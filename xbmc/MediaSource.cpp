@@ -39,7 +39,7 @@ void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString
   vecPaths = paths;
   if (paths.size() == 0)
   { // no paths - return
-    strPath.Empty();
+    strPath.clear();
   }
   else if (paths.size() == 1)
   { // only one valid path? make it the strPath

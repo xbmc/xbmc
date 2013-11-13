@@ -124,7 +124,7 @@ CStdString CTextureUtils::GetWrappedImageURL(const CStdString &image, const CStd
   url.SetProtocol("image");
   url.SetUserName(type);
   url.SetHostName(image);
-  if (!options.IsEmpty())
+  if (!options.empty())
   {
     url.SetFileName("transform");
     url.SetOptions("?" + options);
@@ -142,7 +142,7 @@ CStdString CTextureUtils::UnwrapImageURL(const CStdString &image)
   if (StringUtils::StartsWith(image, "image://"))
   {
     CURL url(image);
-    if (url.GetUserName().IsEmpty() && url.GetOptions().IsEmpty())
+    if (url.GetUserName().empty() && url.GetOptions().empty())
       return url.GetHostName();
   }
   return image;

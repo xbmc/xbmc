@@ -30,6 +30,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
@@ -211,11 +212,10 @@ CStdString CXBMCRenderManager::GetVSyncState()
     avgerror += m_errorbuff[i];
   avgerror /= ERRORBUFFSIZE;
 
-  CStdString state;
-  state.Format("sync:%+3d%% avg:%3d%% error:%2d%%"
-              ,     MathUtils::round_int(m_presentcorr * 100)
-              ,     MathUtils::round_int(avgerror      * 100)
-              , abs(MathUtils::round_int(m_presenterr  * 100)));
+  CStdString state = StringUtils::Format("sync:%+3d%% avg:%3d%% error:%2d%%"
+                                         ,     MathUtils::round_int(m_presentcorr * 100)
+                                         ,     MathUtils::round_int(avgerror      * 100)
+                                         , abs(MathUtils::round_int(m_presenterr  * 100)));
   return state;
 }
 

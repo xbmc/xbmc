@@ -58,7 +58,7 @@ CMusicInfoLoader::~CMusicInfoLoader()
 void CMusicInfoLoader::OnLoaderStart()
 {
   // Load previously cached items from HD
-  if (!m_strCacheFileName.IsEmpty())
+  if (!m_strCacheFileName.empty())
     LoadCache(m_strCacheFileName, *m_mapFileItems);
   else
   {
@@ -67,7 +67,7 @@ void CMusicInfoLoader::OnLoaderStart()
     m_mapFileItems->SetFastLookup(true);
   }
 
-  m_strPrevPath.Empty();
+  m_strPrevPath.clear();
 
   m_databaseHits = m_tagReads = 0;
 
@@ -218,7 +218,7 @@ void CMusicInfoLoader::OnLoaderFinish()
   m_mapFileItems->Clear();
 
   // Save loaded items to HD
-  if (!m_strCacheFileName.IsEmpty())
+  if (!m_strCacheFileName.empty())
     SaveCache(m_strCacheFileName, *m_pVecItems);
   else if (!m_bStop && (m_databaseHits > 1 || m_tagReads > 0))
     m_pVecItems->Save();

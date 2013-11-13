@@ -20,6 +20,7 @@
 
 #include "GUISpinControl.h"
 #include "Key.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -364,11 +365,11 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
   {
     if (m_bShowRange)
     {
-      text.Format("%i/%i", m_iValue, m_iEnd);
+      text = StringUtils::Format("%i/%i", m_iValue, m_iEnd);
     }
     else
     {
-      text.Format("%i", m_iValue);
+      text = StringUtils::Format("%i", m_iValue);
     }
   }
   else if (m_iType == SPIN_CONTROL_TYPE_PAGE)
@@ -378,17 +379,17 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
     int currentPage = m_currentItem / m_itemsPerPage + 1;
     if (m_currentItem >= m_numItems - m_itemsPerPage)
       currentPage = numPages;
-    text.Format("%i/%i", currentPage, numPages);
+    text = StringUtils::Format("%i/%i", currentPage, numPages);
   }
   else if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
   {
     if (m_bShowRange)
     {
-      text.Format("%02.2f/%02.2f", m_fValue, m_fEnd);
+      text = StringUtils::Format("%02.2f/%02.2f", m_fValue, m_fEnd);
     }
     else
     {
-      text.Format("%02.2f", m_fValue);
+      text = StringUtils::Format("%02.2f", m_fValue);
     }
   }
   else
@@ -397,14 +398,14 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
     {
       if (m_bShowRange)
       {
-        text.Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), CStdString(m_vecLabels[m_iValue]).c_str() );
+        text = StringUtils::Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), CStdString(m_vecLabels[m_iValue]).c_str() );
       }
       else
       {
-        text.Format("%s", CStdString(m_vecLabels[m_iValue]).c_str() );
+        text = StringUtils::Format("%s", CStdString(m_vecLabels[m_iValue]).c_str() );
       }
     }
-    else text.Format("?%i?", m_iValue);
+    else text = StringUtils::Format("?%i?", m_iValue);
 
   }
 
@@ -947,9 +948,7 @@ EVENT_RESULT CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEven
 
 CStdString CGUISpinControl::GetDescription() const
 {
-  CStdString strLabel;
-  strLabel.Format("%i/%i", 1 + GetValue(), GetMaximum());
-  return strLabel;
+  return StringUtils::Format("%i/%i", 1 + GetValue(), GetMaximum());
 }
 
 bool CGUISpinControl::IsFocusedOnUp() const

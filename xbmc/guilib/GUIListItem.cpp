@@ -22,9 +22,15 @@
 #include "GUIListItemLayout.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 using namespace std;
+
+bool CGUIListItem::icompare::operator()(const CStdString &s1, const CStdString &s2) const
+{
+  return StringUtils::CompareNoCase(s1, s2) < 0;
+}
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
@@ -69,7 +75,7 @@ void CGUIListItem::SetLabel(const CStdString& strLabel)
   if (m_strLabel == strLabel)
     return;
   m_strLabel = strLabel;
-  if (m_sortLabel.IsEmpty())
+  if (m_sortLabel.empty())
     SetSortLabel(strLabel);
   SetInvalid();
 }

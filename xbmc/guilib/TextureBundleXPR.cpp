@@ -131,7 +131,7 @@ bool CTextureBundleXPR::OpenBundle()
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
     CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
-    if (!theme.IsEmpty() && theme.CompareNoCase("SKINDEFAULT"))
+    if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
       CStdString themeXPR(URIUtils::ReplaceExtension(theme, ".xpr"));
       strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
@@ -251,7 +251,7 @@ bool CTextureBundleXPR::HasFile(const CStdString& Filename)
 
 void CTextureBundleXPR::GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures)
 {
-  if (path.GetLength() > 1 && path[1] == ':')
+  if (path.size() > 1 && path[1] == ':')
     return;
 
   if (m_hFile == NULL && !OpenBundle())
@@ -509,7 +509,8 @@ void CTextureBundleXPR::SetThemeBundle(bool themeBundle)
 CStdString CTextureBundleXPR::Normalize(const CStdString &name)
 {
   CStdString newName(name);
-  newName.Normalize();
-  newName.Replace('/','\\');
+  StringUtils::Trim(newName);
+  StringUtils::ToLower(newName);
+  StringUtils::Replace(newName, '/','\\');
   return newName;
 }

@@ -89,26 +89,29 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
   while (file.ReadString(szLine, 1024))
   {
     strLine = szLine;
-    strLine.TrimRight(" \t\r\n");
-    strLine.TrimLeft(" \t");
+    StringUtils::Trim(strLine);
 
-    if (strLine.Left( (int)strlen(M3U_INFO_MARKER) ) == M3U_INFO_MARKER)
+    if (StringUtils::StartsWith(strLine, M3U_INFO_MARKER))
     {
       // start of info
-      int iColon = (int)strLine.find(":");
-      int iComma = (int)strLine.find(",");
-      if (iColon >= 0 && iComma >= 0 && iComma > iColon)
+      size_t iColon = strLine.find(":");
+      size_t iComma = strLine.find(",");
+      if (iColon != std::string::npos &&
+          iComma != std::string::npos &&
+          iComma > iColon)
       {
         // Read the info and duration
         iColon++;
-        CStdString strLength = strLine.Mid(iColon, iComma - iColon);
+        CStdString strLength = strLine.substr(iColon, iComma - iColon);
         lDuration = atoi(strLength.c_str());
         iComma++;
-        strInfo = strLine.Right((int)strLine.size() - iComma);
+        strInfo = strLine.substr(iComma);
         g_charsetConverter.unknownToUTF8(strInfo);
       }
     }
-    else if (strLine != M3U_START_MARKER && strLine.Left(strlen(M3U_ARTIST_MARKER)) != M3U_ARTIST_MARKER && strLine.Left(strlen(M3U_ALBUM_MARKER)) != M3U_ALBUM_MARKER )
+    else if (strLine != M3U_START_MARKER &&
+             !StringUtils::StartsWith(strLine, M3U_ARTIST_MARKER) &&
+             !StringUtils::StartsWith(strLine, M3U_ALBUM_MARKER))
     {
       CStdString strFileName = strLine;
 
@@ -163,19 +166,18 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
     return;
   }
-  CStdString strLine;
-  strLine.Format("%s\n",M3U_START_MARKER);
+  CStdString strLine = StringUtils::Format("%s\n",M3U_START_MARKER);
   file.Write(strLine.c_str(),strLine.size());
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
     CStdString strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
-    strLine.Format( "%s:%i,%s\n", M3U_INFO_MARKER, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
+    strLine = StringUtils::Format( "%s:%i,%s\n", M3U_INFO_MARKER, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
     file.Write(strLine.c_str(),strLine.size());
     CStdString strFileName = ResolveURL(item);
     g_charsetConverter.utf8ToStringCharset(strFileName);
-    strLine.Format("%s\n",strFileName.c_str());
+    strLine = StringUtils::Format("%s\n",strFileName.c_str());
     file.Write(strLine.c_str(),strLine.size());
   }
   file.Close();
@@ -219,13 +221,12 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
   {
     // read and trim a line
     strLine = szLine;
-    strLine.TrimRight(" \t\r\n");
-    strLine.TrimLeft(" \t");
+    StringUtils::Trim(strLine);
 
     // skip the first line
     if (strLine == M3U_START_MARKER)
         continue;
-    else if (strLine.Left(strlen(M3U_STREAM_MARKER)) == M3U_STREAM_MARKER)
+    else if (StringUtils::StartsWith(strLine, M3U_STREAM_MARKER))
     {
       // parse the line so we can pull out the bandwidth
       std::map< CStdString, CStdString > params = ParseStreamLine(strLine);
@@ -241,8 +242,7 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
             continue;
 
           strLine = szLine;
-          strLine.TrimRight(" \t\r\n");
-          strLine.TrimLeft(" \t");
+          StringUtils::Trim(strLine);
 
           // this line was empty
           if (strLine.empty())
@@ -282,12 +282,15 @@ std::map< CStdString, CStdString > CPlayListM3U::ParseStreamLine(const CStdStrin
   for (size_t i = 0; i < vecParams.size(); i++)
   {
     // split the param, ensure there was an =
-    CStdStringArray vecTuple = StringUtils::SplitString(vecParams[i].Trim(), "=");
+    StringUtils::Trim(vecParams[i]);
+    CStdStringArray vecTuple = StringUtils::SplitString(vecParams[i], "=");
     if (vecTuple.size() < 2)
       continue;
 
     // remove white space from name and value and store it in the dictionary
-    params[vecTuple[0].Trim()] = vecTuple[1].Trim();
+    StringUtils::Trim(vecTuple[0]);
+    StringUtils::Trim(vecTuple[1]);
+    params[vecTuple[0]] = vecTuple[1];
   }
 
   return params;

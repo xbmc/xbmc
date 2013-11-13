@@ -229,7 +229,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
     int64_t iCutStartEnd[2];
     for (int i = 0; i < 2; i++)
     {
-      if (strFields[i].Find(":") != -1) // HH:MM:SS.sss format
+      if (strFields[i].find(":") != std::string::npos) // HH:MM:SS.sss format
       {
         CStdStringArray fieldParts;
         StringUtils::SplitString(strFields[i], ".", fieldParts);
@@ -252,7 +252,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
           }
           else if (fieldParts[1].length() > 3)
           {
-            fieldParts[1] = fieldParts[1].Left(3);
+            fieldParts[1] = fieldParts[1].substr(0, 3);
           }
           iCutStartEnd[i] = (int64_t)StringUtils::TimeStringToSeconds(fieldParts[0]) * 1000 + atoi(fieldParts[1]); // seconds to ms
         }
@@ -262,9 +262,9 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
           continue;
         }
       }
-      else if (strFields[i].Left(1) == "#") // #12345 format for frame number
+      else if (strFields[i][0] == '#') // #12345 format for frame number
       {
-        iCutStartEnd[i] = (int64_t)(atol(strFields[i].Mid(1)) / fFramesPerSecond * 1000); // frame number to ms
+        iCutStartEnd[i] = (int64_t)(atol(strFields[i].substr(1).c_str()) / fFramesPerSecond * 1000); // frame number to ms
       }
       else // Plain old seconds in float format, e.g. 123.45
       {
@@ -794,7 +794,7 @@ bool CEdl::WriteMPlayerEdl()
      *
      * Write out mutes (1) directly. Treat commercial breaks as cuts (everything other than MUTES = 0).
      */
-    strBuffer.AppendFormat("%.3f\t%.3f\t%i\n", (float)(m_vecCuts[i].start / 1000),
+    strBuffer += StringUtils::Format("%.3f\t%.3f\t%i\n", (float)(m_vecCuts[i].start / 1000),
                                                (float)(m_vecCuts[i].end / 1000),
                                                m_vecCuts[i].action == MUTE ? 1 : 0);
   }
@@ -887,16 +887,16 @@ CStdString CEdl::GetInfo()
       }
     }
     if (cutCount > 0)
-      strInfo.AppendFormat("c%i", cutCount);
+      strInfo += StringUtils::Format("c%i", cutCount);
     if (muteCount > 0)
-      strInfo.AppendFormat("m%i", muteCount);
+      strInfo += StringUtils::Format("m%i", muteCount);
     if (commBreakCount > 0)
-      strInfo.AppendFormat("b%i", commBreakCount);
+      strInfo += StringUtils::Format("b%i", commBreakCount);
   }
   if (HasSceneMarker())
-    strInfo.AppendFormat("s%i", m_vecSceneMarkers.size());
+    strInfo += StringUtils::Format("s%i", m_vecSceneMarkers.size());
 
-  return strInfo.IsEmpty() ? "-" : strInfo;
+  return strInfo.empty() ? "-" : strInfo;
 }
 
 bool CEdl::InCut(const int64_t iSeek, Cut *pCut)
@@ -966,7 +966,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneM
 CStdString CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
 {
   CStdString strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
-  strTimeString.AppendFormat(".%03i", iMilliseconds % 1000);
+  strTimeString += StringUtils::Format(".%03i", iMilliseconds % 1000);
   return strTimeString;
 }
 

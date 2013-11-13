@@ -36,6 +36,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 #include "ApplicationMessenger.h"
 #include "Application.h"
 #include "URL.h"
@@ -118,8 +119,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   m_totalItems = 0;
 
   // setup our parameters to send the script
-  CStdString strHandle;
-  strHandle.Format("%i", handle);
+  CStdString strHandle = StringUtils::Format("%i", handle);
   vector<string> argv;
   argv.push_back(basePath);
   argv.push_back(strHandle);
@@ -418,7 +418,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
 bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 {
   CURL url(strPath);
-  if (url.GetHostName().IsEmpty()) // called with no script - should never happen
+  if (url.GetHostName().empty()) // called with no script - should never happen
     return false;
 
   AddonPtr addon;
@@ -438,8 +438,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   CStdString basePath(url.Get());
 
   // setup our parameters to send the script
-  CStdString strHandle;
-  strHandle.Format("%i", -1);
+  CStdString strHandle = StringUtils::Format("%i", -1);
   vector<string> argv;
   argv.push_back(basePath);
   argv.push_back(strHandle);

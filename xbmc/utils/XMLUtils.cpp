@@ -112,7 +112,7 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
   CStdString strEnabled = pNode->FirstChild()->Value();
-  strEnabled.ToLower();
+  StringUtils::ToLower(strEnabled);
   if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false" || strEnabled == "0" )
     bBoolValue = false;
   else
@@ -176,7 +176,7 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
       bResult = true;
       strTemp = node->FirstChild()->Value();
       const char* clear=node->Attribute("clear");
-      if (strStringValue.IsEmpty() || (clear && strcasecmp(clear,"true")==0))
+      if (strStringValue.empty() || (clear && strcasecmp(clear,"true")==0))
         strStringValue = strTemp;
       else
         strStringValue += strSeparator+strTemp;
@@ -240,7 +240,7 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
       CURL::Decode(strStringValue);
     return true;
   }
-  strStringValue.Empty();
+  strStringValue.clear();
   return false;
 }
 
@@ -272,7 +272,7 @@ void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const
 {
   CStdStringArray list;
   StringUtils::SplitString(strValue,strSeparator,list);
-  for (unsigned int i=0;i<list.size() && !list[i].IsEmpty();++i)
+  for (unsigned int i=0;i<list.size() && !list[i].empty();++i)
     SetString(pRootNode,strTag,list[i]);
 }
 
@@ -295,22 +295,19 @@ void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdStr
 
 void XMLUtils::SetInt(TiXmlNode* pRootNode, const char *strTag, int value)
 {
-  CStdString strValue;
-  strValue.Format("%i", value);
+  CStdString strValue = StringUtils::Format("%i", value);
   SetString(pRootNode, strTag, strValue);
 }
 
 void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)
 {
-  CStdString strValue;
-  strValue.Format("%ld", value);
+  CStdString strValue = StringUtils::Format("%ld", value);
   SetString(pRootNode, strTag, strValue);
 }
 
 void XMLUtils::SetFloat(TiXmlNode* pRootNode, const char *strTag, float value)
 {
-  CStdString strValue;
-  strValue.Format("%f", value);
+  CStdString strValue = StringUtils::Format("%f", value);
   SetString(pRootNode, strTag, strValue);
 }
 
@@ -321,8 +318,7 @@ void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
 
 void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value)
 {
-  CStdString strValue;
-  strValue.Format("%x", value);
+  CStdString strValue = StringUtils::Format("%x", value);
   SetString(pRootNode, strTag, strValue);
 }
 

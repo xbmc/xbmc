@@ -27,6 +27,7 @@
 #include "Application.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "settings/Settings.h"
 #include <pulse/pulseaudio.h>
 #include <pulse/simple.h>
@@ -353,9 +354,8 @@ static void SinkInfo(pa_context *c, const pa_sink_info *i, int eol, void *userda
 
     if (add)
     {
-      CStdString desc, sink;
-      desc.Format("%s (PulseAudio)", i->description);
-      sink.Format("pulse:%s@default", i->name);
+      CStdString desc = StringUtils::Format("%s (PulseAudio)", i->description);
+      CStdString sink = StringUtils::Format("pulse:%s@default", i->name);
       sinkStruct->list->push_back(AEDevice(desc, sink));
       CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", desc.c_str(), sink.c_str());
     }
@@ -375,8 +375,7 @@ void CPulseAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
   sinkStruct.passthrough = passthrough;
   sinkStruct.mainloop = m_MainLoop;
   sinkStruct.list = &devices;
-  CStdString def;
-  def.Format("%s (PulseAudio)",g_localizeStrings.Get(409).c_str());
+  CStdString def = StringUtils::Format("%s (PulseAudio)",g_localizeStrings.Get(409).c_str());
   devices.push_back(AEDevice(def, "pulse:default@default"));
   WaitForOperation(pa_context_get_sink_info_list(m_Context,
                    SinkInfo, &sinkStruct), m_MainLoop, "EnumerateAudioSinks");

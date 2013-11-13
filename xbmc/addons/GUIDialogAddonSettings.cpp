@@ -203,8 +203,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
       return false;
 
     // Set the heading
-    CStdString heading;
-    heading.Format("$LOCALIZE[10004] - %s", addon->Name().c_str()); // "Settings - AddonName"
+    CStdString heading = StringUtils::Format("$LOCALIZE[10004] - %s", addon->Name().c_str()); // "Settings - AddonName"
     pDialog->m_strHeading = heading;
 
     pDialog->m_changed = false;
@@ -297,7 +296,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
                 if (i == (unsigned int)atoi(value))
                   selected = i;
                 CStdString localized = m_addon->GetString(atoi(valuesVec[i].c_str()));
-                if (localized.IsEmpty())
+                if (localized.empty())
                   localized = g_localizeStrings.Get(atoi(valuesVec[i].c_str()));
                 valuesVec[i] = localized;
               }
@@ -318,7 +317,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (iSelected >= 0)
             {
               if (setting->Attribute("lvalues"))
-                value.Format("%i", iSelected);
+                value = StringUtils::Format("%i", iSelected);
               else
                 value = valuesVec[iSelected];
               ((CGUIButtonControl*) control)->SetLabel2(valuesVec[iSelected]);
@@ -371,13 +370,13 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             {
               strMask = setting->Attribute("mask");
               // convert mask qualifiers
-              strMask.Replace("$AUDIO", g_advancedSettings.m_musicExtensions);
-              strMask.Replace("$VIDEO", g_advancedSettings.m_videoExtensions);
-              strMask.Replace("$IMAGE", g_advancedSettings.m_pictureExtensions);
+              StringUtils::Replace(strMask, "$AUDIO", g_advancedSettings.m_musicExtensions);
+              StringUtils::Replace(strMask, "$VIDEO", g_advancedSettings.m_videoExtensions);
+              StringUtils::Replace(strMask, "$IMAGE", g_advancedSettings.m_pictureExtensions);
 #if defined(_WIN32_WINNT)
-              strMask.Replace("$EXECUTABLE", ".exe|.bat|.cmd|.py");
+              StringUtils::Replace(strMask, "$EXECUTABLE", ".exe|.bat|.cmd|.py");
 #else
-              strMask.Replace("$EXECUTABLE", "");
+              StringUtils::Replace(strMask, "$EXECUTABLE", "");
 #endif
             }
             else
@@ -412,11 +411,11 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         else if (strcmpi(type, "action") == 0)
         {
           CStdString action = setting->Attribute("action");
-          if (!action.IsEmpty())
+          if (!action.empty())
           {
             // replace $CWD with the url of plugin/script
-            action.Replace("$CWD", m_addon->Path());
-            action.Replace("$ID", m_addon->ID());
+            StringUtils::Replace(action, "$CWD", m_addon->Path());
+            StringUtils::Replace(action, "$ID", m_addon->ID());
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
             CApplicationMessenger::Get().ExecBuiltIn(action);
@@ -425,7 +424,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         else if (strcmp(type, "date") == 0)
         {
           CDateTime date;
-          if (!value.IsEmpty())
+          if (!value.empty())
             date.SetFromDBDate(value);
           SYSTEMTIME timedate;
           date.GetAsSystemTime(timedate);
@@ -439,15 +438,15 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         else if (strcmp(type, "time") == 0)
         {
           SYSTEMTIME timedate;
-          if (!value.IsEmpty())
+          if (!value.empty())
           {
             // assumes HH:MM
-            timedate.wHour = atoi(value.Left(2));
-            timedate.wMinute = atoi(value.Right(2));
+            timedate.wHour = atoi(value.substr(0, 2).c_str());
+            timedate.wMinute = atoi(value.substr(3, 2).c_str());
           }
           if (CGUIDialogNumeric::ShowAndGetTime(timedate, label))
           {
-            value.Format("%02d:%02d", timedate.wHour, timedate.wMinute);
+            value = StringUtils::Format("%02d:%02d", timedate.wHour, timedate.wMinute);
             ((CGUIButtonControl*) control)->SetLabel2(value);
           }
         }
@@ -461,7 +460,8 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             vector<ADDON::TYPE> types;
             for (unsigned int i = 0 ; i < addonTypes.size() ; i++)
             {
-              ADDON::TYPE type = TranslateType(addonTypes[i].Trim());
+              StringUtils::Trim(addonTypes[i]);
+              ADDON::TYPE type = TranslateType(addonTypes[i]);
               if (type != ADDON_UNKNOWN)
                 types.push_back(type);
             }
@@ -522,15 +522,15 @@ void CGUIDialogAddonSettings::UpdateFromControls()
           if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
             value = ((CGUISpinControlEx*) control)->GetLabel();
           else
-            value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+            value = StringUtils::Format("%i", ((CGUISpinControlEx*) control)->GetValue());
           break;
         case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
           {
             CStdString option = setting->Attribute("option");
-            if (option.size() == 0 || option.CompareNoCase("float") == 0)
-              value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
+            if (option.size() == 0 || StringUtils::EqualsNoCase(option, "float"))
+              value = StringUtils::Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
             else
-              value.Format("%i", ((CGUISettingsSliderControl *)control)->GetIntValue());
+              value = StringUtils::Format("%i", ((CGUISettingsSliderControl *)control)->GetIntValue());
           }
           break;
         default:
@@ -604,7 +604,7 @@ void CGUIDialogAddonSettings::CreateSections()
     CGUIButtonControl *button = originalButton ? originalButton->Clone() : NULL;
 
     CStdString label = GetString(category->Attribute("label"));
-    if (label.IsEmpty())
+    if (label.empty())
       label = g_localizeStrings.Get(128);
 
     // add the category button
@@ -754,7 +754,7 @@ void CGUIDialogAddonSettings::CreateControls()
         if (!pControl) return;
         ((CGUISpinControlEx *)pControl)->SetText(label);
 
-        if (!lvalues.IsEmpty())
+       if (!lvalues.empty())
           StringUtils::Tokenize(lvalues, valuesVec, "|");
         else if (values.Equals("$HOURS"))
         {
@@ -766,7 +766,7 @@ void CGUIDialogAddonSettings::CreateControls()
         }
         else
           StringUtils::Tokenize(values, valuesVec, "|");
-        if (!entries.IsEmpty())
+        if (!entries.empty())
           StringUtils::Tokenize(entries, entryVec, "|");
 
         if(bSort && strcmpi(type, "labelenum") == 0)
@@ -777,10 +777,10 @@ void CGUIDialogAddonSettings::CreateControls()
           int iAdd = i;
           if (entryVec.size() > i)
             iAdd = atoi(entryVec[i].c_str());
-          if (!lvalues.IsEmpty())
+          if (!lvalues.empty())
           {
             CStdString replace = m_addon->GetString(atoi(valuesVec[i].c_str()));
-            if (replace.IsEmpty())
+            if (replace.empty())
               replace = g_localizeStrings.Get(atoi(valuesVec[i].c_str()));
             ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
           }
@@ -837,9 +837,9 @@ void CGUIDialogAddonSettings::CreateControls()
         {
           CStdString valuestring;
           if (elements < 2)
-            valuestring.Format(valueformat.c_str(), rangestart);
+            valuestring = StringUtils::Format(valueformat.c_str(), rangestart);
           else
-            valuestring.Format(valueformat.c_str(), rangestart+(rangeend-rangestart)/(elements-1)*i);
+            valuestring = StringUtils::Format(valueformat.c_str(), rangestart+(rangeend-rangestart)/(elements-1)*i);
           ((CGUISpinControlEx *)pControl)->AddLabel(valuestring, i);
         }
         ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings[id]));
@@ -872,11 +872,11 @@ void CGUIDialogAddonSettings::CreateControls()
         CStdString option = setting->Attribute("option");
         int iType=0;
 
-        if (option.size() == 0 || option.CompareNoCase("float") == 0)
+        if (option.size() == 0 || StringUtils::EqualsNoCase(option, "float"))
           iType = SPIN_CONTROL_TYPE_FLOAT;
-        else if (option.CompareNoCase("int") == 0)
+        else if (StringUtils::EqualsNoCase(option, "int"))
           iType = SPIN_CONTROL_TYPE_INT;
-        else if (option.CompareNoCase("percent") == 0)
+        else if (StringUtils::EqualsNoCase(option, "percent"))
           iType = 0;
 
         ((CGUISettingsSliderControl *)pControl)->SetType(iType);
@@ -922,7 +922,7 @@ CStdString CGUIDialogAddonSettings::GetAddonNames(const CStdString& addonIDslist
   StringUtils::SplitString(addonIDslist, ",", addons);
   for (CStdStringArray::const_iterator it = addons.begin(); it != addons.end() ; it ++)
   {
-    if (!retVal.IsEmpty())
+    if (!retVal.empty())
       retVal += ", ";
     AddonPtr addon;
     if (CAddonMgr::Get().GetAddon(*it ,addon))
@@ -938,15 +938,15 @@ vector<std::string> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString 
   // Create our base path, used for type "fileenum" settings
   // replace $PROFILE with the profile path of the plugin/script
   CStdString fullPath = path;
-  if (fullPath.Find("$PROFILE") >= 0)
-    fullPath.Replace("$PROFILE", m_addon->Profile());
+  if (fullPath.find("$PROFILE") != std::string::npos)
+    StringUtils::Replace(fullPath, "$PROFILE", m_addon->Profile());
   else
     fullPath = URIUtils::AddFileToFolder(m_addon->Path(), path);
 
-  bool hideExtensions = (options.CompareNoCase("hideext") == 0);
+  bool hideExtensions = StringUtils::EqualsNoCase(options, "hideext");
   // fetch directory
   CFileItemList items;
-  if (!mask.IsEmpty())
+  if (!mask.empty())
     CDirectory::GetDirectory(fullPath, items, mask, XFILE::DIR_FLAG_NO_FILE_DIRS);
   else
     CDirectory::GetDirectory(fullPath, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
@@ -993,14 +993,14 @@ void CGUIDialogAddonSettings::EnableControls()
 
 bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const int controlId)
 {
-  if (condition.IsEmpty()) return true;
+  if (condition.empty()) return true;
 
   bool bCondition = true;
   bool bCompare = true;
   bool bControlDependend = false;//flag if the condition depends on another control
   vector<std::string> conditionVec;
 
-  if (condition.Find("+") >= 0)
+  if (condition.find("+") != std::string::npos)
     StringUtils::Tokenize(condition, conditionVec, "+");
   else
   {
@@ -1033,7 +1033,7 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
         if (((CGUISpinControlEx*) control2)->GetFloatValue() > 0.0f)
           value = ((CGUISpinControlEx*) control2)->GetLabel();
         else
-          value.Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
+          value = StringUtils::Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
         break;
       default:
         break;
@@ -1080,18 +1080,17 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
 bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strCondition, vector<CStdString> &condVec)
 {
   CStdString strTest = strCondition;
-  strTest.ToLower();
-  strTest.TrimLeft(" ");
-  strTest.TrimRight(" ");
+  StringUtils::ToLower(strTest);
+  StringUtils::Trim(strTest);
 
-  int pos1 = strTest.Find("(");
-  int pos2 = strTest.Find(",");
-  int pos3 = strTest.Find(")");
-  if (pos1 >= 0 && pos2 > pos1 && pos3 > pos2)
+  size_t pos1 = strTest.find("(");
+  size_t pos2 = strTest.find(",");
+  size_t pos3 = strTest.find(")");
+  if (pos1 != std::string::npos && pos2 > pos1 && pos3 > pos2)
   {
-    condVec.push_back(strTest.Left(pos1));
-    condVec.push_back(strTest.Mid(pos1 + 1, pos2 - pos1 - 1));
-    condVec.push_back(strTest.Mid(pos2 + 1, pos3 - pos2 - 1));
+    condVec.push_back(strTest.substr(0, pos1));
+    condVec.push_back(strTest.substr(pos1 + 1, pos2 - pos1 - 1));
+    condVec.push_back(strTest.substr(pos2 + 1, pos3 - pos2 - 1));
     return true;
   }
   return false;

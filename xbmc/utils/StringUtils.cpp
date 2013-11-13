@@ -103,14 +103,77 @@ string StringUtils::FormatV(const char *fmt, va_list args)
   return "";
 }
 
+wstring StringUtils::Format(const wchar_t *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  wstring str = FormatV(fmt, args);
+  va_end(args);
+  
+  return str;
+}
+
+wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
+{
+  if (fmt == NULL)
+    return L"";
+  
+  int size = FORMAT_BLOCK_SIZE;
+  va_list argCopy;
+  
+  wchar_t *cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
+  if (cstr == NULL)
+    return L"";
+  
+  while (1)
+  {
+    va_copy(argCopy, args);
+    
+    int nActual = vswprintf(cstr, size, fmt, argCopy);
+    va_end(argCopy);
+    
+    if (nActual > -1 && nActual < size) // We got a valid result
+    {
+      wstring str(cstr, nActual);
+      free(cstr);
+      return str;
+    }
+    if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
+      size = nActual + 1;
+    else                                // Let's try to double the size (glibc 2.0)
+      size *= 2;
+    
+    wchar_t *new_cstr = reinterpret_cast<wchar_t*>(realloc(cstr, sizeof(wchar_t) * size));
+    if (new_cstr == NULL)
+    {
+      free(cstr);
+      return L"";
+    }
+    
+    cstr = new_cstr;
+  }
+  
+  return L"";
+}
+
 void StringUtils::ToUpper(string &str)
 {
   transform(str.begin(), str.end(), str.begin(), ::toupper);
 }
 
+void StringUtils::ToUpper(wstring &str)
+{
+  transform(str.begin(), str.end(), str.begin(), ::towupper);
+}
+
 void StringUtils::ToLower(string &str)
 {
   transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+
+void StringUtils::ToLower(wstring &str)
+{
+  transform(str.begin(), str.end(), str.begin(), ::towlower);
 }
 
 bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
@@ -134,6 +197,24 @@ bool StringUtils::EqualsNoCase(const char *s1, const char *s2)
       return false;
   } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
   return true;
+}
+
+int StringUtils::CompareNoCase(const std::string &str1, const std::string &str2)
+{
+  return CompareNoCase(str1.c_str(), str2.c_str());
+}
+
+int StringUtils::CompareNoCase(const char *s1, const char *s2)
+{
+  char c2; // we need only one char outside the loop
+  do
+  {
+    const char c1 = *s1++; // const local variable should help compiler to optimize
+    c2 = *s2++;
+    if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
+      return ::tolower(c1) < ::tolower(c2);
+  } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
+  return 0;
 }
 
 string StringUtils::Left(const string &str, size_t count)
@@ -180,9 +261,23 @@ std::string& StringUtils::TrimLeft(std::string &str)
   return str;
 }
 
+std::string& StringUtils::TrimLeft(std::string &str, const std::string& chars)
+{
+  size_t nidx = str.find_first_not_of(chars);
+  str.substr(nidx == str.npos ? 0 : nidx).swap(str);
+  return str;
+}
+
 std::string& StringUtils::TrimRight(std::string &str)
 {
   str.erase(::find_if(str.rbegin(), str.rend(), ::not1(::ptr_fun(isspace_c))).base(), str.end());
+  return str;
+}
+
+std::string& StringUtils::TrimRight(std::string &str, const std::string& chars)
+{
+  size_t nidx = str.find_last_not_of(chars);
+  str.erase(str.npos == nidx ? 0 : ++nidx);
   return str;
 }
 
@@ -243,6 +338,24 @@ int StringUtils::Replace(std::string &str, const std::string &oldStr, const std:
     replacedChars++;
   }
   
+  return replacedChars;
+}
+
+int StringUtils::Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr)
+{
+  if (oldStr.empty())
+    return 0;
+
+  int replacedChars = 0;
+  size_t index = 0;
+
+  while (index < str.size() && (index = str.find(oldStr, index)) != string::npos)
+  {
+    str.replace(index, oldStr.size(), newStr);
+    index += newStr.size();
+    replacedChars++;
+  }
+
   return replacedChars;
 }
 
@@ -344,7 +457,7 @@ void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& d
     result += (*it) + delimiter;
 
   if(result != "")
-    result.Delete(result.size()-delimiter.size(), delimiter.size());
+    result.erase(result.size()-delimiter.size(), delimiter.size());
 }
 
 CStdString StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter)
@@ -368,28 +481,28 @@ CStdString StringUtils::Join(const vector<string> &strings, const CStdString& de
 // added MaxStrings parameter to restrict the number of returned substrings (like perl and python)
 int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings /* = 0 */)
 {
-  int iPos = -1;
-  int newPos = -1;
-  int sizeS2 = delimiter.GetLength();
-  int isize = input.GetLength();
+  size_t iPos = std::string::npos;
+  size_t newPos = std::string::npos;
+  size_t sizeS2 = delimiter.size();
+  size_t isize = input.size();
 
   results.clear();
 
   vector<unsigned int> positions;
 
-  newPos = input.Find (delimiter, 0);
+  newPos = input.find(delimiter, 0);
 
-  if ( newPos < 0 )
+  if (newPos == std::string::npos)
   {
     results.push_back(input);
     return 1;
   }
 
-  while ( newPos > iPos )
+  while (newPos != std::string::npos)
   {
     positions.push_back(newPos);
     iPos = newPos;
-    newPos = input.Find (delimiter, iPos + sizeS2);
+    newPos = input.find(delimiter, iPos + sizeS2);
   }
 
   // numFound is the number of delimiters which is one less
@@ -406,17 +519,17 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
       if ( i == numFound )
         s = input;
       else
-        s = input.Mid( i, positions[i] );
+        s = input.substr(i, positions[i]);
     }
     else
     {
-      int offset = positions[i - 1] + sizeS2;
+      size_t offset = positions[i - 1] + sizeS2;
       if ( offset < isize )
       {
         if ( i == numFound )
-          s = input.Mid(offset);
+          s = input.substr(offset);
         else if ( i > 0 )
-          s = input.Mid( positions[i - 1] + sizeS2,
+          s = input.substr( positions[i - 1] + sizeS2,
                          positions[i] - positions[i - 1] - sizeS2 );
       }
     }
@@ -448,12 +561,12 @@ vector<string> StringUtils::Split(const std::string& input, const std::string& d
 // returns the number of occurrences of strFind in strInput.
 int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFind)
 {
-  int pos = strInput.Find(strFind, 0);
+  size_t pos = strInput.find(strFind, 0);
   int numfound = 0;
-  while (pos >= 0)
+  while (pos != std::string::npos)
   {
     numfound++;
-    pos = strInput.Find(strFind, pos + 1);
+    pos = strInput.find(strFind, pos + 1);
   }
   return numfound;
 }
@@ -541,8 +654,7 @@ int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 long StringUtils::TimeStringToSeconds(const CStdString &timeString)
 {
   CStdString strCopy(timeString);
-  strCopy.TrimLeft(" \n\r\t");
-  strCopy.TrimRight(" \n\r\t");
+  StringUtils::Trim(strCopy);
   if(StringUtils::EndsWithNoCase(strCopy, " min"))
   {
     // this is imdb format of "XXX min"
@@ -573,13 +685,13 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
     format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
   CStdString strHMS;
   if (format & TIME_FORMAT_HH)
-    strHMS.AppendFormat("%02.2i", hh);
+    strHMS += StringUtils::Format("%02.2i", hh);
   else if (format & TIME_FORMAT_H)
-    strHMS.AppendFormat("%i", hh);
+    strHMS += StringUtils::Format("%i", hh);
   if (format & TIME_FORMAT_MM)
-    strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", mm);
+    strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", mm);
   if (format & TIME_FORMAT_SS)
-    strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", ss);
+    strHMS += StringUtils::Format(strHMS.empty() ? "%02.2i" : ":%02.2i", ss);
   return strHMS;
 }
 
@@ -617,10 +729,7 @@ bool StringUtils::IsInteger(const CStdString& str)
 
 void StringUtils::RemoveCRLF(CStdString& strLine)
 {
-  while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )
-  {
-    strLine = strLine.Left(std::max(0, (int)strLine.size() - 1));
-  }
+  StringUtils::TrimRight(strLine, "\n\r");
 }
 
 CStdString StringUtils::SizeToString(int64_t size)
@@ -636,11 +745,11 @@ CStdString StringUtils::SizeToString(int64_t size)
   }
 
   if (!i)
-    strLabel.Format("%.0lf %cB ", s, prefixes[i]);
+    strLabel = StringUtils::Format("%.0lf %cB ", s, prefixes[i]);
   else if (s >= 100.0)
-    strLabel.Format("%.1lf %cB", s, prefixes[i]);
+    strLabel = StringUtils::Format("%.1lf %cB", s, prefixes[i]);
   else
-    strLabel.Format("%.2lf %cB", s, prefixes[i]);
+    strLabel = StringUtils::Format("%.2lf %cB", s, prefixes[i]);
 
   return strLabel;
 }
@@ -741,7 +850,7 @@ int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer,
 void StringUtils::WordToDigits(CStdString &word)
 {
   static const char word_to_letter[] = "22233344455566677778889999";
-  word.ToLower();
+  StringUtils::ToLower(word);
   for (unsigned int i = 0; i < word.size(); ++i)
   { // NB: This assumes ascii, which probably needs extending at some  point.
     char letter = word[i];

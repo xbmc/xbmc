@@ -222,8 +222,7 @@ JSONRPC_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLay
 
   int tvshowID = (int)parameterObject["tvshowid"].asInteger();
 
-  CStdString strPath;
-  strPath.Format("videodb://tvshows/titles/%i/", tvshowID);
+  CStdString strPath = StringUtils::Format("videodb://tvshows/titles/%i/", tvshowID);
   CFileItemList items;
   if (!videodatabase.GetSeasonsNav(strPath, items, -1, -1, -1, -1, tvshowID, false))
     return InternalError;
@@ -264,8 +263,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLa
   int tvshowID = (int)parameterObject["tvshowid"].asInteger();
   int season   = (int)parameterObject["season"].asInteger();
   
-  CStdString strPath;
-  strPath.Format("videodb://tvshows/titles/%i/%i/", tvshowID, season);
+  CStdString strPath = StringUtils::Format("videodb://tvshows/titles/%i/%i/", tvshowID, season);
 
   CVideoDbUrl videoUrl;
   videoUrl.FromString(strPath);
@@ -324,7 +322,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITrans
   if (tvshowid <= 0)
     tvshowid = videodatabase.GetTvShowForEpisode(id);
 
-  CStdString basePath; basePath.Format("videodb://tvshows/titles/%ld/%ld/%ld", tvshowid, infos.m_iSeason, id);
+  CStdString basePath = StringUtils::Format("videodb://tvshows/titles/%ld/%ld/%ld", tvshowid, infos.m_iSeason, id);
   pItem->SetPath(basePath);
 
   HandleFileItem("episodeid", true, "episodedetails", pItem, parameterObject, parameterObject["properties"], result, false);
@@ -434,7 +432,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &meth
 JSONRPC_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["type"].asString();
-  media = media.ToLower();
+  StringUtils::ToLower(media);
   int idContent = -1;
 
   CStdString strPath = "videodb://";
@@ -761,7 +759,7 @@ JSONRPC_STATUS CVideoLibrary::Scan(const CStdString &method, ITransportLayer *tr
   if (directory.empty())
     cmd = "updatelibrary(video)";
   else
-    cmd.Format("updatelibrary(video, %s)", StringUtils::Paramify(directory).c_str());
+    cmd = StringUtils::Format("updatelibrary(video, %s)", StringUtils::Paramify(directory).c_str());
 
   CApplicationMessenger::Get().ExecBuiltIn(cmd);
   return ACK;
@@ -771,12 +769,12 @@ JSONRPC_STATUS CVideoLibrary::Export(const CStdString &method, ITransportLayer *
 {
   CStdString cmd;
   if (parameterObject["options"].isMember("path"))
-    cmd.Format("exportlibrary(video, false, %s)", StringUtils::Paramify(parameterObject["options"]["path"].asString()));
+    cmd = StringUtils::Format("exportlibrary(video, false, %s)", StringUtils::Paramify(parameterObject["options"]["path"].asString()).c_str());
   else
-    cmd.Format("exportlibrary(video, true, %s, %s, %s)",
-      parameterObject["options"]["images"].asBoolean() ? "true" : "false",
-      parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false",
-      parameterObject["options"]["actorthumbs"].asBoolean() ? "true" : "false");
+    cmd = StringUtils::Format("exportlibrary(video, true, %s, %s, %s)",
+                              parameterObject["options"]["images"].asBoolean() ? "true" : "false",
+                              parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false",
+                              parameterObject["options"]["actorthumbs"].asBoolean() ? "true" : "false");
 
   CApplicationMessenger::Get().ExecBuiltIn(cmd);
   return ACK;

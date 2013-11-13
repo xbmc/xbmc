@@ -267,10 +267,7 @@ protected:
   bool m_animationsEnabled;
   struct icompare
   {
-    bool operator()(const CStdString &s1, const CStdString &s2) const
-    {
-      return s1.CompareNoCase(s2) < 0;
-    }
+    bool operator()(const CStdString &s1, const CStdString &s2) const;
   };
 
   CGUIAction m_loadActions;

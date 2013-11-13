@@ -108,7 +108,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       // is this the first time accessing this window?
-      if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
+      if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
         message.SetStringParam(CMediaSourceSettings::Get().GetDefaultSource("pictures"));
 
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -311,7 +311,7 @@ bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemL
     return false;
 
   CStdString label;
-  if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("pictures"), &label)) 
+  if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("pictures"), &label)) 
     items.SetLabel(label);
 
   return true;

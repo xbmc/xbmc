@@ -37,7 +37,7 @@ CFanart::CFanart()
 void CFanart::Pack()
 {
   // Take our data and pack it into the m_xml string
-  m_xml.Empty();
+  m_xml.clear();
   TiXmlElement fanart("fanart");
   for (std::vector<SFanartData>::const_iterator it = m_fanart.begin(); it != m_fanart.end(); ++it)
   {
@@ -111,7 +111,7 @@ const CStdString CFanart::GetColor(unsigned int index) const
     return "FFFFFFFF";
 
   // format is AARRGGBB,AARRGGBB etc.
-  return m_fanart[0].strColors.Mid(index*9, 8);
+  return m_fanart[0].strColors.substr(index*9, 8);
 }
 
 bool CFanart::SetPrimaryFanart(unsigned int index)
@@ -141,13 +141,13 @@ bool CFanart::ParseColors(const CStdString &colorsIn, CStdString &colorsOut)
   // Essentially we read the colors in using the proper format, and store them in our own fixed temporary format (3 DWORDS), and then
   // write them back in in the specified format.
 
-  if (colorsIn.IsEmpty())
+  if (colorsIn.empty())
     return false;
 
   // check for the TVDB RGB triplets "|68,69,59|69,70,58|78,78,68|"
   if (colorsIn[0] == '|')
   { // need conversion
-    colorsOut.Empty();
+    colorsOut.clear();
     CStdStringArray strColors;
     StringUtils::SplitString(colorsIn, "|", strColors);
     for (int i = 0; i < std::min((int)strColors.size()-1, (int)max_fanart_colors); i++)
@@ -158,7 +158,7 @@ bool CFanart::ParseColors(const CStdString &colorsIn, CStdString &colorsOut)
       { // convert
         if (colorsOut.size())
           colorsOut += ",";
-        colorsOut.AppendFormat("FF%2x%2x%2x", atol(strTriplets[0].c_str()), atol(strTriplets[1].c_str()), atol(strTriplets[2].c_str()));
+        colorsOut += StringUtils::Format("FF%2x%2x%2x", atol(strTriplets[0].c_str()), atol(strTriplets[1].c_str()), atol(strTriplets[2].c_str()));
       }
     }
   }

@@ -55,14 +55,14 @@ bool CImageLoader::DoWork()
   else
     loadPath = texturePath;
 
-  if (m_use_cache && loadPath.IsEmpty())
+  if (m_use_cache && loadPath.empty())
   {
     // not in our texture cache, so try and load directly and then cache the result
     loadPath = CTextureCache::Get().CacheImage(texturePath, &m_texture);
     if (m_texture)
       return true; // we're done
   }
-  if (!m_use_cache || !loadPath.IsEmpty())
+  if (!m_use_cache || !loadPath.empty())
   {
     // direct route - load the image
     unsigned int start = XbmcThreads::SystemClockMillis();

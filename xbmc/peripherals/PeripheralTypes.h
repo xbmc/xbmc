@@ -25,6 +25,7 @@
 #include "PlatformDefs.h"
 #endif
 #include "utils/StdString.h"
+#include "utils/StringUtils.h"
 
 class CSetting;
 
@@ -112,7 +113,7 @@ namespace PERIPHERALS
     static PeripheralType GetTypeFromString(const CStdString &strType)
     {
       CStdString strTypeLowerCase(strType);
-      strTypeLowerCase.ToLower();
+      StringUtils::ToLower(strTypeLowerCase);
 
       if (strTypeLowerCase.Equals("bluetooth"))
         return PERIPHERAL_BLUETOOTH;
@@ -154,7 +155,7 @@ namespace PERIPHERALS
     static PeripheralBusType GetBusTypeFromString(const CStdString &strType)
     {
       CStdString strTypeLowerCase(strType);
-      strTypeLowerCase.ToLower();
+      StringUtils::ToLower(strTypeLowerCase);
 
       if (strTypeLowerCase.Equals("usb"))
         return PERIPHERAL_BUS_USB;
@@ -182,7 +183,7 @@ namespace PERIPHERALS
       if (iVal > 65536)
         iVal = 65536;
 
-      strHexString.Format("%04X", iVal);
+      strHexString = StringUtils::Format("%04X", iVal);
     };
   };
 

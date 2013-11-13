@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 
@@ -76,9 +77,8 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       bIsBouquet = false; //On Empty is Bouquet
       if (enigma2)
       {
-        CStdString strPort;
-        strPort.Format(":%i",url.GetPort());
-        if (strRoot.Right(strPort.GetLength()) != strPort) // If not root dir, enable Channels
+        CStdString strPort = StringUtils::Format(":%i",url.GetPort());
+        if (!StringUtils::EndsWith(strRoot, strPort)) // If not root dir, enable Channels
           strFilter = "e2"; // Disable Bouquets for Enigma2
 
         GetRootAndChildStringEnigma2(strBQRequest, strXMLRootString, strXMLChildString);
@@ -87,7 +87,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       url.SetFileName(strBQRequest);
     }
   }
-  if(strFilter.IsEmpty())
+  if(strFilter.empty())
   {
     url.SetOptions("");
     url.SetFileName(strBQRequest);
@@ -128,7 +128,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
       // parse returned xml
       CXBMCTinyXML doc;
-      data.Replace("></",">-</"); //FILL EMPTY ELEMENTS WITH "-"!
+      StringUtils::Replace(data, "></",">-</"); //FILL EMPTY ELEMENTS WITH "-"!
       doc.Parse(data, http.GetServerReportedCharset());
       TiXmlElement *root = doc.RootElement();
       if(root == NULL)
@@ -139,15 +139,15 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
       if( strXMLRootString.Equals(root->Value()) && bIsBouquet)
       {
-        data.Empty();
+        data.clear();
         if (enigma2)
           result = g_tuxbox.ParseBouquetsEnigma2(root, items, url, strFilter, strXMLChildString);
         else
           result = g_tuxbox.ParseBouquets(root, items, url, strFilter, strXMLChildString);
       }
-      else if( strXMLRootString.Equals(root->Value()) && !strFilter.IsEmpty() )
+      else if( strXMLRootString.Equals(root->Value()) && !strFilter.empty() )
       {
-        data.Empty();
+        data.clear();
         if (enigma2)
           result = g_tuxbox.ParseChannelsEnigma2(root, items, url, strFilter, strXMLChildString);
         else
@@ -157,7 +157,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       {
         CLog::Log(LOGERROR, "%s - Invalid root xml element for TuxBox", __FUNCTION__);
         CLog::Log(LOGERROR, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
-        data.Empty();
+        data.clear();
         result = false;
       }
     }
@@ -189,8 +189,8 @@ void CTuxBoxDirectory::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CS
 {
   // Allways take getallservices for Enigma2
   strBQRequest = "web/getallservices"; //Bouquets and Channels
-  strXMLRootString.Format("e2servicelistrecursive");
-  strXMLChildString.Format("e2bouquet");
+  strXMLRootString = StringUtils::Format("e2servicelistrecursive");
+  strXMLChildString = StringUtils::Format("e2bouquet");
 }
 
 bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
@@ -200,8 +200,8 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
   {
     CLog::Log(LOGDEBUG, "%s - Default defined RootMenu : (3) Movies", __FUNCTION__);
     strBQRequest = "xml/services?mode=3&submode=4";
-    strXMLRootString.Format("movies");
-    strXMLChildString.Format("service");
+    strXMLRootString = StringUtils::Format("movies");
+    strXMLChildString = StringUtils::Format("service");
   }
   else if(g_advancedSettings.m_iTuxBoxDefaultRootMenu <= 0 || g_advancedSettings.m_iTuxBoxDefaultRootMenu == 1 ||
     g_advancedSettings.m_iTuxBoxDefaultRootMenu > 4 )
@@ -219,7 +219,7 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
       // DeActivated: Timing Problems, bug in TuxBox.. etc.!
       bool bReqMoRe = true;
       // Detect the RootMode !
-      if (strPath.Find("?mode=")>=0)
+      if (strPath.find("?mode=") != std::string::npos)
       {
         CStdString strMode;
         bReqMoRe=false;
@@ -229,11 +229,11 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
       {
         //PopUp Context and Request SubMode with root and child string
         strBQRequest = g_tuxbox.GetSubMode(g_advancedSettings.m_iTuxBoxDefaultRootMenu, strXMLRootString, strXMLChildString);
-        if(strBQRequest.IsEmpty())
+        if(strBQRequest.empty())
         {
           strBQRequest = "xml/services?mode=0&submode=4"; //Bouquets
-          strXMLRootString.Format("bouquets");
-          strXMLChildString.Format("bouquet");
+          strXMLRootString = StringUtils::Format("bouquets");
+          strXMLChildString = StringUtils::Format("bouquet");
         }
       }
     }
@@ -244,33 +244,33 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (1) Services", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=1"; //Services
-        strXMLRootString.Format("services");
-        strXMLChildString.Format("service");
+        strXMLRootString = StringUtils::Format("services");
+        strXMLChildString = StringUtils::Format("service");
       }
       else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 2)
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (2) Satellites", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=2"; //Satellites
-        strXMLRootString.Format("satellites");
-        strXMLChildString.Format("satellite");
+        strXMLRootString = StringUtils::Format("satellites");
+        strXMLChildString = StringUtils::Format("satellite");
       }
       else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 3)
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (3) Providers", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=3"; //Providers
-        strXMLRootString.Format("providers");
-        strXMLChildString.Format("provider");
+        strXMLRootString = StringUtils::Format("providers");
+        strXMLChildString = StringUtils::Format("provider");
       }
       else
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (4) Bouquets", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=4"; //Bouquets
-        strXMLRootString.Format("bouquets");
-        strXMLChildString.Format("bouquet");
+        strXMLRootString = StringUtils::Format("bouquets");
+        strXMLChildString = StringUtils::Format("bouquet");
       }
     }
   }
-  if(strBQRequest.IsEmpty() || strXMLRootString.IsEmpty() || strXMLChildString.IsEmpty())
+  if(strBQRequest.empty() || strXMLRootString.empty() || strXMLChildString.empty())
     return false;
   else
     return true;

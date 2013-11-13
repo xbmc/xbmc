@@ -159,7 +159,7 @@ string CRepository::GetAddonHash(const AddonPtr& addon) const
 
 #define SET_IF_NOT_EMPTY(x,y) \
   { \
-    if (!x.IsEmpty()) \
+    if (!x.empty()) \
        x = y; \
   }
 
@@ -269,9 +269,9 @@ bool CRepositoryUpdateJob::DoWork()
                                               addon->Name(),TOAST_DISPLAY_TIME,false,TOAST_DISPLAY_TIME);
       }
     }
-    if (!addons[i]->Props().broken.IsEmpty())
+    if (!addons[i]->Props().broken.empty())
     {
-      if (database.IsAddonBroken(addons[i]->ID()).IsEmpty())
+      if (database.IsAddonBroken(addons[i]->ID()).empty())
       {
         std::string line = g_localizeStrings.Get(24096);
         if (addons[i]->Props().broken == "DEPSNOTMET")

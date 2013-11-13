@@ -118,13 +118,13 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
   CStdString RootDir;
 
   // Split up into the special://root and the rest of the filename
-  int pos = FullFileName.Find('/');
-  if (pos != -1 && pos > 1)
+  size_t pos = FullFileName.find('/');
+  if (pos != std::string::npos && pos > 1)
   {
-    RootDir = FullFileName.Left(pos);
+    RootDir = FullFileName.substr(0, pos);
 
-    if (pos < FullFileName.GetLength())
-      FileName = FullFileName.Mid(pos + 1);
+    if (pos < FullFileName.size())
+      FileName = FullFileName.substr(pos + 1);
   }
   else
     RootDir = FullFileName;
@@ -162,7 +162,7 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
            RootDir.Equals("frameworks"))
   {
     CStdString basePath = GetPath(RootDir);
-    if (!basePath.IsEmpty())
+    if (!basePath.empty())
       translatedPath = URIUtils::AddFileToFolder(basePath, FileName);
     else
       translatedPath.clear();
@@ -183,7 +183,7 @@ CStdString CSpecialProtocol::TranslatePathConvertCase(const CStdString& path)
   CStdString translatedPath = TranslatePath(path);
 
 #ifdef TARGET_POSIX
-  if (translatedPath.Find("://") > 0)
+  if (translatedPath.find("://") != std::string::npos)
     return translatedPath;
 
   // If the file exists with the requested name, simply return it
@@ -250,7 +250,7 @@ void CSpecialProtocol::LogPaths()
   CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
   CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
   //CLog::Log(LOGNOTICE, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
-  if (!CUtil::GetFrameworksPath().IsEmpty())
+  if (!CUtil::GetFrameworksPath().empty())
     CLog::Log(LOGNOTICE, "special://frameworks/ is mapped to: %s", GetPath("frameworks").c_str());
 }
 

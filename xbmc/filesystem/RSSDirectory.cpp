@@ -154,7 +154,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   }
   else if (name == "title")
   {
-    if(text.IsEmpty())
+    if(text.empty())
       return;
 
     if(text.length() > item->m_strTitle.length())
@@ -162,7 +162,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   }
   else if(name == "description")
   {
-    if(text.IsEmpty())
+    if(text.empty())
       return;
 
     CStdString description = text;
@@ -172,7 +172,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   }
   else if(name == "category")
   {
-    if(text.IsEmpty())
+    if(text.empty())
       return;
 
     CStdString scheme = item_child->Attribute("scheme");
@@ -400,7 +400,7 @@ static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* e
   else if (name == "broadcasts")
   {
     CURL url(path);
-    if(url.GetFileName().Left(3) == "v1/")
+    if(StringUtils::StartsWith(url.GetFileName(), "v1/"))
     {
       SResource res;
       res.tag  = "svtplay:broadcasts";
@@ -417,11 +417,11 @@ static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root
   {
     CStdString name = child->Value();
     CStdString xmlns;
-    int pos = name.Find(':');
-    if(pos >= 0)
+    size_t pos = name.find(':');
+    if(pos != std::string::npos)
     {
-      xmlns = name.Left(pos);
-      name.Delete(0, pos+1);
+      xmlns = name.substr(0, pos);
+      name.erase(0, pos+1);
     }
 
     if      (xmlns == "media")
@@ -445,7 +445,7 @@ static bool FindMime(SResources resources, CStdString mime)
 {
   for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
   {
-    if(it->mime.Left(mime.length()).Equals(mime))
+    if(StringUtils::StartsWithNoCase(it->mime, mime))
       return true;
   }
   return false;
@@ -477,7 +477,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
   {
     for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
     {
-      if(it->mime.Left(mime.length()) != mime)
+      if(!StringUtils::StartsWith(it->mime, mime))
         continue;
 
       if(it->tag == *type)
@@ -522,7 +522,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
 
     /* handling of mimetypes fo directories are sub optimal at best */
     if(best->mime == "application/rss+xml" && StringUtils::StartsWithNoCase(item->GetPath(), "http://"))
-      item->SetPath("rss://" + item->GetPath().Mid(7));
+      item->SetPath("rss://" + item->GetPath().substr(7));
 
     if(StringUtils::StartsWithNoCase(item->GetPath(), "rss://"))
       item->m_bIsFolder = true;
@@ -530,7 +530,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
       item->m_bIsFolder = false;
   }
 
-  if(!item->m_strTitle.IsEmpty())
+  if(!item->m_strTitle.empty())
     item->SetLabel(item->m_strTitle);
 
   if(item->HasVideoInfoTag())
@@ -540,14 +540,14 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
     if(item->HasProperty("duration")    && !vtag->GetDuration())
       vtag->m_duration = StringUtils::TimeStringToSeconds(item->GetProperty("duration").asString());
 
-    if(item->HasProperty("description") && vtag->m_strPlot.IsEmpty())
+    if(item->HasProperty("description") && vtag->m_strPlot.empty())
       vtag->m_strPlot = item->GetProperty("description").asString();
 
-    if(vtag->m_strPlotOutline.IsEmpty() && !vtag->m_strPlot.IsEmpty())
+    if(vtag->m_strPlotOutline.empty() && !vtag->m_strPlot.empty())
     {
-      int pos = vtag->m_strPlot.Find('\n');
-      if(pos >= 0)
-        vtag->m_strPlotOutline = vtag->m_strPlot.Left(pos);
+      size_t pos = vtag->m_strPlot.find('\n');
+      if(pos != std::string::npos)
+        vtag->m_strPlotOutline = vtag->m_strPlot.substr(0, pos);
       else
         vtag->m_strPlotOutline = vtag->m_strPlot;
     }
@@ -609,7 +609,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     if (!item->HasArt("thumb") && items.HasArt("thumb"))
       item->SetArt("thumb", items.GetArt("thumb"));
 
-    if (!item->GetPath().IsEmpty())
+    if (!item->GetPath().empty())
       items.Add(item);
   }
 

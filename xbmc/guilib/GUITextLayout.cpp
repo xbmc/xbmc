@@ -281,7 +281,7 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
       character_t style = *it & 0xffff0000;
       if (style != sectionStyle)
       {
-        if (!sectionText.IsEmpty())
+        if (!sectionText.empty())
         { // style has changed, bidi flip text
           CStdStringW sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
           for (unsigned int j = 0; j < sectionFlipped.size(); j++)
@@ -294,7 +294,7 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
     }
 
     // handle the last section
-    if (!sectionText.IsEmpty())
+    if (!sectionText.empty())
     {
       CStdStringW sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
       for (unsigned int j = 0; j < sectionFlipped.size(); j++)
@@ -325,7 +325,7 @@ void CGUITextLayout::Filter(CStdString &text)
   vecColors colors;
   vecText parsedText;
   ParseText(utf16, 0, 0xffffffff, colors, parsedText);
-  utf16.Empty();
+  utf16.clear();
   for (unsigned int i = 0; i < parsedText.size(); i++)
     utf16 += (wchar_t)(0xffff & parsedText[i]);
   g_charsetConverter.wToUTF8(utf16, text);
@@ -351,8 +351,8 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, c
   // but [LOWERCASE]Glah[UPPERCASE]FReD[/UPPERCASE]Georeg[/LOWERCASE] won't
 
   int startPos = 0;
-  size_t pos = text.Find(L'[');
-  while (pos != CStdString::npos && pos + 1 < text.size())
+  size_t pos = text.find(L'[');
+  while (pos != std::string::npos && pos + 1 < text.size())
   {
     uint32_t newStyle = 0;
     color_t newColor = currentColor;
@@ -360,52 +360,52 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, c
     bool newLine = false;
     // have a [ - check if it's an ON or OFF switch
     bool on(true);
-    int endPos = pos++; // finish of string
+    size_t endPos = pos++; // finish of string
     if (text[pos] == L'/')
     {
       on = false;
       pos++;
     }
     // check for each type
-    if (text.Mid(pos,2) == L"B]")
+    if (text.compare(pos, 2, L"B]") == 0)
     { // bold - finish the current text block and assign the bold state
       pos += 2;
-      if ((on && text.Find(L"[/B]",pos) >= 0) ||          // check for a matching end point
+      if ((on && text.find(L"[/B]",pos) != std::string::npos) ||          // check for a matching end point
          (!on && (currentStyle & FONT_STYLE_BOLD)))       // or matching start point
         newStyle = FONT_STYLE_BOLD;
     }
-    else if (text.Mid(pos,2) == L"I]")
+    else if (text.compare(pos, 2, L"I]") == 0)
     { // italics
       pos += 2;
-      if ((on && text.Find(L"[/I]",pos) >= 0) ||          // check for a matching end point
+      if ((on && text.find(L"[/I]", pos) != std::string::npos) ||          // check for a matching end point
          (!on && (currentStyle & FONT_STYLE_ITALICS)))    // or matching start point
         newStyle = FONT_STYLE_ITALICS;
     }
-    else if (text.Mid(pos,10) == L"UPPERCASE]")
+    else if (text.compare(pos, 10, L"UPPERCASE]") == 0)
     {
       pos += 10;
-      if ((on && text.Find(L"[/UPPERCASE]",pos) >= 0) ||  // check for a matching end point
+      if ((on && text.find(L"[/UPPERCASE]", pos) != std::string::npos) ||  // check for a matching end point
          (!on && (currentStyle & FONT_STYLE_UPPERCASE)))  // or matching start point
         newStyle = FONT_STYLE_UPPERCASE;
     }
-    else if (text.Mid(pos,10) == L"LOWERCASE]")
+    else if (text.compare(pos, 10, L"LOWERCASE]") == 0)
     {
       pos += 10;
-      if ((on && text.Find(L"[/LOWERCASE]",pos) >= 0) ||  // check for a matching end point
+      if ((on && text.find(L"[/LOWERCASE]", pos) != std::string::npos) ||  // check for a matching end point
          (!on && (currentStyle & FONT_STYLE_LOWERCASE)))  // or matching start point
         newStyle = FONT_STYLE_LOWERCASE;
     }
-    else if (text.Mid(pos,3) == L"CR]" && on)
+    else if (text.compare(pos, 3, L"CR]") == 0 && on)
     {
       newLine = true;
       pos += 3;
     }
-    else if (text.Mid(pos,5) == L"COLOR")
+    else if (text.compare(pos,5, L"COLOR") == 0)
     { // color
-      size_t finish = text.Find(L']', pos + 5);
-      if (on && finish != CStdString::npos && (size_t)text.Find(L"[/COLOR]",finish) != CStdString::npos)
+      size_t finish = text.find(L']', pos + 5);
+      if (on && finish != std::string::npos && text.find(L"[/COLOR]",finish) != std::string::npos)
       {
-        color_t color = g_colorManager.GetColor(text.Mid(pos + 5, finish - pos - 5));
+        color_t color = g_colorManager.GetColor(text.substr(pos + 5, finish - pos - 5));
         vecColors::const_iterator it = std::find(colors.begin(), colors.end(), color);
         if (it == colors.end())
         { // create new color
@@ -435,11 +435,11 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, c
 
     if (newStyle || colorTagChange || newLine)
     { // we have a new style or a new color, so format up the previous segment
-      CStdStringW subText = text.Mid(startPos, endPos - startPos);
+      CStdStringW subText = text.substr(startPos, endPos - startPos);
       if (currentStyle & FONT_STYLE_UPPERCASE)
-        subText.ToUpper();
+        StringUtils::ToUpper(subText);
       if (currentStyle & FONT_STYLE_LOWERCASE)
-        subText.ToLower();
+        StringUtils::ToLower(subText);
       AppendToUTF32(subText, ((currentStyle & 3) << 24) | (currentColor << 16), parsedText);
       if (newLine)
         parsedText.push_back(L'\n');
@@ -452,14 +452,14 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, c
       else
         currentStyle &= ~newStyle;
     }
-    pos = text.Find(L'[',pos);
+    pos = text.find(L'[', pos);
   }
   // now grab the remainder of the string
-  CStdStringW subText = text.Mid(startPos, text.GetLength() - startPos);
+  CStdStringW subText = text.substr(startPos);
   if (currentStyle & FONT_STYLE_UPPERCASE)
-    subText.ToUpper();
+    StringUtils::ToUpper(subText);
   if (currentStyle & FONT_STYLE_LOWERCASE)
-    subText.ToLower();
+    StringUtils::ToLower(subText);
   AppendToUTF32(subText, ((currentStyle & 3) << 24) | (currentColor << 16), parsedText);
 }
 
@@ -667,7 +667,7 @@ void CGUITextLayout::AppendToUTF32(const CStdString &utf8, character_t colStyle,
 void CGUITextLayout::Reset()
 {
   m_lines.clear();
-  m_lastText.Empty();
+  m_lastText.clear();
   m_textWidth = m_textHeight = 0;
 }
 

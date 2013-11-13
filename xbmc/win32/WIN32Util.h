@@ -88,6 +88,7 @@ public:
 
   static bool IsUsbDevice(const CStdStringW &strWdrive);
 
+  static CStdString WUSysMsg(DWORD dwError);
 private:
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
 };

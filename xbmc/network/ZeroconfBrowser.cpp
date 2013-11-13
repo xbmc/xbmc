@@ -242,10 +242,10 @@ CZeroconfBrowser::ZeroconfService CZeroconfBrowser::ZeroconfService::fromPath(co
   if( fcr_path.empty() )
     throw std::runtime_error("CZeroconfBrowser::ZeroconfService::fromPath input string empty!");
 
-  int pos1 = fcr_path.Find('@'); //first @
-  int pos2 = fcr_path.Find('@', pos1+1); //second
+  size_t pos1 = fcr_path.find('@'); //first @
+  size_t pos2 = fcr_path.find('@', pos1 + 1); //second
 
-  if( pos1 == -1 || pos2 == -1 )
+  if(pos1 == std::string::npos || pos2 == std::string::npos)
     throw std::runtime_error("CZeroconfBrowser::ZeroconfService::fromPath invalid input path");
 
   return ZeroconfService(

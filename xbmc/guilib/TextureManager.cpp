@@ -25,6 +25,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "addons/Skin.h"
 #ifdef _DEBUG
 #include "utils/TimeUtils.h"
@@ -173,8 +174,7 @@ void CTextureMap::Dump() const
   if (!m_referenceCount)
     return;   // nothing to see here
 
-  CStdString strLog;
-  strLog.Format("  texture:%s has %i frames %i refcount\n", m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
+  CStdString strLog = StringUtils::Format("  texture:%s has %i frames %i refcount\n", m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
   OutputDebugString(strLog.c_str());
 }
 
@@ -272,7 +272,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
   if (path)
     *path = fullPath;
 
-  return !fullPath.IsEmpty();
+  return !fullPath.empty();
 }
 
 const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleOnly /*= false */)
@@ -321,7 +321,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
   start = CurrentHostCounter();
 #endif
 
-  if (strPath.Right(4).ToLower() == ".gif")
+  if (StringUtils::EndsWithNoCase(strPath, ".gif"))
   {
     CTextureMap* pMap;
 
@@ -354,8 +354,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
       int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
       if (iImages == 0)
       {
-        CStdString rootPath = strPath.Left(g_SkinInfo->Path().GetLength());
-        if (0 == rootPath.CompareNoCase(g_SkinInfo->Path()))
+        if (StringUtils::StartsWith(strPath, g_SkinInfo->Path()))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return emptyTexture;
       }
@@ -511,8 +510,7 @@ void CGUITextureManager::Cleanup()
 
 void CGUITextureManager::Dump() const
 {
-  CStdString strLog;
-  strLog.Format("total texturemaps size:%i\n", m_vecTextures.size());
+  CStdString strLog = StringUtils::Format("total texturemaps size:%i\n", m_vecTextures.size());
   OutputDebugString(strLog.c_str());
 
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -565,7 +563,7 @@ void CGUITextureManager::SetTexturePath(const CStdString &texturePath)
 void CGUITextureManager::AddTexturePath(const CStdString &texturePath)
 {
   CSingleLock lock(m_section);
-  if (!texturePath.IsEmpty())
+  if (!texturePath.empty())
     m_texturePaths.push_back(texturePath);
 }
 

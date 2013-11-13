@@ -25,6 +25,7 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
+#include "utils/StringUtils.h"
 
 #include "addons/include/xbmc_pvr_types.h"
 #include "pvr/PVRManager.h"
@@ -150,7 +151,7 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin(void)
   for (int i = 1; i < 12*60/5; i++)
   {
     CStdString string;
-    string.Format(g_localizeStrings.Get(14044), i*5);
+    string = StringUtils::Format(g_localizeStrings.Get(14044), i*5);
     pSpin->AddLabel(string, i*5);
   }
   pSpin->SetValue(m_searchFilter->m_iMinimumDuration);
@@ -165,7 +166,7 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin(void)
   for (int i = 1; i < 12*60/5; i++)
   {
     CStdString string;
-    string.Format(g_localizeStrings.Get(14044),i*5);
+    string = StringUtils::Format(g_localizeStrings.Get(14044), i*5);
     pSpin->AddLabel(string, i*5);
   }
   pSpin->SetValue(m_searchFilter->m_iMaximumDuration);

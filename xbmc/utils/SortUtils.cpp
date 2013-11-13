@@ -68,30 +68,22 @@ string ByFile(SortAttribute attributes, const SortItem &values)
 {
   CURL url(values.at(FieldPath).asString());
   
-  CStdString label;
-  label.Format("%s %d", url.GetFileNameWithoutPath().c_str(), values.at(FieldStartOffset).asInteger());
-  return label;
+  return StringUtils::Format("%s %d", url.GetFileNameWithoutPath().c_str(), values.at(FieldStartOffset).asInteger());
 }
 
 string ByPath(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%s %d", values.at(FieldPath).asString().c_str(), values.at(FieldStartOffset).asInteger());
-  return label;
+  return StringUtils::Format("%s %d", values.at(FieldPath).asString().c_str(), values.at(FieldStartOffset).asInteger());
 }
 
 string ByLastPlayed(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%s %s", values.at(FieldLastPlayed).asString().c_str(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%s %s", values.at(FieldLastPlayed).asString().c_str(), ByLabel(attributes, values).c_str());
 }
 
 string ByPlaycount(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%i %s", (int)values.at(FieldPlaycount).asInteger(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%i %s", (int)values.at(FieldPlaycount).asInteger(), ByLabel(attributes, values).c_str());
 }
 
 string ByDate(SortAttribute attributes, const SortItem &values)
@@ -101,23 +93,17 @@ string ByDate(SortAttribute attributes, const SortItem &values)
 
 string ByDateAdded(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%s %d", values.at(FieldDateAdded).asString().c_str(), (int)values.at(FieldId).asInteger());
-  return label;
+  return StringUtils::Format("%s %d", values.at(FieldDateAdded).asString().c_str(), (int)values.at(FieldId).asInteger());;
 }
 
 string BySize(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%"PRId64, values.at(FieldSize).asInteger());
-  return label;
+  return StringUtils::Format("%"PRId64, values.at(FieldSize).asInteger());
 }
 
 string ByDriveType(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%d %s", (int)values.at(FieldDriveType).asInteger(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%d %s", (int)values.at(FieldDriveType).asInteger(), ByLabel(attributes, values).c_str());
 }
 
 string ByTitle(SortAttribute attributes, const SortItem &values)
@@ -134,12 +120,11 @@ string ByAlbum(SortAttribute attributes, const SortItem &values)
   if (attributes & SortAttributeIgnoreArticle)
     album = SortUtils::RemoveArticles(album);
 
-  CStdString label;
-  label.Format("%s %s", album, ArrayToString(attributes, values.at(FieldArtist)));
+  CStdString label = StringUtils::Format("%s %s", album.c_str(), ArrayToString(attributes, values.at(FieldArtist)).c_str());
 
   const CVariant &track = values.at(FieldTrackNumber);
   if (!track.isNull())
-    label.AppendFormat(" %i", (int)track.asInteger());
+    label += StringUtils::Format(" %i", (int)track.asInteger());
 
   return label;
 }
@@ -156,7 +141,7 @@ string ByArtist(SortAttribute attributes, const SortItem &values)
   const CVariant &year = values.at(FieldYear);
   if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear &&
       !year.isNull())
-    label.AppendFormat(" %i", (int)year.asInteger());
+    label += StringUtils::Format(" %i", (int)year.asInteger());
 
   const CVariant &album = values.at(FieldAlbum);
   if (!album.isNull())
@@ -164,16 +149,14 @@ string ByArtist(SortAttribute attributes, const SortItem &values)
 
   const CVariant &track = values.at(FieldTrackNumber);
   if (!track.isNull())
-    label.AppendFormat(" %i", (int)track.asInteger());
+    label += StringUtils::Format(" %i", (int)track.asInteger());
 
   return label;
 }
 
 string ByTrackNumber(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%i", (int)values.at(FieldTrackNumber).asInteger());
-  return label;
+  return StringUtils::Format("%i", (int)values.at(FieldTrackNumber).asInteger());
 }
 
 string ByTime(SortAttribute attributes, const SortItem &values)
@@ -181,17 +164,15 @@ string ByTime(SortAttribute attributes, const SortItem &values)
   CStdString label;
   const CVariant &time = values.at(FieldTime);
   if (time.isInteger())
-    label.Format("%i", (int)time.asInteger());
+    label = StringUtils::Format("%i", (int)time.asInteger());
   else
-    label.Format("%s", time.asString());
+    label = StringUtils::Format("%s", time.asString().c_str());
   return label;
 }
 
 string ByProgramCount(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%i", (int)values.at(FieldProgramCount).asInteger());
-  return label;
+  return StringUtils::Format("%i", (int)values.at(FieldProgramCount).asInteger());
 }
 
 string ByPlaylistOrder(SortAttribute attributes, const SortItem &values)
@@ -217,7 +198,7 @@ string ByYear(SortAttribute attributes, const SortItem &values)
   if (!airDate.isNull())
     label = airDate.asString() + " ";
 
-  label.AppendFormat("%i %s", (int)values.at(FieldYear).asInteger(), ByLabel(attributes, values).c_str());
+  label += StringUtils::Format("%i %s", (int)values.at(FieldYear).asInteger(), ByLabel(attributes, values).c_str());
  
   return label;
 }
@@ -236,23 +217,17 @@ string BySortTitle(SortAttribute attributes, const SortItem &values)
 
 string ByRating(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%f %s", values.at(FieldRating).asFloat(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%f %s", values.at(FieldRating).asFloat(), ByLabel(attributes, values).c_str());
 }
 
 string ByVotes(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%d %s", (int)values.at(FieldVotes).asInteger(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%d %s", (int)values.at(FieldVotes).asInteger(), ByLabel(attributes, values).c_str());
 }
 
 string ByTop250(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%d %s", (int)values.at(FieldTop250).asInteger(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%d %s", (int)values.at(FieldTop250).asInteger(), ByLabel(attributes, values).c_str());
 }
 
 string ByMPAA(SortAttribute attributes, const SortItem &values)
@@ -290,9 +265,7 @@ string ByEpisodeNumber(SortAttribute attributes, const SortItem &values)
   if (title.empty())
     title = ByLabel(attributes, values);
 
-  CStdString label;
-  label.Format("%"PRIu64" %s", num, title.c_str());
-  return label;
+  return StringUtils::Format("%"PRIu64" %s", num, title.c_str());
 }
 
 string BySeason(SortAttribute attributes, const SortItem &values)
@@ -302,23 +275,17 @@ string BySeason(SortAttribute attributes, const SortItem &values)
   if (!specialSeason.isNull())
     season = (int)specialSeason.asInteger();
 
-  CStdString label;
-  label.Format("%i %s", season, ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%i %s", season, ByLabel(attributes, values).c_str());
 }
 
 string ByNumberOfEpisodes(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%i %s", (int)values.at(FieldNumberOfEpisodes).asInteger(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%i %s", (int)values.at(FieldNumberOfEpisodes).asInteger(), ByLabel(attributes, values).c_str());
 }
 
 string ByNumberOfWatchedEpisodes(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%i %s", (int)values.at(FieldNumberOfWatchedEpisodes).asInteger(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%i %s", (int)values.at(FieldNumberOfWatchedEpisodes).asInteger(), ByLabel(attributes, values).c_str());
 }
 
 string ByTvShowStatus(SortAttribute attributes, const SortItem &values)
@@ -338,72 +305,52 @@ string ByProductionCode(SortAttribute attributes, const SortItem &values)
 
 string ByVideoResolution(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%i %s", (int)values.at(FieldVideoResolution).asInteger(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%i %s", (int)values.at(FieldVideoResolution).asInteger(), ByLabel(attributes, values).c_str());
 }
 
 string ByVideoCodec(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%s %s", values.at(FieldVideoCodec).asString(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%s %s", values.at(FieldVideoCodec).asString().c_str(), ByLabel(attributes, values).c_str());
 }
 
 string ByVideoAspectRatio(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%f %s", values.at(FieldVideoAspectRatio).asString(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%f %s", values.at(FieldVideoAspectRatio).asString().c_str(), ByLabel(attributes, values).c_str());
 }
 
 string ByAudioChannels(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%i %s", (int)values.at(FieldAudioChannels).asInteger(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%i %s", (int)values.at(FieldAudioChannels).asInteger(), ByLabel(attributes, values).c_str());
 }
 
 string ByAudioCodec(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%s %s", values.at(FieldAudioCodec).asString(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%s %s", values.at(FieldAudioCodec).asString().c_str(), ByLabel(attributes, values).c_str());
 }
 
 string ByAudioLanguage(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%s %s", values.at(FieldAudioLanguage).asString(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%s %s", values.at(FieldAudioLanguage).asString().c_str(), ByLabel(attributes, values).c_str());;
 }
 
 string BySubtitleLanguage(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%s %s", values.at(FieldSubtitleLanguage).asString(), ByLabel(attributes, values).c_str());
-  return label;
+  return StringUtils::Format("%s %s", values.at(FieldSubtitleLanguage).asString().c_str(), ByLabel(attributes, values).c_str());
 }
 
 string ByBitrate(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%"PRId64, values.at(FieldBitrate).asInteger());
-  return label;
+  return StringUtils::Format("%"PRId64, values.at(FieldBitrate).asInteger());
 }
 
 string ByListeners(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%i", values.at(FieldListeners).asInteger());
-  return label;
+  return StringUtils::Format("%i", values.at(FieldListeners).asInteger());;
 }
 
 string ByRandom(SortAttribute attributes, const SortItem &values)
 {
-  CStdString label;
-  label.Format("%i", CUtil::GetRandomNumber());
-  return label;
+  return StringUtils::Format("%i", CUtil::GetRandomNumber());;
 }
 
 string ByChannel(SortAttribute attributes, const SortItem &values)

@@ -252,9 +252,9 @@ CStdString CDatabaseQueryRule::FormatParameter(const CStdString &operatorString,
     StringUtils::SplitString(param, ",", split);
     for (CStdStringArray::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
     {
-      if (!parameter.IsEmpty())
+      if (!parameter.empty())
         parameter += ",";
-      parameter += db.PrepareSQL("'%s'", (*itIn).Trim().c_str());
+      parameter += db.PrepareSQL("'%s'", StringUtils::Trim(*itIn).c_str());
     }
     parameter = " IN (" + parameter + ")";
   }
@@ -390,7 +390,7 @@ CStdString CDatabaseQueryRule::FormatWhereClause(const CStdString &negate, const
     else if (GetFieldType(m_field) == SECONDS_FIELD)
       fmt = "CAST(%s as INTEGER)";
 
-    query.Format(fmt.c_str(), GetField(m_field,strType).c_str());
+    query = StringUtils::Format(fmt.c_str(), GetField(m_field,strType).c_str());
     query += negate + parameter;
   }
 
@@ -430,7 +430,7 @@ CStdString CDatabaseQueryRuleCombination::GetWhereClause(const CDatabase &db, co
     rule += "(";
     CStdString currentRule = (*it)->GetWhereClause(db, strType);
     // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
-    if (currentRule.IsEmpty())
+    if (currentRule.empty())
       currentRule = m_type == CombinationAnd ? "'1'" : "'0'";
     rule += currentRule;
     rule += ")";

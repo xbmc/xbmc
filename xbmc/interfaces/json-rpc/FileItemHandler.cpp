@@ -279,9 +279,9 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     {
       if (allowFile)
       {
-        if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().IsEmpty())
+        if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().empty())
           object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
-        if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
+        if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().empty())
           object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
 
         if (!object.isMember("file"))

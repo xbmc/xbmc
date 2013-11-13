@@ -757,7 +757,7 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStd
   if (!base || !path)
     return false;
   CStdString all = m_cpluff->lookup_cfg_value(base, path);
-  if (all.IsEmpty())
+  if (all.empty())
     return false;
   StringUtils::SplitString(all, " ", result);
   return true;

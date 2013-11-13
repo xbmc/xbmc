@@ -97,7 +97,7 @@ bool EpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 
-  if (!m_strSearchTerm.IsEmpty())
+  if (!m_strSearchTerm.empty())
   {
     CTextSearch search(m_strSearchTerm, m_bIsCaseSensitive, SEARCH_DEFAULT_OR);
     bReturn = search.Search(tag.Title()) ||

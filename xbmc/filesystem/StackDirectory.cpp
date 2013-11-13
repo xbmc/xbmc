@@ -159,15 +159,15 @@ namespace XFILE
     // the stacked files are always in volume order, so just get up to the first filename
     // occurence of " , "
     CStdString file, folder;
-    int pos = strPath.Find(" , ");
-    if (pos > 0)
-      URIUtils::Split(strPath.Left(pos), folder, file);
+    size_t pos = strPath.find(" , ");
+    if (pos != std::string::npos)
+      URIUtils::Split((CStdString)strPath.substr(0, pos), folder, file);
     else
       URIUtils::Split(strPath, folder, file); // single filed stacks - should really not happen
 
     // remove "stack://" from the folder
-    folder = folder.Mid(8);
-    file.Replace(",,", ",");
+    folder = folder.substr(8);
+    StringUtils::Replace(file, ",,", ",");
 
     return URIUtils::AddFileToFolder(folder, file);
   }
@@ -179,7 +179,7 @@ namespace XFILE
     // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.
     CStdString path = strPath;
     // remove stack:// from the beginning
-    path = path.Mid(8);
+    path = path.substr(8);
     
     vecPaths.clear();
     StringUtils::SplitString(path, " , ", vecPaths);
@@ -188,7 +188,7 @@ namespace XFILE
 
     // because " , " is used as a seperator any "," in the real paths are double escaped
     for (vector<CStdString>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); itPath++)
-      itPath->Replace(",,", ",");
+      StringUtils::Replace(*itPath, ",,", ",");
 
     return true;
   }
@@ -203,7 +203,7 @@ namespace XFILE
     URIUtils::Split(items[stack[0]]->GetPath(), folder, file);
     stackedPath += folder;
     // double escape any occurence of commas
-    file.Replace(",", ",,");
+    StringUtils::Replace(file, ",", ",,");
     stackedPath += file;
     for (unsigned int i = 1; i < stack.size(); ++i)
     {
@@ -211,7 +211,7 @@ namespace XFILE
       file = items[stack[i]]->GetPath();
 
       // double escape any occurence of commas
-      file.Replace(",", ",,");
+      StringUtils::Replace(file, ",", ",,");
       stackedPath += file;
     }
     return stackedPath;

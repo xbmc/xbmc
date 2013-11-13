@@ -20,6 +20,7 @@
 
 #include "MusicInfoTagLoaderASAP.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "MusicInfoTag.h"
 
 using namespace MUSIC_INFO;
@@ -42,11 +43,10 @@ bool CMusicInfoTagLoaderASAP::Load(const CStdString &strFile, CMusicInfoTag &tag
   CStdString strFileToLoad = strFile;
   int song = -1;
   CStdString strExtension = URIUtils::GetExtension(strFile);
-  strExtension.MakeLower();
-  if (strExtension == ".asapstream")
+  if (StringUtils::EqualsNoCase(strExtension, ".asapstream"))
   {
     CStdString strFileName = URIUtils::GetFileName(strFile);
-    int iStart = strFileName.ReverseFind('-') + 1;
+    size_t iStart = strFileName.rfind('-') + 1;
     song = atoi(strFileName.substr(iStart, strFileName.size() - iStart - 11).c_str()) - 1;
     strFileToLoad = URIUtils::GetDirectory(strFile);
     URIUtils::RemoveSlashAtEnd(strFileToLoad);

@@ -76,6 +76,7 @@
 #include <dlfcn.h>
 #endif
 #include "utils/Environment.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -138,7 +139,7 @@ extern "C" void __stdcall init_emu_environ()
 #endif
 
   // check if we are running as real xbmc.app or just binary
-  if (!CUtil::GetFrameworksPath(true).IsEmpty())
+  if (!CUtil::GetFrameworksPath(true).empty())
   {
     // using external python, it's build looking for xxx/lib/python2.6
     // so point it to frameworks which is where python2.6 is located
@@ -204,12 +205,13 @@ extern "C" void __stdcall update_emu_environ()
     if (!CSettings::Get().GetString("network.httpproxyusername").empty() &&
         !CSettings::Get().GetString("network.httpproxypassword").empty())
     {
-      strProxy.Format("%s:%s@", CSettings::Get().GetString("network.httpproxyusername").c_str(),
-                                CSettings::Get().GetString("network.httpproxypassword").c_str());
+      strProxy = StringUtils::Format("%s:%s@",
+                                     CSettings::Get().GetString("network.httpproxyusername").c_str(),
+                                     CSettings::Get().GetString("network.httpproxypassword").c_str());
     }
 
     strProxy += CSettings::Get().GetString("network.httpproxyserver");
-    strProxy.AppendFormat(":%d", CSettings::Get().GetInt("network.httpproxyport"));
+    strProxy += StringUtils::Format(":%d", CSettings::Get().GetInt("network.httpproxyport"));
 
     CEnvironment::setenv( "HTTP_PROXY", "http://" + strProxy, true );
     CEnvironment::setenv( "HTTPS_PROXY", "http://" + strProxy, true );
@@ -816,21 +818,21 @@ extern "C"
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
     CStdString strMask;
-    if (url.GetFileName().Find("*.*") != string::npos)
+    if (url.GetFileName().find("*.*") != string::npos)
     {
       CStdString strReplaced = url.GetFileName();
-      strReplaced.Replace("*.*","");
+      StringUtils::Replace(strReplaced, "*.*","");
       url.SetFileName(strReplaced);
     }
-    else if (url.GetFileName().Find("*.") != string::npos)
+    else if (url.GetFileName().find("*.") != string::npos)
     {
       strMask = URIUtils::GetExtension(url.GetFileName());
-      url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
+      url.SetFileName(url.GetFileName().substr(0, url.GetFileName().find("*.")));
     }
-    else if (url.GetFileName().Find("*") != string::npos)
+    else if (url.GetFileName().find("*") != string::npos)
     {
       CStdString strReplaced = url.GetFileName();
-      strReplaced.Replace("*","");
+      StringUtils::Replace(strReplaced, "*","");
       url.SetFileName(strReplaced);
     }
     int iDirSlot=0; // locate next free directory
@@ -1481,8 +1483,7 @@ extern "C"
 
   int dllvprintf(const char *format, va_list va)
   {
-    CStdString buffer;
-    buffer.FormatV(format, va);
+    CStdString buffer = StringUtils::FormatV(format, va);
     CLog::Log(LOGDEBUG, "  msg: %s", buffer.c_str());
     return buffer.length();
   }

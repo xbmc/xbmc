@@ -71,7 +71,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     
     CStdString strIcon;
     // We have the real DVD-ROM, set icon on disktype
-    if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD && share.m_strThumbnailImage.IsEmpty())
+    if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD && share.m_strThumbnailImage.empty())
     {
       CUtil::GetDVDDriveIcon( pItem->GetPath(), strIcon );
       // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
@@ -79,7 +79,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       if (XFILE::CFile::Exists(strThumb))
         pItem->SetArt("thumb", strThumb);
     }
-    else if (pItem->GetPath().Left(9) == "addons://")
+    else if (StringUtils::StartsWith(pItem->GetPath(), "addons://"))
       strIcon = "DefaultHardDisk.png";
     else if (   pItem->IsVideoDb()
              || pItem->IsMusicDb()

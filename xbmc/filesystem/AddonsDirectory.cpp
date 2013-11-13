@@ -32,6 +32,7 @@
 #include "File.h"
 #include "SpecialProtocol.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 
 using namespace ADDON;
@@ -98,7 +99,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else if (path.GetHostName().Equals("search"))
   {
     CStdString search(path.GetFileName());
-    if (search.IsEmpty() && !GetKeyboardInput(16017, search))
+    if (search.empty() && !GetKeyboardInput(16017, search))
       return false;
 
     items.SetProperty("reponame",g_localizeStrings.Get(283));
@@ -130,7 +131,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     items.SetLabel(addon->Name());
   }
 
-  if (path.GetFileName().IsEmpty())
+  if (path.GetFileName().empty())
   {
     if (!path.GetHostName().Equals("repos"))
     {
@@ -144,7 +145,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
             item->SetPath(URIUtils::AddFileToFolder(strPath,TranslateType((TYPE)i,false)));
             item->m_bIsFolder = true;
             CStdString thumb = GetIcon((TYPE)i);
-            if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+            if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
               item->SetArt("thumb", thumb);
             items.Add(item);
             break;
@@ -247,7 +248,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CS
 
   CStdString strLabel(addon->Name());
   if (url.GetHostName().Equals("search"))
-    strLabel.Format("%s - %s", TranslateType(addon->Type(), true), addon->Name());
+    strLabel = StringUtils::Format("%s - %s", TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
 
   item->SetLabel(strLabel);
 
@@ -304,8 +305,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
     if (plugin->ProvidesSeveral())
     {
       CURL url = item->GetAsUrl();
-      CStdString opt;
-      opt.Format("?content_type=%s",content.c_str());
+      CStdString opt = StringUtils::Format("?content_type=%s",content.c_str());
       url.SetOptions(opt);
       item->SetPath(url.Get());
     }

@@ -361,8 +361,8 @@ void CGUIEditControl::RecalcLabelPosition()
 
   CStdStringW text = GetDisplayedText();
   m_textWidth = m_label.CalcTextWidth(text + L'|');
-  float beforeCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos));
-  float afterCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos) + L'|');
+  float beforeCursorWidth = m_label.CalcTextWidth(text.substr(0, m_cursorPos));
+  float afterCursorWidth = m_label.CalcTextWidth(text.substr(0, m_cursorPos) + L'|');
   float leftTextWidth = m_label.GetRenderRect().Width();
   float maxTextWidth = m_label.GetMaxWidth();
   if (leftTextWidth > 0)
@@ -447,11 +447,11 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
         col = L"|";
       else
         col = L"[COLOR 00FFFFFF]|[/COLOR]";
-      text.Insert(m_cursorPos, col);
+      text.insert(m_cursorPos, col);
     }
 
     changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
-    if (text.IsEmpty())
+    if (text.empty())
       changed |= m_label2.SetText(m_hintInfo.GetLabel(GetParentID()));
     else
       changed |= m_label2.SetTextW(text);
@@ -541,7 +541,7 @@ bool CGUIEditControl::ClearMD5()
   if (!(m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW) || !m_isMD5)
     return false;
   
-  m_text2.Empty();
+  m_text2.clear();
   m_cursorPos = 0;
   if (m_inputType != INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
     m_isMD5 = false;
@@ -603,8 +603,8 @@ void CGUIEditControl::OnPasteClipboard()
   // Insert the pasted text at the current cursor position.
   if (unicode_text.length() > 0)
   {
-    CStdStringW left_end = m_text2.Left(m_cursorPos);
-    CStdStringW right_end = m_text2.Right(m_text2.length() - m_cursorPos);
+    CStdStringW left_end = m_text2.substr(0, m_cursorPos);
+    CStdStringW right_end = m_text2.substr(m_cursorPos);
 
     m_text2 = left_end;
     m_text2.append(unicode_text);

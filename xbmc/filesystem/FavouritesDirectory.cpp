@@ -159,7 +159,7 @@ bool CFavouritesDirectory::AddOrRemove(CFileItem *item, int contextWindow)
   else
   { // create our new favourite item
     CFileItemPtr favourite(new CFileItem(item->GetLabel()));
-    if (item->GetLabel().IsEmpty())
+    if (item->GetLabel().empty())
       favourite->SetLabel(CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder));
     favourite->SetArt("thumb", item->GetArt("thumb"));
     favourite->SetPath(executePath);
@@ -190,18 +190,18 @@ CStdString CFavouritesDirectory::GetExecutePath(const CFileItem &item, const std
                             !(item.IsSmartPlayList() || item.IsPlayList())))
   {
     if (!contextWindow.empty())
-      execute.Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
+      execute = StringUtils::Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
   }
   else if (item.IsScript())
-    execute.Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().Mid(9)).c_str());
+    execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().substr(9)).c_str());
   else if (item.IsAndroidApp())
-    execute.Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().Mid(26)).c_str());
+    execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().substr(26)).c_str());
   else  // assume a media file
   {
     if (item.IsVideoDb() && item.HasVideoInfoTag())
-      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath).c_str());
+      execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath).c_str());
     else
-      execute.Format("PlayMedia(%s)", StringUtils::Paramify(item.GetPath()).c_str());
+      execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetPath()).c_str());
   }
   return execute;
 }

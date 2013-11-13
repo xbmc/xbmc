@@ -25,13 +25,14 @@
 
 #include "AddonVersion.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 
 namespace ADDON
 {
   AddonVersion::AddonVersion(const CStdString& version)
   {
     m_originalVersion = version;
-    if (m_originalVersion.IsEmpty())
+    if (m_originalVersion.empty())
       m_originalVersion = "0.0.0";
     const char *epoch_end = strchr(m_originalVersion.c_str(), ':');
     if (epoch_end != NULL)
@@ -125,20 +126,18 @@ namespace ADDON
 
   CStdString AddonVersion::Print() const
   {
-    CStdString out;
-    out.Format("%s %s", g_localizeStrings.Get(24051), m_originalVersion); // "Version <str>"
-    return CStdString(out);
+    return StringUtils::Format("%s %s", g_localizeStrings.Get(24051).c_str(), m_originalVersion.c_str());
   }
 
   bool AddonVersion::SplitFileName(CStdString& ID, CStdString& version,
                                    const CStdString& filename)
   {
-    int dpos = filename.rfind("-");
-    if (dpos < 0)
+    size_t dpos = filename.rfind("-");
+    if (dpos == std::string::npos)
       return false;
-    ID = filename.Mid(0,dpos);
-    version = filename.Mid(dpos+1);
-    version = version.Mid(0,version.size()-4);
+    ID = filename.substr(0, dpos);
+    version = filename.substr(dpos + 1);
+    version = version.substr(0, version.size() - 4);
 
     return true;
   }

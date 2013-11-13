@@ -30,6 +30,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 #if defined(TARGET_DARWIN)
 #include "osx/OSXGNUReplacements.h" // strnlen
@@ -363,10 +364,9 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   }
 
   // add a new session to our buffer
-  CStdString path, user;
-  user = origin.username;
+  CStdString user = origin.username;
   CURL::Encode(user);
-  path.Format("sap://%s/%s/0x%x.sdp", header.origin.c_str(), desc.origin.c_str(), header.msgid);
+  CStdString path = StringUtils::Format("sap://%s/%s/0x%x.sdp", header.origin.c_str(), desc.origin.c_str(), header.msgid);
   CSession session;
   session.path           = path;
   session.origin         = header.origin;

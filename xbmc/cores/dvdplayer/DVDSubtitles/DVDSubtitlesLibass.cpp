@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
 #include "guilib/GraphicContext.h"
@@ -35,8 +36,7 @@ static void libass_log(int level, const char *fmt, va_list args, void *data)
 {
   if(level >= 5)
     return;
-  CStdString log;
-  log.FormatV(fmt, args);
+  CStdString log = StringUtils::FormatV(fmt, args);
   CLog::Log(LOGDEBUG, "CDVDSubtitlesLibass: [ass] %s", log.c_str());
 }
 

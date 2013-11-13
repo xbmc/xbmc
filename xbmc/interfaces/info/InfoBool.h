@@ -62,11 +62,7 @@ public:
     return m_value;
   }
 
-  bool operator==(const InfoBool &right) const
-  {
-    return (m_context == right.m_context && 
-            m_expression.CompareNoCase(right.m_expression) == 0);
-  }
+  bool operator==(const InfoBool &right) const;
 
   /*! \brief Update the value of this info bool
    This is called if and only if the info bool is dirty, allowing it to update it's current value

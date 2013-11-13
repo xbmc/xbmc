@@ -79,11 +79,11 @@ bool CPlayListB4S::LoadData(istream& stream)
   while (pEntryElement)
   {
     CStdString strFileName = pEntryElement->Attribute("Playstring");
-    int iColon = strFileName.Find(":");
-    if (iColon > 0)
+    size_t iColon = strFileName.find(":");
+    if (iColon != std::string::npos)
     {
       iColon++;
-      strFileName = strFileName.Right((int)strFileName.size() - iColon);
+      strFileName.erase(0, iColon);
     }
     if (strFileName.size())
     {
@@ -122,18 +122,18 @@ void CPlayListB4S::Save(const CStdString& strFileName) const
     return ;
   }
   CStdString write;
-  write.AppendFormat("<?xml version=%c1.0%c encoding='UTF-8' standalone=%cyes%c?>\n", 34, 34, 34, 34);
-  write.AppendFormat("<WinampXML>\n");
-  write.AppendFormat("  <playlist num_entries=%c%i%c label=%c%s%c>\n", 34, m_vecItems.size(), 34, 34, m_strPlayListName.c_str(), 34);
+  write += StringUtils::Format("<?xml version=%c1.0%c encoding='UTF-8' standalone=%cyes%c?>\n", 34, 34, 34, 34);
+  write += StringUtils::Format("<WinampXML>\n");
+  write += StringUtils::Format("  <playlist num_entries=%c%i%c label=%c%s%c>\n", 34, m_vecItems.size(), 34, 34, m_strPlayListName.c_str(), 34);
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     const CFileItemPtr item = m_vecItems[i];
-    write.AppendFormat("    <entry Playstring=%cfile:%s%c>\n", 34, item->GetPath().c_str(), 34 );
-    write.AppendFormat("      <Name>%s</Name>\n", item->GetLabel().c_str());
-    write.AppendFormat("      <Length>%u</Length>\n", item->GetMusicInfoTag()->GetDuration());
+    write += StringUtils::Format("    <entry Playstring=%cfile:%s%c>\n", 34, item->GetPath().c_str(), 34 );
+    write += StringUtils::Format("      <Name>%s</Name>\n", item->GetLabel().c_str());
+    write += StringUtils::Format("      <Length>%u</Length>\n", item->GetMusicInfoTag()->GetDuration());
   }
-  write.AppendFormat("  </playlist>\n");
-  write.AppendFormat("</WinampXML>\n");
+  write += StringUtils::Format("  </playlist>\n");
+  write += StringUtils::Format("</WinampXML>\n");
   file.Write(write.c_str(), write.size());
   file.Close();
 }

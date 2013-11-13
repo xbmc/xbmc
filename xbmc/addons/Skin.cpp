@@ -80,13 +80,13 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   else
   { // no resolutions specified -> backward compatibility
     CStdString defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultwideresolution");
-    if (defaultWide.IsEmpty())
+    if (defaultWide.empty())
       defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolution");
     TranslateResolution(defaultWide, m_defaultRes);
   }
 
   CStdString str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
-  if (!str.IsEmpty())
+  if (!str.empty())
     m_effectsSlowDown = (float)atof(str.c_str());
   else
     m_effectsSlowDown = 1.f;
@@ -152,7 +152,7 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION_INFO *re
     return ""; // invalid skin
 
   CStdString strPathToUse = Path();
-  if (!strBaseDir.IsEmpty())
+  if (!strBaseDir.empty())
     strPathToUse = strBaseDir;
 
   // if the caller doesn't care about the resolution just use a temporary
@@ -305,7 +305,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
     CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder && !StringUtils::EqualsNoCase(pItem->GetLabel(), "defaults.xml"))
     { // not the default one
-      vecColors.push_back(pItem->GetLabel().Mid(0, pItem->GetLabel().size() - 4));
+      vecColors.push_back(pItem->GetLabel().substr(0, pItem->GetLabel().size() - 4));
     }
   }
   sort(vecColors.begin(), vecColors.end(), sortstringbyname());

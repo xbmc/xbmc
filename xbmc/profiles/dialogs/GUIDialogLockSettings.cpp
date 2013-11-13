@@ -26,6 +26,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 
 CGUIDialogLockSettings::CGUIDialogLockSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_LOCK_SETTINGS, "LockSettings.xml")
@@ -48,11 +49,10 @@ void CGUIDialogLockSettings::SetupPage()
   // update our settings label
   if (m_bGetUser)
   {
-    CStdString strLabel;
     CStdString strLabel2=m_strURL;
     CURL::Decode(strLabel2);
-    strLabel.Format(g_localizeStrings.Get(20152),strLabel2.c_str());
-    SET_CONTROL_LABEL(2,strLabel);
+    CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20152), strLabel2.c_str());
+    SET_CONTROL_LABEL(2, strLabel);
   }
   else
     SET_CONTROL_LABEL(2,g_localizeStrings.Get(20066));
@@ -76,11 +76,11 @@ void CGUIDialogLockSettings::CreateSettings()
   if (m_bGetUser)
   {
     AddButton(1,20142);
-    if (!m_strUser.IsEmpty())
-      m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(20142).c_str(),m_strUser.c_str());
+    if (!m_strUser.empty())
+      m_settings[0].name = StringUtils::Format("%s (%s)",g_localizeStrings.Get(20142).c_str(),m_strUser.c_str());
     AddButton(2,12326);
-    if (!m_locks.code.IsEmpty())
-      m_settings[1].name.Format("%s (%s)",g_localizeStrings.Get(12326).c_str(),g_localizeStrings.Get(20141).c_str());
+    if (!m_locks.code.empty())
+      m_settings[1].name = StringUtils::Format("%s (%s)",g_localizeStrings.Get(12326).c_str(),g_localizeStrings.Get(20141).c_str());
     if (m_saveUserDetails)
       AddBool(3, 13423, m_saveUserDetails);
     return;
@@ -89,9 +89,9 @@ void CGUIDialogLockSettings::CreateSettings()
   if (m_locks.mode > LOCK_MODE_QWERTY)
     m_locks.mode = LOCK_MODE_EVERYONE;
   if (m_locks.mode != LOCK_MODE_EVERYONE)
-    m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(12336+m_locks.mode).c_str());
+    m_settings[0].name = StringUtils::Format("%s (%s)", g_localizeStrings.Get(m_iButtonLabel).c_str(), g_localizeStrings.Get(12336+m_locks.mode).c_str());
   else
-    m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(1223).c_str());
+    m_settings[0].name = StringUtils::Format("%s (%s)", g_localizeStrings.Get(m_iButtonLabel).c_str(), g_localizeStrings.Get(1223).c_str());
 
   if (m_bDetails)
   {
@@ -125,11 +125,11 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
       CStdString strHeading;
       CStdString strDecodeUrl = m_strURL;
       CURL::Decode(strDecodeUrl);
-      strHeading.Format("%s %s",g_localizeStrings.Get(14062).c_str(),strDecodeUrl.c_str());
+      strHeading = StringUtils::Format("%s %s", g_localizeStrings.Get(14062).c_str(), strDecodeUrl.c_str());
       if (CGUIKeyboardFactory::ShowAndGetInput(m_strUser,strHeading,true))
       {
         m_bChanged = true;
-        m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(20142).c_str(),m_strUser.c_str());
+        m_settings[0].name = StringUtils::Format("%s (%s)", g_localizeStrings.Get(20142).c_str(), m_strUser.c_str());
         UpdateSetting(1);
       }
       return;
@@ -178,22 +178,21 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
         EnableDetails(m_locks.mode != LOCK_MODE_EVERYONE);
       m_bChanged = true;
       if (m_locks.mode != LOCK_MODE_EVERYONE)
-        setting.name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(12336+m_locks.mode).c_str());
+        setting.name = StringUtils::Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(12336+m_locks.mode).c_str());
       else
-        setting.name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(1223).c_str());
+        setting.name = StringUtils::Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(1223).c_str());
 
       UpdateSetting(1);
     }
   }
   if (setting.id == 2 && m_bGetUser)
   {
-    CStdString strHeading;
     CStdString strDecodeUrl = m_strURL;
     CURL::Decode(strDecodeUrl);
-    strHeading.Format("%s %s",g_localizeStrings.Get(20143).c_str(),strDecodeUrl.c_str());
+    CStdString strHeading = StringUtils::Format("%s %s", g_localizeStrings.Get(20143).c_str(), strDecodeUrl.c_str());
     if (CGUIKeyboardFactory::ShowAndGetInput(m_locks.code,strHeading,true,true))
     {
-      m_settings[1].name.Format("%s (%s)",g_localizeStrings.Get(12326).c_str(),g_localizeStrings.Get(20141).c_str());
+      m_settings[1].name = StringUtils::Format("%s (%s)", g_localizeStrings.Get(12326).c_str(), g_localizeStrings.Get(20141).c_str());
       m_bChanged = true;
       UpdateSetting(2);
     }

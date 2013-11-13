@@ -21,6 +21,7 @@
 #include "SpecialProtocolDirectory.h"
 #include "SpecialProtocol.h"
 #include "Directory.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 
@@ -44,8 +45,8 @@ bool CSpecialProtocolDirectory::GetDirectory(const CStdString& strPath, CFileIte
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
-      if (strnicmp(item->GetPath().c_str(), translatedPath.c_str(), translatedPath.GetLength()) == 0)
-        item->SetPath(URIUtils::AddFileToFolder(untranslatedPath, item->GetPath().Mid(translatedPath.GetLength())));
+      if (StringUtils::StartsWith(item->GetPath(), translatedPath))
+        item->SetPath(URIUtils::AddFileToFolder(untranslatedPath, item->GetPath().substr(translatedPath.size())));
     }
     return true;
   }

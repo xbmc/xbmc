@@ -293,7 +293,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
     }
 
     if (nt_error == NT_STATUS_OBJECT_NAME_NOT_FOUND)
-      cError.Format(g_localizeStrings.Get(770).c_str(),nt_error);
+      cError = StringUtils::Format(g_localizeStrings.Get(770).c_str(),nt_error);
     else
       cError = get_friendly_nt_error_msg(nt_error);
 
@@ -307,7 +307,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
     }
 
     if (errno == ENODEV || errno == ENOENT)
-      cError.Format(g_localizeStrings.Get(770).c_str(),errno);
+      cError = StringUtils::Format(g_localizeStrings.Get(770).c_str(),errno);
     else
       cError = strerror(errno);
 
@@ -422,7 +422,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
   }
 
   CStdString newPath = smbPath;
-  newPath.TrimLeft("/");
+  StringUtils::TrimLeft(newPath, "/");
   smbFullPath += newPath;
 
   // Make the mount command.
@@ -441,7 +441,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
 
   CStdString strCmd = "mount -t cifs " + smbPath + " " + strMountPoint +
     " -o rw,nobrl,directio";
-  if (!strUser.IsEmpty())
+  if (!strUser.empty())
     strCmd += ",user=" + strUser + ",password=" + strPass;
   else
     strCmd += ",guest";

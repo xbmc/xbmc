@@ -367,7 +367,7 @@ void CGUIWindowFileManager::UpdateButtons()
 {
   // update our current directory labels
   CStdString strDir = CURL(m_Directory[0]->GetPath()).GetWithoutUserDetails();
-  if (strDir.IsEmpty())
+  if (strDir.empty())
   {
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT,g_localizeStrings.Get(20108));
   }
@@ -376,7 +376,7 @@ void CGUIWindowFileManager::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT, strDir);
   }
   strDir = CURL(m_Directory[1]->GetPath()).GetWithoutUserDetails();
-  if (strDir.IsEmpty())
+  if (strDir.empty())
   {
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT,g_localizeStrings.Get(20108));
   }
@@ -411,9 +411,9 @@ void CGUIWindowFileManager::UpdateItemCounts()
     }
     CStdString items;
     if (selectedCount > 0)
-      items.Format("%i/%i %s (%s)", selectedCount, totalCount, g_localizeStrings.Get(127).c_str(), StringUtils::SizeToString(selectedSize).c_str());
+      items = StringUtils::Format("%i/%i %s (%s)", selectedCount, totalCount, g_localizeStrings.Get(127).c_str(), StringUtils::SizeToString(selectedSize).c_str());
     else
-      items.Format("%i %s", totalCount, g_localizeStrings.Get(127).c_str());
+      items = StringUtils::Format("%i %s", totalCount, g_localizeStrings.Get(127).c_str());
     SET_CONTROL_LABEL(CONTROL_NUMFILES_LEFT + i, items);
   }
 }
@@ -457,7 +457,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
   CStdString strParentPath;
   URIUtils::GetParentPath(strDirectory, strParentPath);
-  if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || CSettings::Get().GetBool("filelists.showaddsourcebuttons")))
+  if (strDirectory.empty() && (m_vecItems[iList]->Size() == 0 || CSettings::Get().GetBool("filelists.showaddsourcebuttons")))
   { // add 'add source button'
     CStdString strLabel = g_localizeStrings.Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
@@ -480,7 +480,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
   m_strParentPath[iList] = (m_rootDir.IsSource(strDirectory) ? "" : strParentPath);
 
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
     pItem->SetLabel(g_localizeStrings.Get(20070));
@@ -818,7 +818,7 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
   {
     // check for step-below, if, unmount rar
-    if (url.GetFileName().IsEmpty())
+    if (url.GetFileName().empty())
       if (url.GetProtocol() == "zip")
         g_ZipManager.release(m_Directory[iList]->GetPath()); // release resources
   }
@@ -844,11 +844,13 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
       // and use as history string, m_strPath
       // can change for new discs
       CStdString strLabel = pItem->GetLabel();
-      int nPosOpen = strLabel.Find('(');
-      int nPosClose = strLabel.ReverseFind(')');
-      if (nPosOpen > -1 && nPosClose > -1 && nPosClose > nPosOpen)
+      size_t nPosOpen = strLabel.find('(');
+      size_t nPosClose = strLabel.rfind(')');
+      if (nPosOpen != std::string::npos &&
+          nPosClose != std::string::npos &&
+          nPosClose > nPosOpen)
       {
-        strLabel.Delete(nPosOpen + 1, (nPosClose) - (nPosOpen + 1));
+        strLabel.erase(nPosOpen + 1, (nPosClose) - (nPosOpen + 1));
         strHistoryString = strLabel;
       }
       else
@@ -1163,7 +1165,7 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
   CURL url(pItem->GetPath());
   const CStdString& strHostName = url.GetHostName();
 
-  if (url.GetProtocol() == "smb" && strHostName.IsEmpty()) //  smb workgroup
+  if (url.GetProtocol() == "smb" && strHostName.empty()) //  smb workgroup
     idMessageText = 15303; // Workgroup not found
   else if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_REMOTE || URIUtils::IsRemote(pItem->GetPath()))
     idMessageText = 15301; // Could not connect to network server
@@ -1203,7 +1205,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
   // check for a passed destination path
   CStdString strDestination = path;
   m_rootDir.SetSources(*CMediaSourceSettings::Get().GetSources("files"));
-  if (!strDestination.IsEmpty())
+  if (!strDestination.empty())
   {
     CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
   }
@@ -1214,7 +1216,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
     CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
   }
   // try to open the destination path
-  if (!strDestination.IsEmpty())
+  if (!strDestination.empty())
   {
     // open root
     if (strDestination.Equals("$ROOT"))

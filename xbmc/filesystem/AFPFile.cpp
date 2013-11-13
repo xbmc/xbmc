@@ -234,14 +234,14 @@ CAfpConnection::afpConnnectError CAfpConnection::Connect(const CURL& url)
     strncpy(m_pAfpUrl->uamname, "No User Authent", sizeof(m_pAfpUrl->uamname));
     CLog::Log(LOGDEBUG, "AFP: Using anonymous authentication.");
   }
-  else if ((nonConstUrl.GetPassWord().IsEmpty() || nonConstUrl.GetUserName().IsEmpty()) && serverChanged)
+  else if ((nonConstUrl.GetPassWord().empty() || nonConstUrl.GetUserName().empty()) && serverChanged)
   {
     // this is our current url object whe are connected to (at least we try)
     return AfpAuth;
   }
 
   // we got a password in the url
-  if (!nonConstUrl.GetPassWord().IsEmpty())
+  if (!nonConstUrl.GetPassWord().empty())
   {
     // copy password because afp_parse_url just puts garbage into the password field :(
     strncpy(m_pAfpUrl->password, nonConstUrl.GetPassWord().c_str(), 127);
@@ -330,14 +330,14 @@ int CAfpConnection::stat(const CURL &url, struct stat *statbuff)
     strncpy(tmpurl.uamname, "No User Authent", sizeof(tmpurl.uamname));
     CLog::Log(LOGDEBUG, "AFP: Using anonymous authentication.");
   }
-  else if ((nonConstUrl.GetPassWord().IsEmpty() || nonConstUrl.GetUserName().IsEmpty()))
+  else if ((nonConstUrl.GetPassWord().empty() || nonConstUrl.GetUserName().empty()))
   {
     // this is our current url object whe are connected to (at least we try)
     return -1;
   }
 
   // we got a password in the url
-  if (!nonConstUrl.GetPassWord().IsEmpty())
+  if (!nonConstUrl.GetPassWord().empty())
   {
     // copy password because afp_parse_url just puts garbage into the password field :(
     strncpy(tmpurl.password, nonConstUrl.GetPassWord().c_str(), 127);
@@ -720,9 +720,9 @@ bool CAFPFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
 bool CAFPFile::IsValidFile(const CStdString& strFileName)
 {
-  if (strFileName.Find('/') == -1   || // doesn't have sharename
-      strFileName.Right(2)  == "/." || // not current folder
-      strFileName.Right(3)  == "/..")  // not parent folder
+  if (strFileName.find('/') == std::string::npos   || // doesn't have sharename
+      StringUtils::EndsWith(strFileName, "/.") ||     // not current folder
+      StringUtils::EndsWith(strFileName, "/.."))      // not parent folder
   {
     return false;
   }

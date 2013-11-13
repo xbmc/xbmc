@@ -26,6 +26,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
 // 3GPP -> 3rd Generation Partnership Program
@@ -211,7 +212,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
 
     // invert the order from above so we bracket the text correctly.
     if (bgnColorIndex == charIndex && textColorRGBA != m_textColor)
-      strUTF8.AppendFormat("[COLOR %8x]", textColorRGBA);
+      strUTF8 += StringUtils::Format("[COLOR %8x]", textColorRGBA);
     // we do not support underline
     //if (bgnStyles & UNDERLINE)
     //  strUTF8.append("[U]");
@@ -230,11 +231,11 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   free(bgnStyle);
   free(endStyle);
     
-  if (strUTF8.IsEmpty())
+  if (strUTF8.empty())
     return OC_BUFFER;
 
   if (strUTF8[strUTF8.size()-1] == '\n')
-    strUTF8.Delete(strUTF8.size()-1);
+    strUTF8.erase(strUTF8.size()-1);
 
   // add a new text element to our container
   m_pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));

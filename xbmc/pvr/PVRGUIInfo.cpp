@@ -439,192 +439,192 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
 
 void CPVRGUIInfo::CharInfoActiveTimerTitle(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strActiveTimerTitle);
+  strValue = StringUtils::Format("%s", m_strActiveTimerTitle.c_str());
 }
 
 void CPVRGUIInfo::CharInfoActiveTimerChannelName(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strActiveTimerChannelName);
+  strValue = StringUtils::Format("%s", m_strActiveTimerChannelName.c_str());
 }
 
 void CPVRGUIInfo::CharInfoActiveTimerChannelIcon(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strActiveTimerChannelIcon);
+  strValue = StringUtils::Format("%s", m_strActiveTimerChannelIcon.c_str());
 }
 
 void CPVRGUIInfo::CharInfoActiveTimerDateTime(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strActiveTimerTime);
+  strValue = StringUtils::Format("%s", m_strActiveTimerTime.c_str());
 }
 
 void CPVRGUIInfo::CharInfoNextTimerTitle(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strNextRecordingTitle);
+  strValue = StringUtils::Format("%s", m_strNextRecordingTitle.c_str());
 }
 
 void CPVRGUIInfo::CharInfoNextTimerChannelName(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strNextRecordingChannelName);
+  strValue = StringUtils::Format("%s", m_strNextRecordingChannelName.c_str());
 }
 
 void CPVRGUIInfo::CharInfoNextTimerChannelIcon(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strNextRecordingChannelIcon);
+  strValue = StringUtils::Format("%s", m_strNextRecordingChannelIcon.c_str());
 }
 
 void CPVRGUIInfo::CharInfoNextTimerDateTime(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strNextRecordingTime);
+  strValue = StringUtils::Format("%s", m_strNextRecordingTime.c_str());
 }
 
 void CPVRGUIInfo::CharInfoPlayingDuration(CStdString &strValue) const
 {
-  strValue.Format("%s", StringUtils::SecondsToTimeString(m_iDuration / 1000, TIME_FORMAT_GUESS));
+  strValue = StringUtils::Format("%s", StringUtils::SecondsToTimeString(m_iDuration / 1000, TIME_FORMAT_GUESS).c_str());
 }
 
 void CPVRGUIInfo::CharInfoPlayingTime(CStdString &strValue) const
 {
-  strValue.Format("%s", StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS));
+  strValue = StringUtils::Format("%s", StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS).c_str());
 }
 
 void CPVRGUIInfo::CharInfoNextTimer(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strNextTimerInfo);
+  strValue = StringUtils::Format("%s", m_strNextTimerInfo.c_str());
 }
 
 void CPVRGUIInfo::CharInfoBackendNumber(CStdString &strValue) const
 {
   if (m_iActiveClients > 0)
-    strValue.Format("%u %s %u", m_iAddonInfoToggleCurrent+1, g_localizeStrings.Get(20163), m_iActiveClients);
+    strValue = StringUtils::Format("%u %s %u", m_iAddonInfoToggleCurrent+1, g_localizeStrings.Get(20163).c_str(), m_iActiveClients);
   else
-    strValue.Format("%s", g_localizeStrings.Get(14023));
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(14023).c_str());
 }
 
 void CPVRGUIInfo::CharInfoTotalDiskSpace(CStdString &strValue) const
 {
-  strValue.Format("%s", m_strTotalDiskspace);
+  strValue = StringUtils::Format("%s", m_strTotalDiskspace.c_str());
 }
 
 void CPVRGUIInfo::CharInfoVideoBR(CStdString &strValue) const
 {
-  strValue.Format("%.2f Mbit/s", m_qualityInfo.dVideoBitrate);
+  strValue = StringUtils::Format("%.2f Mbit/s", m_qualityInfo.dVideoBitrate);
 }
 
 void CPVRGUIInfo::CharInfoAudioBR(CStdString &strValue) const
 {
-  strValue.Format("%.0f kbit/s", m_qualityInfo.dAudioBitrate);
+  strValue = StringUtils::Format("%.0f kbit/s", m_qualityInfo.dAudioBitrate);
 }
 
 void CPVRGUIInfo::CharInfoDolbyBR(CStdString &strValue) const
 {
-  strValue.Format("%.0f kbit/s", m_qualityInfo.dDolbyBitrate);
+  strValue = StringUtils::Format("%.0f kbit/s", m_qualityInfo.dDolbyBitrate);
 }
 
 void CPVRGUIInfo::CharInfoSignal(CStdString &strValue) const
 {
-  strValue.Format("%d %%", m_qualityInfo.iSignal / 655);
+  strValue = StringUtils::Format("%d %%", m_qualityInfo.iSignal / 655);
 }
 
 void CPVRGUIInfo::CharInfoSNR(CStdString &strValue) const
 {
-  strValue.Format("%d %%", m_qualityInfo.iSNR / 655);
+  strValue = StringUtils::Format("%d %%", m_qualityInfo.iSNR / 655);
 }
 
 void CPVRGUIInfo::CharInfoBER(CStdString &strValue) const
 {
-  strValue.Format("%08X", m_qualityInfo.iBER);
+  strValue = StringUtils::Format("%08X", m_qualityInfo.iBER);
 }
 
 void CPVRGUIInfo::CharInfoUNC(CStdString &strValue) const
 {
-  strValue.Format("%08X", m_qualityInfo.iUNC);
+  strValue = StringUtils::Format("%08X", m_qualityInfo.iUNC);
 }
 
 void CPVRGUIInfo::CharInfoFrontendName(CStdString &strValue) const
 {
   if (!strcmp(m_qualityInfo.strAdapterName, StringUtils::EmptyString))
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_qualityInfo.strAdapterName);
+    strValue = StringUtils::Format("%s", m_qualityInfo.strAdapterName);
 }
 
 void CPVRGUIInfo::CharInfoFrontendStatus(CStdString &strValue) const
 {
   if (!strcmp(m_qualityInfo.strAdapterStatus, StringUtils::EmptyString))
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_qualityInfo.strAdapterStatus);
+    strValue = StringUtils::Format("%s", m_qualityInfo.strAdapterStatus);
 }
 
 void CPVRGUIInfo::CharInfoBackendName(CStdString &strValue) const
 {
-  if (m_strBackendName.IsEmpty())
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+  if (m_strBackendName.empty())
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_strBackendName);
+    strValue = StringUtils::Format("%s", m_strBackendName.c_str());
 }
 
 void CPVRGUIInfo::CharInfoBackendVersion(CStdString &strValue) const
 {
-  if (m_strBackendVersion.IsEmpty())
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+  if (m_strBackendVersion.empty())
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s",  m_strBackendVersion);
+    strValue = StringUtils::Format("%s",  m_strBackendVersion.c_str());
 }
 
 void CPVRGUIInfo::CharInfoBackendHost(CStdString &strValue) const
 {
-  if (m_strBackendHost.IsEmpty())
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+  if (m_strBackendHost.empty())
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_strBackendHost);
+    strValue = StringUtils::Format("%s", m_strBackendHost.c_str());
 }
 
 void CPVRGUIInfo::CharInfoBackendDiskspace(CStdString &strValue) const
 {
-  if (m_strBackendDiskspace.IsEmpty())
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+  if (m_strBackendDiskspace.empty())
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_strBackendDiskspace);
+    strValue = StringUtils::Format("%s", m_strBackendDiskspace.c_str());
 }
 
 void CPVRGUIInfo::CharInfoBackendChannels(CStdString &strValue) const
 {
-  if (m_strBackendChannels.IsEmpty())
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+  if (m_strBackendChannels.empty())
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_strBackendChannels);
+    strValue = StringUtils::Format("%s", m_strBackendChannels.c_str());
 }
 
 void CPVRGUIInfo::CharInfoBackendTimers(CStdString &strValue) const
 {
-  if (m_strBackendTimers.IsEmpty())
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+  if (m_strBackendTimers.empty())
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_strBackendTimers);
+    strValue = StringUtils::Format("%s", m_strBackendTimers.c_str());
 }
 
 void CPVRGUIInfo::CharInfoBackendRecordings(CStdString &strValue) const
 {
-  if (m_strBackendRecordings.IsEmpty())
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+  if (m_strBackendRecordings.empty())
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_strBackendRecordings);
+    strValue = StringUtils::Format("%s", m_strBackendRecordings.c_str());
 }
 
 void CPVRGUIInfo::CharInfoPlayingClientName(CStdString &strValue) const
 {
-  if (m_strPlayingClientName.IsEmpty())
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+  if (m_strPlayingClientName.empty())
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_strPlayingClientName);
+    strValue = StringUtils::Format("%s", m_strPlayingClientName.c_str());
 }
 
 void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
 {
   CPVRChannelPtr channel;
   if (g_PVRClients->GetPlayingChannel(channel))
-    strValue.Format("%s", channel->EncryptionName().c_str());
+    strValue = StringUtils::Format("%s", channel->EncryptionName().c_str());
   else
     strValue = StringUtils::EmptyString;
 }
@@ -632,25 +632,25 @@ void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
 void CPVRGUIInfo::CharInfoService(CStdString &strValue) const
 {
   if (!strcmp(m_qualityInfo.strServiceName, StringUtils::EmptyString))
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_qualityInfo.strServiceName);
+    strValue = StringUtils::Format("%s", m_qualityInfo.strServiceName);
 }
 
 void CPVRGUIInfo::CharInfoMux(CStdString &strValue) const
 {
   if (!strcmp(m_qualityInfo.strMuxName, StringUtils::EmptyString))
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_qualityInfo.strMuxName);
+    strValue = StringUtils::Format("%s", m_qualityInfo.strMuxName);
 }
 
 void CPVRGUIInfo::CharInfoProvider(CStdString &strValue) const
 {
   if (!strcmp(m_qualityInfo.strProviderName, StringUtils::EmptyString))
-    strValue.Format("%s", g_localizeStrings.Get(13205));
+    strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
-    strValue.Format("%s", m_qualityInfo.strProviderName);
+    strValue = StringUtils::Format("%s", m_qualityInfo.strProviderName);
 }
 
 void CPVRGUIInfo::UpdateBackendCache(void)
@@ -684,8 +684,8 @@ void CPVRGUIInfo::UpdateBackendCache(void)
     {
       kBTotal /= 1024; // Convert to MBytes
       kBUsed /= 1024;  // Convert to MBytes
-      strBackendDiskspace.Format("%s %.1f GByte - %s: %.1f GByte",
-          g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
+      strBackendDiskspace = StringUtils::Format("%s %.1f GByte - %s: %.1f GByte",
+          g_localizeStrings.Get(20161).c_str(), (float) kBTotal / 1024, g_localizeStrings.Get(20162).c_str(), (float) kBUsed / 1024);
     }
     else
     {
@@ -694,19 +694,19 @@ void CPVRGUIInfo::UpdateBackendCache(void)
 
     int NumChannels = activeClient->second->GetChannelsAmount();
     if (NumChannels >= 0)
-      strBackendChannels.Format("%i", NumChannels);
+      strBackendChannels = StringUtils::Format("%i", NumChannels);
     else
       strBackendChannels = g_localizeStrings.Get(161);
 
     int NumTimers = activeClient->second->GetTimersAmount();
     if (NumTimers >= 0)
-      strBackendTimers.Format("%i", NumTimers);
+      strBackendTimers = StringUtils::Format("%i", NumTimers);
     else
       strBackendTimers = g_localizeStrings.Get(161);
 
     int NumRecordings = activeClient->second->GetRecordingsAmount();
     if (NumRecordings >= 0)
-      strBackendRecordings.Format("%i", NumRecordings);
+      strBackendRecordings = StringUtils::Format("%i", NumRecordings);
     else
       strBackendRecordings = g_localizeStrings.Get(161);
 
@@ -753,16 +753,16 @@ void CPVRGUIInfo::UpdateNextTimer(void)
   if (tag && tag->HasPVRTimerInfoTag())
   {
     CPVRTimerInfoTag *timer = tag->GetPVRTimerInfoTag();
-    strNextRecordingTitle.Format("%s",       timer->Title());
-    strNextRecordingChannelName.Format("%s", timer->ChannelName());
-    strNextRecordingChannelIcon.Format("%s", timer->ChannelIcon());
-    strNextRecordingTime.Format("%s",        timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+    strNextRecordingTitle = StringUtils::Format("%s",       timer->Title().c_str());
+    strNextRecordingChannelName = StringUtils::Format("%s", timer->ChannelName().c_str());
+    strNextRecordingChannelIcon = StringUtils::Format("%s", timer->ChannelIcon().c_str());
+    strNextRecordingTime = StringUtils::Format("%s",        timer->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
 
-    strNextTimerInfo.Format("%s %s %s %s",
-        g_localizeStrings.Get(19106),
-        timer->StartAsLocalTime().GetAsLocalizedDate(true),
-        g_localizeStrings.Get(19107),
-        timer->StartAsLocalTime().GetAsLocalizedTime("HH:mm", false));
+    strNextTimerInfo = StringUtils::Format("%s %s %s %s",
+        g_localizeStrings.Get(19106).c_str(),
+        timer->StartAsLocalTime().GetAsLocalizedDate(true).c_str(),
+        g_localizeStrings.Get(19107).c_str(),
+        timer->StartAsLocalTime().GetAsLocalizedTime("HH:mm", false).c_str());
   }
 
   CSingleLock lock(m_critSection);
@@ -790,10 +790,10 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
     if (m_iTimerInfoToggleCurrent < activeTags.size() && activeTags.at(m_iTimerInfoToggleCurrent)->HasPVRTimerInfoTag())
     {
       CPVRTimerInfoTag *tag = activeTags.at(m_iTimerInfoToggleCurrent)->GetPVRTimerInfoTag();
-      strActiveTimerTitle.Format("%s",       tag->Title());
-      strActiveTimerChannelName.Format("%s", tag->ChannelName());
-      strActiveTimerChannelIcon.Format("%s", tag->ChannelIcon());
-      strActiveTimerTime.Format("%s",        tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+      strActiveTimerTitle = StringUtils::Format("%s",       tag->Title().c_str());
+      strActiveTimerChannelName = StringUtils::Format("%s", tag->ChannelName().c_str());
+      strActiveTimerChannelIcon = StringUtils::Format("%s", tag->ChannelIcon().c_str());
+      strActiveTimerTime = StringUtils::Format("%s",        tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
     }
   }
 

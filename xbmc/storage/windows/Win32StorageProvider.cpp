@@ -69,7 +69,7 @@ std::string CWin32StorageProvider::GetFirstOpticalDeviceFileName()
 
 bool CWin32StorageProvider::Eject(CStdString mountpath)
 {
-  if (!mountpath.IsEmpty())
+  if (!mountpath.empty())
   {
     return CWIN32Util::EjectDrive(mountpath[0]);
   }

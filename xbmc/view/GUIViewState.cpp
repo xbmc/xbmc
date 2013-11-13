@@ -241,10 +241,10 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
     return;
   }
 
-  masks.m_strLabelFile.Empty();
-  masks.m_strLabel2File.Empty();
-  masks.m_strLabelFolder.Empty();
-  masks.m_strLabel2Folder.Empty();
+  masks.m_strLabelFile.clear();
+  masks.m_strLabel2File.clear();
+  masks.m_strLabelFolder.clear();
+  masks.m_strLabel2Folder.clear();
   return;
 }
 
@@ -397,7 +397,7 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     CMediaSource source;
     source.strPath = "addons://sources/" + content + "/";    
     source.strName = label;
-    if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+    if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
       source.m_strThumbnailImage = thumb;
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     source.m_ignore = true;
@@ -415,7 +415,7 @@ void CGUIViewState::AddAndroidSource(const CStdString &content, const CStdString
     CMediaSource source;
     source.strPath = "androidapp://sources/" + content + "/";
     source.strName = label;
-    if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+    if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
       source.m_strThumbnailImage = thumb;
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     source.m_ignore = true;

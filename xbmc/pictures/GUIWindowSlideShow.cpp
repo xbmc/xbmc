@@ -505,7 +505,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   { // load first image
     CFileItemPtr item = m_slides->Get(m_iCurrentSlide);
     CStdString picturePath = GetPicturePath(item.get());
-    if (!picturePath.IsEmpty())
+    if (!picturePath.empty())
     {
       if (item->IsVideo())
         CLog::Log(LOGDEBUG, "Loading the thumb %s for current video %d: %s", picturePath.c_str(), m_iCurrentSlide, item->GetPath().c_str());
@@ -533,7 +533,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_iLastFailedNextSlide = -1;
     CFileItemPtr item = m_slides->Get(m_iNextSlide);
     CStdString picturePath = GetPicturePath(item.get());
-    if (!picturePath.IsEmpty() && (!item->IsVideo() || !m_bSlideShow || m_bPause))
+    if (!picturePath.empty() && (!item->IsVideo() || !m_bSlideShow || m_bPause))
     {
       if (item->IsVideo())
         CLog::Log(LOGDEBUG, "Loading the thumb %s for next video %d: %s", picturePath.c_str(), m_iNextSlide, item->GetPath().c_str());
@@ -1233,7 +1233,7 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath,
   if ((!bNotRandom && CSettings::Get().GetBool("slideshow.shuffle")) || bRandom)
     Shuffle();
 
-  if (!beginSlidePath.IsEmpty())
+  if (!beginSlidePath.empty())
     Select(beginSlidePath);
 
   if (startSlideShow)
@@ -1263,7 +1263,7 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursiv
 
   // fetch directory and sort accordingly
   CFileItemList items;
-  if (!CDirectory::GetDirectory(strPath, items, m_strExtensions.IsEmpty()?g_advancedSettings.m_pictureExtensions:m_strExtensions,DIR_FLAG_NO_FILE_DIRS,true))
+  if (!CDirectory::GetDirectory(strPath, items, m_strExtensions.empty()?g_advancedSettings.m_pictureExtensions:m_strExtensions,DIR_FLAG_NO_FILE_DIRS,true))
     return;
 
   items.Sort(method, order, sortAttributes);
@@ -1296,12 +1296,12 @@ CStdString CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
   if (isVideo)
   {
     picturePath = item->GetArt("thumb");
-    if (picturePath.IsEmpty() && !item->HasProperty("nothumb"))
+    if (picturePath.empty() && !item->HasProperty("nothumb"))
     {
       CPictureThumbLoader thumbLoader;
       thumbLoader.LoadItem(item);
       picturePath = item->GetArt("thumb");
-      if (picturePath.IsEmpty())
+      if (picturePath.empty())
         item->SetProperty("nothumb", true);
     }
   }

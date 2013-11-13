@@ -143,7 +143,7 @@ void CGUIDialogAddonInfo::UpdateControls()
 {
   CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   bool isInstalled = NULL != m_localAddon.get();
-  bool isSystem = isInstalled && m_localAddon->Path().Left(xbmcPath.size()).Equals(xbmcPath);
+  bool isSystem = isInstalled && StringUtils::StartsWith(m_localAddon->Path(), xbmcPath);
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();
   bool isUpdatable = isInstalled && m_item->GetProperty("Addon.UpdateAvail").asBoolean();
   if (isInstalled)
@@ -169,8 +169,7 @@ void CGUIDialogAddonInfo::UpdateControls()
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  CStdString referer;
-  referer.Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().c_str());
+  CStdString referer = StringUtils::Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().c_str());
   CAddonInstaller::Get().Install(m_addon->ID(), true, referer); // force install
   Close();
 }

@@ -24,6 +24,7 @@
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 #include "filesystem/File.h"
 
@@ -60,7 +61,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
 
 bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
 {
-  if (group.GroupName().IsEmpty() && group.GroupID() <= 0)
+  if (group.GroupName().empty() && group.GroupID() <= 0)
     return true;
 
   CPVRChannelGroupPtr updateGroup;
@@ -108,8 +109,8 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const CStdString &strPath) const
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
     // check if the path matches
-    strCheckPath.Format("channels/%s/%s/", (*it)->IsRadio() ? "radio" : "tv", (*it)->GroupName().c_str());
-    if (strFileName.Left(strCheckPath.length()) == strCheckPath)
+    strCheckPath = StringUtils::Format("channels/%s/%s/", (*it)->IsRadio() ? "radio" : "tv", (*it)->GroupName().c_str());
+    if (StringUtils::StartsWith(strFileName, strCheckPath))
     {
       strFileName.erase(0, strCheckPath.length());
       return (*it)->GetByIndex(atoi(strFileName.c_str()));
@@ -349,7 +350,7 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
   CStdString strPath;
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
-    strPath.Format("channels/%s/%i", m_bRadio ? "radio" : "tv", (*it)->GroupID());
+    strPath = StringUtils::Format("channels/%s/%i", m_bRadio ? "radio" : "tv", (*it)->GroupID());
     CFileItemPtr group(new CFileItem(strPath, true));
     group->m_strTitle = (*it)->GroupName();
     group->SetLabel((*it)->GroupName());

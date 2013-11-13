@@ -302,7 +302,7 @@ void CGUIDialogMusicInfo::Update()
 
 void CGUIDialogMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
 {
-  if (strLabel.IsEmpty())
+  if (strLabel.empty())
   {
     SET_CONTROL_LABEL(iControl, (iControl == CONTROL_TEXTAREA) ? (m_bArtistInfo?547:414) : 416);
   }
@@ -354,7 +354,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   for (unsigned int i = 0; i < thumbs.size(); ++i)
   {
     CStdString strItemPath;
-    strItemPath.Format("thumb://Remote%i", i);
+    strItemPath = StringUtils::Format("thumb://Remote%i", i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetArt("thumb", thumbs[i]);
     item->SetIconImage("DefaultPicture.png");
@@ -407,9 +407,9 @@ void CGUIDialogMusicInfo::OnGetThumb()
     return;   // user chose the one they have
 
   CStdString newThumb;
-  if (result.Left(14) == "thumb://Remote")
+  if (StringUtils::StartsWith(result, "thumb://Remote"))
   {
-    int number = atoi(result.Mid(14));
+    int number = atoi(result.substr(14).c_str());
     newThumb = thumbs[number];
   }
   else if (result == "thumb://Local")
@@ -455,8 +455,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   // Grab the thumbnails from the web
   for (unsigned int i = 0; i < m_artist.fanart.GetNumFanarts(); i++)
   {
-    CStdString strItemPath;
-    strItemPath.Format("fanart://Remote%i",i);
+    CStdString strItemPath = StringUtils::Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     CStdString thumb = m_artist.fanart.GetPreviewURL(i);
     item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(thumb));
@@ -475,7 +474,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   database.GetArtistPath(m_artist.idArtist,strArtistPath);
   CFileItem item(strArtistPath,true);
   CStdString strLocal = item.GetLocalFanart();
-  if (!strLocal.IsEmpty())
+  if (!strLocal.empty())
   {
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
     itemLocal->SetArt("thumb", strLocal);
@@ -508,9 +507,9 @@ void CGUIDialogMusicInfo::OnGetFanart()
   if (result.Equals("fanart://Local"))
     result = strLocal;
 
-  if (result.Left(15)  == "fanart://Remote")
+  if (StringUtils::StartsWith(result, "fanart://Remote"))
   {
-    int iFanart = atoi(result.Mid(15).c_str());
+    int iFanart = atoi(result.substr(15).c_str());
     m_artist.fanart.SetPrimaryFanart(iFanart);
     result = m_artist.fanart.GetImageURL();
   }
@@ -570,7 +569,7 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
   else
     itemDir = item.GetPath();
 
-  if (!itemDir.IsEmpty() && CDirectory::Exists(itemDir))
+  if (!itemDir.empty() && CDirectory::Exists(itemDir))
   {
     CMediaSource itemSource;
     itemSource.strName = g_localizeStrings.Get(36041);

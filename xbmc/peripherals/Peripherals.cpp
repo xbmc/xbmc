@@ -470,7 +470,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
   {
     CSetting *setting = NULL;
     CStdString strKey(currentNode->Attribute("key"));
-    if (strKey.IsEmpty())
+    if (strKey.empty())
       continue;
 
     CStdString strSettingsType(currentNode->Attribute("type"));
@@ -506,7 +506,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
     else if (strSettingsType.Equals("enum"))
     {
       CStdString strEnums(currentNode->Attribute("lvalues"));
-      if (!strEnums.IsEmpty())
+      if (!strEnums.empty())
       {
         vector< pair<int,int> > enums;
         vector<std::string> valuesVec;
@@ -543,8 +543,8 @@ void CPeripherals::GetDirectory(const CStdString &strPath, CFileItemList &items)
   if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
     return;
 
-  CStdString strPathCut = strPath.Right(strPath.length() - 14);
-  CStdString strBus = strPathCut.Left(strPathCut.Find('/'));
+  CStdString strPathCut = strPath.substr(14);
+  CStdString strBus = strPathCut.substr(0, strPathCut.find('/'));
 
   CSingleLock lock(m_critSection);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
@@ -559,8 +559,8 @@ CPeripheral *CPeripherals::GetByPath(const CStdString &strPath) const
   if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
     return NULL;
 
-  CStdString strPathCut = strPath.Right(strPath.length() - 14);
-  CStdString strBus = strPathCut.Left(strPathCut.Find('/'));
+  CStdString strPathCut = strPath.substr(14);
+  CStdString strBus = strPathCut.substr(0, strPathCut.find('/'));
 
   CSingleLock lock(m_critSection);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)

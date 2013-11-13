@@ -38,7 +38,7 @@ using namespace JSONRPC;
 JSONRPC_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
-  media = media.ToLower();
+  StringUtils::ToLower(media);
 
   VECSOURCES *sources = CMediaSourceSettings::Get().GetSources(media);
   if (sources)
@@ -75,7 +75,7 @@ JSONRPC_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITran
 JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
-  media = media.ToLower();
+  StringUtils::ToLower(media);
 
   CFileItemList items;
   CStdString strPath = parameterObject["directory"].asString();
@@ -285,7 +285,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
   if (parameterObject.isMember("directory"))
   {
     CStdString media =  parameterObject["media"].asString();
-    media = media.ToLower();
+    StringUtils::ToLower(media);
 
     CStdString strPath = parameterObject["directory"].asString();
     if (!strPath.empty())

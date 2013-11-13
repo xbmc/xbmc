@@ -95,7 +95,7 @@ namespace XBMCAddon
           for (int i=0; i < (int)pPlayList->size(); ++i)
           {
             CFileItemPtr playListItem =(*pPlayList)[i];
-            if (playListItem->GetLabel().IsEmpty())
+            if (playListItem->GetLabel().empty())
               playListItem->SetLabel(URIUtils::GetFileName(playListItem->GetPath()));
 
             this->pPlayList->Add(playListItem);

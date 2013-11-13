@@ -980,7 +980,7 @@ void CEpgInfoTag::UpdatePath(void)
   CStdString path;
   {
     CSingleLock lock(m_critSection);
-    path.Format("pvr://guide/%04i/%s.epg", EpgID(), m_startTime.GetAsDBDateTime().c_str());
+    path = StringUtils::Format("pvr://guide/%04i/%s.epg", EpgID(), m_startTime.GetAsDBDateTime().c_str());
   }
 
   SetPath(path);

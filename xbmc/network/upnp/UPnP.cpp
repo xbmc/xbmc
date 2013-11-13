@@ -385,7 +385,7 @@ CUPnP::CUPnP() :
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list)) && list.GetItemCount()) {
         m_IP = (*(list.GetFirstItem())).ToString();
     }
-    else if(m_IP.IsEmpty())
+    else if(m_IP.empty())
         m_IP = "localhost";
 
     // start upnp monitoring

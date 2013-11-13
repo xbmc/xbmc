@@ -319,7 +319,7 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
     {
       CRegion region(m_defaultRegion);
       region.m_strName=pRegion->Attribute("name");
-      if (region.m_strName.IsEmpty())
+      if (region.m_strName.empty())
         region.m_strName="N/A";
 
       if (pRegion->Attribute("locale"))
@@ -399,7 +399,7 @@ void CLangInfo::LoadTokens(const TiXmlNode* pTokens, vector<CStdString>& vecToke
         strSep = pToken->Attribute("separators");
       if (pToken->FirstChild() && pToken->FirstChild()->Value())
       {
-        if (strSep.IsEmpty())
+        if (strSep.empty())
           vecTokens.push_back(pToken->FirstChild()->Value());
         else
           for (unsigned int i=0;i<strSep.size();++i)

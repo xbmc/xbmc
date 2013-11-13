@@ -23,6 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #include "PVRManager.h"
 #include "channels/PVRChannelGroupsContainer.h"
@@ -578,11 +579,11 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const 
     CStdString strWhereClause;
 
     for (unsigned int iChannelPtr = 0; iChannelPtr + iDeletedChannels < channelsToDelete.size() && iChannelPtr < 50; iChannelPtr++)
-      strChannelsToDelete.AppendFormat(", %d", channelsToDelete.at(iDeletedChannels + iChannelPtr));
+      strChannelsToDelete += StringUtils::Format(", %d", channelsToDelete.at(iDeletedChannels + iChannelPtr));
 
-    if (!strChannelsToDelete.IsEmpty())
+    if (!strChannelsToDelete.empty())
     {
-      strChannelsToDelete = strChannelsToDelete.Right(strChannelsToDelete.length() - 2);
+      strChannelsToDelete.erase(0, 2);
       strWhereClause = FormatSQL("idGroup = %u AND idChannel IN (%s)", group.GroupID(), strChannelsToDelete.c_str());
       bDelete = DeleteValues("map_channelgroups_channels", strWhereClause) && bDelete;
     }
@@ -794,7 +795,7 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
           member.channel->ChannelID(), group.GroupID(), member.iChannelNumber);
 
       CStdString strValue = GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
-      if (strValue.IsEmpty())
+      if (strValue.empty())
       {
         strQuery = FormatSQL("REPLACE INTO map_channelgroups_channels ("
             "idGroup, idChannel, iChannelNumber) "
@@ -825,7 +826,7 @@ bool CPVRDatabase::DeleteClients()
 bool CPVRDatabase::Delete(const CPVRClient &client)
 {
   /* invalid client uid */
-  if (client.ID().IsEmpty())
+  if (client.ID().empty())
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid client uid", __FUNCTION__);
     return false;
@@ -840,7 +841,7 @@ int CPVRDatabase::GetClientId(const CStdString &strClientUid)
   CStdString strWhereClause = FormatSQL("sUid = '%s'", strClientUid.c_str());
   CStdString strValue = GetSingleValue("clients", "idClient", strWhereClause);
 
-  if (strValue.IsEmpty())
+  if (strValue.empty())
     return -1;
 
   return atol(strValue.c_str());
@@ -855,7 +856,7 @@ bool CPVRDatabase::ResetEPG(void)
 bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 {
   bool bReturn(false);
-  if (group.GroupName().IsEmpty())
+  if (group.GroupName().empty())
   {
     CLog::Log(LOGERROR, "%s - empty group name", __FUNCTION__);
     return bReturn;
@@ -897,7 +898,7 @@ int CPVRDatabase::Persist(const AddonPtr client)
   int iReturn(-1);
 
   /* invalid client uid or name */
-  if (client->Name().IsEmpty() || client->ID().IsEmpty())
+  if (client->Name().empty() || client->ID().empty())
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid client uid or name", __FUNCTION__);
     return iReturn;

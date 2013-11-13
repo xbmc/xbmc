@@ -253,7 +253,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
     CFileItemPtr item(new CFileItem(profile->getName()));
     item->SetProperty("Addon.Summary", locked); // lock setting
     CStdString thumb = profile->getThumb();
-    if (thumb.IsEmpty())
+    if (thumb.empty())
       thumb = "unknown-user.png";
     item->SetIconImage(thumb);
     items.Add(item);

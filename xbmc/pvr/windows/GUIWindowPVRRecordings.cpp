@@ -99,7 +99,7 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
 
     // Suppress resume from 0
     if (positionInSeconds > 0)
-      resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(positionInSeconds).c_str());
+      resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(positionInSeconds).c_str());
   }
   return resumeString;
 }
@@ -116,7 +116,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
     CStdString resumeString = GetResumeString(*pItem);
-    if (!resumeString.IsEmpty())
+    if (!resumeString.empty())
     {
       buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
     }
@@ -204,7 +204,7 @@ void CGUIWindowPVRRecordings::UpdateData(bool bUpdateSelectedFile /* = true */)
   CSingleLock graphicsLock(g_graphicsContext);
 
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
-  if (m_parent->m_vecItems->GetPath().Left(17) != "pvr://recordings/")
+  if (!StringUtils::StartsWith(m_parent->m_vecItems->GetPath(), "pvr://recordings/"))
     m_strSelectedPath = "pvr://recordings/";
   else
     m_strSelectedPath = m_parent->m_vecItems->GetPath();
@@ -277,7 +277,7 @@ bool CGUIWindowPVRRecordings::OnClickList(CGUIMessage &message)
     {
       int choice = CONTEXT_BUTTON_PLAY_ITEM;
       CStdString resumeString = GetResumeString(*pItem);
-      if (!resumeString.IsEmpty())
+      if (!resumeString.empty())
       {
         CContextButtons choices;
         choices.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);

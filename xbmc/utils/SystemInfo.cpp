@@ -88,10 +88,8 @@ const CSysData &CSysInfoJob::GetData() const
 
 CStdString CSysInfoJob::GetCPUFreqInfo()
 {
-  CStdString strCPUFreq;
   double CPUFreq = GetCPUFrequency();
-  strCPUFreq.Format("%4.2fMHz", CPUFreq);
-  return strCPUFreq;
+  return StringUtils::Format("%4.2fMHz", CPUFreq);;
 }
 
 CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
@@ -122,9 +120,7 @@ CStdString CSysInfoJob::GetVideoEncoder()
 
 CStdString CSysInfoJob::GetBatteryLevel()
 {
-  CStdString strVal;
-  strVal.Format("%d%%", g_powerManager.BatteryLevel());
-  return strVal;
+  return StringUtils::Format("%d%%", g_powerManager.BatteryLevel());
 }
 
 double CSysInfoJob::GetCPUFrequency()
@@ -172,21 +168,21 @@ CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   if (iDays > 0)
   {
-    strSystemUptime.Format("%i %s, %i %s, %i %s",
-      iDays,g_localizeStrings.Get(12393),
-      iHours,g_localizeStrings.Get(12392),
-      iMinutes, g_localizeStrings.Get(12391));
+    strSystemUptime = StringUtils::Format("%i %s, %i %s, %i %s",
+                                          iDays, g_localizeStrings.Get(12393).c_str(),
+                                          iHours, g_localizeStrings.Get(12392).c_str(),
+                                          iMinutes, g_localizeStrings.Get(12391).c_str());
   }
   else if (iDays == 0 && iHours >= 1 )
   {
-    strSystemUptime.Format("%i %s, %i %s",
-      iHours,g_localizeStrings.Get(12392),
-      iMinutes, g_localizeStrings.Get(12391));
+    strSystemUptime = StringUtils::Format("%i %s, %i %s",
+                                          iHours, g_localizeStrings.Get(12392).c_str(),
+                                          iMinutes, g_localizeStrings.Get(12391).c_str());
   }
   else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
   {
-    strSystemUptime.Format("%i %s",
-      iMinutes, g_localizeStrings.Get(12391));
+    strSystemUptime = StringUtils::Format("%i %s",
+                                          iMinutes, g_localizeStrings.Get(12391).c_str());
   }
   return strSystemUptime;
 }
@@ -272,7 +268,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
-  if( !drive.IsEmpty() && !drive.Equals("*") )
+  if( !drive.empty() && !drive.Equals("*") )
   {
 #ifdef TARGET_WINDOWS
     UINT uidriveType = GetDriveType(( drive + ":\\" ));
@@ -501,9 +497,7 @@ CStdString CSysInfo::GetKernelVersion()
   struct utsname un;
   if (uname(&un)==0)
   {
-    CStdString strKernel;
-    strKernel.Format("%s %s %s %s", un.sysname, un.release, un.version, un.machine);
-    return strKernel;
+    return StringUtils::Format("%s %s %s %s", un.sysname, un.release, un.version, un.machine);;
   }
 
   return "";
@@ -610,19 +604,19 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       switch(drive)
       {
       case SYSTEM_FREE_SPACE:
-        strRet.Format("%i MB %s", totalFree, g_localizeStrings.Get(160));
+        strRet = StringUtils::Format("%i MB %s", totalFree, g_localizeStrings.Get(160).c_str());
         break;
       case SYSTEM_USED_SPACE:
-        strRet.Format("%i MB %s", totalUsed, g_localizeStrings.Get(20162));
+        strRet = StringUtils::Format("%i MB %s", totalUsed, g_localizeStrings.Get(20162).c_str());
         break;
       case SYSTEM_TOTAL_SPACE:
-        strRet.Format("%i MB %s", total, g_localizeStrings.Get(20161));
+        strRet = StringUtils::Format("%i MB %s", total, g_localizeStrings.Get(20161).c_str());
         break;
       case SYSTEM_FREE_SPACE_PERCENT:
-        strRet.Format("%i %% %s", percentFree, g_localizeStrings.Get(160));
+        strRet = StringUtils::Format("%i %% %s", percentFree, g_localizeStrings.Get(160).c_str());
         break;
       case SYSTEM_USED_SPACE_PERCENT:
-        strRet.Format("%i %% %s", percentused, g_localizeStrings.Get(20162));
+        strRet = StringUtils::Format("%i %% %s", percentused, g_localizeStrings.Get(20162).c_str());
         break;
       }
     }
@@ -713,7 +707,7 @@ CStdString CSysInfo::GetLinuxDistro()
 
     fclose(os_release);
 
-    if (!result.IsEmpty())
+    if (!result.empty())
       return result;
   }
 
@@ -723,12 +717,12 @@ CStdString CSysInfo::GetLinuxDistro()
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
       result = buffer;
     pclose(pipe);
-    if (!result.IsEmpty())
-      return result.Trim();
+    if (!result.empty())
+      return StringUtils::Trim(result);
   }
 
   FILE* file = NULL;
-  for (int i = 0; result.IsEmpty() && release_file[i]; i++)
+  for (int i = 0; result.empty() && release_file[i]; i++)
   {
     file = fopen(release_file[i], "r");
     if (file)
@@ -736,8 +730,8 @@ CStdString CSysInfo::GetLinuxDistro()
       if (fgets(buffer, sizeof(buffer), file))
       {
         result = buffer;
-        if (!result.IsEmpty())
-          return result.Trim();
+        if (!result.empty())
+          return StringUtils::Trim(result);
       }
       fclose(file);
     }
@@ -773,7 +767,7 @@ CStdString CSysInfo::GetUnameVersion()
     {
       result = buffer;
 #if defined(TARGET_DARWIN)
-      result.Trim();
+      StringUtils::Trim(result);
       result += ", "; 
       result += GetDarwinVersionString();
 #endif
@@ -784,7 +778,7 @@ CStdString CSysInfo::GetUnameVersion()
   }
 #endif//else !TARGET_ANDROID
 
-  return result.Trim();
+  return StringUtils::Trim(result);
 }
 #endif
 
@@ -798,7 +792,7 @@ CStdString CSysInfo::GetUAWindowsVersion()
 
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
-    strVersion.AppendFormat(" %d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion);
+    strVersion += StringUtils::Format(" %d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion);
   }
 
   SYSTEM_INFO si = {};

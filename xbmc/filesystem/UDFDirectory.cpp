@@ -42,7 +42,7 @@ bool CUDFDirectory::GetDirectory(const CStdString& strPath,
 {
   CStdString strRoot, strSub;
   CURL url;
-  if(strPath.Left(6) == "udf://")
+  if(StringUtils::StartsWith(strPath, "udf://"))
   {
     url.Parse(strPath);
     CURL url(strPath);

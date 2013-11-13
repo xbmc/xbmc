@@ -59,7 +59,7 @@ bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
     if (item->m_bIsFolder && !item->HasIcon() && !item->HasArt("thumb"))
     {
       CStdString strImage = GetIcon(item->GetPath());
-      if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
+      if (!strImage.empty() && g_TextureManager.HasTexture(strImage))
         item->SetIconImage(strImage);
     }
   }
@@ -127,8 +127,7 @@ void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
   Crc32 crc;
   crc.ComputeFromLowerCase(path);
 
-  CStdString strFileName;
-  strFileName.Format("special://temp/%08x.fi", (unsigned __int32) crc);
+  CStdString strFileName = StringUtils::Format("special://temp/%08x.fi", (unsigned __int32) crc);
   CFile::Delete(strFileName);
 }
 
@@ -163,7 +162,7 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   // get artist
   if (params.GetArtistId() >= 0)
   {
-    if (!strLabel.IsEmpty())
+    if (!strLabel.empty())
       strLabel += " / ";
     strLabel += musicdatabase.GetArtistById(params.GetArtistId());
   }
@@ -171,12 +170,12 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   // get album
   if (params.GetAlbumId() >= 0)
   {
-    if (!strLabel.IsEmpty())
+    if (!strLabel.empty())
       strLabel += " / ";
     strLabel += musicdatabase.GetAlbumById(params.GetAlbumId());
   }
 
-  if (strLabel.IsEmpty())
+  if (strLabel.empty())
   {
     switch (pNode->GetChildType())
     {

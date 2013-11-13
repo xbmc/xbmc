@@ -25,7 +25,7 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-
+#include "utils/StringUtils.h"
 #include "karaokelyricstextustar.h"
 
 
@@ -140,16 +140,15 @@ bool CKaraokeLyricsTextUStar::Load()
   for ( ; idx < lines.size() && lines[idx][0] == '#'; idx++ )
   {
     // Parse into key:value
-    int offset = lines[idx].Find( ':' );
-
-    if ( offset == -1 )
+    size_t offset = lines[idx].find(':');
+    if (offset == std::string::npos)
     {
       CLog::Log( LOGERROR, "UStar lyric loader: invalid line '%s', no semicolon", lines[idx].c_str() );
       return false;
     }
 
-    CStdString key = lines[idx].Mid( 1, offset - 1 );
-    CStdString value = lines[idx].Mid( offset + 1 );
+    CStdString key = lines[idx].substr(1, offset - 1);
+    CStdString value = lines[idx].substr(offset + 1);
 
     if ( key == "TITLE" )
       m_songName = value;
@@ -177,7 +176,7 @@ bool CKaraokeLyricsTextUStar::Load()
     else if ( key == "GAP" )
       startoffsetms = atoi( value.c_str() );
     else if ( key == "RELATIVE" )
-      relative = (value.ToUpper() == "YES" );
+      relative = StringUtils::EqualsNoCase(value, "YES");
     else if ( key == "LANGUAGE" || key == "EDITION" || key == "GENRE" || key == "YEAR" || key == "MP3" )
     {
       ; // do nothing

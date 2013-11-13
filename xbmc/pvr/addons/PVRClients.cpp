@@ -310,9 +310,9 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
       // different backend
       currentChannel->ClientID() != channel.ClientID() ||
       // stream URL should always be opened as a new file
-      !channel.StreamURL().IsEmpty() || !currentChannel->StreamURL().IsEmpty())
+      !channel.StreamURL().empty() || !currentChannel->StreamURL().empty())
   {
-    if (channel.StreamURL().IsEmpty())
+    if (channel.StreamURL().empty())
     {
       CloseStream();
       bSwitchSuccessful = OpenStream(channel, true);

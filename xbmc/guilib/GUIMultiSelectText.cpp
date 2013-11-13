@@ -22,6 +22,7 @@
 #include "GUIWindowManager.h"
 #include "Key.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -30,8 +31,8 @@ CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font,
 {
   m_selectable = selectable;
   m_clickAction = clickAction;
-  m_clickAction.TrimLeft(" =");
-  m_clickAction.TrimRight(" ");
+  StringUtils::TrimLeft(m_clickAction, " =");
+  StringUtils::TrimRight(m_clickAction);
   m_text.Update(text);
   float height;
   m_text.GetTextExtent(m_length, height);
@@ -180,7 +181,7 @@ bool CGUIMultiSelectTextControl::OnAction(const CAction &action)
         selected++;
       }
     }
-    if (!clickAction.IsEmpty())
+    if (!clickAction.empty())
     { // have a click action -> perform it
       CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
       message.SetStringParam(clickAction);
@@ -296,22 +297,22 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
 
   // parse our text into clickable blocks
   // format is [ONCLICK <action>] [/ONCLICK]
-  size_t startClickable = text.Find("[ONCLICK");
+  size_t startClickable = text.find("[ONCLICK");
   size_t startUnclickable = 0;
 
   // add the first unclickable block
   if (startClickable != CStdString::npos)
-    AddString(text.Mid(startUnclickable, startClickable - startUnclickable), false);
+    AddString(text.substr(startUnclickable, startClickable - startUnclickable), false);
   else
-    AddString(text.Mid(startUnclickable), false);
+    AddString(text.substr(startUnclickable), false);
   while (startClickable != CStdString::npos)
   {
     // grep out the action and the end of the string
-    size_t endAction = text.Find(']', startClickable + 8);
-    size_t endClickable = text.Find("[/ONCLICK]", startClickable + 8);
-    if (endAction != CStdString::npos && endClickable != CStdString::npos)
+    size_t endAction = text.find(']', startClickable + 8);
+    size_t endClickable = text.find("[/ONCLICK]", startClickable + 8);
+    if (endAction != std::string::npos && endClickable != std::string::npos)
     { // success - add the string, and move the start of our next unclickable portion along
-      AddString(text.Mid(endAction + 1, endClickable - endAction - 1), true, text.Mid(startClickable + 8, endAction - startClickable - 8));
+      AddString(text.substr(endAction + 1, endClickable - endAction - 1), true, text.substr(startClickable + 8, endAction - startClickable - 8));
       startUnclickable = endClickable + 10;
     }
     else
@@ -319,12 +320,12 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
       CLog::Log(LOGERROR, "Invalid multiselect string %s", text.c_str());
       break;
     }
-    startClickable = text.Find("[ONCLICK", startUnclickable);
+    startClickable = text.find("[ONCLICK", startUnclickable);
     // add the unclickable portion
     if (startClickable != CStdString::npos)
-      AddString(text.Mid(startUnclickable, startClickable - startUnclickable), false);
+      AddString(text.substr(startUnclickable, startClickable - startUnclickable), false);
     else
-      AddString(text.Mid(startUnclickable), false);
+      AddString(text.substr(startUnclickable), false);
   }
 
   m_oldText = text;
@@ -335,7 +336,7 @@ void CGUIMultiSelectTextControl::UpdateText(const CStdString &text)
 
 void CGUIMultiSelectTextControl::AddString(const CStdString &text, bool selectable, const CStdString &clickAction)
 {
-  if (!text.IsEmpty())
+  if (!text.empty())
     m_items.push_back(CSelectableString(m_label.font, text, selectable, clickAction));
 }
 

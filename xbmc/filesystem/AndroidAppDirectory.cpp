@@ -28,6 +28,7 @@
 #include "utils/URIUtils.h"
 #include <vector>
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -62,8 +63,7 @@ bool CAndroidAppDirectory::GetDirectory(const CStdString& strPath, CFileItemList
         continue;
       CFileItemPtr pItem(new CFileItem(applications[i].packageName));
       pItem->m_bIsFolder = false;
-      CStdString path;
-      path.Format("androidapp://%s/%s/%s", url.GetHostName(), dirname,  applications[i].packageName);
+      CStdString path = StringUtils::Format("androidapp://%s/%s/%s", url.GetHostName().c_str(), dirname.c_str(),  applications[i].packageName.c_str());
       pItem->SetPath(path);
       pItem->SetLabel(applications[i].packageLabel);
       pItem->SetArt("thumb", path+".png");

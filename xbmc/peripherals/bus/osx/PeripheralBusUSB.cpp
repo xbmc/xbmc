@@ -258,9 +258,9 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
           }
         }
         if (!ttlDeviceFilePath.empty())
-          privateDataRef->result.m_strLocation.Format("%s", ttlDeviceFilePath.c_str());
+          privateDataRef->result.m_strLocation = StringUtils::Format("%s", ttlDeviceFilePath.c_str());
         else
-          privateDataRef->result.m_strLocation.Format("%d", locationId);
+          privateDataRef->result.m_strLocation = StringUtils::Format("%d", locationId);
 
         if (bDeviceClass == kUSBCompositeClass)
           privateDataRef->result.m_type = refCon->GetType(bInterfaceClass);

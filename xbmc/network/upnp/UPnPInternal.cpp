@@ -97,9 +97,9 @@ GetMimeType(const CFileItem& item,
             const PLT_HttpRequestContext* context /* = NULL */)
 {
     CStdString path = item.GetPath();
-    if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().IsEmpty()) {
+    if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().empty()) {
         path = item.GetVideoInfoTag()->GetPath();
-    } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().IsEmpty()) {
+    } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().empty()) {
         path = item.GetMusicInfoTag()->GetURL();
     }
 
@@ -203,7 +203,7 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
                       PLT_MediaItemResource* resource,  /* = NULL */
                       EClientQuirks          quirks)
 {
-    if (!tag.GetURL().IsEmpty() && file_path)
+    if (!tag.GetURL().empty() && file_path)
       *file_path = tag.GetURL();
 
     std::vector<std::string> genres = tag.GetGenre();
@@ -249,7 +249,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     // some usefull buffers
     CStdStringArray strings;
 
-    if (!tag.m_strFileNameAndPath.IsEmpty() && file_path)
+    if (!tag.m_strFileNameAndPath.empty() && file_path)
       *file_path = tag.m_strFileNameAndPath;
 
     if (tag.m_iDbId != -1 ) {
@@ -541,7 +541,7 @@ BuildObject(CFileItem&                    item,
 
     // set a title for the object
     if (object->m_Title.IsEmpty()) {
-        if (!item.GetLabel().IsEmpty()) {
+        if (!item.GetLabel().empty()) {
             CStdString title = item.GetLabel();
             if (item.IsPlayList() || !item.m_bIsFolder) URIUtils::RemoveExtension(title);
             object->m_Title = title;
@@ -904,8 +904,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     {
       if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
       {
-        CStdString prop;
-        prop.Format("upnp:subtitle:%d", ++subs);
+        CStdString prop = StringUtils::Format("upnp:subtitle:%d", ++subs);
         item.SetProperty(prop, (const char*)res.m_Uri);
         break;
       }

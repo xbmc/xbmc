@@ -105,11 +105,11 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   if (!movie) return false;
 
   XMLUtils::SetString(movie, "title", m_strTitle);
-  if (!m_strOriginalTitle.IsEmpty())
+  if (!m_strOriginalTitle.empty())
     XMLUtils::SetString(movie, "originaltitle", m_strOriginalTitle);
-  if (!m_strShowTitle.IsEmpty())
+  if (!m_strShowTitle.empty())
     XMLUtils::SetString(movie, "showtitle", m_strShowTitle);
-  if (!m_strSortTitle.IsEmpty())
+  if (!m_strSortTitle.empty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::SetFloat(movie, "rating", m_fRating);
   XMLUtils::SetFloat(movie, "epbookmark", m_fEpBookmark);
@@ -160,7 +160,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
     XMLUtils::SetString(movie, "basepath", m_basePath);
   }
-  if (!m_strEpisodeGuide.IsEmpty())
+  if (!m_strEpisodeGuide.empty())
   {
     CXBMCTinyXML doc;
     doc.Parse(m_strEpisodeGuide);
@@ -432,7 +432,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
     actor["name"] = m_cast[i].strName;
     actor["role"] = m_cast[i].strRole;
     actor["order"] = m_cast[i].order;
-    if (!m_cast[i].thumb.IsEmpty())
+    if (!m_cast[i].thumb.empty())
       actor["thumbnail"] = CTextureUtils::GetWrappedImageURL(m_cast[i].thumb);
     value["cast"].push_back(actor);
   }
@@ -543,13 +543,13 @@ const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
   {
     CStdString character;
-    if (it->strRole.IsEmpty() || !bIncludeRole)
-      character.Format("%s\n", it->strName.c_str());
+    if (it->strRole.empty() || !bIncludeRole)
+      character = StringUtils::Format("%s\n", it->strName.c_str());
     else
-      character.Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+      character = StringUtils::Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
     strLabel += character;
   }
-  return strLabel.TrimRight("\n");
+  return StringUtils::TrimRight(strLabel, "\n");
 }
 
 void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
@@ -701,8 +701,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         XMLUtils::GetString(nodeDetail, "codec", p->m_strCodec);
         XMLUtils::GetString(nodeDetail, "language", p->m_strLanguage);
         XMLUtils::GetInt(nodeDetail, "channels", p->m_iChannels);
-        p->m_strCodec.MakeLower();
-        p->m_strLanguage.MakeLower();
+        StringUtils::ToLower(p->m_strCodec);
+        StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);
       }
       nodeDetail = NULL;
@@ -715,7 +715,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         XMLUtils::GetInt(nodeDetail, "height", p->m_iHeight);
         XMLUtils::GetInt(nodeDetail, "durationinseconds", p->m_iDuration);
         XMLUtils::GetString(nodeDetail, "stereomode", p->m_strStereoMode);
-        p->m_strCodec.MakeLower();
+        StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strStereoMode);
         m_streamDetails.AddStream(p);
       }
@@ -724,7 +724,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       {
         CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
         XMLUtils::GetString(nodeDetail, "language", p->m_strLanguage);
-        p->m_strLanguage.MakeLower();
+        StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);
       }
     }
@@ -782,9 +782,9 @@ bool CVideoInfoTag::HasStreamDetails() const
 
 bool CVideoInfoTag::IsEmpty() const
 {
-  return (m_strTitle.IsEmpty() &&
-          m_strFile.IsEmpty() &&
-          m_strPath.IsEmpty());
+  return (m_strTitle.empty() &&
+          m_strFile.empty() &&
+          m_strPath.empty());
 }
 
 unsigned int CVideoInfoTag::GetDuration() const

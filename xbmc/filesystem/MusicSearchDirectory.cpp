@@ -44,7 +44,7 @@ bool CMusicSearchDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
   CURL url(strPath);
   CStdString search(url.GetHostName());
 
-  if (search.IsEmpty())
+  if (search.empty())
     return false;
 
   // and retrieve the search details

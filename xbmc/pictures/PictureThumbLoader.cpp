@@ -104,7 +104,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   { // folder, zip, cbz, rar, cbr, playlist may have a previously cached image
     thumb = GetCachedImage(*pItem, "thumb");
   }
-  if (!thumb.IsEmpty())
+  if (!thumb.empty())
   {
     CTextureCache::Get().BackgroundCacheImage(thumb);
     pItem->SetArt("thumb", thumb);

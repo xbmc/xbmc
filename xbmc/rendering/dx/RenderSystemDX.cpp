@@ -462,8 +462,8 @@ bool CRenderSystemDX::CreateDevice()
   {
     m_RenderRenderer = (const char*)m_AIdentifier.Description;
     m_RenderVendor   = (const char*)m_AIdentifier.Driver;
-    m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(m_AIdentifier.DriverVersion.HighPart), LOWORD(m_AIdentifier.DriverVersion.HighPart),
-                                            HIWORD(m_AIdentifier.DriverVersion.LowPart) , LOWORD(m_AIdentifier.DriverVersion.LowPart));
+    m_RenderVersion = StringUtils::Format("%d.%d.%d.%04d", HIWORD(m_AIdentifier.DriverVersion.HighPart), LOWORD(m_AIdentifier.DriverVersion.HighPart),
+                                                           HIWORD(m_AIdentifier.DriverVersion.LowPart) , LOWORD(m_AIdentifier.DriverVersion.LowPart));
   }
 
   CLog::Log(LOGDEBUG, __FUNCTION__" - adapter %d: %s, %s, VendorId %lu, DeviceId %lu",
@@ -1004,10 +1004,7 @@ void CRenderSystemDX::Unregister(ID3DResource* resource)
 
 CStdString CRenderSystemDX::GetErrorDescription(HRESULT hr)
 {
-  CStdString strError;
-  strError.Format("%X - %s (%s)", hr, DXGetErrorString(hr), DXGetErrorDescription(hr));
-
-  return strError;
+  return StringUtils::Format("%X - %s (%s)", hr, DXGetErrorString(hr), DXGetErrorDescription(hr));
 }
 
 void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)

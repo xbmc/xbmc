@@ -22,6 +22,7 @@
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
@@ -94,30 +95,30 @@ void CURL::Parse(const CStdString& strURL1)
   // format 2: protocol://file
 
   // decode protocol
-  int iPos = strURL.Find("://");
-  if (iPos < 0)
+  size_t iPos = strURL.find("://");
+  if (iPos == std::string::npos)
   {
     // This is an ugly hack that needs some work.
     // example: filename /foo/bar.zip/alice.rar/bob.avi
     // This should turn into zip://rar:///foo/bar.zip/alice.rar/bob.avi
     iPos = 0;
-    bool is_apk = (strURL.Find(".apk/", iPos) > 0);
+    bool is_apk = (strURL.find(".apk/", iPos) != std::string::npos);
     while (1)
     {
       if (is_apk)
-        iPos = strURL.Find(".apk/", iPos);
+        iPos = strURL.find(".apk/", iPos);
       else
-        iPos = strURL.Find(".zip/", iPos);
+        iPos = strURL.find(".zip/", iPos);
 
       int extLen = 3;
-      if (iPos < 0)
+      if (iPos == std::string::npos)
       {
         /* set filename and update extension*/
         SetFileName(strURL);
         return ;
       }
       iPos += extLen + 1;
-      CStdString archiveName = strURL.Left(iPos);
+      std::string archiveName = strURL.substr(0, iPos);
       struct __stat64 s;
       if (XFILE::CFile::Stat(archiveName, &s) == 0)
       {
@@ -130,12 +131,12 @@ void CURL::Parse(const CStdString& strURL1)
           Encode(archiveName);
           if (is_apk)
           {
-            CURL c((CStdString)"apk" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            CURL c("apk://" + archiveName + "/" + strURL.substr(iPos + 1));
             *this = c;
           }
           else
           {
-            CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            CURL c("zip://" + archiveName + "/" + strURL.substr(iPos + 1));
             *this = c;
           }
           return;
@@ -145,7 +146,7 @@ void CURL::Parse(const CStdString& strURL1)
   }
   else
   {
-    SetProtocol(strURL.Left(iPos));
+    SetProtocol(strURL.substr(0, iPos));
     iPos += 3;
   }
 
@@ -162,16 +163,16 @@ void CURL::Parse(const CStdString& strURL1)
     m_strProtocol.Equals("special")
     )
   {
-    SetFileName(strURL.Mid(iPos));
+    SetFileName(strURL.substr(iPos));
     return;
   }
 
   // check for username/password - should occur before first /
-  if (iPos == -1) iPos = 0;
+  if (iPos == std::string::npos) iPos = 0;
 
   // for protocols supporting options, chop that part off here
   // maybe we should invert this list instead?
-  int iEnd = strURL.length();
+  size_t iEnd = strURL.length();
   const char* sep = NULL;
 
   //TODO fix all Addon paths
@@ -200,12 +201,12 @@ void CURL::Parse(const CStdString& strURL1)
 
   if(sep)
   {
-    int iOptions = strURL.find_first_of(sep, iPos);
-    if (iOptions >= 0 )
+    size_t iOptions = strURL.find_first_of(sep, iPos);
+    if (iOptions != std::string::npos)
     {
       // we keep the initial char as it can be any of the above
-      int iProto = strURL.find_first_of("|",iOptions);
-      if (iProto >= 0)
+      size_t iProto = strURL.find_first_of("|",iOptions);
+      if (iProto != std::string::npos)
       {
         SetProtocolOptions(strURL.substr(iProto+1));
         SetOptions(strURL.substr(iOptions,iProto-iOptions));
@@ -216,37 +217,36 @@ void CURL::Parse(const CStdString& strURL1)
     }
   }
 
-  int iSlash = strURL.Find("/", iPos);
+  size_t iSlash = strURL.find("/", iPos);
   if(iSlash >= iEnd)
-    iSlash = -1; // was an invalid slash as it was contained in options
+    iSlash = std::string::npos; // was an invalid slash as it was contained in options
 
   if( !m_strProtocol.Equals("iso9660") )
   {
-    int iAlphaSign = strURL.Find("@", iPos);
-    if (iAlphaSign >= 0 && iAlphaSign < iEnd && (iAlphaSign < iSlash || iSlash < 0))
+    size_t iAlphaSign = strURL.find("@", iPos);
+    if (iAlphaSign != std::string::npos && iAlphaSign < iEnd && (iAlphaSign < iSlash || iSlash == std::string::npos))
     {
       // username/password found
-      CStdString strUserNamePassword = strURL.Mid(iPos, iAlphaSign - iPos);
+      CStdString strUserNamePassword = strURL.substr(iPos, iAlphaSign - iPos);
 
       // first extract domain, if protocol is smb
       if (m_strProtocol.Equals("smb"))
       {
-        int iSemiColon = strUserNamePassword.Find(";");
+        size_t iSemiColon = strUserNamePassword.find(";");
 
-        if (iSemiColon >= 0)
+        if (iSemiColon != std::string::npos)
         {
-          m_strDomain = strUserNamePassword.Left(iSemiColon);
-          strUserNamePassword.Delete(0, iSemiColon + 1);
+          m_strDomain = strUserNamePassword.substr(0, iSemiColon);
+          strUserNamePassword.erase(0, iSemiColon + 1);
         }
       }
 
       // username:password
-      int iColon = strUserNamePassword.Find(":");
-      if (iColon >= 0)
+      size_t iColon = strUserNamePassword.find(":");
+      if (iColon != std::string::npos)
       {
-        m_strUserName = strUserNamePassword.Left(iColon);
-        iColon++;
-        m_strPassword = strUserNamePassword.Right(strUserNamePassword.size() - iColon);
+        m_strUserName = strUserNamePassword.substr(0, iColon);
+        m_strPassword = strUserNamePassword.substr(iColon + 1);
       }
       // username
       else
@@ -255,24 +255,22 @@ void CURL::Parse(const CStdString& strURL1)
       }
 
       iPos = iAlphaSign + 1;
-      iSlash = strURL.Find("/", iAlphaSign);
+      iSlash = strURL.find("/", iAlphaSign);
 
       if(iSlash >= iEnd)
-        iSlash = -1;
+        iSlash = std::string::npos;
     }
   }
 
   // detect hostname:port/
-  if (iSlash < 0)
+  if (iSlash == std::string::npos)
   {
-    CStdString strHostNameAndPort = strURL.Mid(iPos, iEnd - iPos);
-    int iColon = strHostNameAndPort.Find(":");
-    if (iColon >= 0)
+    CStdString strHostNameAndPort = strURL.substr(iPos, iEnd - iPos);
+    size_t iColon = strHostNameAndPort.find(":");
+    if (iColon != std::string::npos)
     {
-      m_strHostName = strHostNameAndPort.Left(iColon);
-      iColon++;
-      CStdString strPort = strHostNameAndPort.Right(strHostNameAndPort.size() - iColon);
-      m_iPort = atoi(strPort.c_str());
+      m_strHostName = strHostNameAndPort.substr(0, iColon);
+      m_iPort = atoi(strHostNameAndPort.substr(iColon + 1).c_str());
     }
     else
     {
@@ -282,14 +280,12 @@ void CURL::Parse(const CStdString& strURL1)
   }
   else
   {
-    CStdString strHostNameAndPort = strURL.Mid(iPos, iSlash - iPos);
-    int iColon = strHostNameAndPort.Find(":");
-    if (iColon >= 0)
+    CStdString strHostNameAndPort = strURL.substr(iPos, iSlash - iPos);
+    size_t iColon = strHostNameAndPort.find(":");
+    if (iColon != std::string::npos)
     {
-      m_strHostName = strHostNameAndPort.Left(iColon);
-      iColon++;
-      CStdString strPort = strHostNameAndPort.Right(strHostNameAndPort.size() - iColon);
-      m_iPort = atoi(strPort.c_str());
+      m_strHostName = strHostNameAndPort.substr(0, iColon);
+      m_iPort = atoi(strHostNameAndPort.substr(iColon + 1).c_str());
     }
     else
     {
@@ -298,33 +294,32 @@ void CURL::Parse(const CStdString& strURL1)
     iPos = iSlash + 1;
     if (iEnd > iPos)
     {
-      m_strFileName = strURL.Mid(iPos, iEnd - iPos);
+      m_strFileName = strURL.substr(iPos, iEnd - iPos);
 
-      iSlash = m_strFileName.Find("/");
-      if(iSlash < 0)
+      iSlash = m_strFileName.find("/");
+      if(iSlash == std::string::npos)
         m_strShareName = m_strFileName;
       else
-        m_strShareName = m_strFileName.Left(iSlash);
+        m_strShareName = m_strFileName.substr(0, iSlash);
     }
   }
 
   // iso9960 doesnt have an hostname;-)
-  if (m_strProtocol.CompareNoCase("iso9660") == 0
-    || m_strProtocol.CompareNoCase("musicdb") == 0
-    || m_strProtocol.CompareNoCase("videodb") == 0
-    || m_strProtocol.CompareNoCase("sources") == 0
-    || m_strProtocol.CompareNoCase("pvr") == 0
-    || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
+  if (m_strProtocol == "iso9660"
+    || m_strProtocol == "musicdb"
+    || m_strProtocol == "videodb"
+    || m_strProtocol == "sources"
+    || m_strProtocol == "pvr"
+    || StringUtils::StartsWith(m_strProtocol, "mem"))
   {
     if (m_strHostName != "" && m_strFileName != "")
     {
-      CStdString strFileName = m_strFileName;
-      m_strFileName.Format("%s/%s", m_strHostName.c_str(), strFileName.c_str());
+      m_strFileName = StringUtils::Format("%s/%s", m_strHostName.c_str(), m_strFileName.c_str());
       m_strHostName = "";
     }
     else
     {
-      if (!m_strHostName.IsEmpty() && strURL[iEnd-1]=='/')
+      if (!m_strHostName.empty() && strURL[iEnd-1]=='/')
         m_strFileName = m_strHostName + "/";
       else
         m_strFileName = m_strHostName;
@@ -332,7 +327,7 @@ void CURL::Parse(const CStdString& strURL1)
     }
   }
 
-  m_strFileName.Replace("\\", "/");
+  StringUtils::Replace(m_strFileName, '\\', '/');
 
   /* update extension */
   SetFileName(m_strFileName);
@@ -360,7 +355,8 @@ void CURL::SetFileName(const CStdString& strFileName)
   else
     m_strFileType = "";
 
-  m_strFileType.Normalize();
+  StringUtils::Trim(m_strFileType);
+  StringUtils::ToLower(m_strFileType);
 }
 
 void CURL::SetHostName(const CStdString& strHostName)
@@ -381,16 +377,19 @@ void CURL::SetPassword(const CStdString& strPassword)
 void CURL::SetProtocol(const CStdString& strProtocol)
 {
   m_strProtocol = strProtocol;
-  m_strProtocol.ToLower();
+  StringUtils::ToLower(m_strProtocol);
 }
 
 void CURL::SetOptions(const CStdString& strOptions)
 {
-  m_strOptions.Empty();
+  m_strOptions.clear();
   m_options.Clear();
   if( strOptions.length() > 0)
   {
-    if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' || strOptions.Find("xml") >=0 )
+    if(strOptions[0] == '?' ||
+       strOptions[0] == '#' ||
+       strOptions[0] == ';' ||
+       strOptions.find("xml") != std::string::npos)
     {
       m_strOptions = strOptions;
       m_options.AddOptions(m_strOptions);
@@ -402,12 +401,12 @@ void CURL::SetOptions(const CStdString& strOptions)
 
 void CURL::SetProtocolOptions(const CStdString& strOptions)
 {
-  m_strProtocolOptions.Empty();
+  m_strProtocolOptions.clear();
   m_protocolOptions.Clear();
   if (strOptions.length() > 0)
   {
     if (strOptions[0] == '|')
-      m_strProtocolOptions = strOptions.Mid(1);
+      m_strProtocolOptions = strOptions.substr(1);
     else
       m_strProtocolOptions = strOptions;
     m_protocolOptions.AddOptions(m_strProtocolOptions);
@@ -491,7 +490,7 @@ const CStdString CURL::GetFileNameWithoutPath() const
   if ((m_strProtocol == "rar"  || 
        m_strProtocol == "zip"  ||
        m_strProtocol == "apk") &&
-       m_strFileName.IsEmpty())
+       m_strFileName.empty())
     return URIUtils::GetFileName(m_strHostName);
 
   // otherwise, we've already got the filepath, so just grab the filename portion
@@ -664,8 +663,7 @@ CStdString CURL::GetWithoutFilename() const
       strURL += m_strHostName;
     if (HasPort())
     {
-      CStdString strPort;
-      strPort.Format("%i", m_iPort);
+      CStdString strPort = StringUtils::Format("%i", m_iPort);
       strURL += ":";
       strURL += strPort;
     }
@@ -687,7 +685,7 @@ std::string CURL::GetRedacted(const std::string& path)
 
 bool CURL::IsLocal() const
 {
-  return (IsLocalHost() || m_strProtocol.IsEmpty());
+  return (IsLocalHost() || m_strProtocol.empty());
 }
 
 bool CURL::IsLocalHost() const
@@ -703,7 +701,7 @@ bool CURL::IsFileOnly(const CStdString &url)
 bool CURL::IsFullPath(const CStdString &url)
 {
   if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
-  if (url.Find("://") >= 0) return true;                 //   foo://bar.ext
+  if (url.find("://") != std::string::npos) return true;                 //   foo://bar.ext
   if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
   if (StringUtils::StartsWith(url, "\\\\")) return true;    //   \\UNC\path\to\file
   return false;
@@ -763,8 +761,7 @@ void CURL::Encode(CStdString& strURLData)
     }
     else
     {
-      CStdString strTmp;
-      strTmp.Format("%%%02.2x", kar);
+      CStdString strTmp = StringUtils::Format("%%%02.2x", kar);
       strResult += strTmp;
     }
   }

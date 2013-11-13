@@ -84,7 +84,7 @@ bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString 
       //and just can't change the global nfs context here
       //without destroying something...    
       fullpath = resolvedLink;
-      fullpath = fullpath.Right(fullpath.length()-1);
+      fullpath.erase(0, 1);
       resolvedUrl.SetFileName(fullpath);     
       ret = gAfpConnection.stat(resolvedUrl, stat);
       if(ret < 0)
@@ -127,7 +127,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CURL url(strPath);
   CAfpConnection::afpConnnectError afpError = gAfpConnection.Connect(url);
 
-  if (afpError != CAfpConnection::AfpOk || (!url.GetShareName().IsEmpty() && !gAfpConnection.GetVolume()))
+  if (afpError != CAfpConnection::AfpOk || (!url.GetShareName().empty() && !gAfpConnection.GetVolume()))
   {
     if (afpError == CAfpConnection::AfpAuth)
     {
@@ -145,7 +145,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   struct afp_file_info *curDirPtr = NULL;
 
   // if no share name in url - try to fetch the volumes on the server and treat them like folders
-  if (url.GetShareName().IsEmpty())
+  if (url.GetShareName().empty())
   {
     bListVolumes = true;
     struct afp_server *serv = gAfpConnection.GetServer();

@@ -20,6 +20,7 @@
 
 #include "utils/fft.h"
 #include "utils/StdString.h"
+#include "utils/StringUtils.h"
 
 #include "gtest/gtest.h"
 
@@ -263,8 +264,8 @@ TEST(Testfft, fft)
     /* To more consistently test the resulting floating point numbers, they
      * are converted to strings and the strings are tested for equality.
      */
-    refstr.Format("%.6f", reffftdata[i]);
-    varstr.Format("%.6f", vardata[i]);
+    refstr = StringUtils::Format("%.6f", reffftdata[i]);
+    varstr = StringUtils::Format("%.6f", vardata[i]);
     EXPECT_STREQ(refstr.c_str(), varstr.c_str());
   }
 }
@@ -279,8 +280,8 @@ TEST(Testfft, fft_inverse)
   fft(vardata, REFDATA_NUMELEMENTS/2, -1);
   for (i = 0; i < REFDATA_NUMELEMENTS; i++)
   {
-    refstr.Format("%.6f", reffftinversedata[i]);
-    varstr.Format("%.6f", vardata[i]);
+    refstr = StringUtils::Format("%.6f", reffftinversedata[i]);
+    varstr = StringUtils::Format("%.6f", vardata[i]);
     EXPECT_STREQ(refstr.c_str(), varstr.c_str());
   }
 }
@@ -295,8 +296,8 @@ TEST(Testfft, twochannelrfft)
   twochannelrfft(vardata, REFDATA_NUMELEMENTS/2);
   for (i = 0; i < REFDATA_NUMELEMENTS; i++)
   {
-    refstr.Format("%.6f", reftwochannelrfftdata[i]);
-    varstr.Format("%.6f", vardata[i]);
+    refstr = StringUtils::Format("%.6f", reftwochannelrfftdata[i]);
+    varstr = StringUtils::Format("%.6f", vardata[i]);
     EXPECT_STREQ(refstr.c_str(), varstr.c_str());
   }
 }
@@ -311,8 +312,8 @@ TEST(Testfft, twochanwithwindow)
   twochanwithwindow(vardata, REFDATA_NUMELEMENTS/2);
   for (i = 0; i < REFDATA_NUMELEMENTS; i++)
   {
-    refstr.Format("%.6f", reftwochanwithwindowdata[i]);
-    varstr.Format("%.6f", vardata[i]);
+    refstr = StringUtils::Format("%.6f", reftwochanwithwindowdata[i]);
+    varstr = StringUtils::Format("%.6f", vardata[i]);
     EXPECT_STREQ(refstr.c_str(), varstr.c_str());
   }
 }

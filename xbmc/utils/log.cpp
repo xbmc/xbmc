@@ -26,6 +26,7 @@
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/StdString.h"
+#include "utils/StringUtils.h"
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
 #elif defined(TARGET_WINDOWS)
@@ -86,7 +87,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.reserve(16384);
     va_list va;
     va_start(va, format);
-    strData.FormatV(format,va);
+    strData = StringUtils::FormatV(format,va);
     va_end(va);
 
     if (m_repeatLogLevel == loglevel && m_repeatLine == strData)
@@ -96,10 +97,16 @@ void CLog::Log(int loglevel, const char *format, ... )
     }
     else if (m_repeatCount)
     {
-      CStdString strData2;
-      strPrefix.Format(prefixFormat, time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), levelNames[m_repeatLogLevel]);
+      strPrefix = StringUtils::Format(prefixFormat,
+                                      time.wHour,
+                                      time.wMinute,
+                                      time.wSecond,
+                                      (uint64_t)CThread::GetCurrentThreadId(),
+                                      levelNames[m_repeatLogLevel]);
 
-      strData2.Format("Previous line repeats %d times." LINE_ENDING, m_repeatCount);
+      CStdString strData2 = StringUtils::Format("Previous line repeats %d times."
+                                                LINE_ENDING,
+                                                m_repeatCount);
       fputs(strPrefix.c_str(), m_file);
       fputs(strData2.c_str(), m_file);
       OutputDebugString(strData2);
@@ -109,25 +116,22 @@ void CLog::Log(int loglevel, const char *format, ... )
     m_repeatLine      = strData;
     m_repeatLogLevel  = loglevel;
 
-    unsigned int length = 0;
-    while ( length != strData.length() )
-    {
-      length = strData.length();
-      strData.TrimRight(" ");
-      strData.TrimRight('\n');
-      strData.TrimRight("\r");
-    }
-
-    if (!length)
+    StringUtils::TrimRight(strData);
+    if (strData.empty())
       return;
     
     OutputDebugString(strData);
 
     /* fixup newline alignment, number of spaces should equal prefix length */
-    strData.Replace("\n", LINE_ENDING"                                            ");
+    StringUtils::Replace(strData, "\n", LINE_ENDING"                                            ");
     strData += LINE_ENDING;
 
-    strPrefix.Format(prefixFormat, time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), levelNames[loglevel]);
+    strPrefix = StringUtils::Format(prefixFormat,
+                                    time.wHour,
+                                    time.wMinute,
+                                    time.wSecond,
+                                    (uint64_t)CThread::GetCurrentThreadId(),
+                                    levelNames[loglevel]);
 
 //print to adb
 #if defined(TARGET_ANDROID) && defined(_DEBUG)
@@ -147,10 +151,8 @@ bool CLog::Init(const char* path)
   {
     // the log folder location is initialized in the CAdvancedSettings
     // constructor and changed in CApplication::Create()
-    CStdString strLogFile, strLogFileOld;
-
-    strLogFile.Format("%sxbmc.log", path);
-    strLogFileOld.Format("%sxbmc.old.log", path);
+    CStdString strLogFile = StringUtils::Format("%sxbmc.log", path);
+    CStdString strLogFileOld = StringUtils::Format("%sxbmc.old.log", path);
 
 #if defined(TARGET_WINDOWS)
     // the appdata folder might be redirected to an unc share
@@ -184,15 +186,13 @@ void CLog::MemDump(char *pData, int length)
   Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
   for (int i = 0; i < length; i+=16)
   {
-    CStdString strLine;
-    strLine.Format("MEM_DUMP: %04x ", i);
+    CStdString strLine = StringUtils::Format("MEM_DUMP: %04x ", i);
     char *alpha = pData;
     for (int k=0; k < 4 && i + 4*k < length; k++)
     {
       for (int j=0; j < 4 && i + 4*k + j < length; j++)
       {
-        CStdString strFormat;
-        strFormat.Format(" %02x", (unsigned char)*pData++);
+        CStdString strFormat = StringUtils::Format(" %02x", (unsigned char)*pData++);
         strLine += strFormat;
       }
       strLine += " ";

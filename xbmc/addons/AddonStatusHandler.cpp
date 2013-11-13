@@ -28,6 +28,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 namespace ADDON
 {
@@ -81,8 +82,7 @@ void CAddonStatusHandler::Process()
 {
   CSingleLock lock(m_critSection);
 
-  CStdString heading;
-  heading.Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
+  CStdString heading = StringUtils::Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
 
   /* AddOn lost connection to his backend (for ones that use Network) */
   if (m_status == ADDON_STATUS_LOST_CONNECTION)

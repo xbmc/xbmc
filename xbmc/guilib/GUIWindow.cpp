@@ -41,12 +41,18 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #endif
 
 using namespace std;
+
+bool CGUIWindow::icompare::operator()(const CStdString &s1, const CStdString &s2) const
+{
+  return StringUtils::CompareNoCase(s1, s2) < 0;
+}
 
 CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {
@@ -112,7 +118,9 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   else
   {
     // FIXME: strLowerPath needs to eventually go since resToUse can get incorrectly overridden
-    strLowerPath =  g_SkinInfo->GetSkinPath(CStdString(strFileName).ToLower(), &m_coordsRes);
+    std::string strFileNameLower = strFileName;
+    StringUtils::ToLower(strFileNameLower);
+    strLowerPath =  g_SkinInfo->GetSkinPath(strFileNameLower, &m_coordsRes);
     strPath = g_SkinInfo->GetSkinPath(strFileName, &m_coordsRes);
   }
 
@@ -133,7 +141,9 @@ bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPa
   if (!m_windowXMLRootElement)
   {
     CXBMCTinyXML xmlDoc;
-    if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
+    std::string strPathLower = strPath;
+    StringUtils::ToLower(strPathLower);
+    if (!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(strPathLower) && !xmlDoc.LoadFile(strLowerPath))
     {
       CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
       SetID(WINDOW_INVALID);
@@ -729,7 +739,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
     CStdString xmlFile = GetProperty("xmlfile").asString();
     if (xmlFile.size())
     {
-      bool bHasPath = xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1;
+      bool bHasPath = xmlFile.find("\\") != std::string::npos || xmlFile.find("/") != std::string::npos;
       Load(xmlFile,bHasPath);
     }
   }

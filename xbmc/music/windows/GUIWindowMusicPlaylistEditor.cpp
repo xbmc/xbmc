@@ -22,6 +22,7 @@
 #include "GUIWindowMusicPlaylistEditor.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "Autorun.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "filesystem/PlaylistFileDirectory.h"
@@ -140,7 +141,7 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
 bool CGUIWindowMusicPlaylistEditor::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   items.Clear();
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
   { // root listing - list files:// and musicdb://
     CFileItemPtr files(new CFileItem("files://", true));
     files->SetLabel(g_localizeStrings.Get(744));
@@ -177,8 +178,7 @@ void CGUIWindowMusicPlaylistEditor::UpdateButtons()
   CGUIWindowMusicBase::UpdateButtons();
 
   // Update object count label
-  CStdString items;
-  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str()); // " 14 Objects"
+  CStdString items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str()); // " 14 Objects"
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 
@@ -256,8 +256,7 @@ void CGUIWindowMusicPlaylistEditor::UpdatePlaylist()
   OnMessage(msg);
 
   // indicate how many songs we have
-  CStdString items;
-  items.Format("%i %s", m_playlist->Size(), g_localizeStrings.Get(134).c_str()); // "123 Songs"
+  CStdString items = StringUtils::Format("%i %s", m_playlist->Size(), g_localizeStrings.Get(134).c_str()); // "123 Songs"
   SET_CONTROL_LABEL(CONTROL_LABEL_PLAYLIST, items);
 
   m_playlistThumbLoader.Load(*m_playlist);
@@ -392,8 +391,8 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
 {
   // saves playlist to the playlist folder
   CStdString name = URIUtils::GetFileName(m_strLoadedPlaylist);
-  CStdString strExt = URIUtils::GetExtension(name);
-  name = name.Mid(0,name.size()-strExt.size());
+  URIUtils::RemoveExtension(name);
+
   if (CGUIKeyboardFactory::ShowAndGetInput(name, g_localizeStrings.Get(16012), false))
   { // save playlist as an .m3u
     PLAYLIST::CPlayListM3U playlist;

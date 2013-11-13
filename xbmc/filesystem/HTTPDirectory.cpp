@@ -89,9 +89,9 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       strName = reItem.GetMatch(2);
 
       if(strLink[0] == '/')
-        strLink = strLink.Mid(1);
+        strLink = strLink.substr(1);
 
-      CStdString strNameTemp = strName.Trim();
+      CStdString strNameTemp = StringUtils::Trim(strName);
 
       CStdStringW wName, wLink, wConverted;
       if (fileCharset.empty())
@@ -105,9 +105,9 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       CStdString strLinkOptions;
 
       // split link with url options
-      int pos = strLinkBase.Find('?');
-      if (pos != -1) {
-        strLinkOptions = strLinkBase.Mid(pos);
+      size_t pos = strLinkBase.find('?');
+      if (pos != std::string::npos) {
+        strLinkOptions = strLinkBase.substr(pos);
         strLinkBase.erase(pos);
       }
       CStdString strLinkTemp = strLinkBase;
@@ -120,8 +120,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
       g_charsetConverter.wToUTF8(wConverted, strLinkTemp);
 
-      if (StringUtils::EndsWith(strNameTemp, "..>") && 
-          strLinkTemp.Left(strNameTemp.GetLength()-3).Equals(strNameTemp.Left(strNameTemp.GetLength()-3)))
+      if (StringUtils::EndsWith(strNameTemp, "..>") &&
+          StringUtils::StartsWith(strLinkTemp, strNameTemp.substr(0, strNameTemp.length() - 3)))
         strName = strNameTemp = strLinkTemp;
 
       // we detect http directory items by its display name and its stripped link

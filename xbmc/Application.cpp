@@ -765,8 +765,7 @@ bool CApplication::Create()
   CStdString strLanguage = CSettings::Get().GetString("locale.language");
   strLanguage[0] = toupper(strLanguage[0]);
 
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
+  CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
 
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
@@ -1035,7 +1034,7 @@ bool CApplication::InitDirectoriesLinux()
   CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
   xbmcPath = getenv("XBMC_HOME");
 
-  if (xbmcPath.IsEmpty())
+  if (xbmcPath.empty())
   {
     xbmcPath = xbmcBinPath;
     /* Check if xbmc binaries and arch independent data files are being kept in
@@ -1403,7 +1402,7 @@ bool CApplication::Initialize()
 
     if (CSettings::Get().GetBool("masterlock.startuplock") &&
         CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-       !CProfilesManager::Get().GetMasterProfile().getLockCode().IsEmpty())
+       !CProfilesManager::Get().GetMasterProfile().getLockCode().empty())
     {
        g_passwordManager.CheckStartUpLock();
     }
@@ -2020,7 +2019,7 @@ bool CApplication::LoadUserWindows()
         if (items[i]->m_bIsFolder)
           continue;
         CStdString skinFile = URIUtils::GetFileName(items[i]->GetPath());
-        if (skinFile.Left(6).CompareNoCase("custom") == 0)
+        if (StringUtils::StartsWithNoCase(skinFile, "custom"))
         {
           CXBMCTinyXML xmlDoc;
           if (!xmlDoc.LoadFile(items[i]->GetPath()))
@@ -2128,7 +2127,7 @@ float CApplication::GetDimScreenSaverLevel() const
        !m_screenSaver->ID().empty()))
     return 0;
 
-  if (!m_screenSaver->GetSetting("level").IsEmpty())
+  if (!m_screenSaver->GetSetting("level").empty())
     return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));
   return 100.0f;
 }
@@ -3913,7 +3912,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
         options.starttime = 0.0f;
         CBookmark bookmark;
         CStdString path = item.GetPath();
-        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_strFileNameAndPath.Find("removable://") == 0)
+        if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
           path = item.GetVideoInfoTag()->m_strFileNameAndPath;
         else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
           path = item.GetProperty("original_listitem_url").asString();
@@ -4358,7 +4357,7 @@ void CApplication::UpdateFileState()
         // Update bookmark for save
         m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::Get().GetPlayerName(m_pPlayer->GetCurrentPlayer());
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-        m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
+        m_progressTrackingVideoResumeBookmark.thumbNailImage.clear();
 
         if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
             GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * GetTotalTime())
@@ -4520,7 +4519,7 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
 
     if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black" || m_screenSaver->ID().empty())
       return true;
-    else if (!m_screenSaver->ID().IsEmpty())
+    else if (!m_screenSaver->ID().empty())
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER
           || g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
@@ -4629,7 +4628,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
     return;
-  else if (!m_screenSaver->ID().IsEmpty())
+  else if (!m_screenSaver->ID().empty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 
@@ -5704,12 +5703,12 @@ void CApplication::SaveCurrentFileSettings()
 bool CApplication::AlwaysProcess(const CAction& action)
 {
   // check if this button is mapped to a built-in function
-  if (!action.GetName().IsEmpty())
+  if (!action.GetName().empty())
   {
     CStdString builtInFunction;
     vector<CStdString> params;
     CUtil::SplitExecFunction(action.GetName(), builtInFunction, params);
-    builtInFunction.ToLower();
+    StringUtils::ToLower(builtInFunction);
 
     // should this button be handled normally or just cancel the screensaver?
     if (   builtInFunction.Equals("powerdown")
@@ -5757,8 +5756,7 @@ bool CApplication::SetLanguage(const CStdString &strLanguage)
   CStdString strNewLanguage = strLanguage;
   if (strNewLanguage != strPreviousLanguage)
   {
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
+    CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
     if (!g_langInfo.Load(strLangInfoPath))
       return false;
 

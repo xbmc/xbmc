@@ -24,6 +24,7 @@
 #include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
 #include "utils/StdString.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "DVDSubtitleTagSami.h"
 
@@ -63,15 +64,16 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   {
     for (unsigned int i = 0; i < TagConv.m_Langclass.size(); i++)
     {
-      if (strFileName.Find(TagConv.m_Langclass[i].Name, 9) == 9)
+      if (strFileName.find(TagConv.m_Langclass[i].Name, 9) == 9)
       {
-        strClassID = TagConv.m_Langclass[i].ID.ToLower();
+        strClassID = TagConv.m_Langclass[i].ID;
+        StringUtils::ToLower(strClassID);
         break;
       }
     }
   }
   const char *lang = NULL;
-  if (!strClassID.IsEmpty())
+  if (!strClassID.empty())
     lang = strClassID.c_str();
 
   CDVDOverlayText* pOverlay = NULL;

@@ -79,10 +79,10 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
   CStdString strFileAndPath(strFile);
   URIUtils::RemoveSlashAtEnd(strFileAndPath);
   CStdString strFileName = URIUtils::GetFileName(strFileAndPath);
-  CStdString strPath = strFile.Left(strFileAndPath.size() - strFileName.size());
+  CStdString strPath = URIUtils::GetDirectory(strFileAndPath);
   if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
   {
-    strPath += strFileName;
+    strPath = URIUtils::AddFileToFolder(strPath, strFileName);
     CLog::Log(LOGINFO,"FileUtils: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
     if (URIUtils::IsMultiPath(strFileAndPath))
     { // special case for multipath renames - rename all the paths.

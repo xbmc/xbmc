@@ -61,7 +61,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, IT
     if (fields.find("thumbnail") !=  fields.end())
       object["thumbnail"] = item->GetArt("thumb");
 
-    if (function.CompareNoCase("ActivateWindow") == 0)
+    if (StringUtils::EqualsNoCase(function, "ActivateWindow"))
     {
       object["type"] = "window";
       if (fields.find("window") != fields.end())
@@ -79,13 +79,13 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, IT
           object["windowparameter"] = "";
       }
     }
-    else if (function.CompareNoCase("PlayMedia") == 0)
+    else if (StringUtils::EqualsNoCase(function, "PlayMedia"))
     {
       object["type"] = "media";
       if (fields.find("path") !=  fields.end())
         object["path"] = parameters[0];
     }
-    else if (function.CompareNoCase("RunScript") == 0)
+    else if (StringUtils::EqualsNoCase(function, "RunScript"))
     {
       object["type"] = "script";
       if (fields.find("path") !=  fields.end())

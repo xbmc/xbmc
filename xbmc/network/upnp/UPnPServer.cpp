@@ -308,7 +308,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 }
 
 
-                if (item->GetLabel().IsEmpty()) {
+                if (item->GetLabel().empty()) {
                     /* if no label try to grab it from node type */
                     CStdString label;
                     if (CMusicDatabaseDirectory::GetLabel((const char*)path, label)) {
@@ -347,13 +347,13 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 }
 
                 // try to grab title from tag
-                if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty()) {
+                if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.empty()) {
                     item->SetLabel(item->GetVideoInfoTag()->m_strTitle);
                     item->SetLabelPreformated(true);
                 }
 
                 // try to grab it from the folder
-                if (item->GetLabel().IsEmpty()) {
+                if (item->GetLabel().empty()) {
                     CStdString label;
                     if (CVideoDatabaseDirectory::GetLabel((const char*)path, label)) {
                         item->SetLabel(label);
@@ -744,9 +744,9 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     }
 
     // this isn't pretty but needed to properly hide the addons node from clients
-    if (items.GetPath().Left(7) == "library") {
+    if (StringUtils::StartsWith(items.GetPath(), "library")) {
         for (int i=0; i<items.Size(); i++) {
-            if (items[i]->GetPath().Left(6) == "addons")
+            if (StringUtils::StartsWith(items[i]->GetPath(), "addons"))
                 items.Remove(i);
         }
     }
@@ -881,25 +881,24 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         if (genre.GetLength() > 0) {
             // all tracks by genre filtered by artist and/or album
             CStdString strPath;
-            strPath.Format("musicdb://genres/%ld/%ld/%ld/",
-                database.GetGenreByName((const char*)genre),
-                database.GetArtistByName((const char*)artist), // will return -1 if no artist
-                database.GetAlbumByName((const char*)album));  // will return -1 if no album
+            strPath = StringUtils::Format("musicdb://genres/%ld/%ld/%ld/",
+                                          database.GetGenreByName((const char*)genre),
+                                          database.GetArtistByName((const char*)artist), // will return -1 if no artist
+                                          database.GetAlbumByName((const char*)album));  // will return -1 if no album
 
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (artist.GetLength() > 0) {
             // all tracks by artist name filtered by album if passed
             CStdString strPath;
-            strPath.Format("musicdb://artists/%ld/%ld/",
-                database.GetArtistByName((const char*)artist),
-                database.GetAlbumByName((const char*)album)); // will return -1 if no album
+            strPath = StringUtils::Format("musicdb://artists/%ld/%ld/",
+                                          database.GetArtistByName((const char*)artist),
+                                          database.GetAlbumByName((const char*)album)); // will return -1 if no album
 
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (album.GetLength() > 0) {
             // all tracks by album name
-            CStdString strPath;
-            strPath.Format("musicdb://albums/%ld/",
-                database.GetAlbumByName((const char*)album));
+            CStdString strPath = StringUtils::Format("musicdb://albums/%ld/",
+                                                     database.GetAlbumByName((const char*)album));
 
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
@@ -921,15 +920,13 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         database.Open();
 
         if (genre.GetLength() > 0) {
-            CStdString strPath;
-            strPath.Format("musicdb://genres/%ld/%ld/",
-                database.GetGenreByName((const char*)genre),
-                database.GetArtistByName((const char*)artist)); // no artist should return -1
+            CStdString strPath = StringUtils::Format("musicdb://genres/%ld/%ld/",
+                                                     database.GetGenreByName((const char*)genre),
+                                                     database.GetArtistByName((const char*)artist)); // no artist should return -1
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (artist.GetLength() > 0) {
-            CStdString strPath;
-            strPath.Format("musicdb://artists/%ld/",
-                database.GetArtistByName((const char*)artist));
+            CStdString strPath = StringUtils::Format("musicdb://artists/%ld/",
+                                                     database.GetArtistByName((const char*)artist));
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
 
@@ -941,8 +938,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         if (genre.GetLength() > 0) {
             CMusicDatabase database;
             database.Open();
-            CStdString strPath;
-            strPath.Format("musicdb://genres/%ld/", database.GetGenreByName((const char*)genre));
+            CStdString strPath = StringUtils::Format("musicdb://genres/%ld/", database.GetGenreByName((const char*)genre));
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
         return OnBrowseDirectChildren(action, "musicdb://artists/", filter, starting_index, requested_count, sort_criteria, context);
@@ -1196,14 +1192,14 @@ bool
 CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
 {
   CStdString criteria(sort_criteria);
-  if (criteria.IsEmpty()) {
+  if (criteria.empty()) {
     return false;
   }
 
   bool sorted = false;
   CStdStringArray tokens = StringUtils::SplitString(criteria, ",");
   for (vector<CStdString>::reverse_iterator itr = tokens.rbegin(); itr != tokens.rend(); itr++) {
-    CStdString method = itr->Mid(1);
+    CStdString method = itr->substr(1);
 
     SortDescription sorting;
     /* Platinum guarantees 1st char is - or + */

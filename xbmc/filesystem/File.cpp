@@ -169,7 +169,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
         StringUtils::Tokenize(url.GetFileName(),tokens,pathsep.c_str());
         CStdString strCurrPath;
         // Handle special
-        if (!url.GetProtocol().IsEmpty()) {
+        if (!url.GetProtocol().empty()) {
           pathsep = "/";
           strCurrPath += url.GetProtocol() + "://";
         } // If the directory has a / at the beginning, don't forget it
@@ -419,7 +419,7 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
   
   try
   {
-    if (strFileName.IsEmpty())
+    if (strFileName.empty())
       return false;
 
     if (bUseCache)

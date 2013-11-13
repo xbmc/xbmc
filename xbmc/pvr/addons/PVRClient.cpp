@@ -320,7 +320,7 @@ bool CPVRClient::GetAddonProperties(void)
   catch (exception &e) { LogException(e, "GetConnectionString()"); return false;  }
 
   /* display name = backend name:connection string */
-  strFriendlyName.Format("%s:%s", strBackendName.c_str(), strConnectionString.c_str());
+  strFriendlyName = StringUtils::Format("%s:%s", strBackendName.c_str(), strConnectionString.c_str());
 
   /* backend version number */
   try { strBackendVersion = m_pStruct->GetBackendVersion(); }
@@ -1322,7 +1322,7 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
   {
     CLog::Log(LOGDEBUG, "add-on '%s' can not play channel '%s'", GetFriendlyName().c_str(), channel.ChannelName().c_str());
   }
-  else if (!channel.StreamURL().IsEmpty())
+  else if (!channel.StreamURL().empty())
   {
     CLog::Log(LOGDEBUG, "opening live stream on url '%s'", channel.StreamURL().c_str());
     bReturn = true;

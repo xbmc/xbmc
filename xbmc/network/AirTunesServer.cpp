@@ -47,6 +47,7 @@
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/EndianSwap.h"
@@ -510,7 +511,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
   if (net)
   {
     m_macAddress = net->GetMacAddress();
-    m_macAddress.Replace(":","");
+    StringUtils::Replace(m_macAddress, ":","");
     while (m_macAddress.size() < 12)
     {
       m_macAddress = CStdString("0") + m_macAddress;
@@ -523,7 +524,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
 
   if (!usePassword)
   {
-    pw.Empty();
+    pw.clear();
   }
 
   ServerInstance = new CAirTunesServer(port, nonlocal);
@@ -537,8 +538,9 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
 
   if (success)
   {
-    CStdString appName;
-    appName.Format("%s@%s", m_macAddress.c_str(), g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str());
+    CStdString appName = StringUtils::Format("%s@%s",
+                                             m_macAddress.c_str(),
+                                             g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str());
 
     std::vector<std::pair<std::string, std::string> > txt;
     txt.push_back(std::make_pair("txtvers",  "1"));
@@ -691,9 +693,9 @@ bool CAirTunesServer::Initialize(const CStdString &password)
   CStdString pwStr;
   CStdString portStr;
 
-  hwStr.Format("--mac=%s", m_macAddress.c_str());
-  pwStr.Format("--password=%s",password.c_str());
-  portStr.Format("--server_port=%d",m_port);
+  hwStr = StringUtils::Format("--mac=%s", m_macAddress.c_str());
+  pwStr = StringUtils::Format("--password=%s",password.c_str());
+  portStr = StringUtils::Format("--server_port=%d",m_port);
 
   if (!password.empty())
   {

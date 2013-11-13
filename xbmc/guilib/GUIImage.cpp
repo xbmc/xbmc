@@ -102,7 +102,7 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
   // check whether our image failed to allocate, and if so drop back to the fallback image
   if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
   {
-    if (!m_currentFallback.IsEmpty() && !m_texture.GetFileName().Equals(m_currentFallback))
+    if (!m_currentFallback.empty() && !m_texture.GetFileName().Equals(m_currentFallback))
       m_texture.SetFileName(m_currentFallback);
     else
       m_texture.SetFileName(m_info.GetFallback());
@@ -130,7 +130,7 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
           ++i;
       }
 
-      if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
+      if (m_texture.ReadyToRender() || m_texture.GetFileName().empty())
       { // fade out the last one as well
         if (!ProcessFading(m_fadingTextures[m_fadingTextures.size() - 1], frameTime, currentTime))
           m_fadingTextures.erase(m_fadingTextures.end() - 1);
@@ -151,7 +151,7 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
       }
     }
 
-    if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
+    if (m_texture.ReadyToRender() || m_texture.GetFileName().empty())
     { // fade the new one in
       m_currentFadeTime += frameTime;
       if (m_currentFadeTime > m_crossFadeTime || frameTime == 0) // for if we allocate straight away on creation
@@ -222,7 +222,7 @@ bool CGUIImage::OnMessage(CGUIMessage& message)
 
 void CGUIImage::AllocResources()
 {
-  if (m_texture.GetFileName().IsEmpty())
+  if (m_texture.GetFileName().empty())
     return;
 
   CGUIControl::AllocResources();
@@ -235,7 +235,7 @@ void CGUIImage::FreeTextures(bool immediately /* = false */)
   for (unsigned int i = 0; i < m_fadingTextures.size(); i++)
     delete m_fadingTextures[i];
   m_fadingTextures.clear();
-  m_currentTexture.Empty();
+  m_currentTexture.clear();
   if (!m_info.IsConstant()) // constant textures never change
     m_texture.SetFileName("");
 }
@@ -306,7 +306,7 @@ void CGUIImage::SetAspectRatio(const CAspectRatio &aspect)
 void CGUIImage::SetCrossFade(unsigned int time)
 {
   m_crossFadeTime = time;
-  if (!m_crossFadeTime && m_texture.IsLazyLoaded() && !m_info.GetFallback().IsEmpty())
+  if (!m_crossFadeTime && m_texture.IsLazyLoaded() && !m_info.GetFallback().empty())
     m_crossFadeTime = 1;
 }
 
@@ -324,7 +324,7 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant, con
     if (m_currentTexture.Equals(strFileName))
       return; // nothing to do - we already have this image
 
-    if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
+    if (m_texture.ReadyToRender() || m_texture.GetFileName().empty())
     { // save the current image
       m_fadingTextures.push_back(new CFadingTexture(m_texture, m_currentFadeTime));
       MarkDirtyRegion();

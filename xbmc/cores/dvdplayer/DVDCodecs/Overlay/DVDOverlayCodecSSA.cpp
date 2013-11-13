@@ -87,7 +87,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
     for(size_t i=0; i<lines.size(); i++)
     {
       line = lines[i];
-      line.Trim();
+      StringUtils::Trim(line);
       auto_aptr<char> layer(new char[line.length()+1]);
 
       if(sscanf(line.c_str(), "%*[^:]:%[^,],%d:%d:%d%*c%d,%d:%d:%d%*c%d"
@@ -103,7 +103,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
       if(pos == CStdString::npos)
         continue;
 
-      line2.Format("%d,%s,%s", m_order++, layer.get(), line.Mid(pos+1));
+      line2 = StringUtils::Format("%d,%s,%s", m_order++, layer.get(), line.substr(pos+1).c_str());
 
       m_libass->DecodeDemuxPkt((char*)line2.c_str(), line2.length(), beg, end - beg);
 

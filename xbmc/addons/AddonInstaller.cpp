@@ -490,7 +490,7 @@ bool CAddonInstallJob::DoWork()
 {
   AddonPtr repoPtr = GetRepoForAddon(m_addon);
   CStdString installFrom;
-  if (!repoPtr || repoPtr->Props().libname.IsEmpty())
+  if (!repoPtr || repoPtr->Props().libname.empty())
   {
     // Addons are installed by downloading the .zip package on the server to the local
     // packages folder, then extracting from the local .zip package into the addons folder
@@ -508,7 +508,7 @@ bool CAddonInstallJob::DoWork()
     {
       // zip passed in - download + extract
       CStdString path(m_addon->Path());
-      if (!m_referer.IsEmpty() && URIUtils::IsInternetStream(path))
+      if (!m_referer.empty() && URIUtils::IsInternetStream(path))
       {
         CURL url(path);
         url.SetProtocolOptions(m_referer);
@@ -612,9 +612,8 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
   if (repo)
   {
     CFileItemList dummy;
-    CStdString s;
-    s.Format("plugin://%s/?action=install"
-             "&package=%s&version=%s", repo->ID().c_str(),
+    CStdString s = StringUtils::Format("plugin://%s/?action=install"
+                                       "&package=%s&version=%s", repo->ID().c_str(),
                                        m_addon->ID().c_str(),
                                        m_addon->Version().c_str());
     if (!CDirectory::GetDirectory(s, dummy))
@@ -645,8 +644,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
     // resolve dependencies
     CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
     ADDONDEPS deps = addon->GetDeps();
-    CStdString referer;
-    referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
+    CStdString referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
     for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
     {
       if (it->first.Equals("xbmc.metadata"))
@@ -761,7 +759,7 @@ void CAddonInstallJob::ReportInstallError(const CStdString& addonID,
 
 bool CAddonInstallJob::CheckHash(const CStdString& zipFile)
 {
-  if (m_hash.IsEmpty())
+  if (m_hash.empty())
     return true;
   CStdString md5 = CUtil::GetFileMD5(zipFile);
   if (!md5.Equals(m_hash))
@@ -800,12 +798,11 @@ bool CAddonUnInstallJob::DoWork()
 
   AddonPtr repoPtr = CAddonInstallJob::GetRepoForAddon(m_addon);
   RepositoryPtr therepo = boost::dynamic_pointer_cast<CRepository>(repoPtr);
-  if (therepo && !therepo->Props().libname.IsEmpty())
+  if (therepo && !therepo->Props().libname.empty())
   {
     CFileItemList dummy;
-    CStdString s;
-    s.Format("plugin://%s/?action=uninstall"
-             "&package=%s", therepo->ID().c_str(), m_addon->ID().c_str());
+    CStdString s = StringUtils::Format("plugin://%s/?action=uninstall"
+                                       "&package=%s", therepo->ID().c_str(), m_addon->ID().c_str());
     if (!CDirectory::GetDirectory(s, dummy))
       return false;
   }
@@ -834,7 +831,7 @@ void CAddonUnInstallJob::OnPostUnInstall()
   XFILE::CFavouritesDirectory::Load(items);
   for (int i=0; i < items.Size(); ++i)
   {
-    if (items[i]->GetPath().Find(m_addon->ID()) > -1)
+    if (items[i]->GetPath().find(m_addon->ID()) != std::string::npos)
     {
       items.Remove(items[i].get());
       bSave = true;

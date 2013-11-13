@@ -29,6 +29,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/EndianSwap.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "XBTF.h"
 #include <lzo/lzo1x.h>
 #include "utils/StringUtils.h"
@@ -60,7 +61,7 @@ bool CTextureBundleXBT::OpenBundle()
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
     CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
-    if (!theme.IsEmpty() && theme.CompareNoCase("SKINDEFAULT"))
+    if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
       CStdString themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
       strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
@@ -114,7 +115,7 @@ bool CTextureBundleXBT::HasFile(const CStdString& Filename)
 
 void CTextureBundleXBT::GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures)
 {
-  if (path.GetLength() > 1 && path[1] == ':')
+  if (path.size() > 1 && path[1] == ':')
     return;
 
   if (!m_XBTFReader.IsOpen() && !OpenBundle())
@@ -260,8 +261,10 @@ void CTextureBundleXBT::SetThemeBundle(bool themeBundle)
 CStdString CTextureBundleXBT::Normalize(const CStdString &name)
 {
   CStdString newName(name);
-  newName.Normalize();
-  newName.Replace('\\','/');
+  
+  StringUtils::Trim(newName);
+  StringUtils::ToLower(newName);
+  StringUtils::Replace(newName, '\\','/');
 
   return newName;
 }

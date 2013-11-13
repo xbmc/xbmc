@@ -22,6 +22,7 @@
 #include "DVDDemuxBXA.h"
 #include "DVDDemuxUtils.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "../DVDClock.h"
 
 // AirTunes audio Demuxer.
@@ -41,9 +42,7 @@ public:
   {}
   void GetStreamInfo(string& strInfo)
   {
-    CStdString info;
-    info.Format("%s", m_codec.c_str());
-    strInfo = info;
+    strInfo = StringUtils::Format("%s", m_codec.c_str());
   }
 };
 

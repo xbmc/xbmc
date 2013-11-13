@@ -528,7 +528,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
   if (m_matchTimer.GetElapsedMilliseconds() < letter_match_timeout)
     m_match.push_back(letter);
   else
-    m_match.Format("%c", letter);
+    m_match = StringUtils::Format("%c", letter);
 
   m_matchTimer.StartZero();
 
@@ -574,15 +574,15 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
 
   // now switch to the next letter
   CStdString current = m_letterOffsets[currentLetter].second;
-  int startPos = (letters.Find(current) + 1) % letters.size();
+  size_t startPos = (letters.find(current) + 1) % letters.size();
   // now jump to letters[startPos], or another one in the same range if possible
-  int pos = startPos;
+  size_t pos = startPos;
   while (true)
   {
     // check if we can jump to this letter
-    for (unsigned int i = 0; i < m_letterOffsets.size(); i++)
+    for (size_t i = 0; i < m_letterOffsets.size(); i++)
     {
-      if (m_letterOffsets[i].second == letters.Mid(pos, 1))
+      if (m_letterOffsets[i].second == letters.substr(pos, 1))
       {
         SelectItem(m_letterOffsets[i].first);
         return;
@@ -741,7 +741,7 @@ CStdString CGUIBaseContainer::GetDescription() const
   {
     CGUIListItemPtr pItem = m_items[item];
     if (pItem->m_bIsFolder)
-      strLabel.Format("[%s]", pItem->GetLabel().c_str());
+      strLabel = StringUtils::Format("[%s]", pItem->GetLabel().c_str());
     else
       strLabel = pItem->GetLabel();
   }
@@ -918,7 +918,9 @@ void CGUIBaseContainer::UpdateScrollByLetter()
     // The letter offset jumping is only for ASCII characters at present, and
     // our checks are all done in uppercase
     CStdString nextLetter;
-    g_charsetConverter.wToUTF8(item->GetSortLabel().Left(1).ToUpper(), nextLetter);
+    std::wstring character = item->GetSortLabel().substr(0, 1);
+    StringUtils::ToUpper(character);
+    g_charsetConverter.wToUTF8(character, nextLetter);
     if (currentMatch != nextLetter)
     {
       currentMatch = nextLetter;
@@ -1148,21 +1150,21 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_NUM_PAGES:
-    label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
+    label = StringUtils::Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
     break;
   case CONTAINER_CURRENT_PAGE:
-    label.Format("%u", GetCurrentPage());
+    label = StringUtils::Format("%u", GetCurrentPage());
     break;
   case CONTAINER_POSITION:
-    label.Format("%i", GetCursor());
+    label = StringUtils::Format("%i", GetCursor());
     break;
   case CONTAINER_NUM_ITEMS:
     {
       unsigned int numItems = GetNumItems();
       if (numItems && m_items[0]->IsFileItem() && (boost::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
-        label.Format("%u", numItems-1);
+        label = StringUtils::Format("%u", numItems-1);
       else
-        label.Format("%u", numItems);
+        label = StringUtils::Format("%u", numItems);
     }
     break;
   default:

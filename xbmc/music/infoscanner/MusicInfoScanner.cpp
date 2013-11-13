@@ -246,7 +246,7 @@ void CMusicInfoScanner::Start(const CStdString& strDirectory, int flags)
   m_pathsToScan.clear();
   m_flags = flags;
 
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
   { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
     // we go.
     m_musicDatabase.Open();
@@ -270,7 +270,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory,
   m_pathsToScan.clear();
 
   CFileItemList items;
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
   {
     m_musicDatabase.Open();
     m_musicDatabase.GetAlbumsNav("musicdb://albums/", items);
@@ -314,7 +314,7 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory,
   m_pathsToScan.clear();
   CFileItemList items;
 
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
   {
     m_musicDatabase.Open();
     m_musicDatabase.GetArtistsNav("musicdb://artists/", items, false, -1);
@@ -404,7 +404,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   CStdString dbHash;
   if ((m_flags & SCAN_RESCAN) || !m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
   { // path has changed - rescan
-    if (dbHash.IsEmpty())
+    if (dbHash.empty())
       CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
     else
       CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
@@ -1210,8 +1210,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, ADDON::Scrape
           if (pDialog)
           {
             // set the label to [relevance]  album - artist
-            CStdString strTemp;
-            strTemp.Format("[%0.2f]  %s", relevance, info.GetTitle2());
+            CStdString strTemp = StringUtils::Format("[%0.2f]  %s", relevance, info.GetTitle2().c_str());
             CFileItem item(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
             pDlg->Add(&item);
@@ -1400,13 +1399,13 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, ADDON::Scr
             // set the label to artist
             CFileItem item(scraper.GetArtist(i).GetArtist());
             CStdString strTemp=scraper.GetArtist(i).GetArtist().strArtist;
-            if (!scraper.GetArtist(i).GetArtist().strBorn.IsEmpty())
+            if (!scraper.GetArtist(i).GetArtist().strBorn.empty())
               strTemp += " ("+scraper.GetArtist(i).GetArtist().strBorn+")";
             if (!scraper.GetArtist(i).GetArtist().genre.empty())
             {
               CStdString genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, g_advancedSettings.m_musicItemSeparator);
               if (!genres.empty())
-                strTemp.Format("[%s] %s", genres.c_str(), strTemp.c_str());
+                strTemp = StringUtils::Format("[%s] %s", genres.c_str(), strTemp.c_str());
             }
             item.SetLabel(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
@@ -1545,19 +1544,19 @@ map<string, string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
   // check thumb
   CStdString strFolder;
   CStdString thumb;
-  if (!artist.strPath.IsEmpty())
+  if (!artist.strPath.empty())
   {
     strFolder = artist.strPath;
-    for (int i = 0; i < 3 && thumb.IsEmpty(); ++i)
+    for (int i = 0; i < 3 && thumb.empty(); ++i)
     {
       CFileItem item(strFolder, true);
       thumb = item.GetUserMusicThumb(true);
       strFolder = URIUtils::GetParentPath(strFolder);
     }
   }
-  if (thumb.IsEmpty())
+  if (thumb.empty())
     thumb = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb());
-  if (!thumb.IsEmpty())
+  if (!thumb.empty())
   {
     CTextureCache::Get().BackgroundCacheImage(thumb);
     artwork.insert(make_pair("thumb", thumb));
@@ -1565,19 +1564,19 @@ map<string, string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
 
   // check fanart
   CStdString fanart;
-  if (!artist.strPath.IsEmpty())
+  if (!artist.strPath.empty())
   {
     strFolder = artist.strPath;
-    for (int i = 0; i < 3 && fanart.IsEmpty(); ++i)
+    for (int i = 0; i < 3 && fanart.empty(); ++i)
     {
       CFileItem item(strFolder, true);
       fanart = item.GetLocalFanart();
       strFolder = URIUtils::GetParentPath(strFolder);
     }
   }
-  if (fanart.IsEmpty())
+  if (fanart.empty())
     fanart = artist.fanart.GetImageURL();
-  if (!fanart.IsEmpty())
+  if (!fanart.empty())
   {
     CTextureCache::Get().BackgroundCacheImage(fanart);
     artwork.insert(make_pair("fanart", fanart));

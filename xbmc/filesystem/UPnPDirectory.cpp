@@ -32,6 +32,7 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -150,7 +151,7 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
 
     CStdString uuid   = path.GetHostName();
     CStdString object = path.GetFileName();
-    object.TrimRight("/");
+    StringUtils::TrimRight(object, "/");
     CURL::Decode(object);
 
     PLT_DeviceDataReference device;
@@ -245,11 +246,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         bool video = true;
         bool audio = true;
         bool image = true;
-        m_strFileMask.TrimLeft("/");
-        if (!m_strFileMask.IsEmpty()) {
-            video = m_strFileMask.Find(".wmv") >= 0;
-            audio = m_strFileMask.Find(".wma") >= 0;
-            image = m_strFileMask.Find(".jpg") >= 0;
+        StringUtils::TrimLeft(m_strFileMask, "/");
+        if (!m_strFileMask.empty()) {
+            video = m_strFileMask.find(".wmv") != std::string::npos;
+            audio = m_strFileMask.find(".wma") != std::string::npos;
+            image = m_strFileMask.find(".jpg") != std::string::npos;
         }
 
         // special case for Windows Media Connect and WMP11 when looking for root

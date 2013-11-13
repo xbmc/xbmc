@@ -69,7 +69,7 @@ bool CTextureCacheJob::DoWork()
   // check whether we need cache the job anyway
   bool needsRecaching = false;
   CStdString path(CTextureCache::Get().CheckCachedImage(m_url, false, needsRecaching));
-  if (!path.IsEmpty() && !needsRecaching)
+  if (!path.empty() && !needsRecaching)
     return false;
   return CacheTexture();
 }
@@ -98,7 +98,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     m_details.file = m_cachePath + ".jpg";
     if (out_texture)
       *out_texture = LoadImage(CTextureCache::GetCachedPath(m_details.file), width, height, additional_info);
-    CLog::Log(LOGDEBUG, "Fast %s image '%s' to '%s': %p", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str(), out_texture);
+    CLog::Log(LOGDEBUG, "Fast %s image '%s' to '%s': %p", m_oldHash.empty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str(), out_texture);
     return true;
   }
 #endif
@@ -110,7 +110,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     else
       m_details.file = m_cachePath + ".jpg";
 
-    CLog::Log(LOGDEBUG, "%s image '%s' to '%s':", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str());
+    CLog::Log(LOGDEBUG, "%s image '%s' to '%s':", m_oldHash.empty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str());
 
     if (CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_details.file)))
     {
@@ -145,19 +145,19 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
 
     image = thumbURL.GetHostName();
 
-    CStdString optionString = thumbURL.GetOptions().Mid(1);
-    optionString.TrimRight('/'); // in case XBMC adds a slash
+    CStdString optionString = thumbURL.GetOptions().substr(1);
+    StringUtils::TrimRight(optionString, "/"); // In case XBMC adds a slash.
 
     std::vector<CStdString> options;
     StringUtils::SplitString(optionString, "&", options);
     for (std::vector<CStdString>::iterator i = options.begin(); i != options.end(); i++)
     {
       CStdString option, value;
-      int pos = i->Find('=');
-      if (pos != -1)
+      size_t pos = i->find('=');
+      if (pos != std::string::npos)
       {
-        option = i->Left(pos);
-        value  = i->Mid(pos + 1);
+        option = i->substr(0, pos);
+        value  = i->substr(pos + 1);
       }
       else
       {
@@ -224,11 +224,8 @@ CStdString CTextureCacheJob::GetImageHash(const CStdString &url)
     if (!time)
       time = st.st_ctime;
     if (time || st.st_size)
-    {
-      CStdString hash;
-      hash.Format("d%"PRId64"s%"PRId64, time, st.st_size);
-      return hash;
-    }
+      return StringUtils::Format("d%"PRId64"s%"PRId64, time, st.st_size);;
+
   }
   CLog::Log(LOGDEBUG, "%s - unable to stat url %s", __FUNCTION__, url.c_str());
   return "";

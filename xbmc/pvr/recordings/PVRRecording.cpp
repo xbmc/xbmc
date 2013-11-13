@@ -130,7 +130,7 @@ bool CPVRRecording::Delete(void)
 
 bool CPVRRecording::Rename(const CStdString &strNewName)
 {
-  m_strTitle.Format("%s", strNewName);
+  m_strTitle = StringUtils::Format("%s", strNewName.c_str());
   PVR_ERROR error = g_PVRClients->RenameRecording(*this);
   if (error != PVR_ERROR_NO_ERROR)
   {
@@ -261,18 +261,17 @@ void CPVRRecording::Update(const CPVRRecording &tag)
     m_resumePoint.totalTimeInSeconds = tag.m_resumePoint.totalTimeInSeconds;
   }
 
-  CStdString strShow;
-  strShow.Format("%s - ", g_localizeStrings.Get(20364).c_str());
-  if (m_strPlotOutline.Left(strShow.size()).Equals(strShow))
+  CStdString strShow = StringUtils::Format("%s - ", g_localizeStrings.Get(20364).c_str());
+  if (StringUtils::StartsWithNoCase(m_strPlotOutline, strShow))
   {
     CStdString strEpisode = m_strPlotOutline;
     CStdString strTitle = m_strDirectory;
     
-    int pos = strTitle.ReverseFind('/');
+    size_t pos = strTitle.rfind('/');
     strTitle.erase(0, pos + 1);
     strEpisode.erase(0, strShow.size());
-    m_strTitle.Format("%s - %s", strTitle.c_str(), strEpisode);
-    pos = strEpisode.Find('-');
+    m_strTitle = StringUtils::Format("%s - %s", strTitle.c_str(), strEpisode.c_str());
+    pos = strEpisode.find('-');
     strEpisode.erase(0, pos + 2);
     m_strPlotOutline = strEpisode;
   }
@@ -281,7 +280,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
 
 void CPVRRecording::UpdatePath(void)
 {
-  if (!m_strStreamURL.IsEmpty())
+  if (!m_strStreamURL.empty())
   {
     m_strFileNameAndPath = m_strStreamURL;
   }
@@ -291,13 +290,13 @@ void CPVRRecording::UpdatePath(void)
     CStdString strDatetime(m_recordingTime.GetAsSaveString());
     CStdString strDirectory;
     CStdString strChannel;
-    strTitle.Replace('/',' ');
+    StringUtils::Replace(strTitle, '/',' ');
 
-    if (!m_strDirectory.IsEmpty())
-      strDirectory.Format("%s/", m_strDirectory.c_str());
-    if (!m_strChannelName.IsEmpty())
-      strChannel.Format(" (%s)", m_strChannelName.c_str());
-    m_strFileNameAndPath.Format("pvr://recordings/%s%s, TV%s, %s.pvr", strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
+    if (!m_strDirectory.empty())
+      strDirectory = StringUtils::Format("%s/", m_strDirectory.c_str());
+    if (!m_strChannelName.empty())
+      strChannel = StringUtils::Format(" (%s)", m_strChannelName.c_str());
+    m_strFileNameAndPath = StringUtils::Format("pvr://recordings/%s%s, TV%s, %s.pvr", strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
   }
 }
 

@@ -272,7 +272,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           CLog::Log(LOGDEBUG,"Found Server/Share: %s", strRemoteName.c_str());
 
           strurl.append(strRemoteName);
-          strurl.Replace("\\","/");
+          StringUtils::Replace(strurl, '\\', '/');
           CURL rooturl(strurl);
           rooturl.SetFileName("");
 
@@ -281,7 +281,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           else
             strName = rooturl.GetHostName();
 
-          strName.Replace("\\","");
+          StringUtils::Replace(strName, "\\", "");
 
           URIUtils::AddSlashAtEnd(strurl);
           CFileItemPtr pItem(new CFileItem(strName));

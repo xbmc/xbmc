@@ -33,6 +33,7 @@
 #include "settings/DisplaySettings.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"
+#include "utils/StringUtils.h"
 #include <vector>
 #undef BOOL
 
@@ -267,7 +268,7 @@ void CWinSystemIOS::FillInVideoModes()
       //mode str by doing it without appending "Full Screen".
       //this is what linux does - though it feels that there shouldn't be
       //the same resolution twice... - thats why i add a FIXME here.
-      res.strMode.Format("%dx%d @ %.2f", w, h, refreshrate);
+      res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
       g_graphicsContext.ResetOverscan(res);
       CDisplaySettings::Get().AddResolutionInfo(res);
     }

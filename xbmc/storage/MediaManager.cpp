@@ -44,6 +44,7 @@
 #include "utils/log.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/JobManager.h"
+#include "utils/StringUtils.h"
 #include "AutorunMediaJob.h"
 
 #include "FileItem.h"
@@ -314,7 +315,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
   CStdString strDevice = devicePath;
   // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_DVD_DRIVE
-  if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
+  if(devicePath.empty() || StringUtils::StartsWith(devicePath, "cdda://local"))
     strDevice = m_strFirstAvailDrive;
 #endif
 
@@ -323,9 +324,9 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
     return "";
 
   if(bReturnAsDevice == false)
-    strDevice.Replace("\\\\.\\","");
+    StringUtils::Replace(strDevice, "\\\\.\\","");
   else if(!strDevice.empty() && strDevice[1]==':')
-    strDevice.Format("\\\\.\\%c:", strDevice[0]);
+    strDevice = StringUtils::Format("\\\\.\\%c:", strDevice[0]);
 
   URIUtils::RemoveSlashAtEnd(strDevice);
 #endif
@@ -348,7 +349,7 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   else
     return false;
 #else
-  if(URIUtils::IsDVD(devicePath) || devicePath.IsEmpty())
+  if(URIUtils::IsDVD(devicePath) || devicePath.empty())
     return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();   // TODO: switch all ports to use auto sources
   else
     return true; // Assume other paths to be mounted already
@@ -383,7 +384,7 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
 bool CMediaManager::HasOpticalDrive()
 {
 #ifdef HAS_DVD_DRIVE
-  if (!m_strFirstAvailDrive.IsEmpty())
+  if (!m_strFirstAvailDrive.empty())
     return true;
 #endif
   return false;
@@ -489,7 +490,7 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
   if(GetVolumeInformationW(CStdStringW(strDevice).c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
   g_charsetConverter.wToUTF8(cVolumenName, strDevice);
-  return strDevice.TrimRight(" ");
+  return StringUtils::TrimRight(strDevice, " ");
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
@@ -503,17 +504,17 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
   if (pInfo == NULL)
     return "";
 
-  if (mediaPath.IsEmpty() && pInfo->IsAudio(1))
+  if (mediaPath.empty() && pInfo->IsAudio(1))
     mediaPath = "cdda://local/";
 
-  if (mediaPath.IsEmpty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
+  if (mediaPath.empty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
     mediaPath = "iso9660://";
 
-  if (mediaPath.IsEmpty())
+  if (mediaPath.empty())
     mediaPath = devicePath;
 
 #ifdef TARGET_WINDOWS
-  if (mediaPath.IsEmpty() || mediaPath.CompareNoCase("iso9660://") == 0)
+  if (mediaPath.empty() || mediaPath == "iso9660://")
   {
     mediaPath = g_mediaManager.TranslateDevicePath("");
     URIUtils::AddSlashAtEnd(mediaPath);
@@ -526,11 +527,12 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
     return ""; // return empty
 
   // correct the filename if needed 
-  if (pathVideoTS.Left(6).CompareNoCase("dvd://") == 0 || pathVideoTS.Left(10).CompareNoCase("iso9660://") == 0)
+  if (StringUtils::StartsWith(pathVideoTS, "dvd://") ||
+      StringUtils::StartsWith(pathVideoTS, "iso9660://"))
     pathVideoTS = g_mediaManager.TranslateDevicePath(""); 
 
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());
-  CStdString strID;
+
 
   CDVDInputStreamNavigator dvdNavigator(NULL);
   dvdNavigator.Open(pathVideoTS, "");
@@ -539,7 +541,7 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
   CStdString serialString;
   dvdNavigator.GetDVDSerialString(serialString);
 
-  strID.Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
+  CStdString strID = StringUtils::Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for DVD disk", strID.c_str());
 
   return strID;

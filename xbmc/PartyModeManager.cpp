@@ -33,6 +33,7 @@
 #include "playlists/PlayList.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "Application.h"
 #include "interfaces/AnnouncementManager.h"
 
@@ -45,8 +46,8 @@ CPartyModeManager::CPartyModeManager(void)
 {
   m_bIsVideo = false;
   m_bEnabled = false;
-  m_strCurrentFilterMusic.Empty();
-  m_strCurrentFilterVideo.Empty();
+  m_strCurrentFilterMusic.clear();
+  m_strCurrentFilterVideo.clear();
   ClearState();
 }
 
@@ -62,7 +63,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   bool playlistLoaded;
 
   m_bIsVideo = context == PARTYMODECONTEXT_VIDEO;
-  if (!strXspPath.IsEmpty()) //if a path to a smartplaylist is supplied use it
+  if (!strXspPath.empty()) //if a path to a smartplaylist is supplied use it
     partyModePath = strXspPath;
   else if (m_bIsVideo)
     partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp");
@@ -90,8 +91,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   }
   else
   {
-    m_strCurrentFilterMusic.Empty();
-    m_strCurrentFilterVideo.Empty();
+    m_strCurrentFilterMusic.clear();
+    m_strCurrentFilterVideo.clear();
     m_type = m_bIsVideo ? "musicvideos" : "songs";
   }
 
@@ -605,8 +606,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 
     for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
-      CStdString song;
-      song.Format("%i,", it->second);
+      CStdString song = StringUtils::Format("%i,", it->second);
       if (it->first == 1)
         sqlWhereMusic += song;
       if (it->first == 2)
@@ -644,35 +644,35 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 
 pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
 {
-  CStdString historyWhereMusic;
-  CStdString historyWhereVideo;
   // now add this on to the normal where clause
-  if (m_history.size())
+  std::vector<std::string> historyItemsMusic;
+  std::vector<std::string> historyItemsVideo;
+  for (unsigned int i = 0; i < m_history.size(); i++)
   {
-    if (m_strCurrentFilterMusic.IsEmpty())
-      historyWhereMusic = "songview.idSong not in (";
-    else
-      historyWhereMusic = m_strCurrentFilterMusic + " and songview.idSong not in (";
-    if (m_strCurrentFilterVideo.IsEmpty())
-      historyWhereVideo = "idMVideo not in (";
-    else
-      historyWhereVideo = m_strCurrentFilterVideo + " and idMVideo not in (";
-
-    for (unsigned int i = 0; i < m_history.size(); i++)
-    {
-      CStdString number;
-      number.Format("%i,", m_history[i].second);
-      if (m_history[i].first == 1)
-        historyWhereMusic += number;
-      if (m_history[i].first == 2)
-        historyWhereVideo += number;
-    }
-    historyWhereMusic.TrimRight(",");
-    historyWhereMusic += ")";
-    historyWhereVideo.TrimRight(",");
-    historyWhereVideo += ")";
+    std::string number = StringUtils::Format("%i", m_history[i].second);
+    if (m_history[i].first == 1)
+      historyItemsMusic.push_back(number);
+    if (m_history[i].first == 2)
+      historyItemsVideo.push_back(number);
   }
-  return make_pair(historyWhereMusic,historyWhereVideo);
+
+  std::string historyWhereMusic;
+  if (!historyItemsMusic.empty())
+  {
+    if (!m_strCurrentFilterMusic.empty())
+      historyWhereMusic = m_strCurrentFilterMusic + " and ";
+    historyWhereMusic += "songview.idSong not in (" + StringUtils::Join(historyItemsMusic, ", ") + ")";
+  }
+
+  std::string historyWhereVideo;
+  if (!historyItemsVideo.empty())
+  {
+    if (!m_strCurrentFilterVideo.empty())
+      historyWhereVideo = m_strCurrentFilterVideo + " and ";
+    historyWhereVideo += "idMVideo not in (" + StringUtils::Join(historyItemsVideo, ", ") + ")";
+  }
+
+  return make_pair(historyWhereMusic, historyWhereVideo);
 }
 
 void CPartyModeManager::AddToHistory(int type, int songID)

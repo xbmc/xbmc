@@ -23,6 +23,7 @@
 #include "DirectoryFactory.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "SourcesDirectory.h"
@@ -76,11 +77,11 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   int flags = m_flags;
   if (!bUseFileDirectories)
     flags |= DIR_FLAG_NO_FILE_DIRS;
-  if (!strPath.IsEmpty() && strPath != "files://")
+  if (!strPath.empty() && strPath != "files://")
     return CDirectory::GetDirectory(strPath, items, m_strFileMask, flags, m_allowThreads);
 
   // if strPath is blank, clear the list (to avoid parent items showing up)
-  if (strPath.IsEmpty())
+  if (strPath.empty())
     items.Clear();
 
   // return the root listing
@@ -103,14 +104,13 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources, CStdString *name) const
 {
   CStdString strPathCpy = strPath;
-  strPathCpy.TrimRight("/");
-  strPathCpy.TrimRight("\\");
+  StringUtils::TrimRight(strPathCpy, "/\\");
 
   // just to make sure there's no mixed slashing in share/default defines
   // ie. f:/video and f:\video was not be recognised as the same directory,
   // resulting in navigation to a lower directory then the share.
   if(URIUtils::IsDOSPath(strPathCpy))
-    strPathCpy.Replace("/", "\\");
+    StringUtils::Replace(strPathCpy, '/', '\\');
 
   VECSOURCES shares;
   if (sources)
@@ -121,10 +121,9 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources,
   {
     const CMediaSource& share = shares.at(i);
     CStdString strShare = share.strPath;
-    strShare.TrimRight("/");
-    strShare.TrimRight("\\");
+    StringUtils::TrimRight(strShare, "/\\");
     if(URIUtils::IsDOSPath(strShare))
-      strShare.Replace("/", "\\");
+      StringUtils::Replace(strShare, '/', '\\');
     if (strShare == strPathCpy)
     {
       if (name)
@@ -154,7 +153,8 @@ bool CVirtualDirectory::IsInSource(const CStdString &path) const
     for (unsigned int i = 0; i < shares.size(); i++)
     {
       CMediaSource &share = shares[i];
-      if (URIUtils::IsOnDVD(share.strPath) && share.strPath.Equals(path.Left(share.strPath.GetLength())))
+      if (URIUtils::IsOnDVD(share.strPath) &&
+          StringUtils::StartsWith(path, share.strPath))
         return true;
     }
     return false;

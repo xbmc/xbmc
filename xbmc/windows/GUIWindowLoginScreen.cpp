@@ -33,6 +33,7 @@
 #endif
 #include "interfaces/Builtins.h"
 #include "utils/Weather.h"
+#include "utils/StringUtils.h"
 #include "network/Network.h"
 #include "addons/Skin.h"
 #include "guilib/GUIMessage.h"
@@ -139,8 +140,8 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
     CStdString actionName = action.GetName();
-    actionName.ToLower();
-    if (actionName.Find("shutdown") != -1)
+    StringUtils::ToLower(actionName);
+    if (actionName.find("shutdown") != std::string::npos)
       CBuiltins::Execute(action.GetName());
     return true;
   }
@@ -158,8 +159,7 @@ void CGUIWindowLoginScreen::FrameMove()
   if (GetFocusedControlID() == CONTROL_BIG_LIST && g_windowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
-  CStdString strLabel;
-  strLabel.Format(g_localizeStrings.Get(20114),m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
+  CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20114), m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
@@ -199,13 +199,13 @@ void CGUIWindowLoginScreen::Update()
     const CProfile *profile = CProfilesManager::Get().GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
     CStdString strLabel;
-    if (profile->getDate().IsEmpty())
+    if (profile->getDate().empty())
       strLabel = g_localizeStrings.Get(20113);
     else
-      strLabel.Format(g_localizeStrings.Get(20112), profile->getDate());
+      strLabel = StringUtils::Format(g_localizeStrings.Get(20112).c_str(), profile->getDate().c_str());
     item->SetLabel2(strLabel);
     item->SetArt("thumb", profile->getThumb());
-    if (profile->getThumb().IsEmpty() || profile->getThumb().Equals("-"))
+    if (profile->getThumb().empty() || profile->getThumb().Equals("-"))
       item->SetArt("thumb", "unknown-user.png");
     item->SetLabelPreformated(true);
     m_vecItems->Add(item);

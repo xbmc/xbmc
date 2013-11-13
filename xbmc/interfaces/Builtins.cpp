@@ -237,7 +237,7 @@ bool CBuiltins::HasCommand(const CStdString& execString)
   CUtil::SplitExecFunction(execString, function, parameters);
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
-    if (function.CompareNoCase(commands[i].command) == 0 && (!commands[i].needsParameters || parameters.size()))
+    if (StringUtils::EqualsNoCase(function, commands[i].command) && (!commands[i].needsParameters || parameters.size()))
       return true;
   }
   return false;
@@ -245,7 +245,7 @@ bool CBuiltins::HasCommand(const CStdString& execString)
 
 void CBuiltins::GetHelp(CStdString &help)
 {
-  help.Empty();
+  help.clear();
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     help += commands[i].command;
@@ -261,7 +261,7 @@ int CBuiltins::Execute(const CStdString& execString)
   CStdString execute;
   vector<CStdString> params;
   CUtil::SplitExecFunction(execString, execute, params);
-  execute.ToLower();
+  StringUtils::ToLower(execute);
   CStdString parameter = params.size() ? params[0] : "";
   CStdString strParameterCaseIntact = parameter;
 
@@ -354,13 +354,13 @@ int CBuiltins::Execute(const CStdString& execString)
       if (params.size() >= 2)
         sync = params[1].Equals("sync");
 
-      if (!strSaveToPath.IsEmpty())
+      if (!strSaveToPath.empty())
       {
         if (CDirectory::Exists(strSaveToPath))
         {
           CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%03d.png"), 999);
 
-          if (!file.IsEmpty())
+          if (!file.empty())
           {
             CScreenShot::TakeScreenshot(file, sync);
           }
@@ -579,22 +579,22 @@ int CBuiltins::Execute(const CStdString& execString)
           }
 
           if (plugin->Provides(CPluginSource::VIDEO))
-            cmd.Format("ActivateWindow(Video,plugin://%s%s,return)", addonid, urlParameters);
+            cmd = StringUtils::Format("ActivateWindow(Video,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
           else if (plugin->Provides(CPluginSource::AUDIO))
-            cmd.Format("ActivateWindow(Music,plugin://%s%s,return)", addonid, urlParameters);
+            cmd = StringUtils::Format("ActivateWindow(Music,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
           else if (plugin->Provides(CPluginSource::EXECUTABLE))
-            cmd.Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid, urlParameters);
+            cmd = StringUtils::Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
           else if (plugin->Provides(CPluginSource::IMAGE))
-            cmd.Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid, urlParameters);
+            cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
           else
             // Pass the script name (params[0]) and all the parameters
             // (params[1] ... params[x]) separated by a comma to RunPlugin
-            cmd.Format("RunPlugin(%s)", StringUtils::JoinString(params, ","));
+            cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::JoinString(params, ",").c_str());
         }
         else if (addon->Type() >= ADDON_SCRIPT && addon->Type() <= ADDON_SCRIPT_LYRICS)
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunScript
-          cmd.Format("RunScript(%s)", StringUtils::JoinString(params, ","));
+          cmd = StringUtils::Format("RunScript(%s)", StringUtils::JoinString(params, ",").c_str());
 
         return Execute(cmd);
       }
@@ -660,7 +660,7 @@ int CBuiltins::Execute(const CStdString& execString)
         askToResume = false;
       }
       else if (StringUtils::StartsWithNoCase(params[i], "playoffset=")) {
-        playOffset = atoi(params[i].Mid(11)) - 1;
+        playOffset = atoi(params[i].substr(11).c_str()) - 1;
         item.SetProperty("playlist_starting_track", playOffset);
       }
     }
@@ -760,7 +760,7 @@ int CBuiltins::Execute(const CStdString& execString)
         else if (params[i].Equals("pause"))
           flags |= 8;
         else if (StringUtils::StartsWithNoCase(params[i], "beginslide="))
-          beginSlidePath = params[i].Mid(11);
+          beginSlidePath = params[i].substr(11);
       }
     }
 
@@ -866,11 +866,12 @@ int CBuiltins::Execute(const CStdString& execString)
       if (parameter.size() == 14)
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
       else if (parameter.size() < 17) // arg must be at least "(N)"
-        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.Mid(14).c_str());
+        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.substr(14).c_str());
       else
       {
         // Don't bother checking the argument: an invalid arg will do seek(0)
-        offset = parameter.Mid(15).TrimRight(")");
+        offset = parameter.substr(15);
+        StringUtils::TrimRight(offset, ")");
         float offsetpercent = (float) atof(offset.c_str());
         if (offsetpercent < 0 || offsetpercent > 100)
           CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) argument, %f, must be 0-100", offsetpercent);
@@ -899,7 +900,8 @@ int CBuiltins::Execute(const CStdString& execString)
           context = PARTYMODECONTEXT_VIDEO;
         else if (parameter.size() != 16 || !StringUtils::EndsWithNoCase(parameter, "music)"))
         {
-          strXspPath = parameter.Mid(10).TrimRight(")");
+          strXspPath = parameter.substr(10);
+          StringUtils::TrimRight(strXspPath, ")");
           context = PARTYMODECONTEXT_UNKNOWN;
         }
       }
@@ -1065,7 +1067,7 @@ int CBuiltins::Execute(const CStdString& execString)
     float seconds = 0;
     if (params.size() > 2)
     {
-      if (params[2].Find(':') == -1)
+      if (params[2].find(':') == std::string::npos)
         seconds = static_cast<float>(atoi(params[2].c_str())*60);
       else
         seconds = (float)StringUtils::TimeStringToSeconds(params[2]);
@@ -1073,7 +1075,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else
     { // check if shutdown is specified in particular, and get the time for it
       CStdString strHeading;
-      if (parameter.CompareNoCase("shutdowntimer") == 0)
+      if (StringUtils::EqualsNoCase(parameter, "shutdowntimer"))
         strHeading = g_localizeStrings.Get(20145);
       else
         strHeading = g_localizeStrings.Get(13209);
@@ -1088,9 +1090,9 @@ int CBuiltins::Execute(const CStdString& execString)
     for (unsigned int i = 3; i < params.size() ; i++)
     {
       // check "true" for backward comp
-      if (params[i].CompareNoCase("true") == 0 || params[i].CompareNoCase("silent") == 0)
+      if (StringUtils::EqualsNoCase(params[i], "true") || StringUtils::EqualsNoCase(params[i], "silent"))
         silent = true;
-      else if (params[i].CompareNoCase("loop") == 0)
+      else if (StringUtils::EqualsNoCase(params[i], "loop"))
         loop = true;
     }
 
@@ -1115,7 +1117,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("cancelalarm"))
   {
     bool silent = false;
-    if (params.size() > 1 && params[1].CompareNoCase("true") == 0)
+    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
       silent = true;
     g_alarmClock.Stop(params[0],silent);
   }
@@ -1123,7 +1125,7 @@ int CBuiltins::Execute(const CStdString& execString)
   {
 #ifdef HAS_DVD_DRIVE
     bool restart = false;
-    if (params.size() > 0 && params[0].CompareNoCase("restart") == 0)
+    if (params.size() > 0 && StringUtils::EqualsNoCase(params[0], "restart"))
       restart = true;
     CAutorun::PlayDisc(g_mediaManager.GetDiscPath(), true, restart);
 #endif
@@ -1145,7 +1147,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params.size() > 1)
     {
       int string = CSkinSettings::Get().TranslateBool(params[0]);
-      CSkinSettings::Get().SetBool(string, params[1].CompareNoCase("true") == 0);
+      CSkinSettings::Get().SetBool(string, StringUtils::EqualsNoCase(params[1], "true"));
       CSettings::Get().Save();
       return 0;
     }
@@ -1257,7 +1259,7 @@ int CBuiltins::Execute(const CStdString& execString)
       // if browsing for addons, required param[1] is addontype string, with optional param[2]
       // as contenttype string see IAddon.h & ADDON::TranslateXX
       CStdString strMask = (params.size() > 1) ? params[1] : "";
-      strMask.ToLower();
+      StringUtils::ToLower(strMask);
       ADDON::TYPE type;
       if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
       {
@@ -1267,7 +1269,7 @@ int CBuiltins::Execute(const CStdString& execString)
         url.SetFileName(strMask+"/");
         localShares.clear();
         CStdString content = (params.size() > 2) ? params[2] : "";
-        content.ToLower();
+        StringUtils::ToLower(content);
         url.SetPassword(content);
         CStdString strMask;
         if (type == ADDON_SCRIPT)
@@ -1341,9 +1343,9 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("dialog.close") && params.size())
   {
     bool bForce = false;
-    if (params.size() > 1 && params[1].CompareNoCase("true") == 0)
+    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
       bForce = true;
-    if (params[0].CompareNoCase("all") == 0)
+    if (StringUtils::EqualsNoCase(params[0], "all"))
     {
       g_windowManager.CloseDialogs(bForce);
     }
@@ -1488,7 +1490,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if (params.size() > 2)
       path=params[2];
-    if (singleFile || !path.IsEmpty() ||
+    if (singleFile || !path.empty() ||
         CGUIDialogFileBrowser::ShowAndGetDirectory(shares,
 				  g_localizeStrings.Get(661), path, true))
     {
@@ -1526,7 +1528,7 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
     message.SetStringParam(params[0]);
-    if (params.size() > 1 && params[1].CompareNoCase("replace") == 0)
+    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "replace"))
       message.SetParam2(1); // reset the history
     g_windowManager.SendMessage(message);
   }
@@ -1745,7 +1747,7 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CApplicationMessenger::Get().StartAndroidActivity(params);
   }
-  else if (execute.Equals("SetStereoMode") && !parameter.IsEmpty())
+  else if (execute.Equals("SetStereoMode") && !parameter.empty())
   {
     CAction action = CStereoscopicsManager::Get().ConvertActionCommandToAction(execute, parameter);
     if (action.GetID() != ACTION_NONE)

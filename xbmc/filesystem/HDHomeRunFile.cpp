@@ -57,7 +57,8 @@ bool CHomeRunFile::Exists(const CURL& url)
    * The filename starts with "tuner" and has no extension. This check will cover off requests
    * for *.tbn, *.jpg, *.jpeg, *.edl etc. that do not exist.
    */
-  return path.Left(5) == "tuner" && !URIUtils::HasExtension(path);
+  return StringUtils::StartsWith(path, "tuner") &&
+        !URIUtils::HasExtension(path);
 }
 
 int64_t CHomeRunFile::Seek(int64_t iFilePosition, int iWhence)

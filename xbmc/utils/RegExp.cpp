@@ -24,6 +24,7 @@
 #include "RegExp.h"
 #include "StdString.h"
 #include "log.h"
+#include "utils/StringUtils.h"
 
 using namespace PCRE;
 
@@ -382,8 +383,7 @@ void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
   int size = GetSubCount(); // past the subpatterns is junk
   for (int i = 0; i <= size; i++)
   {
-    CStdString t;
-    t.Format("[%i,%i]", m_iOvector[(i*2)], m_iOvector[(i*2)+1]);
+    CStdString t = StringUtils::Format("[%i,%i]", m_iOvector[(i*2)], m_iOvector[(i*2)+1]);
     if (i != size)
       t += ",";
     str += t;

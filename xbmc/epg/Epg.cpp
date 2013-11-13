@@ -679,7 +679,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
       bGrabSuccess = (g_PVRClients->GetEPGForChannel(*channel, this, start, end) == PVR_ERROR_NO_ERROR);
     }
   }
-  else if (m_strScraperName.IsEmpty()) /* no grabber defined */
+  else if (m_strScraperName.empty()) /* no grabber defined */
     CLog::Log(LOGWARNING, "EPG - %s - no EPG scraper defined for table '%s'", __FUNCTION__, m_strName.c_str());
   else
   {

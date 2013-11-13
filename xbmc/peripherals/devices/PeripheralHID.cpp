@@ -30,13 +30,13 @@ CPeripheralHID::CPeripheralHID(const PeripheralScanResult& scanResult) :
   CPeripheral(scanResult),
   m_bInitialised(false)
 {
-  m_strDeviceName = scanResult.m_strDeviceName.IsEmpty() ? g_localizeStrings.Get(35001) : scanResult.m_strDeviceName;
+  m_strDeviceName = scanResult.m_strDeviceName.empty() ? g_localizeStrings.Get(35001) : scanResult.m_strDeviceName;
   m_features.push_back(FEATURE_HID);
 }
 
 CPeripheralHID::~CPeripheralHID(void)
 {
-  if (!m_strKeymap.IsEmpty() && !GetSettingBool("do_not_use_custom_keymap"))
+  if (!m_strKeymap.empty() && !GetSettingBool("do_not_use_custom_keymap"))
   {
     CLog::Log(LOGDEBUG, "%s - switching active keymapping to: default", __FUNCTION__);
     CButtonTranslator::GetInstance().RemoveDevice(m_strKeymap);
@@ -52,16 +52,16 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
     if (HasSetting("keymap"))
       m_strKeymap = GetSettingString("keymap");
 
-    if (m_strKeymap.IsEmpty())
+    if (m_strKeymap.empty())
     {
-      m_strKeymap.Format("v%sp%s", VendorIdAsString(), ProductIdAsString());
+      m_strKeymap = StringUtils::Format("v%sp%s", VendorIdAsString(), ProductIdAsString());
       SetSetting("keymap", m_strKeymap);
     }
 
     if (!IsSettingVisible("keymap"))
       SetSettingVisible("do_not_use_custom_keymap", false);
 
-    if (!m_strKeymap.IsEmpty())
+    if (!m_strKeymap.empty())
     {
       bool bKeymapEnabled(!GetSettingBool("do_not_use_custom_keymap"));
       if (bKeymapEnabled)

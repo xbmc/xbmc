@@ -181,20 +181,20 @@ void CRssReader::Process()
       }
       http.Cancel();
     }
-    if (!strXML.IsEmpty() && m_pObserver)
+    if (!strXML.empty() && m_pObserver)
     {
       // erase any <content:encoded> tags (also unsupported by tinyxml)
-      int iStart = strXML.Find("<content:encoded>");
-      int iEnd = 0;
-      while (iStart > 0)
+      size_t iStart = strXML.find("<content:encoded>");
+      size_t iEnd = 0;
+      while (iStart != std::string::npos)
       {
         // get <content:encoded> end position
-        iEnd = strXML.Find("</content:encoded>", iStart) + 18;
+        iEnd = strXML.find("</content:encoded>", iStart) + 18;
 
         // erase the section
         strXML = strXML.erase(iStart, iEnd - iStart);
 
-        iStart = strXML.Find("<content:encoded>");
+        iStart = strXML.find("<content:encoded>");
       }
 
       if (Parse(strXML, iFeed, fileCharset))
@@ -235,9 +235,9 @@ void CRssReader::AddString(CStdStringW aString, int aColour, int iFeed)
   else
     m_strFeed[iFeed] += aString;
 
-  int nStringLength = aString.GetLength();
+  size_t nStringLength = aString.size();
 
-  for (int i = 0;i < nStringLength;i++)
+  for (size_t i = 0;i < nStringLength;i++)
     aString[i] = (CHAR) (48 + aColour);
 
   if (m_rtlText)
@@ -332,7 +332,8 @@ bool CRssReader::Parse(int iFeed)
   TiXmlElement* rssXmlNode = NULL;
 
   CStdString strValue = rootXmlNode->Value();
-  if (strValue.Find("rss") >= 0 || strValue.Find("rdf") >= 0)
+  if (strValue.find("rss") != std::string::npos ||
+      strValue.find("rdf") != std::string::npos)
     rssXmlNode = rootXmlNode;
   else
   {
@@ -361,7 +362,7 @@ bool CRssReader::Parse(int iFeed)
   GetNewsItems(rssXmlNode,iFeed);
 
   // avoid trailing ' - '
-  if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size() - 3) == L" - ")
+  if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].substr(m_strFeed[iFeed].size() - 3) == L" - ")
   {
     if (m_rtlText)
     {

@@ -41,6 +41,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -137,8 +138,8 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
   {
     CStdString strAudioInfo;
     g_application.m_pPlayer->GetAudioInfo(strAudioInfo);
-    int iNumChannels = atoi(strAudioInfo.Right(strAudioInfo.size() - strAudioInfo.Find("chns:") - 5).c_str());
-    CStdString strAudioCodec = strAudioInfo.Mid(7, strAudioInfo.Find(") VBR") - 5);
+    int iNumChannels = atoi(strAudioInfo.substr(strAudioInfo.find("chns:") + 5).c_str());
+    CStdString strAudioCodec = strAudioInfo.substr(7, strAudioInfo.find(") VBR") - 5);
     bool bDTS = strstr(strAudioCodec.c_str(), "DTS") != 0;
     bool bAC3 = strstr(strAudioCodec.c_str(), "AC3") != 0;
     if (iNumChannels == 2 && !(bDTS || bAC3))
@@ -171,9 +172,9 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
     if (info.name.length() == 0)
       strItem = strLanguage;
     else
-      strItem.Format("%s - %s", strLanguage.c_str(), info.name.c_str());
+      strItem = StringUtils::Format("%s - %s", strLanguage.c_str(), info.name.c_str());
 
-    strItem.AppendFormat(" (%i/%i)", i + 1, (int)setting.max + 1);
+    strItem += StringUtils::Format(" (%i/%i)", i + 1, (int)setting.max + 1);
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
   }
 
@@ -217,9 +218,9 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     if (info.name.length() == 0)
       strItem = strLanguage;
     else
-      strItem.Format("%s - %s", strLanguage.c_str(), info.name.c_str());
+      strItem = StringUtils::Format("%s - %s", strLanguage.c_str(), info.name.c_str());
 
-    strItem.AppendFormat(" (%i/%i)", i + 1, (int)setting.max + 1);
+    strItem += StringUtils::Format(" (%i/%i)", i + 1, (int)setting.max + 1);
 
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
   }
@@ -376,27 +377,23 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
 
 CStdString CGUIDialogAudioSubtitleSettings::PercentAsDecibel(float value, float interval)
 {
-  CStdString text;
-  text.Format("%2.1f dB", CAEUtil::PercentToGain(value));
-  return text;
+  return StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(value));;
 }
 
 CStdString CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float interval)
 {
-  CStdString text;
-  text.Format("%2.1f dB", value);
-  return text;
+  return StringUtils::Format("%2.1f dB", value);;
 }
 
 CStdString CGUIDialogAudioSubtitleSettings::FormatDelay(float value, float interval)
 {
   CStdString text;
   if (fabs(value) < 0.5f*interval)
-    text.Format(g_localizeStrings.Get(22003).c_str(), 0.0);
+    text = StringUtils::Format(g_localizeStrings.Get(22003).c_str(), 0.0);
   else if (value < 0)
-    text.Format(g_localizeStrings.Get(22004).c_str(), fabs(value));
+    text = StringUtils::Format(g_localizeStrings.Get(22004).c_str(), fabs(value));
   else
-    text.Format(g_localizeStrings.Get(22005).c_str(), value);
+    text = StringUtils::Format(g_localizeStrings.Get(22005).c_str(), value);
   return text;
 }
 

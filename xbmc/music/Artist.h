@@ -36,7 +36,7 @@ public:
   long idArtist;
   bool operator<(const CArtist& a) const
   {
-    if (strMusicBrainzArtistID.IsEmpty() && a.strMusicBrainzArtistID.IsEmpty())
+    if (strMusicBrainzArtistID.empty() && a.strMusicBrainzArtistID.empty())
     {
       if (strArtist < a.strArtist) return true;
       if (strArtist > a.strArtist) return false;
@@ -50,21 +50,21 @@ public:
 
   void Reset()
   {
-    strArtist.Empty();
+    strArtist.clear();
     genre.clear();
-    strBiography.Empty();
+    strBiography.clear();
     styles.clear();
     moods.clear();
     instruments.clear();
-    strBorn.Empty();
-    strFormed.Empty();
-    strDied.Empty();
-    strDisbanded.Empty();
+    strBorn.clear();
+    strFormed.clear();
+    strDied.clear();
+    strDisbanded.clear();
     yearsActive.clear();
     thumbURL.Clear();
     discography.clear();
     idArtist = -1;
-    strPath.Empty();
+    strPath.clear();
   }
 
   /*! \brief Load artist information from an XML file.

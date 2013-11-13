@@ -115,7 +115,7 @@ static const ControlMapping controls[] =
 CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const CStdString &type)
 {
   for (unsigned int i = 0; i < sizeof(controls) / sizeof(controls[0]); ++i)
-    if (0 == type.CompareNoCase(controls[i].name))
+    if (StringUtils::EqualsNoCase(type, controls[i].name))
       return controls[i].type;
   return CGUIControl::GUICONTROL_UNKNOWN;
 }
@@ -292,32 +292,32 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
     return false;
 
   ratio = node->FirstChild()->Value();
-  if (ratio.CompareNoCase("keep") == 0) aspect.ratio = CAspectRatio::AR_KEEP;
-  else if (ratio.CompareNoCase("scale") == 0) aspect.ratio = CAspectRatio::AR_SCALE;
-  else if (ratio.CompareNoCase("center") == 0) aspect.ratio = CAspectRatio::AR_CENTER;
-  else if (ratio.CompareNoCase("stretch") == 0) aspect.ratio = CAspectRatio::AR_STRETCH;
+  if (StringUtils::EqualsNoCase(ratio, "keep")) aspect.ratio = CAspectRatio::AR_KEEP;
+  else if (StringUtils::EqualsNoCase(ratio, "scale")) aspect.ratio = CAspectRatio::AR_SCALE;
+  else if (StringUtils::EqualsNoCase(ratio, "center")) aspect.ratio = CAspectRatio::AR_CENTER;
+  else if (StringUtils::EqualsNoCase(ratio, "stretch")) aspect.ratio = CAspectRatio::AR_STRETCH;
 
   const char *attribute = node->Attribute("align");
   if (attribute)
   {
     CStdString align(attribute);
-    if (align.CompareNoCase("center") == 0) aspect.align = ASPECT_ALIGN_CENTER | (aspect.align & ASPECT_ALIGNY_MASK);
-    else if (align.CompareNoCase("right") == 0) aspect.align = ASPECT_ALIGN_RIGHT | (aspect.align & ASPECT_ALIGNY_MASK);
-    else if (align.CompareNoCase("left") == 0) aspect.align = ASPECT_ALIGN_LEFT | (aspect.align & ASPECT_ALIGNY_MASK);
+    if (StringUtils::EqualsNoCase(align, "center")) aspect.align = ASPECT_ALIGN_CENTER | (aspect.align & ASPECT_ALIGNY_MASK);
+    else if (StringUtils::EqualsNoCase(align, "right")) aspect.align = ASPECT_ALIGN_RIGHT | (aspect.align & ASPECT_ALIGNY_MASK);
+    else if (StringUtils::EqualsNoCase(align, "left")) aspect.align = ASPECT_ALIGN_LEFT | (aspect.align & ASPECT_ALIGNY_MASK);
   }
   attribute = node->Attribute("aligny");
   if (attribute)
   {
     CStdString align(attribute);
-    if (align.CompareNoCase("center") == 0) aspect.align = ASPECT_ALIGNY_CENTER | (aspect.align & ASPECT_ALIGN_MASK);
-    else if (align.CompareNoCase("bottom") == 0) aspect.align = ASPECT_ALIGNY_BOTTOM | (aspect.align & ASPECT_ALIGN_MASK);
-    else if (align.CompareNoCase("top") == 0) aspect.align = ASPECT_ALIGNY_TOP | (aspect.align & ASPECT_ALIGN_MASK);
+    if (StringUtils::EqualsNoCase(align, "center")) aspect.align = ASPECT_ALIGNY_CENTER | (aspect.align & ASPECT_ALIGN_MASK);
+    else if (StringUtils::EqualsNoCase(align, "bottom")) aspect.align = ASPECT_ALIGNY_BOTTOM | (aspect.align & ASPECT_ALIGN_MASK);
+    else if (StringUtils::EqualsNoCase(align, "top")) aspect.align = ASPECT_ALIGNY_TOP | (aspect.align & ASPECT_ALIGN_MASK);
   }
   attribute = node->Attribute("scalediffuse");
   if (attribute)
   {
     CStdString scale(attribute);
-    if (scale.CompareNoCase("true") == 0 || scale.CompareNoCase("yes") == 0)
+    if (StringUtils::EqualsNoCase(scale, "true") || StringUtils::EqualsNoCase(scale, "yes"))
       aspect.scaleDiffuse = true;
     else
       aspect.scaleDiffuse = false;
@@ -567,7 +567,7 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
     return false;
 
   CStdString label = element->FirstChild()->Value();
-  if (label.IsEmpty() || label == "-")
+  if (label.empty() || label == "-")
     return false;
 
   CStdString fallback = element->Attribute("fallback");
@@ -591,8 +591,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
   int labelNumber = 0;
   if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
   {
-    CStdString label;
-    label.Format("%i", labelNumber);
+    CStdString label = StringUtils::Format("%i", labelNumber);
     infoLabels.push_back(CGUIInfoLabel(label));
     return; // done
   }
@@ -615,8 +614,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
     {
       if (infoNode->FirstChild())
       {
-        CStdString info;
-        info.Format("$INFO[%s]", infoNode->FirstChild()->Value());
+        CStdString info = StringUtils::Format("$INFO[%s]", infoNode->FirstChild()->Value());
         infoLabels.push_back(CGUIInfoLabel(info, fallback, parentID));
       }
       infoNode = infoNode->NextSibling("info");
@@ -640,7 +638,7 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
   if (!XMLUtils::GetString(pRootNode, strTag, text))
     return false;
   if (text == "-")
-    text.Empty();
+    text.clear();
   if (StringUtils::IsNaturalNumber(text))
     text = g_localizeStrings.Get(atoi(text.c_str()));
   return true;
@@ -929,7 +927,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
   {
-    strSubType.ToLower();
+    StringUtils::ToLower(strSubType);
 
     if ( strSubType == "int")
       iType = SPIN_CONTROL_TYPE_INT;
@@ -980,7 +978,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
   {
-    if (strTmp.ToLower() == "horizontal")
+    StringUtils::ToLower(strTmp);
+    if (strTmp == "horizontal")
       orientation = HORIZONTAL;
   }
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
@@ -1290,7 +1289,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       texture.useLarge = true;
 
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
-    if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
+    if (borderTexture.filename.empty() && borderStr.empty())
       control = new CGUIImage(
         parentID, id, posX, posY, width, height, texture);
     else

@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
 #include "utils/SystemInfo.h"
+#include "win32/WIN32Util.h"
 #endif
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
@@ -416,7 +417,7 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
   if (err_msg && *err_msg)
   {
 #ifdef TARGET_WINDOWS
-    CStdString sock_err = WUSysMsg(WSAGetLastError());
+    CStdString sock_err = CWIN32Util::WUSysMsg(WSAGetLastError());
 #else
     CStdString sock_err = strerror(errno);
 #endif
@@ -450,7 +451,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     if (setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (const char*)&no, sizeof(no)) < 0)
     {
 #ifdef _MSC_VER
-      CStdString sock_err = WUSysMsg(WSAGetLastError());
+      CStdString sock_err = CWIN32Util::WUSysMsg(WSAGetLastError());
 #else
       CStdString sock_err = strerror(errno);
 #endif

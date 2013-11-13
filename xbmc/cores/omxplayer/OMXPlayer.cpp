@@ -698,8 +698,8 @@ bool COMXPlayer::OpenInputStream()
 
   // correct the filename if needed
   CStdString filename(m_filename);
-  if (filename.Find("dvd://") == 0
-  ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
+  if (StringUtils::StartsWith(filename, "dvd://")
+  ||  StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo") == 0)
   {
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
@@ -707,7 +707,7 @@ bool COMXPlayer::OpenInputStream()
   // before creating the input stream, if this is an HLS playlist then get the
   // most appropriate bitrate based on our network settings
   // ensure to strip off the url options by using a temp CURL object
-  if (filename.Left(7) == "http://" && CURL(filename).GetFileName().Right(5) == ".m3u8")
+  if (StringUtils::StartsWith(filename, "http://") && StringUtils::EndsWith(CURL(filename).GetFileName(), ".m3u8"))
   {
     // get the available bandwidth (as per user settings)
     int maxrate = CSettings::Get().GetInt("network.bandwidth");
@@ -750,7 +750,7 @@ bool COMXPlayer::OpenInputStream()
 
     // find any upnp subtitles
     CStdString key("upnp:subtitle:1");
-    for(unsigned s = 1; m_item.HasProperty(key); key.Format("upnp:subtitle:%u", ++s))
+    for(unsigned s = 1; m_item.HasProperty(key); key = StringUtils::Format("upnp:subtitle:%u", ++s))
       filenames.push_back(m_item.GetProperty(key).asString());
 
     for(unsigned int i=0;i<filenames.size();i++)
@@ -2941,17 +2941,17 @@ bool COMXPlayer::SeekScene(bool bPlus)
 void COMXPlayer::GetAudioInfo(CStdString &strAudioInfo)
 {
   { CSingleLock lock(m_StateSection);
-    strAudioInfo.Format("D(%s)", m_StateInput.demux_audio.c_str());
+    strAudioInfo = StringUtils::Format("D(%s)", m_StateInput.demux_audio.c_str());
   }
-  strAudioInfo.AppendFormat("\nP(%s)", m_omxPlayerAudio.GetPlayerInfo().c_str());
+  strAudioInfo += StringUtils::Format("\nP(%s)", m_omxPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void COMXPlayer::GetVideoInfo(CStdString &strVideoInfo)
 {
   { CSingleLock lock(m_StateSection);
-    strVideoInfo.Format("D(%s)", m_StateInput.demux_video.c_str());
+    strVideoInfo = StringUtils::Format("D(%s)", m_StateInput.demux_video.c_str());
   }
-  strVideoInfo.AppendFormat("\nP(%s)", m_omxPlayerVideo.GetPlayerInfo().c_str());
+  strVideoInfo += StringUtils::Format("\nP(%s)", m_omxPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void COMXPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
@@ -2965,21 +2965,20 @@ void COMXPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
-    CStdString strEDL;
-    strEDL.AppendFormat(", edl:%s", m_Edl.GetInfo().c_str());
+    CStdString strEDL = StringUtils::Format(", edl:%s", m_Edl.GetInfo().c_str());
 
     CStdString strBuf;
     CSingleLock lock(m_StateSection);
     if(m_StateInput.cache_bytes >= 0)
     {
-      strBuf.AppendFormat(" cache:%s %2.0f%%"
+      strBuf += StringUtils::Format(" cache:%s %2.0f%%"
                          , StringUtils::SizeToString(m_State.cache_bytes).c_str()
                          , m_State.cache_level * 100);
       if(m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
-        strBuf.AppendFormat(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
+        strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
     }
 
-    strGeneralInfo.Format("C( ad:% 6.3f a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% amp:% 5.2f )"
+    strGeneralInfo = StringUtils::Format("C( ad:% 6.3f a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% amp:% 5.2f )"
                          , m_omxPlayerAudio.GetDelay()
                          , dDiff
                          , strEDL.c_str()
@@ -3296,7 +3295,7 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
     // for music file, don't open artwork as video
     bool disabled = false;
     CStdString extension = URIUtils::GetExtension(m_filename);
-    if (!extension.IsEmpty() && g_advancedSettings.m_musicExtensions.Find(extension.ToLower()) != -1)
+    if (!extension.empty() && g_advancedSettings.m_musicExtensions.find(StringUtils::ToLower(extension) != std::string::npos)
     {
       CLog::Log(LOGWARNING, "%s - Ignoring video in audio filetype:%s", __FUNCTION__, m_filename.c_str());
       disabled = true;

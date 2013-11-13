@@ -26,6 +26,7 @@
 #include "addons/Scraper.h"
 #include "URL.h"
 #include "Util.h"
+#include "utils/StringUtils.h"
 #include "log.h"
 #include "CharsetConverter.h"
 #include "utils/StringUtils.h"
@@ -84,7 +85,7 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_strFile.Empty();
+  m_strFile.clear();
 }
 
 bool CScraperParser::Load(const CStdString& strXMLFile)
@@ -150,24 +151,23 @@ bool CScraperParser::LoadFromXML()
 void CScraperParser::ReplaceBuffers(CStdString& strDest)
 {
   // insert buffers
-  int iIndex;
+  size_t iIndex;
   for (int i=MAX_SCRAPER_BUFFERS-1; i>=0; i--)
   {
-    CStdString temp;
     iIndex = 0;
-    temp.Format("$$%i",i+1);
-    while ((size_t)(iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
+    CStdString temp = StringUtils::Format("$$%i",i+1);
+    while ((iIndex = strDest.find(temp,iIndex)) != CStdString::npos) // COPIED FROM CStdString WITH THE ADDITION OF $ ESCAPING
     {
-      strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+temp.GetLength(),m_param[i]);
+      strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+temp.size(),m_param[i]);
       iIndex += m_param[i].length();
     }
   }
   // insert settings
   iIndex = 0;
-  while ((size_t)(iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos)
+  while ((iIndex = strDest.find("$INFO[", iIndex)) != CStdString::npos)
   {
-    int iEnd = strDest.Find("]",iIndex);
-    CStdString strInfo = strDest.Mid(iIndex+6,iEnd-iIndex-6);
+    size_t iEnd = strDest.find("]", iIndex);
+    CStdString strInfo = strDest.substr(iIndex+6, iEnd - iIndex - 6);
     CStdString strReplace;
     if (m_scraper)
       strReplace = m_scraper->GetSetting(strInfo);
@@ -176,10 +176,10 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   }
   // insert localize strings
   iIndex = 0;
-  while ((size_t)(iIndex = strDest.find("$LOCALIZE[",iIndex)) != CStdString::npos)
+  while ((iIndex = strDest.find("$LOCALIZE[", iIndex)) != CStdString::npos)
   {
-    int iEnd = strDest.Find("]",iIndex);
-    CStdString strInfo = strDest.Mid(iIndex+10,iEnd-iIndex-10);
+    size_t iEnd = strDest.find("]", iIndex);
+    CStdString strInfo = strDest.substr(iIndex+10, iEnd - iIndex - 10);
     CStdString strReplace;
     if (m_scraper)
       strReplace = m_scraper->GetString(strtol(strInfo.c_str(),NULL,10));
@@ -187,7 +187,7 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
     iIndex += strReplace.length();
   }
   iIndex = 0;
-  while ((size_t)(iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
+  while ((iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+2,"\n");
 }
 
@@ -247,7 +247,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     int iCompare = -1;
     pExpression->QueryIntAttribute("compare",&iCompare);
     if (iCompare > -1)
-      m_param[iCompare-1].ToLower();
+      StringUtils::ToLower(m_param[iCompare-1]);
     CStdString curInput = input;
     for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
     {
@@ -297,19 +297,19 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
 
       int iLen = reg.GetFindLen();
       // nasty hack #1 - & means \0 in a replace string
-      strCurOutput.Replace("&","!!!AMPAMP!!!");
+      StringUtils::Replace(strCurOutput, "&","!!!AMPAMP!!!");
       std::string result = reg.GetReplaceString(strCurOutput.c_str());
       if (!result.empty())
       {
         CStdString strResult(result);
-        strResult.Replace("!!!AMPAMP!!!","&");
+        StringUtils::Replace(strResult, "!!!AMPAMP!!!","&");
         Clean(strResult);
         ReplaceBuffers(strResult);
         if (iCompare > -1)
         {
           CStdString strResultNoCase = strResult;
-          strResultNoCase.ToLower();
-          if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
+          StringUtils::ToLower(strResultNoCase);
+          if (strResultNoCase.find(m_param[iCompare-1]) != std::string::npos)
             dest += strResult;
         }
         else
@@ -417,44 +417,42 @@ const CStdString CScraperParser::Parse(const CStdString& strTag,
 
 void CScraperParser::Clean(CStdString& strDirty)
 {
-  int i=0;
+  size_t i = 0;
   CStdString strBuffer;
-  while ((i=strDirty.Find("!!!CLEAN!!!",i)) != -1)
+  while ((i = strDirty.find("!!!CLEAN!!!",i)) != std::string::npos)
   {
-    int i2;
-    if ((i2=strDirty.Find("!!!CLEAN!!!",i+11)) != -1)
+    size_t i2;
+    if ((i2 = strDirty.find("!!!CLEAN!!!",i+11)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
       CStdString strConverted(strBuffer);
       HTML::CHTMLUtil::RemoveTags(strConverted);
-      RemoveWhiteSpace(strConverted);
-      strDirty.erase(i,i2-i+11);
-      strDirty.Insert(i,strConverted);
+      StringUtils::Trim(strConverted);
+      strDirty.replace(i, i2-i+11, strConverted);
       i += strConverted.size();
     }
     else
       break;
   }
   i=0;
-  while ((i=strDirty.Find("!!!TRIM!!!",i)) != -1)
+  while ((i = strDirty.find("!!!TRIM!!!",i)) != std::string::npos)
   {
-    int i2;
-    if ((i2=strDirty.Find("!!!TRIM!!!",i+10)) != -1)
+    size_t i2;
+    if ((i2 = strDirty.find("!!!TRIM!!!",i+10)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
-      RemoveWhiteSpace(strBuffer);
-      strDirty.erase(i,i2-i+10);
-      strDirty.Insert(i,strBuffer);
+      StringUtils::Trim(strBuffer);
+      strDirty.replace(i, i2-i+10, strBuffer);
       i += strBuffer.size();
     }
     else
       break;
   }
   i=0;
-  while ((i=strDirty.Find("!!!FIXCHARS!!!",i)) != -1)
+  while ((i = strDirty.find("!!!FIXCHARS!!!",i)) != std::string::npos)
   {
-    int i2;
-    if ((i2=strDirty.Find("!!!FIXCHARS!!!",i+14)) != -1)
+    size_t i2;
+    if ((i2 = strDirty.find("!!!FIXCHARS!!!",i+14)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+14,i2-i-14);
       CStdStringW wbuffer;
@@ -462,36 +460,28 @@ void CScraperParser::Clean(CStdString& strDirty)
       CStdStringW wConverted;
       HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
       g_charsetConverter.fromW(wConverted,strBuffer,GetSearchStringEncoding());
-      RemoveWhiteSpace(strBuffer);
+      StringUtils::Trim(strBuffer);
       ConvertJSON(strBuffer);
-      strDirty.erase(i,i2-i+14);
-      strDirty.Insert(i,strBuffer);
+      strDirty.replace(i, i2-i+14, strBuffer);
       i += strBuffer.size();
     }
     else
       break;
   }
   i=0;
-  while ((i=strDirty.Find("!!!ENCODE!!!",i)) != -1)
+  while ((i=strDirty.find("!!!ENCODE!!!",i)) != std::string::npos)
   {
-    int i2;
-    if ((i2=strDirty.Find("!!!ENCODE!!!",i+12)) != -1)
+    size_t i2;
+    if ((i2 = strDirty.find("!!!ENCODE!!!",i+12)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+12,i2-i-12);
       CURL::Encode(strBuffer);
-      strDirty.erase(i,i2-i+12);
-      strDirty.Insert(i,strBuffer);
+      strDirty.replace(i, i2-i+12, strBuffer);
       i += strBuffer.size();
     }
     else
       break;
   }
-}
-
-void CScraperParser::RemoveWhiteSpace(CStdString &string)
-{
-  string.TrimLeft(" \t\r\n");
-  string.TrimRight(" \t\r\n");
 }
 
 void CScraperParser::ConvertJSON(CStdString &string)
@@ -503,8 +493,7 @@ void CScraperParser::ConvertJSON(CStdString &string)
     int pos = reg.GetSubStart(1);
     std::string szReplace(reg.GetMatch(1));
 
-    CStdString replace;
-    replace.Format("&#x%s;", szReplace.c_str());
+    CStdString replace = StringUtils::Format("&#x%s;", szReplace.c_str());
     string.replace(string.begin()+pos-2, string.begin()+pos+4, replace);
   }
 
@@ -516,12 +505,11 @@ void CScraperParser::ConvertJSON(CStdString &string)
     int pos2 = reg2.GetSubStart(2);
     std::string szHexValue(reg2.GetMatch(1));
 
-    CStdString replace;
-    replace.Format("%c", strtol(szHexValue.c_str(), NULL, 16));
+    CStdString replace = StringUtils::Format("%c", strtol(szHexValue.c_str(), NULL, 16));
     string.replace(string.begin()+pos1-2, string.begin()+pos2+reg2.GetSubLength(2), replace);
   }
 
-  string.Replace("\\\"","\"");
+  StringUtils::Replace(string, "\\\"","\"");
 }
 
 void CScraperParser::ClearBuffers()
@@ -552,13 +540,12 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
 {
   char temp[4];
   sprintf(temp,"\\%i",buf);
-  int i2=0;
-  while ((i2 = strOutput.Find(temp,i2)) != -1)
+  size_t i2=0;
+  while ((i2 = strOutput.find(temp,i2)) != std::string::npos)
   {
-    strOutput.Insert(i2,token);
-    i2 += strlen(token);
-    strOutput.Insert(i2+strlen(temp),token);
-    i2 += strlen(temp);
+    strOutput.insert(i2,token);
+    i2 += strlen(token) + strlen(temp);
+    strOutput.insert(i2,token);
   }
 }
 

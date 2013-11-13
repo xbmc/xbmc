@@ -133,7 +133,7 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
   m_iVSyncErrors = 0;
 
   CStdString strVendor(m_RenderVendor);
-  strVendor.ToLower();
+  StringUtils::ToLower(strVendor);
 
   if(!enable)
     return;

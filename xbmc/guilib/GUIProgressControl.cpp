@@ -23,6 +23,7 @@
 #include "GUIListItem.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "utils/StringUtils.h"
 
 CGUIProgressControl::CGUIProgressControl(int parentID, int controlID,
                                          float posX, float posY, float width,
@@ -81,7 +82,7 @@ void CGUIProgressControl::Render()
   {
     m_guiBackground.Render();
 
-    if (m_guiLeft.GetFileName().IsEmpty() && m_guiRight.GetFileName().IsEmpty())
+    if (m_guiLeft.GetFileName().empty() && m_guiRight.GetFileName().empty())
     {
       if (m_bReveal && !m_guiMidClipRect.IsEmpty())
       {
@@ -205,9 +206,7 @@ bool CGUIProgressControl::UpdateColors()
 
 CStdString CGUIProgressControl::GetDescription() const
 {
-  CStdString percent;
-  percent.Format("%2.f", m_fPercent);
-  return percent;
+  return StringUtils::Format("%2.f", m_fPercent);
 }
 
 bool CGUIProgressControl::UpdateLayout(void)
@@ -229,7 +228,7 @@ bool CGUIProgressControl::UpdateLayout(void)
   float posX = m_guiBackground.GetXPosition();
   float posY = m_guiBackground.GetYPosition();
 
-  if (m_guiLeft.GetFileName().IsEmpty() && m_guiRight.GetFileName().IsEmpty())
+  if (m_guiLeft.GetFileName().empty() && m_guiRight.GetFileName().empty())
   { // rendering without left and right image - fill the mid image completely
     float width = m_fPercent * m_width * 0.01f;
     float offset = fabs(fScaleY * 0.5f * (m_guiMid.GetTextureHeight() - m_guiBackground.GetTextureHeight()));

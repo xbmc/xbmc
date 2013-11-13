@@ -22,6 +22,7 @@
 #include "GUIInfoManager.h"
 #include "Key.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 #include "GUIWindowManager.h"
 
 static const SliderAction actions[] = {
@@ -251,8 +252,7 @@ void CGUISliderControl::SendClick()
   SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(percent));
   if (m_action && (!m_dragging || m_action->fireOnDrag))
   {
-    CStdString action;
-    action.Format(m_action->formatString, percent);
+    CStdString action = StringUtils::Format(m_action->formatString, percent);
     CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetStringParam(action);
     g_windowManager.SendMessage(message);    
@@ -591,29 +591,29 @@ void CGUISliderControl::SetInfo(int iInfo)
 
 CStdString CGUISliderControl::GetDescription() const
 {
-  if (!m_textValue.IsEmpty())
+  if (!m_textValue.empty())
     return m_textValue;
   CStdString description;
   if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
   {
     if (m_rangeSelection)
-      description.Format("[%2.2f, %2.2f]", m_floatValues[0], m_floatValues[1]);
+      description = StringUtils::Format("[%2.2f, %2.2f]", m_floatValues[0], m_floatValues[1]);
     else
-      description.Format("%2.2f", m_floatValues[0]);
+      description = StringUtils::Format("%2.2f", m_floatValues[0]);
   }
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
   {
     if (m_rangeSelection)
-      description.Format("[%i, %i]", m_intValues[0], m_intValues[1]);
+      description = StringUtils::Format("[%i, %i]", m_intValues[0], m_intValues[1]);
     else
-      description.Format("%i", m_intValues[0]);
+      description = StringUtils::Format("%i", m_intValues[0]);
   }
   else
   {
     if (m_rangeSelection)
-      description.Format("[%i%%, %i%%]", MathUtils::round_int(m_percentValues[0]), MathUtils::round_int(m_percentValues[1]));
+      description = StringUtils::Format("[%i%%, %i%%]", MathUtils::round_int(m_percentValues[0]), MathUtils::round_int(m_percentValues[1]));
     else
-      description.Format("%i%%", MathUtils::round_int(m_percentValues[0]));
+      description = StringUtils::Format("%i%%", MathUtils::round_int(m_percentValues[0]));
   }
   return description;
 }
@@ -643,7 +643,7 @@ void CGUISliderControl::SetAction(const CStdString &action)
 {
   for (size_t i = 0; i < sizeof(actions)/sizeof(SliderAction); i++)
   {
-    if (action.CompareNoCase(actions[i].action) == 0)
+    if (StringUtils::EqualsNoCase(action, actions[i].action))
     {
       m_action = &actions[i];
       return;

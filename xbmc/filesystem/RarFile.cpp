@@ -113,10 +113,10 @@ void CRarFileExtractThread::Process()
 
 CRarFile::CRarFile()
 {
-  m_strCacheDir.Empty();
-  m_strRarPath.Empty();
-  m_strPassword.Empty();
-  m_strPathInRar.Empty();
+  m_strCacheDir.clear();
+  m_strRarPath.clear();
+  m_strPassword.clear();
+  m_strPathInRar.clear();
   m_bFileOptions = 0;
 #ifdef HAS_FILESYSTEM_RAR
   m_pArc = NULL;
@@ -547,14 +547,14 @@ void CRarFile::InitFromUrl(const CURL& url)
   m_strPathInRar = url.GetFileName();
 
   vector<std::string> options;
-  StringUtils::Tokenize(url.GetOptions().Mid(1), options, "&");
+  StringUtils::Tokenize(url.GetOptions().substr(1), options, "&");
 
   m_bFileOptions = 0;
 
   for( vector<std::string>::iterator it = options.begin();it != options.end(); it++)
   {
-    int iEqual = (*it).find('=');
-    if( iEqual >= 0 )
+    size_t iEqual = (*it).find('=');
+    if(iEqual != std::string::npos)
     {
       CStdString strOption = StringUtils::Left((*it), iEqual);
       CStdString strValue = StringUtils::Mid((*it), iEqual+1);
@@ -708,7 +708,7 @@ bool CRarFile::OpenInArchive()
 
         /* replace back slashes into forward slashes */
         /* this could get us into troubles, file could two different files, one with / and one with \ */
-        strFileName.Replace('\\', '/');
+        StringUtils::Replace(strFileName, '\\', '/');
 
         if (strFileName == m_strPathInRar)
         {

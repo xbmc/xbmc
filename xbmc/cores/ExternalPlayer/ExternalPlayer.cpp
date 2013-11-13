@@ -183,8 +183,8 @@ void CExternalPlayer::Process()
         continue;
 
       CStdString strMatch = vecSplit[0];
-      strMatch.Replace(",,",",");
-      bool bCaseless = vecSplit[3].Find('i') > -1;
+      StringUtils::Replace(strMatch, ",,",",");
+      bool bCaseless = vecSplit[3].find('i') != std::string::npos;
       CRegExp regExp(bCaseless, true);
 
       if (!regExp.RegComp(strMatch.c_str()))
@@ -196,7 +196,7 @@ void CExternalPlayer::Process()
       if (regExp.RegFind(mainFile) > -1)
       {
         CStdString strPat = vecSplit[1];
-        strPat.Replace(",,",",");
+        StringUtils::Replace(strPat, ",,",",");
 
         if (!regExp.RegComp(strPat.c_str()))
         { // invalid regexp - complain in logs
@@ -205,14 +205,14 @@ void CExternalPlayer::Process()
         }
 
         CStdString strRep = vecSplit[2];
-        strRep.Replace(",,",",");
-        bool bGlobal = vecSplit[3].Find('g') > -1;
-        bool bStop = vecSplit[3].Find('s') > -1;
+        StringUtils::Replace(strRep, ",,",",");
+        bool bGlobal = vecSplit[3].find('g') != std::string::npos;
+        bool bStop = vecSplit[3].find('s') != std::string::npos;
         int iStart = 0;
         while ((iStart = regExp.RegFind(mainFile, iStart)) > -1)
         {
           int iLength = regExp.GetFindLen();
-          mainFile = mainFile.Left(iStart) + regExp.GetReplaceString(strRep).c_str() + mainFile.Mid(iStart + iLength);
+          mainFile = mainFile.substr(0, iStart) + regExp.GetReplaceString(strRep) + mainFile.substr(iStart + iLength);
           if (!bGlobal)
             break;
         }
@@ -233,7 +233,7 @@ void CExternalPlayer::Process()
   CStdString strFArgs;
 #if defined(TARGET_WINDOWS)
   // W32 batch-file handline
-  if (m_filename.Right(4) == ".bat" || m_filename.Right(4) == ".cmd")
+  if (StringUtils::EndsWith(m_filename, ".bat") || StringUtils::EndsWith(m_filename, ".cmd"))
   {
     // MSDN says you just need to do this, but cmd's handing of spaces and
     // quotes is soo broken it seems to work much better if you just omit
@@ -250,10 +250,10 @@ void CExternalPlayer::Process()
   strFArgs.append("\" ");
   strFArgs.append(m_args);
 
-  int nReplaced = strFArgs.Replace("{0}", mainFile);
+  int nReplaced = StringUtils::Replace(strFArgs, "{0}", mainFile);
 
   if (!nReplaced)
-    nReplaced = strFArgs.Replace("{1}", mainFile) + strFArgs.Replace("{2}", archiveContent);
+    nReplaced = StringUtils::Replace(strFArgs, "{1}", mainFile) + StringUtils::Replace(strFArgs, "{2}", archiveContent);
 
   if (!nReplaced)
   {
@@ -419,7 +419,7 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 
   if (m_bAbortRequest) return false;
 
-  BOOL ret = CreateProcessW(WstrPath.IsEmpty() ? NULL : WstrPath.c_str(),
+  BOOL ret = CreateProcessW(WstrPath.empty() ? NULL : WstrPath.c_str(),
                             (LPWSTR) WstrSwitches.c_str(), NULL, NULL, FALSE, NULL,
                             NULL, NULL, &si, &m_processInfo);
 
@@ -653,7 +653,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   {
 #ifdef TARGET_WINDOWS
     // Default depends on whether player is a batch file
-    m_hideconsole = m_filename.Right(4) == ".bat";
+    m_hideconsole = StringUtils::EndsWith(m_filename, ".bat");
 #endif
   }
 
@@ -738,15 +738,15 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
       XMLUtils::GetString(pReplacer,"pat",strPat);
       XMLUtils::GetString(pReplacer,"rep",strRep);
 
-      if (!strPat.IsEmpty() && !strRep.IsEmpty())
+      if (!strPat.empty() && !strRep.empty())
       {
         CLog::Log(LOGDEBUG,"  Registering replacer:");
         CLog::Log(LOGDEBUG,"    Match:[%s] Pattern:[%s] Replacement:[%s]", strMatch.c_str(), strPat.c_str(), strRep.c_str());
         CLog::Log(LOGDEBUG,"    Global:[%s] Stop:[%s]", bGlobal?"true":"false", bStop?"true":"false");
         // keep literal commas since we use comma as a seperator
-        strMatch.Replace(",",",,");
-        strPat.Replace(",",",,");
-        strRep.Replace(",",",,");
+        StringUtils::Replace(strMatch, ",",",,");
+        StringUtils::Replace(strPat, ",",",,");
+        StringUtils::Replace(strRep, ",",",,");
 
         CStdString strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
         if (iAction == 2)
@@ -757,7 +757,7 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
       else
       {
         // error message about missing tag
-        if (strPat.IsEmpty())
+        if (strPat.empty())
           CLog::Log(LOGERROR,"  Missing <Pat> tag");
         else
           CLog::Log(LOGERROR,"  Missing <Rep> tag");

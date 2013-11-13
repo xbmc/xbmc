@@ -79,7 +79,7 @@ void CSplash::Show(const CStdString& message)
   m_image->FreeResources();
 
   // render message
-  if (!message.IsEmpty())
+  if (!message.empty())
   {
     if (!m_layoutWasLoading)
     {
@@ -122,7 +122,7 @@ void CSplash::Process()
 
 bool CSplash::Start()
 {
-  if (m_ImageName.IsEmpty() || !CFile::Exists(m_ImageName))
+  if (m_ImageName.empty() || !CFile::Exists(m_ImageName))
   {
     CLog::Log(LOGDEBUG, "Splash image %s not found", m_ImageName.c_str());
     return false;

@@ -104,7 +104,7 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
       texturePath = m_texturePath.GetItemLabel(item, true);
     else
       texturePath = m_texturePath.GetLabel(m_parentID);
-    if (texturePath != m_currentPath && !texturePath.IsEmpty())
+    if (texturePath != m_currentPath && !texturePath.empty())
     {
       // a new path - set our current path and tell ourselves to load our directory
       m_currentPath = texturePath;
@@ -221,7 +221,7 @@ void CGUIMultiImage::LoadDirectory()
   m_files.clear();
 
   // don't load any images if our path is empty
-  if (m_currentPath.IsEmpty()) return;
+  if (m_currentPath.empty()) return;
 
   /* Check the fast cases:
    1. Picture extension
@@ -308,7 +308,7 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
     // Load in images from the directory specified
     // m_path is relative (as are all skin paths)
     CStdString realPath = g_TextureManager.GetTexturePath(m_path, true);
-    if (realPath.IsEmpty())
+    if (realPath.empty())
       return true;
 
     URIUtils::AddSlashAtEnd(realPath);

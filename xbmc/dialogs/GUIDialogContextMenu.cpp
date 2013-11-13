@@ -44,6 +44,7 @@
 #include "TextureCache.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "URL.h"
+#include "utils/StringUtils.h"
 
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
@@ -351,7 +352,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
 
       buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
     }
-    if (!GetDefaultShareNameByType(type).IsEmpty())
+    if (!GetDefaultShareNameByType(type).empty())
       buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
 
     buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
@@ -453,7 +454,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
     { // check default before we delete, as deletion will kill the share object
       CStdString defaultSource(GetDefaultShareNameByType(type));
-      if (!defaultSource.IsEmpty())
+      if (!defaultSource.empty())
       {
         if (share->strName.Equals(defaultSource))
           ClearDefault(type);
@@ -492,7 +493,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       CFileItemList items;
 
       // add the current thumb, if available
-      if (!share->m_strThumbnailImage.IsEmpty())
+      if (!share->m_strThumbnailImage.empty())
       {
         CFileItemPtr current(new CFileItem("thumb://Current", false));
         current->SetArt("thumb", share->m_strThumbnailImage);
@@ -541,7 +542,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         CMediaSourceSettings::Get().UpdateSource(type,share->strName,"thumbnail",strThumb);
         CMediaSourceSettings::Get().Save();
       }
-      else if (!strThumb.IsEmpty())
+      else if (!strThumb.empty())
       { // this is some sort of an auto-share, so store in the texture database
         CTextureDatabase db;
         if (db.Open())
@@ -565,7 +566,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       // password entry and re-entry succeeded, write out the lock data
       share->m_iHasLock = 2;
       CMediaSourceSettings::Get().UpdateSource(type, share->strName, "lockcode", strNewPassword);
-      strNewPassword.Format("%i",share->m_iLockMode);
+      strNewPassword = StringUtils::Format("%i", share->m_iLockMode);
       CMediaSourceSettings::Get().UpdateSource(type, share->strName, "lockmode", strNewPassword);
       CMediaSourceSettings::Get().UpdateSource(type, share->strName, "badpwdcount", "0");
       CMediaSourceSettings::Get().Save();
@@ -624,7 +625,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       CStdString strNewPW;
       CStdString strNewLockMode;
       if (CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW))
-        strNewLockMode.Format("%i",share->m_iLockMode);
+        strNewLockMode = StringUtils::Format("%i",share->m_iLockMode);
       else
         return false;
       // password ReSet and re-entry succeeded, write out the lock data
@@ -661,7 +662,7 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
     }
     // paths match, what about share name - only match the leftmost
     // characters as the label may contain other info (status for instance)
-    if (item->GetLabel().Left(testShare.strName.size()).Equals(testShare.strName))
+    if (StringUtils::StartsWithNoCase(item->GetLabel(), testShare.strName))
     {
       return &testShare;
     }

@@ -39,6 +39,7 @@
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 #include "WakeOnAccess.h"
 
@@ -174,8 +175,7 @@ public:
       int nest_level = NestDetect::Level();
       if (nest_level > 1)
       {
-        CStdString nest;
-        nest.Format("Nesting:%d", nest_level);
+        CStdString nest = StringUtils::Format("Nesting:%d", nest_level);
         m_dialog->SetLine(2, nest);
       }
     }
@@ -333,7 +333,7 @@ void CWakeOnAccess::WakeUpHost(const CURL& url)
 {
   CStdString hostName = url.GetHostName();
 
-  if (!hostName.IsEmpty())
+  if (!hostName.empty())
     WakeUpHost (hostName, url.Get());
 }
 
@@ -363,8 +363,7 @@ void CWakeOnAccess::WakeUpHost (const CStdString& hostName, const string& custom
 
 void CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 {
-  CStdString heading = LOCALIZED(13027);
-  heading.Format (heading, server.host);
+  CStdString heading = StringUtils::Format(LOCALIZED(13027), server.host.c_str());
 
   ProgressDialogHelper dlg (heading);
 
@@ -475,7 +474,7 @@ static void AddHost (const CStdString& host, vector<string>& hosts)
     if (host.Equals((*it).c_str()))
       return; // allready there ..
 
-  if (!host.IsEmpty())
+  if (!host.empty())
     hosts.push_back(host);
 }
 
@@ -564,8 +563,7 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const CStdString& host, const CStdStr
       {
         if (IsEnabled()) // show notification only if we have general feature enabled
         {
-          CStdString message = LOCALIZED(13034);
-          message.Format(message, host);
+          CStdString message = StringUtils::Format(LOCALIZED(13034), host.c_str());
           CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, 4000, true, 3000);
         }
 
@@ -586,8 +584,7 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const CStdString& host, const CStdStr
   CLog::Log(LOGDEBUG, "%s - Create new entry for host '%s'", __FUNCTION__, host.c_str());
   if (IsEnabled()) // show notification only if we have general feature enabled
   {
-    CStdString message = LOCALIZED(13035);
-    message.Format(message, host);
+    CStdString message = StringUtils::Format(LOCALIZED(13035), host.c_str());
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, 4000, true, 3000);
   }
 
@@ -614,8 +611,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     if (IsEnabled())
     {
       CStdString heading = LOCALIZED(13033);
-      CStdString message = LOCALIZED(13036);
-      message.Format(message, host);
+      CStdString message = StringUtils::Format(LOCALIZED(13036), host.c_str());
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, 4000, true, 3000);
     }
   }

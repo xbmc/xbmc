@@ -122,7 +122,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       {
         CStdString path = item->GetPath();
         CStdString videoInfoTagPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-        if (videoInfoTagPath.Find("removable://") == 0)
+        if (StringUtils::StartsWith(videoInfoTagPath, "removable://"))
           path = videoInfoTagPath;
         if (videodatabase.LoadVideoInfo(path, *item->GetVideoInfoTag()))
           id = item->GetVideoInfoTag()->m_iDbId;
@@ -142,7 +142,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       item->SetProperty(LOOKUP_PROPERTY, false);
 
       CStdString title = item->GetVideoInfoTag()->m_strTitle;
-      if (title.IsEmpty())
+      if (title.empty())
         title = item->GetLabel();
       object["item"]["title"] = title;
 
@@ -198,7 +198,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       item->SetProperty(LOOKUP_PROPERTY, false);
 
       CStdString title = item->GetMusicInfoTag()->GetTitle();
-      if (title.IsEmpty())
+      if (title.empty())
         title = item->GetLabel();
       object["item"]["title"] = title;
 

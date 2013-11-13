@@ -21,10 +21,17 @@
 #include "InfoBool.h"
 #include <stack>
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "GUIInfoManager.h"
 
 using namespace std;
 using namespace INFO;
+
+bool InfoBool::operator==(const InfoBool &right) const
+{
+  return (m_context == right.m_context &&
+          StringUtils::EqualsNoCase(m_expression, right.m_expression));
+}
 
 InfoSingle::InfoSingle(const CStdString &expression, int context)
 : InfoBool(expression, context)
@@ -79,7 +86,7 @@ void InfoExpression::Parse(const CStdString &expression)
     if (GetOperator(expression[i]))
     {
       // cleanup any operand, translate and put into our expression list
-      if (!operand.IsEmpty())
+      if (!operand.empty())
       {
         unsigned int info = g_infoManager.Register(operand, m_context);
         if (info)

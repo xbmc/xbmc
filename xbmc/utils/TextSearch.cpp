@@ -42,17 +42,17 @@ bool CTextSearch::IsValid(void) const
 
 bool CTextSearch::Search(const CStdString &strHaystack) const
 {
-  if (strHaystack.IsEmpty() || !IsValid())
+  if (strHaystack.empty() || !IsValid())
     return false;
 
   CStdString strSearch(strHaystack);
   if (!m_bCaseSensitive)
-    strSearch = strSearch.ToLower();
+    StringUtils::ToLower(strSearch);
 
   /* check whether any of the NOT terms matches and return false if there's a match */
   for (unsigned int iNotPtr = 0; iNotPtr < m_NOT.size(); iNotPtr++)
   {
-    if (strSearch.Find(m_NOT.at(iNotPtr)) != -1)
+    if (strSearch.find(m_NOT.at(iNotPtr)) != std::string::npos)
       return false;
   }
 
@@ -60,7 +60,7 @@ bool CTextSearch::Search(const CStdString &strHaystack) const
   bool bFound(m_OR.size() == 0);
   for (unsigned int iOrPtr = 0; iOrPtr < m_OR.size(); iOrPtr++)
   {
-    if (strSearch.Find(m_OR.at(iOrPtr)) != -1)
+    if (strSearch.find(m_OR.at(iOrPtr)) != std::string::npos)
     {
       bFound = true;
       break;
@@ -72,7 +72,7 @@ bool CTextSearch::Search(const CStdString &strHaystack) const
   /* check whether all of the AND terms match and return false if one of them wasn't found */
   for (unsigned int iAndPtr = 0; iAndPtr < m_AND.size(); iAndPtr++)
   {
-    if (strSearch.Find(m_AND[iAndPtr]) == -1)
+    if (strSearch.find(m_AND[iAndPtr]) == std::string::npos)
       return false;
   }
 
@@ -90,10 +90,10 @@ void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNe
     strFindNext = "\"";
   }
 
-  int iNextPos = strSearchTerm.Find(strFindNext);
-  if (iNextPos != -1)
+  size_t iNextPos = strSearchTerm.find(strFindNext);
+  if (iNextPos != std::string::npos)
   {
-    strNextTerm = strSearchTerm.Left(iNextPos);
+    strNextTerm = strSearchTerm.substr(0, iNextPos);
     strSearchTerm.erase(0, iNextPos + 1);
   }
   else
@@ -106,10 +106,10 @@ void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNe
 void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearchDefault defaultSearchMode)
 {
   CStdString strParsedSearchTerm(strSearchTerm);
-  strParsedSearchTerm = strParsedSearchTerm.Trim();
+  StringUtils::Trim(strParsedSearchTerm);
 
   if (!m_bCaseSensitive)
-    strParsedSearchTerm = strParsedSearchTerm.ToLower();
+    StringUtils::ToLower(strParsedSearchTerm);
 
   bool bNextAND(defaultSearchMode == SEARCH_DEFAULT_AND);
   bool bNextOR(defaultSearchMode == SEARCH_DEFAULT_OR);
@@ -117,7 +117,7 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
 
   while (strParsedSearchTerm.length() > 0)
   {
-    strParsedSearchTerm = strParsedSearchTerm.TrimLeft();
+    StringUtils::TrimLeft(strParsedSearchTerm);
 
     if (StringUtils::StartsWith(strParsedSearchTerm, "!") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "not"))
     {
@@ -160,6 +160,6 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
       bNextNOT = (defaultSearchMode == SEARCH_DEFAULT_NOT);
     }
 
-    strParsedSearchTerm = strParsedSearchTerm.TrimLeft();
+    StringUtils::TrimLeft(strParsedSearchTerm);
   }
 }

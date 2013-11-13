@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "LangInfo.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"

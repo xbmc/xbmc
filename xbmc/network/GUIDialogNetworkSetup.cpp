@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIEditControl.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
 
@@ -64,10 +65,10 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_PROTOCOL)
       {
-        m_server.Empty();
-        m_path.Empty();
-        m_username.Empty();
-        m_password.Empty();
+        m_server.clear();
+        m_path.clear();
+        m_username.clear();
+        m_password.clear();
         OnProtocolChange();
       }
       else if (iControl == CONTROL_SERVER_BROWSE)
@@ -316,7 +317,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
 
   // TODO: FIX BETTER DAAP SUPPORT
   // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS, HTSP, VTP, TUXBOX, DAV or DAVS
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.IsEmpty() || !(m_protocol == NET_PROTOCOL_FTP ||
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.empty() || !(m_protocol == NET_PROTOCOL_FTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTPS ||
                                                                               m_protocol == NET_PROTOCOL_DAV ||
@@ -367,13 +368,13 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   else if (m_protocol == NET_PROTOCOL_AFP)
     url.SetProtocol("afp");
     
-  if (!m_username.IsEmpty())
+  if (!m_username.empty())
   {
     url.SetUserName(m_username);
-    if (!m_password.IsEmpty())
+    if (!m_password.empty())
       url.SetPassword(m_password);
   }
-  if(!m_server.IsEmpty())
+  if(!m_server.empty())
     url.SetHostName(m_server);
   if (((m_protocol == NET_PROTOCOL_FTP) ||
        (m_protocol == NET_PROTOCOL_HTTP) ||
@@ -381,18 +382,18 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_DAV) ||
        (m_protocol == NET_PROTOCOL_DAVS) ||
        (m_protocol == NET_PROTOCOL_RSS) ||
-       (m_protocol == NET_PROTOCOL_DAAP && !m_server.IsEmpty()) ||
+       (m_protocol == NET_PROTOCOL_DAAP && !m_server.empty()) ||
        (m_protocol == NET_PROTOCOL_HTSP) ||
        (m_protocol == NET_PROTOCOL_VTP) ||
        (m_protocol == NET_PROTOCOL_MYTH) ||
        (m_protocol == NET_PROTOCOL_TUXBOX) ||
        (m_protocol == NET_PROTOCOL_SFTP) ||
        (m_protocol == NET_PROTOCOL_NFS))
-      && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
+      && !m_port.empty() && atoi(m_port.c_str()) > 0)
   {
     url.SetPort(atoi(m_port));
   }
-  if (!m_path.IsEmpty())
+  if (!m_path.empty())
     url.SetFileName(m_path);
   return url.Get();
 }
@@ -437,7 +438,7 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_SMB;  // default to smb
   m_username = url.GetUserName();
   m_password = url.GetPassWord();
-  m_port.Format("%i", url.GetPort());
+  m_port = StringUtils::Format("%i", url.GetPort());
   m_server = url.GetHostName();
   m_path = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(m_path);

@@ -42,6 +42,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/Environment.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 // default Broadcom registy bits (setup when installing a CrystalHD card)
 #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
@@ -227,7 +228,7 @@ CStdString CWIN32Util::GetLocalPath(const CStdString &strPath)
 {
   CURL url(strPath);
   CStdString strLocalPath = url.GetFileName();
-  strLocalPath.Replace(url.GetShareName()+"/","");
+  StringUtils::Replace(strLocalPath, url.GetShareName()+"/", "");
   return strLocalPath;
 }
 
@@ -312,29 +313,29 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   CStdString strParams;
   CStdString strWorkingDir;
 
-  strCommand.Trim();
-  if (strCommand.IsEmpty())
+  StringUtils::Trim(strCommand);
+  if (strCommand.empty())
   {
     return false;
   }
-  int iIndex = -1;
+  size_t iIndex = std::string::npos;
   char split = ' ';
   if (strCommand[0] == '\"')
   {
     split = '\"';
   }
-  iIndex = strCommand.Find(split, 1);
-  if (iIndex != -1)
+  iIndex = strCommand.find(split, 1);
+  if (iIndex != std::string::npos)
   {
     strExe = strCommand.substr(0, iIndex + 1);
     strParams = strCommand.substr(iIndex + 1);
   }
 
-  strExe.Replace("\"","");
+  StringUtils::Replace(strExe, "\"", "");
 
   strWorkingDir = strExe;
-  iIndex = strWorkingDir.ReverseFind('\\');
-  if(iIndex != -1)
+  iIndex = strWorkingDir.rfind('\\');
+  if(iIndex != std::string::npos)
   {
     strWorkingDir[iIndex+1] = '\0';
   }
@@ -400,7 +401,7 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
       if( DRIVE_FIXED == GetDriveType( strDrive.c_str()  ) &&
         GetDiskFreeSpaceEx( ( strDrive.c_str() ), NULL, &ULTotal, &ULTotalFree ) )
       {
-        strRet.Format("%s %d MB %s",strDrive.c_str(), int(ULTotalFree.QuadPart/(1024*1024)),g_localizeStrings.Get(160));
+        strRet = StringUtils::Format("%s %d MB %s",strDrive.c_str(), int(ULTotalFree.QuadPart/(1024*1024)),g_localizeStrings.Get(160));
         result.push_back(strRet);
       }
       iPos += (strlen( pcBuffer + iPos) + 1 );
@@ -412,13 +413,11 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
 
 CStdString CWIN32Util::GetResInfoString()
 {
-  CStdString strRes;
   DEVMODE devmode;
   ZeroMemory(&devmode, sizeof(devmode));
   devmode.dmSize = sizeof(devmode);
   EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-  strRes.Format("Desktop Resolution: %dx%d %dBit at %dHz",devmode.dmPelsWidth,devmode.dmPelsHeight,devmode.dmBitsPerPel,devmode.dmDisplayFrequency);
-  return strRes;
+  return StringUtils::Format("Desktop Resolution: %dx%d %dBit at %dHz",devmode.dmPelsWidth,devmode.dmPelsHeight,devmode.dmBitsPerPel,devmode.dmDisplayFrequency);
 }
 
 int CWIN32Util::GetDesktopColorDepth()
@@ -480,7 +479,7 @@ CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
   if(StringUtils::StartsWith(strRetPath, "\\\\"))
   {
     strRetPath = "smb:" + strPath;
-    strRetPath.Replace("\\","/");
+    StringUtils::Replace(strRetPath, '\\', '/');
   }
   return strRetPath;
 }
@@ -490,8 +489,8 @@ CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
   CStdString strRetPath(strPath);
   if(StringUtils::StartsWithNoCase(strRetPath, "smb://"))
   {
-    strRetPath.Replace("smb://","\\\\");
-    strRetPath.Replace("/","\\");
+    StringUtils::Replace(strRetPath, "smb://", "\\\\");
+    StringUtils::Replace(strRetPath, '/', '\\');
   }
   return strRetPath;
 }
@@ -560,7 +559,7 @@ void CWIN32Util::ExtendDllPath()
   CStdString strEnv;
   CStdStringArray vecEnv;
   strEnv = CEnvironment::getenv("PATH");
-  if (strEnv.IsEmpty())
+  if (strEnv.empty())
     CLog::Log(LOGWARNING, "Can get system env PATH or PATH is empty");
 
   StringUtils::SplitString(DLL_ENV_PATH, ";", vecEnv);
@@ -587,12 +586,10 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  CStdString strVolFormat;
-  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+  CStdString strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
   HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                              NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  CStdString strRootFormat;
-  strRootFormat.Format( _T("%c:\\"), cDL);
+  CStdString strRootFormat = StringUtils::Format( _T("%c:\\"), cDL);
   if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) &&
       ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
   {
@@ -605,7 +602,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   // unmount it here too as it won't hurt
   if(dwReq == IOCTL_STORAGE_EJECT_MEDIA && bRet == 1)
   {
-    strRootFormat.Format( _T("%c:"), cDL);
+    strRootFormat = StringUtils::Format( _T("%c:"), cDL);
     CMediaSource share;
     share.strPath = strRootFormat;
     share.strName = share.strPath;
@@ -625,8 +622,7 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  CStdString strVolFormat;
-  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+  CStdString strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
 
   if(GetDriveStatus(strVolFormat, true) != 1)
     return ToggleTray(cDL);
@@ -645,8 +641,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  CStdString strVolFormat;
-  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+  CStdString strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
 
   if(GetDriveStatus(strVolFormat, true) == 1)
     return ToggleTray(cDL);
@@ -739,8 +734,7 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   if( !cDriveLetter )
     return false;
 
-  CStdString strVolFormat;
-  strVolFormat.Format( _T("\\\\.\\%c:" ), cDriveLetter);
+  CStdString strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDriveLetter);
 
   long DiskNumber = -1;
 
@@ -872,7 +866,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
       UINT uDriveType= GetDriveTypeW( strWdrive.c_str()  );
       // don't use GetVolumeInformation on fdd's as the floppy controller may be enabled in Bios but
       // no floppy HW is attached which causes huge delays.
-      if(!strWdrive.Left(2).Equals(L"A:") && !strWdrive.Left(2).Equals(L"B:"))
+      if(strWdrive.substr(0,2) != L"A:" && strWdrive.substr(0,2) != L"B:")
         nResult= GetVolumeInformationW( strWdrive.c_str() , cVolumeName, 100, 0, 0, 0, NULL, 25);
       if(nResult == 0 && bonlywithmedia)
       {
@@ -915,25 +909,25 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
           switch(uDriveType)
           {
           case DRIVE_CDROM:
-            share.strName.Format( "%s (%s)", share.strPath, g_localizeStrings.Get(218));
+            share.strName = StringUtils::Format( "%s (%s)", share.strPath.c_str(), g_localizeStrings.Get(218).c_str());
             break;
           case DRIVE_REMOVABLE:
-            if(share.strName.IsEmpty())
-              share.strName.Format( "%s (%s)", g_localizeStrings.Get(437), share.strPath);
+            if(share.strName.empty())
+              share.strName = StringUtils::Format( "%s (%s)", g_localizeStrings.Get(437).c_str(), share.strPath.c_str());
             break;
           case DRIVE_UNKNOWN:
-            share.strName.Format( "%s (%s)", share.strPath, g_localizeStrings.Get(13205));
+            share.strName = StringUtils::Format( "%s (%s)", share.strPath.c_str(), g_localizeStrings.Get(13205).c_str());
             break;
           default:
             if(share.strName.empty())
               share.strName = share.strPath;
             else
-              share.strName.Format( "%s (%s)", share.strPath, share.strName);
+              share.strName = StringUtils::Format( "%s (%s)", share.strPath.c_str(), share.strName.c_str());
             break;
           }
         }
-        share.strName.Replace(":\\",":");
-        share.strPath.Replace(":\\",":");
+        StringUtils::Replace(share.strName, ":\\", ":");
+        StringUtils::Replace(share.strPath, ":\\", ":");
         share.m_ignore= true;
         if( !bUseDCD )
         {
@@ -983,7 +977,8 @@ CStdString CWIN32Util::GetDiskLabel(const CStdString& strPath)
   URIUtils::AddSlashAtEnd(strDrive);
   if(GetVolumeInformation(strDrive.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
-  return CStdString(cVolumenName).TrimRight(" ");
+  CStdString volume = cVolumenName;
+  return StringUtils::TrimRight(volume, " ");
 }
 
 extern "C"
@@ -1431,7 +1426,7 @@ bool CWIN32Util::GetCrystalHDLibraryPath(CStdString &strPath)
   CStdString strRegKey;
 
   CLog::Log(LOGDEBUG, "CrystalHD: detecting CrystalHD installation path");
-  strRegKey.Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
+  strRegKey = StringUtils::Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
 
   if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
   {
@@ -1597,8 +1592,7 @@ extern "C"
 
 bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
 {
-  CStdStringW strWDevicePath;
-  strWDevicePath.Format(L"\\\\.\\%s",strWdrive.Left(2));
+  CStdStringW strWDevicePath = StringUtils::Format(L"\\\\.\\%s",strWdrive.substr(0, 2).c_str());
 
   HANDLE deviceHandle = CreateFileW(
     strWDevicePath.c_str(),
@@ -1637,3 +1631,15 @@ bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
 
   return BusTypeUsb == busType;
  }
+
+CStdString CWIN32Util::WUSysMsg(DWORD dwError)
+{
+  #define SS_DEFLANGID MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT)
+  CHAR szBuf[512];
+
+  if ( 0 != ::FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
+                             SS_DEFLANGID, szBuf, 511, NULL) )
+    return StringUtils::Format("%s (0x%X)", szBuf, dwError);
+  else
+    return StringUtils::Format("Unknown error (0x%X)", dwError);
+}

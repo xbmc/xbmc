@@ -32,6 +32,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
@@ -48,7 +49,7 @@ void CRenderSystemGL::CheckOpenGLQuirks()
 
 {
 #ifdef TARGET_DARWIN_OSX
-  if (m_RenderVendor.Find("NVIDIA") > -1)
+  if (m_RenderVendor.find("NVIDIA") != std::string::npos)
   {             
     // Nvidia 7300 (AppleTV) and 7600 cannot do DXT with NPOT under OSX
     // Nvidia 9400M is slow as a dog
@@ -67,14 +68,14 @@ void CRenderSystemGL::CheckOpenGLQuirks()
   }
 #ifdef __ppc__
   // ATI Radeon 9600 on osx PPC cannot do NPOT
-  if (m_RenderRenderer.Find("ATI Radeon 9600") > -1)
+  if (m_RenderRenderer.find("ATI Radeon 9600") != std::string::npos)
   {
     m_renderCaps &= ~ RENDER_CAPS_NPOT;
     m_renderCaps &= ~ RENDER_CAPS_DXT_NPOT;
   }
 #endif
 #endif
-  if (m_RenderVendor.ToLower() == "nouveau")
+  if (StringUtils::EqualsNoCase(m_RenderVendor, "nouveau"))
     m_renderQuirks |= RENDER_QUIRKS_YV12_PREFERED;
 
   if (m_RenderVendor.Equals("Tungsten Graphics, Inc.")
@@ -92,7 +93,7 @@ void CRenderSystemGL::CheckOpenGLQuirks()
     else
       CLog::Log(LOGNOTICE, "CRenderSystemGL::CheckOpenGLQuirks - unable to parse mesa version string");
 
-    if(m_RenderRenderer.Find("Poulsbo") >= 0)
+    if(m_RenderRenderer.find("Poulsbo") != std::string::npos)
       m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
 
     m_renderQuirks |= RENDER_QUIRKS_BROKEN_OCCLUSION_QUERY;

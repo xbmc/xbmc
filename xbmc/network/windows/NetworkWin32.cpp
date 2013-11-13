@@ -26,6 +26,8 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
+#include "utils/StringUtils.h"
+#include "win32/WIN32Util.h"
 
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003
@@ -78,7 +80,7 @@ CStdString CNetworkInterfaceWin32::GetMacAddress()
 {
   CStdString result;
   unsigned char* mAddr = m_adapter.Address;
-  result.Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
+  result = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
 }
 
@@ -276,7 +278,7 @@ bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 20
 
   DWORD lastErr = GetLastError();
   if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
-    CLog::Log(LOGERROR, "%s - IcmpSendEcho failed - %s", __FUNCTION__, WUSysMsg(lastErr).c_str());
+    CLog::Log(LOGERROR, "%s - IcmpSendEcho failed - %s", __FUNCTION__, CWIN32Util::WUSysMsg(lastErr).c_str());
 
   IcmpCloseHandle (hIcmpFile);
 
@@ -301,7 +303,7 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, CStdString& m
   {
     if (PhysAddrLen == 6)
     {
-      mac.Format("%02X:%02X:%02X:%02X:%02X:%02X", 
+      mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", 
         bPhysAddr[0], bPhysAddr[1], bPhysAddr[2], 
         bPhysAddr[3], bPhysAddr[4], bPhysAddr[5]);
       return true;
@@ -375,7 +377,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
         CStdString essId((char*)bss_entry.dot11Ssid.ucSSID, (unsigned int)bss_entry.dot11Ssid.uSSIDLength);
         CStdString macAddress;
         // macAddress is big-endian, write in byte chunks
-        macAddress.Format("%02x-%02x-%02x-%02x-%02x-%02x",
+        macAddress = StringUtils::Format("%02x-%02x-%02x-%02x-%02x-%02x",
           bss_entry.dot11Bssid[0], bss_entry.dot11Bssid[1], bss_entry.dot11Bssid[2],
           bss_entry.dot11Bssid[3], bss_entry.dot11Bssid[4], bss_entry.dot11Bssid[5]);
         int signalLevel = bss_entry.lRssi;

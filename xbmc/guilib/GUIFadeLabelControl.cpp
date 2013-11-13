@@ -248,7 +248,7 @@ CStdString CGUIFadeLabelControl::GetLabel()
 
   unsigned int numTries = 0;
   CStdString label(m_infoLabels[m_currentLabel].GetLabel(m_parentID));
-  while (label.IsEmpty() && ++numTries < m_infoLabels.size())
+  while (label.empty() && ++numTries < m_infoLabels.size())
   {
     if (++m_currentLabel >= m_infoLabels.size())
       m_currentLabel = 0;

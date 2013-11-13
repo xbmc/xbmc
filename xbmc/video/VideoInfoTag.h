@@ -76,7 +76,7 @@ public:
 
   const CStdString& GetPath() const
   {
-    if (m_strFileNameAndPath.IsEmpty())
+    if (m_strFileNameAndPath.empty())
       return m_strPath;
     return m_strFileNameAndPath;
   };

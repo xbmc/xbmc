@@ -324,7 +324,7 @@ bool CD3DEffect::CreateEffect()
 	{
 		D3DXMACRO m;
 		m.Name = it->first.c_str();
-    if (it->second.IsEmpty())
+    if (it->second.empty())
       m.Definition = NULL;
     else
 		  m.Definition = it->second.c_str();

@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/StringUtils.h"
 
 CGUIColorManager g_colorManager;
 
@@ -59,7 +60,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
     LoadXML(xmlDoc);
 
   // now the color map requested
-  if (colorFile.CompareNoCase("SKINDEFAULT") == 0)
+  if (StringUtils::EqualsNoCase(colorFile, "SKINDEFAULT"))
     return; // nothing to do
 
   path = URIUtils::AddFileToFolder(basePath, colorFile);
@@ -107,7 +108,7 @@ color_t CGUIColorManager::GetColor(const CStdString &color) const
 {
   // look in our color map
   CStdString trimmed(color);
-  trimmed.TrimLeft("= ");
+  StringUtils::TrimLeft(trimmed, "= ");
   icColor it = m_colors.find(trimmed);
   if (it != m_colors.end())
     return (*it).second;

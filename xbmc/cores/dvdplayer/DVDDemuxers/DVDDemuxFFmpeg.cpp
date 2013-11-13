@@ -48,6 +48,7 @@
 #include "threads/Thread.h"
 #include "threads/SystemClock.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
@@ -122,10 +123,8 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
     default            : type = LOGDEBUG;   break;
   }
 
-  CStdString message, prefix;
-  message.FormatV(format, va);
-
-  prefix.Format("ffmpeg[%X]: ", threadId);
+  CStdString message = StringUtils::FormatV(format, va);
+  CStdString prefix = StringUtils::Format("ffmpeg[%X]: ", threadId);
   if(avc)
   {
     if(avc->item_name)
@@ -154,7 +153,7 @@ static void ff_flush_avutil_log_buffers(void)
      add a new buffer next time it writes to the log */
   std::map<uintptr_t, CStdString>::iterator it;
   for (it = g_logbuffer.begin(); it != g_logbuffer.end(); )
-    if ((*it).second.IsEmpty())
+    if ((*it).second.empty())
       g_logbuffer.erase(it++);
     else
       ++it;
@@ -1442,7 +1441,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
       if (strlen(fourcc) == 4)
       {
         strName = fourcc;
-        strName.MakeLower();
+        StringUtils::ToLower(strName);
         return;
       }
     }

@@ -130,7 +130,7 @@ const CStdString GetIcon(const ADDON::TYPE& type)
   { \
     CStdString fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
     if (fan.Equals("true")) \
-      y.Empty(); \
+      y.clear(); \
   }
 
 AddonProps::AddonProps(const cp_extension_t *ext)
@@ -158,7 +158,7 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
     CStdString language;
     language = CAddonMgr::Get().GetExtValue(metadata->configuration, "language");
-    if (!language.IsEmpty())
+    if (!language.empty())
       extrainfo.insert(make_pair("language",language));
     broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
     EMPTY_IF("nofanart",fanart)
@@ -276,7 +276,7 @@ CAddon::CAddon(const cp_plugin_info_t *plugin)
 CAddon::CAddon(const AddonProps &props)
   : m_props(props)
 {
-  if (props.libname.IsEmpty()) BuildLibName();
+  if (props.libname.empty()) BuildLibName();
   else m_strLibName = props.libname;
   BuildProfilePath();
   m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
@@ -588,7 +588,7 @@ TiXmlElement* CAddon::GetSettingsXML()
 
 void CAddon::BuildProfilePath()
 {
-  m_profile.Format("special://profile/addon_data/%s/", ID().c_str());
+  m_profile = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
 }
 
 const CStdString CAddon::Icon() const

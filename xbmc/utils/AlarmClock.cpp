@@ -24,6 +24,7 @@
 #include "threads/SingleLock.h"
 #include "log.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -39,7 +40,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
 {
   // make lower case so that lookups are case-insensitive
   CStdString lowerName(strName);
-  lowerName.ToLower();
+  StringUtils::ToLower(lowerName);
   Stop(lowerName);
   SAlarmClockEvent event;
   event.m_fSecs = n_secs;
@@ -54,7 +55,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
 
   CStdString strAlarmClock;
   CStdString strStarted;
-  if (strName.CompareNoCase("shutdowntimer") == 0)
+  if (StringUtils::EqualsNoCase(strName, "shutdowntimer"))
   {
     strAlarmClock = g_localizeStrings.Get(20144);
     strStarted = g_localizeStrings.Get(20146);
@@ -65,9 +66,9 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
     strStarted = g_localizeStrings.Get(13210);
   }
 
-  CStdString strMessage;
-
-  strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60,static_cast<int>(event.m_fSecs)%60);
+  CStdString strMessage = StringUtils::Format(strStarted.c_str(),
+                                              static_cast<int>(event.m_fSecs)/60,
+                                              static_cast<int>(event.m_fSecs)%60);
 
   if(!bSilent)
      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
@@ -83,7 +84,7 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
   CSingleLock lock(m_events);
 
   CStdString lowerName(strName);
-  lowerName.ToLower();          // lookup as lowercase only
+  StringUtils::ToLower(lowerName);          // lookup as lowercase only
   map<CStdString,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
 
   if (iter == m_event.end())
@@ -104,9 +105,11 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
   {
     float remaining = static_cast<float>(iter->second.m_fSecs-iter->second.watch.GetElapsedSeconds());
     CStdString strStarted = g_localizeStrings.Get(13212);
-    strMessage.Format(strStarted.c_str(),static_cast<int>(remaining)/60,static_cast<int>(remaining)%60);
+    strMessage = StringUtils::Format(strStarted.c_str(),
+                                     static_cast<int>(remaining)/60,
+                                     static_cast<int>(remaining)%60);
   }
-  if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
+  if (iter->second.m_strCommand.empty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
   {
     if(!bSilent)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);

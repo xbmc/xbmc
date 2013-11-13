@@ -48,7 +48,7 @@ bool CFileAndroidApp::Open(const CURL& url)
 
   m_url = url;
   m_appname =  URIUtils::GetFileName(url.Get());
-  m_appname = m_appname.Left(m_appname.size() - 4);
+  m_appname = m_appname.substr(0, m_appname.size() - 4);
 
   return m_appname.size() > 0;
 }

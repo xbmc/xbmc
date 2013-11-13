@@ -25,6 +25,7 @@
 #include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -54,9 +55,9 @@ bool CSlingboxFile::Open(const CURL& url)
 
   // Prepare to connect to the Slingbox
   bool bAdmin;
-  if (url.GetUserName().CompareNoCase("administrator") == 0)
+  if (StringUtils::EqualsNoCase(url.GetUserName(), "administrator"))
     bAdmin = true;
-  else if (url.GetUserName().CompareNoCase("viewer") == 0)
+  else if (StringUtils::EqualsNoCase(url.GetUserName(), "viewer"))
     bAdmin = false;
   else
   {
@@ -429,12 +430,11 @@ bool CSlingboxFile::SelectChannel(unsigned int uiChannel)
   else if (uiButtonsWithCode == 10)
   {
     // Prepare variables
-    CStdString strDigits;
-    strDigits.Format("%u", uiChannel);
-    unsigned int uiNumberOfDigits = strDigits.GetLength();
+    CStdString strDigits = StringUtils::Format("%u", uiChannel);
+    size_t uiNumberOfDigits = strDigits.size();
 
     // Change the channel using IR commands
-    for (unsigned int i = 0; i < uiNumberOfDigits; i++)
+    for (size_t i = 0; i < uiNumberOfDigits; i++)
     {
       if (m_pSlingbox->SendIRCommand(m_sSlingboxSettings.uiCodeNumber[strDigits[i] - '0']))
       {
@@ -528,7 +528,7 @@ void CSlingboxFile::LoadSettings(const CStdString& strHostname)
     pElement = pElement->NextSiblingElement("slingbox"))
   {
     if (pElement->Attribute("hostname") == NULL ||      
-      !m_sSlingboxSettings.strHostname.CompareNoCase(pElement->Attribute("hostname")))
+      StringUtils::EqualsNoCase(m_sSlingboxSettings.strHostname, pElement->Attribute("hostname")))
     {
       // Load setting values
       XMLUtils::GetInt(pElement, "width", m_sSlingboxSettings.iVideoWidth, 0, 640);

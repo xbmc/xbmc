@@ -105,7 +105,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       m_rootDir.AllowNonLocalSources(false);
 
       // is this the first time the window is opened?
-      if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
+      if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
         message.SetStringParam(CSettings::Get().GetString("mymusic.defaultlibview"));
       
       DisplayEmptyDatabaseMessage(false); // reset message state
@@ -257,7 +257,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size()) return false;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (item->GetPath().Left(14) == "musicsearch://")
+  if (StringUtils::StartsWith(item->GetPath(), "musicsearch://"))
   {
     if (m_searchWithEdit)
       OnSearchUpdate();
@@ -294,7 +294,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   if (m_bDisplayEmptyDatabaseMessage)
     return true;
 
-  if (strDirectory.IsEmpty())
+  if (strDirectory.empty())
     AddSearchFolder();
 
   bool bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
@@ -365,8 +365,7 @@ void CGUIWindowMusicNav::UpdateButtons()
       StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
-  CStdString items;
-  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  CStdString items = StringUtils::Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
@@ -570,7 +569,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         long idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
           return false;
-        CStdString path; path.Format("musicdb://artists/%ld/", idArtist);
+        CStdString path = StringUtils::Format("musicdb://artists/%ld/", idArtist);
         CArtist artist;
         m_musicdatabase.GetArtistInfo(idArtist,artist,false);
         *item = CFileItem(artist);
@@ -587,7 +586,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         long idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
           return false;
-        CStdString path; path.Format("musicdb://albums/%ld/", idAlbum);
+        CStdString path = StringUtils::Format("musicdb://albums/%ld/", idAlbum);
         CAlbum album;
         m_musicdatabase.GetAlbumInfo(idAlbum,album,NULL);
         *item = CFileItem(path,album);
@@ -598,7 +597,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         return true;
       }
 
-      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty())
+      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.empty())
       {
         CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
         if (pWindow)
@@ -630,7 +629,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CVideoDatabase database;
       database.Open();
-      strPath.Format("videodb://musicvideos/artists/%ld/",database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator)));
+      strPath = StringUtils::Format("videodb://musicvideos/artists/%ld/",
+                                    database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator)));
       g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
       return true;
     }
@@ -685,10 +685,10 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CDirectoryNode::GetDatabaseInfo(item->GetPath(), params);
       CONTENT_TYPE content = CONTENT_ALBUMS;
       if (params.GetAlbumId() != -1)
-        path.Format("musicdb://albums/%i/",params.GetAlbumId());
+        path = StringUtils::Format("musicdb://albums/%i/",params.GetAlbumId());
       else if (params.GetArtistId() != -1)
       {
-        path.Format("musicdb://artists/%i/",params.GetArtistId());
+        path = StringUtils::Format("musicdb://artists/%i/",params.GetArtistId());
         content = CONTENT_ARTISTS;
       }
 
@@ -768,7 +768,7 @@ void CGUIWindowMusicNav::OnSearchUpdate()
 {
   CStdString search(GetProperty("search").asString());
   CURL::Encode(search);
-  if (!search.IsEmpty())
+  if (!search.empty())
   {
     CStdString path = "musicsearch://" + search + "/";
     m_history.ClearSearchHistory();

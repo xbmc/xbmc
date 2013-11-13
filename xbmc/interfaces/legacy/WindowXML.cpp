@@ -27,6 +27,7 @@
 #include "addons/Skin.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "addons/Addon.h"
 
 // These #defs are for WindowXML
@@ -432,7 +433,9 @@ namespace XBMCAddon
       XBMC_TRACE;
       // load our window
       XFILE::CFile file;
-      if (!file.Open(strPath) && !file.Open(CStdString(strPath).ToLower()) && !file.Open(strLowerPath))
+      std::string strPathLower = strPath;
+      StringUtils::ToLower(strPathLower);
+      if (!file.Open(strPath) && !file.Open(strPathLower) && !file.Open(strLowerPath))
       {
         // fail - can't load the file
         CLog::Log(LOGERROR, "%s: Unable to load skin file %s", __FUNCTION__, strPath.c_str());

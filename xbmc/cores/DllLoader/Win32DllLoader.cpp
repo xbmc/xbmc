@@ -342,9 +342,9 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
   CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc");
   CStdString homePath = CSpecialProtocol::TranslatePath("special://home");
   CStdString tempPath = CSpecialProtocol::TranslatePath("special://temp");
-  return ((strncmp(xbmcPath.c_str(), dllPath.c_str(), xbmcPath.GetLength()) == 0) ||
-    (strncmp(homePath.c_str(), dllPath.c_str(), homePath.GetLength()) == 0) ||
-    (strncmp(tempPath.c_str(), dllPath.c_str(), tempPath.GetLength()) == 0));
+  return ((strncmp(xbmcPath.c_str(), dllPath.c_str(), xbmcPath.size()) == 0) ||
+    (strncmp(homePath.c_str(), dllPath.c_str(), homePath.size()) == 0) ||
+    (strncmp(tempPath.c_str(), dllPath.c_str(), tempPath.size()) == 0));
 }
 
 void Win32DllLoader::RestoreImports()

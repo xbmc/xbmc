@@ -95,17 +95,17 @@ bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startF
   if (pInfo == NULL)
     return false;
 
-  if (mediaPath.IsEmpty() && pInfo->IsAudio(1))
+  if (mediaPath.empty() && pInfo->IsAudio(1))
     mediaPath = "cdda://local/";
 
-  if (mediaPath.IsEmpty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
+  if (mediaPath.empty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
     mediaPath = "iso9660://";
 
-  if (mediaPath.IsEmpty())
+  if (mediaPath.empty())
     mediaPath = path;
 
 #ifdef TARGET_WINDOWS
-  if (mediaPath.IsEmpty() || mediaPath.CompareNoCase("iso9660://") == 0)
+  if (mediaPath.empty() || mediaPath == "iso9660://")
     mediaPath = g_mediaManager.TranslateDevicePath("");
 #endif
 
@@ -179,7 +179,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           item.SetLabel(g_mediaManager.GetDiskLabel(strDrive));
           item.GetVideoInfoTag()->m_strFileNameAndPath = g_mediaManager.GetDiskUniqueId(strDrive);
 
-          if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+          if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.empty())
             item.m_lStartOffset = STARTOFFSET_RESUME;
 
           g_application.PlayFile(item, false);
@@ -196,7 +196,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           item.SetLabel(g_mediaManager.GetDiskLabel(strDrive));
           item.GetVideoInfoTag()->m_strFileNameAndPath = g_mediaManager.GetDiskUniqueId(strDrive);
 
-          if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+          if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.empty())
             item.m_lStartOffset = STARTOFFSET_RESUME;
 
           g_application.PlayFile(item, false);
@@ -283,7 +283,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             item.SetLabel(g_mediaManager.GetDiskLabel(strDrive));
             item.GetVideoInfoTag()->m_strFileNameAndPath = g_mediaManager.GetDiskUniqueId(strDrive);
 
-            if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+            if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.empty())
             item.m_lStartOffset = STARTOFFSET_RESUME;
 
             // get playername
@@ -318,7 +318,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           strExt = ".mpg";
 
         // If a file format was extracted we are sure this is a VCD. Autoplay if settings indicate we should.
-        if (!strExt.IsEmpty() && bAllowVideo
+        if (!strExt.empty() && bAllowVideo
              && (bypassSettings || CSettings::Get().GetBool("dvds.autorun")))
         {
           CFileItemList items;
@@ -338,8 +338,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
               && (bypassSettings))
         {
           bPlaying = true;
-          CStdString strExec;
-          strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->GetPath().c_str());
+          CStdString strExec = StringUtils::Format("XBMC.RecursiveSlideShow(%s)", pItem->GetPath().c_str());
           CBuiltins::Execute(strExec);
           return true;
         }
@@ -416,8 +415,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       if (!pItem->m_bIsFolder && pItem->IsPicture())
       {
         bPlaying = true;
-        CStdString strExec;
-        strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
+        CStdString strExec = StringUtils::Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
         CBuiltins::Execute(strExec);
         break;
       }
@@ -488,7 +486,7 @@ bool CAutorun::PlayDiscAskResume(const CStdString& path)
 bool CAutorun::CanResumePlayDVD(const CStdString& path)
 {
   CStdString strUniqueId = g_mediaManager.GetDiskUniqueId(path);
-  if (!strUniqueId.IsEmpty())
+  if (!strUniqueId.empty())
   {
     CVideoDatabase dbs;
     dbs.Open();

@@ -229,7 +229,7 @@ void CScreenShot::TakeScreenshot()
     }
   }
 
-  if (strDir.IsEmpty())
+  if (strDir.empty())
   {
     strDir = "special://temp/";
     if (!savingScreenshots)
@@ -241,11 +241,11 @@ void CScreenShot::TakeScreenshot()
   }
   URIUtils::RemoveSlashAtEnd(strDir);
 
-  if (!strDir.IsEmpty())
+  if (!strDir.empty())
   {
     CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strDir, "screenshot%03d.png"), 999);
 
-    if (!file.IsEmpty())
+    if (!file.empty())
     {
       TakeScreenshot(file, false);
       if (savingScreenshots)
@@ -263,7 +263,7 @@ void CScreenShot::TakeScreenshot()
           }
         }
 
-        if (!newDir.IsEmpty())
+        if (!newDir.empty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
           {
