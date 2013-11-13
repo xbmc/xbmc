@@ -579,7 +579,7 @@ void CPlexAutoUpdate::UpdateAndRestart()
 
     system(exec.c_str());
 
-    exit(0);
+    _exit(0);
   }
   else
   {
