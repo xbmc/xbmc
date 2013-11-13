@@ -1,0 +1,31 @@
+Upstream fixes:
+      Linux/Windows: Fix A/V sync issues caused by wrong buffer time calculation
+      Sound distortion fixes
+      [osx/mavericks] - hide the menubar not only when on mainscreen - mavericks has menubars on all screens - always hide them
+
+PHT Fixes:
+      Fix issue with remote play when running server and client on same machine
+      Fix 100% CPU in the background issue with theme music.
+      Install both vcredist 2012 and 2010 on windows
+      PHT now selects correct Audio Stream based on language
+      OSX: Channel mapping bugs corrected.
+      Make the myPlex notification silent
+      OSX: Remove 'airplay' from the output devices list.
+      Fix rating dialog.
+      Fanouts are now less jerky when quickly scrolling through sections on the home window
+      Windows: When selecting a HD format (TrueHD/DTS-MA) disable direct sound outputs.
+      If no servers has channels don't show the item on the home window.
+      If the primary server went away, we need to select a new one.
+      OSX: Codesigning for mavericks fixed.
+      OSX: Seeking is now much faster and reliable.
+      OSX: Crashes on Mavericks and dual monitors.
+
+PHT New
+      Something new and exiciting can be found when you start the app.
+      New auto-update framework for all platforms.
+      Remove webkit support
+      Show warnings when trying to play WebKit, ISO and unreachable files.
+      Linux builds can now use FFmpeg from the lib directory
+      Support Plex Media Server paging. Much faster loading!
+      Rewritten Search window to be much faster and reliable.
+      
