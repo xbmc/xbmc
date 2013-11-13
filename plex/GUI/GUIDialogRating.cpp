@@ -83,6 +83,9 @@ void CGUIDialogRating::SetRating(float iRating)
   Initialize();
   
   CGUIImage* image = (CGUIImage*)GetControl(10);
+  if (!image)
+    return;
+
   CStdString fileName;
   fileName.Format("rating%d.png", (int)(iRating + 0.5f));
   image->SetFileName(fileName);
