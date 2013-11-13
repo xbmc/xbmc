@@ -1630,3 +1630,15 @@ bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
 
   return BusTypeUsb == busType;
  }
+
+CStdString CWIN32Util::WUSysMsg(DWORD dwError)
+{
+  #define SS_DEFLANGID MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT)
+  CHAR szBuf[512];
+
+  if ( 0 != ::FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
+                             SS_DEFLANGID, szBuf, 511, NULL) )
+    return StringUtils::Format("%s (0x%X)", szBuf, dwError);
+  else
+    return StringUtils::Format("Unknown error (0x%X)", dwError);
+}
