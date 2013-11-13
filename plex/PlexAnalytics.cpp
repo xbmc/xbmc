@@ -62,9 +62,9 @@ CPlexAnalytics::CPlexAnalytics() : m_timer(this), m_firstEvent(true), m_numberOf
 void CPlexAnalytics::didUpgradeEvent(bool success, const std::string &fromVersion, const std::string &toVersion, bool delta)
 {
   CUrlOptions o;
+  o.AddOption("cd9", (int)delta);
   o.AddOption("cd10", fromVersion);
   o.AddOption("cd11", toVersion);
-  o.AddOption("cm1", (int)delta);
   trackEvent("App", "Upgrade", success ? "success" : "failed", (int)success, o);
 }
 
