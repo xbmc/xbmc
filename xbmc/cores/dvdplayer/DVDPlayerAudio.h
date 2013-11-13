@@ -152,7 +152,7 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
-  int DecodeFrame(DVDAudioFrame &audioframe, int priority);
+  int DecodeFrame(DVDAudioFrame &audioframe);
 
   void UpdatePlayerInfo();
 
