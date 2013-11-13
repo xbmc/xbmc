@@ -241,7 +241,7 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 }
 
 // decode one audio frame and returns its uncompressed size
-int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, int priority)
+int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
 {
   int result = 0;
 
@@ -319,6 +319,14 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, int priority)
     int timeout  = (int)(1000 * m_dvdAudio.GetCacheTime()) + 100;
 
     // read next packet and return -1 on error
+    int priority = 1;
+    //Do we want a new audio frame?
+    if (m_started == false                /* when not started */
+    ||  m_speed   == DVD_PLAYSPEED_NORMAL /* when playing normally */
+    ||  m_speed   <  DVD_PLAYSPEED_PAUSE  /* when rewinding */
+    || (m_speed   >  DVD_PLAYSPEED_NORMAL && m_audioClock < m_pClock->GetClock())) /* when behind clock in ff */
+      priority = 0;
+
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
 
     if (ret == MSGQ_TIMEOUT)
@@ -483,18 +491,7 @@ void CDVDPlayerAudio::Process()
 
   while (!m_bStop)
   {
-    int priority;
-
-    //Do we want a new audio frame?
-    if (m_started == false                /* when not started */
-    ||  m_speed   == DVD_PLAYSPEED_NORMAL /* when playing normally */
-    ||  m_speed   <  DVD_PLAYSPEED_PAUSE  /* when rewinding */
-    || (m_speed   >  DVD_PLAYSPEED_NORMAL && m_audioClock < m_pClock->GetClock())) /* when behind clock in ff */
-      priority = 0;
-    else
-      priority = 1;
-
-    int result = DecodeFrame(audioframe, priority);
+    int result = DecodeFrame(audioframe);
 
     //Drop when not playing normally
     if(m_speed   != DVD_PLAYSPEED_NORMAL
