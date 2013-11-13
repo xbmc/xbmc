@@ -58,7 +58,13 @@ public:
   static bool GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet);
   static bool SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet);
 
+  static bool GetItemsForTag(const CStdString &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
+  static bool AddItemsToTag(const CFileItemPtr &tagItem);
+  static bool RemoveItemsFromTag(const CFileItemPtr &tagItem);
+
   static bool ManageVideoItemArtwork(const CFileItemPtr &item, const std::string &type);
+
+  static std::string GetLocalizedVideoType(const std::string &strType);
 protected:
   virtual void OnInitWindow();
   void Update();
