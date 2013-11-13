@@ -20,13 +20,17 @@
 #include "PlexApplication.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
-CPlexRemoteSubscriber::CPlexRemoteSubscriber(const std::string &uuid, const std::string &ipaddress, int port, int commandID, const std::string &protocol)
+CPlexRemoteSubscriber::CPlexRemoteSubscriber(const std::string &uuid, int commandID, const std::string &ipaddress, int port, const std::string &protocol)
 {
-  m_url.SetProtocol(protocol);
-  m_url.SetHostName(ipaddress);
-  m_url.SetPort(port);
-  m_commandID = commandID;
+  if (!protocol.empty() && !ipaddress.empty())
+  {
+    m_url.SetProtocol(protocol);
+    m_url.SetHostName(ipaddress);
+    m_url.SetPort(port);
+  }
 
+  m_poller = false;
+  m_commandID = commandID;
   m_uuid = uuid;
 }
 
@@ -60,9 +64,9 @@ void CPlexRemoteSubscriber::refresh(CPlexRemoteSubscriberPtr sub)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-void CPlexRemoteSubscriberManager::addSubscriber(CPlexRemoteSubscriberPtr subscriber)
+CPlexRemoteSubscriberPtr CPlexRemoteSubscriberManager::addSubscriber(CPlexRemoteSubscriberPtr subscriber)
 {
-  if (!subscriber) return;
+  if (!subscriber) return CPlexRemoteSubscriberPtr();
   
   CSingleLock lk(m_crit);
   
@@ -80,6 +84,8 @@ void CPlexRemoteSubscriberManager::addSubscriber(CPlexRemoteSubscriberPtr subscr
   
   if (!m_refreshTimer.IsRunning())
     m_refreshTimer.Start(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, true);
+
+  return m_map[subscriber->getUUID()];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,6 +112,19 @@ void CPlexRemoteSubscriberManager::removeSubscriber(CPlexRemoteSubscriberPtr sub
   
   if (m_map.size() == 0)
     m_refreshTimer.Stop();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexRemoteSubscriberPtr CPlexRemoteSubscriberManager::findSubscriberByUUID(const std::string &uuid)
+{
+  if (uuid.empty())
+    return CPlexRemoteSubscriberPtr();
+
+  CSingleLock lk(m_crit);
+  if (m_map.find(uuid) != m_map.end())
+    return m_map[uuid];
+
+  return CPlexRemoteSubscriberPtr();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

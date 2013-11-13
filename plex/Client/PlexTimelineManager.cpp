@@ -69,7 +69,10 @@ void CPlexTimelineManager::SendTimelineToSubscriber(CPlexRemoteSubscriberPtr sub
   if (!subscriber)
     return;
 
-  CXBMCTinyXML timelineXML = GetCurrentTimeLinesXML(subscriber->getCommandID());
+  if (subscriber->isPoller())
+    return;
+
+  CXBMCTinyXML timelineXML = GetCurrentTimeLinesXML(subscriber);
   if (!timelineXML.FirstChild())
     return;
 
@@ -126,7 +129,17 @@ void CPlexTimelineManager::UpdateLocation()
 void CPlexTimelineManager::Stop()
 {
   m_stopped = true;
-  m_pollEvent.Set();
+  NotifyPollers();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexTimelineManager::NotifyPollers()
+{
+  BOOST_FOREACH(CPlexRemoteSubscriberPtr sub, g_plexApplication.remoteSubscriberManager->getSubscribers())
+  {
+    if (sub->isPoller() && sub->m_pollEvent.getNumWaits() > 0)
+      sub->m_pollEvent.Set();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -314,14 +327,12 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
     }
   }
 
-  if ((m_pollEvent.getNumWaits() > 0 || g_plexApplication.remoteSubscriberManager->hasSubscribers()) &&
+  if (g_plexApplication.remoteSubscriberManager->hasSubscribers() &&
       (stateChange || (positionUpdate && m_subTimer.elapsedMs() >= 950)))
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating subscribers.");
-    m_pollEvent.Set();
-
+    NotifyPollers();
     SendTimelineToSubscribers();
-
     m_subTimer.restart();
   }
 
@@ -416,16 +427,18 @@ CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(const CStdStr
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CXBMCTinyXML CPlexTimelineManager::WaitForTimeline(int commandID)
+CXBMCTinyXML CPlexTimelineManager::WaitForTimeline(CPlexRemoteSubscriberPtr subscriber)
 {
-  CLog::Log(LOGDEBUG, "CPlexTimelineManager::WaitForTimeline - waiting until pollEvent is set.");
-  m_pollEvent.Reset();
+  if (!subscriber)
+    return NULL;
 
-  if (m_pollEvent.Wait())
-  {
-    if (!m_stopped)
-      return GetCurrentTimeLinesXML(commandID);
-  }
+  CLog::Log(LOGDEBUG, "CPlexTimelineManager::WaitForTimeline - %s is waiting until pollEvent is set.", subscriber->getUUID().c_str());
+
+  subscriber->m_pollEvent.Reset();
+  subscriber->m_pollEvent.WaitMSec(10000); /* wait 10 seconds */
+
+  if (!m_stopped)
+    return GetCurrentTimeLinesXML(subscriber);
 
   return NULL;
 }
@@ -443,7 +456,7 @@ std::vector<CUrlOptions> CPlexTimelineManager::GetCurrentTimeLines(int commandID
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(int commandID)
+CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(CPlexRemoteSubscriberPtr subscriber)
 {
   std::vector<CUrlOptions> tlines = GetCurrentTimeLines();
 
@@ -458,8 +471,8 @@ CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(int commandID)
     mediaContainer->SetAttribute("textFieldContent", std::string(m_textFieldContents));
   }
 
-  if (commandID != -1)
-    mediaContainer->SetAttribute("commandID", commandID);
+  if (subscriber->getCommandID() != -1)
+    mediaContainer->SetAttribute("commandID", subscriber->getCommandID());
 
   BOOST_FOREACH(CUrlOptions options, tlines)
   {

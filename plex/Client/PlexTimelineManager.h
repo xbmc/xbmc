@@ -35,14 +35,14 @@ class CPlexTimelineManager : public ITimerCallback
 
     void ReportProgress(const CFileItemPtr &currentItem, MediaState state, uint64_t currentPosition=0);
     std::vector<CUrlOptions> GetCurrentTimeLines(int commandID = -1);
-    CXBMCTinyXML GetCurrentTimeLinesXML(int commandID = -1);
+    CXBMCTinyXML GetCurrentTimeLinesXML(CPlexRemoteSubscriberPtr subscriber);
     CUrlOptions GetCurrentTimeline(CPlexTimelineManager::MediaType type, bool forServer=true);
 
     static std::string StateToString(MediaState state);
     static std::string MediaTypeToString(CPlexTimelineManager::MediaType type);
     CPlexTimelineManager::MediaType GetMediaType(CFileItemPtr item);
     CPlexTimelineManager::MediaType GetMediaType(const CStdString &typestr);
-    CXBMCTinyXML WaitForTimeline(int commandID = -1);
+    CXBMCTinyXML WaitForTimeline(CPlexRemoteSubscriberPtr subscriber);
     uint64_t GetItemDuration(CFileItemPtr item);
 
     void SendTimelineToSubscriber(CPlexRemoteSubscriberPtr subscriber);
@@ -65,8 +65,6 @@ class CPlexTimelineManager : public ITimerCallback
     CPlexTimer m_subTimer;
     CPlexTimer m_serverTimer;
 
-    CEvent m_pollEvent;
-
     bool m_stopped;
     bool m_textFieldFocused;
     CStdString m_textFieldName;
@@ -74,6 +72,7 @@ class CPlexTimelineManager : public ITimerCallback
     bool m_textFieldSecure;
 
     CTimer m_subscriberTimer;
+    void NotifyPollers();
 };
 
 typedef boost::shared_ptr<CPlexTimelineManager> CPlexTimelineManagerPtr;

@@ -157,12 +157,20 @@ void CPlexHTTPRemoteHandler::updateCommandID(const HTTPRequest &request, const A
     return;
   }
 
-  CPlexRemoteSubscriberPtr subscriber = getSubFromRequest(request, arguments);
-  if (subscriber)
+  int commandID = -1;
+  try { commandID = boost::lexical_cast<int>(arguments.find("commandID")->second); }
+  catch (boost::bad_lexical_cast) { return; }
+
+  std::string uuid = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, "X-Plex-Client-Identifier");
+  if (uuid.empty())
   {
-    g_plexApplication.remoteSubscriberManager->updateSubscriberCommandID(subscriber);
+    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::updateCommandID subscriber didn't set X-Plex-Client-Identifier");
+    return;
   }
 
+  CPlexRemoteSubscriberPtr sub = g_plexApplication.remoteSubscriberManager->findSubscriberByUUID(uuid);
+  if (sub)
+    sub->setCommandID(commandID);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -705,25 +713,45 @@ void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &arguments)
 {
   bool wait = false;
+
+  std::string uuid = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, "X-Plex-Client-Identifier");
+  int commandID = -1;
+
+  if (arguments.find("commandID") != arguments.end())
+  {
+    try { commandID = boost::lexical_cast<int>(arguments.find("commandID")->second); }
+    catch (boost::bad_lexical_cast) {}
+  }
+
+  if (commandID == -1 || uuid.empty())
+  {
+    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::poll the poller needs to set both X-Plex-Client-Identifier header and commandID arguments.");
+    return;
+  }
+
+  CPlexRemoteSubscriberPtr pollSubscriber = CPlexRemoteSubscriber::NewPollSubscriber(uuid, commandID);
+  if (!pollSubscriber)
+    return;
+
+  pollSubscriber = g_plexApplication.remoteSubscriberManager->addSubscriber(pollSubscriber);
+
   if (arguments.find("wait") != arguments.end())
   {
     if (arguments.find("wait")->second == "1" || arguments.find("wait")->second == "true")
       wait = true;
   }
 
-  int commandID = -1;
-  if (arguments.find("commandID") != arguments.end())
-    commandID = boost::lexical_cast<int>(arguments.find("commandID")->second);
-
   if (wait)
-    m_xmlOutput = g_plexApplication.timelineManager->WaitForTimeline(commandID);
+    m_xmlOutput = g_plexApplication.timelineManager->WaitForTimeline(pollSubscriber);
   else
-    m_xmlOutput = g_plexApplication.timelineManager->GetCurrentTimeLinesXML(commandID);
+    m_xmlOutput = g_plexApplication.timelineManager->GetCurrentTimeLinesXML(pollSubscriber);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
 {
   PLAYLIST::CPlayList playlist;
