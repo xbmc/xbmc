@@ -31,6 +31,7 @@ CWinSystemX11GL::CWinSystemX11GL()
   m_glXWaitVideoSyncSGI  = NULL;
   m_glXSwapIntervalSGI   = NULL;
   m_glXSwapIntervalMESA  = NULL;
+  m_glXSwapIntervalEXT   = NULL;
 
   m_iVSyncErrors = 0;
 }
@@ -115,29 +116,31 @@ bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 void CWinSystemX11GL::SetVSyncImpl(bool enable)
 {
   /* turn of current setting first */
-  if(m_glXSwapIntervalSGI)
-    m_glXSwapIntervalSGI(0);
-  if(m_glXSwapIntervalMESA)
+  if(m_glXSwapIntervalEXT)
+    m_glXSwapIntervalEXT(m_dpy, m_glWindow, 0);
+  else if(m_glXSwapIntervalMESA)
     m_glXSwapIntervalMESA(0);
+  else if(m_glXSwapIntervalSGI)
+    m_glXSwapIntervalSGI(0);
 
   m_iVSyncErrors = 0;
-
-  CStdString strVendor(m_RenderVendor);
-  StringUtils::ToLower(strVendor);
 
   if(!enable)
     return;
 
-  bool vendor_nvidia = strVendor.find("nvidia") != std::string::npos;
-
-  if (m_glXSwapIntervalMESA && !m_iVSyncMode && !vendor_nvidia)
+  if (m_glXSwapIntervalEXT && !m_iVSyncMode)
+  {
+    m_glXSwapIntervalEXT(m_dpy, m_glWindow, 1);
+    m_iVSyncMode = 6;
+  }
+  if (m_glXSwapIntervalMESA && !m_iVSyncMode)
   {
     if(m_glXSwapIntervalMESA(1) == 0)
       m_iVSyncMode = 2;
     else
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
   }
-  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && !vendor_nvidia)
+  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode)
   {
     unsigned int count;
     if(m_glXGetVideoSyncSGI(&count) == 0)
@@ -199,6 +202,10 @@ bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, R
   else
     m_glXSwapIntervalMESA = NULL;
 
+  if (IsExtSupported("GLX_EXT_swap_control"))
+    m_glXSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)glXGetProcAddress((const GLubyte*)"glXSwapIntervalEXT");
+  else
+    m_glXSwapIntervalEXT = NULL;
 
   return true;
 }
