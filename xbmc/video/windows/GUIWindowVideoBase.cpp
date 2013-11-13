@@ -755,6 +755,15 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     if (pItem->IsParentFolder())
       return;
 
+    // check if it's a folder with dvd or bluray files, then just add the relevant file
+    std::string mediapath(pItem->GetOpticalMediaPath());
+    if (!mediapath.empty())
+    {
+      CFileItemPtr item(new CFileItem(mediapath, false));
+      queuedItems.Add(item);
+      return;
+    }
+
     // Check if we add a locked share
     if ( pItem->m_bIsShareOrDrive )
     {
