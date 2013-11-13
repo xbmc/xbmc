@@ -27,6 +27,7 @@
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "win32/WIN32Util.h"
 
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003
@@ -277,7 +278,7 @@ bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 20
 
   DWORD lastErr = GetLastError();
   if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
-    CLog::Log(LOGERROR, "%s - IcmpSendEcho failed - %s", __FUNCTION__, WUSysMsg(lastErr).c_str());
+    CLog::Log(LOGERROR, "%s - IcmpSendEcho failed - %s", __FUNCTION__, CWIN32Util::WUSysMsg(lastErr).c_str());
 
   IcmpCloseHandle (hIcmpFile);
 

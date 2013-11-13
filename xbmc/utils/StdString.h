@@ -3601,135 +3601,17 @@ private:
 #endif  // #ifdef _MFC_VER -- (i.e. is this MFC?)
 
 
-
-// -----------------------------------------------------------------------------
-// GLOBAL FUNCTION:  WUFormat
-//    CStdStringA WUFormat(UINT nId, ...);
-//    CStdStringA WUFormat(PCSTR szFormat, ...);
-//
-// REMARKS:
-//    This function allows the caller for format and return a CStdStringA
-//    object with a single line of code.
-// -----------------------------------------------------------------------------
-#ifdef SS_ANSI
-#else
-  inline CStdStringA WUFormatA(UINT nId, ...)
-  {
-    va_list argList;
-    va_start(argList, nId);
-
-    CStdStringA strFmt;
-    CStdStringA strOut;
-    if ( strFmt.Load(nId) )
-      strOut.FormatV(strFmt, argList);
-
-    va_end(argList);
-    return strOut;
-  }
-  inline CStdStringA WUFormatA(PCSTR szFormat, ...)
-  {
-    va_list argList;
-    va_start(argList, szFormat);
-    CStdStringA strOut;
-    strOut.FormatV(szFormat, argList);
-    va_end(argList);
-    return strOut;
-  }
-  inline CStdStringW WUFormatW(UINT nId, ...)
-  {
-    va_list argList;
-    va_start(argList, nId);
-
-    CStdStringW strFmt;
-    CStdStringW strOut;
-    if ( strFmt.Load(nId) )
-      strOut.FormatV(strFmt, argList);
-
-    va_end(argList);
-    return strOut;
-  }
-  inline CStdStringW WUFormatW(PCWSTR szwFormat, ...)
-  {
-    va_list argList;
-    va_start(argList, szwFormat);
-    CStdStringW strOut;
-    strOut.FormatV(szwFormat, argList);
-    va_end(argList);
-    return strOut;
-  }
-#endif // #ifdef SS_ANSI
-
-
-
-#if defined(SS_WIN32) && !defined (SS_ANSI)
-  // -------------------------------------------------------------------------
-  // FUNCTION: WUSysMessage
-  //   CStdStringA WUSysMessageA(DWORD dwError, DWORD dwLangId=SS_DEFLANGID);
-  //   CStdStringW WUSysMessageW(DWORD dwError, DWORD dwLangId=SS_DEFLANGID);
-  //
-  // DESCRIPTION:
-  //   This function simplifies the process of obtaining a string equivalent
-  //   of a system error code returned from GetLastError().  You simply
-  //   supply the value returned by GetLastError() to this function and the
-  //   corresponding system string is returned in the form of a CStdStringA.
-  //
-  // PARAMETERS:
-  //   dwError - a DWORD value representing the error code to be translated
-  //   dwLangId - the language id to use.  defaults to english.
-  //
-  // RETURN VALUE:
-  //   a CStdStringA equivalent of the error code.  Currently, this function
-  //   only returns either English of the system default language strings.
-  // -------------------------------------------------------------------------
-  #define SS_DEFLANGID MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT)
-  inline CStdStringA WUSysMessageA(DWORD dwError, DWORD dwLangId=SS_DEFLANGID)
-  {
-    CHAR szBuf[512];
-
-    if ( 0 != ::FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
-                   dwLangId, szBuf, 511, NULL) )
-      return WUFormatA("%s (0x%X)", szBuf, dwError);
-    else
-       return WUFormatA("Unknown error (0x%X)", dwError);
-  }
-  inline CStdStringW WUSysMessageW(DWORD dwError, DWORD dwLangId=SS_DEFLANGID)
-  {
-    WCHAR szBuf[512];
-
-    if ( 0 != ::FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
-                   dwLangId, szBuf, 511, NULL) )
-      return WUFormatW(L"%s (0x%X)", szBuf, dwError);
-    else
-       return WUFormatW(L"Unknown error (0x%X)", dwError);
-  }
-#endif
-
 // Define TCHAR based friendly names for some of these functions
 
 #ifdef UNICODE
   //#define CStdString        CStdStringW
   typedef CStdStringW        CStdString;
-  #define WUSysMessage      WUSysMessageW
-  #define WUFormat        WUFormatW
 #else
   //#define CStdString        CStdStringA
   typedef CStdStringA        CStdString;
-  #define WUSysMessage      WUSysMessageA
-  #define WUFormat        WUFormatA
 #endif
 
 // ...and some shorter names for the space-efficient
-
-#define WUSysMsg          WUSysMessage
-#define WUSysMsgA          WUSysMessageA
-#define WUSysMsgW          WUSysMessageW
-#define WUFmtA            WUFormatA
-#define  WUFmtW            WUFormatW
-#define WUFmt            WUFormat
-#define WULastErrMsg()        WUSysMessage(::GetLastError())
-#define WULastErrMsgA()        WUSysMessageA(::GetLastError())
-#define WULastErrMsgW()        WUSysMessageW(::GetLastError())
-
 
 // -----------------------------------------------------------------------------
 // FUNCTIONAL COMPARATORS:
