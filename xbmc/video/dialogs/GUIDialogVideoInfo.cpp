@@ -944,13 +944,13 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
   if (!database.Open())
     return -1;
 
-  VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)item->GetVideoContentType();
+  const std::string &type = item->GetVideoInfoTag()->m_type;
   int dbId = item->GetVideoInfoTag()->m_iDbId;
 
   CContextButtons buttons;
   buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
 
-  if (type == VIDEODB_CONTENT_MOVIES || type == VIDEODB_CONTENT_TVSHOWS)
+  if (type == "movie" || type == "tvshow")
     buttons.Add(CONTEXT_BUTTON_EDIT_SORTTITLE, 16107);
 
   if (item->m_bIsFolder)
@@ -967,7 +967,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
       buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
   }
 
-  if (type == VIDEODB_CONTENT_MOVIES)
+  if (type == "movie")
   {
     // only show link/unlink if there are tvshows available
     if (database.HasContent(VIDEODB_CONTENT_TVSHOWS))
@@ -981,7 +981,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
     buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
   }
 
-  if (type == VIDEODB_CONTENT_EPISODES &&
+  if (type == "episode" &&
       item->GetVideoInfoTag()->m_iBookmarkId > 0)
     buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
 
