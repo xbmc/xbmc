@@ -43,6 +43,8 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
     void WriteUpdateInfo();
     bool GetUpdateInfo(std::string& version, bool& isDelta, std::string& packageHash, std::string& fromVersion) const;
 
+    int GetDownloadPercentage() const { return m_percentage; }
+
   private:
     void CheckInstalledVersion();
     void DownloadUpdate(CFileItemPtr updateItem);
@@ -71,6 +73,7 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
     CFileItemPtr GetPackage(CFileItemPtr updateItem);
     bool NeedDownload(const std::string& localFile, const std::string& expectedHash);
     bool RenameLocalBinary();
+    int m_percentage;
 
     std::vector<std::string> GetAllInstalledVersions() const;
 };

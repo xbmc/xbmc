@@ -472,6 +472,10 @@ msgctxt "#40028"
 msgid "Update Available!"
 msgstr "Update Available!"
 
+msgctxt "#40030"
+msgid "Downloading update %d%%..."
+msgstr "Downloading update %d%%..."
+
 #empty strings from id 40029 to 40099
 
 msgctxt "#40100"

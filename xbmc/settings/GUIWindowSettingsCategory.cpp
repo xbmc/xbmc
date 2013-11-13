@@ -1151,11 +1151,37 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
       {
 #ifdef ENABLE_AUTOUPDATE
-        pControl->SetEnabled(true);
         if (g_plexApplication.autoUpdater->IsReadyToInstall())
+        {
+          pControl->SetEnabled(true);
           pControl->SetLabel(g_localizeStrings.Get(40018));
+        }
         else
-          pControl->SetLabel(g_localizeStrings.Get(40016));
+        {
+          if (g_plexApplication.autoUpdater->IsSearchingForUpdate())
+          {
+            if (GetFocusedControlID() == pControl->GetID())
+            {
+              BaseSettingControlPtr channel = GetSetting("updates.channel");
+              if (channel)
+                SET_CONTROL_FOCUS(channel->GetID(), 0);
+            }
+            pControl->SetEnabled(false);
+            pControl->SetLabel(g_localizeStrings.Get(40001));
+          }
+          else if (g_plexApplication.autoUpdater->IsDownloadingUpdate())
+          {
+            pControl->SetEnabled(false);
+            CStdString dl;
+            dl.Format(g_localizeStrings.Get(40030), g_plexApplication.autoUpdater->GetDownloadPercentage());
+            pControl->SetLabel(dl);
+          }
+          else
+          {
+            pControl->SetEnabled(true);
+            pControl->SetLabel(g_localizeStrings.Get(40016));
+          }
+        }
 #endif
       }
     }

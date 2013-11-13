@@ -34,13 +34,9 @@ using namespace XFILE;
 //#define UPDATE_DEBUG 1
 
 CPlexAutoUpdate::CPlexAutoUpdate()
-  : m_forced(false), m_isSearching(false), m_isDownloading(false),  m_timer(this), m_ready(false)
+  : m_forced(false), m_isSearching(false), m_isDownloading(false),  m_timer(this), m_ready(false), m_percentage(0)
 {
-#ifdef UPDATE_DEBUG
-  m_url = CURL("https://mystaging.plexapp.com/updater/products/1/check.xml");
-#else
   m_url = CURL("https://my.plexapp.com/updater/products/2/check.xml");
-#endif
 
   m_searchFrequency = 86400000; /* default to 24h */
 
@@ -87,7 +83,7 @@ void CPlexAutoUpdate::OnTimeout()
   m_isSearching = true;
 
 #ifdef UPDATE_DEBUG
-  m_url.SetOption("version", "0.0.0.0");
+  m_url.SetOption("version", "1.0.0.117-a97636ae");
 #else
   m_url.SetOption("version", g_infoManager.GetVersion());
 #endif
@@ -126,8 +122,6 @@ void CPlexAutoUpdate::OnTimeout()
     }
   }
 
-  Sleep(5000);
-
   CLog::Log(LOGDEBUG, "CPlexAutoUpdate::OnTimeout found %d candidates", updates.Size());
   CFileItemPtr selectedItem;
 
@@ -150,6 +144,13 @@ void CPlexAutoUpdate::OnTimeout()
   {
     CLog::Log(LOGINFO, "CPlexAutoUpdate::OnTimeout update found! %s", selectedItem->GetProperty("version").asString().c_str());
     DownloadUpdate(selectedItem);
+
+    if (m_forced)
+    {
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", "A new version downloading in the background", 10000, false);
+      m_forced = false;
+    }
+
     m_timer.Stop();
     return;
   }
@@ -168,6 +169,8 @@ void CPlexAutoUpdate::OnTimeout()
     m_timer.Stop();
 
   m_isSearching = false;
+  CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, WINDOW_SETTINGS_MYPICTURES);
+  CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_SETTINGS_SYSTEM);
 }
 
 CFileItemPtr CPlexAutoUpdate::GetPackage(CFileItemPtr updateItem)
@@ -347,6 +350,9 @@ void CPlexAutoUpdate::ProcessDownloads()
   CGUIMessage msg(GUI_MSG_UPDATE, PLEX_AUTO_UPDATER, 0);
   CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_HOME);
 
+  msg = CGUIMessage(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, WINDOW_SETTINGS_MYPICTURES);
+  CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_SETTINGS_SYSTEM);
+
   m_isDownloading = false;
   m_ready = true;
   m_timer.Stop(); // no need to poll for any more updates
@@ -395,6 +401,17 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 
 void CPlexAutoUpdate::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
 {
+  const CPlexDownloadFileJob *fj = static_cast<const CPlexDownloadFileJob*>(job);
+  if (!fj || fj->m_destination != m_localBinary)
+    return;
+
+  int percentage = (int)((float)progress / float(total) * 100.0);
+  if (percentage > m_percentage)
+  {
+    m_percentage = percentage;
+    CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, WINDOW_SETTINGS_MYPICTURES);
+    CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_SETTINGS_SYSTEM);
+  }
 }
 
 bool CPlexAutoUpdate::RenameLocalBinary()
