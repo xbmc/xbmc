@@ -19,11 +19,14 @@
  */
 
 #include "AndroidMouse.h"
+#include "AndroidExtra.h"
 #include "XBMCApp.h"
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "windowing/WinEvents.h"
 #include "input/MouseStat.h"
+
+//#define DEBUG_VERBOSE
 
 CAndroidMouse::CAndroidMouse()
 {
@@ -42,7 +45,9 @@ bool CAndroidMouse::onMouseEvent(AInputEvent* event)
   int8_t mouseAction = eventAction & AMOTION_EVENT_ACTION_MASK;
   size_t mousePointer = eventAction >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
 
+#ifdef DEBUG_VERBOSE
   CXBMCApp::android_printf("%s pointer:%i", __PRETTY_FUNCTION__, mousePointer);
+#endif
   float x = AMotionEvent_getX(event, mousePointer);
   float y = AMotionEvent_getY(event, mousePointer);
 
@@ -51,6 +56,9 @@ bool CAndroidMouse::onMouseEvent(AInputEvent* event)
     case AMOTION_EVENT_ACTION_UP:
     case AMOTION_EVENT_ACTION_DOWN:
       MouseButton(x,y,mouseAction);
+      return true;
+    case AMOTION_EVENT_ACTION_SCROLL:
+      MouseWheel(x, y, AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_VSCROLL, mousePointer));
       return true;
     default:
       MouseMove(x,y);
@@ -61,7 +69,9 @@ bool CAndroidMouse::onMouseEvent(AInputEvent* event)
 
 void CAndroidMouse::MouseMove(float x, float y)
 {
+#ifdef DEBUG_VERBOSE
   CXBMCApp::android_printf("%s: x:%f, y:%f", __PRETTY_FUNCTION__, x, y);
+#endif
   XBMC_Event newEvent;
 
   memset(&newEvent, 0, sizeof(newEvent));
@@ -79,7 +89,9 @@ void CAndroidMouse::MouseMove(float x, float y)
 
 void CAndroidMouse::MouseButton(float x, float y, int32_t action)
 {
+#ifdef DEBUG_VERBOSE
   CXBMCApp::android_printf("%s: x:%f, y:%f, action:%i", __PRETTY_FUNCTION__, x, y, action);
+#endif
   XBMC_Event newEvent;
 
   memset(&newEvent, 0, sizeof(newEvent));
@@ -92,3 +104,41 @@ void CAndroidMouse::MouseButton(float x, float y, int32_t action)
   newEvent.button.button = XBMC_BUTTON_LEFT;
   CWinEvents::MessagePush(&newEvent);
 }
+
+void CAndroidMouse::MouseWheel(float x, float y, float value)
+{
+#ifdef DEBUG_VERBOSE
+  CXBMCApp::android_printf("%s: val:%f", __PRETTY_FUNCTION__, value);
+#endif
+  XBMC_Event newEvent;
+
+  memset(&newEvent, 0, sizeof(newEvent));
+
+  if (value > 0.0f)
+  {
+    newEvent.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.state = XBMC_PRESSED;
+    newEvent.button.button = XBMC_BUTTON_WHEELUP;
+  }
+  else if (value < 0.0f)
+  {
+    newEvent.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.state = XBMC_PRESSED;
+    newEvent.button.button = XBMC_BUTTON_WHEELDOWN;
+  }
+  else
+    return;
+
+  newEvent.button.type = newEvent.type;
+  newEvent.button.x = x;
+  newEvent.button.y = y;
+
+  CWinEvents::MessagePush(&newEvent);
+
+  newEvent.type = XBMC_MOUSEBUTTONUP;
+  newEvent.button.state = XBMC_RELEASED;
+  newEvent.button.type = newEvent.type;
+
+  CWinEvents::MessagePush(&newEvent);
+}
+
