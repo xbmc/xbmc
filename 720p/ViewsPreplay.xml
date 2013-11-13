@@ -269,7 +269,7 @@
 		</control>
 	</include>
 	<include name="EpisodeThumbOverlayTitle2Filtered">
-		<posy>83</posy>
+		<posy>86</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
