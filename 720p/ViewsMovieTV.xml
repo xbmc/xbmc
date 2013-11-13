@@ -84,7 +84,7 @@
 		</control>
 	</include>
 	<include name="MovieTVTitleSmaller">
-		<posy>203</posy>
+		<posy>202</posy>
 		<posx>73</posx>
 		<width>120</width>
 		<height>20</height>

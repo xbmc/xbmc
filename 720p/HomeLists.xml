@@ -167,14 +167,14 @@
 	</include>
 	<include name="ListItemPosterTitleTV1">
 		<control type="label">
-			<posy>192</posy>
+			<posy>190</posy>
 			<include>ListItemTitle1</include>
 		</control>
 	</include>
 	<include name="ListItemPosterTitleTV2">
 		<control type="group">
 			<visible>ListItem.Type(episode)</visible>
-			<posy>216</posy>
+			<posy>214</posy>
 			<posx>95</posx>
 			<control type="label">
 				<width>110</width>
@@ -205,7 +205,7 @@
 	<include name="ListItemPosterTitleTV3">
 		<control type="group">
 			<visible>ListItem.Type(season)</visible>
-			<posy>216</posy>
+			<posy>214</posy>
 			<posx>95</posx>
 			<control type="label">
 				<width>110</width>
