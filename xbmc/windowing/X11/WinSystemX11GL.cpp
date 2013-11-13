@@ -31,8 +31,6 @@ CWinSystemX11GL::CWinSystemX11GL()
   m_glXWaitVideoSyncSGI  = NULL;
   m_glXSwapIntervalSGI   = NULL;
   m_glXSwapIntervalMESA  = NULL;
-  m_glXGetSyncValuesOML  = NULL;
-  m_glXSwapBuffersMscOML = NULL;
 
   m_iVSyncErrors = 0;
 }
@@ -108,14 +106,6 @@ bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
       m_iVSyncErrors = 0;
     }
   }
-  else if (m_iVSyncMode == 5)
-  {
-    int64_t ust, msc, sbc;
-    if(m_glXGetSyncValuesOML(m_dpy, m_glWindow, &ust, &msc, &sbc))
-      m_glXSwapBuffersMscOML(m_dpy, m_glWindow, msc, 0, 0);
-    else
-      CLog::Log(LOGERROR, "%s - glXSwapBuffersMscOML - Failed to get current retrace count", __FUNCTION__);
-  }
   else
     glXSwapBuffers(m_dpy, m_glWindow);
 
@@ -149,16 +139,6 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
   }
 
-  if(m_glXGetSyncValuesOML && m_glXSwapBuffersMscOML && m_glXSwapIntervalMESA && !m_iVSyncMode)
-  {
-    m_glXSwapIntervalMESA(1);
-
-    int64_t ust, msc, sbc;
-    if(m_glXGetSyncValuesOML(m_dpy, m_glWindow, &ust, &msc, &sbc))
-      m_iVSyncMode = 5;
-    else
-      CLog::Log(LOGWARNING, "%s - glXGetSyncValuesOML failed", __FUNCTION__);
-  }
   if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && !vendor_nvidia)
   {
     unsigned int count;
@@ -208,17 +188,6 @@ bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, R
   m_glxext += " ";
 
   CLog::Log(LOGDEBUG, "GLX_EXTENSIONS:%s", m_glxext.c_str());
-
-  /* any time window is recreated we need new pointers */
-  if (IsExtSupported("GLX_OML_sync_control"))
-    m_glXGetSyncValuesOML = (Bool (*)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*))glXGetProcAddress((const GLubyte*)"glXGetSyncValuesOML");
-  else
-    m_glXGetSyncValuesOML = NULL;
-
-  if (IsExtSupported("GLX_OML_sync_control"))
-    m_glXSwapBuffersMscOML = (int64_t (*)(Display*, GLXDrawable, int64_t, int64_t, int64_t))glXGetProcAddress((const GLubyte*)"glXSwapBuffersMscOML");
-  else
-    m_glXSwapBuffersMscOML = NULL;
 
   if (IsExtSupported("GLX_SGI_video_sync"))
     m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
