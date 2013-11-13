@@ -407,11 +407,7 @@ void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting
       if (sink == sinkList.begin())
         firstDevice = sink->second;
 
-#if defined(TARGET_DARWIN)
-      list.push_back(std::make_pair(sink->first, sink->first));
-#else
       list.push_back(std::make_pair(sink->first, sink->second));
-#endif
 
       if (StringUtils::EqualsNoCase(current, sink->second))
         foundValue = true;
