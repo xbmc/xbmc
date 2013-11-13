@@ -167,7 +167,7 @@
 				<posx>100</posx>
 				<posy>28</posy>
 				<width>1200</width>
-				<height>670</height>
+				<height>660</height>
 				<itemlayout width="144" height="220">
 					<include>MovieTVPosterSmaller</include>
 					<control type="label">
