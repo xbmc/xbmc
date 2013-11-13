@@ -28,9 +28,9 @@
 		<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 	</include>
 	<include name="SearchScreenListItemTitleWide">
-		<posx>133</posx>
+		<posx>46</posx>
 		<width>160</width>
-		<align>center</align>
+		<align>left</align>
 		<aligny>center</aligny>
 		<scroll>false</scroll>
 		<font>Condensed-14</font>
