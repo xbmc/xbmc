@@ -28,9 +28,9 @@
 		<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 	</include>
 	<include name="SearchScreenListItemTitleWide">
-		<posx>133</posx>
+		<posx>46</posx>
 		<width>160</width>
-		<align>center</align>
+		<align>left</align>
 		<aligny>center</aligny>
 		<scroll>false</scroll>
 		<font>Condensed-14</font>
@@ -418,7 +418,7 @@
 		</control>
 	</include>
 	<include name="SearchScreenWideThumbOverlayTitle">
-		<posy>121</posy>
+		<posy>123</posy>
 		<posx>44</posx>
 		<width>180</width>
 		<height>30</height>
@@ -1256,8 +1256,8 @@
 									<control type="group">
 										<include>SearchScreenPoster</include>
 										<control type="image">
-											<posx>127</posx>
-											<posy>201</posy>
+											<posx>121</posx>
+											<posy>194</posy>
 											<info>ListItem.Overlay</info>
 										</control>
 									</control>
@@ -1266,11 +1266,6 @@
 							<focusedlayout width="144" height="200">
 								<control type="group">
 									<include>SearchScreenPoster</include>
-									<control type="image">
-										<posx>127</posx>
-										<posy>201</posy>
-										<info>ListItem.Overlay</info>
-									</control>
 									<control type="image">
 										<posy>47</posy>
 										<posx>34</posx>
@@ -1375,8 +1370,8 @@
 								<control type="group">
 									<include>SearchScreenPoster</include>
 									<control type="image">
-										<posx>127</posx>
-										<posy>201</posy>
+										<posx>121</posx>
+										<posy>194</posy>
 										<info>ListItem.Overlay</info>
 									</control>
 								</control>
@@ -1384,11 +1379,6 @@
 							<focusedlayout width="144" height="200">
 								<control type="group">
 									<include>SearchScreenPoster</include>
-									<control type="image">
-										<posx>127</posx>
-										<posy>201</posy>
-										<info>ListItem.Overlay</info>
-									</control>
 									<control type="image">
 										<posy>47</posy>
 										<posx>34</posx>
@@ -1510,8 +1500,8 @@
 										<textcolor>white</textcolor>
 									</control>
 									<control type="image">
-										<posx>203</posx>
-										<posy>128</posy>
+										<posx>195</posx>
+										<posy>123</posy>
 										<info>ListItem.Overlay</info>
 									</control>
 								</control>
@@ -1531,13 +1521,8 @@
 										<posy>50</posy>
 										<posx>37</posx>
 										<width>195</width>
-										<height>106</height>
+										<height>165</height>
 										<include>Border</include>
-									</control>
-									<control type="image">
-										<posx>203</posx>
-										<posy>128</posy>
-										<info>ListItem.Overlay</info>
 									</control>
 								</control>
 							</focusedlayout>

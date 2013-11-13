@@ -133,7 +133,7 @@
 		</control>
 	</include>
 	<include name="EpisodeTitle">
-		<posy>121</posy>
+		<posy>119</posy>
 		<posx>20</posx>
 		<width>174</width>
 		<height>20</height>
@@ -224,7 +224,7 @@
 	</include>
 	<include name="EpisodeSecondTitleFiltered">
 	<control type="label">
-		<posy>142</posy>
+		<posy>143</posy>
 		<posx>20</posx>
 		<width>159</width>
 		<height>20</height>
@@ -237,7 +237,7 @@
 	</include>
 	<include name="EpisodeDateFiltered">
 		<control type="label">
-			<posy>142</posy>
+			<posy>143</posy>
 			<posx>10r</posx>
 			<width>90</width>
 			<height>20</height>
@@ -269,7 +269,7 @@
 		</control>
 	</include>
 	<include name="EpisodeThumbOverlayTitle2Filtered">
-		<posy>83</posy>
+		<posy>86</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
@@ -281,7 +281,7 @@
 	</include>
 	<!-- all episodes are from the same season -->
 	<include name="EpisodeThumbOverlayTitle">
-		<posy>85</posy>
+		<posy>86</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
@@ -293,7 +293,7 @@
 	</include>
 	<!-- episodes are mixed from different seasons -->
 	<include name="EpisodeThumbOverlayTitle2">
-		<posy>85</posy>
+		<posy>86</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
@@ -786,7 +786,7 @@
 					</control>
 					<control type="image">
 						<posx>176</posx>
-						<posy>84</posy>
+						<posy>85</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 				</itemlayout>
@@ -811,7 +811,7 @@
 					</control>
 					<control type="image">
 						<posx>176</posx>
-						<posy>84</posy>
+						<posy>85</posy>
 						<info>ListItem.Overlay</info>
 					</control>
 					<include>EpisodeSelectedBorder</include>

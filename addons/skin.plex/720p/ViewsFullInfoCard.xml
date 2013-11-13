@@ -481,10 +481,10 @@
 								<fadetime>200</fadetime>
 							</control>
 							<control type="image">
-								<posx>339</posx>
+								<posx>337</posx>
 								<posy>264</posy>
-								<width>19</width>
-								<height>19</height>
+								<width>26</width>
+								<height>26</height>
 								<texture>$INFO[Container(9001).ListItem.Overlay]</texture>
 							</control>
 						</control>
@@ -500,10 +500,10 @@
 								<fadetime>200</fadetime>
 							</control>
 							<control type="image">
-								<posx>339</posx>
+								<posx>337</posx>
 								<posy>264</posy>
-								<width>19</width>
-								<height>19</height>
+								<width>26</width>
+								<height>26</height>
 								<texture>$INFO[Container(9002).ListItem.Overlay]</texture>
 							</control>
 						</control>
@@ -519,10 +519,10 @@
 								<fadetime>200</fadetime>
 							</control>
 							<control type="image">
-								<posx>339</posx>
+								<posx>337</posx>
 								<posy>264</posy>
-								<width>19</width>
-								<height>19</height>
+								<width>26</width>
+								<height>26</height>
 								<texture>$INFO[Container(9004).ListItem.Overlay]</texture>
 							</control>
 						</control>
