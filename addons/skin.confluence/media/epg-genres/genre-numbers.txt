@@ -16,3 +16,4 @@ Genre Numbers set internally by XBMC
 208 = other/unknown
 224 = other/unknown
 240 = other/unknown
+256 = use genre string from the backend
