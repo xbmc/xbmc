@@ -265,7 +265,7 @@
 					<posx>20</posx>
 					<control type="list" id="3">
 						<width>460</width>
-						<height>226</height>
+						<height>206</height>
 						<onleft>-</onleft>
 						<onright>-</onright>
 						<onup>3</onup>
@@ -310,7 +310,7 @@
 						<posx>461</posx>
 						<posy>-10</posy>
 						<width>20</width>
-						<height>230</height>
+						<height>220</height>
 						<showonepage>true</showonepage>
 					</control>
 				</control>
