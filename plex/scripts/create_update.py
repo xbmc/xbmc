@@ -115,7 +115,7 @@ def create_update(product, version, output, platform, input, delta, fversion, ma
 
 	archive.close()
 
-	if pathprefix is not None:
+	if pathprefix is not None and len(pathprefix) > 0:
 		ppEl = et.SubElement(rootel, "pathprefix")
 		ppEl.text = pathprefix
 
