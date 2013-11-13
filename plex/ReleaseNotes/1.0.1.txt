@@ -1,0 +1,24 @@
+Fixed:
+      Tons of crash bugs fixed from reported crashes.
+      Sort filtervalues correctly.
+      Fix loading of filters from remote servers
+      Fix for code signing on Mavericks
+      Fix post updating crash
+      Make the Software update settings much nicer.
+      Don't start the videos paused if you press play action.
+      Add letter scroll offset indicator.
+      Fix Volume & Mute dialogs.
+      Don't show spoiler alert if item has no plot.
+      Change filtered episodes thumbs to fanart and other small tweaks.
+      Create a new default smaller Posters view, and make the previous one optional.
+      A transparent dark background for Overlay icons (better visibility), and a ton of tiny pixel shifts in positionings.
+      Create a Preference for hiding Unwatched/InProgress indicators in library views.
+      Fix Overlay icon position in Clips view.
+      Make selected Photo border consistent with other views.
+      Fix new smaller poster view height (bleeding).
+      Fix vertical centering of filtered episodes thumb overlay title.
+      Other various pixel position fixes.
+      Fix StreamPicker dialog list height (bleeding).
+      Fix all overlay positions in Search.
+      Left justify Search result episode titles.
+      Make Search result episodes selected border consistent.
