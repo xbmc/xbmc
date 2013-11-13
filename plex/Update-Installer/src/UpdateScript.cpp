@@ -72,7 +72,7 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
 
   const TiXmlElement* prefixNode = updateNode->FirstChildElement("pathprefix");
   if (prefixNode)
-    m_pathPrefix = prefixNode->GetText();
+    m_pathPrefix = notNullString(prefixNode->GetText());
 
 	const TiXmlElement* installNode = updateNode->FirstChildElement(installNodeName);
 	if (installNode)
