@@ -174,6 +174,7 @@ const char *GetDarwinOSReleaseString(void)
 
 const char *GetDarwinVersionString(void)
 {
+  CCocoaAutoPool pool;
   return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
 }
 
