@@ -3963,7 +3963,7 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 
   if (index == GetAudioStream())
     info.bitrate = m_dvdPlayerAudio.GetAudioBitrate();
-  else
+  else if (m_pDemuxer)
   {
     CDemuxStreamAudio* stream = m_pDemuxer->GetStreamFromAudioId(index);
     if (stream)
