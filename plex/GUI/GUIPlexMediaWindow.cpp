@@ -351,33 +351,14 @@ void CGUIPlexMediaWindow::OnFilterSelected(const std::string &filterKey, int fil
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 {
-  bool ret = CGUIMediaWindow::OnAction(action);
-
-  if ((action.GetID() > ACTION_NONE &&
-      action.GetID() <= ACTION_PAGE_DOWN) ||
-      action.GetID() >= KEY_ASCII) // KEY_ASCII means that we letterjumped.
-  {
-    if (m_viewControl.GetSelectedItem() >= m_pagingOffset)
-      LoadPage(m_pagingOffset, m_viewControl.GetSelectedItem() + PLEX_DEFAULT_PAGE_SIZE);
-    else if (m_viewControl.GetSelectedItem() >= (m_pagingOffset - (PLEX_DEFAULT_PAGE_SIZE/2)))
-      LoadNextPage();
-  }
-  else if (action.GetID() == ACTION_TOGGLE_WATCHED)
-  {
-    if (m_viewControl.GetSelectedItem() != -1)
-    {
-      CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
-      if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
-        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
-      if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
-        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
-    }
-  }
-  else if (action.GetID() == ACTION_PLAYER_PLAY)
+  if (action.GetID() == ACTION_PLAYER_PLAY)
   {
     CGUIControl *pControl = (CGUIControl*)GetControl(m_viewControl.GetCurrentControl());
     if (pControl)
+    {
       PlayFileFromContainer(pControl);
+      return true;
+    }
   }
   else if (action.GetID() == ACTION_CLEAR_FILTERS)
   {
@@ -397,7 +378,31 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 
       g_plexApplication.filterManager->saveFiltersToDisk();
       Update(m_sectionRoot.Get(), false, true);
+      return true;
     }
+  }
+  else if (action.GetID() == ACTION_TOGGLE_WATCHED)
+  {
+    if (m_viewControl.GetSelectedItem() != -1)
+    {
+      CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
+      if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
+        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
+      if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
+        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
+    }
+  }
+
+  bool ret = CGUIMediaWindow::OnAction(action);
+
+  if ((action.GetID() > ACTION_NONE &&
+      action.GetID() <= ACTION_PAGE_DOWN) ||
+      action.GetID() >= KEY_ASCII) // KEY_ASCII means that we letterjumped.
+  {
+    if (m_viewControl.GetSelectedItem() >= m_pagingOffset)
+      LoadPage(m_pagingOffset, m_viewControl.GetSelectedItem() + PLEX_DEFAULT_PAGE_SIZE);
+    else if (m_viewControl.GetSelectedItem() >= (m_pagingOffset - (PLEX_DEFAULT_PAGE_SIZE/2)))
+      LoadNextPage();
   }
 
   return ret;
