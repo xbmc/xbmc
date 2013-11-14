@@ -27,10 +27,9 @@ CPlexServerReachabilityThread::Process()
 
   if (m_server)
   {
-    if (m_server->UpdateReachability())
-      g_plexApplication.serverManager->ServerReachabilityDone(m_server, true);
-    else
-      g_plexApplication.serverManager->ServerReachabilityDone(m_server, false);
+    bool success = m_server->UpdateReachability();
+    if (g_plexApplication.serverManager && !m_bStop)
+      g_plexApplication.serverManager->ServerReachabilityDone(m_server, success);
   }
 }
 
