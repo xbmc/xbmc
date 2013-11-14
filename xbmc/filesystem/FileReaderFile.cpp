@@ -43,6 +43,7 @@ CFileReaderFile::~CFileReaderFile()
 //*********************************************************************************************
 bool CFileReaderFile::Open(const CURL& url)
 {
+  // URL is of the form filereader://<foo>
   CStdString strURL = url.Get();
   strURL = strURL.substr(13);
   return m_reader.Open(strURL,READ_CACHED);
