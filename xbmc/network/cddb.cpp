@@ -556,7 +556,7 @@ void Xcddb::parseData(const char *buffer)
       {
         // Extract Year from extended info
         // as a fallback
-        size_t iPos = strExtd.find("YEAR:");
+        size_t iPos = strExtd.find("YEAR: ");
         if (iPos != std::string::npos) // You never know if you really get UTF-8 strings from cddb
           g_charsetConverter.unknownToUTF8(strExtd.substr(iPos + 6, 4), m_strYear);
       }
@@ -565,7 +565,7 @@ void Xcddb::parseData(const char *buffer)
       {
         // Extract ID3 Genre
         // as a fallback
-        size_t iPos = strExtd.find("ID3G:");
+        size_t iPos = strExtd.find("ID3G: ");
         if (iPos != std::string::npos)
         {
           CStdString strGenre = strExtd.substr(iPos + 5, 4);
