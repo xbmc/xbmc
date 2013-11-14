@@ -204,7 +204,19 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       if (stricmp(sensitive,"yes") == 0)
         bInsensitive=false; // match case sensitive
 
-    CRegExp reg(bInsensitive, true);
+    CRegExp::utf8Mode eUtf8 = CRegExp::autoUtf8;
+    const char* const strUtf8 = pExpression->Attribute("utf8");
+    if (strUtf8)
+    {
+      if (stricmp(strUtf8, "yes") == 0)
+        eUtf8 = CRegExp::forceUtf8;
+      else if (stricmp(strUtf8, "no") == 0)
+        eUtf8 = CRegExp::asciiOnly;
+      else if (stricmp(strUtf8, "auto") == 0)
+        eUtf8 = CRegExp::autoUtf8;
+    }
+
+    CRegExp reg(bInsensitive, eUtf8);
     CStdString strExpression;
     if (pExpression->FirstChild())
       strExpression = pExpression->FirstChild()->Value();
