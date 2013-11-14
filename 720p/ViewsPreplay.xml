@@ -1131,7 +1131,7 @@
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>15</posy>
+						<posy>10</posy>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>
