@@ -120,7 +120,7 @@ void NetworkInterface::WatchForChanges()
   if (!source) 
     eprintf("SCDynamicStoreCreateRunLoopSource failed: %s", SCErrorString(SCError()));
 
-  CFRunLoopAddSource(CFRunLoopGetCurrent(), source, kCFRunLoopDefaultMode);
+  CFRunLoopAddSource(CFRunLoopGetMain(), source, kCFRunLoopDefaultMode);
   CFRelease(source);
   
   CFRelease(patterns);

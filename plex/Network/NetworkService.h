@@ -11,7 +11,7 @@
 
 #define NS_BROWSE_REFRESH_INTERVAL  5000
 #define NS_REMOVAL_INTERVAL         2000
-#define NS_DEAD_SERVER_TIME       180000
+#define NS_DEAD_SERVER_TIME        10000
 
 #define NS_MAX_PACKET_SIZE    8096
 #define NS_BROADCAST_ADDR_OLD boost::asio::ip::address::from_string("239.255.255.250")

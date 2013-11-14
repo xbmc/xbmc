@@ -89,7 +89,6 @@ class NetworkServiceBrowser : public NetworkServiceBase
     dprintf("Forced network scan running!"); m_timer.expires_from_now(boost::posix_time::milliseconds(1));
   }
 
- private:
 
   /// Handle network change.
   virtual void handleNetworkChange(const vector<NetworkInterface>& interfaces)
@@ -147,6 +146,9 @@ class NetworkServiceBrowser : public NetworkServiceBase
       }
     }
   }
+
+  private:
+
   
   /// Send out the search request.
   void sendSearch()

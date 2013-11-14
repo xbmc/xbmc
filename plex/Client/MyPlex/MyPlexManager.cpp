@@ -90,6 +90,8 @@ void CMyPlexManager::BroadcastState()
     case STATE_NOT_LOGGEDIN:
       g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
       break;
+    case STATE_REFRESH:
+      g_guiSettings.SetString("myplex.status", "Trying...");
     default:
       break;
   }
@@ -122,11 +124,16 @@ TiXmlElement *CMyPlexManager::GetXml(const CURL &url, bool POST)
     CLog::Log(LOGERROR, "CMyPlexManager::GetXml failed to fetch %s", url.Get().c_str());
 
     if (file.GetLastHTTPResponseCode() == 401)
+    {
       m_lastError = ERROR_WRONG_CREDS;
+      m_state = STATE_NOT_LOGGEDIN;
+    }
     else
+    {
       m_lastError = ERROR_NETWORK;
+      m_state = STATE_REFRESH;
+    }
 
-    m_state = STATE_NOT_LOGGEDIN;
     BroadcastState();
     return NULL;
   }
@@ -228,10 +235,18 @@ int CMyPlexManager::DoScanMyPlex()
   if (g_guiSettings.GetBool("myplex.enablequeueandrec"))
     g_plexApplication.dataLoader->LoadDataFromServer(m_myplex);
 
-  if (!CMyPlexScanner::DoScan())
+  EMyPlexError err = CMyPlexScanner::DoScan();
+  m_lastError = err;
+
+  if (err == ERROR_WRONG_CREDS)
   {
     m_state = STATE_NOT_LOGGEDIN;
-    m_lastError = ERROR_WRONG_CREDS;
+    BroadcastState();
+    return FAILURE_TMOUT;
+  }
+  else if (err == ERROR_NETWORK)
+  {
+    m_state = STATE_REFRESH;
     BroadcastState();
     return FAILURE_TMOUT;
   }
@@ -245,7 +260,10 @@ int CMyPlexManager::DoRefreshUserInfo()
 
   TiXmlElement* root = GetXml(url);
   if (!root)
+  {
+    DoRemoveAllServers();
     return FAILURE_TMOUT;
+  }
 
   CMyPlexUserInfo userInfo;
 

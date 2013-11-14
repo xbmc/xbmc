@@ -34,6 +34,8 @@ public:
   /// Notify of a service going away.
   virtual void handleServiceDeparture(NetworkServicePtr& service);
 
+  virtual void handleNetworkChange(const vector<NetworkInterface> &interfaces);
+
 private:
   void SetAddTimer();
   void HandleAddTimeout(const boost::system::error_code& e);

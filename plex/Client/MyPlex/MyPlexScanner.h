@@ -9,11 +9,13 @@
 #ifndef MYPLEXSCANNER_H
 #define MYPLEXSCANNER_H
 
+#include "Client/MyPlex/MyPlexManager.h"
+
 class CMyPlexScanner
 {
   public:
     CMyPlexScanner() {} ;
-    static bool DoScan();
+    static CMyPlexManager::EMyPlexError DoScan();
 };
 
 #endif // MYPLEXSCANNER_H

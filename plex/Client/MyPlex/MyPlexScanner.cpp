@@ -16,7 +16,7 @@
 
 #define DEFAULT_PORT 32400
 
-bool CMyPlexScanner::DoScan()
+CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
 {
   CPlexServerPtr myplex = g_plexApplication.serverManager->FindByUUID("myplex");
   CURL url = myplex->BuildPlexURL("pms/servers");
@@ -29,9 +29,9 @@ bool CMyPlexScanner::DoScan()
     if (dir.GetHTTPResponseCode() == 401)
     {
       CLog::Log(LOGERROR, "CMyPlexScanner::DoScan not authorized from myPlex");
-      return false;
+      return CMyPlexManager::ERROR_WRONG_CREDS;
     }
-    return true;
+    return CMyPlexManager::ERROR_NOERROR;
   }
 
   PlexServerList serverList;
@@ -86,7 +86,7 @@ bool CMyPlexScanner::DoScan()
   CFileItemList sectionList;
   if (!dir.GetDirectory(sectionsURL.Get(), sectionList))
   {
-    return true;
+    return CMyPlexManager::ERROR_PARSE;
   }
 
   CMyPlexSectionMap sectionMap;
@@ -113,5 +113,5 @@ bool CMyPlexScanner::DoScan()
 
   g_plexApplication.myPlexManager->SetSectionMap(sectionMap);
 
-  return true;
+  return CMyPlexManager::ERROR_NOERROR;
 }
