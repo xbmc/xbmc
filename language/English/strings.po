@@ -3452,7 +3452,7 @@ msgid "Program Add-ons"
 msgstr ""
 
 msgctxt "#1044"
-msgid "Set plugin thumb"
+msgid "Set plug-in thumb"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
@@ -12102,7 +12102,7 @@ msgid "Passthrough Audio in use"
 msgstr ""
 
 #empty strings from id 29803 to 33000
-#strings 30000 thru 30999 reserved for plugins and plugin settings
+#strings 30000 thru 30999 reserved for plug-ins and plug-in settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
 #strings 33000 thru 33999 reserved for common strings used in Add-ons
@@ -12173,7 +12173,7 @@ msgid "Clips"
 msgstr ""
 
 msgctxt "#33017"
-msgid "Restart plugin to enable"
+msgid "Restart plug-in to enable"
 msgstr ""
 
 msgctxt "#33018"
