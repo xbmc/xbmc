@@ -438,7 +438,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         else if (strcmp(type, "time") == 0)
         {
           SYSTEMTIME timedate;
-          if (!value.empty())
+          if (value.size() >= 5)
           {
             // assumes HH:MM
             timedate.wHour = atoi(value.substr(0, 2).c_str());
