@@ -190,7 +190,7 @@ CStdString CDeviceKitDiskDevice::toString()
   return StringUtils::Format("DeviceUDI %s: IsFileSystem %s HasFileSystem %s "
       "IsSystemInternal %s IsMounted %s IsRemovable %s IsPartition %s "
       "IsOptical %s",
-      m_DeviceKitUDI.c_str(), BOOL2SZ(m_isFileSystem), m_FileSystem,
+      m_DeviceKitUDI.c_str(), BOOL2SZ(m_isFileSystem), m_FileSystem.c_str(),
       BOOL2SZ(m_isSystemInternal), BOOL2SZ(m_isMounted),
       BOOL2SZ(m_isRemovable), BOOL2SZ(m_isPartition), BOOL2SZ(m_isOptical));
 }
