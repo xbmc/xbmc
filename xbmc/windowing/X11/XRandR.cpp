@@ -74,7 +74,7 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
   CStdString cmd;
   cmd  = getenv("XBMC_BIN_HOME");
   cmd += "/xbmc-xrandr";
-  cmd.AppendFormat(" -q --screen %d", screennum);
+  cmd = StringUtils::Format("%s -q --screen %d", cmd.c_str(), screennum);
 
   FILE* file = popen(cmd.c_str(),"r");
   if (!file)
@@ -156,7 +156,7 @@ bool CXRandR::TurnOffOutput(CStdString name)
   CStdString cmd;
   cmd  = getenv("XBMC_BIN_HOME");
   cmd += "/xbmc-xrandr";
-  cmd.AppendFormat(" --screen %d --output %s --off", output->screen, name.c_str());
+  cmd = StringUtils::Format("%s --screen %d --output %s --off", cmd.c_str(), output->screen, name.c_str());
 
   int status = system(cmd.c_str());
   if (status == -1)
