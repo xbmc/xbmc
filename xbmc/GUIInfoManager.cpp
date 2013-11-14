@@ -256,6 +256,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "searchinprogress", SYSTEM_SEARCH_IN_PROGRESS },
                                   { "selectedplexmediaserver", SYSTEM_SELECTED_PLEX_MEDIA_SERVER },
                                   { "updateisavailable", SYSTEM_UPDATE_IS_AVAILABLE },
+                                  { "noplexservers",    SYSTEM_NO_PLEX_SERVERS },
                                   /* END PLEX */
                                   { "hasmediadvd",      SYSTEM_MEDIA_DVD },
                                   { "dvdready",         SYSTEM_DVDREADY },
@@ -2403,6 +2404,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #else
     return false;
 #endif
+  }
+  else if (condition == SYSTEM_NO_PLEX_SERVERS)
+  {
+    bReturn = !g_plexApplication.serverManager->HasAnyServerWithActiveConnection();
   }
   /* END PLEX */
   else if (g_application.IsPlaying())

@@ -52,6 +52,7 @@ public:
   void UpdateReachability(bool force = false);
 
   void ServerReachabilityDone(CPlexServerPtr server, bool success=false);
+  bool HasAnyServerWithActiveConnection() const;
 
   void save();
   void load();

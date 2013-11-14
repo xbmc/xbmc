@@ -131,6 +131,18 @@ CPlexServerManager::GetAllServers(CPlexServerOwnedModifier modifier) const
   return ret;
 }
 
+bool CPlexServerManager::HasAnyServerWithActiveConnection() const
+{
+  CSingleLock lk(m_serverManagerLock);
+  BOOST_FOREACH(PlexServerPair p, m_serverMap)
+  {
+    if (p.second->GetActiveConnection())
+      return true;
+  }
+
+  return false;
+}
+
 void
 CPlexServerManager::MarkServersAsRefreshing()
 {
