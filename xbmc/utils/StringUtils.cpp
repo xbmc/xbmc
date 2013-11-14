@@ -212,7 +212,7 @@ int StringUtils::CompareNoCase(const char *s1, const char *s2)
     const char c1 = *s1++; // const local variable should help compiler to optimize
     c2 = *s2++;
     if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
-      return ::tolower(c1) < ::tolower(c2);
+      return ::tolower(c1) - ::tolower(c2);
   } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
   return 0;
 }
