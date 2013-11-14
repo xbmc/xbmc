@@ -448,6 +448,13 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo)
   if (iformat && (strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->seekable == 0)
     m_pFormatContext->max_analyze_duration = 500000;
 
+  bool short_analyze = false;
+  if (iformat && (strcmp(iformat->name, "mpegts") == 0))
+  {
+    m_pFormatContext->max_analyze_duration = 500000;
+    short_analyze = true;
+  }
+
   // we need to know if this is matroska or avi later
   m_bMatroska = strncmp(m_pFormatContext->iformat->name, "matroska", 8) == 0;	// for "matroska.webm"
   m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
@@ -476,6 +483,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo)
       }
     }
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info finished", __FUNCTION__);
+
+    if (short_analyze)
+    {
+      // make sure we start video with an i-frame
+      ResetVideoStreams();
+    }
   }
   else
     m_program = 0;
@@ -1535,7 +1548,7 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
   }
 
   // for video we need a decoder to get desired information into codec context
-  if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO &&
+  if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO && st->codec->extradata &&
       (!st->codec->width || st->codec->pix_fmt == PIX_FMT_NONE))
   {
     // open a decoder, it will be cleared down by ffmpeg on closing the stream
@@ -1596,4 +1609,20 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
     }
   }
   return true;
+}
+
+void CDVDDemuxFFmpeg::ResetVideoStreams()
+{
+  AVStream *st;
+  for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+  {
+    st = m_pFormatContext->streams[i];
+    if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+    {
+      if (st->codec->extradata)
+        m_dllAvUtil.av_free(st->codec->extradata);
+      st->codec->extradata = NULL;
+      st->codec->width = 0;
+    }
+  }
 }

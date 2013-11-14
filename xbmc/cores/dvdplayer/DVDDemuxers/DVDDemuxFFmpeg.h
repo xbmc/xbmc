@@ -129,6 +129,7 @@ protected:
   void DisposeStreams();
   void ParsePacket(AVPacket *pkt);
   bool IsVideoReady();
+  void ResetVideoStreams();
 
   AVDictionary *GetFFMpegOptionsFromURL(const CURL &url);
   double ConvertTimestamp(int64_t pts, int den, int num);
