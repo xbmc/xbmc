@@ -209,14 +209,13 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
     {
       tmpStr = buffer;
-      result = tmpStr.substr(11);
-    }
-    else
-    {
-      CLog::Log(LOGWARNING, "Unable to determine gateway");
+      if (tmpStr.length() >= 11)
+        result = tmpStr.substr(11);
     }
     pclose(pipe);
   }
+  if (result.empty())
+    CLog::Log(LOGWARNING, "Unable to determine gateway");
 #elif defined(TARGET_FREEBSD)
    size_t needed;
    int mib[6];
@@ -482,14 +481,13 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
     {
       tmpStr = buffer;
-      result.push_back(tmpStr.substr(17));
-    }
-    else
-    {
-      CLog::Log(LOGWARNING, "Unable to determine nameserver");
+      if (tmpStr.length() >= 17)
+        result.push_back(tmpStr.substr(17));
     }
     pclose(pipe);
   } 
+  if (result.empty())
+    CLog::Log(LOGWARNING, "Unable to determine nameserver");
 #elif defined(TARGET_ANDROID)
   char nameserver[PROP_VALUE_MAX];
 
