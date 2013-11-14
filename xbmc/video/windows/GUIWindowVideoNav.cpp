@@ -807,13 +807,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       // can we update the database?
       if (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
-        if (node == NODE_TYPE_TITLE_TVSHOWS)
-        {
-          if (g_application.IsVideoScanning())
-            buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-          else
-            buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-        }
         if (!item->IsPlugin() && !item->IsScript() && !item->IsLiveTV() && !item->IsAddonsPath() &&
             item->GetPath() != "sources://video/" &&
             item->GetPath() != "special://videoplaylists/" &&
@@ -844,6 +837,13 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             item->GetVideoInfoTag()->m_type == "set"))          // sets
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
+        }
+        if (node == NODE_TYPE_TITLE_TVSHOWS)
+        {
+          if (g_application.IsVideoScanning())
+            buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
+          else
+            buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
 
         if (node == NODE_TYPE_SEASONS && item->m_bIsFolder)
