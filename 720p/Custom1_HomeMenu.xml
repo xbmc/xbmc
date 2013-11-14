@@ -2,6 +2,7 @@
 <window type="dialog" id="4998">
 	<defaultcontrol always="true">1300</defaultcontrol>
 	<controls>
+		<!-- LeftSideMenu.xml -->
 		<include>PivotMenuHome</include>
 	</controls>
 </window>

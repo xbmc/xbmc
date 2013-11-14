@@ -299,7 +299,7 @@
 				<height>320</height>
 				<onup>1300</onup>
 				<ondown>1300</ondown>
-				<onleft>Dialog.Close(4998)</onleft>
+				<onleft>-</onleft>
 				<onright>Dialog.Close(4998)</onright>
 				<focusposition>2</focusposition>
 				<scrolltime>200</scrolltime>
@@ -375,76 +375,6 @@
 						<onclick>Plex.Powerdown</onclick>
 					</item>
 				</content>
-			</control>
-		</control>
-	</include>
-	<include name="_LeftSideMenuHome">
-		<!-- Home.xml -->
-		<control type="group">
-			<visible>true</visible>
-			<include>leftMenuInitSlide</include>
-			<include>leftMenuSlideHome</include>
-			<include>leftMenuBgHome</include>
-			<!-- global search-->
-			<!--><include>GlobalSearch</include>-->
-			<!-- filters & sorting menu -->
-			<control type="group" id="1300">
-				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202)</visible>
-				<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(10202)">Conditional</animation>
-				<posx>-253</posx>
-				<posy>30</posy>
-				<width>253</width>
-				<height>650</height>
-				<ondown>19000</ondown>
-				<orientation>vertical</orientation>
-				<scrolltime>150</scrolltime>
-				<!-- options list title -->
-				<control type="label">
-					<description>Title</description>
-					<posy>0</posy>
-					<posx>253</posx>
-					<include>leftMenuTitle</include>
-					<label>MORE:</label>
-				</control>
-				<!-- options list -->
-				<control type="grouplist">
-					<posy>80</posy>
-					<posx>15</posx>
-					<ondown>1300</ondown>
-					<onup>1300</onup>
-					<onright>300</onright>
-					<itemgap>0</itemgap>
-					<control type="button" id="1305">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label> $LOCALIZE[31952]</label>
-						<onclick>Plex.ActivateWindow(1,plexserver://channeldirectory,return)</onclick>
-					</control>
-					<control type="button" id="1304">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>$LOCALIZE[31955]</label>
-						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
-					</control>
-					<control type="button" id="1303">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>$LOCALIZE[31961]</label>
-						<onclick>Plex.Powerdown</onclick>
-					</control>
-					<control type="button" id="1302">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>$LOCALIZE[31960]</label>
-						<onclick>Plex.Suspend</onclick>
-					</control>
-					<control type="button" id="1301">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>$LOCALIZE[31007]</label>
-						<onclick>Plex.Quit</onclick>
-					</control>
-				</control>
 			</control>
 		</control>
 	</include>
