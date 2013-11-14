@@ -53,19 +53,20 @@ int CRegExp::m_UcpSupported  = -1;
 int CRegExp::m_JitSupported  = -1;
 
 
-CRegExp::CRegExp(bool caseless /*= false*/, bool utf8 /*= false*/)
+CRegExp::CRegExp(bool caseless /*= false*/, CRegExp::utf8Mode utf8 /*= asciiOnly*/)
 {
   InitValues(caseless, utf8);
 }
 
-void CRegExp::InitValues(bool caseless /*= false*/, bool utf8 /*= false*/)
+void CRegExp::InitValues(bool caseless /*= false*/, CRegExp::utf8Mode utf8 /*= asciiOnly*/)
 {
+  m_utf8Mode    = utf8;
   m_re          = NULL;
   m_sd          = NULL;
   m_iOptions    = PCRE_DOTALL | PCRE_NEWLINE_ANY;
   if(caseless)
     m_iOptions |= PCRE_CASELESS;
-  if (utf8)
+  if (m_utf8Mode == forceUtf8)
   {
     if (IsUtf8Supported())
       m_iOptions |= PCRE_UTF8;
@@ -82,17 +83,162 @@ void CRegExp::InitValues(bool caseless /*= false*/, bool utf8 /*= false*/)
   memset(m_iOvector, 0, sizeof(m_iOvector));
 }
 
-CRegExp::CRegExp(bool caseless, bool utf8, const char *re, studyMode study /*= NoStudy*/)
+CRegExp::CRegExp(bool caseless, CRegExp::utf8Mode utf8, const char *re, studyMode study /*= NoStudy*/)
 {
+  if (utf8 == autoUtf8)
+    utf8 = requireUtf8(re) ? forceUtf8 : asciiOnly;
+
   InitValues(caseless, utf8);
   RegComp(re, study);
 }
+
+bool CRegExp::requireUtf8(const std::string& regexp)
+{
+  // enable UTF-8 mode if regexp string has UTF-8 multibyte sequences
+  if (CUtf8Utils::checkStrForUtf8(regexp) == CUtf8Utils::utf8string)
+    return true;
+
+  // check for explicit Unicode Properties (\p, \P, \X) and for Unicode character codes (greater than 0xFF) in form \x{hhh..}
+  // note: PCRE change meaning of \w, \s, \d (and \W, \S, \D) when Unicode Properties are enabled,
+  //       but in auto mode we enable UNP for US-ASCII regexp only if regexp contains explicit \p, \P, \X or Unicode character code
+  const char* const regexpC = regexp.c_str();
+  const size_t len = regexp.length();
+  size_t pos = 0;
+
+  while (pos < len)
+  {
+    const char chr = regexpC[pos];
+    if (chr == '\\')
+    {
+      const char nextChr = regexpC[pos + 1];
+
+      if (nextChr == 'p' || nextChr == 'P' || nextChr == 'X')
+        return true; // found Unicode Properties
+      else if (nextChr == 'Q')
+        pos = regexp.find("\\E", pos + 2); // skip all literals in "\Q...\E"
+      else if (nextChr == 'x' && regexpC[pos + 2] == '{')
+      { // Unicode character with hex code
+        if (readCharXCode(regexp, pos) >= 0x100)
+          return true; // found Unicode character code
+      }
+      else if (nextChr == '\\' || nextChr == '(' || nextChr == ')'
+               || nextChr == '[' || nextChr == ']')
+               pos++; // exclude next character from analyze
+
+    } // chr != '\\'
+    else if (chr == '(' && regexpC[pos + 1] == '?' && regexpC[pos + 2] == '#') // comment in regexp
+      pos = regexp.find(')', pos); // skip comment
+    else if (chr == '[')
+    {
+      if (isCharClassWithUnicode(regexp, pos))
+        return true;
+    }
+
+    if (pos == std::string::npos) // check results of regexp.find() and isCharClassWithUnicode
+      return false;
+
+    pos++;
+  }
+
+  // no Unicode Properties was found
+  return false;
+}
+
+inline int CRegExp::readCharXCode(const std::string& regexp, size_t& pos)
+{
+  // read hex character code in form "\x{hh..}"
+  // 'pos' must point to '\'
+  if (pos >= regexp.length())
+    return -1;
+  const char* const regexpC = regexp.c_str();
+  if (regexpC[pos] != '\\' || regexpC[pos + 1] != 'x' || regexpC[pos + 2] != '{')
+    return -1;
+
+  pos++;
+  const size_t startPos = pos; // 'startPos' points to 'x'
+  const size_t closingBracketPos = regexp.find('}', startPos + 2);
+  if (closingBracketPos == std::string::npos)
+    return 0; // return character zero code, leave 'pos' at 'x'
+
+  pos++; // 'pos' points to '{'
+  int chCode = 0;
+  while (++pos < closingBracketPos)
+  {
+    const int xdigitVal = StringUtils::asciixdigitvalue(regexpC[pos]);
+    if (xdigitVal >= 0)
+      chCode = chCode * 16 + xdigitVal;
+    else
+    { // found non-hexdigit
+      pos = startPos; // reset 'pos' to 'startPos', process "{hh..}" as non-code
+      return 0; // return character zero code
+    }
+  }
+
+  return chCode;
+}
+
+bool CRegExp::isCharClassWithUnicode(const std::string& regexp, size_t& pos)
+{
+  const char* const regexpC = regexp.c_str();
+  const size_t len = regexp.length();
+  if (pos > len || regexpC[pos] != '[')
+    return false;
+
+  // look for Unicode character code "\x{hhh..}" and Unicode properties "\P", "\p" and "\X"
+  // find end (terminating ']') of character class (like "[a-h45]")
+  // detect nested POSIX classes like "[[:lower:]]" and escaped brackets like "[\]]"
+  bool needUnicode = false;
+  while (++pos < len)
+  {
+    if (regexpC[pos] == '[' && regexpC[pos + 1] == ':')
+    { // possible POSIX character class, like "[:alpha:]"
+      const size_t nextClosingBracketPos = regexp.find(']', pos + 2); // don't care about "\]", as it produce error if used inside POSIX char class
+
+      if (nextClosingBracketPos == std::string::npos)
+      { // error in regexp: no closing ']' for character class
+        pos = std::string::npos;
+        return needUnicode;
+      }
+      else if (regexpC[nextClosingBracketPos - 1] == ':')
+        pos = nextClosingBracketPos; // skip POSIX character class
+      // if ":]" is not found, process "[:..." as part of normal character class
+    }
+    else if (regexpC[pos] == ']')
+      return needUnicode; // end of character class
+    else if (regexpC[pos] == '\\')
+    {
+      const char nextChar = regexpC[pos + 1];
+      if (nextChar == ']' || nextChar == '[')
+        pos++; // skip next character
+      else if (nextChar == 'Q')
+      {
+        pos = regexp.find("\\E", pos + 2);
+        if (pos == std::string::npos)
+          return needUnicode; // error in regexp: no closing "\E" after "\Q" in character class
+        else
+          pos++; // skip "\E"
+      }
+      else if (nextChar == 'p' || nextChar == 'P' || nextChar == 'X')
+        needUnicode = true; // don't care about property name as it can contain only ASCII chars
+      else if (nextChar == 'x')
+      {
+        if (readCharXCode(regexp, pos) >= 0x100)
+          needUnicode = true;
+      }
+    }
+  }
+  pos = std::string::npos; // closing square bracket was not found
+
+  return needUnicode;
+}
+
 
 CRegExp::CRegExp(const CRegExp& re)
 {
   m_re = NULL;
   m_sd = NULL;
   m_jitStack = NULL;
+  m_utf8Mode = re.m_utf8Mode;
   m_iOptions = re.m_iOptions;
   *this = re;
 }
@@ -140,10 +286,13 @@ bool CRegExp::RegComp(const char *re, studyMode study /*= NoStudy*/)
   m_iMatchCount      = 0;
   const char *errMsg = NULL;
   int errOffset      = 0;
+  int options        = m_iOptions;
+  if (m_utf8Mode == autoUtf8 && requireUtf8(re))
+    options |= (IsUtf8Supported() ? PCRE_UTF8 : 0) | (AreUnicodePropertiesSupported() ? PCRE_UCP : 0);
 
   Cleanup();
 
-  m_re = pcre_compile(re, m_iOptions, &errMsg, &errOffset, NULL);
+  m_re = pcre_compile(re, options, &errMsg, &errOffset, NULL);
   if (!m_re)
   {
     m_pattern.clear();
