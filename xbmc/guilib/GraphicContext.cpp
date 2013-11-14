@@ -807,7 +807,7 @@ void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool need
   m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
 
   // and reset the final transform
-  UpdateFinalTransform(m_guiTransform);
+  m_finalTransform = m_guiTransform;
   Unlock();
 }
 
@@ -817,15 +817,6 @@ void CGraphicContext::SetRenderingResolution(const RESOLUTION_INFO &res, bool ne
   SetScalingResolution(res, needsScaling);
   UpdateCameraPosition(m_cameras.top());
   Unlock();
-}
-
-void CGraphicContext::UpdateFinalTransform(const TransformMatrix &matrix)
-{
-  // We could set the world transform here to GPU-ize the animation system.
-  // trouble is that we require the resulting x,y coords to be rounded to
-  // the nearest pixel (vertex shader perhaps?)
-  m_finalTransform.Reset();
-  m_finalTransform *= matrix;
 }
 
 void CGraphicContext::SetStereoView(RENDER_STEREO_VIEW view)

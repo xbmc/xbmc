@@ -200,34 +200,27 @@ public:
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   inline void AddGUITransform()
   {
-    m_groupTransform.push(m_guiTransform);
-    UpdateFinalTransform(m_groupTransform.top());
+    m_transforms.push(m_finalTransform);
+    m_finalTransform = m_guiTransform;
   }
   inline TransformMatrix AddTransform(const TransformMatrix &matrix)
   {
-    ASSERT(!m_groupTransform.empty());
-    TransformMatrix absoluteMatrix = m_groupTransform.empty() ? matrix : m_groupTransform.top() * matrix;
-    m_groupTransform.push(absoluteMatrix);
-    UpdateFinalTransform(absoluteMatrix);
-    return absoluteMatrix;
+    m_transforms.push(m_finalTransform);
+    m_finalTransform *= matrix;
+    return m_finalTransform;
   }
   inline void SetTransform(const TransformMatrix &matrix)
   {
-    // TODO: We only need to add it to the group transform as other transforms may be added on top of this one later on
-    //       Once all transforms are cached then this can be removed and UpdateFinalTransform can be called directly
-    ASSERT(!m_groupTransform.empty());
-    m_groupTransform.push(matrix);
-    UpdateFinalTransform(m_groupTransform.top());
+   m_transforms.push(m_finalTransform);
+   m_finalTransform = matrix;
   }
   inline void RemoveTransform()
   {
-    ASSERT(!m_groupTransform.empty());
-    if (!m_groupTransform.empty())
-      m_groupTransform.pop();
-    if (!m_groupTransform.empty())
-      UpdateFinalTransform(m_groupTransform.top());
-    else
-      UpdateFinalTransform(TransformMatrix());
+    if (!m_transforms.empty())
+    {
+      m_finalTransform = m_transforms.top();
+      m_transforms.pop();
+    }
   }
 
   /* modifies final coordinates according to stereo mode if needed */
@@ -251,7 +244,6 @@ protected:
 
 private:
   void UpdateCameraPosition(const CPoint &camera);
-  void UpdateFinalTransform(const TransformMatrix &matrix);
   RESOLUTION_INFO m_windowResolution;
   float m_guiScaleX;
   float m_guiScaleY;
@@ -261,7 +253,7 @@ private:
 
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
-  std::stack<TransformMatrix> m_groupTransform;
+  std::stack<TransformMatrix> m_transforms;
   RENDER_STEREO_VIEW m_stereoView;
   RENDER_STEREO_MODE m_stereoMode;
   RENDER_STEREO_MODE m_nextStereoMode;
