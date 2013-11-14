@@ -1438,7 +1438,6 @@
 		DFF0F3CF17528350002DA3A4 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
 		DFF0F3D017528350002DA3A4 /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */; };
 		DFF0F3D117528350002DA3A4 /* GroupUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EDC48A1651A6F900B852D8 /* GroupUtils.cpp */; };
-		DFF0F3D217528350002DA3A4 /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		DFF0F3D317528350002DA3A4 /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
 		DFF0F3D417528350002DA3A4 /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
 		DFF0F3D517528350002DA3A4 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34898113FDAAF60026A711 /* HttpParser.cpp */; };
@@ -1968,7 +1967,6 @@
 		E38E22C80D25F9FE00618676 /* CPUInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */; };
 		E38E22CD0D25F9FE00618676 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E350D25F9FD00618676 /* Event.cpp */; };
 		E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
-		E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
 		E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
 		E38E22D70D25F9FE00618676 /* VideoInfoDownloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4A0D25F9FD00618676 /* VideoInfoDownloader.cpp */; };
@@ -2854,7 +2852,6 @@
 		E4991453174E605900741B6D /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
 		E4991454174E605900741B6D /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */; };
 		E4991455174E605900741B6D /* GroupUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EDC48A1651A6F900B852D8 /* GroupUtils.cpp */; };
-		E4991456174E605900741B6D /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		E4991457174E605900741B6D /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
 		E4991458174E605900741B6D /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
 		E4991459174E605900741B6D /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34898113FDAAF60026A711 /* HttpParser.cpp */; };
@@ -5145,8 +5142,6 @@
 		E38E1E3D0D25F9FD00618676 /* fstrcmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fstrcmp.h; sourceTree = "<group>"; };
 		E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoManager.cpp; sourceTree = "<group>"; };
 		E38E1E3F0D25F9FD00618676 /* GUIInfoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoManager.h; sourceTree = "<group>"; };
-		E38E1E400D25F9FD00618676 /* HTMLTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTMLTable.cpp; sourceTree = "<group>"; };
-		E38E1E410D25F9FD00618676 /* HTMLTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLTable.h; sourceTree = "<group>"; };
 		E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTMLUtil.cpp; sourceTree = "<group>"; };
 		E38E1E430D25F9FD00618676 /* HTMLUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLUtil.h; sourceTree = "<group>"; };
 		E38E1E460D25F9FD00618676 /* HttpHeader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpHeader.cpp; sourceTree = "<group>"; };
@@ -8708,8 +8703,6 @@
 				18C1D22C13033F6A00CFFE59 /* GLUtils.h */,
 				F5EDC48A1651A6F900B852D8 /* GroupUtils.cpp */,
 				F5EDC48B1651A6F900B852D8 /* GroupUtils.h */,
-				E38E1E400D25F9FD00618676 /* HTMLTable.cpp */,
-				E38E1E410D25F9FD00618676 /* HTMLTable.h */,
 				E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */,
 				E38E1E430D25F9FD00618676 /* HTMLUtil.h */,
 				E38E1E460D25F9FD00618676 /* HttpHeader.cpp */,
@@ -10021,7 +10014,6 @@
 				E38E22C80D25F9FE00618676 /* CPUInfo.cpp in Sources */,
 				E38E22CD0D25F9FE00618676 /* Event.cpp in Sources */,
 				E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */,
-				E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */,
 				E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */,
 				E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */,
 				E38E22D70D25F9FE00618676 /* VideoInfoDownloader.cpp in Sources */,
@@ -11551,7 +11543,6 @@
 				DFF0F3CF17528350002DA3A4 /* FileUtils.cpp in Sources */,
 				DFF0F3D017528350002DA3A4 /* GLUtils.cpp in Sources */,
 				DFF0F3D117528350002DA3A4 /* GroupUtils.cpp in Sources */,
-				DFF0F3D217528350002DA3A4 /* HTMLTable.cpp in Sources */,
 				DFF0F3D317528350002DA3A4 /* HTMLUtil.cpp in Sources */,
 				DFF0F3D417528350002DA3A4 /* HttpHeader.cpp in Sources */,
 				DFF0F3D517528350002DA3A4 /* HttpParser.cpp in Sources */,
@@ -12599,7 +12590,6 @@
 				E4991453174E605900741B6D /* FileUtils.cpp in Sources */,
 				E4991454174E605900741B6D /* GLUtils.cpp in Sources */,
 				E4991455174E605900741B6D /* GroupUtils.cpp in Sources */,
-				E4991456174E605900741B6D /* HTMLTable.cpp in Sources */,
 				E4991457174E605900741B6D /* HTMLUtil.cpp in Sources */,
 				E4991458174E605900741B6D /* HttpHeader.cpp in Sources */,
 				E4991459174E605900741B6D /* HttpParser.cpp in Sources */,
