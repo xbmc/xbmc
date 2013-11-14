@@ -836,20 +836,17 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           }
         }
         if (!g_application.IsVideoScanning() && item->IsVideoDb() && item->HasVideoInfoTag() &&
-           (!item->m_bIsFolder || m_vecItems->GetContent().Equals("movies") || m_vecItems->GetContent().Equals("tvshows")))
+           (item->GetVideoInfoTag()->m_type == "movie" ||       // movies
+            item->GetVideoInfoTag()->m_type == "tvshow" ||      // tvshows
+            item->GetVideoInfoTag()->m_type == "episode" ||     // episodes
+            item->GetVideoInfoTag()->m_type == "musicvideo" ||  // musicvideos
+            item->GetVideoInfoTag()->m_type == "set"))          // sets
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
         }
 
         if (node == NODE_TYPE_SEASONS && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_ART, 13511);
-
-        if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://movies/sets/") && item->GetPath().size() > 22 && item->m_bIsFolder) // sets
-        {
-          buttons.Add(CONTEXT_BUTTON_SET_MOVIESET_ART, 13511);
-          buttons.Add(CONTEXT_BUTTON_MOVIESET_ADD_REMOVE_ITEMS, 20465);
-          buttons.Add(CONTEXT_BUTTON_DELETE, 646);
-        }
 
         if (m_vecItems->GetContent() == "tags" && item->m_bIsFolder) // tags
         {
@@ -906,12 +903,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
 }
 
-// predicate used by sorting and set_difference
-bool compFileItemsByDbId(const CFileItemPtr& lhs, const CFileItemPtr& rhs) 
-{
-  return lhs->HasVideoInfoTag() && rhs->HasVideoInfoTag() && lhs->GetVideoInfoTag()->m_iDbId < rhs->GetVideoInfoTag()->m_iDbId;
-}
-
 bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr item;
@@ -946,160 +937,17 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_SEASON_ART:
   case CONTEXT_BUTTON_SET_ACTOR_THUMB:
   case CONTEXT_BUTTON_SET_ARTIST_THUMB:
-  case CONTEXT_BUTTON_SET_MOVIESET_ART:
     {
-      // Grab the thumbnails from the web
-      CFileItemList items;
-      CFileItemPtr noneitem(new CFileItem("thumb://None", false));
-      CStdString currentThumb;
-      int idArtist = -1;
-      CStdString artistPath;
-      string artType = "thumb";
-      if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
-      {
-        CMusicDatabase database;
-        database.Open();
-        idArtist = database.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel());
-        database.GetArtistPath(idArtist, artistPath);
-        currentThumb = database.GetArtForItem(idArtist, "artist", "thumb");
-        if (currentThumb.empty())
-          currentThumb = m_database.GetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, artType);
-      }
-      else if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
-        currentThumb = m_database.GetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, artType);
-      else
-      { // SEASON, SET
-        map<string, string> currentArt;
-        artType = CGUIDialogVideoInfo::ChooseArtType(*m_vecItems->Get(itemNumber), currentArt);
-        if (artType.empty())
-          return false;
-
-        if (artType == "fanart")
-        {
-          OnChooseFanart(*m_vecItems->Get(itemNumber));
-          return true;
-        }
-
-        if (currentArt.find(artType) != currentArt.end())
-          currentThumb = currentArt[artType];
-        else if ((artType == "poster" || artType == "banner") && currentArt.find("thumb") != currentArt.end())
-          currentThumb = currentArt["thumb"];
-      }
-      if (!currentThumb.empty())
-      {
-        CFileItemPtr item(new CFileItem("thumb://Current", false));
-        item->SetArt("thumb", currentThumb);
-        item->SetLabel(g_localizeStrings.Get(13512));
-        items.Add(item);
-      }
-      noneitem->SetIconImage("DefaultFolder.png");
-      noneitem->SetLabel(g_localizeStrings.Get(13515));
-
-      vector<CStdString> thumbs;
-      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB)
-      {
-        CVideoInfoTag tag;
-        if (button == CONTEXT_BUTTON_SET_SEASON_ART)
-          m_database.GetTvShowInfo("",tag,m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iIdShow);
-        else
-          tag = *m_vecItems->Get(itemNumber)->GetVideoInfoTag();
-        if (button == CONTEXT_BUTTON_SET_SEASON_ART)
-          tag.m_strPictureURL.GetThumbURLs(thumbs, artType, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason);
-        else
-          tag.m_strPictureURL.GetThumbURLs(thumbs, artType);
-
-        for (unsigned int i = 0; i < thumbs.size(); i++)
-        {
-          CStdString strItemPath = StringUtils::Format("thumb://Remote%i",i);
-          CFileItemPtr item(new CFileItem(strItemPath, false));
-          item->SetArt("thumb", thumbs[i]);
-          item->SetIconImage("DefaultPicture.png");
-          item->SetLabel(g_localizeStrings.Get(13513));
-          items.Add(item);
-
-          // TODO: Do we need to clear the cached image?
-          //    CTextureCache::Get().ClearCachedImage(thumbs[i]);
-        }
-      }
-
-      bool local=false;
-      if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
-      {
-        CStdString strThumb = URIUtils::AddFileToFolder(artistPath, "folder.jpg");
-        if (XFILE::CFile::Exists(strThumb))
-        {
-          CFileItemPtr pItem(new CFileItem(strThumb,false));
-          pItem->SetLabel(g_localizeStrings.Get(13514));
-          pItem->SetArt("thumb", strThumb);
-          items.Add(pItem);
-          local = true;
-        }
-        else
-          noneitem->SetIconImage("DefaultArtist.png");
-      }
-
+      std::string type = "season";
       if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
-      {
-        CStdString picturePath;
-        CStdString strThumb = URIUtils::AddFileToFolder(picturePath, "folder.jpg");
-        if (XFILE::CFile::Exists(strThumb))
-        {
-          CFileItemPtr pItem(new CFileItem(strThumb,false));
-          pItem->SetLabel(g_localizeStrings.Get(13514));
-          pItem->SetArt("thumb", strThumb);
-          items.Add(pItem);
-          local = true;
-        }
-        else
-          noneitem->SetIconImage("DefaultActor.png");
-      }
-
-      if (button == CONTEXT_BUTTON_SET_MOVIESET_ART)
-        noneitem->SetIconImage("DefaultVideo.png");
-
-      if (!local)
-        items.Add(noneitem);
-
-      VECSOURCES sources=*CMediaSourceSettings::Get().GetSources("video");
-      g_mediaManager.GetLocalDrives(sources);
-      CStdString result;
-      CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(sources, *item);
-      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources,
-                                                  g_localizeStrings.Get(13511), result))
-      {
-        return false;   // user cancelled
-      }
-
-      if (result == "thumb://Current")
-        result = currentThumb;   // user chose the one they have
-
-      // delete the thumbnail if that's what the user wants, else overwrite with the
-      // new thumbnail
-      if (StringUtils::StartsWith(result, "thumb://Remote"))
-      {
-        int number = atoi(result.substr(14).c_str());
-        result = thumbs[number];
-      }
-      else if (result == "thumb://None")
-        result.clear();
-      if (button == CONTEXT_BUTTON_SET_MOVIESET_ART ||
-          button == CONTEXT_BUTTON_SET_ACTOR_THUMB ||
-          button == CONTEXT_BUTTON_SET_SEASON_ART ||
-         (button == CONTEXT_BUTTON_SET_ARTIST_THUMB && idArtist < 0))
-        m_database.SetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, artType, result);
-      else
-      {
-        CMusicDatabase db;
-        if (db.Open())
-          db.SetArtForItem(idArtist, "artist", artType, result);
-      }
-
-      CUtil::DeleteVideoDatabaseDirectoryCache();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-      g_windowManager.SendMessage(msg);
+        type = "actor";
+      else if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
+        type = "artist";
+      
+      bool result = CGUIDialogVideoInfo::ManageVideoItemArtwork(m_vecItems->Get(itemNumber), type);
       Refresh();
 
-      return true;
+      return result;
     }
   case CONTEXT_BUTTON_TAGS_ADD_ITEMS:
     {
@@ -1165,43 +1013,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       items.RemoveDiscCache(GetID());
       return true;
     }
-  case CONTEXT_BUTTON_MOVIESET_ADD_REMOVE_ITEMS:
-    {
-      CFileItemList originalItems;
-      CFileItemList selectedItems;
-
-      if (!CGUIDialogVideoInfo::GetMoviesForSet(item.get(), originalItems, selectedItems) || selectedItems.Size() == 0) // need at least one item selected
-        return true;
-      VECFILEITEMS original = originalItems.GetList();
-      std::sort(original.begin(), original.end(), compFileItemsByDbId);
-      VECFILEITEMS selected = selectedItems.GetList();
-      std::sort(selected.begin(), selected.end(), compFileItemsByDbId);
-
-      bool refreshNeeded = false;
-      // update the "added" items
-      VECFILEITEMS addedItems;
-      set_difference(selected.begin(),selected.end(), original.begin(),original.end(), std::back_inserter(addedItems), compFileItemsByDbId);
-      for (VECFILEITEMS::iterator it = addedItems.begin();  it != addedItems.end(); ++it)
-      {
-        if (CGUIDialogVideoInfo::SetMovieSet(it->get(), item.get()))
-          refreshNeeded = true;
-      }
-      // update the "deleted" items
-      CFileItemPtr clearItem(new CFileItem());
-      clearItem->GetVideoInfoTag()->m_iDbId = -1; // -1 will be used to clear set
-      VECFILEITEMS deletedItems;
-      set_difference(original.begin(),original.end(), selected.begin(),selected.end(), std::back_inserter(deletedItems), compFileItemsByDbId);
-      for (VECFILEITEMS::iterator it = deletedItems.begin();  it != deletedItems.end(); ++it)
-      {
-        if (CGUIDialogVideoInfo::SetMovieSet(it->get(), clearItem.get()))
-          refreshNeeded = true;
-      }
-
-      // we need to clear any cached version of this tag's listing
-      if (refreshNeeded) 
-        Refresh();
-      return true;
-    }
   case CONTEXT_BUTTON_GO_TO_ARTIST:
     {
       CStdString strPath;
@@ -1241,61 +1052,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
-}
-
-void CGUIWindowVideoNav::OnChooseFanart(const CFileItem &videoItem)
-{
-  if (!videoItem.HasVideoInfoTag())
-    return;
-
-  CFileItem item(videoItem);
-
-  CFileItemList items;
-
-  CVideoThumbLoader loader;
-  loader.LoadItem(&item);
-
-  if (item.HasArt("fanart"))
-  {
-    CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetArt("thumb", item.GetArt("fanart"));
-    itemCurrent->SetLabel(g_localizeStrings.Get(20440));
-    items.Add(itemCurrent);
-  }
-
-  // add the none option
-  {
-    CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-    itemNone->SetIconImage("DefaultVideo.png");
-    itemNone->SetLabel(g_localizeStrings.Get(20439));
-    items.Add(itemNone);
-  }
-
-  CStdString result;
-  VECSOURCES sources(*CMediaSourceSettings::Get().GetSources("video"));
-  g_mediaManager.GetLocalDrives(sources);
-  CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(sources, item);
-  bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
-    return;
-
-  if (result.Equals("fanart://None") || !CFile::Exists(result))
-    result.clear();
-  if (!result.empty() && flip)
-    result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
-
-  // update the db
-  CVideoDatabase db;
-  if (db.Open())
-  {
-    db.SetArtForItem(item.GetVideoInfoTag()->m_iDbId, item.GetVideoInfoTag()->m_type, "fanart", result);
-    db.Close();
-  }
-
-  // clear view cache and reload images
-  CUtil::DeleteVideoDatabaseDirectoryCache();
-
-  Refresh();
 }
 
 bool CGUIWindowVideoNav::OnClick(int iItem)

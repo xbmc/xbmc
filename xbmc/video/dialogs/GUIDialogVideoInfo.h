@@ -53,9 +53,12 @@ public:
   static bool DeleteVideoItemFromDatabase(const CFileItemPtr &item, bool unavailable = false);
   static bool DeleteVideoItem(const CFileItemPtr &item, bool unavailable = false);
 
+  static bool ManageMovieSets(const CFileItemPtr &item);
   static bool GetMoviesForSet(const CFileItem *setItem, CFileItemList &originalMovies, CFileItemList &selectedMovies);
   static bool GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet);
   static bool SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet);
+
+  static bool ManageVideoItemArtwork(const CFileItemPtr &item, const std::string &type);
 protected:
   virtual void OnInitWindow();
   void Update();
@@ -73,6 +76,11 @@ protected:
 
   static bool UpdateVideoItemSortTitle(const CFileItemPtr &pItem);
   static bool LinkMovieToTvShow(const CFileItemPtr &item, bool bRemove, CVideoDatabase &database);
+
+  /*! \brief Pop up a fanart chooser. Does not utilise remote URLs.
+   \param videoItem the item to choose fanart for.
+   */
+  static bool OnGetFanart(const CFileItemPtr &videoItem);
 
   CFileItemPtr m_movieItem;
   CFileItemList *m_castList;
