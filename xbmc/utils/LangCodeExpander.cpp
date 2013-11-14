@@ -997,6 +997,7 @@ extern const LCENTRY g_iso639_2[538] =
   { MAKECODE('\0','n','i','c'), "Niger-Kordofanian (Other)" },
   { MAKECODE('\0','s','s','a'), "Nilo-Saharan (Other)" },
   { MAKECODE('\0','n','i','u'), "Niuean" },
+  { MAKECODE('\0','z','x','x'), "No linguistic content" },
   { MAKECODE('\0','n','o','g'), "Nogai" },
   { MAKECODE('\0','n','o','n'), "Norse, Old" },
   { MAKECODE('\0','n','a','i'), "North American Indian (Other)" },
@@ -1187,7 +1188,6 @@ extern const LCENTRY g_iso639_2[538] =
   { MAKECODE('\0','z','h','a'), "Zhuang" },
   { MAKECODE('\0','z','u','l'), "Zulu" },
   { MAKECODE('\0','z','u','n'), "Zuni" },
-  { MAKECODE('\0','u','n','d'), "Undetermined" }, // non-ISO entry for Matroska special language code
 };
 
 const CharCodeConvertionWithHack CharCode2To3[184] =
