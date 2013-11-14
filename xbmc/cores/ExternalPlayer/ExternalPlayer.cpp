@@ -185,7 +185,7 @@ void CExternalPlayer::Process()
       CStdString strMatch = vecSplit[0];
       StringUtils::Replace(strMatch, ",,",",");
       bool bCaseless = vecSplit[3].find('i') != std::string::npos;
-      CRegExp regExp(bCaseless, true);
+      CRegExp regExp(bCaseless, CRegExp::autoUtf8);
 
       if (!regExp.RegComp(strMatch.c_str()))
       { // invalid regexp - complain in logs

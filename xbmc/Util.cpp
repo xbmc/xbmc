@@ -243,8 +243,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
-  CRegExp reTags(true, true);
-  CRegExp reYear(false, true);
+  CRegExp reTags(true, CRegExp::autoUtf8);
+  CRegExp reYear(false, CRegExp::autoUtf8);
 
   if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
@@ -519,7 +519,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
   if (strFileOrFolder.empty())
     return false;
 
-  CRegExp regExExcludes(true, true);  // case insensitive regex
+  CRegExp regExExcludes(true, CRegExp::autoUtf8);  // case insensitive regex
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
