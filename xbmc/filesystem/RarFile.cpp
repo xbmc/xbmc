@@ -547,7 +547,8 @@ void CRarFile::InitFromUrl(const CURL& url)
   m_strPathInRar = url.GetFileName();
 
   vector<std::string> options;
-  StringUtils::Tokenize(url.GetOptions().substr(1), options, "&");
+  if (!url.GetOptions().empty())
+    StringUtils::Tokenize(url.GetOptions().substr(1), options, "&");
 
   m_bFileOptions = 0;
 
