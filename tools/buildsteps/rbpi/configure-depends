@@ -1,0 +1,31 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=rbpi
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+then
+  cd $WORKSPACE/tools/depends;
+
+  PATH="$PATH:$JENKINS_RBPI_DEVENV/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin" \
+  CFLAGS="-pipe -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard \
+  -mfpu=vfp -mabi=aapcs-linux -Wno-psabi -Wa,-mno-warn-deprecated \
+  -Wno-deprecated-declarations -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include \
+  -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include/interface/vcos/pthreads \
+  -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include/interface/vmcs_host/linux" \
+  CXXFLAGS="-pipe -mcpu=arm1176jzf-s -mtune=arm1176jzf-s \
+  -mfloat-abi=hard -mfpu=vfp -mabi=aapcs-linux -Wno-psabi \
+  -Wa,-mno-warn-deprecated -Wno-deprecated-declarations \
+  -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include \
+  -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include/interface/vcos/pthreads \
+  -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include/interface/vmcs_host/linux" \
+  LDFLAGS="-L$JENKINS_RBPI_DEVENV/firmware/opt/vc/lib -lEGL -lGLESv2 -lbcm_host -lvcos \
+  -lvchiq_arm" \
+  ./configure --host=arm-linux-gnueabihf --prefix=$XBMC_DEPENDS_ROOT --with-tarballs=$TARBALLS \
+    --with-toolchain=$JENKINS_RBPI_DEVENV/tools/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/arm-bcm2708hardfp-linux-gnueabi/sysroot \
+    --build=i686-linux \
+      CFLAGS="-pipe -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard \
+      -mfpu=vfp -mabi=aapcs-linux -Wno-psabi -Wa,-mno-warn-deprecated \
+      -Wno-deprecated-declarations -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include \
+      -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include/interface/vcos/pthreads \
+      -isystem$JENKINS_RBPI_DEVENVfirmware/opt/vc/include/interface/vmcs_host/linux"
+fi

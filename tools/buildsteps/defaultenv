@@ -42,6 +42,13 @@ case $XBMC_PLATFORM_DIR in
   linux*)
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
+  ;;
+
+  rbpi)
+    JENKINS_RBPI_DEVENV=/home/jenkins/rbpi-dev
+    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
+    DEFAULT_CONFIGURATION="Debug"
+  ;;
 esac
 
 if [ "$SDK_VERSION" == "Default" ]

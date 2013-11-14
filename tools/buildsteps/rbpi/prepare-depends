@@ -1,0 +1,20 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=rbpi
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+#clean without depends for skipping depends build if possible
+cd $WORKSPACE;git clean -xfd -e "tools/depends"
+
+if [ -d $JENKINS_RBPI_DEVENV/firmware ]
+then
+  cd $JENKINS_RBPI_DEVENV/firmware;git pull origin master
+else
+  cd $JENKINS_RBPI_DEVENV;git clone git://github.com/raspberrypi/firmware.git --depth=1 -b master
+fi
+
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+then
+  #clean up the rest too
+  cd $WORKSPACE;git clean -xfd
+  cd $WORKSPACE/tools/depends/;./bootstrap
+fi

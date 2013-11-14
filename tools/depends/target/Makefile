@@ -55,9 +55,12 @@ endif
 ALSA_LIB=
 LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
-  DEPENDS += alsa-lib libsdl linux-system-libs
-  ALSA_LIB = alsa-lib
-  LINUX_SYSTEM_LIBS = linux-system-libs
+  #not for raspberry pi
+  ifneq ($(CPU),arm)
+    DEPENDS += alsa-lib libsdl linux-system-libs
+    ALSA_LIB = alsa-lib
+    LINUX_SYSTEM_LIBS = linux-system-libs
+  endif
 endif
 
 .PHONY: $(DEPENDS)
