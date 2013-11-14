@@ -21,6 +21,8 @@
 #pragma once
 
 #include <vector>
+#include <list>
+#include <stack>
 #include "InfoBool.h"
 
 class CGUIListItem;
@@ -50,12 +52,61 @@ public:
 
   virtual void Update(const CGUIListItem *item);
 private:
-  void Parse(const std::string &expression);
-  bool Evaluate(const CGUIListItem *item, bool &result);
-  short GetOperator(const char ch) const;
+  typedef enum
+  {
+    OPERATOR_NONE  = 0,
+    OPERATOR_LB,  // 1
+    OPERATOR_RB,  // 2
+    OPERATOR_OR,  // 3
+    OPERATOR_AND, // 4
+    OPERATOR_NOT, // 5
+  } operator_t;
 
-  std::vector<short> m_postfix;         ///< the postfix form of the expression (operators and operand indicies)
-  std::vector<InfoPtr> m_operands;      ///< the operands in the expression
+  typedef enum
+  {
+    NODE_LEAF,
+    NODE_AND,
+    NODE_OR,
+  } node_type_t;
+
+  // An abstract base class for nodes in the expression tree
+  class InfoSubexpression
+  {
+  public:
+    virtual ~InfoSubexpression(void) {}; // so we can destruct derived classes using a pointer to their base class
+    virtual bool Evaluate(const CGUIListItem *item) = 0;
+  };
+
+  typedef boost::shared_ptr<InfoSubexpression> InfoSubexpressionPtr;
+
+  // A leaf node in the expression tree
+  class InfoLeaf : public InfoSubexpression
+  {
+  public:
+    InfoLeaf(InfoPtr info, bool invert) : m_info(info), m_invert(invert) {};
+    virtual bool Evaluate(const CGUIListItem *item);
+  private:
+    InfoPtr m_info;
+    bool m_invert;
+  };
+
+  // A branch node in the expression tree
+  class InfoAssociativeGroup : public InfoSubexpression
+  {
+  public:
+    InfoAssociativeGroup(bool and_not_or, const InfoSubexpressionPtr &left, const InfoSubexpressionPtr &right);
+    void AddChild(const InfoSubexpressionPtr &child);
+    void Merge(boost::shared_ptr<InfoAssociativeGroup> other);
+    virtual bool Evaluate(const CGUIListItem *item);
+  private:
+    bool m_and_not_or;
+    std::list<InfoSubexpressionPtr> m_children;
+  };
+
+  static operator_t GetOperator(char ch);
+  static void OperatorPop(std::stack<operator_t> &operator_stack, bool &invert, std::stack<node_type_t> &node_types, std::stack<InfoSubexpressionPtr> &nodes);
+  bool Parse(const std::string &expression);
+  InfoSubexpressionPtr m_expression_tree;
 };
 
 };

@@ -22,6 +22,10 @@
 #include <stack>
 #include "utils/log.h"
 #include "GUIInfoManager.h"
+#include <list>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/pointer_cast.hpp>
 
 using namespace std;
 using namespace INFO;
@@ -40,21 +44,91 @@ void InfoSingle::Update(const CGUIListItem *item)
 InfoExpression::InfoExpression(const std::string &expression, int context)
 : InfoBool(expression, context)
 {
-  Parse(expression);
+  if (!Parse(expression))
+  {
+    CLog::Log(LOGERROR, "Error parsing boolean expression %s", expression.c_str());
+    m_expression_tree = boost::make_shared<InfoLeaf>(g_infoManager.Register("false", 0), false);
+  }
 }
 
 void InfoExpression::Update(const CGUIListItem *item)
 {
-  Evaluate(item, m_value);
+  m_value = m_expression_tree->Evaluate(item);
 }
 
-#define OPERATOR_LB   5
-#define OPERATOR_RB   4
-#define OPERATOR_NOT  3
-#define OPERATOR_AND  2
-#define OPERATOR_OR   1
+/* Expressions are rewritten at parse time into a form which favours the
+ * formation of groups of associative nodes. These groups are then reordered at
+ * evaluation time such that nodes whose value renders the evaluation of the
+ * remainder of the group unnecessary tend to be evaluated first (these are
+ * true nodes for OR subexpressions, or false nodes for AND subexpressions).
+ * The end effect is to minimise the number of leaf nodes that need to be
+ * evaluated in order to determine the value of the expression. The runtime
+ * adaptability has the advantage of not being customised for any particular skin.
+ *
+ * The modifications to the expression at parse time fall into two groups:
+ * 1) Moving logical NOTs so that they are only applied to leaf nodes.
+ *    For example, rewriting ![A+B]|C as !A|!B|C allows reordering such that
+ *    any of the three leaves can be evaluated first.
+ * 2) Combining adjacent AND or OR operations such that each path from the root
+ *    to a leaf encounters a strictly alternating pattern of AND and OR
+ *    operations. So [A|B]|[C|D+[[E|F]|G] becomes A|B|C|[D+[E|F|G]].
+ */
 
-short InfoExpression::GetOperator(const char ch) const
+bool InfoExpression::InfoLeaf::Evaluate(const CGUIListItem *item)
+{
+  return m_invert ^ m_info->Get(item);
+}
+
+InfoExpression::InfoAssociativeGroup::InfoAssociativeGroup(
+    bool and_not_or,
+    const InfoSubexpressionPtr &left,
+    const InfoSubexpressionPtr &right)
+    : m_and_not_or(and_not_or)
+{
+  AddChild(right);
+  AddChild(left);
+}
+
+void InfoExpression::InfoAssociativeGroup::AddChild(const InfoSubexpressionPtr &child)
+{
+  m_children.push_front(child); // largely undoes the effect of parsing right-associative
+}
+
+void InfoExpression::InfoAssociativeGroup::Merge(boost::shared_ptr<InfoAssociativeGroup> other)
+{
+  m_children.splice(m_children.end(), other->m_children);
+}
+
+bool InfoExpression::InfoAssociativeGroup::Evaluate(const CGUIListItem *item)
+{
+  /* Handle either AND or OR by using the relation
+   * A AND B == !(!A OR !B)
+   * to convert ANDs into ORs
+   */
+  std::list<InfoSubexpressionPtr>::iterator last = m_children.end();
+  std::list<InfoSubexpressionPtr>::iterator it = m_children.begin();
+  bool result = m_and_not_or ^ (*it)->Evaluate(item);
+  while (!result && ++it != last)
+  {
+    result = m_and_not_or ^ (*it)->Evaluate(item);
+    if (result)
+    {
+      /* Move this child to the head of the list so we evaluate faster next time */
+      m_children.push_front(*it);
+      m_children.erase(it);
+    }
+  }
+  return m_and_not_or ^ result;
+}
+
+/* Expressions are parsed using the shunting-yard algorithm. Binary operators
+ * (AND/OR) are treated as right-associative so that we don't need to make a
+ * special case for the unary NOT operator. This has no effect upon the answers
+ * generated, though the initial sequence of evaluation of leaves may be
+ * different from what you might expect.
+ */
+
+InfoExpression::operator_t InfoExpression::GetOperator(char ch)
 {
   if (ch == '[')
     return OPERATOR_LB;
@@ -67,122 +141,179 @@ short InfoExpression::GetOperator(const char ch) const
   else if (ch == '|')
     return OPERATOR_OR;
   else
-    return 0;
+    return OPERATOR_NONE;
 }
 
-void InfoExpression::Parse(const std::string &expression)
+void InfoExpression::OperatorPop(std::stack<operator_t> &operator_stack, bool &invert, std::stack<node_type_t> &node_types, std::stack<InfoSubexpressionPtr> &nodes)
 {
-  stack<char> operators;
-  std::string operand;
-  for (unsigned int i = 0; i < expression.size(); i++)
+  operator_t op2 = operator_stack.top();
+  operator_stack.pop();
+  if (op2 == OPERATOR_NOT)
   {
-    if (GetOperator(expression[i]))
+    invert = !invert;
+  }
+  else
+  {
+    // At this point, it can only be OPERATOR_AND or OPERATOR_OR
+    if (invert)
+      op2 = (operator_t) (OPERATOR_AND ^ OPERATOR_OR ^ op2);
+    node_type_t new_type = op2 == OPERATOR_AND ? NODE_AND : NODE_OR;
+
+    InfoSubexpressionPtr right = nodes.top();
+    nodes.pop();
+    InfoSubexpressionPtr left = nodes.top();
+
+    node_type_t right_type = node_types.top();
+    node_types.pop();
+    node_type_t left_type = node_types.top();
+
+    // Combine associative operations into the same node where possible
+    if (left_type == new_type && right_type == new_type)
+      /* For example:        AND
+       *                   /     \                ____ AND ____
+       *                AND       AND     ->     /    /   \    \
+       *               /   \     /   \         leaf leaf leaf leaf
+       *             leaf leaf leaf leaf
+       */
+      boost::static_pointer_cast<InfoAssociativeGroup>(left)->Merge(boost::static_pointer_cast<InfoAssociativeGroup>(right));
+    else if (left_type == new_type)
+      /* For example:        AND                    AND
+       *                   /     \                /  |  \
+       *                AND       OR      ->   leaf leaf OR
+       *               /   \     /   \                  /   \
+       *             leaf leaf leaf leaf              leaf leaf
+       */
+      boost::static_pointer_cast<InfoAssociativeGroup>(left)->AddChild(right);
+    else
     {
-      // cleanup any operand, translate and put into our expression list
+      nodes.pop();
+      node_types.pop();
+      if (right_type == new_type)
+      {
+        /* For example:        AND                       AND
+         *                   /     \                   /  |  \
+         *                OR        AND     ->      OR  leaf leaf
+         *               /   \     /   \           /   \
+         *             leaf leaf leaf leaf       leaf leaf
+         */
+        boost::static_pointer_cast<InfoAssociativeGroup>(right)->AddChild(left);
+        nodes.push(right);
+      }
+      else
+        /* For example:        AND              which can't be simplified, and
+         *                   /     \            requires a new AND node to be
+         *                OR        OR          created with the two OR nodes
+         *               /   \     /   \        as children
+         *             leaf leaf leaf leaf
+         */
+        nodes.push(boost::make_shared<InfoAssociativeGroup>(new_type == NODE_AND, left, right));
+      node_types.push(new_type);
+    }
+  }
+}
+
+bool InfoExpression::Parse(const std::string &expression)
+{
+  const char *s = expression.c_str();
+  std::string operand;
+  std::stack<operator_t> operator_stack;
+  bool invert = false;
+  std::stack<node_type_t> node_types;
+  std::stack<InfoSubexpressionPtr> nodes;
+  // The next two are for syntax-checking purposes
+  bool after_binaryoperator = true;
+  int bracket_count = 0;
+
+  char c;
+  // Skip leading whitespace - don't want it to count as an operand if that's all there is
+  while (isspace((unsigned char)(c=*s))) s++;
+  while ((c = *s++) != '\0')
+  {
+    operator_t op;
+    if ((op = GetOperator(c)) != OPERATOR_NONE)
+    {
+      // Character is an operator
+      if ((!after_binaryoperator && (c == '!' || c == '[')) ||
+          (after_binaryoperator && (c == ']' || c == '+' || c == '|')))
+      {
+        CLog::Log(LOGERROR, "Misplaced %c", c);
+        return false;
+      }
+      if (c == '[')
+        bracket_count++;
+      else if (c == ']' && bracket_count-- == 0)
+      {
+        CLog::Log(LOGERROR, "Unmatched ]");
+        return false;
+      }
       if (!operand.empty())
       {
         InfoPtr info = g_infoManager.Register(operand, m_context);
-        if (info)
+        if (!info)
         {
-          m_listItemDependent |= info->ListItemDependent();
-          m_postfix.push_back(m_operands.size());
-          m_operands.push_back(info);
+          CLog::Log(LOGERROR, "Bad operand '%s'", operand.c_str());
+          return false;
         }
+        /* Propagate any listItem dependency from the operand to the expression */
+        m_listItemDependent |= info->ListItemDependent();
+        nodes.push(boost::make_shared<InfoLeaf>(info, invert));
+        node_types.push(NODE_LEAF);
+        /* Reuse operand string for next operand */
         operand.clear();
       }
-      // handle closing parenthesis
-      if (expression[i] == ']')
+
+      // Handle any higher-priority stacked operators, except when the new operator is left-bracket.
+      // For a right-bracket, this will stop with the matching left-bracket at the top of the operator stack.
+      if (op != OPERATOR_LB)
       {
-        while (!operators.empty())
-        {
-          char oper = operators.top();
-          operators.pop();
-
-          if (oper == '[')
-            break;
-
-          m_postfix.push_back(-GetOperator(oper)); // negative denotes operator
-        }
+        while (!operator_stack.empty() && operator_stack.top() > op)
+          OperatorPop(operator_stack, invert, node_types, nodes);
       }
+      if (op == OPERATOR_RB)
+        operator_stack.pop(); // remove the matching left-bracket
       else
-      {
-        // all other operators we pop off the stack any operator
-        // that has a higher priority than the one we have.
-        while (!operators.empty() && GetOperator(operators.top()) > GetOperator(expression[i]))
-        {
-          // only handle parenthesis once they're closed.
-          if (operators.top() == '[' && expression[i] != ']')
-            break;
+        operator_stack.push(op);
+      if (op == OPERATOR_NOT)
+        invert = !invert;
 
-          m_postfix.push_back(-GetOperator(operators.top()));  // negative denotes operator
-          operators.pop();
-        }
-        operators.push(expression[i]);
-      }
+      if (c == '+' || c == '|')
+        after_binaryoperator = true;
+      // Skip trailing whitespace - don't want it to count as an operand if that's all there is
+      while (isspace((unsigned char)(c=*s))) s++;
     }
     else
     {
-      operand += expression[i];
+      // Character is part of operand
+      operand += c;
+      after_binaryoperator = false;
     }
   }
-
+  if (bracket_count > 0)
+  {
+    CLog::Log(LOGERROR, "Unmatched [");
+    return false;
+  }
+  if (after_binaryoperator)
+  {
+    CLog::Log(LOGERROR, "Missing operand");
+    return false;
+  }
   if (!operand.empty())
   {
     InfoPtr info = g_infoManager.Register(operand, m_context);
-    if (info)
+    if (!info)
     {
-      m_listItemDependent |= info->ListItemDependent();
-      m_postfix.push_back(m_operands.size());
-      m_operands.push_back(info);
+      CLog::Log(LOGERROR, "Bad operand '%s'", operand.c_str());
+      return false;
     }
+    /* Propagate any listItem dependency from the operand to the expression */
+    m_listItemDependent |= info->ListItemDependent();
+    nodes.push(boost::make_shared<InfoLeaf>(info, invert));
+    node_types.push(NODE_LEAF);
   }
+  while (!operator_stack.empty())
+    OperatorPop(operator_stack, invert, node_types, nodes);
 
-  // finish up by adding any operators
-  while (!operators.empty())
-  {
-    m_postfix.push_back(-GetOperator(operators.top()));  // negative denotes operator
-    operators.pop();
-  }
-
-  // test evaluate
-  bool test;
-  if (!Evaluate(NULL, test))
-    CLog::Log(LOGERROR, "Error evaluating boolean expression %s", expression.c_str());
-}
-
-bool InfoExpression::Evaluate(const CGUIListItem *item, bool &result)
-{
-  stack<bool> save;
-  for (vector<short>::const_iterator it = m_postfix.begin(); it != m_postfix.end(); ++it)
-  {
-    short expr = *it;
-    if (expr == -OPERATOR_NOT)
-    { // NOT the top item on the stack
-      if (save.empty()) return false;
-      bool expr = save.top();
-      save.pop();
-      save.push(!expr);
-    }
-    else if (expr == -OPERATOR_AND)
-    { // AND the top two items on the stack
-      if (save.size() < 2) return false;
-      bool right = save.top(); save.pop();
-      bool left = save.top(); save.pop();
-      save.push(left && right);
-    }
-    else if (expr == -OPERATOR_OR)
-    { // OR the top two items on the stack
-      if (save.size() < 2) return false;
-      bool right = save.top(); save.pop();
-      bool left = save.top(); save.pop();
-      save.push(left || right);
-    }
-    else if (expr >= 0) // operand
-      save.push(m_operands[expr]->Get(item));
-  }
-  if (save.size() != 1)
-    return false;
-  result = save.top();
+  m_expression_tree = nodes.top();
   return true;
 }
-
