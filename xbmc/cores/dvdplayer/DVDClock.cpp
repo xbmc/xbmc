@@ -28,7 +28,6 @@
 int64_t CDVDClock::m_systemOffset;
 int64_t CDVDClock::m_systemFrequency;
 CCriticalSection CDVDClock::m_systemsection;
-bool CDVDClock::m_ismasterclock;
 CDVDClock *CDVDClock::m_playerclock = NULL;;
 
 CDVDClock::CDVDClock()
@@ -43,7 +42,6 @@ CDVDClock::CDVDClock()
   m_maxspeedadjust = 0.0;
   m_speedadjust = false;
 
-  m_ismasterclock = true;
   m_startClock = 0;
 
   m_playerclock = this;
