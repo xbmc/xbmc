@@ -11948,7 +11948,7 @@ msgstr ""
 
 #: xbmc/addons/Repository.cpp
 msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
+msgid "Add-on is incompatible or has been marked broken in repository."
 msgstr ""
 
 #: xbmc/addons/Repository.cpp
