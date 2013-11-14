@@ -107,7 +107,8 @@ CStdString CFanart::GetPreviewURL(unsigned int index) const
 
 const CStdString CFanart::GetColor(unsigned int index) const
 {
-  if (index >= max_fanart_colors || m_fanart.size() == 0)
+  if (index >= max_fanart_colors || m_fanart.size() == 0 ||
+      m_fanart[0].strColors.size() < index*9+8)
     return "FFFFFFFF";
 
   // format is AARRGGBB,AARRGGBB etc.

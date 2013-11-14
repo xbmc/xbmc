@@ -50,7 +50,9 @@ using namespace std;
 
 static CStdString CorrectPath(const CStdString path)
 {
-  if(path == "~" || path.substr(0, 2) == "~/")
+  if (path == "~")
+    return "./";
+  else if (path.substr(0, 2) == "~/")
     return "./" + path.substr(2);
   else
     return "/" + path;
