@@ -483,7 +483,10 @@ const CStdString& CLangInfo::GetAudioLanguage() const
 
 void CLangInfo::SetAudioLanguage(const std::string& language)
 {
-  if (language.empty() || StringUtils::EqualsNoCase(language, "default") || !g_LangCodeExpander.ConvertToThreeCharCode(m_audioLanguage, language))
+  if (language.empty()
+    || StringUtils::EqualsNoCase(language, "default")
+    || StringUtils::EqualsNoCase(language, "original")
+    || !g_LangCodeExpander.ConvertToThreeCharCode(m_audioLanguage, language))
     m_audioLanguage.clear();
 }
 
@@ -498,7 +501,10 @@ const CStdString& CLangInfo::GetSubtitleLanguage() const
 
 void CLangInfo::SetSubtitleLanguage(const std::string& language)
 {
-  if (language.empty() || StringUtils::EqualsNoCase(language, "default") || !g_LangCodeExpander.ConvertToThreeCharCode(m_subtitleLanguage, language))
+  if (language.empty()
+    || StringUtils::EqualsNoCase(language, "default")
+    || StringUtils::EqualsNoCase(language, "original")
+    || !g_LangCodeExpander.ConvertToThreeCharCode(m_subtitleLanguage, language))
     m_subtitleLanguage.clear();
 }
 
