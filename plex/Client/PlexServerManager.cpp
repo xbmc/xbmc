@@ -42,15 +42,16 @@ CPlexServerManager::CPlexServerManager() : m_stopped(false)
   _myPlexServer->AddConnection(conn);
   _myPlexServer->SetActiveConnection(conn);
 
-  _localServer = CPlexServerPtr(new CPlexServer("local", PlexUtils::GetHostName(), true));
-  conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "127.0.0.1", 32400));
-  _localServer->AddConnection(conn);
-  _localServer->SetActiveConnection(conn);
-  
   _nodeServer = CPlexServerPtr(new CPlexServer("node", "plexNode", true));
   conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, "node.plexapp.com", 32400));
   _nodeServer->AddConnection(conn);
   _nodeServer->SetActiveConnection(conn);
+
+  _localServer = CPlexServerPtr(new CPlexServer("local", PlexUtils::GetHostName(), true));
+  conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "127.0.0.1", 32400));
+  _localServer->AddConnection(conn);
+  _localServer->SetActiveConnection(conn);
+
 }
 
 CPlexServerPtr CPlexServerManager::FindByHostAndPort(const CStdString &host, int port)

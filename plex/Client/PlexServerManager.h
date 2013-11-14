@@ -6,11 +6,8 @@
 #include "PlexServer.h"
 #include "PlexConnection.h"
 #include "JobManager.h"
-#include "PlexManualServerManager.h"
 
-typedef std::vector<CPlexServerPtr> PlexServerList;
-typedef std::map<CStdString, CPlexServerPtr> PlexServerMap;
-typedef std::pair<CStdString, CPlexServerPtr> PlexServerPair;
+#include "PlexManualServerManager.h"
 
 #define PLEX_SERVER_MANAGER_XML_FORMAT_VERSION 1
 #define PLEX_SERVER_MANAGER_XML_FILE "special://profile/plexservermanager.xml"

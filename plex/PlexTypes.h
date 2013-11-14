@@ -4,6 +4,8 @@
 #include <string>
 #include <map>
 
+#include <boost/shared_ptr.hpp>
+
 enum EPlexDirectoryType
 {
   PLEX_DIR_TYPE_UNKNOWN,
@@ -175,6 +177,13 @@ typedef std::map<std::string, std::string> PlexStringMap;
 typedef std::map<int64_t, std::string> PlexIntStringMap;
 typedef std::vector<std::string> PlexStringVector;
 typedef std::vector<int64_t> PlexIntVector;
+
+class CPlexServer;
+typedef boost::shared_ptr<CPlexServer> CPlexServerPtr;
+
+typedef std::vector<CPlexServerPtr> PlexServerList;
+typedef std::map<std::string, CPlexServerPtr> PlexServerMap;
+typedef std::pair<std::string, CPlexServerPtr> PlexServerPair;
 
 #define PLEX_DEFAULT_PAGE_SIZE 50
 

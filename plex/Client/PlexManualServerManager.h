@@ -11,13 +11,22 @@
 
 #include <string>
 #include "utils/JobManager.h"
+#include <map>
+#include "threads/CriticalSection.h"
+#include "PlexTypes.h"
 
 class CPlexManualServerManager : IJobCallback
 {
   public:
-    CPlexManualServerManager() {}
+    CPlexManualServerManager() : m_manualServerUUID("") {}
     void checkManualServersAsync();
     void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+    void updateServerManager();
+    void checkLocalhost();
+
+    CCriticalSection m_serverLock;
+    PlexServerMap m_serverMap;
+    std::string m_manualServerUUID;
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexManualServerManager__) */
