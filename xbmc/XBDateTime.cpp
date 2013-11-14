@@ -683,6 +683,7 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 
 void CDateTime::SetFromDateString(const CStdString &date)
 {
+  /* TODO:STRING_CLEANUP */
   if (date.empty())
   {
     SetValid(false);

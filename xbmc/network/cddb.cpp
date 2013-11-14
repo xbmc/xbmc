@@ -523,6 +523,7 @@ void Xcddb::parseData(const char *buffer)
     CStdString strKeyword = *it;
     CStdString strValue = keywords[strKeyword];
 
+    /* TODO:STRING_CLEANUP */
     if (strKeyword == "DTITLE")
     {
       // DTITLE may contain artist and disc title, separated with " / ",

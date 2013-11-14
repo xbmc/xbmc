@@ -192,6 +192,7 @@ CStdString CFavouritesDirectory::GetExecutePath(const CFileItem &item, const std
     if (!contextWindow.empty())
       execute = StringUtils::Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
   }
+  /* TODO:STRING_CLEANUP */
   else if (item.IsScript() && item.GetPath().size() > 9) // plugin://<foo>
     execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().substr(9)).c_str());
   else if (item.IsAndroidApp() && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>

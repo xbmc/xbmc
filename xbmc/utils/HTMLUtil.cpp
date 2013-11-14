@@ -287,6 +287,7 @@ static const HTMLMapping mappings[] =
 
 void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStripped)
 {
+  /* TODO:STRING_CLEANUP */
   if (strHTML.size() == 0)
   {
     strStripped.clear();
