@@ -134,7 +134,7 @@ public:
   ~CPCMRemap();
 
   void Reset();
-  enum PCMChannels *SetInputFormat (unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize, unsigned int sampleRate);
+  enum PCMChannels *SetInputFormat (unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize, unsigned int sampleRate, PCMLayout layout);
   void SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap, bool ignoreLayout = false);
 #if 0
   void Remap(void *data, void *out, unsigned int samples, long drc);
