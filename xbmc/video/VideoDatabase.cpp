@@ -7321,20 +7321,19 @@ void CVideoDatabase::GetMusicVideoAlbumsByName(const CStdString& strSearch, CFil
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    CStdString strLike;
+    strSQL = StringUtils::Format("SELECT DISTINCT"
+                                 "  musicvideo.c%02d,"
+                                 "  musicvideo.idMVideo,"
+                                 "  path.strPath"
+                                 " FROM"
+                                 "  musicvideo"
+                                 " JOIN files ON"
+                                 "  files.idFile=musicvideo.idFile"
+                                 " JOIN path ON"
+                                 "  path.idPath=files.idPath", VIDEODB_ID_MUSICVIDEO_ALBUM);
     if (!strSearch.empty())
-    {
-      strLike = StringUtils::Format("and musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_ALBUM);
-      strLike += "like '%%s%%%'";
-    }
-    if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-      strSQL=PrepareSQL("select distinct musicvideo.c%02d,musicvideo.idMVideo,path.strPath from musicvideo,files,path where files.idFile=musicvideo.idFile and files.idPath=path.idPath"+strLike,VIDEODB_ID_MUSICVIDEO_ALBUM,strSearch.c_str());
-    else
-    {
-      if (!strLike.empty())
-        strLike = "where " + strLike.substr(4);
-      strSQL=PrepareSQL("select distinct musicvideo.c%02d,musicvideo.idMVideo from musicvideo"+strLike,VIDEODB_ID_MUSICVIDEO_ALBUM,strSearch.c_str());
-    }
+      strSQL += PrepareSQL(" WHERE musicvideo.c%02d like '%%%s%%'",VIDEODB_ID_MUSICVIDEO_ALBUM, strSearch.c_str());
+
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())
@@ -7346,7 +7345,7 @@ void CVideoDatabase::GetMusicVideoAlbumsByName(const CStdString& strSearch, CFil
       }
 
       if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),*CMediaSourceSettings::Get().GetSources("video")))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv(2).get_asString()),*CMediaSourceSettings::Get().GetSources("video")))
         {
           m_pDS->next();
           continue;
