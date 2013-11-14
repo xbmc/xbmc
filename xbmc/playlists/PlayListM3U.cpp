@@ -191,6 +191,10 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
   CStdString strPlaylist = strFileName;
   size_t maxBandwidth = 0;
 
+  // preserve any ProtocolOptions
+  CURL inputUrl = CURL(strPlaylist);
+  CStdString inputProtocolOptions = inputUrl.GetProtocolOptions();
+
   // first strip off any query string
   size_t baseEnd = strPlaylist.find('?');
   if (baseEnd != std::string::npos)
@@ -259,6 +263,18 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
         }
       }
     }
+  }
+
+  if (!inputProtocolOptions.empty())
+  {
+    CURL outputUrl = CURL(strPlaylist);
+    // maintain any protocol options that the best stream may include
+    if(!outputUrl.GetProtocolOptions().empty())
+      outputUrl.SetProtocolOptions(outputUrl.GetProtocolOptions() + "&" + inputProtocolOptions);
+    else
+      outputUrl.SetProtocolOptions(inputProtocolOptions);
+    CLog::Log(LOGINFO, "Persisting ProtocolOptions: %s", inputProtocolOptions.c_str());
+    strPlaylist = outputUrl.Get();
   }
 
   CLog::Log(LOGINFO, "Auto-selecting %s based on configured bandwidth.", strPlaylist.c_str());
