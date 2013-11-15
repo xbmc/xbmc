@@ -101,7 +101,7 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
       CMusicDatabase::SetPropertiesFromArtist(*pItem,artist);
 
     CAlbum album;
-    if (database.GetAlbumInfo(param.GetAlbumId(),album,NULL))
+    if (database.GetAlbum(param.GetAlbumId(), album))
       CMusicDatabase::SetPropertiesFromAlbum(*pItem,album);
 
     path = pItem->GetMusicInfoTag()->GetURL();

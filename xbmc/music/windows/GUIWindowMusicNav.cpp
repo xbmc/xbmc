@@ -588,7 +588,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           return false;
         CStdString path = StringUtils::Format("musicdb://albums/%ld/", idAlbum);
         CAlbum album;
-        m_musicdatabase.GetAlbumInfo(idAlbum,album,NULL);
+        m_musicdatabase.GetAlbum(idAlbum,album);
         *item = CFileItem(path,album);
         item->SetPath(path);
         CGUIWindowMusicBase::OnContextButton(itemNumber,button);

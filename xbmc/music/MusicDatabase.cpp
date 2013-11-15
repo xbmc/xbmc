@@ -333,6 +333,33 @@ void CMusicDatabase::CreateViews()
               "FROM artist "
               "  LEFT OUTER JOIN artistinfo ON"
               "    artist.idArtist = artistinfo.idArtist");
+
+  CLog::Log(LOGINFO, "create albumartistview");
+  m_pDS->exec("DROP VIEW IF EXISTS albumartistview");
+  m_pDS->exec("CREATE VIEW albumartistview AS SELECT"
+              "  album_artist.idAlbum AS idAlbum, "
+              "  album_artist.idArtist AS idArtist, "
+              "  artist.strArtist AS strArtist, "
+              "  artist.strMusicBrainzArtistID AS strMusicBrainzArtistID, "
+              "  album_artist.boolFeatured AS boolFeatured, "
+              "  album_artist.strJoinPhrase AS strJoinPhrase, "
+              "  album_artist.iOrder AS iOrder "
+              "FROM album_artist "
+              "JOIN artist ON "
+              "     album_artist.idArtist = artist.idArtist");
+  CLog::Log(LOGINFO, "create songartistview");
+  m_pDS->exec("DROP VIEW IF EXISTS songartistview");
+  m_pDS->exec("CREATE VIEW songartistview AS SELECT"
+              "  song_artist.idSong AS idSong, "
+              "  song_artist.idArtist AS idArtist, "
+              "  artist.strArtist AS strArtist, "
+              "  artist.strMusicBrainzArtistID AS strMusicBrainzArtistID, "
+              "  song_artist.boolFeatured AS boolFeatured, "
+              "  song_artist.strJoinPhrase AS strJoinPhrase, "
+              "  song_artist.iOrder AS iOrder "
+              "FROM song_artist "
+              "JOIN artist ON "
+              "     song_artist.idArtist = artist.idArtist");
 }
 
 int CMusicDatabase::AddSong(const int idAlbum,
@@ -586,6 +613,85 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum, const CStdString& strMu
   }
 
   return -1;
+}
+
+bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (idAlbum == -1)
+      return false; // not in the database
+
+    CStdString strSQL=PrepareSQL("SELECT albumview.*,albumartistview.*,songview.*,songartistview.* "
+                                 "  FROM albumview "
+                                 "  JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
+                                 "  JOIN songview ON albumview.idAlbum = songview.idAlbum "
+                                 "  JOIN songartistview ON songview.idSong = songartistview.idSong "
+                                 "  WHERE albumview.idAlbum = %ld "
+                                 "  ORDER BY iOrder, iTrack", idAlbum);
+
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    int albumArtistOffset = album_enumCount;
+    int songOffset = albumArtistOffset + artistCredit_enumCount;
+    int songArtistOffset = songOffset + song_enumCount;
+
+    set<int> songs;
+    set<int> artistcredits;
+    set<pair<int, int> > songartistcredits;
+    album = GetAlbumFromDataset(m_pDS.get()->get_sql_record(), 0, true); // true to grab the thumburl rather than the thumb
+    while (!m_pDS->eof())
+    {
+      const dbiplus::sql_record* const record = m_pDS.get()->get_sql_record();
+
+      // Because rows repeat in the joined query (cartesian join) we may see each
+      // entity (album artist, song, song artist) multiple times in the result set.
+      // Since there should never be a song with the same artist twice, or an album
+      // with the same song (by id) listed twice, we key on the entity ID and only
+      // create an entity for the first occurence of each entity in the data set.
+      int idAlbumArtist = record->at(albumArtistOffset + artistCredit_idArtist).get_asInt();
+      if (artistcredits.find(idAlbumArtist) == artistcredits.end())
+      {
+        album.artistCredits.push_back(GetArtistCreditFromDataset(record, albumArtistOffset));
+        artistcredits.insert(idAlbumArtist);
+      }
+
+      int idSong = m_pDS.get()->get_sql_record()->at(songOffset + song_idSong).get_asInt();
+      if (songs.find(idSong) == songs.end())
+      {
+        album.songs.push_back(GetSongFromDataset(record, songOffset));
+        songs.insert(idSong);
+      }
+
+      int idSongArtistSong = m_pDS.get()->get_sql_record()->at(songArtistOffset + artistCredit_idEntity).get_asInt();
+      int idSongArtistArtist = m_pDS.get()->get_sql_record()->at(songArtistOffset + artistCredit_idArtist).get_asInt();
+      if (songartistcredits.find(make_pair(idSongArtistSong, idSongArtistArtist)) == songartistcredits.end())
+      {
+        for (VECSONGS::iterator si = album.songs.begin(); si != album.songs.end(); ++si)
+          if (si->idSong == idSongArtistSong)
+            si->artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
+        songartistcredits.insert(make_pair(idSongArtistSong, idSongArtistArtist));
+      }
+
+      m_pDS->next();
+    }
+    m_pDS->close(); // cleanup recordset data
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
+  }
+  
+  return false;
 }
 
 int CMusicDatabase::AddGenre(const CStdString& strGenre1)
@@ -1121,14 +1227,14 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   return album;
 }
 
-CArtistCredit CMusicDatabase::GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset /* = 0 */)
+CArtistCredit CMusicDatabase::GetArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset /* = 0 */)
 {
   CArtistCredit artistCredit;
-  artistCredit.idArtist = record->at(offset + album_idArtist).get_asInt();
-  artistCredit.m_strArtist = record->at(offset + album_strArtist).get_asString();
-  artistCredit.m_strMusicBrainzArtistID = record->at(offset + album_strMusicBrainzArtistID).get_asString();
-  artistCredit.m_boolFeatured = record->at(offset + album_bFeatured).get_asBool();
-  artistCredit.m_strJoinPhrase = record->at(offset + album_strJoinPhrase).get_asString();
+  artistCredit.idArtist = record->at(offset + artistCredit_idArtist).get_asInt();
+  artistCredit.m_strArtist = record->at(offset + artistCredit_strArtist).get_asString();
+  artistCredit.m_strMusicBrainzArtistID = record->at(offset + artistCredit_strMusicBrainzArtistID).get_asString();
+  artistCredit.m_boolFeatured = record->at(offset + artistCredit_bFeatured).get_asBool();
+  artistCredit.m_strJoinPhrase = record->at(offset + artistCredit_strJoinPhrase).get_asString();
   return artistCredit;
 }
 
@@ -1320,7 +1426,7 @@ bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bo
     if (idAlbum == -1)
       return false; // not in the database
 
-    CStdString strSQL=PrepareSQL("SELECT albumview.*, album_artist.idArtist, artist.strArtist, artist.strMusicBrainzArtistID, album_artist.boolFeatured, album_artist.strJoinPhrase FROM albumview JOIN album_artist ON albumview.idAlbum = album_artist.idAlbum JOIN artist ON album_artist.idArtist = artist.idArtist WHERE albumview.idAlbum = %ld", idAlbum);
+    CStdString strSQL=PrepareSQL("SELECT albumview.*,albumartistview.* FROM albumview JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum WHERE albumview.idAlbum = %ld", idAlbum);
     if (scrapedInfo) // require additional information
       strSQL += " and idAlbumInfo > 0";
 
@@ -1335,9 +1441,9 @@ bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bo
     int idAlbumInfo = m_pDS2->fv(album_idAlbumInfo).get_asInt();
     while (!m_pDS2->eof())
     {
-      if (!info.artistCredits.empty() && (m_pDS2->fv(album_idArtist).get_asInt() != info.artistCredits.back().idArtist))
+      if (!info.artistCredits.empty() && (m_pDS2->fv(artistCredit_idArtist).get_asInt() != info.artistCredits.back().idArtist))
       {
-        info.artistCredits.push_back(GetAlbumArtistCreditFromDataset(m_pDS2.get()->get_sql_record()));
+        info.artistCredits.push_back(GetArtistCreditFromDataset(m_pDS2.get()->get_sql_record()));
       }
       m_pDS2->next();
     }
@@ -3784,7 +3890,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
 int CMusicDatabase::GetMinVersion() const
 {
-  return 37;
+  return 38;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)

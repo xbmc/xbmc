@@ -179,7 +179,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITranspo
     return InternalError;
 
   CAlbum album;
-  if (!musicdatabase.GetAlbumInfo(albumID, album, NULL))
+  if (!musicdatabase.GetAlbum(albumID, album))
     return InvalidParams;
 
   CStdString path;
@@ -563,7 +563,7 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &it
     {
       CAlbum album;
       int albumid = musicdatabase.GetAlbumIdByPath(strFilename);
-      if (musicdatabase.GetAlbumInfo(albumid, album, NULL))
+      if (musicdatabase.GetAlbum(albumid, album))
       {
         item->SetFromAlbum(album);
 
