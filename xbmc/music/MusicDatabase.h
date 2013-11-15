@@ -188,7 +188,7 @@ public:
                 const CStdString& strArtist, const CStdString& strGenre,
                 int year, bool bCompilation);
   bool GetAlbum(int idAlbum, CAlbum& album);
-  int  UpdateAlbum(int idAlbum, const CAlbum &album);
+  int  UpdateAlbum(int idAlbum, const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID, const CStdString& strArtist, const CStdString& strGenre, int year, bool bCompilation);
   bool DeleteAlbum(int idAlbum);
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check
@@ -258,16 +258,20 @@ public:
   bool AddAlbumArtist(int idArtist, int idAlbum, std::string joinPhrase, bool featured, int iOrder);
   bool GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<int>& albums);
   bool GetArtistsByAlbum(int idAlbum, bool includeFeatured, std::vector<int>& artists);
+  bool DeleteAlbumArtistsByAlbum(int idAlbum);
 
   bool AddSongArtist(int idArtist, int idSong, std::string joinPhrase, bool featured, int iOrder);
   bool GetSongsByArtist(int idArtist, bool includeFeatured, std::vector<int>& songs);
   bool GetArtistsBySong(int idSong, bool includeFeatured, std::vector<int>& artists);
+  bool DeleteSongArtistsBySong(int idSong);
 
   bool AddSongGenre(int idGenre, int idSong, int iOrder);
   bool GetGenresBySong(int idSong, std::vector<int>& genres);
+  bool DeleteSongGenresBySong(int idSong);
 
   bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
   bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
+  bool DeleteAlbumGenresByAlbum(int idAlbum);
 
   /////////////////////////////////////////////////
   // Top 100

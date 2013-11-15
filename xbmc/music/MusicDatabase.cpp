@@ -510,43 +510,38 @@ int CMusicDatabase::UpdateSong(int idSong,
                                int iTimesPlayed, int iStartOffset, int iEndOffset,
                                const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber)
 {
-  CStdString sql;
   if (idSong < 0)
     return -1;
 
   CStdString strSQL;
-  try
-  {
-    CStdString strPath, strFileName;
-    URIUtils::Split(strPathAndFileName, strPath, strFileName);
-    int idPath = AddPath(strPath);
-    DWORD crc = ComputeCRC(strFileName);
-    
-    strSQL = PrepareSQL("UPDATE song SET idPath = %i, strArtists = '%s', strGenres = '%s', strTitle = '%s', iTrack = %i, iDuration = %i, iYear = %i, dwFileNameCRC = '%ul', strFileName = '%s'",
-                        idPath,
-                        StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator).c_str(),
-                        StringUtils::Join(genres, g_advancedSettings.m_musicItemSeparator).c_str(),
-                        strTitle.c_str(),
-                        iTrack, iDuration, iYear,
-                        crc, strFileName.c_str());
-    if (strMusicBrainzTrackID.empty())
-      strSQL += PrepareSQL(", strMusicBrainzTrackID = NULL");
-    else
-      strSQL += PrepareSQL(", strMusicBrainzTrackID = '%s'", strMusicBrainzTrackID.c_str());
-    
-    if (dtLastPlayed.IsValid())
-      strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = '%s', rating = '%c', comment = '%s'",
-                           iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, strComment.c_str());
-    else
-      strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = NULL, rating = '%c', comment = '%s'",
-                           iTimesPlayed, iStartOffset, iEndOffset, rating, strComment.c_str());
-    strSQL += PrepareSQL(" WHERE idSong = %i", idSong);
-    m_pDS->exec(strSQL.c_str());
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "musicdatabase:unable to addsong (%s)", strSQL.c_str());
-  }
+  CStdString strPath, strFileName;
+  URIUtils::Split(strPathAndFileName, strPath, strFileName);
+  int idPath = AddPath(strPath);
+  DWORD crc = ComputeCRC(strFileName);
+
+  strSQL = PrepareSQL("UPDATE song SET idPath = %i, strArtists = '%s', strGenres = '%s', strTitle = '%s', iTrack = %i, iDuration = %i, iYear = %i, dwFileNameCRC = '%ul', strFileName = '%s'",
+                      idPath,
+                      StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator).c_str(),
+                      StringUtils::Join(genres, g_advancedSettings.m_musicItemSeparator).c_str(),
+                      strTitle.c_str(),
+                      iTrack, iDuration, iYear,
+                      crc, strFileName.c_str());
+  if (strMusicBrainzTrackID.empty())
+    strSQL += PrepareSQL(", strMusicBrainzTrackID = NULL");
+  else
+    strSQL += PrepareSQL(", strMusicBrainzTrackID = '%s'", strMusicBrainzTrackID.c_str());
+
+  if (dtLastPlayed.IsValid())
+    strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = '%s', rating = '%c', comment = '%s'",
+                         iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, strComment.c_str());
+  else
+    strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = NULL, rating = '%c', comment = '%s'",
+                         iTimesPlayed, iStartOffset, iEndOffset, rating, strComment.c_str());
+  strSQL += PrepareSQL(" WHERE idSong = %i", idSong);
+
+  bool status = ExecuteQuery(strSQL);
+  if (status)
+    AnnounceUpdate("song", idSong);
   return idSong;
 }
 
@@ -614,6 +609,34 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum, const CStdString& strMu
 
   return -1;
 }
+
+int  CMusicDatabase::UpdateAlbum(int idAlbum,
+                                 const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID,
+                                 const CStdString& strArtist, const CStdString& strGenre,
+                                 int iYear, bool bCompilation)
+{
+  if (idAlbum < 0)
+    return -1;
+
+  CStdString strSQL;
+  strSQL = PrepareSQL("UPDATE album SET "
+                      " strAlbum = '%s', strArtists = '%s', strGenres = '%s', "
+                      " iYear = %i, bCompilation = %i",
+                      strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(),
+                      iYear, bCompilation);
+  if (strMusicBrainzAlbumID.empty())
+    strSQL += PrepareSQL(", strMusicBrainzAlbumID = NULL");
+  else
+    strSQL += PrepareSQL(", strMusicBrainzAlbumID = '%s'", strMusicBrainzAlbumID.c_str());
+
+  strSQL += PrepareSQL(" WHERE idAlbum = %i", idAlbum);
+
+  bool status = ExecuteQuery(strSQL);
+  if (status)
+    AnnounceUpdate("album", idAlbum);
+  return idAlbum;
+}
+
 
 bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album)
 {
@@ -832,6 +855,13 @@ bool CMusicDatabase::AddSongArtist(int idArtist, int idSong, std::string joinPhr
   return ExecuteQuery(strSQL);
 };
 
+bool CMusicDatabase::DeleteSongArtistsBySong(int idSong)
+{
+  CStdString strSQL;
+  strSQL = PrepareSQL("DELETE FROM song_artist WHERE idSong = %i", idSong);
+  return ExecuteQuery(strSQL);
+}
+
 bool CMusicDatabase::AddAlbumArtist(int idArtist, int idAlbum, std::string joinPhrase, bool featured, int iOrder)
 {
   CStdString strSQL;
@@ -839,6 +869,13 @@ bool CMusicDatabase::AddAlbumArtist(int idArtist, int idAlbum, std::string joinP
                     idArtist, idAlbum, joinPhrase.c_str(), featured == true ? 1 : 0, iOrder);
   return ExecuteQuery(strSQL);
 };
+
+bool CMusicDatabase::DeleteAlbumArtistsByAlbum(int idAlbum)
+{
+  CStdString strSQL;
+  strSQL = PrepareSQL("DELETE FROM album_artist WHERE idAlbum = %i", idAlbum);
+  return ExecuteQuery(strSQL);
+}
 
 bool CMusicDatabase::AddSongGenre(int idGenre, int idSong, int iOrder)
 {
@@ -851,6 +888,13 @@ bool CMusicDatabase::AddSongGenre(int idGenre, int idSong, int iOrder)
   return ExecuteQuery(strSQL);
 };
 
+bool CMusicDatabase::DeleteSongGenresBySong(int idSong)
+{
+  CStdString strSQL;
+  strSQL = PrepareSQL("DELETE FROM song_genre WHERE idSong = %i", idSong);
+  return ExecuteQuery(strSQL);
+}
+
 bool CMusicDatabase::AddAlbumGenre(int idGenre, int idAlbum, int iOrder)
 {
   if (idGenre == -1 || idAlbum == -1)
@@ -861,6 +905,13 @@ bool CMusicDatabase::AddAlbumGenre(int idGenre, int idAlbum, int iOrder)
                     idGenre, idAlbum, iOrder);
   return ExecuteQuery(strSQL);
 };
+
+bool CMusicDatabase::DeleteAlbumGenresByAlbum(int idAlbum)
+{
+  CStdString strSQL;
+  strSQL = PrepareSQL("DELETE FROM album_genre WHERE idAlbum = %i", idAlbum);
+  return ExecuteQuery(strSQL);
+}
 
 bool CMusicDatabase::GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<int> &albums)
 {
