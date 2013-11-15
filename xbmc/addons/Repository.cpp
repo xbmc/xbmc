@@ -107,6 +107,9 @@ CRepository::~CRepository()
 
 string CRepository::Checksum() const
 {
+  /* This code is duplicated in CRepositoryUpdateJob::GrabAddons().
+   * If you make changes here, they may be applicable there, too.
+   */
   string result;
   for (DirList::const_iterator it  = m_dirs.begin(); it != m_dirs.end(); ++it)
   {
@@ -232,6 +235,8 @@ bool CRepositoryUpdateJob::DoWork()
   map<string, AddonPtr> addons;
   for (VECADDONS::const_iterator i = m_repos.begin(); i != m_repos.end(); ++i)
   {
+    if (ShouldCancel(0, 0))
+      return false;
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(*i);
     VECADDONS newAddons = GrabAddons(repo);
     MergeAddons(addons, newAddons);
@@ -322,16 +327,30 @@ bool CRepositoryUpdateJob::DoWork()
 VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
 {
   CAddonDatabase database;
+  VECADDONS addons;
   database.Open();
   string checksum;
   database.GetRepoChecksum(repo->ID(),checksum);
-  string reposum = repo->Checksum();
-  VECADDONS addons;
+  string reposum;
+
+  /* This for loop is duplicated in CRepository::Checksum().
+   * If you make changes here, they may be applicable there, too.
+   */
+  for (CRepository::DirList::const_iterator it  = repo->m_dirs.begin(); it != repo->m_dirs.end(); ++it)
+  {
+    if (ShouldCancel(0, 0))
+      return addons;
+    if (!it->checksum.empty())
+      reposum += CRepository::FetchChecksum(it->checksum);
+  }
+
   if (checksum != reposum || checksum.empty())
   {
     map<string, AddonPtr> uniqueAddons;
     for (CRepository::DirList::const_iterator it = repo->m_dirs.begin(); it != repo->m_dirs.end(); ++it)
     {
+      if (ShouldCancel(0, 0))
+        return addons;
       VECADDONS addons2 = CRepository::Parse(*it);
       MergeAddons(uniqueAddons, addons2);
     }
