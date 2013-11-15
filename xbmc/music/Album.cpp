@@ -198,7 +198,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
           song.artistCredits.push_back(artistCredit);
         }
         
-        songArtistCreditsNode = songArtistCreditsNode->NextSiblingElement("albumArtistCredits");
+        songArtistCreditsNode = songArtistCreditsNode->NextSiblingElement("songArtistCredits");
       }
 
       XMLUtils::GetString(node,   "musicBrainzTrackID",   song.strMusicBrainzTrackID);
