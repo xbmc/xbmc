@@ -105,7 +105,7 @@ void CGUIInfoColor::Parse(const CStdString &label, int context)
   if (label.Equals("-", false))
     return;
 
-  if (StringUtils::StartsWithNoCase(label, "$var"))
+  if (StringUtils::StartsWithNoCase(label, "$var["))
   {
     label2 = label.substr(5, label.length() - 6);
     m_info = g_infoManager.TranslateSkinVariableString(label2, context);
@@ -114,7 +114,7 @@ void CGUIInfoColor::Parse(const CStdString &label, int context)
     return;
   }
 
-  if (StringUtils::StartsWithNoCase(label, "$info"))
+  if (StringUtils::StartsWithNoCase(label, "$info["))
     label2 = label.substr(6, label.length()-7);
 
   m_info = g_infoManager.TranslateString(label2);
@@ -208,7 +208,7 @@ CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
   while (pos1 != std::string::npos)
   {
     size_t pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 10);
-    if (pos2 > pos1)
+    if (pos2 != std::string::npos)
     {
       CStdString left = work.substr(0, pos1);
       CStdString right = work.substr(pos2 + 1);
@@ -236,7 +236,7 @@ CStdString CGUIInfoLabel::ReplaceAddonStrings(const CStdString &label)
   while (pos1 != std::string::npos)
   {
     size_t pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 7);
-    if (pos2 > pos1)
+    if (pos2 != std::string::npos)
     {
       CStdString left = work.substr(0, pos1);
       CStdString right = work.substr(pos2 + 1);
@@ -300,7 +300,7 @@ void CGUIInfoLabel::Parse(const CStdString &label, int context)
         m_info.push_back(CInfoPortion(0, work.substr(0, pos1), ""));
 
       pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + len);
-      if (pos2 > pos1)
+      if (pos2 != std::string::npos)
       {
         // decipher the block
         CStdString block = work.substr(pos1 + len, pos2 - pos1 - len);

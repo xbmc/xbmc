@@ -406,7 +406,9 @@ bool CHTSPDirectory::GetTag(const CURL &base, CFileItemList &items)
 {
   CURL url(base);
 
-  int id = atoi(url.GetFileName().substr(5).c_str());
+  int id = 0;
+  if (url.GetFileName().size() >= 5)
+    id = atoi(url.GetFileName().substr(5).c_str());
 
   SChannels channels = m_session->GetChannels(id);
   if(channels.empty())

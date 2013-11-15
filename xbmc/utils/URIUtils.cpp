@@ -460,7 +460,7 @@ bool URIUtils::IsRemote(const CStdString& strFile)
 bool URIUtils::IsOnDVD(const CStdString& strFile)
 {
 #ifdef TARGET_WINDOWS
-  if (strFile.substr(1,1) == ":")
+  if (strFile.size() >= 2 && strFile.substr(1,1) == ":")
     return (GetDriveType(strFile.substr(0, 3).c_str()) == DRIVE_CDROM);
 #endif
 
@@ -593,8 +593,7 @@ bool URIUtils::IsDVD(const CStdString& strFile)
   if (StringUtils::StartsWithNoCase(strFile, "dvd://"))
     return true;
 
-  if(strFile.substr(1) != ":\\"
-  && strFile.substr(1) != ":")
+  if(strFile.size() < 2 || (strFile.substr(1) != ":\\" && strFile.substr(1) != ":"))
     return false;
 
   if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)

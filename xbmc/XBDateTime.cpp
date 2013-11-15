@@ -175,9 +175,12 @@ void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
 
 void CDateTimeSpan::SetFromTimeString(const CStdString& time) // hh:mm
 {
-  int hour    = atoi(time.substr(0, 2).c_str());
-  int minutes = atoi(time.substr(3, 2).c_str());
-  SetDateTimeSpan(0,hour,minutes,0);
+  if (time.size() >= 5 && time[2] == ':')
+  {
+    int hour    = atoi(time.substr(0, 2).c_str());
+    int minutes = atoi(time.substr(3, 2).c_str());
+    SetDateTimeSpan(0,hour,minutes,0);
+  }
 }
 
 int CDateTimeSpan::GetDays() const
@@ -680,6 +683,7 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 
 void CDateTime::SetFromDateString(const CStdString &date)
 {
+  /* TODO:STRING_CLEANUP */
   if (date.empty())
   {
     SetValid(false);
@@ -706,7 +710,7 @@ void CDateTime::SetFromDateString(const CStdString &date)
   }
 
   size_t iPos2 = date.find(",");
-  CStdString strDay = date.substr(iPos, iPos2-iPos);
+  CStdString strDay = (date.size() >= iPos) ? date.substr(iPos, iPos2-iPos) : "";
   CStdString strYear = date.substr(date.find(" ", iPos2) + 1);
   while (months[j] && stricmp(strMonth.c_str(),months[j]) != 0)
     j++;
@@ -970,10 +974,12 @@ void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
 
 void CDateTime::SetFromDBDate(const CStdString &date)
 {
+  if (date.size() < 10)
+    return;
   // assumes format:
   // YYYY-MM-DD or DD-MM-YYYY
   int year = 0, month = 0, day = 0;
-  if (date.size() > 2 && (date[2] == '-' || date[2] == '.'))
+  if (date[2] == '-' || date[2] == '.')
   {
     day = atoi(date.substr(0, 2).c_str());
     month = atoi(date.substr(3, 2).c_str());
@@ -990,6 +996,8 @@ void CDateTime::SetFromDBDate(const CStdString &date)
 
 void CDateTime::SetFromDBTime(const CStdString &time)
 {
+  if (time.size() < 8)
+    return;
   // assumes format:
   // HH:MM:SS
   int hour, minute, second;

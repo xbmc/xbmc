@@ -190,22 +190,26 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if (recordedNode)
         {
           CStdString strRecorded = recordedNode->FirstChild()->Value();
-          int iYear, iMonth, iDay;
 
-          iYear = atoi(strRecorded.substr(0, 4).c_str());
-          iMonth = atoi(strRecorded.substr(5, 2).c_str());
-          iDay = atoi(strRecorded.substr(8, 2).c_str());
-          dtDateTime.wYear = iYear;
-          dtDateTime.wMonth = iMonth;
-          dtDateTime.wDay = iDay;
+          if (strRecorded.size() >= 19)
+          {
+            /* TODO:STRING_CLEANUP */
+            int iYear, iMonth, iDay;
+            iYear = atoi(strRecorded.substr(0, 4).c_str());
+            iMonth = atoi(strRecorded.substr(5, 2).c_str());
+            iDay = atoi(strRecorded.substr(8, 2).c_str());
+            dtDateTime.wYear = iYear;
+            dtDateTime.wMonth = iMonth;
+            dtDateTime.wDay = iDay;
 
-          int iHour, iMin, iSec;
-          iHour = atoi(strRecorded.substr(11, 2).c_str());
-          iMin = atoi(strRecorded.substr(14, 2).c_str());
-          iSec = atoi(strRecorded.substr(17, 2).c_str());
-          dtDateTime.wHour = iHour;
-          dtDateTime.wMinute = iMin;
-          dtDateTime.wSecond = iSec;
+            int iHour, iMin, iSec;
+            iHour = atoi(strRecorded.substr(11, 2).c_str());
+            iMin = atoi(strRecorded.substr(14, 2).c_str());
+            iSec = atoi(strRecorded.substr(17, 2).c_str());
+            dtDateTime.wHour = iHour;
+            dtDateTime.wMinute = iMin;
+            dtDateTime.wSecond = iSec;
+          }
         }
 
         // PATH

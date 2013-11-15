@@ -1199,11 +1199,10 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
   bool sorted = false;
   CStdStringArray tokens = StringUtils::SplitString(criteria, ",");
   for (vector<CStdString>::reverse_iterator itr = tokens.rbegin(); itr != tokens.rend(); itr++) {
-    CStdString method = itr->substr(1);
-
     SortDescription sorting;
     /* Platinum guarantees 1st char is - or + */
     sorting.sortOrder = StringUtils::StartsWith(*itr, "+") ? SortOrderAscending : SortOrderDescending;
+    CStdString method = itr->substr(1);
 
     /* resource specific */
     if (method.Equals("res@duration"))

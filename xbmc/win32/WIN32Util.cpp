@@ -866,7 +866,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
       UINT uDriveType= GetDriveTypeW( strWdrive.c_str()  );
       // don't use GetVolumeInformation on fdd's as the floppy controller may be enabled in Bios but
       // no floppy HW is attached which causes huge delays.
-      if(strWdrive.substr(0,2) != L"A:" && strWdrive.substr(0,2) != L"B:")
+      if(strWdrive.size() >= 2 && strWdrive.substr(0,2) != L"A:" && strWdrive.substr(0,2) != L"B:")
         nResult= GetVolumeInformationW( strWdrive.c_str() , cVolumeName, 100, 0, 0, 0, NULL, 25);
       if(nResult == 0 && bonlywithmedia)
       {
@@ -1592,6 +1592,9 @@ extern "C"
 
 bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
 {
+  if (strWdrive.size() < 2)
+    return false;
+
   CStdStringW strWDevicePath = StringUtils::Format(L"\\\\.\\%s",strWdrive.substr(0, 2).c_str());
 
   HANDLE deviceHandle = CreateFileW(

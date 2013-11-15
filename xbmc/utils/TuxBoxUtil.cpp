@@ -561,7 +561,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         {
           for (vector<sAudioChannel>::iterator sChannel = sCurSrvData.audio_channels.begin(); sChannel!=sCurSrvData.audio_channels.end(); ++sChannel)
           {
-            if (sChannel->pid != sRequestedAudioChannel.pid)
+            if (sChannel->pid != sRequestedAudioChannel.pid && sChannel->pid.size() >= 4)
               strAPids += "," + sChannel->pid.substr(sChannel->pid.size() - 4);
           }
           CLog::Log(LOGDEBUG, "%s - Sending all audio pids: %s%s", __FUNCTION__, strAudioChannelPid.c_str(), strAPids.c_str());

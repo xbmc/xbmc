@@ -138,8 +138,14 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
   {
     CStdString strAudioInfo;
     g_application.m_pPlayer->GetAudioInfo(strAudioInfo);
-    int iNumChannels = atoi(strAudioInfo.substr(strAudioInfo.find("chns:") + 5).c_str());
-    CStdString strAudioCodec = strAudioInfo.substr(7, strAudioInfo.find(") VBR") - 5);
+    /* TODO:STRING_CLEANUP */
+    int iNumChannels = 0;
+    size_t pos = strAudioInfo.find("chns:");
+    if (pos != std::string::npos)
+      iNumChannels = atoi(strAudioInfo.substr(pos + 5).c_str());
+    CStdString strAudioCodec;
+    if (strAudioInfo.size() > 7)
+      strAudioCodec = strAudioInfo.substr(7, strAudioInfo.find(") VBR") - 5);
     bool bDTS = strstr(strAudioCodec.c_str(), "DTS") != 0;
     bool bAC3 = strstr(strAudioCodec.c_str(), "AC3") != 0;
     if (iNumChannels == 2 && !(bDTS || bAC3))

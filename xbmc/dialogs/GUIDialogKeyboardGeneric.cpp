@@ -761,7 +761,9 @@ void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
   {
     g_charsetConverter.utf8ToW(utf8_text, unicode_text);
 
-    int i = GetCursorPos();
+    size_t i = GetCursorPos();
+    if (i > m_strEdit.size())
+      i = m_strEdit.size();
     CStdStringW left_end = m_strEdit.substr(0, i);
     CStdStringW right_end = m_strEdit.substr(i);
 
