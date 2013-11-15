@@ -9,6 +9,7 @@ SRCS=Addon.cpp \
      AddonManager.cpp \
      AddonStatusHandler.cpp \
      AddonVersion.cpp \
+     AudioEncoder.cpp \
      GUIDialogAddonInfo.cpp \
      GUIDialogAddonSettings.cpp \
      GUIViewStateAddonBrowser.cpp \

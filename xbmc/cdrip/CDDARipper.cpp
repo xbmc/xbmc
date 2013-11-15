@@ -47,8 +47,11 @@
 #include "settings/MediaSourceSettings.h"
 #include "Application.h"
 #include "music/MusicDatabase.h"
+#include "addons/AddonManager.h"
+#include "addons/AudioEncoder.h"
 
 using namespace std;
+using namespace ADDON;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 
@@ -148,16 +151,6 @@ bool CCDDARipper::RipCD()
   }
 
   return true;
-}
-
-const char* CCDDARipper::GetExtension(int iEncoder)
-{
-  if (iEncoder == CDDARIP_ENCODER_WAV) return ".wav";
-  if (iEncoder == CDDARIP_ENCODER_VORBIS) return ".ogg";
-  if (iEncoder == CDDARIP_ENCODER_FLAC) return ".flac";
-  if (iEncoder == CDDARIP_ENCODER_FFMPEG_M4A) return ".m4a";
-  if (iEncoder == CDDARIP_ENCODER_FFMPEG_WMA) return ".wma";
-  return ".mp3";
 }
 
 bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, CStdString& strDirectory, int& legalType)
@@ -299,7 +292,14 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item)
   CStdString track = destItem.GetLabel();
   if (track.empty())
     track = StringUtils::Format("%s%02i", "Track-", trackNumber);
-  track += GetExtension(CSettings::Get().GetInt("audiocds.encoder"));
+
+  AddonPtr addon;
+  CAddonMgr::Get().GetAddon(CSettings::Get().GetString("audiocds.encoder"), addon);
+  if (addon)
+  {
+    boost::shared_ptr<CAudioEncoder> enc = boost::static_pointer_cast<CAudioEncoder>(addon);
+    track += enc->extension;
+  }
 
   return track;
 }

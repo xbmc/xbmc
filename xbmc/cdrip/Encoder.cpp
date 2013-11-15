@@ -22,13 +22,11 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 
-CEncoder::CEncoder()
+CEncoder::CEncoder(boost::shared_ptr<IEncoder> encoder)
 {
   m_file = NULL;
   m_dwWriteBufferPointer = 0;
-  m_iInChannels = 0;
-  m_iInSampleRate = 0;
-  m_iInBitsPerSample = 0;
+  m_impl = encoder;
 }
 
 CEncoder::~CEncoder()
@@ -36,23 +34,48 @@ CEncoder::~CEncoder()
   FileClose();
 }
 
+int CEncoder::WriteCallback(void *opaque, uint8_t *data, int size)
+{
+  if (opaque)
+  {
+    CEncoder *encoder = static_cast<CEncoder *>(opaque);
+    return encoder->WriteStream(data, size);
+  }
+  return -1;
+}
+
+int64_t CEncoder::SeekCallback(void *opaque, int64_t position, int whence)
+{
+  if (opaque)
+  {
+    CEncoder *encoder = static_cast<CEncoder *>(opaque);
+    return encoder->FileSeek(position, whence);
+  }
+  return -1;
+}
+
 bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
   if (strFile == NULL) return false;
 
   m_dwWriteBufferPointer = 0;
-  m_strFile = strFile;
+  m_impl->m_strFile = strFile;
 
-  m_iInChannels = iInChannels;
-  m_iInSampleRate = iInRate;
-  m_iInBitsPerSample = iInBits;
+  m_impl->m_iInChannels = iInChannels;
+  m_impl->m_iInSampleRate = iInRate;
+  m_impl->m_iInBitsPerSample = iInBits;
 
   if (!FileCreate(strFile))
   {
     CLog::Log(LOGERROR, "Error: Cannot open file: %s", strFile);
     return false;
   }
-  return true;
+
+  audioenc_callbacks callbacks;
+  callbacks.opaque = this;
+  callbacks.write  = WriteCallback;
+  callbacks.seek   = SeekCallback;
+  return m_impl->Init(callbacks);
 }
 
 bool CEncoder::FileCreate(const char* filename)
@@ -150,4 +173,27 @@ int CEncoder::FlushStream()
   m_dwWriteBufferPointer = 0;
 
   return iResult;
+}
+
+int CEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
+{
+  int iBytes = m_impl->Encode(nNumBytesRead, pbtStream);
+
+  if (iBytes < 0)
+  {
+    CLog::Log(LOGERROR, "Internal encoder error: %i", iBytes);
+    return 0;
+  }
+  return 1;
+}
+
+bool CEncoder::CloseEncode()
+{
+  if (!m_impl->Close())
+    return false;
+
+  FlushStream();
+  FileClose();
+
+  return true;
 }

@@ -1,6 +1,8 @@
 BINDINGS =xbmc/addons/include/xbmc_addon_cpp_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_types.h
+BINDINGS+=xbmc/addons/include/xbmc_audioenc_dll.h
+BINDINGS+=xbmc/addons/include/xbmc_audioenc_types.h
 BINDINGS+=xbmc/addons/include/xbmc_codec_types.h
 BINDINGS+=xbmc/addons/include/xbmc_epg_types.h
 BINDINGS+=xbmc/addons/include/xbmc_pvr_dll.h

@@ -1,0 +1,3 @@
+<settings>
+  <setting id="bitrate" label="30000" type="enum" values="128|160|192|224|256|288|320" default="2"/>
+</settings>

@@ -21,7 +21,7 @@
  *
  */
 
-#include "Encoder.h"
+#include "utils/StdString.h"
 #include "utils/JobManager.h"
 
 class CFileItem;

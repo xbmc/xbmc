@@ -35,11 +35,14 @@
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include "utils/URIUtils.h"
+#include "addons/AddonManager.h"
 
 /* AV_PKT_FLAG_KEY was named PKT_FLAG_KEY in older versions of libavcodec */
 #ifndef AV_PKT_FLAG_KEY
 #define AV_PKT_FLAG_KEY PKT_FLAG_KEY
 #endif
+
+using namespace ADDON;
 
 CEncoderFFmpeg::CEncoderFFmpeg():
   m_Format    (NULL),
@@ -54,11 +57,17 @@ CEncoderFFmpeg::CEncoderFFmpeg():
   m_ResampledFrame(NULL),
   m_NeedConversion(false)
 {
+  memset(&m_callbacks, 0, sizeof(m_callbacks));
 }
 
-bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
+bool CEncoderFFmpeg::Init(audioenc_callbacks &callbacks)
 {
-  CStdString filename = URIUtils::GetFileName(strFile);
+  if (!callbacks.opaque || !callbacks.write || !callbacks.seek)
+    return false;
+
+  m_callbacks = callbacks;
+
+  CStdString filename = URIUtils::GetFileName(m_strFile);
   if(avformat_alloc_output_context2(&m_Format,NULL,NULL,filename.c_str()))
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Unable to guess the output format for the file %s", filename.c_str());
@@ -82,7 +91,12 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     return false;
   }
 
-  m_Format->bit_rate = CSettings::Get().GetInt("audiocds.bitrate") * 1000;
+  AddonPtr addon;
+  CAddonMgr::Get().GetAddon(CSettings::Get().GetString("audiocds.encoder"), addon);
+  if (addon)
+  {
+    m_Format->bit_rate = (128+32*strtol(addon->GetSetting("bitrate").c_str(), NULL, 10))*1000;
+  }
 
   /* add a stream to it */
   m_Stream = avformat_new_stream(m_Format, codec);
@@ -99,11 +113,11 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_CodecCtx->codec_id       = codec->id;
   m_CodecCtx->codec_type     = AVMEDIA_TYPE_AUDIO;
   m_CodecCtx->bit_rate       = m_Format->bit_rate;
-  m_CodecCtx->sample_rate    = iInRate;
-  m_CodecCtx->channels       = iInChannels;
-  m_CodecCtx->channel_layout = av_get_default_channel_layout(iInChannels);
+  m_CodecCtx->sample_rate    = m_iInSampleRate;
+  m_CodecCtx->channels       = m_iInChannels;
+  m_CodecCtx->channel_layout = av_get_default_channel_layout(m_iInChannels);
   m_CodecCtx->time_base.num  = 1;
-  m_CodecCtx->time_base.den  = iInRate;
+  m_CodecCtx->time_base.den  = m_iInSampleRate;
   /* Allow experimental encoders (like FFmpeg builtin AAC encoder) */
   m_CodecCtx->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
 
@@ -113,7 +127,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     m_Format->flags   |= CODEC_FLAG_GLOBAL_HEADER;
   }
 
-  switch(iInBits)
+  switch(m_iInBitsPerSample)
   {
     case  8: m_InFormat = AV_SAMPLE_FMT_U8 ; break;
     case 16: m_InFormat = AV_SAMPLE_FMT_S16; break;
@@ -141,7 +155,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
 
   /* calculate how many bytes we need per frame */
   m_NeededFrames = m_CodecCtx->frame_size;
-  m_NeededBytes  = av_samples_get_buffer_size(NULL, iInChannels, m_NeededFrames, m_InFormat, 0);
+  m_NeededBytes  = av_samples_get_buffer_size(NULL, m_iInChannels, m_NeededFrames, m_InFormat, 0);
   m_Buffer       = (uint8_t*)av_malloc(m_NeededBytes);
   m_BufferSize   = 0;
 
@@ -161,7 +175,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_BufferFrame->format         = m_InFormat;
   m_BufferFrame->channel_layout = m_CodecCtx->channel_layout;
 
-  avcodec_fill_audio_frame(m_BufferFrame, iInChannels, m_InFormat, m_Buffer, m_NeededBytes, 0);
+  avcodec_fill_audio_frame(m_BufferFrame, m_iInChannels, m_InFormat, m_Buffer, m_NeededBytes, 0);
 
   if(m_NeedConversion)
   {
@@ -180,7 +194,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
       return false;
     }
 
-    m_ResampledBufferSize = av_samples_get_buffer_size(NULL, iInChannels, m_NeededFrames, m_OutFormat, 0);
+    m_ResampledBufferSize = av_samples_get_buffer_size(NULL, m_iInChannels, m_NeededFrames, m_OutFormat, 0);
     m_ResampledBuffer = (uint8_t*)av_malloc(m_ResampledBufferSize);
     m_ResampledFrame = av_frame_alloc();
     if(!m_ResampledBuffer || !m_ResampledFrame)
@@ -199,22 +213,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     m_ResampledFrame->nb_samples     = m_NeededFrames;
     m_ResampledFrame->format         = m_OutFormat;
     m_ResampledFrame->channel_layout = m_CodecCtx->channel_layout;
-    avcodec_fill_audio_frame(m_ResampledFrame, iInChannels, m_OutFormat, m_ResampledBuffer, m_ResampledBufferSize, 0);
-  }
-
-  /* set input stream information and open the file */
-  if (!CEncoder::Init(strFile, iInChannels, iInRate, iInBits))
-  {
-    CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to call CEncoder::Init");
-    if (m_ResampledFrame ) av_frame_free(&m_ResampledFrame);
-    if (m_ResampledBuffer) av_freep(&m_ResampledBuffer);
-    if (m_SwrCtx)          swr_free(&m_SwrCtx);
-    av_frame_free(&m_BufferFrame);
-    av_freep(&m_Buffer);
-    av_freep(&m_Stream);
-    av_freep(&m_Format->pb);
-    av_freep(&m_Format);
-    return false;
+    avcodec_fill_audio_frame(m_ResampledFrame, m_iInChannels, m_OutFormat, m_ResampledBuffer, m_ResampledBufferSize, 0);
   }
 
   /* set the tags */
@@ -245,7 +244,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   return true;
 }
 
-void CEncoderFFmpeg::SetTag(const CStdString tag, const CStdString value)
+void CEncoderFFmpeg::SetTag(const std::string &tag, const std::string &value)
 {
   av_dict_set(&m_Format->metadata, tag.c_str(), value.c_str(), 0);
 }
@@ -253,7 +252,7 @@ void CEncoderFFmpeg::SetTag(const CStdString tag, const CStdString value)
 int CEncoderFFmpeg::avio_write_callback(void *opaque, uint8_t *buf, int buf_size)
 {
   CEncoderFFmpeg *enc = (CEncoderFFmpeg*)opaque;
-  if(enc->FileWrite(buf, buf_size) != buf_size)
+  if(enc->m_callbacks.write(enc->m_callbacks.opaque, buf, buf_size) != buf_size)
   {
     CLog::Log(LOGERROR, "Error writing FFmpeg buffer to file");
     return -1;
@@ -264,10 +263,10 @@ int CEncoderFFmpeg::avio_write_callback(void *opaque, uint8_t *buf, int buf_size
 int64_t CEncoderFFmpeg::avio_seek_callback(void *opaque, int64_t offset, int whence)
 {
   CEncoderFFmpeg *enc = (CEncoderFFmpeg*)opaque;
-  return enc->FileSeek(offset, whence);
+  return enc->m_callbacks.seek(enc->m_callbacks.opaque, offset, whence);
 }
 
-int CEncoderFFmpeg::Encode(int nNumBytesRead, BYTE* pbtStream)
+int CEncoderFFmpeg::Encode(int nNumBytesRead, uint8_t* pbtStream)
 {
   while(nNumBytesRead > 0)
   {
@@ -281,7 +280,10 @@ int CEncoderFFmpeg::Encode(int nNumBytesRead, BYTE* pbtStream)
 
     /* only write full packets */
     if (m_BufferSize == m_NeededBytes)
-      if (!WriteFrame()) return 0;
+    {
+      if (!WriteFrame())
+        return 0;
+    }
   }
 
   return 1;
@@ -334,9 +336,11 @@ bool CEncoderFFmpeg::WriteFrame()
 
 bool CEncoderFFmpeg::Close()
 {
-  if (m_Format) {
+  if (m_Format)
+  {
     /* if there is anything still in the buffer */
-    if (m_BufferSize > 0) {
+    if (m_BufferSize > 0)
+    {
       /* zero the unused space so we dont encode random junk */
       memset(&m_Buffer[m_BufferSize], 0, m_NeededBytes - m_BufferSize);
       /* write any remaining data */
@@ -356,8 +360,6 @@ bool CEncoderFFmpeg::Close()
 
     /* write the trailer */
     av_write_trailer(m_Format);
-    FlushStream();
-    FileClose();
 
     /* cleanup */
     avcodec_close(m_CodecCtx);
