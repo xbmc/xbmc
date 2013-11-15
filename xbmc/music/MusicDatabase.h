@@ -239,7 +239,6 @@ public:
   bool GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bool scrapedInfo = false);
   bool DeleteAlbumInfo(int idArtist);
   bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
-  bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
 
   /////////////////////////////////////////////////
   // ArtistInfo
@@ -455,6 +454,7 @@ private:
   CArtistCredit GetArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset = 0);
   void GetFileItemFromDataset(CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CMusicDbUrl &baseUrl);
+  CSong GetAlbumInfoSongFromDataset(const dbiplus::sql_record* const record, int offset = 0);
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);
   bool CleanupPaths();
@@ -554,4 +554,14 @@ private:
     artist_strFanart,
     artist_enumCount // end of the enum, do not add past here
   } ArtistFields;
+
+  enum _AlbumInfoSongFields
+  {
+    albumInfoSong_idAlbumInfoSong=0,
+    albumInfoSong_idAlbumInfo,
+    albumInfoSong_iTrack,
+    albumInfoSong_strTitle,
+    albumInfoSong_iDuration,
+    albumInfoSong_enumCount // end of the enum, do not add past here
+  } AlbumInfoSongFields;
 };
