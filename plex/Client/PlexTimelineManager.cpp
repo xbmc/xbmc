@@ -463,7 +463,6 @@ CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(CPlexRemoteSubscriberP
   CXBMCTinyXML doc;
   doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
   TiXmlElement *mediaContainer = new TiXmlElement("MediaContainer");
-  mediaContainer->SetAttribute("machineIdentifier", g_guiSettings.GetString("system.uuid").c_str());
   if (m_textFieldFocused)
   {
     mediaContainer->SetAttribute("textFieldFocused", std::string(m_textFieldName));
