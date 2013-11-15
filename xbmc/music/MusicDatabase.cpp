@@ -1217,6 +1217,15 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
   return artist;
 }
 
+CSong CMusicDatabase::GetAlbumInfoSongFromDataset(const dbiplus::sql_record* const record, int offset /* = 0 */)
+{
+  CSong song;
+  song.iTrack = record->at(offset + albumInfoSong_iTrack).get_asInt();
+  song.iDuration = record->at(offset + albumInfoSong_iDuration).get_asInt();
+  song.strTitle = record->at(offset + albumInfoSong_strTitle).get_asString();
+  return song;
+}
+
 bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& song, int startOffset)
 {
   song.Clear();
@@ -1349,7 +1358,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
   return false;
 }
 
-bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bool scrapedInfo /* = false */)
+bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* vecSongs, bool scrapedInfo /* = false */)
 {
   try
   {
@@ -1359,7 +1368,11 @@ bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bo
     if (idAlbum == -1)
       return false; // not in the database
 
-    CStdString strSQL=PrepareSQL("SELECT albumview.*,albumartistview.* FROM albumview JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum WHERE albumview.idAlbum = %ld", idAlbum);
+    CStdString strSQL;
+    if (vecSongs)
+      strSQL=PrepareSQL("SELECT albumview.*, albumartistview.*, albuminfosong.* FROM albumview JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum LEFT JOIN albuminfosong ON albumview.idAlbum = albuminfosong.idAlbumInfo WHERE albumview.idAlbum = %ld", idAlbum);
+    else
+      strSQL=PrepareSQL("SELECT albumview.*, albumartistview.* FROM albumview JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum WHERE albumview.idAlbum = %ld", idAlbum);
     if (scrapedInfo) // require additional information
       strSQL += " and idAlbumInfo > 0";
 
@@ -1370,19 +1383,36 @@ bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bo
       return false;
     }
 
+    int albumArtistOffset = album_enumCount;
+    int infoSongOffset = albumArtistOffset + artistCredit_enumCount;
+
+    set<int> artistcredits;
+    set<int> songs;
     info = GetAlbumFromDataset(m_pDS2.get()->get_sql_record(), 0, true); // true to grab the thumburl rather than the thumb
-    int idAlbumInfo = m_pDS2->fv(album_idAlbumInfo).get_asInt();
     while (!m_pDS2->eof())
     {
-      if (!info.artistCredits.empty() && (m_pDS2->fv(album_enumCount + artistCredit_idArtist).get_asInt() != info.artistCredits.back().idArtist))
+      const dbiplus::sql_record* const record = m_pDS2.get()->get_sql_record();
+
+      int idAlbumArtist = record->at(albumArtistOffset + artistCredit_idArtist).get_asInt();
+      if (artistcredits.find(idAlbumArtist) == artistcredits.end())
       {
-        info.artistCredits.push_back(GetArtistCreditFromDataset(m_pDS2.get()->get_sql_record(), album_enumCount));
+        info.artistCredits.push_back(GetArtistCreditFromDataset(m_pDS2.get()->get_sql_record(), albumArtistOffset));
+        artistcredits.insert(idAlbumArtist);
       }
+
+      if (vecSongs)
+      {
+        int idAlbumInfoSong = record->at(infoSongOffset + albumInfoSong_idAlbumInfoSong).get_asInt();
+        if (songs.find(idAlbumInfoSong) == songs.end())
+        {
+          vecSongs->push_back(GetAlbumInfoSongFromDataset(record, infoSongOffset));
+          songs.insert(idAlbumInfoSong);
+        }
+      }
+
       m_pDS2->next();
     }
-    if (songs)
-      GetAlbumInfoSongs(idAlbumInfo, *songs);
-    
+
     m_pDS2->close(); // cleanup recordset data
     return true;
   }
@@ -1475,40 +1505,6 @@ bool CMusicDatabase::DeleteArtistInfo(int idArtist)
     return false; // not in the database
 
   return ExecuteQuery(PrepareSQL("delete from artistinfo where idArtist=%i",idArtist));
-}
-
-bool CMusicDatabase::GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs)
-{
-  try
-  {
-    CStdString strSQL=PrepareSQL("select * from albuminfosong "
-                                "where idAlbumInfo=%i "
-                                "order by iTrack", idAlbumInfo);
-
-    if (!m_pDS2->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS2->num_rows();
-    if (iRowsFound == 0) return false;
-    while (!m_pDS2->eof())
-    {
-      CSong song;
-      song.iTrack = m_pDS2->fv("iTrack").get_asInt();
-      song.strTitle = m_pDS2->fv("strTitle").get_asString();
-      song.iDuration = m_pDS2->fv("iDuration").get_asInt();
-
-      songs.push_back(song);
-      m_pDS2->next();
-    }
-
-    m_pDS2->close(); // cleanup recordset data
-
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbumInfo);
-  }
-
-  return false;
 }
 
 bool CMusicDatabase::GetTop100(const CStdString& strBaseDir, CFileItemList& items)
@@ -1990,17 +1986,21 @@ int CMusicDatabase::SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONG
     m_pDS->exec(strSQL.c_str());
     int idAlbumInfo = (int)m_pDS->lastinsertid();
 
-    if (SetAlbumInfoSongs(idAlbumInfo, songs))
+    strSQL=PrepareSQL("delete from albuminfosong where idAlbumInfo=%i", idAlbumInfo);
+    m_pDS->exec(strSQL.c_str());
+
+    for (int i = 0; i < (int)songs.size(); i++)
     {
-      if (bTransaction)
-        CommitTransaction();
+      CSong song = songs[i];
+      strSQL=PrepareSQL("insert into albuminfosong (idAlbumInfoSong,idAlbumInfo,iTrack,strTitle,iDuration) values(NULL,%i,%i,'%s',%i)",
+                        idAlbumInfo,
+                        song.iTrack,
+                        song.strTitle.c_str(),
+                        song.iDuration);
+      m_pDS->exec(strSQL.c_str());
     }
-    else
-    {
-      if (bTransaction) // icky
-        RollbackTransaction();
-      idAlbumInfo = -1;
-    }
+    if (bTransaction)
+      CommitTransaction();
 
     return idAlbumInfo;
   }
@@ -2060,37 +2060,6 @@ int CMusicDatabase::SetArtistInfo(int idArtist, const CArtist& artist)
 
 
   return -1;
-}
-
-bool CMusicDatabase::SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs)
-{
-  CStdString strSQL;
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    strSQL=PrepareSQL("delete from albuminfosong where idAlbumInfo=%i", idAlbumInfo);
-    m_pDS->exec(strSQL.c_str());
-
-    for (int i = 0; i < (int)songs.size(); i++)
-    {
-      CSong song = songs[i];
-      strSQL=PrepareSQL("insert into albuminfosong (idAlbumInfoSong,idAlbumInfo,iTrack,strTitle,iDuration) values(NULL,%i,%i,'%s',%i)",
-                    idAlbumInfo,
-                    song.iTrack,
-                    song.strTitle.c_str(),
-                    song.iDuration);
-      m_pDS->exec(strSQL.c_str());
-    }
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed with query (%s)", __FUNCTION__, strSQL.c_str());
-  }
-
-  return false;
 }
 
 bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
