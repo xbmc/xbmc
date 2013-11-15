@@ -463,7 +463,7 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
       m_pDS->close();
       return false;
     }
-    song = GetSongFromDataset();
+    song = GetSongFromDataset(m_pDS.get()->get_sql_record());
     m_pDS->close(); // cleanup recordset data
     return true;
   }
@@ -997,7 +997,7 @@ int CMusicDatabase::AddPath(const CStdString& strPath1)
   return -1;
 }
 
-CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
+CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record, bool bWithMusicDbPath /* = false*/)
 {
   CSong song;
   song.idSong = m_pDS->fv(song_idSong).get_asInt();
@@ -1199,7 +1199,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& son
       m_pDS->close();
       return false;
     }
-    song = GetSongFromDataset();
+    song = GetSongFromDataset(m_pDS.get()->get_sql_record());
     m_pDS->close(); // cleanup recordset data
     return true;
   }
@@ -1798,7 +1798,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs,
     }
     while (!m_pDS->eof())
     {
-      CSong song = GetSongFromDataset();
+      CSong song = GetSongFromDataset(m_pDS.get()->get_sql_record());
       songs.insert(make_pair(song.strFileName, song));
       m_pDS->next();
     }
@@ -4237,7 +4237,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path1, MAPSONGS& song
       std::vector<std::string> songIds;
       while (!m_pDS->eof())
       {
-        CSong song = GetSongFromDataset();
+        CSong song = GetSongFromDataset(m_pDS.get()->get_sql_record());
         song.strThumb = GetArtForItem(song.idSong, "song", "thumb");
         songs.insert(make_pair(song.strFileName, song));
         songIds.push_back(PrepareSQL("%i", song.idSong));
@@ -4949,7 +4949,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
 
     while (!m_pDS->eof())
     {
-      CSong song = GetSongFromDataset( false );
+      CSong song = GetSongFromDataset(m_pDS->get_sql_record(), false);
       CStdString songnum = StringUtils::Format("%06d", song.iKaraokeNumber);
 
       if ( asHTML )
