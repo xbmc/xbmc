@@ -447,12 +447,12 @@ private:
   virtual void CreateViews();
 
   void SplitString(const CStdString &multiString, std::vector<std::string> &vecStrings, CStdString &extraStrings);
-  CSong GetSongFromDataset(const dbiplus::sql_record* const record, bool bWithMusicDbPath = false);
-  CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb = true);
-  CArtist GetArtistFromDataset(const dbiplus::sql_record* const record, bool needThumb = true);
-  CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL=false);
-  CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, bool imageURL=false);
-  CArtistCredit GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record);
+  CSong GetSongFromDataset(const dbiplus::sql_record* const record, int offset = 0, bool bWithMusicDbPath = false);
+  CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, int offset = 0, bool needThumb = true);
+  CArtist GetArtistFromDataset(const dbiplus::sql_record* const record, int offset = 0, bool needThumb = true);
+  CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, int offset = 0, bool imageURL = false);
+  CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, int offset = 0, bool imageURL = false);
+  CArtistCredit GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset = 0);
   void GetFileItemFromDataset(CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CMusicDbUrl &baseUrl);
   bool CleanupSongs();
@@ -494,7 +494,8 @@ private:
     song_iKarDelay,
     song_strKarEncoding,
     song_bCompilation,
-    song_strAlbumArtists
+    song_strAlbumArtists,
+    song_enumCount // end of the enum, do not add past here
   } SongFields;
 
   // Fields should be ordered as they
@@ -543,6 +544,7 @@ private:
     artist_strDisbanded,
     artist_strYearsActive,
     artist_strImage,
-    artist_strFanart
+    artist_strFanart,
+    artist_enumCount // end of the enum, do not add past here
   } ArtistFields;
 };
