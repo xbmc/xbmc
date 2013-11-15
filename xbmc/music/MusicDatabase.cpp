@@ -486,7 +486,7 @@ int CMusicDatabase::UpdateSong(int idSong,
   CStdString sql;
   if (idSong < 0)
     return -1;
-  
+
   CStdString strSQL;
   try
   {
