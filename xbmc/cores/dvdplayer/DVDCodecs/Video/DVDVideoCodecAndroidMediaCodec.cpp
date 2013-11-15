@@ -66,6 +66,21 @@ static bool CanSurfaceRenderWhiteList(const std::string &name)
     return false;
 }
 
+static bool IsBlacklisted(const std::string &name)
+{
+    static const char *blacklisted_decoders[] = {
+      // No software decoders
+      "OMX.google",
+      NULL
+    };
+    for (const char **ptr = blacklisted_decoders; *ptr; ptr++)
+    {
+      if (!strncmp(*ptr, name.c_str(), strlen(*ptr)))
+        return true;
+    }
+    return false;
+}
+
 /*****************************************************************************/
 /*****************************************************************************/
 class CNULL_Listener : public CJNISurfaceTextureOnFrameAvailableListener
@@ -329,6 +344,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CJNIMediaCodecInfo codec_info = CJNIMediaCodecList::getCodecInfoAt(i);
     if (codec_info.isEncoder())
       continue;
+    m_codecname = codec_info.getName();
+    if (IsBlacklisted(m_codecname))
+      continue;
 
     std::vector<std::string> types = codec_info.getSupportedTypes();
     // return the 1st one we find, that one is typically 'the best'
@@ -336,7 +354,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     {
       if (types[j] == m_mime)
       {
-        m_codecname = codec_info.getName();
         m_codec = boost::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createByCodecName(m_codecname)));
 
         CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
