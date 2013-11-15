@@ -39,9 +39,9 @@ bool stf_Open(void* stf, CDVDStreamInfo &hints)
   return ((CStageFrightVideo*)stf)->Open(hints);
 }
 
-void stf_Close(void* stf)
+void stf_Dispose(void* stf)
 {
-  ((CStageFrightVideo*)stf)->Close();
+  ((CStageFrightVideo*)stf)->Dispose();
 }
 
 int  stf_Decode(void* stf, uint8_t *pData, int iSize, double dts, double pts)

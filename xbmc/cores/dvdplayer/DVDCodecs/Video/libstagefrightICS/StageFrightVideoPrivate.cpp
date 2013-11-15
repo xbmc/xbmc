@@ -105,8 +105,8 @@ MediaBuffer* CStageFrightVideoPrivate::getBuffer(size_t size)
     inbuf[i]->setObserver(this);
   }
 
+  inbuf[i]->reset();
   inbuf[i]->add_ref();
-  inbuf[i]->set_range(0, size);
   return inbuf[i];
 }
 
@@ -117,6 +117,24 @@ bool CStageFrightVideoPrivate::inputBufferAvailable()
       return true;
 
   return false;
+}
+
+stSlot* CStageFrightVideoPrivate::getSlot(EGLImageKHR eglimg)
+{
+  for (int i=0; i<NUMFBOTEX; ++i)
+    if (texslots[i].eglimg == eglimg)
+      return &(texslots[i]);
+
+  return NULL;
+}
+
+stSlot* CStageFrightVideoPrivate::getFreeSlot()
+{
+  for (int i=0; i<NUMFBOTEX; ++i)
+    if (texslots[i].use_cnt == 0)
+      return &(texslots[i]);
+
+  return NULL;
 }
 
 void CStageFrightVideoPrivate::loadOESShader(GLenum shaderType, const char* pSource, GLuint* outShader)
@@ -271,8 +289,8 @@ void CStageFrightVideoPrivate::InitializeEGL(int w, int h)
 
   for (int i=0; i<NUMFBOTEX; ++i)
   {
-    glGenTextures(1, &(slots[i].texid));
-    glBindTexture(GL_TEXTURE_2D,  slots[i].texid);
+    glGenTextures(1, &(texslots[i].texid));
+    glBindTexture(GL_TEXTURE_2D,  texslots[i].texid);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texwidth, texheight, 0,
            GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -283,9 +301,8 @@ void CStageFrightVideoPrivate::InitializeEGL(int w, int h)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    slots[i].eglimg = eglCreateImageKHR(eglDisplay, eglContext, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)(slots[i].texid),imageAttributes);
-    free_queue.push_back(std::pair<EGLImageKHR, int>(slots[i].eglimg, i));
-
+    texslots[i].eglimg = eglCreateImageKHR(eglDisplay, eglContext, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)(texslots[i].texid),imageAttributes);
+    texslots[i].use_cnt = 0;
   }
   glBindTexture(GL_TEXTURE_2D,  0);
 
@@ -298,7 +315,7 @@ void CStageFrightVideoPrivate::InitializeEGL(int w, int h)
 #endif
 }
 
-void CStageFrightVideoPrivate::UninitializeEGL()
+void CStageFrightVideoPrivate::ReleaseEGL()
 {
 #if defined(DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s: >>> UninitializeEGL\n", CLASSNAME);
@@ -306,8 +323,8 @@ void CStageFrightVideoPrivate::UninitializeEGL()
   fbo.Cleanup();
   for (int i=0; i<NUMFBOTEX; ++i)
   {
-    glDeleteTextures(1, &(slots[i].texid));
-    eglDestroyImageKHR(eglDisplay, slots[i].eglimg);
+    glDeleteTextures(1, &(texslots[i].texid));
+    eglDestroyImageKHR(eglDisplay, texslots[i].eglimg);
   }
 
   if (eglContext != EGL_NO_CONTEXT)
@@ -356,17 +373,6 @@ bool CStageFrightVideoPrivate::InitSurfaceTexture()
     glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glBindTexture(  GL_TEXTURE_EXTERNAL_OES, 0);
     mVideoTextureId = texture_id;
-
-    mSurfTexture = new CJNISurfaceTexture(mVideoTextureId);
-    mSurface = new CJNISurface(*mSurfTexture);
-
-    JNIEnv* env = xbmc_jnienv();
-    mVideoNativeWindow = ANativeWindow_fromSurface(env, mSurface->get_raw());
-    native_window_api_connect(mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
-
-  #if defined(DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s: <<< InitSurfaceTexture\n", CLASSNAME);
-  #endif
   }
   else
   {
@@ -380,6 +386,17 @@ bool CStageFrightVideoPrivate::InitSurfaceTexture()
 
     // wait for it.
     m_g_applicationMessenger->SendMessage(msg, true);
+
+    mSurfTexture = new CJNISurfaceTexture(mVideoTextureId);
+    mSurface = new CJNISurface(*mSurfTexture);
+
+    JNIEnv* env = xbmc_jnienv();
+    mVideoNativeWindow = ANativeWindow_fromSurface(env, mSurface->get_raw());
+    native_window_api_connect(mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
+
+  #if defined(DEBUG_VERBOSE)
+    CLog::Log(LOGDEBUG, "%s: <<< InitSurfaceTexture texid(%d) natwin(%p)\n", CLASSNAME, mVideoTextureId, mVideoNativeWindow.get());
+  #endif
   }
 
   return (mVideoTextureId != -1);
@@ -395,7 +412,7 @@ void CStageFrightVideoPrivate::ReleaseSurfaceTexture()
 
   native_window_api_disconnect(mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
   ANativeWindow_release(mVideoNativeWindow.get());
-  mVideoNativeWindow = NULL;
+  mVideoNativeWindow.clear();
 
   mSurface->release();
   mSurfTexture->release();
@@ -403,7 +420,8 @@ void CStageFrightVideoPrivate::ReleaseSurfaceTexture()
   delete mSurface;
   delete mSurfTexture;
 
-  glDeleteTextures(1, &mVideoTextureId);
+  if (mVideoTextureId > 0)
+    glDeleteTextures(1, &mVideoTextureId);
 #if defined(DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s: <<< ReleaseSurfaceTexture\n", CLASSNAME);
 #endif

@@ -39,7 +39,7 @@ public:
   virtual ~CStageFrightVideo();
 
   bool Open(CDVDStreamInfo &hints);
-  void Close(void);
+  void Dispose(void);
   int  Decode(uint8_t *pData, int iSize, double dts, double pts);
   void Reset(void);
   bool GetPicture(DVDVideoPicture *pDvdVideoPicture);

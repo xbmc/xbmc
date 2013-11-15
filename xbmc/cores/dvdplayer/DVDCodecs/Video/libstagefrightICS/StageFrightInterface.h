@@ -34,7 +34,7 @@ extern "C"
   void destroy_stf(void*);
 
   bool stf_Open(void*, CDVDStreamInfo &hints);
-  void stf_Close(void*);
+  void stf_Dispose(void*);
   int  stf_Decode(void*, uint8_t *pData, int iSize, double dts, double pts);
   void stf_Reset(void*);
   bool stf_GetPicture(void*, DVDVideoPicture *pDvdVideoPicture);

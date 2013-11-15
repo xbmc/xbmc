@@ -137,7 +137,7 @@ void CDVDVideoCodecStageFright::Dispose()
   }
   if (m_stf_handle)
   {
-    m_stf_dll->stf_Close(m_stf_handle);
+    m_stf_dll->stf_Dispose(m_stf_handle);
     m_stf_dll->destroy_stf(m_stf_handle);
     m_stf_handle = NULL;
   }
