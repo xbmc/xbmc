@@ -1031,34 +1031,39 @@ int CMusicDatabase::AddPath(const CStdString& strPath1)
 
 CSong CMusicDatabase::GetSongFromDataset()
 {
+  return GetSongFromDataset(m_pDS->get_sql_record());
+}
+
+CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record)
+{
   CSong song;
-  song.idSong = m_pDS->fv(song_idSong).get_asInt();
+  song.idSong = record->at(song_idSong).get_asInt();
   // get the full artist string
-  song.artist = StringUtils::Split(m_pDS->fv(song_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  song.artist = StringUtils::Split(record->at(song_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
   // and the full genre string
-  song.genre = StringUtils::Split(m_pDS->fv(song_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  song.genre = StringUtils::Split(record->at(song_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
   // and the rest...
-  song.strAlbum = m_pDS->fv(song_strAlbum).get_asString();
-  song.idAlbum = m_pDS->fv(song_idAlbum).get_asInt();
-  song.iTrack = m_pDS->fv(song_iTrack).get_asInt() ;
-  song.iDuration = m_pDS->fv(song_iDuration).get_asInt() ;
-  song.iYear = m_pDS->fv(song_iYear).get_asInt() ;
-  song.strTitle = m_pDS->fv(song_strTitle).get_asString();
-  song.iTimesPlayed = m_pDS->fv(song_iTimesPlayed).get_asInt();
-  song.lastPlayed.SetFromDBDateTime(m_pDS->fv(song_lastplayed).get_asString());
-  song.iStartOffset = m_pDS->fv(song_iStartOffset).get_asInt();
-  song.iEndOffset = m_pDS->fv(song_iEndOffset).get_asInt();
-  song.strMusicBrainzTrackID = m_pDS->fv(song_strMusicBrainzTrackID).get_asString();
-  song.rating = m_pDS->fv(song_rating).get_asChar();
-  song.strComment = m_pDS->fv(song_comment).get_asString();
-  song.iKaraokeNumber = m_pDS->fv(song_iKarNumber).get_asInt();
-  song.strKaraokeLyrEncoding = m_pDS->fv(song_strKarEncoding).get_asString();
-  song.iKaraokeDelay = m_pDS->fv(song_iKarDelay).get_asInt();
-  song.bCompilation = m_pDS->fv(song_bCompilation).get_asInt() == 1;
-  song.albumArtist = StringUtils::Split(m_pDS->fv(song_strAlbumArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  song.strAlbum = record->at(song_strAlbum).get_asString();
+  song.idAlbum = record->at(song_idAlbum).get_asInt();
+  song.iTrack = record->at(song_iTrack).get_asInt() ;
+  song.iDuration = record->at(song_iDuration).get_asInt() ;
+  song.iYear = record->at(song_iYear).get_asInt() ;
+  song.strTitle = record->at(song_strTitle).get_asString();
+  song.iTimesPlayed = record->at(song_iTimesPlayed).get_asInt();
+  song.lastPlayed.SetFromDBDateTime(record->at(song_lastplayed).get_asString());
+  song.iStartOffset = record->at(song_iStartOffset).get_asInt();
+  song.iEndOffset = record->at(song_iEndOffset).get_asInt();
+  song.strMusicBrainzTrackID = record->at(song_strMusicBrainzTrackID).get_asString();
+  song.rating = record->at(song_rating).get_asChar();
+  song.strComment = record->at(song_comment).get_asString();
+  song.iKaraokeNumber = record->at(song_iKarNumber).get_asInt();
+  song.strKaraokeLyrEncoding = record->at(song_strKarEncoding).get_asString();
+  song.iKaraokeDelay = record->at(song_iKarDelay).get_asInt();
+  song.bCompilation = record->at(song_bCompilation).get_asInt() == 1;
+  song.albumArtist = StringUtils::Split(record->at(song_strAlbumArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
 
   // Get filename with full path
-  song.strFileName = URIUtils::AddFileToFolder(m_pDS->fv(song_strPath).get_asString(), m_pDS->fv(song_strFileName).get_asString());
+  song.strFileName = URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString());
   return song;
 }
 

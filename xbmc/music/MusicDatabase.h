@@ -461,6 +461,7 @@ private:
 
   void SplitString(const CStdString &multiString, std::vector<std::string> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset();
+  CSong GetSongFromDataset(const dbiplus::sql_record* const record);
   CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb = true);
   CArtist GetArtistFromDataset(const dbiplus::sql_record* const record, bool needThumb = true);
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL=false);
