@@ -215,6 +215,8 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
       if (m_editControl) desc = m_editControl->GetDescription();
       g_plexApplication.timelineManager->SetTextFieldFocused(false, desc);
     }
+
+    m_editControl = NULL;
   }
 
   if (message.GetMessage() == GUI_MSG_SET_TEXT && message.GetControlId() == CTL_LABEL_EDIT)

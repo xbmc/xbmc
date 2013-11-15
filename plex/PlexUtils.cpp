@@ -319,6 +319,26 @@ bool PlexUtils::PlexMediaStreamCompare(CFileItemPtr stream1, CFileItemPtr stream
   return false;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemPtr PlexUtils::GetStreamByID(CFileItemPtr item, int streamType, int plexStreamID)
+{
+  BOOST_FOREACH(CFileItemPtr it, item->m_mediaItems)
+  {
+    BOOST_FOREACH(CFileItemPtr part, it->m_mediaParts)
+    {
+      BOOST_FOREACH(CFileItemPtr stream, part->m_mediaPartStreams)
+      {
+        if (stream->GetProperty("streamType").asInteger() == streamType &&
+            stream->GetProperty("id").asInteger() == plexStreamID)
+        {
+          return stream;
+        }
+      }
+    }
+  }
+  return CFileItemPtr();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 void PlexUtils::SetSelectedStream(CFileItemPtr item, CFileItemPtr stream)
 {

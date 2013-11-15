@@ -30,6 +30,7 @@
 #include "guilib/GUIEditControl.h"
 
 #include "PlayList.h"
+#include "Settings.h"
 
 #define LEGACY 1
 
@@ -76,8 +77,10 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   updateCommandID(request, argumentMap);
 
   CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::HandleHTTPRequest handling %s", request.url.c_str());
-  
-  if (path.Equals("/player/playback/playMedia") ||
+
+  if (boost::starts_with(path, "/resources"))
+    resources();
+  else if (path.Equals("/player/playback/playMedia") ||
       /* LEGACY */ path.Equals("/player/application/playMedia"))
     playMedia(argumentMap);
   else if (path.Equals("/player/playback/stepForward") ||
@@ -95,6 +98,12 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     skipTo(argumentMap);
   else if (path.Equals("/player/playback/setParameters"))
     set(argumentMap);
+  else if (path.Equals("/player/playback/setStreams"))
+    setStreams(argumentMap);
+  else if (path.Equals("/player/playback/pause"))
+    pausePlay(argumentMap);
+  else if (path.Equals("/player/playback/play"))
+    pausePlay(argumentMap);
   else if (boost::starts_with(path, "/player/navigation"))
     navigation(path, argumentMap);
   else if (path.Equals("/player/timeline/subscribe"))
@@ -103,16 +112,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     unsubscribe(request, argumentMap);
   else if (path.Equals("/player/timeline/poll"))
     poll(request, argumentMap);
-  else if (path.Equals("/player/setStreams"))
-    setStreams(argumentMap);
-  else if (boost::starts_with(path, "/resources"))
-    resources();
   else if (path.Equals("/player/application/setText"))
     sendString(argumentMap);
-  else if (path.Equals("/player/playback/pause"))
-    pausePlay(argumentMap);
-  else if (path.Equals("/player/playback/play"))
-    pausePlay(argumentMap);
 
 
 #ifdef LEGACY
@@ -573,12 +574,15 @@ void CPlexHTTPRemoteHandler::sendString(const ArgMap &arguments)
 
   int currentWindow = g_windowManager.GetActiveWindow();
   CGUIWindow* win = g_windowManager.GetWindow(currentWindow);
-  CGUIControl* ctrl;
+  CGUIControl* ctrl = NULL;
 
   if (currentWindow == WINDOW_PLEX_SEARCH)
     ctrl = (CGUIControl*)win->GetControl(310);
   else
     ctrl = win->GetFocusedControl();
+
+  if (!ctrl)
+    return;
 
   if (ctrl->GetControlType() != CGUIControl::GUICONTROL_EDIT)
   {
@@ -693,24 +697,62 @@ void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
 {
   if (!g_application.IsPlayingVideo())
     return;
-  
+
+  if (arguments.find("type") != arguments.end())
+  {
+    if (arguments.find("type")->second != "video")
+    {
+      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::setStreams only works with type=video");
+      return;
+    }
+  }
+
+
+  CFileItemPtr stream;
+
   if (arguments.find("audioStreamID") != arguments.end())
   {
     int audioStreamID = boost::lexical_cast<int>(arguments.find("audioStreamID")->second);
+    stream = PlexUtils::GetStreamByID(g_application.CurrentFileItemPtr(), PLEX_STREAM_AUDIO, audioStreamID);
+    if (!stream)
+    {
+      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::setStream failed to find audioStream %d", audioStreamID);
+      return;
+    }
     g_application.m_pPlayer->SetAudioStreamPlexID(audioStreamID);
+    g_settings.m_currentVideoSettings.m_AudioStream = g_application.m_pPlayer->GetAudioStream();
   }
   
   if (arguments.find("subtitleStreamID") != arguments.end())
   {
     int subStreamID = boost::lexical_cast<int>(arguments.find("subtitleStreamID")->second);
-    if (subStreamID == -1 && g_application.m_pPlayer->GetSubtitleVisible())
-      g_application.m_pPlayer->SetSubtitleVisible(false);
+    bool visible = subStreamID != -1;
+
+    if (subStreamID == -1)
+    {
+      stream = CFileItemPtr(new CFileItem);
+      stream->SetProperty("streamType", PLEX_STREAM_SUBTITLE);
+      stream->SetProperty("id", -1);
+    }
     else
     {
+      stream = PlexUtils::GetStreamByID(g_application.CurrentFileItemPtr(), PLEX_STREAM_SUBTITLE, subStreamID);
+      if (!stream)
+      {
+        CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::setStream failed to find subtitleStream %d", subStreamID);
+        return;
+      }
       g_application.m_pPlayer->SetSubtitleStreamPlexID(subStreamID);
-      g_application.m_pPlayer->SetSubtitleVisible(true);
+      g_settings.m_currentVideoSettings.m_SubtitleStream = g_application.m_pPlayer->GetSubtitle();
     }
+
+    g_application.m_pPlayer->SetSubtitleVisible(visible);
+    g_settings.m_currentVideoSettings.m_SubtitleOn = visible;
+
   }
+
+  if (stream)
+    PlexUtils::SetSelectedStream(g_application.CurrentFileItemPtr(), stream);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -12,6 +12,7 @@
 #include "PlexUtils.h"
 #include "PlexApplication.h"
 #include "Application.h"
+#include "Settings.h"
 
 CGUIDialogPlexPicker::CGUIDialogPlexPicker(int id, const CStdString& xml, bool audio)
   : CGUIDialogSelect(id, xml)
@@ -110,16 +111,21 @@ void CGUIDialogPlexPicker::UpdateStreamSelection()
     if (m_audio)
     {
       if (player->GetAudioStreamPlexID() != streamId)
+      {
         player->SetAudioStreamPlexID(streamId);
+        g_settings.m_currentVideoSettings.m_AudioStream = player->GetAudioStream();
+      }
     }
     else
     {
-      if (streamId == -1)
-        player->SetSubtitleVisible(false);
-      else
+      bool visible = streamId != -1;
+      player->SetSubtitleVisible(visible);
+      g_settings.m_currentVideoSettings.m_SubtitleOn = visible;
+
+      if (visible)
       {
         player->SetSubtitleStreamPlexID(streamId);
-        player->SetSubtitleVisible(true);
+        g_settings.m_currentVideoSettings.m_SubtitleStream = player->GetSubtitle();
       }
     }
   }
