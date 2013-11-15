@@ -57,6 +57,7 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
   /* first see if we need to handle CORS requests - Access-Control-Allow-Origin needs to be
    * available for all requests, the other headers is only needed on a OPTIONS call */
   m_responseHeaderFields.insert(std::pair<std::string, std::string>("Access-Control-Allow-Origin", "*"));
+  m_responseHeaderFields.insert(std::pair<std::string, std::string>("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid")));
   if (request.method == OPTIONS &&
       headerMap.find("Access-Control-Request-Method") != headerMap.end())
   {
