@@ -99,6 +99,41 @@
 		<value condition="ListItem(0).Status(unwatched)">Unwatched</value>
 		<value/>
 	</variable>
+	<variable name="HomeListSelectedItemType">
+		<!-- on deck -->
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">episode</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">movie</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(clip)">clip</value>
+		<!-- recently added -->
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">episode</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">movie</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album)">album</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(track)">track</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(song)">song</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(photo)">photo</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(photoAlbum)">photoAlbum</value>
+		<!-- queue -->
+		<value condition="ControlGroup(7003).HasFocus + Container(11003).ListItem.Type(episode)">episode</value>
+		<value condition="ControlGroup(7003).HasFocus + Container(11003).ListItem.Type(movie)">movie</value>
+		<value condition="ControlGroup(7003).HasFocus + Container(11003).ListItem.Type(clip)">clip</value>
+		<!-- recommended -->
+		<value condition="ControlGroup(7005).HasFocus + Container(11004).ListItem.Type(episode)">episode</value>
+		<value condition="ControlGroup(7005).HasFocus + Container(11004).ListItem.Type(movie)">movie</value>
+		<value condition="ControlGroup(7005).HasFocus + Container(11004).ListItem.Type(clip)">clip</value>
+	</variable>
+	<variable name="HomeListItemFullInfoTitle">
+		<!-- on deck -->
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.TVShowTitle]</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.Title]</value>
+		<!-- recently added -->
+		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(season) | Container(11000).ListItem.Type(episode)]">$INFO[Container(11000).ListItem.TVShowTitle]</value>
+		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(clip)]">$INFO[Container(11000).ListItem.Title]</value>
+		<!-- queue -->
+		<value condition="ControlGroup(7003).HasFocus">$INFO[Container(11003).ListItem.Title]</value>
+		<!-- recommended -->
+		<value condition="ControlGroup(7005).HasFocus">$INFO[Container(11004).ListItem.Title]</value>
+		<!--><value>No title available (debug).</value>-->
+	</variable>
 	<include name="debugInfos">
 		<control type="group" id="1">
 			<visible>Skin.HasSetting(showdebug)</visible>
@@ -157,10 +192,10 @@
 					<include>debugFont</include>
 					<label>Skin.String(SectionType) : [COLOR=orangeLight]$INFO[Skin.String(SectionType)][/COLOR]</label>
 				</control>
-					<control type="label">
-						<include>debugFont</include>
-						<label/>
-					</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
 				<control type="label">
 					<include>debugFont</include>
 					<label>Container.Viewmode : [COLOR=orangeLight]$INFO[Container.Viewmode][/COLOR]</label>
@@ -657,7 +692,7 @@
 				<visible>Window.IsVisible(0)</visible>
 				<control type="label">
 					<include>debugFont</include>
-					<label>HOME ON DECK PLOT DEBUG:</label>
+					<label>HOME LISTS SPECIFIC:</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
@@ -665,8 +700,11 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>Hide Unwatched Episodes Plot : [COLOR=orangeLight]ON[/COLOR]</label>
-					<visible>Skin.HasSetting(HidePlotForUnwatched)</visible>
+					<label>HomeListSelectedItemType : [COLOR=orangeLight]$VAR[HomeListSelectedItemType][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
 				</control>
 				<control type="label">
 					<include>debugFont</include>
@@ -676,16 +714,6 @@
 				<control type="label">
 					<include>debugFont</include>
 					<label/>
-				</control>
-				<control type="label">
-					<include>debugFont</include>
-					<label>On Deck Item Plot (untampered) :</label>
-				</control>
-				<control type="textbox">
-					<width>300</width>
-					<height>300</height>
-					<label>[COLOR=orangeLight]$INFO[Container(11001).ListItem.Plot][/COLOR]</label>
-					<include>debugFont</include>
 				</control>
 			</control>
 		</control>
