@@ -167,6 +167,7 @@ void CPlexHTTPRemoteHandler::updateCommandID(const HTTPRequest &request, const A
   if (uuid.empty())
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::updateCommandID subscriber didn't set X-Plex-Client-Identifier");
+    setStandardResponse(500, "When commandID is set you also need to specify X-Plex-Client-Identifier");
     return;
   }
 
@@ -214,12 +215,14 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     else
     {
       CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia no machineId, no path, no protocol/address/port, how should I know what to play?");
+      setStandardResponse(500, "playmedia needs either machineId, path or protocol/address/port to figure out what server to play from.");
       return;
     }
 
     if (!PlexUtils::IsValidIP(serverURL.GetHostName()))
     {
       CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia got something, but it's not a valid IP.");
+      setStandardResponse(500, "Got a remote server URL but it was not a valid IP.");
       return;
     }
 
@@ -246,6 +249,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   if (arguments.find("key") == arguments.end())
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia need a key argument!");
+    setStandardResponse(500, "Client failed to send key argument");
     return;
   }
 
@@ -273,6 +277,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   if (!dir.GetDirectory(itemURL.Get(), list))
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia can't fetch container %s", itemURL.Get().c_str());
+    setStandardResponse(500, "Could not find that item");
     return;
   }
   
@@ -296,6 +301,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   if (!item)
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia couldn't find %s in %s", key.c_str(), itemURL.Get().c_str());
+    setStandardResponse(500, "Could not find that item");
     return;
   }
 
@@ -431,6 +437,7 @@ void CPlexHTTPRemoteHandler::seekTo(const ArgMap &arguments)
       seekTo = boost::lexical_cast<int64_t>(arguments.find("offset")->second);
     } catch (...) {
       CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::seekTo failed to convert offset into a int64_t");
+      setStandardResponse(500, "offset is not a integer?");
       return;
     }
   }
@@ -588,6 +595,7 @@ void CPlexHTTPRemoteHandler::sendString(const ArgMap &arguments)
   if (ctrl->GetControlType() != CGUIControl::GUICONTROL_EDIT)
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::sendString focused control %d is not a edit control", ctrl->GetID());
+    setStandardResponse(500, "Current focused control doesn't accept text");
     return;
   }
 
@@ -704,6 +712,7 @@ void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
     if (arguments.find("type")->second != "video")
     {
       CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::setStreams only works with type=video");
+      setStandardResponse(500, "Can only change streams on videos");
       return;
     }
   }
@@ -718,6 +727,7 @@ void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
     if (!stream)
     {
       CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::setStream failed to find audioStream %d", audioStreamID);
+      setStandardResponse(500, "Failed to find stream");
       return;
     }
     g_application.m_pPlayer->SetAudioStreamPlexID(audioStreamID);
@@ -741,6 +751,7 @@ void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
       if (!stream)
       {
         CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::setStream failed to find subtitleStream %d", subStreamID);
+        setStandardResponse(500, "Failed to find stream");
         return;
       }
       g_application.m_pPlayer->SetSubtitleStreamPlexID(subStreamID);
@@ -773,12 +784,16 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
   if (commandID == -1 || uuid.empty())
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::poll the poller needs to set both X-Plex-Client-Identifier header and commandID arguments.");
+    setStandardResponse(500, "You need to specify both x-Plex-Client-Identifier as a header and commandID as a argument");
     return;
   }
 
   CPlexRemoteSubscriberPtr pollSubscriber = CPlexRemoteSubscriber::NewPollSubscriber(uuid, commandID);
   if (!pollSubscriber)
+  {
+    setStandardResponse(500, "Could not create a poll subscriber. (internal error)");
     return;
+  }
 
   pollSubscriber = g_plexApplication.remoteSubscriberManager->addSubscriber(pollSubscriber);
 
@@ -814,6 +829,7 @@ void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
   if (arguments.find("key") == arguments.end())
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::skipTo missing 'key' argument.");
+    setStandardResponse(500, "Missing key argument");
     return;
   }
 
