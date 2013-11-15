@@ -216,8 +216,10 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
         controllable.push_back("repeat");
       }
 
+      if (!g_application.m_pPlayer->IsPassthrough())
+        controllable.push_back("volume");
+
       controllable.push_back("mute");
-      controllable.push_back("volume");
       controllable.push_back("stepBack");
       controllable.push_back("stepForward");
       if (type == VIDEO)
