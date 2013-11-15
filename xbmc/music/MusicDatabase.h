@@ -179,6 +179,13 @@ public:
   /////////////////////////////////////////////////
   // Album
   /////////////////////////////////////////////////
+  bool AddAlbum(CAlbum& album);
+  /*! \brief Update an album and all its nested entities (artists, songs, infoSongs, etc)
+   \param album the album to update
+   \return true or false
+   */
+  bool UpdateAlbum(CAlbum& album);
+
   /*! \brief Add an album and all its songs to the database
    \param album the album to add
    \param songIDs [out] the ids of the added songs
@@ -188,8 +195,20 @@ public:
                 const CStdString& strArtist, const CStdString& strGenre,
                 int year, bool bCompilation);
   bool GetAlbum(int idAlbum, CAlbum& album);
-  int  UpdateAlbum(int idAlbum, const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID, const CStdString& strArtist, const CStdString& strGenre, int year, bool bCompilation);
+  int  UpdateAlbum(int idAlbum,
+                   const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID,
+                   const CStdString& strArtist, const CStdString& strGenre,
+                   const CStdString& strMoods, const CStdString& strStyles,
+                   const CStdString& strThemes, const CStdString& strReview,
+                   const CStdString& strImage, const CStdString& strLabel,
+                   const CStdString& strType,
+                   int iRating, int iYear, bool bCompilation);
   bool DeleteAlbum(int idAlbum);
+  bool ClearAlbumLastScrapedTime(int idAlbum);
+  bool SetAlbumLastScrapeTime(int idAlbum, const CDateTime& dtLastScraped);
+  bool HasAlbumBeenScraped(int idAlbum);
+  int  AddAlbumInfoSong(int idAlbum, const CSong& song);
+
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check
    */
@@ -230,15 +249,6 @@ public:
   int AddGenre(const CStdString& strGenre);
   CStdString GetGenreById(int id);
   int GetGenreByName(const CStdString& strGenre);
-
-  /////////////////////////////////////////////////
-  // AlbumInfo
-  /////////////////////////////////////////////////
-  bool HasAlbumInfo(int idAlbum);
-  int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
-  bool GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bool scrapedInfo = false);
-  bool DeleteAlbumInfo(int idArtist);
-  bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
 
   /////////////////////////////////////////////////
   // ArtistInfo
@@ -512,7 +522,6 @@ private:
     album_strArtists,
     album_strGenres,
     album_iYear,
-    album_idAlbumInfo,
     album_strMoods,
     album_strStyles,
     album_strThemes,

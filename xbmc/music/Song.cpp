@@ -72,6 +72,14 @@ CSong::CSong()
   Clear();
 }
 
+void CSong::MergeScrapedSong(const CSong& song)
+{
+  strTitle = song.strTitle;
+  artist = song.artist;
+  artistCredits = song.artistCredits;
+  iTrack = song.iTrack;
+}
+
 void CSong::Serialize(CVariant& value) const
 {
   value["filename"] = strFileName;

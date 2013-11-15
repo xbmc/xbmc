@@ -38,6 +38,7 @@ public:
   CAlbum(const CFileItem& item);
   CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; };
   bool operator<(const CAlbum &a) const;
+  void MergeScrapedAlbum(const CAlbum& album);
 
   void Reset()
   {
@@ -98,6 +99,7 @@ public:
   bool bCompilation;
   int iTimesPlayed;
   VECSONGS songs;
+  VECSONGS infoSongs;
 };
 
 typedef std::vector<CAlbum> VECALBUMS;

@@ -53,6 +53,40 @@ CAlbum::CAlbum(const CFileItem& item)
   iTimesPlayed = 0;
 }
 
+void CAlbum::MergeScrapedAlbum(const CAlbum& source)
+{
+  strAlbum = source.strAlbum;
+//  strMusicBrainzAlbumID = source.strMusicBrainzAlbumID - don't merge the musicbrainz ID
+  genre = source.genre;
+  thumbURL = source.thumbURL;
+  moods = source.moods;
+  styles = source.styles;
+  themes = source.themes;
+  art = source.art;
+  strReview = source.strReview;
+  strLabel = source.strLabel;
+  strType = source.strType;
+//  strPath = source.strPath - don't merge the path
+  m_strDateOfRelease = source.m_strDateOfRelease;
+  iRating = source.iRating;
+  iYear = source.iYear;
+  bCompilation = source.bCompilation;
+  iTimesPlayed = source.iTimesPlayed;
+  if (!strMusicBrainzAlbumID.empty())
+  {
+    artist = source.artist;
+    artistCredits = source.artistCredits;
+    for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
+    {
+      if (!song->strMusicBrainzTrackID.empty())
+        for (VECSONGS::const_iterator sourceSong = source.infoSongs.begin(); sourceSong != source.infoSongs.end(); ++sourceSong)
+          if (sourceSong->strMusicBrainzTrackID == song->strMusicBrainzTrackID)
+            song->MergeScrapedSong(*sourceSong);
+    }
+  }
+  infoSongs = source.songs;
+}
+
 CStdString CAlbum::GetArtistString() const
 {
   return StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);
@@ -173,7 +207,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   const TiXmlElement* node = album->FirstChildElement("track");
   if (node)
-    songs.clear();  // this means that the tracks can't be spread over separate pages
+    infoSongs.clear();  // this means that the tracks can't be spread over separate pages
                     // but this is probably a reasonable limitation
   bool bIncrement = false;
   while (node)
@@ -215,7 +249,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       if (bIncrement)
         song.iTrack = song.iTrack + 1;
 
-      songs.push_back(song);
+      infoSongs.push_back(song);
     }
     node = node->NextSiblingElement("track");
   }

@@ -172,11 +172,12 @@ void CMusicInfoScanner::Process()
       {
         CQueryParams params;
         CDirectoryNode::GetDatabaseInfo(*it, params);
-        if (m_musicDatabase.HasAlbumInfo(params.GetArtistId())) // should this be here?
+        if (m_musicDatabase.HasAlbumBeenScraped(params.GetAlbumId())) // should this be here?
           continue;
 
         CAlbum album;
-        m_musicDatabase.GetAlbumInfo(params.GetAlbumId(), album, &album.songs);
+        m_musicDatabase.GetAlbum(params.GetAlbumId(), album);
+
         if (m_handle)
         {
           float percentage = (float) std::distance(it, m_pathsToScan.end()) / m_pathsToScan.size();
@@ -297,7 +298,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory,
     m_pathsToScan.insert(items[i]->GetPath());
     if (refresh)
     {
-      m_musicDatabase.DeleteAlbumInfo(items[i]->GetMusicInfoTag()->GetDatabaseId());
+      m_musicDatabase.ClearAlbumLastScrapedTime(items[i]->GetMusicInfoTag()->GetDatabaseId());
     }
   }
   m_musicDatabase.Close();
@@ -721,15 +722,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
       if (albumDownloadStatus == INFO_ADDED || albumDownloadStatus == INFO_HAVE_ALREADY)
       {
         CAlbum &downloadedAlbum = albumInfo.GetAlbum();
-        downloadedAlbum.idAlbum = m_musicDatabase.AddAlbum(downloadedAlbum.strAlbum,
-                                                           downloadedAlbum.strMusicBrainzAlbumID,
-                                                           downloadedAlbum.GetArtistString(),
-                                                           downloadedAlbum.GetGenreString(),
-                                                           downloadedAlbum.iYear,
-                                                           downloadedAlbum.bCompilation);
-        m_musicDatabase.SetAlbumInfo(downloadedAlbum.idAlbum,
-                                     downloadedAlbum,
-                                     downloadedAlbum.songs);
+        album->MergeScrapedAlbum(downloadedAlbum);
+        downloadedAlbum.idAlbum = m_musicDatabase.AddAlbum(*album);
         m_musicDatabase.SetArtForItem(downloadedAlbum.idAlbum,
                                       "album", album->art);
         GetAlbumArtwork(downloadedAlbum.idAlbum, downloadedAlbum);
@@ -740,12 +734,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
       else
       {
         // No download info, fallback to already gathered (eg. local) information/art (if any)
-        album->idAlbum = m_musicDatabase.AddAlbum(album->strAlbum,
-                                                  album->strMusicBrainzAlbumID,
-                                                  album->GetArtistString(),
-                                                  album->GetGenreString(),
-                                                  album->iYear,
-                                                  album->bCompilation);
+        m_musicDatabase.AddAlbum(*album);
         if (!album->art.empty())
           m_musicDatabase.SetArtForItem(album->idAlbum,
                                         "album", album->art);
@@ -1014,7 +1003,7 @@ INFO_RET CMusicInfoScanner::UpdateDatabaseAlbumInfo(const CStdString& strPath, C
     return INFO_ERROR;
 
   CAlbum album;
-  m_musicDatabase.GetAlbumInfo(params.GetAlbumId(), album, &album.songs);
+  m_musicDatabase.GetAlbum(params.GetAlbumId(), album);
 
   // find album info
   ADDON::ScraperPtr scraper;
@@ -1046,8 +1035,10 @@ loop:
   else if (albumDownloadStatus == INFO_ADDED)
   {
     m_musicDatabase.Open();
-    m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), albumInfo.GetAlbum().songs);
+    album.MergeScrapedAlbum(albumInfo.GetAlbum());
+    m_musicDatabase.UpdateAlbum(album);
     GetAlbumArtwork(params.GetAlbumId(), albumInfo.GetAlbum());
+    m_musicDatabase.SetAlbumLastScrapeTime(params.GetAlbumId(), CDateTime::GetCurrentDateTime());
     albumInfo.SetLoaded(true);
     m_musicDatabase.Close();
   }

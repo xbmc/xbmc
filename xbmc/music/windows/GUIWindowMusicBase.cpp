@@ -432,8 +432,8 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
   CMusicAlbumInfo albumInfo;
   while (1)
   {
-    if (!m_musicdatabase.HasAlbumInfo(params.GetAlbumId()) || 
-        !m_musicdatabase.GetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), &albumInfo.GetAlbum().songs))
+    if (!m_musicdatabase.HasAlbumBeenScraped(params.GetAlbumId()) ||
+        !m_musicdatabase.GetAlbum(params.GetAlbumId(), albumInfo.GetAlbum()))
     {
       if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
       {
@@ -484,7 +484,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
 
       if (pDlgAlbumInfo->NeedRefresh())
       {
-        m_musicdatabase.DeleteAlbumInfo(params.GetAlbumId());
+        m_musicdatabase.ClearAlbumLastScrapedTime(params.GetAlbumId());
         continue;
       }
       else if (pDlgAlbumInfo->HasUpdatedThumb())

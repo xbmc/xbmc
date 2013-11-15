@@ -440,7 +440,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const CStdString &method, ITranspo
 
   CAlbum album;
   VECSONGS songs;
-  if (!musicdatabase.GetAlbumInfo(id, album, &songs) || album.idAlbum <= 0)
+  if (!musicdatabase.GetAlbum(id, album) || album.idAlbum <= 0)
     return InvalidParams;
 
   if (ParameterNotNull(parameterObject, "title"))
@@ -466,7 +466,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const CStdString &method, ITranspo
   if (ParameterNotNull(parameterObject, "year"))
     album.iYear = (int)parameterObject["year"].asInteger();
 
-  if (musicdatabase.SetAlbumInfo(id, album, songs) <= 0)
+  if (musicdatabase.UpdateAlbum(album) <= 0)
     return InternalError;
 
   CJSONRPCUtils::NotifyItemUpdated();
