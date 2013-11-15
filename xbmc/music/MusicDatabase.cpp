@@ -1034,33 +1034,33 @@ CSong CMusicDatabase::GetSongFromDataset()
   return GetSongFromDataset(m_pDS->get_sql_record());
 }
 
-CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record)
+CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record, int offset /* = 0 */)
 {
   CSong song;
-  song.idSong = record->at(song_idSong).get_asInt();
+  song.idSong = record->at(offset + song_idSong).get_asInt();
   // get the full artist string
-  song.artist = StringUtils::Split(record->at(song_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  song.artist = StringUtils::Split(record->at(offset + song_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
   // and the full genre string
-  song.genre = StringUtils::Split(record->at(song_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  song.genre = StringUtils::Split(record->at(offset + song_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
   // and the rest...
-  song.strAlbum = record->at(song_strAlbum).get_asString();
-  song.idAlbum = record->at(song_idAlbum).get_asInt();
-  song.iTrack = record->at(song_iTrack).get_asInt() ;
-  song.iDuration = record->at(song_iDuration).get_asInt() ;
-  song.iYear = record->at(song_iYear).get_asInt() ;
-  song.strTitle = record->at(song_strTitle).get_asString();
-  song.iTimesPlayed = record->at(song_iTimesPlayed).get_asInt();
-  song.lastPlayed.SetFromDBDateTime(record->at(song_lastplayed).get_asString());
-  song.iStartOffset = record->at(song_iStartOffset).get_asInt();
-  song.iEndOffset = record->at(song_iEndOffset).get_asInt();
-  song.strMusicBrainzTrackID = record->at(song_strMusicBrainzTrackID).get_asString();
-  song.rating = record->at(song_rating).get_asChar();
-  song.strComment = record->at(song_comment).get_asString();
-  song.iKaraokeNumber = record->at(song_iKarNumber).get_asInt();
-  song.strKaraokeLyrEncoding = record->at(song_strKarEncoding).get_asString();
-  song.iKaraokeDelay = record->at(song_iKarDelay).get_asInt();
-  song.bCompilation = record->at(song_bCompilation).get_asInt() == 1;
-  song.albumArtist = StringUtils::Split(record->at(song_strAlbumArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  song.strAlbum = record->at(offset + song_strAlbum).get_asString();
+  song.idAlbum = record->at(offset + song_idAlbum).get_asInt();
+  song.iTrack = record->at(offset + song_iTrack).get_asInt() ;
+  song.iDuration = record->at(offset + song_iDuration).get_asInt() ;
+  song.iYear = record->at(offset + song_iYear).get_asInt() ;
+  song.strTitle = record->at(offset + song_strTitle).get_asString();
+  song.iTimesPlayed = record->at(offset + song_iTimesPlayed).get_asInt();
+  song.lastPlayed.SetFromDBDateTime(record->at(offset + song_lastplayed).get_asString());
+  song.iStartOffset = record->at(offset + song_iStartOffset).get_asInt();
+  song.iEndOffset = record->at(offset + song_iEndOffset).get_asInt();
+  song.strMusicBrainzTrackID = record->at(offset + song_strMusicBrainzTrackID).get_asString();
+  song.rating = record->at(offset + song_rating).get_asChar();
+  song.strComment = record->at(offset + song_comment).get_asString();
+  song.iKaraokeNumber = record->at(offset + song_iKarNumber).get_asInt();
+  song.strKaraokeLyrEncoding = record->at(offset + song_strKarEncoding).get_asString();
+  song.iKaraokeDelay = record->at(offset + song_iKarDelay).get_asInt();
+  song.bCompilation = record->at(offset + song_bCompilation).get_asInt() == 1;
+  song.albumArtist = StringUtils::Split(record->at(offset + song_strAlbumArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
 
   // Get filename with full path
   song.strFileName = URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString());
@@ -1116,69 +1116,69 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   }
 }
 
-CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL /* = false*/)
+CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, int offset /* = 0 */, bool imageURL /* = false*/)
 {
-  return GetAlbumFromDataset(pDS->get_sql_record(), imageURL);
+  return GetAlbumFromDataset(pDS->get_sql_record(), offset, imageURL);
 }
 
-CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const record, bool imageURL /* = false*/)
+CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const record, int offset /* = 0 */, bool imageURL /* = false*/)
 {
   CAlbum album;
-  album.idAlbum = record->at(album_idAlbum).get_asInt();
-  album.strAlbum = record->at(album_strAlbum).get_asString();
+  album.idAlbum = record->at(offset + album_idAlbum).get_asInt();
+  album.strAlbum = record->at(offset + album_strAlbum).get_asString();
   if (album.strAlbum.empty())
     album.strAlbum = g_localizeStrings.Get(1050);
-  album.strMusicBrainzAlbumID = record->at(album_strMusicBrainzAlbumID).get_asString();
-  album.artist = StringUtils::Split(record->at(album_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  album.genre = StringUtils::Split(record->at(album_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  album.iYear = record->at(album_iYear).get_asInt();
+  album.strMusicBrainzAlbumID = record->at(offset + album_strMusicBrainzAlbumID).get_asString();
+  album.artist = StringUtils::Split(record->at(offset + album_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.genre = StringUtils::Split(record->at(offset + album_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.iYear = record->at(offset + album_iYear).get_asInt();
   if (imageURL)
-    album.thumbURL.ParseString(record->at(album_strThumbURL).get_asString());
-  album.iRating = record->at(album_iRating).get_asInt();
-  album.iYear = record->at(album_iYear).get_asInt();
-  album.strReview = record->at(album_strReview).get_asString();
-  album.styles = StringUtils::Split(record->at(album_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  album.moods = StringUtils::Split(record->at(album_strMoods).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  album.themes = StringUtils::Split(record->at(album_strThemes).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  album.strLabel = record->at(album_strLabel).get_asString();
-  album.strType = record->at(album_strType).get_asString();
-  album.bCompilation = record->at(album_bCompilation).get_asInt() == 1;
-  album.iTimesPlayed = record->at(album_iTimesPlayed).get_asInt();
+    album.thumbURL.ParseString(record->at(offset + album_strThumbURL).get_asString());
+  album.iRating = record->at(offset + album_iRating).get_asInt();
+  album.iYear = record->at(offset + album_iYear).get_asInt();
+  album.strReview = record->at(offset + album_strReview).get_asString();
+  album.styles = StringUtils::Split(record->at(offset + album_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.moods = StringUtils::Split(record->at(offset + album_strMoods).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.themes = StringUtils::Split(record->at(offset + album_strThemes).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.strLabel = record->at(offset + album_strLabel).get_asString();
+  album.strType = record->at(offset + album_strType).get_asString();
+  album.bCompilation = record->at(offset + album_bCompilation).get_asInt() == 1;
+  album.iTimesPlayed = record->at(offset + album_iTimesPlayed).get_asInt();
   return album;
 }
 
-CArtistCredit CMusicDatabase::GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record)
+CArtistCredit CMusicDatabase::GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset /* = 0 */)
 {
   CArtistCredit artistCredit;
-  artistCredit.idArtist = record->at(album_idArtist).get_asInt();
-  artistCredit.m_strArtist = record->at(album_strArtist).get_asString();
-  artistCredit.m_strMusicBrainzArtistID = record->at(album_strMusicBrainzArtistID).get_asString();
-  artistCredit.m_boolFeatured = record->at(album_bFeatured).get_asBool();
-  artistCredit.m_strJoinPhrase = record->at(album_strJoinPhrase).get_asString();
+  artistCredit.idArtist = record->at(offset + album_idArtist).get_asInt();
+  artistCredit.m_strArtist = record->at(offset + album_strArtist).get_asString();
+  artistCredit.m_strMusicBrainzArtistID = record->at(offset + album_strMusicBrainzArtistID).get_asString();
+  artistCredit.m_boolFeatured = record->at(offset + album_bFeatured).get_asBool();
+  artistCredit.m_strJoinPhrase = record->at(offset + album_strJoinPhrase).get_asString();
   return artistCredit;
 }
 
-CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb)
+CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, int offset /* = 0 */, bool needThumb /* = true */)
 {
-  return GetArtistFromDataset(pDS->get_sql_record(), needThumb);
+  return GetArtistFromDataset(pDS->get_sql_record(), offset, needThumb);
 }
 
-CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const record, bool needThumb /* = true */)
+CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const record, int offset /* = 0 */, bool needThumb /* = true */)
 {
   CArtist artist;
-  artist.idArtist = record->at(artist_idArtist).get_asInt();
-  artist.strArtist = record->at(artist_strArtist).get_asString();
-  artist.strMusicBrainzArtistID = record->at(artist_strMusicBrainzArtistID).get_asString();
-  artist.genre = StringUtils::Split(record->at(artist_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  artist.strBiography = record->at(artist_strBiography).get_asString();
-  artist.styles = StringUtils::Split(record->at(artist_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  artist.moods = StringUtils::Split(record->at(artist_strMoods).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  artist.strBorn = record->at(artist_strBorn).get_asString();
-  artist.strFormed = record->at(artist_strFormed).get_asString();
-  artist.strDied = record->at(artist_strDied).get_asString();
-  artist.strDisbanded = record->at(artist_strDisbanded).get_asString();
-  artist.yearsActive = StringUtils::Split(record->at(artist_strYearsActive).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  artist.instruments = StringUtils::Split(record->at(artist_strInstruments).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  artist.idArtist = record->at(offset + artist_idArtist).get_asInt();
+  artist.strArtist = record->at(offset + artist_strArtist).get_asString();
+  artist.strMusicBrainzArtistID = record->at(offset + artist_strMusicBrainzArtistID).get_asString();
+  artist.genre = StringUtils::Split(record->at(offset + artist_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  artist.strBiography = record->at(offset + artist_strBiography).get_asString();
+  artist.styles = StringUtils::Split(record->at(offset + artist_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  artist.moods = StringUtils::Split(record->at(offset + artist_strMoods).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  artist.strBorn = record->at(offset + artist_strBorn).get_asString();
+  artist.strFormed = record->at(offset + artist_strFormed).get_asString();
+  artist.strDied = record->at(offset + artist_strDied).get_asString();
+  artist.strDisbanded = record->at(offset + artist_strDisbanded).get_asString();
+  artist.yearsActive = StringUtils::Split(record->at(offset + artist_strYearsActive).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  artist.instruments = StringUtils::Split(record->at(offset + artist_strInstruments).get_asString(), g_advancedSettings.m_musicItemSeparator);
 
   if (needThumb)
   {
@@ -1343,7 +1343,7 @@ bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bo
       return false;
     }
 
-    info = GetAlbumFromDataset(m_pDS2.get()->get_sql_record(), true); // true to grab the thumburl rather than the thumb
+    info = GetAlbumFromDataset(m_pDS2.get()->get_sql_record(), 0, true); // true to grab the thumburl rather than the thumb
     int idAlbumInfo = m_pDS2->fv(album_idAlbumInfo).get_asInt();
     while (!m_pDS2->eof())
     {
@@ -1412,7 +1412,7 @@ bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)
     int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound != 0)
     {
-      info = GetArtistFromDataset(m_pDS2.get(),needAll);
+      info = GetArtistFromDataset(m_pDS2.get(), 0, needAll);
       if (needAll)
       {
         strSQL=PrepareSQL("select * from discography where idArtist=%i",idArtist);
