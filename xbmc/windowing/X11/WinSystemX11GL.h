@@ -45,7 +45,6 @@ protected:
 
   int (*m_glXGetVideoSyncSGI)(unsigned int*);
   int (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
-  int (*m_glXSwapIntervalSGI)(int);
   int (*m_glXSwapIntervalMESA)(int);
   PFNGLXSWAPINTERVALEXTPROC m_glXSwapIntervalEXT;
 
