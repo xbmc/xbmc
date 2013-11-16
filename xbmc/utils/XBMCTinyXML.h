@@ -25,19 +25,7 @@
 #endif
 #ifdef TARGET_WINDOWS
 #define TIXML_USE_STL
-#if _MSC_VER < 1700
-#ifdef _DEBUG
-#pragma comment(lib, "tinyxmlSTLd.lib")
-#else
 #pragma comment(lib, "tinyxmlSTL.lib")
-#endif
-#else if _MSC_VER >= 1800
-#ifdef _DEBUG
-#pragma comment(lib, "tinyxmlSTL12d.lib")
-#else
-#pragma comment(lib, "tinyxmlSTL12.lib")
-#endif
-#endif // _MSC_VER < 1700
 #else
 //compile fix for TinyXml < 2.6.0
 #define DOCUMENT    TINYXML_DOCUMENT
