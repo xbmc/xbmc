@@ -44,21 +44,19 @@ public:
   CWIN32Util(void);
   virtual ~CWIN32Util(void);
 
-  static CStdString URLEncode(const CURL &url);
-  static CStdString GetLocalPath(const CStdString &strPath);
   static char FirstDriveFromMask (ULONG unitmask);
-  static int GetDriveStatus(const CStdString &strPath, bool bStatusEx=false);
+  static int GetDriveStatus(const std::string &strPath, bool bStatusEx=false);
   static bool PowerManagement(PowerState State);
   static int BatteryLevel();
-  static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
+  static bool XBMCShellExecute(const std::string &strPath, bool bWaitForScriptExit=false);
   static std::vector<CStdString> GetDiskUsage();
-  static CStdString GetResInfoString();
+  static std::string GetResInfoString();
   static int GetDesktopColorDepth();
-  static CStdString GetSpecialFolder(int csidl);
-  static CStdString GetSystemPath();
-  static CStdString GetProfilePath();
-  static CStdString UncToSmb(const CStdString &strPath);
-  static CStdString SmbToUnc(const CStdString &strPath);
+  static std::string GetSpecialFolder(int csidl);
+  static std::string GetSystemPath();
+  static std::string GetProfilePath();
+  static std::string UncToSmb(const std::string &strPath);
+  static std::string SmbToUnc(const std::string &strPath);
   static bool AddExtraLongPathPrefix(std::wstring& path);
   static bool RemoveExtraLongPathPrefix(std::wstring& path);
   static std::wstring ConvertPathToWin32Form(const std::string& pathUtf8);
@@ -75,20 +73,18 @@ public:
   static BOOL IsCurrentUserLocalAdministrator();
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES, bool bonlywithmedia=false);
   static std::string GetFirstOpticalDrive();
-  static bool IsAudioCD(const CStdString& strPath);
-  static CStdString GetDiskLabel(const CStdString& strPath);
 
   static LONG UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd );
   static bool UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64= false );
 
-  static bool GetCrystalHDLibraryPath(CStdString &strPath);
+  static bool GetCrystalHDLibraryPath(std::string &strPath);
 
-  static bool GetFocussedProcess(CStdString &strProcessFile);
+  static bool GetFocussedProcess(std::string &strProcessFile);
   static void CropSource(CRect& src, CRect& dst, CRect target);
 
-  static bool IsUsbDevice(const CStdStringW &strWdrive);
+  static bool IsUsbDevice(const std::wstring &strWdrive);
 
-  static CStdString WUSysMsg(DWORD dwError);
+  static std::string WUSysMsg(DWORD dwError);
 private:
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
 };

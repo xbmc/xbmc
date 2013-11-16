@@ -71,45 +71,7 @@ CWIN32Util::~CWIN32Util(void)
 {
 }
 
-CStdString CWIN32Util::URLEncode(const CURL &url)
-{
-  /* due to smb wanting encoded urls we have to build it manually */
-
-  CStdString flat = "smb://";
-
-  if(url.GetDomain().length() > 0)
-  {
-    flat += url.GetDomain();
-    flat += ";";
-  }
-
-  /* samba messes up of password is set but no username is set. don't know why yet */
-  /* probably the url parser that goes crazy */
-  if(url.GetUserName().length() > 0 /* || url.GetPassWord().length() > 0 */)
-  {
-    flat += url.GetUserName();
-    flat += ":";
-    flat += url.GetPassWord();
-    flat += "@";
-  }
-  flat += url.GetHostName();
-
-  /* okey sadly since a slash is an invalid name we have to tokenize */
-  std::vector<std::string> parts;
-  std::vector<std::string>::iterator it;
-  StringUtils::Tokenize(url.GetFileName(), parts, "/");
-  for( it = parts.begin(); it != parts.end(); it++ )
-  {
-    flat += "/";
-    flat += (*it);
-  }
-
-  /* okey options should go here, thou current samba doesn't support any */
-
-  return flat;
-}
-
-int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
+int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
 {
   HANDLE hDevice;               // handle to the drive to be examined
   int iResult;                  // results flag
@@ -224,14 +186,6 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
   return -1;
 }
 
-CStdString CWIN32Util::GetLocalPath(const CStdString &strPath)
-{
-  CURL url(strPath);
-  CStdString strLocalPath = url.GetFileName();
-  StringUtils::Replace(strLocalPath, url.GetShareName()+"/", "");
-  return strLocalPath;
-}
-
 char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
 {
     char i;
@@ -306,12 +260,12 @@ int CWIN32Util::BatteryLevel()
   return 0;
 }
 
-bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit)
+bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScriptExit)
 {
-  CStdString strCommand = strPath;
-  CStdString strExe = strPath;
-  CStdString strParams;
-  CStdString strWorkingDir;
+  std::string strCommand = strPath;
+  std::string strExe = strPath;
+  std::string strParams;
+  std::string strWorkingDir;
 
   StringUtils::Trim(strCommand);
   if (strCommand.empty())
@@ -340,7 +294,7 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
     strWorkingDir[iIndex+1] = '\0';
   }
 
-  CStdStringW WstrExe, WstrParams, WstrWorkingDir;
+  std::wstring WstrExe, WstrParams, WstrWorkingDir;
   g_charsetConverter.utf8ToW(strExe, WstrExe);
   g_charsetConverter.utf8ToW(strParams, WstrParams);
   g_charsetConverter.utf8ToW(strWorkingDir, WstrWorkingDir);
@@ -397,7 +351,7 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
     int iPos= 0;
     do
     {
-      CStdString strDrive = pcBuffer + iPos;
+      std::string strDrive = pcBuffer + iPos;
       if( DRIVE_FIXED == GetDriveType( strDrive.c_str()  ) &&
         GetDiskFreeSpaceEx( ( strDrive.c_str() ), NULL, &ULTotal, &ULTotalFree ) )
       {
@@ -411,7 +365,7 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
   return result;
 }
 
-CStdString CWIN32Util::GetResInfoString()
+std::string CWIN32Util::GetResInfoString()
 {
   DEVMODE devmode;
   ZeroMemory(&devmode, sizeof(devmode));
@@ -429,9 +383,9 @@ int CWIN32Util::GetDesktopColorDepth()
   return (int)devmode.dmBitsPerPel;
 }
 
-CStdString CWIN32Util::GetSpecialFolder(int csidl)
+std::string CWIN32Util::GetSpecialFolder(int csidl)
 {
-  CStdString strProfilePath;
+  std::string strProfilePath;
   static const int bufSize = MAX_PATH;
   WCHAR* buf = new WCHAR[bufSize];
 
@@ -448,14 +402,14 @@ CStdString CWIN32Util::GetSpecialFolder(int csidl)
   return strProfilePath;
 }
 
-CStdString CWIN32Util::GetSystemPath()
+std::string CWIN32Util::GetSystemPath()
 {
   return GetSpecialFolder(CSIDL_SYSTEM);
 }
 
-CStdString CWIN32Util::GetProfilePath()
+std::string CWIN32Util::GetProfilePath()
 {
-  CStdString strProfilePath;
+  std::string strProfilePath;
   CStdString strHomePath;
 
   CUtil::GetHomePath(strHomePath);
@@ -473,9 +427,9 @@ CStdString CWIN32Util::GetProfilePath()
   return strProfilePath;
 }
 
-CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
+std::string CWIN32Util::UncToSmb(const std::string &strPath)
 {
-  CStdString strRetPath(strPath);
+  std::string strRetPath(strPath);
   if(StringUtils::StartsWith(strRetPath, "\\\\"))
   {
     strRetPath = "smb:" + strPath;
@@ -484,9 +438,9 @@ CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
   return strRetPath;
 }
 
-CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
+std::string CWIN32Util::SmbToUnc(const std::string &strPath)
 {
-  CStdString strRetPath(strPath);
+  std::string strRetPath(strPath);
   if(StringUtils::StartsWithNoCase(strRetPath, "smb://"))
   {
     StringUtils::Replace(strRetPath, "smb://", "\\\\");
@@ -556,13 +510,13 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
 
 void CWIN32Util::ExtendDllPath()
 {
-  CStdString strEnv;
-  CStdStringArray vecEnv;
+  std::string strEnv;
+  std::vector<std::string> vecEnv;
   strEnv = CEnvironment::getenv("PATH");
   if (strEnv.empty())
     CLog::Log(LOGWARNING, "Can get system env PATH or PATH is empty");
 
-  StringUtils::SplitString(DLL_ENV_PATH, ";", vecEnv);
+  vecEnv = StringUtils::Split(DLL_ENV_PATH, ";");
   for (int i=0; i<(int)vecEnv.size(); ++i)
     strEnv.append(";" + CSpecialProtocol::TranslatePath(vecEnv[i]));
 
@@ -586,12 +540,12 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  CStdString strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
+  std::string strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
   HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                              NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  CStdString strRootFormat = StringUtils::Format( _T("%c:\\"), cDL);
+  std::string strRootFormat = StringUtils::Format( _T("%c:\\"), cDL);
   if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) &&
-      ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
+    ( GetDriveType( strRootFormat.c_str() ) == DRIVE_CDROM ) )
   {
     DWORD dwDummy;
     dwReq = (GetDriveStatus(strVolFormat, true) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
@@ -616,13 +570,13 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
   char cDL = cDriveLetter;
   if( !cDL )
   {
-    CStdString dvdDevice = g_mediaManager.TranslateDevicePath("");
-    if(dvdDevice == "")
+    std::string dvdDevice = g_mediaManager.TranslateDevicePath("");
+    if(dvdDevice.empty())
       return S_FALSE;
     cDL = dvdDevice[0];
   }
 
-  CStdString strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
+  std::string strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
 
   if(GetDriveStatus(strVolFormat, true) != 1)
     return ToggleTray(cDL);
@@ -635,13 +589,13 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
   char cDL = cDriveLetter;
   if( !cDL )
   {
-    CStdString dvdDevice = g_mediaManager.TranslateDevicePath("");
-    if(dvdDevice == "")
+    std::string dvdDevice = g_mediaManager.TranslateDevicePath("");
+    if(dvdDevice.empty())
       return S_FALSE;
     cDL = dvdDevice[0];
   }
 
-  CStdString strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
+  std::string strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
 
   if(GetDriveStatus(strVolFormat, true) == 1)
     return ToggleTray(cDL);
@@ -734,7 +688,7 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   if( !cDriveLetter )
     return false;
 
-  CStdString strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDriveLetter);
+  std::string strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDriveLetter);
 
   long DiskNumber = -1;
 
@@ -861,7 +815,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
       int nResult = 0;
       cVolumeName[0]= L'\0';
 
-      CStdStringW strWdrive = pcBuffer + iPos;
+      std::wstring strWdrive = pcBuffer + iPos;
 
       UINT uDriveType= GetDriveTypeW( strWdrive.c_str()  );
       // don't use GetVolumeInformation on fdd's as the floppy controller may be enabled in Bios but
@@ -956,29 +910,6 @@ std::string CWIN32Util::GetFirstOpticalDrive()
     return strdevice.append(vShare.front().strPath);
   else
     return "";
-}
-
-bool CWIN32Util::IsAudioCD(const CStdString& strPath)
-{
-  CStdString strDrive = strPath;
-  char cVolumenName[256];
-  char cFSName[256];
-  URIUtils::AddSlashAtEnd(strDrive);
-  if(GetVolumeInformation(strDrive.c_str(), cVolumenName, 255, NULL, NULL, NULL, cFSName, 255)==0)
-    return false;
-  return (strncmp(cFSName,"CDFS",4)==0 && strncmp(cVolumenName,"Audio CD",4)==0);
-}
-
-CStdString CWIN32Util::GetDiskLabel(const CStdString& strPath)
-{
-  CStdString strDrive = strPath;
-  char cVolumenName[128];
-  char cFSName[128];
-  URIUtils::AddSlashAtEnd(strDrive);
-  if(GetVolumeInformation(strDrive.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
-    return "";
-  CStdString volume = cVolumenName;
-  return StringUtils::TrimRight(volume, " ");
 }
 
 extern "C"
@@ -1419,11 +1350,11 @@ bool CWIN32Util::UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKe
   return bRet;
 }
 
-bool CWIN32Util::GetCrystalHDLibraryPath(CStdString &strPath)
+bool CWIN32Util::GetCrystalHDLibraryPath(std::string &strPath)
 {
   // support finding library by windows registry
   HKEY hKey;
-  CStdString strRegKey;
+  std::string strRegKey;
 
   CLog::Log(LOGDEBUG, "CrystalHD: detecting CrystalHD installation path");
   strRegKey = StringUtils::Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
@@ -1458,7 +1389,7 @@ bool CWIN32Util::GetCrystalHDLibraryPath(CStdString &strPath)
 // Typically this will be some process using the system tray grabbing
 // the focus and causing XBMC to minimise. Logging the offending
 // process name can help the user fix the problem.
-bool CWIN32Util::GetFocussedProcess(CStdString &strProcessFile)
+bool CWIN32Util::GetFocussedProcess(std::string &strProcessFile)
 {
   strProcessFile = "";
 
@@ -1590,12 +1521,12 @@ extern "C"
 // detect if a drive is a usb device
 // code taken from http://banderlogi.blogspot.com/2011/06/enum-drive-letters-attached-for-usb.html
 
-bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
+bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
 {
   if (strWdrive.size() < 2)
     return false;
 
-  CStdStringW strWDevicePath = StringUtils::Format(L"\\\\.\\%s",strWdrive.substr(0, 2).c_str());
+  std::wstring strWDevicePath = StringUtils::Format(L"\\\\.\\%s",strWdrive.substr(0, 2).c_str());
 
   HANDLE deviceHandle = CreateFileW(
     strWDevicePath.c_str(),
@@ -1635,7 +1566,7 @@ bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
   return BusTypeUsb == busType;
  }
 
-CStdString CWIN32Util::WUSysMsg(DWORD dwError)
+std::string CWIN32Util::WUSysMsg(DWORD dwError)
 {
   #define SS_DEFLANGID MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT)
   CHAR szBuf[512];

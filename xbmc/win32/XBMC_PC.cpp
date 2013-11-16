@@ -115,7 +115,8 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     int argc;
     LPWSTR* argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
 
-    CStdString* strargvA = new CStdString[argc];
+    std::vector<std::string> strargvA;
+    strargvA.resize(argc);
     const char** argv = (const char**) LocalAlloc(LMEM_FIXED, argc*sizeof(char*));
     for (int i = 0; i < argc; i++)
     {
@@ -130,7 +131,6 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     // Clean up the storage we've used
     LocalFree(argvW);
     LocalFree(argv);
-    delete [] strargvA;
   }
 
   // Initialise Winsock
