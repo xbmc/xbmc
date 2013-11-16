@@ -1,6 +1,6 @@
 # XBMC Media Center language file
-# Addon Name: OpenGL Spectrum
-# Addon id: visualization.glspectrum
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -9,69 +9,69 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Chinese (Simple) (http://www.transifex.com/projects/p/xbmc-main/language/zh/)\n"
+"Language-Team: Tajik (http://www.transifex.com/projects/p/xbmc-main/language/tg/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: tg\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
 msgid "Mode"
-msgstr "模式"
+msgstr "Ҳолат"
 
 msgctxt "#30001"
 msgid "Filled"
-msgstr "填充"
+msgstr "Пуршуда"
 
 msgctxt "#30002"
 msgid "Wireframe"
-msgstr "线框"
+msgstr "Чорчӯбаи хаттӣ"
 
 msgctxt "#30003"
 msgid "Points"
-msgstr "点"
+msgstr "Нуқтаҳо"
 
 msgctxt "#30004"
 msgid "Bar Height"
-msgstr "柱高"
+msgstr "Баландии навор"
 
 msgctxt "#30005"
 msgid "Small"
-msgstr "小"
+msgstr "Хурд"
 
 msgctxt "#30006"
 msgid "Default"
-msgstr "默认"
+msgstr "Пешфарз"
 
 msgctxt "#30007"
 msgid "Big"
-msgstr "大"
+msgstr "Калон"
 
 msgctxt "#30008"
 msgid "Very Big"
-msgstr "特大"
+msgstr "Хеле калон"
 
 msgctxt "#30009"
 msgid "Speed"
-msgstr "速度"
+msgstr "Суръат"
 
 msgctxt "#30010"
 msgid "Very Slow"
-msgstr "极慢"
+msgstr "Хеле суст"
 
 msgctxt "#30011"
 msgid "Slow"
-msgstr "慢"
+msgstr "Суст"
 
 msgctxt "#30012"
 msgid "Default"
-msgstr "默认"
+msgstr "Пешфарз"
 
 msgctxt "#30013"
 msgid "Fast"
-msgstr "快"
+msgstr "Тез"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "极快"
+msgstr "Хеле тез"

@@ -50,7 +50,7 @@ msgstr "大"
 
 msgctxt "#30008"
 msgid "Very Big"
-msgstr "很大"
+msgstr "特大"
 
 msgctxt "#30009"
 msgid "Speed"
@@ -58,7 +58,7 @@ msgstr "速度"
 
 msgctxt "#30010"
 msgid "Very Slow"
-msgstr "很慢"
+msgstr "极慢"
 
 msgctxt "#30011"
 msgid "Slow"
@@ -74,4 +74,4 @@ msgstr "快"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "很快"
+msgstr "极快"

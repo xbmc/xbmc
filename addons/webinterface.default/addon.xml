@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.1"
+  version="2.2.2"
   name="Default"
   provider-name="Team XBMC">
   <requires>
@@ -16,7 +16,7 @@
     <summary lang="ar">واجهة شبكة فريق XBMC.</summary>
     <summary lang="ast">Interfaz web de XBMC. (Interfaz web por defeutu de XBMC)</summary>
     <summary lang="be">Team XBMC Web Interface. (XBMC's default web interface)</summary>
-    <summary lang="bg">Уебинтерфейс на Team XBMC. (стандартният уебинтерфейс на XBMC)</summary>
+    <summary lang="bg">Уеб интерфейс на Team XBMC. (стандартният уеб интерфейс на XBMC)</summary>
     <summary lang="ca">Interfície web de l'equip XBMC. (Interficie web per defecte de l'XBMC)</summary>
     <summary lang="cs">Webové rozhraní týmu XBMC (Výchozí webové rozhraní XBMC).</summary>
     <summary lang="cy">Rhyngwyneb Gwe Team XBMC (Rhyngwyneb gwe rhagosodedig XBMC)</summary>
@@ -42,6 +42,7 @@
     <summary lang="ja">Team XBMC Web Interface. (XBMC's default web interface)</summary>
     <summary lang="ko">Team XBMC 웹 인터페이스. (XBMC 기본 웹 인터페이스)</summary>
     <summary lang="lt">Komandos XBMC Web sąsaja.(XBMC numatytoji žiniatinklio sąsaja)</summary>
+    <summary lang="lv">XBMC pārlūka sakarne. (XBMC noklusētā pārlūka sakarne)</summary>
     <summary lang="mk">Веб интерфејс на  XBMC тимот. (XBMC's подразбирачки веб интерфејс)</summary>
     <summary lang="ms">Antaramuka web kumpulan XBMC (antaramuka web lalai XBMC) </summary>
     <summary lang="my">Team XBMC ဝက်ဘ် အသွင်အပြင် (XBMC ၏ မူရင် ဝက်ဘ် အသွင်အပြင်)</summary>
@@ -58,18 +59,19 @@
     <summary lang="sr">Веб интерфејс од програмера XBMC-а (подразумевани веб интерфејс XBMC-а)</summary>
     <summary lang="sv">Team XBMC webbgränsnitt. (XBMC's standardwebbgränssnitt)</summary>
     <summary lang="ta_IN">XBMC அணியின் வலை இடைமுகம். (XBMC இயல்புநிலை இணைய இடைமுகம்)     </summary>
+    <summary lang="tg">Интерфейси веби гурӯҳи кории XBMC Web. (Интерфейси веби пешфарз барои XBMC)</summary>
     <summary lang="th">ทีมส่วนประสานหน้าเว็บ XBMC (ส่วนประสานหน้าเว็บพื้นฐานของ XBMC)</summary>
     <summary lang="tr">XBMC Takımı Web Arayüzü. (XBMC'nin varsayılan web arayüzü)</summary>
     <summary lang="uk">Веб-інтерфейс XBMC (Типовий веб-інтерфейс  для XBMC)</summary>
     <summary lang="uz">XBMC guruhi veb Interfeysi. (XBMC andoza veb interfeysi)</summary>
     <summary lang="vi">Đội ngũ giao diện Web XBMC. (Giao diện Web mặc định của XBMC)</summary>
-    <summary lang="zh">Team XBMC Web 界面。（XBMC 的默认 web 界面）</summary>
+    <summary lang="zh">XBMC 团队开发的 Web 界面。（XBMC 的默认 web 界面）</summary>
     <summary lang="zh_TW">XBMC團隊網頁介面。(XBMC的預設網頁介面)</summary>
     <description lang="af">Verstek web koppelvlak vir XBMC; Ontwerp vir toestelle van alle resolusies</description>
     <description lang="am">ነባር የዌብ ገጽታዎች ለ XBMC ፡ የተነደፈው ለሁሉም አካላቶች resolutions ነው </description>
     <description lang="ast">Interfaz web por defeutu de XBMC. Diseñada pa preseos de cualquier resolución</description>
     <description lang="be">Стандартны вэб-інтэрфэйс да XBMC; распрацаваны для прыладаў зь любымі разрознасьцямі</description>
-    <description lang="bg">Стандартния уебинтерфейс на XBMC; Направен е за устройства с най-различни резолюции</description>
+    <description lang="bg">Стандартния уеб интерфейс на XBMC; Направен е за устройства с най-различни резолюции</description>
     <description lang="ca">Interfície web per defecte de l'XBMC; Dissenyada per dispositius de totes les resol·lucions</description>
     <description lang="cs">Výchozí webové rozhraní XBMC navržené pro zařízení s libovolným rozlišením</description>
     <description lang="cy">Rhyngwyneb gwe rhagosodedig XBMC. Wedi ei gynllunio ar gyfer cydraniad pob dyfais</description>
@@ -95,6 +97,7 @@
     <description lang="ja">Default web interface for XBMC; Designed for devices of all resolutions</description>
     <description lang="ko">XBMC 기본 웹 인터페이스; 모든 해상도의 기기를 위해 디자인 됨</description>
     <description lang="lt">Numatytoji XBMC Web sąsaja skirta visų rezoliucijų prietaisams</description>
+    <description lang="lv">Noklusētā XBMC pārlūka sakarne; Piemērota iekārtām ar dažādu ekrānu izšķirtspēju</description>
     <description lang="mk">Подразбирачки веб интерфејс за XBMC; Дизајниран за уреди со сите резолуции</description>
     <description lang="ms">Antaramuka web lalai untuk XBMC; Di reka untuk peranti pelbagai resolusi</description>
     <description lang="my">XBMC အတွက် မူရင်း ဝက်ဘ် အသွင်ပြင် ၊ စက်များ အားလုံး၏ resolutions အတွက် ရေးဆွဲထားသည်။</description>
@@ -111,12 +114,13 @@
     <description lang="sr">Подразумевани веб интерфејс XBMC-а, намењен уређајима свих резолуција</description>
     <description lang="sv">Standardwebbgränssnitt för XBMC; Designat för enheter med alla upplösningar</description>
     <description lang="ta_IN">XBMC முன்னிருப்பு இணைய இடைமுகம்; அனைத்து சாதனங்களின் தெளிவிற்காக வடிவமைக்கப்பட்டுள்ளது</description>
+    <description lang="tg">Интерфейси веби пешфарз барои XBMC; Барои ҳар гуна дастгоҳ бо возеҳии экранаш гуногун эҷод карда шудааст</description>
     <description lang="th">ส่วนประสานหน้าเว็บพื้นฐานสำหรับ XBMC ได้ออกแบบรองรับความละเอียดหน้าจอของอุปกรณ์ทั้งหมด</description>
     <description lang="tr">XBMC için varsayılan web arayüzü; Bütün çözünürlüklerde tüm cihazlar için dizayn edilmiştir.</description>
     <description lang="uk">Типовий веб-інтерфейс  для XBMC; Розроблений для пристроїв з будь-якою роздільною здатністю</description>
     <description lang="uz">XBMC uchun andoza veb interfeysi; barcha ekran o'lchamlari bilan uskunalar uchun yaratilgan</description>
     <description lang="vi">Giao diện Web mặc định cho XBMC; Thiết kế cho các thiết bị ở tất cả độ phân giải khác nhau</description>
-    <description lang="zh">XBMC 的默认 web 界面；适应所有分辨率模式</description>
+    <description lang="zh">XBMC 的默认 web 界面；为支持所有分辨率的设备而设计</description>
     <description lang="zh_TW">XBMC的預設網頁介面；針對所有解析度的設備而設計</description>
     <platform>all</platform>
   </extension>

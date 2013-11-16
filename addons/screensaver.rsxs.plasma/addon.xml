@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.plasma"
-  version="1.0.7"
+  version="1.0.8"
   name="Plasma"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -39,6 +39,7 @@
     <summary lang="ja">世界で2番目にサイケなスクリーンセーバー</summary>
     <summary lang="ko">아마도 지금까지 두번째로 가장 환상적인 화면보호기</summary>
     <summary lang="lt">Tikriausiai antra labiausiai psichodeline ekrano uzsklanda pasaulyje.</summary>
+    <summary lang="lv">Iespējams viens no visvairāk psihodēliskajiem ekrānsaudzētājiem pasaulē</summary>
     <summary lang="mk">Можеби втора нај психоделична заштита на екран</summary>
     <summary lang="nl">Waarschijnlijk de op één na meest psychedelische schermbeveiliging ooit</summary>
     <summary lang="no">Helt sikkert den nest psykadeliske skjermsparern som fins</summary>
@@ -52,10 +53,11 @@
     <summary lang="sl">Drugi najbolj psihadelični ohranjevalnik zaslona na svetu.</summary>
     <summary lang="sv">Troligen den näst mest psykedeliska skärmsläckaren någonsin.</summary>
     <summary lang="ta_IN">இரண்டாவது மாயத்தோற்றம் தரக்கூடிய திரைகாப்பான்</summary>
+    <summary lang="tg">Эҳтимол аст, ки имрӯз дар тамоми ҷаҳон ин пардаи экран ҷои дуюмро мегирад</summary>
     <summary lang="tr">Muhtemelen insanı hayallere sürükleyen en iyi ikinci ekran koruyucu</summary>
     <summary lang="uk">Напевно, друга серед найбільш психоделічних заставок</summary>
     <summary lang="vi">Xứng đáng làm trình bảo vệ màn hình gây ảo giác mạnh thứ hai</summary>
-    <summary lang="zh">也许是排名第二的迷幻效果屏幕保护程序</summary>
+    <summary lang="zh">或许是排名第二的迷幻效果屏幕保护程序</summary>
     <summary lang="zh_TW">可能是有史以來第二最夢幻的螢幕保護程式保護程式</summary>
     <description lang="af">Seker die tweede mees psigedeliese sluimerskerm wat bestaan. Verbeel jou net al daai kleure wat rond beweeg.</description>
     <description lang="ar">ربما شاشة التوقف الثانية الأكثر هدوء في الوجود. فقط حاول تصوير هذه الألوان المتحركة .</description>
@@ -68,6 +70,7 @@
     <description lang="de">Wahrscheinlich der zweit-psychodelischste Bildschirmschoner, den es gibt. Versuche doch alle diese Farben, die sich umher bewegen, festzuhalten.</description>
     <description lang="el">Πιθανότατα η δεύτερη πιο ψυχεδελική προφύλαξη οθόνης που υπάρχει. Απλά προσπαθήστε να φανταστείτε όλα αυτά τα χρώματα σε κίνηση.</description>
     <description lang="en">Probably the second most psychedelic screensaver in existence. Just try to picture all those colours moving around.</description>
+    <description lang="en_US">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="es">Probablemente el segundo salvapantallas más psicodélico que existe. Intente imaginarse todos esos colores moviéndose.</description>
     <description lang="es_AR">Probablemente el segundo protector de pantalla más psicodélico que existe. Solo intente imaginarse todos esos colores moviéndose.</description>
     <description lang="es_MX">Probablemente el segundo protector de pantallas más psicodélico.  Solo trate de captar todos los colores moviéndose alrededor.</description>
@@ -83,10 +86,11 @@
     <description lang="ja">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="ko">아마도 존재하는 두번째로 가장 환상적인 화면보호기. 모든 색깔들이 움직이는 것을 상상해보세요.</description>
     <description lang="lt">Turbut antra labiausiai psichodeline ekrano uzsklanda pasaulyje. Isbandykite ja ir pamatysite judanciu spalvu svente.</description>
+    <description lang="lv">Iespējams viens no visvairāk psihodēliskajiem ekrānsaudzētājiem pasaulē. Tikai izmēģiniet lai gūtu priekšstatu  par visu šo krāsu kustību un plūsmu visapkārt.</description>
     <description lang="mk">Можеби втора нај психоделична заштита на екран. Само обидете се да ги согледате сите тие бои кои се движат.</description>
     <description lang="nl">Waarschlijnlijk de op één na meest psychedelische schermbeveliging ooit. Probeer u het voor te stellen: al die kleuren die door elkaar lopen.</description>
     <description lang="no">Helt sikkert den nest psykadeliske skjermsparern i verden. Bare prøv å se for deg alle de fargene som beveger seg rundt.</description>
-    <description lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie. Spróbuj i zobacz ferię poruszających się barw.</description>
+    <description lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie. Spróbuj i zobacz ferie poruszających się barw.</description>
     <description lang="pt">É, provavelmente, o segundo melhor protector de ecrã psicadélico de sempre. Experimente-o e veja todas as cores em movimento livre.</description>
     <description lang="pt_BR">Provavelmente, o segundo mais psicodélico screensaver existente.  Experimente-a para ver todas as cores moverem-se livremente.</description>
     <description lang="ro">Probabil al doilea cel mai năucitor screensaver care a existat vreodată. Doar încercați să vă imaginați toate acele culori mișcându-se.</description>
@@ -96,10 +100,11 @@
     <description lang="sl">Drugi najbolj psihadelični ohranjevalnik zaslona na svetu. Samo predstavljajte si vse te barve, ki letijo naokrog.</description>
     <description lang="sv">Troligen den näst mest psykedeliska skärmsläckaren som existerar. Bara tänk dig alla färgerna som rör på sig.</description>
     <description lang="ta_IN">ஒருவேளை இரண்டாவது மாயத்தோற்றம் தரக்கூடிய திரைகாப்பான் இதுதான். இப்போது சுற்றி திரியும் வண்ணங்களை பார்க்க முயற்சி செய்துபாரும்.</description>
+    <description lang="tg">Эҳтимол аст, ки имрӯз дар тамоми ҷаҳон ин пардаи экран ҷои дуюмро мегирад. Танҳо тасаввур кунед, ки чӣ қадар зебо ҳамаи рангҳояш бозӣ мекунанд.</description>
     <description lang="tr">Muhtemelen insanı hayallere sürükleyen en iyi ikinci ekran koruyucu. Ekranda dolaşan tüm renkleri seyretmeye çalışın.</description>
     <description lang="uk">Напевно, друга серед найбільш психоделічних заставок. Лише уявіть усі ці переливи кольорів.</description>
     <description lang="vi">Đây có thể là trình bảo vệ màn hình gây ảo giác mạnh thứ hai tại thời điểm này. Hãy thử xem các hình ảnh tạo nên từ các màu sắc di chuyển khắp nơi</description>
-    <description lang="zh">也许是排名第二的迷幻效果屏幕保护程序。你将看到所有颜色满处乱飞。</description>
+    <description lang="zh">或许是排名第二的迷幻效果屏幕保护程序。你将看到所有颜色满处乱飞。</description>
     <description lang="zh_TW">可能是現存第二最夢幻的螢幕保護程式。快來嘗試想像一下所有移動中的色彩變化。</description>
     <platform>linux osx</platform>
   </extension>

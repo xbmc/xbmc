@@ -16,6 +16,10 @@ msgstr ""
 "Language: lv\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Renderēšanas kvalitāte"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Zems"
@@ -27,3 +31,15 @@ msgstr "Vidējs"
 msgctxt "#30003"
 msgid "High"
 msgstr "Augsts"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "Maksimums"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Jaukšanas režīms"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Sitienu jūtīgums"

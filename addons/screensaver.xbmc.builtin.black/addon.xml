@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.7"
+       version="1.0.8"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -50,6 +50,7 @@
     <summary lang="sl">Ohranjevalnik zaslona, ki počrni zaslon.</summary>
     <summary lang="sv">En skärmsläckare som gör din skärm svart</summary>
     <summary lang="ta_IN">திரையை கறுப்பாக்கும் திரைகாப்பான்</summary>
+    <summary lang="tg">Пардаи экран бо таъсири «Пардаи экрани сиёҳ»</summary>
     <summary lang="th">สกรีนเซฟเวอร์ที่จะพักหน้าจอของคุณให้เป็นสีดำ</summary>
     <summary lang="tr">Ekranınızı siyah renge çeviren bir ekran koruyucu</summary>
     <summary lang="uk">Заставка заповнює екран чорним кольором</summary>
@@ -101,6 +102,7 @@
     <description lang="sl">Black je enostaven ohranjevalnik zaslona, ki počrni zaslon.</description>
     <description lang="sv">Detta är en enkel skärmsläckare som gör din skärm svart.</description>
     <description lang="ta_IN">கருப்பு மிகவும் எளிமையான திரைகாப்பான் இது திரையை கறுப்பாக்கிவிடும்</description>
+    <description lang="tg">Ин пардаи экрани осон мебошад, ки таъсири «Пардаи экрани сиёҳ»-ро истифода мебарад.</description>
     <description lang="th">หน้าจอสีดำเป็นสกรีนเซฟเวอร์แบบง่ายๆที่จะเปิดหน้าจอของคุณให้เป็นสีดำ</description>
     <description lang="tr">Siyah, ekranınızı siyaha çeviren basit bir ekran koruyucusudur.</description>
     <description lang="uk">Black є простою заставкою що заповнює екран чорним кольором.</description>

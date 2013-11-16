@@ -16,6 +16,62 @@ msgstr ""
 "Language: lv\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Veids"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Pildīts"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Tīkla režgis"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Punkti"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Stieņa augstums"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Mazs"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Noklusētais"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Liels"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Ļoti liels"
+
 msgctxt "#30009"
 msgid "Speed"
 msgstr "Ātrums"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Ļoti mazs"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Lēns"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Noklusētais"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Ātrs"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Loti ātrs"

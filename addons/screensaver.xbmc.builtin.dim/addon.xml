@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.7"
+       version="1.0.8"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -50,6 +50,7 @@
     <summary lang="sq">Ruajtës ekrani, që errëson ekranin</summary>
     <summary lang="sv">En skärmsläckare som tonar ned din skärm</summary>
     <summary lang="ta_IN">திரையை மங்க செய்யும் திரைகாப்பான்</summary>
+    <summary lang="tg">Пардаи экран бо таъсири «Пардаи экрани камнур»</summary>
     <summary lang="th">สกรีนเซฟเวอร์ที่หรี่หน้าจอของคุณ</summary>
     <summary lang="tr">Ekranınızı karanlıklaştıran ekran koruyucu</summary>
     <summary lang="uk">Проста заставка що затемняє екран.</summary>
@@ -101,6 +102,7 @@
     <description lang="sq">Errësuesi i ekranit është një mbrojtës i thjeshtë ekrani, i cili errëson (zbeh) ekranin tuaj në varësi të një vlere të axhustueshme nga 20 deri në 100%. </description>
     <description lang="sv">Detta är en enkel skärmsläckare som tonar ned ljusstyrkan på din skärm till ett angivet värde mellan 20 och 100%</description>
     <description lang="ta_IN">இது எளிமையான திரைகாப்பான் - திரையை மங்க (மங்கு விளைவு) செய்துவிடும் - மங்கு அளவு 20% முதல் 100% வரை.</description>
+    <description lang="tg">Ин пардаи экран бо таъсири «Пардаи экрани камнур» хеле осон мебошад, ки сатҳи камнури экранро то дараҷае байни 20% ва 100% тағйир меёбад.</description>
     <description lang="th">สกรีนเซฟเวอร์หรี่หน้าจอเป็นสกรีนเซฟเวอร์แบบพื้นฐานที่ช่วยหรี่หน้าจอของคุณซึ่งสามารถตั้งค่าการหรี่หน้าจอได้ตั้งแต่ 20% ถึง 100%</description>
     <description lang="tr">Dim ekran koruyucusu, değeri %20 ila %100 arasında ayarlanabilen ve ekranınızı karanlıklaştıran (silikleştiren) basit bir ekran koruyucudur.</description>
     <description lang="uk">Ця заставка затемняє екран (зменшує яскравість) на встановлене значення в межах від 20% до 100%.</description>

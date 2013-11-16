@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.7"
+  version="1.0.8"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -15,7 +15,7 @@
     <summary lang="af">'n Betoverende deeltjie effek sluimerskerm</summary>
     <summary lang="ar">أداة ساحرة تؤثر بشاشة التوقف</summary>
     <summary lang="be">Ахоўнік экрану з зачаравальнымі эфэктамі часьціцаў</summary>
-    <summary lang="bg">Скрийнсейвър с частици, които очароват</summary>
+    <summary lang="bg">Скрийнсейвър от частици, които очароват</summary>
     <summary lang="ca">Un estalvi de pantalla amb uns efectes de partícula fascinants</summary>
     <summary lang="cs">Spořič obrazovky s fascinujícími částicovými efekty</summary>
     <summary lang="cy">Arbedwr sgrin effeithiau gronynnau llesmeiriol</summary>
@@ -23,6 +23,7 @@
     <summary lang="de">Ein faszinierender Bildschirmschoner mit Partikeleffekten</summary>
     <summary lang="el">Μία μαγευτική σωματιδιακή προφύλαξη οθόνης</summary>
     <summary lang="en">A mesmerising particle effects screensaver</summary>
+    <summary lang="en_US">A mesmerizing particle effects screensaver</summary>
     <summary lang="es">Un salvapatallas con unos efectos de partículas hipnotizantes</summary>
     <summary lang="es_AR">Un protector de pantalla con unos efectos de partículas hipnotizantes</summary>
     <summary lang="es_MX">Un sorprendente protector de pantalla de partículas</summary>
@@ -38,6 +39,7 @@
     <summary lang="ja">パーティクルによる幻想的なスクリーンセーバー</summary>
     <summary lang="ko">매혹적인 파티클 이펙트 화면보호기</summary>
     <summary lang="lt">Itaigus dalelių poveikio ekrano užsklanda</summary>
+    <summary lang="lv">Hipnotizējoši daļiņu ekrānsaudzētājs</summary>
     <summary lang="mk">Заштита на екран со смирувачки честички</summary>
     <summary lang="nl">Een hypnotiserende schermbeveiliging met partikeleffecten</summary>
     <summary lang="no">En hypnotiserende skjermsparer med partikkeleffekter</summary>
@@ -51,6 +53,7 @@
     <summary lang="sl">Ohranjevalnik zaslona z učinkom hipnotičnih delčkov</summary>
     <summary lang="sv">En hypnotiserande partikeleffektskärmsläckare</summary>
     <summary lang="ta_IN">மயக்கவைக்கும் துகள் விளைவுகள் திரைகாப்பான்</summary>
+    <summary lang="tg">Пардаи экрани аҷоиб бо таъсири зарраҳо</summary>
     <summary lang="tr">Büyüleyici bir parçacık efektli ekran koruyucu</summary>
     <summary lang="uk">Заставка із частинок, що має гіпнотизуючий ефект</summary>
     <summary lang="vi">Một trình bảo vệ màn hình với hiệu ứng thôi miên tạo từ các hạt</summary>
@@ -67,6 +70,7 @@
     <description lang="de">Dies ist ein faszinierender Bildschirmschoner mit Partikeleffekten. Du kannst eine verblüffend große Anzahl an verschiedenen Animationen einstellen.</description>
     <description lang="el">Αυτή είναι μία μαγευτική σωματιδιακή προφύλαξη οθόνης. Θα διαπιστώσετε ότι μπορείτε να επιτύχετε έναν απίστευτο αριθμό διαφορετικών σχεδίων.</description>
     <description lang="en">This is a very mesmerising particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
+    <description lang="en_US">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="es">Este es un salvapatallas con unos efectos de partículas hipnotizantes. Descubrirás que puedes obtener un número increíble de patrones diferentes.</description>
     <description lang="es_AR">Este es un protector de pantalla con unos efectos de partículas hipnotizantes. Descubrirás que puedes obtener un número increíble de patrones diferentes.</description>
     <description lang="es_MX">Éste es un sorprendente protector de pantalla de partículas.  Encontrará que puede obtener un gran número de patrones diferentes.</description>
@@ -82,6 +86,7 @@
     <description lang="ja">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="ko">매혹적인 파티클 이펙트 화면보호기입니다. 아주 다양한 패턴의 보여줍니다.</description>
     <description lang="lt">Tai labai itaigus dalelių poveikio ekrano užsklanda. Jūs galite pasiekti nuostabių ivairių modelių nustatymuose. </description>
+    <description lang="lv">Hipnotizējoši daļiņu ekrānsaudzētājs. jūs spēsiet gūt apbrīnojumu daudzumu dažādus veidu.</description>
     <description lang="mk">Ова е заштита на екран со смирувачки честички. Ќе откриете дека можете да постигнете зачудувачки шеми.</description>
     <description lang="nl">Dit is een erg hypnotiserende screensaver. Je kunt ongelooflijk veel verschillende patronen bekomen.</description>
     <description lang="no">Dette er en veldig hypnotiserende skjermsparer med partikkeleffekter. Du får se at der fins en utrolig mengde forskjellige mønster.</description>
@@ -95,6 +100,7 @@
     <description lang="sl">To je ohranjevalnik zaslona s presenetiljivim hipnotičnim učinkom delcev. Odkrili boste, da lahko dosežejo neverjetno število različnih vzorcev.</description>
     <description lang="sv">Detta är en väldigt hypnotiserande partikeleffektskärmsläckare. Du kommer att upptäcka att du kan åstadkomma ett häpnadsväckande antal olika mönster.</description>
     <description lang="ta_IN">இது ஒருவிதமான மயக்கவைக்கும் துகள் விளைவுகள் திரைகாப்பான். நீங்கள் எண்ணற்ற அற்புதமான வெவ்வேறு வகைகளின் வடிவங்களை பார்க்கலாம்.</description>
+    <description lang="tg">Ин пардаи экран бо таъсири зарраҳо аҷоиб мебошад. Барои ин парда шумо бисёр таъсирҳои аҷиби нотакрорро пайдо мекунед.</description>
     <description lang="tr">Son derece büyüleyici bir parçacık efektli ekran koruyucu. Birçok değişik şekle ulaşabildiğinizi farkedeceksiniz.</description>
     <description lang="uk">Це дуже гіпнотизуюча заставка із різноманітних ефектів частинок. Ви побачите надзвичайно велику кількість різноманітних візерунків.</description>
     <description lang="vi">Đây là trình bảo vệ có hiệu ứng thôi miên cục kỳ lợi hại. Bạn sẽ thấy sự sáng tạo từ những kiểu kết hợp có thể là không giới hạn</description>
