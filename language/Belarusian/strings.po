@@ -1045,10 +1045,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Закладкі"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "AAC capable receiver"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "MP1 capable receiver"
@@ -1185,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Канвэртаваньне часьціні кадраў"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Вывад аўдыё"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Аптычны/кааксіяльны"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Розныя выканаўцы"
@@ -1217,17 +1205,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Год"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Павялічваць гучнасьць у ціхага"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD capable receiver"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "Multichannel LPCM capable receiver"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1504,10 +1484,6 @@ msgstr "Найменшая"
 msgctxt "#419"
 msgid "High"
 msgstr "Найбольшая"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2901,10 +2877,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Праграмы-дадаткі"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Вызначыць мініятуру ўбудовы"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Налады дадатку"
@@ -3465,26 +3437,6 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Reset"
 
-msgctxt "#10036"
-msgid "Level: Basic"
-msgstr "Узровень: базавы"
-
-msgctxt "#10037"
-msgid "Level: Standard"
-msgstr "Узровень: стандартны"
-
-msgctxt "#10038"
-msgid "Level: Advanced"
-msgstr "Узровень: пашыраны"
-
-msgctxt "#10039"
-msgid "Level: Expert"
-msgstr "Узровень: экспэрт"
-
-msgctxt "#10041"
-msgid "Reset settings"
-msgstr "Reset settings"
-
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Are you sure you want to reset the settings in this category?"
@@ -3809,10 +3761,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Перавышаная колькасьць спробаў паролю."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Зараз сыстэма будзе выключаная."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Складнік заблякаваны"
@@ -4108,10 +4056,6 @@ msgstr "Test & apply resolution"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Save resolution?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Would you like to keep this resolution?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -6557,10 +6501,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "No PVR add-on could be enabled. Check your settings or the log for more info."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Запіс перапынены"
@@ -6617,17 +6557,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Starting background threads"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Няма ўключаных дадаткаў PVR"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "The PVR manager has been enabled without any"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "enabled PVR add-on. Enable at least one add-on"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6741,17 +6673,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* All recordings"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "Ня знойдзены дадаткі PVR"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Вам патрэбны прыймач, апраграмаваньне да яго,"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "і дадатак які можа выкарыстоўваць ваш PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9709,21 +9633,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Ёсьць абнаўленьні"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Dependencies not met"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Дадатак мае некарэктную структуру"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s is used by the following installed add-on(s)"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "This add-on cannot be uninstalled"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9840,10 +9752,6 @@ msgstr "(current)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(blacklisted)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Add-on has been marked as broken in repository."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9976,10 +9884,6 @@ msgstr "Ask for download before playing video"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Restart plugin to enable"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10933,10 +10837,6 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "No info available yet."
 
-msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
-msgstr "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
@@ -11037,10 +10937,6 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Show the last viewed channel if switching to live tv."
 
-msgctxt "#36229"
-msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
-msgstr "Display signal quality information in the codec information window (if supported by the add-on and backend)."
-
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "No info available yet."
@@ -11060,22 +10956,6 @@ msgstr "No info available yet."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
-
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
-msgstr "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
-
-msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
-msgstr "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
-
-msgctxt "#36237"
-msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
-msgstr "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
-
-msgctxt "#36238"
-msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
-msgstr "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11533,21 +11413,9 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "No info available yet."
 
-msgctxt "#36361"
-msgid "Type of connection to the audio equipment."
-msgstr "Type of connection to the audio equipment."
-
-msgctxt "#36362"
-msgid "Select your physical speaker layout."
-msgstr "Select your physical speaker layout."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Boost AC3 streams that have been downmixed to 2 channels."
-
-msgctxt "#36364"
-msgid "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
-msgstr "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11557,14 +11425,6 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Select this option if your receiver is capable of decoding DTS streams."
 
-msgctxt "#36367"
-msgid "Select this option if your receiver is capable of decoding AAC streams."
-msgstr "Select this option if your receiver is capable of decoding AAC streams."
-
-msgctxt "#36368"
-msgid "Select this option if your receiver is capable of decoding LPCM streams."
-msgstr "Select this option if your receiver is capable of decoding LPCM streams."
-
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "Select this option if your receiver is capable of decoding TrueHD streams."
@@ -11572,14 +11432,6 @@ msgstr "Select this option if your receiver is capable of decoding TrueHD stream
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Select this option if your receiver is capable of decoding DTS-HD streams."
-
-msgctxt "#36371"
-msgid "Select the device you use to play audio decoded by XBMC such as mp3's and FLAC."
-msgstr "Select the device you use to play audio decoded by XBMC such as mp3's and FLAC."
-
-msgctxt "#36372"
-msgid "Select the device you use to play encoded formats, these are any of the formats checked above in the 'capable receiver' options."
-msgstr "Select the device you use to play encoded formats, these are any of the formats checked above in the 'capable receiver' options."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11764,6 +11616,10 @@ msgstr "No info available yet."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "No info available yet."
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "Enable hardware decoding of video files."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

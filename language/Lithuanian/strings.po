@@ -1045,10 +1045,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Žymos"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "AAC imtuvas"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "MP1 imtuvas"
@@ -1185,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Kadrų dažnio konversija"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Garso išvestis"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Optinis/Koaksalinis"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Įvairūs atlikėjai"
@@ -1217,17 +1205,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Metai"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Padidinti garsumo lygį Downmix"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD imtuvas"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "Multikanalinis LPCM imtuvas"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1504,14 +1484,6 @@ msgstr "- iki"
 msgctxt "#419"
 msgid "High"
 msgstr "Temeratūra nuo"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
-
-msgctxt "#421"
-msgid "Stream silence when idle"
-msgstr "Srauto tyla, kai nenaudojamas"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2909,10 +2881,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Programų priedai"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Thumb įskiepių kolekcija"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Priedų nustatymai"
@@ -3477,26 +3445,6 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Atstatyti"
 
-msgctxt "#10036"
-msgid "Level: Basic"
-msgstr "Lygis: Pagrindinis"
-
-msgctxt "#10037"
-msgid "Level: Standard"
-msgstr "Lygis: Standartinis"
-
-msgctxt "#10038"
-msgid "Level: Advanced"
-msgstr "Lygis: Pažangus"
-
-msgctxt "#10039"
-msgid "Level: Expert"
-msgstr "Lygis: Ekspertas"
-
-msgctxt "#10041"
-msgid "Reset settings"
-msgstr "Atstatyti nustatymus"
-
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Ar tikrai norite iš naujo nustatyti šios kategorijos nustatymus?"
@@ -3821,10 +3769,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Slaptažodžių bandymų skaičius išnaudotas."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Dabar sistema bus išjungta."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Užblokuota"
@@ -4120,10 +4064,6 @@ msgstr "Išbandyti ir taikyti rezoliuciją"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Išsaugoti rezoliuciją?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Norite palikti šią rezoliuciją?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -5605,10 +5545,6 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Pakeisti pavadinimą"
 
-msgctxt "#16106"
-msgid "Manage ..."
-msgstr "Tvarkyti ..."
-
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Redaguoti rūšiavimo pavadinimą"
@@ -6581,10 +6517,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "PVR priedas gali būti išjungtas. Patikrinkite savo nustatymus arba 'Išsamesnės informacijos' žurnalą."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Įrašymas atšauktas"
@@ -6641,17 +6573,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Paleidimo foninės gijos"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "PVR priedas neįjungtas"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR menedžeris buvo įjungtas nenaudojant"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "PVR priedų. Įjungti nors vieną priedą,"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6765,17 +6689,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Visi įrašai"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "Neimanoma rasti PVR priedo"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Jums reikia imtuvo posistemės programinės įrangos,"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "ir posistemės priedo, kad būtų galima naudoti PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9741,21 +9657,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Prieinami atnaujinimai"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Priklausomybės neįvykdytos"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Priedai neatitinka teisingos struktūros"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s yra naudojami toliau išvardyti įdiegti priedai(as)"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Šis priedas negali būti pašalintas"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9872,10 +9776,6 @@ msgstr "(dabartinis)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(juodas sąrašas)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Priedas saugykloje buvo pažymėtas kaip sugadintas."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10008,10 +9908,6 @@ msgstr "Klausti prieš pradedant atkūrimą vaizdo įrašo atsisiuntimui"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Vaizdo klipai"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Iš naujo paleisti papildinį"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10332,10 +10228,6 @@ msgstr "7.0"
 msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
-
-msgctxt "#34111"
-msgid "When activated silence is output in order to keep alive receiver, otherwise sink is drained in idle state"
-msgstr "Kai aktyvuota tyla atkuriamas veikiantis imtuvas priešingu atveju"
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
@@ -10981,10 +10873,6 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Informacijos dar nėra."
 
-msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
-msgstr "Įjungti,- Personal Video Recorder (PVR) funkciją XBMC. Tam reikia, kad būtų įdiegtas bent vienas PVR priedas."
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importuoti kanalų grupes iš PVR posistemės (jei jos palaikomos). Bus ištrintos vartotojo sukurtos grupės, jei jos nebuvo rastos posistemėje."
@@ -11380,3 +11268,7 @@ msgstr "Informacijos dar nėra."
 msgctxt "#36540"
 msgid "No info available yet."
 msgstr "Informacijos dar nėra."
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "Įjungti vaizdo failų įrangos dekodavimą."

@@ -1045,10 +1045,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "書籤"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "AAC相容接收機"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "MP1相容接收機"
@@ -1185,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "調整畫面頻率"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "音效輸出"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "光纖/同軸電纜"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "多位演出者"
@@ -1217,17 +1205,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "年份"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "增加聲道縮減混音音量"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD 相容接收機"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "多聲道LPCM相容接收機"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1504,10 +1484,6 @@ msgstr "低溫"
 msgctxt "#419"
 msgid "High"
 msgstr "高溫"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2897,10 +2873,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "程式附加元件"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "設定外掛縮圖"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "附加元件設定"
@@ -3461,26 +3433,6 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "重置"
 
-msgctxt "#10036"
-msgid "Level: Basic"
-msgstr "層級：基本"
-
-msgctxt "#10037"
-msgid "Level: Standard"
-msgstr "層級：標準"
-
-msgctxt "#10038"
-msgid "Level: Advanced"
-msgstr "層級：進階"
-
-msgctxt "#10039"
-msgid "Level: Expert"
-msgstr "層級：專家"
-
-msgctxt "#10041"
-msgid "Reset settings"
-msgstr "重置設定"
-
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "您確定要重設該類別下的設定嗎？"
@@ -3805,10 +3757,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "已達密碼重試次數限制。"
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "系統將要立刻關閉。"
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "項目被鎖定"
@@ -4104,10 +4052,6 @@ msgstr "測試解析度"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "儲存此解析度？"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "是否儲存此解析度？"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -6541,10 +6485,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "電子節目表"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "沒有 PVR 附加元件可以被啟用。請檢查你的設定或者查閱日誌以取得更多資訊。"
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "錄影已放棄"
@@ -6601,17 +6541,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "開始背景執行緒"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "沒有啟用任何 PVR 附加元件"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR 管理員已啟用，但沒有啟用任何"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "的 PVR 附加元件。為了使用 PVR 功能，"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6725,17 +6657,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* 所有的錄影"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "找不到任何 PVR 附加元件"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "你需要一個接收器 (tuner)、後端軟體和為該後端軟體"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "設計的附加元件才能使用 PVR 功能。"
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -8537,9 +8461,17 @@ msgctxt "#20466"
 msgid "Select movie set"
 msgstr "選擇電影集"
 
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "沒有電影集 (從 %s 移除)"
+
 msgctxt "#20468"
 msgid "Add movie to a new set"
 msgstr "新增電影至新電影集"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "保留目前的電影集 (%s)"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -9653,21 +9585,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "可取得的更新"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "無法滿足相依關係"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "附加元件未包含正確結構"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s 正被下列已安裝的附加元件使用中"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "這個附加元件不能解除安裝"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9784,10 +9704,6 @@ msgstr "〈目前版本〉"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "〈黑名單〉"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "附加元件已經被標記為「已損壞」。"
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9920,10 +9836,6 @@ msgstr "播放視訊前詢間是否先下載"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "片斷"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "重新啟動以啟用外掛"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10269,9 +10181,17 @@ msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "已經安裝蘋果的 Bonjour 服務了嗎？請查閱記錄以取得更多資訊。"
 
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "需開啟Zeroconf才能使用AirPlay功能"
+
 msgctxt "#34303"
 msgid "Unable to stop Zeroconf"
 msgstr "無法停止 Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "需要先運行 Zeroconf 才能使用 AirPlay 和 AirTunes 功能"
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10345,6 +10265,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "啟用搖桿和手把支援"
 
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "本裝置存在時停用搖桿"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "位置"
@@ -10396,6 +10320,10 @@ msgstr "當停止 XBMC 時關閉裝置"
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "螢幕保護啟動時讓裝置進入待機模式"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "螢幕保護關閉時喚醒裝置"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10493,9 +10421,49 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* 項目資料夾"
 
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "改變使用者介面的視覺風格"
+
 msgctxt "#36102"
 msgid "No info available yet."
 msgstr "無可用資訊。"
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "選擇使用者介面的皮膚，本選項會定義XBMC的整體視覺風格"
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "修改特定皮膚檔的設定，可用的選項依所使用皮膚而定"
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "改變您選用的皮膚所關連的主題檔"
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "改變您選用皮膚檔的顏色設定"
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "選擇使用者介面中顯示的字型.字型庫的內容由您選用的皮膚決定"
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "改變圖形使用者介面的可視尺寸"
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "選擇XBMC啟動時要顯示的媒體視窗"
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "選擇或關閉使用者介面所使用的音效主題"
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "關閉此選項可移除RSS新聞跑馬燈"
 
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
@@ -10504,6 +10472,14 @@ msgstr "編輯 RSS 來源。"
 msgctxt "#36113"
 msgid "No info available yet."
 msgstr "無可用資訊。"
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "選擇使用者介面的語言"
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "選擇溫度、時間及日期的格式.可使用的選項視所選的語言而定"
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -10524,6 +10500,10 @@ msgstr "顯示隱藏的檔案和目錄。"
 msgctxt "#36128"
 msgid "No info available yet."
 msgstr "無可用資訊。"
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "設定螢幕保護程式啟動前的待機時間"
 
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
@@ -10844,6 +10824,10 @@ msgstr "無可用資訊。"
 msgctxt "#36337"
 msgid "No info available yet."
 msgstr "無可用資訊。"
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "允許網路上的程式控制XBMC"
 
 msgctxt "#36339"
 msgid "No info available yet."

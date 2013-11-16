@@ -1161,14 +1161,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Конверзија на брзина на слики"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Излез на звук"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Дигитални"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Различни изведувачи"
@@ -1192,10 +1184,6 @@ msgstr "Глумци"
 msgctxt "#345"
 msgid "Year"
 msgstr "Година"
-
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Зголеми го звукот при префрл. во помал бр. канали"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1464,10 +1452,6 @@ msgstr "Мин."
 msgctxt "#419"
 msgid "High"
 msgstr "Макс."
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2777,10 +2761,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Додатоци за програм"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Постави сликичка на додатоци"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Поставки за додатки"
@@ -3577,10 +3557,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Прекумерен број обиди за внес на лозинка."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Системот ќе се исклучи."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Ставката е заклучена"
@@ -3824,10 +3800,6 @@ msgstr "Испробај и примени резолуција"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Сочувај резолуција?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Сакате да ја задржите оваа резолуција?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -5793,17 +5765,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Се стартуваат позадинските процеси"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Нема активен ПВР додаток"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Управувачот со ПВР беше активиран, но нема дефинирано"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "ниту еден ПВР додаток. Активирајте барем еден додаток"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."

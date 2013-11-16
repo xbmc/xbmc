@@ -273,6 +273,26 @@ msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
 
+msgctxt "#88"
+msgid "South"
+msgstr "Suður"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Norður"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Vestur"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Austur"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Breytileg"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "Útlit: Sjálfvirkt"
@@ -548,6 +568,10 @@ msgstr "Diskur í bakka"
 msgctxt "#166"
 msgid "Skin"
 msgstr "Útlit"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Hætta við skráaraðgerð"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -1137,14 +1161,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Stilla rammafjölda"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Hljóðútgangur"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Stafrænt"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Ýmsir flytjendur"
@@ -1168,10 +1184,6 @@ msgstr "Leikarar"
 msgctxt "#345"
 msgid "Year"
 msgstr "Ár"
-
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Magna hljóðstyrk við endurblöndun"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1441,10 +1453,6 @@ msgctxt "#419"
 msgid "High"
 msgstr "Hátt"
 
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
-
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Eyða hljómplötuupplýsingum"
@@ -1496,6 +1504,14 @@ msgstr "Viltu fjarlægja '%s'?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "Frá %s á %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Ekkert diskadrif fannst"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Þú þarft diskadrif til að spila þetta vídeó"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1997,6 +2013,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Sinnum spilað"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Tekin dags"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Raða í átt"
@@ -2136,6 +2156,10 @@ msgstr "Bæta við laga númeri"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "Öll lög með"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Í vinnslu sjónvarpsþættir"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2281,6 +2305,10 @@ msgctxt "#705"
 msgid "Network"
 msgstr "Netkerfi"
 
+msgctxt "#706"
+msgid "Server"
+msgstr "Þjónn"
+
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "Nota HTTP milliþjón til að tengjast netinu"
@@ -2297,6 +2325,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP milliþjónn (Proxy)"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Verkefni"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Sjálfvirkt (DHCP)"
@@ -2308,6 +2340,10 @@ msgstr "Handvirkt (Föst)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP tala"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS þjónn"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2352,6 +2388,14 @@ msgstr "Ekkert lykilorð"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Stafasett"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Stíll"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Litur"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2485,6 +2529,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Þráðlaust net nafn (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Þráðlaust lykilorð"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Þráðlaust öryggi"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Vista og virkja nettenginga stillingar"
@@ -2565,6 +2617,14 @@ msgctxt "#798"
 msgid "Internet access"
 msgstr "Internet aðgangur"
 
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Uppfæra safn"
+
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Tónlistarsafnið þarf að endurlesa tög skránna"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Ógilt númer á gátt slegið inn"
@@ -2577,6 +2637,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Gild gátt er á bilinu 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Bæta við ljósmyndum..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Bæta við tónlist..."
@@ -2584,6 +2648,10 @@ msgstr "Bæta við tónlist..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Bæta við myndefni..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Forsýn"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2753,10 +2821,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Forritsviðbætur"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Setja viðbótar smámynd"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Stilling viðbóta"
@@ -2784,6 +2848,26 @@ msgstr "Smáskífur"
 msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Sláðu inn veffang"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOKCS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 með dns utanhúss"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -2921,9 +3005,21 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Nafn tækis"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Vernda lykilorð"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
+
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Sía %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3001,6 +3097,10 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "vindasamt"
 
+msgctxt "#1413"
+msgid "Patches"
+msgstr "Plástrar"
+
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "Þrumuveður"
@@ -3021,6 +3121,10 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Þrumuveður"
 
+msgctxt "#1419"
+msgid "Shallow"
+msgstr "Grunn"
+
 msgctxt "#1420"
 msgid "Moderate"
 msgstr "Hóflegt"
@@ -3037,6 +3141,46 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "Mistur"
 
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "Skýjahula"
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr "Hagl"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Reykur"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Eldfjalla"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Aska"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "Víðaáttumikil"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Ryk"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Sandur"
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Úði"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Sandstormur"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "Lítið"
@@ -3045,6 +3189,10 @@ msgctxt "#1439"
 msgid "and"
 msgstr "og"
 
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "Slydda"
+
 msgctxt "#1441"
 msgid "with"
 msgstr "með"
@@ -3052,6 +3200,10 @@ msgstr "með"
 msgctxt "#1443"
 msgid "of"
 msgstr "af"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Ský"
 
 msgctxt "#1446"
 msgid "Unknown"
@@ -3068,6 +3220,10 @@ msgstr "Virkja lágt orkustig ef aðgerðalaus"
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Lengd"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Tómur listi"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3181,6 +3337,34 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Stillingar - Notendur"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Endurstilla"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Hjálp"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Engin hjálp í boði"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Skráarvafri"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Uppsetning netkerfis"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Uppspretta"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Notandastillingar"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Læsa stillingum"
@@ -3189,9 +3373,25 @@ msgctxt "#10134"
 msgid "Favourites"
 msgstr "Uppáhalds"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Söngvar/Upplýsingar"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Snjallur spilunarlistaritill"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Myndir/upplýsingar"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Stilling viðbóta"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Viðbætur/upplýsingar"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3453,17 +3653,21 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Fjöldi ágiskana á lykilorð er uppurinn."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Kerfið mun núna slökkva á sér."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Atriði læst"
 
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Ekki er þörf á niðurhali."
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Setja læsingu á"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Viltu uppfæra núna?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3496,6 +3700,10 @@ msgstr "Vinsamlega sláðu inn aðal kóða"
 msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "Stillingar og  skráarsýsl"
+
+msgctxt "#12376"
+msgid "Set as default for all videos"
+msgstr "Setja sem sjálfgefið fyrir öll vídeó"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3676,10 +3884,6 @@ msgstr "Prufa og virkja upplausn"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Vista upplausn?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Viltu nota þessa upplausn?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -7829,6 +8033,10 @@ msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (sjálfgefið)"
 
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "Þjónusta fyrir veður upplýsingar"
+
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
 msgstr "Ekki er hægt að stilla þessa viðbót"
@@ -7885,21 +8093,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Fáanlegar uppfærslur"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Kröfur voru ekki uppfylltar"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Viðbót er ekki rétt uppsett"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s er notað af eftirfarandi viðbótum"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Ekki er hægt að taka þessa viðbót út"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -8016,10 +8212,6 @@ msgstr "(núverandi)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(á bannlista)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Viðbót hefur verið merkt sem biluð í safni."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -8144,10 +8336,6 @@ msgstr "Spyrja um niðurhal áður en myndband er spilað"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Úrklippur"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Endurræstu viðbót til að gera virkt"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -8620,3 +8808,7 @@ msgstr "Alltaf"
 msgctxt "#36037"
 msgid "TV"
 msgstr "Sjónvarp"
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "Mappa sem notuð er til þess að vista skjáskot sem tekin eru í XBMC."

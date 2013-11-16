@@ -49,6 +49,10 @@ msgctxt "#8"
 msgid "Weather"
 msgstr "Laika apstākļi"
 
+msgctxt "#9"
+msgid "xbmc media center"
+msgstr "XBMC mediju centrs"
+
 msgctxt "#11"
 msgid "Monday"
 msgstr "Pirmdiena"
@@ -264,6 +268,30 @@ msgstr "ZR"
 msgctxt "#86"
 msgid "NNW"
 msgstr "ZZR"
+
+msgctxt "#87"
+msgid "VAR"
+msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Dienvidi"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Ziemeļi"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Rietumi"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Austrumi"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Mainīgais"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -541,9 +569,21 @@ msgctxt "#166"
 msgid "Skin"
 msgstr "Āda"
 
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Atcelt failu operācijas"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Izšķirtspēja"
+
+msgctxt "#170"
+msgid "Adjust display refresh rate to match video"
+msgstr "Pielāgot displeja atsvaidzes intensitāti, lai pieskaņotos videoklipam"
 
 msgctxt "#172"
 msgid "Release date"
@@ -552,6 +592,14 @@ msgstr "Izlaišanas datums"
 msgctxt "#173"
 msgid "Display 4:3 videos as"
 msgstr "Parādīt 4:3 video kā"
+
+msgctxt "#175"
+msgid "Moods"
+msgstr "Noskaņas"
+
+msgctxt "#176"
+msgid "Styles"
+msgstr "Stili"
 
 msgctxt "#179"
 msgid "Song"
@@ -565,9 +613,21 @@ msgctxt "#181"
 msgid "Select album"
 msgstr "Izvēlēties albumu"
 
+msgctxt "#182"
+msgid "Tracks"
+msgstr "Dziesmas"
+
+msgctxt "#183"
+msgid "Review"
+msgstr "Apskats"
+
 msgctxt "#184"
 msgid "Refresh"
 msgstr "Atsvaidzināt"
+
+msgctxt "#185"
+msgid "Searching album"
+msgstr "Meklē albumu"
 
 msgctxt "#186"
 msgid "OK"
@@ -580,6 +640,10 @@ msgstr "Nav atrasts neviens albums!"
 msgctxt "#188"
 msgid "Select all"
 msgstr "Izvēlēties visu"
+
+msgctxt "#189"
+msgid "Scanning media info"
+msgstr "Skenē satura informāciju"
 
 msgctxt "#190"
 msgid "Save"
@@ -609,13 +673,29 @@ msgctxt "#196"
 msgid "Select movie:"
 msgstr "Izvēlēties filmu:"
 
+msgctxt "#197"
+msgid "Querying %s info"
+msgstr "Sarindo informāciju: %s "
+
 msgctxt "#198"
 msgid "Loading movie details"
 msgstr "Ielādē filmas informāciju"
 
+msgctxt "#199"
+msgid "Web interface"
+msgstr "Pārlūka saskarne"
+
 msgctxt "#205"
 msgid "Votes"
 msgstr "Balsis"
+
+msgctxt "#206"
+msgid "Cast"
+msgstr "Aktoru saraksts"
+
+msgctxt "#207"
+msgid "Plot"
+msgstr "Sižets"
 
 msgctxt "#208"
 msgid "Play"
@@ -629,6 +709,22 @@ msgctxt "#210"
 msgid "Previous"
 msgstr "Iepriekšējais"
 
+msgctxt "#213"
+msgid "Calibrate user interface..."
+msgstr "Kalibrēt lietotāja saskarni..."
+
+msgctxt "#214"
+msgid "Video calibration..."
+msgstr "Video kalibrācija"
+
+msgctxt "#215"
+msgid "Soften"
+msgstr "Mīkstināt"
+
+msgctxt "#216"
+msgid "Zoom amount"
+msgstr "Palielinājuma apjoms"
+
 msgctxt "#217"
 msgid "Pixel ratio"
 msgstr "Pikseļu attiecība"
@@ -640,6 +736,10 @@ msgstr "DVD lasītājs"
 msgctxt "#219"
 msgid "Please insert disc"
 msgstr "Lūdzu ievieto disku"
+
+msgctxt "#220"
+msgid "Remote share"
+msgstr "Attālinātā dalīšanās"
 
 msgctxt "#221"
 msgid "Network is not connected"
@@ -653,6 +753,22 @@ msgctxt "#224"
 msgid "Speed"
 msgstr "Ātrums"
 
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "Vertikālā nobīde"
+
+msgctxt "#226"
+msgid "Test patterns..."
+msgstr "Testa šablons..."
+
+msgctxt "#230"
+msgid "Video filters"
+msgstr "Video filtri"
+
+msgctxt "#231"
+msgid "None"
+msgstr "Nav"
+
 msgctxt "#232"
 msgid "Point"
 msgstr "Punkts"
@@ -660,6 +776,10 @@ msgstr "Punkts"
 msgctxt "#238"
 msgid "Magnification"
 msgstr "Palielinājums"
+
+msgctxt "#243"
+msgid "Refresh Rate"
+msgstr "Atsvaidzes Intensitāte"
 
 msgctxt "#244"
 msgid "Full screen"
@@ -741,6 +861,10 @@ msgctxt "#291"
 msgid "Video"
 msgstr "Video"
 
+msgctxt "#292"
+msgid "Audio"
+msgstr "Audio"
+
 msgctxt "#304"
 msgid "Language"
 msgstr "Valoda"
@@ -748,6 +872,10 @@ msgstr "Valoda"
 msgctxt "#305"
 msgid "Enabled"
 msgstr "Ieslēgts"
+
+msgctxt "#312"
+msgid "(0=auto)"
+msgstr "(0=auto)"
 
 msgctxt "#313"
 msgid "Cleaning database"
@@ -1037,10 +1165,6 @@ msgctxt "#419"
 msgid "High"
 msgstr "Augsts"
 
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
-
 msgctxt "#424"
 msgid "Select"
 msgstr "Izvēlēties"
@@ -1057,33 +1181,177 @@ msgctxt "#438"
 msgid "Opening file"
 msgstr "Atver failu"
 
+msgctxt "#443"
+msgid "Internet"
+msgstr "Internets"
+
 msgctxt "#444"
 msgid "Video"
 msgstr "Video"
+
+msgctxt "#445"
+msgid "Audio"
+msgstr "Audio"
+
+msgctxt "#446"
+msgid "DVD"
+msgstr "DVD"
 
 msgctxt "#449"
 msgid "Enabled"
 msgstr "Ieslēgts"
 
+msgctxt "#456"
+msgid "Mode"
+msgstr "Veids"
+
+msgctxt "#466"
+msgid "Gamma"
+msgstr "Gamma"
+
+msgctxt "#467"
+msgid "Type"
+msgstr "Tips"
+
+msgctxt "#543"
+msgid "DVD"
+msgstr "DVD"
+
 msgctxt "#556"
 msgid "Title"
 msgstr "Nosaukums"
+
+msgctxt "#561"
+msgid "File"
+msgstr "Fails"
 
 msgctxt "#562"
 msgid "Year"
 msgstr "Gads"
 
+msgctxt "#564"
+msgid "Type"
+msgstr "Tips"
+
+msgctxt "#571"
+msgid "Default"
+msgstr "Noklusētais"
+
+msgctxt "#573"
+msgid "Path"
+msgstr "Ceļš"
+
+msgctxt "#574"
+msgid "Country"
+msgstr "Valsts"
+
 msgctxt "#601"
 msgid "Medium"
 msgstr "Vidējs"
+
+msgctxt "#652"
+msgid "Years"
+msgstr "Gadi"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Serveris"
+
+msgctxt "#713"
+msgid "HTTP proxy"
+msgstr "HTTP proxy"
 
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP adrese"
 
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS serveris"
+
+msgctxt "#728"
+msgid "FTP server"
+msgstr "FTP serveris"
+
+msgctxt "#730"
+msgid "Port"
+msgstr "Ports"
+
+msgctxt "#742"
+msgid "White"
+msgstr "Balts"
+
+msgctxt "#743"
+msgid "Yellow"
+msgstr "Dzeltens"
+
+msgctxt "#744"
+msgid "Files"
+msgstr "Faili"
+
+msgctxt "#760"
+msgid "Yellow"
+msgstr "Dzeltens"
+
+msgctxt "#761"
+msgid "White"
+msgstr "Balts"
+
+msgctxt "#762"
+msgid "Blue"
+msgstr "Zils"
+
+msgctxt "#781"
+msgid "WEP"
+msgstr "WEP"
+
+msgctxt "#782"
+msgid "WPA"
+msgstr "WPA"
+
+msgctxt "#783"
+msgid "WPA2"
+msgstr "WPA2"
+
+msgctxt "#792"
+msgid "Port"
+msgstr "Ports"
+
 msgctxt "#1006"
 msgid "IP address"
 msgstr "IP adrese"
+
+msgctxt "#1008"
+msgid "Protocol"
+msgstr "Protocols"
+
+msgctxt "#1013"
+msgid "Port"
+msgstr "Ports"
+
+msgctxt "#1047"
+msgid "Other..."
+msgstr "Citi..."
+
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Proxy tips"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
 
 msgctxt "#1211"
 msgid "Music"
@@ -1097,9 +1365,25 @@ msgctxt "#1213"
 msgid "Pictures"
 msgstr "Attēli"
 
+msgctxt "#1214"
+msgid "Files"
+msgstr "Faili"
+
+msgctxt "#1273"
+msgid "AirPlay"
+msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
+
 msgctxt "#1403"
 msgid "Sun"
 msgstr "Svēt"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Mazs"
 
 msgctxt "#10001"
 msgid "Programs"
@@ -1141,6 +1425,50 @@ msgctxt "#10511"
 msgid "System info"
 msgstr "Sistēmas informācija"
 
+msgctxt "#12310"
+msgid "0"
+msgstr "0"
+
+msgctxt "#12311"
+msgid "1"
+msgstr "1"
+
+msgctxt "#12312"
+msgid "2"
+msgstr "2"
+
+msgctxt "#12313"
+msgid "3"
+msgstr "3"
+
+msgctxt "#12314"
+msgid "4"
+msgstr "4"
+
+msgctxt "#12315"
+msgid "5"
+msgstr "5"
+
+msgctxt "#12316"
+msgid "6"
+msgstr "6"
+
+msgctxt "#12317"
+msgid "7"
+msgstr "7"
+
+msgctxt "#12318"
+msgid "8"
+msgstr "8"
+
+msgctxt "#12319"
+msgid "9"
+msgstr "9"
+
+msgctxt "#12321"
+msgid "Ok"
+msgstr "Labi"
+
 msgctxt "#12600"
 msgid "Weather"
 msgstr "Laika apstākļi"
@@ -1149,17 +1477,45 @@ msgctxt "#12900"
 msgid "Screensaver"
 msgstr "Ekrānsaudzētājs"
 
+msgctxt "#13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+msgctxt "#13276"
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
 msgctxt "#13277"
 msgid "Storage"
 msgstr "Glabātuve"
+
+msgctxt "#13278"
+msgid "Default"
+msgstr "Noklusētais"
 
 msgctxt "#13280"
 msgid "Video"
 msgstr "Video"
 
+msgctxt "#13320"
+msgid "Stereo"
+msgstr "Stereo"
+
+msgctxt "#13327"
+msgid "Karaoke"
+msgstr "Karaoke"
+
 msgctxt "#13398"
 msgid "Shortcuts"
 msgstr "Saīsnes"
+
+msgctxt "#13409"
+msgid "Top 250"
+msgstr "Top 250"
+
+msgctxt "#13421"
+msgid "VDPAU"
+msgstr "VDPAU"
 
 msgctxt "#13507"
 msgid "Medium"
@@ -1169,17 +1525,149 @@ msgctxt "#13508"
 msgid "High"
 msgstr "Augsts"
 
+msgctxt "#14028"
+msgid "Internet"
+msgstr "Internets"
+
+msgctxt "#14032"
+msgid "Internet"
+msgstr "Internets"
+
+msgctxt "#14044"
+msgid "%i min"
+msgstr "%i min"
+
+msgctxt "#14045"
+msgid "%i sec"
+msgstr "%i sec"
+
+msgctxt "#14046"
+msgid "%i ms"
+msgstr "%i ms"
+
+msgctxt "#14047"
+msgid "%i %%"
+msgstr "%i %%"
+
+msgctxt "#14048"
+msgid "%i kbps"
+msgstr "%i kbps"
+
+msgctxt "#14049"
+msgid "%i kb"
+msgstr "%i kb"
+
+msgctxt "#14050"
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+msgctxt "#14061"
+msgid "Auto"
+msgstr "Auto"
+
 msgctxt "#14098"
 msgid "Play"
 msgstr "Atskaņot"
+
+msgctxt "#15019"
+msgid "Add"
+msgstr "Pievienot"
+
+msgctxt "#15109"
+msgid "Skin default"
+msgstr "Ādiņas noklusētie iestatījumi"
+
+msgctxt "#15200"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+msgctxt "#15311"
+msgid "Path:"
+msgstr "Ceļš:"
 
 msgctxt "#16000"
 msgid "General"
 msgstr "Vispārīgi"
 
+msgctxt "#16018"
+msgid "None"
+msgstr "Nav"
+
+msgctxt "#16040"
+msgid "Auto"
+msgstr "Auto"
+
+msgctxt "#16304"
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+msgctxt "#16305"
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+msgctxt "#16306"
+msgid "Sinc8"
+msgstr "Sinc8"
+
+msgctxt "#16316"
+msgid "Auto"
+msgstr "Auto"
+
+msgctxt "#16319"
+msgid "DXVA"
+msgstr "DXVA"
+
+msgctxt "#16325"
+msgid "VDPAU - Bob"
+msgstr "VDPAU - Bob"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Radio"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "Nākamais"
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Radio:"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#20173"
+msgid "FTP server"
+msgstr "FTP serveris"
+
+msgctxt "#20331"
+msgid "File"
+msgstr "Fails"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -1193,6 +1681,10 @@ msgctxt "#20445"
 msgid "Fanart"
 msgstr "Fanu māksla"
 
+msgctxt "#21387"
+msgid "Fast"
+msgstr "Ātrs"
+
 msgctxt "#21417"
 msgid "Settings"
 msgstr "Iestatījumi"
@@ -1201,9 +1693,45 @@ msgctxt "#21805"
 msgid "Resolution"
 msgstr "Izšķirtspēja"
 
+msgctxt "#21837"
+msgid "ISO"
+msgstr "ISO"
+
+msgctxt "#21873"
+msgid "City"
+msgstr "Pilsēta"
+
+msgctxt "#21875"
+msgid "Country"
+msgstr "Valsts"
+
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "DNS suffikss"
+
+msgctxt "#22009"
+msgid "OpenGL version:"
+msgstr "OpenGL versija:"
+
+msgctxt "#22010"
+msgid "GPU temperature:"
+msgstr "GPU temperatūra:"
+
+msgctxt "#22011"
+msgid "CPU temperature:"
+msgstr "CPU temperatūra:"
+
+msgctxt "#22017"
+msgid "By group"
+msgstr "Pēc grupas"
+
 msgctxt "#22030"
 msgid "Font"
 msgstr "Fonts"
+
+msgctxt "#22082"
+msgid "More..."
+msgstr "Vairāk..."
 
 msgctxt "#24008"
 msgid "Screensaver"
@@ -1225,6 +1753,78 @@ msgctxt "#33068"
 msgid "Background"
 msgstr "Fons"
 
+msgctxt "#34000"
+msgid "Lame"
+msgstr "Lame"
+
+msgctxt "#34001"
+msgid "Vorbis"
+msgstr "Vorbis"
+
+msgctxt "#34002"
+msgid "Wav"
+msgstr "Wav"
+
+msgctxt "#34003"
+msgid "DXVA2"
+msgstr "DXVA2"
+
+msgctxt "#34004"
+msgid "VAAPI"
+msgstr "VAAPI"
+
+msgctxt "#34005"
+msgid "Flac"
+msgstr "Flac"
+
+msgctxt "#34101"
+msgid "2.0"
+msgstr "2.0"
+
+msgctxt "#34102"
+msgid "2.1"
+msgstr "2.1"
+
+msgctxt "#34103"
+msgid "3.0"
+msgstr "3.0"
+
+msgctxt "#34104"
+msgid "3.1"
+msgstr "3.1"
+
+msgctxt "#34105"
+msgid "4.0"
+msgstr "4.0"
+
+msgctxt "#34106"
+msgid "4.1"
+msgstr "4.1"
+
+msgctxt "#34107"
+msgid "5.0"
+msgstr "5.0"
+
+msgctxt "#34108"
+msgid "5.1"
+msgstr "5.1"
+
+msgctxt "#34109"
+msgid "7.0"
+msgstr "7.0"
+
+msgctxt "#34110"
+msgid "7.1"
+msgstr "7.1"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Lokācija"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#36502"
+msgid "None"
+msgstr "Nav"

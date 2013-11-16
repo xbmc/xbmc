@@ -973,14 +973,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Framerate Conversion"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Audio Output"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Diĝita"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Various Artists"
@@ -1004,10 +996,6 @@ msgstr "Aktoro"
 msgctxt "#345"
 msgid "Year"
 msgstr "Jaro"
-
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Stack"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1272,10 +1260,6 @@ msgstr "Mia Filmoj/Gxenroj"
 msgctxt "#419"
 msgid "High"
 msgstr "Mia Filmoj/Aktoroj"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "Mia Filmoj/Jaroj"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2672,10 +2656,6 @@ msgstr "Access Denied"
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "pasvorto retry limit exceeded."
-
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "La XBOX will now shut off."
 
 msgctxt "#12348"
 msgid "Item locked"

@@ -1161,14 +1161,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Raamtempo omskakeling"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Audio uittree"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Opties/Koaksiaal"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Verskeie kunstenaars"
@@ -1192,10 +1184,6 @@ msgstr "Akteurs"
 msgctxt "#345"
 msgid "Year"
 msgstr "Jaar"
-
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Versterk volume vlak met afmenging"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1464,10 +1452,6 @@ msgstr "Laag"
 msgctxt "#419"
 msgid "High"
 msgstr "Hoog"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2805,10 +2789,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Program Byvoegsels"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Stel inprop duim"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Byvoegsel verstellings"
@@ -3605,10 +3585,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Wagwoord herprobeer limiet oorskry."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Die stelsel sal nou afskakel."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Item gesluit"
@@ -3860,10 +3836,6 @@ msgstr "Toets & pas resolusie toe"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Stoor resolusie?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Wil jy hierdie resolusie behou?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -6273,10 +6245,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Geen PVR byvoegsel kon in staat gestel word. Gaan jou verstellings of log na vir meer info."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Opname gestaak"
@@ -6333,17 +6301,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Begin agtergrond drade"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Geen PVR byvoegsel geaktiveer"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Die PVR bestuurder is in staat gestel sonder enige"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "geaktiveerde PVR byvoegsel. Stel ten minste een byvoegsel in staat"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6457,17 +6417,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Alle opnames"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "Geen PVR byvoegsels kon gevind word nie"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Jy benodig 'n instemmer, agterkant sagteware, en"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "byvoegsel vir die agterkant om PVR te kan gebruik."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9349,21 +9301,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Beskikbare opdaterings"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Voldoen nie aan afhanklikhede"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Byvoegsel het nie die regte struktuur nie"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s word deur die volgende geinstalleerde byvoegsel(s) gebruik"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Hierdie byvoegsel kan nie verwyder word nie"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9480,10 +9420,6 @@ msgstr "(huidige)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(geswartlys)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Byvoegsel is as gebreek gemerk in stoorplek."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9616,10 +9552,6 @@ msgstr "Vra vir aflaai voor video speel"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Begin inprop oor om in staat te stel"
 
 msgctxt "#33018"
 msgid "Tonight"

@@ -687,7 +687,7 @@ msgstr "ממשק אינטרנט"
 
 msgctxt "#202"
 msgid "Tagline"
-msgstr "מילות מפתח"
+msgstr "סלוגן"
 
 msgctxt "#203"
 msgid "Plot outline"
@@ -1045,10 +1045,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "סימניות"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "מקלט עם תמיכה ב־AAC"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "מקלט עם תמיכה ב־MP1"
@@ -1185,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "המרת קצב פריימים"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "פלט אודיו"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "דיגיטאלי"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "אמנים שונים"
@@ -1217,17 +1205,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "שנה"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "הגבר קול ב downmix"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "מקלט עם תמיכה ב־DTS-HD"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "מקלט עם תמיכה ב־LPCM במספר ערוצים"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1504,10 +1484,6 @@ msgstr "נמוך"
 msgctxt "#419"
 msgid "High"
 msgstr "גבוה"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2901,10 +2877,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "הרחבות תוכנות"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "הגדר תמונה ממוזערת להרחבה"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "הגדרות הרחבה"
@@ -3465,26 +3437,6 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "איפוס"
 
-msgctxt "#10036"
-msgid "Level: Basic"
-msgstr "רמה: בסיסי"
-
-msgctxt "#10037"
-msgid "Level: Standard"
-msgstr "רמה: רגיל"
-
-msgctxt "#10038"
-msgid "Level: Advanced"
-msgstr "רמה: מתקדם"
-
-msgctxt "#10039"
-msgid "Level: Expert"
-msgstr "רמה: מומחה"
-
-msgctxt "#10041"
-msgid "Reset settings"
-msgstr "איפוס ההגדרות"
-
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "האם לאפס את ההגדרות בקטגוריה זו?"
@@ -3809,10 +3761,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "נסיונות כניסה כושלים רבים מדי."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "המערכת כעת תכבה."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "פריט נעול"
@@ -4108,10 +4056,6 @@ msgstr "בדוק והחל רזולוציה"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "לשמור רזולוציה?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "האם תרצה לשמור את הרזולוציה הזו?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -5589,10 +5533,6 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "ערוך כותרת"
 
-msgctxt "#16106"
-msgid "Manage ..."
-msgstr "נהל..."
-
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "ערוך כותרת מיון"
@@ -6565,10 +6505,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "אף תוסף PVR לא הופעל. בדוק את ההגדרות או בדוק יומן רישום לפרטים נוספים."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "הקלטה בוטלה"
@@ -6625,17 +6561,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "מתחיל מחרוזות ברקע"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "לא הופעל אף תוסף PVR"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "מנהל PVR אותחל ללא כל תוסף PVR."
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "אתחל לפחות תוסף PVR אחד "
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6749,17 +6677,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* כל ההקלטות"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "לא נמצא כל תוסף PVR"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "אתה צריך כרטיס טלוויזיה,תוכנת ממשק אחורי, ובנוסף"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "תוסף לקישור ממשק אחורי על מנת להשתמש ב PVR"
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9721,21 +9641,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "עדכונים קיימים"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "אין התאמה בתלויות"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "להרחבה אין את המבנה הנכון"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s בשימוש ע\"י ההרחבה/ות המותקנות הבאות"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "התקן זה אינו ניתן להסרה"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9852,10 +9760,6 @@ msgstr "(נוכחי)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(רשימה שחורה)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "ההרחבה מסומנת כלא תקינה במאגר"
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9988,10 +9892,6 @@ msgstr "בקש לשמור לפני נגינת הוידאו"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "קליפים"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "הפעל תוסף מחדש כדי להפעיל"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10837,10 +10737,6 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "אין מידע זמין כעת."
 
-msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
-msgstr "הפעל את תכונות מקליט הוידאו (PVR) בXBMC. זה דורש שלפחות תוסף PVR אחד יהיה מותקן."
-
 msgctxt "#36210"
 msgid "No info available yet."
 msgstr "אין מידע זמין כעת."
@@ -11181,14 +11077,6 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "אין מידע זמין כעת."
 
-msgctxt "#36361"
-msgid "Type of connection to the audio equipment."
-msgstr "סוג חיבור לציוד השמע."
-
-msgctxt "#36362"
-msgid "Select your physical speaker layout."
-msgstr "בחר את תצורת מיקום הרמקולים."
-
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
 msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי AC3."
@@ -11196,14 +11084,6 @@ msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל 
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי DTS."
-
-msgctxt "#36367"
-msgid "Select this option if your receiver is capable of decoding AAC streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי AAC."
-
-msgctxt "#36368"
-msgid "Select this option if your receiver is capable of decoding LPCM streams."
-msgstr "יש לבחור באפשרות זאת אם המקלט שלך מסוגל לקודד תזרימי LPCM."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
@@ -11377,6 +11257,10 @@ msgctxt "#36521"
 msgid "Ask me"
 msgstr "שאל אותי"
 
+msgctxt "#36522"
+msgid "Use preferred mode"
+msgstr "השתמש במצב המועדף"
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "מצב מועדף"
@@ -11384,6 +11268,10 @@ msgstr "מצב מועדף"
 msgctxt "#36529"
 msgid "Mono (2D)"
 msgstr "מונו (2D)"
+
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr "מצב מועדף"
 
 msgctxt "#36537"
 msgid "No info available yet."
@@ -11400,6 +11288,10 @@ msgstr "אין מידע זמין כעת."
 msgctxt "#36540"
 msgid "No info available yet."
 msgstr "אין מידע זמין כעת."
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "אפשר פענוח חומרה של קבצי וידאו."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

@@ -1045,10 +1045,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "bookmark-at"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "Marrës i aftë AAC"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "Marrës i aftë MP1"
@@ -1185,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Shëndërrimi i framerate-ve"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Audio"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Optical/Coax"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Artistë të ndryshëm"
@@ -1217,17 +1205,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Viti"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Ngritni nivelin e zërit në rastin downmix"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Marrës i aftë DTS-HD"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "Marrës i aftë Multikanlësh LPCM"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1504,10 +1484,6 @@ msgstr "Poshtë"
 msgctxt "#419"
 msgid "High"
 msgstr "Lartë"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2901,10 +2877,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Shtesa të programit"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Vendosni thumbs për shtesën"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Cilësimet e shtesave"
@@ -3697,10 +3669,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Numri maksimal i përsëritjeve të fjalkalimit u tejkalua."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Sistemi do të fiket tani."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Artikulli është mbyllur"
@@ -3952,10 +3920,6 @@ msgstr "Provoni & applikoni zbërthimin"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Rregjistroni zbërthimin?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Dëshironi të regjistrosh këto zbërthim?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -6365,10 +6329,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Asnjë shtesë PVR nuk mundi të aktivohet. Kontrollo cilësimet ose log'un për më shum informacione."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Regjistrimi u ndërpre"
@@ -6425,17 +6385,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Duke filluar 'background threads'"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Asnjë shtesë PVR e aktivuar"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR menaxheri është aktivuar pa asgjë"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "shtesë PVR të aktivuar. Aktivoni së paku një shtesë"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6549,17 +6501,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Të gjithë regjistrimet"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "Asnjë shtesë PVR nuk u gjet"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Ju duhet një tuner, program televizioni backend, dhe një"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "shtesë për backend'in për të përdorur funkcionalitetin PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9441,21 +9385,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Aktualizimi në dispozicion"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Nuk u plotësuan varësit"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Shtesa nuk  përmban strukturën korekte"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s përdoret nga këto shtesa të instaluara"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Kjo shtesë nuk mund të çinstalohet"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9572,10 +9504,6 @@ msgstr "(aktual)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(i bllokuar)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Shtesa është shënuar e prishur në origjinë."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9708,10 +9636,6 @@ msgstr "Pyetni për shkarkim para se të riprodhohet video"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Klipe"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Ristarto shtesën për aktivizimin"
 
 msgctxt "#33018"
 msgid "Tonight"

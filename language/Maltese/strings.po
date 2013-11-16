@@ -981,14 +981,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Framerate Conversion"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Output Awdjo:"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Diġitali"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Artisti Varji"
@@ -1280,10 +1272,6 @@ msgstr "Filmati/Generi"
 msgctxt "#419"
 msgid "High"
 msgstr "Filmati/Atturi"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "Filmati/Snin"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2453,10 +2441,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Plagins tal-Programmi"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Isettja Tambnejl tal-Plagin"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Settings tal-Plagin"
@@ -3032,10 +3016,6 @@ msgstr "Aċċess Miżmum"
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Ċansijiet tas-sigriet użati kollha."
-
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "L-Xbox ser tintefa."
 
 msgctxt "#12348"
 msgid "Item locked"

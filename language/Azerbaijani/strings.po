@@ -637,10 +637,6 @@ msgctxt "#335"
 msgid "Start"
 msgstr "Başla"
 
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Optik/Koaksikal"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Müxtəlif ifaçılar"
@@ -724,10 +720,6 @@ msgstr "UF indeksi"
 msgctxt "#417"
 msgid "View: Big icons"
 msgstr "Görünüş: Böyük piktoqramlar"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#424"
 msgid "Select"

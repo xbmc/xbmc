@@ -585,6 +585,10 @@ msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Ajuster le taux de rafraîchissement à la vidéo"
 
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Trier les titres"
+
 msgctxt "#172"
 msgid "Release date"
 msgstr "Version du"
@@ -857,6 +861,10 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Musique"
 
+msgctxt "#250"
+msgid "Visualisation"
+msgstr "Visualisation"
+
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Sélectionnez le répertoire de destination"
@@ -1045,10 +1053,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Signets"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "récepteur compatible AAC"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "récepteur compatible MP1"
@@ -1185,14 +1189,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversion du taux de rafraîchissement"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Sortie audio"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Numérique"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Artistes divers"
@@ -1217,17 +1213,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Année"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Amplifier le volume lors du démultiplexage"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "récepteur compatible DTS-HD"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "récepteur compatible  LPCM multicanaux"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1505,14 +1493,6 @@ msgctxt "#419"
 msgid "High"
 msgstr "Max."
 
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
-
-msgctxt "#421"
-msgid "Stream silence when idle"
-msgstr "Silence quand inactif"
-
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Supprimer les informations pour l'album"
@@ -1585,6 +1565,10 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "Cache"
 
+msgctxt "#440"
+msgid "Hard disk"
+msgstr "Disque dur"
+
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1612,6 +1596,10 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Exécuter automatiquement les médias"
+
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "récepteur compatible Dolby Digital Plus (E-AC3)"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1820,6 +1808,10 @@ msgstr "Chargement des informations..."
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Trier par : Usage"
+
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "Autoriser les visualisations"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2265,6 +2257,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Personnalisé"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "Normalisation - ReplayGain"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "Ajustements du volume de normalisation"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Utiliser le volume de la chanson"
@@ -2272,6 +2272,18 @@ msgstr "Utiliser le volume de la chanson"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Utiliser le volume de l'album"
+
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "Niveau de préamplification - Fichiers normalisés"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "Niveau de préamplification - Fichiers non normalisés"
+
+msgctxt "#643"
+msgid "Avoid clipping on ReplayGained files"
+msgstr "Eviter la distorsion sur les fichiers normalisés"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2909,10 +2921,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Extensions programme"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Choisir une vignette plugin"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Paramètres de l'extension"
@@ -3477,25 +3485,9 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Réinitialiser"
 
-msgctxt "#10036"
-msgid "Level: Basic"
-msgstr "Niveau : Basique"
-
-msgctxt "#10037"
-msgid "Level: Standard"
-msgstr "Niveau : Standard"
-
-msgctxt "#10038"
-msgid "Level: Advanced"
-msgstr "Niveau : Avancé"
-
-msgctxt "#10039"
-msgid "Level: Expert"
-msgstr "Niveau : Expert"
-
-msgctxt "#10041"
-msgid "Reset settings"
-msgstr "Réinitialiser les préférences"
+msgctxt "#10040"
+msgid "Add-on browser"
+msgstr "Extension navigateur"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3508,6 +3500,14 @@ msgstr "Aide"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Pas d'aide disponible"
+
+msgctxt "#10100"
+msgid "Yes/No dialogue"
+msgstr "Boîte de dialogue Oui/Non"
+
+msgctxt "#10101"
+msgid "Progress dialogue"
+msgstr "Boîte de dialogue Progression"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3527,7 +3527,7 @@ msgstr "Paramètres du profil"
 
 msgctxt "#10131"
 msgid "Lock settings"
-msgstr "Paramètres du verouillage"
+msgstr "Paramètres du verrouillage"
 
 msgctxt "#10132"
 msgid "Content settings"
@@ -3649,9 +3649,17 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Informations du film"
 
+msgctxt "#12000"
+msgid "Select dialogue"
+msgstr "Boîte de dialogue Sélection"
+
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Musique/info"
+
+msgctxt "#12002"
+msgid "Dialogue OK"
+msgstr "Boîte de dialogue OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3664,6 +3672,14 @@ msgstr "Scripts/Info"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Vidéo plein écran"
+
+msgctxt "#12006"
+msgid "Audio visualisation"
+msgstr "Visualisation audio"
+
+msgctxt "#12008"
+msgid "File stacking dialogue"
+msgstr "Boîte de dialogue Empilement des fichiers"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -3820,10 +3836,6 @@ msgstr "Accès refusé"
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Dépassement du nombre d'essais autorisés."
-
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Le système va maintenant s'éteindre."
 
 msgctxt "#12348"
 msgid "Item locked"
@@ -4001,6 +4013,10 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Redémarrer"
 
+msgctxt "#13014"
+msgid "Minimise"
+msgstr "Minimiser"
+
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Action du bouton Power"
@@ -4121,10 +4137,6 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Appliquer cette résolution ?"
 
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Voulez-vous conserver cette résolution ?"
-
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Conversion en définition supérieure Haute Qualité"
@@ -4164,6 +4176,10 @@ msgstr "VDPAU"
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU niveau Upscaling HQ"
+
+msgctxt "#13122"
+msgid "VDPAU Studio level colour conversion"
+msgstr "Conversion des niveaux de couleurs VDPAU"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4216,6 +4232,10 @@ msgstr "Passerelle "
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "DNS Primaire "
+
+msgctxt "#13162"
+msgid "Initialise failed"
+msgstr "L'initialisation a échoué"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4461,6 +4481,10 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Diaporama récursif"
 
+msgctxt "#13319"
+msgid "Randomise"
+msgstr "Aléatoire"
+
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Stéréo"
@@ -4673,9 +4697,21 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Préréglages"
 
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "Il n'y a pas de préréglages disponibles\npour cette visualisation"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualisation"
+msgstr "Il n'y a pas de réglages disponibles\npour cette visualisation"
+
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Éjecter/Fermer"
+
+msgctxt "#13392"
+msgid "Use visualisation if playing audio"
+msgstr "Activer la visualisation en lecture audio"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4853,6 +4889,18 @@ msgctxt "#13436"
 msgid "Allow hardware acceleration (libstagefright)"
 msgstr "Autoriser l'accélération matérielle (libstagefright)"
 
+msgctxt "#13437"
+msgid "Prefer VDPAU Video Mixer"
+msgstr "Préférer le mixer vidéo VDPAU"
+
+msgctxt "#13438"
+msgid "Allow hardware acceleration (amcodec)"
+msgstr "Autoriser l'accélération matérielle (amcodec)"
+
+msgctxt "#13439"
+msgid "Allow hardware acceleration (MediaCodec)"
+msgstr "Autoriser l'accélération matérielle (MediaCodec)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Méthode de synchro. A/V"
@@ -4868,6 +4916,10 @@ msgstr "Horloge vidéo (Drop/Dupe audio)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Horloge vidéo (Resample audio)"
+
+msgctxt "#13504"
+msgid "Maximum speedup/slowdown amount (%)"
+msgstr "Accélération/ralentissement maximum (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -5060,6 +5112,10 @@ msgstr "Sans TV"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Indiquer la ville la plus proche"
+
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Hard disk"
+msgstr "Cache Vidéo/Audio/DVD - Disque Dur"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5405,6 +5461,10 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "Lire avec..."
 
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronisation"
+msgstr "Utiliser la synchronisation A/V la plus fluide"
+
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "Masquer le nom en vue vignettes"
@@ -5545,6 +5605,10 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Aucune correspondance dans l'audiothèque."
 
+msgctxt "#16032"
+msgid "Could not initialise database."
+msgstr "Ne peut pas initialiser la base de données."
+
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "Impossible d'ouvrir la base de données."
@@ -5604,10 +5668,6 @@ msgstr "Marquer comme non vue"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Éditer le titre"
-
-msgctxt "#16106"
-msgid "Manage ..."
-msgstr "Gérer ..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
@@ -5701,6 +5761,10 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Téléciné inversé"
 
+msgctxt "#16315"
+msgid "Lanczos3 optimised"
+msgstr "Optimisation Lanczos3"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Automatique"
@@ -5729,9 +5793,17 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
+msgctxt "#16323"
+msgid "Spline36 optimised"
+msgstr "Optimisation Spline36"
+
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Mélange logiciel"
+
+msgctxt "#16325"
+msgid "VDPAU - Bob"
+msgstr "VDPAU - Bob"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6385,6 +6457,10 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Délai au démarrage de la lecture"
 
+msgctxt "#19171"
+msgid "Start playback minimised"
+msgstr "Démarrer la lecture minimisé"
+
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Durée d'enregistrement instantanée"
@@ -6452,6 +6528,10 @@ msgstr "Effacement en cours du Guide des Programmes"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Reprendre la dernière chaîne au démarrage"
+
+msgctxt "#19190"
+msgid "Minimised"
+msgstr "Minimisé"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6581,10 +6661,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "Guide des Programmes"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Impossible d'activer une extension d'Enregistreur Vidéo. Vérifiez le journal pour plus de détails."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Enregistrement annulé"
@@ -6608,6 +6684,10 @@ msgstr "Enregistrement supprimé"
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Fermer le menu à l'écran de la chaîne après un changement"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates during playback"
+msgstr "Eviter les mises à jour du Guide des Programmes durant la lecture"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
@@ -6641,17 +6721,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Démarrage des services d'arrière-plan"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Pas d'extension d'Enregistreur Vidéo activée"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Le gestionnaire d'Enregistreur Vidéo a été activé sans"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "qu'une extension d'enregistrement ne le soit. Activez-en au moins une "
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6765,17 +6837,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Tous les enregistrements"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "Aucune extension d'Enregistreur Vidéo trouvée"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Vous avez besoin d'un tuner, d'un logiciel applicatif et d'une"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "extension de traitement pour utiliser l'Enregistreur Vidéo."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -7263,7 +7327,7 @@ msgstr "Verrouiller la section Musique"
 
 msgctxt "#20039"
 msgid "Lock videos window"
-msgstr "Indiquer le nom d'un partage existant"
+msgstr "Verrouiller la section Vidéos"
 
 msgctxt "#20040"
 msgid "Lock pictures window"
@@ -7271,7 +7335,7 @@ msgstr "Verrouiller la section Images"
 
 msgctxt "#20041"
 msgid "Lock programs & scripts windows"
-msgstr "Verrouiller Programmes, Sauvegardes et Scripts"
+msgstr "Verrouiller la section Programmes & Scripts"
 
 msgctxt "#20042"
 msgid "Lock file manager"
@@ -7444,6 +7508,14 @@ msgstr "Afficher les Informations Météo"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Afficher les Informations Système"
+
+msgctxt "#20086"
+msgid "Show available disk space C: E: F:"
+msgstr "Afficher l'espace disque disponible C: E: F:"
+
+msgctxt "#20087"
+msgid "Show available disk space E: F: G:"
+msgstr "Afficher l'espace disque disponible E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8380,6 +8452,10 @@ msgstr "Assembler la série TV"
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Fanart"
+
+msgctxt "#20414"
+msgid "Show fanart in video and music libraries"
+msgstr "Afficher les fanarts dans les bibliothèques vidéo et musicale"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -9461,6 +9537,10 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Guide"
 
+msgctxt "#22021"
+msgid "Allowed error in aspect ratio to minimise black bars"
+msgstr "Autoriser les erreurs d'aspect ratio (minimise les barres noires)"
+
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Afficher les fichiers vidéo dans les listes"
@@ -9621,6 +9701,10 @@ msgctxt "#24009"
 msgid "Script"
 msgstr "Script"
 
+msgctxt "#24010"
+msgid "Visualisation"
+msgstr "Visualisation"
+
 msgctxt "#24011"
 msgid "Add-on repository"
 msgstr "Dépots d'extensions"
@@ -9741,21 +9825,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Mises à jour disponibles"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Dépendances non supportées"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Structure de l'extension incorrecte"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s est utilisé par l'(es) extension(s) suivante(s)"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Cette extension ne peut être désinstallée"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9872,10 +9944,6 @@ msgstr "(actuel)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(sur liste noire)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Le dépot indique cette extension comme inutilisable."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10008,10 +10076,6 @@ msgstr "Confirmer le téléchargement avant de jouer la vidéo"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Relancer l'extension pour activer"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10333,10 +10397,6 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
-msgctxt "#34111"
-msgid "When activated silence is output in order to keep alive receiver, otherwise sink is drained in idle state"
-msgstr "Quand le silence est activé, sortie audio pour garder le récepteur éveillé, sinon risque d'entrer en mode repos"
-
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Navigation sonore"
@@ -10389,6 +10449,10 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Échec du filtre/redimensionnement vidéo, utilisation du redimensionnement bilinéaire à la place"
 
+msgctxt "#34402"
+msgid "Failed to initialise audio device"
+msgstr "Echec lors de l'initialisation du périphérique audio"
+
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Vérifiez vos paramètres audio"
@@ -10420,6 +10484,10 @@ msgstr "Périphériques"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Périphérique d'Interface générique"
+
+msgctxt "#35002"
+msgid "Generic network adaptor"
+msgstr "Adaptateur réseau générique"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10477,6 +10545,10 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "Identification du produit"
 
+msgctxt "#36000"
+msgid "Pulse-Eight CEC adaptor"
+msgstr "Adaptateur CEC Pulse-Eight"
+
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Nyxboard Pulse-Eight"
@@ -10496,6 +10568,10 @@ msgstr "Appuyer sur le bouton de commande \"user\""
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Activer les contrôles de bascule"
+
+msgctxt "#36006"
+msgid "Could not open the adaptor"
+msgstr "Ne peut pas ouvrir l'adaptateur"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
@@ -10517,6 +10593,10 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Impossible de détecter le port CEC. Paramétrez-le manuellement."
 
+msgctxt "#36012"
+msgid "Could not initialise the CEC adaptor. Please check your settings."
+msgstr "Ne peut pas initialiser l'adaptateur CEC. Merci de vérifier vos réglages."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "Numéro de port HDMI"
@@ -10524,6 +10604,10 @@ msgstr "Numéro de port HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Connecté"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
+msgstr "Ne peut pas initialiser l'adaptateur CEC: libCEC non trouvé sur votre système."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10577,6 +10661,14 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Connection perdue"
 
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adaptor"
+msgstr "Cet utilisateur n'a pas les permissions pour ouvrir l'adaptateur CEC"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adaptor"
+msgstr "Le port est occupé. Un seul programme peut accéder à l'adaptateur CEC"
+
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Pauser lors du changement de source"
@@ -10608,6 +10700,10 @@ msgstr "Version de libCEC non supportée. %x est inférieur à la version requis
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Dossier de l'objet"
+
+msgctxt "#36042"
+msgid "Use limited colour range (16-235)"
+msgstr "Utiliser l'espace colorimétrique restreint (16-235)"
 
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
@@ -10725,6 +10821,10 @@ msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Régler la période d'inactivité requise avant d'afficher l'économiseur d'écran."
 
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Choisir l'économiseur d'écran. XBMC va forcer l'atténuation quand une lecture en plein écran est en pause ou une boîte de dialogue est active."
+
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
 msgstr "Changer des paramètres spécifiques à l'économiseur d'écran. Les options disponibles dépendent de l'économiseur d'écran utilisé."
@@ -10732,6 +10832,10 @@ msgstr "Changer des paramètres spécifiques à l'économiseur d'écran. Les opt
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Prévisualiser l'économiseur d'écran sélectionné."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
+msgstr "Si la musique est en cours de lecture, XBMC va démarrer la visualisation sélectionnée à la place de l'économiseur d'écran."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -10861,13 +10965,17 @@ msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
 msgstr "Pause durant quelques secondes pendant un changement de fréquence de rafraîchissement. Activer pour utiliser automatiquement la fréquence de rafraîchissement qui sera la plus adaptée à la vidéo lue. Cela permet potentiellement d'avoir une lecture vidéo parfaitement fluide, vu que les vidéos peuvent être enregistrées selon un grand nombre de fréquence de rafraîchissement et que la fréquence de l'écran doit correspondre pour avoir un affichage fluide."
 
+msgctxt "#36166"
+msgid "Synchronise the video to the refresh rate of the monitor."
+msgstr "Synchroniser la vidéo sur le taux de rafraîchissement du moniteur."
+
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "L'audio doit rester synchronisé, soit en ré-échantillonnant, supprimant/copiant des paquets ou en ajustant l'horloge si la désynchro est trop grande."
 
-msgctxt "#36169"
-msgid "Resampling and other sound processing quality. Low quality is fast, higher quality will consume more CPU."
-msgstr "Ré-échantillonnage et autre traitement du son. Rapide en faible qualité, consomme plus de CPU en meilleure qualité."
+msgctxt "#36168"
+msgid "Maximum video speed adjust to match actual screen refresh rate."
+msgstr "Ajustement maximal de la vitesse d'affichage vidéo pour correspondre au taux de rafraîchissement de l'écran."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -10876,6 +10984,10 @@ msgstr "Permettre au lecteur vidéo d'ignorer l'aspect ratio à partir d'un cert
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Sélectionner le niveau de zoom pour les vidéos 4:3 affichées sur les écrans larges."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
+msgstr "La conversion de niveau VDPAU permet aux applications avancées comme XBMC d'influencer sur la conversion de l'espace colorimétrique."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -10997,10 +11109,6 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
-msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
-msgstr "Activer les fonctionnalités de magnétoscope numérique dans XBMC. Cela nécessite au moins une extension compatible installée."
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importer les groupes de chaînes depuis le programme de magnétoscope numérique (si supporté). Les groupes créés par les utilisateurs seront supprimés si ils ne sont pas trouvés dans l'import."
@@ -11101,10 +11209,6 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Afficher la dernière chaîne visionnée en sélectionnant TV en direct."
 
-msgctxt "#36229"
-msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
-msgstr "Afficher la qualité du signal dans la fenêtre des informations codecs (si supporté par l'extension et le serveur)."
-
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
@@ -11124,22 +11228,6 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Durée de l'enregistrement en pressant le bouton Enregistrer, ou en créant un enregistrement manuel. Par défaut 180 minutes."
-
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
-msgstr "Priorité de l'enregistrement. Plus le nombre est grand, plus la priorité est haute. Par défaut 50. Pas supporté par tous les extensions et tous les serveurs."
-
-msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
-msgstr "Supprimer les enregistrements après le délai. Par défaut 99 jours. Pas supporté par tous les extensions et tous les serveurs."
-
-msgctxt "#36237"
-msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
-msgstr "Démarrer l'enregistrement avant l'heure programmée. Par défaut 2 minutes. Pas supporté par tous les extensions et tous les serveurs."
-
-msgctxt "#36238"
-msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
-msgstr "Terminer l'enregistrement après l'heure programmée. Par défaut 10 minutes. Pas supporté par tous les extensions et tous les serveurs."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11253,6 +11341,10 @@ msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "Quand des sons sont ajoutés à une liste de lecture ils sont mis en attente au lieu d'être lus immédiatement. "
 
+msgctxt "#36267"
+msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "XBMC va lire les infos de normalisation encodées dans votre fichier audio via un programme comme MP3Gain et les utiliser pour normaliser les niveaux sonores."
+
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "89dB est la valeur standard conseillée par défaut. Attention lors de la modification de cette valeur."
@@ -11272,6 +11364,10 @@ msgstr "Fondu entre deux pistes audio. Vous pouvez régler le niveau de chevauch
 msgctxt "#36272"
 msgid "Allow crassfading to occur when both tracks are from the same album."
 msgstr "Permettre le fondu quand deux pistes proviennent d'un même album."
+
+msgctxt "#36273"
+msgid "Select the visualisation that will be displayed while listening to music."
+msgstr "Sélectionner la visualisation qui sera affichée durant l'écoute de musique."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
@@ -11364,6 +11460,10 @@ msgstr "Choississez la police pour le karaoké."
 msgctxt "#36296"
 msgid "Select the size of the font used during karoake."
 msgstr "Choississez la taille de police pour le karaoké."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karoake."
+msgstr "Définir la couleur de la police utilisée pour le karaoke."
 
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
@@ -11589,6 +11689,10 @@ msgctxt "#36353"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36354"
+msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimising other applications. Uses a bit more resources and playback may be slightly less smooth."
+msgstr "Le principal avantage est pour les configurations multi-écrans, car XBMC peut être utilisé sans automatiquement minimiser les autres applications. Utilise un peu plus de ressources et la lecture peut être légèrement moins fluide."
+
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
 msgstr "Dans une configuration multi-écrans, les écrans où XBMC n'est pas affichés seront éteint."
@@ -11613,21 +11717,9 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
-msgctxt "#36361"
-msgid "Type of connection to the audio equipment."
-msgstr "Type de connection à votre matériel audio."
-
-msgctxt "#36362"
-msgid "Select your physical speaker layout."
-msgstr "Sélectionner la disposition physique de vos haut-parleurs."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Amplifier les flux AC3 qui ont été réduit à 2 voies."
-
-msgctxt "#36364"
-msgid "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
-msgstr "Surmixer les sources stéréo à 2 voies afin que le nombre de voies audio correspondent au nombre de haut-parleurs."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11637,14 +11729,6 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Sélectionner cette option si votre récepteur est capable de décoder les flux DTS."
 
-msgctxt "#36367"
-msgid "Select this option if your receiver is capable of decoding AAC streams."
-msgstr "Sélectionner cette option si votre récepteur est capable de décoder les flux AAC."
-
-msgctxt "#36368"
-msgid "Select this option if your receiver is capable of decoding LPCM streams."
-msgstr "Sélectionner cette option si votre récepteur est capable de décoder les flux LPCM."
-
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "Sélectionner cette option si votre récepteur est capable de décoder les flux TrueHD."
@@ -11652,14 +11736,6 @@ msgstr "Sélectionner cette option si votre récepteur est capable de décoder l
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Sélectionner cette option si votre récepteur est capable de décoder les flux DTS-HD."
-
-msgctxt "#36371"
-msgid "Select the device you use to play audio decoded by XBMC such as mp3's and FLAC."
-msgstr "Sélectionner le périphérique que vous utilisez pour la lecture des fichiers audio décodés par XBMC, tels que mp3's et FLAC."
-
-msgctxt "#36372"
-msgid "Select the device you use to play encoded formats, these are any of the formats checked above in the 'capable receiver' options."
-msgstr "Sélectionner le périphérique que vous utilisez pour la lecture des format encodés, qui peuvent être n'importe lequel des formats sélectionnés au dessus dans les options 'capacité du récepteur'."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11748,6 +11824,10 @@ msgstr "Dossier pour enregistrer les captures d'écran prises avec XBMC."
 msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Spécifiez des librairies supplémentaires à ajouter aux logs de debug."
+
+msgctxt "#36395"
+msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
+msgstr "Ouvrir la boîte de dialogue Verrou Administrateur, où vous pouvez configurer vos options de verrouillage."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
@@ -11848,6 +11928,14 @@ msgstr "Définissez des lieux pour trouver des informations sur la météo."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
+
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality"
+msgstr "Ne pas utiliser le mixer VDPAU libère des ressources sur les petites configurations mais réduit légèrement la qualité de l'image."
+
+msgctxt "#36422"
+msgid "Enable hardware video decode using AMLogic decoder"
+msgstr "Activer le décodage vidéo matériel en utilisant le décodeur AMLogic"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
@@ -11965,6 +12053,18 @@ msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "Autoriser le contrôle du volume par les clients AirPlay."
 
+msgctxt "#36542"
+msgid "Output to both analogue (headphones) and HDMI"
+msgstr "Sortie simultanée en analogique (écouteurs) et HDMI"
+
+msgctxt "#36543"
+msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr "Activer ceci pour rendre les dialogues plus présent, comparativement aux effets sonores, lors du remixage audio multi-canaux"
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "Activer le décodage matériel des fichiers."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Malvoyants)"
@@ -11996,3 +12096,15 @@ msgstr "Dernier profil utilisé"
 msgctxt "#37015"
 msgid "Browse Into"
 msgstr "Parcourir"
+
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "Activer cette option si votre matériel est capable de décoder les flux E-AC3."
+
+msgctxt "#37017"
+msgid "Dual audio output"
+msgstr "Double sortie audio"
+
+msgctxt "#37018"
+msgid "Boost centre channel when downmixing"
+msgstr "Augmenter la voie centrale lors du remixage"

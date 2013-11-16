@@ -1069,10 +1069,6 @@ msgctxt "#335"
 msgid "Start"
 msgstr "Byrja"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Ljóð útgangur"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Ymiskir tónleikarar"
@@ -2481,10 +2477,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Forrit víðkan"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Áset plugin mynd"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Víðkanar stilling"
@@ -3205,10 +3197,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Loyniorð skriva ov ofta."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Skipanin verður nú sløkt."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Stongdur lutir"
@@ -3432,10 +3420,6 @@ msgstr "Royn og brúka skermstødd"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Goym skermstødd?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Ynskir tú at goyma hesa skermstødd?"
 
 msgctxt "#13113"
 msgid "Disabled"
@@ -5269,10 +5253,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Ongin PVR víðkan kundi tendrast. Sí stillingar ella log fyri nærri upplýsing."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Upptøka er avlýst"
@@ -5329,17 +5309,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Byrja uppgávur í bakgrundini"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Ongin PVR víðkan er tendra"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR umsiting er tendra uttan at nøkur"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "PVR víðkan er tendra. Tendra minst eina víðkan"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -5449,17 +5421,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Allar upptøkur"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "Fann onga PVR víðkan"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Tær tørvar tól til móttøku, forrit, og eina"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "víðkan fyri at móttakarin kann brúkast til PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -7817,21 +7781,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Tøkar dagføringar"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Krøv ikki lokin"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Víðkan hevur ikki rættan bygnað"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s verður brúkt av fylgjandi víðkan(um)"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Henda víðkan kann ikki strikast"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -7948,10 +7900,6 @@ msgstr "(verðandi)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(svartalista)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Víðkan er fráboða við breki í savni."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"

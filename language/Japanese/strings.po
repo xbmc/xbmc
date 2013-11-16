@@ -1045,10 +1045,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "ブックマーク"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "AAC 対応レシーバー"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "MP1 対応レシーバー"
@@ -1185,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "フレームレートの調整"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "オーディオ出力"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "デジタル(光/同軸)"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "VA/オムニバス"
@@ -1217,17 +1205,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "公開年"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "ダウンミックス時に音量ブースト"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD 対応レシーバー"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "マルチチャンネル LPCM 対応レシーバー"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1504,10 +1484,6 @@ msgstr "最低気温"
 msgctxt "#419"
 msgid "High"
 msgstr "最高気温"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2885,10 +2861,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "プログラム アドオン"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "プラグインサムネイル指定"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "アドオン設定"
@@ -3445,10 +3417,6 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "リセット"
 
-msgctxt "#10041"
-msgid "Reset settings"
-msgstr "設定をリセット"
-
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "このカテゴリーの設定を全てリセットしてもいいですか？"
@@ -3765,10 +3733,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "パスワードリトライ回数の限界を超えました"
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "システムを停止します"
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "アイテム ロック"
@@ -4036,10 +4000,6 @@ msgstr "テスト＆解像度を適用"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "この解像度を保存しますか？"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "この解像度を保持しますか?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -6477,10 +6437,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "PVR アドオンを有効にできませんでした。設定を見直すか、ログを参照してください。"
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "録画が中断されました"
@@ -6537,17 +6493,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "バックグラウンドのスレッドを開始"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "PVR アドオンを有効にできませんでした"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR マネージャは起動しましたが、PVR アドオンが"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "ひとつも有効になっていません。最低でも1つの"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6661,17 +6609,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* 全録画"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "PVR アドオンが見つかりませんでした"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "チューナー、バックエンドのソフトウェア、そして"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "PVR を利用するためのバックエンドアドオンが必要です"
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9565,21 +9505,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "利用可能なアップデート"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "依存関係が満たされません"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "アドオンが正しい構造になっていません"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s は以下のインストール済のアドオンに使われています"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "このアドオンはアンインストールできません"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9696,10 +9624,6 @@ msgstr "(現在)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(ブラックリスト)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Add-on has been marked as broken in repository."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9832,10 +9756,6 @@ msgstr "ビデオ再生前にダウンロードするか確認する"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "クリップ"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "プラグインを再起動して有効にする"
 
 msgctxt "#33018"
 msgid "Tonight"

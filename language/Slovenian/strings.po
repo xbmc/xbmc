@@ -43,7 +43,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Upravitelj datotek"
+msgstr "Upravljalec datotek"
 
 msgctxt "#8"
 msgid "Weather"
@@ -315,15 +315,15 @@ msgstr "Preglej"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "Razvrsti: Ime"
+msgstr "Razvrsti po: Ime"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "Razvrsti: Datum"
+msgstr "Razvrsti po: Datum"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "Razvrsti: Velikost"
+msgstr "Razvrsti po: Velikost"
 
 msgctxt "#106"
 msgid "No"
@@ -499,11 +499,11 @@ msgstr "DHCP"
 
 msgctxt "#149"
 msgid "MAC address"
-msgstr "MAC naslov"
+msgstr "Naslov MAC"
 
 msgctxt "#150"
 msgid "IP address"
-msgstr "IP naslov"
+msgstr "Naslov IP"
 
 msgctxt "#151"
 msgid "Link:"
@@ -584,6 +584,10 @@ msgstr "Ločljivost"
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Prilagodi osveževanje zaslona videu"
+
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Naslov razvrstitve"
 
 msgctxt "#172"
 msgid "Release date"
@@ -869,6 +873,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Število kanalov"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Sprejemnik podpira DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -915,23 +923,23 @@ msgstr "Ustavi snemanje"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Razvrsti: Skladba"
+msgstr "Razvrsti po: Skladba"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "Razvrsti: Čas"
+msgstr "Razvrsti po: Čas"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr "Razvrsti: Naslov"
+msgstr "Razvrsti po: Naslov"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "Razvrsti: Izvajalec"
+msgstr "Razvrsti po: Izvajalec"
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "Razvrsti: Album"
+msgstr "Razvrsti po: Album"
 
 msgctxt "#271"
 msgid "Top 100"
@@ -1040,6 +1048,18 @@ msgstr "Zamik zvoka"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Zaznamki"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Sprejemnik podpira MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Sprejemnik podpira MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Sprejemnik podpira MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1165,14 +1185,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Pretvorba hitrosti sličic"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Zvočni izhod"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Optično/Coax"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Različni izvajalci"
@@ -1197,9 +1209,13 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Leto"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Ojačaj glasnost pri združevanju kanalov"
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Sprejemnik podpira DTS-HD"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "Sprejemnik podpira TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1255,19 +1271,23 @@ msgstr "Zameglitev ohranjevalnika zaslona"
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "Razvrsti: Datoteka"
+msgstr "Razvrsti po: Datoteka"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Sprejemnik podpira Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
-msgstr "Razvrsti: Ime"
+msgstr "Razvrsti po: Ime"
 
 msgctxt "#366"
 msgid "Sort by: Year"
-msgstr "Razvrsti: Leto"
+msgstr "Razvrsti po: Leto"
 
 msgctxt "#367"
 msgid "Sort by: Rating"
-msgstr "Razvrsti: Ocena"
+msgstr "Razvrsti po: Ocena"
 
 msgctxt "#368"
 msgid "IMDb"
@@ -1469,10 +1489,6 @@ msgctxt "#419"
 msgid "High"
 msgstr "Maks."
 
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
-
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Izbriši informacije o albumu"
@@ -1507,7 +1523,7 @@ msgstr "Vstavite naslednji CD/DVD:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
-msgstr "Razvrsti: DVD#"
+msgstr "Razvrsti po: DVD#"
 
 msgctxt "#431"
 msgid "No cache"
@@ -1747,7 +1763,7 @@ msgstr "Prikaži končnice datotek"
 
 msgctxt "#498"
 msgid "Sort by: Type"
-msgstr "Razvrsti: Tip"
+msgstr "Razvrsti po: Tip"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
@@ -1779,7 +1795,11 @@ msgstr "Nalagam informacije iz datotek..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "Razvrsti: Uporaba"
+msgstr "Razvrsti po: Uporaba"
+
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "Vključi vizualizacijo"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -1927,7 +1947,7 @@ msgstr "Pretvori večkanalni zvok v stereo"
 
 msgctxt "#550"
 msgid "Sort by: %s"
-msgstr "Razvrsti: %s"
+msgstr "Razvrsti po: %s"
 
 msgctxt "#551"
 msgid "Name"
@@ -2032,6 +2052,10 @@ msgstr "V predvajanju"
 msgctxt "#576"
 msgid "Times played"
 msgstr "Število predvajanj"
+
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Datum zajema posnetka"
 
 msgctxt "#580"
 msgid "Sort direction"
@@ -2313,6 +2337,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Nivo stiskanja"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Podrobno zapisovanje..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Čiščenje knjižnice"
@@ -2328,6 +2356,10 @@ msgstr "Ta pot je že bila pregledana"
 msgctxt "#705"
 msgid "Network"
 msgstr "Omrežje"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Strežnik"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2356,6 +2388,18 @@ msgstr "Ročno (Statično)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP naslov"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Maska omrežja"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Privzet prehod"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "Strežnik DNS"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2400,6 +2444,14 @@ msgstr "Brez"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Nabor znakov"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Stil"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Barva"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2633,6 +2685,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Veljavno območje vrat je 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Dodaj slike..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Dodaj glasbo..."
@@ -2640,6 +2696,10 @@ msgstr "Dodaj glasbo..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Dodaj video..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Predogled"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2808,10 +2868,6 @@ msgstr "Prenešenih %i od %i predmetov"
 msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Programski dodatki"
-
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Določi sličico dodatka"
 
 msgctxt "#1045"
 msgid "Add-on settings"
@@ -3357,13 +3413,61 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Nastavitve - Profili"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Ponastavi"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Pomoč"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Pomoč ni na voljo"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Brskalnik datotek"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Nastavitve omrežja"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Medijski vir"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Nastavitve profilov"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Zakleni nastavitve"
 
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Nastavitve vsebin"
+
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "Priljubljene"
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Pesmi/Info"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Urejevalnik pametnih seznamov predvajanja"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Urejevalnik pravil pametnih seznamov predvajanja"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Slike/Info"
 
 msgctxt "#10140"
 msgid "Add-on settings"
@@ -3629,10 +3733,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Število ponovnih vnosov gesla je preseženo."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Sistem se bo sedaj izključil."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Predmet je zaklenjen"
@@ -3849,6 +3949,10 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Izključena igralna palica"
 
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Nizek nivo baterije"
@@ -3884,10 +3988,6 @@ msgstr "Preveri & uveljavi ločljivost"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Shrani ločljivost?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Ali želite obdržati ločljivost?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -4160,6 +4260,10 @@ msgstr "Samodejna kontrola temperature"
 msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "Ročna nastavitev hitrosti ventilatorja"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Pisave"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4989,6 +5093,10 @@ msgctxt "#14077"
 msgid "Remove from favourites"
 msgstr "Odstrani iz priljubljenih"
 
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Barve"
+
 msgctxt "#14079"
 msgid "Timezone country"
 msgstr "Država časovnega pasu"
@@ -5124,6 +5232,10 @@ msgstr "Navigacijski zvoki"
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Privzeto"
+
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Tema"
 
 msgctxt "#15112"
 msgid "Default theme"
@@ -5345,6 +5457,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Uredi naslov"
 
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr "Uredi naslov razvrstitve"
+
 msgctxt "#16200"
 msgid "Operation was aborted"
 msgstr "Operacija je bila preklicana"
@@ -5464,6 +5580,10 @@ msgstr "Spline36"
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Programsko prelivanje"
+
+msgctxt "#16325"
+msgid "VDPAU - Bob"
+msgstr "VDPAU - Bob"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -5625,6 +5745,10 @@ msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Snemanje na tem programu se je že začelo"
 
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s ni mogoče predvajati. Preberite več informacij v zapisniku."
+
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
 msgstr "Posnetka ni mogoče predvajati. Preberite več informacij v zapisniku."
@@ -5731,7 +5855,7 @@ msgstr "Dodaj časovnik"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
-msgstr "Razvrsti: Program"
+msgstr "Razvrsti po: Program"
 
 msgctxt "#19063"
 msgid "Go to begin"
@@ -6309,10 +6433,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Nobenega dodatka PVR ni mogoče vključiti. Preverite vaše nastavitve ali pa preberite več informacij v zapisniku."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Preklicano snemanje"
@@ -6369,17 +6489,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Zaganjam niti v ozadju"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Noben dodatek PVR ni vključen"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Upravitelj PVR je bil vključen brez"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "vključen dodatek PVR. Vključite vsaj enega,"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6493,17 +6605,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Vsi posnetki"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "Dodatkov PVR ni mogoče najti"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Za PVR potrebujete sprejemnik, program za hrbtenico"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "in dodatek, ki se bo povezal s to hrbtenico."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -6943,7 +7047,7 @@ msgstr "Želite zagnati igro?"
 
 msgctxt "#20014"
 msgid "Sort by: Playlist"
-msgstr "Razvrsti: Seznam predvajanja"
+msgstr "Razvrsti po: Seznam predvajanja"
 
 msgctxt "#20015"
 msgid "Remote thumb"
@@ -7727,7 +7831,7 @@ msgstr "Video - Knjižnica"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
-msgstr "Razvrsti: ID"
+msgstr "Razvrsti po: ID"
 
 msgctxt "#20317"
 msgid "Scanning movies using %s"
@@ -8120,6 +8224,10 @@ msgstr "Prvič na sporedu"
 msgctxt "#20417"
 msgid "Writer"
 msgstr "Scenarist"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Scenaristi"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -9137,6 +9245,14 @@ msgctxt "#22031"
 msgid "Size"
 msgstr "Velikost"
 
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Barve"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Nabor znakov"
+
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
 msgstr "Izvozi naslove karaok kot HTML"
@@ -9389,21 +9505,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Na voljo so posodobitve"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Odvisnostim ni zadoščeno"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Dodatek nima pravilne strukture"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s je v uporabi s strani sledečih dodatkov"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Dodatka ni mogoče odstraniti"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9520,10 +9624,6 @@ msgstr "(trenuten)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(nedelujoč)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Dodatek je bil v skladišču označen kot nedelujoč."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9656,10 +9756,6 @@ msgstr "Vprašaj za prenos pred predvajanjem"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Odlomki"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Za vklop ponovno zaženite vtičnik"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -9880,6 +9976,10 @@ msgstr "Pot do skripte"
 msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Vključi gumb poljubne skripte"
+
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Samodejna prijava"
 
 msgctxt "#33100"
 msgid "Failed to start"
@@ -10216,3 +10316,623 @@ msgstr "Nepodprta različica libCEC. %x je nižja, kot jo podpira XBMC (%x)"
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Mapa posnetka"
+
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Spremenite izgled in obnašanje uporabniškega vmesnika."
+
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "Izberite preobleko uporabniškega vmesnika. To bo določilo izgled in obnašanje XBMC."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Spremenite nastavitve specifične za preobleko. Možnosti, ki so na voljo, so odvisne od uporabljene preobleke."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Spremenite temo trenutno izbrane preobleke."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Spremenite barve trenutno izbrane preobleke."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "Izberite pisavo uporabniškega vmesnika. Zbirke pisav so nastavljene preko vaše preobleke."
+
+msgctxt "#36112"
+msgid "Edit the RSS feeds."
+msgstr "Uredite vire RSS."
+
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Izberite jezik uporabniškega vmesnika."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Izberite državo bivanja."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Izberite vaš trenutni časovni pas."
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Prikaži skrite datoteke in mape."
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Vključite strojno dekodiranje video datotek."
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Vključite teletekst ob gledanju televizije v živo."
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr "Razvrsti programe glede na njihovo številko na strežniku, vendar uporabi XBMC-jevo lastno številčenje."
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36260"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Samodejno izvrzi disk po končani pretvorbi."
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Izberite pisavo, ki bo uporabljena med karaokami."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Izberite velikost besedila med karaokami."
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Določite vrata spletnega strežnika."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Določite uporabniško ime spletnega strežnika."
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "Določite geslo spletnega strežnika."
+
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Izberite to možnost, če vaš sprejemnik podpira dekodiranje sledi AC3."
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Izberite to možnost, če vaš sprejemnik podpira dekodiranje sledi DTS."
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Izberite to možnost, če vaš sprejemnik podpira dekodiranje sledi TrueHD."
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Izberite to možnost, če vaš sprejemnik podpira dekodiranje sledi DTS-HD."
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36540"
+msgid "No info available yet."
+msgstr "Informacije še niso na voljo."
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "Vključite strojno dekodiranje video datotek."
+
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "Izberite to možnost, če vaš sprejemnik podpira dekodiranje sledi E-AC3."

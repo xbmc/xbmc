@@ -1165,14 +1165,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Перетворення частоти кадрів"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Виведення звуку"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Цифрове"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Різноманітні виконавці"
@@ -1196,10 +1188,6 @@ msgstr "Актори"
 msgctxt "#345"
 msgid "Year"
 msgstr "Рік"
-
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Підвищувати гучність при змішуванні"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1468,10 +1456,6 @@ msgstr "Мін."
 msgctxt "#419"
 msgid "High"
 msgstr "Макс."
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2825,10 +2809,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Програмні надбудови"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Встановити ескіз для надбудови"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Налаштування надбудови"
@@ -3365,10 +3345,6 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Налаштування - Профілі"
 
-msgctxt "#10041"
-msgid "Reset settings"
-msgstr "Скинути налаштування"
-
 msgctxt "#10043"
 msgid "Help"
 msgstr "Допомога"
@@ -3649,10 +3625,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Кількість спроб уведення паролю вичерпано."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Систему буде вимкнено."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Заблоковано"
@@ -3904,10 +3876,6 @@ msgstr "Перевірити та застосувати роздільну зд
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Зберегти роздільну здатність?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Залишити роздільну здатність?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -6341,10 +6309,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Не вдалося увімкнути надбудови PVR. Перевірте налаштування або див. журнал."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Запис перервано"
@@ -6401,17 +6365,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Запуск фонових служб"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Немає активних надбудов PVR"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Менеджер PVR увімкнено без жодних"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "активних надбудов PVR. Активуйте принаймні 1 надбудову"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6525,17 +6481,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Усі записи"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "Не вдалося знайти надбудови PVR"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Для використання PVR потрібен тюнер,"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "серверна програма й відповідна надбудова."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9433,21 +9381,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Доступні надбудови"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Відсутні потрібні компоненти"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Неправильна структура надбудови"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s використовується встановленими надбудовами"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Неможливо видалити надбудову"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9564,10 +9500,6 @@ msgstr "(поточн.)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(заблокован.)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Надбудову відмічено в репозиторії як зіпсовану."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9700,10 +9632,6 @@ msgstr "Пропонувати завантаження відео перед в
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Кліпи"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Перезапустіть надбудову, щоб увімкнути її"
 
 msgctxt "#33018"
 msgid "Tonight"

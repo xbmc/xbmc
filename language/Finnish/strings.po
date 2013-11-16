@@ -869,6 +869,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanavien määrä"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS yhteensopiva vahvistin"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CD-tietokanta"
@@ -1041,6 +1045,18 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Kirjanmerkit"
 
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 yhteensopiva vahvistin"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 yhteensopiva vahvistin"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 yhteensopiva vahvistin"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Viive"
@@ -1165,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Kuvataajuuden muunto"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Äänilähtö"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Optinen/koaksiaali"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Eri esittäjiä"
@@ -1197,9 +1205,13 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Vuosi"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Lisää äänenvoimakkuutta äänikanavia yhdistettäessä"
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD yhteensopiva vahvistin"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD yhteensopiva vahvistin"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1256,6 +1268,10 @@ msgstr "Näytönsäästäjän läpinäkyvyys"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Järjestä: Tiedostonimi"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) yhteensopiva vahvistin"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1469,10 +1485,6 @@ msgctxt "#419"
 msgid "High"
 msgstr "Ylin"
 
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
-
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Poista albumin tiedot"
@@ -1544,6 +1556,10 @@ msgstr "Avataan tiedosto"
 msgctxt "#439"
 msgid "Cache"
 msgstr "Välimuistit"
+
+msgctxt "#440"
+msgid "Hard disk"
+msgstr "Kiintolevy"
 
 msgctxt "#441"
 msgid "UDF"
@@ -2217,6 +2233,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Mukautettu"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "ReplayGain"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "ReplayGain-äänisäädöt"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Käytä kappaletasoja"
@@ -2360,6 +2384,14 @@ msgstr "Manuaalinen (Kiinteä)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP-osoite"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Maski"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Oletus yhdyskäytävä"
 
 msgctxt "#722"
 msgid "DNS server"
@@ -2549,6 +2581,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Langattoman verkon nimi (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Langattoman verkon salasana"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Langattoman verkon suojaus"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Tallenna ja ota asetukset käyttöön"
@@ -2633,6 +2673,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Kirjaston päivitys"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Musiikki kirjaston täytyy lukea tagit uudelleen tiedostoista"
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Haetaanko nyt?"
@@ -2660,6 +2704,10 @@ msgstr "Lisää musiikkia..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Lisää videoita..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Esikatselu"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2828,10 +2876,6 @@ msgstr "Noudettu %i / %i kohdetta"
 msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Ohjelma laajennukset"
-
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Lisäosan pienoiskuva"
 
 msgctxt "#1045"
 msgid "Add-on settings"
@@ -3017,9 +3061,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Laitteen nimi"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Käytä salasana suojausta"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3377,6 +3429,14 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Asetukset - Profiilit"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Resetoida"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Oletko varma että haluat resetoida tämän ryhmän asetukset?"
+
 msgctxt "#10043"
 msgid "Help"
 msgstr "Ohje"
@@ -3384,6 +3444,18 @@ msgstr "Ohje"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Ohjetta ei ole saatavilla"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Tiedostoselain"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Verkkoasetukset"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Media lähde"
 
 msgctxt "#10130"
 msgid "Profile settings"
@@ -3401,9 +3473,21 @@ msgctxt "#10134"
 msgid "Favourites"
 msgstr "Suosikit"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Kappale/Info"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Älykäs soittolistan muokkaus"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Lisäosan asetukset"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Lisäosat/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3665,10 +3749,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Kaikki kirjautumisyritykset käytetty."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Järjestelmä sammutetaan nyt."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Kohde lukittu"
@@ -3885,6 +3965,10 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Peliohjain irroitettu"
 
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC osoitteen löytäminen"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Alhainen akun varaus"
@@ -3920,10 +4004,6 @@ msgstr "Testaa ja hyväksy resoluutio"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Tallenna resoluutio?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Haluatko säilyttää nämä asetukset?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -4704,6 +4784,10 @@ msgstr "Paikallinen kuva"
 msgctxt "#13515"
 msgid "No art"
 msgstr "Ei kuvaa"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Lisää kuva"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -6345,10 +6429,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "Ohjelmaopas"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Yhtään PVR-lisäosaa ei voitu ottaa käyttöön. Tarkista asetukset tai katso lokitiedostosta lisätietoja."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Nauhoitus peruutettu"
@@ -6405,17 +6485,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Käynnistää taustasäikeitä"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Ei käytössä olevia PVR-lisäosia"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR-hallinta on otettu käyttöön ilman yhtään"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "käytössä olevaa PVR-lisäosaa. Ota käyttöön vähintään"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6529,17 +6601,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Kaikki nauhoitukset"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "PVR-lisäosia ei löytynyt"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Tarvitset virittimen, ohjelmiston, ja"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "lisäosa, joka mahdollistaa ohjelmiston käyttää nauhoitusta."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -8373,6 +8437,10 @@ msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Jaa video- ja musiikkikirjastot UPnP:n kautta"
 
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Etsi UPnP soittimia"
+
 msgctxt "#21362"
 msgid "Bookmark created"
 msgstr "Kirjanmerkki luotu"
@@ -9433,21 +9501,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Päivitykset"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Riippuvuudet ei täyty"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Lisäosan rakenne on väärä"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "Seuraavat asennetut lisäosat tarvitsevat lisäosaa %s"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Tätä lisäosaa ei voi poistaa"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9564,10 +9620,6 @@ msgstr "(nykyinen)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(estetty)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Ohjelmavarasto on merkinnyt lisäosan vialliseksi."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9700,10 +9752,6 @@ msgstr "Kysy latauksesta ennen toistoa"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Näytteet"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Lisäosa on käynnistettävä uudelleen"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10037,9 +10085,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Edellistä kohdetta ei löydy"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Zeroconfin käynnistys epäonnistui"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "Onko Applen Bonjour -palvelu asennettu? Katso lokitiedostosta lisätietoja."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "AirPlay vaatii Zeroconfin olevan käytössä."
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Zeroconfin pysäyttäminen epäonnistui"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "AirPlay ja AirTunes vaativat käynnissä olevan Zeroconfin."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10273,6 +10337,10 @@ msgctxt "#36113"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "Valitsee käyttöliittymän kielen."
+
 msgctxt "#36118"
 msgid "Select your current timezone."
 msgstr "Valitse nykyinen aikavyöhykkeesi."
@@ -10280,6 +10348,10 @@ msgstr "Valitse nykyinen aikavyöhykkeesi."
 msgctxt "#36121"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories."
+msgstr "Näytä piilotetut tiedostot ja kansiot."
 
 msgctxt "#36128"
 msgid "No info available yet."
@@ -10505,6 +10577,10 @@ msgctxt "#36254"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
+msgctxt "#36261"
+msgid "Path where taken screenshots will be stored."
+msgstr "Polku, johon otetut kuvakaappaukset tallennetaan."
+
 msgctxt "#36264"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
@@ -10692,10 +10768,6 @@ msgstr "Ei tietoa saatavilla vielä."
 msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36362"
-msgid "Select your physical speaker layout."
-msgstr "Valitse kaiuttimiesi fyysinen asettelu."
 
 msgctxt "#36374"
 msgid "No info available yet."

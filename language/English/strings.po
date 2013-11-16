@@ -12001,7 +12001,7 @@ msgctxt "#24106"
 msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogSubtitles.cpp 
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr ""
@@ -12041,7 +12041,7 @@ msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr ""
 
-#: system/settings/settings.xml 
+#: system/settings/settings.xml
 msgctxt "#24115"
 msgid "Save subtitles to movie folder"
 msgstr ""
@@ -14776,7 +14776,7 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
 msgstr ""
 
-#empty strings from id 36534 to 36534
+#empty string with id 36534
 
 #: guilib/StereoscopicsManager.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp

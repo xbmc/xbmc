@@ -1045,10 +1045,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "بوک مارک ها"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "گیرنده با قابلیت"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "گیرنده با قابلیت"
@@ -1185,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "تبدیل نرخ فریم"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "خروجی صدا"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "اپتیکال/کواکسیال"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "هنرمندان مختلف"
@@ -1217,17 +1205,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "سال"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "تقویت بلندی صدا در داونمیکس"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "گیرنده با قابلیت DTS-HD"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "گیرنده با قابلیت LPCM  چند کاناله"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1504,10 +1484,6 @@ msgstr "کم"
 msgctxt "#419"
 msgid "High"
 msgstr "زیاد"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2885,10 +2861,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "افزودنی های برنامه"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "تنظیم تصویر کوچک پلاگین"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "تنظیمات افزودنی ها"
@@ -3577,10 +3549,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "حداکثر تعداد مجاز ورود رمز عبور تمام شد."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "اکنون سیستم خاموش می شود."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "مورد قفل شده است"
@@ -3800,10 +3768,6 @@ msgstr "تست و بکارگیری رزولیشن"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "رزولیشن دخیره شود؟"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "آیا مایلید این رزولیشن را حفظ کنید؟"
 
 msgctxt "#13112"
 msgid "High quality upscaling"

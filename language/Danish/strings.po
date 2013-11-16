@@ -573,6 +573,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Annuller filoperationer"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Opløsning"
@@ -1041,10 +1045,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Bogmærker"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "AAC-kompatibel receiver"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "MP1-kompatibel receiver"
@@ -1181,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Juster billedhastighed"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Lydudgang"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Optisk/Koaksial"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Diverse kunstnere"
@@ -1213,17 +1205,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Årstal"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Øg lydstyrken ved downmix"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD-kompatibel receiver"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "Multikanal-LPCM-kompatibel receiver"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1500,10 +1484,6 @@ msgstr "Lav"
 msgctxt "#419"
 msgid "High"
 msgstr "Høj"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2065,6 +2045,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Antal afspilninger"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Tilføjet den"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Sorteringsretning"
@@ -2344,6 +2328,10 @@ msgstr "Søg efter script"
 msgctxt "#665"
 msgid "Compression level"
 msgstr "Komprimeringsniveau"
+
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Detaljeret logning..."
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2888,10 +2876,6 @@ msgstr "Hentede %i af %i emner"
 msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Program Add-ons"
-
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Vælg miniaturebillede til plugin"
 
 msgctxt "#1045"
 msgid "Add-on settings"
@@ -3453,26 +3437,6 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Nulstil"
 
-msgctxt "#10036"
-msgid "Level: Basic"
-msgstr "Niveau: Basis"
-
-msgctxt "#10037"
-msgid "Level: Standard"
-msgstr "Niveau: Standard"
-
-msgctxt "#10038"
-msgid "Level: Advanced"
-msgstr "Niveau: Avanceret"
-
-msgctxt "#10039"
-msgid "Level: Expert"
-msgstr "Niveau: Ekspert"
-
-msgctxt "#10041"
-msgid "Reset settings"
-msgstr "Nulstil indstillinger"
-
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Er du sikker på at du vil nulstille indstillingerne for denne kategori?"
@@ -3797,10 +3761,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Du har ikke flere forsøg tilbage."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Systemet slukkes nu."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Låst emne"
@@ -4096,10 +4056,6 @@ msgstr "Test og anvend opløsning"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Gem opløsning?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Vil du gemme denne opløsning?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -6545,10 +6501,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Intet PVR-add-on kunne aktiveres. Tjek dine indstillinger eller log'en for mere information."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Optagelse afbrudt"
@@ -6605,17 +6557,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Starter baggrundstråde"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Intet PVR add-on aktiveret"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR-håndteringen er blevet aktiveret uden et"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "aktiveret PVR-add-on. Aktivér mindst én add-on"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6729,17 +6673,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Alle optagelser"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "Ingen PVR-add-ons kunne findes"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Du skal bruge en tuner, backend-software og en"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "add-on, som muliggør at backend'en kan bruge PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9697,21 +9633,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Tilgængelige Opdateringer"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Afhængigheder ikke opfyldt"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Add-on har ikke den korrekte struktur"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s bliver brugt af det/de følgende installerede add-on(s)"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Denne add-on kan ikke afinstalleres"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9828,10 +9752,6 @@ msgstr "(nuværende)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(sortlistet)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Add-on er markeret som ødelagt i fjernlageret."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9964,10 +9884,6 @@ msgstr "Spørg om hentning før afspilning af video"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Klip"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Genstart plugin for at aktivere"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10645,6 +10561,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Vis filendelser for medie-filer. Eksempelvis ville 'Sangtitel.mp3' ellers vises som 'Sangtitel'."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Ignorer specifikke ord under sortering. For eksempel, 'The Simpsons' ville blive sorteret som 'Simpsons'. For at konfigurerer udeladte ord, se http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Tillad at filer slettes eller omdøbes i brugergrænsefladen via kontekstmenuen (Tryk C på din keyboard for at fremvise menuen)."
@@ -10660,6 +10580,22 @@ msgstr "Vis skjulte filer og mapper."
 msgctxt "#36128"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Sæt den ønskede ventetid, før pauseskærmen vises."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Skift specifikke pauseskærms-indstillinger. Indstillingerne afhænger af den valgte pauseskærm."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Vis den valgte pauseskærm."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Nedton skærmen når mediet er sat på pause. Gælder ikke for 'Dim' pauseskærmen."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10685,17 +10621,65 @@ msgctxt "#36140"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Vis plottet for usete medier i Video Library."
+
 msgctxt "#36142"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Hent skuespillernes miniaturebilleder når medier scannes."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Fjerner seriesæsonnoden, skifter mellem 'hvis kun en sæson' (standard), 'Altid' og 'Aldrig'"
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Gruppér film i 'Sæt' når filmbiblioteket vises."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Kig efter nye mediefiler når XBMC startes."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Vis ikke hvor langt scanningen er nået under scanning."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Fjern emner fra biblioteket der ikke findes (enten er blevet omdøbt, slettet, eller findes på en ekstern lagerenhed der i øjeblikket ikke er sluttet til)."
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Eksporter videodatabasen til XML-filer. Dette vil eventuelt overskrive dine aktuelle XML-filer."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Importer en XML-fil til videodatabasen."
 
 msgctxt "#36151"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "Aktiver automatisk afspilning af den næste fil i listen af valgte emner."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Justér metoden der anvendes til at behandle og vise videoer."
+
 msgctxt "#36154"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36155"
+msgid "Enable hardware decoding of video files."
+msgstr "Aktiver hardware dekodning af video-filer."
 
 msgctxt "#36156"
 msgid "No info available yet."
@@ -10729,9 +10713,37 @@ msgctxt "#36163"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36164"
+msgid "Select when the refresh rate adjustments should take place."
+msgstr "Vælg hvornår opdateringshastighedens justeringer skal ske."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "Sæt mediet på pause i et kort stykke tid, når opdateringshastigheden ændres. Aktivér for automatisk at ændre opdateringshastigheden så den matcher den video der afspilles. Dette kan potentielt give en perfekt jævn afspilning, da videomateriale kan være optaget ved forskellige opdateringshastigheder, hvilket kræver at skærmen matcher videomaterialet for at blive vist uden hakker og flimmer."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Audio skal forblive i sync, det kan enten ske ved resampling, springe pakker over eller dublere pakker eller justere klokken hvis den kommer for meget ud af sync."
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Tillad at videoafspilleren ignorerer størrelsesforholdet med en hvis mængde for at udfylde en større del af skærmen med video."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Vælg hvilket zoomniveau som 4:3 videoer bliver vist med på widescreen-tv."
+
 msgctxt "#36173"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Aktiverer Tekst-tv mens man ser en live TV stream."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Skalerer Tekst-TV til 4:3."
 
 msgctxt "#36176"
 msgid "No info available yet."
@@ -10740,6 +10752,10 @@ msgstr "Ingen information tilgængelig endnu."
 msgctxt "#36178"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "Når en fil er skannet ind i biblioteket vil den vise metadata-titlen i stedet for filnavnet."
 
 msgctxt "#36181"
 msgid "No info available yet."
@@ -10773,13 +10789,45 @@ msgctxt "#36190"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "Angiv en mappe til undertekster. Det kan være en fællesmappe."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Placering af undertekster på skærmen."
+
 msgctxt "#36193"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Automatisk visning af DVD-film når den bliver lagt i DVD-drevet."
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "Tving en region ved DVD-afspilning."
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Forsøg at springe over instruktioner der 'ikke kan springes over' før DVD-menu."
+
 msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr "Vælg standardkilde til filminformation. Se Add-on manager for valgmuligheder."
+
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr "Vælg standardkilde til serieinformation. Se Add-on manager for valgmuligheder."
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "Standardscraper der bruges til at tilføje musikvideoer til dit bibliotek."
 
 msgctxt "#36201"
 msgid "No info available yet."
@@ -10788,6 +10836,10 @@ msgstr "Ingen information tilgængelig endnu."
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "importere kanalgrupper fra PVR-backend (hvis det er supporteret). Det vil slette brugeroprettet grupper, hvis de ikke er fundet på backend."
 
 msgctxt "#36210"
 msgid "No info available yet."
@@ -11160,3 +11212,7 @@ msgstr "Ingen information tilgængelig endnu."
 msgctxt "#36540"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "Aktiver hardware dekodning af video-filer."

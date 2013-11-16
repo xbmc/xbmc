@@ -961,14 +961,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "फ्रेमरेट रूपांतरण"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "ऑडियो आउटपुट"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "ऑप्टिकल / मनाना"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "विभिन्न कलाकारों"
@@ -992,10 +984,6 @@ msgstr "एक्टर्स"
 msgctxt "#345"
 msgid "Year"
 msgstr "वर्ष"
-
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "दोव्न्मिक्स पर वॉल्यूम स्तर बूस्ट"
 
 msgctxt "#350"
 msgid "Programs"
@@ -2440,10 +2428,6 @@ msgstr "पुनःप्राप्त% का% मैं आइटम मै
 msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "कार्यक्रम परिवर्धन"
-
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "पप्लगइन अंगूठा सेट करें"
 
 msgctxt "#1045"
 msgid "Add-on settings"

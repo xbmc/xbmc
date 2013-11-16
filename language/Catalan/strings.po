@@ -585,6 +585,10 @@ msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Ajusta la pantalla per que coincideixi amb la freqüència d'actualització del vídeo"
 
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Ordena títol"
+
 msgctxt "#172"
 msgid "Release date"
 msgstr "Data de llançament"
@@ -857,6 +861,10 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Música"
 
+msgctxt "#250"
+msgid "Visualisation"
+msgstr "Visualització"
+
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Seleccioneu el directori de destí"
@@ -1045,10 +1053,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Adreces d'interès"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "Receptor compatible AAC"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "Receptor compatible MP1"
@@ -1185,14 +1189,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversió de les imatges per segon"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Sortida d'àudio"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Òptica/Coaxial"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Diversos artistes"
@@ -1217,17 +1213,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Any"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Augmenta el volum al fer un downmix"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Receptor compatible DTS-HD"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "Receptor compatible LPCM multicanal"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1505,14 +1493,6 @@ msgctxt "#419"
 msgid "High"
 msgstr "Màx"
 
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
-
-msgctxt "#421"
-msgid "Stream silence when idle"
-msgstr "Silencia l'Stream quan estigui inactiu"
-
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Esborra la informació de l'àlbum"
@@ -1585,6 +1565,10 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "Memòria cau"
 
+msgctxt "#440"
+msgid "Hard disk"
+msgstr "Disc dur"
+
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1612,6 +1596,10 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Executa automàticament els suports"
+
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "Receptor compatible Dolby Digital Plus (E-AC3)"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1820,6 +1808,10 @@ msgstr "S'està carregant la informació multimèdia des de els fitxers"
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Ordena per: Ús"
+
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "Activa les visualitzacions"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2265,6 +2257,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Personalitzat"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "ReplayGain"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "Ajustos de volum de ReplayGain"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Utilitza el volum de la pista"
@@ -2272,6 +2272,18 @@ msgstr "Utilitza el volum de la pista"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Utilitza el volum de l'àlbum"
+
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "Nivell de PreAmp - Fitxers amb ReplayGain"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "Nivell de PreAmp - Fitxers sense ReplayGain"
+
+msgctxt "#643"
+msgid "Avoid clipping on ReplayGained files"
+msgstr "Evitar la distorsió digital en fitxers amb ReplayGain"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2909,10 +2921,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Complements de programes"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Establiu la miniatura del connector"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Configuració del complement"
@@ -3477,25 +3485,9 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Reinicialitza"
 
-msgctxt "#10036"
-msgid "Level: Basic"
-msgstr "Nivell: Bàsic"
-
-msgctxt "#10037"
-msgid "Level: Standard"
-msgstr "Nivell: Estàndard"
-
-msgctxt "#10038"
-msgid "Level: Advanced"
-msgstr "Nivell: Avançat"
-
-msgctxt "#10039"
-msgid "Level: Expert"
-msgstr "Nivell: Expert"
-
-msgctxt "#10041"
-msgid "Reset settings"
-msgstr "Reinicialitza la configuració"
+msgctxt "#10040"
+msgid "Add-on browser"
+msgstr "Cercador de complements"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3508,6 +3500,14 @@ msgstr "Ajuda"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "No hi ha ajuda disponible"
+
+msgctxt "#10100"
+msgid "Yes/No dialogue"
+msgstr "Diàleg Sí/No"
+
+msgctxt "#10101"
+msgid "Progress dialogue"
+msgstr "Diàleg de progrés"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3649,9 +3649,17 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Informació de la pel·lícula"
 
+msgctxt "#12000"
+msgid "Select dialogue"
+msgstr "Diàleg de selecció"
+
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Música/Informació"
+
+msgctxt "#12002"
+msgid "Dialogue OK"
+msgstr "Diàleg «D'acord»"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3664,6 +3672,14 @@ msgstr "Scripts/Informació"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Vídeo en pantalla completa"
+
+msgctxt "#12006"
+msgid "Audio visualisation"
+msgstr "Visualització d'àudio"
+
+msgctxt "#12008"
+msgid "File stacking dialogue"
+msgstr "Diàleg d'agrupar fitxers"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -3820,10 +3836,6 @@ msgstr "Accés denegat"
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "S'ha excedit el límit d'intents."
-
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "El sistema s'aturarà."
 
 msgctxt "#12348"
 msgid "Item locked"
@@ -4001,6 +4013,10 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Reinicia"
 
+msgctxt "#13014"
+msgid "Minimise"
+msgstr "Minimitza"
+
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Acció del botó d'arrencada"
@@ -4121,10 +4137,6 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Voleu desar la resolució?"
 
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Voleu mantenir aquesta resolució?"
-
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Reescalat d'alta qualitat"
@@ -4164,6 +4176,10 @@ msgstr "VDPAU"
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "Nivell d'escalat de VDPAU HQ"
+
+msgctxt "#13122"
+msgid "VDPAU Studio level colour conversion"
+msgstr "VDPAU Studio level color conversion"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4216,6 +4232,10 @@ msgstr "Passarel·la"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "DNS primari"
+
+msgctxt "#13162"
+msgid "Initialise failed"
+msgstr "No s'ha pogut inicialitzar"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4461,6 +4481,10 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Presentació de diapositives recursiva"
 
+msgctxt "#13319"
+msgid "Randomise"
+msgstr "Aleatoritzar"
+
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Estèreo"
@@ -4673,9 +4697,21 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Predefinit"
 
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "No hi ha copcions disponibles⏎\nper a aquesta visualització"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualisation"
+msgstr "No hi ha copcions disponibles⏎\nper a aquesta visualització"
+
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Expulsa/Carrega"
+
+msgctxt "#13392"
+msgid "Use visualisation if playing audio"
+msgstr "Utilitzeu la visualització si es reprodueix àudio"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4853,6 +4889,18 @@ msgctxt "#13436"
 msgid "Allow hardware acceleration (libstagefright)"
 msgstr "Permet l'acceleració per maquinari (libstagefright)"
 
+msgctxt "#13437"
+msgid "Prefer VDPAU Video Mixer"
+msgstr "Preferir el mesclador de vídeo VDAPU"
+
+msgctxt "#13438"
+msgid "Allow hardware acceleration (amcodec)"
+msgstr "Permet l'acceleració per maquinari (amcodec)"
+
+msgctxt "#13439"
+msgid "Allow hardware acceleration (MediaCodec)"
+msgstr "Permet l'acceleració per maquinari (MediaCodec)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Mètode de sincronització d'A/V"
@@ -4868,6 +4916,10 @@ msgstr "Rellotge del vídeo (Drop/Dupe àudio)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Rellotge del vídeo (Remostreja l'àudio)"
+
+msgctxt "#13504"
+msgid "Maximum speedup/slowdown amount (%)"
+msgstr "Quantitat màxim d'acceleració/alentiment (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -5060,6 +5112,10 @@ msgstr "Sense TV"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Introduïu la ciutat propera més gran"
+
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Hard disk"
+msgstr "Memòria cau del Vídeo/Àudio/DVD - Disc dur"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5405,6 +5461,10 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "Reprodueix utilitzant..."
 
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronisation"
+msgstr "Utilitza la sincronització A/V suau"
+
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "Oculta els noms dels fitxers en la vista de miniatures"
@@ -5545,6 +5605,10 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Sense cançons coincidents a la biblioteca"
 
+msgctxt "#16032"
+msgid "Could not initialise database."
+msgstr "No s'ha pogut inicialitzar la base de dades."
+
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "No s'ha pogut obrir la base de dades."
@@ -5604,10 +5668,6 @@ msgstr "Marca com a no visualitzat"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Edita el títol"
-
-msgctxt "#16106"
-msgid "Manage ..."
-msgstr "Gestió..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
@@ -5701,6 +5761,10 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Telecine invers"
 
+msgctxt "#16315"
+msgid "Lanczos3 optimised"
+msgstr "Lanczos3 optimitzat"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Auto"
@@ -5729,9 +5793,17 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
+msgctxt "#16323"
+msgid "Spline36 optimised"
+msgstr "Spline36 optimitzat"
+
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
+
+msgctxt "#16325"
+msgid "VDPAU - Bob"
+msgstr "VDPAU - Bob"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -6385,6 +6457,10 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Temps d'espera en iniciar la reproducció"
 
+msgctxt "#19171"
+msgid "Start playback minimised"
+msgstr "Inicia la reproducció minimitzada"
+
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Durada de l'instant d'enregistrament"
@@ -6452,6 +6528,10 @@ msgstr "S'està reestablint l'EPG"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Continua al darrer canal en iniciar"
+
+msgctxt "#19190"
+msgid "Minimised"
+msgstr "Minimitzat"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6581,10 +6661,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "No s'ha pogut activar cap afegitó PVR. Comprovau la vostra configuració o els registres per més informació."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Enregistrament avortat"
@@ -6608,6 +6684,10 @@ msgstr "Enregistrament suprimit"
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Tanca l'OSD del canal després de canviar canals"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates during playback"
+msgstr "Evita actualitzacions de l'EPG durant la reproducció"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
@@ -6641,17 +6721,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Iniciant els fils de segon pla"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "Cap complement PVR activat"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "El gestor PVR s'ha activat sense cap"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "complement PVR activat. Activau al menys un afegitó"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6765,17 +6837,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Tots els enregistraments"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "No s'ha trobat cap complement PVR"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Necessitau un sintonitzador, programari de rerefons, i un"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "complement del rerefons per poder utilitzar el PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -7444,6 +7508,14 @@ msgstr "Mostra la informació del temps"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Mostra la informació del temps"
+
+msgctxt "#20086"
+msgid "Show available disk space C: E: F:"
+msgstr "Mostra l'espai de disc disponible a C: E: F:"
+
+msgctxt "#20087"
+msgid "Show available disk space E: F: G:"
+msgstr "Mostra l'espai de disc disponible a E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8381,6 +8453,10 @@ msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Get fanart"
 
+msgctxt "#20414"
+msgid "Show fanart in video and music libraries"
+msgstr "Mostra el fanart a les biblioteques de vídeo i música"
+
 msgctxt "#20415"
 msgid "Scanning for new content"
 msgstr "S'està cercant nou contingut"
@@ -8663,7 +8739,7 @@ msgstr "Elimina recurs compartit"
 
 msgctxt "#21366"
 msgid "Subtitle folder"
-msgstr "Carpeta del subtítol"
+msgstr "Carpeta del subtítols"
 
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
@@ -9035,7 +9111,7 @@ msgstr "mesclat"
 
 msgctxt "#21460"
 msgid "Subtitle location"
-msgstr "Subtitle location"
+msgstr "Ubicació dels subtítols"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9461,6 +9537,10 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Guia"
 
+msgctxt "#22021"
+msgid "Allowed error in aspect ratio to minimise black bars"
+msgstr "Error permès en la relació d'aspecte per minimitzar les barres negres"
+
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Mostra els fitxers de vídeo en llistats"
@@ -9621,6 +9701,10 @@ msgctxt "#24009"
 msgid "Script"
 msgstr "Script"
 
+msgctxt "#24010"
+msgid "Visualisation"
+msgstr "Visualització"
+
 msgctxt "#24011"
 msgid "Add-on repository"
 msgstr "Repositori de complements"
@@ -9741,21 +9825,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Actualitzacions disponibles"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Les dependències no es compleixen"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "El complement no té l'estructura correcta"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s és utilitzat per la instal·lació dels següents complements"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Aquest complement no es pot desinstal·lar"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9872,10 +9944,6 @@ msgstr "(actual)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(a la llista negra)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "El complement s'ha marcat com a trencat en el repositori."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10008,10 +10076,6 @@ msgstr "Pregunta si es vol baixar el vídeo abans de reproduir-lo"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Reinicia el plugin per activar-lo"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10333,10 +10397,6 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
-msgctxt "#34111"
-msgid "When activated silence is output in order to keep alive receiver, otherwise sink is drained in idle state"
-msgstr "Quan està actiu es reprodueix el silenci per tal de mantenir despert el receptor, en cas contrari, en estat de repòs, la pica es drena."
-
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Reprodueix els sons de la interfície gràfica d'usuari"
@@ -10389,6 +10449,10 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "No s'han pogut inicialitzar els filtres/escaladors, tornem a l'escalat bilineal"
 
+msgctxt "#34402"
+msgid "Failed to initialise audio device"
+msgstr "No s'ha pogut inicialitzar el dispositiu d'àudio"
+
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Revisi la seva configuració d'àudio"
@@ -10420,6 +10484,10 @@ msgstr "Perifèrics"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Dispositiu genèric HID"
+
+msgctxt "#35002"
+msgid "Generic network adaptor"
+msgstr "Adaptador de xarxa genèric"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10477,6 +10545,10 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "ID del producte"
 
+msgctxt "#36000"
+msgid "Pulse-Eight CEC adaptor"
+msgstr "Adaptador CEC Pulse-Eight"
+
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
 msgstr "Nyxboard Pulse-Eight"
@@ -10496,6 +10568,10 @@ msgstr "Premeu el botó de comandament \"usuari\""
 msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Activa la commutació de comandes del costat"
+
+msgctxt "#36006"
+msgid "Could not open the adaptor"
+msgstr "No s'ha pogut obrir l'adaptador"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
@@ -10517,6 +10593,10 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "No s'ha pogut detectar el port CEC. Establiu-ho manualment."
 
+msgctxt "#36012"
+msgid "Could not initialise the CEC adaptor. Please check your settings."
+msgstr "No s'ha pogut inicialitzar l'adaptador CEC. Reviseu la vostra configuració."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "Número de port HDMI"
@@ -10524,6 +10604,10 @@ msgstr "Número de port HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Connectat"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
+msgstr "No s'ha pogut inicialitzar l'adaptador CEC: libCEC no s'ha trobat en el sistema."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10577,6 +10661,14 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Connexió perduda"
 
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adaptor"
+msgstr "Aquest usuari no té permisos per obrir l'adaptador CEC"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adaptor"
+msgstr "El port es troba ocupat. Només un programa pot accedir a l'adaptador CEC"
+
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Pausa la reproducció en canviar a una altra font"
@@ -10609,6 +10701,10 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Carpeta d'elements"
 
+msgctxt "#36042"
+msgid "Use limited colour range (16-235)"
+msgstr "Utilitza una gamma de colors limitada (16-235)"
+
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
 msgstr "Canvia l'aparença de la interfície d'usuari."
@@ -10619,7 +10715,7 @@ msgstr "No hi ha informació disponible"
 
 msgctxt "#36103"
 msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
-msgstr "Selecciona la pell per a la Interfície d'Usuari. Això definirà l'aparença de l'XBMC."
+msgstr "Seleccioneu la pell per a la interfície d'usuari. Això definirà l'aparença de l'XBMC."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -10683,11 +10779,11 @@ msgstr "Selecciona la teva zona horària actual."
 
 msgctxt "#36119"
 msgid "Select the default audio track when different language tracks are available."
-msgstr "Selecciona la pista d'àudio predeterminada quan hi han disponibles diferents pistes d'idiomes.\n\nSelecciona els subtítols predeterminats quan hi han diferents idiomes disponibles."
+msgstr "Selecciona la pista d'àudio predeterminada quan hi han disponibles diferents pistes d'idiomes."
 
 msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
-msgstr "Selecciona els subtítols predeterminats quan hi han diferents idiomes disponibles."
+msgstr "Seleccioneu els subtítols per defecte quan hi hagin diferents idiomes disponibles."
 
 msgctxt "#36121"
 msgid "No info available yet."
@@ -10725,6 +10821,10 @@ msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Estableix la quantitat de temps d'inactivitat requerit abans de mostrar el protector de pantalla."
 
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Selecciona el protector de pantalla. XBMC forçarà el protector de pantalla 'Dim' quan la reproducció de vídeo a pantalla completa està en pausa o un quadre de diàleg està actiu."
+
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
 msgstr "Canvia la configuració de protector de pantalla específica. Les opcions disponibles depenen del protector de pantalla utilitzada."
@@ -10732,6 +10832,10 @@ msgstr "Canvia la configuració de protector de pantalla específica. Les opcion
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Previsualitza l'estalvi de pantalla seleccionat."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
+msgstr "Si s'està reproduint música, l'XBMC començarà la visualització seleccionada en comptes de mostrar el protector de pantalla."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -10861,13 +10965,17 @@ msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
 msgstr "Pausa curta durant el canvi de freqüència d'actualització. Activar per ajustar automàticament la velocitat d'actualització que millor es correspon amb el vídeo que s'està reproduint. Això permet una reproducció de vídeo perfectament llisa, així com que com el material de vídeo es pugui gravar en una varietat de velocitats de quadres correctament aparellat amb la freqüència d'actualització de la pantalla que farà què es mostri correctament."
 
+msgctxt "#36166"
+msgid "Synchronise the video to the refresh rate of the monitor."
+msgstr "Sincronitzar el vídeo a la velocitat de refresc del monitor."
+
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "L'àudio ha d'estar sincronitzat i es pot fer mitjançant un nou mostreig, saltant-se/duplicant paquets o ajustant el rellotge si s'allnuya massa la sincronització."
 
-msgctxt "#36169"
-msgid "Resampling and other sound processing quality. Low quality is fast, higher quality will consume more CPU."
-msgstr "Resamplejat i altra qualitat de processament de so. La qualitat baixa és més ràpida i l'alta consumirà més CPU."
+msgctxt "#36168"
+msgid "Maximum video speed adjust to match actual screen refresh rate."
+msgstr "Ajust de velocitat de vídeo màxima per a fer coincidir amb la freqüència de refresc de la pantalla\n\nMáximo ajuste de la velocidad de vídeo para coincida con la frecuencia de refresco de la pantalla."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -10876,6 +10984,10 @@ msgstr "Permetre al reproductor de vídeo ignorar la relació d'aspecte dins una
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Selecciona el nivell de zoom que tindran els vídeos 4:3 mostrats en pantalles panoràmiques."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
+msgstr "La conversió de nivell d'estudi VDPAU proporciona un mètode perquè aplicacions avançades com l'XBMC puguin influir en la conversió d'espai de color."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -10951,7 +11063,7 @@ msgstr "No hi ha informació disponible"
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
-msgstr "Estableix un directori personalitzat per als subtítols, com pot ser en un recurs compartit."
+msgstr "Establiu un directori personalitzat per als subtítols. Aquest pot ser un recurs compartit."
 
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
@@ -10996,10 +11108,6 @@ msgstr "No hi ha informació disponible"
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "No hi ha informació disponible"
-
-msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR add-on is installed."
-msgstr "Habilitar les funcions de gravadora de vídeo personal (PVR) de l'XBMC. Per a això és necessari que s'hagi instal·lat com a mínim un complement PVR."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
@@ -11101,10 +11209,6 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Mostra l'últim canal vist al canviar al mode de TV en viu."
 
-msgctxt "#36229"
-msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
-msgstr "Mostra informació sobre la qualitat del senyal a la finestra d'informació de còdec (si és compatible amb el complement i back-end)."
-
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "No hi ha informació disponible"
@@ -11124,22 +11228,6 @@ msgstr "No hi ha informació disponible"
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Durada de l'enregistrament al prémer el botó de gravació o al crear un nou temporitzador manual. Per defecte 180 minuts."
-
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
-msgstr "Prioritat de l'enregistrament. Un nombre més alt significa una major prioritat. Per omissió és 50. No és compatible amb tots els complements i backends."
-
-msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
-msgstr "Elimina la gravació després d'aquest temps. Per omissió és 99 dies. No és compatible amb tots els complements i backends."
-
-msgctxt "#36237"
-msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
-msgstr "Inicia els enregistraments abans de l'hora actual. El valor per defecte és 2 minuts. No és compatible amb tots els complements i backends."
-
-msgctxt "#36238"
-msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
-msgstr "Finalitza les gravacions després de l'hora actual. El valor per defecte és 10 minuts. No és compatible amb tots els complements i backends."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11253,6 +11341,10 @@ msgctxt "#36266"
 msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
 msgstr "Quan s'afegeixen cançons a una llista de reproducció, es posen a la cua en lloc d'iniciar la reproducció immediatament."
 
+msgctxt "#36267"
+msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "L'XBMC llegirà la informació de ReplayGain codificada en els teus fitxers d'àudio a través d'un programa com l'MP3Gain i normalitzarà els nivells de so en concordança.\n\n\nXBMC leerá la información de repetición de ganancia codificada en tus archivos de audio por un programa como MP3Gain y normalizará el sonido en función de los valores obtenidos."
+
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Per omissió és 89 dB segons la norma. Canvieu-ho amb precaució."
@@ -11272,6 +11364,10 @@ msgstr "Atenuar suaument d'una pista d'àudio a una altra. Pots ajustar el valor
 msgctxt "#36272"
 msgid "Allow crassfading to occur when both tracks are from the same album."
 msgstr "Permetre el crossfading quan dues pistes són del mateix àlbum."
+
+msgctxt "#36273"
+msgid "Select the visualisation that will be displayed while listening to music."
+msgstr "Seleccioneu la visualització a mostrar durant l'escolta de música."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
@@ -11364,6 +11460,10 @@ msgstr "Seleccioneu la font utilitzada durant el karoake."
 msgctxt "#36296"
 msgid "Select the size of the font used during karoake."
 msgstr "Seleccioneu la mida de la font utilitzada durant el karoake."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karoake."
+msgstr "Seleccioneu el color de la font utilitzat durant el karoake."
 
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
@@ -11589,9 +11689,13 @@ msgctxt "#36353"
 msgid "No info available yet."
 msgstr "No hi ha informació disponible"
 
+msgctxt "#36354"
+msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimising other applications. Uses a bit more resources and playback may be slightly less smooth."
+msgstr "El principal benefici és per a sistemes multi-pantalla, on es pot utilitzar l'XBMC sense haver de minimitzar la resta d'aplicacions. Requereix una mica més de recursos i la reproducció por tornar-se un pèl menys fluida."
+
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "Amb la configuració multi-pantalla s'apaguen les pantalles on no es mostra l'XBMC."
+msgstr "En una configuració multi-pantalla, es desactiven les pantalles on no es mostra l'XBMC."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -11613,53 +11717,25 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "No hi ha informació disponible"
 
-msgctxt "#36361"
-msgid "Type of connection to the audio equipment."
-msgstr "Tipus de connexió amb l'equip d'àudio."
-
-msgctxt "#36362"
-msgid "Select your physical speaker layout."
-msgstr "Selecciona la disposició física d'altaveus."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Potencia els fluxos AC3 que s'han combinat a 2 canals."
 
-msgctxt "#36364"
-msgid "Upmix 2 channel stereo sources so the number of audio channels matches the number of speakers."
-msgstr "Divideix les fonts estèreo de 2 canals perquè el nombre de canals d'àudio coincideixi amb el nombre d'altaveus."
-
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
-msgstr "Selecciona aquesta opció si el teu receptor és capaç de descodificar fluxos d'AC3."
+msgstr "Seleccioneu aquesta opció si el vostre receptor és capaç de descodificar fluxos d'AC3."
 
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
-msgstr "Selecciona aquesta opció si el teu receptor és capaç de descodificar fluxos DTS."
-
-msgctxt "#36367"
-msgid "Select this option if your receiver is capable of decoding AAC streams."
-msgstr "Selecciona aquesta opció si el teu receptor és capaç de descodificar fluxos AAC."
-
-msgctxt "#36368"
-msgid "Select this option if your receiver is capable of decoding LPCM streams."
-msgstr "Selecciona aquesta opció si el teu receptor és capaç de descodificar fluxos LPCM."
+msgstr "Seleccioneu aquesta opció si el vostre receptor és capaç de descodificar fluxos DTS."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
-msgstr "Selecciona aquesta opció si el teu receptor és capaç de descodificar fluxos TrueHD."
+msgstr "Seleccioneu aquesta opció si el vostre receptor és capaç de descodificar fluxos TrueHD."
 
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
-msgstr "Selecciona aquesta opció si el teu receptor és capaç de descodificar fluxos DTS-HD."
-
-msgctxt "#36371"
-msgid "Select the device you use to play audio decoded by XBMC such as mp3's and FLAC."
-msgstr "Selecciona el dispositiu que utilitzes per reproduir l'àudio descodificat per l'XBMC com els MP3 i els FLAC."
-
-msgctxt "#36372"
-msgid "Select the device you use to play encoded formats, these are any of the formats checked above in the 'capable receiver' options."
-msgstr "Selecciona el dispositiu que utilitzes per reproduir qualsevol dels formats codificats marcats a dalt en les opcions de 'receptor compatible'."
+msgstr "Seleccioneu aquesta opció si el vostre receptor és capaç de descodificar fluxos DTS-HD."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11748,6 +11824,10 @@ msgstr "Directori utilitzat per guardar les imatges capturades des de l'XBMC."
 msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Especifica les biblioteques addicionals que s'inclouran al registre de depuració."
+
+msgctxt "#36395"
+msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
+msgstr "Obre el diàleg de Bloqueig Mestre, on pots definir les teves opcions de Bloqueig Mestre."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
@@ -11849,6 +11929,14 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr "No hi ha informació disponible"
 
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality"
+msgstr "Ometre el mesclador VDAPU estalvia recursos en sistemes de baixa potència, però redueix lleugerament la qualitat d'imatge"
+
+msgctxt "#36422"
+msgid "Enable hardware video decode using AMLogic decoder"
+msgstr "Activa el maquinari de descodificació de vídeo utilitzant el descodificador AMLogic"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Mode estereoscòpic (actual)"
@@ -11915,7 +12003,7 @@ msgstr "Desactiva el mode estereoscòpic quan s'atura la reproducció"
 
 msgctxt "#36527"
 msgid "This video is stereoscopic. Select playback mode"
-msgstr "Aquest vídeo és estereoscòpic. Selecciona el mode de reproducció"
+msgstr "Aquest vídeo és estereoscòpic. Seleccioneu el mode de reproducció"
 
 msgctxt "#36528"
 msgid "Select stereoscopic mode"
@@ -11965,6 +12053,18 @@ msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "Permet als clients AirPlay controlar el volum."
 
+msgctxt "#36542"
+msgid "Output to both analogue (headphones) and HDMI"
+msgstr "Extreu-lo tant per analògic (auriculars) com per HDMI"
+
+msgctxt "#36543"
+msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr "Activa-ho per potenciar els diàlegs en comparació amb els so de fons quan es redueixi el nombre de canals d'àudio"
+
+msgctxt "#36544"
+msgid "Enable hardware decoding of video files."
+msgstr "Activa el maquinari de descodificació d'arxius de vídeo."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Discapacitat visual)"
@@ -11996,3 +12096,15 @@ msgstr "Darrer perfil utilitzat"
 msgctxt "#37015"
 msgid "Browse Into"
 msgstr "Buscar dins"
+
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "Seleccioneu aquesta opció si el vostre receptor és capaç de descodificar fluxos d'E-AC3."
+
+msgctxt "#37017"
+msgid "Dual audio output"
+msgstr "Sortida d'àudio dual"
+
+msgctxt "#37018"
+msgid "Boost centre channel when downmixing"
+msgstr "Potencia el canal central al reduir el nombre de canals"

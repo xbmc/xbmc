@@ -1045,10 +1045,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "العلامات"
 
-msgctxt "#299"
-msgid "AAC capable receiver"
-msgstr "لاقط يدعم نظام (AAC)"
-
 msgctxt "#300"
 msgid "MP1 capable receiver"
 msgstr "لاقط يدعم نظام (MP1)"
@@ -1185,14 +1181,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "تحويل فراميرات"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "مخرج الصوت"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "بصري/محوري"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "فنانين مختلفين"
@@ -1217,17 +1205,9 @@ msgctxt "#345"
 msgid "Year"
 msgstr "السنة"
 
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "دفع مستوى الصوت على downmix"
-
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "لاقط يدعم نظام (DTS-HD)"
-
-msgctxt "#348"
-msgid "Multichannel LPCM capable receiver"
-msgstr "لاقط يدعم نظام (LPCM) متعدد القنوات"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1504,10 +1484,6 @@ msgstr "الصغرى"
 msgctxt "#419"
 msgid "High"
 msgstr "العظمى"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2861,10 +2837,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "ملحقات البرامج"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "تعيين صورة مصغرة للملحق"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "إعدادت الملحق"
@@ -3561,10 +3533,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "فشل العديد من محاولات تسجيل الدخول."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "النظام سوف يغلق الان."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "العنصر مقفل"
@@ -3792,10 +3760,6 @@ msgstr "اختبار وتطبيق الدقة"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "حفظ الدقة؟"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "هل ترغب في الحفاظ على هذه الدقة؟"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -6125,10 +6089,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "دليل القنوات EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "قد لا تتوفر إضافة PVR. افحص إعداداتك أو السجل لمزيد من المعلومات."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "تم ايقاف التسجيل"
@@ -6185,17 +6145,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "بدء مواضيع الخلفية"
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "لا يوجد إضافة PVR ممكنة"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "تم تمكين مدير PVR  بدو أي"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "تمكين إضافة PVR. تمكين إضاقة واحدة على الأقل"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6309,17 +6261,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* كل التسجيلات"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "لم يتم العثور على أي إضافات PVR. "
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "تحتاج معدل, برنامج خلفية, و"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "إضافة للخلفية لتكون قادر على استخدام PVR"
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9053,21 +8997,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "التحديثات متوفرة"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "عدم توافق التطابقات"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "تركيبة الملحق غير صحيحة"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s مستخدم من قبل الملحق المثبت"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "لايمكن إزالة هذا الملحق"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9184,10 +9116,6 @@ msgstr "(الحالي)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(القائمة السوداء)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "ملحوظة المكونات غير صالحة في المخزن"
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9320,10 +9248,6 @@ msgstr "اسأل للتحميل قبل تشغيل الفيديو"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "المقاطع"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "إعادة تشغيل الملحق لتمكينه"
 
 msgctxt "#33018"
 msgid "Tonight"

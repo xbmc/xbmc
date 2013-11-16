@@ -949,14 +949,6 @@ msgctxt "#335"
 msgid "Start"
 msgstr "စမည်"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "audio ထွက်ရှိမှု့"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Optical/Coax"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "အမျိုးမျိုးသော အနုပညာရှင် "
@@ -1204,10 +1196,6 @@ msgstr "အနိမ့်စား"
 msgctxt "#419"
 msgid "High"
 msgstr "အမြင့်စား"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2621,10 +2609,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "စကားဝှက်ပြန်လည်ကြိုးစားခြင်းသည် သတ်မှတ်ထားသည်ထက်ကျော်လွန်သွားပါပြီ။"
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "စက်သည် ယခုပိတ်သွားပါလိမ့်မည်"
-
 msgctxt "#12358"
 msgid "Password entry was blank. Try again."
 msgstr "စကားဝှက်သည်အလွတ်ဖြစ်နေသည်။ ပြန်ကြိုးစားပါ"
@@ -2724,10 +2708,6 @@ msgstr "အမြဲဖွင့်ထားမည်"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "resolution ကိုသိမ်းမလား။"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "ဒီ resolution ကိုပဲထားမလား။"
 
 msgctxt "#13113"
 msgid "Disabled"
@@ -4012,10 +3992,6 @@ msgstr "PIN မမှန်ကန်ပါ"
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "ရိုက်ထည့်သော PIN နံပါတ်မှားယွင်းနေသည်"
-
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "PVR add-on ရှာမတွေ့ပါ"
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -5329,10 +5305,6 @@ msgctxt "#24094"
 msgid "(current)"
 msgstr "(ယခု)"
 
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "သိမ်းဆည်းထားသော နေရာရှိ Add-on သည် သုံးမရတော့ပါ။"
-
 msgctxt "#24098"
 msgid "Broken"
 msgstr "ပျက်စီးသွားသော"
@@ -5684,22 +5656,6 @@ msgstr "ရုပ်ရှင် အချက်အလက် များ ပု
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
 msgstr "တီဗီ အစီအစဉ် အချက်အလက် များ ပုံမှန် ရယူမည့် ရင်းမြစ် ရွေးချယ်ပါ။ ပြုပြင်ပြောင်းလဲ လို့ရသည်များကို Add-ons မန်နေဂျာ တွင် ကြည့်ပါ။"
-
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all add-ons and backends."
-msgstr "ကူးယူမည့် ဦးစားပေး အစီအစဉ်။ နံပတ် အများဆုံးသည် အမြင့်ဆုံး ဦးစားပေးဖြစ်သည်။ ပုံမှန်သည် 50 ဖြစ်သည်။ Add-ons အားလုံး နှင့် backends များမှ အထောက်အပံ့ မပေးပါ။"
-
-msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all add-ons and backends."
-msgstr "ဒီ အချိန် ရောက်လျှင် ကူးထားသည်များကို ဖျက်ပါ။ ပုံမှန် အချိန် သည် 99 ရက်ဖြစ်သည်။ Add-on များ နှင့် backends မှ  အထောက်အပံ့ မပေးပါ။"
-
-msgctxt "#36237"
-msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all add-ons and backends."
-msgstr "တကယ့်အချိန် မစခင်မှာ စပြီး ကူးယူပါ။ ပုံမှန် သည် 2 မိနစ်ဖြစ်သည်။ Add-on များ နှင့် backends မှ  အထောက်အပံ့ မပေးပါ။"
-
-msgctxt "#36238"
-msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all add-ons and backends."
-msgstr "ပြီးသွားသော်လျှင် ဒီ အချိန်ရောက်မှ ကူးတာကို ရပ်ပါ။ ပုံမှန် သည် 10 မိနစ် ဖြစ်သည်။ Add-on များ နှင့် backends မှ  အထောက်အပံ့ မပေးပါ။"
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."

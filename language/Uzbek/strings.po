@@ -509,6 +509,10 @@ msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Fayl jarayonlarini bekor qilish"
 
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Ekran o'lchamlari"
@@ -801,6 +805,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanallar soni"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS qo'llab-quvvatlaydigan priyomnik"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -937,6 +945,18 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Xatcho'plar"
 
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 qo'llab-quvvatlaydigan priyomnik"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 qo'llab-quvvatlaydigan priyomnik"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 qo'llab-quvvatlaydigan priyomnik"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Kechiktirish"
@@ -944,6 +964,10 @@ msgstr "Kechiktirish"
 msgctxt "#304"
 msgid "Language"
 msgstr "Til"
+
+msgctxt "#305"
+msgid "Enabled"
+msgstr "Yoqilgan"
 
 msgctxt "#309"
 msgid "User Interface language"
@@ -1045,14 +1069,6 @@ msgctxt "#335"
 msgid "Start"
 msgstr "Boshlash"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Audio chiqarish"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Optik/Coax"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Har xil artistlar"
@@ -1072,6 +1088,14 @@ msgstr "Aktyorlar"
 msgctxt "#345"
 msgid "Year"
 msgstr "Yil"
+
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD qo'llab-quvvatlaydigan priyomnik"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD qo'llab-quvvatlaydigan priyomnik"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1217,10 +1241,6 @@ msgctxt "#419"
 msgid "High"
 msgstr "Yuqori"
 
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
-
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Albom ma'lumotini o'chirish"
@@ -1297,9 +1317,41 @@ msgctxt "#446"
 msgid "DVD"
 msgstr "DVD"
 
+msgctxt "#449"
+msgid "Enabled"
+msgstr "Yoqilgan"
+
+msgctxt "#450"
+msgid "Columns"
+msgstr "Ustunlar"
+
+msgctxt "#451"
+msgid "Row 1 address"
+msgstr "Satr 1 manzil"
+
+msgctxt "#452"
+msgid "Row 2 address"
+msgstr "Satr 2 manzil"
+
+msgctxt "#453"
+msgid "Row 3 address"
+msgstr "Satr 3 manzil"
+
+msgctxt "#454"
+msgid "Row 4 address"
+msgstr "Satr 4 manzil"
+
+msgctxt "#455"
+msgid "Rows"
+msgstr "Satrlar"
+
 msgctxt "#456"
 msgid "Mode"
 msgstr "Usul"
+
+msgctxt "#460"
+msgid "Audio stream"
+msgstr "Audio oqim"
 
 msgctxt "#461"
 msgid "[active]"
@@ -1316,6 +1368,10 @@ msgstr "Ravshanlik"
 msgctxt "#465"
 msgid "Contrast"
 msgstr "Kontrast"
+
+msgctxt "#466"
+msgid "Gamma"
+msgstr "Gamma"
 
 msgctxt "#467"
 msgid "Type"
@@ -1380,6 +1436,14 @@ msgstr "Avtomatik ravishda keyingi qo'shiqni ijro ettirish"
 msgctxt "#493"
 msgid "Advanced options (Experts Only!)"
 msgstr "Qo'shimcha parametrlar (Ekspertlar uchun!)"
+
+msgctxt "#496"
+msgid "Calibration"
+msgstr "Kalibrlash"
+
+msgctxt "#497"
+msgid "Show file extensions"
+msgstr "Fayl kengaytmalarini ko'rsatish"
 
 msgctxt "#498"
 msgid "Sort by: Type"
@@ -1589,6 +1653,10 @@ msgctxt "#574"
 msgid "Country"
 msgstr "Davlat"
 
+msgctxt "#580"
+msgid "Sort direction"
+msgstr "Saralash yo'nalishi"
+
 msgctxt "#581"
 msgid "Sort method"
 msgstr "Saralash usuli"
@@ -1596,6 +1664,10 @@ msgstr "Saralash usuli"
 msgctxt "#582"
 msgid "View mode"
 msgstr "Ko'rish usuli"
+
+msgctxt "#584"
+msgid "Ascending"
+msgstr "O‘sish tartibida"
 
 msgctxt "#586"
 msgid "Edit playlist"

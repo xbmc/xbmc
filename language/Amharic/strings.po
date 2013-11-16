@@ -1025,10 +1025,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "የ ክፈፍ መጠን መቀየሪያ"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "የድምፅ ውጤት "
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "የተለያዩ ከያኒዎች"
@@ -1300,10 +1296,6 @@ msgstr "ዝቅተኛ "
 msgctxt "#419"
 msgid "High"
 msgstr "ከፍተኛ "
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2673,10 +2665,6 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "ገጽታ ማሰናጃ "
 
-msgctxt "#10036"
-msgid "Level: Basic"
-msgstr "ደረጃ: መሰረታዊ"
-
 msgctxt "#10043"
 msgid "Help"
 msgstr "እርዳታ"
@@ -2924,10 +2912,6 @@ msgstr "ፍቃድ ተከልክሏል "
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "የ መግቢያ ቃል እንደገና መሞከሪያው ጊዜው አልፏል"
-
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "ስርአቱ አሁን ይጠፋል "
 
 msgctxt "#12348"
 msgid "Item locked"

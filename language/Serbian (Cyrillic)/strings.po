@@ -1013,14 +1013,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Конверзија брзине сличица"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Излаз звука"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Дигитални"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Различити извођачи"
@@ -1044,10 +1036,6 @@ msgstr "Глумци"
 msgctxt "#345"
 msgid "Year"
 msgstr "Година"
-
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Појачај ниво звука при пребацивању у мањи бр. канала"
 
 msgctxt "#350"
 msgid "Programs"
@@ -2597,10 +2585,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Додаци за програм"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Постави сличицу додатка"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Поставке додатка"
@@ -3253,10 +3237,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Прекомерни број покушаја уноса лозинке."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "Систем ће сада бити искључен."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Ставка је закључана"
@@ -3464,10 +3444,6 @@ msgstr "Испробај и примени резолуцију"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Сачувати резолуцију?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "Желите ли да задржите ову резолуцију?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -7276,10 +7252,6 @@ msgstr "Питај за преузимање пре репродукције ф�
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Клипови"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Поново покрените додатак за активирање"
 
 msgctxt "#33018"
 msgid "Tonight"

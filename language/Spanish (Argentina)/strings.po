@@ -1165,14 +1165,6 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversión de imágenes por segundo"
 
-msgctxt "#337"
-msgid "Audio output"
-msgstr "Salida de audio"
-
-msgctxt "#339"
-msgid "Optical/Coax"
-msgstr "Óptica/Coaxial"
-
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Varios intérpretes"
@@ -1196,10 +1188,6 @@ msgstr "Actores"
 msgctxt "#345"
 msgid "Year"
 msgstr "Año"
-
-msgctxt "#346"
-msgid "Boost volume level on downmix"
-msgstr "Aumentar el volumen al hacer un downmix"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1468,10 +1456,6 @@ msgstr "Min"
 msgctxt "#419"
 msgid "High"
 msgstr "Max"
-
-msgctxt "#420"
-msgid "HDMI"
-msgstr "HDMI"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2809,10 +2793,6 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Add-ons de aplicaciones"
 
-msgctxt "#1044"
-msgid "Set plugin thumb"
-msgstr "Establecer miniatura de plugin"
-
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Configuración del Add-on"
@@ -3609,10 +3589,6 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Límite de intentos de contraseña excedidos."
 
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr "El equipo se apagará ahora."
-
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Elemento bloqueado"
@@ -3864,10 +3840,6 @@ msgstr "Probar y aplicar resolución"
 msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "¿Grabar resolución?"
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr "¿Deseas mantener esta resolución?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -6277,10 +6249,6 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "No se pudo activar ningún add-on PVR. Revisa tu configuración o consulta el log para más detalles."
-
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Grabación abortada"
@@ -6337,17 +6305,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Comenzando hilos en segundo plano "
 
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr "No hay ningún add-on PVR activo"
-
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "El gestor PVR se ha activado sin ningún"
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "add-on PVR activado. Active al menos un add-on"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6461,17 +6421,9 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Todas las grabaciones"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr "No se encontraron add-ons de PVR"
-
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Es necesario una sintonizadora, un soft backend y un"
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr "add-on para el backend para usar el PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9353,21 +9305,9 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Actualizaciones disponibles"
 
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr "Dependencias incumplidas"
-
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "El Add-on no tiene la estructura correcta"
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr "%s es usado por los siguientes add-ons instalados"
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr "Este add-on no se puede desinstalar"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9484,10 +9424,6 @@ msgstr "(actual)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(en la lista negra)"
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr "Add-on marcado como roto en el repositorio"
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9620,10 +9556,6 @@ msgstr "Preguntar si deseamos descargar video antes de reproducirlo"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr "Es necesario reiniciar el plugin"
 
 msgctxt "#33018"
 msgid "Tonight"
