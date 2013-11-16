@@ -418,6 +418,8 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
 {
   CSingleLock lock(m_critSection);
   addons.clear();
+  if (!m_cp_context)
+    return false;
   cp_status_t status;
   int num;
   CStdString ext_point(TranslateType(type));
