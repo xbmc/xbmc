@@ -4204,7 +4204,15 @@ void COMXPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 
   CStdString retVal;
   if (m_pDemuxer && (m_CurrentVideo.id != -1))
+  {
     m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
+    CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
+    if (stream)
+    {
+      info.width  = stream->iWidth;
+      info.height = stream->iHeight;
+    }
+  }
   info.videoCodecName = retVal;
   info.videoAspectRatio = g_renderManager.GetAspectRatio();
   g_renderManager.GetVideoRect(info.SrcRect, info.DestRect);
@@ -4482,28 +4490,6 @@ bool COMXPlayer::Record(bool bOnOff)
     return true;
   }
   return false;
-}
-
-int COMXPlayer::GetPictureWidth()
-{
-  if (m_pDemuxer && (m_CurrentVideo.id != -1))
-  {
-    CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
-    if (stream)
-      return stream->iWidth;
-  }
-  return 0;
-}
-
-int COMXPlayer::GetPictureHeight()
-{
-  if (m_pDemuxer && (m_CurrentVideo.id != -1))
-  {
-    CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
-    if (stream)
-      return stream->iHeight;
-  }
-  return 0;
 }
 
 bool COMXPlayer::GetStreamDetails(CStreamDetails &details)

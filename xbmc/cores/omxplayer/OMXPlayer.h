@@ -238,8 +238,6 @@ public:
   virtual int GetSourceBitrate();
   virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
 
-  virtual int GetPictureWidth();
-  virtual int GetPictureHeight();
   virtual bool GetStreamDetails(CStreamDetails &details);
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
 

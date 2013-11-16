@@ -84,7 +84,6 @@ public:
   int   GetAudioStream();
   int   GetAudioStreamCount();
   void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
-  int   GetBitsPerSample();
   int   GetCacheLevel() const;
   float GetCachePercentage() const;
   int   GetChapterCount();
@@ -94,12 +93,9 @@ public:
   void  GetDeinterlaceModes(std::vector<int> &deinterlaceModes);
   void  GetGeneralInfo( CStdString& strVideoInfo);
   float GetPercentage() const;
-  int   GetPictureHeight();
-  int   GetPictureWidth();
   CStdString GetPlayerState();
   CStdString GetPlayingTitle();
   void  GetRenderFeatures(std::vector<int> &renderFeatures);
-  int   GetSampleRate();
   void  GetScalingMethods(std::vector<int> &scalingMethods);
   bool  GetStreamDetails(CStreamDetails &details);
   int   GetSubtitle();
