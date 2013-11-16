@@ -22,6 +22,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "test/TestUtils.h"
+#include "utils/StringUtils.h"
 
 #include "gtest/gtest.h"
 
@@ -36,7 +37,7 @@ protected:
         CXBMCTestUtils::Instance().getAdvancedSettingsFiles();
       std::vector<CStdString> guisettings =
         CXBMCTestUtils::Instance().getGUISettingsFiles();
-      
+
       std::vector<CStdString>::iterator it;
       for (it = guisettings.begin(); it < guisettings.end(); it++)
         CSettings::Get().Load(*it);
@@ -45,7 +46,7 @@ protected:
         g_advancedSettings.ParseSettingsFile(*it);
 
       CSettings::Get().SetLoaded();
-    }    
+    }
   }
 
   ~TestFileFactory()
