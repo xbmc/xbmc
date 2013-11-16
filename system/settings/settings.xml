@@ -235,7 +235,7 @@
     </category>
     <category id="screensaver" label="360" help="36128">
       <group id="1">
-        <setting id="screensaver.mode" type="addon" label="356" help="36129">
+        <setting id="screensaver.mode" type="addon" label="356" help="36130">
           <level>0</level>
           <default>screensaver.xbmc.builtin.dim</default>
           <constraints>
@@ -247,7 +247,7 @@
           </updates>
           <control type="button" format="addon" />
         </setting>
-        <setting id="screensaver.settings" parent="screensaver.mode" type="action" label="21417" help="36130">
+        <setting id="screensaver.settings" parent="screensaver.mode" type="action" label="21417" help="36131">
           <level>0</level>
           <dependencies>
             <dependency type="enable">
@@ -259,14 +259,14 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="screensaver.preview" type="action" parent="screensaver.mode" label="1000" help="36131">
+        <setting id="screensaver.preview" type="action" parent="screensaver.mode" label="1000" help="36132">
           <level>0</level>
           <dependencies>
             <dependency type="enable" setting="screensaver.mode" operator="!is"></dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="screensaver.time" type="integer" label="355" help="36132">
+        <setting id="screensaver.time" type="integer" label="355" help="36129">
           <level>0</level>
           <default>3</default>
           <constraints>
