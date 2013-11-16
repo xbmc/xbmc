@@ -1543,6 +1543,40 @@ void CFileItem::SetFromSong(const CSong &song)
   FillInMimeType(false);
 }
 
+std::string CFileItem::GetOpticalMediaPath() const
+{
+  std::string path;
+  std::string dvdPath;
+  path = URIUtils::AddFileToFolder(GetPath(), "VIDEO_TS.IFO");
+  if (CFile::Exists(path))
+    dvdPath = path;
+  else
+  {
+    dvdPath = URIUtils::AddFileToFolder(GetPath(), "VIDEO_TS");
+    path = URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO");
+    dvdPath.clear();
+    if (CFile::Exists(path))
+      dvdPath = path;
+  }
+#ifdef HAVE_LIBBLURAY
+  if (dvdPath.empty())
+  {
+    path = URIUtils::AddFileToFolder(GetPath(), "index.bdmv");
+    if (CFile::Exists(path))
+      dvdPath = path;
+    else
+    {
+      dvdPath = URIUtils::AddFileToFolder(GetPath(), "BDMV");
+      path = URIUtils::AddFileToFolder(dvdPath, "index.bdmv");
+      dvdPath.clear();
+      if (CFile::Exists(path))
+        dvdPath = path;
+    }
+  }
+#endif
+  return dvdPath;
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 /////
 ///// CFileItemList
@@ -2359,35 +2393,8 @@ void CFileItemList::StackFolders()
         // check for dvd folders
         if (!bMatch)
         {
-          CStdString path;
-          CStdString dvdPath;
-          path = URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS.IFO");
-          if (CFile::Exists(path))
-            dvdPath = path;
-          else
-          {
-            dvdPath = URIUtils::AddFileToFolder(item->GetPath(), "VIDEO_TS");
-            path = URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO");
-            dvdPath.clear();
-            if (CFile::Exists(path))
-              dvdPath = path;
-          }
-#ifdef HAVE_LIBBLURAY
-          if (dvdPath.empty())
-          {
-            path = URIUtils::AddFileToFolder(item->GetPath(), "index.bdmv");
-            if (CFile::Exists(path))
-              dvdPath = path;
-            else
-            {
-              dvdPath = URIUtils::AddFileToFolder(item->GetPath(), "BDMV");
-              path = URIUtils::AddFileToFolder(dvdPath, "index.bdmv");
-              dvdPath.clear();
-              if (CFile::Exists(path))
-                dvdPath = path;
-            }
-          }
-#endif
+          std::string dvdPath = item->GetOpticalMediaPath();
+
           if (!dvdPath.empty())
           {
             // NOTE: should this be done for the CD# folders too?
