@@ -1186,7 +1186,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       // since we add the drive status and disc name to the source
       // "Name (Drive Status/Disc Name)"
       size_t iPos = strName.rfind('(');
-      if (iPos > 1)
+      if (iPos != std::string::npos && iPos > 1)
         strName = strName.substr(0, iPos - 1);
     }
     if (strPath.Equals(strName))
@@ -1393,7 +1393,7 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
 void CUtil::ForceForwardSlashes(CStdString& strPath)
 {
   size_t iPos = strPath.rfind('\\');
-  while (iPos > 0)
+  while (iPos != string::npos)
   {
     strPath.at(iPos) = '/';
     iPos = strPath.rfind('\\');
