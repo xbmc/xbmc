@@ -56,13 +56,16 @@ class CJNISurface;
 class CJNISurfaceTexture;
 class CWinSystemEGL;
 class CAdvancedSettings;
+class CApplication;
+class CApplicationMessenger;
 
 using namespace android;
 
-struct tex_slot
+struct stSlot
 {
   GLuint texid;
   EGLImageKHR eglimg;
+  int use_cnt;
 };
 
 struct Frame
@@ -91,11 +94,14 @@ public:
   MediaBuffer* getBuffer(size_t size);
   bool inputBufferAvailable();
 
+  stSlot* getSlot(EGLImageKHR eglimg);
+  stSlot* getFreeSlot();
+
   void loadOESShader(GLenum shaderType, const char* pSource, GLuint* outShader);
   void createOESProgram(const char* pVertexSource, const char* pFragmentSource, GLuint* outPgm);
   void OES_shader_setUp();
   void InitializeEGL(int w, int h);
-  void UninitializeEGL();
+  void ReleaseEGL();
 
 public:
   CStageFrightDecodeThread* decode_thread;
@@ -109,6 +115,8 @@ public:
   GLint mTexSamplerHandle;
   GLint mTexMatrixHandle;
 
+  CApplication* m_g_application;
+  CApplicationMessenger* m_g_applicationMessenger;
   CWinSystemEGL* m_g_Windowing;
   CAdvancedSettings* m_g_advancedSettings;
 
@@ -118,13 +126,11 @@ public:
   EGLContext eglContext;
   bool eglInitialized;
 
-  tex_slot slots[NUMFBOTEX];
-  std::list< std::pair<EGLImageKHR, int> > free_queue;
-  std::list< std::pair<EGLImageKHR, int> > busy_queue;
+  stSlot texslots[NUMFBOTEX];
 
   sp<MetaData> meta;
   int64_t framecount;
-  std::map<int64_t, Frame*> in_queue;
+  std::list<Frame*> in_queue;
   std::map<int64_t, Frame*> out_queue;
   CCriticalSection in_mutex;
   CCriticalSection out_mutex;
@@ -158,8 +164,9 @@ public:
   CJNISurface* mSurface;
   sp<ANativeWindow> mVideoNativeWindow;
 
-  bool InitStagefrightSurface();
-  void UninitStagefrightSurface();
-  void UpdateStagefrightTexture();
-  void GetStagefrightTransformMatrix(float* transformMatrix);
+  static void  CallbackInitSurfaceTexture(void*);
+  bool InitSurfaceTexture();
+  void ReleaseSurfaceTexture();
+  void UpdateSurfaceTexture();
+  void GetSurfaceTextureTransformMatrix(float* transformMatrix);
 };

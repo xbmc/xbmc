@@ -32,6 +32,8 @@
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecStageFright.h"
 #include "utils/log.h"
+#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 
@@ -108,7 +110,7 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       return false;
     m_stf_dll->EnableDelayedUnload(false);
 
-    m_stf_handle = m_stf_dll->create_stf(&g_Windowing, &g_advancedSettings);
+    m_stf_handle = m_stf_dll->create_stf(&g_application, &CApplicationMessenger::Get(), &g_Windowing, &g_advancedSettings);
 
     if (!m_stf_dll->stf_Open(m_stf_handle, hints))
     {
@@ -135,7 +137,7 @@ void CDVDVideoCodecStageFright::Dispose()
   }
   if (m_stf_handle)
   {
-    m_stf_dll->stf_Close(m_stf_handle);
+    m_stf_dll->stf_Dispose(m_stf_handle);
     m_stf_dll->destroy_stf(m_stf_handle);
     m_stf_handle = NULL;
   }

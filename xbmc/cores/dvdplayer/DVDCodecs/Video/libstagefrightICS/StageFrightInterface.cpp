@@ -24,9 +24,9 @@
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 
-void* create_stf(CWinSystemEGL* windowing, CAdvancedSettings* advsettings)
+void* create_stf(CApplication* application, CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings)
 {
-  return (void*)new CStageFrightVideo(windowing, advsettings);
+  return (void*)new CStageFrightVideo(application, applicationMessenger, windowing, advsettings);
 }
 
 void destroy_stf(void* stf)
@@ -39,9 +39,9 @@ bool stf_Open(void* stf, CDVDStreamInfo &hints)
   return ((CStageFrightVideo*)stf)->Open(hints);
 }
 
-void stf_Close(void* stf)
+void stf_Dispose(void* stf)
 {
-  ((CStageFrightVideo*)stf)->Close();
+  ((CStageFrightVideo*)stf)->Dispose();
 }
 
 int  stf_Decode(void* stf, uint8_t *pData, int iSize, double dts, double pts)

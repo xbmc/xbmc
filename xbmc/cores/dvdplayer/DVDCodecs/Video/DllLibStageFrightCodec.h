@@ -27,6 +27,8 @@
 #include "DynamicDll.h"
 #include "DVDVideoCodec.h"
 
+class CApplication;
+class CApplicationMessenger;
 class CWinSystemEGL;
 class CAdvancedSettings;
 
@@ -35,11 +37,11 @@ class DllLibStageFrightCodecInterface
 public:
   virtual ~DllLibStageFrightCodecInterface() {}
 
-  virtual void* create_stf(CWinSystemEGL* windowing, CAdvancedSettings* advsettings)=0;
+  virtual void* create_stf(CApplication* application, CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings)=0;
   virtual void destroy_stf(void*)=0;
   
   virtual bool stf_Open(void*, CDVDStreamInfo &hints) = 0;
-  virtual void stf_Close(void*) = 0;
+  virtual void stf_Dispose(void*) = 0;
   virtual int  stf_Decode(void*, uint8_t *pData, int iSize, double dts, double pts) = 0;
   virtual void stf_Reset(void*) = 0;
   virtual bool stf_GetPicture(void*, DVDVideoPicture *pDvdVideoPicture) = 0;
@@ -54,10 +56,10 @@ public:
 class DllLibStageFrightCodec : public DllDynamic, DllLibStageFrightCodecInterface
 {
   DECLARE_DLL_WRAPPER(DllLibStageFrightCodec, DLL_PATH_LIBSTAGEFRIGHTICS)
-  DEFINE_METHOD2(void*, create_stf, (CWinSystemEGL* p1, CAdvancedSettings* p2))
+  DEFINE_METHOD4(void*, create_stf, (CApplication* p1, CApplicationMessenger* p2, CWinSystemEGL* p3, CAdvancedSettings* p4))
   DEFINE_METHOD1(void, destroy_stf, (void* p1))
   DEFINE_METHOD2(bool, stf_Open, (void* p1, CDVDStreamInfo &p2))
-  DEFINE_METHOD1(void, stf_Close, (void* p1))
+  DEFINE_METHOD1(void, stf_Dispose, (void* p1))
   DEFINE_METHOD5(int, stf_Decode, (void* p1, uint8_t *p2, int p3, double p4, double p5))
   DEFINE_METHOD1(void, stf_Reset, (void* p1))
   DEFINE_METHOD2(bool, stf_GetPicture, (void* p1, DVDVideoPicture * p2))
@@ -70,7 +72,7 @@ class DllLibStageFrightCodec : public DllDynamic, DllLibStageFrightCodecInterfac
     RESOLVE_METHOD(create_stf)
     RESOLVE_METHOD(destroy_stf)
     RESOLVE_METHOD(stf_Open)
-    RESOLVE_METHOD(stf_Close)
+    RESOLVE_METHOD(stf_Dispose)
     RESOLVE_METHOD(stf_Decode)
     RESOLVE_METHOD(stf_Reset)
     RESOLVE_METHOD(stf_GetPicture)

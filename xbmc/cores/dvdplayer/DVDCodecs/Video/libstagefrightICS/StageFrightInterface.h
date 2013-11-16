@@ -23,16 +23,18 @@
 #include "DVDVideoCodec.h"
 
 class CStageFrightVideo;
+class CApplication;
+class CApplicationMessenger;
 class CWinSystemEGL;
 class CAdvancedSettings;
 
 extern "C"
 {
-  void* create_stf(CWinSystemEGL* windowing, CAdvancedSettings* advsettings);
+  void* create_stf(CApplication* application, CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings);
   void destroy_stf(void*);
 
   bool stf_Open(void*, CDVDStreamInfo &hints);
-  void stf_Close(void*);
+  void stf_Dispose(void*);
   int  stf_Decode(void*, uint8_t *pData, int iSize, double dts, double pts);
   void stf_Reset(void*);
   bool stf_GetPicture(void*, DVDVideoPicture *pDvdVideoPicture);
