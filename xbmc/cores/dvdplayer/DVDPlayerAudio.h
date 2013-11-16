@@ -139,7 +139,6 @@ public:
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
 
-  CPTSOutputQueue m_ptsOutput;
   CPTSInputQueue  m_ptsInput;
 
   double GetCurrentPts()                            { return m_dvdAudio.GetPlayingPts(); }
