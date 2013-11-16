@@ -69,27 +69,35 @@ public:
     m_count++;
   }
 
+  void    Adjust(double error)
+  {
+    m_buffer += error * m_count;
+    m_error  += error;
+  }
+
   void    Flush()
   {
     m_buffer = 0.0f;
     m_count  = 0;
+    m_error  = 0.0;
     m_timer.Set(2000);
   }
 
   double  Get()
   {
-    if(m_count)
-      return m_buffer / m_count;
-    else
-      return 0.0;
+    return m_error;
   }
 
   bool    Get(double& error)
   {
     if(m_timer.IsTimePast())
     {
-      error = Get();
+      if(m_count)
+        error = m_buffer / m_count;
+      else
+        error = 0.0;
       Flush();
+      m_error = error;
       return true;
     }
     else
@@ -98,6 +106,7 @@ public:
 
   double               m_buffer; //place to store average errors
   int                  m_count;  //number of errors stored
+  double               m_error;  //last stored error
   XbmcThreads::EndTime m_timer;
 };
 
@@ -216,8 +225,6 @@ protected:
   int    m_synctype;
   int    m_setsynctype;
   int    m_prevsynctype; //so we can print to the log
-
-  double m_error;    //last average error
 
   void   SetSyncType(bool passthrough);
   void   HandleSyncError(double duration);
