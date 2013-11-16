@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Nézet lehetőségek"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Beállítási lehetőségek"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Teljes képernyő"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "KERESŐ"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Vizualizáció beállításai"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Befejezés időpontja"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "\"Megállítva\" mutatása a diavetítés közben"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Filmelőzetesek lejátszása ablakban [COLOR=grey3](csak a videóinfó ablakban)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Egyéb beállítások"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Nemrég hozzáadott videók mutatása"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Főképernyő Programok almenü"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Fanart-háttér elrejtése"
@@ -211,6 +223,10 @@ msgstr "Fanart-háttér elrejtése"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "A háttérben az éppen játszott videó megjelenítése"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "A háttérben az éppen futó vizualizáció megjelenítése"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Dalszöveg"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Fanart elrejtése teljes képernyős vizualizációnál"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Dalszöveg kiegészítő"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Filmfelirat kiegészítő"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Főképernyő Videó almenü"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Főképernyő Zene almenü"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Főképernyő Képek almenü"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KIEGÉSZÍTŐK BEÁLLÍTÁSA[/B][CR][CR]A telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése az xbmc.org[CR]webhelyről · Kiegészítők beállításainak módosítása"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]TV BEÁLLÍTÁSOK[/B][CR][CR]Teljesképernyős infó · Elektronikus Programújság \"EPG\" beállítások"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]SZOLGÁLTATÁSOK BEÁLLÍTÁSA[/B][CR][CR]XBMC UPNP-n és HTTP-n keresztüli vezérlésének beállításai · Fájlmegosztás beállításai[CR]Zeroconf engedélyezése · AirPlay beállításai"
@@ -439,6 +471,10 @@ msgstr "[B]SZOLGÁLTATÁSOK BEÁLLÍTÁSA[/B][CR][CR]XBMC UPNP-n és HTTP-n�
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Segítség első indításkor..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Ez a fül azt jelzi hogy oldalt van egy menü, extra opciókkal az adott tartalomhoz.  A menühöz hozzáférhetsz ha az egérmutatót a fül fölé viszed, vagy a bal nyilat megnyomod a távirányítón. [CR][CR]Nyomj \"OK\" gombot a szöveg bezárásához. Nem fog még egyszer megjelenni."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

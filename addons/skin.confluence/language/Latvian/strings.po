@@ -26,7 +26,7 @@ msgstr "Papildiespējas"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Working..."
+msgstr "Apstrāde..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -36,9 +36,17 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Skata iespējas"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Pilnekrāns"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Kopējais ilgums"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Mūzika - Faili"
 
 msgctxt "#31023"
 msgid "Playing"
@@ -80,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Info"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Darbības"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Pašlaik atskaņo"
@@ -99,6 +111,14 @@ msgstr "TĪT UZ PRIEKŠU"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ATTĪT ATPAKAĻ"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "MEKLĒŠANA"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Vizualizācijas sagataves"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -148,6 +168,26 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Rādīt \"Iepauzēts\" attēlu slīdrādē"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Atskaņot filmu reklāmas logā [COLOR=grey3](Video informācijas dialogs)[/COLOR]"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Dažādi uzstādijumi"
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr "Slēpt galvenās izvēlnes pogas"
+
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr "Iespējot savus fonus"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Fona ceļš"
+
 msgctxt "#31111"
 msgid "Hide"
 msgstr "Slēpt"
@@ -156,25 +196,133 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Iespējas"
 
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr "Rādīt nesen pievienotos albumus"
+
+msgctxt "#31117"
+msgid "Show Recently added Videos"
+msgstr "Rādit nesen pievienotos albumus"
+
+msgctxt "#31124"
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Rādīt fonā video \"Tagad atskaņo\""
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lirika"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Dziesmu vārdu papildinājums"
 
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Saīsnes"
 
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr "Izvēlies dziesmu"
+
+msgctxt "#31205"
+msgid "Lyrics Source"
+msgstr "Vārdu avots"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Atrasts(-i)"
+
+msgctxt "#31207"
+msgid "Find More Items"
+msgstr "Atrast vairāk"
+
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr "Epizodes drīzumā"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Esošais temps"
+
 msgctxt "#31301"
 msgid "Last Updated"
 msgstr "Pēdējie atjaunotie"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Datu sniedzējs"
+
+msgctxt "#31307"
+msgid "Hide Fanart"
+msgstr "Slēot fanu mākslu"
+
+msgctxt "#31308"
+msgid "Movie Details"
+msgstr "Filmas informācija"
 
 msgctxt "#31309"
 msgid "Memory Used:"
 msgstr "Atmiņa izmantota:"
 
+msgctxt "#31310"
+msgid "Track Number"
+msgstr "Celiņa numurs"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Satura skenēšanas iestatījumi"
+
+msgctxt "#31317"
+msgid "Set Fanart Path"
+msgstr "Uzstādīt fanu mākslu"
+
+msgctxt "#31319"
+msgid "Selected Profile"
+msgstr "Izvēlēties Profilu"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Pēdējoreiz pieslēdzies"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Karaoke Dziesmu Atlasītājs"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Translēts"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Atskaņošanas sarakstu uzstādijumi"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Izveidots"
+
 msgctxt "#31327"
 msgid "Resolution"
 msgstr "Izšķirtspēja"
+
+msgctxt "#31328"
+msgid "Recently Added"
+msgstr "Nesen Pievienoti"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Taimeris tiek iestatīts![/B] [COLOR=grey2] - Sistēmas automatiski izslēgsies pēc[/COLOR]"
+
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "Spiediet pogu lai atskaņotu[CR][CR]filmu reklāmas"
+
+msgctxt "#31331"
+msgid "Album Details"
+msgstr "Albūma Informācija"
 
 msgctxt "#31351"
 msgid "Pause"
@@ -192,6 +340,146 @@ msgctxt "#31354"
 msgid "Rewind"
 msgstr "Attīt atpakaļ"
 
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Filmu izvēlne"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Lejupielādēt Subtitrus"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Skatīt ka 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Mainīt režīmu"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Ieslēgts"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Ādiņas noklusētie iestatījumi"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Virszemes bāzēts"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "Palīdzība pirmo reizi darbinot..."
+
+msgctxt "#31421"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "Izvēlaties savi XBMC lietotāja profilu[CR]lai pieslēgtos un turpinātu"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Ieplānotais laiks"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Pievienot Grupu"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Pārdēvēt Grupu"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Dzēst Grupu"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Pieejamas[CR]Grupas"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "Kanālu Grupas"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Taimeris tiek iestatīts"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "Kanālu iespējas"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "36 Stundu Prognoze"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Ik stundas prognoze"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Nedēļas nogales prognoze"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Prognoze 10 Dienām"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Prognoze"
+
+msgctxt "#31908"
+msgid "Chance of Precipitation"
+msgstr "Iespējami nokrišņi"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Prognozes informācijas lejupielāde..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Karte un Brīdinājumi"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "LAIKA APSTĀKĻI"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "BILDES"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "LIVE TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEOKLIPI"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMAS"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV RĀDĪJUMI"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MŪZIKA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMMAS"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "SPĒLĒT DISKU"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTĒMA"

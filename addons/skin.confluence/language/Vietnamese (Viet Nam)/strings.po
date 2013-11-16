@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Tùy chọn xem"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Toàn màn hình"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Độ dài"

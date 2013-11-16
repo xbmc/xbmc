@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Zobacz opcje"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Ustawienia Opcji"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Pełny ekran"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "PRZESZUKIWANIE"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Efekty wizualizacji"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Koniec o godzinie"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Wyświetlaj \"Pauza\" podczas pokazu slajdów"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Odtwarzaj zwiastuny w oknie [COLOR=grey3](tylko w oknie Informacje o wideo)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Różne opcje"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Pokazuj ostatnio dodane wideo"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Podmenu Strony Głównej Programy"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Ukryj tło fanartu"
@@ -211,6 +223,10 @@ msgstr "Ukryj tło fanartu"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Pokazuj aktualnie odtwarzane wideo jako tło"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Pokaż Tło Wizualizacji \"Teraz Odtwarzane\" "
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Teksty piosenek"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Ukryj Fanart w trybie pełnoekranowym "
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Wtyczka Teksty piosenek"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Wtyczka Napisy do filmów"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Podmenu Strony Głównej Wideo"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Podmenu Strony Głównej Muzyka"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Podmenu Strony Głównej Obrazy"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KONFIGURUJ USTAWIENIA WTYCZEK[/B][CR][CR]Zarządzaj wtyczkami · Przeglądaj i instaluj wtyczki[CR]Ustawienia wtyczek"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]KONFIGURACJA USTAWIEŃ TV[/B][CR][CR]Zmień wyświetlanie informacji na ekranie · Zarządzaj ustawieniami danych EPG"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGURUJ USTAWIENIA USŁUG[/B][CR][CR]Ustaw kontrolę XBMC za pomocą UPnP i HTTP · Ustaw współdzielenie plików[CR]Włącz Zeroconf · Ustaw AirPlay"
@@ -439,6 +471,10 @@ msgstr "[B]KONFIGURUJ USTAWIENIA USŁUG[/B][CR][CR]Ustaw kontrolę XBMC za pomoc
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Najpierw skorzystaj z pomocy..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Ta zakładka oznacza iż za krawędzią tego okna jest menu, które zawiera dodatkowe opcje dla tej sekcji. Aby dostać się do tego menu, skieruj się w lewo przy pomocy pilota, klawiszy lub umieść myszkę nad zakładką.[CR][CR]Kliknij \"OK\" by zamknąć okno. Nie pojawi się ono ponownie."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

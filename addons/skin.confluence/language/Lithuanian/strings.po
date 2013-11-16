@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Rodinio parinktys"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Nustatymų parinktys"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Visas ekranas"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -227,10 +227,6 @@ msgstr "Dainų tekstai"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Dainų tekstų priedas"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Subtitrų priedas"
 
 msgctxt "#31140"
 msgid "Music OSD"

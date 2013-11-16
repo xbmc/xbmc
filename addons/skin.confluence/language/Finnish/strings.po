@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Näkymän asetukset"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Kokoruutu"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Kokonaiskesto"
@@ -215,10 +219,6 @@ msgstr "Sanoitukset"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Sanoitukset-lisäosa"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Tekstitykset-lisäosa"
 
 msgctxt "#31140"
 msgid "Music OSD"

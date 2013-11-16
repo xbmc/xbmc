@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Lihat Opsyen"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Opsyen Tetapan"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Skrin Penuh"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -215,10 +215,6 @@ msgstr "Lirik"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Perisisan tambahan Lirik"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Perisian tambahan Sarikata"
 
 msgctxt "#31327"
 msgid "Resolution"

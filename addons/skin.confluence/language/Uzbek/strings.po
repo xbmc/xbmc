@@ -20,6 +20,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Ko'rish parametrlari"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "To'liq ekran"
+
 msgctxt "#31033"
 msgid "Info"
 msgstr "Ma'lumot"
@@ -35,6 +39,10 @@ msgstr "Xatcho'plar"
 msgctxt "#31327"
 msgid "Resolution"
 msgstr "Ekran o'lchamlari"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Yoqilgan"
 
 msgctxt "#31502"
 msgid "Live TV"

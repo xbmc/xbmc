@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Opciones de Vista"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Opciones de Ajustes"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Pant. Completa"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -223,10 +223,6 @@ msgstr "Letras"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Add-on de Liricas"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Add-on de Subtítulos"
 
 msgctxt "#31140"
 msgid "Music OSD"

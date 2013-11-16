@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Anzeige - Optionen"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Einstellungsoptionen"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Vollbild"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "SUCHLAUF"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Visualisierungs - Voreinstellung"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Endzeit"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Zeige \"Pause\" in Bilder Diaschau"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Trailer im Fenster wiedergeben [COLOR=grey3](Nur im Videoinformationsdialog)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Sonstige Optionen"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Zeige kürzlich hinzugefügte Videos"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Hauptmenü Programme-Untermenü"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Verstecke Hintergrund - Fanart"
@@ -211,6 +223,10 @@ msgstr "Verstecke Hintergrund - Fanart"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Zeige im Hintergrund \"Aktuell abgespielt\"-Video"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Zeige im Hintergrund \"Aktuell abgespielt\"-Visualisierung"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Songtexte"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Fanart in Vollbild Visualisierung ausblenden."
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Songtext Add-on"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Untertitel Add-on"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Hauptmenü Videos-Untermenü"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Hauptmenü Musik-Untermenü"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Hauptmenü Bilder-Untermenü"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KONFIGURIERE ADD-ONS[/B][CR][CR]Organisiere die installierten Add-ons · Installiere Add-ons von xbmc.org[CR]Add-on Einstellungen anpassen"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]TV Einstellungen konfigurieren[/B][CR][CR]Ändere die Vollbild Information - Verwalte die EPG-Daten Einstellungen"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGURIERE DIENSTE[/B][CR][CR]Richte Zugriff auf XBMC via UPnP und HTTP ein · Konfiguriere die Dateifreigabe[CR]Aktiviere Zeroconf · Konfiguriere AirPlay"
@@ -439,6 +471,10 @@ msgstr "[B]KONFIGURIERE DIENSTE[/B][CR][CR]Richte Zugriff auf XBMC via UPnP und 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Hilfe beim ersten Start...."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Dieses Symbol zeigt an, dass ein Menü an der Seite des Fensters versteckt ist, welches weitere Optionen beinhaltet. Um es aufzurufen, navigieren Sie nach links oder zeigen Sie mit der Maus darauf.[CR][CR]Klicken Sie auf \"Ok\" um diesen Dialog zu schließen. Er wird nicht wieder angezeigt werden."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

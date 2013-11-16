@@ -20,6 +20,10 @@ msgctxt "#31004"
 msgid "Working..."
 msgstr "در حال کار..."
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "تمام صفحه"
+
 msgctxt "#31022"
 msgid "Music - Files"
 msgstr "موسیقی - فایل ها"

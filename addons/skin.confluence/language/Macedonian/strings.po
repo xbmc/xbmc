@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Погледни опции"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Полн екран"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Вкупно времетраење"
@@ -215,10 +219,6 @@ msgstr "Текстови на песни"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Lyrics Add-on"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Add-on за преводи"
 
 msgctxt "#31140"
 msgid "Music OSD"

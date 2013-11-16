@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Opțiuni vizualizare"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Ecran complet"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Durata Totală"
@@ -215,10 +219,6 @@ msgstr "Versuri"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Supliment versuri"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Supliment subtitrări"
 
 msgctxt "#31140"
 msgid "Music OSD"

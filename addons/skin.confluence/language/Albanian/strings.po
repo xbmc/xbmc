@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Opcionet e Pamjes"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Opcinet e konfigurimit"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Ekrani i plotë"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -223,10 +223,6 @@ msgstr "Tekste Këngësh"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Shtesë Tekstesh të Këngëve"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Shtesë Subtitërash"
 
 msgctxt "#31140"
 msgid "Music OSD"

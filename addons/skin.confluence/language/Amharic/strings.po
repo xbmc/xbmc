@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "ምርጫዎችን መመልከቻ"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "በሙል መመልከቻ ዘዴ "
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "ጠቅላላ የሚፈጀው ጊዜ"
@@ -183,10 +187,6 @@ msgstr "ግጥም"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "ግጥም መጨ - መሪያ "
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "የንዑስ አርእስት ተጨማ-ሪዎች "
 
 msgctxt "#31140"
 msgid "Music OSD"

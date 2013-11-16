@@ -24,6 +24,10 @@ msgctxt "#31005"
 msgid "Hide Information"
 msgstr "အချက်အလက်များကိုဖျောက်ထားမည်"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "မျက်နှာပြင်အပြည့် "
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "စုစုပေါင်းကြာချိန်"

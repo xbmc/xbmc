@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Налаштування перегляду"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Опції налаштування"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Повний екран"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -227,10 +227,6 @@ msgstr "Тексти"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Надбудова текстів пісень"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Надбудова субтитрів"
 
 msgctxt "#31140"
 msgid "Music OSD"

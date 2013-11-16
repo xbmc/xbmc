@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Ver opções"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Opções de Definições"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Ecrã cheio"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "PROCURANDO"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Pré-selecções de visualização"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Termina às"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Mostrar \"Pausado\" ao Apresentar Slides"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Reproduzir trailers numa janela [COLOR=grey3](só na janela de info de vídeo)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Várias opções"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Mostrar Vídeos Recentes"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Submenu de Programas da Página Inicial"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Ocultar Fanart de fundo"
@@ -211,6 +223,10 @@ msgstr "Ocultar Fanart de fundo"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Mostrar vídeo \"A reproduzir\" em fundo"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Mostrar visualização \"A reproduzir\" em fundo"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Letras"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Ocultar Fanart na visualização de ecrã inteiro"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Add-on de Letras de música"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Add-on de Legendas"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Submenu de Vídeos da Página Inicial"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Submenu de Música da Página Inicial"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Submenu de Fotos da Página Inicial"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGURAR ADD-ONS[/B][CR][CR]Gerir Add-ons instalados · Procurar e instalar Add-ons de xbmc.org[CR]Alterar opções dos Add-ons"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DE TV[/B][CR][CR]Alterar informações em ecrã cheio · Gerir definições de dados do EPG"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGURAR SERVIÇOS[/B][CR][CR]Configurar controlo do XBMC via UPnP e HTTP · Configurar partilha de ficheiros[CR]Activar ZeroConf · Configurar AirPlay"
@@ -439,6 +471,10 @@ msgstr "[B]CONFIGURAR SERVIÇOS[/B][CR][CR]Configurar controlo do XBMC via UPnP 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ajuda de primeira inicialização..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Este tabulador indica que existe um menu lateral, nesta janela, que contém mais opções para esta secção. Para aceder ao menu, navegue para a esquerda com o controlo remoto ou teclado, ou então coloque o rato sobre a tabulação. [CR][CR]Clique \"OK\" para fechar esta caixa, que não irá ser exibida novamente."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

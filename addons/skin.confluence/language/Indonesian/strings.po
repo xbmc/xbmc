@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Lihat Pilihan"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Video Mainkan Secara Otomatis"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Durasi Total"

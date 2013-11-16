@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Xem Tùy chọn"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Thiết lập cho Tùy Chọn"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Toàn màn hình"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -223,10 +223,6 @@ msgstr "Lời Bài Hát"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Lời Bài Hát của Addon"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Phụ Đề Addon"
 
 msgctxt "#31140"
 msgid "Music OSD"

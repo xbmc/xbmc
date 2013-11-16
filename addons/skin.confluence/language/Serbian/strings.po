@@ -32,6 +32,10 @@ msgctxt "#31005"
 msgid "Hide Information"
 msgstr "Sakrij info."
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Ceo Ekran"
+
 msgctxt "#31022"
 msgid "Music - Files"
 msgstr "Muzika - Datoteke"

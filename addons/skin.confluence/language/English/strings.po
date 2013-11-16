@@ -310,7 +310,7 @@ msgctxt "#31142"
 msgid "Settings level"
 msgstr ""
 
-#empty strings from id 31142 to 31199
+#empty strings from id 31143 to 31199
 #Script labels
 
 msgctxt "#31200"

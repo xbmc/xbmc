@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Zobrazit možnosti"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Možnosti nastavení"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Celá obrazovka"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "VYHLEDÁVÁM"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Předvolby vizualizace"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Čas ukončení"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Zobrazovat \"Pozastaveno\" při promítání obrázků"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Přehrávat upoutávky v okně [COLOR=grey3](pouze z okna Informace o videu)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Různá nastavení"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Zobrazovat nedávno přidaná videa"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Úvodní obrazovka, podnabídka programů"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Skrýt Fanart na pozadí"
@@ -211,6 +223,10 @@ msgstr "Skrýt Fanart na pozadí"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Zobrazovat na pozadí právě přehrávané video"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Zobrazovat právě přehrávanou vizualizaci na pozadí"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Texty písní"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Skrýt fanart při vizualizaci v režimu celé obrazovky"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Doplněk textů písní"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Doplněk titulků"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Úvodní obrazovka, podnabídka videí"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Úvodní obrazovka, podnabídka Hudba"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Úvodní obrazovka, podmenu obrázků"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ DOPLŇKŮ[/B][CR][CR]Správa nainstalovaných doplňků · Vyhledávání a instalace doplňků z xbmc.org[CR]Nastavení doplňků"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ PŘEHRÁVÁNÍ TELEVIZE[/B][CR][CR]Změnit zobrazení přes celou obrazovku · Nastavení EPG dat"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání XBMC skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolit zeroconf · Nastavit AirPlay"
@@ -439,6 +471,10 @@ msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání XBMC 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Nejprve spusťte nápovědu..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Tato záložka zdůrazňuje, že se na boční straně okna nachází skryté menu s dalšími vlastnostmi.\nPro přístup k tomuto menu se přesuňte doleva dálkovým ovladačem, či klávesnicí, nebo přesuňte myš nad tuto kartu.[CR][CR]Kliknutím na tlačítko OK zavřete tento dialog, který se již znovu nezobrazí."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

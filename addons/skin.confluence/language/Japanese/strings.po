@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "表示オプション"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "設定オプション"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "フルスクリーン"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -227,10 +227,6 @@ msgstr "歌詞"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "歌詞アドオン"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "字幕アドオン"
 
 msgctxt "#31140"
 msgid "Music OSD"

@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Options d'affichage"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Options des paramètres"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Plein écran"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "RECHERCHE"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Préréglages de visualisation"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Échéance"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Afficher « Pause » dans le diaporama d'images"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Lire les bandes annonces dans une fenêtre [COLOR=grey3](Ecran d'information sur la vidéo uniquement)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Options diverses"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Afficher les vidéos récemment ajoutées"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Page d'accueil du sous menu Programmes"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Masquer le Fanart d’arrière-plan"
@@ -211,6 +223,10 @@ msgstr "Masquer le Fanart d’arrière-plan"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Afficher la vidéo en cours de lecture en arrière-plan"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Afficher la visualisation en cours de lecture en arrière-plan"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Paroles"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Cacher Fanart en mode plein ecran"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Extension gérant les paroles"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Extension gérant les sous-titres"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Page d'accueil du sous menu Vidéos"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Page d'accueil du sous menu Musiques"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Page d'accueil du sous menu Images"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGURATION DES EXTENSIONS[/B][CR][CR]Gérer les extensions installées · Recherche et installation d'extensions depuis xbmc.org[CR]Modifier les paramètres des extensions"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]CONFIGURER RÉGLAGES TV[/B][CR][CR]Changer les informations de plein écran · Gérer les données du Guide des Programmes"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGURATION DES PARAMÈTRES DE SERVICE[/B][CR][CR]Configurer le contrôle de XBMC en UPnP et HTTP · Configurer le partage de fichiers[CR]Activer Zeroconf · Configurer AirPlay"
@@ -439,6 +471,10 @@ msgstr "[B]CONFIGURATION DES PARAMÈTRES DE SERVICE[/B][CR][CR]Configurer le con
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Aide au démarrage"
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Cet onglet signale un menu en côté de fenêtre contenant des options supplémentaires pour cette section.  Pour accéder à ce menu, appuyez sur la flèche de gauche sur votre télécommande ou votre clavier ou placez votre souris au dessus de l'onglet. [CR][CR]Cliquez sur \"Ok\" pour fermer cette fenêtre. Elle n’apparaîtra plus."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

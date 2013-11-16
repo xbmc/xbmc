@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Визуални настройки"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Цял екран"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Общо времетраене"
@@ -108,6 +112,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "ПРЕВЪРТАНЕ НАЗАД"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Шаблони за визуализацията"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Ще свърши в:"
@@ -160,6 +168,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Показвай \"На Пауза\" индикация при слайдшоу от снимки"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Възпроизвеждай трейлърите в прозорец [COLOR=grey3](само в \"Информация за видеото\")[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Разни настройки"
@@ -196,6 +208,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Показвай наскоро добавените видео файлове"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Подменю на елемента \"Програми\", от началния екран"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Скривай фоновия Fanart"
@@ -203,6 +219,10 @@ msgstr "Скривай фоновия Fanart"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Ползвай за фон възпроизвежданото в момента видео"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Ползвай за фон възпроизвежданата в момента визуализация "
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -216,13 +236,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Лирики"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Без Fanart при визуализация на цял екран"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Добавка за лирики"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Добавка за субтитри"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Подменю на елемента \"Видео\", от началния екран"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Подменю на елемента \"Музика\", от началния екран"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Подменю на елемента \"Снимки\", от началния екран"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -338,7 +370,7 @@ msgstr "Наскоро добавени"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]ТАЙМЕРЪТ Е НАСТРОЕН![/B] [COLOR=grey2]Изключване след[/COLOR]"
+msgstr "[B]БРОЯЧЪТ Е НАСТРОЕН![/B] [COLOR=grey2]Изключване след[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
@@ -420,6 +452,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]КОНФИГУРИРАЙТЕ ДОБАВКИТЕ[/B][CR][CR]Управлявайте инсталираните добавки · Променяйте настройките на добавките[CR]Разглеждайте/Инсталирайте добавки от xbmc.org"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]Конфигурирайте Телевията[/B][CR][CR]Change full screen info · Manage EPG data settings"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]КОНФИГУРИРАЙТЕ УСЛУГИТЕ[/B][CR][CR]Настройте контролирането на XBMC през UPnP и HTTP · Настройте споделянето на файлове[CR]Включете Zeroconf · Настройте AirPlay"
@@ -427,6 +463,10 @@ msgstr "[B]КОНФИГУРИРАЙТЕ УСЛУГИТЕ[/B][CR][CR]Настро
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Помощ при първо стартиране"
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Табът отляво обозначава наличието на меню, което е извън видимия екран, съдържащо опции за текущата секция. За достъп до него е необходим да се придвижите наляво, с помощта на дистанционното, клавиатурата или да поставите курсора на мишката над таба. [CR][CR]Кликнете върху \"Добре\" за да затворите този прозорец, който няма да се появи повече."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -442,7 +482,7 @@ msgstr "Телевизия"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr "Добавяне на гупа"
+msgstr "Добавяне на група"
 
 msgctxt "#31504"
 msgid "Rename Group"
@@ -458,7 +498,7 @@ msgstr "Налични[CR]Групи"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr "Настройка на таймер"
+msgstr "Настройка на брояча"
 
 msgctxt "#31511"
 msgid "Channel Options"

@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Visningsalternativer"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Innstillingsalternativer"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Fullskjerm"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Info"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Handlinger"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Nå spilles"
@@ -111,6 +115,10 @@ msgstr "SPOL TILBAKE"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "SØKER"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Visualiseringsforvalg"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -164,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Vis \"Pause\" under bildefremvisning"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Spill trailere i et vindu[COLOR=grey3](Kun videoinformasjonsdialog)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Øvrige alternativer"
@@ -200,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Vis nylig tilføyde videoer"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Programundermeny i hovedmeny"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Gjem fanart-bakgrunn"
@@ -207,6 +223,10 @@ msgstr "Gjem fanart-bakgrunn"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Vis \"Nå spilles\" for filmer i bakgrunnen"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Vis visualisering for \"Nå spilles\" i bakgrunnen"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -220,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Sangtekster"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Gjem Fanart i fullskjermsvisualisering"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Sangtekst-tillegg"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Undertekst-tillegg"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Hjemmeskjerm video-undermeny"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Hjemmeskjerm musikk-undermeny"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Hjemmeskjerm bilder-undermeny"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -376,6 +408,14 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Hent undertekster"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Se som 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Endre modus"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Aktivert"
@@ -420,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]ENDRE DINE TILLEGG[/B][CR][CR]Håndter innstallerte tillegg · Let etter og installer tillegg fra xbmc.org[CR]Endre tilleggsinnstillinger"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]KONFIGURER TV-INNSTILLINGER[/B][CR][CR]Skift fullskjermsinfo · Administrer datainnstillinger for EPG"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]ENDRE DINE TJENESTEINNSTILLINGER[/B][CR][CR]Konfigurer kontroll av XBMC via UPnP og HTTP · Konfigurer fildeling[CR]Aktiver Zeroconf · Konfigurer AirPlay"
@@ -427,6 +471,10 @@ msgstr "[B]ENDRE DINE TJENESTEINNSTILLINGER[/B][CR][CR]Konfigurer kontroll av XB
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Først kjør hjelp"
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Denne fanen indikerer at det er en meny ved siden av dette vinduet som inneholder ekstra innstillinger til denne seksjonen. For å få tilgang til menyen,  navigerer du til venstre med fjernkontrollen eller tastaturet. Du kan også flytte musmarkøren over fanen. [CR][CR]Trykk \"Ok\" for å lukke dette dialogvinduet. Det kommer ikke opp igjen senere."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

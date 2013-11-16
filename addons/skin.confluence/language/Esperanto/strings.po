@@ -16,6 +16,10 @@ msgstr ""
 "Language: eo\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Tutekrane"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Bookmarks"

@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "خيارات العرض"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "شاشة كاملة"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "إجمالي المدة"
@@ -215,10 +219,6 @@ msgstr "كلمات الأغاني"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "ملحق كلمات الأغاني"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "ملحق الترجمات"
 
 msgctxt "#31140"
 msgid "Music OSD"

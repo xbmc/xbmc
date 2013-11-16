@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Weergave Opties"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Instellingen Opties"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Volledig scherm"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "ZOEKEN"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Visualisatie voorinstellingen"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Eindigt om"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Laat \"PAUZE\" zien in diavoorstelling"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Trailers afspelen in een venster [COLOR=grey3](Alleen Video Informatiescherm)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Diverse opties"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Laat onlangs toegevoegde video's zien"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Beginscherm Programma`s submenu"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Fanart achtergronden verbergen"
@@ -211,6 +223,10 @@ msgstr "Fanart achtergronden verbergen"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Laat achtergrond \"Nu Afspelen\" zien voor video"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Laat achtergrond \"Nu Afspelen\" zien voor visualisatie"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Songteksten"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Verberg fanart in volledig scherm visualisatie"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Songtekst Add-on"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Ondertiteling Add-on"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Begin Scherm Video's Submenu"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Begin Scherm Musiek Submenu"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Begin Scherm Afbeeldingen Submenu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]ADD-ONS CONFIGUREREN[/B][CR][CR]Beheer uw geïnstalleerde Add-ons · Zoek en installeer Add-ons via xbmc.org · Wijzig Add-oninstellingen"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]CONFIGUREER TV INSTELLINGEN[/B][CR][CR]Verander volledig scherm info  · Beheer EPG data instellingen"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGUREER SERVICE-INSTELLINGEN[/B][CR][CR]Stel XBMC-beheer in via UPnP en HTTP · Configureer bestandsdeling[CR]Schakel Zeroconf in · Configureer AirPlay"
@@ -439,6 +471,10 @@ msgstr "[B]CONFIGUREER SERVICE-INSTELLINGEN[/B][CR][CR]Stel XBMC-beheer in via U
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Eerste sessie hulp..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Deze tab betekent dat er een menu met extra opties voor deze sectie aan de zijkant van het scherm beschikbaar is. Voor toegang tot het menu, navigeer naar links met de afstandsbediening of toetsenbord of ga met de muisaanwijzer naar de tab. [CR][CR]Klik \"Ok\" om het dialoogscherm te sluiten. Deze zal niet meer worden getoond. "
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Možnosti zobrazenia"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Možnosti nastavenia"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Celá obrazovka"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "VYHĽADÁVANIE"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Predvoľby vizualizácie"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Koniec filmu"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Zobrazovať 'Pauza' pri prezentácií obrázkov"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Prehrávať ukážky v okne [COLOR=grey3](iba z okna Detailné Informácie)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Rôzne nastavenia"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Zobrazovať Posledné pridané"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Domovská stránka / podmenu Programy"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Skryť Fanart na pozadí"
@@ -211,6 +223,10 @@ msgstr "Skryť Fanart na pozadí"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Zobrazovať práve prehrávané video na pozadí"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Zobrazovať vizualizáciu na pozadí"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Texty skladieb"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Skryť Fanart pri vizualizácii na celú obrazovku"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Doplnok Texty skladieb"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Doplnok Titulky"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Domovská stránka / podmenu Videá"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Domovská stránka / podmenu Hudba"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Domovská stránka / podmenu Obrázky"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]MOŽNOSTI DOPLNKOV[/B][CR][CR]Správa nainštalovaných doplnkov · Vyhľadávanie a inštalácia doplnkov z xbmc.org[CR]Nastavenie doplnkov"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]NASTAVENIA TV[/B][CR][CR]Zmeniť informácie zobrazené na celej obrazovke · Spravovať nastavenia EPG dát"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGUROVAŤ NASTAVENIA SLUŽBY[/B][CR][CR]Nastaviť ovládanie XBMC pomocou UPnP a HTTP · Konfigurovať zdielanie[CR]Zapnúť Zeroconf · Konfigurovať AirPlay"
@@ -439,6 +471,10 @@ msgstr "[B]KONFIGUROVAŤ NASTAVENIA SLUŽBY[/B][CR][CR]Nastaviť ovládanie XBMC
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Pomocník po prvom spustení..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Táto záložka zvýrazňuje, že sa na bočnej strane okna nachádza skryté menu. Aby ste sa k nemu dostali, kurzorovými tlačidlami na vašom diaľkovom ovládači alebo klávesnici choďte doľava, prípadne umiestnite kurzor myši ponad túto záložku. [CR][CR]Kliknutím na tlačidlo \"Ok\" sa zavrie toto dialógové okno. V budúcnosti sa už nezobrazí."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

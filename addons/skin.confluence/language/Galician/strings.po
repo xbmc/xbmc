@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Ver opcións"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Opcións dos axustes"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Pantalla completa"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,17 +116,21 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "BUSCANDO"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Preconfiguracións de visualizacións"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Tempo final"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Ordear: Ascendente"
+msgstr "Ordenar: Ascendente"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Ordear: Descendente"
+msgstr "Ordenar: Descendente"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -150,7 +154,7 @@ msgstr "Lista de reproducción actual"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Este arquivo esta amontoado, selecione a parte que quere reproducir."
+msgstr "Este ficheiro esta amontoado, selecione a parte que quere reproducir."
 
 msgctxt "#31061"
 msgid "Current Selected"
@@ -167,6 +171,10 @@ msgstr "Fondo"
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Mostrar \"Pausado\" nunha diapositiva"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Reproducir avances nunha xanela [COLOR=grey3](Só diálogo de información de vídeo)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Mostrar vídeos engadidos recentemente"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Submenú de Aplicacións da Páxina de Inicio"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Agochar o fondo do cartel"
@@ -211,6 +223,10 @@ msgstr "Agochar o fondo do cartel"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Amosar o video reproducíndose actualmente no fondo"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Amosar a visualización 'En Reprodución' no fondo"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Letras"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Ocultar Fanart na visualización de pantalla completa"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Complemento de letras"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Complemento de subtítulos"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Submenú de Vídeos da Páxina de Inicio"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Submenú de Música da Páxina de Inicio"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Submenú de Imaxes da Páxina de Inicio"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -406,7 +434,7 @@ msgstr "Baseado en Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]CONFIGURAR PARÁMETROS DE APARIENCIA[/B][CR][CR]Trocar a pel · Estabrecer lingua e rexión · Trocar as opcións de listado de arquivos[CR]Estabrecer gardapantallas"
+msgstr "[B]CONFIGURAR PARÁMETROS DE APARIENCIA[/B][CR][CR]Trocar a pel · Estabrecer lingua e rexión · Trocar as opcións de listado de ficheiros[CR]Estabelecer o protector de pantalla"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -432,13 +460,21 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGURAR ENGADIDOS[/B][CR][CR]Xestionar engadidos instalados · Buscar e instalar Engadidos de xbmc.org[CR]Modificar a configuración dos Engadidos"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]CONFIGURAR OS AXUSTES DE TV[/B][CR][CR]Trocar info. na pantalla completa · Controlar configuración dos datos da Guía"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURAR PARÁMETROS DO SERVIZO[/B][CR][CR]Configurar o control de XBMC vía UPnP e HTTP · Configurar compartición de arquivos[CR]Activar Zeroconf · Configurar AirPlay"
+msgstr "[B]CONFIGURAR PARÁMETROS DO SERVIZO[/B][CR][CR]Configurar o control de XBMC vía UPnP e HTTP · Configurar compartición de ficheiros[CR]Activar Zeroconf · Configurar AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Axuda da primeira execución..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Esta lapela significa que existe un menú deshabilitado nesta xanela que contén máis opcións para esta sección. Para acceder ó menú, ir a esquerda co control remoto o teclado ou move o punteiro do rato até a lapela. [CR][CR]Preme en \"Feito\" para pechar a caixa de diálogo. Non aparecera máis."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

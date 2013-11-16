@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "ตัวเลือก มุมมอง"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "ตัวเลือก การตั้งค่า"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "เต็มจอ"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "ค้นหา"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "ชุดรูปแบบ การแสดงแสงสี"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "เวลาสิ้นสุด"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "แสดง \"หยุดชั่วขณะ\" ในการนำเสนอภาพนิ่ง"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "เล่นตัวอย่างภาพยนตร์ในหน้าต่าง [COLOR=grey3](กล่องโต้ตอบข้อมูลวิดีโอเท่านั้น)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "ตัวเลือก อื่นๆ"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "แสดงวิดีโอ ที่เพิ่งเพิ่ม"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "หน้าหลัก โปรแกรม เมนู-ย่อย"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "ซ่อน แฟนอาร์ตในพื้นหลัง"
@@ -211,6 +223,10 @@ msgstr "ซ่อน แฟนอาร์ตในพื้นหลัง"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "แสดงพื้นหลังด้วยวิดีโอ \"ที่กำลังเล่น\""
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "แสดงพื้นหลัง แสงสีประกอบเพลง \"ที่กำลังเล่น\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "เนื้อเพลง"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "ซ่อนแฟนอาร์ต ในการแสดงแสงสีแบบเต็มจอ"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "ส่วนเสริม เนื้อเพลง"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "ส่วนเสริม คำบรรยาย"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "หน้าหลัก วิดีโอ เมนู-ย่อย"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "หน้าหลัก เพลง เมนู-ย่อย"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "หน้าหลัก รูปภาพ เมนู-ย่อย"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]ปรับเปลี่ยน ส่วนเสริม[/B][CR][CR]จัดการส่วนเสริมที่ติดตั้งไว้ของคุณ · เรียกดูและติดตั้งส่วนเสริม จาก xbmc.org[CR]ปรับเปลี่ยน การตั้งค่าส่วนเสริม"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B] ตั้งค่าทีวี [/B][CR][CR]เปลี่ยนแปลงข้อมูลแบบเต็มหน้าจอ·จัดการการตั้งค่าข้อมูล EPG"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]ปรับเปลี่ยนการตั้งค่าบริการ[/B][CR][CR]การตั้งค่าของ การควบคุม XBMC ผ่าน UPnP และ HTTP · กำหนดค่าใช้ไฟล์ร่วมกัน[CR]เปิดใช้ Zeroconf · กำหนดค่า AirPlay"
@@ -439,6 +471,10 @@ msgstr "[B]ปรับเปลี่ยนการตั้งค่าบร
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "ตัวช่วยในการเริ่มใช้งาน"
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "แท็บนี้มีเครื่องหมายที่แสดงว่า มีเมนูในด้านข้างของหน้าต่าง ซึ่งมีเมนูการปรับแต่งพิเศษสำหรับส่วนนี้. ในการเข้าถึงเมนูนี้, ให้เลื่อนลูกศรซ้ายด้วยรีโมทหรือคีย์บอร์ด หรือวางตัวชี้ของเมาท์เหนือแท็บนี้. [CR][CR]กด \"ตกลง\" เพื่อปิดกล่องโต้ตอบนี้. ซึ่งจะไม่แสดงขึ้นมาอีก."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Görünüm Seçenekleri"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Ayar Seçenekleri"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Tam ekran"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "ARIYOR"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Görsel Öğe Önayarları"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Bitiş Zamanı"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Resim slayt gösterisinde \"Duraklatıldı\"yı göster"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Fragmanları pencere içinde oynat [COLOR=grey3](Sadece Video Bilgisi İletişim Kutusu İçin)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Çeşitli seçenekler"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Son Eklenen Videoları Göster"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Ana Sayfa Programlar Alt Menüsü"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Arkaplan Fanartını Gizle"
@@ -211,6 +223,10 @@ msgstr "Arkaplan Fanartını Gizle"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Arkaplanda Oynatılan Videoyu Göster"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Arkaplanda Görsel Ögeyi Göster"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,13 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Şarkı Sözleri"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Tam ekran görsel öğede Fanart'ı gizle"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Şarkı Sözleri Eklentisi"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Altyazı Eklentisi"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Ana Sayfa Videolar Alt Menüsü"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Ana Sayfa Müzik Alt Menüsü"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Ana Sayfa Resimler Alt Menüsü"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -432,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]EKLENTİLERİ YAPILANDIR[/B][CR][CR]Yüklenmiş eklentileri yönet · Eklentilere gözat ve yenilerini yükle[CR]Eklenti ayarlarını değiştir"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]TV AYARLARINI YAPILANDIR[/B][CR][CR]Tam ekran bilgisini değiştir · EPG veri ayarlarını yönet"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]HİZMET AYARLARINI YAPILANDIR[/B][CR][CR]UPnP ve HTTP üzerinden XBMC kontrolü ayarları · Dosya paylaşımını yapılandır[CR]Zeroconf'u etkinleştir · AirPlay'i yapılandır"
@@ -439,6 +471,10 @@ msgstr "[B]HİZMET AYARLARINI YAPILANDIR[/B][CR][CR]UPnP ve HTTP üzerinden XBMC
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "İlk çalıştırma yardımı...."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Bu sekme bu bölüm için ekstra özellikleri içeren bir menüye, bu pencerenin kenarından ulaşılabileceğini belirtir. Menüye ulaşmak için, uzaktan kumanda, klavye yada fare imlecini sekmenin sol tarafına götürünüz. [CR][CR]Pencereyi kapatmak için \"Ok\" tuşuna basınız. Bu bildiri bir daha çıkmayacaktır."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "הצג אפשרויות"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "אפשרות בהגדרות"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "מסך מלא"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -227,10 +227,6 @@ msgstr "מילות שירים"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "תוספי מילים לשירים"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "תסוף כתובית"
 
 msgctxt "#31140"
 msgid "Music OSD"

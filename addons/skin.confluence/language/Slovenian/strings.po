@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Možnosti pogleda"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Celozaslonsko"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Celotno trajanje"
@@ -84,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Informacije"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Dejanja"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Trenutno predvajam"
@@ -103,6 +111,14 @@ msgstr "NAPREJ"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "NAZAJ"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "ISKANJE"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Predloge vizualizacije"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -146,7 +162,7 @@ msgstr "Trenutno izbrano"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Nastavitve domačega okna"
+msgstr "Možnosti domačega okna"
 
 msgctxt "#31102"
 msgid "Background"
@@ -155,6 +171,10 @@ msgstr "Ozadje"
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Prikaži \"Prekinitev\" v projekciji slik"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Predvajaj napovednike v oknu [COLOR=grey3](Samo okno z informacijami o videu)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -192,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Prikaži nedavno dodane videe"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Podmeni programov na domačem oknu"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Skrij ozadja"
@@ -199,6 +223,10 @@ msgstr "Skrij ozadja"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "V ozadjnu prikaži video \"Trenutno predvajam\""
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "V ozadju prikaži vizualizacijo \"Trenutno predvajam\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -215,10 +243,6 @@ msgstr "Besedilo pesmi"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Dodatek besedil pesmi"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Dodatek podnapisov"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -368,6 +392,14 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Prenesi podnapise"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "2D Ogled"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Spremeni način"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Vključen"
@@ -412,6 +444,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte nameščene dodatke · Brskajte in namestite nove dodatke iz xbmc.org[CR]Nastavite dodatke"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]PRILAGODITVE NASTAVITVE TV[/B][CR][CR]Spremenite informacije v celozaslonskem načinu · Upravljajte z nastavitvami EPG"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]PRILAGODITE NASTAVITVE STORITEV[/B][CR][CR]Nastavite upravljanje XBMC preko UPnP in HTTP · Nastavite deljenje datotek[CR]Vključite Zeroconf · Prilagodite AirPlay"
@@ -419,6 +455,10 @@ msgstr "[B]PRILAGODITE NASTAVITVE STORITEV[/B][CR][CR]Nastavite upravljanje XBMC
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Pomoč ob prvem zagonu..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Ta zavihek nakazuje, da se tu skriva meni z dodatnimi možnostmi trenutnega pogleda.  Za dostop do menija pritisnite levo na vašem daljinskem upravljalcu ali tipkovnici ali pa postavite miško na zavihek. [CR][CR]Kliknite \"Ok\", da zaprete to okno. Ne bo se več prikazalo."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -491,3 +531,43 @@ msgstr "Prenašam vremenske informacije..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Karte & Opozorila"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "VREME"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "SLIKE"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "TV V ŽIVO"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEO"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMI"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV SERIJE"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "GLASBA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMI"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "PREDVAJAJ DISK"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTEM"

@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Stillingar sjónarhorns"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Fylla skjá"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Alls tímalengd"
@@ -84,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Upplýsingar"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Aðgerðir"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Í spilun"
@@ -103,6 +111,14 @@ msgstr "HRATT ÁFRAM"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "TIL BAKA"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "LEITA"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Forstillingar myndskreytinga"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -156,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Sýna \"Í bið\" í myndasýningu"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Spila kvikmyndasýnishorn í glugga [COLOR=grey3](Aðeins myndbandaupplýsingarglugga)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Ýmsir valkostir"
@@ -167,6 +187,14 @@ msgstr "Fela flagg lesið frá skráarnöfnum [COLOR=grey3](Blu-ray, HD-DVD)[/CO
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
 msgstr "Fela hnapp í aðalvalmynd"
+
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr "Virkja sérsniðinn bakgrunn"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Bakgrunnsslóð"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -184,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Sýna myndbönd sem var nýlega bætt við"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Undirvalmynd heimasíðu"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Fela aðdáendamyndir í bakgrunni"
@@ -191,6 +223,10 @@ msgstr "Fela aðdáendamyndir í bakgrunni"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Sýna \"Í spilun\" myndband í bakgrunni"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Sýna \"Í spilun\" myndskreytingu í bakgrunni"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -208,9 +244,17 @@ msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Viðbót fyrir lagatexta"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Viðbót fyrir þýðingartexta"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Undirvalmynd myndbandasíðu"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Undirvalmynd tónlistarsíðu"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Undirvalmynd ljósmyndaasíðu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -360,6 +404,14 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Niðurhala þýðingartextum"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Horfa á í 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Breyta ham"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Virkt"
@@ -420,9 +472,29 @@ msgctxt "#31502"
 msgid "Live TV"
 msgstr "Sjónvarp bein útsending"
 
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Bæta við hóp"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Endurnefna hóp"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Eyða hóp"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "Rásarhópur"
+
 msgctxt "#31510"
 msgid "Timer Set"
 msgstr "Stilling teljara"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "Valkostir rásar"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -451,3 +523,43 @@ msgstr "Líkur á úrkomu"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Næ í veðurspá..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Kort og viðvaranir"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "VEÐUR"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "MYNDIR"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VÍDEÓ"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "KVIKMYNDIR"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "SJÓNVARPSÞÆTTIR"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "TÓNLIST"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "FORRIT"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "SPILA DISK"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "KERFI"

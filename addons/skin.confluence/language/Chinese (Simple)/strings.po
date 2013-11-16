@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "视图选项"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "设置项"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "全屏"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -114,7 +114,11 @@ msgstr "回退"
 
 msgctxt "#31046"
 msgid "SEEKING"
-msgstr "查找中"
+msgstr "搜索中"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "可视化效果预设"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -122,11 +126,11 @@ msgstr "结束时间"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "排序：升序"
+msgstr "顺序：升序"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "排序：降序"
+msgstr "顺序：降序"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "图片幻灯片播放时显示“暂停”状态"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "窗口播放预告片[COLOR=grey3]（仅在视频信息显示画面）[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "其他选项"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "显示最新加入视频"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "主界面程序子菜单"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "隐藏同人画背景"
@@ -212,9 +224,13 @@ msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "在背景显示“正在播放”视频"
 
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "在背景显示“正在播放”可视化效果"
+
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "视频资料库模式播放电视主题曲（TvTunes扩展功能）"
+msgstr "视频资料库模式播放电视主题曲（TvTunes 插件）"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -224,21 +240,33 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "歌词"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "全屏可视化效果隐藏同人画"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "歌词扩展功能"
+msgstr "歌词插件"
 
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "字幕扩展功能"
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "主界面视频子菜单"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "主界面音乐子菜单"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "主界面图片子菜单"
 
 msgctxt "#31140"
 msgid "Music OSD"
-msgstr "音乐OSD"
+msgstr "音乐 OSD"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "视频OSD"
+msgstr "视频 OSD"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -342,7 +370,7 @@ msgstr "分辨率"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "最新增加"
+msgstr "最新加入"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
@@ -370,7 +398,7 @@ msgstr "快进"
 
 msgctxt "#31354"
 msgid "Rewind"
-msgstr "快退"
+msgstr "回退"
 
 msgctxt "#31355"
 msgid "Movie menu"
@@ -398,27 +426,27 @@ msgstr "皮肤默认"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "皮肤默认（无Caps字体）"
+msgstr "皮肤默认无Caps"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "基于Arial字体"
+msgstr "基于 Arial 字体"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]设置用户界面[/B][CR][CR]变换皮肤 · 设置语言和区域 · 修改文件列表参数 · 设置屏幕保护"
+msgstr "[B]设置用户界面[/B][CR][CR]变换皮肤 · 设置语言和区域 · 修改文件列表选项 · 设置屏幕保护"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]设置视频参数[/B][CR][CR]管理视频资料库 · 设置视频播放参数 · 修改视频列表参数 · 设置字幕字体"
+msgstr "[B]设置视频选项[/B][CR][CR]管理视频资料库 · 设置视频播放选项 · 修改视频列表选项 · 设置字幕字体"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]设置音乐参数[/B][CR][CR]管理音乐资料库 · 设置音乐播放参数 · 修改音乐列表参数 · 设置音乐提交 · 设置卡拉OK选项"
+msgstr "[B]设置音乐选项[/B][CR][CR]管理音乐资料库 · 设置音乐播放选项 · 修改音乐列表选项 · 设置歌曲提交 · 设置卡拉OK选项"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]设置图片参数[/B][CR][CR]设置图片列表参数 · 设置幻灯片播放"
+msgstr "[B]设置图片选项[/B][CR][CR]设置图片列表选项 · 设置幻灯片播放"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
@@ -426,19 +454,27 @@ msgstr "[B]设置天气预报[/B][CR][CR]设置三个获取天气信息的城市
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]设置系统参数[/B][CR][CR]设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电参数 · 启用调试 · 设置管理员和锁定"
+msgstr "[B]设置系统选项[/B][CR][CR]设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电选项 · 启用调试 · 设置主机锁定"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]设置扩展功能[/B][CR][CR]管理你安装的扩展功能 · 在xbmc.org浏览并安装扩展功能 · 修改扩展功能设置"
+msgstr "[B]设置插件功能[/B][CR][CR]管理你安装的插件 · 在 xbmc.org 浏览并安装插件 · 修改插件设置"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]设置直播电视[/B][CR][CR]更改全屏信息 · 管理电子节目单数据设置"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]设置网络服务[/B][CR][CR]设置通过UPnP和HTTP控制XBMC · 配置文件共享[CR]启用Zeroconf · 设置AirPlay"
+msgstr "[B]设置网络服务[/B][CR][CR]设置通过 UPnP 和 HTTP 控制 XBMC · 配置文件共享[CR]启用 Zeroconf · 设置 AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "首次运行帮助...."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "此选项卡表示有一个提供本功能模块特殊设置选项的菜单隐藏在窗口侧边。你可以通过按遥控器或键盘左键、或将鼠标指针移动到选项卡范围来开启此菜单。[CR] [CR]点“确定”关闭此对话框，本提示不会再次出现。"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

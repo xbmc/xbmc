@@ -36,9 +36,9 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Vedi Opzioni"
 
-msgctxt "#31007"
-msgid "Settings Options"
-msgstr "Impostazioni"
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Schermo intero"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "RICERCA"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Preimpostazione di visualizzazione"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Orario fine riproduzione"
@@ -167,6 +171,10 @@ msgstr "Sfondo"
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Mostra \"In pausa\" durante la visualizzazione delle immagini"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Riproduci i Trailers in una finestra [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -224,13 +232,13 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "XBMC Testi Canzoni"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Nascondi Fanart nella visualizzazione full screen"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Add-on Testi"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Add-on Sottotitoli"
 
 msgctxt "#31140"
 msgid "Music OSD"

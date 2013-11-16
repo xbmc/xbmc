@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Vísimøguleikar"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Fullan skerm"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Samla spælitíð"
@@ -191,10 +195,6 @@ msgstr "Sangtekstir"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Víðkan til sangtekstir"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Víðkan til undirtekstir"
 
 msgctxt "#31140"
 msgid "Music OSD"

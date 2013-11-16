@@ -16,6 +16,10 @@ msgstr ""
 "Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "पूर्ण स्क्रीन "
+
 msgctxt "#31102"
 msgid "Background"
 msgstr "पृष्ठभूमि"

@@ -36,6 +36,10 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Besigtig Opsies"
 
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Volskerm"
+
 msgctxt "#31009"
 msgid "Total Duration"
 msgstr "Totale Tydsduur"
@@ -215,10 +219,6 @@ msgstr "Lirieke"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Lirieke Byvoegsel"
-
-msgctxt "#31133"
-msgid "Subtitle Add-on"
-msgstr "Subtitel Byvoegsel"
 
 msgctxt "#31140"
 msgid "Music OSD"
