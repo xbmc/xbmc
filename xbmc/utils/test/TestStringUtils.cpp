@@ -29,7 +29,7 @@ TEST(TestStringUtils, Format)
   std::string varstr = StringUtils::Format("%s %d %.1f %x %02X", "test", 25, 2.743f, 0x00ff, 0x00ff);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  varstr = StringUtils::Format(NULL, "test", 25, 2.743f, 0x00ff, 0x00ff);
+  varstr = StringUtils::Format("", "test", 25, 2.743f, 0x00ff, 0x00ff);
   EXPECT_STREQ("", varstr.c_str());
 }
 
