@@ -717,8 +717,10 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
   }
   else if (m_synctype == SYNC_RESAMPLE)
   {
+    double base_speed = 1.0 / g_VideoReferenceClock.GetSpeed();
     m_dvdAudio.SetResampleRatio(m_resampleratio);
     m_dvdAudio.AddPackets(audioframe);
+    m_errors.Adjust(-audioframe.duration * (m_resampleratio - base_speed));
   }
 
   return true;
