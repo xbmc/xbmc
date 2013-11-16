@@ -158,6 +158,19 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     albumArtistCreditsNode = albumArtistCreditsNode->NextSiblingElement("albumArtistCredits");
   }
 
+  // Support old style <artist></artist> for backwards compatibility
+  // .nfo files should ideally be updated to use the artist credits structure above
+  // or removed entirely in preference for better tags (MusicBrainz?)
+  if (artistCredits.empty() && !artist.empty())
+  {
+    for (vector<string>::const_iterator it = artist.begin(); it != artist.end(); ++it)
+    {
+      CArtistCredit artistCredit(*it, StringUtils::EmptyString,
+                                 it == --artist.end() ? StringUtils::EmptyString : g_advancedSettings.m_musicItemSeparator);
+      artistCredits.push_back(artistCredit);
+    }
+  }
+
   const TiXmlElement* node = album->FirstChildElement("track");
   if (node)
     songs.clear();  // this means that the tracks can't be spread over separate pages
