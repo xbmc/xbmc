@@ -243,7 +243,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
       return -1;
 
     case PCRE_ERROR_BADUTF8_OFFSET:
-      CLog::Log(LOGERROR, "PCRE: Offset (%d) is pointing to the middle of UTF-8 character", startoffset);
+      CLog::Log(LOGERROR, "PCRE: Offset is pointing to the middle of UTF-8 character");
       return -1;
 
     default:
