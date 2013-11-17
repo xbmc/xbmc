@@ -224,7 +224,12 @@ bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTa
   // read from the XML
   bool hasLeft = GetPosition(node, leftTag, parentSize, left);
   bool hasCenter = GetPosition(node, centerTag, parentSize, center);
-  bool hasRight = GetPosition(node, rightTag, parentSize, right);
+  bool hasRight = false;
+  if (GetPosition(node, rightTag, parentSize, right))
+  {
+    right = parentSize - right;
+    hasRight = true;
+  }
   bool hasWidth = GetDimension(node, widthTag, parentSize, width, min_width);
 
   if (!hasLeft)
