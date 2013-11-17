@@ -27,5 +27,5 @@ then
       -mfpu=vfp -mabi=aapcs-linux -Wno-psabi -Wa,-mno-warn-deprecated \
       -Wno-deprecated-declarations -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include \
       -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include/interface/vcos/pthreads \
-      -isystem$JENKINS_RBPI_DEVENVfirmware/opt/vc/include/interface/vmcs_host/linux"
+      -isystem$JENKINS_RBPI_DEVENV/firmware/opt/vc/include/interface/vmcs_host/linux"
 fi
