@@ -29,10 +29,8 @@ CWinSystemX11GL::CWinSystemX11GL()
 {
   m_glXGetVideoSyncSGI   = NULL;
   m_glXWaitVideoSyncSGI  = NULL;
-  m_glXSwapIntervalSGI   = NULL;
   m_glXSwapIntervalMESA  = NULL;
-  m_glXGetSyncValuesOML  = NULL;
-  m_glXSwapBuffersMscOML = NULL;
+  m_glXSwapIntervalEXT   = NULL;
 
   m_iVSyncErrors = 0;
 }
@@ -108,14 +106,6 @@ bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
       m_iVSyncErrors = 0;
     }
   }
-  else if (m_iVSyncMode == 5)
-  {
-    int64_t ust, msc, sbc;
-    if(m_glXGetSyncValuesOML(m_dpy, m_glWindow, &ust, &msc, &sbc))
-      m_glXSwapBuffersMscOML(m_dpy, m_glWindow, msc, 0, 0);
-    else
-      CLog::Log(LOGERROR, "%s - glXSwapBuffersMscOML - Failed to get current retrace count", __FUNCTION__);
-  }
   else
     glXSwapBuffers(m_dpy, m_glWindow);
 
@@ -125,41 +115,29 @@ bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 void CWinSystemX11GL::SetVSyncImpl(bool enable)
 {
   /* turn of current setting first */
-  if(m_glXSwapIntervalSGI)
-    m_glXSwapIntervalSGI(0);
-  if(m_glXSwapIntervalMESA)
+  if(m_glXSwapIntervalEXT)
+    m_glXSwapIntervalEXT(m_dpy, m_glWindow, 0);
+  else if(m_glXSwapIntervalMESA)
     m_glXSwapIntervalMESA(0);
 
   m_iVSyncErrors = 0;
 
-  CStdString strVendor(m_RenderVendor);
-  StringUtils::ToLower(strVendor);
-
   if(!enable)
     return;
 
-  bool vendor_nvidia = strVendor.find("nvidia") != std::string::npos;
-  bool vendor_ati    = StringUtils::StartsWith(strVendor, "ati");
-
-  if (m_glXSwapIntervalMESA && !m_iVSyncMode && vendor_ati)
+  if (m_glXSwapIntervalEXT && !m_iVSyncMode)
+  {
+    m_glXSwapIntervalEXT(m_dpy, m_glWindow, 1);
+    m_iVSyncMode = 6;
+  }
+  if (m_glXSwapIntervalMESA && !m_iVSyncMode)
   {
     if(m_glXSwapIntervalMESA(1) == 0)
       m_iVSyncMode = 2;
     else
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
   }
-
-  if(m_glXGetSyncValuesOML && m_glXSwapBuffersMscOML && m_glXSwapIntervalMESA && !m_iVSyncMode)
-  {
-    m_glXSwapIntervalMESA(1);
-
-    int64_t ust, msc, sbc;
-    if(m_glXGetSyncValuesOML(m_dpy, m_glWindow, &ust, &msc, &sbc))
-      m_iVSyncMode = 5;
-    else
-      CLog::Log(LOGWARNING, "%s - glXGetSyncValuesOML failed", __FUNCTION__);
-  }
-  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && !vendor_nvidia)
+  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode)
   {
     unsigned int count;
     if(m_glXGetVideoSyncSGI(&count) == 0)
@@ -167,21 +145,6 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     else
       CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
   }
-  if (m_glXSwapIntervalSGI && !m_iVSyncMode)
-  {
-    if(m_glXSwapIntervalSGI(1) == 0)
-      m_iVSyncMode = 2;
-    else
-      CLog::Log(LOGWARNING, "%s - glXSwapIntervalSGI failed", __FUNCTION__);
-  }
-  if (m_glXSwapIntervalMESA && !m_iVSyncMode && !vendor_ati)
-  {
-    if(m_glXSwapIntervalMESA(1) == 0)
-      m_iVSyncMode = 2;
-    else
-      CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
-  }
-
 }
 
 bool CWinSystemX11GL::IsExtSupported(const char* extension)
@@ -209,17 +172,6 @@ bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, R
 
   CLog::Log(LOGDEBUG, "GLX_EXTENSIONS:%s", m_glxext.c_str());
 
-  /* any time window is recreated we need new pointers */
-  if (IsExtSupported("GLX_OML_sync_control"))
-    m_glXGetSyncValuesOML = (Bool (*)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*))glXGetProcAddress((const GLubyte*)"glXGetSyncValuesOML");
-  else
-    m_glXGetSyncValuesOML = NULL;
-
-  if (IsExtSupported("GLX_OML_sync_control"))
-    m_glXSwapBuffersMscOML = (int64_t (*)(Display*, GLXDrawable, int64_t, int64_t, int64_t))glXGetProcAddress((const GLubyte*)"glXSwapBuffersMscOML");
-  else
-    m_glXSwapBuffersMscOML = NULL;
-
   if (IsExtSupported("GLX_SGI_video_sync"))
     m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
   else
@@ -230,16 +182,15 @@ bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, R
   else
     m_glXGetVideoSyncSGI = NULL;
 
-  if (IsExtSupported("GLX_SGI_swap_control") )
-    m_glXSwapIntervalSGI = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalSGI");
-  else
-    m_glXSwapIntervalSGI = NULL;
-
   if (IsExtSupported("GLX_MESA_swap_control"))
     m_glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
   else
     m_glXSwapIntervalMESA = NULL;
 
+  if (IsExtSupported("GLX_EXT_swap_control"))
+    m_glXSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)glXGetProcAddress((const GLubyte*)"glXSwapIntervalEXT");
+  else
+    m_glXSwapIntervalEXT = NULL;
 
   return true;
 }
