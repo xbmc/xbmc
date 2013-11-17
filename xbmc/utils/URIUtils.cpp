@@ -118,11 +118,10 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
     return;
   }
 
-  size_t iPos = strFileName.rfind('.');
-  // Extension found
-  if (iPos != std::string::npos)
+  size_t period = strFileName.find_last_of("./\\");
+  if (period != string::npos && strFileName[period] == '.')
   {
-    CStdString strExtension = GetExtension(strFileName);
+    CStdString strExtension = strFileName.substr(period);
     StringUtils::ToLower(strExtension);
     strExtension += "|";
 
@@ -139,7 +138,7 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
     strFileMask += "|";
 
     if (strFileMask.find(strExtension) != std::string::npos)
-      strFileName.erase(iPos);
+      strFileName.erase(period);
   }
 }
 
