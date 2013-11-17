@@ -79,7 +79,7 @@ const CStdString CPVRRecordings::GetDirectoryFromPath(const CStdString &strPath,
 
   /* check for more occurences */
   size_t iDelimiter = strUsePath.find('/');
-  if (iDelimiter != std::string::npos)
+  if (iDelimiter != std::string::npos && iDelimiter > 0)
     strReturn = strUsePath.substr(0, iDelimiter);
   else
     strReturn = strUsePath;
