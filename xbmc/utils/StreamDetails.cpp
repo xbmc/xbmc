@@ -392,6 +392,13 @@ int CStreamDetails::GetVideoDuration(int idx) const
     return 0;
 }
 
+void CStreamDetails::SetVideoDuration(int idx, const int duration)
+{
+  CStreamDetailVideo *item = (CStreamDetailVideo *)GetNthStream(CStreamDetail::VIDEO, idx);
+  if (item)
+    item->m_iDuration = duration;
+}
+
 std::string CStreamDetails::GetStereoMode(int idx) const
 {
   CStreamDetailVideo *item = (CStreamDetailVideo *)GetNthStream(CStreamDetail::VIDEO, idx);
