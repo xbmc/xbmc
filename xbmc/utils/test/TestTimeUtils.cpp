@@ -49,13 +49,15 @@ TEST(TestTimeUtils, GetFrameTime)
 TEST(TestTimeUtils, GetLocalTime)
 {
   CDateTime cdatetime, cdatetime2;
-  time_t time;
+  time_t timer;
 
-  cdatetime = CTimeUtils::GetLocalTime(time);
+  time(&timer);
+
+  cdatetime = CTimeUtils::GetLocalTime(timer);
   std::cout << "cdatetime.GetAsLocalizedDateTime(): " <<
     cdatetime.GetAsLocalizedDateTime() << std::endl;
 
-  cdatetime2 = time;
+  cdatetime2 = timer;
   std::cout << "time: " <<
     cdatetime2.GetAsLocalizedDateTime() << std::endl;
 }
