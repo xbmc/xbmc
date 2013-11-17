@@ -1103,7 +1103,7 @@ if test "$gcrypt_headers_available" = "yes"; then
    AC_CHECK_LIB([gcrypt],[gcry_control],, AC_MSG_ERROR($missing_library))
    AC_DEFINE([HAVE_GCRYPT],[1],[Define if we have gcrypt])
 fi
-PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS], [1], [Define if we have gnutls])], AC_MSG_WARN("gnutls not found, ffmpeg TLS support disabled"))
+PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS], [1], [Define if we have gnutls]), AC_MSG_WARN("gnutls not found, ffmpeg TLS support disabled"))
 
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
