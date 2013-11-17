@@ -202,7 +202,6 @@
 			<texturefocus border="5">MenuItemFO.png</texturefocus>
 			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 			<pulseonselect>false</pulseonselect>
-      <onleft>20</onleft>
 		</control>
 		<control type="button" id="7">
 			<description>Default Button</description>
