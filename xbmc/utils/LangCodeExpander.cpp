@@ -49,7 +49,7 @@ struct CharCodeConvertion
 };
 
 // declared as extern to allow forward declaration
-extern const CharCodeConvertionWithHack CharCode2To3[185];
+extern const CharCodeConvertionWithHack CharCode2To3[189];
 extern const CharCodeConvertion RegionCode2To3[246];
 
 CLangCodeExpander::CLangCodeExpander(void)
@@ -1231,7 +1231,7 @@ extern const LCENTRY g_iso639_2[538] =
   { MAKECODE('\0','z','u','n'), "Zuni" },
 };
 
-const CharCodeConvertionWithHack CharCode2To3[185] =
+const CharCodeConvertionWithHack CharCode2To3[189] =
 {
   { "aa", "aar", NULL },
   { "ab", "abk", NULL },
@@ -1417,7 +1417,11 @@ const CharCodeConvertionWithHack CharCode2To3[185] =
   { "yo", "yor", NULL },
   { "za", "zha", NULL },
   { "zh", "chi", NULL },
-  { "zu", "zul", NULL }
+  { "zu", "zul", NULL },
+  { "zv", "und", NULL }, // XBMC intern mapping for missing "Undetermined" iso639-1 code
+  { "zx", "zxx", NULL }, // XBMC intern mapping for missing "No linguistic content" iso639-1 code
+  { "zy", "mis", NULL }, // XBMC intern mapping for missing "Miscellaneous languages" iso639-1 code
+  { "zz", "mul", NULL }  // XBMC intern mapping for missing "Multiple languages" iso639-1 code
 };
 
 // Based on ISO 3166
