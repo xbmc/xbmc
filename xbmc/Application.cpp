@@ -4349,6 +4349,9 @@ void CApplication::UpdateFileState()
           // Update with stream details from player, if any
           if (m_pPlayer->GetStreamDetails(details))
             m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails = details;
+
+          if (m_progressTrackingItem->IsStack())
+            m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, GetTotalTime()); // Overwrite with CApp's totaltime as it takes into account total stack time
         }
 
         // Update bookmark for save
