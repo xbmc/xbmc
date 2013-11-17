@@ -241,7 +241,7 @@ bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTa
         if (hasRight)
         {
           width = (right - center) * 2;
-          left = right - center;
+          left = right - width;
           hasLeft = true;
         }
       }
