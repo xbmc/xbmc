@@ -276,7 +276,7 @@ bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTa
         hasLeft = hasWidth = true;
       }
     }
-    else // neither right nor center specified
+    else if (hasLeft) // neither right nor center specified
     {
       width = max(0.0f, parentSize - left); // if left=0, this fills to parent
     }
