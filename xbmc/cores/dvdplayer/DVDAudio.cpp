@@ -321,7 +321,6 @@ double CDVDAudio::GetDelay()
 void CDVDAudio::Flush()
 {
   CSingleLock lock (m_critSection);
-  m_pts += GetDelay();
 
   if (m_pAudioStream)
   {
