@@ -56,6 +56,7 @@ static bool CanSurfaceRenderWhiteList(const std::string &name)
   // cannot surface render.
     static const char *cansurfacerender_decoders[] = {
       "OMX.Nvidia",
+      "OMX.rk",
       NULL
     };
     for (const char **ptr = cansurfacerender_decoders; *ptr; ptr++)
