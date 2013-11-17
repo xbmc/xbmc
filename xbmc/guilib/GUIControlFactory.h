@@ -138,7 +138,8 @@ private:
    \param node the <control> node describing the control.
    \param leftTag the tag that holds the left field.
    \param rightTag the tag that holds the right field.
-   \param centerTag the tag that holds the right field.
+   \param centerLeftTag the tag that holds the center left field.
+   \param centerRightTag the tag that holds the center right field.
    \param widthTag the tag holding the width.
    \param parentSize the size of the parent, for relative sizing.
    \param pos [out] the discovered position.
@@ -147,7 +148,8 @@ private:
    \return true if we can successfully derive the position and size, false otherwise.
    \sa GetDimension, GetPosition, ParsePosition.
    */
-  static bool GetDimensions(const TiXmlNode *node, const char *leftTag, const char *rightTag, const char *centerTag,
-                            const char *widthTag, const float parentSize, float &pos, float &width, float &min_width);
+  static bool GetDimensions(const TiXmlNode *node, const char *leftTag, const char *rightTag, const char *centerLeftTag,
+                            const char *centerRightTag, const char *widthTag, const float parentSize, float &left,
+                            float &width, float &min_width);
 };
 #endif
