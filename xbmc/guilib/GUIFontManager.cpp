@@ -53,10 +53,11 @@ GUIFontManager::~GUIFontManager(void)
 
 void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect)
 {
-  // set scaling resolution so that we can scale our font sizes correctly
+  // get the UI scaling constants so that we can scale our font sizes correctly
   // as fonts aren't scaled at render time (due to aliasing) we must scale
   // the size of the fonts before they are drawn to bitmaps
-  g_graphicsContext.SetScalingResolution(sourceRes, true);
+  float scaleX, scaleY;
+  g_graphicsContext.GetGUIScaling(sourceRes, scaleX, scaleY);
 
   if (preserveAspect)
   {
@@ -70,10 +71,10 @@ void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const 
     // adjust aspect ratio
     *aspect *= sourceRes.fPixelRatio;
 
-    *aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
+    *aspect *= scaleY / scaleX;
   }
 
-  *size /= g_graphicsContext.GetGUIScaleY();
+  *size /= scaleY;
 }
 
 static bool CheckFont(CStdString& strPath, const CStdString& newPath,
