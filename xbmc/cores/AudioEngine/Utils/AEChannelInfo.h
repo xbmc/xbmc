@@ -23,52 +23,7 @@
 #include <vector>
 #include <string>
 
-/**
- * The possible channels
- */
-enum AEChannel
-{
-  AE_CH_NULL = -1,
-  AE_CH_RAW ,
-
-  AE_CH_FL  , AE_CH_FR , AE_CH_FC , AE_CH_LFE, AE_CH_BL  , AE_CH_BR  , AE_CH_FLOC,
-  AE_CH_FROC, AE_CH_BC , AE_CH_SL , AE_CH_SR , AE_CH_TFL , AE_CH_TFR , AE_CH_TFC ,
-  AE_CH_TC  , AE_CH_TBL, AE_CH_TBR, AE_CH_TBC, AE_CH_BLOC, AE_CH_BROC,
-
-  /* p16v devices */
-  AE_CH_UNKNOWN1,
-  AE_CH_UNKNOWN2,
-  AE_CH_UNKNOWN3,
-  AE_CH_UNKNOWN4,
-  AE_CH_UNKNOWN5,
-  AE_CH_UNKNOWN6,
-  AE_CH_UNKNOWN7,
-  AE_CH_UNKNOWN8,
-
-  AE_CH_MAX
-};
-
-/**
- * Standard channel layouts
- */
-enum AEStdChLayout
-{
-  AE_CH_LAYOUT_INVALID = -1,
-
-  AE_CH_LAYOUT_1_0 = 0,
-  AE_CH_LAYOUT_2_0,
-  AE_CH_LAYOUT_2_1,
-  AE_CH_LAYOUT_3_0,
-  AE_CH_LAYOUT_3_1,
-  AE_CH_LAYOUT_4_0,
-  AE_CH_LAYOUT_4_1,
-  AE_CH_LAYOUT_5_0,
-  AE_CH_LAYOUT_5_1,
-  AE_CH_LAYOUT_7_0,
-  AE_CH_LAYOUT_7_1,
-
-  AE_CH_LAYOUT_MAX
-};
+#include "AEChannelData.h"
 
 class CAEChannelInfo {
 public:

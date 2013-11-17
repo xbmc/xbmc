@@ -21,59 +21,6 @@
 
 #include "AEChannelInfo.h"
 
-/**
- * The various data formats
- * LE = Little Endian, BE = Big Endian, NE = Native Endian
- * @note This is ordered from the worst to best preferred formats
- */
-enum AEDataFormat
-{
-  AE_FMT_INVALID = -1,
-
-  AE_FMT_U8,
-
-  AE_FMT_S16BE,
-  AE_FMT_S16LE,
-  AE_FMT_S16NE,
-
-  AE_FMT_S32BE,
-  AE_FMT_S32LE,
-  AE_FMT_S32NE,
-  
-  AE_FMT_S24BE4,
-  AE_FMT_S24LE4,
-  AE_FMT_S24NE4,    // 24 bits in lower 3 bytes
-  AE_FMT_S24NE4MSB, // S32 with bits_per_sample < 32
-
-  AE_FMT_S24BE3,
-  AE_FMT_S24LE3,
-  AE_FMT_S24NE3, /* S24 in 3 bytes */
-
-  AE_FMT_DOUBLE,
-  AE_FMT_FLOAT,
-
-  /* Bitstream formats */
-  AE_FMT_AAC,
-  AE_FMT_AC3,
-  AE_FMT_DTS,
-  AE_FMT_EAC3,
-  AE_FMT_TRUEHD,
-  AE_FMT_DTSHD,
-  AE_FMT_LPCM,
-
-  /* planar formats */
-  AE_FMT_U8P,
-  AE_FMT_S16NEP,
-  AE_FMT_S32NEP,
-  AE_FMT_S24NE4P,
-  AE_FMT_S24NE4MSBP,
-  AE_FMT_S24NE3P,
-  AE_FMT_DOUBLEP,
-  AE_FMT_FLOATP,
-
-  AE_FMT_MAX
-};
-
 #define AE_IS_RAW(x) ((x) >= AE_FMT_AAC && (x) < AE_FMT_U8P)
 #define AE_IS_RAW_HD(x) ((x) >= AE_FMT_EAC3 && (x) < AE_FMT_U8P)
 #define AE_IS_PLANAR(x) ((x) >= AE_FMT_U8P && (x) <= AE_FMT_FLOATP)
