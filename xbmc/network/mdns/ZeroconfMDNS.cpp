@@ -99,6 +99,7 @@ bool CZeroconfMDNS::doPublishService(const std::string& fcr_identifier,
   TXTRecordCreate(&txtRecord, 0, NULL);
 
 #if !defined(HAS_MDNS_EMBEDDED)
+  CSingleLock lock(m_data_guard);
   if(m_service == NULL)
   {
     err = DNSServiceCreateConnection(&m_service);
