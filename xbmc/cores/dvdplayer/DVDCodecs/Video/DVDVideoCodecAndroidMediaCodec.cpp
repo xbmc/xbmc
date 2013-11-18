@@ -54,33 +54,33 @@ static bool CanSurfaceRenderWhiteList(const std::string &name)
   // All devices 'should' be capiable of surface rendering
   // but that seems to be hit or miss as most odd name devices
   // cannot surface render.
-    static const char *cansurfacerender_decoders[] = {
-      "OMX.Nvidia",
-      "OMX.rk",
-      "OMX.qcom",
-      NULL
-    };
-    for (const char **ptr = cansurfacerender_decoders; *ptr; ptr++)
-    {
-      if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
-        return true;
-    }
-    return false;
+  static const char *cansurfacerender_decoders[] = {
+    "OMX.Nvidia",
+    "OMX.rk",
+    "OMX.qcom",
+    NULL
+  };
+  for (const char **ptr = cansurfacerender_decoders; *ptr; ptr++)
+  {
+    if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
+      return true;
+  }
+  return false;
 }
 
 static bool IsBlacklisted(const std::string &name)
 {
-    static const char *blacklisted_decoders[] = {
-      // No software decoders
-      "OMX.google",
-      NULL
-    };
-    for (const char **ptr = blacklisted_decoders; *ptr; ptr++)
-    {
-      if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
-        return true;
-    }
-    return false;
+  static const char *blacklisted_decoders[] = {
+    // No software decoders
+    "OMX.google",
+    NULL
+  };
+  for (const char **ptr = blacklisted_decoders; *ptr; ptr++)
+  {
+    if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
+      return true;
+  }
+  return false;
 }
 
 static bool IsSupportedColorFormat(int color_format)
