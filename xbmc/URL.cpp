@@ -336,8 +336,7 @@ void CURL::Parse(const CStdString& strURL1)
   if(URIUtils::ProtocolHasEncodedHostname(m_strProtocol))
   {
     Decode(m_strHostName);
-    // Validate it as it is likely to contain a filename
-    SetHostName(CUtil::ValidatePath(m_strHostName));
+    SetHostName(m_strHostName);
   }
 
   Decode(m_strUserName);
