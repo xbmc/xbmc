@@ -101,7 +101,7 @@ float CEngineStats::GetDelay(CActiveAEStream *stream)
   if (delay < 0)
     delay = 0.0;
 
-  delay += stream->m_bufferedTime;
+  delay += stream->m_bufferedTime / stream->m_streamResampleRatio;
   return delay;
 }
 
