@@ -560,8 +560,10 @@ CStdString CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHei
   else if (iWidth <= 1920 && iHeight <= 1080)
     return "1080";
   // 4K
-  else
+  else if (iWidth * iHeight >= 6000000)
     return "4K";
+  else
+    return "";
 }
 
 CStdString CStreamDetails::VideoAspectToAspectDescription(float fAspect)
