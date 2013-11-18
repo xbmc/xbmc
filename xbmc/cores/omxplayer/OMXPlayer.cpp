@@ -870,8 +870,8 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
   if(!valid)
     CloseAudioStream(true);
 
-  // enable subtitles
-  m_omxPlayerVideo.EnableSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+  // enable  or disable subtitles
+  SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
   // open subtitle stream
   OMXSelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
@@ -892,7 +892,8 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
   if(!valid)
   {
     CloseSubtitleStream(true);
-    SetSubtitleVisible(false);
+    if (m_pInputStream && !(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY)))
+      SetSubtitleVisible(false);
   }
 
   // open teletext stream
@@ -3749,7 +3750,7 @@ int COMXPlayer::OnDVDNavResult(void* pData, int iMessage)
         int iStream = event->physical_wide;
         bool visible = !(iStream & 0x80);
 
-        m_omxPlayerVideo.EnableSubtitle(visible);
+        SetSubtitleVisible(visible);
 
         if (iStream >= 0)
           m_dvd.iSelectedSPUStream = (iStream & ~0x80);
