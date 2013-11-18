@@ -34,4 +34,5 @@ protected:
 private:
   void MouseMove(float x, float y);
   void MouseButton(float x, float y, int32_t type);
+  void MouseWheel(float x, float y, float value);
 };

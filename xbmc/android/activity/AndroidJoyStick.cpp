@@ -32,7 +32,6 @@
 
 
 #include <math.h>
-#include <dlfcn.h>
 
 //#define DEBUG_VERBOSE
 
@@ -71,11 +70,6 @@ static const KeyMap ButtonMap[] = {
   { AKEYCODE_BUTTON_C        , 51 },
   { AKEYCODE_BUTTON_Z        , 52 },
 };
-
-// missing in early NDKs, is present in r9b+
-extern float AMotionEvent_getAxisValue(const AInputEvent* motion_event, int32_t axis, size_t pointer_index);
-static typeof(AMotionEvent_getAxisValue) *p_AMotionEvent_getAxisValue;
-#define AMotionEvent_getAxisValue (*p_AMotionEvent_getAxisValue)
 
 /************************************************************************/
 /************************************************************************/
@@ -205,8 +199,6 @@ CAndroidJoyStick::CAndroidJoyStick()
   , m_prev_button(0)
   , m_prev_holdtime(0)
 {
-  p_AMotionEvent_getAxisValue = (typeof(AMotionEvent_getAxisValue)*) dlsym(RTLD_DEFAULT, "AMotionEvent_getAxisValue");
-  CXBMCApp::android_printf("CAndroidJoystick: AMotionEvent_getAxisValue: %p", p_AMotionEvent_getAxisValue);
 }
 
 CAndroidJoyStick::~CAndroidJoyStick()
