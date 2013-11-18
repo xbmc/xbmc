@@ -1,0 +1,54 @@
+diff -ru macosx10.8_x86_64-target/lib/afp_url.c macosx10.8_x86_64-target_mine/lib/afp_url.c
+--- macosx10.8_x86_64-target/lib/afp_url.c	2013-11-18 15:40:19.000000000 +1300
++++ macosx10.8_x86_64-target_mine/lib/afp_url.c	2013-11-18 15:38:56.000000000 +1300
+@@ -235,7 +235,7 @@
+ 		}
+ 	}
+ 
+-	snprintf(url->servername,strlen(p)+1,p);
++	strncpy(url->servername,p,strlen(p)+1);
+ 	if (check_servername(url->servername)) {
+ 			if (verbose) printf("This isn't a valid servername\n");
+ 			return -1;
+@@ -265,7 +266,7 @@
+ 	if ((q=escape_strrchr(p,':',":"))) {
+ 		*q='\0';
+ 		q++;
+-		snprintf(url->password,strlen(q)+1,q);
++		strncpy(url->password,q,strlen(q)+1);
+ 		if (check_password(url->password)) {
+ 			if (verbose) printf("This isn't a valid passwd\n");
+ 			return -1;
+@@ -278,7 +279,7 @@
+ 	if ((q=strstr(p,";AUTH="))) {
+ 		*q='\0';
+ 		q+=6;
+-		snprintf(url->uamname,strlen(q)+1,q);
++		strncpy(url->uamname,q,strlen(q)+1);
+ 		if (check_uamname(url->uamname)) {
+ 			if (verbose) printf("This isn't a valid uamname\n");
+ 			return -1;
+@@ -286,7 +287,7 @@
+ 	}
+ 
+ 	if (strlen(p)>0) {
+-		snprintf(url->username,strlen(p)+1,p);
++		strncpy(url->username,p,strlen(p)+1);
+ 		if (check_username(url->username)) {
+ 			if (verbose) printf("This isn't a valid username\n");
+ 			return -1;;
+@@ -306,12 +307,12 @@
+ 		*q='\0';
+ 		q++;
+ 	}
+-	snprintf(url->volumename,strlen(p)+1,p);
++	strncpy(url->volumename,p,strlen(p)+1);
+ 
+ 
+ 	if (q) {
+ 		url->path[0]='/';
+-		snprintf(url->path+1,strlen(q)+1,q);
++		strncpy(url->path+1,q,strlen(q)+1);
+ 	}
+ 
+ done:
