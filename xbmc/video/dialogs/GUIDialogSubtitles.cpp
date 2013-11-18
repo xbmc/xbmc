@@ -244,8 +244,10 @@ bool CGUIDialogSubtitles::SetService(const std::string &service)
 
     CGUIImage* image = (CGUIImage*)GetControl(CONTROL_NAMELOGO);
     if (image)
-      image->SetFileName(currentService->GetArt("thumb"));
-
+    {
+      std::string icon = URIUtils::AddFileToFolder(currentService->GetProperty("Addon.Path").asString(), "logo.png");
+      image->SetFileName(icon);
+    }
     if (g_application.m_pPlayer->GetSubtitleCount() == 0)
       SET_CONTROL_HIDDEN(CONTROL_SUBSEXIST);
     else
