@@ -112,7 +112,7 @@ void CPiTexture::Update(unsigned int width, unsigned int height, unsigned int pi
   CGLTexture::Update(width, height, pitch, format, pixels, loadToGPU);
 }
 
-bool CPiTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate)
+bool CPiTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate, bool requirePixels)
 {
   if (URIUtils::HasExtension(texturePath, ".jpg|.tbn"))
   {
@@ -123,20 +123,32 @@ bool CPiTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned in
       int orientation = file->GetOrientation();
       // limit the sizes of jpegs (even if we fail to decode)
       g_OMXImage.ClampLimits(maxWidth, maxHeight, file->GetWidth(), file->GetHeight(), orientation & 4);
-      if (g_OMXImage.DecodeJpegToTexture(file, maxWidth, maxHeight, &m_egl_image) && m_egl_image)
+
+      if (requirePixels)
+      {
+        Allocate(maxWidth, maxHeight, XB_FMT_A8R8G8B8);
+        if (m_pixels && COMXImage::DecodeJpeg(file, maxWidth, GetRows(), GetPitch(), (void *)m_pixels))
+          okay = true;
+      }
+      else
+      {
+        if (g_OMXImage.DecodeJpegToTexture(file, maxWidth, maxHeight, &m_egl_image) && m_egl_image)
+        {
+          Allocate(maxWidth, maxHeight, XB_FMT_A8R8G8B8);
+          okay = true;
+        }
+      }
+      g_OMXImage.CloseJpeg(file);
+      if (okay)
       {
         m_hasAlpha = false;
         if (autoRotate && orientation)
           m_orientation = orientation - 1;
-        Allocate(maxWidth, maxHeight, XB_FMT_A8R8G8B8);
-        okay = true;
-      }
-      g_OMXImage.CloseJpeg(file);
-      if (okay)
         return true;
+      }
     }
   }
-  return CGLTexture::LoadFromFileInternal(texturePath, maxWidth, maxHeight, autoRotate);
+  return CGLTexture::LoadFromFileInternal(texturePath, maxWidth, maxHeight, autoRotate, requirePixels);
 }
 
 #endif
