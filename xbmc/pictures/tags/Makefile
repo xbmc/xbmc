@@ -1,0 +1,10 @@
+SRCS=PictureInfoTag.cpp \
+     PictureInfoTagLoaderDatabase.cpp \
+     PictureInfoTagLoaderFactory.cpp \
+     PictureInfoTagLoaderJPG.cpp \
+    
+     
+LIB=pictureinfotag.a
+
+include ../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
