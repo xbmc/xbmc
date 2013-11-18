@@ -3042,8 +3042,6 @@ float COMXPlayer::GetSubTitleDelay()
 // priority: 1: libdvdnav, 2: external subtitles, 3: muxed subtitles
 int COMXPlayer::GetSubtitleCount()
 {
-  OMXStreamLock lock(this);
-  m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
   return m_SelectionStreams.Count(STREAM_SUBTITLE);
 }
 
@@ -3095,8 +3093,6 @@ void COMXPlayer::SetSubtitleVisible(bool bVisible)
 
 int COMXPlayer::GetAudioStreamCount()
 {
-  OMXStreamLock lock(this);
-  m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
   return m_SelectionStreams.Count(STREAM_AUDIO);
 }
 
