@@ -515,4 +515,6 @@ protected:
 
   bool m_HasVideo;
   bool m_HasAudio;
+
+  bool m_DemuxerPausePending;
 };
