@@ -770,9 +770,6 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
     numAdded += album->songs.size();
   }
 
-  if (m_bStop)
-    m_musicDatabase.RollbackTransaction();
-
   if (m_handle)
     m_handle->SetTitle(g_localizeStrings.Get(505));
 
