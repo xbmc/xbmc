@@ -90,7 +90,7 @@ void CPlexAutoUpdate::OnTimeout()
   m_url.SetOption("build", PLEX_BUILD_TAG);
 
   int channel = g_guiSettings.GetInt("updates.channel");
-  if (channel > 0)
+  if (channel != CMyPlexUserInfo::ROLE_USER)
     m_url.SetOption("channel", boost::lexical_cast<std::string>(channel));
 
   if (g_plexApplication.myPlexManager->IsSignedIn())
