@@ -57,7 +57,7 @@ using namespace XFILE;
 using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
-CGUIWindowPlexSearch::CGUIWindowPlexSearch() : CGUIWindow(WINDOW_PLEX_SEARCH, "PlexSearch.xml"), m_searchTimer(this)
+CGUIWindowPlexSearch::CGUIWindowPlexSearch() : CGUIWindow(WINDOW_PLEX_SEARCH, "PlexSearch.xml")
 {
   m_editControl = NULL;
   m_loadType = LOAD_ON_GUI_INIT;
@@ -136,10 +136,7 @@ void CGUIWindowPlexSearch::UpdateSearch()
 
   if (!str.empty())
   {
-    if (m_searchTimer.IsRunning())
-      m_searchTimer.Restart();
-    else
-      m_searchTimer.Start(SEARCH_DELAY, false);
+    g_plexApplication.timer.SetTimeout(SEARCH_DELAY, this);
   }
   else
     Reset();

@@ -18,7 +18,7 @@ typedef std::map<CStdString, CFileItemListPtr> ServerDataMap;
 typedef std::pair<CStdString, CFileItemListPtr> ServerDataPair;
 typedef std::map<CStdString, CPlexServerPtr> ServerMap;
 
-class CPlexServerDataLoader : public CJobQueue, public ITimerCallback, public boost::enable_shared_from_this<CPlexServerDataLoader>
+class CPlexServerDataLoader : public CJobQueue, public IPlexGlobalTimeout, public boost::enable_shared_from_this<CPlexServerDataLoader>
 {
   public:
     CPlexServerDataLoader();
@@ -50,8 +50,6 @@ class CPlexServerDataLoader : public CJobQueue, public ITimerCallback, public bo
   private:
     bool m_stopped;
     void OnTimeout();
-
-    CTimer *m_refreshTimer;
 
     CCriticalSection m_dataLock;
     CCriticalSection m_serverLock;

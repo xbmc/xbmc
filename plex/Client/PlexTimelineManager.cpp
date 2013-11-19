@@ -22,7 +22,7 @@
 #include "FileItem.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false), m_textFieldFocused(false), m_textFieldSecure(false), m_subscriberTimer(this)
+CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false), m_textFieldFocused(false), m_textFieldSecure(false)
 {
   m_currentItems[MUSIC] = CFileItemPtr();
   m_currentItems[PHOTO] = CFileItemPtr();
@@ -85,11 +85,7 @@ void CPlexTimelineManager::SendTimelineToSubscriber(CPlexRemoteSubscriberPtr sub
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexTimelineManager::SendTimelineToSubscribers()
 {
-  /* collate events under 200 MS */
-  if (m_subscriberTimer.IsRunning())
-    m_subscriberTimer.Restart();
-  else
-    m_subscriberTimer.Start(200);
+  g_plexApplication.timer.SetTimeout(200, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

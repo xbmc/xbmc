@@ -28,11 +28,11 @@
 #include "JobManager.h"
 #include "PlexContentPlayerMixin.h"
 #include "guilib/GUIEditControl.h"
-#include "threads/Timer.h"
+#include "PlexGlobalTimer.h"
 #include "threads/CriticalSection.h"
 #include "PlexNavigationHelper.h"
 
-class CGUIWindowPlexSearch : public CGUIWindow, public PlexContentPlayerMixin, public IJobCallback, public ITimerCallback
+class CGUIWindowPlexSearch : public CGUIWindow, public PlexContentPlayerMixin, public IJobCallback, public IPlexGlobalTimeout
 {
   public:
 
@@ -59,7 +59,6 @@ class CGUIWindowPlexSearch : public CGUIWindow, public PlexContentPlayerMixin, p
     void ProcessResults(CFileItemList *results);
     void Reset();
 
-    CTimer m_searchTimer;
     CGUIEditControl *m_editControl;
     std::vector<unsigned int> m_currentSearchId;
     CStdString m_currentSearchString;

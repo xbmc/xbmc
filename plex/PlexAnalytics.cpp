@@ -17,6 +17,7 @@
 #include "PlexJobs.h"
 #include "JobManager.h"
 #include "GUIInfoManager.h"
+#include "PlexApplication.h"
 
 #define ANALYTICS_TID_PHT "UA-6111912-18"
 
@@ -24,7 +25,7 @@
 #define PING_INTERVAL_SECONDS 13500
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexAnalytics::CPlexAnalytics() : m_timer(this), m_firstEvent(true), m_numberOfPlays(0)
+CPlexAnalytics::CPlexAnalytics() : m_firstEvent(true), m_numberOfPlays(0)
 {
 
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
@@ -54,7 +55,7 @@ CPlexAnalytics::CPlexAnalytics() : m_timer(this), m_firstEvent(true), m_numberOf
   m_baseOptions.AddOption("sr", resStr);
 #endif
 
-  m_timer.Start(INITIAL_EVENT_DELAY, false);
+  g_plexApplication.timer.SetTimeout(INITIAL_EVENT_DELAY * 1000, this);
   m_sessionLength.restart();
 }
 
@@ -158,7 +159,7 @@ void CPlexAnalytics::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *s
       o.AddOption("cm1", boost::lexical_cast<std::string>(m_numberOfPlays));
       trackEvent("App", "Shutdown", "", m_sessionLength.elapsed(), o);
 
-      m_timer.Stop();
+      g_plexApplication.timer.RemoveTimeout(this);
     }
   } else if (flag == ANNOUNCEMENT::Player && (stricmp(sender, "xbmc") == 0))
   {
@@ -179,7 +180,7 @@ void CPlexAnalytics::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *s
                  m_currentItem->GetProperty("type").asString(),
                  m_currentItem->GetProperty("identifier").asString(),
                  playbackTime);
-      m_timer.Restart();
+      g_plexApplication.timer.RestartTimeout(PING_INTERVAL_SECONDS * 1000, this);
 
       m_currentItem.reset();
       m_startOffset = 0;
@@ -194,11 +195,10 @@ void CPlexAnalytics::OnTimeout()
   if (m_firstEvent)
   {
     m_firstEvent = false;
-    m_timer.Start(PING_INTERVAL_SECONDS, true);
-
     CUrlOptions o("sc=start");
     trackEvent("App", "Startup", "", 1, o);
   } else {
     sendPing();
   }
+  g_plexApplication.timer.SetTimeout(PING_INTERVAL_SECONDS * 1000, this);
 }

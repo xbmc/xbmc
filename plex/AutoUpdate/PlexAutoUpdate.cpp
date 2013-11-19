@@ -34,7 +34,7 @@ using namespace XFILE;
 //#define UPDATE_DEBUG 1
 
 CPlexAutoUpdate::CPlexAutoUpdate()
-  : m_forced(false), m_isSearching(false), m_isDownloading(false),  m_timer(this), m_ready(false), m_percentage(0)
+  : m_forced(false), m_isSearching(false), m_isDownloading(false), m_ready(false), m_percentage(0)
 {
   m_url = CURL("https://my.plexapp.com/updater/products/2/check.xml");
 
@@ -43,7 +43,7 @@ CPlexAutoUpdate::CPlexAutoUpdate()
   CheckInstalledVersion();
 
   if (g_guiSettings.GetBool("updates.auto"))
-    m_timer.Start(5 * 1000, true);
+    g_plexApplication.timer.SetTimeout(5 * 1000, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,8 +150,6 @@ void CPlexAutoUpdate::OnTimeout()
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", "A new version downloading in the background", 10000, false);
       m_forced = false;
     }
-
-    m_timer.Stop();
     return;
   }
 
@@ -164,9 +162,7 @@ void CPlexAutoUpdate::OnTimeout()
   }
 
   if (g_guiSettings.GetBool("updates.auto"))
-    m_timer.SetTimeout(m_searchFrequency);
-  else
-    m_timer.Stop();
+    g_plexApplication.timer.SetTimeout(m_searchFrequency, this);
 
   m_isSearching = false;
   CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, WINDOW_SETTINGS_MYPICTURES);
@@ -355,7 +351,6 @@ void CPlexAutoUpdate::ProcessDownloads()
 
   m_isDownloading = false;
   m_ready = true;
-  m_timer.Stop(); // no need to poll for any more updates
 }
 
 void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
@@ -391,7 +386,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   else if (!success)
   {
     CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to run a download job, will retry in %d seconds.", m_searchFrequency);
-    m_timer.Start(m_searchFrequency, true);
+    g_plexApplication.timer.SetTimeout(m_searchFrequency, this);
     return;
   }
 
@@ -650,30 +645,27 @@ void CPlexAutoUpdate::UpdateAndRestart()
 
 void CPlexAutoUpdate::ForceVersionCheckInBackground()
 {
-  if (m_timer.IsRunning())
-    m_timer.Stop(true);
+  g_plexApplication.timer.RemoveTimeout(this);
 
   m_forced = true;
   m_isSearching = true;
   // restart with a short time out, just to make sure that we get it running in the background thread
-  m_timer.Start(1);
+  g_plexApplication.timer.SetTimeout(1, this);
 }
 
 void CPlexAutoUpdate::ResetTimer()
 {
   if (g_guiSettings.GetBool("updates.auto"))
   {
-    if (m_timer.IsRunning())
-      m_timer.Stop(true);
-    m_timer.Start(m_searchFrequency);
+    g_plexApplication.timer.RestartTimeout(m_searchFrequency, this);
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexAutoUpdate::PokeFromSettings()
 {
-  if (g_guiSettings.GetBool("updates.auto") && !m_timer.IsRunning())
-    m_timer.Start(m_searchFrequency);
-  else if (!g_guiSettings.GetBool("updates.auto") && m_timer.IsRunning())
-    m_timer.Stop();
+  if (g_guiSettings.GetBool("updates.auto"))
+    g_plexApplication.timer.RestartTimeout(m_searchFrequency, this);
+  else if (!g_guiSettings.GetBool("updates.auto"))
+    g_plexApplication.timer.RemoveTimeout(this);
 }

@@ -18,8 +18,7 @@ using namespace XFILE;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIORITY_NORMAL), m_stopped(false)
 {
-  m_refreshTimer = new CTimer(this);
-  m_refreshTimer->Start(SECTION_REFRESH_INTERVAL, true);
+  g_plexApplication.timer.SetTimeout(SECTION_REFRESH_INTERVAL, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +35,7 @@ void CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
     CLog::Log(LOGDEBUG, "CPlexServerDataLoader::LoadDataFromServer loading data for server %s", server->GetName().c_str());
     AddJob(new CPlexServerDataLoaderJob(server, shared_from_this()));
     
-    m_refreshTimer->Restart();
+    g_plexApplication.timer.RestartTimeout(SECTION_REFRESH_INTERVAL, this);
   }
 }
 
@@ -251,12 +250,14 @@ void CPlexServerDataLoader::OnTimeout()
   std::pair<CStdString, CPlexServerPtr> p;
   BOOST_FOREACH(p, m_servers)
     AddJob(new CPlexServerDataLoaderJob(p.second, shared_from_this()));
+
+  g_plexApplication.timer.SetTimeout(SECTION_REFRESH_INTERVAL, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServerDataLoader::Stop()
 {
-  m_refreshTimer->Stop();
+  g_plexApplication.timer.RemoveTimeout(this);
   m_stopped = true;
 
   CancelJobs();

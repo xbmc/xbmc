@@ -82,8 +82,7 @@ CPlexRemoteSubscriberPtr CPlexRemoteSubscriberManager::addSubscriber(CPlexRemote
               subscriber->getURL().GetHostName().c_str(), subscriber->getURL().GetPort(), subscriber->getUUID().c_str());
   }
   
-  if (!m_refreshTimer.IsRunning())
-    m_refreshTimer.Start(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, true);
+  g_plexApplication.timer.SetTimeout(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, this);
 
   return m_map[subscriber->getUUID()];
 }
@@ -111,7 +110,7 @@ void CPlexRemoteSubscriberManager::removeSubscriber(CPlexRemoteSubscriberPtr sub
   m_map.erase(subscriber->getUUID());
   
   if (m_map.size() == 0)
-    m_refreshTimer.Stop();
+    g_plexApplication.timer.RemoveTimeout(this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,8 +147,8 @@ void CPlexRemoteSubscriberManager::OnTimeout()
   CLog::Log(LOGDEBUG, "CPlexRemoteSubscriberManager::OnTimeout %lu clients left after timeout", m_map.size());
   
   /* still clients to handle, restart the timer */
-  if (m_map.size() < 1)
-    m_refreshTimer.Stop();
+  if (m_map.size() > 0)
+    g_plexApplication.timer.SetTimeout(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

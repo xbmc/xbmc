@@ -151,7 +151,7 @@ void PlexApplication::setNetworkLogging(bool onOff)
     return;
   }
 
-  if (onOff && !m_networkLoggingTimer.IsRunning())
+  if (onOff && !m_networkLoggingOn)
   {
     if (!Create())
     {
@@ -166,14 +166,19 @@ void PlexApplication::setNetworkLogging(bool onOff)
       g_guiSettings.SetBool("debug.networklogging", false);
       return;
     }
-    m_networkLoggingTimer.Start(1200000); /* on for 20 minutes */
+    timer.SetTimeout(1200000, this);
+    m_networkLoggingOn = true;
+
     CLog::Log(LOGINFO, "Plex Home Theater v%s (%s %s) @ %s", g_infoManager.GetVersion().c_str(), PlexUtils::GetMachinePlatform().c_str(),
               PlexUtils::GetMachinePlatformVersion().c_str(), myPlexManager->GetCurrentUserInfo().email.c_str());
   }
-  else if (!onOff && m_networkLoggingTimer.IsRunning())
+  else if (!onOff && m_networkLoggingOn)
   {
     Destroy();
-    m_networkLoggingTimer.Stop();
+
+    m_networkLoggingOn = false;
+    timer.RemoveTimeout(this);
+
     CLog::Log(LOGWARNING, "CPlexApplication::setNetworkLogging stopped networkLogging");
   }
 }
@@ -182,6 +187,7 @@ void PlexApplication::setNetworkLogging(bool onOff)
 void PlexApplication::OnTimeout()
 {
   g_guiSettings.SetBool("debug.networklogging", false);
+  m_networkLoggingOn = false;
   Destroy();
 }
 
@@ -191,7 +197,7 @@ void PlexApplication::sendNetworkLog(int level, const std::string &logline)
   if (boost::contains(logline, "DEBUG: UDPCLIENT"))
     return;
 
-  if (!m_networkLoggingTimer.IsRunning())
+  if (!m_networkLoggingOn)
     return;
 
   if (!myPlexManager->IsSignedIn())

@@ -18,6 +18,7 @@
 #include "threads/Timer.h"
 #include "network/UdpClient.h"
 #include "FileItem.h"
+#include "Utility/PlexGlobalTimer.h"
 
 #ifdef TARGET_DARWIN_OSX
 #include "Helper/PlexHTHelper.h"
@@ -61,10 +62,10 @@ typedef boost::shared_ptr<CPlexFilterManager> CPlexFilterManagerPtr;
 ///
 /// The hub of all Plex goodness.
 ///
-class PlexApplication : public IMsgTargetCallback, public ANNOUNCEMENT::IAnnouncer, public ITimerCallback, public CUdpClient
+class PlexApplication : public IMsgTargetCallback, public ANNOUNCEMENT::IAnnouncer, public IPlexGlobalTimeout, public CUdpClient
 {
 public:
-  PlexApplication() : myPlexManager(NULL), remoteSubscriberManager(NULL), m_networkLoggingTimer(this) {};
+  PlexApplication() : myPlexManager(NULL), remoteSubscriberManager(NULL), m_networkLoggingOn(false) {};
   void Start();
 
   /// Destructor
@@ -93,6 +94,7 @@ public:
   CPlexTimelineManagerPtr timelineManager;  
   CPlexThumbCacher *thumbCacher;
   CPlexFilterManagerPtr filterManager;
+  CPlexGlobalTimer timer;
 
   void setNetworkLogging(bool);
   void OnTimeout();
@@ -101,8 +103,8 @@ public:
 private:
   /// Members
   CPlexServiceListenerPtr m_serviceListener;
-  CTimer m_networkLoggingTimer;
   CStdString m_ipAddress;
+  bool m_networkLoggingOn;
   
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 };

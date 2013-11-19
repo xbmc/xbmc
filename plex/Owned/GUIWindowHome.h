@@ -35,8 +35,8 @@
 #include "PictureThumbLoader.h"
 
 #include "Utility/PlexTimer.h"
-#include "threads/Timer.h"
 #include "PlexNavigationHelper.h"
+#include "PlexGlobalTimer.h"
 
 
 // List IDs.
@@ -97,7 +97,7 @@ class CPlexSectionFanout : public IJobCallback
     std::vector<int> m_outstandingJobs;
 };
 
-class CGUIWindowHome : public CGUIWindow, public PlexContentPlayerMixin, public ITimerCallback, public IJobCallback
+class CGUIWindowHome : public CGUIWindow, public PlexContentPlayerMixin, public IPlexGlobalTimeout, public IJobCallback
 {
 public:
   CGUIWindowHome(void);
@@ -147,7 +147,6 @@ public:
   CStdString                 m_lastSelectedItem;
   CStdString                 m_currentFanArt;
   CStdString                 m_lastSelectedSubItem;
-  CTimer                     m_loadFanoutTimer;
   CEvent                     m_loadNavigationEvent;
   bool                       m_cacheLoadFail;
   CPlexNavigationHelper      m_navHelper;

@@ -3,12 +3,11 @@
 
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/IAnnouncer.h"
-#include "threads/Timer.h"
 #include "utils/UrlOptions.h"
 #include "Utility/PlexTimer.h"
+#include "PlexGlobalTimer.h"
 
-
-class CPlexAnalytics : public ANNOUNCEMENT::IAnnouncer, public ITimerCallback
+class CPlexAnalytics : public ANNOUNCEMENT::IAnnouncer, public IPlexGlobalTimeout
 {
   public:
     CPlexAnalytics();
@@ -27,7 +26,6 @@ class CPlexAnalytics : public ANNOUNCEMENT::IAnnouncer, public ITimerCallback
     void OnTimeout();
 
     CUrlOptions m_baseOptions;
-    CTimer m_timer;
     bool m_firstEvent;
 
     int64_t m_numberOfPlays;

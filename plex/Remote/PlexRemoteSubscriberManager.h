@@ -12,7 +12,7 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 #include <boost/timer.hpp>
-#include "threads/Timer.h"
+#include "PlexGlobalTimer.h"
 #include "threads/Event.h"
 #include "URL.h"
 #include "FileItem.h"
@@ -69,10 +69,10 @@ class CPlexRemoteSubscriber
 typedef std::map<std::string, CPlexRemoteSubscriberPtr> SubscriberMap;
 typedef std::pair<std::string, CPlexRemoteSubscriberPtr> SubscriberPair;
 
-class CPlexRemoteSubscriberManager : public ITimerCallback
+class CPlexRemoteSubscriberManager : public IPlexGlobalTimeout
 {
   public:
-    CPlexRemoteSubscriberManager() : m_refreshTimer(this) {}
+    CPlexRemoteSubscriberManager() {}
     CPlexRemoteSubscriberPtr addSubscriber(CPlexRemoteSubscriberPtr subscriber);
     void updateSubscriberCommandID(CPlexRemoteSubscriberPtr subscriber);
     void removeSubscriber(CPlexRemoteSubscriberPtr subscriber);
@@ -87,7 +87,6 @@ class CPlexRemoteSubscriberManager : public ITimerCallback
     void OnTimeout();
   
     CCriticalSection m_crit;
-    CTimer m_refreshTimer;
     SubscriberMap m_map;
 };
 

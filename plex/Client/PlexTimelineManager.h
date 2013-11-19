@@ -14,7 +14,7 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 
-class CPlexTimelineManager : public ITimerCallback
+class CPlexTimelineManager : public IPlexGlobalTimeout
 {
   public:
     enum MediaType {
@@ -71,7 +71,6 @@ class CPlexTimelineManager : public ITimerCallback
     CStdString m_textFieldContents;
     bool m_textFieldSecure;
 
-    CTimer m_subscriberTimer;
     void NotifyPollers();
 };
 

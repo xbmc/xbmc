@@ -319,7 +319,7 @@ bool CPlexSectionFanout::NeedsRefresh()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(false), m_lastSelectedItem("Search"), m_loadFanoutTimer(this)
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(false), m_lastSelectedItem("Search")
 {
   m_loadType = LOAD_ON_GUI_INIT;
   AddSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
@@ -366,11 +366,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
         HideAllLists();
         m_lastSelectedItem = GetCurrentItemName();
         m_lastSelectedSubItem.Empty();
-
-        if (m_loadFanoutTimer.IsRunning())
-          m_loadFanoutTimer.Restart();
-        else
-          m_loadFanoutTimer.Start(200);
+        g_plexApplication.timer.SetTimeout(200, this);
       }
 
       if (action.GetID() == ACTION_SELECT_ITEM && pItem->HasProperty("sectionPath") &&

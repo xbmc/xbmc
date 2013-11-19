@@ -21,8 +21,9 @@
 #include "FileItem.h"
 
 #include "threads/Thread.h"
+#include "PlexApplication.h"
 
-class CPlexAutoUpdate : public ITimerCallback, IJobCallback
+class CPlexAutoUpdate : public IJobCallback, public IPlexGlobalTimeout
 {
   public:
     CPlexAutoUpdate();
@@ -54,7 +55,6 @@ class CPlexAutoUpdate : public ITimerCallback, IJobCallback
     CFileItemPtr m_downloadPackage;
     uint32_t m_searchFrequency;
     CURL m_url;
-    CTimer m_timer;
 
     CStdString m_localManifest;
     CStdString m_localBinary;
