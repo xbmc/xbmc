@@ -962,7 +962,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         }
       }
 
-      if (bDisabled && (g_PVRManager.GetState() == ManagerStateStarted || g_PVRManager.GetState() == ManagerStateStarting))
+      if (bDisabled && (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
         CGUIDialogOK::ShowAndGetInput(24070, 24071, 16029, 0);
     }
   }
@@ -1015,7 +1015,7 @@ void CPVRClients::Process(void)
 
 void CPVRClients::ShowDialogNoClientsEnabled(void)
 {
-  if (g_PVRManager.GetState() != ManagerStateStarted && g_PVRManager.GetState() != ManagerStateStarting)
+  if (!g_PVRManager.IsStarted() && !g_PVRManager.IsInitialising())
     return;
 
   CGUIDialogOK::ShowAndGetInput(19240, 19241, 19242, 19243);
@@ -1156,7 +1156,7 @@ bool CPVRClients::UpdateAddons(void)
 
   if ((!bReturn || addons.size() == 0) && !m_bNoAddonWarningDisplayed &&
       !CAddonMgr::Get().HasAddons(ADDON_PVRDLL, false) &&
-      (g_PVRManager.GetState() == ManagerStateStarted || g_PVRManager.GetState() == ManagerStateStarting))
+      (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
   {
     // No PVR add-ons could be found
     // You need a tuner, backend software, and an add-on for the backend to be able to use PVR.
