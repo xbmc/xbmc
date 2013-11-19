@@ -45,6 +45,9 @@ CPlexConnection::TestReachability(CPlexServerPtr server)
 
   m_http.SetRequestHeader("Accept", "application/xml");
 
+  if (GetAccessToken().empty() && server->HasAuthToken())
+    url.SetOption(GetAccessTokenParameter(), server->GetAnyToken());
+
   if (m_http.Get(url.Get(), rootXml))
   {
     if (server->CollectDataFromRoot(rootXml))

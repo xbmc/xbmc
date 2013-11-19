@@ -85,6 +85,7 @@ public:
   bool SupportsDeletion() const { return m_supportsDeletion; }
   
   bool HasAuthToken() const;
+  std::string GetAnyToken() const;
   
   void save(TiXmlNode* parent);
   static CPlexServerPtr load(TiXmlElement* element);

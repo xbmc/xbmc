@@ -337,13 +337,22 @@ CPlexServer::BuildURL(const CStdString &path, const CStdString &options) const
 
 bool CPlexServer::HasAuthToken() const
 {
-  CStdString token;
   BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
   {
     if (!conn->GetAccessToken().empty())
       return true;
   }
   return false;
+}
+
+string CPlexServer::GetAnyToken() const
+{
+  BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
+  {
+    if (!conn->GetAccessToken().empty())
+      return conn->GetAccessToken();
+  }
+  return string();
 }
 
 void

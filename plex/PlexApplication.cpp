@@ -51,6 +51,8 @@ PlexApplication::Start()
   themeMusicPlayer = CPlexThemeMusicPlayerPtr(new CPlexThemeMusicPlayer);
   thumbCacher = new CPlexThumbCacher;
   filterManager = CPlexFilterManagerPtr(new CPlexFilterManager);
+
+  serverManager->load();
   
   ANNOUNCEMENT::CAnnouncementManager::AddAnnouncer(this);
 
@@ -58,7 +60,6 @@ PlexApplication::Start()
   autoUpdater = new CPlexAutoUpdate;
 #endif
 
-  serverManager->load();
 
   new CrashSubmitter;
 

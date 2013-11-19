@@ -344,9 +344,6 @@ void CPlexServerManager::save()
 
 void CPlexServerManager::load()
 {
-  /* let's see if we have manual servers first */
-  m_manualServerManager.checkManualServersAsync();
-  
   /* now load our saved state */
   if (XFILE::CFile::Exists(PLEX_SERVER_MANAGER_XML_FILE))
   {
@@ -385,6 +382,8 @@ void CPlexServerManager::load()
 
     CLog::Log(LOGDEBUG, "CPlexServerManager::load Got %ld servers from plexservermanager.xml", m_serverMap.size());
   }
+
+  m_manualServerManager.checkManualServersAsync();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
