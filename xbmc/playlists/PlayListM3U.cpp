@@ -86,7 +86,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
     return false;
   }
 
-  while (file.ReadString(szLine, 1024))
+  while (file.ReadString(szLine, 4095))
   {
     strLine = szLine;
     StringUtils::Trim(strLine);
