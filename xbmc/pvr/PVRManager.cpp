@@ -1346,6 +1346,16 @@ bool CPVRManager::IsStarted(void) const
   return GetState() == ManagerStateStarted;
 }
 
+bool CPVRManager::IsStopping() const
+{
+  return GetState() == ManagerStateStopping;
+}
+
+bool CPVRManager::IsStopped() const
+{
+  return GetState() == ManagerStateStopped;
+}
+
 bool CPVRManager::EpgsCreated(void) const
 {
   CSingleLock lock(m_critSection);

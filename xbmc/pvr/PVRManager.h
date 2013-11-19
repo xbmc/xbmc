@@ -228,6 +228,18 @@ namespace PVR
      * @return True while the PVRManager is initialising.
      */
     bool IsInitialising(void) const;
+    
+    /*!
+     * @brief Check whether the PVRManager is stopping
+     * @return True while the PVRManager is stopping.
+     */
+    bool IsStopping(void) const;
+    
+    /*!
+     * @brief Check whether the PVRManager has been stopped.
+     * @return True if stopped, false otherwise.
+     */
+    bool IsStopped(void) const;
 
     /*!
      * @brief Return the channel that is currently playing.
