@@ -691,7 +691,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
     m_needsCleanup = true;
 
   CFileItemList scannedItems;
-  if (ScanTags(items, scannedItems) == INFO_CANCELLED)
+  if (ScanTags(items, scannedItems) == INFO_CANCELLED || scannedItems.Size() == 0)
     return 0;
 
   VECALBUMS albums;
