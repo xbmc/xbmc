@@ -174,7 +174,7 @@ int CPVRClients::GetFirstConnectedClientID(void)
 {
   CSingleLock lock(m_critSection);
 
-  for (PVR_CLIENTMAP_ITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
+  for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
     if (itr->second->ReadyToUse())
       return itr->second->GetID();
 
@@ -383,7 +383,7 @@ PVR_ERROR CPVRClients::GetTimers(CPVRTimers *timers)
   GetConnectedClients(clients);
 
   /* get the timer list from each client */
-  for (PVR_CLIENTMAP_ITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
+  for (PVR_CLIENTMAP_CITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
   {
     PVR_ERROR currentError = (*itrClients).second->GetTimers(timers);
     if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
@@ -456,7 +456,7 @@ PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings *recordings)
   PVR_CLIENTMAP clients;
   GetConnectedClients(clients);
 
-  for (PVR_CLIENTMAP_ITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
+  for (PVR_CLIENTMAP_CITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
   {
     PVR_ERROR currentError = (*itrClients).second->GetRecordings(recordings);
     if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
@@ -604,7 +604,7 @@ PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal *group)
   GetConnectedClients(clients);
 
   /* get the channel list from each client */
-  for (PVR_CLIENTMAP_ITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
+  for (PVR_CLIENTMAP_CITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
   {
     PVR_ERROR currentError = (*itrClients).second->GetChannels(*group, group->IsRadio());
     if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
@@ -624,7 +624,7 @@ PVR_ERROR CPVRClients::GetChannelGroups(CPVRChannelGroups *groups)
   PVR_CLIENTMAP clients;
   GetConnectedClients(clients);
 
-  for (PVR_CLIENTMAP_ITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
+  for (PVR_CLIENTMAP_CITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
   {
     PVR_ERROR currentError = (*itrClients).second->GetChannelGroups(groups);
     if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
@@ -645,7 +645,7 @@ PVR_ERROR CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group)
   GetConnectedClients(clients);
 
   /* get the member list from each client */
-  for (PVR_CLIENTMAP_ITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
+  for (PVR_CLIENTMAP_CITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
   {
     PVR_ERROR currentError = (*itrClients).second->GetChannelGroupMembers(group);
     if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
@@ -707,7 +707,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
       pDialog->Reset();
       pDialog->SetHeading(19196);
 
-      PVR_CLIENTMAP_ITR itrClients;
+      PVR_CLIENTMAP_CITR itrClients;
       for (itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
       {
         pDialog->Add(itrClients->second->GetBackendName());
@@ -861,7 +861,7 @@ int CPVRClients::RegisterClient(AddonPtr client)
   // load and initialise the client libraries
   {
     CSingleLock lock(m_critSection);
-    PVR_CLIENTMAP_ITR existingClient = m_clientMap.find(iClientId);
+    PVR_CLIENTMAP_CITR existingClient = m_clientMap.find(iClientId);
     if (existingClient != m_clientMap.end())
     {
       // return existing client
