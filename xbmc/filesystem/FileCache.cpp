@@ -475,7 +475,7 @@ void CFileCache::StopThread(bool bWait /*= true*/)
   CThread::StopThread(bWait);
 }
 
-CStdString CFileCache::GetContent()
+std::string CFileCache::GetContent()
 {
   if (!m_source.GetImplemenation())
     return IFile::GetContent();

@@ -52,7 +52,7 @@ public:
   virtual int           Stat(const CURL& url, struct __stat64* buffer) { return -1; }
   virtual void          Close();
   virtual unsigned int  Read(void* buffer, int64_t size);
-  virtual CStdString    GetContent() { return ""; }
+  virtual std::string   GetContent() { return ""; }
   virtual bool          SkipNext();
 
   virtual bool          Delete(const CURL& url);
@@ -84,14 +84,14 @@ protected:
   virtual void OnEvent(int event, const std::string& data);
 
   bool HandleEvents();
-  bool ChangeChannel(int direction, const CStdString &channel);
+  bool ChangeChannel(int direction, const std::string &channel);
 
   bool SetupConnection(const CURL& url, bool control, bool event, bool database);
   bool SetupRecording(const CURL& url);
   bool SetupLiveTV(const CURL& url);
   bool SetupFile(const CURL& url);
 
-  CStdString GetValue(char* str) { return m_session->GetValue(str); }
+  std::string GetValue(char* str) { return m_session->GetValue(str); }
   CDateTime  GetValue(const cmyth_timestamp_t t) { return m_session->GetValue(t); }
 
   CMythSession*     m_session;
@@ -101,7 +101,7 @@ protected:
   cmyth_recorder_t  m_recorder;
   cmyth_proginfo_t  m_program;
   cmyth_file_t      m_file;
-  CStdString        m_filename;
+  std::string       m_filename;
   CVideoInfoTag     m_infotag;
 
   CCriticalSection  m_section;

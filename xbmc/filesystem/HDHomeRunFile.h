@@ -21,7 +21,7 @@
 
 #include "IFile.h"
 
-struct hdhomerun_device;
+struct hdhomerun_device_t;
 class DllHdHomeRun;
 
 namespace XFILE

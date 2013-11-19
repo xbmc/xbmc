@@ -22,12 +22,12 @@
 #include "system.h"
 #include "URL.h"
 #include "FileItem.h"
-#include "DllHDHomeRun.h"
 #include "HDHomeRunFile.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
+#include "DllHDHomeRun.h"
 
 using namespace XFILE;
 using namespace std;
@@ -50,7 +50,7 @@ CHomeRunFile::~CHomeRunFile()
 
 bool CHomeRunFile::Exists(const CURL& url)
 {
-  CStdString path(url.GetFileName());
+  std::string path(url.GetFileName());
 
   /*
    * HDHomeRun URLs are of the form hdhomerun://1014F6D1/tuner0?channel=qam:108&program=10

@@ -431,7 +431,7 @@ bool CSlingboxFile::SelectChannel(unsigned int uiChannel)
   else if (uiButtonsWithCode == 10)
   {
     // Prepare variables
-    CStdString strDigits = StringUtils::Format("%u", uiChannel);
+    std::string strDigits = StringUtils::Format("%u", uiChannel);
     size_t uiNumberOfDigits = strDigits.size();
 
     // Change the channel using IR commands
@@ -476,7 +476,7 @@ bool CSlingboxFile::SelectChannel(unsigned int uiChannel)
   return bSuccess;
 }
 
-void CSlingboxFile::LoadSettings(const CStdString& strHostname)
+void CSlingboxFile::LoadSettings(const std::string& strHostname)
 {
   // Load default settings
   m_sSlingboxSettings.strHostname = strHostname;
@@ -494,7 +494,7 @@ void CSlingboxFile::LoadSettings(const CStdString& strHostname)
     m_sSlingboxSettings.uiCodeNumber[i] = 0;
 
   // Check if a SlingboxSettings.xml file exists
-  CStdString slingboxXMLFile = CProfilesManager::Get().GetUserDataItem("SlingboxSettings.xml");
+  std::string slingboxXMLFile = CProfilesManager::Get().GetUserDataItem("SlingboxSettings.xml");
   if (!CFile::Exists(slingboxXMLFile))
   {
     CLog::Log(LOGNOTICE, "No SlingboxSettings.xml file (%s) found - using default settings",

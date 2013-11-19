@@ -195,7 +195,7 @@ bool CMythFile::SetupLiveTV(const CURL& url)
   if(!SetupConnection(url, true, true, true))
     return false;
 
-  CStdString channel = url.GetFileNameWithoutPath();
+  std::string channel = url.GetFileNameWithoutPath();
   if(!URIUtils::HasExtension(channel, ".ts"))
   {
     CLog::Log(LOGERROR, "%s - invalid channel url %s", __FUNCTION__, channel.c_str());
@@ -300,7 +300,7 @@ bool CMythFile::Open(const CURL& url)
 {
   Close();
 
-  CStdString path(url.GetFileName());
+  std::string path(url.GetFileName());
 
   if (StringUtils::StartsWith(path, "recordings/") ||
       StringUtils::StartsWith(path, "movies/") ||
@@ -388,7 +388,7 @@ CMythFile::~CMythFile()
 
 bool CMythFile::Exists(const CURL& url)
 {
-  CStdString path(url.GetFileName());
+  std::string path(url.GetFileName());
 
   /*
    * mythbackend provides access to the .mpg or .nuv recordings. The associated thumbnails
@@ -420,7 +420,7 @@ bool CMythFile::Exists(const CURL& url)
 
 bool CMythFile::Delete(const CURL& url)
 {
-  CStdString path(url.GetFileName());
+  std::string path(url.GetFileName());
 
   if (StringUtils::StartsWith(path, "recordings/") ||
       StringUtils::StartsWith(path, "movies/") ||
@@ -539,7 +539,7 @@ bool CMythFile::UpdateItem(CFileItem& item)
   if (!m_program || !m_session)
     return false;
 
-  CStdString title = item.m_strTitle;
+  std::string title = item.m_strTitle;
   m_session->SetFileItemMetaData(item, m_program);
   return title != item.m_strTitle;
 }
@@ -579,7 +579,7 @@ int CMythFile::GetStartTime()
   return 0;
 }
 
-bool CMythFile::ChangeChannel(int direction, const CStdString &channel)
+bool CMythFile::ChangeChannel(int direction, const std::string &channel)
 {
   CLog::Log(LOGDEBUG, "%s - channel change started", __FUNCTION__);
 

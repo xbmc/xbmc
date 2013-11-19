@@ -65,7 +65,7 @@ protected:
 TEST_F(TestFileFactory, Read)
 {
   XFILE::CFile file;
-  CStdString str;
+  std::string str;
   unsigned int size, i;
   unsigned char buf[16];
   int64_t count = 0;
@@ -116,7 +116,7 @@ TEST_F(TestFileFactory, Read)
 TEST_F(TestFileFactory, Write)
 {
   XFILE::CFile file, inputfile;
-  CStdString str;
+  std::string str;
   unsigned int size, i;
   unsigned char buf[16];
   int64_t count = 0;

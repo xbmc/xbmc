@@ -34,8 +34,8 @@ using ::testing::ValuesIn;
 struct SplitPath
 {
   std::string url;
-  CStdString exportPath;
-  CStdString relativePath;
+  std::string exportPath;
+  std::string relativePath;
   bool expectedResultExport;
   bool expectedResultPath;
 } g_TestData[] = { 
@@ -78,19 +78,19 @@ static ExportList exportList;
 TEST_P(TestNfs, splitUrlIntoExportAndPath)
 {
   CURL url(GetParam().url);
-  CStdString exportPath;
-  CStdString relativePath;
+  std::string exportPath;
+  std::string relativePath;
   gNfsConnection.splitUrlIntoExportAndPath(url, exportPath, relativePath, exportList.data);
 
-  if (GetParam().expectedResultExport)    
-    EXPECT_STREQ(GetParam().exportPath, exportPath);
+  if (GetParam().expectedResultExport)
+    EXPECT_STREQ(GetParam().exportPath.c_str(), exportPath.c_str());
   else
-    EXPECT_STRNE(GetParam().exportPath, exportPath);
+    EXPECT_STRNE(GetParam().exportPath.c_str(), exportPath.c_str());
 
   if (GetParam().expectedResultPath)
-    EXPECT_STREQ(GetParam().relativePath, relativePath);
+    EXPECT_STREQ(GetParam().relativePath.c_str(), relativePath.c_str());
   else
-    EXPECT_STRNE(GetParam().relativePath, relativePath);
+    EXPECT_STRNE(GetParam().relativePath.c_str(), relativePath.c_str());
 }
 
 INSTANTIATE_TEST_CASE_P(NfsFile, TestNfs, ValuesIn(g_TestData));

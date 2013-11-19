@@ -42,7 +42,7 @@ public:
   virtual int64_t GetPosition();
   virtual int64_t GetLength();
   virtual bool Open(const CURL& url);
-  bool Open(const char* strHostName, const char* strFileName, int iport);
+  bool Open(const std::string& strHostName, const std::string& strFileName, int iport);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
   virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
@@ -51,8 +51,8 @@ public:
 protected:
   uint64_t m_fileSize;
   uint64_t m_filePos;
-  char m_hostName[255];
-  char m_fileName[255];
+  std::string m_hostName;
+  std::string m_fileName;
   int m_iport;
 private:
   RTVD m_rtvd;

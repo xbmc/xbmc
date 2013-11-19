@@ -37,14 +37,14 @@ CMusicDatabaseFile::~CMusicDatabaseFile(void)
   Close();
 }
 
-CStdString CMusicDatabaseFile::TranslateUrl(const CURL& url)
+std::string CMusicDatabaseFile::TranslateUrl(const CURL& url)
 {
   CMusicDatabase musicDatabase;
   if (!musicDatabase.Open())
     return "";
 
-  CStdString strFileName=URIUtils::GetFileName(url.Get());
-  CStdString strExtension = URIUtils::GetExtension(strFileName);
+  std::string strFileName=URIUtils::GetFileName(url.Get());
+  std::string strExtension = URIUtils::GetExtension(strFileName);
   URIUtils::RemoveExtension(strFileName);
 
   if (!StringUtils::IsNaturalNumber(strFileName))

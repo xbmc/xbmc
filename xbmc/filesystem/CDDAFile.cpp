@@ -50,7 +50,7 @@ CFileCDDA::~CFileCDDA(void)
 
 bool CFileCDDA::Open(const CURL& url)
 {
-  CStdString strURL = url.GetWithoutFilename();
+  std::string strURL = url.GetWithoutFilename();
 
   if (!g_mediaManager.IsDiscInDrive(strURL) || !IsValidFile(url))
     return false;
@@ -221,7 +221,7 @@ bool CFileCDDA::IsValidFile(const CURL& url)
 
 int CFileCDDA::GetTrackNum(const CURL& url)
 {
-  CStdString strFileName = url.Get();
+  std::string strFileName = url.Get();
 
   // get track number from "cdda://local/01.cdda"
   return atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());

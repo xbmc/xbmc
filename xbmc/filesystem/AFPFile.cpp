@@ -41,7 +41,7 @@ using namespace XFILE;
 void AfpConnectionLog(void *priv, enum loglevels loglevel, int logtype, const char *message)
 {
   if (!message) return;
-  CStdString msg = "LIBAFPCLIENT: " + CStdString(message);
+  std::string msg = "LIBAFPCLIENT: " + std::string(message);
 
   switch(logtype)
   {
@@ -170,13 +170,11 @@ bool CAfpConnection::connectVolume(const char *volumename, struct afp_volume *&p
   return ret;
 }
 
-CStdString CAfpConnection::getAuthenticatedPath(const CURL &url)
+CURL CAfpConnection::getAuthenticatedPath(const CURL &url)
 {
   CURL authURL(url);
-  CStdString ret;
   CPasswordManager::GetInstance().AuthenticateURL(authURL);
-  ret = authURL.Get();
-  return ret;
+  return authURL;
 }
 
 CAfpConnection::afpConnnectError CAfpConnection::Connect(const CURL& url)
@@ -297,7 +295,7 @@ CAfpConnection::afpConnnectError CAfpConnection::Connect(const CURL& url)
 int CAfpConnection::stat(const CURL &url, struct stat *statbuff)
 {
   CSingleLock lock(*this);
-  CStdString strPath = gAfpConnection.GetPath(url);
+  std::string strPath = gAfpConnection.GetPath(url);
   struct afp_volume *pTmpVol = NULL;
   struct afp_url tmpurl;
   int iResult = -1;
@@ -390,10 +388,10 @@ void CAfpConnection::AddIdleConnection()
   m_IdleTimeout = 180;
 }
 
-CStdString CAfpConnection::GetPath(const CURL &url)
+std::string CAfpConnection::GetPath(const CURL &url)
 {
   struct afp_url tmpurl;
-  CStdString ret = "";
+  std::string ret;
 
   m_pLibAfp->afp_default_url(&tmpurl);
 
@@ -405,7 +403,7 @@ CStdString CAfpConnection::GetPath(const CURL &url)
   }
   else
   {
-    ret = CStdString(tmpurl.path);
+    ret = tmpurl.path;
   }
   return ret;
 }
@@ -455,7 +453,7 @@ bool CAFPFile::Open(const CURL& url)
     return false;
   m_pAfpVol = gAfpConnection.GetVolume();
 
-  CStdString strPath = gAfpConnection.GetPath(url);
+  std::string strPath = gAfpConnection.GetPath(url);
 
   if (gAfpConnection.GetImpl()->afp_wrap_open(m_pAfpVol, strPath.c_str(), O_RDONLY, &m_pFp))
   {
@@ -508,7 +506,7 @@ int CAFPFile::Stat(const CURL& url, struct __stat64* buffer)
   if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return -1;
 
-  CStdString strPath = gAfpConnection.GetPath(url);
+  std::string strPath = gAfpConnection.GetPath(url);
 
   struct stat tmpBuffer = {0};
   int iResult = gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strPath.c_str(), &tmpBuffer);
@@ -644,7 +642,7 @@ bool CAFPFile::Delete(const CURL& url)
   if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return false;
 
-  CStdString strPath = gAfpConnection.GetPath(url);
+  std::string strPath = gAfpConnection.GetPath(url);
 
   int result = gAfpConnection.GetImpl()->afp_wrap_unlink(gAfpConnection.GetVolume(), strPath.c_str());
 
@@ -660,8 +658,8 @@ bool CAFPFile::Rename(const CURL& url, const CURL& urlnew)
   if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return false;
 
-  CStdString strFile = gAfpConnection.GetPath(url);
-  CStdString strFileNew = gAfpConnection.GetPath(urlnew);
+  std::string strFile = gAfpConnection.GetPath(url);
+  std::string strFileNew = gAfpConnection.GetPath(urlnew);
 
   int result = gAfpConnection.GetImpl()->afp_wrap_rename(gAfpConnection.GetVolume(), strFile.c_str(), strFileNew.c_str());
 
@@ -690,7 +688,7 @@ bool CAFPFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   m_pAfpVol = gAfpConnection.GetVolume();
 
-  CStdString strPath = gAfpConnection.GetPath(url);
+  std::string strPath = gAfpConnection.GetPath(url);
 
   if (bOverWrite)
   {
@@ -711,7 +709,7 @@ bool CAFPFile::OpenForWrite(const CURL& url, bool bOverWrite)
   return true;
 }
 
-bool CAFPFile::IsValidFile(const CStdString& strFileName)
+bool CAFPFile::IsValidFile(const std::string& strFileName)
 {
   if (strFileName.find('/') == std::string::npos   || // doesn't have sharename
       StringUtils::EndsWith(strFileName, "/.") ||     // not current folder

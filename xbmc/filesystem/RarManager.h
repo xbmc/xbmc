@@ -67,9 +67,9 @@ class CRarManager
 public:
   CRarManager();
   ~CRarManager();
-  bool CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath,
-                       const CStdString& strPathInRar, uint8_t bOptions = EXFILE_AUTODELETE,
-                       const CStdString& strDir =RAR_DEFAULT_CACHE, const int64_t iSize=-1);
+  bool CacheRarredFile(std::string& strPathInCache, const std::string& strRarPath,
+                       const std::string& strPathInRar, uint8_t bOptions = EXFILE_AUTODELETE,
+                       const std::string& strDir =RAR_DEFAULT_CACHE, const int64_t iSize=-1);
   bool GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath,
                       const CStdString& strPathInRar = "");
   bool GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath,

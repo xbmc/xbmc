@@ -21,6 +21,8 @@
  *
  */
 
+#include "utils/StdString.h"
+
 // C++ Interface: karaokelyrics
 
 // Abstract interface class for all Karaoke lyrics

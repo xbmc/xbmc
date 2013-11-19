@@ -37,43 +37,43 @@ CSpecialProtocolFile::~CSpecialProtocolFile(void)
 
 bool CSpecialProtocolFile::Open(const CURL& url)
 {
-  CStdString strFileName=CSpecialProtocol::TranslatePath(url);
+  std::string strFileName=CSpecialProtocol::TranslatePath(url);
 
   return m_file.Open(strFileName);
 }
 
 bool CSpecialProtocolFile::OpenForWrite(const CURL& url, bool bOverWrite /*=false */)
 {
-  CStdString strFileName=CSpecialProtocol::TranslatePath(url);
+  std::string strFileName=CSpecialProtocol::TranslatePath(url);
 
   return m_file.OpenForWrite(strFileName,bOverWrite);
 }
 
 bool CSpecialProtocolFile::Delete(const CURL& url)
 {
-  CStdString strFileName=CSpecialProtocol::TranslatePath(url);
+  std::string strFileName=CSpecialProtocol::TranslatePath(url);
   
   return m_file.Delete(strFileName);
 }
 
 bool CSpecialProtocolFile::Exists(const CURL& url)
 {
-  CStdString strFileName=CSpecialProtocol::TranslatePath(url);
+  std::string strFileName=CSpecialProtocol::TranslatePath(url);
 
   return m_file.Exists(strFileName);
 }
 
 int CSpecialProtocolFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CStdString strFileName=CSpecialProtocol::TranslatePath(url);
+  std::string strFileName=CSpecialProtocol::TranslatePath(url);
 
   return m_file.Stat(strFileName, buffer);
 }
 
 bool CSpecialProtocolFile::Rename(const CURL& url, const CURL& urlnew)
 {
-  CStdString strFileName=CSpecialProtocol::TranslatePath(url);
-  CStdString strFileName2=CSpecialProtocol::TranslatePath(urlnew);
+  std::string strFileName=CSpecialProtocol::TranslatePath(url);
+  std::string strFileName2=CSpecialProtocol::TranslatePath(urlnew);
 
   return m_file.Rename(strFileName,strFileName2);
 }

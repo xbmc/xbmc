@@ -69,7 +69,7 @@ CFile::~CFile()
 
 //*********************************************************************************************
 
-bool CFile::Copy(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
+bool CFile::Copy(const std::string& strFileName, const std::string& strDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
   const CURL pathToUrl(strFileName);
   const CURL pathToUrlDest(strDest);
@@ -80,7 +80,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
 {
   CFile file;
 
-  const CStdString pathToUrl(dest.Get());
+  const std::string pathToUrl(dest.Get());
   if (pathToUrl.empty())
     return false;
 
@@ -95,7 +95,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
     if (URIUtils::IsHD(pathToUrl)) // create possible missing dirs
     {
       vector<std::string> tokens;
-      CStdString strDirectory = URIUtils::GetDirectory(pathToUrl);
+      std::string strDirectory = URIUtils::GetDirectory(pathToUrl);
       URIUtils::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
@@ -107,7 +107,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
         pathsep = "/";
 #endif
         StringUtils::Tokenize(url.GetFileName(),tokens,pathsep.c_str());
-        CStdString strCurrPath;
+        std::string strCurrPath;
         // Handle special
         if (!url.GetProtocol().empty()) {
           pathsep = "/";
@@ -210,7 +210,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
 }
 
 //*********************************************************************************************
-bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
+bool CFile::Open(const std::string& strFileName, const unsigned int flags)
 {
   const CURL pathToUrl(strFileName);
   return Open(pathToUrl, flags);
@@ -237,7 +237,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
 
     if (!(m_flags & READ_NO_CACHE))
     {
-      const CStdString pathToUrl(url.Get());
+      const std::string pathToUrl(url.Get());
       if (URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(pathToUrl) )
         m_flags |= READ_CACHED;
 
@@ -321,7 +321,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
   return false;
 }
 
-bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
+bool CFile::OpenForWrite(const std::string& strFileName, bool bOverWrite)
 {
   const CURL pathToUrl(strFileName);
   return OpenForWrite(pathToUrl, bOverWrite);
@@ -351,7 +351,7 @@ bool CFile::OpenForWrite(const CURL& file, bool bOverWrite)
   return false;
 }
 
-bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
+bool CFile::Exists(const std::string& strFileName, bool bUseCache /* = true */)
 {
   const CURL pathToUrl(strFileName);
   return Exists(pathToUrl, bUseCache);
@@ -439,7 +439,7 @@ bool CFile::SkipNext()
   return false;
 }
 
-int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
+int CFile::Stat(const std::string& strFileName, struct __stat64* buffer)
 {
   const CURL pathToUrl(strFileName);
   return Stat(pathToUrl, buffer);
@@ -750,7 +750,7 @@ int CFile::Write(const void* lpBuf, int64_t uiBufSize)
   return -1;
 }
 
-bool CFile::Delete(const CStdString& strFileName)
+bool CFile::Delete(const std::string& strFileName)
 {
   const CURL pathToUrl(strFileName);
   return Delete(pathToUrl);
@@ -782,7 +782,7 @@ bool CFile::Delete(const CURL& file)
   return false;
 }
 
-bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileName)
+bool CFile::Rename(const std::string& strFileName, const std::string& strNewFileName)
 {
   const CURL pathToUrl(strFileName);
   const CURL pathToUrlNew(strNewFileName);
@@ -816,7 +816,7 @@ bool CFile::Rename(const CURL& file, const CURL& newFile)
   return false;
 }
 
-bool CFile::SetHidden(const CStdString& fileName, bool hidden)
+bool CFile::SetHidden(const std::string& fileName, bool hidden)
 {
   const CURL pathToUrl(fileName);
   return SetHidden(pathToUrl, hidden);
@@ -1114,7 +1114,7 @@ void CFileStream::Close()
   SAFE_DELETE(m_file);
 }
 
-bool CFileStream::Open(const CStdString& filename)
+bool CFileStream::Open(const std::string& filename)
 {
   const CURL pathToUrl(filename);
   return Open(pathToUrl);

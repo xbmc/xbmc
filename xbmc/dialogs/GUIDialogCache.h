@@ -23,6 +23,7 @@
 #include "filesystem/File.h"
 #include "threads/Thread.h"
 #include "threads/SystemClock.h"
+#include "utils/StdString.h"
 
 class CGUIDialogProgress;
 

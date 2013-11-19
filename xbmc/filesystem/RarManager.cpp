@@ -64,7 +64,7 @@ CRarManager::~CRarManager()
   ClearCache(true);
 }
 
-bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE  bOptions, const CStdString& strDir, const int64_t iSize)
+bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string& strRarPath, const std::string& strPathInRar, BYTE  bOptions, const std::string& strDir, const int64_t iSize)
 {
 #ifdef HAS_FILESYSTEM_RAR
   CSingleLock lock(m_CritSection);

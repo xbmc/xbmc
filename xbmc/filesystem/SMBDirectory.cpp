@@ -139,7 +139,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
-          const CStdString strFullName = strAuth + smb.URLEncode(strFile);
+          const CStdString strFullName = strAuth + (CStdString)smb.URLEncode(strFile);
 
           lock.Enter();
 

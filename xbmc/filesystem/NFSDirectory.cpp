@@ -112,7 +112,7 @@ bool CNFSDirectory::ResolveSymlink( const CStdString &dirName, struct nfsdirent 
   CSingleLock lock(gNfsConnection); 
   int ret = 0;  
   bool retVal = true;
-  CStdString fullpath = dirName;
+  std::string fullpath = dirName;
   char resolvedLink[MAX_PATH];
   
   URIUtils::AddSlashAtEnd(fullpath);

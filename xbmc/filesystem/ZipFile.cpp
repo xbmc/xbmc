@@ -46,7 +46,7 @@ CZipFile::~CZipFile()
 
 bool CZipFile::Open(const CURL&url)
 {
-  CStdString strOpts = url.GetOptions();
+  std::string strOpts = url.GetOptions();
   CURL url2(url);
   url2.SetOptions("");
   if (!g_ZipManager.GetZipEntry(url2,mZipItem))
