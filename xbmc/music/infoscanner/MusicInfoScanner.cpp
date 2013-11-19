@@ -715,6 +715,24 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
 
     album->strPath = strDirectory;
     m_musicDatabase.AddAlbum(*album);
+
+    // Yuk - this is a kludgy way to do what we want to do, but it will work to sort
+    // out artist fanart until we can restructure the artist fanart to work more
+    // like the album fanart. This has to be done after we've added the album so
+    // we have the artist IDs to update, but before we call UpdateDatabaseArtistInfo.
+    if (albums.size() == 1 &&
+        album->artistCredits.size() > 0 &&
+        !StringUtils::EqualsNoCase(album->artistCredits[0].GetArtist(), "various artists") &&
+        !StringUtils::EqualsNoCase(album->artistCredits[0].GetArtist(), "various"))
+    {
+      CArtist artist;
+      if (m_musicDatabase.GetArtist(album->artistCredits[0].GetArtistId(), artist))
+      {
+        artist.strPath = URIUtils::GetParentPath(strDirectory);
+        m_musicDatabase.SetArtForItem(artist.idArtist, "artist", GetArtistArtwork(artist));
+      }
+    }
+
     if ((m_flags & SCAN_ONLINE))
     {
       if (!albumScraper || !artistScraper)
