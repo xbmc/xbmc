@@ -163,8 +163,8 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   float scale = rd.Width() / (res.Overscan.right - res.Overscan.left);
   TransformMatrix mat;
   mat.m[0][0] = mat.m[1][1] = scale;
-  mat.m[3][0] = rd.x1;
-  mat.m[3][1] = rd.y1;
+  mat.m[0][3] = rd.x1;
+  mat.m[1][3] = rd.y1;
 
   float x = state.x, y = state.y;
   mat.InverseTransformPosition(x, y);
