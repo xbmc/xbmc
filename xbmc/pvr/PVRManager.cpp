@@ -1400,76 +1400,46 @@ bool CPVRManager::IsJobPending(const char *strJobName) const
   return bReturn;
 }
 
-void CPVRManager::TriggerEpgsCreate(void)
+void CPVRManager::QueueJob(const char *strJobName, CJob *job, bool bIgnorePending /* = false */)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (IsJobPending("pvr-create-epgs"))
+  if (!bIgnorePending && IsJobPending(strJobName))
     return;
 
-  m_pendingUpdates.push_back(new CPVREpgsCreateJob());
+  m_pendingUpdates.push_back(job);
 
   lock.Leave();
   m_triggerEvent.Set();
+}
+
+void CPVRManager::TriggerEpgsCreate(void)
+{
+  QueueJob("pvr-create-epgs", new CPVREpgsCreateJob());
 }
 
 void CPVRManager::TriggerRecordingsUpdate(void)
 {
-  CSingleLock lock(m_critSectionTriggers);
-  if (!IsStarted() || IsJobPending("pvr-update-recordings"))
-    return;
-
-  m_pendingUpdates.push_back(new CPVRRecordingsUpdateJob());
-
-  lock.Leave();
-  m_triggerEvent.Set();
+  QueueJob("pvr-update-recordings", new CPVRRecordingsUpdateJob());
 }
 
 void CPVRManager::TriggerTimersUpdate(void)
 {
-  CSingleLock lock(m_critSectionTriggers);
-  if (!IsStarted() || IsJobPending("pvr-update-timers"))
-    return;
-
-  m_pendingUpdates.push_back(new CPVRTimersUpdateJob());
-
-  lock.Leave();
-  m_triggerEvent.Set();
+  QueueJob("pvr-update-timers", new CPVRTimersUpdateJob());
 }
 
 void CPVRManager::TriggerChannelsUpdate(void)
 {
-  CSingleLock lock(m_critSectionTriggers);
-  if (!IsStarted() || IsJobPending("pvr-update-channels"))
-    return;
-
-  m_pendingUpdates.push_back(new CPVRChannelsUpdateJob());
-
-  lock.Leave();
-  m_triggerEvent.Set();
+  QueueJob("pvr-update-channels", new CPVRChannelsUpdateJob());
 }
 
 void CPVRManager::TriggerChannelGroupsUpdate(void)
 {
-  CSingleLock lock(m_critSectionTriggers);
-  if (!IsStarted() || IsJobPending("pvr-update-channelgroups"))
-    return;
-
-  m_pendingUpdates.push_back(new CPVRChannelGroupsUpdateJob());
-
-  lock.Leave();
-  m_triggerEvent.Set();
+  QueueJob("pvr-update-channelgroups", new CPVRChannelGroupsUpdateJob());
 }
 
 void CPVRManager::TriggerSaveChannelSettings(void)
 {
-  CSingleLock lock(m_critSectionTriggers);
-  if (!IsStarted() || IsJobPending("pvr-save-channelsettings"))
-    return;
-
-  m_pendingUpdates.push_back(new CPVRChannelSettingsSaveJob());
-
-  lock.Leave();
-  m_triggerEvent.Set();
+  QueueJob("pvr-save-channelsettings", new CPVRChannelSettingsSaveJob());
 }
 
 void CPVRManager::ExecutePendingJobs(void)
