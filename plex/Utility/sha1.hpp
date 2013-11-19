@@ -11,6 +11,8 @@
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
+#else
+#include <stdio.h>
 #endif
 
 struct SHA1 {
