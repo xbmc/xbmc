@@ -94,6 +94,18 @@
 			<animation effect="fade" start="90" end="40" time="500" condition="!ControlGroup(1300).HasFocus()">Conditional</animation>
 			<animation effect="fade" start="40" end="90" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
 		</control>
+		<control type="largeimage">
+			<posy>0</posy>
+			<posx>465</posx>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio aligny="top">stretch</aspectratio>
+			<texture background="true">black.png</texture>
+			<visible>Control.IsVisible(41)</visible>
+			<include>rightSideSlide</include>
+			<animation effect="fade" start="90" end="40" time="500" condition="!ControlGroup(1300).HasFocus()">Conditional</animation>
+			<animation effect="fade" start="40" end="90" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+		</control>
 		<!-- white overlay -->
 		<control type="largeimage">
 			<posy>0</posy>

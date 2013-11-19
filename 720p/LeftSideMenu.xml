@@ -49,6 +49,7 @@
 				<aspectratio>scale</aspectratio>
 				<texture>arrow-big.png</texture>
 				<colordiffuse>FF000000</colordiffuse>
+				<visible>!Control.IsVisible(41)</visible>
 			</control>
 			<control type="image">
 				<posy>41</posy>
@@ -449,6 +450,9 @@
 				<!-- filters buttons -->
 				<control type="button" id="19005">
 					<textoffsetx>35</textoffsetx>
+					<onup>19000</onup>
+					<ondown>19000</ondown>
+					<onright>777</onright>
 					<include>leftMenuClearFilters</include>
 				</control>
 				<control type="radiobutton" id="19006">

@@ -114,9 +114,9 @@
 			<control type="panel" id="51">
 				<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
 				<viewtype label="LibraryPostersBigger">panel</viewtype>
-				<onup>50</onup>
-				<ondown>50</ondown>
-				<onright>50</onright>
+				<onup>51</onup>
+				<ondown>51</ondown>
+				<onright>Container.NextViewMode</onright>
 				<onleft>1300</onleft>
 				<orientation>vertical</orientation>
 				<posx>102</posx>

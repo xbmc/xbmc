@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="6">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,50,51,60,61,62,66,70,71,80,99</views>
+	<views>40,41,50,51,60,61,62,66,70,71,80,99</views>
 	<allowoverlay>yes</allowoverlay>
 	<onload condition="Container.Content(movies)">Skin.SetString(SectionType,movies)</onload>
 	<onload condition="Container.Content(tvshows)">Skin.SetString(SectionType,tvshows)</onload>
@@ -9,13 +9,22 @@
 	<onunload>SetFocus(777)</onunload>
 	<onunload>Skin.Reset(SectionType)</onunload>
 	<controls>
+		<control type="button" id="2">
+		    <description>ViewType cycle</description>
+			<posy>-10000</posy>
+			<posx>-10000</posx>
+			<onright>777</onright>
+			<onleft>777</onleft>
+		</control>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
-		<!-- views (ViewsMovieTV.xml & ViewsChannels.xml & ViewsPreplay.xml & ViewsClips.xml) -->
+		<!-- views (Views.xml & ViewsMovieTV.xml & ViewsChannels.xml & ViewsPreplay.xml & ViewsClips.xml) -->
 		<!-- ByFolder ID 40 -->
 		<include>ByFolder</include>
+		<!-- List ID 41 -->
+		<include>List</include>
 		<!-- LibraryPosters ID 50 -->
 		<include condition="!Skin.HasSetting(ShowBigPostersLibraryView)">LibraryPosters</include>
 		<!-- LibraryPostersBigger ID 51 -->
@@ -38,6 +47,10 @@
 		<include>Channel</include>
 		<!-- Scroll Offset -->
 		<include>scrollOffset</include>
+		<!-- Item Full Info -->
+		<control type="group">
+			<include>ListItemFullInfo</include>
+		</control>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->

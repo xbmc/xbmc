@@ -1,5 +1,273 @@
 <?xml version="1.0"?>
 <includes>
+	<!-- ListItemFullInfo -->
+	<include name="ListItemFullInfoThumbSize">
+		<posy>30</posy>
+		<posx>20</posx>
+		<width>390</width>
+		<height>215</height>
+		<fadetime>300</fadetime>
+		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+	</include>
+	<include name="ListItemFullInfoThumbCard">
+	<control type="image">
+		<posy>245</posy>
+		<posx>20</posx>
+		<width>390</width>
+		<height>30</height>
+		<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+		<include>Black</include>
+	</control>
+	</include>
+	<variable name="ListItemFullInfoTitle">
+		<value condition="ListItem.Type(episode)">$INFO[ListItem.TVShowTitle]</value>
+		<value condition="ListItem.Type(movie)">$INFO[ListItem.Title]</value>
+		<value>$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="ListItemFullInfoSecondTitle">
+		<value condition="ListItem.Type(movie)">$INFO[ListItem.DurationStr]$INFO[ListItem.Year, &#xB7; ]</value>
+		<value condition="ListItem.Type(episode)">$INFO[ListItem.Title]</value>
+		<value condition="ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
+	</variable>
+	<variable name="ListItemFullInfoThirdTitle">
+		<value condition="ListItem.Type(episode)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="ListItem.Type(movie) | Container.Content(tvshows)">[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</value>
+		<value condition="ListItem.Type(season)">$LOCALIZE[32101]: $INFO[ListItem.Property(LeafCount)]</value>
+		<value condition="ListItem.Type(album) + !IsEmpty(ListItem.Album)">$INFO[ListItem.Album]</value>
+		<value condition="ListItem.Type(clip) + IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(sourceTitle)]</value>
+		<value condition="ListItem.Type(clip) + !IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(Recommender)]$INFO[ListItem.Property(sourceTitle), [COLOR=orange]&#xB7;[/COLOR] ]</value>
+	</variable>
+	<include name="ListItemUnwatchedCount">
+		<control type="grouplist">
+			<visible>Container.Content(tvshows)</visible>
+			<width>310</width>
+			<height>20</height>
+			<align>left</align>
+			<posy>31</posy>
+			<orientation>horizontal</orientation>
+			<itemgap>5</itemgap>
+			<control type="label">
+				<width min="10" max="150">auto</width>
+				<height>20</height>
+				<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Year, &#xB7; ]</label>
+				<font>CondensedBold-16</font>
+				<scroll>false</scroll>
+				<textcolor>FFefedeb</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+				<shadowcolor>ff222222</shadowcolor>
+			</control>			
+			<control type="label">
+				<width min="0" max="20">auto</width>
+				<height>20</height>
+				<label>&#xB7;</label>
+				<font>CondensedBold-16</font>
+				<scroll>false</scroll>
+				<textcolor>FFefedeb</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+				<shadowcolor>ff222222</shadowcolor>
+			</control>
+			<control type="image">
+				<height>20</height>
+				<width min="1" max="18">auto</width>
+				<texture>OverlayUnwatched.png</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<width min="10" max="50">auto</width>
+				<height>20</height>
+				<label>$INFO[ListItem.Property(UnwatchedEpisodes)]</label>
+				<font>CondensedBold-16</font>
+				<scroll>false</scroll>
+				<textcolor>FFefedeb</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+				<shadowcolor>ff222222</shadowcolor>
+			</control>
+		</control>
+	</include>
+	<variable name="ListItemFullInfoPlot">
+		<value condition="!ListItem.Type(episode)">$INFO[ListItem.Plot]</value>
+		<value condition="ListItem.Type(episode) + [ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]]">$INFO[ListItem.Plot]</value>
+		<value condition="ListItem.Type(episode) + [Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)]">$LOCALIZE[32105]</value>
+		<value>$INFO[ListItem.Plot]</value>
+	</variable>
+	<include name="ListItemFullInfoFlags">
+		<control type="grouplist">
+			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+			<width>310</width>
+			<align>center</align>
+			<posy>27</posy>
+			<orientation>horizontal</orientation>
+			<itemgap>40</itemgap>
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoResolution))</visible>
+				<height>18</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Art(mediaTag::videoResolution)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioCodec))</visible>
+				<height>18</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Art(mediaTag::audioCodec)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioChannels))</visible>
+				<height>18</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Art(mediaTag::audioChannels)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+		</control>
+	</include>
+	<!-- Card -->
+	<include name="ListItemFullInfo">
+		<control type="group">
+		<visible>Control.IsVisible(41)</visible>
+		<include>rightSideSlide</include>
+			<control type="group" id="999">
+				<posx>74</posx>
+				<posy>0</posy>
+				<height>25</height>
+				<control type="group">
+					<!-- bg -->
+					<control type="image">
+						<posx>-889</posx>
+						<posy>0</posy>
+						<width>1280</width>
+						<height>720</height>
+						<texture>bg-overlay-grainy.png</texture>
+						<animation effect="fade" start="0" end="100" time="400" condition="true">Conditional</animation>
+						<colordiffuse>FF555555</colordiffuse>
+						<visible>true</visible>
+					</control>
+					<!-- plot bg -->
+					<control type="image">
+						<posx>0</posx>
+						<posy>330</posy>
+						<width>390</width>
+						<height>320</height>
+						<include>Black</include>
+						<animation effect="fade" start="0" end="30" time="400" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<!-- orange separator -->
+					<control type="image">
+						<posx>390</posx>
+						<posy>0</posy>
+						<width>1</width>
+						<height>720</height>
+						<texture border="1">base.png</texture>
+						<colordiffuse>orange</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="400" condition="true">Conditional</animation>
+						<visible>true</visible>
+					</control>
+					<!-- arrow -->
+					<control type="image">
+						<posy>365</posy>
+						<posx>391</posx>
+						<texture background="true">arrow-big.png</texture>
+						<colordiffuse>orange</colordiffuse>
+						<animation effect="fade" start="0" end="100" time="500" delay="100" condition="true">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
+					</control>
+					<!-- thumb -->
+					<control type="group">
+						<posy>-30</posy>
+						<posx>-20</posx>
+						<control type="group">
+							<include>ListItemFullInfoThumbCard</include>
+							<control type="image">
+								<include>ListItemFullInfoThumbSize</include>
+								<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+							</control>
+							<control type="image">
+								<posx>367</posx>
+								<posy>210</posy>
+								<width>30</width>
+								<height>30</height>
+								<texture>$INFO[ListItem.Overlay]</texture>
+							</control>
+						</control>
+					</control>
+					<!-- infos -->
+					<control type="group">
+						<posy>230</posy>
+						<posx>22</posx>
+						<include>ListItemUnwatchedCount</include>
+						<control type="label">
+							<width>300</width>
+							<align>left</align>
+							<label>$VAR[ListItemFullInfoTitle]</label>
+							<font>CondensedBold-16</font>
+							<scroll>true</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
+						<control type="label">
+							<posy>42</posy>
+							<align>left</align>
+							<label>$VAR[ListItemFullInfoSecondTitle]</label>
+							<font>CondensedBold-16</font>
+							<scroll>false</scroll>
+							<textcolor>FFefedeb</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width>315</width>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
+						<control type="label">
+							<posy>72</posy>
+							<align>left</align>
+							<label>$VAR[ListItemFullInfoThirdTitle]</label>
+							<font>Condensed-16</font>
+							<scroll>false</scroll>
+							<textcolor>FF888888</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width>270</width>
+							<shadowcolor>ff222222</shadowcolor>
+						</control>
+						<control type="image">
+							<posy>37</posy>
+							<posx>960r</posx>
+							<width>50</width>
+							<height>40</height>
+							<texture>$INFO[Listitem.Art(mediaTag::contentRating)]</texture>
+							<aspectratio align="right" aligny="bottom">keep</aspectratio>
+							<colordiffuse>FF999999</colordiffuse>
+						</control>
+						<control type="textbox">
+							<posy>115</posy>
+							<width>315</width>
+							<height>280</height>
+							<label>$VAR[ListItemFullInfoPlot]</label>
+							<font>HomePlot</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+							<visible>!IsEmpty(ListItem.Plot)</visible>
+						</control>
+						<control type="textbox">
+							<posy>115</posy>
+							<width>315</width>
+							<height>280</height>
+							<include>NoPlotDefault</include>
+							<font>HomePlot</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+							<visible>IsEmpty(ListItem.Plot)</visible>
+						</control>
+					</control>
+					<!-- media flags -->
+					<control type="group">
+						<posy>650</posy>
+						<posx>34</posx>
+						<include>ListItemFullInfoFlags</include>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>	
 	<!-- HomeListItemFullInfo -->
 	<include name="ShowHomeFullInfo">
 		<visible>[Control.HasFocus(11001) + Control.IsVisible(11000)] | [Control.HasFocus(11003) + Control.IsVisible(11004)] | [Control.HasFocus(11000) + Control.IsVisible(11001)] | [Control.HasFocus(11004) + Control.IsVisible(11003)] | [Control.HasFocus(11000) + !Control.IsVisible(11001) + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [Control.HasFocus(11001) + !Control.IsVisible(11000)] | [Control.HasFocus(11003) + !Control.IsVisible(11004)] | [Control.HasFocus(11004) + !Control.IsVisible(11003)]</visible>
