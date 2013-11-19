@@ -772,6 +772,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           m_seekable = false;
         else if (name.Equals("Accept-Charset"))
           SetAcceptCharset(value);
+        else if (name.Equals("HttpProxy"))
+          SetStreamProxy(value, PROXY_HTTP);
         else
           SetRequestHeader(name, value);
       }
@@ -782,6 +784,17 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_url = url2.GetWithoutUserDetails();
   else
     m_url = url2.Get();
+}
+
+void CCurlFile::SetStreamProxy(const CStdString &proxy, ProxyType type)
+{
+  CURL url(proxy);
+  m_proxy = url.GetWithoutUserDetails();
+  m_proxyuserpass = url.GetUserName();
+  if (!url.GetPassWord().empty())
+    m_proxyuserpass += ":" + url.GetPassWord();
+  m_proxytype = type;
+  CLog::Log(LOGDEBUG, "Overriding proxy from URL parameter: %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
 }
 
 bool CCurlFile::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)

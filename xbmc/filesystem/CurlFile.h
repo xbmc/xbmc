@@ -74,6 +74,7 @@ namespace XFILE
       void SetProxy(CStdString &proxy)                           { m_proxy = proxy; }
       void SetProxyUserPass(CStdString &proxyuserpass)           { m_proxyuserpass = proxyuserpass; }
       void SetProxyType(ProxyType proxytype)                     { m_proxytype = proxytype; }
+      void SetStreamProxy(const CStdString &proxy, ProxyType type);
       void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
