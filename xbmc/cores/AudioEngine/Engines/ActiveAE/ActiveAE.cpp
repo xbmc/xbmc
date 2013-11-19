@@ -1322,7 +1322,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
         case 10: stdLayout = AE_CH_LAYOUT_7_1; break;
       }
 
-      if (m_settings.config == AE_CONFIG_FIXED)
+      if (m_settings.config == AE_CONFIG_FIXED || (settings.stereoupmix && format.m_channelLayout.Count() <= 2))
         format.m_channelLayout = stdLayout;
       else
         format.m_channelLayout.ResolveChannels(stdLayout);;
@@ -1994,7 +1994,7 @@ void CActiveAE::LoadSettings()
   m_settings.passthoughdevice = CSettings::Get().GetString("audiooutput.passthroughdevice");
 
   m_settings.config = CSettings::Get().GetInt("audiooutput.config");
-  m_settings.channels = CSettings::Get().GetInt("audiooutput.channels");
+  m_settings.channels = (m_sink.GetDeviceType(m_settings.device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::Get().GetInt("audiooutput.channels");
   m_settings.samplerate = CSettings::Get().GetInt("audiooutput.samplerate");
 
   m_settings.stereoupmix = (m_settings.channels > AE_CH_LAYOUT_2_0) ? CSettings::Get().GetBool("audiooutput.stereoupmix") : false;
