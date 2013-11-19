@@ -105,7 +105,7 @@ mkdir symbols-$outputdir
 for l in $libs; do
   dsymutil -o symbols-$outputdir/$(basename $l).dSYM $l
   $outputdir/bin/dump_syms symbols/$outputdir/$(basename %l).dSYM | bzip2 > symbols-$outputdir/$(basename $l).sym.bz2
-  rm -rf symbols-$outputdir/$(basename %l).dSYM
+  rm -rf symbols-$outputdir/$(basename $l).dSYM
   strip -S $l 
 done
 
@@ -113,13 +113,16 @@ for l in $libs; do
   codesign --force --sign "Developer ID Application: Plex Inc." $l
 done
 
+# wait until mds has calmed down
+sleep 20
+
 echo "Packing xbmc-depends"
 echo gtar --xz -cf $DEPDIR/built-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz $outputdir
 gtar --xz -cf $DEPDIR/built-depends/$outputdir-xbmc-$DEPEND_HASH.tar.xz $outputdir
 
 echo "Packing symbols"
-echo gtar -cf $DEPDIR/built-depensd/$outputdir-xbmc-symbols-$DEPEND_HASH.tar symbols-$outputdir
-gtar -cf $DEPDIR/built-depensd/$outputdir-xbmc-symbols-$DEPEND_HASH.tar symbols-$outputdir
+echo gtar -cf $DEPDIR/built-depends/$outputdir-xbmc-symbols-$DEPEND_HASH.tar symbols-$outputdir
+gtar -cf $DEPDIR/built-depends/$outputdir-xbmc-symbols-$DEPEND_HASH.tar symbols-$outputdir
 
 echo "Packing ffmpeg"
 echo gtar --xz -cf $DEPDIR/built-depends/$outputdir-ffmpeg-$FFMPEG_HASH.tar.xz ffmpeg-$outputdir
