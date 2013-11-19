@@ -3,12 +3,16 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=pcre
-VERSION=7.9
+VERSION=8.33
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; ./configure --prefix=$(PREFIX) --disable-stack-for-recursion --disable-shared
+CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; ./configure --prefix=$(PREFIX) \
+	--disable-shared --disable-stack-for-recursion \
+	--enable-pcre8 --disable-pcre16 --disable-pcre32 \
+	--enable-jit --enable-utf --enable-unicode-properties \
+	--enable-newline-is-anycrlf
 
 
 LIBDYLIB=$(PLATFORM)/.libs/lib$(LIBNAME).a
