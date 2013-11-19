@@ -103,8 +103,9 @@ libs=$(find $outputdir -name *.dylib)
 rm -rf symbols-$outputdir
 mkdir symbols-$outputdir
 for l in $libs; do
-  dsymutil -o symbols-$outputdir/$(basename $l) $l
-  $outputdir/bin/dump_syms $l | bzip2 > symbols-$outputdir/$(basename l).sym.bz2
+  dsymutil -o symbols-$outputdir/$(basename $l).dSYM $l
+  $outputdir/bin/dump_syms symbols/$outputdir/$(basename %l).dSYM | bzip2 > symbols-$outputdir/$(basename $l).sym.bz2
+  rm -rf symbols-$outputdir/$(basename %l).dSYM
   strip -S $l 
 done
 
