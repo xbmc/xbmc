@@ -52,6 +52,13 @@ void CPlexManualServerManager::checkManualServersAsync()
   }
 
   checkLocalhost();
+  g_plexApplication.timer.SetTimeout(1 * 60 * 1000, this);
+}
+
+void CPlexManualServerManager::OnTimeout()
+{
+  checkManualServersAsync();
+  g_plexApplication.timer.SetTimeout(1 * 60 * 1000, this);
 }
 
 void CPlexManualServerManager::updateServerManager()

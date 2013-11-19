@@ -14,8 +14,9 @@
 #include <map>
 #include "threads/CriticalSection.h"
 #include "PlexTypes.h"
+#include "PlexGlobalTimer.h"
 
-class CPlexManualServerManager : IJobCallback
+class CPlexManualServerManager : public IJobCallback, public IPlexGlobalTimeout
 {
   public:
     CPlexManualServerManager() : m_manualServerUUID("") {}
@@ -23,6 +24,8 @@ class CPlexManualServerManager : IJobCallback
     void OnJobComplete(unsigned int jobID, bool success, CJob *job);
     void updateServerManager();
     void checkLocalhost();
+
+    void OnTimeout();
 
     CCriticalSection m_serverLock;
     PlexServerMap m_serverMap;
