@@ -67,30 +67,6 @@ setfilepath /xbmc/system/players/dvdplayer
 checkfiles avcodec-53.dll avformat-53.dll avutil-51.dll postproc-52.dll swscale-2.dll avfilter-2.dll swresample-0.dll
 echo "##### building of ffmpeg dlls done #####"
 
-echo "##### building libdvd dlls #####"
-cd /xbmc/lib/libdvd/
-sh ./build-xbmc-win32.sh $MAKECLEAN
-setfilepath /xbmc/system/players/dvdplayer
-checkfiles libdvdcss-2.dll libdvdnav.dll
-echo "##### building of libdvd dlls done #####"
-
-echo "##### building timidity dlls #####"
-cd /xbmc/lib/timidity/
-if  [ "$MAKECLEAN" == "clean" ]; then
-  make -f Makefile.win32 clean
-fi
-make -f Makefile.win32 $MAKEFLAGS
-setfilepath /xbmc/system/players/paplayer
-checkfiles timidity.dll
-echo "##### building of timidity dlls done #####"
-
-echo "##### building asap dlls #####"
-cd /xbmc/lib/asap/win32
-sh ./build_xbmc_win32.sh $MAKECLEAN
-setfilepath /xbmc/system/players/paplayer
-checkfiles xbmc_asap.dll
-echo "##### building of asap dlls done #####"
-
 # wait for key press
 if [ $NOPROMPT == 0 ]; then
   echo press a key to close the window
