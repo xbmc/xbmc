@@ -32,8 +32,8 @@ else
 endif
 
 platform_path=@use_xcodepath@/Toolchains/XcodeDefault.xctoolchain
-platform_os_cflags=-arch @use_arch@ -no_compact_linkedit
-platform_os_ldflags=-arch @use_arch@ -no_compact_linkedit
+platform_os_cflags=-arch @use_arch@ -g
+platform_os_ldflags=-arch @use_arch@
 platform_sdk_path=@use_sdk_path@
 
 export NM=${platform_path}/usr/bin/nm
