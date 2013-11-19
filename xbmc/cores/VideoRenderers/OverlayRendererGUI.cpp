@@ -151,8 +151,7 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   if(m_layout == NULL)
     return;
 
-  CRect rs, rd;
-  g_renderManager.GetVideoRect(rs, rd);
+  CRect rd = g_graphicsContext.GetViewWindow();
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
 
   /* our coordinates are in screen coordinates constrained to rd, but the font is sized suitably for fullscreen,
@@ -179,9 +178,7 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   if (m_subalign == SUBTITLE_ALIGN_MANUAL
   ||  m_subalign == SUBTITLE_ALIGN_TOP_OUTSIDE
   ||  m_subalign == SUBTITLE_ALIGN_BOTTOM_INSIDE)
-    y = state.y - height;
-  else
-    y = state.y;
+    y -= height;
 
   // clamp inside screen
   y = std::max(y, (float) res.Overscan.top);
