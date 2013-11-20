@@ -1529,6 +1529,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
         CZeroconf::GetInstance()->Start();
       }
 #endif //HAS_ZEROCONF
+      /* PLEX */
+      CGUIDialogOK::ShowAndGetInput("Important!", "Note that receiving video content from iOS7 might not work.", "", "");
+      /* END PLEX */
+
       g_application.StartAirplayServer();//will stop the server before internal
     }
     else
