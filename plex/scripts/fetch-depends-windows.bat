@@ -4,7 +4,7 @@ if "%WORKSPACE%"=="" (
 	set WORKSPACE="%~dp0..\.."
 )
 
-set buildno=4
+set buildno=5
 rem set sha1=
 
 %WORKSPACE%\project\BuildDependencies\bin\wget.exe -O %WORKSPACE%\plex\Dependencies\windows-i386-xbmc-deps.tar.gz http://nightlies.plexapp.com/plex-dependencies/plex-home-theater-deps-windows/%buildno%/windows-i386-xbmc-deps.tar.gz
