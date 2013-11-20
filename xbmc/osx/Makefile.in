@@ -10,6 +10,10 @@ SRCS += DarwinUtils.mm
 SRCS += CocoaInterface.mm
 SRCS += HotKeyController.m
 SRCS += OSXGNUReplacements.c
+SRCS += OSXTextInputResponder.mm
+ifeq ($(findstring osx,@ARCH@), osx)
+SRCS += smc.c
+endif
 	
 LIB = osx.a
 
