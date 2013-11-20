@@ -757,6 +757,7 @@ CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
   CGUIStaticItemPtr newItem = CGUIStaticItemPtr(new CGUIStaticItem);
   newItem->SetLabel(item->GetLabel());
   newItem->SetLabel2(item->GetProperty("serverName").asString());
+  newItem->SetProperty("sectionNameCollision", item->GetProperty("sectionNameCollision"));
   newItem->SetProperty("plex", true);
   newItem->SetProperty("sectionPath", item->GetPath());
   newItem->SetPlexDirectoryType(item->GetPlexDirectoryType());

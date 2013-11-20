@@ -199,6 +199,7 @@ CFileItemListPtr CPlexServerDataLoader::GetAllSections() const
 {
   CSingleLock lk(m_dataLock);
   CFileItemList* list = new CFileItemList;
+  std::map<std::string, CFileItemPtr> sectionNameMap;
 
   BOOST_FOREACH(ServerDataPair pair, m_sectionMap)
   {
@@ -213,6 +214,14 @@ CFileItemListPtr CPlexServerDataLoader::GetAllSections() const
         item->SetProperty("serverName", pair.second->GetProperty("serverName"));
         item->SetProperty("serverUUID", pair.second->GetProperty("serverUUID"));
         list->Add(item);
+
+        if (sectionNameMap.find(item->GetLabel()) != sectionNameMap.end())
+        {
+          sectionNameMap[item->GetLabel()]->SetProperty("SectionNameCollision", "yes");
+          item->SetProperty("sectionNameCollision", "yes");
+        }
+
+        sectionNameMap[item->GetLabel()] = item;
       }
     }
   }
