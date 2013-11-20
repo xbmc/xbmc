@@ -645,10 +645,11 @@ void CGUIWindowManager::FrameMove()
 CGUIWindow* CGUIWindowManager::GetWindow(int id) const
 {
   CGUIWindow *window;
-  if (m_idCache.Get(id, window))
-    return window;
   if (id == 0 || id == WINDOW_INVALID)
     return NULL;
+  window = m_idCache.Get(id);
+  if (window)
+    return window;
 
   CSingleLock lock(g_graphicsContext);
   WindowMap::const_iterator it = m_mapWindows.find(id);
