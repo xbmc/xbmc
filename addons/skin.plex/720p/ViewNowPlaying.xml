@@ -3,22 +3,22 @@
 	<include name="CurrentCover">
 		<control type="group">
 			<control type="image">
-				<posx>-4</posx>
-				<posy>-4</posy>
+				<posx>0</posx>
+				<posy>0</posy>
 				<width>416</width>
 				<height>416</height>
 				<include>Shadow</include>
 			</control>
 			<control type="image">
-				<posx>9</posx>
-				<posy>9</posy>
+				<posx>13</posx>
+				<posy>13</posy>
 				<width>390</width>
 				<height>390</height>
 				<texture>default-square-big.png</texture>
 			</control>
 			<control type="image">
-				<posx>9</posx>
-				<posy>9</posy>
+				<posx>13</posx>
+				<posy>13</posy>
 				<width>390</width>
 				<height>390</height>
 				<texture diffuse="mask-square-big.png">$INFO[MusicPlayer.Cover]</texture>
@@ -30,22 +30,22 @@
 		<control type="group">
 			<animation effect="fade" start="0" end="60" condition="true">Conditional</animation>
 			<control type="image">
-				<posx>-4</posx>
-				<posy>-4</posy>
+				<posx>0</posx>
+				<posy>0</posy>
 				<width>256</width>
 				<height>256</height>
 				<include>Shadow</include>
 			</control>
 			<control type="image">
-				<posx>9</posx>
-				<posy>9</posy>
+				<posx>13</posx>
+				<posy>13</posy>
 				<width>230</width>
 				<height>230</height>
 				<texture>default-square-small.png</texture>
 			</control>
 			<control type="image">
-				<posx>9</posx>
-				<posy>9</posy>
+				<posx>13</posx>
+				<posy>13</posy>
 				<width>230</width>
 				<height>230</height>
 				<texture diffuse="mask-square.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
@@ -57,39 +57,40 @@
 		<control type="label">
 			<posy>5</posy>
 			<width>800</width>
-			<font>CondensedBold-32</font>
-			<textcolor>orange</textcolor>
+			<font>CondensedBold-36</font>
+			<textcolor>white</textcolor>
 			<label>$INFO[MusicPlayer.Artist]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>75</posy>
+			<posy>53</posy>
 			<width>800</width>
-			<font>Condensed-24</font>
+			<font>Condensed-30</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Album]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>165</posy>
+			<posy>100</posy>
 			<width>800</width>
-			<font>CondensedBold-30</font>
+			<font>Condensed-30</font>
+			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Title]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
 			<posy>275</posy>
 			<width>500</width>
-			<textcolor>greyLighter</textcolor>
+			<textcolor>white</textcolor>
 			<font>Condensed-24</font>
 			<label>$INFO[MusicPlayer.Time]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>350</posy>
-			<posx>740</posx>
-			<width>500</width>
-			<textcolor>greyLighter</textcolor>
+			<posy>275</posy>
+			<posx>140r</posx>
+			<width>100</width>
+			<textcolor>white</textcolor>
 			<font>Condensed-24</font>
 			<label>$INFO[MusicPlayer.Duration]</label>
 			<shadowcolor>ff222222</shadowcolor>
@@ -98,26 +99,27 @@
 	<include name="NextInfo">
 		<animation effect="fade" start="0" end="80" condition="true">Conditional</animation>
 		<control type="label">
+			<posy>38</posy>
 			<width>800</width>
-			<font>CondensedBold-24</font>
-			<textcolor>orange</textcolor>
+			<font>CondensedBold-28</font>
+			<textcolor>white</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Artist]</label>
 			<align>right</align>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>53</posy>
+			<posy>80</posy>
 			<width>800</width>
-			<font>Condensed-24</font>
+			<font>Condensed-26</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Title]</label>
 			<align>right</align>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>100</posy>
+			<posy>120</posy>
 			<width>800</width>
-			<font>CondensedBold-24</font>
+			<font>Condensed-26</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Album]</label>
 			<align>right</align>
@@ -128,43 +130,43 @@
 		<control type="label">
 			<posy>5</posy>
 			<width>800</width>
-			<font>CondensedBold-32</font>
-			<textcolor>orange</textcolor>
+			<font>CondensedBold-36</font>
+			<textcolor>white</textcolor>
 			<label>$INFO[MusicPlayer.Artist]</label>
 			<align>right</align>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>75</posy>
+			<posy>53</posy>
 			<width>800</width>
-			<font>Condensed-24</font>
+			<font>Condensed-30</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Album]</label>
 			<align>right</align>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>165</posy>
+			<posy>100</posy>
 			<width>800</width>
-			<font>CondensedBold-30</font>
-			<textcolor>FF888888</textcolor>
+			<font>Condensed-30</font>
+			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Title]</label>
 			<align>right</align>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
 			<posy>275</posy>
-			<posx>-795</posx>
+			<posx>-770</posx>
 			<width>500</width>
-			<textcolor>greyLighter</textcolor>
+			<textcolor>white</textcolor>
 			<font>Condensed-24</font>
 			<label>$INFO[MusicPlayer.Time]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>350</posy>
+			<posy>275</posy>
 			<width>500</width>
-			<textcolor>greyLighter</textcolor>
+			<textcolor>white</textcolor>
 			<font>Condensed-24</font>
 			<label>$INFO[MusicPlayer.Duration]</label>
 			<align>right</align>
@@ -174,24 +176,25 @@
 	<include name="NextInfoFlipped">
 		<animation effect="fade" start="0" end="80" condition="true">Conditional</animation>
 		<control type="label">
+			<posy>38</posy>
 			<width>800</width>
-			<font>CondensedBold-24</font>
-			<textcolor>orange</textcolor>
+			<font>CondensedBold-28</font>
+			<textcolor>white</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Artist]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>53</posy>
+			<posy>80</posy>
 			<width>800</width>
-			<font>Condensed-24</font>
+			<font>Condensed-26</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Title]</label>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
 		<control type="label">
-			<posy>100</posy>
+			<posy>120</posy>
 			<width>800</width>
-			<font>CondensedBold-24</font>
+			<font>Condensed-26</font>
 			<textcolor>greyLighter</textcolor>
 			<label>$INFO[MusicPlayer.Offset(1).Album]</label>
 			<shadowcolor>ff222222</shadowcolor>
@@ -217,6 +220,14 @@
 				<animation effect="fade" end="80" condition="true">Conditional</animation>
 			</control>
 		</control>
+	</include>
+	<include name="ProgressBar">
+		<width>550</width>
+		<height>16</height>
+		<aligny>center</aligny>
+		<info>Player.Progress</info>
+		<texturebg border="8">OSDProgressBack2.png</texturebg>
+		<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
 	</include>
 	<!-- Animations -->
 	<include name="Fade">
@@ -262,35 +273,34 @@
 			<visible>!MusicPlayer.NowPlayingFlipped</visible>
 			<include>Flip</include>
 			<include>Fade</include>
-			<posx>20</posx>
+			<posx>40</posx>
 			<posy>20</posy>
 			<!-- 2 cover view -->
 			<control type="group">
 				<visible>MusicPlayer.HasNext</visible>
-				<include>CurrentCover</include>
+				<control type="group">
+					<posy>-4</posy>
+					<posx>-4</posx>
+					<include>CurrentCover</include>
+				</control>
 				<control type="group">
 					<posy>25</posy>
 					<posx>430</posx>
 					<include>CurrentInfo</include>
 				</control>
 				<control type="progress">
-					<posx>428</posx>
-					<posy>330</posy>
-					<width>803</width>
-					<height>16</height>
-					<aligny>center</aligny>
-					<info>Player.Progress</info>
-					<texturebg border="8">OSDProgressBack2.png</texturebg>
-					<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
+					<posx>540</posx>
+					<posy>292</posy>
+					<include>ProgressBar</include>
 				</control>
 				<control type="group">
-					<posx>990</posx>
-					<posy>430</posy>
+					<posx>956</posx>
+					<posy>396</posy>
 					<include>NextCover</include>
 				</control>
 				<control type="group">
-					<posx>970</posx>
-					<posy>530</posy>
+					<posx>940</posx>
+					<posy>500</posy>
 					<include>NextInfo</include>
 				</control>
 			</control>
@@ -299,21 +309,20 @@
 				<posy>130</posy>
 				<visible>!MusicPlayer.HasNext</visible>
 				<include>Slide</include>
-				<include>CurrentCover</include>
+				<control type="group">
+					<posy>0</posy>
+					<posx>-14</posx>
+					<include>CurrentCover</include>
+				</control>
 				<control type="group">
 					<posy>25</posy>
-					<posx>430</posx>
+					<posx>420</posx>
 					<include>CurrentInfo</include>
 				</control>
 				<control type="progress">
-					<posx>428</posx>
-					<posy>330</posy>
-					<width>803</width>
-					<height>16</height>
-					<aligny>center</aligny>
-					<info>Player.Progress</info>
-					<texturebg border="8">OSDProgressBack2.png</texturebg>
-					<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
+					<posx>535</posx>
+					<posy>292</posy>
+					<include>ProgressBar</include>
 				</control>
 			</control>
 		</control>
@@ -322,38 +331,34 @@
 			<visible>MusicPlayer.NowPlayingFlipped</visible>
 			<include>Flip</include>
 			<include>Fade</include>
-			<posx>20</posx>
+			<posx>10</posx>
 			<posy>20</posy>
 			<!-- 2 cover view -->
 			<control type="group">
 				<visible>MusicPlayer.HasNext</visible>
 				<control type="group">
-					<posy>5</posy>
-					<posx>830</posx>
+					<posy>-4</posy>
+					<posx>806</posx>
 					<include>CurrentCover</include>
 				</control>
 				<control type="group">
 					<posy>25</posy>
-					<posx>800</posx>
+					<posx>790</posx>
 					<include>CurrentInfoFlipped</include>
 				</control>
 				<control type="progress">
-					<posy>330</posy>
-					<width>803</width>
-					<height>16</height>
-					<aligny>center</aligny>
-					<info>Player.Progress</info>
-					<texturebg border="8">OSDProgressBack2.png</texturebg>
-					<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
+					<posx>130</posx>
+					<posy>292</posy>
+					<include>ProgressBar</include>
 				</control>
 				<control type="group">
-					<posx>0</posx>
-					<posy>430</posy>
+					<posx>-4</posx>
+					<posy>406</posy>
 					<include>NextCover</include>
 				</control>
 				<control type="group">
-					<posx>260</posx>
-					<posy>530</posy>
+					<posx>270</posx>
+					<posy>520</posy>
 					<include>NextInfoFlipped</include>
 				</control>
 			</control>
@@ -363,23 +368,19 @@
 				<visible>!MusicPlayer.HasNext</visible>
 				<include>Slide</include>
 				<control type="group">
-					<posy>5</posy>
-					<posx>830</posx>
+					<posy>-4</posy>
+					<posx>826</posx>
 					<include>CurrentCover</include>
 				</control>
 				<control type="group">
 					<posy>25</posy>
-					<posx>800</posx>
+					<posx>810</posx>
 					<include>CurrentInfoFlipped</include>
 				</control>
 				<control type="progress">
-					<posy>330</posy>
-					<width>803</width>
-					<height>16</height>
-					<aligny>center</aligny>
-					<info>Player.Progress</info>
-					<texturebg border="8">OSDProgressBack2.png</texturebg>
-					<midtexture border="8">OSDProgressMid-grey4.png</midtexture>
+					<posx>145</posx>
+					<posy>292</posy>
+					<include>ProgressBar</include>
 				</control>
 			</control>
 		</control>
