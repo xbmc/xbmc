@@ -21,7 +21,7 @@ void CPlexGlobalTimer::StopAllTimers()
 void CPlexGlobalTimer::SetTimeout(int64_t msec, IPlexGlobalTimeout *callback)
 {
   int64_t absoluteTime = XbmcThreads::SystemClockMillis() + msec;
-  timeoutPair newPair = std::make_pair<int64_t, IPlexGlobalTimeout*>(absoluteTime, callback);
+  timeoutPair newPair = std::make_pair(absoluteTime, callback);
 
   CSingleLock lk(m_timerLock);
   if (m_timeouts.size() == 0)
