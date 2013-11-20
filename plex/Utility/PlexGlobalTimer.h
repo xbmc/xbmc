@@ -37,6 +37,7 @@ class CPlexGlobalTimer : public CThread
     void RemoveTimeout(IPlexGlobalTimeout* callback);
     void RestartTimeout(int64_t msec, IPlexGlobalTimeout* callback);
 
+    void StopAllTimers();
   private:
     void Process();
     void SetTimer();

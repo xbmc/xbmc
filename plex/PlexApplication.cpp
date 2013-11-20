@@ -239,6 +239,8 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
   {
     CLog::Log(LOGINFO, "CPlexApplication shutting down!");
 
+    timer.StopAllTimers();
+
     themeMusicPlayer->stop();
     
     m_serviceListener->Stop();

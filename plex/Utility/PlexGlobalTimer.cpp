@@ -6,9 +6,15 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexGlobalTimer::~CPlexGlobalTimer()
 {
+  StopAllTimers();
+}
+
+void CPlexGlobalTimer::StopAllTimers()
+{
   m_running = false;
   m_timeouts.clear();
   m_timerEvent.Set();
+  StopThread(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +27,7 @@ void CPlexGlobalTimer::SetTimeout(int64_t msec, IPlexGlobalTimeout *callback)
   if (m_timeouts.size() == 0)
   {
     m_timeouts.push_back(newPair);
-    Create(true);
+    Create(false);
     return;
   }
 
