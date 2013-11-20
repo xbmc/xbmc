@@ -67,16 +67,9 @@ else(NOT TARGET_WIN32)
   # On win we use this for code signing
   file(GLOB_RECURSE EXES ${CMAKE_INSTALL_PREFIX}/*.exe)
   set(ENV{errorlevel} 1)
-
   foreach(e ${EXES})
     message("-- Signing: ${PLEXDIR}/scripts/WindowsSign.cmd ${e}")
     execute_process(COMMAND ${PLEXDIR}/scripts/WindowsSign.cmd "${e}" RESULT_VARIABLE RES)
   endforeach(e ${EXES})
-
-  file(GLOB_RECURSE DLLS ${CMAKE_INSTALL_PREFIX}/*.dll)
-  foreach(d ${DLLS})
-    message("-- Signing: ${d}")
-    execute_process(COMMAND ${PLEXDIR}/scripts/WindowsSign.cmd "${d}" RESULT_VARIABLE RES)
-  endforeach(d ${DLLS})
 endif(NOT TARGET_WIN32)
 
