@@ -76,6 +76,8 @@ public:
 
   void OnWakeUp();
 
+  void FailAddToPacketRender();
+
   void ForceVersionCheck();
   CPlexServiceListenerPtr GetServiceListener() const { return m_serviceListener; }
   
@@ -105,6 +107,7 @@ private:
   CPlexServiceListenerPtr m_serviceListener;
   CStdString m_ipAddress;
   bool m_networkLoggingOn;
+  bool m_triedToRestart;
   
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 };

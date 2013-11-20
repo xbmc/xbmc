@@ -28,6 +28,10 @@
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "settings/Settings.h"
 
+/* PLEX */
+#include "PlexApplication.h"
+/* END PLEX */
+
 using namespace std;
 
 
@@ -206,6 +210,10 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
 
     if (copied == 0 && timeout < CDVDClock::GetAbsoluteClock())
     {
+      /* PLEX */
+      g_plexApplication.FailAddToPacketRender();
+      /* END PLEX */
+
       CLog::Log(LOGERROR, "CDVDAudio::AddPacketsRenderer - timeout adding data to renderer");
       break;
     }

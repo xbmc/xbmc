@@ -27,6 +27,8 @@
 #include "PlexThemeMusicPlayer.h"
 #include "VideoThumbLoader.h"
 #include "PlexFilterManager.h"
+#include "Application.h"
+#include "ApplicationMessenger.h"
 
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
@@ -135,6 +137,20 @@ void PlexApplication::OnWakeUp()
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexApplication::FailAddToPacketRender()
+{
+#ifdef TARGET_DARWIN_OSX
+  if (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF &&
+      g_application.m_pPlayer->IsPassthrough() && !m_triedToRestart)
+  {
+    CLog::Log(LOGDEBUG, "CPlexApplication::FailAddToPacketRender Let's try to restart the media player");
+    CApplicationMessenger::Get().MediaRestart(false);
+    m_triedToRestart = true;
+  }
+#endif
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::ForceVersionCheck()
 {
@@ -235,7 +251,9 @@ void PlexApplication::sendNetworkLog(int level, const std::string &logline)
 ////////////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if (flag == ANNOUNCEMENT::System && stricmp(sender, "xbmc") == 0 && stricmp(message, "onQuit") == 0)
+  if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0 && stricmp(message, "OnPlay") == 0)
+    m_triedToRestart = false;
+  else if (flag == ANNOUNCEMENT::System && stricmp(sender, "xbmc") == 0 && stricmp(message, "onQuit") == 0)
   {
     CLog::Log(LOGINFO, "CPlexApplication shutting down!");
 
