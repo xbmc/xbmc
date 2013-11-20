@@ -522,7 +522,7 @@ bool CGUIWindowHome::OnPopupMenu()
       else if (choice == CONTEXT_BUTTON_DELETE)
       {
         // Confirm.
-        if (!CGUIDialogYesNo::ShowAndGetInput(122, 125, 0, 0))
+        if (!CGUIDialogYesNo::ShowAndGetInput(750, 125, 0, 0))
           return true;
 
         g_plexApplication.mediaServerClient->deleteItem(fileItem);

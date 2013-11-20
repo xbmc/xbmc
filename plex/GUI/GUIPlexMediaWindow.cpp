@@ -36,6 +36,7 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "Client/PlexTimelineManager.h"
 #include "Client/PlexServerDataLoader.h"
+#include "dialogs/GUIDialogYesNo.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
@@ -667,17 +668,22 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (button == CONTEXT_BUTTON_MARK_WATCHED)
         item->MarkAsWatched(reload);
-      else
-        item->MarkAsUnWatched(reload);
+      else item->MarkAsUnWatched(reload);
 
       g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
       break;
     }
 
     case CONTEXT_BUTTON_DELETE:
-      g_plexApplication.mediaServerClient->deleteItem(item);
-      g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
+    {
+      bool canceled;
+      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(750), g_localizeStrings.Get(125), "", "", canceled))
+      {
+        g_plexApplication.mediaServerClient->deleteItem(item);
+        g_directoryCache.ClearSubPaths(m_vecItems->GetPath());
+      }
       break;
+    }
 
     default:
       break;
