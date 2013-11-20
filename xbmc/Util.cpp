@@ -1207,7 +1207,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   if (!URIUtils::HasSlashAtEnd(strDest))
     strDest += "/";
 
-  size_t iLength = std::string::npos;
+  size_t iLength = 0;
   size_t iLenPath = strDest.size();
   for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
