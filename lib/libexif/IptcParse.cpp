@@ -201,8 +201,10 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
         // there may be multiple keywords - lets join them
         size_t maxLen = MAX_IPTC_STRING - strlen(tag);
         if (maxLen > 2)
+        {
           strcat(tag, ", ");
-        strncat(tag, pos, min(length, MAX_IPTC_STRING - maxLen - 3));
+          strncat(tag, pos, min(length, maxLen - 3));
+        }
       }
 /*      if (id == SLIDE_IPTC_CAPTION)
       {
