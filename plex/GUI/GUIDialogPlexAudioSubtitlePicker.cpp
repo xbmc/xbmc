@@ -56,7 +56,7 @@ CGUIDialogPlexPicker::SetFileItem(CFileItemPtr& fileItem)
     CFileItem* noneItem = new CFileItem;
     
     noneItem->SetLabel(g_localizeStrings.Get(231));
-    noneItem->SetProperty("id", -1);
+    noneItem->SetProperty("id", 0);
     noneItem->SetProperty("streamType", boost::lexical_cast<std::string>(PLEX_STREAM_SUBTITLE));
     noneItem->Select(false);
     

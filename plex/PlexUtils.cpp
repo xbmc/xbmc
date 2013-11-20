@@ -347,7 +347,7 @@ void PlexUtils::SetSelectedStream(CFileItemPtr item, CFileItemPtr stream)
     BOOST_FOREACH(CFileItemPtr part, item->m_mediaParts)
     {
       if (stream->GetProperty("streamType").asInteger() == PLEX_STREAM_SUBTITLE &&
-          stream->GetProperty("id").asInteger() == -1)
+          stream->GetProperty("id").asInteger() == 0)
       {
         /* this means we reset the stream back to none */
         stream->Select(true);
@@ -449,8 +449,7 @@ CStdString PlexUtils::GetPrettyStreamName(const CFileItem &fileItem, bool audio)
       if (selectedStream->GetProperty("streamType").asInteger() == PLEX_STREAM_AUDIO)
         name += " (" + GetStreamCodecName(selectedStream) + " " + GetStreamChannelName(selectedStream) + ")";
     }
-    else if (audio) name = g_localizeStrings.Get(1446);
-    else name = g_localizeStrings.Get(231);
+    else name = g_localizeStrings.Get(1446);
   }
   else
     name = g_localizeStrings.Get(231);
