@@ -147,6 +147,8 @@ CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &
     window = WINDOW_MUSIC_FILES;
   else if (type == PLEX_DIR_TYPE_PHOTOALBUM || type == PLEX_DIR_TYPE_PHOTO)
     window = WINDOW_PICTURES;
+  else if (type == PLEX_DIR_TYPE_DIRECTORY)
+    window = windowId;
   else if (type == PLEX_DIR_TYPE_CHANNEL)
   {
     CStdString typeStr = item->GetProperty("type").asString();
