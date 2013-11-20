@@ -815,6 +815,8 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
     m_xmlOutput = g_plexApplication.timelineManager->WaitForTimeline(pollSubscriber);
   else
     m_xmlOutput = g_plexApplication.timelineManager->GetCurrentTimeLinesXML(pollSubscriber);
+
+  m_responseHeaderFields.insert(std::make_pair("Access-Control-Expose-Headers", "X-Plex-Client-Identifier"));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
