@@ -18,6 +18,33 @@
  *
  */
 
+/*
+ * File has been modified to prevent overwrites of valid Aspect Ratios taken from nfo files
+ * when available.  Requires user to activate by creating a flag file, typically done   
+ * from a simple gui python add-on, but can be done manually by the user.  Modification
+ * consisted of adding a function to parse the Aspect ratio from the nfo file 
+ * getAspect_Ratio_nfo, adding lines to define the active movie path within 
+ * CGUIInfoManager::GetItemLabel, and lines added to two case statements
+ * VIDEOPLAYER_VIDEO_ASPECT, LISTITEM_VIDEO_ASPECT to write the Aspect Ratio of the nfo file
+ * to the database using getAspect_Ratio_nfo, so it is displayed during playback
+ * and persistent afer playback stopped. 
+ *
+ * It goes without saying these mods are not the optimum way to address the issue, it is
+ * a temporary solution until (if) a dev decides to pursue an elegant solution.
+ * 
+ *    jmac 11/18/2013
+ */
+
+//
+// added jmac 03/29/2013
+//
+#include <iostream>
+#include <fstream>
+#include <string>
+//
+//
+//
+
 #include "network/Network.h"
 #include "system.h"
 #include "GitRevision.h"
@@ -101,6 +128,14 @@ using namespace ADDON;
 using namespace PVR;
 using namespace INFO;
 using namespace EPG;
+
+// added jmac 03/29/2013
+//
+// declare function to parse aspect ratio from nfo file
+//
+float getAspect_Ratio_nfo ( CStdString filename );
+//
+//
 
 CGUIInfoManager::CGUIInfoManager(void) :
     Observable()
@@ -1598,12 +1633,80 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     }
     break;
   case VIDEOPLAYER_VIDEO_ASPECT:
+//
+// this case statement was modified to prevent overwriting of Aspect Ratios
+// in the player icons while the default media player is used to view movies
+// code from frodo 12.0 mod/patches was used
+//  11/17/2013 jmac-burg
+//
+
     if (g_application.m_pPlayer->IsPlaying())
     {
-      UpdateAVInfo();
-      strLabel = CStreamDetails::VideoAspectToAspectDescription(m_videoInfo.videoAspectRatio);
+//
+// check to see if flag to bypass default behavior is set
+//
+//
+          CStdString useNFOflags = "special://home/keep_media_flags";
+
+          if (!CFile::Exists(useNFOflags))
+          {
+
+
+//
+// original default return value
+//
+              float aspect=1.78;
+              strLabel = CStreamDetails::VideoAspectToAspectDescription(aspect);
+
+           }
+
+           else
+       {
+//
+// added these lines to force AR read from nfo file
+//
+//   03/29/2013  jmac
+//
+
+        if (m_currentFile)
+        {
+        if (m_currentFile->HasMusicInfoTag())
+                strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
+        else if (m_currentFile->HasVideoInfoTag())
+                strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
+        }
+
+                strLabel = URIUtils::GetParentPath(strLabel);
+                CStdString movie_dir = strLabel;
+                CStdString nfo_file = movie_dir + "/movie.nfo";
+
+                  ifstream myinfile (nfo_file);
+
+                  if ( myinfile.is_open() )
+                   {
+
+                        float nfo_AR = getAspect_Ratio_nfo ( nfo_file );
+                        strLabel =  CStreamDetails::VideoAspectToAspectDescription( nfo_AR );
+                        myinfile.close ();
+
+                    }
+                   else
+                    {
+
+                                //
+                                // original/historical return value 
+                                //
+                                      float aspect=1.78;
+                                      strLabel = CStreamDetails::VideoAspectToAspectDescription(aspect);
+
+                    }
+
+	}
+
     }
+
     break;
+
   case VIDEOPLAYER_AUDIO_CHANNELS:
     if(g_application.m_pPlayer->IsPlaying())
     {
@@ -4324,6 +4427,9 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
     return false;
   }
 
+
+
+
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
     CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
@@ -4390,6 +4496,42 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
 
   if (info >= LISTITEM_PICTURE_START && info <= LISTITEM_PICTURE_END && item->HasPictureInfoTag())
     return item->GetPictureInfoTag()->GetInfo(picture_slide_map[info - LISTITEM_PICTURE_START]);
+
+//
+// added this code to declare the path variable/string to been seen throughout GUIInfoManager::GetItemLabel
+// specifically for the LISTITEM_VIDEO_ASPECT case statement that sets/changes the AR when player is used
+//
+//  11/18/2013		jmac-burgh
+
+
+  CStdString path;
+      if (item->IsMusicDb() && item->HasMusicInfoTag())
+        path = URIUtils::GetDirectory(item->GetMusicInfoTag()->GetURL());
+      else if (item->IsVideoDb() && item->HasVideoInfoTag())
+      {
+        if( item->m_bIsFolder )
+          path = item->GetVideoInfoTag()->m_strPath;
+        else
+          URIUtils::GetParentPath(item->GetVideoInfoTag()->m_strFileNameAndPath, path);
+      }
+      else
+        URIUtils::GetParentPath(item->GetPath(), path);
+      path = CURL(path).GetWithoutUserDetails();
+      if (info==LISTITEM_FOLDERNAME)
+      {
+        URIUtils::RemoveSlashAtEnd(path);
+        path=URIUtils::GetFileName(path);
+      }
+      CURL::Decode(path);
+ 
+     CStdString movie_dir = path;
+     CStdString nfo_file = movie_dir + "/movie.nfo";
+
+     CStdString useNFOflags = "special://home/keep_media_flags";
+//
+//
+//
+//
 
   switch (info)
   {
@@ -4807,9 +4949,33 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       return CStreamDetails::VideoDimsToResolutionDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth(), item->GetVideoInfoTag()->m_streamDetails.GetVideoHeight());
     break;
   case LISTITEM_VIDEO_ASPECT:
-    if (item->HasVideoInfoTag())
-      return CStreamDetails::VideoAspectToAspectDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoAspect());
+//
+// this case statement was modified to prevent overwriting valid Aspect Ratios taken from nfo files.
+// if the nfo file is not available, or the user does not manually enable this mod via flag/file useNFOflags
+// the default code is used in the else if block
+//  11/17/2103  jmac-burgh
+//
+
+    if (CFile::Exists(useNFOflags))
+    {
+                   float nfo_AR = getAspect_Ratio_nfo ( nfo_file );
+                   ifstream myinfile (nfo_file);
+
+                   if ( myinfile.is_open() )
+                     {
+                   	float nfo_AR = getAspect_Ratio_nfo ( nfo_file );
+            		if (item->HasVideoInfoTag())
+                	return CStreamDetails::VideoAspectToAspectDescription( nfo_AR );
+                     }
+
+                   myinfile.close ();
+    }	
+
+    else if (item->HasVideoInfoTag())
+       return CStreamDetails::VideoAspectToAspectDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoAspect());
+
     break;
+
   case LISTITEM_AUDIO_CODEC:
     if (item->HasVideoInfoTag())
     {
@@ -5527,4 +5693,56 @@ bool CGUIInfoManager::GetEpgInfoTag(CEpgInfoTag& tag) const
     }
   }
   return false;
+}
+
+//
+//
+// added function to get AR from a movie.nfo file if its there
+//
+//   jmac 03/29/2013
+//
+
+float getAspect_Ratio_nfo ( CStdString filename )
+{
+   using namespace std;
+
+   float ar_float;
+
+
+   ifstream nfo_file_infile(filename.c_str());
+
+   if ( nfo_file_infile.is_open() )
+   {
+                char * start_pos = 0;
+                string search = "<aspect>";
+                string line;
+
+
+                while (getline(nfo_file_infile, line))
+                 {
+                        if (line.find(search) != std::string::npos)
+                        {
+                                int length = line.size();
+                                char line_str [length];
+                                strcpy( line_str, line.c_str() );
+                                start_pos = strstr ( line_str, "<aspect>" );
+                                std::string AR;
+                                AR.assign(start_pos+8, start_pos+12);
+                                ar_float = ::atof( AR.c_str() );
+
+                                return ar_float;
+
+                        }
+                 }
+
+    nfo_file_infile.close ();
+
+   }
+   else
+   {
+      cerr << "Cannot open file " << filename << endl;
+      return -1;
+   }
+
+
 }
