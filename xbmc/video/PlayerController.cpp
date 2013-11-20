@@ -96,11 +96,8 @@ bool CPlayerController::OnAction(const CAction &action)
         {
           CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream++;
           if (CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream >= g_application.m_pPlayer->GetSubtitleCount())
-          {
             CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = 0;
-            CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = false;
-            g_application.m_pPlayer->SetSubtitleVisible(false);
-          }
+
           g_application.m_pPlayer->SetSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
         }
         else
