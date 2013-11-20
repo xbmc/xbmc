@@ -28,6 +28,7 @@
 
 #include "settings/GUISettings.h"
 #include "guilib/GUIEditControl.h"
+#include "GUIAudioManager.h"
 
 #include "PlayList.h"
 #include "Settings.h"
@@ -497,8 +498,15 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
   
   if (action != ACTION_NONE)
   {
+    CAction actionId(action);
+
     g_application.WakeUpScreenSaverAndDPMS();
-    CApplicationMessenger::Get().SendAction(CAction(action), g_windowManager.GetFocusedWindow(), false);
+
+    g_application.ResetSystemIdleTimer();
+    g_audioManager.PlayActionSound(actionId);
+
+    CApplicationMessenger::Get().SendAction(actionId, WINDOW_INVALID, false);
+
   }
 }
 
