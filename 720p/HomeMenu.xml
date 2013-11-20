@@ -146,7 +146,7 @@
 						<font>CondensedBold-16</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
-						<visible>!IsEmpty(ListItem.Label2)</visible>
+						<visible>!IsEmpty(ListItem.Property(SectionNameCollision))</visible>
 					</control>
 				</focusedlayout>
 				<!-- additional menu items -->
