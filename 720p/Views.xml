@@ -61,8 +61,18 @@
 	<include name="List">
 		<control type="group">
 			<include>FadeDialog</include>
-			<include>rightSideSlide</include>
-			<visible>[Container.content(movies) | Container.Content(TVShows)]</visible>
+			<include>rightSideSlide</include>			
+			<control type="largeimage">
+				<posy>0</posy>
+				<posx>465</posx>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio aligny="top">stretch</aspectratio>
+				<texture background="true">black.png</texture>
+				<visible>Control.IsVisible(41)</visible>
+				<animation effect="fade" end="40" time="0" condition="true">Conditional</animation>
+			</control>
+			<!--><visible>[Container.content(movies) | Container.Content(TVShows)]</visible>-->
 			<!-- selected item bg -->
 			<control type="image">
 				<posx>465</posx>
@@ -76,7 +86,7 @@
 			<control type="group" id="777">
 				<control type="fixedlist" id="41">
 					<viewtype label="List">list</viewtype>
-					<visible>[Container.content(movies) | Container.Content(TVShows)]</visible>
+					<!--><visible>[Container.content(movies) | Container.Content(TVShows)]</visible>-->
 					<posy>31</posy>
 					<posx>505</posx>
 					<width>735</width>
@@ -89,7 +99,7 @@
 					<wraparound>true</wraparound>
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
-					<itemlayout height="50">
+					<itemlayout height="50" condition="!Container.Content(episodes)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -113,7 +123,7 @@
 							<textoffsetx>80</textoffsetx>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100">
+					<focusedlayout height="100" condition="!Container.Content(episodes)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -134,6 +144,86 @@
 						<control type="label">
 							<width>820</width>
 							<height>100</height>
+							<info>ListItem.Label</info>
+							<aligny>center</aligny>
+							<font>CondensedBold-32</font>
+							<textcolor>orange</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+							<textoffsetx>100</textoffsetx>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="450"/>
+							</animation>
+						</control>
+					</focusedlayout>
+					<itemlayout height="50" condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))]">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>50</height>
+							<texture border="5">border-bottom-grey.png</texture>
+						</control>
+						<control type="image">
+							<posx>28</posx>
+							<posy>15</posy>
+							<width>20</width>
+							<height>20</height>
+							<texture>$INFO[ListItem.Overlay]</texture>
+						</control>
+						<control type="label">
+							<width>840</width>
+							<height>50</height>
+							<label>[COLOR=greyLighter]$INFO[ListItem.TVShowTitle][/COLOR]$INFO[ListItem.Title, [COLOR=orange]&#xB7; [/COLOR]]</label>
+							<font>Condensed-20</font>
+							<include>White2</include>
+							<textoffsetx>80</textoffsetx>
+						</control>
+					</itemlayout>
+					<focusedlayout height="100" condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))]">
+						<!--><control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>100</height>
+							<texture border="10">black-bottom-grey.png</texture>
+							<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+						</control>-->
+						<control type="group">
+							<posx>-27</posx>
+							<posy>-40</posy>
+							<include>ListSelectedPoster</include>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="150,0" start="85" end="100" time="300" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="650"/>
+							</animation>
+						</control>
+						<control type="label">
+							<width>820</width>
+							<height>50</height>
+							<info>ListItem.TVShowTitle</info>
+							<aligny>center</aligny>
+							<font>CondensedBold-32</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+							<textoffsetx>100</textoffsetx>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="450"/>
+							</animation>
+						</control>
+						<control type="image">
+							<posx>100</posx>
+							<posy>50</posy>
+							<width>650</width>
+							<height>1</height>
+							<texture>black.png</texture>
+							<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+						</control>
+						<control type="label">
+							<posy>50</posy>
+							<width>820</width>
+							<height>50</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
 							<font>CondensedBold-32</font>
