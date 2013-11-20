@@ -683,7 +683,7 @@ void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
         /* PLEX */
       /* Direct Sound can NOT be used for HD formats */
       if ((g_guiSettings.GetBool("audiooutput.truehdpassthrough") || g_guiSettings.GetBool("audiooutput.dtshdpassthrough")) &&
-        sinkInfo.m_sinkName == "DirectSound")
+        sinkInfo.m_sinkName == "DirectSound" && passthrough)
         continue;
       /* END PLEX */
 
