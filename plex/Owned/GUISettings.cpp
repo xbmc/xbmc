@@ -441,7 +441,7 @@ void CGUISettings::Initialize()
   AddBool(srvGeneral, "services.plexplayer", 44300, true);
   AddBool(srvGeneral, "services.upnprenderer", 21881, false);
 #ifdef HAS_WEB_SERVER
-  AddBool(NULL,  "services.webserver",        263, true);
+  AddBool(srvGeneral,  "services.webserver",        263, true);
 #ifndef __PLEX__
   AddString(NULL,"services.webserverport",    730, CUtil::CanBindPrivileged()?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
 #else

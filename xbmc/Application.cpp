@@ -1728,11 +1728,7 @@ bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* 
 bool CApplication::StartWebServer()
 {
 #ifdef HAS_WEB_SERVER
-#ifndef __PLEX__
   if (g_guiSettings.GetBool("services.webserver") && m_network->IsAvailable())
-#else /* Always start the webserver */
-  if (m_network->IsAvailable())
-#endif
   {
     int webPort = atoi(g_guiSettings.GetString("services.webserverport"));
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
