@@ -847,6 +847,7 @@ void CGUIWindowHome::UpdateSections()
           listUpdated = true;
           item->SetLabel(foundItem->GetLabel());
         }
+        item->SetProperty("sectionNameCollision", foundItem->GetProperty("sectionNameCollision"));
 
         newSections.push_back(item);
       }
