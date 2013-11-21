@@ -843,7 +843,11 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   {
     CloseSubtitleStream(true);
     if (m_pInputStream && !(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY)))
+    {
       SetSubtitleVisible(false);
+      if (GetSubtitleCount() > 0 && CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream == -1)
+        CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = 0;
+    }
   }
 
   // open teletext stream
