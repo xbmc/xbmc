@@ -264,7 +264,7 @@ std::string& StringUtils::TrimLeft(std::string &str)
 std::string& StringUtils::TrimLeft(std::string &str, const std::string& chars)
 {
   size_t nidx = str.find_first_not_of(chars);
-  str.substr(nidx == str.npos ? 0 : nidx).swap(str);
+  str.erase(0, nidx);
   return str;
 }
 
