@@ -272,7 +272,12 @@
 			<label>19040</label>
 			<onclick>ActivateWindow(TV,timers)</onclick>
 		</control>
-		<control type="image" id="90147">
+		<control type="button" id="90147">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>137</label>
+			<onclick>ActivateWindow(TV,search)</onclick>
+		</control>
+		<control type="image" id="90148">
 			<width>35</width>
 			<height>35</height>
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>
@@ -304,7 +309,12 @@
 			<label>19040</label>
 			<onclick>ActivateWindow(Radio,timers)</onclick>
 		</control>
-		<control type="image" id="90247">
+		<control type="button" id="90247">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>137</label>
+			<onclick>ActivateWindow(Radio,search)</onclick>
+		</control>
+		<control type="image" id="90248">
 			<width>35</width>
 			<height>35</height>
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>
