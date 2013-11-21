@@ -145,7 +145,7 @@ void PlexApplication::FailAddToPacketRender()
       g_application.m_pPlayer->IsPassthrough() && !m_triedToRestart)
   {
     CLog::Log(LOGDEBUG, "CPlexApplication::FailAddToPacketRender Let's try to restart the media player");
-    CApplicationMessenger::Get().MediaRestart(false);
+    //CApplicationMessenger::Get().MediaRestart(false);
     m_triedToRestart = true;
   }
 #endif
