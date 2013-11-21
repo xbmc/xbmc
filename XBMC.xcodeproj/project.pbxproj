@@ -381,6 +381,8 @@
 		AE32174218313ADF0003FAFC /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
 		AE32174318313AE10003FAFC /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
 		AE4E87A717354C4A00D15206 /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
+		9C1C237F183E348C00BB7AAE /* GUIWindowRadio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C237B183E348C00BB7AAE /* GUIWindowRadio.cpp */; };
+		9C1C2380183E348C00BB7AAE /* GUIWindowTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C237D183E348C00BB7AAE /* GUIWindowTV.cpp */; };
 		AE84CB5A15A5B8A600A3810E /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */; };
 		AE89ACA61621DAB800E17DBC /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
 		AEC0083115ACAC6E0099888C /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */; };
@@ -3924,6 +3926,10 @@
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
 		AE4E87A617354C4A00D15206 /* XSLTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSLTUtils.h; sourceTree = "<group>"; };
+		9C1C237B183E348C00BB7AAE /* GUIWindowRadio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowRadio.cpp; sourceTree = "<group>"; };
+		9C1C237C183E348C00BB7AAE /* GUIWindowRadio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowRadio.h; sourceTree = "<group>"; };
+		9C1C237D183E348C00BB7AAE /* GUIWindowTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowTV.cpp; sourceTree = "<group>"; };
+		9C1C237E183E348C00BB7AAE /* GUIWindowTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowTV.h; sourceTree = "<group>"; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
 		AE84CB5C15A5B8BA00A3810E /* TagLibVFSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLibVFSStream.h; sourceTree = "<group>"; };
 		AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxBXA.cpp; sourceTree = "<group>"; };
@@ -6905,6 +6911,10 @@
 		C84828AD156CFCD8005A996F /* windows */ = {
 			isa = PBXGroup;
 			children = (
+				9C1C237B183E348C00BB7AAE /* GUIWindowRadio.cpp */,
+				9C1C237C183E348C00BB7AAE /* GUIWindowRadio.h */,
+				9C1C237D183E348C00BB7AAE /* GUIWindowTV.cpp */,
+				9C1C237E183E348C00BB7AAE /* GUIWindowTV.h */,
 				C84828AE156CFCD8005A996F /* GUIViewStatePVR.cpp */,
 				C84828AF156CFCD8005A996F /* GUIViewStatePVR.h */,
 				C84828B0156CFCD8005A996F /* GUIWindowPVR.cpp */,
@@ -10147,6 +10157,7 @@
 				F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */,
 				F55110450F5C3C0100955236 /* DVDDemuxHTSP.cpp in Sources */,
 				F551107C0F5C424700955236 /* htsatomic.c in Sources */,
+				9C1C237F183E348C00BB7AAE /* GUIWindowRadio.cpp in Sources */,
 				F551107D0F5C424700955236 /* htsbuf.c in Sources */,
 				F551107E0F5C424700955236 /* htsmsg.c in Sources */,
 				F551107F0F5C424700955236 /* htsmsg_binary.c in Sources */,
@@ -10698,6 +10709,7 @@
 				DF8990211709BB5400B35C21 /* ViewStateSettings.cpp in Sources */,
 				DF28EDA2170E1A11005FA9D2 /* GUIDialogLockSettings.cpp in Sources */,
 				DF28EDA3170E1A11005FA9D2 /* GUIDialogProfileSettings.cpp in Sources */,
+				9C1C2380183E348C00BB7AAE /* GUIWindowTV.cpp in Sources */,
 				DF28EDA6170E1A11005FA9D2 /* Profile.cpp in Sources */,
 				DF28EDA7170E1A11005FA9D2 /* ProfilesManager.cpp in Sources */,
 				DF28EDA8170E1A11005FA9D2 /* GUIWindowSettingsProfile.cpp in Sources */,
