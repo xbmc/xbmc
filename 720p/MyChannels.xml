@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="99">
 	<defaultcontrol>777</defaultcontrol>
-	<views>70</views>
+	<views>41,70</views>
 	<allowoverlay>yes</allowoverlay>
 	<onload>Skin.SetString(SectionType,channels)</onload>
 	<onunload>SetFocus(777)</onunload>
@@ -11,9 +11,15 @@
 		<include>BGGrainy</include>
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
+		<!-- List ID 41 -->
+		<include>List</include>
 		<!-- views (ViewsChannels.xml) -->
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
+		<!-- Item Full Info -->
+		<control type="group">
+			<include>ListItemFullInfo</include>
+		</control>
 		<!-- Scroll Offset -->
 		<include>scrollOffset</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->

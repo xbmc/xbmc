@@ -20,11 +20,12 @@
 	</control>
 	</include>
 	<variable name="ListItemFullInfoTitle">
-		<value condition="ListItem.Type(episode) + !Container.Content(episodes)">$INFO[ListItem.TVShowTitle]</value>
+		<value condition="ListItem.Type(episode) + !Container.Content(episodes) + !Container.Content(channel)">$INFO[ListItem.TVShowTitle]</value>
 		<value condition="ListItem.Type(episode) + Container.Content(episodes)">$INFO[ListItem.Label]</value>
+		<value condition="ListItem.Type(episode) + Container.Content(channel)">$INFO[Container.FolderName]</value>
 		<value condition="ListItem.Type(movie)">$INFO[ListItem.Title]</value>
 		<value condition="ListItem.Type(artist)">$INFO[ListItem.Label]</value>
-		<value condition="ListItem.Type(album) | Container.Content(songs)">$INFO[ListItem.Artist]</value>
+		<value condition="ListItem.Type(album) | Container.Content(songs) | [Container.Content(channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Artist]</value>
 		<value condition="[Container.Content(albums) + !ListItem.Type(album)] | Container.Content(seasons)">$INFO[Container.Property(parentTitle)]</value>
 		<value>$INFO[ListItem.Title]</value>
 	</variable>
@@ -33,27 +34,27 @@
 		<value condition="ListItem.Type(movie) + Container.Content(homemovies)">$INFO[ListItem.DurationStr]</value>
 		<value condition="ListItem.Type(episode) + !Container.Content(episodes)">$INFO[ListItem.Title]</value>
 		<value condition="ListItem.Type(episode) + Container.Content(episodes) + IsEmpty(Container.Property(mixedParents)) ">$INFO[Container.SecondTitle] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
-		
 		<value condition="ListItem.Type(episode) + [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
 		<value condition="ListItem.Type(episode) + [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]">$LOCALIZE[31145] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
-		
-		
 		<value condition="ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
 		<value condition="ListItem.Type(photo)">$INFO[ListItem.Date]</value>
 		<value condition="ListItem.Type(photoAlbum)">Album</value>
 		<value condition="ListItem.Type(artist)">$INFO[ListItem.Genre]</value>
 		<value condition="ListItem.Type(album)">$INFO[ListItem.Album]</value>
 		<value condition="[Container.Content(albums) + !ListItem.Type(album)]">$INFO[ListItem.Label]</value>
-		<value condition="Container.Content(songs)">$INFO[ListItem.Title]$INFO[ListItem.DurationStr, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="Container.Content(channels)">$INFO[ListItem.Property(ServerName)]</value>
+		<value condition="Container.Content(songs) | [Container.Content(channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Title]$INFO[ListItem.DurationStr, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 	</variable>
 	<variable name="ListItemFullInfoThirdTitle">
-		<value condition="ListItem.Type(episode) + !Container.Content(episodes)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="ListItem.Type(episode) + !Container.Content(episodes) + !Container.Content(channel)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(episode) + Container.Content(episodes)">$INFO[ListItem.DurationStr]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="ListItem.Type(episode) + [Container.Content(episodes) | Container.Content(channel)]">$INFO[ListItem.Date]</value>
 		<value condition="[ListItem.Type(movie) + !Container.Content(homemovies)] | Container.Content(tvshows)">[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</value>
-		<value condition="ListItem.Type(movie) + Container.Content(homemovies)">$INFO[ListItem.Date]</value>
+		<value condition="[ListItem.Type(movie) + Container.Content(homemovies)] | [Container.Content(channel) + ListItem.Type(clip)]">$INFO[ListItem.Date]</value>
 		<value condition="ListItem.Type(season) + !Container.Content(seasons)">$LOCALIZE[32101]: $INFO[ListItem.Property(LeafCount)]</value>
 		<value condition="Container.Content(seasons)">$INFO[ListItem.Genre]</value>
-		<value condition="!Container.Content(albums) + ListItem.Type(album) + !IsEmpty(ListItem.Album)">$INFO[ListItem.Album]</value>
+		<value condition="[!Container.Content(albums) + ListItem.Type(album) + !IsEmpty(ListItem.Album) + !Container.Content(channel)] | [Container.Content(channel) + Skin.String(SectionType,music) + !ListItem.Type(album)]">$INFO[ListItem.Album]</value>
+		<value condition="[Container.Content(channel) + Skin.String(SectionType,music) + ListItem.Type(album)]">$INFO[ListItem.Year]</value>
 		<value condition="ListItem.Type(clip) + IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(sourceTitle)]</value>
 		<value condition="ListItem.Type(clip) + !IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(Recommender)]$INFO[ListItem.Property(sourceTitle), [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(photo)">$INFO[ListItem.PictureResolution]</value>
@@ -158,7 +159,7 @@
 		</control>
 	</include>
 	<include name="ListItemFullInfoLeftSlide">
-		<animation effect="slide" start="0" end="-74" time="400" condition="Container.Content(seasons) | Container.Content(episodes) | [Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated))] | Container.Content(songs)">Conditional</animation>
+		<animation effect="slide" start="0" end="-74" time="400" condition="Container.Content(seasons) | Container.Content(episodes) | [Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated))] | Container.Content(songs) | Container.Content(channels) | Container.Content(channel)">Conditional</animation>
 	</include>
 	<!-- Card -->
 	<include name="ListItemFullInfo">
@@ -221,7 +222,7 @@
 							<control type="image">
 								<include>ListItemFullInfoThumbSize</include>
 								<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos) + !Container.Content(artists)</visible>
+								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos) + !Container.Content(artists) | [Container.Content(channel) + !ListItem.Type(photo)] + [Container.Content(channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
 							</control>
 								<control type="image">
 									<posy>30</posy>
@@ -231,7 +232,7 @@
 									<fadetime>300</fadetime>
 									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 									<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos) | Container.Content(artists)</visible>
+									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos) | Container.Content(artists) | [Container.Content(channel) + ListItem.Type(photo)] | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 								</control>
 							<control type="image">
 								<posx>367</posx>
@@ -248,18 +249,6 @@
 						<posx>22</posx>
 						<include>ListItemUnwatchedCount</include>
 						<control type="label">
-							<width>300</width>
-							<align>left</align>
-							<label>$VAR[ListItemFullInfoTitle]</label>
-							<font>CondensedBold-16</font>
-							<scroll>true</scroll>
-							<textcolor>orange</textcolor>
-							<wrapmultiline>false</wrapmultiline>
-							<shadowcolor>ff222222</shadowcolor>
-							<visible>!Window.IsActive(2) + !Window.IsActive(501)</visible>
-						</control>
-						<!-- show longer title for photos & music -->
-						<control type="label">
 							<width>340</width>
 							<align>left</align>
 							<label>$VAR[ListItemFullInfoTitle]</label>
@@ -268,7 +257,6 @@
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>Window.IsActive(2) | Window.IsActive(501)</visible>
 						</control>
 						<control type="label">
 							<posy>42</posy>
@@ -311,6 +299,36 @@
 							<aspectratio align="right" aligny="bottom">keep</aspectratio>
 							<colordiffuse>FF999999</colordiffuse>
 						</control>
+						<control type="image">
+							<posy>37</posy>
+							<posx>960r</posx>
+							<width>50</width>
+							<height>40</height>
+							<texture>icon-video.png</texture>
+							<aspectratio align="right" aligny="bottom">keep</aspectratio>
+							<colordiffuse>FF999999</colordiffuse>
+							<visible>Container.Content(channels) + ListItem.Type(video)</visible>
+						</control>
+						<control type="image">
+							<posy>37</posy>
+							<posx>960r</posx>
+							<width>50</width>
+							<height>40</height>
+							<texture>icon-music.png</texture>
+							<aspectratio align="right" aligny="bottom">keep</aspectratio>
+							<colordiffuse>FF999999</colordiffuse>
+							<visible>Container.Content(channels) + ListItem.Type(music)</visible>
+						</control>
+						<control type="image">
+							<posy>37</posy>
+							<posx>960r</posx>
+							<width>50</width>
+							<height>40</height>
+							<texture>icon-photo.png</texture>
+							<aspectratio align="right" aligny="bottom">keep</aspectratio>
+							<colordiffuse>FF999999</colordiffuse>
+							<visible>Container.Content(channels) + ListItem.Type(photos)</visible>
+						</control>
 						<control type="textbox"id="111">
 							<posy>115</posy>
 							<width>315</width>
@@ -349,7 +367,17 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113)</visible>
+							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + !Container.Content(channels) + !Container.Content(channel)</visible>
+						</control>
+						<control type="textbox">
+							<posy>115</posy>
+							<width>315</width>
+							<height>280</height>
+							<label>$LOCALIZE[32103]$VAR[NoPlotDefaultItem].</label>
+							<font>HomePlot</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + [Container.Content(channels) | Container.Content(channel)]</visible>
 						</control>
 					</control>
 					<!-- media flags -->

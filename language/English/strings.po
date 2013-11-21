@@ -1078,3 +1078,7 @@ msgstr ""
 msgctxt "#32106"
 msgid "Tracks"
 msgstr ""
+
+msgctxt "#32107"
+msgid "Channel"
+msgstr ""
