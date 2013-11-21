@@ -218,6 +218,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
       controllable.push_back("mute");
       controllable.push_back("stepBack");
       controllable.push_back("stepForward");
+      controllable.push_back("seekTo");
       if (type == VIDEO)
       {
         controllable.push_back("subtitleStream");
