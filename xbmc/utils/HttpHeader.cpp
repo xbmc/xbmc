@@ -173,7 +173,10 @@ std::string CHttpHeader::GetMimeType(void) const
 {
   std::string strValue(GetValueRaw("content-type"));
 
-  return strValue.substr(0, strValue.find(';'));
+  std::string mimeType(strValue, 0, strValue.find(';'));
+  StringUtils::TrimRight(mimeType, m_whitespaceChars);
+
+  return mimeType;
 }
 
 std::string CHttpHeader::GetCharset(void) const
