@@ -248,6 +248,12 @@ std::string& StringUtils::Trim(std::string &str)
   return TrimRight(str);
 }
 
+std::string& StringUtils::Trim(std::string &str, const char* const chars)
+{
+  TrimLeft(str, chars);
+  return TrimRight(str, chars);
+}
+
 // hack to ensure that std::string::iterator will be dereferenced as _unsigned_ char
 // without this hack "TrimX" functions failed on Win32 with UTF-8 strings
 static int isspace_c(char c)
