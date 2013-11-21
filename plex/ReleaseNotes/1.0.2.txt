@@ -1,0 +1,25 @@
+PHT Fixes:
+
+Under system updates there is now a plexpass channel.
+Don't create random folders (mixed/video/audio) in root
+Several crashbugs fixed.
+Remote API could resume from the wrong offset at times
+Much better handling when losing / switching network
+Much better detection of localhost server
+Reduce the number of threads used
+Fixed delayed loading of servers that required local authentication.
+Add dialog to confirm file deletion.
+Fix navigation in iTunes channel.
+Fix theme music volume
+Unknown SRT's now shows Unknown not None in the interface
+Don't show server name in the home menu if the section name is unique
+Bring back the setting for the webserver. This way we have workaround for crashy microhttpd
+Make an annoying warning about iOS7 and Airplay.
+Only disable direct sound as passthrough device when using HD formats.
+Make clicky sounds from the navigation API
+Fix Unwatched/In Progress icon being cut in preplay.
+Tweaks to Now Playing.
+Disable "left to pivot" from Home secondary menu.
+New Recommend icon.
+Add non-stretched support for 16:10 display (adds a black bar at bottom).
+Add audio output device settings back on OSX.
