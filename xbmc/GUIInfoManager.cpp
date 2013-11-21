@@ -798,6 +798,18 @@ void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector<Prope
 /// efficient retrieval of data.
 int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
+  bool listItemDependent;
+  return TranslateSingleString(strCondition, listItemDependent);
+}
+
+int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool &listItemDependent)
+{
+  /* We need to disable caching in INFO::InfoBool::Get if either of the following are true:
+   *  1. if condition is between LISTITEM_START and LISTITEM_END
+   *  2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
+   *     corresponding label is between LISTITEM_START and LISTITEM_END
+   *  This is achieved by setting the bool pointed at by listItemDependent, either here or in a recursive call
+   */
   // trim whitespaces
   CStdString strTest = strCondition;
   StringUtils::Trim(strTest);
@@ -816,11 +828,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (cat.name == "true" || cat.name == "yes" || cat.name == "on")
       return SYSTEM_ALWAYS_TRUE;
     if (cat.name == "isempty" && cat.num_params() == 1)
-      return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(cat.param())));
+      return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(cat.param(), listItemDependent)));
     else if (cat.name == "stringcompare" && cat.num_params() == 2)
     {
-      int info = TranslateSingleString(cat.param(0));
-      int info2 = TranslateSingleString(cat.param(1));
+      int info = TranslateSingleString(cat.param(0), listItemDependent);
+      int info2 = TranslateSingleString(cat.param(1), listItemDependent);
       if (info2 > 0)
         return AddMultiInfo(GUIInfo(STRING_COMPARE, info, -info2));
       // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
@@ -831,13 +843,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (cat.name == "integergreaterthan" && cat.num_params() == 2)
     {
-      int info = TranslateSingleString(cat.param(0));
+      int info = TranslateSingleString(cat.param(0), listItemDependent);
       int compareInt = atoi(cat.param(1).c_str());
       return AddMultiInfo(GUIInfo(INTEGER_GREATER_THAN, info, compareInt));
     }
     else if (cat.name == "substring" && cat.num_params() >= 2)
     {
-      int info = TranslateSingleString(cat.param(0));
+      int info = TranslateSingleString(cat.param(0), listItemDependent);
       CStdString label = CGUIInfoLabel::GetLabel(cat.param(1));
       StringUtils::ToLower(label);
       int compareString = ConditionalStringParameter(label);
@@ -930,7 +942,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         }
         else if (prop.name == "addontitle")
         {
-          int infoLabel = TranslateSingleString(param);
+          int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, infoLabel, 0));
           CStdString label = CGUIInfoLabel::GetLabel(param);
@@ -939,7 +951,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         }
         else if (prop.name == "addonicon")
         {
-          int infoLabel = TranslateSingleString(param);
+          int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, infoLabel, 0));
           CStdString label = CGUIInfoLabel::GetLabel(param);
@@ -948,7 +960,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         }
         else if (prop.name == "addonversion")
         {
-          int infoLabel = TranslateSingleString(param);
+          int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_VERSION, infoLabel, 0));
           CStdString label = CGUIInfoLabel::GetLabel(param);
@@ -1087,6 +1099,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       int offset = atoi(cat.param().c_str());
       int ret = TranslateListItem(prop);
+      if (ret)
+        listItemDependent = true;
       if (offset)
         return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
       return ret;
@@ -1095,6 +1109,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       int offset = atoi(cat.param().c_str());
       int ret = TranslateListItem(prop);
+      if (ret)
+        listItemDependent = true;
       if (offset)
         return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
       return ret;
@@ -1103,6 +1119,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       int offset = atoi(cat.param().c_str());
       int ret = TranslateListItem(prop);
+      if (ret)
+        listItemDependent = true;
       if (offset)
         return AddMultiInfo(GUIInfo(ret, 0, offset));
       return ret;
@@ -1263,11 +1281,20 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int id = atoi(info[0].param().c_str());
       int offset = atoi(info[1].param().c_str());
       if (info[1].name == "listitemnowrap")
+      {
+        listItemDependent = true;
         return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset));
+      }
       else if (info[1].name == "listitemposition")
+      {
+        listItemDependent = true;
         return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_POSITION));
+      }
       else if (info[1].name == "listitem")
+      {
+        listItemDependent = true;
         return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_WRAP));
+      }
     }
   }
 

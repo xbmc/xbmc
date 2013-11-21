@@ -37,7 +37,8 @@ class InfoBool
 {
 public:
   InfoBool(const CStdString &expression, int context)
-    : m_value(false),
+    : m_listItemDependent(false),
+      m_value(false),
       m_context(context),
       m_expression(expression),
       m_dirty(true)
@@ -59,7 +60,7 @@ public:
    */
   inline bool Get(const CGUIListItem *item = NULL)
   {
-    if (item)
+    if (item && m_listItemDependent)
       Update(item);
     else if (m_dirty)
     {
@@ -77,6 +78,8 @@ public:
   virtual void Update(const CGUIListItem *item) {};
 
   const std::string &GetExpression() const { return m_expression; }
+
+  bool m_listItemDependent;    ///< do not cache if a listitem pointer is given
 
 protected:
 
