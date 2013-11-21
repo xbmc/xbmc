@@ -115,7 +115,7 @@
 			<height>80</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-wide-big.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-			<visible>!ListItem.Type(episode)</visible>
+			<!--><visible>!ListItem.Type(episode)</visible>-->
 		</control>
 	</include>
 	<!-- List -->
@@ -133,7 +133,7 @@
 				<visible>Control.IsVisible(41)</visible>
 				<animation effect="fade" end="40" time="0" condition="true">Conditional</animation>
 			</control>
-			<visible>[![Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))]] + !Container.Content(Folders)</visible>
+			<visible>!Container.Content(episode) + !Container.Content(Folders)</visible>
 			<!-- selected item bg -->
 			<control type="image">
 				<posx>465</posx>
@@ -147,7 +147,7 @@
 			<control type="group" id="777">
 				<control type="fixedlist" id="41">
 					<viewtype label="List">list</viewtype>
-					<visible>[![Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))]] + !Container.Content(Folders)</visible>
+					<visible>!Container.Content(episode) + !Container.Content(Folders)</visible>
 					<posy>31</posy>
 					<posx>505</posx>
 					<width>735</width>
@@ -161,7 +161,7 @@
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
 					<!-- movies & tv shows -->
-					<itemlayout height="50" condition="Container.Content(movies) | Container.Content(tvshows)">
+					<itemlayout height="50" condition="Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -185,7 +185,7 @@
 							<textoffsetx>80</textoffsetx>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Container.Content(movies) | Container.Content(tvshows)">
+					<focusedlayout height="100" condition="Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -299,8 +299,8 @@
 							</animation>
 						</control>
 					</focusedlayout>
-					<!-- clips -->
-					<itemlayout height="50" condition="Container.Content(clips) | Container.Content(homemovies)">
+					<!-- clips & episodes -->
+					<itemlayout height="50" condition="Container.Content(clips) | Container.Content(homemovies) | [Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -322,9 +322,28 @@
 							<font>Condensed-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
+							<visible>![Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]</visible>
+						</control>
+						<control type="label">
+							<width>840</width>
+							<height>50</height>
+							<label>S$INFO[ListItem.Season]E$INFO[ListItem.Episode] &#xB7; $INFO[ListItem.Label]</label>
+							<font>Condensed-20</font>
+							<include>White2</include>
+							<textoffsetx>80</textoffsetx>
+							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]</visible>
+						</control>
+						<control type="label">
+							<width>840</width>
+							<height>50</height>
+							<label>$LOCALIZE[31145] &#xB7; $INFO[ListItem.Label]</label>
+							<font>Condensed-20</font>
+							<include>White2</include>
+							<textoffsetx>80</textoffsetx>
+							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]</visible>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="Container.Content(clips) | Container.Content(homemovies)">
+					<focusedlayout height="100" condition="Container.Content(clips) | Container.Content(homemovies) | [Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -343,7 +362,7 @@
 							</animation>
 						</control>
 						<control type="label">
-							<width>750</width>
+							<width>900</width>
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>

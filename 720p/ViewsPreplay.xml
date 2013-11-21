@@ -298,6 +298,8 @@
 			<include>FadeDialog</include>
 			<visible>Container.Content(Seasons)</visible>
 			<include>rightSideSlide</include>
+			<control type="group">
+			<visible> Control.IsVisible(60)</visible>
 			<!-- backgrounds -->
 			<control type="group">
 				<include>PlotBGShowAndSeason</include>
@@ -395,13 +397,14 @@
 				<include>NoPlotDefault</include>
 				<visible>IsEmpty(Container.ShowPlot)</visible>
 			</control>
+		</control>
 			<!-- main list -->
 			<control type="panel" id="60">
 				<visible>Container.Content(Seasons)</visible>
 				<viewtype label="PreplaySeasons">panel</viewtype>
 				<onup>60</onup>
 				<ondown>60</ondown>
-				<onright>60</onright>
+				<onright>Container.NextViewMode</onright>
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
 				<posx>598</posx>
@@ -528,6 +531,8 @@
 			<visible>Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
+			<control type="group">
+			<visible> Control.IsVisible(61)</visible>
 			<!-- backgrounds -->
 			<control type="group">
 				<include>PlotBGShowAndSeason</include>
@@ -640,13 +645,14 @@
 				<include>NoPlotDefault</include>
 				<visible>IsEmpty(Container.ShowPlot)</visible>
 			</control>
+			</control>
 			<!-- main list -->
 			<control type="panel" id="61">
 				<visible>Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))</visible>
 				<viewtype label="PreplayEpisodes">panel</viewtype>
 				<onup>61</onup>
 				<ondown>61</ondown>
-				<onright>61</onright>
+				<onright>Container.NextViewMode</onright>
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
 				<posx>588</posx>

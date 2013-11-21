@@ -391,6 +391,10 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
+					<label>ListItem.Property(LeafCount) : [COLOR=orangeLight]$INFO[ListItem.Property(LeafCount)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
 					<label>ListItem.Country : [COLOR=orangeLight]$INFO[ListItem.Country][/COLOR]</label>
 				</control>
 				<control type="label">
