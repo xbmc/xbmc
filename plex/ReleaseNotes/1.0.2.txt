@@ -23,3 +23,4 @@ Disable "left to pivot" from Home secondary menu.
 New Recommend icon.
 Add non-stretched support for 16:10 display (adds a black bar at bottom).
 Add audio output device settings back on OSX.
+Fixed playback of stacked files
