@@ -199,6 +199,9 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
     /* determine what things are controllable */
     std::vector<std::string> controllable;
 
+    controllable.push_back("playPause");
+    controllable.push_back("stop");
+
     if (type == MUSIC || type == VIDEO)
     {
       if (playlistLen > 0)
