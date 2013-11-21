@@ -157,11 +157,15 @@
 			</control>
 		</control>
 	</include>
+	<include name="ListItemFullInfoLeftSlide">
+		<animation effect="slide" start="0" end="-74" time="400" condition="Container.Content(seasons) | Container.Content(episodes) | [Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated))] | Container.Content(songs)">Conditional</animation>
+	</include>
 	<!-- Card -->
 	<include name="ListItemFullInfo">
 		<control type="group">
 		<visible>Control.IsVisible(41)</visible>
 		<include>rightSideSlide</include>
+		<include>ListItemFullInfoLeftSlide</include>
 			<control type="group" id="999">
 				<posx>74</posx>
 				<posy>0</posy>

@@ -122,7 +122,8 @@
 	<include name="List">
 		<control type="group">
 			<include>FadeDialog</include>
-			<include>rightSideSlide</include>			
+			<include>rightSideSlide</include>
+			<include>ListItemFullInfoLeftSlide</include>
 			<control type="largeimage">
 				<posy>0</posy>
 				<posx>465</posx>

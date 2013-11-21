@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <includes>
 	<include name="leftMenuInitSlide">
-		<animation effect="slide" start="-100" end="0" time="400">WindowOpen</animation>
+		<animation effect="slide" start="-74" end="0" time="400">Visible</animation>
+		<animation effect="slide" start="0" end="-74" time="400">Hidden</animation>
 	</include>
 	<include name="leftMenuSlide">
 		<animation effect="slide" start="0" end="246" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
@@ -382,7 +383,7 @@
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>[!Container.Content(secondary) + !Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons) + !Container.Content(songs) + !Container.Content(albums) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))] | !IsEmpty(Container.Property(primaryFilterActivated)) | Container.Content(empty)</visible>
+			<visible>[!Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons) + !Container.Content(songs) + !Container.Content(albums) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))] | [!IsEmpty(Container.Property(primaryFilterActivated)) + !Container.Content(songs)] | Container.Content(empty)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
