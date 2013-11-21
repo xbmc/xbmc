@@ -185,20 +185,47 @@ std::string CHttpHeader::GetCharset(void) const
   if (strValue.empty())
     return strValue;
 
-  const size_t semicolonPos = strValue.find(';');
-  if (semicolonPos == std::string::npos)
-    return "";
-
   StringUtils::ToUpper(strValue);
-  size_t posCharset;
-  if ((posCharset = strValue.find("; CHARSET=", semicolonPos)) != std::string::npos)
-    posCharset += 10;
-  else if ((posCharset = strValue.find(";CHARSET=", semicolonPos)) != std::string::npos)
-    posCharset += 9;
-  else
-    return "";
+  const size_t len = strValue.length();
+  const char* const strValueC = strValue.c_str();
 
-  return strValue.substr(posCharset, strValue.find(';', posCharset) - posCharset);
+  // extract charset value from 'contenttype/contentsubtype;pram1=param1Val ; charset=XXXX\t;param2=param2Val'
+  // most common form: 'text/html; charset=XXXX'
+  // charset value can be in double quotes: 'text/xml; charset="XXX XX"'
+
+  size_t pos = strValue.find(';');
+  while (pos < len)
+  {
+    // move to the next non-whitespace character
+    pos = strValue.find_first_not_of(m_whitespaceChars, pos + 1);
+
+    if (pos != std::string::npos)
+    {
+      if (strValue.compare(pos, 8, "CHARSET=", 8) == 0)
+      {
+        std::string charset(strValue, pos, strValue.find(';', pos));  // intentionally ignoring possible ';' inside quoted string
+                                                                      // as we don't support any charset with ';' in name
+        StringUtils::Trim(charset, m_whitespaceChars);
+        if (!charset.empty())
+        {
+          if (charset[0] != '"')
+            return charset;
+          else
+          { // charset contains quoted string (allowed according to RFC 2616)
+            StringUtils::Replace(charset, "\\", ""); // unescape chars, ignoring possible '\"' and '\\'
+            const size_t closingQ = charset.find('"', 1);
+            if (closingQ == std::string::npos)
+              return ""; // no closing quote
+
+            return charset.substr(1, closingQ - 1);
+          }
+        }
+      }
+      pos = strValue.find(';', pos); // find next parameter
+    }
+  }
+
+  return ""; // no charset is detected
 }
 
 void CHttpHeader::Clear()
