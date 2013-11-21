@@ -271,7 +271,7 @@ enum StdConversionType /* Keep it in sync with CCharsetConverter::CInnerConverte
   Utf32ToUtf8,
   Utf32ToW,
   WToUtf32,
-  SubtitleCharsetToW,
+  SubtitleCharsetToUtf8,
   Utf8ToUserCharset,
   UserCharsetToUtf8,
   Utf32ToUserCharset,
@@ -315,7 +315,7 @@ CConverterType CCharsetConverter::CInnerConverter::m_stdConversion[NumberOfStdCo
   /* Utf32ToUtf8 */         CConverterType(UTF32_CHARSET,   "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
   /* Utf32ToW */            CConverterType(UTF32_CHARSET,   WCHAR_CHARSET),
   /* WToUtf32 */            CConverterType(WCHAR_CHARSET,   UTF32_CHARSET),
-  /* SubtitleCharsetToW */  CConverterType(SubtitleCharset, WCHAR_CHARSET),
+  /* SubtitleCharsetToUtf8*/CConverterType(SubtitleCharset, "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
   /* Utf8ToUserCharset */   CConverterType(UTF8_SOURCE,     UserCharset),
   /* UserCharsetToUtf8 */   CConverterType(UserCharset,     "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
   /* Utf32ToUserCharset */  CConverterType(UTF32_CHARSET,   UserCharset),
@@ -654,7 +654,7 @@ void CCharsetConverter::resetUserCharset(void)
 
 void CCharsetConverter::resetSubtitleCharset(void)
 {
-  CInnerConverter::m_stdConversion[SubtitleCharsetToW].Reset();
+  CInnerConverter::m_stdConversion[SubtitleCharsetToUtf8].Reset();
 }
 
 void CCharsetConverter::resetKaraokeCharset(void)
@@ -749,9 +749,9 @@ bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& 
   return CInnerConverter::stdConvert(Utf8toW, utf8StringSrc, wStringDst, failOnBadChar);
 }
 
-bool CCharsetConverter::subtitleCharsetToW(const std::string& stringSrc, std::wstring& wStringDst)
+bool CCharsetConverter::subtitleCharsetToUtf8(const std::string& stringSrc, std::string& utf8StringDst)
 {
-  return CInnerConverter::stdConvert(SubtitleCharsetToW, stringSrc, wStringDst, false);
+  return CInnerConverter::stdConvert(SubtitleCharsetToUtf8, stringSrc, utf8StringDst, false);
 }
 
 bool CCharsetConverter::fromW(const std::wstring& wStringSrc,

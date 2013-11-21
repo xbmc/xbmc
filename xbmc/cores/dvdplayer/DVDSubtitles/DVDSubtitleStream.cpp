@@ -23,8 +23,11 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "utils/CharsetConverter.h"
 #include "utils/Utf8Utils.h"
+#include "utils/CharsetDetection.h"
+#include "filesystem/File.h"
 
 using namespace std;
+using XFILE::auto_buffer;
 
 CDVDSubtitleStream::CDVDSubtitleStream()
 {
@@ -40,60 +43,51 @@ bool CDVDSubtitleStream::Open(const string& strFile)
   pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
   if (pInputStream && pInputStream->Open(strFile.c_str(), ""))
   {
-    unsigned char buffer[16384];
-    int size_read = 0;
-    size_read = pInputStream->Read(buffer,3);
-    bool isUTF8 = false;
-    bool isUTF16 = false;
-    if (buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF)
-      isUTF8 = true;
-    else if (buffer[0] == 0xFF && buffer[1] == 0xFE)
+    static const size_t chunksize = 64 * 1024;
+    auto_buffer buf;
+
+    // read content
+    size_t totalread = 0;
+    int read;
+    do
     {
-      isUTF16 = true;
-      pInputStream->Seek(2, SEEK_SET);
+      if (totalread == buf.size())
+        buf.resize(buf.size() + chunksize);
+
+      read = pInputStream->Read((uint8_t*)buf.get() + totalread, buf.size() - totalread);
+      if (read > 0)
+        totalread += read;
+    } while (read > 0);
+
+    delete pInputStream;
+    if (!totalread)
+      return false;
+
+    std::string tmpStr(buf.get(), totalread);
+    buf.clear();
+
+    std::string enc(CCharsetDetection::GetBomEncoding(tmpStr));
+    if (enc == "UTF-8" || (enc.empty() && CUtf8Utils::isValidUtf8(tmpStr)))
+      m_stringstream << tmpStr;
+    else if (!enc.empty())
+    {
+      std::string converted;
+      g_charsetConverter.ToUtf8(enc, tmpStr, converted);
+      if (converted.empty())
+        return false;
+
+      m_stringstream << converted;
     }
     else
-      pInputStream->Seek(0, SEEK_SET);
-
-    if (isUTF16)
     {
-      std::wstringstream wstringstream;
-      while( (size_read = pInputStream->Read(buffer, sizeof(buffer)-2) ) > 0 )
-      {
-        buffer[size_read] = buffer[size_read + 1] = '\0';
-        CStdStringW temp; 
-        g_charsetConverter.utf16LEtoW(std::u16string((char16_t*)buffer),temp); 
-        wstringstream << temp; 
-      }
-      delete pInputStream;
+      std::string converted;
+      g_charsetConverter.subtitleCharsetToUtf8(tmpStr, converted);
+      if (converted.empty())
+        return false;
 
-      CStdString strUTF8;
-      g_charsetConverter.wToUTF8(CStdStringW(wstringstream.str()),strUTF8);
-      m_stringstream.str("");
-      m_stringstream << strUTF8;
+      m_stringstream << converted;
     }
-    else
-    {
-      while( (size_read = pInputStream->Read(buffer, sizeof(buffer)-1) ) > 0 )
-      {
-        buffer[size_read] = '\0';
-        m_stringstream << buffer;
-      }
-      delete pInputStream;
 
-      if (!isUTF8)
-        isUTF8 = CUtf8Utils::isValidUtf8(m_stringstream.str());
-
-      if (!isUTF8)
-      {
-        CStdStringW strUTF16;
-        CStdString strUTF8;
-        g_charsetConverter.subtitleCharsetToW(m_stringstream.str(), strUTF16);
-        g_charsetConverter.wToUTF8(strUTF16,strUTF8);
-        m_stringstream.str("");
-        m_stringstream << strUTF8;
-      }
-    }
     return true;
   }
 
