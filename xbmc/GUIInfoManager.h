@@ -852,6 +852,7 @@ public:
 protected:
   friend class INFO::InfoSingle;
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
+  int TranslateSingleString(const CStdString &strCondition, bool &listItemDependent);
 
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
