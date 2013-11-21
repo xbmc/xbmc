@@ -261,7 +261,7 @@ std::string& StringUtils::TrimLeft(std::string &str)
   return str;
 }
 
-std::string& StringUtils::TrimLeft(std::string &str, const std::string& chars)
+std::string& StringUtils::TrimLeft(std::string &str, const char* const chars)
 {
   size_t nidx = str.find_first_not_of(chars);
   str.erase(0, nidx);
@@ -274,7 +274,7 @@ std::string& StringUtils::TrimRight(std::string &str)
   return str;
 }
 
-std::string& StringUtils::TrimRight(std::string &str, const std::string& chars)
+std::string& StringUtils::TrimRight(std::string &str, const char* const chars)
 {
   size_t nidx = str.find_last_not_of(chars);
   str.erase(str.npos == nidx ? 0 : ++nidx);
