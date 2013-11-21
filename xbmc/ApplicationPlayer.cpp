@@ -280,33 +280,6 @@ int64_t CApplicationPlayer::GetTime() const
     return 0;
 }
 
-int CApplicationPlayer::GetPictureHeight()
-{
-  boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetPictureHeight();
-  else
-    return 0;
-}
-
-int CApplicationPlayer::GetPictureWidth()
-{
-  boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetPictureWidth();
-  else
-    return 0;
-}
-
-int CApplicationPlayer::GetSampleRate()
-{
-  boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetSampleRate();
-  else
-    return 0;
-}
-
 bool CApplicationPlayer::IsCaching() const
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
@@ -339,15 +312,6 @@ int CApplicationPlayer::GetSubtitleCount()
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->GetSubtitleCount();
-  else
-    return 0;
-}
-
-int CApplicationPlayer::GetBitsPerSample()
-{
-  boost::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetBitsPerSample();
   else
     return 0;
 }

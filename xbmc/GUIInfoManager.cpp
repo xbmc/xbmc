@@ -1588,7 +1588,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
     if(g_application.m_pPlayer->IsPlaying())
-      return CStreamDetails::VideoDimsToResolutionDescription(g_application.m_pPlayer->GetPictureWidth(), g_application.m_pPlayer->GetPictureHeight());
+    {
+      UpdateAVInfo();
+      return CStreamDetails::VideoDimsToResolutionDescription(m_videoInfo.width, m_videoInfo.height);
+    }
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.m_pPlayer->IsPlaying())
@@ -3620,20 +3623,16 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_BITSPERSAMPLE:
     {
       CStdString strBitsPerSample = "";
-      if (g_application.m_pPlayer->GetBitsPerSample() > 0)
-      {
-        strBitsPerSample = StringUtils::Format("%i", g_application.m_pPlayer->GetBitsPerSample());
-      }
+      if (m_audioInfo.bitspersample > 0)
+        strBitsPerSample = StringUtils::Format("%i", m_audioInfo.bitspersample);
       return strBitsPerSample;
     }
     break;
   case MUSICPLAYER_SAMPLERATE:
     {
       CStdString strSampleRate = "";
-      if (g_application.m_pPlayer->GetSampleRate() > 0)
-      {
-        strSampleRate = StringUtils::Format("%.5g", ((double)g_application.m_pPlayer->GetSampleRate() / 1000.0));
-      }
+      if (m_audioInfo.samplerate > 0)
+        strSampleRate = StringUtils::Format("%.5g", ((double)m_audioInfo.samplerate / 1000.0));
       return strSampleRate;
     }
     break;

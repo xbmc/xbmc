@@ -79,6 +79,8 @@ struct SPlayerAudioStreamInfo
 {
   int bitrate;
   int channels;
+  int samplerate;
+  int bitspersample;
   std::string language;
   std::string name;
   std::string audioCodecName;
@@ -87,6 +89,8 @@ struct SPlayerAudioStreamInfo
   {
     bitrate = 0;
     channels = 0;
+    samplerate = 0;
+    bitspersample = 0;
   }
 };
 
@@ -100,6 +104,8 @@ struct SPlayerVideoStreamInfo
 {
   int bitrate;
   float videoAspectRatio;
+  int height;
+  int width;
   std::string language;
   std::string name;
   std::string videoCodecName;
@@ -111,6 +117,8 @@ struct SPlayerVideoStreamInfo
   {
     bitrate = 0;
     videoAspectRatio = 1.0f;
+    height = 0;
+    width = 0;
   }
 };
 
@@ -189,10 +197,6 @@ public:
   virtual int64_t GetTotalTime() { return 0; }
   virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info){};
   virtual int GetSourceBitrate(){ return 0;}
-  virtual int GetBitsPerSample(){ return 0;};
-  virtual int GetSampleRate(){ return 0;};
-  virtual int GetPictureWidth(){ return 0;}
-  virtual int GetPictureHeight(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void ToFFRW(int iSpeed = 0){};
   // Skip to next track/item inside the current media (if supported).
