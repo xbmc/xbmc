@@ -81,6 +81,5 @@ protected:
   double           m_maxspeedadjust;
   bool             m_speedadjust;
   CCriticalSection m_speedsection;
-  static bool      m_ismasterclock;
   static CDVDClock *m_playerclock;
 };
