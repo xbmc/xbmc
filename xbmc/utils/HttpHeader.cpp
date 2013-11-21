@@ -21,6 +21,10 @@
 #include "HttpHeader.h"
 #include "utils/StringUtils.h"
 
+// header white space characters according to RFC 2616
+const char* const CHttpHeader::m_whitespaceChars = " \t";
+
+
 CHttpHeader::CHttpHeader()
 {
   m_headerdone = false;
@@ -32,42 +36,68 @@ CHttpHeader::~CHttpHeader()
 
 void CHttpHeader::Parse(const std::string& strData)
 {
-  if (m_headerdone)
-    Clear();
-
   size_t pos = 0;
   const size_t len = strData.length();
+  const char* const strDataC = strData.c_str();
+
+  // According to RFC 2616 any header line can have continuation on next line, if next line is started from whitespace char
+  // This code at first checks for whitespace char at the begging of the line, and if found, then current line is appended to m_lastHeaderLine
+  // If current line is NOT started from whitespace char, then previously stored (and completed) m_lastHeaderLine is parsed and current line is assigned to m_lastHeaderLine (to be parsed later)
   while (pos < len)
   {
-    const size_t valueStart = strData.find(':', pos);
-    const size_t lineEnd = strData.find("\r\n", pos);
+    const size_t lineEnd = strData.find("\x0d\x0a", pos); // use "\x0d\x0a" instead of "\r\n" to be platform independent
 
     if (lineEnd == std::string::npos)
-      break;
+      return; // error: expected only complete lines
 
-    if (lineEnd == pos)
-    {
-      m_headerdone = true;
-      break;
+    if (m_headerdone)
+      Clear(); // clear previous header and process new one
+
+    if (strDataC[pos] == ' ' || strDataC[pos] == '\t') // same chars as in CHttpHeader::m_whitespaceChars
+    { // line is started from whitespace char: this is continuation of previous line
+      pos = strData.find_first_not_of(m_whitespaceChars);
+
+      m_lastHeaderLine.push_back(' '); // replace all whitespace chars at start of the line with single space
+      m_lastHeaderLine.append(strData, pos, lineEnd - pos); // append current line
     }
-    else if (valueStart != std::string::npos && valueStart < lineEnd)
-    {
-      std::string strParam(strData, pos, valueStart - pos);
-      std::string strValue(strData, valueStart + 1, lineEnd - valueStart - 1);
+    else
+    { // this line is NOT continuation, this line is new header line
+      if (!m_lastHeaderLine.empty())
+        ParseLine(m_lastHeaderLine); // process previously stored completed line (if any)
 
-      StringUtils::Trim(strParam);
-      StringUtils::ToLower(strParam);
+      m_lastHeaderLine.assign(strData, pos, lineEnd - pos); // store current line to (possibly) complete later. Will be parsed on next turns.
 
-      StringUtils::Trim(strValue);
-
-      if (!strParam.empty() && !strValue.empty())
-        m_params.push_back(HeaderParams::value_type(strParam, strValue));
+      if (pos == lineEnd)
+        m_headerdone = true; // current line is bare "\r\n", means end of header; no need to process current m_lastHeaderLine
     }
-    else if (m_protoLine.empty())
-      m_protoLine.assign(strData, pos, lineEnd - pos);
 
-    pos = lineEnd + 2;
+    pos = lineEnd + 2; // '+2' for "\r\n": go to next line (if any)
   }
+}
+
+bool CHttpHeader::ParseLine(const std::string& headerLine)
+{
+  const size_t valueStart = headerLine.find(':');
+
+  if (valueStart != std::string::npos)
+  {
+    std::string strParam(headerLine, 0, valueStart);
+    std::string strValue(headerLine, valueStart + 1);
+
+    StringUtils::Trim(strParam, m_whitespaceChars);
+    StringUtils::ToLower(strParam);
+
+    StringUtils::Trim(strValue, m_whitespaceChars);
+
+    if (!strParam.empty() && !strValue.empty())
+      m_params.push_back(HeaderParams::value_type(strParam, strValue));
+    else
+      return false;
+  }
+  else if (m_protoLine.empty())
+    m_protoLine = headerLine;
+
+  return true;
 }
 
 void CHttpHeader::AddParam(const std::string& param, const std::string& value, const bool overwrite /*= false*/)
@@ -173,4 +203,5 @@ void CHttpHeader::Clear()
   m_params.clear();
   m_protoLine.clear();
   m_headerdone = false;
+  m_lastHeaderLine.clear();
 }

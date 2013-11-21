@@ -54,9 +54,12 @@ public:
 
 protected:
   std::string GetValueRaw(const std::string& strParam) const;
+  bool ParseLine(const std::string& headerLine);
 
   HeaderParams m_params;
   std::string   m_protoLine;
   bool m_headerdone;
+  std::string m_lastHeaderLine;
+  static const char* const m_whitespaceChars;
 };
 
