@@ -35,8 +35,8 @@
 		<include>PreplayShow</include>
 		<!-- PreplaySeason ID 61 -->
 		<include>PreplaySeason</include>
-		<!-- PreplayFilteredEpisodes ID 62 -->
-		<include>PreplayFilteredEpisodes</include>
+		<!-- LibraryFilteredEpisodes ID 62 -->
+		<include>LibraryFilteredEpisodes</include>
 		<!-- FilteredEmpty ID 66 -->
 		<include>FilteredEmpty</include>
 		<!-- Channels ID 70 -->

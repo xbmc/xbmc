@@ -75,14 +75,14 @@
 		<value condition="Player.DisplayAfterSeek + ![Player.Forwarding | Player.Rewinding] + Player.Paused">PAUSED $INFO[Player.SeekOffset]</value>
 		<value condition="Player.Forwarding2x">FORWARDING 2x</value>
 		<value condition="Player.Forwarding4x">FORWARDING 4x</value>
-		<value condition="Player.Forwarding4x">FORWARDING 8x</value>
-		<value condition="Player.Forwarding4x">FORWARDING 16x</value>
-		<value condition="Player.Forwarding4x">FORWARDING 32x</value>
+		<value condition="Player.Forwarding8x">FORWARDING 8x</value>
+		<value condition="Player.Forwarding16x">FORWARDING 16x</value>
+		<value condition="Player.Forwarding32x">FORWARDING 32x</value>
 		<value condition="Player.Rewinding2x">REWINDING 2x</value>
 		<value condition="Player.Rewinding4x">REWINDING 4x</value>
-		<value condition="Player.Rewinding4x">REWINDING 8x</value>
-		<value condition="Player.Rewinding4x">REWINDING 16x</value>
-		<value condition="Player.Rewinding4x">REWINDING 32x</value>
+		<value condition="Player.Rewinding8x">REWINDING 8x</value>
+		<value condition="Player.Rewinding16x">REWINDING 16x</value>
+		<value condition="Player.Rewinding32x">REWINDING 32x</value>
 	</variable>
 	<include name="VideoSeek">
 		<visible>!Window.IsActive(2901) + !Player.Caching</visible>

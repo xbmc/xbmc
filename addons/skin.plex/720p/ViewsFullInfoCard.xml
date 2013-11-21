@@ -181,7 +181,13 @@
 							<control type="image">
 								<include>ListItemFullInfoThumbSize</include>
 								<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies)</visible>
 							</control>
+								<control type="image">
+									<include>ListItemFullInfoThumbSize</include>
+									<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies)</visible>
+								</control>
 							<control type="image">
 								<posx>367</posx>
 								<posy>210</posy>

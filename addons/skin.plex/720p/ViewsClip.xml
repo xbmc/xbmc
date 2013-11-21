@@ -119,7 +119,7 @@
 				<visible>Container.content(Clips) | Container.Content(HomeMovies)</visible>
 				<onup>80</onup>
 				<ondown>80</ondown>
-				<onright>80</onright>
+				<onright>Container.NextViewMode</onright>
 				<onleft>1300</onleft>
 				<orientation>vertical</orientation>
 				<posx>102</posx>
