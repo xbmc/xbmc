@@ -4250,8 +4250,12 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
     {
       newItem.SetProperty("viewOffset", item.GetProperty("viewOffset"));
       newItem.m_lStartOffset = item.m_lStartOffset;
+      newItem.m_lEndOffset = item.m_lEndOffset;
+
       item = newItem;
-      *m_itemCurrentFile = newItem;
+
+      if (!m_itemCurrentFile->IsStack())
+        *m_itemCurrentFile = newItem;
     }
   }
   /* END PLEX */
