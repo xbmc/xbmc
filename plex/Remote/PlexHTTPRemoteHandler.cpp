@@ -654,10 +654,6 @@ void CPlexHTTPRemoteHandler::subscribe(const HTTPRequest &request, const ArgMap 
     g_plexApplication.remoteSubscriberManager->addSubscriber(sub);
     g_plexApplication.timelineManager->SendTimelineToSubscriber(sub);
   }
-  else
-  {
-    setStandardResponse(500, "Client failed to specify all required data for a subscribe call");
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -669,12 +665,21 @@ void CPlexHTTPRemoteHandler::unsubscribe(const HTTPRequest &request, const ArgMa
 ////////////////////////////////////////////////////////////////////////////////////////
 CPlexRemoteSubscriberPtr CPlexHTTPRemoteHandler::getSubFromRequest(const HTTPRequest &request, const ArgMap &arguments)
 {
-  std::string uuid, ipaddress;
+  std::string uuid, name;
   
   uuid = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, "X-Plex-Client-Identifier");
   if (uuid.empty())
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::subscribe subscriber didn't set X-Plex-Client-Identifier");
+    setStandardResponse(500, "subscriber didn't set X-Plex-Client-Identifier");
+    return CPlexRemoteSubscriberPtr();
+  }
+
+  name = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, "X-Plex-Device-Name");
+  if (name.empty())
+  {
+    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::subscribe subscriber didn't set X-Plex-Device-Name");
+    setStandardResponse(500, "subscriber didn't set X-Plex-Device-Name");
     return CPlexRemoteSubscriberPtr();
   }
   
@@ -705,6 +710,7 @@ CPlexRemoteSubscriberPtr CPlexHTTPRemoteHandler::getSubFromRequest(const HTTPReq
     protocol = arguments.find("protocol")->second;
   
   CPlexRemoteSubscriberPtr sub = CPlexRemoteSubscriber::NewSubscriber(uuid, ipstr, port, commandID);
+  sub->setName(name);
   
   return sub;
 }
@@ -781,6 +787,7 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
   bool wait = false;
 
   std::string uuid = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, "X-Plex-Client-Identifier");
+  std::string name = CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, "X-Plex-Device-Name");
   int commandID = -1;
 
   if (arguments.find("commandID") != arguments.end())
@@ -802,6 +809,9 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
     setStandardResponse(500, "Could not create a poll subscriber. (internal error)");
     return;
   }
+
+  if (!name.empty())
+    pollSubscriber->setName(name);
 
   pollSubscriber = g_plexApplication.remoteSubscriberManager->addSubscriber(pollSubscriber);
 

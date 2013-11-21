@@ -56,6 +56,9 @@ class CPlexRemoteSubscriber
     int getCommandID() const { return m_commandID; }
     void setCommandID(int commandID) { m_commandID = commandID; }
 
+    void setName(const std::string& name) { m_name = name; }
+    std::string getName() const { return m_name; }
+
     CEvent m_pollEvent;
   
   private:
@@ -64,6 +67,7 @@ class CPlexRemoteSubscriber
     CPlexTimer m_lastUpdated;
     std::string m_uuid;
     bool m_poller;
+    std::string m_name;
 };
 
 typedef std::map<std::string, CPlexRemoteSubscriberPtr> SubscriberMap;

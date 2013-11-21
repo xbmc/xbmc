@@ -951,3 +951,12 @@ msgstr "Share %s on %s with message:"
 msgctxt "#52404"
 msgid "Enable network logging"
 msgstr "Enable network logging"
+
+msgctxt "#52500"
+msgid "Remote connected"
+msgstr "Remote connected"
+
+msgctxt "#52501"
+msgid "Remote disconnected"
+msgstr "Remote disconnected"
+
