@@ -92,6 +92,7 @@ namespace EPG
 
     void GoToBegin();
     void GoToEnd();
+    void GoToNow();
     void SetStartEnd(CDateTime start, CDateTime end);
     void SetChannel(const PVR::CPVRChannel &channel);
     void SetChannel(const CStdString &channel);
