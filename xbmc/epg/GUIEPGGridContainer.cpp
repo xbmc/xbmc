@@ -937,26 +937,16 @@ void CGUIEPGGridContainer::UpdateItems()
           continue;
         }
 
-        if (tag->EpgID() != iEpgId)
+        if (tag->EpgID() != iEpgId || gridCursor < tag->StartAsUTC() || m_gridEnd <= tag->StartAsUTC())
           break;
 
-        if (m_gridEnd <= tag->StartAsUTC())
-        {
-          break;
-        }
-        else if (gridCursor >= tag->EndAsUTC())
-        {
-          progIdx++;
-        }
-        else if (gridCursor < tag->EndAsUTC())
+        if (gridCursor < tag->EndAsUTC())
         {
           m_gridIndex[row][block].item = item;
           break;
         }
-        else
-        {
-          progIdx++;
-        }
+        
+        progIdx++;
       }
 
       gridCursor += blockDuration;
