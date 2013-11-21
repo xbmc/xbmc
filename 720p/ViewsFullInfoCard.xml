@@ -22,6 +22,9 @@
 	<variable name="ListItemFullInfoTitle">
 		<value condition="ListItem.Type(episode)">$INFO[ListItem.TVShowTitle]</value>
 		<value condition="ListItem.Type(movie)">$INFO[ListItem.Title]</value>
+		<value condition="ListItem.Type(artist)">$INFO[ListItem.Label]</value>
+		<value condition="ListItem.Type(album) | Container.Content(songs)">$INFO[ListItem.Artist]</value>
+		<value condition="[Container.Content(albums) + !ListItem.Type(album)] | Container.Content(seasons)">$INFO[Container.Property(parentTitle)]</value>
 		<value>$INFO[ListItem.Title]</value>
 	</variable>
 	<variable name="ListItemFullInfoSecondTitle">
@@ -30,15 +33,22 @@
 		<value condition="ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
 		<value condition="ListItem.Type(photo)">$INFO[ListItem.Date]</value>
 		<value condition="ListItem.Type(photoAlbum)">Album</value>
+		<value condition="ListItem.Type(artist)">$INFO[ListItem.Genre]</value>
+		<value condition="ListItem.Type(album)">$INFO[ListItem.Album]</value>
+		<value condition="[Container.Content(albums) + !ListItem.Type(album)]">$INFO[ListItem.Label]</value>
+		<value condition="Container.Content(songs)">$INFO[ListItem.Title]$INFO[ListItem.DurationStr, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 	</variable>
 	<variable name="ListItemFullInfoThirdTitle">
 		<value condition="ListItem.Type(episode)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(movie) | Container.Content(tvshows)">[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</value>
 		<value condition="ListItem.Type(season)">$LOCALIZE[32101]: $INFO[ListItem.Property(LeafCount)]</value>
 		<value condition="ListItem.Type(album) + !IsEmpty(ListItem.Album)">$INFO[ListItem.Album]</value>
+		<value condition="!Container.Content(albums) + ListItem.Type(album) + !IsEmpty(ListItem.Album)">$INFO[ListItem.Album]</value>
 		<value condition="ListItem.Type(clip) + IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(sourceTitle)]</value>
 		<value condition="ListItem.Type(clip) + !IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(Recommender)]$INFO[ListItem.Property(sourceTitle), [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(photo)">$INFO[ListItem.PictureResolution]</value>
+		<value condition="Container.Content(albums)">$INFO[ListItem.Property(LeafCount)] $LOCALIZE[32106]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="Container.Content(songs)">$INFO[ListItem.Album]</value>
 	</variable>
 	<include name="ListItemUnwatchedCount">
 		<control type="grouplist">
@@ -187,9 +197,14 @@
 								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos)</visible>
 							</control>
 								<control type="image">
-									<include>ListItemFullInfoThumbSize</include>
+									<posy>30</posy>
+									<posx>20</posx>
+									<width>390</width>
+									<height>215</height>
+									<fadetime>300</fadetime>
+									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 									<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos)</visible>
+									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos) | Container.Content(artists)</visible>
 								</control>
 							<control type="image">
 								<posx>367</posx>
@@ -214,8 +229,9 @@
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>!Window.IsActive(2)</visible>
+							<visible>!Window.IsActive(2) + !Window.IsActive(501)</visible>
 						</control>
+						<!-- show longer title for photos & music -->
 						<control type="label">
 							<width>340</width>
 							<align>left</align>
@@ -225,7 +241,7 @@
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>Window.IsActive(2)</visible>
+							<visible>Window.IsActive(2) | Window.IsActive(501)</visible>
 						</control>
 						<control type="label">
 							<posy>42</posy>
@@ -278,7 +294,17 @@
 							<shadowcolor>ff222222</shadowcolor>
 							<visible>IsEmpty(ListItem.Plot) + !IsEmpty(ListItem.Property(summary))</visible>
 						</control>
-						<control type="textbox">
+						<control type="textbox" id="112">
+							<posy>115</posy>
+							<width>315</width>
+							<height>280</height>
+							<label>$INFO[Container.Property(summary)]</label>
+							<font>HomePlot</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+							<visible>[Container.Content(songs) + !IsEmpty(Container.Property(summary))] | [Container.Content(seasons) + IsEmpty(ListItem.Property(summary)) + !IsEmpty(Container.Property(summary))]</visible>
+						</control>
+						<control type="textbox" id="113">
 							<posy>115</posy>
 							<width>315</width>
 							<height>280</height>
