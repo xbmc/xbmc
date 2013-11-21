@@ -28,6 +28,8 @@
 		<value condition="ListItem.Type(movie)">$INFO[ListItem.DurationStr]$INFO[ListItem.Year, &#xB7; ]</value>
 		<value condition="ListItem.Type(episode)">$INFO[ListItem.Title]</value>
 		<value condition="ListItem.Type(clip)">$INFO[ListItem.DurationStr]</value>
+		<value condition="ListItem.Type(photo)">$INFO[ListItem.Date]</value>
+		<value condition="ListItem.Type(photoAlbum)">Album</value>
 	</variable>
 	<variable name="ListItemFullInfoThirdTitle">
 		<value condition="ListItem.Type(episode)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
@@ -36,6 +38,7 @@
 		<value condition="ListItem.Type(album) + !IsEmpty(ListItem.Album)">$INFO[ListItem.Album]</value>
 		<value condition="ListItem.Type(clip) + IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(sourceTitle)]</value>
 		<value condition="ListItem.Type(clip) + !IsEmpty(ListItem.Property(Recommender))">$INFO[ListItem.Property(Recommender)]$INFO[ListItem.Property(sourceTitle), [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="ListItem.Type(photo)">$INFO[ListItem.PictureResolution]</value>
 	</variable>
 	<include name="ListItemUnwatchedCount">
 		<control type="grouplist">
@@ -181,12 +184,12 @@
 							<control type="image">
 								<include>ListItemFullInfoThumbSize</include>
 								<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies)</visible>
+								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos)</visible>
 							</control>
 								<control type="image">
 									<include>ListItemFullInfoThumbSize</include>
 									<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies)</visible>
+									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos)</visible>
 								</control>
 							<control type="image">
 								<posx>367</posx>
@@ -211,6 +214,18 @@
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<shadowcolor>ff222222</shadowcolor>
+							<visible>!Window.IsActive(2)</visible>
+						</control>
+						<control type="label">
+							<width>340</width>
+							<align>left</align>
+							<label>$VAR[ListItemFullInfoTitle]</label>
+							<font>CondensedBold-16</font>
+							<scroll>true</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<shadowcolor>ff222222</shadowcolor>
+							<visible>Window.IsActive(2)</visible>
 						</control>
 						<control type="label">
 							<posy>42</posy>
@@ -243,6 +258,26 @@
 							<aspectratio align="right" aligny="bottom">keep</aspectratio>
 							<colordiffuse>FF999999</colordiffuse>
 						</control>
+						<control type="image">
+							<posy>37</posy>
+							<posx>960r</posx>
+							<width>50</width>
+							<height>40</height>
+							<texture>icon-photoalbum.png</texture>
+							<visible>ListItem.Type(photoAlbum)</visible>
+							<aspectratio align="right" aligny="bottom">keep</aspectratio>
+							<colordiffuse>FF999999</colordiffuse>
+						</control>
+						<control type="textbox">
+							<posy>115</posy>
+							<width>315</width>
+							<height>280</height>
+							<label>$INFO[ListItem.Property(summary)]</label>
+							<font>HomePlot</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>ff222222</shadowcolor>
+							<visible>IsEmpty(ListItem.Plot) + !IsEmpty(ListItem.Property(summary))</visible>
+						</control>
 						<control type="textbox">
 							<posy>115</posy>
 							<width>315</width>
@@ -251,7 +286,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>!IsEmpty(ListItem.Plot)</visible>
+							<visible>!IsEmpty(ListItem.Plot) + IsEmpty(ListItem.Property(summary))</visible>
 						</control>
 						<control type="textbox">
 							<posy>115</posy>
@@ -261,7 +296,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>IsEmpty(ListItem.Plot)</visible>
+							<visible>IsEmpty(ListItem.Plot) + IsEmpty(ListItem.Property(summary))</visible>
 						</control>
 					</control>
 					<!-- media flags -->
