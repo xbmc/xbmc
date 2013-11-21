@@ -23,6 +23,7 @@
 #include <vector>
 #include <map>
 #include "utils/StdString.h"
+#include "boost/shared_ptr.hpp"
 
 class CGUIListItem;
 
@@ -39,25 +40,31 @@ public:
     : m_value(false),
       m_context(context),
       m_expression(expression),
-      m_lastUpdate(0)
+      m_dirty(true)
   {
   };
 
   virtual ~InfoBool() {};
 
+  /*! \brief Mark this info bool as dirty
+   */
+  void SetDirty(void)
+  {
+    m_dirty = true;
+  }
+
   /*! \brief Get the value of this info bool
-   This is called to update (if necessary) and fetch the value of the info bool
-   \param time current time (used to test if we need to update yet)
+   This is called to update (if dirty) and fetch the value of the info bool
    \param item the item used to evaluate the bool
    */
-  inline bool Get(unsigned int time, const CGUIListItem *item = NULL)
+  inline bool Get(const CGUIListItem *item = NULL)
   {
     if (item)
       Update(item);
-    else if (time - m_lastUpdate > 0)
+    else if (m_dirty)
     {
       Update(NULL);
-      m_lastUpdate = time;
+      m_dirty = false;
     }
     return m_value;
   }
@@ -69,6 +76,8 @@ public:
    */
   virtual void Update(const CGUIListItem *item) {};
 
+  const std::string &GetExpression() const { return m_expression; }
+
 protected:
 
   bool m_value;                ///< current value
@@ -76,8 +85,10 @@ protected:
 
 private:
   CStdString m_expression;     ///< original expression
-  unsigned int m_lastUpdate;   ///< last update time (to determine dirty status)
+  bool         m_dirty;        ///< whether we need an update
 };
+
+typedef boost::shared_ptr<InfoBool> InfoPtr;
 
 /*! \brief Class to wrap active boolean conditions
  */
@@ -107,7 +118,7 @@ private:
   short GetOperator(const char ch) const;
 
   std::vector<short> m_postfix;         ///< the postfix form of the expression (operators and operand indicies)
-  std::vector<unsigned int> m_operands; ///< the operands in the expression
+  std::vector<InfoPtr> m_operands;      ///< the operands in the expression
 };
 
 };

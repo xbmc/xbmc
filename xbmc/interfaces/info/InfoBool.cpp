@@ -88,7 +88,7 @@ void InfoExpression::Parse(const CStdString &expression)
       // cleanup any operand, translate and put into our expression list
       if (!operand.empty())
       {
-        unsigned int info = g_infoManager.Register(operand, m_context);
+        InfoPtr info = g_infoManager.Register(operand, m_context);
         if (info)
         {
           m_postfix.push_back(m_operands.size());
@@ -134,7 +134,7 @@ void InfoExpression::Parse(const CStdString &expression)
 
   if (!operand.empty())
   {
-    unsigned int info = g_infoManager.Register(operand, m_context);
+    InfoPtr info = g_infoManager.Register(operand, m_context);
     if (info)
     {
       m_postfix.push_back(m_operands.size());
@@ -183,7 +183,7 @@ bool InfoExpression::Evaluate(const CGUIListItem *item, bool &result)
       save.push(left || right);
     }
     else  // operand
-      save.push(g_infoManager.GetBoolValue(m_operands[expr], item));
+      save.push(m_operands[expr]->Get(item));
   }
   if (save.size() != 1)
     return false;

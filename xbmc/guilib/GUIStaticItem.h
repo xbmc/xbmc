@@ -89,7 +89,7 @@ public:
 private:
   typedef std::vector< std::pair<CGUIInfoLabel, CStdString> > InfoVector;
   InfoVector m_info;
-  unsigned int m_visCondition;
+  INFO::InfoPtr m_visCondition;
   bool m_visState;
   CGUIAction m_clickActions;
 };

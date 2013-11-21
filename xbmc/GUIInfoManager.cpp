@@ -59,6 +59,7 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
+#include "boost/make_shared.hpp"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -118,7 +119,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_currentSlide = new CFileItem;
   m_frameCounter = 0;
   m_lastFPSTime = 0;
-  m_updateTime = 1;
   m_playerShowTime = false;
   m_playerShowCodec = false;
   m_playerShowInfo = false;
@@ -2122,13 +2122,13 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   return false;
 }
 
-unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
+INFO::InfoPtr CGUIInfoManager::Register(const CStdString &expression, int context)
 {
   CStdString condition(CGUIInfoLabel::ReplaceLocalize(expression));
   StringUtils::Trim(condition);
 
   if (condition.empty())
-    return 0;
+    return INFO::InfoPtr();
 
   CSingleLock lock(m_critInfo);
   // do we have the boolean expression already registered?
@@ -2136,49 +2136,24 @@ unsigned int CGUIInfoManager::Register(const CStdString &expression, int context
   for (unsigned int i = 0; i < m_bools.size(); ++i)
   {
     if (*m_bools[i] == test)
-      return i+1;
+      return m_bools[i];
   }
 
   if (condition.find_first_of("|+[]!") != condition.npos)
-    m_bools.push_back(new InfoExpression(condition, context));
+    m_bools.push_back(boost::make_shared<InfoExpression>(condition, context));
   else
-    m_bools.push_back(new InfoSingle(condition, context));
+    m_bools.push_back(boost::make_shared<InfoSingle>(condition, context));
 
-  return m_bools.size();
+  return m_bools[m_bools.size() - 1];
 }
 
 bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWindow)
 {
   bool result = false;
-  unsigned int info = Register(expression, contextWindow);
+  INFO::InfoPtr info = Register(expression, contextWindow);
   if (info)
-    result = GetBoolValue(info);
+    result = info->Get();
   return result;
-}
-
-/*
- TODO: what to do with item-based infobools...
- these crop up:
- 1. if condition is between LISTITEM_START and LISTITEM_END
- 2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
-    corresponding label is between LISTITEM_START and LISTITEM_END
-
- In both cases they shouldn't be in our cache as they depend on items outside of our control atm.
-
- We only pass a listitem object in for controls inside a listitemlayout, so I think it's probably OK
- to not cache these, as they're "pushed" out anyway.
-
- The problem is how do we avoid these?  The only thing we have to go on is the expression here, so I
- guess what we have to do is call through via Update.  One thing we don't handle, however, is that the
- majority of conditions (even inside lists) don't depend on the listitem at all.
-
- Advantage is that we know this at creation time I think, so could perhaps signal it in IsDirty()?
- */
-bool CGUIInfoManager::GetBoolValue(unsigned int expression, const CGUIListItem *item)
-{
-  if (expression && --expression < m_bools.size())
-    return m_bools[expression]->Get(m_updateTime, item);
-  return false;
 }
 
 // checks the condition and returns it as necessary.  Currently used
@@ -4233,11 +4208,15 @@ bool CGUIInfoManager::GetDisplayAfterSeek()
 void CGUIInfoManager::Clear()
 {
   CSingleLock lock(m_critInfo);
-  for (unsigned int i = 0; i < m_bools.size(); ++i)
-    delete m_bools[i];
-  m_bools.clear();
-
   m_skinVariableStrings.clear();
+
+  // erase any info bools that are unused
+  m_bools.erase(remove_if(m_bools.begin(), m_bools.end(),
+                          std::mem_fun_ref(&InfoPtr::unique)),
+                m_bools.end());
+  // log which ones are used
+  for (vector<InfoPtr>::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+    CLog::Log(LOGDEBUG, "Infobool '%s' still used by %ul instances", (*i)->GetExpression().c_str(), (unsigned int) i->use_count());
 }
 
 void CGUIInfoManager::UpdateFPS()
@@ -5182,7 +5161,9 @@ void CGUIInfoManager::ResetCache()
 {
   // reset any animation triggers as well
   m_containerMoves.clear();
-  m_updateTime++;
+  CSingleLock lock(m_critInfo);
+  for (vector<InfoPtr>::iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+    (*i)->SetDirty();
 }
 
 // Called from tuxbox service thread to update current status
@@ -5502,11 +5483,11 @@ CStdString CGUIInfoManager::GetSkinVariableString(int info,
   return "";
 }
 
-bool CGUIInfoManager::ConditionsChangedValues(const std::map<int, bool>& map)
+bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map)
 {
-  for (std::map<int, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
+  for (std::map<INFO::InfoPtr, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
   {
-    if (GetBoolValue(it->first) != it->second)
+    if (it->first->Get() != it->second)
       return true;
   }
   return false;

@@ -63,11 +63,10 @@ public:
   COrigin()
   {
     x = y = 0;
-    condition = 0;
   };
   float x;
   float y;
-  unsigned int condition;
+  INFO::InfoPtr condition;
 };
 
 /*!
@@ -281,7 +280,7 @@ protected:
 
 private:
   std::map<CStdString, CVariant, icompare> m_mapProperties;
-  std::map<int, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
+  std::map<INFO::InfoPtr, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
 };
 
 #endif

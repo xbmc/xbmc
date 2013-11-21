@@ -29,6 +29,7 @@
  */
 
 #include "utils/StdString.h"
+#include "interfaces/info/InfoBool.h"
 
 class CGUIListItem;
 
@@ -43,7 +44,7 @@ public:
   void Update(const CGUIListItem *item = NULL);
   void Parse(const CStdString &expression, int context);
 private:
-  unsigned int m_info;
+  INFO::InfoPtr m_info;
   bool m_value;
 };
 

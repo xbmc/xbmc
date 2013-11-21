@@ -86,7 +86,7 @@ protected:
   TransformMatrix m_cachedTextMatrix;
 
   // autoscrolling
-  unsigned int m_autoScrollCondition;
+  INFO::InfoPtr m_autoScrollCondition;
   int          m_autoScrollTime;      // time to scroll 1 line (ms)
   int          m_autoScrollDelay;     // delay before scroll (ms)
   unsigned int m_autoScrollDelayTime; // current offset into the delay
