@@ -129,7 +129,7 @@
 			<control type="group" id="777">
 				<posx>-54</posx>
 				<posy>-34</posy>
-				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + IsEmpty(Container.Property(mixedParents))</visible>
+				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + IsEmpty(Container.Property(mixedParents)) + IsEmpty(Container.Property(primaryFilterActivated)) + Control.IsVisible(53)</visible>
 				<!-- backgrounds & plot -->
 				<control type="group">
 					<!-- backgrounds -->
@@ -262,7 +262,7 @@
 				</control>
 				<!-- list -->
 				<control type="panel" id="53">
-					<visible>Container.Content(Albums)</visible>
+					<visible>Container.Content(Albums) + IsEmpty(Container.Property(primaryFilterActivated))</visible>
 					<viewtype label="MusicLibraryAlbums">panel</viewtype>
 					<onup>53</onup>
 					<ondown>53</ondown>

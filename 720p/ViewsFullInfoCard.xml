@@ -221,7 +221,7 @@
 							<control type="image">
 								<include>ListItemFullInfoThumbSize</include>
 								<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos)</visible>
+								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos) + !Container.Content(artists)</visible>
 							</control>
 								<control type="image">
 									<posy>30</posy>
