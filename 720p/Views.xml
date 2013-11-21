@@ -82,7 +82,7 @@
 		</control>
 	</include>
 	<!-- List -->
-	<include name="List">
+	<include name="_List">
 		<control type="group">
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>			
