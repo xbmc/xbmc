@@ -15,7 +15,7 @@ def get_file_element(root, frelpath, size, perms, shasum, tarfilename, ismain):
 	sizeel.text = str(size)
 
 	permissions = et.SubElement(fileEl, "permissions")
-	permissions.text = str(perms)
+	permissions.text = str(perms).relpace("L", "")
 
 	hashel = et.SubElement(fileEl, "hash")
 	hashel.text = shasum
