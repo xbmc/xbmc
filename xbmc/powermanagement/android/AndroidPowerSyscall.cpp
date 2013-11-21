@@ -22,12 +22,44 @@
 
 #include "AndroidPowerSyscall.h"
 #include "android/activity/XBMCApp.h"
+#include "filesystem/File.h"
+#include <unistd.h>
 
 CAndroidPowerSyscall::CAndroidPowerSyscall()
-{ }
+{
+  m_isRooted = false;
+  m_su_path = "/system/bin/su";
+
+  if (XFILE::CFile::Exists(m_su_path))
+    m_isRooted = true;
+  else
+  {
+    m_su_path = "/system/xbin/su";
+    if (XFILE::CFile::Exists(m_su_path))
+      m_isRooted = true;
+  }
+}
 
 CAndroidPowerSyscall::~CAndroidPowerSyscall()
 { }
+
+bool CAndroidPowerSyscall::Powerdown()
+{
+  if (!m_isRooted)
+    return false;
+
+  int rc = system((m_su_path + " -c \"reboot -p\"").c_str());
+  return (rc == 0);
+}
+
+bool CAndroidPowerSyscall::Reboot()
+{
+  if (!m_isRooted)
+    return false;
+
+  int rc = system((m_su_path + " -c reboot").c_str());
+  return (rc == 0);
+}
 
 int CAndroidPowerSyscall::BatteryLevel(void)
 {

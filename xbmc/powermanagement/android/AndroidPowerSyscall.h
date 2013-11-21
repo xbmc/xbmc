@@ -22,23 +22,29 @@
 #if defined (TARGET_ANDROID)
 #include "powermanagement/IPowerSyscall.h"
 
+#include <string>
+
 class CAndroidPowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
   CAndroidPowerSyscall();
   ~CAndroidPowerSyscall();
 
-  virtual bool Powerdown(void) { return false; }
+  virtual bool Powerdown(void);
   virtual bool Suspend(void) { return false; }
   virtual bool Hibernate(void) { return false; }
-  virtual bool Reboot(void) { return false; }
+  virtual bool Reboot(void);
 
-  virtual bool CanPowerdown(void) { return false; }
+  virtual bool CanPowerdown(void) { return m_isRooted; }
   virtual bool CanSuspend(void) { return false; }
   virtual bool CanHibernate(void) { return false; }
-  virtual bool CanReboot(void) { return false; }
+  virtual bool CanReboot(void) { return m_isRooted; }
   virtual int  BatteryLevel(void);
 
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
+
+private:
+  bool m_isRooted;
+  std::string m_su_path;
 };
 #endif
