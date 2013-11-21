@@ -40,7 +40,7 @@ public:
    * @param content     the text to analyze
    * @return detected encoding or empty string if BOM not detected
    */
-  static inline std::string GetBomEncoding(const std::string& content, std::string& detectedEncoding)
+  static inline std::string GetBomEncoding(const std::string& content)
   { return GetBomEncoding(content.c_str(), content.length()); }
 
   static inline bool DetectXmlEncoding(const std::string& xmlContent, std::string& detectedEncoding)
