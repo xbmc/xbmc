@@ -387,6 +387,10 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
+					<label>ListItem.Property(summary) : [COLOR=orangeLight]$INFO[ListItem.Property(summary)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
 					<label>ListItem.Country : [COLOR=orangeLight]$INFO[ListItem.Country][/COLOR]</label>
 				</control>
 				<control type="label">
@@ -439,6 +443,80 @@
 				</control>
 			</control>
 			<!-- right list -->
+			<!-- PHOTOS -->
+			<control type="grouplist">
+				<posx>820</posx>
+				<posy>40</posy>
+				<width>390</width>
+				<height>680</height>
+				<orientation>vertical</orientation>
+				<itemgap>5</itemgap>
+				<visible>Window.IsVisible(2)</visible>
+				<control type="label">
+					<include>debugFont</include>
+					<label>PHOTO SPECIFIC:</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label/>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureAperture : [COLOR=orangeLight]$INFO[ListItem.PictureAperture][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureCamMake : [COLOR=orangeLight]$INFO[ListItem.PictureCamMake][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureCamModel : [COLOR=orangeLight]$INFO[ListItem.PictureCamModel][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureCaption : [COLOR=orangeLight]$INFO[ListItem.PictureCaption][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureComment : [COLOR=orangeLight]$INFO[ListItem.PictureComment][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureDate : [COLOR=orangeLight]$INFO[ListItem.PictureDate][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureDatetime : [COLOR=orangeLight]$INFO[ListItem.PictureDatetime][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureDesc : [COLOR=orangeLight]$INFO[ListItem.PictureDesc][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureExpMode : [COLOR=orangeLight]$INFO[ListItem.PictureExpMode][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureExpTime : [COLOR=orangeLight]$INFO[ListItem.PictureExpTime][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureResolution : [COLOR=orangeLight]$INFO[ListItem.PictureResolution][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PicturePath : [COLOR=orangeLight]$INFO[ListItem.PicturePath][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.PictureKeywords : [COLOR=orangeLight]$INFO[ListItem.PictureKeywords][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>ListItem.Property(aspectRatio) : [COLOR=orangeLight]$INFO[ListItem.Property(aspectRatio)][/COLOR]</label>
+				</control>
+			</control>
 			<!-- VIDEO -->
 			<control type="grouplist">
 				<posx>820</posx>
