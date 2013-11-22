@@ -776,6 +776,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
   {
     delete m_windowXMLRootElement;
     m_windowXMLRootElement = NULL;
+    m_xmlIncludeConditions.clear();
   }
 }
 
@@ -791,6 +792,7 @@ void CGUIWindow::ClearAll()
   CGUIControlGroup::ClearAll();
   m_windowLoaded = false;
   m_dynamicResourceAlloc = true;
+  m_visibleCondition.reset();
 }
 
 bool CGUIWindow::Initialize()
