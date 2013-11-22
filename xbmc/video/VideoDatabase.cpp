@@ -8094,7 +8094,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     m_pDS->close();
 
     // Add any files that don't have a valid idPath entry to the filesToDelete list.
-    sql = "SELECT files.idFile FROM files WHERE idPath NOT IN (SELECT idPath FROM path)";
+    sql = "SELECT files.idFile FROM files WHERE NOT EXISTS (SELECT 1 FROM path WHERE path.idPath = files.idPath)";
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
@@ -8246,11 +8246,11 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       sql = PrepareSQL("DELETE FROM tvshowlinkpath WHERE idPath IN (%s)",strIds.c_str());
       m_pDS->exec(sql.c_str());
     }
-    sql = "DELETE FROM tvshowlinkpath WHERE idPath NOT IN (SELECT idPath FROM path)";
+    sql = "DELETE FROM tvshowlinkpath WHERE NOT EXISTS (SELECT 1 FROM path WHERE path.idPath = tvshowlinkpath.idPath)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning tvshow table", __FUNCTION__);
-    sql = "DELETE FROM tvshow WHERE idShow NOT IN (SELECT idShow FROM tvshowlinkpath)";
+    sql = "DELETE FROM tvshow WHERE NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idShow = tvshow.idShow)";
     m_pDS->exec(sql.c_str());
 
     std::vector<int> tvshowIDs;
@@ -8258,7 +8258,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     sql = "SELECT tvshow.idShow FROM tvshow "
             "JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow "
             "JOIN path ON path.idPath = tvshowlinkpath.idPath "
-          "WHERE tvshow.idShow NOT IN (SELECT idShow FROM episode) "
+          "WHERE NOT EXISTS (SELECT 1 FROM episode WHERE episode.idShow = tvshow.idShow) "
             "AND (path.strContent IS NULL OR path.strContent = '')";
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
@@ -8275,29 +8275,29 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
 
     CLog::Log(LOGDEBUG, "%s: Cleaning actorlinktvshow table", __FUNCTION__);
-    sql = "DELETE FROM actorlinktvshow WHERE idShow NOT IN (SELECT idShow FROM tvshow)";
+    sql = "DELETE FROM actorlinktvshow WHERE NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = actorlinktvshow.idShow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning directorlinktvshow table", __FUNCTION__);
-    sql = "DELETE FROM directorlinktvshow WHERE idShow NOT IN (SELECT idShow FROM tvshow)";
+    sql = "DELETE FROM directorlinktvshow WHERE NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = directorlinktvshow.idShow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning tvshowlinkpath table", __FUNCTION__);
-    sql = "DELETE FROM tvshowlinkpath WHERE idShow NOT IN (SELECT idShow FROM tvshow)";
+    sql = "DELETE FROM tvshowlinkpath WHERE idShow NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = tvshowlinkpath.idShow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning genrelinktvshow table", __FUNCTION__);
-    sql = "DELETE FROM genrelinktvshow WHERE idShow NOT IN (SELECT idShow FROM tvshow)";
+    sql = "DELETE FROM genrelinktvshow WHERE NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = genrelinktvshow.idShow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning seasons table", __FUNCTION__);
-    sql = "DELETE FROM seasons WHERE idShow NOT IN (SELECT idShow FROM tvshow)";
+    sql = "DELETE FROM seasons WHERE NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = seasons.idShow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning movielinktvshow table", __FUNCTION__);
-    sql = "DELETE FROM movielinktvshow WHERE idShow NOT IN (SELECT idShow FROM tvshow)";
+    sql = "DELETE FROM movielinktvshow WHERE NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = movielinktvshow.idShow)";
     m_pDS->exec(sql.c_str());
-    sql = "DELETE FROM movielinktvshow WHERE idMovie NOT IN (SELECT DISTINCT idMovie FROM movie)";
+    sql = "DELETE FROM movielinktvshow WHERE NOT EXISTS (SELECT 1 FROM movie WHERE movie.idMovie = movielinktvshow.idMovie)";
     m_pDS->exec(sql.c_str());
 
     if ( ! musicVideosToDelete.empty() )
@@ -8331,49 +8331,49 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
                                   "AND (strSettings IS NULL OR strSettings = '') "
                                   "and (strHash IS NULL OR strHash = '') "
                                   "AND (exclude IS NULL OR exclude != 1) "
-                                  "AND idPath NOT IN (SELECT DISTINCT idPath FROM files) "
-                                  "AND idPath NOT IN (SELECT DISTINCT idPath FROM tvshowlinkpath) "
-                                  "AND idPath NOT IN (SELECT DISTINCT c%02d FROM movie) "
-                                  "AND idPath NOT IN (SELECT DISTINCT c%02d FROM tvshow) "
-                                  "AND idPath NOT IN (SELECT DISTINCT c%02d FROM episode) "
-                                  "AND idPath NOT IN (SELECT DISTINCT c%02d FROM musicvideo)"
+                                  "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = path.idPath) "
+                                  "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idPath = path.idPath) "
+                                  "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.c%02d = path.idPath) "
+                                  "AND NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.c%02d = path.idPath) "
+                                  "AND NOT EXISTS (SELECT 1 FROM episode WHERE episode.c%02d = path.idPath) "
+                                  "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE musicvideo.c%02d = path.idPath)"
                 , VIDEODB_ID_PARENTPATHID, VIDEODB_ID_TV_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID, VIDEODB_ID_MUSICVIDEO_PARENTPATHID );
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning genre table", __FUNCTION__);
     sql = "DELETE FROM genre "
-            "WHERE idGenre NOT IN (SELECT DISTINCT idGenre FROM genrelinkmovie) "
-              "AND idGenre NOT IN (SELECT DISTINCT idGenre FROM genrelinktvshow) "
-              "AND idGenre NOT IN (SELECT DISTINCT idGenre FROM genrelinkmusicvideo)";
+            "WHERE NOT EXISTS (SELECT 1 FROM genrelinkmovie WHERE genrelinkmovie.idGenre = genre.idGenre) "
+              "AND NOT EXISTS (SELECT 1 FROM genrelinktvshow WHERE genrelinktvshow.idGenre = genre.idGenre) "
+              "AND NOT EXISTS (SELECT 1 FROM genrelinkmusicvideo WHERE genrelinkmusicvideo.idGenre = genre.idGenre)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning country table", __FUNCTION__);
-    sql = "DELETE FROM country WHERE idCountry NOT IN (select DISTINCT idCountry FROM countrylinkmovie)";
+    sql = "DELETE FROM country WHERE NOT EXISTS (SELECT 1 FROM countrylinkmovie WHERE countrylinkmovie.idCountry = country.idCountry)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning actor table of actors, directors and writers", __FUNCTION__);
     sql = "DELETE FROM actors "
-            "WHERE idActor NOT IN (SELECT DISTINCT idActor FROM actorlinkmovie) "
-              "AND idActor NOT IN (SELECT DISTINCT idDirector FROM directorlinkmovie) "
-              "AND idActor NOT IN (SELECT DISTINCT idWriter FROM writerlinkmovie) "
-              "AND idActor NOT IN (SELECT DISTINCT idActor FROM actorlinktvshow) "
-              "AND idActor NOT IN (SELECT DISTINCT idActor FROM actorlinkepisode) "
-              "AND idActor NOT IN (SELECT DISTINCT idDirector FROM directorlinktvshow) "
-              "AND idActor NOT IN (SELECT DISTINCT idDirector FROM directorlinkepisode) "
-              "AND idActor NOT IN (SELECT DISTINCT idWriter FROM writerlinkepisode) "
-              "AND idActor NOT IN (SELECT DISTINCT idArtist FROM artistlinkmusicvideo) "
-              "AND idActor NOT IN (SELECT DISTINCT idDirector FROM directorlinkmusicvideo)";
+            "WHERE NOT EXISTS (SELECT 1 FROM actorlinkmovie WHERE actorlinkmovie.idActor = actors.idActor) "
+              "AND NOT EXISTS (SELECT 1 FROM directorlinkmovie WHERE directorlinkmovie.idDirector = actors.idActor) "
+              "AND NOT EXISTS (SELECT 1 FROM writerlinkmovie WHERE writerlinkmovie.idWriter = actors.idActor) "
+              "AND NOT EXISTS (SELECT 1 FROM actorlinktvshow WHERE actorlinktvshow.idActor = actors.idActor) "
+              "AND NOT EXISTS (SELECT 1 FROM actorlinkepisode WHERE actorlinkepisode.idActor = actors.idActor) "
+              "AND NOT EXISTS (SELECT 1 FROM directorlinktvshow WHERE directorlinktvshow.idDirector = actors.idActor) "
+              "AND NOT EXISTS (SELECT 1 FROM directorlinkepisode WHERE directorlinkepisode.idDirector = actors.idActor) "
+              "AND NOT EXISTS (SELECT 1 FROM writerlinkepisode WHERE writerlinkepisode.idWriter = actors.idActor) "
+              "AND NOT EXISTS (SELECT 1 FROM artistlinkmusicvideo WHERE artistlinkmusicvideo.idArtist = actors.idActor) "
+              "AND NOT EXISTS (SELECT 1 FROM directorlinkmusicvideo WHERE directorlinkmusicvideo.idDirector = actors.idActor)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning studio table", __FUNCTION__);
     sql = "DELETE FROM studio "
-            "WHERE idStudio NOT IN (SELECT DISTINCT idStudio FROM studiolinkmovie) "
-              "AND idStudio NOT IN (SELECT DISTINCT idStudio FROM studiolinkmusicvideo) "
-              "AND idStudio NOT IN (SELECT DISTINCT idStudio FROM studiolinktvshow)";
+            "WHERE NOT EXISTS (SELECT 1 FROM studiolinkmovie WHERE studiolinkmovie.idStudio = studio.idStudio) "
+              "AND NOT EXISTS (SELECT 1 FROM studiolinkmusicvideo WHERE studiolinkmusicvideo.idStudio = studio.idStudio) "
+              "AND NOT EXISTS (SELECT 1 FROM studiolinktvshow WHERE studiolinktvshow.idStudio = studio.idStudio)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning set table", __FUNCTION__);
-    sql = "DELETE FROM sets WHERE idSet NOT IN (SELECT DISTINCT idSet FROM movie)";
+    sql = "DELETE FROM sets WHERE NOT EXISTS (SELECT 1 FROM movie WHERE movie.idSet = sets.idSet)";
     m_pDS->exec(sql.c_str());
 
     CommitTransaction();
