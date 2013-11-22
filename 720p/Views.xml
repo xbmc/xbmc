@@ -166,7 +166,7 @@
 				<visible>Control.IsVisible(58)</visible>
 				<animation effect="fade" end="40" time="0" condition="true">Conditional</animation>
 			</control>
-			<visible>!Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip)</visible>
+			<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip)</visible>
 			<!-- selected item bg -->
 			<control type="image">
 				<posx>465</posx>
@@ -180,7 +180,7 @@
 			<control type="group" id="777">
 				<control type="fixedlist" id="58">
 					<viewtype label="List">panel</viewtype>
-					<visible>!Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip)</visible>
+					<visible>!Container.Content(movie) + !Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip)</visible>
 					<posy>31</posy>
 					<posx>505</posx>
 					<width>735</width>

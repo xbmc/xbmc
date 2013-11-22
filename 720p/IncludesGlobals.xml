@@ -226,7 +226,7 @@
 		<value condition="Container.Content(photos) + ListItem.Type(photo)">$LOCALIZE[31704]</value>
 		<value condition="Container.Content(photos) + ListItem.Type(photoAlbum)">$LOCALIZE[31230]</value>
 		<value condition="Container.Content(photoAlbums)">$LOCALIZE[31704]</value>
-		<value condition="Container.Content(movie)">$LOCALIZE[31142]</value>
+		<value condition="Container.Content(movie) | Container.Content(movies)">$LOCALIZE[31142]</value>
 		<value condition="Container.Content(tvshow)">$LOCALIZE[31143]</value>
 		<value condition="Container.Content(seasons)">$LOCALIZE[31143]</value>
 		<value condition="Container.Content(episodes)">$LOCALIZE[31143]</value>
