@@ -108,7 +108,13 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
 #endif
 
   AddSeparator(7);
-  m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
+  /* PLEX */
+  if (!g_application.m_pPlayer)
+    m_subtitleVisible = false;
+  else
+  /* END PLEX */
+    m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
+
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &m_subtitleVisible);
   if (SupportsSubtitleFeature(IPC_SUBS_OFFSET))
     AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_settings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, FormatDelay);
