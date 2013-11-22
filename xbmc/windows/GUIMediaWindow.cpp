@@ -382,9 +382,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         return true;
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
-      /* PLEX */
-#ifndef __PLEX__
       { // State of the sources changed, so update our view
+#ifndef __PLEX__
+
         if ((m_vecItems->IsVirtualDirectoryRoot() ||
              m_vecItems->IsSourcesPath()) && IsActive())
         {
@@ -393,18 +393,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           m_viewControl.SetSelectedItem(iItem);
         }
         return true;
-      }
 #endif
-      {
-        RefreshShares(true);
-        return true;
       }
-      else if (message.GetParam1() == GUI_MSG_UPDATE_REMOTE_SOURCES)
-      {
-        RefreshShares(true);
-        return true;
-      }
-      /* END PLEX */
 
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
@@ -501,7 +491,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
       /* PLEX */
       g_plexApplication.mediaServerClient->SetViewMode(CFileItemPtr(new CFileItem(*m_vecItems)), viewMode);
+      CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage updating viewMode to %d", viewMode);
       m_vecItems->SetProperty("viewMode", viewMode);
+      g_directoryCache.ClearDirectory(m_vecItems->GetPath());
       /* END PLEX */
 
       UpdateButtons();
@@ -603,22 +595,12 @@ void CGUIMediaWindow::UpdateButtons()
     m_viewControl.SetCurrentView(m_guiState->GetViewAsControl());
 #endif
     /* PLEX */
-    bool allowChange = true;
-
-    int viewMode = m_guiState->GetViewAsControl();
-
-    // Check the list of disabled view modes for this directory
-    CStdStringArray viewModes;
-    StringUtils::SplitString(CurrentDirectory().GetProperty("disabledViewModes").asString(), ",", viewModes);
-    for (unsigned int i = 0; i < viewModes.size(); i++)
-    {
-      if (atoi(viewModes[i]) == viewMode)
-        allowChange = false;
-    }
-
     // If we have a default view mode, use that instead
     if (CurrentDirectory().HasProperty("viewMode"))
+    {
+      CLog::Log(LOGDEBUG, "CGUIMediaWindow::UpdateButtons setting viewMode to %lld", CurrentDirectory().GetProperty("viewMode").asInteger());
       m_viewControl.SetCurrentView(CurrentDirectory().GetProperty("viewMode").asInteger());
+    }
 
     // Otherwise, use the global default
     else
@@ -648,24 +630,12 @@ void CGUIMediaWindow::UpdateButtons()
     SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter").asString());
 }
 
-#ifndef __PLEX__
 void CGUIMediaWindow::ClearFileItems()
 {
   m_viewControl.Clear();
   m_vecItems->Clear();
   m_unfilteredItems->Clear();
 }
-#else
-void CGUIMediaWindow::ClearFileItems()
-{
-  m_viewControl.Clear();
-  int defaultViewMode = m_vecItems->GetProperty("viewMode").asInteger();
-  m_vecItems->Clear(); // will clean up everything
-  m_vecItems->SetProperty("viewMode", defaultViewMode);
-
-  m_unfilteredItems->Clear();
-}
-#endif
 
 // \brief Sorts Fileitems based on the sort method and sort oder provided by guiViewState
 void CGUIMediaWindow::SortItems(CFileItemList &items)
@@ -842,10 +812,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   if (strDirectory == "?")
     return false;
 
-  /* PLEX */
-  RefreshShares();
-  /* END PLEX */
-
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
@@ -874,11 +840,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   }
 
   CFileItemList items;
-
-  /* PLEX */
-  // Save the default view mode.
-  if (strDirectory == strCurrentDirectory)
-    items.SetProperty("viewMode", m_vecItems->GetProperty("viewMode"));
 
 #ifndef __PLEX__
   if (!GetDirectory(directory, items))
@@ -929,30 +890,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   
   ClearFileItems();
   m_vecItems->Copy(items);
-
-  /* PLEX */
-  // Double check and see if we need to update.
-  if (m_updatedItem &&
-      m_vecItems->Get(m_iSelectedItem) &&
-      m_updatedItem->GetProperty("ratingKey").size() > 0 &&
-      m_updatedItem->GetProperty("ratingKey") == m_vecItems->Get(m_iSelectedItem)->GetProperty("ratingKey"))
-  {
-    // Update resume time and view count.
-    CFileItemPtr item = m_vecItems->Get(m_iSelectedItem);
-    if (m_updatedItem->HasProperty("viewOffset"))
-      item->SetProperty("viewOffset", m_updatedItem->GetProperty("viewOffset"));
-    else
-      item->ClearProperty("viewOffset");
-
-    // Play count.
-    item->GetVideoInfoTag()->m_playCount = m_updatedItem->GetVideoInfoTag()->m_playCount;
-
-    // Icon.
-    item->SetOverlayImage((CGUIListItem::GUIIconOverlay)m_updatedItem->GetOverlayImageID());
-
-    m_updatedItem = CFileItemPtr();
-  }
-  /* END PLEX */
+  CLog::Log(LOGDEBUG, "CGUIMediaWindow::Update viewMode = %lld %s", items.GetProperty("viewMode").asInteger(), items.GetPath().c_str());
+  m_vecItems->SetProperty("viewMode", items.GetProperty("viewMode"));
 
   // only set the filter path if it hasn't been marked
   // as preset or if it's empty
@@ -2134,23 +2073,3 @@ CStdString CGUIMediaWindow::RemoveParameterFromPath(const CStdString &strDirecto
 
   return strDirectory;
 }
-
-/* PLEX */
-void CGUIMediaWindow::RefreshShares(bool update)
-{
-  /*
-  if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
-  {
-    CPlexSourceScanner::MergeSourcesForWindow(GetID());
-    SetupShares();
-
-    if (update)
-    {
-      int iItem = m_viewControl.GetSelectedItem();
-      Update(m_vecItems->GetPath());
-      m_viewControl.SetSelectedItem(iItem);
-    }
-  }
-   */
-}
-/* END PLEX */

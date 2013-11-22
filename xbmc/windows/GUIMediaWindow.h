@@ -162,7 +162,6 @@ protected:
 
   /* PLEX */
   virtual CBackgroundInfoLoader* GetBackgroundLoader() { return 0; }
-  void RefreshShares(bool update=false);
   CFileItemPtr m_updatedItem;
   /* END PLEX */
 
