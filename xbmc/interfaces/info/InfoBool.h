@@ -22,7 +22,7 @@
 
 #include <vector>
 #include <map>
-#include "utils/StdString.h"
+#include <string>
 
 class CGUIListItem;
 
@@ -35,7 +35,7 @@ namespace INFO
 class InfoBool
 {
 public:
-  InfoBool(const CStdString &expression, int context)
+  InfoBool(const std::string &expression, int context)
     : m_value(false),
       m_context(context),
       m_expression(expression),
@@ -75,7 +75,7 @@ protected:
   int m_context;               ///< contextual information to go with the condition
 
 private:
-  CStdString m_expression;     ///< original expression
+  std::string  m_expression;   ///< original expression
   unsigned int m_lastUpdate;   ///< last update time (to determine dirty status)
 };
 
@@ -84,7 +84,7 @@ private:
 class InfoSingle : public InfoBool
 {
 public:
-  InfoSingle(const CStdString &condition, int context);
+  InfoSingle(const std::string &condition, int context);
   virtual ~InfoSingle() {};
 
   virtual void Update(const CGUIListItem *item);
@@ -97,12 +97,12 @@ private:
 class InfoExpression : public InfoBool
 {
 public:
-  InfoExpression(const CStdString &expression, int context);
+  InfoExpression(const std::string &expression, int context);
   virtual ~InfoExpression() {};
 
   virtual void Update(const CGUIListItem *item);
 private:
-  void Parse(const CStdString &expression);
+  void Parse(const std::string &expression);
   bool Evaluate(const CGUIListItem *item, bool &result);
   short GetOperator(const char ch) const;
 

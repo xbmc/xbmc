@@ -33,7 +33,7 @@ bool InfoBool::operator==(const InfoBool &right) const
           StringUtils::EqualsNoCase(m_expression, right.m_expression));
 }
 
-InfoSingle::InfoSingle(const CStdString &expression, int context)
+InfoSingle::InfoSingle(const std::string &expression, int context)
 : InfoBool(expression, context)
 {
   m_condition = g_infoManager.TranslateSingleString(expression);
@@ -44,7 +44,7 @@ void InfoSingle::Update(const CGUIListItem *item)
   m_value = g_infoManager.GetBool(m_condition, m_context, item);
 }
 
-InfoExpression::InfoExpression(const CStdString &expression, int context)
+InfoExpression::InfoExpression(const std::string &expression, int context)
 : InfoBool(expression, context)
 {
   Parse(expression);
@@ -77,10 +77,10 @@ short InfoExpression::GetOperator(const char ch) const
     return 0;
 }
 
-void InfoExpression::Parse(const CStdString &expression)
+void InfoExpression::Parse(const std::string &expression)
 {
   stack<char> operators;
-  CStdString operand;
+  std::string operand;
   for (unsigned int i = 0; i < expression.size(); i++)
   {
     if (GetOperator(expression[i]))
