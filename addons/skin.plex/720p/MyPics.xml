@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="2">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,70,71,72,51,52,99</views>
+	<views>40,70,71,72,51,52,99,58</views>
 	<allowoverlay>yes</allowoverlay>
 	<onload>Skin.SetString(SectionType,photos)</onload>
 	<onunload>SetFocus(777)</onunload>
@@ -23,8 +23,14 @@
 		<!-- LibraryPhoto ID 51 -->
 		<include>LibraryPhoto</include>
 		<include>AlbumPhoto</include>
+		<!-- List ID 58 -->
+		<include>List</include>
 		<!-- Scroll Offset -->
 		<include>scrollOffset</include>
+		<!-- Item Full Info -->
+		<control type="group">
+			<include>ListItemFullInfo</include>
+		</control>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->

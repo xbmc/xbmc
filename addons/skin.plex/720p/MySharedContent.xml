@@ -1,10 +1,18 @@
 <?xml version="1.0"?>
 <window id="100">
 	<defaultcontrol>777</defaultcontrol>
+	<views>50,58</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
+		<include>SharedContentMainBG</include>
+		<!-- List ID 58 -->
+		<include>List</include>
 		<!-- views (ViewsSharedContent.xml) -->
 		<include>SharedContent</include>
+		<!-- Item Full Info -->
+		<control type="group">
+			<include>ListItemFullInfo</include>
+		</control>
 		<!-- top-level ui (IncludesGlobals.xml & Debug.xml) -->
 		<!--<include>TopBar</include>-->
 		<include>debugInfos</include>

@@ -48,18 +48,18 @@
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<include name="ChannelServer">
-	<control type="label">
-		<posy>202</posy>
-		<posx>20</posx>
-		<width>150</width>
-		<height>20</height>
-		<align>left</align>
-		<aligny>center</aligny>
-		<label>$INFO[ListItem.Property(serverName)]</label>
-		<font>Condensed-13</font>
-		<textcolor>FF999999</textcolor>
-		<shadowcolor>FF222222</shadowcolor>
-	</control>
+		<control type="label">
+			<posy>202</posy>
+			<posx>20</posx>
+			<width>150</width>
+			<height>20</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<label>$INFO[ListItem.Property(serverName)]</label>
+			<font>Condensed-13</font>
+			<textcolor>FF999999</textcolor>
+			<shadowcolor>FF222222</shadowcolor>
+		</control>
 	</include>
 	<include name="ChannelTypeIcon">
 		<control type="image">
@@ -248,7 +248,7 @@
 				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
-		</control>		
+		</control>
 	</include>
 	<!-- views -->
 	<!-- channel directory -->
@@ -258,9 +258,9 @@
 			<include>FadeDialog</include>
 			<control type="group">
 				<posx>-74</posx>
-			<include>ChannelPlotBG</include>
-			<include>ChannelDirectoryPlot</include>
-			<include>ChannelDirectoryIcon</include>
+				<include>ChannelPlotBG</include>
+				<include>ChannelDirectoryPlot</include>
+				<include>ChannelDirectoryIcon</include>
 			</control>
 			<!-- main list -->
 			<control type="panel" id="74">
@@ -309,11 +309,11 @@
 				<height>680</height>
 				<onup>70</onup>
 				<ondown>70</ondown>
-				<onright>70</onright>
-				<onleft>9100</onleft>
+				<onright>Container.NextViewMode</onright>
+				<onleft>70</onleft>
 				<orientation>vertical</orientation>
 				<itemlayout width="206" height="228">
-				<include>ChannelThumbCard</include>
+					<include>ChannelThumbCard</include>
 					<include>ChannelThumb</include>
 					<control type="label">
 						<include>ChannelLabel</include>
@@ -323,7 +323,7 @@
 					<include>ChannelTypeIcon</include>
 				</itemlayout>
 				<focusedlayout width="206" height="228">
-				<include>ChannelThumbCard</include>
+					<include>ChannelThumbCard</include>
 					<include>ChannelThumb</include>
 					<control type="label">
 						<include>ChannelLabel</include>
@@ -349,7 +349,7 @@
 					<visible>Container.content(channel)</visible>
 					<onup>99</onup>
 					<ondown>99</ondown>
-					<onright>99</onright>
+					<onright>Container.NextViewMode</onright>
 					<onleft>9100</onleft>
 					<orientation>vertical</orientation>
 					<posx>28</posx>
@@ -373,7 +373,7 @@
 							<textcolor>orangeLight</textcolor>
 						</control>
 						<include>SelectedBorder</include>
-					</focusedlayout>	
+					</focusedlayout>
 					<!-- episode layout -->
 					<itemlayout condition="ListItem.Type(episode) | ListItem.Type(clip)" width="250" height="162">
 						<include>EpisodeThumbCard</include>
