@@ -698,6 +698,63 @@
 							</animation>
 						</control>
 					</focusedlayout>
+					<!-- shared content main -->
+					<itemlayout height="50" condition="Window.IsActive(mysharedcontent)">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>50</height>
+							<texture border="5">border-bottom-grey.png</texture>
+						</control>
+						<include>ListChannelTypeIcon</include>
+						<control type="group">
+							<posx>-2</posx>
+							<posy>-40</posy>
+							<include>ListSquareItemThumb</include>
+						</control>
+						<control type="label">
+							<width>840</width>
+							<height>50</height>
+							<label>$INFO[ListItem.Label][COLOR=greyLight]$INFO[ListItem.Property(SourceTitle), [COLOR=orange]&#xB7;[/COLOR] ][/COLOR][COLOR=greyLight]$INFO[ListItem.Property(ServerName), [COLOR=orange]&#xB7;[/COLOR] ][/COLOR]</label>
+							<font>Condensed-20</font>
+							<include>White2</include>
+							<textoffsetx>100</textoffsetx>
+						</control>
+					</itemlayout>
+					<focusedlayout height="100" condition="Window.IsActive(mysharedcontent)">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>1150</width>
+							<height>100</height>
+							<texture border="10">-black-bottom-grey.png</texture>
+							<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+						</control>
+						<control type="group">
+							<posx>-27</posx>
+							<posy>-40</posy>
+							<include>ListSelectedSquareItemThumb</include>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="650"/>
+							</animation>
+						</control>
+						<control type="label">
+							<width>850</width>
+							<height>100</height>
+							<info>ListItem.Label</info>
+							<aligny>center</aligny>
+							<font>CondensedBold-32</font>
+							<textcolor>orange</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+							<textoffsetx>120</textoffsetx>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="450"/>
+							</animation>
+						</control>
+					</focusedlayout>
 					<!-- music -->
 					<itemlayout height="50" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(songs)">
 						<control type="image">
