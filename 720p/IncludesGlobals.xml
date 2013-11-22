@@ -221,7 +221,8 @@
 	<!-- variable for default description when no plot available -->
 	<variable name="NoPlotDefaultItem">
 		<value condition="Container.Content(songs)">$LOCALIZE[31230]</value>
-		<value condition="Container.Content(albums)">$LOCALIZE[31229]</value>
+		<value condition="Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated))">$LOCALIZE[31229]</value>
+		<value condition="Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated))">$LOCALIZE[31230]</value>
 		<value condition="Container.Content(photos) + ListItem.Type(photo)">$LOCALIZE[31704]</value>
 		<value condition="Container.Content(photos) + ListItem.Type(photoAlbum)">$LOCALIZE[31230]</value>
 		<value condition="Container.Content(photoAlbums)">$LOCALIZE[31704]</value>

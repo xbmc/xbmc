@@ -784,7 +784,7 @@
 							<font>Condensed-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
-							<visible>IsEmpty(Container.Property(primaryFilterActivated)) + Container.Content(albums)</visible>
+							<visible>[IsEmpty(Container.Property(primaryFilterActivated)) + Container.Content(albums)] | [IsEmpty(Container.Property(primaryFilterActivated)) + Container.Content(artists)]</visible>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -831,18 +831,6 @@
 								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="650"/>
 							</animation>
-						</control>
-						<control type="image">
-							<posx>15</posx>
-							<posy>70</posy>
-							<width>15</width>
-							<height>15</height>
-							<texture>icon-photoalbum.png</texture>
-							<animation type="Focus" reversible="false">
-								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
-								<effect type="fade" start="0" end="100" time="650"/>
-							</animation>
-							<visible>ListItem.Type(photoAlbum)</visible>
 						</control>
 						<control type="label">
 							<width>850</width>
