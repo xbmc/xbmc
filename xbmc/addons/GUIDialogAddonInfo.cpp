@@ -216,7 +216,7 @@ void CGUIDialogAddonInfo::OnUninstall()
     return;
 
   // prompt user to be sure
-  if (CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
+  if (!CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
     return;
 
   // ensure the addon isn't disabled in our database
