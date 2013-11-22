@@ -9,16 +9,10 @@
 		<include>BGGrainy</include>
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
-		<!-- List ID 58 -->
-		<include>List</include>
 		<!-- Preplay screens (ViewsPreplay.xml) -->
 		<include>PreplayMovie</include>
 		<include>PreplayEpisode</include>
 		<include>PreplayClip</include>
-		<!-- Item Full Info -->
-		<control type="group">
-			<include>ListItemFullInfo</include>
-		</control>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenuPreplay</include>
 		<!--<include>TopBar</include>-->

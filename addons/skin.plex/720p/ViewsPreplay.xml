@@ -783,7 +783,7 @@
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>10</posy>
+						<posy>7</posy>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>
@@ -794,7 +794,15 @@
 					<label>$LOCALIZE[31141] $INFO[ListItem.Season] &#xB7; $LOCALIZE[31114, &#xB7; ] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
 					<font>Condensed-18</font>
 					<include>WhiteShadow</include>
-					<visible>true</visible>
+					<visible>!IsEmpty(ListItem.Season)</visible>
+				</control>
+				<control type="label">
+					<width>600</width>
+					<height>25</height>
+					<label>$LOCALIZE[31145] &#xB7; $LOCALIZE[31114, &#xB7; ] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
+					<font>Condensed-18</font>
+					<include>WhiteShadow</include>
+					<visible>IsEmpty(ListItem.Season)</visible>
 				</control>
 			</control>
 			<!-- Infos Right -->
