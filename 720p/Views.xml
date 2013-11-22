@@ -179,7 +179,7 @@
 			</control>
 			<control type="group" id="777">
 				<control type="fixedlist" id="58">
-					<viewtype label="List">list</viewtype>
+					<viewtype label="List">panel</viewtype>
 					<visible>!Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip)</visible>
 					<posy>31</posy>
 					<posx>505</posx>
