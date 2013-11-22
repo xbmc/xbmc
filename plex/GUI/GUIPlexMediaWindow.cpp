@@ -829,7 +829,7 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
   CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
 
   list.SetProperty("hasAdvancedFilters", (filter && filter->hasAdvancedFilters()) ? "yes" : "");
-  list.SetProperty("primaryFilterActivated", (filter && filter->secondaryFiltersActivated()) ? "" : "yes");
+  list.SetProperty("primaryFilterActivated", (!filter || !filter->secondaryFiltersActivated()) ? "yes" : "");
 
   CFileItemPtr section = g_plexApplication.dataLoader->GetSection(m_sectionRoot);
   if (section && section->GetPlexDirectoryType() == PLEX_DIR_TYPE_HOME_MOVIES)
