@@ -1477,18 +1477,18 @@ int CGUIEPGGridContainer::GetSelectedItem() const
       m_epgItemsPtr.empty() ||
       m_channelCursor + m_channelOffset >= m_channels ||
       m_blockCursor + m_blockOffset >= m_blocks)
-    return 0;
+    return -1;
 
   CGUIListItemPtr currentItem = m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item;
   if (!currentItem)
-    return 0;
+    return -1;
 
   for (int i = 0; i < (int)m_programmeItems.size(); i++)
   {
     if (currentItem == m_programmeItems[i])
       return i;
   }
-  return 0;
+  return -1;
 }
 
 CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag) const
