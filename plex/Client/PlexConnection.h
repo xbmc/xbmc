@@ -66,7 +66,7 @@ public:
   {
     CStdString fmt;
     fmt.Format("Connection: %s token used: %s type: %02x state: %s",
-               m_url.Get().c_str(),
+               m_url.Get().empty() ? "NONE" : m_url.Get().c_str(),
                m_token.empty() ? "NO" : "YES",
                m_type,
                ConnectionStateName(m_state).c_str());
