@@ -103,7 +103,7 @@
 					<height>660</height>
 					<onup>52</onup>
 					<ondown>52</ondown>
-					<onright>52</onright>
+					<onright>Container.NextViewMode</onright>
 					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
 					<itemlayout width="192" height="220">
@@ -129,16 +129,16 @@
 			<control type="group" id="777">
 				<posx>-54</posx>
 				<posy>-34</posy>
-				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + IsEmpty(Container.Property(mixedParents))</visible>
+				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + IsEmpty(Container.Property(mixedParents)) + IsEmpty(Container.Property(primaryFilterActivated)) + Control.IsVisible(53)</visible>
 				<!-- backgrounds & plot -->
 				<control type="group">
 					<!-- backgrounds -->
 					<control type="group">
 						<include>MusicPlotBG</include>
 						<include>MusicRightBG</include>
-					</control>
-					<!-- artist thumb -->
-					<control type="group">
+						<visible>Control.IsVisible(53)</visible>
+						<!-- artist thumb -->
+						<control type="group">
 						<posx>81</posx>
 						<posy>62</posy>
 						<control type="image">
@@ -167,8 +167,8 @@
 							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						</control>
 					</control>
-					<!-- plot text -->
-					<control type="textbox">
+						<!-- plot text -->
+						<control type="textbox">
 						<posx>95</posx>
 						<posy>420</posy>
 						<width>670</width>
@@ -176,7 +176,7 @@
 						<include>PlotFormat</include>
 						<label>$INFO[Container.Property(summary)]</label>
 					</control>
-					<control type="textbox">
+						<control type="textbox">
 						<posx>95</posx>
 						<posy>420</posy>
 						<width>670</width>
@@ -185,6 +185,7 @@
 						<include>NoPlotDefault</include>
 						<visible>IsEmpty(Container.Property(summary))</visible>
 					</control>
+					</control>	
 				</control>
 				<!-- Infos Left -->
 				<control type="group">
@@ -261,11 +262,11 @@
 				</control>
 				<!-- list -->
 				<control type="panel" id="53">
-					<visible>Container.Content(Albums)</visible>
+					<visible>Container.Content(Albums) + IsEmpty(Container.Property(primaryFilterActivated))</visible>
 					<viewtype label="MusicLibraryAlbums">panel</viewtype>
 					<onup>53</onup>
 					<ondown>53</ondown>
-					<onright>53</onright>
+					<onright>Container.NextViewMode</onright>
 					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
 					<posx>850</posx>
@@ -298,6 +299,7 @@
 				<visible>Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
 				<!-- backgrounds & plot -->
 				<control type="group">
+					<visible>Control.IsVisible(54)</visible>
 					<!-- backgrounds -->
 					<control type="group">
 						<include>MusicPlotBG</include>
@@ -356,6 +358,7 @@
 				</control>
 				<!-- Infos Left -->
 				<control type="group">
+					<visible>Control.IsVisible(54)</visible>
 					<posy>70</posy>
 					<posx>394</posx>
 					<!-- Titles -->
@@ -425,6 +428,7 @@
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
 					<onleft>1300</onleft>
+					<onright>Container.NextViewMode</onright>
 					<onup>54</onup>
 					<ondown>54</ondown>
 					<itemlayout height="49" width="520">

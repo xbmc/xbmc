@@ -264,7 +264,7 @@
 					<viewtype label="LibraryPhoto">panel</viewtype>
 					<onup>51</onup>
 					<ondown>51</ondown>
-					<onright>51</onright>
+					<onright>Container.NextViewMode</onright>
 					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
 					<posx>93</posx>
@@ -317,10 +317,13 @@
 			<visible>Container.Content(photoAlbums)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
-			<include>PlotBGLibrary</include>
-			<include>AlbumTitleLibrary</include>
-			<include>AlbumIconsLibrary</include>
-			<include>PlotLibrary</include>
+			<control type="group">
+				<visible> Control.IsVisible(52)</visible>
+				<include>PlotBGLibrary</include>
+				<include>AlbumTitleLibrary</include>
+				<include>AlbumIconsLibrary</include>
+				<include>PlotLibrary</include>
+			</control>
 			<!-- main list -->
 			<control type="group" id="777">
 				<control type="panel" id="52">
@@ -328,12 +331,12 @@
 					<viewtype label="AlbumPhoto">panel</viewtype>
 					<onup>51</onup>
 					<ondown>51</ondown>
-					<onright>51</onright>
+					<onright>Container.NextViewMode</onright>
 					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
 					<posx>573</posx>
 					<posy>15</posy>
-					<width>680</width>
+					<width>685</width>
 					<height>690</height>
 					<itemlayout width="136" height="171">
 						<include>PhotoThumbCard</include>

@@ -309,7 +309,7 @@
 				<height>680</height>
 				<onup>70</onup>
 				<ondown>70</ondown>
-				<onright>70</onright>
+				<onright>Container.NextViewMode</onright>
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
 				<itemlayout width="206" height="228">
@@ -349,7 +349,7 @@
 					<visible>Container.content(channel)</visible>
 					<onup>99</onup>
 					<ondown>99</ondown>
-					<onright>99</onright>
+					<onright>Container.NextViewMode</onright>
 					<onleft>9100</onleft>
 					<orientation>vertical</orientation>
 					<posx>28</posx>

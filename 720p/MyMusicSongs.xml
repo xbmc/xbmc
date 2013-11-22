@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="501">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,70,71,73,52,53,54,99</views>
+	<views>40,41,70,71,73,52,53,54,99</views>
 	<allowoverlay>yes</allowoverlay>
 	<onload>Skin.SetString(SectionType,music)</onload>
 	<onunload>SetFocus(777)</onunload>
@@ -14,6 +14,8 @@
 		<!-- views (ViewsMusic.xml & ViewsChannels.xml) -->
 		<!-- ByFolder ID 40 -->
 		<include>ByFolder</include>
+		<!-- List ID 41 -->
+		<include>List</include>
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
 		<!-- ChannelMusic ID 73 -->
@@ -24,6 +26,10 @@
 		<include>LibraryMusic</include>
 		<!-- Scroll Offset -->
 		<include>scrollOffset</include>
+		<!-- Item Full Info -->
+		<control type="group">
+			<include>ListItemFullInfo</include>
+		</control>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenu</include>
 		<!--<include>TopBar</include>-->

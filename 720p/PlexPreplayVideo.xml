@@ -1,5 +1,6 @@
 <window id="10090">
 	<defaultcontrol always="true">102</defaultcontrol>
+	<views>41,60,61</views>
 	<allowoverlay>no</allowoverlay>
 	<onload condition="Container.Content(clips)">Skin.SetString(SectionType,preplay)</onload>
 	<onunload>Skin.Reset(SectionType)</onunload>
@@ -8,10 +9,16 @@
 		<include>BGGrainy</include>
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
+		<!-- List ID 41 -->
+		<include>List</include>
 		<!-- Preplay screens (ViewsPreplay.xml) -->
 		<include>PreplayMovie</include>
 		<include>PreplayEpisode</include>
 		<include>PreplayClip</include>
+		<!-- Item Full Info -->
+		<control type="group">
+			<include>ListItemFullInfo</include>
+		</control>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenuPreplay</include>
 		<!--<include>TopBar</include>-->

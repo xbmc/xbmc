@@ -1074,3 +1074,11 @@ msgstr ""
 msgctxt "#32105"
 msgid "* Plot hidden to avoid spoilers *"
 msgstr ""
+
+msgctxt "#32106"
+msgid "Tracks"
+msgstr ""
+
+msgctxt "#32107"
+msgid "Channel"
+msgstr ""

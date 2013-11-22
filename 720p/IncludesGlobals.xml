@@ -221,14 +221,18 @@
 	<!-- variable for default description when no plot available -->
 	<variable name="NoPlotDefaultItem">
 		<value condition="Container.Content(songs)">$LOCALIZE[31230]</value>
-		<value condition="Container.Content(albums)">$LOCALIZE[31229]</value>
-		<value condition="Container.Content(photoAlbums)">$LOCALIZE[31230]</value>
+		<value condition="Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated))">$LOCALIZE[31229]</value>
+		<value condition="Container.Content(albums) + !IsEmpty(Container.Property(primaryFilterActivated))">$LOCALIZE[31230]</value>
+		<value condition="Container.Content(photos) + ListItem.Type(photo)">$LOCALIZE[31704]</value>
+		<value condition="Container.Content(photos) + ListItem.Type(photoAlbum)">$LOCALIZE[31230]</value>
+		<value condition="Container.Content(photoAlbums)">$LOCALIZE[31704]</value>
 		<value condition="Container.Content(movie)">$LOCALIZE[31142]</value>
 		<value condition="Container.Content(tvshow)">$LOCALIZE[31143]</value>
 		<value condition="Container.Content(seasons)">$LOCALIZE[31143]</value>
 		<value condition="Container.Content(episodes)">$LOCALIZE[31143]</value>
 		<value condition="Container.Content(episode)">$LOCALIZE[31114]</value>
-		<value condition="Container.Content(clip)">$LOCALIZE[31144]</value>
+		<value condition="Container.Content(channels)">$LOCALIZE[32107]</value>
+		<value condition="Container.Content(clip) | Container.Content(homemovies)">$LOCALIZE[31144]</value>
 		<value>Item</value>
 	</variable>
 	<include name="TopBar">
