@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scraper framework="1.1" date="2013-05-29">
 	<NfoUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings+artist-credits&lt;/url&gt;" dest="3">
 			<expression>release/(.+)</expression>
 		</RegExp>
 	</NfoUrl>
 	<ResolveIDToUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings+artist-credits&lt;/url&gt;" dest="3">
 			<expression>(.+)</expression>
 		</RegExp>
 	</ResolveIDToUrl>
@@ -59,24 +59,57 @@
 			<RegExp input="$$1" output="\1" dest="8">
 				<expression trim="1">&lt;release id=&quot;[^&quot;]*&quot;&gt;&lt;title&gt;[^&lt;]*&lt;.*?&lt;artist id=&quot;[^&quot;]*&quot;&gt;&lt;name&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
-			<RegExp input="$$3" output="&lt;chain function=&quot;GetMBAlbumTitleByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5">
-				<expression noclean="1">(.+)</expression>
-			</RegExp>
-			<RegExp input="$$3" output="&lt;chain function=&quot;GetMBAlbumArtistsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
-				<expression noclean="1">(.+)</expression>
-			</RegExp>
-			<RegExp input="$$3" output="&lt;chain function=&quot;GetMBAlbumArtistByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
-				<expression noclean="1">(.+)</expression>
-			</RegExp>
-			<RegExp input="$$3" output="&lt;chain function=&quot;GetMBAlbumLabelByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
-				<expression noclean="1">(.+)</expression>
-			</RegExp>
-			<RegExp input="$$3" output="&lt;chain function=&quot;GetMBAlbumDateByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
-				<expression noclean="1">(.+)</expression>
-			</RegExp>
-			<RegExp input="$$3" output="&lt;chain function=&quot;GetMBAlbumTracksByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
-				<expression noclean="1">(.+)</expression>
-			</RegExp>
+			<XSLT input="$$1" output="\1" dest="5">
+				<xsl:stylesheet version = "1.0"
+						xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+						xmlns:mmd="http://musicbrainz.org/ns/mmd-2.0#">
+					<xsl:output omit-xml-declaration="yes"/>
+					<xsl:template match="/">
+						<xsl:for-each select="mmd:metadata">
+							<xsl:for-each select="mmd:release">
+								<title><xsl:value-of select="mmd:title"/></title>
+								<musicBrainzAlbumID><xsl:value-of select="@id"/></musicBrainzAlbumID>
+								<artist><xsl:for-each select="mmd:artist-credit/mmd:name-credit"><xsl:value-of select="mmd:artist/mmd:name"/><xsl:value-of select="@joinphrase"/></xsl:for-each></artist>
+								<genre/>
+								<style/>
+								<mood/>
+								<theme/>
+								<compilation><xsl:choose><xsl:when test="mmd:release-group[@type='Compilation']">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose></compilation>
+								<review></review>
+								<releasedate><xsl:value-of select="date"/></releasedate>
+								<label><xsl:value-of select="mmd:label-info-list/mmd:label-info/mmd:label/mmd:name"/></label>
+								<type><xsl:value-of select="mmd:release-group/@type"/></type>
+								<year><xsl:value-of select="substring(mmd:date, 0, 5)"/></year>
+								<rating/>
+								<xsl:for-each select="mmd:artist-credit/mmd:name-credit">
+								<albumArtistCredits>
+									<artist><xsl:value-of select="mmd:artist/mmd:name"/></artist>
+									<musicBrainzArtistID><xsl:value-of select="mmd:artist/@id"/></musicBrainzArtistID>
+									<joinphrase><xsl:value-of select="@joinphrase"/></joinphrase>
+								</albumArtistCredits>
+								</xsl:for-each>
+								<xsl:for-each select="mmd:medium-list/mmd:medium">
+								<xsl:for-each select="mmd:track-list/mmd:track">
+								<track>
+								<xsl:for-each select="mmd:recording/mmd:artist-credit/mmd:name-credit">
+									<songArtistCredits>
+										<artist><xsl:value-of select="mmd:artist/mmd:name"/></artist>
+										<musicBrainzArtistID><xsl:value-of select="mmd:artist/@id"/></musicBrainzArtistID>
+										<joinphrase><xsl:value-of select="@joinphrase"/></joinphrase>
+									</songArtistCredits>
+								</xsl:for-each>
+								<musicBrainzTrackID><xsl:value-of select="mmd:recording/@id"/></musicBrainzTrackID>
+								<title><xsl:value-of select="mmd:recording/mmd:title"/></title>
+								<position><xsl:value-of select="mmd:position"/></position>            
+								<duration><xsl:value-of select="mmd:length"/></duration>
+								</track>
+								</xsl:for-each>
+								</xsl:for-each>
+							</xsl:for-each>
+						</xsl:for-each>
+					</xsl:template>
+				</xsl:stylesheet>
+			</XSLT>
 			<RegExp input="$INFO[albumreviewsource]" output="&lt;url function=&quot;GetAMGAlbumReview&quot; cache=&quot;mb-$$4-rg.xml&quot;&gt;http://musicbrainz.org/ws/2/release-group/$$4?inc=url-rels&lt;/url&gt;" dest="5+">
 				<expression>allmusic.com</expression>
 			</RegExp>

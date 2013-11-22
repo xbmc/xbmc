@@ -393,6 +393,8 @@ lib/cmyth/Makefile
 /system/libnfs.dll
 /system/dnssd.dll
 /system/libcec.dll
+/system/pthreadVC2.dll
+/system/libxslt.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
