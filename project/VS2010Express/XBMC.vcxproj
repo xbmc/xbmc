@@ -639,7 +639,7 @@
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\generic\LanguageInvokerThread.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\generic\ScriptInvocationManager.cpp" />
-    <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\info\InfoExpression.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\info\SkinVariable.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.cpp" />
@@ -2163,6 +2163,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\Builtins.h" />
     <ClInclude Include="..\..\xbmc\interfaces\IAnnouncer.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\info\InfoExpression.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\SkinVariable.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AudioLibrary.h" />

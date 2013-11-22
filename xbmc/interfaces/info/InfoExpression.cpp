@@ -18,7 +18,7 @@
  *
  */
 
-#include "InfoBool.h"
+#include "InfoExpression.h"
 #include <stack>
 #include "utils/log.h"
 #include "GUIInfoManager.h"

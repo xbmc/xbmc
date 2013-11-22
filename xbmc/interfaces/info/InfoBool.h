@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include <vector>
-#include <map>
 #include <string>
 
 class CGUIListItem;
@@ -81,37 +79,6 @@ protected:
 private:
   std::string  m_expression;   ///< original expression
   unsigned int m_lastUpdate;   ///< last update time (to determine dirty status)
-};
-
-/*! \brief Class to wrap active boolean conditions
- */
-class InfoSingle : public InfoBool
-{
-public:
-  InfoSingle(const std::string &condition, int context);
-  virtual ~InfoSingle() {};
-
-  virtual void Update(const CGUIListItem *item);
-private:
-  int m_condition;             ///< actual condition this represents
-};
-
-/*! \brief Class to wrap active boolean expressions
- */
-class InfoExpression : public InfoBool
-{
-public:
-  InfoExpression(const std::string &expression, int context);
-  virtual ~InfoExpression() {};
-
-  virtual void Update(const CGUIListItem *item);
-private:
-  void Parse(const std::string &expression);
-  bool Evaluate(const CGUIListItem *item, bool &result);
-  short GetOperator(const char ch) const;
-
-  std::vector<short> m_postfix;         ///< the postfix form of the expression (operators and operand indicies)
-  std::vector<unsigned int> m_operands; ///< the operands in the expression
 };
 
 };

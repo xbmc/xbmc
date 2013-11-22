@@ -85,6 +85,7 @@
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
+#include "interfaces/info/InfoExpression.h"
 
 #if defined(TARGET_DARWIN_OSX)
 #include "osx/smc.h"
