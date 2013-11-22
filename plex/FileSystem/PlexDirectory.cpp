@@ -415,16 +415,6 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   
   CPlexDirectory::CopyAttributes(root, &mediaContainer, m_url);
   g_parserKey->Process(m_url, "key", "/" + m_url.GetFileName(), &mediaContainer);
-  
-  
-  /* set the view mode */
-  if (mediaContainer.HasProperty("viewMode"))
-  {
-    int viewMode = mediaContainer.GetProperty("viewMode").asInteger();
-    CGUIViewState *state = CGUIViewState::GetViewState(0, mediaContainer);
-    state->SaveViewAsControl(viewMode);
-    delete state;
-  }
 
   /* now read all the childs to the mediaContainer */
   ReadChildren(root, mediaContainer);
