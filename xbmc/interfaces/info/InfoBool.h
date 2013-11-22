@@ -21,6 +21,7 @@
 #pragma once
 
 #include <string>
+#include "boost/shared_ptr.hpp"
 
 class CGUIListItem;
 
@@ -71,6 +72,8 @@ public:
    */
   virtual void Update(const CGUIListItem *item) {};
 
+  const std::string &GetExpression() const { return m_expression; }
+
 protected:
 
   bool m_value;                ///< current value
@@ -81,4 +84,5 @@ private:
   unsigned int m_lastUpdate;   ///< last update time (to determine dirty status)
 };
 
+typedef boost::shared_ptr<InfoBool> InfoPtr;
 };

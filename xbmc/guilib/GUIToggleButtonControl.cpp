@@ -30,7 +30,6 @@ CGUIToggleButtonControl::CGUIToggleButtonControl(int parentID, int controlID, fl
     : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
     , m_selectButton(parentID, controlID, posX, posY, width, height, altTextureFocus, altTextureNoFocus, labelInfo)
 {
-  m_toggleSelect = 0;
   ControlType = GUICONTROL_TOGGLEBUTTON;
 }
 

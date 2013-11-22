@@ -33,6 +33,7 @@ class CGUIListItem;
 #include "Geometry.h"         // for CPoint, CRect
 #include "utils/StdString.h"
 #include "boost/shared_ptr.hpp"
+#include "interfaces/info/InfoBool.h"
 
 enum ANIMATION_TYPE
 {
@@ -184,7 +185,7 @@ private:
   // type of animation
   ANIMATION_TYPE m_type;
   bool m_reversible;
-  unsigned int m_condition;
+  INFO::InfoPtr m_condition;
 
   // conditional anims can repeat
   ANIM_REPEAT m_repeatAnim;

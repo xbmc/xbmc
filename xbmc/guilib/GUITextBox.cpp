@@ -41,7 +41,6 @@ CGUITextBox::CGUITextBox(int parentID, int controlID, float posX, float posY, fl
   m_pageControl = 0;
   m_lastRenderTime = 0;
   m_scrollTime = scrollTime;
-  m_autoScrollCondition = 0;
   m_autoScrollTime = 0;
   m_autoScrollDelay = 3000;
   m_autoScrollDelayTime = 0;

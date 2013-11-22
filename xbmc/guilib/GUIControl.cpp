@@ -40,8 +40,6 @@ CGUIControl::CGUIControl() :
   m_visible = VISIBLE;
   m_visibleFromSkinCondition = true;
   m_forceHidden = false;
-  m_visibleCondition = 0;
-  m_enableCondition = 0;
   m_enabled = true;
   m_posX = 0;
   m_posY = 0;
@@ -71,8 +69,6 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_visible = VISIBLE;
   m_visibleFromSkinCondition = true;
   m_forceHidden = false;
-  m_visibleCondition = 0;
-  m_enableCondition = 0;
   m_enabled = true;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;

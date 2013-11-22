@@ -81,7 +81,7 @@ void InfoExpression::Parse(const std::string &expression)
       // cleanup any operand, translate and put into our expression list
       if (!operand.empty())
       {
-        unsigned int info = g_infoManager.Register(operand, m_context);
+        InfoPtr info = g_infoManager.Register(operand, m_context);
         if (info)
         {
           m_postfix.push_back(m_operands.size());
@@ -127,7 +127,7 @@ void InfoExpression::Parse(const std::string &expression)
 
   if (!operand.empty())
   {
-    unsigned int info = g_infoManager.Register(operand, m_context);
+    InfoPtr info = g_infoManager.Register(operand, m_context);
     if (info)
     {
       m_postfix.push_back(m_operands.size());

@@ -59,6 +59,7 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
+#include "boost/make_shared.hpp"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -2123,14 +2124,14 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   return false;
 }
 
-unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
+INFO::InfoPtr CGUIInfoManager::Register(const CStdString &expression, int context)
 {
   CStdString condition(CGUIInfoLabel::ReplaceLocalize(expression));
   StringUtils::Trim(condition);
   StringUtils::ToLower(condition);
 
   if (condition.empty())
-    return 0;
+    return INFO::InfoPtr();
 
   CSingleLock lock(m_critInfo);
   // do we have the boolean expression already registered?
@@ -2138,21 +2139,21 @@ unsigned int CGUIInfoManager::Register(const CStdString &expression, int context
   for (unsigned int i = 0; i < m_bools.size(); ++i)
   {
     if (*m_bools[i] == test)
-      return i+1;
+      return m_bools[i];
   }
 
   if (condition.find_first_of("|+[]!") != condition.npos)
-    m_bools.push_back(new InfoExpression(condition, context));
+    m_bools.push_back(boost::make_shared<InfoExpression>(condition, context));
   else
-    m_bools.push_back(new InfoSingle(condition, context));
+    m_bools.push_back(boost::make_shared<InfoSingle>(condition, context));
 
-  return m_bools.size();
+  return m_bools.back();
 }
 
 bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWindow)
 {
   bool result = false;
-  unsigned int info = Register(expression, contextWindow);
+  INFO::InfoPtr info = Register(expression, contextWindow);
   if (info)
     result = GetBoolValue(info);
   return result;
@@ -2176,10 +2177,10 @@ bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWind
 
  Advantage is that we know this at creation time I think, so could perhaps signal it in IsDirty()?
  */
-bool CGUIInfoManager::GetBoolValue(unsigned int expression, const CGUIListItem *item)
+bool CGUIInfoManager::GetBoolValue(const INFO::InfoPtr &expression, const CGUIListItem *item)
 {
-  if (expression && --expression < m_bools.size())
-    return m_bools[expression]->Get(m_updateTime, item);
+  if (expression)
+    return expression->Get(m_updateTime, item);
   return false;
 }
 
@@ -4235,11 +4236,22 @@ bool CGUIInfoManager::GetDisplayAfterSeek()
 void CGUIInfoManager::Clear()
 {
   CSingleLock lock(m_critInfo);
-  for (unsigned int i = 0; i < m_bools.size(); ++i)
-    delete m_bools[i];
-  m_bools.clear();
-
   m_skinVariableStrings.clear();
+
+  /*
+    Erase any info bools that are unused. We do this repeatedly as each run
+    will remove those bools that are no longer dependencies of other bools
+    in the vector.
+   */
+  vector<InfoPtr>::iterator i = remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
+  while (i != m_bools.end())
+  {
+    m_bools.erase(i, m_bools.end());
+    i = remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
+  }
+  // log which ones are used - they should all be gone by now
+  for (vector<InfoPtr>::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+    CLog::Log(LOGDEBUG, "Infobool '%s' still used by %u instances", (*i)->GetExpression().c_str(), (unsigned int) i->use_count());
 }
 
 void CGUIInfoManager::UpdateFPS()
@@ -5504,9 +5516,9 @@ CStdString CGUIInfoManager::GetSkinVariableString(int info,
   return "";
 }
 
-bool CGUIInfoManager::ConditionsChangedValues(const std::map<int, bool>& map)
+bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map)
 {
-  for (std::map<int, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
+  for (std::map<INFO::InfoPtr, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
   {
     if (GetBoolValue(it->first) != it->second)
       return true;

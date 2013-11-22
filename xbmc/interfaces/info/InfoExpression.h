@@ -55,7 +55,7 @@ private:
   short GetOperator(const char ch) const;
 
   std::vector<short> m_postfix;         ///< the postfix form of the expression (operators and operand indicies)
-  std::vector<unsigned int> m_operands; ///< the operands in the expression
+  std::vector<InfoPtr> m_operands;      ///< the operands in the expression
 };
 
 };

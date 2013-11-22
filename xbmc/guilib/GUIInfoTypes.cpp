@@ -33,7 +33,6 @@ using ADDON::CAddonMgr;
 
 CGUIInfoBool::CGUIInfoBool(bool value)
 {
-  m_info = 0;
   m_value = value;
 }
 

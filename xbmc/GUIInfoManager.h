@@ -32,6 +32,7 @@
 #include "inttypes.h"
 #include "XBDateTime.h"
 #include "utils/Observer.h"
+#include "interfaces/info/InfoBool.h"
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
 
@@ -48,7 +49,6 @@ class CGUIListItem;
 class CDateTime;
 namespace INFO
 {
-  class InfoBool;
   class InfoSingle;
 }
 
@@ -726,13 +726,13 @@ public:
 
    \sa GetBoolValue
    */
-  unsigned int Register(const CStdString &expression, int context = 0);
+  INFO::InfoPtr Register(const CStdString &expression, int context = 0);
 
   /*! \brief Get a previously registered boolean expression's value
    Checks the cache and evaluates the boolean expression if required.
    \sa Register
    */
-  bool GetBoolValue(unsigned int expression, const CGUIListItem *item = NULL);
+  bool GetBoolValue(const INFO::InfoPtr &expression, const CGUIListItem *item = NULL);
 
   /*! \brief Evaluate a boolean expression
    \param expression the expression to evaluate
@@ -845,7 +845,7 @@ public:
   CStdString GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=NULL);
 
   /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
-  bool ConditionsChangedValues(const std::map<int, bool>& map);
+  bool ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map);
 
   bool m_AVInfoValid;
 
@@ -942,7 +942,7 @@ protected:
   int m_nextWindowID;
   int m_prevWindowID;
 
-  std::vector<INFO::InfoBool*> m_bools;
+  std::vector<INFO::InfoPtr> m_bools;
   std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
   unsigned int m_updateTime;
 

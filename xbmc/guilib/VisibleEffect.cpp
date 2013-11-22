@@ -360,7 +360,6 @@ CAnimation::CAnimation()
 {
   m_type = ANIM_TYPE_NONE;
   m_reversible = true;
-  m_condition = 0;
   m_repeatAnim = ANIM_REPEAT_NONE;
   m_currentState = ANIM_STATE_NONE;
   m_currentProcess = ANIM_PROCESS_NONE;
@@ -389,7 +388,7 @@ CAnimation &CAnimation::operator =(const CAnimation &src)
   if (this == &src) return *this; // same
   m_type = src.m_type;
   m_reversible = src.m_reversible;
-  m_condition = src.m_condition; // TODO: register/unregister
+  m_condition = src.m_condition;
   m_repeatAnim = src.m_repeatAnim;
   m_lastCondition = src.m_lastCondition;
   m_queuedProcess = src.m_queuedProcess;

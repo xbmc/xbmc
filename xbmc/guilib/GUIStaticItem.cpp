@@ -28,7 +28,6 @@ using namespace std;
 
 CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileItem()
 {
-  m_visCondition = 0;
   m_visState = false;
 
   assert(item);
@@ -91,7 +90,6 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
 CGUIStaticItem::CGUIStaticItem(const CFileItem &item)
 : CFileItem(item)
 {
-  m_visCondition = 0;
   m_visState = false;
 }
 

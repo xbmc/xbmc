@@ -34,7 +34,6 @@ CGUIListItemLayout::CGUIListItemLayout()
 {
   m_width = 0;
   m_height = 0;
-  m_condition = 0;
   m_focused = false;
   m_invalidated = true;
   m_group.SetPushUpdates(true);
