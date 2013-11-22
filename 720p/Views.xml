@@ -163,7 +163,7 @@
 				<height>720</height>
 				<aspectratio aligny="top">stretch</aspectratio>
 				<texture background="true">black.png</texture>
-				<visible>Control.IsVisible(41)</visible>
+				<visible>Control.IsVisible(58)</visible>
 				<animation effect="fade" end="40" time="0" condition="true">Conditional</animation>
 			</control>
 			<visible>!Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip)</visible>
@@ -175,10 +175,10 @@
 				<height>101</height>
 				<include>Base</include>
 				<animation effect="fade" start="0" end="10" time="400" condition="true">Conditional</animation>
-				<visible>Control.IsVisible(41)</visible>
+				<visible>Control.IsVisible(58)</visible>
 			</control>
 			<control type="group" id="777">
-				<control type="fixedlist" id="41">
+				<control type="fixedlist" id="58">
 					<viewtype label="List">list</viewtype>
 					<visible>!Container.Content(episode) + !Container.Content(Folders) + !Container.Content(clip)</visible>
 					<posy>31</posy>
@@ -187,8 +187,8 @@
 					<height>655</height>
 					<onright>Container.NextViewMode</onright>
 					<onleft>1300</onleft>
-					<onup>41</onup>
-					<ondown>41</ondown>
+					<onup>58</onup>
+					<ondown>58</ondown>
 					<focusposition>6</focusposition>
 					<wraparound>true</wraparound>
 					<scrolltime>200</scrolltime>

@@ -167,7 +167,7 @@
 	<!-- Card -->
 	<include name="ListItemFullInfo">
 		<control type="group">
-		<visible>Control.IsVisible(41)</visible>
+		<visible>Control.IsVisible(58)</visible>
 		<include>rightSideSlide</include>
 		<include>ListItemFullInfoLeftSlide</include>
 			<control type="group" id="999">
@@ -376,7 +376,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + !Container.Content(channels) + !Container.Content(channel)</visible>
+							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + !Container.Content(channels) + !Container.Content(channel) + !Window.IsActive(mysharedcontent)</visible>
 						</control>
 						<control type="textbox">
 							<posy>115</posy>
@@ -386,7 +386,7 @@
 							<font>HomePlot</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
-							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + [Container.Content(channels) | Container.Content(channel)]</visible>
+							<visible>!Control.IsVisible(111) + !Control.IsVisible(112) + !Control.IsVisible(113) + [Container.Content(channels) | Container.Content(channel) | Window.IsActive(mysharedcontent)]</visible>
 						</control>
 					</control>
 					<!-- media flags -->

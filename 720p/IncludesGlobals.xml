@@ -233,6 +233,7 @@
 		<value condition="Container.Content(episode)">$LOCALIZE[31114]</value>
 		<value condition="Container.Content(channels)">$LOCALIZE[32107]</value>
 		<value condition="Container.Content(clip) | Container.Content(homemovies)">$LOCALIZE[31144]</value>
+		<value condition="Window.IsActive(mysharedcontent)">$LOCALIZE[32108]</value>		
 		<value>Item</value>
 	</variable>
 	<include name="TopBar">

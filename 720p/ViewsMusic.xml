@@ -89,14 +89,14 @@
 	<!-- Library -->
 	<include name="LibraryMusic">
 		<control type="group">
-			<visible>!Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + !Container.Content(channel)</visible>
+			<visible>!Container.Content(addons) + !Container.Content(plugins) + !Container.Content(channel)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- Library -->
 			<control type="group" id="777">
 				<control type="panel" id="52">
 					<viewtype label="MusicLibrary">panel</viewtype>
-					<visible>[!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))]</visible>
+					<visible>[!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))]</visible>
 					<posy>28</posy>
 					<posx>100</posx>
 					<width>1200</width>

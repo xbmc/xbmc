@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="2">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,41,70,71,72,51,52,99</views>
+	<views>40,70,71,72,51,52,99,58</views>
 	<allowoverlay>yes</allowoverlay>
 	<onload>Skin.SetString(SectionType,photos)</onload>
 	<onunload>SetFocus(777)</onunload>
@@ -14,8 +14,6 @@
 		<!-- views (ViewsPhoto.xml & ViewsChannels.xml) -->
 		<!-- ByFolder ID 40 -->
 		<include>ByFolder</include>
-		<!-- List ID 41 -->
-		<include>List</include>
 		<!-- Channels ID 70 -->
 		<include>Channels</include>
 		<!-- ChannelPhoto ID 72 -->
@@ -25,6 +23,8 @@
 		<!-- LibraryPhoto ID 51 -->
 		<include>LibraryPhoto</include>
 		<include>AlbumPhoto</include>
+		<!-- List ID 58 -->
+		<include>List</include>
 		<!-- Scroll Offset -->
 		<include>scrollOffset</include>
 		<!-- Item Full Info -->

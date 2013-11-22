@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <window id="100">
 	<defaultcontrol>777</defaultcontrol>
-	<views>41,50</views>
+	<views>50,58</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<include>SharedContentMainBG</include>
-		<!-- List ID 41 -->
+		<!-- List ID 58 -->
 		<include>List</include>
 		<!-- views (ViewsSharedContent.xml) -->
 		<include>SharedContent</include>

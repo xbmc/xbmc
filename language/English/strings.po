@@ -1082,3 +1082,7 @@ msgstr ""
 msgctxt "#32107"
 msgid "Channel"
 msgstr ""
+
+msgctxt "#32108"
+msgid "Section"
+msgstr ""

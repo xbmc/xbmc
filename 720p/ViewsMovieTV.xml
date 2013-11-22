@@ -162,7 +162,7 @@
 				<viewtype label="LibraryPosters">panel</viewtype>
 				<onup>50</onup>
 				<ondown>50</ondown>
-				<onright>50</onright>
+				<onright>Container.NextViewMode</onright>
 				<onleft>1300</onleft>
 				<orientation>vertical</orientation>
 				<posx>100</posx>
