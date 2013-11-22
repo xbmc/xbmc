@@ -309,7 +309,7 @@
 				<height>680</height>
 				<onup>70</onup>
 				<ondown>70</ondown>
-				<onright>Container.NextViewMode</onright>
+				<onright>70</onright>
 				<onleft>70</onleft>
 				<orientation>vertical</orientation>
 				<itemlayout width="206" height="228">
