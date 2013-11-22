@@ -20,6 +20,8 @@
 #include "Client/PlexConnection.h"
 #include "FileSystem/PlexFile.h"
 
+#include "log.h"
+
 #include <map>
 
 typedef std::map<std::string, std::string> str2str;
@@ -186,8 +188,14 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   tURL.SetOption("videoQuality", _qualities[bitrate]);
   tURL.SetOption("videoResolution", _resolutions[bitrate]);
   
-  /* PHT can render subtitles itself no need to include them in the transcoded video */
-  tURL.SetOption("skipSubtitles", "1");
+  /* PHT can render subtitles itself no need to include them in the transcoded video
+   * UNLESS it's a embedded subtitle, we can't extract it from the file */
+  CFileItemPtr subStream = PlexUtils::GetItemSelectedStreamOfType(item, PLEX_STREAM_SUBTITLE);
+  if (subStream && subStream->HasProperty("key"))
+  {
+    CLog::Log(LOGDEBUG, "CPlexTranscoderClient::GetTranscodeURL file has a selected subtitle that is external.");
+    tURL.SetOption("skipSubtitles", "1");
+  }
   
   CStdString extraAudioFormats;
   int audioMode = g_guiSettings.GetInt("audiooutput.mode");

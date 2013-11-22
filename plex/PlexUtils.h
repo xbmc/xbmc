@@ -28,6 +28,7 @@ namespace PlexUtils
 
   bool PlexMediaStreamCompare(CFileItemPtr stream1, CFileItemPtr stream2);
   CFileItemPtr GetSelectedStreamOfType(CFileItemPtr mediaPart, int streamType);
+  CFileItemPtr GetItemSelectedStreamOfType(const CFileItem& fileItem, int streamType);
   void SetSelectedStream(CFileItemPtr item, CFileItemPtr stream);
   CFileItemPtr GetStreamByID(CFileItemPtr item, int streamType, int plexStreamID);
 

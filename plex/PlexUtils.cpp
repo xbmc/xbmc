@@ -293,6 +293,32 @@ std::string PlexUtils::GetStreamCodecName(CFileItemPtr item)
   return boost::to_upper_copy(codec);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemPtr PlexUtils::GetItemSelectedStreamOfType(const CFileItem &fileItem, int streamType)
+{
+  int selectedItem = 0;
+  if (fileItem.HasProperty("selectedMediaItem"))
+    selectedItem = fileItem.GetProperty("selectedMediaItem").asInteger();
+
+  if (fileItem.m_mediaItems.size() == 0 ||
+      fileItem.m_mediaItems.size() < selectedItem)
+    return CFileItemPtr();
+
+  CFileItemPtr item = fileItem.m_mediaItems[selectedItem];
+
+  if (!item)
+    return CFileItemPtr();
+
+  CFileItemPtr part;
+  if (item->m_mediaParts.size() > 0)
+    part = item->m_mediaParts[0];
+
+  if (part)
+    return GetSelectedStreamOfType(part, streamType);
+
+  return CFileItemPtr();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 CFileItemPtr PlexUtils::GetSelectedStreamOfType(CFileItemPtr mediaPart, int streamType)
 {
