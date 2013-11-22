@@ -6594,9 +6594,25 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr ""
 
-#empty strings from id 14101 to 15014
+#empty strings from id 14101 to 15011
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#15013"
+msgid "What would you like to do with media items from the following unavailable source?"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#15014"
+msgid "Keep"
+msgstr ""
 
 #: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/video/VideoDatabase.cpp
 msgctxt "#15015"
 msgid "Remove"
 msgstr ""

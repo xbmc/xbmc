@@ -843,6 +843,9 @@ private:
    */
   CStdString GetSafeFile(const CStdString &dir, const CStdString &name) const;
 
+  std::vector<int> CleanMediaType(const std::string &mediaType, const std::string &cleanableFileIDs,
+                                  std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent);
+
   void AnnounceRemove(std::string content, int id);
   void AnnounceUpdate(std::string content, int id);
 };
