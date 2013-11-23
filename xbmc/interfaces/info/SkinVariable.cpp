@@ -74,7 +74,7 @@ CStdString CSkinVariableString::GetValue(bool preferImage /* = false*/, const CG
 {
   for (VECCONDITIONLABELPAIR::const_iterator it = m_conditionLabelPairs.begin() ; it != m_conditionLabelPairs.end(); ++it)
   {
-    if (!it->m_condition || g_infoManager.GetBoolValue(it->m_condition, item))
+    if (!it->m_condition || it->m_condition->Get(item))
     {
       if (item)
         return it->m_label.GetItemLabel(item, preferImage);

@@ -42,7 +42,7 @@ void CGUIToggleButtonControl::Process(unsigned int currentTime, CDirtyRegionList
   // ask our infoManager whether we are selected or not...
   bool selected = m_bSelected;
   if (m_toggleSelect)
-    selected = g_infoManager.GetBoolValue(m_toggleSelect);
+    selected = m_toggleSelect->Get();
   if (selected != m_bSelected)
   {
     MarkDirtyRegion();

@@ -71,7 +71,7 @@ void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList 
   if (m_toggleSelect)
   {
     // ask our infoManager whether we are selected or not...
-    bool selected = g_infoManager.GetBoolValue(m_toggleSelect);
+    bool selected = m_toggleSelect->Get();
 
     if (selected != m_bSelected)
     {

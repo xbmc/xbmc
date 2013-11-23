@@ -243,7 +243,7 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
     if (condition)
     { // check this condition
       INFO::InfoPtr conditionID = g_infoManager.Register(condition);
-      bool value = g_infoManager.GetBoolValue(conditionID);
+      bool value = conditionID->Get();
 
       if (xmlIncludeConditions)
         (*xmlIncludeConditions)[conditionID] = value;

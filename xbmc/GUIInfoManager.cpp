@@ -120,7 +120,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_currentSlide = new CFileItem;
   m_frameCounter = 0;
   m_lastFPSTime = 0;
-  m_updateTime = 1;
   m_playerShowTime = false;
   m_playerShowCodec = false;
   m_playerShowInfo = false;
@@ -2187,15 +2186,8 @@ bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWind
   bool result = false;
   INFO::InfoPtr info = Register(expression, contextWindow);
   if (info)
-    result = GetBoolValue(info);
+    result = info->Get();
   return result;
-}
-
-bool CGUIInfoManager::GetBoolValue(const INFO::InfoPtr &expression, const CGUIListItem *item)
-{
-  if (expression)
-    return expression->Get(m_updateTime, item);
-  return false;
 }
 
 // checks the condition and returns it as necessary.  Currently used
@@ -5210,7 +5202,10 @@ void CGUIInfoManager::ResetCache()
 {
   // reset any animation triggers as well
   m_containerMoves.clear();
-  m_updateTime++;
+  // mark our infobools as dirty
+  CSingleLock lock(m_critInfo);
+  for (vector<InfoPtr>::iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+    (*i)->SetDirty();
 }
 
 // Called from tuxbox service thread to update current status
@@ -5534,7 +5529,7 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
 {
   for (std::map<INFO::InfoPtr, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
   {
-    if (GetBoolValue(it->first) != it->second)
+    if (it->first->Get() != it->second)
       return true;
   }
   return false;

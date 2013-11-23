@@ -39,25 +39,31 @@ public:
       m_context(context),
       m_listItemDependent(false),
       m_expression(expression),
-      m_lastUpdate(0)
+      m_dirty(true)
   {
   };
 
   virtual ~InfoBool() {};
 
+  /*! \brief Set the info bool dirty.
+   Will cause the info bool to be re-evaluated next call to Get()
+   */
+  void SetDirty()
+  {
+    m_dirty = true;
+  }
   /*! \brief Get the value of this info bool
-   This is called to update (if necessary) and fetch the value of the info bool
-   \param time current time (used to test if we need to update yet)
+   This is called to update (if dirty) and fetch the value of the info bool
    \param item the item used to evaluate the bool
    */
-  inline bool Get(unsigned int time, const CGUIListItem *item = NULL)
+  inline bool Get(const CGUIListItem *item = NULL)
   {
     if (item && m_listItemDependent)
       Update(item);
-    else if (time - m_lastUpdate > 0)
+    else if (m_dirty)
     {
       Update(NULL);
-      m_lastUpdate = time;
+      m_dirty = false;
     }
     return m_value;
   }
@@ -83,7 +89,7 @@ protected:
 
 private:
   std::string  m_expression;   ///< original expression
-  unsigned int m_lastUpdate;   ///< last update time (to determine dirty status)
+  bool         m_dirty;        ///< whether we need an update
 };
 
 typedef boost::shared_ptr<InfoBool> InfoPtr;

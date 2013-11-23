@@ -723,22 +723,14 @@ public:
    \param expression the boolean condition or expression
    \param context the context window
    \return an identifier used to reference this expression
-
-   \sa GetBoolValue
    */
   INFO::InfoPtr Register(const CStdString &expression, int context = 0);
-
-  /*! \brief Get a previously registered boolean expression's value
-   Checks the cache and evaluates the boolean expression if required.
-   \sa Register
-   */
-  bool GetBoolValue(const INFO::InfoPtr &expression, const CGUIListItem *item = NULL);
 
   /*! \brief Evaluate a boolean expression
    \param expression the expression to evaluate
    \param context the context in which to evaluate the expression (currently windows)
    \return the value of the evaluated expression.
-   \sa Register, GetBoolValue
+   \sa Register
    */
   bool EvaluateBool(const CStdString &expression, int context = 0);
 
@@ -945,7 +937,6 @@ protected:
 
   std::vector<INFO::InfoPtr> m_bools;
   std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
-  unsigned int m_updateTime;
 
   int m_libraryHasMusic;
   int m_libraryHasMovies;

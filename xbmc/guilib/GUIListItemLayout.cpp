@@ -142,7 +142,7 @@ bool CGUIListItemLayout::MoveRight()
 
 bool CGUIListItemLayout::CheckCondition()
 {
-  return !m_condition || g_infoManager.GetBoolValue(m_condition);
+  return !m_condition || m_condition->Get();
 }
 
 void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)

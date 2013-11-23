@@ -56,7 +56,7 @@ void CGUIInfoBool::Parse(const CStdString &expression, int context)
 void CGUIInfoBool::Update(const CGUIListItem *item /*= NULL*/)
 {
   if (m_info)
-    m_value = g_infoManager.GetBoolValue(m_info, item);
+    m_value = m_info->Get(item);
 }
 
 

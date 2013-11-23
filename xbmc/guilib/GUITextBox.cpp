@@ -123,7 +123,7 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
   // update our auto-scrolling as necessary
   if (m_autoScrollTime && m_lines.size() > m_itemsPerPage)
   {
-    if (!m_autoScrollCondition || g_infoManager.GetBoolValue(m_autoScrollCondition))
+    if (!m_autoScrollCondition || m_autoScrollCondition->Get())
     {
       if (m_lastRenderTime)
         m_autoScrollDelayTime += currentTime - m_lastRenderTime;
