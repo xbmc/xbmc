@@ -21,17 +21,10 @@
 #include "InfoBool.h"
 #include <stack>
 #include "utils/log.h"
-#include "utils/StringUtils.h"
 #include "GUIInfoManager.h"
 
 using namespace std;
 using namespace INFO;
-
-bool InfoBool::operator==(const InfoBool &right) const
-{
-  return (m_context == right.m_context &&
-          StringUtils::EqualsNoCase(m_expression, right.m_expression));
-}
 
 InfoSingle::InfoSingle(const std::string &expression, int context)
 : InfoBool(expression, context)

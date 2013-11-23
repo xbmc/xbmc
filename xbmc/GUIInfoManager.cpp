@@ -2126,6 +2126,7 @@ unsigned int CGUIInfoManager::Register(const CStdString &expression, int context
 {
   CStdString condition(CGUIInfoLabel::ReplaceLocalize(expression));
   StringUtils::Trim(condition);
+  StringUtils::ToLower(condition);
 
   if (condition.empty())
     return 0;
