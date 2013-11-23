@@ -554,6 +554,10 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
   /* Wait for the agumentation to return for 5 seconds */
   if (m_augmentationEvent.WaitMSec(5 * 1000))
   {
+    CSingleLock lk(m_augmentationLock);
+    if (m_isCanceled)
+      return;
+
     BOOST_FOREACH(CFileItemList *augList, m_augmentationItems)
     {
       if (augList->Size() > 0)
@@ -660,6 +664,7 @@ void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
     CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation timed out");
     BOOST_FOREACH(int id, m_augmentationJobs)
       CJobManager::GetInstance().CancelJob(id);
+    m_augmentationJobs.clear();
   }
 
   /* clean up */
@@ -692,9 +697,7 @@ void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
         list->Size() > 0 &&
         list->Get(0)->HasProperty("parentKey"))
     {
-      lk.unlock();
       AddAugmentation(CURL(list->Get(0)->GetProperty("parentKey").asString()));
-      lk.lock();
     }
   }
 
