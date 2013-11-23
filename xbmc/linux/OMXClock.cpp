@@ -141,7 +141,7 @@ void OMXClock::OMXDeinitialize()
   if(m_omx_clock.GetComponent() == NULL)
     return;
 
-  m_omx_clock.Deinitialize();
+  m_omx_clock.Deinitialize(true);
 
   m_omx_speed = DVD_PLAYSPEED_NORMAL;
 }
