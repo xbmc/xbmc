@@ -2124,6 +2124,14 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   return false;
 }
 
+// functor for comparison InfoPtr's
+struct InfoBoolFinder
+{
+  InfoBoolFinder(const std::string &expression, int context) : m_bool(expression, context) {};
+  bool operator() (const InfoPtr &right) const { return m_bool == *right; };
+  InfoBool m_bool;
+};
+
 INFO::InfoPtr CGUIInfoManager::Register(const CStdString &expression, int context)
 {
   CStdString condition(CGUIInfoLabel::ReplaceLocalize(expression));
@@ -2135,12 +2143,9 @@ INFO::InfoPtr CGUIInfoManager::Register(const CStdString &expression, int contex
 
   CSingleLock lock(m_critInfo);
   // do we have the boolean expression already registered?
-  InfoBool test(condition, context);
-  for (unsigned int i = 0; i < m_bools.size(); ++i)
-  {
-    if (*m_bools[i] == test)
-      return m_bools[i];
-  }
+  vector<InfoPtr>::const_iterator i = find_if(m_bools.begin(), m_bools.end(), InfoBoolFinder(condition, context));
+  if (i != m_bools.end())
+    return *i;
 
   if (condition.find_first_of("|+[]!") != condition.npos)
     m_bools.push_back(boost::make_shared<InfoExpression>(condition, context));
