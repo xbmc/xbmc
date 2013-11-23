@@ -24,6 +24,28 @@
 
 using namespace std;
 
+void CArtist::MergeScrapedArtist(const CArtist& source)
+{
+  if (!strMusicBrainzArtistID.empty())
+    strArtist = source.strArtist;
+
+//  strMusicBrainzArtistID = source.strMusicBrainzArtistID -- not copied over
+  genre = source.genre;
+  strBiography = source.strBiography;
+  styles = source.styles;
+  moods = source.moods;
+  instruments = source.instruments;
+  strBorn = source.strBorn;
+  strFormed = source.strFormed;
+  strDied = source.strDied;
+  strDisbanded = source.strDisbanded;
+  yearsActive = source.yearsActive;
+  thumbURL = source.thumbURL;
+  fanart = source.fanart;
+  discography = source.discography;
+}
+
+
 bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
 {
   if (!artist) return false;

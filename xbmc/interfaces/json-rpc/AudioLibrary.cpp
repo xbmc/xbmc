@@ -179,7 +179,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITranspo
     return InternalError;
 
   CAlbum album;
-  if (!musicdatabase.GetAlbumInfo(albumID, album, NULL))
+  if (!musicdatabase.GetAlbum(albumID, album))
     return InvalidParams;
 
   CStdString path;
@@ -397,7 +397,7 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const CStdString &method, ITransp
     return InternalError;
 
   CArtist artist;
-  if (!musicdatabase.GetArtistInfo(id, artist) || artist.idArtist <= 0)
+  if (!musicdatabase.GetArtist(id, artist) || artist.idArtist <= 0)
     return InvalidParams;
 
   if (ParameterNotNull(parameterObject, "artist"))
@@ -423,7 +423,7 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const CStdString &method, ITransp
   if (ParameterNotNull(parameterObject, "yearsactive"))
     CopyStringArray(parameterObject["yearsactive"], artist.yearsActive);
 
-  if (musicdatabase.SetArtistInfo(id, artist) <= 0)
+  if (musicdatabase.UpdateArtist(artist) <= 0)
     return InternalError;
 
   CJSONRPCUtils::NotifyItemUpdated();
@@ -440,7 +440,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const CStdString &method, ITranspo
 
   CAlbum album;
   VECSONGS songs;
-  if (!musicdatabase.GetAlbumInfo(id, album, &songs) || album.idAlbum <= 0)
+  if (!musicdatabase.GetAlbum(id, album) || album.idAlbum <= 0)
     return InvalidParams;
 
   if (ParameterNotNull(parameterObject, "title"))
@@ -466,7 +466,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const CStdString &method, ITranspo
   if (ParameterNotNull(parameterObject, "year"))
     album.iYear = (int)parameterObject["year"].asInteger();
 
-  if (musicdatabase.SetAlbumInfo(id, album, songs) <= 0)
+  if (musicdatabase.UpdateAlbum(album) <= 0)
     return InternalError;
 
   CJSONRPCUtils::NotifyItemUpdated();
@@ -563,7 +563,7 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &it
     {
       CAlbum album;
       int albumid = musicdatabase.GetAlbumIdByPath(strFilename);
-      if (musicdatabase.GetAlbumInfo(albumid, album, NULL))
+      if (musicdatabase.GetAlbum(albumid, album))
       {
         item->SetFromAlbum(album);
 

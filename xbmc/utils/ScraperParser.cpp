@@ -30,7 +30,7 @@
 #include "log.h"
 #include "CharsetConverter.h"
 #include "utils/StringUtils.h"
-
+#include "utils/XSLTUtils.h"
 #include <sstream>
 #include <cstring>
 
@@ -326,17 +326,44 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
   }
 }
 
+void CScraperParser::ParseXSLT(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend)
+{
+  TiXmlElement* pSheet = element->FirstChildElement();
+  if (pSheet)
+  {
+    XSLTUtils xsltUtils;
+    CStdString strXslt;
+    strXslt << *pSheet;
+
+    if (!xsltUtils.SetInput(input))
+      CLog::Log(LOGDEBUG, "could not parse input XML");
+
+    if (!xsltUtils.SetStylesheet(strXslt))
+      CLog::Log(LOGDEBUG, "could not parse stylesheet XML");
+
+    xsltUtils.XSLTTransform(dest);
+  }
+}
+
 void CScraperParser::ParseNext(TiXmlElement* element)
 {
-  TiXmlElement* pReg = element;
-  while (pReg)
+  for (TiXmlElement* pReg = element; pReg; pReg = pReg->NextSiblingElement())
   {
-    TiXmlElement* pChildReg = pReg->FirstChildElement("RegExp");
-    if (pChildReg)
-      ParseNext(pChildReg);
-    else
+    if (pReg->ValueStr() != "XSLT" && pReg->ValueStr() != "RegExp")
+      continue;
+
+    TiXmlElement* pChildReg;
+    for (pChildReg = pReg->FirstChildElement(); pChildReg; pChildReg = pChildReg->NextSiblingElement())
     {
-      TiXmlElement* pChildReg = pReg->FirstChildElement("clear");
+      if (pChildReg->ValueStr() == "RegExp" || pChildReg->ValueStr() == "XSLT")
+      {
+        ParseNext(pChildReg);
+        break;
+      }
+    }
+    if (!pChildReg)
+    {
+      pChildReg = pReg->FirstChildElement("clear");
       if (pChildReg)
         ParseNext(pChildReg);
     }
@@ -349,46 +376,47 @@ void CScraperParser::ParseNext(TiXmlElement* element)
       {
         if (szDest[strlen(szDest)-1] == '+')
           bAppend = true;
-
+        
         iDest = atoi(szDest);
       }
-
-      const char *szInput = pReg->Attribute("input");
-      CStdString strInput;
-      if (szInput)
+    
+    const char *szInput = pReg->Attribute("input");
+    CStdString strInput;
+    if (szInput)
+    {
+      strInput = szInput;
+      ReplaceBuffers(strInput);
+    }
+    else
+      strInput = m_param[0];
+    
+    const char* szConditional = pReg->Attribute("conditional");
+    bool bExecute = true;
+    if (szConditional)
+    {
+      bool bInverse=false;
+      if (szConditional[0] == '!')
       {
-        strInput = szInput;
-        ReplaceBuffers(strInput);
+        bInverse = true;
+        szConditional++;
       }
-      else
-        strInput = m_param[0];
+      CStdString strSetting;
+      if (m_scraper && m_scraper->HasSettings())
+        strSetting = m_scraper->GetSetting(szConditional);
+      bExecute = bInverse != strSetting.Equals("true");
+    }
+    
+    if (bExecute)
+    {
+      if (iDest-1 >= MAX_SCRAPER_BUFFERS || iDest-1 < 0)
+        CLog::Log(LOGERROR,"CScraperParser::ParseNext: destination buffer "
+                  "out of bounds, skipping expression");
 
-      const char* szConditional = pReg->Attribute("conditional");
-      bool bExecute = true;
-      if (szConditional)
-      {
-        bool bInverse=false;
-        if (szConditional[0] == '!')
-        {
-          bInverse = true;
-          szConditional++;
-        }
-        CStdString strSetting;
-        if (m_scraper && m_scraper->HasSettings())
-           strSetting = m_scraper->GetSetting(szConditional);
-        bExecute = bInverse != strSetting.Equals("true");
-      }
-
-      if (bExecute)
-      {
-        if (iDest-1 < MAX_SCRAPER_BUFFERS && iDest-1 > -1)
-          ParseExpression(strInput, m_param[iDest-1],pReg,bAppend);
-        else
-          CLog::Log(LOGERROR,"CScraperParser::ParseNext: destination buffer "
-                             "out of bounds, skipping expression");
-      }
-
-      pReg = pReg->NextSiblingElement("RegExp");
+      if (pReg->ValueStr() == "RegExp")
+        ParseExpression(strInput, m_param[iDest - 1],pReg,bAppend);
+      else if (pReg->ValueStr() == "XSLT")
+        ParseXSLT(strInput, m_param[iDest - 1], pReg, bAppend);
+    }
   }
 }
 
@@ -403,9 +431,15 @@ const CStdString CScraperParser::Parse(const CStdString& strTag,
   }
   int iResult = 1; // default to param 1
   pChildElement->QueryIntAttribute("dest",&iResult);
-  TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
   m_scraper = scraper;
-  ParseNext(pChildStart);
+
+  TiXmlElement* pStart;
+  for (pStart = pChildElement->FirstChildElement(); pStart; pStart = pStart->NextSiblingElement())
+  {
+    if (pStart->ValueStr() == "XSLT" || pStart->ValueStr() == "RegExp")
+      ParseNext(pStart);
+  }
+
   CStdString tmp = m_param[iResult-1];
 
   const char* szClearBuffers = pChildElement->Attribute("clearbuffers");
