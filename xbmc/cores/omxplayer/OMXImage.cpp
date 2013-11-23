@@ -941,7 +941,7 @@ bool COMXImageDec::HandlePortSettingChange(unsigned int resize_width, unsigned i
 
     m_omx_tunnel_decode.Initialize(&m_omx_decoder, m_omx_decoder.GetOutputPort(), &m_omx_resize, m_omx_resize.GetInputPort());
 
-    omx_err = m_omx_tunnel_decode.Establish(false);
+    omx_err = m_omx_tunnel_decode.Establish();
     if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "%s::%s m_omx_tunnel_decode.Establish\n", CLASSNAME, __func__);
@@ -1576,7 +1576,7 @@ bool COMXImageReEnc::HandlePortSettingChange(unsigned int resize_width, unsigned
 
     m_omx_tunnel_decode.Initialize(&m_omx_decoder, m_omx_decoder.GetOutputPort(), &m_omx_resize, m_omx_resize.GetInputPort());
 
-    omx_err = m_omx_tunnel_decode.Establish(false);
+    omx_err = m_omx_tunnel_decode.Establish();
     if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "%s::%s m_omx_tunnel_decode.Establish\n", CLASSNAME, __func__);
@@ -1585,7 +1585,7 @@ bool COMXImageReEnc::HandlePortSettingChange(unsigned int resize_width, unsigned
 
     m_omx_tunnel_resize.Initialize(&m_omx_resize, m_omx_resize.GetOutputPort(), &m_omx_encoder, m_omx_encoder.GetInputPort());
 
-    omx_err = m_omx_tunnel_resize.Establish(false);
+    omx_err = m_omx_tunnel_resize.Establish();
     if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "%s::%s m_omx_tunnel_resize.Establish\n", CLASSNAME, __func__);
@@ -1928,7 +1928,7 @@ bool COMXTexture::HandlePortSettingChange(unsigned int resize_width, unsigned in
 
   m_omx_tunnel_decode.Initialize(&m_omx_decoder, m_omx_decoder.GetOutputPort(), &m_omx_resize, m_omx_resize.GetInputPort());
 
-  omx_err = m_omx_tunnel_decode.Establish(false);
+  omx_err = m_omx_tunnel_decode.Establish();
   if (omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "%s::%s m_omx_tunnel_decode.Establish (%x)", CLASSNAME, __func__, omx_err);
@@ -1937,7 +1937,7 @@ bool COMXTexture::HandlePortSettingChange(unsigned int resize_width, unsigned in
 
   m_omx_tunnel_egl.Initialize(&m_omx_resize, m_omx_resize.GetOutputPort(), &m_omx_egl_render, m_omx_egl_render.GetInputPort());
 
-  omx_err = m_omx_tunnel_egl.Establish(false);
+  omx_err = m_omx_tunnel_egl.Establish();
   if (omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "%s::%s m_omx_tunnel_egl.Establish (%x)", CLASSNAME, __func__, omx_err);
