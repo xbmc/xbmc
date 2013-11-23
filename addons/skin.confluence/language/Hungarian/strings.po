@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Videó tálca"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Beállítás szint"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Parancsikonok"
@@ -475,6 +479,10 @@ msgstr "Segítség első indításkor..."
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Ez a fül azt jelzi hogy oldalt van egy menü, extra opciókkal az adott tartalomhoz.  A menühöz hozzáférhetsz ha az egérmutatót a fül fölé viszed, vagy a bal nyilat megnyomod a távirányítón. [CR][CR]Nyomj \"OK\" gombot a szöveg bezárásához. Nem fog még egyszer megjelenni."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Helyi felirat elérhető"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

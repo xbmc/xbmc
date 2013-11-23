@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Menu à l'écran Vidéo"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Niveau de paramètres"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Raccourcis"
@@ -475,6 +479,10 @@ msgstr "Aide au démarrage"
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Cet onglet signale un menu en côté de fenêtre contenant des options supplémentaires pour cette section.  Pour accéder à ce menu, appuyez sur la flèche de gauche sur votre télécommande ou votre clavier ou placez votre souris au dessus de l'onglet. [CR][CR]Cliquez sur \"Ok\" pour fermer cette fenêtre. Elle n’apparaîtra plus."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Sous-titres locaux disponibles"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

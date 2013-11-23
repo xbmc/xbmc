@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "OSD videa"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Razina postavki"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Prečaci"
@@ -475,6 +479,10 @@ msgstr "Pomoć kod prvog pokretanja..."
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Ova kartica označava da postoji izbornik sa strane ovog prozora koji sadrži dodatne mogućnosti ovog odjeljka. Za pristup izborniku, idite lijevo daljinskim upravljačem ili tipkovnicom ili postavite pokazivač miša iznad kartice. [CR] [CR] Kliknite na \"U redu\" za zatvaranje ovog dijaloga. Neće se ponovno pojaviti."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Lokalni podnaslovi dostupni"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

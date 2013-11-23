@@ -112,6 +112,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "ПРЕВЪРТАНЕ НАЗАД"
 
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "Преход"
+
 msgctxt "#31048"
 msgid "Visualisation Presets"
 msgstr "Шаблони за визуализацията"
@@ -222,7 +226,7 @@ msgstr "Ползвай за фон възпроизвежданото в мом�
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "Ползвай за фон възпроизвежданата в момента визуализация "
+msgstr "Ползвай за фон възпроизвежданата в момента визуализация"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -263,6 +267,10 @@ msgstr "Музика OSD"
 msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Видео OSD"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Изобразявани настройки"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -467,6 +475,10 @@ msgstr "Помощ при първо стартиране"
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Табът отляво обозначава наличието на меню, което е извън видимия екран, съдържащо опции за текущата секция. За достъп до него е необходим да се придвижите наляво, с помощта на дистанционното, клавиатурата или да поставите курсора на мишката над таба. [CR][CR]Кликнете върху \"Добре\" за да затворите този прозорец, който няма да се появи повече."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Налични са локални субтитри"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

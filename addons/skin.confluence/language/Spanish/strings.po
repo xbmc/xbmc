@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "OSD de vídeo"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Nivel de ajustes"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Accesos directos"
@@ -475,6 +479,10 @@ msgstr "Ayuda para la primera vez..."
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Esta pestaña significa que hay un menú a un lado de esta ventana que contiene opciones adicionales para esta sección. Para acceder al menú, desplácese a la izquierda con el mando a distancia o el teclado o sitúe el puntero del ratón sobre la pestaña. [CR][CR] Haga clic en \"Aceptar\" para cerrar este cuadro de diálogo. No volverá a aparecer."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Subtítulo local disponible"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
