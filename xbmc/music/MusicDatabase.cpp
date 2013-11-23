@@ -282,7 +282,7 @@ void CMusicDatabase::CreateViews()
   {
     m_pDS->exec("CREATE VIEW songview AS SELECT "
                 "        song.idSong AS idSong, "
-                "        GROUP_CONCAT(strArtist || strJoinPhrase, '') as strArtists, "
+                "        (SELECT GROUP_CONCAT(strArtist || strJoinPhrase, '') FROM (SELECT * from song_artist WHERE song_artist.idSong = song.idSong ORDER BY iOrder)) AS strArtists, "
                 "        song.strGenres AS strGenres,"
                 "        strTitle, "
                 "        iTrack, iDuration, "
@@ -350,7 +350,7 @@ void CMusicDatabase::CreateViews()
                 "        album.idAlbum AS idAlbum, "
                 "        strAlbum, "
                 "        strMusicBrainzAlbumID, "
-                "        GROUP_CONCAT(strArtist || strJoinPhrase, '') as strArtists, "
+                "        (SELECT GROUP_CONCAT(strArtist || strJoinPhrase, '') FROM (SELECT * from album_artist WHERE album_artist.idAlbum = album.idAlbum ORDER BY iOrder)) AS strArtists, "
                 "        album.strGenres AS strGenres, "
                 "        album.iYear AS iYear, "
                 "        album.strMoods AS strMoods, "
@@ -363,10 +363,7 @@ void CMusicDatabase::CreateViews()
                 "        iRating, "
                 "        bCompilation, "
                 "        (SELECT MIN(iTimesPlayed) AS iTimesPlayed FROM song WHERE song.idAlbum = album.idAlbum)"
-                "   FROM album  "
-                "   LEFT OUTER JOIN album_artist ON "
-                "       album.idAlbum = album_artist.idAlbum "
-                "   GROUP BY album.idAlbum");
+                "   FROM album  ");
   }
   else
   {
