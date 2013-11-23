@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.5" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.6" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
   </requires>
   <extension point="xbmc.python.module"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Добавка за променяне подробността на дневниците които XBMC генерира</summary>
     <summary lang="ca">Complement per millorar la personalització de registre</summary>
     <summary lang="cs">Doplňky pro podrobné protokolování</summary>
     <summary lang="da">Tilføjelse der øger muligheden for tilpasning af logning</summary>
