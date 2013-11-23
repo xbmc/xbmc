@@ -210,7 +210,7 @@ public:
   virtual void SetHeight(float height);
   virtual void SetVisible(bool bVisible, bool setVisState = false);
   void SetVisibleCondition(const CStdString &expression, const CStdString &allowHiddenFocus = "");
-  const INFO::InfoPtr &GetVisibleCondition() const { return m_visibleCondition; };
+  bool HasVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(const CStdString &expression);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void SetInitialVisibility();
