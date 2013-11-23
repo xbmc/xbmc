@@ -727,15 +727,15 @@ bool COMXAudio::Deinitialize()
 
   m_omx_decoder.FlushInput();
 
-  m_omx_decoder.Deinitialize(true);
+  m_omx_decoder.Deinitialize();
   if ( m_omx_mixer.IsInitialized() )
-    m_omx_mixer.Deinitialize(true);
+    m_omx_mixer.Deinitialize();
   if ( m_omx_splitter.IsInitialized() )
-    m_omx_splitter.Deinitialize(true);
+    m_omx_splitter.Deinitialize();
   if ( m_omx_render_hdmi.IsInitialized() )
-    m_omx_render_hdmi.Deinitialize(true);
+    m_omx_render_hdmi.Deinitialize();
   if ( m_omx_render_analog.IsInitialized() )
-    m_omx_render_analog.Deinitialize(true);
+    m_omx_render_analog.Deinitialize();
 
   m_BytesPerSec = 0;
   m_BufferLen   = 0;

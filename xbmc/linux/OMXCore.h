@@ -112,7 +112,7 @@ public:
 
   bool          Initialize( const std::string &component_name, OMX_INDEXTYPE index);
   bool          IsInitialized();
-  bool          Deinitialize(bool free_component = false);
+  bool          Deinitialize();
 
   // OMXCore Decoder delegate callback routines.
   static OMX_ERRORTYPE DecoderEventHandlerCallback(OMX_HANDLETYPE hComponent, OMX_PTR pAppData,
