@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Kuvataajuuden muunto"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Kiinteä"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Eri esittäjiä"
@@ -3432,6 +3436,10 @@ msgstr "Asetukset - Profiilit"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Resetoida"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Normaali"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

@@ -1165,6 +1165,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Перетворення частоти кадрів"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Фіксоване"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Різноманітні виконавці"
@@ -3344,6 +3348,10 @@ msgstr "Екран входу"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Налаштування - Профілі"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Стандартний"
 
 msgctxt "#10043"
 msgid "Help"

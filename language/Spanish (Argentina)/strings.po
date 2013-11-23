@@ -1165,6 +1165,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversión de imágenes por segundo"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fijo"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Varios intérpretes"
@@ -3316,6 +3320,10 @@ msgstr "Inicio de sesión"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Configuración - Perfiles"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Estándar"
 
 msgctxt "#10131"
 msgid "Lock settings"

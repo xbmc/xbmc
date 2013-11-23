@@ -1189,6 +1189,18 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Képkockasebesség konvertálás"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Kimenet konfiguráció"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Rögzített"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimalizált"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Különböző előadók"
@@ -1213,9 +1225,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Év"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Csatornalekeverésnél hangerő kiegyenlítése"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Nagy felbontású DTS kompatibilis vevőkészülék"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Hang közvetlen átengedésének engedélyezése"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1492,6 +1512,14 @@ msgstr "Min"
 msgctxt "#419"
 msgid "High"
 msgstr "Max"
+
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Leginkább Egyező"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Hangeszköz ébren tartása"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -3484,6 +3512,10 @@ msgstr "Beállítások - Profilok"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Visszaállítás"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
 
 msgctxt "#10040"
 msgid "Add-on browser"

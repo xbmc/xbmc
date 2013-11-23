@@ -1125,6 +1125,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Konverzija brzine sličica"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Brzo"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Različiti izvođači"
@@ -3140,6 +3144,10 @@ msgstr "Ekran za prijavu"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Postavke - Profili"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Uobičajeno"
 
 msgctxt "#10131"
 msgid "Lock settings"

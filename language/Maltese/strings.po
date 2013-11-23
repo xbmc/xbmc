@@ -2765,6 +2765,10 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Settings->Profili"
 
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Settings tal-Aċċess"

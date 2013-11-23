@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Framerate conversion"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fixed"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Various artists"
@@ -3484,6 +3488,10 @@ msgstr "Settings - Profiles"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Reset"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
 
 msgctxt "#10040"
 msgid "Add-on browser"

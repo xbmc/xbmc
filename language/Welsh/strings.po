@@ -1185,6 +1185,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Trosi'r raddfa fframiau"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Sefydlog"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Artistiaid amrywiol"
@@ -1264,6 +1268,10 @@ msgstr "Lefel pylu arbedwr sgrin"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Trefnu: Ffeil"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Derbynnydd Dolby Digital (AC3) galluog"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -3385,6 +3393,22 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Ailosod"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Sylfaenol"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Safonnol"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Uwch"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Arbenigwr"
+
 msgctxt "#10043"
 msgid "Help"
 msgstr "Cymorth"
@@ -3392,6 +3416,10 @@ msgstr "Cymorth"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Dim cymorth ar gael"
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Dim categorïau ar gael"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -4725,6 +4753,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Eiliad"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Munud"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Munud"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Rheolwr Pell Apple"
@@ -5920,6 +5956,14 @@ msgstr "Rhowch enw i'r recordiad"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Rhybudd"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Gwasanaeth"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Darparwr"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -8737,6 +8781,10 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Cyfrif rhifyn gwyliwyd"
 
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Grwpio yn ôl"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Lleoliad isdeitlau"
@@ -9941,6 +9989,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "Sain MPEG-4 (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Sain Windows Media 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "Ffurfweddu Seinydd"
@@ -10000,6 +10056,26 @@ msgstr "Pob tro"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Byth"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"

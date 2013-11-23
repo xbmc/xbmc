@@ -949,6 +949,10 @@ msgctxt "#335"
 msgid "Start"
 msgstr "စမည်"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "အမြန်"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "အမျိုးမျိုးသော အနုပညာရှင် "
@@ -2405,6 +2409,10 @@ msgctxt "#10029"
 msgid "Login screen"
 msgstr "ဝင်ရောက်သည့်စခရင်"
 
+msgctxt "#10037"
+msgid "Standard"
+msgstr "စံ"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Lock settings"
@@ -2945,6 +2953,10 @@ msgctxt "#13336"
 msgid "Remove button"
 msgstr "ခလုတ်ကိုဖယ်မည်"
 
+msgctxt "#13340"
+msgid "Leave as is"
+msgstr "စံ"
+
 msgctxt "#13341"
 msgid "Green"
 msgstr "အစိမ်းရောင်"
@@ -3000,6 +3012,10 @@ msgstr "ကိရိယာဖွင့်ထားမည်"
 msgctxt "#13376"
 msgid "Volume"
 msgstr "အသံ"
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "စံ"
 
 msgctxt "#13393"
 msgid "Calculate size"

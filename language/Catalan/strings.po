@@ -1189,6 +1189,18 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversió de les imatges per segon"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Configuració de sortida"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fixed"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimitzat"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Diversos artistes"
@@ -1492,6 +1504,10 @@ msgstr "Mín"
 msgctxt "#419"
 msgid "High"
 msgstr "Màx"
+
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Millor coincidència"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -2921,6 +2937,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Complements de programes"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Establir la miniatura del connector"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Configuració del complement"
@@ -3485,9 +3505,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Reinicialitza"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Bàsic"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Estàndard"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Avançat"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Expert"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Cercador de complements"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Restableix els ajustos anteriors als per defecte"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3500,6 +3540,18 @@ msgstr "Ajuda"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "No hi ha ajuda disponible"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Restableix tots els canvis visibles als seus valors per defecte."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "No hi ha categories disponibles"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Prova de canviar el nivell d'ajust per veure categories i valors addicionals."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3837,6 +3889,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "S'ha excedit el límit d'intents."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Ara s'aturarà el sistema."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Element bloquejat"
@@ -4137,6 +4193,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Voleu desar la resolució?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Voleu mantenir aquest canvi?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Reescalat d'alta qualitat"
@@ -4180,6 +4240,10 @@ msgstr "Nivell d'escalat de VDPAU HQ"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "VDPAU Studio level color conversion"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Mantenir la pell?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4985,6 +5049,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Segons"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Minut"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minuts"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Apple remote"
@@ -5669,6 +5741,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Edita el títol"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Gestió..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Edita l'ordre de títols"
@@ -6212,6 +6288,18 @@ msgstr "Introduïu el nom de l'enregistrament "
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Advertència"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Servei"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Mux"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Proveïdor"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -9145,6 +9233,10 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s a %s"
 
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Extern)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Nom del fitxer"
@@ -9833,6 +9925,10 @@ msgctxt "#24048"
 msgid "Rollback"
 msgstr "Rollback"
 
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Incompatible"
+
 msgctxt "#24050"
 msgid "Available Add-ons"
 msgstr "Complements disponibles"
@@ -9937,6 +10033,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Bloqueja l'Administrador de Complements"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "No es pot desactivar aquest complement"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(actual)"
@@ -9972,6 +10072,38 @@ msgstr "No s'ha pogut carregar la pell"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "La pell manca d'alguns fitxers"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Cercant subtítols ..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d subtítols trobats"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "No s'han trobat subtítols"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Baixant subtítols ..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Baixar els subtítols per als idiomes"
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "No s'han pogut descarregar els subtítols"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "No hi ha serveis de subtítols instal·lats"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Desa els subtítols a la carpeta de la pel·lícula"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10076,6 +10208,10 @@ msgstr "Pregunta si es vol baixar el vídeo abans de reproduir-lo"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Reinicialitza el plugin per habilitar-ho"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10413,6 +10549,26 @@ msgctxt "#34123"
 msgid "Never"
 msgstr "Mai"
 
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "No s'ha pogut trobar el següent element a reproduir"
@@ -10524,6 +10680,10 @@ msgstr "Activa el suport de manaments de joc"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Desactivar el joystick quan aquest dispositiu estigui present"
+
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Habilitar tecles de sistema en pantalla completa"
 
 msgctxt "#35500"
 msgid "Location"

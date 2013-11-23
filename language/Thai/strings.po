@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "แปลง เฟรมเรต"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "คงที่"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "ศิลปิน"
@@ -3484,6 +3488,10 @@ msgstr "การตั้งค่า - ข้อมูลส่วนตัว
 msgctxt "#10035"
 msgid "Reset"
 msgstr "คืนค่า"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "มาตรฐาน"
 
 msgctxt "#10040"
 msgid "Add-on browser"

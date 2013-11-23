@@ -1169,6 +1169,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversie rată de cadre"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fixă"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Artiști diferiți"
@@ -3320,6 +3324,10 @@ msgstr "Ecran de autentificare"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Setări - Profile"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
 
 msgctxt "#10131"
 msgid "Lock settings"

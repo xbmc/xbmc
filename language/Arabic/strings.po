@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "تحويل فراميرات"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "صالح"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "فنانين مختلفين"
@@ -3260,6 +3264,10 @@ msgstr "شاشة الدخول"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "إعدادات ملف المستخدم -"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "قياسي"
 
 msgctxt "#10131"
 msgid "Lock settings"

@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Kaadrisageduse konverteerimine"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fikseeritud"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Erinevad artistid"
@@ -3420,6 +3424,10 @@ msgstr "Seaded - Profiilid"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Lähtesta"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Normaalne"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

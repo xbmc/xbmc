@@ -1161,6 +1161,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Raamtempo omskakeling"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Vaste"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Verskeie kunstenaars"
@@ -3312,6 +3316,10 @@ msgstr "Inteken skerm"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Verstellings - Profiele"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standaard"
 
 msgctxt "#10131"
 msgid "Lock settings"

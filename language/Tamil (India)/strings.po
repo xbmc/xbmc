@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "சட்டவிகிதம் மாற்றுதல்"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "சரிசெய்யபட்டது"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "பல்வேறு கலைஞர்கள்"
@@ -3436,6 +3440,10 @@ msgstr "அமைப்புக்கள் - சுயவிவரம்"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "மீட்டமை"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "நிலையான"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

@@ -1189,6 +1189,18 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversion du taux de rafraîchissement"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Configuration de la sortie"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fixe"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimisé"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Artistes divers"
@@ -1213,9 +1225,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Année"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normalise le volume lors du démultiplexage"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "récepteur compatible DTS-HD"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Activer le passthrough"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1493,6 +1513,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "Max."
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Meilleure correspondance"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Garde le périphérique audio actif"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Supprimer les informations pour l'album"
@@ -1636,6 +1664,10 @@ msgstr "Mode"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Changer de vue"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Limiter le taux d'échantillonnage (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2921,6 +2953,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Extensions programme"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Choisir une vignette plug-in"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Paramètres de l'extension"
@@ -3485,9 +3521,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Réinitialiser"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Basique"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Avancé"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Expert"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Extension navigateur"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Réinitialiser toutes les préférences ci-dessus aux valeurs par défaut"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3500,6 +3556,18 @@ msgstr "Aide"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Pas d'aide disponible"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Réinitialiser toutes les préférences visibles aux valeurs par défaut."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Aucune catégorie disponible"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Essayez de changer le niveau de paramètres pour voir d'autres catégories et paramètres."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3837,6 +3905,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Dépassement du nombre d'essais autorisés."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Le système va maintenant s'éteindre."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Sécurisé"
@@ -4137,6 +4209,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Appliquer cette résolution ?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Voulez-vous conserver ce changement ?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Conversion en définition supérieure Haute Qualité"
@@ -4180,6 +4256,10 @@ msgstr "VDPAU niveau Upscaling HQ"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "Conversion des niveaux de couleurs VDPAU"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Garder le thème ?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4901,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Autoriser l'accélération matérielle (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Frame Multi Threaded Decoding (less reliable)"
+msgstr "Décodage vidéo multi thread (moins fiable)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Méthode de synchro. A/V"
@@ -4984,6 +5068,14 @@ msgstr "%.1f Seconde"
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Secondes"
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Minute"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minutes"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -5669,6 +5761,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Éditer le titre"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Gérer..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Editer le tri sur le titre"
@@ -6213,6 +6309,14 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Attention"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Service"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Fournisseur"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Changer de chaîne SVP"
@@ -6661,6 +6765,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "Guide des Programmes"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Impossible d'activer une extension d'Enregistreur Vidéo. Vérifiez le journal pour plus de détails."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Enregistrement annulé"
@@ -6701,6 +6809,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Afficher à la mise à jour de la minuterie"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Utiliser les N° de chaînes du serveur (seulement si 1 extension PVR active)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "Démarrage du gestionnaire d'Enregistreur Vidéo"
@@ -6721,9 +6833,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Démarrage des services d'arrière-plan"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Pas d'extension d'Enregistreur Vidéo activée"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Le gestionnaire d'Enregistreur Vidéo a été activé sans"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "qu'une extension d'enregistrement ne le soit. Activez-en au moins une "
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6837,9 +6957,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Tous les enregistrements"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Aucune extension d'Enregistreur Vidéo trouvée"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Vous avez besoin d'un tuner, d'un logiciel applicatif et d'une"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "extension de traitement pour utiliser l'Enregistreur Vidéo."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9145,6 +9273,18 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s à %s"
 
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "Préférer les sous-titres externes"
+
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "Préférer les sous-titres externes aux sous-titres internes"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Externe)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Nom du fichier"
@@ -9825,13 +9965,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Mises à jour disponibles"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Dépendances non satisfaites. Merci de contacter l'auteur de l'extension."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Structure de l'extension incorrecte"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s est utilisé par l'(es) extension(s) suivante(s)"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Cette extension ne peut être désinstallée"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Annulation de la transaction"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Incompatible"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9937,6 +10093,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Verrouiller le gestionnaire d'extension"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Cette extension ne peut être désactivée"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(actuel)"
@@ -9944,6 +10104,10 @@ msgstr "(actuel)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(sur liste noire)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Le dépôt indique que cette extension est incompatible ou inutilisable."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9972,6 +10136,54 @@ msgstr "Impossible d'activer le thème"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Le thème est incomplet"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "L'extension est incompatible à cause de dépendances non satisfaites."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pause lors de la recherche de sous-titres"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "S'ils ne sont pas enregistrés dans le répertoire des sous-titres du film, ils seront téléchargés dans un répertoire de sous-titres personnalisé"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Recherche de sous-titres..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d sous-titres trouvés"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Aucuns sous-titres trouvés"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Téléchargement des sous-titres ..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Langues pour les sous-titres à télécharger"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "définir les langues à utiliser lors de la recherche de sous-titres. Tous les services de sous-titres n'utilisent pas toutes les langues."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Échec lors du téléchargement des sous-titres"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Aucun service de sous-titres installé"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Sauvegarder les sous-titres dans le répertoire du film"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10076,6 +10288,10 @@ msgstr "Confirmer le téléchargement avant de jouer la vidéo"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Relancer l'extension pour activer"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10397,6 +10613,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Choisir le comportement quand aucun son n'est requis aussi bien pour la lecture que pour la navigation. [Toujours] - un signal inaudible continue est émis afin de garder le périphérique audio actif, cependant cela peut bloquer les sons des autres applications. [1-10 Minutes] - Identique à Toujours excepté qu'après la fin de la période sélectionnée, le périphérique audio entrera en veille. [Off] - le périphérique audio entrera en veille. Note - des sons peuvent être manqués si le périphérique entre en veille."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Navigation sonore"
@@ -10412,6 +10632,26 @@ msgstr "Toujours"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Jamais"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -10524,6 +10764,10 @@ msgstr "Activer le support du joystick et du gamepad"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Désactiver le joystick quand ce dispositif est connecté"
+
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Activer les touches systèmes en plein écran"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10977,6 +11221,10 @@ msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr "Ajustement maximal de la vitesse d'affichage vidéo pour correspondre au taux de rafraîchissement de l'écran."
 
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Sélectionner la qualité du ré-échantillonnage dans le cas ou la sortie audio a besoin d'être à un taux différent de celui de la source. [Bas] est rapide et minimisera l'impact sur des ressources systèmes comme la CPU, [Moyen] & [Haut] vont utiliser progressivement plus de ressources système."
+
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
 msgstr "Permettre au lecteur vidéo d'ignorer l'aspect ratio à partir d'un certain point afin de remplir une plus grande partie de l'écran avec la vidéo."
@@ -11109,6 +11357,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Activer les fonctionnalités de magnétoscope numérique (PVR) dans XBMC. Cela nécessite au moins une extension compatible installée."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importer les groupes de chaînes depuis le programme de magnétoscope numérique (si supporté). Les groupes créés par les utilisateurs seront supprimés si ils ne sont pas trouvés dans l'import."
@@ -11209,6 +11461,10 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Afficher la dernière chaîne visionnée en sélectionnant TV en direct."
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Afficher la qualité du signal dans la fenêtre des informations codecs (si supporté par l'extension et le serveur)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
@@ -11228,6 +11484,22 @@ msgstr "Pas d'information actuellement disponible."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Durée de l'enregistrement en pressant le bouton Enregistrer, ou en créant un enregistrement manuel. Par défaut 180 minutes."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Priorité de l'enregistrement. Plus le nombre est grand, plus la priorité est haute. Par défaut 50. Pas supporté par tous les extensions et tous les serveurs."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Supprimer les enregistrements après le délai. Par défaut 99 jours. Pas supporté par tous les extensions et tous les serveurs."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Démarrer l'enregistrement avant l'heure programmée. Par défaut 2 minutes. Pas supporté par tous les extensions et tous les serveurs."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Terminer l'enregistrement après l'heure programmée. Par défaut 10 minutes. Pas supporté par tous les extensions et tous les serveurs."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11717,9 +11989,21 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Pas d'information actuellement disponible."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Sélectionner commet les propriétés de la sortie audio seront positionnées : [Fixe] - les propriétés de sortie sont positionnées pour le taux d'échantillonnage spécifié et les configuration des enceintes une fois pour toute ; [Meilleure correspondance] - les propriétés de sortie sont positionnées pour être toujours le plus proche possible de la source ; [Optimisé] - les propriétés de sortie sont positionnées au début de la lecture et ne changeront pas si les propriétés de la source changent."
+
+msgctxt "#36362"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded."
+msgstr "Sélectionner le nombre maximum de canaux audio/haut-parleurs disponibles pour le décodage audio."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Amplifier les flux AC3 qui ont été réduit à 2 voies."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgstr "Sélectionner pour activer le surmixage des sources stéréo à 2 voies au nombre de voies audio spécifiées par la configuration des haut-parleurs."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11729,6 +12013,14 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Sélectionner cette option si votre récepteur est capable de décoder les flux DTS."
 
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Sélectionner le nombre maximum de canaux audio/haut-parleurs disponibles pour le décodage audio. Si des sorties optiques/coaxiales sont utilisés, ce nombre doit être défini à 2.0"
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Sélectionner pour activer les options audio de passthrough pour la lecture de pistes audio encodées comme le Dolby Digital."
+
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "Sélectionner cette option si votre récepteur est capable de décoder les flux TrueHD."
@@ -11736,6 +12028,14 @@ msgstr "Sélectionner cette option si votre récepteur est capable de décoder l
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Sélectionner cette option si votre récepteur est capable de décoder les flux DTS-HD."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
+msgstr "Sélectionner le périphérique à utiliser pour la lecture des fichiers audio décodés tels que mp3"
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Sélectionner le périphérique à utiliser pour la lecture des format encodés, qui peuvent être n'importe lequel des formats ci-dessous dans les options 'capacité du récepteur'."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11937,6 +12237,10 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Activer le décodage vidéo matériel en utilisant le décodeur AMLogic"
 
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr "Utilise le décodage vidéo multi thread de ffmpeg quand le décodage matériel ne marche pas ou est désactivé. (moins fiable que le mode par défaut mono thread)"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Mode stéréoscopique (actuel)"
@@ -11989,6 +12293,10 @@ msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Utiliser le mode préféré"
 
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
+msgstr "Taux d'échantillonnage maxi pour SPDIF ou taux d'échantillonnage pour la configuration sortie fixe"
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "Mode préféré"
@@ -12024,6 +12332,10 @@ msgstr "Choisir le mode alternatif..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Comme le film"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Choisir comment l'audio est ré-échantillonné (downmix), par exemple pour passer de 5.1 à 2.0 : [Activé] maintient l'étendue dynamique de la source audio originale mais le volume sera moins élevé. [Désactivé] maintient le volume de la source audio originale mais l'étendue dynamique est compressée. Note - l'étendue dynamique est la différence entre le son le plus faible et le plus fort dans une source audio."
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
@@ -12108,3 +12420,7 @@ msgstr "Double sortie audio"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Augmenter la voie centrale lors du remixage"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr "Active les touches systèmes comme impression alt-tab ou les touches de volume lors du plein écran"

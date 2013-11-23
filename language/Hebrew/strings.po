@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "המרת קצב פריימים"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "מקובע"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "אמנים שונים"
@@ -3436,6 +3440,10 @@ msgstr "הגדרות - פרופילים"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "איפוס"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "סטנדרטי"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

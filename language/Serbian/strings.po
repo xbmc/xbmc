@@ -3101,6 +3101,10 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Postavke - Profili"
 
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Uobičajeno"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Zaključaj postavke"

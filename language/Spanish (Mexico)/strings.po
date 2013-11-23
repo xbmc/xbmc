@@ -1185,6 +1185,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversión de imágenes por segundo"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fijo"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Varios Intérpretes"
@@ -3456,6 +3460,10 @@ msgstr "Configuración - Perfiles"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Resetear"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Estándar"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

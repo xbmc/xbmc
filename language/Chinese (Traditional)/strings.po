@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "調整畫面頻率"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "固定"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "多位演出者"
@@ -3432,6 +3436,10 @@ msgstr "設定 - 使用者設定檔"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "重置"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "標準"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

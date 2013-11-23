@@ -1161,6 +1161,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Fotograma-tasa bihurketa"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Konpondua"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Hainbat artista"
@@ -3284,6 +3288,10 @@ msgstr "Login pantaila"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Ezarpenak - Profilak"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Estandarra"
 
 msgctxt "#10043"
 msgid "Help"

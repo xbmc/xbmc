@@ -1189,6 +1189,18 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Pretvorba sličica"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Izlazno podešavanje"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fiksni"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimizirano"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Srodni izvođači"
@@ -1213,9 +1225,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Godina"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normalizacija razina pri spajanju kanala"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD kompatibilan prijamnik"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Omogući izlazni uređaj"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1493,6 +1513,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "Maks"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Najbolje odgovarajuće"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Drži zvučni uređaj aktivnim"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Obriši informacije albuma"
@@ -1636,6 +1664,10 @@ msgstr "Način"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Promjeni prikaz"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Ograničenje frekvencije (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2187,7 +2219,7 @@ msgstr "Upiši broj"
 
 msgctxt "#612"
 msgid "Bits/sample"
-msgstr "Bitovi/Uzorak"
+msgstr "Bitovi/uzorak"
 
 msgctxt "#613"
 msgid "Sample rate"
@@ -2921,6 +2953,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Programski dodaci"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Postavi minijaturu dodatka"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Postavke dodatka"
@@ -3485,9 +3521,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Vrati na početno"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Osnovna"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standardno"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Napredna"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Stručna"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Preglednik dodataka"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Vrati postavke iznad na uobičajeno"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3500,6 +3556,18 @@ msgstr "Pomoć"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Pomoć nije dostupna"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Vrati sve vidljive postavke na njihove uobičajene vrijednosti."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Nema dostupnih kategorija"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Pokušajte promijeniti razinu postavki da bi vidjeli dodatne kategorije i postavke."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3837,6 +3905,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Broj unosa lozinke je promašen."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Sustav će se sada isključiti."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Stavka zaključana"
@@ -4137,6 +4209,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Spremi razlučivost?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Želite li zadržati ovu promjenu?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Visoko kvalitetan upscale"
@@ -4180,6 +4256,10 @@ msgstr "VDPAU HQ Upscaling razina"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "VDPAU Studijska razina pretvorbe boje"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Zadrži presvlaku?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4901,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Dopusti hardversko ubrzanje (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Frame Multi Threaded Decoding (less reliable)"
+msgstr "Višenizno dekôdiranje sličica (manje pouzdano)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Način usklađivanja Zvuka/Slike"
@@ -4984,6 +5068,14 @@ msgstr "%.1f sekunda"
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f sekundi"
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d minuta"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d minuta"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -5669,6 +5761,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Uredi naslov"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Upravljanje..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Uredi naslov poredka"
@@ -6213,6 +6309,18 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Upozorenje"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Usluga"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Mux"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Pružatelj usluge"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Molimo prebacite na drugi program."
@@ -6661,6 +6769,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Nijedan PVR dodatak ne može biti omogućen. Provjerite postavke ili zapis za više informacija."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Snimanje prekinuto"
@@ -6701,6 +6813,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Prikaži obavijest pri ažuriranju zakazanih snimanja"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Koristi brojeve TV programa sa pozadinskog softvera (radi samo sa 1 omogućenim PVR dodatkom)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "Pokreće se PVR upravitelj"
@@ -6721,9 +6837,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Pokrećem radnje u pozadini"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Nema omogućenih PVR dodataka"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR upravitelj je omogućen bez ijednog"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "omogućenog PVR dodatka. Omogućite bar jedan dodatak"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6837,9 +6961,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Sva snimanja"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "PVR dodaci se ne mogu pronaći"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Potreban vam je prijemnik, pozadinski softver, i"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "Dodatak za pozadinski softver da bi mogli koristiti PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9145,6 +9277,18 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s u %s"
 
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "Preferiraj vanjske podnaslove"
+
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "Preferiraj vanjske podnaslove umjesto lokalnih"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Vanjski)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Naziv datoteke"
@@ -9825,13 +9969,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Dostupna ažuriranja"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Međuzavisnosti nisu ispunjene. Kontaktirajte autora dodatka."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Dodatak nema ispravnu strukturu"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s koristi sljedeće instalirane dodatke"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Ovaj dodatak se ne može ukloniti"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Vrati na staro"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Nekompatiblno"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9937,6 +10097,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Zaključaj Upravitelja dodatka"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Ovaj dodatak se ne može onemogućiti"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(trenutni)"
@@ -9944,6 +10108,10 @@ msgstr "(trenutni)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(crni-popis)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Dodatak je nekompatibilan ili je označen kao pokvaren u repozitoriju."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9972,6 +10140,54 @@ msgstr "Nemoguće učitavanje presvlake"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Presvlaci nedostaju neke datoteke"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Dodatak je nekompatibilan uslijed nezadovoljenih međuzavisnosti."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pauziraj prilikom pretraživanja podnaslova"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "Ako nisu spremljeni u mapu filma podnaslovi će biti preuzeti u prilagođenu mapu podnaslova"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Pretraživanje podnslova..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d podnaslova pronađeno"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Nema pronađenih podnaslova"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Preuzmanje podnaslova..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Jezik preuzimanja podnaslova"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Postavite jezik koji će se koristiti prilikom pretraživanja podnaslova. Svi izvori podnaslova neće koristiti sve jezike."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Neuspjelo preuzimanje podnaslova"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Nema instaliranih izvora podnaslova"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Spremi podnaslov u mapu filma"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10011,7 +10227,7 @@ msgstr "QWERTY tipkovnica"
 
 msgctxt "#29802"
 msgid "Passthrough Audio in use"
-msgstr "Korist se Audio Passthrough"
+msgstr "Zvučni izlazni uređaj se korist"
 
 msgctxt "#33001"
 msgid "Trailer quality"
@@ -10076,6 +10292,10 @@ msgstr "Pitaj za preuzimanje prije reprodukcije videa"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Isječci"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Ponovno pokreni dodatak za omogućavanje"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10397,6 +10617,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Odaberite ponašanje kada zvuk nije potreban, za reprodukciju ili za zvukove grafičkog sučelja (GUI). [Uvijek] - neprekidan zvučni signal na izlazu, ovo drži izlazni zvučni uređaj aktivnim za svaki novi zvuk, isto tako ovo može blokirati zvučni uređaj ostalim aplikacijama. [1- 10 minuta] - isto kao i 'Uvijek' osim što nakon odabranog vremenskog razdoblja zvuk ulazi u stanje suspenzije [Isključeno] - izlazni zvuk ulazi u stanje suspenzije. Napomena - zvukovi mogu biti nedostupni ako zvuk uđe u stanje suspenzije."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Reproduciraj GUI zvukove"
@@ -10412,6 +10636,26 @@ msgstr "Uvijek"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Nikada"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -10524,6 +10768,10 @@ msgstr "Omogući podršku za joystick i gamepad kontrolere"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Onemogući joystick dok je ovaj uređaj prisutan"
+
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Omogući tipke sustava u cjelozaslonskom prikazu"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10977,6 +11225,10 @@ msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr "Najveća brzina video prilagođavanja za poklapanje s trenutnom brzinom osvježavanja zaslona."
 
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Odaberite kavalitetu ponovnog uzrokovanja za slučajeve gdje zvučni izlaz treba biti drugačijeg uzorka od onog kojeg koristi izvor. [Manje] je brže i imati će minimalan utjecaj na resurse sustava poput opterećenja CPU-a, [Srednje] i [Visoko] koristiti će postupno više resursa sustava."
+
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
 msgstr "Dopusti video raproduktoru zanemarivanje određenog omjera slike za popunjavanje veće površine zaslona s videom."
@@ -11109,6 +11361,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Informacije još nisu dostupne."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Omogući značajku Osobnog Video Snimača (PVR) u XBMC-u. To zahtijeva bar jedan instalirani PVR dodatak."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Uvezi grupu programa iz PVR pozadinskog softvera (ako je podržano). To će obristi grupe koje je napravio korisnik ako nisu pronađene na pozadinskom softveru."
@@ -11209,6 +11465,10 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Prikaži posljednji gledani program ako pokrećete televiziju."
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Prikaži informacije kvalitete signala u prozoru informacija kôdeka (ako je podržano dodatkom pozadinskog softvera)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Informacije još nisu dostupne."
@@ -11228,6 +11488,22 @@ msgstr "Informacije još nisu dostupne."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Trajanje snimanja kada je snimanje pokrenuto tipkom snimanja, ili kada ručno zakazujete novo zakazano snimanje. Zadano je 180 minuta."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Prioritet snimanja. Veći broj znači veći prioritet. Zadani broj je 50. Nije podržano na svim dodacima i pozadinskim softverima."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Obriši snimanja nakon ovoliko vremena. Zadano je 99 dana. Nije podržano na svim dodacima i pozadinskim softverima."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Pokreni snimanja prije zadanog vremena. Zadane su 2 minute. Nije podržano na svim dodacima i pozadinskim softverima."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Zaustavi snimanja nakon zadanog vremena. Zadano je 10 minuta. Nije podržano na svim dodacima i pozadinskim softverima."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11717,9 +11993,21 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Informacije još nisu dostupne."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Odaberite kako su svojstva zvučnog izlaza postavljena: [Nepromjenjivo] - izlazna svojstva su postavljena na određeno uzrokovanje i podešavanja zvučnika svo vrijeme; [Najbolje odgovarajuće] - izlazna svojstva su postavljena da se uvijek što bliže podudraju svojstivima izvora koliko je to moguće; [Optimizirano] - izlazna svojstva su postavljena na početku reprodukcije i neće se promijeniti ako se svojstva izvora promijene."
+
+msgctxt "#36362"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded."
+msgstr "Odaberite maksimalan broj zvučnih kanala/zvučnika dostupnih za zvučno dekôdiranje."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Pojačaj AC3 streamove koji su pretvoreni u 2 kanala."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgstr "Odaberite za omogućavanje razdvajanja 2-kanalnog stereo izvora u broj zvučnih kanala određenih zvučnim podešavanjima."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11729,6 +12017,14 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Odaberite ovu mogućnost ako je vaš prijemnik sposoban dekôdirati DTS zvučne zapise."
 
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Odaberite maksimalan broj zvučnih kanala/zvučnika dostupnih za zvučno dekôdiranje. Ako se optički/digitalani izlazi koriste, to mora biti postavljeno na 2.0. "
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Odaberite za omogućavanje izlazne zvučne mogućnosti za reprodukciju enkôdiranog zvuka poput Dolby Digitala."
+
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "Odaberite ovu mogućnost ako je vaš prijemnik sposoban dekôdirati TrueHD zvučne zapise."
@@ -11736,6 +12032,14 @@ msgstr "Odaberite ovu mogućnost ako je vaš prijemnik sposoban dekôdirati True
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Odaberite ovu mogućnost ako je vaš prijemnik sposoban dekôdirati DTS-HD zvučne zapise."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
+msgstr "Odaberite uređaj koji će se koristiti za reprodukciju pjesama, dekôdiranih poput mp3 i FLAC-a."
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Odaberite uređaj koji će se koristiti za reprodukciju enkôdiranih formata, to su bilo koji formati odabrani ispod u 'kompatibilan prijemnik' mogućnosti."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11937,6 +12241,10 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Omogući hardversko dekôdiranje video datoteka koristeći AMLogic dekôder."
 
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr "Koristi ffmpeg višenizno dekôdiranje sličica kada hardversko dekôdiranje ne radi ili je onemogućeno. (manje pouzdano nego zadani jednonizni način)"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Stereoskopski način (trenutno)"
@@ -11989,6 +12297,10 @@ msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Koristi željeni način"
 
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
+msgstr "Maksimalna brzina uzorkovanja za SPDIF ili brzina uzorkovanje za nepromjenjivo izlazno podešavanje"
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "Željeni način"
@@ -12024,6 +12336,10 @@ msgstr "Odaberi alternativan način..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Isti kao film"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Odaberite kako je zvuk spojen, npr. iz 5.1 u 2.0: [Omogućeno] održava dinamički raspon izvornog zvučnog izvora kada je spojen, ipak glasnoća zvuka će biti tiša; [Onemogućeno] održava razinu glasnoće zvuka izvornog zvučnog izvora, ipak dinamički raspon je kompresiran. Napomena - Dinamički raspon je razlika između najtišeg i najglasnijeg zvuka u zvučnom izvoru."
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
@@ -12108,3 +12424,7 @@ msgstr "Dvostruki zvučni izlaz"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Pojačaj središnji kanal pri spajanju kanala zvuka"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr "Omogućava tipke sustava poput 'Print Screen', 'Alt-Tab' i tipke glasnoće zvuka u cjelozaslonskom prikazu"

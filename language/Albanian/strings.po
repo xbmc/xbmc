@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Shëndërrimi i framerate-ve"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "fiksuar"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Artistë të ndryshëm"
@@ -3396,6 +3400,10 @@ msgstr "Ekrani i hyrjes"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Cilësimet - Profile"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standardi"
 
 msgctxt "#10131"
 msgid "Lock settings"

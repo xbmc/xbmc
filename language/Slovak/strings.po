@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Konverzia snímkovania"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Pevné"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Rôzny interpreti"
@@ -3484,6 +3488,10 @@ msgstr "Nastavenia - Profily"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Obnoviť"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Štandardný"
 
 msgctxt "#10040"
 msgid "Add-on browser"

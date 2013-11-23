@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Bildrate konvertieren"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fixiert"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Verschiedene Interpreten"
@@ -1636,6 +1640,10 @@ msgstr "Modus"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Ansicht ändern"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Beschränke Samplingrate (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -3484,6 +3492,10 @@ msgstr "Einstellungen->Profile"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Zurücksetzen"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
 
 msgctxt "#10040"
 msgid "Add-on browser"

@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "フレームレートの調整"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fixed"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "VA/オムニバス"
@@ -3416,6 +3420,10 @@ msgstr "設定 - プロファイル"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "リセット"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "標準"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

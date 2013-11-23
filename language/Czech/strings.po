@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Převod rychlosti snímků"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Pevné"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Různí umělci"
@@ -3388,6 +3392,10 @@ msgstr "Nastavení - Profily"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Obnovit"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standardní"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

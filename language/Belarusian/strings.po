@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Канвэртаваньне часьціні кадраў"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Фіксаванае"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Розныя выканаўцы"
@@ -3436,6 +3440,10 @@ msgstr "Настройка - Профілі"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Reset"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversión da taxa de cadros"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fixa"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Varios artistas"
@@ -3476,6 +3480,10 @@ msgstr "Configuracións - Perfís"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Restabelecer"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Normal"
 
 msgctxt "#10040"
 msgid "Add-on browser"

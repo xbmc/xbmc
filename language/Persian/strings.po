@@ -453,6 +453,10 @@ msgctxt "#400"
 msgid "Weather"
 msgstr "آب و هوا"
 
+msgctxt "#409"
+msgid "Defaults"
+msgstr "استاندارد"
+
 msgctxt "#444"
 msgid "Video"
 msgstr "ویدئو"
@@ -709,6 +713,10 @@ msgctxt "#10025"
 msgid "Videos"
 msgstr "ویدئوها"
 
+msgctxt "#10037"
+msgid "Standard"
+msgstr "استاندارد"
+
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "علاقه‌مندی‌ها"
@@ -773,9 +781,17 @@ msgctxt "#13280"
 msgid "Video"
 msgstr "ویدئو"
 
+msgctxt "#13340"
+msgid "Leave as is"
+msgstr "استاندارد"
+
 msgctxt "#13350"
 msgid "Now playing..."
 msgstr "در حال پخش..."
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "استاندارد"
 
 msgctxt "#13398"
 msgid "Shortcuts"

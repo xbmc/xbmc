@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Çerçeve hızı çeviricisi"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Sabit"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Çeşitli sanatçılar"
@@ -2921,6 +2925,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Program Eklentileri"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Eklenti küçük resmini ayarla"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Eklenti ayarları"
@@ -3484,6 +3492,22 @@ msgstr "Ayarlar - Profiller"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Sıfırla"
+
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Temel"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standart"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Gelişmiş"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Uzman"
 
 msgctxt "#10040"
 msgid "Add-on browser"
@@ -4981,6 +5005,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Saniye"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Dakika"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Dakika"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Apple kumanda"
@@ -5665,6 +5697,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Başlığı düzenle"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Yönet..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Sıralama başlığını düzenle"
@@ -6209,6 +6245,10 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Uyarı"
 
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Sağlayıcı"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Lütfen başka kanala geçiniz."
@@ -6657,6 +6697,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "PVR eklentisi etkin olmayabilir. Ayarlarınızı veya daha fazla bilgi için günlük dosyasını kontrol edin."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Kayıt durduruldu"
@@ -6697,6 +6741,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Zamanlayıcı güncellemelerinde bildirim göster"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Arka uç kanal numaralarını kullan (sadece 1 tane etkin PVR eklentisi ile çalışır)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "PVR yöneticisi başlatılıyor"
@@ -6716,6 +6764,10 @@ msgstr "İstemcilerden kayıtlar yükleniyor"
 msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Arka plan iş parçacıkları başlatılıyor"
+
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Hiçbir PVR eklentisi etkin değil"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
@@ -6832,6 +6884,10 @@ msgstr "'bağlantı kesildi' uyarılarını gösterme"
 msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Bütün kayıtlar"
+
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Hiçbir PVR eklentisi bulunamadı"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -9821,6 +9877,10 @@ msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Eklenti doğru bir yapıya sahip değil"
 
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Bu eklenti kaldırılamaz"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Geri alma"
@@ -9929,6 +9989,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Eklenti yöneticisini kilitle"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Bu eklenti devre dışı bırakılamaz"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(geçerli)"
@@ -9964,6 +10028,22 @@ msgstr "Dış görünüm yüklenemiyor"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Bazı dış görünüm dosyaları eksik"
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d altyazı bulundu"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Altyazı bulunamadı"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Altyazılar indiriliyor..."
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Altyazıları film klasörüne kaydet"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10068,6 +10148,10 @@ msgstr "Videoyu oynatmadan önce indirmek için sor"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Klipler"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Etkinleştirmek için eklentiyi yeniden başlat"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10404,6 +10488,26 @@ msgstr "Her zaman"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Hiçbir zaman"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"

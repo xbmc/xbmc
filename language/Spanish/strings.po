@@ -1189,6 +1189,18 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Conversión de imágenes por segundo"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Configuración de salida"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fijo"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimizado"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Varios intérpretes"
@@ -1212,6 +1224,10 @@ msgstr "Actores"
 msgctxt "#345"
 msgid "Year"
 msgstr "Año"
+
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normalizar los niveles al hacer un downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1493,6 +1509,10 @@ msgctxt "#419"
 msgid "High"
 msgstr "Alto"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Mejor coincidencia"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Eliminar información del álbum"
@@ -1636,6 +1656,10 @@ msgstr "Modo"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Cambiar vista"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Limitar frecuencia de muestreo (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2921,6 +2945,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Add-ons de aplicaciones"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Establecer miniatura de plugin"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Configuración del Add-on"
@@ -3485,6 +3513,22 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Reiniciar"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Básico"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Estándar"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Avanzado"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Experto"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Buscador de addons"
@@ -3500,6 +3544,14 @@ msgstr "Ayuda"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "No hay ayuda disponible"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Reiniciar los ajustes visibles a sus valores por defecto"
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "No hay categorías disponibles"
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3837,6 +3889,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Límite de intentos de contraseña excedidos."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "El equipo se apagará ahora."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Elemento bloqueado"
@@ -4137,6 +4193,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "¿Guardar resolución?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "¿Quiere mantener el cambio?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Reescalado de alta calidad"
@@ -4180,6 +4240,10 @@ msgstr "Nivel de escalado de VDPAU HQ"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "Conversión del nivel de color del estudio VDPAU"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "¿Mantener skin?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4985,6 +5049,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Segundos"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Minuto"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minutos"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Mando Apple"
@@ -5669,6 +5741,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Editar título"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Gestionar ..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Editar orden de título"
@@ -6213,6 +6289,14 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Advertencia"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Servicio"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Proveedor"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Por favor, cambie a otro canal."
@@ -6661,6 +6745,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "No se pudo activar ningún add-on PVR. Revise su configuración o consulte el log para más detalles."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Grabación abortada"
@@ -6701,6 +6789,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Mostrar una notificación en las actualizaciones de temporizadores"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Usar los números de canal del backend (sólo funciona cuando hay 1 addon PVR activo)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "El Gestor PVR se está iniciando"
@@ -6721,9 +6813,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Comenzando hilos en segundo plano "
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "No hay ningún add-on PVR activo"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "El gestor PVR se ha activado sin ningún"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "add-on PVR activado. Active al menos un add-on"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6837,9 +6937,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Todas las grabaciones"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "No se encontraron add-ons de PVR"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Para usar PVR necesitas una sintonizadora,"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "add-on para el backend para usar el PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9145,6 +9253,18 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s a %s"
 
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "Preferir subtítulos externos"
+
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "Preferir subtítulos externos a los internos"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Externo)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Nombre de archivo"
@@ -9825,13 +9945,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Actualizaciones disponibles"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "No se han encontrado las dependencias. Por favor, contacte con el autor del add-on"
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "El Add-on no tiene la estructura correcta"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s es usado por los siguientes add-ons instalados"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Este add-on no se puede desinstalar"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Volver una versión atrás"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Incompatible"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9937,6 +10073,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Bloquear el gestor de Add-ons"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Este Add-on no se puede desactivar"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(actual)"
@@ -9944,6 +10084,10 @@ msgstr "(actual)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(en la lista negra)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Add-on incompatible o marcado como roto en el repositorio."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9972,6 +10116,50 @@ msgstr "No se pudo cargar el skin"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "No se encuentran algunos archivos del skin"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Add-on incompatible debido a dependencias no encontradas."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pausar al buscar subtítulos"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "Si no se salvan al directorio de películas, los subtítulos se descargarán en el directorio de subtítulos personalizado"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Buscando subtítulos..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d subtítulos encontrados"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "No se encontraron subtítulos"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Descargando subtitulos..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Idiomas para los que descargar subtítulos"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Establecer idiomas a usar cuando se busquen subtítulos. No todos los servicios de subtítulos usarán todos los idiomas."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Fallo al descargar el subtítulo"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Guardar subtítulos al directorio de la película"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10076,6 +10264,10 @@ msgstr "Preguntar si deseamos descargar vídeo antes de reproducirlo"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Es necesario reiniciar el plugin"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10413,6 +10605,26 @@ msgctxt "#34123"
 msgid "Never"
 msgstr "Nunca"
 
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "No se ha podido encontrar el siguiente elemento a reproducir"
@@ -10524,6 +10736,10 @@ msgstr "Activar joystick y mando de juegos"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Deshabilitar joystick cuando el dispositivo esté presente"
+
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Habilitar teclas de sistema al estar a pantalla completa"
 
 msgctxt "#35500"
 msgid "Location"
@@ -11109,6 +11325,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Habilitar las funciones de grabadora de vídeo personal (PVR) en XBMC. Para ello es necesario que al menos un add-on PVR esté instalado."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importar grupos de canales de la fuente PVR (si lo soporta). Borrará grupos creados por el usuario si no coinciden con los proporcionados por la fuente PVR."
@@ -11209,6 +11429,10 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Mostrar el último canal visto cuando se vuelva a TV."
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Mostrar calidad de la señal en la pantalla de información del codec (si está soportado por en add-on y el sistema)"
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "No hay información disponible."
@@ -11228,6 +11452,22 @@ msgstr "No hay información disponible."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Duración de la grabación al presionar el botón para grabar, o cuando se crea un temporizador manual. Por defecto 180 minutos."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Prioridad de la grabación. Números altos significan mayor prioridad. El valor por defecto es 50. No soportado por todos los add-ons y backends."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Borrar grabación después de este tiempo. Por defecto 99 días. No soportado por todos los complementos y sistemas."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Comenzar las grabaciones antes de la hora establecida. Por defecto, 2 minutos. No soportado por todos los add-ons y fuentes PVR."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Finalizar las grabaciones depués de la hora establecida. Por defecto, 10 minutos. No soportado por todos los add-ons y backends."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11721,6 +11961,10 @@ msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Amplificar streams AC3 que han sido reducidos a 2 canales."
 
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgstr "Seleccionar para habilitar la mezcla de 2 canales estéreo para el número de canales especificados por la configuración del altavoz."
+
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
 msgstr "Selecciona esta opción si tu receptor puede decodificar streams AC3."
@@ -11728,6 +11972,10 @@ msgstr "Selecciona esta opción si tu receptor puede decodificar streams AC3."
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Selecciona esta opción si tu receptor puede decodificar streams DTS."
+
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Seleccionar el número máximo de canales de audio/altavoces disponibles para la decodificación de audio. Si se usan salidas ópticas/coaxial digital debe ser puesto a 2.0"
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
@@ -12108,3 +12356,7 @@ msgstr "Salida de audio dual"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Potenciar el canal central cuando se reduzca el número de canales"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr "Habilita las teclas del sistema como imprimir pantalla, alt-tabulador y teclas de volumen cuando se está a pantalla completa"

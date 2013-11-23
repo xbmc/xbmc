@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "帧率转换"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "固定"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "群星"
@@ -3484,6 +3488,10 @@ msgstr "设置 - 用户配置"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "重置"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "标准"
 
 msgctxt "#10040"
 msgid "Add-on browser"

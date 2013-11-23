@@ -1185,6 +1185,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Pretvorba hitrosti sličic"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fiksno"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Različni izvajalci"
@@ -3416,6 +3420,10 @@ msgstr "Nastavitve - Profili"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Ponastavi"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Običajno"
 
 msgctxt "#10043"
 msgid "Help"

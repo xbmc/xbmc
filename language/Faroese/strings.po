@@ -1069,6 +1069,10 @@ msgctxt "#335"
 msgid "Start"
 msgstr "Byrja"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Rætta"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Ymiskir tónleikarar"
@@ -2984,6 +2988,10 @@ msgstr "Login mynd"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Stillingar - Uppsetingar"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Vanligt"
 
 msgctxt "#10131"
 msgid "Lock settings"

@@ -1189,6 +1189,18 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "프레임레이트 변환"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "출력 설정"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "고정"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "최적"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "여러 아티스트"
@@ -1213,9 +1225,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "연도"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "다운믹스 노멀라이즈 레벨"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD 지원 리시버"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "패스스루 사용"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1493,6 +1513,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "최고"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "소스에 맞춤"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "오디오 장비 대기상태 방지"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "앨범 정보 삭제"
@@ -1637,6 +1665,10 @@ msgctxt "#457"
 msgid "Switch view"
 msgstr "보기 변경"
 
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "샘플레이트 제한 (kHz)"
+
 msgctxt "#459"
 msgid "Subs"
 msgstr "자막"
@@ -1691,7 +1723,7 @@ msgstr "모드칩"
 
 msgctxt "#474"
 msgid "Off"
-msgstr "끄기"
+msgstr "끔"
 
 msgctxt "#475"
 msgid "Music only"
@@ -2347,7 +2379,7 @@ msgstr "노래 정보"
 
 msgctxt "#659"
 msgid "Non-linear stretch"
-msgstr "비-선형 늘림"
+msgstr "비선형 늘림"
 
 msgctxt "#660"
 msgid "Volume amplification"
@@ -2699,11 +2731,11 @@ msgstr "다른 시스템의 프로그램이 XBMC를 제어하는 것을 허용"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
-msgstr "초기 반복 지연(밀리초)"
+msgstr "초기 반복 지연 (밀리초)"
 
 msgctxt "#796"
 msgid "Continuous repeat delay (ms)"
-msgstr "연속 반복 지연(밀리초)"
+msgstr "연속 반복 지연 (밀리초)"
 
 msgctxt "#797"
 msgid "Maximum number of clients"
@@ -3477,9 +3509,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "초기화"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "초급"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "표준"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "고급"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "전문가"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "추가기능 탐색기"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "위 설정을 기본값으로 초기화"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3492,6 +3544,18 @@ msgstr "도움말"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "도움말 없음"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "현재 보이는 설정을 모두 기본값으로 초기화합니다"
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "사용 가능한 카테고리 없음"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "더 많은 카테고리와 설정을 보려면 설정 수준을 변경하세요."
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3813,6 +3877,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "비밀번호 재시도 제한이 초과 되었습니다."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "시스템의 전원이 곧 꺼집니다."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "항목 잠김"
@@ -4109,6 +4177,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "해상도를 저장 하겠습니까?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "변경 사항을 유지하겠습니까?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "고품질 업스케일링"
@@ -4152,6 +4224,10 @@ msgstr "VDPAU HQ 업스케일링 수준"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "VDPAU 스튜디오 수준 색온도 변환"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "이 스킨을 사용하겠습니까?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4869,6 +4945,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "하드웨어 가속 허용 (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Frame Multi Threaded Decoding (less reliable)"
+msgstr "프레임 다중 쓰레드 디코딩 (낮은 신뢰도)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V 동기 방식"
@@ -4943,7 +5023,7 @@ msgstr "새로고침 빈도 변경시 일시정지"
 
 msgctxt "#13551"
 msgid "Off"
-msgstr "끄기"
+msgstr "끔"
 
 msgctxt "#13552"
 msgid "%.1f Second"
@@ -4952,6 +5032,14 @@ msgstr "%.1f 초"
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f 초"
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d 분"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d 분"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -5637,6 +5725,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "제목 수정"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "관리..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "정렬용 제목 수정"
@@ -6181,6 +6273,14 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "경고"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "서비스"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "제공자"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "다른 채널로 변경하세요"
@@ -6425,6 +6525,10 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "재생 시작시 시간 제한"
 
+msgctxt "#19171"
+msgid "Start playback minimised"
+msgstr "최소화 상태로 시작"
+
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "즉시 녹화 지속시간"
@@ -6492,6 +6596,10 @@ msgstr "EPG가 초기화됩니다"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "시작시 이전 채널 계속 재생"
+
+msgctxt "#19190"
+msgid "Minimised"
+msgstr "최소화"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6621,6 +6729,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "사용하는 PVR 추가기능이 없습니다. 설정이나 로그를 확인해보세요."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "녹화 취소됨"
@@ -6661,6 +6773,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "녹화 예약을 업데이트할 때 알림 표시"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "백엔드 채널 번호 사용 (하나의 PVR 애드온이 활성화되어 있을 때만 동작)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "PVR 매니저 시작하는 중"
@@ -6681,9 +6797,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "백그라운드 스레드 시작중"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "활성화된 PVR 애드온이 없습니다"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR 관리자가 활성화되었으나 PVR 추가기능은"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "활성화된 PVR 애드온. 하나 이상의 애드온을 활성화하세요."
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6797,9 +6921,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* 모든 녹화"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "PVR 애드온을 찾을 수 없습니다"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "튜너, 백엔드 소프트웨어와"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "PVR 사용을 위한 백엔드 애드온"
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9105,6 +9237,18 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s 에서 %s"
 
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "외부 자막 우선"
+
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "동영상 내부 자막보다 외부 자막을 우선 적용합니다."
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(외부자막)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "파일 이름"
@@ -9320,6 +9464,10 @@ msgstr "Original Tx Reference"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "제작일"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "긴급"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9781,13 +9929,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "사용가능한 업데이트"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "설치 조건을 충족하지 않습니다. 추가기능 제작자에게 문의하세요."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "추가기능의 구조가 바르지 않습니다"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s 을(를) 사용하는 추가기능"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "이 추가기능은 제거할 수 없습니다"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "되돌리기"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "호환 안됨"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9893,6 +10057,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "추가기능 관리자 잠금"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "이 추가기능은 비활성화 할 수 없습니다"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(현재)"
@@ -9900,6 +10068,10 @@ msgstr "(현재)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(차단됨)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "추가기능이 호환되지 않거나 저장소에 깨진 것으로 표시되어 있습니다."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9928,6 +10100,54 @@ msgstr "스킨을 불러올 수 없습니다"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "스킨에 일부 파일이 없습니다"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "추가기능이 설치 조건을 충족하지 않아 호환되지 않습니다."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "자막을 찾을 때 일시정지"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "자막을 영화 폴더에 저장하지 않으면 사용자 설정 자막 폴더로 다운로드합니다"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "자막 찾는 중..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d개의 자막 찾음"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "자막 찾을 수 없음"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "자막 다운로드 중..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "다운로드할 자막 언어"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "자막을 찾을 때 사용할 언어를 설정합니다. 자막 서비스가 모든 언어를 지원하는 것은 아닙니다."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "자막 다운로드 실패"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "설치된 자막 서비스 없음"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "자막을 영화 폴더에 저장"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10032,6 +10252,10 @@ msgstr "비디오 재생전에 다운로드 묻기"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "클립"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "활성화하려면 플러그인을 다시 시작하세요"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10353,6 +10577,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "재생 또는 GUI 음향이 필요하지 않을 때의 동작을 선택합니다. [항상] - 들리지 않는 음향 신호를 지속적으로 출력하여 오디오 장비가 대기 상태로 진입하지 않고 신호를 받게 해 주지만 다른 애플리케이션의 사운드도 막을 수 있습니다. [1- 10분] - '항상'과 같지만 선택한 시간이 지나면 오디오가 유휴 상태로 들어갑니다. [끔] - 오디오 출력이 유휴 상태로 들어갑니다. 주의 - 오디오가 대기 상태로 들어가면 일부 사운드가 들리지 않을 수 있습니다."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "GUI 사운드 재생"
@@ -10368,6 +10596,26 @@ msgstr "항상"
 msgctxt "#34123"
 msgid "Never"
 msgstr "사용 안 함"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -10480,6 +10728,10 @@ msgstr "조이스틱과 게임패드 사용"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "이 장치가 있을 때 조이스틱 사용 안 함"
+
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "전체화면에서 시스템 키 사용"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10917,13 +11169,25 @@ msgctxt "#36164"
 msgid "Select when the refresh rate adjustments should take place."
 msgstr "새로고침 빈도를 조정할 시점을 선택합니다."
 
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "새로고침 빈도를 변경할 때 약간의 시간 동안 일시정지 합니다. 재생중인 비디오에 최대한 일치하는 새고로침 빈도로 자동 설정하게 하면, 비디오가 부드럽게 재생됩니다. 동영상은 다양한 프레임 레이트로 녹화되거나 제작되기 때문에 매끄러운 재생을 위해서는 새로고침 빈도가 적절하게 일치해야 합니다."
+
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "비디오를 모니터 새로고침 빈도에 동기화 합니다."
 
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "오디오 싱크가 심하게 맞지 않는 경우 리샘플링, 패킷 건너뛰기/반복, 클럭 조정 등의 방법으로 싱크를 유지합니다."
+
 msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr "최대 비디오 속도를 실제 화면 새로고침 빈도와 일치하게 조정합니다."
+
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "소스와 다른 샘플레이트로 출력이 필요한 경우 리샘플링 품질을 선택합니다. [낮음] CPU 사용 등 시스템 리소스에 가해지는 부담을 최소화하고 빠릅니다. [중간] 또는 [높음] 더 많은 시스템 리소스를 사용합니다."
 
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
@@ -11049,9 +11313,33 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "XBMC의 PVR 기능을 사용합니다. 하나 이상의 PVR 애드온이 설치되어 있어야 합니다."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "PVR 백엔드에서 채널 그룹을 가져옵니다. 백엔드에서 그룹이 발견되지 않으면 사용자가 만든 그룹을 지웁니다."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr "XBMC 자체 채널 번호를 사용하지만 서버의 채널 번호 순서로 채널을 정렬합니다."
+
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr "XBMC에서 수동으로 채널 번호를 설정하지 않고 백엔드의 채널 번호를 사용합니다."
+
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "채널 관리자를 엽니다. 채널 순서, 채널 이름, 아이콘 등을 변경할 수 있습니다."
+
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "백엔드에 채널 검색 명령을 보냅니다. (지원하는 경우)"
+
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr "채널/EPG 데이터베이스를 삭제한 후 백엔드에서 데이터를 다시 가져옵니다."
 
 msgctxt "#36210"
 msgid "No info available yet."
@@ -11089,13 +11377,57 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
 
+msgctxt "#36219"
+msgid "Default EPG window to show. Defaults to Timeline."
+msgstr "EPG 기본 창. 기본값은 편성표."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgstr "백엔드에서 몇 일분의 EPG 데이터를 가져올 것인지를 설정합니다. 기본값은 2일."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
+msgstr "백엔드에서 EPG 데이터를 가져오는 시간 간격. 기본값은 120분 마다."
+
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "TV 재생 중에는 CPU 사용을 최소화 하기 위해 EPG 데이터를 가져오지 않습니다."
+
+msgctxt "#36223"
+msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
+msgstr "기본적으로, XBMC를 시작할 때 데이터를 가져오는 속도를 향상 시키기 위하여 EPG 데이터를 로컬 데이터베이스에 저장합니다."
+
+msgctxt "#36224"
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgstr "채널의 EPG 데이터를 찾지 못하는 경우에 보여주는 \"정보 없음\" 표시를 숨김."
+
+msgctxt "#36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr "EPG 데이터베이스를 XBMC에서 삭제한 후 백엔드에서 데이터를 다시 가져옵니다."
+
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
 
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "선택한 채널을 전체화면 대신 작은 창에서 보여 줍니다."
+
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr "TV 시청으로 전환할 때 마지막으로 시청한 채널을 봅니다."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "코덱 정보 윈도우에서 신호 품질을 표시합니다 (애드온과 백엔드가 지원하는 경우)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
+
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr "전체화면 모드에서 숫자 버튼을 누르면 1초가 지난 후 해당 번호의 채널로 자동 전환됩니다."
 
 msgctxt "#36232"
 msgid "No info available yet."
@@ -11105,6 +11437,30 @@ msgctxt "#36233"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
 
+msgctxt "#36234"
+msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgstr "녹화 버튼을 누르거나 예약 녹화를 설정할 때의 녹화 분량. 기본값은 180분."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "녹화 우선순위. 높은 번호일수록 우선순위가 높습니다. 기본값 50. 모든 애드온과 백엔드가 지원하지는 않습니다."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "지정한 시간 후 녹화를 삭제합니다. 기본값 99일. 모든 애드온과 백엔드가 지원하지는 않습니다."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "실제 방송 시작시간 전에 녹화를 시작합니다. 기본값 2분. 모든 애드온과 백엔드가 지원하지는 않습니다."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "실제 방송 종료시간이 지난 후 녹화를 종료합니다. 기본값 10분. 모든 애드온과 백엔드가 지원하지는 않습니다."
+
+msgctxt "#36239"
+msgid "Display a notification when timers are added, finished or removed by the backend."
+msgstr "백엔드에서 예약 추가, 완료, 삭제되는 경우 알림을 표시합니다."
+
 msgctxt "#36240"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
@@ -11112,6 +11468,10 @@ msgstr "아직 사용 가능한 정보가 없습니다."
 msgctxt "#36247"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
+
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "자녀 보호 잠금이 된 채널에 접근할 때 비밀번호를 물어봅니다. 일반 채널 편집기의 일반 탭에서 잠금 표시를 할 수 습니다. 자녀 보호 잠금 채널은 비밀번호를 입력하지 않으면 시청 또는 녹화를 할 수 없으며 EPG 정보를 숨깁니다."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -11553,9 +11913,21 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "오디오 출력 특성을 선택합니다: [고정] - 항상 지정한 샘플레이트와 스피커 설정으로 출력합니다; [소스에 맞춤] - 출력 특성이 소스 특성에 가능한 가장 근접하게 항상 설정됩니다; [최적] - 재생이 시작될 때 출력 특성이 설정되고 소스의 특성이 변경되어도 바뀌지 않습니다."
+
+msgctxt "#36362"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded."
+msgstr "사용 가능한 최대 오디오 채널/스피커 수를 선택합니다."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "2 채널로 다운믹스한 AC3 스트림을 증폭합니다."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgstr "2 채널 스테레오 소스를 스피커 설정에서 지정한 채널 수 대로 업믹스합니다."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11565,6 +11937,14 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "리시버가 DTS 디코딩을 지원하면 선택합니다."
 
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "사용 가능한 최대 오디오 채널/스피커 수를 선택합니다. 옵티컬/코엑스 디지털 출력을 사용하는 경우 반드시 2.0으로 설정하여야 합니다."
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "돌비 디지털 등으로 인코딩된 오디오를 재생하려면 패스스루 옵션을 선택합니다."
+
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "리시버가 TrueHD 디코딩을 지원하면 선택합니다."
@@ -11572,6 +11952,14 @@ msgstr "리시버가 TrueHD 디코딩을 지원하면 선택합니다."
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "리시버가 DTS-HD 디코딩을 지원하면 선택합니다."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
+msgstr "리시버가 mp3 등의 오디오를 지원하면 선택합니다."
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "아래의 '지원 리시버' 포맷으로 인코딩 된 미디어를 재생할 때 사용할 장치를 선택합니다."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11769,6 +12157,10 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "AMLogic 디코더를 사용하여 비디오를 하드웨어 디코드합니다."
 
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr "하드웨어 디코딩을 사용할 수 없거나 작동하지 않는 경우 ffmpeg 다중 쓰레드 디코딩을 사용합니다. (기본 단일 쓰레드 모드에 비해 신뢰도가 떨어집니다)"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "3D 모드 (현재)"
@@ -11821,6 +12213,10 @@ msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "우선 모드 사용"
 
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
+msgstr "spdif 최대 샘플 레이트 또는 고정 출력 샘플 레이트"
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "우선 모드"
@@ -11852,6 +12248,10 @@ msgstr "우선 모드"
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "영상과 동일"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "다운믹스 방식을 선택합니다. 예)  5.1 채널에서 2.0 채널: [사용함] 소스의 다이내믹 레인지를 유지하지만 음량은 낮아집니다. [사용 안 함] 소스의 음량 수준을 유지하지만 다이내믹 레인지는 좁아집니다. 주 - 다이내믹 레인지는 특정 오디오 소스에서 가장 시끄러운 소리와 가장 조용한 소리의 범위입니다."
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
@@ -11936,3 +12336,7 @@ msgstr "듀얼 오디오 출력"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "다운믹스할 때 센터 채널 증폭"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr "전체화면에서 프린트스크린, alt-tab, 음량 등의 시스템 키를 사용합니다"

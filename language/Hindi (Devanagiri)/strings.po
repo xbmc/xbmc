@@ -2613,6 +2613,10 @@ msgctxt "#10025"
 msgid "Videos"
 msgstr "विडियो"
 
+msgctxt "#10037"
+msgid "Standard"
+msgstr "मानक"
+
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "प्रिय"
@@ -2725,6 +2729,10 @@ msgctxt "#13327"
 msgid "Karaoke"
 msgstr "कराओके"
 
+msgctxt "#13340"
+msgid "Leave as is"
+msgstr "मानक"
+
 msgctxt "#13346"
 msgid "Movie information"
 msgstr "मूवी जानकारी"
@@ -2744,6 +2752,10 @@ msgstr "स्वचालित रूप से थंबनेल उत्�
 msgctxt "#13387"
 msgid "Track naming template - right"
 msgstr "ट्रैक नामकरण टेम्पलेट - ठीक है"
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "मानक"
 
 msgctxt "#13398"
 msgid "Shortcuts"

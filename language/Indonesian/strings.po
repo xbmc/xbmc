@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Atur Framerate"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Sudah tetap"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Berbagai Artis"
@@ -3436,6 +3440,10 @@ msgstr "Setelan->Profil"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Atur Ulang"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standar"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"

@@ -3277,6 +3277,10 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "تنظیمات - پروفایل ها"
 
+msgctxt "#10037"
+msgid "Standard"
+msgstr "استاندارد"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "تنظیمات قفل"

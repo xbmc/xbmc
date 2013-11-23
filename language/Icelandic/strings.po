@@ -1161,6 +1161,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Stilla rammafjölda"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fastur"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Ýmsir flytjendur"
@@ -3340,6 +3344,10 @@ msgstr "Stillingar - Notendur"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Endurstilla"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Venjulegt"
 
 msgctxt "#10043"
 msgid "Help"

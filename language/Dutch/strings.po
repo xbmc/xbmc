@@ -727,7 +727,7 @@ msgstr "Gebruikersomgeving kalibreren"
 
 msgctxt "#214"
 msgid "Video calibration..."
-msgstr "Beeldscherm kalibreren..."
+msgstr "Beeld kalibreren..."
 
 msgctxt "#215"
 msgid "Soften"
@@ -1189,6 +1189,18 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Framerateconversie"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Uitgangsconfiguratie"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Vast"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Geoptimaliseerd"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Diverse artiesten"
@@ -1213,9 +1225,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Jaar"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normaliseer niveaus bij downmixen"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD geschikte obtvanger"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Activeer Passthrough"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1493,6 +1513,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "Max"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Beste overeenkomst"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Audioapparaat 'levend' houden"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Albuminformatie wissen"
@@ -1636,6 +1664,10 @@ msgstr "Modus"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Layout wijzigen"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Sampling rate (kHz) limiteren"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2921,6 +2953,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Programma add-ons"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Plugin-afbeelding instellen"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Add-on instellingen"
@@ -3485,9 +3521,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Reset"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Basis"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standaard"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Geavanceerd"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Expert"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Addon verkenner"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Herstel bovengenoemde instellingen naar standaard"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3500,6 +3556,18 @@ msgstr "Hulp"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Geen hulp beschikbaar"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Herstelt alle zichtbare instellingen naar hun standaardwaarden."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Geen categorieën beschikbaar"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Probeer het instellingsniveau te veranderen om  extra categorien en instellingen te zien."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3837,6 +3905,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Maximaal aantal pogingen bereikt"
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Het systeem zal nu worden uitgeschakeld."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Item vergrendeld"
@@ -4137,6 +4209,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Resolutie behouden?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Wilt u deze verandering behouden?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Hoge kwaliteit beeldverbetering"
@@ -4180,6 +4256,10 @@ msgstr "VDPAU HQ Upscaling level"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "VDPAU Studio level kleur conversie"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Skin behouden?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4901,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Hardwareversnelling inschakelen (mediacodec)"
 
+msgctxt "#13440"
+msgid "Frame Multi Threaded Decoding (less reliable)"
+msgstr "Frame multi-threaded decodering (minder betrouwbaar)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V-synchronisatiemethode"
@@ -4984,6 +5068,14 @@ msgstr "%.1f Seconde"
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Seconden"
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d minuut"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minuten"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -5311,7 +5403,7 @@ msgstr "Tijdzone"
 
 msgctxt "#14081"
 msgid "File lists"
-msgstr "Bestandlijsten"
+msgstr "Bestandslijsten"
 
 msgctxt "#14082"
 msgid "Show EXIF picture information"
@@ -5668,6 +5760,10 @@ msgstr "Als niet-bekeken markeren"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Titel aanpassen"
+
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Beheren..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
@@ -6213,6 +6309,18 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Waarschuwing"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Dienst"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Mux"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Provider"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Schakel over naar een ander kanaal"
@@ -6661,6 +6769,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "TV gids"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Geen PVR Add-on kon worden geactiveerd. Controleer uw instellingen of kijk in het logbestand voor meer informatie."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Opname geannuleerd"
@@ -6701,6 +6813,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Toon een melding bij timer updates"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Gebruik kanaalnummers van de backend (alleen als 1 PVR add-on actief is)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "PVR manager is starting up"
@@ -6721,9 +6837,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Achtergrond threads worden gestart"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Geen PVR add-on ingeschakeld"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "De PVR manager is ingeschakeld zonder ingeschakelde"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "Geactiveerde PVR add-on. Schakel tenminste een add-on in"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6837,9 +6961,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Alle opnames"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Er konden geen PVR add-ons gevonden worden"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "U heeft een tuner, backend software, en een"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "Add-on voor de backend om PVR te kunnen gebruiken."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9145,6 +9277,18 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s naar %s"
 
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "Voorkeur voor externe ondertitels"
+
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "Voorkeur voor externe ondertitels ten opzichte van interne"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(extern)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Bestandsnaam"
@@ -9825,13 +9969,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Beschikbare updates"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Afhankelijkheden komen niet overeen. Neem contact op met de Add-on auteur."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Add-on heeft niet de juiste structuur"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s wordt gebruikt door volgende geinstalleerde add-on(s)"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Deze add-on kan niet worden verwijderd"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Ongedaan maken"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Niet compatibel"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9937,6 +10097,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Add-onmanager vastzetten"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Deze Add-on kan niet worden gedeactiveerd"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(huidige)"
@@ -9944,6 +10108,10 @@ msgstr "(huidige)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(geblacklist)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Add-on is niet compatibel of is gemarkeerd als niet werkend in het repository."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9972,6 +10140,54 @@ msgstr "Niet in staat om de skip te laden"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Skin mist enkele bestanden"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Add-on is niet compatibel vanwege onvervulde afhankelijkheden."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pauzeer wanneer er wordt gezocht naar ondertitels"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "Als de ondertitels niet worden opgeslagen in de filmmap dan worden de ondertitels gedownload naar een aangepaste ondertitelmap"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Zoeken naar ondertitels..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d ondertitels gevonden"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Geen ondertitels gevonden"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Downloaden ondertitels..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Talen van te downloaden ondertitels"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Stel te gebruiken talen in wanneer er wordt gezocht naar ondertitels. Niet alle ondertitel diensten gebruiken alle talen."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Niet gelukt ondertitel te downloaden"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Geen ondertitel dienst geïnstalleerd"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Sla ondertitels op in filmmap"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10076,6 +10292,10 @@ msgstr "Vragen om download alvorens video te spelen"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Herstart Plug-in om te activeren"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10397,6 +10617,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Selecteer het gedrag in wanneer geen geluid is vereist voor ofwel afspelen of GUI geluiden. [Altijd] - Doorlopend onhoorbaar signaal is uitgang, dit behoud het ontvangende geluidsapparaat beschikbaar voor alle nieuwe geluiden, Echter dit kan eveneens ook geluid van andere applicaties blokkeren. [1- 10 minuten] - Hetzelfde als altijd behalve na de geselecteerde periode of tijd wanneer geluid in en onderbroken staat gaat [uit] - Geluidsuitvoer in een onderbroken staat. opmerking - geluiden kunnen worden gemist als geluiden worden onderbroken."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Interface geluiden afspelen"
@@ -10412,6 +10636,26 @@ msgstr "Altijd"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Nooit"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -10525,6 +10769,10 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Zet joysticks uit wanneer die present zijn"
 
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Activeer systeem knoppen in volledig scherm"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Locatie"
@@ -10595,7 +10843,7 @@ msgstr "Kon de COM poort niet detecteren. Stel het manueel in."
 
 msgctxt "#36012"
 msgid "Could not initialise the CEC adaptor. Please check your settings."
-msgstr "Kon de CEC adapter niet initialiseren. Controleer je instellingen."
+msgstr "Kon de CEC adapter niet initialiseren. Controleer uw instellingen."
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -10667,7 +10915,7 @@ msgstr "Deze gebruiker heeft geen toestemming om de CEC adapter te openen."
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adaptor"
-msgstr "Deze poort is in gebruik. Slechts een programma tegelijkertijd kan toegang hebben tot de CEC adapter"
+msgstr "Deze poort is in gebruik. Slechts één programma tegelijkertijd kan toegang hebben tot de CEC adapter"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
@@ -10975,7 +11223,11 @@ msgstr "Audio moet gesynchroniseerd blijven: dit is mogelijk ofwel via 'resampli
 
 msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
-msgstr "Pas de maximum videosnelheid aan gelijk aan de actuele beeldschermverversingssnelheid "
+msgstr "Maximale aanpassing van de videosnelheid aan de actuele beeldschermverversingssnelheid."
+
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Selecteer de kwaliteit van resampling voor gevallen waarbij de audio-uitvoer op een andere sampling rate moet zijn dan die gebruikt door de bron. [laag] is snel en heeft weinig invloed op systeembronnen zoals het gebruik van de processor, [gemiddeld] & [hoog] Zal geleidelijk meer systeembronnen gebruiken."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -11109,6 +11361,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Activeer de personal Video Recorder (PVR) functies in XBMC. dit vereist dat minstens één PVR Add-on is geïnstalleerd."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importeer kanaalgroepen vanuit de PVR back-end (indien ondersteund). Dit zal lokaal aangemaakte groepen verwijderen indien deze niet teruggevonden worden op de back-end."
@@ -11209,6 +11465,10 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Toon het laatstbekeken kanaal bij het schakelen naar Live TV."
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Toon signaalkwaliteitsinformatie in het codec informatiescherm (indien ondersteund door de add-on en back-end)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
@@ -11228,6 +11488,22 @@ msgstr "Nog geen informatie beschikbaar."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Duurtijd van de opname wanneer de opnameknop ingedrukt wordt, of wanneer een nieuwe manuele timer ingesteld wordt. Standaard 180 minuten."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Prioriteit van de opname. Een hoger getal betekent een hogere prioriteit. Standaard op 50. Niet ondersteund door alle add-ons en back-ends."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Verwijder opname automatisch na deze tijd. Standaard op 99 dagen. Niet ondersteund door alle add-ons en back-ends."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Start opnames voor de eigenlijke starttijd. Standaard op 2 minuten. Niet ondersteund door alle add-ons en back-ends."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Beëindig opnames na de eigenlijke tijd. Standaard op 10 minuten. Niet ondersteund door alle add-ons en back-ends."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11717,9 +11993,21 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Nog geen informatie beschikbaar."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Selecteer hoe de eigenschappen van de geluidsuitvoer zijn ingesteld: [Vast] - uitvoer eigenschappen zijn ingesteld naar de gespecificeerde sampling rate & speaker configuratie ten alle tijde; [Beste overeenkomst] - uitvoereigenschappen zijn zo ingesteld dat ze altijd zo dicht mogelijk overeenkomen met de broneigenschappen als mogelijk; [Geoptimaliseerd] - uitvoereigenschappen zijn ingesteld bij het begin van afspelen en zullen niet veranderen als de eigenschappen van de bron veranderen."
+
+msgctxt "#36362"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded."
+msgstr "Selecteer het maximum aantal geluidskanalen/speakers beschikbaar voor gedecodeerde geluiden."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Versterk AC3 geluid dat gedownmixt werd naar 2 kanalen."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgstr "Selecteer om upmixing te activeren van 2-kanaals stereobronnen naar het aantal geluidskanalen gespecificeerd door de speaker configuratie."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11729,6 +12017,14 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Kies deze optie als uw ontvanger DTS digitaal geluid kan decoderen."
 
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Selecteer het maximum aantal geluidskanalen/speakers beschikbaar voor gedecodeerde geluiden. Als optische/coax digitale uitgangen worden gebruikt moet dit worden ingesteld op 2.0"
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Selecteer om doorvoer geluidsopties voor afpelen van gecodeerde audio zoals Dolby Digital te activeren."
+
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "Kies deze optie als uw ontvanger Dolby TrueHD digitaal geluid kan decoderen."
@@ -11736,6 +12032,14 @@ msgstr "Kies deze optie als uw ontvanger Dolby TrueHD digitaal geluid kan decode
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Kies deze optie als uw ontvanger DTS-HD digitaal geluid kan decoderen."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
+msgstr "Selecteer het apparaat dat moet worden gebruikt voor het afspelen van gedecodeerd geluid zoals MP3"
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Selecteer het apparaat dat moet worden gebruikt voor het afspelen van gecodeerde formaten. Dit zijn alle formaten genoemd in de 'capabele ontvanger' opties."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11937,6 +12241,10 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Schakel Hardware video decodering in met gebruik van AMLogic decoder"
 
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr "Gebruik ffmpeg frame multi-thread decoderen wanneer hardware decodering niet werkt of is gedeactiveerd. (Minder betrouwbaar dan de standaard single thread modus)"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Stereoscopische modus (huidig)"
@@ -11989,6 +12297,10 @@ msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Voorkeursmodus gebruiken"
 
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
+msgstr "Maximum sampling rate voor spdif of sampling rate voor vaste uitvoer configuratie"
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "Voorkeursmodus"
@@ -12025,6 +12337,10 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Zelfde als film"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Selecteer hoe geluid wordt gedownmixed. als voorbeeld van 5.1 naar 2.0: [Geactiveerd] behoudt het dynamische bereik van de originele geluidsbron wanneer er wordt gedownmixed, echter volume zal lager zijn [Gedeactiveerd] behoudt het volumeniveau van de originele geluidsbron echter het dynamische bereik is gecomprimeerd. Opmerking - dynamisch bereik is het verschil tussen de zachtste en hardste geluiden in een geluidsbron."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Stereoscopische modus van video"
@@ -12055,7 +12371,7 @@ msgstr "Laat toe om het volume aan te passen van AirPlay clients."
 
 msgctxt "#36542"
 msgid "Output to both analogue (headphones) and HDMI"
-msgstr "Uitzenden naar zowel analoog (koptelefoon) als HDMI"
+msgstr "Uitvoeren naar zowel analoog (koptelefoon) als HDMI"
 
 msgctxt "#36543"
 msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
@@ -12103,8 +12419,12 @@ msgstr "Kies deze optie als uw receiver (versterker) in staat is om E-AC3 digita
 
 msgctxt "#37017"
 msgid "Dual audio output"
-msgstr "Tweezijdige Geluidsuitvoer"
+msgstr "Dubbele Geluidsuitvoer"
 
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Boost middenkanaal bij downmixen"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr "Activeer systeemknoppen zoals Printscreen, Alt-tab en volumeknoppen bij volledig scherm"

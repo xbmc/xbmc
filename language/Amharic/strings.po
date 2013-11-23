@@ -1025,6 +1025,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "የ ክፈፍ መጠን መቀየሪያ"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "በፍጥነት "
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "የተለያዩ ከያኒዎች"
@@ -2665,6 +2669,10 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "ገጽታ ማሰናጃ "
 
+msgctxt "#10037"
+msgid "Standard"
+msgstr "መደበኛ "
+
 msgctxt "#10043"
 msgid "Help"
 msgstr "እርዳታ"
@@ -3396,6 +3404,10 @@ msgstr "ነባር ማነጻጸሪያ"
 msgctxt "#13381"
 msgid "Resume video"
 msgstr "ቪዲዮ መቀጠያ "
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "መደበኛ "
 
 msgctxt "#13391"
 msgid "Eject/Load"

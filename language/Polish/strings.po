@@ -1189,6 +1189,18 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Konwertuj liczbę klatek"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Konfiguracja wyjścia"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Stałe"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Zoptymalizowany"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Różni artyści"
@@ -1213,9 +1225,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Rok"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normalizacja poziomu przy miksowaniu"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Wsparcie formatu DTS-HD"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Włącz przekazywanie"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1493,6 +1513,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "maks."
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Najlepsze dopasowanie "
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Utrzymuj urządzenie audio włączone"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Usuń informacje o albumach"
@@ -1636,6 +1664,10 @@ msgstr "Tryb"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Przełącz widok"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Limit próbkowania (kHz) "
 
 msgctxt "#459"
 msgid "Subs"
@@ -3485,9 +3517,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Resetuj"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Podstawowy"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standardowy"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Zaawansowany"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Ekspert"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Przeglądarka wtyczek"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Przywróć powyższe ustawienia do domyślnych "
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3500,6 +3552,14 @@ msgstr "Pomoc"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Brak dostępnej pomocy"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Przywraca wszystkie ustawienia do wartości domyślnych."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Brak dostępnych kategorii "
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3837,6 +3897,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Limit prób wpisania hasła został wyczerpany."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "System wyłączy się teraz."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Zablokowany"
@@ -4137,6 +4201,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Zapisać rozdzielczość?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Czy chcesz zachować?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Upscaling wysokiej jakości"
@@ -4180,6 +4248,10 @@ msgstr "VDPAU poziom skalowania HQ"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "Korekcja poziomu kolorów VDPAU (YCbCr i RGB)"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Zostawić skórę?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4985,6 +5057,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f sekund(y)"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Minuta"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minut(y)"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Pilot Apple"
@@ -5669,6 +5749,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Edytuj tytuł"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Zarządzanie..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Edycja sortowania "
@@ -6213,6 +6297,14 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Uwaga"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Usługa"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Dostawca"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Proszę zmień na inny kanał."
@@ -6661,6 +6753,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Nie można uruchomić żadnej wtyczki PVR. Sprawdź ustawienia lub plik log."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Nagrywanie anulowane"
@@ -6701,6 +6797,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Wyświetl powiadomienie przy zmianie zaplanowanych zadań"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Używaj numerów kanałów z serwera (działa tylko przy jednej włączonej wtyczce PVR)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "Menedżer PVR startuje"
@@ -6721,9 +6821,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Startowanie wątków tła"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Brak wlączonych wtyczek PVR"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Menedżer PVR został uruchomiony bez jakichkolwiek"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "Włącz wtyczkę PVR. Włącz przynajmniej jeden dodatek"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6836,6 +6944,10 @@ msgstr "Nie pokazuj ostrzeżeń \"połączenie zerwane\""
 msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Wszystkie nagrania"
+
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Brak wtyczek PVR"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -9829,9 +9941,17 @@ msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Wtyczka nie ma właściwej struktury"
 
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Ta wtyczka nie może zostać usunięta"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Przywróć"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Niekompatybilne"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9937,6 +10057,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Zablokuj menedżer wtyczek"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Ta wtyczka nie może być wyłączona"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(bieżący)"
@@ -9972,6 +10096,26 @@ msgstr "Nie można wczytać skóry"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "W skórze brakuje części plików"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Szukanie napisów..."
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Nie znaleziono napisów"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Pobieram napisy..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Pobierz napisy dla następujących języków:"
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Błąd podczas pobierania napisów"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10412,6 +10556,26 @@ msgstr "Zawsze"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Nigdy"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1 "
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0 "
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"

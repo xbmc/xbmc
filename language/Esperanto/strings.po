@@ -1221,6 +1221,10 @@ msgctxt "#406"
 msgid "Humidity"
 msgstr "Humideco"
 
+msgctxt "#409"
+msgid "Defaults"
+msgstr "Standard"
+
 msgctxt "#410"
 msgid "Accessing weather service"
 msgstr "Accessing Wealar.com"
@@ -2416,6 +2420,10 @@ msgstr "Mia Filmoj/Kanto-listoj"
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Preferoj->Provicos"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
 
 msgctxt "#10500"
 msgid "Music/Playlist"

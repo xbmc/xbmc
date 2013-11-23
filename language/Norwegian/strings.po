@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Konverter bildefrekvens"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Låst"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Diverse artister"
@@ -3468,6 +3472,10 @@ msgstr "Innstillinger - Profiler"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Nullstill"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
 
 msgctxt "#10040"
 msgid "Add-on browser"

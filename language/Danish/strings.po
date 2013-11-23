@@ -1181,6 +1181,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Juster billedhastighed"
 
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fast"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Diverse kunstnere"
@@ -3436,6 +3440,10 @@ msgstr "Indstillinger - Profiler"
 msgctxt "#10035"
 msgid "Reset"
 msgstr "Nulstil"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standard"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
