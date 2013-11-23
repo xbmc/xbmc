@@ -1114,7 +1114,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, ADDON::Scrape
   if (!album.strMusicBrainzAlbumID.empty())
   {
     CScraperUrl musicBrainzURL;
-    if (ResolveMusicBrainz(album.strMusicBrainzAlbumID, info, scraper, musicBrainzURL))
+    if (ResolveMusicBrainz(album.strMusicBrainzAlbumID, info, musicBrainzURL))
     {
       CMusicAlbumInfo albumNfo("nfo", musicBrainzURL);
       scraper.GetAlbums().clear();
@@ -1326,7 +1326,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, ADDON::Scr
   if (!artist.strMusicBrainzArtistID.empty())
   {
     CScraperUrl musicBrainzURL;
-    if (ResolveMusicBrainz(artist.strMusicBrainzArtistID, info, scraper, musicBrainzURL))
+    if (ResolveMusicBrainz(artist.strMusicBrainzArtistID, info, musicBrainzURL))
     {
       CMusicArtistInfo artistNfo("nfo", musicBrainzURL);
       scraper.GetArtists().clear();
@@ -1463,75 +1463,31 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, ADDON::Scr
   return INFO_ADDED;
 }
 
-bool CMusicInfoScanner::ResolveMusicBrainz(const CStdString strMusicBrainzID, ScraperPtr &preferredScraper, CMusicInfoScraper &musicInfoScraper, CScraperUrl &musicBrainzURL)
+bool CMusicInfoScanner::ResolveMusicBrainz(const CStdString strMusicBrainzID, const ScraperPtr &preferredScraper, CScraperUrl &musicBrainzURL)
 {
   // We have a MusicBrainz ID
   // Get a scraper that can resolve it to a MusicBrainz URL & force our
   // search directly to the specific album.
   bool bMusicBrainz = false;
-  ADDON::TYPE type = ScraperTypeFromContent(preferredScraper->Content());
-
-  CFileItemList items;
-  ADDON::AddonPtr addon;
-  ADDON::ScraperPtr defaultScraper;
-  if (ADDON::CAddonMgr::Get().GetDefault(type, addon))
-    defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
-
-  vector<ScraperPtr> vecScrapers;
-
-  // add selected scraper - first proirity
-  if (preferredScraper)
-    vecScrapers.push_back(preferredScraper);
-
-  // Add all scrapers except selected and default
-  VECADDONS addons;
-  CAddonMgr::Get().GetAddons(type, addons);
-
-  for (unsigned i = 0; i < addons.size(); ++i)
+  try
   {
-    ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
-
-    // skip if scraper requires settings and there's nothing set yet
-    if (!scraper || (scraper->RequiresSettings() && !scraper->HasUserSettings()))
-      continue;
-    
-    if((!preferredScraper || preferredScraper->ID() != scraper->ID()) && (!defaultScraper || defaultScraper->ID() != scraper->ID()) )
-      vecScrapers.push_back(scraper);
+    musicBrainzURL = preferredScraper->ResolveIDToUrl(strMusicBrainzID);
+  }
+  catch (const ADDON::CScraperError &sce)
+  {
+    if (sce.FAborted())
+      return false;
   }
 
-  // add default scraper - not user selectable so it's last priority
-  if(defaultScraper && 
-     (!preferredScraper || preferredScraper->ID() != defaultScraper->ID()) &&
-     (!defaultScraper->RequiresSettings() || defaultScraper->HasUserSettings()))
-    vecScrapers.push_back(defaultScraper);
-
-  for (unsigned int i=0; i < vecScrapers.size(); ++i)
+  if (!musicBrainzURL.m_url.empty())
   {
-    if (vecScrapers[i]->Type() != type)
-      continue;
-
-    vecScrapers[i]->ClearCache();
-    try
-    {
-      musicBrainzURL = vecScrapers[i]->ResolveIDToUrl(strMusicBrainzID);
-    }
-    catch (const ADDON::CScraperError &sce)
-    {
-      if (!sce.FAborted())
-        continue;
-    }
-    if (!musicBrainzURL.m_url.empty())
-    {
-      Sleep(2000); // MusicBrainz rate-limits queries to 1 p.s - once we hit the rate-limiter
-                   // they start serving up the 'you hit the rate-limiter' page fast - meaning
-                   // we will never get below the rate-limit threshold again in a specific run. 
-                   // This helps us to avoidthe rate-limiter as far as possible.
-      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",vecScrapers[i]->Name().c_str());
-      CLog::Log(LOGDEBUG,"-- nfo url: %s", musicBrainzURL.m_url[0].m_url.c_str());
-      musicInfoScraper.SetScraperInfo(vecScrapers[i]);
-      bMusicBrainz = true;
-      break;
-    }
+    Sleep(2000); // MusicBrainz rate-limits queries to 1 p.s - once we hit the rate-limiter
+                 // they start serving up the 'you hit the rate-limiter' page fast - meaning
+                 // we will never get below the rate-limit threshold again in a specific run.
+                 // This helps us to avoidthe rate-limiter as far as possible.
+    CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",preferredScraper->Name().c_str());
+    CLog::Log(LOGDEBUG,"-- nfo url: %s", musicBrainzURL.m_url[0].m_url.c_str());
+    bMusicBrainz = true;
   }
 
   return bMusicBrainz;

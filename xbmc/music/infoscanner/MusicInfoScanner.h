@@ -198,7 +198,7 @@ protected:
    \param preferredScraper [in] A ScraperPtr to the preferred album/artist scraper.
    \param musicBrainzURL [out] will be populated with the MB URL for the artist/album.
    */
-  bool ResolveMusicBrainz(const CStdString strMusicBrainzID, ADDON::ScraperPtr &preferredScraper, MUSIC_GRABBER::CMusicInfoScraper &musicInfoScraper, CScraperUrl &musicBrainzURL);
+  bool ResolveMusicBrainz(const CStdString strMusicBrainzID, const ADDON::ScraperPtr &preferredScraper, CScraperUrl &musicBrainzURL);
 
 protected:
   bool m_showDialog;
