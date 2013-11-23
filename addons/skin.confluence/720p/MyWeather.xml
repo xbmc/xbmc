@@ -100,7 +100,7 @@
 				</control>
 				<control type="image">
 					<left>70</left>
-					<top>40</top>
+					<top>30</top>
 					<width>360</width>
 					<height>90</height>
 					<aspectratio align="center" aligny="center">keep</aspectratio>
@@ -109,7 +109,7 @@
 				<control type="label">
 					<description>Provider Text</description>
 					<left>20</left>
-					<top>50</top>
+					<top>60</top>
 					<width>460</width>
 					<height>35</height>
 					<font>font12</font>
@@ -122,7 +122,6 @@
 					<visible>IsEmpty(Window.Property(WeatherProviderLogo))</visible>
 				</control>
 				<control type="group">
-					<animation effect="slide" start="0,0" end="0,30" condition="!IsEmpty(Window.Property(WeatherProviderLogo))">Conditional</animation>
 					<control type="label">
 						<description>weather location label</description>
 						<left>20</left>
@@ -151,7 +150,7 @@
 					<control type="label">
 						<description>current temp Value</description>
 						<right>195</right>
-						<top>175</top>
+						<top>185</top>
 						<width>180</width>
 						<height>40</height>
 						<font>WeatherTemp</font>
@@ -163,8 +162,8 @@
 					</control>
 					<control type="label">
 						<description>current temp Value Units</description>
-						<left>190</left>
-						<top>185</top>
+						<left>200</left>
+						<top>195</top>
 						<width>100</width>
 						<height>40</height>
 						<font>font16</font>
@@ -176,17 +175,17 @@
 					</control>
 					<control type="image">
 						<description>current weather icon</description>
-						<left>230</left>
-						<top>120</top>
-						<width>230</width>
-						<height>230</height>
+						<left>260</left>
+						<top>145</top>
+						<width>200</width>
+						<height>200</height>
 						<info>Window.Property(Current.ConditionIcon)</info>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
 						<description>current condition label</description>
 						<left>20</left>
-						<top>320</top>
+						<top>350</top>
 						<width>460</width>
 						<height>30</height>
 						<info>Window.Property(Current.Condition)</info>
