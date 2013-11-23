@@ -22,6 +22,10 @@
 #include "filesystem/File.h"
 #include "Variant.h"
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wlong-long"
+#endif
+
 using namespace XFILE;
 
 #define BUFFER_MAX 4096
@@ -83,6 +87,30 @@ CArchive& CArchive::operator<<(double d)
   return *this;
 }
 
+CArchive& CArchive::operator<<(short int s)
+{
+  int size = sizeof(s);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &s, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(unsigned short int us)
+{
+  int size = sizeof(us);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &us, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
 CArchive& CArchive::operator<<(int i)
 {
   int size = sizeof(int);
@@ -107,25 +135,49 @@ CArchive& CArchive::operator<<(unsigned int i)
   return *this;
 }
 
-CArchive& CArchive::operator<<(int64_t i64)
+CArchive& CArchive::operator<<(long int l)
 {
-  int size = sizeof(int64_t);
+  const size_t size = sizeof(l);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
-  memcpy(&m_pBuffer[m_BufferPos], &i64, size);
+  memcpy(&m_pBuffer[m_BufferPos], &l, size);
   m_BufferPos += size;
 
   return *this;
 }
 
-CArchive& CArchive::operator<<(uint64_t ui64)
+CArchive& CArchive::operator<<(unsigned long int ul)
 {
-  int size = sizeof(uint64_t);
+  const size_t size = sizeof(ul);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
-  memcpy(&m_pBuffer[m_BufferPos], &ui64, size);
+  memcpy(&m_pBuffer[m_BufferPos], &ul, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(long long int ll)
+{
+  const size_t size = sizeof(ll);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &ll, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(unsigned long long int ull)
+{
+  const size_t size = sizeof(ull);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &ull, size);
   m_BufferPos += size;
 
   return *this;
@@ -301,6 +353,20 @@ CArchive& CArchive::operator>>(double& d)
   return *this;
 }
 
+CArchive& CArchive::operator>>(short int& s)
+{
+  m_pFile->Read((void*)&s, sizeof(s));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(unsigned short int& us)
+{
+  m_pFile->Read((void*)&us, sizeof(us));
+
+  return *this;
+}
+
 CArchive& CArchive::operator>>(int& i)
 {
   m_pFile->Read((void*)&i, sizeof(int));
@@ -315,16 +381,30 @@ CArchive& CArchive::operator>>(unsigned int& i)
   return *this;
 }
 
-CArchive& CArchive::operator>>(int64_t& i64)
+CArchive& CArchive::operator>>(long int& l)
 {
-  m_pFile->Read((void*)&i64, sizeof(int64_t));
+  m_pFile->Read((void*)&l, sizeof(long));
 
   return *this;
 }
 
-CArchive& CArchive::operator>>(uint64_t& ui64)
+CArchive& CArchive::operator>>(unsigned long int& ul)
 {
-  m_pFile->Read((void*)&ui64, sizeof(uint64_t));
+  m_pFile->Read((void*)&ul, sizeof(unsigned long));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(long long int& ll)
+{
+  m_pFile->Read((void*)&ll, sizeof(ll));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(unsigned long long int& ull)
+{
+  m_pFile->Read((void*)&ull, sizeof(ull));
 
   return *this;
 }
