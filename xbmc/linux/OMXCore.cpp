@@ -1442,14 +1442,11 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
         component_name.c_str(), (int)omx_err);
   }
 
-  if(m_componentName != "OMX.broadcom.clock")
+  omx_err = DisableAllPorts();
+  if (omx_err != OMX_ErrorNone)
   {
-    omx_err = DisableAllPorts();
-    if (omx_err != OMX_ErrorNone)
-    {
-      CLog::Log(LOGERROR, "COMXCoreComponent::Initialize - error disable ports on component %s omx_err(0x%08x)\n",
-          component_name.c_str(), (int)omx_err);
-    }
+    CLog::Log(LOGERROR, "COMXCoreComponent::Initialize - error disable ports on component %s omx_err(0x%08x)\n",
+        component_name.c_str(), (int)omx_err);
   }
 
   m_input_port  = port_param.nStartPortNumber;

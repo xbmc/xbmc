@@ -131,8 +131,6 @@ bool OMXClock::OMXInitialize(CDVDClock *clock)
   if(!m_omx_clock.Initialize((const std::string)componentName, OMX_IndexParamOtherInit))
     return false;
 
-  m_omx_clock.DisableAllPorts();
-
   return true;
 }
 
