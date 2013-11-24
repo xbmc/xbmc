@@ -248,7 +248,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     {
       // Nvidia gpu's are all powerful and work the way god intended
       m_decode_async = true;
-      m_use_cvBufferRef = true;
+      // The gods are liars, ignore the sirens for now.
+      m_use_cvBufferRef = false;
     }
     else if (rendervendor.find("intel") != std::string::npos)
     {
@@ -260,7 +261,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     {
       // ATI gpu's are borked when using async decode
       m_decode_async = false;
-      m_use_cvBufferRef = true;
+      // They lie here too.
+      m_use_cvBufferRef = false;
     }
 
     if (!m_use_cvBufferRef)
