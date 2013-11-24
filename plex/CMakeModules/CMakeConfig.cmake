@@ -82,7 +82,9 @@ add_definitions(-D__PLEX__ -D__PLEX__XBMC__ -DPLEX_BUILD_TAG="${BUILD_TAG}" -DPL
 set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG "_DEBUG")
 
 include(CheckFFmpegIncludes)
-include(CheckCrystalHDInclude)
+if (NOT TARGET_RPI)
+  include(CheckCrystalHDInclude)
+endif()
 include(CheckLibshairportConfig)
 
 if(DEFINED SDL_FOUND)

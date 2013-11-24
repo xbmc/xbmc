@@ -1,7 +1,11 @@
 add_subdirectory(VideoShaders)
 find_all_sources(. videorenderers_SRCS)
 
-list(REMOVE_ITEM videorenderers_SRCS ./LinuxRendererGLES.cpp)
+if(TARGET_RPI )
+  list(REMOVE_ITEM videorenderers_SRCS ./LinuxRendererGL.cpp)
+else()
+  list(REMOVE_ITEM videorenderers_SRCS ./LinuxRendererGLES.cpp)
+endif()
 
 if(NOT WIN32)
   list(REMOVE_ITEM videorenderers_SRCS ./WinRenderer.cpp)

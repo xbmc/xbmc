@@ -33,3 +33,5 @@ endif(TARGET_COMMON_DARWIN)
 
 add_subdirectory(cpluff)
 add_subdirectory(cximage-6.0)
+add_subdirectory(addons)
+
