@@ -34,7 +34,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "utils/StringUtils.h"
 #include "DllPaths_win32.h"
 #include "FileSystem/File.h"
 #include "utils/URIUtils.h"
@@ -534,16 +533,16 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   char cDL = cDriveLetter;
   if( !cDL )
   {
-    CStdString dvdDevice = g_mediaManager.TranslateDevicePath("");
+    std::string dvdDevice = g_mediaManager.TranslateDevicePath("");
     if(dvdDevice == "")
       return S_FALSE;
     cDL = dvdDevice[0];
   }
 
-  std::string strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
+  std::string strVolFormat = StringUtils::Format("\\\\.\\%c:", cDL);
   HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                              NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  std::string strRootFormat = StringUtils::Format( _T("%c:\\"), cDL);
+  std::string strRootFormat = StringUtils::Format("%c:\\", cDL);
   if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) &&
     ( GetDriveType( strRootFormat.c_str() ) == DRIVE_CDROM ) )
   {
@@ -556,7 +555,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   // unmount it here too as it won't hurt
   if(dwReq == IOCTL_STORAGE_EJECT_MEDIA && bRet == 1)
   {
-    strRootFormat = StringUtils::Format( _T("%c:"), cDL);
+    strRootFormat = StringUtils::Format("%c:", cDL);
     CMediaSource share;
     share.strPath = strRootFormat;
     share.strName = share.strPath;
@@ -576,7 +575,7 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  std::string strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
+  std::string strVolFormat = StringUtils::Format("\\\\.\\%c:", cDL);
 
   if(GetDriveStatus(strVolFormat, true) != 1)
     return ToggleTray(cDL);
@@ -595,7 +594,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  std::string strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDL);
+  std::string strVolFormat = StringUtils::Format( "\\\\.\\%c:", cDL);
 
   if(GetDriveStatus(strVolFormat, true) == 1)
     return ToggleTray(cDL);
@@ -688,7 +687,7 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   if( !cDriveLetter )
     return false;
 
-  std::string strVolFormat = StringUtils::Format( _T("\\\\.\\%c:" ), cDriveLetter);
+  std::string strVolFormat = StringUtils::Format("\\\\.\\%c:", cDriveLetter);
 
   long DiskNumber = -1;
 
