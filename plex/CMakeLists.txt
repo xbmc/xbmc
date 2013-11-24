@@ -129,7 +129,7 @@ endif(ENABLE_PYTHON)
 
 if(TARGET_RPI)
     set(EXCLUDE_TEXTURES ^foo)
-  
+else()  
   
   file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
   file(GLOB MEDIA_IMAGES_PLEX_SKIN ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)

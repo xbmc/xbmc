@@ -89,10 +89,13 @@ if(TARGET_WIN32)
 endif(TARGET_WIN32)
 
 # Build the texturepacker
-add_subdirectory(tools/TexturePacker)
 
-# add our visualizations
-add_subdirectory(xbmc/visualizations)
+if (NOT TARGET_RPI)
+  add_subdirectory(tools/TexturePacker)
+
+  # add our visualizations
+  add_subdirectory(xbmc/visualizations)
+endif()
 
 # global includes
 include_directories(
