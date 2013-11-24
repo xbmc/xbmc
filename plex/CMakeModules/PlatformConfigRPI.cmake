@@ -6,8 +6,10 @@ if(UNIX)
   set(CMAKE_REQUIRED_FLAGS "-D__LINUX_USER__")
 endif()
 
+option(USE_INTERNAL_FFMPEG "" ON)
+#option(USE_INTERNAL_FFMPEG "" OFF)
+
 set(LINK_PKG
-  FFmpeg
   Freetype
   ZLIB
   JPEG
@@ -26,6 +28,13 @@ set(LINK_PKG
   LibDl
   LibRt
 )
+
+if(NOT USE_INTERNAL_FFMPEG)
+  list(APPEND LINK_PKG FFmpeg)
+else()
+  set(FFMPEG_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/lib/ffmpeg ${CMAKE_BINARY_DIR}/lib/ffmpeg/ffmpeg/src/ffmpeg-build)
+endif()
+
 
 
 
@@ -105,7 +114,6 @@ set(USE_CRYSTALHD 0)
 set(USE_PULSE 0)
 set(DISABLE_PROJECTM 1)
 set(USE_TEXTUREPACKER_NATIVE_ROOT 0)
-set(USE_INTERNAL_FFMPEG 1)
 
 
 
