@@ -2,6 +2,7 @@
 <window>
 	<defaultcontrol always="true">8</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<onload condition="Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True)</onload>
 	<controls>
 		<control type="group">
 			<visible>!Window.IsVisible(FileBrowser)</visible>
@@ -986,7 +987,7 @@
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>31127</label>
 						<onclick>XBMC.RunScript(script.tvtunes,mode=solo&amp;tvpath=$INFO[ListItem.FilenameAndPath]&amp;tvname=$INFO[ListItem.TVShowTitle])</onclick>
-						<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes) + Container.Content(TVShows)</visible>
+						<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes) + IsEmpty(Window(movieinformation).Property("TvTunes_HideVideoInfoButton")) + [Container.Content(TVShows) | Container.Content(Movies)]</visible>
 					</control>
 				</control>
 			</control>

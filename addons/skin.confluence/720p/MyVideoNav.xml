@@ -4,7 +4,7 @@
 	<allowoverlay>no</allowoverlay>
 	<views>50,51,500,550,551,560,501,508,504,503,515,505,511</views>
 	<onload condition="!Skin.HasSetting(FirstTimeRun)">ActivateWindow(1112)</onload>
-	<onload condition="Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True&amp;loop=False)</onload>
+	<onload condition="Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True)</onload>
 	<controls>
 		<include>CommonBackground</include>
 		<include>ContentPanelBackgrounds</include>
