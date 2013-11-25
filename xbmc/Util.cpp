@@ -1154,6 +1154,9 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   // Check for special protocols
   CURL checkURL(strPath);
 
+  if (StringUtils::StartsWith(strPath, "special://skin/"))
+    return 1;
+
   // stack://
   if (checkURL.GetProtocol() == "stack")
     strPath.erase(0, 8); // remove the stack protocol
