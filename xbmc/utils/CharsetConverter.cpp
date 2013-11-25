@@ -172,9 +172,10 @@ CConverterType::CConverterType(const CConverterType& other) : CCriticalSection()
 
 CConverterType::~CConverterType()
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   if (m_iconv != NO_ICONV)
     iconv_close(m_iconv);
+  lock.Leave(); // ensure unlocking before final destruction
 }
 
 
@@ -204,7 +205,7 @@ iconv_t CConverterType::GetConverter(CSingleLock& converterLock)
 
 void CConverterType::Reset(void)
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   if (m_iconv != NO_ICONV)
   {
     iconv_close(m_iconv);
@@ -220,7 +221,7 @@ void CConverterType::Reset(void)
 
 void CConverterType::ReinitTo(const std::string& sourceCharset, const std::string& targetCharset, unsigned int targetSingleCharMaxLen /*= 1*/)
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   if (sourceCharset != m_sourceCharset || targetCharset != m_targetCharset)
   {
     if (m_iconv != NO_ICONV)
