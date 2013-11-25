@@ -75,11 +75,12 @@ namespace XBMCAddon
       virtual ~Player(void);
 
       /**
-       * play([item, listitem, windowed]) -- Play this item.\n
+       * play([item, listitem, windowed, startpos]) -- Play this item.\n
        * \n
        * item           : [opt] string - filename, url or playlist.\n
        * listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n
        * windowed       : [opt] bool - true=play video windowed, false=play users preference.(default)\n
+       * startpos       : [opt] int - starting position when playing a playlist. Default = -1\n
        * \n
        * *Note, If item is not given then the Player will try to play the current item\n
        *        in the current playlist.\n
@@ -91,6 +92,7 @@ namespace XBMCAddon
        *   - listitem = xbmcgui.ListItem('Ironman')\n
        *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n
        *   - xbmc.Player().play(url, listitem, windowed)\n
+       *   - xbmc.Player().play(playlist, listitem, windowed, startpos)\n
        */
       void play(const PlayParameter& item = Player::defaultPlayParameter, 
                 const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false, int startpos = -1);
