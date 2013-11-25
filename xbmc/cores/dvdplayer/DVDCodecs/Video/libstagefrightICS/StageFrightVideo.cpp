@@ -55,8 +55,6 @@
 #define EGL_NATIVE_BUFFER_ANDROID 0x3140
 #define EGL_IMAGE_PRESERVED_KHR   0x30D2
 
-const char *MEDIA_MIMETYPE_VIDEO_WMV  = "video/x-ms-wmv";
-
 using namespace android;
 
 static int64_t pts_dtoi(double pts)
@@ -430,33 +428,37 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   case CODEC_ID_H264:
     if (p->m_g_advancedSettings->m_stagefrightConfig.useAVCcodec == 0)
       return false;
-    mimetype = MEDIA_MIMETYPE_VIDEO_AVC;
+    mimetype = "video/avc";
     if ( *(char*)hints.extradata == 1 )
       p->meta->setData(kKeyAVCC, kTypeAVCC, hints.extradata, hints.extrasize);
     break;
   case CODEC_ID_MPEG4:
     if (p->m_g_advancedSettings->m_stagefrightConfig.useMP4codec == 0)
       return false;
-    mimetype = MEDIA_MIMETYPE_VIDEO_MPEG4;
+    mimetype = "video/mp4v-es";
     break;
   case CODEC_ID_MPEG2VIDEO:
     if (p->m_g_advancedSettings->m_stagefrightConfig.useMPEG2codec == 0)
       return false;
-    mimetype = MEDIA_MIMETYPE_VIDEO_MPEG2;
+    mimetype = "video/mpeg2";
     break;
   case CODEC_ID_VP3:
   case CODEC_ID_VP6:
   case CODEC_ID_VP6F:
+      if (p->m_g_advancedSettings->m_stagefrightConfig.useVPXcodec == 0)
+        return false;
+      mimetype = "video/vp6";
+      break;
   case CODEC_ID_VP8:
     if (p->m_g_advancedSettings->m_stagefrightConfig.useVPXcodec == 0)
       return false;
-    mimetype = MEDIA_MIMETYPE_VIDEO_VPX;
+    mimetype = "video/x-vnd.on2.vp8";
     break;
   case CODEC_ID_VC1:
   case CODEC_ID_WMV3:
     if (p->m_g_advancedSettings->m_stagefrightConfig.useVC1codec == 0)
       return false;
-    mimetype = MEDIA_MIMETYPE_VIDEO_WMV;
+    mimetype = "video/vc1";
     break;
   default:
     return false;
