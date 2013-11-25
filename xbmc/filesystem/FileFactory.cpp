@@ -34,7 +34,7 @@
 #ifdef TARGET_WINDOWS
 #include "windows/WINFileSmb.h"
 #else
-#include "SmbFile.h"
+#include "SMBFile.h"
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
@@ -169,7 +169,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef TARGET_WINDOWS
     else if (url.IsProtocol("smb")) return new CWINFileSMB();
 #else
-    else if (url.IsProtocol("smb")) return new CSmbFile();
+    else if (url.IsProtocol("smb")) return new CSMBFile();
 #endif
 #endif
 #ifdef HAS_FILESYSTEM

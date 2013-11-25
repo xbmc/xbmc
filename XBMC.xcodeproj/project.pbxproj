@@ -1258,7 +1258,7 @@
 		DF93D6AA1444A8B1007C6459 /* SFTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6851444A8B0007C6459 /* SFTPFile.cpp */; };
 		DF93D6AB1444A8B1007C6459 /* ShoutcastFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6871444A8B0007C6459 /* ShoutcastFile.cpp */; };
 		DF93D6AC1444A8B1007C6459 /* SlingboxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */; };
-		DF93D6AD1444A8B1007C6459 /* SmbFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SmbFile.cpp */; };
+		DF93D6AD1444A8B1007C6459 /* SMBFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SMBFile.cpp */; };
 		DF93D6AE1444A8B1007C6459 /* SpecialProtocolFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68D1444A8B0007C6459 /* SpecialProtocolFile.cpp */; };
 		DF93D6AF1444A8B1007C6459 /* TuxBoxDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68F1444A8B0007C6459 /* TuxBoxDirectory.cpp */; };
 		DF93D6B01444A8B1007C6459 /* TuxBoxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6911444A8B0007C6459 /* TuxBoxFile.cpp */; };
@@ -1687,7 +1687,7 @@
 		DFF0F24817528350002DA3A4 /* SlingboxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */; };
 		DFF0F24917528350002DA3A4 /* SmartPlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */; };
 		DFF0F24A17528350002DA3A4 /* SMBDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */; };
-		DFF0F24B17528350002DA3A4 /* SmbFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SmbFile.cpp */; };
+		DFF0F24B17528350002DA3A4 /* SMBFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SMBFile.cpp */; };
 		DFF0F24C17528350002DA3A4 /* SourcesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */; };
 		DFF0F24D17528350002DA3A4 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		DFF0F24E17528350002DA3A4 /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
@@ -2950,7 +2950,7 @@
 		E49912B1174E5D9900741B6D /* SlingboxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */; };
 		E49912B2174E5D9900741B6D /* SmartPlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */; };
 		E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */; };
-		E49912B4174E5D9900741B6D /* SmbFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SmbFile.cpp */; };
+		E49912B4174E5D9900741B6D /* SMBFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SMBFile.cpp */; };
 		E49912B5174E5D9900741B6D /* SourcesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */; };
 		E49912B6174E5D9900741B6D /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		E49912B7174E5D9900741B6D /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
@@ -4964,8 +4964,8 @@
 		DF93D6881444A8B0007C6459 /* ShoutcastFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShoutcastFile.h; sourceTree = "<group>"; };
 		DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SlingboxFile.cpp; sourceTree = "<group>"; };
 		DF93D68A1444A8B0007C6459 /* SlingboxFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlingboxFile.h; sourceTree = "<group>"; };
-		DF93D68B1444A8B0007C6459 /* SmbFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmbFile.cpp; sourceTree = "<group>"; };
-		DF93D68C1444A8B0007C6459 /* SmbFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmbFile.h; sourceTree = "<group>"; };
+		DF93D68B1444A8B0007C6459 /* SMBFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SMBFile.cpp; sourceTree = "<group>"; };
+		DF93D68C1444A8B0007C6459 /* SMBFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMBFile.h; sourceTree = "<group>"; };
 		DF93D68D1444A8B0007C6459 /* SpecialProtocolFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocolFile.cpp; sourceTree = "<group>"; };
 		DF93D68E1444A8B0007C6459 /* SpecialProtocolFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolFile.h; sourceTree = "<group>"; };
 		DF93D68F1444A8B0007C6459 /* TuxBoxDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TuxBoxDirectory.cpp; sourceTree = "<group>"; };
@@ -9233,8 +9233,8 @@
 				E38E17540D25F9FA00618676 /* SmartPlaylistDirectory.h */,
 				E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */,
 				E38E17560D25F9FA00618676 /* SMBDirectory.h */,
-				DF93D68B1444A8B0007C6459 /* SmbFile.cpp */,
-				DF93D68C1444A8B0007C6459 /* SmbFile.h */,
+				DF93D68B1444A8B0007C6459 /* SMBFile.cpp */,
+				DF93D68C1444A8B0007C6459 /* SMBFile.h */,
 				7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */,
 				7C84A59D12FA3C1600CD1714 /* SourcesDirectory.h */,
 				7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */,
@@ -11311,7 +11311,7 @@
 				DF93D6AA1444A8B1007C6459 /* SFTPFile.cpp in Sources */,
 				DF93D6AB1444A8B1007C6459 /* ShoutcastFile.cpp in Sources */,
 				DF93D6AC1444A8B1007C6459 /* SlingboxFile.cpp in Sources */,
-				DF93D6AD1444A8B1007C6459 /* SmbFile.cpp in Sources */,
+				DF93D6AD1444A8B1007C6459 /* SMBFile.cpp in Sources */,
 				DF93D6AE1444A8B1007C6459 /* SpecialProtocolFile.cpp in Sources */,
 				DF93D6AF1444A8B1007C6459 /* TuxBoxDirectory.cpp in Sources */,
 				DF93D6B01444A8B1007C6459 /* TuxBoxFile.cpp in Sources */,
@@ -12142,7 +12142,7 @@
 				DFF0F24817528350002DA3A4 /* SlingboxFile.cpp in Sources */,
 				DFF0F24917528350002DA3A4 /* SmartPlaylistDirectory.cpp in Sources */,
 				DFF0F24A17528350002DA3A4 /* SMBDirectory.cpp in Sources */,
-				DFF0F24B17528350002DA3A4 /* SmbFile.cpp in Sources */,
+				DFF0F24B17528350002DA3A4 /* SMBFile.cpp in Sources */,
 				DFF0F24C17528350002DA3A4 /* SourcesDirectory.cpp in Sources */,
 				DFF0F24D17528350002DA3A4 /* SpecialProtocol.cpp in Sources */,
 				DFF0F24E17528350002DA3A4 /* SpecialProtocolDirectory.cpp in Sources */,
@@ -13339,7 +13339,7 @@
 				E49912B1174E5D9900741B6D /* SlingboxFile.cpp in Sources */,
 				E49912B2174E5D9900741B6D /* SmartPlaylistDirectory.cpp in Sources */,
 				E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */,
-				E49912B4174E5D9900741B6D /* SmbFile.cpp in Sources */,
+				E49912B4174E5D9900741B6D /* SMBFile.cpp in Sources */,
 				E49912B5174E5D9900741B6D /* SourcesDirectory.cpp in Sources */,
 				E49912B6174E5D9900741B6D /* SpecialProtocol.cpp in Sources */,
 				E49912B7174E5D9900741B6D /* SpecialProtocolDirectory.cpp in Sources */,
