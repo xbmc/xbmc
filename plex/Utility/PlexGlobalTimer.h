@@ -31,7 +31,7 @@ class CPlexGlobalTimerJob : public CJob
 class CPlexGlobalTimer : public CThread
 {
   public:
-    CPlexGlobalTimer() : CThread("CPlexGlobalTimer"), m_running(false) {}
+    CPlexGlobalTimer() : CThread("CPlexGlobalTimer"), m_running(false) { Create(); }
     ~CPlexGlobalTimer();
     void SetTimeout(int64_t msec, IPlexGlobalTimeout* callback);
     void RemoveTimeout(IPlexGlobalTimeout* callback);

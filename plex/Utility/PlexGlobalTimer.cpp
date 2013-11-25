@@ -27,7 +27,7 @@ void CPlexGlobalTimer::SetTimeout(int64_t msec, IPlexGlobalTimeout *callback)
   if (m_timeouts.size() == 0)
   {
     m_timeouts.push_back(newPair);
-    Create(false);
+    m_timerEvent.Set();
     return;
   }
 
@@ -100,10 +100,13 @@ void CPlexGlobalTimer::Process()
   while (m_running)
   {
     CSingleLock lk(m_timerLock);
-    if (m_timeouts.size() == 0)
+
+    while (m_timeouts.size() == 0)
     {
-      CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process no more timeouts.");
-      return;
+      CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process no more timeouts, waiting for them.");
+      lk.unlock();
+      m_timerEvent.Wait();
+      lk.lock();
     }
 
     timeoutPair p = m_timeouts.at(0);
