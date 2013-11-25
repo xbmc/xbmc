@@ -6,6 +6,7 @@ if(NOT TARGET_COMMON_LINUX)
 	list(REMOVE_ITEM linux_SRCS ./HALManager.cpp)
 endif(NOT TARGET_COMMON_LINUX)
 
-list(REMOVE_ITEM linux_SRCS ./OMXClock.cpp ./OMXCore.cpp ./RBP.cpp)
-
+if(NOT TARGET_RPI)
+    list(REMOVE_ITEM linux_SRCS ./OMXClock.cpp ./OMXCore.cpp ./RBP.cpp)
+endif()
 add_sources(${linux_SRCS})

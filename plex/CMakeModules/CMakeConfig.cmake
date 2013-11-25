@@ -17,7 +17,7 @@ OPTION(ENABLE_PYTHON "Enable Python addon support" OFF)
 OPTION(CREATE_BUNDLE "Create the finished bundle" ON)
 OPTION(COMPRESS_TEXTURES "If we should compress the textures or not" ON)
 OPTION(ENABLE_NEW_SKIN "Enable the new Plex skin" ON)
-OPTION(ENABLE_AUTOUPDATE "Enable the cool autoupdate system" ON)
+OPTION(ENABLE_AUTOUPDATE "Enable the cool autoupdate system" OFF)
 
 if(ENABLE_NEW_SKIN)
   add_definitions(-DPLEX_NEW_SKIN=1)
