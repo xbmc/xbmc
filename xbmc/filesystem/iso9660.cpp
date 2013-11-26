@@ -493,7 +493,8 @@ void iso9660::Scan()
     WORD wSectorSize = from_723(m_info.iso.logical_block_size);
 
     // first check if first file in the current VD has a rock-ridge NM. if it has, disable joliet
-    ::SetFilePointer( m_info.ISO_HANDLE, wSectorSize * from_733(((iso9660_Directory*)(&m_info.iso.szRootDir))->extent), 0, FILE_BEGIN );
+    iso9660_Directory *dirPointer = reinterpret_cast<iso9660_Directory*>(&m_info.iso.szRootDir);
+    ::SetFilePointer( m_info.ISO_HANDLE, wSectorSize * from_733(dirPointer->extent), 0, FILE_BEGIN );
 
     DWORD lpNumberOfBytesRead;
     char* pCurr_dir_cache = (char*)malloc( 16*wSectorSize );
