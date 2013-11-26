@@ -96,7 +96,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const CStdString &method, ITrans
 	bool bPrompt = false;
 	bPrompt = parameterObject["prompt"].asBoolean();
     
-	bool bCanceled;
+	bool bCanceled(false);
   bool bLoadProfile(false);
 
   if (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||            // Password not needed
