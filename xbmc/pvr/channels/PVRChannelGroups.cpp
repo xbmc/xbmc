@@ -294,8 +294,7 @@ bool CPVRChannelGroups::Load(void)
   }
 
   // set the internal group as selected at startup
-  internalChannels->SetSelectedGroup(true);
-  m_selectedGroup = internalChannels;
+  SetSelectedGroup(internalChannels);
 
   CLog::Log(LOGDEBUG, "PVR - %s - %d %s channel groups loaded", __FUNCTION__, (int) m_groups.size(), m_bRadio ? "radio" : "TV");
 
