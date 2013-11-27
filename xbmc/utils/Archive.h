@@ -20,7 +20,8 @@
  *
  */
 
-#include "StdString.h"
+#include <string>
+#include <vector>
 #include "system.h" // for SYSTEMTIME
 
 namespace XFILE
