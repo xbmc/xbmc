@@ -60,7 +60,7 @@
       <!-- Prev		-->      <button id="32">Back</button>
       <!-- Guide  	-->      <button id="65">FullScreen</button>
       <!-- Info  	-->      <button id="31">Info</button>
-      <!-- Exit 	-->      <button id="51">PreviousMenu</button>
+      <!-- Exit 	-->      <button id="51">ActivateWindow(Home)</button>
       <!-- Channel Up  	-->      <button id="71">PageUp</button>
       <!-- Channel Down -->      <button id="72">PageDown</button>
       <!-- looks like buttons below are duplicates of those above
