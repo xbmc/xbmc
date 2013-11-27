@@ -20,6 +20,7 @@
  *
  */
 
+#include "utils/StdString.h"
 #include "utils/Archive.h"
 
 /*! \brief TIME_FORMAT enum/bitmask used for formatting time strings

@@ -19,6 +19,7 @@
  *
  */
 
+#include "utils/StdString.h"
 #include "Archive.h"
 #include "ISerializable.h"
 #include <vector>
