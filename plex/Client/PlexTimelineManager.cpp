@@ -360,16 +360,12 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
 
   if (currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED &&
       currentPosition >= 5)
-  {
     currentItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
-  }
 
   if ((currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_IN_PROGRESS ||
       currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED) &&
       percentage > g_advancedSettings.m_videoPlayCountMinimumPercent)
-  {
     currentItem->MarkAsWatched();
-  }
 
   /* if we are stopping, we need to reset our currentItem */
   if (state == MEDIA_STATE_STOPPED)
