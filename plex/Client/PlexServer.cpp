@@ -64,12 +64,18 @@ CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 
     if (root->QueryBoolAttribute("allowMediaDeletion", &boolValue) == TIXML_SUCCESS)
       m_supportsDeletion = boolValue;
+    else
+      m_supportsDeletion = false;
 
     if (root->QueryBoolAttribute("transcoderAudio", &boolValue) == TIXML_SUCCESS)
       m_supportsAudioTranscoding = boolValue;
+    else
+      m_supportsAudioTranscoding = false;
 
     if (root->QueryBoolAttribute("transcoderVideo", &boolValue) == TIXML_SUCCESS)
       m_supportsVideoTranscoding = boolValue;
+    else
+      m_supportsVideoTranscoding = false;
 
     root->QueryStringAttribute("serverClass", &m_serverClass);
     root->QueryStringAttribute("version", &m_version);
