@@ -598,6 +598,22 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       g_guiSettings.SetString("updates.current", g_infoManager.GetVersion());
     }
+    else if (strSetting.Equals("plexmediaserver.remotequalitystr"))
+    {
+      if (g_guiSettings.GetInt("plexmediaserver.remotequality") == 0)
+        g_guiSettings.SetString("plexmediaserver.remotequalitystr", g_localizeStrings.Get(42999));
+    }
+    else if (strSetting.Equals("plexmediaserver.localqualitystr"))
+    {
+      if (g_guiSettings.GetInt("plexmediaserver.localquality") == 0)
+        g_guiSettings.SetString("plexmediaserver.localqualitystr", g_localizeStrings.Get(42999));
+    }
+    else if (strSetting.Equals("plexmediaserver.onlinemediaqualitystr"))
+    {
+      if (g_guiSettings.GetInt("plexmediaserver.onlinemediaquality") == 0)
+        g_guiSettings.SetString("plexmediaserver.onlinemediaqualitystr", g_localizeStrings.Get(13181));
+    }
+
     /* END PLEX */
 
     AddSetting(pSetting, group->GetWidth(), iControlID);

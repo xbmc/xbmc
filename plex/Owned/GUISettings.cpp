@@ -913,7 +913,7 @@ void CGUISettings::Initialize()
   AddInt(NULL, "plexmediaserver.remotequality", 52201, 0, 0, 1, INT_MAX, SPIN_CONTROL_INT);
 
   // TODO: Hook this up to preferred channel quality picker (should be like 1080p, 720p, 480p, SD)
-  AddString(qual, "plexmediaserver.onlinemediaqualitystr", 52203, g_localizeStrings.Get(13183), BUTTON_CONTROL_MISC_INPUT);
+  AddString(qual, "plexmediaserver.onlinemediaqualitystr", 52203, g_localizeStrings.Get(13181), BUTTON_CONTROL_MISC_INPUT);
   AddInt(NULL, "plexmediaserver.onlinemediaquality", 52201, 0, 0, 1, INT_MAX, SPIN_CONTROL_INT);
 
   CSettingsCategory* pms = AddCategory(SETTINGS_SERVICE, "plexmediaserver", 40210);
