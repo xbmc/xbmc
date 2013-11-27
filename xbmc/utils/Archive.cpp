@@ -179,30 +179,6 @@ CArchive& CArchive::operator<<(const std::string& str)
   return *this;
 }
 
-CArchive& CArchive::operator<<(const CStdString& str)
-{
-  *this << (unsigned int)str.size();
-
-  int size = str.size();
-  if (m_BufferPos + size >= BUFFER_MAX)
-    FlushBuffer();
-
-  int iBufferMaxParts=size/BUFFER_MAX;
-  for (int i=0; i<iBufferMaxParts; i++)
-  {
-    memcpy(&m_pBuffer[m_BufferPos], str.c_str()+(i*BUFFER_MAX), BUFFER_MAX);
-    m_BufferPos+=BUFFER_MAX;
-    FlushBuffer();
-  }
-
-  int iPos=iBufferMaxParts*BUFFER_MAX;
-  int iSizeLeft=size-iPos;
-  memcpy(&m_pBuffer[m_BufferPos], str.c_str()+iPos, iSizeLeft);
-  m_BufferPos+=iSizeLeft;
-
-  return *this;
-}
-
 CArchive& CArchive::operator<<(const CStdStringW& str)
 {
   *this << (unsigned int)str.size();
@@ -371,18 +347,6 @@ CArchive& CArchive::operator>>(std::string& str)
   m_pFile->Read(s, iLength);
   str.assign(s, iLength);
   delete[] s;
-
-  return *this;
-}
-
-CArchive& CArchive::operator>>(CStdString& str)
-{
-  unsigned int iLength = 0;
-  *this >> iLength;
-
-  m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength);
-  str.ReleaseBuffer();
-
 
   return *this;
 }

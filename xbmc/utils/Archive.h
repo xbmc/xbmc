@@ -53,7 +53,6 @@ public:
   CArchive& operator<<(bool b);
   CArchive& operator<<(char c);
   CArchive& operator<<(const std::string &str);
-  CArchive& operator<<(const CStdString& str);
   CArchive& operator<<(const CStdStringW& str);
   CArchive& operator<<(const SYSTEMTIME& time);
   CArchive& operator<<(IArchivable& obj);
@@ -71,7 +70,6 @@ public:
   CArchive& operator>>(bool& b);
   CArchive& operator>>(char& c);
   CArchive& operator>>(std::string &str);
-  CArchive& operator>>(CStdString& str);
   CArchive& operator>>(CStdStringW& str);
   CArchive& operator>>(SYSTEMTIME& time);
   CArchive& operator>>(IArchivable& obj);
