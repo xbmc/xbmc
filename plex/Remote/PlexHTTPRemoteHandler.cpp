@@ -461,8 +461,6 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     action = ACTION_MOVE_UP;
   else if (navigation.Equals("select"))
     action = ACTION_SELECT_ITEM;
-  else if (navigation.Equals("back"))
-    action = ACTION_NAV_BACK;
   else if (navigation.Equals("music"))
   {
     if (g_application.IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
@@ -475,6 +473,14 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, args, false);
     return;
   }
+  else if (navigation.Equals("back"))
+  {
+    if (g_application.IsPlayingFullScreenVideo())
+      action = ACTION_STOP;
+    else
+      action = ACTION_NAV_BACK;
+  }
+
 
 #ifdef LEGACY
   else if (navigation.Equals("contextMenu"))
