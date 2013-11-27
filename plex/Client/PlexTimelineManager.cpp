@@ -330,7 +330,7 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
   }
 
   if (g_plexApplication.remoteSubscriberManager->hasSubscribers() &&
-      (stateChange || (positionUpdate && m_subTimer.elapsedMs() >= 950)))
+      (stateChange || m_subTimer.elapsedMs() >= 950))
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating subscribers.");
     NotifyPollers();
@@ -346,7 +346,7 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
   else if (server && server->GetActiveConnection() && !server->GetActiveConnection()->IsLocal())
     serverTimeout = 9950 * 3; // 30 seconds for remote server
 
-  if (stateChange || (positionUpdate && m_serverTimer.elapsedMs() >= serverTimeout))
+  if (stateChange || m_serverTimer.elapsedMs() >= serverTimeout)
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server");
     g_plexApplication.mediaServerClient->SendServerTimeline(m_currentItems[type], GetCurrentTimeline(type));
