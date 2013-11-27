@@ -327,8 +327,8 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   
   if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK)
   {
-    if (g_application.IsPlaying())
-      CApplicationMessenger::Get().MediaStop();
+    if (g_application.IsPlaying() || g_application.IsPaused())
+      CApplicationMessenger::Get().MediaStop(true);
     
     if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
       CApplicationMessenger::Get().PlayListPlayerShuffle(PLAYLIST_MUSIC, false);
@@ -341,19 +341,14 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   {
     /* if we are playing music, we don't need to stop */
     if (g_application.IsPlayingVideo())
-      CApplicationMessenger::Get().MediaStop();
+      CApplicationMessenger::Get().MediaStop(true);
     
     g_application.WakeUpScreenSaverAndDPMS();
     CLog::Log(LOGDEBUG, "PlexHTTPRemoteHandler::playMedia photo slideshow with start %s", list.Get(idx)->GetPath().c_str());
     CApplicationMessenger::Get().PictureSlideShow(itemURL.Get(), false, list.Get(idx)->GetPath());
   }
   else
-  {
-    if (g_application.IsPlaying())
-      CApplicationMessenger::Get().MediaStop();
-    
     CApplicationMessenger::Get().PlayFile(*item);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
