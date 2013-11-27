@@ -45,6 +45,12 @@ static enum AEChannel ALSAChannelMap[ALSA_MAX_CHANNELS + 1] = {
   AE_CH_NULL
 };
 
+static enum AEChannel ALSAChannelMapWide[ALSA_MAX_CHANNELS + 1] = {
+  AE_CH_FL      , AE_CH_FR      , AE_CH_SL      , AE_CH_SR      , AE_CH_FC      , AE_CH_LFE     , AE_CH_BL      , AE_CH_BR      ,
+  AE_CH_UNKNOWN1, AE_CH_UNKNOWN2, AE_CH_UNKNOWN3, AE_CH_UNKNOWN4, AE_CH_UNKNOWN5, AE_CH_UNKNOWN6, AE_CH_UNKNOWN7, AE_CH_UNKNOWN8, /* for p16v devices */
+  AE_CH_NULL
+};
+
 static unsigned int ALSASampleRateList[] =
 {
   5512,
@@ -94,9 +100,15 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(AEAudioFormat format)
            count = 8;
   else
   {
+    // According to CEA-861-D only RL and RR are known. In case of a format having SL and SR channels
+    // but no BR BL channels, we use the wide map in order to open only the num of channels really
+    // needed.
+    enum AEChannel* channelMap = ALSAChannelMap;
+    if (format.m_channelLayout.HasChannel(AE_CH_SL) && !format.m_channelLayout.HasChannel(AE_CH_BL))
+      channelMap = ALSAChannelMapWide;
     for (unsigned int c = 0; c < 8; ++c)
       for (unsigned int i = 0; i < format.m_channelLayout.Count(); ++i)
-        if (format.m_channelLayout[i] == ALSAChannelMap[c])
+        if (format.m_channelLayout[i] == channelMap[c])
         {
           count = c + 1;
           break;
