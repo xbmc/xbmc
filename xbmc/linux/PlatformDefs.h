@@ -199,11 +199,7 @@ typedef int64_t     INT64;
 typedef uint64_t    UINT64;
 typedef long        LONG;
 typedef long long   LONGLONG;
-#if defined(TARGET_DARWIN_OSX)
-typedef UInt32      ULONG;
-#else
 typedef unsigned long ULONG;
-#endif
 typedef float       FLOAT;
 typedef size_t      SIZE_T;
 typedef void*       PVOID;
@@ -212,11 +208,7 @@ typedef void*       LPVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 typedef HANDLE      HDC;
 typedef void*       HWND;
-#if defined(TARGET_DARWIN_OSX)
-typedef SInt32      HRESULT;
-#else
 typedef LONG        HRESULT;
-#endif
 typedef BYTE*       LPBYTE;
 typedef DWORD*      LPDWORD;
 typedef CONST CHAR* LPCSTR;
