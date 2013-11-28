@@ -357,7 +357,9 @@
 #include "plex/Remote/PlexRemoteSubscriberManager.h"
 #include "plex/CrashReporter/Breakpad.h"
 #include "plex/GUI/GUIDialogPlexAudioSubtitlePicker.h"
+#ifndef TARGET_RASPBERRY_PI
 #include "plex/GUI/GUIWindowPlexStartupHelper.h"
+#endif
 #include "plex/PlexThemeMusicPlayer.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
 /* END PLEX */
@@ -1527,7 +1529,9 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowPlexMyChannels);
     g_windowManager.Add(new CGUIDialogPlexAudioPicker);
     g_windowManager.Add(new CGUIDialogPlexSubtitlePicker);
+#ifndef TARGET_RASPBERRY_PI
     g_windowManager.Add(new CGUIWindowPlexStartupHelper);
+#endif
     g_windowManager.Add(new CGUIPlexPictureWindow);
     /* END PLEX */
 
