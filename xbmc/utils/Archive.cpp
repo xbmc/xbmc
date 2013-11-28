@@ -359,7 +359,7 @@ CArchive& CArchive::operator>>(std::wstring& wstr)
   *this >> iLength;
 
   wchar_t * const p = new wchar_t[iLength];
-  m_pFile->Read(p, iLength);
+  m_pFile->Read(p, iLength * sizeof(wchar_t));
   wstr.assign(p, iLength);
   delete[] p;
 
