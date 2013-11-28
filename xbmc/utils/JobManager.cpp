@@ -431,7 +431,7 @@ unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority) const
 #ifndef __PLEX__
   static const unsigned int max_workers = 5;
 #else
-  static const unsigned int max_workers = 5;
+  static const unsigned int max_workers = 10;
 #endif
   return max_workers - (CJob::PRIORITY_HIGH - priority);
 }
