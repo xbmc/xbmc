@@ -46,7 +46,7 @@ size_t CUtf8Utils::RFindValidUtf8Char(const std::string& str, const size_t start
 
   const char* strC = str.c_str();
   size_t pos = (startPos >= len) ? len - 1 : startPos;
-  while (pos >= 0)
+  while (pos < len)  // pos is unsigned, after zero pos becomes large then len
   {
     if (SizeOfUtf8Char(strC + pos))
       return pos;
