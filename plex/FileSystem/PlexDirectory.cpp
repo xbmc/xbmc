@@ -38,6 +38,78 @@
 
 using namespace XFILE;
 
+
+//Cached Directory class : contains information about cached directory
+#include <map>
+#include <iostream>
+#include <functional>
+#include <string>
+
+class CCachedDirectory
+{
+public:
+	CCachedDirectory(CStdString url,CFileItemList *pfileitems, unsigned long hash)
+	{	
+		Url = url;
+		if (pfileitems)	FileItems.Copy(*pfileitems);
+		Hash = hash;
+	}
+	
+	CStdString Url;
+	CFileItemList FileItems;
+	unsigned long Hash;
+	
+	
+};
+
+// Cache management class
+class CPlexDirectoryCache
+{
+public :
+	CCachedDirectory *Get(CStdString url)
+	{
+		iPlexDirectoryCache i = m_PlexDirectoryCache.find(url);
+		if (i != m_PlexDirectoryCache.end())
+		{
+			return m_PlexDirectoryCache.at(url);
+		}
+		
+		return NULL;
+	}
+	
+	void Remove(CStdString url)
+	{
+		m_PlexDirectoryCache.erase(url);
+	}
+	
+	unsigned long GetHash(CStdString Data)
+	{
+		unsigned long hash = 5381;
+        int c;
+		const char* str = Data.c_str();
+
+        while (c = *str++)
+            hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+        return hash;
+	}
+	
+	void Add(CCachedDirectory *Dir)
+	{
+		m_PlexDirectoryCache.insert(std::pair<CStdString, CCachedDirectory*>(Dir->Url, Dir));
+	}
+	
+protected:
+	std::map<CStdString, CCachedDirectory*> m_PlexDirectoryCache;
+	typedef std::map<CStdString, CCachedDirectory*>::iterator iPlexDirectoryCache;
+
+};
+
+// Global Cache collection
+CPlexDirectoryCache g_PlexDirectoryCache;
+
+
+
 /* IDirectory Interface */
 bool
 CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
@@ -46,9 +118,9 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
 
   CStopWatch timer;
   timer.StartZero();
-
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", m_url.Get().c_str());
 
+ 
   /* Some hardcoded paths here */
   if (url.GetHostName() == "shared")
   {
@@ -112,6 +184,36 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return false;
   }
 
+  //Cache management
+  // Compute xml Hash
+  bool bFoundInCache = false;
+  CCachedDirectory *pCachedDir = g_PlexDirectoryCache.Get(url.Get());
+  unsigned long NewHash = g_PlexDirectoryCache.GetHash(m_data);
+    
+  if (pCachedDir)
+  {
+	// already in cache, check the Hash
+	if (NewHash == pCachedDir->Hash)
+	{
+		CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: Found in Cache with matching Hash (%d, %s)", NewHash, url.Get().c_str());
+		fileItems.Copy(pCachedDir->FileItems);
+		bFoundInCache = true;
+	}
+	else
+	{
+		CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: Found in Cache without matching Hash (%d, %s), removing", NewHash, url.Get().c_str());
+		g_PlexDirectoryCache.Remove(url.Get());
+	}
+  }
+  else
+  {
+	// not cached, we add it to cache
+	CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: Not Found in Cache,adding (%d,%s)",NewHash, url.Get().c_str());
+  }
+  
+  
+  // End Cache Management
+  if (!bFoundInCache)
   {
     CXBMCTinyXML doc;
 
@@ -130,11 +232,16 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
       CancelAugmentations();
       return false;
     }
+  
+
+	if (m_isAugmented)
+		DoAugmentation(fileItems);
+
+	// Adding to Cache
+	CCachedDirectory *NewDir = new CCachedDirectory(url.Get(),&fileItems,NewHash);
+	g_PlexDirectoryCache.Add(NewDir);
   }
-
-  if (m_isAugmented)
-    DoAugmentation(fileItems);
-
+	
   float elapsed = timer.GetElapsedSeconds();
 
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory returning a directory after %f seconds with %d items with content %s", elapsed, fileItems.Size(), fileItems.GetContent().c_str());

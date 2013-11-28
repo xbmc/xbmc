@@ -349,6 +349,7 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
   CSingleLock lock(m_section);
   while (m_running)
   {
+	CLog::Log(LOGDEBUG, "CJobManager::GetNextJob Jobs processing %d", m_processing.size());
     // grab a job off the queue if we have one
     CJob *job = PopJob();
     if (job)
@@ -430,7 +431,7 @@ unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority) const
 #ifndef __PLEX__
   static const unsigned int max_workers = 5;
 #else
-  static const unsigned int max_workers = 10;
+  static const unsigned int max_workers = 5;
 #endif
   return max_workers - (CJob::PRIORITY_HIGH - priority);
 }

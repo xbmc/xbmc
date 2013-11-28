@@ -26,6 +26,7 @@
 #include "DDSImage.h"
 #include "filesystem/SpecialProtocol.h"
 #include "JpegIO.h"
+#include "Stopwatch.h"
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
@@ -103,6 +104,7 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   CLAMP(m_imageHeight, m_textureHeight);
   delete[] m_pixels;
   m_pixels = new unsigned char[GetPitch() * GetRows()];
+  CLog::Log(LOGDEBUG, "***CBaseTexture::Allocate %d Bytes", GetPitch() * GetRows());
 }
 
 void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU)
@@ -226,10 +228,14 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
   if (URIUtils::GetExtension(texturePath)!=".png")
   {
     COMXImage omx_image;
-
+	
+	CStopWatch timer;
+	timer.StartZero();
+		
     if(omx_image.ReadFile(texturePath))
-    {
-      if(omx_image.Decode(maxWidth, maxHeight))
+	{
+  
+	  if(omx_image.Decode(m_textureWidth, m_textureWidth))
       {
         Allocate(omx_image.GetDecodedWidth(), omx_image.GetDecodedHeight(), XB_FMT_A8R8G8B8);
 
@@ -265,6 +271,7 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
         }
         else
         {
+			
           if(omx_image.GetDecodedData())
           {
             int size = ( ( GetPitch() * GetRows() ) > omx_image.GetDecodedSize() ) ?
@@ -275,7 +282,7 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
         }
 
         omx_image.Close();
-
+	
         return true;
       }
       else
