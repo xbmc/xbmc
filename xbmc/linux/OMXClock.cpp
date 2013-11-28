@@ -131,8 +131,6 @@ bool OMXClock::OMXInitialize(CDVDClock *clock)
   if(!m_omx_clock.Initialize((const std::string)componentName, OMX_IndexParamOtherInit))
     return false;
 
-  m_omx_clock.DisableAllPorts();
-
   return true;
 }
 
@@ -141,7 +139,7 @@ void OMXClock::OMXDeinitialize()
   if(m_omx_clock.GetComponent() == NULL)
     return;
 
-  m_omx_clock.Deinitialize(true);
+  m_omx_clock.Deinitialize();
 
   m_omx_speed = DVD_PLAYSPEED_NORMAL;
 }

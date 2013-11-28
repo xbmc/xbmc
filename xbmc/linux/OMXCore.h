@@ -72,9 +72,8 @@ public:
   void Initialize(COMXCoreComponent *src_component, unsigned int src_port, COMXCoreComponent *dst_component, unsigned int dst_port);
   bool IsInitialized();
   OMX_ERRORTYPE Deestablish(bool noWait = false);
-  OMX_ERRORTYPE Establish(bool portSettingsChanged, bool enable_ports = true, bool disable_ports = false);
+  OMX_ERRORTYPE Establish(bool enable_ports = true, bool disable_ports = false);
 private:
-  bool              m_portSettingsChanged;
   COMXCoreComponent *m_src_component;
   COMXCoreComponent *m_dst_component;
   unsigned int      m_src_port;
@@ -112,7 +111,7 @@ public:
 
   bool          Initialize( const std::string &component_name, OMX_INDEXTYPE index);
   bool          IsInitialized();
-  bool          Deinitialize(bool free_component = false);
+  bool          Deinitialize();
 
   // OMXCore Decoder delegate callback routines.
   static OMX_ERRORTYPE DecoderEventHandlerCallback(OMX_HANDLETYPE hComponent, OMX_PTR pAppData,
