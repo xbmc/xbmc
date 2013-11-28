@@ -20,7 +20,9 @@
  *
  */
 
-#ifdef TARGET_POSIX
+#ifndef TARGET_POSIX
+#error "This file is POSIX-specific only!"
+#else
 
 #define LINE_ENDING "\n"
 
@@ -59,7 +61,6 @@
 #endif
 #include <sys/time.h>
 #include <time.h>
-#endif
 
 #if defined(__ppc__) || defined(__powerpc__)
 #define PIXEL_ASHIFT 0
@@ -84,38 +85,26 @@
 #include <stdint.h>
 
 #ifndef PRId64
-#ifdef TARGET_WINDOWS
-#define PRId64 "I64d"
-#else
 #if __WORDSIZE == 64
 #define PRId64 "ld"
 #else
 #define PRId64 "lld"
 #endif
 #endif
-#endif
 
 #ifndef PRIu64
-#ifdef TARGET_WINDOWS
-#define PRIu64 "I64u"
-#else
 #if __WORDSIZE == 64
 #define PRIu64 "lu"
 #else
 #define PRIu64 "llu"
 #endif
 #endif
-#endif
 	
 #ifndef PRIx64
-#ifdef TARGET_WINDOWS
-#define PRIx64 "I64x"
-#else
 #if __WORDSIZE == 64
 #define PRIx64 "lx"
 #else
 #define PRIx64 "llx"
-#endif
 #endif
 #endif
 
@@ -127,7 +116,6 @@
 #define PRIuS "zu"
 #endif
 
-#ifdef TARGET_POSIX
 
 #define XXLog(a,b) printf("%s", (b))
 
@@ -661,8 +649,4 @@ typedef struct tWAVEFORMATEXTENSIBLE
   GUID SubFormat;
 } __attribute__((__packed__)) WAVEFORMATEXTENSIBLE;
 
-
-
 #endif
-
-
