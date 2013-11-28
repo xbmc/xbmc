@@ -92,7 +92,8 @@ bool CPVRRecordings::IsDirectoryMember(const CStdString &strDirectory, const CSt
   CStdString strUseDirectory = TrimSlashes(strDirectory);
   CStdString strUseEntryDirectory = TrimSlashes(strEntryDirectory);
 
-  return StringUtils::StartsWith(strUseEntryDirectory, strUseDirectory) &&
+  /* Case-insensitive comparison since sub folders are created with case-insensitive matching (GetSubDirectories) */
+  return StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory) &&
       (!bDirectMember || strUseEntryDirectory.Equals(strUseDirectory));
 }
 
