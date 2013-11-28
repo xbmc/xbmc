@@ -198,19 +198,19 @@ typedef uint32_t    UINT32;
 typedef int64_t     INT64;
 typedef uint64_t    UINT64;
 typedef long        LONG;
-typedef long long     LONGLONG;
+typedef long long   LONGLONG;
 #if defined(TARGET_DARWIN_OSX)
-typedef UInt32          ULONG;
+typedef UInt32      ULONG;
 #else
-typedef unsigned long   ULONG;
+typedef unsigned long ULONG;
 #endif
-typedef float         FLOAT;
-typedef size_t        SIZE_T;
-typedef void*         PVOID;
-typedef void*         LPVOID;
+typedef float       FLOAT;
+typedef size_t      SIZE_T;
+typedef void*       PVOID;
+typedef void*       LPVOID;
 //typedef PVOID         HANDLE;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
-typedef HANDLE        HDC;
+typedef HANDLE      HDC;
 typedef void*       HWND;
 #if defined(TARGET_DARWIN_OSX)
 typedef SInt32      HRESULT;
@@ -218,18 +218,18 @@ typedef SInt32      HRESULT;
 typedef LONG        HRESULT;
 #endif
 typedef BYTE*       LPBYTE;
-typedef DWORD*        LPDWORD;
-typedef CONST CHAR*   LPCSTR;
-typedef CONST WCHAR*    LPCWSTR;
-typedef CHAR*     LPTSTR;
-typedef WCHAR         *PWSTR,      *LPWSTR,    *NWPSTR;
-typedef CHAR            *PSTR,       *LPSTR,     *NPSTR;
+typedef DWORD*      LPDWORD;
+typedef CONST CHAR* LPCSTR;
+typedef CONST WCHAR*  LPCWSTR;
+typedef CHAR*       LPTSTR;
+typedef WCHAR       *PWSTR,      *LPWSTR,    *NWPSTR;
+typedef CHAR        *PSTR,       *LPSTR,     *NPSTR;
 typedef LONG        *PLONG, *LPLONG;
 typedef LPCSTR      LPCTSTR;
 typedef unsigned long long  ULONGLONG;
 typedef intptr_t    LONG_PTR;
 typedef uintptr_t   ULONG_PTR;
-typedef ULONG_PTR     DWORD_PTR;
+typedef ULONG_PTR   DWORD_PTR;
 typedef __int64     __time64_t;
 typedef intptr_t (*FARPROC)(void);
 
