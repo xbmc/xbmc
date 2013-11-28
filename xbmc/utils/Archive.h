@@ -47,8 +47,10 @@ public:
   // storing
   CArchive& operator<<(float f);
   CArchive& operator<<(double d);
-  CArchive& operator<<(int i);
-  CArchive& operator<<(unsigned int i);
+  CArchive& operator<<(int16_t i16);
+  CArchive& operator<<(uint16_t ui16);
+  CArchive& operator<<(int32_t i32);
+  CArchive& operator<<(uint32_t ui32);
   CArchive& operator<<(int64_t i64);
   CArchive& operator<<(uint64_t ui64);
   CArchive& operator<<(bool b);
@@ -64,8 +66,10 @@ public:
   // loading
   CArchive& operator>>(float& f);
   CArchive& operator>>(double& d);
-  CArchive& operator>>(int& i);
-  CArchive& operator>>(unsigned int& i);
+  CArchive& operator>>(int16_t& i16);
+  CArchive& operator>>(uint16_t& ui16);
+  CArchive& operator>>(int32_t& i32);
+  CArchive& operator>>(uint32_t& ui32);
   CArchive& operator>>(int64_t& i64);
   CArchive& operator>>(uint64_t& ui64);
   CArchive& operator>>(bool& b);

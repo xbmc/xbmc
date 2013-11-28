@@ -83,25 +83,49 @@ CArchive& CArchive::operator<<(double d)
   return *this;
 }
 
-CArchive& CArchive::operator<<(int i)
+CArchive& CArchive::operator<<(int16_t i16)
 {
-  int size = sizeof(int);
+  int size = sizeof(i16);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
-  memcpy(&m_pBuffer[m_BufferPos], &i, size);
+  memcpy(&m_pBuffer[m_BufferPos], &i16, size);
   m_BufferPos += size;
 
   return *this;
 }
 
-CArchive& CArchive::operator<<(unsigned int i)
+CArchive& CArchive::operator<<(uint16_t ui16)
 {
-  int size = sizeof(unsigned int);
+  int size = sizeof(ui16);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
-  memcpy(&m_pBuffer[m_BufferPos], &i, size);
+  memcpy(&m_pBuffer[m_BufferPos], &ui16, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(int32_t i32)
+{
+  int size = sizeof(i32);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &i32, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(uint32_t ui32)
+{
+  int size = sizeof(ui32);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &ui32, size);
   m_BufferPos += size;
 
   return *this;
@@ -298,16 +322,30 @@ CArchive& CArchive::operator>>(double& d)
   return *this;
 }
 
-CArchive& CArchive::operator>>(int& i)
+CArchive& CArchive::operator>>(int16_t& i16)
 {
-  m_pFile->Read((void*)&i, sizeof(int));
+  m_pFile->Read((void*)&i16, sizeof(i16));
 
   return *this;
 }
 
-CArchive& CArchive::operator>>(unsigned int& i)
+CArchive& CArchive::operator>>(uint16_t& ui16)
 {
-  m_pFile->Read((void*)&i, sizeof(unsigned int));
+  m_pFile->Read((void*)&ui16, sizeof(ui16));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(int32_t& i32)
+{
+  m_pFile->Read((void*)&i32, sizeof(i32));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(uint32_t& ui32)
+{
+  m_pFile->Read((void*)&ui32, sizeof(ui32));
 
   return *this;
 }
