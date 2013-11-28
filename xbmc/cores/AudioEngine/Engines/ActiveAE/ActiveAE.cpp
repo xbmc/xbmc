@@ -1649,9 +1649,11 @@ bool CActiveAE::RunStages()
               fadingStep = delta / samples;
             }
 
-            // for streams amplification of turned off downmix normalization
+            // for stream amplification, 
+            // turned off downmix normalization,
+            // or if sink format is float (in order to prevent from clipping)
             // we need to run on a per sample basis
-            if ((*it)->m_amplify != 1.0 || !(*it)->m_resampleBuffers->m_normalize)
+            if ((*it)->m_amplify != 1.0 || !(*it)->m_resampleBuffers->m_normalize || (m_sinkFormat.m_dataFormat == AE_FMT_FLOAT))
             {
               nb_floats = out->pkt->config.channels / out->pkt->planes;
               nb_loops = out->pkt->nb_samples;
