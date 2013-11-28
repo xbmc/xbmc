@@ -142,11 +142,11 @@
 #define ZeroMemory(dst,size) memset(dst, 0, size)
 
 #define VOID    void
-#define __int8    char
-#define __int16   short
-#define __int32   int
-#define __int64   long long
-#define __uint64  unsigned long long
+#define __int8    int8_t
+#define __int16   int16_t
+#define __int32   int32_t
+#define __int64   int64_t
+#define __uint64  uint64_t
 
 #if defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) || defined (__arm__) // should this be powerpc64 only?
 #define __stdcall
@@ -181,22 +181,22 @@ typedef CXHandle* HANDLE;
 typedef void* HINSTANCE;
 typedef void* HMODULE;
 
-typedef unsigned int  DWORD;
-typedef unsigned short  WORD;
-typedef unsigned char   BYTE;
+typedef uint32_t    DWORD;
+typedef uint16_t    WORD;
+typedef uint8_t     BYTE;
 typedef char        CHAR;
 typedef unsigned char UCHAR;
 typedef wchar_t     WCHAR;
 typedef int         BOOL;
-typedef BYTE        BOOLEAN;
+typedef uint8_t     BOOLEAN;
 typedef short       SHORT;
 typedef unsigned short  USHORT;
 typedef int         INT;
 typedef unsigned int  UINT;
 // typedef int INT32;              // unused; must match Xmd.h but why bother
-typedef unsigned int  UINT32;
-typedef long long     INT64;
-typedef unsigned long long    UINT64;
+typedef uint32_t    UINT32;
+typedef int64_t     INT64;
+typedef uint64_t    UINT64;
 typedef long        LONG;
 typedef long long     LONGLONG;
 #if defined(TARGET_DARWIN_OSX)
@@ -225,14 +225,10 @@ typedef CHAR*     LPTSTR;
 typedef WCHAR         *PWSTR,      *LPWSTR,    *NWPSTR;
 typedef CHAR            *PSTR,       *LPSTR,     *NPSTR;
 typedef LONG        *PLONG, *LPLONG;
-#ifdef UNICODE
-typedef LPCWSTR       LPCTSTR;
-#else
 typedef LPCSTR      LPCTSTR;
-#endif
-typedef unsigned __int64 ULONGLONG;
-typedef long        LONG_PTR;
-typedef unsigned long   ULONG_PTR;
+typedef unsigned long long  ULONGLONG;
+typedef intptr_t    LONG_PTR;
+typedef uintptr_t   ULONG_PTR;
 typedef ULONG_PTR     DWORD_PTR;
 typedef __int64     __time64_t;
 typedef intptr_t (*FARPROC)(void);
