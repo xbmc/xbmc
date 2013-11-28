@@ -139,7 +139,7 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
       item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
   }
   
-  //ParseMediaNodes(item, itemElement);
+  ParseMediaNodes(item, itemElement);
 
   
   /* Now we have the Media nodes, we need to "borrow" some properties from it */
