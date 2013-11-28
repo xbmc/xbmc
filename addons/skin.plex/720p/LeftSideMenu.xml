@@ -357,7 +357,12 @@
 						<label>$LOCALIZE[31955]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
-					</item>
+                    </item>
+                    <item id="101">
+                        <description>RasPlex Settings Button</description>
+                        <label> $LOCALIZE[41000] </label>
+                        <onclick>RunAddon(service.openelec.settings)</onclick>
+                    </item>
 					<item id="111">
 						<description>Quit</description>
 						<label>$LOCALIZE[31007]</label>
