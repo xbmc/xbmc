@@ -53,12 +53,12 @@ struct CoreInfo
   unsigned long long m_system;
   unsigned long long m_idle;
   unsigned long long m_io;
-  CStdString m_strVendor;
-  CStdString m_strModel;
-  CStdString m_strBogoMips;
-  CStdString m_strHardware;
-  CStdString m_strRevision;
-  CStdString m_strSerial;
+  std::string m_strVendor;
+  std::string m_strModel;
+  std::string m_strBogoMips;
+  std::string m_strHardware;
+  std::string m_strRevision;
+  std::string m_strSerial;
   CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_user(0LL), m_nice(0LL), m_system(0LL), m_idle(0LL), m_io(0LL) {}
 };
 
@@ -81,7 +81,7 @@ public:
   const CoreInfo &GetCoreInfo(int nCoreId);
   bool HasCoreId(int nCoreId) const;
 
-  CStdString GetCoresUsageString() const;
+  std::string GetCoresUsageString() const;
 
   unsigned int GetCPUFeatures() { return m_cpuFeatures; }
 

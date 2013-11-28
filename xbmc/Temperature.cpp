@@ -483,7 +483,7 @@ double CTemperature::ToLocale() const
 }
 
 // Returns temperature as localized string
-CStdString CTemperature::ToString() const
+std::string CTemperature::ToString() const
 {
   if (!IsValid())
     return g_localizeStrings.Get(13205); // "Unknown"
