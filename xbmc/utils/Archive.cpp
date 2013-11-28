@@ -241,6 +241,9 @@ CArchive& CArchive::operator<<(const CVariant& variant)
   case CVariant::VariantTypeString:
     *this << variant.asString();
     break;
+  case CVariant::VariantTypeWideString:
+    *this << variant.asWideString();
+    break;
   case CVariant::VariantTypeDouble:
     *this << variant.asDouble();
     break;
@@ -412,6 +415,13 @@ CArchive& CArchive::operator>>(CVariant& variant)
   case CVariant::VariantTypeString:
   {
     std::string value;
+    *this >> value;
+    variant = value;
+    break;
+  }
+  case CVariant::VariantTypeWideString:
+  {
+    std::wstring value;
     *this >> value;
     variant = value;
     break;
