@@ -1,5 +1,4 @@
-#ifndef __PLATFORM_DEFS_H__
-#define __PLATFORM_DEFS_H__
+#pragma once
 
 /*
  *      Copyright (C) 2005-2013 Team XBMC
@@ -665,7 +664,5 @@ typedef struct tWAVEFORMATEXTENSIBLE
 
 
 #endif
-
-#endif //__PLATFORM_DEFS_H__
 
 
