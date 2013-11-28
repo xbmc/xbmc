@@ -42,6 +42,7 @@
 #include "threads/SingleLock.h"
 
 typedef boost::shared_ptr<CDVDInputStream> InputStreamPtr;
+typedef boost::shared_ptr<CDVDDemux> DemuxPtr;
 
 class COMXPlayer;
 class OMXPlayerVideo;
@@ -154,7 +155,7 @@ public:
   int              Source  (StreamSource source, std::string filename);
 
   void             Update  (OMXSelectionStream& s);
-  void             Update  (CDVDInputStream* input, CDVDDemux* demuxer);
+  int              Update  (CDVDInputStream* input, CDVDDemux* demuxer);
 };
 
 
@@ -338,6 +339,7 @@ protected:
   bool CheckDelayedChannelEntry(void);
   bool OpenInputStream();
   bool OpenDemuxStream();
+  bool OpenDemuxStream(InputStreamPtr& input);
   void OpenDefaultStreams(bool reset = true);
 
   void UpdateApplication(double timeout);
@@ -390,7 +392,8 @@ protected:
 
   CDVDInputStream* m_pInputStream;                // master input stream for current playing file
   std::map<int, InputStreamPtr> m_pInputStreams;  // input streams for current playing file
-  CDVDDemux* m_pDemuxer;                          // demuxer for current playing file
+  CDVDDemux* m_pDemuxer;                          // master demuxer for current playing file
+  std::map<int, DemuxPtr> m_pDemuxers;              // demuxers for current playing file
   CDVDDemux*            m_pSubtitleDemuxer;
 
   CStdString m_lastSub;
