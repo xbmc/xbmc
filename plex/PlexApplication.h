@@ -59,6 +59,8 @@ class CPlexThumbCacher;
 class CPlexFilterManager;
 typedef boost::shared_ptr<CPlexFilterManager> CPlexFilterManagerPtr;
 
+class CPlexExtraInfoLoader;
+
 ///
 /// The hub of all Plex goodness.
 ///
@@ -97,6 +99,7 @@ public:
   CPlexThumbCacher *thumbCacher;
   CPlexFilterManagerPtr filterManager;
   CPlexGlobalTimer timer;
+  CPlexExtraInfoLoader *extraInfo;
 
   void setNetworkLogging(bool);
   void OnTimeout();

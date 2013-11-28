@@ -37,6 +37,7 @@
 #include "Client/PlexTimelineManager.h"
 #include "Client/PlexServerDataLoader.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "Client/PlexExtraInfoLoader.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
@@ -806,6 +807,9 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
     m_history.RemoveParentPath();
 
   bool ret = CGUIMediaWindow::Update(newUrl.Get(), updateFilterPath);
+
+  g_plexApplication.extraInfo->LoadExtraInfoForItem(m_vecItems);
+
   if (!updateFromFilter)
     g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems);
 

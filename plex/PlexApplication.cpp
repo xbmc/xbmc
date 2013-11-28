@@ -33,6 +33,8 @@
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
 
+#include "Client/PlexExtraInfoLoader.h"
+
 #ifdef ENABLE_AUTOUPDATE
 #include "AutoUpdate/PlexAutoUpdate.h"
 #endif
@@ -53,6 +55,7 @@ PlexApplication::Start()
   themeMusicPlayer = CPlexThemeMusicPlayerPtr(new CPlexThemeMusicPlayer);
   thumbCacher = new CPlexThumbCacher;
   filterManager = CPlexFilterManagerPtr(new CPlexFilterManager);
+  extraInfo = new CPlexExtraInfoLoader;
 
   serverManager->load();
   
@@ -256,6 +259,8 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
   else if (flag == ANNOUNCEMENT::System && stricmp(sender, "xbmc") == 0 && stricmp(message, "onQuit") == 0)
   {
     CLog::Log(LOGINFO, "CPlexApplication shutting down!");
+
+    delete extraInfo;
 
     timer.StopAllTimers();
 
