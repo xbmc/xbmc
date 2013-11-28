@@ -72,6 +72,7 @@ SRCS += Vector.cpp
 SRCS += Weather.cpp
 SRCS += XBMCTinyXML.cpp
 SRCS += XMLUtils.cpp
+SRCS += Utf8Utils.cpp
 SRCS += ActorProtocol.cpp 
 
 ifeq (@USE_OPENGLES@,1)
