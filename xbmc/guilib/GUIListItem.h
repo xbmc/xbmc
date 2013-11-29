@@ -29,6 +29,8 @@
  */
 
 #include "utils/StdString.h"
+#include "utils/Variant.h"
+#include "boost/format.hpp"
 
 #include <map>
 #include <string>
@@ -96,8 +98,16 @@ public:
    \param type type of art to set.
    \param url the url of the art.
    */
-  void SetArt(const std::string &type, const std::string &url);
-
+   inline void SetArt(const std::string &type, const std::string &url)
+	{
+	  ArtMap::iterator i = m_art.find(type);
+	  if (i == m_art.end() || i->second != url)
+	  {
+		m_art[type] = url;
+		SetInvalid();
+	  }
+	}
+  
   /*! \brief set artwork for an item
    \param art a type:url map for artwork
    \sa GetArt
@@ -127,7 +137,9 @@ public:
    \param type type of art to fetch.
    \return the art URL, if available, else empty.
    */
-  std::string GetArt(const std::string &type) const;
+   std::string GetArt(const std::string &type) const;
+   
+  
 
   /*! \brief get artwork for an item
    Retrieves artwork in a type:url map
@@ -141,7 +153,7 @@ public:
    \param type type of art to set.
    \return true if the item has that art set, false otherwise.
    */
-  bool HasArt(const std::string &type) const;
+  bool HasArt(const std::string &type) const; 
 
   void SetSortLabel(const CStdString &label);
   void SetSortLabel(const CStdStringW &label);
@@ -166,8 +178,6 @@ public:
 
   bool m_bIsFolder;     ///< is item a folder or a file
 
-  void SetProperty(const CStdString &strKey, const CVariant &value);
-
   void IncrementProperty(const CStdString &strKey, int nVal);
   void IncrementProperty(const CStdString &strKey, double dVal);
 
@@ -183,19 +193,62 @@ public:
   void Archive(CArchive& ar);
   void Serialize(CVariant& value);
 
-  bool       HasProperty(const CStdString &strKey) const;
+
   bool       HasProperties() const { return m_mapProperties.size() > 0; };
   void       ClearProperty(const CStdString &strKey);
 
-  CVariant   GetProperty(const CStdString &strKey) const;
+  inline void SetProperty(const CStdString &strKey, const CVariant &value)
+	{
+	  m_mapProperties[strKey] = value;
+	}
+
+  inline CVariant GetProperty(const CStdString &strKey) const
+	{
+	  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
+	  if (iter == m_mapProperties.end())
+		return CVariant(CVariant::VariantTypeNull);
+
+	  return iter->second;
+	}
+
+   inline bool HasProperty(const CStdString &strKey) const
+	{
+	  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
+	  if (iter == m_mapProperties.end())
+		return false;
+
+	  return true;
+	}
 
   /* PLEX */
   int GetOverlayImageID() const { return m_overlayIcon; }
 
-  void SetArt(const std::string &type, int index, const std::string &url);
-  std::string GetArt(const std::string &type, int index) const;
-  bool HasArt(const std::string &type, int index) const;
+  
+  inline void SetArt(const std::string &type, int index, const std::string &url)
+	{
+	  if (index == 0)
+		SetArt(type, url);
+	  else
+	  {
+		std::string typeNum = (boost::format("%s____%d") % type % index).str();
+		SetArt(typeNum, url);
+	  }
+	}
+	
+  inline std::string GetArt(const std::string &type, int index) const
+	{
+	  if (index == 0)
+		return GetArt(type);
 
+	  std::string typeNum = (boost::format("%s____%d") % type % index).str();
+	  return GetArt(typeNum);
+	}
+	
+   inline bool HasArt(const std::string &type, int index) const
+	{
+	  return !GetArt(type, index).empty();
+	}
+	
   void RemoveArt(const std::string &type);
   /* END PLEX */
 
