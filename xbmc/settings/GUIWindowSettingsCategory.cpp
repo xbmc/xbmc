@@ -845,22 +845,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") == CDDARIP_ENCODER_FLAC);
     }
-/* PLEX */
-    else if (strSetting.Equals("audiooutput.channels"))
-    {
-      CGUISpinControl *pControl = (CGUISpinControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI &&
-                                         g_guiSettings.GetBool("audiooutput.multichannellpcm"));
-#ifdef TARGET_DARWIN_OSX
-      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI)
-      {
-        g_guiSettings.SetInt("audiooutput.channels", CGUIWindowPlexStartupHelper::GetNumberOfHDMIChannels());
-        pControl->SetValue(g_guiSettings.GetInt("audiooutput.channels"));
-        pControl->SetEnabled(false);
-      }
-#endif
-    }
-/* END PLEX */
     else if (
              strSetting.Equals("audiooutput.passthroughdevice") ||
              strSetting.Equals("audiooutput.ac3passthrough") ||

@@ -552,11 +552,7 @@ void CGUISettings::Initialize()
   map<int,int> channelLayout;
   for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
     channelLayout.insert(make_pair(34100 + layout, layout));
-#ifndef TARGET_DARWIN_OSX
   AddInt(advs, "audiooutput.channels", 18110, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
-#else
-  AddInt(NULL, "audiooutput.channels", 18110, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
-#endif
 
 #if !defined(TARGET_RASPBERRY_PI)
 #if defined(TARGET_DARWIN)
