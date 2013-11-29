@@ -148,7 +148,7 @@ bool COMXAudio::PortSettingsChanged()
     // round up to power of 2
     m_pcm_output.nChannels = m_OutputChannels > 4 ? 8 : m_OutputChannels > 2 ? 4 : m_OutputChannels;
     /* limit samplerate (through resampling) if requested */
-    m_pcm_output.nSamplingRate = std::min((int)m_pcm_output.nSamplingRate, CSettings::Get().GetInt("audiooutput.samplerate"));
+    m_pcm_output.nSamplingRate = std::min(std::max((int)m_pcm_output.nSamplingRate, 8000), CSettings::Get().GetInt("audiooutput.samplerate"));
 
     m_pcm_output.nPortIndex = m_omx_mixer.GetOutputPort();
     omx_err = m_omx_mixer.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
