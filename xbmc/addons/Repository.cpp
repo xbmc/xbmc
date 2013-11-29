@@ -236,7 +236,8 @@ bool CRepositoryUpdateJob::DoWork()
     if (ShouldCancel(0,0))
       break;
 
-    if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
+    bool deps_met = CAddonInstaller::Get().CheckDependencies(addons[i]);
+    if (!deps_met && addons[i]->Props().broken.empty())
       addons[i]->Props().broken = "DEPSNOTMET";
 
     // invalidate the art associated with this item
