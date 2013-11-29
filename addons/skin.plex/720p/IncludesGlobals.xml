@@ -294,7 +294,7 @@
 		<height>190</height>
 		<font>Condensed-18</font>
 		<include>White2</include>
-		<shadowcolor>ff333333</shadowcolor>
+		<shadowcolor>ff222222</shadowcolor>
 		<autoscroll delay="10000" time="3000" repeat="5000">!Control.HasFocus(13)</autoscroll>
 	</include>
 	<include name="Plot">
