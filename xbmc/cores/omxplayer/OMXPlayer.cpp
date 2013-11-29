@@ -3436,7 +3436,7 @@ bool COMXPlayer::AdaptForcedSubtitles()
   OMXSelectionStream ss = m_SelectionStreams.Get(STREAM_SUBTITLE, GetSubtitle());
   if (ss.flags & CDemuxStream::FLAG_FORCED || !GetSubtitleVisible())
   {
-    OMXSelectionStream as = m_SelectionStreams.Get(STREAM_SUBTITLE, GetAudioStream());
+    OMXSelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
     OMXSelectionStreams streams = m_SelectionStreams.Get(STREAM_SUBTITLE);
 
     for(OMXSelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
