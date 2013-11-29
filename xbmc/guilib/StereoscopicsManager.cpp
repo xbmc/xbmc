@@ -170,8 +170,9 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
 
   if (stereoMode.empty())
     stereoMode = "mono";
+  else
+    CLog::Log(LOGDEBUG, "StereoscopicsManager: Detected stereo mode in string '%s' is '%s'", CURL::GetRedacted(needle).c_str(), stereoMode.c_str());
 
-  CLog::Log(LOGDEBUG, "StereoscopicsManager: Detected stereo mode in string '%s' is '%s'", CURL::GetRedacted(needle).c_str(), stereoMode.c_str());
   return stereoMode;
 }
 
