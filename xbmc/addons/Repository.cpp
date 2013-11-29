@@ -236,7 +236,8 @@ bool CRepositoryUpdateJob::DoWork()
     if (ShouldCancel(0,0))
       break;
 
-    if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
+    bool deps_met = CAddonInstaller::Get().CheckDependencies(addons[i]);
+    if (!deps_met && addons[i]->Props().broken.empty())
       addons[i]->Props().broken = "DEPSNOTMET";
 
     // invalidate the art associated with this item
@@ -248,7 +249,8 @@ bool CRepositoryUpdateJob::DoWork()
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(addons[i]->ID(),addon);
     if (addon && addons[i]->Version() > addon->Version() &&
-        !database.IsAddonBlacklisted(addons[i]->ID(),addons[i]->Version().c_str()))
+        !database.IsAddonBlacklisted(addons[i]->ID(),addons[i]->Version().c_str()) &&
+        deps_met)
     {
       if (CSettings::Get().GetBool("general.addonautoupdate") || addon->Type() >= ADDON_VIZ_LIBRARY)
       {
