@@ -8224,7 +8224,11 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
 
     CLog::Log(LOGDEBUG, "%s: Cleaning paths that don't exist and have content set...", __FUNCTION__);
-    sql = "select * from path where not (strContent='' and strSettings='' and strHash='' and exclude!=1)";
+    sql = "select * from path "
+            "where not ((strContent IS NULL OR strContent='') "
+                   "and (strSettings IS NULL OR strSettings='') "
+                   "and (strHash IS NULL OR strHash='') "
+                   "and (exclude IS NULL OR exclude!=1))";
     m_pDS->query(sql.c_str());
     CStdString strIds;
     while (!m_pDS->eof())
@@ -8255,7 +8259,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
             "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
             "join path on path.idPath=tvshowlinkpath.idPath "
           "where tvshow.idShow not in (select idShow from episode) "
-            "and path.strContent=''";
+            "and (path.strContent IS NULL OR path.strContent='')";
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
@@ -8322,7 +8326,11 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
 
     CLog::Log(LOGDEBUG, "%s: Cleaning path table", __FUNCTION__);
-    sql = StringUtils::Format("delete from path where strContent='' and strSettings='' and strHash='' and exclude!=1 "
+    sql = StringUtils::Format("delete from path "
+                                "where (strContent is null or strContent='') "
+                                  "and (strSettings is null or strSettings='') "
+                                  "and (strHash is null or strHash='') "
+                                  "and (exclude is null or exclude!=1) "
                                   "and idPath not in (select distinct idPath from files) "
                                   "and idPath not in (select distinct idPath from tvshowlinkpath) "
                                   "and idPath not in (select distinct c%02d from movie) "
