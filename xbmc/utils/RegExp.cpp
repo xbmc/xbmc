@@ -252,9 +252,9 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
       {
         const size_t startPos = (m_iOvector[0] > fragmentLen) ? CUtf8Utils::RFindValidUtf8Char(m_subject, m_iOvector[0] - fragmentLen) : 0;
         if (m_iOvector[0] >= 0 && startPos != std::string::npos)
-          CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character, error code: %d, position: %d. Text before bad char: \"%s\"", m_iOvector[0], m_iOvector[1], m_subject.substr(startPos, m_iOvector[0] - startPos + 1).c_str());
+          CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character, error code: %d, position: %d. Text before bad char: \"%s\"", m_iOvector[1], m_iOvector[0], m_subject.substr(startPos, m_iOvector[0] - startPos + 1).c_str());
         else
-          CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character, error code: %d, position: %d", m_iOvector[0], m_iOvector[1]);
+          CLog::Log(LOGERROR, "PCRE: Bad UTF-8 character, error code: %d, position: %d", m_iOvector[1], m_iOvector[0]);
         return -1;
       }
     case PCRE_ERROR_BADUTF8_OFFSET:
