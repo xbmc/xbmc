@@ -119,6 +119,8 @@ bool CDDSImage::ReadFile(const std::string &inputFile)
 
 bool CDDSImage::Create(const std::string &outputFile, unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *brga, double maxMSE)
 {
+  if (!brga)
+    return false;
   if (!Compress(width, height, pitch, brga, maxMSE))
   { // use ARGB
     Allocate(width, height, XB_FMT_A8R8G8B8);

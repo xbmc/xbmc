@@ -1040,8 +1040,9 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
   XMLUtils::GetUInt(pRootElement, "fanartres", m_fanartRes, 0, 1080);
   XMLUtils::GetUInt(pRootElement, "imageres", m_imageRes, 0, 1080);
+#if !defined(TARGET_RASPBERRY_PI)
   XMLUtils::GetBoolean(pRootElement, "useddsfanart", m_useDDSFanart);
-
+#endif
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", m_detectAsUdf);
 
