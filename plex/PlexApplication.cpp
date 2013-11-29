@@ -286,6 +286,8 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
 
     filterManager->saveFiltersToDisk();
     filterManager.reset();
+
+    OnTimeout();
     
     delete remoteSubscriberManager;
     
