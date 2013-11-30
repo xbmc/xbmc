@@ -483,43 +483,38 @@ int CMusicDatabase::UpdateSong(int idSong,
                                int iTimesPlayed, int iStartOffset, int iEndOffset,
                                const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber)
 {
-  CStdString sql;
   if (idSong < 0)
     return -1;
 
   CStdString strSQL;
-  try
-  {
-    CStdString strPath, strFileName;
-    URIUtils::Split(strPathAndFileName, strPath, strFileName);
-    int idPath = AddPath(strPath);
-    DWORD crc = ComputeCRC(strFileName);
-    
-    strSQL = PrepareSQL("UPDATE song SET idPath = %i, strArtists = '%s', strGenres = '%s', strTitle = '%s', iTrack = %i, iDuration = %i, iYear = %i, dwFileNameCRC = '%ul', strFileName = '%s'",
-                        idPath,
-                        StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator).c_str(),
-                        StringUtils::Join(genres, g_advancedSettings.m_musicItemSeparator).c_str(),
-                        strTitle.c_str(),
-                        iTrack, iDuration, iYear,
-                        crc, strFileName.c_str());
-    if (strMusicBrainzTrackID.empty())
-      strSQL += PrepareSQL(", strMusicBrainzTrackID = NULL");
-    else
-      strSQL += PrepareSQL(", strMusicBrainzTrackID = '%s'", strMusicBrainzTrackID.c_str());
-    
-    if (dtLastPlayed.IsValid())
-      strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = '%s', rating = '%c', comment = '%s'",
-                           iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, strComment.c_str());
-    else
-      strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = NULL, rating = '%c', comment = '%s'",
-                           iTimesPlayed, iStartOffset, iEndOffset, rating, strComment.c_str());
-    strSQL += PrepareSQL(" WHERE idSong = %i", idSong);
-    m_pDS->exec(strSQL.c_str());
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "musicdatabase:unable to addsong (%s)", strSQL.c_str());
-  }
+  CStdString strPath, strFileName;
+  URIUtils::Split(strPathAndFileName, strPath, strFileName);
+  int idPath = AddPath(strPath);
+  DWORD crc = ComputeCRC(strFileName);
+
+  strSQL = PrepareSQL("UPDATE song SET idPath = %i, strArtists = '%s', strGenres = '%s', strTitle = '%s', iTrack = %i, iDuration = %i, iYear = %i, dwFileNameCRC = '%ul', strFileName = '%s'",
+                      idPath,
+                      StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator).c_str(),
+                      StringUtils::Join(genres, g_advancedSettings.m_musicItemSeparator).c_str(),
+                      strTitle.c_str(),
+                      iTrack, iDuration, iYear,
+                      crc, strFileName.c_str());
+  if (strMusicBrainzTrackID.empty())
+    strSQL += PrepareSQL(", strMusicBrainzTrackID = NULL");
+  else
+    strSQL += PrepareSQL(", strMusicBrainzTrackID = '%s'", strMusicBrainzTrackID.c_str());
+
+  if (dtLastPlayed.IsValid())
+    strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = '%s', rating = '%c', comment = '%s'",
+                         iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, strComment.c_str());
+  else
+    strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = NULL, rating = '%c', comment = '%s'",
+                         iTimesPlayed, iStartOffset, iEndOffset, rating, strComment.c_str());
+  strSQL += PrepareSQL(" WHERE idSong = %i", idSong);
+
+  bool status = ExecuteQuery(strSQL);
+  if (status)
+    AnnounceUpdate("song", idSong);
   return idSong;
 }
 
