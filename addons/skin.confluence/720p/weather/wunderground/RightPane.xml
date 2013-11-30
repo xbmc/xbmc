@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="WundergroundRightPane">
+		<control type="group">
+			<posx>580</posx>
+			<posy>40</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>650</width>
+				<height>620</height>
+				<texture border="20">ContentPanel.png</texture>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>612</posy>
+				<width>650</width>
+				<height>64</height>
+				<texture border="10">ContentPanelMirror.png</texture>
+			</control>
+			<control type="image">
+				<posx>20</posx>
+				<posy>5</posy>
+				<width>610</width>
+				<height>90</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="group" id="50">
+				<include>Weather10DayForcast</include>
+				<include>Weather36HourForcast</include>
+				<include>WeatherWeekendForcast</include>
+				<include>WeatherHourlyForcast</include>
+				<include>WeatherMapAlerts</include>
+			</control>
+		</control>
+	</include>
+</includes>

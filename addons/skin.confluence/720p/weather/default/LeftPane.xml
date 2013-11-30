@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="DefaultLeftPane">
+		<control type="group">
+			<posx>60</posx>
+			<posy>40</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>500</width>
+				<height>620</height>
+				<texture border="20">ContentPanel.png</texture>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>612</posy>
+				<width>500</width>
+				<height>64</height>
+				<texture border="10">ContentPanelMirror.png</texture>
+			</control>
+			<control type="image">
+				<posx>20</posx>
+				<posy>5</posy>
+				<width>460</width>
+				<height>90</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>20</posx>
+				<posy>13</posy>
+				<width>460</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>31300</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>Provider Text</description>
+				<posx>20</posx>
+				<posy>50</posy>
+				<width>460</width>
+				<height>35</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[31303] : [COLOR=orange]$INFO[Window.Property(WeatherProvider)][/COLOR]</label>
+				<include>Window_OpenClose_Animation</include>
+			</control>
+			<control type="label">
+				<description>weather location label</description>
+				<posx>20</posx>
+				<posy>80</posy>
+				<width>460</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<scroll>false</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[Window.Property(Location)]</label>
+			</control>
+			<control type="label">
+				<description>update label</description>
+				<posx>20</posx>
+				<posy>100</posy>
+				<width>460</width>
+				<height>35</height>
+				<font>font12</font>
+				<label>$LOCALIZE[31301] - $INFO[Window.Property(Updated)]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<description>current temp Value</description>
+				<posx>195</posx>
+				<posy>175</posy>
+				<width>180</width>
+				<height>40</height>
+				<font>WeatherTemp</font>
+				<align>right</align>
+				<aligny>top</aligny>
+				<label>$INFO[Window.Property(Current.Temperature)]</label>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current temp Value Units</description>
+				<posx>190</posx>
+				<posy>185</posy>
+				<width>100</width>
+				<height>40</height>
+				<font>font16</font>
+				<align>left</align>
+				<aligny>top</aligny>
+				<label>$INFO[System.TemperatureUnits]</label>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="image">
+				<description>current weather icon</description>
+				<posx>230</posx>
+				<posy>120</posy>
+				<width>230</width>
+				<height>230</height>
+				<info>Window.Property(Current.ConditionIcon)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<description>current condition label</description>
+				<posx>20</posx>
+				<posy>320</posy>
+				<width>460</width>
+				<height>30</height>
+				<info>Window.Property(Current.Condition)</info>
+				<wrapmultiline>true</wrapmultiline>
+				<font>font13</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="image">
+				<posx>20</posx>
+				<posy>390</posy>
+				<width>460</width>
+				<height>4</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="label">
+				<description>current feels like label</description>
+				<posx>170</posx>
+				<posy>400</posy>
+				<width>170</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[402] :</label>
+				<textcolor>grey2</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current dew label</description>
+				<posx>170</posx>
+				<posy>430</posy>
+				<width>170</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[405] :</label>
+				<textcolor>grey2</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current humidity label</description>
+				<posx>170</posx>
+				<posy>460</posy>
+				<width>170</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[406] :</label>
+				<textcolor>grey2</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current UV Index label</description>
+				<posx>170</posx>
+				<posy>490</posy>
+				<width>170</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[403] :</label>
+				<textcolor>grey2</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current Wind label</description>
+				<posx>170</posx>
+				<posy>520</posy>
+				<width>170</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[404] :</label>
+				<textcolor>grey2</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current feels like Value</description>
+				<posx>185</posx>
+				<posy>400</posy>
+				<width>300</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$INFO[Window.Property(Current.FeelsLike)]$INFO[System.TemperatureUnits]</label>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current dew Value</description>
+				<posx>185</posx>
+				<posy>430</posy>
+				<width>300</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$INFO[Window.Property(Current.DewPoint)]$INFO[System.TemperatureUnits]</label>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current humidity Value</description>
+				<posx>185</posx>
+				<posy>460</posy>
+				<width>300</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<info>Window.Property(Current.Humidity)</info>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current UV Index Value</description>
+				<posx>185</posx>
+				<posy>490</posy>
+				<width>300</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<info>Window.Property(Current.UVIndex)</info>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>current Wind Value</description>
+				<posx>185</posx>
+				<posy>520</posy>
+				<width>300</width>
+				<height>35</height>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<info>Window.Property(Current.Wind)</info>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="group">
+				<visible>StringCompare(Weather.Plugin,weather.wunderground) + !IsEmpty(Window.Property(36Hour.IsFetched))</visible>
+				<control type="label">
+					<description>Sunrise Label</description>
+					<posx>30</posx>
+					<posy>570</posy>
+					<width>300</width>
+					<height>35</height>
+					<font>font13</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[33027] : [COLOR=white]$INFO[Window.Property(Today.Sunrise)][/COLOR]</label>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Sunset label</description>
+					<posx>470</posx>
+					<posy>570</posy>
+					<width>300</width>
+					<height>35</height>
+					<font>font13</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[33028] : [COLOR=white]$INFO[Window.Property(Today.Sunset)][/COLOR]</label>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

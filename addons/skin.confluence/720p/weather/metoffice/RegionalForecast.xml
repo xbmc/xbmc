@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="MetOfficeRegionalForcast">
+		<control type="group">
+			<visible>StringCompare(Window.Property(Weather.CurrentView),regional)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="label">
+				<description>header label</description>
+				<posx>20</posx>
+				<posy>13</posy>
+				<width>610</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[31804] - $INFO[Window.Property(RegionalLocation)]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="grouplist" id="56">
+				<posx>30</posx>
+				<posy>60</posy>
+				<width>570</width>
+				<height>515</height>
+				<pagecontrol>57</pagecontrol>
+				<itemgap>10</itemgap>
+				<description>Regional forecast list</description>
+				<visible>Control.IsVisible(56)</visible>
+				<onleft>56</onleft>
+				<onright>9000</onright>
+				<control type="label">
+					<width>570</width>
+					<height>30</height>
+					<font>font13_title</font>
+					<align>center</align>
+					<label>$INFO[Window.Property(Regional.Paragraph0.Title)]</label>
+				</control>
+				<control type="textbox">
+					<width>570</width>
+					<height>60</height>
+					<font>font12</font>
+					<label>$INFO[Window.Property(Regional.Paragraph0.Content)]</label>
+				</control>
+				<control type="image">
+					<width>570</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="label">
+					<width>570</width>
+					<height>30</height>
+					<font>font13_title</font>
+					<align>center</align>
+					<label>$INFO[Window.Property(Regional.Paragraph1.Title)]</label>
+				</control>
+				<control type="textbox">
+					<width>570</width>
+					<height>100</height>
+					<font>font12</font>
+					<label>$INFO[Window.Property(Regional.Paragraph1.Content)]</label>
+				</control>
+				<control type="image">
+					<width>570</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="label">					
+					<width>570</width>
+					<height>30</height>
+					<font>font13_title</font>
+					<align>center</align>
+					<label>$INFO[Window.Property(Regional.Paragraph2.Title)]</label>
+				</control>
+				<control type="textbox">
+					<width>570</width>
+					<height>100</height>
+					<font>font12</font>
+					<label>$INFO[Window.Property(Regional.Paragraph2.Content)]</label>
+				</control>
+				<control type="image">
+					<width>570</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="label">
+					<width>570</width>
+					<height>30</height>
+					<font>font13_title</font>
+					<align>center</align>
+					<label>$INFO[Window.Property(Regional.Paragraph3.Title)]</label>
+				</control>
+				<control type="textbox">
+					<width>570</width>
+					<height>100</height>
+					<font>font12</font>
+					<label>$INFO[Window.Property(Regional.Paragraph3.Content)]</label>
+				</control>
+				<control type="image">
+					<width>570</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="label">
+					<height>30</height>
+					<width>570</width>
+					<font>font13_title</font>
+					<align>center</align>
+					<label>$INFO[Window.Property(Regional.Paragraph4.Title)]</label>
+				</control>
+				<control type="textbox">
+					<width>570</width>
+					<font>font12</font>
+					<label>$INFO[Window.Property(Regional.Paragraph4.Content)]</label>
+				</control>
+				<control type="image">
+					<width>570</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="label">
+					<height>30</height>			
+					<width>570</width>
+					<font>font13_title</font>
+					<align>center</align>
+					<label>$INFO[Window.Property(Regional.Paragraph5.Title)]</label>
+				</control>
+				<control type="textbox">
+					<width>570</width>
+					<font>font12</font>
+					<label>$INFO[Window.Property(Regional.Paragraph5.Content)]</label>
+				</control>
+				<control type="image">
+					<width>570</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+					<visible>!IsEmpty(Window.Property(Regional.Paragraph6.Title))</visible>
+				</control>
+				<control type="label">
+					<height>30</height>			
+					<width>570</width>
+					<font>font13_title</font>
+					<align>center</align>
+					<label>$INFO[Window.Property(Regional.Paragraph6.Title)]</label>
+					<visible>!IsEmpty(Window.Property(Regional.Paragraph6.Title))</visible>
+				</control>
+				<control type="textbox">
+					<width>570</width>
+					<font>font12</font>
+					<label>$INFO[Window.Property(Regional.Paragraph6.Content)]</label>
+					<visible>!IsEmpty(Window.Property(Regional.Paragraph6.Title))</visible>
+				</control>
+			</control>
+			<control type="label">
+				<description>issued at label</description>
+				<posx>600</posx>
+				<posy>580</posy>
+				<width>260</width>
+				<height>35</height>
+				<font>font10</font>
+				<textcolor>white</textcolor>
+				<label>$LOCALIZE[31302] : [COLOR=orange]$INFO[Window.Property(RegionalForecast.IssuedAt)][/COLOR]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="scrollbar" id="57">
+				<posx>615</posx>
+				<posy>60</posy>
+				<width>25</width>
+				<height>515</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>56</onleft>
+				<onright>9000</onright>
+				<showonepage>true</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(56)</visible>
+			</control>
+		</control>
+	</include>
+</includes>

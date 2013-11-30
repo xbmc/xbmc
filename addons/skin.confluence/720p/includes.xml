@@ -12,11 +12,22 @@
 	<include file="IncludesHomeRecentlyAdded.xml"/>
 	<include file="IncludesHomeMenuItems.xml"/>
 	<include file="IncludesBackgroundBuilding.xml"/>
-	<include file="weather\10DayForecast.xml"/>
-	<include file="weather\36HourForecast.xml"/>
-	<include file="weather\WeekendForecast.xml"/>
-	<include file="weather\HourlyForecast.xml"/>
-	<include file="weather\MapAlerts.xml"/>
+	<include file="weather\default\LeftPane.xml" />
+	<include file="weather\default\RightPane.xml" />
+	<include file="weather\default\SideBladeContents.xml" />
+	<include file="weather\metoffice\RightPane.xml" />
+	<include file="weather\metoffice\LeftPane.xml" />
+	<include file="weather\metoffice\RegionalForecast.xml" />
+	<include file="weather\metoffice\DailyForecast.xml" />
+	<include file="weather\metoffice\3HourlyForecast.xml" />
+	<include file="weather\metoffice\SideBladeContents.xml" />
+	<include file="weather\wunderground\RightPane.xml" />
+	<include file="weather\wunderground\10DayForecast.xml" />
+	<include file="weather\wunderground\36HourForecast.xml" />
+	<include file="weather\wunderground\WeekendForecast.xml" />
+	<include file="weather\wunderground\HourlyForecast.xml" />
+	<include file="weather\wunderground\MapAlerts.xml" />
+	<include file="weather\wunderground\SideBladeContents.xml" />
 
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>

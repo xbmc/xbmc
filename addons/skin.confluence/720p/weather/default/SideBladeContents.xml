@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="DefaultSideBladeContents">
+		<control type="grouplist" id="9000">
+			<posx>0</posx>
+			<posy>60</posy>
+			<width>250</width>
+			<height>650</height>
+			<onleft>9000</onleft>
+			<onright>50</onright>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<onback>50</onback>
+			<itemgap>0</itemgap>
+			<control type="label" id="200">
+				<width>250</width>
+				<height>35</height>
+				<font>font12</font>
+				<label>31006</label>
+				<textcolor>blue</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="group" id="300">
+				<width>250</width>
+				<height>40</height>
+				<control type="spincontrolex" id="3">
+					<description>change location button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<font>-</font>
+					<include>ButtonCommonValues</include>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>200</onup>
+					<ondown>302</ondown>
+					<onback>50</onback>
+				</control>
+				<control type="label" id="301">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>200</width>
+					<height>40</height>
+					<font>font13</font>
+					<label>31027</label>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+				</control>
+			</control>
+			<control type="label" id="302">
+				<width>250</width>
+				<height>35</height>
+				<font>font12</font>
+				<label>31026</label>
+				<textcolor>blue</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="button" id="2">
+				<description>Refresh button</description>
+				<textwidth>235</textwidth>
+				<include>ButtonCommonValues</include>
+				<label>103</label>
+			</control>
+			<control type="button" id="5">
+				<description>Custom Weather Script Button</description>
+				<label>$INFO[Skin.String(WeatherScript_Label)]</label>
+				<onclick>SetFocus(50)</onclick>
+				<onclick>XBMC.RunScript($INFO[Skin.String(WeatherScript_Path)])</onclick>
+				<onclick>SetFocus(50)</onclick>
+				<textwidth>235</textwidth>
+				<include>ButtonCommonValues</include>
+				<visible>Skin.HasSetting(WeatherScript_Enable) + !IsEmpty(Skin.String(WeatherScript_Label))</visible>
+			</control>
+			<control type="button" id="4">
+				<description>Settings button</description>
+				<label>5</label>
+				<onclick>ActivateWindow(MyWeatherSettings)</onclick>
+				<textwidth>235</textwidth>
+				<include>ButtonCommonValues</include>
+			</control>
+			<control type="radiobutton" id="250">
+				<description>Fanart Toggle</description>
+				<include>ButtonCommonValues</include>
+				<label>31307</label>
+				<onclick>Skin.ToggleSetting(ShowWeatherFanart)</onclick>
+				<selected>!Skin.HasSetting(ShowWeatherFanart)</selected>
+			</control>
+			<control type="button" id="251">
+				<include>ButtonCommonValues</include>
+				<label>31317</label>
+				<onclick>Skin.SetPath(WeatherFanartDir)</onclick>
+				<enable>Skin.HasSetting(ShowWeatherFanart)</enable>
+			</control>
+			<include>CommonNowPlaying_Controls</include>
+		</control>
+	</include>
+</includes>

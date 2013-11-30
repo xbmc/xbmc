@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="DefaultRightPane">
+		<control type="group">
+			<posx>580</posx>
+			<posy>40</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>650</width>
+				<height>620</height>
+				<texture border="20">ContentPanel.png</texture>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>612</posy>
+				<width>650</width>
+				<height>64</height>
+				<texture border="10">ContentPanelMirror.png</texture>
+			</control>
+			<control type="image">
+				<posx>20</posx>
+				<posy>5</posy>
+				<width>610</width>
+				<height>90</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>20</posx>
+				<posy>13</posy>
+				<width>610</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>10508</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="list" id="50">
+				<posx>15</posx>
+				<posy>60</posy>
+				<width>600</width>
+				<height>541</height>
+				<onleft>9000</onleft>
+				<onright>61</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<viewtype label="535">list</viewtype>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="135" width="600">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>600</width>
+						<height>136</height>
+						<texture border="0,5,0,5">MenuItemNF.png</texture>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>600</width>
+						<height>136</height>
+						<texture border="0,5,0,5">MenuItemNF.png</texture>
+					</control>
+					<control type="label">
+						<posx>300</posx>
+						<posy>5</posy>
+						<width>300</width>
+						<height>25</height>
+						<font>font13_title</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="image">
+						<posx>460</posx>
+						<posy>0</posy>
+						<width>135</width>
+						<height>135</height>
+						<aspectratio>keep</aspectratio>
+						<texture>$INFO[ListItem.ActualIcon]</texture>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>35</posy>
+						<width>390</width>
+						<height>30</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[COLOR=grey2]$LOCALIZE[419] : [/COLOR]$INFO[ListItem.Property(HighTemp)]$INFO[ListItem.Property(TempUnits)]     [COLOR=grey2]$LOCALIZE[418] : [/COLOR]$INFO[ListItem.Property(LowTemp)]$INFO[ListItem.Property(TempUnits)]</label>
+						<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
+					</control>
+					<control type="textbox">
+						<posx>30</posx>
+						<posy>70</posy>
+						<width>400</width>
+						<height>50</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<label>$INFO[ListItem.Property(Outlook)]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="135" width="600">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>600</width>
+						<height>136</height>
+						<texture border="0,2,0,2">MenuItemNF.png</texture>
+						<visible>!Control.HasFocus(50)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>600</width>
+						<height>136</height>
+						<texture border="0,2,0,2">MenuItemNF.png</texture>
+						<visible>!Control.HasFocus(50)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>600</width>
+						<height>136</height>
+						<texture border="10">button-focus2.png</texture>
+						<visible>Control.HasFocus(50)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="label">
+						<posx>300</posx>
+						<posy>5</posy>
+						<width>300</width>
+						<height>25</height>
+						<font>font13_title</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="image">
+						<posx>460</posx>
+						<posy>0</posy>
+						<width>135</width>
+						<height>135</height>
+						<aspectratio>keep</aspectratio>
+						<texture>$INFO[ListItem.ActualIcon]</texture>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>35</posy>
+						<width>390</width>
+						<height>30</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[COLOR=grey2]$LOCALIZE[419] : [/COLOR]$INFO[ListItem.Property(HighTemp)]$INFO[ListItem.Property(TempUnits)]     [COLOR=grey2]$LOCALIZE[418] : [/COLOR]$INFO[ListItem.Property(LowTemp)]$INFO[ListItem.Property(TempUnits)]</label>
+						<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
+					</control>
+					<control type="textbox">
+						<posx>30</posx>
+						<posy>70</posy>
+						<width>400</width>
+						<height>50</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<label>$INFO[ListItem.Property(Outlook)]</label>
+					</control>
+				</focusedlayout>
+				<content>
+					<item>
+						<label>$LOCALIZE[31909]</label>
+						<icon>-</icon>
+						<onclick>noop</onclick>
+						<visible>!Weather.IsFetched</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day0.Title)]</label>
+						<icon>$INFO[Window.Property(Day0.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day0.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day0.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day0.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day0.Title))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day1.Title)]</label>
+						<icon>$INFO[Window.Property(Day1.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day1.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day1.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day1.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day1.Title))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day2.Title)]</label>
+						<icon>$INFO[Window.Property(Day2.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day2.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day2.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day2.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day2.Title))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day3.Title)]</label>
+						<icon>$INFO[Window.Property(Day3.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day3.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day3.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day3.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day3.Title))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day4.Title)]</label>
+						<icon>$INFO[Window.Property(Day4.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day4.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day4.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day4.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day4.Title))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day5.Title)]</label>
+						<icon>$INFO[Window.Property(Day5.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day5.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day5.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day5.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day5.Title))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day6.Title)]</label>
+						<icon>$INFO[Window.Property(Day6.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day6.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day6.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day6.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day6.Title))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day7.Title)]</label>
+						<icon>$INFO[Window.Property(Day7.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day7.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day7.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day7.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day7.Title))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day8.Title)]</label>
+						<icon>$INFO[Window.Property(Day8.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day8.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day8.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day8.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day8.Title))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Day9.Title)]</label>
+						<icon>$INFO[Window.Property(Day9.OutlookIcon)]</icon>
+						<property name="HighTemp">$INFO[Window.Property(Day9.HighTemp)]</property>
+						<property name="LowTemp">$INFO[Window.Property(Day9.LowTemp)]</property>
+						<property name="Outlook">$INFO[Window.Property(Day9.Outlook)]</property>
+						<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
+						<onclick>noop</onclick>
+						<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day9.Title))</visible>
+					</item>
+				</content>
+			</control>
+			<control type="scrollbar" id="61">
+				<posx>615</posx>
+				<posy>60</posy>
+				<width>25</width>
+				<height>540</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>50</onleft>
+				<onright>9000</onright>
+				<showonepage>true</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(50)</visible>
+			</control>
+			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
+				<description>number of files/pages</description>
+				<posx>660</posx>
+				<posy>627</posy>
+				<width>570</width>
+				<font>font12</font>
+				<align>right</align>
+				<scroll>true</scroll>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>([COLOR=blue]$INFO[Container(50).NumItems][/COLOR]) $LOCALIZE[12393] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages][/COLOR])</label>
+			</control>
+		</control>
+	</include>
+</includes>
