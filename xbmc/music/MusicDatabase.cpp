@@ -663,9 +663,9 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=PrepareSQL("select * from songview "
-                                 "where idSong=%i"
-                                 , idSong);
+    CStdString strSQL=PrepareSQL("SELECT songview.*,songartistview.* FROM songview "
+                                 " JOIN songartistview ON songview.idSong = songartistview.idSong "
+                                 " WHERE songview.idSong = %i", idSong);
 
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -674,7 +674,24 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
       m_pDS->close();
       return false;
     }
-    song = GetSongFromDataset();
+
+    int songArtistOffset = song_enumCount;
+
+    set<int> artistcredits;
+    song = GetSongFromDataset(m_pDS.get()->get_sql_record());
+    while (!m_pDS->eof())
+    {
+      const dbiplus::sql_record* const record = m_pDS.get()->get_sql_record();
+
+      int idSongArtist = record->at(songArtistOffset + artistCredit_idArtist).get_asInt();
+      if (artistcredits.find(idSongArtist) == artistcredits.end())
+      {
+        song.artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
+        artistcredits.insert(idSongArtist);
+      }
+
+      m_pDS->next();
+    }
     m_pDS->close(); // cleanup recordset data
     return true;
   }
