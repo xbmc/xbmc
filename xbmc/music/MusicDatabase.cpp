@@ -4599,10 +4599,20 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
     if (NULL == m_pDS2.get()) return;
 
     // find all albums
-    CStdString sql = "select albumview.*,albuminfo.strImage,albuminfo.idAlbumInfo from albuminfo "
-                     "join albumview on albuminfo.idAlbum=albumview.idAlbum ";
-
+    vector<int> albumIds;
+    CStdString sql = "select idAlbum FROM albumview WHERE idAlbumInfo > 0";
     m_pDS->query(sql.c_str());
+
+    int total = m_pDS->num_rows();
+    int current = 0;
+
+    albumIds.reserve(total);
+    while (!m_pDS->eof())
+    {
+      albumIds.push_back(m_pDS->fv("idAlbum").get_asInt());
+      m_pDS->next();
+    }
+    m_pDS->close();
 
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
@@ -4616,9 +4626,6 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       progress->ShowProgressBar(true);
     }
 
-    int total = m_pDS->num_rows();
-    int current = 0;
-
     // create our xml document
     CXBMCTinyXML xmlDoc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
@@ -4631,15 +4638,12 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       TiXmlElement xmlMainElement("musicdb");
       pMain = xmlDoc.InsertEndChild(xmlMainElement);
     }
-    while (!m_pDS->eof())
+    for (vector<int>::iterator albumId = albumIds.begin(); albumId != albumIds.end(); ++albumId)
     {
-      CAlbum album = GetAlbumFromDataset(m_pDS.get());
-      album.thumbURL.Clear();
-      album.thumbURL.ParseString(m_pDS->fv("albuminfo.strImage").get_asString());
-      int idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asInt();
-      GetAlbumInfoSongs(idAlbumInfo,album.songs);
+      CAlbum album;
+      GetAlbumInfo(*albumId, album, &album.songs);
       CStdString strPath;
-      GetAlbumPath(album.idAlbum,strPath);
+      GetAlbumPath(*albumId, strPath);
       album.Save(pMain, "album", strPath);
       if (singleFiles)
       {
@@ -4678,10 +4682,8 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           return;
         }
       }
-      m_pDS->next();
       current++;
     }
-    m_pDS->close();
 
     // find all artists
     sql = "SELECT artist.idArtist AS idArtist, strArtist, "
