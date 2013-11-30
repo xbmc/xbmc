@@ -997,7 +997,7 @@ int CMusicDatabase::AddPath(const CStdString& strPath1)
   return -1;
 }
 
-CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
+CSong CMusicDatabase::GetSongFromDataset()
 {
   CSong song;
   song.idSong = m_pDS->fv(song_idSong).get_asInt();
@@ -1026,18 +1026,7 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.albumArtist = StringUtils::Split(m_pDS->fv(song_strAlbumArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
 
   // Get filename with full path
-  if (!bWithMusicDbPath)
-    song.strFileName = URIUtils::AddFileToFolder(m_pDS->fv(song_strPath).get_asString(), m_pDS->fv(song_strFileName).get_asString());
-  else
-  {
-    CStdString strFileName = m_pDS->fv(song_strFileName).get_asString();
-    CStdString strExt = URIUtils::GetExtension(strFileName);
-    song.strFileName = StringUtils::Format("musicdb://albums/%ld/%ld%s",
-                                           m_pDS->fv(song_idAlbum).get_asInt(),
-                                           m_pDS->fv(song_idSong).get_asInt(),
-                                           strExt.c_str());
-  }
-
+  song.strFileName = URIUtils::AddFileToFolder(m_pDS->fv(song_strPath).get_asString(), m_pDS->fv(song_strFileName).get_asString());
   return song;
 }
 
@@ -4949,7 +4938,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
 
     while (!m_pDS->eof())
     {
-      CSong song = GetSongFromDataset( false );
+      CSong song = GetSongFromDataset();
       CStdString songnum = StringUtils::Format("%06d", song.iKaraokeNumber);
 
       if ( asHTML )
