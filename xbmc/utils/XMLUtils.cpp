@@ -336,10 +336,10 @@ void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdStrin
 
 void XMLUtils::SetDate(TiXmlNode* pRootNode, const char *strTag, const CDateTime& date)
 {
-  SetString(pRootNode, strTag, date.GetAsDBDate());
+  SetString(pRootNode, strTag, date.IsValid() ? date.GetAsDBDate() : "");
 }
 
 void XMLUtils::SetDateTime(TiXmlNode* pRootNode, const char *strTag, const CDateTime& dateTime)
 {
-  SetString(pRootNode, strTag, dateTime.GetAsDBDateTime());
+  SetString(pRootNode, strTag, dateTime.IsValid() ? dateTime.GetAsDBDateTime() : "");
 }

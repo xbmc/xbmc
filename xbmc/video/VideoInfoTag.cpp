@@ -237,7 +237,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetFloat(&resume, "total", (float)m_resumePoint.totalTimeInSeconds);
   movie->InsertEndChild(resume);
 
-  XMLUtils::SetString(movie, "dateadded", m_dateAdded.GetAsDBDateTime());
+  XMLUtils::SetDateTime(movie, "dateadded", m_dateAdded);
 
   if (additionalNode)
     movie->InsertEndChild(*additionalNode);
@@ -769,10 +769,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     XMLUtils::GetDouble(resume, "total", m_resumePoint.totalTimeInSeconds);
   }
 
-  // dateAdded
-  CStdString dateAdded;
-  XMLUtils::GetString(movie, "dateadded", dateAdded);
-  m_dateAdded.SetFromDBDateTime(dateAdded);
+  XMLUtils::GetDateTime(movie, "dateadded", m_dateAdded);
 }
 
 bool CVideoInfoTag::HasStreamDetails() const
