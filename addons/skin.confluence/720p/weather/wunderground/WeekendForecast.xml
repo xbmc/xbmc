@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<include name="WeatherWeekendForcast">
+	<include name="WundergroundWeekendForcast">
 		<control type="group">
 			<visible>StringCompare(Window.Property(Weather.CurrentView),weekend)</visible>
 			<include>VisibleFadeEffect</include>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<include name="WeatherHourlyForcast">
+	<include name="WundergroundHourlyForcast">
 		<control type="group">
 			<visible>StringCompare(Window.Property(Weather.CurrentView),hourly)</visible>
 			<include>VisibleFadeEffect</include>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<include name="Weather10DayForcast">
+	<include name="Wunderground10DayForcast">
 		<control type="group">
 			<visible>IsEmpty(Window.Property(Weather.CurrentView))</visible>
 			<include>VisibleFadeEffect</include>

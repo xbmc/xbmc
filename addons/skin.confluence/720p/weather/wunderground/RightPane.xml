@@ -27,11 +27,11 @@
 				<texture>GlassTitleBar.png</texture>
 			</control>
 			<control type="group" id="50">
-				<include>Weather10DayForcast</include>
-				<include>Weather36HourForcast</include>
-				<include>WeatherWeekendForcast</include>
-				<include>WeatherHourlyForcast</include>
-				<include>WeatherMapAlerts</include>
+				<include>Wunderground10DayForcast</include>
+				<include>Wunderground36HourForcast</include>
+				<include>WundergroundWeekendForcast</include>
+				<include>WundergroundHourlyForcast</include>
+				<include>WundergroundMapAlerts</include>
 			</control>
 		</control>
 	</include>

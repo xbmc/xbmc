@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<include name="WeatherMapAlerts">
+	<include name="WundergroundMapAlerts">
 		<control type="group">
 			<visible>StringCompare(Window.Property(Weather.CurrentView),map)</visible>
 			<include>VisibleFadeEffect</include>
