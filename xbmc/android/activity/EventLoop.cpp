@@ -25,6 +25,7 @@
 #include <dlfcn.h>
 
 typeof(AMotionEvent_getAxisValue) *p_AMotionEvent_getAxisValue;
+typeof(AMotionEvent_getButtonState) *p_AMotionEvent_getButtonState;
 
 CEventLoop::CEventLoop(android_app* application)
   : m_enabled(false),
@@ -50,7 +51,9 @@ void CEventLoop::run(IActivityHandler &activityHandler, IInputHandler &inputHand
 
   // missing in early NDKs, is present in r9b+
   p_AMotionEvent_getAxisValue = (typeof(AMotionEvent_getAxisValue)*) dlsym(RTLD_DEFAULT, "AMotionEvent_getAxisValue");
-  CXBMCApp::android_printf("CEventLoop: AMotionEvent_getAxisValue: %p", p_AMotionEvent_getAxisValue);
+  // missing in NDK
+  p_AMotionEvent_getButtonState = (typeof(AMotionEvent_getButtonState)*) dlsym(RTLD_DEFAULT, "AMotionEvent_getButtonState");
+  CXBMCApp::android_printf("CEventLoop: AMotionEvent_getAxisValue: %p, AMotionEvent_getButtonState: %p", p_AMotionEvent_getAxisValue, p_AMotionEvent_getButtonState);
 
   CXBMCApp::android_printf("CEventLoop: starting event loop");
   while (1)

@@ -26,6 +26,11 @@ extern float AMotionEvent_getAxisValue(const AInputEvent* motion_event, int32_t 
 extern typeof(AMotionEvent_getAxisValue) *p_AMotionEvent_getAxisValue;
 #define AMotionEvent_getAxisValue (*p_AMotionEvent_getAxisValue)
 
+// missing in NDK
+extern int32_t AMotionEvent_getButtonState(const AInputEvent* motion_event);
+extern typeof(AMotionEvent_getButtonState) *p_AMotionEvent_getButtonState;
+#define AMotionEvent_getButtonState (*p_AMotionEvent_getButtonState)
+
  //Additional defines from android.view.KeyEvent (http://developer.android.com/reference/android/view/KeyEvent.html)
 #define AKEYCODE_ESCAPE 111
 #define AKEYCODE_FORWARD_DEL 112
@@ -40,6 +45,12 @@ extern typeof(AMotionEvent_getAxisValue) *p_AMotionEvent_getAxisValue;
 
 //Additional defines from android.view.MotionEvent (http://developer.android.com/reference/android/view/MotionEvent.html)
 #define AMOTION_EVENT_ACTION_SCROLL 0x08
+
+#define AMOTION_EVENT_BUTTON_PRIMARY 0x00000001
+#define AMOTION_EVENT_BUTTON_SECONDARY 0x00000002
+#define AMOTION_EVENT_BUTTON_TERTIARY 0x00000004
+#define AMOTION_EVENT_BUTTON_BACK 0x00000008
+#define AMOTION_EVENT_BUTTON_FORWARD 0x00000010
 
 #define AINPUT_SOURCE_CLASS_JOYSTICK 0x00000010
 

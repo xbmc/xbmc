@@ -33,6 +33,9 @@ protected:
 
 private:
   void MouseMove(float x, float y);
-  void MouseButton(float x, float y, int32_t type);
+  void MouseButton(float x, float y, int32_t type, int32_t buttons);
   void MouseWheel(float x, float y, float value);
+
+private:
+  int32_t m_lastButtonState;
 };

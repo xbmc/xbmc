@@ -29,6 +29,7 @@
 //#define DEBUG_VERBOSE
 
 CAndroidMouse::CAndroidMouse()
+  : m_lastButtonState(0)
 {
 }
 
@@ -43,22 +44,23 @@ bool CAndroidMouse::onMouseEvent(AInputEvent* event)
 
   int32_t eventAction = AMotionEvent_getAction(event);
   int8_t mouseAction = eventAction & AMOTION_EVENT_ACTION_MASK;
-  size_t mousePointer = eventAction >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+  size_t mousePointerIdx = eventAction >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+  int32_t mousePointerId = AMotionEvent_getPointerId(event, mousePointerIdx);
 
 #ifdef DEBUG_VERBOSE
-  CXBMCApp::android_printf("%s pointer:%i", __PRETTY_FUNCTION__, mousePointer);
+  CXBMCApp::android_printf("%s idx:%i, id:%i", __PRETTY_FUNCTION__, mousePointerIdx, mousePointerId);
 #endif
-  float x = AMotionEvent_getX(event, mousePointer);
-  float y = AMotionEvent_getY(event, mousePointer);
+  float x = AMotionEvent_getX(event, mousePointerIdx);
+  float y = AMotionEvent_getY(event, mousePointerIdx);
 
   switch (mouseAction)
   {
     case AMOTION_EVENT_ACTION_UP:
     case AMOTION_EVENT_ACTION_DOWN:
-      MouseButton(x,y,mouseAction);
+      MouseButton(x,y,mouseAction,AMotionEvent_getButtonState(event));
       return true;
     case AMOTION_EVENT_ACTION_SCROLL:
-      MouseWheel(x, y, AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_VSCROLL, mousePointer));
+      MouseWheel(x, y, AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_VSCROLL, mousePointerIdx));
       return true;
     default:
       MouseMove(x,y);
@@ -87,22 +89,33 @@ void CAndroidMouse::MouseMove(float x, float y)
   CWinEvents::MessagePush(&newEvent);
 }
 
-void CAndroidMouse::MouseButton(float x, float y, int32_t action)
+void CAndroidMouse::MouseButton(float x, float y, int32_t action, int32_t buttons)
 {
 #ifdef DEBUG_VERBOSE
-  CXBMCApp::android_printf("%s: x:%f, y:%f, action:%i", __PRETTY_FUNCTION__, x, y, action);
+  CXBMCApp::android_printf("%s: x:%f, y:%f, action:%i, buttons:%i", __PRETTY_FUNCTION__, x, y, action, buttons);
 #endif
   XBMC_Event newEvent;
 
   memset(&newEvent, 0, sizeof(newEvent));
+
+  int32_t checkButtons = buttons;
+  if (action ==  AMOTION_EVENT_ACTION_UP)
+    checkButtons = m_lastButtonState;
 
   newEvent.type = (action ==  AMOTION_EVENT_ACTION_DOWN) ? XBMC_MOUSEBUTTONDOWN : XBMC_MOUSEBUTTONUP;
   newEvent.button.state = (action ==  AMOTION_EVENT_ACTION_DOWN) ? XBMC_PRESSED : XBMC_RELEASED;
   newEvent.button.type = newEvent.type;
   newEvent.button.x = x;
   newEvent.button.y = y;
-  newEvent.button.button = XBMC_BUTTON_LEFT;
+  if (checkButtons & AMOTION_EVENT_BUTTON_PRIMARY)
+    newEvent.button.button = XBMC_BUTTON_LEFT;
+  else if (checkButtons & AMOTION_EVENT_BUTTON_SECONDARY)
+    newEvent.button.button = XBMC_BUTTON_RIGHT;
+  else if (checkButtons & AMOTION_EVENT_BUTTON_TERTIARY)
+    newEvent.button.button = XBMC_BUTTON_MIDDLE;
   CWinEvents::MessagePush(&newEvent);
+
+  m_lastButtonState = buttons;
 }
 
 void CAndroidMouse::MouseWheel(float x, float y, float value)
