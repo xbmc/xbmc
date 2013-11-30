@@ -18,6 +18,10 @@
  *
  */
 
+/*
+stacktrace code from http://stackoverflow.com/questions/3151779/how-its-better-to-invoke-gdb-from-program-to-print-its-stacktrace/4611112#4611112
+*/
+
 #include "system.h"
 #include "settings/AppParamParser.h"
 #include "settings/AdvancedSettings.h"
@@ -29,6 +33,11 @@
 #ifdef _LINUX
 #include <sys/resource.h>
 #include <signal.h>
+
+#ifdef TARGET_RASPBERRY_PI
+#include "backtrace.h"
+#endif
+
 #endif
 #if defined(TARGET_DARWIN_OSX)
   #include "Util.h"
@@ -42,8 +51,31 @@
 #endif
 #include "XbmcContext.h"
 
+
+
+
 int main(int argc, char* argv[])
 {
+#ifdef TARGET_RASPBERRY_PI
+    /* Install our signal handler */
+    struct sigaction sa;
+
+    sa.sa_sigaction = bt_sighandler;
+    sigemptyset (&sa.sa_mask);
+    sa.sa_flags = SA_RESTART | SA_SIGINFO;
+
+    sigaction(SIGSEGV, &sa, NULL);
+    sigaction(SIGBUS, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
+    sigaction(SIGILL, &sa, NULL);
+    sigaction(SIGFPE, &sa, NULL);
+    sigaction(SIGUSR1, &sa, NULL);
+    sigaction(SIGUSR2, &sa, NULL);
+    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGKILL, &sa, NULL);
+    /* add any other signal here */
+#endif
+
   // set up some xbmc specific relationships
   XBMC::Context context;
 
