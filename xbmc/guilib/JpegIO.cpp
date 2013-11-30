@@ -374,8 +374,9 @@ bool CJpegIO::Read(unsigned char* buffer, unsigned int bufSize, unsigned int min
     m_cinfo.scale_denom = 8;
     m_cinfo.out_color_space = JCS_RGB;
     unsigned int maxtexsize = g_Windowing.GetMaxTextureSize();
-    for (m_cinfo.scale_num = 1; m_cinfo.scale_num <= 8; m_cinfo.scale_num++)
+    for (unsigned int scale = 1; scale <= 8; scale++)
     {
+      m_cinfo.scale_num = scale;
       jpeg_calc_output_dimensions(&m_cinfo);
       if ((m_cinfo.output_width > maxtexsize) || (m_cinfo.output_height > maxtexsize))
       {
