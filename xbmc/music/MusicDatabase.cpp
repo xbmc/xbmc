@@ -306,54 +306,24 @@ void CMusicDatabase::CreateViews()
 
   CLog::Log(LOGINFO, "create album view");
   m_pDS->exec("DROP VIEW IF EXISTS albumview");
-  if (m_sqlite)
-  {
-    m_pDS->exec("CREATE VIEW albumview AS SELECT "
-                "        album.idAlbum AS idAlbum, "
-                "        strAlbum, "
-                "        strMusicBrainzAlbumID, "
-                "        GROUP_CONCAT(strArtist || strJoinPhrase, '') as strArtists, "
-                "        album.strGenres AS strGenres, "
-                "        album.iYear AS iYear, "
-                "        album.strMoods AS strMoods, "
-                "        album.strStyles AS strStyles, "
-                "        strThemes, "
-                "        strReview, "
-                "        strLabel, "
-                "        strType, "
-                "        album.strImage as strImage, "
-                "        iRating, "
-                "        bCompilation, "
-                "        (SELECT MIN(iTimesPlayed) AS iTimesPlayed FROM song WHERE song.idAlbum = album.idAlbum)"
-                "   FROM album  "
-                "   LEFT OUTER JOIN album_artist ON "
-                "       album.idAlbum = album_artist.idAlbum "
-                "   GROUP BY album.idAlbum");
-  }
-  else
-  {
-    m_pDS->exec("CREATE VIEW albumview AS SELECT "
-                "        album.idAlbum AS idAlbum, "
-                "        strAlbum, "
-                "        strMusicBrainzAlbumID, "
-                "        GROUP_CONCAT(strArtist, strJoinPhrase ORDER BY iOrder SEPARATOR '') as strArtists, "
-                "        album.strGenres AS strGenres, "
-                "        album.iYear AS iYear, "
-                "        strMoods, "
-                "        strStyles, "
-                "        strThemes, "
-                "        strReview, "
-                "        strLabel, "
-                "        strType, "
-                "        strImage, "
-                "        iRating, "
-                "        bCompilation, "
-                "        (SELECT MIN(iTimesPlayed) AS iTimesPlayed FROM song WHERE song.idAlbum = album.idAlbum)"
-                "   FROM album  "
-                "   LEFT OUTER JOIN album_artist ON "
-                "       album.idAlbum = album_artist.idAlbum "
-                "   GROUP BY album.idAlbum");
-  }
+  m_pDS->exec("CREATE VIEW albumview AS SELECT "
+              "        album.idAlbum AS idAlbum, "
+              "        strAlbum, "
+              "        strMusicBrainzAlbumID, "
+              "        album.strArtists AS strArtists, "
+              "        album.strGenres AS strGenres, "
+              "        album.iYear AS iYear, "
+              "        album.strMoods AS strMoods, "
+              "        album.strStyles AS strStyles, "
+              "        strThemes, "
+              "        strReview, "
+              "        strLabel, "
+              "        strType, "
+              "        album.strImage as strImage, "
+              "        iRating, "
+              "        bCompilation, "
+              "        (SELECT MIN(iTimesPlayed) AS iTimesPlayed FROM song WHERE song.idAlbum = album.idAlbum)"
+              "   FROM album  ");
 
   CLog::Log(LOGINFO, "create artist view");
   m_pDS->exec("DROP VIEW IF EXISTS artistview");
