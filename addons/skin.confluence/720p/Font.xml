@@ -86,6 +86,11 @@
 			<filename>Roboto-Bold.ttf</filename>
 			<size>80</size>
 		</font>
+		<font>
+			<name>BigWeatherTemp</name>
+			<filename>Roboto-Bold.ttf</filename>
+			<size>150</size>
+		</font>
 	</fontset>
 
 	<fontset id="DefaultNoCaps" idloc="31391" unicode="true"> 

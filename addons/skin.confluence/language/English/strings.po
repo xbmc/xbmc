@@ -344,6 +344,10 @@ msgstr ""
 #empty strings from id 31209 to 31299
 #Extra labels
 
+msgctxt "#31299"
+msgid "Observation"
+msgstr ""
+
 msgctxt "#31300"
 msgid "Current Temp"
 msgstr ""
@@ -352,7 +356,10 @@ msgctxt "#31301"
 msgid "Last Updated"
 msgstr ""
 
-#empty string with id 31302
+#for weather.metoffice...
+msgctxt "#31302"
+msgid "Issued At"
+msgstr ""
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -605,6 +612,38 @@ msgstr ""
 
 #empty strings from id 31512 to 31900
 #Weather plugin
+
+msgctxt "#31800"
+msgid "Visibility"
+msgstr ""
+
+msgctxt "#31801"
+msgid "Pressure"
+msgstr ""
+
+msgctxt "#31802"
+msgid "Wind Gust"
+msgstr ""
+
+msgctxt "#31803"
+msgid "5 Day Forecast"
+msgstr ""
+
+msgctxt "#31804"
+msgid "Regional Text Forecast"
+msgstr ""
+
+msgctxt "#31805"
+msgid "3 Hour Forecast"
+msgstr ""
+
+msgctxt "#31806"
+msgid "Precipitation Probability"
+msgstr ""
+
+msgctxt "#31807"
+msgid "Daily Forecast"
+msgstr ""
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
