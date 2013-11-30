@@ -466,7 +466,7 @@ private:
   CArtist GetArtistFromDataset(const dbiplus::sql_record* const record, int offset = 0, bool needThumb = true);
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, int offset = 0, bool imageURL = false);
   CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, int offset = 0, bool imageURL = false);
-  CArtistCredit GetAlbumArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset = 0);
+  CArtistCredit GetArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset = 0);
   void GetFileItemFromDataset(CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CMusicDbUrl &baseUrl);
   bool CleanupSongs();
@@ -533,14 +533,21 @@ private:
     album_iRating,
     album_bCompilation,
     album_iTimesPlayed,
-
-    // used for GetAlbumInfo to get the cascaded artist credits
-    album_idArtist,
-    album_strArtist,
-    album_strMusicBrainzArtistID,
-    album_bFeatured,
-    album_strJoinPhrase
+    album_enumCount // end of the enum, do not add past here
   } AlbumFields;
+
+  enum _ArtistCreditFields
+  {
+    // used for GetAlbum to get the cascaded album/song artist credits
+    artistCredit_idEntity = 0,  // can be idSong or idAlbum depending on context
+    artistCredit_idArtist,
+    artistCredit_strArtist,
+    artistCredit_strMusicBrainzArtistID,
+    artistCredit_bFeatured,
+    artistCredit_strJoinPhrase,
+    artistCredit_iOrder,
+    artistCredit_enumCount
+  } ArtistCreditFields;
 
   enum _ArtistFields
   {
