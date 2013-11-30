@@ -2,8 +2,8 @@
 <includes>
 	<include name="DefaultSideBladeContents">
 		<control type="grouplist" id="9000">
-			<posx>0</posx>
-			<posy>60</posy>
+			<left>0</left>
+			<top>60</top>
 			<width>250</width>
 			<height>650</height>
 			<onleft>9000</onleft>
@@ -26,8 +26,8 @@
 				<height>40</height>
 				<control type="spincontrolex" id="3">
 					<description>change location button</description>
-					<posx>0</posx>
-					<posy>0</posy>
+					<left>0</left>
+					<top>0</top>
 					<font>-</font>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
@@ -37,8 +37,8 @@
 					<onback>50</onback>
 				</control>
 				<control type="label" id="301">
-					<posx>10</posx>
-					<posy>0</posy>
+					<left>10</left>
+					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<font>font13</font>

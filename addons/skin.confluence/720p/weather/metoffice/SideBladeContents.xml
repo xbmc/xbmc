@@ -2,8 +2,8 @@
 <includes>
 	<include name="MetOfficeSideBladeContents">
 		<control type="grouplist" id="9000">
-			<posx>0</posx>
-			<posy>60</posy>
+			<left>0</left>
+			<top>60</top>
 			<width>250</width>
 			<height>650</height>
 			<onleft>9000</onleft>

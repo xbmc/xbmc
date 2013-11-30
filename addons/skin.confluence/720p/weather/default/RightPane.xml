@@ -2,25 +2,25 @@
 <includes>
 	<include name="DefaultRightPane">
 		<control type="group">
-			<posx>580</posx>
-			<posy>40</posy>
+			<left>580</left>
+			<top>40</top>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
+				<left>0</left>
+				<top>0</top>
 				<width>650</width>
 				<height>620</height>
 				<texture border="20">ContentPanel.png</texture>
 			</control>
 			<control type="image">
-				<posx>0</posx>
-				<posy>612</posy>
+				<left>0</left>
+				<top>612</top>
 				<width>650</width>
 				<height>64</height>
 				<texture border="10">ContentPanelMirror.png</texture>
 			</control>
 			<control type="image">
-				<posx>20</posx>
-				<posy>5</posy>
+				<left>20</left>
+				<top>5</top>
 				<width>610</width>
 				<height>90</height>
 				<aspectratio>stretch</aspectratio>
@@ -28,8 +28,8 @@
 			</control>
 			<control type="label">
 				<description>header label</description>
-				<posx>20</posx>
-				<posy>13</posy>
+				<left>20</left>
+				<top>13</top>
 				<width>610</width>
 				<height>30</height>
 				<font>font13_title</font>
@@ -40,8 +40,8 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="list" id="50">
-				<posx>15</posx>
-				<posy>60</posy>
+				<left>15</left>
+				<top>60</top>
 				<width>600</width>
 				<height>541</height>
 				<onleft>9000</onleft>
@@ -53,22 +53,22 @@
 				<scrolltime>200</scrolltime>
 				<itemlayout height="135" width="600">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>600</width>
 						<height>136</height>
 						<texture border="0,5,0,5">MenuItemNF.png</texture>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>600</width>
 						<height>136</height>
 						<texture border="0,5,0,5">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
-						<posx>300</posx>
-						<posy>5</posy>
+						<left>300</left>
+						<top>5</top>
 						<width>300</width>
 						<height>25</height>
 						<font>font13_title</font>
@@ -80,16 +80,16 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="image">
-						<posx>460</posx>
-						<posy>0</posy>
+						<left>460</left>
+						<top>0</top>
 						<width>135</width>
 						<height>135</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.ActualIcon]</texture>
 					</control>
 					<control type="label">
-						<posx>30</posx>
-						<posy>35</posy>
+						<left>30</left>
+						<top>35</top>
 						<width>390</width>
 						<height>30</height>
 						<font>font13</font>
@@ -102,8 +102,8 @@
 						<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
 					</control>
 					<control type="textbox">
-						<posx>30</posx>
-						<posy>70</posy>
+						<left>30</left>
+						<top>70</top>
 						<width>400</width>
 						<height>50</height>
 						<font>font13</font>
@@ -116,8 +116,8 @@
 				</itemlayout>
 				<focusedlayout height="135" width="600">
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>600</width>
 						<height>136</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
@@ -125,8 +125,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>600</width>
 						<height>136</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
@@ -134,8 +134,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
+						<left>0</left>
+						<top>0</top>
 						<width>600</width>
 						<height>136</height>
 						<texture border="10">button-focus2.png</texture>
@@ -143,8 +143,8 @@
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="label">
-						<posx>300</posx>
-						<posy>5</posy>
+						<left>300</left>
+						<top>5</top>
 						<width>300</width>
 						<height>25</height>
 						<font>font13_title</font>
@@ -156,16 +156,16 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="image">
-						<posx>460</posx>
-						<posy>0</posy>
+						<left>460</left>
+						<top>0</top>
 						<width>135</width>
 						<height>135</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.ActualIcon]</texture>
 					</control>
 					<control type="label">
-						<posx>30</posx>
-						<posy>35</posy>
+						<left>30</left>
+						<top>35</top>
 						<width>390</width>
 						<height>30</height>
 						<font>font13</font>
@@ -178,8 +178,8 @@
 						<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
 					</control>
 					<control type="textbox">
-						<posx>30</posx>
-						<posy>70</posy>
+						<left>30</left>
+						<top>70</top>
 						<width>400</width>
 						<height>50</height>
 						<font>font13</font>
@@ -300,8 +300,8 @@
 				</content>
 			</control>
 			<control type="scrollbar" id="61">
-				<posx>615</posx>
-				<posy>60</posy>
+				<left>615</left>
+				<top>60</top>
 				<width>25</width>
 				<height>540</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
@@ -318,8 +318,8 @@
 			<control type="label">
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>number of files/pages</description>
-				<posx>660</posx>
-				<posy>627</posy>
+				<right>660</right>
+				<top>627</top>
 				<width>570</width>
 				<font>font12</font>
 				<align>right</align>
