@@ -475,6 +475,27 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
   return false;
 }
 
+int CMusicDatabase::UpdateSong(int idSong, const CSong &song)
+{
+  return UpdateSong(idSong,
+                    song.strTitle,
+                    song.strMusicBrainzTrackID,
+                    song.strFileName,
+                    song.strComment,
+                    song.strThumb,
+                    song.artist,
+                    song.genre,
+                    song.iTrack,
+                    song.iDuration,
+                    song.iYear,
+                    song.iTimesPlayed,
+                    song.iStartOffset,
+                    song.iEndOffset,
+                    song.lastPlayed,
+                    song.rating,
+                    song.iKaraokeNumber);
+}
+
 int CMusicDatabase::UpdateSong(int idSong,
                                const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
                                const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,

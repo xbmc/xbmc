@@ -510,7 +510,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const CStdString &method, ITranspor
   if (ParameterNotNull(parameterObject, "musicbrainztrackid"))
     song.strMusicBrainzTrackID = parameterObject["musicbrainztrackid"].asString();
 
-  if (musicdatabase.UpdateSong(id, song.strTitle, song.strMusicBrainzTrackID, song.strFileName, song.strComment, song.strThumb, song.artist, song.genre, song.iTrack, song.iDuration, song.iYear, song.iTimesPlayed, song.iStartOffset, song.iEndOffset, song.lastPlayed, song.rating, song.iKaraokeNumber) <= 0)
+  if (musicdatabase.UpdateSong(id, song) <= 0)
     return InternalError;
 
   CJSONRPCUtils::NotifyItemUpdated();

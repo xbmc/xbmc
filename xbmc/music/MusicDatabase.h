@@ -137,6 +137,19 @@ public:
               char rating, int iKaraokeNumber);
   bool GetSong(int idSong, CSong& song);
 
+  /*! \brief Update a song in the database.
+
+   NOTE: This function assumes that song.artist contains the artist string to be concatenated.
+         Most internal functions should instead use the long-form function as the artist string
+         should be constructed from the artist credits.
+         This function will eventually be demised.
+
+   \param idSong  the database ID of the song to update
+   \param song the song
+   \return the id of the song.
+   */
+  int UpdateSong(int idSong, const CSong &song);
+
   /*! \brief Update a song in the database
    \param idSong [in] the database ID of the song to update
    \param strTitle [in] the title of the song (required to be non-empty)
