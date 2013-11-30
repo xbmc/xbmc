@@ -111,7 +111,7 @@ public:
    \param strPathAndFileName [in] the path and filename to the song
    \param strComment [in] the ids of the added songs
    \param strThumb [in] the ids of the added songs
-   \param artists [in] a vector of artist names (will only be used for the cache names in the album views)
+   \param artistString [in] the assembled artist string, denormalized from CONCAT(strArtist||strJoinPhrase)
    \param genres [in] a vector of genres to which this song belongs
    \param iTrack [in] the track number and disc number of the song
    \param iDuration [in] the duration of the song
@@ -130,7 +130,7 @@ public:
               const CStdString& strPathAndFileName,
               const CStdString& strComment,
               const CStdString& strThumb,
-              const std::vector<std::string>& artists, const std::vector<std::string>& genres,
+              const std::string &artistString, const std::vector<std::string>& genres,
               int iTrack, int iDuration, int iYear,
               const int iTimesPlayed, int iStartOffset, int iEndOffset,
               const CDateTime& dtLastPlayed,
@@ -157,7 +157,7 @@ public:
    \param strPathAndFileName [in] the path and filename to the song
    \param strComment [in] the ids of the added songs
    \param strThumb [in] the ids of the added songs
-   \param artists [in] a vector of artist names (will only be used for the cache names in the album views)
+   \param artistString [in] the full artist string, denormalized from CONCAT(song_artist.strArtist || song_artist.strJoinPhrase)
    \param genres [in] a vector of genres to which this song belongs
    \param iTrack [in] the track number and disc number of the song
    \param iDuration [in] the duration of the song
@@ -174,7 +174,7 @@ public:
                  const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
                  const CStdString& strPathAndFileName, const CStdString& strComment,
                  const CStdString& strThumb,
-                 const std::vector<std::string>& artists, const std::vector<std::string>& genres,
+                 const std::string& artistString, const std::vector<std::string>& genres,
                  int iTrack, int iDuration, int iYear,
                  int iTimesPlayed, int iStartOffset, int iEndOffset,
                  const CDateTime& dtLastPlayed,

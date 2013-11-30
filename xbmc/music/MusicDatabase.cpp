@@ -347,7 +347,7 @@ void CMusicDatabase::CreateViews()
 int CMusicDatabase::AddSong(const int idAlbum,
                             const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
                             const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,
-                            const std::vector<std::string>& artists, const std::vector<std::string>& genres,
+                            const std::string &artistString, const std::vector<std::string>& genres,
                             int iTrack, int iDuration, int iYear,
                             const int iTimesPlayed, int iStartOffset, int iEndOffset,
                             const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber)
@@ -392,7 +392,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
       strSQL=PrepareSQL("INSERT INTO song (idSong,idAlbum,idPath,strArtists,strGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,iTimesPlayed,iStartOffset,iEndOffset,lastplayed,rating,comment) values (NULL, %i, %i, '%s', '%s', '%s', %i, %i, %i, '%ul', '%s'",
                     idAlbum,
                     idPath,
-                    StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator).c_str(),
+                    artistString.c_str(),
                     StringUtils::Join(genres, g_advancedSettings.m_musicItemSeparator).c_str(),
                     strTitle.c_str(),
                     iTrack, iDuration, iYear,
@@ -416,7 +416,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
     {
       idSong = m_pDS->fv("idSong").get_asInt();
       m_pDS->close();
-      UpdateSong(idSong, strTitle, strMusicBrainzTrackID, strPathAndFileName, strComment, strThumb, artists, genres, iTrack, iDuration, iYear, iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed, rating,  iKaraokeNumber);
+      UpdateSong(idSong, strTitle, strMusicBrainzTrackID, strPathAndFileName, strComment, strThumb, artistString, genres, iTrack, iDuration, iYear, iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed, rating,  iKaraokeNumber);
     }
 
     if (!strThumb.empty())
@@ -492,7 +492,7 @@ int CMusicDatabase::UpdateSong(int idSong, const CSong &song)
                     song.strFileName,
                     song.strComment,
                     song.strThumb,
-                    song.artist,
+                    StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator), // NOTE: Don't call this function internally!!!
                     song.genre,
                     song.iTrack,
                     song.iDuration,
@@ -508,7 +508,7 @@ int CMusicDatabase::UpdateSong(int idSong, const CSong &song)
 int CMusicDatabase::UpdateSong(int idSong,
                                const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
                                const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,
-                               const std::vector<std::string>& artists, const std::vector<std::string>& genres,
+                               const std::string& artistString, const std::vector<std::string>& genres,
                                int iTrack, int iDuration, int iYear,
                                int iTimesPlayed, int iStartOffset, int iEndOffset,
                                const CDateTime& dtLastPlayed, char rating, int iKaraokeNumber)
@@ -524,7 +524,7 @@ int CMusicDatabase::UpdateSong(int idSong,
 
   strSQL = PrepareSQL("UPDATE song SET idPath = %i, strArtists = '%s', strGenres = '%s', strTitle = '%s', iTrack = %i, iDuration = %i, iYear = %i, dwFileNameCRC = '%ul', strFileName = '%s'",
                       idPath,
-                      StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator).c_str(),
+                      artistString.c_str(),
                       StringUtils::Join(genres, g_advancedSettings.m_musicItemSeparator).c_str(),
                       strTitle.c_str(),
                       iTrack, iDuration, iYear,

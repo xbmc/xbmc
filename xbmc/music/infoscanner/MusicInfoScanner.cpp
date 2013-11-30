@@ -823,7 +823,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
                                              song->strTitle, song->strMusicBrainzTrackID,
                                              song->strFileName, song->strComment,
                                              song->strThumb,
-                                             song->artist, song->genre,
+                                             StringUtils::Join(song->artist, g_advancedSettings.m_musicItemSeparator), song->genre,
                                              song->iTrack, song->iDuration, song->iYear,
                                              song->iTimesPlayed, song->iStartOffset,
                                              song->iEndOffset,
