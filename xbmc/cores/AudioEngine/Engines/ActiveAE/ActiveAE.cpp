@@ -1999,7 +1999,7 @@ void CActiveAE::LoadSettings()
   m_settings.channels = (m_sink.GetDeviceType(m_settings.device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::Get().GetInt("audiooutput.channels");
   m_settings.samplerate = CSettings::Get().GetInt("audiooutput.samplerate");
 
-  m_settings.stereoupmix = (m_settings.channels > AE_CH_LAYOUT_2_0) ? CSettings::Get().GetBool("audiooutput.stereoupmix") : false;
+  m_settings.stereoupmix = IsSettingVisible("audiooutput.stereoupmix") ? CSettings::Get().GetBool("audiooutput.stereoupmix") : false;
   m_settings.normalizelevels = CSettings::Get().GetBool("audiooutput.normalizelevels");
 
   m_settings.passthrough = m_settings.config == AE_CONFIG_FIXED ? false : CSettings::Get().GetBool("audiooutput.passthrough");
@@ -2145,6 +2145,21 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
         CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED &&
         m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.passthroughdevice")) == AE_DEVTYPE_HDMI)
       return true;
+  }
+  else if (settingId == "audiooutput.stereoupmix")
+  {
+    if (m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.audiodevice")) != AE_DEVTYPE_IEC958)
+    {
+      if (CSettings::Get().GetInt("audiooutput.channels") > AE_CH_LAYOUT_2_0)
+        return true;
+    }
+    else
+    {
+      if (m_sink.HasPassthroughDevice() &&
+          CSettings::Get().GetBool("audiooutput.passthrough") &&
+          CSettings::Get().GetBool("audiooutput.ac3passthrough"))
+        return true;
+    }
   }
   return false;
 }
