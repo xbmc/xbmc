@@ -2227,6 +2227,8 @@ void CLinuxRendererGLES::UploadCVRefTexture(int index)
 
     plane.flipindex = m_buffers[index].flipindex;
   }
+
+  CalculateTextureSourceRects(source, 1);
 #endif
 }
 void CLinuxRendererGLES::DeleteCVRefTexture(int index)
@@ -2340,6 +2342,8 @@ void CLinuxRendererGLES::UploadEGLIMGTexture(int index)
     plane.flipindex = m_buffers[index].flipindex;
   }
 
+  CalculateTextureSourceRects(source, 1);
+
 #ifdef DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "UploadEGLIMGTexture %d: img:%p, tm:%d\n", index, m_buffers[index].eglimg, XbmcThreads::SystemClockMillis() - time);
 #endif
@@ -2426,6 +2430,8 @@ void CLinuxRendererGLES::UploadSurfaceTexture(int index)
     buf.mediacodec->GetTransformMatrix(m_textureMatrix);
     SAFE_RELEASE(buf.mediacodec);
   }
+
+  CalculateTextureSourceRects(source, 1);
 
 #ifdef DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "UploadSurfaceTexture %d: img: %d tm:%d", index, mindex, XbmcThreads::SystemClockMillis() - time);
