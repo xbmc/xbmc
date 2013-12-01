@@ -381,6 +381,85 @@ void CMusicDatabase::CreateViews()
               "     song_artist.idArtist = artist.idArtist");
 }
 
+int CMusicDatabase::AddAlbumInfoSong(int idAlbum, const CSong& song)
+{
+  CStdString strSQL = PrepareSQL("SELECT idAlbumInfoSong FROM albuminfosong WHERE idAlbumInfo = %i and iTrack = %i", idAlbum, song.iTrack);
+  int idAlbumInfoSong = (int)strtol(GetSingleValue(strSQL).c_str(), NULL, 10);
+  if (idAlbumInfoSong > 0)
+  {
+    strSQL = PrepareSQL("UPDATE albuminfosong SET strTitle = '%s', iDuration = %i WHERE idAlbumInfoSong = %i", song.strTitle.c_str(), song.iDuration, idAlbumInfoSong);
+    return ExecuteQuery(strSQL);
+  }
+  else
+  {
+    strSQL = PrepareSQL("INSERT INTO albuminfosong (idAlbumInfoSong,idAlbumInfo,iTrack,strTitle,iDuration) VALUES (NULL,%i,%i,'%s',%i)",
+                        idAlbum,
+                        song.iTrack,
+                        song.strTitle.c_str(),
+                        song.iDuration);
+    return ExecuteQuery(strSQL);
+  }
+}
+
+bool CMusicDatabase::AddAlbum(CAlbum& album)
+{
+  BeginTransaction();
+
+  album.idAlbum = AddAlbum(album.strAlbum,
+                           album.strMusicBrainzAlbumID,
+                           album.GetArtistString(),
+                           album.GetGenreString(),
+                           album.iYear,
+                           album.bCompilation);
+
+  // Add the album artists
+  for (VECARTISTCREDITS::iterator artistCredit = album.artistCredits.begin(); artistCredit != album.artistCredits.end(); ++artistCredit)
+  {
+    artistCredit->idArtist = AddArtist(artistCredit->GetArtist(), artistCredit->GetMusicBrainzArtistID());
+    AddAlbumArtist(artistCredit->idArtist,
+                   album.idAlbum,
+                   artistCredit->GetJoinPhrase(),
+                   artistCredit == album.artistCredits.begin() ? false : true,
+                   std::distance(album.artistCredits.begin(), artistCredit));
+  }
+
+  for (VECSONGS::iterator song = album.songs.begin(); song != album.songs.end(); ++song)
+  {
+    song->idAlbum = album.idAlbum;
+    song->idSong = AddSong(song->idAlbum,
+                           song->strTitle, song->strMusicBrainzTrackID,
+                           song->strFileName, song->strComment,
+                           song->strThumb,
+                           StringUtils::Join(song->artist, g_advancedSettings.m_musicItemSeparator), song->genre,
+                           song->iTrack, song->iDuration, song->iYear,
+                           song->iTimesPlayed, song->iStartOffset,
+                           song->iEndOffset,
+                           song->lastPlayed,
+                           song->rating,
+                           song->iKaraokeNumber);
+    for (VECARTISTCREDITS::iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
+    {
+      artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
+                                         artistCredit->GetMusicBrainzArtistID());
+      AddSongArtist(artistCredit->idArtist,
+                    song->idSong,
+                    artistCredit->GetJoinPhrase(), // we don't have song artist breakdowns from scrapers, yet
+                    artistCredit == song->artistCredits.begin() ? false : true,
+                    std::distance(song->artistCredits.begin(), artistCredit));
+    }
+  }
+  for (VECSONGS::const_iterator infoSong = album.infoSongs.begin(); infoSong != album.infoSongs.end(); ++infoSong)
+    AddAlbumInfoSong(album.idAlbum, *infoSong);
+
+  for (std::map<std::string, std::string>::const_iterator albumArt = album.art.begin();
+                                                          albumArt != album.art.end();
+                                                        ++albumArt)
+    SetArtForItem(album.idAlbum, "album", albumArt->first, albumArt->second);
+
+  CommitTransaction();
+  return true;
+}
+
 int CMusicDatabase::AddSong(const int idAlbum,
                             const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
                             const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,

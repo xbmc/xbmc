@@ -721,15 +721,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
       if (albumDownloadStatus == INFO_ADDED || albumDownloadStatus == INFO_HAVE_ALREADY)
       {
         CAlbum &downloadedAlbum = albumInfo.GetAlbum();
-        downloadedAlbum.idAlbum = m_musicDatabase.AddAlbum(downloadedAlbum.strAlbum,
-                                                           downloadedAlbum.strMusicBrainzAlbumID,
-                                                           downloadedAlbum.GetArtistString(),
-                                                           downloadedAlbum.GetGenreString(),
-                                                           downloadedAlbum.iYear,
-                                                           downloadedAlbum.bCompilation);
-        m_musicDatabase.SetAlbumInfo(downloadedAlbum.idAlbum,
-                                     downloadedAlbum,
-                                     downloadedAlbum.infoSongs);
+        album->MergeScrapedAlbum(downloadedAlbum);
+        downloadedAlbum.idAlbum = m_musicDatabase.AddAlbum(*album);
         m_musicDatabase.SetArtForItem(downloadedAlbum.idAlbum,
                                       "album", album->art);
         GetAlbumArtwork(downloadedAlbum.idAlbum, downloadedAlbum);
@@ -740,12 +733,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
       else
       {
         // No download info, fallback to already gathered (eg. local) information/art (if any)
-        album->idAlbum = m_musicDatabase.AddAlbum(album->strAlbum,
-                                                  album->strMusicBrainzAlbumID,
-                                                  album->GetArtistString(),
-                                                  album->GetGenreString(),
-                                                  album->iYear,
-                                                  album->bCompilation);
+        m_musicDatabase.AddAlbum(*album);
         if (!album->art.empty())
           m_musicDatabase.SetArtForItem(album->idAlbum,
                                         "album", album->art);

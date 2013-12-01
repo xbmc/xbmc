@@ -192,6 +192,8 @@ public:
   /////////////////////////////////////////////////
   // Album
   /////////////////////////////////////////////////
+  bool AddAlbum(CAlbum& album);
+
   /*! \brief Add an album and all its songs to the database
    \param album the album to add
    \param songIDs [out] the ids of the added songs
@@ -211,6 +213,7 @@ public:
   bool DeleteAlbum(int idAlbum);
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum);
+  int  AddAlbumInfoSong(int idAlbum, const CSong& song);
 
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check
