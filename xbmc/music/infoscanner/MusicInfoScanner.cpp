@@ -172,7 +172,7 @@ void CMusicInfoScanner::Process()
       {
         CQueryParams params;
         CDirectoryNode::GetDatabaseInfo(*it, params);
-        if (m_musicDatabase.HasAlbumInfo(params.GetArtistId())) // should this be here?
+        if (m_musicDatabase.HasAlbumBeenScraped(params.GetAlbumId())) // should this be here?
           continue;
 
         CAlbum album;
@@ -297,7 +297,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory,
     m_pathsToScan.insert(items[i]->GetPath());
     if (refresh)
     {
-      m_musicDatabase.DeleteAlbumInfo(items[i]->GetMusicInfoTag()->GetDatabaseId());
+      m_musicDatabase.ClearAlbumLastScrapedTime(items[i]->GetMusicInfoTag()->GetDatabaseId());
     }
   }
   m_musicDatabase.Close();

@@ -754,6 +754,18 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
   return false;
 }
 
+bool CMusicDatabase::ClearAlbumLastScrapedTime(int idAlbum)
+{
+  CStdString strSQL = PrepareSQL("UPDATE album SET lastScraped = NULL WHERE idAlbum = %i", idAlbum);
+  return ExecuteQuery(strSQL);
+}
+
+bool CMusicDatabase::HasAlbumBeenScraped(int idAlbum)
+{
+  CStdString strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE idAlbum = %i AND lastScraped IS NULL", idAlbum);
+  return GetSingleValue(strSQL).empty();
+}
+
 int CMusicDatabase::AddGenre(const CStdString& strGenre1)
 {
   CStdString strSQL;
@@ -1463,35 +1475,6 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
   }
 
   return false;
-}
-
-bool CMusicDatabase::HasAlbumInfo(int idAlbum)
-{
-  try
-  {
-    if (idAlbum == -1)
-      return false; // not in the database
-
-    CStdString strSQL=PrepareSQL("select idAlbum from album where idAlbum = %ld and lastScraped NOT NULL", idAlbum);
-
-    if (!m_pDS2->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS2->num_rows();
-    m_pDS2->close();
-    return iRowsFound > 0;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
-  }
-
-  return false;
-}
-
-bool CMusicDatabase::DeleteAlbumInfo(int idAlbum)
-{
-  if (idAlbum == -1)
-    return false; // not in the database
-  return ExecuteQuery(PrepareSQL("update album set lastScraped = NULL where idAlbum=%i",idAlbum));
 }
 
 bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)

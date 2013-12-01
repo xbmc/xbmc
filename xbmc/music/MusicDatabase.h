@@ -209,6 +209,9 @@ public:
   bool GetAlbum(int idAlbum, CAlbum& album, bool getSongs = true);
   int  UpdateAlbum(int idAlbum, const CAlbum &album);
   bool DeleteAlbum(int idAlbum);
+  bool ClearAlbumLastScrapedTime(int idAlbum);
+  bool HasAlbumBeenScraped(int idAlbum);
+
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check
    */
@@ -253,9 +256,7 @@ public:
   /////////////////////////////////////////////////
   // AlbumInfo
   /////////////////////////////////////////////////
-  bool HasAlbumInfo(int idAlbum);
   int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
-  bool DeleteAlbumInfo(int idArtist);
 
   /////////////////////////////////////////////////
   // ArtistInfo
