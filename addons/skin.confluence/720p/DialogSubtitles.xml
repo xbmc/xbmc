@@ -133,10 +133,10 @@
 						</control>
 						<control type="image">
 							<left>5</left>
-							<top>11</top>
+							<top>5</top>
 							<width>26</width>
-							<height>17</height>
-							<texture>Subtitles/flags/$INFO[ListItem.Thumb].gif</texture>
+							<height>26</height>
+							<texture>Subtitles/flags/$INFO[ListItem.Thumb].png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -204,10 +204,10 @@
 						</control>
 						<control type="image">
 							<left>5</left>
-							<top>11</top>
+							<top>5</top>
 							<width>26</width>
-							<height>17</height>
-							<texture>Subtitles/flags/$INFO[ListItem.Thumb].gif</texture>
+							<height>26</height>
+							<texture>Subtitles/flags/$INFO[ListItem.Thumb].png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
