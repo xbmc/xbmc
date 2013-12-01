@@ -101,6 +101,10 @@ void CAEChannelInfo::ResolveChannels(const CAEChannelInfo& rhs)
       newInfo += m_channels[i];
   }
 
+  // we let the sink do the mapping later on
+  if (m_channelCount == 8 && m_channelCount == rhs.Count())
+    return;
+
   /* we need to ensure we end up with rear or side channels for downmix to work */
   if (srcHasSL && !dstHasSL && dstHasRL)
     newInfo += AE_CH_BL;
