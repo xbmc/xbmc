@@ -46,7 +46,7 @@ fi
 PACKAGE=org.xbmc.xbmc-ios
 
 VERSION=13.0
-REVISION=0~alpha10
+REVISION=0~alpha11
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION

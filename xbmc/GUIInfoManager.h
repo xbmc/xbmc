@@ -498,7 +498,7 @@ namespace INFO
 
 #define VERSION_MAJOR               13
 #define VERSION_MINOR               0
-#define VERSION_TAG                 "-ALPHA10"
+#define VERSION_TAG                 "-ALPHA11"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
