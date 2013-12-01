@@ -460,6 +460,75 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
   return true;
 }
 
+bool CMusicDatabase::UpdateAlbum(CAlbum& album)
+{
+  BeginTransaction();
+
+  UpdateAlbum(album.idAlbum,
+              album.strAlbum, album.strMusicBrainzAlbumID,
+              album.GetArtistString(), album.GetGenreString(),
+              StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator).c_str(),
+              StringUtils::Join(album.styles, g_advancedSettings.m_musicItemSeparator).c_str(),
+              StringUtils::Join(album.themes, g_advancedSettings.m_musicItemSeparator).c_str(),
+              album.strReview,
+              album.thumbURL.m_xml.c_str(),
+              album.strLabel, album.strType,
+              album.iRating, album.iYear, album.bCompilation);
+
+  // Add the album artists
+  DeleteAlbumArtistsByAlbum(album.idAlbum);
+  for (VECARTISTCREDITS::iterator artistCredit = album.artistCredits.begin(); artistCredit != album.artistCredits.end(); ++artistCredit)
+  {
+    artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
+                                       artistCredit->GetMusicBrainzArtistID());
+    AddAlbumArtist(artistCredit->idArtist,
+                   album.idAlbum,
+                   artistCredit->GetJoinPhrase(),
+                   artistCredit == album.artistCredits.begin() ? false : true,
+                   std::distance(album.artistCredits.begin(), artistCredit));
+  }
+
+  for (VECSONGS::iterator song = album.songs.begin(); song != album.songs.end(); ++song)
+  {
+    UpdateSong(song->idSong,
+               song->strTitle,
+               song->strMusicBrainzTrackID,
+               song->strFileName,
+               song->strComment,
+               song->strThumb,
+               StringUtils::Join(song->artist, g_advancedSettings.m_musicItemSeparator),
+               song->genre,
+               song->iTrack,
+               song->iDuration,
+               song->iYear,
+               song->iTimesPlayed,
+               song->iStartOffset,
+               song->iEndOffset,
+               song->lastPlayed,
+               song->rating,
+               song->iKaraokeNumber);
+    DeleteSongArtistsBySong(song->idSong);
+    for (VECARTISTCREDITS::iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
+    {
+      artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
+                                         artistCredit->GetMusicBrainzArtistID());
+      AddSongArtist(artistCredit->idArtist,
+                    song->idSong,
+                    artistCredit->GetJoinPhrase(),
+                    artistCredit == song->artistCredits.begin() ? false : true,
+                    std::distance(song->artistCredits.begin(), artistCredit));
+    }
+  }
+  for (VECSONGS::const_iterator infoSong = album.infoSongs.begin(); infoSong != album.infoSongs.end(); ++infoSong)
+    AddAlbumInfoSong(album.idAlbum, *infoSong);
+
+  if (!album.art.empty())
+    SetArtForItem(album.idAlbum, "album", album.art);
+
+  CommitTransaction();
+  return true;
+}
+
 int CMusicDatabase::AddSong(const int idAlbum,
                             const CStdString& strTitle, const CStdString& strMusicBrainzTrackID,
                             const CStdString& strPathAndFileName, const CStdString& strComment, const CStdString& strThumb,
@@ -729,6 +798,44 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum, const CStdString& strMu
   return -1;
 }
 
+int  CMusicDatabase::UpdateAlbum(int idAlbum,
+                                 const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID,
+                                 const CStdString& strArtist, const CStdString& strGenre,
+                                 const CStdString& strMoods, const CStdString& strStyles,
+                                 const CStdString& strThemes, const CStdString& strReview,
+                                 const CStdString& strImage, const CStdString& strLabel,
+                                 const CStdString& strType,
+                                 int iRating, int iYear, bool bCompilation)
+{
+  if (idAlbum < 0)
+    return -1;
+
+  CStdString strSQL;
+  strSQL = PrepareSQL("UPDATE album SET "
+                      " strAlbum = '%s', strArtists = '%s', strGenres = '%s', "
+                      " strMoods = '%s', strStyles = '%s', strThemes = '%s', "
+                      " strReview = '%s', strImage = '%s', strLabel = '%s', "
+                      " strType = '%s',"
+                      " iYear = %i, bCompilation = %i, lastScraped = '%s'",
+                      strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(),
+                      strMoods.c_str(), strStyles.c_str(), strThemes.c_str(),
+                      strReview.c_str(), strImage.c_str(), strLabel.c_str(),
+                      strType.c_str(),
+                      iYear, bCompilation,
+                      CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
+  if (strMusicBrainzAlbumID.empty())
+    strSQL += PrepareSQL(", strMusicBrainzAlbumID = NULL");
+  else
+    strSQL += PrepareSQL(", strMusicBrainzAlbumID = '%s'", strMusicBrainzAlbumID.c_str());
+
+  strSQL += PrepareSQL(" WHERE idAlbum = %i", idAlbum);
+
+  bool status = ExecuteQuery(strSQL);
+  if (status)
+    AnnounceUpdate("album", idAlbum);
+  return idAlbum;
+}
+
 bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = true */)
 {
   try
@@ -983,6 +1090,11 @@ bool CMusicDatabase::AddSongArtist(int idArtist, int idSong, std::string joinPhr
   return ExecuteQuery(strSQL);
 };
 
+bool CMusicDatabase::DeleteSongArtistsBySong(int idSong)
+{
+  return ExecuteQuery(PrepareSQL("DELETE FROM song_artist WHERE idSong = %i", idSong));
+}
+
 bool CMusicDatabase::AddAlbumArtist(int idArtist, int idAlbum, std::string joinPhrase, bool featured, int iOrder)
 {
   CStdString strSQL;
@@ -990,6 +1102,11 @@ bool CMusicDatabase::AddAlbumArtist(int idArtist, int idAlbum, std::string joinP
                     idArtist, idAlbum, joinPhrase.c_str(), featured == true ? 1 : 0, iOrder);
   return ExecuteQuery(strSQL);
 };
+
+bool CMusicDatabase::DeleteAlbumArtistsByAlbum(int idAlbum)
+{
+  return ExecuteQuery(PrepareSQL("DELETE FROM album_artist WHERE idAlbum = %i", idAlbum));
+}
 
 bool CMusicDatabase::AddSongGenre(int idGenre, int idSong, int iOrder)
 {
@@ -1002,6 +1119,11 @@ bool CMusicDatabase::AddSongGenre(int idGenre, int idSong, int iOrder)
   return ExecuteQuery(strSQL);
 };
 
+bool CMusicDatabase::DeleteSongGenresBySong(int idSong)
+{
+  return ExecuteQuery(PrepareSQL("DELETE FROM song_genre WHERE idSong = %i", idSong));
+}
+
 bool CMusicDatabase::AddAlbumGenre(int idGenre, int idAlbum, int iOrder)
 {
   if (idGenre == -1 || idAlbum == -1)
@@ -1012,6 +1134,11 @@ bool CMusicDatabase::AddAlbumGenre(int idGenre, int idAlbum, int iOrder)
                     idGenre, idAlbum, iOrder);
   return ExecuteQuery(strSQL);
 };
+
+bool CMusicDatabase::DeleteAlbumGenresByAlbum(int idAlbum)
+{
+  return ExecuteQuery(PrepareSQL("DELETE FROM album_genre WHERE idAlbum = %i", idAlbum));
+}
 
 bool CMusicDatabase::GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<int> &albums)
 {
@@ -2057,71 +2184,6 @@ bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &album
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
-}
-
-int CMusicDatabase::SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction)
-{
-  CStdString strSQL;
-  try
-  {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-
-    if (bTransaction)
-      BeginTransaction();
-
-    // update our data
-    strSQL=PrepareSQL("UPDATE album SET"
-                      " strMoods='%s',"
-                      " strStyles='%s',"
-                      " strThemes='%s',"
-                      " strReview='%s',"
-                      " strImage='%s',"
-                      " strLabel='%s',"
-                      " strType='%s',"
-                      " iRating=%i,"
-                      " iYear=%i,"
-                      " lastScraped='%s' WHERE idAlbum=%i",
-                  StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  StringUtils::Join(album.styles, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  StringUtils::Join(album.themes, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  album.strReview.c_str(),
-                  album.thumbURL.m_xml.c_str(),
-                  album.strLabel.c_str(),
-                  album.strType.c_str(),
-                  album.iRating,
-                  album.iYear,
-                  CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str(),
-                  idAlbum);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("delete from albuminfosong where idAlbumInfo=%i", idAlbum);
-    m_pDS->exec(strSQL.c_str());
-
-    for (int i = 0; i < (int)songs.size(); i++)
-    {
-      CSong song = songs[i];
-      strSQL=PrepareSQL("insert into albuminfosong (idAlbumInfoSong,idAlbumInfo,iTrack,strTitle,iDuration) values(NULL,%i,%i,'%s',%i)",
-                        idAlbum,
-                        song.iTrack,
-                        song.strTitle.c_str(),
-                        song.iDuration);
-      m_pDS->exec(strSQL.c_str());
-    }
-    if (bTransaction)
-      CommitTransaction();
-
-    return idAlbum;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed with query (%s)", __FUNCTION__, strSQL.c_str());
-  }
-
-  if (bTransaction)
-    RollbackTransaction();
-
-  return -1;
 }
 
 int CMusicDatabase::SetArtistInfo(int idArtist, const CArtist& artist)
@@ -4957,12 +5019,17 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
       }
       else if (strnicmp(entry->Value(), "album", 5) == 0)
       {
-        CAlbum album;
-        album.Load(entry);
-        strTitle = album.strAlbum;
-        int idAlbum = GetAlbumByName(album.strAlbum,album.artist);
+        CAlbum importedAlbum;
+        importedAlbum.Load(entry);
+        strTitle = importedAlbum.strAlbum;
+        int idAlbum = GetAlbumByName(importedAlbum.strAlbum, importedAlbum.artist);
         if (idAlbum > -1)
-          SetAlbumInfo(idAlbum,album,album.infoSongs,false);
+        {
+          CAlbum album;
+          GetAlbum(idAlbum, album, true);
+          album.MergeScrapedAlbum(importedAlbum, true);
+          UpdateAlbum(album);
+        }
 
         current++;
       }

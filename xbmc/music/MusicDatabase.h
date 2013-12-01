@@ -193,6 +193,11 @@ public:
   // Album
   /////////////////////////////////////////////////
   bool AddAlbum(CAlbum& album);
+  /*! \brief Update an album and all its nested entities (artists, songs, infoSongs, etc)
+   \param album the album to update
+   \return true or false
+   */
+  bool UpdateAlbum(CAlbum& album);
 
   /*! \brief Add an album and all its songs to the database
    \param album the album to add
@@ -210,6 +215,14 @@ public:
    */
   bool GetAlbum(int idAlbum, CAlbum& album, bool getSongs = true);
   int  UpdateAlbum(int idAlbum, const CAlbum &album);
+  int  UpdateAlbum(int idAlbum,
+                   const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID,
+                   const CStdString& strArtist, const CStdString& strGenre,
+                   const CStdString& strMoods, const CStdString& strStyles,
+                   const CStdString& strThemes, const CStdString& strReview,
+                   const CStdString& strImage, const CStdString& strLabel,
+                   const CStdString& strType,
+                   int iRating, int iYear, bool bCompilation);
   bool DeleteAlbum(int idAlbum);
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum);
@@ -257,11 +270,6 @@ public:
   int GetGenreByName(const CStdString& strGenre);
 
   /////////////////////////////////////////////////
-  // AlbumInfo
-  /////////////////////////////////////////////////
-  int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
-
-  /////////////////////////////////////////////////
   // ArtistInfo
   /////////////////////////////////////////////////
   /*! \brief Check if an artist entity has additional metadata (scraped)
@@ -279,16 +287,20 @@ public:
   bool AddAlbumArtist(int idArtist, int idAlbum, std::string joinPhrase, bool featured, int iOrder);
   bool GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<int>& albums);
   bool GetArtistsByAlbum(int idAlbum, bool includeFeatured, std::vector<int>& artists);
+  bool DeleteAlbumArtistsByAlbum(int idAlbum);
 
   bool AddSongArtist(int idArtist, int idSong, std::string joinPhrase, bool featured, int iOrder);
   bool GetSongsByArtist(int idArtist, bool includeFeatured, std::vector<int>& songs);
   bool GetArtistsBySong(int idSong, bool includeFeatured, std::vector<int>& artists);
+  bool DeleteSongArtistsBySong(int idSong);
 
   bool AddSongGenre(int idGenre, int idSong, int iOrder);
   bool GetGenresBySong(int idSong, std::vector<int>& genres);
+  bool DeleteSongGenresBySong(int idSong);
 
   bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
   bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
+  bool DeleteAlbumGenresByAlbum(int idAlbum);
 
   /////////////////////////////////////////////////
   // Top 100

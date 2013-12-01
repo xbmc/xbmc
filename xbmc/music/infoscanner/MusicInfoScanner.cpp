@@ -1033,11 +1033,12 @@ loop:
   }
   else if (albumDownloadStatus == INFO_ADDED)
   {
+    album.MergeScrapedAlbum(albumInfo.GetAlbum());
     m_musicDatabase.Open();
-    m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), albumInfo.GetAlbum().infoSongs);
-    GetAlbumArtwork(params.GetAlbumId(), albumInfo.GetAlbum());
-    albumInfo.SetLoaded(true);
+    m_musicDatabase.UpdateAlbum(album);
+    GetAlbumArtwork(album.idAlbum, album);
     m_musicDatabase.Close();
+    albumInfo.SetLoaded(true);
   }
   return albumDownloadStatus;
 }
