@@ -1727,32 +1727,16 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
 
     if (deinterlacing)
     {
-      // Load Y fields
+      // Load Even Y Field
       LoadPlane( fields[FIELD_TOP][0] , GL_LUMINANCE, buf.flipindex
                , im->width, im->height >> 1
                , im->stride[0]*2, im->bpp, im->plane[0] );
 
+      // Load Odd Y fields
       LoadPlane( fields[FIELD_BOT][0], GL_LUMINANCE, buf.flipindex
                , im->width, im->height >> 1
                , im->stride[0]*2, im->bpp, im->plane[0] + im->stride[0]) ;
-    }
-    else
-    {
-      // Load Y plane
-      LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
-               , im->width, im->height
-               , im->stride[0], im->bpp, im->plane[0] );
-    }
-  }
 
-  VerifyGLState();
-
-  if (!(m_renderMethod & RENDER_SW))
-  {
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-
-    if (deinterlacing)
-    {
       // Load Even U & V Fields
       LoadPlane( fields[FIELD_TOP][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
@@ -1770,19 +1754,28 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
       LoadPlane( fields[FIELD_BOT][2], GL_ALPHA, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->bpp, im->plane[2] + im->stride[2] );
-
     }
     else
     {
+      // Load Y plane
+      LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
+               , im->width, im->height
+               , im->stride[0], im->bpp, im->plane[0] );
+
+      //load U plane
       LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[1], im->bpp, im->plane[1] );
 
+      //load V plane
       LoadPlane( fields[FIELD_FULL][2], GL_ALPHA, buf.flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[2], im->bpp, im->plane[2] );
     }
   }
+
+  VerifyGLState();
+
   CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
