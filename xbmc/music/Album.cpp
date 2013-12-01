@@ -173,7 +173,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   const TiXmlElement* node = album->FirstChildElement("track");
   if (node)
-    songs.clear();  // this means that the tracks can't be spread over separate pages
+    infoSongs.clear();  // this means that the tracks can't be spread over separate pages
                     // but this is probably a reasonable limitation
   bool bIncrement = false;
   while (node)
@@ -215,7 +215,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       if (bIncrement)
         song.iTrack = song.iTrack + 1;
 
-      songs.push_back(song);
+      infoSongs.push_back(song);
     }
     node = node->NextSiblingElement("track");
   }
@@ -274,7 +274,7 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
     XMLUtils::SetString(albumArtistCreditsNode,            "featuring", artistCredit->GetArtist());
   }
 
-  for( VECSONGS::const_iterator song = songs.begin(); song != songs.end(); ++song)
+  for( VECSONGS::const_iterator song = infoSongs.begin(); song != infoSongs.end(); ++song)
   {
     // add a <song> tag
     TiXmlElement cast("track");

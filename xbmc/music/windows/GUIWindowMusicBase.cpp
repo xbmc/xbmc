@@ -433,7 +433,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
   while (1)
   {
     if (!m_musicdatabase.HasAlbumInfo(params.GetAlbumId()) || 
-        !m_musicdatabase.GetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), &albumInfo.GetAlbum().songs))
+        !m_musicdatabase.GetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), &albumInfo.GetAlbum().infoSongs))
     {
       if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
       {

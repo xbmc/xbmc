@@ -150,7 +150,7 @@ bool CGUIDialogMusicInfo::OnAction(const CAction &action)
 void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
 {
   m_album = album;
-  SetSongs(m_album.songs);
+  SetSongs(m_album.infoSongs);
   *m_albumItem = CFileItem(path, true);
   m_albumItem->GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
   m_albumItem->GetMusicInfoTag()->SetAlbumArtist(StringUtils::Join(m_album.artist, g_advancedSettings.m_musicItemSeparator));
@@ -558,7 +558,7 @@ void CGUIDialogMusicInfo::OnSearch(const CFileItem* pItem)
       pItem->GetMusicInfoTag()->GetDatabaseId() > 0)
   {
     CAlbum album;
-    if (database.GetAlbumInfo(pItem->GetMusicInfoTag()->GetDatabaseId(), album, &album.songs))
+    if (database.GetAlbumInfo(pItem->GetMusicInfoTag()->GetDatabaseId(), album, &album.infoSongs))
     {
       CStdString strPath;
       database.GetAlbumPath(pItem->GetMusicInfoTag()->GetDatabaseId(), strPath);

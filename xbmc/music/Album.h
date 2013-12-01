@@ -62,6 +62,7 @@ public:
     bCompilation = false;
     iTimesPlayed = 0;
     songs.clear();
+    infoSongs.clear();
   }
 
   CStdString GetArtistString() const;
@@ -97,7 +98,8 @@ public:
   int iYear;
   bool bCompilation;
   int iTimesPlayed;
-  VECSONGS songs;
+  VECSONGS songs;     ///< Local songs
+  VECSONGS infoSongs; ///< Scraped songs
 };
 
 typedef std::vector<CAlbum> VECALBUMS;

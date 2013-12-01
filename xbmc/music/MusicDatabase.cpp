@@ -4659,7 +4659,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
     for (vector<int>::iterator albumId = albumIds.begin(); albumId != albumIds.end(); ++albumId)
     {
       CAlbum album;
-      GetAlbumInfo(*albumId, album, &album.songs);
+      GetAlbumInfo(*albumId, album, &album.infoSongs);
       CStdString strPath;
       GetAlbumPath(*albumId, strPath);
       album.Save(pMain, "album", strPath);
@@ -4862,7 +4862,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
         strTitle = album.strAlbum;
         int idAlbum = GetAlbumByName(album.strAlbum,album.artist);
         if (idAlbum > -1)
-          SetAlbumInfo(idAlbum,album,album.songs,false);
+          SetAlbumInfo(idAlbum,album,album.infoSongs,false);
 
         current++;
       }

@@ -176,7 +176,7 @@ void CMusicInfoScanner::Process()
           continue;
 
         CAlbum album;
-        m_musicDatabase.GetAlbumInfo(params.GetAlbumId(), album, &album.songs);
+        m_musicDatabase.GetAlbumInfo(params.GetAlbumId(), album, &album.infoSongs);
         if (m_handle)
         {
           float percentage = (float) std::distance(it, m_pathsToScan.end()) / m_pathsToScan.size();
@@ -729,7 +729,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
                                                            downloadedAlbum.bCompilation);
         m_musicDatabase.SetAlbumInfo(downloadedAlbum.idAlbum,
                                      downloadedAlbum,
-                                     downloadedAlbum.songs);
+                                     downloadedAlbum.infoSongs);
         m_musicDatabase.SetArtForItem(downloadedAlbum.idAlbum,
                                       "album", album->art);
         GetAlbumArtwork(downloadedAlbum.idAlbum, downloadedAlbum);
@@ -1014,7 +1014,7 @@ INFO_RET CMusicInfoScanner::UpdateDatabaseAlbumInfo(const CStdString& strPath, C
     return INFO_ERROR;
 
   CAlbum album;
-  m_musicDatabase.GetAlbumInfo(params.GetAlbumId(), album, &album.songs);
+  m_musicDatabase.GetAlbumInfo(params.GetAlbumId(), album, &album.infoSongs);
 
   // find album info
   ADDON::ScraperPtr scraper;
@@ -1046,7 +1046,7 @@ loop:
   else if (albumDownloadStatus == INFO_ADDED)
   {
     m_musicDatabase.Open();
-    m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), albumInfo.GetAlbum().songs);
+    m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), albumInfo.GetAlbum().infoSongs);
     GetAlbumArtwork(params.GetAlbumId(), albumInfo.GetAlbum());
     albumInfo.SetLoaded(true);
     m_musicDatabase.Close();
