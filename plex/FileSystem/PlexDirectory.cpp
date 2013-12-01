@@ -77,6 +77,16 @@ public :
 		return NULL;
 	}
 	
+	bool IsCachable(CStdString url)
+	{
+		if (url.find("section") != std::string::npos)
+		{
+			if (url.find("onDeck") != std::string::npos) return true;
+			if (url.find("recentlyAdded") != std::string::npos) return true;
+		}
+		return false;
+	}
+	
 	void Remove(CStdString url)
 	{
 		m_PlexDirectoryCache.erase(url);
@@ -97,6 +107,11 @@ public :
 	void Add(CCachedDirectory *Dir)
 	{
 		m_PlexDirectoryCache.insert(std::pair<CStdString, CCachedDirectory*>(Dir->Url, Dir));
+	}
+	
+	void LogCacheStats()
+	{
+		CLog::Log(LOGDEBUG, "CPlexDirectory CACHE Stats: %d Urls Cached", m_PlexDirectoryCache.size());
 	}
 	
 protected:
@@ -184,31 +199,38 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return false;
   }
 
-  //Cache management
+  // Cache management
   // Compute xml Hash
+  bool bCachable = g_PlexDirectoryCache.IsCachable(url.Get());
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: checking (%s), Cachable=%d", url.Get().c_str(),bCachable);
   bool bFoundInCache = false;
-  CCachedDirectory *pCachedDir = g_PlexDirectoryCache.Get(url.Get());
-  unsigned long NewHash = g_PlexDirectoryCache.GetHash(m_data);
-    
-  if (pCachedDir)
+  unsigned long NewHash;
+  
+  if (bCachable)
   {
-	// already in cache, check the Hash
-	if (NewHash == pCachedDir->Hash)
-	{
-		CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: Found in Cache with matching Hash (%d, %s)", NewHash, url.Get().c_str());
-		fileItems.Copy(pCachedDir->FileItems);
-		bFoundInCache = true;
-	}
-	else
-	{
-		CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: Found in Cache without matching Hash (%d, %s), removing", NewHash, url.Get().c_str());
-		g_PlexDirectoryCache.Remove(url.Get());
-	}
-  }
-  else
-  {
-	// not cached, we add it to cache
-	CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: Not Found in Cache,adding (%d,%s)",NewHash, url.Get().c_str());
+	  CCachedDirectory *pCachedDir = g_PlexDirectoryCache.Get(url.Get());
+	  NewHash = g_PlexDirectoryCache.GetHash(m_data);
+		
+	  if (pCachedDir)
+	  {
+		// already in cache, check the Hash
+		if (NewHash == pCachedDir->Hash)
+		{
+			CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: Found in Cache with matching Hash (%d, %s)", NewHash, url.Get().c_str());
+			fileItems.Copy(pCachedDir->FileItems);
+			bFoundInCache = true;
+		}
+		else
+		{
+			CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: Found in Cache without matching Hash (%d, %s), removing", NewHash, url.Get().c_str());
+			g_PlexDirectoryCache.Remove(url.Get());
+		}
+	  }
+	  else
+	  {
+		// not cached, we add it to cache
+		CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory CACHE: Not Found in Cache,adding (%d,%s)",NewHash, url.Get().c_str());
+	  }
   }
   
   
@@ -238,14 +260,17 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
 		DoAugmentation(fileItems);
 
 	// Adding to Cache
-	CCachedDirectory *NewDir = new CCachedDirectory(url.Get(),&fileItems,NewHash);
-	g_PlexDirectoryCache.Add(NewDir);
+	if (bCachable)
+	{
+		CCachedDirectory *NewDir = new CCachedDirectory(url.Get(),&fileItems,NewHash);
+		g_PlexDirectoryCache.Add(NewDir);
+	}
   }
 	
   float elapsed = timer.GetElapsedSeconds();
 
   CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory returning a directory after %f seconds with %d items with content %s", elapsed, fileItems.Size(), fileItems.GetContent().c_str());
-
+  g_PlexDirectoryCache.LogCacheStats();
   return true;
 }
 
