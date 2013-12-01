@@ -523,81 +523,6 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
   plane.flipindex = flipindex;
 }
 
-bool CLinuxRendererGL::UploadYV12Texture(int source)
-{
-  YUVBUFFER& buf    =  m_buffers[source];
-  YV12Image* im     = &buf.image;
-  YUVFIELDS& fields =  buf.fields;
-
-  if (!(im->flags&IMAGE_FLAG_READY))
-    return false;
-  bool deinterlacing;
-  if (m_currentField == FIELD_FULL)
-    deinterlacing = false;
-  else
-    deinterlacing = true;
-
-  glEnable(m_textureTarget);
-  VerifyGLState();
-
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-
-  if (deinterlacing)
-  {
-    // Load Even Y Field
-    LoadPlane( fields[FIELD_TOP][0] , GL_LUMINANCE, buf.flipindex
-             , im->width, im->height >> 1
-             , im->stride[0]*2, im->bpp, im->plane[0] );
-
-    //load Odd Y Field
-    LoadPlane( fields[FIELD_BOT][0], GL_LUMINANCE, buf.flipindex
-             , im->width, im->height >> 1
-             , im->stride[0]*2, im->bpp, im->plane[0] + im->stride[0]) ;
-
-    // Load Even U & V Fields
-    LoadPlane( fields[FIELD_TOP][1], GL_LUMINANCE, buf.flipindex
-             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[1]*2, im->bpp, im->plane[1] );
-
-    LoadPlane( fields[FIELD_TOP][2], GL_ALPHA, buf.flipindex
-             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[2]*2, im->bpp, im->plane[2] );
-
-    // Load Odd U & V Fields
-    LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE, buf.flipindex
-             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[1]*2, im->bpp, im->plane[1] + im->stride[1] );
-
-    LoadPlane( fields[FIELD_BOT][2], GL_ALPHA, buf.flipindex
-             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[2]*2, im->bpp, im->plane[2] + im->stride[2] );
-  }
-  else
-  {
-    //Load Y plane
-    LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
-             , im->width, im->height
-             , im->stride[0], im->bpp, im->plane[0] );
-
-    //load U plane
-    LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
-             , im->width >> im->cshift_x, im->height >> im->cshift_y
-             , im->stride[1], im->bpp, im->plane[1] );
-
-    //load V plane
-    LoadPlane( fields[FIELD_FULL][2], GL_ALPHA, buf.flipindex
-             , im->width >> im->cshift_x, im->height >> im->cshift_y
-             , im->stride[2], im->bpp, im->plane[2] );
-  }
-
-  VerifyGLState();
-
-  CalculateTextureSourceRects(source, 3);
-
-  glDisable(m_textureTarget);
-  return true;
-}
-
 void CLinuxRendererGL::Reset()
 {
   for(int i=0; i<m_NumYV12Buffers; i++)
@@ -1846,6 +1771,81 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 //********************************************************************************************************
 // YV12 Texture creation, deletion, copying + clearing
 //********************************************************************************************************
+bool CLinuxRendererGL::UploadYV12Texture(int source)
+{
+  YUVBUFFER& buf    =  m_buffers[source];
+  YV12Image* im     = &buf.image;
+  YUVFIELDS& fields =  buf.fields;
+
+  if (!(im->flags&IMAGE_FLAG_READY))
+    return false;
+  bool deinterlacing;
+  if (m_currentField == FIELD_FULL)
+    deinterlacing = false;
+  else
+    deinterlacing = true;
+
+  glEnable(m_textureTarget);
+  VerifyGLState();
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+
+  if (deinterlacing)
+  {
+    // Load Even Y Field
+    LoadPlane( fields[FIELD_TOP][0] , GL_LUMINANCE, buf.flipindex
+             , im->width, im->height >> 1
+             , im->stride[0]*2, im->bpp, im->plane[0] );
+
+    //load Odd Y Field
+    LoadPlane( fields[FIELD_BOT][0], GL_LUMINANCE, buf.flipindex
+             , im->width, im->height >> 1
+             , im->stride[0]*2, im->bpp, im->plane[0] + im->stride[0]) ;
+
+    // Load Even U & V Fields
+    LoadPlane( fields[FIELD_TOP][1], GL_LUMINANCE, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+             , im->stride[1]*2, im->bpp, im->plane[1] );
+
+    LoadPlane( fields[FIELD_TOP][2], GL_ALPHA, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+             , im->stride[2]*2, im->bpp, im->plane[2] );
+
+    // Load Odd U & V Fields
+    LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+             , im->stride[1]*2, im->bpp, im->plane[1] + im->stride[1] );
+
+    LoadPlane( fields[FIELD_BOT][2], GL_ALPHA, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+             , im->stride[2]*2, im->bpp, im->plane[2] + im->stride[2] );
+  }
+  else
+  {
+    //Load Y plane
+    LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
+             , im->width, im->height
+             , im->stride[0], im->bpp, im->plane[0] );
+
+    //load U plane
+    LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> im->cshift_y
+             , im->stride[1], im->bpp, im->plane[1] );
+
+    //load V plane
+    LoadPlane( fields[FIELD_FULL][2], GL_ALPHA, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> im->cshift_y
+             , im->stride[2], im->bpp, im->plane[2] );
+  }
+
+  VerifyGLState();
+
+  CalculateTextureSourceRects(source, 3);
+
+  glDisable(m_textureTarget);
+  return true;
+}
+
 void CLinuxRendererGL::DeleteYV12Texture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
