@@ -704,7 +704,9 @@ bool CRenderSystemDX::BeginRender()
   }
 
   IDirect3DSurface9 *pBackBuffer;
-  m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+  if(m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer) != D3D_OK)
+    return false;
+
   m_pD3DDevice->SetRenderTarget(0, pBackBuffer);
   pBackBuffer->Release();
 
