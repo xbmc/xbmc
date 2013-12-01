@@ -352,54 +352,31 @@ bool CStageFrightVideoPrivate::InitSurfaceTexture()
    if (mVideoNativeWindow != NULL)
     return false;
 
-  mVideoTextureId = -1;
+   //FIXME: Playing back-to-back vids induces a bug when properly generating textures between runs.
+   //       Symptoms are upside down vid, "updateTexImage: error binding external texture" in log, and crash
+   //       after stopping.
+   //       Workaround is to always use the same, arbitrary chosen, texture ids.
+  mVideoTextureId = 0xbaad;
 
-  // We MUST create the GLES texture on the main thread
-  // to match where the valid GLES context is located.
-  // It would be nice to move this out of here, we would need
-  // to create/fetch/create from g_RenderMananger. But g_RenderMananger
-  // does not know we are using MediaCodec until Configure and we
-  // we need m_surfaceTexture valid before then. Chicken, meet Egg.
-  if (m_g_application->IsCurrentThread())
-  {
-    // localize GLuint so we do not spew gles includes in our header
-    GLuint texture_id;
+  glBindTexture(  GL_TEXTURE_EXTERNAL_OES, mVideoTextureId);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBindTexture(  GL_TEXTURE_EXTERNAL_OES, 0);
 
-    glGenTextures(1, &texture_id);
-    glBindTexture(  GL_TEXTURE_EXTERNAL_OES, texture_id);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(  GL_TEXTURE_EXTERNAL_OES, 0);
-    mVideoTextureId = texture_id;
-  }
-  else
-  {
-    ThreadMessageCallback callbackData;
-    callbackData.callback = &CallbackInitSurfaceTexture;
-    callbackData.userptr  = (void*)this;
+  mSurfTexture = new CJNISurfaceTexture(mVideoTextureId);
+  mSurface = new CJNISurface(*mSurfTexture);
 
-    ThreadMessage msg;
-    msg.dwMessage = TMSG_CALLBACK;
-    msg.lpVoid = (void*)&callbackData;
+  JNIEnv* env = xbmc_jnienv();
+  mVideoNativeWindow = ANativeWindow_fromSurface(env, mSurface->get_raw());
+  native_window_api_connect(mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
 
-    // wait for it.
-    m_g_applicationMessenger->SendMessage(msg, true);
+#if defined(DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "%s: <<< InitSurfaceTexture texid(%d) natwin(%p)\n", CLASSNAME, mVideoTextureId, mVideoNativeWindow.get());
+#endif
 
-    mSurfTexture = new CJNISurfaceTexture(mVideoTextureId);
-    mSurface = new CJNISurface(*mSurfTexture);
-
-    JNIEnv* env = xbmc_jnienv();
-    mVideoNativeWindow = ANativeWindow_fromSurface(env, mSurface->get_raw());
-    native_window_api_connect(mVideoNativeWindow.get(), NATIVE_WINDOW_API_MEDIA);
-
-  #if defined(DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s: <<< InitSurfaceTexture texid(%d) natwin(%p)\n", CLASSNAME, mVideoTextureId, mVideoNativeWindow.get());
-  #endif
-  }
-
-  return (mVideoTextureId != -1);
+  return true;
 }
 
 void CStageFrightVideoPrivate::ReleaseSurfaceTexture()
@@ -420,8 +397,6 @@ void CStageFrightVideoPrivate::ReleaseSurfaceTexture()
   delete mSurface;
   delete mSurfTexture;
 
-  if (mVideoTextureId > 0)
-    glDeleteTextures(1, &mVideoTextureId);
 #if defined(DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s: <<< ReleaseSurfaceTexture\n", CLASSNAME);
 #endif

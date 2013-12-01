@@ -3,10 +3,12 @@ package org.xbmc.xbmc;
 import android.app.NativeActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 public class Main extends NativeActivity 
 {
   native void _onNewIntent(Intent intent);
+
   public Main() 
   {
     super();
@@ -22,7 +24,11 @@ public class Main extends NativeActivity
   protected void onNewIntent(Intent intent)
   {
     super.onNewIntent(intent);
-    _onNewIntent(intent);
+    try {
+      _onNewIntent(intent);
+    } catch (UnsatisfiedLinkError e) {
+      Log.e("Main", "Native not registered");
+    }
   }
 
 }
