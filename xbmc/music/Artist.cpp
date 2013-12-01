@@ -24,6 +24,34 @@
 
 using namespace std;
 
+void CArtist::MergeScrapedArtist(const CArtist& source, bool override /* = true */)
+{
+  /*
+   We don't merge musicbrainz artist ID so that a refresh of artist information
+   allows a lookup based on name rather than directly (re)using musicbrainz.
+   In future, we may wish to be able to override lookup by musicbrainz so
+   this might be dropped.
+   */
+  //  strMusicBrainzArtistID = source.strMusicBrainzArtistID;
+  if ((override && !source.strArtist.empty()) || strArtist.empty())
+    strArtist = source.strArtist;
+
+  genre = source.genre;
+  strBiography = source.strBiography;
+  styles = source.styles;
+  moods = source.moods;
+  instruments = source.instruments;
+  strBorn = source.strBorn;
+  strFormed = source.strFormed;
+  strDied = source.strDied;
+  strDisbanded = source.strDisbanded;
+  yearsActive = source.yearsActive;
+  thumbURL = source.thumbURL;
+  fanart = source.fanart;
+  discography = source.discography;
+}
+
+
 bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
 {
   if (!artist) return false;

@@ -58,6 +58,7 @@ public:
   CSong(CFileItem& item);
   virtual ~CSong(){};
   void Clear() ;
+  void MergeScrapedSong(const CSong& source, bool override);
   virtual void Serialize(CVariant& value) const;
 
   bool operator<(const CSong &song) const

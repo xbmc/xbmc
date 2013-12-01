@@ -38,6 +38,7 @@ public:
   CAlbum(const CFileItem& item);
   CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; };
   bool operator<(const CAlbum &a) const;
+  void MergeScrapedAlbum(const CAlbum& album, bool override = true);
 
   void Reset()
   {

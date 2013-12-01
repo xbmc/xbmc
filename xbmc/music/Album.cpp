@@ -53,6 +53,60 @@ CAlbum::CAlbum(const CFileItem& item)
   iTimesPlayed = 0;
 }
 
+void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
+{
+  /*
+   We don't merge musicbrainz album ID so that a refresh of album information
+   allows a lookup based on name rather than directly (re)using musicbrainz.
+   In future, we may wish to be able to override lookup by musicbrainz so
+   this might be dropped.
+   */
+//  strMusicBrainzAlbumID = source.strMusicBrainzAlbumID;
+  if ((override && !source.genre.empty()) || genre.empty())
+    genre = source.genre;
+  if ((override && !source.strAlbum.empty()) || strAlbum.empty())
+    strAlbum = source.strAlbum;
+  if ((override && source.iYear > 0) || iYear == 0)
+    iYear = source.iYear;
+  if (override)
+    bCompilation = source.bCompilation;
+  //  iTimesPlayed = source.iTimesPlayed; // times played is derived from songs
+  for (std::map<std::string, std::string>::const_iterator i = source.art.begin(); i != source.art.end(); ++i)
+  {
+    if (override || art.find(i->first) == art.end())
+      art[i->first] = i->second;
+  }
+  strLabel = source.strLabel;
+  thumbURL = source.thumbURL;
+  moods = source.moods;
+  styles = source.styles;
+  themes = source.themes;
+  strReview = source.strReview;
+  strType = source.strType;
+//  strPath = source.strPath; // don't merge the path
+  m_strDateOfRelease = source.m_strDateOfRelease;
+  iRating = source.iRating;
+  if (override)
+  {
+    artistCredits = source.artistCredits;
+    artist = source.artist; // artist information is read-only from the database. artistCredits is what counts on scan
+  }
+  else if (source.artistCredits.size() > artistCredits.size())
+    artistCredits.insert(artistCredits.end(), source.artistCredits.begin()+artistCredits.size(), source.artistCredits.end());
+  if (!strMusicBrainzAlbumID.empty())
+  {
+    /* update local songs with MB information */
+    for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
+    {
+      if (!song->strMusicBrainzTrackID.empty())
+        for (VECSONGS::const_iterator sourceSong = source.infoSongs.begin(); sourceSong != source.infoSongs.end(); ++sourceSong)
+          if (sourceSong->strMusicBrainzTrackID == song->strMusicBrainzTrackID)
+            song->MergeScrapedSong(*sourceSong, override);
+    }
+  }
+  infoSongs = source.infoSongs;
+}
+
 CStdString CAlbum::GetArtistString() const
 {
   return StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);

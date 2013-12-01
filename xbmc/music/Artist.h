@@ -47,6 +47,8 @@ public:
     if (strMusicBrainzArtistID > a.strMusicBrainzArtistID) return false;
     return false;
   }
+  
+  void MergeScrapedArtist(const CArtist& source, bool override = true);
 
   void Reset()
   {
