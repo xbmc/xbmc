@@ -671,7 +671,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else
     {
-      CGUIWindowVideoNav::DeleteItem(item.get());
+      CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(item);
       CUtil::DeleteVideoDatabaseDirectoryCache();
     }
     Refresh();

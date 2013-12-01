@@ -35,8 +35,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   virtual void OnInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
-  static bool CanDelete(const CStdString& strPath);
-  static bool DeleteItem(CFileItem* pItem, bool bUnavailable=false);
 
   /*! \brief Load video information from the database for these items (public static version)
    Useful for grabbing information for file listings, from watched status to full metadata
@@ -52,11 +50,6 @@ protected:
    \param items the items to load information for.
    */
   void LoadVideoInfo(CFileItemList &items);
-
-  /*! \brief Pop up a fanart chooser. Does not utilise remote URLs.
-   \param videoItem the item to choose fanart for.
-   */
-  void OnChooseFanart(const CFileItem &videoItem);
 
   bool ApplyWatchedFilter(CFileItemList &items);
   virtual bool GetFilteredItems(const CStdString &filter, CFileItemList &items);
@@ -74,9 +67,6 @@ protected:
   virtual CStdString GetStartFolder(const CStdString &dir);
 
   virtual CStdString GetQuickpathName(const CStdString& strPath) const;
-
-  bool GetItemsForTag(const CStdString &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
-  static CStdString GetLocalizedType(const std::string &strType);
 
   VECSOURCES m_shares;
 };
