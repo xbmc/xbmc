@@ -297,7 +297,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     }
                     else if (params.GetAlbumId() >= 0 ) {
                         CAlbum album;
-                        if (db.GetAlbumInfo(params.GetAlbumId(), album, NULL))
+                        if (db.GetAlbum(params.GetAlbumId(), album, false))
                             item->GetMusicInfoTag()->SetAlbum(album);
                     }
                     else if (params.GetArtistId() >= 0 ) {

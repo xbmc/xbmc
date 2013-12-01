@@ -176,7 +176,7 @@ void CMusicInfoScanner::Process()
           continue;
 
         CAlbum album;
-        m_musicDatabase.GetAlbumInfo(params.GetAlbumId(), album, &album.infoSongs);
+        m_musicDatabase.GetAlbum(params.GetAlbumId(), album);
         if (m_handle)
         {
           float percentage = (float) std::distance(it, m_pathsToScan.end()) / m_pathsToScan.size();
@@ -1014,7 +1014,7 @@ INFO_RET CMusicInfoScanner::UpdateDatabaseAlbumInfo(const CStdString& strPath, C
     return INFO_ERROR;
 
   CAlbum album;
-  m_musicDatabase.GetAlbumInfo(params.GetAlbumId(), album, &album.infoSongs);
+  m_musicDatabase.GetAlbum(params.GetAlbumId(), album);
 
   // find album info
   ADDON::ScraperPtr scraper;

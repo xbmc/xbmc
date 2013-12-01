@@ -558,7 +558,7 @@ void CGUIDialogMusicInfo::OnSearch(const CFileItem* pItem)
       pItem->GetMusicInfoTag()->GetDatabaseId() > 0)
   {
     CAlbum album;
-    if (database.GetAlbumInfo(pItem->GetMusicInfoTag()->GetDatabaseId(), album, &album.infoSongs))
+    if (database.GetAlbum(pItem->GetMusicInfoTag()->GetDatabaseId(), album))
     {
       CStdString strPath;
       database.GetAlbumPath(pItem->GetMusicInfoTag()->GetDatabaseId(), strPath);

@@ -200,7 +200,13 @@ public:
   int  AddAlbum(const CStdString& strAlbum, const CStdString& strMusicBrainzAlbumID,
                 const CStdString& strArtist, const CStdString& strGenre,
                 int year, bool bCompilation);
-  bool GetAlbum(int idAlbum, CAlbum& album);
+  /*! \brief retrieve an album, optionally with all songs.
+   \param idAlbum the database id of the album.
+   \param album [out] the album to fill.
+   \param getSongs whether or not to retrieve songs, defaults to true.
+   \return true if the album is retrieved, false otherwise.
+   */
+  bool GetAlbum(int idAlbum, CAlbum& album, bool getSongs = true);
   int  UpdateAlbum(int idAlbum, const CAlbum &album);
   bool DeleteAlbum(int idAlbum);
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
@@ -249,7 +255,6 @@ public:
   /////////////////////////////////////////////////
   bool HasAlbumInfo(int idAlbum);
   int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
-  bool GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bool scrapedInfo = false);
   bool DeleteAlbumInfo(int idArtist);
 
   /////////////////////////////////////////////////

@@ -650,6 +650,110 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum, const CStdString& strMu
   return -1;
 }
 
+bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = true */)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (idAlbum == -1)
+      return false; // not in the database
+
+    CStdString sql;
+    if (getSongs)
+    {
+      sql = PrepareSQL("SELECT albumview.*,albumartistview.*,songview.*,songartistview.*,albuminfosong.* "
+                       "  FROM albumview "
+                       "  JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
+                       "  JOIN songview ON albumview.idAlbum = songview.idAlbum "
+                       "  JOIN songartistview ON songview.idSong = songartistview.idSong "
+                       "  LEFT JOIN albuminfosong ON albumview.idAlbum = albuminfosong.idAlbumInfo "
+                       "  WHERE albumview.idAlbum = %ld "
+                       "  ORDER BY iOrder, iTrack", idAlbum);
+    }
+    else
+    {
+      sql = PrepareSQL("SELECT albumview.*,albumartistview.* "
+                       "  FROM albumview "
+                       "  JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
+                       "  WHERE albumview.idAlbum = %ld "
+                       "  ORDER BY iOrder", idAlbum);
+    }
+
+    CLog::Log(LOGDEBUG, "%s", sql.c_str());
+    if (!m_pDS->query(sql.c_str())) return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    int albumArtistOffset = album_enumCount;
+    int songOffset = albumArtistOffset + artistCredit_enumCount;
+    int songArtistOffset = songOffset + song_enumCount;
+    int infoSongOffset = songArtistOffset + artistCredit_enumCount;
+
+    set<int> artistcredits;
+    set<int> songs;
+    set<pair<int, int> > songartistcredits;
+    set<int> infosongs;
+    album = GetAlbumFromDataset(m_pDS.get()->get_sql_record(), 0, true); // true to grab and parse the imageURL
+    while (!m_pDS->eof())
+    {
+      const dbiplus::sql_record* const record = m_pDS->get_sql_record();
+
+      // Because rows repeat in the joined query (cartesian join) we may see each
+      // entity (album artist, song, song artist) multiple times in the result set.
+      // Since there should never be a song with the same artist twice, or an album
+      // with the same song (by id) listed twice, we key on the entity ID and only
+      // create an entity for the first occurence of each entity in the data set.
+      int idAlbumArtist = record->at(albumArtistOffset + artistCredit_idArtist).get_asInt();
+      if (artistcredits.find(idAlbumArtist) == artistcredits.end())
+      {
+        album.artistCredits.push_back(GetArtistCreditFromDataset(record, albumArtistOffset));
+        artistcredits.insert(idAlbumArtist);
+      }
+
+      if (getSongs)
+      {
+        int idSong = record->at(songOffset + song_idSong).get_asInt();
+        if (songs.find(idSong) == songs.end())
+        {
+          album.songs.push_back(GetSongFromDataset(record, songOffset));
+          songs.insert(idSong);
+        }
+
+        int idSongArtistSong = record->at(songArtistOffset + artistCredit_idEntity).get_asInt();
+        int idSongArtistArtist = record->at(songArtistOffset + artistCredit_idArtist).get_asInt();
+        if (songartistcredits.find(make_pair(idSongArtistSong, idSongArtistArtist)) == songartistcredits.end())
+        {
+          for (VECSONGS::iterator si = album.songs.begin(); si != album.songs.end(); ++si)
+            if (si->idSong == idSongArtistSong)
+              si->artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
+          songartistcredits.insert(make_pair(idSongArtistSong, idSongArtistArtist));
+        }
+
+        int idAlbumInfoSong = m_pDS.get()->get_sql_record()->at(infoSongOffset + albumInfoSong_idAlbumInfoSong).get_asInt();
+        if (infosongs.find(idAlbumInfoSong) == infosongs.end())
+        {
+          album.infoSongs.push_back(GetAlbumInfoSongFromDataset(record, infoSongOffset));
+          infosongs.insert(idAlbumInfoSong);
+        }
+      }
+      m_pDS->next();
+    }
+    m_pDS->close(); // cleanup recordset data
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
+  }
+
+  return false;
+}
+
 int CMusicDatabase::AddGenre(const CStdString& strGenre1)
 {
   CStdString strSQL;
@@ -1356,72 +1460,6 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-
-  return false;
-}
-
-bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* vecSongs, bool scrapedInfo /* = false */)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS2.get()) return false;
-
-    if (idAlbum == -1)
-      return false; // not in the database
-
-    CStdString strSQL;
-    if (vecSongs)
-      strSQL=PrepareSQL("SELECT albumview.*, albumartistview.*, albuminfosong.* FROM albumview JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum LEFT JOIN albuminfosong ON albumview.idAlbum = albuminfosong.idAlbumInfo WHERE albumview.idAlbum = %ld", idAlbum);
-    else
-      strSQL=PrepareSQL("SELECT albumview.*, albumartistview.* FROM albumview JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum WHERE albumview.idAlbum = %ld", idAlbum);
-    if (scrapedInfo) // require additional information
-      strSQL += " and lastScraped NOT NULL";
-
-    if (!m_pDS2->query(strSQL.c_str())) return false;
-    if (m_pDS2->num_rows() == 0)
-    {
-      m_pDS2->close();
-      return false;
-    }
-
-    int albumArtistOffset = album_enumCount;
-    int infoSongOffset = albumArtistOffset + artistCredit_enumCount;
-
-    set<int> artistcredits;
-    set<int> songs;
-    info = GetAlbumFromDataset(m_pDS2.get()->get_sql_record(), 0, true); // true to grab the thumburl rather than the thumb
-    while (!m_pDS2->eof())
-    {
-      const dbiplus::sql_record* const record = m_pDS2.get()->get_sql_record();
-
-      int idAlbumArtist = record->at(albumArtistOffset + artistCredit_idArtist).get_asInt();
-      if (artistcredits.find(idAlbumArtist) == artistcredits.end())
-      {
-        info.artistCredits.push_back(GetArtistCreditFromDataset(m_pDS2.get()->get_sql_record(), albumArtistOffset));
-        artistcredits.insert(idAlbumArtist);
-      }
-
-      if (vecSongs)
-      {
-        int idAlbumInfoSong = record->at(infoSongOffset + albumInfoSong_idAlbumInfoSong).get_asInt();
-        if (songs.find(idAlbumInfoSong) == songs.end())
-        {
-          vecSongs->push_back(GetAlbumInfoSongFromDataset(record, infoSongOffset));
-          songs.insert(idAlbumInfoSong);
-        }
-      }
-
-      m_pDS2->next();
-    }
-
-    m_pDS2->close(); // cleanup recordset data
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
   }
 
   return false;
@@ -4659,7 +4697,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
     for (vector<int>::iterator albumId = albumIds.begin(); albumId != albumIds.end(); ++albumId)
     {
       CAlbum album;
-      GetAlbumInfo(*albumId, album, &album.infoSongs);
+      GetAlbum(*albumId, album);
       CStdString strPath;
       GetAlbumPath(*albumId, strPath);
       album.Save(pMain, "album", strPath);
@@ -5312,7 +5350,7 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
   if (idAlbum > -1)
   {
     CAlbum album;
-    if (GetAlbumInfo(idAlbum,album,NULL,true)) // true to force additional information
+    if (GetAlbum(idAlbum, album, false))
       SetPropertiesFromAlbum(item,album);
   }
 }

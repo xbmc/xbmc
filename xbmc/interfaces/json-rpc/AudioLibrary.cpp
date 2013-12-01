@@ -179,7 +179,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITranspo
     return InternalError;
 
   CAlbum album;
-  if (!musicdatabase.GetAlbumInfo(albumID, album, NULL))
+  if (!musicdatabase.GetAlbum(albumID, album, false))
     return InvalidParams;
 
   CStdString path;
@@ -439,8 +439,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const CStdString &method, ITranspo
     return InternalError;
 
   CAlbum album;
-  VECSONGS songs;
-  if (!musicdatabase.GetAlbumInfo(id, album, &songs) || album.idAlbum <= 0)
+  if (!musicdatabase.GetAlbum(id, album) || album.idAlbum <= 0)
     return InvalidParams;
 
   if (ParameterNotNull(parameterObject, "title"))
@@ -466,7 +465,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const CStdString &method, ITranspo
   if (ParameterNotNull(parameterObject, "year"))
     album.iYear = (int)parameterObject["year"].asInteger();
 
-  if (musicdatabase.SetAlbumInfo(id, album, songs) <= 0)
+  if (musicdatabase.SetAlbumInfo(id, album, album.infoSongs) <= 0)
     return InternalError;
 
   CJSONRPCUtils::NotifyItemUpdated();
@@ -563,7 +562,7 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &it
     {
       CAlbum album;
       int albumid = musicdatabase.GetAlbumIdByPath(strFilename);
-      if (musicdatabase.GetAlbumInfo(albumid, album, NULL))
+      if (musicdatabase.GetAlbum(albumid, album, false))
       {
         item->SetFromAlbum(album);
 
