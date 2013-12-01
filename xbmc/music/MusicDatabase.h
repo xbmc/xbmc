@@ -521,7 +521,6 @@ private:
     album_strArtists,
     album_strGenres,
     album_iYear,
-    album_idAlbumInfo,
     album_strMoods,
     album_strStyles,
     album_strThemes,
