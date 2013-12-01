@@ -809,10 +809,8 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
     return;
 
   // grab the viewport dimensions and location
-  D3DVIEWPORT9 viewport;
-  m_pD3DDevice->GetViewport(&viewport);
-  float w = viewport.Width*0.5f;
-  float h = viewport.Height*0.5f;
+  float w = m_viewPort.Width*0.5f;
+  float h = m_viewPort.Height*0.5f;
 
   CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
 
@@ -838,7 +836,6 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   m_world = mtxWorld;
   m_view = mtxView;
   m_projection = mtxProjection;
-  m_viewPort = viewport;
 }
 
 void CRenderSystemDX::Project(float &x, float &y, float &z)
@@ -935,13 +932,10 @@ void CRenderSystemDX::GetViewPort(CRect& viewPort)
   if (!m_bRenderCreated)
     return;
 
-  D3DVIEWPORT9 d3dviewport;
-  m_pD3DDevice->GetViewport(&d3dviewport);
-
-  viewPort.x1 = (float)d3dviewport.X;
-  viewPort.y1 = (float)d3dviewport.Y;
-  viewPort.x2 = (float)d3dviewport.X + d3dviewport.Width;
-  viewPort.y2 = (float)d3dviewport.Y + d3dviewport.Height;
+  viewPort.x1 = (float)m_viewPort.X;
+  viewPort.y1 = (float)m_viewPort.Y;
+  viewPort.x2 = (float)m_viewPort.X + m_viewPort.Width;
+  viewPort.y2 = (float)m_viewPort.Y + m_viewPort.Height;
 }
 
 void CRenderSystemDX::SetViewPort(CRect& viewPort)
@@ -949,15 +943,13 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
   if (!m_bRenderCreated)
     return;
 
-  D3DVIEWPORT9 newviewport;
-
-  newviewport.MinZ   = 0.0f;
-  newviewport.MaxZ   = 1.0f;
-  newviewport.X      = (DWORD)viewPort.x1;
-  newviewport.Y      = (DWORD)viewPort.y1;
-  newviewport.Width  = (DWORD)(viewPort.x2 - viewPort.x1);
-  newviewport.Height = (DWORD)(viewPort.y2 - viewPort.y1);
-  m_pD3DDevice->SetViewport(&newviewport);
+  m_viewPort.MinZ   = 0.0f;
+  m_viewPort.MaxZ   = 1.0f;
+  m_viewPort.X      = (DWORD)viewPort.x1;
+  m_viewPort.Y      = (DWORD)viewPort.y1;
+  m_viewPort.Width  = (DWORD)(viewPort.x2 - viewPort.x1);
+  m_viewPort.Height = (DWORD)(viewPort.y2 - viewPort.y1);
+  m_pD3DDevice->SetViewport(&m_viewPort);
 }
 
 void CRenderSystemDX::SetScissors(const CRect& rect)
