@@ -13,6 +13,10 @@ public class XBMCBroadcastReceiver extends BroadcastReceiver
   public void onReceive(Context context, Intent intent)
   {
     Log.d("XBMCBroadcastReceiver", "Received Intent");
-    _onReceive(intent);
+    try {
+      _onReceive(intent);
+    } catch (UnsatisfiedLinkError e) {
+      Log.e("XBMCBroadcastReceiver", "Native not registered");
+    }
   }
 }
