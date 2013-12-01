@@ -996,7 +996,7 @@ void CRenderSystemDX::Unregister(ID3DResource* resource)
     m_resources.erase(i);
 }
 
-CStdString CRenderSystemDX::GetErrorDescription(HRESULT hr)
+std::string CRenderSystemDX::GetErrorDescription(HRESULT hr)
 {
   return StringUtils::Format("%X - %s (%s)", hr, DXGetErrorString(hr), DXGetErrorDescription(hr));
 }
