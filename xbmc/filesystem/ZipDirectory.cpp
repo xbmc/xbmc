@@ -123,8 +123,7 @@ namespace XFILE
 
       CFileItemPtr pFileItem(new CFileItem);
 
-      if (g_charsetConverter.isValidUtf8(pathTokens[baseTokens.size()]))
-        g_charsetConverter.utf8ToStringCharset(pathTokens[baseTokens.size()]);
+      g_charsetConverter.unknownToUTF8(pathTokens[baseTokens.size()]);
 
       pFileItem->SetLabel(pathTokens[baseTokens.size()]);
       if (bIsFolder)
