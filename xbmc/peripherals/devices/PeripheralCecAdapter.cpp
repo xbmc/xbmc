@@ -1455,11 +1455,8 @@ bool CPeripheralCecAdapterUpdateThread::WaitReady(void)
   if (m_configuration.wakeDevices.IsEmpty() && m_configuration.bActivateSource == 0)
     return true;
 
-  // wait for the TV if we're configured to become the active source.
-  // wait for the first device in the wake list otherwise.
-  cec_logical_address waitFor = (m_configuration.bActivateSource == 1) ?
-      CECDEVICE_TV :
-      m_configuration.wakeDevices.primary;
+  // wait for the first device in the wake list
+  cec_logical_address waitFor = m_configuration.wakeDevices.primary;
 
   cec_power_status powerStatus(CEC_POWER_STATUS_UNKNOWN);
   bool bContinue(true);
