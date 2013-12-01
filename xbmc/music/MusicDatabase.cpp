@@ -776,17 +776,34 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum, const CStdString& strMu
     }
     else
     {
-      // exists in our database and not scanned during this scan, so we should update it as the details
-      // may have changed (there's a reason we're rescanning, afterall!)
+      /* Exists in our database and being re-scanned from tags, so we should update it as the details
+         may have changed.
+
+         Note that for multi-folder albums this will mean the last folder scanned will have the information
+         stored for it.  Most values here should be the same across all songs anyway, but it does mean
+         that if there's any inconsistencies then only the last folders information will be taken.
+
+         We make sure we clear out the link tables (album artists, album genres) and we reset
+         the last scraped time to make sure that online metadata is re-fetched. */
       int idAlbum = m_pDS->fv("idAlbum").get_asInt();
       m_pDS->close();
-      strSQL=PrepareSQL("update album set strGenres='%s', iYear=%i where idAlbum=%i", strGenre.c_str(), year, idAlbum);
+      if (strMusicBrainzAlbumID.empty())
+        strSQL=PrepareSQL("UPDATE album SET strGenres = '%s', iYear=%i, bCompilation=%i, lastScraped = NULL WHERE idAlbum=%i",
+                          strGenre.c_str(),
+                          year,
+                          bCompilation,
+                          idAlbum);
+      else
+        strSQL=PrepareSQL("UPDATE album SET strAlbum = '%s', strArtists = '%s', strGenres = '%s', iYear=%i, bCompilation=%i, lastScraped = NULL WHERE idAlbum=%i",
+                          strAlbum.c_str(),
+                          strArtist.c_str(),
+                          strGenre.c_str(),
+                          year,
+                          bCompilation,
+                          idAlbum);
       m_pDS->exec(strSQL.c_str());
-      // and clear the link tables - these are updated in AddSong()
-      strSQL=PrepareSQL("delete from album_artist where idAlbum=%i", idAlbum);
-      m_pDS->exec(strSQL.c_str());
-      strSQL=PrepareSQL("delete from album_genre where idAlbum=%i", idAlbum);
-      m_pDS->exec(strSQL.c_str());
+      DeleteAlbumArtistsByAlbum(idAlbum);
+      DeleteAlbumGenresByAlbum(idAlbum);
       return idAlbum;
     }
   }
