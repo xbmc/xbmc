@@ -27,6 +27,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
+#include "utils/Utf8Utils.h"
 #include "log.h"
 
 #include <errno.h>
@@ -817,7 +818,7 @@ bool CCharsetConverter::unknownToUTF8(std::string& stringSrcDst)
 bool CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
 {
   // checks whether it's utf8 already, and if not converts using the sourceCharset if given, else the string charset
-  if (isValidUtf8(stringSrc))
+  if (CUtf8Utils::isValidUtf8(stringSrc))
   {
     utf8StringDst = stringSrc;
     return true;
