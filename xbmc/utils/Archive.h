@@ -22,7 +22,7 @@
 
 #include <string>
 #include <vector>
-#include "system.h" // for SYSTEMTIME
+#include "PlatformDefs.h" // for SYSTEMTIME
 
 namespace XFILE
 {
