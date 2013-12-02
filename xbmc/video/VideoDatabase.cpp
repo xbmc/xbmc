@@ -3197,8 +3197,12 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, i
       *(float*)(((char*)&details)+offsets[i].offset) = record->at(i+idxOffset).get_asFloat();
       break;
     case VIDEODB_TYPE_STRINGARRAY:
-      *(std::vector<std::string>*)(((char*)&details)+offsets[i].offset) = StringUtils::Split(record->at(i+idxOffset).get_asString(), g_advancedSettings.m_videoItemSeparator);
+    {
+      std::string value = record->at(i+idxOffset).get_asString();
+      if (!value.empty())
+        *(std::vector<std::string>*)(((char*)&details)+offsets[i].offset) = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
       break;
+    }
     case VIDEODB_TYPE_DATE:
       ((CDateTime*)(((char*)&details)+offsets[i].offset))->SetFromDBDate(record->at(i+idxOffset).get_asString());
       break;
