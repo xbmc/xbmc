@@ -777,7 +777,7 @@ bool CCharsetConverter::utf8ToStringCharset(std::string& stringSrcDst)
   return utf8ToStringCharset(strSrc, stringSrcDst);
 }
 
-bool CCharsetConverter::ToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst)
+bool CCharsetConverter::ToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
 {
   if (strSourceCharset == "UTF-8")
   { // simple case - no conversion necessary
@@ -785,7 +785,7 @@ bool CCharsetConverter::ToUtf8(const std::string& strSourceCharset, const std::s
     return true;
   }
   
-  return CInnerConverter::customConvert(strSourceCharset, "UTF-8", stringSrc, utf8StringDst);
+  return CInnerConverter::customConvert(strSourceCharset, "UTF-8", stringSrc, utf8StringDst, failOnBadChar);
 }
 
 bool CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::string& stringDst)
