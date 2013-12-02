@@ -389,9 +389,9 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     {
       CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
       if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
-        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
+        return OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_MARK_WATCHED);
       if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
-        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
+        return OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_MARK_UNWATCHED);
     }
   }
 
