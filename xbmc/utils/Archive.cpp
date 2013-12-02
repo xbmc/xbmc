@@ -61,7 +61,7 @@ bool CArchive::IsStoring()
 
 CArchive& CArchive::operator<<(float f)
 {
-  int size = sizeof(float);
+  const size_t size = sizeof(float);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -73,7 +73,7 @@ CArchive& CArchive::operator<<(float f)
 
 CArchive& CArchive::operator<<(double d)
 {
-  int size = sizeof(double);
+  const size_t size = sizeof(double);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -83,25 +83,49 @@ CArchive& CArchive::operator<<(double d)
   return *this;
 }
 
-CArchive& CArchive::operator<<(int i)
+CArchive& CArchive::operator<<(int16_t i16)
 {
-  int size = sizeof(int);
+  const size_t size = sizeof(i16);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
-  memcpy(&m_pBuffer[m_BufferPos], &i, size);
+  memcpy(&m_pBuffer[m_BufferPos], &i16, size);
   m_BufferPos += size;
 
   return *this;
 }
 
-CArchive& CArchive::operator<<(unsigned int i)
+CArchive& CArchive::operator<<(uint16_t ui16)
 {
-  int size = sizeof(unsigned int);
+  const size_t size = sizeof(ui16);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
-  memcpy(&m_pBuffer[m_BufferPos], &i, size);
+  memcpy(&m_pBuffer[m_BufferPos], &ui16, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(int32_t i32)
+{
+  int size = sizeof(i32);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &i32, size);
+  m_BufferPos += size;
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(uint32_t ui32)
+{
+  int size = sizeof(ui32);
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  memcpy(&m_pBuffer[m_BufferPos], &ui32, size);
   m_BufferPos += size;
 
   return *this;
@@ -133,7 +157,7 @@ CArchive& CArchive::operator<<(uint64_t ui64)
 
 CArchive& CArchive::operator<<(bool b)
 {
-  int size = sizeof(bool);
+  const size_t size = sizeof(bool);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -145,7 +169,7 @@ CArchive& CArchive::operator<<(bool b)
 
 CArchive& CArchive::operator<<(char c)
 {
-  int size = sizeof(char);
+  const size_t size = sizeof(char);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -157,7 +181,7 @@ CArchive& CArchive::operator<<(char c)
 
 CArchive& CArchive::operator<<(const std::string& str)
 {
-  *this << (int)str.size();
+  *this << str.size();
 
   int size = str.size();
   if (m_BufferPos + size >= BUFFER_MAX)
@@ -181,7 +205,7 @@ CArchive& CArchive::operator<<(const std::string& str)
 
 CArchive& CArchive::operator<<(const std::wstring& wstr)
 {
-  *this << (unsigned int)wstr.size();
+  *this << wstr.size();
 
   unsigned int size = wstr.size() * sizeof(wchar_t);
   const uint8_t* ptr = (const uint8_t*)wstr.data();
@@ -207,7 +231,7 @@ CArchive& CArchive::operator<<(const std::wstring& wstr)
 
 CArchive& CArchive::operator<<(const SYSTEMTIME& time)
 {
-  int size = sizeof(SYSTEMTIME);
+  const size_t size = sizeof(SYSTEMTIME);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -271,8 +295,8 @@ CArchive& CArchive::operator<<(const CVariant& variant)
 
 CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
 {
-  *this << (unsigned int)strArray.size();
-  for (unsigned int index = 0; index < strArray.size(); index++)
+  *this << strArray.size();
+  for (size_t index = 0; index < strArray.size(); index++)
     *this << strArray.at(index);
 
   return *this;
@@ -280,8 +304,8 @@ CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
 
 CArchive& CArchive::operator<<(const std::vector<int>& iArray)
 {
-  *this << (unsigned int)iArray.size();
-  for (unsigned int index = 0; index < iArray.size(); index++)
+  *this << iArray.size();
+  for (size_t index = 0; index < iArray.size(); index++)
     *this << iArray.at(index);
 
   return *this;
@@ -301,16 +325,30 @@ CArchive& CArchive::operator>>(double& d)
   return *this;
 }
 
-CArchive& CArchive::operator>>(int& i)
+CArchive& CArchive::operator>>(int16_t& i16)
 {
-  m_pFile->Read((void*)&i, sizeof(int));
+  m_pFile->Read((void*)&i16, sizeof(i16));
 
   return *this;
 }
 
-CArchive& CArchive::operator>>(unsigned int& i)
+CArchive& CArchive::operator>>(uint16_t& ui16)
 {
-  m_pFile->Read((void*)&i, sizeof(unsigned int));
+  m_pFile->Read((void*)&ui16, sizeof(ui16));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(int32_t& i32)
+{
+  m_pFile->Read((void*)&i32, sizeof(i32));
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(uint32_t& ui32)
+{
+  m_pFile->Read((void*)&ui32, sizeof(ui32));
 
   return *this;
 }
@@ -345,7 +383,7 @@ CArchive& CArchive::operator>>(char& c)
 
 CArchive& CArchive::operator>>(std::string& str)
 {
-  int iLength = 0;
+  size_t iLength = 0;
   *this >> iLength;
 
   char *s = new char[iLength];
@@ -358,7 +396,7 @@ CArchive& CArchive::operator>>(std::string& str)
 
 CArchive& CArchive::operator>>(std::wstring& wstr)
 {
-  unsigned int iLength = 0;
+  size_t iLength = 0;
   *this >> iLength;
 
   wchar_t * const p = new wchar_t[iLength];
@@ -385,7 +423,7 @@ CArchive& CArchive::operator>>(IArchivable& obj)
 
 CArchive& CArchive::operator>>(CVariant& variant)
 {
-  int type;
+  size_t type;
   *this >> type;
   variant = CVariant((CVariant::VariantType)type);
 
@@ -470,10 +508,10 @@ CArchive& CArchive::operator>>(CVariant& variant)
 
 CArchive& CArchive::operator>>(std::vector<std::string>& strArray)
 {
-  int size;
+  size_t size;
   *this >> size;
   strArray.clear();
-  for (int index = 0; index < size; index++)
+  for (size_t index = 0; index < size; index++)
   {
     std::string str;
     *this >> str;
@@ -485,10 +523,10 @@ CArchive& CArchive::operator>>(std::vector<std::string>& strArray)
 
 CArchive& CArchive::operator>>(std::vector<int>& iArray)
 {
-  int size;
+  size_t size;
   *this >> size;
   iArray.clear();
-  for (int index = 0; index < size; index++)
+  for (size_t index = 0; index < size; index++)
   {
     int i;
     *this >> i;
