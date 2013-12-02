@@ -2111,7 +2111,12 @@
           <control type="button" format="action" />
         </setting>
         <setting id="videoscreen.testpattern" type="action" label="226" help="36358">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>1</level>
           <control type="button" format="action" />
         </setting>
