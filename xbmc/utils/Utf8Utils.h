@@ -41,6 +41,11 @@ public:
    */
   static utf8CheckResult checkStrForUtf8(const std::string& str);
 
+  static inline bool isValidUtf8(const std::string& str)
+  {
+    return checkStrForUtf8(str) != hiAscii;
+  }
+
   static size_t FindValidUtf8Char(const std::string& str, const size_t startPos = 0);
   static size_t RFindValidUtf8Char(const std::string& str, const size_t startPos);
   
