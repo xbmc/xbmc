@@ -1151,6 +1151,18 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* =
   return false;
 }
 
+bool CMusicDatabase::HasArtistBeenScraped(int idArtist)
+{
+  CStdString strSQL = PrepareSQL("SELECT idArtist FROM artist WHERE idArtist = %i AND lastScraped IS NULL", idArtist);
+  return GetSingleValue(strSQL).empty();
+}
+
+bool CMusicDatabase::ClearArtistLastScrapedTime(int idArtist)
+{
+  CStdString strSQL = PrepareSQL("UPDATE artist SET lastScraped = NULL WHERE idArtist = %i", idArtist);
+  return ExecuteQuery(strSQL);
+}
+
 bool CMusicDatabase::AddSongArtist(int idArtist, int idSong, std::string joinPhrase, bool featured, int iOrder)
 {
   CStdString strSQL;
@@ -1750,20 +1762,6 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
   }
 
   return false;
-}
-
-bool CMusicDatabase::HasArtistInfo(int idArtist)
-{
-  CStdString strSQL = PrepareSQL("SELECT idArtist FROM artist WHERE idArtist = %ld AND lastScraped IS NULL", idArtist);
-  return GetSingleValue(strSQL).empty();
-}
-
-bool CMusicDatabase::DeleteArtistInfo(int idArtist)
-{
-  if (idArtist == -1)
-    return false; // not in the database
-
-  return ExecuteQuery(PrepareSQL("UPDATE artist SET lastScraped=NULL where idArtist=%i",idArtist));
 }
 
 bool CMusicDatabase::GetTop100(const CStdString& strBaseDir, CFileItemList& items)

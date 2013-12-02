@@ -247,6 +247,8 @@ public:
   bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = true);
   int  UpdateArtist(int idArtist, const CArtist& artist);
   bool DeleteArtist(int idArtist);
+  bool HasArtistBeenScraped(int idArtist);
+  bool ClearArtistLastScrapedTime(int idArtist);
 
   CStdString GetArtistById(int id);
   int GetArtistByName(const CStdString& strArtist);
@@ -276,9 +278,7 @@ public:
    \param idArtist the id of the Artist to check
    \return true or false - whether the artist has metadata
    */
-  bool HasArtistInfo(int idArtist);
   int SetArtistInfo(int idArtist, const CArtist& artist);
-  bool DeleteArtistInfo(int idArtist);
 
   /////////////////////////////////////////////////
   // Link tables

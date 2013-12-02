@@ -197,7 +197,7 @@ void CMusicInfoScanner::Process()
       {
         CQueryParams params;
         CDirectoryNode::GetDatabaseInfo(*it, params);
-        if (m_musicDatabase.HasArtistInfo(params.GetArtistId())) // should this be here?
+        if (m_musicDatabase.HasArtistBeenScraped(params.GetArtistId())) // should this be here?
             continue;
 
         CArtist artist;
@@ -341,7 +341,7 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory,
     m_pathsToScan.insert(items[i]->GetPath());
     if (refresh)
     {
-      m_musicDatabase.DeleteArtistInfo(items[i]->GetMusicInfoTag()->GetDatabaseId());
+      m_musicDatabase.ClearArtistLastScrapedTime(items[i]->GetMusicInfoTag()->GetDatabaseId());
     }
   }
   m_musicDatabase.Close();
