@@ -49,10 +49,10 @@ std::string StandardDirs::appDataPath(const std::string& organizationName,
 	return path;
 #elif defined(PLATFORM_WINDOWS)
 	char buffer[MAX_PATH + 1];
-	if (SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0 /* hToken */, SHGFP_TYPE_CURRENT, buffer) == S_OK)
+  if (SHGetFolderPath(0, CSIDL_APPDATA, 0 /* hToken */, SHGFP_TYPE_CURRENT, buffer) == S_OK)
 	{
 		std::string path = FileUtils::toUnixPathSeparators(notNullString(buffer));
-		path += '/' + organizationName + '/' + appName;
+		path += '/' + appName;
 		return path;
 	}
 	else
