@@ -31,14 +31,22 @@ function(GENERATE_BREAKPAD_SYMBOLS APP)
       COMMAND ${PROJECT_SOURCE_DIR}/plex/scripts/dump_syms.sh "${DUMP_SYMS}" "${BZIP2}" "${TARGETFILE}" "${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}${ARCH}.symbols.bz2"
       DEPENDS ${DEPENDENCY}
     )
-	add_custom_target(${APP}_symbols DEPENDS ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}${ARCH}.symbols.bz2)
+	  add_custom_target(${APP}_symbols DEPENDS ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}${ARCH}.symbols.bz2)
   else(NOT TARGET_WIN32)
     find_program(SZIP 7za HINTS ${PROJECT_SOURCE_DIR}/project/Win32BuildSetup/tools/7z)
     add_custom_command(
-	  OUTPUT ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.7z
-	  COMMAND ${PROJECT_SOURCE_DIR}/plex/scripts/dump_syms.cmd "${DUMP_SYMS}" "${SZIP}" "${TARGETFILE}" "${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols"
-	  DEPENDS ${DEPENDENCY}
-	)
-	add_custom_target(${APP}_symbols DEPENDS ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.7z)
+	   OUTPUT ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.7z
+	   COMMAND ${PROJECT_SOURCE_DIR}/plex/scripts/dump_syms.cmd "${DUMP_SYMS}" "${SZIP}" "${TARGETFILE}" "${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols"
+	   DEPENDS ${DEPENDENCY}
+	  )
+
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/symserv)
+    add_custom_command(
+      OUTPUT  ${CMAKE_BINARY_DIR}/PlexHomeTheater-${PLEX_VERSION_STRING}.symsrv.zip
+      COMMAND ${PROJECT_SOURCE_DIR}/plex/scripts/create_symstore.cmd "${PROJECT_SOURCE_DIR}" "${PLEX_VERSION_STRING}"
+      DEPENDS ${DEPENDENCY} 
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+	  add_custom_target(${APP}_symbols DEPENDS ${CMAKE_BINARY_DIR}/${APP}-${PLEX_VERSION_STRING}.symbols.7z ${CMAKE_BINARY_DIR}/PlexHomeTheater-${PLEX_VERSION_STRING}.symsrv.zip)
   endif(NOT TARGET_WIN32)
 endfunction(GENERATE_BREAKPAD_SYMBOLS APP)
