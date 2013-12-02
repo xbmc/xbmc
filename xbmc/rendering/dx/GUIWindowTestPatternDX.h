@@ -39,5 +39,14 @@ private:
   virtual void DrawCircle(int originX, int originY, int radius);
   virtual void BeginRender();
   virtual void EndRender();
+
+  struct CUSTOMVERTEX
+  {
+    FLOAT x, y, z, rhw; // The transformed position for the vertex
+    DWORD color;        // The vertex color
+  };
+
+  void DrawRectangle(float x, float y, float x2, float y2, DWORD color);
+  void DrawCircleEx(float originX, float originY, float radius, DWORD color);
 };
 
