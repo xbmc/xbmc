@@ -17,9 +17,8 @@ cd build-windows-i386
 cmake -GNinja -DCMAKE_INSTALL_PREFIX=output -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
 ninja release_package
 
-%WORKSPACE%\project\Win32BuildSetup\tools\7z\7za.exe a -tzip %WORKSPACE%\upload\PlexHomeTheater-symserv_.zip plex\*.pdb
-
 move c:\tmp\PlexHomeTheater*exe %WORKSPACE%\upload
 move PlexHomeTheater*7z %WORKSPACE%\upload
+move PlexHomeTheater*symserv*zip %WORKSPACE%\upload
 move c:\tmp\PlexHomeTheater*zip %WORKSPACE%\upload
 move c:\tmp\PlexHomeTheater*manifest.xml %WORKSPACE%\upload
