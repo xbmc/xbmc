@@ -19,6 +19,6 @@ ninja release_package
 
 move c:\tmp\PlexHomeTheater*exe %WORKSPACE%\upload
 move PlexHomeTheater*7z %WORKSPACE%\upload
-move PlexHomeTheater*symserv*zip %WORKSPACE%\upload
+move PlexHomeTheater*symsrv*zip %WORKSPACE%\upload
 move c:\tmp\PlexHomeTheater*zip %WORKSPACE%\upload
 move c:\tmp\PlexHomeTheater*manifest.xml %WORKSPACE%\upload
