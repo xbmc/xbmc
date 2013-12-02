@@ -243,12 +243,23 @@ public:
   /////////////////////////////////////////////////
   // Artist CRUD
   /////////////////////////////////////////////////
+  bool UpdateArtist(const CArtist& artist);
+
   int  AddArtist(const CStdString& strArtist, const CStdString& strMusicBrainzArtistID);
   bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = true);
-  int  UpdateArtist(int idArtist, const CArtist& artist);
+  int  UpdateArtist(int idArtist,
+                    const CStdString& strArtist, const CStdString& strMusicBrainzArtistID,
+                    const CStdString& strBorn, const CStdString& strFormed,
+                    const CStdString& strGenres, const CStdString& strMoods,
+                    const CStdString& strStyles, const CStdString& strInstruments,
+                    const CStdString& strBiography, const CStdString& strDied,
+                    const CStdString& strDisbanded, const CStdString& strYearsActive,
+                    const CStdString& strImage, const CStdString& strFanart);
   bool DeleteArtist(int idArtist);
   bool HasArtistBeenScraped(int idArtist);
   bool ClearArtistLastScrapedTime(int idArtist);
+  int  AddArtistDiscography(int idArtist, const CStdString& strAlbum, const CStdString& strYear);
+  bool DeleteArtistDiscography(int idArtist);
 
   CStdString GetArtistById(int id);
   int GetArtistByName(const CStdString& strArtist);
@@ -270,15 +281,6 @@ public:
   int AddGenre(const CStdString& strGenre);
   CStdString GetGenreById(int id);
   int GetGenreByName(const CStdString& strGenre);
-
-  /////////////////////////////////////////////////
-  // ArtistInfo
-  /////////////////////////////////////////////////
-  /*! \brief Check if an artist entity has additional metadata (scraped)
-   \param idArtist the id of the Artist to check
-   \return true or false - whether the artist has metadata
-   */
-  int SetArtistInfo(int idArtist, const CArtist& artist);
 
   /////////////////////////////////////////////////
   // Link tables

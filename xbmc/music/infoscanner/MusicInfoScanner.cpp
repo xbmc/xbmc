@@ -771,16 +771,14 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
         if (artistDownloadStatus == INFO_ADDED || artistDownloadStatus == INFO_HAVE_ALREADY)
         {
           CArtist &downloadedArtist = artistInfo.GetArtist();
-          downloadedArtist.idArtist = m_musicDatabase.AddArtist(downloadedArtist.strArtist,
-                                                                downloadedArtist.strMusicBrainzArtistID);
-          m_musicDatabase.SetArtistInfo(downloadedArtist.idArtist,
-                                        downloadedArtist);
-
+          artistTmp.MergeScrapedArtist(downloadedArtist);
+          artistTmp.idArtist = m_musicDatabase.AddArtist(artistTmp.strArtist, artistTmp.strMusicBrainzArtistID);
+          m_musicDatabase.UpdateArtist(artistTmp);
           URIUtils::GetParentPath(album->strPath, downloadedArtist.strPath);
           map<string, string> artwork = GetArtistArtwork(downloadedArtist);
           // check thumb stuff
-          m_musicDatabase.SetArtForItem(downloadedArtist.idArtist, "artist", artwork);
-          m_artistCache.insert(make_pair(*artistCredit, downloadedArtist));
+          m_musicDatabase.SetArtForItem(artistTmp.idArtist, "artist", artwork);
+          m_artistCache.insert(make_pair(*artistCredit, artistTmp));
         }
         else if (artistDownloadStatus == INFO_CANCELLED)
           break;
@@ -842,15 +840,15 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
           if (artistDownloadStatus == INFO_ADDED || artistDownloadStatus == INFO_HAVE_ALREADY)
           {
             CArtist &downloadedArtist = artistInfo.GetArtist();
-            downloadedArtist.idArtist = m_musicDatabase.AddArtist(downloadedArtist.strArtist,
-                                                                  downloadedArtist.strMusicBrainzArtistID);
-            m_musicDatabase.SetArtistInfo(downloadedArtist.idArtist,
-                                          downloadedArtist);
+            artistTmp.MergeScrapedArtist(downloadedArtist);
+            artistTmp.idArtist = m_musicDatabase.AddArtist(artistTmp.strArtist,
+                                                                  artistTmp.strMusicBrainzArtistID);
+            m_musicDatabase.UpdateArtist(artistTmp);
             // check thumb stuff
-            URIUtils::GetParentPath(album->strPath, downloadedArtist.strPath);
-            map<string, string> artwork = GetArtistArtwork(downloadedArtist);
-            m_musicDatabase.SetArtForItem(downloadedArtist.idArtist, "artist", artwork);
-            m_artistCache.insert(make_pair(*artistCredit, downloadedArtist));
+            URIUtils::GetParentPath(album->strPath, artistTmp.strPath);
+            map<string, string> artwork = GetArtistArtwork(artistTmp);
+            m_musicDatabase.SetArtForItem(artistTmp.idArtist, "artist", artwork);
+            m_artistCache.insert(make_pair(*artistCredit, artistTmp));
           }
           else if (artistDownloadStatus == INFO_CANCELLED)
             break;
@@ -1075,13 +1073,13 @@ loop:
   }
   else if (artistDownloadStatus == INFO_ADDED)
   {
+    artist.MergeScrapedArtist(artistInfo.GetArtist());
     m_musicDatabase.Open();
-    m_musicDatabase.SetArtistInfo(params.GetArtistId(), artistInfo.GetArtist());
-    m_musicDatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
-    map<string, string> artwork = GetArtistArtwork(artist);
-    m_musicDatabase.SetArtForItem(params.GetArtistId(), "artist", artwork);
-    artistInfo.SetLoaded();
+    m_musicDatabase.UpdateArtist(artist);
+    m_musicDatabase.GetArtistPath(artist.idArtist, artist.strPath);
+    m_musicDatabase.SetArtForItem(artist.idArtist, "artist", GetArtistArtwork(artist));
     m_musicDatabase.Close();
+    artistInfo.SetLoaded();
   }
   return artistDownloadStatus;
 }

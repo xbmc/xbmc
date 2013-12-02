@@ -1022,6 +1022,32 @@ int CMusicDatabase::AddGenre(const CStdString& strGenre1)
   return -1;
 }
 
+bool CMusicDatabase::UpdateArtist(const CArtist& artist)
+{
+  UpdateArtist(artist.idArtist,
+               artist.strArtist, artist.strMusicBrainzArtistID,
+               artist.strBorn, artist.strFormed,
+               StringUtils::Join(artist.genre, g_advancedSettings.m_musicItemSeparator),
+               StringUtils::Join(artist.moods, g_advancedSettings.m_musicItemSeparator),
+               StringUtils::Join(artist.styles, g_advancedSettings.m_musicItemSeparator),
+               StringUtils::Join(artist.instruments, g_advancedSettings.m_musicItemSeparator),
+               artist.strBiography, artist.strDied,
+               artist.strDisbanded,
+               StringUtils::Join(artist.yearsActive, g_advancedSettings.m_musicItemSeparator).c_str(),
+               artist.thumbURL.m_xml.c_str(),
+               artist.fanart.m_xml.c_str());
+
+  DeleteArtistDiscography(artist.idArtist);
+  for (std::vector<std::pair<CStdString,CStdString> >::const_iterator disc = artist.discography.begin();
+                                                                      disc != artist.discography.end();
+                                                                    ++disc)
+  {
+    AddArtistDiscography(artist.idArtist, disc->first, disc->second);
+  }
+
+  return true;
+}
+
 int CMusicDatabase::AddArtist(const CStdString& strArtist, const CStdString& strMusicBrainzArtistID)
 {
   CStdString strSQL;
@@ -1103,6 +1129,48 @@ int CMusicDatabase::AddArtist(const CStdString& strArtist, const CStdString& str
   return -1;
 }
 
+int  CMusicDatabase::UpdateArtist(int idArtist,
+                                  const CStdString& strArtist, const CStdString& strMusicBrainzArtistID,
+                                  const CStdString& strBorn, const CStdString& strFormed,
+                                  const CStdString& strGenres, const CStdString& strMoods,
+                                  const CStdString& strStyles, const CStdString& strInstruments,
+                                  const CStdString& strBiography, const CStdString& strDied,
+                                  const CStdString& strDisbanded, const CStdString& strYearsActive,
+                                  const CStdString& strImage, const CStdString& strFanart)
+{
+  CScraperUrl thumbURL;
+  CFanart fanart;
+  std::vector<std::pair<CStdString,CStdString> > discography;
+  if (idArtist < 0)
+    return -1;
+
+  CStdString strSQL;
+  strSQL = PrepareSQL("UPDATE artist SET "
+                      " strArtist = '%s', "
+                      " strBorn = '%s', strFormed = '%s', strGenres = '%s', "
+                      " strMoods = '%s', strStyles = '%s', strInstruments = '%s', "
+                      " strBiography = '%s', strDied = '%s', strDisbanded = '%s', "
+                      " strYearsActive = '%s', strImage = '%s', strFanart = '%s', "
+                      " lastScraped = '%s'",
+                      strArtist.c_str(), /* strMusicBrainzArtistID.c_str(), */
+                      strBorn.c_str(), strFormed.c_str(), strGenres.c_str(),
+                      strMoods.c_str(), strStyles.c_str(), strInstruments.c_str(),
+                      strBiography.c_str(), strDied.c_str(), strDisbanded.c_str(),
+                      strYearsActive.c_str(), strImage.c_str(), strFanart.c_str(),
+                      CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
+  if (strMusicBrainzArtistID.empty())
+    strSQL += PrepareSQL(", strMusicBrainzArtistID = NULL");
+  else
+    strSQL += PrepareSQL(", strMusicBrainzArtistID = '%s'", strMusicBrainzArtistID.c_str());
+
+  strSQL += PrepareSQL(" WHERE idArtist = %i", idArtist);
+
+  bool status = ExecuteQuery(strSQL);
+  if (status)
+    AnnounceUpdate("artist", idArtist);
+  return idArtist;
+}
+
 bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* = false */)
 {
   try
@@ -1160,6 +1228,21 @@ bool CMusicDatabase::HasArtistBeenScraped(int idArtist)
 bool CMusicDatabase::ClearArtistLastScrapedTime(int idArtist)
 {
   CStdString strSQL = PrepareSQL("UPDATE artist SET lastScraped = NULL WHERE idArtist = %i", idArtist);
+  return ExecuteQuery(strSQL);
+}
+
+int CMusicDatabase::AddArtistDiscography(int idArtist, const CStdString& strAlbum, const CStdString& strYear)
+{
+  CStdString strSQL=PrepareSQL("INSERT INTO discography (idArtist, strAlbum, strYear) values(%i, '%s', '%s')",
+                               idArtist,
+                               strAlbum.c_str(),
+                               strYear.c_str());
+  return ExecuteQuery(strSQL);
+}
+
+bool CMusicDatabase::DeleteArtistDiscography(int idArtist)
+{
+  CStdString strSQL = PrepareSQL("DELETE FROM discography WHERE idArtist = %i", idArtist);
   return ExecuteQuery(strSQL);
 }
 
@@ -2211,65 +2294,6 @@ bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &album
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
-}
-
-int CMusicDatabase::SetArtistInfo(int idArtist, const CArtist& artist)
-{
-  CStdString strSQL;
-  try
-  {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-
-    // delete the discography info
-    strSQL=PrepareSQL("delete from discography where idArtist=%i", idArtist);
-    m_pDS->exec(strSQL.c_str());
-
-    // update our data
-    strSQL=PrepareSQL("UPDATE artist SET"
-                      " strBorn = '%s',"
-                      " strFormed = '%s',"
-                      " strGenres = '%s',"
-                      " strMoods = '%s',"
-                      " strStyles = '%s',"
-                      " strInstruments = '%s',"
-                      " strBiography = '%s',"
-                      " strDied = '%s',"
-                      " strDisbanded = '%s',"
-                      " strYearsActive = '%s',"
-                      " strImage = '%s',"
-                      " strFanart = '%s',"
-                      " lastScraped = '%s' WHERE idArtist=%d",
-                  artist.strBorn.c_str(),
-                  artist.strFormed.c_str(),
-                  StringUtils::Join(artist.genre, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  StringUtils::Join(artist.moods, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  StringUtils::Join(artist.styles, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  StringUtils::Join(artist.instruments, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  artist.strBiography.c_str(),
-                  artist.strDied.c_str(),
-                  artist.strDisbanded.c_str(),
-                  StringUtils::Join(artist.yearsActive, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  artist.thumbURL.m_xml.c_str(),
-                  artist.fanart.m_xml.c_str(),
-                  CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str(),
-                  idArtist);
-    m_pDS->exec(strSQL.c_str());
-    for (unsigned int i=0;i<artist.discography.size();++i)
-    {
-      strSQL=PrepareSQL("insert into discography (idArtist,strAlbum,strYear) values (%i,'%s','%s')",idArtist,artist.discography[i].first.c_str(),artist.discography[i].second.c_str());
-      m_pDS->exec(strSQL.c_str());
-    }
-
-    return idArtist;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s -  failed with query (%s)", __FUNCTION__, strSQL.c_str());
-  }
-
-
-  return -1;
 }
 
 bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
@@ -5063,12 +5087,17 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
       CStdString strTitle;
       if (strnicmp(entry->Value(), "artist", 6) == 0)
       {
-        CArtist artist;
-        artist.Load(entry);
-        strTitle = artist.strArtist;
-        int idArtist = GetArtistByName(artist.strArtist);
+        CArtist importedArtist;
+        importedArtist.Load(entry);
+        strTitle = importedArtist.strArtist;
+        int idArtist = GetArtistByName(importedArtist.strArtist);
         if (idArtist > -1)
-          SetArtistInfo(idArtist,artist);
+        {
+          CArtist artist;
+          GetArtist(idArtist, artist);
+          artist.MergeScrapedArtist(importedArtist, true);
+          UpdateArtist(artist);
+        }
 
         current++;
       }
