@@ -4883,35 +4883,23 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
     }
 
     // find all artists
-    sql = "SELECT artist.idArtist AS idArtist, strArtist, "
-          "  strMusicBrainzArtistID, "
-          "  strBorn, strFormed, strGenres, "
-          "  strMoods, strStyles, strInstruments, "
-          "  strBiography, strDied, strDisbanded, "
-          "  strYearsActive, strImage, strFanart "
-          "  FROM artist "
-          "  JOIN artistinfo "
-          "    ON artist.idArtist=artistinfo.idArtist";
-
-    // needed due to getartistpath
-    auto_ptr<dbiplus::Dataset> pDS;
-    pDS.reset(m_pDB->CreateDataset());
-    pDS->query(sql.c_str());
-
-    total = pDS->num_rows();
+    vector<int> artistIds;
+    CStdString artistSQL = "SELECT idArtist FROM artistinfo";
+    m_pDS->query(artistSQL.c_str());
+    total = m_pDS->num_rows();
     current = 0;
-
-    while (!pDS->eof())
+    artistIds.reserve(total);
+    while (!m_pDS->eof())
     {
-      CArtist artist = GetArtistFromDataset(pDS.get());
-      CStdString strSQL=PrepareSQL("select * from discography where idArtist=%i",artist.idArtist);
-      m_pDS->query(strSQL.c_str());
-      while (!m_pDS->eof())
-      {
-        artist.discography.push_back(make_pair(m_pDS->fv("strAlbum").get_asString(),m_pDS->fv("strYear").get_asString()));
-        m_pDS->next();
-      }
-      m_pDS->close();
+      artistIds.push_back(m_pDS->fv("idArtist").get_asInt());
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (vector<int>::iterator artistId = artistIds.begin(); artistId != artistIds.end(); ++artistId)
+    {
+      CArtist artist;
+      GetArtistInfo(*artistId, artist);
       CStdString strPath;
       GetArtistPath(artist.idArtist,strPath);
       artist.Save(pMain, "artist", strPath);
@@ -4964,10 +4952,8 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           return;
         }
       }
-      pDS->next();
       current++;
     }
-    pDS->close();
 
     if (progress)
       progress->Close();
