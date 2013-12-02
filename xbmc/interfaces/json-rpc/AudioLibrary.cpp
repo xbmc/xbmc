@@ -397,7 +397,7 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const CStdString &method, ITransp
     return InternalError;
 
   CArtist artist;
-  if (!musicdatabase.GetArtistInfo(id, artist) || artist.idArtist <= 0)
+  if (!musicdatabase.GetArtist(id, artist) || artist.idArtist <= 0)
     return InvalidParams;
 
   if (ParameterNotNull(parameterObject, "artist"))

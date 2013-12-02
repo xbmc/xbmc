@@ -302,7 +302,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     }
                     else if (params.GetArtistId() >= 0 ) {
                         CArtist artist;
-                        if (db.GetArtistInfo(params.GetArtistId(), artist, false))
+                        if (db.GetArtist(params.GetArtistId(), artist, false))
                             item->GetMusicInfoTag()->SetArtist(artist);
                     }
                 }

@@ -244,7 +244,7 @@ public:
   // Artist CRUD
   /////////////////////////////////////////////////
   int  AddArtist(const CStdString& strArtist, const CStdString& strMusicBrainzArtistID);
-  bool GetArtist(int idArtist, CArtist& artist);
+  bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = true);
   int  UpdateArtist(int idArtist, const CArtist& artist);
   bool DeleteArtist(int idArtist);
 
@@ -278,7 +278,6 @@ public:
    */
   bool HasArtistInfo(int idArtist);
   int SetArtistInfo(int idArtist, const CArtist& artist);
-  bool GetArtistInfo(int idArtist, CArtist &info, bool needAll=true);
   bool DeleteArtistInfo(int idArtist);
 
   /////////////////////////////////////////////////

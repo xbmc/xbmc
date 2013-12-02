@@ -201,7 +201,7 @@ void CMusicInfoScanner::Process()
             continue;
 
         CArtist artist;
-        m_musicDatabase.GetArtistInfo(params.GetArtistId(), artist);
+        m_musicDatabase.GetArtist(params.GetArtistId(), artist);
         m_musicDatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
 
         if (m_handle)
@@ -1053,7 +1053,7 @@ INFO_RET CMusicInfoScanner::UpdateDatabaseArtistInfo(const CStdString& strPath, 
     return INFO_ERROR;
 
   CArtist artist;
-  m_musicDatabase.GetArtistInfo(params.GetArtistId(), artist);
+  m_musicDatabase.GetArtist(params.GetArtistId(), artist);
 
   // find album info
   ADDON::ScraperPtr scraper;
