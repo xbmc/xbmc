@@ -601,6 +601,8 @@ void CPlexAutoUpdate::UpdateAndRestart()
   DWORD pid = GetCurrentProcessId();
 
   std::list<std::string> args;
+  args.push_back(updater);
+
   args.push_back("--wait");
   args.push_back(boost::lexical_cast<std::string>(pid));
   
@@ -617,7 +619,7 @@ void CPlexAutoUpdate::UpdateAndRestart()
 
   char *arguments = strdup(quoteArgs(args).c_str());
 
-  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s %s", updater.c_str(), arguments);
+  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s", arguments);
 
 	STARTUPINFO startupInfo;
 	ZeroMemory(&startupInfo,sizeof(startupInfo));
