@@ -1138,6 +1138,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(false);
     }
 
+    else if (strSetting.Equals("services.plexplayer"))
+    {
+      CGUIControl* pControl = (CGUIControl*)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
+    }
+
     else if (strSetting.Equals("backgroundmusic.bgmusicenabled"))
     {
 //      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
@@ -1489,7 +1495,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       {
         CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33101), "", g_localizeStrings.Get(33100), "");
         g_guiSettings.SetBool("services.webserver", false);
-      }
+      }    
   }
   else if (strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {

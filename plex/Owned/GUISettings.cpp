@@ -438,8 +438,6 @@ void CGUISettings::Initialize()
   AddBool(NULL, "services.upnpserver", 21360, false);
   AddBool(NULL, "services.upnpannounce", 20188, false);
   AddString(srvGeneral,"services.devicename", 1271, PlexUtils::GetHostName().c_str(), EDIT_CONTROL_INPUT);
-  AddBool(srvGeneral, "services.plexplayer", 44300, true);
-  AddBool(srvGeneral, "services.upnprenderer", 21881, false);
 #ifdef HAS_WEB_SERVER
   AddBool(srvGeneral,  "services.webserver",        263, true);
 #ifndef __PLEX__
@@ -447,6 +445,8 @@ void CGUISettings::Initialize()
 #else
   AddString(NULL,"services.webserverport",    730, "3005", EDIT_CONTROL_NUMBER_INPUT, false, 730);
 #endif
+  AddBool(srvGeneral, "services.plexplayer", 44300, true);
+  AddBool(srvGeneral, "services.upnprenderer", 21881, false);
   AddString(NULL,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(NULL,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
   AddDefaultAddon(NULL, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
