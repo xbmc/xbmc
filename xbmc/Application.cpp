@@ -4127,9 +4127,11 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // we send this if it isn't playlistplayer that is doing this
     int next = g_playlistPlayer.GetNextSong();
     int size = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size();
-    if(next < 0
-    || next >= size)
+    if (next < 0 || next >= size)
+    {
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(16026), g_localizeStrings.Get(16027));
       OnPlayBackStopped();
+    }
     m_ePlayState = PLAY_STATE_NONE;
   }
 
