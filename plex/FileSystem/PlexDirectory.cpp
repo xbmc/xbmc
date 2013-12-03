@@ -521,13 +521,6 @@ DIR_CACHE_TYPE CPlexDirectory::GetCacheType(const CStdString &strPath) const
 {
   /* We really don't want to agressively cache stuff, so let's just start by caching remote servers */
   CURL u(strPath);
-
-  if (boost::starts_with(u.GetFileName(), "library/metadata"))
-  {
-    CLog::Log(LOGDEBUG, "CPlexDirectory::GetCacheType allow caching of preplay screen: %s", u.Get().c_str());
-    return DIR_CACHE_ALWAYS;
-  }
-
   CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(u.GetHostName());
 
   if (server && server->GetActiveConnection())

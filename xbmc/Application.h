@@ -382,7 +382,7 @@ public:
   void ShowBusyIndicator();
   void HideBusyIndicator();
 
-  void UpdateFileState(const std::string& state="");
+  void UpdateFileState(const std::string& state="", bool force=false);
   void UpdateViewOffset();
 
   void RestartWithNewPlayer(CGUIDialogCache* cacheDlg, const CStdString& newURL);

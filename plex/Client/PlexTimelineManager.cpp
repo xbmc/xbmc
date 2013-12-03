@@ -288,7 +288,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlexTimelineManager::MediaState state, uint64_t currentPosition)
+void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlexTimelineManager::MediaState state, uint64_t currentPosition, bool force)
 {
   if (!currentItem)
     return;
@@ -301,7 +301,6 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
   }
 
   bool stateChange = false;
-  bool positionUpdate = false;
 
   if (currentItem != m_currentItems[type])
   {
@@ -323,10 +322,12 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
       currentPosition = 0;
 
     if (currentItem->GetProperty("viewOffset").asInteger() != currentPosition)
-    {
       currentItem->SetProperty("viewOffset", currentPosition);
-      positionUpdate = true;
-    }
+
+    if (g_plexApplication.m_preplayItem &&
+        g_plexApplication.m_preplayItem->GetLabel() == currentItem->GetLabel() &&
+        g_plexApplication.m_preplayItem->GetProperty("viewOffset").asInteger() != currentPosition)
+      g_plexApplication.m_preplayItem->SetProperty("viewOffset", currentPosition);
   }
 
   if (g_plexApplication.remoteSubscriberManager->hasSubscribers() &&
@@ -346,7 +347,7 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
   else if (server && server->GetActiveConnection() && !server->GetActiveConnection()->IsLocal())
     serverTimeout = 9950 * 3; // 30 seconds for remote server
 
-  if (stateChange || m_serverTimer.elapsedMs() >= serverTimeout)
+  if (force || stateChange || m_serverTimer.elapsedMs() >= serverTimeout)
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server");
     g_plexApplication.mediaServerClient->SendServerTimeline(m_currentItems[type], GetCurrentTimeline(type));
