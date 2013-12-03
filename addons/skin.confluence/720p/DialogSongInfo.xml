@@ -91,7 +91,7 @@
 				<top>120</top>
 				<control type="label">
 					<description>Artist Title</description>
-					<right>150</right>
+					<left>0</left>
 					<top>0</top>
 					<width>150</width>
 					<height>25</height>
@@ -117,7 +117,7 @@
 				</control>
 				<control type="label">
 					<description>Album Title</description>
-					<right>150</right>
+					<left>0</left>
 					<top>30</top>
 					<width>150</width>
 					<height>25</height>
@@ -143,7 +143,7 @@
 				</control>
 				<control type="label">
 					<description>Genre Title</description>
-					<right>150</right>
+					<left>0</left>
 					<top>60</top>
 					<width>150</width>
 					<height>25</height>
@@ -169,7 +169,7 @@
 				</control>
 				<control type="label">
 					<description>Year Title</description>
-					<right>150</right>
+					<left>0</left>
 					<top>90</top>
 					<width>150</width>
 					<height>25</height>
@@ -193,7 +193,7 @@
 				</control>
 				<control type="label">
 					<description>Track Number Title</description>
-					<right>150</right>
+					<left>0</left>
 					<top>120</top>
 					<width>150</width>
 					<height>25</height>
@@ -217,7 +217,7 @@
 				</control>
 				<control type="label">
 					<description>Rating Title</description>
-					<right>150</right>
+					<left>0</left>
 					<top>150</top>
 					<width>150</width>
 					<height>25</height>
@@ -270,7 +270,7 @@
 				</control>
 				<control type="label">
 					<description>Comment Title</description>
-					<right>150</right>
+					<left>0</left>
 					<top>180</top>
 					<width>150</width>
 					<height>25</height>

@@ -82,7 +82,7 @@
 			<top>140</top>
 			<control type="label">
 				<description>Start Date</description>
-				<right>170</right>
+				<left>10</left>
 				<top>0</top>
 				<width>160</width>
 				<height>25</height>
@@ -106,7 +106,7 @@
 			</control>
 			<control type="label">
 				<description>Start time</description>
-				<right>170</right>
+				<left>10</left>
 				<top>35</top>
 				<width>160</width>
 				<height>25</height>
@@ -130,7 +130,7 @@
 			</control>
 			<control type="label">
 				<description>Channel Name</description>
-				<right>170</right>
+				<left>10</left>
 				<top>70</top>
 				<width>160</width>
 				<height>25</height>
@@ -154,7 +154,7 @@
 			</control>
 			<control type="label">
 				<description>Duration</description>
-				<right>170</right>
+				<left>10</left>
 				<top>105</top>
 				<width>160</width>
 				<height>25</height>
@@ -176,7 +176,7 @@
 			</control>
 			<control type="label">
 				<description>Genre</description>
-				<right>170</right>
+				<left>10</left>
 				<top>140</top>
 				<width>160</width>
 				<height>25</height>
@@ -210,7 +210,7 @@
 			</control>
 		</control>
 		<control type="label">
-			<right>610</right>
+			<left>210</left>
 			<top>370</top>
 			<width>400</width>
 			<height>30</height>

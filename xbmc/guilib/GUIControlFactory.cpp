@@ -216,15 +216,26 @@ bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* st
   return true;
 }
 
-bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTag, const char *rightTag, const char *centerTag,
-                                       const char *widthTag, const float parentSize, float &left, float &width, float &min_width)
+bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTag, const char *rightTag, const char *centerLeftTag,
+                                       const char *centerRightTag, const char *widthTag, const float parentSize, float &left,
+                                       float &width, float &min_width)
 {
   float center = 0, right = 0;
 
   // read from the XML
   bool hasLeft = GetPosition(node, leftTag, parentSize, left);
-  bool hasCenter = GetPosition(node, centerTag, parentSize, center);
-  bool hasRight = GetPosition(node, rightTag, parentSize, right);
+  bool hasCenter = GetPosition(node, centerLeftTag, parentSize, center);
+  if (!hasCenter && GetPosition(node, centerRightTag, parentSize, center))
+  {
+    center = parentSize - center;
+    hasCenter = true;
+  }
+  bool hasRight = false;
+  if (GetPosition(node, rightTag, parentSize, right))
+  {
+    right = parentSize - right;
+    hasRight = true;
+  }
   bool hasWidth = GetDimension(node, widthTag, parentSize, width, min_width);
 
   if (!hasLeft)
@@ -241,7 +252,7 @@ bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTa
         if (hasRight)
         {
           width = (right - center) * 2;
-          left = right - center;
+          left = right - width;
           hasLeft = true;
         }
       }
@@ -786,7 +797,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   // such as buttons etc.  For labels/fadelabels/images it does not matter
 
   GetAlignment(pControlNode, "align", labelInfo.align);
-  if (!GetDimensions(pControlNode, "left", "right", "centerx", "width", rect.Width(), posX, width, minWidth))
+  if (!GetDimensions(pControlNode, "left", "right", "centerleft", "centerright", "width", rect.Width(), posX, width, minWidth))
   { // didn't get 2 dimensions, so test for old <posx> as well
     if (GetPosition(pControlNode, "posx", rect.Width(), posX))
     { // <posx> available, so use it along with any hacks we used to support
@@ -798,7 +809,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     if (!width)
       width = max(rect.Width() - posX, 0.0f);
   }
-  if (!GetDimensions(pControlNode, "top", "bottom", "centery", "height", rect.Height(), posY, height, minHeight))
+  if (!GetDimensions(pControlNode, "top", "bottom", "centertop", "centerbottom", "height", rect.Height(), posY, height, minHeight))
   {
     GetPosition(pControlNode, "posy", rect.Height(), posY);
     if (!height)

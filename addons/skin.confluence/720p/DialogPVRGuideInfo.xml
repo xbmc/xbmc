@@ -85,7 +85,7 @@
 					<top>120</top>
 					<control type="label">
 						<description>Time description</description>
-						<right>170</right>
+						<left>0</left>
 						<top>0</top>
 						<width>170</width>
 						<height>25</height>
@@ -109,7 +109,7 @@
 					</control>
 					<control type="label">
 						<description>Duration</description>
-						<right>170</right>
+						<left>0</left>
 						<top>35</top>
 						<width>170</width>
 						<height>25</height>
@@ -133,7 +133,7 @@
 					</control>
 					<control type="label">
 						<description>Channel Name</description>
-						<right>170</right>
+						<left>0</left>
 						<top>70</top>
 						<width>170</width>
 						<height>25</height>
@@ -157,7 +157,7 @@
 					</control>
 					<control type="label">
 						<description>Genre</description>
-						<right>170</right>
+						<left>0</left>
 						<top>105</top>
 						<width>170</width>
 						<height>25</height>

@@ -276,7 +276,7 @@
 				</control>
 				<control type="label" id="52">
 					<description>XBMC BUILD Version</description>
-					<right>750</right>
+					<left>20</left>
 					<top>400</top>
 					<width>730</width>
 					<label>144</label>
@@ -287,7 +287,7 @@
 				</control>
 				<control type="label">
 					<description>CPU Text</description>
-					<right>420</right>
+					<left>70</left>
 					<top>450</top>
 					<width>350</width>
 					<height>25</height>
@@ -308,7 +308,7 @@
 				</control>
 				<control type="label">
 					<description>Memory Text</description>
-					<right>420</right>
+					<left>70</left>
 					<top>480</top>
 					<width>350</width>
 					<height>25</height>
