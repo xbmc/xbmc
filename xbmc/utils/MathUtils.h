@@ -71,8 +71,10 @@ namespace MathUtils
   */
   inline int round_int(double x)
   {
+#if 0
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast<double>(INT_MAX / 2) + 1.0);
+#endif
     const float round_to_nearest = 0.5f;
     int i;
 
@@ -163,8 +165,10 @@ namespace MathUtils
   */
   inline int truncate_int(double x)
   {
+#if 0
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast<double>(INT_MAX / 2) + 1.0);
+#endif
     int i;
 
 #if defined(DISABLE_MATHUTILS_ASM_TRUNCATE_INT)
