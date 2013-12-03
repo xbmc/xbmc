@@ -151,6 +151,8 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
 
   if (!tag.Icon().empty())
     SetIconImage(tag.Icon());
+  else if (tag.HasPVRChannel() && !tag.ChannelTag()->IconPath().empty())
+    SetIconImage(tag.ChannelTag()->IconPath());
 
   FillInMimeType(false);
 }
