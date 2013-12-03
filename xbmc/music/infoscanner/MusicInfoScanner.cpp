@@ -714,181 +714,60 @@ int CMusicInfoScanner::RetrieveMusicInfo(const CStdString& strDirectory, CFileIt
       break;
 
     album->strPath = strDirectory;
-    m_musicDatabase.BeginTransaction();
-
-    // Check if the album has already been downloaded or failed
-    map<CAlbum, CAlbum>::iterator cachedAlbum = m_albumCache.find(*album);
-    if (cachedAlbum == m_albumCache.end())
+    m_musicDatabase.AddAlbum(*album);
+    if ((m_flags & SCAN_ONLINE))
     {
-      // No - download the information
-      CMusicAlbumInfo albumInfo;
-      INFO_RET albumDownloadStatus = INFO_NOT_FOUND;
-      if ((m_flags & SCAN_ONLINE) && albumScraper)
-        albumDownloadStatus = DownloadAlbumInfo(*album, albumScraper, albumInfo);
+      if (!albumScraper || !artistScraper)
+        continue;
 
-      if (albumDownloadStatus == INFO_ADDED || albumDownloadStatus == INFO_HAVE_ALREADY)
+      INFO_RET albumScrapeStatus = INFO_NOT_FOUND;
+      if (!m_musicDatabase.HasAlbumBeenScraped(album->idAlbum))
+        albumScrapeStatus = UpdateDatabaseAlbumInfo(*album, albumScraper, false);
+
+      if (albumScrapeStatus == INFO_ADDED)
       {
-        CAlbum &downloadedAlbum = albumInfo.GetAlbum();
-        album->MergeScrapedAlbum(downloadedAlbum);
-        downloadedAlbum.idAlbum = m_musicDatabase.AddAlbum(*album);
-        m_musicDatabase.SetArtForItem(downloadedAlbum.idAlbum,
-                                      "album", album->art);
-        GetAlbumArtwork(downloadedAlbum.idAlbum, downloadedAlbum);
-        m_albumCache.insert(make_pair(*album, albumInfo.GetAlbum()));
-      }
-      else if (albumDownloadStatus == INFO_CANCELLED)
-        break;
-      else
-      {
-        // No download info, fallback to already gathered (eg. local) information/art (if any)
-        m_musicDatabase.AddAlbum(*album);
-        if (!album->art.empty())
-          m_musicDatabase.SetArtForItem(album->idAlbum,
-                                        "album", album->art);
-        m_albumCache.insert(make_pair(*album, *album));
-      }
-
-      // Update the cache pointer with our newly created info
-      cachedAlbum = m_albumCache.find(*album);
-    }
-
-    if (m_bStop)
-      break;
-
-    // Add the album artists
-    for (VECARTISTCREDITS::iterator artistCredit = cachedAlbum->second.artistCredits.begin(); artistCredit != cachedAlbum->second.artistCredits.end(); ++artistCredit)
-    {
-      if (m_bStop)
-        break;
-
-      // Check if the artist has already been downloaded or failed
-      map<CArtistCredit, CArtist>::iterator cachedArtist = m_artistCache.find(*artistCredit);
-      if (cachedArtist == m_artistCache.end())
-      {
-        CArtist artistTmp;
-        artistTmp.strArtist = artistCredit->GetArtist();
-        artistTmp.strMusicBrainzArtistID = artistCredit->GetMusicBrainzArtistID();
-        URIUtils::GetParentPath(album->strPath, artistTmp.strPath);
-
-        // No - download the information
-        CMusicArtistInfo artistInfo;
-        INFO_RET artistDownloadStatus = INFO_NOT_FOUND;
-        if ((m_flags & SCAN_ONLINE) && artistScraper)
-          artistDownloadStatus = DownloadArtistInfo(artistTmp, artistScraper, artistInfo);
-
-        if (artistDownloadStatus == INFO_ADDED || artistDownloadStatus == INFO_HAVE_ALREADY)
+        for (VECARTISTCREDITS::const_iterator artistCredit  = album->artistCredits.begin();
+                                              artistCredit != album->artistCredits.end();
+                                            ++artistCredit)
         {
-          CArtist &downloadedArtist = artistInfo.GetArtist();
-          artistTmp.MergeScrapedArtist(downloadedArtist);
-          artistTmp.idArtist = m_musicDatabase.AddArtist(artistTmp.strArtist, artistTmp.strMusicBrainzArtistID);
-          m_musicDatabase.UpdateArtist(artistTmp);
-          URIUtils::GetParentPath(album->strPath, downloadedArtist.strPath);
-          map<string, string> artwork = GetArtistArtwork(downloadedArtist);
-          // check thumb stuff
-          m_musicDatabase.SetArtForItem(artistTmp.idArtist, "artist", artwork);
-          m_artistCache.insert(make_pair(*artistCredit, artistTmp));
-        }
-        else if (artistDownloadStatus == INFO_CANCELLED)
-          break;
-        else
-        {
-          // Cache the lookup failure so we don't retry
-          artistTmp.idArtist = m_musicDatabase.AddArtist(artistCredit->GetArtist(), artistCredit->GetMusicBrainzArtistID());
-          m_artistCache.insert(make_pair(*artistCredit, artistTmp));
-        }
-        
-        // Update the cache pointer with our newly created info
-        cachedArtist = m_artistCache.find(*artistCredit);
-      }
-
-      m_musicDatabase.AddAlbumArtist(cachedArtist->second.idArtist,
-                                     cachedAlbum->second.idAlbum,
-                                     artistCredit->GetJoinPhrase(),
-                                     artistCredit == cachedAlbum->second.artistCredits.begin() ? false : true,
-                                     std::distance(cachedAlbum->second.artistCredits.begin(), artistCredit));
-    }
-
-    if (m_bStop)
-      break;
-
-    for (VECSONGS::iterator song = album->songs.begin(); song != album->songs.end(); ++song)
-    {
-      song->idAlbum = cachedAlbum->second.idAlbum;
-      song->idSong = m_musicDatabase.AddSong(cachedAlbum->second.idAlbum,
-                                             song->strTitle, song->strMusicBrainzTrackID,
-                                             song->strFileName, song->strComment,
-                                             song->strThumb,
-                                             StringUtils::Join(song->artist, g_advancedSettings.m_musicItemSeparator), song->genre,
-                                             song->iTrack, song->iDuration, song->iYear,
-                                             song->iTimesPlayed, song->iStartOffset,
-                                             song->iEndOffset,
-                                             song->lastPlayed,
-                                             song->rating,
-                                             song->iKaraokeNumber);
-      for (VECARTISTCREDITS::iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
-      {
-        if (m_bStop)
-          break;
-
-        // Check if the artist has already been downloaded or failed
-        map<CArtistCredit, CArtist>::iterator cachedArtist = m_artistCache.find(*artistCredit);
-        if (cachedArtist == m_artistCache.end())
-        {
-          CArtist artistTmp;
-          artistTmp.strArtist = artistCredit->GetArtist();
-          artistTmp.strMusicBrainzArtistID = artistCredit->GetMusicBrainzArtistID();
-          URIUtils::GetParentPath(album->strPath, artistTmp.strPath); // FIXME
-
-          // No - download the information
-          CMusicArtistInfo artistInfo;
-          INFO_RET artistDownloadStatus = INFO_NOT_FOUND;
-          if ((m_flags & SCAN_ONLINE) && artistScraper)
-            artistDownloadStatus = DownloadArtistInfo(artistTmp, artistScraper, artistInfo);
-
-          if (artistDownloadStatus == INFO_ADDED || artistDownloadStatus == INFO_HAVE_ALREADY)
-          {
-            CArtist &downloadedArtist = artistInfo.GetArtist();
-            artistTmp.MergeScrapedArtist(downloadedArtist);
-            artistTmp.idArtist = m_musicDatabase.AddArtist(artistTmp.strArtist,
-                                                                  artistTmp.strMusicBrainzArtistID);
-            m_musicDatabase.UpdateArtist(artistTmp);
-            // check thumb stuff
-            URIUtils::GetParentPath(album->strPath, artistTmp.strPath);
-            map<string, string> artwork = GetArtistArtwork(artistTmp);
-            m_musicDatabase.SetArtForItem(artistTmp.idArtist, "artist", artwork);
-            m_artistCache.insert(make_pair(*artistCredit, artistTmp));
-          }
-          else if (artistDownloadStatus == INFO_CANCELLED)
+          if (m_bStop)
             break;
-          else
-          {
-            // Cache the lookup failure so we don't retry
-            artistTmp.idArtist = m_musicDatabase.AddArtist(artistCredit->GetArtist(), artistCredit->GetMusicBrainzArtistID());
-            m_artistCache.insert(make_pair(*artistCredit, artistTmp));
-          }
 
-          // Update the cache pointer with our newly created info
-          cachedArtist = m_artistCache.find(*artistCredit);
+          if (!m_musicDatabase.HasArtistBeenScraped(artistCredit->GetArtistId()))
+          {
+            CArtist artist;
+            m_musicDatabase.GetArtist(artistCredit->GetArtistId(), artist);
+            UpdateDatabaseArtistInfo(artist, artistScraper, false);
+          }
         }
 
-        m_musicDatabase.AddSongArtist(cachedArtist->second.idArtist,
-                                      song->idSong,
-                                      g_advancedSettings.m_musicItemSeparator, // we don't have song artist breakdowns from scrapers, yet
-                                      artistCredit == song->artistCredits.begin() ? false : true,
-                                      std::distance(song->artistCredits.begin(), artistCredit));
+        for (VECSONGS::iterator song  = album->songs.begin();
+                                song != album->songs.end();
+                                song++)
+        {
+          if (m_bStop)
+            break;
+
+          for (VECARTISTCREDITS::const_iterator artistCredit  = song->artistCredits.begin();
+                                                artistCredit != song->artistCredits.end();
+                                              ++artistCredit)
+          {
+            if (m_bStop)
+              break;
+
+            CMusicArtistInfo musicArtistInfo;
+            if (!m_musicDatabase.HasArtistBeenScraped(artistCredit->GetArtistId()))
+            {
+              CArtist artist;
+              m_musicDatabase.GetArtist(artistCredit->GetArtistId(), artist);
+              UpdateDatabaseArtistInfo(artist, artistScraper, false);
+            }
+          }
+        }
       }
     }
-
-    if (m_bStop)
-      break;
-
-    // Commit the album to the DB
-    m_musicDatabase.CommitTransaction();
     numAdded += album->songs.size();
   }
-
-  if (m_bStop)
-    m_musicDatabase.RollbackTransaction();
 
   if (m_handle)
     m_handle->SetTitle(g_localizeStrings.Get(505));
