@@ -22,7 +22,7 @@
 					<label>[B]$INFO[Container(11).ListItem.Title][/B]</label>
 				</control>
 				<control type="label">
-					<right>80</right>
+					<left>0</left>
 					<top>22</top>
 					<width>80</width>
 					<height>20</height>
@@ -69,7 +69,7 @@
 					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 				</control>
 				<control type="label">
-					<right>690</right>
+					<left>0</left>
 					<top>140</top>
 					<width>690</width>
 					<height>20</height>
@@ -293,7 +293,7 @@
 			<control type="label">
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
-				<right>40r</right>
+				<right>40</right>
 				<top>53r</top>
 				<width>500</width>
 				<height>20</height>
@@ -330,7 +330,7 @@
 					<label>[B]$INFO[Container(12).ListItem.Title][/B]</label>
 				</control>
 				<control type="label">
-					<right>80</right>
+					<left>0</left>
 					<top>22</top>
 					<width>80</width>
 					<height>20</height>
@@ -377,7 +377,7 @@
 					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 				</control>
 				<control type="label">
-					<right>690</right>
+					<left>0</left>
 					<top>140</top>
 					<width>690</width>
 					<height>20</height>
@@ -601,7 +601,7 @@
 			<control type="label">
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
-				<right>40r</right>
+				<right>40</right>
 				<top>53r</top>
 				<width>500</width>
 				<height>20</height>
@@ -784,7 +784,7 @@
 			<control type="label">
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
-				<right>40r</right>
+				<right>40</right>
 				<top>53r</top>
 				<width>500</width>
 				<height>20</height>
@@ -1354,7 +1354,7 @@
 			<control type="label">
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
-				<right>40r</right>
+				<right>40</right>
 				<top>53r</top>
 				<width>500</width>
 				<height>20</height>
@@ -1405,7 +1405,7 @@
 				</control>
 				<control type="label">
 					<description>Time label</description>
-					<right>920</right>
+					<left>620</left>
 					<top>20</top>
 					<width>300</width>
 					<height>20</height>
@@ -1709,7 +1709,7 @@
 			<control type="label">
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
-				<right>40r</right>
+				<right>40</right>
 				<top>53r</top>
 				<width>500</width>
 				<height>20</height>
@@ -2033,7 +2033,7 @@
 			<control type="label">
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
-				<right>40r</right>
+				<right>40</right>
 				<top>53r</top>
 				<width>500</width>
 				<height>20</height>
@@ -2408,7 +2408,7 @@
 			<control type="label">
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
-				<right>40r</right>
+				<right>40</right>
 				<top>53r</top>
 				<width>500</width>
 				<height>20</height>

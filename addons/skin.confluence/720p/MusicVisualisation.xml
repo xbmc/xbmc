@@ -63,7 +63,7 @@
 			</control>
 			<control type="label">
 				<description>Clock label</description>
-				<right>1250</right>
+				<left>450</left>
 				<top>5</top>
 				<width>800</width>
 				<height>25</height>
@@ -206,7 +206,7 @@
 					<info>Player.Progress</info>
 				</control>
 				<control type="label">
-					<right>920</right>
+					<left>820</left>
 					<top>0</top>
 					<width>100</width>
 					<height>40</height>

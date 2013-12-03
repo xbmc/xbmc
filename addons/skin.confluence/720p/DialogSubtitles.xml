@@ -52,7 +52,7 @@
 			<control type="group">
 				<control type="label" id="100">
 					<description>header label</description>
-					<right>880</right>
+					<left>330</left>
 					<top>80</top>
 					<width>550</width>
 					<height>30</height>
@@ -64,7 +64,7 @@
 				</control>
 				<control type="label">
 					<description>Video label</description>
-					<right>880</right>
+					<left>330</left>
 					<top>110</top>
 					<width>550</width>
 					<height>30</height>

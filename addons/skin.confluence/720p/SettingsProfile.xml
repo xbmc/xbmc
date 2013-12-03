@@ -84,7 +84,7 @@
 				<enable>!Window.IsVisible(ProfileSettings)</enable>
 			</control>
 			<control type="label">
-				<right>250</right>
+				<left>10</left>
 				<top>130</top>
 				<width>240</width>
 				<height>25</height>
@@ -96,7 +96,7 @@
 				<visible>System.HasLoginScreen</visible>
 			</control>
 			<control type="label">
-				<right>250</right>
+				<left>10</left>
 				<top>130</top>
 				<width>240</width>
 				<height>25</height>
@@ -149,7 +149,7 @@
 				<enable>false</enable> 
 			</control> 
 			<control type="label"> 
-				<right>247</right> 
+				<left>47</left>
 				<top>201</top> 
 				<width>200</width> 
 				<height>25</height> 

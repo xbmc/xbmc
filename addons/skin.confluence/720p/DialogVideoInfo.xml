@@ -806,7 +806,7 @@
 					</control>
 				</control>
 				<control type="label">
-					<right>130r</right>
+					<right>130</right>
 					<top>480</top>
 					<width>400</width>
 					<height>30</height>
@@ -820,7 +820,7 @@
 					<visible>Control.IsVisible(400)</visible>
 				</control>
 				<control type="label">
-					<right>130r</right>
+					<right>130</right>
 					<top>480</top>
 					<width>400</width>
 					<height>30</height>
