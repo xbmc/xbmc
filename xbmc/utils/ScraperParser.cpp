@@ -395,55 +395,54 @@ void CScraperParser::ParseNext(TiXmlElement* element)
     int iDest = 1;
     bool bAppend = false;
     const char* szDest = pReg->Attribute("dest");
-    if (szDest)
-      if (strlen(szDest))
-      {
-        if (szDest[strlen(szDest)-1] == '+')
-          bAppend = true;
+    if (szDest && strlen(szDest))
+    {
+      if (szDest[strlen(szDest)-1] == '+')
+        bAppend = true;
 
-        iDest = atoi(szDest);
+      iDest = atoi(szDest);
+    }
+
+    const char *szInput = pReg->Attribute("input");
+    CStdString strInput;
+    if (szInput)
+    {
+      strInput = szInput;
+      ReplaceBuffers(strInput);
+    }
+    else
+      strInput = m_param[0];
+
+    const char* szConditional = pReg->Attribute("conditional");
+    bool bExecute = true;
+    if (szConditional)
+    {
+      bool bInverse=false;
+      if (szConditional[0] == '!')
+      {
+        bInverse = true;
+        szConditional++;
       }
+      CStdString strSetting;
+      if (m_scraper && m_scraper->HasSettings())
+        strSetting = m_scraper->GetSetting(szConditional);
+      bExecute = bInverse != strSetting.Equals("true");
+    }
 
-      const char *szInput = pReg->Attribute("input");
-      CStdString strInput;
-      if (szInput)
+    if (bExecute)
+    {
+      if (iDest-1 < MAX_SCRAPER_BUFFERS && iDest-1 > -1)
       {
-        strInput = szInput;
-        ReplaceBuffers(strInput);
+        if (pReg->ValueStr() == "XSLT")
+          ParseXSLT(strInput, m_param[iDest - 1], pReg, bAppend);
+        else
+          ParseExpression(strInput, m_param[iDest - 1],pReg,bAppend);
       }
       else
-        strInput = m_param[0];
-
-      const char* szConditional = pReg->Attribute("conditional");
-      bool bExecute = true;
-      if (szConditional)
-      {
-        bool bInverse=false;
-        if (szConditional[0] == '!')
-        {
-          bInverse = true;
-          szConditional++;
-        }
-        CStdString strSetting;
-        if (m_scraper && m_scraper->HasSettings())
-           strSetting = m_scraper->GetSetting(szConditional);
-        bExecute = bInverse != strSetting.Equals("true");
-      }
-
-      if (bExecute)
-      {
-        if (iDest-1 < MAX_SCRAPER_BUFFERS && iDest-1 > -1)
-        {
-          if (pReg->ValueStr() == "XSLT")
-            ParseXSLT(strInput, m_param[iDest - 1], pReg, bAppend);
-          else
-            ParseExpression(strInput, m_param[iDest - 1],pReg,bAppend);
-        }
-        else
-          CLog::Log(LOGERROR,"CScraperParser::ParseNext: destination buffer "
-                             "out of bounds, skipping expression");
-      }
-      pReg = NextSiblingScraperElement(pReg);
+        CLog::Log(LOGERROR,"CScraperParser::ParseNext: destination buffer "
+                           "out of bounds, skipping expression");
+    }
+    pReg = NextSiblingScraperElement(pReg);
   }
 }
 
