@@ -149,7 +149,7 @@
 					</control>
 					<control type="label">
 						<description>current temp Value</description>
-						<right>195</right>
+						<left>15</left>
 						<top>185</top>
 						<width>180</width>
 						<height>40</height>
@@ -206,7 +206,7 @@
 				</control>
 				<control type="label">
 					<description>current feels like label</description>
-					<right>170</right>
+					<left>0</left>
 					<top>400</top>
 					<width>170</width>
 					<height>35</height>
@@ -219,7 +219,7 @@
 				</control>
 				<control type="label">
 					<description>current dew label</description>
-					<right>170</right>
+					<left>0</left>
 					<top>430</top>
 					<width>170</width>
 					<height>35</height>
@@ -232,7 +232,7 @@
 				</control>
 				<control type="label">
 					<description>current humidity label</description>
-					<right>170</right>
+					<left>0</left>
 					<top>460</top>
 					<width>170</width>
 					<height>35</height>
@@ -245,7 +245,7 @@
 				</control>
 				<control type="label">
 					<description>current UV Index label</description>
-					<right>170</right>
+					<left>0</left>
 					<top>490</top>
 					<width>170</width>
 					<height>35</height>
@@ -258,7 +258,7 @@
 				</control>
 				<control type="label">
 					<description>current Wind label</description>
-					<right>170</right>
+					<left>0</left>
 					<top>520</top>
 					<width>170</width>
 					<height>35</height>
@@ -351,7 +351,7 @@
 					</control>
 					<control type="label">
 						<description>Sunset label</description>
-						<right>470</right>
+						<left>170</left>
 						<top>570</top>
 						<width>300</width>
 						<height>35</height>
@@ -682,7 +682,7 @@
 				<control type="label">
 					<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 					<description>number of files/pages</description>
-					<right>660</right>
+					<left>90</left>
 					<top>627</top>
 					<width>570</width>
 					<font>font12</font>

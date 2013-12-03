@@ -963,7 +963,7 @@
 				</control>
 				<control type="label">
 					<description>Episodes txt</description>
-					<right>150</right>
+					<left>10</left>
 					<top>120</top>
 					<width>140</width>
 					<height>25</height>
@@ -987,7 +987,7 @@
 				</control>
 				<control type="label">
 					<description>Aired txt</description>
-					<right>150</right>
+					<left>10</left>
 					<top>145</top>
 					<width>140</width>
 					<height>25</height>
@@ -1011,7 +1011,7 @@
 				</control>
 				<control type="label">
 					<description>Genre txt</description>
-					<right>150</right>
+					<left>10</left>
 					<top>170</top>
 					<width>140</width>
 					<height>25</height>
@@ -1448,7 +1448,7 @@
 				</control>
 				<control type="label">
 					<description>Year txt</description>
-					<right>150</right>
+					<left>10</left>
 					<top>335</top>
 					<width>140</width>
 					<height>25</height>
@@ -1472,7 +1472,7 @@
 				</control>
 				<control type="label">
 					<description>Genre txt</description>
-					<right>150</right>
+					<left>10</left>
 					<top>360</top>
 					<width>140</width>
 					<height>25</height>
@@ -1554,7 +1554,7 @@
 				</control>
 				<control type="label">
 					<description>Aired txt</description>
-					<right>150</right>
+					<left>10</left>
 					<top>335</top>
 					<width>140</width>
 					<height>25</height>
@@ -1578,7 +1578,7 @@
 				</control>
 				<control type="label">
 					<description>Episode txt</description>
-					<right>150</right>
+					<left>10</left>
 					<top>360</top>
 					<width>140</width>
 					<height>25</height>
