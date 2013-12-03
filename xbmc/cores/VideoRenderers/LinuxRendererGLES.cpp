@@ -1814,6 +1814,25 @@ void CLinuxRendererGLES::DeleteYV12Texture(int index)
   }
 }
 
+static GLint GetInternalFormat(GLint format, int bpp)
+{
+  if(bpp == 2)
+  {
+    switch (format)
+    {
+#ifdef GL_ALPHA16
+      case GL_ALPHA:     return GL_ALPHA16;
+#endif
+#ifdef GL_LUMINANCE16
+      case GL_LUMINANCE: return GL_LUMINANCE16;
+#endif
+      default:           return format;
+    }
+  }
+  else
+    return format;
+}
+
 bool CLinuxRendererGLES::CreateYV12Texture(int index)
 {
   /* since we also want the field textures, pitch must be texture aligned */
@@ -1919,21 +1938,10 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
         GLenum format;
         GLint internalformat;
         if (p == 2) //V plane needs an alpha texture
-        {
           format = GL_ALPHA;
-          if(im.bpp == 2)
-            internalformat = GL_ALPHA16;
-          else
-            internalformat = GL_ALPHA;
-        }
         else
-        {
           format = GL_LUMINANCE;
-          if(im.bpp == 2)
-            internalformat = GL_LUMINANCE16;
-          else
-            internalformat = GL_LUMINANCE;
-        }
+        internalformat = GetInternalFormat(format, im.bpp);
 
         if(m_renderMethod & RENDER_POT)
           CLog::Log(LOGDEBUG, "GL: Creating YUV POT texture of size %d x %d",  plane.texwidth, plane.texheight);
