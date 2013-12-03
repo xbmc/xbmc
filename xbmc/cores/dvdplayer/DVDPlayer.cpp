@@ -800,7 +800,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
     if(OpenVideoStream(it->id, it->source, reset))
-      valid = true;;
+      valid = true;
   }
   if(!valid)
     CloseVideoStream(true);
