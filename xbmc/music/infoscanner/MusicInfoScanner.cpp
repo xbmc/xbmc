@@ -184,8 +184,12 @@ void CMusicInfoScanner::Process()
           m_handle->SetPercentage(percentage);
         }
 
-        CMusicAlbumInfo albumInfo;
-        UpdateDatabaseAlbumInfo(*it, albumInfo, false);
+        // find album info
+        ADDON::ScraperPtr scraper;
+        if (!m_musicDatabase.GetScraperForPath(*it, scraper, ADDON::ADDON_SCRAPER_ALBUMS))
+          continue;
+
+        UpdateDatabaseAlbumInfo(album, scraper, false);
 
         if (m_bStop)
           break;
@@ -210,9 +214,13 @@ void CMusicInfoScanner::Process()
           m_handle->SetText(artist.strArtist);
           m_handle->SetPercentage(percentage);
         }
-        
-        CMusicArtistInfo artistInfo;
-        UpdateDatabaseArtistInfo(*it, artistInfo, false);
+
+        // find album info
+        ADDON::ScraperPtr scraper;
+        if (!m_musicDatabase.GetScraperForPath(*it, scraper, ADDON::ADDON_SCRAPER_ARTISTS) || !scraper)
+          continue;
+
+        UpdateDatabaseArtistInfo(artist, scraper, false);
 
         if (m_bStop)
           break;
@@ -990,26 +998,12 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
   return count;
 }
 
-INFO_RET CMusicInfoScanner::UpdateDatabaseAlbumInfo(const CStdString& strPath, CMusicAlbumInfo& albumInfo, bool bAllowSelection, CGUIDialogProgress* pDialog /* = NULL */)
+INFO_RET CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog /* = NULL */)
 {
-  m_musicDatabase.Open();
-  CQueryParams params;
-  CDirectoryNode::GetDatabaseInfo(strPath, params);
-
-  if (params.GetAlbumId() == -1)
+  if (!scraper)
     return INFO_ERROR;
 
-  CAlbum album;
-  m_musicDatabase.GetAlbum(params.GetAlbumId(), album);
-
-  // find album info
-  ADDON::ScraperPtr scraper;
-  bool result = m_musicDatabase.GetScraperForPath(strPath, scraper, ADDON::ADDON_SCRAPER_ALBUMS);
-
-  m_musicDatabase.Close();
-
-  if (!result || !scraper)
-    return INFO_ERROR;
+  CMusicAlbumInfo albumInfo;
 
 loop:
   CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, album.strAlbum.c_str());
@@ -1041,23 +1035,12 @@ loop:
   return albumDownloadStatus;
 }
 
-INFO_RET CMusicInfoScanner::UpdateDatabaseArtistInfo(const CStdString& strPath, CMusicArtistInfo& artistInfo, bool bAllowSelection, CGUIDialogProgress* pDialog /* = NULL */)
+INFO_RET CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog /* = NULL */)
 {
-  m_musicDatabase.Open();
-  CQueryParams params;
-  CDirectoryNode::GetDatabaseInfo(strPath, params);
-
-  if (params.GetArtistId() == -1)
+  if (!scraper)
     return INFO_ERROR;
 
-  CArtist artist;
-  m_musicDatabase.GetArtist(params.GetArtistId(), artist);
-
-  // find album info
-  ADDON::ScraperPtr scraper;
-  if (!m_musicDatabase.GetScraperForPath(strPath, scraper, ADDON::ADDON_SCRAPER_ARTISTS) || !scraper)
-    return INFO_ERROR;
-  m_musicDatabase.Close();
+  CMusicArtistInfo artistInfo;
 
 loop:
   CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, artist.strArtist.c_str());
