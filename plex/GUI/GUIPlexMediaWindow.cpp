@@ -140,10 +140,37 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       }
       break;
     }
+
+    case GUI_MSG_PLEX_PAGE_LOADED:
+    {
+      InsertPage((CFileItemList*)message.GetPointer());
+    }
       
   }
 
   return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::InsertPage(CFileItemList* items)
+{
+  int nItem = m_viewControl.GetSelectedItem();
+  CStdString strSelected;
+  if (nItem >= 0)
+    strSelected = m_vecItems->Get(nItem)->GetPath();
+
+  int itemsToRemove = items->Size();
+  for (int i = 0; i < itemsToRemove; i ++)
+    m_vecItems->Remove(m_pagingOffset);
+
+  for (int i = 0; i < items->Size(); i ++)
+    m_vecItems->Insert(m_pagingOffset + i, items->Get(i));
+
+  m_pagingOffset += items->Size();
+  m_viewControl.SetItems(*m_vecItems);
+  m_viewControl.SetSelectedItem(strSelected);
+
+  delete items;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -522,22 +549,15 @@ void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob *
     return;
 
   if (success)
-  {    
-    int nItem = m_viewControl.GetSelectedItem();
-    CStdString strSelected;
-    if (nItem >= 0)
-      strSelected = m_vecItems->Get(nItem)->GetPath();
-    
-    int itemsToRemove = fjob->m_items.Size();
-    for (int i = 0; i < itemsToRemove; i ++)
-      m_vecItems->Remove(m_pagingOffset);
-    
-    for (int i = 0; i < fjob->m_items.Size(); i ++)
-      m_vecItems->Insert(m_pagingOffset + i, fjob->m_items.Get(i));
-    
-    m_pagingOffset += fjob->m_items.Size();
-    m_viewControl.SetItems(*m_vecItems);
-    m_viewControl.SetSelectedItem(strSelected);
+  {
+    CFileItemList* list = new CFileItemList;
+    list->Copy(fjob->m_items);
+
+    if (list)
+    {
+      CGUIMessage msg(GUI_MSG_PLEX_PAGE_LOADED, 0, GetID(), 0, 0, list);
+      g_windowManager.SendThreadMessage(msg);
+    }
   }
   
   m_currentJobId = -1;
