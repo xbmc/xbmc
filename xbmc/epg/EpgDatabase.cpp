@@ -26,6 +26,7 @@
 
 #include "EpgDatabase.h"
 #include "EpgContainer.h"
+#include "system.h"
 
 using namespace std;
 using namespace dbiplus;

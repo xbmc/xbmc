@@ -19,6 +19,7 @@
  */
 
 #include "CDDARipJob.h"
+#include "system.h"
 #ifdef HAVE_LIBMP3LAME
 #include "EncoderLame.h"
 #endif
