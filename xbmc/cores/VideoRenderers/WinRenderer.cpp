@@ -438,9 +438,9 @@ void CWinRenderer::UnInit()
   m_processor.UnInit();
 }
 
-bool CWinRenderer::CreateIntermediateRenderTarget()
+bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height)
 {
-  // Initialize a render target for intermediate rendering - same size as the video source
+  // Initialize a render target for intermediate rendering
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
   D3DFORMAT format = D3DFMT_X8R8G8B8;
   DWORD usage = D3DUSAGE_RENDERTARGET;
@@ -454,11 +454,19 @@ bool CWinRenderer::CreateIntermediateRenderTarget()
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8B8G8R8, usage))    format = D3DFMT_X8B8G8R8;
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_R8G8B8, usage))      format = D3DFMT_R8G8B8;
 
+  // don't create new one if it exists with requested size and format
+  if ( m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format
+    && m_IntermediateTarget.GetWidth() == width && m_IntermediateTarget.GetHeight() == height)
+    return true;
+
+  if (m_IntermediateTarget.Get())
+    m_IntermediateTarget.Release();
+
   CLog::Log(LOGDEBUG, __FUNCTION__": format %i", format);
 
-  if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, usage, format, D3DPOOL_DEFAULT))
+  if(!m_IntermediateTarget.Create(width, height, 1, usage, format, D3DPOOL_DEFAULT))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": render target creation failed. Going back to bilinear scaling.", format);
+    CLog::Log(LOGERROR, __FUNCTION__": intermediate render target creation failed.", format);
     return false;
   }
   return true;
@@ -568,10 +576,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     }
   }
 
-  if(m_IntermediateTarget.Get())
-    m_IntermediateTarget.Release();
-
-  if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
+  if (m_bUseHQScaler && !CreateIntermediateRenderTarget(m_sourceWidth, m_sourceHeight))
   {
     SAFE_DELETE(m_scalerShader);
     m_bUseHQScaler = false;
@@ -579,9 +584,15 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   SAFE_DELETE(m_colorShader);
 
-  // When using DXVA, we are already setup at this point, color shader is not needed
   if (m_renderMethod == RENDER_DXVA)
+  {
+    // we'd use m_IntermediateTarget as rendering target for possible anaglyph stereo with dxva processor.
+    if (!m_bUseHQScaler) 
+      CreateIntermediateRenderTarget(m_destWidth, m_destHeight);
+
+    // When using DXVA, we are already setup at this point, color shader is not needed
     return;
+  }
 
   if (m_bUseHQScaler)
   {
@@ -921,7 +932,20 @@ void CWinRenderer::Stage1()
 
 void CWinRenderer::Stage2()
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect));
+  CRect sourceRect;
+
+  // fixup stereo+dxva+hq scaling issue
+  if (m_renderMethod == RENDER_DXVA)
+  {
+    sourceRect.y1 = 0.0f;
+    sourceRect.y2 = m_sourceHeight;
+    sourceRect.x1 = 0.0f;
+    sourceRect.x2 = m_sourceWidth;
+  }
+  else
+    sourceRect = m_sourceRect;
+
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, sourceRect, g_graphicsContext.StereoCorrection(m_destRect));
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
@@ -938,13 +962,17 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     destRect.x2 = m_sourceWidth;
   }
   else
-    destRect = m_destRect;
+    destRect = g_graphicsContext.StereoCorrection(m_destRect);
 
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
   IDirect3DSurface9* target;
-  if (m_bUseHQScaler)
+  if ( m_bUseHQScaler 
+    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
+    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+  {
     m_IntermediateTarget.GetSurfaceLevel(0, &target);
+  }
   else
   {
     if(FAILED(hr = g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
@@ -954,12 +982,52 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     }
   }
 
-  m_processor.Render(m_sourceRect, g_graphicsContext.StereoCorrection(destRect), target, image->id, flags);
+  m_processor.Render(m_sourceRect, destRect, target, image->id, flags);
 
   target->Release();
 
   if (m_bUseHQScaler)
+  {
     Stage2();
+  }
+  else if ( g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
+         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+  {
+    IDirect3DDevice9 *pD3DDev = g_Windowing.Get3DDevice();
+
+    struct VERTEX
+    {
+      FLOAT x,y,z;
+      FLOAT tu,tv;
+    };
+
+    VERTEX vertex[] =
+    {
+      {destRect.x1 - 0.5f, destRect.y1 - 0.5f, 0.0f, m_destRect.x1 / m_destWidth, m_destRect.y1 / m_destHeight},
+      {destRect.x2 - 0.5f, destRect.y1 - 0.5f, 0.0f, m_destRect.x2 / m_destWidth, m_destRect.y1 / m_destHeight},
+      {destRect.x2 - 0.5f, destRect.y2 - 0.5f, 0.0f, m_destRect.x2 / m_destWidth, m_destRect.y2 / m_destHeight},
+      {destRect.x1 - 0.5f, destRect.y2 - 0.5f, 0.0f, m_destRect.x1 / m_destWidth, m_destRect.y2 / m_destHeight},
+    };
+
+    pD3DDev->SetTexture(0, m_IntermediateTarget.Get());
+
+    pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+    pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+    pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+
+    pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+    pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+
+    pD3DDev->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
+
+    if (FAILED(hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX))))
+      CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
+
+    pD3DDev->SetTexture(0, NULL);
+  }
 }
 
 bool CWinRenderer::RenderCapture(CRenderCapture* capture)
