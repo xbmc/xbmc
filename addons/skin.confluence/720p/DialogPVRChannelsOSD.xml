@@ -343,7 +343,7 @@
 			</control>
 			<control type="label">
 				<description>Page Count Label</description>
-				<right>450</right>
+				<left>50</left>
 				<top>610</top>
 				<width>400</width>
 				<height>20</height>
