@@ -12062,7 +12062,27 @@ msgctxt "#24115"
 msgid "Save subtitles to movie folder"
 msgstr ""
 
-#empty strings from id 24116 to 24999
+#: system/settings/settings.xml
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles"
+msgstr ""
+
+#empty strings from id 24120 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
