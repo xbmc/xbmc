@@ -547,15 +547,18 @@ void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CD
   CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
   float width = ((CDateTime::GetUTCDateTime() - m_gridStart).GetSecondsTotal() * m_blockSize) / (MINSPERBLOCK * 60) - m_programmeScrollOffset;
 
-  if (m_orientation == VERTICAL)
+  if (width > 0)
   {
-    m_guiProgressIndicatorTexture.SetWidth(width);
+    m_guiProgressIndicatorTexture.SetVisible(true);
     m_guiProgressIndicatorTexture.SetPosition(originRuler.x, originRuler.y);
+    if (m_orientation == VERTICAL)
+      m_guiProgressIndicatorTexture.SetWidth(width);
+    else
+      m_guiProgressIndicatorTexture.SetHeight(width);
   }
   else
   {
-    m_guiProgressIndicatorTexture.SetHeight(width);
-    m_guiProgressIndicatorTexture.SetPosition(originRuler.x, originRuler.y);
+    m_guiProgressIndicatorTexture.SetVisible(false);
   }
   
   m_guiProgressIndicatorTexture.Process(currentTime);
