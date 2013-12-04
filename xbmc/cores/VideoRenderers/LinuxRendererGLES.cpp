@@ -1115,8 +1115,8 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   g_matrices.LoadIdentity();
   VerifyGLState();
   g_matrices.Ortho2D(0, m_sourceWidth, 0, m_sourceHeight);
-  glViewport(0, 0, m_sourceWidth, m_sourceHeight);
-  glScissor(0, 0, m_sourceWidth, m_sourceHeight);
+  CRect viewport(0, 0, m_sourceWidth, m_sourceHeight);
+  g_Windowing.SetViewPort(viewport);
   g_matrices.MatrixMode(MM_MODELVIEW);
   VerifyGLState();
 

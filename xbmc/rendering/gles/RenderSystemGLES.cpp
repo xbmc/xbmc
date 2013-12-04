@@ -528,9 +528,9 @@ void CRenderSystemGLES::SetViewPort(CRect& viewPort)
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   m_viewPort[0] = viewPort.x1;
-  m_viewPort[1] = viewPort.y1;
-  m_viewPort[2] = viewPort.x2;
-  m_viewPort[3] = viewPort.y2;
+  m_viewPort[1] = m_height - viewPort.y1 - viewPort.Height();
+  m_viewPort[2] = viewPort.Width();
+  m_viewPort[3] = viewPort.Height();
 }
 
 void CRenderSystemGLES::SetScissors(const CRect &rect)
