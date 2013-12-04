@@ -1438,8 +1438,7 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
 
 bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet)
 {
-  if (movieItem == NULL || !movieItem->HasVideoInfoTag() ||
-      selectedSet == NULL)
+  if (movieItem == NULL || !movieItem->HasVideoInfoTag())
     return false;
 
   CVideoDatabase videodb;
