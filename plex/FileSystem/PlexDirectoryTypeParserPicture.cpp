@@ -8,7 +8,7 @@
 
 #include "PlexDirectoryTypeParserPicture.h"
 #include "PlexAttributeParser.h"
-#include "Pictures/PictureInfoTag.h"
+#include "pictures/PictureInfoTag.h"
 
 void CPlexDirectoryTypeParserPicture::Process(CFileItem &item, CFileItem &mediaContainer, TiXmlElement *itemElement)
 {
