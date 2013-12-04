@@ -39,11 +39,11 @@ namespace PVR
 {
   class CPVRGUIInfo;
 
-  typedef std::map< int, boost::shared_ptr<CPVRClient> >                 PVR_CLIENTMAP;
-  typedef std::map< int, boost::shared_ptr<CPVRClient> >::iterator       PVR_CLIENTMAP_ITR;
-  typedef std::map< int, boost::shared_ptr<CPVRClient> >::const_iterator PVR_CLIENTMAP_CITR;
-  typedef std::map< int, PVR_STREAM_PROPERTIES >                         STREAMPROPS;
   typedef boost::shared_ptr<CPVRClient> PVR_CLIENT;
+  typedef std::map< int, PVR_CLIENT >                 PVR_CLIENTMAP;
+  typedef std::map< int, PVR_CLIENT >::iterator       PVR_CLIENTMAP_ITR;
+  typedef std::map< int, PVR_CLIENT >::const_iterator PVR_CLIENTMAP_CITR;
+  typedef std::map< int, PVR_STREAM_PROPERTIES >      STREAMPROPS;
 
   class CPVRClients : public ADDON::IAddonMgrCallback,
                       public Observer,
@@ -541,7 +541,7 @@ namespace PVR
     /*!
      * @return All clients that support channel scanning.
      */
-    std::vector< boost::shared_ptr<CPVRClient> > GetClientsSupportingChannelScan(void) const;
+    std::vector<PVR_CLIENT> GetClientsSupportingChannelScan(void) const;
 
     //@}
 
@@ -597,7 +597,7 @@ namespace PVR
      * @param addon The client.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClient(int iClientId, boost::shared_ptr<CPVRClient> &addon) const;
+    bool GetClient(int iClientId, PVR_CLIENT &addon) const;
 
     /*!
      * @brief Get the instance of the client, if it's connected.
@@ -605,7 +605,7 @@ namespace PVR
      * @param addon The client.
      * @return True if the client is connected, false otherwise.
      */
-    bool GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient> &addon) const;
+    bool GetConnectedClient(int iClientId, PVR_CLIENT &addon) const;
 
     /*!
      * @brief Check whether a client is registered.
