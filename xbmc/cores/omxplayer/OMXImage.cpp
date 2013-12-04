@@ -54,6 +54,8 @@
 #endif
 #define CLASSNAME "COMXImage"
 
+#define DEFAULT_TIMEOUT 2000
+
 COMXImage::COMXImage()
 : CThread("CRBPWorker")
 {
@@ -1103,7 +1105,7 @@ bool COMXImageDec::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes
     long timeout = 0;
     if (demuxer_bytes)
     {
-       omx_buffer = m_omx_decoder.GetInputBuffer(1000);
+       omx_buffer = m_omx_decoder.GetInputBuffer(DEFAULT_TIMEOUT);
        if(omx_buffer == NULL)
          return false;
 
@@ -1128,7 +1130,7 @@ bool COMXImageDec::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes
     if (!demuxer_bytes)
     {
        // we've submitted all buffers so can wait now
-       timeout = 1000;
+       timeout = DEFAULT_TIMEOUT;
     }
     omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged, timeout);
     if(omx_err == OMX_ErrorNone)
@@ -1151,7 +1153,7 @@ bool COMXImageDec::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes
     }
   }
 
-  omx_err = m_omx_resize.WaitForOutputDone(1000);
+  omx_err = m_omx_resize.WaitForOutputDone(DEFAULT_TIMEOUT);
   if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "%s::%s m_omx_resize.WaitForOutputDone result(0x%x)\n", CLASSNAME, __func__, omx_err);
@@ -1306,7 +1308,7 @@ bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsig
 
   while(demuxer_bytes > 0)
   {
-    omx_buffer = m_omx_encoder.GetInputBuffer(1000);
+    omx_buffer = m_omx_encoder.GetInputBuffer(DEFAULT_TIMEOUT);
     if(omx_buffer == NULL)
     {
       return false;
@@ -1343,7 +1345,7 @@ bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsig
   if(omx_err != OMX_ErrorNone)
     return false;
 
-  omx_err = m_omx_encoder.WaitForOutputDone(1000);
+  omx_err = m_omx_encoder.WaitForOutputDone(DEFAULT_TIMEOUT);
   if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "%s::%s m_omx_resize.WaitForOutputDone result(0x%x)\n", CLASSNAME, __func__, omx_err);
@@ -1731,7 +1733,7 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
     long timeout = 0;
     if (demuxer_bytes)
     {
-       OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer(1000);
+       OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer(DEFAULT_TIMEOUT);
        if(omx_buffer)
        {
          omx_buffer->nOffset = omx_buffer->nFlags  = 0;
@@ -1755,7 +1757,7 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
     if (!demuxer_bytes)
     {
        // we've submitted all buffers so can wait now
-       timeout = 1000;
+       timeout = DEFAULT_TIMEOUT;
     }
 
     omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged, timeout);
@@ -1791,7 +1793,7 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
     }
     if (m_encoded_buffer)
     {
-      omx_err = m_omx_encoder.WaitForOutputDone(1000);
+      omx_err = m_omx_encoder.WaitForOutputDone(DEFAULT_TIMEOUT);
       if (omx_err != OMX_ErrorNone)
       {
         CLog::Log(LOGERROR, "%s::%s %s m_omx_encoder.WaitForOutputDone result(0x%x)\n", CLASSNAME, __func__, srcFile.GetFilename(), omx_err);
@@ -2050,7 +2052,7 @@ bool COMXTexture::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes,
     long timeout = 0;
     if (demuxer_bytes)
     {
-      OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer(1000);
+      OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer(DEFAULT_TIMEOUT);
       if (omx_buffer)
       {
         omx_buffer->nOffset = omx_buffer->nFlags  = 0;
@@ -2075,7 +2077,7 @@ bool COMXTexture::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes,
     if (!demuxer_bytes)
     {
        // we've submitted all buffers so can wait now
-       timeout = 1000;
+       timeout = DEFAULT_TIMEOUT;
     }
 
     omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged, timeout);
@@ -2120,7 +2122,7 @@ bool COMXTexture::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes,
         return false;
       }
 
-      omx_err = m_omx_egl_render.WaitForOutputDone(1000);
+      omx_err = m_omx_egl_render.WaitForOutputDone(DEFAULT_TIMEOUT);
       if (omx_err != OMX_ErrorNone)
       {
         CLog::Log(LOGERROR, "%s::%s m_omx_egl_render.WaitForOutputDone result(0x%x)\n", CLASSNAME, __func__, omx_err);
