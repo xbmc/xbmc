@@ -23,7 +23,7 @@ fi
 #copy bzip2 of dsym to xbmc-depends install dir
 if [ -d $DSYM ]; then
   if [ -d $DSYM_TARGET_DIR ]; then
-    tar -C $DSYM/.. -c $DSYM_FILENAME/ | bzip2 > $DSYM_TARGET_DIR/`$DIRNAME/../../../buildbot/gitrev-posix`-${DSYM_FILENAME}.tar.bz2
+    tar -C $DSYM/.. -c $DSYM_FILENAME/ | bzip2 > $DSYM_TARGET_DIR/`$DIRNAME/../gitrev-posix`-${DSYM_FILENAME}.tar.bz2
   fi
 fi
 
