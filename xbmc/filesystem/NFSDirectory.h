@@ -36,7 +36,7 @@ namespace XFILE
       virtual bool Remove(const char* strPath);
     private:
       bool GetServerList(CFileItemList &items);
-      bool GetDirectoryFromExportList(const CStdString& strPath, CFileItemList &items);
+      bool GetDirectoryFromExportList(const std::string& strPath, CFileItemList &items);
       bool ResolveSymlink( const CStdString &dirName, struct nfsdirent *dirent, CURL &resolvedUrl);
   };
 }

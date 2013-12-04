@@ -32,6 +32,7 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 using namespace XFILE;
 using namespace std;
@@ -49,20 +50,20 @@ CNFSDirectory::~CNFSDirectory(void)
   gNfsConnection.AddIdleConnection();
 }
 
-bool CNFSDirectory::GetDirectoryFromExportList(const CStdString& strPath, CFileItemList &items)
+bool CNFSDirectory::GetDirectoryFromExportList(const std::string& strPath, CFileItemList &items)
 {
   CURL url(strPath);
-  CStdString nonConstStrPath(strPath);
-  std::list<CStdString> exportList=gNfsConnection.GetExportList(url);
-  std::list<CStdString>::iterator it;
+  std::string nonConstStrPath(strPath);
+  std::list<std::string> exportList=gNfsConnection.GetExportList(url);
+  std::list<std::string>::iterator it;
   
   for(it=exportList.begin();it!=exportList.end();it++)
   {
-      CStdString currentExport(*it);     
+      std::string currentExport(*it);     
       URIUtils::RemoveSlashAtEnd(nonConstStrPath);
            
       CFileItemPtr pItem(new CFileItem(currentExport));
-      CStdString path(nonConstStrPath + currentExport);
+      std::string path(nonConstStrPath + currentExport);
       URIUtils::AddSlashAtEnd(path);
       pItem->SetPath(path);
       pItem->m_dateTime=0;
@@ -189,7 +190,7 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CSingleLock lock(gNfsConnection); 
   CURL url(strPath);
   CStdString strDirName="";
-  CStdString myStrPath(strPath);
+  std::string myStrPath(strPath);
   URIUtils::AddSlashAtEnd(myStrPath); //be sure the dir ends with a slash
    
   if(!gNfsConnection.Connect(url,strDirName))
@@ -226,8 +227,8 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   
   while((nfsdirent = gNfsConnection.GetImpl()->nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != NULL) 
   {
-    CStdString strName = nfsdirent->name;
-    CStdString path(myStrPath + strName);    
+    std::string strName = nfsdirent->name;
+    std::string path(myStrPath + strName);    
     int64_t iSize = 0;
     bool bIsDir = false;
     int64_t lTimeDate = 0;
@@ -249,8 +250,8 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     bIsDir = nfsdirent->type == NF3DIR;
     lTimeDate = nfsdirent->mtime.tv_sec;
 
-    if (!strName.Equals(".") && !strName.Equals("..")
-      && !strName.Equals("lost+found"))
+    if (!StringUtils::EqualsNoCase(strName,".") && !StringUtils::EqualsNoCase(strName,"..")
+        && !StringUtils::EqualsNoCase(strName,"lost+found"))
     {
       if(lTimeDate == 0) // if modification date is missing, use create date
       {

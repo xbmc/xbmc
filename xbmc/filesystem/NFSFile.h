@@ -72,7 +72,7 @@ public:
   uint64_t          GetMaxReadChunkSize(){return m_readChunkSize;}
   uint64_t          GetMaxWriteChunkSize(){return m_writeChunkSize;} 
   DllLibNfs        *GetImpl(){return m_pLibNfs;}
-  std::list<CStdString> GetExportList(const CURL &url);
+  std::list<std::string> GetExportList(const CURL &url);
   //this functions splits the url into the exportpath (feed to mount) and the rest of the path
   //relative to the mounted export
   bool splitUrlIntoExportAndPath(const CURL& url, CStdString &exportPath, CStdString &relativePath);
@@ -109,7 +109,7 @@ private:
   tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
   uint64_t m_lastAccessedTime;//last access time for m_pNfsContext
   DllLibNfs *m_pLibNfs;//the lib
-  std::list<CStdString> m_exportList;//list of exported pathes of current connected servers
+  std::list<std::string> m_exportList;//list of exported pathes of current connected servers
   CCriticalSection keepAliveLock;
   CCriticalSection openContextLock;
  

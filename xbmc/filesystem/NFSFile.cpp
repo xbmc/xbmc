@@ -82,9 +82,9 @@ void CNfsConnection::resolveHost(const CURL &url)
   CDNSNameCache::Lookup(url.GetHostName(), m_resolvedHostName);
 }
 
-std::list<CStdString> CNfsConnection::GetExportList(const CURL &url)
+std::list<std::string> CNfsConnection::GetExportList(const CURL &url)
 {
-    std::list<CStdString> retList;
+    std::list<std::string> retList;
 
     if(HandleDyLoad())
     {
@@ -94,7 +94,9 @@ std::list<CStdString> CNfsConnection::GetExportList(const CURL &url)
 
       for(tmp = exportlist; tmp!=NULL; tmp=tmp->ex_next)
       {
-        retList.push_back(CStdString(tmp->ex_dir));
+        std::string exportStr = std::string(tmp->ex_dir);
+        
+        retList.push_back(exportStr);
       }      
 
       gNfsConnection.GetImpl()->mount_free_export_list(exportlist);
@@ -248,7 +250,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
         path = "/" + path;
       }
       
-      std::list<CStdString>::iterator it;
+      std::list<std::string>::iterator it;
       
       for(it=m_exportList.begin();it!=m_exportList.end();it++)
       {
