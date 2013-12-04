@@ -179,7 +179,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
 
     /* okey this is silly, boxee what did you think?? */
     if     (scheme == "urn:boxee:genre")
-      vtag->m_genre = StringUtils::Split(text, g_advancedSettings.m_videoItemSeparator);
+      vtag->m_genre.push_back(text);
     else if(scheme == "urn:boxee:title-type")
     {
       if     (text == "tv")
