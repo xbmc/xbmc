@@ -8,6 +8,7 @@ Don't try to use mobile servers to transcode
 Correct action on harmony exit button
 Add back more filtering options for Home Movie sections.
 Send timelines even if we are paused. (Fixes now playing timeout)
+More fixes for timelines where the stopped command could reset the progress.
 MacOSX now have a channel selection setting under advanced.
 Fix onscreen Keyboard mappings.
 A shade darker text shadows.
