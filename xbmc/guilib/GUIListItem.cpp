@@ -113,16 +113,6 @@ const CStdStringW& CGUIListItem::GetSortLabel() const
   return m_sortLabel;
 }
 
-void CGUIListItem::SetArt(const std::string &type, const std::string &url)
-{
-  ArtMap::iterator i = m_art.find(type);
-  if (i == m_art.end() || i->second != url)
-  {
-    m_art[type] = url;
-    SetInvalid();
-  }
-}
-
 void CGUIListItem::SetArt(const ArtMap &art)
 {
   m_art = art;
@@ -401,29 +391,6 @@ void CGUIListItem::SetInvalid()
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
 }
 
-void CGUIListItem::SetProperty(const CStdString &strKey, const CVariant &value)
-{
-  m_mapProperties[strKey] = value;
-}
-
-CVariant CGUIListItem::GetProperty(const CStdString &strKey) const
-{
-  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
-  if (iter == m_mapProperties.end())
-    return CVariant(CVariant::VariantTypeNull);
-
-  return iter->second;
-}
-
-bool CGUIListItem::HasProperty(const CStdString &strKey) const
-{
-  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
-  if (iter == m_mapProperties.end())
-    return false;
-
-  return true;
-}
-
 void CGUIListItem::ClearProperty(const CStdString &strKey)
 {
   PropertyMap::iterator iter = m_mapProperties.find(strKey);
@@ -454,32 +421,6 @@ void CGUIListItem::AppendProperties(const CGUIListItem &item)
 {
   for (PropertyMap::const_iterator i = item.m_mapProperties.begin(); i != item.m_mapProperties.end(); ++i)
     SetProperty(i->first, i->second);
-}
-
-/* PLEX */
-bool CGUIListItem::HasArt(const string &type, int index) const
-{
-  return !GetArt(type, index).empty();
-}
-
-std::string CGUIListItem::GetArt(const string &type, int index) const
-{
-  if (index == 0)
-    return GetArt(type);
-
-  std::string typeNum = (boost::format("%s____%d") % type % index).str();
-  return GetArt(typeNum);
-}
-
-void CGUIListItem::SetArt(const string &type, int index, const string &url)
-{
-  if (index == 0)
-    SetArt(type, url);
-  else
-  {
-    std::string typeNum = (boost::format("%s____%d") % type % index).str();
-    SetArt(typeNum, url);
-  }
 }
 
 void CGUIListItem::RemoveArt(const string &type)
