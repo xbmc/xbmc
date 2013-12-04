@@ -23,6 +23,7 @@
 #include "settings/Settings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "system.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif

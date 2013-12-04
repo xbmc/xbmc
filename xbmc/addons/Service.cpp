@@ -21,6 +21,7 @@
 #include "AddonManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/log.h"
+#include "system.h"
 
 using namespace std;
 
