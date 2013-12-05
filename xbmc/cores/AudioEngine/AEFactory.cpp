@@ -439,3 +439,9 @@ bool CAEFactory::IsSettingVisible(const std::string &condition, const std::strin
 
   return AE->IsSettingVisible(value);
 }
+
+void CAEFactory::KeepConfiguration(unsigned int millis)
+{
+  if (AE)
+    AE->KeepConfiguration(millis);
+}

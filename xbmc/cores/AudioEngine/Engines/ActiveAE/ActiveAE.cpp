@@ -231,6 +231,9 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::MUTE:
           m_muted = *(bool*)msg->data;
           return;
+        case CActiveAEControlProtocol::KEEPCONFIG:
+          m_extKeepConfig = *(unsigned int*)msg->data;
+          return;
         default:
           break;
         }
@@ -540,7 +543,10 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           DiscardStream(stream);
           if (m_streams.empty())
           {
-            m_extDrainTimer.Set(m_stats.GetDelay() * 1000);
+            if (m_extKeepConfig)
+              m_extDrainTimer.Set(m_extKeepConfig);
+            else
+              m_extDrainTimer.Set(m_stats.GetDelay() * 1000);
             m_extDrain = true;
           }
           m_extTimeout = 0;
@@ -719,6 +725,7 @@ void CActiveAE::Process()
   m_bStateMachineSelfTrigger = false;
   m_extDrain = false;
   m_extDeferData = false;
+  m_extKeepConfig = 0;
 
   // start sink
   m_sink.Start();
@@ -854,6 +861,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
   m_sinkRequestFormat = inputFormat;
   ApplySettingsToFormat(m_sinkRequestFormat, m_settings, (int*)&m_mode);
+  m_extKeepConfig = 0;
+
   std::string device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
@@ -1269,6 +1278,7 @@ void CActiveAE::ChangeResamplers()
 
 void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, int *mode)
 {
+  int oldMode = m_mode;
   if (mode)
     *mode = MODE_PCM;
 
@@ -1329,6 +1339,8 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
 
       if (m_settings.config == AE_CONFIG_FIXED || (settings.stereoupmix && format.m_channelLayout.Count() <= 2))
         format.m_channelLayout = stdLayout;
+      else if (m_extKeepConfig && (settings.config == AE_CONFIG_AUTO) && (oldMode != MODE_RAW))
+        format.m_channelLayout = m_internalFormat.m_channelLayout;
       else
         format.m_channelLayout.ResolveChannels(stdLayout);
     }
@@ -2237,6 +2249,11 @@ void CActiveAE::SetSoundMode(const int mode)
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::SOUNDMODE, &soundmode, sizeof(int));
 }
 
+void CActiveAE::KeepConfiguration(unsigned int millis)
+{
+  unsigned int timeMs = millis;
+  m_controlPort.SendOutMessage(CActiveAEControlProtocol::KEEPCONFIG, &timeMs, sizeof(unsigned int));
+}
 
 void CActiveAE::OnLostDevice()
 {
