@@ -425,6 +425,19 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
   // and copy the file across
   CFile::Cache(strUrl, strSubPath);
+
+  // for ".sub" subtitles we check if ".idx" counterpart exists and copy that as well
+  if (strSubExt.Equals(".sub"))
+  {
+    strUrl = URIUtils::ReplaceExtension(strUrl, ".idx");
+    if(CFile::Exists(strUrl))
+    {
+      CStdString strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
+      strSubPath = URIUtils::AddFileToFolder(strDestPath, strSubNameIdx);
+      CFile::Cache(strUrl, strSubPath);
+    }
+  }
+
   SetSubtitles(strSubPath);
   // Close the window
   Close();
