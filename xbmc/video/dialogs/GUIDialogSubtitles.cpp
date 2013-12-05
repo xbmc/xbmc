@@ -189,14 +189,18 @@ void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &di
       OnMessage(message);
       m_updateSubsList = false;
     }
-
-    if (!m_subtitles->IsEmpty())
-    { // set focus to the list
-      CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_SUBLIST);
+    
+    int control = GetFocusedControlID();
+    // nothing has focus
+    if (!control)
+    {
+      CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_subtitles->IsEmpty() ?
+                      CONTROL_SERVICELIST : CONTROL_SUBLIST);
       OnMessage(msg);
     }
-    else
-    { // set focus to the service list if no subs are found
+    // subs list is focused but we have no subs
+    else if (control == CONTROL_SUBLIST && m_subtitles->IsEmpty())
+    {
       CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_SERVICELIST);
       OnMessage(msg);
     }
