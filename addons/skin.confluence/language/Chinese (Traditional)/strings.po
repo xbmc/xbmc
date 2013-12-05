@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "影片播放工具列"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "設定值"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "捷徑"
@@ -475,6 +479,10 @@ msgstr "第一次使用說明..."
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "這個標籤表示這個部分在視窗的側邊有提供額外選項的選單。你可以使用遙控器或鍵盤的左鍵或者是將滑鼠指標移動到這個標籤的範圍來存取這個選單。[CR][CR]按一下\"Ok\" 可以關閉這個對話框。它不會再出現。"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "有本地語言的字幕可選用"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

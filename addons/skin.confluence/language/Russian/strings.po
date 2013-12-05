@@ -482,7 +482,7 @@ msgstr "Эта вкладка означает, что сбоку окна ес�
 
 msgctxt "#31413"
 msgid "Local subtitle available"
-msgstr "Субтитры доступны"
+msgstr "Доступны локальные субтитры"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

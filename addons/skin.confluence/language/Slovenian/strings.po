@@ -240,6 +240,10 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Besedilo pesmi"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Skrij grafike v vizualizaciji v celozaslonskem načinu"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Dodatek besedil pesmi"
@@ -251,6 +255,10 @@ msgstr "Glasbeni OSD"
 msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Video OSD"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Nivo nastavitev"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -459,6 +467,10 @@ msgstr "Pomoč ob prvem zagonu..."
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Ta zavihek nakazuje, da se tu skriva meni z dodatnimi možnostmi trenutnega pogleda.  Za dostop do menija pritisnite levo na vašem daljinskem upravljalcu ali tipkovnici ali pa postavite miško na zavihek. [CR][CR]Kliknite \"Ok\", da zaprete to okno. Ne bo se več prikazalo."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Na voljo so krajevni podnapisi"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

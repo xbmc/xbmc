@@ -270,7 +270,7 @@ msgstr "Видео OSD"
 
 msgctxt "#31142"
 msgid "Settings level"
-msgstr "Изобразявани настройки"
+msgstr "Видими настройки"
 
 msgctxt "#31200"
 msgid "Shortcuts"

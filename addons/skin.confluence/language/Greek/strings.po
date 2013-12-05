@@ -482,7 +482,7 @@ msgstr "Υπάρχει ένα μενού στο πλάι του παραθύρο
 
 msgctxt "#31413"
 msgid "Local subtitle available"
-msgstr "Διαθέσιμοι υπότιτλοι τοπικά"
+msgstr "Διαθέσιμος υπότιτλος τοπικά"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

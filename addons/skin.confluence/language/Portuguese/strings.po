@@ -34,7 +34,7 @@ msgstr "Ocultar Info"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Ver opções"
+msgstr "Opções de Vista"
 
 msgctxt "#31008"
 msgid "Full screen"
@@ -258,7 +258,7 @@ msgstr "Submenu de Música da Página Inicial"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
-msgstr "Submenu de Fotos da Página Inicial"
+msgstr "Submenu de Imagens da Página Inicial"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -330,11 +330,11 @@ msgstr "Imagem de Fanart[CR][CR]Indisponível[CR][CR] Clique no botão para sele
 
 msgctxt "#31312"
 msgid "Current Scraper"
-msgstr "Scraper actual"
+msgstr "Colector Actual"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Escolha um scraper"
+msgstr "Escolha um Colector"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
@@ -562,7 +562,7 @@ msgstr "TEMPO"
 
 msgctxt "#31951"
 msgid "PICTURES"
-msgstr "FOTOS"
+msgstr "IMAGENS"
 
 msgctxt "#31952"
 msgid "LIVE TV"

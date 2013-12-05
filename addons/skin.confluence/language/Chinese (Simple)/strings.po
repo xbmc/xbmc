@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "视频 OSD"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "设置级别"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "快捷方式"
@@ -475,6 +479,10 @@ msgstr "首次运行帮助...."
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "此选项卡表示有一个提供本功能模块特殊设置选项的菜单隐藏在窗口侧边。你可以通过按遥控器或键盘左键、或将鼠标指针移动到选项卡范围来开启此菜单。[CR] [CR]点“确定”关闭此对话框，本提示不会再次出现。"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "本地字幕可用"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -254,7 +254,7 @@ msgstr "Úvodní obrazovka, podnabídka videí"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "Úvodní obrazovka, podnabídka Hudba"
+msgstr "Úvodní obrazovka, podnabídka hudby"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
@@ -267,6 +267,10 @@ msgstr "OSD hudby"
 msgctxt "#31141"
 msgid "Video OSD"
 msgstr "OSD videa"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Úrověň nastavení"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -434,7 +438,7 @@ msgstr "Písmo založené na Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ VZHLEDU PROSTŘEDÍ[/B][CR][CR]Změna vzhledu · Výběr jazyka a oblasti · Možnosti zobrazení souborů[CR]Nastavení spořiče obrazovky"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ VZHLEDU[/B][CR][CR]Změna vzhledu · Výběr jazyka a oblasti · Možnosti zobrazení souborů[CR]Nastavení spořiče obrazovky"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -454,7 +458,7 @@ msgstr "[B]NASTAVENÍ MOŽNOSTÍ POČASÍ[/B][CR][CR]Nastavení tří měst pro 
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ SYSTÉMU[/B][CR][CR]Nastavení a kalibrace obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Nastavení úsporného režimu · Povolit informací o ladění · Rodičovský zámek"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ SYSTÉMU[/B][CR][CR]Nastavení a kalibrace obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Nastavení úsporného režimu · Povolení informací o ladění · Rodičovský zámek"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
@@ -462,11 +466,11 @@ msgstr "[B]NASTAVENÍ MOŽNOSTÍ DOPLŇKŮ[/B][CR][CR]Správa nainstalovaných d
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ PŘEHRÁVÁNÍ TELEVIZE[/B][CR][CR]Změnit zobrazení přes celou obrazovku · Nastavení EPG dat"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ TELEVIZNÍHO PŘEHRÁVÁNÍ[/B][CR][CR]Změna zobrazení přes celou obrazovku · Nastavení EPG dat"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání XBMC skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolit zeroconf · Nastavit AirPlay"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání XBMC skrze UPnP a HTTP · Nastavení sdílení souborů[CR]Povolení zeroconf · Nastavení AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -475,6 +479,10 @@ msgstr "Nejprve spusťte nápovědu..."
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Tato záložka zdůrazňuje, že se na boční straně okna nachází skryté menu s dalšími vlastnostmi.\nPro přístup k tomuto menu se přesuňte doleva dálkovým ovladačem, či klávesnicí, nebo přesuňte myš nad tuto kartu.[CR][CR]Kliknutím na tlačítko OK zavřete tento dialog, který se již znovu nezobrazí."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Místní titulky k dispozici"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
