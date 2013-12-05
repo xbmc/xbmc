@@ -867,7 +867,6 @@ namespace VIDEO
     CStdString strLabel=item->GetPath();
     // URLDecode in case an episode is on a http/https/dav/davs:// source and URL-encoded like foo%201x01%20bar.avi
     CURL::Decode(strLabel);
-    StringUtils::ToLower(strLabel);
 
     for (unsigned int i=0;i<expression.size();++i)
     {
