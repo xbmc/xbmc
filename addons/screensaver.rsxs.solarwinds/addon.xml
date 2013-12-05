@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.9"
+  version="1.0.10"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -91,7 +91,7 @@
     <description lang="nl">Dit is een erg hypnotiserende screensaver. Je kunt ongelooflijk veel verschillende patronen bekomen.</description>
     <description lang="no">Dette er en veldig hypnotiserende skjermsparer med partikkeleffekter. Du får se at der fins en utrolig mengde forskjellige mønster.</description>
     <description lang="pl">Bardzo hipnotyzujący wygaszacz. Przekonaj się, ile niespotykanch wzorów da się osiągnąć.</description>
-    <description lang="pt">Uma fantástica protecção de ecrã com um impressionante efeito de partículas. Experimente e verá que obtém um número quase infinito de padrões.</description>
+    <description lang="pt">Uma fantástica protecção de ecrã com um impressionante efeito de partículas. Experimente e verá que pode obter um número quase infinito de padrões.</description>
     <description lang="pt_BR">Este é um protetor de tela com efeitos de partícula bem hipnotizante. Você verá que pode alcançar um incrível número de diferentes padrões.</description>
     <description lang="ro">Acesta este un screensaver cu efecte de particule foarte fascinant. O să vedeți că veți putea obține un număr uimitor de modele diferite.</description>
     <description lang="ru">Завораживающая заставка с эффектами частиц. Для этой заставки на выбор доступно огромное количество вариаций эффектов.</description>
