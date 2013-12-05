@@ -134,6 +134,9 @@ bool CThumbExtractor::DoWork()
     CVideoDatabase db;
     if (db.Open())
     {
+      if (URIUtils::IsStack(m_listpath))
+        m_item.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, 0); // Don't know the total time of the stack, so set duration to zero to avoid confusion
+
       if (info->m_iFileId < 0)
         db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : m_item.GetPath());
       else
@@ -374,8 +377,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
     // flag extraction
     if (CSettings::Get().GetBool("myvideos.extractflags") &&
        (!pItem->HasVideoInfoTag()                     ||
-        !pItem->GetVideoInfoTag()->HasStreamDetails() ||
-         pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
+        !pItem->GetVideoInfoTag()->HasStreamDetails() ) )
     {
       CFileItem item(*pItem);
       CStdString path(item.GetPath());
