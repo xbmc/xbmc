@@ -37,7 +37,7 @@ public:
 
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options);
   virtual bool QueueNextFile(const CFileItem &file);
-  virtual bool CloseFile();
+  virtual bool CloseFile(bool reopen = false);
   virtual bool IsPlaying() const;
   virtual void Pause();
   virtual bool IsPaused() const;

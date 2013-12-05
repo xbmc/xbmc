@@ -60,7 +60,7 @@ public:
   int m_iPlaySpeed;
 
   // player management
-  void CloseFile();
+  void CloseFile(bool reopen = false);
   void ClosePlayer();
   void ClosePlayerGapless(PLAYERCOREID newCore);
   void CreatePlayer(PLAYERCOREID newCore, IPlayerCallback& callback);

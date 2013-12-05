@@ -120,7 +120,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
   }
 }
 
-bool CExternalPlayer::CloseFile()
+bool CExternalPlayer::CloseFile(bool reopen)
 {
   m_bAbortRequest = true;
 

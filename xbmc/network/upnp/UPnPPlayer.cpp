@@ -357,7 +357,7 @@ failed:
   return false;
 }
 
-bool CUPnPPlayer::CloseFile()
+bool CUPnPPlayer::CloseFile(bool reopen)
 {
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
   NPT_CHECK_LABEL(m_control->Stop(m_delegate->m_device

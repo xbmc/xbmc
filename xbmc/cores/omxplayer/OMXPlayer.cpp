@@ -636,7 +636,7 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
   }
 }
 
-bool COMXPlayer::CloseFile()
+bool COMXPlayer::CloseFile(bool reopen)
 {
   CLog::Log(LOGDEBUG, "COMXPlayer::CloseFile");
 

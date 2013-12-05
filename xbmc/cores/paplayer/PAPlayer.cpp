@@ -509,7 +509,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   return true;
 }
 
-bool PAPlayer::CloseFile()
+bool PAPlayer::CloseFile(bool reopen)
 {
   if (!m_isPaused)
     SoftStop(true, true);

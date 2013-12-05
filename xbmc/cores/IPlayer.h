@@ -133,7 +133,7 @@ public:
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
   virtual bool QueueNextFile(const CFileItem &file) { return false; }
   virtual void OnNothingToQueueNotify() {}
-  virtual bool CloseFile(){ return true;}
+  virtual bool CloseFile(bool reopen = false) = 0;
   virtual bool IsPlaying() const { return false;}
   virtual bool CanPause() { return true; };
   virtual void Pause() = 0;
