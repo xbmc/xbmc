@@ -88,7 +88,7 @@ public:
   CDVDDemuxFFmpeg();
   virtual ~CDVDDemuxFFmpeg();
 
-  bool Open(CDVDInputStream* pInput);
+  bool Open(CDVDInputStream* pInput, bool streaminfo = true);
   void Dispose();
   void Reset();
   void Flush();
@@ -127,6 +127,8 @@ protected:
   CDemuxStream* GetStreamInternal(int iStreamId);
   void CreateStreams(unsigned int program = UINT_MAX);
   void DisposeStreams();
+  void ParsePacket(AVPacket *pkt);
+  bool IsVideoReady();
 
   AVDictionary *GetFFMpegOptionsFromURL(const CURL &url);
   double ConvertTimestamp(int64_t pts, int den, int num);
@@ -157,5 +159,6 @@ protected:
 
   bool m_bPtsWrap, m_bPtsWrapChecked;
   int64_t m_iStartTime, m_iMaxTime, m_iEndTime;
+  bool m_streaminfo;
 };
 
