@@ -319,11 +319,11 @@ msgstr "Slideshow"
 
 msgctxt "#109"
 msgid "Create thumbs"
-msgstr "thumb များဖန်တီးမည်"
+msgstr "ပုံသေး များဖန်တီးမည်"
 
 msgctxt "#110"
 msgid "Create thumbnails"
-msgstr "thumbnail များဖန်တီးမည်"
+msgstr "ပုံသေး များဖန်တီးမည်"
 
 msgctxt "#111"
 msgid "Shortcuts"

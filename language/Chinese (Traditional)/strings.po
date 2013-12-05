@@ -8285,6 +8285,10 @@ msgctxt "#20417"
 msgid "Writer"
 msgstr "編劇"
 
+msgctxt "#20418"
+msgid "Writers"
+msgstr "編劇群"
+
 msgctxt "#20419"
 msgid "Replace file names with library titles"
 msgstr "在檔案檢視中顯示媒體資訊"
@@ -8520,6 +8524,18 @@ msgstr "加入媒體共享…"
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "透過 UPnP 分享影片和音樂"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "尋找遠端UPnP播放器"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "已產生書籤"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "已產生影集書籤"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8897,6 +8913,10 @@ msgctxt "#21458"
 msgid "Group by"
 msgstr "群組分類依據"
 
+msgctxt "#21459"
+msgid "mixed"
+msgstr "混合"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "字幕位置"
@@ -9065,9 +9085,17 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "方位"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "子地區"
+
 msgctxt "#21858"
 msgid "Image type"
 msgstr "影像類型"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "建立時間"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -9140,6 +9168,10 @@ msgstr "原始的 Tx 引用"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "建立日期"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "緊急程度"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -10489,6 +10521,10 @@ msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "選擇溫度、時間及日期的格式.可使用的選項視所選的語言而定"
 
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "選擇將會在使用者介面中顯示的字元集"
+
 msgctxt "#36117"
 msgid "Select country location."
 msgstr "選擇國家位置。"
@@ -10496,6 +10532,14 @@ msgstr "選擇國家位置。"
 msgctxt "#36118"
 msgid "Select your current timezone."
 msgstr "選擇目前所在時區。"
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "當影片提供多種語言音軌時，選取預設的音軌"
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "當影片提供多種語言的字幕時，選取預設的字幕"
 
 msgctxt "#36121"
 msgid "No info available yet."

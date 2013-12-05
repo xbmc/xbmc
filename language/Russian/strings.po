@@ -6309,6 +6309,14 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Предупреждение"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Служба"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Микшировать"
+
 msgctxt "#19101"
 msgid "Provider"
 msgstr "Провайдер"
@@ -9959,7 +9967,7 @@ msgstr "Доступные обновления"
 
 msgctxt "#24044"
 msgid "Dependencies not met. Please contact Add-on author."
-msgstr "Зависимости не соблюдены. Свяжитесь с разработчиком Модуля."
+msgstr "Зависимости не соблюдены. Свяжитесь с разработчиком дополнения."
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
@@ -10099,7 +10107,7 @@ msgstr "(заблокирован.)"
 
 msgctxt "#24096"
 msgid "Add-on is incompatible or has been marked broken in repository."
-msgstr "Модуль несовместимый или помечен в репозитории как нерабочий. "
+msgstr "Модуль несовместим или помечен в репозитории как нерабочий. "
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10131,7 +10139,7 @@ msgstr "В обложке отсутствуют некоторые файлы"
 
 msgctxt "#24104"
 msgid "Add-on is incompatible due to unmet dependencies."
-msgstr "Модуль несовместимый из-за несоблюдения зависимостей."
+msgstr "Модуль несовместим из-за несоблюдения зависимостей."
 
 msgctxt "#24105"
 msgid "Pause when searching for subtitles"
@@ -10283,7 +10291,7 @@ msgstr "Клипы"
 
 msgctxt "#33017"
 msgid "Restart plug-in to enable"
-msgstr "Перезапустить модуль для активации"
+msgstr "Перезапустить дополнение для активации."
 
 msgctxt "#33018"
 msgid "Tonight"

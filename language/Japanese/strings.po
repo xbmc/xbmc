@@ -857,6 +857,10 @@ msgctxt "#249"
 msgid "Music"
 msgstr "ミュージック"
 
+msgctxt "#250"
+msgid "Visualisation"
+msgstr "視覚化"
+
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "ディレクトリの選択"
@@ -1035,7 +1039,7 @@ msgstr "ブックマークの作成"
 
 msgctxt "#296"
 msgid "Clear bookmarks"
-msgstr "ブックマークの削除"
+msgstr "ブックマークをクリア"
 
 msgctxt "#297"
 msgid "Audio offset"
@@ -1797,6 +1801,10 @@ msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "並べ替え：回数"
 
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "視覚化を有効に"
+
 msgctxt "#511"
 msgid "Enable video mode switching"
 msgstr "ビデオモードを切り替えを有効化"
@@ -2049,6 +2057,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "再生回数"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "撮影日"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "並べ替え方向"
@@ -2172,6 +2184,10 @@ msgstr "ビットレート"
 msgctxt "#613"
 msgid "Sample rate"
 msgstr "サンプルレート"
+
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr "仮想フォルダー"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2328,6 +2344,10 @@ msgstr "スクリプトを参照する"
 msgctxt "#665"
 msgid "Compression level"
 msgstr "圧縮レベル"
+
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "詳細なログ..."
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -3425,6 +3445,10 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "標準"
 
+msgctxt "#10040"
+msgid "Add-on browser"
+msgstr "アドオンブラウザー"
+
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "このカテゴリーの設定を全てリセットしてもいいですか？"
@@ -3436,6 +3460,10 @@ msgstr "ヘルプ"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "ヘルプがありません"
+
+msgctxt "#10100"
+msgid "Yes/No dialogue"
+msgstr "はい/いいえ ダイアログ"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3584,6 +3612,10 @@ msgstr "スクリプト/情報"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "フルスクリーンビデオ"
+
+msgctxt "#12006"
+msgid "Audio visualisation"
+msgstr "オーディオ視覚化"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4557,9 +4589,21 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "プリセット"
 
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "この視覚化には\nプリセットがありません"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualisation"
+msgstr "この視覚化には\n可能な設定がありません"
+
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "イジェクト/ロード"
+
+msgctxt "#13392"
+msgid "Use visualisation if playing audio"
+msgstr "オーディオ再生中に視覚化を使用"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4728,6 +4772,18 @@ msgstr "次のビデオを自動で再生する"
 msgctxt "#13434"
 msgid "Play only this"
 msgstr "これだけを再生"
+
+msgctxt "#13437"
+msgid "Prefer VDPAU Video Mixer"
+msgstr "VDPAU Video Mixer を優先"
+
+msgctxt "#13438"
+msgid "Allow hardware acceleration (amcodec)"
+msgstr "ハードウェアアクセラレーションを許可 (amcodec)"
+
+msgctxt "#13439"
+msgid "Allow hardware acceleration (MediaCodec)"
+msgstr "ハードウェアアクセラレーションを許可 (MediaCodec)"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -8185,6 +8241,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "俳優のサムネイルを指定"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "ブックマークの削除"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "エピソードブックマークを削除"
@@ -8379,11 +8439,11 @@ msgstr "Listeners"
 
 msgctxt "#20457"
 msgid "Movie set"
-msgstr "Movie set"
+msgstr "ムービーセット"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr "Group movies in sets"
+msgstr "ムービーセットにグループ化"
 
 msgctxt "#20459"
 msgid "Tags"
@@ -8408,6 +8468,18 @@ msgstr "「%s」という名前のタグは既に存在します"
 msgctxt "#20464"
 msgid "Select %s"
 msgstr "%s を選択"
+
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "ムービーセットの管理"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "ムービーセットを選択"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "ムービーを新規セットに追加"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -8448,6 +8520,14 @@ msgstr "メディア共有を追加..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "ビデオ/ミュージックライブラリを UPnP 経由で共有"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "ブックマークが作られました"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "エピソードブックマークが作られました"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -9393,6 +9473,10 @@ msgctxt "#24009"
 msgid "Script"
 msgstr "スクリプト"
 
+msgctxt "#24010"
+msgid "Visualisation"
+msgstr "視覚化"
+
 msgctxt "#24011"
 msgid "Add-on repository"
 msgstr "アドオン レポジトリ"
@@ -10033,6 +10117,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "FLAC"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 オーディオ (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media オーディオ 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "スピーカー設定"
@@ -10345,6 +10437,18 @@ msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
 msgstr "UI のルック＆フィールを変更"
 
+msgctxt "#36102"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "ユーザーインターフェースのスキンを選びます。これにより XBMC の見た目や使い心地が変わります。"
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "指定したスキンの設定を変更します。スキンによって設定可能なオプションは異なります。"
+
 msgctxt "#36105"
 msgid "Change the theme associated with your selected skin."
 msgstr "選択したスキンのテーマを変更"
@@ -10353,10 +10457,622 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "選択したスキンの色を変更"
 
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "ユーザーインターフェースで表示されるフォントを選択します。フォントセットはスキンにより設定されます。"
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "GUI ビューをリサイズします。"
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "XBMC 起動時に表示するメディアウィンドウを選択"
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "ユーザーインターフェース操作時の音の有効・無効を選択します。"
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "スクロール式 RSS ニュース表示を消すにはこれをオフに"
+
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "RSS フィードを編集します。"
 
+msgctxt "#36113"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36114"
+msgid "Chooses the language of the User Interface."
+msgstr "ユーザーインターフェースで使う言語を選択します。"
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "気温、時刻、日付のフォーマットを選択します。可能なオプションは、選択された言語によって異なります。"
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "GUI でテキスト表示に使う文字セットを選択します。"
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "国を選択"
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "タイムゾーンを選択します。"
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "複数の異なる言語の音声トラックがある場合、どれをデフォルトにするか選びます。"
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "複数の異なる言語の字幕トラックがある場合、どれをデフォルトにするか選びます。"
+
+msgctxt "#36121"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "親ディレクトリに移動するための (..) を表示します。"
+
+msgctxt "#36128"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
+msgstr "音楽の再生中、XBMC はスクリーンセーバーの代わりに、選択した視覚化を開始します。"
+
+msgctxt "#36135"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36136"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36137"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36138"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36139"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36140"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36142"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "ムービーライブラリを閲覧時、ムービーセットとしてグループ化します。"
+
 msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
 msgstr "XBMC 起動時に新しいメディアファイルをチェックします。"
+
+msgctxt "#36151"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36154"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36156"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36157"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36158"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36159"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36160"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36161"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36162"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36163"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36173"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36176"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36178"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36181"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36184"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36185"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36186"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36187"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36188"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36189"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36190"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36193"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36197"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36201"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36202"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36210"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36211"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36212"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36213"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36214"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36215"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36216"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36217"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36218"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36226"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36230"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36232"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36233"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36240"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36247"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36251"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36252"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36253"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36254"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36260"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36264"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36273"
+msgid "Select the visualisation that will be displayed while listening to music."
+msgstr "音楽再生中に表示される視覚化を選んでください。"
+
+msgctxt "#36277"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36278"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36279"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36280"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36282"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "CD がドライブに挿入されたら、自動再生する。"
+
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "オーディオ CD にかんする情報をインターネットデータベースから読み込む。"
+
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "リッピング時に使用するオーディオエンコーダーを選んでください。"
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "リッピングの品質を選んでください。"
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "指定したオーディオエンコーダーで使うビットレートを選んでください。"
+
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "FLAC 圧縮レベルは、デフォルト5"
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "リッピング完了後、自動でディスクイジェクトする。"
+
+msgctxt "#36292"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36294"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36299"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36300"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36301"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36302"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36303"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36304"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36305"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36310"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36311"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36315"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36316"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36319"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36320"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36322"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36325"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36327"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36335"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36336"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36337"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36339"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36340"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36341"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36342"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36343"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36344"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36345"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36346"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36347"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36348"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36349"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36351"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36352"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36353"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36359"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36360"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36374"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36375"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36379"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36388"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36392"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36399"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36400"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36401"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36402"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36403"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36404"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36405"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36406"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36407"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36408"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36409"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36410"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36411"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36412"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36413"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36414"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36415"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36417"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36418"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "天気情報の取得先を指定してください。"
+
+msgctxt "#36420"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#36540"
+msgid "No info available yet."
+msgstr "情報がまだありません。"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "前回使用したプロフィール"

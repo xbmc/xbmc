@@ -1189,9 +1189,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Konverzia snímkovania"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Konfigurácia výstupu"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Pevné"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimalizované"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1217,9 +1225,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Rok"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normalizovať úrovne hlasitosti pri downmixe"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "AV prijímač s možnosťou dekódovania DTS-HD"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Zapnúť priechodzí výstup zvuku"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1497,6 +1513,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "Deň"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Najlepšia zhoda"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Ponechať zvukové zariadenie aktívne"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Odstrániť informácie o albume"
@@ -1640,6 +1664,10 @@ msgstr "Režim"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Prepnúť zobrazenie"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Obmedziť vzorkovaciu frekvenciu (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2925,6 +2953,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "-Programy (doplnky)"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Nastavenie náhľadu doplnku"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Nastavenie doplnku"
@@ -3489,13 +3521,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Obnoviť"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Základné"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Štandardný"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Pokročilé"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Expertné"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Prehliadač doplnkov"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Obnoviť vyššie uvedené nastavenia na predvolené hodnoty"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3508,6 +3556,18 @@ msgstr "Pomocník"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "K dispozícii nie je žiadny Pomocník"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Obnoviť všetky viditeľné nastavenia na ich predvolené hodnoty"
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "K dispozícii nie sú žiadne kategórie"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Skúste zmeniť úroveň nastavení, aby ste videli ďalšie kategórie a nastavenia."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3845,6 +3905,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Limit pre opakovanie bol prekročený."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Tento systém sa teraz vypne."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Položka zamknutá"
@@ -4145,6 +4209,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Uložiť rozlíšenie?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Chcete zachovať túto zmenu?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Vysoko kvalitný prepočet (upscaling)"
@@ -4188,6 +4256,10 @@ msgstr "VDPAU HQ prepočet (upscaling)"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "VDPAU farebná konverzia - Studio level"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Použiť tento vzhľad?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4909,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Povoliť hardvérovú akceleráciu (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Frame Multi Threaded Decoding (less reliable)"
+msgstr "Dekódovanie rámcov s využitím viacerých vlákien súčasne (menej spoľahlivé)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Spôsob synchronizácie A/V"
@@ -4992,6 +5068,14 @@ msgstr "%.1f Sekunda"
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Sekúnd"
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d minúta"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d minút"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -5677,6 +5761,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Upraviť titul"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Spravovať..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Upraviť názov usporiadania"
@@ -6221,6 +6309,18 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Upozornenie"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Služba"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Multiplex"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Poskytovateľ"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Prepnite, prosím, na ďalší kanál."
@@ -6669,6 +6769,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Nebolo možné zapnúť žiadny PVR doplnok. Skontrolujte nastavenia alebo pre viac informácii si pozrite výpis z denníka."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Nahrávanie bolo zrušené"
@@ -6709,6 +6813,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Zobraziť oznámenie pri aktualizáciách časovačov"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Použiť čísla kanálov backendov (funguje iba s 1 zapnutým PVR doplnkom)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "Spúšťa sa správca PVR"
@@ -6729,9 +6837,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Spúšťajú sa vlákna na pozadí"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Nie je zapnutý žiadny PVR doplnok"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "Správca PVR bol aktivovaný bez toho, aby bol zapnutý"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "zapnutý PVR doplnok. Zapnite aspoň jeden doplnok,"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6845,9 +6961,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Všetky nahrávky"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Nie je možné nájsť žiadne PVR doplnky"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Aby bolo možné použiť PVR funkcie, je potrebný"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "Doplnok pre backend, aby bolo možné použiť PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9153,6 +9277,18 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s do %s"
 
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "Uprednostňovať externé titulky"
+
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "Uprednostňovať externé titulky pre internými"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Externé)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Názov súboru"
@@ -9833,13 +9969,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Dostupné aktualizácie"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Nie sú splnené závislosti. Kontaktujte, prosím, autora doplnku."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Doplnok nemá správnu štruktúru"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s je použitá následovným nainštalovaným doplnkom"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Tento doplnok sa nedá odinštalovať"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Obnoviť zmeny"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Nekompatibilný"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9945,6 +10097,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Zamknúť správcu doplnkov"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Tento doplnok nie je možné vypnúť"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(aktuálny)"
@@ -9952,6 +10108,10 @@ msgstr "(aktuálny)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(na čiernej listine)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Tento doplnok je nekompatibilný alebo bol v repozitári označený ako nefunkčný."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9980,6 +10140,54 @@ msgstr "Nie je možné načítať vzhľad"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Vo vzhľade chýbajú nejaké súbory"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Doplnok nie je kompatibilný z dôvodu nesplnených závislostí."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pozastaviť prehrávanie počas hľadania titulkov"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "Pokiaľ nebudú uložené do priečinka s filmom, titulky sa prevezmú do priečinka s titulkami nastaveného používateľom"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Prebieha vyhľadávanie titulkov..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d nájdených titulkov"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Nenašli sa žiadne titulky"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Preberajú sa titulky ..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Zoznam jazykov, pre ktoré preberať titulky"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Nastavte jazyky, ktoré sa majú použiť, keď sa budú hľadať titulky. Nie všetky služby s titulkami využijú všetky jazyky."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Počas preberania titulkov nastala chyba"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Nie je nainštalovaná žiadna služba s titulkami"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Uložiť titulky do priečinka s filmom"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10084,6 +10292,10 @@ msgstr "Pred prehrávaním videa sa spýtať na jeho stiahnutie"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Klipy"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Pre aktiváciu reštartujte doplnok"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10405,6 +10617,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Toto nastavenie vyberte vtedy, keď pre prehrávanie alebo zvuky v grafickom prostredí nie je potrebný žiadny zvuk. [Vždy] - výstupom je neustály nepočuteľný signál. Týmto sa udržiava prijímacie zvukové zariadenie aktívne pre akýkoľvek nový zvuk, avšak týmto sa tiež môže blokovať zvuk z ostatných aplikácií. [1- 10 minút] - rovnaké ako pri nastavení Vždy s tým rozdielom, že po určitej dobe zvukový výstup prejde do pozastaveného stavu [Vypnuté] - zvukový výstup prejde do pozastaveného stavu. Poznámka - ak zvukový výstup prejde do pozastaveného stavu, niektoré zvuky nemusia byť prehrané."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Prehrať zvuky užívateľského prostredia"
@@ -10420,6 +10636,26 @@ msgstr "Vždy"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Nikdy"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -10532,6 +10768,10 @@ msgstr "Zapnúť podporu pákových ovládačov a gamepadov"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Zakázať joystick, pokiaľ je toto zariadenie prítomné"
+
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Zapnúť systémové klávesy v režime celej obrazovky"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10985,6 +11225,10 @@ msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr "Maximum video speed adjust to match actual screen refresh rate."
 
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Vyberte kvalitu prevzorkovania v prípadoch, keď zvukový výstup musí byť na inej vzorkovacej frekvencii, ako je tá, ktorú používa zdroj. [Nízka] je rýchla a bude mať minimálny dopad na systémové prostriedky, ako je napr. využitie procesora, [Stredná] a [Vysoká] využívajú viac systémových prostriedkov."
+
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
 msgstr "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -11117,6 +11361,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Týmto sa zapnú funkcie osobného videorekordéra (PVR) v XBMC. Toto nastavenie vyžaduje, aby bol nainštalovaný aspoň jeden PVR doplnok."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
@@ -11217,6 +11465,10 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Show the last viewed channel if switching to live tv."
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Zobrazovať informácie o kvalite signálu v okne s informáciami o použitom kodeku (pokiaľ to podporuje doplnok a backend)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Momentálne nie sú k dispozícii žiadne informácie."
@@ -11236,6 +11488,22 @@ msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Priorita nahrávania. Vyššia hodnota znamená vyššiu prioritu. Predvolená hodnota je 50. Toto nastavenie nie je podporované všetkými doplnkami a backendami."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Odstrániť nahrávku po zadanom čase. Predvolená hodnota je 99 dní. Toto nastavenie nie je podporované všetkými doplnkami a backendami."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Spustiť nahrávanie pred skutočným časom začiatku programu. Predvolená hodnota je 2 minúty. Toto nastavenie nie je podporované všetkými doplnkami a backendami."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Ukončiť nahrávanie po skutočnom čase konca programu. Predvolená hodnota je 10 minút. Toto nastavenie nie je podporované všetkými doplnkami a backendami."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -12116,3 +12384,7 @@ msgstr "Dual audio output"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Boost centre channel when downmixing"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr "Zapne systémové klávesy ako napr. printscreen, alt-tab a klávesy pre ovládanie hlasitosti v režime celej obrazovky"

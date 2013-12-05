@@ -451,7 +451,7 @@ msgstr "播放列表"
 
 msgctxt "#137"
 msgid "Search"
-msgstr "查找"
+msgstr "搜索"
 
 msgctxt "#138"
 msgid "System Information"
@@ -631,7 +631,7 @@ msgstr "刷新"
 
 msgctxt "#185"
 msgid "Searching album"
-msgstr "查找专辑"
+msgstr "搜索专辑"
 
 msgctxt "#186"
 msgid "OK"
@@ -667,7 +667,7 @@ msgstr "扫描"
 
 msgctxt "#194"
 msgid "Searching..."
-msgstr "查找..."
+msgstr "搜索..."
 
 msgctxt "#195"
 msgid "No info found!"
@@ -995,7 +995,7 @@ msgstr "找到 %i 个项目"
 
 msgctxt "#283"
 msgid "Search results"
-msgstr "查找结果"
+msgstr "搜索结果"
 
 msgctxt "#284"
 msgid "No results found"
@@ -1107,7 +1107,7 @@ msgstr "数据库错误"
 
 msgctxt "#316"
 msgid "Searching songs..."
-msgstr "搜寻歌曲..."
+msgstr "搜索歌曲..."
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
@@ -1189,9 +1189,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "帧率转换"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "输出设置"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "固定"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "优化"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1217,9 +1225,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "年份"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "混缩时正常化音量"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD 兼容功放"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "启用直通输出"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1497,6 +1513,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "高"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "最佳匹配"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "保持音频设备激活"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "删除专辑信息"
@@ -1640,6 +1664,10 @@ msgstr "模式"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "切换视图"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "限制采样率（kHz）"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2925,6 +2953,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "程序插件"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "设置插件缩略图"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "插件设置"
@@ -3489,13 +3521,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "重置"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "基础"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "标准"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "高级"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "专家"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "插件浏览器"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "将以上设置重置为默认值"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3508,6 +3556,18 @@ msgstr "帮助"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "无可用帮助"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "将所有可见设置重置为默认值。"
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "无可用类别"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "改变设置级别以查看更多的类别和设置。"
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3845,6 +3905,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "已达密码重试次数限制。"
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "系统将立刻关机。"
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "项目已锁定"
@@ -4145,6 +4209,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "保存此分辨率？"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "是否保存此变更？"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "高品质倍线"
@@ -4188,6 +4256,10 @@ msgstr "VDPAU 高品质倍线等级"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "VDPAU 演播室级色彩转换"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "保持皮肤？"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4595,7 +4667,7 @@ msgstr "加入播放列表"
 
 msgctxt "#13348"
 msgid "Search IMDb..."
-msgstr "查询网络电影资料库..."
+msgstr "搜索网络电影资料库..."
 
 msgctxt "#13349"
 msgid "Scan for new content"
@@ -4909,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "允许硬件加速（MediaCodec）"
 
+msgctxt "#13440"
+msgid "Frame Multi Threaded Decoding (less reliable)"
+msgstr "框架多线程解码（低可靠）"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "影音同步方式"
@@ -4992,6 +5068,14 @@ msgstr "%.1f 秒"
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f 秒"
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d 分"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d 分"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -5677,6 +5761,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "编辑标题"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "管理..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "编辑排序标题"
@@ -6221,6 +6309,14 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "注意"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "服务"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "提供者"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "请切换到其它频道。"
@@ -6669,6 +6765,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "电子节目单"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "无可激活的 PVR 插件，检查你的设置或详细日志记录。"
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "录像已中止"
@@ -6703,11 +6803,15 @@ msgstr "总是使用后端的频道顺序"
 
 msgctxt "#19232"
 msgid "Clear search results"
-msgstr "清除搜索结果"
+msgstr "清除查询结果"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "定时器更新时显示提示信息"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "使用后端频道号（仅适用于一个已启用的 PVR 插件）"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6729,9 +6833,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "启动后台线程"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "无启用的 PVR 插件"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR 管理已启用，但无任何已启用"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "的 PVR 插件。使用 PVR 功能前"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6845,9 +6957,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* 所有录像"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "未找到 PVR 插件"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "你需要一个电视卡、后端软件，和"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "一个用于后端的插件才能使用 PVR。"
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9153,6 +9273,18 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s 到 %s"
 
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "首选外挂字幕"
+
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "首选外挂而非内嵌字幕"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "（外挂）"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "文件名"
@@ -9833,13 +9965,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "可更新项"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "依赖项未找到。请联系插件作者。"
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "插件结构不完整"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "下列已安装插件依赖 %s"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "此插件无法卸载"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "撤消"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "不兼容"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9945,6 +10093,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "锁定插件管理"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "此插件无法禁用"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "（当前使用）"
@@ -9952,6 +10104,10 @@ msgstr "（当前使用）"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "（列入黑名单）"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "插件不兼容或在库中被标记为已失效。"
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9980,6 +10136,54 @@ msgstr "无法载入皮肤"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "皮肤缺少部分文件"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "插件因缺少依赖项不兼容。"
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "搜索字幕时暂停"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "如果不保存到电影文件夹，字幕将被下载到自定义字幕文件夹"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "搜索字幕..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d 字幕找到"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "字幕未找到"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "下载字幕..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "下载字幕语言"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "设置搜索字幕所用语言。不是所有字幕服务都能支持所有语言。"
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "下载字幕失败"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "未安装字幕服务"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "字幕保存到电影文件夹"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10084,6 +10288,10 @@ msgstr "播放视频前询问是否先下载"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "片段"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "重启插件以启用"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10420,6 +10628,26 @@ msgstr "总是"
 msgctxt "#34123"
 msgid "Never"
 msgstr "从不"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -11117,6 +11345,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "启用 XBMC 的个人视频录像机（PVR）功能。需要至少安装有一个 PVR 插件。"
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "从PVR后端（如果支持）导入频道组。这将删除用户创建但后端中没有的组。"
@@ -11217,6 +11449,10 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "切换到直播电视时显示前次浏览的频道。"
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "在编码信息窗显示信号质量信息（如果插件和后端支持）。"
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "无可用信息。"
@@ -11236,6 +11472,22 @@ msgstr "无可用信息。"
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "按下录像按钮或创建新的手动计时器时的录像时长，默认为180分钟。"
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "录像的优先级，数值大表示优先级高，默认为50。并非所有插件和后端都支持。"
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "删除录像的期限，默认为99天。并非所有插件和后端都支持。"
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "开始录像的提前量，默认为2分钟。并非所有插件和后端都支持。"
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "结束录像的延迟量，默认为10分钟。并非所有插件和后端都支持。"
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11725,9 +11977,17 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36362"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded."
+msgstr "选择解码音频可用的最大声道/扬声器数。"
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "增大混缩为2声道的 AC3 音频流音量。"
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgstr "选择启用将双声道立体声音源上混为多声道以匹配扬声器数量。"
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11737,6 +11997,14 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "当你的功放能解码 DTS 音频流时选择此项。"
 
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "选择解码音频可用的最大声道/扬声器数。如果使用光纤/同轴数字输出则应设置为2.0"
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "选择以启用如杜比数字等编码音频播放的直通输出选项。"
+
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "当你的功放能解码 TrueHD 音频流时选择此项。"
@@ -11744,6 +12012,14 @@ msgstr "当你的功放能解码 TrueHD 音频流时选择此项。"
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "当你的功放能解码 DTS-HD 音频流时选择此项。"
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
+msgstr "选择用于播放已被解码的的音频如 mp3 的设备。"
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "选择用于播放未解码格式，也就是上面选择功放兼容的编码格式音频的播放设备。"
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -11945,6 +12221,10 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "启用 AMLogic 解码器的视频硬解码"
 
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr "当硬件解码不工作或禁用时使用 ffmpeg 的框架多线程解码。（没有默认的单线程模式可靠）"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "立体模式（当前）"
@@ -12032,6 +12312,10 @@ msgstr "选择替代模式..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "同影片格式"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "选择音频混缩方式，如从5.1到2.0：[启用] 混缩时保持原始音频源动态范围而音量会降低 [禁用] 保持原始音频源音量而动态范围被压缩。注 - 动态范围是音频源最静和最响声音之间的差距。"
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
