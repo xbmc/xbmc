@@ -1001,6 +1001,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         // create buffer pool
         (*it)->m_inputBuffers = new CActiveAEBufferPool((*it)->m_format);
         (*it)->m_inputBuffers->Create(MAX_CACHE_LEVEL*1000);
+        (*it)->m_streamSpace = (*it)->m_format.m_frameSize * (*it)->m_format.m_frames;
       }
       if (initSink && (*it)->m_resampleBuffers)
       {
