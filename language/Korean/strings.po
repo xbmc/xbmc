@@ -9939,7 +9939,7 @@ msgstr "추가기능의 구조가 바르지 않습니다"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed Add-on(s)"
-msgstr "%s 을(를) 사용하는 추가기능"
+msgstr "%s 을(를) 아래 추가기능이 사용합니다."
 
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
@@ -10531,7 +10531,7 @@ msgstr "MPEG-4 오디오 (FFmpeg M4A AAC)"
 
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
-msgstr "윈도우즈 미디어 오디오 2 (FFmpeg wmav2)"
+msgstr "윈도우 미디어 오디오 2 (FFmpeg wmav2)"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
@@ -11303,7 +11303,7 @@ msgstr "기본 TV 쇼 정보 소스를 선택합니다. 추가기능 관리자�
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
-msgstr "기본 뮤직비디오 스크래퍼"
+msgstr "기본 뮤직비디오 자료수집기"
 
 msgctxt "#36201"
 msgid "No info available yet."

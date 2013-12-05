@@ -5205,6 +5205,10 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (Umsnúinn)"
 
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Hætti við......"
+
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Sláðu inn nafn listamanns"
@@ -5485,6 +5489,10 @@ msgctxt "#19031"
 msgid "Next"
 msgstr "Næst"
 
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Tímalína"
+
 msgctxt "#19033"
 msgid "Information"
 msgstr "Upplýsingar"
@@ -5572,6 +5580,10 @@ msgstr "Dagur:"
 msgctxt "#19080"
 msgid "Begin:"
 msgstr "Byrja:"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "Gefðu upptökunni nafn"
 
 msgctxt "#19098"
 msgid "Warning"

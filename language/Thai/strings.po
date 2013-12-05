@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "แปลง เฟรมเรต"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "ปรับตั้งค่า ส่งสัญญาณออก"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "คงที่"

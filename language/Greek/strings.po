@@ -1189,9 +1189,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Μετατροπή δειγματοληψίας"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Διαμόρφωση εξόδου"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Σταθερή"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Βελτιστοποιημένο"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1216,6 +1224,10 @@ msgstr "Ηθοποιοί"
 msgctxt "#345"
 msgid "Year"
 msgstr "Έτος"
+
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Εξισορρόπηση των επιπέδων κατά το χειρισμό downmix"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1496,6 +1508,10 @@ msgstr "Ελαχ."
 msgctxt "#419"
 msgid "High"
 msgstr "Μεγ."
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Διατήρηση της συσκευής ήχου ενεργής"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -3532,6 +3548,10 @@ msgstr "Θα επαναφέρει όλες τις ορατές ρυθμίσει�
 msgctxt "#10046"
 msgid "No categories available"
 msgstr "Δεν υπάρχουν διαθέσιμες κατηγορίες"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Δοκιμάστε να αλλάξετε το επίπεδο ρυθμίσεων για να δείτε επιπλέον κατηγορίες και ρυθμίσεις."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -6771,7 +6791,7 @@ msgstr "Εμφάνιση ειδοποίησης κατά τις ενημερώσ
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
-msgstr "Ξεκινά ο διαχειριστής PVR"
+msgstr "Ξεκινά η διαχείριση PVR"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
@@ -6789,9 +6809,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Εκκίνηση νημάτων παρασκηνίου"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Δεν έχει ενεργοποιηθεί κανένα Πρόσθετο PVR"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr "Ο διαχειριστής PVR ενεργοποιήθηκε χωρίς κανένα"
+msgstr "Η διαχείρηση PVR ενεργοποιήθηκε χωρίς κανένα"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "ενεργό Πρόσθετο PVR. Ενεργοποιήστε τουλάχιστον ένα"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -9917,6 +9945,10 @@ msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Το πρόσθετο δεν έχει τη σωστή δομή"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "Το %s χρησιμοποιείται από τα ακόλουθα εγκατεστημένα Πρόσθετα"
+
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
 msgstr "Αυτό το Πρόσθετο δεν μπορεί να απεγκατασταθεί"
@@ -10031,7 +10063,7 @@ msgstr "Επανεκκινήσεις πρόσθετου"
 
 msgctxt "#24090"
 msgid "Lock Add-on manager"
-msgstr "Κλείδωμα διαχειριστή πρόσθετων"
+msgstr "Κλείδωμα διαχείρισης Πρόσθετων"
 
 msgctxt "#24091"
 msgid "This Add-on cannot be disabled"
@@ -10044,6 +10076,10 @@ msgstr "(τρέχoν)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(ανεπιθύμητο)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Το Πρόσθετο είναι μη συμβατό ή έχει σημανθεί ως κατεστραμμένο στο αποθετήριο."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10073,9 +10109,17 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Λείπουν κάποια αρχεία από το κέλυφος"
 
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Το Πρόσθετο είναι μη συμβατό επειδή δεν πληρούνται οι εξαρτήσεις."
+
 msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Παύση κατά την αναζήτηση υποτίτλων"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "Αν δεν αποθηκευθούν στο φάκελο ταινιών, οι υπότιτλοι θα αποθηκευθούν σε προσαρμοσμένο φάκελο υποτίτλων"
 
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
@@ -10096,6 +10140,10 @@ msgstr "Γίνεται λήψη υποτίτλων ..."
 msgctxt "#24111"
 msgid "Languages to download subtitles for"
 msgstr "Γλώσσες για τις οποίες να γίνει λήψη υποτίτλων"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Ορισμός γλωσσών για τις οποίες θα γίνεται αναζήτηση υποτίτλων. Δε θα χρησιμοποιηθούν από όλες τις υπηρεσίες υποτίτλων όλες τις γλώσσες."
 
 msgctxt "#24113"
 msgid "Failed to download subtitle"
@@ -10536,6 +10584,10 @@ msgstr "7.0"
 msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
+
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Επιλογή της συμπεριφοράς όταν δεν απαιτείται ήχος ούτε για αναπαραγωγή, ούτε για το Περιβάλλον Εργασίας. [Συνέχεια] - εκπομπή συνεχόμενου αθόρυβου σήματος που διατηρεί τη συσκευή ήχου ενεργή για νέους ήχους, αλλά ενδέχεται να μπλοκάρει τον ήχο από άλλες εφαρμογές. [1- 10 Λεπτά] - παρόμοιο με το 'Συνέχεια', αλλά μετά από συγκεκριμένο χρονικό διάστημα η έξοδος ήχου μεταβαίνει σε κατάσταση αναστολής [Απενεργοποιημένο] - η έξοδος ήχου μεταβαίνει σε κατάσταση αναστολής. Προσοχή - οι ήχοι μπορεί να χαθούν αν η έξοδος ήχου μεταβεί σε κατάσταση αναστολής."
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
@@ -11393,6 +11445,10 @@ msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Διάρκεια της εγγραφής κατά την πίεση του πλήκτρου εγγραφής, ή κατά τη δημιουργία νέου χρονοδιακόπτη. Η προεπιλογή είναι 180 λεπτά."
 
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Προτεραιότητα της εγγραφής. Μεγαλύτερος αριθμός δείχνει μεγαλύτερη προτεραιότητα. Η προεπιλογή είναι 50. Δεν υποστηρίζεται από όλα τα Πρόσθετα και τα backend."
+
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Εμφάνιση ειδοποίησης κατά την προσθήκη, ολοκλήρωση ή αφαίρεση χρονοδιακοπτών από το backend."
@@ -11893,6 +11949,10 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Επιλογή αυτής της ρύθμισης αν ο δέκτης σας υποστηρίζει αποκωδικοποίηση ροών DTS."
 
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Επιλέξτε το μέγιστο αριθμό ηχητικών καναλιών/ηχείων διαθέσιμων για την ηχητική αποκωδικοποίηση. Εάν χρησιμοποιούνται οπτικές/coax έξοδοι αυτό θα πρέπει να οριστεί ως 2.0"
+
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "Επιλογή αυτής της ρύθμισης αν ο δέκτης σας υποστηρίζει αποκωδικοποίηση ροών TrueHD."
@@ -11900,6 +11960,14 @@ msgstr "Επιλογή αυτής της ρύθμισης αν ο δέκτης �
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Επιλογή αυτής της ρύθμισης αν ο δέκτης σας υποστηρίζει αποκωδικοποίηση ροών DTS-HD."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
+msgstr "Επιλέξτε τη συσκευή που θα χρησιμοποιηθεί για αναπαραγωγή ήχου που έχει αποκωδικοποιηθεί όπως mp3"
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Επιλογή της συσκευής για αναπαραγωγή κωδικοποιημένων μορφών, όπως όλα εκείνες παρακάτω στις επιλογές 'δέκτης με υποστήριξη'."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."

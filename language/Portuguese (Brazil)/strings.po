@@ -12007,7 +12007,7 @@ msgstr "Ampliar os fluxos AC3 que foram misturados para 2 canais"
 
 msgctxt "#36364"
 msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
-msgstr "Selecione para ativar upmixing de fonte de 2 canais em esteréo para o número de canais de áudio especificados na configuração de alto-falantes."
+msgstr "Selecione para ativar upmixing de fonte de 2 canais em estéreo para o número de canais de áudio especificados na configuração de alto-falantes."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."

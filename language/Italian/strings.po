@@ -1217,6 +1217,10 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Anno"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normalizza livelli nel downmix"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "Ricevitore compatibile DTS-HD"
@@ -3489,9 +3493,21 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Reset"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Base"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standard"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Avanzato"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Esperto"
 
 msgctxt "#10040"
 msgid "Add-on browser"
@@ -4172,6 +4188,10 @@ msgstr "Livello VDPAU HQ Upscaling"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "Livello di conversione colore VDPAU Studio"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Tenere questa Skin?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4964,6 +4984,14 @@ msgstr "%.1f Secondo"
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Secondi"
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "Minuto %d"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minuti"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -9801,6 +9829,10 @@ msgctxt "#24048"
 msgid "Rollback"
 msgstr "Regredire versione"
 
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Incompatibile"
+
 msgctxt "#24050"
 msgid "Available Add-ons"
 msgstr "Add-on disponibili"
@@ -9835,7 +9867,7 @@ msgstr "Aggiornamento per l'Addon-on disponibile!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Abilita Add-ons"
+msgstr "Add-ons Abilitati"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -9843,7 +9875,7 @@ msgstr "Auto aggiornamento"
 
 msgctxt "#24064"
 msgid "Add-on enabled"
-msgstr "Abilita Add-on"
+msgstr "Add-on Ablitato"
 
 msgctxt "#24065"
 msgid "Add-on updated"
@@ -9905,6 +9937,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Blocca il manager degli Add-on"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Questo add-on non può essere disabilitato"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(currente)"
@@ -9940,6 +9976,34 @@ msgstr "Impossibile caricare la skin"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Mancano alcuni file della skin"
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Metti in pausa durante la ricerca dei sottotitoli"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Ricerca sottotitoli in corso..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "Trovati %d sottotitoli"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Sottotitoli non trovati"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Salvataggio sottotitoli in corso..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Lingue per cui scaricare i sottotitoli"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Salva i sottotitoli nella cartella del film"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10380,6 +10444,26 @@ msgstr "Sempre"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Mai"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -11168,6 +11252,10 @@ msgstr "Mostra una notifica quando dei timer vengono aggiunti, finiscono o vengo
 msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
+
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Esegui il \"comando di risveglio\" quando XBMC esce o va in ibernazione. Il timestamp della prossima operazione programmata viene passato come parametro"
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."

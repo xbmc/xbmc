@@ -1753,6 +1753,10 @@ msgctxt "#33068"
 msgid "Background"
 msgstr "Fons"
 
+msgctxt "#33081"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Šis fails ir ielādēts, izvēlieties daļu, kuru vēlaties lai atskaņotu no."
+
 msgctxt "#34000"
 msgid "Lame"
 msgstr "Lame"

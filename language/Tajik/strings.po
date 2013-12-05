@@ -11209,17 +11209,37 @@ msgctxt "#36164"
 msgid "Select when the refresh rate adjustments should take place."
 msgstr "ҳамоҳанг кардани суръати навсозии дисплей вобаста аз суръати навсозии кадрҳои видеоӣ."
 
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgstr "Таваққуфи кӯтоҳ ҳангоми тағйирдиҳии сурӯати навсозӣ. Барои танзими суръати навсозӣ бо видео ба таври худкор, ин имконро фаъол кунед. Ин имкон иҷозат медиҳад, ки видео тавонад ҳангоми намоиш ҳамвор карда шавад, зеро ки мӯҳтавои видео мумкин дар суръатҳои навсозии гуногун сабт карда шавад ва барои намоиши ҳамвор бояд бо суръати навсозии дисплей баробар шавад."
+
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "Ҳамоҳанг кардани видео бо суръати навсозии монитор."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Аудио бояд ҳамоҳанг карда шавад. Шумо метавонед ин амалро тавассути тағйири басомади садо, гузариши/нусхабардории қуттиҳо ё танзими соат иҷро намоед."
 
 msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr "Сатҳи аксари суръати видео барои ҳамоҳанг кардани суръати навсозии дисплей."
 
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Интихоби сифати басомади садо барои барориши аудиоие, ки басомади садои дигаргунро талаб мекунад. [Паст] - тез аст, ва ба манбаҳои система, монанди CPU, таъсири ҷузъӣ мерасонад, [Миёна] ва [Баланд] манбаҳои системаро комилан истифода мебаранд."
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Ба плеери видеоӣ иҷозат диҳед, ки тавонад таносубро то сатҳи муайян истифода набарад, то ки экран бо видео бештар пур карда шавад."
+
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Интихоби танзими андозаи видео бо таносуби 4:3 барои намоиш дар дисплейҳои васеъэкран."
+
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
+msgstr "Студияи табдилдиҳии сатҳи рангҳои VDPAU ба барномаҳои монанди XBMC иҷозат медиҳад, ки тавонанд ба табдилдиҳии рангҳои фазо таъсир расонанд."
 
 msgctxt "#36173"
 msgid "No info available yet."
@@ -11237,13 +11257,33 @@ msgctxt "#36176"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "Амалҳои имконпазир: Интихоби файл, пахши файл (ба сурати пешфарз), идомаи намоиш ва намоиши иттилоот. \"Интихоби файл\" - объектеро интихоб мекунад, масалан директорияро дар ҳолати файлҳо мекушояд. \"Идомаи намоиш\" - намоиши видеоро аз нуқтаи таваққуф, ҳатто баъд аз бозоғозии система, идома медиҳад."
+
 msgctxt "#36178"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "Вақте ки файл ба китобхна илова мешавад, ба ҷои намоиши номи файл номи филм намоиш дода мешавад."
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Барориши эскизҳо ва иттилоот, монанди кодекҳо ва таносуб, барои намоиш дар ҳолати китобхона."
+
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
+
+msgctxt "#36182"
+msgid "Enables direct playback of videos that are in folders, without having to open those folders first, as well as displaying multi-part video files as single items in non-library views."
+msgstr "Фаъол кардани пахши бевосита барои видеоҳо дар ҷузвдонҳо (бе кушодани ҷузвдонҳо) ва намоиш додани якчанд файли видеоӣ ҳамчун файли видеоии ягона дар ҳолати ғайри китобхонагӣ."
+
+msgctxt "#36183"
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+msgstr "Барои намоиш надодани \"Унвон\", \"Жанр\", \"Сол\" ва ғайра дар ҳолати Китобхона истифода баред. Ҳангоми интихоби категория рӯйхати филмҳо/сериалҳо дарҳол намоиш дода мешавад."
 
 msgctxt "#36184"
 msgid "No info available yet."
@@ -11320,6 +11360,18 @@ msgstr "Ягон маълумот ҳоло дастрас нест."
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
+
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Фаъол кардани хусусиятҳои Сабткунандаи видеоии шахсӣ (PVR) дар системаи XBMC. Шумо бояд ақаллан ак барномаи иловагии PVR-ро насб кунед."
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "Ворид кардани гурӯҳҳои шабакавӣ аз сервери PVR (агар дастгирӣ кунад). Гурӯҳҳои бо корбар эҷодшударо нест мекунад, агар онҳоро дар сервер ёфт накунад."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr "Мураттаб кардани шабакаҳо аз рӯи рақамгузории шабакаҳо дар сервер, вале истифода кардани рақамгузории махсуси XBMC барои шабакаҳо."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -11461,9 +11513,21 @@ msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Иҷро кардани \"фармони бедоршавии\" мазкур ҳангоми хориҷ шудан аз XBMC ё гузариш ба ҳолати хоб. Вақти сабти замонбандии навбатӣ ҳамчун параметр истифода мешавад."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
+msgstr "Фармон иҷро карда намешавад, вақте ки сабт дар ҳудуди ин вақт оғоз мешавад. Қимати пешфарз — 15 дақиқа."
+
 msgctxt "#36243"
 msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
 msgstr "Ин фармонест, ки иҷро мешавад. Фармони пешфарз — \"/usr/bin/setwakeup.sh\"."
+
+msgctxt "#36244"
+msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
+msgstr "Вақти боқимонда аз вақти оғози сабти ба нақша гирифташудаи навбатӣ. Қимати пешфарз — 15 дақиқа."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11477,9 +11541,17 @@ msgctxt "#36247"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "Ҳангоми кушодани шабакаҳои қулфшуда рамзи PIN дархост мешавад. Шабакаҳо метавонанд дар варақаи умумии муҳаррири шабакаҳо ҳамчун қулфшуда қайд карда шаванд. Шабакаҳои қулфшуда танҳо баъд аз ворид кардани рамзи PIN пахш ё сабт карда мешаванд ва иттилооти EPG барои ин шабакаҳо пинҳон карда мешаванд."
+
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Барои кушодани шабакаҳои қулфшуда бо волидон рамзи қулфи наверо ворид кунед."
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
+msgstr "Агар дар давоми ин фосилаи вақт ягон кушоиши дастрасӣ ба мӯҳтавои қулфшуда аз кӯдакон дархост нашавад, ҳангоми дархости дигар барои кушоиши дастрасӣ вориди пин-код лозим мешавад. Қимати пешфарз — 300 сония."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -11496,6 +11568,10 @@ msgstr "Ягон маълумот ҳоло дастрас нест."
 msgctxt "#36254"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
+
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr "Намоиш додани номҳои ҳунармандони маҷмӯи клипҳо дар рӯйхати умумии китобхона."
 
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
@@ -11521,6 +11597,10 @@ msgctxt "#36261"
 msgid "Path where taken screenshots will be stored."
 msgstr "Ҷузвдон барои нигоҳ доштани суратҳои экран."
 
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Содир кардани пойгоҳи иттилоотии китобхонаи мусиқӣ ба файлҳои XML. Ин амал ба қадри зарурӣ (интихобӣ) файлҳои XML-и ҷории шуморо рӯиҳамнависӣ мекунад."
+
 msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "Ворид кардани файли XML ба пойгоҳи иттилоотии китобхонаи мусиқӣ"
@@ -11528,6 +11608,18 @@ msgstr "Ворид кардани файли XML ба пойгоҳи иттил�
 msgctxt "#36264"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
+
+msgctxt "#36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr "Системаи XBMC файли навбатиро дар ҷузвдони ҷорӣ ба таври худкор пахш мекунад. Барои мисол, дар ҳолати намоиши файлҳо, баъд аз пахш кардани файл, системаи XBMC дар ҳамон ҷузвдоне, ки файлро пахш кард, файли навбатиро ба таври худкор пахш мекунад."
+
+msgctxt "#36266"
+msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
+msgstr "Вақте ки сурудҳо ба рӯйхати пахш илова мешаванд, онҳо дарҳол пахш накарда ба тартиби пахш дароварда мешаванд."
+
+msgctxt "#36267"
+msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "Системаи XBMC иттилооти рамзгузоришудаи \"ReplayGain\"-ро (масалан, рамзгузоришуда тавассути барномаи MP3Gain) аз файлҳои аудиоӣ намоиш медиҳад ва сатҳи садоро ба таври мувофиқ ҳамвор мекунад."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11541,6 +11633,10 @@ msgctxt "#36270"
 msgid "Reduce the volume of the file if clipping is likely to occur."
 msgstr "Паст кардани баландии садо дар ҳолати имкон будани буриши сатҳ."
 
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr "Гузариши ҳамвор байни роҳчаҳои мусиқӣ. Шумо метавонед давомнокии гузаришро аз 1 то 15 сония танзим кунед."
+
 msgctxt "#36272"
 msgid "Allow crassfading to occur when both tracks are from the same album."
 msgstr "Иҷозати гузариши ҳамвор байни роҳчаҳо, ҳатто барои роҳчаҳо аз албоми агона."
@@ -11548,6 +11644,18 @@ msgstr "Иҷозати гузариши ҳамвор байни роҳчаҳо, 
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
 msgstr "Интихоби таҷассуме, ки ҳангоми шунидани мусиқӣ намоиш дода мешавад."
+
+msgctxt "#36274"
+msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
+msgstr "Намоиш додани иттилооти барчаспҳо аз файлҳои мусиқӣ. Барои сканкунии директорияҳои ҳаҷмӣ, махсусан тавассути шабака, ин метавонад вақти зиёдро гирад."
+
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
+msgstr "Идора кардани тарзи намоиши номҳои сурудҳо дар интерфейси корбарӣ. Барои намоиши дуруст барчаспҳои ID3 бояд фаъол карда шаванд."
+
+msgctxt "#36276"
+msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
+msgstr "Барои намоиш додани иттилоот аз тарафи рости интерфейси корбарӣ истифода мешавад. Умуман, ин вақти давомнокии роҳчаро намоиш медиҳад."
 
 msgctxt "#36277"
 msgid "No info available yet."
@@ -11564,6 +11672,10 @@ msgstr "Ягон маълумот ҳоло дастрас нест."
 msgctxt "#36280"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
+
+msgctxt "#36281"
+msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "Системаи XBMC эскизҳоро дар ҷузвдонҳои шабакавӣ ё дискҳои оптикӣ ҷустуҷӯ мекунад. Ин метавонад ҳангоми ҷустуҷӯ дар ҷузвдонҳои шабакавӣ вақти зиёдро гирад."
 
 msgctxt "#36282"
 msgid "No info available yet."
@@ -11593,6 +11705,10 @@ msgctxt "#36288"
 msgid "Select which quality you want to rip your files."
 msgstr "Интихоби сифати файлҳо барои нусхабардории диск."
 
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Интихоби суръати бит барои истифода бо рамзгузори аудиои муайяншуда ҳангоми фишурдасозии аудио."
+
 msgctxt "#36290"
 msgid "For FLAC define compression level, default 5"
 msgstr "Барои сатҳи фушурдан бо рамзгузори FLAC, қимати пешфарз 5 мебошад"
@@ -11604,6 +11720,10 @@ msgstr "Барориши худкор баъд аз анҷоми нусхаба�
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
+
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr "Ҳангоми пахш кардани ягон файли мусиқӣ, системаи XBMC файлҳоро бо пасвандҳои .cdg ҷустуҷӯ мекунад ва тасвирҳои мусиқиро намоиш медиҳад."
 
 msgctxt "#36294"
 msgid "No info available yet."
@@ -11665,6 +11785,10 @@ msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "Давр занондани суратҳо ба таври худкор мувофиқи иттилоот дар барчаспи EXIF."
 
+msgctxt "#36309"
+msgid "Show video media in picture file lists, since most digital cameras nowadays have video recording capabilities."
+msgstr "Намоиш додани файлҳои видеоӣ дар рӯйхати суратҳо, зеро ки имрӯз бисёр фотокамераҳо метавонанд видеоро сабт кунанд."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
@@ -11721,13 +11845,25 @@ msgctxt "#36323"
 msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
 msgstr "Фаъол кардани сервери UPnP. Имкон медиҳад, ки шумо тавонед ҷараёни мултимедиавиро ба ҳамаи муштариёни UPnP пахш кунед."
 
+msgctxt "#36324"
+msgid "When a manual or automatical library update occurs, notify UPnP clients."
+msgstr "Фиристодани огоҳӣ ба муштариёни UPnP ҳангоми ба вуҷуд омадани навсозиҳои дастӣ ё худкор барои китобхона."
+
 msgctxt "#36325"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36326"
+msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "Фаъол кардани муштарии UPnP. Ба шумо имконият пайдо мешавад, ки тавонед ҷараёнҳои мултимедиавиро аз ягон сервери UPnP пахш кунед. Дар ин ҳолат сервер пахшро идора мекунад."
+
 msgctxt "#36327"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
+
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr "Иҷозати идоракунии XBMC аз тарафи корбарони дурдаст тавассути интерфейси веби дарунсохт."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -11748,6 +11884,10 @@ msgstr "Интихоби интерфейсҳои веби насбшуда та
 msgctxt "#36333"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
+
+msgctxt "#36334"
+msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Иҷозати идоракунии XBMC аз тарафи барномаҳои ин компютер тавассути интерфейси веб ё протоколи интерфейси JSON-RPC."
 
 msgctxt "#36335"
 msgid "No info available yet."
@@ -11809,6 +11949,10 @@ msgctxt "#36349"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36350"
+msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
+msgstr "Фиристодани фармони \"Wake-On-Lan\" ба серверҳо ба таври худкор, пеш аз пайдо кардани дастрасӣ ба файлҳои муштарак ё хидматҳо."
+
 msgctxt "#36351"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
@@ -11821,9 +11965,21 @@ msgctxt "#36353"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36354"
+msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimising other applications. Uses a bit more resources and playback may be slightly less smooth."
+msgstr "Барои системаҳо бо якчанд экран муфид аст, то ки системаи XBMC тавонад барномаҳои дигарро ба ҳадди ақал ба таври худкор созад. Дар ин ҳолат сарбории система меафзояд ва сифати намоиш каме паст мешавад."
+
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgstr "Дар конфигуратсия бо якчанд экран, ҳамаи экранҳоро ба ғайр аз экран бо XBMC хомӯш кунед."
+
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
 msgstr "Тоза кардани қатъҳои амудии кадрҳо."
+
+msgctxt "#36357"
+msgid "Calibrate the User Interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Санҷидани интерфейси корбар тавассути танзими таносуби канорҳои экран. Агар тасвир дар дисплейи шумо хеле хурд ё хеле калон бошад, ин абзорро истифода баред."
 
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
@@ -11837,9 +11993,21 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Интихоб кунед, ки чӣ тавр хусусиятҳои барориши аудио кор мекунанд: [Fixed] - хусусиятҳои барориш ҳамеша басомади садои муайян ва танзимоти динамикҳоро истифода мекунад; [Best Match] - хусусиятҳои барориш ҳамеша хуусиятҳои манбаро истифода мекунанд; [Optimized] - хусусиятҳои барориш дар оғози пахш танзим мешаванд ва тағйир дода намешавнд, агар хусусиятҳои манба тағйир дода нашаванд."
+
+msgctxt "#36362"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded."
+msgstr "Интихоби меъёри аксари шабакаҳо/динамикҳои аудиоии дастрас барои аудиои рамзшуда."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Афзудани баландии садои роҳчаҳои AC3 ҳангоми омезиши шабака то сатҳи стерео (2 шабака)."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgstr "Фаъол кардани омезиши 2 манбаи шабакаи стереоии муайяншуда мувофиқи танзимоти динамикҳо."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11849,6 +12017,14 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Ин имконотро интихоб кунед, агар ресивери шумо тавонад ҷараёнҳои DTS-ро рамзкушоӣ кунад."
 
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Интихоби меъёри аксари шабакаҳо/динамикҳои аудиоии дастрас барои аудиои рамзшуда. Агар каналҳои барориши рақамии оптикӣ/коаксиро истифода баред, меъёри 2.0 -ро интихоб намоед."
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Интихоб кунед, то ки тавонед имконоти аудиоиро барои пахши аудиои рамздор монанди Dolby Digital истифода баред."
+
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "Ин имконотро интихоб кунед, агар ресивери шумо тавонад ҷараёнҳои TrueHD-ро рамзкушоӣ кунад."
@@ -11857,6 +12033,18 @@ msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Ин имконотро интихоб кунед, агар ресивери шумо тавонад ҷараёнҳои DTS-HD-ро рамзкушоӣ кунад."
 
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
+msgstr "Интихоби дастгоҳ барои пахш кардани аудиои рамзкушодашуда, масалан mp3"
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Дастгоҳеро интихоб кунед, то ки тавонед форматҳои рамздорро аз рӯйхати зерин дар менюи имконоти \"мувофиқсозии ресивер\" пахш кунед."
+
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Танзимоти коркарди садоҳои интерфейс, монанди садоҳои идоракунӣ ва огоҳиҳои муҳим."
+
 msgctxt "#36374"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
@@ -11864,6 +12052,14 @@ msgstr "Ягон маълумот ҳоло дастрас нест."
 msgctxt "#36375"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
+
+msgctxt "#36376"
+msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
+msgstr "Агар фаъол кунед, тугмаҳои тирчадори клавиатура интихобро дар клавиатураи виртуалӣ интиқол медиҳанд. Агар ғайрифаъол кунед, онҳо курсорро аз матни шумо интиқол медиҳанд."
+
+msgctxt "#36377"
+msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
+msgstr "Истифода бурдани муш ё экрани ламсӣ барои идоракунии системаи XBMC. Тавзеҳ: агар хомӯш кунед, метавонед ҳангоми истифода накардани клавиатура ё пулт идоракунии системаи XBMC-ро ум кунед."
 
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
@@ -11900,6 +12096,10 @@ msgstr "Пароли сервери проксиро ворид кунед."
 msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "Агар паҳноии канали шабака маҳдуд бошад, XBMC дар ҳудуди муайяншуда иҷро карда шавад."
+
+msgctxt "#36387"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer."
+msgstr "Хомӯш кардани дисплей ҳангоми бефаъолиятӣ. Файданок аст, агар телевизор ҳангоми пайдо накардани сигнал тавонад хомӯш карда шавад. Дар ин ҳолат лозим нест, ки шумо бояд компютери худро таваққуф кунед ё комилан хомӯш кунед."
 
 msgctxt "#36388"
 msgid "No info available yet."
@@ -12033,9 +12233,17 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality"
+msgstr "Баъди хомӯшкунии омезиши VDPAU манбаҳои система кам истифода мешаванд, вале сифати тасвир камтар паст мешавад"
+
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Фаъол кардани рамзгузори сахтафзории видеоӣ тавассути рамзгузори AMLogic."
+
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr "Истифодаи рамзгузори серриштаи кадрҳои ffmpeg вақте ки рамзгузори сахтафзорӣ кор намекунад ё ғайрифаъол аст. (қобилияти итминонаш нисбат ба ҳолати пешфарзи якриштаӣ паст аст)"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
@@ -12089,6 +12297,10 @@ msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Истифодаи ҳолати дӯстдошта"
 
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
+msgstr "Қимати аксари басомади садо барои spdif ё танзимоти барориши муқаррар"
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "Ҳолати дӯстдошта"
@@ -12125,6 +12337,10 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Монанди филм"
 
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Интихоб кунед, ки чӣ тавр аудио омезиш меёбад, масалан аз 5.1 то 2.0: [Фаъолшуда] диапазони динамикии манбаи аудиои аслиро ҳангоми омезиш истифода мекунад, вале баландии садо паст мешавад [Ғайрифаъол] сатҳи баландии садои манбаи аудиоии аслиро истифода мекунад, вале диапазони динамиқӣ фишурдашуда аст. Тавзеҳ - Диапазони динамикӣ ин тафовут байни садои пасттарин ва баландтарин дар манбаи аудиоӣ мебошад."
+
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "Ҳолати видеои стереоскопӣ"
@@ -12156,6 +12372,10 @@ msgstr "Иҷозати идоракунии баландии садо аз му�
 msgctxt "#36542"
 msgid "Output to both analogue (headphones) and HDMI"
 msgstr "Барориши яклухт аз динамикҳои аналогӣ (гӯшмонакҳо) ва HDMI"
+
+msgctxt "#36543"
+msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr "Баландкунии садои талаффуз дар диалог нисбат ба садоҳои пасзаминаӣ ҳангоми омезиши аудиои сершабакавӣ."
 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."

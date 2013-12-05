@@ -459,7 +459,7 @@ msgstr "Sistem Bilgisi"
 
 msgctxt "#139"
 msgid "Temperatures:"
-msgstr "Isı:"
+msgstr "Sıcaklıklar:"
 
 msgctxt "#140"
 msgid "CPU:"
@@ -1139,19 +1139,19 @@ msgstr "Tarzlar temizlenirken hata oluştu"
 
 msgctxt "#324"
 msgid "Cleaning paths..."
-msgstr "Yollar siliniyor..."
+msgstr "Yollar temizleniyor..."
 
 msgctxt "#325"
 msgid "Error cleaning paths"
-msgstr "Yollar silinirken hata oluştu"
+msgstr "Yollar temizlenirken hata oluştu"
 
 msgctxt "#326"
 msgid "Cleaning albums..."
-msgstr "Albümler siliniyor..."
+msgstr "Albümler temizleniyor..."
 
 msgctxt "#327"
 msgid "Error cleaning albums"
-msgstr "Albümler silinirken hata oluştu"
+msgstr "Albümler temizlenirken hata oluştu"
 
 msgctxt "#328"
 msgid "Writing changes..."
@@ -1496,6 +1496,10 @@ msgstr "Düşük"
 msgctxt "#419"
 msgid "High"
 msgstr "Yüksek"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Ses aygıtını etkin tut"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -4767,7 +4771,7 @@ msgstr "Sıralarken tanımlık ekleri yoksay (\"the\" vb.)"
 
 msgctxt "#13400"
 msgid "Crossfade between songs on the same album"
-msgstr "Aynı albümdeki parçalar arasında çapraz geçiş yap"
+msgstr "Aynı albümdeki şarkılar arasında çapraz geçiş yap"
 
 msgctxt "#13401"
 msgid "Browse for %s"
@@ -5631,7 +5635,7 @@ msgstr "Parti modu durduruldu."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
-msgstr "Kitaplıkta eşleşen şarkı yok"
+msgstr "Kitaplıkta eşleşen şarkı yok."
 
 msgctxt "#16032"
 msgid "Could not initialise database."
@@ -9873,9 +9877,17 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Kullanılabilir Güncellemeler"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Bağımlılıklar karşılanmadı. Lütfen eklenti yazarı ile iletişime geçin."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Eklenti doğru bir yapıya sahip değil"
+
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s aşağıdaki yüklü eklenti(ler) tarafından kullanılıyor"
 
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
@@ -9884,6 +9896,10 @@ msgstr "Bu eklenti kaldırılamaz"
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Geri alma"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Uyumsuz"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -10001,6 +10017,10 @@ msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(kara listede)"
 
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Eklenti uyumsuz veya depoda bozuk olarak işaretlenmiş."
+
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
 msgstr "Sisteminizde devre dışı bırakmak ister misiniz?"
@@ -10029,6 +10049,10 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Bazı dış görünüm dosyaları eksik"
 
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Eklenti karşılanamayan bağımlılıklar olduğu için uyumsuz."
+
 msgctxt "#24108"
 msgid "%d subtitles found"
 msgstr "%d altyazı bulundu"
@@ -10040,6 +10064,14 @@ msgstr "Altyazı bulunamadı"
 msgctxt "#24110"
 msgid "Downloading subtitles ..."
 msgstr "Altyazılar indiriliyor..."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Altyazı indirilemedi"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Hiçbir altyazı hizmeti yüklü değil"
 
 msgctxt "#24115"
 msgid "Save subtitles to movie folder"
@@ -10519,7 +10551,7 @@ msgstr "Çalınacak önceki öğeyi bulamıyor"
 
 msgctxt "#34300"
 msgid "Failed to start Zeroconf"
-msgstr "Zeroconf başlatma hatası"
+msgstr "Zeroconf başlatılamadı"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
@@ -10620,6 +10652,10 @@ msgstr "Joystick ve gamepad desteğini etkinleştir"
 msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Bu aygıt mevcut iken oyun çubuğunu kullanma"
+
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Tam ekranda sistem tuşlarını etkinleştir"
 
 msgctxt "#35500"
 msgid "Location"
@@ -11311,7 +11347,7 @@ msgstr "Müzik dinlerken hangi görsel öğenin gösterileceğini seç."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
-msgstr "Şarkı dosyalarının etiket bilgilerini oku. Büyük klasörler için okuma süresi yavaşlar, özellikle ağ üzerinden."
+msgstr "Şarkı dosyalarının etiket bilgilerini oku. Bu büyük klasörler için okuma süresini yavaşlatır, özellikle ağ üzerinden."
 
 msgctxt "#36277"
 msgid "No info available yet."
@@ -11928,3 +11964,7 @@ msgstr "Eğer alıcınız E-AC3 çözme desteğine sahipse bu seçeneği seçin.
 msgctxt "#37017"
 msgid "Dual audio output"
 msgstr "Çift ses çıkışı"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr "Tam ekranda printscreen, alt-tab ve ses ayarı tuşları gibi sistem tuşlarını etkinleştirir"

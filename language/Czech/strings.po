@@ -3185,6 +3185,10 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Bouřky"
 
+msgctxt "#1419"
+msgid "Shallow"
+msgstr "mělký"
+
 msgctxt "#1420"
 msgid "Moderate"
 msgstr "Střední"
@@ -3205,6 +3209,10 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "Zamračeno"
 
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Pelety"
+
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Krupobití"
@@ -3212,6 +3220,18 @@ msgstr "Krupobití"
 msgctxt "#1427"
 msgid "Smoke"
 msgstr "Dým"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Sopečný"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Popel"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "Rozšířený"
 
 msgctxt "#1431"
 msgid "Dust"
@@ -3225,9 +3245,17 @@ msgctxt "#1433"
 msgid "Spray"
 msgstr "Sprška"
 
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "Víry"
+
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Písečná bouře"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Foukání"
 
 msgctxt "#1438"
 msgid "Small"

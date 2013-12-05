@@ -3473,13 +3473,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Nullstill"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Grunnleggende"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standard"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Avansert"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Ekspert"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Tilleggsutforsker"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Tilbakestill ovenstående innstillinger til standardoppsett"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3492,6 +3508,14 @@ msgstr "Hjelp"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Ingen hjelp tilgjengelig"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Tilbakestiller alle synlige innstillinger til standardoppsett."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Ingen kategorier tilgjengelig"
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3829,6 +3853,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Grense for antall forsøk er nådd."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Systemet skrur seg av."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Låst oppføring"
@@ -4129,6 +4157,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Lagre oppløsning?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Vil du beholde denne endringen?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Høy kvalitet oppskalering"
@@ -4172,6 +4204,10 @@ msgstr "VDPAU HQ oppskaleringsnivå"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "VDPAU studionivå fargekonvertering"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Behold skall?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4964,6 +5000,10 @@ msgstr "%.1f sekund"
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f sekunder"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d minutter"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -6625,6 +6665,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Ingen PVR-tillegg kunne aktiveres. Kontroller innstillingene eller loggen for mer informasjon."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Opptak stoppet"
@@ -6661,6 +6705,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Vis notifikasjon ved tidsuroppdateringer"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Bruk kanalnumre fra backend (fungerer kun med 1 aktivert PVR add-on)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "Starter PVR-behandler"
@@ -6680,6 +6728,10 @@ msgstr "Henter opptak fra klienter"
 msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Starter bakgrunnstråder"
+
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Ingen PVR-tillegg aktivert"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
@@ -6796,6 +6848,10 @@ msgstr "Ikke vis «tilkobling brutt» advarsler"
 msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Alle opptak"
+
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Ingen PVR-tillegg ble funnet"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -9101,6 +9157,14 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s til %s"
 
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "Foretrekk eksterne undertekster fremfor interne"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Ekstern)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Filnavn"
@@ -9785,6 +9849,10 @@ msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Tillegg har ikke den korrekte strukturen"
 
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Dette tillegget kan ikke fjernes"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Tilbakestill"
@@ -9893,6 +9961,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Lås tilleggsbehandler"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Dette tillegget kan ikke deaktiveres"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(nåværende)"
@@ -9928,6 +10000,30 @@ msgstr "Kan ikke hente skall"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Skallet mangler noen filer"
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Sett på pause ved søk etter undertekster"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Søker etter undertekster ..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d undertekster funnet"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Ingen undertekster funnet"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Laster ned undertekster ..."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Kunne ikke laste ned undertekst"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -11053,6 +11149,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Aktiver PVR-funksjonen (Personal Video Recorder) i XBMC. Dette krever at du har minst ett PVR-tillegg installert."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Hent kanalgrupper fra PVR-kulisseklienten (hvis støttet). Dette vil slette brukeropprettede kanalgrupper som ikke eksisterer på kulisseklienten."
@@ -11153,6 +11253,10 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Vis den sist sette kanalen hvis det byttes til Live-TV."
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Vis informasjon om signalkvaliteten i kodekinformasjonsvinduet (hvis støttet av tillegget og tjenerdelen)"
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
@@ -11172,6 +11276,22 @@ msgstr "Ingen informasjon tilgjengelig enda."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Varigheten på opptakene når opptaksknappen trykkes, eller når et nytt, manuellt tidsur opprettes. Standarden er 180 minutter."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Opptaksprioritet. Et høyere tall betyr en høyere prioritet. Standarden er 50. Ikke støttet av alle tillegg og tjenerdeler."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Slett opptak etter denne perioden. Standarden er 99 dager. Ikke støttet av alle tillegg og tjenerdeler."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Start opptaket før det fastsatte tidspunktet. Standarden er 2 minutter. Ikke støttet av alle tillegg og tjenerdeler."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Avslutt opptak etter det fastsatte tidspunktet.. Standarden er 10 minutter. Ikke støttet av alle tillegg eller tjenerdeler."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11661,6 +11781,10 @@ msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Velg dette alternativet hvis receiveren din er i stand til å utkode DTS-HD-strømmer."
 
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
+msgstr "Velg enheten du vil bruke til å spille av lyd som har blitt dekodet, slik som MP3"
+
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "Kofigurer hvordan grensesnittlyder blir håndtert, slik som menynavigasjon og viktige varsler."
@@ -11964,3 +12088,7 @@ msgstr "Velg dette alternativet hvis receiveren din er i stand til å utkode E-A
 msgctxt "#37017"
 msgid "Dual audio output"
 msgstr "Dobbel lydutgang"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr "Aktiverer systemtaster som PrintScreen, Alt-Tab og volumtaster i fullskjermmodus"

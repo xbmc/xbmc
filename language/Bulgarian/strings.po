@@ -1547,7 +1547,7 @@ msgstr "Премахване на филм от библиотеката"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
-msgstr "Наистина ли желаете премахването на:\n\"%s\"?"
+msgstr "Наистина ли желаете премахването на: \"%s\"?"
 
 msgctxt "#434"
 msgid "From %s at %i %s"
@@ -9365,6 +9365,10 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Налични актуализации"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Добавката не отговаря на изискванията. Свържете се с автора ѝ."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Добавката има неправилна структура"
@@ -9779,7 +9783,7 @@ msgstr "Аларма"
 
 msgctxt "#33050"
 msgid "Alerts"
-msgstr "Аларми"
+msgstr "Тревоги"
 
 msgctxt "#33051"
 msgid "Choose Your"
@@ -10011,7 +10015,7 @@ msgstr "7.1"
 
 msgctxt "#34111"
 msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
-msgstr "Изберете поведение когато не се изисква възпроизвеждане на звук от файл, нито от интефейса. [Винаги] - непрекъснато извеждане на сигнал, който не можете да чуете. Така приемника няма да се зиключи и ще бъде в готовност веднага да възпроизвежда при необходимост, но може да доведе до блокиране на звука от други приложения. [1- 10 минути] - действа като [Винаги], но след избрания период от време прекустановява извеждането на сигнал. [Изключено] - аудио извода се привежда в суспендирано суспендирано състояни. БЕЛЕЖКА: звуковите карти може да be missed if audio enters suspended state."
+msgstr "Изберете поведение когато не се възпроизвежда звук. [Винаги] - непрекъснато извеждане на сигнал, който не можете да чуете. Така приемника няма да се изключи и ще бъде в готовност веднага да възпроизвежда при необходимост, но може да доведе до блокиране на звука от други приложения. [1- 10 минути] - действа като [Винаги], но след избрания период от време преустановява извеждането на сигнал. [Изключено] - аудио извода се привежда в суспендирано суспендирано състояни. БЕЛЕЖКА: при последните два режима е възможно да пропуснете част от възпроизведения материал - докато приемника се приведе в работен режим от суспендирано/изключено състояние!"
 
 msgctxt "#34120"
 msgid "Play GUI sounds"

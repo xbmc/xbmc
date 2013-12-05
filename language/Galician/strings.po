@@ -1497,6 +1497,10 @@ msgctxt "#419"
 msgid "High"
 msgstr "Alto"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Mellor Coincidencia"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Eliminar información do álbum"
@@ -1600,6 +1604,10 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Medios de autoarrinque"
+
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "Receptor compatíbel con Dolby Digital Plus (E-AC3)"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -2603,7 +2611,7 @@ msgstr "Erro %i: compartido non dispoñible"
 
 msgctxt "#772"
 msgid "Audio output"
-msgstr "Saída de audiocó"
+msgstr "Saída de audio"
 
 msgctxt "#773"
 msgid "Seeking"
@@ -3481,9 +3489,21 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Restabelecer"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Básico"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Normal"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Avanzado"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Experto"
 
 msgctxt "#10040"
 msgid "Add-on browser"
@@ -4137,6 +4157,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Gardar resolución?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Quere manter estes cambios?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Escalado de alta calidade"
@@ -4180,6 +4204,10 @@ msgstr "Escalado de alta calidade VDPAU"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "Conversión de cor VDPAU nivel de estudio"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Manter a pel?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4977,6 +5005,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Segundos"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Minuto"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minutos"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Apple remote"
@@ -5653,6 +5689,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Editar título"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Xestionar..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Editar título para ordenación"
@@ -6196,6 +6236,18 @@ msgstr "Introducir o nome da gravación"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Atención"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Servizo"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Mux"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Provedor"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -9941,6 +9993,50 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Faltan algúns ficheiros da pel"
 
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pausar ao buscar subtítulos"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "Se non se gardan no cartafol do filme, os subtítulos descargáranse ao cartafol personalizado"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Buscando subtítulos..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d subtítulos atopados"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Non se atoparon subtítulos"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Descargando subtítulos..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Descargar subtítulos para estes idiomas"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Estabelecer idiomas para procurar subtítulos. Non todos os servizos de subtítulos usarán todos os idiomas."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Produciuse un erro na descarga do subtítulo"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Servizos de subtítulos non instalados"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Gardar o subtítulo no cartafol do filme"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notificacións"
@@ -10044,6 +10140,10 @@ msgstr "Preguntar pola descarga antes de reproducir o vídeo"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Clips"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Reiniciar o engadido para activalo"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10381,6 +10481,26 @@ msgctxt "#34123"
 msgid "Never"
 msgstr "Xamáis"
 
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Non se puido atopar o seguinte elemento a reproducir"
@@ -10417,6 +10537,10 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Fallo ó iniciar os filtros/escaladores de vídeo, voltando ó escalado bilinear"
 
+msgctxt "#34402"
+msgid "Failed to initialise audio device"
+msgstr "Produciuse un erro ao inicializar o dispositivo de son"
+
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Comprar as súas configuracións de audio"
@@ -10448,6 +10572,10 @@ msgstr "Periféricos"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Dispositivo HID xenérico"
+
+msgctxt "#35002"
+msgid "Generic network adaptor"
+msgstr "Adaptador de rede xenérico"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10485,6 +10613,10 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Desactivar o joystick cando o dispositivo está presente"
 
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Activar as teclas de sistema en pantalla completa"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Localización"
@@ -10504,6 +10636,10 @@ msgstr "Vendedor"
 msgctxt "#35504"
 msgid "Product ID"
 msgstr "ID de Produto"
+
+msgctxt "#36000"
+msgid "Pulse-Eight CEC adaptor"
+msgstr "Adaptador Pulse-Eight CEC"
 
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
@@ -10525,6 +10661,10 @@ msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Activar o troco de control"
 
+msgctxt "#36006"
+msgid "Could not open the adaptor"
+msgstr "Non se pode abrir o adaptador"
+
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
 msgstr "Dispositivos a activar no arrinque de XBMC"
@@ -10545,6 +10685,10 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Non se puido detectar o porto CEC. Estabrézao manualmente."
 
+msgctxt "#36012"
+msgid "Could not initialise the CEC adaptor. Please check your settings."
+msgstr "Non se pode inicializar o adaptador CEC, por favor verifique a configuración."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "Número de porto HDMI"
@@ -10552,6 +10696,10 @@ msgstr "Número de porto HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Conectado"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
+msgstr "Non se pode inicializar o adaptador CEC: non se atopou libCEC no sistema."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10605,6 +10753,14 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Perdeuse a conexión"
 
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adaptor"
+msgstr "Este usuario non ten permisos para abrir o adaptador CEC"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adaptor"
+msgstr "O porto esta ocupado, só un programa pode acceder ao adaptador CEC"
+
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Pausar a reprodución cando se cambie a outra fonte"
@@ -10636,6 +10792,10 @@ msgstr " Versión da interface libCEC non soportada. %x é menor que a versión 
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Cartafol do elemento"
+
+msgctxt "#36042"
+msgid "Use limited colour range (16-235)"
+msgstr "Usar un rango limitado de cores (16-235)"
 
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
@@ -11129,6 +11289,10 @@ msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Duración da gravación ao premer o botón de gravación ou ao crear un novo temporizador manual. Predefinido a 180 minutos."
 
+msgctxt "#36239"
+msgid "Display a notification when timers are added, finished or removed by the backend."
+msgstr "Amosar unha notificación cando o motor engada, remate ou elimine temporizadores."
+
 msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Aínda non hai info. dispoñíbel."
@@ -11284,6 +11448,10 @@ msgstr "Escoller a fonte a usar no karaoke."
 msgctxt "#36296"
 msgid "Select the size of the font used during karoake."
 msgstr "Escoller a tamaño da fonte a usar no karaoke."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karoake."
+msgstr "Escoller a cor da fonte a usar no karaoke."
 
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
