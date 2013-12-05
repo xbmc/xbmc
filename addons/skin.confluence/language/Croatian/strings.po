@@ -438,39 +438,39 @@ msgstr "Temeljen na Arialu "
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]PODESITE POSTAVKE IZGLEDA[/B][CR][CR]Promijenite presvlaku · Postavite jezik i regiju · Promijenite mogućnosti popisivanja datoteka[CR]Postavite čuvara zaslona"
+msgstr "[B]PRILAGODITE POSTAVKE IZGLEDA[/B][CR][CR]Promijenite presvlaku · Postavite jezik i regiju · Promijenite mogućnosti popisivanja datoteka[CR]Postavite čuvara zaslona"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]PODESITE VIDEO POSTAVKE[/B][CR][CR]Upravljajte svojom videotekom · Postavite mogućnosti reprodukcije videa[CR]Promijenite mogućnosti popisivanja video sadržaja · Postavite slova podnaslova"
+msgstr "[B]PRILAGODITE VIDEO POSTAVKE[/B][CR][CR]Upravljajte svojom videotekom · Postavite mogućnosti reprodukcije videa[CR]Promijenite mogućnosti popisivanja video sadržaja · Postavite slova podnaslova"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]PODESITE POSTAVKE GLAZBE[/B][CR][CR]Upravljajte svojm fonotekom · Postavite mogućnosti reprodukcije glazbe[CR]Promjenite mogućnosti popisivanja glazbenoga sadržaja · Postavite slanje pjesama · Postavite mogućnosti karaoka"
+msgstr "[B]PRILAGODITE POSTAVKE GLAZBE[/B][CR][CR]Upravljajte svojm fonotekom · Postavite mogućnosti reprodukcije glazbe[CR]Promjenite mogućnosti popisivanja glazbenoga sadržaja · Postavite slanje pjesama · Postavite mogućnosti karaoka"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]PODESITE POSTAVKE SLIKA[/B][CR][CR]Postavljanje mogućnosti popsivanja slika · Postavke slikovne prezentacije"
+msgstr "[B]PRILAGODITE POSTAVKE SLIKA[/B][CR][CR]Postavljanje mogućnosti popsivanja slika · Postavke slikovne prezentacije"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]PODESITE POSTAVKE VREMENSKE PROGNOZE[/B][CR][CR]Postavite tri grada za prikupljanje informacije o vremenskoj prognozi"
+msgstr "[B]PRILAGODITE POSTAVKE VREMENSKE PROGNOZE[/B][CR][CR]Postavite tri grada za prikupljanje informacije o vremenskoj prognozi"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]PODESITE POSTAVKE SUSTAVA[/B][CR][CR]Podesite i kalibrirajte zaslon · Podesite izlaz zvuka · Postavite daljinsko upravljanje[CR]Postavite mogućnosti uštede energije  · Omogućite zapise otklanjanja grešaka · Postavite glavno zaključavanje"
+msgstr "[B]PRILAGODITE POSTAVKE SUSTAVA[/B][CR][CR]Prilagodite i kalibrirajte zaslon · Prilagodite izlaz zvuka · Postavite daljinsko upravljanje[CR]Postavite mogućnosti uštede energije  · Omogućite zapise otklanjanja grešaka · Postavite glavno zaključavanje"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]PODESITE DODATKE[/B][CR][CR]Upravljajte svojim instaliranim dodacima · Pregledavajte i instalirajte dodatake iz xbmc.org[CR]Mijenjajte postavke dodataka"
+msgstr "[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte svojim instaliranim dodacima · Pregledavajte i instalirajte dodatake iz xbmc.org[CR]Mijenjajte postavke dodataka"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]PODESITE TV POSTAVKE[/B][CR][CR]Promjenite informacije cijelog zaslona · Upravljajte postavkama podataka elektronskog programskog vodiča (EPG)"
+msgstr "[B]PRILAGODITE TV POSTAVKE[/B][CR][CR]Promjenite informacije cijelog zaslona · Upravljajte postavkama podataka elektronskog programskog vodiča (EPG)"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]PODESITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje XBMC-om putem UPnP-a i HTTP-a · Podesite dijeljenje datoteka[CR]Omogućite Zeroconf · Podesite AirPlay"
+msgstr "[B]PRILAGODITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje XBMC-om putem UPnP-a i HTTP-a · Prilagodite dijeljenje datoteka[CR]Omogućite Zeroconf · Prilagodite AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."

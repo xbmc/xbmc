@@ -152,6 +152,10 @@ msgctxt "#31059"
 msgid "Current playlist"
 msgstr "Pašreizējais atskaņošanas saraksts"
 
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Šis fails ir ielādēts, izvēlieties daļu, kuru vēlaties lai atskaņotu no."
+
 msgctxt "#31061"
 msgid "Current Selected"
 msgstr "Pašlaik izvēlētais"
@@ -175,6 +179,10 @@ msgstr "Atskaņot filmu reklāmas logā [COLOR=grey3](Video informācijas dialog
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Dažādi uzstādijumi"
+
+msgctxt "#31107"
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Paslēpt Karodziņu lasīt video faila nosaukumus [COLOR = grey3] (Blu-ray, HD-DVD) [/ color]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
@@ -204,9 +212,21 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Rādit nesen pievienotos albumus"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Mājas lapa programmām Apakšizvēlne"
+
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr "Slēpt fonā Fanart"
+
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Rādīt fonā video \"Tagad atskaņo\""
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Atskaņot TV dziesmas tēmas video bibliotēkā (TvTunes )"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -219,6 +239,14 @@ msgstr "Lirika"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Dziesmu vārdu papildinājums"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Mūzikas OSD"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "Video OSD"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -271,6 +299,18 @@ msgstr "Atmiņa izmantota:"
 msgctxt "#31310"
 msgid "Track Number"
 msgstr "Celiņa numurs"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Fanart attēls [CR] [CR] Nav pieejams [CR] [CR] Klikšķiniet pogu, lai uzstādītu"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "Pašreizējais Scraper"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "Izvēlieties Scraper"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
@@ -363,6 +403,10 @@ msgstr "Ieslēgts"
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Ādiņas noklusētie iestatījumi"
+
+msgctxt "#31391"
+msgid "Skin default with no Caps"
+msgstr "Āda noklusējuma bez Caps"
 
 msgctxt "#31392"
 msgid "Arial based"
