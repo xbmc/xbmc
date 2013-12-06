@@ -455,7 +455,7 @@ inline CArchive& CArchive::streamin(void* dataPtr, const size_t size)
   size_t read = m_pFile->Read(dataPtr, size);
   if (read < size)
   {
-    CLog::Log(LOGERROR, "%s: can't stream out: requested %lu bytes, was read %lu bytes", (unsigned long)size, (unsigned long)read);
+    CLog::Log(LOGERROR, "%s: can't stream out: requested %lu bytes, was read %lu bytes", __FUNCTION__, (unsigned long)size, (unsigned long)read);
     memset(dataPtr, 0, size);
   }
 
