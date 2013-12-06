@@ -1067,53 +1067,49 @@
 				<top>60</top>
 				<control type="label">
 					<description>Channel header label</description>
-					<left>0</left>
+					<left>20</left>
 					<top>20</top>
 					<width>220</width>
 					<height>20</height>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<align>center</align>
 					<aligny>center</aligny>
 					<label>19029</label>
 				</control>
 				<control type="label">
 					<description>Title header label</description>
-					<left>220</left>
+					<left>240</left>
 					<top>20</top>
 					<width>300</width>
 					<height>20</height>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<align>center</align>
 					<aligny>center</aligny>
 					<label>369</label>
 				</control>
 				<control type="label">
 					<description>Schedule Time header label</description>
-					<left>580</left>
+					<left>600</left>
 					<top>20</top>
 					<width>300</width>
 					<height>20</height>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<align>center</align>
 					<aligny>center</aligny>
 					<label>31501</label>
 				</control>
 				<control type="label">
 					<description>Status header label</description>
-					<left>940</left>
+					<left>980</left>
 					<top>20</top>
 					<width>150</width>
 					<height>20</height>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<align>center</align>
 					<aligny>center</aligny>
 					<label>126</label>
 				</control>
@@ -1145,73 +1141,68 @@
 							<height>41</height>
 							<texture border="5">MenuItemNF.png</texture>
 						</control>
-						<control type="image">
-							<left>220</left>
-							<top>0</top>
-							<width>300</width>
-							<height>40</height>
-							<colordiffuse>33FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
+						<control type="group">
+							<visible>IsEmpty(ListItem.Date)</visible>
+							<control type="label">
+								<left>50</left>
+								<top>0</top>
+								<width>150</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>
 						</control>
-						<control type="image">
-							<left>940</left>
-							<top>0</top>
-							<width>155</width>
-							<height>40</height>
-							<colordiffuse>33FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>8</top>
-							<width>50</width>
-							<height>26</height>
+						<control type="group">
 							<visible>!IsEmpty(ListItem.Date)</visible>
-							<texture border="1">$INFO[ListItem.Icon]</texture>
-						</control>
-						<control type="label">
-							<left>50</left>
-							<top>0</top>
-							<width>150</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.ChannelName</info>
-						</control>
-						<control type="label">
-							<left>370</left>
-							<top>0</top>
-							<width>290</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>center</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
-						</control>
-						<control type="label">
-							<left>730</left>
-							<top>0</top>
-							<width>400</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>center</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Date</info>
-						</control>
-						<control type="label">
-							<left>1018</left>
-							<top>0</top>
-							<width>170</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>center</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Comment</info>
+							<control type="image">
+								<left>0</left>
+								<top>8</top>
+								<width>50</width>
+								<height>26</height>
+								<texture border="1">$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<left>50</left>
+								<top>0</top>
+								<width>150</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.ChannelName</info>
+							</control>
+							<control type="label">
+								<left>240</left>
+								<top>0</top>
+								<width>290</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>
+							<control type="label">
+								<left>600</left>
+								<top>0</top>
+								<width>400</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Date</info>
+							</control>
+							<control type="label">
+								<left>980</left>
+								<top>0</top>
+								<width>170</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Comment</info>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout height="40">
@@ -1220,95 +1211,79 @@
 							<top>0</top>
 							<width>1100</width>
 							<height>41</height>
-							<texture border="5">MenuItemNF.png</texture>
-						</control>
-						<control type="image">
-							<left>220</left>
-							<top>0</top>
-							<width>300</width>
-							<height>40</height>
-							<colordiffuse>33FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
-							<visible>!Control.HasFocus(14)</visible>
-						</control>
-						<control type="image">
-							<left>940</left>
-							<top>0</top>
-							<width>155</width>
-							<height>40</height>
-							<colordiffuse>33FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
-							<visible>!Control.HasFocus(14)</visible>
-						</control>
-						<control type="image">
-							<left>220</left>
-							<top>0</top>
-							<width>300</width>
-							<height>40</height>
-							<colordiffuse>88FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
-							<visible>Control.HasFocus(14)</visible>
-						</control>
-						<control type="image">
-							<left>940</left>
-							<top>0</top>
-							<width>155</width>
-							<height>40</height>
-							<colordiffuse>88FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
-							<visible>Control.HasFocus(14)</visible>
+							<texture border="5">MenuItemFO.png</texture>
 						</control>
 						<control type="image">
 							<left>0</left>
-							<top>8</top>
-							<width>50</width>
-							<height>26</height>
+							<top>0</top>
+							<width>1100</width>
+							<height>41</height>
+							<colordiffuse>33FFFFFF</colordiffuse>
+							<texture border="5">MenuItemFO.png</texture>
+							<visible>Control.HasFocus(14)</visible>
+						</control>
+						<control type="group">
+							<visible>IsEmpty(ListItem.Date)</visible>
+							<control type="label">
+								<left>50</left>
+								<top>0</top>
+								<width>150</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>
+						</control>
+						<control type="group">
 							<visible>!IsEmpty(ListItem.Date)</visible>
-							<texture border="1">$INFO[ListItem.Icon]</texture>
-						</control>
-						<control type="label">
-							<left>50</left>
-							<top>0</top>
-							<width>150</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.ChannelName</info>
-						</control>
-						<control type="label">
-							<left>370</left>
-							<top>0</top>
-							<width>290</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>center</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
-						</control>
-						<control type="label">
-							<left>730</left>
-							<top>0</top>
-							<width>400</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>center</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Date</info>
-						</control>
-						<control type="label">
-							<left>1018</left>
-							<top>0</top>
-							<width>150</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>center</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Comment</info>
+							<control type="image">
+								<left>0</left>
+								<top>8</top>
+								<width>50</width>
+								<height>26</height>
+								<texture border="1">$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<left>50</left>
+								<top>0</top>
+								<width>150</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.ChannelName</info>
+							</control>
+							<control type="label">
+								<left>240</left>
+								<top>0</top>
+								<width>290</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>
+							<control type="label">
+								<left>600</left>
+								<top>0</top>
+								<width>400</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Date</info>
+							</control>
+							<control type="label">
+								<left>980</left>
+								<top>0</top>
+								<width>150</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Comment</info>
+							</control>
 						</control>
 					</focusedlayout>
 				</control>
@@ -1381,51 +1356,47 @@
 					<description>Channel label</description>
 					<left>0</left>
 					<top>20</top>
-					<width>250</width>
+					<width>220</width>
 					<height>20</height>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<align>center</align>
 					<aligny>center</aligny>
 					<label>19148</label>
 				</control>
 				<control type="label">
-					<description>Title</description>
-					<left>290</left>
-					<top>20</top>
-					<width>350</width>
-					<height>20</height>
-					<font>font13_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<align>left</align>
-					<aligny>center</aligny>
-					<label>369</label>
-				</control>
-				<control type="label">
-					<description>Time label</description>
-					<left>620</left>
+					<description>Title header label</description>
+					<left>240</left>
 					<top>20</top>
 					<width>300</width>
 					<height>20</height>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<align>right</align>
+					<aligny>center</aligny>
+					<label>369</label>
+				</control>
+				<control type="label">
+					<description>Time label</description>
+					<left>700</left>
+					<top>20</top>
+					<width>300</width>
+					<height>20</height>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<aligny>center</aligny>
 					<label>21820</label>
 				</control>
 				<control type="label">
 					<description>Status header label</description>
-					<left>960</left>
+					<left>980</left>
 					<top>20</top>
 					<width>140</width>
 					<height>20</height>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<align>center</align>
 					<aligny>center</aligny>
 					<label>126</label>
 				</control>
@@ -1457,106 +1428,102 @@
 							<height>41</height>
 							<texture border="5">MenuItemNF.png</texture>
 						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>250</width>
-							<height>40</height>
-							<colordiffuse>33FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
+						<control type="group">
+							<visible>IsEmpty(ListItem.Date)</visible>
+							<control type="label">
+								<left>50</left>
+								<top>0</top>
+								<width>650</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>	
 						</control>
-						<control type="image">
-							<left>960</left>
-							<top>0</top>
-							<width>140</width>
-							<height>40</height>
-							<colordiffuse>33FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
-						</control>
-						<control type="image">
-							<left>10</left>
-							<top>5</top>
-							<width>30</width>
-							<height>30</height>
-							<info>ListItem.Icon</info>
-						</control>
-						<control type="label">
-							<left>50</left>
-							<top>0</top>
-							<width>190</width>
-							<height>35</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.ChannelName</info>
-						</control>
-						<control type="label">
-							<left>260</left>
-							<top>0</top>
-							<width>650</width>
-							<height>35</height>
-							<font>font13</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
-						</control>
-						<control type="label">
-							<left>950</left>
-							<top>0</top>
-							<width>500</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>right</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Date</info>
-						</control>
-						<control type="image">
-							<left>970</left>
-							<top>10</top>
-							<width>30</width>
-							<height>20</height>
-							<texture>PVR-IsRecording.png</texture>
-							<visible>ListItem.IsRecording</visible>
-						</control>
-						<control type="label">
-							<left>1005</left>
-							<top>0</top>
-							<width>80</width>
-							<height>40</height>
-							<font>font10</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<label>19043</label>
-							<visible>ListItem.IsRecording</visible>
-						</control>
-						<control type="image">
-							<left>970</left>
-							<top>10</top>
-							<width>20</width>
-							<height>20</height>
-							<texture>PVR-HasTimer.png</texture>
-							<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
-						</control>
-						<control type="label">
-							<left>1000</left>
-							<top>0</top>
-							<width>80</width>
-							<height>40</height>
-							<font>font10</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<label>31510</label>
-							<visible>ListItem.HasTimer</visible>
+						<control type="group">
+							<visible>!IsEmpty(ListItem.Date)</visible>
+							<control type="image">
+								<left>0</left>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture border="1">$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<left>50</left>
+								<top>0</top>
+								<width>190</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.ChannelName</info>
+							</control>
+							<control type="label">
+								<left>240</left>
+								<top>0</top>
+								<width>450</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>
+							<control type="label">
+								<left>700</left>
+								<top>0</top>
+								<width>270</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Date</info>
+							</control>
+							<control type="image">
+								<left>980</left>
+								<top>10</top>
+								<width>30</width>
+								<height>20</height>
+								<texture>PVR-IsRecording.png</texture>
+								<visible>ListItem.IsRecording</visible>
+							</control>
+							<control type="label">
+								<left>1015</left>
+								<top>0</top>
+								<width>80</width>
+								<height>40</height>
+								<font>font10</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<label>19043</label>
+								<visible>ListItem.IsRecording</visible>
+							</control>
+							<control type="image">
+								<left>980</left>
+								<top>10</top>
+								<width>20</width>
+								<height>20</height>
+								<texture>PVR-HasTimer.png</texture>
+								<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
+							</control>
+							<control type="label">
+								<left>1010</left>
+								<top>0</top>
+								<width>80</width>
+								<height>40</height>
+								<font>font10</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<label>31510</label>
+								<visible>ListItem.HasTimer</visible>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout height="40">
@@ -1570,123 +1537,107 @@
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
-							<width>250</width>
-							<height>40</height>
-							<colordiffuse>33FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
-							<visible>!Control.HasFocus(17)</visible>
-						</control>
-						<control type="image">
-							<left>960</left>
-							<top>0</top>
-							<width>140</width>
-							<height>40</height>
-							<colordiffuse>33FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
-							<visible>!Control.HasFocus(17)</visible>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>250</width>
-							<height>40</height>
-							<colordiffuse>88FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
+							<width>1100</width>
+							<height>41</height>
+							<texture border="5">MenuItemFO.png</texture>
 							<visible>Control.HasFocus(17)</visible>
 						</control>
-						<control type="image">
-							<left>960</left>
-							<top>0</top>
-							<width>140</width>
-							<height>40</height>
-							<colordiffuse>88FFFFFF</colordiffuse>
-							<texture border="5">StackFO.png</texture>
-							<visible>Control.HasFocus(17)</visible>
+						<control type="group">
+							<visible>IsEmpty(ListItem.Date)</visible>
+							<control type="label">
+								<left>50</left>
+								<top>0</top>
+								<width>650</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>	
 						</control>
-						<control type="image">
-							<left>10</left>
-							<top>5</top>
-							<width>30</width>
-							<height>30</height>
-							<info>ListItem.Icon</info>
-						</control>
-						<control type="label">
-							<left>50</left>
-							<top>0</top>
-							<width>190</width>
-							<height>35</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.ChannelName</info>
-						</control>
-						<control type="label">
-							<left>260</left>
-							<top>0</top>
-							<width>650</width>
-							<height>35</height>
-							<font>font13</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
-						</control>
-						<control type="label">
-							<left>950</left>
-							<top>0</top>
-							<width>500</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>right</align>
-							<aligny>center</aligny>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Date</info>
-						</control>
-						<control type="image">
-							<left>970</left>
-							<top>10</top>
-							<width>30</width>
-							<height>20</height>
-							<texture>PVR-IsRecording.png</texture>
-							<visible>ListItem.IsRecording</visible>
-						</control>
-						<control type="label">
-							<left>1005</left>
-							<top>0</top>
-							<width>80</width>
-							<height>40</height>
-							<font>font10</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<label>19043</label>
-							<visible>ListItem.IsRecording</visible>
-						</control>
-						<control type="image">
-							<left>970</left>
-							<top>10</top>
-							<width>20</width>
-							<height>20</height>
-							<texture>PVR-HasTimer.png</texture>
-							<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
-						</control>
-						<control type="label">
-							<left>1000</left>
-							<top>0</top>
-							<width>80</width>
-							<height>40</height>
-							<font>font10</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<label>31510</label>
-							<visible>ListItem.HasTimer</visible>
+						<control type="group">
+							<visible>!IsEmpty(ListItem.Date)</visible>
+							<control type="image">
+								<left>0</left>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture border="1">$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<left>50</left>
+								<top>0</top>
+								<width>190</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.ChannelName</info>
+							</control>
+							<control type="label">
+								<left>240</left>
+								<top>0</top>
+								<width>450</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>
+							<control type="label">
+								<left>700</left>
+								<top>0</top>
+								<width>270</width>
+								<height>40</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Date</info>
+							</control>
+							<control type="image">
+								<left>980</left>
+								<top>10</top>
+								<width>30</width>
+								<height>20</height>
+								<texture>PVR-IsRecording.png</texture>
+								<visible>ListItem.IsRecording</visible>
+							</control>
+							<control type="label">
+								<left>1015</left>
+								<top>0</top>
+								<width>80</width>
+								<height>40</height>
+								<font>font10</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<label>19043</label>
+								<visible>ListItem.IsRecording</visible>
+							</control>
+							<control type="image">
+								<left>980</left>
+								<top>10</top>
+								<width>20</width>
+								<height>20</height>
+								<texture>PVR-HasTimer.png</texture>
+								<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
+							</control>
+							<control type="label">
+								<left>1010</left>
+								<top>0</top>
+								<width>80</width>
+								<height>40</height>
+								<font>font10</font>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<label>31510</label>
+								<visible>ListItem.HasTimer</visible>
+							</control>
 						</control>
 					</focusedlayout>
 				</control>
