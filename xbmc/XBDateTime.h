@@ -21,7 +21,8 @@
  */
 
 #include "utils/StdString.h"
-#include "utils/Archive.h"
+#include "utils/IArchivable.h"
+#include "system.h"
 
 /*! \brief TIME_FORMAT enum/bitmask used for formatting time strings
  Note the use of bitmasking, e.g.

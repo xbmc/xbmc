@@ -22,6 +22,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Archive.h"
 #include "Util.h"
 #include "playlists/PlayListFactory.h"
 #include "utils/Crc32.h"

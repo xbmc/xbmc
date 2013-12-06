@@ -20,7 +20,7 @@
  */
 
 #include "utils/StdString.h"
-#include "Archive.h"
+#include "utils/IArchivable.h"
 #include "ISerializable.h"
 #include <vector>
 

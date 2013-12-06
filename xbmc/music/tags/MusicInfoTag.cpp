@@ -24,6 +24,7 @@
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
+#include "utils/Archive.h"
 
 using namespace MUSIC_INFO;
 

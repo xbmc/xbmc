@@ -23,6 +23,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Archive.h"
 #ifdef TARGET_POSIX
 #include "XTimeUtils.h"
 #include "XFileUtils.h"

@@ -24,6 +24,7 @@
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/Archive.h"
 
 using namespace std;
 

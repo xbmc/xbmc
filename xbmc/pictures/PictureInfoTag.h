@@ -21,7 +21,7 @@
 
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
-#include "utils/Archive.h"
+#include "utils/IArchivable.h"
 #include "DllLibExif.h"
 #include "XBDateTime.h"
 

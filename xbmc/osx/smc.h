@@ -19,6 +19,7 @@
 
 #ifndef __SMC_H__
 #define __SMC_H__
+#include <libkern/OSTypes.h>
 #endif
 
 #define SMC_VERSION               "0.01"

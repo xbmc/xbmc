@@ -22,6 +22,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "Temperature.h"
 #include "utils/StringUtils.h"
+#include "utils/Archive.h"
 
 CTemperature::CTemperature()
 {
