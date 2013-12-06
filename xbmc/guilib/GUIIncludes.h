@@ -24,6 +24,7 @@
 
 #include <map>
 #include <set>
+#include "interfaces/info/InfoBool.h"
 
 // forward definitions
 class TiXmlElement;
@@ -47,11 +48,11 @@ public:
    "bar" from the include file "foo".
    \param node an XML Element - all child elements are traversed.
    */
-  void ResolveIncludes(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions = NULL);
+  void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
   const INFO::CSkinVariableString* CreateSkinVariable(const CStdString& name, int context);
 
 private:
-  void ResolveIncludesForNode(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions = NULL);
+  void ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
   CStdString ResolveConstant(const CStdString &constant) const;
   bool HasIncludeFile(const CStdString &includeFile) const;
   std::map<CStdString, TiXmlElement> m_includes;

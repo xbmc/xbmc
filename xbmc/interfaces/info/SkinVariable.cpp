@@ -25,8 +25,6 @@
 using namespace std;
 using namespace INFO;
 
-#define DEFAULT_VALUE -1
-
 const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node, int context)
 {
   const char* name = node.Attribute("name");
@@ -43,12 +41,10 @@ const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node
         CSkinVariableString::ConditionLabelPair pair;
         if (valuenode->Attribute("condition"))
           pair.m_condition = g_infoManager.Register(valuenode->Attribute("condition"), context);
-        else
-          pair.m_condition = DEFAULT_VALUE;
 
         pair.m_label = CGUIInfoLabel(valuenode->FirstChild()->Value());
         tmp->m_conditionLabelPairs.push_back(pair);
-        if (pair.m_condition == DEFAULT_VALUE)
+        if (!pair.m_condition)
           break; // once we reach default value (without condition) break iterating
       }
       valuenode = valuenode->NextSiblingElement("value");
@@ -78,7 +74,7 @@ CStdString CSkinVariableString::GetValue(bool preferImage /* = false*/, const CG
 {
   for (VECCONDITIONLABELPAIR::const_iterator it = m_conditionLabelPairs.begin() ; it != m_conditionLabelPairs.end(); ++it)
   {
-    if (it->m_condition == DEFAULT_VALUE || g_infoManager.GetBoolValue(it->m_condition, item))
+    if (!it->m_condition || it->m_condition->Get(item))
     {
       if (item)
         return it->m_label.GetItemLabel(item, preferImage);

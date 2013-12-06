@@ -95,7 +95,7 @@ public:
    */
   static bool TranslateResolution(const CStdString &name, RESOLUTION_INFO &res);
 
-  void ResolveIncludes(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions = NULL);
+  void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
 
   float GetEffectsSlowdown() const { return m_effectsSlowDown; };
 

@@ -34,7 +34,6 @@ CGUIListItemLayout::CGUIListItemLayout()
 {
   m_width = 0;
   m_height = 0;
-  m_condition = 0;
   m_focused = false;
   m_invalidated = true;
   m_group.SetPushUpdates(true);
@@ -143,7 +142,7 @@ bool CGUIListItemLayout::MoveRight()
 
 bool CGUIListItemLayout::CheckCondition()
 {
-  return !m_condition || g_infoManager.GetBoolValue(m_condition);
+  return !m_condition || m_condition->Get();
 }
 
 void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)

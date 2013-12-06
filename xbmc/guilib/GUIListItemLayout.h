@@ -70,7 +70,7 @@ protected:
   bool m_focused;
   bool m_invalidated;
 
-  unsigned int m_condition;
+  INFO::InfoPtr m_condition;
   CGUIInfoBool m_isPlaying;
 };
 
