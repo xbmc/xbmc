@@ -647,12 +647,11 @@ void CPlexAutoUpdate::UpdateAndRestart()
 
 void CPlexAutoUpdate::ForceVersionCheckInBackground()
 {
-  g_plexApplication.timer.RemoveTimeout(this);
-
   m_forced = true;
   m_isSearching = true;
+
   // restart with a short time out, just to make sure that we get it running in the background thread
-  g_plexApplication.timer.SetTimeout(1, this);
+  g_plexApplication.timer.RestartTimeout(1, this);
 }
 
 void CPlexAutoUpdate::ResetTimer()
