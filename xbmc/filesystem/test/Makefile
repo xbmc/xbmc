@@ -2,6 +2,7 @@ SRCS= \
   TestDirectory.cpp \
   TestFile.cpp \
   TestFileFactory.cpp \
+  TestNfsFile.cpp \
   TestRarFile.cpp \
   TestZipFile.cpp
 
