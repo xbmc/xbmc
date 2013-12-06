@@ -69,13 +69,16 @@ void CPlexGlobalTimer::RemoveTimeout(IPlexGlobalTimeout *callback)
   if (m_timeouts.size() == 0)
     return;
 
-  int idx = 0;
+  int idx = -1;
   BOOST_FOREACH(timeoutPair tmout, m_timeouts)
   {
     if (callback == tmout.second)
       break;
     idx ++;
   }
+
+  if (idx == -1)
+    return;
 
   if (idx > m_timeouts.size())
     return;
