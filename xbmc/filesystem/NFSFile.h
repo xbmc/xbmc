@@ -75,6 +75,7 @@ public:
   std::list<std::string> GetExportList(const CURL &url);
   //this functions splits the url into the exportpath (feed to mount) and the rest of the path
   //relative to the mounted export
+  bool splitUrlIntoExportAndPath(const CURL& url, CStdString &exportPath, CStdString &relativePath, std::list<std::string> &exportList);
   bool splitUrlIntoExportAndPath(const CURL& url, CStdString &exportPath, CStdString &relativePath);
   
   //special stat which uses its own context
