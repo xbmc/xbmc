@@ -27,6 +27,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
+#include "utils/Utf8Utils.h"
 #include "log.h"
 
 #include <errno.h>
@@ -817,7 +818,7 @@ bool CCharsetConverter::unknownToUTF8(std::string& stringSrcDst)
 bool CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
 {
   // checks whether it's utf8 already, and if not converts using the sourceCharset if given, else the string charset
-  if (isValidUtf8(stringSrc))
+  if (CUtf8Utils::isValidUtf8(stringSrc))
   {
     utf8StringDst = stringSrc;
     return true;
@@ -860,72 +861,6 @@ bool CCharsetConverter::utf8ToSystem(std::string& stringSrcDst, bool failOnBadCh
 {
   std::string strSrc(stringSrcDst);
   return CInnerConverter::stdConvert(Utf8ToSystem, strSrc, stringSrcDst, failOnBadChar);
-}
-
-// Taken from RFC2640
-bool CCharsetConverter::isValidUtf8(const char* buf, unsigned int len)
-{
-  const unsigned char* endbuf = (unsigned char*)buf + len;
-  unsigned char byte2mask=0x00, c;
-  int trailing=0; // trailing (continuation) bytes to follow
-
-  while ((unsigned char*)buf != endbuf)
-  {
-    c = *buf++;
-    if (trailing)
-      if ((c & 0xc0) == 0x80) // does trailing byte follow UTF-8 format ?
-      {
-        if (byte2mask) // need to check 2nd byte for proper range
-        {
-          if (c & byte2mask) // are appropriate bits set ?
-            byte2mask = 0x00;
-          else
-            return false;
-        }
-        trailing--;
-      }
-      else
-        return 0;
-    else
-      if ((c & 0x80) == 0x00) continue; // valid 1-byte UTF-8
-      else if ((c & 0xe0) == 0xc0)      // valid 2-byte UTF-8
-        if (c & 0x1e)                   //is UTF-8 byte in proper range ?
-          trailing = 1;
-        else
-          return false;
-      else if ((c & 0xf0) == 0xe0)      // valid 3-byte UTF-8
-       {
-        if (!(c & 0x0f))                // is UTF-8 byte in proper range ?
-          byte2mask = 0x20;             // if not set mask
-        trailing = 2;                   // to check next byte
-      }
-      else if ((c & 0xf8) == 0xf0)      // valid 4-byte UTF-8
-      {
-        if (!(c & 0x07))                // is UTF-8 byte in proper range ?
-          byte2mask = 0x30;             // if not set mask
-        trailing = 3;                   // to check next byte
-      }
-      else if ((c & 0xfc) == 0xf8)      // valid 5-byte UTF-8
-      {
-        if (!(c & 0x03))                // is UTF-8 byte in proper range ?
-          byte2mask = 0x38;             // if not set mask
-        trailing = 4;                   // to check next byte
-      }
-      else if ((c & 0xfe) == 0xfc)      // valid 6-byte UTF-8
-      {
-        if (!(c & 0x01))                // is UTF-8 byte in proper range ?
-          byte2mask = 0x3c;             // if not set mask
-        trailing = 5;                   // to check next byte
-      }
-      else
-        return false;
-  }
-  return trailing == 0;
-}
-
-bool CCharsetConverter::isValidUtf8(const std::string& str)
-{
-  return isValidUtf8(str.c_str(), str.size());
 }
 
 bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst, bool failOnBadString /*= false*/)

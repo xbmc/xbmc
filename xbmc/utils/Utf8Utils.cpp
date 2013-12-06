@@ -21,6 +21,32 @@
 #include "Utf8Utils.h"
 
 
+CUtf8Utils::utf8CheckResult CUtf8Utils::checkStrForUtf8(const std::string& str)
+{
+  const char* const strC = str.c_str();
+  const size_t len = str.length();
+  size_t pos = 0;
+  bool isPlainAscii = true;
+
+  while (pos < len)
+  {
+    const size_t chrLen = SizeOfUtf8Char(strC + pos);
+    if (chrLen == 0)
+      return hiAscii; // non valid UTF-8 sequence
+    else if (chrLen > 1)
+      isPlainAscii = false;
+
+    pos += chrLen;
+  }
+
+  if (isPlainAscii)
+    return plainAscii; // only single-byte characters (valid for US-ASCII and for UTF-8)
+
+  return utf8string;   // valid UTF-8 with at least one valid UTF-8 multi-byte sequence
+}
+
+
+
 size_t CUtf8Utils::FindValidUtf8Char(const std::string& str, const size_t startPos /*= 0*/)
 {
   const char* strC = str.c_str();

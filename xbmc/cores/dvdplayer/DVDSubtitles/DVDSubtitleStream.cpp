@@ -22,6 +22,7 @@
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "utils/CharsetConverter.h"
+#include "utils/Utf8Utils.h"
 
 using namespace std;
 
@@ -81,7 +82,7 @@ bool CDVDSubtitleStream::Open(const string& strFile)
       delete pInputStream;
 
       if (!isUTF8)
-        isUTF8 = g_charsetConverter.isValidUtf8(m_stringstream.str());
+        isUTF8 = CUtf8Utils::isValidUtf8(m_stringstream.str());
 
       if (!isUTF8)
       {
