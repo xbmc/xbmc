@@ -22,6 +22,10 @@
 #include "Temperature.h"
 #include "settings/AdvancedSettings.h"
 
+#ifdef TARGET_POSIX
+#include "../linux/XTimeUtils.h"
+#endif
+
 #include "gtest/gtest.h"
 
 TEST(TestCPUInfo, getUsedPercentage)
@@ -111,7 +115,7 @@ TEST(TestCPUInfo, CoreInfo)
 
 TEST(TestCPUInfo, GetCoresUsageString)
 {
-  EXPECT_STRNE("", g_cpuInfo.GetCoresUsageString());
+  EXPECT_STRNE("", g_cpuInfo.GetCoresUsageString().c_str());
 }
 
 TEST(TestCPUInfo, GetCPUFeatures)
