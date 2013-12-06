@@ -95,11 +95,13 @@ std::list<std::string> CNfsConnection::GetExportList(const CURL &url)
       for(tmp = exportlist; tmp!=NULL; tmp=tmp->ex_next)
       {
         std::string exportStr = std::string(tmp->ex_dir);
-        URIUtils::AddSlashAtEnd(exportStr);
+        
         retList.push_back(exportStr);
       }      
 
       gNfsConnection.GetImpl()->mount_free_export_list(exportlist);
+      retList.sort();
+      retList.reverse();
     }
     
     return retList;
@@ -260,9 +262,9 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
           //in that case we don't want to stripp off to
           //much from the path
           if( exportPath == "/" )
-            relativePath = "//" + path.substr(exportPath.length()-1);
-          else
             relativePath = "//" + path.substr(exportPath.length());
+          else
+            relativePath = "//" + path.substr(exportPath.length()+1);
           ret = true;
           break;          
         }
