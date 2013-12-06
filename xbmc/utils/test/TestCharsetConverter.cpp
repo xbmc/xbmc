@@ -21,6 +21,7 @@
 #include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StdString.h"
+#include "utils/Utf8Utils.h"
 
 #include "gtest/gtest.h"
 
@@ -212,27 +213,25 @@ TEST_F(TestCharsetConverter, isValidUtf8_1)
 {
   varstra1.clear();
   g_charsetConverter.ToUtf8("UTF-16LE", refutf16LE3, varstra1);
-  EXPECT_TRUE(g_charsetConverter.isValidUtf8(varstra1.c_str()));
+  EXPECT_TRUE(CUtf8Utils::isValidUtf8(varstra1.c_str()));
 }
 
 TEST_F(TestCharsetConverter, isValidUtf8_2)
 {
   refstr1 = refutf16LE3;
-  EXPECT_FALSE(g_charsetConverter.isValidUtf8(refstr1));
+  EXPECT_FALSE(CUtf8Utils::isValidUtf8(refstr1));
 }
 
 TEST_F(TestCharsetConverter, isValidUtf8_3)
 {
   varstra1.clear();
   g_charsetConverter.ToUtf8("UTF-16LE", refutf16LE3, varstra1);
-  EXPECT_TRUE(g_charsetConverter.isValidUtf8(varstra1.c_str(),
-                                             varstra1.length() + 1));
+  EXPECT_TRUE(CUtf8Utils::isValidUtf8(varstra1.c_str()));
 }
 
 TEST_F(TestCharsetConverter, isValidUtf8_4)
 {
-  EXPECT_FALSE(g_charsetConverter.isValidUtf8(refutf16LE3,
-                                              sizeof(refutf16LE3)));
+  EXPECT_FALSE(CUtf8Utils::isValidUtf8(refutf16LE3));
 }
 
 /* TODO: Resolve correct input/output for this function */
