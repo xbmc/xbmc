@@ -246,6 +246,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
       if(!path.empty() && path[0] != '/')
       {
         path = "/" + path;
+        URIUtils::AddSlashAtEnd(path);
       }
       
       std::list<std::string>::iterator it;
