@@ -18,6 +18,7 @@
  *
  */
 
+#include "system.h" // For Sleep()
 #include "utils/CPUInfo.h"
 #include "Temperature.h"
 #include "settings/AdvancedSettings.h"
