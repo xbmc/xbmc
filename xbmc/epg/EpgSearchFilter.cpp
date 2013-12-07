@@ -48,8 +48,6 @@ void EpgSearchFilter::Reset()
   m_startDateTime.SetFromUTCDateTime(g_EpgContainer.GetFirstEPGDate());
   m_endDateTime.SetFromUTCDateTime(g_EpgContainer.GetLastEPGDate());
   m_bIncludeUnknownGenres    = false;
-  m_bIgnorePresentTimers     = false;
-  m_bIgnorePresentRecordings = false;
   m_bPreventRepeats          = false;
 
   /* pvr specific filters */
