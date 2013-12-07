@@ -197,23 +197,23 @@ bool CProcessorHD::PreInit()
     return false;
   }
 
-  CHECK(m_pDXVAHD->GetVideoProcessorDeviceCaps( &m_caps ));
+  CHECK(m_pDXVAHD->GetVideoProcessorDeviceCaps( &m_VPDevCaps ));
 
-  if (m_caps.VideoProcessorCount == 0)
+  if (m_VPDevCaps.VideoProcessorCount == 0)
   {
     CLog::Log(LOGWARNING, __FUNCTION__" - unable to find any video processor. GPU drivers doesn't support DXVA-HD.");
     return false;
   }
 
   // Create the array of video processor caps. 
-  DXVAHD_VPCAPS* pVPCaps = new (std::nothrow) DXVAHD_VPCAPS[ m_caps.VideoProcessorCount ];
+  DXVAHD_VPCAPS* pVPCaps = new (std::nothrow) DXVAHD_VPCAPS[ m_VPDevCaps.VideoProcessorCount ];
   if (pVPCaps == NULL)
   {
     CLog::Log(LOGERROR, __FUNCTION__" - unable to create video processor caps array. Out of memory.");
     return false;
   }
 
-  HRESULT hr = m_pDXVAHD->GetVideoProcessorCaps( m_caps.VideoProcessorCount, pVPCaps );
+  HRESULT hr = m_pDXVAHD->GetVideoProcessorCaps( m_VPDevCaps.VideoProcessorCount, pVPCaps );
   if(FAILED(hr))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - failed get processor caps with error %x.", hr);
@@ -225,7 +225,7 @@ bool CProcessorHD::PreInit()
   m_max_back_refs = 0;
   m_max_fwd_refs = 0;
 
-  for (unsigned int i = 0; i < m_caps.VideoProcessorCount; i++)
+  for (unsigned int i = 0; i < m_VPDevCaps.VideoProcessorCount; i++)
   {
     if (pVPCaps[i].FutureFrames > m_max_fwd_refs)
     {
@@ -243,7 +243,7 @@ bool CProcessorHD::PreInit()
   // Get the image filtering capabilities.
   for (long i = 0; i < NUM_FILTERS; i++)
   {
-    if (m_caps.FilterCaps & (1 << i))
+    if (m_VPDevCaps.FilterCaps & (1 << i))
     {
       m_pDXVAHD->GetVideoProcessorFilterRange(PROCAMP_FILTERS[i], &m_Filters[i].Range);
       m_Filters[i].bSupported = true;
@@ -361,7 +361,7 @@ bool CProcessorHD::CreateSurfaces()
                                 (m_width + 15) & ~15,
                                 (m_height + 15) & ~15,
                                 m_format,
-                                m_caps.InputPool,
+                                m_VPDevCaps.InputPool,
                                 &m_surfaces[idx],
                                 NULL));
 
