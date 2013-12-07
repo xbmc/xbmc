@@ -256,6 +256,10 @@ protected:
     unsigned texwidth;
     unsigned texheight;
 
+    //pixels per texel
+    unsigned pixpertex_x;
+    unsigned pixpertex_y;
+
     unsigned flipindex;
   };
 
@@ -295,7 +299,7 @@ protected:
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
-                , unsigned int stride, void* data );
+                , unsigned int stride, int bpp, void* data );
 
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
