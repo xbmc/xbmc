@@ -81,7 +81,7 @@ D3DXMATRIX* CYUV2RGBMatrix::Matrix()
     m_mat._31 = matrix.m[0][2];
     m_mat._32 = matrix.m[1][2];
     m_mat._33 = matrix.m[2][2];
-    m_mat._44 = 0.0f;
+    m_mat._34 = 0.0f;
     m_mat._41 = matrix.m[0][3];
     m_mat._42 = matrix.m[1][3];
     m_mat._43 = matrix.m[2][3];
