@@ -71,36 +71,7 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  int iFlatten = CSettings::Get().GetInt("videolibrary.flattentvshows");
   bool bSuccess=videodatabase.GetSeasonsNav(BuildPath(), items, params.GetActorId(), params.GetDirectorId(), params.GetGenreId(), params.GetYear(), params.GetTvShowId());
-  bool bFlatten = (items.GetObjectCount() == 1 && iFlatten == 1) || iFlatten == 2;
-  if (items.GetObjectCount() == 2 && iFlatten == 1)
-    if (items[0]->GetVideoInfoTag()->m_iSeason == 0 || items[1]->GetVideoInfoTag()->m_iSeason == 0)
-      bFlatten = true; // flatten if one season + specials
-
-  if (iFlatten > 0 && !bFlatten && CMediaSettings::Get().GetWatchedMode("tvshows") == WatchedModeUnwatched)
-  {
-    int count = 0;
-    for(int i = 0; i < items.Size(); i++) 
-    {
-      if (items[i]->GetProperty("unwatchedepisodes").asInteger() != 0 && items[i]->GetVideoInfoTag()->m_iSeason != 0)
-        count++;
-    }
-    bFlatten = (count < 2); // flatten if there is only 1 unwatched season (not counting specials)
-  }
-
-  if (bFlatten)
-  { // flatten if one season or flatten always
-    items.Clear();
-
-    CVideoDbUrl videoUrl;
-    if (!videoUrl.FromString(BuildPath()))
-      return false;
-  
-    videoUrl.AppendPath("-2/");
-    bSuccess=videodatabase.GetEpisodesNav(videoUrl.ToString(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetTvShowId());
-    items.SetPath(videoUrl.ToString());
-  }
 
   videodatabase.Close();
 
