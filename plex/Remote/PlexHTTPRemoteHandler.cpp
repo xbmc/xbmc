@@ -448,6 +448,7 @@ void CPlexHTTPRemoteHandler::seekTo(const ArgMap &arguments)
 void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arguments)
 {
   int action = ACTION_NONE;
+  int activeWindow = g_windowManager.GetActiveWindow();
   
   CStdString navigation = url.Mid(19, url.length() - 19);
   
@@ -463,7 +464,7 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     action = ACTION_SELECT_ITEM;
   else if (navigation.Equals("music"))
   {
-    if (g_application.IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+    if (g_application.IsPlayingAudio() && activeWindow != WINDOW_VISUALISATION)
       action = ACTION_SHOW_GUI;
   }
   else if (navigation.Equals("home"))
@@ -475,7 +476,9 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
   }
   else if (navigation.Equals("back"))
   {
-    if (g_application.IsPlayingFullScreenVideo())
+    if (g_application.IsPlayingFullScreenVideo() &&
+        (activeWindow != WINDOW_DIALOG_AUDIO_OSD_SETTINGS &&
+         activeWindow != WINDOW_DIALOG_VIDEO_OSD_SETTINGS))
       action = ACTION_STOP;
     else
       action = ACTION_NAV_BACK;
