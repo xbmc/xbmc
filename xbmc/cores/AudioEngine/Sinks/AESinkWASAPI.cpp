@@ -1017,9 +1017,18 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 {
   WAVEFORMATEXTENSIBLE_IEC61937 wfxex_iec61937;
   WAVEFORMATEXTENSIBLE &wfxex = wfxex_iec61937.FormatExt;
+  bool obsolete71Wide = false;
 
   if (format.m_dataFormat <= AE_FMT_FLOAT)
+  {
     BuildWaveFormatExtensible(format, wfxex);
+    // handle obsolete 7.1 wide
+    if (wfxex.dwChannelMask == KSAUDIO_SPEAKER_7POINT1)
+    {
+      obsolete71Wide = true;
+      wfxex.dwChannelMask = KSAUDIO_SPEAKER_7POINT1_SURROUND;
+    }
+  }
   else
     BuildWaveFormatExtensibleIEC61397(format, wfxex_iec61937);
 
@@ -1137,7 +1146,22 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
 initialize:
 
-  AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
+  // check if 7.1 wide was requested and we were able to open 8 channels
+  if (obsolete71Wide && (wfxex.dwChannelMask == KSAUDIO_SPEAKER_7POINT1_SURROUND))
+  {
+    // build layout for 7.1 Wide and map it into KSAUDIO_SPEAKER_7POINT1_SURROUND
+    m_channelLayout.Reset();
+    m_channelLayout += AE_CH_FLOC;  // FLOC/FROC go into FL/FR
+    m_channelLayout += AE_CH_FROC;
+    m_channelLayout += AE_CH_FC;
+    m_channelLayout += AE_CH_LFE;
+    m_channelLayout += AE_CH_FL;    // FL/FR go into SL/SR
+    m_channelLayout += AE_CH_FR;
+    m_channelLayout += AE_CH_BL;
+    m_channelLayout += AE_CH_BR;
+  }
+  else
+    AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
   format.m_channelLayout = m_channelLayout;
 
   /* When the stream is raw, the values in the format structure are set to the link    */
