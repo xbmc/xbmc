@@ -157,19 +157,14 @@ bool CPlexServerDataLoaderJob::DoWork()
   }
   else
   {
-    CFileItemListPtr recList = FetchList("/pms/playlists/recommendations/all");
-    CFileItemListPtr qList = FetchList("/pms/playlists/queue/all");
-    if (recList && qList && (recList->Size() > 0 || qList->Size() > 0))
-    {
-      m_sectionList = CFileItemListPtr(new CFileItemList);
-      CFileItemPtr myPlexSection = CFileItemPtr(new CFileItem("plexserver://myplex/pms/playlists"));
-      myPlexSection->SetProperty("serverName", "myPlex");
-      myPlexSection->SetProperty("serverUUID", "myplex");
-      myPlexSection->SetPath("plexserver://myplex/pms/playlists");
-      myPlexSection->SetLabel(g_localizeStrings.Get(44021));
-      myPlexSection->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
-      m_sectionList->Add(myPlexSection);
-    }
+    m_sectionList = CFileItemListPtr(new CFileItemList);
+    CFileItemPtr myPlexSection = CFileItemPtr(new CFileItem("plexserver://myplex/pms/playlists"));
+    myPlexSection->SetProperty("serverName", "myPlex");
+    myPlexSection->SetProperty("serverUUID", "myplex");
+    myPlexSection->SetPath("plexserver://myplex/pms/playlists");
+    myPlexSection->SetLabel(g_localizeStrings.Get(44021));
+    myPlexSection->SetPlexDirectoryType(PLEX_DIR_TYPE_PLAYLIST);
+    m_sectionList->Add(myPlexSection);
   }
   return true;
 }
@@ -258,7 +253,10 @@ void CPlexServerDataLoader::OnTimeout()
 
   std::pair<CStdString, CPlexServerPtr> p;
   BOOST_FOREACH(p, m_servers)
-    AddJob(new CPlexServerDataLoaderJob(p.second, shared_from_this()));
+  {
+    if (p.second->GetUUID() != "myplex")
+      AddJob(new CPlexServerDataLoaderJob(p.second, shared_from_this()));
+  }
 
   g_plexApplication.timer.SetTimeout(SECTION_REFRESH_INTERVAL, this);
 }
