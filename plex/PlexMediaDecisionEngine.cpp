@@ -22,6 +22,12 @@
 
 bool CPlexMediaDecisionEngine::BlockAndResolve(const CFileItem &item, CFileItem &resolvedItem)
 {
+  if (item.GetProperty("isResolved").asBoolean())
+  {
+    resolvedItem = item;
+    return true;
+  }
+
   m_item = item;
 
   m_done.Reset();
@@ -54,6 +60,7 @@ bool CPlexMediaDecisionEngine::BlockAndResolve(const CFileItem &item, CFileItem 
   if (m_success)
   {
     resolvedItem = m_choosenMedia;
+    resolvedItem.SetProperty("isResolved", true);
     return true;
   }
   return false;
