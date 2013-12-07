@@ -233,7 +233,7 @@ void OMXPlayerVideo::ProcessOverlays(double pts)
   VecOverlaysIter it = pVecOverlays->begin();
 
   //Check all overlays and render those that should be rendered, based on time and forced
-  //Both forced and subs should check timeing, pts == 0 in the stillframe case
+  //Both forced and subs should check timing
   while (it != pVecOverlays->end())
   {
     CDVDOverlay* pOverlay = *it++;
@@ -242,7 +242,7 @@ void OMXPlayerVideo::ProcessOverlays(double pts)
 
     double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
 
-    if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
+    if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)))
     {
       if(pOverlay->IsOverlayType(DVDOVERLAY_TYPE_GROUP))
         overlays.insert(overlays.end(), static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.begin()
@@ -298,9 +298,6 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
 
   double subtitle_pts = m_nextOverlay;
   double time = subtitle_pts != DVD_NOPTS_VALUE ? subtitle_pts - media_pts : 0.0;
-
-  if (m_nextOverlay != DVD_NOPTS_VALUE)
-    media_pts = m_nextOverlay;
 
   m_nextOverlay = NextOverlay(media_pts);
 
