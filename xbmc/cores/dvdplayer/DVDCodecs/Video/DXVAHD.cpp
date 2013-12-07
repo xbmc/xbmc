@@ -181,11 +181,21 @@ bool CProcessorHD::PreInit()
   desc.OutputWidth = 640;
   desc.OutputHeight = 480;
 
-  CHECK(g_DXVAHDCreateVideoService( (IDirect3DDevice9Ex*)g_Windowing.Get3DDevice()
-                                       , &desc
-                                       , DXVAHD_DEVICE_USAGE_OPTIMAL_QUALITY
-                                       , NULL
-                                       , &m_pDXVAHD ));
+  HRESULT cvres = g_DXVAHDCreateVideoService( (IDirect3DDevice9Ex*)g_Windowing.Get3DDevice()
+                                              , &desc
+                                              , DXVAHD_DEVICE_USAGE_OPTIMAL_QUALITY
+                                              , NULL
+                                              , &m_pDXVAHD );
+
+  if(FAILED(cvres))
+  {
+    if(cvres == E_NOINTERFACE)
+      CLog::Log(LOGNOTICE, __FUNCTION__" - The Direct3d device doesn't support DXVA-HD.");
+    else
+      CLog::Log(LOGERROR, __FUNCTION__" - failed to create DXVAHD device %x", cvres);
+
+    return false;
+  }
 
   CHECK(m_pDXVAHD->GetVideoProcessorDeviceCaps( &m_caps ));
 
