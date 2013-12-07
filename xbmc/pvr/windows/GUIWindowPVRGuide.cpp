@@ -366,24 +366,32 @@ bool CGUIWindowPVRGuide::OnClickList(CGUIMessage &message)
     CFileItemPtr pItem = m_parent->m_vecItems->Get(iItem);
 
     /* process actions */
-    bReturn = true;
-    if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+    switch (iAction)
     {
-      if (!g_advancedSettings.m_bPVRShowEpgInfoOnEpgItemSelect && pItem->GetEPGInfoTag()->StartAsLocalTime() <= CDateTime::GetCurrentDateTime())
-        PlayEpgItem(pItem.get());
-      else
+      case ACTION_SELECT_ITEM:
+      case ACTION_MOUSE_LEFT_CLICK:
+        if (!g_advancedSettings.m_bPVRShowEpgInfoOnEpgItemSelect && pItem->GetEPGInfoTag()->IsActive())
+          ActionPlayEpg(pItem.get());
+        else
+          ShowEPGInfo(pItem.get());
+        break;
+      case ACTION_SHOW_INFO:
         ShowEPGInfo(pItem.get());
+        break;
+      case ACTION_PLAY:
+        ActionPlayEpg(pItem.get());
+        break;
+      case ACTION_RECORD:
+        ActionRecord(pItem.get());
+        break;
+      case ACTION_CONTEXT_MENU:
+      case ACTION_MOUSE_RIGHT_CLICK:
+        m_parent->OnPopupMenu(iItem);
+        break;
+      default:
+        bReturn = false;
+        break;
     }
-    else if (iAction == ACTION_SHOW_INFO)
-      ShowEPGInfo(pItem.get());
-    else if (iAction == ACTION_RECORD)
-      ActionRecord(pItem.get());
-    else if (iAction == ACTION_PLAY)
-      ActionPlayEpg(pItem.get());
-    else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
-      m_parent->OnPopupMenu(iItem);
-    else
-      bReturn = false;
   }
 
   return bReturn;
