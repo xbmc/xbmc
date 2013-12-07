@@ -592,7 +592,7 @@ bool CSettings::SetList(const std::string &id, const std::vector<CVariant> &valu
       case SettingTypeInteger:
         if (!itValue->isInteger())
           return false;
-        ret = static_cast<CSettingInt*>(settingValue)->SetValue(itValue->asInteger());
+        ret = static_cast<CSettingInt*>(settingValue)->SetValue((int)itValue->asInteger());
         break;
 
       case SettingTypeNumber:
