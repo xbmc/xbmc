@@ -34,7 +34,6 @@ namespace PERIPHERALS
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
 
   protected:
-    bool       m_bInitialised;
     CStdString m_strKeymap;
   };
 }
