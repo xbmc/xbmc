@@ -74,9 +74,8 @@ protected:
 
   IDXVAHD_Device          *m_pDXVAHD;      // DXVA-HD device.
   IDXVAHD_VideoProcessor  *m_pDXVAVP;      // DXVA-HD video processor.
-  DXVAHD_VPDEVCAPS         m_caps;
+  DXVAHD_VPDEVCAPS         m_VPDevCaps;
   DXVAHD_VPCAPS            m_VPCaps;
-  GUID                     m_device;
   unsigned int             m_width;
   unsigned int             m_height;
   D3DFORMAT                m_format;
@@ -100,15 +99,6 @@ protected:
   };
   typedef std::deque<SFrame> SFrames;
   SFrames                  m_frames;
-
-  CSurfaceContext*         m_context;
-  unsigned                 m_size;
-  unsigned                 m_max_back_refs;
-  unsigned                 m_max_fwd_refs;
-  unsigned                 m_index;
-
-  LPDIRECT3DSURFACE9*      m_surfaces;
-  CCriticalSection         m_section;
 };
 
 };
