@@ -447,7 +447,7 @@ CPoint CGUIWindow::GetPosition() const
   for (unsigned int i = 0; i < m_origins.size(); i++)
   {
     // no condition implies true
-    if (!m_origins[i].condition || g_infoManager.GetBoolValue(m_origins[i].condition))
+    if (!m_origins[i].condition || m_origins[i].condition->Get())
     { // found origin
       return CPoint(m_origins[i].x, m_origins[i].y);
     }
@@ -776,6 +776,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
   {
     delete m_windowXMLRootElement;
     m_windowXMLRootElement = NULL;
+    m_xmlIncludeConditions.clear();
   }
 }
 
@@ -791,6 +792,7 @@ void CGUIWindow::ClearAll()
   CGUIControlGroup::ClearAll();
   m_windowLoaded = false;
   m_dynamicResourceAlloc = true;
+  m_visibleCondition.reset();
 }
 
 bool CGUIWindow::Initialize()
@@ -967,7 +969,6 @@ void CGUIWindow::SetDefaults()
   m_defaultControl = 0;
   m_posX = m_posY = m_width = m_height = 0;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
-  m_visibleCondition = 0;
   m_previousWindow = WINDOW_INVALID;
   m_animations.clear();
   m_origins.clear();

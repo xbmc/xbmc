@@ -210,7 +210,7 @@ public:
   virtual void SetHeight(float height);
   virtual void SetVisible(bool bVisible, bool setVisState = false);
   void SetVisibleCondition(const CStdString &expression, const CStdString &allowHiddenFocus = "");
-  unsigned int GetVisibleCondition() const { return m_visibleCondition; };
+  bool HasVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(const CStdString &expression);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void SetInitialVisibility();
@@ -339,14 +339,14 @@ protected:
   CGUIControl *m_parentControl;   // our parent control if we're part of a group
 
   // visibility condition/state
-  unsigned int m_visibleCondition;
+  INFO::InfoPtr m_visibleCondition;
   GUIVISIBLE m_visible;
   bool m_visibleFromSkinCondition;
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   CGUIInfoBool m_allowHiddenFocus;
   bool m_hasProcessed;
   // enable/disable state
-  unsigned int m_enableCondition;
+  INFO::InfoPtr m_enableCondition;
   bool m_enabled;
 
   bool m_pushedUpdates;

@@ -59,6 +59,7 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
+#include "boost/make_shared.hpp"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -85,6 +86,7 @@
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
+#include "interfaces/info/InfoExpression.h"
 
 #if defined(TARGET_DARWIN_OSX)
 #include "osx/smc.h"
@@ -118,7 +120,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_currentSlide = new CFileItem;
   m_frameCounter = 0;
   m_lastFPSTime = 0;
-  m_updateTime = 1;
   m_playerShowTime = false;
   m_playerShowCodec = false;
   m_playerShowInfo = false;
@@ -798,6 +799,18 @@ void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector<Prope
 /// efficient retrieval of data.
 int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
+  bool listItemDependent;
+  return TranslateSingleString(strCondition, listItemDependent);
+}
+
+int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool &listItemDependent)
+{
+  /* We need to disable caching in INFO::InfoBool::Get if either of the following are true:
+   *  1. if condition is between LISTITEM_START and LISTITEM_END
+   *  2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
+   *     corresponding label is between LISTITEM_START and LISTITEM_END
+   *  This is achieved by setting the bool pointed at by listItemDependent, either here or in a recursive call
+   */
   // trim whitespaces
   CStdString strTest = strCondition;
   StringUtils::Trim(strTest);
@@ -816,11 +829,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (cat.name == "true" || cat.name == "yes" || cat.name == "on")
       return SYSTEM_ALWAYS_TRUE;
     if (cat.name == "isempty" && cat.num_params() == 1)
-      return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(cat.param())));
+      return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(cat.param(), listItemDependent)));
     else if (cat.name == "stringcompare" && cat.num_params() == 2)
     {
-      int info = TranslateSingleString(cat.param(0));
-      int info2 = TranslateSingleString(cat.param(1));
+      int info = TranslateSingleString(cat.param(0), listItemDependent);
+      int info2 = TranslateSingleString(cat.param(1), listItemDependent);
       if (info2 > 0)
         return AddMultiInfo(GUIInfo(STRING_COMPARE, info, -info2));
       // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
@@ -831,13 +844,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (cat.name == "integergreaterthan" && cat.num_params() == 2)
     {
-      int info = TranslateSingleString(cat.param(0));
+      int info = TranslateSingleString(cat.param(0), listItemDependent);
       int compareInt = atoi(cat.param(1).c_str());
       return AddMultiInfo(GUIInfo(INTEGER_GREATER_THAN, info, compareInt));
     }
     else if (cat.name == "substring" && cat.num_params() >= 2)
     {
-      int info = TranslateSingleString(cat.param(0));
+      int info = TranslateSingleString(cat.param(0), listItemDependent);
       CStdString label = CGUIInfoLabel::GetLabel(cat.param(1));
       StringUtils::ToLower(label);
       int compareString = ConditionalStringParameter(label);
@@ -930,7 +943,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         }
         else if (prop.name == "addontitle")
         {
-          int infoLabel = TranslateSingleString(param);
+          int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, infoLabel, 0));
           CStdString label = CGUIInfoLabel::GetLabel(param);
@@ -939,7 +952,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         }
         else if (prop.name == "addonicon")
         {
-          int infoLabel = TranslateSingleString(param);
+          int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, infoLabel, 0));
           CStdString label = CGUIInfoLabel::GetLabel(param);
@@ -948,7 +961,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         }
         else if (prop.name == "addonversion")
         {
-          int infoLabel = TranslateSingleString(param);
+          int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_VERSION, infoLabel, 0));
           CStdString label = CGUIInfoLabel::GetLabel(param);
@@ -1087,6 +1100,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       int offset = atoi(cat.param().c_str());
       int ret = TranslateListItem(prop);
+      if (ret)
+        listItemDependent = true;
       if (offset)
         return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
       return ret;
@@ -1095,6 +1110,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       int offset = atoi(cat.param().c_str());
       int ret = TranslateListItem(prop);
+      if (ret)
+        listItemDependent = true;
       if (offset)
         return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
       return ret;
@@ -1103,6 +1120,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       int offset = atoi(cat.param().c_str());
       int ret = TranslateListItem(prop);
+      if (ret)
+        listItemDependent = true;
       if (offset)
         return AddMultiInfo(GUIInfo(ret, 0, offset));
       return ret;
@@ -1263,11 +1282,20 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int id = atoi(info[0].param().c_str());
       int offset = atoi(info[1].param().c_str());
       if (info[1].name == "listitemnowrap")
+      {
+        listItemDependent = true;
         return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset));
+      }
       else if (info[1].name == "listitemposition")
+      {
+        listItemDependent = true;
         return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_POSITION));
+      }
       else if (info[1].name == "listitem")
+      {
+        listItemDependent = true;
         return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_WRAP));
+      }
     }
   }
 
@@ -2122,63 +2150,44 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   return false;
 }
 
-unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
+// functor for comparison InfoPtr's
+struct InfoBoolFinder
+{
+  InfoBoolFinder(const std::string &expression, int context) : m_bool(expression, context) {};
+  bool operator() (const InfoPtr &right) const { return m_bool == *right; };
+  InfoBool m_bool;
+};
+
+INFO::InfoPtr CGUIInfoManager::Register(const CStdString &expression, int context)
 {
   CStdString condition(CGUIInfoLabel::ReplaceLocalize(expression));
   StringUtils::Trim(condition);
+  StringUtils::ToLower(condition);
 
   if (condition.empty())
-    return 0;
+    return INFO::InfoPtr();
 
   CSingleLock lock(m_critInfo);
   // do we have the boolean expression already registered?
-  InfoBool test(condition, context);
-  for (unsigned int i = 0; i < m_bools.size(); ++i)
-  {
-    if (*m_bools[i] == test)
-      return i+1;
-  }
+  vector<InfoPtr>::const_iterator i = find_if(m_bools.begin(), m_bools.end(), InfoBoolFinder(condition, context));
+  if (i != m_bools.end())
+    return *i;
 
   if (condition.find_first_of("|+[]!") != condition.npos)
-    m_bools.push_back(new InfoExpression(condition, context));
+    m_bools.push_back(boost::make_shared<InfoExpression>(condition, context));
   else
-    m_bools.push_back(new InfoSingle(condition, context));
+    m_bools.push_back(boost::make_shared<InfoSingle>(condition, context));
 
-  return m_bools.size();
+  return m_bools.back();
 }
 
 bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWindow)
 {
   bool result = false;
-  unsigned int info = Register(expression, contextWindow);
+  INFO::InfoPtr info = Register(expression, contextWindow);
   if (info)
-    result = GetBoolValue(info);
+    result = info->Get();
   return result;
-}
-
-/*
- TODO: what to do with item-based infobools...
- these crop up:
- 1. if condition is between LISTITEM_START and LISTITEM_END
- 2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
-    corresponding label is between LISTITEM_START and LISTITEM_END
-
- In both cases they shouldn't be in our cache as they depend on items outside of our control atm.
-
- We only pass a listitem object in for controls inside a listitemlayout, so I think it's probably OK
- to not cache these, as they're "pushed" out anyway.
-
- The problem is how do we avoid these?  The only thing we have to go on is the expression here, so I
- guess what we have to do is call through via Update.  One thing we don't handle, however, is that the
- majority of conditions (even inside lists) don't depend on the listitem at all.
-
- Advantage is that we know this at creation time I think, so could perhaps signal it in IsDirty()?
- */
-bool CGUIInfoManager::GetBoolValue(unsigned int expression, const CGUIListItem *item)
-{
-  if (expression && --expression < m_bools.size())
-    return m_bools[expression]->Get(m_updateTime, item);
-  return false;
 }
 
 // checks the condition and returns it as necessary.  Currently used
@@ -4233,11 +4242,22 @@ bool CGUIInfoManager::GetDisplayAfterSeek()
 void CGUIInfoManager::Clear()
 {
   CSingleLock lock(m_critInfo);
-  for (unsigned int i = 0; i < m_bools.size(); ++i)
-    delete m_bools[i];
-  m_bools.clear();
-
   m_skinVariableStrings.clear();
+
+  /*
+    Erase any info bools that are unused. We do this repeatedly as each run
+    will remove those bools that are no longer dependencies of other bools
+    in the vector.
+   */
+  vector<InfoPtr>::iterator i = remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
+  while (i != m_bools.end())
+  {
+    m_bools.erase(i, m_bools.end());
+    i = remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
+  }
+  // log which ones are used - they should all be gone by now
+  for (vector<InfoPtr>::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+    CLog::Log(LOGDEBUG, "Infobool '%s' still used by %u instances", (*i)->GetExpression().c_str(), (unsigned int) i->use_count());
 }
 
 void CGUIInfoManager::UpdateFPS()
@@ -5182,7 +5202,10 @@ void CGUIInfoManager::ResetCache()
 {
   // reset any animation triggers as well
   m_containerMoves.clear();
-  m_updateTime++;
+  // mark our infobools as dirty
+  CSingleLock lock(m_critInfo);
+  for (vector<InfoPtr>::iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+    (*i)->SetDirty();
 }
 
 // Called from tuxbox service thread to update current status
@@ -5502,11 +5525,11 @@ CStdString CGUIInfoManager::GetSkinVariableString(int info,
   return "";
 }
 
-bool CGUIInfoManager::ConditionsChangedValues(const std::map<int, bool>& map)
+bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map)
 {
-  for (std::map<int, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
+  for (std::map<INFO::InfoPtr, bool>::const_iterator it = map.begin() ; it != map.end() ; it++)
   {
-    if (GetBoolValue(it->first) != it->second)
+    if (it->first->Get() != it->second)
       return true;
   }
   return false;

@@ -28,7 +28,6 @@ using namespace std;
 
 CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileItem()
 {
-  m_visCondition = 0;
   m_visState = false;
 
   assert(item);
@@ -91,7 +90,6 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
 CGUIStaticItem::CGUIStaticItem(const CFileItem &item)
 : CFileItem(item)
 {
-  m_visCondition = 0;
   m_visState = false;
 }
 
@@ -120,7 +118,7 @@ bool CGUIStaticItem::UpdateVisibility(int contextWindow)
 {
   if (!m_visCondition)
     return false;
-  bool state = g_infoManager.GetBoolValue(m_visCondition);
+  bool state = m_visCondition->Get();
   if (state != m_visState)
   {
     m_visState = state;

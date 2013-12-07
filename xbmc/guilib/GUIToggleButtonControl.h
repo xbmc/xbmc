@@ -61,6 +61,6 @@ protected:
   virtual bool UpdateColors();
   virtual void OnClick();
   CGUIButtonControl m_selectButton;
-  unsigned int m_toggleSelect;
+  INFO::InfoPtr m_toggleSelect;
 };
 #endif

@@ -281,6 +281,9 @@
 		7C1409A4183224B8009F9411 /* SettingUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C140987183224B8009F9411 /* SettingUpdate.cpp */; };
 		7C1409A5183224B8009F9411 /* SettingUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C140987183224B8009F9411 /* SettingUpdate.cpp */; };
 		7C1409A6183224B8009F9411 /* SettingUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C140987183224B8009F9411 /* SettingUpdate.cpp */; };
+		7C1409A9184015C9009F9411 /* InfoExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1409A7184015C6009F9411 /* InfoExpression.cpp */; };
+		7C1409AA184015C9009F9411 /* InfoExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1409A7184015C6009F9411 /* InfoExpression.cpp */; };
+		7C1409AB184015C9009F9411 /* InfoExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1409A7184015C6009F9411 /* InfoExpression.cpp */; };
 		7C1A492315A962EE004AF4A4 /* SeekHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A492115A962EE004AF4A4 /* SeekHandler.cpp */; };
 		7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
 		7C1D682915A7D2FD00658B65 /* DatabaseManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */; };
@@ -321,7 +324,6 @@
 		7C84A59E12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */; };
 		7C87B2CE162CE39600EF897D /* PlayerController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C87B2CC162CE39600EF897D /* PlayerController.cpp */; };
 		7C89619213B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */; };
-		7C89674613C03B22003631FE /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89674313C03B22003631FE /* InfoBool.cpp */; };
 		7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
 		7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
 		7C8FC6EE1829A4580045153D /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */; };
@@ -1190,7 +1192,6 @@
 		DFF0F2C817528350002DA3A4 /* XBTFReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A81294222E009E7A26 /* XBTFReader.cpp */; };
 		DFF0F2C917528350002DA3A4 /* GenericTouchActionHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4991334174E5E5C00741B6D /* GenericTouchActionHandler.cpp */; };
 		DFF0F2CA17528350002DA3A4 /* ITouchInputHandling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4991342174E5E5C00741B6D /* ITouchInputHandling.cpp */; };
-		DFF0F2CB17528350002DA3A4 /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89674313C03B22003631FE /* InfoBool.cpp */; };
 		DFF0F2CC17528350002DA3A4 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DFF0F2CD17528350002DA3A4 /* AddonsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB0F470161B747500D744F4 /* AddonsOperations.cpp */; };
 		DFF0F2CE17528350002DA3A4 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DC614155D7C005BA742 /* ApplicationOperations.cpp */; };
@@ -2606,7 +2607,6 @@
 		E4991331174E5DAD00741B6D /* XBTFReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A81294222E009E7A26 /* XBTFReader.cpp */; };
 		E4991345174E5E5C00741B6D /* GenericTouchActionHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4991334174E5E5C00741B6D /* GenericTouchActionHandler.cpp */; };
 		E499134B174E5E5C00741B6D /* ITouchInputHandling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4991342174E5E5C00741B6D /* ITouchInputHandling.cpp */; };
-		E499134C174E5EB700741B6D /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89674313C03B22003631FE /* InfoBool.cpp */; };
 		E499134D174E5EB700741B6D /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		E499134E174E5EBE00741B6D /* AddonsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB0F470161B747500D744F4 /* AddonsOperations.cpp */; };
 		E499134F174E5EBE00741B6D /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DC614155D7C005BA742 /* ApplicationOperations.cpp */; };
@@ -3739,6 +3739,8 @@
 		7C140986183224B8009F9411 /* SettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsManager.h; path = lib/SettingsManager.h; sourceTree = "<group>"; };
 		7C140987183224B8009F9411 /* SettingUpdate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SettingUpdate.cpp; path = lib/SettingUpdate.cpp; sourceTree = "<group>"; };
 		7C140988183224B8009F9411 /* SettingUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingUpdate.h; path = lib/SettingUpdate.h; sourceTree = "<group>"; };
+		7C1409A7184015C6009F9411 /* InfoExpression.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoExpression.cpp; sourceTree = "<group>"; };
+		7C1409A8184015C8009F9411 /* InfoExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoExpression.h; sourceTree = "<group>"; };
 		7C1A492115A962EE004AF4A4 /* SeekHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SeekHandler.cpp; sourceTree = "<group>"; };
 		7C1A492215A962EE004AF4A4 /* SeekHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeekHandler.h; sourceTree = "<group>"; };
 		7C1A495B15A96918004AF4A4 /* SaveFileStateJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaveFileStateJob.h; sourceTree = "<group>"; };
@@ -3805,7 +3807,6 @@
 		7C87B2CD162CE39600EF897D /* PlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerController.h; sourceTree = "<group>"; };
 		7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowScreensaverDim.cpp; sourceTree = "<group>"; };
 		7C89619113B6A16F003631FE /* GUIWindowScreensaverDim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowScreensaverDim.h; sourceTree = "<group>"; };
-		7C89674313C03B22003631FE /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoBool.cpp; sourceTree = "<group>"; };
 		7C89674413C03B22003631FE /* InfoBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoBool.h; sourceTree = "<group>"; };
 		7C8A14541154CB2600E5FCFA /* TextureCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCache.cpp; sourceTree = "<group>"; };
 		7C8A14551154CB2600E5FCFA /* TextureCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCache.h; sourceTree = "<group>"; };
@@ -6745,8 +6746,9 @@
 		7C89674213C03B21003631FE /* info */ = {
 			isa = PBXGroup;
 			children = (
-				7C89674313C03B22003631FE /* InfoBool.cpp */,
 				7C89674413C03B22003631FE /* InfoBool.h */,
+				7C1409A7184015C6009F9411 /* InfoExpression.cpp */,
+				7C1409A8184015C8009F9411 /* InfoExpression.h */,
 				DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */,
 				DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */,
 			);
@@ -10426,7 +10428,6 @@
 				38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */,
 				3802709A13D5A653009493DD /* SystemClock.cpp in Sources */,
 				7CEE2E5B13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */,
-				7C89674613C03B22003631FE /* InfoBool.cpp in Sources */,
 				DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */,
 				DF3488E713FD958F0026A711 /* GUIAction.cpp in Sources */,
 				DF34892A13FD9C780026A711 /* AirPlayServer.cpp in Sources */,
@@ -10741,6 +10742,7 @@
 				7C1409A1183224B8009F9411 /* SettingsManager.cpp in Sources */,
 				7C1409A4183224B8009F9411 /* SettingUpdate.cpp in Sources */,
 				DF0ABB73183A94A30018445D /* Utf8Utils.cpp in Sources */,
+				7C1409A9184015C9009F9411 /* InfoExpression.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11308,7 +11310,6 @@
 				DFF0F2C817528350002DA3A4 /* XBTFReader.cpp in Sources */,
 				DFF0F2C917528350002DA3A4 /* GenericTouchActionHandler.cpp in Sources */,
 				DFF0F2CA17528350002DA3A4 /* ITouchInputHandling.cpp in Sources */,
-				DFF0F2CB17528350002DA3A4 /* InfoBool.cpp in Sources */,
 				DFF0F2CC17528350002DA3A4 /* SkinVariable.cpp in Sources */,
 				DFF0F2CD17528350002DA3A4 /* AddonsOperations.cpp in Sources */,
 				DFF0F2CE17528350002DA3A4 /* ApplicationOperations.cpp in Sources */,
@@ -11783,6 +11784,7 @@
 				7C1409A3183224B8009F9411 /* SettingsManager.cpp in Sources */,
 				7C1409A6183224B8009F9411 /* SettingUpdate.cpp in Sources */,
 				DF0ABB75183A94A30018445D /* Utf8Utils.cpp in Sources */,
+				7C1409AB184015C9009F9411 /* InfoExpression.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12357,7 +12359,6 @@
 				E4991331174E5DAD00741B6D /* XBTFReader.cpp in Sources */,
 				E4991345174E5E5C00741B6D /* GenericTouchActionHandler.cpp in Sources */,
 				E499134B174E5E5C00741B6D /* ITouchInputHandling.cpp in Sources */,
-				E499134C174E5EB700741B6D /* InfoBool.cpp in Sources */,
 				E499134D174E5EB700741B6D /* SkinVariable.cpp in Sources */,
 				E499134E174E5EBE00741B6D /* AddonsOperations.cpp in Sources */,
 				E499134F174E5EBE00741B6D /* ApplicationOperations.cpp in Sources */,
@@ -12827,6 +12828,7 @@
 				7C1409A2183224B8009F9411 /* SettingsManager.cpp in Sources */,
 				7C1409A5183224B8009F9411 /* SettingUpdate.cpp in Sources */,
 				DF0ABB74183A94A30018445D /* Utf8Utils.cpp in Sources */,
+				7C1409AA184015C9009F9411 /* InfoExpression.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

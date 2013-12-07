@@ -1903,7 +1903,7 @@
     <ClCompile Include="..\..\xbmc\input\InertialScrollingHandler.cpp">
       <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp">
+    <ClCompile Include="..\..\xbmc\interfaces\info\InfoExpression.cpp">
       <Filter>interfaces\info</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIAction.cpp">
@@ -4967,6 +4967,9 @@
       <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h">
+      <Filter>interfaces\info</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\info\InfoExpression.h">
       <Filter>interfaces\info</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIAction.h">

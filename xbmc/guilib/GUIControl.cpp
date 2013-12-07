@@ -40,8 +40,6 @@ CGUIControl::CGUIControl() :
   m_visible = VISIBLE;
   m_visibleFromSkinCondition = true;
   m_forceHidden = false;
-  m_visibleCondition = 0;
-  m_enableCondition = 0;
   m_enabled = true;
   m_posX = 0;
   m_posY = 0;
@@ -71,8 +69,6 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_visible = VISIBLE;
   m_visibleFromSkinCondition = true;
   m_forceHidden = false;
-  m_visibleCondition = 0;
-  m_enableCondition = 0;
   m_enabled = true;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
@@ -543,7 +539,7 @@ void CGUIControl::SetVisible(bool bVisible, bool setVisState)
      //       otherwise we just set m_forceHidden
     GUIVISIBLE visible;
     if (m_visibleCondition)
-      visible = g_infoManager.GetBoolValue(m_visibleCondition) ? VISIBLE : HIDDEN;
+      visible = m_visibleCondition->Get() ? VISIBLE : HIDDEN;
     else
       visible = VISIBLE;
     if (visible != m_visible)
@@ -606,7 +602,7 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_visibleCondition)
   {
     bool bWasVisible = m_visibleFromSkinCondition;
-    m_visibleFromSkinCondition = g_infoManager.GetBoolValue(m_visibleCondition, item);
+    m_visibleFromSkinCondition = m_visibleCondition->Get(item);
     if (!bWasVisible && m_visibleFromSkinCondition)
     { // automatic change of visibility - queue the in effect
   //    CLog::Log(LOGDEBUG, "Visibility changed to visible for control id %i", m_controlID);
@@ -629,7 +625,7 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   // this may need to be reviewed at a later date
   bool enabled = m_enabled;
   if (m_enableCondition)
-    m_enabled = g_infoManager.GetBoolValue(m_enableCondition, item);
+    m_enabled = m_enableCondition->Get(item);
 
   if (m_enabled != enabled)
     MarkDirtyRegion();
@@ -651,7 +647,7 @@ void CGUIControl::SetInitialVisibility()
 {
   if (m_visibleCondition)
   {
-    m_visibleFromSkinCondition = g_infoManager.GetBoolValue(m_visibleCondition);
+    m_visibleFromSkinCondition = m_visibleCondition->Get();
     m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
   //  CLog::Log(LOGDEBUG, "Set initial visibility for control %i: %s", m_controlID, m_visible == VISIBLE ? "visible" : "hidden");
   }
@@ -667,7 +663,7 @@ void CGUIControl::SetInitialVisibility()
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
   if (m_enableCondition)
-    m_enabled = g_infoManager.GetBoolValue(m_enableCondition);
+    m_enabled = m_enableCondition->Get();
   m_allowHiddenFocus.Update();
   UpdateColors();
 

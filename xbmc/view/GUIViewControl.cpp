@@ -327,7 +327,7 @@ void CGUIViewControl::UpdateViewVisibility()
   for (unsigned int i = 0; i < m_allViews.size(); i++)
   {
     CGUIControl *view = m_allViews[i];
-    if (view->GetVisibleCondition())
+    if (view->HasVisibleCondition())
     {
       view->UpdateVisibility();
       if (view->IsVisibleFromSkin())

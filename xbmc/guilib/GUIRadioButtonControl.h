@@ -68,5 +68,5 @@ protected:
   CGUITexture m_imgRadioOffNoFocus;
   float m_radioPosX;
   float m_radioPosY;
-  unsigned int m_toggleSelect;
+  INFO::InfoPtr m_toggleSelect;
 };

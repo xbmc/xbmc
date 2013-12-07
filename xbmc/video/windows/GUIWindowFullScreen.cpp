@@ -339,7 +339,7 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   CGUIProgressControl* pProgress = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
   if(pProgress)
   {
-    if( pProgress->GetInfo() == 0 || pProgress->GetVisibleCondition() == 0)
+    if( pProgress->GetInfo() == 0 || !pProgress->HasVisibleCondition())
     {
       pProgress->SetInfo(PLAYER_PROGRESS);
       pProgress->SetVisibleCondition("player.displayafterseek");
@@ -348,14 +348,14 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   }
 
   CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(LABEL_BUFFERING);
-  if(pLabel && pLabel->GetVisibleCondition() == 0)
+  if(pLabel && !pLabel->HasVisibleCondition())
   {
     pLabel->SetVisibleCondition("player.caching");
     pLabel->SetVisible(true);
   }
 
   pLabel = (CGUILabelControl*)GetControl(LABEL_CURRENT_TIME);
-  if(pLabel && pLabel->GetVisibleCondition() == 0)
+  if(pLabel && !pLabel->HasVisibleCondition())
   {
     pLabel->SetVisibleCondition("player.displayafterseek");
     pLabel->SetVisible(true);
