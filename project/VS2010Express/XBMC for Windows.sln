@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7} = {C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}
@@ -81,6 +81,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gtest", "..\..\lib\gtest\msvc\gtest.vcxproj", "{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_codec", "..\..\lib\addons\library.xbmc.codec\project\VS2010Express\libXBMC_codec.vcxproj", "{F8F1290B-1188-4810-86C9-88178A31D2AF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visVortex", "..\..\xbmc\visualizations\Vortex\Vortex\Vortex.vcxproj", "{AFF288D5-8A77-4817-8DD9-364E183CDBF8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{034B1D02-CA92-455D-8866-DB95BEE49C10} = {034B1D02-CA92-455D-8866-DB95BEE49C10}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -460,6 +465,16 @@ Global
 		{F8F1290B-1188-4810-86C9-88178A31D2AF}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{F8F1290B-1188-4810-86C9-88178A31D2AF}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{F8F1290B-1188-4810-86C9-88178A31D2AF}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Debug Testsuite|Win32.Build.0 = Debug|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{AFF288D5-8A77-4817-8DD9-364E183CDBF8}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

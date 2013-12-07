@@ -29,7 +29,7 @@
 Vortex* g_Vortex = NULL;
 
 // settings vector
-StructSetting** g_structSettings;
+//StructSetting** g_structSettings;
 
 extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
@@ -41,7 +41,7 @@ extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
 	g_Vortex = new Vortex;
 	g_Vortex->Init( ( LPDIRECT3DDEVICE9 )visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio );
 
-	return ADDON_STATUS_NEED_SETTINGS;
+	return ADDON_STATUS_NEED_SAVEDSETTINGS;
 }
 
 extern "C" void Start( int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName )
@@ -59,7 +59,7 @@ extern "C" void ADDON_Stop()
 	}
 }
 
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
 	g_Vortex->AudioData( pAudioData, iAudioDataLength, pFreqData, iFreqDataLength );
 }
@@ -151,7 +151,7 @@ extern "C" bool IsLocked()
 //-----------------------------------------------------------------------------
 extern "C" void ADDON_Destroy()
 {
-	Stop();
+	ADDON_Stop();
 }
 
 //-- HasSettings --------------------------------------------------------------
@@ -224,6 +224,10 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
 	else if (strcmpi(id, "ShowAudioAnalysis") == 0)
 	{
 		userSettings.ShowAudioAnalysis = *(bool*)value == 1;
+	}
+  else if (strcmpi(id, "LockPreset") == 0)
+	{
+    userSettings.PresetLocked = *(bool*)value == 1;
 	}
  	else
  		return ADDON_STATUS_UNKNOWN;

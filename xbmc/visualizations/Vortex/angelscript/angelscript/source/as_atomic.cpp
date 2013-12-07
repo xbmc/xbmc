@@ -35,6 +35,7 @@
 //
 
 #include "as_atomic.h"
+#include "threads/Atomics.h"
 
 BEGIN_AS_NAMESPACE
 
