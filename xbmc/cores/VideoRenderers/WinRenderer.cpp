@@ -20,24 +20,25 @@
 
 #ifdef HAS_DX
 
-#include "WinRenderer.h"
+#include "DllSwScale.h"
 #include "Util.h"
+#include "WinRenderer.h"
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/Texture.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "guilib/Texture.h"
-#include "windowing/WindowingFactory.h"
-#include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "filesystem/File.h"
 #include "utils/MathUtils.h"
+#include "utils/SystemInfo.h"
 #include "VideoShaders/WinVideoFilter.h"
-#include "DllSwScale.h"
-#include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "win32/WIN32Util.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "windowing/WindowingFactory.h"
 
 typedef struct {
   RenderMethod  method;
@@ -91,6 +92,7 @@ CWinRenderer::CWinRenderer()
   m_bConfigured = false;
   m_clearColour = 0;
   m_format = RENDER_FMT_NONE;
+  m_processor = NULL;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -135,12 +137,12 @@ void CWinRenderer::SelectRenderMethod()
   // Force dxva renderer after dxva decoding: PS and SW renderers have performance issues after dxva decode.
   if (g_advancedSettings.m_DXVAForceProcessorRenderer && m_format == RENDER_FMT_DXVA)
   {
-    CLog::Log(LOGNOTICE, "D3D: rendering method forced to DXVA2 processor");
+    CLog::Log(LOGNOTICE, "D3D: rendering method forced to DXVA processor");
     m_renderMethod = RENDER_DXVA;
-    if (!m_processor.Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
+    if (!m_processor->Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
     {
-      CLog::Log(LOGNOTICE, "D3D: unable to open DXVA2 processor");
-      m_processor.Close();
+      CLog::Log(LOGNOTICE, "D3D: unable to open DXVA processor");
+      m_processor->Close();
       m_renderMethod = RENDER_INVALID;
     }
   }
@@ -150,14 +152,15 @@ void CWinRenderer::SelectRenderMethod()
 
     switch(m_iRequestedMethod)
     {
+      case RENDER_METHOD_DXVAHD:
       case RENDER_METHOD_DXVA:
         m_renderMethod = RENDER_DXVA;
-        if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
+        if (m_processor->Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
             break;
         else
         {
-          CLog::Log(LOGNOTICE, "D3D: unable to open DXVA2 processor");
-          m_processor.Close();
+          CLog::Log(LOGNOTICE, "D3D: unable to open DXVA processor");
+          m_processor->Close();
         }
       // Drop through to pixel shader
       case RENDER_METHOD_AUTO:
@@ -277,7 +280,7 @@ bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture, int index)
       return false;
 
     DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
-    buf->id = m_processor.Add(picture);
+    buf->id = m_processor->Add(picture);
     return true;
   }
   return false;
@@ -388,11 +391,6 @@ unsigned int CWinRenderer::PreInit()
 
   g_Windowing.Get3DDevice()->GetDeviceCaps(&m_deviceCaps);
 
-  m_iRequestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
-
-  if ((g_advancedSettings.m_DXVAForceProcessorRenderer || m_iRequestedMethod == RENDER_METHOD_DXVA) && !m_processor.PreInit())
-    CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA2 processor - skipping");
-
   m_formats.push_back(RENDER_FMT_YUV420P);
   if(g_Windowing.IsTextureFormatOk(D3DFMT_L16, 0))
   {
@@ -403,6 +401,29 @@ unsigned int CWinRenderer::PreInit()
   m_formats.push_back(RENDER_FMT_YUYV422);
   m_formats.push_back(RENDER_FMT_UYVY422);
 
+  m_iRequestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
+
+  if (g_advancedSettings.m_DXVAForceProcessorRenderer || m_iRequestedMethod == RENDER_METHOD_DXVA
+      || m_iRequestedMethod == RENDER_METHOD_DXVAHD)
+  {
+    if (m_iRequestedMethod != RENDER_METHOD_DXVA && CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin7))
+    {
+      m_processor = new DXVA::CProcessorHD();
+      if (!m_processor->PreInit())
+      {
+        CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA-HD processor - skipping");
+        SAFE_DELETE(m_processor);
+        m_processor = new DXVA::CProcessor();
+      }
+      else
+        return 0;
+    }
+    else
+      m_processor = new DXVA::CProcessor();
+
+    if (!m_processor->PreInit())
+      CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA2 processor - skipping");
+  }
 
   return 0;
 }
@@ -435,7 +456,11 @@ void CWinRenderer::UnInit()
   }
   SAFE_DELETE(m_dllSwScale);
 
-  m_processor.UnInit();
+  if (m_processor)
+  {
+    m_processor->UnInit();
+    SAFE_DELETE(m_processor);
+  }
 }
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height)
@@ -982,7 +1007,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     }
   }
 
-  m_processor.Render(m_sourceRect, destRect, target, image->id, flags);
+  m_processor->Render(m_sourceRect, destRect, target, image->id, flags);
 
   target->Release();
 
@@ -1217,8 +1242,8 @@ EINTERLACEMETHOD CWinRenderer::AutoInterlaceMethod()
 
 unsigned int CWinRenderer::GetProcessorSize()
 {
-  if (m_format == RENDER_FMT_DXVA)
-    return m_processor.Size();
+  if (m_format == RENDER_FMT_DXVA && m_processor)
+    return m_processor->Size();
   else
     return 0;
 }

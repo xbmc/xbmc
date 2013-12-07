@@ -7145,7 +7145,12 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr ""
 
-#empty strings from id 16326 to 16399
+#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr ""
+
+#empty strings from id 16327 to 16399
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16400"

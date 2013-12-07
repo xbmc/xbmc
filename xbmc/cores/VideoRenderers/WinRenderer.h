@@ -30,6 +30,7 @@
 #include "RenderCapture.h"
 #include "settings/VideoSettings.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
+#include "cores/dvdplayer/DVDCodecs/Video/DXVAHD.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 
@@ -203,7 +204,7 @@ protected:
   bool                 m_bConfigured;
   SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
   RenderMethod         m_renderMethod;
-  DXVA::CProcessor     m_processor;
+  DXVA::CProcessor    *m_processor;
   std::vector<ERenderFormat> m_formats;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
@@ -226,7 +227,7 @@ protected:
   ESCALINGMETHOD       m_scalingMethod;
   ESCALINGMETHOD       m_scalingMethodGui;
 
-  D3DCAPS9 m_deviceCaps;
+  D3DCAPS9             m_deviceCaps;
 
   bool                 m_bFilterInitialized;
 
