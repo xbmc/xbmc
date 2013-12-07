@@ -532,8 +532,7 @@ bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
     return false;
 
   CPVRChannelPtr channel = epgTag->ChannelTag();
-  if (!channel || channel->ChannelNumber() > 0 ||
-      !g_PVRManager.CheckParentalLock(*channel))
+  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return false;
 
   PlayBackRet ret = g_application.PlayFile(CFileItem(*channel));
