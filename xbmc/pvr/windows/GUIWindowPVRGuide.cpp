@@ -455,35 +455,13 @@ bool CGUIWindowPVRGuide::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON but
   return bReturn;
 }
 
-bool CGUIWindowPVRGuide::PlayEpgItem(CFileItem *item)
-{
-  CPVRChannelPtr channel;
-  if (item && item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
-    channel = item->GetEPGInfoTag()->ChannelTag();
-
-  if (!channel || !g_PVRManager.CheckParentalLock(*channel))
-    return false;
-
-  CLog::Log(LOGDEBUG, "play channel '%s'", channel->ChannelName().c_str());
-  CFileItem channelItem = CFileItem(*channel);
-  g_application.SwitchToFullScreen();
-  bool bReturn = PlayFile(&channelItem);
-  if (!bReturn)
-  {
-    CStdString msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
-    CGUIDialogOK::ShowAndGetInput(19033, 0, msg, 0);
-  }
-
-  return bReturn;
-}
-
 bool CGUIWindowPVRGuide::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
 
   if (button == CONTEXT_BUTTON_PLAY_ITEM)
   {
-    bReturn = PlayEpgItem(item);
+    bReturn = ActionPlayEpg(item);
   }
 
   return bReturn;

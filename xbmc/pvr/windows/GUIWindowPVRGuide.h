@@ -64,7 +64,6 @@ namespace PVR
     bool IsSelectedList(CGUIMessage &message) const;
     bool OnClickButton(CGUIMessage &message);
     bool OnClickList(CGUIMessage &message);
-    bool PlayEpgItem(CFileItem *item);
 
     bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
