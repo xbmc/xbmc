@@ -1,0 +1,7 @@
+PHT Fixes
+
+  Fix crash in 'Check for update'
+  New Icons and Splash screen
+  Workaround for 3FPS on Refresh Rate switching
+  MyPlex queue optimizations
+  Quit video playback when pressing esc on the OSD in paused mode.
