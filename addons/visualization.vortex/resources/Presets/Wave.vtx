@@ -1,0 +1,26 @@
+// Author : MrC
+
+void Render()
+{
+	gfxSetAspect(0);
+	gfxTranslate(0, 0, 2.414);
+   
+	gfxBegin(PRIM_LINESTRIP);
+	for (int x=0; x<256; x=x+1)
+	{
+		float r = WaveLeft(x);
+		gfxColour(1, Fabs(r), 0.1f, 1);
+		gfxVertex((x-128) / 128.0f, r * 0.4f + 0.5f, 0);
+	}
+	gfxEnd();
+
+	gfxBegin(PRIM_LINESTRIP);
+	for (int x=0; x<256; x=x+1)
+	{
+		float r = WaveRight(x);
+		gfxColour(Fabs(r), 1, 0.1f, 1);
+		gfxVertex((x-128) / 128.0f, r * 0.4f - 0.5f, 0);
+	}
+	gfxEnd();
+
+}

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<setting id="RandomPresets" type="bool" label="30000" default="true"/>
+	<setting id="TimeBetweenPresets" type="rangeofnum" label="30001" rangestart="5" rangeend="50" elements="10" valueformat="30050" default="0"/>
+	<setting id="AdditionalRandomTime" type="rangeofnum" label="30002" rangestart="5" rangeend="50" elements="10" valueformat="30050" default="0"/>
+	<setting id="LockPreset" type="bool" label="30003" default="false"/>
+	<setting id="EnableTransitions" type="bool" label="30004" default="true"/>
+	<setting id="StopFirstPreset" type="bool" label="30005" default="false"/>
+	<setting id="ShowFPS" type="bool" label="30006" default="false" visible="false"/>
+	<setting id="ShowDebugConsole" type="bool" label="30007" default="false" visible="false"/>
+	<setting id="ShowAudioAnalysis" type="bool" label="30008" default="false" visible="false"/>
+</settings>

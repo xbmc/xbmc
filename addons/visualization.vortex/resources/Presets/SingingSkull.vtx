@@ -1,0 +1,72 @@
+// AlbumArtZoomer.vtx
+// Author - MrC
+
+Texture skull1;
+Texture skull2;
+Texture skull3;
+Texture skull4;
+Texture skull5;
+Texture skull6;
+Texture skull7;
+Texture skull0;
+
+float bt,bump,n;
+
+void Init()
+{
+	skull0.LoadTexture("skull_jawud1.png");
+	skull1.LoadTexture("skull_jawud2.png");
+	skull2.LoadTexture("skull_jawud3.png");
+	skull3.LoadTexture("skull_jawud4.png");
+	skull4.LoadTexture("skull_jawud5.png");
+	skull5.LoadTexture("skull_jawud6.png");
+	skull6.LoadTexture("skull_jawud7.png");
+	skull7.LoadTexture("skull_jawud8.png");
+	bt = 0;
+}
+
+float time = 0;
+
+void Render()
+{
+	time += TIMEPASS*10;
+	bt = bt + (TIMEPASS*(0.5+BASS));
+	n = 1.0-(TIMEPASS*4);
+	bump = (bump*n)+(BASS*(1.0-n));
+	
+	int tex = 0;
+	if (MIDDLE > 0)
+		tex = MIDDLE * 10;
+	if (tex == 0)
+		gfxSetTexture(skull0);
+	else if (tex == 1)
+		gfxSetTexture(skull1);
+	else if (tex == 2)
+		gfxSetTexture(skull2);
+	else if (tex == 3)
+		gfxSetTexture(skull3);
+	else if (tex == 4)
+		gfxSetTexture(skull4);
+	else if (tex == 5)
+		gfxSetTexture(skull5);
+	else if (tex == 6)
+		gfxSetTexture(skull6);
+	else if (tex >= 7)
+		gfxSetTexture(skull7);
+//	gfxSetAspect(0);
+	gfxSetBlendMode(BLEND_MOD);
+	gfxTranslate(0,0,2.5);
+	
+	float x = (Sin(bt*6.43)+Cos(bt*4.23))*0.25;
+	float y = (Cos(bt*6.43)+Sin(bt*4.23))*0.25;
+
+	
+	gfxTexRect(x - 0.5, y + 0.5, x + 0.5, y -0.5);
+
+	float col = 0;
+	if (BASS > 0)
+		col = BASS;
+
+	col = Fabs(Sin(time));
+	
+}
