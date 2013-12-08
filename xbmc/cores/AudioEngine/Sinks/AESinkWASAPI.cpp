@@ -1017,9 +1017,18 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 {
   WAVEFORMATEXTENSIBLE_IEC61937 wfxex_iec61937;
   WAVEFORMATEXTENSIBLE &wfxex = wfxex_iec61937.FormatExt;
+  bool obsolete71Wide = false;
 
   if (format.m_dataFormat <= AE_FMT_FLOAT)
+  {
     BuildWaveFormatExtensible(format, wfxex);
+    // handle obsolete 7.1 wide
+    if (wfxex.dwChannelMask == KSAUDIO_SPEAKER_7POINT1)
+    {
+      obsolete71Wide = true;
+      wfxex.dwChannelMask = KSAUDIO_SPEAKER_7POINT1_SURROUND;
+    }
+  }
   else
     BuildWaveFormatExtensibleIEC61397(format, wfxex_iec61937);
 
@@ -1060,51 +1069,72 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
 
   int closestMatch;
+  unsigned int requestedChannels = wfxex.Format.nChannels;
+  unsigned int noOfCh;
 
   /* The requested format is not supported by the device.  Find something that works */
-  for (int j = 0; j < sizeof(testFormats)/sizeof(sampleFormat); j++)
+  for (int layout = -1; layout <= (int)ARRAYSIZE(layoutsList); layout++)
   {
-    closestMatch = -1;
-
-    wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
-    wfxex.SubFormat                   = testFormats[j].subFormat;
-    wfxex.Format.wBitsPerSample       = testFormats[j].bitsPerSample;
-    wfxex.Samples.wValidBitsPerSample = testFormats[j].validBitsPerSample;
-    wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
-
-    for (int i = 0 ; i < WASAPISampleRateCount; i++)
+    // if requested layout is not suppported, try standard layouts with at least
+    // the number of channels as requested
+    // as the last resort try stereo
+    if (layout == ARRAYSIZE(layoutsList))
     {
-      wfxex.Format.nSamplesPerSec    = WASAPISampleRates[i];
-      wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
-
-      /* Trace format match iteration loop via log */
-      #if 0
-      CLog::Log(LOGDEBUG, "WASAPI: Trying Format: %s, %d, %d, %d", CAEUtil::DataFormatToStr(testFormats[j].subFormatType),
-                                                                   wfxex.Format.nSamplesPerSec,
-                                                                   wfxex.Format.wBitsPerSample,
-                                                                   wfxex.Samples.wValidBitsPerSample);
-      #endif
-
-      hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
-
-      if (SUCCEEDED(hr))
-      {
-        /* If the current sample rate matches the source then stop looking and use it */
-        if ((WASAPISampleRates[i] == format.m_sampleRate) && (testFormats[j].subFormatType <= format.m_dataFormat))
-          goto initialize;
-        /* If this rate is closer to the source then the previous one, save it */
-        else if (closestMatch < 0 || abs((int)WASAPISampleRates[i] - (int)format.m_sampleRate) < abs((int)WASAPISampleRates[closestMatch] - (int)format.m_sampleRate))
-          closestMatch = i;
-      }
-      else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT)
-          CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
+      wfxex.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
+      wfxex.Format.nChannels = 2;
+    }
+    else if (layout >= 0)
+    {
+      wfxex.dwChannelMask = ChLayoutToChMask(layoutsList[layout], &noOfCh);
+      wfxex.Format.nChannels = noOfCh;
+      if (noOfCh < requestedChannels)
+        continue;
     }
 
-    if (closestMatch >= 0)
+    for (int j = 0; j < sizeof(testFormats)/sizeof(sampleFormat); j++)
     {
-      wfxex.Format.nSamplesPerSec    = WASAPISampleRates[closestMatch];
-      wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
-      goto initialize;
+      closestMatch = -1;
+
+      wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
+      wfxex.SubFormat                   = testFormats[j].subFormat;
+      wfxex.Format.wBitsPerSample       = testFormats[j].bitsPerSample;
+      wfxex.Samples.wValidBitsPerSample = testFormats[j].validBitsPerSample;
+      wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+
+      for (int i = 0 ; i < WASAPISampleRateCount; i++)
+      {
+        wfxex.Format.nSamplesPerSec    = WASAPISampleRates[i];
+        wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+
+        /* Trace format match iteration loop via log */
+#if 0
+        CLog::Log(LOGDEBUG, "WASAPI: Trying Format: %s, %d, %d, %d", CAEUtil::DataFormatToStr(testFormats[j].subFormatType),
+          wfxex.Format.nSamplesPerSec,
+          wfxex.Format.wBitsPerSample,
+          wfxex.Samples.wValidBitsPerSample);
+#endif
+
+        hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
+
+        if (SUCCEEDED(hr))
+        {
+          /* If the current sample rate matches the source then stop looking and use it */
+          if ((WASAPISampleRates[i] == format.m_sampleRate) && (testFormats[j].subFormatType <= format.m_dataFormat))
+            goto initialize;
+          /* If this rate is closer to the source then the previous one, save it */
+          else if (closestMatch < 0 || abs((int)WASAPISampleRates[i] - (int)format.m_sampleRate) < abs((int)WASAPISampleRates[closestMatch] - (int)format.m_sampleRate))
+            closestMatch = i;
+        }
+        else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT)
+          CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
+      }
+
+      if (closestMatch >= 0)
+      {
+        wfxex.Format.nSamplesPerSec    = WASAPISampleRates[closestMatch];
+        wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+        goto initialize;
+      }
     }
   }
 
@@ -1116,7 +1146,22 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
 initialize:
 
-  AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
+  // check if 7.1 wide was requested and we were able to open 8 channels
+  if (obsolete71Wide && (wfxex.dwChannelMask == KSAUDIO_SPEAKER_7POINT1_SURROUND))
+  {
+    // build layout for 7.1 Wide and map it into KSAUDIO_SPEAKER_7POINT1_SURROUND
+    m_channelLayout.Reset();
+    m_channelLayout += AE_CH_FLOC;  // FLOC/FROC go into FL/FR
+    m_channelLayout += AE_CH_FROC;
+    m_channelLayout += AE_CH_FC;
+    m_channelLayout += AE_CH_LFE;
+    m_channelLayout += AE_CH_FL;    // FL/FR go into SL/SR
+    m_channelLayout += AE_CH_FR;
+    m_channelLayout += AE_CH_BL;
+    m_channelLayout += AE_CH_BR;
+  }
+  else
+    AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
   format.m_channelLayout = m_channelLayout;
 
   /* When the stream is raw, the values in the format structure are set to the link    */

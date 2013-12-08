@@ -2222,7 +2222,13 @@
           <level>2</level>
           <default>false</default>
           <dependencies>
-            <dependency type="visible" setting="audiooutput.channels" operator="!is">1</dependency>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.channels">audiooutput.stereoupmix</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.stereoupmix</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.stereoupmix</condition>
+              </or>    
+            </dependency>
           </dependencies>
           <control type="toggle" />
         </setting>

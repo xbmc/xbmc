@@ -530,6 +530,11 @@ bool CCoreAudioAE::IsSettingVisible(const std::string &settingId)
     else
       return false;
   }
+  else if (settingId == "audiooutput.stereoupmix")
+  {
+    if (CSettings::Get().GetInt("audiooutput.channels") > AE_CH_LAYOUT_2_0)
+      return true;
+  }
 
   return true;
 }
