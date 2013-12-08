@@ -60,7 +60,6 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_cacheItems = preloadItems;
   m_scrollItemsPerFrame = 0.0f;
   m_type = VIEW_TYPE_NONE;
-  m_autoScrollCondition = 1;
   m_autoScrollMoveTime = 0;
   m_autoScrollDelayTime = 0;
   m_autoScrollIsReversed = false;
@@ -1023,7 +1022,7 @@ void CGUIBaseContainer::ResetAutoScrolling()
 
 void CGUIBaseContainer::UpdateAutoScrolling(unsigned int currentTime)
 {
-  if (!m_autoScrollCondition || g_infoManager.GetBoolValue(m_autoScrollCondition))
+  if (m_autoScrollCondition && m_autoScrollCondition->Get())
   {
     if (m_lastRenderTime)
       m_autoScrollDelayTime += currentTime - m_lastRenderTime;
@@ -1034,7 +1033,7 @@ void CGUIBaseContainer::UpdateAutoScrolling(unsigned int currentTime)
       m_autoScrollIsReversed ? MoveUp(true) : MoveDown(true);
     }
   }
-  else if (m_autoScrollCondition)
+  else if (!m_autoScrollCondition)
     ResetAutoScrolling();  // conditional is false, so reset the autoscrolling
 }
 
