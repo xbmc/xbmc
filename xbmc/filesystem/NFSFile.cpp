@@ -245,7 +245,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
       //GetFileName returns path without leading "/"
       //but we need it because the export paths start with "/"
       //and path.Find(*it) wouldn't work else
-      if(!path.empty() && path[0] != '/')
+      if(path[0] != '/')
       {
         path = "/" + path;
       }
@@ -257,11 +257,20 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
         //if path starts with the current export path
         if(StringUtils::StartsWith(path, *it))
         {
+          //its possible that StartsWith may not find the correct match first
+          //as an example, if /path/ & and /path/sub/ are exported, but
+          //the user specifies the path /path/subdir/ (from /path/ export).
+          //If the path is longer than the exportpath, make sure / is next.
+          if( (path.length() > (*it).length()) &&
+              (path[(*it).length()] != '/') && (*it) != "/")
+            continue;
           exportPath = *it;
           //handle special case where root is exported
           //in that case we don't want to stripp off to
           //much from the path
-          if( exportPath == "/" )
+          if( exportPath == path )
+            relativePath = "//";
+          else if( exportPath == "/" )
             relativePath = "//" + path.substr(exportPath.length());
           else
             relativePath = "//" + path.substr(exportPath.length()+1);
