@@ -153,6 +153,11 @@ public class Helper
             ret += newline
           else if (it.name() == 'ndash')
             ret += "--"
+          else if (it.name() == 'emphasis')
+          {
+            ret += '*'
+            it.children().each handleDoc
+          }
           else
             System.out.println("WARNING: Cannot parse the following as part of the doxygen processing:" + XmlUtil.serialize(it))
         }
