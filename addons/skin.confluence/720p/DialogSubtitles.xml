@@ -59,8 +59,8 @@
 					<font>font30_title</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<textcolor>FFFFFFFF</textcolor>
-					<shadowcolor>FF000000</shadowcolor>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
 					<description>Video label</description>
@@ -73,7 +73,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>
-					<shadowcolor>FF000000</shadowcolor>
+					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="image">
 					<left>30</left>
@@ -97,7 +97,7 @@
 					<width>780</width>
 					<height>40</height>
 					<font>font13</font>
-					<textcolor>FFFFFFFF</textcolor>
+					<textcolor>white</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
 					<wrapmultiline>true</wrapmultiline>
@@ -145,8 +145,8 @@
 							<height>38</height>
 							<font>font18</font>
 							<aligny>center</aligny>
-							<textcolor>FFFFFFFF</textcolor>
-							<selectedcolor>FF0084FF</selectedcolor>
+							<textcolor>white</textcolor>
+							<selectedcolor>selected</selectedcolor>
 							<align>left</align>
 							<info>ListItem.Label</info>
 						</control>
@@ -173,8 +173,8 @@
 							<height>38</height>
 							<font>font18</font>
 							<aligny>center</aligny>
-							<textcolor>FFFFFFFF</textcolor>
-							<selectedcolor>FF0084FF</selectedcolor>
+							<textcolor>white</textcolor>
+							<selectedcolor>selected</selectedcolor>
 							<align>left</align>
 							<info>ListItem.Label2</info>
 						</control>
@@ -216,8 +216,8 @@
 							<height>38</height>
 							<font>font18</font>
 							<aligny>center</aligny>
-							<textcolor>FFFFFFFF</textcolor>
-							<selectedcolor>FF0084FF</selectedcolor>
+							<textcolor>white</textcolor>
+							<selectedcolor>selected</selectedcolor>
 							<align>left</align>
 							<info>ListItem.Label</info>
 						</control>
@@ -244,8 +244,8 @@
 							<height>38</height>
 							<font>font18</font>
 							<aligny>center</aligny>
-							<textcolor>FFFFFFFF</textcolor>
-							<selectedcolor>FF0084FF</selectedcolor>
+							<textcolor>white</textcolor>
+							<selectedcolor>selected</selectedcolor>
 							<align>left</align>
 							<info>ListItem.Label2</info>
 						</control>
@@ -268,7 +268,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<subtype>page</subtype>
-					<textcolor>FFFFFFFF</textcolor>
+					<textcolor>white</textcolor>
 					<onleft>120</onleft>
 					<onright>120</onright>
 					<ondown>120</ondown>
@@ -300,7 +300,7 @@
 							<width min="10" max="260">auto</width>
 							<height>40</height>
 							<font>font13</font>
-							<textcolor>FFFFFFFF</textcolor>
+							<textcolor>white</textcolor>
 							<label>31413</label>
 							<aligny>center</aligny>
 							<wrapmultiline>true</wrapmultiline>
@@ -334,8 +334,8 @@
 					<font>font13</font>
 					<align>center</align>
 					<aligny>top</aligny>
-					<textcolor>FFEB9E17</textcolor>
-					<shadowcolor>FF000000</shadowcolor>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
 				</control>
 				<control type="image">
@@ -372,8 +372,8 @@
 							<height>38</height>
 							<font>font18</font>
 							<aligny>center</aligny>
-							<textcolor>FFFFFFFF</textcolor>
-							<selectedcolor>FF0084FF</selectedcolor>
+							<textcolor>white</textcolor>
+							<selectedcolor>selected</selectedcolor>
 							<align>left</align>
 							<info>ListItem.Label</info>
 						</control>
@@ -401,8 +401,8 @@
 							<height>38</height>
 							<font>font18</font>
 							<aligny>center</aligny>
-							<textcolor>FFFFFFFF</textcolor>
-							<selectedcolor>FF0084FF</selectedcolor>
+							<textcolor>white</textcolor>
+							<selectedcolor>selected</selectedcolor>
 							<align>left</align>
 							<info>ListItem.Label</info>
 						</control>
