@@ -125,9 +125,9 @@ const char *eventStrings[] = {"playing", "paused", "loading", "stopped"};
 "<key>deviceid</key>\r\n"\
 "<string>%s</string>\r\n"\
 "<key>features</key>\r\n"\
-"<integer>119</integer>\r\n"\
+"<integer>4294969855</integer>\r\n"\
 "<key>model</key>\r\n"\
-"<string>Xbmc,1</string>\r\n"\
+"<string>AppleTV3,2</string>\r\n"\
 "<key>protovers</key>\r\n"\
 "<string>1.0</string>\r\n"\
 "<key>srcvers</key>\r\n"\
