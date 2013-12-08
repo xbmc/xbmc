@@ -67,8 +67,8 @@ protected:
   float                     m_fForcedAspectRatio;
   unsigned                  m_flags;
 
+  CRect                     m_src_rect;
   CRect                     m_dst_rect;
-  int                       m_view_mode;
 
   uint32_t                  m_history_valid_pts;
   DllBcmHost                m_DllBcmHost;

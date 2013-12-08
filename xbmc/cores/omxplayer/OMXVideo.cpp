@@ -852,6 +852,8 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
   configDisplay.src_rect.width      = (int)(SrcRect.Width()+0.5f);
   configDisplay.src_rect.height     = (int)(SrcRect.Height()+0.5f);
 
+  configDisplay.fullscreen          = configDisplay.dest_rect.width == 0 || configDisplay.dest_rect.width == 0 ? OMX_TRUE : OMX_FALSE;
+
   m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
 
   CLog::Log(LOGDEBUG, "dest_rect.x_offset %d dest_rect.y_offset %d dest_rect.width %d dest_rect.height %d\n",
