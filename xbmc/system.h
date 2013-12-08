@@ -74,7 +74,7 @@
   #define HAS_AIRPLAY
 #endif
 
-#ifdef HAVE_LIBSHAIRPORT
+#if defined(HAVE_LIBSHAIRPORT) || defined(HAVE_LIBSHAIRPLAY)
   #define HAS_AIRTUNES
 #endif
 
@@ -121,6 +121,7 @@
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
 #define HAS_AIRTUNES
+#define HAVE_LIBSHAIRPLAY
 #define HAVE_LIBCEC
 #define HAVE_LIBMP3LAME
 #define HAVE_LIBVORBISENC
