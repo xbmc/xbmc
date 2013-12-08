@@ -225,15 +225,20 @@ int CNfsConnection::getContextForExport(const CStdString &exportname)
 
 bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &exportPath, CStdString &relativePath)
 {
-    bool ret = false;
-    
-    //refresh exportlist if empty or hostname change
-    if(m_exportList.empty() || !url.GetHostName().Equals(m_hostName,false))
-    {
-      m_exportList = GetExportList(url);
-    }
+  //refresh exportlist if empty or hostname change
+  if(m_exportList.empty() || !StringUtils::EqualsNoCase(url.GetHostName(), m_hostName))
+  {
+    m_exportList = GetExportList(url);
+  }
 
-    if(!m_exportList.empty())
+  return splitUrlIntoExportAndPath(url, exportPath, relativePath, m_exportList);
+}
+
+bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,CStdString &exportPath, CStdString &relativePath, std::list<std::string> &exportList)
+{
+    bool ret = false;
+  
+    if(!exportList.empty())
     {
       relativePath = "";
       exportPath = "";
@@ -250,7 +255,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
       
       std::list<std::string>::iterator it;
       
-      for(it=m_exportList.begin();it!=m_exportList.end();it++)
+      for(it=exportList.begin();it!=exportList.end();it++)
       {
         //if path starts with the current export path
         if(StringUtils::StartsWith(path, *it))
