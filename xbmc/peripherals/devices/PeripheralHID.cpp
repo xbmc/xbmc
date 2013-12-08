@@ -27,8 +27,7 @@ using namespace PERIPHERALS;
 using namespace std;
 
 CPeripheralHID::CPeripheralHID(const PeripheralScanResult& scanResult) :
-  CPeripheral(scanResult),
-  m_bInitialised(false)
+  CPeripheral(scanResult)
 {
   m_strDeviceName = scanResult.m_strDeviceName.empty() ? g_localizeStrings.Get(35001) : scanResult.m_strDeviceName;
   m_features.push_back(FEATURE_HID);

@@ -453,14 +453,14 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
   CecVolumeChange pendingVolumeChange = VOLUME_CHANGE_NONE;
   {
     CSingleLock lock(m_critSection);
-    if (m_volumeChangeQueue.size() > 0)
+    if (!m_volumeChangeQueue.empty())
     {
       /* get the first change from the queue */
       pendingVolumeChange = m_volumeChangeQueue.front();
       m_volumeChangeQueue.pop();
 
       /* remove all dupe entries */
-      while (m_volumeChangeQueue.size() > 0 && m_volumeChangeQueue.front() == pendingVolumeChange)
+      while (!m_volumeChangeQueue.empty() && m_volumeChangeQueue.front() == pendingVolumeChange)
         m_volumeChangeQueue.pop();
 
       /* send another keypress after VOLUME_REFRESH_TIMEOUT ms */
