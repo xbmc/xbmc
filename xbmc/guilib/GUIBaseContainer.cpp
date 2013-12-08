@@ -58,6 +58,10 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_scrollItemsPerFrame = 0.0f;
   m_type = VIEW_TYPE_NONE;
   m_listProvider = NULL;
+  m_autoScrollMoveTime = 0;
+  m_autoScrollDelayTime = 0;
+  m_autoScrollIsReversed = false;
+  m_lastRenderTime = 0;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
@@ -72,10 +76,19 @@ void CGUIBaseContainer::DoProcess(unsigned int currentTime, CDirtyRegionList &di
   if (m_pageChangeTimer.GetElapsedMilliseconds() > 200)
     m_pageChangeTimer.Stop();
   m_wasReset = false;
+
+  // if not visible, we reset the autoscroll timer
+  if (!IsVisible() && m_autoScrollMoveTime)
+  {
+    ResetAutoScrolling();
+  }
 }
 
 void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  // update our auto-scrolling as necessary
+  UpdateAutoScrolling(currentTime);
+
   ValidateOffset();
 
   if (m_bInvalidated)
@@ -130,6 +143,8 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
   // when we are scrolling up, offset will become lower (integer division, see offset calc)
   // to have same behaviour when scrolling down, we need to set page control to offset+1
   UpdatePageControl(offset + (m_scroller.IsScrollingDown() ? 1 : 0));
+
+  m_lastRenderTime = currentTime;
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
@@ -607,6 +622,7 @@ bool CGUIBaseContainer::MoveDown(bool wrapAround)
 // scrolls the said amount
 void CGUIBaseContainer::Scroll(int amount)
 {
+  ResetAutoScrolling();
   ScrollToOffset(GetOffset() + amount);
 }
 
@@ -974,6 +990,42 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   SetOffset(offset);
 }
 
+void CGUIBaseContainer::SetAutoScrolling(const TiXmlNode *node)
+{
+  if (!node) return;
+  const TiXmlElement *scroll = node->FirstChildElement("autoscroll");
+  if (scroll)
+  {
+    scroll->Attribute("time", &m_autoScrollMoveTime);
+    if (scroll->Attribute("reverse"))
+      m_autoScrollIsReversed = true;
+    if (scroll->FirstChild())
+      m_autoScrollCondition = g_infoManager.Register(scroll->FirstChild()->ValueStr(), GetParentID());
+  }
+}
+
+void CGUIBaseContainer::ResetAutoScrolling()
+{
+  m_autoScrollDelayTime = 0;
+}
+
+void CGUIBaseContainer::UpdateAutoScrolling(unsigned int currentTime)
+{
+  if (m_autoScrollCondition && m_autoScrollCondition->Get())
+  {
+    if (m_lastRenderTime)
+      m_autoScrollDelayTime += currentTime - m_lastRenderTime;
+    if (m_autoScrollDelayTime > (unsigned int)m_autoScrollMoveTime && !m_scroller.IsScrolling())
+    { // delay is finished - start moving
+      m_autoScrollDelayTime = 0;
+      // Move up or down whether reversed moving is true or false
+      m_autoScrollIsReversed ? MoveUp(true) : MoveDown(true);
+    }
+  }
+  else
+    ResetAutoScrolling();
+}
+
 void CGUIBaseContainer::SetContainerMoving(int direction)
 {
   if (direction)
@@ -1001,6 +1053,7 @@ void CGUIBaseContainer::Reset()
   m_wasReset = true;
   m_items.clear();
   m_lastItem.reset();
+  ResetAutoScrolling();
 }
 
 void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
