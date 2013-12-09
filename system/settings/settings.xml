@@ -809,6 +809,18 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="3">
+        <setting id="subtitles.stereoscopicdepth" type="integer" label="36545" help="36546">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>10</maximum>
+          </constraints>
+          <control type="spinner" format="integer" delayed="true"/>
+        </setting>
+      </group>
     </category>
     <category id="dvds" label="14087" help="36193">
       <group id="1">

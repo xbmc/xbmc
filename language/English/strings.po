@@ -14871,7 +14871,17 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr ""
 
-#empty strings from id 36545 to 36999
+#: system/settings/settings.xml
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr ""
+
+#empty strings from id 36547 to 36999
 #reserved strings 365XX
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
