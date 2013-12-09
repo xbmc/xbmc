@@ -57,7 +57,8 @@ public:
 
 };
 
-#if (defined USE_EXTERNAL_OMX)
+#ifndef TARGET_RASPBERRY_PI
+//#if (defined USE_EXTERNAL_OMX)
 class DllOMX : public DllDynamic, DllOMXInterface
 {
 public:
@@ -113,7 +114,7 @@ class DllOMX : public DllDynamic, DllOMXInterface
 public:
   virtual bool Load()
   {
-    CLog::Log(LOGDEBUG, "DllOMX: dlloaded openmax library");
+//    CLog::Log(LOGDEBUG, "DllOMX: dlloaded openmax library");
     return DllDynamic::Load();
   }
 };

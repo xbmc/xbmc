@@ -149,14 +149,14 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
   }
   else if (key == "art")
   {
-    width = "1280";
-    height = "720";
+    width = "1920";
+    height = "1080";
     propertyName = PLEX_ART_FANART;
   }
   else if (key == "picture")
   {
-    width = "1280";
-    height = "720";
+    width = "1920";
+    height = "1080";
   }
 
   mediaUrl.SetOption("width", width);

@@ -255,7 +255,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
     else
     {
       // display warning: libCEC could not be loaded
-      CLog::Log(LOGERROR, "%s", g_localizeStrings.Get(36017).c_str());
+      //CLog::Log(LOGERROR, "%s", g_localizeStrings.Get(36017).c_str());
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36017));
       delete m_dll;
       m_dll = NULL;
@@ -266,7 +266,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
     if (m_configuration.serverVersion < CEC_LIB_SUPPORTED_VERSION)
     {
       /* unsupported libcec version */
-      CLog::Log(LOGERROR, g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1, CEC_LIB_SUPPORTED_VERSION);
+      //CLog::Log(LOGERROR, g_localizeStrings.Get(36040).c_str(), m_cecAdapter ? m_configuration.serverVersion : -1, CEC_LIB_SUPPORTED_VERSION);
 
       // display warning: incompatible libCEC
       CStdString strMessage;
@@ -282,7 +282,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
     }
     else
     {
-      CLog::Log(LOGDEBUG, "%s - using libCEC v%s", __FUNCTION__, m_cecAdapter->ToString((cec_server_version)m_configuration.serverVersion));
+      //CLog::Log(LOGDEBUG, "%s - using libCEC v%s", __FUNCTION__, m_cecAdapter->ToString((cec_server_version)m_configuration.serverVersion));
       SetVersionInfo(m_configuration);
     }
 
@@ -311,13 +311,13 @@ bool CPeripheralCecAdapter::OpenConnection(void)
 
   if (!GetSettingBool("enabled"))
   {
-    CLog::Log(LOGDEBUG, "%s - CEC adapter is disabled in peripheral settings", __FUNCTION__);
+    //CLog::Log(LOGDEBUG, "%s - CEC adapter is disabled in peripheral settings", __FUNCTION__);
     m_bStarted = false;
     return bIsOpen;
   }
   
   // open the CEC adapter
-  CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, m_strComPort.c_str());
+  //CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, m_strComPort.c_str());
 
   // scanning the CEC bus takes about 5 seconds, so display a notification to inform users that we're busy
   CStdString strMessage;
@@ -331,7 +331,7 @@ bool CPeripheralCecAdapter::OpenConnection(void)
     if ((bIsOpen = m_cecAdapter->Open(m_strComPort.c_str(), 10000)) == false)
     {
       // display warning: couldn't initialise libCEC
-      CLog::Log(LOGERROR, "%s - could not opening a connection to the CEC adapter", __FUNCTION__);
+      //CLog::Log(LOGERROR, "%s - could not opening a connection to the CEC adapter", __FUNCTION__);
       if (!bConnectionFailedDisplayed)
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36012));
       bConnectionFailedDisplayed = true;
@@ -1209,8 +1209,8 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message me
     break;
   }
 
-  if (iLevel >= 0)
-    CLog::Log(iLevel, "%s - %s", __FUNCTION__, message.message);
+//  if (iLevel >= 0)
+//    CLog::Log(iLevel, "%s - %s", __FUNCTION__, message.message);
 
   return 1;
 }

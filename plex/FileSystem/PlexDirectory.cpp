@@ -256,8 +256,6 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     }
   
 
-	if (m_isAugmented)
-		DoAugmentation(fileItems);
 
 	// Adding to Cache
 	if (bCachable)

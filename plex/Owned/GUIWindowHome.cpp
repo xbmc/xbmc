@@ -191,7 +191,7 @@ void CPlexSectionFanout::Refresh()
       /* On slow/limited systems we don't want to have the full list */
 #if defined(TARGET_RPI) || defined(TARGET_DARWIN_IOS)
       trueUrl.SetOption("X-Plex-Container-Start", "0");
-      trueUrl.SetOption("X-Plex-Container-Size", "10");
+      trueUrl.SetOption("X-Plex-Container-Size", "20");
 #endif
       
       if (m_sectionType != SECTION_TYPE_ALBUM)
