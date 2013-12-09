@@ -393,8 +393,13 @@ ManagerState CPVRManager::GetState(void) const
 
 void CPVRManager::SetState(ManagerState state) 
 {
-  CSingleLock lock(m_managerStateMutex);
-  m_managerState = state;
+  {
+    CSingleLock lock(m_managerStateMutex);
+    m_managerState = state;
+    SetChanged();
+  }
+
+  NotifyObservers(ObservableMessageManagerStateChanged);
 }
 
 void CPVRManager::Process(void)
