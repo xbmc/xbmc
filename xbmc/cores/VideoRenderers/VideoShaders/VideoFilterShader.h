@@ -87,6 +87,13 @@ namespace Shaders {
       bool  OnEnabled();
   };
 
+  class DefaultFilterShader : public BaseVideoFilterShader
+  {
+    public:
+      void  OnCompiledAndLinked();
+      bool  OnEnabled();
+  };
+
 } // end namespace
 
 #endif

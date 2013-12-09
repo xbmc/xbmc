@@ -830,6 +830,15 @@ void CLinuxRendererGL::UpdateVideoFilter()
         break;
       }
     }
+    else
+    {
+      m_pVideoFilterShader = new DefaultFilterShader();
+      if (!m_pVideoFilterShader->CompileAndLink())
+      {
+        CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
+        break;
+      }
+    }
     return;
 
   case VS_SCALINGMETHOD_LANCZOS2:
