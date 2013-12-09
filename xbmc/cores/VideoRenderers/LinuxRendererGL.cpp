@@ -1536,7 +1536,6 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 
   // make sure we know the correct texture size
   GetPlaneTextureSize(plane);
-  CalculateTextureSourceRects(index, 1);
 
   // Try some clamping or wrapping
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -1583,10 +1582,10 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   }
   else
   {
-    glTexCoord2f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y); glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0.0f, 0.0f);
-    glTexCoord2f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y); glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 1.0f, 0.0f);
-    glTexCoord2f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y); glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 1.0f, 1.0f);
-    glTexCoord2f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y); glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0.0f, 1.0f);
+    glTexCoord2f(plane.rect.x1, plane.rect.y1); glVertex4f(m_rotatedDestCoords[0].x, m_rotatedDestCoords[0].y, 0.0f, 0.0f);
+    glTexCoord2f(plane.rect.x2, plane.rect.y1); glVertex4f(m_rotatedDestCoords[1].x, m_rotatedDestCoords[1].y, 1.0f, 0.0f);
+    glTexCoord2f(plane.rect.x2, plane.rect.y2); glVertex4f(m_rotatedDestCoords[2].x, m_rotatedDestCoords[2].y, 1.0f, 1.0f);
+    glTexCoord2f(plane.rect.x1, plane.rect.y2); glVertex4f(m_rotatedDestCoords[3].x, m_rotatedDestCoords[3].y, 0.0f, 1.0f);
   }
   glEnd();
   VerifyGLState();
@@ -2407,23 +2406,27 @@ bool CLinuxRendererGL::UploadVDPAUTexture(int index)
 
   plane.id = vdpau->texture[0];
 
+  // in stereoscopic mode sourceRect may only
+  // be a part of the source video surface
   plane.rect = m_sourceRect;
-  plane.width  = im.width;
-  plane.height = im.height;
 
-  plane.height  /= plane.pixpertex_y;
-  plane.rect.y1 /= plane.pixpertex_y;
-  plane.rect.y2 /= plane.pixpertex_y;
-  plane.width   /= plane.pixpertex_x;
-  plane.rect.x1 /= plane.pixpertex_x;
-  plane.rect.x2 /= plane.pixpertex_x;
+  // clip rect
+  if (vdpau->crop.x1 > plane.rect.x1)
+    plane.rect.x1 = vdpau->crop.x1;
+  if (vdpau->crop.x2 < plane.rect.x2)
+    plane.rect.x2 = vdpau->crop.x2;
+  if (vdpau->crop.y1 > plane.rect.y1)
+    plane.rect.y1 = vdpau->crop.y1;
+  if (vdpau->crop.y2 < plane.rect.y2)
+    plane.rect.y2 = vdpau->crop.y2;
+
+  plane.texheight = vdpau->texHeight;
+  plane.texwidth  = vdpau->texWidth;
 
   if (m_textureTarget == GL_TEXTURE_2D)
   {
-    plane.height  /= plane.texheight;
     plane.rect.y1 /= plane.texheight;
     plane.rect.y2 /= plane.texheight;
-    plane.width   /= plane.texwidth;
     plane.rect.x1 /= plane.texwidth;
     plane.rect.x2 /= plane.texwidth;
   }
