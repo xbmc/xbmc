@@ -120,7 +120,7 @@
 			<textureslidernib>ScrollBarNib.png</textureslidernib>
 			<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
 			<onleft>2</onleft>
-			<onright>9</onright>
+			<onright>2</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 		</control>
@@ -140,7 +140,7 @@
 				<onleft>12</onleft>
 				<onright>11</onright>
 				<onup>2</onup>
-				<ondown>9</ondown>
+				<ondown>2</ondown>
 			</control>
 			<control type="button" id="11">
 				<description>Cancel Button</description>
@@ -155,7 +155,7 @@
 				<onleft>10</onleft>
 				<onright>12</onright>
 				<onup>2</onup>
-				<ondown>9</ondown>
+				<ondown>2</ondown>
 			</control>
 			<control type="button" id="12">
 				<description>Defaults Button</description>
@@ -170,7 +170,7 @@
 				<onleft>11</onleft>
 				<onright>10</onright>
 				<onup>2</onup>
-				<ondown>9</ondown>
+				<ondown>2</ondown>
 			</control>
 		</control>
 

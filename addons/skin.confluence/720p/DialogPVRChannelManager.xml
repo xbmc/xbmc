@@ -4,8 +4,8 @@
 	<allowoverlay>no</allowoverlay>
 	<coordinates>
 		<system>1</system>
-		<left>190</left>
-		<top>30</top>
+		<left>80</left>
+		<top>65</top>
 	</coordinates>
 	<include>dialogeffect</include>
 
@@ -13,15 +13,15 @@
 		<control type="image">
 			<left>0</left>
 			<top>0</top>
-			<width>900</width>
-			<height>660</height>
+			<width>1120</width>
+			<height>570</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
 			<description>Dialog Header image</description>
 			<left>40</left>
 			<top>16</top>
-			<width>820</width>
+			<width>1020</width>
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
@@ -29,7 +29,7 @@
 			<description>header label</description>
 			<left>40</left>
 			<top>20</top>
-			<width>820</width>
+			<width>1020</width>
 			<height>30</height>
 			<font>font13_title</font>
 			<label>$LOCALIZE[19199] - $LOCALIZE[19023]</label>
@@ -43,7 +43,7 @@
 			<description>header label</description>
 			<left>40</left>
 			<top>20</top>
-			<width>820</width>
+			<width>1020</width>
 			<height>30</height>
 			<font>font13_title</font>
 			<label>$LOCALIZE[19199] - $LOCALIZE[19024]</label>
@@ -55,7 +55,7 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<left>810</left>
+			<left>1030</left>
 			<top>15</top>
 			<width>64</width>
 			<height>32</height>
@@ -74,7 +74,7 @@
 			<left>20</left>
 			<top>70</top>
 			<control type="scrollbar" id="60">
-				<left>0</left>
+				<left>440</left>
 				<top>5</top>
 				<width>25</width>
 				<height>470</height>
@@ -83,27 +83,27 @@
 				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
 				<textureslidernib>ScrollBarNib.png</textureslidernib>
 				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-				<onleft>9002</onleft>
-				<onright>20</onright>
+				<onleft>20</onleft>
+				<onright>9002</onright>
 				<showonepage>false</showonepage>
 				<orientation>vertical</orientation>
 			</control>
 			<control type="image">
-				<left>25</left>
+				<left>10</left>
 				<top>0</top>
 				<width>430</width>
 				<height>475</height>
 				<texture border="5">button-nofocus.png</texture>
 			</control>
 			<control type="list" id="20">
-				<left>30</left>
+				<left>15</left>
 				<top>5</top>
 				<width>420</width>
 				<height>470</height>
 				<onup>20</onup>
 				<ondown>20</ondown>
-				<onleft>60</onleft>
-				<onright>9002</onright>
+				<onleft>9002</onleft>
+				<onright>60</onright>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="45" width="420">
@@ -240,19 +240,6 @@
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="label">
-				<description>Page Count Label</description>
-				<left>30</left>
-				<top>485</top>
-				<width>420</width>
-				<height>20</height>
-				<font>font12</font>
-				<textcolor>grey</textcolor>
-				<scroll>false</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>([COLOR=blue]$INFO[Container(20).NumItems][/COLOR]) $LOCALIZE[19019] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages][/COLOR])</label>
-			</control>
 		</control>
 		<control type="group" id="9002">
 			<control type="group">
@@ -288,8 +275,8 @@
 					<pulseonselect>no</pulseonselect>
 					<label>19074</label>
 					<onleft>20</onleft>
-					<onright>60</onright>
-					<onup>9000</onup>
+					<onright>9000</onright>
+					<onup>33</onup>
 					<ondown>8</ondown>
 				</control>
 				<control type="edit" id="8">
@@ -321,7 +308,7 @@
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<label>19202</label>
 					<onleft>20</onleft>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onup>8</onup>
 					<ondown>12</ondown>
 				</control>
@@ -351,7 +338,7 @@
 					<pulseonselect>no</pulseonselect>
 					<label>19206</label>
 					<onleft>20</onleft>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onup>9</onup>
 					<ondown>13</ondown>
 				</control>
@@ -365,7 +352,7 @@
 					<texturefocus border="5">button-focus2.png</texturefocus>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<label>19200</label>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onleft>20</onleft>
 					<onup>12</onup>
 					<ondown>14</ondown>
@@ -387,7 +374,7 @@
 					<pulseonselect>no</pulseonselect>
 					<label>19267</label>
 					<onleft>20</onleft>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onup>13</onup>
 					<ondown>30</ondown>
 				</control>
@@ -437,7 +424,7 @@
 					<align>center</align>
 					<label>19024</label>
 					<onleft>30</onleft>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onup>14</onup>
 					<ondown>31</ondown>
 				</control>
@@ -454,7 +441,7 @@
 					<align>center</align>
 					<label>19023</label>
 					<onleft>30</onleft>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onup>14</onup>
 					<ondown>31</ondown>
 				</control>
@@ -470,7 +457,7 @@
 					<align>center</align>
 					<label>19203</label>
 					<onleft>20</onleft>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onup>30</onup>
 					<ondown>32</ondown>
 				</control>
@@ -486,7 +473,7 @@
 					<align>center</align>
 					<label>19211</label>
 					<onleft>20</onleft>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onup>31</onup>
 					<ondown>33</ondown>
 				</control>
@@ -502,59 +489,92 @@
 					<align>center</align>
 					<label>19204</label>
 					<onleft>20</onleft>
-					<onright>60</onright>
+					<onright>9000</onright>
 					<onup>32</onup>
-					<ondown>9000</ondown>
+					<ondown>7</ondown>
 				</control>
 			</control>
 		</control>
 		<control type="group" id="9000">
-			<left>70</left>
-			<top>590</top>
+			<left>890</left>
+			<top>95</top>
 			<control type="button" id="4">
 				<description>OK Button</description>
 				<left>0</left>
 				<top>0</top>
-				<width>250</width>
+				<width>200</width>
 				<height>40</height>
 				<label>186</label>
 				<font>font12_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<onleft>6</onleft>
-				<onright>5</onright>
-				<onup>33</onup>
-				<ondown>7</ondown>
+				<onleft>9002</onleft>
+				<onright>20</onright>
+				<onup>6</onup>
+				<ondown>5</ondown>
 			</control>
 			<control type="button" id="5">
 				<description>Apply changes Button</description>
-				<left>260</left>
-				<top>0</top>
-				<width>250</width>
+				<left>0</left>
+				<top>45</top>
+				<width>200</width>
 				<height>40</height>
 				<label>14070</label>
 				<font>font12_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<onleft>4</onleft>
-				<onright>6</onright>
-				<onup>33</onup>
-				<ondown>7</ondown>
+				<onleft>9002</onleft>
+				<onright>20</onright>
+				<onup>4</onup>
+				<ondown>6</ondown>
 			</control>
 			<control type="button" id="6">
 				<description>Cancel Button</description>
-				<left>520</left>
-				<top>0</top>
-				<width>250</width>
+				<left>0</left>
+				<top>90</top>
+				<width>200</width>
 				<height>40</height>
 				<label>222</label>
 				<font>font12_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<onleft>5</onleft>
-				<onright>4</onright>
-				<onup>33</onup>
-				<ondown>7</ondown>
+				<onleft>9002</onleft>
+				<onright>20</onright>
+				<onup>5</onup>
+				<ondown>4</ondown>
+			</control>
+			<control type="group">
+				<left>-5</left>
+				<top>200</top>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>210</width>
+					<height>210</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<left>5</left>
+					<top>5</top>
+					<width>200</width>
+					<height>200</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true">$INFO[Container(20).ListItem.Icon]</texture>
+				</control> 
+			</control>
+			<control type="label">
+				<description>Page Count Label</description>
+				<left>-15</left>
+				<top>418</top>
+				<width>230</width>
+				<height>35</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<scroll>false</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>([COLOR=blue]$INFO[Container(20).NumItems][/COLOR]) $LOCALIZE[19019] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages][/COLOR])</label>
+				<wrapmultiline>true</wrapmultiline>
 			</control>
 		</control>
 	</controls>

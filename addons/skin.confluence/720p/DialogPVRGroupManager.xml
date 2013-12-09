@@ -7,15 +7,32 @@
 			<animation effect="slide" start="1150,0" end="0,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="1150,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<control type="image">
-				<left>130</left>
+				<left>50</left>
 				<top>0</top>
-				<width>1150</width>
+				<width>1230</width>
 				<height>720</height>
 				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
 			</control>
+			<control type="image">
+				<description>background image</description>
+				<left>1060</left>
+				<top>-10</top>
+				<width>675</width>
+				<height>740</height>
+				<texture border="10">KeyboardEditArea.png</texture>
+				<animation effect="fade" end="30" time="0" condition="true">conditional</animation>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<left>90</left>
+				<top>16</top>
+				<width>930</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
+			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<left>180</left>
+				<left>70</left>
 				<top>0</top>
 				<width>64</width>
 				<height>32</height>
@@ -35,10 +52,10 @@
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 				<control type="label">
 					<description>header label</description>
-					<left>160</left>
-					<top>40</top>
-					<width>1080</width>
-					<height>30</height>
+					<left>90</left>
+					<top>16</top>
+					<width>930</width>
+					<height>40</height>
 					<font>font24_title</font>
 					<label>19143</label>
 					<align>center</align>
@@ -48,13 +65,13 @@
 				</control>
 				<control type="group">
 					<description>Group list</description>
-					<left>160</left>
+					<left>70</left>
 					<top>80</top>
 					<control type="label">
 						<description>name label</description>
 						<left>0</left>
 						<top>0</top>
-						<width>340</width>
+						<width>310</width>
 						<height>70</height>
 						<font>font13</font>
 						<label>31506</label>
@@ -65,18 +82,18 @@
 					<control type="image">
 						<left>0</left>
 						<top>75</top>
-						<width>340</width>
+						<width>310</width>
 						<height>460</height>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="list" id="13">
 						<left>5</left>
 						<top>80</top>
-						<width>330</width>
+						<width>300</width>
 						<height>450</height>
 						<onup>13</onup>
 						<ondown>13</ondown>
-						<onleft>29</onleft>
+						<onleft>9000</onleft>
 						<onright>73</onright>
 						<pagecontrol>73</pagecontrol>
 						<scrolltime>200</scrolltime>
@@ -84,14 +101,14 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>330</width>
+								<width>300</width>
 								<height>40</height>
 								<texture border="5">button-nofocus.png</texture>
 							</control>
 							<control type="label">
 								<left>10</left>
 								<top>0</top>
-								<width>310</width>
+								<width>280</width>
 								<height>40</height>
 								<font>font12</font>
 								<align>left</align>
@@ -105,7 +122,7 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>330</width>
+								<width>300</width>
 								<height>40</height>
 								<texture border="5">button-nofocus.png</texture>
 								<visible>!Control.HasFocus(13)</visible>
@@ -113,7 +130,7 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>330</width>
+								<width>300</width>
 								<height>40</height>
 								<texture border="5">button-focus2.png</texture>
 								<visible>Control.HasFocus(13)</visible>
@@ -121,7 +138,7 @@
 							<control type="label">
 								<left>10</left>
 								<top>0</top>
-								<width>310</width>
+								<width>280</width>
 								<height>40</height>
 								<font>font12</font>
 								<align>left</align>
@@ -133,7 +150,7 @@
 						</focusedlayout>
 					</control>
 					<control type="scrollbar" id="73">
-						<left>340</left>
+						<left>305</left>
 						<top>75</top>
 						<width>25</width>
 						<height>460</height>
@@ -152,13 +169,13 @@
 				</control>
 				<control type="group">
 					<description>Channels list</description>
-					<left>525</left>
+					<left>400</left>
 					<top>80</top>
 					<control type="label" id="21">
 						<description>name label</description>
 						<left>0</left>
 						<top>0</top>
-						<width>340</width>
+						<width>310</width>
 						<height>70</height>
 						<font>font13</font>
 						<align>center</align>
@@ -168,14 +185,14 @@
 					<control type="image">
 						<left>0</left>
 						<top>75</top>
-						<width>340</width>
+						<width>310</width>
 						<height>460</height>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="list" id="11">
 						<left>5</left>
 						<top>85</top>
-						<width>330</width>
+						<width>300</width>
 						<height>450</height>
 						<onup>11</onup>
 						<ondown>11</ondown>
@@ -187,7 +204,7 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>330</width>
+								<width>300</width>
 								<height>40</height>
 								<texture border="5">button-nofocus.png</texture>
 							</control>
@@ -201,7 +218,7 @@
 							<control type="label">
 								<left>40</left>
 								<top>0</top>
-								<width>280</width>
+								<width>250</width>
 								<height>40</height>
 								<font>font12</font>
 								<align>left</align>
@@ -215,7 +232,7 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>330</width>
+								<width>300</width>
 								<height>40</height>
 								<texture border="5">button-nofocus.png</texture>
 								<visible>!Control.HasFocus(11)</visible>
@@ -223,7 +240,7 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>330</width>
+								<width>300</width>
 								<height>40</height>
 								<texture border="5">button-focus2.png</texture>
 								<visible>Control.HasFocus(11)</visible>
@@ -238,7 +255,7 @@
 							<control type="label">
 								<left>40</left>
 								<top>0</top>
-								<width>280</width>
+								<width>250</width>
 								<height>40</height>
 								<font>font12</font>
 								<align>left</align>
@@ -250,7 +267,7 @@
 						</focusedlayout>
 					</control>
 					<control type="scrollbar" id="71">
-						<left>340</left>
+						<left>305</left>
 						<top>75</top>
 						<width>25</width>
 						<height>460</height>
@@ -269,13 +286,13 @@
 				</control>
 				<control type="group">
 					<description>Grouped Channels list</description>
-					<left>890</left>
+					<left>730</left>
 					<top>80</top>
 					<control type="label" id="22">
 						<description>name label</description>
 						<left>0</left>
 						<top>0</top>
-						<width>340</width>
+						<width>310</width>
 						<height>70</height>
 						<font>font13</font>
 						<align>center</align>
@@ -285,14 +302,14 @@
 					<control type="image">
 						<left>0</left>
 						<top>75</top>
-						<width>340</width>
+						<width>310</width>
 						<height>460</height>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="list" id="12">
 						<left>5</left>
 						<top>85</top>
-						<width>330</width>
+						<width>300</width>
 						<height>450</height>
 						<onup>12</onup>
 						<ondown>12</ondown>
@@ -304,7 +321,7 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>330</width>
+								<width>300</width>
 								<height>40</height>
 								<texture border="5">button-nofocus.png</texture>
 							</control>
@@ -318,7 +335,7 @@
 							<control type="label">
 								<left>40</left>
 								<top>0</top>
-								<width>280</width>
+								<width>250</width>
 								<height>40</height>
 								<font>font12</font>
 								<align>left</align>
@@ -332,7 +349,7 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>330</width>
+								<width>300</width>
 								<height>40</height>
 								<texture border="5">button-nofocus.png</texture>
 								<visible>!Control.HasFocus(12)</visible>
@@ -340,7 +357,7 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>330</width>
+								<width>300</width>
 								<height>40</height>
 								<texture border="5">button-focus2.png</texture>
 								<visible>Control.HasFocus(12)</visible>
@@ -355,7 +372,7 @@
 							<control type="label">
 								<left>40</left>
 								<top>0</top>
-								<width>280</width>
+								<width>250</width>
 								<height>40</height>
 								<font>font12</font>
 								<align>left</align>
@@ -367,7 +384,7 @@
 						</focusedlayout>
 					</control>
 					<control type="scrollbar" id="72">
-						<left>340</left>
+						<left>305</left>
 						<top>75</top>
 						<width>25</width>
 						<height>460</height>
@@ -377,7 +394,7 @@
 						<textureslidernib>ScrollBarNib.png</textureslidernib>
 						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
 						<onleft>12</onleft>
-						<onright>26</onright>
+						<onright>9000</onright>
 						<ondown>72</ondown>
 						<onup>72</onup>
 						<showonepage>false</showonepage>
@@ -385,40 +402,69 @@
 					</control>
 				</control>
 				<control type="grouplist" id="9000">
-					<left>160</left>
-					<top>660</top>
-					<width>1080</width>
-					<height>40</height>
-					<itemgap>2</itemgap>
+					<left>1070</left>
+					<top>165</top>
+					<width>200</width>
+					<height>175</height>
+					<itemgap>5</itemgap>
 					<align>center</align>
-					<orientation>horizontal</orientation>
-					<onleft>72</onleft>
+					<orientation>vertical</orientation>
+					<onleft>12</onleft>
 					<onright>13</onright>
 					<onup>9000</onup>
 					<ondown>9000</ondown>
 					<control type="button" id="26">
 						<description>Add Group</description>
-						<width>230</width>
+						<width>200</width>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>31503</label>
 					</control>
 					<control type="button" id="27">
 						<description>Rename Group</description>
-						<width>230</width>
+						<width>200</width>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>31504</label>
 					</control>
 					<control type="button" id="28">
 						<description>Delete Group</description>
-						<width>230</width>
+						<width>200</width>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>31505</label>
 					</control>
 					<control type="button" id="29">
 						<description>OK</description>
-						<width>230</width>
+						<width>200</width>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>186</label>
+					</control>
+				</control>
+				<control type="group">
+					<left>1065</left>
+					<top>405</top>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>210</width>
+						<height>210</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<left>5</left>
+						<top>5</top>
+						<width>200</width>
+						<height>200</height>
+						<aspectratio>keep</aspectratio>
+						<texture background="true">$INFO[Container(11).ListItem.Icon]</texture>
+						<visible>Control.HasFocus(11) | Control.HasFocus(71)</visible>
+					</control>
+					<control type="image">
+						<left>5</left>
+						<top>5</top>
+						<width>200</width>
+						<height>200</height>
+						<aspectratio>keep</aspectratio>
+						<texture background="true">$INFO[Container(12).ListItem.Icon]</texture>
+						<visible>Control.HasFocus(12) | Control.HasFocus(72)</visible>
 					</control>
 				</control>
 			</control>

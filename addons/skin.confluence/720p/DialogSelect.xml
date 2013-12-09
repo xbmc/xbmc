@@ -4,7 +4,7 @@
 	<defaultcontrol always="true">3</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<left>335</left>
+		<left>215</left>
 		<top>35</top>
 	</coordinates>
 	<include>dialogeffect</include>
@@ -13,8 +13,8 @@
 			<description>background image</description>
 			<left>0</left>
 			<top>0</top>
-			<width>610</width>
-			<height>650</height>
+			<width>850</width>
+			<height>600</height>
 			<texture border="40">DialogBack.png</texture>
 			<visible>![Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)]</visible>
 		</control>
@@ -22,8 +22,8 @@
 			<description>background image</description>
 			<left>0</left>
 			<top>0</top>
-			<width>610</width>
-			<height>650</height>
+			<width>850</width>
+			<height>600</height>
 			<texture border="40">DialogBack2.png</texture>
 			<visible>Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)</visible>
 		</control>
@@ -31,7 +31,7 @@
 			<description>Dialog Header image</description>
 			<left>40</left>
 			<top>16</top>
-			<width>530</width>
+			<width>770</width>
 			<height>40</height>
 			<texture>dialogheader.png</texture>
 		</control>
@@ -39,7 +39,7 @@
 			<description>header label</description>
 			<left>40</left>
 			<top>20</top>
-			<width>530</width>
+			<width>770</width>
 			<height>30</height>
 			<font>font13_title</font>
 			<label>$LOCALIZE[13406]</label>
@@ -50,7 +50,7 @@
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<left>520</left>
+			<left>760</left>
 			<top>15</top>
 			<width>64</width>
 			<height>32</height>
@@ -248,7 +248,7 @@
 			<textureslidernib>ScrollBarNib.png</textureslidernib>
 			<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
 			<onleft>3</onleft>
-			<onright>3</onright>
+			<onright>5</onright>
 			<ondown>61</ondown>
 			<onup>61</onup>
 			<showonepage>false</showonepage>
@@ -270,9 +270,9 @@
 		</control>
 		<control type="label">
 			<description>number of files/pages in list text label</description>
-			<left>280</left>
-			<top>587</top>
-			<width>300</width>
+			<left>595</left>
+			<top>542</top>
+			<width>230</width>
 			<height>35</height>
 			<font>font12</font>
 			<align>right</align>
@@ -280,12 +280,13 @@
 			<scroll>true</scroll>
 			<textcolor>grey</textcolor>
 			<label>([COLOR=blue]$INFO[Container(6).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages][/COLOR])</label>
+			<wrapmultiline>true</wrapmultiline>
 			<visible>Control.IsVisible(6)</visible>
 		</control>
 		<control type="button" id="5">
 			<description>Manual button</description>
-			<left>20</left>
-			<top>585</top>
+			<left>615</left>
+			<top>107</top>
 			<width>200</width>
 			<height>40</height>
 			<label>186</label>
@@ -293,10 +294,28 @@
 			<textcolor>white</textcolor>
 			<focusedcolor>white</focusedcolor>
 			<align>center</align>
-			<onleft>61</onleft>
+			<onleft>3</onleft>
 			<onright>3</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
+		</control>
+		<control type="group">
+			<left>610</left>
+			<top>320</top>
+			<visible>Control.IsVisible(6)</visible>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>210</width>
+				<height>210</height>
+				<texture border="5">button-nofocus.png</texture>
+			</control>
+			<control type="image">
+				<left>5</left>
+				<top>5</top>
+				<width>200</width>
+				<height>200</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true">$INFO[Container(6).ListItem.Icon]</texture>
+			</control> 
 		</control>
 	</controls>
 </window>
