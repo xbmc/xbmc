@@ -116,6 +116,7 @@ protected:
   static void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
   static CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
   void CalcTextExtent();
+  void UpdateCommon(const CStdStringW &text, float maxWidth, bool forceLTRReadingOrder);
 
   // our text to render
   vecColors m_colors;
@@ -131,6 +132,7 @@ protected:
   // the default color (may differ from the font objects defaults)
   color_t m_textColor;
 
+  std::string m_lastUtf8Text;
   CStdStringW m_lastText;
   float m_textWidth;
   float m_textHeight;
