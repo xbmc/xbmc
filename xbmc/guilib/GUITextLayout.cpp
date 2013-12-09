@@ -227,7 +227,7 @@ bool CGUITextLayout::Update(const CStdString &text, float maxWidth, bool forceUp
 
 bool CGUITextLayout::UpdateW(const CStdStringW &text, float maxWidth /*= 0*/, bool forceUpdate /*= false*/, bool forceLTRReadingOrder /*= false*/)
 {
-  if (text.Equals(m_lastText) && !forceUpdate)
+  if (text == m_lastText && !forceUpdate)
     return false;
 
   // parse the text for style information
