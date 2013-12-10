@@ -100,7 +100,11 @@ CPlexFile::BuildHTTPURL(CURL& url)
     return false;
 
   if (url.HasProtocolOption("ssl") && url.GetProtocolOption("ssl") == "1")
+  {
     newUrl.SetProtocol("https");
+    if (url.GetPort() == 32400)
+      newUrl.SetPort(32443);
+  }
 
   if (!url.GetUserName().empty())
     newUrl.SetUserName(url.GetUserName());

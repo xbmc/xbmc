@@ -220,10 +220,10 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
       return;
     }
 
-    if (!PlexUtils::IsValidIP(serverURL.GetHostName()))
+    if (serverURL.GetHostName().empty())
     {
-      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia got something, but it's not a valid IP.");
-      setStandardResponse(500, "Got a remote server URL but it was not a valid IP.");
+      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia got something, but it's not a valid IP/Host.");
+      setStandardResponse(500, "Got a remote server URL but it was not a valid IP/Host.");
       return;
     }
 
@@ -241,7 +241,8 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
       if (serverURL.HasOption("X-Plex-Token"))
         token = serverURL.GetOption("X-Plex-Token");
 
-      server->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED, serverURL.GetHostName(), serverURL.GetPort(), token)));
+      server->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED,
+                                                                   serverURL.GetHostName(), serverURL.GetPort(), token)));
     }
   }
 
@@ -260,8 +261,26 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     containerPath = arguments.find("containerKey")->second;
   else if (containerPath.empty())
     containerPath = key;
-    
-  CURL itemURL = server->BuildPlexURL(containerPath);
+
+  // iOS 3.3.1 hacking here, iOS client sends the full absolute path as key
+  // We only need the end part of it
+  {
+    CURL keyURL(key);
+    CStdString options = keyURL.GetOptions();
+    CURL::Decode(options);
+
+    if (!keyURL.Get().empty() && keyURL.GetProtocol() == "http")
+      key = "/" + keyURL.GetFileName() + options;
+
+    if (containerPath == keyURL.Get())
+      containerPath = key;
+  }
+
+  CURL itemURL;
+  if (server->GetUUID().empty())
+    itemURL = server->BuildURL(containerPath);
+  else
+    itemURL = server->BuildPlexURL(containerPath);
 
   if (!containerOptions.GetOptionsString().empty())
     itemURL.AddOptions(containerOptions);
@@ -269,7 +288,10 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   if (arguments.find("protocol") != arguments.end())
   {
     if (arguments.find("protocol")->second == "https")
-      itemURL.SetProtocolOption("ssl", "1");
+    {
+      if (itemURL.GetProtocol() == "plexserver")
+        itemURL.SetProtocolOption("ssl", "1");
+    }
   }
   
   /* fetch the container */
@@ -287,18 +309,20 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   for (int i = 0; i < list.Size(); i ++)
   {
     CFileItemPtr it = list.Get(i);
-    CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia compare %s = %s", it->GetProperty("unprocessed_key").asString().c_str(), key.c_str());
-    if (it->HasProperty("unprocessed_key") &&
-        it->GetProperty("unprocessed_key") == key)
+    CStdString itemKey = it->GetProperty("unprocessed_key").asString();
+    CStdString decodedKey(itemKey);
+    CURL::Decode(decodedKey);
+
+    CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia compare %s|%s = %s", itemKey.c_str(), decodedKey.c_str(), key.c_str());
+    if (itemKey == key || decodedKey == key)
     {
+      CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia found media (%s) at index %d", key.c_str(), idx);
       item = it;
       idx = i;
       break;
     }
   }
 
-  CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia found media (%s) at index %d", key.c_str(), idx);
-  
   if (!item)
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia couldn't find %s in %s", key.c_str(), itemURL.Get().c_str());
