@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="visualization.vortex"
+  version="1.0.0"
+  name="Vortex"
+  provider-name="Team XBMC">
+  <extension
+    point="xbmc.player.musicviz"
+    library_windx="Vortex_win32dx.vis"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>windx</platform>
+  </extension>
+</addon>

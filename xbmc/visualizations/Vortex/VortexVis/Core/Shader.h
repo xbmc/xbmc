@@ -21,7 +21,7 @@
 #define _SHADER_H_
 
 #include <vector>
-#include "d3dx9.h"
+#include <d3dx9.h>
 #include "Renderer.h"
 
 enum EShaderType

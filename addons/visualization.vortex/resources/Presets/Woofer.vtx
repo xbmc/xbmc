@@ -1,0 +1,65 @@
+// woofer.vtx
+// Author - morte0815
+
+float angle = 0;
+
+void Init()
+{
+
+}
+
+void Quad(float x, float y, float z, float width, float tu_u,float tv_l, float tu_b , float tv_r)
+{
+gfxBegin(PRIM_QUADLIST);
+gfxTexCoord(tu_u, tv_l);
+gfxVertex(x,y,z);
+gfxTexCoord(tu_b, tv_l);
+gfxVertex(x+width,y,z);
+gfxTexCoord(tu_b, tv_r);
+gfxVertex(x+width,y+width,z);
+gfxTexCoord(tu_u, tv_r);
+gfxVertex(x,y+width,z);
+
+
+gfxEnd();
+}
+
+
+float Length(float x, float y)
+{
+  return Sqrt(x*x+y*y);
+}
+
+void Render()
+{
+  if (BASS>0.5f)angle += TIMEPASS*5;
+  if (BASS<0.5f)angle -= TIMEPASS*5;
+  
+  gfxTranslate(0, 0, 25.0f);
+    
+    gfxRotate(-100,1,0,0);
+    gfxRotate(angle,0,0,1);
+  
+  
+    gfxSetTexture(TEXTURE_ALBUMART);
+    
+    for (int i = -10; i < 10; i++)
+  {
+    for ( int j = -10; j < 10; j++)
+    {
+      if (Length(i,j) <= 10)
+      {
+      float height=(Length(i,j)/10.0f*BASS);
+      height+=((10.0f-Length(i,j))/10.0f*TREBLE);
+      height+=((5.0f-Length(i,j))/10*MIDDLE);
+      Quad(i,j,height,1,(i+10)/20.0f,(j+10)/20.0f,(i+1+10)/20.0f,(j+1+10)/20.0f);
+      }
+    }
+  }
+  
+  
+  
+      
+    gfxEnd();
+    
+}

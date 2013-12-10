@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AFF288D5-8A77-4817-8DD9-364E183CDBF8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Vortex</RootNamespace>
+    <ProjectName>visVortex</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(SolutionDir)\XBMC.defaults.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(SolutionDir)\XBMC.defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
+    <TargetName>Vortex_win32dx</TargetName>
+    <TargetExt>.vis</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
+    <TargetName>Vortex_win32dx</TargetName>
+    <TargetExt>.vis</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;VORTEX_EXPORTS;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\VortexVis\core;..\VortexVis\effects;..\angelscript\angelscript\include;..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>D3dx9.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmtd</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\visualization.vortex\$(TargetFileName)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;VORTEX_EXPORTS;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\VortexVis\core;..\VortexVis\effects;..\angelscript\angelscript\include;..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>D3dx9.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\visualization.vortex\$(TargetFileName)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\angelscript\add_on\scriptstring\scriptstring.cpp" />
+    <ClCompile Include="..\angelscript\add_on\scriptstring\scriptstring_utils.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_arrayobject.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_atomic.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_builder.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_bytecode.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_callfunc.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_callfunc_arm.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_callfunc_mips.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_callfunc_ppc.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_callfunc_ppc_64.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_callfunc_sh4.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_callfunc_x64_gcc.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_callfunc_x86.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_callfunc_xenon.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_compiler.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_configgroup.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_context.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_datatype.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_gc.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_generic.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_globalproperty.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_memory.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_module.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_objecttype.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_outputbuffer.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_parser.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_restore.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_scriptcode.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_scriptengine.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_scriptfunction.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_scriptnode.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_scriptobject.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_string.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_string_util.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_thread.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_tokenizer.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_typeinfo.cpp" />
+    <ClCompile Include="..\angelscript\angelscript\source\as_variablescope.cpp" />
+    <ClCompile Include="..\VortexVis\Core\DebugConsole.cpp" />
+    <ClCompile Include="..\VortexVis\Core\EffectBase.cpp" />
+    <ClCompile Include="..\VortexVis\Core\fft.cpp" />
+    <ClCompile Include="..\VortexVis\Core\Mesh.cpp" />
+    <ClCompile Include="..\VortexVis\Core\Preset.cpp" />
+    <ClCompile Include="..\VortexVis\Core\Renderer.cpp" />
+    <ClCompile Include="..\VortexVis\Core\Shader.cpp" />
+    <ClCompile Include="..\VortexVis\Core\Texture.cpp" />
+    <ClCompile Include="..\VortexVis\Core\Vortex.cpp" />
+    <ClCompile Include="..\VortexVis\Core\XmlDocument.cpp" />
+    <ClCompile Include="..\VortexVis\Effects\Map.cpp" />
+    <ClCompile Include="..\VortexVis\Effects\Tunnel.cpp" />
+    <ClCompile Include="..\VortexVis\Effects\VoicePrint.cpp" />
+    <ClCompile Include="..\VortexXBMC\VortexXBMC.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\angelscript\add_on\scriptstring\scriptstring.h" />
+    <ClInclude Include="..\VortexVis\Core\DebugConsole.h" />
+    <ClInclude Include="..\VortexVis\Core\EffectBase.h" />
+    <ClInclude Include="..\VortexVis\Core\fft.h" />
+    <ClInclude Include="..\VortexVis\Core\Mesh.h" />
+    <ClInclude Include="..\VortexVis\Core\Preset.h" />
+    <ClInclude Include="..\VortexVis\Core\Renderer.h" />
+    <ClInclude Include="..\VortexVis\Core\Shader.h" />
+    <ClInclude Include="..\VortexVis\Core\Texture.h" />
+    <ClInclude Include="..\VortexVis\Core\Vortex.h" />
+    <ClInclude Include="..\VortexVis\Core\XBMCTypes.h" />
+    <ClInclude Include="..\VortexVis\Core\XmlDocument.h" />
+    <ClInclude Include="..\VortexVis\Effects\Map.h" />
+    <ClInclude Include="..\VortexVis\Effects\Tunnel.h" />
+    <ClInclude Include="..\VortexVis\Effects\VoicePrint.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\project\VS2010Express\XbmcThreads.vcxproj">
+      <Project>{034b1d02-ca92-455d-8866-db95bee49c10}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

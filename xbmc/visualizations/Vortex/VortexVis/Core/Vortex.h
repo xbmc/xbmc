@@ -57,7 +57,7 @@ public:
 	void Init( LPDIRECT3DDEVICE9 pD3DDevice, int iPosX, int iPosY, int iWidth, int iHeight, float fPixelRatio );
 	void Start( int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName );
 	void Shutdown();
-	void AudioData( const short* pAudioData, int iAudioDataLength, float* pFreq, int iFreqDataLength );
+	void AudioData( const float* pAudioData, int iAudioDataLength, float* pFreq, int iFreqDataLength );
 	void Render();
 	void UpdateTrack( VisTrack* pVisTrack );
 	void UpdateAlbumArt( char* artFilename );

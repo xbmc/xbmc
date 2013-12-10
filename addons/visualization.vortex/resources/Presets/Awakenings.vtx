@@ -1,0 +1,125 @@
+// Awakenings.vtx
+// Author - MrC
+// Based on Awakenings_remix.r4 by John Baker and Gordon Williams
+
+int x,y;
+float c,tm,tn,td;
+float[] c_x(256),c_y(256),c_z(256),c_vz(256),c_rx(256),c_ry(256),c_sx(256),c_sy(256),c_sz(256);
+float d;
+
+Texture	envTexture;
+
+void MakeNew(int n)
+{
+   c_x[n]=c_y[n]=0;
+   while (Mag(c_x[n],c_y[n])<1)
+   {
+      c_x[n] = (Rand()*8.0)-4.0;
+      c_y[n] = (Rand()*8.0)-4.0;
+   }
+
+   c_z[n] = 10;
+   c_vz[n] = (1.0+Rand())*4;
+   c_rx[n] = (1.0+Rand())*80;
+   c_ry[n] = (1.0+Rand())*80;
+   c_sx[n] = (0.5+Rand())*0.5;
+   c_sy[n] = (0.5+Rand())*0.5;
+   c_sz[n] = (0.5+Rand())*0.05;
+}
+
+
+void Init()
+{
+	envTexture.LoadTexture("xbmc_icon.png");
+	
+	for (x=0;x<256;x=x+1)
+	{
+      MakeNew(x);
+      c_z[x] = Rand()*10;
+	}
+	tm = tn = 0;
+}
+
+void mything(float x,float y,float z)
+{ 
+   gfxBegin(PRIM_QUADLIST); 
+      gfxTexCoord(0,0); 
+      gfxVertex(-x,y,0); 
+      gfxTexCoord(1,0); 
+      gfxVertex(x,y,0); 
+      gfxTexCoord(1,1); 
+      gfxVertex(x,-y,0); 
+      gfxTexCoord(0,1); 
+      gfxVertex(-x,-y,0); 
+
+      gfxTexCoord(0,0); 
+      gfxVertex(-x,0,z); 
+      gfxTexCoord(1,0); 
+      gfxVertex(x,0,z); 
+      gfxTexCoord(1,1); 
+      gfxVertex(x,0,-z); 
+      gfxTexCoord(0,1); 
+      gfxVertex(-x,0,-z); 
+
+      gfxTexCoord(0,0); 
+      gfxVertex(0,-y,z); 
+      gfxTexCoord(1,0); 
+      gfxVertex(0,y,z); 
+      gfxTexCoord(1,1); 
+      gfxVertex(0,y,-z); 
+      gfxTexCoord(0,1); 
+      gfxVertex(0,-y,-z); 
+   gfxEnd(); 
+} 
+
+void Render()
+{
+	td = ((TREBLE+1.5f) * TIMEPASS);
+	tm = tm + td;
+	tn = tn + ((BASS+1.0) * TIMEPASS * 2);
+
+	gfxTranslate(Cos(tn * 1.23f) * 0.25f, Sin(tn) * 0.25f, 0.0f);
+	gfxRotate(Cos(tn*0.6734f)*20.0f, 1.0f, 0.0f, 0.0f);
+	gfxRotate(Sin(tn*0.2143f)*20.0f, 0.0f, 1.0f, 0.0f);
+
+	gfxSetBlendMode(BLEND_MOD);
+	gfxSetTexture(envTexture);
+	gfxTranslate(0, 0, 3+BASS);
+	gfxBegin(PRIM_QUADLIST);
+	gfxTexCoord(0, 0);
+	gfxVertex(-1.5, 1,0);
+	gfxTexCoord(1, 0);
+	gfxVertex(1.5, 1,0);
+	gfxTexCoord(1, 1);
+	gfxVertex(1.5, -1,0);
+	gfxTexCoord(0, 1);
+	gfxVertex(-1.5, -1,0);
+	gfxEnd();
+	gfxTranslate(0, 0, -3-BASS);
+
+	gfxSetTexture(envTexture);
+	gfxSetBlendMode(BLEND_ADD);
+
+	for (x=255;x>0;x=x-1)
+	{ 
+		c_z[x] = c_z[x] - (td*c_vz[x]); 
+		if (c_z[x]<0) MakeNew(x); 
+
+		c = (5.0-(c_z[x]*0.5))*0.1; 
+		if (c>1.75) c=(2-c)*4; 
+		if (c>1) c=1;    
+
+		d = (20.0-(c_z[x]*2.0))*0.1; 
+		if (d>1.75) d=(2-c)*4; 
+		if (d>1) c=1;    
+
+		gfxColour(c,d*(TREBLE+1)*0.5,c,1); 
+		gfxPushMatrix(); 
+		gfxTranslate(c_x[x],c_y[x],c_z[x]); 
+		gfxRotate(c_rx[x]*tm,1.0f,0.0f,0.0f); 
+		gfxRotate(c_ry[x]*tm,0.0f,1.0f,0.0f); 
+		mything(c_sx[x],c_sy[x],c_sz[x]); 
+		gfxPopMatrix(); 
+	} 
+
+}
