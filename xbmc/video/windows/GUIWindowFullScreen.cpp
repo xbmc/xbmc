@@ -748,6 +748,14 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CUTTER);
       if (pDialog) pDialog->Close(true);
 
+      /* PLEX */
+      pDialog = (CGUIDialog*)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_AUDIO_PICKER);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog*)g_windowManager.GetWindow(WINDOW_DIALOG_PLEX_SUBTITLE_PICKER);
+      if (pDialog) pDialog->Close(true);
+      /* END PLEX */
+
+
       CGUIWindow::OnMessage(message);
 
       g_settings.Save();
