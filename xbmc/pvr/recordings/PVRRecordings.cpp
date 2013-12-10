@@ -34,7 +34,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
-#include "utils/StringUtils.h"
 
 using namespace PVR;
 
