@@ -218,7 +218,6 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
       if (g_application.m_pPlayer && !g_application.m_pPlayer->IsPassthrough())
         controllable.push_back("volume");
 
-      controllable.push_back("mute");
       controllable.push_back("stepBack");
       controllable.push_back("stepForward");
       controllable.push_back("seekTo");
