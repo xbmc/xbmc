@@ -472,7 +472,7 @@ void CPlexHTTPRemoteHandler::seekTo(const ArgMap &arguments)
 void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arguments)
 {
   int action = ACTION_NONE;
-  int activeWindow = g_windowManager.GetActiveWindow();
+  int activeWindow = g_windowManager.GetFocusedWindow();
   
   CStdString navigation = url.Mid(19, url.length() - 19);
   
@@ -502,7 +502,9 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
   {
     if (g_application.IsPlayingFullScreenVideo() &&
         (activeWindow != WINDOW_DIALOG_AUDIO_OSD_SETTINGS &&
-         activeWindow != WINDOW_DIALOG_VIDEO_OSD_SETTINGS))
+         activeWindow != WINDOW_DIALOG_VIDEO_OSD_SETTINGS &&
+         activeWindow != WINDOW_DIALOG_PLEX_AUDIO_PICKER &&
+         activeWindow != WINDOW_DIALOG_PLEX_SUBTITLE_PICKER))
       action = ACTION_STOP;
     else
       action = ACTION_NAV_BACK;
