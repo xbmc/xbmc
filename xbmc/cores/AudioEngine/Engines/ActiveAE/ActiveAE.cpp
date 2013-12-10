@@ -268,7 +268,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           break;
         }
       }
-      else if (&m_sink.m_dataPort)
+      else if (port == &m_sink.m_dataPort)
       {
         switch (signal)
         {
@@ -558,7 +558,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           break;
         }
       }
-      else if (&m_sink.m_dataPort)
+      else if (port == &m_sink.m_dataPort)
       {
         switch (signal)
         {
@@ -613,7 +613,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           break;
         }
       }
-      else if (&m_sink.m_dataPort)
+      else if (port == &m_sink.m_dataPort)
       {
         switch (signal)
         {
