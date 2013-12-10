@@ -25,6 +25,9 @@
 
 #define LINE_ENDING "\r\n"
 
+#include <cstddef>
+#include <WinNT.h>
+#include <WinDef.h>
 #define __STDC_FORMAT_MACROS
 #include "inttypes.h"
 
