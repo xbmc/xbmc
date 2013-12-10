@@ -57,6 +57,7 @@ public:
   CStdString GetOwner() const { return m_owner; }
   CStdString GetServerClass() const { return m_serverClass; }
   bool GetOwned() const { return m_owned; }
+  bool IsComplete() const { return m_complete; }
 
   CPlexServerPtr GetShared() { return shared_from_this(); }
   CPlexConnectionPtr GetActiveConnection() const;
