@@ -1389,11 +1389,14 @@ bool CPVRManager::IsJobPending(const char *strJobName) const
   return bReturn;
 }
 
-void CPVRManager::QueueJob(const char *strJobName, CJob *job, bool bIgnorePending /* = false */)
+void CPVRManager::QueueJob(CJob *job)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (!IsStarted() || (!bIgnorePending && IsJobPending(strJobName)))
+  if (!IsStarted() || IsJobPending(job->GetType()))
+  {
+    delete job;
     return;
+  }
 
   m_pendingUpdates.push_back(job);
 
@@ -1403,32 +1406,32 @@ void CPVRManager::QueueJob(const char *strJobName, CJob *job, bool bIgnorePendin
 
 void CPVRManager::TriggerEpgsCreate(void)
 {
-  QueueJob("pvr-create-epgs", new CPVREpgsCreateJob());
+  QueueJob(new CPVREpgsCreateJob());
 }
 
 void CPVRManager::TriggerRecordingsUpdate(void)
 {
-  QueueJob("pvr-update-recordings", new CPVRRecordingsUpdateJob());
+  QueueJob(new CPVRRecordingsUpdateJob());
 }
 
 void CPVRManager::TriggerTimersUpdate(void)
 {
-  QueueJob("pvr-update-timers", new CPVRTimersUpdateJob());
+  QueueJob(new CPVRTimersUpdateJob());
 }
 
 void CPVRManager::TriggerChannelsUpdate(void)
 {
-  QueueJob("pvr-update-channels", new CPVRChannelsUpdateJob());
+  QueueJob(new CPVRChannelsUpdateJob());
 }
 
 void CPVRManager::TriggerChannelGroupsUpdate(void)
 {
-  QueueJob("pvr-update-channelgroups", new CPVRChannelGroupsUpdateJob());
+  QueueJob(new CPVRChannelGroupsUpdateJob());
 }
 
 void CPVRManager::TriggerSaveChannelSettings(void)
 {
-  QueueJob("pvr-save-channelsettings", new CPVRChannelSettingsSaveJob());
+  QueueJob(new CPVRChannelSettingsSaveJob());
 }
 
 void CPVRManager::ExecutePendingJobs(void)
