@@ -6112,6 +6112,7 @@
     <ClInclude Include="..\..\xbmc\utils\Utf8Utils.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\PlatformConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
