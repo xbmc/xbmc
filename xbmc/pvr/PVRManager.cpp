@@ -1389,10 +1389,10 @@ bool CPVRManager::IsJobPending(const char *strJobName) const
   return bReturn;
 }
 
-void CPVRManager::QueueJob(CJob *job, bool bIgnorePending /* = false */)
+void CPVRManager::QueueJob(CJob *job)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (!IsStarted() || (!bIgnorePending && IsJobPending(job->GetType())))
+  if (!IsStarted() || IsJobPending(job->GetType()))
   {
     delete job;
     return;
