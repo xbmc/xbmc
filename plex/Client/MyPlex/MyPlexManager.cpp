@@ -256,6 +256,9 @@ int CMyPlexManager::DoScanMyPlex()
 
 int CMyPlexManager::DoRefreshUserInfo()
 {
+  if (GetAuthToken().empty())
+    return FAILURE_TMOUT;
+
   CURL url = m_myplex->BuildPlexURL("users/account");
 
   TiXmlElement* root = GetXml(url);
