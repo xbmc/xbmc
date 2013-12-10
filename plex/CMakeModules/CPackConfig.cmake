@@ -39,7 +39,13 @@ set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
    ExecWait \\\"$INSTDIR\\\\Dependencies\\\\vcredist_2010_x86.exe /q /norestart\\\"
    IfFileExists \\\"$INSTDIR\\\\Dependencies\\\\dxsetup\\\\dxsetup.exe\\\" 0 +2
    ExecWait \\\"$INSTDIR\\\\Dependencies\\\\dxsetup\\\\dxsetup.exe /silent\\\"
-   RMDir /r \\\"$INSTDIR\\\\Dependencies\\\"")
+   RMDir /r \\\"$INSTDIR\\\\Dependencies\\\"
+   !include \\\"WinVer.nsh\\\"
+   !include \\\"LogicLib.nsh\\\"
+   ${IfNot} ${AtLeastWinVista}
+      MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND \\\"Windows Vista or above required.$\nThis program can not be run on Windows XP\\\"
+      Quit
+   ${EndIf}")
 
 if(TARGET_OSX)
   set(CPACK_GENERATOR "ZIP")
