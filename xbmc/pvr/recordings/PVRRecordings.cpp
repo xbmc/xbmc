@@ -126,7 +126,7 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
   }
 }
 
-void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip /* = true */)
+void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList *results)
 {
   CStdString strUseBase = TrimSlashes(strBase);
 
@@ -186,7 +186,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
   CFileItemList files;
   GetContents(strBase, &files);
 
-  if (bAutoSkip && results->Size() == 1 && files.Size() == 0)
+  if (results->Size() == 1 && files.Size() == 0)
   {
     CStdString strGetPath = StringUtils::Format("%s/%s/", strUseBase.c_str(), results->Get(0)->GetLabel().c_str());
 
@@ -194,7 +194,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
     CLog::Log(LOGDEBUG, "CPVRRecordings - %s - '%s' only has 1 subdirectory, selecting that directory ('%s')",
         __FUNCTION__, strUseBase.c_str(), strGetPath.c_str());
-    GetSubDirectories(strGetPath, results, true);
+    GetSubDirectories(strGetPath, results);
     return;
   }
 
@@ -401,7 +401,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
     if (StringUtils::StartsWith(strFileName, "recordings"))
     {
       strFileName.erase(0, 10);
-      GetSubDirectories(strFileName, &items, true);
+      GetSubDirectories(strFileName, &items);
       bSuccess = true;
     }
   }

@@ -41,7 +41,7 @@ namespace PVR
     virtual const CStdString GetDirectoryFromPath(const CStdString &strPath, const CStdString &strBase) const;
     virtual bool IsDirectoryMember(const CStdString &strDirectory, const CStdString &strEntryDirectory, bool bDirectMember = true) const;
     virtual void GetContents(const CStdString &strDirectory, CFileItemList *results);
-    virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip = true);
+    virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results);
 
     CStdString AddAllRecordingsPathExtension(const CStdString &strDirectory);
     CStdString RemoveAllRecordingsPathExtension(const CStdString &strDirectory);
