@@ -1389,10 +1389,10 @@ bool CPVRManager::IsJobPending(const char *strJobName) const
   return bReturn;
 }
 
-void CPVRManager::QueueJob(const char *strJobName, CJob *job, bool bIgnorePending /* = false */)
+void CPVRManager::QueueJob(const char *strJobName, CJob *job, bool bEnsureStarted /*= true*/)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (!IsStarted() || (!bIgnorePending && IsJobPending(strJobName)))
+  if ((bEnsureStarted && !IsStarted()) || IsJobPending(strJobName))
     return;
 
   m_pendingUpdates.push_back(job);
@@ -1403,7 +1403,7 @@ void CPVRManager::QueueJob(const char *strJobName, CJob *job, bool bIgnorePendin
 
 void CPVRManager::TriggerEpgsCreate(void)
 {
-  QueueJob("pvr-create-epgs", new CPVREpgsCreateJob());
+  QueueJob("pvr-create-epgs", new CPVREpgsCreateJob(), false);
 }
 
 void CPVRManager::TriggerRecordingsUpdate(void)

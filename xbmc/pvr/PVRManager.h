@@ -632,14 +632,14 @@ namespace PVR
     bool IsJobPending(const char *strJobName) const;
 
     /*!
-     * @brief Adds the job to the list of pending jobs. If bIgnorePending is set
-     * to true the job will be added even if there's an identical job already
-     * queued
+     * @brief Adds the job to the list of pending jobs (unless an equal job is 
+     * already pending)
      * @param strJobName the name of the job
-     * @param bIgnorePending whether to ignore previously queued identical jobs
+     * @param bEnsureStarted when set to false the job will be executed regardless 
+     * of whether the PVR manager has started
      * @param job the job
      */
-    void QueueJob(const char *strJobName, CJob *job, bool bIgnorePending = false);
+    void QueueJob(const char *strJobName, CJob *job, bool bEnsureStarted = true);
 
     ManagerState GetState(void) const;
 
