@@ -19,7 +19,8 @@
  *
  */
 
-#include "system.h"
+#include "PlatformConfig.h"
+#include "PlatformDefs.h"
 #ifdef HAS_WEB_SERVER
 #include <sys/types.h>
 #include <sys/select.h>

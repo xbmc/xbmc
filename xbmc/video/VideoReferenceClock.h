@@ -19,7 +19,8 @@
  *
  */
 
-#include "system.h" // for HAS_XRANDR, and Win32 types
+#include "PlatformConfig.h" // for HAS_XRANDR, HAS_GLX
+#include "PlatformDefs.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 

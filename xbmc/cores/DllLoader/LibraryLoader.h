@@ -21,10 +21,7 @@
 #ifndef LIBRARY_LOADER
 #define LIBRARY_LOADER
 
-#include "system.h"
-#ifdef TARGET_POSIX
 #include "PlatformDefs.h"
-#endif
 
 class LibraryLoader
 {

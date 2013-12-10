@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "system.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;

@@ -21,6 +21,7 @@
 #define INITGUID
 
 #include "AESinkDirectSound.h"
+#include "system.h"
 #include "utils/Log.h"
 #include <initguid.h>
 #include <Mmreg.h>

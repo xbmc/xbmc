@@ -26,6 +26,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/MediaSettings.h"
 #include "network/upnp/UPnP.h"
+#include "PlatformConfig.h"
 
 class CSaveFileStateJob : public CJob
 {

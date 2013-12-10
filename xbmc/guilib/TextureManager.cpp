@@ -35,6 +35,7 @@
 #include "filesystem/Directory.h"
 #include "URL.h"
 #include <assert.h>
+#include "PlatformConfig.h"
 
 using namespace std;
 

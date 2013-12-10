@@ -44,6 +44,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "CharsetConverter.h"
 #include "addons/GUIDialogAddonSettings.h"
+#include "system.h"
 
 using namespace std;
 using namespace ADDON;

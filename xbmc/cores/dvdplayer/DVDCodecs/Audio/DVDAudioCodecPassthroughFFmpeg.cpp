@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "system.h"
 
 //These values are forced to allow spdif out
 #define OUT_SAMPLESIZE 16

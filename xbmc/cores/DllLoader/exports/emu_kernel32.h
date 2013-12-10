@@ -22,7 +22,7 @@
  */
 
 #include "utils/StdString.h"
-#include "system.h"
+#include "PlatformDefs.h"
 
 #define MAX_LEADBYTES             12
 #define MAX_DEFAULTCHAR           2

@@ -23,9 +23,6 @@
 
 #include "threads/CriticalSection.h"
 #include "PlatformDefs.h"
-#ifdef TARGET_WINDOWS
-#include "system.h" // for SOCKET
-#endif
 
 #include <list>
 #include <map>

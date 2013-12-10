@@ -18,6 +18,11 @@
  *
  */
 
+#if defined(TARGET_WINDOWS)
+#include <Windows.h> // for "Sleep()"
+#elif defined(TARGET_POSIX)
+#include "XTimeUtils.h" // for "Sleep()"
+#endif
 #include "AddonInstaller.h"
 #include "Service.h"
 #include "utils/log.h"

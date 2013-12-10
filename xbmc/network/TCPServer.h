@@ -28,6 +28,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "websocket/WebSocket.h"
+#include "PlatformDefs.h"
 
 namespace JSONRPC
 {

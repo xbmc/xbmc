@@ -21,7 +21,8 @@
  */
 
 #include "utils/StdString.h"
-#include "system.h"
+#include "PlatformConfig.h"
+#include "PlatformDefs.h"
 #include "DVDDemuxPacket.h"
 
 class CDVDInputStream;

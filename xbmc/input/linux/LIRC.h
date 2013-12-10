@@ -18,10 +18,11 @@
  *
  */
 
+#include "PlatformConfig.h"
 #ifndef LIRC_H
 #define LIRC_H
 
-#include "system.h"
+#include "PlatformDefs.h"
 #include "utils/StdString.h"
 
 class CRemoteControl

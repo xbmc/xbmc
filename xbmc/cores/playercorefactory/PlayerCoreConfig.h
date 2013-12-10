@@ -24,6 +24,7 @@
 #include "PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
+#include "PlatformConfig.h"
 #if defined(HAS_OMXPLAYER)
 #include "cores/omxplayer/OMXPlayer.h"
 #endif

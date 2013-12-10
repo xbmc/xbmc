@@ -19,7 +19,7 @@
  *
  */
 
-#include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_PULSEAUDIO
 
 #include "Interfaces/AE.h"
@@ -27,6 +27,7 @@
 #include "PulseAESound.h"
 #include "threads/CriticalSection.h"
 #include <list>
+#include <string>
 
 struct pa_context;
 struct pa_threaded_mainloop;

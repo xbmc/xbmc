@@ -21,6 +21,7 @@
 #include "ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "Application.h"
+#include "PlatformConfig.h"
 
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB

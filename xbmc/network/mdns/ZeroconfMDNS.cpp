@@ -29,6 +29,7 @@
 #if defined(TARGET_WINDOWS)
 #include "win32/WIN32Util.h"
 #endif //TARGET_WINDOWS
+#include "PlatformConfig.h"
 
 #if defined(HAS_MDNS_EMBEDDED)
 #include <mDnsEmbedded.h>

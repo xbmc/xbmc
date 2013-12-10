@@ -266,7 +266,10 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
   }
 
   if (!m_initialized)
-    SAFE_DELETE(m_pHelpers);
+  {
+    delete m_pHelpers;
+    m_pHelpers = 0;
+  }
 
   return status;
 }

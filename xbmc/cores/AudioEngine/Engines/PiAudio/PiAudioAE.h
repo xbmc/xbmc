@@ -19,7 +19,6 @@
  *
  */
 
-#include "system.h"
 #include "threads/Thread.h"
 
 #include "Interfaces/AEStream.h"

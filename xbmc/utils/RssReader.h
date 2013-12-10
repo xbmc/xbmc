@@ -27,6 +27,7 @@
 #include "utils/IRssObserver.h"
 #include "utils/StdString.h"
 #include "utils/XBMCTinyXML.h"
+#include "PlatformDefs.h"
 
 class CRssReader : public CThread
 {

@@ -18,6 +18,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #ifdef HAS_DBUS
 
 #include "UPowerSyscall.h"

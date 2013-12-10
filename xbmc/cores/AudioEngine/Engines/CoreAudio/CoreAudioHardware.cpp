@@ -23,6 +23,7 @@
 #include "CoreAudioAEHAL.h"
 #include "utils/log.h"
 #include "osx/DarwinUtils.h"
+#include "XTimeUtils.h" // for "Sleep()", TODO: Replace with usleep()/sleep()?
 
 bool CCoreAudioHardware::GetAutoHogMode()
 {

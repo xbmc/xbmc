@@ -22,7 +22,7 @@
  *
  */
 
-#include "system.h"
+#include "PlatformConfig.h"
 #include <string.h>
 #include <stdio.h>
 #include <dbus/dbus.h>
@@ -31,7 +31,7 @@
 
 #include "utils/log.h"
 #include "threads/CriticalSection.h"
-#include "utils/StringUtils.h"
+#include "utils/StdString.h"
 #include "utils/URIUtils.h"
 #include "MediaSource.h"
 

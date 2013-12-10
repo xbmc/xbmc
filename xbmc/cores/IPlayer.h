@@ -20,7 +20,7 @@
  *
  */
 
-#include "system.h" // until we get sane int types used here
+#include "PlatformDefs.h" // until we get sane int types used here
 #include "IAudioCallback.h"
 #include "IPlayerCallback.h"
 #include "utils/StdString.h"

@@ -19,13 +19,14 @@
  *
  */
 
-#include "system.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
+#include "PlatformDefs.h"
+#include "PlatformConfig.h"
 
 class CFileItemList;
 class CSetting;

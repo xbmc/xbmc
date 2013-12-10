@@ -21,6 +21,7 @@
 #include "AEBuffer.h"
 #include "utils/StdString.h" /* needed for ASSERT */
 #include <algorithm>
+#include "system.h"
 
 CAEBuffer::CAEBuffer() :
   m_buffer    (NULL),

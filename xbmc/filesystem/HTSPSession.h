@@ -20,7 +20,7 @@
 
 #pragma once
 #include "deque"
-#include "system.h" // for SOCKET
+#include "PlatformDefs.h"
 
 #include <algorithm>
 #include <string>

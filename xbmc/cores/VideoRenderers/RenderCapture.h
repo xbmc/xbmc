@@ -74,7 +74,8 @@ even if they're a different size
 
 */
 
-#include "system.h" //HAS_DX, HAS_GL, HAS_GLES, opengl headers, direct3d headers
+#include "PlatformConfig.h" //HAS_DX, HAS_GL, HAS_GLES, opengl headers, direct3d headers
+#include "PlatformDefs.h"
 
 #ifdef HAS_DX
   #include "guilib/D3DResource.h"

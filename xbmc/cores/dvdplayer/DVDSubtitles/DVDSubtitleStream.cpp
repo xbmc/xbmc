@@ -23,6 +23,7 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "utils/CharsetConverter.h"
 #include "utils/Utf8Utils.h"
+#include "PlatformDefs.h"
 
 using namespace std;
 

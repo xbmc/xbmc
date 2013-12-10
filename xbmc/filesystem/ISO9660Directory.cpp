@@ -18,6 +18,11 @@
  *
  */
 
+#if defined(TARGET_WINDOWS)
+#include <Windows.h>    // for FileTimeToLocalFileTime
+#elif defined(TARGET_POSIX)
+#include "XTimeUtils.h" // for FileTimeToLocalFileTime
+#endif
 #include "ISO9660Directory.h"
 #include "iso9660.h"
 #include "Util.h"

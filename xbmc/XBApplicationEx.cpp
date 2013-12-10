@@ -22,6 +22,7 @@
 #include "XBApplicationEx.h"
 #include "utils/log.h"
 #include "threads/SystemClock.h"
+#include "PlatformConfig.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else

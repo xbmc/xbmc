@@ -25,7 +25,7 @@
 
 #include <map>
 #include <vector>
-#include "system.h" // for HAS_EVENT_SERVER, HAS_SDL_JOYSTICK, HAS_LIRC
+#include "PlatformConfig.h" // for HAS_EVENT_SERVER, HAS_SDL_JOYSTICK, HAS_LIRC
 
 #ifdef HAS_EVENT_SERVER
 #include "network/EventClient.h"

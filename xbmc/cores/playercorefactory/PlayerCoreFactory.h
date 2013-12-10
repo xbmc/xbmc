@@ -22,7 +22,7 @@
 
 #include <vector>
 
-#include "system.h"
+#include "PlatformConfig.h"
 #include "cores/IPlayerCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"

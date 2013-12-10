@@ -26,6 +26,7 @@
 #include "guilib/Geometry.h"
 #include "powermanagement/PowerManager.h"
 #include "utils/Stopwatch.h"
+#include "PlatformConfig.h"
 
 enum Drive_Types
 {

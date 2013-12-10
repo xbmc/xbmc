@@ -19,7 +19,7 @@
  *
  */
 
-#include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_AVAHI
 
 #include <memory>
@@ -28,6 +28,7 @@
 #include "network/ZeroconfBrowser.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
+#include "utils/StdString.h"
 
 #include <avahi-client/client.h>
 #include <avahi-client/lookup.h>

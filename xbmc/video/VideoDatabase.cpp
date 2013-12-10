@@ -59,6 +59,7 @@
 #include "video/VideoDbUrl.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/GroupUtils.h"
+#include "system.h"
 
 using namespace std;
 using namespace dbiplus;

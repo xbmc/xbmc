@@ -24,6 +24,7 @@
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "system.h"
 
 #include "PVRManager.h"
 #include "channels/PVRChannelGroupsContainer.h"

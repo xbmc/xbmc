@@ -30,15 +30,17 @@
 
 #pragma once
 
-#include "system.h" // for HAS_DVD_DRIVE
+#include "PlatformConfig.h" // for HAS_DVD_DRIVE
 
 #ifdef HAS_DVD_DRIVE
 
+#include "PlatformDefs.h" // for ssize_t
 #include <cdio/cdio.h>
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
 #include "boost/shared_ptr.hpp"
 #include <map>
+#include "PlatformDefs.h"
 
 namespace MEDIA_DETECT
 {

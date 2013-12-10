@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
+#include "PlatformConfig.h"
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
 #endif

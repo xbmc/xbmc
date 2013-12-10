@@ -57,7 +57,7 @@ private:
   static const char  *WASAPIErrToStr(HRESULT err);
 
   LPDIRECTSOUNDBUFFER m_pBuffer;
-  LPDIRECTSOUND8      m_pDSound;
+  LPDIRECTSOUND       m_pDSound;
 
   AEAudioFormat       m_format;
   enum AEDataFormat   m_encodedFormat;

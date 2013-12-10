@@ -25,6 +25,7 @@
 #include "utils/log.h"
 
 #include <AudioToolbox/AUGraph.h>
+#include "XTimeUtils.h" // for "Sleep()", TODO: Replace with usleep()/sleep()?
 
 CCoreAudioUnit::CCoreAudioUnit() :
   m_pSource         (NULL         ),

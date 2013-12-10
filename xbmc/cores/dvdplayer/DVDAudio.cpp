@@ -27,6 +27,11 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "settings/MediaSettings.h"
+#if defined(TARGET_WINDOWS)
+#include <Windows.h>
+#elif defined(TARGET_POSIX)
+#include "XTimeUtils.h"
+#endif
 
 using namespace std;
 

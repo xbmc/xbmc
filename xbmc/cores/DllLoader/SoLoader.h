@@ -22,7 +22,7 @@
  */
 
 #include <stdio.h>
-#include "system.h"
+#include "PlatformConfig.h"
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h"
 #endif
