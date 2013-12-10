@@ -6,8 +6,8 @@ if(UNIX)
   set(CMAKE_REQUIRED_FLAGS "-D__LINUX_USER__")
 endif()
 
-option(USE_INTERNAL_FFMPEG "" ON)
-#option(USE_INTERNAL_FFMPEG "" OFF)
+#option(USE_INTERNAL_FFMPEG "" ON)
+option(USE_INTERNAL_FFMPEG "" OFF)
 
 set(LINK_PKG
   Freetype
@@ -31,6 +31,9 @@ set(LINK_PKG
 
 if(NOT USE_INTERNAL_FFMPEG)
   list(APPEND LINK_PKG FFmpeg)
+  add_definitions(
+    -DUSE_EXTERNAL_FFMPEG
+    )
 else()
   set(FFMPEG_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/lib/ffmpeg ${CMAKE_BINARY_DIR}/lib/ffmpeg/ffmpeg/src/ffmpeg-build)
 endif()
@@ -122,7 +125,6 @@ set(SKIP_CONFIG_DVDCSS 1)
 set(DVDREAD_CFLAGS "-D_XBMC -UHAVE_DVDCSS_DVDCSS_H")
 
 add_definitions(
-    -DTARGET_POSIX 
     -DTARGET_LINUX 
     -D_LINUX 
     -D_ARMEL 
@@ -180,10 +182,10 @@ endforeach()
 
 #set(CMAKE_C_FLAGS " -isystem/usr/include -isystem/opt/vc/include -isystem/opt/vc/include/interface/vcos/pthreads -isystem/opt/vc -isystem/opt/vc/include/interface/vmcs_host/linux/ -isystem/opt/vc/include/EGL -isystem/opt/vc/include/GLES -isystem/opt/vc/include/GLES2 -isystem/opt/vc/include/KHR -isystem/opt/vc/include/VG -L/lib -L/usr/lib -L/opt/vc/lib -Wl,-rpath-link,/lib -Wl,-rpath-link,/lib -Wl,-rpath-link,/usr/lib -Wl,-rpath-link,/opt/vc/ -fPIC -pipe -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp -mabi=aapcs-linux -Wno-psabi -Wa,-mno-warn-deprecated -Wno-deprecated-declarations -g -pg")
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -g -rdynamic ")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -rdynamic")
-set(CMAKE_EXE_FLAGS_DEBUG  "${CMAKE_EXE_FLAGS} -g -rdynamic")
-set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} -g -rdynamic")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -rdynamic ")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -rdynamic")
+set(CMAKE_EXE_FLAGS_DEBUG  "${CMAKE_EXE_FLAGS} -rdynamic")
+set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} -rdynamic")
 #message (STATUS "Enabling profiling with gprof")
 #set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pg")
 #set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -pg")
