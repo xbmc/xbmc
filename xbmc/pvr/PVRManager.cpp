@@ -1393,7 +1393,10 @@ void CPVRManager::QueueJob(const char *strJobName, CJob *job, bool bIgnorePendin
 {
   CSingleLock lock(m_critSectionTriggers);
   if (!IsStarted() || (!bIgnorePending && IsJobPending(strJobName)))
+  {
+    delete job;
     return;
+  }
 
   m_pendingUpdates.push_back(job);
 
