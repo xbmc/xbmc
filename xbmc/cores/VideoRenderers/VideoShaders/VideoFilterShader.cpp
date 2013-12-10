@@ -65,6 +65,16 @@ BaseVideoFilterShader::BaseVideoFilterShader()
     "gl_FrontColor = gl_Color;"
     "}";
   VertexShader()->SetSource(shaderv);
+
+  string shaderp =
+    "uniform sampler2D img;"
+    "varying vec2 cord;"
+    "void main()"
+    "{"
+    "gl_FragColor.rgb = texture2D(img, cord).rgb;"
+    "gl_FragColor.a = gl_Color.a;"
+    "}";
+  PixelShader()->SetSource(shaderp);
 }
 
 ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch)
@@ -226,6 +236,18 @@ bool StretchFilterShader::OnEnabled()
 {
   glUniform1i(m_hSourceTex, m_sourceTexUnit);
   glUniform1f(m_hStretch, m_stretch);
+  VerifyGLState();
+  return true;
+}
+
+void DefaultFilterShader::OnCompiledAndLinked()
+{
+  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
+}
+
+bool DefaultFilterShader::OnEnabled()
+{
+  glUniform1i(m_hSourceTex, m_sourceTexUnit);
   VerifyGLState();
   return true;
 }
