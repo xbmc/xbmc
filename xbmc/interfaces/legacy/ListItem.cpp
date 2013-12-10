@@ -129,6 +129,21 @@ namespace XBMCAddon
       }
     }
 
+    void ListItem::setArt(const Dictionary& dictionary)
+    {
+      if (!item) return;
+      {
+        LOCKGUI;
+        for (Dictionary::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
+        {
+          CStdString artName = it->first;
+          StringUtils::ToLower(artName);
+          const CStdString artFilename(it->second.c_str());
+          item->SetArt(artName, artFilename);
+        }
+      }
+    }
+
     void ListItem::select(bool selected)
     {
       if (!item) return;
