@@ -48,25 +48,32 @@ public:
     StudyRegExp      = 1, // study expression (slower compilation, faster find)
     StudyWithJitComp      // study expression and JIT-compile it, if possible (heavyweight optimization) 
   };
+  enum utf8Mode
+  {
+    autoUtf8  = -1, // analyze regexp for UTF-8 multi-byte chars, for Unicode codes > 0xFF
+                    // or explicit Unicode properties (\p, \P and \X), enable UTF-8 mode if any of them are found
+    asciiOnly =  0, // process regexp and strings as single-byte encoded strings
+    forceUtf8 =  1  // enable UTF-8 mode (with Unicode properties)
+  };
 
   static const int m_MaxNumOfBackrefrences = 20;
   /**
    * @param caseless (optional) Matching will be case insensitive if set to true
    *                            or case sensitive if set to false
-   * @param utf8 (optional) If set to true all string will be processed as UTF-8 strings 
+   * @param utf8 (optional) Control UTF-8 processing
    */
-  CRegExp(bool caseless = false, bool utf8 = false);
+  CRegExp(bool caseless = false, utf8Mode utf8 = asciiOnly);
   /**
    * Create new CRegExp object and compile regexp expression in one step
    * @warning Use only with hardcoded regexp when you're sure that regexp is compiled without errors
    * @param caseless    Matching will be case insensitive if set to true 
    *                    or case sensitive if set to false
-   * @param utf8        If set to true all string will be processed as UTF-8 strings
+   * @param utf8        Control UTF-8 processing
    * @param re          The regular expression
    * @param study (optional) Controls study of expression, useful if expression will be used
    *                         several times
    */
-  CRegExp(bool caseless, bool utf8, const char *re, studyMode study = NoStudy);
+  CRegExp(bool caseless, utf8Mode utf8, const char *re, studyMode study = NoStudy);
 
   CRegExp(const CRegExp& re);
   ~CRegExp();
@@ -143,7 +150,10 @@ public:
 
 private:
   int PrivateRegFind(size_t bufferLen, const char *str, unsigned int startoffset = 0, int maxNumberOfCharsToTest = -1);
-  void InitValues(bool caseless = false, bool utf8 = false);
+  void InitValues(bool caseless = false, CRegExp::utf8Mode utf8 = asciiOnly);
+  static bool requireUtf8(const std::string& regexp);
+  static int readCharXCode(const std::string& regexp, size_t& pos);
+  static bool isCharClassWithUnicode(const std::string& regexp, size_t& pos);
 
   void Cleanup();
   inline bool IsValidSubNumber(int iSub) const;
@@ -153,6 +163,7 @@ private:
   static const int OVECCOUNT=(m_MaxNumOfBackrefrences + 1) * 3;
   unsigned int m_offset;
   int         m_iOvector[OVECCOUNT];
+  utf8Mode    m_utf8Mode;
   int         m_iMatchCount;
   int         m_iOptions;
   bool        m_jitCompiled;

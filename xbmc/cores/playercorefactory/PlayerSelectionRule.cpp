@@ -118,7 +118,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
   if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile()) return;
   if (m_tDVDImage >= 0 && (m_tDVDImage > 0) != item.IsDVDImage()) return;
 
-  CRegExp regExp(false, true);
+  CRegExp regExp(false, CRegExp::autoUtf8);
 
   if (m_bStreamDetails)
   {

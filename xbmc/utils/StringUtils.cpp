@@ -733,6 +733,28 @@ bool StringUtils::IsInteger(const CStdString& str)
   return i == str.size() && n > 0;
 }
 
+int StringUtils::asciidigitvalue(char chr)
+{
+  if (!isasciidigit(chr))
+    return -1;
+
+  return chr - '0';
+}
+
+int StringUtils::asciixdigitvalue(char chr)
+{
+  int v = asciidigitvalue(chr);
+  if (v >= 0)
+    return v;
+  if (chr >= 'a' && chr <= 'f')
+    return chr - 'a' + 10;
+  if (chr >= 'A' && chr <= 'F')
+    return chr - 'A' + 10;
+
+  return -1;
+}
+
+
 void StringUtils::RemoveCRLF(CStdString& strLine)
 {
   StringUtils::TrimRight(strLine, "\n\r");
