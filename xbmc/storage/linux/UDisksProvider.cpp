@@ -39,7 +39,7 @@ CUDiskDevice::CUDiskDevice(const char *DeviceKitUDI)
   m_isFileSystem = false;
   m_isSystemInternal = false;
   m_isOptical = false;
-  m_PartitionSizeGiB = 0.0f;
+  m_PartitionSize = 0;
   Update();
 }
 
@@ -67,7 +67,7 @@ void CUDiskDevice::Update()
   else
     m_MountPath.clear();
 
-  m_PartitionSizeGiB = properties["PartitionSize"].asUnsignedInteger() / 1024.0 / 1024.0 / 1024.0;
+  m_PartitionSize = properties["PartitionSize"].asUnsignedInteger();
   m_isPartition = properties["DeviceIsPartition"].asBoolean();
   m_isSystemInternal = properties["DeviceIsSystemInternal"].asBoolean();
   m_isOptical = properties["DeviceIsOpticalDisc"].asBoolean();
@@ -140,7 +140,10 @@ CMediaSource CUDiskDevice::ToMediaShare()
   CMediaSource source;
   source.strPath = m_MountPath;
   if (m_Label.empty())
-    source.strName = StringUtils::Format("%.1f GB %s", m_PartitionSizeGiB, g_localizeStrings.Get(155).c_str());
+  {
+    std::string strSize = StringUtils::SizeToString(m_PartitionSize);
+    source.strName = StringUtils::Format("%s %s", strSize.c_str(), g_localizeStrings.Get(155).c_str());
+  }
   else
     source.strName = m_Label;
   if (m_isOptical)

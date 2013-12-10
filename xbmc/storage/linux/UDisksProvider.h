@@ -41,7 +41,7 @@ public:
 
   CStdString m_UDI, m_DeviceKitUDI, m_MountPath, m_FileSystem, m_Label;
   bool m_isMounted, m_isMountedByUs, m_isRemovable, m_isPartition, m_isFileSystem, m_isSystemInternal, m_isOptical;
-  float m_PartitionSizeGiB;
+  int64_t m_PartitionSize;
 };
 
 class CUDisksProvider : public IStorageProvider
