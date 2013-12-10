@@ -25,16 +25,20 @@
 #include "utils/Observer.h"
 #include "video/VideoThumbLoader.h"
 
+#include <boost/shared_ptr.hpp>
+
 #define PVR_ALL_RECORDINGS_PATH_EXTENSION "-1"
 
 namespace PVR
 {
+  typedef boost::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
+  
   class CPVRRecordings : public Observable
   {
   private:
-    CCriticalSection             m_critSection;
-    bool                         m_bIsUpdating;
-    std::vector<CPVRRecording *> m_recordings;
+    CCriticalSection              m_critSection;
+    bool                          m_bIsUpdating;
+    std::vector<CPVRRecordingPtr> m_recordings;
 
     virtual void UpdateFromClients(void);
     virtual CStdString TrimSlashes(const CStdString &strOrig) const;
