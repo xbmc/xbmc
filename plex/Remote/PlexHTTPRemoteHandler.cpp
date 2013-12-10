@@ -33,6 +33,8 @@
 #include "PlayList.h"
 #include "Settings.h"
 
+#include "GUIWindowSlideShow.h"
+
 #define LEGACY 1
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -872,9 +874,12 @@ void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
       playlistType = PLAYLIST_MUSIC;
     else if (type == "video")
       playlistType = PLAYLIST_VIDEO;
+    else if (type == "photo")
+      playlistType = PLAYLIST_PICTURE;
   }
 
-  playlist = g_playlistPlayer.GetPlaylist(playlistType);
+  if (playlistType != PLAYLIST_PICTURE)
+    playlist = g_playlistPlayer.GetPlaylist(playlistType);
 
   if (arguments.find("key") == arguments.end())
   {
@@ -884,6 +889,36 @@ void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
   }
 
   std::string key = arguments.find("key")->second;
+
+  if (playlistType == PLAYLIST_PICTURE)
+  {
+    CGUIWindowSlideShow* ss = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (!ss)
+    {
+      setStandardResponse(500, "Missing slideshow, very internal bad error.");
+      return;
+    }
+    CFileItemList list;
+    ss->GetSlideShowContents(list);
+
+    bool found = false;
+
+    for (int i = 0; i < list.Size(); i++)
+    {
+      CFileItemPtr pic = list.Get(i);
+      if (pic && (pic->GetProperty("unprocessed_key").asString() == key))
+      {
+        ss->Select(pic->GetPath());
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
+      setStandardResponse(500, "Can't find that key in the current slideshow!");
+
+    return;
+  }
 
   int idx = -1;
   for (int i = 0; i < playlist.size(); i++)
