@@ -93,14 +93,10 @@ public:
         pPlayer = new COMXPlayer(callback); 
         CLog::Log(LOGINFO, "Created player %s for core %d / OMXPlayer forced as DVDPlayer", "OMXPlayer", m_eCore);
         break;
-      case EPC_PAPLAYER: 
-        pPlayer = new COMXPlayer(callback); 
-        CLog::Log(LOGINFO, "Created player %s for core %d / OMXPlayer forced as PAPLayer", "OMXPlayer", m_eCore);
-        break;
 #else
       case EPC_DVDPLAYER: pPlayer = new CDVDPlayer(callback); break;
-      case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
 #endif
+      case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
 #if defined(HAS_OMXPLAYER)
       case EPC_OMXPLAYER: pPlayer = new COMXPlayer(callback); break;
