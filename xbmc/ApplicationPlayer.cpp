@@ -49,13 +49,13 @@ void CApplicationPlayer::ClosePlayer()
   }
 }
 
-void CApplicationPlayer::CloseFile()
+void CApplicationPlayer::CloseFile(bool reopen)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
   {
     ++m_iPlayerOPSeq;
-    player->CloseFile();
+    player->CloseFile(reopen);
   }
 }
 
@@ -81,7 +81,7 @@ void CApplicationPlayer::ClosePlayerGapless(PLAYERCOREID newCore)
     // but if we do not stop it, we can not distingush callbacks from previous
     // item and current item, it will confused us then we can not make correct delay
     // callback after the starting state.
-    CloseFile();
+    CloseFile(true);
   }
 }
 

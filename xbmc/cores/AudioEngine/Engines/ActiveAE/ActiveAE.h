@@ -86,6 +86,7 @@ public:
     GETSTATE,
     DISPLAYLOST,
     DISPLAYRESET,
+    KEEPCONFIG,
     TIMEOUT,
   };
   enum InSignal
@@ -219,6 +220,7 @@ public:
   virtual bool SupportsSilenceTimeout();
   virtual bool SupportsQualityLevel(enum AEQuality level);
   virtual bool IsSettingVisible(const std::string &settingId);
+  virtual void KeepConfiguration(unsigned int millis);
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback();
@@ -286,6 +288,7 @@ protected:
   bool m_extError;
   bool m_extDrain;
   XbmcThreads::EndTime m_extDrainTimer;
+  unsigned int m_extKeepConfig;
   bool m_extDeferData;
 
   enum

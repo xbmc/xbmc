@@ -509,8 +509,11 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   return true;
 }
 
-bool PAPlayer::CloseFile()
+bool PAPlayer::CloseFile(bool reopen)
 {
+  if (reopen)
+    CAEFactory::KeepConfiguration(3000);
+
   if (!m_isPaused)
     SoftStop(true, true);
   CloseAllStreams(false);

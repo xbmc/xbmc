@@ -226,5 +226,11 @@ public:
    * @return true if AudioEngine wants to display this setting
    */
   virtual bool IsSettingVisible(const std::string &settingId) {return false; }
+
+  /**
+   * Instruct AE to keep configuration for a specified time
+   * @param millis time for which old configuration should be kept
+   */
+  virtual void KeepConfiguration(unsigned int millis) {return; }
 };
 
