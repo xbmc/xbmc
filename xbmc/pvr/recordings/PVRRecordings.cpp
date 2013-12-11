@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "video/VideoDatabase.h"
+#include "settings/Settings.h"
 
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -34,7 +35,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
-#include "utils/StringUtils.h"
 
 using namespace PVR;
 
@@ -127,7 +127,7 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
   }
 }
 
-void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip /* = true */)
+void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList *results)
 {
   CStdString strUseBase = TrimSlashes(strBase);
 
@@ -187,7 +187,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
   CFileItemList files;
   GetContents(strBase, &files);
 
-  if (bAutoSkip && results->Size() == 1 && files.Size() == 0)
+  if (results->Size() == 1 && files.Size() == 0)
   {
     CStdString strGetPath = StringUtils::Format("%s/%s/", strUseBase.c_str(), results->Get(0)->GetLabel().c_str());
 
@@ -195,7 +195,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
     CLog::Log(LOGDEBUG, "CPVRRecordings - %s - '%s' only has 1 subdirectory, selecting that directory ('%s')",
         __FUNCTION__, strUseBase.c_str(), strGetPath.c_str());
-    GetSubDirectories(strGetPath, results, true);
+    GetSubDirectories(strGetPath, results);
     return;
   }
 
@@ -221,6 +221,16 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
       if(pItem->m_dateTime < results->Get(i)->m_dateTime)
         pItem->m_dateTime = results->Get(i)->m_dateTime;
     }
+    results->AddFront(pItem, 0);
+  }
+
+  // Add parent directory item
+  if (!strUseBase.empty() && (subDirectories > 0 || files.Size() > 0) && CSettings::Get().GetBool("filelists.showparentdiritems"))
+  {
+    CStdString strLabel("..");
+    CFileItemPtr pItem(new CFileItem(strLabel));
+    pItem->SetPath("pvr://recordings");
+    pItem->m_bIsShareOrDrive = false;
     results->AddFront(pItem, 0);
   }
 }
@@ -402,7 +412,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
     if (StringUtils::StartsWith(strFileName, "recordings"))
     {
       strFileName.erase(0, 10);
-      GetSubDirectories(strFileName, &items, true);
+      GetSubDirectories(strFileName, &items);
       bSuccess = true;
     }
   }
