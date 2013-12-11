@@ -5,3 +5,10 @@ PHT Fixes
   Workaround for 3FPS on Refresh Rate switching
   MyPlex queue optimizations
   Quit video playback when pressing esc on the OSD in paused mode.
+  Support getting transcoder bitrates from other servers than the "best" one.
+  Fix iOS client flinging Queue/Recommended videos
+  Fix back button in VideoOSD
+  Implement skipTo for pictures
+  Don't show myPlex dialogs when we are not logged into myPlex.
+  Close Audio/Subtitle pickers when we close the video window.
+  Hide some pop-ups when playing video.
