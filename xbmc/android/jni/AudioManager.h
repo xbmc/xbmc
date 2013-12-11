@@ -33,9 +33,9 @@ public:
   void setStreamVolume(int index = 0, int flags = 0);
 
   static void PopulateStaticFields();
+  static int STREAM_MUSIC;
 
 private:
   CJNIAudioManager();
-
-  static int STREAM_MUSIC;
 };
+
