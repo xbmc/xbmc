@@ -1681,8 +1681,11 @@ void CPeripheralCecAdapter::ProcessStandbyDevices(void)
 
   if (bStandby)
   {
-    m_cecAdapter->StandbyDevices(CECDEVICE_BROADCAST);
-    if (m_configuration.bSendInactiveSource == 1)
+    if (!m_configuration.powerOffDevices.IsEmpty())
+    {
+      m_cecAdapter->StandbyDevices(CECDEVICE_BROADCAST);
+    }
+    else if (m_configuration.bSendInactiveSource == 1)
     {
       CLog::Log(LOGDEBUG, "%s - sending inactive source commands", __FUNCTION__);
       m_cecAdapter->SetInactiveView();
