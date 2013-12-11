@@ -1675,6 +1675,8 @@ void CPeripheralCecAdapter::ProcessStandbyDevices(void)
     CSingleLock lock(m_critSection);
     bStandby = m_bStandbyPending;
     m_bStandbyPending = false;
+    if (bStandby)
+      m_bGoingToStandby = true;
   }
 
   if (bStandby)
