@@ -1198,6 +1198,7 @@ int COMXAudio::SetPlaySpeed(int iSpeed)
 
 void COMXAudio::RegisterAudioCallback(IAudioCallback *pCallback)
 {
+  CSingleLock lock (m_critSection);
   if(!m_Passthrough && !m_HWDecode)
   {
     m_pCallback = pCallback;
@@ -1210,6 +1211,7 @@ void COMXAudio::RegisterAudioCallback(IAudioCallback *pCallback)
 
 void COMXAudio::UnRegisterAudioCallback()
 {
+  CSingleLock lock (m_critSection);
   m_pCallback = NULL;
 }
 
