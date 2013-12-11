@@ -146,13 +146,13 @@ void CGUIFontTTFGL::LastEnd()
 #ifdef HAS_GL
   glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
 
-  glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
-  glVertexPointer  (3, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
-  glTexCoordPointer(2, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
+  glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)&m_vertex[0] + offsetof(SVertex, r));
+  glVertexPointer  (3, GL_FLOAT        , sizeof(SVertex), (char*)&m_vertex[0] + offsetof(SVertex, x));
+  glTexCoordPointer(2, GL_FLOAT        , sizeof(SVertex), (char*)&m_vertex[0] + offsetof(SVertex, u));
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-  glDrawArrays(GL_QUADS, 0, m_vertex_count);
+  glDrawArrays(GL_QUADS, 0, m_vertex.size());
   glPopClientAttrib();
 
   glActiveTexture(GL_TEXTURE1);
@@ -168,10 +168,10 @@ void CGUIFontTTFGL::LastEnd()
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
   // stack object until VBOs will be used
-  std::vector<SVertex> vecVertices( 6 * (m_vertex_count / 4) );
+  std::vector<SVertex> vecVertices( 6 * (m_vertex.size() / 4) );
   SVertex *vertices = &vecVertices[0];
 
-  for (int i=0; i<m_vertex_count; i+=4)
+  for (size_t i=0; i<m_vertex.size(); i+=4)
   {
     *vertices++ = m_vertex[i];
     *vertices++ = m_vertex[i+1];

@@ -101,17 +101,23 @@ void CGUIFontTTFDX::LastEnd()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
-  if (m_vertex_count == 0)
+  if (m_vertex.size() == 0)
     return;
 
-  unsigned index_size = m_vertex_size * 6 / 4;
+  /* If the number of elements in m_vertex reduces, we can simply re-use the
+   * first elements in m_index without any need to reallocate or reinitialise
+   * it. To ensure we don't reallocate m_index any more frequently than
+   * m_vertex, keep their respective high watermarks (m_index_size and
+   * m_vertex.capacity()) in line.
+   */
+  unsigned index_size = m_vertex.capacity() * 6 / 4;
   if(m_index_size < index_size)
   {
     uint16_t* id  = (uint16_t*)calloc(index_size, sizeof(uint16_t));
     if(id == NULL)
       return;
 
-    for(int i = 0, b = 0; i < m_vertex_size; i += 4, b += 6)
+    for(int i = 0, b = 0; i < m_vertex.capacity(); i += 4, b += 6)
     {
       id[b+0] = i + 0;
       id[b+1] = i + 1;
@@ -140,11 +146,11 @@ void CGUIFontTTFDX::LastEnd()
 
   pD3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST
                                     , 0
-                                    , m_vertex_count
-                                    , m_vertex_count / 2
+                                    , m_vertex.size()
+                                    , m_vertex.size() / 2
                                     , m_index
                                     , D3DFMT_INDEX16
-                                    , m_vertex
+                                    , &m_vertex[0]
                                     , sizeof(SVertex));
   pD3DDevice->SetTransform(D3DTS_WORLD, &orig);
 
