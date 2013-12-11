@@ -10,1005 +10,1319 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+""
 
 msgctxt "#31000"
 msgid "Browse"
 msgstr "찾기"
 
+
 msgctxt "#31001"
 msgid "Videos"
 msgstr "비디오"
+
 
 msgctxt "#31002"
 msgid "Music"
 msgstr "음악"
 
+
 msgctxt "#31003"
 msgid "Pictures"
 msgstr "사진"
+
 
 msgctxt "#31004"
 msgid "Applications"
 msgstr "프로그램"
 
+
 msgctxt "#31005"
 msgid "Weather"
 msgstr "날씨"
+
 
 msgctxt "#31006"
 msgid "System"
 msgstr "시스템"
 
+
 msgctxt "#31007"
 msgid "Quit"
-msgstr "켜기/끄기"
+msgstr "종료"
+
 
 msgctxt "#31008"
 msgid "TV Shows"
 msgstr "TV 쇼"
 
+
+#empty strings from id 31009 to 31010
+
 msgctxt "#31011"
 msgid "Watch your"
 msgstr "시청하기"
+
 
 msgctxt "#31012"
 msgid "Listen to"
 msgstr "들어보기"
 
+
 msgctxt "#31013"
 msgid "View your"
 msgstr "살펴보기"
+
 
 msgctxt "#31014"
 msgid "Use your"
 msgstr "사용하기"
 
+
 msgctxt "#31015"
 msgid "Check"
 msgstr "확인"
+
 
 msgctxt "#31016"
 msgid "Change your"
 msgstr "설정하기"
 
+
+#empty string with id 31017
+
 msgctxt "#31018"
 msgid "Menu"
 msgstr "메뉴"
+
 
 msgctxt "#31019"
 msgid "Play the"
 msgstr "재생하기"
 
+
 msgctxt "#31020"
 msgid "Options"
 msgstr "옵션"
+
 
 msgctxt "#31021"
 msgid "Seasons"
 msgstr "시즌"
 
+
 msgctxt "#31022"
 msgid "Hide"
 msgstr "숨김"
+
 
 msgctxt "#31023"
 msgid "Sort By"
 msgstr "정렬"
 
+
 msgctxt "#31024"
 msgid "Sort Direction"
 msgstr "정렬 방향"
+
 
 msgctxt "#31025"
 msgid "Backward"
 msgstr "역방향"
 
+
 msgctxt "#31026"
 msgid "Forward"
 msgstr "순방향"
+
 
 msgctxt "#31027"
 msgid "Began"
 msgstr "시작"
 
+
 msgctxt "#31028"
 msgid "Finished"
 msgstr "끝"
+
 
 msgctxt "#31029"
 msgid "Writer"
 msgstr "저자"
 
+
 msgctxt "#31030"
 msgid "Track No."
 msgstr "트랙 번호"
+
 
 msgctxt "#31031"
 msgid "Active"
 msgstr "활성"
 
+
 msgctxt "#31032"
 msgid "Instrmts"
 msgstr "악기"
+
 
 msgctxt "#31033"
 msgid "Last Refreshed"
 msgstr "마지막 새로 고침"
 
+
 msgctxt "#31034"
 msgid "Build"
 msgstr "생성"
+
 
 msgctxt "#31035"
 msgid "Free RAM"
 msgstr "여유 메모리"
 
+
 msgctxt "#31036"
 msgid "IP Addr."
 msgstr "IP 주소"
+
 
 msgctxt "#31037"
 msgid "Hard Drive Space"
 msgstr "하드 드라이브 공간"
 
+
 msgctxt "#31038"
 msgid "Choose Your"
-msgstr "선택"
+msgstr "선택하기"
+
 
 msgctxt "#31039"
 msgid "Favourite"
 msgstr "즐겨찾기"
 
+
 msgctxt "#31040"
 msgid "Modify"
 msgstr "수정"
+
 
 msgctxt "#31041"
 msgid "Editor"
 msgstr "편집기"
 
+
 msgctxt "#31042"
 msgid "Picture"
 msgstr "사진"
+
 
 msgctxt "#31043"
 msgid "Check the"
 msgstr "확인하기"
 
+
 msgctxt "#31044"
 msgid "By"
 msgstr "-"
+
 
 msgctxt "#31045"
 msgid "Recently Added"
 msgstr "최근 추가됨"
 
+
 msgctxt "#31046"
 msgid "Path to Lyrics Script"
 msgstr "가사 스크립트 경로"
 
+
 msgctxt "#31047"
 msgid "Not Available"
-msgstr ""
+msgstr "사용불가"
+
+
+#empty strings from id 31048 to 31049
 
 msgctxt "#31050"
 msgid "Items"
-msgstr ""
+msgstr "항목"
+
+
+#Programs
 
 msgctxt "#31051"
 msgid "Games"
 msgstr "게임"
 
+
 msgctxt "#31052"
 msgid "Emulators"
 msgstr "에뮬레이터"
+
 
 msgctxt "#31053"
 msgid "Apps"
 msgstr "응용 프로그램"
 
+
+#System
+#empty strings from id 31054 to 31059
+
 msgctxt "#31060"
 msgid "Settings"
 msgstr "설정"
+
 
 msgctxt "#31061"
 msgid "Scripts"
 msgstr "스크립트"
 
+
 msgctxt "#31062"
 msgid "File Manager"
 msgstr "파일 관리자"
+
 
 msgctxt "#31063"
 msgid "Favourites"
 msgstr "즐겨찾기"
 
+
 msgctxt "#31064"
 msgid "Profiles"
-msgstr "프로파일"
+msgstr "프로필"
+
 
 msgctxt "#31065"
 msgid "Info"
 msgstr "정보"
 
+
 msgctxt "#31066"
 msgid "Refresh"
 msgstr "새로 고침"
+
 
 msgctxt "#31067"
 msgid "About Your"
 msgstr "정보"
 
+
 msgctxt "#31068"
 msgid "User ID:"
-msgstr ""
+msgstr "사용자ID:"
+
 
 msgctxt "#31069"
 msgid "Password:"
-msgstr ""
+msgstr "비밀번호:"
+
+
+#Power
+#empty string with id 31070
 
 msgctxt "#31071"
 msgid "Shutdown"
 msgstr "종료"
 
+
 msgctxt "#31072"
 msgid "Restart"
 msgstr "다시 시작"
+
 
 msgctxt "#31073"
 msgid "Reload XBMC"
 msgstr "XBMC 새로 고침"
 
+
 msgctxt "#31074"
 msgid "Dashboard"
 msgstr "대시보드"
+
 
 msgctxt "#31075"
 msgid "Refresh Skin"
 msgstr "스킨 새로 고침"
 
+
+#Video
+#empty strings from id 31076 to 31110
+
 msgctxt "#31111"
 msgid "Movies"
 msgstr "영화"
+
 
 msgctxt "#31112"
 msgid "TV Shows"
 msgstr "TV 쇼"
 
+
 msgctxt "#31113"
 msgid "Clips"
 msgstr "클립"
+
 
 msgctxt "#31114"
 msgid "Episode"
 msgstr "에피소드:"
 
+
 msgctxt "#31115"
 msgid "N/A"
 msgstr "사용할수 없음"
+
 
 msgctxt "#31116"
 msgid "Movie Title"
 msgstr "영화 제목"
 
+
 msgctxt "#31117"
 msgid "Thumb"
 msgstr "미리보기"
+
 
 msgctxt "#31118"
 msgid "Fanart"
 msgstr "팬아트"
 
+
 msgctxt "#31119"
 msgid "Synopsis"
 msgstr "개요"
 
+
 msgctxt "#31120"
 msgid "Star Rating"
-msgstr "별 등급"
+msgstr "별점"
+
 
 msgctxt "#31121"
 msgid "Movie Details"
 msgstr "영화 상세정보"
 
+
 msgctxt "#31122"
 msgid "Aired"
 msgstr "방영"
+
 
 msgctxt "#31123"
 msgid "MPAA"
 msgstr "미국 영화협회"
 
+
 msgctxt "#31124"
 msgid "Eps."
 msgstr "에피소드"
+
 
 msgctxt "#31125"
 msgid "Theater Times"
 msgstr "Theater Times"
 
+
 msgctxt "#31126"
 msgid "TV Show Details"
 msgstr "TV 쇼 상세정보"
+
 
 msgctxt "#31127"
 msgid "Episode Details"
 msgstr "에피소드 상세정보"
 
+
 msgctxt "#31128"
 msgid "Banner"
-msgstr ""
+msgstr "배너"
+
 
 msgctxt "#31129"
 msgid "Rating"
-msgstr ""
+msgstr "평점"
+
 
 msgctxt "#31130"
 msgid "IMDb Rating"
-msgstr ""
+msgstr "IMDb 평점"
+
 
 msgctxt "#31131"
 msgid "Genre"
-msgstr ""
+msgstr "장르"
+
 
 msgctxt "#31132"
 msgid "Duration"
-msgstr ""
+msgstr "길이"
+
 
 msgctxt "#31133"
 msgid "Subtitles"
-msgstr ""
+msgstr "자막"
+
 
 msgctxt "#31134"
 msgid "Cast"
-msgstr ""
+msgstr "출연"
+
 
 msgctxt "#31135"
 msgid "Director"
-msgstr ""
+msgstr "감독"
+
 
 msgctxt "#31136"
 msgid "Writer"
-msgstr ""
+msgstr "저자"
+
 
 msgctxt "#31137"
 msgid "Episodes"
-msgstr ""
+msgstr "에피소드"
+
 
 msgctxt "#31138"
 msgid "Watched"
-msgstr ""
+msgstr "시청"
+
 
 msgctxt "#31139"
 msgid "Unwatched"
-msgstr ""
+msgstr "미시청"
+
 
 msgctxt "#31140"
 msgid "First Aired"
-msgstr ""
+msgstr "첫 방송"
+
 
 msgctxt "#31141"
 msgid "Season"
-msgstr ""
+msgstr "시즌"
+
 
 msgctxt "#31142"
 msgid "Movie"
-msgstr ""
+msgstr "영화"
+
 
 msgctxt "#31143"
 msgid "TV Show"
-msgstr ""
+msgstr "TV 쇼"
+
 
 msgctxt "#31144"
 msgid "Video"
-msgstr ""
+msgstr "비디오"
+
 
 msgctxt "#31145"
 msgid "Specials"
-msgstr ""
+msgstr "스페셜"
+
+
+#Music
+#empty strings from id 31146 to 31219
 
 msgctxt "#31220"
 msgid "Currently Playing"
 msgstr "현재 재생"
 
+
 msgctxt "#31221"
 msgid "Previous Track"
 msgstr "이전 트랙"
+
 
 msgctxt "#31222"
 msgid "Upcoming Tracks"
 msgstr "이번 트랙"
 
+
 msgctxt "#31223"
 msgid "Click for Lyrics"
 msgstr "가사 버튼"
+
 
 msgctxt "#31224"
 msgid "Open MENU for Options"
 msgstr "옵션 메뉴 열기"
 
+
 msgctxt "#31225"
 msgid "Rating"
-msgstr "등급"
+msgstr "평점"
+
 
 msgctxt "#31226"
 msgid "Change"
 msgstr "변경"
 
+
 msgctxt "#31227"
 msgid "Your Preset"
 msgstr "사전설정"
+
 
 msgctxt "#31228"
 msgid "Lyrics"
 msgstr "가사"
 
+
 msgctxt "#31229"
 msgid "Artist"
-msgstr ""
+msgstr "가수"
+
 
 msgctxt "#31230"
 msgid "Album"
-msgstr ""
+msgstr "앨범"
+
+
+#Settings
+#empty strings from id 31231 to 31600
 
 msgctxt "#31601"
 msgid "Appearance"
 msgstr "모양새"
 
+
 msgctxt "#31602"
 msgid "Network"
 msgstr "네트워크"
+
 
 msgctxt "#31603"
 msgid "Skin"
 msgstr "스킨"
 
+
 msgctxt "#31604"
 msgid "General"
 msgstr "일반"
+
 
 msgctxt "#31605"
 msgid "Home"
 msgstr "홈"
 
+
 msgctxt "#31606"
 msgid "Change Preferences For"
-msgstr "설정 변경"
+msgstr "설정  변경 : "
+
 
 msgctxt "#31607"
 msgid "Current"
 msgstr "현재"
 
+
 msgctxt "#31608"
 msgid "Source"
 msgstr "소스"
+
 
 msgctxt "#31609"
 msgid "Dest"
 msgstr "대상"
 
+
 msgctxt "#31610"
 msgid "Playback"
-msgstr ""
+msgstr "재생"
+
+
+#empty strings from id 31611 to 31619
 
 msgctxt "#31620"
 msgid "Menu"
 msgstr "메뉴"
 
+
 msgctxt "#31621"
 msgid "Disable"
 msgstr "사용안함 :"
 
+
 msgctxt "#31622"
 msgid "Enable"
-msgstr "사용함"
+msgstr "사용"
+
 
 msgctxt "#31623"
 msgid "Background"
 msgstr "배경"
 
+
 msgctxt "#31624"
 msgid "Select"
 msgstr "선택"
+
 
 msgctxt "#31625"
 msgid "Use Default"
 msgstr "기본값 사용"
 
+
+#empty strings from id 31626 to 31649
+
 msgctxt "#31650"
 msgid "Hide right blade"
 msgstr "오른쪽 날개 숨김"
+
 
 msgctxt "#31651"
 msgid "Enable custom backgrounds"
 msgstr "사용자 지정 배경 사용"
 
+
 msgctxt "#31652"
 msgid "Enable"
 msgstr "사용"
+
 
 msgctxt "#31653"
 msgid "View"
 msgstr "보기"
 
+
 msgctxt "#31654"
 msgid "Hide Thumb Labels in File Browser dialog"
 msgstr "파일 찾기 대화창에 미리보기 라벨 숨김"
+
 
 msgctxt "#31655"
 msgid "Display rotated Season thumb in Episodes view"
 msgstr "에피소드 보기에 시즌 미리보기 순환 표시"
 
+
 msgctxt "#31656"
 msgid "Backgrounds"
 msgstr "배경"
+
 
 msgctxt "#31657"
 msgid "Image"
 msgstr "이미지"
 
+
 msgctxt "#31658"
 msgid "Folder"
 msgstr "폴더"
+
 
 msgctxt "#31659"
 msgid "Reset"
 msgstr "초기화"
 
+
 msgctxt "#31660"
 msgid "Enable Custom BG's on Home"
 msgstr "홈에 사용자 지정 배경 사용"
+
 
 msgctxt "#31661"
 msgid "Apple Movie Trailers"
 msgstr "애플 영화 트레일러"
 
+
 msgctxt "#31662"
 msgid "Hide clock"
 msgstr "시계 숨김"
+
 
 msgctxt "#31663"
 msgid "Show Media Count"
 msgstr "미디어 회수 보기"
 
+
 msgctxt "#31664"
 msgid "Hide Scrollbars on Media Screens"
 msgstr "미디어 화면에 스크롤바 숨김"
+
 
 msgctxt "#31665"
 msgid "Hide Watched/Unwatched icons"
 msgstr "시청/미시청 아이콘 숨김"
 
+
 msgctxt "#31666"
 msgid "Show Blade in Centre of Screen"
 msgstr "화면 중앙에 날개 보기"
 
+
 msgctxt "#31667"
 msgid "MediaStream"
-msgstr "MediaStream"
+msgstr "미디어스트림"
+
 
 msgctxt "#31668"
 msgid "Show Larger Clock"
 msgstr "큰 시계 보기"
 
+
 msgctxt "#31669"
 msgid "Show Weather on Home"
 msgstr "홈에 날씨 보기"
+
 
 msgctxt "#31670"
 msgid "Show Fanart"
 msgstr "팬아트 보기"
 
+
 msgctxt "#31671"
 msgid "Hide Plot in Video OSD"
 msgstr "비디오 OSD 에 줄거리 숨김"
+
 
 msgctxt "#31672"
 msgid "Hide Info"
 msgstr "정보 숨김"
 
+
 msgctxt "#31673"
 msgid "Media Views"
 msgstr "미디어 보기"
+
 
 msgctxt "#31674"
 msgid "Hide Fanart"
 msgstr "팬아트 숨김"
 
+
 msgctxt "#31675"
 msgid "with Movies Views"
 msgstr ": 영화 보기에서"
+
 
 msgctxt "#31676"
 msgid "In Media Preview"
 msgstr ": 미디어 미리보기에서"
 
+
 msgctxt "#31677"
 msgid "with TV Shows List"
 msgstr ": TV 쇼 목록에서"
+
 
 msgctxt "#31678"
 msgid "Show Season thumb"
 msgstr "시즌 미리보기 보기"
 
+
 msgctxt "#31679"
 msgid "Hide Focus Details in Panel Stream"
 msgstr "패널 스트림에 상세 초점 숨김"
+
 
 msgctxt "#31680"
 msgid "Hide Thumbs in List View"
 msgstr "목록 보기에 미리보기 숨김"
 
+
 msgctxt "#31681"
 msgid "in Files Mode"
 msgstr ": 파일 모드에서"
+
 
 msgctxt "#31682"
 msgid "on TV Wall"
 msgstr ": TV 월에서"
 
+
 msgctxt "#31683"
 msgid "with TV Views"
 msgstr ": TV 보기에서"
+
 
 msgctxt "#31684"
 msgid "Hide Custom Backgrounds"
 msgstr "사용자 지정 배경 숨김"
 
+
 msgctxt "#31685"
 msgid "Show Animated"
 msgstr "애니메이션 보기"
+
 
 msgctxt "#31686"
 msgid "Show Horizontal Music Vis"
 msgstr "수평 음악 시각화 보기"
 
+
 msgctxt "#31687"
 msgid "with Video Views"
 msgstr ": 비디오 보기에서"
+
 
 msgctxt "#31688"
 msgid "with Music Views"
 msgstr ": 뮤직 보기에서"
 
+
 msgctxt "#31689"
 msgid "with Pictures Views"
 msgstr ": 사진 보기에서"
+
 
 msgctxt "#31690"
 msgid "Hide No Thumb Icons"
 msgstr "미리보기 없는 아이콘 숨김"
 
+
 msgctxt "#31691"
 msgid "Use Low Overlay for TV Shows Coverflow"
 msgstr "TV 쇼 커버 플로우 느린 오버레이 사용"
+
 
 msgctxt "#31692"
 msgid "Hide Info in Wall Stream view"
 msgstr "월 스트림 보기에 정보 숨김"
 
+
 msgctxt "#31693"
 msgid "Hide Thumbs in Options Menu"
 msgstr "옵션 메뉴에 미리보기 숨김"
+
 
 msgctxt "#31694"
 msgid "Show Now Playing UI on Left"
 msgstr "왼쪽에 현재 재생 UI 보기"
 
+
 msgctxt "#31695"
 msgid "Show AM/PM in clock"
 msgstr "시계에 오전/오후 보기"
 
+
+#empty string with id 31696
+
 msgctxt "#31697"
 msgid "Hide Photo Description in Slideshow"
-msgstr ""
+msgstr "슬라이드쇼에서 사진 설명 숨김"
+
+
+#Options Menu
+#empty strings from id 31698 to 31700
 
 msgctxt "#31701"
 msgid "Setup"
 msgstr "설정"
 
+
 msgctxt "#31702"
 msgid "Showcase"
 msgstr "쇼케이스"
+
 
 msgctxt "#31703"
 msgid "Seasons"
 msgstr "시즌"
 
+
 msgctxt "#31704"
 msgid "Photo"
 msgstr "사진"
+
 
 msgctxt "#31705"
 msgid "Convex"
 msgstr "볼록"
 
+
 msgctxt "#31706"
 msgid "Episode Thumbs"
 msgstr "에피소드 미리보기"
+
 
 msgctxt "#31707"
 msgid "Media Preview"
 msgstr "미디어 미리보기"
 
+
 msgctxt "#31708"
 msgid "Media List"
 msgstr "미디어 목록"
+
 
 msgctxt "#31709"
 msgid "Concave"
 msgstr "오목"
 
+
 msgctxt "#31710"
 msgid "Display"
 msgstr "표시"
+
 
 msgctxt "#31711"
 msgid "Info List"
 msgstr "정보 목록"
 
+
 msgctxt "#31712"
 msgid "Image Stream"
 msgstr "이미지 스트림"
+
 
 msgctxt "#31713"
 msgid "Setup Options"
 msgstr "설정 옵션"
 
+
 msgctxt "#31714"
 msgid "Wall Stream"
 msgstr "월 스트림"
+
 
 msgctxt "#31715"
 msgid "Panel Stream"
 msgstr "패널 스트림"
 
+
 msgctxt "#31716"
 msgid "Coverflow"
 msgstr "커버플로우"
+
 
 msgctxt "#31717"
 msgid "Options Menu"
 msgstr "옵션 메뉴"
 
+
+#empty strings from id 31718 to 31719
+
 msgctxt "#31720"
 msgid "Grid"
-msgstr ""
+msgstr "그리드"
+
 
 msgctxt "#31721"
 msgid "Episodes List"
-msgstr ""
+msgstr "에피소드 목록"
+
 
 msgctxt "#31722"
 msgid "Plugin Stream"
-msgstr ""
+msgstr "플러그인 스트림"
+
+
+#Credits
+#empty strings from id 31723 to 31799
 
 msgctxt "#31800"
 msgid "About Plex"
 msgstr "만든 사람들"
 
+
 msgctxt "#31801"
 msgid "Welcome to"
 msgstr "환영합니다"
+
 
 msgctxt "#31802"
 msgid "your media....[COLOR Highlighted]your[/COLOR] way"
 msgstr "너의 미디어는....[COLOR Highlighted]너의[/COLOR] 방식으로"
 
+
+#empty string with id 31803
+
 msgctxt "#31804"
 msgid "MediaStream is a new user interface for the popular multimedia XBMC.  Created by the newly-formed \"Team RazorFish\", this new interface seeks to combine functionality with form, merging style with substance.  Designed and optimized for the 'High-Def' generation, this interface seeks to bring a new experience to the already popular platform."
-msgstr "MediaStream 은 인기있는 멀티미디어 XBMC 의 새로운 사용자 인터페이스 입니다.  새로 형성된 \"Team RazorFish\" 에 의해 만들어진, 이 새로운 인터페이스는 외형의 기능성과 스타일을 내용에 융합을 결합합니다.  '고화질' 세대를 위해 디자인되고 최적화된, 이 인터페이스는 이미 인기있는 플랫폼에 새로운 경험을 가져다주는것을 추구합니다."
+msgstr "MediaStream 은 XBMC 의 새로운 사용자 인터페이스 입니다.  새로 구성된 \"RazorFish\" 팀 에 의해 만들어진 이 새로운 인터페이스는 외형의 기능성과 스타일을 내용에 융합을 결합합니다.  '고화질' 세대를 위해 디자인되고 최적화된 이 인터페이스는 이미 인기있는 플랫폼에 새로운 경험을 가져다주는것을 추구합니다."
+
 
 msgctxt "#31805"
 msgid "Note"
 msgstr "주의"
 
+
 msgctxt "#31806"
 msgid "Please ensure that you have the very latest build of XBMC.  We recommend the latest SVN build of XBMC, and would ask that you always download the full skin package."
-msgstr "마지막 XBMC 빌드를 가지고 있는지 확실히 해주세요. 우리는 마지막 SVN 빌드의 XBMC 를 추천하고, 언제나 전체 스킨 꾸러미를 다운로드 하기를 부탁합니다."
+msgstr "최신 XBMC 빌드를 사용중인지 확인 바랍니다. 최신 SVN 빌드의 XBMC 사용을 추천하며, 전체 스킨 꾸러미를 다운로드할때 필요할 수 있습니다."
+
 
 msgctxt "#31807"
 msgid "Skin Credits"
 msgstr "스킨 만든 사람들"
 
+
 msgctxt "#31808"
 msgid "The entire project was a collaborative effort between many talented individuals.  These are as follows: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Special thanks goes to emilio (a.k.a. thedeViL), without whom this project would never have happened.  Of course all thanks go to you, the XBMC community... without you there would be no reason to do what we do... keep rocking guys, you're the best!!!"
 msgstr "모든 프로젝트는 많은 재능있는 개인과 협력의 노력의 성과입니다.  그들은: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x 입니다.  emilio (일명 thedeViL) 에게 특별한 감사를 드립니다, 그가 없었다면 이 프로젝트는 생겨나지 않았을 것입니다.  물론 당신과, XBMC 공동체에 감사합니다... 당신이 없었다면 우리가 할 이유가 없었습니다... 계속하세요. 멋진 녀석들, 당신이 최고 입니다!!!"
+
 
 msgctxt "#31809"
 msgid "Special Thanks: entire XBMC team, supporters at the xbmc and xbox-scene forums"
 msgstr "특별히 감사드림: XBMC 팀 전체, xbmc 와 xbox-scene 포럼 후원자"
 
+
 msgctxt "#31810"
 msgid "Click \"OK\" to continue and begin using our skin"
 msgstr "계속하고 우리의 스킨 사용을 시작하려면 \"예\" 누르세요"
+
 
 msgctxt "#31811"
 msgid "Note: This is the only time you will see this message once you hit \"OK\""
 msgstr "주의: \"예\"를 누르면 다시는 이 메시지를 볼수 없습니다"
 
+
+#empty strings from id 31812 to 31850
+
 msgctxt "#31851"
 msgid "[COLOR=orange]Plex[/COLOR] bridges the gap between your Mac and your home theater, doing so with a visually appealing user interface that provides instant access to your media. [COLOR=orange]Plex[/COLOR] can play a wide range of video, audio and photo formats as well as online streaming audio and video. The real power of [COLOR=orange]Plex[/COLOR] is found in its library features: Organize your media into versatile libraries, automatically retrieve metadata from the Internet and display your library using one of the visually stunning skins."
-msgstr ""
+msgstr "[COLOR=orange]플렉스[/COLOR]는 미려한 사용자 인터페이스를 통해 여러분의 미디어에 즉각적인 접근을 가능하게 하여 여러분의 PC와 홈시어터 사이를 이어줍니다. \n"
+"[COLOR=orange]플렉스[/COLOR] 는 다양한 포맷의 비디오, 오디오, 사진뿐 아니라 온라인 비디오/오디오 스트리밍까지 재생가능합니다. [COLOR=orange]플렉스[/COLOR]의 진정한 힘은 라이브러리 기능에서 찾을 수 있습니다. 미디어를 다양한 라이브러리로 정리하고 인터넷에서 자동으로 메타데이터를 불러오며 화려한 스킨을 통해 라이브러리를 표시하십시오."
+
 
 msgctxt "#31852"
 msgid "At Plex, we would like to thank the following projects, without whom none of this would be possible:"
-msgstr ""
+msgstr "플렉스는 다음의 프로젝트에 감사를 전합니다. 그들이 없이는 해낼 수 없었을 겁니다:"
+
 
 msgctxt "#31853"
 msgid "[COLOR=orange]XBMC[/COLOR]: The most important one, for supplying us with a great foundation to build on."
-msgstr ""
+msgstr "[COLOR=orange]XBMC[/COLOR]: 가장 중요한 프로젝트, 우리에게 훌륭한 기반을 제공해 주었습니다."
+
 
 msgctxt "#31854"
 msgid "[COLOR=orange]Team RazorFish[/COLOR]: The talented team who created the original MediaStream skin."
-msgstr ""
+msgstr "[COLOR=orange]Team RazorFish[/COLOR]: 오리지널 MediaStream 스킨을 만든 재능있는 팀."
+
 
 msgctxt "#31855"
 msgid "[COLOR=orange]FFmpeg[/COLOR]: Without this, there would be no decoding of video inside Plex. A critical component, to be sure."
-msgstr ""
+msgstr "[COLOR=orange]FFmpeg[/COLOR]: 이것이 없다면 플렉스에서 어떤 동영상도 재생할 수 없었을 겁니다. 확실히 중요한 부분."
+
 
 msgctxt "#31856"
 msgid "[COLOR=orange]SQLite[/COLOR]: The media database is stored using this excellent, industry standard free database."
-msgstr ""
+msgstr "[COLOR=orange]SQLite[/COLOR]: 미디어 데이터베이스가 이 훌륭한 산업표준의 무료 데이터베이스에 저장됩니다."
+
 
 msgctxt "#31857"
 msgid "[COLOR=orange]CxImage[/COLOR]: The workhorse code responsible for loading images and photos. It uses lots of other libraries like libPNG, libJPEG, etc."
-msgstr ""
+msgstr "[COLOR=orange]CxImage[/COLOR]: 이미지와 사진을 읽어들이는 사용하는 코드. libPNG나 libJPEG 처럼 많이 사용됩니다."
+
 
 msgctxt "#31858"
 msgid "[COLOR=orange]FreeType[/COLOR]: This code is responsible for the beautiful rendering of fonts within the application."
-msgstr ""
+msgstr "[COLOR=orange]FreeType[/COLOR]: 프로그램 안에서 아름답게 렌더링되는 폰트를 담당합니다."
+
 
 msgctxt "#31859"
 msgid "[COLOR=orange]Python[/COLOR]: The media center embeds the Python interpreter to provide powerful scripting functionality."
-msgstr ""
+msgstr "[COLOR=orange]Python[/COLOR]: 미디어 서버에 포함된 Python 인터프리터가 강력한 스크립팅 기능을 제공합니다."
+
 
 msgctxt "#31860"
 msgid "Please visit http://www.plexapp.com/credits.php for links and more information."
-msgstr ""
+msgstr "자세한 정보는 http://www.plexapp.com/credits.php 에서 확인하십시오."
+
+
+#Profiles
+#empty strings from id 31861 to 31899
 
 msgctxt "#31900"
 msgid "Login As"
 msgstr "로그인"
 
+
 msgctxt "#31901"
 msgid "Modify Your"
 msgstr "수정"
 
+
 msgctxt "#31902"
 msgid "Profile"
-msgstr "프로파일"
+msgstr "프로필"
+
 
 msgctxt "#31903"
 msgid "Profile name"
-msgstr "프로파일 이름"
+msgstr "프로필 이름"
+
 
 msgctxt "#31904"
 msgid "Profile picture"
-msgstr "프로파일 사진"
+msgstr "프로필 사진"
+
+
+#Plex additions
+#empty strings from id 31905 to 31949
 
 msgctxt "#31950"
 msgid "Go to your"
 msgstr "오세요"
 
+
 msgctxt "#31951"
 msgid "Visit"
 msgstr "오세요"
 
+
 msgctxt "#31952"
 msgid "Channel Directory"
-msgstr "앱 스토어"
+msgstr "채널 디렉토리"
+
 
 msgctxt "#31953"
 msgid "Get"
 msgstr "받으세요"
 
+
 msgctxt "#31954"
 msgid "Help"
 msgstr "도움"
 
+
 msgctxt "#31955"
 msgid "Preferences"
-msgstr "환경설정"
+msgstr "환경 설정"
+
 
 msgctxt "#31956"
 msgid "Show"
 msgstr "Show"
 
+
+#empty strings from id 31957 to 31959
+
 msgctxt "#31960"
 msgid "Sleep"
-msgstr ""
+msgstr "절전모드"
+
 
 msgctxt "#31961"
 msgid "Shut Down"
-msgstr ""
+msgstr "시스템 종료"
+
 
 msgctxt "#31962"
 msgid "Power Menu"
-msgstr ""
+msgstr "전원 메뉴"
+
 
 msgctxt "#31963"
 msgid "displays"
-msgstr ""
+msgstr "화면"
+
 
 msgctxt "#31964"
 msgid "Sleep Display"
-msgstr ""
+msgstr "화면 꺼짐"
+
+
+#empty strings from id 31965 to 31969
 
 msgctxt "#31970"
 msgid "Channels"
-msgstr ""
+msgstr "채널"
+
 
 msgctxt "#31971"
 msgid "Video Channels"
-msgstr ""
+msgstr "비디오 채널"
+
 
 msgctxt "#31972"
 msgid "Music Channels"
-msgstr ""
+msgstr "음악 채널"
+
 
 msgctxt "#31973"
 msgid "Picture Channels"
-msgstr ""
+msgstr "사진 채널"
+
+
+#empty strings from id 31974 to 31980
 
 msgctxt "#31981"
 msgid "Show Thumbnails in List View"
-msgstr ""
+msgstr "목록 보기에서 미리보기 표시"
+
 
 msgctxt "#31982"
 msgid "Show Plot in Video OSD"
-msgstr ""
+msgstr "비디오 OSD 에 줄거리 표시"
+
 
 msgctxt "#31983"
 msgid "Show Picture Descriptions in Slideshow"
-msgstr ""
+msgstr "슬라이드쇼에 사진 설명 표시"
+
 
 msgctxt "#31984"
 msgid "Show Now Playing Information in Visualisations"
-msgstr ""
+msgstr "시각화 사용시 지금 재생중 정보를 표시"
+
 
 msgctxt "#31985"
 msgid "Show Separate Menu Items for Plug-in Sections"
-msgstr ""
+msgstr "플러그인 영역에 에 분리된 메뉴 항목을 표시"
+
+
+#empty strings from id 31986 to 31998
 
 msgctxt "#31999"
 msgid "End Time"
-msgstr ""
+msgstr "종료 시간"
+
+
+#Startup helper
 
 msgctxt "#32000"
 msgid "Please choose the type of audio connector used on this computer.  If you're unsure, or if you're using built-in speakers, you can accept the default and continue.  You can access this setting at any time in the Preferences."
-msgstr ""
+msgstr "현제 컴퓨터에서 사용중이 오디오 단자 종류를 선택하십시오. 잘 모르겠거나 내장 스피커를 사용중이라면 기본 설정을 선택하십시오. 이 설정은 환경설정 메뉴에서 언제든 변경가능합니다."
+
 
 msgctxt "#32001"
 msgid "Plex Home Theater Setup"
-msgstr ""
+msgstr "플렉스 홈시어터 설정"
+
+
+#empty string with id 32002
 
 msgctxt "#32003"
 msgid "[B]Welcome to Plex![/B]  [CR][CR]In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to [B]myPlex[/B].  [CR][CR][B]myPlex[/B] lets you queue and share online videos, and access shared media from your friends' libraries.  [CR][CR]If you don't already have a free [B]myPlex[/B] account, you can create one now at [COLOR=orange]http://my.plexapp.com[/COLOR] before continuing."
-msgstr ""
+msgstr "[B]Plex에 오신걸 환영합니다![/B] [CR][CR]최적의 감상을 위해 오디오를 설정하고 [B]myPlex[/B]에 로그인 하십시오. [CR][CR][B]myPlex[/B]는 여러분의 온라인 비디오를 대기열에 저장, 공유하며 친구들의 공유 미디어에 접근할 수 있게 해줍니다. [CR][CR]아직도 무료 [B]myPlex[/B] 계정을 갖고있지 않다면 [COLOR=orange]http://my.plexapp.com[/COLOR] 에서 지금 가입하십시오."
+
+
+#Other
+#empty strings from id 32004 to 32099
 
 msgctxt "#32100"
 msgid "Set Rating"
-msgstr ""
+msgstr "평점 주기"
+
 
 msgctxt "#32101"
 msgid "Episodes added"
-msgstr ""
+msgstr "에피소드 추가됨"
+
 
 msgctxt "#32102"
 msgid "All Episodes"
-msgstr ""
+msgstr "전체 에피소드"
+
 
 msgctxt "#32103"
 msgid "There is no description available for this "
-msgstr ""
+msgstr "현재 항목을 위한 설명이 존재하지 않습니다"
+
 
 msgctxt "#32104"
 msgid "You can add one for it in the Media Manager"
-msgstr ""
+msgstr "미디어 매니저에서 추가하실 수 있습니다"
+
 
 msgctxt "#32105"
 msgid "* Plot hidden to avoid spoilers *"
-msgstr ""
+msgstr "* 스포일러 예방을 위해 줄거리 숨김*"
+

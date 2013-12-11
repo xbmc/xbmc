@@ -1313,7 +1313,7 @@ msgstr "Alla avsnitt"
 
 msgctxt "#32103"
 msgid "There is no description available for this "
-msgstr "Det finns ingen beskrivning tillgänglig för detta"
+msgstr "Det finns ingen beskrivning tillgänglig för denna "
 
 
 msgctxt "#32104"
@@ -1324,3 +1324,4 @@ msgstr "Du kan lägga till en i Media Manager-gränssnittet."
 msgctxt "#32105"
 msgid "* Plot hidden to avoid spoilers *"
 msgstr "* Handling dold för att undvika spoilers *"
+

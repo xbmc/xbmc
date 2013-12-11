@@ -240,7 +240,7 @@ msgstr "Pfad zum Skript für Liedtexte"
 
 msgctxt "#31047"
 msgid "Not Available"
-msgstr ""
+msgstr "Nicht verfügbar"
 
 
 #empty strings from id 31048 to 31049
@@ -312,12 +312,12 @@ msgstr "Über"
 
 msgctxt "#31068"
 msgid "User ID:"
-msgstr ""
+msgstr "Benutzerkennung:"
 
 
 msgctxt "#31069"
 msgid "Password:"
-msgstr ""
+msgstr "Passwort:"
 
 
 #Power
@@ -438,7 +438,7 @@ msgstr "Episodendetails"
 
 msgctxt "#31128"
 msgid "Banner"
-msgstr ""
+msgstr "Banner"
 
 
 msgctxt "#31129"
@@ -448,32 +448,32 @@ msgstr "Wertung"
 
 msgctxt "#31130"
 msgid "IMDb Rating"
-msgstr ""
+msgstr "IMDb-Wertung"
 
 
 msgctxt "#31131"
 msgid "Genre"
-msgstr ""
+msgstr "Genre"
 
 
 msgctxt "#31132"
 msgid "Duration"
-msgstr ""
+msgstr "Dauer"
 
 
 msgctxt "#31133"
 msgid "Subtitles"
-msgstr ""
+msgstr "Untertitel"
 
 
 msgctxt "#31134"
 msgid "Cast"
-msgstr ""
+msgstr "Besetzung"
 
 
 msgctxt "#31135"
 msgid "Director"
-msgstr ""
+msgstr "Regisseur"
 
 
 msgctxt "#31136"
@@ -483,42 +483,42 @@ msgstr "Autor"
 
 msgctxt "#31137"
 msgid "Episodes"
-msgstr ""
+msgstr "Episoden"
 
 
 msgctxt "#31138"
 msgid "Watched"
-msgstr ""
+msgstr "Gesehen"
 
 
 msgctxt "#31139"
 msgid "Unwatched"
-msgstr ""
+msgstr "Ungesehen"
 
 
 msgctxt "#31140"
 msgid "First Aired"
-msgstr ""
+msgstr "Erstaustrahlung"
 
 
 msgctxt "#31141"
 msgid "Season"
-msgstr ""
+msgstr "Staffel"
 
 
 msgctxt "#31142"
 msgid "Movie"
-msgstr ""
+msgstr "Film"
 
 
 msgctxt "#31143"
 msgid "TV Show"
-msgstr ""
+msgstr "TV-Show"
 
 
 msgctxt "#31144"
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 
 msgctxt "#31145"
@@ -576,12 +576,12 @@ msgstr "Liedtext"
 
 msgctxt "#31229"
 msgid "Artist"
-msgstr ""
+msgstr "Künstler"
 
 
 msgctxt "#31230"
 msgid "Album"
-msgstr ""
+msgstr "Album"
 
 
 #Settings
@@ -634,7 +634,7 @@ msgstr "Ziel"
 
 msgctxt "#31610"
 msgid "Playback"
-msgstr ""
+msgstr "Wiedergabe"
 
 
 #empty strings from id 31611 to 31619
@@ -1000,12 +1000,12 @@ msgstr "Optionensmenü"
 
 msgctxt "#31720"
 msgid "Grid"
-msgstr ""
+msgstr "Gitter"
 
 
 msgctxt "#31721"
 msgid "Episodes List"
-msgstr ""
+msgstr "Liste der Episoden"
 
 
 msgctxt "#31722"
@@ -1195,12 +1195,12 @@ msgstr "Show"
 
 msgctxt "#31960"
 msgid "Sleep"
-msgstr ""
+msgstr "Ruhezustand"
 
 
 msgctxt "#31961"
 msgid "Shut Down"
-msgstr ""
+msgstr "Herunterfahren"
 
 
 msgctxt "#31962"
@@ -1222,17 +1222,17 @@ msgstr ""
 
 msgctxt "#31970"
 msgid "Channels"
-msgstr ""
+msgstr "Kanäle"
 
 
 msgctxt "#31971"
 msgid "Video Channels"
-msgstr ""
+msgstr "Video-Kanäle"
 
 
 msgctxt "#31972"
 msgid "Music Channels"
-msgstr ""
+msgstr "Musik-Kanäle"
 
 
 msgctxt "#31973"
@@ -1271,7 +1271,7 @@ msgstr ""
 
 msgctxt "#31999"
 msgid "End Time"
-msgstr ""
+msgstr "Endzeit"
 
 
 #Startup helper
@@ -1303,17 +1303,17 @@ msgstr "Bewertung eingeben"
 
 msgctxt "#32101"
 msgid "Episodes added"
-msgstr ""
+msgstr "Episoden hinzugefügt"
 
 
 msgctxt "#32102"
 msgid "All Episodes"
-msgstr ""
+msgstr "Alle Episoden"
 
 
 msgctxt "#32103"
 msgid "There is no description available for this "
-msgstr ""
+msgstr "Eine Beschreibung ist nicht verfügbar"
 
 
 msgctxt "#32104"
@@ -1323,4 +1323,5 @@ msgstr ""
 
 msgctxt "#32105"
 msgid "* Plot hidden to avoid spoilers *"
-msgstr ""
+msgstr "* Inhaltsangabe verborgen um Spoiler zu verhindern *"
+

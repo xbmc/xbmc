@@ -26,12 +26,12 @@ msgstr "VÃ­deos"
 
 msgctxt "#31002"
 msgid "Music"
-msgstr "MÃºsica"
+msgstr "Música"
 
 
 msgctxt "#31003"
 msgid "Pictures"
-msgstr "ImÃ¡genes"
+msgstr "Imágenes"
 
 
 msgctxt "#31004"
@@ -95,7 +95,7 @@ msgstr "Configurar el"
 
 msgctxt "#31018"
 msgid "Menu"
-msgstr "MenÃº"
+msgstr "Menú"
 
 
 msgctxt "#31019"
@@ -235,7 +235,7 @@ msgstr "Recientemente AÃ±adido"
 
 msgctxt "#31046"
 msgid "Path to Lyrics Script"
-msgstr "UbicaciÃ³n del Script de Letras"
+msgstr "Ubicación del Script de Letras"
 
 
 msgctxt "#31047"
@@ -353,7 +353,7 @@ msgstr "Refrescar skin"
 
 msgctxt "#31111"
 msgid "Movies"
-msgstr "PelÃ­culas"
+msgstr "Películas"
 
 
 msgctxt "#31112"
@@ -363,12 +363,12 @@ msgstr "Series de TV"
 
 msgctxt "#31113"
 msgid "Clips"
-msgstr "Todos los vÃ­deos"
+msgstr "Vídeos"
 
 
 msgctxt "#31114"
 msgid "Episode"
-msgstr "Episodio:"
+msgstr "Episodio"
 
 
 msgctxt "#31115"
@@ -398,7 +398,7 @@ msgstr "Sinopsis"
 
 msgctxt "#31120"
 msgid "Star Rating"
-msgstr "Puntaje"
+msgstr "Puntuación"
 
 
 msgctxt "#31121"
@@ -443,27 +443,27 @@ msgstr "Banner"
 
 msgctxt "#31129"
 msgid "Rating"
-msgstr "ValoraciÃ³n"
+msgstr "Valoración"
 
 
 msgctxt "#31130"
 msgid "IMDb Rating"
-msgstr "ValoraciÃ³n IMDb"
+msgstr "Valoración IMDB"
 
 
 msgctxt "#31131"
 msgid "Genre"
-msgstr "GÃ©nero"
+msgstr "Género"
 
 
 msgctxt "#31132"
 msgid "Duration"
-msgstr "DuraciÃ³n"
+msgstr "Duración"
 
 
 msgctxt "#31133"
 msgid "Subtitles"
-msgstr "SubtÃ­tulos"
+msgstr "Subtítulos"
 
 
 msgctxt "#31134"
@@ -513,7 +513,7 @@ msgstr "Película"
 
 msgctxt "#31143"
 msgid "TV Show"
-msgstr ""
+msgstr "Serie de televisión"
 
 
 msgctxt "#31144"
@@ -523,7 +523,7 @@ msgstr "Video"
 
 msgctxt "#31145"
 msgid "Specials"
-msgstr ""
+msgstr "Especiales"
 
 
 #Music
@@ -556,7 +556,7 @@ msgstr "Abrir el MENÃ de opciones"
 
 msgctxt "#31225"
 msgid "Rating"
-msgstr "ValoraciÃ³n"
+msgstr "Valoración"
 
 
 msgctxt "#31226"
@@ -566,7 +566,7 @@ msgstr "Cambiar"
 
 msgctxt "#31227"
 msgid "Your Preset"
-msgstr "Tu preselecciÃ³n"
+msgstr "Tu preselección"
 
 
 msgctxt "#31228"
@@ -609,7 +609,7 @@ msgstr "General"
 
 msgctxt "#31605"
 msgid "Home"
-msgstr "MenÃº principal"
+msgstr "Menú principal"
 
 
 msgctxt "#31606"
@@ -634,14 +634,14 @@ msgstr "Destino"
 
 msgctxt "#31610"
 msgid "Playback"
-msgstr ""
+msgstr "Reproducción"
 
 
 #empty strings from id 31611 to 31619
 
 msgctxt "#31620"
 msgid "Menu"
-msgstr "MenÃº"
+msgstr "Menú"
 
 
 msgctxt "#31621"
@@ -673,7 +673,7 @@ msgstr "Usar por defecto"
 
 msgctxt "#31650"
 msgid "Hide right blade"
-msgstr "Ocultar el menÃº desplegable derecho"
+msgstr "Ocultar el menú desplegable derecho"
 
 
 msgctxt "#31651"
@@ -693,7 +693,7 @@ msgstr "Ver"
 
 msgctxt "#31654"
 msgid "Hide Thumb Labels in File Browser dialog"
-msgstr "Ocultar miniatura en el diÃ¡logo del explorador"
+msgstr "Ocultar miniatura en el diálogo del explorador"
 
 
 msgctxt "#31655"
@@ -723,7 +723,7 @@ msgstr "Reiniciar"
 
 msgctxt "#31660"
 msgid "Enable Custom BG's on Home"
-msgstr "Habilitar fondos personalizados en el menÃº principal"
+msgstr "Habilitar fondos personalizados en el menú principal"
 
 
 msgctxt "#31661"
@@ -768,7 +768,7 @@ msgstr "Mostrar reloj grande"
 
 msgctxt "#31669"
 msgid "Show Weather on Home"
-msgstr "Mostrar el clima en el menÃº principal"
+msgstr "Mostrar el tiempo en el menú principal"
 
 
 msgctxt "#31670"
@@ -783,7 +783,7 @@ msgstr "Ocultar argumento en el OSD de vÃ­deo"
 
 msgctxt "#31672"
 msgid "Hide Info"
-msgstr "Ocultar informaciÃ³n"
+msgstr "Ocultar información"
 
 
 msgctxt "#31673"
@@ -798,12 +798,12 @@ msgstr "Ocultar fanart"
 
 msgctxt "#31675"
 msgid "with Movies Views"
-msgstr "con vistas de pelÃ­culas"
+msgstr "con vistas de películas"
 
 
 msgctxt "#31676"
 msgid "In Media Preview"
-msgstr "en presentaciÃ³n multimedia"
+msgstr "en presentación detallada"
 
 
 msgctxt "#31677"
@@ -868,7 +868,7 @@ msgstr "con vistas de mÃºsica"
 
 msgctxt "#31689"
 msgid "with Pictures Views"
-msgstr "con vistas de imagenes"
+msgstr "con vistas de imágenes"
 
 
 msgctxt "#31690"
@@ -888,7 +888,7 @@ msgstr "Ocultar informaciÃ³n en flujo del muro"
 
 msgctxt "#31693"
 msgid "Hide Thumbs in Options Menu"
-msgstr "Ocultar miniaturas en menÃº de opciones"
+msgstr "Ocultar miniaturas en el menú de opciones"
 
 
 msgctxt "#31694"
@@ -913,7 +913,7 @@ msgstr "Ocultar descripciÃ³n de las fotos en la PresentaciÃ³n"
 
 msgctxt "#31701"
 msgid "Setup"
-msgstr "ConfiguraciÃ³n"
+msgstr "Configuración"
 
 
 msgctxt "#31702"
@@ -943,7 +943,7 @@ msgstr "Miniatura de episodios"
 
 msgctxt "#31707"
 msgid "Media Preview"
-msgstr "PresentaciÃ³n detallada"
+msgstr "Presentación detallada"
 
 
 msgctxt "#31708"
@@ -953,7 +953,7 @@ msgstr "Lista de medios"
 
 msgctxt "#31709"
 msgid "Concave"
-msgstr "CÃ³ncavo"
+msgstr "Cóncavo"
 
 
 msgctxt "#31710"
@@ -973,7 +973,7 @@ msgstr "Flujo de imÃ¡genes"
 
 msgctxt "#31713"
 msgid "Setup Options"
-msgstr "Opciones"
+msgstr "Opciones de configuración"
 
 
 msgctxt "#31714"
@@ -993,7 +993,7 @@ msgstr "Flujo de la cubierta"
 
 msgctxt "#31717"
 msgid "Options Menu"
-msgstr "MenÃº de Opciones"
+msgstr "Menú de Opciones"
 
 
 #empty strings from id 31718 to 31719
@@ -1018,7 +1018,7 @@ msgstr "Plugin Stream"
 
 msgctxt "#31800"
 msgid "About Plex"
-msgstr "CrÃ©ditos"
+msgstr "Acerca de Plex/HT"
 
 
 msgctxt "#31801"
@@ -1077,7 +1077,7 @@ msgstr "Nota: Esta serÃ¡ la Ãºnica vez que leas este mensaje una vez hagas c
 
 msgctxt "#31851"
 msgid "[COLOR=orange]Plex[/COLOR] bridges the gap between your Mac and your home theater, doing so with a visually appealing user interface that provides instant access to your media. [COLOR=orange]Plex[/COLOR] can play a wide range of video, audio and photo formats as well as online streaming audio and video. The real power of [COLOR=orange]Plex[/COLOR] is found in its library features: Organize your media into versatile libraries, automatically retrieve metadata from the Internet and display your library using one of the visually stunning skins."
-msgstr "Plex  sirve de puente entre tu Mac y tu cine en casa, con una interfaz de usuario visualmente atractiva que ofrece acceso instantÃ¡neo a sus archivos multimedia. Plex  puede reproducir una amplia gama de formatos de vÃ­deo, audio y fotos, asÃ­ como audio y vÃ­deo en lÃ­nea. El poder real de Plex  se encuentra en las caracterÃ­sticas de su biblioteca: Organiza sus archivos multimedia en las bibliotecas y descarga automÃ¡ticamente los metadatos de Internet para visualizar la biblioteca con un aspecto impresionante."
+msgstr "Plex  sirve de puente entre tu Mac y tu cine en casa, con una interfaz de usuario visualmente atractiva que ofrece acceso instantáneo a sus archivos multimedia. Plex  puede reproducir una amplia gama de formatos de vídeo, audio y fotos, así­ como audio y vídeo en lí­nea. El poder real de Plex  se encuentra en las caracterí­sticas de su biblioteca: Organiza sus archivos multimedia en las bibliotecas y descarga automáticamente los metadatos de Internet para visualizar la biblioteca con un aspecto impresionante."
 
 
 msgctxt "#31852"
@@ -1130,7 +1130,7 @@ msgstr "Por favor visite http://www.plexapp.com/credits.php para enlaces y mÃ¡
 
 msgctxt "#31900"
 msgid "Login As"
-msgstr "Iniciar sesiÃ³n como"
+msgstr "Iniciar sesión como"
 
 
 msgctxt "#31901"
@@ -1205,7 +1205,7 @@ msgstr "Apagar"
 
 msgctxt "#31962"
 msgid "Power Menu"
-msgstr "Menu de Apagado"
+msgstr "Menú de Apagado"
 
 
 msgctxt "#31963"
@@ -1232,7 +1232,7 @@ msgstr "VÃ­deos"
 
 msgctxt "#31972"
 msgid "Music Channels"
-msgstr "MÃºsica"
+msgstr "Canales de Música"
 
 
 msgctxt "#31973"
@@ -1254,7 +1254,7 @@ msgstr "Mostrar Sinopsis en OSD de VÃ­deo"
 
 msgctxt "#31983"
 msgid "Show Picture Descriptions in Slideshow"
-msgstr "Mostrar DescripciÃ³n de imagen en PresentaciÃ³n"
+msgstr "Mostrar Descripciónes de imagen en la Presentación"
 
 
 msgctxt "#31984"
@@ -1264,7 +1264,7 @@ msgstr "Mostrar InformaciÃ³n de reproducciÃ³n en las Visualizaciones"
 
 msgctxt "#31985"
 msgid "Show Separate Menu Items for Plug-in Sections"
-msgstr "Mostrar Ã­tems separados en menÃº para las diferentes secciones de los canales"
+msgstr "Mostrar artículos separados en el menú para las diferentes secciones de Plug-In"
 
 
 #empty strings from id 31986 to 31998
@@ -1278,19 +1278,19 @@ msgstr "Finaliza"
 
 msgctxt "#32000"
 msgid "Please choose the type of audio connector used on this computer.  If you're unsure, or if you're using built-in speakers, you can accept the default and continue.  You can access this setting at any time in the Preferences."
-msgstr ""
+msgstr "Por favor, elija el tipo de conexión de audio usada en este ordenador. Si no esta seguro, o si esta usando los altavoces integrados, puede aceptar la opción por defecto y continuar. Puede acceder a esta configuración en cualquier momento desde Ajustes."
 
 
 msgctxt "#32001"
 msgid "Plex Home Theater Setup"
-msgstr ""
+msgstr "Configuración de Plex Home Theater"
 
 
 #empty string with id 32002
 
 msgctxt "#32003"
 msgid "[B]Welcome to Plex![/B]  [CR][CR]In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to [B]myPlex[/B].  [CR][CR][B]myPlex[/B] lets you queue and share online videos, and access shared media from your friends' libraries.  [CR][CR]If you don't already have a free [B]myPlex[/B] account, you can create one now at [COLOR=orange]http://my.plexapp.com[/COLOR] before continuing."
-msgstr ""
+msgstr "[B]¡Bienvenido a Plex![/B]  [CR][CR]Con el fin de garantizar la mejor experiencia, vamos a tomar un minuto para determinar la configuración de audio y acceder a [B]myPlex[/B].  [CR][CR][B]myPlex[/B] permite poner en cola y compartir vídeos de la red, y acceder al contenido compartido de las bibliotecas de sus amigos.  [CR][CR]Si no dispone de una cuenta [B]myPlex[/B] gratuita, puede crear una nueva desde [COLOR=orange]http://my.plexapp.com[/COLOR] antes de continuar."
 
 
 #Other
@@ -1318,9 +1318,10 @@ msgstr "No hay una descripción disponible para esto"
 
 msgctxt "#32104"
 msgid "You can add one for it in the Media Manager"
-msgstr "Puedes añadirle una desde el gestor multimedia."
+msgstr "Puedes añadirle una desde el Media Manager"
 
 
 msgctxt "#32105"
 msgid "* Plot hidden to avoid spoilers *"
 msgstr "*Sinopsis oculta para evitar spoilers*"
+
