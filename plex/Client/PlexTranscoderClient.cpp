@@ -20,7 +20,7 @@
 #include "Client/PlexConnection.h"
 #include "FileSystem/PlexFile.h"
 #include "Client/PlexServerManager.h"
-#include "client/PlexServer.h"
+#include "Client/PlexServer.h"
 
 #include "log.h"
 
