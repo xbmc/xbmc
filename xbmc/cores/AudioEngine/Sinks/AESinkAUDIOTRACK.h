@@ -24,8 +24,9 @@
 #include "threads/CriticalSection.h"
 
 class AERingBuffer;
+class CAudiotrackJNI;
 
-class CAESinkAUDIOTRACK : public CThread, public IAESink
+class CAESinkAUDIOTRACK : public IAESink
 {
 public:
   virtual const char *GetName() { return "AUDIOTRACK"; }
@@ -47,27 +48,17 @@ public:
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
 private:
-  virtual void Process();
+  void InitializeAT();
+  CAudiotrackJNI  *m_at_jni;
+  // m_frames_written must wrap at UINT32_MAX
+  uint32_t        m_frames_written;
 
   static CAEDeviceInfo m_info;
   AEAudioFormat      m_format;
   double             m_volume;
-  bool               m_volume_changed;
-  CCriticalSection   m_volume_lock;
   volatile int       m_min_frames;
   int16_t           *m_alignedS16;
-  AERingBuffer      *m_sinkbuffer;
   unsigned int       m_sink_frameSize;
-  double             m_sinkbuffer_sec;
-  double             m_sinkbuffer_sec_per_byte;
-
-  CEvent             m_wake;
-  CEvent             m_inited;
-  volatile bool      m_draining;
-  CCriticalSection   m_drain_lock;
   bool               m_passthrough;
-
   double             m_audiotrackbuffer_sec;
-  double             m_audiotrack_empty_sec;
-  double             m_audiotrack_empty_sec_tweaks;
 };
