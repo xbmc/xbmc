@@ -705,6 +705,7 @@ int CPeripheralCecAdapter::CecAlert(void *cbParam, const libcec_alert alert, con
     iAlertString = 36027;
     break;
   case CEC_ALERT_CONNECTION_LOST:
+    bReopenConnection = true;
     iAlertString = 36030;
     break;
 #if defined(CEC_ALERT_PERMISSION_ERROR)
