@@ -83,8 +83,8 @@ public:
 
   bool Load(const std::string& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f, bool border = false);
 
-  virtual void Begin() = 0;
-  virtual void End() = 0;
+  void Begin();
+  void End();
 
   const std::string& GetFileName() const { return m_strFileName; };
 
@@ -175,6 +175,8 @@ protected:
   XUTILS::auto_buffer m_fontFileInMemory; // used only in some cases, see CFreeTypeLibrary::GetFont()
 
 private:
+  virtual bool FirstBegin() = 0;
+  virtual void LastEnd() = 0;
   CGUIFontTTFBase(const CGUIFontTTFBase&);
   CGUIFontTTFBase& operator=(const CGUIFontTTFBase&);
   int m_referenceCount;

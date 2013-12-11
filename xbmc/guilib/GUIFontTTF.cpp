@@ -333,6 +333,27 @@ bool CGUIFontTTFBase::Load(const std::string& strFilename, float height, float a
   return true;
 }
 
+void CGUIFontTTFBase::Begin()
+{
+  if (m_nestedBeginCount == 0 && m_texture != NULL && FirstBegin())
+  {
+    m_vertex_count = 0;
+  }
+  // Keep track of the nested begin/end calls.
+  m_nestedBeginCount++;
+}
+
+void CGUIFontTTFBase::End()
+{
+  if (m_nestedBeginCount == 0)
+    return;
+
+  if (--m_nestedBeginCount > 0)
+    return;
+
+  LastEnd();
+}
+
 void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text, uint32_t alignment, float maxPixelWidth, bool scrolling)
 {
   Begin();

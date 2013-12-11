@@ -53,108 +53,96 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
 {
 }
 
-void CGUIFontTTFGL::Begin()
+bool CGUIFontTTFGL::FirstBegin()
 {
-  if (m_nestedBeginCount == 0 && m_texture != NULL)
+  if (m_textureStatus == TEXTURE_REALLOCATED)
   {
-    if (m_textureStatus == TEXTURE_REALLOCATED)
-    {
-      if (glIsTexture(m_nTexture))
-        g_TextureManager.ReleaseHwTexture(m_nTexture);
-      m_textureStatus = TEXTURE_VOID;
-    }
-    
-    if (m_textureStatus == TEXTURE_VOID)
-    {
-      // Have OpenGL generate a texture object handle for us
-      glGenTextures(1, (GLuint*) &m_nTexture);
+    if (glIsTexture(m_nTexture))
+      g_TextureManager.ReleaseHwTexture(m_nTexture);
+    m_textureStatus = TEXTURE_VOID;
+  }
 
-      // Bind the texture object
-      glBindTexture(GL_TEXTURE_2D, m_nTexture);
-#ifdef HAS_GL
-      glEnable(GL_TEXTURE_2D);
-#endif
-      // Set the texture's stretching properties
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  if (m_textureStatus == TEXTURE_VOID)
+  {
+    // Have OpenGL generate a texture object handle for us
+    glGenTextures(1, (GLuint*) &m_nTexture);
 
-      // Set the texture image -- THIS WORKS, so the pixels must be wrong.
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->GetWidth(), m_texture->GetHeight(), 0,
-                   GL_ALPHA, GL_UNSIGNED_BYTE, 0);
-      
-      VerifyGLState();
-      m_textureStatus = TEXTURE_UPDATED;
-    }
-
-    if (m_textureStatus == TEXTURE_UPDATED)
-    {
-      glBindTexture(GL_TEXTURE_2D, m_nTexture);
-      glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1, GL_ALPHA, GL_UNSIGNED_BYTE,
-                      m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
-      glDisable(GL_TEXTURE_2D);
-        
-      m_updateY1 = m_updateY2 = 0;
-      m_textureStatus = TEXTURE_READY;
-    }
-
-    // Turn Blending On
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-    glEnable(GL_BLEND);
+    // Bind the texture object
+    glBindTexture(GL_TEXTURE_2D, m_nTexture);
 #ifdef HAS_GL
     glEnable(GL_TEXTURE_2D);
 #endif
+    // Set the texture's stretching properties
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Set the texture image -- THIS WORKS, so the pixels must be wrong.
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->GetWidth(), m_texture->GetHeight(), 0,
+        GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+
+    VerifyGLState();
+    m_textureStatus = TEXTURE_UPDATED;
+  }
+
+  if (m_textureStatus == TEXTURE_UPDATED)
+  {
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1, GL_ALPHA, GL_UNSIGNED_BYTE,
+        m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
+    glDisable(GL_TEXTURE_2D);
+
+    m_updateY1 = m_updateY2 = 0;
+    m_textureStatus = TEXTURE_READY;
+  }
+
+  // Turn Blending On
+  glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+  glEnable(GL_BLEND);
+#ifdef HAS_GL
+  glEnable(GL_TEXTURE_2D);
+#endif
+  glBindTexture(GL_TEXTURE_2D, m_nTexture);
 
 #ifdef HAS_GL
-    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-    glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-    glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+  glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  VerifyGLState();
+
+  if(g_Windowing.UseLimitedColor())
+  {
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, m_nTexture); // dummy bind
+    glEnable(GL_TEXTURE_2D);
+
+    const GLfloat rgba[4] = {16.0f / 255.0f, 16.0f / 255.0f, 16.0f / 255.0f, 0.0f};
+    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE , GL_COMBINE);
+    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, rgba);
+    glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_RGB      , GL_ADD);
+    glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_RGB      , GL_PREVIOUS);
+    glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE1_RGB      , GL_CONSTANT);
+    glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND0_RGB     , GL_SRC_COLOR);
+    glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND1_RGB     , GL_SRC_COLOR);
+    glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_ALPHA    , GL_REPLACE);
+    glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_ALPHA    , GL_PREVIOUS);
     VerifyGLState();
-
-    if(g_Windowing.UseLimitedColor())
-    {
-      glActiveTexture(GL_TEXTURE1);
-      glBindTexture(GL_TEXTURE_2D, m_nTexture); // dummy bind
-      glEnable(GL_TEXTURE_2D);
-
-      const GLfloat rgba[4] = {16.0f / 255.0f, 16.0f / 255.0f, 16.0f / 255.0f, 0.0f};
-      glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE , GL_COMBINE);
-      glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, rgba);
-      glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_RGB      , GL_ADD);
-      glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_RGB      , GL_PREVIOUS);
-      glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE1_RGB      , GL_CONSTANT);
-      glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND0_RGB     , GL_SRC_COLOR);
-      glTexEnvi (GL_TEXTURE_ENV, GL_OPERAND1_RGB     , GL_SRC_COLOR);
-      glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_ALPHA    , GL_REPLACE);
-      glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_ALPHA    , GL_PREVIOUS);
-      VerifyGLState();
-    }
+  }
 
 #else
-    g_Windowing.EnableGUIShader(SM_FONTS);
+  g_Windowing.EnableGUIShader(SM_FONTS);
 #endif
-
-    m_vertex_count = 0;
-  }
-  // Keep track of the nested begin/end calls.
-  m_nestedBeginCount++;
+  return true;
 }
 
-void CGUIFontTTFGL::End()
+void CGUIFontTTFGL::LastEnd()
 {
-  if (m_nestedBeginCount == 0)
-    return;
-
-  if (--m_nestedBeginCount > 0)
-    return;
-
 #ifdef HAS_GL
   glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
 

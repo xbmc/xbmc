@@ -41,8 +41,8 @@ public:
   CGUIFontTTFGL(const std::string& strFileName);
   virtual ~CGUIFontTTFGL(void);
 
-  virtual void Begin();
-  virtual void End();
+  virtual bool FirstBegin();
+  virtual void LastEnd();
 
 protected:
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);
