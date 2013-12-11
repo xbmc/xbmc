@@ -598,6 +598,22 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       g_guiSettings.SetString("updates.current", g_infoManager.GetVersion());
     }
+    else if (strSetting.Equals("plexmediaserver.remotequalitystr"))
+    {
+      if (g_guiSettings.GetInt("plexmediaserver.remotequality") == 0)
+        g_guiSettings.SetString("plexmediaserver.remotequalitystr", g_localizeStrings.Get(42999));
+    }
+    else if (strSetting.Equals("plexmediaserver.localqualitystr"))
+    {
+      if (g_guiSettings.GetInt("plexmediaserver.localquality") == 0)
+        g_guiSettings.SetString("plexmediaserver.localqualitystr", g_localizeStrings.Get(42999));
+    }
+    else if (strSetting.Equals("plexmediaserver.onlinemediaqualitystr"))
+    {
+      if (g_guiSettings.GetInt("plexmediaserver.onlinemediaquality") == 0)
+        g_guiSettings.SetString("plexmediaserver.onlinemediaqualitystr", g_localizeStrings.Get(13181));
+    }
+
     /* END PLEX */
 
     AddSetting(pSetting, group->GetWidth(), iControlID);
@@ -829,22 +845,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") == CDDARIP_ENCODER_FLAC);
     }
-/* PLEX */
-    else if (strSetting.Equals("audiooutput.channels"))
-    {
-      CGUISpinControl *pControl = (CGUISpinControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI &&
-                                         g_guiSettings.GetBool("audiooutput.multichannellpcm"));
-#ifdef TARGET_DARWIN_OSX
-      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI)
-      {
-        g_guiSettings.SetInt("audiooutput.channels", CGUIWindowPlexStartupHelper::GetNumberOfHDMIChannels());
-        pControl->SetValue(g_guiSettings.GetInt("audiooutput.channels"));
-        pControl->SetEnabled(false);
-      }
-#endif
-    }
-/* END PLEX */
     else if (
              strSetting.Equals("audiooutput.passthroughdevice") ||
              strSetting.Equals("audiooutput.ac3passthrough") ||
@@ -1136,6 +1136,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(false);
+    }
+
+    else if (strSetting.Equals("services.plexplayer"))
+    {
+      CGUIControl* pControl = (CGUIControl*)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
 
     else if (strSetting.Equals("backgroundmusic.bgmusicenabled"))
@@ -1489,7 +1495,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       {
         CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33101), "", g_localizeStrings.Get(33100), "");
         g_guiSettings.SetBool("services.webserver", false);
-      }
+      }    
   }
   else if (strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {

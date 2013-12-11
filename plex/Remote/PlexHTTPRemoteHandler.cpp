@@ -327,8 +327,8 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   
   if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK)
   {
-    if (g_application.IsPlaying())
-      CApplicationMessenger::Get().MediaStop();
+    if (g_application.IsPlaying() || g_application.IsPaused())
+      CApplicationMessenger::Get().MediaStop(true);
     
     if (g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC))
       CApplicationMessenger::Get().PlayListPlayerShuffle(PLAYLIST_MUSIC, false);
@@ -341,19 +341,14 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   {
     /* if we are playing music, we don't need to stop */
     if (g_application.IsPlayingVideo())
-      CApplicationMessenger::Get().MediaStop();
+      CApplicationMessenger::Get().MediaStop(true);
     
     g_application.WakeUpScreenSaverAndDPMS();
     CLog::Log(LOGDEBUG, "PlexHTTPRemoteHandler::playMedia photo slideshow with start %s", list.Get(idx)->GetPath().c_str());
     CApplicationMessenger::Get().PictureSlideShow(itemURL.Get(), false, list.Get(idx)->GetPath());
   }
   else
-  {
-    if (g_application.IsPlaying())
-      CApplicationMessenger::Get().MediaStop();
-    
     CApplicationMessenger::Get().PlayFile(*item);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -453,6 +448,7 @@ void CPlexHTTPRemoteHandler::seekTo(const ArgMap &arguments)
 void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arguments)
 {
   int action = ACTION_NONE;
+  int activeWindow = g_windowManager.GetActiveWindow();
   
   CStdString navigation = url.Mid(19, url.length() - 19);
   
@@ -466,11 +462,9 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     action = ACTION_MOVE_UP;
   else if (navigation.Equals("select"))
     action = ACTION_SELECT_ITEM;
-  else if (navigation.Equals("back"))
-    action = ACTION_NAV_BACK;
   else if (navigation.Equals("music"))
   {
-    if (g_application.IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+    if (g_application.IsPlayingAudio() && activeWindow != WINDOW_VISUALISATION)
       action = ACTION_SHOW_GUI;
   }
   else if (navigation.Equals("home"))
@@ -480,6 +474,16 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, args, false);
     return;
   }
+  else if (navigation.Equals("back"))
+  {
+    if (g_application.IsPlayingFullScreenVideo() &&
+        (activeWindow != WINDOW_DIALOG_AUDIO_OSD_SETTINGS &&
+         activeWindow != WINDOW_DIALOG_VIDEO_OSD_SETTINGS))
+      action = ACTION_STOP;
+    else
+      action = ACTION_NAV_BACK;
+  }
+
 
 #ifdef LEGACY
   else if (navigation.Equals("contextMenu"))

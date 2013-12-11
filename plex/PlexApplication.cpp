@@ -33,9 +33,13 @@
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
 
+#include "Client/PlexExtraInfoLoader.h"
+
 #ifdef ENABLE_AUTOUPDATE
 #include "AutoUpdate/PlexAutoUpdate.h"
 #endif
+
+#include "AudioEngine/AEFactory.h"
 
 #include <sstream>
 
@@ -53,6 +57,7 @@ PlexApplication::Start()
   themeMusicPlayer = CPlexThemeMusicPlayerPtr(new CPlexThemeMusicPlayer);
   thumbCacher = new CPlexThumbCacher;
   filterManager = CPlexFilterManagerPtr(new CPlexFilterManager);
+  extraInfo = new CPlexExtraInfoLoader;
 
   serverManager->load();
   
@@ -140,15 +145,12 @@ void PlexApplication::OnWakeUp()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::FailAddToPacketRender()
 {
-#ifdef TARGET_DARWIN_OSX
-  if (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF &&
-      g_application.m_pPlayer->IsPassthrough() && !m_triedToRestart)
+  if (g_application.m_pPlayer->IsPassthrough() && !m_triedToRestart)
   {
     CLog::Log(LOGDEBUG, "CPlexApplication::FailAddToPacketRender Let's try to restart the media player");
-    //CApplicationMessenger::Get().MediaRestart(false);
+    CApplicationMessenger::Get().MediaRestart(false);
     m_triedToRestart = true;
   }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -257,6 +259,8 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
   {
     CLog::Log(LOGINFO, "CPlexApplication shutting down!");
 
+    delete extraInfo;
+
     timer.StopAllTimers();
 
     themeMusicPlayer->stop();
@@ -281,6 +285,8 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
 
     filterManager->saveFiltersToDisk();
     filterManager.reset();
+
+    OnTimeout();
     
     delete remoteSubscriberManager;
     

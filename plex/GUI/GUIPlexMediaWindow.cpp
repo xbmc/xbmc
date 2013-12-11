@@ -37,6 +37,7 @@
 #include "Client/PlexTimelineManager.h"
 #include "Client/PlexServerDataLoader.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "Client/PlexExtraInfoLoader.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
@@ -139,10 +140,37 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       }
       break;
     }
+
+    case GUI_MSG_PLEX_PAGE_LOADED:
+    {
+      InsertPage((CFileItemList*)message.GetPointer());
+    }
       
   }
 
   return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::InsertPage(CFileItemList* items)
+{
+  int nItem = m_viewControl.GetSelectedItem();
+  CStdString strSelected;
+  if (nItem >= 0)
+    strSelected = m_vecItems->Get(nItem)->GetPath();
+
+  int itemsToRemove = items->Size();
+  for (int i = 0; i < itemsToRemove; i ++)
+    m_vecItems->Remove(m_pagingOffset);
+
+  for (int i = 0; i < items->Size(); i ++)
+    m_vecItems->Insert(m_pagingOffset + i, items->Get(i));
+
+  m_pagingOffset += items->Size();
+  m_viewControl.SetItems(*m_vecItems);
+  m_viewControl.SetSelectedItem(strSelected);
+
+  delete items;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -388,9 +416,9 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     {
       CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
       if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
-        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
+        return OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_MARK_WATCHED);
       if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
-        return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
+        return OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_MARK_UNWATCHED);
     }
   }
 
@@ -521,22 +549,15 @@ void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob *
     return;
 
   if (success)
-  {    
-    int nItem = m_viewControl.GetSelectedItem();
-    CStdString strSelected;
-    if (nItem >= 0)
-      strSelected = m_vecItems->Get(nItem)->GetPath();
-    
-    int itemsToRemove = fjob->m_items.Size();
-    for (int i = 0; i < itemsToRemove; i ++)
-      m_vecItems->Remove(m_pagingOffset);
-    
-    for (int i = 0; i < fjob->m_items.Size(); i ++)
-      m_vecItems->Insert(m_pagingOffset + i, fjob->m_items.Get(i));
-    
-    m_pagingOffset += fjob->m_items.Size();
-    m_viewControl.SetItems(*m_vecItems);
-    m_viewControl.SetSelectedItem(strSelected);
+  {
+    CFileItemList* list = new CFileItemList;
+    list->Copy(fjob->m_items);
+
+    if (list)
+    {
+      CGUIMessage msg(GUI_MSG_PLEX_PAGE_LOADED, 0, GetID(), 0, 0, list);
+      g_windowManager.SendThreadMessage(msg);
+    }
   }
   
   m_currentJobId = -1;
@@ -806,6 +827,9 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
     m_history.RemoveParentPath();
 
   bool ret = CGUIMediaWindow::Update(newUrl.Get(), updateFilterPath);
+
+  g_plexApplication.extraInfo->LoadExtraInfoForItem(m_vecItems);
+
   if (!updateFromFilter)
     g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems);
 

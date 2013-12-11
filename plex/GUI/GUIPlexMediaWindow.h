@@ -107,6 +107,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
 
     CPlexNavigationHelper m_navHelper;
     CURL GetUrlWithParentArgument(const CURL &originalUrl);
+    void InsertPage(CFileItemList *items);
 };
 
 class CGUIPlexMusicWindow : public CGUIPlexMediaWindow

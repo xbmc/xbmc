@@ -114,7 +114,7 @@ void CPlexSectionFanout::GetContentList(int type, CFileItemList& list)
 {
   CSingleLock lk(m_critical);
   if (m_fileLists.find(type) != m_fileLists.end())
-    list.Assign(*m_fileLists[type], false);
+    list.Copy(*m_fileLists[type], true);
 }
 
 //////////////////////////////////////////////////////////////////////////////

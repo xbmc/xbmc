@@ -323,12 +323,12 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<animation type="WindowOpen" condition="true" reversible="false">
-			  <effect type="rotatey" center="120" start="-90,360" end="0,360" time="300"/>
-			  <effect type="fade" start="0" end="100" time="0" delay="0" />
+				<effect type="rotatey" center="120" start="-90,360" end="0,360" time="300"/>
+				<effect type="fade" start="0" end="100" time="0" delay="0"/>
 			</animation>
 			<animation type="WindowClose" condition="true" reversible="false">
-			  <effect type="rotatey" center="120" start="0,360" end="-90,360" time="300" />
-			  <effect type="fade" start="100" end="0" time="230" />
+				<effect type="rotatey" center="120" start="0,360" end="-90,360" time="300"/>
+				<effect type="fade" start="100" end="0" time="230"/>
 			</animation>
 			<!-- sub-list backgrounds -->
 			<!--><control type="group">
@@ -1166,7 +1166,7 @@
 					</control>
 				</control>
 				<!-- Row 1 -->
-				<control type="grouplist">
+				<control type="grouplist" id="501">
 					<itemgap>5</itemgap>
 					<width>1280</width>
 					<height>50</height>
@@ -1175,18 +1175,18 @@
 					<orientation>horizontal</orientation>
 					<control type="button" id="49">
 						<description>'1' button</description>
-						<onleft>305</onleft>
+						<onleft>48</onleft>
 						<onright>50</onright>
 						<onup>307</onup>
-						<ondown>303</ondown>
+						<ondown>65</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="50">
 						<description>'2' button</description>
 						<onleft>49</onleft>
 						<onright>51</onright>
-						<onup>32</onup>
-						<ondown>65</ondown>
+						<onup>307</onup>
+						<ondown>66</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="51">
@@ -1194,7 +1194,7 @@
 						<onleft>50</onleft>
 						<onright>52</onright>
 						<onup>32</onup>
-						<ondown>66</ondown>
+						<ondown>67</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="52">
@@ -1202,7 +1202,7 @@
 						<onleft>51</onleft>
 						<onright>53</onright>
 						<onup>32</onup>
-						<ondown>67</ondown>
+						<ondown>68</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="53">
@@ -1210,7 +1210,7 @@
 						<onleft>52</onleft>
 						<onright>54</onright>
 						<onup>32</onup>
-						<ondown>68</ondown>
+						<ondown>69</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="54">
@@ -1218,7 +1218,7 @@
 						<onleft>53</onleft>
 						<onright>55</onright>
 						<onup>32</onup>
-						<ondown>68</ondown>
+						<ondown>70</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="55">
@@ -1226,15 +1226,15 @@
 						<onleft>54</onleft>
 						<onright>56</onright>
 						<onup>32</onup>
-						<ondown>69</ondown>
+						<ondown>71</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="56">
 						<description>'8' button</description>
 						<onleft>55</onleft>
 						<onright>57</onright>
-						<onup>8</onup>
-						<ondown>70</ondown>
+						<onup>32</onup>
+						<ondown>72</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="57">
@@ -1242,20 +1242,20 @@
 						<onleft>56</onleft>
 						<onright>48</onright>
 						<onup>8</onup>
-						<ondown>71</ondown>
+						<ondown>73</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="48">
 						<description>'0' button</description>
 						<onleft>57</onleft>
 						<onright>306</onright>
-						<onup>300</onup>
-						<ondown>72</ondown>
+						<onup>8</onup>
+						<ondown>74</ondown>
 						<include>KeyboardButton</include>
 					</control>
 				</control>
 				<!-- Row 2 -->
-				<control type="grouplist">
+				<control type="grouplist" id="502">
 					<itemgap>5</itemgap>
 					<width>1280</width>
 					<height>50</height>
@@ -1266,85 +1266,85 @@
 						<description>'A' button</description>
 						<onleft>303</onleft>
 						<onright>66</onright>
-						<onup>50</onup>
-						<ondown>74</ondown>
+						<onup>49</onup>
+						<ondown>75</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="66">
 						<description>'B' button</description>
 						<onleft>65</onleft>
 						<onright>67</onright>
-						<onup>51</onup>
-						<ondown>75</ondown>
+						<onup>50</onup>
+						<ondown>76</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="67">
 						<description>'C' button</description>
 						<onleft>66</onleft>
 						<onright>68</onright>
-						<onup>52</onup>
-						<ondown>76</ondown>
+						<onup>51</onup>
+						<ondown>77</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="68">
 						<description>'D' button</description>
 						<onleft>67</onleft>
 						<onright>69</onright>
-						<onup>53</onup>
-						<ondown>77</ondown>
+						<onup>52</onup>
+						<ondown>78</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="69">
 						<description>'E' button</description>
 						<onleft>68</onleft>
 						<onright>70</onright>
-						<onup>55</onup>
-						<ondown>78</ondown>
+						<onup>53</onup>
+						<ondown>79</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="70">
 						<description>'F' button</description>
 						<onleft>69</onleft>
 						<onright>71</onright>
-						<onup>56</onup>
-						<ondown>79</ondown>
+						<onup>54</onup>
+						<ondown>80</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="71">
 						<description>'G' button</description>
 						<onleft>70</onleft>
 						<onright>72</onright>
-						<onup>57</onup>
-						<ondown>80</ondown>
+						<onup>55</onup>
+						<ondown>81</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="72">
 						<description>'H' button</description>
 						<onleft>71</onleft>
 						<onright>73</onright>
-						<onup>48</onup>
-						<ondown>81</ondown>
+						<onup>56</onup>
+						<ondown>82</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="73">
 						<description>'I' button</description>
 						<onleft>72</onleft>
 						<onright>303</onright>
-						<onup>306</onup>
-						<ondown>82</ondown>
+						<onup>57</onup>
+						<ondown>83</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="74">
 						<description>'J' button</description>
 						<onleft>302</onleft>
 						<onright>75</onright>
-						<onup>65</onup>
-						<ondown>83</ondown>
+						<onup>48</onup>
+						<ondown>84</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 				</control>
 				<!-- Row 3 -->
-				<control type="grouplist">
+				<control type="grouplist" id="503">
 					<itemgap>5</itemgap>
 					<width>1280</width>
 					<height>50</height>
@@ -1355,85 +1355,85 @@
 						<description>'K' button</description>
 						<onleft>74</onleft>
 						<onright>76</onright>
-						<onup>66</onup>
-						<ondown>84</ondown>
+						<onup>65</onup>
+						<ondown>303</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="76">
 						<description>'L' button</description>
 						<onleft>75</onleft>
 						<onright>77</onright>
-						<onup>67</onup>
-						<ondown>85</ondown>
+						<onup>66</onup>
+						<ondown>304</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="77">
 						<description>'M' button</description>
 						<onleft>76</onleft>
 						<onright>78</onright>
-						<onup>68</onup>
-						<ondown>86</ondown>
+						<onup>67</onup>
+						<ondown>85</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="78">
 						<description>'N' button</description>
 						<onleft>77</onleft>
 						<onright>79</onright>
-						<onup>69</onup>
-						<ondown>87</ondown>
+						<onup>68</onup>
+						<ondown>86</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="79">
 						<description>'O' button</description>
 						<onleft>78</onleft>
 						<onright>80</onright>
-						<onup>70</onup>
-						<ondown>88</ondown>
+						<onup>69</onup>
+						<ondown>87</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="80">
 						<description>'P' button</description>
 						<onleft>79</onleft>
 						<onright>81</onright>
-						<onup>71</onup>
-						<ondown>89</ondown>
+						<onup>70</onup>
+						<ondown>88</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="81">
 						<description>'Q' button</description>
 						<onleft>80</onleft>
 						<onright>82</onright>
-						<onup>72</onup>
-						<ondown>90</ondown>
+						<onup>71</onup>
+						<ondown>89</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="82">
 						<description>'R' button</description>
 						<onleft>81</onleft>
 						<onright>302</onright>
-						<onup>73</onup>
-						<ondown>300</ondown>
+						<onup>72</onup>
+						<ondown>90</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="83">
 						<description>'S' button</description>
 						<onleft>304</onleft>
 						<onright>84</onright>
-						<onup>74</onup>
-						<ondown>32</ondown>
+						<onup>73</onup>
+						<ondown>305</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="84">
 						<description>'T' button</description>
 						<onleft>83</onleft>
 						<onright>85</onright>
-						<onup>75</onup>
-						<ondown>32</ondown>
+						<onup>74</onup>
+						<ondown>306</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 				</control>
 				<!-- Row 4 -->
-				<control type="grouplist">
+				<control type="grouplist" id="504">
 					<itemgap>5</itemgap>
 					<width>1280</width>
 					<height>50</height>
@@ -1444,8 +1444,8 @@
 						<description>CAPS LOCK button</description>
 						<onleft>73</onleft>
 						<onright>65</onright>
-						<onup>305</onup>
-						<ondown>302</ondown>
+						<onup>75</onup>
+						<ondown>307</ondown>
 						<include>KeyboardButtonBig</include>
 						<label>&#x21EA;</label>
 						<alttexturenofocus>orange.png</alttexturenofocus>
@@ -1455,7 +1455,7 @@
 						<description>Symbols button</description>
 						<onleft>90</onleft>
 						<onright>83</onright>
-						<onup>302</onup>
+						<onup>76</onup>
 						<ondown>307</ondown>
 						<include>KeyboardButton</include>
 						<label>{~}</label>
@@ -1466,7 +1466,7 @@
 						<description>'U' button</description>
 						<onleft>84</onleft>
 						<onright>86</onright>
-						<onup>76</onup>
+						<onup>77</onup>
 						<ondown>32</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
@@ -1474,7 +1474,7 @@
 						<description>'V' button</description>
 						<onleft>85</onleft>
 						<onright>87</onright>
-						<onup>77</onup>
+						<onup>78</onup>
 						<ondown>32</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
@@ -1482,7 +1482,7 @@
 						<description>'W' button</description>
 						<onleft>86</onleft>
 						<onright>88</onright>
-						<onup>78</onup>
+						<onup>79</onup>
 						<ondown>32</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
@@ -1490,30 +1490,30 @@
 						<description>'X' button</description>
 						<onleft>87</onleft>
 						<onright>89</onright>
-						<onup>79</onup>
-						<ondown>8</ondown>
+						<onup>80</onup>
+						<ondown>32</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="89">
 						<description>'Y' button</description>
 						<onleft>88</onleft>
 						<onright>90</onright>
-						<onup>80</onup>
-						<ondown>8</ondown>
+						<onup>81</onup>
+						<ondown>32</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="90">
 						<description>'Z' button</description>
 						<onleft>89</onleft>
 						<onright>304</onright>
-						<onup>81</onup>
-						<ondown>300</ondown>
+						<onup>82</onup>
+						<ondown>32</ondown>
 						<include>KeyboardButtonLighter</include>
 					</control>
 					<control type="button" id="305">
 						<description>Previous button</description>
-						<onup>307</onup>
-						<ondown>303</ondown>
+						<onup>83</onup>
+						<ondown>8</ondown>
 						<onleft>306</onleft>
 						<onright>49</onright>
 						<include>KeyboardButtonBig</include>
@@ -1523,14 +1523,14 @@
 						<description>Next button</description>
 						<onleft>48</onleft>
 						<onright>305</onright>
-						<onup>300</onup>
-						<ondown>73</ondown>
+						<onup>84</onup>
+						<ondown>8</ondown>
 						<label>&#x2192;</label>
 						<include>KeyboardButtonBig</include>
 					</control>
 				</control>
 				<!-- Row 5 -->
-				<control type="grouplist">
+				<control type="grouplist" id="505">
 					<itemgap>5</itemgap>
 					<width>1280</width>
 					<height>60</height>
@@ -1542,8 +1542,8 @@
 						<width>125</width>
 						<onleft>300</onleft>
 						<onright>32</onright>
-						<onup>304</onup>
-						<ondown>305</ondown>
+						<onup>504</onup>
+						<ondown>506</ondown>
 						<include>KeyboardButton</include>
 						<label>IP</label>
 					</control>
@@ -1552,8 +1552,8 @@
 						<width>385</width>
 						<onleft>307</onleft>
 						<onright>8</onright>
-						<onup>85</onup>
-						<ondown>53</ondown>
+						<onup>504</onup>
+						<ondown>506</ondown>
 						<include>KeyboardButton</include>
 						<label/>
 					</control>
@@ -1562,14 +1562,14 @@
 						<width>125</width>
 						<onleft>32</onleft>
 						<onright>300</onright>
-						<onup>88</onup>
-						<ondown>56</ondown>
+						<onup>504</onup>
+						<ondown>506</ondown>
 						<include>KeyboardButtonBig</include>
 						<label>&#x21A4;</label>
 					</control>
 				</control>
 				<!-- Row 6 -->
-				<control type="grouplist">
+				<control type="grouplist" id="506">
 					<itemgap>5</itemgap>
 					<width>1280</width>
 					<height>50</height>
@@ -1581,8 +1581,8 @@
 						<width>385</width>
 						<onleft>8</onleft>
 						<onright>307</onright>
-						<onup>90</onup>
-						<ondown>306</ondown>
+						<onup>505</onup>
+						<ondown>501</ondown>
 						<include>KeyboardButton</include>
 						<label>$LOCALIZE[20177]</label>
 					</control>

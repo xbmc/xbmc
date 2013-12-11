@@ -28,12 +28,12 @@
 
 namespace XFILE
 {
-  class CPlexDirectory : public IDirectory, public IJobCallback
+  class CPlexDirectory : public IDirectory
   {
     public:
 
 
-      CPlexDirectory() : m_isAugmented(false), m_isCanceled(false) {}
+      CPlexDirectory() {}
 
       bool GetDirectory(const CURL& url, CFileItemList& items);
 
@@ -68,8 +68,6 @@ namespace XFILE
 
       static bool IsFolder(const CFileItemPtr& item, TiXmlElement* element);
 
-      virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-
       long GetHTTPResponseCode() const { return m_file.GetLastHTTPResponseCode(); }
     
       virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
@@ -81,28 +79,6 @@ namespace XFILE
     private:
       bool ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaContainer);
       void ReadChildren(TiXmlElement* element, CFileItemList& container);
-
-      void DoAugmentation(CFileItemList& fileItems);
-
-      void AddAugmentation(const CURL &url);
-
-      void CancelAugmentations()
-      {
-        CSingleLock lk(m_augmentationLock);
-        BOOST_FOREACH(int id, m_augmentationJobs)
-          CJobManager::GetInstance().CancelJob(id);
-        m_augmentationJobs.clear();
-        m_augmentationEvent.Set();
-        m_isCanceled = true;
-      }
-
-      CCriticalSection m_augmentationLock;
-      std::vector<int> m_augmentationJobs;
-      bool m_isAugmented;
-      bool m_isCanceled;
-
-      std::vector<CFileItemList*> m_augmentationItems;
-      CEvent m_augmentationEvent;
 
       CStdString m_body;
       CStdString m_data;

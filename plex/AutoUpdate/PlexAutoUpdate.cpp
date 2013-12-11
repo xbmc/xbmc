@@ -601,6 +601,8 @@ void CPlexAutoUpdate::UpdateAndRestart()
   DWORD pid = GetCurrentProcessId();
 
   std::list<std::string> args;
+  args.push_back(updater);
+
   args.push_back("--wait");
   args.push_back(boost::lexical_cast<std::string>(pid));
   
@@ -617,7 +619,7 @@ void CPlexAutoUpdate::UpdateAndRestart()
 
   char *arguments = strdup(quoteArgs(args).c_str());
 
-  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s %s", updater.c_str(), arguments);
+  CLog::Log(LOGDEBUG, "CPlexAutoUpdate::UpdateAndRestart going to run %s", arguments);
 
 	STARTUPINFO startupInfo;
 	ZeroMemory(&startupInfo,sizeof(startupInfo));
@@ -645,12 +647,11 @@ void CPlexAutoUpdate::UpdateAndRestart()
 
 void CPlexAutoUpdate::ForceVersionCheckInBackground()
 {
-  g_plexApplication.timer.RemoveTimeout(this);
-
   m_forced = true;
   m_isSearching = true;
+
   // restart with a short time out, just to make sure that we get it running in the background thread
-  g_plexApplication.timer.SetTimeout(1, this);
+  g_plexApplication.timer.RestartTimeout(1, this);
 }
 
 void CPlexAutoUpdate::ResetTimer()

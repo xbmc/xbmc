@@ -149,6 +149,9 @@ std::string CPlexTranscoderClient::GetPrettyBitrate(int rawbitrate)
 ///////////////////////////////////////////////////////////////////////////////
 bool CPlexTranscoderClient::ShouldTranscode(CPlexServerPtr server, const CFileItem& item)
 {
+  if (!item.IsVideo())
+    return false;
+
   if (!server || !server->GetActiveConnection())
     return false;
   

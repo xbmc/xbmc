@@ -438,8 +438,6 @@ void CGUISettings::Initialize()
   AddBool(NULL, "services.upnpserver", 21360, false);
   AddBool(NULL, "services.upnpannounce", 20188, false);
   AddString(srvGeneral,"services.devicename", 1271, PlexUtils::GetHostName().c_str(), EDIT_CONTROL_INPUT);
-  AddBool(srvGeneral, "services.plexplayer", 44300, true);
-  AddBool(srvGeneral, "services.upnprenderer", 21881, false);
 #ifdef HAS_WEB_SERVER
   AddBool(srvGeneral,  "services.webserver",        263, true);
 #ifndef __PLEX__
@@ -447,6 +445,8 @@ void CGUISettings::Initialize()
 #else
   AddString(NULL,"services.webserverport",    730, "3005", EDIT_CONTROL_NUMBER_INPUT, false, 730);
 #endif
+  AddBool(srvGeneral, "services.plexplayer", 44300, true);
+  AddBool(srvGeneral, "services.upnprenderer", 21881, false);
   AddString(NULL,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(NULL,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
   AddDefaultAddon(NULL, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
@@ -552,11 +552,7 @@ void CGUISettings::Initialize()
   map<int,int> channelLayout;
   for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
     channelLayout.insert(make_pair(34100 + layout, layout));
-#ifndef TARGET_DARWIN_OSX
   AddInt(advs, "audiooutput.channels", 18110, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
-#else
-  AddInt(NULL, "audiooutput.channels", 18110, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
-#endif
 
 #if !defined(TARGET_RASPBERRY_PI)
 #if defined(TARGET_DARWIN)
@@ -913,7 +909,7 @@ void CGUISettings::Initialize()
   AddInt(NULL, "plexmediaserver.remotequality", 52201, 0, 0, 1, INT_MAX, SPIN_CONTROL_INT);
 
   // TODO: Hook this up to preferred channel quality picker (should be like 1080p, 720p, 480p, SD)
-  AddString(qual, "plexmediaserver.onlinemediaqualitystr", 52203, g_localizeStrings.Get(13183), BUTTON_CONTROL_MISC_INPUT);
+  AddString(qual, "plexmediaserver.onlinemediaqualitystr", 52203, g_localizeStrings.Get(13181), BUTTON_CONTROL_MISC_INPUT);
   AddInt(NULL, "plexmediaserver.onlinemediaquality", 52201, 0, 0, 1, INT_MAX, SPIN_CONTROL_INT);
 
   CSettingsCategory* pms = AddCategory(SETTINGS_SERVICE, "plexmediaserver", 40210);

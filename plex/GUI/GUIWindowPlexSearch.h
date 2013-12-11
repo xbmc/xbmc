@@ -58,8 +58,8 @@ class CGUIWindowPlexSearch : public CGUIWindow, public PlexContentPlayerMixin, p
     void HideAllLists();
     void ProcessResults(CFileItemList *results);
     void Reset();
+    CGUIEditControl *GetEditControl() const;
 
-    CGUIEditControl *m_editControl;
     std::vector<unsigned int> m_currentSearchId;
     CStdString m_currentSearchString;
     CCriticalSection m_threadsSection;

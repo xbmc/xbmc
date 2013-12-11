@@ -332,8 +332,8 @@ msgid "Video render method"
 msgstr "Video render method"
 
 msgctxt "#18110"
-msgid "HDMI output channels"
-msgstr "HDMI output channels"
+msgid "Audio output channels"
+msgstr "Audio output channels"
 
 msgctxt "#18111"
 msgid "Advanced video"

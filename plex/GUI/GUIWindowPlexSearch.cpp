@@ -59,7 +59,6 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////
 CGUIWindowPlexSearch::CGUIWindowPlexSearch() : CGUIWindow(WINDOW_PLEX_SEARCH, "PlexSearch.xml")
 {
-  m_editControl = NULL;
   m_loadType = LOAD_ON_GUI_INIT;
   m_lastFocusedContainer = -1;
   m_lastFocusedItem = -1;
@@ -82,8 +81,9 @@ CGUIWindowPlexSearch::~CGUIWindowPlexSearch()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CStdString CGUIWindowPlexSearch::GetString()
 {
-  if (m_editControl)
-    return m_editControl->GetLabel2();
+  CGUIEditControl* edit = GetEditControl();
+  if (edit)
+    return edit->GetLabel2();
   return "";
 }
 
@@ -145,14 +145,13 @@ void CGUIWindowPlexSearch::UpdateSearch()
 ///////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexSearch::OnAction(const CAction &action)
 {
-  if (m_editControl)
+  CGUIEditControl* edit = GetEditControl();
+  if (edit)
   {
     if (action.GetID() >= KEY_ASCII)
     {
       bool ret = false;
-
-      if (m_editControl)
-        ret = m_editControl->OnAction(action);
+      ret = edit->OnAction(action);
 
       UpdateSearch();
       return ret;
@@ -160,9 +159,7 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
     else if ((action.GetID() == ACTION_BACKSPACE || action.GetID() == ACTION_NAV_BACK) && !GetString().empty())
     {
       bool ret = false;
-
-      if (m_editControl)
-        ret = m_editControl->OnAction(CAction(ACTION_BACKSPACE));
+      ret = edit->OnAction(CAction(ACTION_BACKSPACE));
 
       UpdateSearch();
       return ret;
@@ -197,23 +194,13 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
   {
     InitWindow();
     if (g_plexApplication.timelineManager)
-    {
-      std::string desc = "search";
-      if (m_editControl) desc = m_editControl->GetDescription();
-      g_plexApplication.timelineManager->SetTextFieldFocused(true, desc, GetString());
-    }
+      g_plexApplication.timelineManager->SetTextFieldFocused(true, "Search", GetString());
   }
 
   if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {
     if (g_plexApplication.timelineManager)
-    {
-      std::string desc = "field";
-      if (m_editControl) desc = m_editControl->GetDescription();
-      g_plexApplication.timelineManager->SetTextFieldFocused(false, desc);
-    }
-
-    m_editControl = NULL;
+      g_plexApplication.timelineManager->SetTextFieldFocused(false, "Search");
   }
 
   if (message.GetMessage() == GUI_MSG_SET_TEXT && message.GetControlId() == CTL_LABEL_EDIT)
@@ -231,16 +218,16 @@ bool CGUIWindowPlexSearch::OnClick(int senderId, int action)
   }
   else if (senderId == CTL_BUTTON_CLEAR)
   {
-    if (m_editControl)
-      m_editControl->SetLabel2("");
+    if (GetEditControl())
+      GetEditControl()->SetLabel2("");
     Reset();
   }
   else if (senderId == CTL_BUTTON_SPACE)
   {
     CStdString str = GetString();
     str += " ";
-    if (m_editControl)
-      m_editControl->SetLabel2(str);
+    if (GetEditControl())
+      GetEditControl()->SetLabel2(str);
     UpdateSearch();
   }
   else if (senderId >= 65 && senderId <= 100)
@@ -254,8 +241,8 @@ bool CGUIWindowPlexSearch::OnClick(int senderId, int action)
 
     CStdString str = GetString();
     str += c;
-    if (m_editControl)
-      m_editControl->SetLabel2(str);
+    if (GetEditControl())
+      GetEditControl()->SetLabel2(str);
     UpdateSearch();
   }
   else if (senderId >= 9001)
@@ -340,17 +327,15 @@ void CGUIWindowPlexSearch::Reset()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowPlexSearch::InitWindow()
+CGUIEditControl *CGUIWindowPlexSearch::GetEditControl() const
 {
   CGUIEditControl* ctrl = (CGUIEditControl*)GetControl(CTL_LABEL_EDIT);
-  if (ctrl)
-  {
-    m_editControl = ctrl;
-    m_editControl->SetOnlyCaps(true);
-  }
-  else
-    CLog::Log(LOGWARNING, "CGUIWindowPlexSearch::InitWindow Couldn't find editlabel with ID %d", CTL_LABEL_EDIT);
+  return ctrl;
+}
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexSearch::InitWindow()
+{
   if (m_lastFocusedContainer == -1)
     HideAllLists();
   else
@@ -362,6 +347,9 @@ void CGUIWindowPlexSearch::InitWindow()
 
     CONTROL_SELECT_ITEM(m_lastFocusedContainer, m_lastFocusedItem);
   }
+
+  if (GetEditControl())
+    GetEditControl()->SetOnlyCaps(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

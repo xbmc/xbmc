@@ -150,24 +150,6 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return GetOnlineChannelDirectory(fileItems);
   }
 
-  if (boost::ends_with(m_url.GetFileName(), "/children") ||
-      boost::ends_with(m_url.GetFileName(), "/allLeaves"))
-  {
-    /* When we are asking for /children we also ask for the parent
-     * path to get more information for the path we want to navigate
-     * to */
-    CURL augmentUrl = m_url;
-    augmentUrl.SetProtocolOptions("");
-    
-    CStdString newFile = m_url.GetFileName();
-    if (boost::ends_with(m_url.GetFileName(), "/children"))
-      boost::replace_last(newFile, "/children", "");
-    else
-      boost::replace_last(newFile, "/allLeaves", "");
-    augmentUrl.SetFileName(newFile);
-    AddAugmentation(augmentUrl);
-  }
-  
   if (boost::contains(m_url.GetFileName(), "library/metadata"))
     m_url.SetOption("checkFiles", "1");
 
@@ -244,14 +226,12 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     if (doc.Error())
     {
       CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to parse XML from %s\nError on %d:%d - %s\n%s", m_url.Get().c_str(), doc.ErrorRow(), doc.ErrorCol(), doc.ErrorDesc(), m_data.c_str());
-      CancelAugmentations();
       return false;
     }
 
     if (!ReadMediaContainer(doc.RootElement(), fileItems))
     {
       CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", m_url.Get().c_str());
-      CancelAugmentations();
       return false;
     }
   
@@ -275,7 +255,6 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
 void
 CPlexDirectory::CancelDirectory()
 {
-  CancelAugmentations();
   m_file.Cancel();
 }
 
@@ -569,14 +548,6 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
     else
       mediaContainer.SetPlexDirectoryType(mediaContainer.Get(0)->GetPlexDirectoryType());
   }
-
-  if (mediaContainer.GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE &&
-      mediaContainer.Size() == 1)
-  {
-    CFileItemPtr firstItem = mediaContainer.Get(0);
-    if (firstItem && firstItem->HasProperty("parentKey"))
-      AddAugmentation(CURL(firstItem->GetProperty("parentKey").asString()));
-  }
   
   /* we need to massage channels a tiny wee bit */
   if (boost::starts_with(m_url.GetFileName(), "video") ||
@@ -678,177 +649,11 @@ CStdString CPlexDirectory::GetContentFromType(EPlexDirectoryType typeNr)
   return content;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void CPlexDirectory::DoAugmentation(CFileItemList &fileItems)
-{
-  /* Wait for the agumentation to return for 5 seconds */
-  if (m_augmentationEvent.WaitMSec(5 * 1000))
-  {
-    CSingleLock lk(m_augmentationLock);
-    if (m_isCanceled)
-      return;
-
-    BOOST_FOREACH(CFileItemList *augList, m_augmentationItems)
-    {
-      if (augList->Size() > 0)
-      {
-        CFileItemPtr augItem = augList->Get(0);
-        if ((fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON ||
-             fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE) &&
-            augItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW)
-        {
-          /* Augmentation of seasons works like this:
-           * We load metadata/XX/children as our main url
-           * then we load metadata/XX as augmentation, then we
-           * augment our main CFileItem with information from the
-           * first subitem from the augmentation URL.
-           */
-
-          if (augItem->HasProperty("summary"))
-            fileItems.SetProperty("showplot", augItem->GetProperty("summary"));
-
-          for (int i = 0; i < fileItems.Size(); i++)
-          {
-            CFileItemPtr item = fileItems.Get(i);
-
-            std::pair<CStdString, CVariant> p;
-            BOOST_FOREACH(p, augItem->m_mapProperties)
-            {
-              /* we only insert the properties if they are not available */
-              if (item->m_mapProperties.find(p.first) == item->m_mapProperties.end())
-                item->m_mapProperties[p.first] = p.second;
-            }
-
-            std::pair<CStdString, CStdString> sP;
-            BOOST_FOREACH(sP, augItem->GetArt())
-            {
-              if (!item->HasArt(sP.first))
-                item->SetArt(sP.first, sP.second);
-            }
-
-            if (augItem->HasVideoInfoTag())
-            {
-              CVideoInfoTag* infoTag = item->GetVideoInfoTag();
-              CVideoInfoTag* infoTag2 = augItem->GetVideoInfoTag();
-
-              infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
-              infoTag->m_cast.insert(infoTag->m_cast.end(), infoTag2->m_cast.begin(), infoTag2->m_cast.end());
-              infoTag->m_writingCredits.insert(infoTag->m_writingCredits.end(), infoTag2->m_writingCredits.begin(), infoTag2->m_writingCredits.end());
-              infoTag->m_director.insert(infoTag->m_director.end(), infoTag2->m_director.begin(), infoTag2->m_director.end());
-            }
-          }
-        }
-        else if ((fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_ALBUM ||
-                  fileItems.GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK) &&
-                 (augItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST ||
-                  augItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_ALBUM))
-        {
-          for (int i = 0; i < fileItems.Size(); i++)
-          {
-            CFileItemPtr item = fileItems.Get(i);
-            if (!item)
-              continue;
-
-
-            std::pair<CStdString, CVariant> p;
-            BOOST_FOREACH(p, augItem->m_mapProperties)
-            {
-              /* we only insert the properties if they are not available */
-              if (item->m_mapProperties.find(p.first) == item->m_mapProperties.end())
-              {
-                item->m_mapProperties[p.first] = p.second;
-              }
-            }
-
-            std::pair<CStdString, CStdString> sP;
-            BOOST_FOREACH(sP, augItem->GetArt())
-            {
-              if (!item->HasArt(sP.first))
-                item->SetArt(sP.first, sP.second);
-            }
-
-            if (augItem->HasMusicInfoTag())
-            {
-              MUSIC_INFO::CMusicInfoTag* musicInfoTag = item->GetMusicInfoTag();
-              MUSIC_INFO::CMusicInfoTag* musicInfoTag2 = augItem->GetMusicInfoTag();
-
-              std::vector<std::string> genres = musicInfoTag2->GetGenre();
-              std::vector<std::string> genres2 = musicInfoTag->GetGenre();
-              BOOST_FOREACH(std::string g, genres)
-              {
-                if (std::find(genres2.begin(), genres2.end(), g) == genres2.end())
-                  genres2.push_back(g);
-              }
-
-              musicInfoTag->SetGenre(genres2);
-            }
-          }
-        }
-      }
-    }
-  }
-  else
-  {
-    CSingleLock lk(m_augmentationLock);
-    m_isCanceled = true;
-    CLog::Log(LOGWARNING, "CPlexDirectory::DoAugmentation timed out");
-    BOOST_FOREACH(int id, m_augmentationJobs)
-      CJobManager::GetInstance().CancelJob(id);
-    m_augmentationJobs.clear();
-  }
-
-  /* clean up */
-  BOOST_FOREACH(CFileItemList* item, m_augmentationItems)
-    delete item;
-  m_augmentationItems.clear();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-void CPlexDirectory::OnJobComplete(unsigned int jobID, bool success, CJob *job)
-{
-  CSingleLock lk(m_augmentationLock);
-
-  if (m_isCanceled)
-    return;
-
-  if (success)
-  {
-    CPlexDirectoryFetchJob *fjob = static_cast<CPlexDirectoryFetchJob*>(job);
-    CFileItemList* list = new CFileItemList;
-    list->Copy(fjob->m_items);
-    
-    m_augmentationItems.push_back(list);
-
-    /* Fire off some more augmentation events if needed */
-    if ((list->GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON ||
-         list->GetPlexDirectoryType() == PLEX_DIR_TYPE_ALBUM ||
-         list->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK) &&
-        list->Size() > 0 &&
-        list->Get(0)->HasProperty("parentKey"))
-    {
-      AddAugmentation(CURL(list->Get(0)->GetProperty("parentKey").asString()));
-    }
-  }
-
-  m_augmentationJobs.erase(std::remove(m_augmentationJobs.begin(), m_augmentationJobs.end(), jobID), m_augmentationJobs.end());
-
-  if (m_augmentationJobs.size() == 0)
-    m_augmentationEvent.Set();
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 DIR_CACHE_TYPE CPlexDirectory::GetCacheType(const CStdString &strPath) const
 {
   /* We really don't want to agressively cache stuff, so let's just start by caching remote servers */
   CURL u(strPath);
-
-  if (boost::starts_with(u.GetFileName(), "library/metadata"))
-  {
-    CLog::Log(LOGDEBUG, "CPlexDirectory::GetCacheType allow caching of preplay screen: %s", u.Get().c_str());
-    return DIR_CACHE_ALWAYS;
-  }
-
   CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(u.GetHostName());
 
   if (server && server->GetActiveConnection())
@@ -1014,18 +819,4 @@ bool CPlexDirectory::GetOnlineChannelDirectory(CFileItemList &items)
     items.SetPath("plexserver://channeldirectory");
   
   return success;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CPlexDirectory::AddAugmentation(const CURL &url)
-{
-  CSingleLock lk(m_augmentationLock);
-  if (m_isCanceled)
-    return;
-
-  CLog::Log(LOGDEBUG, "CPlexDirectory::AddAugmentation adding %s", url.Get().c_str());
-  int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(url), this, CJob::PRIORITY_HIGH);
-  m_augmentationJobs.push_back(id);
-  m_isAugmented = true;
-  m_augmentationEvent.Reset();
 }

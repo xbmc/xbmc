@@ -4582,6 +4582,10 @@ void CApplication::OnPlayBackEnded()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
+
+  /* PLEX */
+  UpdateFileState("stopped");
+  /* END PLEX */
 }
 
 void CApplication::OnPlayBackStarted()
@@ -4707,6 +4711,10 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   param["player"]["speed"] = GetPlaySpeed();
   CAnnouncementManager::Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
+
+  /* PLEX */
+  UpdateFileState("", true);
+  /* END PLEX */
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
@@ -4884,6 +4892,8 @@ void CApplication::StopPlaying()
       //m_pPlayer->CloseFile();
     /* PLEX */
     {
+      UpdateFileState("stopped");
+
       if (IsStartingPlayback())
         m_pPlayer->Abort();
       else
@@ -5343,14 +5353,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_pKaraokeMgr->Stop();
 #endif
 
-      /* PLEX */
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_STOPPED || message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
-      {
-        UpdateFileState("stopped");
-        HideBusyIndicator();
-      }
-      /* END PLEX */
-
 #ifdef TARGET_DARWIN
       DarwinSetScheduling(message.GetMessage());
 #endif
@@ -5363,13 +5365,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           return true;
         }
       }
-      /* PLEX */
-      else
-      {
-        UpdateFileState("stopped");
-      }
-      /* END PLEX */
-      
+
       // In case playback ended due to user eg. skipping over the end, clear
       // our resume bookmark here
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnorePercentAtEnd > 0)
@@ -6352,7 +6348,7 @@ bool CApplication::IsBuffering() const
   return false;
 }
 
-void CApplication::UpdateFileState(const string& aState)
+void CApplication::UpdateFileState(const string& aState, bool force)
 {
   if (!m_itemCurrentFile)
     return;
@@ -6378,7 +6374,7 @@ void CApplication::UpdateFileState(const string& aState)
   if (state == CPlexTimelineManager::MEDIA_STATE_STOPPED || IsPlayingVideo() || IsPlayingAudio())
   {
     if (g_plexApplication.timelineManager)
-      g_plexApplication.timelineManager->ReportProgress(m_itemCurrentFile, state, GetTime() * 1000);
+      g_plexApplication.timelineManager->ReportProgress(m_itemCurrentFile, state, GetTime() * 1000, force);
 
     // Update the item in place.
     CGUIMediaWindow* mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_FILES);

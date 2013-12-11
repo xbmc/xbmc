@@ -41,7 +41,7 @@ bool CPlexSectionFilter::loadFilters()
           type != PLEX_DIR_TYPE_HOME_MOVIES)
         continue;
 
-      if (advancedFilters && (type == PLEX_DIR_TYPE_MOVIE || type == PLEX_DIR_TYPE_HOME_MOVIES))
+      if (advancedFilters && (type == PLEX_DIR_TYPE_MOVIE))
       {
         if (primaryFilter->GetProperty("unprocessed_key").asString() == "all" ||
             primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck" ||
