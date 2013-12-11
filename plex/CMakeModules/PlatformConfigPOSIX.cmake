@@ -31,6 +31,10 @@ set(HAVE_PTHREAD_SETNAME_NP 1)
 set(HAS_SDL_JOYSTICK 1)
 set(HAS_LIBRTMP 1)
 
+if(NOT USE_INTERNAL_FFMPEG)
+  add_definitions(-DUSE_EXTERNAL_FFMPEG)
+endif()
+
 add_definitions(
   -DTARGET_POSIX
   -D_REENTRANT
