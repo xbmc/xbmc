@@ -6,6 +6,7 @@ SRCS      += Intent.cpp
 SRCS      += PackageManager.cpp
 SRCS      += AudioFormat.cpp
 SRCS      += AudioManager.cpp
+SRCS      += AudioTrack.cpp
 SRCS      += PowerManager.cpp
 SRCS      += WakeLock.cpp
 SRCS      += Environment.cpp
