@@ -466,17 +466,17 @@ msgstr "Tillåt kontroll av Plex/HT via UPnP"
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr "%2.3fs"
+msgstr "%d"
 
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr "Fördröjd med: %2.3fs"
+msgstr "Fördröjd med: %d"
 
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr "Före med: %2.3fs"
+msgstr "Före med: %d"
 
 
 msgctxt "#33075"
@@ -522,7 +522,7 @@ msgstr "Söker efter tillgängliga uppdateringar..."
 
 msgctxt "#40002"
 msgid "Update channel"
-msgstr "Uppdatera kanal"
+msgstr "Uppdateringskanal"
 
 
 msgctxt "#40003"

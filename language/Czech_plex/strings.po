@@ -26,7 +26,7 @@ msgstr "Plex/HT SVN"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "Plex for Home Theater"
+msgstr "Plex Home Theater"
 
 
 msgctxt "#10"
@@ -64,7 +64,7 @@ msgstr "Povolit programům na jiných systémech ovládání Plex/HT"
 
 msgctxt "#1002"
 msgid "XBMC was unable to connect to the network location."
-msgstr "Plex/HT se nemohl připojit k síťovému umístění"
+msgstr "Plex/HT se nemohl připojit k síťovému umístění."
 
 
 #empty strings from id 1003 to 1269
@@ -76,7 +76,7 @@ msgstr "Povolit Plex/HT přijímání AirPlay obsahu"
 
 msgctxt "#13134"
 msgid "H.264 Speed Boost"
-msgstr "Zrychlení pomocí H.264"
+msgstr "H.264 Speed Boost"
 
 
 msgctxt "#13135"
@@ -115,7 +115,7 @@ msgstr "Pokud budete pokračovat tak možná nebude moci ovládat Plex/HT"
 
 msgctxt "#13143"
 msgid "Search remote libraries"
-msgstr ""
+msgstr "Hledat ve vzdálených knihovnách"
 
 
 #empty strings from id 13144 to 13145
@@ -129,12 +129,12 @@ msgstr "Plex/HT, změna tohoto nastavení může ovlivnit vaší možnost"
 
 msgctxt "#13148"
 msgid "Allow Picking Alternate Library Media"
-msgstr ""
+msgstr "Povolit výběr alternativní knihovny médií"
 
 
 msgctxt "#13149"
 msgid "Quality From Remote Media Servers"
-msgstr ""
+msgstr "Kvalita ze vzdálených media serverů"
 
 
 #empty strings from id 13150 to 13179
@@ -180,24 +180,24 @@ msgstr "místo jen Plex/HT?"
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
-msgstr ""
+msgstr "Povolit spuštění PLEX/HT dálkovým ovladačem"
 
 
 #empty strings from id 13603 to 13621
 
 msgctxt "#13622"
 msgid "Please see Remote Buddy FAQ to uninstall."
-msgstr ""
+msgstr "Pro odinstalaci si prosím přečtěte Remote Buddy FAQ"
 
 
 msgctxt "#13623"
 msgid "Sofa Control is running."
-msgstr ""
+msgstr "Sofa Control je spuštěno"
 
 
 msgctxt "#13624"
 msgid "Please see Sofa Control documentation to uninstall."
-msgstr ""
+msgstr "Pro odinstalaci si prosím přečtěte dokumentaci Sofa Control"
 
 
 #empty strings from id 13625 to 13629
@@ -215,7 +215,7 @@ msgstr "Mode"
 
 msgctxt "#13632"
 msgid "- Always Running"
-msgstr ""
+msgstr "- Vždy spuštěný"
 
 
 msgctxt "#13633"
@@ -230,7 +230,7 @@ msgstr "Zapnuto"
 
 msgctxt "#13635"
 msgid "Enable Scrobbling"
-msgstr ""
+msgstr "Zapnout Scrobbling"
 
 
 #empty strings from id 13636 to 14028
@@ -249,7 +249,7 @@ msgstr "Servery"
 
 msgctxt "#14037"
 msgid "Look and Feel"
-msgstr ""
+msgstr "Vzhled"
 
 
 #empty string with id 14038
@@ -263,7 +263,7 @@ msgstr "Plex/HT vyžaduje restart, aby změnil vaše"
 
 msgctxt "#15150"
 msgid "Use library artwork backgrounds"
-msgstr ""
+msgstr "Používat obrázky z knihovny jako pozadí"
 
 
 #empty strings from id 15151 to 15204
@@ -277,14 +277,14 @@ msgstr "Prosím aktualizuj Plex/HT"
 
 msgctxt "#16001"
 msgid "Configure Audio Hardware..."
-msgstr "Nastavení zařízení pro zvuk"
+msgstr "Nastavit zařízení pro zvuk..."
 
 
 #empty strings from id 16002 to 17500
 
 msgctxt "#17501"
 msgid "Display Brightness"
-msgstr ""
+msgstr "Jas dipleje"
 
 
 #empty strings from id 17502 to 17700
@@ -323,12 +323,12 @@ msgstr "Síťový zdroj (nabíjení)"
 
 msgctxt "#18004"
 msgid "Battery power"
-msgstr ""
+msgstr "Baterie"
 
 
 msgctxt "#18005"
 msgid "Power level"
-msgstr ""
+msgstr "Úroveň nabití"
 
 
 msgctxt "#18006"
@@ -355,17 +355,17 @@ msgstr "Povolit varování v případě nízké úrovně nabití baterie"
 
 msgctxt "#18101"
 msgid "Theme music volume"
-msgstr ""
+msgstr "Hlasitost hudební znělky"
 
 
 msgctxt "#18102"
 msgid "Enable TV theme music"
-msgstr ""
+msgstr "Zapnout televizní hudební znělky"
 
 
 msgctxt "#18103"
 msgid "- Automatically Download Theme Music"
-msgstr "- Automaticky stáhnout hudební motiv"
+msgstr "- Automaticky stáhnout hudební znělku"
 
 
 msgctxt "#18104"
@@ -375,62 +375,62 @@ msgstr "Povolit hudbu na pozadí"
 
 msgctxt "#18105"
 msgid "Advanced"
-msgstr ""
+msgstr "Pokročilé"
 
 
 msgctxt "#18106"
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 
 msgctxt "#18107"
 msgid "Music"
-msgstr ""
+msgstr "Hudba"
 
 
 msgctxt "#18108"
 msgid "Photos"
-msgstr ""
+msgstr "Fotky"
 
 
 msgctxt "#18109"
 msgid "Video render method"
-msgstr ""
+msgstr "Metoda renderování videa"
 
 
 msgctxt "#18110"
 msgid "HDMI output channels"
-msgstr ""
+msgstr "Výstupní HDMI kanály"
 
 
 msgctxt "#18111"
 msgid "Advanced video"
-msgstr ""
+msgstr "Pokročilé video"
 
 
 msgctxt "#18112"
 msgid "Logging"
-msgstr ""
+msgstr "Logování"
 
 
 msgctxt "#18113"
 msgid "Theme music"
-msgstr ""
+msgstr "Hudební znělka"
 
 
 msgctxt "#18114"
 msgid "Visualize dirty regions"
-msgstr ""
+msgstr "Zobrazovat \"dirty regions\""
 
 
 msgctxt "#18115"
 msgid "Dirty regions algorithm"
-msgstr ""
+msgstr "Algoritmus \"dirty regions\""
 
 
 msgctxt "#18116"
 msgid "Dirty regions no flip timeout (ms)"
-msgstr ""
+msgstr "Dirty regions no flip timeout (ms)"
 
 
 #empty strings from id 18117 to 18999
@@ -454,34 +454,34 @@ msgstr ""
 
 msgctxt "#20341"
 msgid "this path from the Plex/HT library?"
-msgstr ""
+msgstr "tato cesta z Plex/HT knihovny?"
 
 
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
 msgid "Allow control of XBMC via UPnP"
-msgstr "Povolit ovládání Plex/HT přes UPnp"
+msgstr "Povolit ovládání Plex/HT přes UPnP"
 
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr ""
+msgstr "%2.3fs"
 
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr ""
+msgstr "Zpožděno o: %2.3fs"
 
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr ""
+msgstr "Napřed o: %2.3fs"
 
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
-msgstr ""
+msgstr "ke spuštění verzi Plex/HT %s a vyšší."
 
 
 msgctxt "#33076"
@@ -493,71 +493,71 @@ msgstr "Prosím aktualizujte Plex/HT"
 
 msgctxt "#36007"
 msgid "Power on the TV when starting Plex/HT"
-msgstr ""
+msgstr "Zapnout televizi, když je spouštěn Plex/HT"
 
 
 msgctxt "#36008"
 msgid "Power off devices when stopping Plex/HT"
-msgstr ""
+msgstr "Vypnout zařízení, když je vypínán Plex/HT"
 
 
 #empty strings from id 36009 to 36012
 
 msgctxt "#36013"
 msgid "Unsupported libcec interface version. %d is greater than the version Plex/HT supports (%d)"
-msgstr ""
+msgstr "Nepodporavaná verze libcec rozhraní. %d je vyšší, než verze, kterou Plex/HT podporuje (%d)"
 
 
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
 msgid "Software update"
-msgstr ""
+msgstr "Aktualizace software"
 
 
 msgctxt "#40001"
 msgid "Checking for available updates..."
-msgstr ""
+msgstr "Vyhledávání dostupných aktualizací..."
 
 
 msgctxt "#40002"
 msgid "Update channel"
-msgstr ""
+msgstr "Aktualizovat kanál"
 
 
 msgctxt "#40003"
 msgid "Stable"
-msgstr ""
+msgstr "Stabilní"
 
 
 msgctxt "#40004"
 msgid "PlexPass"
-msgstr ""
+msgstr "PlexPass"
 
 
 msgctxt "#40005"
 msgid "Ninja"
-msgstr ""
+msgstr "Ninja"
 
 
 msgctxt "#40006"
 msgid "I am Special!"
-msgstr ""
+msgstr "I am Special!"
 
 
 msgctxt "#40016"
 msgid "Check for update now..."
-msgstr ""
+msgstr "Vyhledat aktualizace..."
 
 
 msgctxt "#40017"
 msgid "Automatically check for updates"
-msgstr ""
+msgstr "Automaticky vyhledávat aktualizace"
 
 
 msgctxt "#40018"
 msgid "Update and restart"
-msgstr ""
+msgstr "Aktualizovat a restartovat"
 
 
 msgctxt "#40029"
@@ -567,7 +567,7 @@ msgstr "Aktuální verze"
 
 msgctxt "#40028"
 msgid "Update Available!"
-msgstr ""
+msgstr "Dostupná aktualizace!"
 
 
 #empty strings from id 40029 to 40099
@@ -623,7 +623,7 @@ msgstr "Nepodporovaná cesta"
 
 msgctxt "#40201"
 msgid "Plex Media Server paths can't be added to multipath"
-msgstr ""
+msgstr "Plex Media Server cesty nemohou být přidány do hromadné cesty"
 
 
 msgctxt "#40202"
@@ -643,7 +643,7 @@ msgstr "Čekám na odezvu..."
 
 msgctxt "#40205"
 msgid "Rate..."
-msgstr ""
+msgstr "Hodnotit..."
 
 
 msgctxt "#40206"
@@ -680,7 +680,7 @@ msgstr "Adresa"
 
 msgctxt "#40213"
 msgid "Force transcoding on local network"
-msgstr ""
+msgstr "Vždy transkódovat na lokální síti"
 
 
 msgctxt "#40214"
@@ -780,12 +780,12 @@ msgstr "Chcete změnit nastavení pro automatické ukončení?"
 
 msgctxt "#40321"
 msgid "Would you like to set a sleep timer instead?"
-msgstr "Chcete změnit nastavení pro automatické uspání?"
+msgstr "Nechcete raději změnit nastavení pro automatické uspání?"
 
 
 msgctxt "#40322"
 msgid "Would you like to set a shut down timer instead?"
-msgstr "Chcete změnit nastavení pro automatické vypnutí?"
+msgstr "Nechcete raději změnit nastavení pro automatické vypnutí?"
 
 
 msgctxt "#40323"
@@ -814,7 +814,7 @@ msgstr "Nemohu rozpoznat vstupní formát"
 
 msgctxt "#42002"
 msgid "Could not read file header"
-msgstr "Nemohu přečíst hlavičku souboru"
+msgstr "Nelze přečíst hlavičku souboru"
 
 
 msgctxt "#42003"
@@ -917,7 +917,7 @@ msgstr "Heslo"
 
 msgctxt "#44002"
 msgid "Use PIN"
-msgstr ""
+msgstr "Použít PIN"
 
 
 msgctxt "#44003"
@@ -962,7 +962,7 @@ msgstr "Fronta"
 
 msgctxt "#44022"
 msgid "Recommended"
-msgstr ""
+msgstr "Doporučené"
 
 
 msgctxt "#44030"
@@ -977,7 +977,7 @@ msgstr "ŘAZENÍ"
 
 msgctxt "#44032"
 msgid "Clear Filters"
-msgstr ""
+msgstr "Smazat filtry"
 
 
 msgctxt "#44100"
@@ -987,17 +987,17 @@ msgstr "Přihlásit se do myPlex"
 
 msgctxt "#44101"
 msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "Ze svého počítače přejdi na http://my.plexapp.com/pin"
+msgstr "Ze svého počítače přejděte na http://my.plexapp.com/pin"
 
 
 msgctxt "#44102"
 msgid "retrieving code..."
-msgstr "Získávám kod..."
+msgstr "Získávám kód..."
 
 
 msgctxt "#44103"
 msgid "and enter this code:"
-msgstr "a vložte tento kod:"
+msgstr "a vložte tento kód:"
 
 
 msgctxt "#44104"
@@ -1007,7 +1007,7 @@ msgstr "Hurá, jsme přihlášeni!"
 
 msgctxt "#44105"
 msgid "Signed in to myPlex"
-msgstr ""
+msgstr "Přihlášeno do myPlex"
 
 
 msgctxt "#44200"
@@ -1022,7 +1022,7 @@ msgstr "Pro tuto neveřejnou verzi musíte být přihlášeni k myPlex a mít Pl
 
 msgctxt "#44202"
 msgid "Press OK to be taken to the Settings screen"
-msgstr "Stiskni OK pro přechod do Nastavení"
+msgstr "Stiskněte OK pro přechod do Nastavení"
 
 
 msgctxt "#44203"
@@ -1032,19 +1032,19 @@ msgstr "Pouze pro členy PlexPass"
 
 msgctxt "#44204"
 msgid "Press OK Quit"
-msgstr "Stiskni OK pro ukončení"
+msgstr "Stiskněte OK pro ukončení"
 
 
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
-msgstr ""
+msgstr "Povolit ovládání Plex/HT z Plex klientů"
 
 
 #### These are error strings shown from channels
 #### errorcode + 50000
 msgctxt "#52000"
 msgid "Unable to play media"
-msgstr "Nemohu přehrát medium"
+msgstr "Nelze přehrát medium"
 
 
 msgctxt "#52001"
@@ -1054,106 +1054,106 @@ msgstr "Medium není v tuto chvíli dostupné"
 
 msgctxt "#52002"
 msgid "This media has expired"
-msgstr ""
+msgstr "Platnost média vypršela"
 
 
 msgctxt "#52003"
 msgid "This live media has not yet started"
-msgstr ""
+msgstr "Toto živé médium ještě nezačalo"
 
 
 msgctxt "#52004"
 msgid "You are not authorized to access this media"
-msgstr ""
+msgstr "Nemáte oprávnění pro přístup k tomuto médiu"
 
 
 msgctxt "#52005"
 msgid "This media is geoblocked and can't be accessed from your current location."
-msgstr "Toto médium není pro vaši aktuální lokalitu dostupné"
+msgstr "Toto médium není dostupné pro vaši aktuální lokalitu."
 
 #### end error strings
 
 msgctxt "#52010"
 msgid "Please check that this file exists and the necessary drive is mounted"
-msgstr ""
+msgstr "Zkontrolujte prosím, zda soubor existuje a potřebný oddíl je připojen"
 
 
 msgctxt "#52011"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater nedokáže přehrát obsah tohoto kanálu"
 
 
 msgctxt "#52012"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater nedokáže přehrát obsah tohoto kanálu"
 
 
 msgctxt "#52100"
 msgid "Select Audio Track"
-msgstr ""
+msgstr "Vybrat zvukovou stopu"
 
 
 msgctxt "#52101"
 msgid "Select Subtitle"
-msgstr ""
+msgstr "Vybrat titulky"
 
 
 msgctxt "#52102"
 msgid "Channels"
-msgstr ""
+msgstr "Kanály"
 
 
 msgctxt "#52201"
 msgid "Local video quality"
-msgstr ""
+msgstr "Kvalita lokálního videa"
 
 
 msgctxt "#52202"
 msgid "Remote video quality"
-msgstr ""
+msgstr "Kvalita vzdáleného videa"
 
 
 msgctxt "#52203"
 msgid "Online video quality"
-msgstr ""
+msgstr "Kvalita online videa"
 
 
 msgctxt "#52210"
 msgid "Show myPlex queue and recommendations"
-msgstr ""
+msgstr "Zobrazit myPlex frontu a doporučení"
 
 
 msgctxt "#52300"
 msgid "Media Server went away"
-msgstr ""
+msgstr "Media Server již není dostupný"
 
 
 msgctxt "#52301"
 msgid "The Server you where browsing went away..."
-msgstr ""
+msgstr "Server, který jste procházeli, již není dostupný..."
 
 
 msgctxt "#52400"
 msgid "No linked social accounts"
-msgstr ""
+msgstr "Žádné připojené účty sociálních sítí"
 
 
 msgctxt "#52401"
 msgid "Go to http://my.plexapp.com to link your account"
-msgstr ""
+msgstr "Pro připojení vašeho účtu navštivte http://my.plexapp.com"
 
 
 msgctxt "#52402"
 msgid "Enter message"
-msgstr ""
+msgstr "Zadejte zprávu"
 
 
 msgctxt "#52403"
 msgid "Share %s on %s with message:"
-msgstr ""
+msgstr "Sdílet %s na %s se zprávou:"
 
 
 msgctxt "#52404"
 msgid "Enable network logging"
-msgstr ""
+msgstr "Zapnout síťové logování"
 

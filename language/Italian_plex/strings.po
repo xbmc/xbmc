@@ -26,7 +26,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "XBMC media center"
+msgstr "xbmc media center"
 
 
 msgctxt "#10"
@@ -50,14 +50,14 @@ msgstr "Informazioni su XBMC"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
-msgstr "Permetti ai programmi su questa macchina di controllare XBMC"
+msgstr "Permetti ai programmi su questo sistema di controllare XBMC"
 
 
 #empty strings from id 792 to 793
 
 msgctxt "#794"
 msgid "Allow programs on other systems to control XBMC"
-msgstr "Permetti ai sistemi di macchine remote di controllare XBMC"
+msgstr "Permetti ai programmi su altri sistemi di controllare XBMC"
 
 
 #empty strings from id 795 to 1001
@@ -96,12 +96,12 @@ msgstr "Alto"
 
 msgctxt "#13138"
 msgid "Automatically Select Audio Stream"
-msgstr "Seleziona automaticamente il flusso audio"
+msgstr "Seleziona Automaticamente il Flusso Audio"
 
 
 msgctxt "#13139"
 msgid "Automatically Select Subtitle Stream"
-msgstr "Seleziona automaticamente i sottotitoli"
+msgstr "Seleziona Automaticamente i Sottotitoli"
 
 
 #empty string with id 13140
@@ -114,8 +114,8 @@ msgstr "Se procedi potrai non essere in grado di controllare XBMC"
 #empty string with id 13142
 
 msgctxt "#13143"
-msgid "Search Remote Libraries"
-msgstr "Cerca su librerie remote"
+msgid "Search remote libraries"
+msgstr ""
 
 
 #empty strings from id 13144 to 13145
@@ -173,7 +173,7 @@ msgstr "SD"
 
 msgctxt "#13309"
 msgid "instead of just XBMC?"
-msgstr "Invece di XBMC?"
+msgstr "invece di semplicemente XBMC?"
 
 
 #empty strings from id 13310 to 13601
@@ -262,15 +262,15 @@ msgstr "Plex/HT necessita di essere riavviato per cambiare"
 #empty strings from id 14040 to 15149
 
 msgctxt "#15150"
-msgid "Enable Global Slideshow"
-msgstr "Abilita lo slideshow globale"
+msgid "Use library artwork backgrounds"
+msgstr ""
 
 
 #empty strings from id 15151 to 15204
 
 msgctxt "#15205"
 msgid "Please update Plex/HT"
-msgstr "Prego aggiorna Plex/HT"
+msgstr "Per favore aggiorna Plex/HT"
 
 
 #empty strings from id 15206 to 16000
@@ -291,12 +291,12 @@ msgstr "Luminosità dello schermo"
 
 msgctxt "#17701"
 msgid "Low Battery"
-msgstr "Batteria in esaurimento"
+msgstr "Batteria in Esaurimento"
 
 
 msgctxt "#17702"
 msgid "Connect to AC Power"
-msgstr "Collega alla corrente elettrica"
+msgstr "Connetti alla Corrente Elettrica"
 
 
 #empty strings from id 17703 to 17999
@@ -354,13 +354,13 @@ msgstr "Abilita allarme riserva batteria"
 #empty strings from id 18010 to 18100
 
 msgctxt "#18101"
-msgid "Background Music Volume"
-msgstr "Volume della musica in background"
+msgid "Theme music volume"
+msgstr ""
 
 
 msgctxt "#18102"
-msgid "Enable Theme Music"
-msgstr "Abilita colonne sonore"
+msgid "Enable TV theme music"
+msgstr ""
 
 
 msgctxt "#18103"
@@ -373,7 +373,67 @@ msgid "Enable Background Music"
 msgstr "Abilita musica in background"
 
 
-#empty strings from id 18105 to 18999
+msgctxt "#18105"
+msgid "Advanced"
+msgstr ""
+
+
+msgctxt "#18106"
+msgid "Video"
+msgstr ""
+
+
+msgctxt "#18107"
+msgid "Music"
+msgstr "La Musica"
+
+
+msgctxt "#18108"
+msgid "Photos"
+msgstr ""
+
+
+msgctxt "#18109"
+msgid "Video render method"
+msgstr ""
+
+
+msgctxt "#18110"
+msgid "HDMI output channels"
+msgstr ""
+
+
+msgctxt "#18111"
+msgid "Advanced video"
+msgstr ""
+
+
+msgctxt "#18112"
+msgid "Logging"
+msgstr ""
+
+
+msgctxt "#18113"
+msgid "Theme music"
+msgstr ""
+
+
+msgctxt "#18114"
+msgid "Visualize dirty regions"
+msgstr ""
+
+
+msgctxt "#18115"
+msgid "Dirty regions algorithm"
+msgstr ""
+
+
+msgctxt "#18116"
+msgid "Dirty regions no flip timeout (ms)"
+msgstr ""
+
+
+#empty strings from id 18117 to 18999
 
 
 #empty strings from id 19022 to 20008
@@ -387,205 +447,126 @@ msgstr "Usa Plex/HT"
 
 msgctxt "#20250"
 msgid "Recent Music Count"
-msgstr ""
+msgstr "Conteggio Musica Recente"
 
 
 #empty strings from id 20251 to 20340
 
 msgctxt "#20341"
 msgid "this path from the Plex/HT library?"
-msgstr ""
+msgstr "questo percorso dalla libreria di Plex/HT?"
 
 
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
-msgid "Allow control of Plex/HT via UPnP"
+msgid "Allow control of XBMC via UPnP"
+msgstr "Permetti il controllo di Plex/HT via UPnP"
+
+
+msgctxt "#22003"
+msgid "%2.3fs"
 msgstr ""
 
 
-#empty strings from id 21882 to 33074
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr ""
+
+
+msgctxt "#22005"
+msgid "Ahead by: %2.3fs"
+msgstr ""
+
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
-msgstr ""
+msgstr "Versione %s o maggiore di Plex/HT per funzionare."
 
 
 msgctxt "#33076"
 msgid "Please update Plex/HT."
-msgstr ""
+msgstr "Per favore aggiorna Plex/HT."
 
 
 #empty strings from id 33077 to 36006
 
 msgctxt "#36007"
 msgid "Power on the TV when starting Plex/HT"
-msgstr ""
+msgstr "Accendi la TV avviando Plex/HT"
 
 
 msgctxt "#36008"
 msgid "Power off devices when stopping Plex/HT"
-msgstr ""
+msgstr "Spegni i dispostitivi arrestando Plex/HT"
 
 
 #empty strings from id 36009 to 36012
 
 msgctxt "#36013"
 msgid "Unsupported libcec interface version. %d is greater than the version Plex/HT supports (%d)"
-msgstr ""
+msgstr "Versione dell'interfaccia libcec non supportata. %d è maggiore della versione supportata da Plex/HT (%d)"
 
 
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
-msgid "Software Update\n"
-""
-msgstr "Aggiornamento Software\n"
-""
+msgid "Software update"
+msgstr ""
 
 
 msgctxt "#40001"
-msgid "New Version Available"
-msgstr "Nuova versione disponibile"
+msgid "Checking for available updates..."
+msgstr ""
 
 
 msgctxt "#40002"
-msgid "Install with Software Update"
-msgstr "Installa con Aggiornamento Software"
+msgid "Update channel"
+msgstr ""
 
 
 msgctxt "#40003"
-msgid "A new version of Plex/HT is available."
-msgstr "Una nuova versione di Plex/HT è disponibile"
+msgid "Stable"
+msgstr ""
 
 
 msgctxt "#40004"
-msgid "Version: %@  (you have %@)"
-msgstr "Versione: %@ (tu possiedi %@)"
+msgid "PlexPass"
+msgstr ""
 
 
 msgctxt "#40005"
-msgid "Would you like to download and install it now?"
-msgstr "Vuoi scaricare e installare ora?"
+msgid "Ninja"
+msgstr ""
 
 
 msgctxt "#40006"
-msgid "You currently have the latest version of Plex/HT (%@)"
-msgstr "Al momento hai l'ultima versione di Plex/HT (%@)"
-
-
-msgctxt "#40007"
-msgid "Downloading Plex/HT update"
-msgstr "Scaricando l'aggiornamento di Plex/HT"
-
-
-msgctxt "#40008"
-msgid "%@ of %@"
-msgstr "%@ di %@"
-
-
-msgctxt "#40009"
-msgid "%@ downloaded"
-msgstr ""
-
-
-msgctxt "#40010"
-msgid "Extracting Plex/HT update"
-msgstr ""
-
-
-msgctxt "#40011"
-msgid "Installing Plex/HT update"
-msgstr ""
-
-
-msgctxt "#40012"
-msgid "Update Failed"
-msgstr ""
-
-
-msgctxt "#40013"
-msgid "An error has occurred."
-msgstr ""
-
-
-msgctxt "#40014"
-msgid "Please check the console for more details."
-msgstr ""
-
-
-msgctxt "#40015"
-msgid "Checking for updates"
+msgid "I am Special!"
 msgstr ""
 
 
 msgctxt "#40016"
-msgid "Check For Update Now..."
+msgid "Check for update now..."
 msgstr ""
 
 
 msgctxt "#40017"
-msgid "Automatically Check For Updates"
+msgid "Automatically check for updates"
 msgstr ""
 
 
 msgctxt "#40018"
-msgid "Update"
-msgstr ""
-
-
-msgctxt "#40019"
-msgid "- If Updates Are Available"
-msgstr ""
-
-
-msgctxt "#40020"
-msgid "Ahow a Notification"
-msgstr ""
-
-
-msgctxt "#40021"
-msgid "Ask to Install"
-msgstr ""
-
-
-msgctxt "#40022"
-msgid "Check for Updates Automatically?"
-msgstr ""
-
-
-msgctxt "#40023"
-msgid "Would you like Plex/HT to alert you when updates"
-msgstr ""
-
-
-msgctxt "#40024"
-msgid "are available?"
-msgstr ""
-
-
-msgctxt "#40025"
-msgid "- Check For Updates"
-msgstr ""
-
-
-msgctxt "#40026"
-msgid "Every Hour"
-msgstr ""
-
-
-msgctxt "#40027"
-msgid "Every Day"
-msgstr ""
-
-
-msgctxt "#40028"
-msgid "Every Week"
+msgid "Update and restart"
 msgstr ""
 
 
 msgctxt "#40029"
 msgid "Current version"
+msgstr "Versione corrente"
+
+
+msgctxt "#40028"
+msgid "Update Available!"
 msgstr ""
 
 
@@ -593,32 +574,32 @@ msgstr ""
 
 msgctxt "#40100"
 msgid "Applications"
-msgstr ""
+msgstr "I Programmi"
 
 
 msgctxt "#40101"
 msgid "Add Application"
-msgstr ""
+msgstr "Aggiungi Applicazione"
 
 
 msgctxt "#40102"
 msgid "Remove Application"
-msgstr ""
+msgstr "Rimuovi Applicazione"
 
 
 msgctxt "#40103"
 msgid "Browse for Application"
-msgstr ""
+msgstr "Sfoglia Applicazioni"
 
 
 msgctxt "#40104"
 msgid "RSS"
-msgstr ""
+msgstr "RSS"
 
 
 msgctxt "#40105"
 msgid "Energy Saver"
-msgstr ""
+msgstr "Risparmio Energia"
 
 
 msgctxt "#40106"
@@ -630,54 +611,54 @@ msgstr ""
 
 msgctxt "#40150"
 msgid "Now Playing"
-msgstr ""
+msgstr "In Riproduzione"
 
 
 #empty strings from id 40151 to 40199
 
 msgctxt "#40200"
 msgid "Unsupported path"
-msgstr ""
+msgstr "Percorso non supportato"
 
 
 msgctxt "#40201"
 msgid "Plex Media Server paths can't be added to multipath"
-msgstr ""
+msgstr "I percorsi del Plex Media Server non possono essere aggiunti al multipath"
 
 
 msgctxt "#40202"
 msgid "sources."
-msgstr ""
+msgstr "sorgenti."
 
 
 msgctxt "#40203"
 msgid "Plex Media Server"
-msgstr ""
+msgstr "Plex Media Server"
 
 
 msgctxt "#40204"
 msgid "Waiting for response..."
-msgstr ""
+msgstr "In attesa di risposta..."
 
 
 msgctxt "#40205"
 msgid "Rate..."
-msgstr ""
+msgstr "Valuta..."
 
 
 msgctxt "#40206"
 msgid "Change Rating..."
-msgstr ""
+msgstr "Cambia Valutazione..."
 
 
 msgctxt "#40207"
 msgid "Set Rating"
-msgstr ""
+msgstr "Imposta Valutazione"
 
 
 msgctxt "#40208"
 msgid "Change Rating"
-msgstr ""
+msgstr "Cambia Valutazione"
 
 
 #empty string with id 40209
@@ -689,264 +670,264 @@ msgstr "Media server"
 
 msgctxt "#40211"
 msgid "Manually specify server"
-msgstr ""
+msgstr "Specifica manualmente il server"
 
 
 msgctxt "#40212"
 msgid "Address"
-msgstr ""
+msgstr "Indirizzo"
 
 
 msgctxt "#40213"
 msgid "Force transcoding on local network"
-msgstr ""
+msgstr "Forza la ricodifica sulla rete locale"
 
 
 msgctxt "#40214"
 msgid "Quality"
-msgstr ""
+msgstr "Qualità"
 
 
 #empty strings from id 40215 to 40299
 
 msgctxt "#40300"
 msgid "Set Quit Timer"
-msgstr ""
+msgstr "Imposta il Timer di Uscita"
 
 
 msgctxt "#40301"
 msgid "Set Sleep Timer"
-msgstr ""
+msgstr "Imposta il Timer di Sospensione"
 
 
 msgctxt "#40302"
 msgid "Set Shut Down Timer"
-msgstr ""
+msgstr "Imposta il Timer di Arresto"
 
 
 #empty strings from id 40303 to 40304
 
 msgctxt "#40305"
 msgid "Change Quit Timer"
-msgstr ""
+msgstr "Cambia il Timer di Uscita"
 
 
 msgctxt "#40306"
 msgid "Change Sleep Timer"
-msgstr ""
+msgstr "Cambia il Timer di Sospensione"
 
 
 msgctxt "#40307"
 msgid "Change Shut Down Timer"
-msgstr ""
+msgstr "Cambia il Timer di Arresto"
 
 
 msgctxt "#40308"
 msgid "Change Sleep Display Timer"
-msgstr ""
+msgstr "Cambia il Timer di Sospensione dello Schermo"
 
 
 #empty string with id 40309
 
 msgctxt "#40310"
 msgid "Plex/HT will quit at"
-msgstr ""
+msgstr "Plex/HT uscirà a"
 
 
 msgctxt "#40311"
 msgid "The system will sleep at"
-msgstr ""
+msgstr "Il sistema si sospenderà a"
 
 
 msgctxt "#40312"
 msgid "The system will shut down at"
-msgstr ""
+msgstr "Il sistema si arresterà a"
 
 
 msgctxt "#40313"
 msgid "The system will sleep the display at"
-msgstr ""
+msgstr "Il sistema sospenderà lo schermo a"
 
 
 #empty string with id 40314
 
 msgctxt "#40315"
 msgid "You have already set a quit timer."
-msgstr ""
+msgstr "Hai già impostato un timer d'uscita."
 
 
 msgctxt "#40316"
 msgid "You have already set a sleep timer."
-msgstr ""
+msgstr "Hai già impostato un timer di sospensione."
 
 
 msgctxt "#40317"
 msgid "You have already set a shut down timer."
-msgstr ""
+msgstr "Hai già impostato un timer d'arresto."
 
 
 msgctxt "#40318"
 msgid "You have already set a sleep display timer."
-msgstr ""
+msgstr "Hai già impostato un timer di sospensione dello schermo."
 
 
 #empty string with id 40319
 
 msgctxt "#40320"
 msgid "Would you like to set a quit timer instead?"
-msgstr ""
+msgstr "Vorresti un impostare un timer di uscita al posto?"
 
 
 msgctxt "#40321"
 msgid "Would you like to set a sleep timer instead?"
-msgstr ""
+msgstr "Vorresti un impostare un timer di sospensione al posto?"
 
 
 msgctxt "#40322"
 msgid "Would you like to set a shut down timer instead?"
-msgstr ""
+msgstr "Vorresti un impostare un timer di arresto al posto?"
 
 
 msgctxt "#40323"
 msgid "Set Sleep Display Timer"
-msgstr ""
+msgstr "Imposta il Timer di Sospensione dello Schermo"
 
 
 #empty string with id 40324
 
 msgctxt "#40325"
 msgid "Timer already set"
-msgstr ""
+msgstr "Timer già impostato"
 
 
 #empty strings from id 40326 to 41999
 
 msgctxt "#42000"
 msgid "Could not read from input stream"
-msgstr ""
+msgstr "Non posso leggere dal flusso in ingresso"
 
 
 msgctxt "#42001"
 msgid "Could not determine input format"
-msgstr ""
+msgstr "Non riesco a determinare il formato in ingresso"
 
 
 msgctxt "#42002"
 msgid "Could not read file header"
-msgstr ""
+msgstr "Non riesco a leggere l'header del file"
 
 
 msgctxt "#42003"
 msgid "Unknown format"
-msgstr ""
+msgstr "Formato sconosciuto"
 
 
 msgctxt "#42004"
 msgid "Could not read data from file"
-msgstr ""
+msgstr "Non posso leggere dati dal file"
 
 
 msgctxt "#42005"
 msgid "Not enough memory to open file"
-msgstr ""
+msgstr "Non abbastanza memoria per aprire il file"
 
 
 msgctxt "#42006"
 msgid "File was not found"
-msgstr ""
+msgstr "File non trovato"
 
 
 msgctxt "#42007"
 msgid "Unsupported network protocol"
-msgstr ""
+msgstr "Protocollo di rete non supportato"
 
 
 msgctxt "#42008"
 msgid "Error while opening file"
-msgstr ""
+msgstr "Errore nell'aprire il file"
 
 
 #empty strings from id 42009 to 42998
 
 msgctxt "#42999"
 msgid "Direct Play"
-msgstr ""
+msgstr "Riproduci Direttamente"
 
 
 #. 3
 msgctxt "#43000"
 msgid "320 kbps"
-msgstr ""
+msgstr "320 kbps"
 
 
 msgctxt "#43001"
 msgid "720 kbps"
-msgstr ""
+msgstr "720 kbps"
 
 
 msgctxt "#43002"
 msgid "1.5 Mbps"
-msgstr ""
+msgstr "1.5 Mbps"
 
 
 msgctxt "#43003"
 msgid "2 Mbps"
-msgstr ""
+msgstr "2 Mbps"
 
 
 msgctxt "#43004"
 msgid "3 Mbps"
-msgstr ""
+msgstr "3 Mbps"
 
 
 msgctxt "#43005"
 msgid "4 Mbps"
-msgstr ""
+msgstr "4 Mbps"
 
 
 msgctxt "#43006"
 msgid "8 Mbps"
-msgstr ""
+msgstr "8 Mbps"
 
 
 msgctxt "#43007"
 msgid "10 Mbps"
-msgstr ""
+msgstr "10 Mbps"
 
 
 msgctxt "#43008"
 msgid "12 Mbps"
-msgstr ""
+msgstr "12 Mbps"
 
 
 msgctxt "#43009"
 msgid "20 Mbps"
-msgstr ""
+msgstr "20 Mbps"
 
 
 msgctxt "#44000"
 msgid "Email"
-msgstr ""
+msgstr "Indirizzo email"
 
 
 msgctxt "#44001"
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 
 msgctxt "#44002"
-msgid "Sign in with PIN code"
+msgid "Use PIN"
 msgstr ""
 
 
 msgctxt "#44003"
 msgid "Sign out"
-msgstr ""
+msgstr "Disconnettiti"
 
 
 msgctxt "#44004"
 msgid "Sign in"
-msgstr ""
+msgstr "Accedi"
 
 
 msgctxt "#44010"
@@ -966,47 +947,57 @@ msgstr ""
 
 msgctxt "#44013"
 msgid "Manually enter username and password to sign in"
-msgstr ""
+msgstr "Inserisci manualmente il nome utente e password per accedere"
 
 
 msgctxt "#44020"
 msgid "Shared Content"
-msgstr ""
+msgstr "Contenuto Condiviso"
 
 
 msgctxt "#44021"
 msgid "Queue"
+msgstr "Coda"
+
+
+msgctxt "#44022"
+msgid "Recommended"
 msgstr ""
 
 
 msgctxt "#44030"
 msgid "FILTERS"
-msgstr ""
+msgstr "FILTRI"
 
 
 msgctxt "#44031"
 msgid "SORTING"
+msgstr "ORDINAMENTO"
+
+
+msgctxt "#44032"
+msgid "Clear Filters"
 msgstr ""
 
 
 msgctxt "#44100"
 msgid "Sign in to myPlex"
-msgstr ""
+msgstr "Accedi a myPlex"
 
 
 msgctxt "#44101"
 msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr ""
+msgstr "Dal tuo computer accedi a http://my.plexapp.com/pin"
 
 
 msgctxt "#44102"
 msgid "retrieving code..."
-msgstr ""
+msgstr "recuperando il codice..."
 
 
 msgctxt "#44103"
 msgid "and enter this code:"
-msgstr ""
+msgstr "e inserisci questo codice:"
 
 
 msgctxt "#44104"
@@ -1014,28 +1005,38 @@ msgid "Hooray we are signed in!"
 msgstr ""
 
 
+msgctxt "#44105"
+msgid "Signed in to myPlex"
+msgstr ""
+
+
 msgctxt "#44200"
 msgid "PlexPass Required"
-msgstr ""
+msgstr "PlexPass Richiesto"
 
 
 msgctxt "#44201"
 msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr ""
+msgstr "Per questa release in anteprima devi essere loggato in myPlex ed avere un PlexPass"
 
 
 msgctxt "#44202"
 msgid "Press OK to be taken to the Settings screen"
-msgstr ""
+msgstr "Premi OK per essere portato alla schermata delle Impostazioni"
 
 
 msgctxt "#44203"
 msgid "PlexPass Required"
-msgstr ""
+msgstr "PlexPass Richiesto"
 
 
 msgctxt "#44204"
 msgid "Press OK Quit"
+msgstr "Premi OK Esci"
+
+
+msgctxt "#44300"
+msgid "Allow control of Plex/HT from Plex Clients"
 msgstr ""
 
 
@@ -1071,3 +1072,88 @@ msgid "This media is geoblocked and can't be accessed from your current location
 msgstr ""
 
 #### end error strings
+
+msgctxt "#52010"
+msgid "Please check that this file exists and the necessary drive is mounted"
+msgstr ""
+
+
+msgctxt "#52011"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr ""
+
+
+msgctxt "#52012"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr ""
+
+
+msgctxt "#52100"
+msgid "Select Audio Track"
+msgstr ""
+
+
+msgctxt "#52101"
+msgid "Select Subtitle"
+msgstr ""
+
+
+msgctxt "#52102"
+msgid "Channels"
+msgstr ""
+
+
+msgctxt "#52201"
+msgid "Local video quality"
+msgstr ""
+
+
+msgctxt "#52202"
+msgid "Remote video quality"
+msgstr ""
+
+
+msgctxt "#52203"
+msgid "Online video quality"
+msgstr ""
+
+
+msgctxt "#52210"
+msgid "Show myPlex queue and recommendations"
+msgstr ""
+
+
+msgctxt "#52300"
+msgid "Media Server went away"
+msgstr ""
+
+
+msgctxt "#52301"
+msgid "The Server you where browsing went away..."
+msgstr ""
+
+
+msgctxt "#52400"
+msgid "No linked social accounts"
+msgstr ""
+
+
+msgctxt "#52401"
+msgid "Go to http://my.plexapp.com to link your account"
+msgstr ""
+
+
+msgctxt "#52402"
+msgid "Enter message"
+msgstr ""
+
+
+msgctxt "#52403"
+msgid "Share %s on %s with message:"
+msgstr ""
+
+
+msgctxt "#52404"
+msgid "Enable network logging"
+msgstr ""
+

@@ -115,7 +115,7 @@ msgstr "Si continua, es posible que no pueda controlar Plex"
 
 msgctxt "#13143"
 msgid "Search remote libraries"
-msgstr "Buscar librerias remotas"
+msgstr "Buscar bibliotecas remotas"
 
 
 #empty strings from id 13144 to 13145
@@ -263,7 +263,7 @@ msgstr "Plex/HT necesita un reinicio para cambiar su"
 
 msgctxt "#15150"
 msgid "Use library artwork backgrounds"
-msgstr ""
+msgstr "Usar imágenes de fondo de la biblioteca"
 
 
 #empty strings from id 15151 to 15204
@@ -385,7 +385,7 @@ msgstr "Video"
 
 msgctxt "#18107"
 msgid "Music"
-msgstr "MÃºsica"
+msgstr "Música"
 
 
 msgctxt "#18108"
@@ -410,7 +410,7 @@ msgstr "Video avanzado"
 
 msgctxt "#18112"
 msgid "Logging"
-msgstr ""
+msgstr "Registro de logs"
 
 
 msgctxt "#18113"
@@ -425,12 +425,12 @@ msgstr "Visualizar dirty regions"
 
 msgctxt "#18115"
 msgid "Dirty regions algorithm"
-msgstr "Algoritm Dirty regions"
+msgstr "Algoritmo dirty regions"
 
 
 msgctxt "#18116"
 msgid "Dirty regions no flip timeout (ms)"
-msgstr ""
+msgstr "Dirty regions no flip timeout (ms)"
 
 
 #empty strings from id 18117 to 18999
@@ -466,17 +466,17 @@ msgstr "Permitir control de Plex por UPnP"
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr "%2.3fs"
+msgstr "%d"
 
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr "Retrasado: %2.3fs"
+msgstr "Retrasado: %d"
 
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr "Adelantado: %2.3fs"
+msgstr "Adelantado: %d"
 
 
 msgctxt "#33075"
@@ -1155,5 +1155,5 @@ msgstr "Compartir %s con %s con el mensaje:"
 
 msgctxt "#52404"
 msgid "Enable network logging"
-msgstr ""
+msgstr "Activar registro de red"
 

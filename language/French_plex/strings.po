@@ -50,7 +50,7 @@ msgstr "A propos de Plex/HT"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
-msgstr "Permettre aux programmes sur ce système de contrôler Plex/HT"
+msgstr "Permettre le contrôle de Plex/HT par des logiciels installés sur cet ordinateur"
 
 
 #empty strings from id 792 to 793
@@ -114,8 +114,8 @@ msgstr "Si vous continuez, vous pourriez ne pas être en mesure de contrôler Pl
 #empty string with id 13142
 
 msgctxt "#13143"
-msgid "Search Remote Libraries"
-msgstr "Rechercher dans les médiathèques distantes"
+msgid "Search remote libraries"
+msgstr "Recherchez des bibliothèques éloignées"
 
 
 #empty strings from id 13144 to 13145
@@ -173,7 +173,7 @@ msgstr "SD"
 
 msgctxt "#13309"
 msgid "instead of just XBMC?"
-msgstr "au lieu de simplement Plex/HT?"
+msgstr "au lieu de Plex/HT seulement ?"
 
 
 #empty strings from id 13310 to 13601
@@ -262,8 +262,8 @@ msgstr "Plex/HT nécessite un redémarrage pour changer votre"
 #empty strings from id 14040 to 15149
 
 msgctxt "#15150"
-msgid "Enable Global Slideshow"
-msgstr "Activer diaporama global"
+msgid "Use library artwork backgrounds"
+msgstr "Utiliser la bibliothèque d'illustrations"
 
 
 #empty strings from id 15151 to 15204
@@ -323,7 +323,7 @@ msgstr "Source de courant (en charge)"
 
 msgctxt "#18004"
 msgid "Battery power"
-msgstr "Puissance de la batterie"
+msgstr "Charge de la batterie"
 
 
 msgctxt "#18005"
@@ -354,13 +354,13 @@ msgstr "Activer avertissement de batterie faible"
 #empty strings from id 18010 to 18100
 
 msgctxt "#18101"
-msgid "Background Music Volume"
-msgstr "Activer la musique de fond"
+msgid "Theme music volume"
+msgstr "Volume du thème musical"
 
 
 msgctxt "#18102"
-msgid "Enable Theme Music"
-msgstr "Activer Theme Music"
+msgid "Enable TV theme music"
+msgstr "Activer les génériques des séries"
 
 
 msgctxt "#18103"
@@ -373,7 +373,67 @@ msgid "Enable Background Music"
 msgstr "Activer la musique de fond"
 
 
-#empty strings from id 18105 to 18999
+msgctxt "#18105"
+msgid "Advanced"
+msgstr "Avancé"
+
+
+msgctxt "#18106"
+msgid "Video"
+msgstr "Vidéo"
+
+
+msgctxt "#18107"
+msgid "Music"
+msgstr "Musique"
+
+
+msgctxt "#18108"
+msgid "Photos"
+msgstr "Photos"
+
+
+msgctxt "#18109"
+msgid "Video render method"
+msgstr "Méthode de rendu vidéo"
+
+
+msgctxt "#18110"
+msgid "HDMI output channels"
+msgstr "Canaux de sortie HDMI"
+
+
+msgctxt "#18111"
+msgid "Advanced video"
+msgstr "Vidéo avancée"
+
+
+msgctxt "#18112"
+msgid "Logging"
+msgstr "Connexion"
+
+
+msgctxt "#18113"
+msgid "Theme music"
+msgstr "Thème musical"
+
+
+msgctxt "#18114"
+msgid "Visualize dirty regions"
+msgstr "Visualisez les régions"
+
+
+msgctxt "#18115"
+msgid "Dirty regions algorithm"
+msgstr "Algorithme des régions"
+
+
+msgctxt "#18116"
+msgid "Dirty regions no flip timeout (ms)"
+msgstr "Les régions modifiées sans réponse (ms)"
+
+
+#empty strings from id 18117 to 18999
 
 
 #empty strings from id 19022 to 20008
@@ -394,21 +454,34 @@ msgstr "Musique jouée récemment"
 
 msgctxt "#20341"
 msgid "this path from the Plex/HT library?"
-msgstr "ce chemin pour Plex/HT bibliothèque ?"
+msgstr "ce chemin pour la bibliothèque de Plex/HT ?"
 
 
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
-msgid "Allow control of Plex/HT via UPnP"
+msgid "Allow control of XBMC via UPnP"
 msgstr "Permettre le contrôle de Plex/HT via UPnP"
 
 
-#empty strings from id 21882 to 33074
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr "%d"
+
+
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr "Retardé de: %d"
+
+
+msgctxt "#22005"
+msgid "Ahead by: %2.3fs"
+msgstr "Avancé de: %d"
+
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
-msgstr "La révision %s ou plus de Plex/HT est nécessaire pour fonctionner."
+msgstr "La version %s ou plus de Plex/HT est nécessaire pour fonctionner."
 
 
 msgctxt "#33076"
@@ -438,153 +511,63 @@ msgstr "Cette version de l'interface libcec (%d) est plus récente que celle com
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
-msgid "Software Update"
-msgstr "Mise à jour "
+msgid "Software update"
+msgstr "Mise à jour logicielle"
 
 
 msgctxt "#40001"
-msgid "New Version Available"
-msgstr "Nouvelle version disponible"
+msgid "Checking for available updates..."
+msgstr "Vérification des mises à jour disponibles ..."
 
 
 msgctxt "#40002"
-msgid "Install with Software Update"
-msgstr "Installer avec mise à jour logiciel"
+msgid "Update channel"
+msgstr "Mise à jour "
 
 
 msgctxt "#40003"
-msgid "A new version of Plex/HT is available."
-msgstr "Une nouvelle version de Plex/HT est disponible."
+msgid "Stable"
+msgstr "Stable"
 
 
 msgctxt "#40004"
-msgid "Version: %@  (you have %@)"
-msgstr "Version: %@ (vous avez %@)"
+msgid "PlexPass"
+msgstr "PlexPass"
 
 
 msgctxt "#40005"
-msgid "Would you like to download and install it now?"
-msgstr "Voulez-vous la télécharger et l'installer maintenant?"
+msgid "Ninja"
+msgstr "Ninja"
 
 
 msgctxt "#40006"
-msgid "You currently have the latest version of Plex/HT (%@)"
-msgstr "Vous avez actuellement la dernière version de Plex/HT (%@)"
-
-
-msgctxt "#40007"
-msgid "Downloading Plex/HT update"
-msgstr "Téléchargement de la mise à jour de Plex/HT"
-
-
-msgctxt "#40008"
-msgid "%@ of %@"
-msgstr "%@ de %@"
-
-
-msgctxt "#40009"
-msgid "%@ downloaded"
-msgstr "%@ téléchargé(s)"
-
-
-msgctxt "#40010"
-msgid "Extracting Plex/HT update"
-msgstr "Extraction de la mise à jour de Plex/HT"
-
-
-msgctxt "#40011"
-msgid "Installing Plex/HT update"
-msgstr "Installation de la mise à jour de Plex/HT"
-
-
-msgctxt "#40012"
-msgid "Update Failed"
-msgstr "Échec de la mise à jour"
-
-
-msgctxt "#40013"
-msgid "An error has occurred."
-msgstr "Une erreur s'est produite."
-
-
-msgctxt "#40014"
-msgid "Please check the console for more details."
-msgstr "Veuillez vérifier la console pour plus de détails."
-
-
-msgctxt "#40015"
-msgid "Checking for updates"
-msgstr "Vérification de la disponibilité de mises à jour"
+msgid "I am Special!"
+msgstr "Je suis spécial!"
 
 
 msgctxt "#40016"
-msgid "Check For Update Now..."
-msgstr "Vérification de mise à jour en cours ..."
+msgid "Check for update now..."
+msgstr "Vérifiez les mises à jour maintenant ..."
 
 
 msgctxt "#40017"
-msgid "Automatically Check For Updates"
-msgstr "Recherche automatique des mises à jour"
+msgid "Automatically check for updates"
+msgstr "Vérifier automatiquement les mises à jour"
 
 
 msgctxt "#40018"
-msgid "Update"
-msgstr "Mise à jour"
-
-
-msgctxt "#40019"
-msgid "- If Updates Are Available"
-msgstr "- Si une mise à jour est disponible"
-
-
-msgctxt "#40020"
-msgid "Ahow a Notification"
-msgstr "Afficher une notification"
-
-
-msgctxt "#40021"
-msgid "Ask to Install"
-msgstr "Demandez à installer"
-
-
-msgctxt "#40022"
-msgid "Check for Updates Automatically?"
-msgstr "Vérifier automatiquement les mises à jour ?"
-
-
-msgctxt "#40023"
-msgid "Would you like Plex/HT to alert you when updates"
-msgstr "Voulez-vous que Plex/HT vous avertisse lorsqu'une mise à jour"
-
-
-msgctxt "#40024"
-msgid "are available?"
-msgstr "est disponible ?"
-
-
-msgctxt "#40025"
-msgid "- Check For Updates"
-msgstr "- Recherche des mises à jour"
-
-
-msgctxt "#40026"
-msgid "Every Hour"
-msgstr "Toutes les heures"
-
-
-msgctxt "#40027"
-msgid "Every Day"
-msgstr "Tous les jours"
-
-
-msgctxt "#40028"
-msgid "Every Week"
-msgstr "Toutes les semaines"
+msgid "Update and restart"
+msgstr "Mettre à jour et redémarrer"
 
 
 msgctxt "#40029"
 msgid "Current version"
 msgstr "Version actuelle"
+
+
+msgctxt "#40028"
+msgid "Update Available!"
+msgstr "Mise à jour disponible!"
 
 
 #empty strings from id 40029 to 40099
@@ -606,7 +589,7 @@ msgstr "Supprimer l'application"
 
 msgctxt "#40103"
 msgid "Browse for Application"
-msgstr "Rechercher des applications"
+msgstr "Rechercher une Application"
 
 
 msgctxt "#40104"
@@ -660,7 +643,7 @@ msgstr "Attente de la réponse ..."
 
 msgctxt "#40205"
 msgid "Rate..."
-msgstr "Note..."
+msgstr "Evaluations ..."
 
 
 msgctxt "#40206"
@@ -741,7 +724,7 @@ msgstr "Modifier le minuteur d'extinction de l'ordinateur "
 
 msgctxt "#40308"
 msgid "Change Sleep Display Timer"
-msgstr "Changer le minuteur de veille d'écran"
+msgstr "Changer le minuteur d'écran de veille"
 
 
 #empty string with id 40309
@@ -924,7 +907,7 @@ msgstr "20 Mbps"
 
 msgctxt "#44000"
 msgid "Email"
-msgstr "Email"
+msgstr "Courriel"
 
 
 msgctxt "#44001"
@@ -933,8 +916,8 @@ msgstr "Mot de passe"
 
 
 msgctxt "#44002"
-msgid "Sign in with PIN code"
-msgstr "Se connecter avec un code PIN"
+msgid "Use PIN"
+msgstr "Entrer votre code PIN"
 
 
 msgctxt "#44003"
@@ -964,7 +947,7 @@ msgstr "Erreur de connexion"
 
 msgctxt "#44013"
 msgid "Manually enter username and password to sign in"
-msgstr "Entrez manuellement le nom d'utilisateur et le mot de passe pour se connecter"
+msgstr "Entrez votre nom d'utilisateur et votre mot de passe pour vous connecter"
 
 
 msgctxt "#44020"
@@ -977,6 +960,11 @@ msgid "Queue"
 msgstr "File d'attente"
 
 
+msgctxt "#44022"
+msgid "Recommended"
+msgstr "Recommandations"
+
+
 msgctxt "#44030"
 msgid "FILTERS"
 msgstr "FILTRES"
@@ -984,7 +972,12 @@ msgstr "FILTRES"
 
 msgctxt "#44031"
 msgid "SORTING"
-msgstr "TRI"
+msgstr "TRI EN COURS"
+
+
+msgctxt "#44032"
+msgid "Clear Filters"
+msgstr "Supprimer les filtres"
 
 
 msgctxt "#44100"
@@ -994,7 +987,7 @@ msgstr "Se connecter à myPlex"
 
 msgctxt "#44101"
 msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "Ouvrez votre navigateur et rendez vous à l'adresse: http://my.plexapp.com/pin"
+msgstr "À partir de votre ordinateur, allez sur http://my.plexapp.com/pin"
 
 
 msgctxt "#44102"
@@ -1009,17 +1002,22 @@ msgstr "et entrez ce code :"
 
 msgctxt "#44104"
 msgid "Hooray we are signed in!"
-msgstr "Bien joué! Vous êtes maintenant connecté."
+msgstr "Félicitation! Vous êtes maintenant connecté."
+
+
+msgctxt "#44105"
+msgid "Signed in to myPlex"
+msgstr "Se connecter à myPlex"
 
 
 msgctxt "#44200"
 msgid "PlexPass Required"
-msgstr "Licence PlexPass nécessaire"
+msgstr "Abonnement PlexPass Nécessaire"
 
 
 msgctxt "#44201"
 msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr "Pour utiliser cette version, vous devez être connecté à myPlex et avoir un PlexPass"
+msgstr "Pour accéder à un aperçu de la version en développement , vous devez être connecté à myPlex et posséder un abonnement PlexPass"
 
 
 msgctxt "#44202"
@@ -1029,12 +1027,17 @@ msgstr "Appuyez sur OK pour aller à l'écran de paramètres"
 
 msgctxt "#44203"
 msgid "PlexPass Required"
-msgstr "Licence PlexPass nécessaire"
+msgstr "Abonnement PlexPass Nécessaire"
 
 
 msgctxt "#44204"
 msgid "Press OK Quit"
 msgstr "Appuyez sur OK pour quitter"
+
+
+msgctxt "#44300"
+msgid "Allow control of Plex/HT from Plex Clients"
+msgstr "Autoriser le contrôle de Plex / HT à partir d'un clients Plex"
 
 
 #### These are error strings shown from channels
@@ -1069,3 +1072,88 @@ msgid "This media is geoblocked and can't be accessed from your current location
 msgstr "Ce contenu est soumis à des restrictions géographiques et n'est pas accessible depuis le pays où vous vous trouvez."
 
 #### end error strings
+
+msgctxt "#52010"
+msgid "Please check that this file exists and the necessary drive is mounted"
+msgstr "Veuillez vérifier que ce fichier existe et que le disque est monté"
+
+
+msgctxt "#52011"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Cinéma n'est pas en mesure de jouer ce contenu audio"
+
+
+msgctxt "#52012"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Cinéma n'est pas en mesure de jouer ce contenu audio"
+
+
+msgctxt "#52100"
+msgid "Select Audio Track"
+msgstr "Séléctionnez la piste audio"
+
+
+msgctxt "#52101"
+msgid "Select Subtitle"
+msgstr "Sélectionner le sous-titre"
+
+
+msgctxt "#52102"
+msgid "Channels"
+msgstr "Plug-ins"
+
+
+msgctxt "#52201"
+msgid "Local video quality"
+msgstr "Qualité de la vidéo en locale"
+
+
+msgctxt "#52202"
+msgid "Remote video quality"
+msgstr "Qualité de la vidéo à distance"
+
+
+msgctxt "#52203"
+msgid "Online video quality"
+msgstr "Qualité de la vidéo en ligne"
+
+
+msgctxt "#52210"
+msgid "Show myPlex queue and recommendations"
+msgstr "Afficher la file d'attente et les recommandations myPlex"
+
+
+msgctxt "#52300"
+msgid "Media Server went away"
+msgstr "Perte du Serveur Multimédia"
+
+
+msgctxt "#52301"
+msgid "The Server you where browsing went away..."
+msgstr "Le serveur que vous utilisiez est perdu..."
+
+
+msgctxt "#52400"
+msgid "No linked social accounts"
+msgstr "Pas de comptes sociaux liés"
+
+
+msgctxt "#52401"
+msgid "Go to http://my.plexapp.com to link your account"
+msgstr "Aller sur http://my.plexapp.com pour lier votre compte"
+
+
+msgctxt "#52402"
+msgid "Enter message"
+msgstr "Entrez un message"
+
+
+msgctxt "#52403"
+msgid "Share %s on %s with message:"
+msgstr "Partagez %s sur %s avec le message:"
+
+
+msgctxt "#52404"
+msgid "Enable network logging"
+msgstr "Activer la journalisation du réseau"
+
