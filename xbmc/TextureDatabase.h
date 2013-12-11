@@ -22,7 +22,8 @@
 
 #include "dbwrappers/Database.h"
 #include "TextureCacheJob.h"
-#include "playlists/SmartPlayList.h"
+#include "dbwrappers/DatabaseQuery.h"
+#include "utils/DatabaseUtils.h"
 
 class CVariant;
 

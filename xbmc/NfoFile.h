@@ -29,7 +29,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "addons/Scraper.h"
 #include "utils/CharsetConverter.h"
-#include "utils/XMLUtils.h"
 #include "utils/StdString.h"
 
 class CNfoFile
