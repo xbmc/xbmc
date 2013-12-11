@@ -35,6 +35,7 @@
 #include "PowerManager.h"
 #include "Cursor.h"
 #include "ConnectivityManager.h"
+#include "AudioFormat.h"
 #include "AudioManager.h"
 #include "Surface.h"
 #include "MediaCodec.h"
@@ -76,6 +77,7 @@ void CJNIContext::PopulateStaticFields()
   CJNICursor::PopulateStaticFields();
   CJNIContentResolver::PopulateStaticFields();
   CJNIConnectivityManager::PopulateStaticFields();
+  CJNIAudioFormat::PopulateStaticFields();
   CJNIAudioManager::PopulateStaticFields();
   CJNISurface::PopulateStaticFields();
   CJNIMediaCodec::PopulateStaticFields();
