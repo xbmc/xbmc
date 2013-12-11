@@ -26,6 +26,7 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/JobManager.h"
+#include "utils/Observer.h"
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -83,7 +84,7 @@ namespace PVR
 
   typedef boost::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
-  class CPVRManager : public ISettingCallback, private CThread
+  class CPVRManager : public ISettingCallback, private CThread, public Observable
   {
     friend class CPVRClients;
 
