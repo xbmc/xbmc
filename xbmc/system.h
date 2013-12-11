@@ -34,7 +34,6 @@
 #include "DSound.h"
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
 #define LPDIRECTSOUND8 LPDIRECTSOUND
-#undef GetFreeSpace
 #include "PlatformInclude.h"
 #ifdef HAS_DX
 #include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
@@ -45,6 +44,33 @@
 #ifdef HAS_SDL
 #include "SDL\SDL.h"
 #endif
+
+// undef some Win32 defines
+#ifdef GetFreeSpace
+#undef GetFreeSpace
+#endif
+#ifdef DeleteFile
+#undef DeleteFile
+#endif
+#ifdef CreateDirectory
+#undef CreateDirectory
+#endif
+#ifdef RemoveDirectory
+#undef RemoveDirectory
+#endif
+#ifdef GetDateFormat
+#undef GetDateFormat
+#endif
+#ifdef GetTimeFormat
+#undef GetTimeFormat
+#endif
+#ifdef SetPort
+#undef SetPort
+#endif
+#ifdef LoadImage
+#undef LoadImage
+#endif
+
 #endif
 
 #if defined(TARGET_POSIX)

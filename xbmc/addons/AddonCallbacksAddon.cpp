@@ -33,6 +33,17 @@
 #include "utils/StringUtils.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
 
+// undef some Win32 defines
+#ifdef DeleteFile
+#undef DeleteFile
+#endif
+#ifdef CreateDirectory
+#undef CreateDirectory
+#endif
+#ifdef RemoveDirectory
+#undef RemoveDirectory
+#endif
+
 using namespace XFILE;
 
 namespace ADDON

@@ -21,6 +21,17 @@
 
 #include "AddonCallbacks.h"
 
+// undef some Win32 defines
+#ifdef DeleteFile
+#undef DeleteFile
+#endif
+#ifdef CreateDirectory
+#undef CreateDirectory
+#endif
+#ifdef RemoveDirectory
+#undef RemoveDirectory
+#endif
+
 namespace ADDON
 {
 
