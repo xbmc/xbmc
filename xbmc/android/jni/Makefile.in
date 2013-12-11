@@ -4,6 +4,7 @@ SRCS      += Context.cpp
 SRCS      += BroadcastReceiver.cpp
 SRCS      += Intent.cpp
 SRCS      += PackageManager.cpp
+SRCS      += AudioFormat.cpp
 SRCS      += AudioManager.cpp
 SRCS      += PowerManager.cpp
 SRCS      += WakeLock.cpp
