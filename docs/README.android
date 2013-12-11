@@ -13,8 +13,9 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-We currently recommend Ubuntu Natty (11.04) or later. Current work has been
-done here. Additionally, building from OSX Snow Leopard is working.
+We currently recommend Ubuntu "Precise Pangolin" (12.04) 64Bit. This is what our continuous 
+integration system "jenkins" is using.
+Additionally, building from OSX Snow Leopard is working.
 
 NOTE TO NEW USERS: All lines that are prefixed with the '#'
 character are commands that need to be typed into a terminal window /
@@ -33,6 +34,12 @@ users will need to get the equivalents.
 If you run a 64bit operating system you will also need to get ia32-libs
 
    # sudo apt-get install ia32-libs
+   
+The following versions are used on our continuous integration system "jenkins". Other (newer)
+versions might work as well.
+
+JDK: openjdk-6-jdk (java version "1.6.0_27")
+JRE: openjre-6-jre (java version "1.6.0_27")
 
 
 -----------------------------------------------------------------------------
@@ -49,15 +56,28 @@ To get the Android SDK, go to http://developer.android.com/sdk and
 download the latest version for your operating system. The NDK
 can be downloaded from http://developer.android.com/tools/sdk/ndk/ 
 
-[NOTICE] Compiling XBMC for Android requires at least Android NDK
-         Revision r8e. Android NDK Revision 7 and earlier do not work
-         properly for our cause.
+[NOTICE] Compiling XBMC for Android requires Android NDK
+         Revision r9. For the SDK just use the latest available. 
+         It will work.
 
 After downloading the SDK and NDK extract the files contained in the
-archives to your harddisk.
+archives to your harddisk. For our example we are extracting in the following
+directories (this matches the example from tools/depends/README aswell):
+
+NDK (referenced as <android-ndk> from now on):
+/opt/android-ndk-r9
+
+TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
+/opt/arm-linux-androideabi-4.8-vanilla/android-14
+
+TOOLCHAIN (x86) (referenced as <android-toolchain-x86> from now on):
+/opt/x86-linux-4.8-vanilla/android-14
+
+SDK (referenced as <android-sdk> from now on):
+/opt/android-sdk-linux
 
 Make sure you have a recent JRE and JDK installed otherwise the
-Android SDK will not work.
+Android SDK will not work. (see point 2.)
 
 --------------------------------------------------------------------
 3.2. Installing Android SDK packages
@@ -78,18 +98,30 @@ Android platform you first need to setup an Android toolchain using
 the Android NDK which you earlier extracted to <android-ndk>. The
 following commands will create a toolchain suitable for the most
 common scenario.
-The --install-dir option (and therefore the <android-toolchain> value)
-specifies where the resulting toolchain should be installed (your choice).
+The --install-dir option (and therefore the <android-toolchain-arm>/<android-toolchain-x86> value)
+specifies where the resulting toolchain should be installed (your choice). 
+
+[NOTICE] XBMC uses the android API Version 14 and gcc version 4.8!
+
+Building for arm architecture:
 
    # cd <android-ndk>
    # ls platforms
    # cd build/tools
    # ./make-standalone-toolchain.sh --ndk-dir=../../ \
-     --install-dir=<android-toolchain>/android-14 --platform=android-14 \
-     --toolchain=arm-linux-androideabi-4.7
+     --install-dir=<android-toolchain-arm>/android-14 --platform=android-14 \
+     --toolchain=arm-linux-androideabi-4.8
+     
+Building for x86 architecture:
 
-Make sure to pick a toolchain for your desired architecture. Currently only
-gcc 4.7 and gcc 4.8 toolchains are supported, anything else will likely fail to build.
+   # cd <android-ndk>
+   # ls platforms
+   # cd build/tools
+   # ./make-standalone-toolchain.sh --ndk-dir=../../ \
+     --install-dir=<android-toolchain-x86>/android-14 --platform=android-14 \
+     --toolchain=x86-4.8 --arch=x86 --system=linux-x86_64
+
+Make sure to pick a toolchain for your desired architecture.
 
 --------------------------------------------------------------------
 3.4. Create a (new) debug key to sign debug APKs
@@ -141,7 +173,9 @@ on with the Android toolchain and creating an Android Application Package
    give it a 'make -j20' or so.
 
    Verify that all deps built correctly (it will tell you so) before
-   continuing. You will get crazy build errors otherwise.
+   continuing. You will get crazy build errors otherwise. If in doubt
+   run another 'make' (single threaded) until the message 
+   "Dependencies built successfully." appears.
 
 --------------------------------------------------------------------
 5.2. Building XBMC
@@ -214,7 +248,7 @@ and the <device-id> may not be needed when using the Android emulator)
 
 GDB can be used to debug, though the support is rather primitive. Rather than
 using gdb directly, you will need to use ndk-gdb which wraps it. Do NOT trust
-the -p/--project switches, as of ndk7b they do not work. Instead you will need
+the -p/--project switches, as they do not work. Instead you will need
 to cd to tools/android/packaging/xbmc and execute it from there.
 
   # ndk-gdb --start --delay=0
@@ -267,8 +301,7 @@ instead we build as usual then package ourselves. It may be beneficial to use
 ndk-build to do the actual packaging, but for now its behavior is emulated.
 
 ABI:
-Presently we are targeting armv7a+neon for arm, and i686 for x86. Note that x86
-builds successfully but has not been tested.
+Presently we are targeting armv7a+neon for arm, and i686 for x86.
 
 --------------------------------------------------------------------
 9. Useful Commands
@@ -292,3 +325,4 @@ is 'tools/android/packaging' and that the proper sdk/ndk paths are set.
 -Enable CheckJNI (BEFORE starting the application)
   # adb shell setprop debug.checkjni 1
   
+

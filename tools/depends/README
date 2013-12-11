@@ -12,11 +12,17 @@ IOS:
   ./configure --host=arm-apple-darwin # (defaults chosen)
   ./configure --host=arm-apple-darwin --with-sdk=4.3 --prefix=home/foo/xbmc-deps
 
-Android:
-  ./configure --with-toolchain=/opt/toolchains/android-ndk-r7-crystax-5.beta3-toolchain-14 --prefix=/opt/xbmc-deps --host=arm-linux-androideabi --with-sdk-path=/opt/android-sdk --with-ndk=/opt/android-ndk-r7-crystax-5.beta3 --with-sdk=android-14 --with-tarballs=/tmp/xbmc-android
+Android (the pathes are examples and have to match those of docs/READM.android):
+  arm:
+    ./configure --with-tarballs=/opt/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=/opt/android-sdk-linux --with-ndk=/opt/android-ndk-r9 --with-toolchain=/opt/arm-linux-androideabi-4.8-vanilla/android-14 --prefix=/opt/xbmc-depends
+  x86:
+    ./configure --with-tarballs=/opt/xbmc-tarballs --host=i686-linux-android --with-sdk-path=/opt/android-sdk-linux --with-ndk=/opt/android-ndk-r9 --with-toolchain=/opt/x86-linux-4.8-vanilla/android-14 --prefix=/opt/xbmc-depends
+
+  
 
 Linux:
   ARM toolchain (codesourcery/lenaro/etc)
     ./configure --with-toolchain=/opt/toolchains/my-example-toolchain/  --prefix=/opt/xbmc-deps --host=arm-linux-gnueabi
   Native toolchain
     ./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu
+
