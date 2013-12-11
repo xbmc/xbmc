@@ -50,7 +50,13 @@ namespace PVR
     CPVRChannelPtr channel;
     unsigned int   iChannelNumber;
   } PVRChannelGroupMember;
-
+  
+  enum EpgDateType
+  {
+    EPG_FIRST_DATE = 0,
+    EPG_LAST_DATE = 1
+  };
+  
   class CPVRChannelGroup;
   typedef boost::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
@@ -365,6 +371,18 @@ namespace PVR
      * @return The amount of entries that were added.
      */
     int GetEPGNext(CFileItemList &results);
+    
+    /*!
+     * @brief Get the start time of the first entry.
+     * @return The start time.
+     */
+    CDateTime GetFirstEPGDate(void) const;
+    
+    /*!
+     * @brief Get the end time of the last entry.
+     * @return The end time.
+     */
+    CDateTime GetLastEPGDate(void) const;
 
     bool UpdateChannel(const CFileItem &channel, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const CStdString &strChannelName, const CStdString &strIconPath, const CStdString &strStreamURL);
 
@@ -495,6 +513,10 @@ namespace PVR
     bool             m_bPreventSortAndRenumber;     /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
     std::vector<PVRChannelGroupMember> m_members;
     CCriticalSection m_critSection;
+    
+  private:
+    CDateTime GetEPGDate(EpgDateType epgDateType) const;
+    
   };
 
   class CPVRPersistGroupJob : public CJob

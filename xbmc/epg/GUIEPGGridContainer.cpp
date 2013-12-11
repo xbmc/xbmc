@@ -1008,6 +1008,7 @@ void CGUIEPGGridContainer::UpdateItems()
     SetBlock(GetBlock(m_item->item, m_channelCursor));
 
   SetInvalid();
+  GoToNow();
 }
 
 void CGUIEPGGridContainer::ChannelScroll(int amount)
@@ -1479,18 +1480,18 @@ int CGUIEPGGridContainer::GetSelectedItem() const
       m_epgItemsPtr.empty() ||
       m_channelCursor + m_channelOffset >= m_channels ||
       m_blockCursor + m_blockOffset >= m_blocks)
-    return 0;
+    return -1;
 
   CGUIListItemPtr currentItem = m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item;
   if (!currentItem)
-    return 0;
+    return -1;
 
   for (int i = 0; i < (int)m_programmeItems.size(); i++)
   {
     if (currentItem == m_programmeItems[i])
       return i;
   }
-  return 0;
+  return -1;
 }
 
 CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag) const
@@ -1868,6 +1869,13 @@ void CGUIEPGGridContainer::GoToEnd()
 
   ScrollToBlockOffset(blockOffset); // scroll to the start point of the last epg element
   SetBlock(m_blocksPerPage - 1);    // select the last epg element
+}
+
+void CGUIEPGGridContainer::GoToNow()
+{
+  CDateTime currentDate = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+  int offset = ((currentDate - m_gridStart).GetSecondsTotal() / 60 - 30) / MINSPERBLOCK;
+  ScrollToBlockOffset(offset);
 }
 
 void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)

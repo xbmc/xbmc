@@ -1118,6 +1118,50 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results)
   return results.Size() - iInitialSize;
 }
 
+CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
+{
+  CDateTime date;
+  CSingleLock lock(m_critSection);
+  
+  for (std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); it != m_members.end(); it++)
+  {
+    if (it->channel && !it->channel->IsHidden())
+    {
+      CEpg* epg = it->channel->GetEPG();
+      if (epg)
+      {
+        CDateTime epgDate;
+        switch (epgDateType)
+        {
+          case EPG_FIRST_DATE:
+            epgDate = epg->GetFirstDate();
+            if (epgDate.IsValid() && (date.IsValid() || epgDate < date))
+              date = epgDate;
+            break;
+            
+          case EPG_LAST_DATE:
+            epgDate = epg->GetLastDate();
+            if (epgDate.IsValid() && (date.IsValid() || epgDate > date))
+              date = epgDate;
+            break;
+        }
+      }
+    }
+  }
+  
+  return date;
+}
+
+CDateTime CPVRChannelGroup::GetFirstEPGDate(void) const
+{
+  return GetEPGDate(EPG_FIRST_DATE);
+}
+
+CDateTime CPVRChannelGroup::GetLastEPGDate(void) const
+{
+  return GetEPGDate(EPG_LAST_DATE);
+}
+
 int CPVRChannelGroup::Size(void) const
 {
   return m_members.size();

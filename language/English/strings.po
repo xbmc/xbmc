@@ -7471,7 +7471,9 @@ msgctxt "#19069"
 msgid "EPG"
 msgstr ""
 
-#empty string with id 19070
+msgctxt "#19070"
+msgid "Go to now"
+msgstr ""
 
 msgctxt "#19071"
 msgid "EPG update interval"
