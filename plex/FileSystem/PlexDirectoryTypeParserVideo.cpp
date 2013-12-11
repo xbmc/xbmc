@@ -15,7 +15,6 @@
 #include "utils/StringUtils.h"
 #include "AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
-#include "Stopwatch.h"
 
 #include <boost/foreach.hpp>
 
@@ -49,11 +48,6 @@ using namespace XFILE;
 void
 CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContainer, TiXmlElement *itemElement)
 {
-  CStopWatch timer;
-  timer.StartZero();
-  
-  
-  
   /* Element recevied here is the <Video> tag */
   CVideoInfoTag videoTag;
   EPlexDirectoryType dirType = item.GetPlexDirectoryType();
@@ -87,7 +81,7 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
     videoTag.m_strShowTitle = item.GetProperty("grandparentTitle").asString();
   
   item.SetArt(PLEX_ART_POSTER, item.GetArt(PLEX_ART_THUMB));
-  
+
   if (dirType == PLEX_DIR_TYPE_EPISODE)
   {
     videoTag.m_iEpisode = item.GetProperty("index").asInteger();
@@ -141,7 +135,6 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
   
   ParseMediaNodes(item, itemElement);
 
-  
   /* Now we have the Media nodes, we need to "borrow" some properties from it */
   if (item.m_mediaItems.size() > 0)
   {
