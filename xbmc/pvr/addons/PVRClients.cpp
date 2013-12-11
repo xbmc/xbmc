@@ -1068,64 +1068,30 @@ void CPVRClients::LoadCurrentChannelSettings(void)
 
   if (g_application.m_pPlayer->HasPlayer())
   {
-    /* set the default settings first */
+    /* store the current settings so we can compare if anything has changed */
+    CVideoSettings previousSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+
+    /* load the persisted channel settings and set them as current */
     CVideoSettings loadedChannelSettings = CMediaSettings::Get().GetDefaultVideoSettings();
-
-    /* try to load the settings from the database */
     database->GetChannelSettings(*channel, loadedChannelSettings);
+    CMediaSettings::Get().GetCurrentVideoSettings() = loadedChannelSettings;
 
-    CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
-    CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness          = loadedChannelSettings.m_Brightness;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast            = loadedChannelSettings.m_Contrast;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_Gamma               = loadedChannelSettings.m_Gamma;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_Crop                = loadedChannelSettings.m_Crop;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft            = loadedChannelSettings.m_CropLeft;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight           = loadedChannelSettings.m_CropRight;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop             = loadedChannelSettings.m_CropTop;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom          = loadedChannelSettings.m_CropBottom;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio    = loadedChannelSettings.m_CustomPixelRatio;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount    = loadedChannelSettings.m_CustomZoomAmount;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_CustomVerticalShift = loadedChannelSettings.m_CustomVerticalShift;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction      = loadedChannelSettings.m_NoiseReduction;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness           = loadedChannelSettings.m_Sharpness;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod     = loadedChannelSettings.m_InterlaceMethod;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_OutputToAllSpeakers = loadedChannelSettings.m_OutputToAllSpeakers;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay          = loadedChannelSettings.m_AudioDelay;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream         = loadedChannelSettings.m_AudioStream;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn          = loadedChannelSettings.m_SubtitleOn;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay       = loadedChannelSettings.m_SubtitleDelay;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_CustomNonLinStretch = loadedChannelSettings.m_CustomNonLinStretch;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod       = loadedChannelSettings.m_ScalingMethod;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_PostProcess         = loadedChannelSettings.m_PostProcess;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode     = loadedChannelSettings.m_DeinterlaceMode;
-
-    /* only change the view mode if it's different */
-    if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode != loadedChannelSettings.m_ViewMode)
-    {
-      CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = loadedChannelSettings.m_ViewMode;
-
-      g_renderManager.SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
-      CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount = CDisplaySettings::Get().GetZoomAmount();
-      CMediaSettings::Get().GetCurrentVideoSettings().m_CustomPixelRatio = CDisplaySettings::Get().GetPixelRatio();
-    }
+    /* update the view mode if it set to custom or differs from the previous mode */
+    if (previousSettings.m_ViewMode != loadedChannelSettings.m_ViewMode || loadedChannelSettings.m_ViewMode == ViewModeCustom)
+      g_renderManager.SetViewMode(loadedChannelSettings.m_ViewMode);
 
     /* only change the subtitle stream, if it's different */
-    if (CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream != loadedChannelSettings.m_SubtitleStream)
-    {
-      CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = loadedChannelSettings.m_SubtitleStream;
-
-      g_application.m_pPlayer->SetSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
-    }
+    if (previousSettings.m_SubtitleStream != loadedChannelSettings.m_SubtitleStream)
+      g_application.m_pPlayer->SetSubtitle(loadedChannelSettings.m_SubtitleStream);
 
     /* only change the audio stream if it's different */
-    if (g_application.m_pPlayer->GetAudioStream() != CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream &&
-        CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream >= 0)
-      g_application.m_pPlayer->SetAudioStream(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream);
+    if (g_application.m_pPlayer->GetAudioStream() != loadedChannelSettings.m_AudioStream && loadedChannelSettings.m_AudioStream >= 0)
+      g_application.m_pPlayer->SetAudioStream(loadedChannelSettings.m_AudioStream);
 
-    g_application.m_pPlayer->SetAVDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
-    g_application.m_pPlayer->SetDynamicRangeCompression((long)(CMediaSettings::Get().GetCurrentVideoSettings().m_VolumeAmplification * 100));
-    g_application.m_pPlayer->SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
-    g_application.m_pPlayer->SetSubTitleDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
+    g_application.m_pPlayer->SetAVDelay(loadedChannelSettings.m_AudioDelay);
+    g_application.m_pPlayer->SetDynamicRangeCompression((long)(loadedChannelSettings.m_VolumeAmplification * 100));
+    g_application.m_pPlayer->SetSubtitleVisible(loadedChannelSettings.m_SubtitleOn);
+    g_application.m_pPlayer->SetSubTitleDelay(loadedChannelSettings.m_SubtitleDelay);
 
     /* settings can be saved on next channel switch */
     m_bIsValidChannelSettings = true;
