@@ -29,7 +29,6 @@
 #include <libhal.h>
 #include <vector>
 
-#define BYTE char
 #include "utils/log.h"
 #include "threads/CriticalSection.h"
 #include "utils/StringUtils.h"
