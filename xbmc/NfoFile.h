@@ -26,7 +26,6 @@
 
 #pragma once
 
-#include "utils/XBMCTinyXML.h"
 #include "addons/Scraper.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StdString.h"

@@ -21,7 +21,6 @@
 #include "AppParamParser.h"
 #include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
-#include "FileItem.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"

@@ -34,12 +34,6 @@
 #define LEGAL_WIN32_COMPAT    1
 #define LEGAL_FATX            2
 
-namespace XFILE
-{
-  class IFileCallback;
-}
-
-class CFileItem;
 class CFileItemList;
 class CURL;
 

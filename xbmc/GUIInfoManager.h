@@ -666,7 +666,6 @@ namespace INFO
 #define COMBINED_VALUES_START        100000
 
 // forward
-class CInfoLabel;
 class CGUIWindow;
 namespace EPG { class CEpgInfoTag; }
 
