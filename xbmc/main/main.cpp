@@ -56,8 +56,7 @@ stacktrace code from http://stackoverflow.com/questions/3151779/how-its-better-t
 
 int main(int argc, char* argv[])
 {
-#ifdef TARGET_RASPBERRY_PI
-    /* Install our signal handler */
+/*#ifdef TARGET_RASPBERRY_PI
     struct sigaction sa;
 
     sa.sa_sigaction = bt_sighandler;
@@ -73,8 +72,8 @@ int main(int argc, char* argv[])
     sigaction(SIGUSR2, &sa, NULL);
     sigaction(SIGQUIT, &sa, NULL);
     sigaction(SIGKILL, &sa, NULL);
-    /* add any other signal here */
 #endif
+*/
 
   // set up some xbmc specific relationships
   XBMC::Context context;

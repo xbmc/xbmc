@@ -42,6 +42,23 @@ CGUIWindowPlexStartupHelper::CGUIWindowPlexStartupHelper() :
 
 bool CGUIWindowPlexStartupHelper::OnMessage(CGUIMessage &message)
 {
+#ifdef TARGET_RASPBERRY_PI
+  g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI);
+  g_guiSettings.SetInt("audiooutput.channels", GetNumberOfHDMIChannels());
+  g_guiSettings.SetBool("audiooutput.ac3passthrough", true);
+  g_guiSettings.SetBool("audiooutput.dtspassthrough", true);
+  if (!g_plexApplication.myPlexManager->IsSignedIn())
+  {
+    std::vector<CStdString> param;
+    param.push_back("gohome");
+    g_windowManager.ActivateWindow(WINDOW_MYPLEX_LOGIN, param, true);
+  }
+  else
+  {
+    g_windowManager.ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+  }
+
+#else
   if (message.GetMessage() == GUI_MSG_CLICKED)
   {
     if (message.GetSenderId() == 121)
@@ -76,6 +93,7 @@ bool CGUIWindowPlexStartupHelper::OnMessage(CGUIMessage &message)
       return true;
     }
   }
+#endif 
   return CGUIWindow::OnMessage(message);
 }
 
@@ -94,7 +112,6 @@ void CGUIWindowPlexStartupHelper::AudioControlSelected(int id)
   hdmi->SetSelected(false);
 
   CStdString outputDevice = "default";
-
   if (id == RADIO_BUTTON_ANALOG)
   {
     analog->SetSelected(true);

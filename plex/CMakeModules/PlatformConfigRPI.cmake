@@ -141,12 +141,12 @@ add_definitions(
     -DHAS_OMXPLAYER
     -DHAVE_CEC_RPI_API
     -DHAVE_LIBCEC
-
     -DPIC 
     -D_REENTRANT 
     -D_LARGEFILE64_SOURCE 
     -D_FILE_OFFSET_BITS=64 
     -DNDEBUG=1 
+    -DDEBUG
 )
 
 #include_directories(
