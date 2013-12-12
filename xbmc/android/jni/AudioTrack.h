@@ -20,22 +20,32 @@
  */
 
 #include "JNIBase.h"
+#include "ByteBuffer.h"
 
-class CJNIAudioManager : public CJNIBase
+namespace jni
 {
-public:
-  CJNIAudioManager(const jni::jhobject &object) : CJNIBase(object) {};
-  ~CJNIAudioManager() {};
 
-  // Note removal of streamType param.
-  int  getStreamMaxVolume();
-  int  getStreamVolume();
-  void setStreamVolume(int index = 0, int flags = 0);
+class CJNIAudioTrack : public CJNIBase
+{
+  jharray m_buffer;
 
-  static void PopulateStaticFields();
-  static int STREAM_MUSIC;
+  public:
+    CJNIAudioTrack(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes, int mode);
 
-private:
-  CJNIAudioManager();
+    void  play();
+    void  stop();
+    void  flush();
+    void  release();
+    int   write(char* audioData, int offsetInBytes, int sizeInBytes);
+    int   getPlayState();
+    int   getPlaybackHeadPosition();
+
+    static int  MODE_STREAM;
+    static int  PLAYSTATE_PLAYING;
+    
+    static void PopulateStaticFields();
+    static int  getMinBufferSize(int sampleRateInHz, int channelConfig, int audioFormat);
+};
+
 };
 

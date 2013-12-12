@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
  *      http://xbmc.org
@@ -19,23 +18,24 @@
  *
  */
 
+#include "AudioFormat.h"
 #include "JNIBase.h"
+#include "jutils/jutils-details.hpp"
 
-class CJNIAudioManager : public CJNIBase
+using namespace jni;
+
+int CJNIAudioFormat::ENCODING_PCM_16BIT = 0x00000002;
+int CJNIAudioFormat::CHANNEL_OUT_STEREO = 0x0000000c;
+
+void CJNIAudioFormat::PopulateStaticFields()
 {
-public:
-  CJNIAudioManager(const jni::jhobject &object) : CJNIBase(object) {};
-  ~CJNIAudioManager() {};
-
-  // Note removal of streamType param.
-  int  getStreamMaxVolume();
-  int  getStreamVolume();
-  void setStreamVolume(int index = 0, int flags = 0);
-
-  static void PopulateStaticFields();
-  static int STREAM_MUSIC;
-
-private:
-  CJNIAudioManager();
-};
+  int sdk = CJNIBase::GetSDKVersion();
+  if (sdk >= 3)
+  {
+    jhclass c = find_class("android/media/AudioFormat");
+    CJNIAudioFormat::ENCODING_PCM_16BIT = get_static_field<int>(c, "ENCODING_PCM_16BIT");
+    if (sdk >= 5)
+      CJNIAudioFormat::CHANNEL_OUT_STEREO = get_static_field<int>(c, "CHANNEL_OUT_STEREO");
+  }
+}
 
