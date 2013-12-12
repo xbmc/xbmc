@@ -35,7 +35,7 @@ public:
   static AudioStreamBasicDescription* FormatsList(AudioStreamID stream);
   static AudioStreamID* StreamsList(AudioDeviceID device);
   static void           ResetAudioDevices();
-  static void           ResetStream(AudioStreamID stream);
+  static void           ResetStream(AudioStreamID streamId);
   static AudioDeviceID  FindAudioDevice(const std::string &deviceName);
   static AudioDeviceID  GetDefaultOutputDevice();
   static void           GetOutputDeviceName(std::string &name);
