@@ -114,9 +114,9 @@ void CPeripherals::Clear(void)
   /* delete mappings */
   for (unsigned int iMappingPtr = 0; iMappingPtr < m_mappings.size(); iMappingPtr++)
   {
-    map<CStdString, CSetting *> settings = m_mappings.at(iMappingPtr).m_settings;
-    for (map<CStdString, CSetting *>::iterator itr = settings.begin(); itr != settings.end(); itr++)
-      delete itr->second;
+    map<CStdString, PeripheralDeviceSetting> settings = m_mappings.at(iMappingPtr).m_settings;
+    for (map<CStdString, PeripheralDeviceSetting>::iterator itr = settings.begin(); itr != settings.end(); itr++)
+      delete itr->second.m_setting;
     m_mappings.at(iMappingPtr).m_settings.clear();
   }
   m_mappings.clear();
@@ -401,8 +401,8 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
 
     if (bBusMatch && bProductMatch && bClassMatch)
     {
-      for (map<CStdString, CSetting *>::const_iterator itr = mapping->m_settings.begin(); itr != mapping->m_settings.end(); itr++)
-        peripheral.AddSetting((*itr).first, (*itr).second);
+      for (map<CStdString, PeripheralDeviceSetting>::const_iterator itr = mapping->m_settings.begin(); itr != mapping->m_settings.end(); itr++)
+        peripheral.AddSetting((*itr).first, (*itr).second.m_setting, (*itr).second.m_order);
     }
   }
 }
@@ -463,9 +463,11 @@ bool CPeripherals::LoadMappings(void)
   return true;
 }
 
-void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdString, CSetting *> &m_settings)
+void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdString, PeripheralDeviceSetting> &settings)
 {
   TiXmlElement *currentNode = xmlNode->FirstChildElement("setting");
+  int iMaxOrder = 0;
+
   while (currentNode)
   {
     CSetting *setting = NULL;
@@ -530,11 +532,28 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       /* set the visibility */
       setting->SetVisible(bConfigurable);
 
+      /* set the order */
+      int iOrder = 0;
+      currentNode->Attribute("order", &iOrder);
+      /* if the order attribute is invalid or 0, then the setting will be added at the end */
+      if (iOrder < 0)
+        iOrder = 0;
+      if (iOrder > iMaxOrder)
+       iMaxOrder = iOrder;
+
       /* and add this new setting */
-      m_settings[strKey] = setting;
+      PeripheralDeviceSetting deviceSetting = { setting, iOrder };
+      settings[strKey] = deviceSetting;
     }
 
     currentNode = currentNode->NextSiblingElement("setting");
+  }
+
+  /* add the settings without an order attribute or an invalid order attribute set at the end */
+  for (map<CStdString, PeripheralDeviceSetting>::iterator it = settings.begin(); it != settings.end(); it++)
+  {
+    if (it->second.m_order == 0)
+      it->second.m_order = ++iMaxOrder;
   }
 }
 
