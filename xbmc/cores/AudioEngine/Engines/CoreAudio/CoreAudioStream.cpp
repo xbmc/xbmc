@@ -61,7 +61,7 @@ bool CCoreAudioStream::Open(AudioStreamID streamId)
 
 // TODO: Should it even be possible to change both the 
 // physical and virtual formats, since the devices do it themselves?
-void CCoreAudioStream::Close()
+void CCoreAudioStream::Close(bool restore)
 {
   if (!m_StreamId)
     return;
@@ -84,7 +84,7 @@ void CCoreAudioStream::Close()
     CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Couldn't remove property listener.");
 
   // Revert any format changes we made
-  if (m_OriginalVirtualFormat.mFormatID && m_StreamId)
+  if (restore && m_OriginalVirtualFormat.mFormatID && m_StreamId)
   {
     CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: "
       "Restoring original virtual format for stream 0x%04x. (%s)",
@@ -92,7 +92,7 @@ void CCoreAudioStream::Close()
     AudioStreamBasicDescription setFormat = m_OriginalVirtualFormat;
     SetVirtualFormat(&setFormat);
   }
-  if (m_OriginalPhysicalFormat.mFormatID && m_StreamId)
+  if (restore && m_OriginalPhysicalFormat.mFormatID && m_StreamId)
   {
     CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: "
       "Restoring original physical format for stream 0x%04x. (%s)",
