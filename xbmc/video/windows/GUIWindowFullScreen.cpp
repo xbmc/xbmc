@@ -941,7 +941,8 @@ void CGUIWindowFullScreen::FrameMove()
         if (f->GetProperty("plexDidTranscode").asBoolean())
           transcodeInfo.Format("transcoded");
         CPlexServerPtr s = g_plexApplication.serverManager->FindByUUID(f->GetProperty("plexserver").asString());
-        plexInfo.Format("P( server:%s %s )", s->GetName().c_str(), transcodeInfo);
+        if (s)
+          plexInfo.Format("P( server:%s %s )", s->GetName().c_str(), transcodeInfo);
       }
 
       /*END PLEX*/
