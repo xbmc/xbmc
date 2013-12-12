@@ -83,9 +83,6 @@ COMXAudio::COMXAudio() :
   m_submitted_eos   (false  ),
   m_failed_eos      (false  )
 {
-  m_vizBufferSize   = m_vizRemapBufferSize = VIS_PACKET_SIZE * sizeof(float);
-  m_vizRemapBuffer  = (uint8_t *)_aligned_malloc(m_vizRemapBufferSize,16);
-  m_vizBuffer       = (uint8_t *)_aligned_malloc(m_vizBufferSize,16);
   CAEFactory::Suspend();
   while (!CAEFactory::IsSuspended())
     Sleep(10);
@@ -95,8 +92,6 @@ COMXAudio::~COMXAudio()
 {
   Deinitialize();
 
-  _aligned_free(m_vizRemapBuffer);
-  _aligned_free(m_vizBuffer);
   CAEFactory::Resume();
 }
 
@@ -491,8 +486,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     m_wave_header.dwChannelMask = channelMap;
     BuildChannelMapOMX(m_input_channels, channelMap);
     BuildChannelMapOMX(m_output_channels, GetChannelLayout(layout));
-
-    m_vizRemap.Initialize(GetAEChannelLayout(channelMap), CAEChannelInfo(AE_CH_LAYOUT_2_0), false, true);
   }
 
   m_SampleRate    = m_format.m_sampleRate;
@@ -753,9 +746,6 @@ bool COMXAudio::Deinitialize()
   m_extradata = NULL;
   m_extrasize = 0;
 
-  while(!m_vizqueue.empty())
-    m_vizqueue.pop();
-
   m_dllAvUtil.Unload();
 
   while(!m_ampqueue.empty())
@@ -872,62 +862,6 @@ bool COMXAudio::ApplyVolume(void)
   return true;
 }
 
-void COMXAudio::VizPacket(const void* data, unsigned int len, double pts)
-{
-    /* input samples */
-    unsigned int vizBufferSamples = len / (CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3);
-
-    /* input frames */
-    unsigned int frames = vizBufferSamples / m_InputChannels;
-    float *floatBuffer = (float *)data;
-
-    if (m_format.m_dataFormat != AE_FMT_FLOAT)
-    {
-      CAEConvert::AEConvertToFn m_convertFn = CAEConvert::ToFloat(m_format.m_dataFormat);
-
-      /* check convert buffer */
-      CheckOutputBufferSize((void **)&m_vizBuffer, &m_vizBufferSize, vizBufferSamples * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
-
-      /* convert to float */
-      m_convertFn((uint8_t *)data, vizBufferSamples, (float *)m_vizBuffer);
-      floatBuffer = (float *)m_vizBuffer;
-    }
-
-    // Viz channel count is 2
-    CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, frames * 2 * sizeof(float));
-
-    /* remap */
-    m_vizRemap.Remap(floatBuffer, (float*)m_vizRemapBuffer, frames);
-
-    /* output samples */
-    vizBufferSamples = vizBufferSamples / m_InputChannels * 2;
-
-    /* viz size is limited */
-    if(vizBufferSamples > VIS_PACKET_SIZE)
-      vizBufferSamples = VIS_PACKET_SIZE;
-
-    vizblock_t v;
-    v.pts = pts;
-    v.num_samples = vizBufferSamples;
-    memcpy(v.samples, m_vizRemapBuffer, vizBufferSamples * sizeof(float));
-    m_vizqueue.push(v);
-
-    double stamp = m_av_clock->OMXMediaTime();
-    while(!m_vizqueue.empty())
-    {
-      vizblock_t &v = m_vizqueue.front();
-      /* if packet has almost reached media time (allow time for rendering delay) then display it */
-      /* we'll also consume if queue gets unexpectedly long to avoid filling memory */
-      if (v.pts == DVD_NOPTS_VALUE || v.pts - stamp < DVD_SEC_TO_TIME(1.0/30.0) || v.pts - stamp > DVD_SEC_TO_TIME(15.0))
-      {
-         m_pCallback->OnAudioData(v.samples, v.num_samples);
-         m_vizqueue.pop();
-      }
-      else break;
-   }
-}
-
-
 //***********************************************************************************************
 unsigned int COMXAudio::AddPackets(const void* data, unsigned int len)
 {
@@ -944,9 +878,6 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     CLog::Log(LOGERROR,"COMXAudio::AddPackets - sanity failed. no valid play handle!");
     return len;
   }
-
-  if (m_pCallback && len && !(m_Passthrough || m_HWDecode))
-    VizPacket(data, len, pts);
 
   if(m_eEncoding == OMX_AUDIO_CodingDTS && m_LostSync && (m_Passthrough || m_HWDecode))
   {
