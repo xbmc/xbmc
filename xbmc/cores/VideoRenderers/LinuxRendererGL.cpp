@@ -68,6 +68,9 @@
   #include "osx/CocoaInterface.h"
   #include <CoreVideo/CoreVideo.h>
   #include <OpenGL/CGLIOSurface.h>
+  #ifdef TARGET_DARWIN_OSX
+    #include "osx/DarwinUtils.h"
+  #endif
 #endif
 
 #ifdef HAS_GLX
@@ -312,6 +315,19 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_pixelRatio       = 1.0;
 
   m_pboSupported = glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo");
+
+#ifdef TARGET_DARWIN_OSX
+  // on osx 10.9 mavericks we get a strange ripple
+  // effect when rendering with pbo
+  // when used on intel gpu - we have to quirk it here
+  if (DarwinIsMavericks())
+  {
+    CStdString rendervendor = g_Windowing.GetRenderVendor();
+    rendervendor.MakeLower();
+    if (rendervendor.find("intel") != std::string::npos)
+      m_pboSupported = false;
+  }
+#endif
 
   return true;
 }
