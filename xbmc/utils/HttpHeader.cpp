@@ -187,7 +187,6 @@ std::string CHttpHeader::GetCharset(void) const
 
   StringUtils::ToUpper(strValue);
   const size_t len = strValue.length();
-  const char* const strValueC = strValue.c_str();
 
   // extract charset value from 'contenttype/contentsubtype;pram1=param1Val ; charset=XXXX\t;param2=param2Val'
   // most common form: 'text/html; charset=XXXX'
