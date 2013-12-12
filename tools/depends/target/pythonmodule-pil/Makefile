@@ -33,7 +33,7 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	mkdir -p $(PREFIX)/lib/python2.6/site-packages/PIL
-	unzip -of $(LIBDYLIB) -d $(PREFIX)/lib/python2.6/site-packages/PIL/
+	unzip -oq $(LIBDYLIB) -d $(PREFIX)/lib/python2.6/site-packages/PIL/
 	echo 'PIL' > $(PREFIX)/lib/python2.6/site-packages/PIL.pth
 	touch $@
 
