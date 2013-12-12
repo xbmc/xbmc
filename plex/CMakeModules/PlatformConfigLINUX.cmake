@@ -8,6 +8,8 @@ if(UNIX)
   set(CMAKE_REQUIRED_FLAGS "-D__LINUX_USER__")
 endif()
 
+option(USE_INTERNAL_FFMPEG "" ON)
+
 set(LINK_PKG
   Freetype
   SDL
