@@ -47,7 +47,7 @@ using namespace std;
 #define CEC_LIB_SUPPORTED_VERSION 0x2100
 
 /* time in seconds to ignore standby commands from devices after the screensaver has been activated */
-#define SCREENSAVER_TIMEOUT       10
+#define SCREENSAVER_TIMEOUT       20
 #define VOLUME_CHANGE_TIMEOUT     250
 #define VOLUME_REFRESH_TIMEOUT    100
 
