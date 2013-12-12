@@ -28,12 +28,15 @@
 #endif
 #include "utils/log.h"
 
-#include <jni.h>
+#include "android/jni/AudioFormat.h"
+#include "android/jni/AudioManager.h"
+#include "android/jni/AudioTrack.h"
 
-#if defined(__ARM_NEON__)
+using namespace jni;
+
+#if 0 //defined(__ARM_NEON__)
 #include <arm_neon.h>
 #include "utils/CPUInfo.h"
-#include "android/jni/JNIThreading.h"
 
 // LGPLv2 from PulseAudio
 // float values from AE are pre-clamped so we do not need to clamp again here
@@ -57,35 +60,6 @@ static void pa_sconv_s16le_from_f32ne_neon(unsigned n, const float32_t *a, int16
     b[i] = (int16_t) lrintf(a[i] * 0x7FFF);
 }
 #endif
-
-static jint GetStaticIntField(JNIEnv *jenv, std::string class_name, std::string field_name)
-{
-  class_name.insert(0, "android/media/");
-  jclass cls = jenv->FindClass(class_name.c_str());
-  jfieldID field = jenv->GetStaticFieldID(cls, field_name.c_str(), "I");
-  jint int_field = jenv->GetStaticIntField(cls, field);
-  jenv->DeleteLocalRef(cls);
-  return int_field;
-}
-
-class CAudiotrackJNI
-{
-public:
-  JNIEnv *jenv;
-  jclass jcAudioTrack;
-  jobject joAudioTrack;
-  jmethodID jmInit;
-  jmethodID jmPlay;
-  jmethodID jmStop;
-  jmethodID jmFlush;
-  jmethodID jmRelease;
-  jmethodID jmWrite;
-  jmethodID jmPlayState;
-  jmethodID jmPlayHeadPosition;
-  jmethodID jmGetMinBufferSize;
-  jint playing;
-  jarray jbuffer;
-};
 
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info;
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,16 +117,35 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       break;
     }
   }
-  m_format.m_dataFormat = dataFormat;
 
-  m_format.m_channelLayout = m_info.m_channels;
-  m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3);
+  m_format.m_dataFormat     = dataFormat;
+  m_format.m_channelLayout  = m_info.m_channels;
+  m_format.m_frameSize      = m_format.m_channelLayout.Count() *
+                              (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
+  int min_buffer_size       = CJNIAudioTrack::getMinBufferSize( m_format.m_sampleRate,
+                                                                CJNIAudioFormat::CHANNEL_OUT_STEREO,
+                                                                CJNIAudioFormat::ENCODING_PCM_16BIT);
+  m_sink_frameSize          = m_format.m_channelLayout.Count() *
+                              (CAEUtil::DataFormatToBits(AE_FMT_S16LE) / 8);
+  m_min_frames              = min_buffer_size / m_sink_frameSize;
+  m_audiotrackbuffer_sec    = (double)m_min_frames / (double)m_format.m_sampleRate;
+  m_at_jni                  = new CJNIAudioTrack( CJNIAudioManager::STREAM_MUSIC,
+                                                  m_format.m_sampleRate,
+                                                  CJNIAudioFormat::CHANNEL_OUT_STEREO,
+                                                  CJNIAudioFormat::ENCODING_PCM_16BIT,
+                                                  min_buffer_size,
+                                                  CJNIAudioTrack::MODE_STREAM);
+  m_format.m_frames         = m_min_frames / 2;
 
-  InitializeAT();
-  m_format.m_frames = m_min_frames / 2;
+  m_format.m_frameSamples   = m_format.m_frames * m_format.m_channelLayout.Count();
+  format                    = m_format;
 
-  m_format.m_frameSamples = m_format.m_frames * m_format.m_channelLayout.Count();
-  format = m_format;
+  JNIEnv* jenv = xbmc_jnienv();
+  // Set the initial volume
+  float volume = 1.0;
+  if (!m_passthrough)
+    volume = m_volume;
+  CXBMCApp::SetSystemVolume(jenv, volume);
 
   return true;
 }
@@ -162,25 +155,14 @@ void CAESinkAUDIOTRACK::Deinitialize()
   if (!m_at_jni)
     return;
 
-  JNIEnv *jenv = xbmc_jnienv();
-
-  jenv->CallVoidMethod(m_at_jni->joAudioTrack, m_at_jni->jmStop);
-  jenv->CallVoidMethod(m_at_jni->joAudioTrack, m_at_jni->jmFlush);
-  jenv->CallVoidMethod(m_at_jni->joAudioTrack, m_at_jni->jmRelease);
-
-  // might toss an exception on jmRelease so catch it.
-  jthrowable exception = jenv->ExceptionOccurred();
-  if (exception)
-  {
-    jenv->ExceptionDescribe();
-    jenv->ExceptionClear();
-  }
-
-  jenv->DeleteLocalRef(m_at_jni->jbuffer);
-  jenv->DeleteLocalRef(m_at_jni->joAudioTrack);
-  jenv->DeleteLocalRef(m_at_jni->jcAudioTrack);
+  m_at_jni->stop();
+  m_at_jni->flush();
+  m_at_jni->release();
+  
+  m_frames_written = 0;
 
   delete m_at_jni;
+  m_at_jni = NULL;
 }
 
 bool CAESinkAUDIOTRACK::IsCompatible(const AEAudioFormat &format, const std::string &device)
@@ -195,11 +177,10 @@ double CAESinkAUDIOTRACK::GetDelay()
   if (!m_at_jni)
     return 0.0;
 
-  JNIEnv *jenv = xbmc_jnienv();
   // In their infinite wisdom, Google decided to make getPlaybackHeadPosition
   // return a 32bit "int" that you should "interpret as unsigned."  As such,
   // for wrap saftey, we need to do all ops on it in 32bit integer math.
-  uint32_t head_pos = (uint32_t)jenv->CallIntMethod(m_at_jni->joAudioTrack, m_at_jni->jmPlayHeadPosition);
+  uint32_t head_pos = (uint32_t)m_at_jni->getPlaybackHeadPosition();
 
   double delay = (double)(m_frames_written - head_pos) / m_format.m_sampleRate;
 
@@ -226,29 +207,17 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t *data, unsigned int frames, b
     return INT_MAX;
 
   // write as many frames of audio as we can fit into our internal buffer.
-  JNIEnv *jenv = m_at_jni->jenv;
   int written = 0;
   if (frames)
   {
     // android will auto pause the playstate when it senses idle,
     // check it and set playing if it does this. Do this before
     // writing into its buffer.
-    if (jenv->CallIntMethod(m_at_jni->joAudioTrack, m_at_jni->jmPlayState) != m_at_jni->playing)
-      jenv->CallVoidMethod( m_at_jni->joAudioTrack, m_at_jni->jmPlay);
+    if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING)
+      m_at_jni->play();
 
-    // Write a buffer of audio data to Java AudioTrack.
-    // Warning, no other JNI function can be called after
-    // GetPrimitiveArrayCritical until ReleasePrimitiveArrayCritical.
-    void *pBuffer = jenv->GetPrimitiveArrayCritical(m_at_jni->jbuffer, NULL);
-    if (pBuffer)
-    {
-      memcpy(pBuffer, data, frames*m_sink_frameSize);
-      jenv->ReleasePrimitiveArrayCritical(m_at_jni->jbuffer, pBuffer, 0);
-      // jmWrite is blocking and returns when the data has been transferred
-      // from the Java layer and queued for playback.
-      written = jenv->CallIntMethod(m_at_jni->joAudioTrack, m_at_jni->jmWrite, m_at_jni->jbuffer, 0, frames*m_sink_frameSize);
-      m_frames_written += written / m_sink_frameSize;
-    }
+    written = m_at_jni->write((char*)data, 0, frames * m_sink_frameSize);
+    m_frames_written += written / m_sink_frameSize;
   }
 
   return (unsigned int)(written/m_sink_frameSize);
@@ -259,20 +228,10 @@ void CAESinkAUDIOTRACK::Drain()
   if (!m_at_jni)
     return;
 
-  JNIEnv *jenv = m_at_jni->jenv;
-
   // TODO: does this block until last samples played out?
   // we should not return from drain as long the device is in playing state
-  jenv->CallVoidMethod(m_at_jni->joAudioTrack, m_at_jni->jmStop);
+  m_at_jni->stop();
   m_frames_written = 0;
-
-  // might toss an exception so catch it.
-  jthrowable exception = jenv->ExceptionOccurred();
-  if (exception)
-  {
-    jenv->ExceptionDescribe();
-    jenv->ExceptionClear();
-  }
 }
 
 bool CAESinkAUDIOTRACK::HasVolume()
@@ -290,7 +249,7 @@ void  CAESinkAUDIOTRACK::SetVolume(float scale)
   m_volume = CAEUtil::GainToPercent(gain);
   if (!m_passthrough)
   {
-    CXBMCApp::SetSystemVolume(m_at_jni->jenv, m_volume);
+    CXBMCApp::SetSystemVolume(xbmc_jnienv(), m_volume);
   }
 }
 
@@ -317,54 +276,3 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   list.push_back(m_info);
 }
 
-void CAESinkAUDIOTRACK::InitializeAT()
-{
-  m_at_jni = new CAudiotrackJNI();
-
-  JNIEnv *jenv = xbmc_jnienv();
-  m_at_jni->jenv = jenv;
-
-  m_at_jni->jcAudioTrack        = jenv->FindClass("android/media/AudioTrack");
-  m_at_jni->jmInit              = jenv->GetMethodID(m_at_jni->jcAudioTrack, "<init>", "(IIIIII)V");
-  m_at_jni->jmPlay              = jenv->GetMethodID(m_at_jni->jcAudioTrack, "play", "()V");
-  m_at_jni->jmStop              = jenv->GetMethodID(m_at_jni->jcAudioTrack, "stop", "()V");
-  m_at_jni->jmFlush             = jenv->GetMethodID(m_at_jni->jcAudioTrack, "flush", "()V");
-  m_at_jni->jmRelease           = jenv->GetMethodID(m_at_jni->jcAudioTrack, "release", "()V");
-  m_at_jni->jmWrite             = jenv->GetMethodID(m_at_jni->jcAudioTrack, "write", "([BII)I");
-  m_at_jni->jmPlayState         = jenv->GetMethodID(m_at_jni->jcAudioTrack, "getPlayState", "()I");
-  m_at_jni->jmPlayHeadPosition  = jenv->GetMethodID(m_at_jni->jcAudioTrack, "getPlaybackHeadPosition", "()I");
-  m_at_jni->jmGetMinBufferSize  = jenv->GetStaticMethodID(m_at_jni->jcAudioTrack, "getMinBufferSize", "(III)I");
-
-  jint audioFormat    = GetStaticIntField(jenv, "AudioFormat", "ENCODING_PCM_16BIT");
-  jint channelConfig  = GetStaticIntField(jenv, "AudioFormat", "CHANNEL_OUT_STEREO");
-
-  jint min_buffer_size = jenv->CallStaticIntMethod(m_at_jni->jcAudioTrack, m_at_jni->jmGetMinBufferSize,
-    m_format.m_sampleRate, channelConfig, audioFormat);
-
-  m_sink_frameSize = m_format.m_channelLayout.Count() * CAEUtil::DataFormatToBits(AE_FMT_S16LE) >> 3;
-  m_min_frames = min_buffer_size / m_sink_frameSize;
-
-  m_audiotrackbuffer_sec = (double)m_min_frames / (double)m_format.m_sampleRate;
-
-  m_at_jni->joAudioTrack = jenv->NewObject(m_at_jni->jcAudioTrack, m_at_jni->jmInit,
-    GetStaticIntField(jenv, "AudioManager", "STREAM_MUSIC"),
-    m_format.m_sampleRate,
-    channelConfig,
-    audioFormat,
-    min_buffer_size,
-    GetStaticIntField(jenv, "AudioTrack", "MODE_STREAM"));
-
-  // Set the initial volume
-  float volume = 1.0;
-  if (!m_passthrough)
-    volume = m_volume;
-  CXBMCApp::SetSystemVolume(jenv, volume);
-
-  // cache the playing int value.
-  m_at_jni->playing = GetStaticIntField(jenv, "AudioTrack", "PLAYSTATE_PLAYING");
-
-  // create a java byte buffer for writing pcm data to AudioTrack.
-  m_at_jni->jbuffer = jenv->NewByteArray(min_buffer_size);
-
-  m_frames_written = 0;
-}

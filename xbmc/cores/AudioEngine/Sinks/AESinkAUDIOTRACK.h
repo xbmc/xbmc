@@ -24,7 +24,10 @@
 #include "threads/CriticalSection.h"
 
 class AERingBuffer;
-class CAudiotrackJNI;
+namespace jni
+{
+class CJNIAudioTrack;
+};
 
 class CAESinkAUDIOTRACK : public IAESink
 {
@@ -48,10 +51,9 @@ public:
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
 private:
-  void InitializeAT();
-  CAudiotrackJNI  *m_at_jni;
+  jni::CJNIAudioTrack  *m_at_jni;
   // m_frames_written must wrap at UINT32_MAX
-  uint32_t        m_frames_written;
+  uint32_t              m_frames_written;
 
   static CAEDeviceInfo m_info;
   AEAudioFormat      m_format;
