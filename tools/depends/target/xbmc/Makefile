@@ -13,6 +13,8 @@ ifeq ($(OS),android)
 CONFIGURE += --enable-codec=libstagefright
 endif
 
+CONFIGURE += $(CONFIG_EXTRA)
+
 all: $(SOURCE)/libxbmc.so
 
 
