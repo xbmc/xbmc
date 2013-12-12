@@ -38,7 +38,7 @@ public:
   virtual ~CCoreAudioStream();
   
   bool    Open(AudioStreamID streamId);
-  void    Close();
+  void    Close(bool restore = true);
   
   AudioStreamID GetId() {return m_StreamId;}
   UInt32  GetDirection();
