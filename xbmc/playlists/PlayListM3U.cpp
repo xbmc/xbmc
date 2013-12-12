@@ -190,29 +190,27 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
   // return to the filename so it can be played
   char szLine[4096];
   CStdString strLine;
-  CStdString strPlaylist = strFileName;
   size_t maxBandwidth = 0;
-
-  // first strip off any query string
-  size_t baseEnd = strPlaylist.find('?');
-  if (baseEnd != std::string::npos)
-    strPlaylist = strPlaylist.substr(0, baseEnd);
-
-  // if we cannot get the last / we wont be able to determine the sub-playlists
-  baseEnd = strPlaylist.rfind('/');
-  if (baseEnd == std::string::npos)
-    return strPlaylist;
-
-  // store the base path (the path without the filename)
-  CStdString basePath = strPlaylist.substr(0, baseEnd + 1);
 
   // open the file, and if it fails, return
   CFile file;
   if (!file.Open(strFileName) )
   {
     file.Close();
-    return strPlaylist;
+    return strFileName;
   }
+
+  // get protocol options if they were set, so we can restore them again at the end
+  CURL playlistUrl(strFileName);
+  
+  // and set the fallback value
+  CURL subStreamUrl = CURL(strFileName);
+  
+  // determine the base
+  CURL basePlaylistUrl(URIUtils::GetParentPath(strFileName));
+  basePlaylistUrl.SetOptions("");
+  basePlaylistUrl.SetProtocolOptions("");
+  CStdString basePart = basePlaylistUrl.Get();
 
   // convert bandwidth specified in kbps to bps used by the m3u8
   bandwidth *= 1000;
@@ -253,17 +251,20 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
 
           // if the path is absolute just use it
           if (CURL::IsFullPath(strLine))
-            strPlaylist = strLine;
+            subStreamUrl = CURL(strLine);
           else
-            strPlaylist = basePath + strLine;
+            subStreamUrl = CURL(basePart + strLine);
         }
       }
     }
   }
 
-  CLog::Log(LOGINFO, "Auto-selecting %s based on configured bandwidth.", strPlaylist.c_str());
+  // if any protocol options were set, restore them
+  subStreamUrl.SetProtocolOptions(playlistUrl.GetProtocolOptions());
+  CStdString subStream = subStreamUrl.Get();
 
-  return strPlaylist;
+  CLog::Log(LOGINFO, "Auto-selecting %s based on configured bandwidth.", subStream.c_str());
+  return subStream;
 }
 
 std::map< CStdString, CStdString > CPlayListM3U::ParseStreamLine(const CStdString &streamLine)
