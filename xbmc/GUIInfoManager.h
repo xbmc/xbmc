@@ -503,7 +503,7 @@ namespace INFO
 #define CONTROL_HAS_FOCUS           30000
 
 #define VERSION_MAJOR 12
-#define VERSION_MINOR 2
+#define VERSION_MINOR 3
 #define VERSION_TAG ""
 
 #define LISTITEM_START              35000
