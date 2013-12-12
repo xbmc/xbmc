@@ -147,9 +147,9 @@ private:
   void SoftStart(bool wait = false);
   void SoftStop(bool wait = false, bool close = true);
   void CloseAllStreams(bool fade = true);
-  void ProcessStreams(double &delay, double &buffer);
+  void ProcessStreams(double &freeBufferTime);
   bool PrepareStream(StreamInfo *si);
-  bool ProcessStream(StreamInfo *si, double &delay, double &buffer);
+  bool ProcessStream(StreamInfo *si, double &freeBufferTime);
   bool QueueData(StreamInfo *si);
   int64_t GetTotalTime64();
   void UpdateCrossfadeTime(const CFileItem& file);
