@@ -3303,17 +3303,7 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
   if(m_CurrentVideo.id    < 0
   || m_CurrentVideo.hint != hint)
   {
-    // for music file, don't open artwork as video
-    bool disabled = false;
-    CStdString extension = URIUtils::GetExtension(m_filename);
-    StringUtils::ToLower(extension);
-    if (!extension.empty() && g_advancedSettings.m_musicExtensions.find(extension) != std::string::npos)
-    {
-      CLog::Log(LOGWARNING, "%s - Ignoring video in audio filetype:%s", __FUNCTION__, m_filename.c_str());
-      disabled = true;
-    }
-
-    if (disabled || !m_omxPlayerVideo.OpenStream(hint))
+    if (!m_omxPlayerVideo.OpenStream(hint))
     {
       /* mark stream as disabled, to disallaw further attempts */
       CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
