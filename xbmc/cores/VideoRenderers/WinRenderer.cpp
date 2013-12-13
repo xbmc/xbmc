@@ -93,6 +93,7 @@ CWinRenderer::CWinRenderer()
   m_clearColour = 0;
   m_format = RENDER_FMT_NONE;
   m_processor = NULL;
+  m_neededBuffers = 0;
 }
 
 CWinRenderer::~CWinRenderer()
