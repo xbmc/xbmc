@@ -56,13 +56,6 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
   m_inChannels  = CCoreAudioChannelLayout::GetChannelCountForLayout(inLayout);
   m_outChannels = CCoreAudioChannelLayout::GetChannelCountForLayout(outLayout);
 
-  // No need to use the mixing matrix if we have the same number of channels on both sides.
-  if (m_inChannels == m_outChannels)
-  {
-    m_isValid = false;
-    return;
-  }
-
   // Try to find a 'well-known' matrix
   const AudioChannelLayout* layouts[] = {&inLayout, &outLayout};
   UInt32 propSize = 0;
