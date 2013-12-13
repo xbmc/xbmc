@@ -631,7 +631,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
                       PLT_MediaItemResource* resource /* = NULL */)
 {
     CDateTime date;
-    date.SetFromDateString((const char*)object.m_Date);
+    date.SetFromW3CDate((const char*)object.m_Date);
 
     if(!object.m_Recorded.program_title.IsEmpty())
     {
