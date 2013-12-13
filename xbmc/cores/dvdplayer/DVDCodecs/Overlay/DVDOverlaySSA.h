@@ -20,7 +20,6 @@
  *
  */
 
-#include "system.h" // for SAFE_RELEASE
 #include "DVDOverlay.h"
 #include "../../DVDSubtitles/DVDSubtitlesLibass.h"
 
@@ -46,8 +45,8 @@ public:
 
   ~CDVDOverlaySSA()
   {
-    if(m_libass)
-      SAFE_RELEASE(m_libass);
+    if (m_libass)
+      m_libass->Release();
   }
 
   virtual CDVDOverlaySSA* Clone()

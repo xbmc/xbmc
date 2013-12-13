@@ -26,6 +26,7 @@
 #include "utils/AutoPtrHandle.h"
 #include "utils/AliasShortcutUtils.h"
 #include "utils/URIUtils.h"
+#include "system.h"
 
 #ifdef TARGET_WINDOWS
 #include "utils/CharsetConverter.h"

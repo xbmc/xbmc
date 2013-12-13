@@ -23,6 +23,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "threads/Atomics.h"
+#include "PlatformConfig.h"
 #if defined (TARGET_WINDOWS)
 #include "system.h" // For HAS_SDL_JOYSTICK
 #if defined (HAS_SDL_JOYSTICK)

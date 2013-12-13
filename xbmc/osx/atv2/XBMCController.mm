@@ -70,6 +70,7 @@
 #import "IOSSCreenManager.h"
 #include "XBMC_keysym.h"
 #include "substrate.h"
+#include "XTimeUtils.h" // for "Sleep()", TODO: Replace with usleep()/sleep()?
 
 //start repeating after 0.5s
 #define REPEATED_KEYPRESS_DELAY_S 0.5

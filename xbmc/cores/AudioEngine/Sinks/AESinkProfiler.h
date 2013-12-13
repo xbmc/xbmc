@@ -19,8 +19,6 @@
  *
  */
 
-#include "system.h"
-
 #include "Interfaces/AESink.h"
 #include <stdint.h>
 

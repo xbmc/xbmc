@@ -57,6 +57,7 @@
 #include "utils/Variant.h"
 #include "music/karaoke/karaokelyricsfactory.h"
 #include "utils/Mime.h"
+#include "PlatformConfig.h"
 #ifdef HAS_ASAP_CODEC
 #include "cores/paplayer/ASAPCodec.h"
 #endif

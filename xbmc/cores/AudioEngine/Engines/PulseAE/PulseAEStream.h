@@ -19,6 +19,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #ifdef HAS_PULSEAUDIO
 
 #include "Interfaces/AEStream.h"

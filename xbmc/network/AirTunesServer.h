@@ -21,7 +21,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_AIRTUNES
 

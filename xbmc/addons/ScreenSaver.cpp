@@ -22,6 +22,7 @@
 #include "settings/DisplaySettings.h"
 #include "utils/AlarmClock.h"
 #include "windowing/WindowingFactory.h"
+#include "PlatformConfig.h"
 
 // What sound does a python screensaver make?
 #define SCRIPT_ALARM "sssssscreensaver"

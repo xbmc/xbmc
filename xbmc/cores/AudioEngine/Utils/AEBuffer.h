@@ -19,8 +19,7 @@
  *
  */
 
-#include "system.h"
-
+#include "PlatformDefs.h"
 #ifdef _DEBUG
 #include "utils/StdString.h" /* needed for ASSERT */
 #endif

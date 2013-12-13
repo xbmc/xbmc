@@ -23,7 +23,7 @@
 #include <set>
 
 #include "utils/log.h"
-#include "system.h" // for GetLastError()
+#include "system.h" // for GetLastError() and HAS_xx defines
 #include "network/WakeOnAccess.h"
 
 #ifdef HAS_MYSQL

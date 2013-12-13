@@ -20,183 +20,7 @@
  *
  */
 
-#if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
-#include "config.h"
-#define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
-#endif
-
-#define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
-#define PRE_SKIN_VERSION_11_COMPATIBILITY 1
-
-/*****************
- * All platforms
- *****************/
-#define HAS_DVD_SWSCALE
-#define HAS_DVDPLAYER
-#define HAS_EVENT_SERVER
-#define HAS_KARAOKE
-#define HAS_SCREENSAVER
-#define HAS_PYTHON
-#define HAS_SYSINFO
-#define HAS_VIDEO_PLAYBACK
-#define HAS_VISUALISATION
-#define HAS_PVRCLIENTS
-
-#ifdef HAVE_LIBMICROHTTPD
-#define HAS_WEB_SERVER
-#define HAS_WEB_INTERFACE
-#endif
-
-#define HAS_JSONRPC
-
-#ifdef USE_ASAP_CODEC
-#define HAS_ASAP_CODEC
-#endif
-
-#define HAS_FILESYSTEM
-#define HAS_FILESYSTEM_CDDA
-#define HAS_FILESYSTEM_RTV
-#define HAS_FILESYSTEM_DAAP
-#define HAS_FILESYSTEM_SAP
-#define HAS_FILESYSTEM_VTP
-#define HAS_FILESYSTEM_HTSP
-
-#ifdef HAVE_LIBSMBCLIENT
-  #define HAS_FILESYSTEM_SMB
-#endif
-
-#ifdef HAVE_LIBNFS
-  #define HAS_FILESYSTEM_NFS
-#endif
-
-#ifdef HAVE_LIBAFPCLIENT
-  #define HAS_FILESYSTEM_AFP
-#endif
-
-#ifdef HAVE_LIBPLIST
-  #define HAS_AIRPLAY
-#endif
-
-#if defined(HAVE_LIBSHAIRPORT) || defined(HAVE_LIBSHAIRPLAY)
-  #define HAS_AIRTUNES
-#endif
-
-#ifdef HAVE_MYSQL
-  #define HAS_MYSQL
-#endif
-
-#if defined(USE_UPNP)
-  #define HAS_UPNP
-#endif
-
-#if defined(HAVE_LIBMDNSEMBEDDED)
-  #define HAS_ZEROCONF
-  #define HAS_MDNS
-  #define HAS_MDNS_EMBEDDED
-#endif
-
-/**********************
- * Non-free Components
- **********************/
-
-#if defined(TARGET_WINDOWS)
-  #define HAS_FILESYSTEM_RAR
-#else
-  #if defined(HAVE_XBMC_NONFREE)
-    #define HAS_FILESYSTEM_RAR
-  #endif
-#endif
-
-/*****************
- * Win32 Specific
- *****************/
-
-#if defined(TARGET_WINDOWS)
-#define HAS_SDL_JOYSTICK
-#define HAS_DVD_DRIVE
-#define HAS_WIN32_NETWORK
-#define HAS_IRSERVERSUITE
-#define HAS_AUDIO
-#define HAVE_LIBCRYSTALHD 2
-#define HAS_WEB_SERVER
-#define HAS_WEB_INTERFACE
-#define HAVE_LIBSSH
-#define HAS_LIBRTMP
-#define HAVE_LIBBLURAY
-#define HAS_ASAP_CODEC
-#define HAVE_YAJL_YAJL_VERSION_H
-#define HAS_FILESYSTEM_SMB
-#define HAS_FILESYSTEM_NFS
-#define HAS_ZEROCONF
-#define HAS_MDNS
-#define HAS_AIRPLAY
-#define HAS_AIRTUNES
-#define HAVE_LIBSHAIRPLAY
-#define HAVE_LIBCEC
-#define HAVE_LIBMP3LAME
-#define HAVE_LIBVORBISENC
-#define HAS_MYSQL
-#define HAS_UPNP
-
-#define DECLARE_UNUSED(a,b) a b;
-#endif
-
-/*****************
- * Mac Specific
- *****************/
-
-#if defined(TARGET_DARWIN)
-  #if defined(TARGET_DARWIN_OSX)
-    #define HAS_GL
-    #define HAS_SDL
-    #define HAS_SDL_OPENGL
-    #define HAS_SDL_WIN_EVENTS
-  #endif
-  #define HAS_ZEROCONF
-  #define HAS_LINUX_NETWORK
-#endif
-
-/*****************
- * Linux Specific
- *****************/
-
-#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-#if defined(HAVE_LIBAVAHI_COMMON) && defined(HAVE_LIBAVAHI_CLIENT)
-#define HAS_ZEROCONF
-#define HAS_AVAHI
-#endif
-#ifdef HAVE_DBUS
-#define HAS_DBUS
-#endif
-#define HAS_GL
-#ifdef HAVE_X11
-#define HAS_GLX
-#endif
-#ifdef HAVE_SDL
-#define HAS_SDL
-#ifndef HAS_SDL_OPENGL
-#define HAS_SDL_OPENGL
-#endif
-#define HAS_SDL_WIN_EVENTS
-#else
-#define HAS_LINUX_EVENTS
-#endif
-#define HAS_LINUX_NETWORK
-#define HAS_LIRC
-#ifdef HAVE_LIBPULSE
-#define HAS_PULSEAUDIO
-#endif
-#ifdef HAVE_LIBXRANDR
-#define HAS_XRANDR
-#endif
-#ifdef HAVE_ALSA
-#define HAS_ALSA
-#endif
-#endif
-
-#ifdef HAVE_LIBSSH
-#define HAS_FILESYSTEM_SFTP
-#endif
+#include "PlatformConfig.h"
 
 /****************************************
  * Additional platform specific includes
@@ -210,7 +34,6 @@
 #include "DSound.h"
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
 #define LPDIRECTSOUND8 LPDIRECTSOUND
-#undef GetFreeSpace
 #include "PlatformInclude.h"
 #ifdef HAS_DX
 #include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
@@ -221,6 +44,33 @@
 #ifdef HAS_SDL
 #include "SDL\SDL.h"
 #endif
+
+// undef some Win32 defines
+#ifdef GetFreeSpace
+#undef GetFreeSpace
+#endif
+#ifdef DeleteFile
+#undef DeleteFile
+#endif
+#ifdef CreateDirectory
+#undef CreateDirectory
+#endif
+#ifdef RemoveDirectory
+#undef RemoveDirectory
+#endif
+#ifdef GetDateFormat
+#undef GetDateFormat
+#endif
+#ifdef GetTimeFormat
+#undef GetTimeFormat
+#endif
+#ifdef SetPort
+#undef SetPort
+#endif
+#ifdef LoadImage
+#undef LoadImage
+#endif
+
 #endif
 
 #if defined(TARGET_POSIX)
@@ -229,50 +79,4 @@
 #include <sys/types.h>
 #include <errno.h>
 #include "PlatformInclude.h"
-#endif
-
-#if defined(TARGET_ANDROID)
-#undef HAS_LINUX_EVENTS
-#undef HAS_LIRC
-#endif
-
-// EGL detected. Dont use GLX!
-#ifdef HAVE_LIBEGL
-#undef HAS_GLX
-#define HAS_EGL
-#endif
-
-// GLES2.0 detected. Dont use GL!
-#ifdef HAVE_LIBGLESV2
-#undef HAS_GL
-#define HAS_GLES 2
-#endif
-
-// GLES1.0 detected. Dont use GL!
-#ifdef HAVE_LIBGLES
-#undef HAS_GL
-#define HAS_GLES 1
-#endif
-
-#ifdef HAS_DVD_DRIVE
-#define HAS_CDDA_RIPPER
-#endif
-
-#define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)
-#define SAFE_DELETE_ARRAY(p) do { delete[] (p);   (p)=NULL; } while (0)
-#define SAFE_RELEASE(p)      do { if(p) { (p)->Release(); (p)=NULL; } } while (0)
-
-// Useful pixel colour manipulation macros
-#define GET_A(color)            ((color >> 24) & 0xFF)
-#define GET_R(color)            ((color >> 16) & 0xFF)
-#define GET_G(color)            ((color >>  8) & 0xFF)
-#define GET_B(color)            ((color >>  0) & 0xFF)
-
-/****************
- * default skin
- ****************/
-#if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
-#define DEFAULT_SKIN          "skin.touched"
-#else
-#define DEFAULT_SKIN          "skin.confluence"
 #endif

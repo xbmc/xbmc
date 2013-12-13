@@ -18,7 +18,7 @@
  *
  */
 #pragma once
-#include "system.h"
+#include <stddef.h> // for NULL
 #include "utils/StdString.h"
 #include "NptTypes.h"
 #include "NptReferences.h"

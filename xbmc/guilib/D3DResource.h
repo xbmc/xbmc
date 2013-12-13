@@ -21,6 +21,7 @@
 #pragma once
 
 #ifdef HAS_DX
+#include <d3d9.h>
 #include "utils/StdString.h"
 #include <map>
 

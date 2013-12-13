@@ -18,6 +18,7 @@
  *
  */
 #include "DBusMessage.h"
+#include "system.h"
 #ifdef HAS_DBUS
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"

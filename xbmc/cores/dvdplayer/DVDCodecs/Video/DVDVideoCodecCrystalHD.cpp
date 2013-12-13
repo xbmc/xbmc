@@ -21,9 +21,9 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #elif defined(TARGET_WINDOWS)
-#include "system.h"
 #include "DllAvCodec.h"
 #endif
+#include "system.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
 #include "DVDClock.h"

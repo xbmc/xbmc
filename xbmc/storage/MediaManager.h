@@ -24,6 +24,7 @@
 #include "utils/Job.h"
 #include "IStorageProvider.h"
 #include "threads/CriticalSection.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;

@@ -24,7 +24,6 @@
 
 #include <stdio.h>
 
-#include "system.h"
 #include "threads/CriticalSection.h"
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID)

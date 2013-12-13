@@ -19,7 +19,7 @@
  */
 #pragma once
 #include "powermanagement/IPowerSyscall.h"
-#include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_HAL
 
 class CHALPowerSyscall : public CPowerSyscallWithoutEvents

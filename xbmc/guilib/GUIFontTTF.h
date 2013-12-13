@@ -27,6 +27,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 // forward definition
 class CBaseTexture;
 

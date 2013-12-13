@@ -31,6 +31,7 @@
 #include "OverlayRenderer.h"
 #include <deque>
 #include "PlatformDefs.h"
+#include "PlatformConfig.h"
 
 class CRenderCapture;
 

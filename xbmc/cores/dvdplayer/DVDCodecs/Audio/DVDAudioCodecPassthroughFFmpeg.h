@@ -21,7 +21,7 @@
  */
 
 #include <list>
-#include "system.h"
+#include "PlatformDefs.h"
 #include "DllAvFormat.h"
 #include "DllAvCodec.h"
 #include "DllAvUtil.h"

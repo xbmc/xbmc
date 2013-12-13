@@ -73,7 +73,8 @@ void CDVDSubtitleParserSSA::Dispose()
 {
   if(m_libass)
   {
-    SAFE_RELEASE(m_libass);
+    m_libass->Release();
+    m_libass = 0;
     CLog::Log(LOGINFO, "SSA Parser: Releasing reference to ASS Library");
   }
   CDVDSubtitleParserCollection::Dispose();

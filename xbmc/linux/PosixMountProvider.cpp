@@ -22,6 +22,8 @@
 #include "utils/StdString.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "system.h"
+
 
 CPosixMountProvider::CPosixMountProvider()
 {

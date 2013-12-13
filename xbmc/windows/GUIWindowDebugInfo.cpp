@@ -33,6 +33,7 @@
 #include "GUIInfoManager.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
+#include "system.h"
 
 #include <climits>
 

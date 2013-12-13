@@ -19,7 +19,6 @@
  *
  */
 
-#include "system.h"
 #include "threads/Thread.h"
 
 #include "ActiveAESink.h"
@@ -28,6 +27,7 @@
 #include "Interfaces/AESound.h"
 #include "AEFactory.h"
 #include "guilib/DispResource.h"
+#include "PlatformConfig.h"
 
 // ffmpeg
 #include "DllAvFormat.h"

@@ -21,7 +21,7 @@
  *
  */
 
-#include "system.h" // for HAS_GL/HAS_GLES
+#include "PlatformConfig.h" // for HAS_GL/HAS_GLES
 
 #include <vector>
 #include <string>

@@ -29,7 +29,8 @@
 #endif
 
 // include as less is possible to prevent dependencies
-#include "system.h"
+#include "PlatformConfig.h"
+#include "PlatformDefs.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageTracker.h"
 #include "DVDResource.h"

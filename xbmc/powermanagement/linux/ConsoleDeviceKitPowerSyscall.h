@@ -18,6 +18,7 @@
  *
  */
 
+#include "PlatformConfig.h"
 #ifdef HAS_DBUS
 #ifndef _DBUS_POWER_SYSCALL_H_
 #define _DBUS_POWER_SYSCALL_H_

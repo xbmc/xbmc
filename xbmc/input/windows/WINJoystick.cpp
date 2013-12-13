@@ -24,6 +24,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
+#include "PlatformConfig.h"
 
 #include <math.h>
 

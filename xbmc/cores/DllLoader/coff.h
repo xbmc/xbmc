@@ -2,7 +2,7 @@
 #define __COFF_H_
 #pragma once
 
-#include "system.h"
+#include "PlatformDefs.h"
 
 /*
  *      Copyright (C) 2005-2013 Team XBMC

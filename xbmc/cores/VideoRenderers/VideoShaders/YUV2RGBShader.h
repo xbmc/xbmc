@@ -23,6 +23,7 @@
 
 #include "guilib/TransformMatrix.h"
 #include "cores/VideoRenderers/RenderFormats.h"
+#include "PlatformConfig.h"
 
 void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags

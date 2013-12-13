@@ -19,7 +19,8 @@
  *
  */
 
-#include "system.h" // for HAS_DVD_DRIVE
+#include "PlatformConfig.h"
+#include "PlatformDefs.h"
 
 #ifdef HAS_DVD_DRIVE
 
@@ -32,6 +33,7 @@
 #include "storage/cdioSupport.h"
 
 #include "utils/AutoPtrHandle.h"
+#include "utils/StdString.h"
 
 namespace CDDB
 {

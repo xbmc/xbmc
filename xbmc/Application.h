@@ -20,12 +20,12 @@
  *
  */
 
-#include "system.h" // for HAS_DVD_DRIVE et. al.
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
 #include "threads/Condition.h"
 #include "utils/GlobalsHandling.h"
+#include "PlatformConfig.h"
 
 #include <map>
 

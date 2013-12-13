@@ -18,8 +18,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
+
+#include <vector>
 #include "MediaSource.h"
+#include "utils/StdString.h"
+#include "PlatformConfig.h"
 #ifdef HAS_DVD_DRIVE
 #include "cdioSupport.h"
 #endif

@@ -19,12 +19,13 @@
  *
  */
 
-#include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_ALSA
 
 #include "Interfaces/AESink.h"
 #include "Utils/AEDeviceInfo.h"
 #include <stdint.h>
+#include <string>
 
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>

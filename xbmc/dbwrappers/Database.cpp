@@ -32,6 +32,7 @@
 #include "sqlitedataset.h"
 #include "DatabaseManager.h"
 #include "DbUrl.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"

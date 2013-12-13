@@ -20,6 +20,18 @@
  */
 
 #include "AddonCallbacks.h"
+#include "PlatformDefs.h"
+
+// undef some Win32 defines
+#ifdef DeleteFile
+#undef DeleteFile
+#endif
+#ifdef CreateDirectory
+#undef CreateDirectory
+#endif
+#ifdef RemoveDirectory
+#undef RemoveDirectory
+#endif
 
 namespace ADDON
 {
@@ -58,7 +70,7 @@ public:
   static void CloseFile(const void* addonData, void* file);
   static int GetFileChunkSize(const void* addonData, void* file);
   static bool FileExists(const void* addonData, const char *strFileName, bool bUseCache);
-  static int StatFile(const void* addonData, const char *strFileName, struct __stat64* buffer);
+  static int StatFile(const void* addonData, const char *strFileName, struct ::__stat64* buffer);
   static bool DeleteFile(const void* addonData, const char *strFileName);
   static bool CanOpenDirectory(const void* addonData, const char* strURL);
   static bool CreateDirectory(const void* addonData, const char *strPath);

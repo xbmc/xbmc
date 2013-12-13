@@ -19,6 +19,7 @@
  */
 
 #include "AutoPtrHandle.h"
+#include "system.h"
 
 using namespace AUTOPTR;
 

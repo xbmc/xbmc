@@ -22,7 +22,7 @@
 
 #include <list>
 
-#include "system.h"
+#include "PlatformDefs.h"
 #include "DVDAudioCodec.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"

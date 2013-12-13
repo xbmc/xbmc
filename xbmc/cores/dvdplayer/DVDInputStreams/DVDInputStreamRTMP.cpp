@@ -18,12 +18,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
-#ifdef TARGET_WINDOWS
-#include "system.h" // just for HAS_LIBRTMP
-#endif
+#include "PlatformConfig.h" // just for HAS_LIBRTMP
 
 #ifdef HAS_LIBRTMP
 #include "settings/AdvancedSettings.h"

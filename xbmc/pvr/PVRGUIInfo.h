@@ -24,6 +24,7 @@
 #include "utils/Observer.h"
 #include "threads/Thread.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "PlatformDefs.h"
 
 namespace EPG
 {

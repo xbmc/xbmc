@@ -22,6 +22,11 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+#if defined(TARGET_WINDOWS)
+#include <malloc.h>     // for _aligned_malloc, _aligned_free
+#elif defined(TARGET_POSIX)
+#include "XMemUtils.h"  // for _aligned_malloc, _aligned_free
+#endif
 #include "DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDStreamInfo.h"

@@ -23,6 +23,7 @@
 #include "CoreAudioChannelLayout.h"
 #include "CoreAudioHardware.h"
 #include "utils/log.h"
+#include "XTimeUtils.h" // for "Sleep()", TODO: Replace with usleep()/sleep()?
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioDevice

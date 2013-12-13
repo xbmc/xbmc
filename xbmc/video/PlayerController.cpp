@@ -31,6 +31,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "video/windows/GUIWindowFullScreen.h"
+#include "PlatformConfig.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/OverlayRendererGUI.h"

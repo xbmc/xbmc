@@ -20,7 +20,7 @@
  *
  */
 
-#include "system.h"
+#include "PlatformDefs.h"
 
 #include <vector>
 #include "cores/VideoRenderers/RenderFormats.h"

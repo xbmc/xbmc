@@ -35,6 +35,7 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "windowing/WindowingFactory.h"
+#include "PlatformConfig.h"
 
 // 0.1 second increments
 #define MAX_REFRESH_CHANGE_DELAY 200

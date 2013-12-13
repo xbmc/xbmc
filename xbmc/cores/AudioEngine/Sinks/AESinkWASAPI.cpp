@@ -19,6 +19,7 @@
  */
 
 #include "AESinkWASAPI.h"
+#include "system.h"
 #include <Audioclient.h>
 #include <avrt.h>
 #include <initguid.h>

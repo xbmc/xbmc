@@ -19,10 +19,10 @@
  *
  */
 
-#include "system.h"
 #include "FileItem.h"
 #include "Job.h"
 #include "filesystem/File.h"
+#include "PlatformDefs.h"
 
 class CGUIDialogProgressBarHandle;
 

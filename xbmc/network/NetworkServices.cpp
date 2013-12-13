@@ -30,6 +30,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/LocalizeStrings.h"
 #include "network/Network.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"

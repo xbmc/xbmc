@@ -27,6 +27,7 @@
 #endif
 
 #include "AirTunesServer.h"
+#include "PlatformConfig.h"
 
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"

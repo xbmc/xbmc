@@ -24,7 +24,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "system.h" // for win32 types
+#include "PlatformDefs.h" // for win32 types
 
 #ifdef TARGET_WINDOWS
 // Ideally we should just be including iso9660.h, but it's not win32-ified at this point,

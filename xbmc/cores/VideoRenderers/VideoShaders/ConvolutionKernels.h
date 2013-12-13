@@ -21,7 +21,7 @@
 #ifndef CONVOLUTIONKERNELS
 #define CONVOLUTIONKERNELS
 
-#include "system.h"
+#include "PlatformDefs.h"
 #include "../../../settings/VideoSettings.h"
 
 class CConvolutionKernel

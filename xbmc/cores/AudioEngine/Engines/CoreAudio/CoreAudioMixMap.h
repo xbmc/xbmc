@@ -19,7 +19,7 @@
  *
  */
 
-#include "system.h"
+#include "PlatformDefs.h"
 
 #if defined(TARGET_DARWIN_OSX)
 

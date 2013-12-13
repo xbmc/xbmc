@@ -22,6 +22,7 @@
 #define XBAPPLICATIONEX_H
 
 #include "guilib/IWindowManagerCallback.h"
+#include "PlatformDefs.h"
 
 // Do not change the numbering, external scripts depend on them
 enum {

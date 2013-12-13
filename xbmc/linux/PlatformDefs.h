@@ -32,6 +32,7 @@
 #undef _FILE_OFFSET_BITS
 #define _FILE_OFFSET_BITS 64
 
+#include <cstddef>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>

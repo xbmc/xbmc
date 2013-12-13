@@ -27,6 +27,7 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
+#include "PlatformConfig.h"
 
 #define CONTROL_PROTOCOL        10
 #define CONTROL_SERVER_ADDRESS  11

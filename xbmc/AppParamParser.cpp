@@ -26,6 +26,7 @@
 #include "ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "PlatformConfig.h"
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif

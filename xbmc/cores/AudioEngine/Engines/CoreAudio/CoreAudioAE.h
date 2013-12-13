@@ -22,7 +22,7 @@
 #include <list>
 #include <map>
 
-#include "system.h"
+#include "PlatformDefs.h"
 
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "ICoreAudioAEHAL.h"

@@ -19,7 +19,7 @@
  *
  */
 
-#include "system.h"
+#include "PlatformConfig.h"
 
 #if !defined(HAVE_LIBCEC)
 #include "Peripheral.h"
@@ -45,11 +45,14 @@ namespace PERIPHERALS
 
 #else
 
+#include <queue>
+#include <vector>
+#include "utils/StdString.h"
 #include "PeripheralHID.h"
 #include "interfaces/AnnouncementManager.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
-#include <queue>
+#include "XBDateTime.h"
 
 // undefine macro isset, it collides with function in cectypes.h
 #ifdef isset

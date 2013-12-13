@@ -18,7 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_DBUS
 #include "DBusMessage.h"
 #include "utils/Variant.h"

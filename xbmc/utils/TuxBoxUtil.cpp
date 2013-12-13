@@ -41,6 +41,7 @@
 #include "StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "log.h"
+#include "system.h"
 
 using namespace XFILE;
 using namespace std;

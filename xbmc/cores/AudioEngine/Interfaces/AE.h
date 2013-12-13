@@ -22,7 +22,6 @@
 #include <list>
 #include <map>
 
-#include "system.h"
 #include "threads/CriticalSection.h"
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"

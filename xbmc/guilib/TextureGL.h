@@ -21,6 +21,7 @@
 #pragma once
 
 #include "Texture.h"
+#include "PlatformConfig.h"
 
 #if defined(HAS_GL) || defined(HAS_GLES)
 

@@ -63,6 +63,7 @@
 #include "threads/SystemClock.h"
 #include "Exception.h"
 #include <vector>
+#include "system.h"
 
 namespace XBMCAddon
 {

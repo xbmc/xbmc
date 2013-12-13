@@ -24,6 +24,7 @@
 #include "interfaces/Builtins.h"
 #include <libhal-storage.h>
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "powermanagement/PowerManager.h"

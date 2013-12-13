@@ -19,7 +19,7 @@
  *
  */
 
-#include "system.h"
+#include "PlatformConfig.h"
 #ifdef HAS_FILESYSTEM_SFTP
 #include "IFile.h"
 #include "FileItem.h"

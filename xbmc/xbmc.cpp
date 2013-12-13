@@ -20,6 +20,7 @@
 
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
+#include "system.h"
 
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"

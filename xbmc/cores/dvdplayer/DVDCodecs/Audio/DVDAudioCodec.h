@@ -20,7 +20,8 @@
  *
  */
 
-#include "system.h"
+#include "PlatformConfig.h"
+#include "PlatformDefs.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "DVDClock.h"

@@ -25,8 +25,17 @@
 
 #define LINE_ENDING "\r\n"
 
+#include <cstddef>
+#include <WinNT.h>
+#include <WinDef.h>
 #define __STDC_FORMAT_MACROS
 #include "inttypes.h"
+
+typedef UINT_PTR SOCKET; // save include of <WinSock2.h>
+
+struct _SYSTEMTIME; // forward declaration
+
+typedef struct _SYSTEMTIME SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME; // forward declaration
 
 typedef __int64       off64_t;
 typedef __int64       fpos64_t;

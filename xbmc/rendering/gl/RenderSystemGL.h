@@ -23,7 +23,8 @@
 
 #pragma once
 
-#include "system.h"
+#include "PlatformConfig.h"
+#include "PlatformDefs.h"
 #include "system_gl.h"
 #include "rendering/RenderSystem.h"
 

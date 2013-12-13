@@ -23,7 +23,7 @@
 #include <vector>
 #include <netinet/in.h>
 
-#include "system.h" // for SOCKET
+#include "PlatformDefs.h"
 
 //#define VTP_STANDALONE
 

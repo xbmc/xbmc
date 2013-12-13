@@ -19,7 +19,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
+#include "PlatformDefs.h"
 
 class ILinuxKeymap
 {

@@ -67,7 +67,8 @@ public:
   IHardwareDecoder * GetHardware()                           { return m_pHardware; };
   void               SetHardware(IHardwareDecoder* hardware) 
   {
-    SAFE_RELEASE(m_pHardware);
+    if (m_pHardware)
+      m_pHardware->Release();
     m_pHardware = hardware;
     UpdateName();
   }

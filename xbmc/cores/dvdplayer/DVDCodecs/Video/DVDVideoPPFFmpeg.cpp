@@ -18,6 +18,11 @@
  *
  */
 
+#if defined(TARGET_WINDOWS)
+#include <malloc.h>     // for _aligned_malloc, _aligned_free
+#elif defined(TARGET_POSIX)
+#include "XMemUtils.h"  // for _aligned_malloc, _aligned_free
+#endif
 #include "DVDVideoPPFFmpeg.h"
 #include "utils/log.h"
 

@@ -24,6 +24,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
+#include "PlatformConfig.h"
 
 using namespace std;
 
