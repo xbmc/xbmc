@@ -57,6 +57,8 @@ CBaseRenderer::CBaseRenderer()
 
   m_RenderUpdateCallBackFn = NULL;
   m_RenderUpdateCallBackCtx = NULL;
+  m_RenderFeaturesCallBackFn = NULL;
+  m_RenderFeaturesCallBackCtx = NULL;
 }
 
 CBaseRenderer::~CBaseRenderer()
