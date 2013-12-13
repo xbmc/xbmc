@@ -90,9 +90,9 @@ CArchive& CArchive::operator<<(int i)
   return streamout(&i, sizeof(i));
 }
 
-CArchive& CArchive::operator<<(unsigned int i)
+CArchive& CArchive::operator<<(unsigned int ui)
 {
-  return streamout(&i, sizeof(i));
+  return streamout(&ui, sizeof(ui));
 }
 
 CArchive& CArchive::operator<<(long int l)
@@ -262,9 +262,9 @@ CArchive& CArchive::operator>>(int& i)
   return streamin(&i, sizeof(i));
 }
 
-CArchive& CArchive::operator>>(unsigned int& i)
+CArchive& CArchive::operator>>(unsigned int& ui)
 {
-  return streamin(&i, sizeof(i));
+  return streamin(&ui, sizeof(ui));
 }
 
 CArchive& CArchive::operator>>(long int& l)

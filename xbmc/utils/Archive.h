@@ -61,7 +61,7 @@ public:
   CArchive& operator<<(short int s);
   CArchive& operator<<(unsigned short int us);
   CArchive& operator<<(int i);
-  CArchive& operator<<(unsigned int i);
+  CArchive& operator<<(unsigned int ui);
   CArchive& operator<<(long int l);
   CArchive& operator<<(unsigned long int ul);
   CArchive& operator<<(long long int ll);
@@ -79,10 +79,10 @@ public:
   // loading
   CArchive& operator>>(float& f);
   CArchive& operator>>(double& d);
-  CArchive& operator>>(short int& i);
-  CArchive& operator>>(unsigned short int& i);
+  CArchive& operator>>(short int& s);
+  CArchive& operator>>(unsigned short int& us);
   CArchive& operator>>(int& i);
-  CArchive& operator>>(unsigned int& i);
+  CArchive& operator>>(unsigned int& ui);
   CArchive& operator>>(long int& l);
   CArchive& operator>>(unsigned long int& ul);
   CArchive& operator>>(long long int& ll);
