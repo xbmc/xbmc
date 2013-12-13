@@ -46,6 +46,10 @@
 #include "RenderCapture.h"
 #include "RenderFormats.h"
 
+/* PLEX */
+#include "StringUtils.h"
+/* END PLEX */
+
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
