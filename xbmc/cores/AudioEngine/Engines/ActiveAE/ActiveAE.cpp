@@ -1474,7 +1474,7 @@ void CActiveAE::DrainSink()
   }
 }
 
-bool CActiveAE::IsSinkCompatible(const AEAudioFormat format, const std::string &device)
+bool CActiveAE::IsSinkCompatible(const AEAudioFormat &format, const std::string &device)
 {
   bool compatible = false;
   SinkConfig config;
