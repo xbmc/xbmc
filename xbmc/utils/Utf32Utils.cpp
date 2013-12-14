@@ -22,3 +22,20 @@
 
 const CUtf32Utils::digitsMap CUtf32Utils::m_digitsMap(digitsMapFiller());
 
+inline bool CUtf32Utils::IsDigit(char32_t chr)
+{
+  double val;
+  return GetDigitValue(chr, val);
+}
+
+bool CUtf32Utils::GetDigitValue(char32_t chr, double& resultValue)
+{
+  digitsMap::const_iterator it = m_digitsMap.find(chr);
+  if (it != m_digitsMap.end())
+  {
+    resultValue = it->second;
+    return true;
+  }
+  return false;
+}
+

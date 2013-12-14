@@ -28,6 +28,8 @@
 class CUtf32Utils
 {
 public:
+  static bool IsDigit(char32_t chr);
+  static bool GetDigitValue(char32_t chr, double& resultValue);
 
 private:
   typedef std::map<const char32_t, const double> digitsMap;
