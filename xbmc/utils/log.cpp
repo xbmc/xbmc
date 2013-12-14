@@ -32,6 +32,7 @@
 #elif defined(TARGET_WINDOWS)
 #include "win32/WIN32Util.h"
 #endif
+#include "utils/TimeUtils.cpp"
 
 #define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
 #define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
@@ -64,7 +65,7 @@ void CLog::Close()
 
 void CLog::Log(int loglevel, const char *format, ... )
 {
-  static const char* prefixFormat = "%02.2d:%02.2d:%02.2d T:%"PRIu64" %7s: ";
+  static const char* prefixFormat = "%02.2d:%02.2d:%02.2d %10.6f T:%"PRIu64" %7s: ";
   CSingleLock waitLock(critSec);
   int extras = (loglevel >> LOGMASKBIT) << LOGMASKBIT;
   loglevel = loglevel & LOGMASK;
@@ -90,6 +91,11 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData = StringUtils::FormatV(format,va);
     va_end(va);
 
+
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  float Now = now.tv_sec + now.tv_nsec * 1e-9;
+
     if (m_repeatLogLevel == loglevel && m_repeatLine == strData)
     {
       m_repeatCount++;
@@ -100,7 +106,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       strPrefix = StringUtils::Format(prefixFormat,
                                       time.wHour,
                                       time.wMinute,
-                                      time.wSecond,
+                                      time.wSecond, Now,
                                       (uint64_t)CThread::GetCurrentThreadId(),
                                       levelNames[m_repeatLogLevel]);
 
@@ -129,7 +135,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     strPrefix = StringUtils::Format(prefixFormat,
                                     time.wHour,
                                     time.wMinute,
-                                    time.wSecond,
+                                    time.wSecond, Now,
                                     (uint64_t)CThread::GetCurrentThreadId(),
                                     levelNames[loglevel]);
 
