@@ -81,6 +81,8 @@
 #include "DirectoryCache.h"
 #include "GUI/GUIPlexMediaWindow.h"
 
+#include "Owned/PlexGlobalCacher.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace boost;
@@ -99,6 +101,8 @@ using namespace boost;
 #define CHANNELS_APPLICATION 4
 
 #define SLIDESHOW_MULTIIMAGE 10101
+
+CPlexGlobalCacher *pg_Cacher = NULL;
 
 typedef std::pair<CStdString, CPlexSectionFanout*> nameSectionPair;
 
@@ -323,6 +327,16 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_gl
 {
   m_loadType = LOAD_ON_GUI_INIT;
   AddSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
+  
+  // Here we start the global cacher
+  // it will request all the section data and try to cache them locally
+  // it will create a plex.cached in userdata directory when it has been done at least once in order not to reprocess at every start
+  if (!pg_Cacher)
+  {
+		pg_Cacher = new CPlexGlobalCacher();
+		pg_Cacher->Start();
+  }
+
 }
 
 //////////////////////////////////////////////////////////////////////////////
