@@ -146,8 +146,8 @@
       <nine>Number9</nine>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>BigStepForward</up>
-      <down>BigStepBack</down>
+      <up>ChapterOrBigStepForward</up>
+      <down>ChapterOrBigStepBack</down>
       <back>Back</back>
       <menu>OSD</menu>
       <start>OSD</start>
