@@ -97,12 +97,12 @@ bool CThumbExtractor::DoWork()
   ||  m_item.IsPlayList())
     return false;
 
-  if (URIUtils::IsRemote(m_item.GetPath()) && !URIUtils::IsOnLAN(m_item.GetPath()))
-  {
-    // A quasi internet filesystem like webdav is generally fast enough for extracting stuff
-    if (!URIUtils::IsDAV(m_item.GetPath()))
-      return false;
-  }
+  // For HTTP/FTP we only allow extraction when on a LAN
+  if (URIUtils::IsRemote(m_item.GetPath()) &&
+     !URIUtils::IsOnLAN(m_item.GetPath())  &&
+     (URIUtils::IsFTP(m_item.GetPath())    ||
+      URIUtils::IsHTTP(m_item.GetPath())))
+    return false;
 
   bool result=false;
   if (m_thumb)
