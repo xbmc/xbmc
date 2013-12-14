@@ -13,6 +13,15 @@
       <swipe direction="down">SwipeDown</swipe>
     </touch>
   </global>
+  <FullScreenVideo>
+    <touch>
+      <swipe direction="left">StepBack</swipe>
+      <swipe direction="right">StepForward</swipe>
+      <swipe direction="up">ChapterOrBigStepForward</swipe>
+      <swipe direction="down">ChapterOrBigStepBack</swipe>
+      <swipe direction="left" pointers="2">SmallStepBack</swipe>
+    </touch>
+  </FullScreenVideo>
   <SlideShow>
     <touch>
       <zoom>ZoomGesture</zoom>
