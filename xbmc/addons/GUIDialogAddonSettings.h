@@ -80,7 +80,6 @@ private:
   const TiXmlElement *GetFirstSetting() const;
 
   ADDON::AddonPtr m_addon;
-  CStdString m_strHeading;
   std::map<CStdString,CStdString> m_buttonValues;
   bool m_changed;
   bool m_saveToDisk; // whether the addon settings should be saved to disk or just stored locally in the addon
