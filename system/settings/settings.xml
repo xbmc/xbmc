@@ -467,7 +467,7 @@
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.useframemtdec" type="boolean" label="13440" help="36423">
-          <level>2</level>
+          <level>3</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
