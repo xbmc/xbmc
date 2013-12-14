@@ -110,7 +110,7 @@ public:
   CStdString GetUnameVersion();
 #endif
 #if defined(TARGET_WINDOWS)
-  CStdString CSysInfo::GetUAWindowsVersion();
+  CStdString GetUAWindowsVersion();
 #endif
   CStdString GetUserAgent();
   bool HasInternet();
