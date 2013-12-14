@@ -57,7 +57,7 @@ protected:
 
   void SetSubtitles(const std::string &subtitle);
 
-  CCriticalSection m_section;
+  CCriticalSection m_critsection;
   CFileItemList* m_subtitles;
   CFileItemList* m_serviceItems;
   std::string    m_currentService;
