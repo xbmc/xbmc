@@ -76,7 +76,7 @@ void CActiveAESink::Dispose()
   }
 }
 
-bool CActiveAESink::IsCompatible(const AEAudioFormat format, const std::string &device)
+bool CActiveAESink::IsCompatible(const AEAudioFormat &format, const std::string &device)
 {
   if (!m_sink)
     return false;

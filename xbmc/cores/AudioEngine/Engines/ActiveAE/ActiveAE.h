@@ -250,7 +250,7 @@ protected:
   bool InitSink();
   void DrainSink();
   void UnconfigureSink();
-  bool IsSinkCompatible(const AEAudioFormat format, const std::string &device);
+  bool IsSinkCompatible(const AEAudioFormat &format, const std::string &device);
   void Start();
   void Dispose();
   void LoadSettings();
