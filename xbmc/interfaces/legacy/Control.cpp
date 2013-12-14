@@ -403,9 +403,9 @@ namespace XBMCAddon
     // ============================================================
     // ============================================================
     ControlImage::ControlImage(long x, long y, long width, long height, 
-                               const char* filename, long aspectRatio,
+                               const char* filename, long aRatio,
                                const char* _colorDiffuse):
-      colorDiffuse(0)
+      colorDiffuse(0), aspectRatio(aRatio)
     {
       dwPosX = x;
       dwPosY = y;
