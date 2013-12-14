@@ -60,7 +60,7 @@ namespace ADDON
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);
     bool Create(int x, int y, int w, int h, void *device);
-    void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
+    void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString &strSongName);
     void AudioData(const float *pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
     void Render();
     void Stop();

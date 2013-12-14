@@ -116,7 +116,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   return false;
 }
 
-void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName)
+void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString &strSongName)
 {
   // notify visz. that new song has been started
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
