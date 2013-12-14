@@ -99,7 +99,7 @@ CAESinkALSA::~CAESinkALSA()
   Deinitialize();
 }
 
-inline CAEChannelInfo CAESinkALSA::GetChannelLayout(AEAudioFormat format, unsigned int maxChannels)
+inline CAEChannelInfo CAESinkALSA::GetChannelLayout(AEAudioFormat format, unsigned int minChannels, unsigned int maxChannels)
 {
   enum AEChannel* channelMap = ALSAChannelMap;
   unsigned int count = 0;
@@ -131,16 +131,22 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(AEAudioFormat format, unsign
       channelMap = ALSAChannelMap71Wide;
     }
     for (unsigned int c = 0; c < 8; ++c)
+    {
       for (unsigned int i = 0; i < format.m_channelLayout.Count(); ++i)
+      {
         if (format.m_channelLayout[i] == channelMap[c])
         {
           count = c + 1;
           break;
         }
+      }
+    }
+    count = std::max(count, minChannels);
   }
 
   CAEChannelInfo info;
-  for (unsigned int i = 0; i < count && i < maxChannels+1; ++i)
+  count = std::min(count, maxChannels);
+  for (unsigned int i = 0; i < count; ++i)
     info += channelMap[i];
 
   CLog::Log(LOGDEBUG, "CAESinkALSA::GetChannelLayout - Input Channel Count: %d Output Channel Count: %d", format.m_channelLayout.Count(), count);
@@ -171,7 +177,7 @@ void CAESinkALSA::GetAESParams(AEAudioFormat format, std::string& params)
 
 bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 {
-  CAEChannelInfo channelLayout = GetChannelLayout(format, 8);
+  CAEChannelInfo channelLayout = GetChannelLayout(format, 2, 8);
   m_initDevice = device;
   m_initFormat = format;
   ALSAConfig inconfig, outconfig;
@@ -246,7 +252,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
   // adjust format to the configuration we got
-  format.m_channelLayout = GetChannelLayout(format, outconfig.channels);
+  format.m_channelLayout = GetChannelLayout(format, outconfig.channels, outconfig.channels);
   format.m_sampleRate = outconfig.sampleRate;
   format.m_frames = outconfig.periodSize;
   format.m_frameSize = outconfig.frameSize;
