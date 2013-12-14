@@ -15,7 +15,7 @@ class CPlexDirectoryTypeParserPicture : public CPlexDirectoryTypeParserVideo
 {
   public:
     CPlexDirectoryTypeParserPicture() {}
-    void Process(CFileItem &item, CFileItem &mediaContainer, TiXmlElement *itemElement);
+    void Process(CFileItem &item, CFileItem &mediaContainer, XML_ELEMENT *itemElement);
 };
 
 #endif // PLEXDIRECTORYTYPEPARSERPICTURE_H

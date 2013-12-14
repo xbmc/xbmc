@@ -12,16 +12,16 @@
 class CPlexDirectoryTypeParserVideo;
 
 #include "PlexDirectoryTypeParser.h"
-#include "XBMCTinyXML.h"
+#include "XMLChoice.h"
 
 class CPlexDirectoryTypeParserVideo : public CPlexDirectoryTypeParserBase
 {
   public:
-    virtual void Process(CFileItem& item, CFileItem& mediaContainer, TiXmlElement* itemElement);
+    virtual void Process(CFileItem& item, CFileItem& mediaContainer, XML_ELEMENT* itemElement);
 
-    void ParseMediaNodes(CFileItem& item, TiXmlElement* element);
-    void ParseMediaParts(CFileItem& mediaItem, TiXmlElement* element);
-    void ParseMediaStreams(CFileItem& mediaPart, TiXmlElement* element);
+    void ParseMediaNodes(CFileItem& item, XML_ELEMENT* element);
+    void ParseMediaParts(CFileItem& mediaItem, XML_ELEMENT* element);
+    void ParseMediaStreams(CFileItem& mediaPart, XML_ELEMENT* element);
     virtual void ParseTag(CFileItem& item, CFileItem& tagItem);
 
     static void DebugPrintVideoItem(const CFileItem &item);

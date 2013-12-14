@@ -16,7 +16,7 @@
 class CPlexDirectoryTypeParserAlbum : public CPlexDirectoryTypeParserBase
 {
   public:
-    virtual void Process(CFileItem& item, CFileItem& mediaContainer, TiXmlElement* itemElement);
+    virtual void Process(CFileItem& item, CFileItem& mediaContainer, XML_ELEMENT* itemElement);
     void ParseTag(CFileItem &item, CFileItem &tagItem);
 };
 
@@ -24,14 +24,14 @@ class CPlexDirectoryTypeParserTrack : public CPlexDirectoryTypeParserVideo
 {
 public:
   CPlexDirectoryTypeParserTrack() {}
-  virtual void Process(CFileItem& item, CFileItem& mediaContainer, TiXmlElement* itemElement);
+  virtual void Process(CFileItem& item, CFileItem& mediaContainer, XML_ELEMENT* itemElement);
 };
 
 class CPlexDirectoryTypeParserArtist : public CPlexDirectoryTypeParserAlbum
 {
 public:
   CPlexDirectoryTypeParserArtist() {}
-  virtual void Process(CFileItem& item, CFileItem& mediaContainer, TiXmlElement* itemElement);
+  virtual void Process(CFileItem& item, CFileItem& mediaContainer, XML_ELEMENT* itemElement);
 };
 
 
