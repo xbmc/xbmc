@@ -220,9 +220,6 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::GETSTATE:
           msg->Reply(CActiveAEControlProtocol::ACC, &m_state, sizeof(m_state));
           return;
-        case CActiveAEControlProtocol::SOUNDMODE:
-          m_soundMode = *(int*)msg->data;
-          return;
         case CActiveAEControlProtocol::VOLUME:
           m_volume = *(float*)msg->data;
           if (m_sinkHasVolume)
@@ -488,8 +485,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEDataProtocol::PLAYSOUND:
           CActiveAESound *sound;
           sound = *(CActiveAESound**)msg->data;
-          if (m_soundMode == AE_SOUND_OFF ||
-             (m_soundMode == AE_SOUND_IDLE && !m_streams.empty()))
+          if (m_settings.guisoundmode == AE_SOUND_OFF ||
+             (m_settings.guisoundmode == AE_SOUND_IDLE && !m_streams.empty()))
             return;
           if (sound)
           {
@@ -692,7 +689,6 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           if (!m_extDrain && HasWork())
           {
-            ResampleSounds();
             ClearDiscardedBuffers();
             m_extTimeout = 100;
             return;
@@ -1075,10 +1071,14 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   // reset gui sounds
   if (!CompareFormat(oldInternalFormat, m_internalFormat))
   {
-    std::vector<CActiveAESound*>::iterator it;
-    for (it = m_sounds.begin(); it != m_sounds.end(); ++it)
+    if (m_settings.guisoundmode == AE_SOUND_ALWAYS ||
+       (m_settings.guisoundmode == AE_SOUND_IDLE && m_streams.empty()))
     {
-      (*it)->SetConverted(false);
+      std::vector<CActiveAESound*>::iterator it;
+      for (it = m_sounds.begin(); it != m_sounds.end(); ++it)
+      {
+        (*it)->SetConverted(false);
+      }
     }
     m_sounds_playing.clear();
   }
@@ -2018,6 +2018,7 @@ void CActiveAE::LoadSettings()
 
   m_settings.stereoupmix = IsSettingVisible("audiooutput.stereoupmix") ? CSettings::Get().GetBool("audiooutput.stereoupmix") : false;
   m_settings.normalizelevels = CSettings::Get().GetBool("audiooutput.normalizelevels");
+  m_settings.guisoundmode = CSettings::Get().GetInt("audiooutput.guisoundmode");
 
   m_settings.passthrough = m_settings.config == AE_CONFIG_FIXED ? false : CSettings::Get().GetBool("audiooutput.passthrough");
   m_settings.ac3passthrough = CSettings::Get().GetBool("audiooutput.ac3passthrough");
@@ -2095,7 +2096,8 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.processquality"    ||
       setting == "audiooutput.passthrough"       ||
       setting == "audiooutput.samplerate"        ||
-      setting == "audiooutput.normalizelevels")
+      setting == "audiooutput.normalizelevels"   ||
+      setting == "audiooutput.guisoundmode")
   {
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
   }
@@ -2245,8 +2247,7 @@ bool CActiveAE::IsMuted()
 
 void CActiveAE::SetSoundMode(const int mode)
 {
-  int soundmode = mode;
-  m_controlPort.SendOutMessage(CActiveAEControlProtocol::SOUNDMODE, &soundmode, sizeof(int));
+  return;
 }
 
 void CActiveAE::KeepConfiguration(unsigned int millis)
@@ -2452,6 +2453,10 @@ void CActiveAE::StopSound(CActiveAESound *sound)
  */
 void CActiveAE::ResampleSounds()
 {
+  if (m_settings.guisoundmode == AE_SOUND_OFF ||
+     (m_settings.guisoundmode == AE_SOUND_IDLE && !m_streams.empty()))
+    return;
+
   std::vector<CActiveAESound*>::iterator it;
   for (it = m_sounds.begin(); it != m_sounds.end(); ++it)
   {
@@ -2498,7 +2503,7 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
                   false,
                   true,
                   NULL,
-                  AE_QUALITY_MID);
+                  m_settings.resampleQuality);
 
   dst_samples = resampler->CalcDstSampleCount(sound->GetSound(true)->nb_samples,
                                               m_internalFormat.m_sampleRate,
