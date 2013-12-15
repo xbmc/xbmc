@@ -20,8 +20,6 @@
 		<disabledcolor>grey3</disabledcolor>
 	</default>
 	<default type="button">
-		<left>300</left>
-		<top>200</top>
 		<width>300</width>
 		<height>42</height>
 		<texturefocus border="5">button-focus.png</texturefocus>

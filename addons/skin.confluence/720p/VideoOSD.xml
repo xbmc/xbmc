@@ -479,10 +479,10 @@
 		</control>
 		<control type="button" id="410">
 			<description>Fake button for mouse control</description>
-			<left>400r</left>
-			<top>350r</top>
+			<right>145</right>
+			<bottom>60</bottom>
 			<width>256</width>
-			<height>300</height>
+			<height>250</height>
 			<label>-</label>
 			<font>-</font>
 			<texturenofocus>-</texturenofocus>
@@ -494,10 +494,10 @@
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<animation effect="slide" start="0,0" end="0,80" time="0" condition="![VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled]">Conditional</animation>
 			<animation effect="slide" start="0,0" end="0,40" time="0" condition="!VideoPlayer.HasSubtitles">Conditional</animation>
-			<left>400r</left>
-			<top>350r</top>
+			<right>145</right>
+			<bottom>45</bottom>
 			<width>256</width>
-			<height>300</height>
+			<height>260</height>
 			<itemgap>0</itemgap>
 			<onleft>400</onleft>
 			<onright>400</onright>
@@ -598,10 +598,10 @@
 		<!-- STEREOSCOPIC 3D !LiveTV -->
 		<control type="button" id="520">
 			<description>Fake button for mouse control</description>
-			<left>455r</left>
-			<top>350r</top>
+			<right>200</right>
+			<bottom>60</bottom>
 			<width>256</width>
-			<height>300</height>
+			<height>210</height>
 			<label>-</label>
 			<font>-</font>
 			<texturenofocus>-</texturenofocus>
@@ -611,10 +611,10 @@
 		<control type="grouplist" id="500">
 			<visible>VideoPlayer.IsStereoscopic + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
-			<left>455r</left>
-			<top>350r</top>
+			<right>200</right>
+			<bottom>45</bottom>
 			<width>256</width>
-			<height>300</height>
+			<height>220</height>
 			<itemgap>0</itemgap>
 			<onleft>500</onleft>
 			<onright>500</onright>
@@ -697,10 +697,10 @@
 		<!-- STEREOSCOPIC 3D LiveTV -->
 		<control type="button" id="570">
 			<description>Fake button for mouse control</description>
-			<left>340r</left>
-			<top>350r</top>
+			<right>145</right>
+			<bottom>60</bottom>
 			<width>256</width>
-			<height>300</height>
+			<height>210</height>
 			<label>-</label>
 			<font>-</font>
 			<texturenofocus>-</texturenofocus>
@@ -710,10 +710,10 @@
 		<control type="grouplist" id="550">
 			<visible>videoplayer.isstereoscopic + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
-			<left>340r</left>
-			<top>350r</top>
+			<right>145</right>
+			<bottom>45</bottom>
 			<width>256</width>
-			<height>300</height>
+			<height>220</height>
 			<itemgap>0</itemgap>
 			<onleft>550</onleft>
 			<onright>550</onright>
