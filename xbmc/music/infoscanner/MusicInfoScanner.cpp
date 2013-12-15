@@ -922,7 +922,7 @@ loop:
   }
   else if (albumDownloadStatus == INFO_ADDED)
   {
-    album.MergeScrapedAlbum(albumInfo.GetAlbum());
+    album.MergeScrapedAlbum(albumInfo.GetAlbum(), CSettings::Get().GetBool("musiclibrary.overridetags"));
     m_musicDatabase.Open();
     m_musicDatabase.UpdateAlbum(album);
     GetAlbumArtwork(album.idAlbum, album);
@@ -953,7 +953,7 @@ loop:
   }
   else if (artistDownloadStatus == INFO_ADDED)
   {
-    artist.MergeScrapedArtist(artistInfo.GetArtist());
+    artist.MergeScrapedArtist(artistInfo.GetArtist(), CSettings::Get().GetBool("musiclibrary.overridetags"));
     m_musicDatabase.Open();
     m_musicDatabase.UpdateArtist(artist);
     m_musicDatabase.GetArtistPath(artist.idArtist, artist.strPath);
