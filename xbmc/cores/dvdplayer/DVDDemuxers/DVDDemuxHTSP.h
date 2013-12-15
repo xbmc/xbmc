@@ -58,6 +58,13 @@ protected:
   htsmsg_t* ReadStream();
   bool      ReadStream(uint8_t* buf, int len);
 
+  inline uint32_t htstohl(uint8_t *buf) {
+    return ((uint32_t) buf[0] << 24) + 
+           ((uint32_t) buf[1] << 16) + 
+           ((uint32_t) buf[2] << 8) + 
+           (uint32_t) buf[3];
+  }
+
   typedef std::vector<CDemuxStream*> TStreams;
 
   CDVDInputStream*     m_Input;

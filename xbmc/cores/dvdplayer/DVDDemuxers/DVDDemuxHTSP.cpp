@@ -143,11 +143,11 @@ htsmsg_t* CDVDDemuxHTSP::ReadStream()
   if(m_Input->IsStreamType(DVDSTREAM_TYPE_HTSP))
     return ((CDVDInputStreamHTSP*)m_Input)->ReadStream();
 
-  uint32_t l;
-  if(!ReadStream((uint8_t*)&l, 4))
+  uint8_t lb[4];
+  if(!ReadStream(lb, 4))
     return NULL;
 
-  l = ntohl(l);
+  uint32_t l = htstohl(lb);
   if(l == 0)
     return htsmsg_create_map();
 
