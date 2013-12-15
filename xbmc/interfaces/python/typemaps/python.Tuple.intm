@@ -20,8 +20,7 @@
  */
 %>
 <%
-matcher = ltype =~ /Tuple<\((.*)\)>/
-    vectype = '(' + matcher[0][1] + ')'
+    List types = swigTypeParser.SwigType_templateparmlist(ltype)
     boolean ispointer = swigTypeParser.SwigType_ispointer(type)
     String accessor = ispointer ? '->' : '.'
     int seq = sequence.increment()
@@ -30,24 +29,17 @@ matcher = ltype =~ /Tuple<\((.*)\)>/
     {
       bool isTuple = PyObject_TypeCheck(${slarg},&PyTuple_Type);
       if (!isTuple && !PyObject_TypeCheck(${slarg},&PyList_Type))
-      {
-        PyErr_SetString(PyExc_TypeError, "the parameter \"${api}\" must be either a Tuple or a List.");
-        return NULL; // short circuit the rest of this python method
-      }
+        throw WrongTypeException("The parameter \"${api}\" must be either a Tuple or a List.");
       int vecSize = (isTuple ? PyTuple_Size(${slarg}) : PyList_Size(${slarg}));
 <%
-      swigTypeParser.SwigType_parmlist(vectype).eachWithIndex { curType, entryIndex -> 
+      types.eachWithIndex { curType, entryIndex -> 
 %>
       if (vecSize > ${entryIndex})
       {
         PyObject *pyentry${entryIndex}_${seq} = NULL;
         pyentry${entryIndex}_${seq} = (isTuple ? PyTuple_GetItem(${slarg}, ${entryIndex}) : PyList_GetItem(${slarg}, ${entryIndex}));
         ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(curType))} entry${entryIndex}_${seq};
-        ${helper.getInConversion(curType, 'entry' + entryIndex + '_' + seq, 'pyentry' + entryIndex + '_' + seq, method,
-                                 [ 'type' : vectype,
-                                   'ltype' : swigTypeParser.SwigType_ltype(curType),
-                                   'sequence' : sequence
-                                   ])}
+        ${helper.getInConversion(curType, 'entry' + entryIndex + '_' + seq, 'pyentry' + entryIndex + '_' + seq, method,[ 'sequence' : sequence ])}
         ${api}${accessor}${tupleAccess[entryIndex]}() = entry${entryIndex}_${seq};
       }
 <%

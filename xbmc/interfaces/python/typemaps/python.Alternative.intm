@@ -20,16 +20,13 @@
  */
 %>
 <%
-    type = swigTypeParser.SwigType_resolve_all_typedefs(type)
-    matcher = type =~ /Alternative<\((.*)\)>/
-    vectype = '(' + matcher[0][1] + ')'
-    boolean ispointer = swigTypeParser.SwigType_ispointer(type)
+    boolean ispointer = swigTypeParser.SwigType_ispointer(ltype)
     String accessor = ispointer ? '->' : '.'
     int seq = sequence.increment()
     altAccess = [ 'former', 'later' ]
     altSwitch = [ 'first', 'second' ]
 
-    List types = swigTypeParser.SwigType_parmlist(vectype)
+    List types = swigTypeParser.SwigType_templateparmlist(ltype)
 %>
     {
       // we need to check the parameter type and see if it matches
@@ -38,10 +35,7 @@
       {
         ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(types[0]))} entry0_${seq};
         ${helper.getInConversion(types[0], 'entry0' + '_' + seq, 'pyentry' + '_' + seq, method,
-                                 [ 'type' : vectype,
-                                   'ltype' : swigTypeParser.SwigType_ltype(types[0]),
-                                   'sequence' : sequence
-                                   ])}
+                                 [ 'sequence' : sequence ])}
         ${api}${accessor}${altAccess[0]}() = entry0_${seq};
       }
       catch (XBMCAddon::WrongTypeException wte)
@@ -50,10 +44,7 @@
         {
           ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(types[1]))} entry1_${seq};
           ${helper.getInConversion(types[1], 'entry1' + '_' + seq, 'pyentry' + '_' + seq, method,
-                                   [ 'type' : vectype,
-                                     'ltype' : swigTypeParser.SwigType_ltype(types[1]),
-                                     'sequence' : sequence
-                                     ])}
+                                   [ 'sequence' : sequence ])}
           ${api}${accessor}${altAccess[1]}() = entry1_${seq};
         }
         catch (XBMCAddon::WrongTypeException wte2)

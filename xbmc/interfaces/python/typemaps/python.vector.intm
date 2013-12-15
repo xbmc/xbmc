@@ -20,8 +20,8 @@
  */
 %>
 <%
-    matcher = ltype =~ /std::vector<\((.*)\)>/
-    vectype = matcher[0][1]
+    List templateArgs = swigTypeParser.SwigType_templateparmlist(ltype)
+    vectype = templateArgs[0]
     boolean ispointer = swigTypeParser.SwigType_ispointer(type)
     String accessor = ispointer ? '->' : '.'
     int seq = sequence.increment()
@@ -29,10 +29,7 @@
     {
       bool isTuple = PyObject_TypeCheck(${slarg},&PyTuple_Type);
       if (!isTuple && !PyObject_TypeCheck(${slarg},&PyList_Type))
-      {
-        PyErr_SetString(PyExc_TypeError, "the parameter \"${api}\" must be either a Tuple or a List.");
-        return NULL; // short circuit the rest of this python method
-      }
+        throw WrongTypeException("The parameter \"${api}\" must be either a Tuple or a List.");
 
       <%  if (ispointer) print("${api} = new std::vector<${swigTypeParser.SwigType_str(vectype)}>();") %>
       PyObject *pyentry${seq} = NULL;

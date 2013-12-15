@@ -44,10 +44,13 @@ using namespace xbmcgui;
 %feature("knownbasetypes") XBMCAddon::xbmcgui "AddonClass,AddonCallback"
 
 %include "interfaces/legacy/swighelper.h"
+%include "interfaces/legacy/AddonString.h"
 
 %include "interfaces/legacy/ModuleXbmcgui.h"
 
 %include "interfaces/legacy/Exception.h"
+
+%include "interfaces/legacy/Dictionary.h"
 
 %include "interfaces/legacy/ListItem.h"
 

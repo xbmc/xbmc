@@ -20,8 +20,7 @@
  */
 %>
 <%
-    matcher = type =~ /Alternative<\((.*)\)>/
-    vectype = '(' + matcher[0][1] + ')'
+    List types = swigTypeParser.SwigType_templateparmlist(type)
     boolean ispointer = swigTypeParser.SwigType_ispointer(type)
     int seq = sequence.increment()
     String accessor = ispointer ? '->' : '.'
@@ -32,7 +31,7 @@
 
     if (<%if (ispointer) { %>${api} != NULL && <%}%>pos != XBMCAddon::none)
     { <%
-      swigTypeParser.SwigType_parmlist(vectype).eachWithIndex { curType, entryIndex -> 
+      types.eachWithIndex { curType, entryIndex -> 
 %>
       if (pos == XBMCAddon::${altSwitch[entryIndex]})
       {

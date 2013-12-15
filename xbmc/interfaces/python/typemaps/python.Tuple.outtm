@@ -20,8 +20,7 @@
  */
 %>
 <%
-    matcher = type =~ /Tuple<\((.*)\)>/
-    vectype = '(' + matcher[0][1] + ')'
+    List types = swigTypeParser.SwigType_templateparmlist(type)
     boolean ispointer = swigTypeParser.SwigType_ispointer(type)
     int seq = sequence.increment()
     String accessor = ispointer ? '->' : '.'
@@ -38,7 +37,7 @@
 <%  }  // this ends the if (ispointer)
 %>    {
       PyObject* pyentry${seq}; <%
-      swigTypeParser.SwigType_parmlist(vectype).eachWithIndex { curType, entryIndex -> 
+      types.eachWithIndex { curType, entryIndex -> 
 %>
 
       if (vecSize > ${entryIndex})

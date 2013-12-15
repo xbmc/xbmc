@@ -44,6 +44,7 @@ using namespace xbmc;
 
 %feature("python:coerceToUnicode") XBMCAddon::xbmc::getLocalizedString "true"
 
+%include "interfaces/legacy/AddonString.h"
 %include "interfaces/legacy/ModuleXbmc.h"
 
 %feature("director") Player;

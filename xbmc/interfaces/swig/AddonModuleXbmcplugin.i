@@ -35,5 +35,6 @@ using namespace xbmcplugin;
 %feature("knownapitypes") XBMCAddon::xbmcplugin "XBMCAddon::xbmcgui::ListItem"
 
 %include "interfaces/legacy/swighelper.h"
+%include "interfaces/legacy/AddonString.h"
 %include "interfaces/legacy/ModuleXbmcplugin.h"
 
