@@ -221,6 +221,11 @@ public class Helper
 
       if (!convertTemplate)
       {
+        // check the typedef resolution
+        String apiTypeResolved = SwigTypeParser.SwigType_resolve_all_typedefs(apiType)
+        if (!apiTypeResolved.equals(apiType))
+          return getOutConversion(apiTypeResolved, apiName, method, overrideBindings, recurse)
+
         if (recurse)
           return getOutConversion(SwigTypeParser.SwigType_ltype(apiType),apiName,method,overrideBindings,false)
         else if (!isKnownApiType(apiType,method))
@@ -339,7 +344,13 @@ public class Helper
       if (convertTemplate == null)
         convertTemplate = inTypemap.find({ key, value -> (key instanceof Pattern && key.matcher(apiLType).matches()) })?.value
 
-      if (!convertTemplate){
+      if (!convertTemplate)
+      {
+         // check the typedef resolution
+         String apiTypeResolved = SwigTypeParser.SwigType_resolve_all_typedefs(apiType)
+         if (!apiTypeResolved.equals(apiType))
+           return getInConversion(apiTypeResolved, apiName, paramName, slName, method, overrideBindings)
+
          // it's ok if this is a known type
          if (!isKnownApiType(apiType,method) && !isKnownApiType(apiLType,method))
            System.out.println("WARNING: Unknown parameter type: ${apiType} (or ${apiLType}) for the call ${Helper.findFullClassName(method) + '::' + Helper.callingName(method)}")
