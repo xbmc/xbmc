@@ -627,8 +627,14 @@ PopulateTagFromObject(CMusicInfoTag&          tag,
     }
     tag.SetTrackNumber(object.m_MiscInfo.original_track_number);
 
-    for (NPT_List<NPT_String>::Iterator it = object.m_Affiliation.genres.GetFirstItem(); it; it++)
+    for (NPT_List<NPT_String>::Iterator it = object.m_Affiliation.genres.GetFirstItem(); it; it++) {
+        // ignore single "Unknown" genre inserted by Platinum
+        if (it == object.m_Affiliation.genres.GetFirstItem() && object.m_Affiliation.genres.GetItemCount() == 1 &&
+            *it == "Unknown")
+            break;
+
         tag.SetGenre((const char*) *it);
+    }
 
     tag.SetAlbum((const char*)object.m_Affiliation.album);
     CDateTime last;
@@ -684,7 +690,14 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     }
     tag.m_iYear       = date.GetYear();
     for (unsigned int index = 0; index < object.m_Affiliation.genres.GetItemCount(); index++)
+    {
+      // ignore single "Unknown" genre inserted by Platinum
+      if (index == 0 && object.m_Affiliation.genres.GetItemCount() == 1 &&
+          *object.m_Affiliation.genres.GetItem(index) == "Unknown")
+          break;
+
       tag.m_genre.push_back(object.m_Affiliation.genres.GetItem(index)->GetChars());
+    }
     for (unsigned int index = 0; index < object.m_People.directors.GetItemCount(); index++)
       tag.m_director.push_back(object.m_People.directors.GetItem(index)->name.GetChars());
     for (unsigned int index = 0; index < object.m_People.authors.GetItemCount(); index++)
