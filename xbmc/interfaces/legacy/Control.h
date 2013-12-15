@@ -1295,30 +1295,30 @@ namespace XBMCAddon
     /**
      * ControlRadioButton class.
      * 
-     * ControlRadioButton(x, y, width, height, label[, focusOnTexture, noFocusOnTexture,
-     *                   focusOffTexture, noFocusOffTexture, focusTexture, noFocusTexture,
+     * ControlRadioButton(x, y, width, height, label[, focusOnTexture, noFocusOnTexture,\n
+     *                   focusOffTexture, noFocusOffTexture, focusTexture, noFocusTexture,\n
      *                   textOffsetX, textOffsetY, alignment, font, textColor, disabledColor])
      * 
-     * x                 : integer - x coordinate of control.
-     * y                 : integer - y coordinate of control.
-     * width             : integer - width of control.
-     * height            : integer - height of control.
-     * label             : string or unicode - text string.
-     * focusOnTexture    : [opt] string - filename for radio ON focused texture.
-     * noFocusOnTexture  : [opt] string - filename for radio ON not focused texture.
-     * focusOfTexture    : [opt] string - filename for radio OFF focused texture.
-     * noFocusOffTexture : [opt] string - filename for radio OFF not focused texture.
-     * focusTexture      : [opt] string - filename for radio ON texture (deprecated, use focusOnTexture and noFocusOnTexture).
-     * noFocusTexture    : [opt] string - filename for radio OFF texture (deprecated, use focusOffTexture and noFocusOffTexture).
-     * textOffsetX       : [opt] integer - horizontal text offset
-     * textOffsetY       : [opt] integer - vertical text offset
-     * alignment         : [opt] integer - alignment of label - *Note, see xbfont.h
-     * font              : [opt] string - font used for label text. (e.g. 'font13')
-     * textColor         : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')
+     * x                 : integer - x coordinate of control.\n
+     * y                 : integer - y coordinate of control.\n
+     * width             : integer - width of control.\n
+     * height            : integer - height of control.\n
+     * label             : string or unicode - text string.\n
+     * focusOnTexture    : [opt] string - filename for radio ON focused texture.\n
+     * noFocusOnTexture  : [opt] string - filename for radio ON not focused texture.\n
+     * focusOfTexture    : [opt] string - filename for radio OFF focused texture.\n
+     * noFocusOffTexture : [opt] string - filename for radio OFF not focused texture.\n
+     * focusTexture      : [opt] string - filename for radio ON texture (deprecated, use focusOnTexture and noFocusOnTexture).\n
+     * noFocusTexture    : [opt] string - filename for radio OFF texture (deprecated, use focusOffTexture and noFocusOffTexture).\n
+     * textOffsetX       : [opt] integer - horizontal text offset\n
+     * textOffsetY       : [opt] integer - vertical text offset\n
+     * alignment         : [opt] integer - alignment of label - *Note, see xbfont.h\n
+     * font              : [opt] string - font used for label text. (e.g. 'font13')\n
+     * textColor         : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')\n
      * disabledColor     : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
      * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.
-     *        Once you use a keyword, all following arguments require the keyword.
+     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
+     *        Once you use a keyword, all following arguments require the keyword.\n
      *        After you create the control, you need to add it to the window with addControl().
      * 
      * example:
@@ -1336,9 +1336,7 @@ namespace XBMCAddon
                          long _alignment = (XBFONT_LEFT | XBFONT_CENTER_Y), 
                          const char* font = NULL, const char* textColor = NULL,
                          const char* disabledColor = NULL, long angle = 0,
-                         const char* shadowColor = NULL, const char* focusedColor = NULL,
-                         const char* TextureRadioFocus = NULL, 
-                         const char* TextureRadioNoFocus = NULL);
+                         const char* shadowColor = NULL, const char* focusedColor = NULL);
 
       // setSelected() Method
       /**
