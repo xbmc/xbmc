@@ -51,12 +51,6 @@ static enum AEChannel ALSAChannelMap51Wide[ALSA_MAX_CHANNELS + 1] = {
   AE_CH_NULL
 };
 
-static enum AEChannel ALSAChannelMap71Wide[ALSA_MAX_CHANNELS + 1] = {
-  AE_CH_FLOC    , AE_CH_FROC    , AE_CH_BL      , AE_CH_BR      , AE_CH_FC      , AE_CH_LFE     , AE_CH_FL        , AE_CH_FR        ,
-  AE_CH_UNKNOWN1, AE_CH_UNKNOWN2, AE_CH_UNKNOWN3, AE_CH_UNKNOWN4, AE_CH_UNKNOWN5, AE_CH_UNKNOWN6, AE_CH_UNKNOWN7, AE_CH_UNKNOWN8, /* for p16v devices */
-  AE_CH_NULL
-};
-
 static enum AEChannel ALSAChannelMapPassthrough[ALSA_MAX_CHANNELS + 1] = {
   AE_CH_RAW     , AE_CH_RAW     , AE_CH_RAW     , AE_CH_RAW     , AE_CH_RAW     , AE_CH_RAW     , AE_CH_RAW      , AE_CH_RAW      ,
   AE_CH_UNKNOWN1, AE_CH_UNKNOWN2, AE_CH_UNKNOWN3, AE_CH_UNKNOWN4, AE_CH_UNKNOWN5, AE_CH_UNKNOWN6, AE_CH_UNKNOWN7, AE_CH_UNKNOWN8, /* for p16v devices */
@@ -125,10 +119,6 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(AEAudioFormat format, unsign
     if (format.m_channelLayout.HasChannel(AE_CH_SL) && !format.m_channelLayout.HasChannel(AE_CH_BL))
     {
       channelMap = ALSAChannelMap51Wide;
-    }
-    else if (maxChannels >= 8 && format.m_channelLayout.HasChannel(AE_CH_FLOC) && !format.m_channelLayout.HasChannel(AE_CH_SL))
-    {
-      channelMap = ALSAChannelMap71Wide;
     }
     for (unsigned int c = 0; c < 8; ++c)
     {
