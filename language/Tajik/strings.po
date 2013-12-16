@@ -5477,6 +5477,18 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Истодани нусхабардории диски CD"
 
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Манбаи дастнорас"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from"
+msgstr "Шумо бо объекти мултимедиа аз зерин чӣ кор мекунед:"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Нигоҳ доштан"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Тоза кардан"
@@ -10188,6 +10200,22 @@ msgstr "Ягон хидмати зерунвонҳо насб нашудааст
 msgctxt "#24115"
 msgid "Save subtitles to movie folder"
 msgstr "Захира кардани зерунвонҳо ба ҷузвдони филм"
+
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr "Хидмати телевизионии пешфарз"
+
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles"
+msgstr "Хидматеро барои истифода ҳамчун хидмати пешфарз ҳангоми ҷустуҷӯи зерунвонҳои барномаҳои телевизионӣ интихоб намоед"
+
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr "Хидмати филмҳои пешфарз"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles"
+msgstr "Хидматеро барои истифода ҳамчун хидмати пешфарз ҳангоми ҷустуҷӯи зерунвонҳои филмҳо интихоб намоед"
 
 msgctxt "#25000"
 msgid "Notifications"

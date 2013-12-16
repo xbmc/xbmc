@@ -10825,6 +10825,18 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Prikaži pripone medijskih datote. Primer 'Party Anima.mp3' bi preprosto bil prikazan kot 'Party Animal'."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Prezri določene \"žetone\" med razvrščanjem. Primer: 'The Simpsons' bi bil preprosto razvrščen kot 'Simpsons'. Če želiš konfigurirati žetone, glej http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Dovoli brisanje in preimenovanje datotek s pomočjo uporabniškega vmesnika, preko vsebinskega menija (Primer: na tipkovnici pritisni tipko C za prikaz vsebinskega menija)."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Pokaži gumb Dodaj vir iz koreninskih odsekov uporabniškega vmesnika."
+
 msgctxt "#36127"
 msgid "Show hidden files and directories."
 msgstr "Prikaži skrite datoteke in mape."
@@ -10832,6 +10844,10 @@ msgstr "Prikaži skrite datoteke in mape."
 msgctxt "#36128"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Nastavi potreben neaktivni čas pred prehodom v prikaz ohranjevalnika zaslona."
 
 msgctxt "#36132"
 msgid "Preview the selected screensaver."

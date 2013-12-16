@@ -9695,7 +9695,7 @@ msgstr "Tillegg"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr "Tillegger"
+msgstr "Tillegg"
 
 msgctxt "#24002"
 msgid "Add-on options"
@@ -9815,7 +9815,7 @@ msgstr "Tvungen oppdatering"
 
 msgctxt "#24036"
 msgid "Change log"
-msgstr "Endre logg"
+msgstr "Endringslogg"
 
 msgctxt "#24037"
 msgid "Uninstall"
@@ -11724,6 +11724,10 @@ msgstr "Ingen informasjon tilgjengelig enda."
 msgctxt "#36349"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
+
+msgctxt "#36350"
+msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
+msgstr "Send 'Wake-On-Lan' automatisk til server(e) like før åpning av delte filer eller tjenester."
 
 msgctxt "#36351"
 msgid "No info available yet."

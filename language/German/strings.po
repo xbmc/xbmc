@@ -5477,6 +5477,14 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Rippen der CD stoppen"
 
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Nicht verfügbar"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Behalten"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Entfernen"
@@ -10188,6 +10196,22 @@ msgstr "Keine Untertitel-Dienste installiert"
 msgctxt "#24115"
 msgid "Save subtitles to movie folder"
 msgstr "Speichere Untertitel ins Film-Verzeichnis"
+
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr "Standard TV-Dienst"
+
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles"
+msgstr "Dienst auswählen, der als Standard für die Suche nach TV-Show-Untertiteln verwendet wird"
+
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr "Standard Film-Scraper"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles"
+msgstr "Dienst auswählen, der als Standard für die Suche nach Film-Untertiteln verwendet wird"
 
 msgctxt "#25000"
 msgid "Notifications"

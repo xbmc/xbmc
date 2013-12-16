@@ -869,6 +869,10 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "Кількість каналів"
 
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Виводити звук у форматі DTS"
+
 msgctxt "#255"
 msgid "CDDB"
 msgstr "CDDB"
@@ -1040,6 +1044,18 @@ msgstr "Зміщення звуку"
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Закладки"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "Виводити звук у форматі MP1"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "Виводити звук у форматі MP2"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "Виводити звук у форматі MP3"
 
 msgctxt "#303"
 msgid "Delay"

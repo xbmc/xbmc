@@ -871,7 +871,7 @@ msgstr "Выберите папку назначения"
 
 msgctxt "#252"
 msgid "Output stereo to all speakers"
-msgstr "Выводить стерео на все динамики"
+msgstr "Выводить стерео на все колонки"
 
 msgctxt "#253"
 msgid "Number of channels"
@@ -1191,15 +1191,15 @@ msgstr "Преобразование частоты кадров"
 
 msgctxt "#337"
 msgid "Output configuration"
-msgstr "Настроить данные вывода"
+msgstr "Настройка вывода"
 
 msgctxt "#338"
 msgid "Fixed"
-msgstr "Фиксированное"
+msgstr "Фиксир."
 
 msgctxt "#339"
 msgid "Optimized"
-msgstr "Оптимизированный"
+msgstr "Оптимизир."
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1227,7 +1227,7 @@ msgstr "Год"
 
 msgctxt "#346"
 msgid "Normalize levels on downmix"
-msgstr "Нормализация уровней при downmix"
+msgstr "Нормализовать уровни при микшировании"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
@@ -1235,7 +1235,7 @@ msgstr "Выводить звук в формате DTS-HD"
 
 msgctxt "#348"
 msgid "Enable passthrough"
-msgstr "Активировать пересылку"
+msgstr "Включить прямой вывод звука"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1515,7 +1515,7 @@ msgstr "Макс."
 
 msgctxt "#420"
 msgid "Best Match"
-msgstr "Автоподбор"
+msgstr "Оптимизир."
 
 msgctxt "#421"
 msgid "Keep audio device alive"
@@ -1667,7 +1667,7 @@ msgstr "Сменить вид"
 
 msgctxt "#458"
 msgid "Limit sampling rate (kHz)"
-msgstr "Ограничить частоту (кГц)"
+msgstr "Ограничить частоту сэмплирования (кГц)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2955,7 +2955,7 @@ msgstr "Программные дополнения"
 
 msgctxt "#1044"
 msgid "Set plug-in thumb"
-msgstr "Установить мини-изображение для модуля"
+msgstr "Выбрать эскиз для дополнения"
 
 msgctxt "#1045"
 msgid "Add-on settings"
@@ -3523,7 +3523,7 @@ msgstr "Сброс"
 
 msgctxt "#10036"
 msgid "Basic"
-msgstr "Начальный"
+msgstr "Базовый"
 
 msgctxt "#10037"
 msgid "Standard"
@@ -3531,7 +3531,7 @@ msgstr "Стандартный"
 
 msgctxt "#10038"
 msgid "Advanced"
-msgstr "Продвинутый"
+msgstr "Расширенный"
 
 msgctxt "#10039"
 msgid "Expert"
@@ -3543,7 +3543,7 @@ msgstr "Браузер дополнений"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
-msgstr "Сбросить настройки на значение по умолчанию"
+msgstr "Сбросить настройки до значений по умолчанию"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3559,7 +3559,7 @@ msgstr "Справка недоступна"
 
 msgctxt "#10045"
 msgid "Resets all the visible settings to their default values."
-msgstr "Сбросить все представленные настройки до уровня по умолчанию"
+msgstr "Сбросить все доступные настройки до значений по умолчанию."
 
 msgctxt "#10046"
 msgid "No categories available"
@@ -3567,7 +3567,7 @@ msgstr "Нет доступных категорий"
 
 msgctxt "#10047"
 msgid "Try changing the setting level to see additional categories and settings."
-msgstr "Попробуйте поменять настройки, чтобы увидеть дополнительные категории и настройки."
+msgstr "Попробуйте поменять уровень настроек, чтобы увидеть дополнительные категории и настройки."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3907,7 +3907,7 @@ msgstr "Количество попыток ввода пароля исчерп
 
 msgctxt "#12347"
 msgid "The system will now power down."
-msgstr "Сейчас система будет выключена. "
+msgstr "Сейчас система будет выключена."
 
 msgctxt "#12348"
 msgid "Item locked"
@@ -4211,7 +4211,7 @@ msgstr "Сохранить разрешение?"
 
 msgctxt "#13111"
 msgid "Would you like to keep this change?"
-msgstr "Хотите сохранить изменения?"
+msgstr "Сохранить изменения?"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
@@ -4259,7 +4259,7 @@ msgstr "Преобразование цветов VDPAU Studio"
 
 msgctxt "#13123"
 msgid "Keep skin?"
-msgstr "Оставить настройку темы?"
+msgstr "Оставить обложку?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4983,7 +4983,7 @@ msgstr "Включить аппаратное ускорение (MediaCodec)"
 
 msgctxt "#13440"
 msgid "Frame Multi Threaded Decoding (less reliable)"
-msgstr "Мультипотоковое декодирование (менее стабильно)"
+msgstr "Многопоточное декодирование (менее надежно)"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5071,11 +5071,11 @@ msgstr "%.1f с."
 
 msgctxt "#13554"
 msgid "%d Minute"
-msgstr "%d Минута"
+msgstr "%d мин."
 
 msgctxt "#13555"
 msgid "%d Minutes"
-msgstr "%d Минуты"
+msgstr "%d мин."
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -5477,6 +5477,18 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Остановить оцифровку CD"
 
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Источник недоступен"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from"
+msgstr "Операция с медиафайлами из"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Сохнанить"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Удалить"
@@ -5763,7 +5775,7 @@ msgstr "Изменить название"
 
 msgctxt "#16106"
 msgid "Manage..."
-msgstr "Управление..."
+msgstr "Управление…"
 
 msgctxt "#16107"
 msgid "Edit sort title"
@@ -6319,7 +6331,7 @@ msgstr "Микшировать"
 
 msgctxt "#19101"
 msgid "Provider"
-msgstr "Провайдер"
+msgstr "Поставщик"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -6771,7 +6783,7 @@ msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
-msgstr "Ни один Модуль PVR не может быть активирован. Проверьте настройки или системный журнал для дополнительной информации."
+msgstr "Не удалось включить дополнения PVR. Проверьте настройки или см. журнал."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6813,6 +6825,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Уведомлять о обновлении таймеров"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Использовать номера каналов с сервера (только для 1 дополнения PVR)"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "Менеджер PVR запускается…"
@@ -6835,7 +6851,7 @@ msgstr "Запуск фоновых процессов"
 
 msgctxt "#19240"
 msgid "No PVR Add-on enabled"
-msgstr "Нет активированного Модуля PVR"
+msgstr "Нет активных дополнений PVR"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
@@ -6843,7 +6859,7 @@ msgstr "Менеджер PVR включен без"
 
 msgctxt "#19242"
 msgid "enabled PVR Add-on. Enable at least one Add-on"
-msgstr "активированных модулей PVR. Активируйте по меньшей мере один Модуль"
+msgstr "активных дополнений PVR. Включите по крайней мере одно дополнение"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6959,7 +6975,7 @@ msgstr "* Все записи"
 
 msgctxt "#19271"
 msgid "No PVR Add-ons could be found"
-msgstr "Ни одного модуля PVR не обнаружено"
+msgstr "Не найдено дополнений PVR"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -6967,7 +6983,7 @@ msgstr "Для использования функций PVR необходим 
 
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
-msgstr "Модуль (внутрисистемной коммутации/внутреннего интерфейса), необходимый для ипользования PVR."
+msgstr "серверное ПО и соответствующее дополнение."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -9275,11 +9291,11 @@ msgstr "%s—%s"
 
 msgctxt "#21600"
 msgid "Prefer external subtitles"
-msgstr "Приоритет субтитров извне"
+msgstr "Предпочитать внешние субтитры"
 
 msgctxt "#21601"
 msgid "Prefer external subtitles to internal ones"
-msgstr "Приоритет субтитров извне над встроенными субтитрами"
+msgstr "Предпочитать внешние субтитры при наличии внутренних."
 
 msgctxt "#21602"
 msgid "(External)"
@@ -9975,11 +9991,11 @@ msgstr "Неправильная структура дополнения"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed Add-on(s)"
-msgstr "% используется следующим установленным(и) Модулем(-ями)"
+msgstr "%s используется установленными дополнениями"
 
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
-msgstr "Данный Модуль не может быть удален."
+msgstr "Невозможно удалить дополнение"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -10095,7 +10111,7 @@ msgstr "Заблокировать менеджер дополнений"
 
 msgctxt "#24091"
 msgid "This Add-on cannot be disabled"
-msgstr "Данный Модуль нельзя дезактивировать"
+msgstr "Невозможно отключить дополнение"
 
 msgctxt "#24094"
 msgid "(current)"
@@ -10143,35 +10159,35 @@ msgstr "Модуль несовместим из-за несоблюдения �
 
 msgctxt "#24105"
 msgid "Pause when searching for subtitles"
-msgstr "Приостановите для поиска субтитров."
+msgstr "Пауза при поиске субтитров"
 
 msgctxt "#24106"
 msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
-msgstr "Если субтитры не сохранены в папке с видео, тогда они загружаются в папку субтитров по выбору пользователя"
+msgstr "Вместо папки с видео субтитры будут сохранены в папку, указанную пользователем."
 
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
-msgstr "Поиск субтитров..."
+msgstr "Поиск субтитров…"
 
 msgctxt "#24108"
 msgid "%d subtitles found"
-msgstr "Найдено %d субтитров"
+msgstr "Найдено субтитров: %d"
 
 msgctxt "#24109"
 msgid "No subtitles found"
-msgstr "Субтитров не обнаружено"
+msgstr "Субтитры не найдены"
 
 msgctxt "#24110"
 msgid "Downloading subtitles ..."
-msgstr "Субтитры загружаются..."
+msgstr "Загрузка субтитров…"
 
 msgctxt "#24111"
 msgid "Languages to download subtitles for"
-msgstr "Языки, для которых загружаются субтитры:"
+msgstr "Языки загружаемых субтитров"
 
 msgctxt "#24112"
 msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
-msgstr "Установить языки для поиска субтитров. Не все источники будут использовать указанные языки."
+msgstr "Выбрать языки для поиска субтитров. Не все службы субтитров поддерживают нужные языки."
 
 msgctxt "#24113"
 msgid "Failed to download subtitle"
@@ -10179,11 +10195,27 @@ msgstr "Не удалось загрузить субтитры"
 
 msgctxt "#24114"
 msgid "No subtitle services installed"
-msgstr "Не обнаружены источники субтитров"
+msgstr "Службы субтитров не установлены"
 
 msgctxt "#24115"
 msgid "Save subtitles to movie folder"
-msgstr "Сохранить субтитры в папку для видео"
+msgstr "Сохранять субтитры в папку с видео"
+
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr "Служба субтитров сериалов"
+
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles"
+msgstr "Выбор службы, используемой по умолчанию для поиска субтитров к сериалам."
+
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr "Служба субтитров фильмов"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles"
+msgstr "Выбор службы, используемой по умолчанию для поиска субтитров к фильмам."
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10571,7 +10603,7 @@ msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
-msgstr "Конфигурация динамиков"
+msgstr "Конфигурация колонок"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -10613,6 +10645,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Действие при отсутствии звуков воспроизведения или интерфейса. [Всегда] — непрерывный вывод неслышимого сигнала, чтобы предотвратить отключение ресивера/усилителя. При этом могут блокироваться звуки других приложений. [1—10 мин.] — то же, что и [Всегда], но по истечении указанного интервала времени вывод аудио отключается. [Выкл.] — вывод аудио отключается. Примечание: в этом режиме возможен пропуск звука."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Звуки интерфейса"
@@ -10631,23 +10667,23 @@ msgstr "Никогда"
 
 msgctxt "#34124"
 msgid "44.1"
-msgstr "44.1"
+msgstr "44,1"
 
 msgctxt "#34125"
 msgid "48.0"
-msgstr "48.0"
+msgstr "48,0"
 
 msgctxt "#34126"
 msgid "88.2"
-msgstr "88.2"
+msgstr "88,2"
 
 msgctxt "#34127"
 msgid "96.0"
-msgstr "96.0"
+msgstr "96,0"
 
 msgctxt "#34128"
 msgid "192.0"
-msgstr "192.0"
+msgstr "192,0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -10763,7 +10799,7 @@ msgstr "Отключать джойстик, когда это устройст�
 
 msgctxt "#35103"
 msgid "Enable system keys in fullscreen"
-msgstr "Активировать нажатия клавиш в полноэкранном режиме"
+msgstr "Разрешить системные сочетания клавиш в полноэкранном режиме"
 
 msgctxt "#35500"
 msgid "Location"
@@ -11217,6 +11253,10 @@ msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr "Максимальный уровень изменения скорости видео для подстройки к частоте дисплея."
 
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Выбор качества преобразования частоты сэмплирования, если звук нужно вывести с частотой, отличной от источника. [Низк.] обеспечивает высокую скорость и минимальную нагрузку на системные ресурсы, например ЦП. [Средн.] и [Высок.], соответственно, используют больше системных ресурсов."
+
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
 msgstr "Игнорировать соотношение сторон видео до некоторой степени, чтобы заполнить больше площади экрана."
@@ -11351,7 +11391,7 @@ msgstr "Информация пока недоступна."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
-msgstr "Активировать функции Персонального ВидеоРегистратора (PVR) в XBMC. Требуется по крайней мере один предустановленный Модуль PVR."
+msgstr "Активировать функции просмотра и записи ТВ (PVR) в XBMC. Для этого требуется по крайней мере одно дополенние PVR."
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
@@ -11453,6 +11493,10 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Показывать последний просматриваемый канал при открытии раздела \"ТВ\"."
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Сведения о качестве сигнала в окне сведений о кодеке (если поддерживается дополнением и сервером)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
@@ -11475,7 +11519,19 @@ msgstr "Продолжительность записи при нажатии к
 
 msgctxt "#36235"
 msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
-msgstr "Приоритет записи. Большее число означает более высокий приоритет. Значение по умоланию 50. Не поддерживается всеми Модулями (и внутренними интерфейсами)."
+msgstr "Приоритет записи. Большее число означает более высокий приоритет. Значение по умоланию 50. Поддерживается не всеми дополнениями и серверами."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Удалить запись после указанного времени. По умолчанию — 99 дней. Поддерживается не всеми дополнениями и серверами."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Начать запись с упреждением. По умолчанию — за 2 минуты. Поддерживается не всеми дополнениями и серверами."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Заканчивать запись после указанного времени. По умолчанию — через 10 минут. Поддерживается не всеми дополнениями и серверами."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11965,13 +12021,21 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Настройка выбора параметров аудиовыхода: [Фиксир.] — всегда использовать указанную частоту сэмплирования и конфигурацию колонок; [Наилучш.] — параметры аудиовыхода выбираются, чтобы наилучшим образом соответствовать источнику; [Оптимизир.] — параметры аудиовыхода задаются в начале воспроизведения и не меняются при изменение параметров источника."
+
 msgctxt "#36362"
 msgid "Select the maximum number of audio channels/speakers available for audio decoded."
-msgstr "Установить максимальное число аудироканалов/колонок для декодированного аудиопотока."
+msgstr "Выбрать максимальное число аудироканалов/колонок для декодированного аудиопотока."
 
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Увеличивать громкость звуковых дорожек AC3 при микшировании до стерео."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgstr "Преобразовывать 2-канальное стерео в многоканальный звук. Количество каналов определяется конфигурацией колонок."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11983,11 +12047,11 @@ msgstr "Включите эту настройку, если ваш ресиве
 
 msgctxt "#36367"
 msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
-msgstr "Установить максимальное число аудироканалов/колонок для декодированного аудиопотока. Если использованы выходные оптические/коаксиальные каналы, установите на 2.0"
+msgstr "Выбрать максимальное число аудироканалов/колонок для декодированного аудиопотока. При использовании цифрового оптического/коаксиального выхода выберите 2.0."
 
 msgctxt "#36368"
 msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
-msgstr "Выберите для активации транзита аудиопотока, чтобы воспроизодить кодированный аудиопоток типа Dolby Digital."
+msgstr "Включение прямого вывода кодированного аудиопотока, например Dolby Digital, на А/В-ресивер."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
@@ -11999,11 +12063,11 @@ msgstr "Включите эту настройку, если ваш ресиве
 
 msgctxt "#36371"
 msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
-msgstr "Выберите устройство воспроизведения декодированного аудиопотока, напр., mp3"
+msgstr "Выбрать устройство воспроизведения декодированного аудиопотока, например mp3"
 
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
-msgstr "Выберите устройство воспроизведения декодированных форматов, любых из списка в меню 'совместимое устройство приёма'."
+msgstr "Выбор устройства воспроизведения кодированных форматов. Доступные форматы выбираются настройками \"Выводить звук в формате…\"."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -12205,6 +12269,10 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Включение аппаратного декодирования видеофайлов при помощи декодера AMLogic."
 
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr "Использовать многопоточное декодирование ffmpeg, если аппаратное декодирование не работает или отключено. (Менее надежно, чем однопоточный режим, используемый по умолчанию.)"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Стереоскопический режим (текущий)"
@@ -12257,6 +12325,10 @@ msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Использовать предпочтительный режим"
 
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
+msgstr "Максимальная частота сэмплирования для выхода spdif или частота сэмплирования для фиксированной конфигурации выхода."
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "Предпочтительный режим"
@@ -12292,6 +12364,10 @@ msgstr "Выберите альтернативный режим…"
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Как в фильме"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Выбор способа микширования аудио, например с 5.1 до стерео. [Вкл.] — сохранение исходного динамического диапазона при микшировании, но при этом громкость будет ниже. [Выкл.] — сохранение уровня исходного уровня громкости, но со сжатием динамического диапазона. Примечание: динамический диапазон — это разница между самым тихим и самым громким звуками исходного аудио."
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
@@ -12379,4 +12455,4 @@ msgstr "Усиливать центральный канал при микшир
 
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
-msgstr "Активация клавиш для скриншота, alt-tab и клавиши управления громкостью в полноэкранном режиме."
+msgstr "Разрешить системные комбинации клавиш, например PRINT SCREEN, ALT+TAB, клавиши громкости, в полноэкранном режиме."

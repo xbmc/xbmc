@@ -1153,6 +1153,10 @@ msgctxt "#370"
 msgid "Thunderstorms"
 msgstr "Momaqaldiroq"
 
+msgctxt "#371"
+msgid "Partly"
+msgstr "Qisman"
+
 msgctxt "#375"
 msgid "Snow"
 msgstr "Qor"
@@ -2405,6 +2409,26 @@ msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "To'liq ekran video"
 
+msgctxt "#12009"
+msgid "Rebuild index..."
+msgstr "Indeksni qayta qurish..."
+
+msgctxt "#12010"
+msgid "Return to music window"
+msgstr "Musiqa oynasiga qaytish"
+
+msgctxt "#12011"
+msgid "Return to videos window"
+msgstr "Video oynasiga qaytish"
+
+msgctxt "#12021"
+msgid "Start from beginning"
+msgstr "Boshidan boshlash"
+
+msgctxt "#12022"
+msgid "Resume from %s"
+msgstr "%s'dan davom ettirish"
+
 msgctxt "#12310"
 msgid "0"
 msgstr "0"
@@ -2453,9 +2477,21 @@ msgctxt "#12322"
 msgid "*"
 msgstr "*"
 
+msgctxt "#12325"
+msgid "Locked! Enter code..."
+msgstr "Bloklangan! Kodni kiriting..."
+
 msgctxt "#12326"
 msgid "Enter password"
 msgstr "Maxfiy so'zni kiriting"
+
+msgctxt "#12327"
+msgid "Enter master code"
+msgstr "Bosh kodni kiritish"
+
+msgctxt "#12328"
+msgid "Enter unlock code"
+msgstr "Blokdan chiqarish kodini kiritish"
 
 msgctxt "#12329"
 msgid "or press C to cancel"

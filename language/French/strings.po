@@ -5477,6 +5477,10 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Arrêter l'extraction du CD"
 
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Source non disponible"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Supprimer"

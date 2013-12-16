@@ -27,11 +27,11 @@ msgstr "الموسيقى"
 
 msgctxt "#3"
 msgid "Videos"
-msgstr "الفيديو"
+msgstr "المقاطع المرئيه"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "دليل التلفزيون"
+msgstr "دليل التلفاز"
 
 msgctxt "#5"
 msgid "Settings"
@@ -43,7 +43,7 @@ msgstr "XBMC النسخة المستقرة"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "إدارة الملفات"
+msgstr "مُدير الملفات"
 
 msgctxt "#8"
 msgid "Weather"
@@ -51,11 +51,11 @@ msgstr "الطقس"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "xbmc مركز وسائط"
+msgstr "مركز وسائط إكس بى إم سى"
 
 msgctxt "#11"
 msgid "Monday"
-msgstr "الاثنين"
+msgstr "الإثنين"
 
 msgctxt "#12"
 msgid "Tuesday"
@@ -295,19 +295,19 @@ msgstr "متغير"
 
 msgctxt "#98"
 msgid "View: Auto"
-msgstr "عرض: تلقائية"
+msgstr "العرض: تلقائى"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "عرض: تلقائية كبيرة"
+msgstr "العرض : تلقائى كبير"
 
 msgctxt "#100"
 msgid "View: Icons"
-msgstr "عرض: رموز"
+msgstr "العرض: ايقونات"
 
 msgctxt "#101"
 msgid "View: List"
-msgstr "عرض: قائمة"
+msgstr "العرض: قائمه"
 
 msgctxt "#102"
 msgid "Scan"
@@ -315,15 +315,15 @@ msgstr "فحص"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "ترتيب حسب: الإسم"
+msgstr "فرز حسب: الإسم"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "ترتيب حسب: التاريخ"
+msgstr "فرزحسب: التاريخ"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "ترتيب حسب: الحجم"
+msgstr "فرزحسب: الحجم"
 
 msgctxt "#106"
 msgid "No"
@@ -335,7 +335,7 @@ msgstr "نعم"
 
 msgctxt "#108"
 msgid "Slideshow"
-msgstr "عرض الشرائح"
+msgstr "عرض شرائح"
 
 msgctxt "#109"
 msgid "Create thumbs"
@@ -347,7 +347,7 @@ msgstr "إنشاء مصغرات"
 
 msgctxt "#111"
 msgid "Shortcuts"
-msgstr "اختصارات"
+msgstr "إختصارات"
 
 msgctxt "#112"
 msgid "Paused"
@@ -355,11 +355,11 @@ msgstr "متوقف"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "فشل التحديث"
+msgstr "تعذر التحديث"
 
 msgctxt "#114"
 msgid "Installation failed"
-msgstr "فشل التثبيت"
+msgstr "تعذر التثبيت"
 
 msgctxt "#115"
 msgid "Copy"
@@ -367,7 +367,7 @@ msgstr "نسخ"
 
 msgctxt "#116"
 msgid "Move"
-msgstr "تحريك"
+msgstr "نقل"
 
 msgctxt "#117"
 msgid "Delete"
@@ -383,15 +383,15 @@ msgstr "مجلد جديد"
 
 msgctxt "#120"
 msgid "Confirm file copy"
-msgstr "تأكيد نسخ ملف"
+msgstr "تأكيد نسخ الملف"
 
 msgctxt "#121"
 msgid "Confirm file move"
-msgstr "تأكيد نقل ملف"
+msgstr "تأكيد نقل الملف"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "تأكيد حذف ملف؟"
+msgstr "تأكيد حذف الملف؟"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -399,7 +399,7 @@ msgstr "نسخ هذه الملفات؟"
 
 msgctxt "#124"
 msgid "Move these files?"
-msgstr "تحريك هذه الملفات؟"
+msgstr "نقل هذه الملفات؟"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
@@ -2433,6 +2433,14 @@ msgctxt "#735"
 msgid "Character set"
 msgstr "تعيين الأحرف"
 
+msgctxt "#736"
+msgid "Style"
+msgstr "المظهر"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "الألوان"
+
 msgctxt "#738"
 msgid "Normal"
 msgstr "عادي"
@@ -2565,6 +2573,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "اسم الشبكة اللاسلكية (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "كلمه مرور الشبكه اللاسلكيه"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "أمان الشبكه اللاسلكيه"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "حفظ إعدادات واجهة الشبكة"
@@ -2664,6 +2680,10 @@ msgstr "نطاق المنفذ الصالح هو 1-65535"
 msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "نطاق المنفذ السليم هو 1024-65535"
+
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "إضافه صور..."
 
 msgctxt "#998"
 msgid "Add Music..."
@@ -3269,6 +3289,18 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "قياسي"
 
+msgctxt "#10043"
+msgid "Help"
+msgstr "المساعده"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "لا توجد مساعده متوفره لهذا"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "مُتصفح الملفات"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "إعدادات القفل"
@@ -3548,6 +3580,10 @@ msgstr "العنصر مقفل"
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "تنشيط قفل"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "اترغب بنحديثها الأن؟"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -4037,6 +4073,10 @@ msgctxt "#13302"
 msgid "Fan speed override"
 msgstr "السيطرة على سرعة المروحة"
 
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "الخطوط"
+
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
 msgstr "مكن جعل الأحرف"
@@ -4472,6 +4512,14 @@ msgstr "مظلل البيكسل"
 msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "تمكين تسارع (VideoToolbox)"
+
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "شغل المقطع التالى تلقائياً"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "شغل هذا وفقط"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -4957,6 +5005,10 @@ msgctxt "#15109"
 msgid "Skin default"
 msgstr "الغلاف الافتراضي"
 
+msgctxt "#15111"
+msgid "Theme"
+msgstr "الثمه"
+
 msgctxt "#15112"
 msgid "Default theme"
 msgstr "السمة الافتراضية"
@@ -5084,6 +5136,10 @@ msgstr "بوب"
 msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "بوب مزدوج"
+
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "يَلغِى..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -6000,6 +6056,14 @@ msgstr "لا يمكن بدء مسح المحطة. افحص السجل للتفا
 msgctxt "#19194"
 msgid "Continue?"
 msgstr "متابعة؟"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "بدأ التسجيل فى: %s"
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr "إنتهى التسجيل فى: %s"
 
 msgctxt "#19199"
 msgid "Channel manager"
@@ -9477,6 +9541,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "تمكين زر تخصيص نصي"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "تسجيل دخول تلقائى"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "فشل البدء"
@@ -9776,3 +9844,7 @@ msgstr "إبدأ/توقف"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "إختر لغه الترجمه المبدأيه عندما تتوفر اكثر من ترجمه باكثر من لغه"

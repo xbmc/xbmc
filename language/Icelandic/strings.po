@@ -43,7 +43,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Skráarsýsl"
+msgstr "Skráasýsl"
 
 msgctxt "#8"
 msgid "Weather"
@@ -55,31 +55,31 @@ msgstr "xbmc media center"
 
 msgctxt "#11"
 msgid "Monday"
-msgstr "Mánudagur"
+msgstr "mánudagur"
 
 msgctxt "#12"
 msgid "Tuesday"
-msgstr "Þriðjudagur"
+msgstr "þriðjudagur"
 
 msgctxt "#13"
 msgid "Wednesday"
-msgstr "Miðvikudagur"
+msgstr "miðvikudagur"
 
 msgctxt "#14"
 msgid "Thursday"
-msgstr "Fimmtudagur"
+msgstr "fimmtudagur"
 
 msgctxt "#15"
 msgid "Friday"
-msgstr "Föstudagur"
+msgstr "föstudagur"
 
 msgctxt "#16"
 msgid "Saturday"
-msgstr "Laugardagur"
+msgstr "laugardagur"
 
 msgctxt "#17"
 msgid "Sunday"
-msgstr "Sunnudagur"
+msgstr "sunnudagur"
 
 msgctxt "#21"
 msgid "January"
@@ -131,31 +131,31 @@ msgstr "desember"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "Mán"
+msgstr "mán"
 
 msgctxt "#42"
 msgid "Tue"
-msgstr "Þri"
+msgstr "þri"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "Mið"
+msgstr "mið"
 
 msgctxt "#44"
 msgid "Thu"
-msgstr "Fim"
+msgstr "fim"
 
 msgctxt "#45"
 msgid "Fri"
-msgstr "Fös"
+msgstr "fös"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "Lau"
+msgstr "lau"
 
 msgctxt "#47"
 msgid "Sun"
-msgstr "Sun"
+msgstr "sun"
 
 msgctxt "#51"
 msgid "Jan"
@@ -731,7 +731,7 @@ msgstr "Stækka"
 
 msgctxt "#217"
 msgid "Pixel ratio"
-msgstr "Teygja"
+msgstr "Skjápunktshlutfall"
 
 msgctxt "#218"
 msgid "DVD drive"
@@ -864,6 +864,10 @@ msgstr "Senda í alla hátalara"
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Fjöldi rása"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "Móttakari styður DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1739,7 +1743,7 @@ msgstr "Get ekki tengst upplýsingaþjónustu"
 
 msgctxt "#500"
 msgid "Downloading album information failed"
-msgstr "Niðurhal hljómplötuupplýsinga brást"
+msgstr "Gat ekki sótt upplýsingar um hljómplötu"
 
 msgctxt "#501"
 msgid "Looking for album names..."
@@ -3667,7 +3671,7 @@ msgstr "Atriði læst"
 
 msgctxt "#12352"
 msgid "No downloading is needed."
-msgstr "Ekki er þörf á niðurhali."
+msgstr "Ekki er þörf á að sækja gögn."
 
 msgctxt "#12353"
 msgid "Reactivate lock"
@@ -4519,7 +4523,7 @@ msgstr "Spila hér"
 
 msgctxt "#13413"
 msgid "Downloading"
-msgstr "Niðurhala"
+msgstr "Sæki"
 
 msgctxt "#13414"
 msgid "Include artists who appear only on compilations"
@@ -4699,11 +4703,11 @@ msgstr "Ekki stafla"
 
 msgctxt "#14003"
 msgid "Downloading playlist file..."
-msgstr "Hala niður spilunarlista..."
+msgstr "Sæki spilunarlista..."
 
 msgctxt "#14004"
 msgid "Downloading streams list..."
-msgstr "Hala niður streymi lista..."
+msgstr "Sæki streymi lista..."
 
 msgctxt "#14005"
 msgid "Parsing streams list..."
@@ -4711,11 +4715,11 @@ msgstr "Þátta streymi lista..."
 
 msgctxt "#14006"
 msgid "Downloading streams list failed"
-msgstr "Niðurhölun streymilista mistókst"
+msgstr "Mistókst að sækja streymilista"
 
 msgctxt "#14007"
 msgid "Downloading playlist file failed"
-msgstr "Niðurhölun spilunarlista mistókst"
+msgstr "Mistókst að sækja spilunarlista"
 
 msgctxt "#14009"
 msgid "Games directory"
@@ -5581,6 +5585,10 @@ msgctxt "#19080"
 msgid "Begin:"
 msgstr "Byrja:"
 
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Líftími (dagar):"
+
 msgctxt "#19097"
 msgid "Enter the name for the recording"
 msgstr "Gefðu upptökunni nafn"
@@ -5588,6 +5596,14 @@ msgstr "Gefðu upptökunni nafn"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Athugið"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Þjónusta"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "Vinsamlegast skiptu yfir á aðra stöð."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6435,7 +6451,7 @@ msgstr "Fann engan listamann!"
 
 msgctxt "#20199"
 msgid "Downloading artist info failed"
-msgstr "Niðurhal á upplýsingum um listamann mistókst"
+msgstr "Misstókst að sækja upplýsingar um listamann"
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -6843,7 +6859,7 @@ msgstr "Spila tónlistarmyndband"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Hlaða niður smámyndum fyrir leikara þegar bætt er við í safn"
+msgstr "Sækja smámyndir leikara þegar bætt er við í safn"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
@@ -6863,11 +6879,11 @@ msgstr "Stillingar skrapara"
 
 msgctxt "#20408"
 msgid "Downloading music video information"
-msgstr "Sæki upplýsingar fyrir tónlistarmyndband"
+msgstr "Sæki upplýsingar um tónlistarmyndband"
 
 msgctxt "#20409"
 msgid "Downloading TV show information"
-msgstr "Sæki upplýsingar fyrir sjónvarpsþáttaröð"
+msgstr "Sæki upplýsingar um sjónvarpsþáttaröð"
 
 msgctxt "#20410"
 msgid "Trailer"
@@ -7011,7 +7027,7 @@ msgstr "Hunsa og endurnýja frá Internetinu?"
 
 msgctxt "#20448"
 msgid "Could not download information"
-msgstr "Gat ekki niðurhalið upplýsingum"
+msgstr "Gat ekki sótt upplýsingar"
 
 msgctxt "#20449"
 msgid "Unable to connect to remote server"
@@ -7707,11 +7723,11 @@ msgstr "Leita að upplýsingum fyrir alla tónlistarmenn"
 
 msgctxt "#21885"
 msgid "Downloading album information"
-msgstr "Hleð niður upplýsingum um hljómplötu"
+msgstr "Sæki upplýsingar um hljómplötu"
 
 msgctxt "#21886"
 msgid "Downloading artist information"
-msgstr "Hleð niður upplýsingum um listamann"
+msgstr "Sæki upplýsingar um listamann"
 
 msgctxt "#21887"
 msgid "Biography"
@@ -8107,7 +8123,7 @@ msgstr "Setja inn frá zip skrá"
 
 msgctxt "#24042"
 msgid "Downloading %i%%"
-msgstr "Niðurhaa %i%%"
+msgstr "Sæki %i%%"
 
 msgctxt "#24043"
 msgid "Available Updates"
@@ -8171,11 +8187,11 @@ msgstr "Viðbót uppfærð"
 
 msgctxt "#24066"
 msgid "Cancel Add-on download?"
-msgstr "Hætta við að niðurhala viðbót?"
+msgstr "Hætta við að sækja viðbót?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr "Er að niðurhala viðbótum"
+msgstr "Er að sækja viðbætur"
 
 msgctxt "#24068"
 msgid "Update available"
@@ -8247,11 +8263,27 @@ msgstr "Viltu skipta yfir á þetta útlit?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr "Til að nota þetta þarftu að hala niður viðbót:"
+msgstr "Til að nota þetta þarftu að sækja viðbót:"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr "Viltu hala niður þessari viðbót?"
+msgstr "Viltu sækja þessa viðbót?"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "Ef þýðingartextar eru ekki settir í möppu myndar, þá verða þeir settir í sérsniðna þýðingartexta-möppu"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Sæki þýðingartexta ..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Sækja þýðingartexta fyrir tungumál"
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Gat ekki sótt þýðingartexta"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -8303,15 +8335,15 @@ msgstr "Straumur"
 
 msgctxt "#33003"
 msgid "Download"
-msgstr "Hala niður"
+msgstr "Sækja"
 
 msgctxt "#33004"
 msgid "Download & play"
-msgstr "Niðurhala og spila"
+msgstr "Sækja og spila"
 
 msgctxt "#33005"
 msgid "Download & save"
-msgstr "Niðurhala og vista"
+msgstr "Sækja og vista"
 
 msgctxt "#33006"
 msgid "Today"
@@ -8331,7 +8363,7 @@ msgstr "Afritun"
 
 msgctxt "#33010"
 msgid "Set download directory"
-msgstr "Velja niðurhalsmöppu"
+msgstr "Velja möppu fyrir sótt gögn"
 
 msgctxt "#33011"
 msgid "Search duration"

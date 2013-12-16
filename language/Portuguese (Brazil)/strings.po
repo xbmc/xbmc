@@ -5477,6 +5477,18 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Parar de ripar o CD"
 
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Fonte indisponível"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from"
+msgstr "O que você deseja fazer com itens de mídia de"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Manter"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Remove"
@@ -6255,7 +6267,7 @@ msgstr "Primeiro dia:"
 
 msgctxt "#19085"
 msgid "Unknown channel %u"
-msgstr "Canal desconhecido %"
+msgstr "Canal desconhecido %u"
 
 msgctxt "#19086"
 msgid "Mo-__-__-__-__-__-__"
@@ -10159,7 +10171,7 @@ msgstr "Procurando por legendas..."
 
 msgctxt "#24108"
 msgid "%d subtitles found"
-msgstr "% legendas encontradas"
+msgstr "%d legenda(s) encontrada(s)"
 
 msgctxt "#24109"
 msgid "No subtitles found"
@@ -10189,6 +10201,22 @@ msgctxt "#24115"
 msgid "Save subtitles to movie folder"
 msgstr "Salvar legendas para pasta de vídeo"
 
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr "Serviço padrão para Seriados"
+
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles"
+msgstr "Selecione o serviço que será utilizado como padrão para procurar legendas de Seriados"
+
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr "Serviço Padrão para Filmes"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles"
+msgstr "Selecione o serviço que será utilizado como padrão para procurar legendas de Filmes"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notificações"
@@ -10207,7 +10235,7 @@ msgstr "Mostrar Menus blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr "Reproduzir título prinicipal: %d"
+msgstr "Reproduzir título principal: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
@@ -12007,7 +12035,7 @@ msgstr "Ampliar os fluxos AC3 que foram misturados para 2 canais"
 
 msgctxt "#36364"
 msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
-msgstr "Selecione para ativar upmixing de fonte de 2 canais em estéreo para o número de canais de áudio especificados na configuração de alto-falantes."
+msgstr "Selecione para ativar upmixing de fonte de 2 canais em esteréo para o número de canais de áudio especificados na configuração de alto-falantes."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
