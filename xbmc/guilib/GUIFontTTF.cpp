@@ -354,6 +354,8 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
 {
   Begin();
 
+  std::vector<SVertex> &vertices = m_vertex;
+
   // save the origin, which is scaled separately
   m_originX = x;
   m_originY = y;
@@ -434,7 +436,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
 
         for (int i = 0; i < 3; i++)
         {
-          RenderCharacter(startX + cursorX, startY, period, color, !scrolling);
+          RenderCharacter(startX + cursorX, startY, period, color, !scrolling, vertices);
           cursorX += period->advance;
         }
         break;
@@ -443,7 +445,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
     else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
       break;  // exceeded max allowed width - stop rendering
 
-    RenderCharacter(startX + cursorX, startY, ch, color, !scrolling);
+    RenderCharacter(startX + cursorX, startY, ch, color, !scrolling, vertices);
     if ( alignment & XBFONT_JUSTIFIED )
     {
       if ((*pos & 0xffff) == L' ')
@@ -700,7 +702,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   return true;
 }
 
-void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX)
+void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX, std::vector<SVertex> &vertices)
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
@@ -766,8 +768,8 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   float tt = texture.y1 * m_textureScaleY;
   float tb = texture.y2 * m_textureScaleY;
 
-  m_vertex.resize(m_vertex.size() + 4);
-  SVertex* v = &m_vertex[m_vertex.size() - 4];
+  vertices.resize(vertices.size() + 4);
+  SVertex* v = &vertices[vertices.size() - 4];
   m_color = color;
 
   unsigned char r = GET_R(color)

@@ -115,7 +115,7 @@ protected:
   // Stuff for pre-rendering for speed
   inline Character *GetCharacter(character_t letter);
   bool CacheCharacter(wchar_t letter, uint32_t style, Character *ch);
-  void RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX);
+  void RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX, std::vector<SVertex> &vertices);
   void ClearCharacterCache();
 
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight) = 0;
