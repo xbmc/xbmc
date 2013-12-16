@@ -375,7 +375,7 @@ msgstr "Aktiver baggrundsmusik"
 
 msgctxt "#18105"
 msgid "Advanced"
-msgstr "Advanceret"
+msgstr "Avanceret"
 
 
 msgctxt "#18106"
@@ -405,7 +405,7 @@ msgstr "HDMI udgangs kanaler"
 
 msgctxt "#18111"
 msgid "Advanced video"
-msgstr "Advanceret billede"
+msgstr "Avanceret video"
 
 
 msgctxt "#18112"
@@ -466,17 +466,17 @@ msgstr "Tillad kontrol af Plex/HT via UPnP"
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr "%2.3fs"
+msgstr "%d"
 
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr "Forsinket med: %2.3fs"
+msgstr "Forsinket med: %d"
 
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr "Foran med: %2.3fs"
+msgstr "Foran med: %d"
 
 
 msgctxt "#33075"

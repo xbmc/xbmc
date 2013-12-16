@@ -1,0 +1,1159 @@
+# XBMC Media Center language file
+# XBMC-core v12.0-RC1
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+""
+
+### PLEX/HT ###
+
+msgctxt "#6"
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+
+#empty strings from id 7 to 8
+
+msgctxt "#9"
+msgid "xbmc media center"
+msgstr "xbmc 미디어센터"
+
+
+msgctxt "#10"
+msgid "myPlex"
+msgstr "myPlex"
+
+
+#empty strings from id 11 to 262
+
+msgctxt "#263"
+msgid "Allow control of XBMC via HTTP"
+msgstr "HTTP를 통해 XBMC 제어 허용"
+
+
+msgctxt "#482"
+msgid "About XBMC"
+msgstr "XBMC 정보"
+
+
+#empty strings from id 747 to 790
+
+msgctxt "#791"
+msgid "Allow programs on this system to control XBMC"
+msgstr "현재 시스템의 프로그램이 XBMC를 제어하도록 허용"
+
+
+#empty strings from id 792 to 793
+
+msgctxt "#794"
+msgid "Allow programs on other systems to control XBMC"
+msgstr "다른 시스템의 프로그램이 XBMC를 제어하도록 허용"
+
+
+#empty strings from id 795 to 1001
+
+msgctxt "#1002"
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC가 네트워크에 접속할 수 없습니다."
+
+
+#empty strings from id 1003 to 1269
+
+msgctxt "#1270"
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "XBMC가 AirPlay 컨텐츠를 수신하도록 허용"
+
+
+msgctxt "#13134"
+msgid "H.264 Speed Boost"
+msgstr "H.264 가속"
+
+
+msgctxt "#13135"
+msgid "Disabled"
+msgstr "사용안함"
+
+
+msgctxt "#13136"
+msgid "Medium"
+msgstr "중간"
+
+
+msgctxt "#13137"
+msgid "High"
+msgstr "높음"
+
+
+msgctxt "#13138"
+msgid "Automatically Select Audio Stream"
+msgstr "오디오 자동 선택"
+
+
+msgctxt "#13139"
+msgid "Automatically Select Subtitle Stream"
+msgstr "자막 자동 선택"
+
+
+#empty string with id 13140
+
+msgctxt "#13141"
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "계속하면 XBMC를 컨트롤하지 못할 수 있습니다."
+
+
+#empty string with id 13142
+
+msgctxt "#13143"
+msgid "Search remote libraries"
+msgstr "원격 라이브러리 검색"
+
+
+#empty strings from id 13144 to 13145
+
+msgctxt "#13146"
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC, 현재 설정을 변경할 경우 성능에 문제가 있을 수 있습니다."
+
+
+#empty string with id 13147
+
+msgctxt "#13148"
+msgid "Allow Picking Alternate Library Media"
+msgstr "다른 라이브러리 미디어를 열도록 허용"
+
+
+msgctxt "#13149"
+msgid "Quality From Remote Media Servers"
+msgstr "원격 미디어 서버에서의 화질"
+
+
+#empty strings from id 13150 to 13179
+
+msgctxt "#13180"
+msgid "Preferred Online Video Quality"
+msgstr "선호 온라인 비디오 화질"
+
+
+msgctxt "#13181"
+msgid "Always ask"
+msgstr "항상 확인"
+
+
+msgctxt "#13182"
+msgid "1080p"
+msgstr "1080p"
+
+
+msgctxt "#13183"
+msgid "720p"
+msgstr "720p"
+
+
+msgctxt "#13184"
+msgid "480p"
+msgstr "480p"
+
+
+msgctxt "#13185"
+msgid "SD"
+msgstr "SD"
+
+
+#empty strings from id 13186 to 13308
+
+msgctxt "#13309"
+msgid "instead of just XBMC?"
+msgstr "XBMC만이 아닌?"
+
+
+#empty strings from id 13310 to 13601
+
+msgctxt "#13602"
+msgid "Allow start of XBMC using the remote"
+msgstr "리모컨으로 XBMC 시작 허용"
+
+
+#empty strings from id 13603 to 13621
+
+msgctxt "#13622"
+msgid "Please see Remote Buddy FAQ to uninstall."
+msgstr "삭제하려면 Remote Buddy FAQ를 참고하십시오."
+
+
+msgctxt "#13623"
+msgid "Sofa Control is running."
+msgstr "소파 컨트롤이 실행중입니다."
+
+
+msgctxt "#13624"
+msgid "Please see Sofa Control documentation to uninstall."
+msgstr "삭제하려면 소파 컨트롤 설명서를 참고하십시오."
+
+
+#empty strings from id 13625 to 13629
+
+msgctxt "#13630"
+msgid "Media Server"
+msgstr "미디어 서버"
+
+
+msgctxt "#13631"
+msgid "Mode"
+msgstr "모드"
+
+msgstr "Mode"
+
+msgctxt "#13632"
+msgid "- Always Running"
+msgstr "- 항상 실행"
+
+
+msgctxt "#13633"
+msgid "Disabled"
+msgstr "사용안함"
+
+
+msgctxt "#13634"
+msgid "Enabled"
+msgstr "사용함"
+
+
+msgctxt "#13635"
+msgid "Enable Scrobbling"
+msgstr "스크로블링 사용"
+
+
+#empty strings from id 13636 to 14028
+
+msgctxt "#14029"
+msgid "Cache Size"
+msgstr "캐시 크기"
+
+
+#empty strings from id 14030 to 14035
+
+msgctxt "#14036"
+msgid "Servers"
+msgstr "서버"
+
+
+msgctxt "#14037"
+msgid "Look and Feel"
+msgstr "외양과 느낌"
+
+
+#empty string with id 14038
+
+msgctxt "#14039"
+msgid "Plex/HT requires a restart to change your"
+msgstr "다음 사항 변경을 위해선 플랙스HT의 재실행이 필요합니다 : "
+
+
+#empty strings from id 14040 to 15149
+
+msgctxt "#15150"
+msgid "Use library artwork backgrounds"
+msgstr "라이브러리 아트워크 배경 사용"
+
+
+#empty strings from id 15151 to 15204
+
+msgctxt "#15205"
+msgid "Please update Plex/HT"
+msgstr "플렉스/HT를 업데이트 하십시오"
+
+
+#empty strings from id 15206 to 16000
+
+msgctxt "#16001"
+msgid "Configure Audio Hardware..."
+msgstr "오디오 하드웨어 설정..."
+
+
+#empty strings from id 16002 to 17500
+
+msgctxt "#17501"
+msgid "Display Brightness"
+msgstr "화면 밝기"
+
+
+#empty strings from id 17502 to 17700
+
+msgctxt "#17701"
+msgid "Low Battery"
+msgstr "배터리 부족"
+
+
+msgctxt "#17702"
+msgid "Connect to AC Power"
+msgstr "AC 전원 연결"
+
+
+#empty strings from id 17703 to 17999
+
+msgctxt "#18000"
+msgid "Model"
+msgstr "모델"
+
+
+msgctxt "#18001"
+msgid "Power source"
+msgstr "전원"
+
+
+msgctxt "#18002"
+msgid "AC power"
+msgstr "AC 전원"
+
+
+msgctxt "#18003"
+msgid "AC power (charging)"
+msgstr "AC 전원 (충전중)"
+
+
+msgctxt "#18004"
+msgid "Battery power"
+msgstr "배터리 전원"
+
+
+msgctxt "#18005"
+msgid "Power level"
+msgstr "전원 잔량"
+
+
+msgctxt "#18006"
+msgid "until full"
+msgstr "완충 까지"
+
+
+msgctxt "#18007"
+msgid "remaining"
+msgstr "남음"
+
+
+msgctxt "#18008"
+msgid "Calculating time"
+msgstr "시간 계산중"
+
+
+msgctxt "#18009"
+msgid "Enable low battery warning"
+msgstr "배터리 부족 경고 사용"
+
+
+#empty strings from id 18010 to 18100
+
+msgctxt "#18101"
+msgid "Theme music volume"
+msgstr "테마 음악 볼륨"
+
+
+msgctxt "#18102"
+msgid "Enable TV theme music"
+msgstr "TV 테마 음악 사용"
+
+
+msgctxt "#18103"
+msgid "- Automatically Download Theme Music"
+msgstr "- 테마 음악을 자동 다운로드"
+
+
+msgctxt "#18104"
+msgid "Enable Background Music"
+msgstr "배경 음악 사용"
+
+
+msgctxt "#18105"
+msgid "Advanced"
+msgstr "고급 설정"
+
+
+msgctxt "#18106"
+msgid "Video"
+msgstr "비디오"
+
+
+msgctxt "#18107"
+msgid "Music"
+msgstr "음악"
+
+
+msgctxt "#18108"
+msgid "Photos"
+msgstr "사진"
+
+
+msgctxt "#18109"
+msgid "Video render method"
+msgstr "비디오 렌더링 방식"
+
+
+msgctxt "#18110"
+msgid "HDMI output channels"
+msgstr "HDMI 출력 채널"
+
+
+msgctxt "#18111"
+msgid "Advanced video"
+msgstr "고급 비디오 설정"
+
+
+msgctxt "#18112"
+msgid "Logging"
+msgstr "로그 기록"
+
+
+msgctxt "#18113"
+msgid "Theme music"
+msgstr "테마 음악"
+
+
+msgctxt "#18114"
+msgid "Visualize dirty regions"
+msgstr "Dirty regions 표시"
+
+
+msgctxt "#18115"
+msgid "Dirty regions algorithm"
+msgstr "Dirty regions 알고리즘"
+
+
+msgctxt "#18116"
+msgid "Dirty regions no flip timeout (ms)"
+msgstr "Dirty regions 변환 지연시간(ms)"
+
+
+#empty strings from id 18117 to 18999
+
+
+#empty strings from id 19022 to 20008
+
+msgctxt "#20009"
+msgid "Use Plex/HT"
+msgstr "플렉스/HT 사용"
+
+
+#empty strings from id 20010 to 20249
+
+msgctxt "#20250"
+msgid "Recent Music Count"
+msgstr "최근 음악 카운트"
+
+
+#empty strings from id 20251 to 20340
+
+msgctxt "#20341"
+msgid "this path from the Plex/HT library?"
+msgstr "플렉스/HT 라이브러리에서 이 폴더를?"
+
+
+#empty strings from id 20342 to 21880
+
+msgctxt "#21881"
+msgid "Allow control of XBMC via UPnP"
+msgstr "UPnP를 통해 XBMC 제어 허용"
+
+
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr "지연 : %2.3fs"
+
+
+msgctxt "#22005"
+msgid "Ahead by: %2.3fs"
+msgstr "앞섬 : %2.3fs"
+
+
+msgctxt "#33075"
+msgid "Plex/HT revision of %s or greater to run."
+msgstr "실행하려면 플렉스/HT %s 이상 버전 필요."
+
+
+msgctxt "#33076"
+msgid "Please update Plex/HT."
+msgstr "플렉스/HT를 업데이트 하십시오."
+
+
+#empty strings from id 33077 to 36006
+
+msgctxt "#36007"
+msgid "Power on the TV when starting Plex/HT"
+msgstr "플렉스/HT 실행시 TV전원 켬"
+
+
+msgctxt "#36008"
+msgid "Power off devices when stopping Plex/HT"
+msgstr "플렉스/HT 종료시 TV전원 끔"
+
+
+#empty strings from id 36009 to 36012
+
+msgctxt "#36013"
+msgid "Unsupported libcec interface version. %d is greater than the version Plex/HT supports (%d)"
+msgstr "libcec 인터페이스 (%d )버전이 플렉스/HT에서 지원가능한 (%d)버전 보다 높습니다."
+
+
+#empty strings from id 36014 to 39999
+
+msgctxt "#40000"
+msgid "Software update"
+msgstr "소프트웨어 업데이트"
+
+
+msgctxt "#40001"
+msgid "Checking for available updates..."
+msgstr "업데이트 확인중..."
+
+
+msgctxt "#40002"
+msgid "Update channel"
+msgstr "채널 업데이트"
+
+
+msgctxt "#40003"
+msgid "Stable"
+msgstr "안정적"
+
+
+msgctxt "#40004"
+msgid "PlexPass"
+msgstr "PlexPass"
+
+
+msgctxt "#40005"
+msgid "Ninja"
+msgstr "닌자"
+
+
+msgctxt "#40006"
+msgid "I am Special!"
+msgstr "나는 특별하니까!"
+
+
+msgctxt "#40016"
+msgid "Check for update now..."
+msgstr "지금 업데이트 확인..."
+
+
+msgctxt "#40017"
+msgid "Automatically check for updates"
+msgstr "업데이트 자동 확인"
+
+
+msgctxt "#40018"
+msgid "Update and restart"
+msgstr "업데이트 및 재시작"
+
+
+msgctxt "#40029"
+msgid "Current version"
+msgstr "현재 버전"
+
+
+msgctxt "#40028"
+msgid "Update Available!"
+msgstr "업데이트 사용가능!"
+
+
+#empty strings from id 40029 to 40099
+
+msgctxt "#40100"
+msgid "Applications"
+msgstr "프로그램"
+
+
+msgctxt "#40101"
+msgid "Add Application"
+msgstr "프로그램 추가"
+
+
+msgctxt "#40102"
+msgid "Remove Application"
+msgstr "프로그램 삭제"
+
+
+msgctxt "#40103"
+msgid "Browse for Application"
+msgstr "프로그램 찾기"
+
+
+msgctxt "#40104"
+msgid "RSS"
+msgstr "RSS"
+
+
+msgctxt "#40105"
+msgid "Energy Saver"
+msgstr "절전"
+
+
+msgctxt "#40106"
+msgid "Remove Workflow"
+msgstr "진행사항 삭제"
+
+
+#empty strings from id 40107 to 40149
+
+msgctxt "#40150"
+msgid "Now Playing"
+msgstr "지금 재생중"
+
+
+#empty strings from id 40151 to 40199
+
+msgctxt "#40200"
+msgid "Unsupported path"
+msgstr "지원되지 않는 경로"
+
+
+msgctxt "#40201"
+msgid "Plex Media Server paths can't be added to multipath"
+msgstr "플렉스 미디어 서버 경로를 원본 경로로"
+
+
+msgctxt "#40202"
+msgid "sources."
+msgstr "추가가 불가능합니다."
+
+
+msgctxt "#40203"
+msgid "Plex Media Server"
+msgstr "플렉스 미디어 서버"
+
+
+msgctxt "#40204"
+msgid "Waiting for response..."
+msgstr "응답을 기다리는 중..."
+
+
+msgctxt "#40205"
+msgid "Rate..."
+msgstr "평점..."
+
+
+msgctxt "#40206"
+msgid "Change Rating..."
+msgstr "평점 변경..."
+
+
+msgctxt "#40207"
+msgid "Set Rating"
+msgstr "평점 주기"
+
+
+msgctxt "#40208"
+msgid "Change Rating"
+msgstr "평점 변경"
+
+
+#empty string with id 40209
+
+msgctxt "#40210"
+msgid "Media Server"
+msgstr "미디어 서버"
+
+
+msgctxt "#40211"
+msgid "Manually specify server"
+msgstr "수동으로 서버 지정"
+
+
+msgctxt "#40212"
+msgid "Address"
+msgstr "IP주소"
+
+
+msgctxt "#40213"
+msgid "Force transcoding on local network"
+msgstr "내부 네트워크에서 강제 트랜스코딩"
+
+
+msgctxt "#40214"
+msgid "Quality"
+msgstr "품질"
+
+
+#empty strings from id 40215 to 40299
+
+msgctxt "#40300"
+msgid "Set Quit Timer"
+msgstr "종료 타이머 설정"
+
+
+msgctxt "#40301"
+msgid "Set Sleep Timer"
+msgstr "대기모드 타이머 설정"
+
+
+msgctxt "#40302"
+msgid "Set Shut Down Timer"
+msgstr "PC종료 타이머 설정"
+
+
+#empty strings from id 40303 to 40304
+
+msgctxt "#40305"
+msgid "Change Quit Timer"
+msgstr "종료 타이머 변경"
+
+
+msgctxt "#40306"
+msgid "Change Sleep Timer"
+msgstr "대기모드 타이머 변경"
+
+
+msgctxt "#40307"
+msgid "Change Shut Down Timer"
+msgstr "PC종료 타이머 변경"
+
+
+msgctxt "#40308"
+msgid "Change Sleep Display Timer"
+msgstr "화면 꺼짐 타이머 변경"
+
+
+#empty string with id 40309
+
+msgctxt "#40310"
+msgid "Plex/HT will quit at"
+msgstr "플렉스/HT 종료 예정 : "
+
+
+msgctxt "#40311"
+msgid "The system will sleep at"
+msgstr "시스템 절전 전환 : "
+
+
+msgctxt "#40312"
+msgid "The system will shut down at"
+msgstr "시스템 종료 예정 : "
+
+
+msgctxt "#40313"
+msgid "The system will sleep the display at"
+msgstr "시스템 화면 꺼짐 예정 : "
+
+
+#empty string with id 40314
+
+msgctxt "#40315"
+msgid "You have already set a quit timer."
+msgstr "이미 종료 타이머를 설정했습니다."
+
+
+msgctxt "#40316"
+msgid "You have already set a sleep timer."
+msgstr "이미 대기모드 타이머를 설정했습니다."
+
+
+msgctxt "#40317"
+msgid "You have already set a shut down timer."
+msgstr "이미 시스템 종료 타이머를 설정했습니다."
+
+
+msgctxt "#40318"
+msgid "You have already set a sleep display timer."
+msgstr "이미 화면 꺼짐 타이머를 설정했습니다."
+
+
+#empty string with id 40319
+
+msgctxt "#40320"
+msgid "Would you like to set a quit timer instead?"
+msgstr "종료 타이머를 설정하시겠습니까?"
+
+
+msgctxt "#40321"
+msgid "Would you like to set a sleep timer instead?"
+msgstr "대기모드 타이머를 설정하시겠습니까?"
+
+
+msgctxt "#40322"
+msgid "Would you like to set a shut down timer instead?"
+msgstr "시스템 종료 타이머를 설정하시겠습니까?"
+
+
+msgctxt "#40323"
+msgid "Set Sleep Display Timer"
+msgstr "화면 꺼짐 타이머 설정"
+
+
+#empty string with id 40324
+
+msgctxt "#40325"
+msgid "Timer already set"
+msgstr "이미 타이머 설정됨"
+
+
+#empty strings from id 40326 to 41999
+
+msgctxt "#42000"
+msgid "Could not read from input stream"
+msgstr "입력 스트림을 읽을 수 없습니다"
+
+
+msgctxt "#42001"
+msgid "Could not determine input format"
+msgstr "입력 포맷을 확인할 수 없습니다"
+
+
+msgctxt "#42002"
+msgid "Could not read file header"
+msgstr "파일 헤더를 읽을 수 없습니다"
+
+
+msgctxt "#42003"
+msgid "Unknown format"
+msgstr "알 수 없는 포맷"
+
+
+msgctxt "#42004"
+msgid "Could not read data from file"
+msgstr "파일에서 데이터를 읽을 수 없습니다"
+
+
+msgctxt "#42005"
+msgid "Not enough memory to open file"
+msgstr "메모리가 부족하여 파일을 열 수 없습니다"
+
+
+msgctxt "#42006"
+msgid "File was not found"
+msgstr "파일을 찾을 수 없습니다"
+
+
+msgctxt "#42007"
+msgid "Unsupported network protocol"
+msgstr "지원되지 않는 네트워크 프로토콜"
+
+
+msgctxt "#42008"
+msgid "Error while opening file"
+msgstr "파일 열기 오류"
+
+
+#empty strings from id 42009 to 42998
+
+msgctxt "#42999"
+msgid "Direct Play"
+msgstr "직접 재생"
+
+
+#. 3
+msgctxt "#43000"
+msgid "320 kbps"
+msgstr "320 kbps"
+
+
+msgctxt "#43001"
+msgid "720 kbps"
+msgstr "720 kbps"
+
+
+msgctxt "#43002"
+msgid "1.5 Mbps"
+msgstr "1.5 Mbps"
+
+
+msgctxt "#43003"
+msgid "2 Mbps"
+msgstr "2 Mbps"
+
+
+msgctxt "#43004"
+msgid "3 Mbps"
+msgstr "3 Mbps"
+
+
+msgctxt "#43005"
+msgid "4 Mbps"
+msgstr "4 Mbps"
+
+
+msgctxt "#43006"
+msgid "8 Mbps"
+msgstr "8 Mbps"
+
+
+msgctxt "#43007"
+msgid "10 Mbps"
+msgstr "10 Mbps"
+
+
+msgctxt "#43008"
+msgid "12 Mbps"
+msgstr "12 Mbps"
+
+
+msgctxt "#43009"
+msgid "20 Mbps"
+msgstr "20 Mbps"
+
+
+msgctxt "#44000"
+msgid "Email"
+msgstr "이메일"
+
+
+msgctxt "#44001"
+msgid "Password"
+msgstr "비밀번호"
+
+
+msgctxt "#44002"
+msgid "Use PIN"
+msgstr "코드 사용"
+
+
+msgctxt "#44003"
+msgid "Sign out"
+msgstr "로그아웃"
+
+
+msgctxt "#44004"
+msgid "Sign in"
+msgstr "로그인"
+
+
+msgctxt "#44010"
+msgid "Not signed in"
+msgstr "로그인 안됨"
+
+
+msgctxt "#44011"
+msgid "Signed in"
+msgstr "로그인 됨"
+
+
+msgctxt "#44012"
+msgid "Error signing in"
+msgstr "로그인 오류"
+
+
+msgctxt "#44013"
+msgid "Manually enter username and password to sign in"
+msgstr "아이디 및 비밀 번호 수동 입력"
+
+
+msgctxt "#44020"
+msgid "Shared Content"
+msgstr "공유 컨텐츠"
+
+
+msgctxt "#44021"
+msgid "Queue"
+msgstr "대기열"
+
+
+msgctxt "#44022"
+msgid "Recommended"
+msgstr "추천"
+
+
+msgctxt "#44030"
+msgid "FILTERS"
+msgstr "필터"
+
+
+msgctxt "#44031"
+msgid "SORTING"
+msgstr "정렬"
+
+
+msgctxt "#44032"
+msgid "Clear Filters"
+msgstr "필터 초기화"
+
+
+msgctxt "#44100"
+msgid "Sign in to myPlex"
+msgstr "myPlex 로그인"
+
+
+msgctxt "#44101"
+msgid "From your computer go to http://my.plexapp.com/pin"
+msgstr "컴퓨터에서 http://my.plexapp.com/pin 을 열고"
+
+
+msgctxt "#44102"
+msgid "retrieving code..."
+msgstr "코드 가져오는 중..."
+
+
+msgctxt "#44103"
+msgid "and enter this code:"
+msgstr "이 코드를 입력하십시오:"
+
+
+msgctxt "#44104"
+msgid "Hooray we are signed in!"
+msgstr "오예, 로그인 했습니다!"
+
+
+msgctxt "#44105"
+msgid "Signed in to myPlex"
+msgstr "myPlex 로그인 됨"
+
+
+msgctxt "#44200"
+msgid "PlexPass Required"
+msgstr "PlexPass 필요"
+
+
+msgctxt "#44201"
+msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
+msgstr "선행 공개버전을 사용하려면 PlexPass계정으로 myPlex에 로그인해야합니다."
+
+
+msgctxt "#44202"
+msgid "Press OK to be taken to the Settings screen"
+msgstr "확인을 누르시면 설저 화면으로 이동합니다"
+
+
+msgctxt "#44203"
+msgid "PlexPass Required"
+msgstr "PlexPass 필요"
+
+
+msgctxt "#44204"
+msgid "Press OK Quit"
+msgstr "종료하려면 확인"
+
+
+msgctxt "#44300"
+msgid "Allow control of Plex/HT from Plex Clients"
+msgstr "플렉스 클라이언트에서 플렉스/HT 제어 허용"
+
+
+#### These are error strings shown from channels
+#### errorcode + 50000
+msgctxt "#52000"
+msgid "Unable to play media"
+msgstr "미디어를 재생할 수 없습니다."
+
+
+msgctxt "#52001"
+msgid "This media is not currently available"
+msgstr "현재 사용할 수 없는 미디어입니다"
+
+
+msgctxt "#52002"
+msgid "This media has expired"
+msgstr "만료된 미디어입니다"
+
+
+msgctxt "#52003"
+msgid "This live media has not yet started"
+msgstr "라이브 미디어가 아직 시작되지 않았습니다"
+
+
+msgctxt "#52004"
+msgid "You are not authorized to access this media"
+msgstr "현재 미디어의 사용권한이 없습니다"
+
+
+msgctxt "#52005"
+msgid "This media is geoblocked and can't be accessed from your current location."
+msgstr "미디어의 접근이 차단되어 현재 위치에서는 접근할 수 없습니다."
+
+#### end error strings
+
+msgctxt "#52010"
+msgid "Please check that this file exists and the necessary drive is mounted"
+msgstr "파일이 존재하거나 필요한 드라이브가 장착되어있는지 확인 바랍니다"
+
+
+msgctxt "#52011"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "플렉스 홈 시어터에서 재생 불가능한 채널 컨텐츠 입니다"
+
+
+msgctxt "#52012"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "플렉스 홈 시어터에서 재생 불가능한 채널 컨텐츠 입니다"
+
+
+msgctxt "#52100"
+msgid "Select Audio Track"
+msgstr "오디오 트랙 선택"
+
+
+msgctxt "#52101"
+msgid "Select Subtitle"
+msgstr "자막 선택"
+
+
+msgctxt "#52102"
+msgid "Channels"
+msgstr "채널"
+
+
+msgctxt "#52201"
+msgid "Local video quality"
+msgstr "내부 네트워크 비디오 화질"
+
+
+msgctxt "#52202"
+msgid "Remote video quality"
+msgstr "원격 네트워크 비디오 화질"
+
+
+msgctxt "#52203"
+msgid "Online video quality"
+msgstr "온라인 비디오 화질"
+
+
+msgctxt "#52210"
+msgid "Show myPlex queue and recommendations"
+msgstr "myPlex 대기열 및 추천 항목 표시"
+
+
+msgctxt "#52300"
+msgid "Media Server went away"
+msgstr "미디어 서버 찾지 못함"
+
+
+msgctxt "#52301"
+msgid "The Server you where browsing went away..."
+msgstr "사용중이던 미디어 서버가 사라졌습니다..."
+
+
+msgctxt "#52400"
+msgid "No linked social accounts"
+msgstr "연결된 소셜 계정 없음"
+
+
+msgctxt "#52401"
+msgid "Go to http://my.plexapp.com to link your account"
+msgstr "http://my.plexapp.com 에서 계정을 연결하십시오"
+
+
+msgctxt "#52402"
+msgid "Enter message"
+msgstr "메시지 입력"
+
+
+msgctxt "#52403"
+msgid "Share %s on %s with message:"
+msgstr "메시지에 %s 공유 (%s) :"
+
+
+msgctxt "#52404"
+msgid "Enable network logging"
+msgstr "네트워크 로그 사용"
+

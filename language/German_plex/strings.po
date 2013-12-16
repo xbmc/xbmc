@@ -115,7 +115,7 @@ msgstr "Wenn Sie fortfahren, können Sie eventuell nicht mehr auf Plex/HT zugrei
 
 msgctxt "#13143"
 msgid "Search remote libraries"
-msgstr ""
+msgstr "Suche entfernte Bibliotheken"
 
 
 #empty strings from id 13144 to 13145
@@ -355,12 +355,12 @@ msgstr "Warnung bei geringem Akkustand aktivieren"
 
 msgctxt "#18101"
 msgid "Theme music volume"
-msgstr ""
+msgstr "Titelmusik-Lautstärke"
 
 
 msgctxt "#18102"
 msgid "Enable TV theme music"
-msgstr ""
+msgstr "TV-Titelmusik aktivieren"
 
 
 msgctxt "#18103"
@@ -375,12 +375,12 @@ msgstr "Hintergrundmusik aktivieren"
 
 msgctxt "#18105"
 msgid "Advanced"
-msgstr ""
+msgstr "Erweitert"
 
 
 msgctxt "#18106"
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 
 msgctxt "#18107"
@@ -390,17 +390,17 @@ msgstr "Musik"
 
 msgctxt "#18108"
 msgid "Photos"
-msgstr ""
+msgstr "Fotos"
 
 
 msgctxt "#18109"
 msgid "Video render method"
-msgstr ""
+msgstr "Anzeigemethode (Video)"
 
 
 msgctxt "#18110"
 msgid "HDMI output channels"
-msgstr ""
+msgstr "HDMI-Ausgabekanäle"
 
 
 msgctxt "#18111"
@@ -410,12 +410,12 @@ msgstr ""
 
 msgctxt "#18112"
 msgid "Logging"
-msgstr ""
+msgstr "Protokollierung"
 
 
 msgctxt "#18113"
 msgid "Theme music"
-msgstr ""
+msgstr "Titelmusik"
 
 
 msgctxt "#18114"
@@ -466,7 +466,7 @@ msgstr "Steuerung von Plex/HT über UPnP erlauben"
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr ""
+msgstr "%2.3fs"
 
 
 msgctxt "#22004"
@@ -512,52 +512,52 @@ msgstr "Neuere Version %d von libcec wird von Plex/HT nicht unterstützt (maxima
 
 msgctxt "#40000"
 msgid "Software update"
-msgstr ""
+msgstr "Software-Update"
 
 
 msgctxt "#40001"
 msgid "Checking for available updates..."
-msgstr ""
+msgstr "Suche nach verfügbaren Updates…"
 
 
 msgctxt "#40002"
 msgid "Update channel"
-msgstr ""
+msgstr "Aktualisiere Kanal"
 
 
 msgctxt "#40003"
 msgid "Stable"
-msgstr ""
+msgstr "Stabil"
 
 
 msgctxt "#40004"
 msgid "PlexPass"
-msgstr ""
+msgstr "PlexPass"
 
 
 msgctxt "#40005"
 msgid "Ninja"
-msgstr ""
+msgstr "Ninja"
 
 
 msgctxt "#40006"
 msgid "I am Special!"
-msgstr ""
+msgstr "Ich bin etwas Besonderes!"
 
 
 msgctxt "#40016"
 msgid "Check for update now..."
-msgstr ""
+msgstr "Jetzt nach Updates suchen…"
 
 
 msgctxt "#40017"
 msgid "Automatically check for updates"
-msgstr ""
+msgstr "Automatisch nach Updates suchen"
 
 
 msgctxt "#40018"
 msgid "Update and restart"
-msgstr ""
+msgstr "Update und neu starten"
 
 
 msgctxt "#40029"
@@ -567,7 +567,7 @@ msgstr "Aktuelle Version"
 
 msgctxt "#40028"
 msgid "Update Available!"
-msgstr ""
+msgstr "Update erhältlich"
 
 
 #empty strings from id 40029 to 40099
@@ -917,7 +917,7 @@ msgstr "Passwort"
 
 msgctxt "#44002"
 msgid "Use PIN"
-msgstr ""
+msgstr "PIN benutzen"
 
 
 msgctxt "#44003"
@@ -932,7 +932,7 @@ msgstr "Anmelden"
 
 msgctxt "#44010"
 msgid "Not signed in"
-msgstr "Nicht Angemeldet"
+msgstr "Nicht angemeldet"
 
 
 msgctxt "#44011"
@@ -962,7 +962,7 @@ msgstr "Warteschlange"
 
 msgctxt "#44022"
 msgid "Recommended"
-msgstr ""
+msgstr "Empfehlungen"
 
 
 msgctxt "#44030"
@@ -977,7 +977,7 @@ msgstr "SORTIERUNG"
 
 msgctxt "#44032"
 msgid "Clear Filters"
-msgstr ""
+msgstr "Filter zurücksetzen"
 
 
 msgctxt "#44100"
@@ -1007,7 +1007,7 @@ msgstr "Hurra wir sind angemeldet!"
 
 msgctxt "#44105"
 msgid "Signed in to myPlex"
-msgstr ""
+msgstr "Bei myPlex angemeldet"
 
 
 msgctxt "#44200"
@@ -1037,7 +1037,7 @@ msgstr "Wählen Sie OK zum Beenden"
 
 msgctxt "#44300"
 msgid "Allow control of Plex/HT from Plex Clients"
-msgstr ""
+msgstr "Plex/HT-Bedienung durch Plex-Anwendungen zulassen"
 
 
 #### These are error strings shown from channels
@@ -1075,37 +1075,37 @@ msgstr "Der Regionalcode des Mediums ist nicht korrekt."
 
 msgctxt "#52010"
 msgid "Please check that this file exists and the necessary drive is mounted"
-msgstr ""
+msgstr "Bitte prüfen Sie, dass diese Datei existiert und das zugehörige Laufwerk verfügbar ist"
 
 
 msgctxt "#52011"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater kann den Inhalt dieses Kanals nicht abspielen"
 
 
 msgctxt "#52012"
 msgid "Plex Home Theater is not able to play this channel content"
-msgstr ""
+msgstr "Plex Home Theater kann den Inhalt dieses Kanals nicht abspielen"
 
 
 msgctxt "#52100"
 msgid "Select Audio Track"
-msgstr ""
+msgstr "Tonspur auswählen"
 
 
 msgctxt "#52101"
 msgid "Select Subtitle"
-msgstr ""
+msgstr "Untertitelspur auswählen"
 
 
 msgctxt "#52102"
 msgid "Channels"
-msgstr ""
+msgstr "Kanäle"
 
 
 msgctxt "#52201"
 msgid "Local video quality"
-msgstr ""
+msgstr "Lokale Videoqualität"
 
 
 msgctxt "#52202"
@@ -1115,22 +1115,22 @@ msgstr ""
 
 msgctxt "#52203"
 msgid "Online video quality"
-msgstr ""
+msgstr "Online Videoqualität"
 
 
 msgctxt "#52210"
 msgid "Show myPlex queue and recommendations"
-msgstr ""
+msgstr "myPlex-Merkliste und Empfehlungen anzeigen"
 
 
 msgctxt "#52300"
 msgid "Media Server went away"
-msgstr ""
+msgstr "Mediaserver nicht mehr erreichbar"
 
 
 msgctxt "#52301"
 msgid "The Server you where browsing went away..."
-msgstr ""
+msgstr "Der ausgewählte Server ist nicht mehr erreichbar…"
 
 
 msgctxt "#52400"
@@ -1140,12 +1140,12 @@ msgstr ""
 
 msgctxt "#52401"
 msgid "Go to http://my.plexapp.com to link your account"
-msgstr ""
+msgstr "Gehe zu http://my.plexapp.com, um deinen Account zu verbinden"
 
 
 msgctxt "#52402"
 msgid "Enter message"
-msgstr ""
+msgstr "Nachricht eingeben"
 
 
 msgctxt "#52403"
@@ -1155,5 +1155,5 @@ msgstr ""
 
 msgctxt "#52404"
 msgid "Enable network logging"
-msgstr ""
+msgstr "Netzwerk-Protokollierung einschalten"
 

@@ -19,6 +19,8 @@
 #include "plex/PlexUtils.h"
 #include "Client/PlexConnection.h"
 #include "FileSystem/PlexFile.h"
+#include "Client/PlexServerManager.h"
+#include "Client/PlexServer.h"
 
 #include "log.h"
 
@@ -92,7 +94,29 @@ int CPlexTranscoderClient::SelectAOnlineQuality(int currentQuality)
 ///////////////////////////////////////////////////////////////////////////////
 int CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr server, int currentQuality)
 {
-  std::vector<std::string> qualities = server->GetTranscoderBitrates();
+  if (!server)
+  {
+    server = g_plexApplication.serverManager->GetBestServer();
+    if (!server || !server->SupportsVideoTranscoding())
+    {
+      server.reset();
+
+      PlexServerList allServers = g_plexApplication.serverManager->GetAllServers();
+      BOOST_FOREACH(CPlexServerPtr s, allServers)
+      {
+        if (s->IsComplete() && s->SupportsVideoTranscoding())
+        {
+          server = s;
+          break;
+        }
+      }
+    }
+  }
+
+  std::vector<std::string> qualities;
+
+  if (server)
+    qualities = server->GetTranscoderBitrates();
   
   CGUIDialogSelect *select = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   select->Add(g_localizeStrings.Get(42999));

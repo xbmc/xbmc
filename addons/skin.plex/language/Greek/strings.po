@@ -10,1005 +10,1318 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: el\n"
+"Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+""
 
 msgctxt "#31000"
 msgid "Browse"
-msgstr "Περιήγηση"
+msgstr ""
+
 
 msgctxt "#31001"
 msgid "Videos"
-msgstr "Βίντεο"
+msgstr ""
+
 
 msgctxt "#31002"
 msgid "Music"
-msgstr "Μουσική"
+msgstr ""
+
 
 msgctxt "#31003"
 msgid "Pictures"
-msgstr "Φωτογραφίες"
+msgstr ""
+
 
 msgctxt "#31004"
 msgid "Applications"
-msgstr "Προγράμματα"
+msgstr ""
+
 
 msgctxt "#31005"
 msgid "Weather"
-msgstr "Καιρός"
+msgstr ""
+
 
 msgctxt "#31006"
 msgid "System"
-msgstr "Σύστημα"
+msgstr ""
+
 
 msgctxt "#31007"
 msgid "Quit"
-msgstr "Έναρξη/Παύση"
+msgstr ""
+
 
 msgctxt "#31008"
 msgid "TV Shows"
-msgstr "Τηλεοπτικές Σειρές"
+msgstr ""
+
+
+#empty strings from id 31009 to 31010
 
 msgctxt "#31011"
 msgid "Watch your"
-msgstr "Παρακολούθηση"
+msgstr ""
+
 
 msgctxt "#31012"
 msgid "Listen to"
-msgstr "Ακρόαση"
+msgstr ""
+
 
 msgctxt "#31013"
 msgid "View your"
-msgstr "Προβολή"
+msgstr ""
+
 
 msgctxt "#31014"
 msgid "Use your"
-msgstr "Εκτέλεση"
+msgstr ""
+
 
 msgctxt "#31015"
 msgid "Check"
-msgstr "Πρόγνωση"
+msgstr ""
+
 
 msgctxt "#31016"
 msgid "Change your"
-msgstr "Ρύθμιση"
+msgstr ""
+
+
+#empty string with id 31017
 
 msgctxt "#31018"
 msgid "Menu"
-msgstr "Μενού"
+msgstr ""
+
 
 msgctxt "#31019"
 msgid "Play the"
-msgstr "Αναπαραγωγή"
+msgstr ""
+
 
 msgctxt "#31020"
 msgid "Options"
-msgstr "Επιλογές"
+msgstr ""
+
 
 msgctxt "#31021"
 msgid "Seasons"
-msgstr "Κύκλοι"
+msgstr ""
+
 
 msgctxt "#31022"
 msgid "Hide"
-msgstr "Απόκρυψη"
+msgstr ""
+
 
 msgctxt "#31023"
 msgid "Sort By"
-msgstr "Κριτήριο Ταξινόμησης"
+msgstr ""
+
 
 msgctxt "#31024"
 msgid "Sort Direction"
-msgstr "Κατεύθυνση Ταξινόμησης"
+msgstr ""
+
 
 msgctxt "#31025"
 msgid "Backward"
-msgstr "Προώθηση πίσω"
+msgstr ""
+
 
 msgctxt "#31026"
 msgid "Forward"
-msgstr "Προώθηση μπροστά"
+msgstr ""
+
 
 msgctxt "#31027"
 msgid "Began"
-msgstr "’ρχισε"
+msgstr ""
+
 
 msgctxt "#31028"
 msgid "Finished"
-msgstr "Τερματίστηκε"
+msgstr ""
+
 
 msgctxt "#31029"
 msgid "Writer"
-msgstr "Εγγραφέας"
+msgstr ""
+
 
 msgctxt "#31030"
 msgid "Track No."
-msgstr "Αριθμός Κομματιού"
+msgstr ""
+
 
 msgctxt "#31031"
 msgid "Active"
-msgstr "Ενεργό"
+msgstr ""
+
 
 msgctxt "#31032"
 msgid "Instrmts"
-msgstr "Όργανα"
+msgstr ""
+
 
 msgctxt "#31033"
 msgid "Last Refreshed"
-msgstr "Τελευταία Ενημέρωση"
+msgstr ""
+
 
 msgctxt "#31034"
 msgid "Build"
-msgstr "Αναγνωριστικό έκδοσης"
+msgstr ""
+
 
 msgctxt "#31035"
 msgid "Free RAM"
-msgstr "Ελεύθερη Μνήμη"
+msgstr ""
+
 
 msgctxt "#31036"
 msgid "IP Addr."
-msgstr "Διεύθυνση IP"
+msgstr ""
+
 
 msgctxt "#31037"
 msgid "Hard Drive Space"
-msgstr "Μέσα αποθήκευσης"
+msgstr ""
+
 
 msgctxt "#31038"
 msgid "Choose Your"
-msgstr "Επιλογή"
+msgstr ""
+
 
 msgctxt "#31039"
 msgid "Favourite"
-msgstr "Αγαπημένο"
+msgstr ""
+
 
 msgctxt "#31040"
 msgid "Modify"
-msgstr "Τροποποίηση"
+msgstr ""
+
 
 msgctxt "#31041"
 msgid "Editor"
-msgstr "Επεξεργαστής"
+msgstr ""
+
 
 msgctxt "#31042"
 msgid "Picture"
-msgstr "Εικόνα"
+msgstr ""
+
 
 msgctxt "#31043"
 msgid "Check the"
-msgstr "Πρόγνωση"
+msgstr ""
+
 
 msgctxt "#31044"
 msgid "By"
-msgstr "Κριτήριο - "
+msgstr ""
+
 
 msgctxt "#31045"
 msgid "Recently Added"
-msgstr "Πρόσφατα Αναρτημένα"
+msgstr ""
+
 
 msgctxt "#31046"
 msgid "Path to Lyrics Script"
-msgstr "Διαδρομή για το 'Lyrics Script'"
+msgstr ""
+
 
 msgctxt "#31047"
 msgid "Not Available"
 msgstr ""
 
+
+#empty strings from id 31048 to 31049
+
 msgctxt "#31050"
 msgid "Items"
 msgstr ""
 
+
+#Programs
+
 msgctxt "#31051"
 msgid "Games"
-msgstr "Παιχνίδια"
+msgstr ""
+
 
 msgctxt "#31052"
 msgid "Emulators"
-msgstr "Εξομοιωτές"
+msgstr ""
+
 
 msgctxt "#31053"
 msgid "Apps"
-msgstr "Εφαρμογές"
+msgstr ""
+
+
+#System
+#empty strings from id 31054 to 31059
 
 msgctxt "#31060"
 msgid "Settings"
-msgstr "Ρυθμίσεις"
+msgstr ""
+
 
 msgctxt "#31061"
 msgid "Scripts"
-msgstr "Scripts"
+msgstr ""
+
 
 msgctxt "#31062"
 msgid "File Manager"
-msgstr "Διαχείριση Αρχείων"
+msgstr ""
+
 
 msgctxt "#31063"
 msgid "Favourites"
-msgstr "Αγαπημένα"
+msgstr ""
+
 
 msgctxt "#31064"
 msgid "Profiles"
-msgstr "Προφίλ"
+msgstr ""
+
 
 msgctxt "#31065"
 msgid "Info"
-msgstr "Πληροφορίες"
+msgstr ""
+
 
 msgctxt "#31066"
 msgid "Refresh"
-msgstr "Ανανέωση"
+msgstr ""
+
 
 msgctxt "#31067"
 msgid "About Your"
-msgstr "Σχετικά"
+msgstr ""
+
 
 msgctxt "#31068"
 msgid "User ID:"
 msgstr ""
 
+
 msgctxt "#31069"
 msgid "Password:"
 msgstr ""
 
+
+#Power
+#empty string with id 31070
+
 msgctxt "#31071"
 msgid "Shutdown"
-msgstr "Τερματισμός"
+msgstr ""
+
 
 msgctxt "#31072"
 msgid "Restart"
-msgstr "Επανεκκίνηση"
+msgstr ""
+
 
 msgctxt "#31073"
 msgid "Reload XBMC"
-msgstr "Εκκίνηση XBMC"
+msgstr ""
+
 
 msgctxt "#31074"
 msgid "Dashboard"
-msgstr "Εκκινητής"
+msgstr ""
+
 
 msgctxt "#31075"
 msgid "Refresh Skin"
-msgstr "Ανανέωση Κελύφους"
+msgstr ""
+
+
+#Video
+#empty strings from id 31076 to 31110
 
 msgctxt "#31111"
 msgid "Movies"
-msgstr "Ταινίες"
+msgstr ""
+
 
 msgctxt "#31112"
 msgid "TV Shows"
-msgstr "Τηλεοπτ. Σειρές"
+msgstr ""
+
 
 msgctxt "#31113"
 msgid "Clips"
-msgstr "Βίντεο Clips"
+msgstr ""
+
 
 msgctxt "#31114"
 msgid "Episode"
-msgstr "Επεισόδιο:"
+msgstr ""
+
 
 msgctxt "#31115"
 msgid "N/A"
-msgstr "Μ/Δ"
+msgstr ""
+
 
 msgctxt "#31116"
 msgid "Movie Title"
-msgstr "Τίτλος Ταινίας"
+msgstr ""
+
 
 msgctxt "#31117"
 msgid "Thumb"
-msgstr "Μικρογραφία"
+msgstr ""
+
 
 msgctxt "#31118"
 msgid "Fanart"
-msgstr "Fanart"
+msgstr ""
+
 
 msgctxt "#31119"
 msgid "Synopsis"
-msgstr "Σύνοψη"
+msgstr ""
+
 
 msgctxt "#31120"
 msgid "Star Rating"
-msgstr "Αξιολόγηση"
+msgstr ""
+
 
 msgctxt "#31121"
 msgid "Movie Details"
-msgstr "Λεπτομέρειες Ταινίας"
+msgstr ""
+
 
 msgctxt "#31122"
 msgid "Aired"
-msgstr "Κυκλοφορία"
+msgstr ""
+
 
 msgctxt "#31123"
 msgid "MPAA"
-msgstr "MPAA"
+msgstr ""
+
 
 msgctxt "#31124"
 msgid "Eps."
-msgstr "Επεισόδιο"
+msgstr ""
+
 
 msgctxt "#31125"
 msgid "Theater Times"
-msgstr "Διάρκεια"
+msgstr ""
+
 
 msgctxt "#31126"
 msgid "TV Show Details"
-msgstr "Λεπτομέρειες Τηλεοπτικής Σειράς"
+msgstr ""
+
 
 msgctxt "#31127"
 msgid "Episode Details"
-msgstr "Λεπτομέρειες Επεισοδίου"
+msgstr ""
+
 
 msgctxt "#31128"
 msgid "Banner"
 msgstr ""
 
+
 msgctxt "#31129"
 msgid "Rating"
 msgstr ""
+
 
 msgctxt "#31130"
 msgid "IMDb Rating"
 msgstr ""
 
+
 msgctxt "#31131"
 msgid "Genre"
 msgstr ""
+
 
 msgctxt "#31132"
 msgid "Duration"
 msgstr ""
 
+
 msgctxt "#31133"
 msgid "Subtitles"
 msgstr ""
+
 
 msgctxt "#31134"
 msgid "Cast"
 msgstr ""
 
+
 msgctxt "#31135"
 msgid "Director"
 msgstr ""
+
 
 msgctxt "#31136"
 msgid "Writer"
 msgstr ""
 
+
 msgctxt "#31137"
 msgid "Episodes"
 msgstr ""
+
 
 msgctxt "#31138"
 msgid "Watched"
 msgstr ""
 
+
 msgctxt "#31139"
 msgid "Unwatched"
 msgstr ""
+
 
 msgctxt "#31140"
 msgid "First Aired"
 msgstr ""
 
+
 msgctxt "#31141"
 msgid "Season"
 msgstr ""
+
 
 msgctxt "#31142"
 msgid "Movie"
 msgstr ""
 
+
 msgctxt "#31143"
 msgid "TV Show"
 msgstr ""
+
 
 msgctxt "#31144"
 msgid "Video"
 msgstr ""
 
+
 msgctxt "#31145"
 msgid "Specials"
 msgstr ""
 
+
+#Music
+#empty strings from id 31146 to 31219
+
 msgctxt "#31220"
 msgid "Currently Playing"
-msgstr "Τρέχουσα Αναπαραγωγή"
+msgstr ""
+
 
 msgctxt "#31221"
 msgid "Previous Track"
-msgstr "Προηγούμενο Κομμάτι"
+msgstr ""
+
 
 msgctxt "#31222"
 msgid "Upcoming Tracks"
-msgstr "Επερχόμενα Κομμάτια"
+msgstr ""
+
 
 msgctxt "#31223"
 msgid "Click for Lyrics"
-msgstr "Στοίχοι τραγουδιού"
+msgstr ""
+
 
 msgctxt "#31224"
 msgid "Open MENU for Options"
-msgstr "Μενού Επιλογών"
+msgstr ""
+
 
 msgctxt "#31225"
 msgid "Rating"
-msgstr "Αξιολόγηση"
+msgstr ""
+
 
 msgctxt "#31226"
 msgid "Change"
-msgstr "Αλλαγή"
+msgstr ""
+
 
 msgctxt "#31227"
 msgid "Your Preset"
-msgstr "Οι επιλογές μου"
+msgstr ""
+
 
 msgctxt "#31228"
 msgid "Lyrics"
-msgstr "Στοίχοι"
+msgstr ""
+
 
 msgctxt "#31229"
 msgid "Artist"
 msgstr ""
 
+
 msgctxt "#31230"
 msgid "Album"
 msgstr ""
 
+
+#Settings
+#empty strings from id 31231 to 31600
+
 msgctxt "#31601"
 msgid "Appearance"
-msgstr "Εξατομίκευση"
+msgstr ""
+
 
 msgctxt "#31602"
 msgid "Network"
-msgstr "Δίκτυο"
+msgstr ""
+
 
 msgctxt "#31603"
 msgid "Skin"
-msgstr "Κέλυφος"
+msgstr ""
+
 
 msgctxt "#31604"
 msgid "General"
-msgstr "Γενικά"
+msgstr ""
+
 
 msgctxt "#31605"
 msgid "Home"
-msgstr "Αρχική Οθόνη"
+msgstr ""
+
 
 msgctxt "#31606"
 msgid "Change Preferences For"
-msgstr "Αλλαγή Ρυθμίσεων"
+msgstr ""
+
 
 msgctxt "#31607"
 msgid "Current"
-msgstr "Τρέχουσα"
+msgstr ""
+
 
 msgctxt "#31608"
 msgid "Source"
-msgstr "Προέλευση"
+msgstr ""
+
 
 msgctxt "#31609"
 msgid "Dest"
-msgstr "Προορισμός"
+msgstr ""
+
 
 msgctxt "#31610"
 msgid "Playback"
 msgstr ""
 
+
+#empty strings from id 31611 to 31619
+
 msgctxt "#31620"
 msgid "Menu"
-msgstr "Μενού"
+msgstr ""
+
 
 msgctxt "#31621"
 msgid "Disable"
-msgstr "Απόκρυψη της επιλογής"
+msgstr ""
+
 
 msgctxt "#31622"
 msgid "Enable"
-msgstr "Ενεργό/ή"
+msgstr ""
+
 
 msgctxt "#31623"
 msgid "Background"
-msgstr "- Υπόβαθρο"
+msgstr ""
+
 
 msgctxt "#31624"
 msgid "Select"
-msgstr "Επιλογή"
+msgstr ""
+
 
 msgctxt "#31625"
 msgid "Use Default"
-msgstr "Χρήση Προεπιλεγμένων"
+msgstr ""
+
+
+#empty strings from id 31626 to 31649
 
 msgctxt "#31650"
 msgid "Hide right blade"
-msgstr "Απόκρυψη Δεξιάς Λεπίδας"
+msgstr ""
+
 
 msgctxt "#31651"
 msgid "Enable custom backgrounds"
-msgstr "Ενεργοποίηση τροποποιημένων Υποβάθρων"
+msgstr ""
+
 
 msgctxt "#31652"
 msgid "Enable"
-msgstr "Ενεργό/ή"
+msgstr ""
+
 
 msgctxt "#31653"
 msgid "View"
-msgstr "Προβολή"
+msgstr ""
+
 
 msgctxt "#31654"
 msgid "Hide Thumb Labels in File Browser dialog"
-msgstr "Απόκρυψη ετικετών Μικρογραφιών στην Διαχείριση Αρχείων"
+msgstr ""
+
 
 msgctxt "#31655"
 msgid "Display rotated Season thumb in Episodes view"
-msgstr "Εμφάνιση κυλιόμενων Μικρογραφιών κατά την προβολή Επεισοδίων"
+msgstr ""
+
 
 msgctxt "#31656"
 msgid "Backgrounds"
-msgstr "Υπόβαθρα"
+msgstr ""
+
 
 msgctxt "#31657"
 msgid "Image"
-msgstr "Εικόνα"
+msgstr ""
+
 
 msgctxt "#31658"
 msgid "Folder"
-msgstr "Φάκελος"
+msgstr ""
+
 
 msgctxt "#31659"
 msgid "Reset"
-msgstr "Απομάκρυνση από"
+msgstr ""
+
 
 msgctxt "#31660"
 msgid "Enable Custom BG's on Home"
-msgstr "Ενεργοποίηση τροποποιημένου Υπόβαθρου στην Αρχική Οθόνη"
+msgstr ""
+
 
 msgctxt "#31661"
 msgid "Apple Movie Trailers"
-msgstr "Διαφημιστικά Ταινιών από την Apple"
+msgstr ""
+
 
 msgctxt "#31662"
 msgid "Hide clock"
-msgstr "Απόκρυψη Ρολογιού"
+msgstr ""
+
 
 msgctxt "#31663"
 msgid "Show Media Count"
-msgstr "Εμφάνιση Πλήθους Πολυμέσων"
+msgstr ""
+
 
 msgctxt "#31664"
 msgid "Hide Scrollbars on Media Screens"
-msgstr "Απόκρυψη Γραμμών Κύλισης"
+msgstr ""
+
 
 msgctxt "#31665"
 msgid "Hide Watched/Unwatched icons"
-msgstr "Απόκρυψη των εικονιδίων που έχουν ή δεν έχουν θεαθεί"
+msgstr ""
+
 
 msgctxt "#31666"
 msgid "Show Blade in Centre of Screen"
-msgstr "Εμφάνιση της Λεπίδας Επιλογών στο κέντρο της οθόνης"
+msgstr ""
+
 
 msgctxt "#31667"
 msgid "MediaStream"
-msgstr "MediaStream"
+msgstr ""
+
 
 msgctxt "#31668"
 msgid "Show Larger Clock"
-msgstr "Εμφάνιση Mεγάλου Ρολογιού"
+msgstr ""
+
 
 msgctxt "#31669"
 msgid "Show Weather on Home"
-msgstr "Εμφάνιση του Καιρού στην Αρχική Οθόνη"
+msgstr ""
+
 
 msgctxt "#31670"
 msgid "Show Fanart"
-msgstr "Εμφάνιση Fanart"
+msgstr ""
+
 
 msgctxt "#31671"
 msgid "Hide Plot in Video OSD"
-msgstr "Απόκρυψη Πλοκής κατά την προβολή Πληροφοριών Βίντεο"
+msgstr ""
+
 
 msgctxt "#31672"
 msgid "Hide Info"
-msgstr "Απόκρυψη Πληροφοριών"
+msgstr ""
+
 
 msgctxt "#31673"
 msgid "Media Views"
-msgstr "Πολυμέσα"
+msgstr ""
+
 
 msgctxt "#31674"
 msgid "Hide Fanart"
-msgstr "Απόκρυψη Fanart"
+msgstr ""
+
 
 msgctxt "#31675"
 msgid "with Movies Views"
-msgstr "κατά την προβολή Ταινιών"
+msgstr ""
+
 
 msgctxt "#31676"
 msgid "In Media Preview"
-msgstr "στην Επισκόπηση Πολυμέσων"
+msgstr ""
+
 
 msgctxt "#31677"
 msgid "with TV Shows List"
-msgstr "με τις Λίστες Τηλεοπτικών Σειρών"
+msgstr ""
+
 
 msgctxt "#31678"
 msgid "Show Season thumb"
-msgstr "Εμφάνιση Μικρογραφίας Κύκλου Επεισοδίου"
+msgstr ""
+
 
 msgctxt "#31679"
 msgid "Hide Focus Details in Panel Stream"
-msgstr "Απόκρυψη Λεπτομερειών Εστίασης στο Πίνακα Ανάρτησης"
+msgstr ""
+
 
 msgctxt "#31680"
 msgid "Hide Thumbs in List View"
-msgstr "Απόκρυψη Μικρογραφιών κατά την προβολή Λίστας"
+msgstr ""
+
 
 msgctxt "#31681"
 msgid "in Files Mode"
-msgstr "σε προβολή Αρχείων"
+msgstr ""
+
 
 msgctxt "#31682"
 msgid "on TV Wall"
-msgstr "σε Γιγαντο-Οθόνη"
+msgstr ""
+
 
 msgctxt "#31683"
 msgid "with TV Views"
-msgstr "κατά την προβολή Τηλεόρασης"
+msgstr ""
+
 
 msgctxt "#31684"
 msgid "Hide Custom Backgrounds"
-msgstr "Απόκρυψη τροποποιημένων Υποβάθρων"
+msgstr ""
+
 
 msgctxt "#31685"
 msgid "Show Animated"
-msgstr "Εμφάνιση Κίνησης"
+msgstr ""
+
 
 msgctxt "#31686"
 msgid "Show Horizontal Music Vis"
-msgstr "Εμφάνιση Οριζόντιων Απεικονίσεων"
+msgstr ""
+
 
 msgctxt "#31687"
 msgid "with Video Views"
-msgstr "κατά την προβολή Βίντεο"
+msgstr ""
+
 
 msgctxt "#31688"
 msgid "with Music Views"
-msgstr "κατά την προβολή Μουσικής"
+msgstr ""
+
 
 msgctxt "#31689"
 msgid "with Pictures Views"
-msgstr "κατά την προβολή Φωτογραφιών"
+msgstr ""
+
 
 msgctxt "#31690"
 msgid "Hide No Thumb Icons"
-msgstr "Απόκρυψη κειμένου 'Χωρίς Μικρογραφία'"
+msgstr ""
+
 
 msgctxt "#31691"
 msgid "Use Low Overlay for TV Shows Coverflow"
-msgstr "Μικρή Επικάλυψη κατά τη Ροή Εξωφύλλων στις Τηλεοπτικές Σειρές"
+msgstr ""
+
 
 msgctxt "#31692"
 msgid "Hide Info in Wall Stream view"
-msgstr "Απόκρυψη Πληροφοριών κατά την προβολή Κυλιόμενες Αφίσες"
+msgstr ""
+
 
 msgctxt "#31693"
 msgid "Hide Thumbs in Options Menu"
-msgstr "Απόκρυψη Μικρογραφιών στις Επιλογές"
+msgstr ""
+
 
 msgctxt "#31694"
 msgid "Show Now Playing UI on Left"
-msgstr "Εμφάνιση Πληροφοριών τρέχουσας αναπαραγωγής στ' αριστερά"
+msgstr ""
+
 
 msgctxt "#31695"
 msgid "Show AM/PM in clock"
-msgstr "Εμφάνιση των 'πμ/μμ' στην Ώρα"
+msgstr ""
+
+
+#empty string with id 31696
 
 msgctxt "#31697"
 msgid "Hide Photo Description in Slideshow"
 msgstr ""
 
+
+#Options Menu
+#empty strings from id 31698 to 31700
+
 msgctxt "#31701"
 msgid "Setup"
-msgstr "Διαμόρφωση"
+msgstr ""
+
 
 msgctxt "#31702"
 msgid "Showcase"
-msgstr "Προθήκη"
+msgstr ""
+
 
 msgctxt "#31703"
 msgid "Seasons"
-msgstr "Κύκλοι"
+msgstr ""
+
 
 msgctxt "#31704"
 msgid "Photo"
-msgstr "Φωτογραφία"
+msgstr ""
+
 
 msgctxt "#31705"
 msgid "Convex"
-msgstr "Κυρτό"
+msgstr ""
+
 
 msgctxt "#31706"
 msgid "Episode Thumbs"
-msgstr "Μικρογραφίες Επεισοδίου"
+msgstr ""
+
 
 msgctxt "#31707"
 msgid "Media Preview"
-msgstr "Επισκόπηση Πολυμέσων"
+msgstr ""
+
 
 msgctxt "#31708"
 msgid "Media List"
-msgstr "Λίστα Πολυμέσων"
+msgstr ""
+
 
 msgctxt "#31709"
 msgid "Concave"
-msgstr "Κοίλο"
+msgstr ""
+
 
 msgctxt "#31710"
 msgid "Display"
-msgstr "Εμφάνιση"
+msgstr ""
+
 
 msgctxt "#31711"
 msgid "Info List"
-msgstr "Πληροφορίες Λίστας"
+msgstr ""
+
 
 msgctxt "#31712"
 msgid "Image Stream"
-msgstr "Ροή Εικόνας"
+msgstr ""
+
 
 msgctxt "#31713"
 msgid "Setup Options"
-msgstr "Επιλογές Διαμόρφωσης"
+msgstr ""
+
 
 msgctxt "#31714"
 msgid "Wall Stream"
-msgstr "Κυλιόμενες Αφίσες"
+msgstr ""
+
 
 msgctxt "#31715"
 msgid "Panel Stream"
-msgstr "Πίνακας Ανάρτησης"
+msgstr ""
+
 
 msgctxt "#31716"
 msgid "Coverflow"
-msgstr "Ροή Εξώφυλλων"
+msgstr ""
+
 
 msgctxt "#31717"
 msgid "Options Menu"
-msgstr "Επιλογές"
+msgstr ""
+
+
+#empty strings from id 31718 to 31719
 
 msgctxt "#31720"
 msgid "Grid"
 msgstr ""
 
+
 msgctxt "#31721"
 msgid "Episodes List"
 msgstr ""
+
 
 msgctxt "#31722"
 msgid "Plugin Stream"
 msgstr ""
 
+
+#Credits
+#empty strings from id 31723 to 31799
+
 msgctxt "#31800"
 msgid "About Plex"
-msgstr "Μνεία"
+msgstr ""
+
 
 msgctxt "#31801"
 msgid "Welcome to"
-msgstr "Καλωσορίσατε στο"
+msgstr ""
+
 
 msgctxt "#31802"
 msgid "your media....[COLOR Highlighted]your[/COLOR] way"
-msgstr "your media....[COLOR Highlighted]your[/COLOR] way"
+msgstr ""
+
+
+#empty string with id 31803
 
 msgctxt "#31804"
 msgid "MediaStream is a new user interface for the popular multimedia XBMC.  Created by the newly-formed \"Team RazorFish\", this new interface seeks to combine functionality with form, merging style with substance.  Designed and optimized for the 'High-Def' generation, this interface seeks to bring a new experience to the already popular platform."
-msgstr "Το MediaStream είναι ένα νέο Κέλυφος για το δημοφιλές XBMC.  Δημιουργημένο από τη νεοσυσταθείσα ομάδα  «Team RazorFish». Το Κέλυφος αυτό επιδιώκει να συγχωνεύει τη λειτουργικότητα και το ύφος (ως προς την εμφάνιση) σε μία ενιαία δόμη.  Σχεδιασμένο και βελτιστοποιημένο για να αποδίδει απεικόνιση Υψηλής Ανάλυσης. Επιδιώκει να προσφέρει μια νέα εμπειρία στην ήδη δημοφιλή πλατφόρμα."
+msgstr ""
+
 
 msgctxt "#31805"
 msgid "Note"
-msgstr "Σημείωση"
+msgstr ""
+
 
 msgctxt "#31806"
 msgid "Please ensure that you have the very latest build of XBMC.  We recommend the latest SVN build of XBMC, and would ask that you always download the full skin package."
-msgstr "Παρακαλώ, σιγουρευτείτε ότι χρησιμοποιείτε την πιο πρόσφατη έκδοση του XBMC.  Συστήνουμε την πρόσφατη έκδοση SVN του XBMC, επιπρόσθετα απαιτείτε και η λήψη του Κελύφους MediaStream."
+msgstr ""
+
 
 msgctxt "#31807"
 msgid "Skin Credits"
-msgstr "Σχετικά με το Κέλυφος"
+msgstr ""
+
 
 msgctxt "#31808"
 msgid "The entire project was a collaborative effort between many talented individuals.  These are as follows: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Special thanks goes to emilio (a.k.a. thedeViL), without whom this project would never have happened.  Of course all thanks go to you, the XBMC community... without you there would be no reason to do what we do... keep rocking guys, you're the best!!!"
-msgstr "Το έργο αυτό είναι αποτέλεσμα συνεργασίας πολλών ταλαντούχων ατόμων.  Συνεισέφεραν και συμμετείχαν οι ακόλουθοι: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Θερμές Ευχαριστίες ιδιαιτέρως στους emilio (a.k.a. thedeViL), χωρίς τους οποίους, αυτό το έργο δεν θα είχε δημιουργηθεί ποτέ.  Φυσικά, όλες οι ευχαριστίες απονέμονται σ` εσάς, την κοινότητα του XBMC. Χωρίς εσάς δεν θα υπήρχε κανένας λόγος να δημιουργηθεί αυτό το έργο, συνεχίστε, είστε οι καλύτεροι!!!"
+msgstr ""
+
 
 msgctxt "#31809"
 msgid "Special Thanks: entire XBMC team, supporters at the xbmc and xbox-scene forums"
-msgstr "Θερμές Ευχαριστίες: στην ομάδα του «XBMC team», στους υποστηρικτές του XBMC και στα «xbox-scene forums»"
+msgstr ""
+
 
 msgctxt "#31810"
 msgid "Click \"OK\" to continue and begin using our skin"
-msgstr "Πιέστε το πλήκτρο «Εντάξει» για να συνεχίσετε"
+msgstr ""
+
 
 msgctxt "#31811"
 msgid "Note: This is the only time you will see this message once you hit \"OK\""
-msgstr "Σημείωση: Αυτή είναι η μοναδική φορά που θα δείτε αυτό το μήνυμα"
+msgstr ""
+
+
+#empty strings from id 31812 to 31850
 
 msgctxt "#31851"
 msgid "[COLOR=orange]Plex[/COLOR] bridges the gap between your Mac and your home theater, doing so with a visually appealing user interface that provides instant access to your media. [COLOR=orange]Plex[/COLOR] can play a wide range of video, audio and photo formats as well as online streaming audio and video. The real power of [COLOR=orange]Plex[/COLOR] is found in its library features: Organize your media into versatile libraries, automatically retrieve metadata from the Internet and display your library using one of the visually stunning skins."
 msgstr ""
 
+
 msgctxt "#31852"
 msgid "At Plex, we would like to thank the following projects, without whom none of this would be possible:"
 msgstr ""
+
 
 msgctxt "#31853"
 msgid "[COLOR=orange]XBMC[/COLOR]: The most important one, for supplying us with a great foundation to build on."
 msgstr ""
 
+
 msgctxt "#31854"
 msgid "[COLOR=orange]Team RazorFish[/COLOR]: The talented team who created the original MediaStream skin."
 msgstr ""
+
 
 msgctxt "#31855"
 msgid "[COLOR=orange]FFmpeg[/COLOR]: Without this, there would be no decoding of video inside Plex. A critical component, to be sure."
 msgstr ""
 
+
 msgctxt "#31856"
 msgid "[COLOR=orange]SQLite[/COLOR]: The media database is stored using this excellent, industry standard free database."
 msgstr ""
+
 
 msgctxt "#31857"
 msgid "[COLOR=orange]CxImage[/COLOR]: The workhorse code responsible for loading images and photos. It uses lots of other libraries like libPNG, libJPEG, etc."
 msgstr ""
 
+
 msgctxt "#31858"
 msgid "[COLOR=orange]FreeType[/COLOR]: This code is responsible for the beautiful rendering of fonts within the application."
 msgstr ""
+
 
 msgctxt "#31859"
 msgid "[COLOR=orange]Python[/COLOR]: The media center embeds the Python interpreter to provide powerful scripting functionality."
 msgstr ""
 
+
 msgctxt "#31860"
 msgid "Please visit http://www.plexapp.com/credits.php for links and more information."
 msgstr ""
 
+
+#Profiles
+#empty strings from id 31861 to 31899
+
 msgctxt "#31900"
 msgid "Login As"
-msgstr "Είσοδος ως"
+msgstr ""
+
 
 msgctxt "#31901"
 msgid "Modify Your"
-msgstr "Τροποποίηση"
+msgstr ""
+
 
 msgctxt "#31902"
 msgid "Profile"
-msgstr "Προφίλ"
+msgstr ""
+
 
 msgctxt "#31903"
 msgid "Profile name"
-msgstr "Όνομα Προφίλ"
+msgstr ""
+
 
 msgctxt "#31904"
 msgid "Profile picture"
-msgstr "Εικόνα Προφίλ"
+msgstr ""
+
+
+#Plex additions
+#empty strings from id 31905 to 31949
 
 msgctxt "#31950"
 msgid "Go to your"
-msgstr "Eπιλογή"
+msgstr ""
+
 
 msgctxt "#31951"
 msgid "Visit"
-msgstr "Επιλογή"
+msgstr ""
+
 
 msgctxt "#31952"
 msgid "Channel Directory"
-msgstr "App Store"
+msgstr ""
+
 
 msgctxt "#31953"
 msgid "Get"
-msgstr "Παροχή"
+msgstr ""
+
 
 msgctxt "#31954"
 msgid "Help"
-msgstr "Βοήθεια"
+msgstr ""
+
 
 msgctxt "#31955"
 msgid "Preferences"
-msgstr "Προτιμήσεις"
+msgstr ""
+
 
 msgctxt "#31956"
 msgid "Show"
-msgstr "Προβολή"
+msgstr ""
+
+
+#empty strings from id 31957 to 31959
 
 msgctxt "#31960"
 msgid "Sleep"
 msgstr ""
 
+
 msgctxt "#31961"
 msgid "Shut Down"
 msgstr ""
+
 
 msgctxt "#31962"
 msgid "Power Menu"
 msgstr ""
 
+
 msgctxt "#31963"
 msgid "displays"
 msgstr ""
+
 
 msgctxt "#31964"
 msgid "Sleep Display"
 msgstr ""
 
+
+#empty strings from id 31965 to 31969
+
 msgctxt "#31970"
 msgid "Channels"
 msgstr ""
+
 
 msgctxt "#31971"
 msgid "Video Channels"
 msgstr ""
 
+
 msgctxt "#31972"
 msgid "Music Channels"
 msgstr ""
+
 
 msgctxt "#31973"
 msgid "Picture Channels"
 msgstr ""
 
+
+#empty strings from id 31974 to 31980
+
 msgctxt "#31981"
 msgid "Show Thumbnails in List View"
 msgstr ""
+
 
 msgctxt "#31982"
 msgid "Show Plot in Video OSD"
 msgstr ""
 
+
 msgctxt "#31983"
 msgid "Show Picture Descriptions in Slideshow"
 msgstr ""
+
 
 msgctxt "#31984"
 msgid "Show Now Playing Information in Visualisations"
 msgstr ""
 
+
 msgctxt "#31985"
 msgid "Show Separate Menu Items for Plug-in Sections"
 msgstr ""
+
+
+#empty strings from id 31986 to 31998
 
 msgctxt "#31999"
 msgid "End Time"
 msgstr ""
 
+
+#Startup helper
+
 msgctxt "#32000"
 msgid "Please choose the type of audio connector used on this computer.  If you're unsure, or if you're using built-in speakers, you can accept the default and continue.  You can access this setting at any time in the Preferences."
 msgstr ""
+
 
 msgctxt "#32001"
 msgid "Plex Home Theater Setup"
 msgstr ""
 
+
+#empty string with id 32002
+
 msgctxt "#32003"
 msgid "[B]Welcome to Plex![/B]  [CR][CR]In order to ensure the best experience, let's take a minute to determine some audio settings and get signed in to [B]myPlex[/B].  [CR][CR][B]myPlex[/B] lets you queue and share online videos, and access shared media from your friends' libraries.  [CR][CR]If you don't already have a free [B]myPlex[/B] account, you can create one now at [COLOR=orange]http://my.plexapp.com[/COLOR] before continuing."
 msgstr ""
+
+
+#Other
+#empty strings from id 32004 to 32099
 
 msgctxt "#32100"
 msgid "Set Rating"
 msgstr ""
 
+
 msgctxt "#32101"
 msgid "Episodes added"
 msgstr ""
+
 
 msgctxt "#32102"
 msgid "All Episodes"
 msgstr ""
 
+
 msgctxt "#32103"
 msgid "There is no description available for this "
 msgstr ""
+
 
 msgctxt "#32104"
 msgid "You can add one for it in the Media Manager"
 msgstr ""
 
+
 msgctxt "#32105"
 msgid "* Plot hidden to avoid spoilers *"
 msgstr ""
+

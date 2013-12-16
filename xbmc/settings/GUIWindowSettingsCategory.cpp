@@ -2270,29 +2270,21 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Equals("plexmediaserver.localqualitystr"))
   {
-    CPlexServerPtr server = g_plexApplication.serverManager->GetBestServer();
-    if (server)
-    {
-      int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.localquality"));
-      g_guiSettings.SetInt("plexmediaserver.localquality", quality);
-      if (quality > 0)
-        g_guiSettings.SetString("plexmediaserver.localqualitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
-      else
-        g_guiSettings.SetString("plexmediaserver.localqualitystr", g_localizeStrings.Get(42999));
-    }
+    int quality = CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr(), g_guiSettings.GetInt("plexmediaserver.localquality"));
+    g_guiSettings.SetInt("plexmediaserver.localquality", quality);
+    if (quality > 0)
+      g_guiSettings.SetString("plexmediaserver.localqualitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
+    else
+      g_guiSettings.SetString("plexmediaserver.localqualitystr", g_localizeStrings.Get(42999));
   }
   else if (strSetting.Equals("plexmediaserver.remotequalitystr"))
   {
-    CPlexServerPtr server = g_plexApplication.serverManager->GetBestServer();
-    if (server)
-    {
-      int quality = CPlexTranscoderClient::SelectATranscoderQuality(server, g_guiSettings.GetInt("plexmediaserver.remotequality"));
-      g_guiSettings.SetInt("plexmediaserver.remotequality", quality);
-      if (quality > 0)
-        g_guiSettings.SetString("plexmediaserver.remotequalitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
-      else
-        g_guiSettings.SetString("plexmediaserver.remotequalitystr", g_localizeStrings.Get(42999));
-    }
+    int quality = CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr(), g_guiSettings.GetInt("plexmediaserver.remotequality"));
+    g_guiSettings.SetInt("plexmediaserver.remotequality", quality);
+    if (quality > 0)
+      g_guiSettings.SetString("plexmediaserver.remotequalitystr", CPlexTranscoderClient::GetPrettyBitrate(quality).c_str());
+    else
+      g_guiSettings.SetString("plexmediaserver.remotequalitystr", g_localizeStrings.Get(42999));
   }
   else if (strSetting.Equals("plexmediaserver.onlinemediaqualitystr"))
   {

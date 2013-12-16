@@ -341,7 +341,8 @@ void CPlexAutoUpdate::ProcessDownloads()
 {
   CStdString verStr;
   verStr.Format("Version %s is now ready to be installed.", GetUpdateVersion());
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", verStr, 10000, false);
+  if (!g_application.IsPlayingFullScreenVideo())
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", verStr, 10000, false);
 
   CGUIMessage msg(GUI_MSG_UPDATE, PLEX_AUTO_UPDATER, 0);
   CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_HOME);

@@ -33,6 +33,8 @@
 #include "PlayList.h"
 #include "Settings.h"
 
+#include "GUIWindowSlideShow.h"
+
 #define LEGACY 1
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -221,10 +223,10 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
       return;
     }
 
-    if (!PlexUtils::IsValidIP(serverURL.GetHostName()))
+    if (serverURL.GetHostName().empty())
     {
-      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia got something, but it's not a valid IP.");
-      setStandardResponse(500, "Got a remote server URL but it was not a valid IP.");
+      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia got something, but it's not a valid IP/Host.");
+      setStandardResponse(500, "Got a remote server URL but it was not a valid IP/Host.");
       return;
     }
 
@@ -242,7 +244,8 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
       if (serverURL.HasOption("X-Plex-Token"))
         token = serverURL.GetOption("X-Plex-Token");
 
-      server->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED, serverURL.GetHostName(), serverURL.GetPort(), token)));
+      server->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED,
+                                                                   serverURL.GetHostName(), serverURL.GetPort(), token)));
     }
   }
 
@@ -261,8 +264,26 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     containerPath = arguments.find("containerKey")->second;
   else if (containerPath.empty())
     containerPath = key;
-    
-  CURL itemURL = server->BuildPlexURL(containerPath);
+
+  // iOS 3.3.1 hacking here, iOS client sends the full absolute path as key
+  // We only need the end part of it
+  {
+    CURL keyURL(key);
+    CStdString options = keyURL.GetOptions();
+    CURL::Decode(options);
+
+    if (!keyURL.Get().empty() && keyURL.GetProtocol() == "http")
+      key = "/" + keyURL.GetFileName() + options;
+
+    if (containerPath == keyURL.Get())
+      containerPath = key;
+  }
+
+  CURL itemURL;
+  if (server->GetUUID().empty())
+    itemURL = server->BuildURL(containerPath);
+  else
+    itemURL = server->BuildPlexURL(containerPath);
 
   if (!containerOptions.GetOptionsString().empty())
     itemURL.AddOptions(containerOptions);
@@ -270,7 +291,10 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   if (arguments.find("protocol") != arguments.end())
   {
     if (arguments.find("protocol")->second == "https")
-      itemURL.SetProtocolOption("ssl", "1");
+    {
+      if (itemURL.GetProtocol() == "plexserver")
+        itemURL.SetProtocolOption("ssl", "1");
+    }
   }
   
   /* fetch the container */
@@ -288,18 +312,20 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   for (int i = 0; i < list.Size(); i ++)
   {
     CFileItemPtr it = list.Get(i);
-    CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia compare %s = %s", it->GetProperty("unprocessed_key").asString().c_str(), key.c_str());
-    if (it->HasProperty("unprocessed_key") &&
-        it->GetProperty("unprocessed_key") == key)
+    CStdString itemKey = it->GetProperty("unprocessed_key").asString();
+    CStdString decodedKey(itemKey);
+    CURL::Decode(decodedKey);
+
+    CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia compare %s|%s = %s", itemKey.c_str(), decodedKey.c_str(), key.c_str());
+    if (itemKey == key || decodedKey == key)
     {
+      CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia found media (%s) at index %d", key.c_str(), idx);
       item = it;
       idx = i;
       break;
     }
   }
 
-  CLog::Log(LOGDEBUG, "CPlexHTTPRemoteHandler::playMedia found media (%s) at index %d", key.c_str(), idx);
-  
   if (!item)
   {
     CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia couldn't find %s in %s", key.c_str(), itemURL.Get().c_str());
@@ -449,7 +475,7 @@ void CPlexHTTPRemoteHandler::seekTo(const ArgMap &arguments)
 void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arguments)
 {
   int action = ACTION_NONE;
-  int activeWindow = g_windowManager.GetActiveWindow();
+  int activeWindow = g_windowManager.GetFocusedWindow();
   
   CStdString navigation = url.Mid(19, url.length() - 19);
   
@@ -479,7 +505,9 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
   {
     if (g_application.IsPlayingFullScreenVideo() &&
         (activeWindow != WINDOW_DIALOG_AUDIO_OSD_SETTINGS &&
-         activeWindow != WINDOW_DIALOG_VIDEO_OSD_SETTINGS))
+         activeWindow != WINDOW_DIALOG_VIDEO_OSD_SETTINGS &&
+         activeWindow != WINDOW_DIALOG_PLEX_AUDIO_PICKER &&
+         activeWindow != WINDOW_DIALOG_PLEX_SUBTITLE_PICKER))
       action = ACTION_STOP;
     else
       action = ACTION_NAV_BACK;
@@ -847,9 +875,12 @@ void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
       playlistType = PLAYLIST_MUSIC;
     else if (type == "video")
       playlistType = PLAYLIST_VIDEO;
+    else if (type == "photo")
+      playlistType = PLAYLIST_PICTURE;
   }
 
-  playlist = g_playlistPlayer.GetPlaylist(playlistType);
+  if (playlistType != PLAYLIST_PICTURE)
+    playlist = g_playlistPlayer.GetPlaylist(playlistType);
 
   if (arguments.find("key") == arguments.end())
   {
@@ -859,6 +890,36 @@ void CPlexHTTPRemoteHandler::skipTo(const ArgMap &arguments)
   }
 
   std::string key = arguments.find("key")->second;
+
+  if (playlistType == PLAYLIST_PICTURE)
+  {
+    CGUIWindowSlideShow* ss = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (!ss)
+    {
+      setStandardResponse(500, "Missing slideshow, very internal bad error.");
+      return;
+    }
+    CFileItemList list;
+    ss->GetSlideShowContents(list);
+
+    bool found = false;
+
+    for (int i = 0; i < list.Size(); i++)
+    {
+      CFileItemPtr pic = list.Get(i);
+      if (pic && (pic->GetProperty("unprocessed_key").asString() == key))
+      {
+        ss->Select(pic->GetPath());
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
+      setStandardResponse(500, "Can't find that key in the current slideshow!");
+
+    return;
+  }
 
   int idx = -1;
   for (int i = 0; i < playlist.size(); i++)

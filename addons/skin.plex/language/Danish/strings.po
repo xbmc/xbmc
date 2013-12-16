@@ -778,7 +778,7 @@ msgstr "Vis Fankunst"
 
 msgctxt "#31671"
 msgid "Hide Plot in Video OSD"
-msgstr "Gem Plot i Video på skærmen"
+msgstr "Skjul handling i Video OSD"
 
 
 msgctxt "#31672"
@@ -793,7 +793,7 @@ msgstr "Medie Udseende"
 
 msgctxt "#31674"
 msgid "Hide Fanart"
-msgstr "Gem Fankunst"
+msgstr "Skjul fankunst"
 
 
 msgctxt "#31675"
@@ -808,7 +808,7 @@ msgstr "I Media Forhåndsvisning"
 
 msgctxt "#31677"
 msgid "with TV Shows List"
-msgstr "med TV Program List"
+msgstr "med TV-Serier liste"
 
 
 msgctxt "#31678"
@@ -818,12 +818,12 @@ msgstr "Vis sæson miniaturebillede "
 
 msgctxt "#31679"
 msgid "Hide Focus Details in Panel Stream"
-msgstr "Gem Fokus for Detaljer i Panel Strømmen"
+msgstr "Skjul fokusdetaljer i Panel Stream"
 
 
 msgctxt "#31680"
 msgid "Hide Thumbs in List View"
-msgstr "Gem Miniatyrebillede i List Visning"
+msgstr "Skjul miniaturebilleder i listevisning"
 
 
 msgctxt "#31681"
@@ -843,7 +843,7 @@ msgstr "med TV Visning"
 
 msgctxt "#31684"
 msgid "Hide Custom Backgrounds"
-msgstr "Gem Brugerdefineret Baggrunde"
+msgstr "Skjul brugerdefinerede baggrunde"
 
 
 msgctxt "#31685"
@@ -873,7 +873,7 @@ msgstr "med Billede Visning"
 
 msgctxt "#31690"
 msgid "Hide No Thumb Icons"
-msgstr "Gem Ikoner Uden Miniatyrebillede"
+msgstr "Skjul ingen-miniature ikoner"
 
 
 msgctxt "#31691"
@@ -888,7 +888,7 @@ msgstr "Gem information i Væg Strøm visning"
 
 msgctxt "#31693"
 msgid "Hide Thumbs in Options Menu"
-msgstr "Gem Miniatyrebillede i Indstillings Menuen"
+msgstr "Skjul miniaturebilleder i indstillingsmenuen"
 
 
 msgctxt "#31694"
@@ -1324,3 +1324,4 @@ msgstr "Du kan tilføje en beskrivelse i Media Manager"
 msgctxt "#32105"
 msgid "* Plot hidden to avoid spoilers *"
 msgstr "* Plottet er gemt for ikke at afsløre handlingen *"
+

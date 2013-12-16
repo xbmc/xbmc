@@ -114,8 +114,8 @@ msgstr "Als u doorgaat, is het mogelijk dat u Plex/HT niet zal kunnen bedienen"
 #empty string with id 13142
 
 msgctxt "#13143"
-msgid "Search Remote Libraries"
-msgstr "Doorzoek Externe Bibliotheken"
+msgid "Search remote libraries"
+msgstr "Zoek in externe bibliotheken"
 
 
 #empty strings from id 13144 to 13145
@@ -262,15 +262,15 @@ msgstr "Plex/HT heeft een herstart nodig om uw {1} te veranderen"
 #empty strings from id 14040 to 15149
 
 msgctxt "#15150"
-msgid "Enable Global Slideshow"
-msgstr "Activeer Diavoorstelling als Achtergrond"
+msgid "Use library artwork backgrounds"
+msgstr "Gebruik bibliotheek achtergrond afbeeldingen"
 
 
 #empty strings from id 15151 to 15204
 
 msgctxt "#15205"
 msgid "Please update Plex/HT"
-msgstr "Update Plex/HT A.U.B."
+msgstr "Update Plex/HT a.u.b."
 
 
 #empty strings from id 15206 to 16000
@@ -333,7 +333,7 @@ msgstr "Accuniveau"
 
 msgctxt "#18006"
 msgid "until full"
-msgstr "volledig vullen"
+msgstr "tot het vol is"
 
 
 msgctxt "#18007"
@@ -354,18 +354,18 @@ msgstr "Activeer melding bij laag accuniveau"
 #empty strings from id 18010 to 18100
 
 msgctxt "#18101"
-msgid "Background Music Volume"
-msgstr "Volume Achtergrondmuziek"
+msgid "Theme music volume"
+msgstr "Thema muziek volume"
 
 
 msgctxt "#18102"
-msgid "Enable Theme Music"
-msgstr "Activeer Titelmuziek"
+msgid "Enable TV theme music"
+msgstr "Zet TV Thema muziek aan"
 
 
 msgctxt "#18103"
 msgid "- Automatically Download Theme Music"
-msgstr "Download Titelmuziek Automatisch"
+msgstr "- Download automatisch thema muziek"
 
 
 msgctxt "#18104"
@@ -373,7 +373,67 @@ msgid "Enable Background Music"
 msgstr "Activeer achtergrond muziek"
 
 
-#empty strings from id 18105 to 18999
+msgctxt "#18105"
+msgid "Advanced"
+msgstr "Geavanceerd"
+
+
+msgctxt "#18106"
+msgid "Video"
+msgstr "Video"
+
+
+msgctxt "#18107"
+msgid "Music"
+msgstr "Muziek"
+
+
+msgctxt "#18108"
+msgid "Photos"
+msgstr "Foto's"
+
+
+msgctxt "#18109"
+msgid "Video render method"
+msgstr "Video render methode"
+
+
+msgctxt "#18110"
+msgid "HDMI output channels"
+msgstr "HDMI uitgangs kanalen"
+
+
+msgctxt "#18111"
+msgid "Advanced video"
+msgstr "Geavanceerd video"
+
+
+msgctxt "#18112"
+msgid "Logging"
+msgstr "Logging"
+
+
+msgctxt "#18113"
+msgid "Theme music"
+msgstr "Thema muziek"
+
+
+msgctxt "#18114"
+msgid "Visualize dirty regions"
+msgstr "Visualiseren vuile plaatsen"
+
+
+msgctxt "#18115"
+msgid "Dirty regions algorithm"
+msgstr "Vuile gebieden algoritme"
+
+
+msgctxt "#18116"
+msgid "Dirty regions no flip timeout (ms)"
+msgstr "Vuile gebieden geen flip timeout (ms)"
+
+
+#empty strings from id 18117 to 18999
 
 
 #empty strings from id 19022 to 20008
@@ -400,11 +460,24 @@ msgstr "dit path van de Plex/HT bibliotheek?"
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
-msgid "Allow control of Plex/HT via UPnP"
+msgid "Allow control of XBMC via UPnP"
 msgstr "Sta bediening van Plex/HT via UPnP toe."
 
 
-#empty strings from id 21882 to 33074
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr "Vertraagd met: %2.3fs"
+
+
+msgctxt "#22005"
+msgid "Ahead by: %2.3fs"
+msgstr "Versneld met: %2.3fs"
+
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
@@ -438,148 +511,53 @@ msgstr "Niet ondersteunde libcec interface versie. %d is hoger dan de versie die
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
-msgid "Software Update"
-msgstr "Software Update"
+msgid "Software update"
+msgstr "Software update"
 
 
 msgctxt "#40001"
-msgid "New Version Available"
-msgstr "Nieuwe Versie Beschikbaar"
+msgid "Checking for available updates..."
+msgstr "Controleren op beschikbare updates..."
 
 
 msgctxt "#40002"
-msgid "Install with Software Update"
-msgstr "Installeer met Software Update"
+msgid "Update channel"
+msgstr "Update kanaal"
 
 
 msgctxt "#40003"
-msgid "A new version of Plex/HT is available."
-msgstr "Een nieuwe versie van Plex/HT is beschikbaar."
+msgid "Stable"
+msgstr "Stabiel"
 
 
 msgctxt "#40004"
-msgid "Version: %@  (you have %@)"
-msgstr "Versie: %@ (U hebt %@)"
+msgid "PlexPass"
+msgstr "PlexPass"
 
 
 msgctxt "#40005"
-msgid "Would you like to download and install it now?"
-msgstr "Wilt u het nu downloaden en installeren?"
+msgid "Ninja"
+msgstr "Ninja"
 
 
 msgctxt "#40006"
-msgid "You currently have the latest version of Plex/HT (%@)"
-msgstr "U heeft momenteel de laatste versie van Plex/HT (%@)"
-
-
-msgctxt "#40007"
-msgid "Downloading Plex/HT update"
-msgstr "Plex/HT update wordt gedownload"
-
-
-msgctxt "#40008"
-msgid "%@ of %@"
-msgstr "%@ van %@"
-
-
-msgctxt "#40009"
-msgid "%@ downloaded"
-msgstr "%@ gedownload"
-
-
-msgctxt "#40010"
-msgid "Extracting Plex/HT update"
-msgstr "Plex/HT update aan het uitpakken"
-
-
-msgctxt "#40011"
-msgid "Installing Plex/HT update"
-msgstr "Plex/HT update aan het installeren"
-
-
-msgctxt "#40012"
-msgid "Update Failed"
-msgstr "Update mislukt"
-
-
-msgctxt "#40013"
-msgid "An error has occurred."
-msgstr "Er heeft zich een fout voorgedaan."
-
-
-msgctxt "#40014"
-msgid "Please check the console for more details."
-msgstr "Raadpleeg de console voor meer details"
-
-
-msgctxt "#40015"
-msgid "Checking for updates"
-msgstr "Zoeken naar updates"
+msgid "I am Special!"
+msgstr "Ik ben Speciaal!"
 
 
 msgctxt "#40016"
-msgid "Check For Update Now..."
-msgstr "Zoek nu naar een update..."
+msgid "Check for update now..."
+msgstr "Controleer nu voor update..."
 
 
 msgctxt "#40017"
-msgid "Automatically Check For Updates"
-msgstr "Zoek Automatisch Naar Updates"
+msgid "Automatically check for updates"
+msgstr "Automatisch controleren voor updates"
 
 
 msgctxt "#40018"
-msgid "Update"
-msgstr "Update"
-
-
-msgctxt "#40019"
-msgid "- If Updates Are Available"
-msgstr "- Als Updates Beschikbaar Zijn"
-
-
-msgctxt "#40020"
-msgid "Ahow a Notification"
-msgstr "Toon een Melding"
-
-
-msgctxt "#40021"
-msgid "Ask to Install"
-msgstr "Vraag om te Installeren"
-
-
-msgctxt "#40022"
-msgid "Check for Updates Automatically?"
-msgstr "Zoek Automatisch naar Updates?"
-
-
-msgctxt "#40023"
-msgid "Would you like Plex/HT to alert you when updates"
-msgstr "Wil u dat Plex/HT u laat weten dat er een update is"
-
-
-msgctxt "#40024"
-msgid "are available?"
-msgstr "zijn beschikbaar?"
-
-
-msgctxt "#40025"
-msgid "- Check For Updates"
-msgstr "- Zoek naar updates"
-
-
-msgctxt "#40026"
-msgid "Every Hour"
-msgstr "Elk Uur"
-
-
-msgctxt "#40027"
-msgid "Every Day"
-msgstr "Elke Dag"
-
-
-msgctxt "#40028"
-msgid "Every Week"
-msgstr "Elke Week"
+msgid "Update and restart"
+msgstr "Update en herstarten"
 
 
 msgctxt "#40029"
@@ -587,11 +565,16 @@ msgid "Current version"
 msgstr "Huidige versie"
 
 
+msgctxt "#40028"
+msgid "Update Available!"
+msgstr "Update Beschikbaar!"
+
+
 #empty strings from id 40029 to 40099
 
 msgctxt "#40100"
 msgid "Applications"
-msgstr "Applicaties"
+msgstr "Toepassingen"
 
 
 msgctxt "#40101"
@@ -601,12 +584,12 @@ msgstr "Voeg applicatie toe"
 
 msgctxt "#40102"
 msgid "Remove Application"
-msgstr "Verwijder applicatie"
+msgstr "Toepassing Verwijderen"
 
 
 msgctxt "#40103"
 msgid "Browse for Application"
-msgstr "Zoeken naar applicaties"
+msgstr "Bladeren door applicaties"
 
 
 msgctxt "#40104"
@@ -635,7 +618,7 @@ msgstr "Nu aan het afspelen"
 
 msgctxt "#40200"
 msgid "Unsupported path"
-msgstr "Niet ondersteund path"
+msgstr "Niet ondersteund pad"
 
 
 msgctxt "#40201"
@@ -933,8 +916,8 @@ msgstr "Wachtwoord"
 
 
 msgctxt "#44002"
-msgid "Sign in with PIN code"
-msgstr "Aanmelden met PIN code"
+msgid "Use PIN"
+msgstr "Gebruik PIN"
 
 
 msgctxt "#44003"
@@ -977,6 +960,11 @@ msgid "Queue"
 msgstr "Wachtrij"
 
 
+msgctxt "#44022"
+msgid "Recommended"
+msgstr "Aanbevolen"
+
+
 msgctxt "#44030"
 msgid "FILTERS"
 msgstr "FILTERS"
@@ -985,6 +973,11 @@ msgstr "FILTERS"
 msgctxt "#44031"
 msgid "SORTING"
 msgstr "SORTEREN"
+
+
+msgctxt "#44032"
+msgid "Clear Filters"
+msgstr "Filters Opschonen"
 
 
 msgctxt "#44100"
@@ -1012,6 +1005,11 @@ msgid "Hooray we are signed in!"
 msgstr "Hoera we zijn aangemeld!"
 
 
+msgctxt "#44105"
+msgid "Signed in to myPlex"
+msgstr "Aangemeld bij myPlex"
+
+
 msgctxt "#44200"
 msgid "PlexPass Required"
 msgstr "PlexPass Vereist"
@@ -1035,6 +1033,11 @@ msgstr "PlexPass Vereist"
 msgctxt "#44204"
 msgid "Press OK Quit"
 msgstr "Druk OK om te stoppen"
+
+
+msgctxt "#44300"
+msgid "Allow control of Plex/HT from Plex Clients"
+msgstr "Sta Plex Clients toe Plex/HT te besturen"
 
 
 #### These are error strings shown from channels
@@ -1069,3 +1072,88 @@ msgid "This media is geoblocked and can't be accessed from your current location
 msgstr "Deze media heeft een geo-blokkade en is daardoor niet toegankelijk vanaf uw huidige locatie."
 
 #### end error strings
+
+msgctxt "#52010"
+msgid "Please check that this file exists and the necessary drive is mounted"
+msgstr "Controleer of dit bestand bestaat en of de benodigde schijf beschikbaar is"
+
+
+msgctxt "#52011"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Theater is niet in staat de inhoud van dit kanaal af te spelen"
+
+
+msgctxt "#52012"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr "Plex Home Theater is niet in staat de inhoud van dit kanaal af te spelen"
+
+
+msgctxt "#52100"
+msgid "Select Audio Track"
+msgstr "Selecteer Geluidsspoor"
+
+
+msgctxt "#52101"
+msgid "Select Subtitle"
+msgstr "Selecteer Ondertiteling"
+
+
+msgctxt "#52102"
+msgid "Channels"
+msgstr "Kanalen"
+
+
+msgctxt "#52201"
+msgid "Local video quality"
+msgstr "Lokale Videokwaliteit"
+
+
+msgctxt "#52202"
+msgid "Remote video quality"
+msgstr "Videokwaliteit Voor Extern"
+
+
+msgctxt "#52203"
+msgid "Online video quality"
+msgstr "Online video kwaliteit"
+
+
+msgctxt "#52210"
+msgid "Show myPlex queue and recommendations"
+msgstr "Laat myPlex queue en aanbevelingen zien"
+
+
+msgctxt "#52300"
+msgid "Media Server went away"
+msgstr "Media Server is weggegaan"
+
+
+msgctxt "#52301"
+msgid "The Server you where browsing went away..."
+msgstr "De server die je aan het bladeren was is weggegaan"
+
+
+msgctxt "#52400"
+msgid "No linked social accounts"
+msgstr "Geen Sociale accounts gekoppeld"
+
+
+msgctxt "#52401"
+msgid "Go to http://my.plexapp.com to link your account"
+msgstr "Ga naar http://my.plexapp.com om je account te koppelen."
+
+
+msgctxt "#52402"
+msgid "Enter message"
+msgstr "Voer bericht in"
+
+
+msgctxt "#52403"
+msgid "Share %s on %s with message:"
+msgstr "Deel %s op %s met bericht:"
+
+
+msgctxt "#52404"
+msgid "Enable network logging"
+msgstr "Zet netwerk logging aan"
+

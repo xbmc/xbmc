@@ -1,0 +1,8 @@
+Upstream fixes:
+	Fix video ripple on Mavericks with Intel GPU
+
+PHT Fixes:
+	Update app translations.
+	OSX: Make sure we reset audio devices to PCM mode correctly
+    OSX: Don't apply a mix matrix when the input channels are the same as output channels
+    Crash fixes

@@ -114,8 +114,8 @@ msgstr "אם תבמשיך, ישנה אפשרות שלא תוכל לשלוט בפ
 #empty string with id 13142
 
 msgctxt "#13143"
-msgid "Search Remote Libraries"
-msgstr "חפש בסיפריות חיצוניות"
+msgid "Search remote libraries"
+msgstr ""
 
 
 #empty strings from id 13144 to 13145
@@ -262,7 +262,7 @@ msgstr "פלקס זקוק לאתחול על מנת לשנות את ה"
 #empty strings from id 14040 to 15149
 
 msgctxt "#15150"
-msgid "Enable Global Slideshow"
+msgid "Use library artwork backgrounds"
 msgstr ""
 
 
@@ -270,80 +270,80 @@ msgstr ""
 
 msgctxt "#15205"
 msgid "Please update Plex/HT"
-msgstr ""
+msgstr "אנא עדכן את פלקס"
 
 
 #empty strings from id 15206 to 16000
 
 msgctxt "#16001"
 msgid "Configure Audio Hardware..."
-msgstr ""
+msgstr "הגדרות חומרת קול"
 
 
 #empty strings from id 16002 to 17500
 
 msgctxt "#17501"
 msgid "Display Brightness"
-msgstr ""
+msgstr "בהירות מסך"
 
 
 #empty strings from id 17502 to 17700
 
 msgctxt "#17701"
 msgid "Low Battery"
-msgstr ""
+msgstr "סוללה חלשה"
 
 
 msgctxt "#17702"
 msgid "Connect to AC Power"
-msgstr ""
+msgstr "התחבר למקור חשמל"
 
 
 #empty strings from id 17703 to 17999
 
 msgctxt "#18000"
 msgid "Model"
-msgstr ""
+msgstr "מודל"
 
 
 msgctxt "#18001"
 msgid "Power source"
-msgstr ""
+msgstr "מקור מתח"
 
 
 msgctxt "#18002"
 msgid "AC power"
-msgstr ""
+msgstr "התחבר למקור חשמל"
 
 
 msgctxt "#18003"
 msgid "AC power (charging)"
-msgstr ""
+msgstr "התחבר למקור חשמל (טוען)"
 
 
 msgctxt "#18004"
 msgid "Battery power"
-msgstr ""
+msgstr "מתח סוללה"
 
 
 msgctxt "#18005"
 msgid "Power level"
-msgstr ""
+msgstr "דרגת כוח"
 
 
 msgctxt "#18006"
 msgid "until full"
-msgstr ""
+msgstr "עד טעינה מלאה"
 
 
 msgctxt "#18007"
 msgid "remaining"
-msgstr ""
+msgstr "נשאר"
 
 
 msgctxt "#18008"
 msgid "Calculating time"
-msgstr ""
+msgstr "מחשב זמן"
 
 
 msgctxt "#18009"
@@ -354,12 +354,12 @@ msgstr ""
 #empty strings from id 18010 to 18100
 
 msgctxt "#18101"
-msgid "Background Music Volume"
+msgid "Theme music volume"
 msgstr ""
 
 
 msgctxt "#18102"
-msgid "Enable Theme Music"
+msgid "Enable TV theme music"
 msgstr ""
 
 
@@ -373,7 +373,67 @@ msgid "Enable Background Music"
 msgstr ""
 
 
-#empty strings from id 18105 to 18999
+msgctxt "#18105"
+msgid "Advanced"
+msgstr ""
+
+
+msgctxt "#18106"
+msgid "Video"
+msgstr ""
+
+
+msgctxt "#18107"
+msgid "Music"
+msgstr "מוזיקה"
+
+
+msgctxt "#18108"
+msgid "Photos"
+msgstr ""
+
+
+msgctxt "#18109"
+msgid "Video render method"
+msgstr "שיטת המרת וידאו"
+
+
+msgctxt "#18110"
+msgid "HDMI output channels"
+msgstr ""
+
+
+msgctxt "#18111"
+msgid "Advanced video"
+msgstr "וידאו מתקדם"
+
+
+msgctxt "#18112"
+msgid "Logging"
+msgstr "נכנס"
+
+
+msgctxt "#18113"
+msgid "Theme music"
+msgstr "מוסיקת רקע"
+
+
+msgctxt "#18114"
+msgid "Visualize dirty regions"
+msgstr ""
+
+
+msgctxt "#18115"
+msgid "Dirty regions algorithm"
+msgstr ""
+
+
+msgctxt "#18116"
+msgid "Dirty regions no flip timeout (ms)"
+msgstr ""
+
+
+#empty strings from id 18117 to 18999
 
 
 #empty strings from id 19022 to 20008
@@ -400,11 +460,24 @@ msgstr ""
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
-msgid "Allow control of Plex/HT via UPnP"
+msgid "Allow control of XBMC via UPnP"
 msgstr ""
 
 
-#empty strings from id 21882 to 33074
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr ""
+
+
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr ""
+
+
+msgctxt "#22005"
+msgid "Ahead by: %2.3fs"
+msgstr ""
+
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
@@ -438,148 +511,53 @@ msgstr ""
 #empty strings from id 36014 to 39999
 
 msgctxt "#40000"
-msgid "Software Update"
+msgid "Software update"
 msgstr ""
 
 
 msgctxt "#40001"
-msgid "New Version Available"
+msgid "Checking for available updates..."
 msgstr ""
 
 
 msgctxt "#40002"
-msgid "Install with Software Update"
+msgid "Update channel"
 msgstr ""
 
 
 msgctxt "#40003"
-msgid "A new version of Plex/HT is available."
+msgid "Stable"
 msgstr ""
 
 
 msgctxt "#40004"
-msgid "Version: %@  (you have %@)"
+msgid "PlexPass"
 msgstr ""
 
 
 msgctxt "#40005"
-msgid "Would you like to download and install it now?"
+msgid "Ninja"
 msgstr ""
 
 
 msgctxt "#40006"
-msgid "You currently have the latest version of Plex/HT (%@)"
-msgstr ""
-
-
-msgctxt "#40007"
-msgid "Downloading Plex/HT update"
-msgstr ""
-
-
-msgctxt "#40008"
-msgid "%@ of %@"
-msgstr ""
-
-
-msgctxt "#40009"
-msgid "%@ downloaded"
-msgstr ""
-
-
-msgctxt "#40010"
-msgid "Extracting Plex/HT update"
-msgstr ""
-
-
-msgctxt "#40011"
-msgid "Installing Plex/HT update"
-msgstr ""
-
-
-msgctxt "#40012"
-msgid "Update Failed"
-msgstr ""
-
-
-msgctxt "#40013"
-msgid "An error has occurred."
-msgstr ""
-
-
-msgctxt "#40014"
-msgid "Please check the console for more details."
-msgstr ""
-
-
-msgctxt "#40015"
-msgid "Checking for updates"
-msgstr ""
+msgid "I am Special!"
+msgstr "אני מיוחד!"
 
 
 msgctxt "#40016"
-msgid "Check For Update Now..."
-msgstr ""
+msgid "Check for update now..."
+msgstr "בדוק עדכונים כעת.."
 
 
 msgctxt "#40017"
-msgid "Automatically Check For Updates"
-msgstr ""
+msgid "Automatically check for updates"
+msgstr "בדוק עדכונית אוטומטית"
 
 
 msgctxt "#40018"
-msgid "Update"
-msgstr ""
-
-
-msgctxt "#40019"
-msgid "- If Updates Are Available"
-msgstr ""
-
-
-msgctxt "#40020"
-msgid "Ahow a Notification"
-msgstr ""
-
-
-msgctxt "#40021"
-msgid "Ask to Install"
-msgstr ""
-
-
-msgctxt "#40022"
-msgid "Check for Updates Automatically?"
-msgstr ""
-
-
-msgctxt "#40023"
-msgid "Would you like Plex/HT to alert you when updates"
-msgstr ""
-
-
-msgctxt "#40024"
-msgid "are available?"
-msgstr ""
-
-
-msgctxt "#40025"
-msgid "- Check For Updates"
-msgstr ""
-
-
-msgctxt "#40026"
-msgid "Every Hour"
-msgstr ""
-
-
-msgctxt "#40027"
-msgid "Every Day"
-msgstr ""
-
-
-msgctxt "#40028"
-msgid "Every Week"
-msgstr ""
+msgid "Update and restart"
+msgstr "עדכן והפעל מחדש"
 
 
 msgctxt "#40029"
@@ -587,11 +565,16 @@ msgid "Current version"
 msgstr ""
 
 
+msgctxt "#40028"
+msgid "Update Available!"
+msgstr ""
+
+
 #empty strings from id 40029 to 40099
 
 msgctxt "#40100"
 msgid "Applications"
-msgstr ""
+msgstr "תוכניות"
 
 
 msgctxt "#40101"
@@ -697,7 +680,7 @@ msgstr ""
 
 msgctxt "#40213"
 msgid "Force transcoding on local network"
-msgstr ""
+msgstr "כפה המרה ברשת מקומית"
 
 
 msgctxt "#40214"
@@ -709,39 +692,39 @@ msgstr ""
 
 msgctxt "#40300"
 msgid "Set Quit Timer"
-msgstr ""
+msgstr "הגדר זמן יציאה"
 
 
 msgctxt "#40301"
 msgid "Set Sleep Timer"
-msgstr ""
+msgstr "הגדר זמן שינה"
 
 
 msgctxt "#40302"
 msgid "Set Shut Down Timer"
-msgstr ""
+msgstr "הגדר זמן כיבוי"
 
 
 #empty strings from id 40303 to 40304
 
 msgctxt "#40305"
 msgid "Change Quit Timer"
-msgstr ""
+msgstr "שנה זמן יציאה"
 
 
 msgctxt "#40306"
 msgid "Change Sleep Timer"
-msgstr ""
+msgstr "שנה זמן שינה"
 
 
 msgctxt "#40307"
 msgid "Change Shut Down Timer"
-msgstr ""
+msgstr "שנה זמן כיבוי"
 
 
 msgctxt "#40308"
 msgid "Change Sleep Display Timer"
-msgstr ""
+msgstr "שנה זמן שינת תצוגה"
 
 
 #empty string with id 40309
@@ -933,8 +916,8 @@ msgstr "סיסמא"
 
 
 msgctxt "#44002"
-msgid "Sign in with PIN code"
-msgstr "היכנס בעזרת קוד אישי"
+msgid "Use PIN"
+msgstr ""
 
 
 msgctxt "#44003"
@@ -977,6 +960,11 @@ msgid "Queue"
 msgstr "תור"
 
 
+msgctxt "#44022"
+msgid "Recommended"
+msgstr "מומלץ"
+
+
 msgctxt "#44030"
 msgid "FILTERS"
 msgstr "סינונים"
@@ -984,6 +972,11 @@ msgstr "סינונים"
 
 msgctxt "#44031"
 msgid "SORTING"
+msgstr ""
+
+
+msgctxt "#44032"
+msgid "Clear Filters"
 msgstr ""
 
 
@@ -1012,6 +1005,11 @@ msgid "Hooray we are signed in!"
 msgstr ""
 
 
+msgctxt "#44105"
+msgid "Signed in to myPlex"
+msgstr ""
+
+
 msgctxt "#44200"
 msgid "PlexPass Required"
 msgstr ""
@@ -1034,6 +1032,11 @@ msgstr ""
 
 msgctxt "#44204"
 msgid "Press OK Quit"
+msgstr ""
+
+
+msgctxt "#44300"
+msgid "Allow control of Plex/HT from Plex Clients"
 msgstr ""
 
 
@@ -1069,3 +1072,88 @@ msgid "This media is geoblocked and can't be accessed from your current location
 msgstr ""
 
 #### end error strings
+
+msgctxt "#52010"
+msgid "Please check that this file exists and the necessary drive is mounted"
+msgstr ""
+
+
+msgctxt "#52011"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr ""
+
+
+msgctxt "#52012"
+msgid "Plex Home Theater is not able to play this channel content"
+msgstr ""
+
+
+msgctxt "#52100"
+msgid "Select Audio Track"
+msgstr "בחר ערוץ שמע"
+
+
+msgctxt "#52101"
+msgid "Select Subtitle"
+msgstr ""
+
+
+msgctxt "#52102"
+msgid "Channels"
+msgstr ""
+
+
+msgctxt "#52201"
+msgid "Local video quality"
+msgstr ""
+
+
+msgctxt "#52202"
+msgid "Remote video quality"
+msgstr ""
+
+
+msgctxt "#52203"
+msgid "Online video quality"
+msgstr ""
+
+
+msgctxt "#52210"
+msgid "Show myPlex queue and recommendations"
+msgstr ""
+
+
+msgctxt "#52300"
+msgid "Media Server went away"
+msgstr ""
+
+
+msgctxt "#52301"
+msgid "The Server you where browsing went away..."
+msgstr ""
+
+
+msgctxt "#52400"
+msgid "No linked social accounts"
+msgstr "לא חוברו חשבונות חברתיים"
+
+
+msgctxt "#52401"
+msgid "Go to http://my.plexapp.com to link your account"
+msgstr ""
+
+
+msgctxt "#52402"
+msgid "Enter message"
+msgstr "הכנס הודעה"
+
+
+msgctxt "#52403"
+msgid "Share %s on %s with message:"
+msgstr ""
+
+
+msgctxt "#52404"
+msgid "Enable network logging"
+msgstr ""
+

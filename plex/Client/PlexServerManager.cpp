@@ -99,7 +99,7 @@ CPlexServerManager::FindByUUID(const CStdString &uuid)
   if (uuid.Equals("local"))
     return _localServer;
   
-  if (uuid.Equals("node"))
+  if (uuid.Equals("node") || uuid.Equals("com.plexapp.node"))
     return _nodeServer;
 
   if (uuid.Equals("best"))

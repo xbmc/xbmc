@@ -32,6 +32,7 @@ extern "C"
 {
 #endif
   bool        DarwinIsAppleTV2(void);
+  bool        DarwinIsMavericks(void);
   bool        DarwinHasRetina(void);
   const char *GetDarwinOSReleaseString(void);
   const char *GetDarwinVersionString(void);
