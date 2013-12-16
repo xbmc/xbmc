@@ -334,7 +334,7 @@
 				<!-- Title -->
 				<control type="label">
 					<width min="29" max="300">auto</width>
-					<height>40</height>
+					<height>44</height>
 					<label>$INFO[Container.SecondTitle]</label>
 					<label>Seasons view</label>
 					<font>CondensedBold-36</font>
@@ -577,7 +577,7 @@
 				<!-- Titles -->
 				<control type="label">
 					<width>270</width>
-					<height>40</height>
+					<height>44</height>
 					<label>$INFO[Container.FirstTitle]</label>
 					<font>CondensedBold-36</font>
 					<textcolor>white</textcolor>
@@ -586,7 +586,7 @@
 				</control>
 				<control type="label">
 					<width>270</width>
-					<height>40</height>
+					<height>44</height>
 					<label>$INFO[Container.Property(parentTitle)]</label>
 					<font>CondensedBold-36</font>
 					<textcolor>white</textcolor>
@@ -596,7 +596,7 @@
 				<control type="label">
 					<posy>40</posy>
 					<width>270</width>
-					<height>40</height>
+					<height>44</height>
 					<label>$INFO[Container.SecondTitle]</label>
 					<font>CondensedBold-36</font>
 					<include>Grey1</include>
@@ -606,7 +606,7 @@
 				<control type="label">
 					<posy>40</posy>
 					<width>270</width>
-					<height>40</height>
+					<height>44</height>
 					<label>$LOCALIZE[32102]</label>
 					<font>CondensedBold-36</font>
 					<include>Grey1</include>
@@ -754,13 +754,13 @@
 			<!-- Infos Left -->
 			<control type="grouplist">
 				<orientation>vertical</orientation>
-				<itemgap>10</itemgap>
+				<itemgap>6</itemgap>
 				<posy>62</posy>
 				<posx>560</posx>
 				<!-- Title -->
 				<control type="label">
 					<width>570</width>
-					<height>40</height>
+					<height>44</height>
 					<label>$INFO[ListItem.TVShowTitle]</label>
 					<font>CondensedBold-36</font>
 					<include>WhiteShadow</include>
@@ -769,14 +769,14 @@
 				<!-- Title Episode & Watched/Unwatched indicator -->
 				<control type="grouplist">
 					<width>600</width>
-					<height>40</height>
+					<height>44</height>
 					<align>left</align>
 					<usecontrolcoords>true</usecontrolcoords>
 					<orientation>horizontal</orientation>
 					<itemgap>20</itemgap>
 					<control type="label">
-						<width min="29" max="500">auto</width>
-						<height>40</height>
+						<width min="29" max="450">auto</width>
+						<height>44</height>
 						<label>$INFO[ListItem.Title]</label>
 						<font>CondensedBold-36</font>
 						<include>Grey1</include>
@@ -957,7 +957,7 @@
 				<!-- Title & Watched/Unwatched indicator -->
 				<control type="grouplist">
 					<width>570</width>
-					<height>40</height>
+					<height>44</height>
 					<align>left</align>
 					<usecontrolcoords>true</usecontrolcoords>
 					<orientation>horizontal</orientation>
@@ -1179,14 +1179,14 @@
 				<!-- Title & Watched/Unwatched indicator -->
 				<control type="grouplist">
 					<width>630</width>
-					<height>40</height>
+					<height>44</height>
 					<align>left</align>
 					<usecontrolcoords>true</usecontrolcoords>
 					<orientation>horizontal</orientation>
 					<itemgap>20</itemgap>
 					<control type="label">
 						<width min="29" max="570">auto</width>
-						<height>40</height>
+						<height>44</height>
 						<label>$INFO[ListItem.Title]</label>
 						<font>CondensedBold-36</font>
 						<include>WhiteShadow</include>
