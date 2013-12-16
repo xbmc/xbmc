@@ -30,11 +30,11 @@ msgstr "Temps Aleatori Addicional"
 
 msgctxt "#30003"
 msgid "Enable Anisotropic Filtering"
-msgstr "Activa el filtre anisotròpic"
+msgstr "Habilita el filtre anisotròpic"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
-msgstr "Activa talls en sec"
+msgstr "Habilita talls en sec"
 
 msgctxt "#30005"
 msgid "Loudness Threshold For Hard Cuts"
@@ -50,7 +50,7 @@ msgstr "Temps de refresc màxim"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
-msgstr "Activa l'Stereo 3D"
+msgstr "Habilita l'Stereo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"

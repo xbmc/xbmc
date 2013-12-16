@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="XBMC.org Add-ons"
-		version="2.1.14"
+		version="2.1.15"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -22,7 +22,7 @@
 	<extension point="xbmc.addon.metadata">
 		<summary lang="af">Installeer Byvoegsels vanaf XBMC.org</summary>
 		<summary lang="am">ከ XBMC.org ተጨማ-ሪዎች መግጠሚያ </summary>
-		<summary lang="ar">تثبيت الإضافات من XBMC.org</summary>
+		<summary lang="ar">ثبت إضافات من موقع إكس بى إم سى الرسمى</summary>
 		<summary lang="be">Усталяваць дадатак з XBMC.org</summary>
 		<summary lang="bg">Инсталира добавки от XBMC.org</summary>
 		<summary lang="ca">Instal·la complements des de XBMC.org</summary>
@@ -124,7 +124,7 @@
 		<description lang="zh">从官方 XBMC.org 插件库下载和安装插件。[CR]　通过官方插件库你将能利用我们广泛的镜像服务优势，使你能够就近下载资源。[CR]　官方库中的所有插件都经过了基本的测试，如果你发现有损坏或不能正常工作的插件请向 XBMC 开发团队报告，以便及时处理。</description>
 		<description lang="zh_TW">從 XBMC.org 官方的附加元件庫下載並安裝附加元件。[CR] 使用官方的附加元件庫你可以從離你較近的檔案鏡像伺器以較快的速度下載附加元件。[CR] 在這個附加元件庫中的附加元件都經過簡單的測試，如果你發現損壞或無法正常工作的附加元件，請回報給 XBMC 團隊，以讓 XBMC 團隊能做一些必須的處置。</description>
 		<disclaimer lang="af">Die XBMC span het nie al die byvoegsels in die kodebank gemaak nie en is nie verantwoordelik vir hulle inhoud nie</disclaimer>
-		<disclaimer lang="ar">فريق XBMC لم يصنع كل الإضافات في هذا المستودع و غير مسؤول عن محتوياتها</disclaimer>
+		<disclaimer lang="ar">فريق برنامج إكس بى إم سى لم يُصنِع جميع اﻹضافات فى هذا المستودع وغير مسؤول عن ما قد تسببه لك</disclaimer>
 		<disclaimer lang="be">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="bg">Team XBMC (Екипът зад XBMC) не е автор на всички добавки в хранилището и не носи отговорност за съдържанието им</disclaimer>
 		<disclaimer lang="ca">L'equip de l'XBMC no ha fet tots els complements d'aquest repositori i per tant no són responsables del seu contingut.</disclaimer>

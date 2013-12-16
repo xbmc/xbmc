@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.7" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.8" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
@@ -24,6 +24,7 @@
     <summary lang="id">Addon untuk memperbaiki keleluasaan menggubah pencatatan log</summary>
     <summary lang="is">Viðbót til þess að bæta skráningu á sérsniði</summary>
     <summary lang="it">Addon per migliorare la personalizzazione di logging</summary>
+    <summary lang="ja">ログのカスタマイズ性をより良くするアドオン</summary>
     <summary lang="lt">Priedų registravimo adaptacija</summary>
     <summary lang="lv">Pievienojumprogramma, ierakstījumu žurnalā pielāgošanai</summary>
     <summary lang="my">logging စိတ်ကြိုက်ပြုပြင် မှုကို တိုးတက်စေသော Addon</summary>
