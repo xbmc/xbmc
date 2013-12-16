@@ -110,7 +110,7 @@ public:
   bool HasTexture(const CStdString &textureName, CStdString *path = NULL, int *bundle = NULL, int *size = NULL);
   static bool CanLoad(const CStdString &texturePath); ///< Returns true if the texture manager can load this texture
   const CTextureArray& Load(const CStdString& strTextureName, bool checkBundleOnly = false);
-  void ReleaseTexture(const CStdString& strTextureName);
+  void ReleaseTexture(const CStdString& strTextureName, bool immediately = false);
   void Cleanup();
   void Dump() const;
   uint32_t GetMemoryUsage() const;
