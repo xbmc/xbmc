@@ -73,6 +73,7 @@ config.log
 /Makefile.include
 /aclocal.m4
 /autom4te.cache/
+/build-aux/compile
 /build-aux/config.guess
 /build-aux/config.sub
 /build-aux/install-sh
@@ -323,6 +324,9 @@ lib/cmyth/Makefile
 # /project
 /project/obj
 /project/output
+
+# /project/cmake
+/project/cmake/xbmc-config.cmake
 
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/XBMC.log
