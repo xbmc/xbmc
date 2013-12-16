@@ -317,8 +317,10 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
       {
         st.s->ExtraData = new uint8_t[4];
         st.s->ExtraSize = 4;
-        ((uint16_t*)st.s->ExtraData)[0] = composition_id;
-        ((uint16_t*)st.s->ExtraData)[1] = ancillary_id;
+        st.s->ExtraData[0] = (composition_id >> 8) & 0xff;
+        st.s->ExtraData[1] = (composition_id >> 0) & 0xff;
+        st.s->ExtraData[2] = (ancillary_id   >> 8) & 0xff;
+        st.s->ExtraData[3] = (ancillary_id   >> 0) & 0xff;
       }
     } else if(!strcmp(type, "TEXTSUB")) {
       st.s = new CDemuxStreamSubtitle();

@@ -414,8 +414,10 @@ void CDVDDemuxPVRClient::RequestStreams()
       {
         st->ExtraData = new uint8_t[4];
         st->ExtraSize = 4;
-        ((uint16_t*)st->ExtraData)[0] = (props.stream[i].iIdentifier >> 0) & 0xFFFFu;
-        ((uint16_t*)st->ExtraData)[1] = (props.stream[i].iIdentifier >> 4) & 0xFFFFu;
+        st->ExtraData[0] = (props.stream[i].iIdentifier >> 8) & 0xff;
+        st->ExtraData[1] = (props.stream[i].iIdentifier >> 0) & 0xff;
+        st->ExtraData[2] = (props.stream[i].iIdentifier >> 24) & 0xff;
+        st->ExtraData[3] = (props.stream[i].iIdentifier >> 16) & 0xff;
       }
       m_streams[i] = st;
     }
