@@ -38,12 +38,21 @@
 						<posy>-153</posy>
 						<width>182</width>
 						<height>274</height>
-						<texture background="true" diffuse="mask-poster-middle.png">$INFO[VideoPlayer.Cover]</texture>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Player.Art(poster)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>
 				</control>
 				<control type="group">
 					<posx>220</posx>
+					<control type="label" id="1">
+						<posy>-80</posy>
+						<width>1000</width>
+						<label>$INFO[VideoPlayer.TVShowTitle] &#xB7; S$INFO[VideoPlayer.Season]&#xB7;E$INFO[VideoPlayer.Episode]</label>
+						<align>left</align>
+						<include>White2</include>
+						<font>CondensedBold-36</font>
+						<visible>!IsEmpty(VideoPlayer.TVShowTitle)</visible>
+					</control>
 					<control type="label" id="1">
 						<posy>-30</posy>
 						<width>1000</width>
