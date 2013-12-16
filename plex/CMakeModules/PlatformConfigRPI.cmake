@@ -147,6 +147,7 @@ add_definitions(
     -D_FILE_OFFSET_BITS=64 
     -DNDEBUG=1 
     -DDEBUG
+    -DUSE_RAPIDXML
 )
 
 #include_directories(

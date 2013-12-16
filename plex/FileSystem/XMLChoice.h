@@ -1,8 +1,6 @@
 #ifndef _XMLCHOICE_H_
 #define _XMLCHOICE_H_
 
-#define USE_RAPIDXML
-
 #ifndef USE_RAPIDXML
 	#include "XBMCTinyXML.h"
 	#define XML_ELEMENT TiXmlElement
