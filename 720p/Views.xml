@@ -150,6 +150,10 @@
 			<visible>ListItem.Type(photos)</visible>
 		</control>
 	</include>
+	<include name="ListMovieTVUnwatchedOverlay">
+			<info>ListItem.Overlay</info>
+			<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+	</include>
 	<!-- List -->
 	<include name="List">
 		<control type="group">
@@ -207,7 +211,7 @@
 							<posy>15</posy>
 							<width>20</width>
 							<height>20</height>
-							<texture>$INFO[ListItem.Overlay]</texture>
+							<include>ListMovieTVUnwatchedOverlay</include>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -265,7 +269,7 @@
 							<posy>15</posy>
 							<width>20</width>
 							<height>20</height>
-							<texture>$INFO[ListItem.Overlay]</texture>
+							<include>ListMovieTVUnwatchedOverlay</include>
 						</control>
 						<control type="label">
 							<width>840</width>
@@ -346,7 +350,7 @@
 							<posy>15</posy>
 							<width>20</width>
 							<height>20</height>
-							<texture>$INFO[ListItem.Overlay]</texture>
+							<include>ListMovieTVUnwatchedOverlay</include>
 						</control>
 						<control type="label">
 							<width>840</width>
