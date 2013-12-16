@@ -723,10 +723,10 @@ void CURL::Decode(CStdString& strURLData)
     {
       if (i < strURLData.size() - 2)
       {
-        CStdString strTmp;
+        std::string strTmp;
         strTmp.assign(strURLData.substr(i + 1, 2));
         int dec_num=-1;
-        sscanf(strTmp,"%x",(unsigned int *)&dec_num);
+        sscanf(strTmp.c_str(), "%x", (unsigned int *)&dec_num);
         if (dec_num<0 || dec_num>255)
           strResult += kar;
         else
