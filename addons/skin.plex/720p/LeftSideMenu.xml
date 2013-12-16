@@ -361,6 +361,7 @@
                     <item id="101">
                         <description>RasPlex Settings Button</description>
                         <label> $LOCALIZE[41000] </label>
+                        <onclick>Dialog.Close(4998)</onclick>
                         <onclick>RunAddon(service.openelec.settings)</onclick>
                     </item>
 					<item id="111">
