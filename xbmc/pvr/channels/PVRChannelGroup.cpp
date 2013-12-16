@@ -1135,13 +1135,13 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
         {
           case EPG_FIRST_DATE:
             epgDate = epg->GetFirstDate();
-            if (epgDate.IsValid() && (date.IsValid() || epgDate < date))
+            if (epgDate.IsValid() && (!date.IsValid() || epgDate < date))
               date = epgDate;
             break;
             
           case EPG_LAST_DATE:
             epgDate = epg->GetLastDate();
-            if (epgDate.IsValid() && (date.IsValid() || epgDate > date))
+            if (epgDate.IsValid() && (!date.IsValid() || epgDate > date))
               date = epgDate;
             break;
         }
