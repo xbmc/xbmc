@@ -222,7 +222,7 @@ private:
 
   CCriticalSection m_databaseSection;
   CTextureDatabase m_database;
-  std::set<CStdString> m_processing; ///< currently processing list to avoid 2 jobs being processed at once
+  std::set<CStdString> m_processinglist; ///< currently processing list to avoid 2 jobs being processed at once
   CCriticalSection     m_processingSection;
   CEvent               m_completeEvent; ///< Set whenever a job has finished
   std::vector<CTextureDetails> m_useCounts; ///< Use count tracking

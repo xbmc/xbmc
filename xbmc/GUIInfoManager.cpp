@@ -4034,7 +4034,7 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
   NotifyObservers(ObservableMessageCurrentItem);
 }
 
-void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString thumbFileName)
+void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString &thumbFileName)
 {
   if (CFile::Exists(thumbFileName))
     m_currentFile->SetArt("thumb", thumbFileName);

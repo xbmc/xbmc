@@ -145,9 +145,9 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
 {
   CStdString url = CTextureUtils::UnwrapImageURL(image);
   CSingleLock lock(m_processingSection);
-  if (m_processing.find(url) == m_processing.end())
+  if (m_processinglist.find(url) == m_processinglist.end())
   {
-    m_processing.insert(url);
+    m_processinglist.insert(url);
     lock.Leave();
     // cache the texture directly
     CTextureCacheJob job(url);
@@ -165,7 +165,7 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
     m_completeEvent.WaitMSec(1000);
     {
       CSingleLock lock(m_processingSection);
-      if (m_processing.find(url) == m_processing.end())
+      if (m_processinglist.find(url) == m_processinglist.end())
         break;
     }
   }
@@ -274,9 +274,9 @@ void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
 
   { // remove from our processing list
     CSingleLock lock(m_processingSection);
-    std::set<CStdString>::iterator i = m_processing.find(job->m_url);
-    if (i != m_processing.end())
-      m_processing.erase(i);
+    std::set<CStdString>::iterator i = m_processinglist.find(job->m_url);
+    if (i != m_processinglist.end())
+      m_processinglist.erase(i);
   }
 
   m_completeEvent.Set();
@@ -300,10 +300,10 @@ void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, uns
     {
       CSingleLock lock(m_processingSection);
       const CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
-      std::set<CStdString>::iterator i = m_processing.find(cacheJob->m_url);
-      if (i == m_processing.end())
+      std::set<CStdString>::iterator i = m_processinglist.find(cacheJob->m_url);
+      if (i == m_processinglist.end())
       {
-        m_processing.insert(cacheJob->m_url);
+        m_processinglist.insert(cacheJob->m_url);
         return;
       }
     }

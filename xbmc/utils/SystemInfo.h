@@ -110,7 +110,7 @@ public:
   CStdString GetUnameVersion();
 #endif
 #if defined(TARGET_WINDOWS)
-  CStdString CSysInfo::GetUAWindowsVersion();
+  CStdString GetUAWindowsVersion();
 #endif
   CStdString GetUserAgent();
   bool HasInternet();
@@ -131,7 +131,7 @@ public:
   CStdString GetManufacturer();
   CStdString GetProduct();
   CStdString GetModel();
-  bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
+  bool GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
 

@@ -149,7 +149,7 @@ void CPasswordManager::Load()
 
 void CPasswordManager::Save() const
 {
-  if (!m_permanentCache.size())
+  if (m_permanentCache.empty())
     return;
 
   CXBMCTinyXML doc;
