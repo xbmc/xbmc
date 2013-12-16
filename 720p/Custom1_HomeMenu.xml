@@ -3,6 +3,7 @@
 	<defaultcontrol always="true">1300</defaultcontrol>
 	<controls>
 		<!-- LeftSideMenu.xml -->
-		<include>PivotMenuHome</include>
+		<include condition="!Skin.HasSetting(HideQuitShutdown)">PivotMenuHome</include>
+		<include condition="Skin.HasSetting(HideQuitShutdown)">PivotMenuHomeMinimal</include>
 	</controls>
 </window>

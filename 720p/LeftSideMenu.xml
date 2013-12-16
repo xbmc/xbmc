@@ -349,7 +349,6 @@
 						<label> $LOCALIZE[31952]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>Plex.ActivateWindow(1,plexserver://channeldirectory,return)</onclick>
-						<visible>!Skin.HasSetting(HideAppStore)</visible>
 						<textcolor>50FFFFFF</textcolor>
 					</item>
 					<item id="6">
@@ -375,6 +374,84 @@
 						<label>$LOCALIZE[31961]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>Plex.Powerdown</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+	</include>
+	<include name="PivotMenuHomeMinimal">
+		<!-- Main Menu -->
+		<control type="group" id="1400">
+			<!-- list -->
+			<control type="wraplist" id="1300">
+				<description>Home Secondary Menu</description>
+				<posx>0</posx>
+				<posy>347</posy>
+				<width>372</width>
+				<height>220</height>
+				<onup>1300</onup>
+				<ondown>1300</ondown>
+				<onleft>-</onleft>
+				<onright>Dialog.Close(4998)</onright>
+				<focusposition>1</focusposition>
+				<scrolltime>200</scrolltime>
+				<animation type="WindowOpen" condition="true" reversible="false">
+					<effect type="rotatey" center="304" start="-90,455" end="0,455" time="300"/>
+					<effect type="fade" start="0" end="100" time="50" delay="0"/>
+				</animation>
+				<animation type="WindowClose" condition="true" reversible="false">
+					<effect type="rotatey" center="304" start="0,455" end="-90,455" time="300"/>
+					<effect type="fade" start="100" end="0" time="230"/>
+				</animation>
+				<itemlayout width="600" height="50">
+					<control type="label">
+						<posx>372</posx>
+						<posy>20</posy>
+						<width>360</width>
+						<height>0</height>
+						<label>$INFO[ListItem.Title]</label>
+						<info>ListItem.Label</info>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>Condensed-28</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>FF333333</shadowcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="600" height="120">
+					<control type="label">
+						<posx>363</posx>
+						<posy>53</posy>
+						<width>353</width>
+						<height>0</height>
+						<info>ListItem.Label</info>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>CondensedBold-36</font>
+						<textcolor>orange</textcolor>
+						<shadowcolor>FF222222</shadowcolor>
+					</control>
+				</focusedlayout>
+				<!-- additional menu items -->
+				<content>
+					<item id="12">
+						<description>Channel Directory</description>
+						<label> $LOCALIZE[31952]</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>Plex.ActivateWindow(1,plexserver://channeldirectory,return)</onclick>
+						<textcolor>50FFFFFF</textcolor>
+					</item>
+					<item id="6">
+						<description>Preferences</description>
+						<label>$LOCALIZE[31955]</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
+					</item>
+					<item id="112">
+						<description>Sleep</description>
+						<label>$LOCALIZE[31960]</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>Plex.Suspend</onclick>
 					</item>
 				</content>
 			</control>
