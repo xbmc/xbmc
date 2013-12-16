@@ -353,16 +353,15 @@ bool CGUIWindowPVRGuide::OnClickButton(CGUIMessage &message)
 
 bool CGUIWindowPVRGuide::OnClickList(CGUIMessage &message)
 {
-  bool bReturn = false;
-
   if (IsSelectedList(message))
   {
     int iAction = message.GetParam1();
     int iItem = m_parent->m_viewControl.GetSelectedItem();
 
-    /* get the fileitem pointer */
     if (iItem < 0 || iItem >= (int) m_parent->m_vecItems->Size())
-      return bReturn;
+      return false;
+    
+    /* get the fileitem pointer */
     CFileItemPtr pItem = m_parent->m_vecItems->Get(iItem);
 
     /* process actions */
@@ -389,12 +388,13 @@ bool CGUIWindowPVRGuide::OnClickList(CGUIMessage &message)
         m_parent->OnPopupMenu(iItem);
         break;
       default:
-        bReturn = false;
-        break;
+        return false;
     }
+    
+    return true;
   }
 
-  return bReturn;
+  return false;
 }
 
 bool CGUIWindowPVRGuide::OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button)
