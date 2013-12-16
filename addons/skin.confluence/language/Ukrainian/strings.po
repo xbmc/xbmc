@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "ПОШУК"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Налаштування візуалізації"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Час закінчення"
@@ -168,6 +172,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Показувати \"Пауза\" в режими слайдшоу"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Відтворювати трейлери у вікні [COLOR=grey3](лише для вікна відомостей)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Різні параметри"
@@ -204,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Показувати останнє додане відео"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Підменю програм головного екрану"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Приховувати фанарт на тлі"
@@ -211,6 +223,10 @@ msgstr "Приховувати фанарт на тлі"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Відтворюване відео на тлі"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Музична візуалізація на тлі"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -224,9 +240,21 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Тексти"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Приховувати фанарт у повноекранній візуалізації"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Надбудова текстів пісень"
+
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Підменю відео головного екрану"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Підменю музики головного екрану"
 
 msgctxt "#31140"
 msgid "Music OSD"

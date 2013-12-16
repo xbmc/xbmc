@@ -248,6 +248,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Video OSD"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Iestatījumi"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Saīsnes"

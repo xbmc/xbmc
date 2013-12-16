@@ -22,11 +22,11 @@ msgstr "تغيير"
 
 msgctxt "#31003"
 msgid "Power Options"
-msgstr "خيارات الطاقة"
+msgstr "إعدادات الطاقه"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "...جاري التشغيل"
+msgstr "يعمل..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -38,7 +38,7 @@ msgstr "خيارات العرض"
 
 msgctxt "#31008"
 msgid "Full screen"
-msgstr "شاشة كاملة"
+msgstr "ملئ الشاشه"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -54,11 +54,11 @@ msgstr "يشتغل الان"
 
 msgctxt "#31024"
 msgid "Page"
-msgstr "عناصر"
+msgstr "الصفحه"
 
 msgctxt "#31025"
 msgid "Items"
-msgstr "صفحة"
+msgstr "العناصر"
 
 msgctxt "#31026"
 msgid "Misc Options"
@@ -90,11 +90,11 @@ msgstr "معلومات"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "يشتغل الان"
+msgstr "المُشَغَل اﻷن"
 
 msgctxt "#31042"
 msgid "PLAYING"
-msgstr "يشتغل الان"
+msgstr "المُشَغَل"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -108,29 +108,33 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "إرجاع"
 
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "يَطلُب"
+
 msgctxt "#31049"
 msgid "End Time"
-msgstr "وقت الانتهاء"
+msgstr "وقت اﻹنتهاء"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "الفرز:تصاعدي"
+msgstr "الفرز: تصاعدياً"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "الفرز:تنازلي"
+msgstr "الفرز: تنازلياً"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "فتح قائمة التشغيل"
+msgstr "إفتح قائمة التشغيل"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "حفظ قائمة التشغيل"
+msgstr "إحفظ قائمة التشغيل"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "إغلاق قائمة التشغيل"
+msgstr "إغلق قائمه التشغيل"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -142,15 +146,15 @@ msgstr "قائمة التشغيل الحالية"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr ".هذا الملف مكدس، حدد الجزء الذي تريد تشغيله"
+msgstr "هذا الملف مُكدَس، حدد الجزء الذى تريد تشغيله منه"
 
 msgctxt "#31061"
 msgid "Current Selected"
-msgstr "مختارة حاليا"
+msgstr "المُختاره حالياً"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "خيارات الصفحة الرئيسية"
+msgstr "إعدادات الصفحه الرئيسيه"
 
 msgctxt "#31102"
 msgid "Background"
@@ -162,7 +166,7 @@ msgstr "إظهار \"إيقاف مؤقت\" في عرض شرائح الصور"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "خيارات متنوعة"
+msgstr "إعدادات متنوعه"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
@@ -170,31 +174,31 @@ msgstr "[COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]إخفاء وضع علامة ال�
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "إخفاء أزرار القائمة الرئيسية"
+msgstr "إخف ازرار القائمة الرئيسية"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "تمكين تخصيص الخلفية"
+msgstr "تمكين تخصيص الخلفيه"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "خلفية مسار:"
+msgstr "مسار الخلفيه:"
 
 msgctxt "#31111"
 msgid "Hide"
-msgstr "إخفاء"
+msgstr "إخف"
 
 msgctxt "#31112"
 msgid "Options"
-msgstr "خيارات"
+msgstr "إعدادات"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "أظهر الألبومات المضافة مؤخرا"
+msgstr "إظهر اﻷلبومات المُضافه مؤخراً"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "إظهار الفيديوات المضافة مؤخراً"
+msgstr "إظهر المقاطع المرئيه المُضافه مؤخراً"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -226,15 +230,19 @@ msgstr "عرض الموسيقى على الشاشة"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "عرض الفيديو على الشاشة"
+msgstr "عرض المقاطع المرئيه على الشاشة"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "مستوى اﻹعدادات"
 
 msgctxt "#31200"
 msgid "Shortcuts"
-msgstr "اختصارات"
+msgstr "اﻹختصارات"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "اختر أغنيتك"
+msgstr "إختر اغنيتك"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -242,11 +250,11 @@ msgstr "مصدر كلمات الأغنية"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr "وجد"
+msgstr "وجِدَ"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr "ايجاد المزيد من المواضيع"
+msgstr "جِد المزيد من العناصر"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
@@ -262,7 +270,7 @@ msgstr "اخر تحديث"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr ": مزود البيانات"
+msgstr "مزود البيانات"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -270,7 +278,7 @@ msgstr "Fanart إخفاء"
 
 msgctxt "#31308"
 msgid "Movie Details"
-msgstr "تفاصيل الفلم"
+msgstr "تفاصيل الفيلم"
 
 msgctxt "#31309"
 msgid "Memory Used:"
@@ -294,7 +302,7 @@ msgstr "Choose a Scraper"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
-msgstr "خيارات فحص المحتوى "
+msgstr "إعدادات فحص المحتوى"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
@@ -302,31 +310,31 @@ msgstr "Fanart تعيين مسار"
 
 msgctxt "#31319"
 msgid "Selected Profile"
-msgstr "الملف الشخصي المحدد"
+msgstr "الملف الشخصي المُحدد"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "آخر تسجيل دخول في"
+msgstr "آخر تسجيل دخول كان فى"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
-msgstr "محدد أغاني الكاريوكي"
+msgstr "مُحَدِد أغاني الكاريوكي"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "المبث"
+msgstr "المَبَت"
 
 msgctxt "#31325"
 msgid "Playlist Options"
-msgstr "خيارات قائمة التشغيل"
+msgstr "إعدادات قائمه التشغيل"
 
 msgctxt "#31326"
 msgid "Created"
-msgstr "أنشئ"
+msgstr "اُنشَئ"
 
 msgctxt "#31327"
 msgid "Resolution"
-msgstr "الدقة"
+msgstr "اﻷبعاد"
 
 msgctxt "#31328"
 msgid "Recently Added"
@@ -346,11 +354,11 @@ msgstr "تفاصبل الألبوم"
 
 msgctxt "#31351"
 msgid "Pause"
-msgstr "توقيف مؤقت"
+msgstr "اوقف مؤقتاً"
 
 msgctxt "#31352"
 msgid "Stop"
-msgstr "توقف كامل"
+msgstr "اوقف"
 
 msgctxt "#31353"
 msgid "Fast Forward"
@@ -358,7 +366,7 @@ msgstr "تقديم سريع"
 
 msgctxt "#31354"
 msgid "Rewind"
-msgstr "ترجيع"
+msgstr "إرجاع"
 
 msgctxt "#31355"
 msgid "Movie menu"
@@ -366,7 +374,15 @@ msgstr "قائمة الفلم"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "تحميل الترجمات"
+msgstr "تنزيل ترجمات"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "شاهد كـ ثنائى الابعاد"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "غير الوضع"
 
 msgctxt "#31362"
 msgid "Enabled"
@@ -374,7 +390,7 @@ msgstr "ممكن"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "الخلفية الاإفتراضية"
+msgstr "الجلد المبدأى"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
@@ -386,39 +402,47 @@ msgstr "Arial based"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]تكوين إعدادات المظهر[/B][CR][CR]تغيير الخلفية · تعيين اللغة والمنطقة · تغيير خيارات قائمة الملف[CR]ضبط شاشة التوقف"
+msgstr "[B]ضبط إعدادات المظهر[/B][CR][CR]ضبط الجلد · ضبط اللغة والمنطقة · ضبط قوائم الملفات[CR]ضبط شاشة التوقف"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]تكوين إعدادات الفيديو[/B][CR][CR]إدارة مكتبة الفيديو · تعيين خيارات تشغيل الفيديو · تغيير خيارات قائمة الفيديو[CR]تعيين خطوط الترجمة"
+msgstr "[B]ضبط إعدادات المقاطع المرئيه[/B][CR][CR]ضبط إعدادات مكتبات المقاطع المرئيه - ضبط إعدادات تشغيل المقاطع المرئيه - تغيير إعدادات قوائم المقاطع المرئيه[CR]ضبط الترجمات"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]تكوين إعدادات الموسيقى[/B][CR][CR]إدارة مكتبة الموسيقي · تعيين خيارات تشغيل الموسيقى · تغيير خيارات قائمة الموسيقى · تعيين خيارات الكارويوكي"
+msgstr "[B]ضبط إعدادات الموسيقى[/B][CR][CR]ضبط مكتبات الموسيقى · ضبط إعدادات تشغيل الموسيقى · ضبط إعدادات قائمه الموسيقى[CR]ضبط إعدادات إذاعه الموسيقى - ضبط إعدادات الكارويوكي"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]تكوين إعدادات الصور[/B][CR][CR]ضبط عرض الشرائح · تغيير خيارات قائمة الصور"
+msgstr "[B]ضبط إعدادات الصور[/B][CR][CR]ضبط إعدادات قائمه الصور - ضبط العروض التقديميه"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]تكوين إعدادات الطقس[/B][CR][CR]تعيين ثلاث مدن لجمع معلومات عن الطقس"
+msgstr "[B]ضبط إعدادات الطقس[/B][CR][CR]إختيار ثلاث مدن لتجميع بيانات الطقس الخاصه بها"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]تكوين إعدادات النظام[/B][CR][CR]ضبط المعايرة والعرض· تكوين مخرج الصوت · ضبط التحكم عن بعد[CR]تعيين خيارات توفير الطاقة · تمكين التصحيح · ضبط القفل الرئيسي "
+msgstr "[B]ضبط إعدادات النظام[/B][CR][CR]ضبط ومعايره طُرُق العرض - ضبط مخارج الصوت - ضبط التحكم عن بعد[CR]ضبط إعدادات توفير الطاقه - ضبط وضع المعالجه - ضبط القفل الرئيسى"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]تكوين الملحقات [/B][CR][CR]xbmc.org إدارة الملحقات المثبتة · تصفح وتثبيت الملحقات من[CR] تعديل إعدادت الملحق"
+msgstr "[B]ضبط إعدادات الملحقات[/B][CR][CR]ضبط الملحقات المُثبته - تصفح وتثبيت الملحقات عبر موقع إكس بى إم سى الرسمى[CR]ضبط إعدادات مُلحق معين"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "تكوين إعدادات الخدمة [B/][CR][CR] إعداد التحكم بـXBMC عبر UPnP و HTTP. نكوين مشاركة ملف [CR] تمكن  Zeroconf. تكوين التشغيل الحي "
 
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "مساعده المبتدئين...."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "تتوفر ترجمات محليه"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "للدخول والإستمرارا [CR]XBMC  حدد ملفك الشخصي الخاص بـ"
+msgstr "حدد الملف الشخصى المُراد[CR] لتسجيل الدخول به"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -426,23 +450,23 @@ msgstr "جدول الزمن"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr "تي في مباشر"
+msgstr "تلفاز مباشر"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr "إضافة مجموعة"
+msgstr "أضف مجموعه"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr "إعادة تسمية مجموعة"
+msgstr "أعد تسميه مجموعه"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr "حذف مجموعة"
+msgstr "إحذف مجموعه"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr "مجموعات [ سي دي] متوفرة"
+msgstr "المجموعات[CR]المتوفره"
 
 msgctxt "#31509"
 msgid "Channel Group"
@@ -458,19 +482,19 @@ msgstr "خيارات القناة"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
-msgstr "36 hour توقعات طقس"
+msgstr "توقعات الطقس للـ 36 ساعه القادمه"
 
 msgctxt "#31902"
 msgid "Hourly Forecast"
-msgstr "توقعات الطقس لكل ساعة"
+msgstr "توقعات الطقس لكل ساعه"
 
 msgctxt "#31903"
 msgid "Weekend Forecast"
-msgstr "توقعات طقس نهاية الأسبوع"
+msgstr "توقعات طقس نهايه الاسبوع"
 
 msgctxt "#31904"
 msgid "10 Day Forecast"
-msgstr "10 Days توقعات طقس"
+msgstr "توقعات الطقس للـ 10 ايام القادمه"
 
 msgctxt "#31905"
 msgid "Forecast"
@@ -478,8 +502,52 @@ msgstr "توقعات الطقس"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"
-msgstr "فرصة هطول الأمطار"
+msgstr "فرصه تساقط امطار"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
-msgstr "...جلب معلومات توقعات الطقس"
+msgstr "يَجِلِب توقعات الطقس..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "الخريطه و التحذيرات"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "الطقس"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "الصور"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "التلفاز المباشر"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "المقاطع المرئيه"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "اﻷفلام"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "العروض التلفازيه"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "الموسيقى"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "البرمجيات"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "القرص"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "النظام"

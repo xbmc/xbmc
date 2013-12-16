@@ -190,7 +190,7 @@ msgstr "Amaga els botons del menú principal"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Habilita fons personalitzat"
+msgstr "Habilita el fons personalitzat"
 
 msgctxt "#31110"
 msgid "Background path:"
@@ -418,7 +418,7 @@ msgstr "Canvia el mode"
 
 msgctxt "#31362"
 msgid "Enabled"
-msgstr "Activat"
+msgstr "Habilitat"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -475,6 +475,10 @@ msgstr "Ajuda inicial...."
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Aquesta pestanya indica que hi ha un menú al costat d'aquesta finestra que conté opcions addicionals a les d'aquesta secció. Per accedir a aquest menú, navegau a l'esquerra amb el comandament a distància o teclat, o posau el punter del ratolí a sobre de la pestanya. [CR] [CR]Feu clic a \"D'acord\" per tancar aquest diàlog. No es tornarà a mostrar."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Subtítol local disponible"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

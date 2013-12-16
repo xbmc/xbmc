@@ -212,6 +212,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "最近追加されたビデオを表示"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "ホーム画面「プログラム」のサブメニュー"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "背景のファンアートを隠す"
@@ -243,6 +247,18 @@ msgstr "フルスクリーン視覚化ではファンアートを非表示に"
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "歌詞アドオン"
+
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "ホーム画面「ビデオ』のサブメニュー"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "ホーム画面「ミュージック』のサブメニュー"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "ホーム画面「ピクチャ』のサブメニュー"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -448,6 +464,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]アドオン設定[/B][CR][CR]インストール済みアドオン管理 - xbmc.orgからアドオンを検索・インストール[CR]アドオン設定変更"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]TV設定[/B][CR][CR]フルスクリーン情報の変更 · EPGデータ設定"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]サービス設定[/B][CR][CR]UPnP や HTTP 経由による XBMC 操作設定 · ファイル共有設定[CR]Zeroconf を有効に · AirPlay 設定"
@@ -455,6 +475,14 @@ msgstr "[B]サービス設定[/B][CR][CR]UPnP や HTTP 経由による XBMC 操�
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "初回起動時のヘルプ..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "このタブは、このウィンドウの端にこのセクションの追加オプションが含まれているメニューがある事を示しています。このメニューにアクセスするには、リモコンやキーボードで左端に移動するか、またはマウスポインターをタブの上にのせます。[CR][CR]このダイアログを閉じるのには、「OK」をクリックしてください。このメッセージは再び表示されません。"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "ローカルの字幕を利用できます"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
