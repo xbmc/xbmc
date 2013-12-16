@@ -25,6 +25,9 @@ using namespace ActiveAE;
 CActiveAEResample::CActiveAEResample()
 {
   m_pContext = NULL;
+  m_loaded = false;
+  if (m_dllAvUtil.Load() && m_dllSwResample.Load())
+    m_loaded = true;
 }
 
 CActiveAEResample::~CActiveAEResample()
@@ -38,7 +41,7 @@ CActiveAEResample::~CActiveAEResample()
 
 bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality)
 {
-  if (!m_dllAvUtil.Load() || !m_dllSwResample.Load())
+  if (!m_loaded)
     return false;
 
   m_dst_chan_layout = dst_chan_layout;

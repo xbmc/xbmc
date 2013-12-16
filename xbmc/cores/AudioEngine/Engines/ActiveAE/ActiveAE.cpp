@@ -1007,6 +1007,9 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         (*it)->m_inputBuffers = new CActiveAEBufferPool((*it)->m_format);
         (*it)->m_inputBuffers->Create(MAX_CACHE_LEVEL*1000);
         (*it)->m_streamSpace = (*it)->m_format.m_frameSize * (*it)->m_format.m_frames;
+
+        // if input format does not follow ffmpeg channel mask, we may need to remap channels
+        (*it)->InitRemapper();
       }
       if (initSink && (*it)->m_resampleBuffers)
       {
