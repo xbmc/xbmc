@@ -70,7 +70,6 @@ private:
   static void CallbackTvServiceCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2);
 
   void DestroyDispmaxWindow();
-  bool ClampToGUIDisplayLimits(int &width, int &height);
   int FindMatchingResolution(const RESOLUTION_INFO &res, const std::vector<RESOLUTION_INFO> &resolutions);
   int AddUniqueResolution(const RESOLUTION_INFO &res, std::vector<RESOLUTION_INFO> &resolutions);
 #endif
