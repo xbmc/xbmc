@@ -128,7 +128,8 @@ int MysqlDatabase::connect(bool create_new) {
         ciphers.empty() ? NULL : ciphers.c_str());
     }
 
-    CWakeOnAccess::Get().WakeUpHost(host, "MySQL : " + db);
+    if (!CWakeOnAccess::Get().WakeUpHost(host, "MySQL : " + db))
+      return DB_CONNECTION_NONE;
 
     // establish connection with just user credentials
     if (mysql_real_connect(conn, host.c_str(),login.c_str(),passwd.c_str(), NULL, atoi(port.c_str()),NULL,0) != NULL)

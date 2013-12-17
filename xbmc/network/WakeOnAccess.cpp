@@ -329,18 +329,19 @@ CWakeOnAccess &CWakeOnAccess::Get()
   return sWakeOnAccess;
 }
 
-void CWakeOnAccess::WakeUpHost(const CURL& url)
+bool CWakeOnAccess::WakeUpHost(const CURL& url)
 {
   CStdString hostName = url.GetHostName();
 
   if (!hostName.empty())
-    WakeUpHost (hostName, url.Get());
+    return WakeUpHost (hostName, url.Get());
+  return true;
 }
 
-void CWakeOnAccess::WakeUpHost (const CStdString& hostName, const string& customMessage)
+bool CWakeOnAccess::WakeUpHost (const CStdString& hostName, const string& customMessage)
 {
   if (!IsEnabled())
-    return; // bail if feature is turned off
+    return true; // bail if feature is turned off
 
   WakeUpEntry server;
 
@@ -353,15 +354,18 @@ void CWakeOnAccess::WakeUpHost (const CStdString& hostName, const string& custom
     if (nesting.IsNested()) // we might get in trouble if it gets called back in loop
       CLog::Log(LOGWARNING,"WakeOnAccess recursively called on gui-thread [%d]", NestDetect::Level());
 
-    WakeUpHost(server);
+    bool ret = WakeUpHost(server);
 
     TouchHostEntry(hostName);
+
+    return ret;
   }
+  return true;
 }
 
 #define LOCALIZED(id) g_localizeStrings.Get(id)
 
-void CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
+bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 {
   CStdString heading = StringUtils::Format(LOCALIZED(13027), server.host.c_str());
 
@@ -373,7 +377,7 @@ void CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
     if (dlg.ShowAndWait (waitObj, m_netinit_sec, LOCALIZED(13028)) != ProgressDialogHelper::Success)
     {
       CLog::Log(LOGNOTICE,"WakeOnAccess timeout/cancel while waiting for network");
-      return; // timedout or canceled
+      return false; // timedout or canceled
     }
   }
 
@@ -383,7 +387,7 @@ void CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
     if (g_application.getNetwork().PingHost(dst_ip, server.ping_port, 500)) // quick ping with short timeout to not block too long
     {
       CLog::Log(LOGNOTICE,"WakeOnAccess success exit, server already running");
-      return;
+      return true;
     }
   }
 
@@ -393,7 +397,7 @@ void CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 
     if (g_application.IsCurrentThread() || !g_application.m_pPlayer->IsPlaying())
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, LOCALIZED(13029));
-    return;
+    return false;
   }
 
   {
@@ -408,17 +412,19 @@ void CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
     if (result != ProgressDialogHelper::Success)
     {
       CLog::Log(LOGNOTICE,"WakeOnAccess timeout/cancel while waiting for response");
-      return; // timedout or canceled
+      return false; // timedout or canceled
     }
   }
 
   {
     WaitCondition waitObj ; // wait uninteruptable fixed time for services ..
 
-    dlg.ShowAndWait (waitObj, server.wait_services_sec, LOCALIZED(13032));
+    if (ProgressDialogHelper::Success != dlg.ShowAndWait (waitObj, server.wait_services_sec, LOCALIZED(13032)))
+      return false;
 
     CLog::Log(LOGNOTICE,"WakeOnAccess sequence completed, server started");
   }
+  return true;
 }
 
 bool CWakeOnAccess::FindOrTouchHostEntry (const CStdString& hostName, WakeUpEntry& result)

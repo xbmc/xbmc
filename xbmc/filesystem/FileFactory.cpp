@@ -115,7 +115,8 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 
 IFile* CFileFactory::CreateLoader(const CURL& url)
 {
-  CWakeOnAccess::Get().WakeUpHost(url);
+  if (!CWakeOnAccess::Get().WakeUpHost(url))
+    return NULL;
 
   CStdString strProtocol = url.GetProtocol();
   StringUtils::ToLower(strProtocol);
