@@ -179,8 +179,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         AddRecentlyAddedJobs(updateRA);
       else
         m_updateRA |= updateRA;
-
-      return true;
     }
     break;
 

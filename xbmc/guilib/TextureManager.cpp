@@ -302,7 +302,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
   for (ilistUnused i = m_unusedTextures.begin(); i != m_unusedTextures.end(); ++i)
   {
     CTextureMap* pMap = i->first;
-    if (pMap->GetName() == strTextureName)
+    if (pMap->GetName() == strTextureName && i->second > 0)
     {
       m_vecTextures.push_back(pMap);
       m_unusedTextures.erase(i);
@@ -435,7 +435,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
 }
 
 
-void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
+void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, bool immediately /*= false */)
 {
   CSingleLock lock(g_graphicsContext);
 
@@ -450,7 +450,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
       {
         //CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
         // add to our textures to free
-        m_unusedTextures.push_back(make_pair(pMap, XbmcThreads::SystemClockMillis()));
+        m_unusedTextures.push_back(make_pair(pMap, immediately ? 0 : XbmcThreads::SystemClockMillis()));
         i = m_vecTextures.erase(i);
       }
       return;

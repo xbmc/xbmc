@@ -57,6 +57,8 @@
 #include <map>
 #include <string>
 
+#define TMP_COVERART_PATH "special://temp/airtunes_album_thumb.jpg"
+
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
 
@@ -67,6 +69,9 @@ DllLibShairport *CAirTunesServer::m_pLibShairport = NULL;
 #endif
 CAirTunesServer *CAirTunesServer::ServerInstance = NULL;
 CStdString CAirTunesServer::m_macAddress;
+std::string CAirTunesServer::m_metadata[3];
+CCriticalSection CAirTunesServer::m_metadataLock;
+bool CAirTunesServer::m_streamStarted = false;
 
 //parse daap metadata - thx to project MythTV
 std::map<std::string, std::string> decodeDMAP(const char *buffer, unsigned int size)
@@ -88,38 +93,75 @@ std::map<std::string, std::string> decodeDMAP(const char *buffer, unsigned int s
   return result;
 }
 
+void CAirTunesServer::RefreshMetadata()
+{
+  CSingleLock lock(m_metadataLock);
+  MUSIC_INFO::CMusicInfoTag tag;
+  if (m_metadata[0].length())
+    tag.SetAlbum(m_metadata[0]);//album
+  if (m_metadata[1].length())
+    tag.SetTitle(m_metadata[1]);//title
+  if (m_metadata[2].length())
+    tag.SetArtist(m_metadata[2]);//artist
+  
+  CApplicationMessenger::Get().SetCurrentSongTag(tag);
+}
+
+void CAirTunesServer::RefreshCoverArt()
+{
+  CSingleLock lock(m_metadataLock);
+  //reset to empty before setting the new one
+  //else it won't get refreshed because the name didn't change
+  g_infoManager.SetCurrentAlbumThumb("");
+  //update the ui
+  g_infoManager.SetCurrentAlbumThumb(TMP_COVERART_PATH);
+  //update the ui
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REFRESH_THUMBS);
+  g_windowManager.SendThreadMessage(msg);
+}
+
 void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int size)
 {
-  MUSIC_INFO::CMusicInfoTag tag;
+
   std::map<std::string, std::string> metadata = decodeDMAP(buffer, size);
+  CSingleLock lock(m_metadataLock);
+
   if(metadata["asal"].length())
-    tag.SetAlbum(metadata["asal"]);//album
+    m_metadata[0] = metadata["asal"];//album
   if(metadata["minm"].length())    
-    tag.SetTitle(metadata["minm"]);//title
+    m_metadata[1] = metadata["minm"];//title
   if(metadata["asar"].length())    
-    tag.SetArtist(metadata["asar"]);//artist
-  CApplicationMessenger::Get().SetCurrentSongTag(tag);
+    m_metadata[2] = metadata["asar"];//artist
+  
+  RefreshMetadata();
 }
 
 void CAirTunesServer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if ( (flag & Player) && strcmp(sender, "xbmc") == 0 && strcmp(message, "OnStop") == 0)
+  if ( (flag & Player) && strcmp(sender, "xbmc") == 0)
   {
 #ifdef HAS_AIRPLAY
-    CAirPlayServer::restoreVolume();
+    if (strcmp(message, "OnStop") == 0)
+      CAirPlayServer::restoreVolume();
 #endif
+    if (strcmp(message, "OnPlay") == 0 && m_streamStarted)
+    {
+      RefreshMetadata();
+      RefreshCoverArt();
+    }
   }
 }
 
 void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int size)
 {
   XFILE::CFile tmpFile;
-  const char *tmpFileName = "special://temp/airtunes_album_thumb.jpg";
 
   if(!size)
     return;
 
-  if (tmpFile.OpenForWrite(tmpFileName, true))
+  CSingleLock lock(m_metadataLock);
+  
+  if (tmpFile.OpenForWrite(TMP_COVERART_PATH, true))
   {
     int writtenBytes=0;
     writtenBytes = tmpFile.Write(buffer, size);
@@ -127,13 +169,7 @@ void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int siz
 
     if(writtenBytes)
     {
-      //reset to empty before setting the new one
-      //else it won't get refreshed because the name didn't change
-      g_infoManager.SetCurrentAlbumThumb("");
-      g_infoManager.SetCurrentAlbumThumb(tmpFileName);
-      //update the ui
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REFRESH_THUMBS);
-      g_windowManager.SendThreadMessage(msg);
+      RefreshCoverArt();
     }
   }
 }
@@ -199,6 +235,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   CFileItem item;
   item.SetPath(pipe->GetName());
   item.SetMimeType("audio/x-xbmc-pcm");
+  m_streamStarted = true;
 
   CApplicationMessenger::Get().PlayFile(item);
 
@@ -261,6 +298,8 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
     CApplicationMessenger::Get().SendMessage(tMsg, true);
     CLog::Log(LOGDEBUG, "AIRTUNES: AirPlay not running - stopping player");
   }
+  
+  m_streamStarted = false;
 }
 
 void shairplay_log(void *cls, int level, const char *msg)
@@ -394,6 +433,8 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
   if (ao_get_option(option, "name"))
     item.GetMusicInfoTag()->SetTitle(ao_get_option(option, "name"));
 
+  m_streamStarted = true;
+
   CApplicationMessenger::Get().PlayFile(item);
 
   return (ao_device*) device;
@@ -422,6 +463,7 @@ int CAirTunesServer::AudioOutputFunctions::ao_close(ao_device *device)
   }
 
   delete device_xbmc;
+  m_streamStarted = false;
 
   return 0;
 }
