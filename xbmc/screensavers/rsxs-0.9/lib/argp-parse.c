@@ -208,7 +208,7 @@ struct group
      particular short options is from.  */
   char *short_end;
 
-  /* The number of non-option args sucessfully handled by this parser.  */
+  /* The number of non-option args successfully handled by this parser.  */
   unsigned args_processed;
 
   /* This group's parser's parent's group.  */
@@ -776,7 +776,7 @@ parser_parse_opt (struct parser *parser, int opt, char *val)
 
 /* Parse the next argument in PARSER (as indicated by PARSER->state.next).
    Any error from the parsers is returned, and *ARGP_EBADKEY indicates
-   whether a value of EBADKEY is due to an unrecognized argument (which is
+   whether a value of EBADKEY is due to an unrecognised argument (which is
    generally not fatal).  */
 static error_t
 parser_parse_next (struct parser *parser, int *arg_ebadkey)

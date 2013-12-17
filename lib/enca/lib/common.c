@@ -95,11 +95,11 @@ enca_strdup(const char *s) {
  * @haystack: A string where to search.
  * @needle: A string to find.
  *
- * Finds occurence of a substring in a string.
+ * Finds occurrence of a substring in a string.
  *
  * Will be defined as strstr() when system provides it.
  *
- * Returns: Pointer to the first occurence of @needle in @haystack; #NULL if
+ * Returns: Pointer to the first occurrence of @needle in @haystack; #NULL if
  *          not found.
  **/
 const char*
@@ -137,7 +137,7 @@ enca_strstr(const char *haystack,
  *
  * Will be defined as stpcpy() when system provides it.
  *
- * Caller is responisble for providing @dest long enough to hold the result.
+ * Caller is responsible for providing @dest long enough to hold the result.
  *
  * Returns: Pointer to the terminating zero byte of resulting string.
  **/

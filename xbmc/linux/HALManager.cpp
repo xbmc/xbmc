@@ -175,7 +175,7 @@ void CHALManager::Initialize()
 
   GenerateGDL();
 
-  CLog::Log(LOGINFO, "HAL: Sucessfully initialized");
+  CLog::Log(LOGINFO, "HAL: Successfully initialized");
   m_Notifications = true;
 }
 

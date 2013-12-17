@@ -101,7 +101,7 @@ bool CUDiskDevice::Mount()
       if (dbus_message_get_args (reply, NULL, DBUS_TYPE_STRING, &mountPoint, DBUS_TYPE_INVALID))
       {
         m_MountPath = mountPoint;
-        CLog::Log(LOGDEBUG, "UDisks: Sucessfully mounted %s on %s", m_DeviceKitUDI.c_str(), mountPoint);
+        CLog::Log(LOGDEBUG, "UDisks: Successfully mounted %s on %s", m_DeviceKitUDI.c_str(), mountPoint);
         m_isMountedByUs = m_isMounted = true;
       }
     }
