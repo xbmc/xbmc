@@ -365,13 +365,13 @@ namespace XBMCAddon
           else if (key == "tvshowtitle")
             item->GetVideoInfoTag()->m_strShowTitle = value;
           else if (key == "premiered")
-            item->GetVideoInfoTag()->m_premiered.SetFromDateString(value);
+            item->GetVideoInfoTag()->m_premiered.SetFromDBDate(value);
           else if (key == "status")
             item->GetVideoInfoTag()->m_strStatus = value;
           else if (key == "code")
             item->GetVideoInfoTag()->m_strProductionCode = value;
           else if (key == "aired")
-            item->GetVideoInfoTag()->m_firstAired.SetFromDateString(value);
+            item->GetVideoInfoTag()->m_firstAired.SetFromDBDate(value);
           else if (key == "credits")
             item->GetVideoInfoTag()->m_writingCredits = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
           else if (key == "lastplayed")
