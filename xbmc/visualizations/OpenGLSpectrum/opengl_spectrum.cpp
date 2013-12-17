@@ -160,6 +160,8 @@ void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, G
 
 void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
 {
+  // avoid zero sized bars, which results in overlapping triangles of same depth and display artefacts
+  height = std::max(height, 1e-3f);
   GLfloat col[] =  {
                       red * 0.1f, green * 0.1f, blue * 0.1f,
                       red * 0.2f, green * 0.2f, blue * 0.2f,
