@@ -83,6 +83,7 @@ void RegisterDeviceChangedCB(bool bRegister, void *ref){}
 
 CCoreAudioAE::CCoreAudioAE() :
   m_Initialized        (false         ),
+  m_deviceLost         (false         ),
   m_callbackRunning    (false         ),
   m_lastStreamFormat   (AE_FMT_INVALID),
   m_lastChLayoutCount  (0             ),
@@ -141,20 +142,26 @@ void CCoreAudioAE::Shutdown()
 
 void CCoreAudioAE::AudioDevicesChanged()
 {
-  if (!m_Initialized)
+  if (!m_Initialized && !m_deviceLost)
     return;
 
-  // give CA a bit time to realise that maybe the 
-  // default device might have changed now - else
-  // OpenCoreAudio might open the old default device
-  // again (yeah that really is the case - duh)
-  Sleep(500);
   CSingleLock engineLock(m_engineLock);
 
   // re-check initialized since it can have changed when we waited and grabbed the lock
-  if (!m_Initialized)
+  if (!m_Initialized && !m_deviceLost)
     return;
+
   OpenCoreAudio(m_lastSampleRate, COREAUDIO_IS_RAW(m_lastStreamFormat), m_lastStreamFormat, m_transcode);
+
+  // when we tried to open the default device or the last device
+  // again there was an error preventing us from doing it (mostly
+  // the device couldn't be found) - in that case
+  // mark our device as lost and hope that another callback
+  // for changed device list fires (e.x. device reappears)
+  if (!m_Initialized)
+      m_deviceLost = true;
+  else
+      m_deviceLost = false;
 }
 
 bool CCoreAudioAE::Initialize()
