@@ -362,7 +362,7 @@ bool CWiiRemote::Connect()
 #endif      
       m_connected = true;
 
-      CPacketLOG log(LOGNOTICE, "Sucessfully connected a WiiRemote");
+      CPacketLOG log(LOGNOTICE, "Successfully connected a WiiRemote");
       log.Send(m_Socket, m_MyAddr);
       return true;
     }
@@ -390,7 +390,7 @@ void CWiiRemote::DisconnectNow(bool startConnectThread)
       notification.Send(m_Socket, m_MyAddr);
     }
 
-    CPacketLOG log(LOGNOTICE, "Sucessfully disconnected a WiiRemote");
+    CPacketLOG log(LOGNOTICE, "Successfully disconnected a WiiRemote");
     log.Send(m_Socket, m_MyAddr);
   }
   m_connected = false;
