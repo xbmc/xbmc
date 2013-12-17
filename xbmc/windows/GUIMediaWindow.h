@@ -73,7 +73,7 @@ protected:
   /*! \brief Retrieves the items from the given path and updates the list
    \param strDirectory The path to the directory to get the items from
    \param updateFilterPath Whether to update the filter path in m_strFilterPath or not
-   \return true if the list was sucessfully updated otherwise false
+   \return true if the list was successfully updated otherwise false
    \sa GetDirectory
    \sa m_vecItems
    \sa m_strFilterPath

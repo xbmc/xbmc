@@ -221,7 +221,7 @@ CAfpConnection::afpConnnectError CAfpConnection::Connect(const CURL& url)
     CLog::Log(LOGDEBUG, "AFP: Could not parse url: %s!\n", nonConstUrl.Get().c_str());
     return AfpFailed;
   }
-  else // parsed sucessfull
+  else // parsed successfull
   {
     // this is our current url object whe are connected to (at least we try)
     *m_pAfpUrl = tmpurl;
