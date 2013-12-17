@@ -6603,7 +6603,7 @@ msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15013"
-msgid "What would you like to do with media items from"
+msgid "What would you like to do with media items from %s"
 msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
