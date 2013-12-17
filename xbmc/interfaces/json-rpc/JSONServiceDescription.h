@@ -321,7 +321,7 @@ namespace JSONRPC
      \brief Parses the given json schema description and evaluates
      and stores the defined type
      \param jsonType json schema description to parse
-     \return True if the json schema description has been parsed sucessfully otherwise false
+     \return True if the json schema description has been parsed successfully otherwise false
      */
     static bool AddType(const std::string &jsonType);
 
@@ -330,7 +330,7 @@ namespace JSONRPC
      and stores the defined method
      \param jsonMethod json schema description to parse
      \param method pointer to the implementation
-     \return True if the json schema description has been parsed sucessfully otherwise false
+     \return True if the json schema description has been parsed successfully otherwise false
      */
     static bool AddMethod(const std::string &jsonMethod, MethodCall method);
 
@@ -338,7 +338,7 @@ namespace JSONRPC
      \brief Parses the given json schema description and evaluates
      and stores the defined builtin method
      \param jsonMethod json schema description to parse
-     \return True if the json schema description has been parsed sucessfully otherwise false
+     \return True if the json schema description has been parsed successfully otherwise false
      */
     static bool AddBuiltinMethod(const std::string &jsonMethod);
 
@@ -346,7 +346,7 @@ namespace JSONRPC
      \brief Parses the given json schema description and evaluates
      and stores the defined notification
      \param jsonNotification json schema description to parse
-     \return True if the json schema description has been parsed sucessfully otherwise false
+     \return True if the json schema description has been parsed successfully otherwise false
      */
     static bool AddNotification(const std::string &jsonNotification);
 
