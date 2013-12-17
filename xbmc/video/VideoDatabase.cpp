@@ -8457,9 +8457,10 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
           CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
           if (pDialog != NULL)
           {
+            CURL parentUrl(parentPath);
             pDialog->SetHeading(15012);
             pDialog->SetLine(1, 15013);
-            pDialog->SetLine(2, parentPath);
+            pDialog->SetLine(2, parentUrl.GetWithoutUserDetails());
             pDialog->SetChoice(0, 15015);
             pDialog->SetChoice(1, 15014);
 
