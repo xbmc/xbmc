@@ -103,7 +103,7 @@ unsigned int CHttpResponse::Create(char *&response)
     m_buffer.append(HEADER_CONTENT_LENGTH);
     m_buffer.append(SEPARATOR);
     char lengthBuffer[11];
-    sprintf(lengthBuffer, "%d", m_contentLength);
+    sprintf(lengthBuffer, "%u", m_contentLength);
     m_buffer.append(lengthBuffer);
     m_buffer.append(LINEBREAK);
   }
