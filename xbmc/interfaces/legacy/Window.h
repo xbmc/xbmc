@@ -134,7 +134,10 @@ namespace XBMCAddon
       bool existingWindow;
       bool destroyAfterDeInit;
 
-      Window() throw (WindowException);
+      // This only takes a boolean to allow subclasses to explicitly use it. A default
+      //  constructor can be used as a concrete class and we need to tell the difference.
+      //  subclasses should use this constructor and not the other.
+      Window(bool discrim) throw (WindowException);
 
       virtual void deallocating();
 
@@ -169,7 +172,7 @@ namespace XBMCAddon
 #endif
 
     public:
-      Window(int existingWindowId) throw (WindowException);
+      Window(int existingWindowId = -1) throw (WindowException);
 
       virtual ~Window();
 

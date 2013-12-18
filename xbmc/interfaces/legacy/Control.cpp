@@ -585,8 +585,7 @@ namespace XBMCAddon
                                            long _textOffsetX, long _textOffsetY, 
                                            long alignment, const char* font, const char* _textColor,
                                            const char* _disabledColor, long angle,
-                                           const char* _shadowColor, const char* _focusedColor,
-                                           const char* TextureRadioFocus, const char* TextureRadioNoFocus) :
+                                           const char* _shadowColor, const char* _focusedColor) :
       strFont("font13"), textColor(0xffffffff), disabledColor(0x60ffffff), 
       textOffsetX(_textOffsetX), textOffsetY(_textOffsetY), align(alignment), iAngle(angle), 
       shadowColor(0), focusedColor(0xffffffff)

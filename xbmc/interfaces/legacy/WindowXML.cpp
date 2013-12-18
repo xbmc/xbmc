@@ -97,7 +97,8 @@ namespace XBMCAddon
     WindowXML::WindowXML(const String& xmlFilename,
                          const String& scriptPath,
                          const String& defaultSkin,
-                         const String& defaultRes) throw(WindowException)
+                         const String& defaultRes) throw(WindowException) :
+      Window(true)
     {
       XBMC_TRACE;
       RESOLUTION_INFO res;
