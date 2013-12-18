@@ -232,6 +232,41 @@
 			<include>Border</include>
 		</control>
 	</include>
+	<include name="PosterThumbUnwatchedOverlay">
+		<!-- season poster -->
+		<control type="group">
+			<control type="image">
+				<posx>155</posx>
+				<posy>246</posy>
+				<width>36</width>
+				<height>36</height>
+				<info>ListItem.Overlay</info>
+			</control>
+			<control type="label">
+				<posy>249</posy>
+				<posx>173</posx>
+				<width>40</width>
+				<height>30</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
+				<font>CondensedBold-16</font>
+				<shadowcolor>FF222222</shadowcolor>
+			</control>
+			<visible>[Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+		</control>
+		<!-- episode thumb -->
+		<control type="group">
+			<control type="image">
+				<posy>87</posy>
+				<posx>176</posx>
+				<width>28</width>
+				<height>28</height>
+				<info>ListItem.Overlay</info>
+				<visible>Container.Content(episodes)</visible>
+			</control>
+		</control>
+	</include>
 	<!-- poster movie -->
 	<include name="MoviePosterBig">
 		<control type="largeimage">
@@ -460,11 +495,7 @@
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>ListItem.Type(season) + !IsEmpty(ListItem.Season)</visible>
 					</control>
-					<control type="group">
-						<posy>-7</posy>
-						<posx>-10</posx>
-						<include>MovieTVUnwatchedOverlay</include>
-					</control>
+					<include>PosterThumbUnwatchedOverlay</include>
 				</itemlayout>
 				<focusedlayout width="223" height="335">
 					<include>TVPoster</include>
@@ -516,11 +547,7 @@
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>ListItem.Type(season) + !IsEmpty(ListItem.Season)</visible>
 					</control>
-					<control type="group">
-						<posy>-7</posy>
-						<posx>-10</posx>
-						<include>MovieTVUnwatchedOverlay</include>
-					</control>
+					<include>PosterThumbUnwatchedOverlay</include>
 				</focusedlayout>
 			</control>
 		</control>
@@ -678,11 +705,7 @@
 						<textcolor>white</textcolor>
 						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
-					<control type="image">
-						<posx>176</posx>
-						<posy>85</posy>
-						<info>ListItem.Overlay</info>
-					</control>
+					<include>PosterThumbUnwatchedOverlay</include>
 				</itemlayout>
 				<focusedlayout width="226" height="165">
 					<include>EpisodeThumbCard</include>
@@ -703,11 +726,7 @@
 						<textcolor>orangeLight</textcolor>
 						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 					</control>
-					<control type="image">
-						<posx>176</posx>
-						<posy>85</posy>
-						<info>ListItem.Overlay</info>
-					</control>
+					<include>PosterThumbUnwatchedOverlay</include>
 					<include>EpisodeSelectedBorder</include>
 				</focusedlayout>
 			</control>
@@ -783,7 +802,9 @@
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>7</posy>
+						<posy>10</posy>
+						<width>30</width>
+						<height>30</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>
@@ -972,6 +993,8 @@
 					</control>
 					<control type="image">
 						<posy>10</posy>
+						<width>30</width>
+						<height>30</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>
@@ -1194,6 +1217,8 @@
 					</control>
 					<control type="image">
 						<posy>10</posy>
+						<width>30</width>
+						<height>30</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</control>

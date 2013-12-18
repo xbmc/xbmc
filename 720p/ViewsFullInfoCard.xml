@@ -167,6 +167,18 @@
 	<include name="ListItemFullInfoLeftSlide">
 		<animation effect="slide" start="0" end="-74" time="400" condition="Container.Content(seasons) | [Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))] | [Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated))] | Container.Content(songs) | Container.Content(channels) | Container.Content(channel) | Window.IsActive(mysharedcontent)">Conditional</animation>
 	</include>
+	<include name="ListItemFullInfoThumbCardUnwatchedOverlay">
+		<control type="group">
+			<control type="image">
+				<posy>206</posy>
+				<posx>370</posx>
+				<width>30</width>
+				<height>30</height>
+				<info>ListItem.Overlay</info>
+			</control>
+			<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | Container.Content(episodes)</visible>
+		</control>
+	</include>
 	<!-- Card -->
 	<include name="ListItemFullInfo">
 		<control type="group">
@@ -236,7 +248,7 @@
 								<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos) + !Container.Content(artists) | [Container.Content(channel) + !ListItem.Type(photo)] + [Container.Content(channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
 							</control>
-								<control type="image">
+							<control type="image">
 									<posy>30</posy>
 									<posx>20</posx>
 									<width>390</width>
@@ -246,13 +258,7 @@
 									<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos) | Container.Content(artists) | [Container.Content(channel) + ListItem.Type(photo)] | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 								</control>
-							<control type="image">
-								<posx>367</posx>
-								<posy>210</posy>
-								<width>30</width>
-								<height>30</height>
-								<include>ListMovieTVUnwatchedOverlay</include>
-							</control>
+							<include>ListItemFullInfoThumbCardUnwatchedOverlay</include>
 						</control>
 					</control>
 					<!-- infos -->
