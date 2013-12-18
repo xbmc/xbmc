@@ -81,7 +81,8 @@ CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
 
 bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 {
-  m_format = format;
+  m_lastFormat  = format;
+  m_format      = format;
 
   if (AE_IS_RAW(m_format.m_dataFormat))
     m_passthrough = true;
@@ -167,9 +168,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
 
 bool CAESinkAUDIOTRACK::IsCompatible(const AEAudioFormat &format, const std::string &device)
 {
-  return ((m_format.m_sampleRate    == format.m_sampleRate) &&
-          (m_format.m_dataFormat    == format.m_dataFormat) &&
-          (m_format.m_channelLayout == format.m_channelLayout));
+  return m_lastFormat == format || m_format == format;
 }
 
 double CAESinkAUDIOTRACK::GetDelay()
