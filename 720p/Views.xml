@@ -256,7 +256,7 @@
 						</control>
 					</focusedlayout>
 					<!-- filtered episodes -->
-					<itemlayout height="50" condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))]">
+					<itemlayout height="50" condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + !IsEmpty(Container.Property(mixedParents))] | [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -280,7 +280,7 @@
 							<textoffsetx>80</textoffsetx>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))]">
+					<focusedlayout height="100" condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + !IsEmpty(Container.Property(mixedParents))] | [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]">
 						<!--><control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -337,7 +337,7 @@
 						</control>
 					</focusedlayout>
 					<!-- clips & episodes -->
-					<itemlayout height="50" condition="Container.Content(clips) | Container.Content(homemovies) | [Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))]">
+					<itemlayout height="50" condition="Container.Content(clips) | Container.Content(homemovies) | [Container.Content(episodes) + [IsEmpty(Container.Property(primaryFilterActivated)) | IsEmpty(Container.Property(mixedParents))]]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
