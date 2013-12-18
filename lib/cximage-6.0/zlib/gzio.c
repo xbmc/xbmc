@@ -214,7 +214,7 @@ gzFile ZEXPORT gzopen (path, mode)
 
 /* ===========================================================================
      Associate a gzFile with the file descriptor fd. fd is not dup'ed here
-   to mimic the behaviour of fdopen.
+   to mimic the behavio(u)r of fdopen.
 */
 gzFile ZEXPORT gzdopen (fd, mode)
     int fd;

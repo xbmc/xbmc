@@ -237,12 +237,12 @@ void CWiiRemote::Initialize(CAddress Addr, int Socket)
   ToggleBit(m_ledState, CWIID_LED4_ON);
 }
 
-/* Update is run regulary and we gather the state of the Wiiremote and see if the user have pressed on a button or moved the wiiremote
+/* Update is run regularly and we gather the state of the Wiiremote and see if the user have pressed on a button or moved the wiiremote
    This could have been done with callbacks instead but it doesn't look nice in C++*/
 void CWiiRemote::Update()
 {
   if (m_DisconnectWhenPossible)
-  {//If the user have chosen to disconnect or lost communication
+  {//If the user has chosen to disconnect or lost communication
     DisconnectNow(true);
     m_DisconnectWhenPossible = false;
   }
