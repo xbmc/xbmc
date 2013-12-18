@@ -693,7 +693,7 @@ bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString 
 
 // \brief Show numeric keypad twice to get and confirm a user-entered password string.
 // \param strNewPassword String to preload into the keyboard accumulator. Overwritten with user input if return=true.
-// \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
+// \return true if successful display and user input entry/re-entry. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIDialogNumeric::ShowAndVerifyNewPassword(CStdString& strNewPassword)
 {
   // Prompt user for password input
@@ -726,7 +726,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(CStdString& strNewPassword)
 // \param strPassword Value to compare against user input.
 // \param strHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param iRetries If greater than 0, shows "Incorrect password, %d retries left" on dialog line 2, else line 2 is blank.
-// \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
+// \return 0 if successful display and user input. 1 if unsuccessful input. -1 if no user input or canceled editing.
 int CGUIDialogNumeric::ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries)
 {
   CStdString strTempHeading = strHeading;
@@ -747,7 +747,7 @@ int CGUIDialogNumeric::ShowAndVerifyPassword(CStdString& strPassword, const CStd
 // \param strToVerify Value to compare against user input.
 // \param dlgHeading String shown on dialog title.
 // \param bVerifyInput If set as true we verify the users input versus strToVerify.
-// \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
+// \return true if successful display and user input. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdString& dlgHeading, bool bVerifyInput)
 {
   // Prompt user for password input

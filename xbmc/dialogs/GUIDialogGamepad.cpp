@@ -169,7 +169,7 @@ bool CGUIDialogGamepad::OnMessage(CGUIMessage& message)
 // \param aTextString String to preload into the keyboard accumulator. Overwritten with user input if return=true.
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param bHideUserInput Masks user input as asterisks if set as true.  Currently not yet implemented.
-// \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
+// \return true if successful display and user input. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIDialogGamepad::ShowAndGetInput(CStdString& aTextString, const CStdString &dlgHeading, bool bHideUserInput)
 {
   // Prompt user for input
@@ -192,7 +192,7 @@ bool CGUIDialogGamepad::ShowAndGetInput(CStdString& aTextString, const CStdStrin
 
 // \brief Show gamepad keypad twice to get and confirm a user-entered password string.
 // \param strNewPassword String to preload into the keyboard accumulator. Overwritten with user input if return=true.
-// \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
+// \return true if successful display and user input entry/re-entry. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIDialogGamepad::ShowAndVerifyNewPassword(CStdString& strNewPassword)
 {
   // Prompt user for password input
@@ -225,7 +225,7 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(CStdString& strNewPassword)
 // \param strPassword Value to compare against user input.
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param iRetries If greater than 0, shows "Incorrect password, %d retries left" on dialog line 2, else line 2 is blank.
-// \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
+// \return 0 if successful display and user input. 1 if unsuccessful input. -1 if no user input or canceled editing.
 int CGUIDialogGamepad::ShowAndVerifyPassword(CStdString& strPassword, const CStdString& dlgHeading, int iRetries)
 {
   CStdString strLine2 = "";
@@ -259,7 +259,7 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdString& strPassword, const CStd
 // \param dlgLine2 String shown on dialog line 2. Converts to localized string if contains a positive integer.
 // \param bGetUserInput If set as true and return=true, strToVerify is overwritten with user input string.
 // \param bHideInputChars Masks user input as asterisks if set as true.  Currently not yet implemented.
-// \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
+// \return true if successful display and user input. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdString& dlgHeading,
     const CStdString& dlgLine0, const CStdString& dlgLine1,
     const CStdString& dlgLine2, bool bGetUserInput, bool bHideInputChars)

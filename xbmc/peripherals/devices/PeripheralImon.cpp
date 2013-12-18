@@ -75,12 +75,12 @@ bool CPeripheralImon::InitialiseFeature(const PeripheralFeature feature)
   return CPeripheralHID::InitialiseFeature(feature);
 }
 
-void CPeripheralImon::AddSetting(const CStdString &strKey, const CSetting *setting)
+void CPeripheralImon::AddSetting(const CStdString &strKey, const CSetting *setting, int order)
 {
 #if !defined(TARGET_WINDOWS)
   if (strKey.compare("disable_winjoystick")!=0)
 #endif // !TARGET_WINDOWS
-    CPeripheralHID::AddSetting(strKey, setting);
+    CPeripheralHID::AddSetting(strKey, setting, order);
 }
 
 void CPeripheralImon::OnSettingChanged(const CStdString &strChangedSetting)

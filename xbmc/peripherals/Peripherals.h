@@ -214,7 +214,7 @@ namespace PERIPHERALS
     CPeripherals(void);
     bool LoadMappings(void);
     bool GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const;
-    static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<CStdString, CSetting *> &m_settings);
+    static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<CStdString, PeripheralDeviceSetting> &m_settings);
 
     bool                                 m_bInitialised;
     bool                                 m_bIsStarted;

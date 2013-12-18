@@ -33,7 +33,7 @@ namespace PERIPHERALS
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
     virtual void OnDeviceRemoved();
-    virtual void AddSetting(const CStdString &strKey, const CSetting *setting);
+    virtual void AddSetting(const CStdString &strKey, const CSetting *setting, int order);
     inline bool IsImonConflictsWithDInput() 
     { return m_bImonConflictsWithDInput;}
     static inline long GetCountOfImonsConflictWithDInput()

@@ -72,14 +72,20 @@ namespace PERIPHERALS
     int m_iProductId;
   };
 
+  struct PeripheralDeviceSetting
+  {
+    CSetting* m_setting;
+    int       m_order;
+  };
+
   struct PeripheralDeviceMapping
   {
-    std::vector<PeripheralID>        m_PeripheralID;
-    PeripheralBusType                m_busType;
-    PeripheralType                   m_class;
-    CStdString                       m_strDeviceName;
-    PeripheralType                   m_mappedTo;
-    std::map<CStdString, CSetting *> m_settings;
+    std::vector<PeripheralID>                     m_PeripheralID;
+    PeripheralBusType                             m_busType;
+    PeripheralType                                m_class;
+    CStdString                                    m_strDeviceName;
+    PeripheralType                                m_mappedTo;
+    std::map<CStdString, PeripheralDeviceSetting> m_settings;
   };
 
   class PeripheralTypeTranslator

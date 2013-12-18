@@ -7,8 +7,8 @@
 
 # lib name, version
 LIBNAME=libcec
-VERSION=2.1.1
-SOURCE=$(LIBNAME)-$(VERSION)
+VERSION=2.1.4
+SOURCE=$(LIBNAME)-$(VERSION)-2
 
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs

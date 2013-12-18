@@ -70,7 +70,7 @@ void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typed
 
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
-//          false - unsucessful display of the keyboard or cancelled editing
+//          false - unsuccessful display of the keyboard or cancelled editing
 bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVariant &heading, bool allowEmptyResult, bool hiddenInput /* = false */, unsigned int autoCloseMs /* = 0 */)
 {
   bool confirmed = false;
@@ -142,7 +142,7 @@ bool CGUIKeyboardFactory::ShowAndGetFilter(CStdString &filter, bool searching, u
 // \param newPassword Overwritten with user input if return=true.
 // \param heading Heading to display
 // \param allowEmpty Whether a blank password is valid or not.
-// \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
+// \return true if successful display and user input entry/re-entry. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty, unsigned int autoCloseMs /* = 0 */)
 {
   // Prompt user for password input
@@ -172,7 +172,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, cons
 
 // \brief Show keyboard twice to get and confirm a user-entered password string.
 // \param strNewPassword Overwritten with user input if return=true.
-// \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
+// \return true if successful display and user input entry/re-entry. false if unsuccessful display, no user input, or canceled editing.
 bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, unsigned int autoCloseMs /* = 0 */)
 {
   CStdString heading = g_localizeStrings.Get(12340);
@@ -183,7 +183,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, unsi
 // \param strPassword Value to compare against user input.
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param iRetries If greater than 0, shows "Incorrect password, %d retries left" on dialog line 2, else line 2 is blank.
-// \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
+// \return 0 if successful display and user input. 1 if unsuccessful input. -1 if no user input or canceled editing.
 int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries, unsigned int autoCloseMs /* = 0 */)
 {
   CStdString strHeadingTemp;
