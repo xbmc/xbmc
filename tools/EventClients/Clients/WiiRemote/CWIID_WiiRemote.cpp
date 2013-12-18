@@ -83,7 +83,7 @@ void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, uni
                                           mesg[i].ir_mesg.src[1].pos[CWIID_Y]);
       }
       else if (valid_source > 2)
-      { //TODO Make this care with the strenght of the sources
+      { //TODO Make this care with the strength of the sources
         g_WiiRemote.CalculateMousePointer(mesg[i].ir_mesg.src[0].pos[CWIID_X],
                                           mesg[i].ir_mesg.src[0].pos[CWIID_Y],
                                           mesg[i].ir_mesg.src[1].pos[CWIID_X],
@@ -97,7 +97,7 @@ void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, uni
       g_WiiRemote.ProcessKey(mesg[i].btn_mesg.buttons);
     break;	  
     case CWIID_MESG_STATUS:
-      //Here we can figure out Extensiontypes and such
+      //Here we can figure out Extension types and such
     break;
     case CWIID_MESG_NUNCHUK:
       g_WiiRemote.ProcessNunchuck(mesg[i].nunchuk_mesg);
@@ -237,12 +237,12 @@ void CWiiRemote::Initialize(CAddress Addr, int Socket)
   ToggleBit(m_ledState, CWIID_LED4_ON);
 }
 
-/* Update is run regulary and we gather the state of the Wiiremote and see if the user have pressed on a button or moved the wiiremote
+/* Update is run regularly and we gather the state of the Wiiremote and see if the user have pressed on a button or moved the wiiremote
    This could have been done with callbacks instead but it doesn't look nice in C++*/
 void CWiiRemote::Update()
 {
   if (m_DisconnectWhenPossible)
-  {//If the user have choosen to disconnect or lost comunication
+  {//If the user has chosen to disconnect or lost communication
     DisconnectNow(true);
     m_DisconnectWhenPossible = false;
   }
@@ -311,7 +311,7 @@ void CWiiRemote::Disconnect()
 		
 #ifdef CWIID_OLD		
 /* This function is mostly a hack as CWIID < 6.0 doesn't report on disconnects, this function is called everytime
-   a message is sent to the callback (Will be once every 10 ms or so) this is to see if the connection is interupted. */
+   a message is sent to the callback (Will be once every 10 ms or so) this is to see if the connection is interrupted. */
 void CWiiRemote::CheckIn()
 { //This is always called from a criticalsection
   m_LastMsgTime = getTicks();
@@ -357,12 +357,12 @@ bool CWiiRemote::Connect()
       }
 #ifdef CWIID_OLD
       /* CheckIn to say that this is the last msg, If this isn't called it could give issues if we Connects -> Disconnect and then try to connect again 
-         the CWIID_OLD hack would automaticly disconnect the wiiremote as the lastmsg is too old. */
+         the CWIID_OLD hack would automatically disconnect the wiiremote as the lastmsg is too old. */
       CheckIn();
 #endif      
       m_connected = true;
 
-      CPacketLOG log(LOGNOTICE, "Sucessfully connected a WiiRemote");
+      CPacketLOG log(LOGNOTICE, "Successfully connected a WiiRemote");
       log.Send(m_Socket, m_MyAddr);
       return true;
     }
@@ -390,7 +390,7 @@ void CWiiRemote::DisconnectNow(bool startConnectThread)
       notification.Send(m_Socket, m_MyAddr);
     }
 
-    CPacketLOG log(LOGNOTICE, "Sucessfully disconnected a WiiRemote");
+    CPacketLOG log(LOGNOTICE, "Successfully disconnected a WiiRemote");
     log.Send(m_Socket, m_MyAddr);
   }
   m_connected = false;
@@ -415,7 +415,7 @@ bool CWiiRemote::CheckConnection()
 
 /* Sets rpt mode when a new wiiremote is connected */
 void CWiiRemote::SetupWiiRemote()
-{ //Lights up the apropriate led and setups the rapport mode, so buttons and IR work
+{ //Lights up the appropriate led and setups the rapport mode, so buttons and IR work
   SetRptMode();
   SetLedState();
 
