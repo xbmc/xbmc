@@ -1060,11 +1060,20 @@ bool CApplication::InitDirectoriesLinux()
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
-    CStdString strTempPath = userHome;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, ".xbmc/temp");
+    CStdString strHomePath, strProfilePath, strTempPath;
+
+    strHomePath = URIUtils::AddFileToFolder(userHome, ".xbmc");
+    if (getenv("XBMC_USER_HOME"))
+        strHomePath = getenv("XBMC_USER_HOME");
+    CSpecialProtocol::SetHomePath(strHomePath);
+
+    strProfilePath = URIUtils::AddFileToFolder(strHomePath, "userdata");
+    if (getenv("XBMC_PROFILE_USERDATA"))
+        strProfilePath = getenv("XBMC_PROFILE_USERDATA");
+    CSpecialProtocol::SetMasterProfilePath(strProfilePath);
+
+    strTempPath = URIUtils::AddFileToFolder(strHomePath, "temp");
     if (getenv("XBMC_TEMP"))
       strTempPath = getenv("XBMC_TEMP");
     CSpecialProtocol::SetTempPath(strTempPath);
