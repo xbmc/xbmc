@@ -168,7 +168,7 @@ void CRemoteControl::Initialize()
                   if ((m_inotify_wd = inotify_add_watch(m_inotify_fd, m_deviceName.c_str(), IN_DELETE_SELF)) != -1)
                   {
                     m_bInitialized = true;
-                    CLog::Log(LOGINFO, "LIRC %s: sucessfully started", __FUNCTION__);
+                    CLog::Log(LOGINFO, "LIRC %s: successfully started", __FUNCTION__);
                   }
                   else
                     CLog::Log(LOGDEBUG, "LIRC: Failed to initialize Inotify. LIRC device will not be monitored.");
@@ -177,7 +177,7 @@ void CRemoteControl::Initialize()
             }
 #else
             m_bInitialized = true;
-            CLog::Log(LOGINFO, "LIRC %s: sucessfully started", __FUNCTION__);
+            CLog::Log(LOGINFO, "LIRC %s: successfully started", __FUNCTION__);
 #endif
           }
           else
