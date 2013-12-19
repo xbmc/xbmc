@@ -49,85 +49,83 @@ using namespace rapidxml;
 bool
 CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
 {
-  m_url = url;
+    m_url = url;
 
-  CStopWatch timer;
-  timer.StartZero();
+    CStopWatch timer;
+    timer.StartZero();
 
-  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", m_url.Get().c_str());
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory %s", m_url.Get().c_str());
 
-  /* Some hardcoded paths here */
-  if (url.GetHostName() == "shared")
-  {
+    /* Some hardcoded paths here */
+    if (url.GetHostName() == "shared")
+    {
     return GetSharedServerDirectory(fileItems);
-  }
-  else if (url.GetHostName() == "channels")
-  {
+    }
+    else if (url.GetHostName() == "channels")
+    {
     return GetChannelDirectory(fileItems);
-  }
-  else if (url.GetHostName() == "channeldirectory")
-  {
+    }
+    else if (url.GetHostName() == "channeldirectory")
+    {
     return GetOnlineChannelDirectory(fileItems);
-  }
+    }
 
-  if (boost::contains(m_url.GetFileName(), "library/metadata"))
+    if (boost::contains(m_url.GetFileName(), "library/metadata"))
     m_url.SetOption("checkFiles", "1");
 
-  bool httpSuccess;
+    bool httpSuccess;
 
-  if (m_url.HasProtocolOption("containerSize"))
-  {
+    if (m_url.HasProtocolOption("containerSize"))
+    {
     m_url.SetOption("X-Plex-Container-Size", m_url.GetProtocolOption("containerSize"));
     m_url.RemoveProtocolOption("containerSize");
-  }
-  if (m_url.HasProtocolOption("containerStart"))
-  {
+    }
+    if (m_url.HasProtocolOption("containerStart"))
+    {
     m_url.SetOption("X-Plex-Container-Start", m_url.GetProtocolOption("containerStart"));
     m_url.RemoveProtocolOption("containerStart");
-  }
+    }
 
-  if (m_body.empty())
+    if (m_body.empty())
     httpSuccess = m_file.Get(m_url.Get(), m_data);
-  else
+    else
     httpSuccess = m_file.Post(m_url.Get(), m_body, m_data);
 
-  if (!httpSuccess)
-  {
+    if (!httpSuccess)
+    {
     CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to fetch data from %s: %ld", m_url.Get().c_str(), m_file.GetLastHTTPResponseCode());
     if (m_file.GetLastHTTPResponseCode() == 500)
     {
       /* internal server error, we should handle this .. */
     }
     return false;
-  }
+    }
 
-  {
-	
-	
+
 #ifdef USE_RAPIDXML
 
-	xml_document<> doc;    // character type defaults to char
-	try
-	{
-		doc.parse<rapidxml::parse_no_entity_translation | rapidxml::parse_no_utf8 |rapidxml::parse_no_data_nodes>((char*)m_data.c_str());    // 0 means default parse flags
-	}
-	catch (...)
-	{
-		CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory Parse with RapidXML failed");
-	}
+    xml_document<> doc;    // character type defaults to char
+    try
+    {
+        doc.parse<0>((char*)m_data.c_str());    // 0 means default parse flags
+    }
+    catch (...)
+    {
+        CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory Parse with RapidXML failed");
+    }
 
-	xml_node<>* pRoot =  doc.first_node();
-	if (pRoot)
-	{
-		if (!ReadMediaContainer(pRoot, fileItems))
-		{
-		  CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", m_url.Get().c_str());
-		  return false;
-		}
-	}
-	else CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory Parsed root is NULL");
+    xml_node<>* pRoot =  doc.first_node();
+    if (pRoot)
+    {
+        if (!ReadMediaContainer(pRoot, fileItems))
+        {
+          CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to read root MediaContainer from %s", m_url.Get().c_str());
+          return false;
+        }
+    }
+    else CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory Parsed root is NULL");
 
-	
+
 #else	
 	CXBMCTinyXML doc;
 	
@@ -144,14 +142,13 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
       return false;
     }
 #endif
-  }
 
 
-  float elapsed = timer.GetElapsedSeconds();
+    float elapsed = timer.GetElapsedSeconds();
 
-  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory returning a directory after %f seconds with %d items with content %s", elapsed, fileItems.Size(), fileItems.GetContent().c_str());
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory returning a directory after %f seconds with %d items with content %s", elapsed, fileItems.Size(), fileItems.GetContent().c_str());
 
-  return true;
+    return true;
 }
 
 void
