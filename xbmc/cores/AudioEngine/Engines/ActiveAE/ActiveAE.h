@@ -250,7 +250,6 @@ protected:
   bool InitSink();
   void DrainSink();
   void UnconfigureSink();
-  bool IsSinkCompatible(const AEAudioFormat &format, const std::string &device);
   void Start();
   void Dispose();
   void LoadSettings();
@@ -307,6 +306,7 @@ protected:
   AudioSettings m_settings;
   CEngineStats m_stats;
   IAEEncoder *m_encoder;
+  std::string m_currDevice;
 
   // buffers
   CActiveAEBufferPoolResample *m_sinkBuffers;
