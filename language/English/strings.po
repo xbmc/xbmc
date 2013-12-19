@@ -6074,7 +6074,13 @@ msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
 msgstr ""
 
-#empty strings from id 13453 to 13499
+#. Description of setting #13453 'Use SW Filter for VAAPI'
+#: system/settings/settings.xml
+msgctxt "#13453"
+msgid "Use SW Filter for VAAPI"
+msgstr ""
+
+#empty strings from id 13454 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
@@ -14877,7 +14883,12 @@ msgctxt "#36429"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - transcoding can lead to a reduction in sound quality"
 msgstr ""
 
-#empty strings from id 36430 to 36499
+#: system/settings/settings.xml
+msgctxt "#36430"
+msgid "This option enables the deinterlacing methods available for software decoding. It gives the possiblity to use high quality deinterlacers in combination with VAAPI."
+msgstr ""
+
+#empty strings from id 36431 to 36499
 #end reservation
 
 #: system/settings/settings.xml

@@ -986,10 +986,10 @@ EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHO
   if (mInt == VS_INTERLACEMETHOD_NONE)
     return VS_INTERLACEMETHOD_NONE;
 
-  if(!m_pRenderer->Supports(mInt))
+  if(m_pRenderer && !m_pRenderer->Supports(mInt))
     mInt = VS_INTERLACEMETHOD_AUTO;
 
-  if (mInt == VS_INTERLACEMETHOD_AUTO)
+  if (m_pRenderer && mInt == VS_INTERLACEMETHOD_AUTO)
     return m_pRenderer->AutoInterlaceMethod();
 
   return mInt;

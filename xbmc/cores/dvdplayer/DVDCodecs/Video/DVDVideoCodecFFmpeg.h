@@ -53,6 +53,8 @@ public:
     virtual bool CanSkipDeint() {return false; }
     virtual const std::string Name() = 0;
     virtual CCriticalSection* Section() { return NULL; }
+    virtual bool UseFilter() { return false; }
+    virtual bool MapFrame(AVCodecContext* avctx, AVFrame* frame) { return false; }
   };
 
   CDVDVideoCodecFFmpeg();
@@ -129,4 +131,5 @@ protected:
   int    m_skippedDeint;
   bool   m_requestSkipDeint;
   int    m_codecControlFlags;
+  bool   m_interlace;
 };

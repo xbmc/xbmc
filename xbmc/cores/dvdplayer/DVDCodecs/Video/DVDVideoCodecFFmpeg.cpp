@@ -37,6 +37,7 @@
 #include "utils/log.h"
 #include "boost/shared_ptr.hpp"
 #include "threads/Atomics.h"
+#include "settings/MediaSettings.h"
 
 #ifndef TARGET_POSIX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -167,6 +168,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_dts = DVD_NOPTS_VALUE;
   m_started = false;
   m_decoderPts = DVD_NOPTS_VALUE;
+  m_interlace = false;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -371,7 +373,7 @@ unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
 {
   m_filters_next.clear();
 
-  if(m_pHardware)
+  if(m_pHardware && !m_pHardware->UseFilter())
     return 0;
 
   if(flags & FILTER_ROTATE)
@@ -445,10 +447,10 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
     if(section)
       lock = shared_ptr<CSingleLock>(new CSingleLock(*section));
 
-    int result;
+    int result = 0;
     if(pData)
       result = m_pHardware->Check(m_pCodecContext);
-    else
+    else if (!m_pHardware->UseFilter())
       result = m_pHardware->Decode(m_pCodecContext, NULL);
 
     if(result)
@@ -503,19 +505,60 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   || m_pCodecContext->codec_id == AV_CODEC_ID_SVQ3)
     m_started = true;
 
-  if(m_pHardware == NULL)
+  m_interlace = m_pFrame->interlaced_frame;
+
+  if(m_pHardware == NULL || m_pHardware->UseFilter())
   {
+    if (m_pHardware)
+    {
+      m_pFrame->pkt_dts = pts_dtoi(m_dts);
+      int result = m_pHardware->Decode(m_pCodecContext, m_pFrame);
+      if (result == VC_BUFFER)
+        return result;
+      m_pHardware->MapFrame(m_pCodecContext, m_pFrame);
+      m_dts = pts_itod(m_pFrame->pkt_dts);
+      m_pFrame->pkt_dts = 0;
+    }
+
     bool need_scale = std::find( m_formats.begin()
                                , m_formats.end()
-                               , m_pCodecContext->pix_fmt) == m_formats.end();
+                               , m_pFrame->format) == m_formats.end();
 
     bool need_reopen  = false;
+
+
+    // ask codec to do deinterlacing if possible
+    EDEINTERLACEMODE mDeintMode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+    EINTERLACEMETHOD mInt       = g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
+
+    unsigned int mFilters = 0;
+
+    if (mDeintMode != VS_DEINTERLACEMODE_OFF)
+    {
+      if (mDeintMode == VS_DEINTERLACEMODE_FORCE ||
+          m_pFrame->interlaced_frame)
+      {
+        if (mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+          mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
+        else if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+          mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
+
+        if (mDeintMode == VS_DEINTERLACEMODE_AUTO && mFilters)
+          mFilters |=  CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
+      }
+    }
+
+    if (!g_renderManager.Supports(RENDERFEATURE_ROTATION))
+      mFilters |= CDVDVideoCodec::FILTER_ROTATE;
+
+    SetFilters(mFilters);
+
     if(!m_filters.Equals(m_filters_next))
       need_reopen = true;
 
     if(m_pFilterIn)
     {
-      if(m_pFilterIn->outputs[0]->format != m_pCodecContext->pix_fmt
+      if(m_pFilterIn->outputs[0]->format != m_pFrame->format
       || m_pFilterIn->outputs[0]->w      != m_pCodecContext->width
       || m_pFilterIn->outputs[0]->h      != m_pCodecContext->height)
         need_reopen = true;
@@ -532,7 +575,7 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   }
 
   int result;
-  if(m_pHardware)
+  if(m_pHardware && !m_pHardware->UseFilter())
     result = m_pHardware->Decode(m_pCodecContext, m_pFrame);
   else if(m_pFilterGraph)
     result = FilterProcess(m_pFrame);
@@ -616,6 +659,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pDvdVideoPicture->color_primaries = m_pCodecContext->color_primaries;
   pDvdVideoPicture->color_transfer = m_pCodecContext->color_trc;
+  pDvdVideoPicture->color_matrix = m_pCodecContext->colorspace;
   if(m_pCodecContext->color_range == AVCOL_RANGE_JPEG
   || m_pCodecContext->pix_fmt     == PIX_FMT_YUVJ420P)
     pDvdVideoPicture->color_range = 1;
@@ -639,7 +683,11 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->qscale_type = DVP_QSCALE_UNKNOWN;
   }
 
-  pDvdVideoPicture->dts = m_dts;
+  if (pDvdVideoPicture->iRepeatPicture)
+    pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
+  else
+    pDvdVideoPicture->dts = m_dts;
+
   m_dts = DVD_NOPTS_VALUE;
   if (m_pFrame->reordered_opaque)
     pDvdVideoPicture->pts = pts_itod(m_pFrame->reordered_opaque);
@@ -670,7 +718,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 
 bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  if(m_pHardware)
+  if(m_pHardware && !m_pHardware->UseFilter())
     return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);
 
   if(!GetPictureCommon(pDvdVideoPicture))
@@ -690,6 +738,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pix_fmt = (PixelFormat)m_pFrame->format;
 
   pDvdVideoPicture->format = CDVDCodecUtils::EFormatFromPixfmt(pix_fmt);
+
   return true;
 }
 
@@ -704,7 +753,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
   if (filters.empty() && !scale)
     return 0;
 
-  if (m_pHardware)
+  if (m_pHardware && !m_pHardware->UseFilter())
   {
     CLog::Log(LOGWARNING, "CDVDVideoCodecFFmpeg::FilterOpen - skipped opening filters on hardware decode");
     return 0;
@@ -722,7 +771,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
   CStdString args = StringUtils::Format("%d:%d:%d:%d:%d:%d:%d",
                                         m_pCodecContext->width,
                                         m_pCodecContext->height,
-                                        m_pCodecContext->pix_fmt,
+                                        m_pFrame->format,
                                         m_pCodecContext->time_base.num,
                                         m_pCodecContext->time_base.den,
                                         m_pCodecContext->sample_aspect_ratio.num,
@@ -848,10 +897,7 @@ bool CDVDVideoCodecFFmpeg::GetCodecStats(double &pts, int &skippedDeint, int &in
 {
   pts = m_decoderPts;
   skippedDeint = m_skippedDeint;
-  if (m_pFrame)
-    interlaced = m_pFrame->interlaced_frame;
-  else
-    interlaced = 0;
+  interlaced = m_interlace;
   return true;
 }
 
