@@ -148,6 +148,7 @@ private:
 
   // Prevent multiple init/deinit
   bool              m_Initialized;
+  bool              m_deviceLost;
   bool              m_callbackRunning;
 
   AEAudioFormat     m_format;
