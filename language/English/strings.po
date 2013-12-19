@@ -10951,7 +10951,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21460"
-msgid "Subtitle location"
+msgid "Subtitle position"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11002,13 +11002,14 @@ msgstr ""
 #empty strings from id 21470 to 21599
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
+#: system/settings/settings.xml
 msgctxt "#21600"
-msgid "Prefer external subtitles"
+msgid "Prefer downloaded subtitles"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21601"
-msgid "Prefer external subtitles to internal ones"
+msgid "Prefer downloaded subtitles to default ones"
 msgstr ""
 
 #: xbmc/Util.cpp
