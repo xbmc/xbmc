@@ -8,6 +8,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/log.h"
 #include "filesystem/File.h"
+#include "TextureCache.h"
 
 using namespace XFILE;
 
@@ -15,8 +16,6 @@ using namespace XFILE;
 
 CPlexGlobalCacher::CPlexGlobalCacher() : CPlexThumbCacher() , CThread("Plex Global Cacher")
 {
-	m_MediaCount = 0;
-	m_MediaTotal = 0;
 }
 
 CPlexGlobalCacher::~CPlexGlobalCacher()
@@ -70,17 +69,37 @@ void CPlexGlobalCacher::Process()
 		Lastcount = list.Size();
 	}
 
-	m_MediaTotal += list.Size();
+    // Here we have the file list, just process the items
+    for (int i = 0; i < list.Size(); i++)
+    {
+      CFileItemPtr item = list.Get(i);
+      if (item->IsPlexMediaServer())
+      {
+          if (item->HasArt("thumb") &&
+              !CTextureCache::Get().HasCachedImage(item->GetArt("thumb")))
+            CTextureCache::Get().CacheImage(item->GetArt("thumb"));
 
-	// load the list into thumbCaher
-	CPlexThumbCacher::Load(list);
+          if (item->HasArt("fanart") &&
+              !CTextureCache::Get().HasCachedImage(item->GetArt("fanart")))
+            CTextureCache::Get().CacheImage(item->GetArt("fanart"));
 
-	// Start teh processing
-	// this will spawn one job per item
-	CPlexThumbCacher::Start();
 
-	// wait for the proper number of threads to complete
-	m_CompletedEvent.Wait();
+          if (item->HasArt("grandParentThumb") &&
+              !CTextureCache::Get().HasCachedImage(item->GetArt("grandParentThumb")))
+            CTextureCache::Get().CacheImage(item->GetArt("grandParentThumb"));
+
+
+          if (item->HasArt("bigPoster") &&
+              !CTextureCache::Get().HasCachedImage(item->GetArt("bigPoster")))
+            CTextureCache::Get().CacheImage(item->GetArt("bigPoster"));
+
+      }
+
+      CStdString Message;
+      Message.Format("Processing %0.0f%%..." ,float(i * 100.0f) / (float)list.Size());
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, Message, GLOBAL_CACHING_DESC, 8000, false,10);
+
+    }
 
 	// now write the file to mark that caching has been done once
 	CFile CacheFile;
@@ -93,19 +112,4 @@ void CPlexGlobalCacher::Process()
 	CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Processing Complete.", GLOBAL_CACHING_DESC, 5000, false,500);
 }
 
-void  CPlexGlobalCacher::OnJobComplete(unsigned int jobID, bool success, CJob *job)
-{
-	m_MediaCount++;
 
-	// Display progress
-	CStdString Message;
-	Message.Format("Processing %0.0f%%..." ,float(m_MediaCount * 100.0f) / (float)m_MediaTotal);
-	CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, Message, GLOBAL_CACHING_DESC, 5000, false,10);
-
-	// call base class processing
-	CPlexThumbCacher::OnJobComplete(jobID, success, job);
-	
-	// if we are done, then release here so that main theard can exit
-	if (m_MediaCount >= m_MediaTotal) m_CompletedEvent.Set();
-
-}

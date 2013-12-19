@@ -13,13 +13,9 @@ public :
 	~CPlexGlobalCacher();
 	void Start();
 	void Process();
-	void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
 protected :
-	int m_MediaTotal;
-	int m_MediaCount;
 
-	CEvent m_CompletedEvent;
 };
 
 #endif /* _PLEXGLOBALCACHER_H_*/ 
