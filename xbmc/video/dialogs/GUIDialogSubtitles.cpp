@@ -404,6 +404,8 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     return;
   }
 
+  SUBTITLE_STORAGEMODE storageMode = (SUBTITLE_STORAGEMODE) CSettings::Get().GetInt("subtitles.storagemode");
+
   // Get (unstacked) path
   const CStdString &strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
 
@@ -419,7 +421,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
       strDownloadPath = subPath;
 
     strFileName = URIUtils::GetFileName(strCurrentFile);
-    if (CSettings::Get().GetBool("subtitles.savetomoviefolder") &&
+    if (storageMode == SUBTITLE_STORAGEMODE_MOVIEPATH &&
         CUtil::SupportsWriteFileOperations(strCurrentFilePath))
     {
       strDestPath = strCurrentFilePath;

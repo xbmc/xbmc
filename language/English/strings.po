@@ -12178,7 +12178,7 @@ msgstr ""
 #. Description of setting "Videos -> Subtitles -> Save subtitles to movie folder" with label #24115
 #: system/settings/settings.xml
 msgctxt "#24106"
-msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder."
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
@@ -12224,7 +12224,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24115"
-msgid "Save subtitles to movie folder"
+msgid "Subtitle storage location"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12271,7 +12271,17 @@ msgctxt "#24123"
 msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
 msgstr ""
 
-#empty strings from id 24124 to 24999
+#: system/settings/settings.xml
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#24125"
+msgid "Custom location"
+msgstr ""
+
+#empty strings from id 24126 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"

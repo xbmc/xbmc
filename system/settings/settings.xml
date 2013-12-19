@@ -926,12 +926,18 @@
         </setting>
       </group>
       <group id="4">
-        <setting id="subtitles.savetomoviefolder" type="boolean" label="24115" help="24106">
+        <setting id="subtitles.storagemode" type="integer" label="24115" help="24106">
           <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="24124">0</option> <!-- SUBTITLE_STORAGEMODE_MOVIEPATH -->
+              <option label="24125">1</option> <!-- SUBTITLE_STORAGEMODE_CUSTOMPATH -->
+            </options>
+          </constraints>
+          <control type="spinner" format="integer" />
         </setting>
-        <setting id="subtitles.custompath" type="path" label="21366" help="36191">
+        <setting id="subtitles.custompath" parent="subtitles.storagemode" type="path" label="21366" help="36191">
           <level>1</level>
           <default></default>
           <constraints>
@@ -941,6 +947,9 @@
               <source>videos</source>
             </sources>
           </constraints>
+          <dependencies>
+            <dependency type="enable" setting="subtitles.storagemode" operator="is">1</dependency>
+          </dependencies>
           <control type="button" format="path">
             <heading>657</heading>
           </control>
