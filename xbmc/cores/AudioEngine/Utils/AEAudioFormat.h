@@ -125,6 +125,17 @@ typedef struct AEAudioFormat{
     m_frameSamples = 0;
     m_frameSize = 0;
   }
+
+  bool operator==(const AEAudioFormat& fmt) const
+  {
+    return  m_dataFormat    ==  fmt.m_dataFormat    &&
+            m_sampleRate    ==  fmt.m_sampleRate    &&
+            m_encodedRate   ==  fmt.m_encodedRate   &&
+            m_channelLayout ==  fmt.m_channelLayout &&
+            m_frames        ==  fmt.m_frames        &&
+            m_frameSamples  ==  fmt.m_frameSamples  &&
+            m_frameSize     ==  fmt.m_frameSize;
+  }
  
 } AEAudioFormat;
 

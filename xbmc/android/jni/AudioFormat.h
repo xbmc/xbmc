@@ -19,23 +19,17 @@
  *
  */
 
-#include "JNIBase.h"
-
-class CJNIAudioManager : public CJNIBase
+namespace jni
 {
-public:
-  CJNIAudioManager(const jni::jhobject &object) : CJNIBase(object) {};
-  ~CJNIAudioManager() {};
 
-  // Note removal of streamType param.
-  int  getStreamMaxVolume();
-  int  getStreamVolume();
-  void setStreamVolume(int index = 0, int flags = 0);
+class CJNIAudioFormat
+{
+  public:
+    static void PopulateStaticFields();
 
-  static void PopulateStaticFields();
-  static int STREAM_MUSIC;
+    static int ENCODING_PCM_16BIT;
+    static int CHANNEL_OUT_STEREO;
+};
 
-private:
-  CJNIAudioManager();
 };
 
