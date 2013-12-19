@@ -56,11 +56,15 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_leftoverBuffer = new uint8_t[m_format.m_frameSize];
   m_leftoverBytes = 0;
   m_forceResampler = false;
+  m_remapper = NULL;
+  m_remapBuffer = NULL;
 }
 
 CActiveAEStream::~CActiveAEStream()
 {
   delete [] m_leftoverBuffer;
+  delete m_remapper;
+  delete m_remapBuffer;
 }
 
 void CActiveAEStream::IncFreeBuffers()
@@ -79,6 +83,105 @@ void CActiveAEStream::ResetFreeBuffers()
 {
   CSingleLock lock(m_streamLock);
   m_streamFreeBuffers = 0;
+}
+
+void CActiveAEStream::InitRemapper()
+{
+  // check if input format follows ffmpeg channel mask
+  bool needRemap = false;
+  unsigned int avLast, avCur = 0;
+  for(unsigned int i=0; i<m_format.m_channelLayout.Count(); i++)
+  {
+    avLast = avCur;
+    avCur = CActiveAEResample::GetAVChannel(m_format.m_channelLayout[i]);
+    if(avCur < avLast)
+    {
+      needRemap = true;
+      break;
+    }
+  }
+
+  if(needRemap)
+  {
+    CLog::Log(LOGDEBUG, "CActiveAEStream::%s - initialize remapper", __FUNCTION__);
+
+    m_remapper = new CActiveAEResample();
+    uint64_t avLayout = CActiveAEResample::GetAVChannelLayout(m_format.m_channelLayout);
+
+    // build layout according to ffmpeg channel order
+    // we need this for reference
+    CAEChannelInfo ffmpegLayout;
+    ffmpegLayout.Reset();
+    int idx = 0;
+    for(unsigned int i=0; i<m_format.m_channelLayout.Count(); i++)
+    {
+      for(unsigned int j=0; j<m_format.m_channelLayout.Count(); j++)
+      {
+        idx = m_remapper->GetAVChannelIndex(m_format.m_channelLayout[j], avLayout);
+        if (idx == i)
+        {
+          ffmpegLayout += m_format.m_channelLayout[j];
+          break;
+        }
+      }
+    }
+
+    // build remap layout we can pass to resampler as destination layout
+    CAEChannelInfo remapLayout;
+    remapLayout.Reset();
+    for(unsigned int i=0; i<m_format.m_channelLayout.Count(); i++)
+    {
+      for(unsigned int j=0; j<m_format.m_channelLayout.Count(); j++)
+      {
+        idx = m_remapper->GetAVChannelIndex(m_format.m_channelLayout[j], avLayout);
+        if (idx == i)
+        {
+          remapLayout += ffmpegLayout[j];
+          break;
+        }
+      }
+    }
+
+    // initialize resampler for only doing remapping
+    m_remapper->Init(avLayout,
+                     m_format.m_channelLayout.Count(),
+                     m_format.m_sampleRate,
+                     CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat),
+                     CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
+                     avLayout,
+                     m_format.m_channelLayout.Count(),
+                     m_format.m_sampleRate,
+                     CActiveAEResample::GetAVSampleFormat(m_format.m_dataFormat),
+                     CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
+                     false,
+                     false,
+                     &remapLayout,
+                     AE_QUALITY_LOW); // not used for remapping
+
+    // extra sound packet, we can't resample to the same buffer
+    m_remapBuffer = new CSoundPacket(m_inputBuffers->m_allSamples[0]->pkt->config, m_inputBuffers->m_allSamples[0]->pkt->max_nb_samples);
+  }
+}
+
+void CActiveAEStream::RemapBuffer()
+{
+  if(m_remapper)
+  {
+    int samples = m_remapper->Resample(m_remapBuffer->data, m_remapBuffer->max_nb_samples,
+                                       m_currentBuffer->pkt->data, m_currentBuffer->pkt->nb_samples,
+                                       1.0);
+
+    if (samples != m_currentBuffer->pkt->nb_samples)
+    {
+      CLog::Log(LOGERROR, "CActiveAEStream::%s - error remapping", __FUNCTION__);
+    }
+
+    // swap sound packets
+    CSoundPacket *tmp = m_remapBuffer;
+    tmp = m_currentBuffer->pkt;
+    m_currentBuffer->pkt = m_remapBuffer;
+    m_remapBuffer = tmp;
+  }
 }
 
 unsigned int CActiveAEStream::GetSpace()
@@ -150,6 +253,7 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
         MsgStreamSample msgData;
         msgData.buffer = m_currentBuffer;
         msgData.stream = this;
+        RemapBuffer();
         m_streamPort->SendOutMessage(CActiveAEDataProtocol::STREAMSAMPLE, &msgData, sizeof(MsgStreamSample));
         m_currentBuffer = NULL;
       }
@@ -234,6 +338,7 @@ void CActiveAEStream::Drain(bool wait)
     MsgStreamSample msgData;
     msgData.buffer = m_currentBuffer;
     msgData.stream = this;
+    RemapBuffer();
     m_streamPort->SendOutMessage(CActiveAEDataProtocol::STREAMSAMPLE, &msgData, sizeof(MsgStreamSample));
     m_currentBuffer = NULL;
   }
@@ -248,6 +353,7 @@ void CActiveAEStream::Drain(bool wait)
         MsgStreamSample msgData;
         msgData.stream = this;
         msgData.buffer = *((CSampleBuffer**)msg->data);
+        RemapBuffer();
         msg->Reply(CActiveAEDataProtocol::STREAMSAMPLE, &msgData, sizeof(MsgStreamSample));
         DecFreeBuffers();
         continue;

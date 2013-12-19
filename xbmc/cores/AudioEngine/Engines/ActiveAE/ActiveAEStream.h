@@ -38,6 +38,8 @@ protected:
   void IncFreeBuffers();
   void DecFreeBuffers();
   void ResetFreeBuffers();
+  void InitRemapper();
+  void RemapBuffer();
 
 public:
   virtual unsigned int GetSpace();
@@ -94,12 +96,14 @@ protected:
   CCriticalSection m_streamLock;
   uint8_t *m_leftoverBuffer;
   int m_leftoverBytes;
+  CSampleBuffer *m_currentBuffer;
+  CSoundPacket *m_remapBuffer;
+  CActiveAEResample *m_remapper;
 
   // only accessed by engine
   CActiveAEBufferPool *m_inputBuffers;
   CActiveAEBufferPoolResample *m_resampleBuffers;
   std::deque<CSampleBuffer*> m_processingSamples;
-  CSampleBuffer *m_currentBuffer;
   CActiveAEDataProtocol *m_streamPort;
   CEvent m_inMsgEvent;
   CCriticalSection *m_statsLock;
