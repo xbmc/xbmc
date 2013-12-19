@@ -30,7 +30,6 @@ class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
-typedef struct ass_image ASS_Image;
 
 namespace OVERLAY {
 
@@ -38,7 +37,7 @@ namespace OVERLAY {
     : public COverlayMainThread
   {
   public:
-    COverlayQuadsDX(ASS_Image* images, int width, int height);
+    COverlayQuadsDX(ass_image_t* images, int width, int height);
     virtual ~COverlayQuadsDX();
 
     void Render(SRenderState& state);

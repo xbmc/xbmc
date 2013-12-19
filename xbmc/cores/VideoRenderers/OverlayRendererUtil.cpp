@@ -183,9 +183,9 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
   return rgba;
 }
 
-bool convert_quad(ASS_Image* images, SQuads& quads)
+bool convert_quad(ass_image_t* images, SQuads& quads)
 {
-  ASS_Image* img;
+  ass_image_t* img;
 
   if (!images)
     return false;

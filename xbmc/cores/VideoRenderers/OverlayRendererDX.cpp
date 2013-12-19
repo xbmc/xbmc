@@ -159,7 +159,7 @@ static bool LoadTexture(int width, int height, int stride
   return true;
 }
 
-COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
+COverlayQuadsDX::COverlayQuadsDX(ass_image_t* images, int width, int height)
 {
   m_width  = 1.0;
   m_height = 1.0;

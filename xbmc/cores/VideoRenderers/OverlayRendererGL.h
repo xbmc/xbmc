@@ -27,7 +27,6 @@ class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
-typedef struct ass_image ASS_Image;
 
 #if defined(HAS_GL) || HAS_GLES == 2
 
@@ -53,7 +52,7 @@ namespace OVERLAY {
      : public COverlayMainThread
   {
   public:
-   COverlayGlyphGL(ASS_Image* images, int width, int height);
+   COverlayGlyphGL(ass_image_t* images, int width, int height);
 
    virtual ~COverlayGlyphGL();
 
