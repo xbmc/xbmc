@@ -1250,3 +1250,4 @@ plex/build_xc
 plex/Dependencies/built-depends/*
 
 *.autosave
+/plex-home-theater
