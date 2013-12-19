@@ -45,8 +45,8 @@ bool CGUIWindowPlexStartupHelper::OnMessage(CGUIMessage &message)
 #ifdef TARGET_RASPBERRY_PI
   g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI);
   g_guiSettings.SetInt("audiooutput.channels", GetNumberOfHDMIChannels());
-  g_guiSettings.SetBool("audiooutput.ac3passthrough", true);
-  g_guiSettings.SetBool("audiooutput.dtspassthrough", true);
+  g_guiSettings.SetBool("audiooutput.ac3passthrough", false);
+  g_guiSettings.SetBool("audiooutput.dtspassthrough", false);
   if (!g_plexApplication.myPlexManager->IsSignedIn())
   {
     std::vector<CStdString> param;
