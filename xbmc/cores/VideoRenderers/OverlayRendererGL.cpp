@@ -266,7 +266,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   m_pma    = !!USE_PREMULTIPLIED_ALPHA;
 }
 
-COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
+COverlayGlyphGL::COverlayGlyphGL(ass_image_t* images, int width, int height)
 {
   m_vertex = NULL;
   m_width  = 1.0;

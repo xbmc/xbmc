@@ -286,7 +286,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   int height = MathUtils::round_int(dst.Height());
 
   int changes = 0;
-  ASS_Image* images = o->m_libass->RenderImage(width, height, pts, &changes);
+  ass_image_t* images = o->m_libass->RenderImage(width, height, pts, &changes);
 
   if(o->m_overlay)
   {

@@ -20,12 +20,13 @@
 
 #pragma once
 
+#include <ass/ass.h>
+
 #include <stdlib.h>
 
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
-typedef struct ass_image ASS_Image;
 
 namespace OVERLAY {
 
@@ -63,7 +64,7 @@ namespace OVERLAY {
   uint32_t* convert_rgba(CDVDOverlaySpu*   o, bool mergealpha
                        , int& min_x, int& max_x
                        , int& min_y, int& max_y);
-  bool      convert_quad(ASS_Image* images, SQuads& quads);
+  bool      convert_quad(ass_image_t* images, SQuads& quads);
   int       GetStereoscopicDepth();
 
 }
