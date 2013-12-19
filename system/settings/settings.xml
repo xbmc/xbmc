@@ -165,6 +165,19 @@
         </setting>
       </group>
       <group id="4">
+        <setting id="locale.spokenlanguages" type="list[string]" label="24111" help="24112">
+          <level>1</level>
+          <default>English</default>
+          <constraints>
+            <options>languages</options>
+            <delimiter>,</delimiter>
+            <minimum>1</minimum>
+            <maximum>4</maximum>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
         <setting id="locale.audiolanguage" type="string" label="285" help="36119">
           <level>1</level>
           <default>original</default>
@@ -745,19 +758,6 @@
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
-        </setting>
-        <setting id="subtitles.languages" type="list[string]" label="24111" help="24112">
-          <level>1</level>
-          <default>English</default>
-          <constraints>
-            <options>languages</options>
-            <delimiter>,</delimiter>
-            <minimum>1</minimum>
-            <maximum>3</maximum>
-          </constraints>
-          <control type="list" format="string">
-            <multiselect>true</multiselect>
-          </control>
         </setting>
         <setting id="subtitles.tv" type="addon" label="24116" help="24117">
           <level>1</level>

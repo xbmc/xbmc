@@ -12046,12 +12046,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24111"
-msgid "Languages to download subtitles for"
+msgid "Spoken languages"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24112"
-msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgid "Specify the languages you speak or can understand. These languages will f.e. be used when downloading missing subtitles."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp

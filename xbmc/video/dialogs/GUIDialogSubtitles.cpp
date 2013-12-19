@@ -301,7 +301,7 @@ void CGUIDialogSubtitles::Search()
   CURL url("plugin://" + m_currentService + "/");
   url.SetOption("action", "search");
 
-  const CSetting *setting = CSettings::Get().GetSetting("subtitles.languages");
+  const CSetting *setting = CSettings::Get().GetSetting("locale.spokenlanguages");
   if (setting)
     url.SetOption("languages", setting->ToString());
 
