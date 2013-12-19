@@ -25,6 +25,12 @@
 #include "threads/CriticalSection.h"
 #include "utils/JobManager.h"
 
+enum SUBTITLE_STORAGEMODE
+{
+  SUBTITLE_STORAGEMODE_MOVIEPATH = 0,
+  SUBTITLE_STORAGEMODE_CUSTOMPATH
+};
+
 class CFileItem;
 class CFileItemList;
 

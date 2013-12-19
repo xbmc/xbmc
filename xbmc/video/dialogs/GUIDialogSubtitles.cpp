@@ -384,8 +384,11 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     return;
   }
 
+  // prepare file name and destination path
   CStdString strFileName;
   CStdString strDestPath;
+  SUBTITLE_STORAGEMODE storageMode = (SUBTITLE_STORAGEMODE) CSettings::Get().GetInt("subtitles.storagemode");
+
   if (g_application.CurrentFileItem().IsStack())
   {
     for (int i = 0; i < items->Size(); i++)
@@ -394,28 +397,21 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 //    CLog::Log(LOGDEBUG, "Stack Subs [%s} Found", vecItems[i]->GetLabel().c_str());
     }
   }
-  else if (StringUtils::StartsWith(g_application.CurrentFile(), "http://"))
-  {
-    strFileName = "TemporarySubs";
-    strDestPath = "special://temp/";
-  }
   else
   {
     strFileName = URIUtils::GetFileName(g_application.CurrentFile());
-    if (CSettings::Get().GetBool("subtitles.savetomoviefolder"))
-    {
+    if (storageMode == SUBTITLE_STORAGEMODE_MOVIEPATH)
       strDestPath = URIUtils::GetDirectory(g_application.CurrentFile());
-      if (!CUtil::SupportsWriteFileOperations(strDestPath))
-        strDestPath.clear();
-    }
-    if (strDestPath.empty())
-    {
-      if (CSpecialProtocol::TranslatePath("special://subtitles").empty())
-        strDestPath = "special://temp";
-      else
-        strDestPath = "special://subtitles";
-    }
+    else if (storageMode == SUBTITLE_STORAGEMODE_CUSTOMPATH && !CSpecialProtocol::TranslatePath("special://subtitles").empty())
+      strDestPath = "special://subtitles";
   }
+
+  if (strDestPath.empty() || !CUtil::SupportsWriteFileOperations(strDestPath))
+  {
+    strFileName = "TemporarySubs";
+    strDestPath = "special://temp";
+  }
+
   // Extract the language and appropriate extension
   CStdString strSubLang;
   g_LangCodeExpander.ConvertToTwoCharCode(strSubLang, language);

@@ -749,10 +749,33 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="subtitles.savetomoviefolder" type="boolean" label="24115" help="24106">
+        <setting id="subtitles.storagemode" type="integer" label="24115" help="24106">
           <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="24120">0</option> <!-- SUBTITLE_STORAGEMODE_MOVIEPATH -->
+              <option label="24121">1</option> <!-- SUBTITLE_STORAGEMODE_CUSTOMPATH -->
+            </options>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="subtitles.custompath" parent="subtitles.storagemode" type="path" label="21366" help="36191">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+            <writable>false</writable>
+            <sources>
+              <source>videos</source>
+            </sources>
+          </constraints>
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
+          <dependencies>
+            <dependency type="enable" setting="subtitles.storagemode" operator="is">1</dependency>
+          </dependencies>
         </setting>
         <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="">
           <level>1</level>
@@ -774,20 +797,6 @@
             <addontype>xbmc.subtitle.module</addontype>
           </constraints>
           <control type="button" format="addon" />
-        </setting>
-        <setting id="subtitles.custompath" type="path" label="21366" help="36191">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-            <writable>false</writable>
-            <sources>
-              <source>videos</source>
-            </sources>
-          </constraints>
-          <control type="button" format="path">
-            <heading>657</heading>
-          </control>
         </setting>
         <setting id="subtitles.align" type="integer" label="21460" help="36192">
           <level>1</level>
