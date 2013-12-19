@@ -59,16 +59,15 @@
 #define glLoadIdentity()          vis_shader->LoadIdentity()
 #define glFrustum(a,b,c,d,e,f)    vis_shader->Frustum(a,b,c,d,e,f)
 
-GLenum  g_mode = GL_TRIANGLES;
-float g_fWaveform[2][512];
-const char *frag = "precision mediump float; \n"
+static GLenum  g_mode = GL_TRIANGLES;
+static const char *frag = "precision mediump float; \n"
                    "varying lowp vec4 m_colour; \n"
                    "void main () \n"
                    "{ \n"
                    "  gl_FragColor = m_colour; \n"
                    "}\n";
 
-const char *vert = "attribute vec4 m_attrpos;\n"
+static const char *vert = "attribute vec4 m_attrpos;\n"
                    "attribute vec4 m_attrcol;\n"
                    "attribute vec4 m_attrcord0;\n"
                    "attribute vec4 m_attrcord1;\n"
@@ -86,24 +85,24 @@ const char *vert = "attribute vec4 m_attrpos;\n"
                    "  m_cord1     = m_attrcord1;\n"
                    "}\n";
 
-CVisGUIShader *vis_shader = NULL;
+static CVisGUIShader *vis_shader = NULL;
 
 #elif defined(HAS_SDL_OPENGL)
 #include <GL/glew.h>
-GLenum  g_mode = GL_FILL;
+static GLenum  g_mode = GL_FILL;
 
 #endif
 
 #define NUM_BANDS 16
 
-GLfloat x_angle = 20.0, x_speed = 0.0;
-GLfloat y_angle = 45.0, y_speed = 0.5;
-GLfloat z_angle = 0.0, z_speed = 0.0;
-GLfloat heights[16][16], cHeights[16][16], scale;
-GLfloat hSpeed = 0.05;
+static GLfloat x_angle = 20.0, x_speed = 0.0;
+static GLfloat y_angle = 45.0, y_speed = 0.5;
+static GLfloat z_angle = 0.0, z_speed = 0.0;
+static GLfloat heights[16][16], cHeights[16][16], scale;
+static GLfloat hSpeed = 0.05;
 
 #if defined(HAS_SDL_OPENGL)
-void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
+static void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
 {
   if(y1 == y2)
   {
@@ -127,7 +126,7 @@ void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, 
   }
 }
 
-void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
+static void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
 {
   GLfloat width = 0.1;
 
@@ -158,7 +157,7 @@ void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, G
 
 #elif defined(HAS_GLES)
 
-void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
+static void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
 {
   // avoid zero sized bars, which results in overlapping triangles of same depth and display artefacts
   height = std::max(height, 1e-3f);
@@ -220,7 +219,7 @@ void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, G
 }
 #endif
 
-void draw_bars(void)
+static void draw_bars(void)
 {
   int x,y;
   GLfloat x_offset, z_offset, r_base, b_base;
