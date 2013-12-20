@@ -198,16 +198,19 @@ void CGUIWindowPVRCommon::OnWindowUnload(void)
 
 bool CGUIWindowPVRCommon::OnAction(const CAction &action)
 {
-  bool bReturn = false;
 
-  if (action.GetID() == ACTION_NAV_BACK ||
-      action.GetID() == ACTION_PREVIOUS_MENU)
+  switch(action.GetID())
   {
-    g_windowManager.PreviousWindow();
-    bReturn = true;
+    case ACTION_NAV_BACK:
+      g_windowManager.PreviousWindow();
+      return true;
+    case ACTION_PREVIOUS_MENU:
+      CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS, m_parent->GetID(), m_iControlButton);
+      m_parent->OnMessage(msg);
+      return true;
   }
 
-  return bReturn;
+  return false;
 }
 
 bool CGUIWindowPVRCommon::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
