@@ -316,8 +316,11 @@ bool CPVRDatabase::DeleteClientChannels(const CPVRClient &client)
   }
 
   CLog::Log(LOGDEBUG, "PVR - %s - deleting all channels from client '%i' from the database", __FUNCTION__, client.GetID());
-  CStdString strWhereClause = FormatSQL("iClientId = %u", client.GetID());
-  return DeleteValues("channels", strWhereClause);
+
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("iClientId = %u", client.GetID()));
+
+  return DeleteValues("channels", filter);
 }
 
 bool CPVRDatabase::Delete(const CPVRChannel &channel)
@@ -327,8 +330,11 @@ bool CPVRDatabase::Delete(const CPVRChannel &channel)
     return false;
 
   CLog::Log(LOGDEBUG, "PVR - %s - deleting channel '%s' from the database", __FUNCTION__, channel.ChannelName().c_str());
-  CStdString strWhereClause = FormatSQL("idChannel = %u", channel.ChannelID());
-  return DeleteValues("channels", strWhereClause);
+
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idChannel = %u", channel.ChannelID()));
+
+  return DeleteValues("channels", filter);
 }
 
 int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
@@ -411,8 +417,10 @@ bool CPVRDatabase::DeleteChannelSettings(const CPVRChannel &channel)
     return bReturn;
   }
 
-  CStdString strWhereClause = FormatSQL("idChannel = %u", channel.ChannelID());
-  return DeleteValues("channelsettings", strWhereClause);
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idChannel = %u", channel.ChannelID()));
+
+  return DeleteValues("channelsettings", filter);
 }
 
 bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings)
@@ -508,8 +516,10 @@ bool CPVRDatabase::PersistChannelSettings(const CPVRChannel &channel, const CVid
 
 bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup &group)
 {
-  CStdString strWhereClause = FormatSQL("idGroup = %u", group.GroupID());
-  return DeleteValues("map_channelgroups_channels", strWhereClause);
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
+
+  return DeleteValues("map_channelgroups_channels", filter);
 }
 
 bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, vector<int> &members)
@@ -557,9 +567,10 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group)
     return false;
   }
 
-  CStdString strWhereClause;
-  strWhereClause = FormatSQL("idGroup = %u", group.GroupID());
-  return DeleteValues("map_channelgroups_channels", strWhereClause);
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
+
+  return DeleteValues("map_channelgroups_channels", filter);
 }
 
 bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const vector<int> &channelsToDelete)
@@ -576,7 +587,6 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const 
   while (iDeletedChannels < channelsToDelete.size())
   {
     CStdString strChannelsToDelete;
-    CStdString strWhereClause;
 
     for (unsigned int iChannelPtr = 0; iChannelPtr + iDeletedChannels < channelsToDelete.size() && iChannelPtr < 50; iChannelPtr++)
       strChannelsToDelete += StringUtils::Format(", %d", channelsToDelete.at(iDeletedChannels + iChannelPtr));
@@ -584,8 +594,12 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const 
     if (!strChannelsToDelete.empty())
     {
       strChannelsToDelete.erase(0, 2);
-      strWhereClause = FormatSQL("idGroup = %u AND idChannel IN (%s)", group.GroupID(), strChannelsToDelete.c_str());
-      bDelete = DeleteValues("map_channelgroups_channels", strWhereClause) && bDelete;
+
+      Filter filter;
+      filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
+      filter.AppendWhere(PrepareSQL("AND idChannel IN (%s)", strChannelsToDelete.c_str()));
+
+      bDelete = DeleteValues("map_channelgroups_channels", filter) && bDelete;
     }
 
     iDeletedChannels += 50;
@@ -617,8 +631,10 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
     }
     else
     {
-      CStdString strWhereClause = FormatSQL("idChannel IN (SELECT m.idChannel FROM map_channelgroups_channels m LEFT JOIN channels on m.idChannel = channels.idChannel WHERE channels.idChannel IS NULL)");
-      bDelete = DeleteValues("map_channelgroups_channels", strWhereClause);
+      Filter filter;
+      filter.AppendWhere("idChannel IN (SELECT m.idChannel FROM map_channelgroups_channels m LEFT JOIN channels on m.idChannel = channels.idChannel WHERE channels.idChannel IS NULL)");
+
+      bDelete = DeleteValues("map_channelgroups_channels", filter);
     }
   }
 
@@ -639,8 +655,10 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
   }
   else
   {
-    CStdString strWhereClause = FormatSQL("idGroup = %u", group.GroupID());
-    bDelete = DeleteValues("map_channelgroups_channels", strWhereClause) && bDelete;
+    Filter filter;
+    filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
+
+    bDelete = DeleteValues("map_channelgroups_channels", filter) && bDelete;
   }
 
   return bDelete;
@@ -663,9 +681,12 @@ bool CPVRDatabase::Delete(const CPVRChannelGroup &group)
     return false;
   }
 
-  CStdString strWhereClause = FormatSQL("idGroup = %u AND bIsRadio = %u", group.GroupID(), group.IsRadio());
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
+  filter.AppendWhere(PrepareSQL("bIsRadio = %u", group.IsRadio()));
+
   return RemoveChannelsFromGroup(group) &&
-      DeleteValues("channelgroups", strWhereClause);
+      DeleteValues("channelgroups", filter);
 }
 
 bool CPVRDatabase::Get(CPVRChannelGroups &results)
@@ -734,7 +755,11 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
         else
         {
           // remove a channel that doesn't exist (anymore) from the table
-          DeleteValues("map_channelgroups_channels", FormatSQL("idGroup = %u AND idChannel = %u", group.GroupID(), iChannelId));
+          Filter filter;
+          filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
+          filter.AppendWhere(PrepareSQL("idChannel = %u", iChannelId));
+
+          DeleteValues("map_channelgroups_channels", filter);
         }
 
         m_pDS->next();
@@ -832,8 +857,10 @@ bool CPVRDatabase::Delete(const CPVRClient &client)
     return false;
   }
 
-  CStdString strWhereClause = FormatSQL("sUid = '%s'", client.ID().c_str());
-  return DeleteValues("clients", strWhereClause);
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("sUid = '%s'", client.ID().c_str()));
+
+  return DeleteValues("clients", filter);
 }
 
 int CPVRDatabase::GetClientId(const CStdString &strClientUid)

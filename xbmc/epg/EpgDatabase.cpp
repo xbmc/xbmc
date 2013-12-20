@@ -170,10 +170,10 @@ bool CEpgDatabase::Delete(const CEpg &table)
     return false;
   }
 
-  CStdString strWhereClause;
-  strWhereClause = FormatSQL("idEpg = %u", table.EpgID());
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idEpg = %u", table.EpgID()));
 
-  return DeleteValues("epg", strWhereClause);
+  return DeleteValues("epg", filter);
 }
 
 bool CEpgDatabase::DeleteOldEpgEntries(void)
@@ -183,9 +183,10 @@ bool CEpgDatabase::DeleteOldEpgEntries(void)
       CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
   cleanupTime.GetAsTime(iCleanupTime);
 
-  CStdString strWhereClause = FormatSQL("iEndTime < %u", iCleanupTime);
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("iEndTime < %u", iCleanupTime));
 
-  return DeleteValues("epgtags", strWhereClause);
+  return DeleteValues("epgtags", filter);
 }
 
 bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
@@ -194,9 +195,10 @@ bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
   if (tag.BroadcastId() <= 0)
     return false;
 
-  CStdString strWhereClause = FormatSQL("idBroadcast = %u", tag.BroadcastId());
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idBroadcast = %u", tag.BroadcastId()));
 
-  return DeleteValues("epgtags", strWhereClause);
+  return DeleteValues("epgtags", filter);
 }
 
 int CEpgDatabase::Get(CEpgContainer &container)

@@ -210,19 +210,11 @@ CStdString CDatabase::GetSingleValue(const CStdString &query)
   return GetSingleValue(query, m_pDS);
 }
 
-bool CDatabase::DeleteValues(const CStdString &strTable, const CStdString &strWhereClause /* = CStdString() */)
+bool CDatabase::DeleteValues(const CStdString &strTable, const Filter &filter /* = Filter() */)
 {
-  bool bReturn = true;
-
-  CStdString strQueryBase = "DELETE FROM %s";
-  if (!strWhereClause.empty())
-    strQueryBase += StringUtils::Format(" WHERE %s", strWhereClause.c_str());
-
-  CStdString strQuery = FormatSQL(strQueryBase, strTable.c_str());
-
-  bReturn = ExecuteQuery(strQuery);
-
-  return bReturn;
+  CStdString strQuery;
+  BuildSQL(PrepareSQL("DELETE FROM %s ", strTable.c_str()), filter, strQuery);
+  return ExecuteQuery(strQuery);
 }
 
 bool CDatabase::ExecuteQuery(const CStdString &strQuery)
