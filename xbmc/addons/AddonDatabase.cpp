@@ -788,7 +788,7 @@ bool CAddonDatabase::GetPackageHash(const CStdString& addonID,
                                     const CStdString& packageFileName,
                                     CStdString&       hash)
 {
-  CStdString where = FormatSQL( "addonID='%s' and filename='%s'",
+  CStdString where = PrepareSQL("addonID='%s' and filename='%s'",
                                 addonID.c_str(), packageFileName.c_str());
   hash = GetSingleValue("package", "hash", where);
   return !hash.empty();

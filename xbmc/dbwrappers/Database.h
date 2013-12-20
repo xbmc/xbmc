@@ -71,7 +71,6 @@ public:
   void RollbackTransaction();
   bool InTransaction();
 
-  static CStdString FormatSQL(CStdString strStmt, ...);
   CStdString PrepareSQL(CStdString strStmt, ...) const;
 
   /*!
