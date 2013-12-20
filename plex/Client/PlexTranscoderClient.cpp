@@ -104,7 +104,7 @@ int CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr server, int c
       PlexServerList allServers = g_plexApplication.serverManager->GetAllServers();
       BOOST_FOREACH(CPlexServerPtr s, allServers)
       {
-        if (s->IsComplete() && s->SupportsVideoTranscoding())
+        if (s && s->IsComplete() && s->SupportsVideoTranscoding())
         {
           server = s;
           break;
@@ -124,7 +124,7 @@ int CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr server, int c
   if (currentQuality == 0)
     select->SetSelected(0);
   
-  if (server->SupportsVideoTranscoding())
+  if (server && server->SupportsVideoTranscoding())
   {
     int idx = 1;
     BOOST_FOREACH(std::string qual, qualities)
