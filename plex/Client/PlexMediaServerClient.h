@@ -46,6 +46,8 @@ public:
 
   CURL GetItemURL(CFileItemPtr item);
 
+  void SendTranscoderPing(CPlexServerPtr server);
+
   private:
   CStdString GetPrefix(const CFileItemPtr& item) const
   {

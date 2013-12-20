@@ -256,9 +256,7 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-CURL CPlexTranscoderClient::GetTranscodeStopURL(CPlexServerPtr server)
+std::string CPlexTranscoderClient::GetCurrentSession()
 {
-  CURL url = server->BuildPlexURL("/video/:/transcode/universal/stop");
-  url.SetOption("session", g_guiSettings.GetString("system.uuid"));
-  return url;
+  return g_guiSettings.GetString("system.uuid");
 }

@@ -350,6 +350,12 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server");
     g_plexApplication.mediaServerClient->SendServerTimeline(m_currentItems[type], GetCurrentTimeline(type));
+
+    /* now we can see if we need to ping the transcoder as well */
+    if (type == VIDEO && state == MEDIA_STATE_PAUSED && currentItem &&
+        currentItem->GetProperty("plexDidTranscode").asBoolean() && server)
+      g_plexApplication.mediaServerClient->SendTranscoderPing(server);
+
     m_serverTimer.restart();
   }
 
