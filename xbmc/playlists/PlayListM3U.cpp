@@ -191,17 +191,21 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
   char szLine[4096];
   CStdString strLine;
   CStdString strPlaylist = strFileName;
+  CStdString strQueryString = "";
   size_t maxBandwidth = 0;
 
   // first strip off any query string
   size_t baseEnd = strPlaylist.find('?');
   if (baseEnd != std::string::npos)
+  {
+    strQueryString = strPlaylist.substr(baseEnd);
     strPlaylist = strPlaylist.substr(0, baseEnd);
+  }
 
   // if we cannot get the last / we wont be able to determine the sub-playlists
   baseEnd = strPlaylist.rfind('/');
   if (baseEnd == std::string::npos)
-    return strPlaylist;
+    return strFileName;
 
   // store the base path (the path without the filename)
   CStdString basePath = strPlaylist.substr(0, baseEnd + 1);
@@ -211,7 +215,7 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
   if (!file.Open(strFileName) )
   {
     file.Close();
-    return strPlaylist;
+    return strFileName;
   }
 
   // convert bandwidth specified in kbps to bps used by the m3u8
@@ -260,6 +264,9 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
       }
     }
   }
+
+  if(strPlaylist.find('?') == std::string::npos)
+    strPlaylist.append(strQueryString);
 
   CLog::Log(LOGINFO, "Auto-selecting %s based on configured bandwidth.", strPlaylist.c_str());
 
