@@ -259,19 +259,15 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
   {
     m_triedToRestart = false;
 
-    /* PLEX */
     CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
     if (g_application.IsPlayingVideo() && osd && osd->IsOpenedFromPause())
       CApplicationMessenger::Get().Close(osd, false);
-    /* PLEX */
   }
   else if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0 && stricmp(message, "OnPause") == 0)
   {
-    /* PLEX */
     CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
     if (g_application.IsPlayingVideo() && osd && !osd->IsActive())
       CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
-    /* END PLEX */
   }
   else if (flag == ANNOUNCEMENT::System && stricmp(sender, "xbmc") == 0 && stricmp(message, "onQuit") == 0)
   {
