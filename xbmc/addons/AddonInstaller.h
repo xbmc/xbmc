@@ -176,12 +176,6 @@ private:
    */
   void ReportInstallError(const CStdString& addonID, const CStdString& fileName);
 
-  /*! \brief Check the hash of a downloaded addon with the hash in the repository
-   \param addonZip - filename of the zipped addon to check
-   \return true if the hash matches (or no hash is available on the repo), false otherwise
-   */
-  bool CheckHash(const CStdString& addonZip);
-
   ADDON::AddonPtr m_addon;
   CStdString m_hash;
   bool m_update;

@@ -36,8 +36,10 @@
 #include "utils/FileOperationJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 #include "addons/AddonInstaller.h"
 #include "pvr/PVRManager.h"
+#include "Util.h"
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7
@@ -407,6 +409,8 @@ void CGUIDialogAddonInfo::GrabRollbackVersions()
   CFileItemList items;
   XFILE::CDirectory::GetDirectory("special://home/addons/packages/",items,".zip",DIR_FLAG_NO_FILE_DIRS);
   items.Sort(SortByLabel, SortOrderAscending);
+  CAddonDatabase db;
+  db.Open();
   for (int i=0;i<items.Size();++i)
   {
     if (items[i]->m_bIsFolder)
@@ -414,6 +418,20 @@ void CGUIDialogAddonInfo::GrabRollbackVersions()
     CStdString ID, version;
     AddonVersion::SplitFileName(ID,version,items[i]->GetLabel());
     if (ID.Equals(m_localAddon->ID()))
-      m_rollbackVersions.push_back(version);
+    {
+      CStdString hash, path(items[i]->GetPath());
+      if (db.GetPackageHash(m_localAddon->ID(), path, hash))
+      {
+        CStdString md5 = CUtil::GetFileMD5(path);
+        if (md5 == hash)
+          m_rollbackVersions.push_back(version);
+        else /* The package has been corrupted */
+        {
+          CLog::Log(LOGWARNING, "%s: Removing corrupt addon package %s.", __FUNCTION__, path.c_str());
+          CFile::Delete(path);
+          db.RemovePackage(path);
+        }
+      }
+    }
   }
 }
