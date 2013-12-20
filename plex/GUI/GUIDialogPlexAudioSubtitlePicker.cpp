@@ -118,9 +118,8 @@ void CGUIDialogPlexPicker::UpdateStreamSelection()
     }
     else
     {
-      bool visible = streamId != -1;
+      bool visible = streamId != 0;
       player->SetSubtitleVisible(visible);
-      g_settings.m_currentVideoSettings.m_SubtitleOn = visible;
 
       if (visible)
       {
