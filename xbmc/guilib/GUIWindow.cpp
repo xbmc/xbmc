@@ -71,6 +71,8 @@ CGUIWindow::CGUIWindow(int id, const std::string &xmlFile)
   m_exclusiveMouseControl = 0;
   m_clearBackground = 0xff000000; // opaque black -> always clear
   m_windowXMLRootElement = NULL;
+  m_menuControlID = 0;
+  m_menuLastFocusedControlID = 0;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -204,6 +206,10 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
       if (always && strcmpi(always, "true") == 0)
         m_defaultAlways = true;
       m_defaultControl = atoi(pChild->FirstChild()->Value());
+    }
+    else if(strValue == "menucontrol" && pChild->FirstChild())
+    {
+      m_menuControlID = atoi(pChild->FirstChild()->Value());
     }
     else if (strValue == "visible" && pChild->FirstChild())
     {
@@ -432,8 +438,39 @@ bool CGUIWindow::OnAction(const CAction &action)
   }
 
   // default implementations
-  if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
-    return OnBack(action.GetID());
+  switch(action.GetID())
+  {
+    case ACTION_NAV_BACK:
+    case ACTION_PREVIOUS_MENU:
+      return OnBack(action.GetID());
+    case ACTION_MENU:
+      if (m_menuControlID > 0)
+      {
+        CGUIControl *menu = GetControl(m_menuControlID);
+        if (menu)
+        {
+          int focusControlId;
+          if (!menu->HasFocus())
+          {
+            // focus the menu control
+            focusControlId = m_menuControlID;
+            // To support a toggle behaviour we store the last focused control id
+            // to restore (focus) this control if the menu control has the focus
+            // while you press the menu button again.
+            m_menuLastFocusedControlID = GetFocusedControlID();
+          }
+          else
+          {
+            // restore the last focused control or if not exists use the default control
+            focusControlId = m_menuLastFocusedControlID > 0 ? m_menuLastFocusedControlID : m_defaultControl;
+          }
+
+          CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS, GetID(), focusControlId);
+          return OnMessage(msg);
+        }
+      }
+      break;
+  }
 
   return false;
 }
@@ -970,6 +1007,8 @@ void CGUIWindow::SetDefaults()
   m_animationsEnabled = true;
   m_clearBackground = 0xff000000; // opaque black -> clear
   m_hitRect.SetRect(0, 0, (float)m_coordsRes.iWidth, (float)m_coordsRes.iHeight);
+  m_menuControlID = 0;
+  m_menuLastFocusedControlID = 0;
 }
 
 CRect CGUIWindow::GetScaledBounds() const
