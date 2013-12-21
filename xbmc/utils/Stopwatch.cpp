@@ -32,19 +32,14 @@ CStopWatch::CStopWatch(bool useFrameTime /*=false*/)
   m_isRunning        = false;
   m_useFrameTime     = useFrameTime;
 
-  if (m_useFrameTime)
-  {
-    m_timerPeriod = 1.0f / 1000.0f; //frametime is in milliseconds
-  }
-  else
-  {
-  // Get the timer frequency (ticks per second)
-#ifndef TARGET_POSIX
-  m_timerPeriod = 1.0f / (float)CurrentHostFrequency();
-#else
+#ifdef TARGET_POSIX
   m_timerPeriod = 1.0f / 1000.0f; // we want seconds
+#else
+  if (m_useFrameTime)
+    m_timerPeriod = 1.0f / 1000.0f; //frametime is in milliseconds
+  else
+    m_timerPeriod = 1.0f / (float)CurrentHostFrequency();
 #endif
-  }
 }
 
 CStopWatch::~CStopWatch()
