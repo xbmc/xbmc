@@ -236,30 +236,31 @@ bool CRepositoryUpdateJob::DoWork()
     if (ShouldCancel(0,0))
       break;
 
-    bool deps_met = CAddonInstaller::Get().CheckDependencies(addons[i]);
-    if (!deps_met && addons[i]->Props().broken.empty())
-      addons[i]->Props().broken = "DEPSNOTMET";
+    AddonPtr newAddon = addons[i];
+    bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon);
+    if (!deps_met && newAddon->Props().broken.empty())
+      newAddon->Props().broken = "DEPSNOTMET";
 
     // invalidate the art associated with this item
-    if (!addons[i]->Props().fanart.empty())
-      textureDB.InvalidateCachedTexture(addons[i]->Props().fanart);
-    if (!addons[i]->Props().icon.empty())
-      textureDB.InvalidateCachedTexture(addons[i]->Props().icon);
+    if (!newAddon->Props().fanart.empty())
+      textureDB.InvalidateCachedTexture(newAddon->Props().fanart);
+    if (!newAddon->Props().icon.empty())
+      textureDB.InvalidateCachedTexture(newAddon->Props().icon);
 
     AddonPtr addon;
-    CAddonMgr::Get().GetAddon(addons[i]->ID(),addon);
-    if (addon && addons[i]->Version() > addon->Version() &&
-        !database.IsAddonBlacklisted(addons[i]->ID(),addons[i]->Version().c_str()) &&
+    CAddonMgr::Get().GetAddon(newAddon->ID(),addon);
+    if (addon && newAddon->Version() > addon->Version() &&
+        !database.IsAddonBlacklisted(newAddon->ID(),newAddon->Version().c_str()) &&
         deps_met)
     {
       if (CSettings::Get().GetBool("general.addonautoupdate") || addon->Type() >= ADDON_VIZ_LIBRARY)
       {
         string referer;
-        if (URIUtils::IsInternetStream(addons[i]->Path()))
+        if (URIUtils::IsInternetStream(newAddon->Path()))
           referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
 
-        if (addons[i]->Type() == ADDON_PVRDLL &&
-            !PVR::CPVRManager::Get().InstallAddonAllowed(addons[i]->ID()))
+        if (newAddon->Type() == ADDON_PVRDLL &&
+            !PVR::CPVRManager::Get().InstallAddonAllowed(newAddon->ID()))
           PVR::CPVRManager::Get().MarkAsOutdated(addon->ID(), referer);
         else
           CAddonInstaller::Get().Install(addon->ID(), true, referer);
@@ -271,21 +272,21 @@ bool CRepositoryUpdateJob::DoWork()
                                               addon->Name(),TOAST_DISPLAY_TIME,false,TOAST_DISPLAY_TIME);
       }
     }
-    if (!addons[i]->Props().broken.empty())
+    if (!newAddon->Props().broken.empty())
     {
-      if (database.IsAddonBroken(addons[i]->ID()).empty())
+      if (database.IsAddonBroken(newAddon->ID()).empty())
       {
         std::string line = g_localizeStrings.Get(24096);
-        if (addons[i]->Props().broken == "DEPSNOTMET")
+        if (newAddon->Props().broken == "DEPSNOTMET")
           line = g_localizeStrings.Get(24104);
-        if (addon && CGUIDialogYesNo::ShowAndGetInput(addons[i]->Name(),
+        if (addon && CGUIDialogYesNo::ShowAndGetInput(newAddon->Name(),
                                              line,
                                              g_localizeStrings.Get(24097),
                                              ""))
-          CAddonMgr::Get().DisableAddon(addons[i]->ID());
+          CAddonMgr::Get().DisableAddon(newAddon->ID());
       }
     }
-    database.BreakAddon(addons[i]->ID(), addons[i]->Props().broken);
+    database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
   }
 
   return true;
