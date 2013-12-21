@@ -243,6 +243,14 @@ void CDatabaseQueryRule::SetParameter(const std::vector<CStdString> &values)
   m_parameter.assign(values.begin(), values.end());
 }
 
+CStdString CDatabaseQueryRule::ValidateParameter(const CStdString &parameter) const
+{
+  if ((GetFieldType(m_field) == NUMERIC_FIELD ||
+       GetFieldType(m_field) == SECONDS_FIELD) && parameter.empty())
+    return "0"; // interpret empty fields as 0
+  return parameter;
+}
+
 CStdString CDatabaseQueryRule::FormatParameter(const CStdString &operatorString, const CStdString &param, const CDatabase &db, const CStdString &strType) const
 {
   CStdString parameter;
@@ -259,7 +267,7 @@ CStdString CDatabaseQueryRule::FormatParameter(const CStdString &operatorString,
     parameter = " IN (" + parameter + ")";
   }
   else
-    parameter = db.PrepareSQL(operatorString.c_str(), param.c_str());
+    parameter = db.PrepareSQL(operatorString.c_str(), ValidateParameter(param).c_str());
 
   if (GetFieldType(m_field) == DATE_FIELD)
   {
