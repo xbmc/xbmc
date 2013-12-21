@@ -163,6 +163,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           if (!m_extError)
           {
             m_stats->SetSinkCacheTotal(m_sink->GetCacheTotal());
+            m_stats->SetSinkLatency(m_sink->GetLatency());
             m_state = S_TOP_CONFIGURED_IDLE;
             m_extTimeout = 10000;
             msg->Reply(CSinkControlProtocol::ACC, &m_sinkFormat, sizeof(AEAudioFormat));

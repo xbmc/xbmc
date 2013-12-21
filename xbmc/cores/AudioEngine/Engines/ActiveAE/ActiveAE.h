@@ -163,11 +163,13 @@ public:
   float GetWaterLevel();
   void SetSuspended(bool state);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
+  void SetSinkLatency(float time) { m_sinkLatency = time; }
   bool IsSuspended();
   CCriticalSection *GetLock() { return &m_lock; }
 protected:
   float m_sinkDelay;
   float m_sinkCacheTotal;
+  float m_sinkLatency;
   int m_bufferedSamples;
   unsigned int m_sinkSampleRate;
   unsigned int m_sinkUpdate;

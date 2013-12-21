@@ -58,6 +58,11 @@ public:
   virtual double GetCacheTotal() = 0;
 
   /*
+    This method returns latency of hardware.
+  */
+  virtual double GetLatency() { return 0.0; };
+
+  /*
     Adds packets to be sent out, this routine MUST block or sleep.
   */
   virtual unsigned int AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking = false) = 0;
