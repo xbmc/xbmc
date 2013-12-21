@@ -272,6 +272,17 @@ bool CRepositoryUpdateJob::DoWork()
                                               addon->Name(),TOAST_DISPLAY_TIME,false,TOAST_DISPLAY_TIME);
       }
     }
+
+    // Check if we should mark the add-on as broken.  We may have a newer version
+    // of this add-on in the database or installed - if so, we keep it unbroken.
+    bool haveNewer = addon && addon->Version() > newAddon->Version();
+    if (!haveNewer)
+    {
+      AddonPtr dbAddon;
+      haveNewer = database.GetAddon(newAddon->ID(), dbAddon) && dbAddon->Version() > newAddon->Version();
+    }
+    if (!haveNewer)
+    {
     if (!newAddon->Props().broken.empty())
     {
       if (database.IsAddonBroken(newAddon->ID()).empty())
@@ -287,6 +298,7 @@ bool CRepositoryUpdateJob::DoWork()
       }
     }
     database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
+    }
   }
 
   return true;
