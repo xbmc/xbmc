@@ -61,11 +61,11 @@ public:
 
 protected:
   CRssManager();
-  CRssManager(const CRssManager&);
-  CRssManager const& operator=(CRssManager const&);
   ~CRssManager();
 
 private:
+  CRssManager(const CRssManager&);
+  CRssManager& operator=(const CRssManager&);
   struct READERCONTROL
   {
     int controlID;
