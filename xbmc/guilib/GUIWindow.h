@@ -272,6 +272,9 @@ protected:
 
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 
+  int m_menuControlID;
+  int m_menuLastFocusedControlID;
+
 private:
   std::map<std::string, CVariant, icompare> m_mapProperties;
   std::map<INFO::InfoPtr, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window

@@ -75,6 +75,7 @@ static const ActionMapping actions[] =
     { "parentdir"                , ACTION_NAV_BACK },                   // backward compatibility
     { "parentfolder"             , ACTION_PARENT_DIR },
     { "back"                     , ACTION_NAV_BACK },
+    { "menu"                     , ACTION_MENU},
     { "previousmenu"             , ACTION_PREVIOUS_MENU },
     { "info"                     , ACTION_SHOW_INFO },
     { "pause"                    , ACTION_PAUSE },
