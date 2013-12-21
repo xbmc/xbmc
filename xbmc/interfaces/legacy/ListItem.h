@@ -125,6 +125,25 @@ namespace XBMCAddon
       void setThumbnailImage(const String& thumbFilename);
 
       /**
+       * setArt(values) -- Sets the listitem's art
+       * \n
+       * values              : dictionary - pairs of { label: value }.\n
+       *
+       * - Some default art values (any string possible):
+       *     - thumb         : string - image filename
+       *     - poster        : string - image filename
+       *     - banner        : string - image filename
+       *     - fanart        : string - image filename
+       *     - clearart      : string - image filename
+       *     - clearlogo     : string - image filename
+       *     - landscape     : string - image filename
+       *
+       * example:
+       *   - self.list.getSelectedItem().setArt({ 'poster': 'poster.png', 'banner' : 'banner.png' })
+       */
+      void setArt(const Dictionary& dictionary);
+
+      /**
        * select(selected) -- Sets the listitem's selected status.\n
        * \n
        * selected        : bool - True=selected/False=not selected\n
