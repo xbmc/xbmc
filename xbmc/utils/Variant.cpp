@@ -500,7 +500,6 @@ std::wstring CVariant::asWideString(const std::wstring &fallback /* = L"" */) co
       else
         strStream << m_data.dvalue;
       return strStream.str();
-      break;
     }
     default:
       return fallback;
