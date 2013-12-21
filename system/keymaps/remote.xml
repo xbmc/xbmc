@@ -148,7 +148,7 @@
       <right>StepForward</right>
       <up>BigStepForward</up>
       <down>BigStepBack</down>
-      <back>SmallStepBack</back>
+      <back>Back</back>
       <menu>OSD</menu>
       <start>OSD</start>
       <select>OSD</select>
@@ -189,7 +189,7 @@
       <right>NextPreset</right>
       <up>IncreaseRating</up>
       <down>DecreaseRating</down>
-      <back>LockPreset</back>
+      <back>Back</back>
       <title>CodecInfo</title>
       <select>XBMC.ActivateWindow(VisualisationPresetList)</select>
       <menu>OSD</menu>
