@@ -31,6 +31,7 @@ public:
   unsigned char* m_buffer;
 
   CScreenshotSurface(void);
+  ~CScreenshotSurface();
   bool capture( void );
 };
 

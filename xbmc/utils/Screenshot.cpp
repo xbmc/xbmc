@@ -58,6 +58,11 @@ CScreenshotSurface::CScreenshotSurface()
   m_buffer = NULL;
 }
 
+CScreenshotSurface::~CScreenshotSurface()
+{
+  delete m_buffer;
+}
+
 bool CScreenshotSurface::capture()
 {
 #if defined(TARGET_RASPBERRY_PI)
@@ -193,6 +198,7 @@ void CScreenShot::TakeScreenshot(const CStdString &filename, bool sync)
       CLog::Log(LOGERROR, "Unable to write screenshot %s", filename.c_str());
 
     delete [] surface.m_buffer;
+    surface.m_buffer = NULL;
   }
   else
   {
@@ -207,6 +213,7 @@ void CScreenShot::TakeScreenshot(const CStdString &filename, bool sync)
     //buffer is deleted from CThumbnailWriter
     CThumbnailWriter* thumbnailwriter = new CThumbnailWriter(surface.m_buffer, surface.m_width, surface.m_height, surface.m_stride, filename);
     CJobManager::GetInstance().AddJob(thumbnailwriter, NULL);
+    surface.m_buffer = NULL;
   }
 }
 

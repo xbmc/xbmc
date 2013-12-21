@@ -87,6 +87,11 @@ CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height,
   m_thumbFile = thumbFile;
 }
 
+CThumbnailWriter::~CThumbnailWriter()
+{
+  delete m_buffer;
+}
+
 bool CThumbnailWriter::DoWork()
 {
   bool success = true;
@@ -98,6 +103,7 @@ bool CThumbnailWriter::DoWork()
   }
 
   delete [] m_buffer;
+  m_buffer = NULL;
 
   return success;
 }
