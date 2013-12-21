@@ -47,21 +47,10 @@ public:
   virtual void Deinitialize() = 0;
 
   /*
-    Return true if the supplied format and device are compatible with the current open sink
-  */
-  virtual bool IsCompatible(const AEAudioFormat &format, const std::string &device) = 0;
-
-  /*
     This method returns the time in seconds that it will take
     for the next added packet to be heard from the speakers.
   */
   virtual double GetDelay() = 0;
-
-  /*
-    This method returns the time in seconds that it will take
-    to underrun the cache if no sample is added.
-  */
-  virtual double GetCacheTime() = 0;
 
   /*
     This method returns the total time in seconds of the cache.

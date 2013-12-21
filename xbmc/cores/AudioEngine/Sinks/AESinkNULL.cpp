@@ -75,20 +75,7 @@ void CAESinkNULL::Deinitialize()
   StopThread();
 }
 
-bool CAESinkNULL::IsCompatible(const AEAudioFormat &format, const std::string &device)
-{
-  return ((m_format.m_sampleRate    == format.m_sampleRate) &&
-          (m_format.m_dataFormat    == format.m_dataFormat) &&
-          (m_format.m_channelLayout == format.m_channelLayout));
-}
-
 double CAESinkNULL::GetDelay()
-{
-  double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_level;
-  return sinkbuffer_seconds_to_empty;
-}
-
-double CAESinkNULL::GetCacheTime()
 {
   double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_level;
   return sinkbuffer_seconds_to_empty;

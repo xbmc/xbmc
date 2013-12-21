@@ -374,19 +374,6 @@ inline CAEChannelInfo CAESinkOSS::GetChannelLayout(AEAudioFormat format)
   return info;
 }
 
-bool CAESinkOSS::IsCompatible(const AEAudioFormat &format, const std::string &device)
-{
-  AEAudioFormat tmp  = format;
-  tmp.m_channelLayout = GetChannelLayout(format);
-
-  return (
-    tmp.m_sampleRate    == m_initFormat.m_sampleRate    &&
-    tmp.m_dataFormat    == m_initFormat.m_dataFormat    &&
-    tmp.m_channelLayout == m_initFormat.m_channelLayout &&
-    GetDeviceUse(tmp, device) == m_device
-  );
-}
-
 void CAESinkOSS::Stop()
 {
 #ifdef SNDCTL_DSP_RESET

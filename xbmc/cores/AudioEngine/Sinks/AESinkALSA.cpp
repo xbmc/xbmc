@@ -255,17 +255,6 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   return true;
 }
 
-bool CAESinkALSA::IsCompatible(const AEAudioFormat &format, const std::string &device)
-{
-  return (
-      /* compare against the requested format and the real format */
-      (m_initFormat.m_sampleRate    == format.m_sampleRate    || m_format.m_sampleRate    == format.m_sampleRate   ) &&
-      (m_initFormat.m_dataFormat    == format.m_dataFormat    || m_format.m_dataFormat    == format.m_dataFormat   ) &&
-      (m_initFormat.m_channelLayout == format.m_channelLayout || m_format.m_channelLayout == format.m_channelLayout) &&
-      (m_initDevice == device)
-  );
-}
-
 snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat format)
 {
   if (AE_IS_RAW(format))
@@ -524,28 +513,6 @@ double CAESinkALSA::GetDelay()
   }
 
   return (double)frames * m_formatSampleRateMul;
-}
-
-double CAESinkALSA::GetCacheTime()
-{
-  if (!m_pcm)
-    return 0.0;
-
-  int space = snd_pcm_avail_update(m_pcm);
-  if (space == 0)
-  {
-    snd_pcm_state_t state = snd_pcm_state(m_pcm);
-    if (state < 0)
-    {
-      HandleError("snd_pcm_state", state);
-      space = m_bufferSize;
-    }
-
-    if (state != SND_PCM_STATE_RUNNING && state != SND_PCM_STATE_PREPARED)
-      space = m_bufferSize;
-  }
-
-  return (double)(m_bufferSize - space) * m_formatSampleRateMul;
 }
 
 double CAESinkALSA::GetCacheTotal()
