@@ -147,7 +147,7 @@ bool CDatabaseQueryRule::Load(const CVariant &obj)
     return false;
 
   const CVariant &value = obj["value"];
-  if (value.isString() && !value.asString().empty())
+  if (value.isString())
     m_parameter.push_back(value.asString());
   else if (value.isArray())
   {
@@ -156,6 +156,8 @@ bool CDatabaseQueryRule::Load(const CVariant &obj)
       if (val->isString() && !val->asString().empty())
         m_parameter.push_back(val->asString());
     }
+    if (m_parameter.empty())
+      m_parameter.push_back("");
   }
   else
     return false;
