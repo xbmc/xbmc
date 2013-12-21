@@ -212,14 +212,29 @@ CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
 {
 }
 
+void MergeAddons(map<string, AddonPtr> &addons, const VECADDONS &new_addons)
+{
+  for (VECADDONS::const_iterator it = new_addons.begin(); it != new_addons.end(); ++it)
+  {
+    map<string, AddonPtr>::iterator existing = addons.find((*it)->ID());
+    if (existing != addons.end())
+    { // already got it - replace if we have a newer version
+      if (existing->second->Version() < (*it)->Version())
+        existing->second = *it;
+    }
+    else
+      addons.insert(make_pair((*it)->ID(), *it));
+  }
+}
+
 bool CRepositoryUpdateJob::DoWork()
 {
-  VECADDONS addons;
+  map<string, AddonPtr> addons;
   for (VECADDONS::const_iterator i = m_repos.begin(); i != m_repos.end(); ++i)
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(*i);
     VECADDONS newAddons = GrabAddons(repo);
-    addons.insert(addons.end(), newAddons.begin(), newAddons.end());
+    MergeAddons(addons, newAddons);
   }
   if (addons.empty())
     return false;
@@ -230,13 +245,13 @@ bool CRepositoryUpdateJob::DoWork()
   
   CTextureDatabase textureDB;
   textureDB.Open();
-  for (unsigned int i=0;i<addons.size();++i)
+  for (map<string, AddonPtr>::const_iterator i = addons.begin(); i != addons.end(); ++i)
   {
     // manager told us to feck off
     if (ShouldCancel(0,0))
       break;
 
-    AddonPtr newAddon = addons[i];
+    AddonPtr newAddon = i->second;
     bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon);
     if (!deps_met && newAddon->Props().broken.empty())
       newAddon->Props().broken = "DEPSNOTMET";
@@ -318,17 +333,7 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
     for (CRepository::DirList::const_iterator it = repo->m_dirs.begin(); it != repo->m_dirs.end(); ++it)
     {
       VECADDONS addons2 = CRepository::Parse(*it);
-      for (VECADDONS::const_iterator it2 = addons2.begin(); it2 != addons2.end(); ++it2)
-      {
-        map<string, AddonPtr>::iterator existing = uniqueAddons.find((*it2)->ID());
-        if (existing != uniqueAddons.end())
-        { // already got it - replace if we have a newer version
-          if (existing->second->Version() < (*it2)->Version())
-            existing->second = *it2;
-        }
-        else
-          uniqueAddons.insert(make_pair((*it2)->ID(), *it2));
-      }
+      MergeAddons(uniqueAddons, addons2);
     }
 
     if (uniqueAddons.empty())
