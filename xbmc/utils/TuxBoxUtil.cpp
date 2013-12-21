@@ -57,6 +57,7 @@ CTuxBoxService::~CTuxBoxService()
 CTuxBoxUtil::CTuxBoxUtil(void)
 {
   sCurSrvData.requested_audio_channel = 0;
+  vVideoSubChannel.mode = false;
   sZapstream.initialized = false;
   sZapstream.available = false;
 }

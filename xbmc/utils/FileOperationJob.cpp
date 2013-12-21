@@ -43,6 +43,9 @@ using namespace XFILE;
 
 CFileOperationJob::CFileOperationJob()
 {
+  m_action = ActionCopy;
+  m_heading = 0;
+  m_line = 0;
   m_handle = NULL;
   m_displayProgress = false;
 }

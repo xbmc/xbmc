@@ -40,7 +40,7 @@ public:
   class CLogGlobals
   {
   public:
-    CLogGlobals() : m_file(NULL), m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG) {}
+    CLogGlobals() : m_file(NULL), m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
     FILE*       m_file;
     int         m_repeatCount;
     int         m_repeatLogLevel;
