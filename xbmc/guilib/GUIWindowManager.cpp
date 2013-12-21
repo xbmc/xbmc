@@ -186,6 +186,7 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
   }
   // push back all the windows if there are more than one covered by this class
   CSingleLock lock(g_graphicsContext);
+  m_idCache.Invalidate();
   const vector<int>& idRange = pWindow->GetIDRange();
   for (vector<int>::const_iterator idIt = idRange.begin(); idIt != idRange.end() ; ++idIt)
   {
@@ -219,6 +220,7 @@ void CGUIWindowManager::AddModeless(CGUIWindow* dialog)
 void CGUIWindowManager::Remove(int id)
 {
   CSingleLock lock(g_graphicsContext);
+  m_idCache.Invalidate();
   WindowMap::iterator it = m_mapWindows.find(id);
   if (it != m_mapWindows.end())
   {
@@ -642,16 +644,21 @@ void CGUIWindowManager::FrameMove()
 
 CGUIWindow* CGUIWindowManager::GetWindow(int id) const
 {
-  if (id == WINDOW_INVALID)
-  {
+  CGUIWindow *window;
+  if (id == 0 || id == WINDOW_INVALID)
     return NULL;
-  }
+  window = m_idCache.Get(id);
+  if (window)
+    return window;
 
   CSingleLock lock(g_graphicsContext);
   WindowMap::const_iterator it = m_mapWindows.find(id);
   if (it != m_mapWindows.end())
-    return (*it).second;
-  return NULL;
+    window = (*it).second;
+  else
+    window = NULL;
+  m_idCache.Set(id, window);
+  return window;
 }
 
 void CGUIWindowManager::ProcessRenderLoop(bool renderOnly /*= false*/)
