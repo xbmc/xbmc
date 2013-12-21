@@ -142,7 +142,7 @@ public:
    */
   inline bool IsCompiled(void)
   { return !m_pattern.empty(); }
-  const CRegExp& operator= (const CRegExp& re);
+  CRegExp& operator= (const CRegExp& re);
   static bool IsUtf8Supported(void);
   static bool AreUnicodePropertiesSupported(void);
   static bool LogCheckUtf8Support(void);

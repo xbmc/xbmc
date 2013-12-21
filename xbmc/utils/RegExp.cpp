@@ -243,7 +243,7 @@ CRegExp::CRegExp(const CRegExp& re)
   *this = re;
 }
 
-const CRegExp& CRegExp::operator=(const CRegExp& re)
+CRegExp& CRegExp::operator=(const CRegExp& re)
 {
   size_t size;
   Cleanup();
