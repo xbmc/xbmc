@@ -240,9 +240,6 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, b
     return false;
 
   // check whether all the dependencies are available or not
-  // TODO: we currently assume that dependencies will install correctly (and each of their dependencies and so on).
-  //       it may be better to install the dependencies first to minimise the chance of an addon becoming orphaned due to
-  //       missing deps.
   if (!CheckDependencies(addon))
   {
     CGUIDialogKaiToast::QueueNotification(addon->Icon(), addon->Name(), g_localizeStrings.Get(24044), TOAST_DISPLAY_TIME, false);
@@ -609,6 +606,38 @@ bool CAddonInstallJob::DeleteAddon(const CStdString &addonFolder)
 
 bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& repo)
 {
+  // The first thing we do is install dependencies
+  ADDONDEPS deps = m_addon->GetDeps();
+  CStdString referer = StringUtils::Format("Referer=%s-%s.zip",m_addon->ID().c_str(),m_addon->Version().c_str());
+  for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
+  {
+    if (it->first.Equals("xbmc.metadata"))
+      continue;
+
+    const CStdString &addonID = it->first;
+    const AddonVersion &version = it->second.first;
+    bool optional = it->second.second;
+    AddonPtr dependency;
+    bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dependency);
+    if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
+    { // we have it but our version isn't good enough, or we don't have it and we need it
+      bool force=(dependency != NULL);
+      // dependency is already queued up for install - ::Install will fail
+      // instead we wait until the Job has finished. note that we
+      // recall install on purpose in case prior installation failed
+      if (CAddonInstaller::Get().HasJob(addonID))
+      {
+        while (CAddonInstaller::Get().HasJob(addonID))
+          Sleep(50);
+        force = false;
+      }
+      // don't have the addon or the addon isn't new enough - grab it (no new job for these)
+      if (!CAddonInstaller::Get().Install(addonID, force, referer, false))
+        return false;
+    }
+  }
+
+  // now that we have all our dependencies, we can install our add-on
   if (repo)
   {
     CFileItemList dummy;
@@ -641,40 +670,8 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
       return false;
     }
 
-    // resolve dependencies
-    CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
-    ADDONDEPS deps = addon->GetDeps();
-    CStdString referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
-    for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
-    {
-      if (it->first.Equals("xbmc.metadata"))
-        continue;
-
-      const CStdString &addonID = it->first;
-      const AddonVersion &version = it->second.first;
-      bool optional = it->second.second;
-      AddonPtr dependency;
-      bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dependency);
-      if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
-      { // we have it but our version isn't good enough, or we don't have it and we need it
-        bool force=(dependency != NULL);
-        // dependency is already queued up for install - ::Install will fail
-        // instead we wait until the Job has finished. note that we
-        // recall install on purpose in case prior installation failed
-        if (CAddonInstaller::Get().HasJob(addonID))
-        {
-          while (CAddonInstaller::Get().HasJob(addonID))
-            Sleep(50);
-          force = false;
-        }
-        // don't have the addon or the addon isn't new enough - grab it (no new job for these)
-        if (!CAddonInstaller::Get().Install(addonID, force, referer, false))
-        {
-          DeleteAddon(addonFolder);
-          return false;
-        }
-      }
-    }
+    // Update the addon manager so that it has the newly installed add-on.
+    CAddonMgr::Get().FindAddons();
   }
   return true;
 }
