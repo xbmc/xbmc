@@ -283,21 +283,21 @@ bool CRepositoryUpdateJob::DoWork()
     }
     if (!haveNewer)
     {
-    if (!newAddon->Props().broken.empty())
-    {
-      if (database.IsAddonBroken(newAddon->ID()).empty())
+      if (!newAddon->Props().broken.empty())
       {
-        std::string line = g_localizeStrings.Get(24096);
-        if (newAddon->Props().broken == "DEPSNOTMET")
-          line = g_localizeStrings.Get(24104);
-        if (addon && CGUIDialogYesNo::ShowAndGetInput(newAddon->Name(),
-                                             line,
-                                             g_localizeStrings.Get(24097),
-                                             ""))
-          CAddonMgr::Get().DisableAddon(newAddon->ID());
+        if (database.IsAddonBroken(newAddon->ID()).empty())
+        {
+          std::string line = g_localizeStrings.Get(24096);
+          if (newAddon->Props().broken == "DEPSNOTMET")
+            line = g_localizeStrings.Get(24104);
+          if (addon && CGUIDialogYesNo::ShowAndGetInput(newAddon->Name(),
+                                               line,
+                                               g_localizeStrings.Get(24097),
+                                               ""))
+            CAddonMgr::Get().DisableAddon(newAddon->ID());
+        }
       }
-    }
-    database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
+      database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
     }
   }
 
