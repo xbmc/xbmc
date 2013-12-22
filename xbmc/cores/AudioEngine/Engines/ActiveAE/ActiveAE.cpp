@@ -1507,6 +1507,9 @@ void CActiveAE::UnconfigureSink()
     m_extError = true;
   }
 
+  // make sure we open sink on next configure
+  m_currDevice = "";
+
   m_inMsgEvent.Reset();
 }
 
