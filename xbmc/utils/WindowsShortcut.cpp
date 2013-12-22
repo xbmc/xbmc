@@ -96,7 +96,7 @@ bool CWindowsShortcut::GetShortcut(const string& strFileName, string& strFileOrD
   strFileOrDir = "smb:";
   // share name
   iPos += dwOffsetNetworkVolumeInfo + 0x14;
-  while (byHeader[iPos] != 0 && iPos < iBytesRead)
+  while (iPos < iBytesRead && byHeader[iPos] != 0)
   {
     if (byHeader[iPos] == '\\') byHeader[iPos] = '/';
     strFileOrDir += (char)byHeader[iPos];
@@ -105,7 +105,7 @@ bool CWindowsShortcut::GetShortcut(const string& strFileName, string& strFileOrD
   iPos++;
   // file/folder name
   strFileOrDir += '/';
-  while (byHeader[iPos] != 0 && iPos < iBytesRead)
+  while (iPos < iBytesRead && byHeader[iPos] != 0)
   {
     if (byHeader[iPos] == '\\') byHeader[iPos] = '/';
     strFileOrDir += (char)byHeader[iPos];
