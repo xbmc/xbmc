@@ -55,17 +55,6 @@ void CAESinkProfiler::Deinitialize()
 {
 }
 
-bool CAESinkProfiler::IsCompatible(const AEAudioFormat &format, const std::string &device)
-{
-  if (AE_IS_RAW(format.m_dataFormat))
-    return false;
-
-  if (format.m_dataFormat != AE_FMT_FLOAT)
-    return false;
-
-  return true;
-}
-
 double CAESinkProfiler::GetDelay()
 {
   return 0.0f;

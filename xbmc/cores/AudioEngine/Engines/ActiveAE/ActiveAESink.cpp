@@ -76,13 +76,6 @@ void CActiveAESink::Dispose()
   }
 }
 
-bool CActiveAESink::IsCompatible(const AEAudioFormat &format, const std::string &device)
-{
-  if (!m_sink)
-    return false;
-  return m_sink->IsCompatible(format, device);
-}
-
 bool CActiveAESink::HasVolume()
 {
   if (!m_sink)
@@ -170,6 +163,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           if (!m_extError)
           {
             m_stats->SetSinkCacheTotal(m_sink->GetCacheTotal());
+            m_stats->SetSinkLatency(m_sink->GetLatency());
             m_state = S_TOP_CONFIGURED_IDLE;
             m_extTimeout = 10000;
             msg->Reply(CSinkControlProtocol::ACC, &m_sinkFormat, sizeof(AEAudioFormat));
@@ -197,13 +191,6 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         case CSinkControlProtocol::FLUSH:
           ReturnBuffers();
           msg->Reply(CSinkControlProtocol::ACC);
-          return;
-
-        case CSinkControlProtocol::ISCOMPATIBLE:
-          data = (SinkConfig*)msg->data;
-          bool compatible;
-          compatible = IsCompatible(data->format, *(data->device));
-          msg->Reply(CSinkControlProtocol::ACC, &compatible, sizeof(bool));
           return;
 
         default:
@@ -652,73 +639,58 @@ void CActiveAESink::OpenSink()
   if (driver.empty() && m_sink)
     driver = m_sink->GetName();
 
-  std::string sinkName;
+  CLog::Log(LOGINFO, "CActiveAE::OpenSink - initialize sink");
+
   if (m_sink)
   {
-    sinkName = m_sink->GetName();
-    std::transform(sinkName.begin(), sinkName.end(), sinkName.begin(), ::toupper);
+    m_sink->Drain();
+    m_sink->Deinitialize();
+    delete m_sink;
+    m_sink = NULL;
   }
 
-  if (!m_sink || sinkName != driver || !m_sink->IsCompatible(m_requestedFormat, device))
+  // get the display name of the device
+  GetDeviceFriendlyName(device);
+
+  // if we already have a driver, prepend it to the device string
+  if (!driver.empty())
+    device = driver + ":" + device;
+
+  // WARNING: this changes format and does not use passthrough
+  m_sinkFormat = m_requestedFormat;
+  CLog::Log(LOGDEBUG, "CActiveAE::OpenSink - trying to open device %s", device.c_str());
+  m_sink = CAESinkFactory::Create(device, m_sinkFormat, passthrough);
+
+  if (!m_sink)
   {
-    CLog::Log(LOGINFO, "CActiveAE::OpenSink - sink incompatible, re-starting");
+    CLog::Log(LOGERROR, "CActiveAE::OpenSink - no sink was returned");
+    m_extError = true;
+    return;
+  }
 
-    if (m_sink)
-    {
-      m_sink->Drain();
-      m_sink->Deinitialize();
-      delete m_sink;
-      m_sink = NULL;
-    }
-
-    // get the display name of the device
-    GetDeviceFriendlyName(device);
-
-    // if we already have a driver, prepend it to the device string
-    if (!driver.empty())
-      device = driver + ":" + device;
-
-    // WARNING: this changes format and does not use passthrough
-    m_sinkFormat = m_requestedFormat;
-    CLog::Log(LOGDEBUG, "CActiveAE::OpenSink - trying to open device %s", device.c_str());
-    m_sink = CAESinkFactory::Create(device, m_sinkFormat, passthrough);
-
-    if (!m_sink)
-    {
-      CLog::Log(LOGERROR, "CActiveAE::OpenSink - no sink was returned");
-      m_extError = true;
-      return;
-    }
-
-    m_sink->SetVolume(m_volume);
+  m_sink->SetVolume(m_volume);
 
 #ifdef WORDS_BIGENDIAN
-    if (m_sinkFormat.m_dataFormat == AE_FMT_S16BE)
-      m_sinkFormat.m_dataFormat = AE_FMT_S16NE;
-    else if (m_sinkFormat.m_dataFormat == AE_FMT_S32BE)
-      m_sinkFormat.m_dataFormat = AE_FMT_S32NE;
+  if (m_sinkFormat.m_dataFormat == AE_FMT_S16BE)
+    m_sinkFormat.m_dataFormat = AE_FMT_S16NE;
+  else if (m_sinkFormat.m_dataFormat == AE_FMT_S32BE)
+    m_sinkFormat.m_dataFormat = AE_FMT_S32NE;
 #else
-    if (m_sinkFormat.m_dataFormat == AE_FMT_S16LE)
-      m_sinkFormat.m_dataFormat = AE_FMT_S16NE;
-    else if (m_sinkFormat.m_dataFormat == AE_FMT_S32LE)
-      m_sinkFormat.m_dataFormat = AE_FMT_S32NE;
+  if (m_sinkFormat.m_dataFormat == AE_FMT_S16LE)
+    m_sinkFormat.m_dataFormat = AE_FMT_S16NE;
+  else if (m_sinkFormat.m_dataFormat == AE_FMT_S32LE)
+    m_sinkFormat.m_dataFormat = AE_FMT_S32NE;
 #endif
 
-    CLog::Log(LOGDEBUG, "CActiveAE::OpenSink - %s Initialized:", m_sink->GetName());
-    CLog::Log(LOGDEBUG, "  Output Device : %s", m_deviceFriendlyName.c_str());
-    CLog::Log(LOGDEBUG, "  Sample Rate   : %d", m_sinkFormat.m_sampleRate);
-    CLog::Log(LOGDEBUG, "  Sample Format : %s", CAEUtil::DataFormatToStr(m_sinkFormat.m_dataFormat));
-    CLog::Log(LOGDEBUG, "  Channel Count : %d", m_sinkFormat.m_channelLayout.Count());
-    CLog::Log(LOGDEBUG, "  Channel Layout: %s", ((std::string)m_sinkFormat.m_channelLayout).c_str());
-    CLog::Log(LOGDEBUG, "  Frames        : %d", m_sinkFormat.m_frames);
-    CLog::Log(LOGDEBUG, "  Frame Samples : %d", m_sinkFormat.m_frameSamples);
-    CLog::Log(LOGDEBUG, "  Frame Size    : %d", m_sinkFormat.m_frameSize);
-  }
-  else
-    CLog::Log(LOGINFO, "CActiveAE::OpenSink - keeping old sink with : %s, %s, %dhz",
-                          CAEUtil::DataFormatToStr(m_sinkFormat.m_dataFormat),
-                          ((std::string)m_sinkFormat.m_channelLayout).c_str(),
-                          m_sinkFormat.m_sampleRate);
+  CLog::Log(LOGDEBUG, "CActiveAE::OpenSink - %s Initialized:", m_sink->GetName());
+  CLog::Log(LOGDEBUG, "  Output Device : %s", m_deviceFriendlyName.c_str());
+  CLog::Log(LOGDEBUG, "  Sample Rate   : %d", m_sinkFormat.m_sampleRate);
+  CLog::Log(LOGDEBUG, "  Sample Format : %s", CAEUtil::DataFormatToStr(m_sinkFormat.m_dataFormat));
+  CLog::Log(LOGDEBUG, "  Channel Count : %d", m_sinkFormat.m_channelLayout.Count());
+  CLog::Log(LOGDEBUG, "  Channel Layout: %s", ((std::string)m_sinkFormat.m_channelLayout).c_str());
+  CLog::Log(LOGDEBUG, "  Frames        : %d", m_sinkFormat.m_frames);
+  CLog::Log(LOGDEBUG, "  Frame Samples : %d", m_sinkFormat.m_frameSamples);
+  CLog::Log(LOGDEBUG, "  Frame Size    : %d", m_sinkFormat.m_frameSize);
 
   // init sample of silence
   SampleConfig config;

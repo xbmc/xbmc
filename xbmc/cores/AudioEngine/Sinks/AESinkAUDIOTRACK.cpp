@@ -166,11 +166,6 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_at_jni = NULL;
 }
 
-bool CAESinkAUDIOTRACK::IsCompatible(const AEAudioFormat &format, const std::string &device)
-{
-  return m_lastFormat == format || m_format == format;
-}
-
 double CAESinkAUDIOTRACK::GetDelay()
 {
   if (!m_at_jni)
@@ -184,12 +179,6 @@ double CAESinkAUDIOTRACK::GetDelay()
   double delay = (double)(m_frames_written - head_pos) / m_format.m_sampleRate;
 
   return delay;
-}
-
-double CAESinkAUDIOTRACK::GetCacheTime()
-{
-  // depreciated, not used by ActiveAE
-  return 0;
 }
 
 double CAESinkAUDIOTRACK::GetCacheTotal()

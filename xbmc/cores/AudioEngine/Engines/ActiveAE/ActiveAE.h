@@ -163,11 +163,13 @@ public:
   float GetWaterLevel();
   void SetSuspended(bool state);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
+  void SetSinkLatency(float time) { m_sinkLatency = time; }
   bool IsSuspended();
   CCriticalSection *GetLock() { return &m_lock; }
 protected:
   float m_sinkDelay;
   float m_sinkCacheTotal;
+  float m_sinkLatency;
   int m_bufferedSamples;
   unsigned int m_sinkSampleRate;
   unsigned int m_sinkUpdate;
@@ -250,7 +252,6 @@ protected:
   bool InitSink();
   void DrainSink();
   void UnconfigureSink();
-  bool IsSinkCompatible(const AEAudioFormat &format, const std::string &device);
   void Start();
   void Dispose();
   void LoadSettings();
@@ -307,6 +308,7 @@ protected:
   AudioSettings m_settings;
   CEngineStats m_stats;
   IAEEncoder *m_encoder;
+  std::string m_currDevice;
 
   // buffers
   CActiveAEBufferPoolResample *m_sinkBuffers;
