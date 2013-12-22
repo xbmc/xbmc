@@ -443,7 +443,7 @@ std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::str
 CStdString URIUtils::SubstitutePath(const CStdString& strPath, bool reverse /* = false */)
 {
   for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
-      i != g_advancedSettings.m_pathSubstitutions.end(); i++)
+      i != g_advancedSettings.m_pathSubstitutions.end(); ++i)
   {
     CStdString fromPath;
     CStdString toPath;
@@ -1207,7 +1207,7 @@ std::string URIUtils::resolvePath(const std::string &path)
   vector<string> parts = StringUtils::Split(path, delim);
   vector<string> realParts;
 
-  for (vector<string>::const_iterator part = parts.begin(); part != parts.end(); part++)
+  for (vector<string>::const_iterator part = parts.begin(); part != parts.end(); ++part)
   {
     if (part->empty() || part->compare(".") == 0)
       continue;
@@ -1254,7 +1254,7 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
     if (!CStackDirectory::GetPaths(strFilename, files))
       return false;
 
-    for (vector<CStdString>::iterator file = files.begin(); file != files.end(); file++)
+    for (vector<CStdString>::iterator file = files.begin(); file != files.end(); ++file)
     {
       std::string filePath = *file;
       UpdateUrlEncoding(filePath);

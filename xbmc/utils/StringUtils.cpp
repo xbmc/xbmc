@@ -317,7 +317,7 @@ std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
 int StringUtils::Replace(string &str, char oldChar, char newChar)
 {
   int replacedChars = 0;
-  for (string::iterator it = str.begin(); it != str.end(); it++)
+  for (string::iterator it = str.begin(); it != str.end(); ++it)
   {
     if (*it == oldChar)
     {
@@ -459,7 +459,7 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
 void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result)
 {
   result = "";
-  for(CStdStringArray::const_iterator it = strings.begin(); it != strings.end(); it++ )
+  for(CStdStringArray::const_iterator it = strings.begin(); it != strings.end(); ++it )
     result += (*it) + delimiter;
 
   if(result != "")
@@ -961,7 +961,7 @@ int StringUtils::FindBestMatch(const CStdString &str, const CStdStringArray &str
   matchscore = 0;
 
   int i = 0;
-  for (CStdStringArray::const_iterator it = strings.begin(); it != strings.end(); it++, i++)
+  for (CStdStringArray::const_iterator it = strings.begin(); it != strings.end(); ++it, i++)
   {
     int maxlength = max(str.length(), it->length());
     double score = StringUtils::CompareFuzzy(str, *it) / maxlength;
@@ -976,7 +976,7 @@ int StringUtils::FindBestMatch(const CStdString &str, const CStdStringArray &str
 
 bool StringUtils::ContainsKeyword(const CStdString &str, const CStdStringArray &keywords)
 {
-  for (CStdStringArray::const_iterator it = keywords.begin(); it != keywords.end(); it++)
+  for (CStdStringArray::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
   {
     if (str.find(*it) != str.npos)
       return true;

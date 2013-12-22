@@ -327,7 +327,7 @@ bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
   CStdString descTmp(desc);
   StringUtils::Trim(descTmp);
   STRINGLOOKUPTABLE::iterator it;
-  for (it = m_mapUser.begin(); it != m_mapUser.end() ; it++)
+  for (it = m_mapUser.begin(); it != m_mapUser.end() ; ++it)
   {
     if (descTmp.Equals(it->second))
     {

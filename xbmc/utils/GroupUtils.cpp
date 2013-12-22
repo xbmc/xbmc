@@ -67,7 +67,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
     if (!itemsUrl.FromString(baseDir))
       return false;
 
-    for (SetMap::const_iterator set = setMap.begin(); set != setMap.end(); set++)
+    for (SetMap::const_iterator set = setMap.begin(); set != setMap.end(); ++set)
     {
       // only one item in the set, so just re-add it
       if (set->second.size() == 1 && (groupAttributes & GroupAttributeIgnoreSingleItems))
@@ -98,7 +98,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       int ratings = 0;
       int iWatched = 0; // have all the movies been played at least once?
       std::set<CStdString> pathSet;
-      for (std::set<CFileItemPtr>::const_iterator movie = set->second.begin(); movie != set->second.end(); movie++)
+      for (std::set<CFileItemPtr>::const_iterator movie = set->second.begin(); movie != set->second.end(); ++movie)
       {
         CVideoInfoTag* movieInfo = (*movie)->GetVideoInfoTag();
         // handle rating

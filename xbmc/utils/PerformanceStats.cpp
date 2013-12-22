@@ -35,7 +35,7 @@ CPerformanceStats::~CPerformanceStats()
   while (iter != m_mapStats.end())
   {
     delete iter->second;
-    iter++;
+    ++iter;
   }
   m_mapStats.clear();
 }
@@ -71,7 +71,7 @@ void CPerformanceStats::DumpStats()
     double dAvgSys  = iter->second->m_sys / (double)iter->second->m_samples;
     CLog::Log(LOGINFO, "%s - counter <%s>. avg duration: <%f sec>, avg user: <%f>, avg sys: <%f> (%"PRIu64" samples)",
       __FUNCTION__, iter->first.c_str(), dAvg, dAvgUser, dAvgSys, iter->second->m_samples);
-    iter++;
+    ++iter;
   }
 }
 
