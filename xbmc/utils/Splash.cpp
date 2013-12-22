@@ -30,9 +30,8 @@
 
 using namespace XFILE;
 
-CSplash::CSplash(const CStdString& imageName) : CThread("Splash")
+CSplash::CSplash(const CStdString& imageName) : CThread("Splash"), m_ImageName(imageName)
 {
-  m_ImageName = imageName;
   fade = 0.5;
   m_messageLayout = NULL;
   m_image = NULL;
