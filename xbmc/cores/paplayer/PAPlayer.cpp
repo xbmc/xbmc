@@ -541,24 +541,14 @@ void PAPlayer::Process()
       m_signalSpeedChange = false;
     }
 
-    double delay  = 100.0;
-    double buffer = 100.0;
-    ProcessStreams(delay, buffer);
+    double freeBufferTime = 0.0;
+    ProcessStreams(freeBufferTime);
 
-    double watermark = buffer * 0.5;
-#if defined(TARGET_DARWIN)
-    // In CoreAudio the delay can be bigger then the buffer
-    // because of delay from the HAL/Hardware
-    // This is the case when the buffer is full (e.x. 1 sec)
-    // and there is a HAL-Delay. In that case we would never sleep
-    // but load one cpu core up to 100% (happens on osx/ios whenever
-    // the first stream is finished and a prebuffered second stream
-    // starts to play. A BIG FIXME HERE.
-    if ((delay < buffer || buffer == 1) && delay > watermark)
-#else
-    if ((delay < buffer) && delay > watermark)
-#endif
-      CThread::Sleep(MathUtils::round_int((delay - watermark) * 1000.0));
+    // if none of our streams wants at least 10ms of data, we sleep
+    if (freeBufferTime < 0.01)
+    {
+      CThread::Sleep(10);
+    }
 
     GetTimeInternal(); //update for GUI
   }
@@ -580,13 +570,13 @@ void PAPlayer::Process()
     m_callback.OnPlayBackStopped();
 }
 
-inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
+inline void PAPlayer::ProcessStreams(double &freeBufferTime)
 {
   CSharedLock sharedLock(m_streamsLock);
   if (m_isFinished && m_streams.empty() && m_finishing.empty())
   {
     m_isPlaying = false;
-    delay       = 0;
+    freeBufferTime = 1.0;
     return;
   }
 
@@ -617,7 +607,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
       UpdateGUIData(si); //update for GUI
     }
     /* if the stream is finishing */
-    if ((si->m_playNextTriggered && si->m_stream && !si->m_stream->IsFading()) || !ProcessStream(si, delay, buffer))
+    if ((si->m_playNextTriggered && si->m_stream && !si->m_stream->IsFading()) || !ProcessStream(si, freeBufferTime))
     {
       if (!si->m_prepareTriggered)
       {
@@ -703,7 +693,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
   }
 }
 
-inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffer)
+inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
 {
   /* if playback needs to start on this stream, do it */
   if (si == m_currentStream && !si->m_started)
@@ -801,14 +791,16 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
   if (!QueueData(si))
     return false;
 
-  /* update the delay time if we are running */
+  /* update free buffer time if we are running */
   if (si->m_started)
   {
     if (si->m_stream->IsBuffering())
-      delay = 0.0;
+      freeBufferTime = 1.0;
     else
-      delay = std::min(delay , si->m_stream->GetDelay());
-    buffer = std::min(buffer, si->m_stream->GetCacheTotal());
+    {
+      double free_space = (double)(si->m_stream->GetSpace() / si->m_bytesPerSample) / si->m_sampleRate;
+      freeBufferTime = std::max(freeBufferTime , free_space);
+    }
   }
 
   return true;
