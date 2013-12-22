@@ -1,0 +1,20 @@
+ARCH=@ARCH@
+DEFINES+=
+CXXFLAGS=-fPIC -msse4.1
+LIBNAME=libsse4
+OBJS=CopyFrame.o
+
+LIB_SHARED=@abs_top_srcdir@/system/$(LIBNAME)-$(ARCH).so
+
+all: $(LIB_SHARED)
+
+$(LIB_SHARED): $(OBJS)
+	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
+
+CLEAN_FILES = \
+	$(LIB_SHARED) \
+
+DISTCLEAN_FILES= \
+	Makefile \
+
+include ../../../Makefile.include

@@ -318,6 +318,12 @@ CHECK_LIBADD=@WAYLAND_TEST_LIBS@
 endif
 endif
 
+ifeq (@USE_SSE4@,1)
+LIBSSE4+=sse4
+sse4 : force
+	$(MAKE) -C xbmc/linux/sse4
+endif
+
 CHECK_PROGRAMS = xbmc-test
 
 CLEAN_FILES += $(CHECK_PROGRAMS) $(CHECK_EXTENSIONS)
@@ -452,7 +458,7 @@ endif
 
 codecs: papcodecs dvdpcodecs dvdpextcodecs
 
-libs: libhdhomerun imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
+libs: $(LIBSSE4) libhdhomerun imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
 externals: codecs libs visualizations screensavers libaddon pvraddons
 
