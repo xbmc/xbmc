@@ -195,7 +195,7 @@ string ByYear(SortAttribute attributes, const SortItem &values)
 {
   CStdString label;
   const CVariant &airDate = values.at(FieldAirDate);
-  if (!airDate.isNull())
+  if (!airDate.isNull() && !airDate.asString().empty())
     label = airDate.asString() + " ";
 
   label += StringUtils::Format("%i %s", (int)values.at(FieldYear).asInteger(), ByLabel(attributes, values).c_str());
