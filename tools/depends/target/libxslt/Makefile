@@ -25,6 +25,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	sed -ie "s|runtest$$(EXEEXT)||" "$(PLATFORM)/Makefile.in"
 	sed -ie "s|testrecurse$$(EXEEXT)||" "$(PLATFORM)/Makefile.in"
+	sed -ie "s|xsltproc||" "$(PLATFORM)/Makefile.in"
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
