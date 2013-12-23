@@ -337,7 +337,7 @@ CArchive& CArchive::operator>>(IArchivable& obj)
 
 CArchive& CArchive::operator>>(CVariant& variant)
 {
-  size_t type;
+  int type;
   *this >> type;
   variant = CVariant((CVariant::VariantType)type);
 
