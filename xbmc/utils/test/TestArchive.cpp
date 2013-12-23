@@ -261,6 +261,25 @@ TEST_F(TestArchive, CVariantArchive)
   arload.Close();
 
   EXPECT_TRUE(CVariant_var.isInteger());
+  EXPECT_EQ(1, CVariant_var.asInteger());
+}
+
+TEST_F(TestArchive, CVariantArchiveString)
+{
+  ASSERT_TRUE(file);
+  CVariant CVariant_ref("teststring"), CVariant_var;
+
+  CArchive arstore(file, CArchive::store);
+  arstore << CVariant_ref;
+  arstore.Close();
+
+  ASSERT_TRUE((file->Seek(0, SEEK_SET) == 0));
+  CArchive arload(file, CArchive::load);
+  arload >> CVariant_var;
+  arload.Close();
+
+  EXPECT_TRUE(CVariant_var.isString());
+  EXPECT_STREQ("teststring", CVariant_var.asString().c_str());
 }
 
 TEST_F(TestArchive, StringVectorArchive)
