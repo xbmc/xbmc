@@ -9,7 +9,7 @@ ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --without-python --disable-shared   --with-debug --with-debugger --with-mem-debug
+          ./configure --prefix=$(PREFIX) --without-python --disable-shared   --with-debug --with-debugger --with-mem-debug --with-libxml-prefix=$(PREFIX)
 
 LIBDYLIB=$(PLATFORM)/.libs/$(LIBNAME).a
 
