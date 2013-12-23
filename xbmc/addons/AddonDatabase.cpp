@@ -90,6 +90,10 @@ bool CAddonDatabase::CreateTables()
     CLog::Log(LOGINFO, "create blacklist table");
     m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
+
+    CLog::Log(LOGINFO, "create package table");
+    m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxPackage ON package(filename)");
   }
   catch (...)
   {
@@ -115,6 +119,11 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   {
     m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
+  }
+  if (version < 16)
+  {
+    m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxPackage ON package(filename)");
   }
   return true;
 }
@@ -764,3 +773,30 @@ bool CAddonDatabase::RemoveAddonFromBlacklist(const CStdString& addonID,
   }
   return false;
 }
+
+bool CAddonDatabase::AddPackage(const CStdString& addonID,
+                                const CStdString& packageFileName,
+                                const CStdString& hash)
+{
+  CStdString sql = PrepareSQL("insert into package(id, addonID, filename, hash)"
+                              "values(NULL, '%s', '%s', '%s')",
+                              addonID.c_str(), packageFileName.c_str(), hash.c_str());
+  return ExecuteQuery(sql);
+}
+
+bool CAddonDatabase::GetPackageHash(const CStdString& addonID,
+                                    const CStdString& packageFileName,
+                                    CStdString&       hash)
+{
+  CStdString where = FormatSQL( "addonID='%s' and filename='%s'",
+                                addonID.c_str(), packageFileName.c_str());
+  hash = GetSingleValue("package", "hash", where);
+  return !hash.empty();
+}
+
+bool CAddonDatabase::RemovePackage(const CStdString& packageFileName)
+{
+  CStdString sql = PrepareSQL("delete from package where filename='%s'", packageFileName.c_str());
+  return ExecuteQuery(sql);
+}
+

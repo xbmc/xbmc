@@ -406,7 +406,9 @@ void CAddonInstaller::PrunePackageCache()
 
   // Prune packages
   // 1. Remove the largest packages, leaving at least 2 for each add-on
-  CFileItemList items;
+  CFileItemList   items;
+  CAddonDatabase  db;
+  db.Open();
   for (std::map<CStdString,CFileItemList*>::const_iterator it  = packs.begin();
                                                           it != packs.end();++it)
   {
@@ -419,6 +421,7 @@ void CAddonInstaller::PrunePackageCache()
   while (size > limit && i < items.Size())
   {
     size -= items[i]->m_dwSize;
+    db.RemovePackage(items[i]->GetPath());
     CFileUtils::DeleteItem(items[i++],true);
   }
 
@@ -437,6 +440,7 @@ void CAddonInstaller::PrunePackageCache()
     while (size > limit && i < items.Size())
     {
       size -= items[i]->m_dwSize;
+      db.RemovePackage(items[i]->GetPath());
       CFileUtils::DeleteItem(items[i++],true);
     }
   }
@@ -496,32 +500,56 @@ bool CAddonInstallJob::DoWork()
     CStdString dest="special://home/addons/packages/";
     CStdString package = URIUtils::AddFileToFolder("special://home/addons/packages/",
                                                 URIUtils::GetFileName(m_addon->Path()));
-
     if (URIUtils::HasSlashAtEnd(m_addon->Path()))
     { // passed in a folder - all we need do is copy it across
       installFrom = m_addon->Path();
     }
     else
     {
-      // zip passed in - download + extract
-      CStdString path(m_addon->Path());
-      if (!m_referer.empty() && URIUtils::IsInternetStream(path))
+      CStdString      md5;
+      CAddonDatabase  db;
+      db.Open();
+
+      // check that we don't already have a valid copy
+      if (!m_hash.empty() && CFile::Exists(package))
       {
-        CURL url(path);
-        url.SetProtocolOptions(m_referer);
-        path = url.Get();
+        if (db.GetPackageHash(m_addon->ID(), package, md5) && m_hash != md5)
+        {
+          db.RemovePackage(package);
+          CFile::Delete(package);
+        }
       }
-      if (!CFile::Exists(package) && !DownloadPackage(path, dest))
+
+      // zip passed in - download + extract
+      if (!CFile::Exists(package))
       {
-        CFile::Delete(package);
-        return false;
+        CStdString path(m_addon->Path());
+        if (!m_referer.empty() && URIUtils::IsInternetStream(path))
+        {
+          CURL url(path);
+          url.SetProtocolOptions(m_referer);
+          path = url.Get();
+        }
+
+        if (!DownloadPackage(path, dest))
+        {
+          CFile::Delete(package);
+          return false;
+        }
       }
 
       // at this point we have the package - check that it is valid
-      if (!CFile::Exists(package) || !CheckHash(package))
+      if (!m_hash.empty())
       {
-        CFile::Delete(package);
-        return false;
+        md5 = CUtil::GetFileMD5(package);
+        if (!md5.Equals(m_hash))
+        {
+          CFile::Delete(package);
+          ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
+          CLog::Log(LOGERROR, "MD5 mismatch after download %s", package.c_str());
+          return false;
+        }
+        db.AddPackage(m_addon->ID(), package, md5);
       }
 
       // check the archive as well - should have just a single folder in the root
@@ -533,6 +561,7 @@ bool CAddonInstallJob::DoWork()
 
       if (archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder)
       { // invalid package
+        db.RemovePackage(package);
         CFile::Delete(package);
         return false;
       }
@@ -752,21 +781,6 @@ void CAddonInstallJob::ReportInstallError(const CStdString& addonID,
                                           g_localizeStrings.Get(114),
                                           TOAST_DISPLAY_TIME, false);
   }
-}
-
-bool CAddonInstallJob::CheckHash(const CStdString& zipFile)
-{
-  if (m_hash.empty())
-    return true;
-  CStdString md5 = CUtil::GetFileMD5(zipFile);
-  if (!md5.Equals(m_hash))
-  {
-    CFile::Delete(zipFile);
-    ReportInstallError(m_addon->ID(), URIUtils::GetFileName(zipFile));
-    CLog::Log(LOGERROR, "MD5 mismatch after download %s", zipFile.c_str());
-    return false;
-  }
-  return true;
 }
 
 CStdString CAddonInstallJob::AddonID() const

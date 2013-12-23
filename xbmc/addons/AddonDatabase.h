@@ -106,10 +106,36 @@ public:
   bool RemoveAddonFromBlacklist(const CStdString& addonID,
                                 const CStdString& version);
 
+  /*! \brief Store an addon's package filename and that file's hash for future verification
+      \param  addonID         id of the addon we're adding a package for
+      \param  packageFileName filename of the package
+      \param  hash            MD5 checksum of the package
+      \return Whether or not the info successfully made it into the DB.
+      \sa GetPackageHash, RemovePackage
+  */
+  bool AddPackage(const CStdString& addonID,
+                  const CStdString& packageFileName,
+                  const CStdString& hash);
+  /*! \brief Query the MD5 checksum of the given given addon's given package
+      \param  addonID         id of the addon we're who's package we're querying
+      \param  packageFileName filename of the package
+      \param  hash            return the MD5 checksum of the package
+      \return Whether or not we found a hash for the given addon's given package
+      \sa AddPackage, RemovePackage
+  */
+  bool GetPackageHash(const CStdString& addonID,
+                      const CStdString& packageFileName,
+                      CStdString&       hash);
+  /*! \brief Remove a package's info from the database
+      \param  packageFileName filename of the package
+      \return Whether or not we succeeded in removing the package
+      \sa AddPackage, GetPackageHash
+  */
+  bool RemovePackage(const CStdString& packageFileName);
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 15; }
+  virtual int GetMinVersion() const { return 16; }
   const char *GetBaseDBName() const { return "Addons"; }
 };
 
