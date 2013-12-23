@@ -863,11 +863,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
       PCSTR pNextSrcA      = pSrcA;
       PWSTR pNextDstW      = pDstW;
       const SSCodeCvt& conv  = SS_USE_FACET(loc, SSCodeCvt);
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-      SSCodeCvt::state_type st= { { 0 } };
-#else
-      SSCodeCvt::state_type st= { 0 };
-#endif
+      SSCodeCvt::state_type st= {};
       SSCodeCvt::result res = conv.in(st,
                               pSrcA, pSrcA + nSrc, pNextSrcA,
                               pDstW, pDstW + nDst, pNextDstW);
@@ -909,11 +905,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
       PSTR pNextDstA      = pDstA;
       PCWSTR pNextSrcW    = pSrcW;
       const SSCodeCvt& conv  = SS_USE_FACET(loc, SSCodeCvt);
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-      SSCodeCvt::state_type st= { { 0 } };
-#else
-      SSCodeCvt::state_type st= { 0 };
-#endif
+      SSCodeCvt::state_type st= {};
       SSCodeCvt::result res = conv.out(st,
                               pSrcW, pSrcW + nSrc, pNextSrcW,
                               pDstA, pDstA + nDst, pNextDstA);
