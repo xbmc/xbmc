@@ -61,7 +61,7 @@ void CGUIListLabel::SetFocus(bool focus)
 
 CRect CGUIListLabel::CalcRenderRegion() const
 {
-  return m_label.GetRenderRect();
+  return m_label.GetRenderRect(true);
 }
 
 bool CGUIListLabel::UpdateColors()

@@ -192,7 +192,7 @@ void CGUILabelControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
 
 CRect CGUILabelControl::CalcRenderRegion() const
 {
-  return m_label.GetRenderRect();
+  return m_label.GetRenderRect(true);
 }
 
 void CGUILabelControl::Render()

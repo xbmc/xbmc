@@ -20,6 +20,8 @@
 
 #include "GUILabel.h"
 #include <limits>
+#include "TransformMatrix.h"
+#include "GraphicContext.h"
 
 CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow)
     : m_label(labelInfo)
@@ -211,6 +213,49 @@ void CGUILabel::UpdateRenderRect()
     m_renderRect.x1 = m_maxRect.x1 + m_label.offsetX;
   m_renderRect.x2 = m_renderRect.x1 + width;
   m_renderRect.y2 = m_renderRect.y1 + height;
+
+  if (m_label.angle)
+  { // have an angle, so need to calculate the rotated rect as well
+    float posX = m_renderRect.x1;
+    float posY = m_renderRect.y1;
+    bool overFlows = (m_renderRect.Width() + 0.5f < m_textLayout.GetTextWidth()); // 0.5f to deal with floating point rounding issues
+    if (!overFlows)
+    { // hack for right and centered multiline text, as GUITextLayout::Render() treats posX as the right hand
+      // or center edge of the text (see GUIFontTTF::DrawTextInternal), and this has already been taken care of
+      // in UpdateRenderRect(), but we wish to still pass the horizontal alignment info through (so that multiline text
+      // is aligned correctly), so we must undo the UpdateRenderRect() changes for horizontal alignment.
+      if (m_label.align & XBFONT_RIGHT)
+        posX += m_renderRect.Width();
+      else if (m_label.align & XBFONT_CENTER_X)
+        posX += m_renderRect.Width() * 0.5f;
+      if (m_label.align & XBFONT_CENTER_Y) // need to pass a centered Y so that <angle> will rotate around the correct point.
+        posY += m_renderRect.Height() * 0.5f;
+    }
+    static const float degrees_to_radians = 0.01745329252f;
+    TransformMatrix rotation = TransformMatrix::CreateZRotation(m_label.angle * degrees_to_radians, posX, posY, g_graphicsContext.GetScalingPixelRatio());
+    // transform each coordinate and maximize the resulting rectangle...
+    float x[4], y[4], z;
+    x[0] = x[1] = m_renderRect.x1;
+    x[2] = x[3] = m_renderRect.x2;
+    y[0] = y[2] = m_renderRect.y1;
+    y[1] = y[3] = m_renderRect.y2;
+    m_rotatedRect.SetRect(posX, posY, posX, posY);
+    for (int i = 0; i < 4; i++)
+    {
+      rotation.TransformPosition(x[i], y[i], z);
+      m_rotatedRect.x1 = std::min(m_rotatedRect.x1, x[i]);
+      m_rotatedRect.x2 = std::max(m_rotatedRect.x2, x[i]);
+      m_rotatedRect.y1 = std::min(m_rotatedRect.y1, y[i]);
+      m_rotatedRect.y2 = std::max(m_rotatedRect.y2, y[i]);
+    }
+  }
+}
+
+const CRect &CGUILabel::GetRenderRect(bool withRotation /* = false */) const
+{
+  if (!withRotation || m_label.angle == 0)
+    return m_renderRect;
+  return m_rotatedRect;
 }
 
 float CGUILabel::GetMaxWidth() const

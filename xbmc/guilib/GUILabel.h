@@ -170,10 +170,11 @@ public:
   bool UpdateColors();
   
   /*! \brief Returns the precalculated final layout of the current text
+   \param withRotation if true, applies the rotation transform to the render rect. Defaults to false.
    \return CRect containing the extents of the current text
    \sa SetRenderRect, UpdateRenderRect
    */
-  const CRect &GetRenderRect() const { return m_renderRect; };
+  const CRect &GetRenderRect(bool withRotation = false) const;
   
   /*! \brief Returns the precalculated full width of the current text, regardless of layout
    \return full width of the current text
@@ -239,6 +240,7 @@ private:
   bool           m_selected;
   CScrollInfo    m_scrollInfo;
   CRect          m_renderRect;   ///< actual sizing of text
+  CRect          m_rotatedRect;  ///< rotated rect of text (if m_label.angle is non-zero)
   CRect          m_maxRect;      ///< maximum sizing of text
   bool           m_invalid;      ///< if true, the label needs recomputing
   COLOR          m_color;        ///< color to render text \sa SetColor, GetColor
