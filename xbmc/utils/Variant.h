@@ -95,6 +95,7 @@ public:
 
   CVariant &operator=(const CVariant &rhs);
   bool operator==(const CVariant &rhs) const;
+  bool operator!=(const CVariant &rhs) const { return !(*this == rhs); }
 
   void push_back(const CVariant &variant);
   void append(const CVariant &variant);
