@@ -145,7 +145,7 @@ string CRepository::GetAddonHash(const AddonPtr& addon) const
   string checksum;
   DirList::const_iterator it;
   for (it = m_dirs.begin();it != m_dirs.end(); ++it)
-    if (it->datadir == addon->Path())
+    if (URIUtils::IsInPath(addon->Path(), it->datadir))
       break;
   if (it != m_dirs.end() && it->hashes)
   {
