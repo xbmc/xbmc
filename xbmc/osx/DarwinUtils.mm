@@ -77,7 +77,11 @@ enum iosPlatform
   iPad3,
   iPad4WIFI,
   iPad4,
-  iPad4GSMCDMA,  
+  iPad4GSMCDMA,
+  iPadAirWifi,
+  iPadAirCellular,
+  iPadMini2Wifi,
+  iPadMini2Cellular,
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
@@ -127,6 +131,11 @@ enum iosPlatform getIosPlatform()
   if ([platform isEqualToString:@"iPad3,4"])      return iPad4WIFI;
   if ([platform isEqualToString:@"iPad3,5"])      return iPad4;
   if ([platform isEqualToString:@"iPad3,6"])      return iPad4GSMCDMA;
+  if ([platform isEqualToString:@"iPad4,1"])      return iPadAirWifi;
+  if ([platform isEqualToString:@"iPad4,2"])      return iPadAirCellular;
+  if ([platform isEqualToString:@"iPad4,4"])      return iPadMini2Wifi;
+  if ([platform isEqualToString:@"iPad4,5"])      return iPadMini2Cellular;
+  
   if ([platform isEqualToString:@"AppleTV2,1"])   return AppleTV2;
 #endif
   return iDeviceUnknown;
