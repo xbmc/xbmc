@@ -1417,10 +1417,10 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
   }
 
   // Set texture coordinates (is flipped in y)
-  tex[0][0] = tex[3][0] = 0;
-  tex[0][1] = tex[1][1] = 1;
-  tex[1][0] = tex[2][0] = 1;
-  tex[2][1] = tex[3][1] = 0;
+  tex[0][0] = tex[3][0] = plane.rect.x1;
+  tex[0][1] = tex[1][1] = plane.rect.y2;
+  tex[1][0] = tex[2][0] = plane.rect.x2;
+  tex[2][1] = tex[3][1] = plane.rect.y1;
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
@@ -1558,10 +1558,10 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
   }
 
   // Set texture coordinates (corevideo is flipped in y)
-  tex[0][0] = tex[3][0] = 0;
-  tex[0][1] = tex[1][1] = 1;
-  tex[1][0] = tex[2][0] = 1;
-  tex[2][1] = tex[3][1] = 0;
+  tex[0][0] = tex[3][0] = plane.rect.x1;
+  tex[0][1] = tex[1][1] = plane.rect.y2;
+  tex[1][0] = tex[2][0] = plane.rect.x2;
+  tex[2][1] = tex[3][1] = plane.rect.y1;
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
