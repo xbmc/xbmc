@@ -2859,6 +2859,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 {
   MEASURE_FUNCTION;
 
+  CWinEvents::MessagePump();
+
   if (processEvents)
   {
     // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
@@ -2881,7 +2883,6 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       }
       g_graphicsContext.Unlock();
     }
-    CWinEvents::MessagePump();
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
     // Read the input from a remote
