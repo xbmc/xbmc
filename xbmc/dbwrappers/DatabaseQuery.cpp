@@ -402,6 +402,11 @@ CStdString CDatabaseQueryRule::FormatWhereClause(const CStdString &negate, const
 
     query = StringUtils::Format(fmt.c_str(), GetField(m_field,strType).c_str());
     query += negate + parameter;
+
+    // special case for matching parameters in fields that might be either empty or NULL.
+    if ((  param.empty() &&  negate.empty() ) ||
+        ( !param.empty() && !negate.empty() ))
+      query += " OR " + GetField(m_field,strType) + " IS NULL";
   }
 
   if (query.Equals(negate + parameter))
