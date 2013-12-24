@@ -62,5 +62,11 @@ if ! $scriptPath/generate-digitsdata.sh $outputFilename; then
   exit 1
 fi
 
+echo 'Starting folding data processing...'
+if ! $scriptPath/generate-folddata.sh $outputFilename; then
+  echo 'Error!'
+  exit 1
+fi
+
 echo
 echo 'All done.'
