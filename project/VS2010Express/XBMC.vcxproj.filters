@@ -3110,6 +3110,9 @@
     <ClCompile Include="..\..\xbmc\utils\Utf8Utils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\XSLTUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6110,6 +6113,9 @@
       <Filter>listproviders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Utf8Utils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\XSLTUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>

@@ -371,6 +371,9 @@
 		889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
 		88ACB01B0DCF40800083CFDF /* ASAPFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */; };
 		88ACB01F0DCF409E0083CFDF /* ASAPCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB01C0DCF409E0083CFDF /* ASAPCodec.cpp */; };
+		AE32174218313ADF0003FAFC /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
+		AE32174318313AE10003FAFC /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
+		AE4E87A717354C4A00D15206 /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
 		AE84CB5A15A5B8A600A3810E /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */; };
 		AE89ACA61621DAB800E17DBC /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
 		AEC0083115ACAC6E0099888C /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */; };
@@ -3899,6 +3902,8 @@
 		88ACB01E0DCF409E0083CFDF /* DllASAP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllASAP.h; sourceTree = "<group>"; };
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
+		AE4E87A617354C4A00D15206 /* XSLTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSLTUtils.h; sourceTree = "<group>"; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
 		AE84CB5C15A5B8BA00A3810E /* TagLibVFSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLibVFSStream.h; sourceTree = "<group>"; };
 		AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxBXA.cpp; sourceTree = "<group>"; };
@@ -8813,6 +8818,8 @@
 				E38E1E920D25F9FD00618676 /* WindowsShortcut.h */,
 				F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */,
 				F5ED908715538DCE00842059 /* XBMCTinyXML.h */,
+				AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */,
+				AE4E87A617354C4A00D15206 /* XSLTUtils.h */,
 				18B7C9811294385F009E7A26 /* XMLUtils.cpp */,
 				18B7C9821294385F009E7A26 /* XMLUtils.h */,
 			);
@@ -10743,6 +10750,7 @@
 				7C1409A4183224B8009F9411 /* SettingUpdate.cpp in Sources */,
 				DF0ABB73183A94A30018445D /* Utf8Utils.cpp in Sources */,
 				7C1409A9184015C9009F9411 /* InfoExpression.cpp in Sources */,
+				AE32174218313ADF0003FAFC /* XSLTUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11785,6 +11793,7 @@
 				7C1409A6183224B8009F9411 /* SettingUpdate.cpp in Sources */,
 				DF0ABB75183A94A30018445D /* Utf8Utils.cpp in Sources */,
 				7C1409AB184015C9009F9411 /* InfoExpression.cpp in Sources */,
+				AE32174318313AE10003FAFC /* XSLTUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12829,6 +12838,7 @@
 				7C1409A5183224B8009F9411 /* SettingUpdate.cpp in Sources */,
 				DF0ABB74183A94A30018445D /* Utf8Utils.cpp in Sources */,
 				7C1409AA184015C9009F9411 /* InfoExpression.cpp in Sources */,
+				AE4E87A717354C4A00D15206 /* XSLTUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12911,6 +12921,7 @@
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
@@ -12983,6 +12994,8 @@
 					"-ltag",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-lxml2",
+					"-lxslt",
 				);
 				PRODUCT_NAME = XBMC;
 				USE_HEADERMAP = NO;
@@ -13043,6 +13056,7 @@
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
@@ -13115,6 +13129,8 @@
 					"-ltag",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-lxml2",
+					"-lxslt",
 				);
 				PRODUCT_NAME = XBMC;
 				USE_HEADERMAP = NO;
@@ -13210,6 +13226,7 @@
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/atv2/XBMCATV2-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
@@ -13323,6 +13340,7 @@
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/atv2/XBMCATV2-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
@@ -13436,6 +13454,7 @@
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/ios/XBMCIOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
@@ -13476,6 +13495,7 @@
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "xbmc/osx/ios/XBMCIOS-Info.plist";
 				SDKROOT = iphoneos;
