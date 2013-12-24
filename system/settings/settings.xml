@@ -1312,6 +1312,11 @@
           </constraints>
           <control type="button" format="addon" />
         </setting>
+        <setting id="musiclibrary.overridetags" type="boolean" label="20220" help="20221">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="musiclibrary.updateonstartup" type="boolean" label="22000" help="36259">
           <level>1</level>
           <default>false</default>

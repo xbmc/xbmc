@@ -38,6 +38,7 @@ public:
   CAlbum(const CFileItem& item);
   CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; };
   bool operator<(const CAlbum &a) const;
+  void MergeScrapedAlbum(const CAlbum& album, bool override = true);
 
   void Reset()
   {
@@ -62,6 +63,7 @@ public:
     bCompilation = false;
     iTimesPlayed = 0;
     songs.clear();
+    infoSongs.clear();
   }
 
   CStdString GetArtistString() const;
@@ -97,7 +99,8 @@ public:
   int iYear;
   bool bCompilation;
   int iTimesPlayed;
-  VECSONGS songs;
+  VECSONGS songs;     ///< Local songs
+  VECSONGS infoSongs; ///< Scraped songs
 };
 
 typedef std::vector<CAlbum> VECALBUMS;

@@ -53,6 +53,60 @@ CAlbum::CAlbum(const CFileItem& item)
   iTimesPlayed = 0;
 }
 
+void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
+{
+  /*
+   We don't merge musicbrainz album ID so that a refresh of album information
+   allows a lookup based on name rather than directly (re)using musicbrainz.
+   In future, we may wish to be able to override lookup by musicbrainz so
+   this might be dropped.
+   */
+//  strMusicBrainzAlbumID = source.strMusicBrainzAlbumID;
+  if ((override && !source.genre.empty()) || genre.empty())
+    genre = source.genre;
+  if ((override && !source.strAlbum.empty()) || strAlbum.empty())
+    strAlbum = source.strAlbum;
+  if ((override && source.iYear > 0) || iYear == 0)
+    iYear = source.iYear;
+  if (override)
+    bCompilation = source.bCompilation;
+  //  iTimesPlayed = source.iTimesPlayed; // times played is derived from songs
+  for (std::map<std::string, std::string>::const_iterator i = source.art.begin(); i != source.art.end(); ++i)
+  {
+    if (override || art.find(i->first) == art.end())
+      art[i->first] = i->second;
+  }
+  strLabel = source.strLabel;
+  thumbURL = source.thumbURL;
+  moods = source.moods;
+  styles = source.styles;
+  themes = source.themes;
+  strReview = source.strReview;
+  strType = source.strType;
+//  strPath = source.strPath; // don't merge the path
+  m_strDateOfRelease = source.m_strDateOfRelease;
+  iRating = source.iRating;
+  if (override)
+  {
+    artistCredits = source.artistCredits;
+    artist = source.artist; // artist information is read-only from the database. artistCredits is what counts on scan
+  }
+  else if (source.artistCredits.size() > artistCredits.size())
+    artistCredits.insert(artistCredits.end(), source.artistCredits.begin()+artistCredits.size(), source.artistCredits.end());
+  if (!strMusicBrainzAlbumID.empty())
+  {
+    /* update local songs with MB information */
+    for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
+    {
+      if (!song->strMusicBrainzTrackID.empty())
+        for (VECSONGS::const_iterator sourceSong = source.infoSongs.begin(); sourceSong != source.infoSongs.end(); ++sourceSong)
+          if (sourceSong->strMusicBrainzTrackID == song->strMusicBrainzTrackID)
+            song->MergeScrapedSong(*sourceSong, override);
+    }
+  }
+  infoSongs = source.infoSongs;
+}
+
 CStdString CAlbum::GetArtistString() const
 {
   return StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);
@@ -173,7 +227,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   const TiXmlElement* node = album->FirstChildElement("track");
   if (node)
-    songs.clear();  // this means that the tracks can't be spread over separate pages
+    infoSongs.clear();  // this means that the tracks can't be spread over separate pages
                     // but this is probably a reasonable limitation
   bool bIncrement = false;
   while (node)
@@ -198,7 +252,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
           song.artistCredits.push_back(artistCredit);
         }
         
-        songArtistCreditsNode = songArtistCreditsNode->NextSiblingElement("albumArtistCredits");
+        songArtistCreditsNode = songArtistCreditsNode->NextSiblingElement("songArtistCredits");
       }
 
       XMLUtils::GetString(node,   "musicBrainzTrackID",   song.strMusicBrainzTrackID);
@@ -215,7 +269,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       if (bIncrement)
         song.iTrack = song.iTrack + 1;
 
-      songs.push_back(song);
+      infoSongs.push_back(song);
     }
     node = node->NextSiblingElement("track");
   }
@@ -274,7 +328,7 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
     XMLUtils::SetString(albumArtistCreditsNode,            "featuring", artistCredit->GetArtist());
   }
 
-  for( VECSONGS::const_iterator song = songs.begin(); song != songs.end(); ++song)
+  for( VECSONGS::const_iterator song = infoSongs.begin(); song != infoSongs.end(); ++song)
   {
     // add a <song> tag
     TiXmlElement cast("track");

@@ -252,7 +252,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent, bool refresh)
+void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent /* = false */, bool refresh /* = false */)
 {
   CMusicDatabaseDirectory dir;
   CStdString strPath = m_vecItems->GetPath();
@@ -364,12 +364,19 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
 {
   CQueryParams params;
   CDirectoryNode::GetDatabaseInfo(pItem->GetPath(), params);
-  CMusicArtistInfo artistInfo;
+
+  ADDON::ScraperPtr scraper;
+  if (!m_musicdatabase.GetScraperForPath(pItem->GetPath(), scraper, ADDON::ADDON_SCRAPER_ARTISTS))
+    return;
+
+  CArtist artist;
+  if (!m_musicdatabase.GetArtist(params.GetArtistId(), artist))
+      return;
+
   while (1)
   {
     // Check if we have the information in the database first
-    if (!m_musicdatabase.HasArtistInfo(params.GetArtistId()) ||
-        !m_musicdatabase.GetArtistInfo(params.GetArtistId(), artistInfo.GetArtist()))
+    if (!m_musicdatabase.HasArtistBeenScraped(params.GetArtistId()))
     {
       if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
         break; // should display a dialog saying no permissions
@@ -391,7 +398,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
       }
 
       CMusicInfoScanner scanner;
-      if (scanner.UpdateDatabaseArtistInfo(pItem->GetPath(), artistInfo, bShowInfo) != INFO_ADDED || !artistInfo.Loaded())
+      if (scanner.UpdateDatabaseArtistInfo(artist, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
       {
         CGUIDialogOK::ShowAndGetInput(21889, 0, 20199, 0);
         break;
@@ -406,12 +413,12 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
     {
       CStdString strPath;
       m_musicdatabase.GetArtistPath(params.GetArtistId(), strPath);
-      pDlgArtistInfo->SetArtist(artistInfo.GetArtist(), strPath);
+      pDlgArtistInfo->SetArtist(artist, strPath);
       pDlgArtistInfo->DoModal();
 
       if (pDlgArtistInfo->NeedRefresh())
       {
-        m_musicdatabase.DeleteArtistInfo(params.GetArtistId());
+        m_musicdatabase.ClearArtistLastScrapedTime(params.GetArtistId());
         continue;
       } 
       else if (pDlgArtistInfo->HasUpdatedThumb()) 
@@ -429,11 +436,18 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
 {
   CQueryParams params;
   CDirectoryNode::GetDatabaseInfo(pItem->GetPath(), params);
-  CMusicAlbumInfo albumInfo;
+
+  ADDON::ScraperPtr scraper;
+  if (!m_musicdatabase.GetScraperForPath(pItem->GetPath(), scraper, ADDON::ADDON_SCRAPER_ALBUMS))
+    return false;
+
+  CAlbum album;
+  if (!m_musicdatabase.GetAlbum(params.GetAlbumId(), album))
+    return false;
+
   while (1)
   {
-    if (!m_musicdatabase.HasAlbumInfo(params.GetAlbumId()) || 
-        !m_musicdatabase.GetAlbumInfo(params.GetAlbumId(), albumInfo.GetAlbum(), &albumInfo.GetAlbum().songs))
+    if (!m_musicdatabase.HasAlbumBeenScraped(params.GetAlbumId()))
     {
       if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
       {
@@ -462,7 +476,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
       }
 
       CMusicInfoScanner scanner;
-      if (scanner.UpdateDatabaseAlbumInfo(pItem->GetPath(), albumInfo, bShowInfo) != INFO_ADDED || !albumInfo.Loaded())
+      if (scanner.UpdateDatabaseAlbumInfo(album, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
       {
         CGUIDialogOK::ShowAndGetInput(185, 0, 500, 0);
         if (m_dlgProgress)
@@ -479,17 +493,17 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
     {
       CStdString strPath;
       m_musicdatabase.GetAlbumPath(params.GetAlbumId(), strPath);
-      pDlgAlbumInfo->SetAlbum(albumInfo.GetAlbum(), strPath);
+      pDlgAlbumInfo->SetAlbum(album, strPath);
       pDlgAlbumInfo->DoModal();
 
       if (pDlgAlbumInfo->NeedRefresh())
       {
-        m_musicdatabase.DeleteAlbumInfo(params.GetAlbumId());
+        m_musicdatabase.ClearAlbumLastScrapedTime(params.GetAlbumId());
         continue;
       }
       else if (pDlgAlbumInfo->HasUpdatedThumb())
       {
-        UpdateThumb(albumInfo.GetAlbum(), strPath);
+        UpdateThumb(album, strPath);
       }
     }
     break;

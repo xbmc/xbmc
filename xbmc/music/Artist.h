@@ -47,6 +47,8 @@ public:
     if (strMusicBrainzArtistID > a.strMusicBrainzArtistID) return false;
     return false;
   }
+  
+  void MergeScrapedArtist(const CArtist& source, bool override = true);
 
   void Reset()
   {
@@ -122,9 +124,11 @@ public:
   std::string GetArtist() const                { return m_strArtist; }
   std::string GetMusicBrainzArtistID() const   { return m_strMusicBrainzArtistID; }
   std::string GetJoinPhrase() const            { return m_strJoinPhrase; }
+  int         GetArtistId() const              { return idArtist; }
   void SetArtist(const std::string &strArtist) { m_strArtist = strArtist; }
   void SetMusicBrainzArtistID(const std::string &strMusicBrainzArtistID) { m_strMusicBrainzArtistID = strMusicBrainzArtistID; }
   void SetJoinPhrase(const std::string &strJoinPhrase) { m_strJoinPhrase = strJoinPhrase; }
+  void SetArtistId(int idArtist)               { this->idArtist = idArtist; }
 
 private:
   long idArtist;

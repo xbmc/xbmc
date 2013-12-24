@@ -150,7 +150,7 @@ bool CGUIDialogMusicInfo::OnAction(const CAction &action)
 void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
 {
   m_album = album;
-  SetSongs(m_album.songs);
+  SetSongs(m_album.infoSongs);
   *m_albumItem = CFileItem(path, true);
   m_albumItem->GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
   m_albumItem->GetMusicInfoTag()->SetAlbumArtist(StringUtils::Join(m_album.artist, g_advancedSettings.m_musicItemSeparator));
@@ -222,11 +222,24 @@ void CGUIDialogMusicInfo::SetDiscography()
   CMusicDatabase database;
   database.Open();
 
+  vector<int> albumsByArtist;
+  database.GetAlbumsByArtist(m_artist.idArtist, true, albumsByArtist);
+
   for (unsigned int i=0;i<m_artist.discography.size();++i)
   {
     CFileItemPtr item(new CFileItem(m_artist.discography[i].first));
     item->SetLabel2(m_artist.discography[i].second);
-    long idAlbum = database.GetAlbumByName(item->GetLabel(),m_artist.strArtist);
+
+    int idAlbum = -1;
+    for (vector<int>::const_iterator album = albumsByArtist.begin(); album != albumsByArtist.end(); ++album)
+    {
+      if (database.GetAlbumById(*album).Equals(item->GetLabel()))
+      {
+        idAlbum = *album;
+        item->GetMusicInfoTag()->SetDatabaseId(idAlbum, "album");
+        break;
+      }
+    }
 
     if (idAlbum != -1) // we need this slight stupidity to get correct case for the album name
       item->SetArt("thumb", database.GetArtForItem(idAlbum, "album", "thumb"));
@@ -541,14 +554,14 @@ void CGUIDialogMusicInfo::OnSearch(const CFileItem* pItem)
 {
   CMusicDatabase database;
   database.Open();
-  long idAlbum = database.GetAlbumByName(pItem->GetLabel(),m_artist.strArtist);
-  if (idAlbum != -1)
+  if (pItem->HasMusicInfoTag() &&
+      pItem->GetMusicInfoTag()->GetDatabaseId() > 0)
   {
     CAlbum album;
-    if (database.GetAlbumInfo(idAlbum,album,&album.songs))
+    if (database.GetAlbum(pItem->GetMusicInfoTag()->GetDatabaseId(), album))
     {
       CStdString strPath;
-      database.GetAlbumPath(idAlbum,strPath);
+      database.GetAlbumPath(pItem->GetMusicInfoTag()->GetDatabaseId(), strPath);
       SetAlbum(album,strPath);
       Update();
     }
