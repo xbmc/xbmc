@@ -1,2 +1,0 @@
-; filename                          	mirror of the file
-libxslt-1.1.26-win32.7z		            http://mirrors.xbmc.org/build-deps/win32/			
