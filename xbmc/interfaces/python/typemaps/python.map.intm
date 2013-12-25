@@ -20,9 +20,9 @@
  */
 %>
 <%
-    matcher = ltype =~ /std::map<\((.*),(.*)\)>/
-    keytype = matcher[0][1]
-    valtype = matcher[0][2]
+    List templateArgs = swigTypeParser.SwigType_templateparmlist(ltype)
+    keytype = templateArgs[0]
+    valtype = templateArgs[1]
 %>
 
     {
@@ -32,14 +32,8 @@
       {
         ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(keytype))} key;
         ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(valtype))} value;
-        ${helper.getInConversion(keytype, 'key', 'pykey', method,
-                                 [ 'type' : swigTypeParser.SwigType_str(keytype),
-                                   'ltype' : swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(keytype))
-                                   ])}
-        ${helper.getInConversion(valtype, 'value', 'pyvalue' ,method,
-                                 [ 'type' : swigTypeParser.SwigType_str(valtype),
-                                   'ltype' : swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(valtype))
-                                   ])}
+        ${helper.getInConversion(keytype, 'key', 'pykey', method)}
+        ${helper.getInConversion(valtype, 'value', 'pyvalue' ,method)}
         ${api}[key] = value;
       }
     }

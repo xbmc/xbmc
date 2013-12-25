@@ -25,6 +25,11 @@
 
 namespace XBMCAddon
 {
+  // This is a hack in order to handle int's as strings. The correct fix for
+  // this is to get rid of Alternative all togther and make the codegenerator
+  // finally handle overloading correctly.
+  typedef String StringOrInt;
+
   /**
    * This is a bit of a hack for dynamically typed languages. In somce
    * cases python addon api calls handle dictionaries with variable
@@ -34,5 +39,7 @@ namespace XBMCAddon
    * native api handles these calls by converting the string to the
    * appropriate types.
    */
-  typedef std::map<String,String> Dictionary;
+  template<class T> class Dictionary : public std::map<String,T> {};
+
+  typedef Dictionary<StringOrInt> Properties;
 }

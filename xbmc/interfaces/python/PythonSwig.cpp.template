@@ -56,7 +56,6 @@ Helper.setup(this,classes,
      * This is meant to contain mini-templates for converting the return type
      * of the native call to be returned to the python caller.
      */
-//      'p.void' : '${result} = Py_BuildValue((char*)"s#",${api},readBytes);',
     [ 'void' : 'Py_INCREF(Py_None);\n    ${result} = Py_None;',
       'long': '${result} = PyInt_FromLong(${api});',
       'unsigned long': '${result} = PyInt_FromLong(${api});',
@@ -65,7 +64,7 @@ Helper.setup(this,classes,
       'int': '${result} = Py_BuildValue((char*)"i", ${api});',
       'double': '${result} = PyFloat_FromDouble(${api});',
       'float': '${result} = Py_BuildValue((char*)"f", ${api});',
-      'String' : new File('typemaps/python.string.outtm'),
+      'std::string' : new File('typemaps/python.string.outtm'),
       'p.q(const).char' : '${result} = PyString_FromString(${api});',
       (Pattern.compile('''(p.){0,1}XbmcCommons::Buffer''')) : new File('typemaps/python.buffer.outtm'),
       (Pattern.compile('''boost::shared_ptr<\\(.*\\)>''')) : new File('typemaps/python.boost_shared_ptr.outtm'),
@@ -82,16 +81,13 @@ Helper.setup(this,classes,
      * call.
      */
     [ 
-      'String' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},false,"${api}","${method.@name}");',
+      'std::string' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},false,"${api}","${method.@name}");',
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.intm'),
       (Pattern.compile('''(p.){0,1}Tuple(3){0,1}<\\(.*\\)>''')) : new File('typemaps/python.Tuple.intm'),
       (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.intm'),
-      // I shouldn't need both of these but my parser doesn't resolve namespaces within
-      //  parameter declarations. TODO: Maybe I should fix this.
-      'r.q(const).Dictionary' : new File('typemaps/python.dict.intm'),
-      'r.q(const).XBMCAddon::Dictionary' : new File('typemaps/python.dict.intm'),
       (Pattern.compile('''(r.){0,1}XbmcCommons::Buffer''')) : new File('typemaps/python.buffer.intm'),
       (Pattern.compile('''(p.){0,1}std::map<\\(.*\\)>''')) : new File('typemaps/python.map.intm'),
+      (Pattern.compile('''(r.){0,1}XBMCAddon::Dictionary<\\(.*\\)>''')) : new File('typemaps/python.dict.intm'),
       'bool' : '${api} = (PyInt_AsLong(${slarg}) == 0L ? false : true);',
       'long' : '${api} = PyInt_AsLong(${slarg});',
       'unsigned long' : '${api} = PyLong_AsUnsignedLong(${slarg});',
@@ -99,7 +95,8 @@ Helper.setup(this,classes,
       'unsigned long long' : '${api} = PyLong_AsUnsignedLongLong(${slarg});',
       'int' : '${api} = (int)PyInt_AsLong(${slarg});',
       'double' : '${api} = PyFloat_AsDouble(${slarg});',
-      'float' : '${api} = (float)PyFloat_AsDouble(${slarg});'
+      'float' : '${api} = (float)PyFloat_AsDouble(${slarg});',
+      'XBMCAddon::StringOrInt' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},PyInt_Check(${slarg}) || PyLong_Check(${slarg}),"${api}","${method.@name}");'
     ], '${api} = (${swigTypeParser.SwigType_str(ltype)})retrieveApiInstance(${slarg},"${ltype}","${helper.findNamespace(method)}","${helper.callingName(method)}");')
 // ---------------------------------------------------------
 

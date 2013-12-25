@@ -20,8 +20,7 @@
  */
 %>
 <%
-    matcher = type =~ /shared_ptr<\((.*)\)>/
-    itype = matcher[0][1]
+    itype = swigTypeParser.SwigType_templateparmlist(type)[0]
     pointertype = swigTypeParser.SwigType_makepointer(itype)
     int seq = sequence.increment()
 %>

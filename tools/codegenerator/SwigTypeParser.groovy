@@ -348,6 +348,12 @@ public class SwigTypeParser
       return t.substring(start,c)
    }
 
+  public static List SwigType_templateparmlist(String t)
+  {
+    int i = t.indexOf('<');
+    return SwigType_parmlist(t.substring(i))
+  }
+
    /* -----------------------------------------------------------------------------
     * SwigType_parmlist()
     *

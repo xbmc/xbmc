@@ -20,8 +20,8 @@
  */
 %>
 <%
-    matcher = type =~ /std::vector<\((.*)\)>/
-    vectype = matcher[0][1]
+    List templateArgs = swigTypeParser.SwigType_templateparmlist(type)
+    vectype = templateArgs[0]
     boolean ispointer = swigTypeParser.SwigType_ispointer(type)
     String accessor = ispointer ? '->' : '.'
     seq = sequence.increment()

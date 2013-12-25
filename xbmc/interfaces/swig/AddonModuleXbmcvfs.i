@@ -36,7 +36,7 @@ using namespace xbmcvfs;
 %}
 
 %include "interfaces/legacy/swighelper.h"
-
+%include "interfaces/legacy/AddonString.h"
 %include "interfaces/legacy/File.h"
 
 %rename ("st_atime") XBMCAddon::xbmcvfs::Stat::atime;

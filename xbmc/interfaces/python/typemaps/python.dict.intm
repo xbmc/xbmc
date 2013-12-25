@@ -19,15 +19,19 @@
  *
  */
 %>
+<%
+    List templateArgs = swigTypeParser.SwigType_templateparmlist(ltype)
+    valtype = templateArgs[0]
+%>
     {
       PyObject *pykey, *pyvalue;
       Py_ssize_t pos = 0;
       while(PyDict_Next(${slarg}, &pos, &pykey, &pyvalue))
       {
-        CStdString key;
-        CStdString value;
+        std::string key;
         PyXBMCGetUnicodeString(key,pykey,false,"${api}","${method.@name}");
-        PyXBMCGetUnicodeString(value,pyvalue,true,"${api}","${method.@name}");
+        ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(valtype))} value;
+        ${helper.getInConversion(valtype, 'value', 'pyvalue' ,method)}
         ${api}[key] = value;
       }
     }
