@@ -34,5 +34,6 @@ private:
   typedef digitsMap::value_type digitsMapElement;
 
   static const digitsMap m_digitsMap;
+  static digitsMap digitsMapFiller(void); // implemented in Utf32Utils-data.cpp
 };
 

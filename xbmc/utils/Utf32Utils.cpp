@@ -20,5 +20,5 @@
 
 #include "Utf32Utils.h"
 
-const CUtf32Utils::digitsMap CUtf32Utils::m_digitsMap;
+const CUtf32Utils::digitsMap CUtf32Utils::m_digitsMap(digitsMapFiller());
 
