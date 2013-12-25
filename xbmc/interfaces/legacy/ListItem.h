@@ -45,10 +45,10 @@ namespace XBMCAddon
     XBMCCOMMONS_STANDARD_EXCEPTION(ListItemException);
 
     // This is a type that represents either a String or a String Tuple
-    typedef Alternative<String,Tuple<String, String> > InfoLabelStringOrTuple;
+    typedef Alternative<StringOrInt,Tuple<String, StringOrInt> > InfoLabelStringOrTuple;
 
     // This type is either a String or a list of InfoLabelStringOrTuple types
-    typedef Alternative<String, std::vector<InfoLabelStringOrTuple> > InfoLabelValue;
+    typedef Alternative<StringOrInt, std::vector<InfoLabelStringOrTuple> > InfoLabelValue;
 
     // The type contains the dictionary values for the ListItem::setInfo call. 
     // The values in the dictionary can be either a String, or a list of items.
