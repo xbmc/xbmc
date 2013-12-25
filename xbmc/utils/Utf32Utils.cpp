@@ -25,8 +25,8 @@
 #include "utils/CharsetConverter.h"
 
 const CUtf32Utils::digitsMap CUtf32Utils::m_digitsMap(digitsMapFiller());
-const CUtf32Utils::charcharMap CUtf32Utils::m_foldSimpleCharsMap;
-const CUtf32Utils::charstrMap CUtf32Utils::m_foldFullCharsMap;
+const CUtf32Utils::charcharMap CUtf32Utils::m_foldSimpleCharsMap(foldSimpleCharsMapFiller());
+const CUtf32Utils::charstrMap CUtf32Utils::m_foldFullCharsMap(foldFullCharsMapFiller());
 
 
 inline bool CUtf32Utils::IsDigit(char32_t chr)
