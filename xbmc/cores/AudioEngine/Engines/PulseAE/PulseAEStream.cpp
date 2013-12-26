@@ -62,6 +62,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   m_format = format;
   m_sampleRate = sampleRate;
   m_channelLayout = channelLayout;
+  m_channels = channelLayout.Count();
   m_options = options;
 
   m_DrainOperation = NULL;
@@ -69,7 +70,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
-  m_SampleSpec.channels = channelLayout.Count();
+  m_SampleSpec.channels = m_channels;
   m_SampleSpec.rate = m_sampleRate;
 
   switch (m_format)
@@ -108,9 +109,9 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   m_frameSize = pa_frame_size(&m_SampleSpec);
 
   struct pa_channel_map map;
-  map.channels = m_channelLayout.Count();
+  map.channels = m_channels;
 
-  for (unsigned int ch = 0; ch < m_channelLayout.Count(); ++ch)
+  for (unsigned int ch = 0; ch < m_channels; ++ch)
     switch(m_channelLayout[ch])
     {
       case AE_CH_NULL: break;
@@ -214,10 +215,12 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   CLog::Log(LOGINFO, "PulseAEStream::Initialized");
   CLog::Log(LOGINFO, "  Sample Rate   : %d", m_sampleRate);
   CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(m_format));
-  CLog::Log(LOGINFO, "  Channel Count : %d", m_channelLayout.Count());
+  CLog::Log(LOGINFO, "  Channel Count : %d", m_channels);
   CLog::Log(LOGINFO, "  Channel Layout: %s", ((std::string)m_channelLayout).c_str());
   CLog::Log(LOGINFO, "  Frame Size    : %d", m_frameSize);
   CLog::Log(LOGINFO, "  Cache Size    : %d", m_cacheSize);
+
+  m_limiter.SetSamplerate(m_sampleRate);
 
   Resume();
 
@@ -299,7 +302,27 @@ unsigned int CPulseAEStream::AddData(void *data, unsigned int size)
     return 0;
   }
 
-  int written = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
+  void *buffer = data;
+  if (GetAmplification() != 1.0f) {
+    buffer = malloc(length);
+    memcpy(buffer, data, length);
+
+    for(char *frameLoc=(char*)buffer; frameLoc < (char*)buffer + length; frameLoc += m_frameSize) {
+      float *frameStart = (float*)frameLoc;
+      float amplification = m_limiter.Run(&frameStart, m_channels, 0, false);
+
+#ifdef __SSE___
+      CAEUtil::SSEMulArray(frameStart, amplification, m_channels);
+#else
+      for(unsigned int n = 0; n < m_channels; n++)
+        frameStart[n] *= amplification;
+#endif
+    }
+  }
+
+  int written = pa_stream_write(m_Stream, (void *)buffer, length, NULL, 0, PA_SEEK_RELATIVE);
+  if (GetAmplification() != 1.0f)
+    free(buffer);
   pa_threaded_mainloop_unlock(m_MainLoop);
 
   if (written < 0)
