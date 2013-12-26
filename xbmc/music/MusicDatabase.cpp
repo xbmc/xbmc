@@ -4076,7 +4076,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
                 " strDied, strDisbanded, strYearsActive, "
                 " strImage, strFanart "
                 " FROM artist "
-                " LEFT JOIN artistinfo ON artist.idArtist = artistInfo.idArtist");
+                " LEFT JOIN artistinfo ON artist.idArtist = artistinfo.idArtist");
     m_pDS->exec(PrepareSQL("UPDATE artist_new SET lastScraped='%s' WHERE idArtist IN (SELECT idArtist FROM artistinfo)", CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str()));
     m_pDS->exec("DROP TABLE artist");
     m_pDS->exec("DROP TABLE artistinfo");
