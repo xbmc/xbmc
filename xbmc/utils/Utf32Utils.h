@@ -47,5 +47,20 @@ private:
 
   static const digitsMap m_digitsMap;
   static digitsMap digitsMapFiller(void); // implemented in Utf32Utils-data.cpp
+
+  typedef std::map<const char32_t, const char32_t> charcharMap;
+  typedef charcharMap::value_type charcharMapElement;
+
+  static const charcharMap m_foldSimpleCharsMap;
+
+  struct strWithLen
+  {
+     const char32_t str[3];
+     const size_t len;
+  };
+  typedef std::map<const char32_t, const strWithLen> charstrMap;
+  typedef charstrMap::value_type charstrMapElement;
+
+  static const charstrMap m_foldFullCharsMap;
 };
 
