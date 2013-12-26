@@ -27,6 +27,7 @@
 const CUtf32Utils::digitsMap CUtf32Utils::m_digitsMap(digitsMapFiller());
 const CUtf32Utils::charcharMap CUtf32Utils::m_foldSimpleCharsMap(foldSimpleCharsMapFiller());
 const CUtf32Utils::charstrMap CUtf32Utils::m_foldFullCharsMap(foldFullCharsMapFiller());
+bool CUtf32Utils::m_useTurkicCaseFolding = false;
 
 
 inline bool CUtf32Utils::IsDigit(char32_t chr)
@@ -151,5 +152,63 @@ int CUtf32Utils::NaturalCompare(const std::u32string& left, const std::u32string
     return -1;
 
   return 0; // strings are equal
+}
+
+std::u32string CUtf32Utils::FoldCase(const std::u32string& str)
+{
+  const char32_t* const strC = str.c_str();
+  const size_t len = str.length();
+
+  std::u32string result;
+  result.reserve(len); // rough estimate
+  
+  for (size_t pos = 0; pos < len; pos++)
+  {
+    const char32_t chr = strC[pos];
+    if (m_useTurkicCaseFolding && (chr == 0x49 || chr == 0x130))
+    {
+      if (chr == 0x49)
+        result.push_back(0x131);
+      else // chr == 0x130
+        result.push_back(0x69);
+    }
+    else
+    {
+      const charcharMap::const_iterator its = m_foldSimpleCharsMap.find(chr);
+      if (its != m_foldSimpleCharsMap.end())
+        result.push_back(its->second);
+      else
+      {
+        const charstrMap::const_iterator itf = m_foldFullCharsMap.find(chr);
+        if (itf != m_foldFullCharsMap.end())
+          result.append(itf->second.str, itf->second.len);
+        else
+          result.push_back(chr);
+      }
+    }
+  }
+
+  return result;
+}
+
+inline std::u32string CUtf32Utils::FoldCase(const char32_t chr)
+{
+  if (m_useTurkicCaseFolding)
+  {
+    if (chr == 0x49)
+      return std::u32string(1, 0x131);
+    if (chr == 0x130)
+      return std::u32string(1, 0x69);
+  }
+
+  const charcharMap::const_iterator its = m_foldSimpleCharsMap.find(chr);
+  if (its != m_foldSimpleCharsMap.end())
+    return std::u32string(1, its->second);
+
+  const charstrMap::const_iterator itf = m_foldFullCharsMap.find(chr);
+  if (itf != m_foldFullCharsMap.end())
+    return std::u32string(itf->second.str, itf->second.len);
+
+  return std::u32string(1, chr);
 }
 

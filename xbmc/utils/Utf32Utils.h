@@ -41,6 +41,21 @@ public:
    */
   static int NaturalCompare(const std::u32string& left, const std::u32string right);
 
+  /**
+   * Fold string for caseless comparison
+   * @warning Use result only for string matching, do not use result for displaying for human
+   * @param str string to process
+   * @return case-folded string
+   */
+  static std::u32string FoldCase(const std::u32string& str);
+  /**
+   * Fold unicode character for caseless comparison
+   * @warning Use result only for character matching, do not use result for displaying for human
+   * @param chr character to process
+   * @return case-folded character in string (possibly converted so several characters)
+   */
+  static std::u32string FoldCase(const char32_t chr);
+
 private:
   typedef std::map<const char32_t, const double> digitsMap;
   typedef digitsMap::value_type digitsMapElement;
@@ -64,5 +79,7 @@ private:
 
   static const charstrMap m_foldFullCharsMap;
   static charstrMap foldFullCharsMapFiller(void);
+
+  static bool m_useTurkicCaseFolding;
 };
 
