@@ -4089,7 +4089,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("CREATE TRIGGER tgrAlbumSong AFTER delete ON album FOR EACH ROW BEGIN delete from song where song.idAlbum = old.idAlbum; END");
     m_pDS->exec("CREATE TRIGGER tgrAlbumArtist AFTER delete ON album FOR EACH ROW BEGIN delete from album_artist where album_artist.idAlbum = old.idAlbum; END");
     m_pDS->exec("CREATE TRIGGER tgrAlbumGenre AFTER delete ON album FOR EACH ROW BEGIN delete from album_genre where album_genre.idAlbum = old.idAlbum; END");
-    m_pDS->exec("CREATE TRIGGER tgrAlbumAlbumInfo AFTER delete ON album FOR EACH ROW BEGIN delete from albuminfosong where albuminfosong.idAlbumInfo = old.idAlbum; END");
     m_pDS->exec("CREATE TRIGGER tgrArtistAlbum AFTER delete ON artist FOR EACH ROW BEGIN delete from album_artist where album_artist.idArtist = old.idArtist; END");
     m_pDS->exec("CREATE TRIGGER tgrArtistSong AFTER delete ON artist FOR EACH ROW BEGIN delete from song_artist where song_artist.idArtist = old.idArtist; END");
     m_pDS->exec("CREATE TRIGGER tgrArtistDiscography AFTER delete ON artist FOR EACH ROW BEGIN delete from discography where discography.idArtist = old.idArtist; END");
