@@ -293,7 +293,7 @@ namespace EPG
     bool NeedsSave(void) const;
 
     /*!
-     * @return True when this EPG is valid and can be updated, false otherwise
+     * @return True when this EPG is valid and can be updated, false otherwise.
      */
     bool IsValid(void) const;
   protected:

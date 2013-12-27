@@ -449,7 +449,7 @@ namespace EPG
     CStdString               m_strTitle;           /*!< title */
     CStdString               m_strPlotOutline;     /*!< plot outline */
     CStdString               m_strPlot;            /*!< plot */
-    std::vector<std::string> m_genre;            /*!< genre */
+    std::vector<std::string> m_genre;              /*!< genre */
     CStdString               m_strEpisodeName;     /*!< episode name */
     CStdString               m_strIconPath;        /*!< the path to the icon */
     CStdString               m_strFileNameAndPath; /*!< the filename and path */
