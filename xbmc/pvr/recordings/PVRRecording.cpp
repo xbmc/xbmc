@@ -156,7 +156,7 @@ void CPVRRecording::Serialize(CVariant& value) const
 
 void CPVRRecording::Reset(void)
 {
-  m_strRecordingId     = StringUtils::EmptyString;
+  m_strRecordingId     = StringUtils::Empty;
   m_iClientId          = 0;
   m_strChannelName     = StringUtils::EmptyString;
   m_strDirectory       = StringUtils::EmptyString;
