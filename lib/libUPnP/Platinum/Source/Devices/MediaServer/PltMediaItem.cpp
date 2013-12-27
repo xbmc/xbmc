@@ -510,7 +510,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     m_People.authors.FromDidl(children);
     
     children.Clear();
-    PLT_XmlHelper::GetChildren(entry, children, "actors", didl_namespace_upnp);
+    PLT_XmlHelper::GetChildren(entry, children, "actor", didl_namespace_upnp);
     m_People.actors.FromDidl(children);
 
     children.Clear();
