@@ -5427,7 +5427,7 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
 
         linestart = p + 1;
         CStdString strSQL=PrepareSQL("select idSong from songview "
-                     "where strArtist like '%s' and strTitle like '%s'", artist, title );
+                     "where strArtists like '%s' and strTitle like '%s'", artist, title );
 
         if ( !m_pDS->query(strSQL.c_str()) )
         {
