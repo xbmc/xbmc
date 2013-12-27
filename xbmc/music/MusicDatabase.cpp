@@ -234,29 +234,30 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create discography indexes");
     m_pDS->exec("CREATE INDEX idxDiscography_1 ON discography ( idArtist )\n");
 
-    // Trigger
-    CLog::Log(LOGINFO, "create album triggers");
-    m_pDS->exec("CREATE TRIGGER tgrAlbumSong AFTER delete ON album FOR EACH ROW BEGIN delete from song where song.idAlbum = old.idAlbum; END");
-    m_pDS->exec("CREATE TRIGGER tgrAlbumArtist AFTER delete ON album FOR EACH ROW BEGIN delete from album_artist where album_artist.idAlbum = old.idAlbum; END");
-    m_pDS->exec("CREATE TRIGGER tgrAlbumGenre AFTER delete ON album FOR EACH ROW BEGIN delete from album_genre where album_genre.idAlbum = old.idAlbum; END");
-    m_pDS->exec("CREATE TRIGGER tgrAlbumInfoSong AFTER delete ON album FOR EACH ROW BEGIN delete from albuminfosong where albuminfosong.idAlbumInfo = old.idAlbum; END");
-
-    CLog::Log(LOGINFO, "create artist triggers");
-    m_pDS->exec("CREATE TRIGGER tgrArtistAlbum AFTER delete ON artist FOR EACH ROW BEGIN delete from album_artist where album_artist.idArtist = old.idArtist; END");
-    m_pDS->exec("CREATE TRIGGER tgrArtistSong AFTER delete ON artist FOR EACH ROW BEGIN delete from song_artist where song_artist.idArtist = old.idArtist; END");
-    m_pDS->exec("CREATE TRIGGER tgrArtistDiscography AFTER delete ON artist FOR EACH ROW BEGIN delete from discography where discography.idArtist = old.idArtist; END");
-
-    CLog::Log(LOGINFO, "create song triggers");
-    m_pDS->exec("CREATE TRIGGER tgrSongArtist AFTER delete ON song FOR EACH ROW BEGIN delete from song_artist where song_artist.idSong = old.idSong; END");
-    m_pDS->exec("CREATE TRIGGER tgrSongGenre AFTER delete ON song FOR EACH ROW BEGIN delete from song_genre where song_genre.idSong = old.idSong; END");
-    m_pDS->exec("CREATE TRIGGER tgrSongKaraokedata AFTER delete ON song FOR EACH ROW BEGIN delete from karaokedata where karaokedata.idSong = old.idSong; END");
-
-    CLog::Log(LOGINFO, "create art table, index and triggers");
+    CLog::Log(LOGINFO, "create art table and index");
     m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
     m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
-    m_pDS->exec("CREATE TRIGGER delete_song AFTER DELETE ON song FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSong AND media_type='song'; END");
-    m_pDS->exec("CREATE TRIGGER delete_album AFTER DELETE ON album FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album'; END");
-    m_pDS->exec("CREATE TRIGGER delete_artist AFTER DELETE ON artist FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist'; END");
+
+    CLog::Log(LOGINFO, "create triggers");
+    m_pDS->exec("CREATE TRIGGER tgrDeleteAlbum AFTER delete ON album FOR EACH ROW BEGIN"
+                "  DELETE FROM song WHERE song.idAlbum = old.idAlbum;"
+                "  DELETE FROM album_artist WHERE album_artist.idAlbum = old.idAlbum;"
+                "  DELETE FROM album_genre WHERE album_genre.idAlbum = old.idAlbum;"
+                "  DELETE FROM albuminfosong WHERE albuminfosong.idAlbumInfo=old.idAlbum;"
+                "  DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album';"
+                " END");
+    m_pDS->exec("CREATE TRIGGER tgrDeleteArtist AFTER delete ON artist FOR EACH ROW BEGIN"
+                "  DELETE FROM album_artist WHERE album_artist.idArtist = old.idArtist;"
+                "  DELETE FROM song_artist WHERE song_artist.idArtist = old.idArtist;"
+                "  DELETE FROM discography WHERE discography.idArtist = old.idArtist;"
+                "  DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist';"
+                " END");
+    m_pDS->exec("CREATE TRIGGER tgrDeleteSong AFTER delete ON song FOR EACH ROW BEGIN"
+                "  DELETE FROM song_artist WHERE song_artist.idSong = old.idSong;"
+                "  DELETE FROM song_genre WHERE song_genre.idSong = old.idSong;"
+                "  DELETE FROM karaokedata WHERE karaokedata.idSong = old.idSong;"
+                "  DELETE FROM art WHERE media_id=old.idSong AND media_type='song';"
+                " END");
 
     // we create views last to ensure all indexes are rolled in
     CreateViews();
@@ -4050,7 +4051,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("DROP TABLE album");
     m_pDS->exec("DROP TABLE albuminfo");
     m_pDS->exec("ALTER TABLE album_new RENAME TO album");
-    m_pDS->exec("CREATE TRIGGER tgrAlbumInfoSong AFTER delete ON album FOR EACH ROW BEGIN delete from albuminfosong where albuminfosong.idAlbumInfo=old.idAlbum; END");
   }
   if (version < 40)
   {
@@ -4083,19 +4083,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("ALTER TABLE artist_new RENAME TO artist");
     m_pDS->exec("CREATE INDEX idxDiscography_1 ON discography ( idArtist )\n");
   }
-  if (version < 41)
-  {
-    // add triggers
-    m_pDS->exec("CREATE TRIGGER tgrAlbumSong AFTER delete ON album FOR EACH ROW BEGIN delete from song where song.idAlbum = old.idAlbum; END");
-    m_pDS->exec("CREATE TRIGGER tgrAlbumArtist AFTER delete ON album FOR EACH ROW BEGIN delete from album_artist where album_artist.idAlbum = old.idAlbum; END");
-    m_pDS->exec("CREATE TRIGGER tgrAlbumGenre AFTER delete ON album FOR EACH ROW BEGIN delete from album_genre where album_genre.idAlbum = old.idAlbum; END");
-    m_pDS->exec("CREATE TRIGGER tgrArtistAlbum AFTER delete ON artist FOR EACH ROW BEGIN delete from album_artist where album_artist.idArtist = old.idArtist; END");
-    m_pDS->exec("CREATE TRIGGER tgrArtistSong AFTER delete ON artist FOR EACH ROW BEGIN delete from song_artist where song_artist.idArtist = old.idArtist; END");
-    m_pDS->exec("CREATE TRIGGER tgrArtistDiscography AFTER delete ON artist FOR EACH ROW BEGIN delete from discography where discography.idArtist = old.idArtist; END");
-    m_pDS->exec("CREATE TRIGGER tgrSongArtist AFTER delete ON song FOR EACH ROW BEGIN delete from song_artist where song_artist.idSong = old.idSong; END");
-    m_pDS->exec("CREATE TRIGGER tgrSongGenre AFTER delete ON song FOR EACH ROW BEGIN delete from song_genre where song_genre.idSong = old.idSong; END");
-    m_pDS->exec("CREATE TRIGGER tgrSongKaraokedata AFTER delete ON song FOR EACH ROW BEGIN delete from karaokedata where karaokedata.idSong = old.idSong; END");
-  }
   if (version < 42)
   {
     m_pDS->exec("ALTER TABLE album_artist ADD strArtist text\n");
@@ -4114,6 +4101,42 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("UPDATE song_artist SET strJoinPhrase = '' WHERE 100*idSong+iOrder IN (select 100*idSong+max(iOrder) FROM song_artist GROUP BY idSong)");
     m_pDS->exec("UPDATE album_artist SET strJoinPhrase = '' WHERE 100*idAlbum+iOrder IN (select 100*idAlbum+max(iOrder) FROM album_artist GROUP BY idAlbum)");
   }
+  if (version < 43)
+  { // (re)create triggers
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrAlbumSong");
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrAlbumArtist");
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrAlbumGenre");
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrAlbumInfoSong");
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrArtistAlbum");
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrArtistSong");
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrArtistDiscography");
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrSongArtist");
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrSongGenre");
+    m_pDS->exec("DROP TRIGGER IF EXISTS tgrSongKaraokedata");
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_song");
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_album");
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_artist");
+
+    m_pDS->exec("CREATE TRIGGER delete_album AFTER delete ON album FOR EACH ROW BEGIN"
+                "  DELETE FROM song WHERE song.idAlbum = old.idAlbum;"
+                "  DELETE FROM album_artist WHERE album_artist.idAlbum = old.idAlbum;"
+                "  DELETE FROM album_genre WHERE album_genre.idAlbum = old.idAlbum;"
+                "  DELETE FROM albuminfosong WHERE albuminfosong.idAlbumInfo=old.idAlbum;"
+                "  DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album';"
+                " END");
+    m_pDS->exec("CREATE TRIGGER delete_artist AFTER delete ON artist FOR EACH ROW BEGIN"
+                "  DELETE FROM album_artist WHERE album_artist.idArtist = old.idArtist;"
+                "  DELETE FROM song_artist WHERE song_artist.idArtist = old.idArtist;"
+                "  DELETE FROM discography WHERE discography.idArtist = old.idArtist;"
+                "  DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist';"
+                " END");
+    m_pDS->exec("CREATE TRIGGER delete_song AFTER delete ON song FOR EACH ROW BEGIN"
+                "  DELETE FROM song_artist WHERE song_artist.idSong = old.idSong;"
+                "  DELETE FROM song_genre WHERE song_genre.idSong = old.idSong;"
+                "  DELETE FROM karaokedata WHERE karaokedata.idSong = old.idSong;"
+                "  DELETE FROM art WHERE media_id=old.idSong AND media_type='song';"
+                " END");
+  }
   // always recreate the views after any table change
   CreateViews();
 
@@ -4122,7 +4145,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
 int CMusicDatabase::GetMinVersion() const
 {
-  return 42;
+  return 43;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
