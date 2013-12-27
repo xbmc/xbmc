@@ -519,16 +519,25 @@ bool CGUIWindowPVRCommon::ActionPlayChannel(CFileItem *item)
 
 bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
 {
+  if (!item || !item->HasEPGInfoTag())
+    return false;
+
   CPVRChannelPtr channel;
-  if (item && item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
-    channel = item->GetEPGInfoTag()->ChannelTag();
+  CEpgInfoTag *epgTag = item->GetEPGInfoTag();
+  if (epgTag->HasPVRChannel())
+    channel = epgTag->ChannelTag();
   
   if (!channel || !g_PVRManager.CheckParentalLock(*channel))
     return false;
   
-  CFileItem channelItem = CFileItem(*channel);
+  CFileItem fileItem;
+  if (epgTag->HasRecording())
+    fileItem = CFileItem(*epgTag->Recording());
+  else
+    fileItem = CFileItem(*channel);
+
   g_application.SwitchToFullScreen();
-  if (!PlayFile(&channelItem))
+  if (!PlayFile(&fileItem))
   {
     // CHANNELNAME could not be played. Check the log for details.
     CStdString msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str());

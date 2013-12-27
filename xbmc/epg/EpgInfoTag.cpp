@@ -122,7 +122,9 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_startTime(tag.m_startTime),
     m_endTime(tag.m_endTime),
     m_firstAired(tag.m_firstAired),
+    m_strRecordingId(tag.m_strRecordingId),
     m_timer(tag.m_timer),
+    m_recording(tag.m_recording),
     m_epg(tag.m_epg),
     m_pvrChannel(tag.m_pvrChannel)
 {
@@ -131,6 +133,7 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
 CEpgInfoTag::~CEpgInfoTag()
 {
   ClearTimer();
+  ClearRecording();
 }
 
 bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
@@ -159,7 +162,8 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
           m_endTime            == right.m_endTime &&
-          m_pvrChannel         == right.m_pvrChannel);
+          m_pvrChannel         == right.m_pvrChannel &&
+          m_strRecordingId     == right.m_strRecordingId);
 }
 
 bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
@@ -195,6 +199,8 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_endTime            = other.m_endTime;
   m_firstAired         = other.m_firstAired;
   m_timer              = other.m_timer;
+  m_strRecordingId     = other.m_strRecordingId;
+  m_recording          = other.m_recording;
   m_epg                = other.m_epg;
   m_pvrChannel         = other.m_pvrChannel;
 
@@ -221,6 +227,8 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
   value["hastimer"] = HasTimer();
+  value["recordingid"] = m_strRecordingId;
+  value["hasrecording"] = HasRecording();
   value["isactive"] = IsActive();
   value["wasactive"] = WasActive();
 }
@@ -794,6 +802,29 @@ CStdString CEpgInfoTag::Path(void) const
   return retVal;
 }
 
+void CEpgInfoTag::SetRecordingId(const std::string &strRecordingId)
+{
+  CSingleLock lock(m_critSection);
+  if (m_strRecordingId != strRecordingId)
+  {
+    m_strRecordingId = strRecordingId;
+    m_bChanged = true;
+  }
+}
+
+const std::string& CEpgInfoTag::RecordingId(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_strRecordingId;
+}
+
+bool CEpgInfoTag::HasRecordingId(void) const
+{
+  CSingleLock lock(m_critSection);
+  return !m_strRecordingId.empty();
+}
+
+
 //void CEpgInfoTag::SetTimer(CPVRTimerInfoTagPtr newTimer)
 //{
 //  CPVRTimerInfoTagPtr oldTimer;
@@ -869,6 +900,7 @@ void CEpgInfoTag::Update(const EPG_TAG &tag)
   SetEpisodeName(tag.strEpisodeName);
   SetStarRating(tag.iStarRating);
   SetIcon(tag.strIconPath);
+  SetRecordingId(tag.strRecordingId);
 }
 
 bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = true */)
@@ -895,7 +927,8 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
         EpgID()              != tag.EpgID() ||
         m_pvrChannel         != tag.m_pvrChannel ||
-        m_genre              != tag.m_genre
+        m_genre              != tag.m_genre ||
+        m_strRecordingId     != tag.m_strRecordingId
     );
     if (bUpdateBroadcastId)
       bChanged = bChanged || m_iBroadcastId != tag.m_iBroadcastId;
@@ -933,6 +966,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_iSeriesNumber      = tag.m_iSeriesNumber;
       m_strEpisodeName     = tag.m_strEpisodeName;
       m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
+      m_strRecordingId     = tag.m_strRecordingId;
 
       m_bChanged = true;
     }
@@ -1015,4 +1049,37 @@ void CEpgInfoTag::ClearTimer(void)
 
   if (previousTag)
     previousTag->ClearEpgTag();
+}
+
+void CEpgInfoTag::SetRecording(CPVRRecordingPtr recording)
+{
+  CSingleLock lock(m_critSection);
+  if (m_recording != recording)
+  {
+    m_recording = recording;
+    m_bChanged = true;
+  }
+}
+
+void CEpgInfoTag::ClearRecording(void)
+{
+  CSingleLock lock(m_critSection);
+  if (m_recording)
+  {
+    CPVRRecordingPtr emptyRecording;
+    m_recording = emptyRecording;
+    m_bChanged = true;
+  }
+}
+
+bool CEpgInfoTag::HasRecording(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_recording != NULL;
+}
+
+CPVRRecordingPtr CEpgInfoTag::Recording(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_recording;
 }

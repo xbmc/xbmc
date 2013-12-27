@@ -339,6 +339,8 @@ namespace EPG
 
     bool IsRemovableTag(const EPG::CEpgInfoTag &tag) const;
 
+    void UpdateRecording(CEpgInfoTagPtr tag);
+
     std::map<CDateTime, CEpgInfoTagPtr> m_tags;
     std::map<int, CEpgInfoTagPtr>       m_changedTags;
     std::map<int, CEpgInfoTagPtr>       m_deletedTags;

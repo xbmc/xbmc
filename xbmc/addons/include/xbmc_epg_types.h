@@ -88,6 +88,7 @@ extern "C" {
     int           iEpisodeNumber;      /*!< @brief (optional) episode number */
     int           iEpisodePartNumber;  /*!< @brief (optional) episode part number */
     const char *  strEpisodeName;      /*!< @brief (optional) episode name */
+    const char *  strRecordingId;      /*!< @brief (optional) unique id of the recording on the client which represents this event */
   } ATTRIBUTE_PACKED EPG_TAG;
 
 #ifdef __cplusplus
