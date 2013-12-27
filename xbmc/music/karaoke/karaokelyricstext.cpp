@@ -260,7 +260,9 @@ void CKaraokeLyricsText::Render()
     case STATE_PLAYING_PARAGRAPH:
       if ( songTime >= m_lyrics[ m_index ].timing )
       {
-        m_index++;
+        while ( songTime >= m_lyrics[ m_index ].timing && m_index <= m_indexEndPara )
+          m_index++;
+
         updateText = true;
 
         if ( m_index > m_indexEndPara )
