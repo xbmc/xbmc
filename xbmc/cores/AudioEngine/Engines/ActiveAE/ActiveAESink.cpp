@@ -438,7 +438,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     default: // we are in no state, should not happen
-      CLog::Log(LOGERROR, "CActiveSink::%s - no valid state: %d", __FUNCTION__, m_state);
+      CLog::Log(LOGERROR, "CActiveAESink::%s - no valid state: %d", __FUNCTION__, m_state);
       return;
     }
   } // for
@@ -639,7 +639,7 @@ void CActiveAESink::OpenSink()
   if (driver.empty() && m_sink)
     driver = m_sink->GetName();
 
-  CLog::Log(LOGINFO, "CActiveAE::OpenSink - initialize sink");
+  CLog::Log(LOGINFO, "CActiveAESink::OpenSink - initialize sink");
 
   if (m_sink)
   {
@@ -658,12 +658,12 @@ void CActiveAESink::OpenSink()
 
   // WARNING: this changes format and does not use passthrough
   m_sinkFormat = m_requestedFormat;
-  CLog::Log(LOGDEBUG, "CActiveAE::OpenSink - trying to open device %s", device.c_str());
+  CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - trying to open device %s", device.c_str());
   m_sink = CAESinkFactory::Create(device, m_sinkFormat, passthrough);
 
   if (!m_sink)
   {
-    CLog::Log(LOGERROR, "CActiveAE::OpenSink - no sink was returned");
+    CLog::Log(LOGERROR, "CActiveAESink::OpenSink - no sink was returned");
     m_extError = true;
     return;
   }
@@ -682,7 +682,7 @@ void CActiveAESink::OpenSink()
     m_sinkFormat.m_dataFormat = AE_FMT_S32NE;
 #endif
 
-  CLog::Log(LOGDEBUG, "CActiveAE::OpenSink - %s Initialized:", m_sink->GetName());
+  CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - %s Initialized:", m_sink->GetName());
   CLog::Log(LOGDEBUG, "  Output Device : %s", m_deviceFriendlyName.c_str());
   CLog::Log(LOGDEBUG, "  Sample Rate   : %d", m_sinkFormat.m_sampleRate);
   CLog::Log(LOGDEBUG, "  Sample Format : %s", CAEUtil::DataFormatToStr(m_sinkFormat.m_dataFormat));
