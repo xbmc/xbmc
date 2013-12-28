@@ -24,7 +24,7 @@
 class CAndroidStorageProvider : public IStorageProvider
 {
 public:
-  CAndroidStorageProvider() { }
+  CAndroidStorageProvider();
   virtual ~CAndroidStorageProvider() { }
 
   virtual void Initialize() { }
@@ -38,4 +38,8 @@ public:
   virtual std::vector<CStdString> GetDiskUsage();
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
+
+private:
+  std::string unescape(const std::string& str);
+  unsigned int m_removableLength;
 };
