@@ -504,9 +504,6 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
   m_vdpauConfig.numRenderBuffers = surfaces;
   m_decoderThread = CThread::GetCurrentThreadId();
 
-  if ((avctx->codec_id == AV_CODEC_ID_MPEG4) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
-    return false;
-
   if (!CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
     return false;
 
