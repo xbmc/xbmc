@@ -685,8 +685,16 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   if (m_fProcStat == NULL)
     return false;
 
+#ifdef TARGET_ANDROID
+  // Just another (vanilla) NDK quirk:
+  // rewind + fflush do not actually flush the buffers,
+  // the same initial content is returned rather than re-read
+  fclose(m_fProcStat);
+  m_fProcStat = fopen("/proc/stat", "r");
+#else
   rewind(m_fProcStat);
   fflush(m_fProcStat);
+#endif
 
   char buf[256];
   if (!fgets(buf, sizeof(buf), m_fProcStat))
