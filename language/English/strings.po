@@ -14705,7 +14705,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36424"
-msgid "No description available"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr ""
 
 #: system/settings/settings.xml

@@ -1027,7 +1027,7 @@
         </setting>
         <setting id="epg.selectaction" type="integer" label="22079" help="36424">
           <level>1</level>
-          <default>0</default> <!-- EPG_SELECT_ACTION_CONTEXT_MENU -->
+          <default>2</default> <!-- EPG_SELECT_ACTION_INFO -->
           <constraints>
             <options>
               <option label="36425">0</option> <!-- EPG_SELECT_ACTION_CONTEXT_MENU -->
