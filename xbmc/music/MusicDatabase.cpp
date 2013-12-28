@@ -1784,7 +1784,7 @@ int CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist,
   try
   {
     CStdString strSQL=PrepareSQL("select idSong from songview "
-                                "where strArtist like '%s' and strAlbum like '%s' and "
+                                "where strArtists like '%s' and strAlbum like '%s' and "
                                 "strTitle like '%s'",strArtist.c_str(),strAlbum.c_str(),strTitle.c_str());
 
     if (!m_pDS->query(strSQL.c_str())) return false;
