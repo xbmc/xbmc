@@ -4098,8 +4098,8 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->next();
     }
     // drop the last separator if more than one
-    m_pDS->exec("UPDATE song_artist SET strJoinPhrase = '' WHERE 100*idSong+iOrder IN (select 100*idSong+max(iOrder) FROM song_artist GROUP BY idSong)");
-    m_pDS->exec("UPDATE album_artist SET strJoinPhrase = '' WHERE 100*idAlbum+iOrder IN (select 100*idAlbum+max(iOrder) FROM album_artist GROUP BY idAlbum)");
+    m_pDS->exec("UPDATE song_artist SET strJoinPhrase = '' WHERE 100*idSong+iOrder IN (SELECT id FROM (SELECT 100*idSong+max(iOrder) AS id FROM song_artist GROUP BY idSong) AS sub)");
+    m_pDS->exec("UPDATE album_artist SET strJoinPhrase = '' WHERE 100*idAlbum+iOrder IN (SELECT id FROM (SELECT 100*idAlbum+max(iOrder) AS id FROM album_artist GROUP BY idAlbum) AS sub)");
   }
   if (version < 43)
   { // (re)create triggers
