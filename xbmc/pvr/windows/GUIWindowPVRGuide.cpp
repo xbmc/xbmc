@@ -369,10 +369,21 @@ bool CGUIWindowPVRGuide::OnClickList(CGUIMessage &message)
     {
       case ACTION_SELECT_ITEM:
       case ACTION_MOUSE_LEFT_CLICK:
-        if (!g_advancedSettings.m_bPVRShowEpgInfoOnEpgItemSelect && pItem->GetEPGInfoTag()->IsActive())
-          ActionPlayEpg(pItem.get());
-        else
-          ShowEPGInfo(pItem.get());
+        switch(CSettings::Get().GetInt("epg.selectaction"))
+        {
+          case EPG_SELECT_ACTION_CONTEXT_MENU:
+            m_parent->OnPopupMenu(iItem);
+            break;
+          case EPG_SELECT_ACTION_SWITCH:
+            ActionPlayEpg(pItem.get());
+            break;
+          case EPG_SELECT_ACTION_INFO:
+            ShowEPGInfo(pItem.get());
+            break;
+          case EPG_SELECT_ACTION_RECORD:
+            ActionRecord(pItem.get());
+            break;
+        }
         break;
       case ACTION_SHOW_INFO:
         ShowEPGInfo(pItem.get());
