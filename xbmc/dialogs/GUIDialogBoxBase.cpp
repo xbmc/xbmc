@@ -85,7 +85,7 @@ void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
   std::string text = StringUtils::Join(lines, "\n");
   if (text != m_text)
   {
-    m_text = StringUtils::Join(lines, "\n");
+    m_text = text;
     SetInvalid();
   }
 }
