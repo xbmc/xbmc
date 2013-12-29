@@ -235,6 +235,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::KEEPCONFIG:
           m_extKeepConfig = *(unsigned int*)msg->data;
           return;
+        case CActiveAEControlProtocol::DISPLAYRESET:
+          return;
         default:
           break;
         }
@@ -423,6 +425,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             m_state = AE_TOP_CONFIGURED_SUSPEND;
             m_extDeferData = true;
           }
+          msg->Reply(CActiveAEControlProtocol::ACC);
           return;
         case CActiveAEControlProtocol::PAUSESTREAM:
           CActiveAEStream *stream;
@@ -631,6 +634,17 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           {
             (*buffer)->Return();
           }
+          return;
+        default:
+          break;
+        }
+      }
+      else if (port == NULL) // timeout
+      {
+        switch (signal)
+        {
+        case CActiveAEControlProtocol::TIMEOUT:
+          m_extTimeout = 1000;
           return;
         default:
           break;
@@ -2238,12 +2252,27 @@ void CActiveAE::KeepConfiguration(unsigned int millis)
 
 void CActiveAE::OnLostDevice()
 {
-//  m_controlPort.SendOutMessage(CActiveAEControlProtocol::DISPLAYLOST);
+  Message *reply;
+  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::DISPLAYLOST,
+                                                 &reply,
+                                                 5000))
+  {
+    bool success = reply->signal == CActiveAEControlProtocol::ACC ? true : false;
+    reply->Release();
+    if (!success)
+    {
+      CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "ActiveAE::%s - timed out", __FUNCTION__);
+  }
 }
 
 void CActiveAE::OnResetDevice()
 {
-//  m_controlPort.SendOutMessage(CActiveAEControlProtocol::DISPLAYRESET);
+  m_controlPort.SendOutMessage(CActiveAEControlProtocol::DISPLAYRESET);
 }
 
 //-----------------------------------------------------------------------------
