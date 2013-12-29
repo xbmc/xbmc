@@ -199,30 +199,44 @@ bool CGUIInfoLabel::IsConstant() const
   return m_info.size() == 0 || (m_info.size() == 1 && m_info[0].m_info == 0);
 }
 
-CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
+typedef CStdString (*StringReplacerFunc) (const CStdString &str);
+
+void ReplaceString(CStdString &work, const std::string &str, StringReplacerFunc func)
 {
-  CStdString work(label);
-  // Replace all $LOCALIZE[number] with the real string
-  size_t pos1 = work.find("$LOCALIZE[");
+  // Replace all $str[number] with the real string
+  size_t pos1 = work.find("$" + str + "[");
   while (pos1 != std::string::npos)
   {
-    size_t pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 10);
-    if (pos2 != std::string::npos)
+    size_t pos2 = pos1 + str.length() + 2;
+    size_t pos3 = StringUtils::FindEndBracket(work, '[', ']', pos2);
+    if (pos3 != std::string::npos)
     {
       CStdString left = work.substr(0, pos1);
-      CStdString right = work.substr(pos2 + 1);
-      CStdString replace = g_localizeStringsTemp.Get(atoi(work.substr(pos1 + 10).c_str()));
-      if (replace == "")
-         replace = g_localizeStrings.Get(atoi(work.substr(pos1 + 10).c_str()));
+      CStdString right = work.substr(pos3 + 1);
+      CStdString replace = func(work.substr(pos2, pos3 - pos2));
       work = left + replace + right;
     }
     else
     {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
-      return "";
+      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", work.c_str());
+      return;
     }
-    pos1 = work.find("$LOCALIZE[", pos1);
+    pos1 = work.find("$" + str + "[", pos1);
   }
+}
+
+CStdString LocalizeReplacer(const CStdString &str)
+{
+  CStdString replace = g_localizeStringsTemp.Get(atoi(str.c_str()));
+  if (replace == "")
+    replace = g_localizeStrings.Get(atoi(str.c_str()));
+  return replace;
+}
+
+CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
+{
+  CStdString work(label);
+  ReplaceString(work, "LOCALIZE", LocalizeReplacer);
   return work;
 }
 
