@@ -690,9 +690,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize device passthrough %d hwdecode %d",
      m_Passthrough, m_HWDecode);
 
-  /* dummy call to inform PiAudioAE that audo is active */
-  CAEFactory::MakeStream((enum AEDataFormat)0, 0, 0, (CAEChannelInfo)0, 0);
-
   return true;
 }
 
@@ -763,9 +760,6 @@ bool COMXAudio::Deinitialize()
   m_last_pts      = DVD_NOPTS_VALUE;
   m_submitted     = 0.0f;
   m_maxLevel      = 0.0f;
-
-  /* dummy call to inform PiAudioAE that audo is inactive */
-  CAEFactory::FreeStream(0);
 
   return true;
 }
