@@ -242,10 +242,16 @@ CStdString AddonReplacer(const CStdString &str)
   return CAddonMgr::Get().GetString(id, stringid);
 }
 
+CStdString NumberReplacer(const CStdString &str)
+{
+  return str;
+}
+
 CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
 {
   CStdString work(label);
   ReplaceString(work, "LOCALIZE", LocalizeReplacer);
+  ReplaceString(work, "NUMBER", NumberReplacer);
   return work;
 }
 
