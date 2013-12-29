@@ -33,6 +33,16 @@
 
 namespace PythonBindings
 {
+  /**
+   * This call will convert the python object passed to a string. The object
+   * passed must be a python str or unicode object unless coerceToString is
+   * true. If coerceToString is true then the type must be castable to a string
+   * using the python call str(pObject).
+   *
+   * This method will handle a 'None' that's passed in. If 'None' is passed then
+   * the resulting buf will contain the value of XBMCAddon::emptyString (which 
+   * is simply a std::string instantiated with the default constructor.
+   */
   void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString = false,
                               const char* pos = "unknown", 
                               const char* methodname = "unknown") throw (XBMCAddon::WrongTypeException);

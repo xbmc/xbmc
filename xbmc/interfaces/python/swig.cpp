@@ -21,6 +21,7 @@
 #include "LanguageHook.h"
 #include "swig.h"
 #include "utils/StringUtils.h"
+#include "interfaces/legacy/AddonString.h"
 
 #include <string>
 
@@ -46,6 +47,14 @@ namespace PythonBindings
   void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString,
                               const char* argumentName, const char* methodname) throw (XBMCAddon::WrongTypeException)
   {
+    // It's okay for a string to be "None". In this case the buf returned
+    // will be the emptyString.
+    if (pObject == Py_None)
+    {
+      buf = XBMCAddon::emptyString;
+      return;
+    }
+
     // TODO: UTF-8: Does python use UTF-16?
     //              Do we need to convert from the string charset to UTF-8
     //              for non-unicode data?
