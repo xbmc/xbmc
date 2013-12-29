@@ -121,8 +121,8 @@ clean:
 	rm -rf xbmc/obj
 	rm -rf xbmc/res/raw
 	rm -rf tmp
-	rm xbmc/res/drawable/splash.png
-	rm xbmc/src/R.java
-	rm xbmc/classes.dex
+	rm -f xbmc/res/drawable/splash.png
+	rm -f xbmc/src/R.java
+	rm -f xbmc/classes.dex
 
 .PHONY: arm armeabi-v7a x86 force extras libs
