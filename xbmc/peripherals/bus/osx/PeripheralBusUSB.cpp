@@ -129,7 +129,7 @@ void CPeripheralBusUSB::DeviceDetachCallback(void *refCon, io_service_t service,
     while(it != privateDataRef->refCon->m_scan_results.m_results.end())
     {
       if (privateDataRef->result.m_strLocation == it->m_strLocation)
-        privateDataRef->refCon->m_scan_results.m_results.erase(it);
+        it = privateDataRef->refCon->m_scan_results.m_results.erase(it);
       else
         ++it;
     }
