@@ -39,6 +39,8 @@ SRCS += AESinkFactory.cpp
 SRCS += Sinks/AESinkNULL.cpp
 SRCS += Sinks/AESinkProfiler.cpp
 
+SRCS += Sinks/AESinkPi.cpp
+
 SRCS += Engines/ActiveAE/ActiveAE.cpp
 SRCS += Engines/ActiveAE/ActiveAESink.cpp
 SRCS += Engines/ActiveAE/ActiveAEStream.cpp

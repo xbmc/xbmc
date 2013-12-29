@@ -42,6 +42,10 @@ CRBP::~CRBP()
 
 bool CRBP::Initialize()
 {
+  CSingleLock lock (m_critSection);
+  if (m_initialized)
+    return true;
+
   m_initialized = m_DllBcmHost->Load();
   if(!m_initialized)
     return false;

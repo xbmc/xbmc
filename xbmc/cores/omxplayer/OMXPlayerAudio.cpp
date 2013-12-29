@@ -511,12 +511,12 @@ AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
   /* check our audio capabilties */
 
   /* pathrought is overriding hw decode*/
-  if(hints.codec == AV_CODEC_ID_AC3 && CAEFactory::SupportsRaw(AE_FMT_AC3))
+  if(hints.codec == AV_CODEC_ID_AC3 && CAEFactory::SupportsRaw(AE_FMT_AC3) && !CSettings::Get().GetBool("audiooutput.dualaudio"))
   {
     dataFormat = AE_FMT_AC3;
     m_passthrough = true;
   }
-  if(hints.codec == AV_CODEC_ID_DTS && CAEFactory::SupportsRaw(AE_FMT_DTS))
+  if(hints.codec == AV_CODEC_ID_DTS && CAEFactory::SupportsRaw(AE_FMT_DTS) && !CSettings::Get().GetBool("audiooutput.dualaudio"))
   {
     dataFormat = AE_FMT_DTS;
     m_passthrough = true;

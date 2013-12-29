@@ -37,6 +37,7 @@
 #if defined(TARGET_RASPBERRY_PI)
 #include "DllBCM.h"
 #include "OMXCore.h"
+#include "threads/CriticalSection.h"
 
 class CRBP
 {
@@ -63,6 +64,7 @@ private:
   int        m_gpu_mem;
   COMXCore   *m_OMX;
   class DllLibOMXCore;
+  CCriticalSection m_critSection;
 };
 
 extern CRBP g_RBP;
