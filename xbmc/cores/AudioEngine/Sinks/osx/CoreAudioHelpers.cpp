@@ -18,9 +18,7 @@
  *
  */
 
-#include "CoreAudioAEHAL.h"
-#include "CoreAudioAE.h"
-#include "utils/log.h"
+#include "CoreAudioHelpers.h"
 
 #include <sstream>
 

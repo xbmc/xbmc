@@ -20,7 +20,6 @@
  */
 
 #include <string>
-#include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
 
 // Helper Functions
