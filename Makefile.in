@@ -556,10 +556,10 @@ ifeq ($(findstring osx,@ARCH@), osx)
 else
 install: install-binaries install-arch install-datas
 
-apk: install
+apk: uninstall apk-clean install
 	make -C tools/android/packaging
 
-apk-clean: 
+apk-clean:
 	make -C tools/android/packaging clean
 
 install-binaries: install-scripts
