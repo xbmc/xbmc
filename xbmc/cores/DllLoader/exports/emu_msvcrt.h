@@ -41,9 +41,9 @@ typedef fpos_t fpos64_t;
 
 typedef void ( *PFV)(void);
 
-#define __IS_STDIN_STREAM(stream)   (stream == stdin  || stream->_file == stdin->_file || stream->_file == 0)
-#define __IS_STDOUT_STREAM(stream)  (stream == stdout || stream->_file == stdout->_file || stream->_file == 1)
-#define __IS_STDERR_STREAM(stream)  (stream == stderr || stream->_file == stderr->_file || stream->_file == 2)
+#define __IS_STDIN_STREAM(stream)  (stream == stdin || fileno(stream) == fileno(stdin) || fileno(stream) == 0)
+#define __IS_STDOUT_STREAM(stream) (stream == stdout || fileno(stream) == fileno(stdout) || fileno(stream) == 1)
+#define __IS_STDERR_STREAM(stream) (stream == stderr || fileno(stream) == fileno(stderr) || fileno(stream) == 2)
 #define IS_STDIN_STREAM(stream)     (stream != NULL && __IS_STDIN_STREAM(stream))
 #define IS_STDOUT_STREAM(stream)    (stream != NULL && __IS_STDOUT_STREAM(stream))
 #define IS_STDERR_STREAM(stream)    (stream != NULL && __IS_STDERR_STREAM(stream))

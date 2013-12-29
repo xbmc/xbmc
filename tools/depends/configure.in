@@ -129,12 +129,12 @@ case $host in
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
   ;;
-  *i686*-linux-gnu*)
+  *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_os="linux"
   ;;
-  x86_64*-linux-gnu*)
+  x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_cflags="-fPIC -DPIC"

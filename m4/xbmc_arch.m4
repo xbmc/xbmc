@@ -2,10 +2,10 @@ AC_DEFUN([XBMC_SETUP_ARCH_DEFINES],[
 
 # host detection and setup
 case $host in
-  i*86*-linux-gnu*)
+  i*86*-linux-gnu*|i*86*-*-linux-uclibc*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
-  x86_64-*-linux-gnu*)
+  x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
   i386-*-freebsd*)
@@ -23,10 +23,10 @@ case $host in
   powerpc-apple-darwin*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
-  powerpc-*-linux-gnu*)
+  powerpc-*-linux-gnu*|powerpc-*-linux-uclibc*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_POWERPC")
      ;;
-  powerpc64-*-linux-gnu*)
+  powerpc64-*-linux-gnu*|powerpc64-*-linux-uclibc*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_POWERPC64")
      ;;
   arm*-*-linux-gnu*)
