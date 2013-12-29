@@ -675,6 +675,7 @@ void CGUITextLayout::Reset()
 {
   m_lines.clear();
   m_lastText.clear();
+  m_lastUtf8Text.clear();
   m_textWidth = m_textHeight = 0;
 }
 
