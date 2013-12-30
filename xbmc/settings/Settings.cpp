@@ -831,6 +831,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("fonts", GUIFontManager::SettingOptionsFontsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("languages", CLangInfo::SettingOptionsLanguagesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("pvrstartlastchannel", PVR::CPVRManager::SettingOptionsPvrStartLastChannelFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("pvrepgdaystodisplay", PVR::CPVRManager::SettingOptionsPvrEPGDaysToDisplayFiller);
   m_settingsManager->RegisterSettingOptionsFiller("pvrepgpastdaystodisplay", PVR::CPVRManager::SettingOptionsPvrEPGPastDaysToDisplayFiller);
   m_settingsManager->RegisterSettingOptionsFiller("refreshchangedelays", CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller);
   m_settingsManager->RegisterSettingOptionsFiller("refreshrates", CDisplaySettings::SettingOptionsRefreshRatesFiller);

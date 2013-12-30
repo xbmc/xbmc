@@ -1003,13 +1003,9 @@
           <level>1</level>
           <default>3</default>
           <constraints>
-            <minimum>1</minimum>
-            <step>1</step>
-            <maximum>14</maximum>
+            <options>pvrepgdaystodisplay</options>
           </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>17999</formatlabel>
-          </control>
+          <control type="spinner" format="string" />
         </setting>
         <setting id="epg.pastdaystodisplay" type="integer" label="19183" help="36429">
           <level>1</level>

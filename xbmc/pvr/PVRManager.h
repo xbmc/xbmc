@@ -122,6 +122,14 @@ namespace PVR
      */
     static void SettingOptionsPvrEPGPastDaysToDisplayFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
 
+    /*!
+     * @brief Fills the option list for the setting epg.daystodisplay
+     * @param setting Setting
+     * @param list Option list
+     * @param current Current index
+     */
+    static void SettingOptionsPvrEPGDaysToDisplayFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+
     virtual void OnSettingChanged(const CSetting *setting);
     virtual void OnSettingAction(const CSetting *setting);
 
