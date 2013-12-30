@@ -318,6 +318,7 @@ namespace XBMCAddon
               info.strName = actor;
               if (castEntry.which() == second)
                 info.strRole = (const String&)(castEntry.later().second());
+              item->GetVideoInfoTag()->m_cast.push_back(info);
             }
           }
           else if (key == "artist")
