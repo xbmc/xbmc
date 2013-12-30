@@ -38,6 +38,11 @@
           <requirement negated="true">HAS_GL</requirement>
         </setting>
       </group>
+      <group id="3">
+        <setting id="videoscreen.vsync">
+          <default>2</default> <!-- VSYNC_ALWAYS -->
+        </setting>
+      </group>
     </category>
     <category id="audiooutput" label="772" help="36360">
       <group id="1">
