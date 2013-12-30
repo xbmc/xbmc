@@ -482,6 +482,8 @@
   <Favourites>
     <keyboard>
       <backspace>Close</backspace>
+      <u>MoveItemUp</u>
+      <d>MoveItemDown</d>
     </keyboard>
   </Favourites>
   <NumericInput>
