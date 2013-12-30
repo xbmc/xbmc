@@ -431,7 +431,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
   CXBMCTinyXML doc;
   TiXmlElement node("settings");
   doc.InsertEndChild(node);
-  for (map<CStdString, PeripheralDeviceSetting>::const_iterator itr = m_settings.begin(); itr != m_settings.end(); itr++)
+  for (map<CStdString, PeripheralDeviceSetting>::const_iterator itr = m_settings.begin(); itr != m_settings.end(); ++itr)
   {
     TiXmlElement nodeSetting("setting");
     nodeSetting.SetAttribute("id", itr->first.c_str());
@@ -477,7 +477,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
 
   if (!bExiting)
   {
-    for (set<CStdString>::const_iterator it = m_changedSettings.begin(); it != m_changedSettings.end(); it++)
+    for (set<CStdString>::const_iterator it = m_changedSettings.begin(); it != m_changedSettings.end(); ++it)
       OnSettingChanged(*it);
   }
   m_changedSettings.clear();
