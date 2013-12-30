@@ -20,6 +20,9 @@
 
 #include "AEResampleFactory.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResampleFFMPEG.h"
+#if defined(TARGET_RASPBERRY_PI)
+  #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResamplePi.h"
+#endif
 
 namespace ActiveAE
 {
