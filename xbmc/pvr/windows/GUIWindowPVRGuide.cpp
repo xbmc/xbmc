@@ -87,6 +87,8 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     return;
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
 
+  buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* switch channel */
+
   CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem.get());
   if (timer && timer->HasPVRTimerInfoTag())
   {
@@ -104,14 +106,15 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* epg info */
-  buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* switch channel */
   buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* find similar program */
+
   if (m_iGuideView == GUIDE_VIEW_TIMELINE)
   {
     buttons.Add(CONTEXT_BUTTON_BEGIN, 19063);           /* go to begin */
     buttons.Add(CONTEXT_BUTTON_NOW, 19070);             /* go to now */
     buttons.Add(CONTEXT_BUTTON_END, 19064);             /* go to end */
   }
+
   if (pItem->GetEPGInfoTag()->HasPVRChannel() &&
       g_PVRClients->HasMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG))
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
@@ -369,10 +372,21 @@ bool CGUIWindowPVRGuide::OnClickList(CGUIMessage &message)
     {
       case ACTION_SELECT_ITEM:
       case ACTION_MOUSE_LEFT_CLICK:
-        if (!g_advancedSettings.m_bPVRShowEpgInfoOnEpgItemSelect && pItem->GetEPGInfoTag()->IsActive())
-          ActionPlayEpg(pItem.get());
-        else
-          ShowEPGInfo(pItem.get());
+        switch(CSettings::Get().GetInt("epg.selectaction"))
+        {
+          case EPG_SELECT_ACTION_CONTEXT_MENU:
+            m_parent->OnPopupMenu(iItem);
+            break;
+          case EPG_SELECT_ACTION_SWITCH:
+            ActionPlayEpg(pItem.get());
+            break;
+          case EPG_SELECT_ACTION_INFO:
+            ShowEPGInfo(pItem.get());
+            break;
+          case EPG_SELECT_ACTION_RECORD:
+            ActionRecord(pItem.get());
+            break;
+        }
         break;
       case ACTION_SHOW_INFO:
         ShowEPGInfo(pItem.get());

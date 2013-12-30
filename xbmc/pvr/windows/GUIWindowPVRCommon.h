@@ -38,6 +38,14 @@ namespace PVR
     PVR_WINDOW_SEARCH          = 6
   };
 
+  enum EPGSelectAction
+  {
+    EPG_SELECT_ACTION_CONTEXT_MENU    = 0,
+    EPG_SELECT_ACTION_SWITCH          = 1,
+    EPG_SELECT_ACTION_INFO            = 2,
+    EPG_SELECT_ACTION_RECORD          = 3
+  };
+
   #define CONTROL_LIST_TIMELINE        10
   #define CONTROL_LIST_CHANNELS_TV     11
   #define CONTROL_LIST_CHANNELS_RADIO  12
