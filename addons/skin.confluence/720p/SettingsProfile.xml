@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">2</defaultcontrol>
+	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
@@ -64,117 +64,73 @@
 				<aspectratio>keep</aspectratio>
 				<texture>Confluence_Logo.png</texture>
 			</control>
-			<control type="button" id="4">
-				<description>Enable Login screen</description>
+			<control type="list" id="9000">
 				<left>10</left>
-				<top>90</top>
-				<width>250</width>
-				<height>72</height>
-				<textoffsety>8</textoffsety>
-				<label>20096</label>
-				<font>font24_title</font>
-				<align>right</align>
-				<aligny>top</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">MenuItemFO.png</texturefocus>
-				<onleft>2</onleft>
-				<onright>2</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<enable>!Window.IsVisible(ProfileSettings)</enable>
+				<top>82</top>
+				<width>260</width>
+				<height>541</height>
+				<onleft>9010</onleft>
+				<onright>9010</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>300</scrolltime>
+				<itemlayout height="54" width="260">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>260</width>
+						<height>55</height>
+						<texture border="5">MenuItemNF.png</texture>
+					</control>
+					<control type="label">
+						<left>250</left>
+						<top>0</top>
+						<width>380</width>
+						<height>55</height>
+						<font>font24_title</font>
+						<textcolor>grey3</textcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="54" width="260">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>260</width>
+						<height>55</height>
+						<texture border="5">MenuItemFO.png</texture>
+						<animation effect="fade" start="100" end="30" time="100" condition="!Control.HasFocus(9000)">Conditional</animation>
+					</control>
+					<control type="label">
+						<left>250</left>
+						<top>0</top>
+						<width>380</width>
+						<height>55</height>
+						<font>font24_title</font>
+						<textcolor>white</textcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<label>31420</label>
+						<onclick>noop</onclick>
+						<icon>-</icon>
+					</item>
+					<item id="2">
+						<label>13200</label>
+						<onclick>noop</onclick>
+						<icon>-</icon>
+					</item>
+				</content>
 			</control>
-			<control type="label">
-				<left>10</left>
-				<top>130</top>
-				<width>240</width>
-				<height>25</height>
-				<font>font13</font>
-				<textcolor>grey2</textcolor>
-				<align>right</align>
-				<aligny>center</aligny>
-				<label>305</label>
-				<visible>System.HasLoginScreen</visible>
-			</control>
-			<control type="label">
-				<left>10</left>
-				<top>130</top>
-				<width>240</width>
-				<height>25</height>
-				<font>font13</font>
-				<textcolor>grey2</textcolor>
-				<align>right</align>
-				<aligny>center</aligny>
-				<label>1223</label>
-				<visible>!System.HasLoginScreen</visible>
-			</control>
-			<control type="button" id="5"> 
-				<description>Choose auto login user</description> 
-				<left>10</left> 
-				<top>161</top> 
-				<width>250</width> 
-				<height>72</height> 
-				<textoffsety>8</textoffsety> 
-				<label>33084</label> 
-				<font>font24_title</font> 
-				<align>right</align> 
-				<aligny>top</aligny> 
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus> 
-				<texturefocus border="5">MenuItemFO.png</texturefocus> 
-				<onleft>2</onleft> 
-				<onright>2</onright> 
-				<onup>4</onup> 
-				<ondown>4</ondown> 
-				<visible>!System.HasLoginScreen</visible> 
-				<enable>!Window.IsVisible(ProfileSettings) + !System.HasLoginScreen</enable> 
-			</control> 
-			<control type="button"> 
-				<description>Choose auto login user (grayed out)</description> 
-				<left>10</left> 
-				<top>161</top> 
-				<width>250</width> 
-				<height>72</height> 
-				<textoffsety>8</textoffsety> 
-				<label>33084</label> 
-				<font>font24_title</font> 
-				<textcolor>grey2</textcolor> 
-				<align>right</align> 
-				<aligny>top</aligny> 
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus> 
-				<texturefocus border="5">MenuItemFO.png</texturefocus> 
-				<onleft>2</onleft> 
-				<onright>2</onright> 
-				<onup>4</onup> 
-				<ondown>4</ondown> 
-				<visible>System.HasLoginScreen</visible> 
-				<enable>false</enable> 
-			</control> 
-			<control type="label"> 
-				<left>47</left>
-				<top>201</top> 
-				<width>200</width> 
-				<height>25</height> 
-				<font>font13caps</font> 
-				<textcolor>grey2</textcolor> 
-				<align>right</align> 
-				<aligny>center</aligny> 
-				<label>$INFO[System.ProfileAutoLogin]</label> 
-				<visible>!Control.HasFocus(5) + !System.HasLoginScreen</visible>
-			</control> 
-			<control type="label"> 
-				<left>247</left> 
-				<top>201</top> 
-				<width>200</width> 
-				<height>25</height> 
-				<font>font13caps</font> 
-				<textcolor>grey2</textcolor> 
-				<align>right</align> 
-				<aligny>center</aligny> 
-				<label>$INFO[System.ProfileAutoLogin]</label> 
-				<scroll>true</scroll> 
-				<scrollspeed>30</scrollspeed> 
-				<visible>Control.HasFocus(5) + !System.HasLoginScreen</visible>
-			</control> 
 			<control type="group">
+				<visible>Container(9000).Hasfocus(2)</visible>
 				<left>20</left>
 				<top>260</top>
 				<control type="image">
@@ -253,86 +209,168 @@
 				<top>20</top>
 				<width>740</width>
 				<height>30</height>
-				<font>font30_title</font>
-				<label>$LOCALIZE[10034]</label>
+				<font>font16</font>
+				<label>$LOCALIZE[13200] - $LOCALIZE[5]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
-			<control type="panel" id="2">
-				<left>283</left>
-				<top>70</top>
-				<width>760</width>
-				<height>540</height>
-				<onleft>4</onleft>
-				<onright>60</onright>
-				<onup>53</onup>
-				<ondown>53</ondown>
-				<viewtype label="21371">list</viewtype>
-				<pagecontrol>60</pagecontrol>
-				<scrolltime>200</scrolltime>
-				<itemlayout height="180" width="190">
-					<control type="image">
-						<left>1</left>
-						<top>0</top>
-						<width>188</width>
-						<height>145</height>
-						<bordertexture border="5">button-nofocus.png</bordertexture>
-						<bordersize>5</bordersize>
-						<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
-					</control>
-					<control type="label">
-						<left>94</left>
-						<top>145</top>
-						<width>178</width>
-						<height>25</height>
-						<font>font11</font>
+			<control type="group" id="9010">
+				<control type="grouplist" id="9001">
+					<visible>Container(9000).Hasfocus(1)</visible>
+					<left>290</left>
+					<top>60</top>
+					<width>750</width>
+					<height>440</height>
+					<itemgap>-1</itemgap>
+					<pagecontrol>60</pagecontrol>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>9001</onup>
+					<ondown>9001</ondown>
+					<control type="radiobutton" id="4">
+						<description>enable login screen</description>
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>20096</label>
 						<textcolor>grey2</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>center</align>
-						<aligny>center</aligny>
-						<info>ListItem.Label</info>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-				</itemlayout>
-				<focusedlayout height="180" width="190">
+					<control type="button" id="5">
+						<description>auto login</description>
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>33084</label>
+						<label2>$INFO[System.ProfileAutoLogin]</label2>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<enable>!System.HasLoginScreen</enable>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container(9000).Hasfocus(1)</visible>
+					<left>290</left>
+					<top>500</top>
+					<width>750</width>
+					<height>40</height>
 					<control type="image">
-						<left>1</left>
-						<top>0</top>
-						<width>188</width>
-						<height>145</height>
-						<bordertexture border="5">folder-focus.png</bordertexture>
-						<bordersize>5</bordersize>
-						<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
+						<description>separator image</description>
+						<left>0</left>
+						<top>25</top>
+						<width>750</width>
+						<height>2</height>
+						<texture>separator2.png</texture>
+						<colordiffuse>40FFFFFF</colordiffuse>
 					</control>
-					<control type="label">
-						<left>94</left>
-						<top>145</top>
-						<width>178</width>
-						<height>25</height>
-						<font>font11</font>
+					<control type="textbox">
+						<description>description area</description>
+						<left>7</left>
+						<top>30</top>
+						<width>736</width>
+						<height>85</height>
+						<font>font12</font>
+						<label>$LOCALIZE[31422]</label>
+						<align>justify</align>
 						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>center</align>
-						<aligny>center</aligny>
-						<info>ListItem.Label</info>
+						<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+						<visible>Control.Hasfocus(4)</visible>
 					</control>
-				</focusedlayout>
-			</control>
-			<control type="scrollbar" id="60">
-				<left>1060</left>
-				<top>60</top>
-				<width>25</width>
-				<height>530</height>
-				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
-				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-				<textureslidernib>ScrollBarNib.png</textureslidernib>
-				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-				<onleft>2</onleft>
-				<onright>4</onright>
-				<showonepage>false</showonepage>
-				<orientation>vertical</orientation>
+					<control type="textbox">
+						<description>description area</description>
+						<left>7</left>
+						<top>30</top>
+						<width>736</width>
+						<height>85</height>
+						<font>font12</font>
+						<label>$LOCALIZE[31423]</label>
+						<align>justify</align>
+						<textcolor>white</textcolor>
+						<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+						<visible>Control.Hasfocus(5)</visible>
+					</control>
+				</control>
+				<control type="panel" id="2">
+					<visible>Container(9000).Hasfocus(2)</visible>
+					<left>290</left>
+					<top>72</top>
+					<width>760</width>
+					<height>540</height>
+					<onleft>9000</onleft>
+					<onright>60</onright>
+					<onup>9010</onup>
+					<ondown>9010</ondown>
+					<viewtype label="21371">list</viewtype>
+					<pagecontrol>60</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="180" width="190">
+						<control type="image">
+							<left>1</left>
+							<top>0</top>
+							<width>188</width>
+							<height>145</height>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
+						</control>
+						<control type="label">
+							<left>94</left>
+							<top>145</top>
+							<width>178</width>
+							<height>25</height>
+							<font>font11</font>
+							<textcolor>grey2</textcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="180" width="190">
+						<control type="image">
+							<left>1</left>
+							<top>0</top>
+							<width>188</width>
+							<height>145</height>
+							<bordertexture border="5">folder-focus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<texture fallback="unknown-user.png">$INFO[Listitem.Icon]</texture>
+						</control>
+						<control type="label">
+							<left>94</left>
+							<top>145</top>
+							<width>178</width>
+							<height>25</height>
+							<font>font11</font>
+							<textcolor>white</textcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="scrollbar" id="60">
+					<left>1060</left>
+					<top>60</top>
+					<width>25</width>
+					<height>530</height>
+					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>ScrollBarNib.png</textureslidernib>
+					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+					<onleft>2</onleft>
+					<onright>9000</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
 			</control>
 		</control>
 		<include>CommonNowPlaying</include>
