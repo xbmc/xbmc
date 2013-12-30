@@ -21,6 +21,7 @@
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "addons/include/xbmc_pvr_types.h"
 
@@ -180,7 +181,7 @@ bool CEpgDatabase::DeleteOldEpgEntries(void)
 {
   time_t iCleanupTime;
   CDateTime cleanupTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() -
-      CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
+      CDateTimeSpan(CSettings::Get().GetInt("epg.pastdaystodisplay"), 0, 0, 0);
   cleanupTime.GetAsTime(iCleanupTime);
 
   CStdString strWhereClause = FormatSQL("iEndTime < %u", iCleanupTime);

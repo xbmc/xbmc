@@ -106,6 +106,22 @@ namespace PVR
      */
     static CPVRManager &Get(void);
 
+    /*!
+     * @brief Fills the option list for the setting pvrplayback.startlast
+     * @param setting Setting
+     * @param list Option list
+     * @param current Current index
+     */
+    static void SettingOptionsPvrStartLastChannelFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+
+    /*!
+     * @brief Fills the option list for the setting epg.pastdaystodisplay
+     * @param setting Setting
+     * @param list Option list
+     * @param current Current index
+     */
+    static void SettingOptionsPvrEPGPastDaysToDisplayFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
+
     virtual void OnSettingChanged(const CSetting *setting);
     virtual void OnSettingAction(const CSetting *setting);
 
@@ -543,8 +559,6 @@ namespace PVR
      * @return True if action could be handled, false otherwise.
      */
     bool OnAction(const CAction &action);
-
-    static void SettingOptionsPvrStartLastChannelFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
 
     /*!
      * @brief Create EPG tags for all channels in internal channel groups

@@ -163,7 +163,7 @@ void CEpg::Clear(void)
 void CEpg::Cleanup(void)
 {
   CDateTime cleanupTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() -
-      CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
+      CDateTimeSpan(CSettings::Get().GetInt("epg.pastdaystodisplay"), 0, 0, 0);
   Cleanup(cleanupTime);
 }
 

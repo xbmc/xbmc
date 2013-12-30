@@ -256,7 +256,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(bool bUpdateSelectedFile)
     endDate = startDate;
   
   // limit start to linger time
-  CDateTime maxPastDate = currentDate - CDateTimeSpan(0, 0, g_advancedSettings.m_iEpgLingerTime, 0);
+  CDateTime maxPastDate = currentDate - CDateTimeSpan(CSettings::Get().GetInt("epg.pastdaystodisplay"), 0, 0, 0);
   if(startDate < maxPastDate)
     startDate = maxPastDate;
   

@@ -300,7 +300,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     int m_iMythMovieLength;         // minutes
 
-    int m_iEpgLingerTime;           // minutes
     int m_iEpgUpdateCheckInterval;  // seconds
     int m_iEpgCleanupInterval;      // seconds
     int m_iEpgActiveTagCheckInterval; // seconds

@@ -1011,6 +1011,14 @@
             <formatlabel>17999</formatlabel>
           </control>
         </setting>
+        <setting id="epg.pastdaystodisplay" type="integer" label="19183" help="36429">
+          <level>1</level>
+          <default>1</default>
+          <constraints>
+            <options>pvrepgpastdaystodisplay</options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
       </group>
       <group id="2">
         <setting id="epg.epgupdate" type="integer" label="19071" help="36221">
