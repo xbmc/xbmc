@@ -96,7 +96,7 @@ Helper.setup(this,classes,
       'int' : '${api} = (int)PyInt_AsLong(${slarg});',
       'double' : '${api} = PyFloat_AsDouble(${slarg});',
       'float' : '${api} = (float)PyFloat_AsDouble(${slarg});',
-      'XBMCAddon::StringOrInt' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},PyInt_Check(${slarg}) || PyLong_Check(${slarg}),"${api}","${method.@name}");'
+      'XBMCAddon::StringOrInt' : 'if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},PyInt_Check(${slarg}) || PyLong_Check(${slarg}) || PyFloat_Check(${slarg}),"${api}","${method.@name}");'
     ], '${api} = (${swigTypeParser.SwigType_str(ltype)})retrieveApiInstance(${slarg},"${ltype}","${helper.findNamespace(method)}","${helper.callingName(method)}");')
 // ---------------------------------------------------------
 
