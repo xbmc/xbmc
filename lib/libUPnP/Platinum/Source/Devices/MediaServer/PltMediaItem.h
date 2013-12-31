@@ -147,6 +147,8 @@ typedef struct {
     NPT_String program_title;
     NPT_String series_title;
     NPT_UInt32 episode_number;
+    NPT_UInt32 episode_count;
+    NPT_UInt32 episode_season;
 } PLT_RecordedInfo;
 
 /*----------------------------------------------------------------------

@@ -156,7 +156,11 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_NRAUDIOCHANNELS;
 		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_SAMPLEFREQUENCY, len, true) == 0) {
             mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_SAMPLEFREQUENCY;
-		}
+		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE_COUNT, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_EPISODE_COUNT;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE_SEASON, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_EPISODE_SEASON;
+        }
 
         if (next_comma < 0) {
             return mask;

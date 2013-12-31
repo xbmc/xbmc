@@ -195,6 +195,8 @@ PLT_MediaObject::Reset()
     m_Recorded.program_title  = "";
     m_Recorded.series_title   = "";
     m_Recorded.episode_number = 0;
+    m_Recorded.episode_count = 0;
+    m_Recorded.episode_season = 0;
 
     m_Resources.Clear();
 
@@ -389,6 +391,20 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
         didl += "</upnp:episodeNumber>";
     }
 
+    // episode count
+    if ((mask & PLT_FILTER_MASK_EPISODE_COUNT) && m_Recorded.episode_count > 0) {
+        didl += "<upnp:episodeCount>";
+        didl += NPT_String::FromInteger(m_Recorded.episode_count);
+        didl += "</upnp:episodeCount>";
+    }
+
+    // episode count
+    if ((mask & PLT_FILTER_MASK_EPISODE_SEASON)) {
+        didl += "<upnp:episodeSeason>";
+        didl += NPT_String::FromInteger(m_Recorded.episode_season);
+        didl += "</upnp:episodeSeason>";
+    }
+
 	if ((mask & PLT_FILTER_MASK_TOC) && !m_MiscInfo.toc.IsEmpty()) {
         didl += "<upnp:toc>";
 		PLT_Didl::AppendXmlEscape(didl, m_MiscInfo.toc);
@@ -547,6 +563,12 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     NPT_UInt32 value;
     if (NPT_FAILED(str.ToInteger(value))) value = 0;
     m_Recorded.episode_number = value;
+    PLT_XmlHelper::GetChildText(entry, "episodeCount", str, didl_namespace_upnp);
+    if (NPT_FAILED(str.ToInteger(value))) value = 0;
+    m_Recorded.episode_count = value;
+    PLT_XmlHelper::GetChildText(entry, "episodeSeason", str, didl_namespace_upnp);
+    if (NPT_FAILED(str.ToInteger(value))) value = -1;
+    m_Recorded.episode_season = value;
 
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "genre", didl_namespace_upnp);
