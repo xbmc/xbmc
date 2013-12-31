@@ -163,7 +163,7 @@ public:
   void Close();
   bool ReEncode(COMXImageFile &srcFile, unsigned int width, unsigned int height, void * &pDestBuffer, unsigned int &nDestSize);
 protected:
-  bool HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, bool port_settings_changed);
+  bool HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, int orientation, bool port_settings_changed);
   // Components
   COMXCoreComponent             m_omx_decoder;
   COMXCoreComponent             m_omx_resize;
