@@ -25,8 +25,8 @@
 				<label>31901</label>
 				<align>center</align>
 				<aligny>center</aligny>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
+				<textcolor>black</textcolor>
+				<shadowcolor>white</shadowcolor>
 			</control>
 			<control type="label">
 				<left>0</left>
