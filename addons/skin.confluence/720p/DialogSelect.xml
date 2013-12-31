@@ -68,27 +68,27 @@
 		<control type="list" id="3">
 			<left>20</left>
 			<top>67</top>
-			<width>550</width>
-			<height>506</height>
+			<width>790</width>
+			<height>460</height>
 			<onup>3</onup>
 			<ondown>3</ondown>
-			<onleft>5</onleft>
-			<onright>61</onright>
-			<pagecontrol>61</pagecontrol>
+			<onleft>60</onleft>
+			<onright>60</onright>
+			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
-			<itemlayout height="46" width="550">
+			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
+			<itemlayout height="46" width="790">
 				<control type="image">
 					<left>0</left>
 					<top>0</top>
-					<width>550</width>
+					<width>790</width>
 					<height>40</height>
 					<texture border="5">button-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<left>20</left>
 					<top>0</top>
-					<width>510</width>
+					<width>750</width>
 					<height>40</height>
 					<font>font13</font>
 					<textcolor>grey2</textcolor>
@@ -98,11 +98,11 @@
 					<label>$INFO[ListItem.Label]</label>
 				</control>
 			</itemlayout>
-			<focusedlayout height="46" width="550">
+			<focusedlayout height="46" width="790">
 				<control type="image">
 					<left>0</left>
 					<top>0</top>
-					<width>550</width>
+					<width>790</width>
 					<height>40</height>
 					<texture border="5">button-nofocus.png</texture>
 					<visible>!Control.HasFocus(3)</visible>
@@ -111,7 +111,7 @@
 				<control type="image">
 					<left>0</left>
 					<top>0</top>
-					<width>550</width>
+					<width>790</width>
 					<height>40</height>
 					<texture border="5">button-focus2.png</texture>
 					<visible>Control.HasFocus(3)</visible>
@@ -120,7 +120,7 @@
 				<control type="label">
 					<left>20</left>
 					<top>0</top>
-					<width>510</width>
+					<width>750</width>
 					<height>40</height>
 					<font>font13</font>
 					<textcolor>white</textcolor>
@@ -237,6 +237,24 @@
 				</control>
 			</focusedlayout>
 		</control>
+		<control type="scrollbar" id="60">
+			<left>810</left>
+			<top>65</top>
+			<width>25</width>
+			<height>464</height>
+			<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+			<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>ScrollBarNib.png</textureslidernib>
+			<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+			<onleft>3</onleft>
+			<onright>3</onright>
+			<ondown>60</ondown>
+			<onup>60</onup>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+			<visible>Control.IsVisible(3)</visible>
+		</control>
 		<control type="scrollbar" id="61">
 			<left>570</left>
 			<top>65</top>
@@ -247,18 +265,19 @@
 			<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
 			<textureslidernib>ScrollBarNib.png</textureslidernib>
 			<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-			<onleft>3</onleft>
+			<onleft>6</onleft>
 			<onright>5</onright>
 			<ondown>61</ondown>
 			<onup>61</onup>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
+			<visible>Control.IsVisible(6)</visible>
 		</control>
 		<control type="label">
 			<description>number of files/pages in list text label</description>
-			<left>280</left>
-			<top>585</top>
-			<width>300</width>
+			<left>595</left>
+			<top>542</top>
+			<width>230</width>
 			<height>35</height>
 			<font>font12</font>
 			<align>right</align>
