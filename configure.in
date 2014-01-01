@@ -37,7 +37,7 @@ AC_DEFUN([XB_ADD_PLAYER],
 AC_DEFUN([XB_ADD_CODEC],
 [
   AC_MSG_CHECKING([for $2])
-  case $add_codecs in
+  case $3 in
     *$2*)
       use_codec_$2="yes"
       AC_SUBST([USE_$1], 1)
@@ -1968,16 +1968,19 @@ case $add_players in
 esac
 
 # additional internal codecs
-case $add_codecs in
-  *amcodec*)
-      AC_CHECK_HEADER([amcodec/codec_error.h],, AC_MSG_ERROR($missing_headers))
-      XB_ADD_CODEC([LIBAMCODEC], [amcodec])
-      ;;
-  *libstagefright*)
-      XB_ADD_CODEC([LIBSTAGEFRIGHT], [libstagefright])
-      ;;
-  *)
-esac
+# remember to convert commas to spaces
+for codecs in `echo $add_codecs | sed 's/,/ /g'`; do
+  case $codecs in
+    *amcodec*)
+        AC_CHECK_HEADER([amcodec/codec_error.h],, AC_MSG_ERROR($missing_headers))
+        XB_ADD_CODEC([LIBAMCODEC], [amcodec], [$codecs])
+        ;;
+    *libstagefright*)
+        XB_ADD_CODEC([LIBSTAGEFRIGHT], [libstagefright], [$codecs])
+        ;;
+    *)
+  esac
+done
 
 # platform specific bin utilities
 if test "$build_vendor" != "apple" ; then
