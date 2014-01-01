@@ -886,7 +886,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
                        "  JOIN songartistview ON songview.idSong = songartistview.idSong "
                        "  LEFT JOIN albuminfosong ON albumview.idAlbum = albuminfosong.idAlbumInfo "
                        "  WHERE albumview.idAlbum = %ld "
-                       "  ORDER BY iOrder, iTrack", idAlbum);
+                       "  ORDER BY albumartistview.iOrder, songview.iTrack, songartistview.iOrder", idAlbum);
     }
     else
     {
@@ -894,7 +894,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
                        "  FROM albumview "
                        "  JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
                        "  WHERE albumview.idAlbum = %ld "
-                       "  ORDER BY iOrder", idAlbum);
+                       "  ORDER BY albumartistview.iOrder", idAlbum);
     }
 
     CLog::Log(LOGDEBUG, "%s", sql.c_str());
