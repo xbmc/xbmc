@@ -104,7 +104,7 @@ public:
 
 protected:
   void            FlushInternal(void);
-  void            ConfigureMediaCodec(void);
+  bool            ConfigureMediaCodec(void);
   int             GetOutputPicture(void);
   void            OutputFormatChanged(void);
 

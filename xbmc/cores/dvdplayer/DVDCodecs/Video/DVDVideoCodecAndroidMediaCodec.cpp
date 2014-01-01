@@ -426,7 +426,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     }
   }
 
-  ConfigureMediaCodec();
+  if (!ConfigureMediaCodec())
+  {
+    m_codec.reset();
+    SAFE_DELETE(m_bitstream);
+    return false;
+  }
 
   // setup a YUV420P DVDVideoPicture buffer.
   // first make sure all properties are reset.
@@ -691,7 +696,7 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
   }
 }
 
-void CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
+bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
 {
   // setup a MediaFormat to match the video content,
   // used by codec during configure
@@ -740,12 +745,23 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   {
     m_codec->configure(mediaformat, *m_surface, crypto, flags);
   }
-
-  m_codec->start();
-
   // always, check/clear jni exceptions.
   if (xbmc_jnienv()->ExceptionOccurred())
+  {
     xbmc_jnienv()->ExceptionClear();
+    return false;
+  }
+
+
+  m_codec->start();
+  // always, check/clear jni exceptions.
+  if (xbmc_jnienv()->ExceptionOccurred())
+  {
+    xbmc_jnienv()->ExceptionClear();
+    return false;
+  }
+
+  return true;
 }
 
 int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
