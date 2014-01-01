@@ -287,10 +287,16 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       // perform the flattening logic for tvshows with a single (unwatched) season (+ optional special season)
       if (node == NODE_TYPE_SEASONS)
       {
+        int itemsSize = items.GetObjectCount();
+        int firstIndex = items.Size() - itemsSize;
+        // check if the last item is the "All seasons" item which should be ignored for flattening
+        if (items[items.Size() - 1]->GetVideoInfoTag()->m_iSeason < 0)
+          itemsSize -= 1;
+
         int iFlatten = CSettings::Get().GetInt("videolibrary.flattentvshows");
-        bool bFlatten = (items.GetObjectCount() == 1 && iFlatten == 1) || iFlatten == 2 ||                              // flatten if one one season or if always flatten is enabled
-                        (items.GetObjectCount() == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
-                         (items[0]->GetVideoInfoTag()->m_iSeason == 0 || items[1]->GetVideoInfoTag()->m_iSeason == 0));
+        bool bFlatten = (itemsSize == 1 && iFlatten == 1) || iFlatten == 2 ||                              // flatten if one one season or if always flatten is enabled
+                        (itemsSize == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
+                         (items[firstIndex]->GetVideoInfoTag()->m_iSeason == 0 || items[firstIndex + 1]->GetVideoInfoTag()->m_iSeason == 0));
 
         if (iFlatten > 0 && !bFlatten && (WatchedMode)CMediaSettings::Get().GetWatchedMode("tvshows") == WatchedModeUnwatched)
         {
