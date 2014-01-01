@@ -14,8 +14,8 @@
 				<label>31904</label>
 				<align>center</align>
 				<aligny>center</aligny>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
+				<textcolor>black</textcolor>
+				<shadowcolor>white</shadowcolor>
 			</control>
 			<control type="list" id="51">
 				<left>15</left>

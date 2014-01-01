@@ -95,8 +95,8 @@
 					<label>31300</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
+					<textcolor>black</textcolor>
+					<shadowcolor>white</shadowcolor>
 				</control>
 				<control type="image">
 					<left>70</left>
