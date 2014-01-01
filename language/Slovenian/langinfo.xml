@@ -13,7 +13,7 @@
 
   <regions>
     <region name="Slovenija" locale="SI">
-      <dateshort>D.M.YYYY</dateshort>
+      <dateshort>D. M. YYYY</dateshort>
       <datelong>D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
