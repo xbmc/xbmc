@@ -27,7 +27,7 @@
 		<control type="label">
 			<description>header label</description>
 			<left>40</left>
-			<top>20</top>
+			<top>13</top>
 			<width>620</width>
 			<height>30</height>
 			<font>font13_title</font>

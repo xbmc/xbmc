@@ -309,14 +309,14 @@
 					<left>268</left>
 					<top>10</top>
 					<width>804</width>
-					<height>100</height>
+					<height>40</height>
 					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
+					<texture>dialogheader.png</texture>
 				</control>
 				<control type="label">
 					<description>header label Finished Searching</description>
 					<left>300</left>
-					<top>20</top>
+					<top>13</top>
 					<width>740</width>
 					<height>30</height>
 					<font>font16</font>
