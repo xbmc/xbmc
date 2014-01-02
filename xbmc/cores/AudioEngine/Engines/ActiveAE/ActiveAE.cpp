@@ -38,8 +38,6 @@ void CEngineStats::Reset(unsigned int sampleRate)
   CSingleLock lock(m_lock);
   m_sinkUpdate = XbmcThreads::SystemClockMillis();
   m_sinkDelay = 0;
-  m_sinkCacheTotal = 0;
-  m_sinkLatency = 0;
   m_sinkSampleRate = sampleRate;
   m_bufferedSamples = 0;
   m_suspended = false;
@@ -1453,18 +1451,22 @@ bool CActiveAE::InitSink()
       m_extError = true;
       return false;
     }
-    AEAudioFormat *data;
-    data = (AEAudioFormat*)reply->data;
+    SinkReply *data;
+    data = (SinkReply*)reply->data;
     if (data)
     {
-      m_sinkFormat = *data;
+      m_sinkFormat = data->format;
+      m_sinkHasVolume = data->hasVolume;
+      m_stats.SetSinkCacheTotal(data->cacheTotal);
+      m_stats.SetSinkLatency(data->latency);
     }
-    m_sinkHasVolume = m_sink.HasVolume();
     reply->Release();
   }
   else
   {
     CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
+    m_stats.SetSinkCacheTotal(0);
+    m_stats.SetSinkLatency(0);
     m_extError = true;
     return false;
   }
