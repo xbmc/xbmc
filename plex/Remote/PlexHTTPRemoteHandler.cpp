@@ -953,7 +953,7 @@ void CPlexHTTPRemoteHandler::resources()
   player->SetAttribute("machineIdentifier", g_guiSettings.GetString("system.uuid").c_str());
   player->SetAttribute("product", "Plex Home Theater");
   player->SetAttribute("platform", PlexUtils::GetMachinePlatform());
-  player->SetAttribute("platformvVersion", PlexUtils::GetMachinePlatformVersion());
+  player->SetAttribute("platformVersion", PlexUtils::GetMachinePlatformVersion());
   player->SetAttribute("deviceClass", "pc");
 
   mediaContainer->LinkEndChild(player);
