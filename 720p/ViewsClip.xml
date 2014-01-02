@@ -104,6 +104,8 @@
 			<visible>!IsEmpty(ListItem.Overlay)</visible>
 			<posx>229</posx>
 			<posy>120</posy>
+			<width>28</width>
+			<height>28</height>
 			<info>ListItem.Overlay</info>
 		</control>
 	</include>
