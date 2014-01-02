@@ -181,6 +181,15 @@ double CAESinkAUDIOTRACK::GetDelay()
   return delay;
 }
 
+double CAESinkAUDIOTRACK::GetLatency()
+{
+#if defined(HAS_LIBAMCODEC)
+  if (aml_present())
+    return 0.250;
+#endif
+  return 0.0;
+}
+
 double CAESinkAUDIOTRACK::GetCacheTotal()
 {
   // total amount that the audio sink can buffer in units of seconds

@@ -41,6 +41,7 @@ public:
   virtual void Deinitialize();
 
   virtual double       GetDelay        ();
+  virtual double       GetLatency      ();
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames, bool hasAudio, bool blocking = false);
   virtual void         Drain           ();
