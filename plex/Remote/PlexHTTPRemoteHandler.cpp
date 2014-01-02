@@ -716,15 +716,11 @@ CPlexRemoteSubscriberPtr CPlexHTTPRemoteHandler::getSubFromRequest(const HTTPReq
   }
   
   char ipstr[INET_ADDRSTRLEN];
-#if MHD_VERSION > 0x00090600
-  sockaddr *so = MHD_get_connection_info(request.connection, MHD_CONNECTION_INFO_CLIENT_ADDRESS)->client_addr;
-  strncpy(ipstr, so->sa_data, INET_ADDRSTRLEN);
-#else
-  struct sockaddr_in *so = MHD_get_connection_info(request.connection, MHD_CONNECTION_INFO_CLIENT_ADDRESS)->client_addr;
 
+  struct sockaddr_in *so = (struct sockaddr_in *)MHD_get_connection_info(request.connection, MHD_CONNECTION_INFO_CLIENT_ADDRESS)->client_addr;
   boost::system::error_code ec;
   boost::asio::detail::socket_ops::inet_ntop(AF_INET, &(so->sin_addr), ipstr, INET_ADDRSTRLEN, 0, ec);
-#endif
+
   if (!so)
     return CPlexRemoteSubscriberPtr();
   
