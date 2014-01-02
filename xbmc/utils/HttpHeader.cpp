@@ -43,17 +43,22 @@ void CHttpHeader::Parse(const std::string& strData)
   // According to RFC 2616 any header line can have continuation on next line, if next line is started from whitespace char
   // This code at first checks for whitespace char at the begging of the line, and if found, then current line is appended to m_lastHeaderLine
   // If current line is NOT started from whitespace char, then previously stored (and completed) m_lastHeaderLine is parsed and current line is assigned to m_lastHeaderLine (to be parsed later)
-  while (pos < len)
+  while (pos < len || !m_lastHeaderLine.empty())
   {
-    const size_t lineEnd = strData.find("\x0d\x0a", pos); // use "\x0d\x0a" instead of "\r\n" to be platform independent
+    size_t lineEnd = 0;
+    if (pos < len)
+    {
+      lineEnd = strData.find("\x0d\x0a", pos); // use "\x0d\x0a" instead of "\r\n" to be platform independent
 
-    if (lineEnd == std::string::npos)
-      return; // error: expected only complete lines
+      if (lineEnd == std::string::npos)
+        return; // error: expected only complete lines
+    }
 
     if (m_headerdone)
       Clear(); // clear previous header and process new one
 
-    if (strDataC[pos] == ' ' || strDataC[pos] == '\t') // same chars as in CHttpHeader::m_whitespaceChars
+    if (pos < len &&
+       (strDataC[pos] == ' ' || strDataC[pos] == '\t')) // same chars as in CHttpHeader::m_whitespaceChars
     { // line is started from whitespace char: this is continuation of previous line
       pos = strData.find_first_not_of(m_whitespaceChars);
 
@@ -65,13 +70,17 @@ void CHttpHeader::Parse(const std::string& strData)
       if (!m_lastHeaderLine.empty())
         ParseLine(m_lastHeaderLine); // process previously stored completed line (if any)
 
-      m_lastHeaderLine.assign(strData, pos, lineEnd - pos); // store current line to (possibly) complete later. Will be parsed on next turns.
+      if (pos < len)
+        m_lastHeaderLine.assign(strData, pos, lineEnd - pos); // store current line to (possibly) complete later. Will be parsed on next turns.
+      else
+        m_lastHeaderLine.clear();
 
       if (pos == lineEnd)
         m_headerdone = true; // current line is bare "\r\n", means end of header; no need to process current m_lastHeaderLine
     }
 
-    pos = lineEnd + 2; // '+2' for "\r\n": go to next line (if any)
+    if (pos < len)
+      pos = lineEnd + 2; // '+2' for "\r\n": go to next line (if any)
   }
 }
 
