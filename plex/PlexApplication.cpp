@@ -30,7 +30,7 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "dialogs/GUIDialogVideoOSD.h"
-#include "GUIWindowManager.h"app
+#include "GUIWindowManager.h"
 
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
