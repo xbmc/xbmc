@@ -1118,8 +1118,13 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         else
           st->bVFR = false;
 
+#ifdef TARGET_RASPBERRY_PI
+        // never trust pts in avi
+        if (m_bAVI)
+#else
         // never trust pts in avi files with h264.
         if (m_bAVI && pStream->codec->codec_id == AV_CODEC_ID_H264)
+#endif
           st->bPTSInvalid = true;
 
 #if defined(AVFORMAT_HAS_STREAM_GET_R_FRAME_RATE)
