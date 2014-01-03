@@ -6,10 +6,10 @@
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=1.3.0
+VERSION=1.8.0
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
-BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
+BASE_URL=https://sites.google.com/site/libnfstarballs/li
 ARCHIVE=$(SOURCE).tar.gz
 TARBALLS_LOCATION=.
 RETRIEVE_TOOL=/usr/bin/curl
