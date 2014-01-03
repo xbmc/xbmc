@@ -167,7 +167,20 @@ bool CWinSystemX11::DestroyWindow()
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   m_userOutput = CSettings::Get().GetString("videoscreen.monitor");
-  if (m_userOutput.compare("Default") == 0)
+  XOutput *out = NULL;
+  if (m_userOutput.compare("Default") != 0)
+  {
+    out = g_xrandr.GetOutput(m_userOutput);
+    if (out)
+    {
+      XMode mode = g_xrandr.GetCurrentMode(m_userOutput);
+      if (!mode.isCurrent)
+      {
+        out = NULL;
+      }
+    }
+  }
+  if (!out)
   {
     std::vector<XOutput> outputs = g_xrandr.GetModes();
     if (outputs.size() > 0)
@@ -175,8 +188,6 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
       m_userOutput = outputs[0].name;
     }
   }
-
-  m_userOutput = g_xrandr.GetModes()[0].name;
 
   if(m_nWidth  == newWidth
   && m_nHeight == newHeight
