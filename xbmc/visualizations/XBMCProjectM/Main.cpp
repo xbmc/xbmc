@@ -412,7 +412,7 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
     }
     return ADDON_STATUS_OK;
   }
-  // It is now time to set the settings got from xmbc
+  // It is now time to set the settings got from xbmc
   if (strcmp(id, "quality")==0)
     ChooseQuality (*(int*)value);
   else if (strcmp(id, "shuffle")==0)

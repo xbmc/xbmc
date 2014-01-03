@@ -290,7 +290,7 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
     }
     return ADDON_STATUS_OK;
   }
-  // It is now time to set the settings got from xmbc
+  // It is now time to set the settings got from xbmc
   if (strcmp(id, "Use Preset") == 0)
     OnAction(34, &value);
   else if (strcmp(id, "Automatic Blend Time") == 0)

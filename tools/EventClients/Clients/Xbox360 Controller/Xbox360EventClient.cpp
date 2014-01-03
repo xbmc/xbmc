@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "Xbox360Controller.h"
 #include "../../lib/c++/xbmcclient.h"
-#pragma comment(lib, "wsock32.lib")      // needed for xmbclient.h?
+#pragma comment(lib, "wsock32.lib")      // needed for xbmclient.h?
 
 // You can have up to 4 xbox360 controllers on a system
 #define MAX_NUM_CONTROLLERS 4

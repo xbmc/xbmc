@@ -575,7 +575,7 @@ int CSmbFile::Write(const void* lpBuf, int64_t uiBufSize)
   if (m_fd == -1) return -1;
   DWORD dwNumberOfBytesWritten = 0;
 
-  // lpBuf can be safely casted to void* since xmbc_write will only read from it.
+  // lpBuf can be safely casted to void* since xbmc_write will only read from it.
   smb.Init();
   CSingleLock lock(smb);
   dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
