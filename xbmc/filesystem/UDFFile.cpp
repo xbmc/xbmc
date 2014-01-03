@@ -50,7 +50,7 @@ CUDFFile::~CUDFFile()
 //*********************************************************************************************
 bool CUDFFile::Open(const CURL& url)
 {
-  if(!m_udfIsoReaderLocal.Open(url.GetHostName()))
+  if(!m_udfIsoReaderLocal.Open(url.GetHostName()) || url.GetFileName().empty())
      return false;
 
   m_hFile = m_udfIsoReaderLocal.OpenFile(url.GetFileName());
@@ -124,6 +124,12 @@ int CUDFFile::Stat(const CURL& url, struct __stat64* buffer)
 {
   if(!m_udfIsoReaderLocal.Open(url.GetHostName()))
      return -1;
+
+  if (url.GetFileName().empty())
+  {
+    buffer->st_mode = _S_IFDIR;
+    return 0;
+  }
 
   m_hFile = m_udfIsoReaderLocal.OpenFile(url.GetFileName());
   if (m_hFile != INVALID_HANDLE_VALUE)
