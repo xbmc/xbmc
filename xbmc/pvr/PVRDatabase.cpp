@@ -291,6 +291,7 @@ int CPVRDatabase::GetLastChannelId(void)
     {
       if (!m_pDS->eof())
         iReturn = m_pDS->fv("iMaxChannel").get_asInt();
+      m_pDS->close();
     }
     catch (...) {}
   }
