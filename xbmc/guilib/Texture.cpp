@@ -175,7 +175,7 @@ void CBaseTexture::ClampToEdge()
   }
 }
 
-CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool autoRotate, bool requirePixels)
+CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
 {
 #if defined(TARGET_ANDROID)
   CURL url(texturePath);
@@ -203,7 +203,7 @@ CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned
   }
 #endif
   CTexture *texture = new CTexture();
-  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, autoRotate, requirePixels))
+  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, autoRotate, requirePixels, strMimeType))
     return texture;
   delete texture;
   return NULL;
@@ -218,7 +218,7 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
   return NULL;
 }
 
-bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate, bool requirePixels)
+bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
 {
   if (URIUtils::HasExtension(texturePath, ".dds"))
   { // special case for DDS images
@@ -241,8 +241,13 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
   if (inputBuffSize == 0)
     return false;
 
-  CURL url(texturePath);
-  IImage* pImage = ImageFactory::CreateLoader(url);
+  IImage* pImage;
+
+  if(strMimeType.empty())
+    pImage = ImageFactory::CreateLoader(texturePath);
+  else
+    pImage = ImageFactory::CreateLoaderFromMimeType(strMimeType);
+
   if(!LoadIImage(pImage, (unsigned char *) inputBuff, inputBuffSize, width, height, autoRotate))
   {
     delete pImage;
