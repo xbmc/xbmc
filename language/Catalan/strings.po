@@ -975,7 +975,7 @@ msgstr "Ajusteu la barra per canviar la posició dels subtítols"
 
 msgctxt "#278"
 msgid "Adjust the rectangle so it is perfectly square"
-msgstr "Ajusteu el rectangle fins que sigui un rectangle perfecte"
+msgstr "Ajusteu el rectangle fins que sigui un quadrat perfecte"
 
 msgctxt "#279"
 msgid "Unable to load settings"

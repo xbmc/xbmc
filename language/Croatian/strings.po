@@ -5481,10 +5481,6 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Nedostupan izvor"
 
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "Što želite učiniti s medijskim stavkama iz"
-
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Zadržati"
@@ -5913,6 +5909,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Dodatna obrada"
@@ -6208,6 +6208,10 @@ msgstr "Ova snimka ne može biti obrisana. Provjerite zapis za pojedinosti."
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Idi odmah"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -7883,11 +7887,11 @@ msgstr "Upiši lozinku za"
 
 msgctxt "#20144"
 msgid "Shutdown timer"
-msgstr "Zakazano vrijeme isključivanja"
+msgstr "Zakazano samoisključivanje"
 
 msgctxt "#20145"
 msgid "Shutdown interval (in minutes)"
-msgstr "Interval vremena isključivanja (u minutama)"
+msgstr "Interval samoisključivanja (u minutama)"
 
 msgctxt "#20146"
 msgid "Started, shutdown in %im"
@@ -7907,11 +7911,11 @@ msgstr "Isključivanje za 120 minuta"
 
 msgctxt "#20150"
 msgid "Custom shutdown timer"
-msgstr "Zadaj vrijeme isključivanja"
+msgstr "Samoisključivanje susatava"
 
 msgctxt "#20151"
 msgid "Cancel shutdown timer"
-msgstr "Otkaži zakazano isključivanje"
+msgstr "Prekini samoisključivanje"
 
 msgctxt "#20152"
 msgid "Lock preferences for %s"
@@ -12408,6 +12412,14 @@ msgstr "Omogućite ovo da bi dijalog bio glasniji u odnosu na pozadinske zvukove
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Omogući hardversko dekôdiranje video datoteka."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Stereoskopska dubina podnaslova"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Postavite vizualnu dubinu podnaslova za stereoskopske video snimke. Ako je veća vrijednost, podnaslovi će biti bliži gledatelju."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

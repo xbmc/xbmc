@@ -2953,6 +2953,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "프로그램 추가기능"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "플러그인 썸네일 설정"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "추가기능 설정"
@@ -3557,6 +3561,14 @@ msgctxt "#10047"
 msgid "Try changing the setting level to see additional categories and settings."
 msgstr "더 많은 카테고리와 설정을 보려면 설정 수준을 변경하세요."
 
+msgctxt "#10100"
+msgid "Yes/No dialogue"
+msgstr "예/아니오 대화창"
+
+msgctxt "#10101"
+msgid "Progress dialogue"
+msgstr "진행 대화창"
+
 msgctxt "#10126"
 msgid "File browser"
 msgstr "파일 탐색기"
@@ -3697,9 +3709,17 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "영화 정보"
 
+msgctxt "#12000"
+msgid "Select dialogue"
+msgstr "선택 대화창"
+
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "음악/정보"
+
+msgctxt "#12002"
+msgid "Dialogue OK"
+msgstr "확인 대화창"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -5063,7 +5083,7 @@ msgstr "표준"
 
 msgctxt "#13612"
 msgid "Universal Remote"
-msgstr "유니버셜 리모트"
+msgstr "유니버설 리모트"
 
 msgctxt "#13613"
 msgid "Multi Remote (Harmony)"
@@ -5444,10 +5464,6 @@ msgstr "CD 리핑 중지"
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "사용할 수 없는 소스"
-
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "다음 경로의 미디어를 어떻게 처리하시겠습니까?"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -5876,6 +5892,10 @@ msgstr "Software Blend"
 msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
+
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -7723,7 +7743,7 @@ msgstr "마지막 로그인: %s"
 
 msgctxt "#20113"
 msgid "Never logged on"
-msgstr "로그인한적 없음"
+msgstr "로그인한 적 없음"
 
 msgctxt "#20114"
 msgid "Profile %i / %i"
@@ -11243,7 +11263,7 @@ msgstr "아직 사용 가능한 정보가 없습니다."
 
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "'선택', '재생' (기본값), '되시작', '정보 보기' 의 옵션이 있습니다. '선택'은 항목을 선택합니다. 예, 파일모드에서 디렉터리를 엽니다. '되시작'은 마지막으로 재생이 중단된 지점부터 자동으로 이어서 재생되며 시스템을 재시작한 경우에도 작동됩니다."
+msgstr "'선택', '재생' (기본값), '되시작', '정보 보기' 의 옵션이 있습니다. '선택'은 항목을 선택합니다(ex. 파일모드에서 디렉터리를 엽니다). '되시작'은 마지막으로 재생이 중단된 지점부터 자동으로 이어서 재생되며 시스템을 재시작한 경우에도 작동됩니다."
 
 msgctxt "#36178"
 msgid "No info available yet."
@@ -11599,7 +11619,7 @@ msgstr "음악을 듣는 동안 표시될 시각화를 선택합니다."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
-msgstr "노래 파일에서 태그 정보를 읽습니다. 큰 디렉터리를 네트워크을 통해 읽어오는 경우 특히 많은 시간이 걸릴 수 있습니다."
+msgstr "노래 파일에서 태그 정보를 읽습니다. 큰 디렉터리를 네트워크를 통해 읽어오는 경우 특히 많은 시간이 걸릴 수 있습니다."
 
 msgctxt "#36275"
 msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
@@ -11607,7 +11627,7 @@ msgstr "노래 목록에서 노래 제목이 표시되는 형식을 설정합니
 
 msgctxt "#36276"
 msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
-msgstr "노래 목록의 오른쪽에 표시될 정보입니다. 통상 트랙의 길이를 표시합니다."
+msgstr "노래 목록의 오른쪽에 표시될 정보입니다. 보통 트랙의 길이를 표시합니다."
 
 msgctxt "#36277"
 msgid "No info available yet."
@@ -11647,15 +11667,15 @@ msgstr "복사한 트랙을 저장할 하드 드라이브의 위치를 선택합
 
 msgctxt "#36286"
 msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
-msgstr "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "태그: [B]%N[/B]: 트랙번호, [B]%S[/B]: 디스크번호, [B]%A[/B]: 아티스트, [B]%T[/B]: 제목, [B]%B[/B]: 앱범, [B]%G[/B]: 장르, [B]%Y[/B]: 연도, [B]%F[/B]: 파일이름, [B]%D[/B]: 재생시간, [B]%J[/B]: 날짜, [B]%R[/B]: 등급, [B]%I[/B]: 파일크기."
 
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
-msgstr "카피 백업에 사용할 오디오 인코더를 선택합니다."
+msgstr "복사 백업에 사용할 오디오 인코더를 선택합니다."
 
 msgctxt "#36288"
 msgid "Select which quality you want to rip your files."
-msgstr "백업 카피 파일의 품질을 선택합니다."
+msgstr "복사 백업 파일의 품질을 선택합니다."
 
 msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
@@ -11675,7 +11695,7 @@ msgstr "아직 사용 가능한 정보가 없습니다."
 
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
-msgstr "음악을 재생할 때, 그 음악의 .cdg 파일을 찾아서 보여줍니다."
+msgstr "음악을 재생할 때 음악의 .cdg 파일을 찾아서 보여줍니다."
 
 msgctxt "#36294"
 msgid "No info available yet."
@@ -11739,7 +11759,7 @@ msgstr "해당되는 정보가 포함되어 있는 경우, EXIF 정보에 따라
 
 msgctxt "#36309"
 msgid "Show video media in picture file lists, since most digital cameras nowadays have video recording capabilities."
-msgstr "대부분의 카메라에 비디오 촬영 기능이 있기 때문에, 사진 파일 목록에서 비디오 미디어를 보여줍니다."
+msgstr "대부분의 카메라에 비디오 촬영 기능이 있기 때문에 사진 파일 목록에서 비디오 미디어를 보여줍니다."
 
 msgctxt "#36310"
 msgid "No info available yet."
@@ -11839,7 +11859,7 @@ msgstr "아직 사용 가능한 정보가 없습니다."
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
-msgstr "이 시스템의 프로그램이, 웹 인터페이스 또는 JSON-RPC 인터페이스 프로토콜을 통해 XBMC를 제어하는 것을 허용합니다."
+msgstr "이 시스템의 프로그램이 웹 인터페이스 또는 JSON-RPC 인터페이스 프로토콜을 통해 XBMC를 제어하는 것을 허용합니다."
 
 msgctxt "#36335"
 msgid "No info available yet."
@@ -12277,6 +12297,10 @@ msgctxt "#36530"
 msgid "Preferred mode"
 msgstr "우선 모드"
 
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr "다른 모드 선택..."
+
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "영상과 동일"
@@ -12324,6 +12348,14 @@ msgstr "멀티채널 오디오를 다운믹싱할 때 대사 음량을 배경 �
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "비디오 하드웨어 디코딩을 사용합니다."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "3D 자막 심도"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "3D 비디오 자막의 심도를 설정합니다. 설정값이 높을수록 시청자에 가깝게 보입니다"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

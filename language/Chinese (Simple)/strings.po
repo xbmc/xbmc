@@ -5481,10 +5481,6 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "无效源"
 
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "如何处置媒体项目于"
-
 msgctxt "#15014"
 msgid "Keep"
 msgstr "保留"

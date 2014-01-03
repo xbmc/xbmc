@@ -5481,17 +5481,13 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Fonte indisponível"
 
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "O que você deseja fazer com itens de mídia de"
-
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Manter"
 
 msgctxt "#15015"
 msgid "Remove"
-msgstr "Remove"
+msgstr "Remover"
 
 msgctxt "#15016"
 msgid "Games"
@@ -5913,6 +5909,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Pós-processamento de video"
@@ -6208,6 +6208,10 @@ msgstr "Esta gravação não pôde ser excluída. Verifique o registro para deta
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Ir para agora"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -12408,6 +12412,14 @@ msgstr "Habilite-o para tornar o diálogo mais alto em comparação com os sons 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Ativar decodificação por hardware de arquivos de vídeo."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Profundidade da Legenda estereoscópica"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Define a profundidade visual de legendas para vídeos estereoscópicos. Quanto maior o valor, mais próximo das legendas aparecerão para o telespectador."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

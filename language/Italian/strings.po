@@ -5477,10 +5477,6 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Sorgente non disponibile"
 
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "Cosa vuoi fare con i media provenienti da"
-
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Mantieni"
@@ -5909,6 +5905,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Video post-processing"
@@ -6204,6 +6204,10 @@ msgstr "Questa registrazione non può essere cancellata. Controlla i log per mag
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Vai a oggi"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -11261,6 +11265,10 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Seleziona il livello di zoom per i video in 4:3 su display widescreen."
 
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
+msgstr "La conversione VDPAU fornisce la possibilità di influenzare la conversione dello spazio dei colori per applicazioni avanzate come XBMC."
+
 msgctxt "#36173"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
@@ -12013,6 +12021,10 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Seleziona come impostare le proprietà dell'output audio: [Fixed] - le proprietà vengono impostate ogni volta su specifici valori di campionamento e configurazione degli altoparlanti; [Best Match] - le proprietà vengono impostate per combaciare il più possibile con le proprietà della sorgente; [Optimized] - le proprietà vengono impostate all'inizio della riproduzione e non cambieranno al cambiare delle proprietà della sorgente."
+
 msgctxt "#36362"
 msgid "Select the maximum number of audio channels/speakers available for audio decoded."
 msgstr "Selezionare il numero massimo di canali audio / altoparlanti disponibili per l'audio decodificato."
@@ -12052,6 +12064,10 @@ msgstr "Scegli questa opzione se il tuo ricevitore è in grado di decodificare i
 msgctxt "#36371"
 msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
 msgstr "Selezionare il dispositivo da utilizzare per la riproduzione di audio che è stato decodificato come mp3"
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Seleziona il dispositivo da usare per la riproduzione dei formati codificati indicati sotto, tra le opzioni dei 'ricevitori capaci'."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -12245,9 +12261,17 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality"
+msgstr "L'esclusione del mixer VDPAU risparmia risorse di sistema, ma riduce leggermente la qualità dell'immagine"
+
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Abilita la decodifica hardware per il video utilizzando il decoder AMLogic"
+
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr "Usa la decodifica dei frame ffmpeg tramite thread multipli quando la decodifica hardware non funziona o è disabilitata. (meno affidabile rispetto alla modalità a thread singolo)"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
@@ -12301,6 +12325,10 @@ msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Utilizza modalità preferita"
 
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
+msgstr "Massima frequenza di campionamento per l'SPDIF o frequenza di campionamento fissa per configurazioni con output a frequenza fissa"
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "Modalità preferita"
@@ -12336,6 +12364,10 @@ msgstr "Seleziona modalità alternativa..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "La stessa del video"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Seleziona come l'audio viene scalato, ad esempio da 5.1 a 2.0: [Enabled] mantieni il range dinamico della sorgente audio originale, abbassando il volume [Disabled] mantieni il livello del volume della sorgente audio originale comprimendo il range dinamico. Nota - Il range dinamico è la differenza tra i suoni più deboli ed i più forti in una sorgente audio."
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
@@ -12376,6 +12408,14 @@ msgstr "Attivare questa opzione per rendere il dialogo più forte rispetto a suo
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Abilita la decodifica hardware dei file video."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Profondità stereoscopica dei sottotitoli"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Imposta la profondità dei sottotitoli per video stereoscopici. Più alto il valore, più i sottotitoli appariranno vicini."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12420,3 +12460,7 @@ msgstr "Uscita audio duale"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Amplifica il canale centrale nella riduzione stereo"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr "Abilita, in modalità schermo intero, i tasti di sistema come Stampa, Alt-Tab ed i tasti del volume"

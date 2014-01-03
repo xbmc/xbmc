@@ -10545,6 +10545,14 @@ msgctxt "#36121"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "在列表中顯示(..)用以回到上層資料夾"
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "顯示媒體檔的副檔名，比如說：「浪人情歌.mp3」會被簡化顯示為「浪人情歌」"
+
 msgctxt "#36127"
 msgid "Show hidden files and directories."
 msgstr "顯示隱藏的檔案和目錄。"

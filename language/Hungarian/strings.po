@@ -3543,11 +3543,11 @@ msgstr "Kiegészítő böngésző"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
-msgstr "Fenti beállítások nullázása"
+msgstr "Alapértelmezett beállítások visszaállítása"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
-msgstr "Biztosan nullázni akarja a kategória beállításait?"
+msgstr "Biztosan visszaállítja a kategória beállításait?"
 
 msgctxt "#10043"
 msgid "Help"
@@ -3559,7 +3559,7 @@ msgstr "Nem áll rendelkezésre súgó"
 
 msgctxt "#10045"
 msgid "Resets all the visible settings to their default values."
-msgstr "Az összes látható beállítás alapértelmezettre visszaállítása."
+msgstr "Az összes látható beállítás visszaállítása alapértelmezettre."
 
 msgctxt "#10046"
 msgid "No categories available"
@@ -5480,10 +5480,6 @@ msgstr "CD bemásolás megszakítása"
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Nem elérhető forrás"
-
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "Mit tegyünk az ebből a forrásból származó médiával"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -11879,7 +11875,7 @@ msgstr "Nincs még információ"
 
 msgctxt "#36323"
 msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
-msgstr "UPnP szerver engedélyezése. Ez lehetővé teszi az anyagok sugárzását bármely UPnP kliens részére."
+msgstr "UPnP szerver engedélyezése. Ez lehetővé teszi műsorok sugárzását bármely UPnP kliens részére."
 
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
@@ -11891,7 +11887,7 @@ msgstr "Nincs még információ"
 
 msgctxt "#36326"
 msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
-msgstr "UPnP kliens engedélyezése. Ez lehetővé teszi bármely UPnP szerverről a lejátszást, és a lejátszás vezérlését a kiválasztott szerverről."
+msgstr "UPnP kliens engedélyezése. Ez lehetővé teszi bármely UPnP kiszolgálóról a lejátszást, és a lejátszás vezérlését."
 
 msgctxt "#36327"
 msgid "No info available yet."

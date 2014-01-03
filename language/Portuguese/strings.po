@@ -5481,10 +5481,6 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Fonte indisponível"
 
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "O que pretende fazer com os itens de média de"
-
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Manter"
@@ -5913,6 +5909,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Pós-processamento"
@@ -6208,6 +6208,10 @@ msgstr "Este evento não pode ser apagado. Verifique o registo para mais detalhe
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Ir para agora"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -12408,6 +12412,14 @@ msgstr "Activar isto para tornar o som dos diálogos mais alto quando comparado 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Activa a descodificação por hardware de ficheiros vídeo."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Profundidade estereoscópica das legendas"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Definir a profundidade visual das legendas para vídeos estereoscópicos. Quanto mais alto o valor, mais próximas ficarão as legendas do espectador."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

@@ -4981,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permitir aceleración de hardware (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Frame Multi Threaded Decoding (less reliable)"
+msgstr "Descodificación  (menos fiable)"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Método sincronización de A/V"
@@ -5477,10 +5481,6 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Origen no disponible"
 
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "Qué le gustaría hacer con los elementos de"
-
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Mantener"
@@ -5909,6 +5909,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-procesamiento de vídeo"
@@ -6204,6 +6208,10 @@ msgstr "Esta grabación no se ha podido eliminar. Consulte el log para más deta
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Ir a ahora"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -10641,6 +10649,10 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Seleccione el comportamiento cuando no se requiere sonido tanto para la reproducción como para el interfaz. [Siempre] -La señal de salida será inaudible de forma continua, lo que podría bloquear el sonido de otras aplicaciones. [1-10 Minutos] - Igual que \"Siempre\", excepto que tras ese periodo, la señal de audio se suspende. [Apagado] - La señal de audio se suspende. Nota: Algunos sonidos pueden perderse si el audio se suspende."
+
 msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Reproducir sonidos de la interfaz de usuario"
@@ -11244,6 +11256,10 @@ msgstr "El audio ha de mantenerse sincronizado; esto se puede conseguir resample
 msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr "Máximo ajuste de la velocidad de vídeo para coincida con la frecuencia de refresco de la pantalla."
+
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Selecciona la calidad del resampleado, para casos donde la salida de audio necesita una tasa de sampleado diferente de la fuente original. [Baja] es más rápida y tendrá un impacto mínimo en el uso de la CPU y otros recursos del sistema. [Media] y [Alta] usarán más recursos del sistema, de forma progresiva."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -12009,6 +12025,10 @@ msgctxt "#36360"
 msgid "No info available yet."
 msgstr "No hay información disponible."
 
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Seleccionar como se establecen las opciones de salida de audio: [Fijo] - las propiedades de salida se establecen a una frecuencia de muestreo especificada y a la configuración de los altavoces siempre; [Mejor opción] - las propiedades de salida se establecen para parecerse lo más posible a las propiedades de la fuente; [Optimizado] - las propiedades de salida se establecen al inicio de la reproducción y no cambiarán aunque varien las propiedades de la fuente de sonido-"
+
 msgctxt "#36362"
 msgid "Select the maximum number of audio channels/speakers available for audio decoded."
 msgstr "Seleccionar el número máximo de canales de audio/altavoces disponibles para la decodificación de audio."
@@ -12044,6 +12064,10 @@ msgstr "Selecciona esta opción si tu receptor puede decodificar streams DTS-HD.
 msgctxt "#36371"
 msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
 msgstr "Selecciona el dispositivo que será usado para reproducir el audio que ha sido decodificado como mp3."
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Elige el dispositivo a usar para la reproducción de los distintos formatos, éstos serán algunos de los formatos abajo indicadoe en las opciones de 'receptores disponibles'"
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -12245,6 +12269,10 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Habilitar decodificación de vídeo por hardware usando decodificador AMLogic."
 
+msgctxt "#36423"
+msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
+msgstr "usar la decodificación ffmpeg multihilo cuando la decodificación por hardware no funciona o esté deshabilitada. (Es menos fiable que el modo por defecto de un único hilo)"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Modo 3D (actual)"
@@ -12297,6 +12325,10 @@ msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Usar modo preferido"
 
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
+msgstr "Máxima frecuencia de muestreo para spdif o frecuencoa de muestreo para una configuración fija de salida"
+
 msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "Modo preferido"
@@ -12332,6 +12364,10 @@ msgstr "Seleccionar modo alternativo..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Igual que la película"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Elige como el audio es reducido, por ejemplo: de 5.1 a 2.0: [Habilitado] mantiene el rango dinámico de la fuente de audio original en la reducción aunque el volumen será menor [Deshabilitado] mantiene el nivel de volumen de la fuente original del audio aunque se comprima el rango dinámico. Nota - El rango dinámico es la diferencia entre el menor y mayor sonido de la fuente de audio."
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
@@ -12372,6 +12408,14 @@ msgstr "Activar para potenciar los diálogos frente al sonido ambiente cuando se
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Habilitar decodificación de vídeo por hardware."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Profundidad estereoscópica para los subtítulos"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Establece la profuncidad visual para los subtitulos en videos estereoscópicos. A mayor valor, más cerca aparecerán los subtitulos del espectador."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

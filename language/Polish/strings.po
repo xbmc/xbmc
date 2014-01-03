@@ -2953,6 +2953,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Wtyczki programów"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Ustaw ikonę wtyczki"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Ustawienia wtyczki"
@@ -5465,6 +5469,10 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Zatrzymaj zgrywanie CD"
 
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Źródło niedostępny"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Usuń"
@@ -5888,6 +5896,10 @@ msgstr "Software Blend"
 msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "DXVA Bob"
+
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -9941,6 +9953,10 @@ msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Wtyczka nie ma właściwej struktury"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s jest używany przez następujące zainstalowane wtyczki"
+
 msgctxt "#24047"
 msgid "This Add-on cannot be uninstalled"
 msgstr "Ta wtyczka nie może zostać usunięta"
@@ -10069,6 +10085,10 @@ msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(zablokowany)"
 
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Wtyczkę jest niekompatybilna lub oznaczono jako uszkodzoną w repozytorium."
+
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
 msgstr "Czy chcesz ją wyłączyć?"
@@ -10100,6 +10120,10 @@ msgstr "W skórze brakuje części plików"
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Szukanie napisów..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d  znaleziono napisy"
 
 msgctxt "#24109"
 msgid "No subtitles found"
@@ -10220,6 +10244,10 @@ msgstr "Przed odtwarzaniem zapytaj czy pobrać"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Klipy"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Wtyczka wymaga restartu"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -11273,6 +11301,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Brak dostępnych informacji."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Włącz osobistą cyfrową nagrywarkę (PVR) w funkcjach w XBMC. Wymagane, aby co najmniej jeden klient PVR był zainstalowany."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importuj grupy kanałów z bazy PVR (jeśli jest obsługiwane). Funkcja usunie wszystkie grupy utworzone przez użytkownika, jeśli nie są one zapisane w bazie."
@@ -11373,6 +11405,10 @@ msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Pokaż ostatnio oglądane kanały przy wejsciu w Telewizję."
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Wyświetlanie informacji o jakości sygnału w oknie informacyjnym kodeka (jeśli jest obsługiwane przez wtyczkę i bazę)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Brak dostępnych informacji."
@@ -11392,6 +11428,22 @@ msgstr "Brak dostępnych informacji."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Czas trwania nagrania po naciśnięciu przycisku nagrywania lub podczas tworzenia nowego czasu nagrania w trybie ręcznym. Domyślnie jest to 180 minut."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Priorytet nagrywania. Wyższa liczba oznacza wyższy priorytet. Domyślnie 50. Nie wszystkie wtyczki i bazy są wspierane."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Usuń nagranie po tym czasie. Domyślnie jest to 99 dni. Nie wszystkie wtyczki i bazy są wspierane."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Początek nagrania przed rozpoczęciem audycji. Domyślnie jest to 2 minuty. Nie wszystkie wtyczki i bazy są wspierane."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Koniec nagrania po zakończeniu audycji. Domyślnie jest to 10 minut. Nie wszystkie wtyczki i bazy są wspierane."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11885,6 +11937,10 @@ msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Wzmocnienie strumieni AC3, które zostały zmiksowane do 2 kanałów."
 
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgstr "Włączone miksowanie źródła 2-kanałowego dźwięku stereo do liczby kanałów audio odpowiadającej liczbie głośników."
+
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
 msgstr "Wybierz tę opcję, jeśli Twój interfejs jest zdolny do dekodowania strumieni AC3."
@@ -11900,6 +11956,10 @@ msgstr "Wybierz tę opcję, jeśli Twój interfejs jest zdolny do dekodowania st
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Wybierz tę opcję, jeśli Twój interfejs jest zdolny do dekodowania strumieni DTS-HD."
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Wybierz interfejs, którego używasz do odtwarzania zdekodowanych formatów, zaznacz dostępne opcje w 'współpracujących interfejsach'."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."

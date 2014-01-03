@@ -5897,6 +5897,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-procesamento"
@@ -6192,6 +6196,10 @@ msgstr "A gravación no se pode eliminar, verifique o rexistro para máis detall
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Ir a 'agora'"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -11660,6 +11668,10 @@ msgstr "Aínda non hai info. dispoñíbel."
 msgctxt "#36305"
 msgid "No info available yet."
 msgstr "Aínda non hai info. dispoñíbel."
+
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "Se existe a información EXIF (data, hora, camara empregada, etc), amosarase."
 
 msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."

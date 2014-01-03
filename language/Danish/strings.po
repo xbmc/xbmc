@@ -5787,7 +5787,7 @@ msgstr "Kommende optagelser"
 
 msgctxt "#19026"
 msgid "Add timer..."
-msgstr "Tilføj timer..."
+msgstr "Tilføj optagelse..."
 
 msgctxt "#19027"
 msgid "No search results"
@@ -5843,7 +5843,7 @@ msgstr "Er du sikker på, at du vil skjule denne kanal?"
 
 msgctxt "#19040"
 msgid "Timer"
-msgstr "Timer"
+msgstr "Optagelse"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
@@ -5851,7 +5851,7 @@ msgstr "Er du sikker på, at du vil omdøbe denne optagelse?"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr "Er du sikker på, at du vil omdøbe denne timer?"
+msgstr "Er du sikker på, at du vil omdøbe denne optagelse?"
 
 msgctxt "#19043"
 msgid "Recording"
@@ -5907,15 +5907,15 @@ msgstr "Ingen information tilgængelig"
 
 msgctxt "#19056"
 msgid "New timer"
-msgstr "Ny timer"
+msgstr "Ny optagelse"
 
 msgctxt "#19057"
 msgid "Edit timer"
-msgstr "Rediger timer"
+msgstr "Rediger optagelse"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr "Timer aktiveret"
+msgstr "Optagelse aktiveret"
 
 msgctxt "#19059"
 msgid "Stop recording"
@@ -5923,11 +5923,11 @@ msgstr "Stop optagelse"
 
 msgctxt "#19060"
 msgid "Delete timer"
-msgstr "Slet timer"
+msgstr "Slet optagelse"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr "Tilføj timer"
+msgstr "Tilføj optagelse"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
@@ -6079,7 +6079,7 @@ msgstr "Indtast navn på mappen til optagelsen"
 
 msgctxt "#19106"
 msgid "Next timer on"
-msgstr "Næste timer aktiveret"
+msgstr "Næste optagelse kl. "
 
 msgctxt "#19107"
 msgid "at"
@@ -6087,7 +6087,7 @@ msgstr "på"
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr "Kunne ikke gemme timeren. Se log'en for detaljer."
+msgstr "Kunne ikke gemme optagelsen. Se log'en for detaljer."
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
@@ -6131,7 +6131,7 @@ msgstr "Undgå gentagelser"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
-msgstr "Denne timer optager stadig. Er du sikker på, at du vil slette denne timer?"
+msgstr "Denne optagelse optager stadig. Er du sikker på, at du vil slette denne optagelse?"
 
 msgctxt "#19123"
 msgid "Free to air channels only"
@@ -6139,7 +6139,7 @@ msgstr "Kun ukodede kanaler"
 
 msgctxt "#19124"
 msgid "Ignore present timers"
-msgstr "Ignorer nuværende timere"
+msgstr "Ignorer nuværende optagelser"
 
 msgctxt "#19125"
 msgid "Ignore present recordings"
@@ -6479,7 +6479,7 @@ msgstr "Indtast en gyldig web-adresse til den nye kanal"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr "PVR backend'en understøtter ikke timere."
+msgstr "PVR backend'en understøtter ikke optagelser."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -6543,7 +6543,7 @@ msgstr "Ryd søgeresultater"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
-msgstr "Vis en besked ved opdatering af timer"
+msgstr "Vis en besked ved opdatering af optagelser"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6555,7 +6555,7 @@ msgstr "Indlæser kanaler fra klienter"
 
 msgctxt "#19237"
 msgid "Loading timers from clients"
-msgstr "Indlæser timere fra klienter"
+msgstr "Indlæser optagelser fra klienter"
 
 msgctxt "#19238"
 msgid "Loading recordings from clients"
@@ -7575,7 +7575,7 @@ msgstr "Indtast adganskode til"
 
 msgctxt "#20144"
 msgid "Shutdown timer"
-msgstr "Nedlukningstimer"
+msgstr "Sluk nedtælling"
 
 msgctxt "#20145"
 msgid "Shutdown interval (in minutes)"
@@ -7599,11 +7599,11 @@ msgstr "Luk ned om 120 minutter"
 
 msgctxt "#20150"
 msgid "Custom shutdown timer"
-msgstr "Nedlukningstimer"
+msgstr "Tilpasset sluk nedtælling"
 
 msgctxt "#20151"
 msgid "Cancel shutdown timer"
-msgstr "Annuller nedlukningstimer"
+msgstr "Annuller sluk nedtælling"
 
 msgctxt "#20152"
 msgid "Lock preferences for %s"
@@ -10765,6 +10765,10 @@ msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
 msgstr "Når en fil er skannet ind i biblioteket vil den vise metadata-titlen i stedet for filnavnet."
 
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Udtræk miniaturebilleder og information om codecs og visningsformat, for visning i Biblioteks visning. "
+
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
@@ -10849,6 +10853,14 @@ msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "importere kanalgrupper fra PVR-backend (hvis det er supporteret). Det vil slette brugeroprettet grupper, hvis de ikke er fundet på backend."
 
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr "Sorter kanaler efter kanalnummer på backend, men vis XBMC's egene kanal numre."
+
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr "Anvend kanalnumre fra backend i stedet for at indstilel dem manuelt i XBMC."
+
 msgctxt "#36210"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
@@ -10885,6 +10897,34 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36219"
+msgid "Default EPG window to show. Defaults to Timeline."
+msgstr "Standard EPG visning. Normal er Tidslinje"
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgstr "Antal dage af EPG data som importeres fra backend. Standard er 2 dage"
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
+msgstr "Timer mellem EPG data import fra backend. Standard er 120 minutter."
+
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "Importer ikke EPG data mens TV vises for at minimerer CPU forbrug."
+
+msgctxt "#36223"
+msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
+msgstr "Normalt er EPG data gemt i en lokal database for hurtig visning når XBMC genstartes."
+
+msgctxt "#36224"
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgstr "Skjul \"Ingen information tilgængelig\" beskeden når der ikke findes EPG data for kanal."
+
+msgctxt "#36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr "Set data i XBMC's lokale EPG database og genimporter data fra backend."
+
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
@@ -10900,6 +10940,14 @@ msgstr "Ingen information tilgængelig endnu."
 msgctxt "#36233"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36234"
+msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgstr "Varighed af optagelsen ved tryk på optag knappen eller ved oprettelse af en ny manuel optagelse. Standard er 180 minutter."
+
+msgctxt "#36239"
+msgid "Display a notification when timers are added, finished or removed by the backend."
+msgstr "Vis en besked når en optagelse er oprettet, færdig eller fjernet af backend."
 
 msgctxt "#36240"
 msgid "No info available yet."

@@ -9635,8 +9635,8 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr ""
 
+#empty strings from id 20200 to 20219
 #string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)
-#empty strings from id 20212 to 20219
 
 #: system/settings/settings.xml
 msgctxt "#20220"

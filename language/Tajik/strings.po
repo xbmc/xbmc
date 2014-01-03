@@ -5481,10 +5481,6 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Манбаи дастнорас"
 
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "Шумо бо объекти мултимедиа аз зерин чӣ кор мекунед:"
-
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Нигоҳ доштан"
@@ -5913,6 +5909,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Коркарди баъдӣ"
@@ -6208,6 +6208,10 @@ msgstr "Ин сабт нест карда нашуд. Барои маълумо�
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Ҳозир гузаронед"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -12408,6 +12412,14 @@ msgstr "Баландкунии садои талаффуз дар диалог �
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Фаъол кардани рамзкушоии сахтафзорӣ барои файлҳои видеоӣ."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Қаъри стереоскопии зерунвонҳо"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Қаъри стереоскопии зерунвонҳоро барои видеоҳои стереоскопӣ танзим мекунад. Қимати баланд зерунвонҳоро барои тамошобин наздиқтар намоиш медиҳад."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

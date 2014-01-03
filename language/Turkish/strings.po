@@ -11245,6 +11245,10 @@ msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "Seçilen kanalın görüntüsünü tam ekran yerine küçük bir kutuda görüntüleyin."
+
 msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Canlı TV ye geçildiğinde son seyredilen kanala geç."
@@ -11252,6 +11256,10 @@ msgstr "Canlı TV ye geçildiğinde son seyredilen kanala geç."
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr "Tam ekran modundayken bir sayı tuşlanırsa, sayı tuşlandıktan 1 saniye sonra otomatikman tuşlanan kanalı açar."
 
 msgctxt "#36232"
 msgid "No info available yet."

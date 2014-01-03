@@ -761,6 +761,14 @@ msgctxt "#226"
 msgid "Test patterns..."
 msgstr "Testa šablons..."
 
+msgctxt "#227"
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Meklēt Audio CD dziesmu nosaukumus no freedb.org"
+
+msgctxt "#228"
+msgid "Shuffle playlist on load"
+msgstr "Jaukt atskaņošanas sarakstu pēc ielādes"
+
 msgctxt "#230"
 msgid "Video filters"
 msgstr "Video filtri"

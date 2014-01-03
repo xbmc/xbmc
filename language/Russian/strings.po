@@ -5481,10 +5481,6 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Источник недоступен"
 
-msgctxt "#15013"
-msgid "What would you like to do with media items from"
-msgstr "Операция с медиафайлами из"
-
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Сохнанить"
@@ -5913,6 +5909,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU  Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Постобработка"
@@ -6208,6 +6208,10 @@ msgstr "Не удалось удалить запись. См. журнал."
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "К текущему моменту"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -12408,6 +12412,14 @@ msgstr "Увеличение громкости речи по сравнению
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Включение аппаратного декодирования видеофайлов."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Глубина стереосубтитров"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Настройка визуальной глубины субтитров для стереоскопического видео. Чем выше значение, тем ближе субтитры к зрителю."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

@@ -1189,6 +1189,10 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Framerate conversion"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Output configuration"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Fixed"
@@ -1497,6 +1501,10 @@ msgctxt "#419"
 msgid "High"
 msgstr "High"
 
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Keep audio device alive"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Delete album info"
@@ -1640,6 +1648,10 @@ msgstr "Mode"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Switch view"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Limit sampling rate (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -2925,6 +2937,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Program Add-ons"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Set plug-in thumb"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Add-on settings"
@@ -3489,13 +3505,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Reset"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Basic"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standard"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Advanced"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Expert"
+
 msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Add-on browser"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Reset above settings to default"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3508,6 +3540,18 @@ msgstr "Help"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "No help available"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Resets all the visible settings to their default values."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "No categories available"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Try changing the setting level to see additional categories and settings."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3845,6 +3889,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Password retry limit exceeded."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "The system will now power down."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Item locked"
@@ -4145,6 +4193,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Save resolution?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Would you like to keep this change?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "High quality upscaling"
@@ -4188,6 +4240,10 @@ msgstr "VDPAU HQ Upscaling level"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "VDPAU Studio level color conversion"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Keep skin?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4993,6 +5049,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Seconds"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Minute"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minutes"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Apple remote"
@@ -5677,6 +5741,10 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr "Edit title"
 
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Manage..."
+
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr "Edit sort title"
@@ -6221,6 +6289,18 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "Warning"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "Service"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Mux"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Provider"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Please switch to another channel."
@@ -6669,6 +6749,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "No PVR Add-on could be enabled. Check your settings or the log for more info."
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "Recording aborted"
@@ -6729,9 +6813,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Starting background threads"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "No PVR Add-on enabled"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "The PVR manager has been enabled without any"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "enabled PVR Add-on. Enable at least one Add-on"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6844,6 +6936,10 @@ msgstr "Do not show 'connection lost' warnings"
 msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* All recordings"
+
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "No PVR Add-ons could be found"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
@@ -9153,6 +9249,18 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s to %s"
 
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "Prefer external subtitles"
+
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "Prefer external subtitles to internal ones"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(External)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "File name"
@@ -9833,13 +9941,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Available Updates"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Dependencies not met. Please contact Add-on author."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Add-on does not have the correct structure"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s is used by the following installed Add-on(s)"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "This Add-on cannot be uninstalled"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Rollback"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Incompatible"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9945,6 +10069,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Lock Add-on manager"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "This Add-on cannot be disabled"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(current)"
@@ -9952,6 +10080,10 @@ msgstr "(current)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(blacklisted)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Add-on is incompatible or has been marked broken in repository."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9980,6 +10112,46 @@ msgstr "Unable to load skin"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Skin is missing some files"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Add-on is incompatible due to unmet dependencies."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pause when searching for subtitles"
+
+msgctxt "#24106"
+msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgstr "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Searching for subtitles ..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d subtitles found"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "No subtitles found"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Downloading subtitles ..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Languages to download subtitles for"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Failed to download subtitle"
 
 msgctxt "#25000"
 msgid "Notifications"

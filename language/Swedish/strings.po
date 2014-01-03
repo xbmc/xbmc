@@ -1193,6 +1193,10 @@ msgctxt "#338"
 msgid "Fixed"
 msgstr "Fast"
 
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimerad"
+
 msgctxt "#340"
 msgid "Various artists"
 msgstr "Blandade artister"
@@ -1220,6 +1224,10 @@ msgstr "År"
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD-kompatibel förstärkare"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Aktivera genomströmning"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1497,6 +1505,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "Hög"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Bästa träff"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Håll ljudenheten levande"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Radera albuminformation"
@@ -1640,6 +1656,10 @@ msgstr "Läge"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Växla vy"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Begränsa samplingshastighet (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -3489,9 +3509,21 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Återställ"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Grundläggande"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standard"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Avancerad"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Expert"
 
 msgctxt "#10040"
 msgid "Add-on browser"
@@ -3508,6 +3540,14 @@ msgstr "Hjälp"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Ingen hjälp tillgänglig"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Nollställer alla synbara inställningar till deras standard-värde."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Inga kategorier tillgängliga"
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3845,6 +3885,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Antal lösenordsförsök har överskridits."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Systemet kommer nu att stängas av."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Objekt låst"
@@ -4145,6 +4189,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Spara upplösning?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Vill du behålla denna ändring?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Högkvalitetsuppskalning"
@@ -4188,6 +4236,10 @@ msgstr "HQ-uppskalningsnivå (VDPAU)"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "Studionivåfärgkonvertering (VDPAU)"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Behålla skin?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4993,6 +5045,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f sekunder"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d Minut"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minuter"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Apple-fjärrkontroll"
@@ -5393,6 +5453,14 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Sluta rippa CD"
 
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Otillgänglig källa"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Behåll"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Ta bort"
@@ -5676,6 +5744,10 @@ msgstr "Markera som inte visad"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Ändra titel"
+
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Hantera..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
@@ -6220,6 +6292,14 @@ msgstr "Ange ett namn för denna inspelning"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Varning"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Tjänst"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Leverantör"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -9153,6 +9233,18 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s till %s"
 
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "Föredra externa undertexter"
+
+msgctxt "#21601"
+msgid "Prefer external subtitles to internal ones"
+msgstr "Föredra externa undertexter framför interna."
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Externa)"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Filnamn"
@@ -9833,13 +9925,25 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Tillgängliga uppdateringar"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Beroenden ej mötta. Vänligen kontakta upphovsmannen för tillägget."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Tillägget har inte korrekt stuktur"
 
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Detta tillägg kan inte avinstalleras"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Återladdning"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Ej kompatibel"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9945,6 +10049,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Lås tilläggshanteraren"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Detta tillägg kan inte inaktiveras"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(nuvarande)"
@@ -9952,6 +10060,10 @@ msgstr "(nuvarande)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(svartlistad)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Tillägget är ej kompatibelt eller har blivit markerat som trasigt i filförrådet."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9980,6 +10092,46 @@ msgstr "Kunde inte ladda skal"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Skalet saknar några filer"
+
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Tillägget är ej kompatibelt på grund av ej mötta beroenden."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pausea vid sökning av undertexter"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Söker efter undertexter ..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d undertexter funna"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Inga undertexter funna"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Laddar ner undertexter ..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Språk att ladda ner undertexter för"
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Misslyckades att ladda ner undertexter"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Inga undertexttjänster installerade"
+
+msgctxt "#24115"
+msgid "Save subtitles to movie folder"
+msgstr "Spara undertexter till film-mappen"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10084,6 +10236,10 @@ msgstr "Fråga om nedladdning innan uppspelning"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Klipp"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Starta om insticksprogrammet för att aktivera"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10420,6 +10576,26 @@ msgstr "Alltid"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Aldrig"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"

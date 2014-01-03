@@ -5481,6 +5481,10 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Source non disponible"
 
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Garder"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Supprimer"
@@ -10188,6 +10192,22 @@ msgstr "Aucun service de sous-titres installé"
 msgctxt "#24115"
 msgid "Save subtitles to movie folder"
 msgstr "Sauvegarder les sous-titres dans le répertoire du film"
+
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr "Service TV par défaut"
+
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles"
+msgstr "Choisissez le service qui sera utilisé par défaut pour chercher des sous-titres pour les émissions TV"
+
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr "Service films par défaut"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles"
+msgstr "Choisissez le service qui sera utilisé par défaut pour chercher des sous-titres pour des films"
 
 msgctxt "#25000"
 msgid "Notifications"

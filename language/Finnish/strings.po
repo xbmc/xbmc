@@ -2053,6 +2053,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Toistokertoja"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Otettu"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Järjestelyn suunta"
@@ -2341,6 +2345,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Pakkaustaso"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Runsas lokitus..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Puhdistetaan kirjastoa"
@@ -2377,6 +2385,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP-välipalvelin"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Jakotapa"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Automaattinen (DHCP)"
@@ -2395,7 +2407,7 @@ msgstr "Maski"
 
 msgctxt "#721"
 msgid "Default gateway"
-msgstr "Oletus yhdyskäytävä"
+msgstr "Oletusyhdyskäytävä"
 
 msgctxt "#722"
 msgid "DNS server"
@@ -2407,7 +2419,7 @@ msgstr "Tallenna ja uudelleenkäynnistä"
 
 msgctxt "#724"
 msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
-msgstr "Osoite on oltava muodossa AAA.BBB.CCC.DDD"
+msgstr "Osoitteen on oltava muodossa AAA.BBB.CCC.DDD"
 
 msgctxt "#725"
 msgid "with numbers between 0 and 255."
@@ -3489,6 +3501,14 @@ msgctxt "#10136"
 msgid "Smart playlist editor"
 msgstr "Älykäs soittolistan muokkaus"
 
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Älykäs soittolistan ehtojen muokkaus"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Kuvat/Tiedot"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Lisäosan asetukset"
@@ -3933,6 +3953,10 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Käynnistä uudelleen"
 
+msgctxt "#13014"
+msgid "Minimise"
+msgstr "PIenennä"
+
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Virtakytkimen toiminto"
@@ -3973,9 +3997,45 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Peliohjain irroitettu"
 
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Herätys lähiverkon kautta (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Luodaan verkkoyhteyttä..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Herätys lähiverkon kautta epäonnistui!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Odotetaan palvelimen heräämistä..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Odotetaan yhä palvelimen heräämistä..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Odotetaan palvelujen käynnistymistä..."
+
 msgctxt "#13033"
 msgid "MAC Discovery"
 msgstr "MAC osoitteen löytäminen"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Päivityksen kesto %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Haun kesto %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Epäonnistui: "
 
 msgctxt "#13050"
 msgid "Running low on battery"
@@ -4561,6 +4621,14 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Esiasetukset"
 
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "Tälle visualisoinnille\nei löytynyt esiasetuksia"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualisation"
+msgstr "Asetuksia ei ole saatavilla\ntälle visualisoinnille."
+
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Poista/Lataa"
@@ -4732,6 +4800,10 @@ msgstr "Toista seuraava video automaattisesti"
 msgctxt "#13434"
 msgid "Play only this"
 msgstr "Toista vain tämä"
+
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "Käytä HQ-skaalaimia yllä oleville"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -4945,6 +5017,10 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Videovälimuisti - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Lähiverkko"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "Internet"
@@ -4953,6 +5029,10 @@ msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Musiikkivälimuisti - DVD-ROM"
 
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Lähiverkko"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Internet"
@@ -4960,6 +5040,10 @@ msgstr "Internet"
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
 msgstr "DVD-välimuisti - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Lähiverkko"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5752,6 +5836,10 @@ msgstr "Tiedot"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Tämän kanavan nauhoittaminen on jo aloitettu"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s ei voi toistaa. Katso lokitiedostosta lisätietoja."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -8229,6 +8317,10 @@ msgctxt "#20417"
 msgid "Writer"
 msgstr "Käsikirjoittaja"
 
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Kirjoittajat"
+
 msgctxt "#20419"
 msgid "Replace file names with library titles"
 msgstr "Korvaa tiedostojen nimet kirjaston sisältämillä nimillä"
@@ -8404,6 +8496,10 @@ msgstr "Tagi nimeltä '%s' on jo olemassa."
 msgctxt "#20464"
 msgid "Select %s"
 msgstr "Valitse %s"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Lisää elokuva uuteen ryhmään"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -8825,6 +8921,10 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Katsottujen jaksojen lukumäärä"
 
+msgctxt "#21458"
+msgid "Group by"
+msgstr "Ryhmitys"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Tekstityksen sijainti"
@@ -8993,6 +9093,14 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Suunta"
 
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Kuvatyyppi"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Luontipvm"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "Lisäkategoriat"
@@ -9064,6 +9172,10 @@ msgstr "Alkuperäinen lähetys"
 msgctxt "#21877"
 msgid "Date created"
 msgstr "Luontipäivä"
+
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Tärkeys"
 
 msgctxt "#21879"
 msgid "Country code"
@@ -9161,6 +9273,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Piilota päivityksen edistyminen"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "DNS-liite"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9256,6 +9372,10 @@ msgstr "Koko"
 msgctxt "#22032"
 msgid "Colours"
 msgstr "Värit"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Merkistö"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -9981,6 +10101,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Oma skripti -painike käytössä"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Automaattinen sisäänkirjautuminen"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Käynnistys epäonnistui:"
@@ -10237,6 +10361,10 @@ msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Aseta laitteet valmiustilaan näytönsäästäjän aktivoituessa"
 
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Herätä laitteet näytönsäästäjän kytkeytyessä pois"
+
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "CEC-porttia ei havaittu. Määritä se käsin."
@@ -10333,9 +10461,49 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Kohteiden kansio"
 
+msgctxt "#36101"
+msgid "Change the look and feel of the User Interface."
+msgstr "Vaihda käyttöliittymän ulkoasua."
+
 msgctxt "#36102"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36103"
+msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
+msgstr "Valitse käyttöliittymän ulkoasu. Tämä vaikuttaa siihen miltä XBMC näyttää."
+
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Vaihda ulkoasun asetuksia. Valittavissa olevat vaihtoehdot riippuvät käytetystä ulkoasusta."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Vaihda käytössä olevan ulkoasun teemaa."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Vaihda käytössä olevan ulkoasun värejä."
+
+msgctxt "#36107"
+msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
+msgstr "Valitse käyttöliittymän fontit. Fonttivalikoima on määritelty ulkoasussa."
+
+msgctxt "#36108"
+msgid "Resize the view of the GUI."
+msgstr "Muuta käyttöliittymän kokoa."
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Valitse mediaikkuna, jonka XBMC näyttää käynnistyttyään."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "Valitse tai poista käytöstä käyttöliittymän äänet."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Kytke tämä pois poistaaksesi ruudulla vierivät RSS-uutiset."
 
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
@@ -10349,13 +10517,53 @@ msgctxt "#36114"
 msgid "Chooses the language of the User Interface."
 msgstr "Valitsee käyttöliittymän kielen."
 
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Valitse missä muodossa lämpötila, aika ja päiväys näytetään. Vaihtoehdot riippuvat valitusta kielestä."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the GUI."
+msgstr "Valitse mitä merkistöä käytetään tekstin näyttämiseen käyttöliittymässä."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Valitse maan sijainti"
+
 msgctxt "#36118"
 msgid "Select your current timezone."
-msgstr "Valitse nykyinen aikavyöhykkeesi."
+msgstr "Valitse aikavyöhykkeesi."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Valitse oletusääniraita kun useampi kieli on saatavilla."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Valitse oletustekstitys kun useampia kieliä on saatavilla."
 
 msgctxt "#36121"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Näytä (..) valinta yläkansion valitsemiseksi."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Näytä mediatiedostojen päätteet. Esimerkiksi 'You Enjoy Myself.mp3' näkyisi pelkästään 'You Enjoy Myself' ilman päätettä."
+
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Älä huomio tiettyjä sanoja aakkosjärjestettäessä. Esimerkiksi 'The Simpsons' näkyisi S-kirjaimen kohdalla kuten 'Simpsons'. Katso lisää http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Salli tiedostojen poisto ja uudelleen nimeäminen käyttöliittymän avulla (paina esimerkiksi näppäimistöltä C päästäksesi tähän valikkoon)."
+
+msgctxt "#36126"
+msgid "Show the add source button from root sections of the user interface."
+msgstr "Näytä Lisää lähde -nappi käyttöliittymän päätasoilla."
 
 msgctxt "#36127"
 msgid "Show hidden files and directories."
@@ -10398,6 +10606,10 @@ msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36151"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36154"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
@@ -10505,6 +10717,10 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Aktivoi videotallennusominaisuudet (PVR) XBMC:ssä. Ainakin yhden PVR-lisäosan on oltava asennettu tätä varten."
+
 msgctxt "#36210"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
@@ -10545,6 +10761,10 @@ msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Näytä signaalin voimakkuustiedot codecin infoikkunassa (mikäli lisäosa ja backend tukee tätä ominaisuutta)."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
@@ -10556,6 +10776,22 @@ msgstr "Ei tietoa saatavilla vielä."
 msgctxt "#36233"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Tallennuksen prioriteetti. Korkeampi numero tarkoittaa korkeampaa prioriteettiä. Oletus on 50. Kaikki lisäosat ja backendit eivät tue tätä."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Poista tallennus tämän ajan jälkeen. Oletus on 99 päivää. Kaikki lisäosat ja backendit eivät tue tätä."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Aloita tallennus hieman ennen ohjelma-aikaa. Oletus on 2 minuuttia. Kaikki lisäosat ja backendit eivät tue tätä."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Lopeta tallentaminen hieman ohjelma-ajan jälkeen. Oletus on 10 minuuttia. Kaikki lisäosat ja backendit eivät tue tätä."
 
 msgctxt "#36240"
 msgid "No info available yet."
@@ -10582,6 +10818,10 @@ msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36254"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
@@ -10700,6 +10940,10 @@ msgstr "Määritä web-palvelimen käyttäjätunnus."
 msgctxt "#36331"
 msgid "Define webserver password."
 msgstr "Määritä web-palvelimen salasana."
+
+msgctxt "#36333"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36335"
 msgid "No info available yet."
@@ -10902,6 +11146,22 @@ msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36420"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36537"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36538"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä."
+
+msgctxt "#36539"
+msgid "No info available yet."
+msgstr "Ei tietoa saatavilla vielä.§"
+
+msgctxt "#36540"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
