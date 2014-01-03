@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.11"
+  version="1.0.12"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -50,7 +50,7 @@
     <summary lang="ru">Завораживающая заставка с эффектами частиц</summary>
     <summary lang="se">En fascinerande skärmsläckare av partikeleffekter</summary>
     <summary lang="sk">Fascinujúci šetrič s efektom častíc</summary>
-    <summary lang="sl">Ohranjevalnik zaslona z učinkom hipnotičnih delčkov</summary>
+    <summary lang="sl">Ohranjevalnik zaslona z dih jemajočimi delčki</summary>
     <summary lang="sv">En hypnotiserande partikeleffektskärmsläckare</summary>
     <summary lang="ta_IN">மயக்கவைக்கும் துகள் விளைவுகள் திரைகாப்பான்</summary>
     <summary lang="tg">Пардаи экрани аҷоиб бо таъсири зарраҳо</summary>
@@ -97,7 +97,7 @@
     <description lang="ru">Завораживающая заставка с эффектами частиц. Для этой заставки на выбор доступно огромное количество вариаций эффектов.</description>
     <description lang="se">Detta är en mycket fascinerande partikeleffektsskärmsläckare. Du kommer att upptäcka att du kan uppnå ett otroligt antal olika mönster.</description>
     <description lang="sk">Toto je veľmi fascinujúci šetrič s efektom častíc. Zistíte, že môžete dosiahnuť neskutočné číslo rôznych vzorov.</description>
-    <description lang="sl">To je ohranjevalnik zaslona s presenetiljivim hipnotičnim učinkom delcev. Odkrili boste, da lahko dosežejo neverjetno število različnih vzorcev.</description>
+    <description lang="sl">To je ohranjevalnik zaslona z dih jemajočimi delčki. Odkrili boste, da lahko dosežejo neverjetno število različnih vzorcev.</description>
     <description lang="sv">Detta är en väldigt hypnotiserande partikeleffektskärmsläckare. Du kommer att upptäcka att du kan åstadkomma ett häpnadsväckande antal olika mönster.</description>
     <description lang="ta_IN">இது ஒருவிதமான மயக்கவைக்கும் துகள் விளைவுகள் திரைகாப்பான். நீங்கள் எண்ணற்ற அற்புதமான வெவ்வேறு வகைகளின் வடிவங்களை பார்க்கலாம்.</description>
     <description lang="tg">Ин пардаи экран бо таъсири зарраҳо аҷоиб мебошад. Барои ин парда шумо бисёр таъсирҳои аҷиби нотакрорро пайдо мекунед.</description>

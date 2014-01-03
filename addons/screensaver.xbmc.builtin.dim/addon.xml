@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.11"
+       version="1.0.12"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -98,7 +98,7 @@
     <description lang="ro">Dim este un screensaver simplu care va întuneca (reduce intensitatea luminii) ecranului dumneavoastră la o valoare configurabilă cuprinsă între 20 și 100% .</description>
     <description lang="ru">Эта заставка постепенно затемняет изображение на экране до заданного значения (от 20% до 100%).</description>
     <description lang="sk">"Dim" šetrič obrazovky je jednoduchý šetrič, ktorý zatemní Vašu obrazovku podľa nastavenia v rozsahu 20 až 100%.</description>
-    <description lang="sl">Dim je enostaven ohranjevalnik zaslona, ki postopoma zatemni zaslon do izbrane svetlosti med 20 in 100%.</description>
+    <description lang="sl">Dim je enostaven ohranjevalnik zaslona, ki zatemni zaslon do izbrane svetlosti med 20 in 100%.</description>
     <description lang="sq">Errësuesi i ekranit është një mbrojtës i thjeshtë ekrani, i cili errëson (zbeh) ekranin tuaj në varësi të një vlere të axhustueshme nga 20 deri në 100%. </description>
     <description lang="sv">Detta är en enkel skärmsläckare som tonar ned ljusstyrkan på din skärm till ett angivet värde mellan 20 och 100%</description>
     <description lang="ta_IN">இது எளிமையான திரைகாப்பான் - திரையை மங்க (மங்கு விளைவு) செய்துவிடும் - மங்கு அளவு 20% முதல் 100% வரை.</description>

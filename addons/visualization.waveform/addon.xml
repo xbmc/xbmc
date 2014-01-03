@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.waveform"
-  version="1.0.11"
+  version="1.0.12"
   name="Waveform"
   provider-name="MrC">
   <extension
@@ -81,7 +81,7 @@
     <description lang="fi">Waveform on kaksi aaltomuotograafia näyttävä yksinkertainen visualisointi. Toinen on vasemmalle ja toinen oikealle kanavalla ja ne liikkuvat musiikin tahdissa.</description>
     <description lang="fr">Waveform est une visualisation simple affichant deux graphiques de forme d'onde à l'écran. Chaque forme d'onde représente une voie, gauche et droite, et réagit selon le rythme de la musique.</description>
     <description lang="gl">Waveform é unha Visualización simple que amosa 2 gráficos en forma de onde na súa pantalla, unha por cada lateral correspondente ás canles de audio da esquerda e da dereita que se move ó ritmo da música</description>
-    <description lang="he">Waveform הוא חיזוי פשוט אשר מציג 2 גרפיים בצורת גל על המסך, אחד לכל ערוץ שמאלי וימני אשר זז לפי קצב המוזיקה</description>
+    <description lang="he">Waveform הוא חיזוי פשוט המציג 2 גרפים בצורת גל על המסך, אחד לכל ערוץ שמאלי וימני הזז לפי קצב המוזיקה</description>
     <description lang="hr">Waveform je jednostavna vizualizacija koja prikazuje 2 valna grafikona, po jedan za lijevi i desni kanal koji se pokreću u ritmu glazbe.</description>
     <description lang="hu">A Waveform egy egyszerű vizualizáció, amely 2db hullámot mutat reprezentálva a bal és a jobb hangcsatornákat, melyek a zene ritmusára mozognak.</description>
     <description lang="id">Waveform adalah visualisasi sederhana yang menunjukkan grafik dua gelombang pada layar, masing-masing untuk Satu saluran Kiri dan Kanan yang bergerak dengan ketukan musik</description>

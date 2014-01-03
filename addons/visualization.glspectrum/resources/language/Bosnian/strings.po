@@ -20,6 +20,10 @@ msgctxt "#30000"
 msgid "Mode"
 msgstr "Režim"
 
+msgctxt "#30005"
+msgid "Small"
+msgstr "Malo"
+
 msgctxt "#30006"
 msgid "Default"
 msgstr "Podrazumjevano"

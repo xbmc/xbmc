@@ -70,8 +70,8 @@ msgstr "ברירת מחדל"
 
 msgctxt "#30013"
 msgid "Fast"
-msgstr "מהר"
+msgstr "מהיר"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "מהר מאוד"
+msgstr "מהיר מאוד"

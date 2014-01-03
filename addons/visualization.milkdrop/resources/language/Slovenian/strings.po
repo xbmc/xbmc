@@ -46,7 +46,7 @@ msgstr "Povprečen čas med ostrimi prehodi"
 
 msgctxt "#30007"
 msgid "Maximum Refresh Rate"
-msgstr "Največja frekvenca osveževanja"
+msgstr "Največja stopnja osveževanja"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"

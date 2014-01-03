@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="XBMC.org Add-ons"
-		version="2.1.15"
+		version="2.1.16"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -36,12 +36,13 @@
 		<summary lang="es">Instalar Add-ons de XBMC.org</summary>
 		<summary lang="es_AR">Instalar Add-ons de XBMC.org</summary>
 		<summary lang="es_MX">Installar Add-ons de XBMC.org</summary>
+		<summary lang="es_VE">Instalar Add-ons de XBMC.org</summary>
 		<summary lang="et">Paigalda lisasid lehelt XBMC.org</summary>
 		<summary lang="eu">Instalatu XBMC.org-eko gehigarriak</summary>
 		<summary lang="fi">Asenna lisäosia XBMC.org -sivustolta</summary>
 		<summary lang="fr">Installer des extensions depuis XBMC.org</summary>
 		<summary lang="gl">Instalar Engadidos dende XBMC.org</summary>
-		<summary lang="he">התקנת תוספים מ־XBMC.org</summary>
+		<summary lang="he">התקן הרחבות מ-XBMC.org</summary>
 		<summary lang="hr">Instaliraj dodatke s XBMC.org</summary>
 		<summary lang="hu">Kiegészítők letöltése az XBMC.org-ról</summary>
 		<summary lang="id">pasang pengaya dari XMBC.org</summary>
@@ -63,7 +64,7 @@
 		<summary lang="ru">Установить дополнения с сайта XBMC.org</summary>
 		<summary lang="se">Installera tillägg från XBMC.org</summary>
 		<summary lang="sk">Inštalovať rozšírenia z XBMC.org</summary>
-		<summary lang="sl">Namestite dodatke iz XBMC.org</summary>
+		<summary lang="sl">Namestite dodatke z XBMC.org</summary>
 		<summary lang="sv">Installera tillägg från XBMC.org</summary>
 		<summary lang="ta_IN">XBMC.org இருந்து துணை பயன்களை நிறுவு</summary>
 		<summary lang="tg">Насб кардани барномаҳои иловагӣ аз XBMC.org</summary>
@@ -88,12 +89,13 @@
 		<description lang="es">Descarga e instala add-ons desde el repositorio oficial de XBMC.[CR]  Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a tí.[CR]  Todos los add-ons en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algún add-on que no funciona, por favor informa de ello al equipo de XBMC para solucionar el problema.</description>
 		<description lang="es_AR">Descarga e instala add-ons desde el repositorio oficial de XBMC.[CR] Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a vos.[CR] Todos los add-ons en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algún add-on que no funciona, por favor informa de ello al equipo de XBMC para solucionar el problema.</description>
 		<description lang="es_MX">Descarga e instala add-ons del repositorio oficial XBMC.org.[CR] Al usar el repositorio oficial, tendrá la ventaja de los servicios de espejos, y así tener descargas más rápidas.[CR] Todos los add-ons en este repositorio se han probado de manera básica, si encuentra alguno que no funciona o roto, favor de reportarlo al Equipo de XBMC para poder tomar las medidas necesarias.</description>
+		<description lang="es_VE">Descarga e instala add-ons del repositorio oficial de XBMC.org.[CR] Al hacer uso del repositorio oficial podrás tomar ventaja de nuestro extenso servicio para descarga de archivos a gran velocidad desde una región cercana a la tuya. [CR] Todos los add-ons en este repositorio han sido probados de forma básica, si algún add-on no puede ser descargado o no funciona por favor repórtalo al Equipo de XBMC para de esta manera tomar cualquier acción que sea necesaria.</description>
 		<description lang="et">Lae alla ja installi lisasid ametlikust XBMC.org hoidlast.[CR]  Ametliku hoidla kasutamise eeliseks on võimalus kasutada meie ulatuslikku failide peegelteenust laadides faile sulle kõige lähemast serverist.[CR]  Kõik lisad selles hoidlas on läbinud elementaarse testimise. Siiski, kui sa leiad vigase või mittetöötava lisa, siis palun teavita sellest XBMC meeskonda, et me saaksime vajaliku abi osutada.</description>
 		<description lang="eu">Gehigarriak XMBC.org biltegi ofizialetik deskargatu eta instalatu.[CR]  &#10;Biltegi ofiziala erabiliaz zutaz gertu dagoen gune batetik deskargatu&#10;ditzakezu gure fitxategi-ispilu multzoaren abantailaz aprobetxatuaz.[CR]  &#10;Biltegi honetako gehigarri guztiek proba basikoak gainditu dituzte baina hondaturiko edo funtzionatzen ez duen gehigarri baten bat aurki ezkero honen berri XBMC taldeari eman beharrezko ekintzak burutu ditzagun.</description>
 		<description lang="fi">Lataa ja asenna lisäosia virallisesta XBMC.org -lisäosasäilöstä.[CR]  Käyttämällä virallista säilöä sinun on mahdollista käyttää hyväksesi meidän kattavaa tiedostojen peilauspalveluamme saavuttaaksesi korkeat latausnopeudet sinun lähialueeltasi.[CR]  Kaikki tämän säilön lisäosat on testattu toimiviksi, jos löydät rikkinäisen tai "ei toimivan" lisäosan, ilmoita siitä Team XBMC:lle, jotta voimme korjata asian.</description>
 		<description lang="fr">Télécharger et installer des extensions à partir du dépôt officiel XBMC.org.[CR]  En utilisant le dépôt officiel, vous bénéficierez de notre service de serveurs miroirs vous permettant de télécharger rapidement depuis une région proche de vous.[CR]  Toutes les extensions de ce dépôt ont été testées de manière basique, si vous trouvez une extension corrompue ou inutilisable, merci d'en informer la Team XBMC afin que nous puissions prendre les mesures nécessaires.</description>
 		<description lang="gl">Descargar e instalar Engadidos dende o repositorio de engadidos oficial de XBMC.org.[CR] Empregando o repositorio oficial, vostede poderá disfrutar das vanatexes do seu extenso servizo de replicación de ficheiros para axudar a descargas rápidas dende unha rexión preto a vostede.[CR] Tódolos Engadidos deste repositorio pasaron por comprobacións básicas. Se atopa algún Engadido roto ou non funcional, por favor reporteo ó equipo de XBMC para que poidan actuar en consecuencia.</description>
-		<description lang="he">ניתן להוריד ולהתקין תוספים מהמאגר הרשמי של Official XBMC.org.[CR]‎ השימוש במאגר הרשמי מקנה לך את היתרון שבשימוש בשירות שיקוף הקבצים שלנו ובכך לסייע לך להוריד מהר יותר מהאזור המועדף עליך.[CR] כל התוספים במאגר זה עברו בדיקה בסיסית, אם מצאת שאחד מהם פגום או בלתי פעיל נא לדווח עליו לצוות של XBMC כדי שנוכל לפעול בהתאם.</description>
+		<description lang="he">הורד והתקן הרחבות מהמאגר הרשמי של XBMC.org.[CR]‎ היתרון שבשימוש במאגר הרשמי הוא הורדה דרך שירות שיקוף קבצים המאפשר הורדה מהירה מהשרת הקרוב אליך.[CR] כל ההרחבות במאגר זה עברו בדיקה בסיסית, אם נתקלת בהרחבה שלא ניתנת להורדה או שאינה תקינה אנא דווח עליה לצוות הפיתוח של XBMC.</description>
 		<description lang="hr">Preuzmite i instalirajte dodatke sa službenog XBMC.org repozitorija dodataka.[CR] Korištenjem službenog repozitorija bit ćete u mogućnosti iskoristiti prednosti usluge našeg brzog zrcalnog poslužitelja datoteka, da bi mogli brže preuzimati iz regije koje je bliže vašoj lokaciji.[CR] Svi dodaci na ovom repozitoriju prošli su osnovno testiranje, u slučaju da primijetite neispravan dodatak, molimo vas da to prijavite XBMC timu koji će zatim poduzeti potrebne korake.</description>
 		<description lang="hu">Kiegészítők letöltése és telepítése a hivatalos XBMC.org tárolóhelyről.[CR] A hivatalos tárolóhely használatával kihasználhatod szerteágazó tükör-kiszolgáló hálózatunkat, ami segít a gyorsabb letöltésben egy hozzád közelebb eső körzet használatával.[CR]  Minden kiegészítő ezen a tárolóhelyen átment egy alaptesztelésen. Ha mégis hibás vagy nem működő kiegészítőt találsz, kérünk jelezd az XBMC csapatnak, hogy megtegyük a szükséges lépéseket.</description>
 		<description lang="id">Unduh dan pasang pengaya dari repositori pengaya resmi XBMC.org. [CR] Dengan menggunakan repositori resmi anda akan mendapat keuntungan dari miror berkas kami yang luas dimana dapat membantu anda untuk lebih cepat mengunduh dari daerah yang dekat dengan anda. [CR] Semua pengaya pada repository telah melalui uji coba standar, jika anda menemukan pengaya yang rusak atau tidak bekerja tolong laporkan kepada tim XBMC agar kami bisa menindak lanjutinya.</description>
@@ -113,7 +115,7 @@
 		<description lang="ru">Загружайте и устанавливайте обновления из официального репозитория XBMC.org[CR]Используя официальный репозиторий, вы сможете воспользоваться преимуществами распределенного хранилища для быстрой загрузки файлов с ближайшего к вам сервера.[CR]Все дополнения в данном репозитории прошли тестирование. Если вы обнаружили нерабочее дополнение, сообщите об этом разработчикам XBMC.</description>
 		<description lang="se">Ladda ner och installera tillägg från det officiella XBMC.org tilläggsförrådet.[CR]  Genom att använda det officiella förrådet kan du utnyttja fördelarna med vår utökade filspeglinstjänst för att få snabbare nedladdningar från en region nära dig.[CR]  Alla tillägg på detta förråd har genomgått en enkel testprocedur, om du hittar ett trasigt eller icke fungerande tillägg uppskattar vi om du är vänlig och rapporterar det till Team XBMC så vi kan vidta nödvändiga åtgärder.</description>
 		<description lang="sk">Stiahnuť a nainštalovať rozšírenia z oficiálneho zdroja rozšírení XBMC.org.[CR] Použitím oficiálneho zdroja získavate možnosť využiť rozsiahly systém zrkadiel, ktorý Vám umožní rýchlejšie sťahovanie z Vám blízkeho regiónu.[CR] Všetky rozšírenia v tomto zdroji boli podrobené základnému testovaniu. Ak nájdete poškodené alebo nefunkčné rozšírenie, oznámte to prosím týmu XBMC aby mohol podľa potreby zakročiť.</description>
-		<description lang="sl">Prenos in namestitev dodatkov iz uradnega skladišča XBMC.org.[CR] Z uporabo uradnega skladišča, boste lahko izkoristili hitrejšo povezavo, ki bo izbrana glede na vašo lokacijo.[CR] Vsi dodatki tega odlagališča so bili osnovno stestirani, če pa boste našli pokvarjen ali nedelujoč dodatek, to sporočite skupini XBMC, da bomo lahko odpravili napake.</description>
+		<description lang="sl">Prenos in namestitev dodatkov iz uradnega skladišča XBMC.org.[CR] Z uporabo uradnega skladišča, boste lahko izkoristili hitrejšo povezavo, ki bo izbrana glede na vašo lokacijo.[CR] Vsi dodatki tega skladišča so bili osnovno stestirani, če pa boste našli pokvarjen ali nedelujoč dodatek, to sporočite ekipi XBMC, da bomo lahko odpravili napake.</description>
 		<description lang="sv">Ladda ner och installera tillägg från det officiella XBMC.org tilläggsförrådet.[CR]Genom att använda det officiella förrådet kommer du att få fördelen att kunna använda vår omfattande spegeltjänst som kommer att hjälpa dig till snabbare nedladdningar från en plats nära dig.[CR]Alla tillägg i detta förråd har genomgått grundläggande tester. Hittar du ett trasigt eller icke fungerande tillägg, vänligen meddela detta till Team XBMC så att vi kan vidta nödvändiga åtgärder.</description>
 		<description lang="ta_IN">அதிகாரப்பூர்வ XBMC.org துணை பயன் களஞ்சியத்திலிருந்து துணை பயன்களை பதிவிறக்கம் மற்றும் நிறுவல் செய்யலாம். [CR] அதிகாரப்பூர்வ களஞ்சியத்தை பயன்படுத்துவதால் நீங்கள் உங்கள் இருப்பிடத்திருக்கு அருகாமையில் உள்ள களஞ்சியத்தில் இருந்து சீக்கிரமாக சேவைகளை பெறமுடியும்.[CR] இங்குள்ள அணைத்து துணை பயன்களும் நன்கு பரிசொதிக்கபட்டவை, சரியாக இயங்கவில்லை என்றால் XBMC குழுவிடம் சொல்லவும்.</description>
 		<description lang="tg">Барномаҳои иловагиро аз анбори нармафзори XBMC.org боргирӣ кунед ва насб намоед.[CR]  Аз истифодаи анбори нармафзори расмии мо ба шумо имконият пайдо мешавад, ки тавонед шароити мусофидро аз хидмати оинаи файлии васеъ ба даст оред ва нармафзори лозимиро аз сервери минтакаи ба шумо наздиктар бо суръати баланд боргирӣ кунед.[CR]  Ҳамаи барномаҳо аз анбори нармафзори мо дар ҳолати санҷишӣ мебошанд, бинобар ин агар ягон барномаи иловагии нуқсондор ё вайроншударо ёбед, лутфан дар бораи он барнома ва нуқсон пайдошуда ба гурӯҳи кории XBMC гузориш диҳед, то ин ки мо тавонем ҳамаи камбудиҳои барномаҳои моро ҳал кунем.</description>
@@ -138,12 +140,13 @@
 		<disclaimer lang="es">El equipo de XBMC no ha hecho todos los Addons en este repositorio y no son responsables de su contenido</disclaimer>
 		<disclaimer lang="es_AR">El equipo de XBMC no ha hecho todos los Add-ons en este repositorio y no es responsable de su contenido</disclaimer>
 		<disclaimer lang="es_MX">El equipo de XBMC no hizo todos los add-ons en este repositorio y no es responsable de su contenido</disclaimer>
+		<disclaimer lang="es_VE">El equipo de XBMC no creó todos los add-ons en este repositorio y no son responsables por su contenido</disclaimer>
 		<disclaimer lang="et">XBMC meeskond ei teinud kõiki lisasid selles hoidlas ja ei vastuta ka nende sisu eest.</disclaimer>
 		<disclaimer lang="eu">XMBC taldeak ez ditu biltegi honetako gehigarri guztiak sortu eta ez da beren edukien erantzule.</disclaimer>
 		<disclaimer lang="fi">Team XBMC ei ole tehnyt kaikkia tässä säilössä olevia lisäosia, eikä siten ole vastuullinen kyseisten lisäosien sisällöstä</disclaimer>
 		<disclaimer lang="fr">La Team XBMC n'est pas l'auteur de toutes les extensions de ce dépôt et n'est pas responsable de leur contenu</disclaimer>
 		<disclaimer lang="gl">O equipo de XBMC non fai tódolos Engadidos deste repositorio e non é responsable do seu contido</disclaimer>
-		<disclaimer lang="he">צוות XBMC לא יצר את כל התוספים שבמאגר זה ואינו אחראי על תוכנם</disclaimer>
+		<disclaimer lang="he">צוות XBMC לא יצר את כל ההרחבות שבמאגר זה ואינו אחראי על תוכנם</disclaimer>
 		<disclaimer lang="hr">XBMC tim nije autor svih dodataka u ovom repozitoriju te kao takvi ne odgovaraju za njihov sadržaj</disclaimer>
 		<disclaimer lang="hu">Nem minden itt található kiegészítőt az XBMC csapat készített és nem vállal felelősséget azok tartalmáért</disclaimer>
 		<disclaimer lang="id">Tim XBMC tidak membuat semua pengaya pada repository ini dan tidak bertanggung jawab atas isinya.</disclaimer>
@@ -164,7 +167,7 @@
 		<disclaimer lang="ru">Разработчики XBMC не являются авторами всех дополнений в данном репозитории и не несут ответственность за их содержимое.</disclaimer>
 		<disclaimer lang="se">Team XBMC har inte skapat alla tillägg på detta förråd och är inte ansvariga för deras innehåll</disclaimer>
 		<disclaimer lang="sk">Team XBMC nevytvoril všetky rozšírenia v tomto zdroji nie je zodpovedný za ich obsah</disclaimer>
-		<disclaimer lang="sl">Skupina XBMC ni naredila vse dodatkov v tem skladišču in to ni skladišče za njihovo vsebino</disclaimer>
+		<disclaimer lang="sl">Ekipa XBMC ni naredila vseh dodatkov v tem skladišču in ne odgovarja za njihovo vsebino</disclaimer>
 		<disclaimer lang="sv">Team XBMC har inte gjort alla tillägg och är inte ansvariga för innehållet i dessa.</disclaimer>
 		<disclaimer lang="ta_IN">இந்த களஞ்சியத்தில் உள்ள துனை பயன்களை XBMC அணியால் உருவாக்கப்படவில்லை மற்றும் அவற்றின் உள்ளடக்கம் தங்கள் பொறுப்பு அல்ல.</disclaimer>
 		<disclaimer lang="tg">Гурӯҳи кории XBMC дар ин анбори нармафзор соҳиби ҳамаи барномаҳои иловагӣ намебошад ва барои мӯҳтавояшон ҷавобгар намебшад</disclaimer>

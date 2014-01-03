@@ -42,7 +42,7 @@ msgstr "Majhna"
 
 msgctxt "#30006"
 msgid "Default"
-msgstr "Privzeto"
+msgstr "Privzeta"
 
 msgctxt "#30007"
 msgid "Big"
