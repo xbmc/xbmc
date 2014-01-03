@@ -58,9 +58,9 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache
 
---------------------------------------------------------------
+-----------------------------------------------------------------------------
 3.1. Using the XBMC PPA to get all build dependencies (Debian/Ubuntu only)
---------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 For this, you need to specify the PPA in your apt sources. Please find them on
 the forum.
@@ -106,9 +106,21 @@ Tip: To override the location that XBMC is installed, use PREFIX=<path>.
 For example.
 
     $ make install DESTDIR=$HOME/xbmc
+    
+-----------------------------------------------------------------------------
+4.1. Libnfs Compilation and install
+-----------------------------------------------------------------------------
+
+The Linux of choice should provide packaged >=1.6 libnfs, if not please, 
+compile it from source as follows:
+
+   $ cd $HOME
+   $ git clone https://github.com/sahlberg/libnfs.git libnfs
+   $ ./bootstrap ; ./configute --prefix=/usr
+   $ make && make install
 
 -----------------------------------------------------------------------------
-4.1. Test Suite
+4.2. Test Suite
 -----------------------------------------------------------------------------
 XBMC has a test suite which uses the Google C++ Testing Framework. The
 framework is provided directly in XBMC's source tree and has very little
