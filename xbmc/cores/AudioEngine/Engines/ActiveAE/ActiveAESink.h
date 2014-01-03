@@ -41,6 +41,14 @@ struct SinkConfig
   const std::string *device;
 };
 
+struct SinkReply
+{
+  AEAudioFormat format;
+  float cacheTotal;
+  float latency;
+  bool hasVolume;
+};
+
 class CSinkControlProtocol : public Protocol
 {
 public:
@@ -87,7 +95,6 @@ public:
   std::string GetDefaultDevice(bool passthrough);
   void Start();
   void Dispose();
-  bool HasVolume();
   AEDeviceType GetDeviceType(const std::string &device);
   bool HasPassthroughDevice();
   CSinkControlProtocol m_controlPort;

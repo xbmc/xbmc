@@ -38,8 +38,6 @@ void CEngineStats::Reset(unsigned int sampleRate)
   CSingleLock lock(m_lock);
   m_sinkUpdate = XbmcThreads::SystemClockMillis();
   m_sinkDelay = 0;
-  m_sinkCacheTotal = 0;
-  m_sinkLatency = 0;
   m_sinkSampleRate = sampleRate;
   m_bufferedSamples = 0;
   m_suspended = false;
@@ -1212,7 +1210,7 @@ void CActiveAE::FlushEngine()
   if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH,
                                            &reply, 2000))
   {
-    bool success = reply->signal == CSinkControlProtocol::ACC ? true : false;
+    bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
     {
       CLog::Log(LOGERROR, "ActiveAE::%s - returned error on flush", __FUNCTION__);
@@ -1445,7 +1443,7 @@ bool CActiveAE::InitSink()
                                                  5000,
                                                  &config, sizeof(config)))
   {
-    bool success = reply->signal == CSinkControlProtocol::ACC ? true : false;
+    bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
     {
       reply->Release();
@@ -1453,18 +1451,22 @@ bool CActiveAE::InitSink()
       m_extError = true;
       return false;
     }
-    AEAudioFormat *data;
-    data = (AEAudioFormat*)reply->data;
+    SinkReply *data;
+    data = (SinkReply*)reply->data;
     if (data)
     {
-      m_sinkFormat = *data;
+      m_sinkFormat = data->format;
+      m_sinkHasVolume = data->hasVolume;
+      m_stats.SetSinkCacheTotal(data->cacheTotal);
+      m_stats.SetSinkLatency(data->latency);
     }
-    m_sinkHasVolume = m_sink.HasVolume();
     reply->Release();
   }
   else
   {
     CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
+    m_stats.SetSinkCacheTotal(0);
+    m_stats.SetSinkLatency(0);
     m_extError = true;
     return false;
   }
@@ -1481,7 +1483,7 @@ void CActiveAE::DrainSink()
                                                  &reply,
                                                  2000))
   {
-    bool success = reply->signal == CSinkDataProtocol::ACC ? true : false;
+    bool success = reply->signal == CSinkDataProtocol::ACC;
     if (!success)
     {
       reply->Release();
@@ -1507,7 +1509,7 @@ void CActiveAE::UnconfigureSink()
                                                  &reply,
                                                  2000))
   {
-    bool success = reply->signal == CSinkControlProtocol::ACC ? true : false;
+    bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
     {
       CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
@@ -2039,7 +2041,7 @@ bool CActiveAE::Initialize()
                                                  &reply,
                                                  5000))
   {
-    bool success = reply->signal == CActiveAEControlProtocol::ACC ? true : false;
+    bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
     if (!success)
     {
@@ -2194,7 +2196,7 @@ bool CActiveAE::Resume()
                                                  &reply,
                                                  5000))
   {
-    bool success = reply->signal == CActiveAEControlProtocol::ACC ? true : false;
+    bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
     if (!success)
     {
@@ -2257,7 +2259,7 @@ void CActiveAE::OnLostDevice()
                                                  &reply,
                                                  5000))
   {
-    bool success = reply->signal == CActiveAEControlProtocol::ACC ? true : false;
+    bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
     if (!success)
     {
@@ -2561,7 +2563,7 @@ IAEStream *CActiveAE::MakeStream(enum AEDataFormat dataFormat, unsigned int samp
                                     &reply,10000,
                                     &msg, sizeof(MsgStreamNew)))
   {
-    bool success = reply->signal == CActiveAEControlProtocol::ACC ? true : false;
+    bool success = reply->signal == CActiveAEControlProtocol::ACC;
     if (success)
     {
       CActiveAEStream *stream = *(CActiveAEStream**)reply->data;
@@ -2588,7 +2590,7 @@ void CActiveAE::FlushStream(CActiveAEStream *stream)
                                        &reply,1000,
                                        &stream, sizeof(CActiveAEStream*)))
   {
-    bool success = reply->signal == CActiveAEControlProtocol::ACC ? true : false;
+    bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
     if (!success)
     {
