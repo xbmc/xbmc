@@ -257,7 +257,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         CFileItemPtr pItem(new CFileItem(szName));
         pItem->m_dateTime=dtDateTime;
         pItem->SetPath(strRoot + szPath);
-        // Hack to show duration of show in minutes as KB in XMBC because
+        // Hack to show duration of show in minutes as KB in XBMC because
         // it doesn't currently permit showing duration in minutes.
         // E.g., a 30 minute show will show as 29.3 KB in XBMC.
         pItem->m_dwSize = dwFileSize * 1000;
