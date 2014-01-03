@@ -736,40 +736,39 @@ bool CDVDPlayer::OpenInputStream()
 
 bool CDVDPlayer::OpenDemuxStream()
 {
-  if(m_pDemuxer)
-    SAFE_DELETE(m_pDemuxer);
-
-  CLog::Log(LOGNOTICE, "Creating Demuxer");
-
-  try
-  {
-    int attempts = 10;
-    while(!m_bStop && attempts-- > 0)
+  if (!m_pDemuxer) {
+    CLog::Log(LOGNOTICE, "Creating Demuxer");
+    
+    try
     {
-      m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-      if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      int attempts = 10;
+      while(!m_bStop && attempts-- > 0)
       {
-        continue;
+        m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
+        if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+        {
+          continue;
+        }
+        else if(!m_pDemuxer && m_pInputStream->NextStream() != CDVDInputStream::NEXTSTREAM_NONE)
+        {
+          CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
+          continue;
+        }
+        break;
       }
-      else if(!m_pDemuxer && m_pInputStream->NextStream() != CDVDInputStream::NEXTSTREAM_NONE)
+
+      if(!m_pDemuxer)
       {
-        CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
-        continue;
+        CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
+        return false;
       }
-      break;
+
     }
-
-    if(!m_pDemuxer)
+    catch(...)
     {
-      CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
       return false;
     }
-
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
-    return false;
   }
 
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
@@ -1262,19 +1261,8 @@ void CDVDPlayer::Process()
         }
       }
 
-      // if there is another stream available, reopen demuxer
-      CDVDInputStream::ENextStream next = m_pInputStream->NextStream();
-      if(next == CDVDInputStream::NEXTSTREAM_OPEN)
-      {
-        SAFE_DELETE(m_pDemuxer);
-        m_CurrentAudio.stream = NULL;
-        m_CurrentVideo.stream = NULL;
-        m_CurrentSubtitle.stream = NULL;
-        continue;
-      }
-
       // input stream asked us to just retry
-      if(next == CDVDInputStream::NEXTSTREAM_RETRY)
+      if(m_pInputStream->NextStream() == CDVDInputStream::NEXTSTREAM_RETRY)
       {
         Sleep(100);
         continue;
@@ -2359,10 +2347,7 @@ void CDVDPlayer::HandleMessages()
       {
         FlushBuffers(false);
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-        if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
-        {
-          SAFE_DELETE(m_pDemuxer);
-        }else
+        if(!input || !input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
           CApplicationMessenger::Get().MediaStop(false);
@@ -2372,10 +2357,7 @@ void CDVDPlayer::HandleMessages()
       {
         FlushBuffers(false);
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-        if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
-        {
-          SAFE_DELETE(m_pDemuxer);
-        }else
+        if(!input || !input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
           CApplicationMessenger::Get().MediaStop(false);
