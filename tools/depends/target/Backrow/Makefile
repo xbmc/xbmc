@@ -17,7 +17,7 @@ $(PLATFORM)/$(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 
 .installed-$(PLATFORM): $(PLATFORM)/$(SOURCE)
 	mkdir -p $(PREFIX)/include
-	cp -rf $(PLATFORM)/$(SOURCE) $(PREFIX)/include/
+	cp -pR $(PLATFORM)/$(SOURCE) $(PREFIX)/include/
 	touch $@
 
 clean:
