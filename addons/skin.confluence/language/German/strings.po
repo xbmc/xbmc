@@ -578,7 +578,7 @@ msgstr "FILME"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "TV SERIEN"
+msgstr "TV-SERIEN"
 
 msgctxt "#31956"
 msgid "MUSIC"

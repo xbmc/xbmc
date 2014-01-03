@@ -256,6 +256,10 @@ msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
 msgstr "Підменю музики головного екрану"
 
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Домашня сторінка Фотографії підменю"
+
 msgctxt "#31140"
 msgid "Music OSD"
 msgstr "OSD музики"
@@ -263,6 +267,10 @@ msgstr "OSD музики"
 msgctxt "#31141"
 msgid "Video OSD"
 msgstr "OSD відео"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Рівень налаштувань"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -456,6 +464,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]НАЛАШТУВАННЯ НАДБУДОВ[/B][CR][CR]Керування встановленими надбудовами • Встановлення надбудов з xbmc.org[CR]Зміна налаштувань надбудов"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]КОНФІГУРАЦІЯ НАЛАШТУВАНЬ ТБ[/B][CR][CR]Змінити інформацію повного екрану · Керувати налаштуваннями даних телегіда"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]НАЛАШТУВАННЯ ПАРАМЕТРІВ СЛУЖБ[/B][CR][CR]Налаштування керування XBMC за UPnP і HTTP • Налаштування доступу до файлів[CR]Увімкнення Zeroconf • Налаштування AirPlay"
@@ -463,6 +475,10 @@ msgstr "[B]НАЛАШТУВАННЯ ПАРАМЕТРІВ СЛУЖБ[/B][CR][CR]�
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Довідка при першому запуску."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Доступні локальні субтитри"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Video OSD"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Indstillingsniveau"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Genveje"
@@ -374,7 +378,7 @@ msgstr "Nyligt tilføjede"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Timeren startet![/B] [COLOR=grey2] - Systemet lukker ned om[/COLOR]"
+msgstr "[B]Optagelse indstillet![/B] [COLOR=grey2] - Systemet lukker ned om[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
@@ -476,6 +480,10 @@ msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Dette faneblad indikerer, at der er en menu i siden af dette vindue, som indeholder ekstra indstillinger til denne sektion.\nFor at få adgang til denne menu, skal du navigere til venstre  med din fjernbetjening eller dit tastatur. Du kan også placere din musemarkør over fanebladet. [CR][CR]Tryk \"Ok\" for at lukke denne dialog. Den dukker ikke op igen."
 
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Undertekster på lokalt sprog tilgængelig"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Vælg din XBMC brugerprofil[CR]for at logge ind og fortsætte"
@@ -510,7 +518,7 @@ msgstr "Kanalgruppe"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr "Indstil Timer"
+msgstr "Indstil Optagelse"
 
 msgctxt "#31511"
 msgid "Channel Options"

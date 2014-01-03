@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Video-OSD"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Inställningsnivå"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Genvägar"
@@ -475,6 +479,10 @@ msgstr "Förstagångshjälp..."
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Denna flik visar att det finns en meny till sidan om detta fönster som innehåller extra inställningar för denna sektion. För att nå menyn, navigera med din fjärrkontroll, tangentbord eller placera din mus ovanför fliken. [CR][CR]Klicka på \"OK\" för att stänga denna dialogruta. Den kommer inte att visas igen."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Lokal undertext tillgänglig"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

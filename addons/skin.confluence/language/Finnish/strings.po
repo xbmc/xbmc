@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Tiedot"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Toiminnot"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Nyt toistetaan"
@@ -368,6 +372,14 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Lataa tekstitykset"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Katso 2D:nä"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Vaihda tilaa"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Käytössä"
@@ -419,6 +431,10 @@ msgstr "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Määritä XBMC:n kauko ohjaus 
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ensimmäisen käynnistyksen apu..."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Paikallinen tekstitys saatavilla"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

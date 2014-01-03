@@ -224,6 +224,10 @@ msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Rādīt fonā video \"Tagad atskaņo\""
 
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Rādīt Fona \"Now Playing\" vizualizāciju"
+
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
 msgstr "Atskaņot TV dziesmas tēmas video bibliotēkā (TvTunes )"
@@ -236,9 +240,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lirika"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Slēpt Fanart pilnekrāna vizualizāciju"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Dziesmu vārdu papildinājums"
+
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr " Video Mājas lapas Apakš-iestatijumi"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Mūzikas Mājas lapas Apakš-iestatijumi"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr " Foto Mājas lapas Apakš-iestatijumi"
 
 msgctxt "#31140"
 msgid "Music OSD"

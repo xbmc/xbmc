@@ -416,6 +416,10 @@ msgctxt "#31360"
 msgid "Watch as 2D"
 msgstr "Гледай в 2D режим"
 
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Промени режима"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Включено"
@@ -507,6 +511,10 @@ msgstr "Изтрий групата"
 msgctxt "#31506"
 msgid "Available[CR]Groups"
 msgstr "Налични[CR]Групи"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "Група канали"
 
 msgctxt "#31510"
 msgid "Timer Set"
