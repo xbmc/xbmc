@@ -20,192 +20,245 @@
  */
 
 #include "xbmc_pvr_types.h"
+#include <algorithm>
 #include <map>
 
 namespace ADDON
 {
+  /**
+   * Represents a single stream. It extends the PODS to provide some operators 
+   * overloads.
+   */
+  class XbmcPvrStream : public PVR_STREAM_PROPERTIES::PVR_STREAM
+  {
+  public:
+    XbmcPvrStream()
+    {
+      Clear();
+    }
+    
+    XbmcPvrStream(const XbmcPvrStream &other)
+    {
+      memcpy(this, &other, sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
+    }
+    
+    XbmcPvrStream& operator=(const XbmcPvrStream &other)
+    {
+      memcpy(this, &other, sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
+      return *this;
+    }
+    
+    /**
+     * Compares this stream based on another stream
+     * @param other
+     * @return
+     */
+    inline bool operator==(const XbmcPvrStream &other) const
+    {
+      return iPhysicalId == other.iPhysicalId && iCodecId == other.iCodecId;
+    }
+
+    /**
+     * Compares this stream with another one so that video streams are sorted
+     * before any other streams and the others are sorted by the physical ID
+     * @param other
+     * @return
+     */
+    bool operator<(const XbmcPvrStream &other) const
+    {
+      if (iCodecType == XBMC_CODEC_TYPE_VIDEO)
+        return true;
+      else if (other.iCodecType != XBMC_CODEC_TYPE_VIDEO)
+        return iPhysicalId < other.iPhysicalId;
+      else
+        return false;
+    }
+    
+    /**
+     * Clears the stream
+     */
+    void Clear()
+    {
+      memset(this, 0, sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
+      iCodecId = XBMC_INVALID_CODEC_ID;
+      iCodecType = XBMC_CODEC_TYPE_UNKNOWN;
+    }
+    
+    /**
+     * Checks whether the stream has been cleared
+     * @return 
+     */
+    inline bool IsCleared() const
+    {
+      return iCodecId   == XBMC_INVALID_CODEC_ID &&
+             iCodecType == XBMC_CODEC_TYPE_UNKNOWN;
+    }
+  };
+  
   class XbmcStreamProperties
   {
   public:
+    typedef std::vector<XbmcPvrStream> stream_vector;
+    
     XbmcStreamProperties(void)
     {
-      Clear();
+      // make sure the vector won't have to resize itself later
+      m_streamVector = new stream_vector();
+      m_streamVector->reserve(PVR_STREAM_MAX_STREAMS);
     }
 
     virtual ~XbmcStreamProperties(void)
     {
+      delete m_streamVector;
+    }
+    
+    /**
+     * Resets the streams
+     */
+    void Clear(void)
+    {
+      m_streamVector->clear();
+      m_streamIndex.clear();
     }
 
-    int GetStreamId(unsigned int iPhysicalId)
+    /**
+     * Returns the index of the stream with the specified physical ID, or -1 if 
+     * there no stream is found. This method is called very often which is why 
+     * we keep a separate map for this.
+     * @param iPhysicalId
+     * @return
+     */
+    int GetStreamId(unsigned int iPhysicalId) const
     {
-      std::map<unsigned int, unsigned int>::iterator it = m_streamIndex.find(iPhysicalId);
+      std::map<unsigned int, int>::const_iterator it = m_streamIndex.find(iPhysicalId);
       if (it != m_streamIndex.end())
         return it->second;
+
       return -1;
     }
-
-    void GetStreamData(unsigned int iPhysicalId, PVR_STREAM_PROPERTIES::PVR_STREAM* stream)
+    
+    /**
+     * Returns the stream with the specified physical ID, or null if no such 
+     * stream exists
+     * @param iPhysicalId
+     * @return
+     */
+    XbmcPvrStream* GetStreamById(unsigned int iPhysicalId) const
     {
-      std::map<unsigned int, unsigned int>::iterator it = m_streamIndex.find(iPhysicalId);
-      if (it != m_streamIndex.end())
-      {
-        memcpy(stream, &m_streams.stream[it->second], sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
-      }
+      int position = GetStreamId(iPhysicalId);
+      return position != -1 ? &m_streamVector->at(position) : NULL;
+    }
+
+    /**
+     * Populates the specified stream with the stream having the specified 
+     * physical ID. If the stream is not found only target stream's physical ID 
+     * will be populated.
+     * @param iPhysicalId
+     * @param stream
+     */
+    void GetStreamData(unsigned int iPhysicalId, XbmcPvrStream* stream)
+    {
+      XbmcPvrStream *foundStream = GetStreamById(iPhysicalId);
+      if (foundStream)
+        stream = foundStream;
       else
       {
-        memset(stream, 0, sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
         stream->iIdentifier = -1;
         stream->iPhysicalId = iPhysicalId;
       }
     }
 
-    PVR_STREAM_PROPERTIES::PVR_STREAM* GetStreamById(unsigned int iPhysicalId)
+    /**
+     * Populates props with the current streams and returns whether there are 
+     * any streams at the moment or not.
+     * @param props
+     * @return
+     */
+    bool GetProperties(PVR_STREAM_PROPERTIES* props)
     {
-      std::map<unsigned int, unsigned int>::iterator it = m_streamIndex.find(iPhysicalId);
-      if (it != m_streamIndex.end())
-        return &m_streams.stream[it->second];
-      return NULL;
-    }
-
-    bool GetProperties(PVR_STREAM_PROPERTIES* props) const
-    {
-      props->iStreamCount = m_streams.iStreamCount;
-      for (unsigned int i = 0; i < m_streams.iStreamCount; i++)
+      unsigned int i = 0;
+      for (stream_vector::const_iterator it = m_streamVector->begin(); 
+           it != m_streamVector->end(); ++it, ++i)
       {
-        props->stream[i].iPhysicalId    = m_streams.stream[i].iPhysicalId;
-        props->stream[i].iCodecType     = m_streams.stream[i].iCodecType;
-        props->stream[i].iCodecId       = m_streams.stream[i].iCodecId;
-        props->stream[i].strLanguage[0] = m_streams.stream[i].strLanguage[0];
-        props->stream[i].strLanguage[1] = m_streams.stream[i].strLanguage[1];
-        props->stream[i].strLanguage[2] = m_streams.stream[i].strLanguage[2];
-        props->stream[i].strLanguage[3] = m_streams.stream[i].strLanguage[3];
-        props->stream[i].iIdentifier    = m_streams.stream[i].iIdentifier;
-        props->stream[i].iFPSScale      = m_streams.stream[i].iFPSScale;
-        props->stream[i].iFPSRate       = m_streams.stream[i].iFPSRate;
-        props->stream[i].iHeight        = m_streams.stream[i].iHeight;
-        props->stream[i].iWidth         = m_streams.stream[i].iWidth;
-        props->stream[i].fAspect        = m_streams.stream[i].fAspect;
-        props->stream[i].iChannels      = m_streams.stream[i].iChannels;
-        props->stream[i].iSampleRate    = m_streams.stream[i].iSampleRate;
-        props->stream[i].iBlockAlign    = m_streams.stream[i].iBlockAlign;
-        props->stream[i].iBitRate       = m_streams.stream[i].iBitRate;
-        props->stream[i].iBitsPerSample = m_streams.stream[i].iBitsPerSample;
+        memcpy(&props->stream[i], &(*it), sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
       }
-
+      
+      props->iStreamCount = m_streamVector->size();
       return (props->iStreamCount > 0);
     }
 
-    void Clear(void)
+    /**
+     * Merges new streams into the current list of streams. Identical streams 
+     * will retain their respective indexes and new streams will replace unused 
+     * indexes or be appended.
+     * @param newStreams
+     */
+    void UpdateStreams(stream_vector &newStreams)
     {
-      memset(&m_streams, 0, sizeof(PVR_STREAM_PROPERTIES));
-      for (unsigned int i = 0; i < PVR_STREAM_MAX_STREAMS; i++)
-        m_streams.stream[i].iCodecType = XBMC_CODEC_TYPE_UNKNOWN;
-    }
-
-    unsigned int NextFreeIndex(void)
-    {
-      unsigned int i;
-      for (i = 0; i < PVR_STREAM_MAX_STREAMS; i++)
+      // sort the new streams
+      std::sort(newStreams.begin(), newStreams.end());
+      
+      // ensure we never have more than PVR_STREAMS_MAX_STREAMS streams
+      if (newStreams.size() > PVR_STREAM_MAX_STREAMS)
       {
-        if (m_streams.stream[i].iCodecType == XBMC_CODEC_TYPE_UNKNOWN)
-          break;
+        while (newStreams.size() > PVR_STREAM_MAX_STREAMS)
+          newStreams.pop_back();
+        
+        XBMC->Log(LOG_ERROR, "%s - max amount of streams reached", __FUNCTION__);
       }
-      return i;
-    }
-
-    static std::map<unsigned int, unsigned int> CreateIndex(PVR_STREAM_PROPERTIES streams)
-    {
-      std::map<unsigned int, unsigned int> retval;
-      for (unsigned int i = 0; i < PVR_STREAM_MAX_STREAMS && i < streams.iStreamCount; i++)
-        retval.insert(std::make_pair(streams.stream[i].iPhysicalId, i));
-      return retval;
-    }
-
-    static std::map<unsigned int, unsigned int> CreateIndex(const std::vector<PVR_STREAM_PROPERTIES::PVR_STREAM>& streams)
-    {
-      std::map<unsigned int, unsigned int> retval;
-      for (unsigned int i = 0; i < PVR_STREAM_MAX_STREAMS && i < streams.size(); i++)
-        retval.insert(std::make_pair(streams.at(i).iPhysicalId, i));
-      return retval;
-    }
-
-    static void ClearStream(PVR_STREAM_PROPERTIES::PVR_STREAM* stream)
-    {
-      memset(stream, 0, sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
-      stream->iCodecType = XBMC_CODEC_TYPE_UNKNOWN;
-      stream->iCodecId   = XBMC_INVALID_CODEC_ID;
-    }
-
-    void UpdateStreams(const std::vector<PVR_STREAM_PROPERTIES::PVR_STREAM>& newStreams)
-    {
-      std::map<unsigned int, unsigned int> newIndex = CreateIndex(newStreams);
-
-      // delete streams we don't have in newStreams
-      std::map<unsigned int, unsigned int>::iterator ito = m_streamIndex.begin();
-      std::map<unsigned int, unsigned int>::iterator itn;
-      while (ito != m_streamIndex.end())
+      
+      stream_vector::iterator newStreamPosition;
+      for (stream_vector::iterator it = m_streamVector->begin(); it != m_streamVector->end(); ++it)
       {
-        itn = newIndex.find(ito->first);
-        if (itn == newIndex.end())
-        {
-          memset(&m_streams.stream[ito->second], 0, sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
-          m_streams.stream[ito->second].iCodecType = XBMC_CODEC_TYPE_UNKNOWN;
-          m_streams.stream[ito->second].iCodecId   = XBMC_INVALID_CODEC_ID;
-          m_streamIndex.erase(ito);
-          ito = m_streamIndex.begin();
-        }
+        newStreamPosition = std::find(newStreams.begin(), newStreams.end(), *it);
+
+        // if the current stream no longer exists we clear it, otherwise we 
+        // copy it and remove it from newStreams
+        if (newStreamPosition == newStreams.end())
+          it->Clear();
         else
-          ++ito;
-      }
-
-      // copy known streams
-      for (ito = m_streamIndex.begin(); ito != m_streamIndex.end(); ++ito)
-      {
-        itn = newIndex.find(ito->first);
-        memcpy(&m_streams.stream[ito->second], &newStreams.at(itn->second), sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
-        newIndex.erase(itn);
-      }
-
-      // place video stream at pos 0
-      for (itn = newIndex.begin(); itn != newIndex.end(); ++itn)
-      {
-        if (newStreams.at(itn->second).iCodecType == XBMC_CODEC_TYPE_VIDEO)
         {
-          m_streamIndex[itn->first] = 0;
-          memcpy(&m_streams.stream[0], &newStreams.at(itn->second), sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
-          newIndex.erase(itn);
-          break;
+          *it = *newStreamPosition;
+          newStreams.erase(newStreamPosition);
         }
       }
 
-      // fill the gaps or append after highest index
-      while (!newIndex.empty())
+      // replace cleared streams with new streams
+      for (stream_vector::iterator it = m_streamVector->begin();
+           it != m_streamVector->end() && !newStreams.empty(); ++it)
       {
-        // find first unused index
-        unsigned int i = NextFreeIndex();
-        itn = newIndex.begin();
-        m_streamIndex[itn->first] = i;
-        memcpy(&m_streams.stream[i], &newStreams.at(itn->second), sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
-        newIndex.erase(itn);
+        if (it->IsCleared())
+        {
+          *it = newStreams.front();
+          newStreams.erase(newStreams.begin());
+        }
       }
 
-      // set streamCount
-      m_streams.iStreamCount = 0;
-      for (ito = m_streamIndex.begin(); ito != m_streamIndex.end(); ++ito)
-      {
-        if (ito->second > m_streams.iStreamCount)
-          m_streams.iStreamCount = ito->second;
-      }
-      if (!m_streamIndex.empty())
-        m_streams.iStreamCount++;
+      // append any remaining new streams
+      m_streamVector->insert(m_streamVector->end(), newStreams.begin(), newStreams.end());
+      
+      // remove trailing cleared streams
+      while (m_streamVector->back().IsCleared())
+        m_streamVector->pop_back();
+      
+      // update the index
+      UpdateIndex();
     }
 
-    size_t Size(void) const
+  private:
+    stream_vector               *m_streamVector;
+    std::map<unsigned int, int> m_streamIndex;
+    
+    /**
+     * Updates the stream index
+     */
+    void UpdateIndex()
     {
-      return m_streamIndex.size();
+      m_streamIndex.clear();
+      
+      int i = 0;
+      for (stream_vector::const_iterator it = m_streamVector->begin(); it != m_streamVector->end(); ++it, ++i)
+        m_streamIndex[it->iPhysicalId] = i;
     }
-
-    std::map<unsigned int, unsigned int> m_streamIndex;
-    PVR_STREAM_PROPERTIES                m_streams;
   };
 }
