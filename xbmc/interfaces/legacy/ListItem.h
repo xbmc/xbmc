@@ -219,7 +219,6 @@ namespace XBMCAddon
        *     - premiered     : string (2005-03-04)
        *     - status        : string (Continuing) - status of a TVshow
        *     - code          : string (tt0110293) - IMDb code
-       *     - aired         : string (2008-12-07)
        *     - credits       : string (Andy Kaufman) - writing credits
        *     - lastplayed    : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
        *     - album         : string (The Joshua Tree)
