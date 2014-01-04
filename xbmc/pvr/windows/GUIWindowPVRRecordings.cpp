@@ -164,13 +164,11 @@ bool CGUIWindowPVRRecordings::OnAction(const CAction &action)
       action.GetID() == ACTION_NAV_BACK)
   {
     if (m_parent->m_vecItems->GetPath() != "pvr://recordings/")
+    {
       m_parent->GoParentFolder();
-    else if (action.GetID() == ACTION_NAV_BACK)
-      g_windowManager.PreviousWindow();
-
-    return true;
+      return true;
+    }
   }
-
   return CGUIWindowPVRCommon::OnAction(action);
 }
 
