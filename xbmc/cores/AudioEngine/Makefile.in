@@ -53,11 +53,6 @@ SRCS += Sinks/AESinkAUDIOTRACK.cpp
 else
 SRCS += Sinks/AESinkALSA.cpp
 SRCS += Sinks/AESinkOSS.cpp
-ifeq (@USE_PULSE@,1)
-SRCS += Engines/PulseAE/PulseAE.cpp
-SRCS += Engines/PulseAE/PulseAEStream.cpp
-SRCS += Engines/PulseAE/PulseAESound.cpp
-endif
 endif
 endif
 
