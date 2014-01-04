@@ -235,7 +235,6 @@ protected:
 
   // clear colour for "black" bars
   DWORD                m_clearColour;
-  ERenderFormat        m_format;
   unsigned int         m_extended_format;
 
   // Width and height of the render target

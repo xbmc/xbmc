@@ -580,10 +580,21 @@ void CBaseRenderer::ManageDisplay()
   switch(stereo_mode)
   {
     case CONF_FLAGS_STEREO_MODE_TAB:
-      if     (stereo_view == RENDER_STEREO_VIEW_LEFT)
-        m_sourceRect.y2 *= 0.5f;
-      else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
-        m_sourceRect.y1 += m_sourceRect.y2*0.5f;
+      // Those are flipped in y
+      if (m_format == RENDER_FMT_CVBREF || m_format == RENDER_FMT_EGLIMG || m_format == RENDER_FMT_MEDIACODEC)
+      {
+        if (stereo_view == RENDER_STEREO_VIEW_LEFT)
+          m_sourceRect.y1 += m_sourceRect.y2*0.5f;
+        else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+          m_sourceRect.y2 *= 0.5f;
+      }
+      else
+      {
+        if (stereo_view == RENDER_STEREO_VIEW_LEFT)
+          m_sourceRect.y2 *= 0.5f;
+        else if(stereo_view == RENDER_STEREO_VIEW_RIGHT)
+          m_sourceRect.y1 += m_sourceRect.y2*0.5f;
+      }
       break;
 
     case CONF_FLAGS_STEREO_MODE_SBS:

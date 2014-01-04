@@ -140,6 +140,7 @@ protected:
 
   // rendering flags
   unsigned m_iFlags;
+  ERenderFormat m_format;
 
   const void* m_RenderUpdateCallBackCtx;
   RenderUpdateCallBackFn m_RenderUpdateCallBackFn;
