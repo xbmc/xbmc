@@ -135,30 +135,6 @@ uint32_t CDatabase::ComputeCRC(const CStdString &text)
   return crc;
 }
 
-
-CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
-{
-  //  %q is the sqlite format string for %s.
-  //  Any bad character, like "'", will be replaced with a proper one
-  StringUtils::Replace(strStmt, "%s", "%q");
-  //  the %I64 enhancement is not supported by sqlite3_vmprintf
-  //  must be %ll instead
-  StringUtils::Replace(strStmt, "%I64", "%ll");
-
-  va_list args;
-  va_start(args, strStmt);
-  char *szSql = sqlite3_vmprintf(strStmt.c_str(), args);
-  va_end(args);
-
-  CStdString strResult;
-  if (szSql) {
-    strResult = szSql;
-    sqlite3_free(szSql);
-  }
-
-  return strResult;
-}
-
 CStdString CDatabase::PrepareSQL(CStdString strStmt, ...) const
 {
   CStdString strResult = "";
@@ -210,19 +186,11 @@ CStdString CDatabase::GetSingleValue(const CStdString &query)
   return GetSingleValue(query, m_pDS);
 }
 
-bool CDatabase::DeleteValues(const CStdString &strTable, const CStdString &strWhereClause /* = CStdString() */)
+bool CDatabase::DeleteValues(const CStdString &strTable, const Filter &filter /* = Filter() */)
 {
-  bool bReturn = true;
-
-  CStdString strQueryBase = "DELETE FROM %s";
-  if (!strWhereClause.empty())
-    strQueryBase += StringUtils::Format(" WHERE %s", strWhereClause.c_str());
-
-  CStdString strQuery = FormatSQL(strQueryBase, strTable.c_str());
-
-  bReturn = ExecuteQuery(strQuery);
-
-  return bReturn;
+  CStdString strQuery;
+  BuildSQL(PrepareSQL("DELETE FROM %s ", strTable.c_str()), filter, strQuery);
+  return ExecuteQuery(strQuery);
 }
 
 bool CDatabase::ExecuteQuery(const CStdString &strQuery)

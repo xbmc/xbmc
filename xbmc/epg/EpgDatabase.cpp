@@ -170,10 +170,10 @@ bool CEpgDatabase::Delete(const CEpg &table)
     return false;
   }
 
-  CStdString strWhereClause;
-  strWhereClause = FormatSQL("idEpg = %u", table.EpgID());
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idEpg = %u", table.EpgID()));
 
-  return DeleteValues("epg", strWhereClause);
+  return DeleteValues("epg", filter);
 }
 
 bool CEpgDatabase::DeleteOldEpgEntries(void)
@@ -183,9 +183,10 @@ bool CEpgDatabase::DeleteOldEpgEntries(void)
       CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
   cleanupTime.GetAsTime(iCleanupTime);
 
-  CStdString strWhereClause = FormatSQL("iEndTime < %u", iCleanupTime);
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("iEndTime < %u", iCleanupTime));
 
-  return DeleteValues("epgtags", strWhereClause);
+  return DeleteValues("epgtags", filter);
 }
 
 bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
@@ -194,16 +195,17 @@ bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
   if (tag.BroadcastId() <= 0)
     return false;
 
-  CStdString strWhereClause = FormatSQL("idBroadcast = %u", tag.BroadcastId());
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idBroadcast = %u", tag.BroadcastId()));
 
-  return DeleteValues("epgtags", strWhereClause);
+  return DeleteValues("epgtags", filter);
 }
 
 int CEpgDatabase::Get(CEpgContainer &container)
 {
   int iReturn(-1);
 
-  CStdString strQuery = FormatSQL("SELECT idEpg, sName, sScraperName FROM epg;");
+  CStdString strQuery = PrepareSQL("SELECT idEpg, sName, sScraperName FROM epg;");
   if (ResultQuery(strQuery))
   {
     iReturn = 0;
@@ -235,7 +237,7 @@ int CEpgDatabase::Get(CEpg &epg)
 {
   int iReturn(-1);
 
-  CStdString strQuery = FormatSQL("SELECT * FROM epgtags WHERE idEpg = %u;", epg.EpgID());
+  CStdString strQuery = PrepareSQL("SELECT * FROM epgtags WHERE idEpg = %u;", epg.EpgID());
   if (ResultQuery(strQuery))
   {
     iReturn = 0;
@@ -292,7 +294,7 @@ int CEpgDatabase::Get(CEpg &epg)
 bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
 {
   bool bReturn = false;
-  CStdString strWhereClause = FormatSQL("idEpg = %u", iEpgId);
+  CStdString strWhereClause = PrepareSQL("idEpg = %u", iEpgId);
   CStdString strValue = GetSingleValue("lastepgscan", "sLastScan", strWhereClause);
 
   if (!strValue.empty())
@@ -310,7 +312,7 @@ bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
 
 bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite /* = false */)
 {
-  CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
+  CStdString strQuery = PrepareSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
       iEpgId, CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsDBDateTime().c_str());
 
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
@@ -334,10 +336,10 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
 
   CStdString strQuery;
   if (epg.EpgID() > 0)
-    strQuery = FormatSQL("REPLACE INTO epg (idEpg, sName, sScraperName) "
+    strQuery = PrepareSQL("REPLACE INTO epg (idEpg, sName, sScraperName) "
         "VALUES (%u, '%s', '%s');", epg.EpgID(), epg.Name().c_str(), epg.ScraperName().c_str());
   else
-    strQuery = FormatSQL("INSERT INTO epg (sName, sScraperName) "
+    strQuery = PrepareSQL("INSERT INTO epg (sName, sScraperName) "
         "VALUES ('%s', '%s');", epg.Name().c_str(), epg.ScraperName().c_str());
 
   if (bQueueWrite)
@@ -377,7 +379,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
 
   if (iBroadcastId < 0)
   {
-    strQuery = FormatSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
+    strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
         "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, sGenre, "
         "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid) "
@@ -390,7 +392,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   }
   else
   {
-    strQuery = FormatSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
+    strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
         "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, sGenre, "
         "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
@@ -418,7 +420,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
 
 int CEpgDatabase::GetLastEPGId(void)
 {
-  CStdString strQuery = FormatSQL("SELECT MAX(idEpg) FROM epg");
+  CStdString strQuery = PrepareSQL("SELECT MAX(idEpg) FROM epg");
   CStdString strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
     return atoi(strValue.c_str());

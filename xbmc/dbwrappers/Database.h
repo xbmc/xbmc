@@ -71,7 +71,6 @@ public:
   void RollbackTransaction();
   bool InTransaction();
 
-  static CStdString FormatSQL(CStdString strStmt, ...);
   CStdString PrepareSQL(CStdString strStmt, ...) const;
 
   /*!
@@ -95,12 +94,11 @@ public:
 
   /*!
    * @brief Delete values from a table.
-   * @remarks The value of the strWhereClause parameter has to be FormatSQL'ed when used.
    * @param strTable The table to delete the values from.
-   * @param strWhereClause If set, use this WHERE clause.
+   * @param filter The Filter to apply to this query.
    * @return True if the query was executed successfully, false otherwise.
    */
-  bool DeleteValues(const CStdString &strTable, const CStdString &strWhereClause = CStdString());
+  bool DeleteValues(const CStdString &strTable, const Filter &filter = Filter());
 
   /*!
    * @brief Execute a query that does not return any result.
