@@ -687,14 +687,17 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
   m_time.dwLowDateTime=time.u.LowPart;
 }
 
-void CDateTime::SetFromDateString(const CStdString &date)
+bool CDateTime::SetFromDateString(const CStdString &date)
 {
   /* TODO:STRING_CLEANUP */
   if (date.empty())
   {
     SetValid(false);
-    return;
+    return false;
   }
+
+  if (SetFromDBDate(date))
+    return true;
 
   const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december",NULL};
   int j=0;
@@ -709,11 +712,8 @@ void CDateTime::SetFromDateString(const CStdString &date)
     iDayPos = 0;
 
   CStdString strMonth = date.substr(iDayPos, iPos - iDayPos);
-  if (strMonth.empty()) // assume dbdate format
-  {
-    SetFromDBDate(date);
-    return;
-  }
+  if (strMonth.empty())
+    return false;
 
   size_t iPos2 = date.find(",");
   CStdString strDay = (date.size() >= iPos) ? date.substr(iPos, iPos2-iPos) : "";
@@ -721,9 +721,9 @@ void CDateTime::SetFromDateString(const CStdString &date)
   while (months[j] && stricmp(strMonth.c_str(),months[j]) != 0)
     j++;
   if (!months[j])
-    return;
+    return false;
 
-  SetDateTime(atol(strYear.c_str()),j+1,atol(strDay.c_str()),0,0,0);
+  return SetDateTime(atol(strYear.c_str()),j+1,atol(strDay.c_str()),0,0,0);
 }
 
 int CDateTime::GetDay() const
@@ -789,7 +789,7 @@ int CDateTime::GetMinuteOfDay() const
   return st.wHour*60+st.wMinute;
 }
 
-void CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, int second)
+bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, int second)
 {
   SYSTEMTIME st;
   ZeroMemory(&st, sizeof(SYSTEMTIME));
@@ -802,17 +802,18 @@ void CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, 
   st.wSecond=second;
 
   m_state = ToFileTime(st, m_time) ? valid : invalid;
+  return m_state == valid;
 }
 
-void CDateTime::SetDate(int year, int month, int day)
+bool CDateTime::SetDate(int year, int month, int day)
 {
-  SetDateTime(year, month, day, 0, 0, 0);
+  return SetDateTime(year, month, day, 0, 0, 0);
 }
 
-void CDateTime::SetTime(int hour, int minute, int second)
+bool CDateTime::SetTime(int hour, int minute, int second)
 {
   // 01.01.1601 00:00:00 is 0 as filetime
-  SetDateTime(1601, 1, 1, hour, minute, second);
+  return SetDateTime(1601, 1, 1, hour, minute, second);
 }
 
 void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
@@ -873,13 +874,14 @@ CStdString CDateTime::GetAsSaveString() const
   return StringUtils::Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);;
 }
 
-void CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
+bool CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
 {
   CDateTime tmp(dateTime);
   tmp -= GetTimezoneBias();
 
   m_time = tmp.m_time;
   m_state = tmp.m_state;
+  return m_state == valid;
 }
 
 static bool bGotTimezoneBias = false;
@@ -914,13 +916,13 @@ CDateTimeSpan CDateTime::GetTimezoneBias(void)
   return timezoneBias;
 }
 
-void CDateTime::SetFromUTCDateTime(const time_t &dateTime)
+bool CDateTime::SetFromUTCDateTime(const time_t &dateTime)
 {
   CDateTime tmp(dateTime);
-  SetFromUTCDateTime(tmp);
+  return SetFromUTCDateTime(tmp);
 }
 
-void CDateTime::SetFromW3CDate(const CStdString &dateTime)
+bool CDateTime::SetFromW3CDate(const CStdString &dateTime)
 {
   CStdString date, time, zone;
 
@@ -960,10 +962,10 @@ void CDateTime::SetFromW3CDate(const CStdString &dateTime)
   if (time.length() >= 8)
     sec  = atoi(time.substr(6, 2).c_str());
 
-  SetDateTime(year, month, day, hour, min, sec);
+  return SetDateTime(year, month, day, hour, min, sec);
 }
 
-void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
+bool CDateTime::SetFromDBDateTime(const CStdString &dateTime)
 {
   // assumes format YYYY-MM-DD HH:MM:SS
   if (dateTime.size() == 19)
@@ -974,36 +976,38 @@ void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
     int hour  = atoi(dateTime.substr(11, 2).c_str());
     int min   = atoi(dateTime.substr(14, 2).c_str());
     int sec   = atoi(dateTime.substr(17, 2).c_str());
-    SetDateTime(year, month, day, hour, min, sec);
+    return SetDateTime(year, month, day, hour, min, sec);
   }
+  return false;
 }
 
-void CDateTime::SetFromDBDate(const CStdString &date)
+bool CDateTime::SetFromDBDate(const CStdString &date)
 {
   if (date.size() < 10)
-    return;
+    return false;
   // assumes format:
   // YYYY-MM-DD or DD-MM-YYYY
+  const static std::string sep_chars = "-./";
   int year = 0, month = 0, day = 0;
-  if (date[2] == '-' || date[2] == '.')
+  if (sep_chars.find(date[2]) != std::string::npos)
   {
     day = atoi(date.substr(0, 2).c_str());
     month = atoi(date.substr(3, 2).c_str());
     year = atoi(date.substr(6, 4).c_str());
   }
-  else
+  else if (sep_chars.find(date[4]) != std::string::npos)
   {
     year = atoi(date.substr(0, 4).c_str());
     month = atoi(date.substr(5, 2).c_str());
     day = atoi(date.substr(8, 2).c_str());
   }
-  SetDate(year, month, day);
+  return SetDate(year, month, day);
 }
 
-void CDateTime::SetFromDBTime(const CStdString &time)
+bool CDateTime::SetFromDBTime(const CStdString &time)
 {
   if (time.size() < 8)
-    return;
+    return false;
   // assumes format:
   // HH:MM:SS
   int hour, minute, second;
@@ -1012,16 +1016,16 @@ void CDateTime::SetFromDBTime(const CStdString &time)
   minute = atoi(time.substr(3, 2).c_str());
   second = atoi(time.substr(6, 2).c_str());
 
-  SetTime(hour, minute, second);
+  return SetTime(hour, minute, second);
 }
 
-void CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
+bool CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
 {
   CStdString date = dateTime;
   StringUtils::Trim(date);
 
   if (date.size() != 29)
-    return;
+    return false;
 
   int day  = strtol(date.substr(5, 2).c_str(), NULL, 10);
 
@@ -1037,14 +1041,14 @@ void CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
   }
 
   if (month < 1)
-    return;
+    return false;
 
   int year = strtol(date.substr(12, 4).c_str(), NULL, 10);
   int hour = strtol(date.substr(17, 2).c_str(), NULL, 10);
   int min  = strtol(date.substr(20, 2).c_str(), NULL, 10);
   int sec  = strtol(date.substr(23, 2).c_str(), NULL, 10);
 
-  SetDateTime(year, month, day, hour, min, sec);
+  return SetDateTime(year, month, day, hour, min, sec);
 }
 
 CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const
