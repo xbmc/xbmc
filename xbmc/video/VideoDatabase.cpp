@@ -9132,7 +9132,6 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
     XMLUtils::GetInt(root, "version", iVersion);
 
     CLog::Log(LOGDEBUG, "%s: Starting import (export version = %i)", __FUNCTION__, iVersion);
-    BeginTransaction();
 
     TiXmlElement *movie = root->FirstChildElement();
     int current = 0;
@@ -9265,18 +9264,14 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         if (progress->IsCanceled())
         {
           progress->Close();
-          RollbackTransaction();
           return;
         }
       }
     }
-
-    CommitTransaction();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-    RollbackTransaction();
   }
   if (progress)
     progress->Close();
