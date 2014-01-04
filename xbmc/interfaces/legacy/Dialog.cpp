@@ -359,7 +359,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
 
-      if (dlg)
+      if (dlg && open)
       {
         DelayedCallGuard dg;
         dlg->Close();
@@ -377,6 +377,7 @@ namespace XBMCAddon
         throw WindowException("Error: Window is NULL, this is not possible :-)");
 
       dlg = pDialog;
+      open = true;
 
       pDialog->SetHeading(heading);
 
@@ -422,6 +423,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       dlg->Close();
+      open = false;
     }
 
     bool DialogProgress::iscanceled()
