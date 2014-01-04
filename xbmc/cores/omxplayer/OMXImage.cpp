@@ -1444,7 +1444,7 @@ void COMXImageReEnc::Close()
 
 
 
-bool COMXImageReEnc::HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, bool port_settings_changed)
+bool COMXImageReEnc::HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, int orientation, bool port_settings_changed)
 {
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   // on the first port settings changed event, we create the tunnel and alloc the buffer
@@ -1567,6 +1567,37 @@ bool COMXImageReEnc::HandlePortSettingChange(unsigned int resize_width, unsigned
       return false;
     }
 
+    if (orientation)
+    {
+      struct {
+        // metadata, these two fields need to be together
+        OMX_CONFIG_METADATAITEMTYPE metadata;
+        char metadata_space[64];
+      } item;
+      OMX_INIT_STRUCTURE(item.metadata);
+
+      item.metadata.nSize = sizeof(item);
+      item.metadata.eScopeMode = OMX_MetadataScopePortLevel;
+      item.metadata.nScopeSpecifier = m_omx_encoder.GetOutputPort();
+      item.metadata.nMetadataItemIndex = 0;
+      item.metadata.eSearchMode = OMX_MetadataSearchValueSizeByIndex;
+      item.metadata.eKeyCharset = OMX_MetadataCharsetASCII;
+      strcpy((char *)item.metadata.nKey, "IFD0.Orientation");
+      item.metadata.nKeySizeUsed = strlen((char *)item.metadata.nKey);
+
+      item.metadata.eValueCharset = OMX_MetadataCharsetASCII;
+      item.metadata.sLanguageCountry = 0;
+      item.metadata.nValueMaxSize = sizeof(item.metadata_space);
+      sprintf((char *)item.metadata.nValue, "%d", orientation);
+      item.metadata.nValueSizeUsed = strlen((char *)item.metadata.nValue);
+
+      omx_err = m_omx_encoder.SetParameter(OMX_IndexConfigMetadataItem, &item);
+      if (omx_err != OMX_ErrorNone)
+      {
+        CLog::Log(LOGERROR, "%s::%s m_omx_encoder.SetParameter:OMX_IndexConfigMetadataItem omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
+        return false;
+      }
+    }
     omx_err = m_omx_encoder.AllocOutputBuffers();
     if(omx_err != OMX_ErrorNone)
     {
@@ -1733,7 +1764,7 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
     omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged, timeout);
     if(omx_err == OMX_ErrorNone)
     {
-      if (!HandlePortSettingChange(maxWidth, maxHeight, port_settings_changed))
+      if (!HandlePortSettingChange(maxWidth, maxHeight, srcFile.GetOrientation(), port_settings_changed))
       {
         CLog::Log(LOGERROR, "%s::%s %s HandlePortSettingChange() failed\n", srcFile.GetFilename(), CLASSNAME, __func__);
         return false;
