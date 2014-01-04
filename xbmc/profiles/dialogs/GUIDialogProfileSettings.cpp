@@ -329,22 +329,14 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
 
       if (!bExists)
       {
-        // save new profile guisettings
+        // copy masterprofile guisettings to new profile guisettings
+        // If the user selects 'start fresh', do nothing as a fresh
+        // guisettings.xml will be created on first profile use.
         if (CGUIDialogYesNo::ShowAndGetInput(20058,20048,20102,20022,20044,20064))
         {
           CFile::Cache(URIUtils::AddFileToFolder("special://masterprofile/","guisettings.xml"),
                        URIUtils::AddFileToFolder("special://masterprofile/",
                                               dialog->m_strDirectory+"/guisettings.xml"));
-        }
-        else
-        {
-          // create some new settings
-          CStdString path = URIUtils::AddFileToFolder("special://masterprofile/", dialog->m_strDirectory);
-          path = URIUtils::AddFileToFolder(path, "guisettings.xml");
-
-          CSettings settings;
-          settings.Initialize();
-          settings.Save(path);
         }
       }
 
@@ -357,6 +349,8 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
       if (!bExists)
       {
         if ((dialog->m_iSourcesMode & 2) == 2)
+          // prompt user to copy masterprofile's sources.xml file
+          // If 'start fresh' (no) is selected, do nothing.
           if (CGUIDialogYesNo::ShowAndGetInput(20058,20071,20102,20022,20044,20064))
           {
             CFile::Cache(URIUtils::AddFileToFolder("special://masterprofile/","sources.xml"),
