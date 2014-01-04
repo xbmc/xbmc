@@ -112,7 +112,7 @@ void CPiTexture::Update(unsigned int width, unsigned int height, unsigned int pi
   CGLTexture::Update(width, height, pitch, format, pixels, loadToGPU);
 }
 
-bool CPiTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate, bool requirePixels)
+bool CPiTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
 {
   if (URIUtils::HasExtension(texturePath, ".jpg|.tbn"))
   {

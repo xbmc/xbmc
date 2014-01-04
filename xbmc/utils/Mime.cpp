@@ -26,6 +26,9 @@
 #include "URIUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "video/VideoInfoTag.h"
+#include "URL.h"
+#include "utils/StringUtils.h"
+#include "filesystem/CurlFile.h"
 
 using namespace std;
 
@@ -534,4 +537,42 @@ string CMime::GetMimeType(const CFileItem &item)
     path = item.GetMusicInfoTag()->GetURL();
 
   return GetMimeType(URIUtils::GetExtension(path));
+}
+
+string CMime::GetMimeType(const CURL &url, bool lookup)
+{
+  
+  std::string strMimeType;
+
+  if( url.GetProtocol() == "shout" || url.GetProtocol() == "http" || url.GetProtocol() == "https")
+  {
+    // If lookup is false, bail out early to leave mime type empty
+    if (!lookup)
+      return strMimeType;
+
+    CStdString strmime;
+    XFILE::CCurlFile::GetMimeType(url, strmime);
+
+    // try to get mime-type again but with an NSPlayer User-Agent
+    // in order for server to provide correct mime-type.  Allows us
+    // to properly detect an MMS stream
+    if (StringUtils::StartsWithNoCase(strmime, "video/x-ms-"))
+      XFILE::CCurlFile::GetMimeType(url, strmime, "NSPlayer/11.00.6001.7000");
+
+    // make sure there are no options set in mime-type
+    // mime-type can look like "video/x-ms-asf ; charset=utf8"
+    size_t i = strmime.find(';');
+    if(i != std::string::npos)
+      strmime.erase(i, strmime.length() - i);
+    StringUtils::Trim(strmime);
+    strMimeType = strmime;
+  }
+  else
+    strMimeType = GetMimeType(url.GetFileType());
+
+  // if it's still empty set to an unknown type
+  if (strMimeType.empty())
+    strMimeType = "application/octet-stream";
+
+  return strMimeType;
 }
