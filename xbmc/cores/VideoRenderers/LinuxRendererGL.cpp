@@ -746,6 +746,22 @@ unsigned int CLinuxRendererGL::PreInit()
   GLint size;
   glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_LUMINANCE16, NP2(1920), NP2(1080), 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, NULL);
   glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_LUMINANCE_SIZE, &size);
+#ifdef TARGET_DARWIN_OSX
+  /* From VLC commit 701d1347faa29f52b0a04c587724deb6de1ae28e
+   * OpenGL 1.x on OS X does _not_ support 16bit shaders, but pretends to.
+   * That's why we enforce return false here, even though the actual code below
+   * would return true.
+   * This fixes playback of 10bit content on the Intel GMA 950 chipset, which is
+   * the only "GPU" supported by 10.6 and 10.7 with just an OpenGL 1.4 driver.
+   *
+   * Presumely, this also improves playback on the GMA 3100, GeForce FX 5200,
+   * GeForce4 Ti, GeForce3, GeForce2 MX/4 MX and the Radeon 8500 when
+   * running OS X 10.5. */
+  unsigned int maj, min;
+  g_Windowing.GetRenderVersion(maj, min);
+  if (maj < 2)
+    size = 8;
+#endif
   if(size >= 16)
   {
     m_formats.push_back(RENDER_FMT_YUV420P10);
