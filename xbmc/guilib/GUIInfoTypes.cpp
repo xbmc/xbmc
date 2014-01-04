@@ -199,59 +199,66 @@ bool CGUIInfoLabel::IsConstant() const
   return m_info.size() == 0 || (m_info.size() == 1 && m_info[0].m_info == 0);
 }
 
-CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
+typedef CStdString (*StringReplacerFunc) (const CStdString &str);
+
+void ReplaceString(CStdString &work, const std::string &str, StringReplacerFunc func)
 {
-  CStdString work(label);
-  // Replace all $LOCALIZE[number] with the real string
-  size_t pos1 = work.find("$LOCALIZE[");
+  // Replace all $str[number] with the real string
+  size_t pos1 = work.find("$" + str + "[");
   while (pos1 != std::string::npos)
   {
-    size_t pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 10);
-    if (pos2 != std::string::npos)
+    size_t pos2 = pos1 + str.length() + 2;
+    size_t pos3 = StringUtils::FindEndBracket(work, '[', ']', pos2);
+    if (pos3 != std::string::npos)
     {
       CStdString left = work.substr(0, pos1);
-      CStdString right = work.substr(pos2 + 1);
-      CStdString replace = g_localizeStringsTemp.Get(atoi(work.substr(pos1 + 10).c_str()));
-      if (replace == "")
-         replace = g_localizeStrings.Get(atoi(work.substr(pos1 + 10).c_str()));
+      CStdString right = work.substr(pos3 + 1);
+      CStdString replace = func(work.substr(pos2, pos3 - pos2));
       work = left + replace + right;
     }
     else
     {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
-      return "";
+      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", work.c_str());
+      return;
     }
-    pos1 = work.find("$LOCALIZE[", pos1);
+    pos1 = work.find("$" + str + "[", pos1);
   }
+}
+
+CStdString LocalizeReplacer(const CStdString &str)
+{
+  CStdString replace = g_localizeStringsTemp.Get(atoi(str.c_str()));
+  if (replace == "")
+    replace = g_localizeStrings.Get(atoi(str.c_str()));
+  return replace;
+}
+
+CStdString AddonReplacer(const CStdString &str)
+{
+  // assumes "addon.id #####"
+  size_t length = str.find(" ");
+  CStdString id = str.substr(0, length);
+  int stringid = atoi(str.substr(length + 1).c_str());
+  return CAddonMgr::Get().GetString(id, stringid);
+}
+
+CStdString NumberReplacer(const CStdString &str)
+{
+  return str;
+}
+
+CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
+{
+  CStdString work(label);
+  ReplaceString(work, "LOCALIZE", LocalizeReplacer);
+  ReplaceString(work, "NUMBER", NumberReplacer);
   return work;
 }
 
 CStdString CGUIInfoLabel::ReplaceAddonStrings(const CStdString &label)
 {
   CStdString work(label);
-  //FIXME why not use RE here?
-  // Replace all $ADDON[id number] with the real string
-  size_t pos1 = work.find("$ADDON[");
-  while (pos1 != std::string::npos)
-  {
-    size_t pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 7);
-    if (pos2 != std::string::npos)
-    {
-      CStdString left = work.substr(0, pos1);
-      CStdString right = work.substr(pos2 + 1);
-      size_t length = work.find(" ", pos1 + 7) - (pos1 + 7);
-      CStdString id = work.substr(pos1 + 7, length);
-      int stringid = atoi(work.substr(pos1 + 7 + id.length() + 1, 5).c_str());
-      CStdString replace = CAddonMgr::Get().GetString(id, stringid);
-      work = left + replace + right;
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
-      return "";
-    }
-    pos1 = work.find("$ADDON[", pos1);
-  }
+  ReplaceString(work, "ADDON", AddonReplacer);
   return work;
 }
 
