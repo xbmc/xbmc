@@ -799,12 +799,6 @@ bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    if (hash.empty())
-    { // this is an empty folder - we need only add it to the path table
-      // if the path actually exists
-      if (!CDirectory::Exists(path))
-        return false;
-    }
     int idPath = AddPath(path);
     if (idPath < 0) return false;
 
