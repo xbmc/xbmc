@@ -683,7 +683,10 @@ namespace XBMCAddon
         PulseActionEvent();
 
       std::vector<CStdString> params;
-      CApplicationMessenger::Get().ActivateWindow(iOldWindowId, params, false);
+      {
+        DelayedCallGuard dcguard(languageHook);
+        CApplicationMessenger::Get().ActivateWindow(iOldWindowId, params, false);
+      }
 
       iOldWindowId = 0;
     }
