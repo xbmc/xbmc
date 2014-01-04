@@ -147,7 +147,7 @@ bool CDatabaseQueryRule::Load(const CVariant &obj)
     return false;
 
   const CVariant &value = obj["value"];
-  if (value.isString() && !value.asString().empty())
+  if (value.isString())
     m_parameter.push_back(value.asString());
   else if (value.isArray())
   {
@@ -156,6 +156,8 @@ bool CDatabaseQueryRule::Load(const CVariant &obj)
       if (val->isString() && !val->asString().empty())
         m_parameter.push_back(val->asString());
     }
+    if (m_parameter.empty())
+      m_parameter.push_back("");
   }
   else
     return false;
@@ -243,6 +245,14 @@ void CDatabaseQueryRule::SetParameter(const std::vector<CStdString> &values)
   m_parameter.assign(values.begin(), values.end());
 }
 
+CStdString CDatabaseQueryRule::ValidateParameter(const CStdString &parameter) const
+{
+  if ((GetFieldType(m_field) == NUMERIC_FIELD ||
+       GetFieldType(m_field) == SECONDS_FIELD) && parameter.empty())
+    return "0"; // interpret empty fields as 0
+  return parameter;
+}
+
 CStdString CDatabaseQueryRule::FormatParameter(const CStdString &operatorString, const CStdString &param, const CDatabase &db, const CStdString &strType) const
 {
   CStdString parameter;
@@ -259,7 +269,7 @@ CStdString CDatabaseQueryRule::FormatParameter(const CStdString &operatorString,
     parameter = " IN (" + parameter + ")";
   }
   else
-    parameter = db.PrepareSQL(operatorString.c_str(), param.c_str());
+    parameter = db.PrepareSQL(operatorString.c_str(), ValidateParameter(param).c_str());
 
   if (GetFieldType(m_field) == DATE_FIELD)
   {
@@ -392,6 +402,11 @@ CStdString CDatabaseQueryRule::FormatWhereClause(const CStdString &negate, const
 
     query = StringUtils::Format(fmt.c_str(), GetField(m_field,strType).c_str());
     query += negate + parameter;
+
+    // special case for matching parameters in fields that might be either empty or NULL.
+    if ((  param.empty() &&  negate.empty() ) ||
+        ( !param.empty() && !negate.empty() ))
+      query += " OR " + GetField(m_field,strType) + " IS NULL";
   }
 
   if (query.Equals(negate + parameter))

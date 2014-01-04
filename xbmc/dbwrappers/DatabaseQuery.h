@@ -86,6 +86,7 @@ protected:
   virtual FIELD_TYPE          GetFieldType(int field) const=0;
   virtual int                 TranslateField(const char *field) const=0;
   virtual CStdString          TranslateField(int field) const=0;
+  CStdString                  ValidateParameter(const CStdString &parameter) const;
   virtual CStdString          FormatParameter(const CStdString &negate, const CStdString &oper, const CDatabase &db, const CStdString &type) const;
   virtual CStdString          FormatWhereClause(const CStdString &negate, const CStdString &oper, const CStdString &param,
                                                 const CDatabase &db, const CStdString &type) const;
