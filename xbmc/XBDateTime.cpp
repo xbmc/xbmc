@@ -696,6 +696,9 @@ bool CDateTime::SetFromDateString(const CStdString &date)
     return false;
   }
 
+  if (SetFromDBDate(date))
+    return true;
+
   const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december",NULL};
   int j=0;
   size_t iDayPos = date.find("day");
@@ -709,8 +712,8 @@ bool CDateTime::SetFromDateString(const CStdString &date)
     iDayPos = 0;
 
   CStdString strMonth = date.substr(iDayPos, iPos - iDayPos);
-  if (strMonth.empty()) // assume dbdate format
-    return SetFromDBDate(date);
+  if (strMonth.empty())
+    return false;
 
   size_t iPos2 = date.find(",");
   CStdString strDay = (date.size() >= iPos) ? date.substr(iPos, iPos2-iPos) : "";
