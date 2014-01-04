@@ -2889,15 +2889,16 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
 
       strSQL=PrepareSQL("delete from movielinktvshow where idMovie=%i", idMovie);
       m_pDS->exec(strSQL.c_str());
+
+      CStdString strPath, strFileName;
+      SplitPath(strFilenameAndPath,strPath,strFileName);
+      InvalidatePathHash(strPath);
     }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
       AnnounceRemove("movie", idMovie);
 
-    CStdString strPath, strFileName;
-    SplitPath(strFilenameAndPath,strPath,strFileName);
-    InvalidatePathHash(strPath);
     CommitTransaction();
 
   }
@@ -2962,13 +2963,13 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
 
       strSQL=PrepareSQL("delete from movielinktvshow where idShow=%i", idTvShow);
       m_pDS->exec(strSQL.c_str());
-    }
+
+      InvalidatePathHash(strPath);
+   }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
       AnnounceRemove("tvshow", idTvShow);
-
-    InvalidatePathHash(strPath);
 
     CommitTransaction();
 
@@ -3088,15 +3089,16 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
 
       strSQL=PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
       m_pDS->exec(strSQL.c_str());
+
+      CStdString strPath, strFileName;
+      SplitPath(strFilenameAndPath,strPath,strFileName);
+      InvalidatePathHash(strPath);
     }
 
     //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
       AnnounceRemove("musicvideo", idMVideo);
 
-    CStdString strPath, strFileName;
-    SplitPath(strFilenameAndPath,strPath,strFileName);
-    InvalidatePathHash(strPath);
     CommitTransaction();
 
   }
