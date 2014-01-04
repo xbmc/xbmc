@@ -848,7 +848,7 @@
 			<control type="image">
 				<description>separator image</description>
 				<left>80</left>
-				<top>111</top>
+				<top>101</top>
 				<width>1100</width>
 				<height>1</height>
 				<colordiffuse>88FFFFFF</colordiffuse>
@@ -857,9 +857,9 @@
 			<control type="epggrid" id="10">
 				<description>EPG Grid</description>
 				<left>80</left>
-				<top>81</top>
-				<width>1120</width>
-				<height>555</height>
+				<top>71</top>
+				<width>1135</width>
+				<height>419</height>
 				<pagecontrol>10</pagecontrol>
 				<scrolltime>350</scrolltime>
 				<timeblocks>40</timeblocks>
@@ -882,12 +882,12 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</rulerlayout>
-				<channellayout height="52" width="280">
+				<channellayout height="48" width="280">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>270</width>
-						<height>52</height>
+						<height>48</height>
 						<texture border="2">MenuItemNF.png</texture>
 						<include>VisibleFadeEffect</include>
 					</control>
@@ -914,7 +914,7 @@
 						<left>94</left>
 						<top>0</top>
 						<width>160</width>
-						<height>52</height>
+						<height>48</height>
 						<font>special12</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
@@ -922,12 +922,12 @@
 						<label>$INFO[ListItem.ChannelName]</label>
 					</control>
 				</channellayout>
-				<focusedchannellayout height="52" width="280">
+				<focusedchannellayout height="48" width="280">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>270</width>
-						<height>52</height>
+						<height>48</height>
 						<texture border="2">MenuItemNF.png</texture>
 						<visible>!Control.HasFocus(10)</visible>
 						<include>VisibleFadeEffect</include>
@@ -936,7 +936,7 @@
 						<left>0</left>
 						<top>0</top>
 						<width>270</width>
-						<height>52</height>
+						<height>48</height>
 						<texture border="2">MenuItemFO.png</texture>
 						<visible>Control.HasFocus(10)</visible>
 						<include>VisibleFadeEffect</include>
@@ -964,7 +964,7 @@
 						<left>94</left>
 						<top>0</top>
 						<width>160</width>
-						<height>52</height>
+						<height>48</height>
 						<font>special12</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
@@ -972,10 +972,10 @@
 						<label>$INFO[ListItem.ChannelName]</label>
 					</control>
 				</focusedchannellayout>
-				<itemlayout height="52" width="40">
+				<itemlayout height="48" width="40">
 					<control type="image" id="2">
 						<width>40</width>
-						<height>52</height>
+						<height>48</height>
 						<left>0</left>
 						<top>0</top>
 						<aspectratio>stretch</aspectratio>
@@ -993,33 +993,33 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
-						<left>5</left>
+						<left>6</left>
 						<top>28</top>
-						<width>30</width>
-						<height>20</height>
+						<width>24</width>
+						<height>16</height>
 						<texture>PVR-IsRecording.png</texture>
 						<visible>ListItem.IsRecording</visible>
 					</control>
 					<control type="image">
-						<left>5</left>
+						<left>6</left>
 						<top>28</top>
-						<width>20</width>
-						<height>20</height>
+						<width>16</width>
+						<height>16</height>
 						<texture>PVR-HasTimer.png</texture>
 						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 					</control>
 				</itemlayout>
-				<focusedlayout height="52" width="40">
+				<focusedlayout height="48" width="40">
 					<control type="image" id="14">
 						<width>40</width>
-						<height>52</height>
+						<height>48</height>
 						<left>0</left>
 						<top>0</top>
 						<texture border="5">folder-focus.png</texture>
 					</control>
 					<control type="image" id="2">
 						<width>40</width>
-						<height>52</height>
+						<height>48</height>
 						<left>0</left>
 						<top>0</top>
 						<aspectratio>stretch</aspectratio>
@@ -1037,22 +1037,65 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
-						<left>5</left>
+						<left>6</left>
 						<top>28</top>
-						<width>30</width>
-						<height>20</height>
+						<width>24</width>
+						<height>16</height>
 						<texture>PVR-IsRecording.png</texture>
 						<visible>ListItem.IsRecording</visible>
 					</control>
 					<control type="image">
-						<left>5</left>
+						<left>6</left>
 						<top>28</top>
-						<width>20</width>
-						<height>20</height>
+						<width>16</width>
+						<height>16</height>
 						<texture>PVR-HasTimer.png</texture>
 						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 					</control>
 				</focusedlayout>
+			</control>
+			<control type="group">
+				<visible>!IsEmpty(ListItem.Label)</visible>
+				<left>80</left>
+				<top>508</top>
+				<control type="image">
+					<left>62</left>
+					<top>6</top>
+					<width>130</width>
+					<height>130</height>
+					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<aspectratio align="center" aligny="top">keep</aspectratio>
+				</control>
+				<control type="label">
+					<left>280</left>
+					<top>0</top>
+					<width>840</width>
+					<height>86</height>
+					<label>[B]$INFO[ListItem.Label][/B]</label>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<left>280</left>
+					<top>25</top>
+					<width>840</width>
+					<height>86</height>
+					<label>$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, - ]$INFO[ListItem.Duration, (,)]</label>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+				</control>
+				<control type="textbox">
+					<description>Plot value</description>
+					<left>280</left>
+					<top>55</top>
+					<width>840</width>
+					<height>65</height>
+					<font>font12</font>
+					<align>justify</align>
+					<textcolor>grey</textcolor>
+					<autoscroll delay="10000" time="3000" repeat="6000">true</autoscroll>
+					<label>$INFO[ListItem.Plot]</label>
+				</control>
 			</control>
 		</control>
 	</include>
