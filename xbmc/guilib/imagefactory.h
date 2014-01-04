@@ -32,5 +32,4 @@ public:
   static IImage* CreateLoader(const CURL& url);
   static IImage* CreateLoaderFromMimeType(const std::string& strMimeType);
   static IImage* CreateFallbackLoader(const std::string& strMimeType);
-  static IImage* CreateFallbackLoader(const CURL& url);
 };
