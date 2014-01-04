@@ -100,6 +100,10 @@ lib/taglib to make it easy to install into /usr/local.
 Unless you are proficient with how linux libraries and versions work, do not
 try to provide it yourself, as you will likely mess up for other programs.
 
+-----------------------------------------------------------------------------
+3.9. Libnfs Compilation and install >= 12.04 LTS
+-----------------------------------------------------------------------------
+See README.linux
 
 -----------------------------------------------------------------------------
 4. How to compile
