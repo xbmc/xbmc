@@ -198,16 +198,7 @@ void CGUIWindowPVRCommon::OnWindowUnload(void)
 
 bool CGUIWindowPVRCommon::OnAction(const CAction &action)
 {
-  bool bReturn = false;
-
-  if (action.GetID() == ACTION_NAV_BACK ||
-      action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    bReturn = true;
-  }
-
-  return bReturn;
+  return false; // CGUIWindowPVR will handle any default actions
 }
 
 bool CGUIWindowPVRCommon::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
