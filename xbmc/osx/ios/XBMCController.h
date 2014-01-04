@@ -98,7 +98,7 @@ typedef enum
 - (void) disableScreenSaver;
 - (void) enableScreenSaver;
 - (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;
-- (void) activateScreen: (UIScreen *)screen;
+- (void) activateScreen: (UIScreen *)screen withOrientation:(UIInterfaceOrientation)newOrientation;
 - (id)   initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
 @end
 

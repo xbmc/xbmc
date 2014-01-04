@@ -57,7 +57,7 @@
 - (void) startAnimation;
 - (void) stopAnimation;
 - (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;
-- (void) activateScreen: (UIScreen *)screen;
+- (void) activateScreen: (UIScreen *)screen withOrientation:(UIInterfaceOrientation)newOrientation;
 - (id) glView;
 - (void) setGlView:(id)view;
 - (BOOL) ATVClientEventFromBREvent:(id)event Repeatable:(bool *)isRepeatable ButtonState:(bool *)isPressed Result:(int *)xbmc_ir_key;

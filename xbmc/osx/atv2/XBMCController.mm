@@ -1333,7 +1333,7 @@ static bool XBMCController$changeScreen(XBMCController* self, SEL _cmd, unsigned
   return [[IOSScreenManager sharedInstance] changeScreen: screenIdx withMode: mode];
 }
 //--------------------------------------------------------------
-static void XBMCController$activateScreen(XBMCController* self, SEL _cmd, UIScreen * screen) 
+static void XBMCController$activateScreen(XBMCController* self, SEL _cmd, UIScreen * screen, UIInterfaceOrientation newOrientation) 
 {
 }
 
@@ -1500,9 +1500,11 @@ static __attribute__((constructor)) void initControllerRuntimeClasses()
   i += 1;
   memcpy(_typeEncoding + i, @encode(UIScreen *), strlen(@encode(UIScreen *)));
   i += strlen(@encode(UIScreen *));
+  _typeEncoding[i] = 'I';
+  i += 1;
   _typeEncoding[i] = '\0';
   // XBMCController::activateScreen$
-  class_addMethod(XBMCControllerCls, @selector(activateScreen:), (IMP)&XBMCController$activateScreen, _typeEncoding);
+  class_addMethod(XBMCControllerCls, @selector(activateScreen:withOrientation:), (IMP)&XBMCController$activateScreen, _typeEncoding);
 
   // and hook up our methods (implementation of the base class methods)
   // XBMCController::brEventAction

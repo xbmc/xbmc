@@ -956,17 +956,30 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   return ret;
 }
 //--------------------------------------------------------------
-- (void) activateScreen: (UIScreen *)screen
+- (void) activateScreen: (UIScreen *)screen  withOrientation:(UIInterfaceOrientation)newOrientation
 {
-  //this is the only way for making ios call the
-  //shouldAutorotateToInterfaceOrientation of the controller
-  //this is needed because at least with my vga adapter
-  //the orientation on the external screen is messed up by 90°
-  //so we need to hard force the orientation to Portrait for
-  //getting the correct display on external screen
+  // Since ios7 we have to handle the orientation manually
+  // it differs by 90 degree between internal and external screen
+  float   angle = 0;
   UIView *view = [m_window.subviews objectAtIndex:0];
-  [view removeFromSuperview];
-  [m_window addSubview:view];  
+  switch(newOrientation)
+  {
+    case UIInterfaceOrientationPortrait:
+      angle = 0;
+      break;
+    case UIInterfaceOrientationPortraitUpsideDown:
+      angle = M_PI;
+      break;
+    case UIInterfaceOrientationLandscapeLeft:
+      angle = -M_PI_2;
+      break;
+    case UIInterfaceOrientationLandscapeRight:
+      angle = M_PI_2;
+      break;
+  }
+  // reset the rotation of the view
+  view.layer.transform = CATransform3DMakeRotation(angle, 0, 0.0, 1.0);
+  [view setFrame:m_window.frame];
   m_window.screen = screen;
 }
 //--------------------------------------------------------------

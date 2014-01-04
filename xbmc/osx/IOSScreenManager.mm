@@ -53,6 +53,7 @@ static CEvent screenChangeEvent;
 @synthesize _screenIdx;
 @synthesize _externalScreen;
 @synthesize _glView;
+@synthesize _lastTouchControllerOrientation;
 
 //--------------------------------------------------------------
 - (void) fadeFromBlack:(CGFloat) delaySecs
@@ -90,7 +91,16 @@ static CEvent screenChangeEvent;
 
     [_glView setScreen:newScreen withFrameBufferResize:TRUE];//will also resize the framebuffer
 
-    [g_xbmcController activateScreen:newScreen];// will attach the screen to xbmc mainwindow
+    if (toExternal)
+    {
+      // portrait on external screen means its landscape for xbmc
+      [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationPortrait];// will attach the screen to xbmc mainwindow
+    }
+    else
+    {
+      // switching back to internal - use same orientation as we used for the touch controller
+      [g_xbmcController activateScreen:newScreen withOrientation:_lastTouchControllerOrientation];// will attach the screen to xbmc mainwindow
+    }
 
     if(toExternal)//changing the external screen might need some time ...
     {
@@ -142,6 +152,7 @@ static CEvent screenChangeEvent;
 
   if([self willSwitchToInternal:screenIdx] && _externalTouchController != nil)
   {
+    _lastTouchControllerOrientation = [_externalTouchController interfaceOrientation];
     [_externalTouchController release];
     _externalTouchController = nil;
   }
