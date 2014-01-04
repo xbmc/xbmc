@@ -984,14 +984,15 @@ bool CDateTime::SetFromDBDate(const CStdString &date)
     return false;
   // assumes format:
   // YYYY-MM-DD or DD-MM-YYYY
+  const static std::string sep_chars = "-./";
   int year = 0, month = 0, day = 0;
-  if (date[2] == '-' || date[2] == '.')
+  if (sep_chars.find(date[2]) != std::string::npos)
   {
     day = atoi(date.substr(0, 2).c_str());
     month = atoi(date.substr(3, 2).c_str());
     year = atoi(date.substr(6, 4).c_str());
   }
-  else
+  else if (sep_chars.find(date[4]) != std::string::npos)
   {
     year = atoi(date.substr(0, 4).c_str());
     month = atoi(date.substr(5, 2).c_str());
