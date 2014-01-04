@@ -112,7 +112,9 @@ void xbmc_read_frame_flush(AVFormatContext *s)
 #define RELATIVE_TS_BASE (INT64_MAX - (1LL<<48))
         if(st->first_dts == AV_NOPTS_VALUE) st->cur_dts = RELATIVE_TS_BASE;
         else                                st->cur_dts = AV_NOPTS_VALUE; /* we set the current DTS to an unspecified origin */
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(55,0,0)
         st->reference_dts = AV_NOPTS_VALUE;
+#endif
 
         st->probe_packets = MAX_PROBE_PACKETS;
 #endif
