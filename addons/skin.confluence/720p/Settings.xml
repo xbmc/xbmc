@@ -183,9 +183,8 @@
 				<left>268</left>
 				<top>10</top>
 				<width>804</width>
-				<height>70</height>
-				<aspectratio>stretch</aspectratio>
-				<texture>GlassTitleBar.png</texture>
+				<height>54</height>
+				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label">
 				<description>header label</description>
@@ -195,7 +194,7 @@
 				<height>30</height>
 				<font>font16</font>
 				<label>$LOCALIZE[31000] $LOCALIZE[5]</label>
-				<align>left</align>
+				<align>center</align>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
