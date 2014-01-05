@@ -39,14 +39,14 @@ SRCS += AESinkFactory.cpp
 SRCS += Sinks/AESinkNULL.cpp
 SRCS += Sinks/AESinkProfiler.cpp
 
+SRCS += Sinks/AESinkPi.cpp
+
 SRCS += Engines/ActiveAE/ActiveAE.cpp
 SRCS += Engines/ActiveAE/ActiveAESink.cpp
 SRCS += Engines/ActiveAE/ActiveAEStream.cpp
 SRCS += Engines/ActiveAE/ActiveAESound.cpp
 SRCS += Engines/ActiveAE/ActiveAEResample.cpp
 SRCS += Engines/ActiveAE/ActiveAEBuffer.cpp
-
-SRCS += Engines/PiAudio/PiAudioAE.cpp
 
 ifeq (@USE_ANDROID@,1)
 SRCS += Sinks/AESinkAUDIOTRACK.cpp

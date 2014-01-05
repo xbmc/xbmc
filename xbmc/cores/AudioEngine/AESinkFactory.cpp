@@ -25,6 +25,8 @@
   #include "Sinks/AESinkDirectSound.h"
 #elif defined(TARGET_ANDROID)
   #include "Sinks/AESinkAUDIOTRACK.h"
+#elif defined(TARGET_RASPBERRY_PI)
+  #include "Sinks/AESinkPi.h"
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   #if defined(HAS_ALSA)
     #include "Sinks/AESinkALSA.h"
@@ -55,6 +57,8 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
         driver == "DIRECTSOUND" ||
 #elif defined(TARGET_ANDROID)
         driver == "AUDIOTRACK"  ||
+#elif defined(TARGET_RASPBERRY_PI)
+        driver == "Pi"          ||
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   #if defined(HAS_ALSA)
         driver == "ALSA"        ||
@@ -110,6 +114,10 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   if (driver.empty() || driver == "AUDIOTRACK")
     TRY_SINK(AUDIOTRACK)
 
+#elif defined(TARGET_RASPBERRY_PI)
+  if (driver.empty() || driver == "Pi")
+    TRY_SINK(Pi)
+
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   #if defined(HAS_ALSA)
   if (driver.empty() || driver == "ALSA")
@@ -143,6 +151,8 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
   ENUMERATE_SINK(WASAPI, force);
 #elif defined(TARGET_ANDROID)
     ENUMERATE_SINK(AUDIOTRACK, force);
+#elif defined(TARGET_RASPBERRY_PI)
+    ENUMERATE_SINK(Pi, force);
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   #if defined(HAS_ALSA)
     ENUMERATE_SINK(ALSA, force);
