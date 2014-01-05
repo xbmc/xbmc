@@ -30,6 +30,7 @@
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIImage.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/VideoSettings.h"
@@ -52,6 +53,7 @@ using namespace XFILE;
 #define CONTROL_SUBSEXIST            130
 #define CONTROL_SUBSTATUS            140
 #define CONTROL_SERVICELIST          150
+#define CONTROL_MANUALSEARCH         160
 
 /*! \brief simple job to retrieve a directory and store a string (language)
  */
@@ -137,6 +139,15 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
         Search();
 
       return true;
+    }
+    else if (iControl == CONTROL_MANUALSEARCH)
+    {
+      //manual search
+      if (CGUIKeyboardFactory::ShowAndGetInput(m_strManualSearch, g_localizeStrings.Get(24121), true))
+      {
+        Search(m_strManualSearch);
+        return true;
+      }
     }
   }
   else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
@@ -290,7 +301,7 @@ const CFileItemPtr CGUIDialogSubtitles::GetService() const
   return CFileItemPtr();
 }
 
-void CGUIDialogSubtitles::Search()
+void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
 {
   if (m_currentService.empty())
     return; // no services available
@@ -299,7 +310,13 @@ void CGUIDialogSubtitles::Search()
   ClearSubtitles();
 
   CURL url("plugin://" + m_currentService + "/");
-  url.SetOption("action", "search");
+  if (!search.empty())
+  {
+    url.SetOption("action", "manualsearch");
+    url.SetOption("searchstring", search);
+  }
+  else
+    url.SetOption("action", "search");
 
   const CSetting *setting = CSettings::Get().GetSetting("subtitles.languages");
   if (setting)
@@ -313,7 +330,7 @@ void CGUIDialogSubtitles::OnJobComplete(unsigned int jobID, bool success, CJob *
   const CURL &url             = ((CSubtitlesJob *)job)->GetURL();
   const CFileItemList *items  = ((CSubtitlesJob *)job)->GetItems();
   const std::string &language = ((CSubtitlesJob *)job)->GetLanguage();
-  if (url.GetOption("action") == "search")
+  if (url.GetOption("action") == "search" || url.GetOption("action") == "manualsearch")
     OnSearchComplete(items);
   else
     OnDownloadComplete(items, language);

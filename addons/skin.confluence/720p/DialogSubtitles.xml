@@ -8,7 +8,7 @@
 	<controls>
 		<control type="group" id="250">
 			<animation effect="slide" start="0,0" end="900,0" time="500" tween="quadratic" easing="out">WindowClose</animation> 
-			<animation type="Conditional" condition="Control.HasFocus(150)" reversible="true">
+			<animation type="Conditional" condition="Control.HasFocus(150) | Control.HasFocus(160)" reversible="true">
 				<effect type="slide" end="-250,0" time="400"/>
 			</animation>
 			<control type="button" id="8999">
@@ -350,11 +350,11 @@
 					<left>900</left>
 					<top>206</top>
 					<width>250</width>
-					<height>434</height>
+					<height>399</height>
 					<onleft>120</onleft>
 					<onright>120</onright>
-					<onup>150</onup>
-					<ondown>150</ondown>
+					<onup>160</onup>
+					<ondown>160</ondown>
 					<viewtype label="535">list</viewtype>
 					<scrolltime>200</scrolltime>
 					<itemlayout width="400" height="36">
@@ -407,6 +407,22 @@
 							<info>ListItem.Label</info>
 						</control>
 					</focusedlayout>
+				</control>
+				<control type="button" id="160">
+					<description>Manual search button</description>
+					<left>925</left>
+					<top>640</top>
+					<width>200</width>
+					<height>40</height>
+					<onleft>120</onleft>
+					<onright>120</onright>
+					<onup>150</onup>
+					<ondown>150</ondown>
+					<label>$LOCALIZE[24120]</label>
+					<font>font12_title</font>
+					<textcolor>white</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<align>center</align>
 				</control>
 			</control>
 		</control>

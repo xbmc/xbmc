@@ -12101,7 +12101,17 @@ msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr ""
 
-#empty strings from id 24120 to 24999
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr ""
+
+#empty strings from id 24121 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
