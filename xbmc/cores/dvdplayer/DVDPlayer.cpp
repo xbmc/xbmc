@@ -1056,7 +1056,10 @@ void CDVDPlayer::Process()
   // allow renderer to switch to fullscreen if requested
   m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
 
-  OpenDefaultStreams();
+  // don't open default streams here for demxued PVR streams, it is done 
+  // when the DMX_SPECIALID_STREAMCHANGE packet comes in
+  if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    OpenDefaultStreams();
 
   // look for any EDL files
   m_Edl.Clear();
@@ -1173,7 +1176,10 @@ void CDVDPlayer::Process()
         break;
       }
 
-      OpenDefaultStreams();
+      // don't open default streams here for demxued PVR streams, it is done 
+      // when the DMX_SPECIALID_STREAMCHANGE packet comes in
+      if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+        OpenDefaultStreams();
 
       // never allow first frames after open to be skipped
       if( m_dvdPlayerVideo.IsInited() )
