@@ -10963,7 +10963,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21460"
-msgid "Subtitle location"
+msgid "Subtitle position"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11014,13 +11014,14 @@ msgstr ""
 #empty strings from id 21470 to 21599
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
+#: system/settings/settings.xml
 msgctxt "#21600"
-msgid "Prefer external subtitles"
+msgid "Prefer downloaded subtitles"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21601"
-msgid "Prefer external subtitles to internal ones"
+msgid "Prefer downloaded subtitles to default ones"
 msgstr ""
 
 #: xbmc/Util.cpp
@@ -12033,7 +12034,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24106"
-msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
+msgid "Specify where downloaded subtitles should be saved in, the same location as the movie or a custom location."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
@@ -12058,12 +12059,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24111"
-msgid "Languages to download subtitles for"
+msgid "Spoken languages"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24112"
-msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgid "Specify the languages you speak or can understand. These languages will f.e. be used when downloading missing subtitles."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
@@ -12078,7 +12079,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24115"
-msgid "Save subtitles to movie folder"
+msgid "Subtitle storage location"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12101,7 +12102,17 @@ msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr ""
 
-#empty strings from id 24120 to 24999
+#: system/settings/settings.xml
+msgctxt "#24120"
+msgid "same as movie"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#24121"
+msgid "custom"
+msgstr ""
+
+#empty strings from id 24122 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
