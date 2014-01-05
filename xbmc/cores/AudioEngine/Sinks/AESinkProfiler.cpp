@@ -20,11 +20,11 @@
 
 #include "system.h"
 
-#include "AESinkProfiler.h"
 #include <stdint.h>
 #include <limits.h>
 
-#include "Utils/AEUtil.h"
+#include "cores/AudioEngine/Sinks/AESinkProfiler.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/StdString.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"

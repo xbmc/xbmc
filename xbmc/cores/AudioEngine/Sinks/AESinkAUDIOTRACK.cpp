@@ -19,8 +19,8 @@
  */
 
 #include "AESinkAUDIOTRACK.h"
-#include "Utils/AEUtil.h"
-#include "Utils/AERingBuffer.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "android/activity/XBMCApp.h"
 #include "settings/Settings.h"
 #if defined(HAS_LIBAMCODEC)

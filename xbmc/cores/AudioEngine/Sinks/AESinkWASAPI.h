@@ -19,11 +19,11 @@
 *
 */
 
-#include "../Interfaces/AESink.h"
 #include <stdint.h>
 #include <mmdeviceapi.h>
 #include <Audioclient.h>
-#include "../Utils/AEDeviceInfo.h"
+#include "cores/AudioEngine/Interfaces/AESink.h"
+#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
 #include "threads/CriticalSection.h"
 

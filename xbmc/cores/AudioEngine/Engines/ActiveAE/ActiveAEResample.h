@@ -21,10 +21,10 @@
 
 #include "DllAvUtil.h"
 #include "DllSwResample.h"
-#include "Utils/AEChannelInfo.h"
-#include "Utils/AEAudioFormat.h"
-#include "ActiveAEBuffer.h"
-#include "Interfaces/AE.h"
+#include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 
 namespace ActiveAE
 {

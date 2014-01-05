@@ -23,8 +23,8 @@
 using namespace ActiveAE;
 #include "ActiveAESound.h"
 #include "ActiveAEStream.h"
-#include "Utils/AEUtil.h"
-#include "Encoders/AEEncoderFFmpeg.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
 
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"

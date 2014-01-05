@@ -21,7 +21,7 @@
 
 #include "system.h"
 
-#include "Interfaces/AESink.h"
+#include "cores/AudioEngine/Interfaces/AESink.h"
 #include <stdint.h>
 
 class CAESinkProfiler : public IAESink

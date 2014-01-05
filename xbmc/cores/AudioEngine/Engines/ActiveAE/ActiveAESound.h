@@ -20,8 +20,8 @@
  */
 
 #include "utils/StdString.h"
-#include "Interfaces/AESound.h"
-#include "ActiveAEResample.h"
+#include "cores/AudioEngine/Interfaces/AESound.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResample.h"
 #include "filesystem/File.h"
 
 class DllAvUtil;

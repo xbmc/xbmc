@@ -23,8 +23,8 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 
-#include "AEFactory.h"
-#include "Utils/AEUtil.h"
+#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #include "ActiveAE.h"
 #include "ActiveAEStream.h"

@@ -25,13 +25,14 @@
 #include <Mmreg.h>
 #include <stdint.h>
 
-#include "../Utils/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StdString.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/CharsetConverter.h"
-#include "../Utils/AEDeviceInfo.h"
+#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include <Mmreg.h>
 #include <mmdeviceapi.h>
 #include "utils/StringUtils.h"

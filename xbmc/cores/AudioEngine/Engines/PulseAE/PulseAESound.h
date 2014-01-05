@@ -22,8 +22,8 @@
 #include "system.h"
 #ifdef HAS_PULSEAUDIO
 
-#include "Interfaces/AESound.h"
-#include "Utils/AEWAVLoader.h"
+#include "cores/AudioEngine/Interfaces/AESound.h"
+#include "cores/AudioEngine/Utils/AEWAVLoader.h"
 #include <pulse/pulseaudio.h>
 
 class CPulseAESound : public IAESound

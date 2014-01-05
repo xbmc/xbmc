@@ -19,10 +19,10 @@
  *
  */
 
-#include "Interfaces/AEStream.h"
-#include "Utils/AEAudioFormat.h"
-#include "Utils/AELimiter.h"
-#include "Utils/AEConvert.h"
+#include "cores/AudioEngine/Interfaces/AEStream.h"
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AELimiter.h"
+#include "cores/AudioEngine/Utils/AEConvert.h"
 
 namespace ActiveAE
 {

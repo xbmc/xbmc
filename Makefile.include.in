@@ -49,10 +49,6 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 endif
 INCLUDES+=-I@abs_top_srcdir@/xbmc/linux
 INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
-ifeq (@USE_OMXPLAYER@,1)
-INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/AudioEngine
-INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/AudioEngine/Utils
-endif
 DEFINES+= \
 	@ARCH_DEFINES@ \
 	-D_FILE_DEFINED \

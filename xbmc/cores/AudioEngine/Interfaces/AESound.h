@@ -19,8 +19,7 @@
  *
  */
 
-#include "utils/StdString.h"
-#include "AE.h"
+#include <string>
 
 class IAESound
 {

@@ -22,8 +22,8 @@
 #include "system.h"
 #ifdef HAS_ALSA
 
-#include "Interfaces/AESink.h"
-#include "Utils/AEDeviceInfo.h"
+#include "cores/AudioEngine/Interfaces/AESink.h"
+#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include <stdint.h>
 
 #define ALSA_PCM_NEW_HW_PARAMS_API

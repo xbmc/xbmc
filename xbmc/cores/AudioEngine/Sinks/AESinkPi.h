@@ -24,7 +24,7 @@
 #if defined(TARGET_RASPBERRY_PI)
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
-#include "Utils/AEDeviceInfo.h"
+#include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
 #include "cores/omxplayer/OMXAudio.h"
 

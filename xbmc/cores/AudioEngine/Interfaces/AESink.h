@@ -19,11 +19,10 @@
  *
  */
 
-#include "threads/Thread.h"
-#include "AE.h"
-#include "Utils/AEAudioFormat.h"
-#include "utils/StdString.h"
+#include <string>
 #include <stdint.h>
+#include "cores/AudioEngine/Interfaces/AE.h" // for typedef's used in derived classes
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 class IAESink
 {

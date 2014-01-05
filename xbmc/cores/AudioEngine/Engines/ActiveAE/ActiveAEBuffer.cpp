@@ -19,9 +19,9 @@
  */
 
 #include "ActiveAEBuffer.h"
-#include "AEFactory.h"
-#include "ActiveAE.h"
-#include "Utils/AEUtil.h"
+#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 using namespace ActiveAE;
 
