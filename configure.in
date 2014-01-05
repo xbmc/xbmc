@@ -1624,7 +1624,7 @@ if test "x$use_airtunes" != "xno"; then
   if test "x$use_airtunes" != "xno"; then
     XB_FIND_SONAME([SHAIRPLAY], [shairplay], [use_airtunes])
     USE_AIRTUNES=1
-    USE_LIBSHAIRPORT=1
+    USE_LIBSHAIRPLAY=1
     AC_CHECK_MEMBERS([struct raop_callbacks_s.cls],,,
                      [[#include <shairplay/raop.h>]])
     AC_DEFINE([HAVE_LIBSHAIRPLAY],[1],["Define to 1 if you have libshairplay."])
@@ -2387,7 +2387,7 @@ else
 fi
 
 if test "x$use_airtunes" != "xno"; then
-  if test "x$USE_LIBSHAIRPORT" == "x1"; then
+  if test "x$USE_LIBSHAIRPLAY" == "x1"; then
     final_message="$final_message\n  AirTunes support (libshairplay):\tYes"  
   else
     final_message="$final_message\n  AirTunes support (libshairport):\tYes"
