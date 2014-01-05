@@ -1377,7 +1377,7 @@ int MysqlDataset::exec(const string &sql) {
   // force the charset and collation to UTF-8
   if ( ci_find(qry, "CREATE TABLE") != string::npos )
   {
-    qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
+    qry += " ENGINE InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
 
   CLog::Log(LOGDEBUG,"Mysql execute: %s", qry.c_str());
