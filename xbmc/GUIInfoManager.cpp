@@ -4747,7 +4747,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
         URIUtils::RemoveSlashAtEnd(path);
         path=URIUtils::GetFileName(path);
       }
-      CURL::Decode(path);
       return path;
     }
   case LISTITEM_FILENAME_AND_PATH:
@@ -4760,7 +4759,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       else
         path = item->GetPath();
       path = CURL(path).GetWithoutUserDetails();
-      CURL::Decode(path);
       return path;
     }
   case LISTITEM_PICTURE_PATH:
