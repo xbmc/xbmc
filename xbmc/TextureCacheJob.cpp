@@ -102,7 +102,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     return true;
   }
 #endif
-  CBaseTexture *texture = LoadImage(image, width, height, additional_info);
+  CBaseTexture *texture = LoadImage(image, width, height, additional_info, true);
   if (texture)
   {
     if (texture->HasAlpha())
@@ -177,7 +177,7 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
   return image;
 }
 
-CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int width, unsigned int height, const std::string &additional_info)
+CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int width, unsigned int height, const std::string &additional_info, bool requirePixels)
 {
   if (additional_info == "music")
   { // special case for embedded music images
@@ -193,7 +193,7 @@ CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int 
       && !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") && !file.GetMimeType().Equals("application/octet-stream")) // ignore non-pictures
     return NULL;
 
-  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, CSettings::Get().GetBool("pictures.useexifrotation"), false, file.GetMimeType());
+  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, CSettings::Get().GetBool("pictures.useexifrotation"), requirePixels, file.GetMimeType());
   if (!texture)
     return NULL;
 

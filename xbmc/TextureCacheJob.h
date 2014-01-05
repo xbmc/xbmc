@@ -117,7 +117,7 @@ private:
    \param additional_info extra info for loading, such as whether to flip horizontally.
    \return a pointer to a CBaseTexture object, NULL if failed.
    */
-  static CBaseTexture *LoadImage(const CStdString &image, unsigned int width, unsigned int height, const std::string &additional_info);
+  static CBaseTexture *LoadImage(const CStdString &image, unsigned int width, unsigned int height, const std::string &additional_info, bool requirePixels = false);
 
   CStdString    m_cachePath;
 };
