@@ -8210,7 +8210,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     {
       std::map<int, bool>::const_iterator pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
       if ((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
-          (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString())))
+          (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false)))
         strIds += m_pDS->fv(0).get_asString() + ",";
 
       m_pDS->next();
