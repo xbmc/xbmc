@@ -629,14 +629,14 @@ case $host in
      use_x11=no
      build_shared_lib=yes    
     ;;
-  i*86*-linux-gnu*)
+  i*86*-linux-gnu*|i*86*-*-linux-uclibc*)
      ARCH="i486-linux"
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86"
         use_cpu="i686"
      fi
      ;;
-  x86_64-*-linux-gnu*)
+  x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*)
      ARCH="x86_64-linux"
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86_64"
@@ -681,10 +681,10 @@ case $host in
      ARCH="powerpc-osx"
      use_arch="ppc"
      ;;
-  powerpc-*-linux-gnu*)
+  powerpc-*-linux-gnu*|powerpc-*-linux-uclibc*)
      ARCH="powerpc-linux"
      ;;
-  powerpc64-*-linux-gnu*)
+  powerpc64-*-linux-gnu*|powerpc64-*-linux-uclibc*)
      ARCH="powerpc64-linux"
      ;;
   arm*-*-linux-gnu*)
