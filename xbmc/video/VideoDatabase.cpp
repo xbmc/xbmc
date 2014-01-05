@@ -8307,7 +8307,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     sql = StringUtils::Format("DELETE FROM path "
                                 "WHERE (strContent IS NULL OR strContent = '') "
                                   "AND (strSettings IS NULL OR strSettings = '') "
-                                  "and (strHash IS NULL OR strHash = '') "
+                                  "AND (strHash IS NULL OR strHash = '') "
                                   "AND (exclude IS NULL OR exclude != 1) "
                                   "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = path.idPath) "
                                   "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idPath = path.idPath) "
