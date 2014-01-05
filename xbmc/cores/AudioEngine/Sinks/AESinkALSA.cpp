@@ -26,8 +26,8 @@
 #include <sstream>
 
 #include "AESinkALSA.h"
-#include "Utils/AEUtil.h"
-#include "Utils/AEELDParser.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEELDParser.h"
 #include "utils/StdString.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"

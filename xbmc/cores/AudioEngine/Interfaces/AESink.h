@@ -19,11 +19,9 @@
  *
  */
 
-#include "threads/Thread.h"
-#include "AE.h"
-#include "Utils/AEAudioFormat.h"
-#include "utils/StdString.h"
+#include <string>
 #include <stdint.h>
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 class IAESink
 {

@@ -21,7 +21,7 @@
 #include <sstream>
 
 #include "ActiveAESink.h"
-#include "Utils/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/EndianSwap.h"
 #include "ActiveAE.h"
 

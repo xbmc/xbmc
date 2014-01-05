@@ -22,7 +22,7 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "PulseAESound.h"
-#include "AEFactory.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "utils/log.h"
 #include "MathUtils.h"
 #include "StringUtils.h"

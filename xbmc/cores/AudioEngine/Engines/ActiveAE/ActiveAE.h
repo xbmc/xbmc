@@ -24,9 +24,9 @@
 
 #include "ActiveAESink.h"
 #include "ActiveAEResample.h"
-#include "Interfaces/AEStream.h"
-#include "Interfaces/AESound.h"
-#include "AEFactory.h"
+#include "cores/AudioEngine/Interfaces/AEStream.h"
+#include "cores/AudioEngine/Interfaces/AESound.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "guilib/DispResource.h"
 
 // ffmpeg

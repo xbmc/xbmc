@@ -22,8 +22,8 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "PulseAEStream.h"
-#include "AEFactory.h"
-#include "Utils/AEUtil.h"
+#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
