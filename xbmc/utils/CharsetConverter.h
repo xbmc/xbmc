@@ -131,7 +131,7 @@ public:
 
   static bool utf16LEtoW(const std::u16string& utf16String, std::wstring& wString);
 
-  static bool subtitleCharsetToW(const std::string& stringSrc, std::wstring& wStringDst);
+  static bool subtitleCharsetToUtf8(const std::string& stringSrc, std::string& utf8StringDst);
 
   static bool utf8ToStringCharset(const std::string& utf8StringSrc, std::string& stringDst);
 
