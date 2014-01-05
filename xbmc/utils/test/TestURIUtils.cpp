@@ -178,12 +178,56 @@ TEST_F(TestURIUtils, SubstitutePath)
 {
   CStdString from, to, ref, var;
 
-  from = "/somepath";
-  to = "/someotherpath";
+  from = "C:\\My Videos";
+  to = "https://myserver/some%20other%20path";
   g_advancedSettings.m_pathSubstitutions.push_back(std::make_pair(from, to));
 
-  ref = "/someotherpath/to/movie.avi";
-  var = URIUtils::SubstitutePath("/somepath/to/movie.avi");
+  from = "/this/path1";
+  to = "/some/other/path2";
+  g_advancedSettings.m_pathSubstitutions.push_back(std::make_pair(from, to));
+
+  from = "davs://otherserver/my%20music%20path";
+  to = "D:\\Local Music\\MP3 Collection";
+  g_advancedSettings.m_pathSubstitutions.push_back(std::make_pair(from, to));
+
+  ref = "https://myserver/some%20other%20path/sub%20dir/movie%20name.avi";
+  var = URIUtils::SubstitutePath("C:\\My Videos\\sub dir\\movie name.avi");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "C:\\My Videos\\sub dir\\movie name.avi";
+  var = URIUtils::SubstitutePath("https://myserver/some%20other%20path/sub%20dir/movie%20name.avi", true);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3";
+  var = URIUtils::SubstitutePath("davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3";
+  var = URIUtils::SubstitutePath("D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3", true);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "/some/other/path2/to/movie.avi";
+  var = URIUtils::SubstitutePath("/this/path1/to/movie.avi");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "/this/path1/to/movie.avi";
+  var = URIUtils::SubstitutePath("/some/other/path2/to/movie.avi", true);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "/no/translation path/";
+  var = URIUtils::SubstitutePath(ref);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "/no/translation path/";
+  var = URIUtils::SubstitutePath(ref, true);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "c:\\no\\translation path";
+  var = URIUtils::SubstitutePath(ref);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "c:\\no\\translation path";
+  var = URIUtils::SubstitutePath(ref, true);
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 

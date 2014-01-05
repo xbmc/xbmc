@@ -395,29 +395,80 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
+std::string URLEncodePath(const std::string& strPath)
+{
+  vector<string> segments = StringUtils::Split(strPath, "/");
+  for (vector<string>::iterator i = segments.begin(); i != segments.end(); ++i)
+    *i = CURL::Encode(*i);
+
+  return StringUtils::Join(segments, "/");
+}
+
+std::string URLDecodePath(const std::string& strPath)
+{
+  vector<string> segments = StringUtils::Split(strPath, "/");
+  for (vector<string>::iterator i = segments.begin(); i != segments.end(); ++i)
+    *i = CURL::Decode(*i);
+
+  return StringUtils::Join(segments, "/");
+}
+
+std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath)
+{
+  std::string toFile = fromFile;
+
+  // Convert back slashes to forward slashes, if required
+  if (IsDOSPath(fromPath) && !IsDOSPath(toPath))
+    StringUtils::Replace(toFile, "\\", "/");
+
+  // Handle difference in URL encoded vs. not encoded
+  if ( ProtocolHasEncodedFilename(CURL(fromPath).GetProtocol() )
+   && !ProtocolHasEncodedFilename(CURL(toPath).GetProtocol() ) )
+  {
+    toFile = URLDecodePath(toFile); // Decode path
+  }
+  else if (!ProtocolHasEncodedFilename(CURL(fromPath).GetProtocol() )
+         && ProtocolHasEncodedFilename(CURL(toPath).GetProtocol() ) )
+  {
+    toFile = URLEncodePath(toFile); // Encode path
+  }
+
+  // Convert forward slashes to back slashes, if required
+  if (!IsDOSPath(fromPath) && IsDOSPath(toPath))
+    StringUtils::Replace(toFile, "/", "\\");
+
+  return AddFileToFolder(toPath, toFile);
+}
+
 CStdString URIUtils::SubstitutePath(const CStdString& strPath, bool reverse /* = false */)
 {
   for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
       i != g_advancedSettings.m_pathSubstitutions.end(); i++)
   {
+    CStdString fromPath;
+    CStdString toPath;
+
     if (!reverse)
     {
-      if (strncmp(strPath.c_str(), i->first.c_str(), HasSlashAtEnd(i->first.c_str()) ? i->first.size()-1 : i->first.size()) == 0)
-      {
-        if (strPath.size() > i->first.size())
-          return URIUtils::AddFileToFolder(i->second, strPath.substr(i->first.size()));
-        else
-          return i->second;
-      }
+      fromPath = i->first;  // Fake path
+      toPath = i->second;   // Real path
     }
     else
     {
-      if (strncmp(strPath.c_str(), i->second.c_str(), HasSlashAtEnd(i->second.c_str()) ? i->second.size()-1 : i->second.size()) == 0)
+      fromPath = i->second; // Real path
+      toPath = i->first;    // Fake path
+    }
+
+    if (strncmp(strPath.c_str(), fromPath.c_str(), HasSlashAtEnd(fromPath) ? fromPath.size() - 1 : fromPath.size()) == 0)
+    {
+      if (strPath.size() > fromPath.size())
       {
-        if (strPath.size() > i->second.size())
-          return URIUtils::AddFileToFolder(i->first, strPath.substr(i->second.size()));
-        else
-          return i->first;
+        CStdString strSubPathAndFileName = strPath.substr(fromPath.size());
+        return ChangeBasePath(fromPath, strSubPathAndFileName, toPath); // Fix encoding + slash direction
+      }
+      else
+      {
+        return toPath;
       }
     }
   }
