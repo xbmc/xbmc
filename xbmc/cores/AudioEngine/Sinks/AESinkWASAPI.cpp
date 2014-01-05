@@ -30,6 +30,7 @@
 #include "utils/StdString.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/CharsetConverter.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include <Mmreg.h>

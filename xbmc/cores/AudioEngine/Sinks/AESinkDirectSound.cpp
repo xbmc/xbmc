@@ -26,6 +26,7 @@
 #include <Mmreg.h>
 #include <list>
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/CharsetConverter.h"

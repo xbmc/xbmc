@@ -20,7 +20,7 @@
  */
 
 #include "system.h"
-
+#include "threads/Thread.h"
 #include "cores/AudioEngine/Interfaces/AESink.h"
 
 class CAESinkNULL : public CThread, public IAESink
