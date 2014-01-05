@@ -7,8 +7,8 @@ rem to keep the downloaded dependencies
 rem we assume git in path as this is a requirement
 
 cd %WORKSPACE%
-ECHO running git clean -xf
-git clean -xf
+ECHO running git clean -xfd -e "project/BuildDependencies/downloads" -e "project/BuildDependencies/downloads2"
+git clean -xfd -e "project/BuildDependencies/downloads" -e "project/BuildDependencies/downloads2"
 
 rem cleaning additional directories
 ECHO delete build directories
