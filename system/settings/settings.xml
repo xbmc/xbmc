@@ -145,7 +145,7 @@
       </group>
       <group id="2">
         <setting id="locale.timezonecountry" type="string" label="14079" help="36117">
-          <level>2</level>
+          <level>1</level>
           <default>default</default> <!-- will be properly set on startup -->
           <constraints>
             <options>timezonecountries</options>
@@ -153,7 +153,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="locale.timezone" type="string" label="14080" help="36118">
-          <level>2</level>
+          <level>1</level>
           <default>default</default> <!-- will be properly set on startup -->
           <constraints>
             <options>timezones</options>
@@ -467,7 +467,7 @@
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.useframemtdec" type="boolean" label="13440" help="36423">
-          <level>2</level>
+          <level>3</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
@@ -880,7 +880,12 @@
     <category id="pvrmanager" label="128" help="36202">
       <group id="1">
         <setting id="pvrmanager.enabled" type="boolean" label="449" help="36203">
-          <level>1</level>
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pvrmanager.hideconnectionlostwarning" type="boolean" label="19269" help="36210">
+          <level>2</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
@@ -917,16 +922,11 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="pvrmanager.resetdb" type="action" label="19185" help="36209">
-          <level>2</level>
-          <control type="button" format="action" />
-        </setting>
       </group>
       <group id="4">
-        <setting id="pvrmanager.hideconnectionlostwarning" type="boolean" label="19269" help="36210">
+        <setting id="pvrmanager.resetdb" type="action" label="19185" help="36209">
           <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
+          <control type="button" format="action" />
         </setting>
       </group>
     </category>
@@ -938,17 +938,17 @@
           <control type="toggle" />
         </setting>
         <setting id="pvrmenu.infotimeout" type="boolean" label="19179" help="36213">
-          <level>1</level>
+          <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="pvrmenu.closechannelosdonswitch" type="boolean" label="19229" help="36214">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="pvrmenu.infotime" type="integer" label="19184" help="36215">
-          <level>1</level>
+          <level>2</level>
           <default>5</default>
           <constraints>
             <minimum>1</minimum>
@@ -962,7 +962,7 @@
       </group>
       <group id="2">
         <setting id="pvrmenu.iconpath" type="path" label="19018" help="36216">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -1000,7 +1000,7 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="epg.daystodisplay" type="integer" label="19182" help="36220">
-          <level>1</level>
+          <level>2</level>
           <default>3</default>
           <constraints>
             <minimum>1</minimum>
@@ -1014,7 +1014,7 @@
       </group>
       <group id="2">
         <setting id="epg.epgupdate" type="integer" label="19071" help="36221">
-          <level>1</level>
+          <level>2</level>
           <default>120</default>
           <constraints>
             <minimum>15</minimum>
@@ -1039,17 +1039,17 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="epg.preventupdateswhileplayingtv" type="boolean" label="19230" help="36222">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="epg.ignoredbforclient" type="boolean" label="19072" help="36223">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="epg.hidenoinfoavailable" type="boolean" label="19268" help="36224">
-          <level>1</level>
+          <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
@@ -1078,14 +1078,14 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
-          <level>1</level>
+          <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
       </group>
       <group id="2">
         <setting id="pvrplayback.scantime" type="integer" label="19170" help="36230">
-          <level>1</level>
+          <level>3</level>
           <default>10</default>
           <constraints>
             <minimum>1</minimum>
@@ -1102,7 +1102,7 @@
           <control type="toggle" />
         </setting>
         <setting id="pvrplayback.channelentrytimeout" type="integer" label="19073" help="36232">
-          <level>1</level>
+          <level>2</level>
           <default>0</default>
           <constraints>
             <minimum>0</minimum>
@@ -1130,7 +1130,7 @@
           </control>
         </setting>
         <setting id="pvrrecord.defaultpriority" type="integer" label="19173" help="36235">
-          <level>1</level>
+          <level>2</level>
           <default>50</default>
           <constraints>
             <minimum>1</minimum>
@@ -1140,7 +1140,7 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="pvrrecord.defaultlifetime" type="integer" label="19174" help="36236">
-          <level>1</level>
+          <level>2</level>
           <default>99</default>
           <constraints>
             <minimum>1</minimum>
@@ -1152,7 +1152,7 @@
           </control>
         </setting>
         <setting id="pvrrecord.marginstart" type="integer" label="19175" help="36237">
-          <level>1</level>
+          <level>2</level>
           <default>0</default>
           <constraints>
             <minimum>0</minimum>
@@ -1164,7 +1164,7 @@
           </control>
         </setting>
         <setting id="pvrrecord.marginend" type="integer" label="19176" help="36238">
-          <level>1</level>
+          <level>2</level>
           <default>0</default>
           <constraints>
             <minimum>0</minimum>
@@ -1178,7 +1178,7 @@
       </group>
       <group id="2">
         <setting id="pvrrecord.timernotifications" type="boolean" label="19233" help="36239">
-          <level>1</level>
+          <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
@@ -1187,14 +1187,14 @@
     <category id="pvrpowermanagement" label="14095" help="36240">
       <group id="1">
         <setting id="pvrpowermanagement.enabled" type="boolean" label="305" help="36241">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
       </group>
       <group id="2">
         <setting id="pvrpowermanagement.backendidletime" type="integer" label="19244" help="36242">
-          <level>1</level>
+          <level>2</level>
           <default>15</default>
           <constraints>
             <minimum label="351">0</minimum>
@@ -1206,7 +1206,7 @@
           </control>
         </setting>
         <setting id="pvrpowermanagement.setwakeupcmd" type="string" label="19245" help="36243">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -1214,7 +1214,7 @@
           <control type="edit" format="string" />
         </setting>
         <setting id="pvrpowermanagement.prewakeup" type="integer" label="19246" help="36244">
-          <level>1</level>
+          <level>2</level>
           <default>15</default>
           <constraints>
             <minimum label="351">0</minimum>
@@ -1228,12 +1228,12 @@
       </group>
       <group id="3">
         <setting id="pvrpowermanagement.dailywakeup" type="boolean" label="19247" help="36245">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="pvrpowermanagement.dailywakeuptime" type="string" label="19248" help="36246">
-          <level>1</level>
+          <level>2</level>
           <default>00:00:00</default>
           <control type="edit" format="string" />
         </setting>
@@ -1243,14 +1243,14 @@
       <access>CheckPVRParentalPin</access>
       <group id="1">
         <setting id="pvrparental.enabled" type="boolean" label="449" help="36248">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
       </group>
       <group id="2">
         <setting id="pvrparental.pin" type="string" label="19261" help="36249">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -1264,7 +1264,7 @@
           </control>
         </setting>
         <setting id="pvrparental.duration" type="integer" label="19260" help="36250">
-          <level>1</level>
+          <level>2</level>
           <default>300</default>
           <constraints>
             <minimum>5</minimum>
@@ -1864,7 +1864,7 @@
           <control type="toggle" />
         </setting>
         <setting id="services.webserverport" type="integer" parent="services.webserver" label="730" help="36329">
-          <level>2</level>
+          <level>1</level>
           <default>8080</default>
           <constraints>
             <minimum>1</minimum>
@@ -1874,7 +1874,7 @@
           <control type="edit" format="integer" />
         </setting>
         <setting id="services.webserverusername" type="string" parent="services.webserver" label="1048" help="36330">
-          <level>2</level>
+          <level>1</level>
           <default>xbmc</default>
           <constraints>
             <allowempty>true</allowempty>
@@ -1885,7 +1885,7 @@
           <control type="edit" format="string" />
         </setting>
         <setting id="services.webserverpassword" type="string" parent="services.webserver" label="733" help="36331">
-          <level>2</level>
+          <level>1</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -2411,7 +2411,7 @@
       </group>
       <group id="2">
         <setting id="input.remoteaskeyboard" type="boolean" label="21449" help="36376">
-          <level>2</level>
+          <level>1</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
@@ -2440,12 +2440,12 @@
     <category id="network" label="798" help="36379">
       <group id="1">
         <setting id="network.usehttpproxy" type="boolean" label="708" help="36380">
-          <level>1</level>
+          <level>2</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="network.httpproxytype" type="integer" parent="network.usehttpproxy" label="1180" help="36381">
-          <level>1</level>
+          <level>2</level>
           <default>0</default>
           <constraints>
             <options>
@@ -2462,7 +2462,7 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="network.httpproxyserver" type="string" parent="network.usehttpproxy" label="706" help="36382">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -2473,7 +2473,7 @@
           <control type="edit" format="string" />
         </setting>
         <setting id="network.httpproxyport" type="integer" parent="network.usehttpproxy" label="730" help="36383">
-          <level>1</level>
+          <level>2</level>
           <default>8080</default>
           <constraints>
             <minimum>1</minimum>
@@ -2486,7 +2486,7 @@
           <control type="edit" format="integer" />
         </setting>
         <setting id="network.httpproxyusername" type="string" parent="network.usehttpproxy" label="1048" help="36384">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
@@ -2497,7 +2497,7 @@
           <control type="edit" format="string" />
         </setting>
         <setting id="network.httpproxypassword" type="string" parent="network.usehttpproxy" label="733" help="36385">
-          <level>1</level>
+          <level>2</level>
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
