@@ -675,6 +675,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
   case ACTION_MOVE_RIGHT:
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_UP:
+  case ACTION_NAV_BACK:
     { // use base class implementation
 
       return CGUIControl::OnAction(action);
