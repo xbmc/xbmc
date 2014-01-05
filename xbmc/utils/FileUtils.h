@@ -18,6 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <string>
 #include "FileItem.h"
 
 class CFileUtils
@@ -28,4 +29,21 @@ public:
   static bool RenameFile(const CStdString &strFile);
   static bool RemoteAccessAllowed(const CStdString &strPath);
   static unsigned int LoadFile(const std::string &filename, void* &outputBuffer);
+
+  enum EFileType
+  {
+    FileTypeUnknown = 0,
+    FileTypeHtml,
+    FileTypeXml,
+    FileTypePlainText,
+    FileTypeZip,
+    FileTypeGZip,
+    FileTypeRar,
+    FileTypeBmp,
+    FileTypeGif,
+    FileTypePng,
+    FileTypeJpeg,
+  };
+  static EFileType GetFileTypeFromMime(const std::string& mimeType);
+  static bool parseMimeType(const std::string& mimeType, std::string& type, std::string& subtype);
 };

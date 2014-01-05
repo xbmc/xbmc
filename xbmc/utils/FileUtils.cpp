@@ -161,3 +161,113 @@ unsigned int CFileUtils::LoadFile(const std::string &filename, void* &outputBuff
   return total_read;
 }
 
+CFileUtils::EFileType CFileUtils::GetFileTypeFromMime(const std::string& mimeType)
+{
+  // based on http://mimesniff.spec.whatwg.org/
+
+  std::string type, subtype;
+  if (!parseMimeType(mimeType, type, subtype))
+    return FileTypeUnknown;
+
+  if (type == "application")
+  {
+    if (subtype == "zip")
+      return FileTypeZip;
+    if (subtype == "x-gzip")
+      return FileTypeGZip;
+    if (subtype == "x-rar-compressed")
+      return FileTypeRar;
+    
+    if (subtype == "xml")
+      return FileTypeXml;
+  }
+  else if (type == "text")
+  {
+    if (subtype == "xml")
+      return FileTypeXml;
+    if (subtype == "html")
+      return FileTypeHtml;
+    if (subtype == "plain")
+      return FileTypePlainText;
+  }
+  else if (type == "image")
+  {
+    if (subtype == "bmp")
+      return FileTypeBmp;
+    if (subtype == "gif")
+      return FileTypeGif;
+    if (subtype == "png")
+      return FileTypePng;
+    if (subtype == "jpeg" || subtype == "pjpeg")
+      return FileTypeJpeg;
+  }
+
+  if (StringUtils::EndsWith(subtype, "+zip"))
+    return FileTypeZip;
+  if (StringUtils::EndsWith(subtype, "+xml"))
+    return FileTypeXml;
+
+  return FileTypeUnknown;
+}
+
+bool CFileUtils::parseMimeType(const std::string& mimeType, std::string& type, std::string& subtype)
+{
+  // this is an modified implementation of http://mimesniff.spec.whatwg.org/#parsing-a-mime-type with additional checks for non-empty type and subtype
+  // note: only type and subtype are parsed, parameters are ignored
+
+  static const char* const whitespaceChars = "\x09\x0A\x0C\x0D\x20"; // tab, LF, FF, CR and space
+  static const std::string whitespaceSmclnChars("\x09\x0A\x0C\x0D\x20\x3B"); // tab, LF, FF, CR, space and semicolon
+
+  type.clear();
+  subtype.clear();
+
+  const size_t len = mimeType.length();
+  if (len < 1)
+    return false;
+
+  const char* const mimeTypeC = mimeType.c_str();
+  size_t pos = mimeType.find_first_not_of(whitespaceChars);
+  if (pos == std::string::npos)
+    return false;
+
+  // find "type"
+  size_t t = 0;
+  do
+  {
+    const char chr = mimeTypeC[pos];
+    if (t > 127 || !chr)
+    {
+      type.clear();
+      return false;
+    }
+
+    if (chr >= 'A' && chr <= 'Z')
+      type.push_back(chr + ('a' - 'A')); // convert to lowercase
+    else
+      type.push_back(chr);
+    t++;
+    pos++;
+  } while (mimeTypeC[pos] != '/');
+
+  pos++; // skip '/'
+  t = 0;
+
+  while (mimeTypeC[pos] && whitespaceSmclnChars.find(mimeTypeC[pos]) != std::string::npos && t++ <= 127)
+  {
+    const char chr = mimeTypeC[pos];
+    if (chr >= 'A' && chr <= 'Z')
+      subtype.push_back(chr + ('a' - 'A')); // convert to lowercase
+    else
+      subtype.push_back(chr);
+    pos++;
+  }
+
+  if (subtype.empty() || t > 127)
+  {
+    type.clear();
+    subtype.clear();
+    return false;
+  }
+
+  return true;
+}

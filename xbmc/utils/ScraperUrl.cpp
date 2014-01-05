@@ -23,10 +23,14 @@
 #include "settings/AdvancedSettings.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
+#include "utils/CharsetDetection.h"
+#include "utils/StringUtils.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/ZipFile.h"
 #include "URIUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/FileUtils.h"
 
 #include <cstring>
 #include <sstream>
@@ -233,27 +237,63 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
       return false;
 
   strHTML = strHTML1;
-  std::string fileCharset(http.GetServerReportedCharset());
 
-  if (scrURL.m_url.find(".zip") != std::string::npos)
+  std::string mimeType(http.GetMimeType());
+  CFileUtils::EFileType ftype = CFileUtils::GetFileTypeFromMime(mimeType);
+
+  if (ftype == CFileUtils::FileTypeZip || ftype == CFileUtils::FileTypeGZip)
   {
     XFILE::CZipFile file;
-    CStdString strBuffer;
-    int iSize = file.UnpackFromMemory(strBuffer,strHTML,scrURL.m_isgz);
-    if (iSize)
-    {
-      fileCharset.clear();
-      strHTML.clear();
-      strHTML.append(strBuffer.c_str(),strBuffer.data()+iSize);
-    }
+    std::string strBuffer;
+    int iSize = file.UnpackFromMemory(strBuffer,strHTML,scrURL.m_isgz); // FIXME: use FileTypeGZip instead of scrURL.m_isgz?
+    if (iSize > 0)
+      strHTML = strBuffer;
   }
 
-  if (!fileCharset.empty() && fileCharset != "UTF-8")
+  std::string reportedCharset(http.GetServerReportedCharset());
+  if (ftype == CFileUtils::FileTypeHtml)
   {
-    std::string converted;
-    if (g_charsetConverter.ToUtf8(fileCharset, strHTML, converted) && !converted.empty())
-      strHTML = converted;
+    std::string realHtmlCharset, converted;
+    if (!CCharsetDetection::ConvertHtmlToUtf8(strHTML, converted, reportedCharset, realHtmlCharset))
+      CLog::Log(LOGWARNING, "%s: Can't find precise charset for \"%s\", using \"%s\" as fallback", __FUNCTION__, scrURL.m_url.c_str(), realHtmlCharset.c_str());
+    else
+      CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for \"%s\"", __FUNCTION__, realHtmlCharset.c_str(), scrURL.m_url.c_str());
+
+    strHTML = converted;
   }
+  else if (ftype == CFileUtils::FileTypeXml)
+  {
+    CXBMCTinyXML xmlDoc;
+    xmlDoc.Parse(strHTML, reportedCharset);
+    
+    std::string realXmlCharset(xmlDoc.GetUsedCharset());
+    if (!realXmlCharset.empty())
+    {
+      CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for \"%s\"", __FUNCTION__, realXmlCharset.c_str(), scrURL.m_url.c_str());
+      std::string converted;
+      g_charsetConverter.ToUtf8(realXmlCharset, strHTML, converted);
+      strHTML = converted;
+    }
+  }
+  else if (ftype == CFileUtils::FileTypePlainText || StringUtils::CompareNoCase(mimeType.substr(0, 5), "text/") == 0)
+  {
+    std::string realTextCharset, converted;
+    CCharsetDetection::ConvertPlainTextToUtf8(strHTML, converted, reportedCharset, realTextCharset);
+    strHTML = converted;
+    if (reportedCharset != realTextCharset)
+      CLog::Log(LOGWARNING, "%s: Using \"%s\" charset for \"%s\" instead of server reported \"%s\" charset", __FUNCTION__, realTextCharset.c_str(), scrURL.m_url.c_str(), reportedCharset.c_str());
+    else
+      CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for \"%s\"", __FUNCTION__, realTextCharset.c_str(), scrURL.m_url.c_str());
+  }
+  else if (!reportedCharset.empty() && reportedCharset != "UTF-8")
+  {
+    CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for \"%s\"", __FUNCTION__, reportedCharset.c_str(), scrURL.m_url.c_str());
+    std::string converted;
+    g_charsetConverter.ToUtf8(reportedCharset, strHTML, converted);
+    strHTML = converted;
+  }
+  else
+    CLog::Log(LOGDEBUG, "%s: Assuming \"UTF-8\" charset for content of \"%s\"", __FUNCTION__, scrURL.m_url.c_str());
 
   if (!scrURL.m_cache.empty())
   {
