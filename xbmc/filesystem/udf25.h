@@ -46,6 +46,7 @@ struct Partition {
   uint32_t AccessType;
   uint32_t Start;
   uint32_t Length;
+  uint32_t Start_Correction;
 };
 
 struct AD {
@@ -75,6 +76,7 @@ struct FileAD {
     uint32_t num_AD;
     uint16_t Partition;
     uint32_t Partition_Start;
+    uint32_t Partition_Start_Correction;
     uint8_t  Type;
     uint16_t Flags;
     struct AD AD_chain[UDF_MAX_AD_CHAINS];
