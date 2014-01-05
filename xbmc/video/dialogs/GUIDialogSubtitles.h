@@ -49,7 +49,7 @@ protected:
   enum STATUS { NO_SERVICES = 0, SEARCHING, SEARCH_COMPLETE, DOWNLOADING };
   void UpdateStatus(STATUS status);
 
-  void Search();
+  void Search(const std::string &search="");
   void OnSearchComplete(const CFileItemList *items);
 
   void Download(const CFileItem &subtitle);
@@ -62,6 +62,7 @@ protected:
   CFileItemList* m_serviceItems;
   std::string    m_currentService;
   std::string    m_status;
+  CStdString     m_strManualSearch;
   bool           m_pausedOnRun;
   bool           m_updateSubsList; ///< true if we need to update our subs list
 };
