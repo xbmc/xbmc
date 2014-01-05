@@ -340,6 +340,7 @@ protected:
   void OpenDefaultStreams(bool reset = true);
 
   void UpdateApplication(double timeout);
+  void UpdateChannelSettings();
   void UpdatePlayState(double timeout);
   double m_UpdateApplication;
 

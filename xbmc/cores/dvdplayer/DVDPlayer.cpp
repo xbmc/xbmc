@@ -1176,15 +1176,13 @@ void CDVDPlayer::Process()
       // never allow first frames after open to be skipped
       if( m_dvdPlayerVideo.IsInited() )
         m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
-
-      // load channel settings
-      CFileItem currentItem(g_application.CurrentFileItem());
-      if (currentItem.HasPVRChannelInfoTag())
-        g_PVRManager.LoadCurrentChannelSettings();
   
       UpdateApplication(0);
       UpdatePlayState(0);
     }
+    
+    // update channel settings for PVR streams
+    UpdateChannelSettings();
 
     // handle eventual seeks due to playspeed
     HandlePlaySpeed();
@@ -4140,6 +4138,13 @@ void CDVDPlayer::UpdateApplication(double timeout)
     }
   }
   m_UpdateApplication = CDVDClock::GetAbsoluteClock();
+}
+
+void CDVDPlayer::UpdateChannelSettings()
+{
+  CFileItem currentItem(g_application.CurrentFileItem());
+  if (currentItem.HasPVRChannelInfoTag())
+    g_PVRManager.LoadCurrentChannelSettings();
 }
 
 bool CDVDPlayer::CanRecord()
