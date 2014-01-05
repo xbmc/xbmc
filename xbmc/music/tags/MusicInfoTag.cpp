@@ -592,7 +592,14 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
 {
   switch (field)
   {
-  case FieldTitle:       sortable[FieldTitle] = m_strTitle; break;
+  case FieldTitle:
+  {
+    // make sure not to overwrite an existing path with an empty one
+    std::string title = m_strTitle;
+    if (!title.empty() || sortable.find(FieldTitle) == sortable.end())
+      sortable[FieldTitle] = title;
+    break;
+  }
   case FieldArtist:      sortable[FieldArtist] = m_artist; break;
   case FieldAlbum:       sortable[FieldAlbum] = m_strAlbum; break;
   case FieldAlbumArtist: sortable[FieldAlbumArtist] = m_albumArtist; break;
