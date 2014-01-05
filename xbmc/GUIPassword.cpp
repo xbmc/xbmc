@@ -352,16 +352,22 @@ bool CGUIPassword::CheckSettingLevelLock(const SettingLevel& level, bool enforce
 
 }
 
+bool IsSettingsWindow(int iWindowID)
+{
+  return (iWindowID >= WINDOW_SCREEN_CALIBRATION && iWindowID <= WINDOW_SETTINGS_MYPVR)
+       || iWindowID == WINDOW_SKIN_SETTINGS;
+}
+
 bool CGUIPassword::CheckMenuLock(int iWindowID)
 {
   bool bCheckPW         = false;
   int iSwitch = iWindowID;
 
   // check if a settings subcategory was called from other than settings window
-  if (iWindowID >= WINDOW_SCREEN_CALIBRATION && iWindowID <= WINDOW_SETTINGS_MYPVR)
+  if (IsSettingsWindow(iWindowID))
   {
     int iCWindowID = g_windowManager.GetActiveWindow();
-    if (iCWindowID != WINDOW_SETTINGS_MENU && (iCWindowID < WINDOW_SCREEN_CALIBRATION || iCWindowID > WINDOW_SETTINGS_MYPVR))
+    if (iCWindowID != WINDOW_SETTINGS_MENU && !IsSettingsWindow(iCWindowID))
       iSwitch = WINDOW_SETTINGS_MENU;
   }
 
