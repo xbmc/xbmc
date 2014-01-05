@@ -21,6 +21,7 @@
 #include "imagefactory.h"
 #include "guilib/JpegIO.h"
 #include "guilib/cximage.h"
+#include "utils/Mime.h"
 
 IImage* ImageFactory::CreateLoader(const std::string& strFileName)
 {
@@ -30,7 +31,10 @@ IImage* ImageFactory::CreateLoader(const std::string& strFileName)
 
 IImage* ImageFactory::CreateLoader(const CURL& url)
 {
-  return CreateLoaderFromMimeType("image/"+url.GetFileType());
+  if(!url.GetFileType().empty())
+    return CreateLoaderFromMimeType("image/"+url.GetFileType());
+
+  return CreateLoaderFromMimeType(CMime::GetMimeType(url));
 }
 
 IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
@@ -43,9 +47,4 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 IImage* ImageFactory::CreateFallbackLoader(const std::string& strMimeType)
 {
   return new CXImage(strMimeType);
-}
-
-IImage* ImageFactory::CreateFallbackLoader(const CURL& url)
-{
-  return new CXImage("image/"+url.GetFileType());
 }

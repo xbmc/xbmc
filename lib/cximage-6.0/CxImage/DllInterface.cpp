@@ -94,6 +94,8 @@ int DetectFileType(const BYTE* pBuffer, int nBufSize)
     // don't include the last APP0 byte (0xE0), as some (non-conforming) JPEG/JFIF files might have some other
     // APPn-specific data here, and we should skip over this.
     return CXIMAGE_FORMAT_JPG;
+  if (pBuffer[0] == 'G' && pBuffer[1] == 'I' && pBuffer[2] == 'F')
+    return CXIMAGE_FORMAT_GIF;
   return CXIMAGE_FORMAT_UNKNOWN;
 }
 
