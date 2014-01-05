@@ -169,9 +169,6 @@ bool COMXImage::ClampLimits(unsigned int &width, unsigned int &height, unsigned 
     height = max_height;
     clamped = true;
   }
-  // Texture.cpp wants even width/height
-  width  = (width  + 15) & ~15;
-  height = (height + 15) & ~15;
 
   return clamped;
 }
@@ -923,7 +920,7 @@ void COMXImageDec::Close()
     m_omx_resize.Deinitialize();
 }
 
-bool COMXImageDec::HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height)
+bool COMXImageDec::HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, unsigned int resize_stride)
 {
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   // on the first port settings changed event, we create the tunnel and alloc the buffer
@@ -963,7 +960,7 @@ bool COMXImageDec::HandlePortSettingChange(unsigned int resize_width, unsigned i
     port_def.format.image.eColorFormat = OMX_COLOR_Format32bitARGB8888;
     port_def.format.image.nFrameWidth = resize_width;
     port_def.format.image.nFrameHeight = resize_height;
-    port_def.format.image.nStride = resize_width*4;
+    port_def.format.image.nStride = resize_stride;
     port_def.format.image.nSliceHeight = 0;
     port_def.format.image.bFlagErrorConcealment = OMX_FALSE;
 
@@ -1136,7 +1133,7 @@ bool COMXImageDec::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes
     omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged, timeout);
     if(omx_err == OMX_ErrorNone)
     {
-      if (!HandlePortSettingChange(width, height))
+      if (!HandlePortSettingChange(width, height, stride))
       {
         CLog::Log(LOGERROR, "%s::%s HandlePortSettingChange() failed\n", CLASSNAME, __func__);
         return false;
@@ -1164,8 +1161,7 @@ bool COMXImageDec::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes
   if(m_omx_decoder.BadState())
     return false;
 
-  assert(m_decoded_buffer->nFilledLen <= stride * height);
-  memcpy( (char*)pixels, m_decoded_buffer->pBuffer, m_decoded_buffer->nFilledLen);
+  memcpy( (char*)pixels, m_decoded_buffer->pBuffer, stride * height);
 
   Close();
   return true;
