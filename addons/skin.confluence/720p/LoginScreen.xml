@@ -208,14 +208,6 @@
 					<aspectratio>keep</aspectratio>
 					<texture>icon_power.png</texture>
 				</control>
-				<control type="image">
-					<left>13</left>
-					<top>3</top>
-					<width>30</width>
-					<height>29</height>
-					<texture>home-power-focus.gif</texture>
-					<visible>Control.HasFocus(20)</visible>
-				</control>
 			</control>
 		</control>
 		<include>Clock</include>
