@@ -355,6 +355,78 @@ bool CCharsetDetection::ConvertHtmlToUtf8(const std::string& htmlContent, std::s
   return false;
 }
 
+bool CCharsetDetection::ConvertPlainTextToUtf8(const std::string& textContent, std::string& converted, const std::string& serverReportedCharset, std::string& usedCharset)
+{
+  converted.clear();
+  usedCharset.clear();
+  if (textContent.empty())
+  {
+    usedCharset = "UTF-8"; // any charset can be used for empty content, use UTF-8 as default
+    return true;
+  }
+
+  // try to get charset from Byte Order Mark
+  std::string bomCharset(GetBomEncoding(textContent));
+  if (checkConversion(bomCharset, textContent, converted))
+  {
+    usedCharset = bomCharset;
+    return true;
+  }
+
+  // try charset from HTTP header (or from other out-of-band source)
+  if (checkConversion(serverReportedCharset, textContent, converted))
+  {
+    usedCharset = serverReportedCharset;
+    return true;
+  }
+
+  // try UTF-8 if not tried before
+  if (bomCharset != "UTF-8" && serverReportedCharset != "UTF-8" && checkConversion("UTF-8", textContent, converted))
+  {
+    usedCharset = "UTF-8";
+    return true;
+  }
+
+  // try user charset
+  std::string userCharset(g_langInfo.GetGuiCharSet());
+  if (checkConversion(userCharset, textContent, converted))
+  {
+    usedCharset = userCharset;
+    return true;
+  }
+
+  // try system default charset
+  if (g_charsetConverter.systemToUtf8(textContent, converted, true))
+  {
+    usedCharset = "char"; // synonym to system charset
+    return true;
+  }
+
+  // try WINDOWS-1252
+  if (checkConversion("WINDOWS-1252", textContent, converted))
+  {
+    usedCharset = "WINDOWS-1252";
+    return true;
+  }
+
+  // can't find correct charset
+  // use one of detected as fallback
+  if (!serverReportedCharset.empty())
+    usedCharset = serverReportedCharset;
+  else if (!bomCharset.empty())
+    usedCharset = bomCharset;
+  else if (!userCharset.empty())
+    usedCharset = userCharset;
+  else
+    usedCharset = "WINDOWS-1252";
+
+  CLog::Log(LOGWARNING, "%s: Can't correctly convert to UTF-8 charset, converting as \"%s\"", __FUNCTION__, usedCharset.c_str());
+  g_charsetConverter.ToUtf8(usedCharset, textContent, converted, false);
+
+  return false;
+}
+
+
 bool CCharsetDetection::checkConversion(const std::string& srcCharset, const std::string& src, std::string& dst)
 {
   if (srcCharset.empty())

@@ -70,6 +70,16 @@ public:
    */
   static bool ConvertHtmlToUtf8(const std::string& htmlContent, std::string& converted, const std::string& serverReportedCharset, std::string& usedHtmlCharset);
 
+  /**
+  * Try to convert plain text to UTF-8 using best suitable charset
+  * @param textContent text to convert
+  * @param converted   receive result of conversion
+  * @param serverReportedCharset charset from HTTP header or from other out-of-band source, empty if unknown or unset
+  * @param usedCharset       receive charset used for conversion
+  * @return true if converted without errors, false otherwise
+  */
+  static bool ConvertPlainTextToUtf8(const std::string& textContent, std::string& converted, const std::string& serverReportedCharset, std::string& usedCharset);
+
 private:
   static bool GetXmlEncodingFromDeclaration(const char* const xmlContent, const size_t contentLength, std::string& declaredEncoding);
   /**
