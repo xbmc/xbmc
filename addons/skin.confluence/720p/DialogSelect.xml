@@ -9,44 +9,70 @@
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
-		<control type="image">
-			<description>background image</description>
-			<left>0</left>
-			<top>0</top>
-			<width>850</width>
-			<height>600</height>
-			<texture border="40">DialogBack.png</texture>
-			<visible>![Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)]</visible>
+		<control type="group">
+			<visible>Control.IsVisible(6) | [Control.IsVisible(3) + Control.IsVisible(5)]</visible>
+			<control type="image">
+				<description>background image</description>
+				<left>0</left>
+				<top>0</top>
+				<width>850</width>
+				<height>600</height>
+				<texture border="40">$VAR[SelectBack]</texture>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<left>40</left>
+				<top>16</top>
+				<width>770</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>header label</description>
+				<left>40</left>
+				<top>20</top>
+				<width>770</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[13406]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
 		</control>
-		<control type="image">
-			<description>background image</description>
-			<left>0</left>
-			<top>0</top>
-			<width>850</width>
-			<height>600</height>
-			<texture border="40">DialogBack2.png</texture>
-			<visible>Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)</visible>
-		</control>
-		<control type="image">
-			<description>Dialog Header image</description>
-			<left>40</left>
-			<top>16</top>
-			<width>770</width>
-			<height>40</height>
-			<texture>dialogheader.png</texture>
-		</control>
-		<control type="label" id="1">
-			<description>header label</description>
-			<left>40</left>
-			<top>20</top>
-			<width>770</width>
-			<height>30</height>
-			<font>font13_title</font>
-			<label>$LOCALIZE[13406]</label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<textcolor>selected</textcolor>
-			<shadowcolor>black</shadowcolor>
+		<control type="group">
+			<left>120</left>
+			<visible>Control.IsVisible(3) + !Control.IsVisible(5)</visible>
+			<control type="image">
+				<description>background image</description>
+				<left>0</left>
+				<top>0</top>
+				<width>610</width>
+				<height>630</height>
+				<texture border="40">$VAR[SelectBack]</texture>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<left>40</left>
+				<top>16</top>
+				<width>530</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>header label</description>
+				<left>40</left>
+				<top>20</top>
+				<width>530</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[13406]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
@@ -63,6 +89,7 @@
 			<onright>10</onright>
 			<onup>10</onup>
 			<ondown>10</ondown>
+			<animation effect="slide" end="-120,0" time="0" condition="Control.IsVisible(3) + !Control.IsVisible(5)">Conditional</animation>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
 		<control type="list" id="3">
@@ -77,6 +104,7 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
+			<animation effect="slide" end="120,0" time="0" condition="Control.IsVisible(3) + !Control.IsVisible(5)">Conditional</animation>
 			<itemlayout height="46" width="550">
 				<control type="image">
 					<left>0</left>
@@ -253,6 +281,7 @@
 			<onup>61</onup>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
+			<animation effect="slide" end="120,0" time="0" condition="Control.IsVisible(3) + !Control.IsVisible(5)">Conditional</animation>
 		</control>
 		<control type="label">
 			<description>number of files/pages in list text label</description>
@@ -266,6 +295,7 @@
 			<scroll>true</scroll>
 			<textcolor>grey</textcolor>
 			<label>([COLOR=blue]$INFO[Container(3).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages][/COLOR])</label>
+			<animation effect="slide" end="-120,30" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
 			<visible>Control.IsVisible(3)</visible>
 		</control>
 		<control type="label">
