@@ -33,6 +33,7 @@
 
 #include "addons/include/xbmc_vis_dll.h"
 #include <string.h>
+#include <stdlib.h>
 #include <math.h>
 #include <stdint.h>
 
@@ -59,16 +60,15 @@
 #define glLoadIdentity()          vis_shader->LoadIdentity()
 #define glFrustum(a,b,c,d,e,f)    vis_shader->Frustum(a,b,c,d,e,f)
 
-GLenum  g_mode = GL_TRIANGLES;
-float g_fWaveform[2][512];
-const char *frag = "precision mediump float; \n"
+static GLenum  g_mode = GL_TRIANGLES;
+static const char *frag = "precision mediump float; \n"
                    "varying lowp vec4 m_colour; \n"
                    "void main () \n"
                    "{ \n"
                    "  gl_FragColor = m_colour; \n"
                    "}\n";
 
-const char *vert = "attribute vec4 m_attrpos;\n"
+static const char *vert = "attribute vec4 m_attrpos;\n"
                    "attribute vec4 m_attrcol;\n"
                    "attribute vec4 m_attrcord0;\n"
                    "attribute vec4 m_attrcord1;\n"
@@ -86,24 +86,24 @@ const char *vert = "attribute vec4 m_attrpos;\n"
                    "  m_cord1     = m_attrcord1;\n"
                    "}\n";
 
-CVisGUIShader *vis_shader = NULL;
+static CVisGUIShader *vis_shader = NULL;
 
 #elif defined(HAS_SDL_OPENGL)
 #include <GL/glew.h>
-GLenum  g_mode = GL_FILL;
+static GLenum  g_mode = GL_FILL;
 
 #endif
 
 #define NUM_BANDS 16
 
-GLfloat x_angle = 20.0, x_speed = 0.0;
-GLfloat y_angle = 45.0, y_speed = 0.5;
-GLfloat z_angle = 0.0, z_speed = 0.0;
-GLfloat heights[16][16], cHeights[16][16], scale;
-GLfloat hSpeed = 0.05;
+static GLfloat x_angle = 20.0, x_speed = 0.0;
+static GLfloat y_angle = 45.0, y_speed = 0.5;
+static GLfloat z_angle = 0.0, z_speed = 0.0;
+static GLfloat heights[16][16], cHeights[16][16], scale;
+static GLfloat hSpeed = 0.05;
 
 #if defined(HAS_SDL_OPENGL)
-void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
+static void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
 {
   if(y1 == y2)
   {
@@ -127,7 +127,7 @@ void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, 
   }
 }
 
-void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
+static void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue, int index)
 {
   GLfloat width = 0.1;
 
@@ -158,69 +158,105 @@ void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, G
 
 #elif defined(HAS_GLES)
 
-void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
+static GLfloat  *m_col;
+static GLfloat  *m_ver;
+static GLushort *m_idx;
+
+static void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue, int index)
 {
+  if (!m_col || !m_ver || !m_idx)
+    return;
+
   // avoid zero sized bars, which results in overlapping triangles of same depth and display artefacts
   height = std::max(height, 1e-3f);
-  GLfloat col[] =  {
-                      red * 0.1f, green * 0.1f, blue * 0.1f,
-                      red * 0.2f, green * 0.2f, blue * 0.2f,
-                      red * 0.3f, green * 0.3f, blue * 0.3f,
-                      red * 0.4f, green * 0.4f, blue * 0.4f,
-                      red * 0.5f, green * 0.5f, blue * 0.5f,
-                      red * 0.6f, green * 0.6f, blue * 0.6f,
-                      red * 0.7f, green * 0.7f, blue * 0.7f,
-                      red * 0.8f, green * 0.8f, blue *0.8f
-                   };
-  GLfloat ver[] =  {
-                      x_offset + 0.0f, 0.0f,    z_offset + 0.0f,
-                      x_offset + 0.1f, 0.0f,    z_offset + 0.0f,
-                      x_offset + 0.1f, 0.0f,    z_offset + 0.1f,
-                      x_offset + 0.0f, 0.0f,    z_offset + 0.1f,
-                      x_offset + 0.0f, height,  z_offset + 0.0f,
-                      x_offset + 0.1f, height,  z_offset + 0.0f,
-                      x_offset + 0.1f, height,  z_offset + 0.1f,
-                      x_offset + 0.0f, height,  z_offset + 0.1f
-                   };
+  GLfloat *ver = m_ver + 3 * 8 * index;
+  // just need to update the height vertex, all else is the same
+  for (int i=0; i<8; i++)
+  {
+    ver[1] = (((i+0)>>2)&1) * height;
+    ver += 3;
+  }
+  // on last index, draw the object
+  if (index == 16*16-1)
+  {
+    GLint   posLoc = vis_shader->GetPosLoc();
+    GLint   colLoc = vis_shader->GetColLoc();
 
-  GLubyte idx[] =  {
-                      // Bottom
-                      0, 1, 2,
-                      0, 2, 3,
-                      // Left
-                      0, 4, 7,
-                      0, 7, 3,
-                      // Back
-                      3, 7, 6,
-                      3, 6, 2,
-                      // Right
-                      1, 5, 6,
-                      1, 6, 2,
-                      // Front
-                      0, 4, 5,
-                      0, 5, 1,
-                      // Top
-                      4, 5, 6,
-                      4, 6, 7
-                   };
+    glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, m_col);
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, m_ver);
 
-  GLint   posLoc = vis_shader->GetPosLoc();
-  GLint   colLoc = vis_shader->GetColLoc();
+    glEnableVertexAttribArray(posLoc);
+    glEnableVertexAttribArray(colLoc);
 
-  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
+    glDrawElements(g_mode, 16*16*36, GL_UNSIGNED_SHORT, m_idx);
 
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(colLoc);
+    glDisableVertexAttribArray(posLoc);
+    glDisableVertexAttribArray(colLoc);
+  }
+}
 
-  glDrawElements(g_mode, 36, GL_UNSIGNED_BYTE, idx);
+static void init_bars(void)
+{
+  if (!m_col || !m_ver || !m_idx)
+    return;
 
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(colLoc);
+  GLfloat x_offset, z_offset, r_base, b_base;
+  for(int y = 0; y < 16; y++)
+  {
+    z_offset = -1.6 + ((15 - y) * 0.2);
+
+    b_base = y * (1.0 / 15);
+    r_base = 1.0 - b_base;
+
+    for(int x = 0; x < 16; x++)
+    {
+      x_offset = -1.6 + ((float)x * 0.2);
+
+      GLfloat red = r_base - (float(x) * (r_base / 15.0));
+      GLfloat green = (float)x * (1.0 / 15);
+      GLfloat blue = b_base;
+      int index = 16*y+x;
+      GLfloat *col = m_col + 3 * 8 * index;
+      for (int i=0; i<8; i++)
+      {
+        float scale = 0.1f * i;
+        *col++ = red   * scale;
+        *col++ = green * scale;
+        *col++ = blue  * scale;
+      }
+      GLfloat *ver = m_ver + 3 * 8 * index;
+      for (int i=0; i<8; i++)
+      {
+        *ver++ = x_offset + (((i+1)>>1)&1) * 0.1f;
+        *ver++ = 0; // height - filled in later
+        *ver++ = z_offset + (((i+0)>>1)&1) * 0.1f;
+      }
+      GLushort *idx = m_idx + 36 * index;
+      GLushort startidx = 8 * index;
+      // Bottom
+      *idx++ = startidx + 0; *idx++ = startidx + 1; *idx++ = startidx + 2;
+      *idx++ = startidx + 0; *idx++ = startidx + 2; *idx++ = startidx + 3;
+      // Left
+      *idx++ = startidx + 0; *idx++ = startidx + 4; *idx++ = startidx + 7;
+      *idx++ = startidx + 0; *idx++ = startidx + 7; *idx++ = startidx + 3;
+      // Back
+      *idx++ = startidx + 3; *idx++ = startidx + 7; *idx++ = startidx + 6;
+      *idx++ = startidx + 3; *idx++ = startidx + 6; *idx++ = startidx + 2;
+      // Right
+      *idx++ = startidx + 1; *idx++ = startidx + 5; *idx++ = startidx + 6;
+      *idx++ = startidx + 1; *idx++ = startidx + 6; *idx++ = startidx + 2;
+      // Front
+      *idx++ = startidx + 0; *idx++ = startidx + 4; *idx++ = startidx + 5;
+      *idx++ = startidx + 0; *idx++ = startidx + 5; *idx++ = startidx + 1;
+      // Top
+      *idx++ = startidx + 4; *idx++ = startidx + 5; *idx++ = startidx + 6;
+      *idx++ = startidx + 4; *idx++ = startidx + 6; *idx++ = startidx + 7;
+    }
+  }
 }
 #endif
 
-void draw_bars(void)
+static void draw_bars(void)
 {
   int x,y;
   GLfloat x_offset, z_offset, r_base, b_base;
@@ -254,7 +290,7 @@ void draw_bars(void)
       }
       draw_bar(x_offset, z_offset,
         cHeights[y][x], r_base - (float(x) * (r_base / 15.0)),
-        (float)x * (1.0 / 15), b_base);
+        (float)x * (1.0 / 15), b_base, 16*y+x);
     }
   }
   glEnd();
@@ -283,6 +319,10 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     delete vis_shader;
     return ADDON_STATUS_UNKNOWN;
   }  
+  m_col = (GLfloat  *)malloc(16*16*3*8 * sizeof(GLfloat *));
+  m_ver = (GLfloat  *)malloc(16*16*3*8 * sizeof(GLfloat *));
+  m_idx = (GLushort *)malloc(16*16*36  * sizeof(GLushort *));
+  init_bars();
 #endif
 
   scale = 1.0 / log(256.0);
@@ -456,6 +496,12 @@ extern "C" void ADDON_Destroy()
     vis_shader->Free();
     delete vis_shader;
   }
+  free(m_col);
+  free(m_ver);
+  free(m_idx);
+  m_col = NULL;
+  m_ver = NULL;
+  m_idx = NULL;
 #endif
 }
 
