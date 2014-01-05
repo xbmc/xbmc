@@ -25,6 +25,7 @@
 #include "guilib/gui3d.h"
 #include "linux/DllBCM.h"
 #include "utils/StringUtils.h"
+#include "settings/Settings.h"
 
 #ifndef __VIDEOCORE4__
 #define __VIDEOCORE4__
@@ -354,19 +355,24 @@ static float get_display_aspect_ratio(SDTV_ASPECT_T aspect)
 
 static bool ClampToGUIDisplayLimits(int &width, int &height)
 {
-  const int max_width = 1280, max_height = 720;
+  float max_height = (float)CSettings::Get().GetInt("videoscreen.limitgui");
+  float default_ar = 16.0f/9.0f;
+  if (max_height < 540.0f || max_height > 1080.0f)
+    max_height = 1080.0f;
+
   float ar = (float)width/(float)height;
+  float max_width = max_height * default_ar;
   // bigger than maximum, so need to clamp
   if (width > max_width || height > max_height) {
     // wider than max, so clamp width first
-    if (ar > (float)max_width/(float)max_height)
+    if (ar > default_ar)
     {
       width = max_width;
-      height = (float)max_width / ar + 0.5f;
+      height = max_width / ar + 0.5f;
     // taller than max, so clamp height first
     } else {
       height = max_height;
-      width = (float)max_height * ar + 0.5f;
+      width = max_height * ar + 0.5f;
     }
     return true;
   }

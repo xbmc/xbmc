@@ -31,6 +31,21 @@
         <setting id="videoscreen.fakefullscreen">
           <visible>false</visible>
         </setting>
+        <setting id="videoscreen.textures32" type="boolean" label="37020" help="36547">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.limitgui" type="integer" label="37021" help="36548">
+          <level>2</level>
+          <default>1080</default>
+          <constraints>
+            <minimum>540</minimum>
+            <step>16</step>
+            <maximum>1080</maximum>
+          </constraints>
+          <control type="edit" format="integer" />
+        </setting>
       </group>
       <group id="3">
         <setting id="videoscreen.vsync">
