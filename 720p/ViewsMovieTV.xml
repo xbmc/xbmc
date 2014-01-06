@@ -52,8 +52,8 @@
 				<info>ListItem.Overlay</info>
 			</control>
 			<control type="label">
-				<posy>251</posy>
-				<posx>177</posx>
+				<posy>253</posy>
+				<posx>176</posx>
 				<width>40</width>
 				<height>30</height>
 				<align>center</align>
@@ -128,7 +128,7 @@
 				<info>ListItem.Overlay</info>
 			</control>
 			<control type="label">
-				<posy>159</posy>
+				<posy>161</posy>
 				<posx>114</posx>
 				<width>40</width>
 				<height>30</height>

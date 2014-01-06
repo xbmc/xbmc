@@ -243,8 +243,8 @@
 				<info>ListItem.Overlay</info>
 			</control>
 			<control type="label">
-				<posy>249</posy>
-				<posx>173</posx>
+				<posy>251</posy>
+				<posx>172</posx>
 				<width>40</width>
 				<height>30</height>
 				<align>center</align>

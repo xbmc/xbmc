@@ -153,13 +153,14 @@
 	<include name="ListMovieTVUnwatchedOverlay">
 		<control type="group">
 			<control type="image">
-				<posy>16</posy>
+				<posy>15</posy>
 				<posx>28</posx>
 				<width>20</width>
 				<height>20</height>
 				<info>ListItem.Overlay</info>
 			</control>
 			<control type="label">
+				<posy>1</posy>
 				<posx>22</posx>
 				<width>40</width>
 				<height>50</height>
