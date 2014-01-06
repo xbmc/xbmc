@@ -75,7 +75,7 @@
 						<width>324</width>
 						<label>$INFO[Player.Time]</label>
 						<align>left</align>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<shadowcolor>ff222222</shadowcolor>
 					</control>
 					<control type="progress" id="21">
@@ -98,7 +98,7 @@
 						<posx>355</posx>
 						<width>200</width>
 						<align>right</align>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<label>$INFO[Player.Duration]</label>
 						<shadowcolor>ff222222</shadowcolor>
 					</control>
@@ -112,7 +112,7 @@
 						<width>350</width>
 						<label>$INFO[MusicPlayer.Artist]</label>
 						<align>left</align>
-						<font>Condensed-18</font>
+						<font>Regular-18</font>
 						<shadowcolor>ff222222</shadowcolor>
 					</control>
 					<control type="label">
@@ -120,7 +120,7 @@
 						<width>350</width>
 						<label>$INFO[MusicPlayer.Title]</label>
 						<align>left</align>
-						<font>Condensed-18</font>
+						<font>Regular-18</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 					</control>
@@ -129,7 +129,7 @@
 						<width>350</width>
 						<label>$INFO[MusicPlayer.Album]</label>
 						<align>left</align>
-						<font>Condensed-18</font>
+						<font>Regular-18</font>
 						<textcolor>FF999999</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 					</control>
@@ -146,7 +146,7 @@
 						<posy>20</posy>
 						<width>220</width>
 						<label>$INFO[MusicPlayer.Offset(1).Artist]</label>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<textcolor>FF999999</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 						<align>left</align>
@@ -155,7 +155,7 @@
 						<posy>43</posy>
 						<width>220</width>
 						<label>$INFO[MusicPlayer.Offset(1).Title]</label>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 						<align>left</align>
@@ -272,14 +272,14 @@
 							<width>48</width>
 							<height>48</height>
 							<label>off</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<visible>!Playlist.IsRandom</visible>
 						</control>
 						<control type="label">
 							<width>48</width>
 							<height>48</height>
 							<label>on</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<textcolor>orange</textcolor>
 							<visible>Playlist.IsRandom</visible>
 						</control>

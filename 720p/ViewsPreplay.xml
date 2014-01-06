@@ -22,13 +22,13 @@
 	<include name="LeftInfoFormatGrey">
 		<width min="29" max="200">auto</width>
 		<height>20</height>
-		<font>Condensed-18</font>
-		<include>Grey1</include>
+		<font>Regular-18</font>
+		<include>White2</include>
 	</include>
 	<include name="LeftInfoFormatWhite">
 		<width min="29" max="600">auto</width>
 		<height>20</height>
-		<font>Condensed-18</font>
+		<font>Regular-18</font>
 		<include>WhiteShadow</include>
 	</include>
 	<!-- bg's -->
@@ -133,26 +133,26 @@
 		</control>
 	</include>
 	<include name="EpisodeTitle">
-		<posy>119</posy>
+		<posy>121</posy>
 		<posx>20</posx>
 		<width>174</width>
 		<height>20</height>
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
-		<font>Condensed-14</font>
+		<font>Regular-14</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<include name="EpisodeDate">
 		<control type="label">
-			<posy>144</posy>
+			<posy>145</posy>
 			<posx>20</posx>
 			<width>174</width>
 			<height>20</height>
 			<align>left</align>
 			<aligny>center</aligny>
 			<label>$INFO[ListItem.Date]</label>
-			<font>Condensed-14</font>
+			<font>Regular-14</font>
 			<textcolor>FF999999</textcolor>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
@@ -169,26 +169,26 @@
 	</include>
 	<!-- all episodes are from the same season -->
 	<include name="EpisodeThumbOverlayTitle">
-		<posy>86</posy>
+		<posy>88</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>E$INFO[ListItem.Episode]</label>
-		<font>CondensedBold-26</font>
+		<font>Bold-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<!-- episodes are mixed from different seasons -->
 	<include name="EpisodeThumbOverlayTitle2">
-		<posy>86</posy>
+		<posy>88</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>S$INFO[ListItem.Season]&#xB7;E$INFO[ListItem.Episode]</label>
-		<font>CondensedBold-26</font>
+		<font>Bold-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<include name="EpisodeSelectedBorder">
@@ -250,7 +250,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<shadowcolor>FF222222</shadowcolor>
 			</control>
 			<visible>[Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
@@ -372,7 +372,7 @@
 					<height>44</height>
 					<label>$INFO[Container.SecondTitle]</label>
 					<label>Seasons view</label>
-					<font>CondensedBold-36</font>
+					<font>Bold-36</font>
 					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
@@ -421,6 +421,7 @@
 				<posy>412</posy>
 				<width>490</width>
 				<height>207</height>
+				<include>PlotFormat</include>
 				<label>$INFO[Container.ShowPlot]</label>
 			</control>
 			<control type="textbox">
@@ -457,40 +458,40 @@
 						<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="label">
-						<posy>250</posy>
+						<posy>252</posy>
 						<posx>23</posx>
 						<width>180</width>
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>[UPPERCASE]$LOCALIZE[593][/UPPERCASE]</label>
-						<font>CondensedBold-26</font>
+						<font>Bold-26</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>IsEmpty(ListItem.Season) + !ListItem.Type(season)</visible>
 					</control>
 					<control type="label">
-						<posy>250</posy>
+						<posy>252</posy>
 						<posx>23</posx>
 						<width>180</width>
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>[UPPERCASE]$LOCALIZE[31145][/UPPERCASE]</label>
-						<font>CondensedBold-26</font>
+						<font>Bold-26</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>IsEmpty(ListItem.Season) + ListItem.Type(season)</visible>
 					</control>
 					<control type="label">
-						<posy>250</posy>
+						<posy>252</posy>
 						<posx>23</posx>
 						<width>180</width>
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>S$INFO[ListItem.Season]</label>
-						<font>CondensedBold-26</font>
+						<font>Bold-26</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>ListItem.Type(season) + !IsEmpty(ListItem.Season)</visible>
@@ -509,40 +510,40 @@
 					</control>
 					<include>TVPosterSelectedBorder</include>
 					<control type="label">
-						<posy>250</posy>
+						<posy>252</posy>
 						<posx>23</posx>
 						<width>180</width>
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>[UPPERCASE]$LOCALIZE[593][/UPPERCASE]</label>
-						<font>CondensedBold-26</font>
+						<font>Bold-26</font>
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>IsEmpty(ListItem.Season) + !ListItem.Type(season)</visible>
 					</control>
 					<control type="label">
-						<posy>250</posy>
+						<posy>252</posy>
 						<posx>23</posx>
 						<width>180</width>
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>[UPPERCASE]$LOCALIZE[31145][/UPPERCASE]</label>
-						<font>CondensedBold-26</font>
+						<font>Bold-26</font>
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>IsEmpty(ListItem.Season) + ListItem.Type(season)</visible>
 					</control>
 					<control type="label">
-						<posy>250</posy>
+						<posy>252</posy>
 						<posx>23</posx>
 						<width>180</width>
 						<height>30</height>
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>S$INFO[ListItem.Season]</label>
-						<font>CondensedBold-26</font>
+						<font>Bold-26</font>
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>ff222222</shadowcolor>
 						<visible>ListItem.Type(season) + !IsEmpty(ListItem.Season)</visible>
@@ -606,7 +607,7 @@
 					<width>270</width>
 					<height>44</height>
 					<label>$INFO[Container.FirstTitle]</label>
-					<font>CondensedBold-36</font>
+					<font>Bold-36</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>ff333333</shadowcolor>
 					<visible>IsEmpty(Container.Property(mixedParents))</visible>
@@ -615,7 +616,7 @@
 					<width>270</width>
 					<height>44</height>
 					<label>$INFO[Container.Property(parentTitle)]</label>
-					<font>CondensedBold-36</font>
+					<font>Bold-36</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>ff333333</shadowcolor>
 					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
@@ -625,7 +626,7 @@
 					<width>270</width>
 					<height>44</height>
 					<label>$INFO[Container.SecondTitle]</label>
-					<font>CondensedBold-36</font>
+					<font>Bold-36</font>
 					<include>Grey1</include>
 					<shadowcolor>ff333333</shadowcolor>
 					<visible>IsEmpty(Container.Property(mixedParents))</visible>
@@ -635,19 +636,19 @@
 					<width>270</width>
 					<height>44</height>
 					<label>$LOCALIZE[32102]</label>
-					<font>CondensedBold-36</font>
+					<font>Bold-36</font>
 					<include>Grey1</include>
 					<shadowcolor>ff333333</shadowcolor>
 					<visible>!IsEmpty(Container.Property(mixedParents))</visible>
 				</control>
 				<!-- Year -->
 				<control type="label">
-					<posy>80</posy>
+					<posy>82</posy>
 					<width>270</width>
 					<height>40</height>
 					<align>left</align>
 					<label>$INFO[ListItem.Year]</label>
-					<font>CondensedBold-36</font>
+					<font>Bold-36</font>
 					<include>Grey1</include>
 					<shadowcolor>ff333333</shadowcolor>
 					<visible>true</visible>
@@ -781,7 +782,7 @@
 					<width>570</width>
 					<height>44</height>
 					<label>$INFO[ListItem.TVShowTitle]</label>
-					<font>CondensedBold-36</font>
+					<font>Bold-36</font>
 					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
@@ -797,12 +798,12 @@
 						<width min="29" max="450">auto</width>
 						<height>44</height>
 						<label>$INFO[ListItem.Title]</label>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<include>Grey1</include>
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>10</posy>
+						<posy>5</posy>
 						<width>30</width>
 						<height>30</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
@@ -813,7 +814,7 @@
 					<width>600</width>
 					<height>25</height>
 					<label>$LOCALIZE[31141] $INFO[ListItem.Season] &#xB7; $LOCALIZE[31114, &#xB7; ] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
-					<font>Condensed-18</font>
+					<font>Regular-18</font>
 					<include>WhiteShadow</include>
 					<visible>!IsEmpty(ListItem.Season)</visible>
 				</control>
@@ -821,7 +822,7 @@
 					<width>600</width>
 					<height>25</height>
 					<label>$LOCALIZE[31145] &#xB7; $LOCALIZE[31114, &#xB7; ] $INFO[ListItem.Episode]$INFO[ListItem.Date, &#xB7; ]</label>
-					<font>Condensed-18</font>
+					<font>Regular-18</font>
 					<include>WhiteShadow</include>
 					<visible>IsEmpty(ListItem.Season)</visible>
 				</control>
@@ -831,7 +832,7 @@
 				<posy>68</posy>
 				<!-- MPAA flag -->
 				<control type="image">
-					<posy>0</posy>
+					<posy>-4</posy>
 					<posx>100r</posx>
 					<width>60</width>
 					<height>30</height>
@@ -843,19 +844,19 @@
 				</control>
 				<!-- DurationStr -->
 				<control type="label">
-					<posy>44</posy>
+					<posy>46</posy>
 					<posx>40r</posx>
 					<width>200</width>
 					<height>40</height>
 					<align>right</align>
 					<label>$INFO[ListItem.DurationStr]</label>
-					<font>CondensedBold-36</font>
+					<font>Bold-36</font>
 					<include>Grey1</include>
 					<visible>true</visible>
 				</control>
 				<!-- Star Rating -->
 				<control type="image">
-					<posy>97</posy>
+					<posy>95</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
@@ -864,7 +865,7 @@
 					<visible>IsEmpty(ListItem.Property(hasUserRating))</visible>
 				</control>
 				<control type="image">
-					<posy>97</posy>
+					<posy>95</posy>
 					<posx>140r</posx>
 					<width>100</width>
 					<height>20</height>
@@ -987,12 +988,12 @@
 						<width min="29" max="500">auto</width>
 						<height>44</height>
 						<label>$INFO[ListItem.Title]</label>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<include>WhiteShadow</include>
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>10</posy>
+						<posy>5</posy>
 						<width>30</width>
 						<height>30</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
@@ -1003,8 +1004,8 @@
 					<width>530</width>
 					<height>15</height>
 					<label>[UPPERCASE]$INFO[ListItem.Genre][/UPPERCASE]</label>
-					<font>Condensed-18</font>
-					<include>Grey1</include>
+					<font>Regular-18</font>
+					<include>White2</include>
 					<visible>true</visible>
 				</control>
 				<!-- DurationStr -->
@@ -1012,7 +1013,7 @@
 					<width>600</width>
 					<height>15</height>
 					<label>$INFO[ListItem.DurationStr]</label>
-					<font>Condensed-18</font>
+					<font>Regular-18</font>
 					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
@@ -1028,7 +1029,7 @@
 					<height>40</height>
 					<align>right</align>
 					<label>$INFO[ListItem.Year]</label>
-					<font>CondensedBold-36</font>
+					<font>Bold-36</font>
 					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
@@ -1069,7 +1070,7 @@
 				<posy>238</posy>
 				<posx>560</posx>
 				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
+				<itemgap>20</itemgap>
 				<control type="label">
 					<label>[UPPERCASE]$LOCALIZE[31135][/UPPERCASE]</label>
 					<include>LeftInfoFormatGrey</include>
@@ -1084,7 +1085,7 @@
 				<posy>268</posy>
 				<posx>560</posx>
 				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
+				<itemgap>20</itemgap>
 				<control type="label">
 					<label>[UPPERCASE]$LOCALIZE[31134][/UPPERCASE]</label>
 					<include>LeftInfoFormatGrey</include>
@@ -1102,7 +1103,7 @@
 					<posy>298</posy>
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
+					<itemgap>20</itemgap>
 					<control type="label">
 						<textoffsetx>0</textoffsetx>
 						<!-- NOTE: NEED STRING FOR THIS -->
@@ -1120,7 +1121,7 @@
 					<posy>328</posy>
 					<posx>560</posx>
 					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
+					<itemgap>20</itemgap>
 					<control type="label">
 						<textoffsetx>0</textoffsetx>
 						<!-- NOTE: NEED STRING FOR THIS -->
@@ -1211,12 +1212,12 @@
 						<width min="29" max="570">auto</width>
 						<height>44</height>
 						<label>$INFO[ListItem.Title]</label>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<include>WhiteShadow</include>
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posy>10</posy>
+						<posy>4</posy>
 						<width>30</width>
 						<height>30</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
@@ -1229,7 +1230,7 @@
 					<width min="30" max="500">auto</width>
 					<height>30</height>
 					<label>$INFO[ListItem.Year]$INFO[ListItem.DurationStr, &#xB7; ]$INFO[ListItem.Property(sourceTitle), &#xB7; ]</label>
-					<font>CondensedBold-30</font>
+					<font>Bold-30</font>
 					<include>Grey1</include>
 				</control>
 				<!-- Season, Episode -->
@@ -1237,7 +1238,7 @@
 					<width>600</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Date]</label>
-					<font>Condensed-18</font>
+					<font>Regular-18</font>
 					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>

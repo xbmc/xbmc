@@ -47,14 +47,14 @@
 		</control>
 	</include>
 	<include name="MusicLabel">
-		<posy>182</posy>
+		<posy>185</posy>
 		<posx>96</posx>
 		<width>150</width>
 		<height>20</height>
 		<align>center</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
-		<font>Condensed-14</font>
+		<font>Regular-14</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<!-- bg's -->
@@ -172,7 +172,7 @@
 						<posx>95</posx>
 						<posy>420</posy>
 						<width>670</width>
-						<height>240</height>
+						<height>246</height>
 						<include>PlotFormat</include>
 						<label>$INFO[Container.Property(summary)]</label>
 					</control>
@@ -180,7 +180,7 @@
 						<posx>95</posx>
 						<posy>420</posy>
 						<width>670</width>
-						<height>240</height>
+						<height>246</height>
 						<include>PlotFormat</include>
 						<include>NoPlotDefault</include>
 						<visible>IsEmpty(Container.Property(summary))</visible>
@@ -196,7 +196,7 @@
 						<width>370</width>
 						<height>40</height>
 						<label>$INFO[Container.SecondTitle]</label>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<include>WhiteShadow</include>
 						<visible>true</visible>
 					</control>
@@ -209,7 +209,7 @@
 							<width min="29" max="200">auto</width>
 							<height>15</height>
 							<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
-							<font>Condensed-18</font>
+							<font>Regular-18</font>
 							<include>Grey1</include>
 							<visible>true</visible>
 						</control>
@@ -217,7 +217,7 @@
 							<width min="29" max="600">auto</width>
 							<height>15</height>
 							<label>$INFO[Container.Genre]</label>
-							<font>Condensed-18</font>
+							<font>Regular-18</font>
 							<include>WhiteShadow</include>
 							<visible>true</visible>
 						</control>
@@ -229,9 +229,9 @@
 						<itemgap>10</itemgap>
 						<control type="label">
 							<width min="29" max="600">auto</width>
-							<height>15</height>
+							<height>20</height>
 							<label>$VAR[TopBarItemCountStrings]</label>
-							<font>Condensed-18</font>
+							<font>Regular-18</font>
 							<include>White2</include>
 							<visible>true</visible>
 						</control>
@@ -245,7 +245,7 @@
 							<width min="29" max="100">auto</width>
 							<height>15</height>
 							<label>[UPPERCASE]Members[/UPPERCASE]</label>
-							<font>Condensed-18</font>
+							<font>Regular-18</font>
 							<include>Grey1</include>
 							<shadowcolor>ff333333</shadowcolor>
 							<visible>true</visible>
@@ -254,7 +254,7 @@
 							<width min="29" max="330">auto</width>
 							<height>15</height>
 							<label>Band members</label>
-							<font>Condensed-18</font>
+							<font>Regular-18</font>
 							<include>White2</include>
 							<visible>true</visible>
 						</control>
@@ -342,7 +342,7 @@
 						<posx>95</posx>
 						<posy>412</posy>
 						<width>670</width>
-						<height>207</height>
+						<height>246</height>
 						<include>PlotFormat</include>
 						<label>$INFO[Container.Property(summary)]</label>
 					</control>
@@ -350,7 +350,7 @@
 						<posx>95</posx>
 						<posy>420</posy>
 						<width>670</width>
-						<height>240</height>
+						<height>246</height>
 						<include>PlotFormat</include>
 						<include>NoPlotDefault</include>
 						<visible>IsEmpty(Container.Property(summary))</visible>
@@ -366,7 +366,7 @@
 						<width>370</width>
 						<height>40</height>
 						<label>$INFO[ListItem.Artist]</label>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<include>WhiteShadow</include>
 						<visible>true</visible>
 					</control>
@@ -375,7 +375,7 @@
 						<width>370</width>
 						<height>40</height>
 						<label>$INFO[ListItem.Album]</label>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<include>Grey1</include>
 						<visible>true</visible>
 					</control>
@@ -388,7 +388,7 @@
 							<width min="29" max="200">auto</width>
 							<height>15</height>
 							<label>[UPPERCASE]$LOCALIZE[31131][/UPPERCASE]</label>
-							<font>Condensed-18</font>
+							<font>Regular-18</font>
 							<include>Grey1</include>
 							<shadowcolor>ff333333</shadowcolor>
 							<visible>true</visible>
@@ -397,7 +397,7 @@
 							<width min="29" max="600">auto</width>
 							<height>15</height>
 							<label>$INFO[ListItem.Property(Genre)]</label>
-							<font>Condensed-18</font>
+							<font>Regular-18</font>
 							<include>WhiteShadow</include>
 							<visible>true</visible>
 						</control>
@@ -409,9 +409,9 @@
 						<itemgap>10</itemgap>
 						<control type="label">
 							<width min="29" max="600">auto</width>
-							<height>15</height>
+							<height>20</height>
 							<label>$VAR[TopBarItemCountStrings]</label>
-							<font>Condensed-18</font>
+							<font>Regular-18</font>
 							<include>WhiteShadow</include>
 							<visible>true</visible>
 						</control>
@@ -446,7 +446,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
-							<font>Condensed-17</font>
+							<font>Regular-17</font>
 							<include>White2</include>
 						</control>
 						<control type="label">
@@ -456,7 +456,7 @@
 							<align>right</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.DurationStr]</label>
-							<font>Condensed-17</font>
+							<font>Regular-17</font>
 							<include>White2</include>
 						</control>
 					</itemlayout>
@@ -477,7 +477,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
-							<font>CondensedBold-17</font>
+							<font>Bold-17</font>
 							<scroll>true</scroll>
 							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>
@@ -490,7 +490,7 @@
 							<align>right</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.DurationStr]</label>
-							<font>CondensedBold-17</font>
+							<font>Bold-17</font>
 							<textcolor>orangeLight</textcolor>
 							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnPrevious">Focus</animation>

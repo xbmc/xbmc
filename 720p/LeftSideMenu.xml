@@ -163,7 +163,7 @@
 	<include name="leftMenuTitle">
 		<textoffsety>5</textoffsety>
 		<textoffsetx>20</textoffsetx>
-		<font>Condensed-26</font>
+		<font>Regular-26</font>
 		<height>55</height>
 		<textcolor>FFCCCCCC</textcolor>
 		<shadowcolor>black</shadowcolor>
@@ -177,11 +177,11 @@
 	</include>
 	<include name="leftMenuFormat">
 		<width>250</width>
-		<height>26</height>
+		<height>24</height>
 		<align>right</align>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>34</textoffsetx>
-		<font>Condensed-17</font>
+		<font>Regular-17</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>FFCCCCCC</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -198,7 +198,7 @@
 		<align>left</align>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>10</textoffsetx>
-		<font>CondensedBold-17</font>
+		<font>Bold-17</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>white</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -214,7 +214,7 @@
 		<align>right</align>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>0</textoffsetx>
-		<font>CondensedBold-17</font>
+		<font>Bold-17</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>white</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -230,7 +230,7 @@
 		<align>right</align>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>0</textoffsetx>
-		<font>Condensed-26</font>
+		<font>Regular-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>FFCCCCCC</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -256,7 +256,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<textoffsetx>10</textoffsetx>
-		<font>Condensed-17</font>
+		<font>Regular-17</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>FFCCCCCC</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -323,7 +323,7 @@
 						<info>ListItem.Label</info>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>Condensed-28</font>
+						<font>Regular-28</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>FF333333</shadowcolor>
 					</control>
@@ -337,7 +337,7 @@
 						<info>ListItem.Label</info>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
@@ -413,7 +413,7 @@
 						<info>ListItem.Label</info>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>Condensed-28</font>
+						<font>Regular-28</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>FF333333</shadowcolor>
 					</control>
@@ -427,7 +427,7 @@
 						<info>ListItem.Label</info>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
@@ -509,7 +509,8 @@
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
 					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-100" time="0" condition="Skin.String(SectionType,photos) | Window.IsVisible(2)">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
+					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsVisible(2)">Conditional</animation>
 					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsVisible(501)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
@@ -522,7 +523,8 @@
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-100" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
+					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
 					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
@@ -541,7 +543,7 @@
 				<control type="label" id="19007">
 					<textoffsetx>40</textoffsetx>
 					<include>leftMenuFormat</include>
-					<font>Condensed-14</font>
+					<font>Regular-14</font>
 					<shadowcolor>ff222222</shadowcolor>
 					<textcolor>FFFFCCCC</textcolor>
 				</control>
@@ -553,8 +555,9 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
-					<animation effect="slide" end="0,-10" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-30" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
+					<animation effect="slide" end="0,-85" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
 					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
@@ -566,8 +569,9 @@
 					<ondown>30000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-10" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-30" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
+					<animation effect="slide" end="0,-85" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
 					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
@@ -811,7 +815,7 @@
 						<label>$LOCALIZE[31606] $INFO[Container(997).ListItem(0).Label]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>ff111111</shadowcolor>
 						<animation effect="fade" time="300" start="0" end="100">Focus</animation>
@@ -823,7 +827,7 @@
 						<label>$VAR[TopBarSelectedItemStrings]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff111111</shadowcolor>
 						<animation effect="fade" time="300" start="0" end="30" condition="true">Conditional</animation>
