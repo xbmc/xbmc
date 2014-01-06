@@ -644,7 +644,7 @@ int OMXPlayerVideo::GetFreeSpace()
 void OMXPlayerVideo::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
 {
   // in 3d modes skip this - we get called as the gui switches from left eye to right eye
-  unsigned flags = GetStereoModeFlags(m_hints.stereo_mode);
+  unsigned flags = GetStereoModeFlags(GetStereoMode());
   if (CONF_FLAGS_STEREO_MODE_MASK(flags))
     return;
 
@@ -700,7 +700,7 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
     m_bAllowFullscreen = false; // only allow on first configure
   }
 
-  flags |= GetStereoModeFlags(m_hints.stereo_mode);
+  flags |= GetStereoModeFlags(GetStereoMode());
 
   if(flags & CONF_FLAGS_STEREO_MODE_SBS)
   {
