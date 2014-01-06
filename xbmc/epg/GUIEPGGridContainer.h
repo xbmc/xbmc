@@ -34,7 +34,7 @@ namespace PVR
 namespace EPG
 {
   #define MAXCHANNELS 20
-  #define MAXBLOCKS   2304 //! !!_EIGHT_!! days of 5 minute blocks
+  #define MAXBLOCKS   (16 * 24 * 60 / 5) //! 16 days of 5 minute blocks (14 days for upcoming data + 1 day for past data + 1 day for fillers)
 
   struct GridItemsPtr
   {
