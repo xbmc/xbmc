@@ -49,7 +49,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
-		<font>Condensed-17</font>
+		<font>Regular-17</font>
 		<shadowcolor>FF222222</shadowcolor>
 	</include>
 	<include name="ClipSecondTitle">
@@ -60,7 +60,7 @@
 			<height>20</height>
 			<align>left</align>
 			<aligny>center</aligny>
-			<font>Condensed-14</font>
+			<font>Regular-14</font>
 			<textcolor>FF999999</textcolor>
 			<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Property(Recommender), [COLOR=orange]&#xB7;[/COLOR] ]</label>
 			<shadowcolor>FF222222</shadowcolor>
@@ -73,7 +73,7 @@
 			<height>20</height>
 			<align>left</align>
 			<aligny>center</aligny>
-			<font>Condensed-14</font>
+			<font>Regular-14</font>
 			<textcolor>FF999999</textcolor>
 			<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Property(Recommender)]</label>
 			<shadowcolor>FF222222</shadowcolor>

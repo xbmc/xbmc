@@ -78,7 +78,7 @@
 						<label>$INFO[ListItem.Label]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-18</font>
+						<font>Bold-18</font>
 						<textcolor>white</textcolor>
 					</control>
 					<control type="label">
@@ -90,7 +90,7 @@
 						<label>$LOCALIZE[35504]:  [COLOR=white]$INFO[ListItem.Property(Product)][/COLOR]    $LOCALIZE[35503]:  [COLOR=white]$INFO[ListItem.Property(Vendor)][/COLOR]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<textcolor>white</textcolor>
 					</control>
 					<control type="label">
@@ -102,7 +102,7 @@
 						<label>$LOCALIZE[35501]:  [COLOR=white]$INFO[ListItem.Property(Class)][/COLOR]     $LOCALIZE[19114]:  [COLOR=white]$INFO[ListItem.Property(Version)][/COLOR]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>Condensed-18</font>
+						<font>Regular-18</font>
 						<textcolor>white</textcolor>
 					</control>
 				</itemlayout>
@@ -132,7 +132,7 @@
 						<label>$INFO[ListItem.Label]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-18</font>
+						<font>Bold-18</font>
 						<textcolor>Focused</textcolor>
 					</control>
 					<control type="label">
@@ -144,7 +144,7 @@
 						<label>$LOCALIZE[35504]:  [COLOR=white]$INFO[ListItem.Property(Product)][/COLOR]    $LOCALIZE[35503]:  [COLOR=white]$INFO[ListItem.Property(Vendor)][/COLOR]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<textcolor>white</textcolor>
 					</control>
 					<control type="label">
@@ -156,7 +156,7 @@
 						<label>$LOCALIZE[35501]:  [COLOR=white]$INFO[ListItem.Property(Class)][/COLOR]     $LOCALIZE[19114]:  [COLOR=white]$INFO[ListItem.Property(Version)][/COLOR]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>Condensed-18</font>
+						<font>Regular-18</font>
 						<textcolor>white</textcolor>
 					</control>
 				</focusedlayout>

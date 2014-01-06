@@ -3,7 +3,7 @@
 	<include name="debugFont">
 		<width>570</width>
 		<height>12</height>
-		<font>Condensed-12</font>
+		<font>Regular-12</font>
 		<textcolor>white</textcolor>
 		<align>left</align>
 		<scroll>false</scroll>

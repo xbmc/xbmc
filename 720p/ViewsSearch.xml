@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <includes>
 	<include name="SearchScreenListTitle">
-		<posy>5</posy>
+		<posy>7</posy>
 		<posx>855</posx>
-		<font>CondensedBold-16</font>
+		<font>Bold-16</font>
 		<shadowcolor>FF222222</shadowcolor>
 		<width>350</width>
 		<height>30</height>
@@ -23,7 +23,7 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<scroll>false</scroll>
-		<font>Condensed-14</font>
+		<font>Regular-14</font>
 		<wrapmultiline>false</wrapmultiline>
 		<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 	</include>
@@ -33,7 +33,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<scroll>false</scroll>
-		<font>Condensed-14</font>
+		<font>Regular-14</font>
 		<wrapmultiline>false</wrapmultiline>
 	</include>
 	<include name="SearchScreenPosListItem">
@@ -154,7 +154,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>S$INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] E$INFO[ListItem.Episode]</label>
-				<font>CondensedBold-14</font>
+				<font>Bold-14</font>
 				<textcolor>white</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
@@ -166,7 +166,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.Date]</label>
-				<font>CondensedBold-14</font>
+				<font>Bold-14</font>
 				<textcolor>white</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<visible>[IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
@@ -260,21 +260,21 @@
 	</include>
 	<include name="SearchScreenSquareTitle">
 		<control type="label">
-			<posy>206</posy>
+			<posy>209</posy>
 			<include>SearchScreenListItemTitle1</include>
 			<label>$INFO[ListItem.Title]</label>
 		</control>
 	</include>
 	<include name="SearchScreenSquareTitleAlbum">
 		<control type="label">
-			<posy>206</posy>
+			<posy>209</posy>
 			<include>SearchScreenListItemTitle1</include>
 			<label>$INFO[ListItem.Album]</label>
 		</control>
 	</include>
 	<include name="SearchScreenSquareTitleArtist">
 		<control type="label">
-			<posy>178</posy>
+			<posy>181</posy>
 			<include>SearchScreenListItemTitle1</include>
 			<label>$INFO[ListItem.Artist]</label>
 		</control>
@@ -312,7 +312,7 @@
 	</include>
 	<include name="SearchScreenPortraitTitle">
 		<control type="label">
-			<posy>209</posy>
+			<posy>212</posy>
 			<include>SearchScreenListItemTitle1</include>
 			<label>$INFO[ListItem.Title]</label>
 			<textcolor>white</textcolor>
@@ -393,7 +393,7 @@
 	</include>
 	<include name="SearchScreenWideTitle">
 		<control type="label">
-			<posy>196</posy>
+			<posy>199</posy>
 			<include>SearchScreenListItemTitleWide</include>
 			<label>$INFO[ListItem.Title]</label>
 			<textcolor>white</textcolor>
@@ -401,7 +401,7 @@
 	</include>
 	<include name="SearchScreenWideTitle2">
 		<control type="label">
-			<posy>168</posy>
+			<posy>171</posy>
 			<include>SearchScreenListItemTitleWide</include>
 			<label>$INFO[ListItem.TVShowTitle]</label>
 			<textcolor>FF888888</textcolor>
@@ -425,7 +425,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>S$INFO[ListItem.Season]E$INFO[ListItem.Episode]</label>
-		<font>CondensedBold-26</font>
+		<font>Bold-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<!-- page ui and search formatting -->
@@ -492,7 +492,7 @@
 			</control>
 			<control type="label">
 				<label>Searching...</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<posx>48</posx>
 				<posy>6</posy>
 				<textcolor>FF888888</textcolor>
@@ -511,7 +511,7 @@
 		<posy>7</posy>
 		<posx>880</posx>
 		<align>right</align>
-		<font>Condensed-16</font>
+		<font>Regular-16</font>
 		<textcolor>orange</textcolor>
 		<width>278</width>
 		<height>30</height>
@@ -520,7 +520,7 @@
 		<posy>7</posy>
 		<posx>880</posx>
 		<align>right</align>
-		<font>Condensed-16</font>
+		<font>Regular-16</font>
 		<textcolor>Unfocused</textcolor>
 		<width>278</width>
 		<height>30</height>
@@ -547,7 +547,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.tvshowtitle]</label>
-				<font>Condensed-16</font>
+				<font>Regular-16</font>
 				<textcolor>FF999999</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>
@@ -560,7 +560,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.artist]</label>
-				<font>Condensed-16</font>
+				<font>Regular-16</font>
 				<textcolor>FF999999</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>
@@ -572,7 +572,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.Title]</label>
-				<font>Condensed-16</font>
+				<font>Regular-16</font>
 				<textcolor>FF999999</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>
@@ -595,7 +595,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.tvshowtitle]</label>
-				<font>Condensed-16</font>
+				<font>Regular-16</font>
 				<textcolor>FFFFFFFF</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>
@@ -608,7 +608,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.artist]</label>
-				<font>Condensed-16</font>
+				<font>Regular-16</font>
 				<textcolor>FFFFFFFF</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>
@@ -620,7 +620,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.Title]</label>
-				<font>Condensed-16</font>
+				<font>Regular-16</font>
 				<textcolor>FFFFFFFF</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>
@@ -670,7 +670,7 @@
 		<ondown>-</ondown>
 		<align>center</align>
 		<aligny>center</aligny>
-		<font>CondensedBold-18</font>
+		<font>Bold-18</font>
 		<texturefocus border="12">black-rounded.png</texturefocus>
 		<texturenofocus border="12">base-rounded-5%.png</texturenofocus>
 	</include>
@@ -692,8 +692,8 @@
 			<control type="edit" id="310">
 				<description>Search</description>
 				<posx>35</posx>
-				<posy>23</posy>
-				<font>Condensed-26</font>
+				<posy>26</posy>
+				<font>Regular-26</font>
 				<textcolor>FF222222</textcolor>
 				<focusedcolor>FF222222</focusedcolor>
 				<width>278</width>
@@ -1154,7 +1154,7 @@
 					<posx>0</posx>
 					<posy>15</posy>
 					<width>910</width>
-					<height>690</height>
+					<height>688</height>
 					<ondown>5200</ondown>
 					<onup>310</onup>
 					<onright>350</onright>
@@ -1712,13 +1712,15 @@
 								<control type="group">
 									<include>SearchScreenSquareCard</include>
 									<include>SearchScreenSquare</include>
-									<include>SearchScreenSquareTitle</include>
+									<include>SearchScreenSquareTitleArtist</include>
+									<include>SearchScreenSquareTitleAlbum</include>
 								</control>
 							</itemlayout>
 							<focusedlayout width="160" height="200">
 								<include>SearchScreenSquareCard</include>
 								<include>SearchScreenSquare</include>
-								<include>SearchScreenSquareTitle</include>
+								<include>SearchScreenSquareTitleArtist</include>
+								<include>SearchScreenSquareTitleAlbum</include>
 								<control type="image">
 									<posy>50</posy>
 									<posx>37</posx>

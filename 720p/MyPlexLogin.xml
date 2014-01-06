@@ -81,7 +81,7 @@
 						<posx>15</posx>
 						<width>480</width>
 						<height>150</height>
-						<font>CondensedBold-126</font>
+						<font>Bold-126</font>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
 				</control>
@@ -98,7 +98,7 @@
 							<width>140</width>
 							<height>50</height>
 							<align>left</align>
-							<font>Condensed-22</font>
+							<font>Regular-22</font>
 							<textcolor>white</textcolor>
 							<label>31068</label>
 						</control>
@@ -125,7 +125,7 @@
 						<textoffsetx>16</textoffsetx>
 						<label/>
 						<hinttext/>
-						<font>Condensed-26</font>
+						<font>Regular-26</font>
 						<textcolor>FF222222</textcolor>
 					</control>
 					<!-- password field -->
@@ -137,7 +137,7 @@
 							<width>140</width>
 							<height>50</height>
 							<align>left</align>
-							<font>Condensed-22</font>
+							<font>Regular-22</font>
 							<textcolor>white</textcolor>
 							<label>31069</label>
 						</control>
@@ -164,7 +164,7 @@
 						<textoffsetx>16</textoffsetx>
 						<label/>
 						<hinttext/>
-						<font>Condensed-26</font>
+						<font>Regular-26</font>
 						<textcolor>FF222222</textcolor>
 					</control>
 				</control>

@@ -32,7 +32,7 @@
 						<posx>20</posx>
 						<posy>0</posy>
 						<width>300</width>
-						<font>CondensedBold-18</font>
+						<font>Bold-18</font>
 						<height>50</height>
 						<align>left</align>
 						<aligny>center</aligny>
@@ -52,7 +52,7 @@
 						<posx>20</posx>
 						<posy>0</posy>
 						<width>300</width>
-						<font>CondensedBold-18</font>
+						<font>Bold-18</font>
 						<height>50</height>
 						<align>left</align>
 						<aligny>center</aligny>
@@ -84,7 +84,7 @@
 					<posx>140</posx>
 					<posy>135</posy>
 					<width>300</width>
-					<font>CondensedBold-18</font>
+					<font>Bold-18</font>
 					<height>50</height>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -106,7 +106,7 @@
 					<posx>140</posx>
 					<posy>265</posy>
 					<width>300</width>
-					<font>CondensedBold-18</font>
+					<font>Bold-18</font>
 					<height>50</height>
 					<align>left</align>
 					<aligny>center</aligny>

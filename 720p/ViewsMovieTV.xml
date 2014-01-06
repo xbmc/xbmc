@@ -34,14 +34,14 @@
 		</control>
 	</include>
 	<include name="MovieTVPosterTitleBigger">
-		<posy>288</posy>
+		<posy>298</posy>
 		<posx>105</posx>
 		<width>180</width>
 		<height>30</height>
 		<align>center</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
-		<font>Condensed-17</font>
+		<font>Regular-17</font>
 		<shadowcolor>FF222222</shadowcolor>
 	</include>
 	<include name="MovieTVPosterUnwatchedOverlayBigger">
@@ -59,7 +59,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<shadowcolor>FF222222</shadowcolor>
 			</control>
 			<visible>[Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
@@ -115,7 +115,7 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
-		<font>Condensed-17</font>
+		<font>Regular-17</font>
 		<shadowcolor>FF222222</shadowcolor>
 	</include>
 	<include name="MovieTVPosterUnwatchedOverlay">
@@ -135,7 +135,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
-				<font>CondensedBold-14</font>
+				<font>Bold-14</font>
 				<shadowcolor>FF222222</shadowcolor>
 			</control>
 			<visible>[Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
@@ -206,7 +206,7 @@
 				<posx>100</posx>
 				<posy>28</posy>
 				<width>1200</width>
-				<height>660</height>
+				<height>666</height>
 				<itemlayout width="144" height="220">
 					<include>MovieTVPoster</include>
 					<control type="label">
@@ -279,7 +279,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.TVShowTitle]</label>
-		<font>Condensed-14</font>
+		<font>Regular-14</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<include name="EpisodeSecondTitleFiltered">
@@ -291,7 +291,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
-		<font>Condensed-14</font>
+		<font>Regular-14</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</control>
 	</include>
@@ -304,7 +304,7 @@
 			<align>right</align>
 			<aligny>center</aligny>
 			<label>$INFO[ListItem.Date]</label>
-			<font>Condensed-14</font>
+			<font>Regular-14</font>
 			<textcolor>FF999999</textcolor>
 			<shadowcolor>ff222222</shadowcolor>
 		</control>
@@ -336,7 +336,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>S$INFO[ListItem.Season]&#xB7;E$INFO[ListItem.Episode]</label>
-		<font>CondensedBold-26</font>
+		<font>Bold-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<!-- Pre-play Filtered Episodes -->

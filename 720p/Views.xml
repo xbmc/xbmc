@@ -164,7 +164,7 @@
 				<width>40</width>
 				<height>50</height>
 				<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
-				<font>Condensed-14</font>
+				<font>Regular-14</font>
 				<include>White2</include>
 				<align>right</align>
 			</control>
@@ -228,7 +228,7 @@
 							<width>840</width>
 							<height>50</height>
 							<info>ListItem.Label</info>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
 						</control>
@@ -256,7 +256,7 @@
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>100</textoffsetx>
@@ -286,7 +286,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>[COLOR=greyLighter]$INFO[ListItem.TVShowTitle][/COLOR]$INFO[ListItem.Title, [COLOR=orange]&#xB7; [/COLOR]]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
 						</control>
@@ -306,7 +306,7 @@
 							<height>50</height>
 							<info>ListItem.TVShowTitle</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>100</textoffsetx>
@@ -329,7 +329,7 @@
 							<height>50</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>100</textoffsetx>
@@ -359,7 +359,7 @@
 							<width>840</width>
 							<height>50</height>
 							<info>ListItem.Label</info>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
 							<visible>![Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]</visible>
@@ -368,7 +368,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>S$INFO[ListItem.Season]E$INFO[ListItem.Episode] &#xB7; $INFO[ListItem.Label]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
 							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]</visible>
@@ -377,7 +377,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>$LOCALIZE[31145] &#xB7; $INFO[ListItem.Label]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
 							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]</visible>
@@ -406,7 +406,7 @@
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>170</textoffsetx>
@@ -442,7 +442,7 @@
 							<width>840</width>
 							<height>50</height>
 							<info>ListItem.Label</info>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
 						</control>
@@ -482,7 +482,7 @@
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>120</textoffsetx>
@@ -511,7 +511,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>$INFO[ListItem.Label][COLOR=greyLight]$INFO[ListItem.Property(ServerName), [COLOR=orange]&#xB7;[/COLOR] ][/COLOR]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
 						</control>
@@ -551,7 +551,7 @@
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>120</textoffsetx>
@@ -579,7 +579,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>$INFO[ListItem.Label][COLOR=greyLight]$INFO[ListItem.Property(ServerName), [COLOR=orange]&#xB7;[/COLOR] ][/COLOR]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
 						</control>
@@ -619,7 +619,7 @@
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>120</textoffsetx>
@@ -648,7 +648,7 @@
 							<width>840</width>
 							<height>50</height>
 							<info>ListItem.Label</info>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
 							<visible>![Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]</visible>
@@ -657,7 +657,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>S$INFO[ListItem.Season]E$INFO[ListItem.Episode] &#xB7; $INFO[ListItem.Label]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
 							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]</visible>
@@ -666,7 +666,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>$LOCALIZE[31145] &#xB7; $INFO[ListItem.Label]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>
 							<visible>[Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]</visible>
@@ -695,7 +695,7 @@
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>170</textoffsetx>
@@ -724,7 +724,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>$INFO[ListItem.Label][COLOR=greyLight]$INFO[ListItem.Property(SourceTitle), [COLOR=orange]&#xB7;[/COLOR] ][/COLOR][COLOR=greyLight]$INFO[ListItem.Property(ServerName), [COLOR=orange]&#xB7;[/COLOR] ][/COLOR]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
 						</control>
@@ -752,7 +752,7 @@
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>120</textoffsetx>
@@ -788,7 +788,7 @@
 							<width>840</width>
 							<height>50</height>
 							<info>ListItem.Label</info>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
 							<visible>[IsEmpty(Container.Property(primaryFilterActivated)) + Container.Content(albums)] | [IsEmpty(Container.Property(primaryFilterActivated)) + Container.Content(artists)]</visible>
@@ -797,7 +797,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>$INFO[ListItem.Artist]$INFO[ListItem.Label, [COLOR=orange]&#xB7;[/COLOR] ]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
 							<visible>!IsEmpty(Container.Property(primaryFilterActivated)) + Container.Content(albums)</visible>
@@ -806,7 +806,7 @@
 							<width>840</width>
 							<height>50</height>
 							<info>ListItem.Label</info>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
 							<visible>IsEmpty(Container.Property(mixedParents)) + Container.Content(songs)</visible>
@@ -815,7 +815,7 @@
 							<width>840</width>
 							<height>50</height>
 							<label>$INFO[ListItem.Album]$INFO[ListItem.Label, [COLOR=orange]&#xB7;[/COLOR] ]</label>
-							<font>Condensed-20</font>
+							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>100</textoffsetx>
 							<visible>!IsEmpty(Container.Property(mixedParents)) + Container.Content(songs)</visible>
@@ -844,7 +844,7 @@
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
-							<font>CondensedBold-32</font>
+							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<textoffsetx>120</textoffsetx>

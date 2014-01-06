@@ -50,7 +50,7 @@
 						<label>$INFO[VideoPlayer.TVShowTitle] &#xB7; S$INFO[VideoPlayer.Season]&#xB7;E$INFO[VideoPlayer.Episode]</label>
 						<align>left</align>
 						<include>White2</include>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<visible>!IsEmpty(VideoPlayer.TVShowTitle)</visible>
 					</control>
 					<control type="label" id="1">
@@ -59,7 +59,7 @@
 						<label>$INFO[VideoPlayer.Title]</label>
 						<align>left</align>
 						<textcolor>white</textcolor>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
 					<control type="textbox" id="8">
@@ -121,7 +121,7 @@
 					<control type="label">
 						<width>200</width>
 						<align>left</align>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<label>$INFO[System.Time(short_no_meridian)]</label>
 						<textcolor>FF666666</textcolor>
 					</control>
@@ -130,7 +130,7 @@
 						<posx>1200</posx>
 						<width>200</width>
 						<align>right</align>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<label>$INFO[Player.FinishTime]</label>
 						<textcolor>FF666666</textcolor>
 					</control>
@@ -142,7 +142,7 @@
 					<control type="label">
 						<width>200</width>
 						<align>left</align>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<label>$INFO[Player.Time]</label>
 						<textcolor>white</textcolor>
 					</control>
@@ -151,7 +151,7 @@
 						<posx>1200</posx>
 						<width>200</width>
 						<align>right</align>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<label>$INFO[Player.Duration]</label>
 						<textcolor>white</textcolor>
 					</control>
@@ -164,7 +164,7 @@
 				<control type="label">
 					<width>200</width>
 					<align>left</align>
-					<font>CondensedBold-18</font>
+					<font>Bold-18</font>
 					<label>$VAR[SeekingLabels]</label>
 					<textcolor>white</textcolor>
 					<visible>!Window.IsActive(142)</visible>
@@ -235,7 +235,7 @@
 					<control type="label">
 						<width>200</width>
 						<align>left</align>
-						<font>Condensed-18</font>
+						<font>Regular-18</font>
 						<label>$INFO[System.Time(short_no_meridian)]</label>
 						<textcolor>FF666666</textcolor>
 					</control>
@@ -244,7 +244,7 @@
 						<posx>1200</posx>
 						<width>200</width>
 						<align>right</align>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<label>$INFO[Player.FinishTime]</label>
 						<textcolor>FF666666</textcolor>
 					</control>
@@ -256,7 +256,7 @@
 					<control type="label">
 						<width>200</width>
 						<align>left</align>
-						<font>Condensed-18</font>
+						<font>Regular-18</font>
 						<label>$INFO[Player.Time]</label>
 						<textcolor>white</textcolor>
 					</control>
@@ -265,7 +265,7 @@
 						<posx>1200</posx>
 						<width>200</width>
 						<align>right</align>
-						<font>Condensed-18</font>
+						<font>Regular-18</font>
 						<label>$INFO[Player.Duration]</label>
 						<textcolor>white</textcolor>
 					</control>
@@ -280,7 +280,7 @@
 				<control type="label">
 					<width>200</width>
 					<align>left</align>
-					<font>CondensedBold-18</font>
+					<font>Bold-18</font>
 					<label>$VAR[SeekingLabels]</label>
 					<textcolor>white</textcolor>
 				</control>
@@ -336,7 +336,7 @@
 						<width>165</width>
 						<height>24</height>
 						<label>$INFO[VideoPlayer.AudioStream]</label>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<textcolor>FF666666</textcolor>
 						<shadowcolor>FF000000</shadowcolor>
 						<visible>!Control.HasFocus(720)</visible>
@@ -347,7 +347,7 @@
 						<width>165</width>
 						<height>24</height>
 						<label>$INFO[VideoPlayer.AudioStream]</label>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>FF000000</shadowcolor>
 						<visible>Control.HasFocus(720)</visible>
@@ -388,7 +388,7 @@
 						<width>165</width>
 						<height>24</height>
 						<label>$INFO[VideoPlayer.SubtitleStream]</label>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<textcolor>FF666666</textcolor>
 						<shadowcolor>FF000000</shadowcolor>
 						<visible>!Control.HasFocus(721)</visible>
@@ -399,7 +399,7 @@
 						<width>165</width>
 						<height>24</height>
 						<label>$INFO[VideoPlayer.SubtitleStream]</label>
-						<font>Condensed-16</font>
+						<font>Regular-16</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>FF000000</shadowcolor>
 						<visible>Control.HasFocus(721)</visible>
@@ -537,7 +537,7 @@
 							<width>100</width>
 							<height>24</height>
 							<label>$LOCALIZE[31060]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<textcolor>FF666666</textcolor>
 							<shadowcolor>FF000000</shadowcolor>
 							<visible>!Control.HasFocus(717)</visible>
@@ -548,7 +548,7 @@
 							<width>100</width>
 							<height>24</height>
 							<label>$LOCALIZE[31060]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>FF000000</shadowcolor>
 							<visible>Control.HasFocus(717)</visible>
@@ -589,7 +589,7 @@
 									<width>80</width>
 									<height>24</height>
 									<label>$LOCALIZE[31060]</label>
-									<font>Condensed-16</font>
+									<font>Regular-16</font>
 									<textcolor>FF666666</textcolor>
 									<shadowcolor>FF000000</shadowcolor>
 									<visible>!Control.HasFocus(718)</visible>
@@ -600,7 +600,7 @@
 									<width>80</width>
 									<height>24</height>
 									<label>$LOCALIZE[31060]</label>
-									<font>Condensed-16</font>
+									<font>Regular-16</font>
 									<textcolor>white</textcolor>
 									<shadowcolor>FF000000</shadowcolor>
 									<visible>Control.HasFocus(718)</visible>

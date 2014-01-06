@@ -76,7 +76,7 @@
 				<width min="10" max="150">auto</width>
 				<height>20</height>
 				<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<scroll>false</scroll>
 				<textcolor>FFefedeb</textcolor>
 				<wrapmultiline>false</wrapmultiline>
@@ -87,7 +87,7 @@
 				<width min="10" max="150">auto</width>
 				<height>20</height>
 				<label>$INFO[ListItem.Label]</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<scroll>false</scroll>
 				<textcolor>FFefedeb</textcolor>
 				<wrapmultiline>false</wrapmultiline>
@@ -98,7 +98,7 @@
 				<width min="0" max="20">auto</width>
 				<height>20</height>
 				<label>&#xB7;</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<scroll>false</scroll>
 				<textcolor>orange</textcolor>
 				<wrapmultiline>false</wrapmultiline>
@@ -116,7 +116,7 @@
 				<width min="10" max="50">auto</width>
 				<height>20</height>
 				<label>$INFO[ListItem.Property(UnwatchedEpisodes)]</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<scroll>false</scroll>
 				<textcolor>FFefedeb</textcolor>
 				<wrapmultiline>false</wrapmultiline>
@@ -263,14 +263,14 @@
 					</control>
 					<!-- infos -->
 					<control type="group">
-						<posy>230</posy>
+						<posy>231</posy>
 						<posx>22</posx>
 						<include>ListItemUnwatchedCount</include>
 						<control type="label">
 							<width>340</width>
 							<align>left</align>
 							<label>$VAR[ListItemFullInfoTitle]</label>
-							<font>CondensedBold-16</font>
+							<font>Bold-16</font>
 							<scroll>true</scroll>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -280,7 +280,7 @@
 							<posy>42</posy>
 							<align>left</align>
 							<label>$VAR[ListItemFullInfoSecondTitle]</label>
-							<font>CondensedBold-16</font>
+							<font>Bold-16</font>
 							<scroll>false</scroll>
 							<textcolor>FFefedeb</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -291,7 +291,7 @@
 							<posy>72</posy>
 							<align>left</align>
 							<label>$VAR[ListItemFullInfoThirdTitle]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<scroll>false</scroll>
 							<textcolor>FF888888</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -679,13 +679,13 @@
 					</control>
 					<!-- infos -->
 					<control type="group">
-						<posy>230</posy>
+						<posy>231</posy>
 						<posx>22</posx>
 						<control type="label">
 							<width>300</width>
 							<align>left</align>
 							<label>$VAR[HomeListItemFullInfoTitle]</label>
-							<font>CondensedBold-16</font>
+							<font>Bold-16</font>
 							<scroll>true</scroll>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -695,7 +695,7 @@
 							<posy>42</posy>
 							<align>left</align>
 							<label>$VAR[HomeListItemFullInfoSecondTitle]</label>
-							<font>CondensedBold-16</font>
+							<font>Bold-16</font>
 							<scroll>false</scroll>
 							<textcolor>FFefedeb</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -706,7 +706,7 @@
 							<posy>72</posy>
 							<align>left</align>
 							<label>$VAR[HomeListItemFullInfoThirdTitle]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<scroll>false</scroll>
 							<textcolor>FF888888</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -762,7 +762,7 @@
 					<label>$INFO[Container(300).ListItem(0).Label]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>CondensedBold-28</font>
+					<font>Bold-28</font>
 					<textcolor>orange</textcolor>
 					<animation effect="fade" end="70" time="0" condition="true">Conditional</animation>
 				</control>
@@ -774,7 +774,7 @@
 					<label>$INFO[Container(300).ListItem(0).Label2]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>CondensedBold-16</font>
+					<font>Bold-16</font>
 					<textcolor>white</textcolor>
 					<visible>!IsEmpty(Container(300).ListItem(0).Label2)</visible>
 					<animation effect="fade" start="50" end="50" time="0" condition="true">Conditional</animation>
@@ -943,7 +943,7 @@
 							<width>285</width>
 							<align>left</align>
 							<label>$VAR[SearchItemFullInfoTitle]</label>
-							<font>CondensedBold-22</font>
+							<font>Bold-22</font>
 							<scroll>true</scroll>
 							<textcolor>orangeLight</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -953,7 +953,7 @@
 							<posy>35</posy>
 							<align>left</align>
 							<label>$VAR[SearchItemFullInfoSecondTitle]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<scroll>false</scroll>
 							<textcolor>FF888888</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -964,7 +964,7 @@
 							<posy>55</posy>
 							<align>left</align>
 							<label>$VAR[SearchItemFullInfoThirdTitle]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<scroll>false</scroll>
 							<textcolor>FF888888</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -975,7 +975,7 @@
 							<posy>95</posy>
 							<align>left</align>
 							<label>$VAR[SearchItemFullInfoSource]</label>
-							<font>Condensed-14</font>
+							<font>Regular-14</font>
 							<scroll>false</scroll>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
