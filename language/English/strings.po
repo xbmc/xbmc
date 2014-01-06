@@ -7180,7 +7180,12 @@ msgctxt "#17999"
 msgid "%i days"
 msgstr ""
 
-#empty strings from id 18000 to 18999
+#: system/settings/settings.xml
+msgctxt "#18000"
+msgid "%i day"
+msgstr ""
+
+#empty strings from id 18001 to 18999
 
 msgctxt "#19000"
 msgid "Switch to channel"
@@ -7931,7 +7936,10 @@ msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr ""
 
-#empty string with id 19183
+#: system/settings/settings.xml
+msgctxt "#19183"
+msgid "Past days to display in the EPG"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19184"
@@ -13695,7 +13703,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14738,7 +14746,11 @@ msgctxt "#36428"
 msgid "Record"
 msgstr ""
 
-#empty strings from id 36429 to 36499
+msgctxt "#36429"
+msgid "Number of past days of EPG data to import from backends. Defaults to 1 day."
+msgstr ""
+
+#empty strings from id 36430 to 36499
 #end reservation
 
 #: system/settings/settings.xml

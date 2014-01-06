@@ -304,7 +304,6 @@ void CAdvancedSettings::Initialize()
 
   m_iMythMovieLength = 0; // 0 == Off
 
-  m_iEpgLingerTime = 60 * 24;           /* keep 24 hours by default */
   m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
   m_iEpgCleanupInterval = 900;     /* remove old entries from the EPG every 15 minutes */
   m_iEpgActiveTagCheckInterval = 60; /* check for updated active tags every minute */
@@ -909,7 +908,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("epg");
   if (pElement)
   {
-    XMLUtils::GetInt(pElement, "lingertime", m_iEpgLingerTime);
     XMLUtils::GetInt(pElement, "updatecheckinterval", m_iEpgUpdateCheckInterval);
     XMLUtils::GetInt(pElement, "cleanupinterval", m_iEpgCleanupInterval);
     XMLUtils::GetInt(pElement, "activetagcheckinterval", m_iEpgActiveTagCheckInterval);

@@ -1503,6 +1503,19 @@ void CPVRManager::SettingOptionsPvrStartLastChannelFiller(const CSetting *settin
   list.push_back(make_pair(g_localizeStrings.Get(107),   PVR::START_LAST_CHANNEL_ON));
 }
 
+void CPVRManager::SettingOptionsPvrEPGPastDaysToDisplayFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  list.push_back(make_pair(g_localizeStrings.Get(1223), 0));
+  for(int i = 1; i < 8; i++)
+    list.push_back(make_pair(StringUtils::Format(g_localizeStrings.Get(i == 1 ? 18000 : 17999), i), i));
+}
+
+void CPVRManager::SettingOptionsPvrEPGDaysToDisplayFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+{
+  for(int i = 1; i < 15; i++)
+    list.push_back(make_pair(StringUtils::Format(g_localizeStrings.Get(i == 1 ? 18000 : 17999), i), i));
+}
+
 bool CPVRChannelSwitchJob::DoWork(void)
 {
   // announce OnStop and delete m_previous when done

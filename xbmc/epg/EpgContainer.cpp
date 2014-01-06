@@ -188,8 +188,10 @@ void CEpgContainer::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "epg.ignoredbforclient" || settingId == "epg.epgupdate" ||
-      settingId == "epg.daystodisplay")
+  if (settingId == "epg.ignoredbforclient" ||
+      settingId == "epg.epgupdate" ||
+      settingId == "epg.daystodisplay" ||
+      settingId == "epg.pastdaystodisplay")
     LoadSettings();
 }
 
@@ -387,16 +389,16 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 bool CEpgContainer::LoadSettings(void)
 {
   m_bIgnoreDbForClient = CSettings::Get().GetBool("epg.ignoredbforclient");
-  m_iUpdateTime        = CSettings::Get().GetInt ("epg.epgupdate") * 60;
-  m_iDisplayTime       = CSettings::Get().GetInt ("epg.daystodisplay") * 24 * 60 * 60;
+  m_iUpdateTime        = CSettings::Get().GetInt("epg.epgupdate") * 60;
+  m_iDisplayTime       = CSettings::Get().GetInt("epg.daystodisplay") * 24 * 60 * 60;
+  m_iPastDisplayTime   = CSettings::Get().GetInt("epg.pastdaystodisplay") * 24 * 60 * 60;
 
   return true;
 }
 
 bool CEpgContainer::RemoveOldEntries(void)
 {
-  CDateTime now = CDateTime::GetUTCDateTime() -
-      CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
+  CDateTime now = CDateTime::GetUTCDateTime() - CDateTimeSpan(0, 0, 0, m_iPastDisplayTime);
 
   /* call Cleanup() on all known EPG tables */
   for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
@@ -504,7 +506,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   time_t end;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(start);
   end = start + m_iDisplayTime;
-  start -= g_advancedSettings.m_iEpgLingerTime * 60;
+  start -= m_iPastDisplayTime;
   bShowProgress = g_advancedSettings.m_bEpgDisplayUpdatePopup && (m_bIsInitialising || g_advancedSettings.m_bEpgDisplayIncrementalUpdatePopup);
 
   {
