@@ -50,8 +50,8 @@ IF %comp%==vs2010 (
 
 	IF EXIST "!NET!" (
 		set msbuildemitsolution=1
-		set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /m:4 /t:Build /p:Configuration="%buildconfig%"
-		set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /m:4 /t:Clean /p:Configuration="%buildconfig%"
+		set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Build /p:Configuration="%buildconfig%"
+		set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Clean /p:Configuration="%buildconfig%"
 	) ELSE (
 		IF EXIST "%VS100COMNTOOLS%\..\IDE\devenv.com" (
 			set NET="%VS100COMNTOOLS%\..\IDE\devenv.com"
