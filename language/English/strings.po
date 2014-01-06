@@ -13695,7 +13695,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
+msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
 msgstr ""
 
 #: system/settings/settings.xml
