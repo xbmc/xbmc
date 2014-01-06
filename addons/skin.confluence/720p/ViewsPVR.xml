@@ -1070,7 +1070,7 @@
 					<left>280</left>
 					<top>0</top>
 					<width>840</width>
-					<height>86</height>
+					<height>20</height>
 					<label>[B]$INFO[ListItem.Label][/B]</label>
 					<font>font13</font>
 					<textcolor>white</textcolor>
@@ -1079,8 +1079,8 @@
 					<left>280</left>
 					<top>25</top>
 					<width>840</width>
-					<height>86</height>
-					<label>$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, - ]$INFO[ListItem.Duration, (,)]</label>
+					<height>20</height>
+					<label>$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, - ]$INFO[ListItem.Genre, • ]</label>
 					<font>font12</font>
 					<textcolor>grey</textcolor>
 				</control>
