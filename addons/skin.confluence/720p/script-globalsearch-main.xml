@@ -309,19 +309,19 @@
 					<left>268</left>
 					<top>10</top>
 					<width>804</width>
-					<height>100</height>
+					<height>40</height>
 					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
+					<texture>dialogheader.png</texture>
 				</control>
 				<control type="label">
 					<description>header label Finished Searching</description>
 					<left>300</left>
-					<top>20</top>
+					<top>13</top>
 					<width>740</width>
 					<height>30</height>
-					<font>font16</font>
+					<font>font13_title</font>
 					<label>$INFO[Container(9000).ListItem.Label]</label>
-					<align>left</align>
+					<align>center</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -333,9 +333,9 @@
 					<top>20</top>
 					<width>740</width>
 					<height>30</height>
-					<font>font16</font>
+					<font>font13_title</font>
 					<label>$INFO[Control.GetLabel(190)] $INFO[Control.GetLabel(191)]</label>
-					<align>left</align>
+					<align>center</align>
 					<aligny>center</aligny>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>

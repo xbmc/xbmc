@@ -81,9 +81,8 @@
 					<left>20</left>
 					<top>5</top>
 					<width>460</width>
-					<height>90</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
+					<height>40</height>
+					<texture>dialogheader.png</texture>
 				</control>
 				<control type="label">
 					<description>header label</description>
@@ -386,9 +385,8 @@
 					<left>20</left>
 					<top>5</top>
 					<width>610</width>
-					<height>90</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
+					<height>40</height>
+					<texture>dialogheader.png</texture>
 				</control>
 				<control type="label">
 					<description>header label</description>
@@ -715,9 +713,8 @@
 					<left>20</left>
 					<top>5</top>
 					<width>610</width>
-					<height>90</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
+					<height>40</height>
+					<texture>dialogheader.png</texture>
 				</control>
 				<control type="group" id="50">
 					<include condition="StringCompare(Weather.Plugin,weather.wunderground)">Weather10DayForcast</include>
