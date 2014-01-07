@@ -147,6 +147,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "iso9660") return new CISOFile();
 #endif
   else if(strProtocol == "udf") return new CUDFFile();
+#if defined(TARGET_ANDROID)
+  else if (strProtocol == "androidapp") return new CFileAndroidApp();
+#endif
 
   if( g_application.getNetwork().IsAvailable() )
   {
@@ -197,9 +200,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "pipe") return new CPipeFile();    
 #ifdef HAS_UPNP
     else if (strProtocol == "upnp") return new CUPnPFile();
-#endif
-#if defined(TARGET_ANDROID)
-    else if (strProtocol == "androidapp") return new CFileAndroidApp();
 #endif
   }
 
