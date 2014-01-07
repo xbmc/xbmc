@@ -38,6 +38,10 @@
 #include "pvr/PVRManager.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
+/* PLEX */
+#include "PlexMediaDecisionEngine.h"
+/* END PLEX */
+
 using namespace std;
 using namespace XFILE;
 using namespace PVR;
@@ -324,14 +328,12 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
 
       /* PLEX */
       // If we're inside the library, we'll need a different path.
-      if (g_application.CurrentFileItem().IsPlexMediaServerLibrary())
+      CFileItemPtr fileItem = g_application.CurrentFileItemPtr();
+      if (fileItem)
       {
-        // Use the local path.
-        strPath = g_application.CurrentFileItem().GetProperty("localPath").asString();
-
-        // If that didn't work, just go from root. FIXME, I'm sure there is a better default. Jamie?
-        if (strPath.size() == 0)
-          strPath = "/";
+        CFileItemPtr mediaPart = CPlexMediaDecisionEngine::getMediaPart(*fileItem.get());
+        if (mediaPart && mediaPart->HasProperty("file"))
+          strPath = URIUtils::GetDirectory(mediaPart->GetProperty("file").asString());
       }
       /* END PLEX */
     }

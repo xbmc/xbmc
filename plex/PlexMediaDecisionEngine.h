@@ -25,7 +25,8 @@ class CPlexMediaDecisionEngine : public CThread
 
     bool BlockAndResolve(const CFileItem &item, CFileItem &resolvedItem);
     static void ProcessStack(const CFileItem& item, const CFileItemList& stack);
-    static CFileItemPtr getSelecteMediaItem(const CFileItem& item);
+    static CFileItemPtr getSelecteMediaItem(const CFileItem& item);  
+    static CFileItemPtr getMediaPart(const CFileItem &item, int partId = -1);
 
   private:
     virtual void Process();

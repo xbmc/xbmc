@@ -315,6 +315,26 @@ CFileItemPtr CPlexMediaDecisionEngine::getSelecteMediaItem(const CFileItem &item
   return mediaItem;
 }
 
+/* This method fetches a mediaPart from a "root" fileItem. You can specify the partId
+ * or leave blank to use the current selected or first one in the lists */
+CFileItemPtr CPlexMediaDecisionEngine::getMediaPart(const CFileItem &item, int partId)
+{
+  CFileItemPtr mediaItem = getSelecteMediaItem(item);
+  if (mediaItem && mediaItem->m_mediaParts.size() > 0)
+  {
+    if (partId == -1)
+      return mediaItem->m_mediaParts.at(0);
+
+    BOOST_FOREACH(CFileItemPtr mP, mediaItem->m_mediaParts)
+    {
+      if (mP->GetProperty("id").asInteger() == partId)
+        return mP;
+    }
+  }
+
+  return CFileItemPtr();
+}
+
 void CPlexMediaDecisionEngine::ProcessStack(const CFileItem& item, const CFileItemList &stack)
 {
   CFileItemPtr mediaItem = getSelecteMediaItem(item);
