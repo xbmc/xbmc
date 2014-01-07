@@ -1049,6 +1049,9 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       (*it)->m_limiter.SetSamplerate(outputFormat.m_sampleRate);
     }
 
+    // update buffered time of streams
+    m_stats.AddSamples(0, m_streams);
+
     // buffers for viz
     if (!AE_IS_RAW(inputFormat.m_dataFormat))
     {
