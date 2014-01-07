@@ -1,0 +1,39 @@
+From 7a82022ee2f9b1fad991ace0936901e7419444be Mon Sep 17 00:00:00 2001
+From: Ben Avison <bavison@riscosopen.org>
+Date: Mon, 5 Aug 2013 13:12:46 +0100
+Subject: [PATCH 1/3] h264_parser: Initialize the h264dsp context in the
+ parser as well
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Each AVStream struct for an H.264 elementary stream actually has two
+copies of the H264DSPContext struct (and in fact all the other members
+of H264Context as well):
+
+((H264Context *) ((AVStream *)st)->codec->priv_data)->h264dsp
+((H264Context *) ((AVStream *)st)->parser->priv_data)->h264dsp
+
+but only the first of these was actually being initialised. This
+prevented the addition of platform-specific implementations of
+parser-related functions.
+
+Signed-off-by: Martin Storsjö <martin@martin.st>
+---
+ libavcodec/h264_parser.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libavcodec/h264_parser.c b/libavcodec/h264_parser.c
+index 2ed155c..da2a5f9 100644
+--- a/libavcodec/h264_parser.c
++++ b/libavcodec/h264_parser.c
+@@ -417,6 +417,7 @@ static av_cold int init(AVCodecParserContext *s)
+     H264Context *h = s->priv_data;
+     h->thread_context[0]   = h;
+     h->slice_context_count = 1;
++    ff_h264dsp_init(&h->h264dsp, 8, 1);
+     return 0;
+ }
+
+--
+1.7.9.5

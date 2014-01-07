@@ -35,7 +35,7 @@
 
 class DllLibPlist;
 
-#define AIRPLAY_SERVER_VERSION_STR "101.28"
+#define AIRPLAY_SERVER_VERSION_STR "160.10"
 
 class CAirPlayServer : public CThread, public ANNOUNCEMENT::IAnnouncer
 {

@@ -78,6 +78,7 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
   m_nChannels     = 0;
   m_DecoderOpen   = false;
   m_bad_state     = false;
+  m_live          = false;
   m_hints_current.Clear();
 
   bool small_mem = g_RBP.GetArmMem() < 256;
@@ -573,7 +574,7 @@ bool OMXPlayerAudio::OpenDecoder()
     // we just want to get the channel count right to stop OMXAudio.cpp rejecting stream
     // the actual layout is not used
     channelMap = (1<<m_nChannels)-1;
-  bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, m_av_clock, m_hints, channelMap, m_passthrough, m_hw_decode);
+  bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, m_av_clock, m_hints, channelMap, m_passthrough, m_hw_decode, m_live);
 
   m_codec_name = "";
   m_bad_state  = !bAudioRenderOpen;

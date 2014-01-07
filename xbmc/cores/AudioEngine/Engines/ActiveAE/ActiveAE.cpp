@@ -2475,7 +2475,14 @@ void CActiveAE::ResampleSounds()
   {
     if (!(*it)->IsConverted())
     {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  uint64_t  Start = ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec;
+
       ResampleSound(*it);
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  uint64_t  End = ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec;
+  CLog::Log(LOGNOTICE, "ActiveAE::%s - resample %s took %.0fms", __FUNCTION__, (*it)->m_filename.c_str(), (End-Start)*1e-6);
       // only do one sound, then yield to main loop
       break;
     }
