@@ -263,13 +263,16 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
     }
 
     std::string location = "navigation";
-    int currentWindow = g_windowManager.GetActiveWindow();
-    if (g_application.IsPlayingFullScreenVideo())
-      location = "fullScreenVideo";
-    else if (currentWindow == WINDOW_SLIDESHOW)
-      location = "fullScreenPhoto";
-    else if (currentWindow == WINDOW_NOW_PLAYING || currentWindow == WINDOW_VISUALISATION)
-      location = "fullScreenMusic";
+    if (m_currentStates[type] != MEDIA_STATE_STOPPED)
+    {
+      int currentWindow = g_windowManager.GetActiveWindow();
+      if (g_application.IsPlayingFullScreenVideo())
+        location = "fullScreenVideo";
+      else if (currentWindow == WINDOW_SLIDESHOW)
+        location = "fullScreenPhoto";
+      else if (currentWindow == WINDOW_NOW_PLAYING || currentWindow == WINDOW_VISUALISATION)
+        location = "fullScreenMusic";
+    }
 
     options.AddOption("location", location);
 
