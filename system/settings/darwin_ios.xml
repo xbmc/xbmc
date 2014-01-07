@@ -3,9 +3,6 @@
   <section id="videos">
     <category id="videoplayer">
       <group id="2">
-        <setting id="videoplayer.hqscalers">
-          <visible>false</visible>
-        </setting>
         <setting id="videoplayer.adjustrefreshrate">
           <visible>false</visible>
         </setting>
@@ -44,6 +41,12 @@
           <visible>false</visible>
         </setting>
         <setting id="audiooutput.ac3passthrough">
+          <requirement>IsAppleTV2</requirement>
+        </setting>
+        <setting id="audiooutput.ac3transcode">
+          <requirement>IsAppleTV2</requirement>
+        </setting>
+        <setting id="audiooutput.eac3passthrough">
           <requirement>IsAppleTV2</requirement>
         </setting>
         <setting id="audiooutput.dtspassthrough">
