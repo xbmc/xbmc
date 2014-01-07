@@ -78,17 +78,16 @@
 					<texture border="10">ContentPanelMirror.png</texture>
 				</control>
 				<control type="image">
-					<left>20</left>
+					<left>8</left>
 					<top>5</top>
-					<width>460</width>
-					<height>90</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
+					<width>484</width>
+					<height>45</height>
+					<texture>dialogheader.png</texture>
 				</control>
 				<control type="label">
 					<description>header label</description>
 					<left>20</left>
-					<top>13</top>
+					<top>15</top>
 					<width>460</width>
 					<height>30</height>
 					<font>font13_title</font>
@@ -99,10 +98,10 @@
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="image">
-					<left>70</left>
-					<top>30</top>
-					<width>360</width>
-					<height>90</height>
+					<left>30</left>
+					<top>55</top>
+					<width>440</width>
+					<height>46</height>
 					<aspectratio align="center" aligny="center">keep</aspectratio>
 					<texture>$INFO[Window.Property(WeatherProviderLogo)]</texture>
 				</control>
@@ -383,17 +382,16 @@
 					<texture border="10">ContentPanelMirror.png</texture>
 				</control>
 				<control type="image">
-					<left>20</left>
+					<left>8</left>
 					<top>5</top>
-					<width>610</width>
-					<height>90</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
+					<width>634</width>
+					<height>45</height>
+					<texture>dialogheader.png</texture>
 				</control>
 				<control type="label">
 					<description>header label</description>
 					<left>20</left>
-					<top>13</top>
+					<top>15</top>
 					<width>610</width>
 					<height>30</height>
 					<font>font13_title</font>
@@ -712,12 +710,11 @@
 					<texture border="10">ContentPanelMirror.png</texture>
 				</control>
 				<control type="image">
-					<left>20</left>
+					<left>8</left>
 					<top>5</top>
-					<width>610</width>
-					<height>90</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
+					<width>634</width>
+					<height>45</height>
+					<texture>dialogheader.png</texture>
 				</control>
 				<control type="group" id="50">
 					<include condition="StringCompare(Weather.Plugin,weather.wunderground)">Weather10DayForcast</include>
