@@ -57,14 +57,6 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   const CGUIViewState *GetViewState() const;
 
-  /* PLEX */
-  void UpdateSelectedItem(const CFileItemPtr& updatedItem)
-  {
-    CFileItem* pItem = new CFileItem();
-    (*pItem) = *(updatedItem.get());
-    m_updatedItem = CFileItemPtr(pItem);
-  }
-
   virtual void CheckPlexFilters(CFileItemList& list) {};
   /* END PLEX */
 

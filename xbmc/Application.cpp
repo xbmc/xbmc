@@ -6378,15 +6378,6 @@ void CApplication::UpdateFileState(const string& aState, bool force)
   {
     if (g_plexApplication.timelineManager)
       g_plexApplication.timelineManager->ReportProgress(m_itemCurrentFile, state, GetTime() * 1000, force);
-
-    // Update the item in place.
-    CGUIMediaWindow* mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_FILES);
-    if (mediaWindow)
-      mediaWindow->UpdateSelectedItem(m_itemCurrentFile);
-
-    mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
-    if (mediaWindow)
-      mediaWindow->UpdateSelectedItem(m_itemCurrentFile);
   }
 }
 
