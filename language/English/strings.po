@@ -8097,7 +8097,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
+msgid "Synchronise channel groups with backend(s)"
 msgstr ""
 
 msgctxt "#19222"
@@ -10589,7 +10589,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21366"
-msgid "Subtitle folder"
+msgid "Custom subtitle folder"
 msgstr ""
 
 msgctxt "#21367"
@@ -11003,7 +11003,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21460"
-msgid "Subtitle location"
+msgid "Subtitle position"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11055,12 +11055,12 @@ msgstr ""
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
 msgctxt "#21600"
-msgid "Prefer external subtitles"
+msgid "Prefer downloaded subtitles"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21601"
-msgid "Prefer external subtitles to internal ones"
+msgid "Prefer downloaded subtitles to default ones"
 msgstr ""
 
 #: xbmc/Util.cpp
@@ -13675,7 +13675,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13790,7 +13790,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36228"
-msgid "Show the last viewed channel if switching to live tv."
+msgid "Continue with the last viewed channel on startup."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13820,7 +13820,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36234"
-msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgid "Duration of instant recordings when pressing the record button. Defaults to 120 minutes."
 msgstr ""
 
 #: system/settings/settings.xml
