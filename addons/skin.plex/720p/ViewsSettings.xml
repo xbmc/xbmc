@@ -92,7 +92,7 @@
 			</control>
 			<control type="button" id="10">
 				<width>300</width>
-				<font>CondensedBold-18</font>
+				<font>Bold-18</font>
 				<textoffsetx>20</textoffsetx>
 				<animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
 			</control>

@@ -37,14 +37,14 @@
 		</control>
 	</include>
 	<include name="ChannelLabel">
-		<posy>182</posy>
+		<posy>185</posy>
 		<posx>20</posx>
 		<width>150</width>
 		<height>20</height>
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
-		<font>Condensed-16</font>
+		<font>Regular-16</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<include name="ChannelServer">
@@ -56,7 +56,7 @@
 			<align>left</align>
 			<aligny>center</aligny>
 			<label>$INFO[ListItem.Property(serverName)]</label>
-			<font>Condensed-13</font>
+			<font>Regular-13</font>
 			<textcolor>FF999999</textcolor>
 			<shadowcolor>FF222222</shadowcolor>
 		</control>

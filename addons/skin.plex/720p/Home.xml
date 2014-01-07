@@ -2,6 +2,7 @@
 <window id="0">
 	<defaultcontrol always="true">300</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<onload>Skin.SetString(AspectRatio,$INFO[Skin.AspectRatio])</onload>
 	<controls>
 		<include>BGGrainy</include>
 		<include>SlideshowHome</include>

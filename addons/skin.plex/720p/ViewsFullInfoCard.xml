@@ -47,7 +47,7 @@
 		<value condition="Container.Content(songs) | [Container.Content(channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Title]$INFO[ListItem.DurationStr, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 	</variable>
 	<variable name="ListItemFullInfoThirdTitle">
-	<value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(ServerName)]</value>
+	    <value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(ServerName)]</value>
 		<value condition="ListItem.Type(episode) + !Container.Content(episodes) + !Container.Content(channel)">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(episode) + Container.Content(episodes)">$INFO[ListItem.DurationStr]$INFO[ListItem.Date, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(episode) + [Container.Content(episodes) | Container.Content(channel)]">$INFO[ListItem.Date]</value>
@@ -65,7 +65,7 @@
 	</variable>
 	<include name="ListItemUnwatchedCount">
 		<control type="grouplist">
-			<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+			<visible>[Container.Content(tvshows) | Container.Content(seasons)]</visible>
 			<width>310</width>
 			<height>20</height>
 			<align>left</align>
@@ -76,7 +76,7 @@
 				<width min="10" max="150">auto</width>
 				<height>20</height>
 				<label>$INFO[ListItem.DurationStr]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<scroll>false</scroll>
 				<textcolor>FFefedeb</textcolor>
 				<wrapmultiline>false</wrapmultiline>
@@ -87,7 +87,7 @@
 				<width min="10" max="150">auto</width>
 				<height>20</height>
 				<label>$INFO[ListItem.Label]</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<scroll>false</scroll>
 				<textcolor>FFefedeb</textcolor>
 				<wrapmultiline>false</wrapmultiline>
@@ -98,27 +98,30 @@
 				<width min="0" max="20">auto</width>
 				<height>20</height>
 				<label>&#xB7;</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<scroll>false</scroll>
 				<textcolor>orange</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<shadowcolor>ff222222</shadowcolor>
+				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 			</control>
 			<control type="image">
 				<height>20</height>
 				<width min="1" max="18">auto</width>
 				<texture>OverlayUnwatched.png</texture>
 				<aspectratio>keep</aspectratio>
+				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 			</control>
 			<control type="label">
 				<width min="10" max="50">auto</width>
 				<height>20</height>
 				<label>$INFO[ListItem.Property(UnwatchedEpisodes)]</label>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<scroll>false</scroll>
 				<textcolor>FFefedeb</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<shadowcolor>ff222222</shadowcolor>
+				<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
 			</control>
 		</control>
 	</include>
@@ -163,6 +166,18 @@
 	</include>
 	<include name="ListItemFullInfoLeftSlide">
 		<animation effect="slide" start="0" end="-74" time="400" condition="Container.Content(seasons) | [Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))] | [Container.Content(albums) + IsEmpty(Container.Property(primaryFilterActivated))] | Container.Content(songs) | Container.Content(channels) | Container.Content(channel) | Window.IsActive(mysharedcontent)">Conditional</animation>
+	</include>
+	<include name="ListItemFullInfoThumbCardUnwatchedOverlay">
+		<control type="group">
+			<control type="image">
+				<posy>206</posy>
+				<posx>370</posx>
+				<width>30</width>
+				<height>30</height>
+				<info>ListItem.Overlay</info>
+			</control>
+			<visible>[Container.Content(movies) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | [Container.Content(seasons) + [ListItem.Status(Unwatched) | ListItem.Status(InProgress)] + !Skin.HasSetting(HideUnwatchedIconsTVShows)] | Container.Content(episodes)</visible>
+		</control>
 	</include>
 	<!-- Card -->
 	<include name="ListItemFullInfo">
@@ -233,7 +248,7 @@
 								<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 								<visible>!IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(homemovies) + !Container.Content(photos) + !Container.Content(artists) | [Container.Content(channel) + !ListItem.Type(photo)] + [Container.Content(channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
 							</control>
-								<control type="image">
+							<control type="image">
 									<posy>30</posy>
 									<posx>20</posx>
 									<width>390</width>
@@ -243,25 +258,19 @@
 									<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<visible>IsEmpty(ListItem.Property(Fanart_Image)) | Container.Content(homemovies) | Container.Content(photos) | Container.Content(artists) | [Container.Content(channel) + ListItem.Type(photo)] | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
 								</control>
-							<control type="image">
-								<posx>367</posx>
-								<posy>210</posy>
-								<width>30</width>
-								<height>30</height>
-								<texture>$INFO[ListItem.Overlay]</texture>
-							</control>
+							<include>ListItemFullInfoThumbCardUnwatchedOverlay</include>
 						</control>
 					</control>
 					<!-- infos -->
 					<control type="group">
-						<posy>230</posy>
+						<posy>231</posy>
 						<posx>22</posx>
 						<include>ListItemUnwatchedCount</include>
 						<control type="label">
 							<width>340</width>
 							<align>left</align>
 							<label>$VAR[ListItemFullInfoTitle]</label>
-							<font>CondensedBold-16</font>
+							<font>Bold-16</font>
 							<scroll>true</scroll>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -271,7 +280,7 @@
 							<posy>42</posy>
 							<align>left</align>
 							<label>$VAR[ListItemFullInfoSecondTitle]</label>
-							<font>CondensedBold-16</font>
+							<font>Bold-16</font>
 							<scroll>false</scroll>
 							<textcolor>FFefedeb</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -282,7 +291,7 @@
 							<posy>72</posy>
 							<align>left</align>
 							<label>$VAR[ListItemFullInfoThirdTitle]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<scroll>false</scroll>
 							<textcolor>FF888888</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -670,13 +679,13 @@
 					</control>
 					<!-- infos -->
 					<control type="group">
-						<posy>230</posy>
+						<posy>231</posy>
 						<posx>22</posx>
 						<control type="label">
 							<width>300</width>
 							<align>left</align>
 							<label>$VAR[HomeListItemFullInfoTitle]</label>
-							<font>CondensedBold-16</font>
+							<font>Bold-16</font>
 							<scroll>true</scroll>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -686,7 +695,7 @@
 							<posy>42</posy>
 							<align>left</align>
 							<label>$VAR[HomeListItemFullInfoSecondTitle]</label>
-							<font>CondensedBold-16</font>
+							<font>Bold-16</font>
 							<scroll>false</scroll>
 							<textcolor>FFefedeb</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -697,7 +706,7 @@
 							<posy>72</posy>
 							<align>left</align>
 							<label>$VAR[HomeListItemFullInfoThirdTitle]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<scroll>false</scroll>
 							<textcolor>FF888888</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -753,7 +762,7 @@
 					<label>$INFO[Container(300).ListItem(0).Label]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>CondensedBold-28</font>
+					<font>Bold-28</font>
 					<textcolor>orange</textcolor>
 					<animation effect="fade" end="70" time="0" condition="true">Conditional</animation>
 				</control>
@@ -765,7 +774,7 @@
 					<label>$INFO[Container(300).ListItem(0).Label2]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>CondensedBold-16</font>
+					<font>Bold-16</font>
 					<textcolor>white</textcolor>
 					<visible>!IsEmpty(Container(300).ListItem(0).Label2)</visible>
 					<animation effect="fade" start="50" end="50" time="0" condition="true">Conditional</animation>
@@ -934,7 +943,7 @@
 							<width>285</width>
 							<align>left</align>
 							<label>$VAR[SearchItemFullInfoTitle]</label>
-							<font>CondensedBold-22</font>
+							<font>Bold-22</font>
 							<scroll>true</scroll>
 							<textcolor>orangeLight</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -944,7 +953,7 @@
 							<posy>35</posy>
 							<align>left</align>
 							<label>$VAR[SearchItemFullInfoSecondTitle]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<scroll>false</scroll>
 							<textcolor>FF888888</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -955,7 +964,7 @@
 							<posy>55</posy>
 							<align>left</align>
 							<label>$VAR[SearchItemFullInfoThirdTitle]</label>
-							<font>Condensed-16</font>
+							<font>Regular-16</font>
 							<scroll>false</scroll>
 							<textcolor>FF888888</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -966,7 +975,7 @@
 							<posy>95</posy>
 							<align>left</align>
 							<label>$VAR[SearchItemFullInfoSource]</label>
-							<font>Condensed-14</font>
+							<font>Regular-14</font>
 							<scroll>false</scroll>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>

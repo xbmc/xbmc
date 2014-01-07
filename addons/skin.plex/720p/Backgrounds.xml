@@ -114,7 +114,7 @@
 			<aligny>center</aligny>
 			<height>60</height>
 			<label>The list is empty</label>
-			<font>CondensedBold-52</font>
+			<font>Bold-52</font>
 			<textcolor>orangeLight</textcolor>
 			<shadowcolor>FF222222</shadowcolor>
 			<visible>Container.Content(empty)</visible>

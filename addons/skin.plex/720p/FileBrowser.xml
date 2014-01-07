@@ -123,7 +123,7 @@
 					<posy>420</posy>
 					<posx>30</posx>
 					<width>560</width>
-					<font>CondensedBold-17</font>
+					<font>Bold-17</font>
 					<textcolor>orangeLight</textcolor>
 					<align>left</align>
 					<label>-</label>
