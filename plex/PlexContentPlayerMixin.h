@@ -166,6 +166,8 @@ class PlexContentPlayerMixin
     {
       CFileItemPtr rFile = file;
 
+      g_playlistPlayer.Clear();
+
       if (type == PLEX_DIR_TYPE_SHOW)
       {
         CFileItemPtr season = GetNextUnwatched(file->GetPath());
