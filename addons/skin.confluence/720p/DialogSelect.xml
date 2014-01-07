@@ -193,7 +193,7 @@
 					<left>90</left>
 					<top>0</top>
 					<width>450</width>
-					<height>30</height>
+					<height>60</height>
 					<font>font13</font>
 					<textcolor>grey</textcolor>
 					<selectedcolor>selected</selectedcolor>
@@ -245,7 +245,7 @@
 					<left>90</left>
 					<top>0</top>
 					<width>450</width>
-					<height>30</height>
+					<height>60</height>
 					<font>font13</font>
 					<textcolor>white</textcolor>
 					<selectedcolor>selected</selectedcolor>
