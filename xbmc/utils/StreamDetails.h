@@ -129,9 +129,6 @@ public:
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value) const;
 
-  // Language to use for "best" subtitle stream
-  CStdString m_strLanguage;
-
 private:
   CStreamDetail *NewStream(CStreamDetail::StreamType type);
   std::vector<CStreamDetail *> m_vecItems;
