@@ -60,7 +60,7 @@
 			<width>640</width>
 			<align>center</align>
 			<label>35004</label>
-			<font>Condensed-18</font>
+			<font>Regular-18</font>
 		</control>
 		<control type="grouplist" id="5">
 			<description>control area</description>

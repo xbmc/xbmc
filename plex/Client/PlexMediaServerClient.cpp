@@ -169,7 +169,17 @@ void CPlexMediaServerClient::SetViewMode(CFileItemPtr item, int viewMode, int so
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::StopTranscodeSession(CPlexServerPtr server)
 {
-  AddJob(new CPlexMediaServerClientJob(CPlexTranscoderClient::GetTranscodeStopURL(server)));
+  CURL u = server->BuildPlexURL("/video/:/transcode/universal/stop");
+  u.SetOption("session", CPlexTranscoderClient::GetCurrentSession());
+  AddJob(new CPlexMediaServerClientJob(u));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::SendTranscoderPing(CPlexServerPtr server)
+{
+  CURL u = server->BuildPlexURL("/video/:/transcode/universal/ping");
+  u.SetOption("session", CPlexTranscoderClient::GetCurrentSession());
+  AddJob(new CPlexMediaServerClientJob(u));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

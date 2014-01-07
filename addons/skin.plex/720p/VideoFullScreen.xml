@@ -23,7 +23,7 @@
 				<height>30</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>Condensed-18</font>
+				<font>Regular-18</font>
 				<label>-</label>
 			</control>
 			<control type="label" id="11">
@@ -34,7 +34,7 @@
 				<height>30</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>Condensed-18</font>
+				<font>Regular-18</font>
 				<label>-</label>
 			</control>
 			<control type="label" id="12">
@@ -45,7 +45,7 @@
 				<height>30</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>Condensed-18</font>
+				<font>Regular-18</font>
 				<label>-</label>
 			</control>
 		</control>

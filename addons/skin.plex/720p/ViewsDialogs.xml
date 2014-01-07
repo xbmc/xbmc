@@ -41,14 +41,14 @@
 	<include name="DialogPressButton">
 		<height>50</height>
 		<align>center</align>
-		<font>CondensedBold-18</font>
+		<font>Bold-18</font>
 		<focusedcolor>FFFFFFFF</focusedcolor>
 		<texturefocus border="12">orange-rounded.png</texturefocus>
 		<texturenofocus border="12">base-rounded-5%.png</texturenofocus>
 	</include>
 	<include name="DialogHeading">
 		<align>center</align>
-		<font>Condensed-24</font>
+		<font>Regular-24</font>
 		<textcolor>white</textcolor>
 	</include>
 	<!-- variables to modify the position/appearance of the audio/subs selection window -->
@@ -146,7 +146,7 @@
 					<width>580</width>
 					<height>40</height>
 					<align>center</align>
-					<font>Condensed-24</font>
+					<font>Regular-24</font>
 					<textcolor>Focused</textcolor>
 				</control>
 				<control type="group">
@@ -257,7 +257,7 @@
 					<width>480</width>
 					<height>40</height>
 					<align>center</align>
-					<font>Condensed-24</font>
+					<font>Regular-24</font>
 					<textcolor>Focused</textcolor>
 				</control>
 				<control type="group">
@@ -368,7 +368,7 @@
 						<height>30</height>
 						<description>Heading</description>
 						<width min="29" max="220">auto</width>
-						<font>Condensed-24</font>
+						<font>Regular-24</font>
 						<textcolor>white</textcolor>
 					</control>
 				</control>
@@ -874,7 +874,7 @@
 					<width>300</width>
 					<height>40</height>
 					<align>center</align>
-					<font>Condensed-24</font>
+					<font>Regular-24</font>
 					<textcolor>Focused</textcolor>
 				</control>
 			</control>
@@ -1052,12 +1052,12 @@
 		</control>
 	</include>
 	<include name="KeyboardFont">
-		<font>Condensed-16</font>
+		<font>Regular-16</font>
 		<align>center</align>
 		<aligny>center</aligny>
 	</include>
 	<include name="KeyboardButton">
-		<font>Condensed-18</font>
+		<font>Regular-18</font>
 		<align>center</align>
 		<aligny>center</aligny>
 		<width>60</width>
@@ -1066,7 +1066,7 @@
 		<texturenofocus>black.png</texturenofocus>
 	</include>
 	<include name="KeyboardButtonFaded">
-		<font>Condensed-18</font>
+		<font>Regular-18</font>
 		<align>center</align>
 		<aligny>center</aligny>
 		<width>60</width>
@@ -1079,7 +1079,7 @@
 		<height>50</height>
 	</include>
 	<include name="KeyboardButtonBig">
-		<font>Condensed-24</font>
+		<font>Regular-24</font>
 		<align>center</align>
 		<aligny>center</aligny>
 		<width>60</width>
@@ -1088,7 +1088,7 @@
 		<texturenofocus>black.png</texturenofocus>
 	</include>
 	<include name="KeyboardButtonBigFaded">
-		<font>Condensed-24</font>
+		<font>Regular-24</font>
 		<align>center</align>
 		<aligny>center</aligny>
 		<width>60</width>
@@ -1100,7 +1100,7 @@
 		<animation effect="fade" start="100" end="30" time="300" condition="Window.IsActive(109)">Conditional</animation>
 	</include>
 	<include name="KeyboardButtonLighter">
-		<font>Condensed-18</font>
+		<font>Regular-18</font>
 		<align>center</align>
 		<aligny>center</aligny>
 		<width>60</width>
@@ -1109,7 +1109,7 @@
 		<texturenofocus>darkgrey.png</texturenofocus>
 	</include>
 	<include name="KeyboardButtonLighterNumeric">
-		<font>Condensed-18</font>
+		<font>Regular-18</font>
 		<align>center</align>
 		<aligny>center</aligny>
 		<width>60</width>

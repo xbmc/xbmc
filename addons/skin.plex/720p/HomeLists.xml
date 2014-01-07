@@ -34,8 +34,9 @@
 		<animation effect="fade" start="0" end="40" time="300" condition="true">Conditional</animation>
 	</include>
 	<include name="ListTitle">
+		<posy>2</posy>
 		<posx>855</posx>
-		<font>CondensedBold-16</font>
+		<font>Bold-16</font>
 		<textcolor>orange</textcolor>
 		<shadowcolor>FF222222</shadowcolor>
 		<width>350</width>
@@ -59,7 +60,7 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<scroll>false</scroll>
-		<font>Condensed-14</font>
+		<font>Regular-14</font>
 		<wrapmultiline>false</wrapmultiline>
 		<shadowcolor>FF222222</shadowcolor>
 	</include>
@@ -69,7 +70,7 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<scroll>false</scroll>
-		<font>Condensed-14</font>
+		<font>Regular-14</font>
 		<wrapmultiline>false</wrapmultiline>
 		<shadowcolor>FF222222</shadowcolor>
 	</include>
@@ -174,7 +175,7 @@
 	<include name="ListItemPosterTitleTV2">
 		<control type="group">
 			<visible>ListItem.Type(episode)</visible>
-			<posy>214</posy>
+			<posy>216</posy>
 			<posx>95</posx>
 			<control type="label">
 				<width>110</width>
@@ -182,7 +183,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>S$INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] E$INFO[ListItem.Episode]</label>
-				<font>CondensedBold-14</font>
+				<font>Bold-14</font>
 				<textcolor>white</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
@@ -194,7 +195,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.Date]</label>
-				<font>CondensedBold-14</font>
+				<font>Bold-14</font>
 				<textcolor>white</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<visible>[IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
@@ -205,7 +206,7 @@
 	<include name="ListItemPosterTitleTV3">
 		<control type="group">
 			<visible>ListItem.Type(season)</visible>
-			<posy>214</posy>
+			<posy>216</posy>
 			<posx>95</posx>
 			<control type="label">
 				<width>110</width>
@@ -213,7 +214,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$LOCALIZE[31141] $INFO[ListItem.Season]</label>
-				<font>CondensedBold-14</font>
+				<font>Bold-14</font>
 				<textcolor>white</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
@@ -225,7 +226,7 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.Date]</label>
-				<font>CondensedBold-14</font>
+				<font>Bold-14</font>
 				<textcolor>white</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<visible>[IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
@@ -320,21 +321,21 @@
 	</include>
 	<include name="ListItemSquareTitle">
 		<control type="label">
-			<posy>212</posy>
+			<posy>214</posy>
 			<include>ListItemTitle1</include>
 			<label>$INFO[ListItem.Title]</label>
 		</control>
 	</include>
 	<include name="ListItemSquareTitleAlbum">
 		<control type="label">
-			<posy>212</posy>
+			<posy>213</posy>
 			<include>ListItemTitle1</include>
 			<label>$INFO[ListItem.Album]</label>
 		</control>
 	</include>
 	<include name="ListItemSquareTitleArtist">
 		<control type="label">
-			<posy>187</posy>
+			<posy>189</posy>
 			<include>ListItemTitle1</include>
 			<label>$INFO[ListItem.Artist]</label>
 		</control>
