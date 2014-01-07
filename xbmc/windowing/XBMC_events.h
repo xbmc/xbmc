@@ -68,6 +68,7 @@ typedef enum {
        XBMC_VIDEOEXPOSE,        /* Screen needs to be redrawn */
        XBMC_APPCOMMAND,         /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
        XBMC_TOUCH,
+       XBMC_SETFOCUS,
        XBMC_USEREVENT,
 
        XBMC_MAXEVENT = 256      /* XBMC_EventType is represented as uchar */
@@ -204,6 +205,12 @@ typedef struct XBMC_TouchEvent {
   int pointers;         /* number of touch pointers */
 } XBMC_TouchEvent;
 
+typedef struct XBMC_SetFocusEvent {
+	unsigned char type;	/* XBMC_SETFOCUS */
+	int x;		/* x position */
+	int y;		/* y position */
+} XBMC_SetFocusEvent;
+
 /* General event structure */
 typedef union XBMC_Event {
   unsigned char type;
@@ -223,6 +230,7 @@ typedef union XBMC_Event {
   XBMC_SysWMEvent syswm;
   XBMC_AppCommandEvent appcommand;
   XBMC_TouchEvent touch;
+  XBMC_SetFocusEvent focus;
 } XBMC_Event;
 
 #endif /* _XBMC_events_h */
