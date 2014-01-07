@@ -112,7 +112,8 @@ BreakpadScope::BreakpadScope(const std::string& processName)
 , m_eh(new google_breakpad::ExceptionHandler(*m_descriptor, NULL, BreakPad_MinidumpCallback, (void*)m_processName.c_str(), true, -1))
 #endif
 #ifdef _WIN32
-: m_eh(new google_breakpad::ExceptionHandler(utf8to16(PlexUtils::GetPlexCrashPath().c_str()).c_str(), NULL, BreakPad_MinidumpCallback, NULL, google_breakpad::ExceptionHandler::HANDLER_ALL))
+: m_eh(new google_breakpad::ExceptionHandler(utf8to16(PlexUtils::GetPlexCrashPath().c_str()).c_str(), NULL, BreakPad_MinidumpCallback, NULL,
+                                             google_breakpad::ExceptionHandler::HANDLER_EXCEPTION | google_breakpad::ExceptionHandler::HANDLER_PURECALL))
 #endif
 #ifdef __APPLE__
 : m_processName(processName)
