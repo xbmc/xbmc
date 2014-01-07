@@ -325,7 +325,7 @@ CFileItemPtr PlexUtils::GetSelectedStreamOfType(CFileItemPtr mediaPart, int stre
   BOOST_FOREACH(CFileItemPtr stream, mediaPart->m_mediaPartStreams)
   {
     int64_t _streamType = stream->GetProperty("streamType").asInteger();
-    bool selected = stream->IsSelected();
+    bool selected = (stream->IsSelected() || streamType == PLEX_STREAM_VIDEO);
     if (_streamType == streamType && selected)
       return stream;
   }

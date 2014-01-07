@@ -4257,6 +4257,21 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
       if (!m_itemCurrentFile->IsStack())
         *m_itemCurrentFile = newItem;
     }
+
+    /* let's set some options if we need to */
+    CFileItemPtr mediaPart = CPlexMediaDecisionEngine::getMediaPart(newItem);
+    if (mediaPart)
+    {
+      CFileItemPtr videoStream = PlexUtils::GetSelectedStreamOfType(mediaPart, PLEX_STREAM_VIDEO);
+      if (videoStream)
+      {
+        if (videoStream->GetProperty("scanType").asString() == "interlaced")
+        {
+          CLog::Log(LOGDEBUG, "CApplication::PlayFile interlaced video found, switching player options to de-interlacing");
+          g_settings.m_currentVideoSettings.m_DeinterlaceMode = VS_DEINTERLACEMODE_FORCE;
+        }
+      }
+    }
   }
   /* END PLEX */
 
