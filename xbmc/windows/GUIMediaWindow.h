@@ -57,6 +57,7 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   const CGUIViewState *GetViewState() const;
 
+  /* PLEX */
   virtual void CheckPlexFilters(CFileItemList& list) {};
   /* END PLEX */
 
