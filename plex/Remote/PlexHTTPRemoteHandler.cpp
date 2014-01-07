@@ -781,13 +781,13 @@ void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
   if (arguments.find("subtitleStreamID") != arguments.end())
   {
     int subStreamID = boost::lexical_cast<int>(arguments.find("subtitleStreamID")->second);
-    bool visible = subStreamID != -1;
+    bool visible = subStreamID != 0;
 
-    if (subStreamID == -1)
+    if (subStreamID == 0)
     {
       stream = CFileItemPtr(new CFileItem);
       stream->SetProperty("streamType", PLEX_STREAM_SUBTITLE);
-      stream->SetProperty("id", -1);
+      stream->SetProperty("id", 0);
     }
     else
     {
