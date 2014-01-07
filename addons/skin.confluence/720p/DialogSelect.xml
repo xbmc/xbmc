@@ -10,7 +10,7 @@
 	<include>dialogeffect</include>
 	<controls>
 		<control type="group">
-			<visible>Control.IsVisible(6) | [Control.IsVisible(3) + Control.IsVisible(5)]</visible>
+			<visible>Control.IsVisible(5)</visible>
 			<control type="image">
 				<description>background image</description>
 				<left>0</left>
@@ -43,7 +43,7 @@
 		</control>
 		<control type="group">
 			<left>120</left>
-			<visible>Control.IsVisible(3) + !Control.IsVisible(5)</visible>
+			<visible>!Control.IsVisible(5)</visible>
 			<control type="image">
 				<description>background image</description>
 				<left>0</left>
@@ -89,7 +89,7 @@
 			<onright>10</onright>
 			<onup>10</onup>
 			<ondown>10</ondown>
-			<animation effect="slide" end="-120,0" time="0" condition="Control.IsVisible(3) + !Control.IsVisible(5)">Conditional</animation>
+			<animation effect="slide" end="-120,0" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
 		<control type="list" id="3">
@@ -104,7 +104,7 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
-			<animation effect="slide" end="120,0" time="0" condition="Control.IsVisible(3) + !Control.IsVisible(5)">Conditional</animation>
+			<animation effect="slide" end="120,0" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
 			<itemlayout height="46" width="550">
 				<control type="image">
 					<left>0</left>
@@ -171,6 +171,7 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
+			<animation effect="slide" end="120,0" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
 			<itemlayout height="85" width="550">
 				<control type="image">
 					<left>0</left>
@@ -281,7 +282,7 @@
 			<onup>61</onup>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
-			<animation effect="slide" end="120,0" time="0" condition="Control.IsVisible(3) + !Control.IsVisible(5)">Conditional</animation>
+			<animation effect="slide" end="120,0" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
 		</control>
 		<control type="label">
 			<description>number of files/pages in list text label</description>
@@ -311,6 +312,7 @@
 			<textcolor>grey</textcolor>
 			<label>([COLOR=blue]$INFO[Container(6).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages][/COLOR])</label>
 			<wrapmultiline>true</wrapmultiline>
+			<animation effect="slide" end="-120,30" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
 			<visible>Control.IsVisible(6)</visible>
 		</control>
 		<control type="button" id="5">
@@ -330,7 +332,7 @@
 		<control type="group">
 			<left>610</left>
 			<top>320</top>
-			<visible>Control.IsVisible(6)</visible>
+			<visible>Control.IsVisible(6) + Control.IsVisible(5)</visible>
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
