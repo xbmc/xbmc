@@ -535,7 +535,9 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     g_application.WakeUpScreenSaverAndDPMS();
 
     g_application.ResetSystemIdleTimer();
-    g_audioManager.PlayActionSound(actionId);
+
+    if (!g_application.IsPlaying())
+      g_audioManager.PlayActionSound(actionId);
 
     CApplicationMessenger::Get().SendAction(actionId, WINDOW_INVALID, false);
 
