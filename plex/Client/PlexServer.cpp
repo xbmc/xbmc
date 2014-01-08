@@ -22,6 +22,14 @@ void
 CPlexServerConnTestThread::Process()
 {
   CPlexTimer t;
+
+  if (!m_conn->IsLocal())
+  {
+    // Delay for 50 ms to make sure we select a local connection first if possible
+    CLog::Log(LOGDEBUG, "CPlexServerConnTestThread::Process delaying 50ms for connection %s", m_conn->toString().c_str());
+    Sleep(50);
+  }
+
   CPlexConnection::ConnectionState state = m_conn->TestReachability(m_server);
 
   if (state == CPlexConnection::CONNECTION_STATE_REACHABLE)
@@ -151,8 +159,8 @@ CPlexServer::MarkUpdateFinished(int connType)
 bool
 ConnectionSortFunction(CPlexConnectionPtr c1, CPlexConnectionPtr c2)
 {
-  if (c1->IsLocal() && !c2->IsLocal()) return false;
-  if (!c1->IsLocal() && c2->IsLocal()) return true;
+  if (c1->IsLocal() && !c2->IsLocal()) return true;
+  if (!c1->IsLocal() && c2->IsLocal()) return false;
   return c1->GetAddress().Get() < c2->GetAddress().Get();
 }
 
