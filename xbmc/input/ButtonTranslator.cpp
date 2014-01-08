@@ -238,9 +238,11 @@ static const ActionMapping actions[] =
         {"mousemove"         , ACTION_MOUSE_MOVE},
   
         /* PLEX */
-        {"markaswatched"     , ACTION_MARK_AS_WATCHED},
-        {"markasunwatched"   , ACTION_MARK_AS_UNWATCHED},
-        {"clearfilters"      , ACTION_CLEAR_FILTERS},
+        {"markaswatched"        , ACTION_MARK_AS_WATCHED},
+        {"markasunwatched"      , ACTION_MARK_AS_UNWATCHED},
+        {"clearfilters"         , ACTION_CLEAR_FILTERS},
+        {"cycleprimaryfilter"   , ACTION_PLEX_CYCLE_PRIMARY_FILTER},
+        {"toggleunwatchedfilter", ACTION_PLEX_TOGGLE_UNWATCHED_FILTER},
         /* END PLEX */
 
         // Do nothing action

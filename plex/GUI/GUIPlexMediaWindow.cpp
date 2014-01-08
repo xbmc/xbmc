@@ -389,25 +389,81 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.GetID() == ACTION_CLEAR_FILTERS)
+  else if (action.GetID() == ACTION_CLEAR_FILTERS ||
+           action.GetID() == ACTION_PLEX_TOGGLE_UNWATCHED_FILTER ||
+           action.GetID() == ACTION_PLEX_CYCLE_PRIMARY_FILTER)
   {
     CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
     if (sectionFilter)
     {
-      sectionFilter->clearFilters();
-      updateFilterButtons(sectionFilter, true, !sectionFilter->secondaryFiltersActivated());
+      if (action.GetID() == ACTION_CLEAR_FILTERS)
+      {
+        sectionFilter->clearFilters();
+        updateFilterButtons(sectionFilter, true, !sectionFilter->secondaryFiltersActivated());
 
-      /* set focus to the next filter */
-      CGUIControl* ctrl = (CGUIControl*)GetControl(FILTER_SECONDARY_BUTTONS_START);
-      if (ctrl)
-        ctrl->SetFocus(true);
+        /* set focus to the next filter */
+        CGUIControl* ctrl = (CGUIControl*)GetControl(FILTER_SECONDARY_BUTTONS_START);
+        if (ctrl)
+          ctrl->SetFocus(true);
 
-      m_clearFilterButton->SetFocus(false);
-      m_clearFilterButton->SetVisible(false);
+        m_clearFilterButton->SetFocus(false);
+        m_clearFilterButton->SetVisible(false);
 
-      g_plexApplication.filterManager->saveFiltersToDisk();
-      Update(m_sectionRoot.Get(), false, true);
-      return true;
+        g_plexApplication.filterManager->saveFiltersToDisk();
+        Update(m_sectionRoot.Get(), false, true);
+        return true;
+      }
+      else if (action.GetID() == ACTION_PLEX_CYCLE_PRIMARY_FILTER)
+      {
+        PlexStringPairVector vec = sectionFilter->getPrimaryFilters();
+        CStdString curr = sectionFilter->currentPrimaryFilter();
+        int idx = 0;
+
+        BOOST_FOREACH(PlexStringPair p, vec)
+        {
+          if (p.first == curr)
+          {
+            if (idx + 1 < vec.size())
+              idx ++;
+            else
+              idx = 0;
+            break;
+          }
+          idx ++;
+        }
+
+        OnFilterButton(FILTER_PRIMARY_BUTTONS_START + idx);
+        std::string filterName = vec.at(idx).second;
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Switched primary filter to: ", filterName, 3000, false);
+      }
+      else if (action.GetID() == ACTION_PLEX_TOGGLE_UNWATCHED_FILTER)
+      {
+        if (sectionFilter->currentPrimaryFilter() == "all")
+        {
+          std::vector<CPlexSecondaryFilterPtr> secFilters = sectionFilter->getSecondaryFilters();
+
+          int i = 0;
+          bool found = false;
+          bool enabled;
+
+          BOOST_FOREACH(CPlexSecondaryFilterPtr p, secFilters)
+          {
+            if (p->getFilterName() == "unwatched")
+            {
+              found = true;
+              enabled = !p->isSelected();
+              break;
+            }
+            i ++;
+          }
+
+          if (found)
+          {
+            OnFilterButton(FILTER_SECONDARY_BUTTONS_START + i);
+            CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Filter unwatched", enabled ? "Enabled" : "Disabled", 3000, false);
+          }
+        }
+      }
     }
   }
   else if (action.GetID() == ACTION_TOGGLE_WATCHED)

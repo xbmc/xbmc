@@ -39,7 +39,6 @@
     <keyboard>
       <p>Play</p>
       <q>Queue</q>
-      <f>ClearFilters</f>
       <r>Rewind</r>
       <left>Left</left>
       <right>Right</right>
@@ -468,7 +467,9 @@
       <delete>Delete</delete>
       <space>Playlist</space>
       <w>ToggleWatched</w>
-      <f>ClearFilters</f>
+      <f>CyclePrimaryFilter</f>
+      <f mod="ctrl">ClearFilters</f>
+      <u>ToggleUnwatchedFilter</u>
     </keyboard>
   </MyVideoLibrary>
   <MyVideoFiles>
@@ -619,7 +620,9 @@
 	</NowPlaying>
 
   <FilterDialog>
-    <f>ClearFilters</f>
+    <f>CyclePrimaryFilter</f>
+    <f mod="ctrl">ClearFilters</f>
+    <u>ToggleUnwatchedFilter</u>
   </FilterDialog>
   <PlexSearch>
     <keyboard>
