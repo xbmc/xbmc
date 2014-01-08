@@ -483,6 +483,35 @@ int CSysInfo::GetKernelBitness(void)
 #endif
 }
 
+std::string CSysInfo::GetKernelCpuFamily(void)
+{
+#ifdef TARGET_WINDOWS
+  SYSTEM_INFO si;
+  GetSystemInfo(&si);
+  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL ||
+      si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+    return "x86";
+
+  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+    return "ARM";
+#elif defined(TARGET_POSIX)
+  struct utsname un;
+  if (uname(&un) == 0)
+  {
+    std::string machine(un.machine);
+    if (machine.compare(0, 3, "arm", 3) == 0)
+      return "ARM";
+    if (machine.compare(0, 4, "mips", 4) == 0)
+      return "MIPS";
+    if (machine.compare(0, 4, "i686", 4) == 0 || machine == "i386" || machine == "amd64" ||  machine.compare(0, 3, "x86", 3) == 0)
+      return "x86";
+    if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
+      return "PowerPC";
+  }
+#endif
+  return "unknown CPU family";
+}
+
 int CSysInfo::GetXbmcBitness(void)
 {
 #if defined (__aarch64__) || defined(__arm64__) || defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || \
@@ -561,6 +590,8 @@ CStdString CSysInfo::GetKernelVersion()
       }
     }
 
+    strKernel.append(" ");
+    strKernel.append(GetKernelCpuFamily());
     strKernel.append(StringUtils::Format(" %d-bit", GetKernelBitness()));
 
     strKernel.append(StringUtils::Format(", build %d", osvi.dwBuildNumber));

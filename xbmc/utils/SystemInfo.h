@@ -123,6 +123,7 @@ public:
   static WindowsVersion GetWindowsVersion();
   static int GetKernelBitness(void);
   static int GetXbmcBitness(void);
+  static std::string GetKernelCpuFamily(void);
   static CStdString GetKernelVersion();
   CStdString GetCPUModel();
   CStdString GetCPUBogoMips();
