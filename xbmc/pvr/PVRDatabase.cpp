@@ -598,7 +598,7 @@ bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const 
 
       Filter filter;
       filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
-      filter.AppendWhere(PrepareSQL("AND idChannel IN (%s)", strChannelsToDelete.c_str()));
+      filter.AppendWhere(PrepareSQL("idChannel IN (%s)", strChannelsToDelete.c_str()));
 
       bDelete = DeleteValues("map_channelgroups_channels", filter) && bDelete;
     }
