@@ -119,7 +119,9 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
       dirty = true;
 
       if (CRssManager::Get().GetReader(GetID(), GetParentID(), this, m_pReader))
-        m_scrollInfo.characterPos = m_pReader->m_SavedScrollPos;
+      {
+        m_scrollInfo.pixelPos = m_pReader->m_savedScrollPixelPos;
+      }
       else
       {
         if (m_strRSSTags != "")
@@ -174,7 +176,7 @@ void CGUIRSSControl::Render()
     if (m_pReader)
     {
       m_pReader->CheckForUpdates();
-      m_pReader->m_SavedScrollPos = m_scrollInfo.characterPos;
+      m_pReader->m_savedScrollPixelPos = m_scrollInfo.pixelPos;
     }
   }
   CGUIControl::Render();

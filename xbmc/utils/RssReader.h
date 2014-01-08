@@ -43,7 +43,7 @@ public:
   void SetObserver(IRssObserver* observer);
   void CheckForUpdates();
   void requestRefresh();
-  unsigned int m_SavedScrollPos;
+  float m_savedScrollPixelPos;
 
 private:
   void Process();
