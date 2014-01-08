@@ -30,7 +30,7 @@
 #include "filesystem/ZipFile.h"
 #include "URIUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "utils/FileUtils.h"
+#include "utils/Mime.h"
 
 #include <cstring>
 #include <sstream>
@@ -239,9 +239,9 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   strHTML = strHTML1;
 
   std::string mimeType(http.GetMimeType());
-  CFileUtils::EFileType ftype = CFileUtils::GetFileTypeFromMime(mimeType);
+  CMime::EFileType ftype = CMime::GetFileTypeFromMime(mimeType);
 
-  if (ftype == CFileUtils::FileTypeZip || ftype == CFileUtils::FileTypeGZip)
+  if (ftype == CMime::FileTypeZip || ftype == CMime::FileTypeGZip)
   {
     XFILE::CZipFile file;
     std::string strBuffer;
@@ -251,7 +251,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   }
 
   std::string reportedCharset(http.GetServerReportedCharset());
-  if (ftype == CFileUtils::FileTypeHtml)
+  if (ftype == CMime::FileTypeHtml)
   {
     std::string realHtmlCharset, converted;
     if (!CCharsetDetection::ConvertHtmlToUtf8(strHTML, converted, reportedCharset, realHtmlCharset))
@@ -261,7 +261,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 
     strHTML = converted;
   }
-  else if (ftype == CFileUtils::FileTypeXml)
+  else if (ftype == CMime::FileTypeXml)
   {
     CXBMCTinyXML xmlDoc;
     xmlDoc.Parse(strHTML, reportedCharset);
@@ -275,7 +275,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
       strHTML = converted;
     }
   }
-  else if (ftype == CFileUtils::FileTypePlainText || StringUtils::CompareNoCase(mimeType.substr(0, 5), "text/") == 0)
+  else if (ftype == CMime::FileTypePlainText || StringUtils::CompareNoCase(mimeType.substr(0, 5), "text/") == 0)
   {
     std::string realTextCharset, converted;
     CCharsetDetection::ConvertPlainTextToUtf8(strHTML, converted, reportedCharset, realTextCharset);
