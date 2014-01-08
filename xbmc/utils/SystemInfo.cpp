@@ -472,7 +472,8 @@ int CSysInfo::GetKernelBitness(void)
   if (uname(&un) == 0)
   {
     std::string machine(un.machine);
-    if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" || machine == "ppc64" || machine == "ia64")
+    if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" || machine == "ppc64" ||
+        machine == "ia64" || machine == "mips64")
       return 64;
     return 32;
   }
@@ -484,7 +485,8 @@ int CSysInfo::GetKernelBitness(void)
 
 int CSysInfo::GetXbmcBitness(void)
 {
-#if defined (__aarch64__) || defined(__arm64__) || defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64) || defined(__ppc64__)
+#if defined (__aarch64__) || defined(__arm64__) || defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || \
+  defined(_M_AMD64) || defined(__ppc64__) || defined(__mips64)
   return 64;
 #elif defined(__thumb__) || defined(_M_ARMT) || defined(__arm__) || defined(_M_ARM) || defined(__mips__) || defined(mips) || defined(__mips) || defined(i386) || \
   defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86) || defined(_X86_) || defined(__powerpc) || \
