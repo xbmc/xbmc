@@ -435,14 +435,12 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::RESUMESTREAM:
           stream = *(CActiveAEStream**)msg->data;
           stream->m_paused = false;
-          m_state = AE_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           return;
         case CActiveAEControlProtocol::FLUSHSTREAM:
           stream = *(CActiveAEStream**)msg->data;
           SFlushStream(stream);
           msg->Reply(CActiveAEControlProtocol::ACC);
-          m_state = AE_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           return;
         case CActiveAEControlProtocol::STREAMAMP:
@@ -655,6 +653,20 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
       {
         switch (signal)
         {
+        case CActiveAEControlProtocol::RESUMESTREAM:
+          CActiveAEStream *stream;
+          stream = *(CActiveAEStream**)msg->data;
+          stream->m_paused = false;
+          m_state = AE_TOP_CONFIGURED_PLAY;
+          m_extTimeout = 0;
+          return;
+        case CActiveAEControlProtocol::FLUSHSTREAM:
+          stream = *(CActiveAEStream**)msg->data;
+          SFlushStream(stream);
+          msg->Reply(CActiveAEControlProtocol::ACC);
+          m_state = AE_TOP_CONFIGURED_PLAY;
+          m_extTimeout = 0;
+          return;
         case CActiveAEControlProtocol::TIMEOUT:
           ResampleSounds();
           ClearDiscardedBuffers();
