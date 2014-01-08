@@ -240,6 +240,8 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 
   std::string mimeType(http.GetMimeType());
   CMime::EFileType ftype = CMime::GetFileTypeFromMime(mimeType);
+  if (ftype == CMime::FileTypeUnknown)
+    ftype = CMime::GetFileTypeFromContent(strHTML);
 
   if (ftype == CMime::FileTypeZip || ftype == CMime::FileTypeGZip)
   {
@@ -247,7 +249,12 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     std::string strBuffer;
     int iSize = file.UnpackFromMemory(strBuffer,strHTML,scrURL.m_isgz); // FIXME: use FileTypeGZip instead of scrURL.m_isgz?
     if (iSize > 0)
+    {
       strHTML = strBuffer;
+      CLog::Log(LOGDEBUG, "%s: Archive \"%s\" was unpacked in memory", __FUNCTION__, scrURL.m_url.c_str());
+    }
+    else
+      CLog::Log(LOGWARNING, "%s: \"%s\" looks like archive, but cannot be unpacked", __FUNCTION__, scrURL.m_url.c_str());
   }
 
   std::string reportedCharset(http.GetServerReportedCharset());
@@ -293,7 +300,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     strHTML = converted;
   }
   else
-    CLog::Log(LOGDEBUG, "%s: Assuming \"UTF-8\" charset for content of \"%s\"", __FUNCTION__, scrURL.m_url.c_str());
+    CLog::Log(LOGDEBUG, "%s: Using content of \"%s\" as binary or text with \"UTF-8\" charset", __FUNCTION__, scrURL.m_url.c_str());
 
   if (!scrURL.m_cache.empty())
   {
