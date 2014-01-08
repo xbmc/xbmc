@@ -30,7 +30,7 @@
 #include "filesystem/ZipFile.h"
 #include "URIUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "utils/FileUtils.h"
+#include "utils/Mime.h"
 
 #include <cstring>
 #include <sstream>
@@ -239,19 +239,26 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   strHTML = strHTML1;
 
   std::string mimeType(http.GetMimeType());
-  CFileUtils::EFileType ftype = CFileUtils::GetFileTypeFromMime(mimeType);
+  CMime::EFileType ftype = CMime::GetFileTypeFromMime(mimeType);
+  if (ftype == CMime::FileTypeUnknown)
+    ftype = CMime::GetFileTypeFromContent(strHTML);
 
-  if (ftype == CFileUtils::FileTypeZip || ftype == CFileUtils::FileTypeGZip)
+  if (ftype == CMime::FileTypeZip || ftype == CMime::FileTypeGZip)
   {
     XFILE::CZipFile file;
     std::string strBuffer;
     int iSize = file.UnpackFromMemory(strBuffer,strHTML,scrURL.m_isgz); // FIXME: use FileTypeGZip instead of scrURL.m_isgz?
     if (iSize > 0)
+    {
       strHTML = strBuffer;
+      CLog::Log(LOGDEBUG, "%s: Archive \"%s\" was unpacked in memory", __FUNCTION__, scrURL.m_url.c_str());
+    }
+    else
+      CLog::Log(LOGWARNING, "%s: \"%s\" looks like archive, but cannot be unpacked", __FUNCTION__, scrURL.m_url.c_str());
   }
 
   std::string reportedCharset(http.GetServerReportedCharset());
-  if (ftype == CFileUtils::FileTypeHtml)
+  if (ftype == CMime::FileTypeHtml)
   {
     std::string realHtmlCharset, converted;
     if (!CCharsetDetection::ConvertHtmlToUtf8(strHTML, converted, reportedCharset, realHtmlCharset))
@@ -261,7 +268,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 
     strHTML = converted;
   }
-  else if (ftype == CFileUtils::FileTypeXml)
+  else if (ftype == CMime::FileTypeXml)
   {
     CXBMCTinyXML xmlDoc;
     xmlDoc.Parse(strHTML, reportedCharset);
@@ -275,7 +282,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
       strHTML = converted;
     }
   }
-  else if (ftype == CFileUtils::FileTypePlainText || StringUtils::CompareNoCase(mimeType.substr(0, 5), "text/") == 0)
+  else if (ftype == CMime::FileTypePlainText || StringUtils::CompareNoCase(mimeType.substr(0, 5), "text/") == 0)
   {
     std::string realTextCharset, converted;
     CCharsetDetection::ConvertPlainTextToUtf8(strHTML, converted, reportedCharset, realTextCharset);
@@ -293,7 +300,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     strHTML = converted;
   }
   else
-    CLog::Log(LOGDEBUG, "%s: Assuming \"UTF-8\" charset for content of \"%s\"", __FUNCTION__, scrURL.m_url.c_str());
+    CLog::Log(LOGDEBUG, "%s: Using content of \"%s\" as binary or text with \"UTF-8\" charset", __FUNCTION__, scrURL.m_url.c_str());
 
   if (!scrURL.m_cache.empty())
   {
