@@ -45,7 +45,8 @@ bool CPlexSectionFilter::loadFilters()
       {
         if (primaryFilter->GetProperty("unprocessed_key").asString() == "all" ||
             primaryFilter->GetProperty("unprocessed_key").asString() == "onDeck" ||
-            primaryFilter->GetProperty("unprocessed_key").asString() == "folder")
+            primaryFilter->GetProperty("unprocessed_key").asString() == "folder" ||
+            primaryFilter->GetProperty("unprocessed_key").asString() == "recentlyViewed")
           m_primaryFilters[primaryFilter->GetProperty("unprocessed_key").asString()] = primaryFilter->GetLabel();
       }
       else
