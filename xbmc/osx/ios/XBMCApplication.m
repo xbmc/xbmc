@@ -76,8 +76,6 @@ XBMCController *m_xbmcController;
 - (void)screenDidDisconnect:(NSNotification *)aNotification
 {
   [IOSScreenManager updateResolutions];
-  //switch back to mainscreen when external screen is removed
-  [[IOSScreenManager sharedInstance] screenDisconnect];
 }
 
 - (void)registerScreenNotifications:(BOOL)bRegister
