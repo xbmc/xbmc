@@ -199,14 +199,14 @@ void CGUIWindowTestPatternDX::DrawContrastBrightnessPattern(int top, int left, i
   if (m_blinkFrame < TEST_PATTERNS_BLINK_CYCLE / 2)
     color = D3DCOLOR_COLORVALUE(m_black + 0.05f, m_black + 0.05f, m_black + 0.05f, 1.0f);
   else
-    color = D3DCOLOR_COLORVALUE(m_black, m_black, m_black, 1.0f);
+    color = D3DCOLOR_COLORVALUE(0.0f, 0.0f, 0.0f, 1.0f); // BTB
   DrawCircleEx(x25p, y75p, (y37p - y12p) / 3, color);
   DrawCircleEx(x75p, y25p, (y37p - y12p) / 3, color);
 
   if (m_blinkFrame < TEST_PATTERNS_BLINK_CYCLE / 2)
     color = D3DCOLOR_COLORVALUE(m_white - 0.05f, m_white - 0.05f, m_white - 0.05f, 1.0f);
   else
-    color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
+    color = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f); // WTW
   DrawCircleEx(x25p, y25p, (y37p - y12p) / 3, color);
   DrawCircleEx(x75p, y75p, (y37p - y12p) / 3, color);
 }
