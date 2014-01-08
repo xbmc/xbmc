@@ -171,6 +171,10 @@ class CMusicThumbLoader;
 
 #define PLEX_ART_FANART_FALLBACK "plex_fanart_fallback"
 
+#define PLEX_IDENTIFIER_LIBRARY "com.plexapp.plugins.library"
+#define PLEX_IDENTIFIER_MYPLEX "com.plexapp.plugins.myplex"
+#define PLEX_IDENTIFIER_SYSTEM "com.plexapp.system"
+
 typedef std::pair<std::string, std::string> PlexStringPair;
 typedef std::pair<int64_t, std::string> PlexIntStringPair;
 typedef std::vector<PlexStringPair> PlexStringPairVector;
