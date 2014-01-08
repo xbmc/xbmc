@@ -48,6 +48,7 @@ public:
     FileTypeJpeg,
   };
   static EFileType GetFileTypeFromMime(const std::string& mimeType);
+  static EFileType GetFileTypeFromContent(const std::string& fileContent);
   static bool parseMimeType(const std::string& mimeType, std::string& type, std::string& subtype);
 
 private:

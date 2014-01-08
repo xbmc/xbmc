@@ -626,6 +626,41 @@ CMime::EFileType CMime::GetFileTypeFromMime(const std::string& mimeType)
   return FileTypeUnknown;
 }
 
+CMime::EFileType CMime::GetFileTypeFromContent(const std::string& fileContent)
+{
+  // based on http://mimesniff.spec.whatwg.org/#matching-a-mime-type-pattern
+
+  const size_t len = fileContent.length();
+  if (len < 2)
+    return FileTypeUnknown;
+
+  const unsigned char* const b = (const unsigned char*)fileContent.c_str();
+
+  // TODO: add detection for text types
+
+  // check image types
+  if (b[0] == 'B' && b[1] == 'M')
+    return FileTypeBmp;
+  if (len >= 6 && b[0] == 'G' && b[1] == 'I' && b[2] == 'F' && b[3] == '8' && (b[4] == '7' || b[4] == '9') && b[5] == 'a')
+    return FileTypeGif;
+  if (len >= 8 && b[0] == 0x89 && b[1] == 'P' && b[2] == 'N' && b[3] == 'G' && b[4] == 0x0D && b[5] == 0x0A && b[6] == 0x1A && b[7] == 0x0A)
+    return FileTypePng;
+  if (len >= 3 && b[0] == 0xFF && b[1] == 0xD8 && b[2] == 0xFF)
+    return FileTypeJpeg;
+
+  // check archive types
+  if (len >= 3 && b[0] == 0x1F && b[1] == 0x8B && b[2] == 0x08)
+    return FileTypeGZip;
+  if (len >= 4 && b[0] == 'P' && b[1] == 'K' && b[2] == 0x03 && b[3] == 0x04)
+    return FileTypeZip;
+  if (len >= 7 && b[0] == 'R' && b[1] == 'a' && b[2] == 'r' && b[3] == ' ' && b[4] == 0x1A && b[5] == 0x07 && b[6] == 0x00)
+    return FileTypeRar;
+
+  // TODO: add detection for other types if required
+
+  return FileTypeUnknown;
+}
+
 bool CMime::parseMimeType(const std::string& mimeType, std::string& type, std::string& subtype)
 {
   static const char* const whitespaceChars = "\x09\x0A\x0C\x0D\x20"; // tab, LF, FF, CR and space
