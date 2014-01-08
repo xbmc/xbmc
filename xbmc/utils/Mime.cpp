@@ -628,62 +628,34 @@ CMime::EFileType CMime::GetFileTypeFromMime(const std::string& mimeType)
 
 bool CMime::parseMimeType(const std::string& mimeType, std::string& type, std::string& subtype)
 {
-  // this is an modified implementation of http://mimesniff.spec.whatwg.org/#parsing-a-mime-type with additional checks for non-empty type and subtype
-  // note: only type and subtype are parsed, parameters are ignored
-
   static const char* const whitespaceChars = "\x09\x0A\x0C\x0D\x20"; // tab, LF, FF, CR and space
-  static const std::string whitespaceSmclnChars("\x09\x0A\x0C\x0D\x20\x3B"); // tab, LF, FF, CR, space and semicolon
 
   type.clear();
   subtype.clear();
 
-  const size_t len = mimeType.length();
-  if (len < 1)
+  const size_t slashPos = mimeType.find('/');
+  if (slashPos == std::string::npos)
     return false;
 
-  const char* const mimeTypeC = mimeType.c_str();
-  size_t pos = mimeType.find_first_not_of(whitespaceChars);
-  if (pos == std::string::npos)
-    return false;
+  type.assign(mimeType, 0, slashPos);
+  subtype.assign(mimeType, slashPos + 1, std::string::npos);
 
-  // find "type"
-  size_t t = 0;
-  do
-  {
-    const char chr = mimeTypeC[pos];
-    if (t > 127 || !chr)
-    {
-      type.clear();
-      return false;
-    }
+  const size_t semicolonPos = subtype.find(';');
+  if (semicolonPos != std::string::npos)
+    subtype.erase(semicolonPos);
 
-    if (chr >= 'A' && chr <= 'Z')
-      type.push_back(chr + ('a' - 'A')); // convert to lowercase
-    else
-      type.push_back(chr);
-    t++;
-    pos++;
-  } while (mimeTypeC[pos] != '/');
+  StringUtils::Trim(type, whitespaceChars);
+  StringUtils::Trim(subtype, whitespaceChars);
 
-  pos++; // skip '/'
-  t = 0;
-
-  while (mimeTypeC[pos] && whitespaceSmclnChars.find(mimeTypeC[pos]) == std::string::npos && t++ <= 127)
-  {
-    const char chr = mimeTypeC[pos];
-    if (chr >= 'A' && chr <= 'Z')
-      subtype.push_back(chr + ('a' - 'A')); // convert to lowercase
-    else
-      subtype.push_back(chr);
-    pos++;
-  }
-
-  if (subtype.empty() || t > 127)
+  if (type.empty() || subtype.empty())
   {
     type.clear();
     subtype.clear();
     return false;
   }
+
+  StringUtils::ToLower(type);
+  StringUtils::ToLower(subtype);
 
   return true;
 }
