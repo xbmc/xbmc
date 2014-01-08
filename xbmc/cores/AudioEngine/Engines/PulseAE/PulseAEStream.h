@@ -24,6 +24,7 @@
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "threads/Thread.h"
 #include <pulse/pulseaudio.h>
+#include "cores/AudioEngine/Utils/AELimiter.h"
 
 class CPulseAEStream : public IAEStream
 {
@@ -53,10 +54,10 @@ public:
 
   virtual float GetVolume    ();
   virtual float GetReplayGain();
-  virtual float GetAmplification() { return 1.0f; }
+  virtual float GetAmplification() { return m_limiter.GetAmplification(); }
   virtual void  SetVolume    (float volume);
   virtual void  SetReplayGain(float factor);
-  virtual void  SetAmplification(float amplify){}
+  virtual void  SetAmplification(float amplify){ m_limiter.SetAmplification(amplify); }
   void SetMute(const bool muted);
 
   virtual const unsigned int      GetFrameSize   () const;
@@ -116,9 +117,11 @@ private:
   enum AEDataFormat m_format;
   unsigned int      m_sampleRate;
   CAEChannelInfo    m_channelLayout;
+  unsigned int      m_channels;
   unsigned int m_options;
   unsigned int m_frameSize;
   unsigned int m_cacheSize;
+  CAELimiter        m_limiter;       /* volume amplification/limiter*/
 
   pa_operation *m_DrainOperation;
   IAEStream    *m_slave;
