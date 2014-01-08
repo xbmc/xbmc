@@ -52,6 +52,9 @@ protected:
   int m_bounceDirectionX;
   int m_bounceDirectionY;
   int m_blinkFrame;
+
+  float m_white;
+  float m_black;
 };
 
 
