@@ -192,7 +192,6 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("updatedAt", g_parserInt)
                                      ("leafCount", g_parserInt)
                                      ("viewedLeafCount", g_parserInt)
-                                     ("ratingKey", g_parserInt)
                                      ("bitrate", g_parserInt)
                                      ("duration", g_parserInt)
                                      ("librarySectionID", g_parserInt)
