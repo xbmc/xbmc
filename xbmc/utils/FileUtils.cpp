@@ -252,7 +252,7 @@ bool CFileUtils::parseMimeType(const std::string& mimeType, std::string& type, s
   pos++; // skip '/'
   t = 0;
 
-  while (mimeTypeC[pos] && whitespaceSmclnChars.find(mimeTypeC[pos]) != std::string::npos && t++ <= 127)
+  while (mimeTypeC[pos] && whitespaceSmclnChars.find(mimeTypeC[pos]) == std::string::npos && t++ <= 127)
   {
     const char chr = mimeTypeC[pos];
     if (chr >= 'A' && chr <= 'Z')
