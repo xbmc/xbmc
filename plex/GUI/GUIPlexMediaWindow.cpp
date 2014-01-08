@@ -448,7 +448,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 
           BOOST_FOREACH(CPlexSecondaryFilterPtr p, secFilters)
           {
-            if (p->getFilterName() == "unwatched")
+            if (p->getFilterName() == "unwatched" || p->getFilterName() == "unwatchedLeaves")
             {
               found = true;
               enabled = !p->isSelected();
@@ -630,6 +630,19 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
   {
     if (!PlexUtils::CurrentSkinHasPreplay() || item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK || item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO)
       return OnPlayMedia(iItem);
+  }
+
+  if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON ||
+      item->GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW)
+  {
+    CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+    CPlexSecondaryFilterPtr unwatchedFilter = filter->getSecondaryFilterOfName("unwatchedLeaves");
+    if (filter && filter->currentPrimaryFilter() == "all" && unwatchedFilter && unwatchedFilter->isSelected())
+    {
+      CURL u(item->GetPath());
+      u.SetOption("unwatched", "1");
+      item->SetPath(u.Get());
+    }
   }
 
   CStdString newUrl = m_navHelper.navigateToItem(item, m_vecItems->GetPath(), GetID());
