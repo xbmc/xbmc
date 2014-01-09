@@ -1162,7 +1162,7 @@
 	<include name="PreplayClip">
 		<control type="group" id="777">
 			<posy>-28</posy>
-			<visible>Container.Content(clip)</visible>
+			<visible>Container.Content(clip) | [Container.Content(channel) + ListItem.Type(clip)]</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
