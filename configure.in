@@ -371,9 +371,9 @@ AC_ARG_ENABLE([alsa],
 
 AC_ARG_ENABLE([pulse],
   [AS_HELP_STRING([--enable-pulse],
-  [enable PulseAudio support (default is no)])],
+  [enable PulseAudio support (default is auto)])],
   [use_pulse=$enableval],
-  [use_pulse=no])
+  [use_pulse=auto])
 
 AC_ARG_ENABLE([ssh],
   [AS_HELP_STRING([--disable-ssh],
