@@ -216,12 +216,16 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   tURL.SetOption("videoResolution", _resolutions[bitrate]);
   
   /* PHT can render subtitles itself no need to include them in the transcoded video
-   * UNLESS it's a embedded subtitle, we can't extract it from the file */
-  CFileItemPtr subStream = PlexUtils::GetItemSelectedStreamOfType(item, PLEX_STREAM_SUBTITLE);
-  if (subStream && subStream->HasProperty("key"))
+   * UNLESS it's a embedded subtitle, we can't extract it from the file or UNLESS the
+   * user have checked the always transcode subtitles option in settings */
+  if (!g_guiSettings.GetBool("plexmediaserver.transcodesubtitles"))
   {
-    CLog::Log(LOGDEBUG, "CPlexTranscoderClient::GetTranscodeURL file has a selected subtitle that is external.");
-    tURL.SetOption("skipSubtitles", "1");
+    CFileItemPtr subStream = PlexUtils::GetItemSelectedStreamOfType(item, PLEX_STREAM_SUBTITLE);
+    if (subStream && subStream->HasProperty("key"))
+    {
+      CLog::Log(LOGDEBUG, "CPlexTranscoderClient::GetTranscodeURL file has a selected subtitle that is external.");
+      tURL.SetOption("skipSubtitles", "1");
+    }
   }
   
   CStdString extraAudioFormats;

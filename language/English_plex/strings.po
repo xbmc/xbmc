@@ -960,3 +960,6 @@ msgctxt "#52501"
 msgid "Remote disconnected"
 msgstr "Remote disconnected"
 
+msgctxt "#52502"
+msgid "Always transcode subtitles"
+msgstr "Always transcode subtitles"

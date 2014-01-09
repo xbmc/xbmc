@@ -912,6 +912,8 @@ void CGUISettings::Initialize()
   AddString(qual, "plexmediaserver.onlinemediaqualitystr", 52203, g_localizeStrings.Get(13181), BUTTON_CONTROL_MISC_INPUT);
   AddInt(NULL, "plexmediaserver.onlinemediaquality", 52201, 0, 0, 1, INT_MAX, SPIN_CONTROL_INT);
 
+  AddBool(qual, "plexmediaserver.transcodesubtitles", 52502, false);
+
   CSettingsCategory* pms = AddCategory(SETTINGS_SERVICE, "plexmediaserver", 40210);
   AddBool(pms, "plexmediaserver.manualaddress", 40211, false);
   AddString(pms, "plexmediaserver.address", 40212, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
