@@ -1,0 +1,27 @@
+From dc013f1ce379537617080a93ccb155ab1dc2f24a Mon Sep 17 00:00:00 2001
+From: Memphiz <memphis@machzwo.de>
+Date: Sat, 25 May 2013 23:06:14 +0200
+Subject: [PATCH 06/21] [platinum] - fix shadowed local var
+
+---
+ lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
+index 7b46539..a8eb4e2 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltStateVariable.cpp
+@@ -215,8 +215,8 @@ PLT_StateVariable::ValidateValue(const char* value)
+                         (const char*)*val,
+                         (const char*)m_Name);
+                     for (unsigned long i=0; i < m_AllowedValues.GetItemCount(); i++) {
+-                        NPT_String *val = *m_AllowedValues.GetItem(i);
+-                        NPT_LOG_WARNING_1("Allowed: %s", (const char*)*val);
++                        NPT_String *val2 = *m_AllowedValues.GetItem(i);
++                        NPT_LOG_WARNING_1("Allowed: %s", (const char*)*val2);
+                     }
+ #endif
+                     return NPT_ERROR_INVALID_PARAMETERS;
+-- 
+1.7.11.msysgit.0
+
