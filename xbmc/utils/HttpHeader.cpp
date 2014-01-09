@@ -59,7 +59,7 @@ void CHttpHeader::Parse(const std::string& strData)
 
     if (strDataC[pos] == ' ' || strDataC[pos] == '\t') // same chars as in CHttpHeader::m_whitespaceChars
     { // line is started from whitespace char: this is continuation of previous line
-      pos = strData.find_first_not_of(m_whitespaceChars);
+      pos = strData.find_first_not_of(m_whitespaceChars, pos);
 
       m_lastHeaderLine.push_back(' '); // replace all whitespace chars at start of the line with single space
       m_lastHeaderLine.append(strData, pos, lineEnd - pos); // append current line
