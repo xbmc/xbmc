@@ -655,23 +655,32 @@
 				</control>
 			</control>
 			<!-- plot text -->
-			<!-- TO DELETE WHEN TVSEASONPLOT WORKS -->
 			<control type="textbox">
 				<posx>40</posx>
 				<posy>412</posy>
 				<width>490</width>
-				<height>207</height>
-				<label>$INFO[Container.ShowPlot]</label>
-				<visible>!IsEmpty(Container.ShowPlot)</visible>
+				<height>200</height>
+				<include>PlotFormat</include>
+				<label>$INFO[ListItem.Plot]</label>
+				<visible>ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]</visible>
 			</control>
 			<control type="textbox">
 				<posx>40</posx>
 				<posy>412</posy>
 				<width>490</width>
-				<height>207</height>
+				<height>200</height>
+				<include>PlotFormat</include>
+				<label>$LOCALIZE[32105]</label>
+				<visible>Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)</visible>
+			</control>
+			<control type="textbox">
+				<posx>40</posx>
+				<posy>412</posy>
+				<width>490</width>
+				<height>200</height>
 				<include>PlotFormat</include>
 				<include>NoPlotDefault</include>
-				<visible>IsEmpty(Container.ShowPlot)</visible>
+				<visible>IsEmpty(ListItem.Plot)</visible>
 			</control>
 			</control>
 			<!-- main list -->
