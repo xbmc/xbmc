@@ -45,10 +45,14 @@ void CHttpHeader::Parse(const std::string& strData)
   // If current line is NOT started from whitespace char, then previously stored (and completed) m_lastHeaderLine is parsed and current line is assigned to m_lastHeaderLine (to be parsed later)
   while (pos < len)
   {
-    const size_t lineEnd = strData.find("\x0d\x0a", pos); // use "\x0d\x0a" instead of "\r\n" to be platform independent
+    size_t lineEnd = strData.find('\x0a', pos); // use '\x0a' instead of '\n' to be platform independent
 
     if (lineEnd == std::string::npos)
       return; // error: expected only complete lines
+
+    const size_t nextLine = lineEnd + 1;
+    if (lineEnd > pos && strDataC[lineEnd - 1] == '\x0d') // use '\x0d' instead of '\r' to be platform independent
+      lineEnd--; 
 
     if (m_headerdone)
       Clear(); // clear previous header and process new one
@@ -68,10 +72,10 @@ void CHttpHeader::Parse(const std::string& strData)
       m_lastHeaderLine.assign(strData, pos, lineEnd - pos); // store current line to (possibly) complete later. Will be parsed on next turns.
 
       if (pos == lineEnd)
-        m_headerdone = true; // current line is bare "\r\n", means end of header; no need to process current m_lastHeaderLine
+        m_headerdone = true; // current line is bare "\r\n" (or "\n"), means end of header; no need to process current m_lastHeaderLine
     }
 
-    pos = lineEnd + 2; // '+2' for "\r\n": go to next line (if any)
+    pos = nextLine; // go to next line (if any)
   }
 }
 
