@@ -197,9 +197,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_video2, AVCodecContext*, AVFrame*, int*, AVPacket*)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_audio4, AVCodecContext*, AVFrame*, int*, AVPacket*)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_subtitle2, AVCodecContext*, AVSubtitle*, int*, AVPacket*)
-#ifndef __PLEX__
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_encode_audio, AVCodecContext*, uint8_t*, int, const short*)
-#endif
   DEFINE_FUNC_ALIGNED1(AVCodecContext*, __cdecl, avcodec_alloc_context3, AVCodec *)
   DEFINE_FUNC_ALIGNED1(AVCodecParserContext*, __cdecl, av_parser_init, int)
   DEFINE_FUNC_ALIGNED9(int, __cdecl, av_parser_parse2, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t, int64_t)
@@ -241,9 +239,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_decode_video2)
     RESOLVE_METHOD(avcodec_decode_audio4)
     RESOLVE_METHOD(avcodec_decode_subtitle2)
-#ifndef __PLEX__
     RESOLVE_METHOD(avcodec_encode_audio)
-#endif
     RESOLVE_METHOD(avpicture_get_size)
     RESOLVE_METHOD(avcodec_alloc_context3)
     RESOLVE_METHOD(avcodec_string)
