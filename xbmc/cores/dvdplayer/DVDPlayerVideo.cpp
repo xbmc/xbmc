@@ -256,6 +256,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_started = false;
   m_codecname = m_pVideoCodec->GetName();
+  m_packets.clear();
 }
 
 void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
