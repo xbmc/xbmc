@@ -514,6 +514,8 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
   
   bool ret = CGUIMediaWindow::GetDirectory(u.Get(), items);
 
+  m_thumbCache.Load(items);
+
   CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(u.GetHostName());
   if (server && server->GetActiveConnection() && server->GetActiveConnection()->IsLocal())
     g_directoryCache.ClearDirectory(u.Get());
@@ -608,6 +610,8 @@ void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob *
   {
     CFileItemList* list = new CFileItemList;
     list->Copy(fjob->m_items);
+
+    m_thumbCache.Load(*list);
 
     if (list)
     {
