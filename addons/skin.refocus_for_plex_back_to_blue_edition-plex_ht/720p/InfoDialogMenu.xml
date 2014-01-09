@@ -1,0 +1,240 @@
+<includes>
+
+	<include name="menu_Info-video">
+		<control type="group">
+			<visible>!Skin.HasSetting(global.kiosk)</visible>
+			<control type="grouplist" id="6000">
+				<posx>-275</posx>
+				<posy>20</posy>
+				<width>800</width>
+				<height>800</height>
+				<orientation>vertical</orientation>
+				<include>MenuOpen</include>
+				<include>transition_Menu</include>
+				<visible allowhiddenfocus="true">ControlGroup(6000).HasFocus + !Skin.HasSetting(global.kiosk) + ![Window.IsActive(101) | Window.IsActive(filebrowser)]</visible>
+				<control type="group">
+					<width>220</width>
+					<height>42</height>
+					<!--refresh-->
+					<control type="button" id="6">
+						<label>$LOCALIZE[184]</label>
+						<onback>8000</onback>
+						<onup>56</onup>
+						<ondown>10</ondown>
+						<onright>50</onright>
+						<include>button_Menu</include>
+					</control>
+				</control>
+				<control type="group">
+					<width>220</width>
+					<height>42</height>
+					<visible>Container.Content(movies) | Container.Content(tvshows)</visible>
+					<!--poster-->
+					<control type="button" id="10">
+						<label>$LOCALIZE[31054]</label>
+						<onback>8000</onback>
+						<onup>6</onup>
+						<ondown>12</ondown>
+						<onright>50</onright>
+						<include>button_Menu</include>
+						<onclick>SetFocus(5000)</onclick>
+					</control>
+				</control>
+				<control type="group">
+					<width>220</width>
+					<height>42</height>
+					<visible>Container.Content(episodes) | Container.Content(musicvideos)</visible>
+					<!--thumbnail-->
+					<control type="button" id="10">
+						<label>$LOCALIZE[31019]</label>
+						<onback>8000</onback>
+						<onup>6</onup>
+						<ondown>12</ondown>
+						<onright>50</onright>
+						<include>button_Menu</include>
+						<onclick>SetFocus(5000)</onclick>
+					</control>
+				</control>
+				<control type="group">
+					<width>220</width>
+					<height>42</height>
+					<visible>Container.Content(movies) | Container.Content(tvshows)</visible>
+					<!--fanart-->
+					<control type="button" id="12">
+						<label>$LOCALIZE[31016]</label>
+						<onback>8000</onback>
+						<onup>10</onup>
+						<ondown>13</ondown>
+						<onright>50</onright>
+						<include>button_Menu</include>
+						<onclick>SetFocus(5000)</onclick>
+					</control>
+				</control>
+				
+				<control type="group">
+					<width>220</width>
+					<height>42</height>
+					<visible>Container.Content(tvshows)</visible>
+					<!--banner-->
+					<control type="button" id="13">
+						<label>Banner</label>
+						<onback>8000</onback>
+						<onup>12</onup>
+						<ondown>6</ondown>
+						<onright>50</onright>
+						<include>button_Menu</include>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+
+	<include name="InfoDialogMenu">
+
+		<control type="group" id="300">
+			<posx>-275</posx>
+			<posy>20</posy>
+			<width>800</width>
+			<height>800</height>
+			<visible allowhiddenfocus="true">ControlGroup(300).HasFocus + ![Window.IsActive(101) | Window.IsActive(filebrowser)]</visible>
+			<orientation>vertical</orientation>
+			<include>MenuOpen</include>
+
+			<control type="button" id="5">
+				<label>$LOCALIZE[206]</label>
+				<width>275</width>
+				<onup>13</onup>
+				<ondown>8</ondown>
+				<onright>7000</onright>
+				<include>contextButton</include>
+				<onclick>Skin.ToggleSetting(foo)</onclick>
+			</control>
+			<control type="button" id="8">
+				<posy>43</posy>
+				<label>$LOCALIZE[208]</label>
+				<width>275</width>
+				<onup>5</onup>
+				<ondown>6</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="6">
+				<posy>86</posy>
+				<label>$LOCALIZE[184]</label>
+				<width>275</width>
+				<onup>8</onup>
+				<ondown>10</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="10">
+				<posy>129</posy>
+				<label>$LOCALIZE[31054]</label>
+				<width>275</width>
+				<onup>6</onup>
+				<ondown>12</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+				<onclick>SetFocus(5000)</onclick>
+				<visible>Container.Content(movies) | Container.Content(tvshows)</visible>
+			</control>
+			<control type="button" id="10">
+				<posy>129</posy>
+				<label>$LOCALIZE[31019]</label>
+				<width>275</width>
+				<onup>6</onup>
+				<ondown>12</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+				<onclick>SetFocus(5000)</onclick>
+				<visible>Container.Content(episodes) | Container.Content(musicvideos)</visible>
+			</control>
+			<control type="button" id="12">
+				<posy>172</posy>
+				<label>Fanart</label>
+				<width>275</width>
+				<onup>10</onup>
+				<ondown>13</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+				<visible>Container.Content(movies) | Container.Content(tvshows)</visible>
+				
+			</control>
+			<control type="button" id="13">
+				<posy>215</posy>
+				<label>Banner</label>
+				<width>275</width>
+				<onup>12</onup>
+				<ondown>5</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+				<visible>Container.Content(tvshows)</visible>
+				
+			</control>
+			<!--control type="button" id="11">
+				<posy>215</posy>
+				<label>$LOCALIZE[20410]</label>
+				<width>275</width>
+				<onup>12</onup>
+				<ondown>5</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+				<enable>!IsEmpty(ListItem.Trailer)</enable>
+				<visible>Container.Content(movies)</visible>
+			</control-->
+		</control>
+				
+	</include>
+	
+	
+	<include name="InfoDialogMenuM">
+
+        <control type="group" id="300">
+			<posx>-275</posx>
+			<posy>20</posy>
+			<width>800</width>
+			<height>800</height>
+			<visible allowhiddenfocus="true">ControlGroup(300).HasFocus + !Window.IsActive(101)</visible>
+			<onright>50</onright>
+			<orientation>vertical</orientation>
+			<include>MenuOpen</include>
+
+			<control type="button" id="5">
+				<label>$LOCALIZE[182]</label>
+				<width>275</width>
+				<onup>12</onup>
+				<ondown>6</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="6">
+				<posy>43</posy>
+				<label>$LOCALIZE[184]</label>
+				<width>275</width>
+				<onup>5</onup>
+				<ondown>10</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="10">
+				<posy>86</posy>
+				<label>$LOCALIZE[31019]</label>
+				<width>275</width>
+				<onup>6</onup>
+				<ondown>12</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="12">
+				<posy>129</posy>
+				<label>Fanart</label>
+				<width>275</width>
+				<onup>10</onup>
+				<ondown>5</ondown>
+				<onright>8000</onright>
+				<include>contextButton</include>
+			</control>
+		</control>
+
+	</include>
+</includes>

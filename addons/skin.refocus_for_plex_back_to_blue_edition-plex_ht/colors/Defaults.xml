@@ -1,0 +1,32 @@
+<colors>
+	<color name="title">ffffffff</color>
+	<color name="data">ff6aa6cb</color>
+	<color name="text">ffffffff</color>
+	
+	<color name="Color0">FFebebeb</color>
+	<color name="Color1">ffffffff</color>
+	<color name="Color2">ffe6b83c</color>
+	<color name="Color3">ffcacaca</color>
+	<color name="Color4">FF696a6c</color>
+	<color name="Color5">FF000000</color>
+	<color name="Color6">FF393939</color>
+	<color name="Color7">FFebebeb</color>
+	<color name="Color8">FF4b4b4b</color>
+	
+	<color name="ProgressSlider">ffffba00</color>
+	
+	<color name="Focused">FF111111</color>
+	<color name="Disabled">ff9a9a9a</color>
+	<color name="Selected">ff16871e</color>
+	
+	<color name="column1">ffffffff</color>
+	<color name="column2">ff2d5a83</color>
+	<color name="column3">dd0c2134</color>
+	<color name="column4">ee2d5a83</color>
+	
+	<color name="column2_black">ff818181</color>
+	<color name="column3_black">dd333333</color>
+	
+	<!-- search -->
+	<color name="LightBlue">ff6aa6cb</color>
+</colors>

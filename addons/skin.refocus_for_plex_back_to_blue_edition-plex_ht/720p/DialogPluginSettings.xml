@@ -1,0 +1,110 @@
+<window id="10140">
+	<defaultcontrol>2</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>315</posx>
+		<posy>100</posy>
+	</coordinates>
+	
+	<include>dialogOpen</include>
+	
+	<controls>
+
+		<control type="group">
+			<animation effect="fade" start="97" end="50" time="500" condition="Window.IsActive(103)">Conditional</animation>
+	
+			<control type="image" id="1">
+				<include>dialogWindow</include>
+				<width>650</width>
+				<height>525</height>
+			</control>
+			
+			<control type="label" id="20">
+				<description>Settings Label</description>
+				<posx>34</posx>
+				<width>582</width>
+				<include>dialogHeading</include>
+			</control>
+
+			<control type="spincontrol" id="60">
+				<visible>false</visible>
+			</control>
+			
+			<control type="image">
+				<posy>75</posy>
+				<width>632</width>
+				<include>dialogSeparator</include>
+			</control>
+			
+			<control type="grouplist" id="2">
+				<description>control area</description>
+				<posx>19</posx>
+				<posy>75</posy>
+				<width>613</width>
+				<height>361</height>
+				<itemgap>0</itemgap>
+				<onleft>-</onleft>
+				<onright>-</onright>
+				<onup>300</onup>
+				<ondown>300</ondown>
+			</control>
+			
+			<control type="button" id="3">
+				<description>Default Button</description>
+				<include>dialogListButton</include>
+			</control>
+			
+			<control type="radiobutton" id="4">
+				<description>Default RadioButton</description>
+				<include>dialogRadio</include>
+			</control>
+			
+			<control type="spincontrolex" id="5">
+				<description>Default SpinControlex</description>
+				<include>dialogSpin</include>
+			</control>
+			
+			<control type="image" id="6">
+				<description>separator image</description>
+			</control>
+	
+			<control type="group" id="300">
+				<posx>34</posx>
+				<posy>450</posy>
+
+				<control type="button" id="12">
+					<description>Defaults button</description>
+					<posx>0</posx>
+					<width>100</width>
+					<label>409</label>
+					<onleft>11</onleft>
+					<onright>10</onright>
+					<onup>2</onup>
+					<ondown>11</ondown>
+					<include>dialogConfirmButton</include>
+				</control>
+				<control type="button" id="10">
+					<description>OK button</description>
+					<posx>335</posx>
+					<label>186</label>
+					<onleft>12</onleft>
+					<onright>11</onright>
+					<onup>2</onup>
+					<ondown>11</ondown>
+					<include>dialogConfirmButton</include>
+				</control>
+				<control type="button" id="11">
+					<description>Cancel button</description>
+					<posx>465</posx>
+					<label>222</label>
+					<onleft>10</onleft>
+					<onright>12</onright>
+					<onup>2</onup>
+					<ondown>11</ondown>
+					<include>dialogConfirmButton</include>
+				</control>
+				
+			</control>
+		</control>
+	</controls>
+</window>

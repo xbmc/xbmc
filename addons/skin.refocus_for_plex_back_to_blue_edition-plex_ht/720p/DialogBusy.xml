@@ -1,0 +1,21 @@
+<window id="138">
+	<defaultcontrol always="true">99</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>30</posx>
+		<posy>8</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<include>fadeinout</include>
+			<visible>!Window.IsActive(startup)</visible>
+			<control type="image">
+				<width>48</width>
+				<height>48</height>
+				<texture>busy/busy.png</texture>
+				<aspectratio>keep</aspectratio>
+				<animation effect="rotate" start="360" end="0" center="24,24" time="1200" loop="true" condition="true">conditional</animation>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<window>
+	<defaultcontrol always="true">10</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>startupSlides</include>
+		<control type="button" id="10">
+			<onfocus>ReplaceWindow(Home)</onfocus>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<animation effect="fade" delay="3000" end="100">Focus</animation>
+		</control>
+		<control type="image">
+			<posx>512</posx>
+			<posy>333</posy>
+			<width>256</width>
+			<height>53</height>
+			<texture>startup/startuplogo.png</texture>
+			<aspectratio>keep</aspectratio>
+			<animation type="WindowOpen">
+				<effect type="zoom" time="600" center="640,360" start="50" end="100" tween="cubic" easing="out" delay="400"/>
+				<effect type="fade" time="600" center="640,360" start="0" end="100" delay="400"/>
+			</animation>
+			<animation type="WindowClose">
+				<effect type="zoom" time="250" center="640,360" start="100" end="50" tween="cubic" easing="in"/>
+				<effect type="fade" time="250" center="640,360" start="100" end="0"/>
+			</animation>
+		</control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>0</posy>
+			<animation type="WindowOpen">
+				<effect type="zoom" time="400" center="640,360" start="180" end="100" tween="cubic" easing="out" delay="600"/>
+				<effect type="fade" time="400" center="640,360" start="0" easing="out" end="100" delay="600"/>
+			</animation>
+			<animation type="WindowClose">
+				<effect type="zoom" time="250" center="640,360" start="100" end="180" tween="cubic" easing="in"/>
+				<effect type="fade" time="250" center="640,360" start="100" easing="in" end="0"/>
+			</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<include>screen_Dimensions</include>
+				<texture>startup/startupmorning.png</texture>
+				<aspectratio>keep</aspectratio>
+				<include>fadeinout</include>
+				<visible>system.time(00:00,12:00)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<include>screen_Dimensions</include>
+				<texture>startup/startupafternoon.png</texture>
+				<aspectratio>keep</aspectratio>
+				<include>fadeinout</include>
+				<visible>system.time(12:00,18:00)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<include>screen_Dimensions</include>
+				<texture>startup/startupevening.png</texture>
+				<aspectratio>keep</aspectratio>
+				<include>fadeinout</include>
+				<visible>system.time(18:00,00:00)</visible>
+			</control>
+		</control>
+		<control type="image">
+			<posx>576</posx>
+			<posy>615</posy>
+			<width>123</width>
+			<height>73</height>
+			<texture>logos/plexlogo.png</texture>
+			<include>fadeinout</include>
+		</control>
+	</controls>
+</window>

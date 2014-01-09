@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="PageLabel">
+		<posx>34</posx>
+		<posy>20</posy>
+		<width>950</width>
+		<aligny>center</aligny>
+		<font>pagelabel</font>
+		<textcolor>Color1</textcolor>
+		<include>transition_PageLabel</include>
+		<animation effect="slide" end="25" condition="Control.IsVisible(6100)">Conditional</animation>
+		<visible>!Window.IsActive(busydialog) + !Control.IsVisible(9900) + !Control.IsVisible(531)</visible>
+	</include>
+	
+	<include name="PageLabelInfo">
+		<posx>34</posx>
+		<posy>20</posy>
+		<width>950</width>
+		<aligny>center</aligny>
+		<font>pagelabel</font>
+		<textcolor>Color1</textcolor>
+		<include>transition_PageLabel</include>
+		<animation effect="slide" end="25" condition="Control.IsVisible(6100)">Conditional</animation>
+		<visible>!Window.IsActive(busydialog) + !Control.IsVisible(9900)</visible>
+	</include>
+	
+	<include name="videoLibPageLabels">
+		<!-- page titles with or without scrolloffset visible -->
+		<control type="label">
+			<label>$INFO[Container.FirstTitle] [COLOR=Color2]$INFO[Container.SecondTitle][/COLOR]</label>
+			<include>PageLabel</include>
+			<visible>!Window.IsActive(500) + !Window.IsActive(502) + !Window.IsActive(sharedcontent) + ![Window.IsActive(movieinformation) | Window.IsActive(musicinformation)]</visible>
+		</control>
+		<!-- sharedcontent -->
+		<control type="label">
+			<label>Shared Content</label>
+			<include>PageLabel</include>
+			<visible>Window.IsActive(sharedcontent)</visible>
+		</control>
+		<!-- pictures -->
+		<!--<control type="label">
+			<description>programs</description>
+			<label>[UPPERCASE]$LOCALIZE[1][/UPPERCASE]</label>
+			<include>PageLabel</include>
+			<visible>Control.IsVisible(50) + Window.IsActive(10002)</visible>
+		</control>-->
+		<!-- music playlist -->
+		<control type="label">
+			<label>$LOCALIZE[2] [COLOR=Color2]$LOCALIZE[559][/COLOR]</label>
+			<include>PageLabel</include>
+			<visible>Window.isActive(500)</visible>
+		</control>
+	</include>
+	<include name="videoLibPageLabels2">
+		<!-- video -->
+		<control type="label">
+			<label>$INFO[Container.FirstTitle] [COLOR=Color2]$INFO[Container.SecondTitle][/COLOR]</label>
+			<include>PageLabel</include>
+			<visible>!Window.IsActive(2003)</visible>
+		</control>
+		<!-- pictures -->
+		<control type="label">
+			<description>programs</description>
+			<label>[UPPERCASE]$LOCALIZE[1][/UPPERCASE]</label>
+			<include>PageLabel</include>
+			<visible>Control.IsVisible(50) + Window.IsActive(10002)</visible>
+		</control>
+	</include>
+</includes>

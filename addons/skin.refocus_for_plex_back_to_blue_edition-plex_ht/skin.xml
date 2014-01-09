@@ -1,0 +1,11 @@
+<skin>
+	<defaultresolution>720p</defaultresolution>
+	<defaultresolutionwide>720p</defaultresolutionwide>
+	<defaultthemename>textures.xpr</defaultthemename>
+	<version>2.10</version>
+	<effectslowdown>.75</effectslowdown>
+	<credits>
+		<skinname>reFocus</skinname>
+		<name>Design, Coding and Graphics by Jeroen</name>
+	</credits>
+</skin>

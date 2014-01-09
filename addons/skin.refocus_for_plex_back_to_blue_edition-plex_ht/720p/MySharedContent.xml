@@ -1,0 +1,86 @@
+<window id="6">
+	<defaultcontrol always="false">50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<views>50</views>
+	<controls>
+		<include>global_Background</include>
+		<include>allscreens</include>
+		<include>AllViewCommonPageControls</include>
+		<include>nav_Indicator</include>
+		<!-- FAKE INFO TRIGGER BUTTON -->
+		<control type="button" id="8000">
+			<label>SHOULD NOT SEE ME</label>
+			<onup>53</onup>
+			<ondown>53</ondown>
+			<onleft>53</onleft>
+			<onright>53</onright>
+			<width>500</width>
+			<visible allowhiddenfocus="true">false</visible>
+		</control>
+		<!-- LIST VIEW NEW -->
+		<include>view_List</include>
+		<control type="group">
+			<include>contextMenuHide</include>
+			<include>infoDialogHide</include>
+			<include>transition_Container</include>
+			<visible>Control.IsVisible(50)</visible>
+			<control type="group">
+				<posx>750</posx>
+				<posy>65</posy>
+				<control type="group">
+					<control type="group">
+						<posx>20</posx>
+						<posy>20</posy>
+						<control type="image">
+							<width>203</width>
+							<height>300</height>
+							<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+							<texture background="true" fallback="thumbs/movie_portrait.jpg">$INFO[ListItem(0).Thumb0]</texture>
+							<bordertexture border="6">frames/frame_Square-small.png</bordertexture>
+							<bordersize>6</bordersize>
+						</control>
+						<control type="image">
+							<posx>210</posx>
+							<width>203</width>
+							<height>300</height>
+							<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+							<texture background="true" fallback="thumbs/movie_portrait.jpg">$INFO[ListItem(0).Thumb1]</texture>
+							<bordertexture border="6">frames/frame_Square-small.png</bordertexture>
+							<bordersize>6</bordersize>
+						</control>
+						<control type="image">
+							<posy>307</posy>
+							<width>203</width>
+							<height>300</height>
+							<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+							<texture background="true" fallback="thumbs/movie_portrait.jpg">$INFO[ListItem(0).Thumb2]</texture>
+							<bordertexture border="6">frames/frame_Square-small.png</bordertexture>
+							<bordersize>6</bordersize>
+						</control>
+						<control type="image">
+							<posx>210</posx>
+							<posy>307</posy>
+							<width>203</width>
+							<height>300</height>
+							<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+							<texture background="true" fallback="thumbs/movie_portrait.jpg">$INFO[ListItem(0).Thumb3]</texture>
+							<bordertexture border="6">frames/frame_Square-small.png</bordertexture>
+							<bordersize>6</bordersize>
+						</control>
+					</control>
+					<control type="group">
+						<posx>397</posx>
+						<posy>591</posy>
+						<control type="image">
+							<include>watchedOverlay</include>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		
+		<include>LibraryVideoMenu</include>
+		<include>videoLibPageLabels</include>
+		<include>debugInfos</include>
+	</controls>
+</window>

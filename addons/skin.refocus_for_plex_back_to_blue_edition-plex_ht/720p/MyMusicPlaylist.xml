@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<window id="500">
+	<defaultcontrol always="false">50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<views>50</views>
+	<controls>
+		<include>global_Background</include>
+		<include>allscreens</include>
+		<include>nav_Indicator</include>
+		
+		<include>LibraryPlaylistMenu</include> <!-- menu links -->
+		<include>view_List</include>
+		<include>info_MusicList</include>
+		<include>videoLibPageLabels</include>
+	</controls>
+</window>

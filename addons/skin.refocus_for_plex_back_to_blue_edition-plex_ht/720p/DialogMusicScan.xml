@@ -1,0 +1,30 @@
+<window id="112">
+	<controls>
+		<control type="group">
+			<visible>![Window.IsActive(script-XBMC_Lyrics-main.xml)]</visible>
+			<control type="label" id="401">
+				<posx>130r</posx>
+				<include>toast_Top</include>
+			</control>
+			<control type="label" id="402">
+				<posx>130r</posx>
+				<include>toast_Bottom</include>
+			</control>
+			<control type="label" id="1">
+				<label>$INFO[Control.GetLabel(403),,%]</label>
+				<include>toast_Side</include>
+			</control>
+			<control type="progress" id="403">
+				<posx>15</posx>
+				<posy>71</posy>
+				<width>1300</width>
+				<texturebg>-</texturebg>
+				<lefttexture>-</lefttexture>
+				<midtexture>-</midtexture>
+				<righttexture>-</righttexture>
+				<overlaytexture>-</overlaytexture>
+				<visible>false</visible>
+			</control>
+		</control>
+	</controls>
+</window>

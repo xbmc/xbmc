@@ -1,0 +1,551 @@
+<includes>
+	<!-- POSTER VIEW (posters and flags positions) [updated] -->
+	<!-- large poster view (without right side info) [updated] -->
+	<include name="view_Poster">
+		<control type="panel" id="57">
+			<viewtype label="31009">bigicon</viewtype>
+			<posx>75</posx>
+			<posy>95</posy>
+			<width>1200</width>
+			<height>521</height>
+			<onleft>300</onleft>
+			<onright>64</onright>
+			<onup>57</onup>
+			<ondown>57</ondown>
+			<scrolltime>150</scrolltime>
+			<pagecontrol>64</pagecontrol>
+			<orientation>vertical</orientation>
+			<preloaditems>4</preloaditems>
+			<visible>!Window.IsActive(progressdialog) + [Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)]</visible>
+			<include>transition2</include>
+			<include>contextMenuHide</include>
+			<include>infoDialogHide</include>
+			<animation effect="slide" end="-30" time="150" condition="Container(57).OnNext">Conditional</animation>
+			<itemlayout height="260" width="186">
+				<control type="image">
+					<width>177</width>
+					<height>250</height>
+					<texture fallback="thumbs/movie_portrait.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="177" height="250">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>stretch</aspectratio>
+					<visible>Container.Content(movies)</visible>
+				</control>
+				<control type="image">
+					<width>177</width>
+					<height>250</height>
+					<texture fallback="thumbs/tvshow_portrait.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="177" height="250">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>stretch</aspectratio>
+					<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+				</control>
+				<control type="image">
+					<posx>139</posx>
+					<posy>212</posy>
+					<width>32</width>
+					<height>32</height>
+					<include>watchedOverlay</include>
+					<visible>[Container.Content(movies) + Skin.HasSetting(overlayMovies)] | [Container.Content(tvshows) + Skin.HasSetting(overlayTVShows)] | [Container.Content(seasons) + Skin.HasSetting(overlayTVShows)]</visible>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>220</posy>
+					<width>39</width>
+					<height>24</height>
+					<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/biglistresolution/,.png]</texture>
+					<aspectratio align="right">keep</aspectratio>
+					<visible>Skin.HasSetting(enablehdflags)</visible>
+				</control>
+			</itemlayout>
+			<!-- FOCUSED POSTER -->
+			<focusedlayout height="260" width="186">
+				<control type="image">
+					<width>177</width>
+					<height>250</height>
+					<texture fallback="thumbs/movie_portrait.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="177" height="250">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>stretch</aspectratio>
+					<include>focus_ThumbPoster</include>
+					<visible>Container.Content(movies)</visible>
+				</control>
+				<control type="image">
+					<width>177</width>
+					<height>250</height>
+					<texture fallback="thumbs/tvshow_portrait.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="177" height="250">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>stretch</aspectratio>
+					<include>focus_ThumbPoster</include>
+					<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+				</control>
+				<!-- unwatched movies & shows -->
+				<control type="image">
+					<posx>139</posx>
+					<posy>212</posy>
+					<width>32</width>
+					<height>32</height>
+					<include>watchedOverlay</include>
+					<visible>[Container.Content(movies) + Skin.HasSetting(overlayMovies)] | [Container.Content(tvshows) + Skin.HasSetting(overlayTVShows)] | [Container.Content(seasons) + Skin.HasSetting(overlayTVShows)]</visible>
+					<include>focus_ThumbPoster</include>
+				</control>
+				<!-- unwatched show seasons -->
+				<control type="image">
+					<posx>6</posx>
+					<posy>220</posy>
+					<width>39</width>
+					<height>24</height>
+					<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/biglistresolution/,.png]</texture>
+					<aspectratio align="right">keep</aspectratio>
+					<include>focus_ThumbPoster</include>
+					<visible>[Skin.HasSetting(onlyfocusflagpanel) | Skin.HasSetting(enablehdflags)]</visible>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	<!-- poster view with right side info [updated] -->
+	<include name="view_PosterInfo">
+		<control type="panel" id="571">
+			<viewtype label="31009">bigicon</viewtype>
+			<posx>55</posx>
+			<posy>110</posy>
+			<width>700</width>
+			<height>570</height>
+			<onleft>300</onleft>
+			<onright>77</onright>
+			<onup>571</onup>
+			<ondown>571</ondown>
+			<scrolltime>150</scrolltime>
+			<pagecontrol>77</pagecontrol>
+			<orientation>vertical</orientation>
+			<preloaditems>4</preloaditems>
+			<visible>!Window.IsActive(progressdialog) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
+			<include>transition2</include>
+			<include>contextMenuHide</include>
+			<include>infoDialogHide</include>
+			<itemlayout height="190" width="140">
+			
+				<control type="image">
+					<width>134</width>
+					<height>185</height>
+					<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+					<texture background="true" fallback="thumbs/tvshow_portrait.jpg">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+				</control>
+				<control type="image">
+					<width>134</width>
+					<height>185</height>
+					<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+					<texture background="true" fallback="thumbs/movie_portrait.jpg">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<visible>Container.Content(movies)</visible>
+				</control>
+				<control type="image">
+					<posx>96</posx>
+					<posy>147</posy>
+					<width>32</width>
+					<height>32</height>
+					<include>watchedOverlay</include>
+					<visible>[Container.Content(movies) + Skin.HasSetting(overlayMovies)] | [Container.Content(tvshows) + Skin.HasSetting(overlayTVShows)]</visible>
+				</control>
+				<control type="image">
+					<posx>1</posx>
+					<posy>158</posy>
+					<width>39</width>
+					<height>20</height>
+					<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/biglistresolution/,.png]</texture>
+					<aspectratio align="right">keep</aspectratio>
+					<visible>Skin.HasSetting(enablehdflags)</visible>
+				</control>
+			</itemlayout>
+			<!-- focused poster -->
+			<focusedlayout height="190" width="140">
+			
+				<control type="image">
+					<width>134</width>
+					<height>185</height>
+					<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+					<texture background="true" fallback="thumbs/tvshow_portrait.jpg">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<include>focus_ThumbPosterInfo</include>
+					<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+				</control>
+				<control type="image">
+					<width>134</width>
+					<height>185</height>
+					<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+					<texture background="true" fallback="thumbs/movie_portrait.jpg">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<include>focus_ThumbPosterInfo</include>
+					<visible>Container.Content(movies)</visible>
+				</control>
+				<control type="image">
+					<posx>96</posx>
+					<posy>147</posy>
+					<width>32</width>
+					<height>32</height>
+					<include>watchedOverlay</include>
+					<include>focus_ThumbPosterInfo</include>
+					<visible>[Container.Content(movies) + Skin.HasSetting(overlayMovies)] | [Container.Content(tvshows) + Skin.HasSetting(overlayTVShows)]</visible>
+				</control>
+				<control type="image">
+					<posx>1</posx>
+					<posy>158</posy>
+					<width>39</width>
+					<height>20</height>
+					<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/biglistresolution/,.png]</texture>
+					<aspectratio align="right">keep</aspectratio>
+					<include>focus_ThumbPosterInfo</include>
+					<visible>Skin.HasSetting(onlyfocusflagpanel) | Skin.HasSetting(enablehdflags)</visible>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	
+	<!---WIDE------>
+	<include name="view_IconFiles">
+		<control type="panel" id="573">
+			<viewtype label="Thumbnails">bigicon</viewtype>
+			<posx>80</posx>
+			<posy>104</posy>
+			<width>1240</width>
+			<height>510</height>
+			<onleft>300</onleft>
+			<onright>83</onright>
+			<onup>573</onup>
+			<ondown>573</ondown>
+			<preloaditems>2</preloaditems>
+			<pagecontrol>83</pagecontrol>
+			<scrolltime tween="Cubic" easing="Out">400</scrolltime>
+			<include>transition_Container</include>
+			<include>infoDialogHide</include>
+			<include>contextMenuHide</include>
+			<visible>[Window.IsActive(mypictures) | Container.Content(artists)]</visible>
+			<itemlayout height="170" width="220">
+				<control type="image">
+					<width>215</width>
+					<height>165</height>
+					<texture fallback="thumbs/artist_landscape.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="200" height="150">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>scale</aspectratio>
+					<visible>Container.Content(artists)</visible>
+				</control>
+				<control type="image">
+					<posx>7</posx>
+					<posy>6</posy>
+					<width>203</width>
+					<height>153</height>
+					<texture background="true">black.png</texture>
+					<aspectratio>scale</aspectratio>
+					<visible>Window.IsActive(mypictures)</visible>
+				</control>
+				<control type="image">
+					<width>215</width>
+					<height>165</height>
+					<texture fallback="thumbs/picture_landscape.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="200" height="150">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>scale</aspectratio>
+					<visible>Window.IsActive(mypictures)</visible>
+				</control>
+			</itemlayout>
+			<focusedlayout height="170" width="220">
+				<control type="image">
+					<width>215</width>
+					<height>165</height>
+					<texture fallback="thumbs/artist_landscape.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="200" height="150">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>scale</aspectratio>
+					<include>focus_WideThumbs</include>
+					<visible>Container.Content(artists)</visible>
+				</control>
+				<control type="image">
+					<posx>7</posx>
+					<posy>6</posy>
+					<width>203</width>
+					<height>153</height>
+					<texture background="true">black.png</texture>
+					<aspectratio>scale</aspectratio>
+					<include>focus_WideThumbs</include>
+					<visible>Window.IsActive(mypictures)</visible>
+				</control>
+				<control type="image">
+					<width>215</width>
+					<height>165</height>
+					<texture fallback="thumbs/picture_landscape.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="200" height="150">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>scale</aspectratio>
+					<include>focus_WideThumbs</include>
+					<visible>Window.IsActive(mypictures)</visible>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	
+	<!---SQUARE ADD-ONS------>
+	<include name="view_IconSquare">
+		<control type="group">
+			<include>transition_Container</include>
+			<include>infoDialogHide</include>
+			<include>contextMenuHide</include>
+			<visible>Control.IsVisible(574)</visible>
+			<!--info-->
+			<control type="grouplist" id="1000">
+				<posx>800</posx>
+				<posy>120</posy>
+				<itemgap>0</itemgap>
+				<control type="label" id="1">
+					<width>405</width>
+					<label>$INFO[ListItem.Label]</label>
+					<include>info_Title</include>
+				</control>
+				<control type="label">
+					<label></label>
+					<height>10</height>
+				</control>
+				<control type="textbox" id="4">
+					<width>405</width>
+					<height>413</height>
+					<label>$INFO[ListItem.Plot]</label>
+					<include>description_Small</include>
+					<textcolor>Color1</textcolor>
+				</control>
+			</control>
+			<!--container-->
+			<control type="panel" id="574">
+				<viewtype label="Thumbnails">bigicon</viewtype>
+				<posx>35</posx>
+				<posy>115</posy>
+				<width>760</width>
+				<height>540</height>
+				<onleft>300</onleft>
+				<onright>78</onright>
+				<onup>574</onup>
+				<ondown>574</ondown>
+				<pagecontrol>78</pagecontrol>
+				<preloaditems>2</preloaditems>
+				<scrolltime tween="Cubic" easing="Out">400</scrolltime>
+				<visible>Window.IsVisible(programs) | Window.IsVisible(addonbrowser)</visible>
+				<itemlayout height="180" width="180">
+					<control type="image">
+						<width>176</width>
+						<height>176</height>
+						<texture background="true">thumbs/addon_empty.png</texture>
+						<bordertexture border="6" width="200" height="150">frames/frame_Square-small.png</bordertexture>
+						<bordersize>6</bordersize>
+						<aspectratio>stretch</aspectratio>
+					</control>
+					<control type="image">
+						<width>176</width>
+						<height>176</height>
+						<texture fallback="thumbs/addon.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+						<bordertexture border="6" width="200" height="150"></bordertexture>
+						<bordersize>6</bordersize>
+						<aspectratio>stretch</aspectratio>
+					</control>
+				</itemlayout>											
+				<focusedlayout height="180" width="180">
+					<control type="image">
+						<width>176</width>
+						<height>176</height>
+						<texture background="true">thumbs/addon_empty.png</texture>
+						<bordertexture border="6" width="200" height="150">frames/frame_Square-small.png</bordertexture>
+						<bordersize>6</bordersize>
+						<aspectratio>stretch</aspectratio>
+						<include>focus_Thumbs</include>
+					</control>
+					<control type="image">
+						<width>176</width>
+						<height>176</height>
+						<texture fallback="thumbs/addon.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+						<bordertexture border="6" width="200" height="150"></bordertexture>
+						<bordersize>6</bordersize>
+						<aspectratio>stretch</aspectratio>
+						<include>focus_Thumbs</include>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+	
+	
+	<!---BIGWIDE------>
+	<include name="view_ThumbEpisode">
+		<control type="panel" id="575">
+			<viewtype label="Thumbnails">bigicon</viewtype>
+			<posx>45</posx>
+			<posy>110</posy>
+			<width>1240</width>
+			<height>560</height>
+			<onleft>300</onleft>
+			<onright>85</onright>
+			<onup>575</onup>
+			<ondown>575</ondown>
+			<pagecontrol>85</pagecontrol>
+			<preloaditems>2</preloaditems>
+			<scrolltime tween="Cubic" easing="Out">400</scrolltime>
+			<include>transition_Container</include>
+			<include>infoDialogHide</include>
+			<include>contextMenuHide</include>
+			<visible>Container.Content(episodes)</visible>
+			<itemlayout height="280" width="400">
+				<control type="image">
+					<width>390</width>
+					<height>238</height>
+					<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="40">frames/frame_Square.png</bordertexture>
+					<bordersize>22</bordersize>
+					<aspectratio align="center">scale</aspectratio>
+				</control>
+				<control type="image">
+					<posx>31</posx>
+					<posy>142</posy>
+					<width>156</width>
+					<height>64</height>
+					<texture background="true">$INFO[Listitem.TVShowTitle,../../extra.tvshowlogos/,.png]</texture>
+					<aspectratio align="center">keep</aspectratio>
+					<visible>!IsEmpty(Container.Property(mixedParents)) + Skin.HasSetting(tvshowlogos.enable)</visible>
+				</control>
+				<control type="group">
+					<posx>25</posx>
+					<posy>222</posy>
+					<control type="label" id="110">
+						<width>335</width>
+						<label>$INFO[ListItem.Title]</label>
+						<font>smallCaps</font>
+						<textcolor>Color1</textcolor>
+						<visible>IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label" id="110">
+						<width>335</width>
+						<label>$INFO[ListItem.TVShowTitle] : $INFO[ListItem.Title]</label>
+						<font>smallCaps</font>
+						<textcolor>Color1</textcolor>
+						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label" id="110">
+						<posy>20</posy>
+						<width>335</width>
+						<label>$INFO[ListItem.Season,$LOCALIZE[20373] , - ]$INFO[ListItem.Episode,$LOCALIZE[20359] ]$INFO[ListItem.Date, • ]</label>
+						<font>smallCaps</font>
+						<textcolor>Color2</textcolor>
+					</control>
+				</control>
+				<control type="image">
+					<posx>336</posx>
+					<posy>184</posy>
+					<include>watchedOverlay</include>
+				</control>
+			</itemlayout>											
+			<focusedlayout height="280" width="400">
+				<control type="image">
+					<posx>12</posx>
+					<posy>12</posy>
+					<width>366</width>
+					<height>214</height>
+					<texture border="10">frames/frame_Square-border.png</texture>
+				</control>
+				<control type="image">
+					<width>390</width>
+					<height>238</height>
+					<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordersize>22</bordersize>
+					<aspectratio align="center">scale</aspectratio>
+				</control>
+				<control type="image">
+					<posx>31</posx>
+					<posy>142</posy>
+					<width>156</width>
+					<height>64</height>
+					<texture background="true">$INFO[Listitem.TVShowTitle,../../extra.tvshowlogos/,.png]</texture>
+					<aspectratio align="center">keep</aspectratio>
+					<visible>!IsEmpty(Container.Property(mixedParents)) + Skin.HasSetting(tvshowlogos.enable)</visible>
+				</control>
+				<control type="group">
+					<posx>25</posx>
+					<posy>222</posy>
+					<control type="label" id="110">
+						<width>335</width>
+						<label>$INFO[ListItem.Title]</label>
+						<font>smallCaps</font>
+						<textcolor>Color1</textcolor>
+						<visible>IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label" id="110">
+						<width>335</width>
+						<label>$INFO[ListItem.TVShowTitle] : $INFO[ListItem.Title]</label>
+						<font>smallCaps</font>
+						<textcolor>Color1</textcolor>
+						<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+					</control>
+					<control type="label" id="110">
+						<posy>20</posy>
+						<width>335</width>
+						<label>$INFO[ListItem.Season,$LOCALIZE[20373] , - ]$INFO[ListItem.Episode,$LOCALIZE[20359] ]$INFO[ListItem.Date, • ]</label>
+						<font>smallCaps</font>
+						<textcolor>Color2</textcolor>
+					</control>
+				</control>
+				<control type="image">
+					<posx>336</posx>
+					<posy>184</posy>
+					<include>watchedOverlay</include>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	
+	<!---SQUARE (ALBUMS)------>
+	<include name="view_IconSquare2">
+		<control type="panel" id="572">
+			<viewtype label="Thumbnails">icons</viewtype>
+			<posx>45</posx>
+			<posy>95</posy>
+			<width>1240</width>
+			<height>507</height>
+			<onleft>300</onleft>
+			<onright>86</onright>
+			<onup>572</onup>
+			<ondown>572</ondown>
+			<pagecontrol>86</pagecontrol>
+			<preloaditems>2</preloaditems>
+			<scrolltime tween="Cubic" easing="Out">400</scrolltime>
+			<include>transition_Container</include>
+			<include>infoDialogHide</include>
+			<include>contextMenuHide</include>
+			<animation effect="slide" end="0,15" condition="true">Conditional</animation>
+			<visible>Container.Content(albums) | Container.Content(songs)</visible>
+			<itemlayout height="169" width="169">
+				<control type="image">
+					<width>169</width>
+					<height>169</height>
+					<texture fallback="thumbs/album.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="169" height="169">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>scale</aspectratio>
+				</control>
+			</itemlayout>											
+			<focusedlayout height="169" width="169">
+				<control type="image">
+					<width>169</width>
+					<height>169</height>
+					<texture fallback="thumbs/album.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="6" width="169" height="169">frames/frame_Square-small.png</bordertexture>
+					<bordersize>6</bordersize>
+					<aspectratio>scale</aspectratio>
+					<include>focus_Thumbs</include>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	
+</includes>

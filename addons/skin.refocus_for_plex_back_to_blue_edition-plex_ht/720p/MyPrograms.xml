@@ -1,0 +1,21 @@
+<window id="1">
+	<defaultcontrol always="false">50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<previouswindow>Home</previouswindow>	
+	<views>50,574</views>
+	
+	<controls>
+		<include>global_Background</include>	
+		<include>contextMenuHide</include>
+		<include>view_List</include>
+		<include>view_IconSquare</include>
+		<include>allscreens</include>
+
+<include>info_AddonList</include>
+
+		<include>nav_Indicator</include>
+		<include>FilesMenu</include>
+		<include>videoLibPageLabels</include>
+		<include>debugInfos</include>
+	</controls>
+</window>

@@ -1,0 +1,44 @@
+<window id="106">
+	<defaultcontrol>1000</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+		<origin x="455" y="100" />
+	</coordinates>
+	<controls>
+		<!--top image-->
+		<control type="image" id="997">
+			<posy>-22</posy>
+			<width>353</width>
+			<height>22</height>
+			<texture border="22,22,22,0">new_dialogs/contextmenu-top.png</texture>
+		</control>
+		<!--background image-->
+		<control type="image" id="999">
+			<posx>0</posx>
+			<width>353</width>
+			<texture border="22">new_dialogs/contextmenu-center.png</texture>
+		</control>
+		<!--bottom background-->
+		<control type="image" id="998">
+			<posx>0</posx>
+			<posy>45</posy>
+			<width>353</width>
+			<height>22</height>
+			<texture border="22,22,22,0">new_dialogs/contextmenu-bottom.png</texture>
+		</control>
+		<control type="image">
+			<posx>9</posx>
+			<width>335</width>
+			<include>dialog_Separator</include>
+		</control>
+		<!--default button-->
+		<control type="button" id="1000">
+			<posx>9</posx>
+			<width>335</width>
+			<include>dialog_Button-list</include>
+		</control>
+	</controls>
+</window>

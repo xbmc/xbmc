@@ -1,0 +1,122 @@
+<window id="2">
+	<defaultcontrol always="false">50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<views>50,573,53</views>
+	<controls>
+		<include>global_Background</include>
+		<include>allscreens</include>
+		<include>AllViewCommonPageControls</include>
+		<include>nav_Indicator</include>
+		<include>view_List</include>
+		
+		<!-- FAKE INFO BUTTON -->
+		<control type="button" id="8000">
+			<label>SHOULD NOT SEE ME</label>
+			<onup>53</onup>
+			<ondown>53</ondown>
+			<onleft>53</onleft>
+			<onright>53</onright>
+			<width>200</width>
+			<visible allowhiddenfocus="true">false</visible>
+		</control>
+			
+<!--- LIST VIEW -->
+		<control type="group">
+			<include>infoDialogHide</include>
+			<include>transition2</include>
+			<include>contextMenuHide</include>
+			<visible>Control.IsVisible(50)</visible>
+			<control type="group">
+				<posx>650</posx>
+				<posy>60</posy>
+				<control type="image">
+					<width>580</width>
+					<height>650</height>
+					<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordersize>22</bordersize>
+					<aligny>top</aligny>
+					<aspectratio align="center">keep</aspectratio>
+					<fadetime>fadetime_Thumb</fadetime>
+					<visible>ListItem.IsFolder</visible>
+				</control>
+				<control type="image">
+					<width>580</width>
+					<height>650</height>
+					<texture fallback="thumbs/picture_landscape.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture border="31" width="400" height="315">frames/frame_Square.png</bordertexture>
+					<bordersize>22</bordersize>
+					<aligny>top</aligny>
+					<aspectratio align="center">keep</aspectratio>
+					<fadetime>fadetime_Thumb</fadetime>
+					<visible>!ListItem.IsFolder</visible>
+				</control>
+			</control>
+		</control>
+		<!---addons--->
+		<include>info_AddonList</include>
+		
+<!---THUMBNAILS VIEW------>
+		<include>view_IconFiles</include>
+		<control type="group">
+			<visible>Control.IsVisible(573)</visible>
+			<include>transition_Info</include>
+			<include>contextMenuHide</include>
+			<posx>85</posx>
+			<posy>640</posy>
+			<control type="label">
+				<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+				<font>title</font>
+				<textcolor>Color1</textcolor>
+				<align>left</align>
+				<width>900</width>
+			</control>
+			<control type="label">
+				<posy>25</posy>
+				<label>$INFO[Listitem.PictureResolution)]$INFO[ListItem.PictureDateTime, • ]</label>
+				<font>info</font>
+				<textcolor>Color2</textcolor>
+				<align>left</align>
+				<width>750</width>
+			</control>
+		</control>
+		
+<!---GALLERY VIEW------>
+		<include>view_Gallery</include>
+		<control type="group">
+			<posx>265</posx>
+			<posy>105</posy>
+			<include>transition_Info</include>
+			<include>contextMenuHide</include>
+			<include>infoDialogHide</include>
+			<visible>Control.IsVisible(53)</visible>
+			<control type="group">
+				<posy>480</posy>
+				<control type="label">
+					<label>[UPPERCASE]$INFO[ListItem.PictureResolution,$LOCALIZE[21805] - ][/UPPERCASE]</label>
+					<width>940</width>
+					<include>info_TitleSmall</include>
+				</control>
+				<!-- werkt niet in Plex
+				<control type="label">
+					<posy>23</posy>
+					<label>[UPPERCASE]$INFO[ListItem.Size][/UPPERCASE]</label>
+					<width>750</width>
+					<include>info_Sub</include>
+				</control>
+				-->
+				<control type="label">
+					<posy>46</posy>
+					<label>[UPPERCASE]$INFO[ListItem.PictureDateTime][/UPPERCASE]</label>
+					<width>750</width>
+					<include>info_Sub</include>
+				</control>
+			</control>
+		</control>
+		
+		
+		<include>LibraryVideoMenu</include>
+		<include>videoLibPageLabels</include>
+	</controls>
+	
+	
+</window>

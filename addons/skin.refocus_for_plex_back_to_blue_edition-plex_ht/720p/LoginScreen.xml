@@ -1,0 +1,110 @@
+<window id="29">
+	<defaultcontrol>52</defaultcontrol>
+
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+
+	<controls>
+		<include>startupSlides</include>
+
+		<control type="group">
+			<posx>390</posx>
+			<posy>200</posy>
+			<animation type="WindowOpen">
+				<effect type="zoom" start="80" end="100" center="640,360" tween="back" time="250" />
+				<effect type="fade" start="0" end="100" time="400" />
+			</animation>
+	
+			<control type="image">
+				<width>500</width>
+				<height>250</height>
+				<include>dialogWindow</include>
+			</control>
+	
+			<control type="label" id="1">
+				<description>Heading Label</description>
+				<posx>34</posx>
+				<width>432</width>
+				<label>please select user</label>
+				<include>dialogHeading</include>
+				<include>fadeinout</include>
+			</control>
+	
+			<control type="image">
+				<posx>213</posx>
+				<posy>75</posy>
+				<width>72</width>
+				<height>72</height>
+				<texture diffuse="frames/albumFrameMaskSmall.png">$INFO[ListItem.Icon]</texture>
+				<aspectratio scalediffuse="false">stretch</aspectratio>
+				<include>fadeinout</include>
+			</control>
+			
+			<control type="image">
+				<posx>34</posx>
+				<posy>99</posy>
+				<width>24</width>
+				<height>24</height>
+				<texture>dialogs/scrollLeftIndicator.png</texture>
+				<aspectratio>keep</aspectratio>
+				<include>fadeinout</include>
+			</control>
+			<control type="image">
+				<posx>445</posx>
+				<posy>99</posy>
+				<width>24</width>
+				<height>24</height>
+				<texture>dialogs/scrollRightIndicator.png</texture>
+				<aspectratio>keep</aspectratio>
+				<include>fadeinout</include>
+			</control>
+		
+			<control type="wraplist" id="52">
+				<posx>34</posx>
+				<posy>160</posy>
+				<width>432</width>
+				<height>121</height>
+				<onleft>52</onleft>
+				<onright>52</onright>
+				<onup>-</onup>
+				<ondown>-</ondown>
+				<focusposition>0</focusposition>
+				<orientation>horizontal</orientation>
+				<include>fadeinout</include>
+	
+				<itemlayout height="40" width="432">
+				</itemlayout>
+	
+				<focusedlayout height="40"  width="432">
+					<control type="image">
+						<posy>0</posy>
+						<width>432</width>
+						<height>40</height>
+						<texture border="0,30,0,30">-black.png</texture>
+					</control>
+					<control type="label">
+						<posx>216</posx>
+						<width>432</width>
+						<font>titleAlt</font>
+						<textcolor>Color4</textcolor>
+						<align>center</align>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+					</control>
+					<control type="label">
+						<posx>216</posx>
+						<posy>28</posy>
+						<width>432</width>
+						<font>small</font>
+						<align>center</align>
+						<aligny>center</aligny>
+						<textcolor>Color4</textcolor>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+	</controls>
+</window>

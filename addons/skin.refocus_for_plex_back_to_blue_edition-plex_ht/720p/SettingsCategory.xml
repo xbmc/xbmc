@@ -1,0 +1,158 @@
+<window id="12">
+	<defaultcontrol>888</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<include>global_Background</include>
+		
+		<include>allscreens</include>
+		<!-- reFocus logo -->
+		<control type="group">
+			<posx>5</posx>
+			<posy>555</posy>
+			<include>newtypelogo</include>
+		</control>
+		<!-- Shadow layer to darken options bg -->
+		<control type="group">
+			<animation effect="fade" start="100" end="60" time="350" condition="true">Conditional</animation>
+			<control type="image">
+				<posx>383</posx>
+				<posy>121</posy>
+				<height>509</height>
+				<width>2000</width>
+				<texture flipx="true">dialogs/square_menu_background.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="50"/>
+				</animation>
+			</control>
+		</control>
+		<!-- white separators top and bottom sub-menu -->
+		<control type="image">
+			<posx>414</posx>
+			<posy>132</posy>
+			<height>10</height>
+			<width>1000</width>
+			<texture>dialogs/sliderBackground_.png</texture>
+			<aspectratio align="right">stretch</aspectratio>
+			<include>transition2</include>
+			<animation type="Conditional" condition="true">
+				<effect type="fade" start="0" end="80"/>
+			</animation>
+			<!--<visible>!Control.HasFocus(300) + [ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()]</visible>-->
+		</control>
+		<control type="image">
+			<posx>414</posx>
+			<posy>610</posy>
+			<height>10</height>
+			<width>1000</width>
+			<texture>dialogs/sliderBackground_.png</texture>
+			<aspectratio align="right">stretch</aspectratio>
+			<include>transition2</include>
+			<animation type="Conditional" condition="true">
+				<effect type="fade" start="0" end="80"/>
+			</animation>
+			<!--<visible>!Control.HasFocus(300) + [ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()]</visible>-->
+		</control>
+		<control type="group">
+			<control type="label">
+				<include>PageLabel</include>
+				<label>$LOCALIZE[10507] </label>
+				<visible>Window.IsActive(settings)</visible>
+			</control>
+			<control type="label">
+				<include>PageLabel</include>
+				<label>$LOCALIZE[5] [COLOR=Color2]$LOCALIZE[480][/COLOR]</label>
+				<visible>Window.IsActive(appearancesettings)</visible>
+			</control>
+			<control type="label">
+				<include>PageLabel</include>
+				<label>$LOCALIZE[157] [COLOR=Color2]$LOCALIZE[5][/COLOR]</label>
+				<visible>Window.IsActive(videossettings)</visible>
+			</control>
+			<control type="label">
+				<include>PageLabel</include>
+				<label>$LOCALIZE[0] [COLOR=Color2]$LOCALIZE[5][/COLOR]</label>
+				<visible>Window.IsActive(programssettings)</visible>
+			</control>
+			<control type="label">
+				<include>PageLabel</include>
+				<label>$LOCALIZE[2] [COLOR=Color2]$LOCALIZE[5][/COLOR]</label>
+				<visible>Window.IsActive(musicsettings)</visible>
+			</control>
+			<control type="label">
+				<include>PageLabel</include>
+				<label>$LOCALIZE[1] [COLOR=Color2]$LOCALIZE[5][/COLOR]</label>
+				<visible>Window.IsActive(picturessettings)</visible>
+			</control>
+			<control type="label">
+				<include>PageLabel</include>
+				<label>$LOCALIZE[705] [COLOR=Color2]$LOCALIZE[5][/COLOR]</label>
+				<visible>Window.IsActive(networksettings)</visible>
+			</control>
+			<control type="label"><include>PageLabel</include><label>$LOCALIZE[12600] [COLOR=Color2]$LOCALIZE[5][/COLOR]</label>&gt;
+				<visible>Window.IsActive(weathersettings)</visible></control>
+			<control type="label">
+				<include>PageLabel</include>
+				<label>$LOCALIZE[13000] [COLOR=Color2]$LOCALIZE[5][/COLOR]</label>
+				<visible>Window.IsActive(systemsettings)</visible>
+			</control>
+		</control>
+		<control type="group">
+			<control type="grouplist" id="3">
+				<description>button area</description>
+				<posx>38</posx>
+				<posy>150</posy>
+				<height>410</height>
+				<itemgap>0</itemgap>
+				<onleft>-</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<include>transition2</include>
+				<visible>!Window.IsActive(progressdialog)</visible>
+			</control>
+			<control type="grouplist" id="5">
+				<description>control area</description>
+				<posx>383</posx>
+				<posy>150</posy>
+				<width>850</width>
+				<height>600</height>
+				<itemgap>0</itemgap>
+				<onleft>3</onleft>
+				<onright>-</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+				<include>transition2</include>
+				<visible>!Window.IsActive(progressdialog)</visible>
+			</control>
+			<control type="button" id="7">
+				<description>Default Button</description>
+				<include>newHomeMenuSubSettingsButton</include>
+			</control>
+			<control type="radiobutton" id="8">
+				<description>Default RadioButton</description>
+				<include>newHomeMenuSubSettingsButton</include>
+			</control>
+			<control type="spincontrolex" id="9">
+				<description>Default SpinControlex</description>
+				<include>newHomeMenuSubSettingsButton</include>
+			</control>
+			<control type="button" id="10">
+				<description>Default Category Button</description>
+				<label>[UPPERCASE]224[/UPPERCASE]</label>
+				<include>newSettingsCategoryButton</include>
+			</control>
+		</control>
+		<control type="image">
+			<posx>354</posx>
+			<posy>0</posy>
+			<height>720</height>
+			<width>29</width>
+			<texture>settings/separator.png</texture>
+			<aspectratio align="right">stretch</aspectratio>
+			<include>transition2</include>
+			<visible>!Window.IsActive(progressdialog)</visible>
+		</control>
+	</controls>
+</window>

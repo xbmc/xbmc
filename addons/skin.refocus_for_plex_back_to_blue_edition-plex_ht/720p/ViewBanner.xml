@@ -1,0 +1,140 @@
+<includes>
+<!-- BANNER VIEW (TV SHOWS mod view) [updated] -->
+	<include name="view_Banner">
+		<control type="fixedlist" id="54">
+			<viewtype label="535">bigwide</viewtype>
+			<posx>225</posx>
+			<posy>76</posy>
+			<width>1000</width>
+			<height>605</height>
+			<onleft>300</onleft>
+			<onright>76</onright>
+			<onup>54</onup>
+			<ondown>54</ondown>
+			<focusposition>2</focusposition>
+			<wraparound>true</wraparound>
+			<scrolltime tween="Cubic" easing="Out">300</scrolltime>
+			<pagecontrol>76</pagecontrol>
+			<include>transition_Container</include>
+			<include>infoDialogHide</include>
+			<include>contextMenuHide</include>
+			<visible>Container.Content(tvshows)</visible>
+			<itemlayout condition="Container.Content(tvshows)" width="560" height="65">
+				<control type="label">
+					<posx>55</posx>
+					<width>700</width>
+					<label>$INFO[ListItem.Title]</label>
+					<font>listBig</font>
+				</control>
+				<control type="label">
+					<posx>55</posx>
+					<width>700</width>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>IsEmpty(ListItem.Title)</visible>
+					<font>listBig</font>
+				</control>
+				<control type="label">
+					<posx>55</posx>
+					<posy>27</posy>
+					<width>700</width>
+					<label>$INFO[ListItem.Genre]</label>
+					<font>listInfo</font>
+					<textcolor>Color2</textcolor>
+				</control>
+				<control type="image">
+					<posx>685</posx>
+					<posy>12</posy>
+					<width>128</width>
+					<height>22</height>
+					<texture>$INFO[ListItem.StarRating]</texture>
+					<colordiffuse>Color7</colordiffuse>
+					<aspectratio align="right">keep</aspectratio>
+					<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+					<visible>!Skin.HasSetting(hideratings)</visible>
+				</control>
+			</itemlayout>
+			<!-- FOCUSED BANNER -->
+			<focusedlayout condition="Container.Content(tvshows)" width="560" height="290">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>836</width>
+					<height>295</height>
+					<include>dialogWindow</include>
+					<include>focus_Banner</include>
+				</control>
+				
+				<control type="image">
+					<posx>19</posx>
+					<posy>16</posy>
+					<width>800</width>
+					<height>148</height>
+					<texture diffuse="frames/frame_Wide-mask.png" fallback="thumbs/tvshow_banner.jpg" background="true">$INFO[ListItem.Banner]</texture>
+					<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+					<include>focus_Banner</include>
+				</control>
+				<control type="image">
+					<posx>19</posx>
+					<posy>164</posy>
+					<width>800</width>
+					<include>dialog_Separator</include>
+					<include>focus_Banner</include>
+				</control>
+				<control type="label">
+					<posx>34</posx>
+					<posy>178</posy>
+					<label>$INFO[ListItem.TVShowTitle]</label>
+					<font>title</font>
+					<textcolor>Color5</textcolor>
+					<align>left</align>
+					<width>1100</width>
+					<include>focus_Banner</include>
+				</control>
+				<control type="label">
+					<posx>34</posx>
+					<posy>210</posy>
+					<label>$INFO[ListItem.Genre]</label>
+					<font>info</font>
+					<textcolor>Color4</textcolor>
+					<align>left</align>
+					<width>900</width>
+					<include>focus_Banner</include>
+					<visible>![IsEmpty(ListItem.TVShowTitle) + IsEmpty(ListItem.Property(UnWatchedEpisodes))]</visible>
+				</control>
+				<control type="label">
+					<posx>34</posx>
+					<posy>234</posy>
+					<label>$LOCALIZE[16101] : $INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[20360]</label>
+					<font>info</font>
+					<textcolor>Color4</textcolor>
+					<align>left</align>
+					<width>900</width>
+					<include>focus_Banner</include>
+					<visible>![IsEmpty(ListItem.TVShowTitle) + IsEmpty(ListItem.Property(UnWatchedEpisodes))]</visible>
+				</control>
+				<control type="image">
+					<posx>678</posx>
+					<posy>180</posy>
+					<width>128</width>
+					<height>22</height>
+					<texture>$INFO[ListItem.StarRating]</texture>
+					<colordiffuse>Color4</colordiffuse>
+					<aspectratio align="right">keep</aspectratio>
+					<include>focus_Banner</include>
+					<visible>!SubString(ListItem.Icon,default)</visible>
+					<visible>!Skin.HasSetting(hideratings)</visible>
+				</control>
+				<control type="image">
+					<posx>678</posx>
+					<posy>214</posy>
+					<width>128</width>
+					<height>48</height>
+					<aspectratio align="right">keep</aspectratio>
+					<colordiffuse>Color4</colordiffuse>
+					<texture>$INFO[ListItem.Property(mediaTag-Studio),flags/tvshows/mono/,.png]</texture>
+					<include>focus_Banner</include>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+</includes>

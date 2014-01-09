@@ -1,0 +1,64 @@
+<window id="200">
+    <coordinates>
+    	<system>1</system>
+    	<posx>0</posx>
+    	<posy>0</posy>
+    </coordinates>
+
+
+    <controls>
+        <control type="group">
+            <posx>448</posx>
+            <posy>250</posy>
+		<include>dialogOpen</include>
+            
+            <control type="image">
+                <texture>new_dialogs/contextmenu-top.png</texture>
+                <posx>0</posx>
+                <posy>0</posy>
+                <width>365</width>
+                <height>22</height>
+            </control>
+
+            <control type="image">
+                <texture>new_dialogs/contextmenu-center.png</texture>
+                <posx>-1</posx>
+                <posy>22</posy>
+                <width>366</width>
+                <height>130</height>
+            </control>
+
+            <control type="image">
+                <texture>new_dialogs/contextmenu-bottom.png</texture>
+                <posx>-1</posx>
+                <posy>152</posy>
+                <width>366</width>
+                <height>24</height>
+            </control>
+
+			
+            
+            <control type="label" id="1">
+                <posy>16</posy>
+                <width>366</width>
+                <align>center</align>
+                <label>Set Rating</label>
+				<include>dialog_Label</include>            
+			</control>
+            
+            <control type="label" id="2">
+                <posy>40</posy>
+                <width>366</width>
+                <align>center</align>
+                <label>Set Rating</label>
+				<include>dialog_Label</include> 
+            </control>
+            
+            <control type="image" id="10">
+                <posx>56</posx>
+                <posy>88</posy>
+                <texture>rating0.png</texture>
+            </control>
+        </control>
+    </controls>
+</window>

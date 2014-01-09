@@ -1,0 +1,63 @@
+<window id="2004">
+	<defaultcontrol>61</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>350</posx>
+		<posy>170</posy>
+	</coordinates>
+	
+	<controls>
+
+		<control type="image" id="0">
+			<width>580</width>
+			<height>450</height>
+			<include>dialogWindow</include>
+		</control>
+		
+		<control type="label" id="1">
+			<description>Heading Label</description>
+			<posx>34</posx>
+			<width>512</width>
+			<label>262</label>
+			<include>dialogHeading</include>
+		</control>
+		<control type="image">
+			<posx>19</posx>
+			<posy>75</posy>
+			<width>543</width>
+			<height>1</height>
+			<texture>dialogSeparator.png</texture>
+		</control>
+		
+		<control type="group">
+			<posx>34</posx>
+			<posy>76</posy>
+	
+			<control type="textbox" id="5">
+				<description>textarea</description>
+				<width>490</width>
+				<height>340</height>
+				<label>-</label>
+				<align>justify</align>
+				<aligny>top</aligny>
+				<textcolor>Color4</textcolor>
+				<shadowcolor>Color1</shadowcolor>
+				<pagecontrol>61</pagecontrol>
+				<include>textBox</include>
+			</control>
+	
+			<control type="scrollbar" id="61">
+				<posx>505</posx>
+				<posy>0</posy>
+				<height>355</height>
+				<onleft>61</onleft>
+				<onright>61</onright>
+				<ondown>61</ondown>
+				<onup>61</onup>
+				<showonepage>true</showonepage>
+				<include>dialogScroller</include>
+			</control>
+		</control>
+	</controls>
+</window>

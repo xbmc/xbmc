@@ -1,0 +1,72 @@
+<includes>
+	<include name="WeatherMenu">
+	
+		<control type="group" id="300">
+			<posx>-275</posx>
+			<posy>20</posy>
+			<visible allowhiddenfocus="true">ControlGroup(300).HasFocus(0)</visible>
+			<onright>8000</onright>
+			<include>MenuOpen</include>
+			<include>transition2</include>
+			
+			<control type="group">
+				<control type="button" id="2">
+					<description>Refresh</description>
+					<posy>0</posy>
+					<onleft>-</onleft>
+					<onright>8000</onright>
+					<onup>32</onup>
+					<ondown>4</ondown>
+					<include>contextButton</include>
+				</control>
+				<control type="button" id="4">
+					<description>Settings</description>
+					<posy>43</posy>
+					<onleft>-</onleft>
+					<onright>8000</onright>
+					<onup>2</onup>
+					<ondown>30</ondown>
+					<label>5</label>
+					<onclick>ActivateWindow(MyWeatherSettings)</onclick>
+					<include>contextButton</include>
+				</control>
+				<control type="button" id="30">
+					<description>Favourites Button</description>
+					<posy>86</posy>
+					<label>$LOCALIZE[1036]</label>
+					<onleft>-</onleft>
+					<onright>8000</onright>
+					<onclick>ActivateWindow(Favourites)</onclick>
+					<onup>4</onup>
+					<ondown>31</ondown>
+					<include>contextButton</include>
+					<visible>![ControlGroup(40).HasFocus() | ControlGroup(80).HasFocus()]</visible>
+				</control>
+				<control type="button" id="31">
+					<description>LastFM Love button</description>
+					<posy>129</posy>
+					<label>LastFM Love</label>
+					<onleft>-</onleft>
+					<onright>8000</onright>
+					<onup>30</onup>
+					<ondown>32</ondown>
+					<onclick>XBMC.LastFM.Love</onclick>
+					<visible>LastFM.RadioPlaying</visible>
+					<include>contextButton</include>
+				</control>
+				<control type="button" id="32">
+					<description>LastFM Ban button</description>
+					<posy>172</posy>
+					<label>LastFM Ban</label>
+					<onleft>-</onleft>
+					<onright>8000</onright>
+					<onup>31</onup>
+					<ondown>2</ondown>
+					<onclick>XBMC.LastFM.Ban</onclick>
+					<visible>LastFM.RadioPlaying</visible>
+					<include>contextButton</include>
+				</control>
+			</control>				
+		</control>
+	</include>
+</includes>

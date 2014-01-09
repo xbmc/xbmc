@@ -1,0 +1,153 @@
+<window id="130">
+	<defaultcontrol>1</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>340</posx>
+		<posy>75</posy>
+	</coordinates>
+	<include>dialogOpen</include>
+	
+	<controls>
+		<control type="image">
+			<width>600</width>
+			<height>422</height>
+			<include>dialogWindow</include>
+		</control>
+		
+		<control type="label">
+			<description>heading label</description>
+			<width>532</width>
+			<label>$LOCALIZE[20067]</label>
+			<include>dialogHeading</include>
+		</control>
+		
+		<control type="image">
+			<posx>19</posx>
+			<posy>75</posy>
+			<width>563</width>
+			<include>dialogSeparator</include>
+		</control>
+		
+		
+		<control type="image" id="2">
+			<description>profile image</description>
+			<posx>20</posx>
+			<posy>70</posy>
+			<width>150</width>
+			<height>150</height>
+			<align>left</align>
+			<aspectratio>stretch</aspectratio>
+			<texture>unknown-user.png</texture>
+			<visible>false</visible>
+		</control>
+		
+		<!--<control type="label">
+			<description>profile name label</description>
+			<posx>200</posx>
+			<posy>70</posy>
+			<width>460</width>
+			<align>left</align>
+			<textcolor>Color5</textcolor>
+			<include>dialogLine</include>
+			<label>$LOCALIZE[20093]</label>
+		</control>
+		<control type="label" id="1000">
+			<description>profile name Value</description>
+			<posx>200</posx>
+			<posy>95</posy>
+			<width>460</width>
+			<align>left</align>
+			<include>dialogLine</include>
+		</control>
+		<control type="label">
+			<description>profile directory label</description>
+			<posx>200</posx>
+			<posy>155</posy>
+			<width>460</width>
+			<align>left</align>
+			<font>font13_title</font>
+			<textcolor>blue</textcolor>
+			<label>$LOCALIZE[20070]</label>
+		</control>
+		<control type="label" id="1001">
+			<description>profile directory Value</description>
+			<posx>200</posx>
+			<posy>180</posy>
+			<width>460</width>
+			<align>left</align>
+			<font>font13</font>
+			<textcolor>white</textcolor>
+		</control>
+		
+		<control type="image">
+			<posx>19</posx>
+			<posy>230</posy>
+			<width>563</width>
+			<height>1</height>
+			<texture>dialogs/separator.png</texture>
+		</control>-->
+		
+		
+		
+		<control type="grouplist" id="5">
+				<description>control area</description>
+				<posx>19</posx>
+				<posy>75</posy>
+				<width>563</width>
+				<height>240</height>
+				<itemgap>0</itemgap>
+				<pagecontrol>60</pagecontrol>
+				<onleft>28</onleft>
+				<onright>28</onright>
+				<onup>28</onup>
+				<ondown>28</ondown>
+			</control>
+
+			<control type="button" id="7">
+				<description>Default Button</description>
+				<include>dialogListButton</include>
+			</control>
+
+			<control type="radiobutton" id="8">
+				<description>default radio button</description>
+				<include>dialogRadio</include>
+			</control>
+
+			<control type="spincontrolex" id="9">
+				<include>dialogSpin</include>
+			</control>
+		
+		
+		
+		<control type="group" id="9001">
+			<posx>34</posx>
+			<posy>345</posy>
+
+
+			<control type="button" id="28">
+				<description>Ok Button</description>
+				<posx>280</posx>
+				<label>186</label>
+				<onup>5</onup>
+				<onleft>20</onleft>
+				<onright>19</onright>
+				<ondown>5</ondown>
+				<include>dialogButton</include>
+			</control>
+			<control type="button" id="19">
+				<description>Cancel Button</description>
+				<posx>413</posx>
+				<label>222</label>
+				<onup>5</onup>
+				<onleft>18</onleft>
+				<onright>20</onright>
+				<ondown>5</ondown>
+				<include>dialogButton</include>
+			</control>
+
+		</control>
+		
+		
+	
+	</controls>
+</window>

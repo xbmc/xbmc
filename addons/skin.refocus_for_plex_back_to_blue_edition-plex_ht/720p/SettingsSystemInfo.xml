@@ -1,0 +1,177 @@
+<window id="7">
+	<defaultcontrol always="true">300</defaultcontrol>
+	<previouswindow>0</previouswindow>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+
+		<include>global_Background</include>
+		<include>allscreens</include>
+		
+		<control type="group">
+			<control type="image">
+				<posx>185</posx>
+				<posy>580</posy>
+				<width>128</width>
+				<texture>logos/xbmclogo.png</texture>
+				<colordiffuse>Color1</colordiffuse>
+				<aspectratio>keep</aspectratio>
+				<include>transition2</include>
+			</control>
+		</control>
+		
+		<control type="label">
+			<include>PageLabel</include>
+			<label>$LOCALIZE[31968]</label>
+		</control>
+		
+		<control type="group">
+			<control type="grouplist" id="300">
+				<posx>15</posx>
+				<posy>125</posy>
+				<itemgap>0</itemgap>
+				<onup>300</onup>
+				<ondown>300</ondown>
+				<include>transition2</include>
+				
+				<control type="button" id="95">
+					<description>Button Default Values</description>
+					<include>categoryButton</include>
+					<label>13278</label>
+				</control>
+				<control type="button" id="94">
+					<description>Button Storage</description>
+					<include>categoryButton</include>
+					<label>13277</label>
+				</control>
+				<control type="button" id="92">
+					<description>Button HDD</description>
+					<include>categoryButton</include>
+					<label>13275</label>
+					<visible>System.Platform.Xbox</visible>
+				</control>
+				<control type="button" id="93">
+					<description>Button DVD</description>
+					<include>categoryButton</include>
+					<label>13276</label>
+					<visible>System.Platform.Xbox</visible>
+				</control>
+				<control type="button" id="96">
+					<description>Button Network</description>
+					<include>categoryButton</include>
+					<label>13279</label>
+				</control>
+				<control type="button" id="97">
+					<description>Button Video</description>
+					<include>categoryButton</include>
+					<label>13280</label>
+				</control>
+				<control type="button" id="98">
+					<description>Button Hardware</description>
+					<include>categoryButton</include>
+					<label>13281</label>
+				</control>
+			</control>
+
+			<control type="group">
+				<include>transition2</include>
+				<posx>370</posx>
+				<posy>113</posy>
+
+				<control type="label" id="40">
+					<description>category label</description>
+					<width>1100</width>
+					<align>left</align>
+					<font>titleSpecial</font>
+					<textcolor>Color1</textcolor>
+				</control>
+			
+				<control type="grouplist">
+					<posy>50</posy>
+					<itemgap>10</itemgap>
+					<control type="label" id="2">
+						<include>sysInfoLabel</include>
+					</control>
+					<control type="label" id="3">
+						<posy>25</posy>
+						<include>sysInfoLabel</include>
+					</control>
+					<control type="label" id="4">
+						<posy>50</posy>
+						<include>sysInfoLabel</include>
+					</control>
+					<control type="label" id="5">
+						<posy>75</posy>
+						<include>sysInfoLabel</include>
+					</control>
+					<control type="label" id="6">
+						<posy>100</posy>
+						<include>sysInfoLabel</include>
+					</control>
+					<control type="label" id="7">
+						<posy>125</posy>
+						<include>sysInfoLabel</include>
+					</control>
+					<control type="label" id="8">
+						<posy>150</posy>
+						<include>sysInfoLabel</include>
+					</control>
+					<control type="label" id="9">
+						<posy>175</posy>
+						<include>sysInfoLabel</include>
+					</control>
+					<control type="label" id="10">
+						<posy>200</posy>
+						<include>sysInfoLabel</include>
+					</control>
+					<control type="label" id="11">
+						<posy>225</posy>
+						<include>sysInfoLabel</include>	
+					</control>	
+				</control>
+				
+				<control type="group">
+					<posy>470</posy>
+					<control type="label" id="1">
+						<width>800</width>
+						<label>[UPPERCASE]$LOCALIZE[9][/UPPERCASE]</label>
+						<font>special3</font>
+						<textcolor>Color1</textcolor>
+					</control>
+					<control type="label" id="1">
+						<posy>25</posy>
+						<width>800</width>
+						<label>[UPPERCASE]$LOCALIZE[144] $INFO[System.BuildVersion][/UPPERCASE]</label>
+						<font>list</font>
+						<textcolor>Color2</textcolor>
+					</control>
+					<control type="label" id="1">
+						<posy>50</posy>
+						<width>800</width>
+						<label>[UPPERCASE]$LOCALIZE[552]: $INFO[System.BuildDate][/UPPERCASE]</label>
+						<font>list</font>
+						<textcolor>Color2</textcolor>
+					</control>
+					<control type="label" id="1">
+						<posy>50</posy>
+						<width>800</width>
+						<label>[UPPERCASE]Mplayer $LOCALIZE[552]: $INFO[system.mplayerversion][/UPPERCASE]</label>
+						<visible>System.Platform.Xbox</visible>
+						<font>list</font>
+						<textcolor>Color2</textcolor>
+					</control>
+				</control>
+			</control>
+			
+			<control type="image">
+				<posx>311</posx>
+				<posy>15</posy>
+				<height>1192</height>
+				<width>29</width>
+				<texture>settings/separator.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+			</control>
+				
+		</control>
+	</controls>
+</window>

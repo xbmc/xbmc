@@ -1,0 +1,314 @@
+<window id="129">
+	<defaultcontrol always="true">22</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	
+	<coordinates>
+		<system>1</system>
+		<posx>290</posx>
+		<posy>75</posy>
+	</coordinates>
+	
+	<include>dialogOpen</include>
+	
+	<controls>
+		<control type="group">
+			<control type="image">
+				<width>700</width>
+				<height>565</height>
+				<include>dialogWindow</include>
+			</control>
+			<control type="label" id="2">
+				<description>heading label</description>
+				<width>563</width>
+				<label>21432</label>
+				<include>dialogHeading</include>
+			</control>
+			<control type="image">
+				<posx>530</posx>
+				<posy>18</posy>
+				<width>150</width>
+				<height>527</height>
+				<texture>dialogs/sidebar.png</texture>
+			</control>
+			
+			<control type="image">
+				<posy>76</posy>
+				<width>512</width>
+				<include>dialogSeparator</include>
+			</control>
+			
+			<control type="spincontrolex" id="22">
+				<description>Set Playlist type</description>
+				<posx>19</posx>
+				<posy>76</posy>
+				<width>512</width>
+				<height>40</height>
+				<label>467</label>
+				<onright>300</onright>
+				<onleft>22</onleft>
+				<onup>19</onup>
+				<ondown>12</ondown>
+				<include>dialogSpin</include>
+			</control>
+			
+			<control type="label" id="0">
+				<posx>19</posx>
+				<posy>114</posy>
+				<width>512</width>
+				<height>40</height>
+				<label>$LOCALIZE[21433]:</label>
+				<textcolor>Color4</textcolor>
+				<include>dialogListButton</include>
+			</control>
+
+			<control type="edit" id="12">
+				<description>Name Button</description>
+				<posx>15</posx>
+				<posy>120</posy>
+				<width>512</width>
+				<textwidth>300</textwidth>
+				<onup>22</onup>
+				<onleft>-</onleft>
+				<onright>300</onright>
+				<ondown>10</ondown>
+				<align>left</align>
+				<textoffsetx>200</textoffsetx>
+				<aligny>bottom</aligny>
+				<height>38</height>
+				<font>small</font>
+				<textcolor>Color4</textcolor>
+				<focusedcolor>Color4</focusedcolor>
+			</control>
+			
+			<control type="image">
+				<posx>19</posx>
+				<posy>156</posy>
+				<width>512</width>
+				<include>dialogSeparator</include>
+			</control>
+		
+			<control type="label">
+				<description>rules label</description>
+				<posx>19</posx>
+				<posy>154</posy>
+				<width>720</width>
+				<label>[B]$LOCALIZE[21434]:[/B]</label>
+				<include>dialogListButton</include>
+			</control>
+
+			<control type="image">
+				<posx>19</posx>
+				<posy>196</posy>
+				<width>512</width>
+				<include>dialogSeparator</include>
+			</control>
+			<control type="image">
+				<posx>19</posx>
+				<posy>236</posy>
+				<width>512</width>
+				<height>1</height>
+				<include>dialogSeparator</include>
+			</control>
+			<control type="image">
+				<posx>19</posx>
+				<posy>276</posy>
+				<width>512</width>
+				<height>1</height>
+				<include>dialogSeparator</include>
+			</control>	
+			<control type="image">
+				<posx>19</posx>
+				<posy>316</posy>
+				<width>512</width>
+				<include>dialogSeparator</include>
+			</control>
+			
+			<control type="list" id="10">
+				<description>Rules List Control</description>
+				<posx>19</posx>
+				<posy>196</posy>
+				<width>563</width>
+				<height>144</height>
+				<onup>12</onup>
+				<onleft>300</onleft>
+				<onright>300</onright>
+				<ondown>16</ondown>
+
+				<itemlayout height="40">
+					<control type="label">
+						<posx>10</posx>
+						<width>512</width>
+						<height>35</height>
+						<font>list</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+						<textcolor>Color4</textcolor>
+						<focusedcolor>Color1</focusedcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout height="40">
+					<control type="image">
+						<width>512</width>
+						<height>40</height>
+						<visible>Control.HasFocus(10)</visible>
+						<texture border="3">dialogs/list-focus.png</texture>
+					</control>
+					<control type="label">
+						<posx>15</posx>
+						<width>512</width>
+						<height>35</height>
+						<font>list</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+						<textcolor>Color4</textcolor>
+						<visible>!Control.HasFocus(10)</visible>
+					</control>
+					<control type="label">
+						<posx>15</posx>
+						<width>512</width>
+						<height>35</height>
+						<font>list</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+						<textcolor>Color1</textcolor>
+						<visible>Control.HasFocus(10)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			
+			<control type="label" id="0">
+				<description>options Label</description>
+				<posx>19</posx>
+				<posy>315</posy>
+				<width>512</width>
+				<height>40</height>
+				<label>[B]$LOCALIZE[31111]:[/B]</label>
+				<textcolor>Color4</textcolor>
+				<include>dialogListButton</include>
+			</control>
+			
+			<control type="image">
+				<posx>19</posx>
+				<posy>356</posy>
+				<width>512</width>
+				<include>dialogSeparator</include>
+			</control>
+			
+			<control type="group" id="9002">
+				<posy>356</posy>
+				<control type="spincontrolex" id="16">
+					<posx>19</posx>
+					<posy>0</posy>
+					<width>512</width>
+					<label>21424</label>
+					<onright>9001</onright>
+					<onleft>16</onleft>
+					<onup>10</onup>
+					<ondown>17</ondown>
+					<height>40</height>
+					<include>dialogSpin</include>
+				</control>
+				<control type="spincontrolex" id="17">
+					<posx>19</posx>
+					<posy>40</posy>
+					<width>512</width>
+					<label>21427</label>
+					<onright>9001</onright>
+					<onleft>17</onleft>
+					<onup>16</onup>
+					<ondown>18</ondown>
+					<height>40</height>
+					<include>dialogSpin</include>
+				</control>
+				<control type="spincontrolex" id="18">
+					<posx>19</posx>
+					<posy>80</posy>
+					<width>512</width>
+					<label>21429</label>
+					<onright>9001</onright>
+					<onleft>19</onleft>
+					<onup>17</onup>
+					<ondown>19</ondown>
+					<height>40</height>
+					<include>dialogSpin</include>
+				</control>
+				<control type="togglebutton" id="19">
+					<posx>19</posx>
+					<posy>120</posy>
+					<width>512</width>
+					<label>21431</label>
+					<altlabel>21430</altlabel>
+					<alttexturefocus>dialogs/list-focus.png</alttexturefocus>
+					<alttexturenofocus>dialogs/list-nofocus.png</alttexturenofocus>
+					<onright>9001</onright>
+					<onleft>18</onleft>
+					<onup>18</onup>
+					<ondown>22</ondown>
+					<height>40</height>
+					<include>dialogSpin</include>
+				</control>
+			</control>
+
+			<control type="group" id="300">
+				<posx>545</posx>
+				<posy>157</posy>
+				<control type="button" id="15">
+					<description>Edit Rule Button</description>
+					<label>21435</label>
+					<onup>21</onup>
+					<onleft>10</onleft>
+					<onright>-</onright>
+					<ondown>13</ondown>
+					<include>dialogButton</include>
+				</control>
+				<control type="button" id="13">
+					<description>Add Rule Button</description>
+					<posy>55</posy>
+					<label>15019</label>
+					<onup>15</onup>
+					<onleft>10</onleft>
+					<onright>-</onright>
+					<ondown>14</ondown>
+					<include>dialogButton</include>
+				</control>
+				<control type="button" id="14">
+					<description>Remove Rule Button</description>
+					<posy>110</posy>
+					<label>1210</label>
+					<onup>13</onup>
+					<onleft>10</onleft>
+					<onright>-</onright>
+					<ondown>20</ondown>
+					<include>dialogButton</include>
+				</control>
+			</control>
+		</control>
+			
+		<control type="group" id="9001">
+			<posx>545</posx>
+			<posy>357</posy>
+			<control type="button" id="20">
+				<description>Ok Button</description>
+				<label>186</label>
+				<onup>14</onup>
+				<onleft>9002</onleft>
+				<onright>-</onright>
+				<ondown>21</ondown>
+				<include>dialogConfirmButton</include>
+			</control>
+			<control type="button" id="21">
+				<description>Cancel Button</description>
+				<posy>55</posy>
+				<label>222</label>
+				<onup>20</onup>
+				<onleft>9002</onleft>
+				<onright>-</onright>
+				<ondown>15</ondown>
+				<include>dialogConfirmButton</include>
+			</control>
+		</control>
+	</controls>
+</window>

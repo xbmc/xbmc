@@ -1,0 +1,93 @@
+<includes>
+	<include name="nowplayinghome">
+		<control type="group">
+			<control type="group">
+				<visible>Player.HasMusicPlaylist</visible>
+				<!-- pause animations -->
+				
+				<animation condition="Player.Paused" type="Conditional">
+					<effect type="fade" start="100" end="70" time="500"/>
+				</animation>
+				<control type="group">
+					<posx>198</posx>
+					<posy>558</posy>
+					<align>right</align>
+					<!-- effects when closing/opening window -->
+					<animation type="WindowOpen">
+						<effect type="fade" start="0" end="100" time="500"/>
+					</animation>
+					<animation type="WindowClose">
+						<effect type="fade" start="100" end="0" time="500"/>
+					</animation>
+					
+					<animation condition="Skin.HasSetting(home.showinfo) + ControlGroup(7002).HasFocus">
+						<effect type="slide" easing="in" start="0,0" end="0,120" tween="Cubic" time="600"/>
+					</animation>
+					<animation condition="Skin.HasSetting(home.showinfo) + ControlGroup(7001).HasFocus + Control.IsVisible(11001)">
+						<effect type="slide" easing="in" start="0,0" end="0,120" tween="Cubic" time="600"/>
+					</animation>
+					
+					<!-- cover now playing -->
+					<control type="group">
+						<animation condition="Skin.HasSetting(showNewLists) + !Control.HasFocus(301) + !Control.HasFocus(1110) + !Control.HasFocus(1120) + !Control.HasFocus(1160) + [Control.IsVisible(11000) | Control.IsVisible(11001) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(12000)]">
+							<effect type="zoom" easing="in" time="600" center="160,160" start="100" end="70" tween="cubic" />
+						</animation>
+						<animation condition="!Skin.HasSetting(showNewLists) + !Control.HasFocus(301) + !Control.HasFocus(1110) + !Control.HasFocus(1120) + !Control.HasFocus(1160) + [ControlGroup(5100).HasFocus | ControlGroup(5200).HasFocus]">
+							<effect type="zoom" easing="out" time="250" center="160,160" start="100" end="70" tween="cubic" />
+						</animation>
+						<control type="image">
+							<width>180</width>
+							<height>180</height>
+							<info>MusicPlayer.Cover</info>
+							<bordertexture border="40">frames/frame_Square.png</bordertexture>
+							<bordersize>22</bordersize>
+							<aspectratio>scale</aspectratio>
+						</control>
+					</control>
+					
+					<control type="group">
+						<description>Current track info</description>
+						<visible>Player.HasMusicPlaylist</visible>
+						<posx>10</posx>
+						<posy>89</posy>
+						<animation condition="Skin.HasSetting(showNewLists) + !Control.HasFocus(301) + !Control.HasFocus(1110) + !Control.HasFocus(1120) + !Control.HasFocus(1160) + [Control.IsVisible(11000) | Control.IsVisible(11001) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(12000)]">
+							<effect type="slide" easing="in" start="0,0" end="45,00" tween="Cubic" time="600"/>
+						</animation>
+						<animation condition="!Skin.HasSetting(showNewLists) + !Control.HasFocus(301) + !Control.HasFocus(1110) + !Control.HasFocus(1120) + !Control.HasFocus(1160) + [ControlGroup(5100).HasFocus | ControlGroup(5200).HasFocus]">
+							<effect type="slide" easing="out" start="0,0" end="45,00" tween="Cubic" time="250"/>
+						</animation>
+						<control type="label">
+							<width>500</width>
+							<include>list_Label-sub</include>
+							<shadowcolor>black</shadowcolor>
+							<label>$INFO[MusicPlayer.Artist]</label>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>20</posy>
+							<width>500</width>
+							<textcolor>Color3</textcolor>
+							<include>list_Label-sub</include>
+							<shadowcolor>black</shadowcolor>
+							<label>$INFO[MusicPlayer.Title]</label>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>40</posy>
+							<width>500</width>
+							<textcolor>Color3</textcolor>
+							<include>list_Label-sub</include>
+							<shadowcolor>black</shadowcolor>
+							<label>$INFO[MusicPlayer.Time] / $INFO[MusicPlayer.Duration]</label>
+							<align>right</align>
+						</control>
+					</control>
+
+					
+					
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- end mod -->
+</includes>

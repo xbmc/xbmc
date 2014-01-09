@@ -1,0 +1,31 @@
+<window id="10">
+	<defaultcontrol>2</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<backgroundcolor>0xff000000</backgroundcolor>
+	<controls>
+
+		<control type="mover" id="8">
+			<description>top left mover</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<texturefocus>calibration/topleft-focus.png</texturefocus>
+			<texturenofocus>calibrate-topleft.png</texturenofocus>
+		</control>
+		<control type="mover" id="9">
+			<description>right bottom mover</description>
+			<posx>700</posx>
+			<posy>500</posy>
+			<texturefocus>calibration/bottomright-focus.png</texturefocus>
+			<texturenofocus>calibration/bottomright.png</texturenofocus>
+		</control>
+		<control type="label" id="3">
+			<description>coordinates label</description>
+			<posx>0</posx>
+			<posy>20</posy>
+			<include>screen_Dimensions</include>
+			<label>5</label>
+			<align>center</align>
+			<font>special</font>
+		</control>
+	</controls>
+</window>

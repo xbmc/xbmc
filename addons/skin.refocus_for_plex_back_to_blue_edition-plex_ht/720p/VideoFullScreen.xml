@@ -1,0 +1,49 @@
+<window id="2005">
+	<defaultcontrol always="true">503</defaultcontrol>
+	<controls>
+		<control type="image" id="1">
+			<include>screen_Dimensions</include>
+			<texture border="16">overlays/vignette.png</texture>
+			<visible>Control.IsVisible(10)</visible>
+			<include>fadeinout</include>
+		</control>
+		<!--regular stream info-->
+		<control type="group">
+			<posx>5</posx>
+			<posy>5</posy>
+			<control type="image" id="1">
+				<width>1270</width>
+				<height>113</height>
+				<texture border="16">black.png</texture>
+			</control>
+			<control type="group">
+				<posx>10</posx>
+				<!--line 1-->
+				<control type="label" id="10">
+					<posy>5</posy>
+					<width>1260</width>
+					<label>-</label>
+					<textcolor>Color1</textcolor>
+					<font>smallerCaps</font>
+				</control>
+				<!--line 2-->
+				<control type="label" id="11">
+					<posy>31</posy>
+					<width>1260</width>
+					<label>-</label>
+					<font>smallerCaps</font>
+					<textcolor>Color1</textcolor>
+				</control>
+				<!--line 3-->
+				<control type="label" id="12">
+					<posy>48</posy>
+					<width>1260</width>
+					<height>60</height>
+					<label>-</label>
+					<textcolor>Color1</textcolor>
+					<font>smallerCaps</font>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

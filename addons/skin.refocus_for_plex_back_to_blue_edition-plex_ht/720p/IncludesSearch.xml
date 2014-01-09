@@ -1,0 +1,166 @@
+<includes>
+	<!-- Search -->
+	<include name="Search_Header_background">
+		<control type="image">
+			<width>900</width>
+			<height>35</height>
+			<texture border="8">search/header.png</texture>
+			<colordiffuse>column3</colordiffuse>
+			<visible>!Skin.HasSetting(overlay.black)</visible>
+		</control>
+		<control type="image">
+			<width>185</width>
+			<height>35</height>
+			<texture>search/arrow.png</texture>
+			<colordiffuse>column2</colordiffuse>
+			<visible>!Skin.HasSetting(overlay.black)</visible>
+		</control>
+		<control type="image">
+			<width>900</width>
+			<height>35</height>
+			<texture border="8">search/header.png</texture>
+			<colordiffuse>column3_black</colordiffuse>
+			<visible>Skin.HasSetting(overlay.black)</visible>
+		</control>
+		<control type="image">
+			<width>185</width>
+			<height>35</height>
+			<texture>search/arrow.png</texture>
+			<colordiffuse>column2_black</colordiffuse>
+			<visible>Skin.HasSetting(overlay.black)</visible>
+		</control>
+	</include>
+	
+	
+	<include name="Search_Label">
+		<posy>1</posy>
+		<posx>10</posx>
+		<align>left</align>
+		<font>smallerCaps</font>
+		<textcolor>Color1</textcolor>
+		<width>160</width>
+		<height>30</height>
+	</include>
+	<include name="Search_Label_Unfocused">
+		<posy>1</posy>
+		<posx>10</posx>
+		<align>left</align>
+		<font>smallerCaps</font>
+		<include>Right_Color</include>
+		<width>160</width>
+		<height>30</height>
+	</include>
+	<include name="Search_Result">
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>880</width>
+		<itemlayout width="140" height="200">
+			<control type="image">
+				<posx>15</posx>
+				<posy>10</posy>
+				<width>128</width>
+				<height>140</height>
+				<info>ListItem.Art(thumb)</info>
+				<aspectratio aligny="bottom">keep</aspectratio>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(episode)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.tvshowtitle]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>Color2</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(album) | ListItem.Type(track)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.artist]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FF999999</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<posx>81</posx>
+				<posy>180</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Title]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FF999999</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</itemlayout>
+		<focusedlayout width="140" height="200">
+			<control type="image">
+				<posx>15</posx>
+				<posy>10</posy>
+				<width>128</width>
+				<height>140</height>
+				<info>ListItem.Art(thumb)</info>
+				<aspectratio aligny="bottom">keep</aspectratio>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(episode)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.tvshowtitle]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(album) | ListItem.Type(track)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.artist]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<posx>81</posx>
+				<posy>180</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Title]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</focusedlayout>
+	</include>
+	<include name="Search_Keyboard_Button">
+		<width>45</width>
+		<height>45</height>
+		<font>LargeSearchFont</font>
+		<textcolor>Color4</textcolor>
+		<focusedcolor>Color1</focusedcolor>
+		<align>center</align>
+		<aligny>center</aligny>
+		<texturenofocus border="20">new_dialogs/button.png</texturenofocus>
+		<texturefocus border="20">new_dialogs/button-focus.png</texturefocus>
+		<textureclick border="20">-</textureclick>
+	</include>
+</includes>

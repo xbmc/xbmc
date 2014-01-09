@@ -1,0 +1,53 @@
+<window id="2006">
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="visualisation" id="2">
+			<description>visualisation</description>
+			<include>screen_Dimensions</include>
+			<visible>!Skin.HasSetting(fanart.visualization) | Skin.HasSetting(fanart.visualization.blend)</visible>
+		</control>
+		<control type="image">
+			<description>Fanart image</description>
+			<include>screen_Dimensions</include>
+			<texture fallback="backgrounds/artist.jpg">$INFO[MusicPlayer.Property(Fanart_Image)]</texture>
+			<visible>Skin.HasSetting(fanart.visualization)</visible>
+			<include>transition_Fanart</include>
+			<animation effect="fade" start="100" end="80" time="0" condition="Skin.HasSetting(fanart.visualization.blend)">Conditional</animation>
+		</control>
+		<include>osd_Info</include>
+		<control type="group">
+			<posx>5</posx>
+			<posy>5</posy>
+			<visible>Player.ShowCodec</visible>
+			<control type="image" id="1">
+				<width>1270</width>
+				<height>93</height>
+				<texture border="16">black.png</texture>
+			</control>
+			<control type="group">
+				<posx>10</posx>
+				<posy>5</posy>
+				<control type="label" id="10">
+					<width>1260</width>
+					<label>$INFO[Musicplayer.Codec,Codec: ,]$INFO[Musicplayer.Bitrate, · Bitrate: ,kbps]$INFO[MusicPlayer.Bitspersample, · Bits: ,bit]$INFO[MusicPlayer.SampleRate, · Freq: ,kHz]$INFO[MusicPlayer.Channels, · Channels: ]</label>
+					<textcolor>Color1</textcolor>
+					<font>smallerCaps</font>
+				</control>
+				<control type="label" id="11">
+					<posy>26</posy>
+					<width>1260</width>
+					<label>$LOCALIZE[250]: $INFO[Visualisation.Name] [I]($LOCALIZE[20166])[/I] · FPS: $INFO[System.FPS]</label>>
+					<font>smallerCaps</font>
+					<textcolor>Color1</textcolor>
+				</control>
+				<control type="label" id="12">
+					<posy>52</posy>
+					<width>1260</width>
+					<label fallback="· (UnAvailable)">$LOCALIZE[13388]: $INFO[Visualisation.Preset]</label>
+					<textcolor>Color1</textcolor>
+					<font>smallerCaps</font>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

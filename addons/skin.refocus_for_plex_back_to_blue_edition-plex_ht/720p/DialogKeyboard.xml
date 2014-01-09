@@ -1,0 +1,504 @@
+<window id="103">
+	<defaultcontrol>300</defaultcontrol>
+	<coordinates>
+		<system>2</system>
+		<posx>308</posx>
+		<posy>260</posy>
+	</coordinates>
+	<include>dialogOpen</include>
+	<controls>
+		<control type="group">
+			<visible>!Window.IsVisible(numericinput)</visible>
+			<animation effect="slide" start="0,0" end="0,200" time="0" condition="Skin.HasSetting(keyboardButtons)">Conditional</animation>
+			<control type="image" id="1">
+				<include>dialogWindow</include>
+				<width>665</width>
+				<height>435</height>
+				<visible>!Skin.HasSetting(keyboardButtons)</visible>
+			</control>
+			<control type="image" id="1">
+				<include>dialogWindow</include>
+				<width>665</width>
+				<height>150</height>
+				<visible>Skin.HasSetting(keyboardButtons)</visible>
+			</control>
+			<control type="label" id="311">
+				<posx>34</posx>
+				<width>597</width>
+				<include>dialog_Windowtitle</include>
+			</control>
+			<control type="image" id="1">
+				<posx>34</posx>
+				<posy>75</posy>
+				<width>597</width>
+				<height>40</height>
+				<texture border="10,0,10,0">new_dialogs/textFieldFocus.png</texture>
+			</control>
+			<control type="label" id="310">
+				<description>Edit Text</description>
+				<posx>44</posx>
+				<posy>73</posy>
+				<width>577</width>
+				<height>38</height>
+				<font>keyboard</font>
+				<ondown>52</ondown>
+				<onright>8</onright>
+				<textcolor>Color4</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="group">
+				<posx>34</posx>
+				<posy>130</posy>
+				<visible>!Skin.HasSetting(keyboardButtons)</visible>
+				<control type="button" id="48">
+					<description>'0' button</description>
+					<width>48</width>
+					<onleft>8</onleft>
+					<onright>49</onright>
+					<onup>32</onup>
+					<ondown>81</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="49">
+					<description>'1' button</description>
+					<posx>55</posx>
+					<width>48</width>
+					<onleft>48</onleft>
+					<onright>50</onright>
+					<onup>32</onup>
+					<ondown>87</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="50">
+					<description>'2' button</description>
+					<posx>110</posx>
+					<width>48</width>
+					<onleft>49</onleft>
+					<onright>51</onright>
+					<onup>32</onup>
+					<ondown>69</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="51">
+					<description>'3' button</description>
+					<posx>165</posx>
+					<onleft>50</onleft>
+					<onright>52</onright>
+					<onup>32</onup>
+					<ondown>82</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="52">
+					<description>'4' button</description>
+					<posx>220</posx>
+					<onleft>51</onleft>
+					<onright>53</onright>
+					<onup>32</onup>
+					<ondown>84</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="53">
+					<description>'5' button</description>
+					<posx>275</posx>
+					<onleft>52</onleft>
+					<onright>54</onright>
+					<onup>32</onup>
+					<ondown>89</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="54">
+					<description>'6' button</description>
+					<posx>330</posx>
+					<onleft>53</onleft>
+					<onright>55</onright>
+					<onup>32</onup>
+					<ondown>85</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="55">
+					<description>'7' button</description>
+					<posx>385</posx>
+					<onleft>54</onleft>
+					<onright>56</onright>
+					<onup>32</onup>
+					<ondown>73</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="56">
+					<description>'8' button</description>
+					<posx>440</posx>
+					<onleft>55</onleft>
+					<onright>57</onright>
+					<onup>32</onup>
+					<ondown>79</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="57">
+					<description>'9' button</description>
+					<posx>495</posx>
+					<onleft>56</onleft>
+					<onright>8</onright>
+					<onup>32</onup>
+					<ondown>80</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="8">
+					<description>BSP button</description>
+					<posx>550</posx>
+					<onleft>57</onleft>
+					<onright>48</onright>
+					<onup>32</onup>
+					<ondown>99</ondown>
+					<texturenofocus border="6">new_dialogs/keyboard_Backspace.png</texturenofocus>
+					<texturefocus border="8,3,8,3">new_dialogs/keyboard_Backspace-focus.png</texturefocus>
+					<include>dialog_Button-keyboard</include>
+				</control>
+			</control>
+			<control type="group">
+				<posx>34</posx>
+				<posy>185</posy>
+				<visible>!Skin.HasSetting(keyboardButtons)</visible>
+				<control type="button" id="81">
+					<description>'Q' button</description>
+					<onleft>99</onleft>
+					<onright>87</onright>
+					<onup>48</onup>
+					<ondown>65</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="87">
+					<description>'W' button</description>
+					<posx>55</posx>
+					<onleft>81</onleft>
+					<onright>69</onright>
+					<onup>49</onup>
+					<ondown>83</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="69">
+					<description>'E' button</description>
+					<posx>110</posx>
+					<onleft>87</onleft>
+					<onright>82</onright>
+					<onup>50</onup>
+					<ondown>68</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="82">
+					<description>'R' button</description>
+					<posx>165</posx>
+					<onleft>69</onleft>
+					<onright>84</onright>
+					<onup>51</onup>
+					<ondown>70</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="84">
+					<description>'T' button</description>
+					<posx>220</posx>
+					<onleft>82</onleft>
+					<onright>89</onright>
+					<onup>52</onup>
+					<ondown>71</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="89">
+					<description>'Y' button</description>
+					<posx>275</posx>
+					<onleft>84</onleft>
+					<onright>85</onright>
+					<onup>53</onup>
+					<ondown>72</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="85">
+					<description>'U' button</description>
+					<posx>330</posx>
+					<onleft>89</onleft>
+					<onright>73</onright>
+					<onup>54</onup>
+					<ondown>74</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="73">
+					<description>'I' button</description>
+					<posx>385</posx>
+					<onleft>85</onleft>
+					<onright>79</onright>
+					<onup>55</onup>
+					<ondown>75</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="79">
+					<description>'O' button</description>
+					<posx>440</posx>
+					<onleft>73</onleft>
+					<onright>80</onright>
+					<onup>56</onup>
+					<ondown>76</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="80">
+					<description>'P' button</description>
+					<posx>495</posx>
+					<onleft>79</onleft>
+					<onright>99</onright>
+					<onup>57</onup>
+					<ondown>76</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="99">
+					<description>hide button</description>
+					<posx>550</posx>
+					<onleft>80</onleft>
+					<onright>81</onright>
+					<onup>8</onup>
+					<ondown>300</ondown>
+					<texturenofocus border="14">new_dialogs/keyboard_Hide.png</texturenofocus>
+					<texturefocus border="14">new_dialogs/keyboard_Hide-focus.png</texturefocus>
+					<include>dialog_Button-keyboard</include>
+					<onclick>Close</onclick>
+				</control>
+			</control>
+			<control type="group">
+				<posx>58</posx>
+				<posy>240</posy>
+				<visible>!Skin.HasSetting(keyboardButtons)</visible>
+				<control type="button" id="65">
+					<description>'A' button</description>
+					<onleft>300</onleft>
+					<onright>83</onright>
+					<onup>81</onup>
+					<ondown>302</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="83">
+					<description>'S' button</description>
+					<posx>55</posx>
+					<onleft>65</onleft>
+					<onright>68</onright>
+					<onup>87</onup>
+					<ondown>90</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="68">
+					<description>'D' button</description>
+					<posx>110</posx>
+					<onleft>83</onleft>
+					<onright>70</onright>
+					<onup>69</onup>
+					<ondown>88</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="70">
+					<description>'F' button</description>
+					<posx>165</posx>
+					<onleft>68</onleft>
+					<onright>71</onright>
+					<onup>82</onup>
+					<ondown>67</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="71">
+					<description>'G' button</description>
+					<posx>220</posx>
+					<onleft>70</onleft>
+					<onright>72</onright>
+					<onup>84</onup>
+					<ondown>86</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="72">
+					<description>'H' button</description>
+					<posx>275</posx>
+					<onleft>71</onleft>
+					<onright>74</onright>
+					<onup>89</onup>
+					<ondown>66</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="74">
+					<description>'J' button</description>
+					<posx>330</posx>
+					<onleft>72</onleft>
+					<onright>75</onright>
+					<onup>85</onup>
+					<ondown>78</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="75">
+					<description>'K' button</description>
+					<posx>385</posx>
+					<onleft>74</onleft>
+					<onright>76</onright>
+					<onup>73</onup>
+					<ondown>77</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="76">
+					<description>'L' button</description>
+					<posx>440</posx>
+					<onleft>75</onleft>
+					<onright>300</onright>
+					<onup>79</onup>
+					<ondown>304</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>	
+				<control type="button" id="300">
+					<description>DONE button</description>
+					<posx>495</posx>
+					<width>79</width>
+					<label>20177</label>
+					<onleft>76</onleft>
+					<onright>65</onright>
+					<onup>99</onup>
+					<ondown>303</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+			</control>
+			<control type="group">
+				<posx>34</posx>
+				<posy>295</posy>
+				<visible>!Skin.HasSetting(keyboardButtons)</visible>
+				<control type="togglebutton" id="302">
+					<description>SHIFT button</description>
+					<width>72</width>
+					<label>20178</label>
+					<onleft>303</onleft>
+					<onright>90</onright>
+					<onup>65</onup>
+					<ondown>305</ondown>
+					<alttexturenofocus border="11">new_dialogs/keyboard_On.png</alttexturenofocus>
+					<alttexturefocus border="11">new_dialogs/keyboard_On-focus.png</alttexturefocus>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="90">
+					<posx>79</posx>
+					<description>'Z' button</description>
+					<onleft>302</onleft>
+					<onright>88</onright>
+					<onup>83</onup>
+					<ondown>306</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="88">
+					<description>'X' button</description>
+					<posx>134</posx>
+					<onleft>90</onleft>
+					<onright>67</onright>
+					<onup>68</onup>
+					<ondown>32</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="67">
+					<description>'C' button</description>
+					<posx>189</posx>
+					<onleft>88</onleft>
+					<onright>86</onright>
+					<onup>70</onup>
+					<ondown>32</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="86">
+					<description>'V' button</description>
+					<posx>244</posx>
+					<onleft>67</onleft>
+					<onright>66</onright>
+					<onup>71</onup>
+					<ondown>32</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="66">
+					<description>'B' button</description>
+					<posx>299</posx>
+					<onleft>86</onleft>
+					<onright>78</onright>
+					<onup>72</onup>
+					<ondown>32</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="78">
+					<description>'N' button</description>
+					<posx>354</posx>
+					<onleft>66</onleft>
+					<onright>77</onright>
+					<onup>74</onup>
+					<ondown>32</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="77">
+					<description>'M' button</description>
+					<posx>409</posx>
+					<onleft>78</onleft>
+					<onright>304</onright>
+					<onup>75</onup>
+					<ondown>304</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="togglebutton" id="304">
+					<description>SYMBOLS button</description>
+					<posx>464</posx>
+					<label>?!#</label>
+					<onleft>77</onleft>
+					<onright>303</onright>
+					<onup>76</onup>
+					<ondown>32</ondown>
+					<alttexturenofocus border="3,14,27,3">button-nofocus-toggle-on.png</alttexturenofocus>
+					<alttexturefocus border="3,14,27,3">button-focus-toggle-on.png</alttexturefocus>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="togglebutton" id="303">
+					<description>CAPS button</description>
+					<posx>519</posx>
+					<width>79</width>
+					<label>CAPS</label>
+					<onleft>304</onleft>
+					<onright>302</onright>
+					<onup>300</onup>
+					<ondown>306</ondown>
+					<alttexturenofocus border="11">new_dialogs/keyboard_On.png</alttexturenofocus>
+					<alttexturefocus border="11">new_dialogs/keyboard_On-focus.png</alttexturefocus>
+					<include>dialog_Button-keyboard</include>
+				</control>
+			</control>
+			<control type="group">
+				<posx>34</posx>
+				<posy>350</posy>
+				<visible>!Skin.HasSetting(keyboardButtons)</visible>
+				<control type="button" id="305">
+					<description>previous button</description>
+					<width>72</width>
+					<label>&lt;</label>
+					<onleft>306</onleft>
+					<onright>32</onright>
+					<onup>302</onup>
+					<ondown>48</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="32">
+					<description>SPACE button</description>
+					<posx>79</posx>
+					<width>433</width>
+					<label>20182</label>
+					<onleft>305</onleft>
+					<onright>306</onright>
+					<onup>86</onup>
+					<ondown>310</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+				<control type="button" id="306">
+					<description>next button</description>
+					<posx>519</posx>
+					<width>79</width>
+					<label>&gt;</label>
+					<onleft>32</onleft>
+					<onright>305</onright>
+					<onup>303</onup>
+					<ondown>8</ondown>
+					<include>dialog_Button-keyboard</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

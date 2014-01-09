@@ -1,0 +1,19 @@
+<window type="Window" id="111">
+	<defaultcontrol always="true">300</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<include>screen_Dimensions</include>
+			<aspectratio>stretch</aspectratio>
+			<include>background_Image</include>
+			<include>transition2.5</include>
+		</control>
+		<control type="group">
+			<include>HomeMenu</include>
+		</control>
+	</controls>
+</window>

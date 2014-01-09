@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+<string id="31000">
+[COLOR=Color2][B][UPPERCASE]Skin Designer and Developer[/UPPERCASE][/B][/COLOR]
+ Jeroen
+
+[B][COLOR=Color2]DANKE[/COLOR][/B
+XBMC Team für das Erstellen eines so fortschrittlichen Media Centers. Danke an die wundervolle XBMC Community für ihre Hilfe, Skins, Plugins, Scripte und Programme, die die XMBC Erfahrung so viel besser gestallten. Und ein Danke an DICH für das Verwenden von reFocus!
+
+Ein besonderer Dank geht an Christopher Meredith für die Nutzung seiner Photographien [B]monopedilos.com/photoblog[/B]
+
+[B][COLOR=Color2]ÜBERSETZUNG[/COLOR][/B]
+[B]MaDDoGo[/B] (spanisch)
+
+[B][COLOR=Color2]ABSCHLIESSEND[/COLOR][/B]
+Unterstützt das XBMC Team im dem ihr etwas Geld spendet.
+[B]xbmc.org/contribute/donate[/B]
+
+[COLOR=Color2][B][UPPERCASE]reFocus für Plex[/UPPERCASE][/B][/COLOR]
+ist eine reFocus Portierung von [COLOR=Color2][B][UPPERCASE]Jeroen[/UPPERCASE][/B][/COLOR], einm XBMC Skin, angepasst [B]Plex[/B] von [B]El Massman[/B].
+
+[B][COLOR=Color2]Danke[/COLOR][/B]
+an das gesamte Plex Team und jedem im Plex Forum, vor allem dem Plex/Nine alpha Team für ihr gründliches Testen und ihre hilfreichen Vorschläge. Besucht uns doch unter forums.plexapp.com
+
+[B][COLOR=Color2]PLEX ÜBERSETZUNG[/COLOR][/B]
+[B]Nerpissad[/B] (spanisch)
+[B]BushD[/B] (deutsch)
+[B]dawiinci[/B] (deutsch)
+</string>
+
+<string id="31001">Poster</string>
+<string id="31002">Galerie</string>
+<string id="31003">Slide</string>
+<string id="31004">Show</string>
+<string id="31006">Zubehör</string>
+<string id="31007">Einstellungen Programme</string>
+<string id="31008">Web</string>
+<string id="31009">Thumbs</string>
+<string id="31010">Bilder</string>	
+<string id="31011">Trailer hinzufügen</string>
+<string id="31012">Video Playlist</string>
+<string id="31013">Beenden</string>
+<string id="31014">Thumbnails</string>
+<string id="31015">Zeige Einstellungen</string>
+<string id="31016">Fanart</string>
+<string id="31017">Verwalte Profile</string>	
+<string id="31018">Eigene</string>
+<string id="31019">Vorschau</string>
+<string id="31020">Hintergründe</string>
+<string id="31021">Profile</string>
+<string id="31022">Ansichten</string>
+<string id="31023">TV Sendungen</string>
+<string id="31024">Musik Videos</string>	
+<string id="31025">Zeige Media Overlays</string>
+<string id="31026">Nutze Login Screen</string>
+<string id="31027">Zeige Partymodus</string>
+<string id="31028">Zeige Video im Hintergrund</string>
+<string id="31029">Zeige Visualisierung im Hintergrund</string>
+<string id="31030">Zeige Künstler</string>
+<string id="31031">Zeige Genre</string>
+<string id="31032">Zeige Playlists</string>
+<string id="31033">Einstellungen für Darstellung</string>
+<string id="31034">Zeige neu hinzugefügte und abgespielte Alben</string>
+<string id="31035">Aktiviere virtuelle Tastatur</string>
+<string id="31036">Bewertung</string>
+<string id="31037">Hebe ersten Buchstaben beim Scrollen hervor</string>
+<string id="31038">Zeige neu hinzugefügte und abgespielte Videos</string>
+<string id="31039">Nutze Fanart</string>
+<string id="31040">PAUSE</string>
+<string id="31041">Vorwärts 2X</string>
+<string id="31042">Vorwärts 4X</string>
+<string id="31043">Vorwärts 8X</string>
+<string id="31044">Vorwärts 16X</string>
+<string id="31045">Vorwärts 32X</string>
+<string id="31046">Zurück 2X</string>
+<string id="31047">Zurück 4X</string>
+<string id="31048">Zurück 8X</string>
+<string id="31049">Zurück 16X</string>
+<string id="31050">Zurück 32X</string>
+<string id="31051">Läuft</string>
+<string id="31052">Trailer</string>
+<string id="31053">Schaue Trailer</string>
+<string id="31054">Poster</string>
+<string id="31055">Verstecke Rollbalken wenn nicht fokussiert</string>
+<string id="31057">Nutze Vollbild für Galerie Ansicht</string>
+<string id="31058">Vollbild</string>
+<string id="31059">Zurück</string>
+<string id="31060">Scanner auswählen</string>
+<string id="31061">Benutze Poster</string>
+<string id="31062">Zeige Vollbild</string>
+<string id="31063">Zeige Ausschnitt</string>
+<string id="31064">Hoch</string>
+<string id="31065">Tief</string>
+<string id="31066">Aktiviere Banneransicht für TV Shows</string>
+<string id="31067">[LOWERCASE]$INFO[ListItem.VideoResolution]p[/LOWERCASE][UPPERCASE] $INFO[ListItem.VideoCodec][/UPPERCASE][LOWERCASE] - $INFO[ListItem.AudioChannels] $LOCALIZE[31055][/LOWERCASE][UPPERCASE] $INFO[ListItem.AudioCodec][/UPPERCASE]</string>
+<string id="31068">Ende: $INFO[Player.FinishTime]</string>
+<string id="31069">Video Einstellungen</string>
+<string id="31070">Allgemein</string>
+<string id="31071">Hintergrund</string>
+
+<string id="31072">$INFO[ListItem.episode] $LOCALIZE[20360] ($INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[16101])</string>
+<string id="31073">$INFO[ListItem.Property(UnWatchedEpisodes),, $LOCALIZE[16101] $LOCALIZE[20360]]</string>
+<string id="31074">$INFO[ListItem.Season,$LOCALIZE[20373] , -] $INFO[ListItem.Episode,$LOCALIZE[20359] ]</string>
+<string id="31075">$INFO[ListItem.Premiered ,$LOCALIZE[31089]: ]</string>
+<string id="31076">[COLOR=Color3]$LOCALIZE[209] : $INFO[MusicPlayer.offset(1).Artist,, - ]$INFO[MusicPlayer.offset(1).Title][/COLOR]</string>
+<string id="31077">[COLOR=Color3]$INFO[MusicPlayer.Playlistposition,$LOCALIZE[554]: ]$INFO[MusicPlayer.Playlistlength, / ][/COLOR]</string>
+<string id="31078">$INFO[Player.Time]$INFO[Player.Duration, / ]</string>
+<string id="31079">$INFO[ListItem.episode] total ($INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[16101])</string>
+<string id="31080">[UPPERCASE]$INFO[ListItem.episode] $LOCALIZE[20360][/UPPERCASE]</string>
+<string id="31081">$INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[16101]</string>
+<string id="31082">$LOCALIZE[31106] $INFO[MusicPlayer.Artist]</string>
+<string id="31083">Aus dem Album $INFO[MusicPlayer.Album]</string>
+<string id="31084">[UPPERCASE][COLOR=Color3]Playing[/COLOR] $INFO[VideoPlayer.Title] [COLOR=Color3]from[/COLOR] $INFO[VideoPlayer.TVShowTitle][/UPPERCASE]</string>
+<string id="31085">$INFO[ListItem.Season ,$LOCALIZE[20373] ] - $INFO[ListItem.Episode ,$LOCALIZE[20359] ]</string>
+
+<string id="31086">Dateien</string>
+<string id="31087">Staffel</string>
+<string id="31088">Folge</string>
+<string id="31089">Gesamt</string>
+<string id="31090">*</string>
+<string id="31091">*</string>
+<string id="31092">Staffeln</string>
+<string id="31093">Banner</string>
+<string id="31094">Neue Folgen</string>
+<string id="31095">Neue Filme</string>
+<string id="31096">$INFO[VideoPlayer.TVShowTitle,,: ]$INFO[VideoPlayer.Season,$LOCALIZE[20373] , -] $INFO[VideoPlayer.Episode,$LOCALIZE[20359] ]</string>
+<string id="31097">Zeige Rollbalken</string>
+<string id="31098">FSK</string>
+<string id="31099">Aktiviere allgemeinen Fanart Hintergrund</string>
+<string id="31100">Min</string>
+<string id="31101">Temperatur</string>
+<string id="31102">Lesezeichen</string>
+<string id="31103">Keine Bewertung verfügbar</string>
+<string id="31104">Zeige Details</string>
+<string id="31105">Keine Details</string>
+<string id="31106">Von</string>
+<string id="31107">Nicht Plätten</string>
+<string id="31108">Von</string>
+<string id="31109">Später</string>
+
+<string id="31110">$INFO[ListItem.TVShowTitle,,: ]$INFO[ListItem.Season,$LOCALIZE[20373] , -] $INFO[ListItem.Episode,$LOCALIZE[20359] ]</string>
+<string id="31111">Optionen für Wiedergabelisten</string>
+<string id="31112">Zeige in der Listenansicht Plot für Episoden</string>
+<string id="31113">Zufällig: aus</string>
+<string id="31114">Zufällig: an</string>
+<string id="31115">Zeige Datum</string>
+
+<!--settings.xml-->
+<string id="31120">Wiedergabe</string>
+<string id="31121">Repositories</string>
+<string id="31122">Plugin</string>
+<string id="31123">Ausgang</string>
+<string id="31124">Hauptbildschirm</string>
+<string id="31125">Öffne Einstellungen in separatem Menü</string>
+
+<string id="31126">Version</string>
+<string id="31127">Hauptrollen</string>
+<string id="31127">Min</string>
+
+<string id="31900">Zeige alle</string>
+<string id="31901">Datei-Modus</string>
+<string id="31902">Netzwerk Einstellungen</string>
+<string id="31903">Wetter Einstellungen</string>
+<string id="31904">System Einstellungen</string>
+<string id="31905">[COLOR=Color2]$LOCALIZE[0][/COLOR] Plugins</string>
+<string id="31906">[COLOR=Color2]$LOCALIZE[1][/COLOR] Plugins</string>
+<string id="31907">Verstecke Uhrzeit und Datum</string>
+<string id="31908">Hintergründe</string>
+<string id="31909">über</string>
+<string id="31910">System ausschalten</string>
+<string id="31911">in 30 Minuten</string>
+<string id="31912">in 60 Minuten</string>
+<string id="31913">in 120 Minuten</string>
+<string id="31914">Plugins</string>
+<string id="31915">Fanart</string>
+<string id="31916">Eigener Timer</string>
+<string id="31917"></string>
+<string id="31920">Zeige Ungesehen-Indikator im Datei-Modus</string>
+<string id="31921">Zeige Ungesehen-Indikator für Serien</string>
+<string id="31922">Zeige Ungesehen-Indikator für Filme</string>
+<string id="31923">Zeige Ungesehen-Indikator für Staffeln</string>
+<string id="31924">Zeige Ungesehen-Indikator für Folgen</string>
+<string id="31925">[COLOR=Color2]Neue[/COLOR] Folgen</string>
+<string id="31926">[COLOR=Color2]Neue[/COLOR] Filme</string>
+<string id="31927">Aktiviere Timer Option im Beenden-Menü</string>
+<string id="31928">[COLOR=Color2]$LOCALIZE[157][/COLOR] Plugins</string>
+<string id="31929">Alternate Global Fanart Overlay</string>
+<string id="31930">Wähle Ansicht</string>
+<string id="31931">[COLOR=Color2]Neue[/COLOR] Musik Videos</string>
+<string id="31932">[COLOR=Color2]Neue[/COLOR] Alben</string>
+<string id="31933">Zeige Fanart in Listenansicht</string>
+<string id="31934">Zeige Poster</string>
+<string id="31935">Zeige Fanart</string>
+<string id="31936">Nutze Fanart Slideshow</string>
+<string id="31937">Setze eigene Slideshow</string>
+<string id="31938">Zeige Reload Skin</string>
+<string id="31940">Zeige Label Erweiterungen in Menü Einträgen</string>
+<string id="31941">[COLOR=Color2]Zuletzt[/COLOR] abgespielt</string>
+<string id="31942">[COLOR=Color2]$LOCALIZE[2][/COLOR] Plugins</string>
+<string id="31943">Serien</string>
+<string id="31944">Einträge</string>
+<string id="31945">Videos</string>
+<string id="31946">Lieder</string>
+<string id="31947">Zeige was gerade läuft</string>
+<string id="31948">Informationen</string>
+<string id="31949">Guten Abend</string>
+<string id="31950">Guten Morgen</string>
+<string id="31951">Guten Tag</string>
+<string id="31952">Ausschalten</string>
+<string id="31953">Zeige Trailer</string>
+<string id="31954">Hauptmenü Optionen</string>
+<string id="31955">Zeige Zubehör</string>
+<string id="31956">Zeige Anwendungen im Hauptmenü</string>
+<string id="31957">Zeige Wetter im Hauptmenü</string>
+<string id="31958">Zeige Optionen bei Beenden</string>
+<string id="31959">Zeige Favoriten im Hauptmenü</string>
+<string id="31960">Zeige Skripte im Hauptmenü</string>
+<string id="31961">Hauptmenü</string>
+<string id="31962">Videomenü</string>
+<string id="31963">Musikmenü</string>
+
+
+<string id="31966">Nutze Wetter Fanart</string>
+<string id="31967">Setze Pfad für Wetter Fanart</string>
+<string id="31968">System [COLOR=Color2]Informationen[/COLOR]</string>
+<string id="31969">Datei [COLOR=Color2]Manager[/COLOR]</string>
+<string id="31970">Neue Alben</string>
+
+<string id="31974">Großes Gitter</string>
+<string id="31975">Kleines Gitter</string>
+
+<!--plex-->
+<string id="31976">Plex Online</string>
+<string id="31977">Deaktiviere RSS-Feed</string>
+
+<string id="31979">Beenden</string>
+<string id="31980">Aktualisiere Plex</string>
+<string id="31981">Automatische Updates</string>
+<string id="31982">Video</string>
+<string id="31983">Audio</string>
+<string id="31984">Medienserver</string>
+<string id="31985">Energie sparen</string>
+<string id="31986">Fanart</string>
+<string id="31987">Aktiviere auf Tageszeit angepasste Slideshow</string>
+<string id="33006">Heute</string>
+<string id="33020">Condition</string>
+
+</strings>

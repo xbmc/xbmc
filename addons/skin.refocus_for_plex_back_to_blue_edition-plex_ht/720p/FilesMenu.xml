@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="FilesMenu">
+		<!-- Shadow layer to darken options bg -->
+		<control type="group">
+			<animation effect="fade" start="100" end="20" time="350" condition="Control.HasFocus(300) | Control.HasFocus(1110) | Control.HasFocus(1140) | Control.HasFocus(1150) | Control.HasFocus(1160)">Conditional</animation>
+			<control type="image">
+				<posx>383</posx>
+				<posy>121</posy>
+				<height>509</height>
+				<width>2000</width>
+				<texture flipx="true">dialogs/square_menu_background.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="50"/>
+				</animation>
+				<visible>!Control.HasFocus(300) + [ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()]</visible>
+			</control>
+		</control>
+		<!-- VIEW MENUS -->
+		<control type="group" id="300">
+			<posx>58</posx>
+			<posy>150</posy>
+			<width>400</width>
+			<height>650</height>
+			<onup>9100</onup>
+			<ondown>9100</ondown>
+			<orientation>vertical</orientation>
+			<scrolltime>150</scrolltime>
+			<visible allowhiddenfocus="true">ControlGroup(300).HasFocus</visible>
+			<include>homeMenuToggle</include>
+			<include>homeMenusLayout</include>
+			<!-- white separators top and bottom sub-menu -->
+			<control type="image">
+				<posx>356</posx>
+				<posy>-18</posy>
+				<height>10</height>
+				<width>1000</width>
+				<texture>dialogs/sliderBackground_.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="80"/>
+				</animation>
+				<!--<visible>!Control.HasFocus(300) + [ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()]</visible>-->
+			</control>
+			<control type="image">
+				<posx>356</posx>
+				<posy>460</posy>
+				<height>10</height>
+				<width>1000</width>
+				<texture>dialogs/sliderBackground_.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="80"/>
+				</animation>
+				<!--<visible>!Control.HasFocus(300) + [ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()]</visible>-->
+			</control>
+			<!-- LEFT -->
+			<control type="grouplist" id="9100">
+				<visible>!Skin.HasSetting(global.kiosk)</visible>
+				<onup>9100</onup>
+				<ondown>9100</ondown>
+				<onleft>50</onleft>
+				<onright>200</onright>
+				<itemgap>0</itemgap>			
+				<!-- list -->
+				<control type="button" id="9019">
+					<label>$LOCALIZE[535]</label>
+					<onclick>Container.SetViewMode(50)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+				</control>
+				<!-- thumbnails -->
+				<control type="button" id="9004">
+					<label>thumbnails</label>
+					<onclick>Container.SetViewMode(574)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+				</control>
+			</control>
+			<!-- RIGHT -->
+			<control type="group">
+				<posx>325</posx>
+				<posy>0</posy>
+				<width>850</width>
+				<height>595</height>
+				<!-- presentation screencaps -->
+				<control type="group" id="200">
+					<posx>100</posx>
+					<posy>30</posy>
+					<height>400</height>
+					<width>700</width>
+					<include>transition2</include>
+					<!-- frame -->
+					<control type="image">
+						<posx>-10</posx>
+						<posy>-10</posy>
+						<height>410</height>
+						<width>718</width>
+						<texture border="20" background="true">dialogs/square_dialog_background.png</texture>
+						<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9019) | ControlGroup(9100).HasFocus(9020) | ControlGroup(9100).HasFocus(9004) | ControlGroup(9100).HasFocus(9005) | ControlGroup(9100).HasFocus(9006) | ControlGroup(9100).HasFocus(9007) | ControlGroup(9100).HasFocus(9008) | ControlGroup(9100).HasFocus(9010) | ControlGroup(9100).HasFocus(9012)</visible>
+					</control>
+					<!-- list -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/listaddon.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9019)</visible>
+					</control>
+					<!-- thumbs addon -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/thumbssquareaddon.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9004)</visible>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!-- Separator New Home Menu -->
+		<control type="group">
+			<!--<animation effect="fade" start="100" end="20" time="350" condition="Control.HasFocus(300) | Control.HasFocus(1110) | Control.HasFocus(1140) | Control.HasFocus(1150) | Control.HasFocus(1160)">Conditional</animation>-->
+			<visible>ControlGroup(300).HasFocus | ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()</visible>
+			<control type="image">
+				<posx>354</posx>
+				<posy>0</posy>
+				<height>720</height>
+				<width>29</width>
+				<texture>settings/separator.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+			</control>
+		</control>
+	</include>
+</includes>

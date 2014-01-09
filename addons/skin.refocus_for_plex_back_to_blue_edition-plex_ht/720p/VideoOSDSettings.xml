@@ -1,0 +1,72 @@
+<window id="123">
+	<defaultcontrol>5</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>340</posx>
+		<posy>60</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<visible>!Window.IsActive(145)</visible>
+			<control type="image" id="1">
+				<include>dialogWindow</include>
+				<width>600</width>
+				<height>600</height>
+				<visible>Window.IsActive(osdvideosettings)</visible>
+			</control>
+			<control type="image" id="1">
+				<include>dialogWindow</include>
+				<width>600</width>
+				<height>520</height>
+				<visible>Window.IsActive(osdaudiosettings)</visible>
+			</control>	
+			<control type="label" id="2">
+				<width>532</width>
+				<include>dialog_Windowtitle</include>
+			</control>
+			<control type="group">
+				<posx>19</posx>
+				<posy>75</posy>
+				<control type="image">
+					<width>563</width>
+					<include>dialog_Separator</include>
+				</control>
+				<control type="grouplist" id="5">
+					<width>563</width>
+					<height>480</height>
+					<itemgap>0</itemgap>
+					<onleft>5</onleft>
+					<onright>5</onright>
+					<onup>5</onup>
+					<ondown>5</ondown>
+					<pagecontrol>60</pagecontrol>
+					<visible>Window.IsActive(osdvideosettings)</visible>
+				</control>
+				<control type="grouplist" id="5">
+					<width>563</width>
+					<height>400</height>
+					<itemgap>0</itemgap>
+					<onleft>5</onleft>
+					<onright>5</onright>
+					<onup>5</onup>
+					<ondown>5</ondown>
+					<pagecontrol>60</pagecontrol>
+					<visible>Window.IsActive(osdaudiosettings)</visible>
+				</control>
+			</control>
+			<control type="sliderex" id="10">
+				<include>dialog_Slider</include>
+			</control>
+			<control type="button" id="7">
+				<include>dialog_Button-list</include>
+			</control>
+			<control type="radiobutton" id="8">
+				<include>dialog_Radio</include>
+			</control>
+			<control type="spincontrolex" id="9">
+				<include>dialog_Spin</include>
+			</control>
+		</control>
+	</controls>
+</window>

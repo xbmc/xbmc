@@ -1,0 +1,197 @@
+<window id="135">
+	<defaultcontrol always="true">901</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>353</posx>
+		<posy>170</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<visible>!Window.IsVisible(musicinformation)</visible>
+			<control type="image">
+				<width>577</width>
+				<height>380</height>
+				<include>dialogWindow</include>
+			</control>
+			<control type="label" id="1">
+				<width>540</width>
+				<scroll>true</scroll>
+				<label>$INFO[ListItem.Title]</label>
+				<include>dialog_Windowtitle</include>
+			</control>
+			<control type="group">
+				<posx>19</posx>
+				<posy>75</posy>
+				<control type="image">
+					<width>540</width>
+					<include>dialog_Separator</include>
+				</control>
+				<control type="list" id="100">
+					<width>540</width>
+					<height>305</height>
+					<onleft>-</onleft>
+					<onright>-</onright>
+					<onup>100</onup>
+					<ondown>100</ondown>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="40">
+						<control type="image">
+							<width>540</width>
+							<height>40</height>
+							<font>smallerCaps</font>
+							<include>dialog_CommonList</include>
+						</control>
+						<control type="label">
+							<width>532</width>
+							<height>36</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>smallerCaps</font>
+							<include>dialog_CommonListItem</include>
+						</control>
+						<control type="label">
+							<posx>525</posx>
+							<width>532</width>
+							<height>36</height>
+							<align>right</align>
+							<label>$INFO[ListItem.Label2]</label>
+							<font>smallAlt</font>
+							<include>dialog_CommonListItem</include>
+						</control>
+					</itemlayout>
+					<focusedlayout height="40">
+						<control type="image">
+							<width>540</width>
+							<include>dialog_CommonList</include>
+						</control>
+						<control type="label">
+							<width>532</width>
+							<height>36</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>smallerCaps</font>
+							<include>dialog_CommonListItem</include>
+						</control>
+						<control type="label">
+							<posx>525</posx>
+							<width>532</width>
+							<height>36</height>
+							<align>right</align>
+							<label>$INFO[ListItem.Label2]</label>
+							<font>smallAlt</font>
+							<include>dialog_CommonListItem</include>
+						</control>
+					</focusedlayout>
+					<content>
+						<item id="1">
+							<label>$LOCALIZE[557]</label>
+							<label2>$INFO[ListItem.Artist]</label2>
+							<onclick>-</onclick>
+						</item>
+						<item id="2">
+							<label>$LOCALIZE[558]</label>
+							<label2>$INFO[ListItem.Album]</label2>
+							<onclick>-</onclick>
+						</item>
+						<item id="3">
+							<label>$LOCALIZE[562]</label>
+							<label2>$INFO[ListItem.Year]</label2>
+							<onclick>-</onclick>
+						</item>
+						<item id="4">
+							<label>$LOCALIZE[554]</label>
+							<label2>$INFO[ListItem.TrackNumber]</label2>
+							<onclick>-</onclick>
+						</item>
+						<item id="5">
+							<label>$LOCALIZE[563]</label>
+							<label2>-</label2>
+							<onclick>-</onclick>
+						</item>
+					</content>
+				</control>
+				<control type="image">
+					<description>Rating value</description>
+					<posx>300</posx>
+					<posy>166</posy>
+					<width>160</width>
+					<height>24</height>
+					<aspectratio align="right">keep</aspectratio>
+					<info>ListItem.StarRating</info>
+				</control>
+			</control>
+			<control type="group" id="900">
+				<posx>493</posx>
+				<posy>241</posy>
+				<control type="button" id="102">
+					<label>-</label>
+					<width>26</width>
+					<height>26</height>
+					<onleft>103</onleft>
+					<onright>103</onright>
+					<onup>-</onup>
+					<ondown>901</ondown>
+					<onclick>IncreaseRating</onclick>
+					<texturenofocus>dialogs/scrollDown.png</texturenofocus>
+					<texturefocus>dialogs/scrollDown-focus.png</texturefocus>
+				</control>
+				<control type="button" id="103">
+					<posx>26</posx>
+					<label>-</label>
+					<width>26</width>
+					<height>26</height>
+					<onleft>102</onleft>
+					<onright>102</onright>
+					<onup>-</onup>
+					<ondown>901</ondown>
+					<onclick>DecreaseRating</onclick>
+					<texturenofocus>dialogs/scrollUp.png</texturenofocus>
+					<texturefocus>dialogs/scrollUp-focus.png</texturefocus>
+				</control>
+			</control>
+		<!---dialog controls------>
+			<control type="group" id="901">
+				<posx>34</posx>
+				<posy>305</posy>
+				<!--thumb-->
+				<control type="button" id="13">
+					<label>$LOCALIZE[31019]</label>
+					<onleft>11</onleft>
+					<onright>12</onright>
+					<onup>900</onup>
+					<ondown>-</ondown>
+					<include>dialog_Button</include>
+				</control>
+				<!--album info-->
+				<control type="button" id="12">
+					<posx>130</posx>
+					<label>$LOCALIZE[10523]</label>
+					<onleft>13</onleft>
+					<onright>10</onright>
+					<onup>900</onup>
+					<ondown>-</ondown>
+					<include>dialog_Button</include>
+				</control>
+				<!--ok-->
+				<control type="button" id ="10">
+					<posx>260</posx>
+					<label>$LOCALIZE[186]</label>
+					<onleft>12</onleft>
+					<onright>11</onright>
+					<onup>900</onup>
+					<ondown>-</ondown>
+					<include>dialog_Button</include>
+				</control>
+				<!--cancel-->
+				<control type="button" id="11">
+					<posx>390</posx>
+					<label>$LOCALIZE[222]</label>
+					<onleft>10</onleft>
+					<onright>13</onright>
+					<onup>900</onup>
+					<ondown>-</ondown>
+					<include>dialog_Button</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

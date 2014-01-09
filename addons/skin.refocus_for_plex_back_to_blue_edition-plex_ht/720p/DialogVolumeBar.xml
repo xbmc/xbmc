@@ -1,0 +1,32 @@
+<window id="104">
+	<defaultcontrol>1</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>490</posx>
+		<posy>5</posy>
+	</coordinates>
+	<include>fadeinout</include>
+	<controls>
+		<control type="image">
+			<width>300</width>
+			<height>120</height>
+			<include>dialogWindow</include>
+		</control>
+		<control type="label">
+			<posx>34</posx>
+			<posy>28</posy>
+			<width>232</width>
+			<label>$INFO[Player.Volume]</label>
+			<font>normalAlt</font>
+			<align>center</align>
+			<textcolor>Color4</textcolor>
+		</control>
+		<control type="progress" id="1">
+			<posx>34</posx>
+			<posy>65</posy>
+			<width>230</width>
+			<height>18</height>
+			<info>Player.Volume</info>
+		</control>
+	</controls>
+</window>

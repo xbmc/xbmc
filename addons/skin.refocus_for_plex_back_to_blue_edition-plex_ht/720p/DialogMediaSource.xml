@@ -1,0 +1,219 @@
+<window id="129">
+	<defaultcontrol always="true">300</defaultcontrol>
+	
+	<coordinates>
+		<system>1</system>
+		<posx>290</posx>
+		<posy>70</posy>
+	</coordinates>
+	
+	<include>dialogOpen</include>
+
+	<controls>
+		<control type="image">
+			<width>700</width>
+			<height>465</height>
+			<include>dialogWindow</include>
+		</control>
+		
+		<control type="label" id="2">
+			<description>heading label</description>
+			<width>466</width>
+			<posx>34</posx>
+			<include>dialogHeading</include>
+		</control>
+		
+		<control type="image">
+			<posx>19</posx>
+			<posy>18</posy>
+			<width>500</width>
+			<height>40</height>
+			<texture>1black.png</texture>
+		</control>
+		
+		<control type="image">
+			<posx>518</posx>
+			<posy>18</posy>
+			<width>150</width>
+			<height>426</height>
+			<texture>dialogs/sidebar.png</texture>
+		</control>
+		
+		<control type="group">
+			<posx>19</posx>
+			<posy>75</posy>
+			<control type="image">
+				<width>499</width>
+				<include>dialogSeparator</include>
+			</control>
+			<control type="image">
+				<posy>40</posy>
+				<width>499</width>
+				<include>dialogSeparator</include>
+			</control>
+			<control type="image">
+				<posy>80</posy>
+				<width>499</width>
+				<include>dialogSeparator</include>
+			</control>
+			<control type="image">
+				<posy>120</posy>
+				<width>499</width>
+				<include>dialogSeparator</include>
+			</control>
+			<control type="image">
+				<posy>160</posy>
+				<width>499</width>
+				<include>dialogSeparator</include>
+			</control>
+		</control>
+
+
+		<control type="list" id="10">
+			<posx>19</posx>
+			<posy>75</posy>
+			<width>563</width>
+			<height>160</height>
+			<onup>12</onup>
+			<onleft>-</onleft>
+			<onright>300</onright>
+			<ondown>12</ondown>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="40">
+				<control type="label">
+					<posx>15</posx>
+					<width>530</width>
+					<height>35</height>
+					<font>list</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+					<textcolor>Color1</textcolor>
+					<focusedcolor>Color5</focusedcolor>
+					<selectedcolor>Color5</selectedcolor>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<width>500</width>
+					<height>40</height>
+					<texture border="3">dialogs/list-focus.png</texture>
+					<animation effect="fade" start="100" end="50" time="0" condition="Control.HasFocus(10)">Conditional</animation>
+				</control>
+				<control type="label">
+					<posx>15</posx>
+					<width>530</width>
+					<height>35</height>
+					<font>list</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+					<textcolor>Color4</textcolor>
+					<selectedcolor>Color5</selectedcolor>
+					<focusedcolor>Color5</focusedcolor>
+				</control>
+			</focusedlayout>
+		</control>
+
+		<control type="button" id="12">
+			<description>Name Button</description>
+			<posx>38</posx>
+			<posy>325</posy>
+			<width>460</width>		
+			<onup>10</onup>
+			<onleft>-</onleft>
+			<onright>300</onright>
+			<ondown>10</ondown>
+			<include>dialogTextField</include>
+		</control>
+		<control type="label">
+			<description>Name label</description>
+			<posx>34</posx>
+			<posy>280</posy>
+			<width>466</width>
+			<height>28</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>list</font>
+			<label>1022</label>
+			<textcolor>Color5</textcolor>
+		</control>
+
+	
+		<control type="group" id="300">
+			<posx>535</posx>
+			<posy>75</posy>
+			<control type="button" id="11">
+				<description>Browse Button</description>
+				<label>1024</label>
+				<width>130</width>
+				<onup>19</onup>
+				<onleft>10</onleft>
+				<onright>-</onright>
+				<ondown>13</ondown>
+				<include>dialogButton</include>
+			</control>
+			<control type="button" id="13">
+				<description>Add Path Button</description>
+				<posy>55</posy>
+				<label>15019</label>
+				<width>130</width>
+				<onup>11</onup>
+				<onleft>10</onleft>
+				<onright>-</onright>
+				<ondown>14</ondown>
+				<include>dialogButton</include>
+			</control>
+			<control type="button" id="14">
+				<description>Remove Path Button</description>
+				<posy>110</posy>
+				<label>1210</label>
+				<width>130</width>
+				<onup>13</onup>
+				<onleft>10</onleft>
+				<onright>-</onright>
+				<ondown>20</ondown>
+				<include>dialogButton</include>
+			</control>
+		</control>
+		
+		<control type="group" id="9001">
+			<posx>535</posx>
+			<posy>275</posy>
+			<control type="button" id="20">
+				<description>Set Content Button</description>
+				<width>130</width>
+				<label>20333</label>
+				<onup>14</onup>
+				<onleft>10</onleft>
+				<onright>-</onright>
+				<ondown>18</ondown>
+				<include>dialogButton</include>
+			</control>
+			<control type="button" id="18">
+				<description>Ok Button</description>
+				<posy>55</posy>
+				<label>186</label>
+				<width>130</width>
+				<onup>20</onup>
+				<onleft>10</onleft>
+				<onright>-</onright>
+				<ondown>19</ondown>
+				<!--<animation effect="slide" start="0,0" end="-102,0" time="0" condition="!Control.IsVisible(20)">Conditional</animation>-->
+				<include>dialogButton</include>
+			</control>
+			<control type="button" id="19">
+				<description>Cancel Button</description>
+				<posy>110</posy>
+				<label>222</label>
+				<width>130</width>
+				<onup>18</onup>
+				<onleft>10</onleft>
+				<onright>-</onright>
+				<ondown>11</ondown>
+				<!--<animation effect="slide" start="0,0" end="-102,0" time="0" condition="!Control.IsVisible(20)">Conditional</animation>-->
+				<include>dialogButton</include>
+			</control>
+		</control>
+	</controls>
+</window>

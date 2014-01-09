@@ -1,0 +1,44 @@
+<window id="145">
+	<defaultcontrol>11</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>396</posx>
+		<posy>425</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<width>488</width>
+			<height>170</height>
+			<include>dialogWindow</include>
+		</control>
+		<control type="label" id="10">
+			<width>420</width>
+			<scroll>true</scroll>
+			<include>dialog_Windowtitle</include>
+		</control>
+		<control type="group">
+			<posx>34</posx>
+			<posy>72</posy>
+			<control type="slider" id="11">
+				<width>420</width>
+				<height>31</height>
+				<onup>11</onup>
+				<ondown>11</ondown>
+				<onleft>11</onleft>
+				<onright>11</onright>
+				<texturesliderbar>osd/sliderBG.png</texturesliderbar>
+				<textureslidernib>osd/sliderNib.png</textureslidernib>
+				<textureslidernibfocus>osd/sliderNib.png</textureslidernibfocus>
+			</control>
+			<control type="label" id="12">
+				<posy>38</posy>
+				<width>417</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>normal</font>
+				<textcolor>Color4</textcolor>
+			</control>
+		</control>
+	</controls>
+</window>

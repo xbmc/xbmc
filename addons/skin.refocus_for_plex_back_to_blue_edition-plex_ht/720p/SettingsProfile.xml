@@ -1,0 +1,119 @@
+<window id="34">
+	<defaultcontrol always="true">300</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<previouswindow>0</previouswindow>
+	
+	<controls>
+		<include>global_Background</include>
+		<include>allscreens</include>
+		
+		<control type="label">
+			<include>PageLabel</include>
+			<label>$LOCALIZE[5] [COLOR=Color2]$LOCALIZE[13200][/COLOR]</label>
+		</control>
+		
+		<control type="group" id="300">
+			<posx>50</posx>
+			<posy>105</posy>
+			<include>transition2</include>
+			<control type="button" id="10">
+				<label>$LOCALIZE[20096]</label>
+				<onfocus>Skin.SetString(ProfileSettings,1)</onfocus>
+				<onleft>12</onleft>
+				<onright>4</onright>
+				<onup>11</onup>
+				<ondown>11</ondown>
+				<width>271</width>
+				<include>categoryButton</include>
+			</control>
+			<control type="button" id="11">
+				<posy>45</posy>
+				<label>31021</label>
+				<onfocus>Skin.SetString(ProfileSettings,2)</onfocus>
+				<onright>5</onright>
+				<onup>10</onup>
+				<ondown>10</ondown>
+				<width>271</width>
+				<include>categoryButton</include>
+			</control>
+		</control>
+		
+		<control type="radiobutton" id="4">
+			<posx>350</posx>
+			<posy>105</posy>
+			<width>850</width>
+			<height>45</height>
+			<onleft>300</onleft>
+			<label>$LOCALIZE[31026]</label>
+			<include>settingsButton</include>
+			<visible>Skin.String(ProfileSettings,1)</visible>
+			<include>transition2</include>
+		</control>
+
+		<control type="group" id="5">
+			<posx>350</posx>
+			<posy>105</posy>
+			<!--<include>pageslide</include>-->
+			<visible>Skin.String(ProfileSettings,2)</visible>
+			<include>transition2</include>
+
+			<control type="list" id="2">
+				<width>850</width>
+				<height>600</height>
+				<onleft>300</onleft>
+				<onright>300</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+				<viewtype label="List">List</viewtype>
+				<itemlayout height="45">
+					<control type="label">
+						<posx>15</posx>
+						<posy>3</posy>
+						<width>850</width>
+						<height>35</height>
+						<info>ListItem.Label</info>
+						<font>list</font>
+						<textcolor>Color1</textcolor>
+					</control>
+					<control type="label">
+						<posx>830</posx>
+						<posy>3</posy>
+						<width>400</width>
+						<height>45</height>
+						<textcolor>Color2</textcolor>
+						<info>ListItem.Label2</info>
+						<font>list</font>
+						<align>right</align>
+						<textcolor>Color1</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout height="45">
+					<control type="image">
+						<width>850</width>
+						<height>45</height>
+						<texture border="16,16,16,16">settings/list-focus.png</texture>
+					</control>
+					<control type="label">
+						<posx>15</posx>
+						<posy>3</posy>
+						<width>850</width>
+						<height>35</height>
+						<info>ListItem.Label</info>
+						<font>list</font>
+						<textcolor>Color5</textcolor>
+					</control>
+					<control type="label">
+						<posx>830</posx>
+						<posy>3</posy>
+						<width>400</width>
+						<height>35</height>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+						<font>list</font>
+						<textcolor>Color5</textcolor>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+	</controls>
+</window>

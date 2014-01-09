@@ -1,0 +1,340 @@
+<includes>
+	<include name="controls_Music">
+		<control type="group">
+			<visible>![Window.IsActive(visualisationpresetlist) | Window.IsActive(script-XBMC_Lyrics-main.xml)]</visible>
+			<control type="group" id="600">
+				<posx>514</posx>
+				<posy>313</posy>
+				<visible allowhiddenfocus="true">ControlGroup(600).HasFocus</visible>
+				<include>toggle_PlayerMenu</include>
+				<control type="image">
+					<width>252</width>
+					<height>267</height>
+					<texture>osd/settingsMenu.png</texture>
+				</control>
+				<control type="grouplist" id="601">
+					<posx>9</posx>
+					<posy>8</posy>
+					<width>234</width>
+					<height>225</height>
+					<align>top</align>
+					<onleft>701</onleft>
+					<onright>701</onright>
+					<onup>599</onup>
+					<ondown>599</ondown>
+					<itemgap>0</itemgap>
+					<!--visualization select-->
+					<control type="button" id="602">
+						<width>234</width>
+						<label>$LOCALIZE[250]</label>
+						<onback>SetFocus(599)</onback>
+						<include>dialog_Button-list</include>
+						<onclick>Addon.Default.Set(xbmc.player.musicviz)</onclick>
+					</control>
+					<!--presets-->
+					<control type="button" id="603">
+						<width>234</width>
+						<label>$LOCALIZE[13388]</label>
+						<onback>SetFocus(599)</onback>
+						<include>dialog_Button-list</include>
+						<onclick>XBMC.ActivateWindow(122)</onclick>
+					</control>
+					<!--Last.fm-->
+					<control type="button" id="604">
+						<width>234</width>
+						<label>$LOCALIZE[15200] $LOCALIZE[33079]</label>
+						<onback>SetFocus(599)</onback>
+						<include>dialog_Button-list</include>
+						<onclick>Dialog.Close(MusicOSD,true)</onclick>
+						<onclick>XBMC.LastFM.Love</onclick>
+						<visible>LastFM.RadioPlaying</visible>
+					</control>
+					<control type="button" id="605">
+						<width>234</width>
+						<label>$LOCALIZE[15200] $LOCALIZE[33080]</label>
+						<onback>SetFocus(599)</onback>
+						<include>dialog_Button-list</include>
+						<onclick>Dialog.Close(MusicOSD,true)</onclick>
+						<onclick>XBMC.LastFM.Ban</onclick>
+						<visible>LastFM.RadioPlaying</visible>
+					</control>
+					<!--random-->
+					<control type="button" id="607">
+						<width>234</width>
+						<label>$LOCALIZE[13319]$INFO[Playlist.Random,: ]</label>
+						<onback>SetFocus(599)</onback>
+						<include>dialog_Button-list</include>
+						<onclick>XBMC.PlayerControl(Random)</onclick>
+					</control>
+					<!--repeat-->
+					<control type="button" id="608">
+						<width>234</width>
+						<label>$LOCALIZE[486]$INFO[Playlist.Repeat,: ]</label>
+						<onback>SetFocus(599)</onback>
+						<include>dialog_Button-list</include>
+						<onclick>XBMC.PlayerControl(Repeat)</onclick>
+					</control>
+				</control>
+			</control>
+			<control type="image">
+				<posx>618</posx>
+				<posy>540</posy>
+				<width>45</width>
+				<height>45</height>
+				<texture>osd/openSettings.png</texture>
+				<visible>!ControlGroup(600).HasFocus</visible>
+				<include>toggle_PlayerControls</include>
+			</control>
+			<control type="group" id="599">
+				<posx>465</posx>
+				<posy>575</posy>
+				<control type="image" id="1">
+					<width>350</width>
+					<height>72</height>
+					<texture border="48,33,48,33">osd/playerControlsPanel.png</texture>
+				</control>
+				<include>toggle_PlayerControls</include>
+				<control type="group">
+					<posy>13</posy>
+					<control type="button" id="700">
+						<posx>13</posx>
+						<width>48</width>
+						<height>48</height>
+						<texturefocus>osd/osd-button-prev-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-prev.png</texturenofocus>
+						<onup>600</onup>
+						<onleft>705</onleft>
+						<onright>701</onright>
+						<onclick>PlayerControl(Previous)</onclick>
+					</control>
+					<control type="button" id="701">
+						<posx>68</posx>
+						<width>48</width>
+						<height>48</height>
+						<texturefocus>osd/osd-button-rwd-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-rwd.png</texturenofocus>
+						<onup>600</onup>
+						<onleft>700</onleft>
+						<onright>702</onright>
+						<onclick>PlayerControl(Rewind)</onclick>
+					</control>
+					<control type="togglebutton" id="702">
+						<posx>123</posx>
+						<width>48</width>
+						<height>48</height>
+						<texturefocus>osd/osd-button-pause-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-pause.png</texturenofocus>
+						<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+						<alttexturefocus>osd/osd-button-play-focus.png</alttexturefocus>
+						<alttexturenofocus>osd/osd-button-play.png</alttexturenofocus>
+						<onup>600</onup>
+						<onleft>701</onleft>
+						<onright>703</onright>
+						<onclick>PlayerControl(Play)</onclick>
+					</control>
+					<control type="button" id="703">
+						<posx>178</posx>
+						<posy>0</posy>
+						<width>48</width>
+						<height>48</height>
+						<font>-</font>
+						<texturefocus>osd/osd-button-stop-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-stop.png</texturenofocus>
+						<onleft>702</onleft>
+						<onright>704</onright>
+						<onup>600</onup>
+						<onclick>PlayerControl(Stop)</onclick>
+					</control>
+					<control type="button" id="704">
+						<posx>233</posx>
+						<posy>0</posy>
+						<width>48</width>
+						<height>48</height>
+						<font>-</font>
+						<texturefocus>osd/osd-button-fwd-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-fwd.png</texturenofocus>
+						<onleft>703</onleft>
+						<onright>705</onright>
+						<onup>600</onup>
+						<onclick>PlayerControl(Forward)</onclick>
+					</control>
+					<control type="button" id="705">
+						<posx>288</posx>
+						<posy>0</posy>
+						<width>48</width>
+						<height>48</height>
+						<font>-</font>
+						<texturefocus>osd/osd-button-next-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-next.png</texturenofocus>
+						<onleft>704</onleft>
+						<onright>700</onright>
+						<onup>600</onup>
+						<onclick>PlayerControl(Next)</onclick>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	
+	<!-- nog doen! -->
+	<include name="controls_Video">
+		<control type="group">
+			<control type="group" id="600">
+				<posx>478</posx>
+				<posy>303</posy>
+				<visible allowhiddenfocus="true">ControlGroup(600).HasFocus</visible>
+				<include>toggle_PlayerMenu</include>
+				<control type="image">
+					<width>325</width>
+					<height>274</height>
+					<texture>osd/settingsMenu.png</texture>
+				</control>
+				<control type="grouplist" id="601">
+					<posx>12</posx>
+					<posy>8</posy>
+					<width>301</width>
+					<height>240</height>
+					<align>top</align>
+					<onleft>701</onleft>
+					<onright>701</onright>
+					<onup>599</onup>
+					<ondown>599</ondown>
+					<onback>SetFocus(599)</onback>
+					<itemgap>0</itemgap>
+					<!--video settings-->
+					<control type="button" id="603">
+						<width>307</width>
+						<label>$LOCALIZE[13395]</label>
+						<onback>SetFocus(599)</onback>
+						<include>dialog_Button-list</include>
+						<onclick>Dialog.Close(VideoOSD,true)</onclick>
+						<onclick>XBMC.ActivateWindow(123)</onclick>
+					</control>
+					<!--audio settings-->
+					<control type="button" id="604">
+						<width>307</width>
+						<label>$LOCALIZE[13396]</label>
+						<onback>SetFocus(599)</onback>
+						<include>dialog_Button-list</include>
+						<onclick>Dialog.Close(VideoOSD,true)</onclick>
+						<onclick>XBMC.ActivateWindow(124)</onclick>
+					</control>
+					<!--dvd menu-->
+					<control type="button" id="610">
+						<width>307</width>
+						<label>$LOCALIZE[33061]</label>
+						<onback>SetFocus(599)</onback>
+						<onclick>Dialog.Close(VideoOSD,true)</onclick>
+						<onclick>PlayerControl(ShowVideoMenu)</onclick>
+						<texturenofocus border="3">-</texturenofocus>
+						<include>dialog_Button-list</include>
+						<visible>VideoPlayer.HasMenu</visible>
+					</control>
+				</control>
+			</control>
+			<control type="image">
+				<posx>618</posx>
+				<posy>540</posy>
+				<width>45</width>
+				<height>45</height>
+				<texture>osd/openSettings.png</texture>
+				<visible>!ControlGroup(600).HasFocus</visible>
+				<include>fadeinout</include>
+			</control>
+			<control type="group" id="599">
+				<posx>465</posx>
+				<posy>575</posy>
+				<control type="image" id="1">
+					<width>350</width>
+					<height>72</height>
+					<texture border="48,33,48,33">osd/playerControlsPanel.png</texture>
+				</control>
+				<include>toggle_PlayerControls</include>
+				<control type="group">
+					<posy>13</posy>
+					<control type="button" id="700">
+						<posx>13</posx>
+						<width>48</width>
+						<height>48</height>
+						<texturefocus>osd/osd-button-prev-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-prev.png</texturenofocus>
+						<onup>600</onup>
+						<onleft>705</onleft>
+						<onright>701</onright>
+						<ondown>-</ondown>
+						<onclick>PlayerControl(Previous)</onclick>
+					</control>
+					<control type="button" id="701">
+						<posx>68</posx>
+						<width>48</width>
+						<height>48</height>
+						<texturefocus>osd/osd-button-rwd-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-rwd.png</texturenofocus>
+						<onup>600</onup>
+						<onleft>700</onleft>
+						<onright>702</onright>
+						<ondown>-</ondown>
+						<onclick>PlayerControl(Rewind)</onclick>
+					</control>
+					<control type="togglebutton" id="702">
+						<posx>123</posx>
+						<width>48</width>
+						<height>48</height>
+						<texturefocus>osd/osd-button-pause-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-pause.png</texturenofocus>
+						<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+						<alttexturefocus>osd/osd-button-play-focus.png</alttexturefocus>
+						<alttexturenofocus>osd/osd-button-play.png</alttexturenofocus>
+						<onup>600</onup>
+						<onleft>701</onleft>
+						<onright>703</onright>
+						<ondown>-</ondown>
+						<onclick>PlayerControl(Play)</onclick>
+					</control>
+					<control type="button" id="703">
+						<posx>178</posx>
+						<posy>0</posy>
+						<width>48</width>
+						<height>48</height>
+						<font>-</font>
+						<texturefocus>osd/osd-button-stop-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-stop.png</texturenofocus>
+						<onleft>702</onleft>
+						<onright>704</onright>
+						<onup>600</onup>
+						<ondown>-</ondown>
+						<onclick>PlayerControl(Stop)</onclick>
+					</control>
+					<control type="button" id="704">
+						<posx>233</posx>
+						<posy>0</posy>
+						<width>48</width>
+						<height>48</height>
+						<font>-</font>
+						<texturefocus>osd/osd-button-fwd-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-fwd.png</texturenofocus>
+						<onleft>703</onleft>
+						<onright>705</onright>
+						<onup>600</onup>
+						<ondown>-</ondown>
+						<onclick>PlayerControl(Forward)</onclick>
+					</control>
+					<control type="button" id="705">
+						<posx>288</posx>
+						<posy>0</posy>
+						<width>48</width>
+						<height>48</height>
+						<font>-</font>
+						<texturefocus>osd/osd-button-next-focus.png</texturefocus>
+						<texturenofocus>osd/osd-button-next.png</texturenofocus>
+						<onleft>704</onleft>
+						<onright>700</onright>
+						<onup>600</onup>
+						<ondown>-</ondown>
+						<onclick>PlayerControl(Next)</onclick>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

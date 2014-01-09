@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<window id="502">
+	<defaultcontrol always="false">50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<views>51,55,522,50,572,573</views>
+	<controls>
+		<include>global_Background</include>
+		<include>allscreens</include>
+		<include>AllViewCommonPageControls</include>
+		<include>view_List</include>
+		<include>view_BigList</include>
+		<include>view_IconFiles</include>
+		<include>view_IconSquare2</include>
+		<include>view_SlideWide</include>
+		<include>view_SlideSquare</include>
+		<include>nav_Indicator</include>
+
+<!---LIST VIEW------>
+		<include>info_MusicList</include>
+		<include>info_AddonList</include>
+
+
+<!---THUMBNAILS VIEW------>
+		<control type="group">
+			<include>transition_Info</include>
+			<include>contextMenuHide</include>
+			<include>infoDialogHide</include>
+			<visible>Control.IsVisible(573) | Control.IsVisible(572)</visible>
+			<control type="group">
+				<!---flags
+				<control type="image">
+					<posx>195r</posx>
+					<posy>638</posy>
+					<width>128</width>
+					<height>64</height>
+					<aspectratio align="right">keep</aspectratio>
+					<texture>$INFO[ListItem.Property(mediaTag-Studio),flags/studios/,.png]</texture>
+					<texture>$INFO[Listitem.Property(Album_Label),flags/labels/,.png]</texture>
+				</control>--->
+				<control type="group">
+					<animation effect="slide" start="0,0" end="25,-5" time="0" condition="Container.Content(artists)">Conditional</animation>
+					<posx>60</posx>
+					<posy>645</posy>
+					<control type="label">
+						<label>$INFO[ListItem.Tracknumber,, - ]$INFO[ListItem.Title]</label>
+						<width>1100</width>
+						<include>info_Title</include>
+						<visible>Container.Content(songs)</visible>
+					</control>
+					<control type="label">
+						<label>$INFO[ListItem.Title]</label>
+						<width>1100</width>
+						<include>info_Title</include>
+						<visible>!Container.Content(songs)</visible>
+					</control>
+					
+					<control type="label">
+						<posy>28</posy>
+						<label>$INFO[ListItem.Artist]$INFO[ListItem.Album, • ]</label>
+						<width>750</width>
+						<include>info_Sub</include>
+						<visible>Container.Content(songs)</visible>
+					</control>
+					<control type="label">
+						<posy>28</posy>
+						<label>$INFO[ListItem.Artist]$INFO[ListItem.Year, • ]</label>
+						<width>750</width>
+						<include>info_Sub</include>
+						<visible>Container.Content(albums)</visible>
+					</control>
+					<control type="label">
+						<posy>28</posy>
+						<label>$INFO[ListItem.Property(Genre)]</label>
+						<width>750</width>
+						<include>info_Sub</include>
+						<visible>Container.Content(artists)</visible>
+					</control>
+				</control>
+			</control>
+		</control>
+		
+<!---SLIDE VIEW------>
+		<control type="group">
+			<include>contextMenuHide</include>
+			<include>transition_Info</include>
+			<include>infoDialogHide</include>
+			<visible>Control.IsVisible(55) | Control.IsVisible(522)</visible>
+			<!---flags
+			<control type="image">
+				<posx>60</posx>
+				<posy>459</posy>
+				<width>128</width>
+				<height>64</height>
+				<aspectratio align="right">keep</aspectratio>
+				<texture>$VAR[flag_Studio]</texture>
+			</control>--->
+			<!---info--->
+			<control type="group">
+				<posx>220</posx>
+				<posy>462</posy>
+				<visible>!Container.Content(addons)</visible>
+				<control type="label">
+					<width>1080</width>
+					<label>$INFO[ListItem.Title]</label>
+					<include>info_Title</include>
+				</control>
+				<control type="label">
+					<posy>28</posy>
+					<width>920</width>
+					<label>$INFO[ListItem.Property(Genre)]</label>
+					<include>info_Sub</include>
+					<visible>Container.Content(artists)</visible>
+				</control>
+				<control type="label">
+					<posy>28</posy>
+					<width>920</width>
+					<label>$INFO[ListItem.Artist]$INFO[ListItem.Year, • ]</label>
+					<include>info_Sub</include>
+					<visible>Container.Content(albums)</visible>
+				</control>
+				<control type="label">
+					<posy>28</posy>
+					<width>920</width>
+					<label>$INFO[ListItem.Artist]</label>
+					<include>info_Sub</include>
+					<visible>Container.Content(songs)</visible>
+				</control>
+				<control type="grouplist">
+					<posy>28</posy>
+					<itemgap>0</itemgap>
+					<visible>Container.Content(songs)</visible>
+					<control type="label">
+						<width>980</width>
+						<label>$INFO[ListItem.Artist]</label>
+						<include>info_Sub</include>
+					</control>
+					<control type="label">
+						<width>980</width>
+						<label>$INFO[ListItem.Album]</label>
+						<include>info_Sub</include>
+						<visible>!IsEmpty(ListItem.Album)</visible>
+					</control>
+					<control type="label">
+						<width>980</width>
+						<label>$INFO[ListItem.DurationStr]</label>
+						<include>info_Sub</include>
+					</control>
+				</control>
+				<control type="textbox">
+					<posy>60</posy>
+					<width>960</width>
+					<height>170</height>
+					<visible>!Container.Content(songs)</visible>
+					<label>$INFO[ListItem.Plot]</label>
+					<include>description_Small</include>
+				</control>
+			</control>
+		</control>
+
+		<include>LibraryMusicMenu</include>
+		<include>videoLibPageLabels</include>
+	</controls>
+</window>

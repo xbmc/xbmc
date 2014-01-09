@@ -1,0 +1,49 @@
+<window id="60" type="dialog">
+	<defaultcontrol>500</defaultcontrol>
+	
+	<coordinates>
+		<system>1</system>
+		<posx>200</posx>
+		<posy>450</posy>
+	</coordinates>
+	
+	<include>fadeinout</include>
+	
+	<controls>
+		<control type="group">
+			<control type="image">
+				<width>450</width>
+				<height>200</height>
+				<include>dialogWindow</include>
+			</control>
+			
+			<control type="grouplist" id="500">
+				<posx>19</posx>
+				<posy>30</posy>
+				<width>850</width>
+				<height>605</height>
+				<onleft>9001</onleft>
+				<onright>9001</onright>
+				<onup>500</onup>
+				<ondown>500</ondown>
+				<itemgap>0</itemgap>
+				<include>transition2</include>
+				
+				<control type="radiobutton" id="505">
+					<label>Use Fanart in Visualisation Screen</label>
+					<onclick>Skin.ToggleSetting(musicVis)</onclick>
+					<onclick>Skin.ToggleSetting(musicVisBlend)</onclick>
+					<selected>Skin.HasSetting(musicVis)</selected>
+					<include>dialogButton</include>
+				</control>
+				<control type="radiobutton" id="506">
+					<label>Blend Visualisation and Fanart</label>
+					<onclick>Skin.ToggleSetting(musicVisBlend)</onclick>
+					<selected>Skin.HasSetting(musicVisBlend)</selected>
+					<enable>Skin.HasSetting(musicVis)</enable>
+					<include>dialogButton</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

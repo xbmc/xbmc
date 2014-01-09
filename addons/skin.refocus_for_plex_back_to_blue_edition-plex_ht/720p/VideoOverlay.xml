@@ -1,0 +1,54 @@
+<window id="2004">
+	<controls>
+	
+		<control type="group">
+			<visible>Player.HasVideo + !Skin.HasSetting(overlay) + ![Window.IsActive(107) | Window.IsActive(104) | Window.IsActive(10133) | Window.IsActive(10112) | Window.IsActive(0) | Window.IsActive(2005)]</visible>
+			<control type="label" id="200">
+				<label>[UPPERCASE]$INFO[VideoPlayer.Title][/UPPERCASE]</label>
+				<posx>34r</posx>
+				<posy>60</posy>
+				<include>toast_Top</include>
+			</control>
+			<!--<control type="label" id="200">
+				<label>[UPPERCASE]$INFO[VideoPlayer.Genre][/UPPERCASE]</label>
+				<posx>34r</posx>
+				<posy>80</posy>
+				<include>toast_Bottom</include>
+			</control>-->
+			<!--<control type="label" id="200">	
+				<posx>34r</posx>
+				<posy>80</posy>
+				<label>[UPPERCASE]$INFO[VideoPlayer.TVShowTitle][/UPPERCASE]</label>
+				<include>toast_Bottom</include>
+			</control>-->
+			<!--<control type="label" id="200">
+				<posx>130r</posx>
+				<label>[UPPERCASE]$INFO[VideoPlayer.Year][/UPPERCASE]</label>
+				<include>toast_Bottom</include>
+				<visible>![Player.HasContent(musicvideos) | Player.Content(episodes)]</visible>
+			</control>
+			<control type="label" id="200">
+				<posx>135r</posx>
+				<label>[UPPERCASE]$INFO[VideoPlayer.Artist][/UPPERCASE]</label>
+				<include>toast_Bottom</include>
+			</control>
+			<control type="label" id="1">
+				<label>$INFO[Player.TimeRemaining]</label>
+				<include>toast_Side</include>
+				<include>transition3</include>
+				<visible>Player.HasVideo + !Skin.HasSetting(overlay) + ![Window.IsActive(107) | Window.IsActive(104) | Window.IsActive(10133) | Window.IsActive(10112) | Window.IsActive(0)]</visible>
+			</control>-->
+			<control type="label" id="200">
+				<label>[UPPERCASE]$INFO[VideoPlayer.TimeRemaining][/UPPERCASE]</label>
+				<posx>34r</posx>
+				<posy>80</posy>
+				<include>toast_Bottom</include>
+			</control>
+		</control>
+	</controls>
+</window>
+
+
+
+
+

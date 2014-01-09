@@ -1,0 +1,1336 @@
+<includes>
+	<include name="view_List">
+		<control type="list" id="50">
+			<viewtype label="535">list</viewtype> 	
+			<posy>90</posy>
+			<width>625</width>
+			<height>612</height>
+			<onup>50</onup>
+			<ondown>50</ondown>
+			<onleft>300</onleft>
+			<onright>80</onright>
+			<pagecontrol>80</pagecontrol>
+			<scrolltime tween="Cubic" easing="Out">200</scrolltime>
+			<preloaditems>2</preloaditems>
+			<orientation>vertical</orientation>
+			<include>transition_Container</include>
+			<include>infoDialogHide</include>
+			<include>contextMenuHide</include>
+			<include condition="Window.IsVisible(videolibrary)">List_Video</include>
+			<include condition="Window.IsVisible(videofiles)">List_Video</include>
+			<include condition="Window.IsVisible(musicfiles) | Window.IsActive(502)">List_Music</include>
+			<include condition="Window.IsVisible(videoplaylist)">List_VideoPlaylist</include>
+			<include condition="Window.IsVisible(musicplaylist)">List_MusicPlaylist</include>
+			<include condition="Window.IsVisible(pictures) | Window.IsVisible(programs) | Window.IsVisible(addonbrowser)">List_Files</include>
+			<include condition="Window.IsVisible(sharedcontent)">List_Shared</include>
+		</control>
+	</include>
+		
+	<include name="List_Video">
+		<itemlayout condition="Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(addons)" width="625" height="67">
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.Title]</label>
+				<include>list_Label</include>
+				<visible>IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.TVShowTitle] : $INFO[ListItem.Title]</label>
+				<include>list_Label</include>
+				<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Year,, • ]$INFO[ListItem.DurationStr,, $LOCALIZE[31100]]$INFO[ListItem.Genre, • ]</label>
+				<include>list_Label-sub</include>
+				<visible>Container.Content(movies)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Property(UnWatchedEpisodes),, $LOCALIZE[16101] $LOCALIZE[20360]]</label>
+				<include>list_Label-sub</include>
+				<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Season,$LOCALIZE[20373] , - ]$INFO[ListItem.Episode,$LOCALIZE[20359] ]$INFO[ListItem.Premiered, • ]</label>
+				<include>list_Label-sub</include>
+				<visible>Container.Content(episodes)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Label2]</label>
+				<include>list_Label-sub</include>
+				<visible>Container.Content(addons)</visible>
+			</control>
+			<control type="image">
+				<posx>570</posx>
+				<posy>35</posy>
+				<width>32</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/hd/nf-,.png]</texture>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>12</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<colordiffuse>Color7</colordiffuse>
+				<aspectratio align="right">keep</aspectratio>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+				<visible>[Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)]</visible>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(addons)" width="625" height="67">
+			<control type="image">
+				<posy>-30</posy>
+				<width>650</width>
+				<height>128</height>
+				<texture border="0,30,0,30">views/list-focus.png</texture>
+				<include>focus_ListScroll</include>
+				<visible>!ControlGroup(6000).HasFocus</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.Title]</label>
+				<include>list_Label-focus</include>
+				<visible>IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.TVShowTitle] : $INFO[ListItem.Title]</label>
+				<include>list_Label-focus</include>
+				<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Year,, • ]$INFO[ListItem.DurationStr,, $LOCALIZE[31100]]$INFO[ListItem.Genre, • ]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>Container.Content(movies)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Property(UnWatchedEpisodes),, $LOCALIZE[16101] $LOCALIZE[20360]]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Season,$LOCALIZE[20373] , - ]$INFO[ListItem.Episode,$LOCALIZE[20359] ]$INFO[ListItem.Premiered, • ]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>Container.Content(episodes)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Label2]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>Container.Content(addons)</visible>
+			</control>
+			<control type="image">
+				<posx>570</posx>
+				<posy>35</posy>
+				<width>32</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/hd/nf-,.png]</texture>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>12</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<colordiffuse>Color7</colordiffuse>
+				<aspectratio align="right">keep</aspectratio>
+				<visible>[Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)]</visible>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+			</control>
+		</focusedlayout>
+		<itemlayout condition="![Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)]" width="625" height="40">
+			<control type="label">
+				<posx>40</posx>
+				<width>500</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label-single</include>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="![Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)]" width="625" height="40">
+			<control type="image">
+				<posy>-28</posy>
+				<width>650</width>
+				<height>100</height>
+				<texture border="0,30,0,30">views/list-focus.png</texture>
+				<include>focus_ListScrollAlt</include>
+				<visible>!ControlGroup(6000).HasFocus</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>500</width>
+				<label>$INFO[ListItem.Label]</label>
+				<textcolor>Focused</textcolor>
+				<include>list_Label-single</include>
+			</control>
+		</focusedlayout>
+	</include>
+	
+	<!--music-->
+	<include name="List_Music">
+		<itemlayout condition="Container.Content(albums) | Container.Content(artists) | Container.Content(singles) | Container.Content(songs)" width="625" height="67">
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Property(Genre)]</label>
+				<visible>Container.Content(artists)</visible>
+				<include>list_Label-sub</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Artist]$INFO[ListItem.Year, • ]</label>
+				<visible>Container.Content(albums)</visible>
+				<include>list_Label-sub</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Artist]$INFO[ListItem.Album, • ]</label>
+				<visible>Container.Content(songs)</visible>
+				<include>list_Label-sub</include>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>12</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<colordiffuse>Color7</colordiffuse>
+				<aspectratio align="right">keep</aspectratio>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+				<visible>!Container.Content(artists)</visible>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.Content(albums) | Container.Content(artists) | Container.Content(singles) | Container.Content(songs)" width="625" height="67">
+			<control type="image">
+				<posy>-30</posy>
+				<width>650</width>
+				<height>128</height>
+				<texture border="0,30,0,30">views/list-focus.png</texture>
+				<include>focus_ListScroll</include>
+				<visible>!ControlGroup(6000).HasFocus</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label-focus</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Property(Genre)]</label>
+				<visible>Container.Content(artists)</visible>
+				<include>list_Label-sub-focus</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Artist]$INFO[ListItem.Year, • ]</label>
+				<visible>Container.Content(albums)</visible>
+				<include>list_Label-sub-focus</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Artist]$INFO[ListItem.Album, • ]</label>
+				<visible>Container.Content(songs)</visible>
+				<include>list_Label-sub-focus</include>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>12</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<colordiffuse>Color7</colordiffuse>
+				<aspectratio align="right">keep</aspectratio>
+				<visible>!Container.Content(artists)</visible>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+			</control>
+		</focusedlayout>
+		<itemlayout condition="![Container.Content(albums) | Container.Content(artists) | Container.Content(singles) | Container.Content(songs)]" width="625" height="40">
+			<control type="label">
+				<posx>40</posx>
+				<width>500</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label-single</include>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="![Container.Content(albums) | Container.Content(artists) | Container.Content(singles) | Container.Content(songs)]" width="625" height="40">
+			<control type="image">
+				<posy>-28</posy>
+				<width>650</width>
+				<height>100</height>
+				<texture border="0,30,0,30">views/list-focus.png</texture>
+				<include>focus_ListScrollAlt</include>
+				<visible>!ControlGroup(6000).HasFocus</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>500</width>
+				<label>$INFO[ListItem.Label]</label>
+				<textcolor>Focused</textcolor>
+				<include>list_Label-single</include>
+			</control>
+		</focusedlayout>
+	</include>
+
+	<!--video playlist-->
+	<include name="List_VideoPlaylist">
+		<itemlayout width="625" height="67">
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.TVShowTitle,,: ]$INFO[ListItem.Season,$LOCALIZE[20373] , -] $INFO[ListItem.Episode,$LOCALIZE[20359] ]</label>
+				<include>list_Label-sub</include>
+				<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Genre]</label>
+				<include>list_Label-sub</include>
+				<visible>IsEmpty(ListItem.TVShowTitle)</visible>
+			</control>
+			<control type="image">
+				<posx>570</posx>
+				<posy>35</posy>
+				<width>32</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/hd/fo-,.png]</texture>
+				<aspectratio align="right">keep</aspectratio>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>12</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+				<colordiffuse>Color7</colordiffuse>
+				<aspectratio align="right">keep</aspectratio>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Window.IsActive(videoplaylist)" width="625" height="67">
+			<control type="image">
+				<posx>0</posx>
+				<posy>-26</posy>
+				<width>650</width>
+				<height>122</height>
+				<texture border="0,30,0,30">views/list-focus.png</texture>
+				<include>focus_ListScroll</include>
+				<visible>!ControlGroup(6000).HasFocus</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label-focus</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.TVShowTitle,,: ]$INFO[ListItem.Season,$LOCALIZE[20373] , -] $INFO[ListItem.Episode,$LOCALIZE[20359] ]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>510</width>
+				<label>$INFO[ListItem.Genre]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>IsEmpty(ListItem.TVShowTitle)</visible>
+			</control>
+			<control type="image">
+				<posx>570</posx>
+				<posy>35</posy>
+				<width>32</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/hd/fo-,.png]</texture>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>12</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+				<colordiffuse>Color7</colordiffuse>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+		</focusedlayout>
+	</include>
+
+	<!--music playlist-->
+	<include name="List_MusicPlaylist">
+		<itemlayout width="625" height="67">
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.Title]</label>
+				<include>list_Label</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Artist]</label>
+				<include>list_Label-sub</include>
+			</control>		
+			<control type="label">
+				<posx>600</posx>
+				<posy>28</posy>
+				<width>500</width>
+				<label>$INFO[ListItem.DurationStr]</label>
+				<align>right</align>
+				<font>smallCaps</font>
+				<include>list_Label-sub</include>
+				<visible>!IsEmpty(ListItem.Title)</visible>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>10</posy>
+				<width>128</width>
+				<height>22</height>
+				<info>$INFO[ListItem.StarRating,rating/nf-,]</info>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+				<aspectratio align="right">keep</aspectratio>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+				<visible>!IsEmpty(ListItem.Title)</visible>
+			</control>
+		</itemlayout>
+		<focusedlayout width="625" height="67">
+			<control type="image">
+				<posy>-30</posy>
+				<width>650</width>
+				<height>128</height>
+				<texture border="0,30,0,30">views/list-focus.png</texture>
+				<visible>!ControlGroup(6000).HasFocus</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>440</width>
+				<label>$INFO[ListItem.Title]</label>
+				<include>list_Label-focus</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Artist]</label>
+				<include>list_Label-sub-focus</include>
+			</control>
+			<control type="label">
+				<posx>600</posx>
+				<posy>25</posy>
+				<width>500</width>
+				<label>$INFO[ListItem.DurationStr]</label>
+				<align>right</align>
+				<font>smallCaps</font>
+				<include>list_Label-sub-focus</include>
+				<visible>!IsEmpty(ListItem.Title)</visible>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>10</posy>
+				<width>128</width>
+				<height>22</height>
+				<info>$INFO[ListItem.StarRating,rating/nf-,]</info>
+				<aspectratio align="right">keep</aspectratio>
+				<visible>!IsEmpty(ListItem.Title)</visible>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+			</control>
+		</focusedlayout>
+	</include>
+
+	<!--files-->
+	<include name="List_Files">
+		<itemlayout condition="!Container.HasFiles" width="625" height="40">
+			<control type="label">
+				<posx>40</posx>
+				<width>500</width>
+				<label>$INFO[ListItem.Label] $INFO[Container.SecondTitle]</label>
+				<include>list_Label-single</include>
+			</control>
+			<control type="image">
+				<posx>588</posx>
+				<posy>14</posy>
+				<width>18</width>
+				<height>18</height>
+				<texture>$INFO[ListItem.Overlay]</texture>
+				<visible>Window.IsActive(pictures)</visible>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="!Container.HasFiles" width="625" height="40">
+			<control type="image">
+				<posy>-28</posy>
+				<width>650</width>
+				<height>100</height>
+				<texture border="0,30,0,30">views/list-focus.png</texture>
+				<include>focus_ListScrollAlt</include>
+				<visible>!ControlGroup(300).HasFocus</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>500</width>
+				<label>$INFO[ListItem.Label]</label>
+				<textcolor>Focused</textcolor>
+				<include>list_Label-single</include>
+			</control>
+			<control type="image">
+				<posx>588</posx>
+				<posy>14</posy>
+				<width>18</width>
+				<height>18</height>
+				<texture>$INFO[ListItem.Overlay]</texture>
+				<visible>Window.IsActive(pictures)</visible>
+			</control>
+		</focusedlayout>
+		<itemlayout condition="Container.HasFiles" width="625" height="67">
+			<control type="label">
+				<posx>40</posx>
+				<width>420</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Date]$INFO[ListItem.PictureResolution, • ]</label>
+				<include>list_Label-sub</include>
+				<visible>Window.IsActive(pictures)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Property(Addon.Summary)]</label>
+				<include>list_Label-sub</include>
+				<visible>Window.IsActive(programs)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Property(Addon.Version),$LOCALIZE[24051] ]$INFO[ListItem.Property(Addon.Status), • ]</label>
+				<include>list_Label-sub</include>
+				<visible>Window.IsActive(addonbrowser)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Label2]</label>
+				<include>list_Label-sub</include>
+				<visible>![Window.IsActive(pictures) | Window.IsActive(programs) | Window.IsActive(addonbrowser)]</visible>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>12</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+				<aspectratio align="right">keep</aspectratio>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.HasFiles" width="625" height="67">
+			<control type="image">
+				<posy>-30</posy>
+				<width>650</width>
+				<height>128</height>
+				<texture border="0,30,0,30">views/list-focus.png</texture>
+				<include>focus_ListScroll</include>
+				<visible>!ControlGroup(6000).HasFocus</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>420</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label-focus</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Date]$INFO[ListItem.PictureResolution, • ]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>Window.IsActive(pictures)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Property(Addon.Summary)]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>Window.IsActive(programs)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Property(Addon.Version),$LOCALIZE[24051] ]$INFO[ListItem.Property(Addon.Status), • ]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>Window.IsActive(addonbrowser)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Label2]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>![Window.IsActive(pictures) | Window.IsActive(programs) | Window.IsActive(addonbrowser)]</visible>
+			</control>
+			<control type="image">
+				<posx>475</posx>
+				<posy>12</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+		</focusedlayout>
+	</include>
+	
+	<!-- shared -->
+	<include name="List_Shared">
+		<itemlayout width="625" height="67">
+			<control type="label">
+				<posx>40</posx>
+				<width>420</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Property(sourceTitle)] • $INFO[ListItem.Property(serverName)]</label>
+				<include>list_Label-sub</include>
+			</control>
+		</itemlayout>
+		<focusedlayout width="625" height="67">
+			<control type="image">
+				<posy>-30</posy>
+				<width>650</width>
+				<height>128</height>
+				<texture border="0,30,0,30">views/list-focus.png</texture>
+				<include>focus_ListScroll</include>
+				<visible>!ControlGroup(6000).HasFocus</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<width>420</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label-focus</include>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>28</posy>
+				<width>560</width>
+				<label>$INFO[ListItem.Property(sourceTitle)] • $INFO[ListItem.Property(serverName)]</label>
+				<include>list_Label-sub-focus</include>
+			</control>
+		</focusedlayout>
+	</include>
+	
+	<!-- BIG LIST -->
+	<include name="view_BigList">
+		<!-- fixed focused bg -->
+		<control type="group">
+			<include>transition_Container</include>
+			<include>infoDialogHide</include>
+			<include>contextMenuHide</include>
+			<control type="image">
+				<posx>29</posx>
+				<posy>237</posy>
+				<width>1205</width>
+				<height>146</height>
+				<texture border="10">views/list-focus-bigAlt.png</texture>
+				<visible>![Window.IsActive(movieinformation)] + [Container.Content(episodes) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(movies)] + Control.IsVisible(51)</visible>
+				<visible>!ControlGroup(300).HasFocus() + !Control.HasFocus(78)</visible>
+			</control>
+			<control type="image">
+				<posx>29</posx>
+				<posy>206</posy>
+				<width>1205</width>
+				<height>120</height>
+				<texture border="10">views/list-focus-bigAlt.png</texture>
+				<visible>Window.IsVisible(musicfiles) + Control.IsVisible(51)</visible>
+				<visible>!ControlGroup(300).HasFocus() + !Control.HasFocus(78)</visible>
+			</control>
+		</control>
+		<!-- container -->
+		<control type="fixedlist" id="51">
+			<viewtype label="537">biglist</viewtype>
+			<posx>30</posx>
+			<posy>88</posy>
+			<width>1400</width>
+			<height>598</height>
+			<onleft>300</onleft>
+			<onright>78</onright>
+			<onup>51</onup>
+			<ondown>51</ondown>
+			<scrolltime tween="Cubic" easing="Out">200</scrolltime>
+			<focusposition>1</focusposition>
+			<pagecontrol>78</pagecontrol>
+			<orientation>vertical</orientation>
+			<include>transition2</include>
+			<include>infoDialogHide</include>
+			<include>contextMenuHide</include>
+			<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(albums) | Container.Content(songs)</visible>
+			<include condition="Window.IsVisible(videofiles) | Window.IsVisible(videolibrary)">BigList_Video</include>
+			<include condition="Window.IsVisible(musicfiles)">BigList_Music</include>
+		</control>
+	</include>
+	<include name="BigList_Video">
+		<itemlayout condition="Container.Content(episodes) | [!Skin.HasSetting(view.biglist.posters) + [Container.Content(tvshows) | Container.Content(movies)]]" width="625" height="150">
+			<control type="image">
+				<width>247</width>
+				<height>144</height>
+				<texture fallback="thumbs/movie_landscape.jpg" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>stretch</aspectratio>
+				<visible>Container.Content(movies)</visible>
+			</control>
+			<control type="image">
+				<width>247</width>
+				<height>144</height>
+				<texture fallback="thumbs/tvshow_landscape.jpg" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>stretch</aspectratio>
+				<visible>Container.Content(tvshows)</visible>
+			</control>
+			<control type="image">
+				<width>247</width>
+				<height>144</height>
+				<texture fallback="thumbs/tvshow_landscape.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>scale</aspectratio>
+				<visible>Container.Content(episodes)</visible>
+			</control>
+			<control type="image">
+				<posx>209</posx>
+				<posy>106</posy>
+				<include>watchedOverlay</include>
+			</control>
+			
+			
+			<!-- movies -->
+			<control type="label">
+				<posx>260</posx>
+				<posy>28</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.Year,, • ]$INFO[ListItem.DurationStr,, $LOCALIZE[31100]]$INFO[ListItem.Genre, • ]</label>
+				<include>list_Label-sub</include>
+				<visible>Container.Content(movies)</visible>
+			</control>
+			
+			<!-- episodes -->
+			<control type="group">
+				<visible>Container.Content(episodes)</visible>
+				<control type="label" id="1">
+					<posx>260</posx>
+					<posy>28</posy>
+					<width>770</width>
+					<label>$LOCALIZE[31074,,]$INFO[ListItem.Date, • ]</label>
+					<include>list_Label-sub</include>
+				</control>
+			</control>
+			
+			<!-- plugincontent -->
+			<control type="group">
+				<visible>Container.Content(plugincontent)</visible>
+				<control type="label" id="1">
+					<posx>260</posx>
+					<posy>28</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Year]</label>
+					<include>list_Label-sub</include>
+					<visible>IsEmpty(ListItem.Label2)</visible>
+				</control>
+				<control type="label" id="1">
+					<posx>260</posx>
+					<posy>28</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Label2]</label>
+					<include>list_Label-sub</include>
+					<visible>IsEmpty(ListItem.Year)</visible>
+				</control>
+			</control>
+			
+			<!-- tvshows -->
+			<control type="group">
+				<posx>260</posx>
+				<posy>28</posy>
+				<visible>Container.Content(tvshows) + !IsEmpty(ListItem.TVShowTitle)</visible>
+				<control type="label">
+					<width>770</width>
+					<label>$LOCALIZE[16101] : $INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[20360]</label>
+					<include>list_Label-sub</include>
+				</control>
+			</control>
+			
+			<!-- general -->
+			<control type="label" id="1">
+				<posx>260</posx>
+				<posy>2</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.Title]</label>
+				<include>list_Label</include>
+				<visible>IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			<control type="label" id="1">
+				<posx>260</posx>
+				<posy>2</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.TVShowTitle] : $INFO[ListItem.Title]</label>
+				<include>list_Label</include>
+				<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			<control type="label" id="1">
+				<posx>260</posx>
+				<posy>2</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label</include>
+				<visible>IsEmpty(ListItem.Title)</visible>
+			</control>
+			<control type="textbox" id="4">
+				<posx>260</posx>
+				<posy>65</posy>
+				<width>930</width>
+				<height>60</height>
+				<label>$INFO[ListItem.Plot]</label>
+				<autoscroll delay="300000" time="1000">!Control.HasFocus(13)</autoscroll>
+				<font>descriptionSmall</font>
+			</control>
+			
+			<control type="image">
+				<posx>1060</posx>
+				<posy>35</posy>
+				<width>128</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<aspectratio align="right">keep</aspectratio>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+				<visible>!IsEmpty(ListItem.Title) + !Skin.HasSetting(hideratings)</visible>
+			</control>
+			<control type="image">
+				<posx>1155</posx>
+				<posy>8</posy>
+				<width>32</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/hd/nf-,.png]</texture>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.Content(episodes) | [!Skin.HasSetting(view.biglist.posters) + [Container.Content(tvshows) | Container.Content(movies)]]" width="625" height="150">
+			<control type="image">
+				<width>247</width>
+				<height>144</height>
+				<texture fallback="thumbs/movie_landscape.jpg" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small-border.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>scale</aspectratio>
+				<visible>Container.Content(movies)</visible>
+			</control>
+			<control type="image">
+				<width>247</width>
+				<height>144</height>
+				<texture fallback="thumbs/tvshow_landscape.jpg" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small-border.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>scale</aspectratio>
+				<visible>Container.Content(tvshows)</visible>
+			</control>
+			<control type="image">
+				<width>247</width>
+				<height>144</height>
+				<texture fallback="thumbs/tvshow_landscape.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small-border.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>scale</aspectratio>
+				<visible>Container.Content(episodes)</visible>
+			</control>
+			<control type="image">
+				<posx>209</posx>
+				<posy>106</posy>
+				<width>32</width>
+				<height>32</height>
+				<include>watchedOverlay</include>
+				<visible>[Container.Content(movies) + Skin.HasSetting(overlayMovies) |  Container.Content(tvshows) + Skin.HasSetting(overlayTVShows) | Container.Content(episodes) + Skin.HasSetting(overlayEpisodes)]</visible>
+			</control>
+			
+			<!-- movies -->
+			<control type="label">
+				<posx>260</posx>
+				<posy>28</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.Year,, • ]$INFO[ListItem.DurationStr,, $LOCALIZE[31100]]$INFO[ListItem.Genre, • ]</label>
+				<include>list_Label-sub-focus</include>
+				<visible>Container.Content(movies)</visible>
+			</control>
+			
+			<!-- episodes -->
+			<control type="group">
+				<visible>Container.Content(episodes)</visible>
+				<control type="label" id="1">
+					<posx>260</posx>
+					<posy>28</posy>
+					<width>770</width>
+					<label>$LOCALIZE[31074,,]$INFO[ListItem.Date, • ]</label>
+					<include>list_Label-sub-focus</include>
+				</control>
+			</control>
+			
+			<!-- plugincontent -->
+			<control type="group">
+				<visible>Container.Content(plugincontent)</visible>
+				<control type="label" id="1">
+					<posx>260</posx>
+					<posy>28</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Year]</label>
+					<include>list_Label-sub-focus</include>
+					<visible>IsEmpty(ListItem.Label2)</visible>
+				</control>
+				<control type="label" id="1">
+					<posx>260</posx>
+					<posy>28</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Label2]</label>
+					<include>list_Label-sub-focus</include>
+					<visible>IsEmpty(ListItem.Year)</visible>
+				</control>
+			</control>
+			
+			<!-- tvshows -->
+			<control type="group">
+				<posx>260</posx>
+				<posy>28</posy>
+				<visible>Container.Content(tvshows) + !IsEmpty(ListItem.TVShowTitle)</visible>
+				<control type="label">
+					<width>770</width>
+					<label>$LOCALIZE[16101] : $INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[20360]</label>
+					<include>list_Label-sub-focus</include>
+				</control>
+			</control>
+			
+			<!-- general -->
+			<control type="label" id="1">
+				<posx>260</posx>
+				<posy>2</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.Title]</label>
+				<include>list_Label-focus</include>
+				<visible>IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			<control type="label" id="1">
+				<posx>260</posx>
+				<posy>2</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.TVShowTitle] : $INFO[ListItem.Title]</label>
+				<include>list_Label-focus</include>
+				<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			<control type="label" id="1">
+				<posx>260</posx>
+				<posy>2</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label-focus</include>
+				<visible>IsEmpty(ListItem.Title)</visible>
+			</control>
+			<control type="textbox" id="4">
+				<posx>260</posx>
+				<posy>65</posy>
+				<width>930</width>
+				<height>60</height>
+				<label>$INFO[ListItem.Plot]</label>
+				<font>descriptionSmall</font>
+				<textcolor>Focused</textcolor>
+				<include>autoscroll-plot</include>
+			</control>
+			
+			<control type="image">
+				<posx>1060</posx>
+				<posy>35</posy>
+				<width>128</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.StarRating,rating/fo-,]</texture>
+				<colordiffuse>Color4</colordiffuse>
+				<visible>!IsEmpty(ListItem.Title) + !Skin.HasSetting(hideratings)</visible>
+			</control>
+			<control type="image">
+				<posx>1155</posx>
+				<posy>8</posy>
+				<width>32</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/hd/fo-,.png]</texture>
+				<aspectratio align="right">keep</aspectratio>
+				<colordiffuse>Color4</colordiffuse>
+			</control>
+		</focusedlayout>
+		<itemlayout condition="[Skin.HasSetting(view.biglist.posters) + [Container.Content(tvshows) | Container.Content(movies)]] | Container.Content(seasons)" width="625" height="150">
+			<control type="image">
+				<width>100</width>
+				<height>144</height>
+				<texture fallback="thumbs/movie_portrait.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>stretch</aspectratio>
+				<visible>Container.Content(movies)</visible>
+			</control>
+			<control type="image">
+				<width>100</width>
+				<height>144</height>
+				<texture fallback="thumbs/tvshow_portrait.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>stretch</aspectratio>
+				<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+			</control>
+			<control type="image">
+				<posx>62</posx>
+				<posy>106</posy>
+				<width>32</width>
+				<height>32</height>
+				<include>watchedOverlay</include>
+				<visible>[Container.Content(movies) + Skin.HasSetting(overlayMovies) |  Container.Content(tvshows) + Skin.HasSetting(overlayTVShows) | Container.Content(episodes) + Skin.HasSetting(overlayEpisodes) | Container.Content(seasons) + Skin.HasSetting(overlayTVShows)]</visible>
+			</control>
+			<control type="label">
+				<posx>120</posx>
+				<posy>2</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label</include>
+			</control>
+			<control type="group">
+				<posx>120</posx>
+				<posy>28</posy>
+				<control type="label">
+					<width>900</width>
+					<label>$INFO[ListItem.Year,, • ]$INFO[ListItem.DurationStr,, $LOCALIZE[31100]]$INFO[ListItem.Genre, • ]</label>
+					<include>list_Label-sub</include>
+					<visible>Container.Content(movies)</visible>
+				</control>
+				<control type="label">
+					<width>975</width>
+					<label>$LOCALIZE[16101] : $INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[20360]</label>
+					<include>list_Label-sub</include>
+					<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+				</control>
+			</control>
+			<control type="textbox" id="4">
+				<posx>120</posx>
+				<posy>67</posy>
+				<width>1070</width>
+				<height>60</height>
+				<label>$INFO[ListItem.Plot]</label>
+				<autoscroll delay="300000" time="1000">!Control.HasFocus(13)</autoscroll>
+				<font>descriptionSmall</font>
+			</control>
+			<control type="image">
+				<posx>1060</posx>
+				<posy>35</posy>
+				<width>128</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+				<aspectratio align="right">keep</aspectratio>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+				<visible>!IsEmpty(ListItem.Title) + !Container.Content(seasons)</visible>
+			</control>
+			<control type="image">
+				<posx>1155</posx>
+				<posy>10</posy>
+				<width>32</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/hd/nf-,.png]</texture>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="[Skin.HasSetting(view.biglist.posters) + [Container.Content(tvshows) | Container.Content(movies)]] | Container.Content(seasons)" width="625" height="150">
+			<control type="image">
+				<width>100</width>
+				<height>144</height>
+				<texture fallback="thumbs/movie_portrait.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small-border.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>stretch</aspectratio>
+				<visible>Container.Content(movies)</visible>
+			</control>
+			<control type="image">
+				<width>100</width>
+				<height>144</height>
+				<texture fallback="thumbs/tvshow_portrait.jpg" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small-border.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>stretch</aspectratio>
+				<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+			</control>
+			<control type="image">
+				<posx>62</posx>
+				<posy>106</posy>
+				<width>32</width>
+				<height>32</height>
+				<include>watchedOverlay</include>
+				<visible>[Container.Content(movies) + Skin.HasSetting(overlayMovies) |  Container.Content(tvshows) + Skin.HasSetting(overlayTVShows) | Container.Content(episodes) + Skin.HasSetting(overlayEpisodes) | Container.Content(seasons) + Skin.HasSetting(overlayTVShows)]</visible>
+			</control>
+			
+			<control type="label">
+				<posx>120</posx>
+				<posy>2</posy>
+				<width>770</width>
+				<label>$INFO[ListItem.Label]</label>
+				<include>list_Label-focus</include>
+			</control>
+			<control type="group">
+				<posx>120</posx>
+				<posy>28</posy>
+				<visible>!IsEmpty(ListItem.Title)</visible>
+				<control type="label">
+					<width>900</width>
+					<label>$INFO[ListItem.Year,, • ]$INFO[ListItem.DurationStr,, $LOCALIZE[31100]]$INFO[ListItem.Genre, • ]</label>
+					<include>list_Label-sub-focus</include>
+					<visible>Container.Content(movies)</visible>
+				</control>
+				<control type="label">
+					<width>900</width>
+					<label>$LOCALIZE[16101] : $INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[20360]</label>
+					<include>list_Label-sub-focus</include>
+					<visible>Container.Content(tvshows) | Container.Content(seasons)</visible>
+				</control>
+			</control>
+			<control type="textbox" id="4">
+				<posx>120</posx>
+				<posy>67</posy>
+				<width>1070</width>
+				<height>60</height>
+				<label>$INFO[ListItem.Plot]</label>
+				<include>autoscroll-plot</include>
+				<font>descriptionSmall</font>
+				<textcolor>Focused</textcolor>
+			</control>
+
+
+			<control type="image">
+				<posx>1060</posx>
+				<posy>35</posy>
+				<width>128</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.StarRating,rating/fo-,]</texture>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+				<colordiffuse>Color4</colordiffuse>
+				<aspectratio align="right">keep</aspectratio>
+				<visible>!IsEmpty(ListItem.Title) + !Container.Content(seasons)</visible>
+			</control>
+			<control type="image">
+				<posx>1155</posx>
+				<posy>10</posy>
+				<width>32</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.Property(mediaTag-videoResolution),flags/hd/fo-,.png]</texture>
+				<aspectratio align="right">keep</aspectratio>
+				<colordiffuse>Color4</colordiffuse>
+			</control>
+		</focusedlayout>
+	</include>
+	<include name="BigList_Music">
+		<itemlayout condition="Container.Content(albums) | Container.Content(songs)" width="625" height="119">
+			<control type="image">
+				<width>118</width>
+				<height>118</height>
+				<texture background="true" fallback="thumbs/album.png">$INFO[ListItem.Art(thumb)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>scale</aspectratio>
+			</control>
+			<control type="group">
+				<posx>135</posx>
+				<control type="label">
+					<posy>2</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Tracknumber,, - ]$INFO[ListItem.Title]</label>
+					<visible>Container.Content(songs)</visible>
+					<include>list_Label</include>
+				</control>
+				<control type="label">
+					<posy>2</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>Container.Content(albums)</visible>
+					<include>list_Label</include>
+				</control>
+				<control type="label">
+					<posy>28</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Artist]</label>
+					<textcolor>Color3</textcolor>
+					<include>list_Label-sub</include>
+				</control>
+				<control type="label">
+					<posy>50</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Album]</label>
+					<include>list_Label-sub</include>
+				</control>
+				<control type="label">
+					<posy>70</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Genre]</label>
+					<include>list_Label-sub</include>
+					<visible>Container.Content(albums)</visible>
+				</control>
+				<control type="label">
+					<posy>70</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.DurationStr]</label>
+					<include>list_Label-sub</include>
+					<visible>Container.Content(songs)</visible>
+				</control>
+			</control>
+			<control type="image">
+				<posx>1060</posx>
+				<posy>15</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/nf-,]</texture>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+				<aspectratio align="right">keep</aspectratio>
+				<animation effect="fade" end="30" time="0" condition="true">Conditional</animation>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.Content(albums) | Container.Content(songs)" width="625" height="119">
+			<control type="image">
+				<width>118</width>
+				<height>118</height>
+				<texture background="true" fallback="thumbs/album.png">$INFO[ListItem.Art(thumb)]</texture>
+				<bordertexture border="6" width="384" height="384">frames/frame_Square-small-border.png</bordertexture>
+				<bordersize>6</bordersize>
+				<aspectratio>scale</aspectratio>
+			</control>
+			<control type="group">
+				<posx>135</posx>
+				<control type="label">
+					<posy>2</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Tracknumber,, - ]$INFO[ListItem.Title]</label>
+					<visible>Container.Content(songs)</visible>
+					<include>list_Label-focus</include>
+				</control>
+				<control type="label">
+					<posy>2</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>Container.Content(albums)</visible>
+					<include>list_Label-focus</include>
+				</control>
+				<control type="label">
+					<posy>28</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Artist]</label>
+					<include>list_Label-sub-focus</include>
+				</control>
+				<control type="label">
+					<posy>50</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Album]</label>
+					<include>list_Label-sub-focus</include>
+				</control>
+				<control type="label">
+					<posy>70</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.Genre]</label>
+					<include>list_Label-sub-focus</include>
+					<visible>Container.Content(albums)</visible>
+				</control>
+				<control type="label">
+					<posy>70</posy>
+					<width>770</width>
+					<label>$INFO[ListItem.DurationStr]</label>
+					<include>list_Label-sub-focus</include>
+					<visible>Container.Content(songs)</visible>
+				</control>
+			</control>
+			<control type="image">
+				<posx>1060</posx>
+				<posy>15</posy>
+				<width>128</width>
+				<height>22</height>
+				<texture>$INFO[ListItem.StarRating,rating/fo-,]</texture>
+				<colordiffuse>Color4</colordiffuse>
+				<aspectratio align="right">keep</aspectratio>
+				<visible>!Skin.HasSetting(hideratings)</visible>
+			</control>
+		</focusedlayout>
+	</include>
+</includes>

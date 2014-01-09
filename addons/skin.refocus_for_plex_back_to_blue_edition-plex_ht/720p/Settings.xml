@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<window id="4000">
+	<defaultcontrol always="true">50</defaultcontrol>
+	<controls>
+		<!-- settings screen -->
+		<include>global_Background</include>
+		<include>allscreens</include>
+		<!-- reFocus logo -->
+		<control type="group">
+			<posx>5</posx>
+			<posy>555</posy>
+			<include>newtypelogo</include>
+		</control>
+		<control type="group">
+			<control type="label">
+				<include>PageLabel</include>
+				<label>Plex [COLOR=Color2]$LOCALIZE[10004][/COLOR]</label>
+			</control>
+			<control type="panel" id="50">
+				<posx>60</posx>
+				<posy>100</posy>
+				<width>1200</width>
+				<height>570</height>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<scrolltime>200</scrolltime>
+				<include>transition3</include>
+				<itemlayout width="600" height="95">
+					<control type="image">
+						<posx>6</posx>
+						<posy>6</posy>
+						<width>84</width>
+						<height>84</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>105</posx>
+						<posy>12</posy>
+						<width>455</width>
+						<height>40</height>
+						<font>titleSpecial</font>
+						<textcolor>Color1</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<posx>105</posx>
+						<posy>51</posy>
+						<width>455</width>
+						<height>34</height>
+						<font>smallCaps</font>
+						<textcolor>Color2</textcolor>
+						<label>$INFO[ListItem.Label2]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout width="600" height="95">
+					<control type="image">
+						<width>575</width>
+						<height>95</height>
+						<texture border="83,23,23,23">settings/list-focus2.png</texture>
+					</control>
+					<control type="image">
+						<posx>6</posx>
+						<posy>6</posy>
+						<width>84</width>
+						<height>84</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="label">
+						<posx>105</posx>
+						<posy>12</posy>
+						<width>455</width>
+						<height>40</height>
+						<font>titleSpecial</font>
+						<textcolor>Color5</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<posx>105</posx>
+						<posy>51</posy>
+						<width>455</width>
+						<height>34</height>
+						<font>smallCaps</font>
+						<textcolor>Color5</textcolor>
+						<label>$INFO[ListItem.Label2]</label>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<label>3</label>
+						<thumb>settings/video.png</thumb>
+						<onclick>ActivateWindow(MyVideosSettings)</onclick>
+						<label2>$LOCALIZE[31120]</label2>
+					</item>
+					<item id="2">
+						<label>2</label>
+						<label2>$LOCALIZE[31120]</label2>
+						<thumb>settings/music.png</thumb>
+						<onclick>ActivateWindow(MyMusicSettings)</onclick>
+					</item>
+					<item id="3">
+						<label>1</label>
+						<label2>$LOCALIZE[108] • $LOCALIZE[31979]</label2>
+						<thumb>settings/pictures.png</thumb>
+						<onclick>ActivateWindow(MyPicturesSettings)</onclick>
+					</item>
+					<item id="7">
+						<label>13000</label>
+						<label2>$LOCALIZE[31982] • $LOCALIZE[31983] • $LOCALIZE[31984] • $LOCALIZE[31985]</label2>
+						<thumb>settings/system.png</thumb>
+						<onclick>ActivateWindow(SystemSettings)</onclick>
+					</item>
+					<item id="8">
+						<label>480</label>
+						<label2>$LOCALIZE[166] • $LOCALIZE[248] • $LOCALIZE[360]</label2>
+						<thumb>settings/appearance.png</thumb>
+						<onclick>ActivateWindow(AppearanceSettings)</onclick>
+					</item>
+					<item id="10">
+						<label>20077</label>
+						<label2>$LOCALIZE[31124] • $LOCALIZE[31015] • $LOCALIZE[31986]</label2>
+						<thumb>settings/skin.png</thumb>
+						<onclick>ActivateWindow(59)</onclick>
+					</item>
+					<item id="11">
+						<label>DONE</label>
+						<label2>Exit settings</label2>
+						<thumb>-</thumb>
+						<onclick>ActivateWindow(0)</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,90 @@
+<includes>
+	<include name="LibraryPlaylistMenu">
+		
+		<control type="group" id="300">
+			<posx>-275</posx>
+			<posy>30</posy>
+			<visible allowhiddenfocus="true">ControlGroup(300).HasFocus(0)</visible>
+			<onright>50</onright>
+			<include>MenuOpen</include>
+			<include>transition_Menu</include>
+			
+			<control type="button" id="20">
+				<description>Shuffle button</description>
+				<posy>0</posy>
+				<label>191</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>31</onup>
+				<ondown>28</ondown>
+				<include>contextButton</include>
+			</control>
+			<control type="togglebutton" id="28">
+				<description>Randomize button</description>
+				<posy>43</posy>
+				<label>$LOCALIZE[31114]</label>
+				<altlabel>$LOCALIZE[31113]</altlabel>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>20</onup>
+				<ondown>26</ondown>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="26">
+				<description>Repeat button</description>
+				<posy>86</posy>
+				<label>486</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>28</onup>
+				<ondown>21</ondown>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="21">
+				<description>Save button</description>
+				<posy>129</posy>
+				<label>190</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>26</onup>
+				<ondown>22</ondown>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="22">
+				<description>Clear button</description>
+				<posy>172</posy>
+				<label>192</label>
+				<label>31011</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>21</onup>
+				<ondown>30</ondown>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="30">
+				<description>LastFM Love button</description>
+				<posy>215</posy>
+				<label>LastFM Love</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>22</onup>
+				<ondown>31</ondown>
+				<onclick>XBMC.LastFM.Love</onclick>
+				<visible>LastFM.RadioPlaying</visible>
+				<include>contextButton</include>
+			</control>
+			<control type="button" id="31">
+				<description>LastFM Ban button</description>
+				<posy>258</posy>
+				<label>LastFM Ban</label>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>30</onup>
+				<ondown>20</ondown>
+				<onclick>XBMC.LastFM.Ban</onclick>
+				<visible>LastFM.RadioPlaying</visible>
+				<include>contextButton</include>
+			</control>															
+		</control>
+	</include>
+</includes>

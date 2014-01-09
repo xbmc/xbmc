@@ -1,0 +1,28 @@
+<window id="2004">
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<visible>Player.HasAudio + !Skin.HasSetting(overlay) + ![Window.IsActive(50) | Window.IsActive(107) | Window.IsActive(104) | Window.IsActive(10133) | Window.IsActive(10112) | Window.IsActive(0)]</visible>
+			<include>toggle_ToastMute</include>
+			<control type="label" id="200">
+				<posx>130r</posx>
+				<label>$INFO[MusicPlayer.Title]</label>
+				<include>toast_Top</include>
+			</control>
+			<control type="label" id="201">
+				<posx>130r</posx>
+				<label>$INFO[MusicPlayer.Artist]</label>
+				<include>toast_Bottom</include>
+			</control>
+			<control type="label" id="1">
+				<posx>120r</posx>
+				<label>$INFO[MusicPlayer.Time]</label>
+				<include>toast_Side</include>
+			</control>
+		</control>
+	</controls>
+</window>

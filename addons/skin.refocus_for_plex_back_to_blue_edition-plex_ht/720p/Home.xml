@@ -1,0 +1,100 @@
+<window id="0">
+	<defaultcontrol always="true">300</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<!-- global background --->
+		<control type="largeimage">
+			<include>screen_Dimensions</include>
+			<include>background_Image</include>
+			<aspectratio>scale</aspectratio>
+			<animation type="WindowOpen" condition="Window.Previous(2999)">
+				<effect type="fade" start="0" end="100" time="600" delay="0" />
+			</animation>
+			<animation type="WindowOpen" condition="!Window.Previous(2999)">
+				<effect type="fade" start="0" end="100" time="200" delay="0" />
+			</animation>
+			<animation type="WindowClose">
+				<effect type="fade" start="100" end="0" time="200" delay="0" />
+			</animation>
+			<visible>![Player.HasVideo + !Skin.HasSetting(backgroundVideoGlobal)] | Skin.HasSetting(FanartGlobal)</visible>
+		</control>
+		<!-- slideshows--->
+		<include>home_Slideshows</include>
+		
+		<control type="largeimage">
+			<include>screen_Dimensions</include>
+			<aspectratio>scale</aspectratio>
+			<texture>$INFO[MusicPlayer.Property(Fanart_Image)]</texture>
+			<visible allowhiddenfocus="true">Control.HasFocus(301) + Container(301).HasFocus(12)</visible>
+			<include>fadeinout</include>
+		</control>
+		
+		<control type="image">
+			<include>screen_Dimensions</include>
+			<include>fadeinout</include>
+			<include>menu_Background_Image</include>
+		</control>
+		
+		<control type="group">
+			<posx>5</posx>
+			<posy>555</posy>
+			<include>newtypelogo</include>
+			<visible>!Skin.HasSetting(hideplexhomelogo)</visible>
+		</control>
+
+		<control type="image" id="1">
+			<include>screen_Dimensions</include>
+			<texture border="16">overlays/vignette.png</texture>
+			<include>transition_Toast</include>
+			<visible>Window.IsActive(videoscan) | Window.IsActive(musicscan) | Window.IsActive(infodialog)</visible>
+		</control>
+		
+		<!-- now playing for legcy home screen  -->
+		<control type="group">
+<!--			<visible>![Control.IsVisible(11000) | Control.IsVisible(11001) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(12000)]</visible> -->
+			<visible>Player.HasAudio</visible>
+			<posx>905</posx>
+			<posy>-15</posy>
+			<include>nowplayinghome</include>
+		</control>
+
+		<!-- time and date -->
+		<include>libClock</include>
+		
+		<!-- left screen edge shadow -->
+			<control type="image">
+				<posx>0</posx>
+				<posy>20</posy>
+				<height>720</height>
+				<width>29</width>
+				<texture flipx="true">settings/separator.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+				<include>infoDialogHide</include>
+			</control>
+			
+		<control type="group" id="6100">
+			<posx>20</posx>
+			<posy>20</posy>
+			<visible>!Window.IsActive(busydialog) + !Control.IsVisible(9900)</visible>
+			<include>transition_Indicator</include>
+			<control type="image">
+				<width>48</width>
+				<height>48</height>
+				<texture>navigation/left.png</texture>
+				<colordiffuse>Color1</colordiffuse>
+				<animation type="Visible">
+					<effect type="fade" tween="Quadratic" easing="Out" start="0" end="100" time="250" />
+					<effect type="slide" tween="Quadratic" easing="Out" start="25" end="0" time="250" />
+				</animation>
+				<animation type="Hidden">
+					<effect type="fade" tween="Quadratic" easing="Out" start="100" end="0" time="250" />
+					<effect type="slide" tween="Quadratic" easing="Out" start="0" end="-25" time="250" />
+				</animation>
+				<animation effect="rotate" center="auto" start="0" end="-180" time="250" tween="Quadratic" condition="Control.HasFocus(301)">Conditional</animation>
+			</control>
+		</control>	
+		<!-- MOD CALL MENU GRAINY EDITION -->
+		<include>HomeMenu_Original</include>
+	</controls>
+</window>

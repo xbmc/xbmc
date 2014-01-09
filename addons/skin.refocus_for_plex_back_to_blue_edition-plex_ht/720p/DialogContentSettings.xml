@@ -1,0 +1,242 @@
+<window id="132">
+	<defaultcontrol always="true">3</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>272</posx>
+		<posy>60</posy>
+	</coordinates>
+	
+	<include>dialogOpen</include>
+
+	<controls>
+		<control type="image">
+			<width>750</width>
+			<height>525</height>
+			<include>dialogWindow</include>
+		</control>
+		
+		<control type="label" id="1">
+			<description>heading label</description>
+			<width>503</width>
+			<label>20333</label>
+			<include>dialogHeading</include>
+		</control>
+		
+		<control type="image">
+			<posx>575</posx>
+			<posy>18</posy>
+			<width>150</width>
+			<height>486</height>
+			<texture>dialogs/sidebar.png</texture>
+		</control>
+		
+		<control type="image">
+			<posx>570</posx>
+			<posy>25</posy>
+			<width>150</width>
+			<height>40</height>
+			<texture>1black.png</texture>
+		</control>
+		
+		<control type="image">
+			<posx>19</posx>
+			<posy>74</posy>
+			<width>556</width>
+			<include>dialogSeparator</include>
+		</control>
+		<control type="image">
+			<posx>19</posx>
+			<posy>154</posy>
+			<width>556</width>
+			<include>dialogSeparator</include>
+		</control>
+		<control type="image">
+			<posx>19</posx>
+			<posy>195</posy>
+			<width>556</width>
+			<include>dialogSeparator</include>
+		</control>
+		<control type="image">
+			<posx>19</posx>
+			<posy>235</posy>
+			<width>556</width>
+			<include>dialogSeparator</include>
+		</control>
+		<control type="image">
+			<posx>19</posx>
+			<posy>275</posy>
+			<width>556</width>
+			<include>dialogSeparator</include>
+		</control>
+		<control type="image">
+			<posx>19</posx>
+			<posy>315</posy>
+			<width>556</width>
+			<include>dialogSeparator</include>
+		</control>
+		
+		<control type="image">
+			<posx>19</posx>
+			<posy>355</posy>
+			<width>556</width>
+			<include>dialogSeparator</include>
+		</control>
+
+	<control type="group" id="9002">
+		<control type="spincontrolex" id="3">
+			<description>Content Picker</description>
+			<posx>19</posx>
+			<posy>75</posy>
+			<width>556</width>
+			<height>40</height>
+			<aligny>center</aligny>
+			<texturefocus border="3">dialogs/list-focus.png</texturefocus>
+			<texturenofocus border="3">dialogs/list-nofocus.png</texturenofocus>
+			<font>small</font>
+			<label>20344</label>
+			<reverse>yes</reverse>
+			<textoffsetx>15</textoffsetx>
+			<onup>5</onup>
+			<ondown>4</ondown>
+			<onleft>-</onleft>
+			<onright>9001</onright>
+			<textcolor>Color4</textcolor>
+			<focusedcolor>Color1</focusedcolor>
+			<pulseonselect>false</pulseonselect>
+			<include>dialogSpin</include>
+		</control>
+		<control type="label">
+			<posx>34</posx>
+			<posy>113</posy>
+			<width>556</width>
+			<height>40</height>
+			<align>left</align>
+			<textcolor>Color4</textcolor>
+			<font>list</font>
+			<label>[B]$LOCALIZE[31060][/B]</label>
+		</control>
+		<control type="label">
+			<posx>34</posx>
+			<posy>314</posy>
+			<width>556</width>
+			<height>40</height>
+			<align>left</align>
+			<textcolor>Color4</textcolor>
+			<font>list</font>
+			<label>[B]$LOCALIZE[33063][/B]</label>
+		</control>
+		
+		<control type="list" id="4">
+			<posx>19</posx>
+			<posy>155</posy>
+			<width>556</width>
+			<height>160</height>
+			<onup>3</onup>
+			<onleft>-</onleft>
+			<onright>9001</onright>
+			<ondown>5</ondown>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>200</scrolltime>
+
+			<itemlayout height="40">
+				<control type="label">
+					<posx>15</posx>
+					<width>556</width>
+					<height>35</height>
+					<font>small</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<textcolor>Color4</textcolor>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<width>556</width>
+					<height>40</height>
+					<texture border="3">dialogs/list-focus.png</texture>
+					<visible>Control.HasFocus(4)</visible>
+				</control>
+				<control type="label">
+					<posx>15</posx>
+					<width>556</width>
+					<height>35</height>
+					<font>small</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<textcolor>Color4</textcolor>
+					<visible>!Control.HasFocus(4)</visible>
+				</control>
+				<control type="label">
+					<posx>15</posx>
+					<width>556</width>
+					<height>35</height>
+					<font>small</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<textcolor>Color1</textcolor>
+					<visible>Control.HasFocus(4)</visible>
+				</control>
+			</focusedlayout>
+		</control>
+
+		<control type="grouplist" id="5">
+			<description>control area</description>
+			<posx>19</posx>
+			<posy>356</posy>
+			<width>556</width>
+			<height>120</height>
+			<itemgap>0</itemgap>
+			<onup>4</onup>
+			<ondown>3</ondown>
+			<onleft>-</onleft>
+			<onright>9001</onright>
+		</control>
+		
+		<control type="button" id="7">
+			<description>Default Button</description>
+		</control>
+		<control type="radiobutton" id="8">
+			<description>Default RadioButton</description>
+			<include>dialogRadio</include>
+		</control>
+	</control>	
+		
+		<control type="group" id="9001">
+			<posx>595</posx>
+			<posy>75</posy>			
+			<control type="button" id="6">
+				<description>settings button</description>
+				<posy>0</posy>
+				<label>5</label>
+				<onleft>9002</onleft>
+				<onright>-</onright>
+				<onup>29</onup>
+				<ondown>28</ondown>
+				<include>dialogConfirmButton</include>
+			</control>
+			<control type="button" id="28">
+				<description>Yes button</description>
+				<posy>55</posy>
+				<label>186</label>
+				<onleft>9002</onleft>
+				<onright>-</onright>
+				<onup>6</onup>
+				<ondown>29</ondown>
+				<include>dialogConfirmButton</include>
+			</control>
+			<control type="button" id="29">
+				<description>No button</description>
+				<posy>110</posy>
+				<label>222</label>
+				<onleft>9002</onleft>
+				<onright>-</onright>
+				<onup>28</onup>
+				<ondown>6</ondown>
+				<include>dialogConfirmButton</include>
+			</control>
+		</control>
+	</controls>
+</window>

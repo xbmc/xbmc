@@ -1,0 +1,398 @@
+<?xml version="1.0"?>
+<!--ReFocus-->
+<window id="2600">
+	<defaultcontrol always="true">8000</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="image">
+			<aspectratio>scale</aspectratio>
+			<include>screen_Dimensions</include>
+			<texture>backgrounds/weather.jpg</texture>
+			<animation type="WindowOpen">
+				<effect type="fade" start="0" end="100" time="200" delay="300"/>
+			</animation>
+			<animation type="WindowClose">
+				<effect type="fade" start="40" end="0" time="200"/>
+			</animation>
+		</control>
+		<include>global_Background</include>
+		<!-- fake info trigger button -->
+		<control type="button" id="8000">
+			<label>SHOULD NOT SEE ME</label>
+			<onup>53</onup>
+			<ondown>53</ondown>
+			<onleft>300</onleft>
+			<onright>53</onright>
+			<width>200</width>
+			<visible allowhiddenfocus="true">false</visible>
+		</control>
+		<!-- location -->
+		<control type="label">
+			<posx>34</posx>
+			<posy>19</posy>
+			<label>[LOWERCASE]$INFO[Weather.Location][/LOWERCASE]</label>
+			<include>grainybeigetext</include>
+			<include>PageLabel</include>
+		</control>
+		<!-- last updated -->
+		<control type="group">
+			<control type="label">
+				<posx>20r</posx>
+				<width>300</width>
+				<label>$LOCALIZE[40018]</label>
+				<include>grainywhitetext</include>
+				<include>toast_Top</include>
+				<visible>Weather.IsFetched</visible>
+			</control>
+			<control type="label">
+				<posx>20r</posx>
+				<width>300</width>
+				<label>$INFO[System.Date] : $INFO[System.Time]</label>
+				<include>grainybeigetext</include>
+				<include>toast_Bottom</include>
+			</control>
+		</control>
+		<!-- THE WEATHER -->
+		<control type="group" id="5000">
+			<include>transition2</include>
+			<include>contextMenuHide</include>
+			<onleft>300</onleft>
+			<animation effect="slide" start="0,0" end="0,-150" time="0" condition="!Skin.HasSetting(weatherFanart) | Skin.HasSetting(weatherFanart)">Conditional</animation>
+			<!-- everything is wrapped in grouplists to enable dynamic sizing of labels -->
+			<!-- the main wrapper is for the four days (which are then in their own wrappers) -->
+			<!-- THE MAIN WRAPPER -->
+			<control type="grouplist">
+				<orientation>horizontal</orientation>
+				<posx>90</posx>
+				<posy>280</posy>
+				<width min="29" max="1100">auto</width>
+				<height>520</height>
+				<font>small</font>
+				<textcolor>Color1</textcolor>
+				<!-- WRAPPER TODAY -->
+				<!-- separator -->
+				<control type="image">
+					<width>1</width>
+					<height>480</height>
+					<texture>dialogs/separator-y.png</texture>
+				</control>
+				<control type="grouplist">
+					<!-- each day wrapper is 275 in width -->
+					<width min="29" max="275">auto</width>
+					<orientation>vertical</orientation>
+					<!-- condition icon -->
+					<control type="image" id="21">
+						<height>80</height>
+						<aspectratio align="right">keep</aspectratio>
+					</control>
+					<!-- TITLE today -->
+					<control type="label">
+						<label>[LOWERCASE]$LOCALIZE[33006][/LOWERCASE]</label>
+						<include>PageLabel</include>
+						<textcolor>Color4</textcolor>
+						<height>100</height>
+					</control>
+					<!-- separator -->
+					<control type="image">
+						<width>480</width>
+						<height>1</height>
+						<texture>dialogs/separator.png</texture>
+					</control>
+					<!-- current condition -->
+					<control type="grouplist">
+						<height>60</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label" id="22">
+							<width min="29" max="280">auto</width>
+						</control>
+					</control>
+					<!-- current temp -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[31101]:</label>
+							<width min="29" max="250">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="23">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+					<!-- feels like -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[402]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="24">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+					<!-- dew point -->
+					<!-- <control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[405]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="27">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control> -->
+					<!-- humidity -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[406]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="28">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+					<!-- uv index -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[403]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="25">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+					<!-- wind -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[404]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="26">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+				</control>
+				<!-- WRAPPER DAY 1 -->
+				<!-- separator -->
+				<control type="image">
+					<width>1</width>
+					<height>480</height>
+					<texture>dialogs/separator-y.png</texture>
+				</control>
+				<control type="grouplist">
+					<width min="29" max="275">auto</width>
+					<orientation>vertical</orientation>
+					<!-- condition icon -->
+					<control type="image" id="45">
+						<height>80</height>
+						<aspectratio align="right">keep</aspectratio>
+					</control>
+					<!-- day label -->
+					<control type="label" id="41">
+						<include>PageLabel</include>
+						<height>100</height>
+					</control>
+					<!-- separator -->
+					<control type="image">
+						<width>480</width>
+						<height>1</height>
+						<texture>dialogs/separator.png</texture>
+					</control>
+					<!-- condition -->
+					<control type="grouplist">
+						<height>60</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label" id="44">
+							<width min="29" max="280">auto</width>
+						</control>
+					</control>
+					<!-- high temp -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[393]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="42">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+					<!-- low temp -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[391]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="43">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+				</control>
+				<!-- WRAPPER DAY 2 -->
+				<!-- separator -->
+				<control type="image">
+					<width>1</width>
+					<height>480</height>
+					<texture>dialogs/separator-y.png</texture>
+				</control>
+				<control type="grouplist">
+					<width min="29" max="275">auto</width>
+					<orientation>vertical</orientation>
+					<!-- condition icon -->
+					<control type="image" id="55">
+						<height>80</height>
+						<aspectratio align="right">keep</aspectratio>
+					</control>
+					<!-- day label -->
+					<control type="label" id="51">
+						<include>PageLabel</include>
+						<height>100</height>
+					</control>
+					<!-- separator -->
+					<control type="image">
+						<width>480</width>
+						<height>1</height>
+						<texture>dialogs/separator.png</texture>
+					</control>
+					<!-- condition -->
+					<control type="grouplist">
+						<height>60</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label" id="54">
+							<width min="29" max="280">auto</width>
+						</control>
+					</control>
+					<!-- high temp -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[393]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="52">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+					<!-- low temp -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[391]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="53">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+				</control>
+				<!-- WRAPPER DAY 3 -->
+				<!-- separator -->
+				<control type="image">
+					<width>1</width>
+					<height>480</height>
+					<texture>dialogs/separator-y.png</texture>
+				</control>
+				<control type="grouplist">
+					<width min="29" max="275">auto</width>
+					<orientation>vertical</orientation>
+					<!-- condition icon -->
+					<control type="image" id="65">
+						<height>80</height>
+						<aspectratio align="right">keep</aspectratio>
+					</control>
+					<!-- day label -->
+					<control type="label" id="61">
+						<include>PageLabel</include>
+						<height>100</height>
+					</control>
+					<!-- separator -->
+					<control type="image">
+						<width>480</width>
+						<height>1</height>
+						<texture>dialogs/separator.png</texture>
+					</control>
+					<!-- condition -->
+					<control type="grouplist">
+						<height>60</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label" id="64">
+							<width min="29" max="280">auto</width>
+						</control>
+					</control>
+					<!-- high temp -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[393]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="62">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+					<!-- low temp -->
+					<control type="grouplist">
+						<height>40</height>
+						<aligny>center</aligny>
+						<orientation>horizontal</orientation>
+						<control type="label">
+							<label>$LOCALIZE[391]:</label>
+							<width min="29" max="500">auto</width>
+							<include>grainybeigetext</include>
+						</control>
+						<control type="label" id="63">
+							<width min="29" max="500">auto</width>
+						</control>
+					</control>
+				</control>
+				<control type="image">
+					<posx>34</posx>
+					<posy>361</posy>
+					<height>32</height>
+					<width>32</width>
+					<include>scrollLeftView</include>
+				</control>
+			</control>
+		</control>
+		<include>WeatherMenu</include>
+	</controls>
+</window>

@@ -1,0 +1,278 @@
+<window id="2001">
+	<defaultcontrol always="true">7000</defaultcontrol>
+
+	<controls>
+	
+	<control type="group">
+		<visible>!Window.IsActive(visualisation)</visible>
+	
+		<control type="button" id="8000">
+			<label>SHOULD NOT SEE ME</label>
+			<onleft>300</onleft>
+			<onright>53</onright>
+			<ondown>50</ondown>
+			<width>200</width>
+			<visible allowhiddenfocus="true">false</visible>
+		</control>
+		<control type="button" id="7000">
+			<label>SHOULD NOT SEE ME</label>
+			<onleft>300</onleft>
+			<onright>53</onright>
+			<width>200</width>
+			<visible allowhiddenfocus="true">false</visible>
+		</control>
+		
+		<control type="label">
+			<label>[LOWERCASE][COLOR=Color2]$INFO[ListItem.Year][/COLOR] $INFO[ListItem.Album][/LOWERCASE]</label>
+			<include>musicPageLabel</include>
+			<visible>Container.Content(albums)</visible>
+		</control>
+		<control type="label">
+			<label>[LOWERCASE]$INFO[ListItem.Artist][/LOWERCASE]</label>
+			<include>musicPageLabel</include>
+			<visible>Container.Content(artists)</visible>
+		</control>
+
+<!--- THUMBNAILS --------------------------------------------------------------------------------------------------------------------------------->
+
+		<control type="group">
+			<posx>10</posx>
+			<posy>80</posy>
+			<include>transition2</include>
+			<include>contextMenuHide</include>
+			<control type="image">
+				<width>398</width>
+				<height>400</height>
+				<texture border="48">frames/wideFrame.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+			<control type="image">
+				<posx>26</posx>
+				<posy>26</posy>
+				<width>348</width>
+				<height>348</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture background="true" fallback="thumbs/album.png" diffuse="frames/wideFrameMask.png">$INFO[ListItem.Art(thumb)]</texture>
+				<visible>Container.Content(albums)</visible>
+			</control>
+			<control type="image">
+				<posx>26</posx>
+				<posy>26</posy>
+				<width>348</width>
+				<height>348</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture background="true" fallback="thumbs/artist.png" diffuse="frames/wideFrameMask.png">$INFO[ListItem.Art(thumb)]</texture>
+				<visible>Container.Content(artists)</visible>
+			</control>
+		</control>
+		<control type="group">
+			<posx>150</posx>
+			<posy>500</posy>
+			<include>labelFlagsInfo</include>
+			<include>transition2</include>
+			<include>contextMenuHide</include>
+		</control>
+		
+		
+		
+			
+<!--- ALBUMS ---------------------------------------------------------------------------------------------------------------------->
+	<control type="group">
+		<posx>450</posx>
+		<posy>117</posy>
+		<include>transition2</include>
+		<include>contextMenuHide</include>
+		<visible>Container.Content(albums)</visible>
+		
+		<control type="label">
+			<width>780</width>
+			<label>[UPPERCASE]$INFO[ListItem.Artist][/UPPERCASE]</label>
+			<include>Heading</include>
+		</control>
+
+		<control type="grouplist" id="1000">
+			<posy>50</posy>
+			<itemgap>6</itemgap>
+			<visible>!ControlGroup(9001).HasFocus()</visible>
+			
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[515] [COLOR=Color1]$INFO[ListItem.Genre][/COLOR]</label>
+				<include>infoDialogMeta</include>
+				<visible>!IsEmpty(ListItem.Genre)</visible>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[21899] [COLOR=Color1]$INFO[ListItem.Property(Album_Label)][/COLOR]</label>
+				<include>infoDialogMeta</include>
+				<visible>!IsEmpty(ListItem.Property(Album_Label))</visible>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[564] [COLOR=Color1]$INFO[ListItem.Property(Album_Type)][/COLOR]</label>
+				<include>infoDialogMeta</include>
+				<visible>!IsEmpty(ListItem.Property(Album_Type))</visible>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[573] [COLOR=Color1]$INFO[ListItem.Path][/COLOR]</label>
+				<include>infoDialogMeta</include>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label></label>
+				<include>infoDialogMeta</include>
+			</control>
+			<control type="textbox" id="4">
+				<width>740</width>
+				<height>385</height>
+				<label>$INFO[ListItem.Property(AlbumReview)]</label>
+				<include>textBox</include>
+			</control>
+		</control>
+	</control>
+
+
+<!--- ARTISTS ---------------------------------------------------------------------------------------------------------------------->
+	<control type="group">
+		<posx>450</posx>
+		<posy>90</posy>
+		<include>transition2</include>
+		<include>contextMenuHide</include>
+		<visible>Container.Content(artists)</visible>
+
+		<control type="grouplist" id="1000">
+			<itemgap>6</itemgap>
+
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[31074]</label>
+				<include>infoDialogMeta</include>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[515] [COLOR=Color1]$INFO[ListItem.Genre][/COLOR]</label>
+				<include>infoDialogMeta</include>
+				<visible>!IsEmpty(ListItem.Genre)</visible>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[21893] [COLOR=Color1]$INFO[ListItem.Property(Artist_Born)][/COLOR]</label>
+				<include>infoDialogMeta</include>
+				<visible>!IsEmpty(ListItem.Property(Artist_Born))</visible>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[21894] [COLOR=Color1]$INFO[ListItem.Property(Artist_Formed)][/COLOR]</label>
+				<include>infoDialogMeta</include>
+				<visible>!IsEmpty(ListItem.Property(Artist_Formed))</visible>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[21897] [COLOR=Color1]$INFO[ListItem.Property(Artist_Died)][/COLOR]</label>
+				<include>infoDialogMeta</include>
+				<visible>!IsEmpty(ListItem.Property(Artist_Died))</visible>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[21896] [COLOR=Color1]$INFO[ListItem.Property(Artist_Disbanded)][/COLOR]</label>
+				<include>infoDialogMeta</include>
+				<visible>!IsEmpty(ListItem.Property(Artist_Disbanded))</visible>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label>$LOCALIZE[21892] [COLOR=Color1]$INFO[ListItem.Property(Instruments)][/COLOR]</label>
+				<include>infoDialogMeta</include>
+				<visible>!IsEmpty(ListItem.Property(Instruments))</visible>
+			</control>
+			<control type="label" id="1">
+				<width>770</width>
+				<label></label>
+				<include>infoDialogMeta</include>
+			</control>
+			<control type="textbox" id="4">
+				<width>740</width>
+				<height>443</height>
+				<label>$INFO[ListItem.Property(Artist_Description)]</label>
+				<include>textBox</include>
+			</control>
+		</control>
+	</control>		
+	
+
+
+<!----- DISCOGRAPHY ------------------------------------------------------------------------------------------------------------------>
+		<control type="group" id="9001">
+			<include>transition2</include>
+			<include>contextMenuHide</include>
+	
+			<control type="list" id="50">
+				<posx>450</posx>
+				<posy>167</posy>
+				<width>765</width>
+				<height>420</height>
+				<onleft>300</onleft>
+				<onright>-</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<orientation>vertical</orientation>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<include>transition2</include>
+				<include>contextMenuHide</include>
+	
+				<itemlayout height="40">
+					<control type="label">
+						<posx>20</posx>
+						<height>35</height>
+						<width>720</width>
+						<label>$INFO[ListItem.Label]</label>
+						<font>list</font>
+						<textcolor>Color1</textcolor>
+					</control>
+					<control type="label">
+						<posx>745</posx>
+						<height>35</height>
+						<width>720</width>
+						<align>right</align>
+						<label>$INFO[ListItem.DurationStr]</label>
+						<font>list</font>
+						<textcolor>Color1</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout height="40">
+					<control type="image">
+						<posy>0</posy>
+						<width>760</width>
+						<height>42</height>
+						<texture border="16,16,16,16">settings/list-focus.png</texture>
+					</control>
+					<control type="label">
+						<posx>20</posx>
+						<width>720</width>
+						<height>35</height>
+						<font>list</font>
+						<textcolor>Focused</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<posx>745</posx>
+						<height>35</height>
+						<width>720</width>
+						<align>right</align>
+						<label>$INFO[ListItem.DurationStr]</label>
+						<font>list</font>
+						<textcolor>Focused</textcolor>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+
+		<include>infoDialogSpin</include>
+
+		<include>InfoDialogMenuM</include>
+	
+	</control>
+	
+	</controls>
+</window>

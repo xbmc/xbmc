@@ -1,0 +1,148 @@
+<includes>
+	<include name="Home_Header_background">
+		<control type="image">
+			<width>880</width>
+			<height>35</height>
+			<texture border="8">search/header.png</texture>
+			<colordiffuse>column3</colordiffuse>
+			<visible>!Skin.HasSetting(overlay.black)</visible>
+		</control>
+		<control type="image">
+			<width>185</width>
+			<height>35</height>
+			<texture>search/arrow.png</texture>
+			<colordiffuse>column2</colordiffuse>
+			<visible>!Skin.HasSetting(overlay.black)</visible>
+		</control>
+		<control type="image">
+			<width>880</width>
+			<height>35</height>
+			<texture border="8">search/header.png</texture>
+			<colordiffuse>column3_black</colordiffuse>
+			<visible>Skin.HasSetting(overlay.black)</visible>
+		</control>
+		<control type="image">
+			<width>185</width>
+			<height>35</height>
+			<texture>search/arrow.png</texture>
+			<colordiffuse>column2_black</colordiffuse>
+			<visible>Skin.HasSetting(overlay.black)</visible>
+		</control>
+	</include>
+	
+	<include name="Home_Label">
+		<posy>1</posy>
+		<posx>10</posx>
+		<align>left</align>
+		<font>smallerCaps</font>
+		<textcolor>Color1</textcolor>
+		<width>160</width>
+		<height>30</height>
+	</include>
+	
+	<include name="Home_Label_Unfocused">
+		<posy>1</posy>
+		<posx>10</posx>
+		<align>left</align>
+		<font>smallerCaps</font>
+		<include>Right_Color</include>
+		<width>160</width>
+		<height>30</height>
+	</include>
+	
+	<include name="Home_Overlay">
+		<control type="image">
+			<posx>92</posx>
+			<posy>147</posy>
+			<width>32</width>
+			<height>32</height>
+			<info>ListItem.Overlay</info>
+		</control>
+	</include>
+	
+	<include name="Home_EpisodeInfo">
+		<control type="image">
+			<posx>6</posx>
+			<posy>161</posy>
+			<width>118</width>
+			<height>18</height>
+			<texture>black.png</texture>
+			<colordiffuse>column3</colordiffuse>
+		</control>
+		<control type="label">
+			<posx>10</posx>
+			<posy>159</posy>
+			<align>left</align>
+			<scroll>false</scroll>
+			<label>S $INFO[ListItem.Season] [COLOR=Color2]•[/COLOR] E $INFO[ListItem.Episode]</label>
+			<font>SearchResultSmaller</font>
+			<wrapmultiline>false</wrapmultiline>
+			<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+			<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+		</control>
+	</include>
+	
+	<include name="Home_RecentlyAddedInfo">
+		<animation type="Conditional" condition="ControlGroup(7001).HasFocus">
+			<effect type="fade" time="250" center="screen_Center" start="0" end="100" delay="600" />
+		</animation>
+		<animation type="Conditional" condition="!ControlGroup(7001).HasFocus">
+			<effect type="fade" time="600" center="screen_Center" start="100" end="0" />
+		</animation>
+		<control type="image">
+			<width>862</width>
+			<height>115</height>
+			<texture border="8">home/infoBackground.png</texture>
+			<colordiffuse>column3</colordiffuse>
+			<visible>!Skin.HasSetting(overlay.black)</visible>
+		</control>
+		
+		<control type="image">
+			<width>862</width>
+			<height>115</height>
+			<texture border="8">home/infoBackground.png</texture>
+			<colordiffuse>column3_black</colordiffuse>
+			<visible>Skin.HasSetting(overlay.black)</visible>
+		</control>
+		
+		<control type="image">
+			<posx>820</posx>
+			<posy>1</posy>
+			<width>32</width>
+			<height>32</height>
+			<texture>$INFO[Container(11000).ListItem(0).Property(mediaTag-videoResolution),flags/hd/fo-,.png]</texture>
+			<colordiffuse>Color1</colordiffuse>
+			<aspectratio align="right">keep</aspectratio>
+		</control>
+		
+		<control type="label">
+			<visible>Container(11000).ListItem(0).Type(movie)</visible>
+			<posx>10</posx>
+			<posy>-8</posy>
+			<width>800</width>
+			<label>$INFO[Container(11000).ListItem(0).Genre]</label>
+			<include>list_Label-sub</include>
+		</control>
+
+		<control type="label">
+			<visible>Container(11000).ListItem(0).Type(episode)</visible>
+			<posx>10</posx>
+			<posy>-8</posy>
+			<width>800</width>
+			<label>$LOCALIZE[180]: $INFO[Container(11000).ListItem(0).Duration]</label>
+			<include>list_Label-sub</include>
+		</control>
+		
+		<control type="textbox">
+			<posx>10</posx>
+			<posy>25</posy>
+			<width>800</width>
+			<height>85</height>
+			<align>left</align>
+			<label>$INFO[Container(11000).ListItem(0).Plot]</label>
+			<font>description_Small</font>
+			<textcolor>Color1</textcolor>
+		</control>
+	</include>
+
+</includes>

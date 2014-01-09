@@ -1,0 +1,62 @@
+<window id="100">
+	<defaultcontrol always="true">10</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>365</posx>
+		<posy>235</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<width>550</width>
+			<height>250</height>
+			<include>dialogWindow</include>
+		</control>
+		<control type="label" id="1">
+			<width>482</width>
+			<label>13406</label>
+			<include>dialog_Windowtitle</include>
+		</control>
+		<!--line 1-->
+		<control type="label" id="2">
+			<posy>65</posy>
+			<width>482</width>
+			<include>dialog_Line</include>
+		</control>
+		<!--line 2-->
+		<control type="label" id="3">
+			<posy>90</posy>
+			<width>482</width>
+			<include>dialog_Line</include>
+		</control>
+		<!--line 3-->
+		<control type="label" id="4">
+			<posy>115</posy>
+			<width>482</width>
+			<include>dialog_Line</include>
+		</control>
+		<control type="group">
+			<posy>174</posy>
+			<posx>150</posx>
+			<!--yes-->
+			<control type="button" id="11">
+				<label>107</label>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<onup>11</onup>
+				<ondown>11</ondown>
+				<include>dialog_Button</include>
+			</control>
+			<!--no-->
+			<control type="button" id="10">
+				<posx>130</posx>
+				<label>106</label>
+				<onleft>11</onleft>
+				<onright>11</onright>
+				<onup>10</onup>
+				<ondown>10</ondown>
+				<include>dialog_Button</include>
+			</control>
+		</control>
+	</controls>
+</window>

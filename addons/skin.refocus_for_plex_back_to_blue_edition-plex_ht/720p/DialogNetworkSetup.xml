@@ -1,0 +1,147 @@
+<window id="128">
+	<defaultcontrol>10</defaultcontrol>
+	
+	<include>dialogOpen</include>
+	
+	<coordinates>
+		<system>1</system>
+		<posx>340</posx>
+		<posy>170</posy>
+	</coordinates>
+	
+	<controls>
+		<control type="image" id="0">
+			<width>600</width>
+			<height>500</height>
+			<include>dialogWindow</include>
+		</control>
+		
+		<control type="label" id="20">
+			<description>Heading Label</description>
+			<posx>34</posx>
+			<width>532</width>
+			<label>1007</label>
+			<include>dialogHeading</include>
+		</control>
+		
+		<control type="group">
+			<posx>19</posx>
+			<posy>75</posy>
+			
+			<control type="image">
+				<width>563</width>
+				<include>dialogSeparator</include>
+			</control>
+			
+			<control type="spincontrolex" id="10">
+				<description>Protocol SpinControl</description>
+				<posy>0</posy>
+				<width>563</width>
+				<label>1008</label>
+				<reverse>yes</reverse>
+				<onup>18</onup>
+				<ondown>11</ondown>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<include>dialogSpin</include>
+			</control>
+	
+			<control type="button" id="11">
+				<description>Server Name Button</description>
+				<posy>40</posy>
+				<width>444</width>
+				<onup>10</onup>
+				<onleft>12</onleft>
+				<onright>12</onright>
+				<ondown>16</ondown>
+				<include>dialogListButton</include>
+			</control>
+
+			<control type="button" id="12">
+				<description>Server Browse Button</description>
+				<posx>443</posx>
+				<posy>40</posy>
+				<height>40</height>
+				<width>120</width>
+				<align>center</align>
+				<label>1024</label>
+				<onup>10</onup>
+				<onleft>11</onleft>
+				<onright>11</onright>
+				<ondown>16</ondown>
+				<include>dialogListButton</include>
+			</control>
+	
+			<control type="button" id="16">
+				<description>Remote path Button</description>
+				<posy>80</posy>
+				<width>563</width>
+				<label>-</label>
+				<onup>11</onup>
+				<onleft>16</onleft>
+				<onright>16</onright>
+				<ondown>13</ondown>
+				<include>dialogListButton</include>
+			</control>
+	
+			<control type="button" id="13">
+				<description>Port Button</description>
+				<posy>120</posy>
+				<width>563</width>
+				<label>1013</label>
+				<onup>16</onup>
+				<onleft>13</onleft>
+				<onright>13</onright>
+				<ondown>14</ondown>
+				<include>dialogListButton</include>
+			</control>
+			<control type="button" id="14">
+				<description>Username Button</description>
+				<posy>160</posy>
+				<width>563</width>
+				<label>1014</label>
+				<onup>13</onup>
+				<onleft>14</onleft>
+				<onright>14</onright>
+				<ondown>15</ondown>
+				<include>dialogListButton</include>
+			</control>
+			<control type="button" id="15">
+				<description>Password Button</description>
+				<posy>200</posy>
+				<width>563</width>
+				<label>15052</label>
+				<onup>14</onup>
+				<onleft>15</onleft>
+				<onright>15</onright>
+				<ondown>18</ondown>
+				<include>dialogListButton</include>
+			</control>
+		</control>
+		
+		<control type="group">
+			<posx>315</posx>
+			<posy>423</posy>
+			<control type="button" id="18">
+				<description>OK button</description>
+				<label>186</label>
+				<onup>15</onup>
+				<onleft>19</onleft>
+				<onright>19</onright>
+				<ondown>10</ondown>
+				<include>dialogConfirmButton</include>
+			</control>
+			<control type="button" id="19">
+				<description>Cancel button</description>
+				<posx>130</posx>
+				<label>222</label>
+				<onup>15</onup>
+				<onleft>18</onleft>
+				<onright>18</onright>
+				<ondown>10</ondown>
+				<include>dialogConfirmButton</include>
+			</control>
+		</control>
+
+	</controls>
+</window>

@@ -1,0 +1,78 @@
+<window id="122">
+	<defaultcontrol>2</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>340</posx>
+		<posy>123</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<width>600</width>
+			<height>475</height>
+			<include>dialogWindow</include>
+		</control>
+		<control type="label" id="3">
+			<width>532</width>
+			<scroll>true</scroll>
+			<include>dialog_Windowtitle</include>
+		</control>
+		<control type="group">
+			<posx>19</posx>
+			<posy>75</posy>
+			<control type="image">
+				<width>563</width>
+				<include>dialog_Separator</include>
+			</control>
+			<!--no presets-->
+			<control type="label" id="4">
+				<posx>34</posx>
+				<posy>145</posy>
+				<width>543</width>
+				<align>center</align>
+				<label>$LOCALIZE[13389]</label>
+				<include>dialog_Label-pages</include>
+			</control>
+			<control type="list" id="2">
+				<width>563</width>
+				<height>320</height>
+				<onup>2</onup>
+				<ondown>2</ondown>
+				<onleft>-</onleft>
+				<onright>-</onright>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="40">
+					<control type="image">
+						<width>600</width>
+						<include>dialog_CommonList</include>
+					</control>
+					<control type="label">
+						<width>563</width>
+						<info>ListItem.Label</info>
+						<include>dialog_CommonListItem</include>
+					</control>
+				</itemlayout>
+				<focusedlayout height="40">
+					<control type="image">
+						<width>600</width>
+						<height>40</height>
+						<include>dialog_CommonListFocus</include>
+					</control>
+					<control type="label">
+						<width>563</width>
+						<info>ListItem.Label</info>
+						<include>dialog_CommonListItemFocus</include>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+		<control type="label">
+			<posx>34</posx>
+			<posy>405</posy>
+			<width>534</width>
+			<label>$INFO[Container(2).CurrentPage]/$INFO[Container(2).NumPages]</label>
+			<visible>!Control.IsVisible(451) + !Control.IsVisible(4)</visible>
+			<include>dialog_Label-pages</include>
+		</control>
+	</controls>
+</window>

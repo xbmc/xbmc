@@ -1,0 +1,135 @@
+<window id="10140">
+	<defaultcontrol always="true">9</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>240</posx>
+		<posy>75</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<control type="image">
+				<width>800</width>
+				<height>570</height>
+				<include>dialogWindow</include>
+			</control>
+			<control type="label" id="20">
+				<description>heading label</description>
+				<width>762</width>
+				<include>dialog_Windowtitle</include>
+			</control>
+			<!---control--->
+			<control type="group">
+				<posx>19</posx>
+				<posy>75</posy>
+				<control type="image">
+					<width>762</width>
+					<include>dialog_Separator</include>
+				</control>
+				<control type="image">
+					<posx>224</posx>
+					<height>400</height>
+					<include>dialog_Separator-y</include>
+				</control>
+				<!--button area-->
+				<control type="grouplist" id="9">
+					<posy>1</posy>
+					<width>225</width>
+					<height>400</height>
+					<itemgap>0</itemgap>
+					<onleft>9001</onleft>
+					<onright>2</onright>
+					<onup>9001</onup>
+					<ondown>9001</ondown>
+					<scrolltime tween="Cubic" easing="Out">200</scrolltime>
+				</control>
+				<control type="image">
+					<posy>400</posy>
+					<width>762</width>
+					<include>dialog_Separator</include>
+				</control>
+				<!--control area-->
+				<control type="grouplist" id="2">
+					<posx>225</posx>
+					<posy>1</posy>
+					<width>540</width>
+					<height>400</height>
+					<itemgap>0</itemgap>
+					<onleft>9</onleft>
+					<onright>9001</onright>
+					<onup>9001</onup>
+					<ondown>9001</ondown>
+					<scrolltime tween="Cubic" easing="Out">200</scrolltime>
+				</control>
+			</control>
+			<!---defaults--->
+			<control type="button" id="13">
+				<description>category button</description>
+				<width>238</width>
+				<textoffsetx>16</textoffsetx>
+				<include>dialog_Button-list</include>
+			</control>
+			<control type="button" id="3">
+				<include>dialog_Button-list</include>
+			</control>
+			<control type="radiobutton" id="4">
+				<textwidth>460</textwidth>
+				<include>dialog_Radio</include>
+			</control>
+			<control type="spincontrolex" id="5">
+				<include>dialog_Spin</include>
+			</control>
+			<control type="sliderex" id="8">
+				<include>dialog_Slider</include>
+			</control>
+			<control type="image" id="6">
+				<description>Default Seperator</description>
+				<height>0</height>
+				<texture>-</texture>
+			</control>
+			<control type="label" id="7">
+				<include>dialog_Label-bold</include>
+			</control>
+			<!---dialog buttons--->
+			<control type="group" id="9001">
+				<posx>34</posx>
+				<posy>495</posy>
+				<!--defaults-->
+				<control type="button" id="12">
+					<label>409</label>
+					<onup>9</onup>
+					<onleft>11</onleft>
+					<onright>10</onright>
+					<ondown>9</ondown>
+					<include>dialog_Button</include>
+				</control>
+				<!--ok-->
+				<control type="button" id="10">
+					<posx>482</posx>
+					<label>186</label>
+					<onup>2</onup>
+					<onleft>12</onleft>
+					<onright>11</onright>
+					<ondown>9</ondown>
+					<include>dialog_Button</include>
+				</control>
+				<!--cancel-->
+				<control type="button" id="11">
+					<posx>612</posx>
+					<label>222</label>
+					<onup>2</onup>
+					<onleft>10</onleft>
+					<onright>12</onright>
+					<ondown>9</ondown>
+					<include>dialog_Button</include>
+				</control>
+			</control>
+			<control type="image" id="6">
+				<visible>false</visible>
+			</control>
+			<control type="scrollbar" id="30">
+				<visible>false</visible>
+			</control>
+		</control>
+	</controls>
+</window>

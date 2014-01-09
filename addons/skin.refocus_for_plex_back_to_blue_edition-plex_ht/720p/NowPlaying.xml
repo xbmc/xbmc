@@ -1,0 +1,248 @@
+<window id="50">
+	<controls>
+		<include>global_Background</include>
+		<!-- Normal view -->
+		<control type="group">
+			<visible>!MusicPlayer.NowPlayingFlipped</visible>
+			<animation effect="rotatey" center="640" start="0" end="-90" time="500" reversible="false">Hidden</animation>
+			<animation effect="rotatey" center="640" start="-90" end="0" time="500" delay="500" reversible="false">Visible</animation>
+			<!-- Second cover -->
+			<control type="group">
+				<visible>MusicPlayer.HasNext</visible>
+				<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+				<control type="group">
+					<posx>813</posx>
+					<posy>244</posy>
+					<visible>MusicPlayer.HasNewCoverNext</visible>
+					<animation effect="slide" start="-80,0" time="1000" tween="cubic" easing="inout">Visible</animation>
+					<animation effect="slide" end="-80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+					<include>NowPlayingNextCover</include>
+				</control>
+			</control>
+			<!-- Double cover view -->
+			<control type="group">
+				<visible>MusicPlayer.HasNewCoverNext</visible>
+				<animation effect="slide" end="80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+				<animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
+				<control type="group">
+					<description>Album covers</description>
+					<posx>587</posx>
+					<posy>204</posy>
+					<include>NowPlayingCurrentCover</include>
+				</control>
+				<control type="group">
+					<description>Info</description>
+					<posx>60</posx>
+					<posy>220</posy>
+					<control type="group">
+						<visible>Player.HasMusicPlaylist</visible>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<include>NowPlayingCurrentInfo</include>
+					</control>
+					<control type="progress" id="20">
+						<description>Progress control</description>
+						<posx>129</posx>
+						<posy>162</posy>
+						<aligny>center</aligny>
+						<width>372</width>
+						<info>Player.Progress</info>
+						<texturebg>dialogs/progressBackground_.png</texturebg>
+						<lefttexture>-</lefttexture>
+						<midtexture border="0">dialogs/progressSlider_.png</midtexture>
+						<righttexture>-</righttexture>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<visible>Player.HasMusicPlaylist</visible>
+					</control>
+					<control type="group">
+						<posy>219</posy>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
+						<include>NowPlayingNextInfo</include>
+					</control>
+				</control>
+			</control>
+			<!-- Single cover view -->
+			<control type="group">
+				<posx>80</posx>
+				<visible>!MusicPlayer.HasNewCoverNext</visible>
+				<animation effect="slide" end="-80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+				<animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
+				<control type="group">
+					<description>Album covers</description>
+					<posx>587</posx>
+					<posy>204</posy>
+					<include>NowPlayingCurrentCover</include>
+				</control>
+				<control type="group">
+					<description>Info</description>
+					<posx>60</posx>
+					<posy>220</posy>
+					<control type="group">
+						<visible>Player.HasMusicPlaylist</visible>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<include>NowPlayingCurrentInfo</include>
+					</control>
+					<control type="progress" id="21">
+						<description>Progress control</description>
+						<posx>129</posx>
+						<posy>162</posy>
+						<aligny>center</aligny>
+						<width>372</width>
+						<info>Player.Progress</info>
+						<texturebg>dialogs/progressBackground_.png</texturebg>
+						<lefttexture>-</lefttexture>
+						<midtexture border="0">dialogs/progressSlider_.png</midtexture>
+						<righttexture>-</righttexture>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<visible>Player.HasMusicPlaylist</visible>
+					</control>
+					<control type="group">
+						<posy>219</posy>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
+						<include>NowPlayingNextInfo</include>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!-- End of normal view -->
+		<!-- Flipped view -->
+		<control type="group">
+			<visible>MusicPlayer.NowPlayingFlipped</visible>
+			<animation effect="rotatey" center="640" start="0" end="90" time="500" reversible="false">Hidden</animation>
+			<animation effect="rotatey" center="640" start="90" end="0" time="500" delay="500" reversible="false">Visible</animation>
+			<!-- Second cover (flipped) -->
+			<control type="group">
+				<visible>MusicPlayer.HasNext</visible>
+				<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+				<control type="group">
+					<posx>429</posx>
+					<posy>244</posy>
+					<visible>MusicPlayer.HasNewCoverNext</visible>
+					<animation effect="slide" start="-80,0" time="1000" tween="cubic" easing="inout">Visible</animation>
+					<animation effect="slide" end="-80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+					<include>NowPlayingNextCover</include>
+				</control>
+			</control>
+			<!-- Double cover view (flipped) -->
+			<control type="group">
+				<control type="group">
+					<visible>MusicPlayer.HasNewCoverNext</visible>
+					<animation effect="slide" end="80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+					<animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
+					<description>Album covers</description>
+					<posx>203</posx>
+					<posy>204</posy>
+					<include>NowPlayingCurrentCover</include>
+				</control>
+				<control type="group">
+					<visible>MusicPlayer.HasNewCoverNext</visible>
+					<animation effect="slide" end="-80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+					<animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
+					<description>Info</description>
+					<posx>720</posx>
+					<posy>220</posy>
+					<control type="group">
+						<visible>Player.HasMusicPlaylist</visible>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<include>NowPlayingCurrentInfoFlipped</include>
+					</control>
+					<control type="progress" id="22">
+						<description>Progress control</description>
+						<posx>0</posx>
+						<posy>162</posy>
+						<aligny>center</aligny>
+						<width>372</width>
+						<info>Player.Progress</info>
+						<texturebg>dialogs/progressBackground_.png</texturebg>
+						<lefttexture>-</lefttexture>
+						<midtexture border="0">dialogs/progressSlider_.png</midtexture>
+						<righttexture>-</righttexture>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<visible>Player.HasMusicPlaylist</visible>
+					</control>
+					<control type="group">
+						<posy>219</posy>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
+						<include>NowPlayingNextInfoFlipped</include>
+					</control>
+				</control>
+			</control>
+			<!-- Single cover view (flipped) -->
+			<control type="group">
+				<posx>80</posx>
+				<control type="group">
+					<visible>!MusicPlayer.HasNewCoverNext</visible>
+					<animation effect="slide" end="-80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+					<animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
+					<description>Album covers</description>
+					<posx>203</posx>
+					<posy>204</posy>
+					<include>NowPlayingCurrentCover</include>
+				</control>
+				<control type="group">
+					<visible>!MusicPlayer.HasNewCoverNext</visible>
+					<animation effect="slide" end="80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+					<animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
+					<description>Info</description>
+					<posx>560</posx>
+					<posy>220</posy>
+					<control type="group">
+						<visible>Player.HasMusicPlaylist</visible>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<include>NowPlayingCurrentInfoFlipped</include>
+					</control>
+					<control type="progress" id="23">
+						<description>Progress control</description>
+						<posx>0</posx>
+						<posy>162</posy>
+						<aligny>center</aligny>
+						<width>372</width>
+						<info>Player.Progress</info>
+						<texturebg>dialogs/progressBackground_.png</texturebg>
+						<lefttexture>-</lefttexture>
+						<midtexture border="0">dialogs/progressSlider_.png</midtexture>
+						<righttexture>-</righttexture>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<visible>Player.HasMusicPlaylist</visible>
+					</control>
+					<control type="group">
+						<posy>219</posy>
+						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+						<visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
+						<include>NowPlayingNextInfoFlipped</include>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!-- End of flip view -->
+		<control type="group">
+			<visible>Player.Paused</visible>
+			<animation effect="fade" end="100" time="1000">Visible</animation>
+			<animation effect="fade" end="0" time="500">Hidden</animation>
+			<control type="image">
+				<animation effect="fade" start="30" end="80" time="2000" condition="Player.Paused" pulse="true">Conditional</animation>
+				<texture>OSDPauseNF.png</texture>
+				<width>48</width>
+				<height>48</height>
+				<posx>616</posx>
+				<posy>603</posy>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,115 @@
+<window id="129">
+	<defaultcontrol always="true">9001</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	
+	<coordinates>
+		<system>1</system>
+		<posx>340</posx>
+		<posy>120</posy>
+	</coordinates>
+	
+	<include>dialogOpen</include>
+
+	<controls>
+	
+		<control type="group">
+	
+			<control type="image">
+				<width>600</width>
+				<height>320</height>
+				<include>dialogWindow</include>
+			</control>
+	
+			<control type="label" id="1">
+				<description>Heading Label</description>
+				<width>532</width>
+				<label>21421</label>
+				<include>dialogHeading</include>
+			</control>
+	
+			<control type="image">
+				<posx>19</posx>
+				<posy>76</posy>
+				<width>563</width>
+				<include>dialogSeparator</include>
+			</control>
+	
+			<control type="group" id="9001">
+				<posy>76</posy>
+	
+				<control type="spincontrolex" id="15">
+					<description>Rule Field</description>
+					<posx>19</posx>
+					<posy>0</posy>
+					<width>563</width>
+					<onright>300</onright>
+					<onleft>300</onleft>
+					<onup>300</onup>
+					<ondown>16</ondown>
+					<include>dialogSpin</include>
+				</control>
+				<control type="spincontrolex" id="16">
+					<description>Rule operator</description>
+					<posx>19</posx>
+					<posy>40</posy>
+					<width>563</width>
+					<onright>300</onright>
+					<onleft>300</onleft>
+					<onup>15</onup>
+					<ondown>17</ondown>
+					<include>dialogSpin</include>
+				</control>
+			</control>
+			<control type="button" id="17">
+				<description>Value Button</description>
+				<posx>30</posx>
+				<posy>170</posy>
+				<width>422</width>
+				<height>42</height>
+				<textwidth>422</textwidth>
+				<onup>9001</onup>
+				<onleft>-</onleft>
+				<onright>20</onright>
+				<ondown>300</ondown>
+				<include>dialogTextField</include>
+			</control>
+			<control type="button" id="20">
+				<description>Browse Button</description>
+				<posx>467</posx>
+				<posy>170</posy>
+				<width>100</width>
+				<label>1024</label>
+				<onup>9001</onup>
+				<onleft>17</onleft>
+				<onright>17</onright>
+				<ondown>300</ondown>
+				<include>dialogButton</include>
+			</control>
+	
+			<control type="group" id="300">
+				<posx>34</posx>
+				<posy>245</posy>
+				<control type="button" id="18">
+					<description>Ok Button</description>
+					<posx>280</posx>
+					<label>186</label>
+					<onup>17</onup>
+					<onleft>21</onleft>
+					<onright>21</onright>
+					<ondown>22</ondown>
+					<include>dialogConfirmButton</include>
+				</control>
+				<control type="button" id="19">
+					<description>Cancel Button</description>
+					<posx>413</posx>
+					<label>222</label>
+					<onup>17</onup>
+					<onleft>20</onleft>
+					<onright>20</onright>
+					<ondown>22</ondown>
+					<include>dialogConfirmButton</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--$Revision: 13808 $-->
+<strings>
+  <string id="577">Normalize Film Volume</string>
+  <string id="737">- Color</string>
+  <string id="1036">Favorites</string>
+  <string id="13339">Front LED Color</string>
+  <string id="13392">Use Visualization if playing audio</string>
+  <string id="14076">Add to Favorites</string>
+  <string id="14077">Remove from Favorites</string>
+  <string id="14078">Skin Colors</string>
+  <string id="15206">Bad authorization: Check username and password</string>
+  <string id="15214">Use Smoothed A/V Synchronization</string>
+  <string id="15272">Neighbors of user %name%</string>
+  <string id="15276">Listen to %name%'s neighbors Last.FM radio</string>
+  <string id="21807">Color/bw</string>
+</strings>

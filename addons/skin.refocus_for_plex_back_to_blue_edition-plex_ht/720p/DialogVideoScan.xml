@@ -1,0 +1,48 @@
+<window id="112">
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<visible>![Window.IsActive(12999) | Window.IsActive(2005) | Window.IsActive(script-XBMC_Lyrics-main.xml)]</visible>
+			<animation effect="slide" start="0" end="-55" condition="Player.Muted | !IntegerGreaterThan(Player.Volume,0)">Conditional</animation>
+			<control type="fadelabel" id="401">
+				<description>Line 1 Label</description>
+				<posx>530r</posx>
+				<width>400</width>
+				<include>toast_Top</include>
+			</control>
+			<control type="fadelabel" id="405">
+				<description>Line 2 Label</description>
+				<posx>530r</posx>
+				<width>400</width>
+				<include>toast_Bottom</include>
+			</control>
+			<control type="label" id="1">
+				<posx>120r</posx>
+				<label>$INFO[Control.GetLabel(404),,%]</label>
+				<include>toast_Side</include>
+			</control>
+			<control type="progress" id="403">
+				<texturebg>-</texturebg>
+				<lefttexture>-</lefttexture>
+				<midtexture>-</midtexture>
+				<righttexture>-</righttexture>
+				<overlaytexture>-</overlaytexture>
+				<visible>false</visible>
+			</control>
+			<control type="progress" id="404">
+				<texturebg>-</texturebg>
+				<lefttexture>-</lefttexture>
+				<midtexture>-</midtexture>
+				<righttexture>-</righttexture>
+				<overlaytexture>-</overlaytexture>
+				<visible>false</visible>
+			</control>
+		</control>
+	</controls>
+</window>
+
+

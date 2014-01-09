@@ -1,0 +1,9 @@
+<window type="dialog" id="2901">
+	<defaultcontrol always="true">702</defaultcontrol>
+	<controls>
+		<include>clock</include>
+		<control type="group">
+			<include>controls_Video</include>
+		</control>
+	</controls>
+</window>

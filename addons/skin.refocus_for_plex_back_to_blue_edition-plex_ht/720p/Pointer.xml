@@ -1,0 +1,42 @@
+<window id="105">
+	<defaultcontrol>1</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="1">
+			<description>Pointer Image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>32</width>
+			<height>32</height>
+			<texture>pointer/pointer-nofocus.png</texture>
+		</control>
+		<control type="image" id="2">
+			<description>Pointer Focus Image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>32</width>
+			<height>32</height>
+			<texture>pointer/pointer-focus.png</texture>
+		</control>
+		<control type="image" id="3">
+			<description>Pointer Drag Image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>32</width>
+			<height>32</height>
+			<texture>pointer/pointer-focus-drag.png</texture>
+		</control>
+		<control type="image" id="4">
+			<description>Pointer Click Image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>32</width>
+			<height>32</height>
+			<texture>pointer/pointer-focus-click.png</texture>
+		</control>
+	</controls>
+</window>

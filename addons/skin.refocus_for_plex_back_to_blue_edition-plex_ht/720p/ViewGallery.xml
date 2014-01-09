@@ -1,0 +1,161 @@
+<includes>
+<!-- GALLERY VIEW [updated, TODO full screen] -->
+	<include name="view_Gallery">
+		<control type="group">
+			<visible>Control.IsVisible(53)</visible>
+			<include>transition2</include>
+			<include>contextMenuHide</include>
+			<include>infoDialogHide</include>
+			<control type="group">
+				<posx>265</posx>
+				<posy>102</posy>
+				<control type="group">
+					<control type="label">
+						<label>$INFO[ListItem.Label]</label>
+						<width>750</width>
+						<include>info_Title</include>
+					</control>
+					<control type="label">
+						<posx>750</posx>
+						<label>$INFO[Container(53).ListItem(1).Label]</label>
+						<width>750</width>
+						<include>info_Title</include>
+						<animation effect="fade" start="100" end="30" time="0" condition="true">Conditional</animation>
+					</control>
+				</control>
+			</control>
+			<control type="image">
+				<posy>106</posy>
+				<width>screen_Width</width>
+				<height>478</height>
+				<aspectratio align="center">stretch</aspectratio>
+				<texture border="29" background="true">frames/frame_Gallery.png</texture>
+			</control>
+		</control>
+		<control type="wraplist" id="53">
+			<viewtype label="Gallery">bigwrap</viewtype>
+			<posx>-485</posx>
+			<posy>135</posy>
+			<width>1900</width>
+			<height>800</height>
+			<onleft>53</onleft>
+			<onright>53</onright>
+			<onup>300</onup>
+			<!-- ondown>8000</ondown -->
+			<scrolltime tween="Cubic" easing="Out">300</scrolltime>
+			<orientation>horizontal</orientation>
+			<focusposition>1</focusposition>
+			<preloaditems>2</preloaditems>
+			<include condition="Window.IsVisible(videofiles) | Window.IsVisible(videolibrary)">GalleryVideo</include>
+			<include condition="Window.IsVisible(pictures)">GalleryPictures</include>
+			<visible>[Container.Content(movies) | Container.Content(tvshows) | Window.IsActive(pictures)] + !Window.IsActive(progressdialog) + !IsEmpty(Container.FolderPath)</visible>
+			<include>transition2</include>
+			<include>contextMenuHide</include>
+			<include>infoDialogHide</include>
+		</control>
+	</include>
+	
+	<!---container contents--->
+	<include name="GalleryVideo">
+		<itemlayout height="800" width="749">
+			<control type="image">
+				<width>750</width>
+				<height>422</height>
+				<aspectratio>scale</aspectratio>
+				<texture fallback="thumbs/movie_portrait.jpg" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+				<visible>Container.Content(movies)</visible>
+			</control>
+			<control type="image">
+				<width>750</width>
+				<height>422</height>
+				<aspectratio>scale</aspectratio>
+				<texture fallback="thumbs/tvshow_portrait.jpg" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+				<visible>Container.Content(tvshows)</visible>
+			</control>
+			<control type="image">
+				<width>750</width>
+				<height>422</height>
+				<aspectratio>scale</aspectratio>
+				<texture fallback="thumbs/picture.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<visible>Window.IsActive(2)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>300</posy>
+				<width>750</width>
+				<height>96</height>
+				<include>art_TVShowLogo</include>
+			</control>
+			<control type="image">
+				<posx>718</posx>
+				<posy>390</posy>
+				<include>watchedOverlay</include>
+				<animation effect="fade" start="100" end="50" time="0" condition="true">Conditional</animation>
+				<visible>!Control.HasFocus(8000) + [Container.Content(movies) + Skin.HasSetting(overlayMovies) | Container.Content(tvshows) + Skin.HasSetting(overlayTVShows)]</visible>
+			</control>
+		</itemlayout>
+		<focusedlayout height="800" width="750">
+			<control type="image">
+				<width>750</width>
+				<height>422</height>
+				<aspectratio>scale</aspectratio>
+				<texture fallback="thumbs/movie_portrait.jpg" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+				<visible>Container.Content(movies)</visible>
+				<animation effect="zoom" start="100" end="173" time="200" center="362,185" tween="Cubic" condition="Control.HasFocus(8000) + !IsEmpty(ListItem.Title)">Conditional</animation>
+			</control>
+			<control type="image">
+				<width>750</width>
+				<height>422</height>
+				<aspectratio>scale</aspectratio>
+				<texture fallback="thumbs/tvshow_portrait.jpg" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+				<visible>Container.Content(tvshows)</visible>
+				<animation effect="zoom" start="100" end="173" time="200" center="362,185" tween="Cubic" condition="Control.HasFocus(8000) + !IsEmpty(ListItem.TVShowTitle)">Conditional</animation>
+			</control>
+			<control type="image">
+				<width>750</width>
+				<height>422</height>
+				<aspectratio>scale</aspectratio>
+				<texture fallback="thumbs/picture.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+				<visible>Window.IsActive(2)</visible>
+				<animation effect="zoom" start="100" end="173" time="200" center="362,185" tween="Cubic" condition="Control.HasFocus(8000)">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>300</posy>
+				<width>750</width>
+				<height>96</height>
+				<include>art_TVShowLogo</include>
+				<animation effect="zoom" start="100" end="173" time="200" center="362,185" tween="Cubic" condition="Control.HasFocus(8000)">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>718</posx>
+				<posy>390</posy>
+				<include>watchedOverlay</include>
+				<visible>!Control.HasFocus(8000) + [Container.Content(movies) + Skin.HasSetting(overlayMovies) | Container.Content(tvshows) + Skin.HasSetting(overlayTVShows)]</visible>
+			</control>
+		</focusedlayout>
+	</include>
+	
+	<include name="GalleryPictures">
+		<itemlayout height="800" width="749">
+			<control type="image">
+				<width>750</width>
+				<height>422</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true" fallback="thumbs/picture_landscape.jpg">$INFO[ListItem.FilenameAndPath]</texture>
+				<visible>Window.IsActive(2)</visible>
+			</control>
+		</itemlayout>
+		<focusedlayout height="800" width="750">
+			<control type="image">
+				<width>750</width>
+				<height>422</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true" fallback="thumbs/picture_landscape.jpg">$INFO[ListItem.FilenameAndPath]</texture>
+				<visible>Window.IsActive(2)</visible>
+				<animation effect="zoom" start="100" end="173" time="200" center="362,185" tween="Cubic" condition="Control.HasFocus(8000)">Conditional</animation>
+			</control>
+		</focusedlayout>
+	</include>
+	
+</includes>

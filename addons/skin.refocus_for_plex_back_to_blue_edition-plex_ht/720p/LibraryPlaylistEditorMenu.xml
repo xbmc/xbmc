@@ -1,0 +1,50 @@
+<includes>
+	<include name="LibraryPlaylistEditorMenu">
+		<control type="group" id="300">
+			<posx>20</posx>
+			<posy>67</posy>
+			<visible allowhiddenfocus="true">ControlGroup(300).HasFocus(0)</visible>
+			<onright>50</onright>
+			<!--<include>pageslide</include>-->
+			<include>MenuOpen</include>
+
+			<control type="group">
+			
+				<control type="button" id="6">
+					<description>Open button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>185</width>
+					<label>502</label>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>8</onup>
+					<ondown>7</ondown>
+				</control>
+					
+				<control type="button" id="7">
+					<description>Save button</description>
+					<posx>0</posx>
+					<posy>35</posy>
+					<width>185</width>
+					<label>190</label>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>6</onup>
+					<ondown>8</ondown>
+				</control>
+					
+				<control type="button" id="8">
+					<description>Clear button</description>
+					<posx>0</posx>
+					<posy>70</posy>
+					<label>192</label>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>7</onup>
+					<ondown>6</ondown>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

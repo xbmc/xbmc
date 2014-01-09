@@ -1,0 +1,151 @@
+<window id="503">
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	
+	<controls>
+		<include>global_Background</include>
+		<include>allscreens</include>
+		
+		<control type="label">
+			<include>PageLabel</include>
+			<label>[LOWERCASE][COLOR=Color2]$LOCALIZE[2][/COLOR] $LOCALIZE[10503][/LOWERCASE]</label>
+		</control>
+
+		<control type="group">
+			<include>transition2</include>
+			<posy>110</posy>
+			<control type="label" id="101">
+				<description>left column label</description>
+				<posx>85</posx>
+				<width>550</width>
+				<font>titleLow</font>
+				<textcolor>Color2</textcolor>
+				<include>transition2</include>
+			</control>	
+			<control type="label" id="102">
+				<description>right column label</description>
+				<posx>675</posx>
+				<width>550</width>
+				<label>$LOCALIZE[559]</label>
+				<font>titleLow</font>
+				<textcolor>Color2</textcolor>
+			</control>
+			
+			<control type="list" id="50">
+				<posx>70</posx>
+				<posy>35</posy>
+				<width>550</width>
+				<height>550</height>
+				<onleft>21</onleft>
+				<onright>100</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<scrolltime>1</scrolltime>
+				<animation effect="fade" start="100" end="60" time="200" condition="Control.HasFocus(100)">Conditional</animation>
+				<itemlayout height="42">
+					<control type="label">
+						<posx>15</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>list</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>Color1</textcolor>
+					</control>
+					<control type="label">
+						<posx>540</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>list</font>
+						<align>right</align>
+						<label>$INFO[ListItem.Year]</label>
+						<textcolor>Color2</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="550" height="42">
+					<control type="image">
+						<width>550</width>
+						<height>45</height>
+						<texture border="16,16,16,16">settings/list-focus2.png</texture>
+					</control>
+					<control type="label">
+						<posx>15</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>list</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+					<control type="label">
+						<posx>540</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>list</font>
+						<align>right</align>
+						<label>$INFO[ListItem.Year]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+				</focusedlayout>
+			</control>
+
+			<control type="list" id="100">
+				<posx>660</posx>
+				<posy>35</posy>
+				<width>550</width>
+				<height>550</height>
+				<onleft>50</onleft>
+				<onright>21</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<scrolltime>1</scrolltime>
+				<animation effect="fade" start="100" end="60" time="200" condition="Control.HasFocus(50)">Conditional</animation>
+				<itemlayout height="42">
+
+					<control type="label">
+						<posx>15</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>list</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>Color1</textcolor>
+					</control>
+					<control type="label">
+						<posx>540</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>list</font>
+						<align>right</align>
+						<label>$INFO[ListItem.DurationStr]</label>
+						<textcolor>Color2</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="550" height="42">
+					<control type="image">
+						<width>550</width>
+						<height>45</height>
+						<texture border="16,16,16,16">settings/list-focus2.png</texture>
+					</control>
+					<control type="label">
+						<posx>15</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>list</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+					<control type="label">
+						<posx>540</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>list</font>
+						<align>right</align>
+						<label>$INFO[ListItem.DurationStr]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+		
+		<include>LibraryPlaylistEditorMenu</include>
+
+	</controls>
+</window>

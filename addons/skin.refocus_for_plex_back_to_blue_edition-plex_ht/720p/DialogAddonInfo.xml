@@ -1,0 +1,183 @@
+<window id="146">
+	<defaultcontrol always="true">300</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>272</posx>
+		<posy>70</posy>
+	</coordinates>
+
+	<controls>
+        <control type="group">
+            <visible>!Window.IsActive(yesnodialog)</visible>
+            <control type="image">
+                <width>737</width>
+                <height>560</height>
+                <include>dialogWindow</include>
+            </control>
+            <control type="label" id="1">
+                <description>heading label</description>
+                <width>669</width>
+                <label>$INFO[ListItem.Property(Addon.Name)]</label>
+                <include>dialogHeading</include>
+            </control>
+            <control type="image">
+                <posx>519</posx>
+                <posy>75</posy>
+                <width>200</width>
+                <height>200</height>
+                <aspectratio>stretch</aspectratio>
+                <texture fallback="addons/noIcon.png">$INFO[ListItem.Icon]</texture>
+            </control>
+		
+            <control type="image">
+                <posx>518</posx>
+                <posy>74</posy>
+                <width>1</width>
+                <height>201</height>
+                <texture>dialogs/separator-y.png</texture>
+            </control>
+            <control type="image">
+                <posx>19</posx>
+                <posy>74</posy>
+                <width>700</width>
+                <include>dialogSeparator</include>
+            </control>
+            <control type="image">
+                <posx>19</posx>
+                <posy>114</posy>
+                <width>500</width>
+                <include>dialogSeparator</include>
+            </control>
+            <control type="image">
+                <posx>19</posx>
+                <posy>154</posy>
+                <width>500</width>
+                <include>dialogSeparator</include>
+            </control>
+            <control type="image">
+                <posx>19</posx>
+                <posy>194</posy>
+                <width>500</width>
+                <include>dialogSeparator</include>
+            </control>
+            <control type="image">
+                <posx>19</posx>
+                <posy>234</posy>
+                <width>500</width>
+                <include>dialogSeparator</include>
+            </control>
+            <control type="image">
+                <posx>19</posx>
+                <posy>275</posy>
+                <width>700</width>
+                <include>dialogSeparator</include>
+            </control>
+            <control type="image">
+                <posx>19</posx>
+                <posy>460</posy>
+                <width>700</width>
+                <include>dialogSeparator</include>
+            </control>
+	
+            <control type="group">
+            <!--<posx>34</posx>-->
+                <posx>19</posx>
+                <posy>73</posy>
+                <control type="label">
+                    <description>Type</description>
+                    <width>532</width>
+                    <label>[B]$LOCALIZE[146,,:][/B] $INFO[ListItem.Property(Addon.Type)]</label>
+                    <include>dialog_Label</include>
+                </control>
+                <control type="label">
+                    <description>Author</description>
+                    <posy>40</posy>
+                    <width>532</width>
+                    <label>[B]$LOCALIZE[21863]:[/B] $INFO[ListItem.Property(Addon.Creator)]</label>
+                    <include>dialog_Label</include>
+                </control>
+                <control type="label">
+                    <description>Version</description>
+                    <posy>80</posy>
+                    <width>532</width>
+                    <label>[B]$LOCALIZE[24051][/B] $INFO[ListItem.Property(Addon.Version)]</label>
+                    <include>dialog_Label</include>
+                </control>
+                <control type="label">
+                    <description>Rating</description>
+                    <posy>120</posy>
+                    <width>532</width>
+                    <label>[B]$LOCALIZE[563]:[/B] $INFO[ListItem.Property(Addon.Rating)]</label>
+                    <include>dialog_Label</include>
+                </control>
+			<!--<control type="fadelabel">-->
+                <control type="label">
+                    <description>Summary</description>
+                    <posy>160</posy>
+                    <width>475</width>
+                <!--<label>[B]$LOCALIZE[20037]:[/B] $INFO[ListItem.Property(Addon.Summary)]</label>-->
+                    <label>[B]$LOCALIZE[24052]:[/B] $INFO[ListItem.Property(Addon.Disclaimer)]</label>
+                    <scrollout>false</scrollout>
+                    <pauseatend>2000</pauseatend>
+                    <include>dialog_Label</include>
+                </control>
+                <control type="textbox" id="400">
+                    <description>Description</description>
+                    <posx>15</posx>
+                    <posy>215</posy>
+                    <width>660</width>
+                    <height>165</height>
+                    <label>$INFO[ListItem.Property(Addon.Description)]</label>
+                    <include>dialogTextBox</include>
+                </control>
+            </control>
+		
+            <control type="group" id="300">
+                <posx>34</posx>
+                <posy>480</posy>
+                <control type="button" id="6">
+                    <description>Enable Button</description>
+                    <label>24022</label>
+                    <onleft>10</onleft>
+                    <onright>7</onright>
+                    <include>dialogButton</include>
+                </control>
+                <control type="button" id="7">
+                    <description>Disable</description>
+                    <posx>133</posx>
+                    <label>24021</label>
+                    <onleft>6</onleft>
+                    <onright>9</onright>
+                    <include>dialogButton</include>
+                </control>
+                <control type="button" id="9">
+                    <description>Configure Button</description>
+                    <posx>266</posx>
+                    <label>24020</label>
+                    <onleft>7</onleft>
+                    <onright>8</onright>
+                    <include>dialogButton</include>
+                </control>
+                <control type="button" id="8">
+                    <description>Update Button</description>
+                    <posx>399</posx>
+                    <label>24069</label>
+                    <onleft>9</onleft>
+                    <onright>10</onright>
+                    <include>dialogButton</include>
+                </control>
+                <control type="button" id="10">
+                    <description>Changelog Button</description>
+                    <posx>532</posx>
+                    <label>24036</label>
+                    <width>135</width>
+                    <onleft>8</onleft>
+                    <onright>6</onright>
+                    <include>dialogButton</include>
+                    <visible>Addon.Disabled</visible>
+                </control>
+            </control>
+        </control>
+	</controls>
+</window>

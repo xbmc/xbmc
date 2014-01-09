@@ -1,0 +1,460 @@
+<?xml version="1.0"?>
+<includes>
+	<include name="LibraryVideoMenu">
+		<!-- Shadow layer to darken options bg -->
+		<control type="group">
+			<animation effect="fade" start="100" end="20" time="350" condition="Control.HasFocus(300) | Control.HasFocus(1110) | Control.HasFocus(1140) | Control.HasFocus(1150) | Control.HasFocus(1160)">Conditional</animation>
+			<control type="image">
+				<posx>383</posx>
+				<posy>121</posy>
+				<height>509</height>
+				<width>2000</width>
+				<texture flipx="true">dialogs/square_menu_background.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="50"/>
+				</animation>
+				<visible>!Control.HasFocus(300) + [ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()]</visible>
+			</control>
+		</control>
+		<!-- VIEW MENUS -->
+		<control type="group" id="300">
+			<posx>58</posx>
+			<posy>150</posy>
+			<width>400</width>
+			<height>650</height>
+			<onup>9100</onup>
+			<ondown>9100</ondown>
+			<orientation>vertical</orientation>
+			<scrolltime>150</scrolltime>
+			<visible allowhiddenfocus="true">ControlGroup(300).HasFocus</visible>
+			<include>homeMenuToggle</include>
+			<include>homeMenusLayout</include>
+			<!-- white separators top and bottom sub-menu -->
+			<control type="image">
+				<posx>356</posx>
+				<posy>-18</posy>
+				<height>10</height>
+				<width>1000</width>
+				<texture>dialogs/sliderBackground_.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="80"/>
+				</animation>
+				<!--<visible>!Control.HasFocus(300) + [ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()]</visible>-->
+			</control>
+			<control type="image">
+				<posx>356</posx>
+				<posy>460</posy>
+				<height>10</height>
+				<width>1000</width>
+				<texture>dialogs/sliderBackground_.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+				<animation type="Conditional" condition="true">
+					<effect type="fade" start="0" end="80"/>
+				</animation>
+				<!--<visible>!Control.HasFocus(300) + [ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()]</visible>-->
+			</control>
+			<!-- LEFT -->
+			<control type="grouplist" id="9100">
+				<visible>!Skin.HasSetting(global.kiosk)</visible>
+				<onup>9100</onup>
+				<ondown>9100</ondown>
+				<onleft>50</onleft>
+				<onright>200</onright>
+				<itemgap>0</itemgap>			
+				<!-- list -->
+				<control type="button" id="9020">
+					<label>$LOCALIZE[535]</label>
+					<onclick>Container.SetViewMode(50)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+				</control>
+				<!-- big list (tv show episodes) -->
+				<control type="button" id="9004">
+					<label>$LOCALIZE[537]</label>
+					<onclick>Container.SetViewMode(51)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>[Container.Content(movies) | Container.Content(tvshows) | Container.Content(episodes)] + !Window.IsActive(2)</visible>
+				</control>
+				<!-- slide (movies, tv shows & seasons) -->
+				<control type="button" id="9005">
+					<label>$LOCALIZE[31003]</label>
+					<onclick>Container.SetViewMode(52)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>[Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)]</visible>
+				</control>
+				<!-- slide (episodes) -->
+				<control type="button" id="9006">
+					<label>$LOCALIZE[31003]</label>
+					<onclick>Container.SetViewMode(58)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>Container.Content(episodes)</visible>
+				</control>
+				<!-- big thumbnails (movies & tv shows) -->
+				<control type="button" id="9007">
+					<label>big thumbnails</label>
+					<onclick>Container.SetViewMode(57)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>[Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)]</visible>
+				</control>
+				<!-- small thumbnails with info -->
+				<control type="button" id="9008">
+					<label>small thumbnails</label>
+					<onclick>Container.SetViewMode(571)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>[Container.Content(movies) | Container.Content(tvshows)]</visible>
+				</control>
+				<!-- thumbnails photo -->
+				<control type="button" id="9009">
+					<label>thumbnails</label>
+					<onclick>Container.SetViewMode(573)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>Window.IsActive(2)</visible>
+				</control>
+				<!-- banners (tv shows) -->
+				<control type="button" id="9010">
+					<label>$LOCALIZE[31093]</label>
+					<onclick>Container.SetViewMode(54)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>Container.Content(tvshows) </visible>
+				</control>
+				<!-- gallery (movies & tv shows & pictures) -->
+				<control type="button" id="9012">
+					<label>$LOCALIZE[31002]</label>
+					<onclick>Container.SetViewMode(53)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>[Container.Content(tvshows) | Container.Content(movies) | Window.IsActive(2)]</visible>
+				</control>
+				<!-- Episode thumbs -->
+				<control type="button" id="9013">
+					<label>thumbnails</label>
+					<onclick>Container.SetViewMode(575)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>Container.Content(episodes)</visible>
+				</control>
+				<!-- AVAILABLE -->
+				<control type="button" id="9014">
+					<label>$LOCALIZE[8]</label>
+					<onclick>ActivateWindow(weather)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<include>newHomeMenuCategoryNoFocusBg</include>
+					<visible>false</visible>
+				</control>
+				<!-- AVAILABLE -->
+				<control type="button" id="9017">
+					<label>$LOCALIZE[5]</label>
+					<include>newHomeMenuCategoryButton</include>
+					<visible>false</visible>
+				</control>
+				<!-- AVAILABLE -->
+				<control type="button" id="9018">
+					<label>$LOCALIZE[5]</label>
+					<onclick>SetFocus(1150)</onclick>
+					<include>newHomeMenuCategoryButton</include>
+					<include>newHomeMenuCategoryNoFocusBg</include>
+					<visible>false</visible>
+				</control>
+				<!-- view options -->
+				<control type="button" id="9001">
+					<label>view options</label>
+					<include>newHomeMenuCategoryButton</include>
+					<visible allowhiddenfocus="true">![Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205) | Control.HasFocus(206) | Control.HasFocus(207) | Control.HasFocus(208) | Control.HasFocus(209) | Control.HasFocus(210) | Control.HasFocus(211) | Control.HasFocus(212) | Control.HasFocus(213) | Control.HasFocus(214)]</visible>
+				</control>
+				<control type="button" id="9002">
+					<label>view options</label>
+					<include>newHomeMenuCategoryButton</include>
+					<include>newHomeMenuCategoryNoFocusBg</include>
+					<visible>!Control.IsVisible(9001)</visible>
+				</control>
+			</control>
+			<!-- RIGHT -->
+			<control type="group">
+				<posx>325</posx>
+				<posy>0</posy>
+				<width>850</width>
+				<height>595</height>
+				<!-- presentation screencaps -->
+				<control type="group" id="200">
+					<posx>100</posx>
+					<posy>30</posy>
+					<height>400</height>
+					<width>700</width>
+					<include>transition2</include>
+					<!-- frame -->
+					<control type="image">
+						<posx>-10</posx>
+						<posy>-10</posy>
+						<height>410</height>
+						<width>718</width>
+						<texture border="20" background="true">dialogs/square_dialog_background.png</texture>
+						<aspectratio scalediffuse="false" align="center">stretch</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9019) | ControlGroup(9100).HasFocus(9020) | ControlGroup(9100).HasFocus(9004) | ControlGroup(9100).HasFocus(9005) | ControlGroup(9100).HasFocus(9006) | ControlGroup(9100).HasFocus(9007) | ControlGroup(9100).HasFocus(9008) | ControlGroup(9100).HasFocus(9010) | ControlGroup(9100).HasFocus(9012)</visible>
+					</control>
+					<!-- list movie -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/listmovie.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9020) + Container.Content(movies)</visible>
+					</control>
+					<!-- list tvshow -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/listtv.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9020) + [Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)]</visible>
+					</control>
+					<!-- list rest -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/list.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9020) + ![Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)]</visible>
+					</control>
+					<!-- big list episodes -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/listbig.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9004) + Container.Content(episodes)</visible>
+					</control>
+					<!-- big list movies -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/listbigmovies.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9004) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
+					</control>
+					<!-- big list seasons -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/listbigseasons.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9004) + Container.Content(seasons)</visible>
+					</control>
+					<!-- slide (movies, tv shows & seasons) -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/slide.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9005)</visible>
+					</control>
+					<!-- slide (episodes) -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/slideepisode.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9006)</visible>
+					</control>
+					<!-- big thumbnails (movies & tv shows) -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/thumbsbig.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9007)</visible>
+					</control>
+					<!-- small thumbnails with info (movies & tv shows) -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/thumbssmall.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9008)</visible>
+					</control>
+					<!-- episode thumbs -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/thumbsepisode.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9013)</visible>
+					</control>
+					<!-- banners (tv shows) -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/banners.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9010)</visible>
+					</control>
+					<!-- gallery (movies & tv shows) -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/gallery.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9012) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
+					</control>
+					<!-- gallery (photo) -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/galleryphoto.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9012) + ![Container.Content(movies) | Container.Content(tvshows)]</visible>
+					</control>
+					<!-- icon wide photo -->
+					<control type="image">
+						<texture border="10" diffuse="frames/episodeframemask.png">views/thumbswidephoto.jpg</texture>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<include>transition2</include>
+						<visible>ControlGroup(9100).HasFocus(9009)</visible>
+					</control>
+				</control>
+				<!-- view options -->
+				<control type="grouplist" id="200">
+					<onleft>9001</onleft>
+					<onright>9001</onright>
+					<onup>200</onup>
+					<ondown>200</ondown>
+					<itemgap>0</itemgap>
+					<include>transition2</include>
+					<visible>ControlGroup(9100).HasFocus(9001)</visible>
+					<!-- slide -->
+					<control type="button" id="202">
+						<description>SLIDE: use posters</description>
+						<label>$LOCALIZE[31061]</label>
+						<onclick>Container.SetViewMode(52)</onclick>
+						<onclick>Skin.ToggleSetting(slideViewFanart)</onclick>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>[Control.IsVisible(52) | Control.IsVisible(55)] + !Skin.HasSetting(slideViewFanart) + !Container.Content(seasons)</visible>
+					</control>
+					<control type="button" id="203">
+						<description>SLIDE: use fanart</description>
+						<label>$LOCALIZE[31039]</label>
+						<onclick>Container.SetViewMode(55)</onclick>
+						<onclick>Skin.ToggleSetting(slideViewFanart)</onclick>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>[Control.IsVisible(52) | Control.IsVisible(55)] + Skin.HasSetting(slideViewFanart) + !Container.Content(seasons)</visible>
+					</control>					
+					<control type="radiobutton" id="206">
+						<label>hide resolution</label>
+						<onclick>Skin.ToggleSetting(slidehideresolution)</onclick>
+						<selected>Skin.HasSetting(slidehideresolution)</selected>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>[Control.IsVisible(52) | Control.IsVisible(55) | Control.IsVisible(58)] + !Container.Content(seasons)</visible>
+					</control>
+					<control type="radiobutton" id="208">
+						<label>hide aspect ratio</label>
+						<onclick>Skin.ToggleSetting(slidehideaspectratio)</onclick>
+						<selected>Skin.HasSetting(slidehideaspectratio)</selected>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>[Control.IsVisible(52) | Control.IsVisible(55) | Control.IsVisible(58)] + !Container.Content(seasons)</visible>
+					</control>
+					<control type="radiobutton" id="207">
+						<label>hide video codec</label>
+						<onclick>Skin.ToggleSetting(slidehidevideoinfo)</onclick>
+						<selected>Skin.HasSetting(slidehidevideoinfo)</selected>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>[Control.IsVisible(52) | Control.IsVisible(55) | Control.IsVisible(58)] + !Container.Content(seasons)</visible>
+					</control>					
+					<control type="radiobutton" id="209">
+						<label>hide audio codec + channels</label>
+						<onclick>Skin.ToggleSetting(slidehideaudioinfo)</onclick>
+						<selected>Skin.HasSetting(slidehideaudioinfo)</selected>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>[Control.IsVisible(52) | Control.IsVisible(55) | Control.IsVisible(58)] + !Container.Content(seasons)</visible>
+					</control>
+					<control type="radiobutton" id="204">
+						<label>hide content rating</label>
+						<onclick>Skin.ToggleSetting(slidehidecontentrating)</onclick>
+						<selected>Skin.HasSetting(slidehidecontentrating)</selected>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>[Control.IsVisible(52) | Control.IsVisible(55)] + !Container.Content(seasons)</visible>
+					</control>
+					<!-- list -->
+					<!--<control type="button" id="210">
+						<description>LIST : use posters</description>
+						<label>$LOCALIZE[31061]</label>
+						<onclick>Skin.ToggleSetting(ListViewFanart)</onclick>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>Control.IsVisible(50) + Skin.HasSetting(ListViewFanart)</visible>
+					</control>
+					<control type="button" id="211">
+						<description>LIST : use fanart</description>
+						<label>use fanart</label>
+						<onclick>Skin.ToggleSetting(ListViewFanart)</onclick>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>Control.IsVisible(50) + !Skin.HasSetting(ListViewFanart)</visible>
+					</control>-->
+					
+					<!-- big thumbnails -->
+					<control type="radiobutton" id="212">
+						<label>show studio logo on right bottom corner</label>
+						<onclick>Container.SetViewMode(57)</onclick>
+						<onclick>Skin.ToggleSetting(thumbnailsshowstudioflag)</onclick>
+						<selected>Skin.HasSetting(thumbnailsshowstudioflag)</selected>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>Control.IsVisible(57) + [Container.Content(tvshows) | Container.Content(movies)]</visible>
+					</control>
+					<control type="radiobutton" id="214">
+						<label>hide "genre" description</label>
+						<onclick>Container.SetViewMode(57)</onclick>
+						<onclick>Skin.ToggleSetting(hidepostergenre)</onclick>
+						<selected>Skin.HasSetting(hidepostergenre)</selected>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>Control.IsVisible(57) + Container.Content(movies)</visible>
+					</control>
+					<!-- big list -->
+					<control type="button" id="202">
+						<description>BIGLIST: use posters</description>
+						<label>$LOCALIZE[31061]</label>
+						<onclick>Container.SetViewMode(51)</onclick>
+						<onclick>Skin.ToggleSetting(view.biglist.posters)</onclick>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>Control.IsVisible(51) + [Container.Content(tvshows) | Container.Content(movies)] + !Skin.HasSetting(view.biglist.posters)</visible>
+					</control>
+					<control type="button" id="203">
+						<description>BIGLIST: use fanart</description>
+						<label>$LOCALIZE[31039]</label>
+						<onclick>Container.SetViewMode(51)</onclick>
+						<onclick>Skin.ToggleSetting(view.biglist.posters)</onclick>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>Control.IsVisible(51) + [Container.Content(tvshows) | Container.Content(movies)] + Skin.HasSetting(view.biglist.posters)</visible>
+					</control>
+					
+					<!-- list -->
+					<control type="button" id="202">
+						<description>LIST: use posters</description>
+						<label>$LOCALIZE[31061]</label>
+						<onclick>Container.SetViewMode(50)</onclick>
+						<onclick>Skin.ToggleSetting(view.list.posters)</onclick>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>Control.IsVisible(50) + [Container.Content(tvshows) | Container.Content(movies)] + !Skin.HasSetting(view.list.posters)</visible>
+					</control>
+					<control type="button" id="203">
+						<description>LIST: use fanart</description>
+						<label>$LOCALIZE[31039]</label>
+						<onclick>Container.SetViewMode(50)</onclick>
+						<onclick>Skin.ToggleSetting(view.list.posters)</onclick>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>Control.IsVisible(50) + [Container.Content(tvshows) | Container.Content(movies)] + Skin.HasSetting(view.list.posters)</visible>
+					</control>
+					
+					<control type="radiobutton" id="212">
+						<label>show tvshow logo's (if available)</label>
+						<onclick>Skin.ToggleSetting(tvshowlogos.enable)</onclick>
+						<selected>Skin.HasSetting(tvshowlogos.enable)</selected>
+						<include>newHomeMenuSubSettingsButton</include>
+						<visible>[[Control.IsVisible(53) + Container.Content(tvshows)] | [Control.IsVisible(50) + Container.Content(tvshows)] | [Control.IsVisible(55) + Container.Content(tvshows)] | [Control.IsVisible(575) + !IsEmpty(Container.Property(mixedParents))] | [Control.IsVisible(50) + !IsEmpty(Container.Property(mixedParents))]]</visible>
+					</control>
+					
+					
+				</control>
+			</control>
+		</control>
+		<!-- Separator New Home Menu -->
+		<control type="group">
+			<!--<animation effect="fade" start="100" end="20" time="350" condition="Control.HasFocus(300) | Control.HasFocus(1110) | Control.HasFocus(1140) | Control.HasFocus(1150) | Control.HasFocus(1160)">Conditional</animation>-->
+			<visible>ControlGroup(300).HasFocus | ControlGroup(9100).HasFocus() | ControlGroup(200).HasFocus()</visible>
+			<control type="image">
+				<posx>354</posx>
+				<posy>0</posy>
+				<height>720</height>
+				<width>29</width>
+				<texture>settings/separator.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+			</control>
+		</control>
+	</include>
+</includes>

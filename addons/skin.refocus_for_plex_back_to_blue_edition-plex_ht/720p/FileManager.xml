@@ -1,0 +1,190 @@
+<window id="3">
+	<defaultcontrol always="true">20</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	
+	<controls>
+		<include>global_Background</include>
+		<include>allscreens</include>
+
+		<control type="group">
+			<!--<include>pageslide</include>-->
+			<!--<include>viewsmenucontext</include>-->
+			
+			<control type="label">
+				<include>PageLabel</include>
+				<label>$LOCALIZE[31969]</label>
+			</control>
+			
+			<!--<control type="label">
+				<description>number of files left column</description>
+				<include>pageSubLabel</include>
+				<label>[UPPERCASE]$INFO[Container(20).NumItems] $LOCALIZE[31944][/UPPERCASE]</label>
+				<visible>Control.HasFocus(20)</visible>
+			</control>
+			<control type="label">
+				<description>number of files right column</description>
+				<include>pageSubLabel</include>
+				<label>[UPPERCASE]$INFO[Container(21).NumItems] $LOCALIZE[31944][/UPPERCASE]</label>
+				<visible>Control.HasFocus(21)</visible>
+			</control>-->
+
+			
+			<control type="label" id="101">
+				<description>left column label</description>
+				<posx>70</posx>
+				<posy>110</posy>
+				<width>550</width>
+				<font>osd2</font>
+				<textcolor>Color2</textcolor>
+				<include>transition2</include>
+			</control>	
+			<control type="label" id="102">
+				<description>right column label</description>
+				<posx>660</posx>
+				<posy>110</posy>
+				<width>550</width>
+				<font>osd2</font>
+				<textcolor>Color2</textcolor>
+				<include>transition2</include>
+			</control>
+
+			<control type="list" id="20">
+				<posx>70</posx>
+				<posy>145</posy>
+				<width>550</width>
+				<height>500</height>
+				<onleft>21</onleft>
+				<onright>21</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<scrolltime>1</scrolltime>
+				<animation effect="fade" start="100" end="60" time="200" condition="Control.HasFocus(21)">Conditional</animation>
+				<include>transition2</include>
+	
+				<itemlayout height="42">
+					<control type="label">
+						<posx>15</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>normal</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>Color1</textcolor>
+					</control>
+					<control type="label">
+						<posx>540</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>normal</font>
+						<align>right</align>
+						<label>$INFO[ListItem.Label2]</label>
+						<textcolor>Color3</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="550" height="42">
+					<control type="image">
+						<width>550</width>
+						<height>45</height>
+						<texture border="16,16,16,16">settings/list-focus2.png</texture>
+					</control>
+					<control type="label">
+						<posx>15</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>normal</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+					<control type="label">
+						<posx>540</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>normal</font>
+						<align>right</align>
+						<label>$INFO[ListItem.Label2]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+				</focusedlayout>
+			</control>
+			
+			<control type="list" id="21">
+				<posx>660</posx>
+				<posy>145</posy>
+				<width>550</width>
+				<height>500</height>
+				<onleft>20</onleft>
+				<onright>20</onright>
+				<onup>21</onup>
+				<ondown>21</ondown>
+				<scrolltime>1</scrolltime>
+				<include>transition2</include>
+				<animation effect="fade" start="100" end="60" time="200" condition="Control.HasFocus(20)">Conditional</animation>
+	
+				<itemlayout height="42">
+					<control type="label">
+						<posx>15</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>normal</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>Color1</textcolor>
+					</control>
+					<control type="label">
+						<posx>540</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>normal</font>
+						<align>right</align>
+						<label>[UPPERCASE]$INFO[ListItem.Label2][/UPPERCASE]</label>
+						<textcolor>Color3</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="550" height="42">
+					<control type="image">
+						<width>550</width>
+						<height>45</height>
+						<texture border="16,16,16,16">settings/list-focus2.png</texture>
+					</control>
+					<control type="label">
+						<posx>15</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>normal</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+					<control type="label">
+						<posx>540</posx>
+						<width>400</width>
+						<height>40</height>
+						<font>normal</font>
+						<align>right</align>
+						<label>$INFO[ListItem.Label2]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+				</focusedlayout>
+			</control>
+			
+			<!--<control type="image">
+				<posx>611</posx>
+				<posy>15</posy>
+				<height>1192</height>
+				<width>58</width>
+				<texture>settings/separatorFM.png</texture>
+				<aspectratio align="right">stretch</aspectratio>
+				<include>transition2</include>
+			</control>-->
+	
+		<!--	<control type="group">
+				<include>fadeinout</include>
+				<posy>680</posy>
+				<control type="label">
+					<width>screen_Width</width>
+					<label>[UPPERCASE]$INFO[System.Freespace(C)] - $INFO[System.Freespace(E)] - $INFO[System.Freespace(F)] - $INFO[System.Freespace(G)][/UPPERCASE]</label>
+					<textcolor>Color2</textcolor>
+					<align>center</align>
+					<include>Heading3</include>
+				</control>
+			</control>-->
+		</control>
+	</controls>
+</window>

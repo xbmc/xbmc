@@ -1,0 +1,168 @@
+<window type="dialog" id="126">
+	<defaultcontrol always="true">450</defaultcontrol>
+	<include>dialogOpen</include>
+	<coordinates>
+		<system>1</system>
+		<posx>240</posx>
+		<posy>60</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<control type="image">
+				<width>800</width>
+				<height>605</height>
+				<include>dialogWindow</include>
+			</control>
+			<control type="label" id="411">
+				<width>766</width>
+				<label>$LOCALIZE[1023]</label>
+				<include>dialog_Windowtitle</include>
+			</control>
+			<control type="group">
+				<posx>19</posx>
+				<posy>75</posy>
+				<control type="image">
+					<width>766</width>
+					<include>dialog_Separator</include>
+				</control>
+				<control type="image">
+					<posy>40</posy>
+					<width>766</width>
+					<include>dialog_Separator</include>
+				</control>
+				<control type="image">
+					<posy>440</posy>
+					<width>766</width>
+					<include>dialog_Separator</include>
+				</control>
+			</control>
+			<control type="group" id="9002">
+				<!--path label-->
+				<control type="label" id="412">
+					<posx>34</posx>
+					<posy>80</posy>
+					<width>700</width>
+					<font>smallAlt</font>
+					<haspath>true</haspath>
+					<textcolor>Color4</textcolor>
+				</control>
+				<control type="list" id="450">
+					<posx>19</posx>
+					<posy>116</posy>
+					<width>492</width>
+					<height>399</height>
+					<onleft>-</onleft>
+					<onright>9001</onright>
+					<onup>450</onup>
+					<ondown>450</ondown>
+					<pagecontrol>60</pagecontrol>
+					<preloaditems>4</preloaditems>
+					<scrolltime tween="Cubic" easing="Out">400</scrolltime>	
+					<itemlayout height="40">
+						<control type="image">
+							<width>634</width>
+							<include>dialog_CommonList</include>
+						</control>
+						<control type="image">
+							<posx>15</posx>
+							<posy>8</posy>
+							<width>24</width>
+							<height>24</height>
+							<texture>$INFO[ListItem.ActualIcon,icons/li-,]</texture>
+							<colordiffuse>Color4</colordiffuse>
+						</control>
+						<control type="label">
+							<posx>60</posx>
+							<width>634</width>
+							<info>ListItem.Label</info>.
+							<font>smallAlt</font>
+							<include>dialog_CommonListItem</include>
+						</control>
+					</itemlayout>
+					<focusedlayout height="40">
+						<control type="image">
+							<width>634</width>
+							<include>dialog_CommonListFocus</include>
+						</control>
+						<control type="image">
+							<posx>15</posx>
+							<posy>8</posy>
+							<width>24</width>
+							<height>24</height>
+							<texture>$INFO[ListItem.ActualIcon,icons/li-,]</texture>
+						</control>
+						<control type="label">
+							<posx>60</posx>
+							<width>634</width>
+							<font>smallAlt</font>
+							<info>ListItem.Label</info>
+							<include>dialog_CommonListItemFocus</include>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="group">
+					<posx>510</posx>
+					<posy>115</posy>
+					<width>272</width>
+					<height>400</height>
+					<control type="image">
+						<posx>84</posx>
+						<posy>135</posy>
+						<width>128</width>
+						<height>128</height>
+						<texture>$INFO[ListItem.ActualIcon,icons/de-,]</texture>
+						<aspectratio>keep</aspectratio>
+						<visible>IsEmpty(Container(450).ListItem.Icon)</visible>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>1</posy>
+						<width>271</width>
+						<height>399</height>
+						<texture>$INFO[Container(450).ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<height>400</height>
+						<include>dialog_Separator-y</include>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="9001">
+				<posx>34</posx>
+				<posy>532</posy>
+				<!--new folder-->
+				<control type="button" id="415">
+					<label>$LOCALIZE[119]</label>
+					<onleft>414</onleft>
+					<onright>413</onright>
+					<onup>9002</onup>
+					<ondown>9002</ondown>
+					<include>dialog_Button</include>
+				</control>
+				<!--ok-->
+				<control type="button" id="413">
+					<posx>485</posx>
+					<label>$LOCALIZE[186]</label>
+					<onleft>415</onleft>
+					<onright>414</onright>
+					<onup>9002</onup>
+					<ondown>9002</ondown>
+					<include>dialog_Button</include>
+				</control>
+				<!--cancel-->
+				<control type="button" id="414">
+					<posx>615</posx>
+					<label>$LOCALIZE[222]</label>
+					<onleft>413</onleft>
+					<onright>415</onright>
+					<onup>9002</onup>
+					<ondown>9002</ondown>
+					<include>dialog_Button</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>
