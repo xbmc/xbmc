@@ -934,6 +934,18 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
 
   if (filter && filter->currentPrimaryFilter() == "folder")
     list.SetContent("folders");
+
+  /* check if we have gone deeper down or not */
+  CURL newPath(list.GetPath());
+  if (m_startDirectory != newPath.GetUrlWithoutOptions())
+  {
+    EPlexDirectoryType type = list.GetPlexDirectoryType();
+    if (type == PLEX_DIR_TYPE_SEASON ||
+        type == PLEX_DIR_TYPE_EPISODE ||
+        type == PLEX_DIR_TYPE_VIDEO)
+      CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::CheckPlexFilters setting preplay flag");
+      list.SetProperty("PlexPreplay", "yes");
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
