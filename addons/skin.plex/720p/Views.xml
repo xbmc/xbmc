@@ -277,11 +277,11 @@
 							<texture border="5">border-bottom-grey.png</texture>
 						</control>
 						<control type="image">
+							<posy>16</posy>
 							<posx>28</posx>
-							<posy>15</posy>
 							<width>20</width>
 							<height>20</height>
-							<include>ListMovieTVUnwatchedOverlay</include>
+							<info>ListItem.Overlay</info>
 						</control>
 						<control type="label">
 							<width>840</width>

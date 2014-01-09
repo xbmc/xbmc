@@ -342,12 +342,12 @@
 	<!-- Pre-play Filtered Episodes -->
 	<include name="LibraryFilteredEpisodes">
 		<control type="group" id="777">
-			<visible>Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
+			<visible>[Container.Content(episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->
 			<control type="panel" id="62">
-				<visible>Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
+				<visible>[Container.Content(episodes) + IsEmpty(Container.Property(PlexPreplay))] + !IsEmpty(Container.Property(primaryFilterActivated))</visible>
 				<viewtype label="LibraryFilteredEpisodes">panel</viewtype>
 				<onup>62</onup>
 				<ondown>62</ondown>
