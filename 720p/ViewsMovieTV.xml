@@ -272,7 +272,7 @@
 		</control>
 	</include>
 	<include name="EpisodeTitleFiltered">
-		<posy>119</posy>
+		<posy>122</posy>
 		<posx>20</posx>
 		<width>255</width>
 		<height>20</height>
@@ -284,7 +284,7 @@
 	</include>
 	<include name="EpisodeSecondTitleFiltered">
 	<control type="label">
-		<posy>143</posy>
+		<posy>145</posy>
 		<posx>20</posx>
 		<width>159</width>
 		<height>20</height>
@@ -297,7 +297,7 @@
 	</include>
 	<include name="EpisodeDateFiltered">
 		<control type="label">
-			<posy>143</posy>
+			<posy>145</posy>
 			<posx>10r</posx>
 			<width>90</width>
 			<height>20</height>
@@ -329,7 +329,7 @@
 		</control>
 	</include>
 	<include name="EpisodeThumbOverlayTitle2Filtered">
-		<posy>86</posy>
+		<posy>89</posy>
 		<posx>20</posx>
 		<width>180</width>
 		<height>30</height>
