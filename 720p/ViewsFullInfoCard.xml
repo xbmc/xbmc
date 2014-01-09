@@ -127,10 +127,10 @@
 	</include>
 	<variable name="ListItemFullInfoPlot">
 		<value condition="!ListItem.Type(episode)">$INFO[ListItem.Plot]</value>
-		<value condition="!Container.Content(episodes) + ListItem.Type(episode) + [ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]]">$INFO[ListItem.Plot]</value>
-		<value condition="[Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))]">$INFO[Container.ShowPlot]</value>
+		<value condition="ListItem.Type(episode) + [ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]]">$INFO[ListItem.Plot]</value>
 		<value condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated))] + [ListItem.Status(Watched) | [!Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)]]]">$INFO[ListItem.Plot]</value>
 		<value condition="ListItem.Type(episode) + [Skin.HasSetting(HidePlotForUnwatched) + [ListItem.Status(InProgress) | ListItem.Status(UnWatched)] + !IsEmpty(ListItem.Plot)]">$LOCALIZE[32105]</value>
+		<value condition="IsEmpty(ListItem.Plot)]">NoPlotDefault</value>
 		<!--><value>$INFO[ListItem.Plot]</value>-->
 	</variable>
 	<include name="ListItemFullInfoFlags">
