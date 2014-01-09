@@ -3,7 +3,9 @@
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "Client/PlexServerManager.h"
 #include "Client/PlexMediaServerClient.h"
+#include "ApplicationMessenger.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
@@ -127,6 +129,10 @@ void CGUIDialogPlexPicker::UpdateStreamSelection()
         g_settings.m_currentVideoSettings.m_SubtitleStream = player->GetSubtitle();
       }
     }
+
+    if (m_fileItem->GetProperty("plexDidTranscode").asBoolean())
+      /* since we are transcoding, we need to stop the current session and restart it on the server */
+      CApplicationMessenger::Get().MediaRestart(false);
   }
 }
 
