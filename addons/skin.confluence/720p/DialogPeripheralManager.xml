@@ -73,9 +73,9 @@
 				<top>65</top>
 				<width>550</width>
 				<height>510</height>
-				<onup>20</onup>
-				<ondown>20</ondown>
-				<onleft>10</onleft>
+				<onup>10</onup>
+				<ondown>10</ondown>
+				<onleft>61</onleft>
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
@@ -224,8 +224,6 @@
 				<textcolor>white</textcolor>
 				<focusedcolor>white</focusedcolor>
 				<align>center</align>
-				<onleft>61</onleft>
-				<onright>20</onright>
 				<onup>20</onup>
 				<ondown>20</ondown>
 			</control>
