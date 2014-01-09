@@ -38,6 +38,14 @@
 						<posy>-153</posy>
 						<width>182</width>
 						<height>274</height>
+						<texture background="true" diffuse="mask-poster-middle.png">default-poster-middle.png</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>
+					<control type="image">
+						<posx>20</posx>
+						<posy>-153</posy>
+						<width>182</width>
+						<height>274</height>
 						<texture background="true" diffuse="mask-poster-middle.png">$INFO[Player.Art(poster)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>
@@ -68,6 +76,14 @@
 						<height>115</height>
 						<label>$INFO[VideoPlayer.Plot]</label>
 						<include>Plot</include>
+					</control>					
+					<control type="textbox">
+						<posy>10</posy>
+						<width>1000</width>
+						<height>115</height>
+						<include>NoPlotDefault</include>
+						<include>Plot</include>
+						<visible>IsEmpty(VideoPlayer.Plot)</visible>
 					</control>
 				</control>
 			</control>
