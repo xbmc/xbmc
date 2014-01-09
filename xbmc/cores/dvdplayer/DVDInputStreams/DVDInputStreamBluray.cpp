@@ -1008,7 +1008,10 @@ void CDVDInputStreamBluray::UserInput(bd_vk_key_e vk)
 void CDVDInputStreamBluray::OnMenu()
 {
   if(m_bd == NULL || !m_navmode)
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - nav mode is not enabled");
     return;
+  }
 
   if(m_dll->bd_user_input(m_bd, -1, BD_VK_POPUP) >= 0)
     return;
