@@ -556,7 +556,7 @@
 	<!-- Pre-play Season -->
 	<include name="PreplaySeason">
 		<control type="group" id="777">
-			<visible>Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))</visible>
+			<visible>Container.Content(episodes) + !IsEmpty(Container.Property(PlexPreplay))</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<control type="group">
@@ -676,7 +676,7 @@
 			</control>
 			<!-- main list -->
 			<control type="panel" id="61">
-				<visible>Container.Content(episodes) + IsEmpty(Container.Property(primaryFilterActivated))</visible>
+				<visible>Container.Content(episodes) + !IsEmpty(Container.Property(PlexPreplay))</visible>
 				<viewtype label="PreplayEpisodes">panel</viewtype>
 				<onup>61</onup>
 				<ondown>61</ondown>
