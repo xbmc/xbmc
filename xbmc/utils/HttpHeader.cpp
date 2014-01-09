@@ -164,12 +164,15 @@ std::vector<std::string> CHttpHeader::GetValues(std::string strParam) const
 
 std::string CHttpHeader::GetHeader(void) const
 {
-  std::string strHeader(m_protoLine + '\n');
+  if (m_protoLine.empty() && m_params.empty())
+    return "";
+
+  std::string strHeader(m_protoLine + "\r\n");
 
   for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
-    strHeader += ((*iter).first + ": " + (*iter).second + "\n");
+    strHeader += ((*iter).first + ": " + (*iter).second + "\r\n");
 
-  strHeader += "\n";
+  strHeader += "\r\n";
   return strHeader;
 }
 
