@@ -508,7 +508,7 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
-					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
 					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsVisible(2)">Conditional</animation>
 					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsVisible(501)">Conditional</animation>
@@ -522,7 +522,7 @@
 					<ondown>32000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
 					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
 					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
@@ -555,7 +555,7 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
-					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
 					<animation effect="slide" end="0,-85" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
 					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
@@ -569,7 +569,7 @@
 					<ondown>30000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
 					<animation effect="slide" end="0,-85" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
 					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
