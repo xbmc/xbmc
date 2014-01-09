@@ -399,8 +399,15 @@ CPlexDirectory::ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaConta
   {
     /* When loading a season the first element can be "All Episodes" and that is just a directory
      * without a type attribute. So let's skip that. */
-    if (boost::ends_with(mediaContainer.Get(0)->GetProperty("unprocessed_key").asString(), "/allLeaves") &&
-        mediaContainer.Size() > 1)
+    std::string key = mediaContainer.Get(0)->GetProperty("unprocessed_key").asString();
+
+    /* we need to cut everything from ? to make sure that we don't include
+     * arguments when making the check */
+    size_t c = key.find_last_of("?");
+    if (c != std::string::npos)
+      key.erase(c, key.size());
+
+    if (boost::ends_with(key, "/allLeaves") && mediaContainer.Size() > 1)
       mediaContainer.SetPlexDirectoryType(mediaContainer.Get(1)->GetPlexDirectoryType());
     /* See https://github.com/plexinc/plex/issues/737 for a discussion around this workaround */
     else if (boost::starts_with(m_url.GetFileName(), "library/sections/") &&
