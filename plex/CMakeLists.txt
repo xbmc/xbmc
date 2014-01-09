@@ -98,6 +98,7 @@ endif()
 
 # Set the correct binary name
 set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
+set_target_properties(${PLEX_TARGET_NAME} PROPERTIES PDB_NAME "Plex Home Theater")
 
 if(ENABLE_DUMP_SYMBOLS)
   GENERATE_BREAKPAD_SYMBOLS(${PLEX_TARGET_NAME})
