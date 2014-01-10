@@ -117,15 +117,15 @@ protected:
   static void OverlayClear(SPlane& plane, int x, int y, int w, int h);
   static void OverlayInit (SPlane& plane, int w, int h);
 
-  IDVDPlayer*   m_player;
-  DllLibbluray *m_dll;
-  BLURAY* m_bd;
-  BLURAY_TITLE_INFO* m_title;
-  uint32_t           m_playlist;
-  uint32_t           m_clip;
-  uint32_t           m_angle;
-  bool               m_menu;
-  bool m_navmode;
+  IDVDPlayer*         m_player;
+  DllLibbluray*       m_dll;
+  BLURAY*             m_bd;
+  BLURAY_TITLE_INFO*  m_title;
+  uint32_t            m_playlist;
+  uint32_t            m_clip;
+  uint32_t            m_angle;
+  bool                m_menu;
+  bool                m_navmode;
 
   typedef boost::shared_ptr<CDVDOverlayImage> SOverlay;
   typedef std::list<SOverlay>                 SOverlays;
