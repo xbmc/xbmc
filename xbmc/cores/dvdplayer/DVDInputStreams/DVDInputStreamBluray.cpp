@@ -565,7 +565,12 @@ void CDVDInputStreamBluray::ProcessEvent() {
 #endif
 #if (BLURAY_VERSION >= BLURAY_VERSION_CODE(0,3,0))
   case BD_EVENT_IDLE:
+#ifdef HAVE_LIBBLURAY_BDJ
     Sleep(100);
+#else
+    m_hold = HOLD_ERROR;
+    m_player->OnDVDNavResult(NULL, 6);
+#endif
     break;
 #endif
 
@@ -600,7 +605,16 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
       if(m_hold == HOLD_HELD)
         return 0;
 
+      if(m_hold == HOLD_ERROR)
+        return -1;
+
       result = m_dll->bd_read_ext (m_bd, buf, buf_size, &m_event);
+
+      if(result < 0)
+      {
+        m_hold = HOLD_ERROR;
+        return result;
+      }
 
       /* Check for holding events */
       switch(m_event.event) {
@@ -982,7 +996,7 @@ void CDVDInputStreamBluray::GetStreamInfo(int pid, char* language)
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
 {
-  if(!m_navmode)
+  if(!m_navmode || m_hold == HOLD_ERROR)
     return NEXTSTREAM_NONE;
 
   /* process any current event */

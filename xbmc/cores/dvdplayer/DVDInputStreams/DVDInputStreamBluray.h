@@ -149,6 +149,7 @@ protected:
     HOLD_HELD,
     HOLD_DATA,
     HOLD_STILL,
+    HOLD_ERROR
   } m_hold;
   BD_EVENT m_event;
 #ifdef HAVE_LIBBLURAY_BDJ
