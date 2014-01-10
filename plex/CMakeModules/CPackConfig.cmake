@@ -21,6 +21,7 @@ set(CPACK_COMPONENT_VCREDIST_DISPLAY_NAME "Visual Studio redistribution installe
 set(CPACK_COMPONENT_MCE_DISPLAY_NAME "Microsoft Media Center Integration")
 set(CPACK_COMPONENT_RUNTIME_DISPLAY_NAME "Plex for Home Theater")
 set(CPACK_COMPONENT_RUNTIME_REQUIRED 1)
+set(CPACK_STRIP_FILES 1)
 
 # Windows installer stuff
 set(CPACK_NSIS_MUI_UNIICON ${plexdir}\\\\Resources\\\\Plex.ico)
