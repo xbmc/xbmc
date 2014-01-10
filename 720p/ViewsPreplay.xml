@@ -963,7 +963,7 @@
 	<include name="PreplayMovie">
 		<control type="group">
 			<posy>-28</posy>
-			<visible>Container.Content(Movie)</visible>
+			<visible>Container.Content(Movie) | [Container.Content(channel) + ListItem.Type(movie)]</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- backgrounds -->
