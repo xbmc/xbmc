@@ -759,7 +759,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum, const CStdString& strMu
       strSQL = PrepareSQL("SELECT * FROM album WHERE strMusicBrainzAlbumID = '%s'",
                         strMusicBrainzAlbumID.c_str());
     else
-      strSQL = PrepareSQL("SELECT * FROM album WHERE strArtists = '%s' AND strAlbum like '%s' and strMusicBrainzAlbumID IS NULL",
+      strSQL = PrepareSQL("SELECT * FROM album WHERE strArtists LIKE '%s' AND strAlbum LIKE '%s' AND strMusicBrainzAlbumID IS NULL",
                           strArtist.c_str(),
                           strAlbum.c_str());
     m_pDS->query(strSQL.c_str());
@@ -1083,7 +1083,7 @@ int CMusicDatabase::AddArtist(const CStdString& strArtist, const CStdString& str
 
       // 1.b) No match on MusicBrainz ID. Look for a previously added artist with no MusicBrainz ID
       //     and update that if it exists.
-      strSQL = PrepareSQL("SELECT * FROM artist WHERE strArtist = '%s' AND strMusicBrainzArtistID IS NULL", strArtist.c_str());
+      strSQL = PrepareSQL("SELECT * FROM artist WHERE strArtist LIKE '%s' AND strMusicBrainzArtistID IS NULL", strArtist.c_str());
       m_pDS->query(strSQL.c_str());
       if (m_pDS->num_rows() > 0)
       {
@@ -1104,7 +1104,7 @@ int CMusicDatabase::AddArtist(const CStdString& strArtist, const CStdString& str
     }
     else
     {
-      strSQL = PrepareSQL("SELECT * FROM artist WHERE strArtist = '%s'",
+      strSQL = PrepareSQL("SELECT * FROM artist WHERE strArtist LIKE '%s'",
                           strArtist.c_str());
 
       m_pDS->query(strSQL.c_str());
