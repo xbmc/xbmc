@@ -1,0 +1,44 @@
+Upstream fixes:
+  * OSX: allow a reinit on lost device. should fix issues especially found on mavericks when doing so (e.x. switching the TV input away from xbmc and back)
+
+PHT fixes:
+  * OSX: Fixed issue with "3fps" when using receviers that didn't negotiate correctly
+  * Win: Fixed issue with "3fps" when playing audio that needed to be reencoded (AAC 5.1)
+  * Fixed a networking issue where UDP could flood the network if the time was not set correctly. (Thanks A. Weinlein)
+  * Fixed a issue where transcoded content would stop playing if paused
+  * Avoid showing notifications when playing video
+  * When browsing for subtitles the dialog will default to the same path as the movie, if possible
+  * Remote: Don't play interface sounds when playing video
+  * Remote: Fix selection of None subtitle
+  * Remote: Fixed remote controlling of Linux based PHTs
+  * Make sure that the music playlist is cleared when playing a movie
+  * Turn on de-interlacing on interlaced content by default
+  * Fixed networking detection bug where public IP could be used instead of local
+  * Channels: fixed watched/unwatched status
+  * Channels: fixed searching bug
+  * Channels: fixed saving settings
+  * Added back Recently Viewed filter to movie sections
+  * New keycode for cycling the filters (f by default) in section roots
+  * New keycode for toggling unwatched filters (u by default) in sections roots
+  * Unwatched filter now follows you when navigating down in TV shows
+  * Add new option under Quality that allows forcing subtitles to be transcoded (use if you have synchronization issues when playing transcoded video)
+  * If you do stream selection (audio/subtitle) while playing transcoded content we now restart the transcoder to get the changes.
+  * Better pre-caching of posters in movie sections
+  * Show more search results (audio tracks in particular) when using global search.
+  * Upgraded SQLite and MicroHTTPD on Windows in hope to solve some crashes on start. Not confirmed to work yet.
+  * Fixed tons of crashes on all platforms.
+
+PHT Skin changes:
+  * Position Video Player OSD lower if the window aspect ratio is 16:10
+  * Adjust Preplay title heights
+  * Don't show Unwatched indicator in List view if the Setting for it is activated
+  * Add a Preference "Hide Quit and Shutdown from Home menu"
+  * While it's still there, show poster and some additional info in the VideoPlayer media info overlay
+  * Show Unwatched Episodes count for TV
+  * MediaStream: Pause defaults to Play button focus in OSD
+  * Fix Clip thumb unwatched overlay size
+  * A new Universal font that supports a really long list of languages
+  * Fix channel preplay for some channels
+  * Position the filters to welcome back "Recently Viewed"
+  * Degrade gracefully if VideoPlayer item has no plot or art
+  * Show Episode plot in episodes list views, instead of Show plot
