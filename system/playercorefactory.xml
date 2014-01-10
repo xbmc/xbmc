@@ -11,31 +11,32 @@
   </players>
 
   <rules name="system rules">
-    <rule name="rtv" protocols="rtv" player="DVDPlayer" />
-    <rule name="hdhomerun/myth/mms/udp" protocols="hdhomerun|myth|cmyth|mms|mmsh|udp" player="DVDPlayer" />
-    <rule name="lastfm/shout" protocols="lastfm|shout" player="PAPlayer" />
+    <rule name="rtv" protocols="rtv" player="videodefaultplayer" />
+    <rule name="hdhomerun/myth/mms/udp" protocols="hdhomerun|myth|cmyth|mms|mmsh|udp" player="videodefaultplayer" />
+    <rule name="lastfm/shout" protocols="lastfm|shout" player="audiodefaultplayer" />
     <rule name="rtmp" protocols="rtmp" player="videodefaultplayer" />
 
     <!-- dvdplayer can play standard rtsp streams -->
-    <rule name="rtsp" protocols="rtsp" filetypes="!(rm|ra)"  player="PAPlayer" />
+    <rule name="rtsp" protocols="rtsp" filetypes="!(rm|ra)"  player="audiodefaultplayer" />
 
     <!-- Internet streams -->
     <rule name="streams" internetstream="true">
-      <rule name="aacp/sdp" mimetypes="audio/aacp|application/sdp" player="DVDPlayer" />
-      <rule name="mp2" mimetypes="application/octet-stream" filetypes="mp2" player="PAPlayer" />
+      <rule name="aacp/sdp" mimetypes="audio/aacp|application/sdp" player="videodefaultplayer" />
+      <rule name="mp2" mimetypes="application/octet-stream" filetypes="mp2" player="audiodefaultplayer" />
     </rule>
 
     <!-- DVDs -->
-    <rule name="dvd" dvd="true" player="DVDPlayer" />
-    <rule name="dvdimage" dvdimage="true" player="DVDPlayer" />
+    <rule name="dvd" dvd="true" player="videodefaultdvdplayer" />
+    <rule name="dvdfile" dvdfile="true" player="videodefaultdvdplayer" />
+    <rule name="dvdimage" dvdimage="true" player="videodefaultdvdplayer" />
 
     <!-- Only dvdplayer can handle these normally -->
-    <rule name="sdp/asf" filetypes="sdp|asf" player="DVDPlayer" />
+    <rule name="sdp/asf" filetypes="sdp|asf" player="videodefaultplayer" />
 
     <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
-    <rule name="nsv" filetypes="nsv" player="DVDPlayer" />
+    <rule name="nsv" filetypes="nsv" player="videodefaultplayer" />
 
     <!-- pvr radio channels should be played by dvdplayer because they need buffering -->
-    <rule name="radio" filetypes="pvr" filename=".*/radio/.*" player="DVDPlayer" />
+    <rule name="radio" filetypes="pvr" filename=".*/radio/.*" player="videodefaultplayer" />
   </rules>
 </playercorefactory>
