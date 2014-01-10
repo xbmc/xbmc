@@ -70,6 +70,7 @@ protected:
   bool                      m_DecoderOpen;
 
   bool                      m_bad_state;
+  bool                      m_live;
 
   virtual void OnStartup();
   virtual void OnExit();
@@ -115,5 +116,6 @@ public:
   std::string GetPlayerInfo();
 
   bool BadState() { return m_bad_state; }
+  void SetLiveMode(bool live) { m_live = live; }
 };
 #endif

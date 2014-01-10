@@ -95,6 +95,8 @@
 		<eight>KEY_8</eight>
 		<nine>KEY_9</nine>
 		<zero>KEY_0</zero>
+		<star>KEY_NUMERIC_STAR</star>
+		<hash>KEY_NUMERIC_POUND</hash>
 		<red>KEY_RED</red>
 		<green>KEY_GREEN</green>
 		<yellow>KEY_YELLOW</yellow>
@@ -420,6 +422,7 @@
 		<enter>KEY_ENTER</enter>
 		<clear>KEY_DELETE</clear>
 		<start>KEY_SELECT</start>
+		<start>KEY_MEDIA</start>
 		<start>KEY_PROG1</start>
 		<start>KEY_HOME</start>
 		<back>KEY_ESC</back>
@@ -448,6 +451,7 @@
 		<language>KEY_LANGUAGE</language>
 		<mute>KEY_MUTE</mute>
 		<power>KEY_POWER</power>
+		<power>KEY_SLEEP</power>
 		<myvideo>KEY_VIDEO</myvideo>
 		<mymusic>KEY_AUDIO</mymusic>
 		<mypictures>KEY_MHP</mypictures>

@@ -92,7 +92,7 @@
       <group id="2">
         <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
           <level>1</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
@@ -1860,7 +1860,7 @@
       <group id="1">
         <setting id="services.webserver" type="boolean" label="263" help="36328">
           <level>1</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="services.webserverport" type="integer" parent="services.webserver" label="730" help="36329">
@@ -1875,7 +1875,7 @@
         </setting>
         <setting id="services.webserverusername" type="string" parent="services.webserver" label="1048" help="36330">
           <level>1</level>
-          <default>xbmc</default>
+          <default></default>
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
@@ -2412,7 +2412,7 @@
       <group id="2">
         <setting id="input.remoteaskeyboard" type="boolean" label="21449" help="36376">
           <level>1</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="input.enablemouse" type="boolean" label="21369" help="36377">

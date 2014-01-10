@@ -15,6 +15,11 @@
         <setting id="videoplayer.useframemtdec">
           <visible>false</visible>
         </setting>
+        <setting id="videoplayer.lowlatency" type="boolean" label="37022" help="36549">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
   </section>

@@ -484,7 +484,7 @@ void OMXPlayerVideo::Process()
         // if a stream has had more than 4 valid pts values in the last 16, the use UNKNOWN, otherwise use dts
         m_history_valid_pts = (m_history_valid_pts << 1) | (pPacket->pts != DVD_NOPTS_VALUE);
         double pts = pPacket->pts;
-        if(pPacket->pts == DVD_NOPTS_VALUE && count_bits(m_history_valid_pts & 0xffff) < 4)
+        if(pPacket->pts == DVD_NOPTS_VALUE && (m_iCurrentPts == DVD_NOPTS_VALUE || count_bits(m_history_valid_pts & 0xffff) < 4))
           pts = pPacket->dts;
 
         if (pts != DVD_NOPTS_VALUE)

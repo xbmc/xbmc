@@ -136,37 +136,64 @@ void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback
   Parse(label, context);
 }
 
-CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback /*= NULL*/) const
+const std::string &CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback /*= NULL*/) const
 {
-  CStdString label;
-  for (unsigned int i = 0; i < m_info.size(); i++)
+  for (unsigned int i = 0, j = 0; i < m_info.size(); i++)
   {
     const CInfoPortion &portion = m_info[i];
     if (portion.m_info)
     {
-      CStdString infoLabel;
+      std::string infoLabel;
       if (preferImage)
         infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow, fallback);
       if (infoLabel.empty())
         infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow, fallback);
-      if (!infoLabel.empty())
-        label += portion.GetLabel(infoLabel);
-    }
-    else
-    { // no info, so just append the prefix
-      label += portion.m_prefix;
+      if (j == m_labelPortions.size())
+        m_labelPortions.push_back(infoLabel);
+      else if (infoLabel != m_labelPortions[j])
+      {
+        m_labelPortions[j] = infoLabel;
+        m_labelDirty = true;
+      }
+      j++;
     }
   }
-  if (label.empty())  // empty label, use the fallback
-    return m_fallback;
-  return label;
+  if (m_labelDirty)
+  {
+    m_label.clear();
+    for (unsigned int i = 0, j= 0; i < m_info.size(); i++)
+    {
+      const CInfoPortion &portion = m_info[i];
+      if (portion.m_info)
+      {
+        if (!m_labelPortions[j].empty())
+          m_label += portion.GetLabel(m_labelPortions[j]);
+        j++;
+      }
+      else
+      { // no info, so just append the prefix
+        m_label += portion.m_prefix;
+      }
+    }
+    if (m_label.empty())  // empty label, use the fallback
+      m_label = m_fallback;
+    m_labelDirty = false;
+  }
+  return m_label;
 }
 
-CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, CStdString *fallback /*= NULL*/) const
+const std::string &CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, CStdString *fallback /*= NULL*/) const
 {
-  if (!item->IsFileItem()) return "";
-  CStdString label;
-  for (unsigned int i = 0; i < m_info.size(); i++)
+  if (!item->IsFileItem())
+  {
+    if (m_itemLabelDirty)
+    {
+      m_itemLabel = "";
+      m_itemLabelDirty = false;
+    }
+    return m_itemLabel;
+  }
+  for (unsigned int i = 0, j = 0; i < m_info.size(); i++)
   {
     const CInfoPortion &portion = m_info[i];
     if (portion.m_info)
@@ -176,17 +203,38 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
         infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion.m_info, fallback);
       else
         infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion.m_info, fallback);
-      if (!infoLabel.empty())
-        label += portion.GetLabel(infoLabel);
-    }
-    else
-    { // no info, so just append the prefix
-      label += portion.m_prefix;
+      if (j == m_itemLabelPortions.size())
+        m_itemLabelPortions.push_back(infoLabel);
+      else if (infoLabel != m_itemLabelPortions[j])
+      {
+        m_itemLabelPortions[j] = infoLabel;
+        m_itemLabelDirty = true;
+      }
+      j++;
     }
   }
-  if (label.empty())
-    return m_fallback;
-  return label;
+  if (m_itemLabelDirty)
+  {
+    m_itemLabel.clear();
+    for (unsigned int i = 0, j = 0; i < m_info.size(); i++)
+    {
+      const CInfoPortion &portion = m_info[i];
+      if (portion.m_info)
+      {
+        if (!m_itemLabelPortions[j].empty())
+          m_itemLabel += portion.GetLabel(m_itemLabelPortions[j]);
+        j++;
+      }
+      else
+      { // no info, so just append the prefix
+        m_itemLabel += portion.m_prefix;
+      }
+    }
+    if (m_itemLabel.empty())
+      m_itemLabel = m_fallback;
+    m_itemLabelDirty = false;
+  }
+  return m_itemLabel;
 }
 
 bool CGUIInfoLabel::IsEmpty() const
@@ -277,6 +325,12 @@ const static infoformat infoformatmap[] = {{ "$INFO[",    FORMATINFO },
 void CGUIInfoLabel::Parse(const CStdString &label, int context)
 {
   m_info.clear();
+  m_labelDirty = true;
+  m_label.clear();
+  m_labelPortions.clear();
+  m_itemLabelDirty = true;
+  m_itemLabel.clear();
+  m_itemLabelPortions.clear();
   // Step 1: Replace all $LOCALIZE[number] with the real string
   CStdString work = ReplaceLocalize(label);
   // Step 2: Replace all $ADDON[id number] with the real string

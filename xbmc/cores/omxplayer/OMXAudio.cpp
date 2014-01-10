@@ -407,7 +407,7 @@ static unsigned count_bits(int64_t value)
   return bits;
 }
 
-bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, uint64_t channelMap, bool bUsePassthrough, bool bUseHWDecode)
+bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, uint64_t channelMap, bool bUsePassthrough, bool bUseHWDecode, bool is_live)
 {
   CSingleLock lock (m_critSection);
   OMX_ERRORTYPE omx_err;
@@ -419,6 +419,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
 
   m_HWDecode    = bUseHWDecode;
   m_Passthrough = bUsePassthrough;
+  m_live = is_live;
 
   m_InputChannels = count_bits(channelMap);
   m_format = format;
@@ -957,22 +958,10 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     }
     else
     {
-      if(pts == DVD_NOPTS_VALUE)
-      {
+      if(pts == DVD_NOPTS_VALUE || pts == m_last_pts)
         omx_buffer->nFlags = OMX_BUFFERFLAG_TIME_UNKNOWN;
+      else
         m_last_pts = pts;
-      }
-      else if (m_last_pts != pts)
-      {
-        if(pts > m_last_pts)
-          m_last_pts = pts;
-        else
-          omx_buffer->nFlags = OMX_BUFFERFLAG_TIME_UNKNOWN;;
-      }
-      else if (m_last_pts == pts)
-      {
-        omx_buffer->nFlags = OMX_BUFFERFLAG_TIME_UNKNOWN;
-      }
     }
 
     omx_buffer->nTimeStamp = ToOMXTime(val);

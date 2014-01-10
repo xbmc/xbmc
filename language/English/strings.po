@@ -14940,6 +14940,16 @@ msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
 msgstr ""
 
+#: system/settings/rbp.xml
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#36549"
+msgid "Enable for live tv and VoD streams"
+msgstr ""
+
 #empty strings from id 36547 to 36999
 #reserved strings 365XX
 
@@ -15012,4 +15022,14 @@ msgstr ""
 #: system/settings/rbp.xml
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#37022"
+msgid "Enable fixed latency playback mode"
 msgstr ""

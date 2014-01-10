@@ -225,7 +225,10 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
 
   float fRefreshRate = fps;
 
-  float last_diff = fRefreshRate;
+  int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
+  if (!(m_iFlags & CONF_FLAGS_STEREO_MODE_SBS) != !(curr.dwFlags & D3DPRESENTFLAG_MODE3DSBS) ||
+      !(m_iFlags & CONF_FLAGS_STEREO_MODE_TAB) != !(curr.dwFlags & D3DPRESENTFLAG_MODE3DTB))
+    c_weight += 1000;
 
   // Find closest refresh rate
   for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
@@ -241,45 +244,29 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
     ||  info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
       continue;
 
-    // For 3D choose the closest refresh rate 
-    if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
-    {
-      float diff = (info.fRefreshRate - fRefreshRate);
-      if(diff < 0)
-        diff *= -1.0f;
+    int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
 
-      if(diff < last_diff)
-      {
-        last_diff = diff;
-        current = (RESOLUTION)i;
-        curr = info;
-      }
-    }
-    else
-    {
-      int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
-      int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
+    if (!(m_iFlags & CONF_FLAGS_STEREO_MODE_SBS) != !(info.dwFlags & D3DPRESENTFLAG_MODE3DSBS) ||
+        !(m_iFlags & CONF_FLAGS_STEREO_MODE_TAB) != !(info.dwFlags & D3DPRESENTFLAG_MODE3DTB))
+      i_weight += 1000;
 
-      // Closer the better, prefer higher refresh rate if the same
-      if ((i_weight <  c_weight)
-      ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
-      {
-        current = (RESOLUTION)i;
-        curr    = info;
-      }
+    // Closer the better, prefer higher refresh rate if the same
+    if ((i_weight <  c_weight)
+    ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
+    {
+      current  = (RESOLUTION)i;
+      curr     = info;
+      c_weight = i_weight;
     }
   }
 
-  // For 3D overwrite weight
-  if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
-    weight = 0;
-  else
-    weight = RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier);
+  weight = RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier);
 
   return current;
 }
 
 //distance of refresh to the closest multiple of fps (multiple is 1 or higher), as a multiplier of fps
+//make higher multiples score slightly worse
 float CBaseRenderer::RefreshWeight(float refresh, float fps)
 {
   float div   = refresh / fps;
@@ -288,7 +275,7 @@ float CBaseRenderer::RefreshWeight(float refresh, float fps)
   if (round < 1)
     return (fps - refresh) / fps;
   else
-    return (float)fabs(div / round - 1.0);
+    return (float)fabs(div / round - 1.0) + round*1e-3f;
 }
 
 RESOLUTION CBaseRenderer::GetResolution() const

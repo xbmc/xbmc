@@ -662,8 +662,8 @@ bool CDVDPlayer::OpenInputStream()
   // before creating the input stream, if this is an HLS playlist then get the
   // most appropriate bitrate based on our network settings
   // ensure to strip off the url options by using a temp CURL object
-  if (StringUtils::StartsWith(filename, "http://") &&
-      StringUtils::EndsWith(CURL(filename).GetFileName(), ".m3u8"))
+  if ((StringUtils::StartsWith(filename, "http://") || StringUtils::StartsWith(filename, "https://"))
+  &&  StringUtils::EndsWith(CURL(filename).GetFileName(), ".m3u8"))
   {
     // get the available bandwidth (as per user settings)
     int maxrate = CSettings::Get().GetInt("network.bandwidth");

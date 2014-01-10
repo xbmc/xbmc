@@ -561,6 +561,7 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
   m_stepped           = false;
   m_video_fifo        = 0;
   m_audio_fifo        = 0;
+  m_latency           = 0.0f;
   m_last_check_time   = 0.0;
   m_stamp             = 0.0;
 
@@ -617,7 +618,7 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
       if(dialog)
       {
         dialog->Show();
-        while(!m_ready.WaitMSec(1))
+        while(!m_ready.WaitMSec(100))
           g_windowManager.ProcessRenderLoop(false);
         dialog->Close();
       }
@@ -708,7 +709,8 @@ bool COMXPlayer::OpenInputStream()
   // before creating the input stream, if this is an HLS playlist then get the
   // most appropriate bitrate based on our network settings
   // ensure to strip off the url options by using a temp CURL object
-  if (StringUtils::StartsWith(filename, "http://") && StringUtils::EndsWith(CURL(filename).GetFileName(), ".m3u8"))
+  if ((StringUtils::StartsWith(filename, "http://") || StringUtils::StartsWith(filename, "https://"))
+  &&  StringUtils::EndsWith(CURL(filename).GetFileName(), ".m3u8"))
   {
     // get the available bandwidth (as per user settings)
     int maxrate = CSettings::Get().GetInt("network.bandwidth");
@@ -1301,6 +1303,52 @@ void COMXPlayer::Process()
             m_av_clock.OMXMediaTime(0.0);
             m_last_check_time = 0.0;
             m_stepped = true;
+          }
+        }
+      }
+      // keep latency under control by adjusting clock (and so resampling audio)
+      // assume non-seekable implies live (fixed latency)
+      else if (CSettings::Get().GetBool("videoplayer.lowlatency"))
+      {
+        float latency = DVD_NOPTS_VALUE;
+        if (m_HasAudio && m_CurrentAudio.started && audio_pts != DVD_NOPTS_VALUE)
+          latency = audio_fifo;
+        else if (!m_HasAudio && m_HasVideo && m_CurrentVideo.started && video_pts != DVD_NOPTS_VALUE)
+          latency = video_fifo;
+        if (!m_Pause && latency != DVD_NOPTS_VALUE && m_stamp != 0.0)
+        {
+          float m_threshold = 0.7f; // todo
+          if (m_av_clock.OMXIsPaused())
+          {
+            if (latency > m_threshold)
+            {
+              CLog::Log(LOGDEBUG, "Resume live %.2f,%.2f (A:%d%d V:%d%d) EOF:%d FULL:%d T:%.2f\n", audio_fifo, video_fifo,
+                audio_fifo_low, audio_fifo_high, video_fifo_low, video_fifo_high, bOmxSentEOFs, not_accepts_data, m_threshold);
+              m_av_clock.OMXStateExecute();
+              m_av_clock.OMXResume();
+              m_latency = latency;
+            }
+          }
+          else
+          {
+            m_latency = m_latency*0.99f + latency*0.01f;
+            float speed = 1.0f;
+            if (m_latency < 0.25f*m_threshold)
+              speed = 0.900f;
+            else if (m_latency < 0.5f*m_threshold)
+              speed = 0.990f;
+            else if (m_latency < 0.9f*m_threshold)
+              speed = 0.999f;
+            else if (m_latency > 4.0f*m_threshold)
+              speed = 1.100f;
+            else if (m_latency > 2.0f*m_threshold)
+              speed = 1.010f;
+            else if (m_latency > 1.1f*m_threshold)
+              speed = 1.001f;
+
+            m_av_clock.OMXSetSpeed(speed * DVD_PLAYSPEED_NORMAL);
+            m_av_clock.OMXSetSpeed(speed * DVD_PLAYSPEED_NORMAL, true, true);
+            CLog::Log(LOGDEBUG, "Live: %.2f (%.2f) S:%.3f T:%.2f\n", m_latency, latency, speed, m_threshold);
           }
         }
       }
@@ -2083,6 +2131,7 @@ static void UpdateLimits(double& minimum, double& maximum, double dts)
 
 void COMXPlayer::CheckContinuity(COMXCurrentStream& current, DemuxPacket* pPacket)
 {
+return;
   if (m_playSpeed < DVD_PLAYSPEED_PAUSE)
     return;
 
@@ -2170,7 +2219,7 @@ void COMXPlayer::CheckAutoSceneSkip()
   || m_CurrentVideo.dts == DVD_NOPTS_VALUE)
     return;
 
-  const int64_t clock = DVD_TIME_TO_MSEC(min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
+  const int64_t clock = GetTime();
 
   CEdl::Cut cut;
   if(!m_Edl.InCut(clock, &cut))
@@ -3221,6 +3270,7 @@ bool COMXPlayer::OpenAudioStream(int iStream, int source, bool reset)
   if(m_CurrentAudio.id    < 0
   || m_CurrentAudio.hint != hint)
   {
+    m_omxPlayerAudio.SetLiveMode(CSettings::Get().GetBool("videoplayer.lowlatency"));
     if(!m_omxPlayerAudio.OpenStream(hint))
     {
       /* mark stream as disabled, to disallaw further attempts*/

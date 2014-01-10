@@ -63,7 +63,7 @@
       <volumeplus>VolumeUp</volumeplus>
       <volumeminus>VolumeDown</volumeminus>
       <mute>Mute</mute>
-      <power>XBMC.ShutDown()</power>
+      <power>XBMC.ActivateWindow(ShutdownMenu)</power>
       <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
