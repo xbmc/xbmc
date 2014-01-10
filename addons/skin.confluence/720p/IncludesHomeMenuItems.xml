@@ -397,6 +397,18 @@
 	</include>
 	<include name="HomeAddonItemsPrograms">
 		<item>
+			<label>$INFO[system.addontitle(script.raspbmc.settings)]</label>
+			<onclick>RunAddon(script.raspbmc.settings)</onclick>
+			<icon>$INFO[system.addonicon(script.raspbmc.settings)]</icon>
+			<thumb>-</thumb>
+		</item>
+		<item>
+			<label>$INFO[system.addontitle(script.raspbmc.browserlaunch)]</label>
+			<onclick>RunAddon(script.raspbmc.browserlaunch)</onclick>
+			<icon>$INFO[system.addonicon(script.raspbmc.browserlaunch)]</icon>
+			<thumb>-</thumb>
+		</item>
+		<item>
 			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton1))]</label>
 			<onclick>RunAddon($INFO[Skin.String(HomeProgramButton1)])</onclick>
 			<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton1))]</icon>
@@ -416,20 +428,6 @@
 			<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton3))]</icon>
 			<thumb>-</thumb>
 			<visible>!IsEmpty(Skin.String(HomeProgramButton3))</visible>
-		</item>
-		<item>
-			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton4))]</label>
-			<onclick>RunAddon($INFO[Skin.String(HomeProgramButton4)])</onclick>
-			<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton4))]</icon>
-			<thumb>-</thumb>
-			<visible>!IsEmpty(Skin.String(HomeProgramButton4))</visible>
-		</item>
-		<item>
-			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton5))]</label>
-			<onclick>RunAddon($INFO[Skin.String(HomeProgramButton5)])</onclick>
-			<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton5))]</icon>
-			<thumb>-</thumb>
-			<visible>!IsEmpty(Skin.String(HomeProgramButton5))</visible>
 		</item>
 	</include>
 </includes>
