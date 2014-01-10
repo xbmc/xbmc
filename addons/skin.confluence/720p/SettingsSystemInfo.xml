@@ -290,7 +290,7 @@
 					<top>450</top>
 					<width>350</width>
 					<height>25</height>
-					<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
+					<label>$LOCALIZE[13271]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
@@ -303,7 +303,7 @@
 					<top>455</top>
 					<width>320</width>
 					<height>16</height>
-					<info>System.CPUUsage</info>
+					<info>10</info>
 				</control>
 				<control type="label">
 					<description>Memory Text</description>
