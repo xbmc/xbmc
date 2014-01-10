@@ -27,6 +27,7 @@
 extern "C"
 {
 #include <libbluray/bluray.h>
+#include <libbluray/bluray-version.h>
 #include <libbluray/keys.h>
 #include <libbluray/overlay.h>
 }

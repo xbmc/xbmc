@@ -556,13 +556,14 @@ void CDVDInputStreamBluray::ProcessEvent() {
     m_player->OnDVDNavResult((void*) &pid, 3);
     break;
 
-#ifdef HAVE_LIBBLURAY_BDJ
+#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(0,2,2))
   case BD_EVENT_MENU:
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST %d",
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_MENU %d",
         m_event.param);
     m_menu = !!m_event.param;
     break;
-
+#endif
+#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(0,3,0))
   case BD_EVENT_IDLE:
     Sleep(100);
     break;
