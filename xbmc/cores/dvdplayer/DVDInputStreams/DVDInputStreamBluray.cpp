@@ -1021,9 +1021,8 @@ void CDVDInputStreamBluray::OnMenu()
     return;
 
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - root failed, trying explicit");
-  if(m_dll->bd_menu_call(m_bd, -1) >= 0)
-    return;
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - root failed");
+  if(m_dll->bd_menu_call(m_bd, -1) <= 0)
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - root failed");
 }
 
 bool CDVDInputStreamBluray::IsInMenu()
