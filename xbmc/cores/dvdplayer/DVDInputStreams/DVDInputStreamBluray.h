@@ -78,6 +78,7 @@ public:
   }
   virtual void OnNext()                  {}
   virtual void OnPrevious()              {}
+  virtual bool HasMenu();
   virtual bool IsInMenu();
   virtual bool OnMouseMove(const CPoint &point)  { return false; }
   virtual bool OnMouseClick(const CPoint &point) { return false; }

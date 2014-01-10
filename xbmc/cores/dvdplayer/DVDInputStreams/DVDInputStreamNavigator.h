@@ -106,6 +106,7 @@ public:
   int GetTotalButtons();
   bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
 
+  bool HasMenu() { return true; }
   bool IsInMenu() { return m_bInMenu; }
 
   int GetActiveSubtitleStream();

@@ -1072,4 +1072,9 @@ void CDVDInputStreamBluray::SkipStill()
   }
 }
 
+bool CDVDInputStreamBluray::HasMenu()
+{
+  return m_navmode;
+}
+
 #endif
