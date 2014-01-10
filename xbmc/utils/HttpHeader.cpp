@@ -106,12 +106,11 @@ bool CHttpHeader::ParseLine(const std::string& headerLine)
 
 void CHttpHeader::AddParam(const std::string& param, const std::string& value, const bool overwrite /*= false*/)
 {
-  if (param.empty() || value.empty())
-    return;
-
   std::string paramLower(param);
   StringUtils::ToLower(paramLower);
   StringUtils::Trim(paramLower, m_whitespaceChars);
+  if (paramLower.empty())
+    return;
 
   if (overwrite)
   { // delete ALL parameters with the same name
@@ -128,6 +127,8 @@ void CHttpHeader::AddParam(const std::string& param, const std::string& value, c
 
   std::string valueTrim(value);
   StringUtils::Trim(valueTrim, m_whitespaceChars);
+  if (valueTrim.empty())
+    return;
 
   m_params.push_back(HeaderParams::value_type(paramLower, valueTrim));
 }
