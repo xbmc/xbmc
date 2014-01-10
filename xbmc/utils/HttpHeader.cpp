@@ -111,6 +111,7 @@ void CHttpHeader::AddParam(const std::string& param, const std::string& value, c
 
   std::string paramLower(param);
   StringUtils::ToLower(paramLower);
+  StringUtils::Trim(paramLower, m_whitespaceChars);
 
   if (overwrite)
   { // delete ALL parameters with the same name
@@ -125,7 +126,10 @@ void CHttpHeader::AddParam(const std::string& param, const std::string& value, c
     }
   }
 
-  m_params.push_back(HeaderParams::value_type(paramLower, value));
+  std::string valueTrim(value);
+  StringUtils::Trim(valueTrim, m_whitespaceChars);
+
+  m_params.push_back(HeaderParams::value_type(paramLower, valueTrim));
 }
 
 std::string CHttpHeader::GetValue(const std::string& strParam) const
