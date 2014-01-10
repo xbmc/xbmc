@@ -57,8 +57,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      SET_CONTROL_LABEL(52, "XBMC " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) +
-                            " (Compiled: " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
+      SET_CONTROL_LABEL(52, "Raspbmc running XBMC " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) +
+                            " (test build, compiled: " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR,
                                   PVR::CPVRManager::Get().IsStarted());
       return true;
