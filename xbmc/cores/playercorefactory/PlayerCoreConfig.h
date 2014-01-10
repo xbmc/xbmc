@@ -88,14 +88,7 @@ public:
     {
       case EPC_MPLAYER:
       // TODO: this hack needs removal until we have a better player selection
-#if defined(HAS_OMXPLAYER)
-      case EPC_DVDPLAYER: 
-        pPlayer = new COMXPlayer(callback); 
-        CLog::Log(LOGINFO, "Created player %s for core %d / OMXPlayer forced as DVDPlayer", "OMXPlayer", m_eCore);
-        break;
-#else
       case EPC_DVDPLAYER: pPlayer = new CDVDPlayer(callback); break;
-#endif
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
 #if defined(HAS_OMXPLAYER)
