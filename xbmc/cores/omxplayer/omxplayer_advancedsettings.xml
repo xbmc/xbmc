@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <advancedsettings>
+  <cputempcommand>/opt/vc/bin/vcgencmd measure_temp | sed -e 's/temp=\([0-9]*\).*/\1 C/'</cputempcommand>
+  <gputempcommand>/opt/vc/bin/vcgencmd measure_temp | sed -e 's/temp=\([0-9]*\).*/\1 C/'</gputempcommand>
+  <imageres>540</imageres>
+  <fanartres>720</fanartres>
   <video>
     <defaultplayer>omxplayer</defaultplayer>
     <defaultdvdplayer>omxplayer</defaultdvdplayer>
