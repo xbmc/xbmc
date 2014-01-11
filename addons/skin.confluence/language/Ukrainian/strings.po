@@ -476,6 +476,10 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Довідка при першому запуску."
 
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Ця вкладка означає, що збоку є меню із додатковими налаштуваннями розділу.  Для доступу до меню перейдіть вліво за допомогою пульта ДУ чи клавіатури або помістіть курсор миші над вкладкою. [CR][CR] ОК — закрити цей діалог. Він більше не з'явиться."
+
 msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Доступні локальні субтитри"

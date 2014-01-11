@@ -436,6 +436,10 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "הרץ עזרה תחילה...."
 
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "כתובית מקומית זמינה"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "בחר בפרופיל משתמש XBMC [CR]שלך כדי להתחבר ולהמשיך"

@@ -1,0 +1,517 @@
+# XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Spanish (Venezuela) (http://www.transifex.com/projects/p/xbmc-main/language/es_VE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_VE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "Cambia tu"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr "Opciones de apagado"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Cargando..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr "Ocultar información"
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr "Ver opciones"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Pantalla completa"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr "Duración total"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Música - Archivos"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Reproduciendo"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Página"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Items"
+
+msgctxt "#31026"
+msgid "Misc Options"
+msgstr "Opciones misceláneas"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Ubicación"
+
+msgctxt "#31028"
+msgid "Poster Wrap"
+msgstr "Afiche"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31031"
+msgid "Pic Thumbs"
+msgstr "Miniaturas"
+
+msgctxt "#31032"
+msgid "Image Wrap"
+msgstr "Imagen"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Información"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Acciones"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "REPRODUCIENDO"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSA"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ADELANTAR"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "RETROCEDER"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "BUSCANDO"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Ajustes de Visualización"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Orden: Ascendente"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Orden: Descendente"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Abrir lista de reproducción"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Guardar lista de reproducción"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Cerrar lista de reproducción"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Archivos de música del sistema"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Lista de reproducción actual"
+
+msgctxt "#31061"
+msgid "Current Selected"
+msgstr "Selección actual"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Opciones de pantalla inicial"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Fondo"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Mostrar \"Pausado\" en presentación de imágenes"
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Reproducir trailers en una ventana [COLOR=grey3](Unicamente Diálogo de Información de Video)[/COLOR]"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Opciones misceláneas"
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr "Ocultar botones del Menú Principal"
+
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr "Habilitar fondo customizado"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Ruta de archivos de fondo:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Ocultar"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Opciones"
+
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr "Mostrar Albumes agregados recientemente"
+
+msgctxt "#31117"
+msgid "Show Recently added Videos"
+msgstr "Mostrar Videos agregados recientemente"
+
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Sub menu de Programas en la Página Principal"
+
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr "Ocultar fondo de Fanart"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Reproducir canciones del show de TV en la librería de video (TvTunes add-on)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Letras de canciones"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Ocultar \"Fanart\" en visualización en pantalla completa"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Add-on para letras de canciones"
+
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Sub menu de Videos en la Página Principal"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Sub menu de Música en la Página Principal"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Sub menu de Imágenes en la Página Principal"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD de Música"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD de Video"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Nivel de configuración"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Accesos directos"
+
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr "Selecciona tu canción"
+
+msgctxt "#31205"
+msgid "Lyrics Source"
+msgstr "Origen de letras de canciones"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Encontrado"
+
+msgctxt "#31207"
+msgid "Find More Items"
+msgstr "Buscar más"
+
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr "Episodios por venir "
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Temperatura actual"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Ultima vez actualizado"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Proveedor de datos"
+
+msgctxt "#31307"
+msgid "Hide Fanart"
+msgstr "Ocultar Fanart"
+
+msgctxt "#31308"
+msgid "Movie Details"
+msgstr "Detalles de la pélicula"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Memoria usada:"
+
+msgctxt "#31310"
+msgid "Track Number"
+msgstr "Número de canción"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Imagen Fanart [CR][CR]No Disponible[CR][CR] Presiona el botón para seleccionar"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "\"Scraper\" actual"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "Seleccionar un \"Scraper\""
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Opciones de búsqueda de contenido"
+
+msgctxt "#31317"
+msgid "Set Fanart Path"
+msgstr "Seleccionar ruta de Fanart"
+
+msgctxt "#31319"
+msgid "Selected Profile"
+msgstr "Perfil seleccionado"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Login más reciente"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Al aire"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Opciones de lista de reproducción"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Creado"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Resolución"
+
+msgctxt "#31328"
+msgid "Recently Added"
+msgstr "Agregado recientemente"
+
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "Presiona el botón para reproducir[CR][CR]Trailer de película"
+
+msgctxt "#31331"
+msgid "Album Details"
+msgstr "Detalles del disco"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pausa"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Detener"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Adelantar"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Retroceder"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menú de Película"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Descargas subtítulos"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Ver en 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Cambiar modo"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Habilitado"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Predeterminado del tema"
+
+msgctxt "#31391"
+msgid "Skin default with no Caps"
+msgstr "Predeterminado del tema sin mayúsculas"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Basado en \"Arial\""
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "Ayuda inicial...."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Subtitulo local disponible"
+
+msgctxt "#31421"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "Selecciona tu perfil de usuario de XBMC[CR]para ingresar y continuar"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "TV en Vivo"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Agregar Grupo"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Cambiar nombre del Grupo"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Eliminar Grupo"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Grupos[CR]Disponibles"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "Grupo de Canales"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "Opciones del Canal"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "Predicción de 36 horas"
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr "Predicción por hora"
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr "Predicción semanal"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Predicción de 10 días"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Predicción del clima"
+
+msgctxt "#31908"
+msgid "Chance of Precipitation"
+msgstr "Chance de precipitación"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Obteniendo información del clima"
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Mapas y Alertas"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "CLIMA"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "IMAGENES"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "TV EN VIVO"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEOS"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "PELICULAS"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "SHOWS DE TV"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUSICA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMAS"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "REPRODUCIR DISCO"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTEMA"
