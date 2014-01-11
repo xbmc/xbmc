@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.12"
+       version="1.0.13"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -22,12 +22,14 @@
     <summary lang="es">Un salvapantallas que pone la pantalla en negro</summary>
     <summary lang="es_AR">Un protector de pantalla que pone la pantalla en negro</summary>
     <summary lang="es_MX">Protector de pantalla que obscurece la pantalla</summary>
+    <summary lang="es_VE">Protector de pantalla de fondo negro</summary>
     <summary lang="et">Ekraanisäästja, mis muudab ekraani mustaks</summary>
     <summary lang="eu">Zure pantaila belzten duen pantaila-babeslea</summary>
     <summary lang="fi">Tyhjä ruutu</summary>
     <summary lang="fr">Un économiseur d'écran qui rend votre écran noir</summary>
+    <summary lang="fr_CA">Un économiseur d'écran qui rend votre écran noir</summary>
     <summary lang="gl">Gardapantallas que volta a súa pantalla negra</summary>
-    <summary lang="he">שומר מסך אשר הופך את המסך שלך לשחור</summary>
+    <summary lang="he">שומר מסך המשחיר את המסך</summary>
     <summary lang="hr">Čuvar zaslona koji pretvara zaslon u crno</summary>
     <summary lang="hu">Képernyővédő ami elfeketíti a képernyőt</summary>
     <summary lang="id">Screensaver yang mengubah layar menjadi hitam</summary>
@@ -74,12 +76,14 @@
     <description lang="es">Black es un sencillo salvapantallas que pone la pantalla en negro.</description>
     <description lang="es_AR">Black es un sencillo protector de pantalla que pone la pantalla en negro.</description>
     <description lang="es_MX">Black es un simple protector de pantalla que la obscurece.</description>
+    <description lang="es_VE">"Black" es un simple protector de pantalla de fondo negro </description>
     <description lang="et">Must on lihtne ekraanisäästja, mis muudab sinu ekraani mustaks.</description>
     <description lang="eu">Black zure pantaila belzten duen pantaila-babesle soil bat da.</description>
     <description lang="fi">Black on yksinkertainen näytönsäästäjä, joka muuttaa ruudun mustaksi.</description>
     <description lang="fr">Black est un simple économiseur qui passe votre écran au noir.</description>
+    <description lang="fr_CA">Black est un simple économiseur qui passe votre écran au noir.</description>
     <description lang="gl">Black é un gardapantallas que tornará a súa pantalla a negro.</description>
-    <description lang="he">Black זהו שומר מסך פשוט אשר הופך את המסך שלך לשחור.</description>
+    <description lang="he">Black הנו שומר מסך פשוט אשר צובע את המסך בשחור.</description>
     <description lang="hr">Black je jednostavni čuvar zaslona koji pretvara zaslon u crno.</description>
     <description lang="hu">A Black egy egyszerű képernyővédő ami feketévé változtatja a képernyőt.</description>
     <description lang="id">Hitam adalah sebuah screensaver sederhana yang mengubah layar menjadi hitam.</description>

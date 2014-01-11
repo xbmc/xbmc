@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.12"
+       version="1.0.13"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -21,10 +21,12 @@
     <summary lang="es">Un salvapantallas que oscurece tu pantalla</summary>
     <summary lang="es_AR">Un protector de pantalla que oscurece tu pantalla</summary>
     <summary lang="es_MX">Protector de pantalla que obscurece su pantalla</summary>
+    <summary lang="es_VE">Protector de pantalla que disminuirá el brillo de tu pantalla</summary>
     <summary lang="et">Ekraanisäästja, mis hämardab ekraani</summary>
     <summary lang="eu">Pantaila iluntzen duen pantaila-babeslea</summary>
     <summary lang="fi">Ruudun himmennys</summary>
     <summary lang="fr">Un économiseur qui assombrit votre écran</summary>
+    <summary lang="fr_CA">Un économiseur qui assombrit votre écran</summary>
     <summary lang="gl">O Gardapantallas atenúa a súa pantalla</summary>
     <summary lang="he">שומר מסך אשר מעמעם את המסך</summary>
     <summary lang="hr">Čuvar zaslona koji zatamnjuje vaš zaslon</summary>
@@ -73,10 +75,12 @@
     <description lang="es">Dim es un sencillo salvapantallas que oscurece tu pantalla. El valor es configurable entre el 20% y el 100%.</description>
     <description lang="es_AR">Dim es un sencillo protector de pantalla que oscurece tu pantalla. El valor es configurable entre el 20% y el 100%.</description>
     <description lang="es_MX">El protector de pantalla de obscurecimiento, es un protector simple que obscurece (fade out) su pantalla en un valor entre 20 y 100%</description>
+    <description lang="es_VE">El protector de pantalla "Dim" es un simple protector de pantalla que disminuirá la intensidad (atenuará) tu pantalla en un valor que puedes colocar entre 20 y 100%</description>
     <description lang="et">Lihtne ekraanisäästja, mis hämardab (tumestab) ekraani vastavalt valitud väärtusele vahemikus 20 kuni 100%.</description>
     <description lang="eu">Dim  %20 eta %100 artean zure pantaila iluntzeko (belztu) konfiguratu daitekeen pantaila babesle soil bat da.</description>
     <description lang="fi">Dim on yksinkertainen näytönsäästäjä joka himmentää ruudun valitulle tasolle välillä 20-100%.</description>
     <description lang="fr">L'économiseur Dim est un simple économiseur qui assombrira votre écran. L'assombrissement est paramétrable de 20 à 100 %.</description>
+    <description lang="fr_CA">L'économiseur Dim est un simple économiseur qui assombrira votre écran. L'assombrissement est paramétrable de 20 à 100 %.</description>
     <description lang="gl">O gardapantallas de Atenuación é un gardapantallas simple que atenuará o súa pantall a un valor configurable entre o 20% e o 100%</description>
     <description lang="he">שומר המסך Dim הוא שומר מסך פשוט אשר יעמעם (fade out) את המסך לערך מוגדר בין 20% ל-100%</description>
     <description lang="hr">Dim čuvar zaslona je jednostavan čuvar zaslona koji će zatamniti (postepeno isčeznuti) vaš zaslon na odabranu vrijednost između 20 i 100% .</description>

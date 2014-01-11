@@ -22,7 +22,7 @@ msgstr "Automaatne sulanduse aeg"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Eelseadistustevaheline aeg"
+msgstr "Eelseadistuste vaheline aeg"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -34,15 +34,15 @@ msgstr "Luba anisotroopne filtreerimine"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
-msgstr "Tugevad kärped kasutusel"
+msgstr "Kasuta tugevaid kärpeid"
 
 msgctxt "#30005"
 msgid "Loudness Threshold For Hard Cuts"
-msgstr "- Helitugevuse künnis"
+msgstr "Helitugevuse künnis"
 
 msgctxt "#30006"
 msgid "Average Time Between Hard Cuts"
-msgstr "- Keskmine intervall"
+msgstr "Keskmine intervall"
 
 msgctxt "#30007"
 msgid "Maximum Refresh Rate"

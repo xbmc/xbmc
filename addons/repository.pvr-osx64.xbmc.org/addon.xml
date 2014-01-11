@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.pvr-osx64.xbmc.org"
 		name="XBMC.org PVR Add-ons"
-		version="1.0.0"
+		version="1.0.1"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -14,9 +14,95 @@
 		<hashes>true</hashes>
 	</extension>
 	<extension point="xbmc.addon.metadata">
+		<summary lang="bg">Инсталира PVR добавки от XBMC.org</summary>
+		<summary lang="ca">Instal·la complements PVR des de XBMC.org</summary>
+		<summary lang="de">Installiere PVR Add-ons von XBMC.org</summary>
+		<summary lang="el">Εγκατάσταση Πρόσθετων PVR από το XBMC.org</summary>
 		<summary lang="en">Install PVR Add-ons from XBMC.org</summary>
+		<summary lang="es">Instala Complementos de XBMC.org</summary>
+		<summary lang="es_VE">Instalar Add-ons para PVR de XMBC.org</summary>
+		<summary lang="et">Paigalda videosalvesti lisasid lehelt XBMC.org</summary>
+		<summary lang="fr_CA">Installer l'extension du magnétoscope numérique depuis XBMC.org</summary>
+		<summary lang="gl">Instalar Engadidos de PVR dende XBMC.org</summary>
+		<summary lang="hu">PVR kiegészítők telepítése az XBMC.org-ról</summary>
+		<summary lang="lt">Įdiekite PVR priedą iš XBMC.org</summary>
+		<summary lang="nl">Installeer PVR Add-ons van XBMC.org</summary>
+		<summary lang="pl">Instaluj wtyczki PVR z XBMC.org</summary>
+		<summary lang="pt">Instalar Add-ons PVR de XBMC.org</summary>
+		<summary lang="pt_BR">Instalar Add-ons de PVR do repositório XBMC.org</summary>
+		<summary lang="sl">Namestite PVR dodatke iz XBMC.org</summary>
+		<summary lang="tg">Насб кардани барномаи иловагии PVR аз XBMC.org</summary>
+		<summary lang="zh">从 XBMC.org 安装 PVR 插件</summary>
+		<description lang="bg">Сваля и инсталира PVR добавки от официалното хранилище за добавки на XBMC.org.[CR] Ползвайки добавката ще се възползвате от системата ни от огледални сървъри - за да сваляте с висока скорост, от сървър в район близък до Вас.[CR] Добавките от хранилището са преминали през няколко основни теста, но въпреки това ако се натъкнете на неработеща или проблемна добавка, моля уведомете екипа на XBMC, за да бъдат предприети необходимите действия.</description>
+		<description lang="de">Lade und installiere PVR Add-Ons aus dem offiziellen XBMC.org Add-On Depot.[CR]  Durch die Nutzung des offiziellen Depots profitieren Sie vom umfangreichen Datei-Verteilsystem, welches hilft schneller Downloads in Ihrer Nähe bereitzustellen.[CR] Alle Add-Ons dieses Depots wurden grundlegender Prüfungen unterzogen, sollte ein Add-On dennoch Fehler haben oder nicht funktionieren melden Sie dies bitte an das Team XBMC, damit die nötigen Schritte eingeleitet werden können.</description>
+		<description lang="el">Λήψη και εγκατάσταση πρόσθετων από το επίσημο αποθετήριο του XBMC.org.[CR]  Χρησιμοποιώντας το Επίσημο Αποθετήριο μπορείτε να εκμεταλλευτείτε τους εκτεταμένους διακομιστές αρχείων μας για ταχύτερες λήψεις από μία κοντινή σας περιοχή.[CR]  Όλα τα πρόσθετα σε αυτό το αποθετήριο έχουν περάσει τις στοιχειώδεις δοκιμές, αν βρείτε ένα κατεστραμμένο ή ανενεργό πρόσθετο παρακαλούμε να το αναφέρετε στην Ομάδα XBMC ούτως ώστε να ληφθούν οι απαραίτητες ενέργειες.</description>
 		<description lang="en">Download and install PVR add-ons from the Official XBMC.org add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team XBMC so we can take any action needed.</description>
+		<description lang="es">Descarga e instala complementos de PVR desde el repositorio oficial de XBMC.[CR] Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a ti.[CR] Todos los complementos en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algún complemento que no funciona, por favor informa de ello al equipo de XBMC para solucionar el problema.</description>
+		<description lang="es_VE">Descarga e instala add-ons de PVR del repositorio oficial de XBMC.org.[CR] Al hacer uso del repositorio oficial podrás tomar ventaja de nuestro extenso servicio para descarga de archivos a gran velocidad desde una región cercana a la tuya. [CR] Todos los add-ons en este repositorio han sido probados de forma básica, si algún add-on no puede ser descargado o no funciona por favor repórtalo al Equipo de XBMC para de esta manera tomar cualquier acción que sea necesaria.</description>
+		<description lang="et">Lae alla ja installi videosalvesti lisasid ametlikust XBMC.org hoidlast.[CR]  Ametliku hoidla kasutamise eeliseks on võimalus kasutada meie ulatuslikku failide peegelteenust laadides faile sulle kõige lähemast serverist.[CR]  Kõik lisad selles hoidlas on läbinud elementaarse testimise. Siiski, kui sa leiad vigase või mittetöötava lisa, siis palun teavita sellest XBMC meeskonda, et me saaksime vajaliku abi osutada.</description>
+		<description lang="fr_CA">Télécharger et installer l'extension du magnétoscope numérique depuis le dépôt officiel de XBMC.org.[CR] En utilisant le dépôt officiel vous pourrez bénéficier de notre service étendu de miroir de fichiers favorisant des téléchargements plus rapides depuis une région proche de vous.[CR] Toutes les extensions de ce dépôt ont subit des tests de base. Si vous trouvez une extension non fonctionnelle ou brisée, veuillez la rapporter à l'équipe XBMC afin que nous puissions agir.</description>
+		<description lang="gl">Descargar e instalar Engadidos de PVR dende o repositorio oficial de XBMC.org.[CR] Empregando o repositorio oficial, vostede poderá disfrutar das vantaxes do seu extenso servizo de replicación de ficheiros para axudar a descargas rápidas dende unha rexión preto a vostede.[CR] Tódolos Engadidos deste repositorio pasaron por comprobacións básicas. Se atopa algún Engadido roto ou non funcional, por favor reporteo ó equipo de XBMC para que poidan actuar en consecuencia.</description>
+		<description lang="lt">Atsisiųskite ir įdiekite PVR priedą iš oficialios XBMC.org priedų saugyklos. [Cr] Naudojant oficialią saugyklą galėsite pasinaudoti mūsų  failų Veidrodine saugyklos paslauga katra padės jums greičiau parsisiųsti iš artimiausios vietos šalia jūsų. [CR] Visi priedai šioje saugykloje yra perėję pagrindinį testavimą, jei atsisiuntėte neveikiantį ar/arba sugadintą priedą praneškite 'Team XBMC', kad galėtume imtis visų būtinų priemonių klaidai ištaisyti.</description>
+		<description lang="nl">Download en installeer PVR add-ons van het officiële XBMC.org addon-repository.[CR] Wanneer u het officiële repository gebruikt beschikt u over onze uitgebreide mirrorservice, waardoor u snel kan downloaden van locaties in uw buurt.[CR] Alle add-ons in dit repository ondergingen standaardtests; indien u een defecte of niet-werkende add-on vindt, meld dit dan aan Team XBMC zodat zij actie kunnen ondernemen.</description>
+		<description lang="pl">Pobieraj i instaluj wtyczki PVR z oficjalnego repozytorium XBMC.org.[CR] Używając oficjalnego repozytorium korzystasz z serwerów lustrzanych, rozsianych po całym świecie. Wybierany jest ten, który znajduje się najbliżej ciebie, zapewniając dużą prędkość połączenia.[CR]Wszystkie wtyczki znajdujące się w tym repozytorium są testowane, ale mogą okazać się niesprawne. Zgłoś wówczas błąd, aby załoga XBMC mogła podjąć odpowiednie działanie.</description>
+		<description lang="pt">Transferir e instalar add-ons PVR do repositório oficial XBMC.org.[CR] Ao usar o repositório oficial, os nossos servidores garantem-lhe sempre transferências rápidas a partir da localização mais próxima.[CR] Todos os Add-ons neste repositório foram alvo de testes preliminares. Na improvável hipótese de encontrar um Add-on que não funcione, por favor contacte a equipa do XBMC, para que a situação se resolva.</description>
+		<description lang="pt_BR">Transfira e instale add-ons de Tv ao Vivo, a partir do repositório oficial do XBMC.org.[CR]|Ao utilizar o repositório oficial, você será capaz de tirar proveito do nosso serviço de espelhamento de arquivos, auxiliando em downloads mais rápidos a partir de uma região perto de você.[CR]|Todos os add-ons neste repositório passam por testes básicos, se você encontrar algum quebrado ou que não esteja funcionando, por favor reporte para a equipe do XBMC, para que possamos tomar as ações necessárias.</description>
+		<description lang="sl">Prenos in namestitev PVR dodatkov iz uradnega skladišča XBMC.org.[CR] Z uporabo uradnega skladišča, boste lahko izkoristili hitrejšo povezavo, ki bo izbrana glede na vašo lokacijo.[CR] Vsi dodatki tega odlagališča so bili osnovno stestirani, če pa boste našli pokvarjen ali nedelujoč dodatek, to sporočite skupini XBMC, da bomo lahko odpravili napake.</description>
+		<description lang="tg">Барномаҳои иловагии PVR-ро аз анбори нармафзори расмии XBMC.org боргирӣ кунед ва насб кунед.[CR]  Агар анбори нармафзори расмиро истифода баред, метавонед нармафзори иловагиро аз серверҳои наздиктарин ба шумо боргирӣ намоед.[CR]  Ҳамаи нармафзори анбори зикршуда аз санҷиши асосӣ мегузаранд, ва агар шумо ягон барномаи иловагии вайроншуда ё ғайрифаъолро пайдо кунед, метавонед дар бораи он гузоришро ба Гурӯҳи кории XBMC фиристонед, то ки барномасозон тавонанд камбудиҳои пайдошударо ҳал кунанд.</description>
+		<description lang="zh">从官方 XBMC.org 插件库下载和安装 PVR 插件。[CR]　通过官方程序库你将能利用我们广泛的镜像服务优势，使你能够就近下载资源。[CR]　官方库中的所有插件都经过了基本的测试，如果你发现有失效或不能正常工作的插件，请向 XBMC 开发团队报告，以便及时处理。</description>
+		<disclaimer lang="af">Die XBMC span het nie al die byvoegsels in die kodebank gemaak nie en is nie verantwoordelik vir hulle inhoud nie</disclaimer>
+		<disclaimer lang="ar">فريق برنامج إكس بى إم سى لم يُصنِع جميع اﻹضافات فى هذا المستودع وغير مسؤول عن ما قد تسببه لك</disclaimer>
+		<disclaimer lang="be">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
+		<disclaimer lang="bg">Team XBMC (Екипът зад XBMC) не е автор на всички добавки в хранилището и не носи отговорност за съдържанието им</disclaimer>
+		<disclaimer lang="ca">L'equip de l'XBMC no ha fet tots els complements d'aquest repositori i per tant no són responsables del seu contingut.</disclaimer>
+		<disclaimer lang="cs">Tým XBMC nevytvořil všechna rozšíření v tomto repozitáři a není zodpovědný za jejich obsah</disclaimer>
+		<disclaimer lang="cy">Nid Team XBMC wnaeth yr holl ychwanegion yn y storfa hon ac nid ydynt yn gyfrifol am eu cynnwys.</disclaimer>
+		<disclaimer lang="da">Team XBMC har ikke lavet alle add-ons i dette fjernlager og er ikke ansvarlig for deres indhold</disclaimer>
+		<disclaimer lang="de">Das Team XBMC hat nicht alle Add-Ons aus dem Repository erstellt und ist für deren Inhalt nicht verantwortlich</disclaimer>
+		<disclaimer lang="el">Η Ομάδα XBMC δεν δημιούργησε όλα τα πρόσθετα σε αυτό το αποθετήριο συνεπώς δεν είναι υπεύθυνοι για το περιεχόμενό τους</disclaimer>
 		<disclaimer lang="en">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
+		<disclaimer lang="en_US">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
+		<disclaimer lang="es">El equipo de XBMC no ha hecho todos los Addons en este repositorio y no son responsables de su contenido</disclaimer>
+		<disclaimer lang="es_AR">El equipo de XBMC no ha hecho todos los Add-ons en este repositorio y no es responsable de su contenido</disclaimer>
+		<disclaimer lang="es_MX">El equipo de XBMC no hizo todos los add-ons en este repositorio y no es responsable de su contenido</disclaimer>
+		<disclaimer lang="es_VE">El equipo de XBMC no creó todos los add-ons en este repositorio y no son responsables por su contenido</disclaimer>
+		<disclaimer lang="et">XBMC meeskond ei teinud kõiki lisasid selles hoidlas ja ei vastuta ka nende sisu eest.</disclaimer>
+		<disclaimer lang="eu">XBMC taldeak ez ditu biltegi honetako gehigarri guztiak sortu eta ez da beren edukien erantzule.</disclaimer>
+		<disclaimer lang="fi">Team XBMC ei ole tehnyt kaikkia tässä säilössä olevia lisäosia, eikä siten ole vastuullinen kyseisten lisäosien sisällöstä</disclaimer>
+		<disclaimer lang="fr">La Team XBMC n'est pas l'auteur de toutes les extensions de ce dépôt et n'est pas responsable de leur contenu</disclaimer>
+		<disclaimer lang="fr_CA">La Team XBMC n'est pas l'auteur de toutes les extensions de ce dépôt et n'est pas responsable de leur contenu</disclaimer>
+		<disclaimer lang="gl">O equipo de XBMC non creou todos os Engadidos deste repositorio e non é responsábel do seu contido</disclaimer>
+		<disclaimer lang="he">צוות XBMC לא יצר את כל ההרחבות שבמאגר זה ואינו אחראי על תוכנם</disclaimer>
+		<disclaimer lang="hr">XBMC tim nije autor svih dodataka u ovom repozitoriju te kao takvi ne odgovaraju za njihov sadržaj</disclaimer>
+		<disclaimer lang="hu">Nem minden itt található kiegészítőt az XBMC csapat készített és nem vállal felelősséget azok tartalmáért</disclaimer>
+		<disclaimer lang="id">Tim XBMC tidak membuat semua pengaya pada repository ini dan tidak bertanggung jawab atas isinya.</disclaimer>
+		<disclaimer lang="is">XBMC teymið gerir ekki allar þessar viðbætur og er ekki ábyrgt fyrir innihaldi þeirra.</disclaimer>
+		<disclaimer lang="it">Il team di XBMC non ha creato tutti gli add-on di questa libreria e non è responsabile per il loro contenuto</disclaimer>
+		<disclaimer lang="ja">XBMC チームが、このリポジトリ上の全アドオンを作ったわけではありません。また、その内容についても責任は負いかねます。</disclaimer>
+		<disclaimer lang="ko">Team XBMC는 저장소의 모든 애드온을 만들지 않았으며, 애드온 컨텐츠에 대한 책임이 없습니다.</disclaimer>
+		<disclaimer lang="ku">تیمی XBMC هەموو پێوەکراوەکانی دروست نەکردووە بۆیە بەرپرسیار نیە لە پێکهاتە و ناوەڕۆکەکانی</disclaimer>
+		<disclaimer lang="lt">XBMC komanda netestavo priedų šioje saugykloje ir neatsako arba nėra atsakinga už jų turinį</disclaimer>
+		<disclaimer lang="lv">XBMC komanda nav izveidojusi visus šīs krātuves paplašinājumus un nav atbildīga par to saturu</disclaimer>
+		<disclaimer lang="mk">XBMC тимот ги нема направено сите овие додатоци и не е одговорен за нивната содржина</disclaimer>
+		<disclaimer lang="nl">Team XBMC heeft niet alle add-ons in dit repository geschreven en is niet verantwoordelijk voor hun inhoud.</disclaimer>
+		<disclaimer lang="no">Team XBMC har ikke produsert alle tilleggene i denne pakkebrønnen og er ikke ansvarlig for deres innhold</disclaimer>
+		<disclaimer lang="pl">Załoga XBMC nie tworzy wszystkich dodatków i nie bierze odpowiedzialności za ich zawartość</disclaimer>
+		<disclaimer lang="pt">A equipa XBMC não desenvolveu todos os Add-ons neste repositório e não é responsável pelo seu conteúdo.</disclaimer>
+		<disclaimer lang="pt_BR">O Time do XBMC não produziu todos os add-ons deste repositório, e portanto não é responsável ​​por seu conteúdo</disclaimer>
+		<disclaimer lang="ro">Echipa XBMC nu a creat toate aceste suplimente din acest depozit și nu este responsabilă pentru conținutul lor.</disclaimer>
+		<disclaimer lang="ru">Разработчики XBMC не являются авторами всех дополнений в данном репозитории и не несут ответственность за их содержимое.</disclaimer>
+		<disclaimer lang="se">Team XBMC har inte skapat alla tillägg på detta förråd och är inte ansvariga för deras innehåll</disclaimer>
+		<disclaimer lang="sk">Team XBMC nevytvoril všetky rozšírenia v tomto zdroji nie je zodpovedný za ich obsah</disclaimer>
+		<disclaimer lang="sl">Ekipa XBMC ni naredila vseh dodatkov v tem skladišču in ne odgovarja za njihovo vsebino</disclaimer>
+		<disclaimer lang="sv">Team XBMC har inte gjort alla tillägg och är inte ansvariga för innehållet i dessa.</disclaimer>
+		<disclaimer lang="ta_IN">இந்த களஞ்சியத்தில் உள்ள துனை பயன்களை XBMC அணியால் உருவாக்கப்படவில்லை மற்றும் அவற்றின் உள்ளடக்கம் தங்கள் பொறுப்பு அல்ல.</disclaimer>
+		<disclaimer lang="tg">Гурӯҳи кории XBMC дар ин анбори нармафзор соҳиби ҳамаи барномаҳои иловагӣ намебошад ва барои мӯҳтавояшон ҷавобгар намебшад</disclaimer>
+		<disclaimer lang="th">ทีม XBMC ไม่ได้จัดทำ ส่วนเสริม ทั้งหมดในแหล่งข้อมูลโปรแกรมนี้ และจะไม่รับผิดชอบต่อเนื้อหาเหล่านั้น</disclaimer>
+		<disclaimer lang="tr">XBMC takımı bu depodaki tüm eklentileri geliştirmemiştir ve bunların içeriklerinden sorumlu değildir.</disclaimer>
+		<disclaimer lang="uk">Зауважте, що не всі додатки в цьому Репозиторії створені Командою XBMC, і тому Команда не несе відповідальності за їх вміст.</disclaimer>
+		<disclaimer lang="vi">Đội ngũ XBMC không làm ra tất cả các add-on có trên kho chứa này và sẽ không chịu trách nhiệm về nội dung của các add-on đấy</disclaimer>
+		<disclaimer lang="zh">本库中插件不完全由 XBMC 团队开发，XBMC 团队对他人提交的内容不承担责任</disclaimer>
+		<disclaimer lang="zh_TW">這個附加元件庫的附加元件並非全部由 XBMC 團隊製作的，所以我們不對這些內容負責。</disclaimer>
 		<platform>osx64</platform>
 	</extension>
 </addon>

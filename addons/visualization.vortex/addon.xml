@@ -1,13 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.vortex"
-  version="1.0.0"
+  version="1.0.1"
   name="Vortex"
   provider-name="Team XBMC">
   <extension
     point="xbmc.player.musicviz"
     library_windx="Vortex_win32dx.vis"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Визуализацията Vortex  от пакета за XBOX</summary>
+    <summary lang="de">Vortex Visualisierung aus dem XBOX Paket</summary>
+    <summary lang="el">Οπτικοποίηση Δίνης από το πακέτο XBOX</summary>
+    <summary lang="en">Vortex Visualization from XBOX package</summary>
+    <summary lang="es">Visualización Vortex del paquete XBOX</summary>
+    <summary lang="et">Vortex visuaal XBOX-i paketist</summary>
+    <summary lang="gl">Visualización Vortex do paquete XBOX</summary>
+    <summary lang="hu">Vortex vizualizáció az XBOX csomagból</summary>
+    <summary lang="nl">Vortex Visualisatie van XBOX verpakking</summary>
+    <summary lang="pl">Wizualizacja Vortex z pakietu XBOX</summary>
+    <summary lang="pt">Visualização Vortex do pacote XBOX</summary>
+    <summary lang="pt_BR">Visualização Vortex do pacote XBOX</summary>
+    <summary lang="sl">Vortex Vizualizacija iz paketa XBOX</summary>
+    <summary lang="tg">Таҷассуми Vortex аз бастаи XBOX</summary>
+    <summary lang="zh">来自 XBOX 组件包的旋涡可视化效果</summary>
     <platform>windx</platform>
   </extension>
 </addon>

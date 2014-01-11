@@ -1,3 +1,6 @@
+2014-01-11:
+        Updated language files from Transifex
+
 2011-02-26:
 	Initial release for XBMC 11, based on fische 4
 

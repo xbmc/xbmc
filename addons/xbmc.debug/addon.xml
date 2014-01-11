@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.9" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.10" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
@@ -18,6 +18,7 @@
     <summary lang="es_MX">Complemento para mejorar la personalizacion del registro</summary>
     <summary lang="et">Lisa, mis võimaldab logimise kohandamist</summary>
     <summary lang="fr">Extension pour améliorer la personnalisation de la journalisation</summary>
+    <summary lang="fr_CA">Extension pour améliorer la personnalisation de la journalisation</summary>
     <summary lang="gl">Complemento para mellorar a personalización do rexistro</summary>
     <summary lang="hr">Dodatak za poboljšanje prilagodljivosti zapisivanja</summary>
     <summary lang="hu">Kiegészítő a naplózás testre szabásához</summary>

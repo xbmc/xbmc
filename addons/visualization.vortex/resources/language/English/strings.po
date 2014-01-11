@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# Addon Name: vortex
+# Addon Name: Vortex
 # Addon id: visualization.vortex
 # Addon Provider: Team XBMC
 msgid ""
@@ -54,6 +54,7 @@ msgctxt "#30008"
 msgid "Show audio analysis"
 msgstr ""
 
+#empty strings from id 30009 to 30049
 #setting value formats
 
 msgctxt "#30050"

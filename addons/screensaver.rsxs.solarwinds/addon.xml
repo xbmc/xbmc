@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.12"
+  version="1.0.13"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -27,11 +27,13 @@
     <summary lang="es">Un salvapatallas con unos efectos de partículas hipnotizantes</summary>
     <summary lang="es_AR">Un protector de pantalla con unos efectos de partículas hipnotizantes</summary>
     <summary lang="es_MX">Un sorprendente protector de pantalla de partículas</summary>
+    <summary lang="es_VE">Un protector de pantalla con efectos de partículas bastante hipnotizante</summary>
     <summary lang="et">Hüpnotiseeriv osakeste efektiga ekraanisäästja</summary>
     <summary lang="fi">Lumoava partikkelitehostenäytönsäästäjä</summary>
     <summary lang="fr">Un économiseur envoûtant à effets de particules</summary>
+    <summary lang="fr_CA">Un économiseur envoûtant à effets de particules</summary>
     <summary lang="gl">Un hipnotizante gardapantallas con efectos de partículas</summary>
-    <summary lang="he">שומר מסך מהפנט</summary>
+    <summary lang="he">שומר מסך עם אפקט חלקיקים מהפנט</summary>
     <summary lang="hr">Čuvar zaslona - Očaravajuće kretanje čestica.</summary>
     <summary lang="hu">Egy igéző részecske-effektus képernyővédő</summary>
     <summary lang="id">Penyelamat layar dengan efek partikel yang mencuri perhatian</summary>
@@ -74,11 +76,13 @@
     <description lang="es">Este es un salvapatallas con unos efectos de partículas hipnotizantes. Descubrirás que puedes obtener un número increíble de patrones diferentes.</description>
     <description lang="es_AR">Este es un protector de pantalla con unos efectos de partículas hipnotizantes. Descubrirás que puedes obtener un número increíble de patrones diferentes.</description>
     <description lang="es_MX">Éste es un sorprendente protector de pantalla de partículas.  Encontrará que puede obtener un gran número de patrones diferentes.</description>
+    <description lang="es_VE">Este es un protector de pantalla con efectos de partículas bastante hipnotizante. Te darás cuenta que podrás lograr un gran número de patrones diferentes.</description>
     <description lang="et">See on väga hüpnotiseeriv osakeste efektiga ekraanisäästja. Võimalik on koostada tohutul hulgal erinevaid mustreid.</description>
     <description lang="fi">Erittäin lumoava partikkelitehostenäytönsäästäjä. Tulet huomaamaan uskomattoman määrän erilaisia kuvioita.</description>
     <description lang="fr">Voici un économiseur d'écran à effets de particules particulièrement envoûtant. Vous trouverez qu'il permet d'obtenir un nombre incroyable de modèles et d'effets différents.</description>
+    <description lang="fr_CA">Voici un économiseur d'écran à effets de particules particulièrement envoûtant. Vous trouverez qu'il permet d'obtenir un nombre incroyable de modèles et d'effets différents.</description>
     <description lang="gl">Este é un gardapantallas con efectos de partículas moi hipnotizante. Atopará que pode acadar un incrible número de patróns diferentes.</description>
-    <description lang="he">זהו שומר מסך מהפנט מאוד. אתה תמצא את עצמך משיג כמויות שונות ומרהיבות של צורות.</description>
+    <description lang="he">זהו שומר מסך עם אפקט חלקיקים מהפנט ביותר. אתה תמצא עצמך מקבל מס' מפתיע של צורות שונות ומרהיבות.</description>
     <description lang="hr">Ovo je zaista očaravajuči čuvar zaslona. Moguće je ostvariti zapanjujući broj različitih uzoraka.</description>
     <description lang="hu">Ez egy lebilincselő hatású részecske-effektus képernyővédő. Hihetetlen mennyiségű különböző minta képes benne kialakulni.</description>
     <description lang="id">Ini adalah penyelamat layar dengan efek partikel yang sangat mencuri perhatian. Anda akan lihat bahwa Anda bisa mendapat sejumlah yang mengagumkan dari pola yang berbeda.</description>
