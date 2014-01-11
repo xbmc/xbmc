@@ -118,9 +118,14 @@ void CGUITextureGL::Begin(color_t color)
 void CGUITextureGL::End()
 {
   glEnd();
-  if (m_diffuse.size())
-    glDisable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE2_ARB);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE1_ARB);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE0_ARB);
+  glBindTexture(GL_TEXTURE_2D, 0);
   glDisable(GL_TEXTURE_2D);
 }
 

@@ -37,7 +37,7 @@ CGUIWindowTestPatternGL::~CGUIWindowTestPatternGL(void)
 void CGUIWindowTestPatternGL::DrawVerticalLines(int top, int left, int bottom, int right)
 {
   glBegin(GL_LINES);
-  glColor3f(1, 1, 1);
+  glColor3f(m_white, m_white, m_white);
   for (int i = left; i <= right; i += 2)
   {
     glVertex2d(i, top);
@@ -49,7 +49,7 @@ void CGUIWindowTestPatternGL::DrawVerticalLines(int top, int left, int bottom, i
 void CGUIWindowTestPatternGL::DrawHorizontalLines(int top, int left, int bottom, int right)
 {
   glBegin(GL_LINES);
-  glColor3f(1, 1, 1);
+  glColor3f(m_white, m_white, m_white);
   for (int i = top; i <= bottom; i += 2)
   {
     glVertex2d(left, i);
@@ -61,7 +61,7 @@ void CGUIWindowTestPatternGL::DrawHorizontalLines(int top, int left, int bottom,
 void CGUIWindowTestPatternGL::DrawCheckers(int top, int left, int bottom, int right)
 {
   glBegin(GL_POINTS);
-  glColor3f(1, 1, 1);
+  glColor3f(m_white, m_white, m_white);
   for (int y = top; y <= bottom; y++)
   {
     for (int x = left; x <= right; x += 2)
@@ -86,7 +86,7 @@ void CGUIWindowTestPatternGL::DrawBouncingRectangle(int top, int left, int botto
   if ((m_bounceDirectionY == 1 && m_bounceY + TEST_PATTERNS_BOUNCE_SQUARE_SIZE == bottom) || (m_bounceDirectionY == -1 && m_bounceY == top))
     m_bounceDirectionY = -m_bounceDirectionY;
 
-  glColor3f(1, 1, 1);
+  glColor3f(m_white, m_white, m_white);
   glRecti(m_bounceX, m_bounceY, m_bounceX + TEST_PATTERNS_BOUNCE_SQUARE_SIZE, m_bounceY + TEST_PATTERNS_BOUNCE_SQUARE_SIZE);
 }
 
@@ -114,13 +114,13 @@ void CGUIWindowTestPatternGL::DrawContrastBrightnessPattern(int top, int left, i
   m_blinkFrame = (m_blinkFrame + 1) % TEST_PATTERNS_BLINK_CYCLE;
 
   // draw main quadrants
-  glColor3f(1, 1, 1);
+  glColor3f(m_white, m_white, m_white);
   glRecti(x50p, top, right, y50p);
   glRecti(left, y50p, x50p, bottom);
 
   // draw border lines
   glBegin(GL_LINES);
-    glColor3f(1, 1, 1);
+    glColor3f(m_white, m_white, m_white);
     glVertex2d(left, y5p);
     glVertex2d(x50p, y5p);
     glVertex2d(x5p, top);
@@ -130,7 +130,7 @@ void CGUIWindowTestPatternGL::DrawContrastBrightnessPattern(int top, int left, i
     glVertex2d(x95p, y50p);
     glVertex2d(x95p, bottom);
 
-    glColor3f(0, 0, 0);
+    glColor3f(m_black, m_black, m_black);
     glVertex2d(x50p, y5p);
     glVertex2d(right, y5p);
     glVertex2d(x5p, y50p);
@@ -142,26 +142,26 @@ void CGUIWindowTestPatternGL::DrawContrastBrightnessPattern(int top, int left, i
   glEnd();
 
   // draw inner rectangles
-  glColor3f(1, 1, 1);
+  glColor3f(m_white, m_white, m_white);
   glRecti(x12p, y12p, x37p, y37p);
   glRecti(x62p, y62p, x87p, y87p);
 
-  glColor3f(0, 0, 0);
+  glColor3f(m_black, m_black, m_black);
   glRecti(x62p, y12p, x87p, y37p);
   glRecti(x12p, y62p, x37p, y87p);
 
   // draw inner circles
   if (m_blinkFrame < TEST_PATTERNS_BLINK_CYCLE / 2)
-    glColor3f(0.05f, 0.05f, 0.05f);
+    glColor3f(m_black + 0.05f, m_black + 0.05f, m_black + 0.05f);
   else
-    glColor3f(0, 0, 0);
+    glColor3f(0.0f, 0.0f, 0.0f); //BTB
   DrawCircle(x25p, y75p, (y37p - y12p) / 3);
   DrawCircle(x75p, y25p, (y37p - y12p) / 3);
 
   if (m_blinkFrame < TEST_PATTERNS_BLINK_CYCLE / 2)
-    glColor3f(0.95f, 0.95f, 0.95f);
+    glColor3f(m_white - 0.05f, m_white - 0.05f, m_white - 0.05f);
   else
-    glColor3f(1, 1, 1);
+    glColor3f(1.0f, 1.0f, 1.0f); //WTW
   DrawCircle(x25p, y25p, (y37p - y12p) / 3);
   DrawCircle(x75p, y75p, (y37p - y12p) / 3);
 }
@@ -192,6 +192,7 @@ void CGUIWindowTestPatternGL::DrawCircle(int originX, int originY, int radius)
 void CGUIWindowTestPatternGL::BeginRender()
 {
   glDisable(GL_TEXTURE_2D);
+  glDisable(GL_BLEND);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

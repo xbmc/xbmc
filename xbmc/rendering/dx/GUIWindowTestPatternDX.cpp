@@ -46,13 +46,13 @@ void CGUIWindowTestPatternDX::DrawVerticalLines(int top, int left, int bottom, i
     vert[p].y = (float)top;
     vert[p].z = 0.5f;
     vert[p].rhw = 1.0f;
-    vert[p].color = 0xffffffff;
+    vert[p].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
     ++p;
     vert[p].x = (float)i;
     vert[p].y = (float)bottom;
     vert[p].z = 0.5f;
     vert[p].rhw = 1.0f;
-    vert[p].color = 0xffffffff;
+    vert[p].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
     ++p;
   }
   g_Windowing.Get3DDevice()->SetFVF(D3DFVF_CUSTOMVERTEX);
@@ -71,13 +71,13 @@ void CGUIWindowTestPatternDX::DrawHorizontalLines(int top, int left, int bottom,
     vert[p].y = (float)i;
     vert[p].z = 0.5f;
     vert[p].rhw = 1.0f;
-    vert[p].color = 0xffffffff;
+    vert[p].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
     ++p;
     vert[p].x = (float)right;
     vert[p].y = (float)i;
     vert[p].z = 0.5f;
     vert[p].rhw = 1.0f;
-    vert[p].color = 0xffffffff;
+    vert[p].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
     ++p;
   }
   g_Windowing.Get3DDevice()->SetFVF(D3DFVF_CUSTOMVERTEX);
@@ -101,7 +101,7 @@ void CGUIWindowTestPatternDX::DrawCheckers(int top, int left, int bottom, int ri
         vert[i].y = (float)y;
         vert[i].z = 0.5f;
         vert[i].rhw = 1.0f;
-        vert[i].color = 0xffffffff;
+        vert[i].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
       }
       else
       {
@@ -109,7 +109,7 @@ void CGUIWindowTestPatternDX::DrawCheckers(int top, int left, int bottom, int ri
         vert[i].y = (float)y;
         vert[i].z = 0.5f;
         vert[i].rhw = 1.0f;
-        vert[i].color = 0xffffffff;
+        vert[i].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
       }
       ++i;
     }
@@ -131,12 +131,14 @@ void CGUIWindowTestPatternDX::DrawBouncingRectangle(int top, int left, int botto
   if ((m_bounceDirectionY == 1 && m_bounceY + TEST_PATTERNS_BOUNCE_SQUARE_SIZE == bottom) || (m_bounceDirectionY == -1 && m_bounceY == top))
     m_bounceDirectionY = -m_bounceDirectionY;
 
-  DrawRectangle((float)m_bounceX, (float)m_bounceY, (float)(m_bounceX + TEST_PATTERNS_BOUNCE_SQUARE_SIZE), (float)(m_bounceY + TEST_PATTERNS_BOUNCE_SQUARE_SIZE), 0xffffffff);
+  DrawRectangle((float)m_bounceX, (float)m_bounceY, (float)(m_bounceX + TEST_PATTERNS_BOUNCE_SQUARE_SIZE), (float)(m_bounceY + TEST_PATTERNS_BOUNCE_SQUARE_SIZE), D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f));
 }
 
 void CGUIWindowTestPatternDX::DrawContrastBrightnessPattern(int top, int left, int bottom, int right)
 {
-  DWORD color = 0xffffffff;
+  DWORD color;
+  DWORD color_white = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
+  DWORD color_black = D3DCOLOR_COLORVALUE(m_black, m_black, m_black, 1.0f);
   float x5p = (float) (left + (0.05f * (right - left)));
   float y5p = (float) (top + (0.05f * (bottom - top)));
   float x12p = (float) (left + (0.125f * (right - left)));
@@ -159,59 +161,59 @@ void CGUIWindowTestPatternDX::DrawContrastBrightnessPattern(int top, int left, i
   m_blinkFrame = (m_blinkFrame + 1) % TEST_PATTERNS_BLINK_CYCLE;
 
   // draw main quadrants
-  DrawRectangle(x50p, (float)top, (float)right, y50p, 0xffffffff);
-  DrawRectangle((float)left, (float)y50p, x50p, (float)bottom, 0xffffffff);
+  DrawRectangle(x50p, (float)top, (float)right, y50p, color_white);
+  DrawRectangle((float)left, (float)y50p, x50p, (float)bottom, color_white);
 
   // draw border lines
   CUSTOMVERTEX vert[] = 
   {
-    {(float)left, y5p, 0.5f, 1.0f, 0xffffffff},
-    {x50p, y5p, 0.5f, 1.0f, 0xffffffff},
-    {x5p, (float)top, 0.5f, 1.0f, 0xffffffff},
-    {x5p, y50p, 0.5f, 1.0f, 0xffffffff},
-    {x50p, y95p, 0.5f, 1.0f, 0xffffffff},
-    {(float)right, y95p, 0.5f, 1.0f, 0xffffffff},
-    {x95p, y50p, 0.5f, 1.0f, 0xffffffff},
-    {x95p, (float)bottom, 0.5f, 1.0f, 0xffffffff},
+    {(float)left, y5p, 0.5f, 1.0f, color_white},
+    {x50p, y5p, 0.5f, 1.0f, color_white},
+    {x5p, (float)top, 0.5f, 1.0f, color_white},
+    {x5p, y50p, 0.5f, 1.0f, color_white},
+    {x50p, y95p, 0.5f, 1.0f, color_white},
+    {(float)right, y95p, 0.5f, 1.0f, color_white},
+    {x95p, y50p, 0.5f, 1.0f, color_white},
+    {x95p, (float)bottom, 0.5f, 1.0f, color_white},
 
-    {x50p, y5p, 0.5f, 1.0f, 0xff000000},
-    {(float)right, y5p, 0.5f, 1.0f, 0xff000000},
-    {x5p, y50p, 0.5f, 1.0f, 0xff000000},
-    {x5p, (float)bottom, 0.5f, 1.0f, 0xff000000},
-    {(float)left, y95p, 0.5f, 1.0f, 0xff000000},
-    {x50p, y95p, 0.5f, 1.0f, 0xff000000},
-    {x95p, (float)top, 0.5f, 1.0f, 0xff000000},
-    {x95p, y50p, 0.5f, 1.0f, 0xff000000}
+    {x50p, y5p, 0.5f, 1.0f, color_black},
+    {(float)right, y5p, 0.5f, 1.0f, color_black},
+    {x5p, y50p, 0.5f, 1.0f, color_black},
+    {x5p, (float)bottom, 0.5f, 1.0f, color_black},
+    {(float)left, y95p, 0.5f, 1.0f, color_black},
+    {x50p, y95p, 0.5f, 1.0f, color_black},
+    {x95p, (float)top, 0.5f, 1.0f, color_black},
+    {x95p, y50p, 0.5f, 1.0f, color_black}
   };
   g_Windowing.Get3DDevice()->SetFVF(D3DFVF_CUSTOMVERTEX);
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_LINELIST, 8, vert, sizeof(CUSTOMVERTEX));
 
   // draw inner rectangles
-  DrawRectangle(x12p, y12p, x37p, y37p, 0xffffffff);
-  DrawRectangle(x62p, y62p, x87p, y87p, 0xffffffff);
+  DrawRectangle(x12p, y12p, x37p, y37p, color_white);
+  DrawRectangle(x62p, y62p, x87p, y87p, color_white);
 
-  DrawRectangle(x62p, y12p, x87p, y37p, 0xff000000);
-  DrawRectangle(x12p, y62p, x37p, y87p, 0xff000000);
+  DrawRectangle(x62p, y12p, x87p, y37p, color_black);
+  DrawRectangle(x12p, y62p, x37p, y87p, color_black);
 
   // draw inner circles
   if (m_blinkFrame < TEST_PATTERNS_BLINK_CYCLE / 2)
-    color = D3DCOLOR_COLORVALUE(0.05f, 0.05f, 0.05f, 1.0f);
+    color = D3DCOLOR_COLORVALUE(m_black + 0.05f, m_black + 0.05f, m_black + 0.05f, 1.0f);
   else
-    color = D3DCOLOR_COLORVALUE(0.0f, 0.0f, 0.0f, 1.0f);
+    color = D3DCOLOR_COLORVALUE(0.0f, 0.0f, 0.0f, 1.0f); // BTB
   DrawCircleEx(x25p, y75p, (y37p - y12p) / 3, color);
   DrawCircleEx(x75p, y25p, (y37p - y12p) / 3, color);
 
   if (m_blinkFrame < TEST_PATTERNS_BLINK_CYCLE / 2)
-    color = D3DCOLOR_COLORVALUE(0.95f, 0.95f, 0.95f, 1.0f);
+    color = D3DCOLOR_COLORVALUE(m_white - 0.05f, m_white - 0.05f, m_white - 0.05f, 1.0f);
   else
-    color = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f);
+    color = D3DCOLOR_COLORVALUE(1.0f, 1.0f, 1.0f, 1.0f); // WTW
   DrawCircleEx(x25p, y25p, (y37p - y12p) / 3, color);
   DrawCircleEx(x75p, y75p, (y37p - y12p) / 3, color);
 }
 
 void CGUIWindowTestPatternDX::DrawCircle(int originX, int originY, int radius)
 {
-  DrawCircleEx((float)originX, (float)originY, (float)radius, 0xffffffff);
+  DrawCircleEx((float)originX, (float)originY, (float)radius, D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f));
 }
 
 void CGUIWindowTestPatternDX::DrawCircleEx(float originX, float originY, float radius, DWORD color)
