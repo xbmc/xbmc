@@ -6000,7 +6000,19 @@ msgctxt "#13440"
 msgid "Allow frame-multi-threaded decoding"
 msgstr ""
 
-#empty strings from id 13441 to 13499
+msgctxt "#13441"
+msgid "Use Mpeg-2 VDPAU"
+msgstr ""
+
+msgctxt "#13442"
+msgid "Use Mpeg-4 VDPAU"
+msgstr ""
+
+msgctxt "#13443"
+msgid "Use VC-1 VDPAU"
+msgstr ""
+
+#empty strings from id 13444 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"

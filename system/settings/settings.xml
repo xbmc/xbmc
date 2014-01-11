@@ -447,6 +447,33 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.usevdpaumpeg2" type="boolean" label="13441" help="36102">
+          <requirement>HAVE_LIBVDPAU</requirement>
+          <level>3</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevdpaumpeg4" type="boolean" label="13442" help="36102">
+          <requirement>HAVE_LIBVDPAU</requirement>
+          <level>3</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevdpauvc1" type="boolean" label="13443" help="36102">
+          <requirement>HAVE_LIBVDPAU</requirement>
+          <level>3</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usevaapi" type="boolean" label="13426" help="36156">
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
