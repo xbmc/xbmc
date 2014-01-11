@@ -483,6 +483,33 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+       <setting id="videoplayer.usevaapimpeg2" type="boolean" label="13447" help="36102">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevaapimpeg4" type="boolean" label="13448" help="36102">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevaapivc1" type="boolean" label="13449" help="36102">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+          </dependencies>
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
           <requirement>HasDXVA2</requirement>
           <dependencies>

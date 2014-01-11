@@ -6012,7 +6012,20 @@ msgctxt "#13443"
 msgid "Use VC-1 VDPAU"
 msgstr ""
 
-#empty strings from id 13444 to 13499
+#empty strings from 13444 to 13446
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr ""
+
+msgctxt "#13448"
+msgid "Use Mpeg-4 VAAPI"
+msgstr ""
+
+msgctxt "#13449"
+msgid "Use VC-1 VAAPI"
+msgstr ""
+
+#empty strings from id 13449 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
