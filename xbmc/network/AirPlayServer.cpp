@@ -741,6 +741,29 @@ void CAirPlayServer::restoreVolume()
   }
 }
 
+void dumpPlist(DllLibPlist *pLibPlist, plist_t *dict)
+{
+  char *plist = NULL;
+  uint32_t len = 0;
+  pLibPlist->plist_to_xml(*dict,&plist, &len);
+  CLog::Log(LOGDEBUG, "AIRPLAY-DUMP: %s", plist);
+  
+}
+
+std::string getStringFromPlist(DllLibPlist *pLibPlist,plist_t node)
+{
+  std::string ret;
+  char *tmpStr = NULL;
+  pLibPlist->plist_get_string_val(node, &tmpStr);
+  ret = tmpStr;
+#ifdef TARGET_WINDOWS
+  pLibPlist->plist_free_string_val(tmpStr);
+#else
+  free(tmpStr);
+#endif
+  return ret;
+}
+
 int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
                                                 std::string& responseBody)
 {
@@ -878,16 +901,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
 
           tmpNode = m_pLibPlist->plist_dict_get_item(dict, "Content-Location");
           if (tmpNode)
-          {
-            char *tmpStr = NULL;
-            m_pLibPlist->plist_get_string_val(tmpNode, &tmpStr);
-            location=tmpStr;
-#ifdef TARGET_WINDOWS
-            m_pLibPlist->plist_free_string_val(tmpStr);
-#else
-            free(tmpStr);
-#endif
-          }
+            location = getStringFromPlist(m_pLibPlist, tmpNode);
 
           if (dict)
           {
