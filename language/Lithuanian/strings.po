@@ -43,7 +43,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Failų menedžeris"
+msgstr "Failų tvarkyklė"
 
 msgctxt "#8"
 msgid "Weather"
@@ -595,7 +595,7 @@ msgstr "Išleidimo data"
 
 msgctxt "#173"
 msgid "Display 4:3 videos as"
-msgstr "Rodyti 4:3 video kaip"
+msgstr "Rodyti 4:3 vaizdą kitu masteliu"
 
 msgctxt "#175"
 msgid "Moods"
@@ -723,7 +723,7 @@ msgstr "Ankstesnis"
 
 msgctxt "#213"
 msgid "Calibrate user interface..."
-msgstr "Kalibruoti naudotojo sąsają..."
+msgstr "Kalibruoti vartotojo sąsają..."
 
 msgctxt "#214"
 msgid "Video calibration..."
@@ -827,7 +827,7 @@ msgstr "Valyti grojaraštį baigus"
 
 msgctxt "#240"
 msgid "Display Mode"
-msgstr "Rodymo režimas"
+msgstr "Pagrindinis langas rodomas kaip"
 
 msgctxt "#241"
 msgid "Full Screen #%d"
@@ -835,7 +835,7 @@ msgstr "Visas ekranas #%d"
 
 msgctxt "#242"
 msgid "Windowed"
-msgstr "Lange"
+msgstr "Langas lange"
 
 msgctxt "#243"
 msgid "Refresh Rate"
@@ -1087,7 +1087,7 @@ msgstr "Originali srautinė kalba"
 
 msgctxt "#309"
 msgid "User Interface language"
-msgstr "Naudotojo sąsajos kalba"
+msgstr "Vartotojo sąsajos kalba"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1467,11 +1467,11 @@ msgstr "Rasos taškas"
 
 msgctxt "#406"
 msgid "Humidity"
-msgstr "Santykinis drėg."
+msgstr "Drėgnumas"
 
 msgctxt "#409"
 msgid "Defaults"
-msgstr "Palikti kaip yra"
+msgstr "Numatytasis"
 
 msgctxt "#410"
 msgid "Accessing weather service"
@@ -2407,7 +2407,7 @@ msgstr "Suspaudimo laipsnis"
 
 msgctxt "#666"
 msgid "Verbose logging..."
-msgstr "Daugiažodis registravimas ..."
+msgstr "Išsami registracija ..."
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2835,7 +2835,7 @@ msgstr "Portas"
 
 msgctxt "#1014"
 msgid "Username"
-msgstr "Naudotojo vardas"
+msgstr "Vartotojo vardas"
 
 msgctxt "#1015"
 msgid "Browse for network server"
@@ -2855,7 +2855,7 @@ msgstr "Įveskite porto numrį"
 
 msgctxt "#1019"
 msgid "Enter the username"
-msgstr "Įveskite naudotojo vardą"
+msgstr "Įveskite vartotojo vardą"
 
 msgctxt "#1020"
 msgid "Add %s source"
@@ -2971,7 +2971,7 @@ msgstr "Kita..."
 
 msgctxt "#1048"
 msgid "Username"
-msgstr "Naudotojo vardas"
+msgstr "Vartotojo vardas"
 
 msgctxt "#1049"
 msgid "Script settings"
@@ -3011,7 +3011,7 @@ msgstr "SOCKS5 kartu su nuotoliniu DNS sperndimu"
 
 msgctxt "#1200"
 msgid "SMB client"
-msgstr "SMB naudotojas"
+msgstr "SMB klientas"
 
 msgctxt "#1202"
 msgid "Workgroup"
@@ -3019,11 +3019,11 @@ msgstr "Darbo grupė"
 
 msgctxt "#1203"
 msgid "Default username"
-msgstr "Numatytas naudotojo vardas"
+msgstr "Numatytas vartotojo vardas"
 
 msgctxt "#1204"
 msgid "Default password"
-msgstr "Numatytas naudotojo slaptažodis"
+msgstr "Numatytas vartotojo slaptažodis"
 
 msgctxt "#1207"
 msgid "WINS server"
@@ -3559,7 +3559,7 @@ msgstr "Žinyno nėra"
 
 msgctxt "#10045"
 msgid "Resets all the visible settings to their default values."
-msgstr "Atstato visus matomų parametrų reikšmes pagal nutylėjimą."
+msgstr "Atstato visas matomų parametrų reikšmes kaip numatytas."
 
 msgctxt "#10046"
 msgid "No categories available"
@@ -3595,7 +3595,7 @@ msgstr "Profilio nuostatos"
 
 msgctxt "#10131"
 msgid "Lock settings"
-msgstr "Blokuoti Nustatymus"
+msgstr "Blokuoti nustatymus"
 
 msgctxt "#10132"
 msgid "Content settings"
@@ -3831,7 +3831,7 @@ msgstr "Įveskite slaptažodį"
 
 msgctxt "#12327"
 msgid "Enter master code"
-msgstr "Įveskite apsaugos kodą"
+msgstr "Įveskite Spec. apsaugos kodą"
 
 msgctxt "#12328"
 msgid "Enter unlock code"
@@ -3951,19 +3951,19 @@ msgstr "Slaptažodžio laukas tuščias. Pakartokite."
 
 msgctxt "#12360"
 msgid "Master lock"
-msgstr "Bendra apsauga"
+msgstr "Speciali apsauga"
 
 msgctxt "#12362"
 msgid "Shutdown system if Master Lock retries exceeded"
-msgstr "Išjungite sistemą, jei bandymų skaičius yra išnaudotas"
+msgstr "Stabdyti sistemą, jei viršyti Spec. apsaugos prisijungimo bandymai"
 
 msgctxt "#12367"
 msgid "Master code is not valid"
-msgstr "Apsaugos kodas neteisingas!"
+msgstr "Spec. apsaugos kodas neteisingas!"
 
 msgctxt "#12368"
 msgid "Please enter a valid master code"
-msgstr "Įveskite teisingą apsaugos kodą!"
+msgstr "Įveskite teisingą Spec. apsaugos kodą!"
 
 msgctxt "#12373"
 msgid "Settings & file manager"
@@ -4855,7 +4855,7 @@ msgstr "%s iš anksto nustatyti"
 
 msgctxt "#13408"
 msgid "(IMDb user rating)"
-msgstr "(IMDb naudotojo įvertinimas)"
+msgstr "(IMDb vartotojo įvertinimas)"
 
 msgctxt "#13409"
 msgid "Top 250"
@@ -5335,7 +5335,7 @@ msgstr "Auto"
 
 msgctxt "#14062"
 msgid "Enter username for"
-msgstr "Įveskite naudotojo vardą"
+msgstr "Įveskite vartotojo vardą"
 
 msgctxt "#14063"
 msgid "Date & time"
@@ -5480,6 +5480,10 @@ msgstr "Stabdyti CD nuskaitymą"
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Neprieinamas šaltinis"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Ką norėtumėte daryti su media elementais %s"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -6615,7 +6619,7 @@ msgstr "Rodyti kanalų informaciją perjungiant kanalus"
 
 msgctxt "#19179"
 msgid "Automatically hide channel information"
-msgstr "Automatiškai nerodyti kanalo informacijos"
+msgstr "Nerodyti kanalo informacijos automatiškai"
 
 msgctxt "#19180"
 msgid "TV"
@@ -6691,7 +6695,7 @@ msgstr "Įrašymas baigtas: %s"
 
 msgctxt "#19199"
 msgid "Channel manager"
-msgstr "Kanalų menedžeris"
+msgstr "Kanalų tvarkyklė"
 
 msgctxt "#19200"
 msgid "EPG source:"
@@ -6835,7 +6839,7 @@ msgstr "Naudoti posistemės kanalų numerius (veikia tik su vienu įjungtu PVR p
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
-msgstr "PVR menedžeris veikia/startavo"
+msgstr "PVR tvarkyklė veikia"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
@@ -6859,7 +6863,7 @@ msgstr "Neįjungtas joks PVR priedas"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr "PVR menedžeris buvo įjungtas nenaudojant"
+msgstr "PVR tvarkyklė buvo įjungta nenaudojant"
 
 msgctxt "#19242"
 msgid "enabled PVR Add-on. Enable at least one Add-on"
@@ -7019,7 +7023,7 @@ msgstr "Konkretūs kliento(-ų) parametrai"
 
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
-msgstr "Patvirtinkite kanalų jungiklius paspausdami OK"
+msgstr "Patvirtinti kanalų jungiklius paspaudus 'OK'"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7483,27 +7487,27 @@ msgstr "Blokuoti nuotraukų langą"
 
 msgctxt "#20041"
 msgid "Lock programs & scripts windows"
-msgstr "Blokuoti programos ir skriptai langus"
+msgstr "Blokuoti programų ir skriptų langus"
 
 msgctxt "#20042"
 msgid "Lock file manager"
-msgstr "Blokuoti Failų tvarkyklę"
+msgstr "Blokuoti failų tvarkyklę"
 
 msgctxt "#20043"
 msgid "Lock settings"
-msgstr "Blokuoti Nustatymus"
+msgstr "Blokuoti nustatymus"
 
 msgctxt "#20044"
 msgid "Start fresh"
-msgstr "Nauja(švari) paleistis"
+msgstr "Pradėti iš naujo"
 
 msgctxt "#20045"
 msgid "Enter master mode"
-msgstr "Įjungti Meistro režimą"
+msgstr "Įjungti Spec. režimą"
 
 msgctxt "#20046"
 msgid "Leave master mode"
-msgstr "Išjungti Meistro režimą"
+msgstr "Išjungti Spec. režimą"
 
 msgctxt "#20047"
 msgid "Create profile '%s'?"
@@ -7531,11 +7535,11 @@ msgstr "Dėmesio"
 
 msgctxt "#20053"
 msgid "Left master mode"
-msgstr "Palikti Meistro režimą"
+msgstr "Palikti Spec. režimą"
 
 msgctxt "#20054"
 msgid "Entered master mode"
-msgstr "Įjungtas Meistro režimas metodas"
+msgstr "Įjungtas Spec. režimo metodas"
 
 msgctxt "#20055"
 msgid "Allmusic.com thumb"
@@ -7615,11 +7619,11 @@ msgstr "Reitingas MPAA"
 
 msgctxt "#20075"
 msgid "Enter master lock code"
-msgstr "Įveskite Meistro užrakto kodą"
+msgstr "Įveskite Spec. apsaugos kodą"
 
 msgctxt "#20076"
 msgid "Ask for master lock code on startup"
-msgstr "Klausti Meistro užrakto kodo paleidžiant"
+msgstr "Klausti Spec. apsaugos kodo paleidžiant"
 
 msgctxt "#20077"
 msgid "Skin settings"
@@ -7715,11 +7719,11 @@ msgstr "Negali nuskaityti CD arba atsekti atkūriant iš CD"
 
 msgctxt "#20100"
 msgid "Master lock code and settings"
-msgstr "'Meistro kodas' ir jo nustatymas"
+msgstr "Spec. apsauga ir jos nustatymai"
 
 msgctxt "#20101"
 msgid "Entering master lock code always enables master mode"
-msgstr "Įvestas 'Meistro kodas' visuomet įgalina pagrindinį Meistro režimą."
+msgstr "Įvesta Spec. apsauga visuomet įgalina Spec. režimą."
 
 msgctxt "#20102"
 msgid "or copy from default?"
@@ -7775,7 +7779,7 @@ msgstr "Profilis %i / %i"
 
 msgctxt "#20115"
 msgid "User login / Select a profile"
-msgstr "Naudotojo prisijungimas / Profilio pasirinkimas"
+msgstr "Vartotojo prisijungimas / Profilio pasirinkimas"
 
 msgctxt "#20116"
 msgid "Use lock on login screen"
@@ -7787,7 +7791,7 @@ msgstr "Neteisingas apsaugos kodas."
 
 msgctxt "#20118"
 msgid "This requires the master lock to be set."
-msgstr "Tai reikalauja 'Meistro kodas', nustatymo(-ų)."
+msgstr "Tai reikalauja Spec. apsaugos nustatymo(-ų)."
 
 msgctxt "#20119"
 msgid "Would you like to set it now?"
@@ -7879,7 +7883,7 @@ msgstr "Įdiegti"
 
 msgctxt "#20142"
 msgid "Username"
-msgstr "Naudotojo vardas"
+msgstr "Vartotojo vardas"
 
 msgctxt "#20143"
 msgid "Enter password for"
@@ -8079,7 +8083,7 @@ msgstr "Įjungti žurnalo derinimą"
 
 msgctxt "#20192"
 msgid "Download additional information during updates"
-msgstr "Parsisiųsti papildomą informaciją per atnaujinimus"
+msgstr "Atsiūsti papildomą informaciją atnaujinant"
 
 msgctxt "#20193"
 msgid "Default service for album information"
@@ -8108,6 +8112,14 @@ msgstr "Atlikėjas nerastas!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Nepavyko atsisiųsti informacijos apie atlikėjus."
+
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Nepaisyti dainų žodžių su informaciją internete"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Naudodami šią pagalbą, visą informacija kurią  atsisiuntėte - albumai, atlikėjai bus taikoma vietoj to ką nustatėte savarankiškai pvz.: dainų žodžiai, žanrai, metai, dainų atlikėjai ir t.t. (Naudinga jei turite 'MusicBrainz' identifikatorių savo dainų žodžiams)."
 
 msgctxt "#20240"
 msgid "Android music"
@@ -8623,7 +8635,7 @@ msgstr "Rašytojai"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
-msgstr "Pakeisti failų pavadinimus su bibliotekų pavadinimais"
+msgstr "Keisti failų pavadinimus su bibliotekų pavadinimais"
 
 msgctxt "#20420"
 msgid "Never"
@@ -9671,7 +9683,7 @@ msgstr "Profilio duomenys"
 
 msgctxt "#22014"
 msgid "Use dim if paused during video playback"
-msgstr "Naudoti pritemdymą, vaizdo atkūrimo pristabdymo metu"
+msgstr "Naudoti pritemdymą jei  pristabdytas vaizdas atkūrimo metu"
 
 msgctxt "#22015"
 msgid "All recordings"
@@ -9927,7 +9939,7 @@ msgstr "Weather.com (standartinis)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr "Informacija apie Orus iš..."
+msgstr "Gauti informaciją apie Orus iš..."
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -10111,7 +10123,7 @@ msgstr "Priedas atnaujinamas"
 
 msgctxt "#24090"
 msgid "Lock Add-on manager"
-msgstr "Blokuoti priedų saugyklą"
+msgstr "Blokuoti priedų tvarkyklės saugyklą"
 
 msgctxt "#24091"
 msgid "This Add-on cannot be disabled"
@@ -10187,7 +10199,7 @@ msgstr "Atsisiunčiami subtitrai ..."
 
 msgctxt "#24111"
 msgid "Languages to download subtitles for"
-msgstr "Kalbos atsisiųsti subtitrai"
+msgstr "Atsisiųsti subtitrus kalbomis pasirinktinai"
 
 msgctxt "#24112"
 msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
@@ -10199,7 +10211,7 @@ msgstr "Nepavyko atsisiųsti subtitrų"
 
 msgctxt "#24114"
 msgid "No subtitle services installed"
-msgstr "Neįdiegta subtitrų siuntimo paslauga"
+msgstr "Neįdiegta subtitrų siuntimo servisas"
 
 msgctxt "#24115"
 msgid "Save subtitles to movie folder"
@@ -10207,7 +10219,7 @@ msgstr "Išsaugoti subtitrus filmo kataloge"
 
 msgctxt "#24116"
 msgid "Default TV Service"
-msgstr "Įprasta TV paslauga"
+msgstr "Numatyta TV servisas"
 
 msgctxt "#24117"
 msgid "Select service that will be used as default to search for TV Show subtitles"
@@ -10215,7 +10227,7 @@ msgstr "Pasirinkite paslaugą, kuri bus naudojama kaip numatytoji ieškant TV š
 
 msgctxt "#24118"
 msgid "Default Movie Service"
-msgstr "Įprasta filmų paslauga"
+msgstr "Numatyta filmų servisas"
 
 msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
@@ -10227,7 +10239,7 @@ msgstr "Pranešimai"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr "Slėpti svetimą(-us)"
+msgstr "Slėpti kitą(-us)"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
@@ -10843,7 +10855,7 @@ msgstr "Perjungti į pultelio komandas"
 
 msgctxt "#36004"
 msgid "Press \"user\" button command"
-msgstr "Paspausti \"Naudotojas\" mygtuką"
+msgstr "Paspausti \"vartotojas\" mygtuką"
 
 msgctxt "#36005"
 msgid "Enable switch side commands"
@@ -11079,11 +11091,11 @@ msgstr "Rodyti medijos failų plėtinius. Pavyzdžiui, 'man patinka Myself.mp3' 
 
 msgctxt "#36124"
 msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-msgstr "Ignoruoti tam tikras žymes konfiguruojant. Pavyzdžiui, 'Simpsons' tiesiog būti konfiguruojama kaip 'Simpsonai'. Norint konfigūruoti žymes žiūr.: http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgstr "Ignoruoti tam tikras žymes konfiguruojant. Pavyzdžiui, 'Simpsons' tiesiog būtų konfiguruojami kaip 'Simpsonai'. Norint konfigūruoti žymes žiūr.: http://wiki.xbmc.org/index.php?title=Settings/Appearance."
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
-msgstr "Leisti panaikinti failus ir/arba pervadinti per vartotojo sąsają arba per kontekstinį meniu (paspauskite C ant klaviatūros, pavyzdžiui, kad įjungtumėte šį meniu)."
+msgstr "Leisti panaikinti failus ir/arba pervadinti per vartotojo sąsają arba per kontekstinį menių (paspauskite C ant klaviatūros kad įjungti šį menių)."
 
 msgctxt "#36126"
 msgid "Show the add source button from root sections of the user interface."
@@ -11103,11 +11115,11 @@ msgstr "Nustatykite prastovos laiką, reikalingą prieš rodant ekrano užskland
 
 msgctxt "#36130"
 msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "Pasirinkite ekrano užsklandą. XBMC 'Dim' ekrano užsklanda priverstinai, kai visame ekrane vaizdo atkūrimas yra sustabdytas ir/ar/arba dialogo langas yra aktyvus."
+msgstr "Pasirinkite ekrano užsklandą. XBMC 'Dim' ekrano užsklanda priverstinai, kai visame ekrane vaizdo atkūrimas yra sustabdytas ir/arba dialogo langas yra aktyvus."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
-msgstr "Pakeisti konkrečius ekrano užsklandos parametrus. Galimos pasirinktys priklauso nuo ekrano naudojamo."
+msgstr "Pakeisti konkrečius ekrano užsklandos parametrus. Galimos parinktys priklauso nuo ekrano naudojamo."
 
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
@@ -11115,7 +11127,7 @@ msgstr "Peržiūrėti pasirinktą ekrano užsklandą."
 
 msgctxt "#36133"
 msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
-msgstr "Kai muzika atkuriama, XBMC pradės pasirinktą vizualizaciją, o ne ekrano užsklandą."
+msgstr "Kai muzika atkuriama, XBMC pradės parinktą vizualizaciją, o ne ekrano užsklandą."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -11147,7 +11159,7 @@ msgstr "Informacijos dar nėra."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
-msgstr "Rodyti informaciją tik neperžiūrėtų medios vaizdo bibliotekoje."
+msgstr "Rodyti informaciją tik neperžiūrėtų media vaizdo bibliotekoje."
 
 msgctxt "#36142"
 msgid "No info available yet."
@@ -11155,7 +11167,7 @@ msgstr "Informacijos dar nėra."
 
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
-msgstr "Gauti atlikėjų miniatiūras skenuojant medijas"
+msgstr "Gauti atlikėjų miniatiūras nuskaitant media"
 
 msgctxt "#36144"
 msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
@@ -11175,7 +11187,7 @@ msgstr "Slėpti bibliotekos skenavimo juostą nuskaitymo metu"
 
 msgctxt "#36148"
 msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
-msgstr "Šalinti elementus iš bibliotekos, kada negalima rasti falų ((failas) pervadintas, ištrintas ir/arba išimta USB/HDD-USB laikmena arba šiuo metu atjungta)."
+msgstr "Šalinti elementus iš bibliotekos kai neimanoma rasti falų ((failas) pervadintas, ištrintas ir/arba išimta USB/HDD-USB laikmena ar/arba šiuo metu atjungta)."
 
 msgctxt "#36149"
 msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
@@ -11291,7 +11303,7 @@ msgstr "Informacijos dar nėra."
 
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "Pasirinkite,- 'Atkurti' (pagal nutylėjimą), 'Atnaujinti ir rodyti informaciją'. Pasirinkite,- bus pasirinkti elementai, pvz.: atidaryti failai katalogo režimu. 'Atnaujinti',- bus automatiškai atnaujintas vaizdo įrašas iš paskutinės pozicijos, kada jūs paskutinį kartą žiūrėjote, net pakartotinai paleidus sistemą."
+msgstr "Pasirinkite,- 'Atkurti' (kaip numatyta), 'Atnaujinti ir rodyti informaciją'. Pasirinkite,- bus pasirinkti elementai, pvz.: atidaryti failai katalogo režimu. 'Atnaujinti',- bus automatiškai atnaujintas vaizdo įrašas iš paskutinės pozicijos, kada jūs paskutinį kartą žiūrėjote, net pakartotinai paleidus sistemą."
 
 msgctxt "#36178"
 msgid "No info available yet."
@@ -11375,11 +11387,11 @@ msgstr "Informacijos dar nėra."
 
 msgctxt "#36198"
 msgid "Select the default movie information source. See the Add-ons Manager for options."
-msgstr "Pasirinkite numatytąjį vaizdo informacijos šaltinį. Žiūrėti,- Manager priedų galimybės."
+msgstr "Pasirinkite numatytąjį vaizdo informacijos šaltinį. Žiūrėti,- Priedų tvarkyklės galimybės."
 
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
-msgstr "Pasirinkite numatytąjį TV Šou informacijos šaltinį. Žiūrėti,- Manager priedų galimybės."
+msgstr "Pasirinkite numatytąjį TV Šou informacijos šaltinį. Žiūrėti,- Priedų tvarkyklės galimybės."
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
@@ -11461,13 +11473,9 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Default EPG window to show. Defaults to Timeline."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Dienų skaičius EPG duomenų importui iš serverio. Pagal nutylėjimą 2 ar daugiau dienų."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
-msgstr "Laikas tarp EPG duomenų importo iš serverio. Pagal nutylėjimą 120 minučių."
+msgstr "Laikas tarp EPG duomenų importo iš serverio. Kaip numatyta 120 minučių."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11475,7 +11483,7 @@ msgstr "Neimportuoti EPG duomenų atkuriant TV. Iki minimumo sumažina kompiuter
 
 msgctxt "#36223"
 msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
-msgstr "Pagal nutylėjimą, EPG duomenys yra saugomi vietos duomenų bazėje. Pagreitinti importavimą kai XBMC įsijungs iš naujo."
+msgstr "Kaip numatyta, EPG duomenys yra saugomi vietos duomenų bazėje. Pagreitinti importavimą kai XBMC įsijungs iš naujo."
 
 msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
@@ -11527,15 +11535,15 @@ msgstr "Prioritetą skiria įrašymui. Didesnis skaičius reiškia didesnį prio
 
 msgctxt "#36236"
 msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
-msgstr "Naikinti įrašą. Pagal nutylėjimą 99 dienų. Palaiko ne visi priedai ir serveriai."
+msgstr "Naikinti įrašą. Kaip numatyta 99 dienų. Palaiko ne visi priedai ir serveriai."
 
 msgctxt "#36237"
 msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
-msgstr "Pradėti įrašus iki faktinio laiko. Pagal nutylėjimą 2 minutės. Palaiko ne visi priedai ir serveriai."
+msgstr "Pradėti įrašus iki faktinio laiko. Kaip numatyta 2 minutės. Palaiko ne visi priedai ir serveriai."
 
 msgctxt "#36238"
 msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
-msgstr "Įrašo pabaiga po faktinio laiko. Pagal nutylėjimą 10 minučių. Palaiko ne visi priedai ir serveriai."
+msgstr "Įrašo pabaiga po faktinio laiko. Kaip numatyta 10 minučių. Palaiko ne visi priedai ir serveriai."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11551,7 +11559,7 @@ msgstr "Execute the \"wakeup command\" below when XBMC exits or is going into hi
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
-msgstr "Komanda nebus vykdoma, kai įrašymas bus pradėtas per šį laukimo laiką. Pagal nutylėjimą 15 minučių."
+msgstr "Komanda nebus vykdoma, kai įrašymas bus pradėtas per šį laukimo laiką. Kaip numatyta 15 minučių."
 
 msgctxt "#36243"
 msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
@@ -11615,7 +11623,7 @@ msgstr "Pasirinkti numatytąjį albumą informacijos šaltiniui"
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
-msgstr "Pasirinkti pagal nutylėjimą šaltinio informacija apie atlikėją. Žiūrėti priedai 'Manager' galimybės."
+msgstr "Pasirinkti kaip numatyta šaltinio informacija apie atlikėją. Žiūrėti,- Priedų tvarkyklės galimybės."
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
@@ -11655,11 +11663,11 @@ msgstr "XBMC perskaitys garso failų ReplayGain informaciją ir atitinkamai norm
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
-msgstr "Pagal nutylėjimą yra 89dB standartu. Keisti atsargiai."
+msgstr "Kaip numatyta yra 89dB standartu. Keisti atsargiai."
 
 msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
-msgstr "Pagal nutylėjimą yra 89dB standartu. Keisti atsargiai."
+msgstr "Kaip numatyta yra 89dB standartu. Keisti atsargiai."
 
 msgctxt "#36270"
 msgid "Reduce the volume of the file if clipping is likely to occur."
@@ -11743,7 +11751,7 @@ msgstr "Pasirinkite, kokią garso kokybę naudoti kodavime, suspaudime."
 
 msgctxt "#36290"
 msgid "For FLAC define compression level, default 5"
-msgstr "Nustatykite FLAC glaudinimo lygį, pagal nutylėjimą 5"
+msgstr "Nustatykite FLAC glaudinimo lygį, Kaip numatyta 5"
 
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
@@ -11855,7 +11863,7 @@ msgstr "Pasirinkite ne daugiau kaip trys vietoves, kuriose bus rodomas oras."
 
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
-msgstr "Nurodykite numatytąjį orų informacijos šaltinį. Žiūrėti variantus priedų atsisiuntime."
+msgstr "Nurodykite numatytąjį orų informacijos šaltinį. Žiūrėti,- variantus Priedų tvarkyklės atsisiuntime."
 
 msgctxt "#36319"
 msgid "No info available yet."
@@ -11903,7 +11911,7 @@ msgstr "Nustatyti web serverio prievadą."
 
 msgctxt "#36330"
 msgid "Define the webserver username."
-msgstr "Nustatyti web serverio vardą."
+msgstr "Nustatyti web serverio vartotojo vardą."
 
 msgctxt "#36331"
 msgid "Define webserver password."
@@ -11911,7 +11919,7 @@ msgstr "Nustatykite web serverio slaptažodį."
 
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
-msgstr "Pasirinkti interneto sąsajos įrenginį naudojantis priedų saugykla."
+msgstr "Pasirinkti interneto sąsajos įrenginį naudojantis priedų tvarkyklės saugykla."
 
 msgctxt "#36333"
 msgid "No info available yet."
@@ -12015,7 +12023,7 @@ msgstr "Kalibruoti vartotojo sąsają koreguojant 'overscan'. Naudokite šį įr
 
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
-msgstr "Modelio testavimas, ekrano techninės įrangos kalibravimas."
+msgstr "Bandymų modeliai, ekrano įrangos kalibravimas."
 
 msgctxt "#36359"
 msgid "No info available yet."
@@ -12163,19 +12171,19 @@ msgstr "Nurodyti papildomas bibliotekas kurios turi būti įtrauktos į derinimo
 
 msgctxt "#36395"
 msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
-msgstr "Atidaryti 'Master Lock' dialogą, kuriame galite konfigūruoti savo 'Master Lock' galimybes."
+msgstr "[B][COLOR=red]Master lock[/COLOR][/B] toliau bus verčiama kaip [B][COLOR=blue]Spec. apsauga[/COLOR][/B].[B][COLOR=red]Master mode[/COLOR][/B] toliau bus verčiama kaip [B][COLOR=blue]Spec. režimas[/COLOR][/B][CR]Atidaryti Spec. apsaugos dialogą, kuriame galite konfigūruoti savo Spec. apsaugos galimybes."
 
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
-msgstr "Nustatyti PIN kodą, naudojamą pagrindiniam užrakinimui."
+msgstr "Nustatyti PIN kodą, naudojamą pagrindiniam Spec. apsaugos nustatymų užrakinimui."
 
 msgctxt "#36397"
 msgid "If enabled, the master lock code is required to unlock XBMC on startup "
-msgstr "Jei įjungta, 'master lock' kodas yra reikalingas atblokuoti paleidžiant XBMC"
+msgstr "Jei įjungta, - Spec. apsaugos kodas yra reikalingas atblokuoti paleidžiant XBMC"
 
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
-msgstr "Nustatykite maksimalų pakartojimų skaičių kol XBMC yra uždarytas."
+msgstr "Nustatykite maksimalų pakartojimų skaičių prieš uždarant XBMC."
 
 msgctxt "#36399"
 msgid "No info available yet."
@@ -12276,6 +12284,26 @@ msgstr "Įjungti, aparatinės įrangos video dekodavimas naudojant AMLogic dekod
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "Naudoti, - ffmpeg  daugkartinis kadro gijos dekodavimas, kai aparatinės įrangos dekodavimas neveikia ar išjungtas. (mažiau patikimas nei numatytasis, -  vienos gijos režimas)"
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Pasirinkite atitikimus, kai EPG elementas yra pasirinktas: [Rodyti kontekstinį menių] suaktyvins kontekstinį menių, kur jūs galite pasirinkti tolimensius veiksmus; [Perjungti kanalą], iš karto paleis atitinkamą kanalą; [Rodyti informaciją] bus rodoma siužetų išsami informacija, pasirinktinai tolimesni variantai; [Record] sukurs pasirinkto elemento įrašymo laikmatį."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Rodyti kontekstinį meniu"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Perjungti į kanalą"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Rodyti informaciją"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Įrašas"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

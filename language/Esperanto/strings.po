@@ -3900,3 +3900,7 @@ msgstr "Never"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Xbox is Connected"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Registri"

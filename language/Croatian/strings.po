@@ -11461,10 +11461,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Zadani EPG prozor prikaza. Zadana je Kronologija."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Broj dana EPG podataka koji će se uvesti iz pozadinskih softvera. Zadano je 2 dana."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Vrijeme između uvoza EPG podataka iz pozadinskih softvera. Zadano je 120 minuta."
@@ -12276,6 +12272,14 @@ msgstr "Omogući hardversko dekôdiranje video datoteka koristeći AMLogic dekô
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "Koristi ffmpeg višenizno dekôdiranje sličica kada hardversko dekôdiranje ne radi ili je onemogućeno. (manje pouzdano nego zadani jednonizni način)"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Prebaci na program"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Snimaj"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

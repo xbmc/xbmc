@@ -7760,3 +7760,11 @@ msgstr "Povezano"
 msgctxt "#36035"
 msgid "Always"
 msgstr "Uvek"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Prebaci na kanal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Snimi"

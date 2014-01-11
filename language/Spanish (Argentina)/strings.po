@@ -10120,3 +10120,11 @@ msgstr "Versión de interfaz libCEC no soportada. %x es menor que la versión so
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Carpeta de items"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Cambiar al canal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Grabar"

@@ -11145,6 +11145,14 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
 
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Pindah ke saluran"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Rekam"
+
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Fungsikan pendekodean perangkat keras atas berkas video."

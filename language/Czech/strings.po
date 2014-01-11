@@ -51,7 +51,7 @@ msgstr "Počasí"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "Multimediální centrum xmbc"
+msgstr "Multimediální centrum XBMC"
 
 msgctxt "#11"
 msgid "Monday"
@@ -10844,3 +10844,11 @@ msgstr "Žádné informace nejsou zatím k dispozici."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Přepnout na kanál"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Nahrávat"

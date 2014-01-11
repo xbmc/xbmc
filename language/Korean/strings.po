@@ -4279,7 +4279,7 @@ msgstr "애플 리모트 모드를 변경 하시겠습니까?"
 
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control"
-msgstr "만약 현재 XMBC 를 제어하는데 애플 리모트를"
+msgstr "만약 현재 XBMC 를 제어하는데 애플 리모트를"
 
 msgctxt "#13146"
 msgid "XBMC, changing this setting might affect your ability"
@@ -8085,6 +8085,14 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "아티스트 정보 다운로드 실패"
 
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "노래 태그를 온라인 정보로 덮어쓰기"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "온라인에서 가져온 아티스트/앨범 정보를 기존 노래 태그(장르, 연도, 아티스트 등)에 덮어씁니다.  기존 노래 태그에 MusicBrainz 식별자가 포함되어 있는 경우 유용합니다."
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "안드로이드 음악"
@@ -11433,10 +11441,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "EPG 기본 창. 기본값은 편성표."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "백엔드에서 몇 일분의 EPG 데이터를 가져올 것인지를 설정합니다. 기본값은 2일."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "백엔드에서 EPG 데이터를 가져오는 시간 간격. 기본값은 120분 마다."
@@ -12212,6 +12216,26 @@ msgstr "AMLogic 디코더를 사용하여 비디오를 하드웨어 디코드합
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "하드웨어 디코딩을 사용할 수 없거나 작동하지 않는 경우 ffmpeg 다중 쓰레드 디코딩을 사용합니다. (기본 단일 쓰레드 모드에 비해 신뢰도가 떨어집니다)"
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "EPG 항목을 선택했을 때의 동작입니다: [컨텍스트 메뉴 표시] 는 해당 항목에서 선택할 수 있는 추가 동작을 컨텍스트 메뉴로 보여줍니다; [채널로  변경] 관련 채널로 이동하여 시청합니다; [정보 보기] 줄거리와 추가 옵션을 포함하는 상세 정보를 보여줍니다; [녹화] 선택한 항목을 예약 녹화합니다."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "컨텍스트 메뉴 표시"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "채널로 변경"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "정보 보기"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "녹화"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

@@ -8832,3 +8832,11 @@ msgstr "Uvijek"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Prebaci na kanal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Snimi"

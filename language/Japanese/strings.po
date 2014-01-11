@@ -11057,6 +11057,14 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr "情報がまだありません。"
 
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "チャンネル切り替え"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "録音"
+
 msgctxt "#36537"
 msgid "No info available yet."
 msgstr "情報がまだありません。"

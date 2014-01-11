@@ -11369,10 +11369,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Domyślnie okno wyświetlania EPG. Domyślnie dla osi czasu."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Liczba importowanych dni danych EPG do pobrania z bazy. Domyślnie to 2 dni."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Czas pomiędzy importowaniem danych EPG z bazy. Domyślnie - 120 minut."
@@ -12160,6 +12156,14 @@ msgstr "Omijanie miksera VDPAU oszczędza zasoby, ale zmniejsza jakość obrazu"
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Włącz sprzętowe dekodowanie plików wideo dekodera AMLogic"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Wybierz kanał"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Nagrywaj"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

@@ -10221,6 +10221,26 @@ msgctxt "#34123"
 msgid "Never"
 msgstr "Aldrig"
 
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Kan ikke finde næste emne at afspille"
@@ -10861,6 +10881,18 @@ msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
 msgstr "Anvend kanalnumre fra backend i stedet for at indstilel dem manuelt i XBMC."
 
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "Åben kanal indstillinger, for ændring af kanal sortering, kanal navn, ikon, m.m."
+
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "Giv besked til back-end om at søge efter kanaler (hvis supporteret)"
+
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr "Slet kanal/EPG database og genimportere data fra back-end bagefter."
+
 msgctxt "#36210"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
@@ -10901,10 +10933,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Standard EPG visning. Normal er Tidslinje"
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Antal dage af EPG data som importeres fra backend. Standard er 2 dage"
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Timer mellem EPG data import fra backend. Standard er 120 minutter."
@@ -10929,9 +10957,21 @@ msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "Vis den valgte kanals stream i en lille boks i stedet for fuld skærm."
+
+msgctxt "#36228"
+msgid "Show the last viewed channel if switching to live tv."
+msgstr "Vis den sidst sete kanal når der skiftes til live-tv."
+
 msgctxt "#36230"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr "Tryk på en nummer tast i fuld skærms visning, vil automatisk skifte til den pågældende kanal efter 1 sekund."
 
 msgctxt "#36232"
 msgid "No info available yet."
@@ -10953,9 +10993,45 @@ msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Udfør \"Vågn-op komandoen\" nedenfor, når XBMC afsluttes eller går i dvale tilstand. Tidspunkt for næste planlagte optagelse tilføjes som parameter."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
+msgstr "Kommandoen vil ikke blive udført hvis en optagelse er planlagt indenfor timeout perioden. Standard er 15 minutter."
+
+msgctxt "#36243"
+msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
+msgstr "Komandoen til udførelse. Standard er '/usr/bin/setwakeup.sh'."
+
+msgctxt "#36244"
+msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
+msgstr "Tid som trækkes fra start tidspunkt for næste planlagte optagelse. Standard er 15 minutter."
+
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Udfør \"Vågn-op kommandoen\" på et bestemt tidspunkt hver dag."
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Tidspunkt for udførelse af \"Vågn-op kommandoen\"."
+
 msgctxt "#36247"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "Spørg efter PIN kode for adgang til kanaler låst med forældrekontrol. Kanaler kan markeres som låste under kanal indstillinger på fanen generelt. kanaler låst med forældrekontrol kan ikke vises eller optages uden indtastning af PIN koden, og EPG information er skjult for disse kanaler."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Indtast en ny PIN kode for at låse op for kanaler låst med forældrekontrol."
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
+msgstr "Spørg efter PIN kode igen efter X antal sekunder, når der forsøges på adgang til kanaler låst med forældrekontrol. Standard er 300 sekunder."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -10973,13 +11049,81 @@ msgctxt "#36254"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr "Skal artister som kun er med på kompilations album, skal vises i artist visning."
+
+msgctxt "#36256"
+msgid "Automatically fetch album and artist information via scrapers during scan."
+msgstr "Automatisk hent album of artist information ved hjælp af scrapers i forbindelse med skanning."
+
+msgctxt "#36257"
+msgid "Select the default album information source"
+msgstr "Vælg standard album information kilde"
+
+msgctxt "#36258"
+msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgstr "Vælg standard artist information kilde. Se Add-on håndtering for muligheder."
+
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr "Tjek for nye, fjernede og ændrede medie filer når XBMC startes."
+
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Exporter musik biblioteks databasen til XML filer. Dette vil overskrive eventuelle eksisterende XML filer."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Importer en XML fil ind i musik biblioteks databasen."
+
 msgctxt "#36264"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr "XBMC afspiller automatisk den næste fil i den nuværende mappe. For eksempel i \"Fil visning: Efter et nummer er blevet afspillet, afspiller XBMC automatisk den næste fil i den samme mappe."
+
+msgctxt "#36266"
+msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
+msgstr "Når sange tilføjes en afspilningsliste, sættes de i kø i stedet for at blive afspillet med det samme."
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Standard er 89db. Vær forsigtig med at ændre dette."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Standard er 89db. Vær forsigtig med at ændre dette."
+
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping is likely to occur."
+msgstr "Sænk automatisk volumen på en afspilning, med for højt signal niveau - ver 100%"
+
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr "Anvend blød og overlappet overgang mellem musik numre. Du kan indstille overlap mellem sangene fra 1-15 sekunder."
+
+msgctxt "#36272"
+msgid "Allow crassfading to occur when both tracks are from the same album."
+msgstr "Anvend crossfading mellem sange fra samme album."
+
+msgctxt "#36274"
+msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
+msgstr "Læs tag information fra musik filerne. For store musik biblioteker kan dette gøre indlæsning langsom over en netværksforbindelse."
+
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
+msgstr "Kontrollerer hvordan titler på sange vises. For at fungerer ska ID3 tags være aktiveret."
+
+msgctxt "#36276"
+msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
+msgstr "Anvendes til information i højre side af skærmen. Det anvendes normalt til at vise længde på numret."
 
 msgctxt "#36277"
 msgid "No info available yet."
@@ -10997,17 +11141,73 @@ msgctxt "#36280"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36281"
+msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "XBMC vil søge efter miniature på netværks drev eller CD/DVD. Dette kan gøre indlæsning langsom over netværk."
+
 msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Automatisk afspilning af CD når den indsættes."
+
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "Hent information om en musik CD fra internettet."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Vælg hvor du ønsker at gemme musik numre som rippes fra CD."
+
+msgctxt "#36286"
+msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "Vælg lyd encoder som skal anvendes til at rippe musik. "
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "Vælg til hvilken kvalitet du ønsker at rippe."
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Vælg bitrate som skal anvendes af den valgte lyd encoder når lyden komprimeres."
+
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5"
+msgstr "Vælg FLAC kompressions niveau. Standard er 5."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Skub CD ud når ripning  er færdig"
 
 msgctxt "#36292"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr "Ved afspilning af musik vil eventuelle .cdg filer vises."
+
 msgctxt "#36294"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36295"
+msgid "Select the font used during karoake."
+msgstr "Vælg skrifttype for karoake."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karoake."
+msgstr "Vælg skriftstørrelse for karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karoake."
+msgstr "Vælg karaktersæt for karaoke."
 
 msgctxt "#36299"
 msgid "No info available yet."
@@ -11036,6 +11236,14 @@ msgstr "Ingen information tilgængelig endnu."
 msgctxt "#36305"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "Hvis EXIF information findes (date, time, camera used, etc.), vil den blive vist."
+
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr "Automatisk genererer miniature billeder, når en mappe med billeder åbnes."
 
 msgctxt "#36310"
 msgid "No info available yet."
@@ -11252,6 +11460,14 @@ msgstr "Ingen information tilgængelig endnu."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Skift til kanal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Optag"
 
 msgctxt "#36537"
 msgid "No info available yet."

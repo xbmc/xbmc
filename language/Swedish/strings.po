@@ -11357,10 +11357,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Standard EPG-fönster att visa. Standard är tidslinje."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Antal dagar av EPG-data att importera från backends. Standard är 2 dagar."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Tid mellan import av EPG-data från backends. Standard är 120 minuter."
@@ -12120,6 +12116,14 @@ msgstr "Att kringå VDPAU-mixern sparar resurser på lågenergisystem men förs�
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Aktivera hårdvaruavkodning av videofiler med hjälp av AMLogic-avkodare"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Byt till kanal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Spela in"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

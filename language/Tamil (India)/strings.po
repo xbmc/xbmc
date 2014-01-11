@@ -2643,7 +2643,7 @@ msgstr "தொலைநிலை கட்டுப்பாட்டு"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
-msgstr "இந்த கணினியில் உள்ள நிரல்களை கொண்டு XMBC யை கட்டுபடுத்த அனுமதிக்கும்"
+msgstr "இந்த கணினியில் உள்ள நிரல்களை கொண்டு XBMC யை கட்டுபடுத்த அனுமதிக்கும்"
 
 msgctxt "#792"
 msgid "Port"
@@ -2655,7 +2655,7 @@ msgstr "துறை வீச்சு"
 
 msgctxt "#794"
 msgid "Allow programs on other systems to control XBMC"
-msgstr "மற்ற கணினியில் உள்ள நிரல்களை கொண்டு XMBC யை கட்டுபடுத்த அனுமதிக்கும்"
+msgstr "மற்ற கணினியில் உள்ள நிரல்களை கொண்டு XBMC யை கட்டுபடுத்த அனுமதிக்கும்"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -11124,6 +11124,14 @@ msgstr "எந்த தகவலும் இதுவரை கிடைக்
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "சேனலுக்கு மாற்றவும்"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "பதிவுசெய்"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

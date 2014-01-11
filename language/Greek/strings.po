@@ -5481,6 +5481,10 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Μη διαθέσιμη πηγή"
 
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Τι επιθυμείτε να κάνετε με πολυμέσα από το %s ;"
+
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Διατήρηση"
@@ -8108,6 +8112,14 @@ msgstr "Δεν βρέθηκε ο καλλιτέχνης!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Αποτυχία λήψης πληροφοριών καλλιτέχνη"
+
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Παράκαμψη ετικετών τραγουδιών με πληροφορίες από το διαδίκτυο"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Αν το ενεργοποιήσετε, κάθε πληροφορία που θα ληφθεί από το διαδίκτυο σχετικά με άλμπουμ και καλλιτέχνες θα παρακάμψει ό,τι έχετε ορίσει στις ετικέτες των τραγουδιών σας, όπως είναι το είδος, το έτος, τα ονόματα καλλιτεχνών, κτλ. Χρήσιμο όταν έχετε τα αναγνωριστικά MusicBrainz στις ετικέτες των τραγουδιών σας."
 
 msgctxt "#20240"
 msgid "Android music"
@@ -11461,10 +11473,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Παράθυρο EPG που θα εμφανίζεται. Προεπιλογή είναι το Χρονοδιάγραμμα."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Πλήθος ημερών δεδομένων EPG για τις οποίες θα γίνει εισαγωγή από τα backend. Προεπιλογή είναι οι 2 ημέρες."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Χρονικό διάστημα ανάμεσα στις εισαγωγές δεδομένων EPG από τα backend. Προεπιλογή είναι τα 120 λεπτά."
@@ -12276,6 +12284,26 @@ msgstr "Ενεργοποίηση αποκωδικοποίησης υλικού A
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "Χρήση ffmpeg πολυνηματικής αποκωδικοποίησης καρέ όταν δε δουλεύει ή είναι ανενεργή η αποκωδικοποίηση υλικού (λιγότερο αξιόπιστη από την προεπιλεγμένη λειτουργία)."
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Ορισμός της ενέργειας όταν έχει επιλεγεί ένα αντικείμενο EPG: Η [Εμφάνιση μενού επιλογών] θα ενεργοποιήσει το αντίστοιχο μενού από όπου μπορείτε να επιλέξετε περαιτέρω ενέργειες. Η [Μετάβαση σε κανάλι] θα αλλάξει άμεσα το κανάλι σε αυτό που θέλετε. Η [Προβολή πληροφοριών] θα εμφανίσει αναλυτικές πληροφορίες, συμπεριλαμβανομένης της πλοκής και επιπλέον επιλογών. Η [Εγγραφή] θα ενεργοποιήσει ένα χρονοδιακόπτη εγγραφής για το επιλεγμένο αντικείμενο."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Εμφάνιση μενού επιλογών"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Μετάβαση στο κανάλι"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Εμφάνιση πληροφοριών"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Εγγραφή"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

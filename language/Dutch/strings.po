@@ -419,7 +419,7 @@ msgstr "Algemeen"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "Voorstelling"
+msgstr "Diavoorstelling"
 
 msgctxt "#130"
 msgid "System info"
@@ -607,7 +607,7 @@ msgstr "Stijlen"
 
 msgctxt "#179"
 msgid "Song"
-msgstr "Tracklist"
+msgstr "Lied"
 
 msgctxt "#180"
 msgid "Duration"
@@ -619,7 +619,7 @@ msgstr "Selecteer album"
 
 msgctxt "#182"
 msgid "Tracks"
-msgstr "Nummer"
+msgstr "Nummers"
 
 msgctxt "#183"
 msgid "Review"
@@ -1231,7 +1231,7 @@ msgstr "Normaliseer niveaus bij downmixen"
 
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
-msgstr "DTS-HD geschikte obtvanger"
+msgstr "DTS-HD geschikte ontvanger"
 
 msgctxt "#348"
 msgid "Enable passthrough"
@@ -1595,7 +1595,7 @@ msgstr "Buffer"
 
 msgctxt "#440"
 msgid "Hard disk"
-msgstr "Harde Schijf"
+msgstr "Harde schijf"
 
 msgctxt "#441"
 msgid "UDF"
@@ -1983,7 +1983,7 @@ msgstr "Doorgifte Geluidsuitvoerapparaat"
 
 msgctxt "#547"
 msgid "No biography for this artist"
-msgstr "Geen biografie beschikbaar voor artiest"
+msgstr "Geen biografie beschikbaar voor deze artiest"
 
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
@@ -2259,7 +2259,7 @@ msgstr "Lopende TV series"
 
 msgctxt "#629"
 msgid "View mode"
-msgstr "Weergave"
+msgstr "Weergave modus"
 
 msgctxt "#630"
 msgid "Normal"
@@ -2431,7 +2431,7 @@ msgstr "Server"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
-msgstr "HTTP-proxy gebruiken"
+msgstr "Gebruik een HTTP-proxy-server voor toegang tot het internet"
 
 msgctxt "#711"
 msgid "Internet Protocol (IP)"
@@ -4315,7 +4315,7 @@ msgstr "DNS-server"
 
 msgctxt "#13162"
 msgid "Initialise failed"
-msgstr "Initialiseren mislukt"
+msgstr "Initialisatie mislukt"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4563,7 +4563,7 @@ msgstr "Diavoorstelling met mappen"
 
 msgctxt "#13319"
 msgid "Randomise"
-msgstr "Willekeurige volgorde"
+msgstr "Willekeurige"
 
 msgctxt "#13320"
 msgid "Stereo"
@@ -4975,11 +4975,11 @@ msgstr "geef de voorkeur aan VDPAU Video Mixer"
 
 msgctxt "#13438"
 msgid "Allow hardware acceleration (amcodec)"
-msgstr "Hardwareversnelling inschakelen (amcodec)"
+msgstr "Hardwareversnelling toestaan (amcodec)"
 
 msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
-msgstr "Hardwareversnelling inschakelen (mediacodec)"
+msgstr "Hardwareversnelling toestaan (mediacodec)"
 
 msgctxt "#13440"
 msgid "Frame Multi Threaded Decoding (less reliable)"
@@ -5480,6 +5480,10 @@ msgstr "CD rippen stoppen"
 msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Niet beschikbare bron"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Wat wilt u dat er gebeurt met de media items van %s"
 
 msgctxt "#15014"
 msgid "Keep"
@@ -8109,6 +8113,14 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Downloaden van artiestinformatie mislukt"
 
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Overschrijf nummer tags met online informatie"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Wanneer dit is geactiveerd, zal alle informatie dat is gedownload voor albums en artiesten worden overschreven voor als wat je hebt ingesteld in jou nummer tags, zoals genre`s, jaar, nummer artiesten, etc. Handig als je MusicBrainz indentificatie hebt in jouw nummer tags."
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "Android muziek"
@@ -9815,7 +9827,7 @@ msgstr "Instellingen verkeerd"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
-msgstr "Schaal Teletext naar 4:3"
+msgstr "Schaal Teletekst naar 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -11279,11 +11291,11 @@ msgstr "Nog geen informatie beschikbaar."
 
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
-msgstr "Laat Teletext toe tijdens het kijken van live TV."
+msgstr "Laat Teletekst toe tijdens het kijken van live TV."
 
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
-msgstr "Schaal Teletext naar 4:3 beeldverhouding."
+msgstr "Schaal Teletekst naar 4:3 beeldverhouding."
 
 msgctxt "#36176"
 msgid "No info available yet."
@@ -11460,10 +11472,6 @@ msgstr "Nog geen informatie beschikbaar."
 msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Standaard EPG venster. Standaard is dit ingesteld op Tijdlijn."
-
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Aantal dagen van EPG gegevens te importeren vanuit de back-ends. Standaard 2 dagen."
 
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
@@ -12276,6 +12284,26 @@ msgstr "Schakel Hardware video decodering in met gebruik van AMLogic decoder"
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "Gebruik ffmpeg frame multi-thread decoderen wanneer hardware decodering niet werkt of is gedeactiveerd. (Minder betrouwbaar dan de standaard single thread modus)"
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Selecteer wat er moet gebeuren wanneer een EPG item is geselecteerd: [Toon context menu] zal het contextuele menu activeren van waaruit je vervolgacties kan kiezen; [Verander naar kanaal] Zal gelijk afstemmen naar het gerealteerde kanaal; [Toon informatie] zal een gedetailleerd informatiescherm tonen met plot en vervolgopties; [Opnemen] Zal een opname timer creëren voor het geselecteerde item."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Toon context menu"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Kanaal wijzigen"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Toon informatie"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Opnemen"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

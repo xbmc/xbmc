@@ -9848,3 +9848,11 @@ msgstr "TV"
 msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "إختر لغه الترجمه المبدأيه عندما تتوفر اكثر من ترجمه باكثر من لغه"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "تبديل الى القناة"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "تسجيل"

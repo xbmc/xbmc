@@ -5980,3 +5980,7 @@ msgstr "Isem"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Xbox Imqabbda"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Irrekordja"

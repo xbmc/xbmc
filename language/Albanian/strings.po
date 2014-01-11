@@ -10200,3 +10200,11 @@ msgstr "Verzioni i ndërfaqes libCEC nuk përkrahet. %x është më poshtë se v
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Dosje artikujsh"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Kaloni tek kanali"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Regjistro"

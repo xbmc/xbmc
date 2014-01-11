@@ -11457,10 +11457,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Finestra EOG predefinita da mostrato. Quella predefinita è la Timeline."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Numero di giorni di dati EPG da importare dal backend. Il valore predefinito è di 2 giorni."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Intervallo tra le importazioni dal backend dei dati EPG. Il valore predefinito è di 120 minuti."
@@ -12167,7 +12163,7 @@ msgstr "Imposta il codice PIN usato come master lock."
 
 msgctxt "#36397"
 msgid "If enabled, the master lock code is required to unlock XBMC on startup "
-msgstr "Se abilitato, verrà richiesto il master lock code sbloccare XMBC all'avvio"
+msgstr "Se abilitato, verrà richiesto il master lock code sbloccare XBMC all'avvio"
 
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
@@ -12272,6 +12268,14 @@ msgstr "Abilita la decodifica hardware per il video utilizzando il decoder AMLog
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "Usa la decodifica dei frame ffmpeg tramite thread multipli quando la decodifica hardware non funziona o è disabilitata. (meno affidabile rispetto alla modalità a thread singolo)"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Cambia al canale"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Registra"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

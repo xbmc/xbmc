@@ -10116,3 +10116,11 @@ msgstr "libCEC koppelvlak weergawe nie ondersteun. %x is laer as die weergawe wa
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Item vouer"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Skakel oor na kanaal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Neem op"

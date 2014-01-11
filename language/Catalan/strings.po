@@ -11377,10 +11377,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Finestra EPG per defecte. Per omissió és la línia de temps."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Nombre de dies de dades de l'EPG per importar des de 'backends'. El valor per defecte és 2 dies."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Temps entre les EPG del backend. Per omissió 120 minuts."
@@ -12140,6 +12136,14 @@ msgstr "Ometre el mesclador VDAPU estalvia recursos en sistemes de baixa potènc
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Habilita el maquinari de descodificació de vídeo utilitzant el descodificador AMLogic"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Canvia al canal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Grava"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

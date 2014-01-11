@@ -8456,3 +8456,11 @@ msgstr "Sjónvarp og AVR eind (serlig)"
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Lutir í mappu"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Skift til kanal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Upptøka"

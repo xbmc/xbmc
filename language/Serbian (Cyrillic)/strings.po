@@ -7560,3 +7560,11 @@ msgstr "Повезано"
 msgctxt "#36035"
 msgid "Always"
 msgstr "Увек"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Пребаци на канал"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Сними"

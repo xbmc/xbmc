@@ -11429,10 +11429,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Default EPG window to show. Defaults to Timeline."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Number of days of EPG data to import from backends. Defaults to 2 days."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Time between EPG data imports from backends. Defaults to 120 minutes."
@@ -12212,6 +12208,14 @@ msgstr "Bypassing VDPAU mixer saves resources on low power systems but slightly 
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Enable hardware video decode using AMLogic decoder"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Prepnúť na kanál"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Nahrávať"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

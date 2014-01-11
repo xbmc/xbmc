@@ -11725,6 +11725,14 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Включва хардуерното декодиране на видео файлове от AMLogic декодер."
 
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Превключи на канал"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Запис"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Стереоскопичен режим (текущ)"

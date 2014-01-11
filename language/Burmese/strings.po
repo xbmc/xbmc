@@ -5680,3 +5680,11 @@ msgstr "အဆိုတော် အချက်အလက် ပုံမှန�
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "ရာသီဥတု အချက်အလက် ပုံမှန် ရယူမည့် ရင်းမြစ်ကို ရွေးပါ။ ပြုပြင်ပြောင်းလဲလို့ ရသည်များကို Add-ons မန်နေဂျာတွင် ကြည့်ပါ။"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "channel သို့ပြောင်းမည်"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "မှတ်တမ်းသွင်းမည်"

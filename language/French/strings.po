@@ -5481,6 +5481,10 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Source non disponible"
 
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Que souhaitez-vous faire avec les éléments media de %s"
+
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Garder"
@@ -5909,6 +5913,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Après traitement Vidéo"
@@ -5931,7 +5939,7 @@ msgstr "%i jours"
 
 msgctxt "#19000"
 msgid "Switch to channel"
-msgstr "Changer de canal"
+msgstr "Changer de chaîne"
 
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
@@ -6205,6 +6213,10 @@ msgctxt "#19069"
 msgid "EPG"
 msgstr "Guide des Programmes"
 
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Y aller maintenant"
+
 msgctxt "#19071"
 msgid "EPG update interval"
 msgstr "Intervalle de mise à jour du Guide des Programmes"
@@ -6320,6 +6332,10 @@ msgstr "Attention"
 msgctxt "#19099"
 msgid "Service"
 msgstr "Service"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Mux"
 
 msgctxt "#19101"
 msgid "Provider"
@@ -8096,6 +8112,14 @@ msgstr "Aucun artiste trouvé !"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Échec du téléchargement des infos Artiste"
+
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Ecraser les tags de la chanson avec les infos en ligne"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Avec cette option d'activée, toutes les informations téléchargées pour les albums et les artistes vont écraser les informations stockées dans les tags de la chansons, tel que les genres, l'année, l'artiste, etc. Utile si vous avez les identifiants MusicBrainz dans les tags de vos chansons."
 
 msgctxt "#20240"
 msgid "Android music"
@@ -11449,10 +11473,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Fenêtre EPG à afficher par défaut. Par défaut Ligne de temps."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Nombre de jours du GEP à importer du serveur. Par défaut 2 jours."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Délai entre les imports des données GEP depuis le serveur. Par défaut 120 minutes."
@@ -12265,6 +12285,26 @@ msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "Utilise le décodage vidéo multi thread de ffmpeg quand le décodage matériel ne marche pas ou est désactivé. (moins fiable que le mode par défaut mono thread)"
 
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Choisissez ce qui se passe lorsqu'un item du Guide Electronique est sélectionné : [Afficher le menu contextuel] va afficher le menu contextuel à partir duquel vous pourrez choisir d'autres actions ; [Changer de chaîne] va immédiatement zapper vers la chaîne ; [Afficher les informations] va afficher les informations détaillées avec le résumé et autres options ; [Enregistrer] va créer un enregistrement de l'item sélectionné."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Afficher le menu contextuel"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Changer de chaîne"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Afficher les informations"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Enregistrer"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "Mode stéréoscopique (actuel)"
@@ -12400,6 +12440,14 @@ msgstr "Activer ceci pour rendre les dialogues plus présent, comparativement au
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Activer le décodage matériel des fichiers."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Profondeur stéréoscopique des sous-titres"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Règle la profondeur visuelles des sous-titres pour les vidéos stéréoscopiques. Plus grande sera la valeur, plus proches les sous-titres apparaîtront pour le téléspectateur."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

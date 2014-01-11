@@ -10999,7 +10999,7 @@ msgstr "Medya taranırken aktör küçük resimlerini al."
 
 msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
-msgstr "XMBC başlatılırken yeni medya dosyalarını kontrol et."
+msgstr "XBMC başlatılırken yeni medya dosyalarını kontrol et."
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
@@ -11315,7 +11315,7 @@ msgstr "Varsayılan sanatçı bilgisi kaynağını seçin. Seçenekler için Ekl
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
-msgstr "XMBC başlatılırken yeni ve kaldırılmış medya dosyalarını kontrol et."
+msgstr "XBMC başlatılırken yeni ve kaldırılmış medya dosyalarını kontrol et."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11555,7 +11555,7 @@ msgstr "Bilgi mevcut değil."
 
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
-msgstr "Ağ üzerindeki programların XMBC yi kontrol etmesine izin ver."
+msgstr "Ağ üzerindeki programların XBMC yi kontrol etmesine izin ver."
 
 msgctxt "#36339"
 msgid "No info available yet."
@@ -11655,7 +11655,7 @@ msgstr "Bilgi mevcut değil."
 
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
-msgstr "XMBC yi kontrol etmek için joystick kullan."
+msgstr "XBMC yi kontrol etmek için joystick kullan."
 
 msgctxt "#36379"
 msgid "No info available yet."
@@ -11820,6 +11820,14 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "AMLogic kod çözücü kullanarak donanımsal video çözücüyü etkinleştir"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Kanal değiştir"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Kayıt"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

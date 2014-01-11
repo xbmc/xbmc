@@ -2631,7 +2631,7 @@ msgstr "Ystod porth"
 
 msgctxt "#794"
 msgid "Allow programs on other systems to control XBMC"
-msgstr "Caniatáu i raglenni ar systemau eraill reoli XMBC"
+msgstr "Caniatáu i raglenni ar systemau eraill reoli XBMC"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
@@ -10824,6 +10824,14 @@ msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Newid i sianel"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Recordio"
 
 msgctxt "#36502"
 msgid "None"

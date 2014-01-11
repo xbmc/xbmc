@@ -10124,3 +10124,11 @@ msgstr "Versiune interfață libCEC nesuportată. %x este mai mică decât versi
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Dosar element"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Comută pe canalul"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Înregistrează"

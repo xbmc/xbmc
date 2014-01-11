@@ -4216,3 +4216,7 @@ msgstr "Qo'llab-quvvatlanmaydigan libCEC interfeysi versiyasi. %x XBMC qo'llab-q
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Element jildi"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Yozish"

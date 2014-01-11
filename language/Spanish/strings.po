@@ -11461,10 +11461,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Ventana EPG que se muestra por defecto. Por defecto, Timeline."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Número de días de datos EPG que se importan de fuentes PVR. Por defecto, 2 días."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Tiempo entre importaciones de datos EPG de fuentes PVR. Por defecto, 120 minutos."
@@ -12272,6 +12268,22 @@ msgstr "Habilitar decodificación de vídeo por hardware usando decodificador AM
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "usar la decodificación ffmpeg multihilo cuando la decodificación por hardware no funciona o esté deshabilitada. (Es menos fiable que el modo por defecto de un único hilo)"
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Mostrar menú contextual"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Cambiar al canal"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Mostrar información"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Grabar"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

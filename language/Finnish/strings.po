@@ -11149,6 +11149,14 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Vaihda kanavalle"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Nauhoita"
+
 msgctxt "#36537"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."

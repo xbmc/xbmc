@@ -1596,3 +1596,7 @@ msgstr "Sentiasa"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Rakam"

@@ -11405,10 +11405,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Estabelecer a xanela da Guía a amosar, a predefinida é a Liña de Tempo."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Número de días da Guía a importar dende o motor. Pedefinidos 2 días."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Intervalo de tempo na importación de datos na Guía dende o motor. Predefinidos 120 minutos."
@@ -12100,6 +12096,22 @@ msgstr "Aínda non hai info. dispoñíbel."
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Activar a decodificación de vídeo por hardware empregando AMLogic"
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Amosar menú contextual"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Trocar á canle"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Amosar información"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Gravar"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

@@ -6572,3 +6572,11 @@ msgstr "متصل شده"
 msgctxt "#36035"
 msgid "Always"
 msgstr "همیشه"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "تغییر به کانال"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "ضبط"

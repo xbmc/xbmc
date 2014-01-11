@@ -231,7 +231,7 @@ msgstr "Idakagu"
 
 msgctxt "#77"
 msgid "SE"
-msgstr "kagu"
+msgstr "Kagu"
 
 msgctxt "#78"
 msgid "SSE"
@@ -315,15 +315,15 @@ msgstr "Uuenda"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "Järjesta:Nimi"
+msgstr "Järjesta: Nimi"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "Järjesta:Kuupäev"
+msgstr "Järjesta: Kuupäev"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "Järjesta:Suurus"
+msgstr "Järjesta: Suurus"
 
 msgctxt "#106"
 msgid "No"
@@ -603,7 +603,7 @@ msgstr "Stiilid"
 
 msgctxt "#179"
 msgid "Song"
-msgstr "Lugu"
+msgstr "Laul"
 
 msgctxt "#180"
 msgid "Duration"
@@ -615,7 +615,7 @@ msgstr "Vali album"
 
 msgctxt "#182"
 msgid "Tracks"
-msgstr "Lugusid"
+msgstr "Lood"
 
 msgctxt "#183"
 msgid "Review"
@@ -763,7 +763,7 @@ msgstr "Kiirus"
 
 msgctxt "#225"
 msgid "Vertical Shift"
-msgstr "Vertikaalne"
+msgstr "Vertikaalne nihe"
 
 msgctxt "#226"
 msgid "Test patterns..."
@@ -787,7 +787,7 @@ msgstr "Video filtrid"
 
 msgctxt "#231"
 msgid "None"
-msgstr "Ükski"
+msgstr "Puudub"
 
 msgctxt "#232"
 msgid "Point"
@@ -843,11 +843,11 @@ msgstr "Täisekraan"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
-msgstr "Kalibreerimine: (%i,%i)->(%i,%i) (Suurendus x%2.2f) Suhe:%2.2f:1 (Pikslid: %2.2f:1) (VShift: %2.2f)"
+msgstr "Kalibreerimine: (%i,%i)->(%i,%i) (Suurendus x%2.2f) Suhe:%2.2f:1 (Pikslid: %2.2f:1) (Vert. nihe: %2.2f)"
 
 msgctxt "#247"
 msgid "Scripts"
-msgstr "Skript"
+msgstr "Skriptid"
 
 msgctxt "#248"
 msgid "Language"
@@ -859,7 +859,7 @@ msgstr "Muusika"
 
 msgctxt "#251"
 msgid "Select destination directory"
-msgstr "Vali sihtkataloog"
+msgstr "Vali sihtkoha kaust"
 
 msgctxt "#252"
 msgid "Output stereo to all speakers"
@@ -879,7 +879,7 @@ msgstr "CDDB"
 
 msgctxt "#256"
 msgid "Fetching CD information"
-msgstr "CD andmete toomine"
+msgstr "CD andmete hankimine"
 
 msgctxt "#257"
 msgid "Error"
@@ -887,7 +887,7 @@ msgstr "Viga"
 
 msgctxt "#258"
 msgid "Enable tag reading"
-msgstr "Luba silumise logimine"
+msgstr "Luba märgendi lugemine"
 
 msgctxt "#259"
 msgid "Opening"
@@ -971,11 +971,11 @@ msgstr "Kohanda ristkülikut kuni tekib perfektne ruut"
 
 msgctxt "#279"
 msgid "Unable to load settings"
-msgstr "Võimetu seadete laadimiseks"
+msgstr "Seadete laadimine ei ole võimalik"
 
 msgctxt "#280"
 msgid "Using default settings"
-msgstr "Vaikesätete kasutamine"
+msgstr "Kasutatakse vaikimisi seadeid"
 
 msgctxt "#281"
 msgid "Please check the XML files"
@@ -1123,11 +1123,11 @@ msgstr "Viga artistide puhastamisel"
 
 msgctxt "#322"
 msgid "Cleaning genres..."
-msgstr "Žanride puhastamine..."
+msgstr "Žanrite puhastamine..."
 
 msgctxt "#323"
 msgid "Error cleaning genres"
-msgstr "Viga žanride puhastamisel"
+msgstr "Viga žanrite puhastamisel"
 
 msgctxt "#324"
 msgid "Cleaning paths..."
@@ -1299,7 +1299,7 @@ msgstr "Pealkiri"
 
 msgctxt "#370"
 msgid "Thunderstorms"
-msgstr "pikne"
+msgstr "äikesetormid"
 
 msgctxt "#371"
 msgid "Partly"
@@ -1751,7 +1751,7 @@ msgstr "Lisavalikud (ainult edasijõudnutele!)"
 
 msgctxt "#494"
 msgid "Overall audio headroom"
-msgstr "Üldine heli kõrgus laeni (dB)"
+msgstr "Üldine helitugevuse lagi (dB)"
 
 msgctxt "#495"
 msgid "Upsample videos to GUI resolution"
@@ -2175,7 +2175,7 @@ msgstr "Sisesta number"
 
 msgctxt "#612"
 msgid "Bits/sample"
-msgstr "Bitid/diskreet"
+msgstr "Bitid/valim"
 
 msgctxt "#613"
 msgid "Sample rate"
@@ -2459,7 +2459,7 @@ msgstr "Värv"
 
 msgctxt "#738"
 msgid "Normal"
-msgstr "Normal"
+msgstr "Normaalne"
 
 msgctxt "#739"
 msgid "Bold"
@@ -2523,11 +2523,11 @@ msgstr "Muuda programmi rada"
 
 msgctxt "#756"
 msgid "Edit program name"
-msgstr "Toimeta programmi nime"
+msgstr "Muuda programmi nime"
 
 msgctxt "#757"
 msgid "Edit path depth"
-msgstr "Ülim"
+msgstr "Muuda raja sügavust"
 
 msgctxt "#759"
 msgid "View: Big list"
@@ -2559,7 +2559,7 @@ msgstr "Helesinine"
 
 msgctxt "#766"
 msgid "Light grey"
-msgstr "Heleroheline"
+msgstr "Helehall"
 
 msgctxt "#767"
 msgid "Grey"
@@ -2623,7 +2623,7 @@ msgstr "Võrguliidese seadete kasutuselevõtt. Palun oota."
 
 msgctxt "#785"
 msgid "Network interface restarted successfully."
-msgstr "Võrguliidese edukalt taaskäivitatud."
+msgstr "Võrguliides edukalt taaskäivitatud."
 
 msgctxt "#786"
 msgid "Network interface did not start successfully."
@@ -2667,7 +2667,7 @@ msgstr "Ühekordne viivitus (ms)"
 
 msgctxt "#796"
 msgid "Continuous repeat delay (ms)"
-msgstr "Korduse intervall (ms)"
+msgstr "Pidev viivitus (ms)"
 
 msgctxt "#797"
 msgid "Maximum number of clients"
@@ -2679,7 +2679,11 @@ msgstr "Internet"
 
 msgctxt "#799"
 msgid "Library Update"
-msgstr "Kogu uuendamine"
+msgstr "Teegi uuendamine"
+
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Muusikateegi märked vajavad failidest ülelugemist"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -2707,7 +2711,7 @@ msgstr "Lisa muusikat..."
 
 msgctxt "#999"
 msgid "Add Videos..."
-msgstr "Lisa videosid..."
+msgstr "Lisa videoid..."
 
 msgctxt "#1000"
 msgid "Preview"
@@ -2795,7 +2799,7 @@ msgstr "Sisesta rajad või sirvi meedia asukohti"
 
 msgctxt "#1022"
 msgid "Enter a name for this media Source."
-msgstr "Sisesta nimi"
+msgstr "Sisesta selle meediaallika nimi."
 
 msgctxt "#1023"
 msgid "Browse for new share"
@@ -3003,27 +3007,27 @@ msgstr "Pildid ja failid"
 
 msgctxt "#1221"
 msgid "Music & video & pictures"
-msgstr "Muusika ja video ja pildid"
+msgstr "Muusika, video ja pildid"
 
 msgctxt "#1222"
 msgid "Music & video & pictures & files"
-msgstr "Muusika ja video ja pildid ja failid"
+msgstr "Muusika, video, pildid ja failid"
 
 msgctxt "#1223"
 msgid "Disabled"
-msgstr "Blokeeritud"
+msgstr "Ei kasutata"
 
 msgctxt "#1226"
 msgid "Files & music & video"
-msgstr "Failid ja muusika ja videod"
+msgstr "Failid, muusika ja videod"
 
 msgctxt "#1227"
 msgid "Files & pictures & music"
-msgstr "Failid ja pildid ja muusika"
+msgstr "Failid, pildid ja muusika"
 
 msgctxt "#1228"
 msgid "Files & pictures & video"
-msgstr "Failid ja pildid ja video"
+msgstr "Failid, pildid ja video"
 
 msgctxt "#1229"
 msgid "Music & programs"
@@ -3039,19 +3043,19 @@ msgstr "Pildid ja programmid"
 
 msgctxt "#1232"
 msgid "Music & video & pictures & programs"
-msgstr "Muusika ja video ja pildid ja programmid"
+msgstr "Muusika, video, pildid ja programmid"
 
 msgctxt "#1233"
 msgid "Programs & video & music"
-msgstr "Programmid ja video ja muusika"
+msgstr "Programmid, video ja muusika"
 
 msgctxt "#1234"
 msgid "Programs & pictures & music"
-msgstr "Programmid ja pildid ja muusika"
+msgstr "Programmid, pildid ja muusika"
 
 msgctxt "#1235"
 msgid "Programs & pictures & video"
-msgstr "Programmid ja pildid ja video"
+msgstr "Programmid, pildid ja video"
 
 msgctxt "#1259"
 msgid "Zeroconf"
@@ -3103,7 +3107,7 @@ msgstr "ja"
 
 msgctxt "#1398"
 msgid "Freezing"
-msgstr "külmutamine"
+msgstr "jäine"
 
 msgctxt "#1399"
 msgid "Late"
@@ -3161,6 +3165,10 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "tuuline"
 
+msgctxt "#1413"
+msgid "Patches"
+msgstr "laigud"
+
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "äikesetorm"
@@ -3207,7 +3215,7 @@ msgstr "Lauspilvisus"
 
 msgctxt "#1425"
 msgid "Pellets"
-msgstr "Pelletid"
+msgstr "Graanulid"
 
 msgctxt "#1426"
 msgid "Hail"
@@ -3237,6 +3245,10 @@ msgctxt "#1432"
 msgid "Sand"
 msgstr "Liiv"
 
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Pihustatud"
+
 msgctxt "#1434"
 msgid "Whirls"
 msgstr "Tuisupöörised"
@@ -3251,7 +3263,7 @@ msgstr "Puhumine"
 
 msgctxt "#1437"
 msgid "Pellet"
-msgstr "Pellet"
+msgstr "Graanul"
 
 msgctxt "#1438"
 msgid "Small"
@@ -3276,6 +3288,10 @@ msgstr "Võimalus"
 msgctxt "#1443"
 msgid "of"
 msgstr "/"
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "lehter"
 
 msgctxt "#1445"
 msgid "Cloud"
@@ -3308,6 +3324,10 @@ msgstr "Kestvus"
 msgctxt "#2080"
 msgid "Empty list"
 msgstr "Tühjenda nimekiri"
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "Võeti kasutusele peamine loend, sest jooksev loend tühjendati"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3415,7 +3435,7 @@ msgstr "Videod/Esitusloend"
 
 msgctxt "#10029"
 msgid "Login screen"
-msgstr "Logimisviip"
+msgstr "Logimisekraan"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
@@ -3631,7 +3651,7 @@ msgstr "Tagasi muusika menüüsse"
 
 msgctxt "#12011"
 msgid "Return to videos window"
-msgstr "Tagasi videode menüüsse"
+msgstr "Tagasi videote menüüsse"
 
 msgctxt "#12021"
 msgid "Start from beginning"
@@ -3789,6 +3809,10 @@ msgctxt "#12350"
 msgid "Processing %s"
 msgstr "%s töötlemine"
 
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "Sinu videoteegi pildipuhver vajab uuendamist"
+
 msgctxt "#12352"
 msgid "No downloading is needed."
 msgstr "Allalaadimine pole vajalik."
@@ -3835,7 +3859,7 @@ msgstr "Seaded & failihaldur"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
-msgstr "Säti vaikeväärtuseks kõikidele videodele"
+msgstr "Säti vaikeväärtuseks kõikidele videotele"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3915,7 +3939,7 @@ msgstr "Ainult video"
 
 msgctxt "#13003"
 msgid "- Delay"
-msgstr "- Viitus"
+msgstr "- Viivitus"
 
 msgctxt "#13004"
 msgid "- Minimum file duration"
@@ -3935,7 +3959,7 @@ msgstr "Välju"
 
 msgctxt "#13010"
 msgid "Hibernate"
-msgstr "Hiberneeri"
+msgstr "Uinu"
 
 msgctxt "#13011"
 msgid "Suspend"
@@ -3993,9 +4017,29 @@ msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Juhtkang lahti ühendatud"
 
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "Proovi pöördumisel kaugservereid äratada"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Ärka võrgust pöördumisel (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Võrguühenduse ootamine..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Võrgust äratamine ebaõnnestus!"
+
 msgctxt "#13030"
 msgid "Waiting for server to wake up..."
 msgstr "Serveri ärkamise ootamine…"
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Pikendatud serveri ärkamise ootamine…"
 
 msgctxt "#13032"
 msgid "Waiting for services to launch..."
@@ -4004,6 +4048,14 @@ msgstr "Teenuste käivitamise ootamine…"
 msgctxt "#13033"
 msgid "MAC Discovery"
 msgstr "MAC leidmine"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Uuendatud %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Leitud %s"
 
 msgctxt "#13036"
 msgid "Failed for %s"
@@ -9495,7 +9547,7 @@ msgstr "Paigalda"
 
 msgctxt "#24039"
 msgid "Disabled Add-ons"
-msgstr "Keela lisamooduleid"
+msgstr "Keelatud lisamoodulid"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
@@ -10964,6 +11016,18 @@ msgstr "Info pole veel saadaval."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Info pole veel saadaval."
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Vali kanal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Salvesta"
+
+msgctxt "#36502"
+msgid "None"
+msgstr "Puudub"
 
 msgctxt "#36524"
 msgid "Preferred mode"

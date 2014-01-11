@@ -1076,3 +1076,7 @@ msgstr "Peripherals"
 msgctxt "#35500"
 msgid "Location"
 msgstr "Địa điểm"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Ghi lại"

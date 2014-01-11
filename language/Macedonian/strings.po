@@ -8324,3 +8324,11 @@ msgstr "Amplifier / AVR уред"
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* локација"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Префрли на канал"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Сними"

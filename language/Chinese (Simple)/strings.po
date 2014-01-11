@@ -5481,6 +5481,10 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "无效源"
 
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "如何处置媒体项目%s"
+
 msgctxt "#15014"
 msgid "Keep"
 msgstr "保留"
@@ -5909,6 +5913,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - 场内插值"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "后处理"
@@ -6204,6 +6212,10 @@ msgstr "此录像无法删除，详情见日志记录。"
 msgctxt "#19069"
 msgid "EPG"
 msgstr "电子节目单"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "现在转入"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -8101,6 +8113,14 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "下载歌手信息失败"
 
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "用在线信息覆盖歌曲标签"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "此选项启用时，你在歌曲标签中设置的风格、年代、歌手等信息，将会被下载信息所覆盖。当你的歌曲标签中有 MusicBrainz 标识时很有用。"
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "Android 音乐"
@@ -9339,7 +9359,7 @@ msgstr "拍摄时间"
 
 msgctxt "#21821"
 msgid "Description"
-msgstr "照片描述"
+msgstr "描述"
 
 msgctxt "#21822"
 msgid "Camera make"
@@ -11453,10 +11473,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "默认电子节目单窗口显示。默认为时间表。"
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "从后端导入电子节目单天数。默认为2天。"
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "从后端导入电子节目单时间间隔。默认为120分钟。"
@@ -12269,6 +12285,26 @@ msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "当硬件解码不工作或禁用时使用 ffmpeg 的框架多线程解码。（没有默认的单线程模式可靠）"
 
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "设置当一个电子节目单项被选中时的动作：[显示上下文菜单] 将触发上下文菜单让你选择更多动作；[切换到频道] 将立即转到相应频道；[显示信息] 将显示剧情介绍等详细信息；[录像] 将创建一个所选项目的录像定时器。"
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "显示上下文菜单"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "切换到频道"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "显示信息"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "录像"
+
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
 msgstr "立体模式（当前）"
@@ -12404,6 +12440,14 @@ msgstr "启用此项使多声道混缩时人声较背景声音更突出"
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "启用视频文件的硬解码。"
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "字幕立体深度"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "设置字幕在立体视频中的远近距离。数值越大则会感觉字幕离你越近。"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"

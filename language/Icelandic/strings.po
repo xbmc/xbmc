@@ -8864,3 +8864,11 @@ msgstr "Sjónvarp"
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
 msgstr "Mappa sem notuð er til þess að vista skjáskot sem tekin eru í XBMC."
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Skipta yfir á rás"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Taka upp"

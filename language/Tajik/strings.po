@@ -5481,6 +5481,10 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Манбаи дастнорас"
 
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Бо объектҳои мултимедиа аз %s чӣ бояд кард"
+
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Нигоҳ доштан"
@@ -8108,6 +8112,14 @@ msgstr "Ягон ҳунарманд ёфт нашуд!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Боргирии иттилооти ҳунарманд қатъ шудааст"
+
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Рӯиҳамнависии барчаспҳои суруд бо иттилооти онлайн"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Агар инро фаъол кунед, ягон иттилооти боргиришуда барои албомҳо ва ҳунармандон иттилооти танзимшударо дар барчаспҳои суруд, монанди жанр, сол, ҳофизи суруд ва ғайра рӯиҳамнависӣ мекунад. Муфид аст, агар MusicBrainz-ро барои барчаспҳои суруд истифода баред."
 
 msgctxt "#20240"
 msgid "Android music"
@@ -11461,10 +11473,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Равзанаи пешфарзи EPG барои намоиш. Қимати пешфарз - Хати вақт."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Миқдори рӯзҳо барои воридоти иттилооти EPG аз серверҳои мултимедиавӣ. Қимати пешфарз - 2 рӯз."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Фосилаи вақт байни воридотҳои иттилооти EPG аз серверҳои мултимедиавӣ. Қимати пешфарз - 120 дақиқа."
@@ -12276,6 +12284,26 @@ msgstr "Фаъол кардани рамзгузори сахтафзории в
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "Истифодаи рамзгузори серриштаи кадрҳои ffmpeg вақте ки рамзгузори сахтафзорӣ кор намекунад ё ғайрифаъол аст. (қобилияти итминонаш нисбат ба ҳолати пешфарзи якриштаӣ паст аст)"
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Амалро барои объекти интихобшудаи EPG интихоб намоед: [Намоиши менюи марбут] менюи марбутро барои интихоби амалҳои иловагӣ намоиш медиҳад; [Гузариш ба канал] канали марбутро дарҳол танзим мекунад; [Намоиши иттилоот] иттилооти ботафсилро бо сужет ва имконоти иловагӣ намоиш медиҳад; [Сабт] вақтсанҷи сабтро барои объекти интихобшуда оғоз мекунад."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Намоиши менюи марбут"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Гузаштан ба канал"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Намоиши иттилоот"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Сабт"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

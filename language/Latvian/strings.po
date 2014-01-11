@@ -1837,6 +1837,10 @@ msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#36428"
+msgid "Record"
+msgstr "Ierakstīt"
+
 msgctxt "#36502"
 msgid "None"
 msgstr "Nav"

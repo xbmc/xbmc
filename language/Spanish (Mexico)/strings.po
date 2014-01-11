@@ -11053,10 +11053,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Ventana EPG que se mostrará. Por omisión al Timeline."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Número de días de los datos del EPG que se importarán desde el backend. Por omisión, 2 días."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Tiempo entre cada importación de EPG desde el backend. Por omisión, 120 minutos."
@@ -11800,6 +11796,14 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Activa la decodificación por hardware utilizando el decodificador AMLogic"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Cambiar a canal"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Grabar"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

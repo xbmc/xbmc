@@ -12111,7 +12111,7 @@ msgctxt "#24121"
 msgid "Enter search string"
 msgstr ""
 
-#empty strings from id 24121 to 24999
+#empty strings from id 24122 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -14940,7 +14940,7 @@ msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
 msgstr ""
 
-#empty strings from id 36547 to 36999
+#empty strings from id 36549 to 36999
 #reserved strings 365XX
 
 #: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
@@ -15003,6 +15003,7 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
+msgstr ""
 
 #: system/settings/rbp.xml
 msgctxt "#37020"

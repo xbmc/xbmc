@@ -3248,3 +3248,7 @@ msgstr "वक्ता विन्यास"
 msgctxt "#35502"
 msgid "Name"
 msgstr "नाम"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "लिखना"

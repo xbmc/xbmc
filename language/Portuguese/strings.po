@@ -5481,6 +5481,10 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Fonte indisponível"
 
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "O que pretende fazer com os itens de média de %s"
+
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Manter"
@@ -5935,7 +5939,7 @@ msgstr "%i dias"
 
 msgctxt "#19000"
 msgid "Switch to channel"
-msgstr "Mudar para canal"
+msgstr "Mudar para Canal"
 
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
@@ -8108,6 +8112,14 @@ msgstr "Não foi encontrado artista!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Não foi possível transferir informação do artista"
+
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Sobrescrever etiquetas de música com info online"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Quando activado, qualquer informação de álbuns e artistas que seja transferida irá sobrescrever os valores presentes nas etiquetas de músicas, como os géneros, anos, artistas, etc. Isto é útil se tiver identificadores MusicBrainz nas suas etiquetas de músicas."
 
 msgctxt "#20240"
 msgid "Android music"
@@ -11461,10 +11473,6 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Padrão de janela EPG para exibir. A Linha do Tempo é a vista padrão."
 
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Número de dias de dados EPG a importar da backend. O padrão é 2 dias."
-
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Intervalo de tempo entre importações de dados EPG da backend. O padrão é 120 minutos."
@@ -12276,6 +12284,26 @@ msgstr "Activa a descodificação por hardware com o descodificador AMLogic"
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "Usar descodificação ffmpeg de frames multi-tarefa quando a descodificação hardware não funciona ou está desactivada. (menos fiável do que o modo padrão de tarefa única)"
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Seleccionar o que acontece quando um item do EPG é seleccionado: [Exibir Menu de Contexto] irá exibir o menu de contexto, de onde poderá escolher outras acções.; [Mudar Para Canal] irá sintonizar imediatamente o canal relacionado; [Exibir Informação] exibirá informação detalhada, com argumento e mais opções; [Gravar] irá criar um temporizador de gravação para o item seleccionado."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Exibir menu de contexto"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Mudar para canal"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Exibir informação"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Gravar"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

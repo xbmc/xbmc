@@ -6712,3 +6712,11 @@ msgstr "Phiên bản giao diện libCEC không được hỗ trợ. Phiên bản
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Thư mục item"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Chuyển tới kênh"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Thu âm"

@@ -10869,6 +10869,18 @@ msgctxt "#36327"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr "讓遠端使用者可以透過內建的網頁伺服器控制 XBMC"
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "設定網頁伺服器的使用者帳號。"
+
+msgctxt "#36331"
+msgid "Define webserver password."
+msgstr "設定網頁伺服器的密碼。"
+
 msgctxt "#36333"
 msgid "No info available yet."
 msgstr "無可用資訊。"
@@ -10961,13 +10973,41 @@ msgctxt "#36375"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "使用遊戲手把控制 XBMC。"
+
 msgctxt "#36379"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "設定代理伺服器的類型。"
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "設定代理伺服器的位址。"
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "設定代理伺服器的連接埠。"
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "設定代理伺服器的使用者帳號。"
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "設定代理伺服器的密碼。"
+
 msgctxt "#36388"
 msgid "No info available yet."
 msgstr "無可用資訊。"
+
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "設定 XBMC 要在閒置多久的時間之後關閉。"
 
 msgctxt "#36392"
 msgid "No info available yet."
@@ -11052,6 +11092,14 @@ msgstr "無可用資訊。"
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "無可用資訊。"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "切換到頻道"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "錄音"
 
 msgctxt "#37014"
 msgid "Last used profile"

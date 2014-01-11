@@ -1507,11 +1507,11 @@ msgstr "Ver: Ícones grandes"
 
 msgctxt "#418"
 msgid "Low"
-msgstr "Baixo"
+msgstr "Mín"
 
 msgctxt "#419"
 msgid "High"
-msgstr "Alto"
+msgstr "Máx"
 
 msgctxt "#420"
 msgid "Best Match"
@@ -5481,13 +5481,17 @@ msgctxt "#15012"
 msgid "Unavailable source"
 msgstr "Fonte indisponível"
 
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "O que você deseja fazer com estes itens de mídia de %s"
+
 msgctxt "#15014"
 msgid "Keep"
 msgstr "Manter"
 
 msgctxt "#15015"
 msgid "Remove"
-msgstr "Remover"
+msgstr "Remove"
 
 msgctxt "#15016"
 msgid "Games"
@@ -6211,7 +6215,7 @@ msgstr "EPG"
 
 msgctxt "#19070"
 msgid "Go to now"
-msgstr "Ir para agora"
+msgstr "Ir agora"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -6407,11 +6411,11 @@ msgstr "Somente canais abertos"
 
 msgctxt "#19124"
 msgid "Ignore present timers"
-msgstr "Ignore agendamentos atuais"
+msgstr "Ignorar agendamentos atuais"
 
 msgctxt "#19125"
 msgid "Ignore present recordings"
-msgstr "Ignore gravações atuais"
+msgstr "Ignorar gravações atuais"
 
 msgctxt "#19126"
 msgid "Start time"
@@ -8109,6 +8113,14 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Falha ao baixar informações de artista"
 
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Sobreponha tags de músicas com informações online"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Com este ajuste ligado, qualquer informação que for transferida para álbuns e artistas, irá sobrepor os conteúdos anteriores de suas tags de músicas, como gênero, ano, artistas de músicas etc. Útil se você tiver identificadores MusicBrainz em suas tags de músicas."
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "Músicas Android"
@@ -9699,7 +9711,7 @@ msgstr "Guia"
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimise black bars"
-msgstr "Erro (%) permitido na proporção de aspecto para minimizar barras pretas"
+msgstr "Erro da proporção de aspecto para minimizar barras pretas"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
@@ -10851,31 +10863,31 @@ msgstr "Ativar mudar lado dos comandos"
 
 msgctxt "#36006"
 msgid "Could not open the adaptor"
-msgstr "Não pude abrir o adaptador"
+msgstr "Não foi possível abrir o adaptador"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
-msgstr "Ligar a TV ou projetor quando inicializar o XBMC"
+msgstr "Ligar a TV ou projetor ao inicializar o XBMC"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping XBMC"
-msgstr "Desligar equipamentos quando parar o XBMC"
+msgstr "Desligar equipamentos ao parar o XBMC"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr "Colocar os equipamentos em modo de espera quando ativando proteção de tela"
+msgstr "Dormir equipamentos ao ativar o protetor de tela"
 
 msgctxt "#36010"
 msgid "Wake devices when deactivating screensaver"
-msgstr "Ativar dispositivos quando protetor de tela estiver sendo desativado"
+msgstr "Acordar equipamentos ao desativar o protetor de tela"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
-msgstr "Não pude detectar a porta CEC. Seta manualmente."
+msgstr "Não foi possível detectar à porta CEC. Configure-o manualmente."
 
 msgctxt "#36012"
 msgid "Could not initialise the CEC adaptor. Please check your settings."
-msgstr "Não pude inicializar o adaptador CEC. Por favor verifique seus ajustes."
+msgstr "Não foi possível inicializar o adaptador CEC. Por favor verifique seus ajustes."
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -10887,7 +10899,7 @@ msgstr "Conectado"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
-msgstr "Não pude inicializar o adaptador CEC: libCEC não foi encontrado em seu sistema."
+msgstr "Não foi possível inicializar o adaptador CEC: libCEC não foi encontrado em seu sistema."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10899,7 +10911,7 @@ msgstr "Conectado a um dispositivo HDMI"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr "Faça XBMC a fonte ativa quando se inicia"
+msgstr "Faça o XBMC a fonte ativa ao iniciar"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -10919,11 +10931,11 @@ msgstr "Falha ao definir a nova configuração. Por favor, verifique suas config
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "Envie comando 'fonte inativa' quando parando XBMC"
+msgstr "Enviar comando 'fonte inativa' ao parar o XBMC"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr "Coloque o equipamento em modo standby quando colocar o PC em standby"
+msgstr "Dormir equipamentos quando o PC também dormir"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
@@ -10931,11 +10943,11 @@ msgstr "Este equipamento necessita serviços"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr "Ignore"
+msgstr "Ignorar"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr "Quando a TV estiver desligando"
+msgstr "Ao desligar a TV"
 
 msgctxt "#36030"
 msgid "Connection lost"
@@ -11460,10 +11472,6 @@ msgstr "Nenhuma informação disponível ainda"
 msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Padrão de janela EPG para exibir. A Linha do Tempo é a vista padrão."
-
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 2 days."
-msgstr "Número de dias de dados EPG a importar do backend. O padrão é 2 dias."
 
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
@@ -12276,6 +12284,26 @@ msgstr "Ativar decodificação de vídeo por hardware usando decoder AMLogic"
 msgctxt "#36423"
 msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
 msgstr "Usar a decodificação de segmentos múltiplos ffmpeg quando a decodificação por hardware não funcionar ou estiver desativada. (Menos confiável do que o modo padrão de decodificação única)"
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "lecione o que vai acontecer quando um item é selecionado EPG: [Mostrar menu de contexto] irá acionar o menu contextual aonde você poderá escolher novas ações; [Mudar para o canal] irá imediatamente sintonizar o canal selecionado; [Mostrar informações] irá mostrar informações detalhadas como enredo e outras opções; [Gravar] criará um temporizador de gravação para o item selecionado."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Mostrar menu de contexto"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Mudar para o canal"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Mostrar Informações"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Gravar"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

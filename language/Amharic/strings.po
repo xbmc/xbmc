@@ -5560,3 +5560,7 @@ msgstr "ቲቪ "
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr "የ እቃ ፎልደር"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "መቅረጫ "

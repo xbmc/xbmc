@@ -10123,7 +10123,7 @@ msgstr "Ezarri blokeo nagusiaren PIN kodea"
 
 msgctxt "#36397"
 msgid "If enabled, the master lock code is required to unlock XBMC on startup "
-msgstr "Gaiturik dagoenean blokeo kodea eskatuko da abioan XMBC desblokeatzeko"
+msgstr "Gaiturik dagoenean blokeo kodea eskatuko da abioan XBMC desblokeatzeko"
 
 msgctxt "#36399"
 msgid "No info available yet."
@@ -10208,6 +10208,14 @@ msgstr "Ez dago informazio erabilgarririk oraindik."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Aldatu kanala"
+
+msgctxt "#36428"
+msgid "Record"
+msgstr "Grabatu"
 
 msgctxt "#37001"
 msgid "(Directors Comments)"
