@@ -447,7 +447,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.usevdpaumpeg2" type="boolean" label="13441" help="36102">
+        <setting id="videoplayer.usevdpaumpeg2" type="boolean" parent="videoplayer.usevdpau" label="13441" help="13442">
           <requirement>HAVE_LIBVDPAU</requirement>
           <level>3</level>
           <default>true</default>
@@ -457,7 +457,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.usevdpaumpeg4" type="boolean" label="13442" help="36102">
+        <setting id="videoplayer.usevdpaumpeg4" type="boolean" parent="videoplayer.usevdpau" label="13443" help="13444">
           <requirement>HAVE_LIBVDPAU</requirement>
           <level>3</level>
           <default>false</default>
@@ -467,7 +467,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.usevdpauvc1" type="boolean" label="13443" help="36102">
+        <setting id="videoplayer.usevdpauvc1" type="boolean" parent="videoplayer.usevdpau" label="13445" help="13446">
           <requirement>HAVE_LIBVDPAU</requirement>
           <level>3</level>
           <default>true</default>
@@ -486,7 +486,7 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-       <setting id="videoplayer.usevaapimpeg2" type="boolean" label="13447" help="36102">
+       <setting id="videoplayer.usevaapimpeg2" type="boolean" parent="videoplayer.usevaapi" label="13447" help="13448">
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
@@ -496,7 +496,7 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.usevaapimpeg4" type="boolean" label="13448" help="36102">
+        <setting id="videoplayer.usevaapimpeg4" type="boolean" parent="videoplayer.usevaapi" label="13449" help="13450">
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
@@ -506,7 +506,7 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.usevaapivc1" type="boolean" label="13449" help="36102">
+        <setting id="videoplayer.usevaapivc1" type="boolean" parent="videoplayer.usevaapi" label="13451" help="13452">
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
