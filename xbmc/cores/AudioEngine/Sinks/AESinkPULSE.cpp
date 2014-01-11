@@ -527,7 +527,12 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   const pa_buffer_attr *a;
 
   if (!(a = pa_stream_get_buffer_attr(m_Stream)))
-      CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
+  {
+    CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
+    pa_threaded_mainloop_unlock(m_MainLoop);
+    Deinitialize();
+    return false;
+  }
   else
   {
     unsigned int packetSize = a->minreq;
