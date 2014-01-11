@@ -1135,6 +1135,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   else if (uri == "/getProperty")
   {
     status = AIRPLAY_STATUS_NOT_FOUND;
+  }
+
+  else if (uri == "/fp-setup")
+  {
+    status = AIRPLAY_STATUS_PRECONDITION_FAILED;
   }  
 
   else if (uri == "200") //response OK from the event reverse message
