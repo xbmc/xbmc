@@ -901,7 +901,26 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
 
           tmpNode = m_pLibPlist->plist_dict_get_item(dict, "Content-Location");
           if (tmpNode)
+          {
             location = getStringFromPlist(m_pLibPlist, tmpNode);
+            tmpNode = NULL;
+          }
+          
+          // in newer protocol versions the location is given
+          // via host and path where host is ip:port and path is /path/file.mov
+          if (location.empty())
+              tmpNode = m_pLibPlist->plist_dict_get_item(dict, "host");
+          if (tmpNode)
+          {
+            location = "http://";
+            location += getStringFromPlist(m_pLibPlist, tmpNode);
+
+            tmpNode = m_pLibPlist->plist_dict_get_item(dict, "path");
+            if (tmpNode)
+            {
+              location += getStringFromPlist(m_pLibPlist, tmpNode);
+            }
+          }
 
           if (dict)
           {
