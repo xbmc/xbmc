@@ -245,6 +245,10 @@ IF %comp%==vs2010 (
   
   ECHO ------------------------------------------------------------
   call buildpvraddons.bat %NET%
+  IF %errorlevel%==1 (
+    set DIETEXT="failed to build pvr addons"
+    goto DIE
+  )
     
   IF EXIST error.log del error.log > NUL
   SET build_path=%CD%

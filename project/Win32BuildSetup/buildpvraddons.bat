@@ -64,6 +64,10 @@ REM build xbmc-pvr-addons.sln
 ECHO Building PVR addons
 %1 %OPTS_EXE%
 
+IF %errorlevel%==1 (
+  goto fail
+)
+
 REM copy the built pvr addons into ADDONS_DIR
 CD "%BUILT_ADDONS_DIR%"
 SET ADDONS_DIR=..\..\..\..\Win32BuildSetup\BUILD_WIN32\Xbmc\xbmc-pvr-addons
@@ -89,6 +93,10 @@ GOTO done
 
 :error
 ECHO No git command available. Unable to fetch and build xbmc-pvr-addons.
+SET EXITCODE=1
+
+:fail
+ECHO Failed to build one or more pvr addons
 SET EXITCODE=1
 
 :done
