@@ -50,7 +50,7 @@ public:
   virtual bool      SetMaxFramesPerSlice(UInt32 maxFrames);
   virtual bool      GetSupportedChannelLayouts(AudioChannelLayoutList* pLayouts);
   virtual void      GetFormatDesc(AEAudioFormat format, 
-                      AudioStreamBasicDescription *streamDesc, AudioStreamBasicDescription *coreaudioDesc);
+                      AudioStreamBasicDescription *streamDesc, AudioStreamBasicDescription *coreaudioDesc, bool encoded = false);
   virtual float     GetLatency();
   virtual bool      Stop();
   virtual bool      Start();

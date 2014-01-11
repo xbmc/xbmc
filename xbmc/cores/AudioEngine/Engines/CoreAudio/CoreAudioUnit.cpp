@@ -278,7 +278,7 @@ OSStatus CCoreAudioUnit::RenderCallback(void *inRefCon, AudioUnitRenderActionFla
 }
 
 void CCoreAudioUnit::GetFormatDesc(AEAudioFormat format,
-  AudioStreamBasicDescription *streamDesc, AudioStreamBasicDescription *coreaudioDesc)
+  AudioStreamBasicDescription *streamDesc, AudioStreamBasicDescription *coreaudioDesc, bool encoded)
 {
   unsigned int bps = CAEUtil::DataFormatToBits(format.m_dataFormat);
 
@@ -303,15 +303,24 @@ void CCoreAudioUnit::GetFormatDesc(AEAudioFormat format,
       streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
       break;
     case AE_FMT_S16LE:
-      streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
+      if (encoded)
+        streamDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
+      else
+        streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
       break;
     case AE_FMT_S16BE:
       streamDesc->mFormatFlags |= kAudioFormatFlagIsBigEndian;
-      streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
+      if (encoded)
+        streamDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
+      else
+        streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
       break;
     default:
       streamDesc->mFormatFlags |= kAudioFormatFlagsNativeEndian;
-      streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
+      if (encoded)
+        streamDesc->mFormatFlags |= kAudioFormatFlagIsSignedInteger;
+      else
+        streamDesc->mFormatFlags |= kAudioFormatFlagsAudioUnitCanonical;
       break;
   }
   streamDesc->mChannelsPerFrame = format.m_channelLayout.Count();               // Number of interleaved audiochannels

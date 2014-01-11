@@ -42,7 +42,7 @@ public:
   ~CCoreAudioGraph();
 
   bool             Open(ICoreAudioSource *pSource, AEAudioFormat &format, AudioDeviceID deviceId,
-                     bool allowMixing, AudioChannelLayoutTag layoutTag, float initVolume);
+                     bool allowMixing, AudioChannelLayoutTag layoutTag, float initVolume, bool encoded);
   bool             Close();
   bool             Start();
   bool             Stop();

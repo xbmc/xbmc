@@ -85,7 +85,7 @@ CCoreAudioAEHALOSX::~CCoreAudioAEHALOSX()
   delete m_OutputStream;
 }
 
-bool CCoreAudioAEHALOSX::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, AudioDeviceID outputDevice)
+bool CCoreAudioAEHALOSX::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, AudioDeviceID outputDevice, bool encoded)
 {
   if (m_audioGraph)
     m_audioGraph->Close(), delete m_audioGraph;
@@ -98,7 +98,7 @@ bool CCoreAudioAEHALOSX::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat 
   if (!m_Passthrough && CSettings::Get().GetInt("audiooutput.channels") ==  AE_CH_LAYOUT_2_0)
     layout = g_LayoutMap[1];
 
-  if (!m_audioGraph->Open(pSource, format, outputDevice, allowMixing, layout, m_initVolume ))
+  if (!m_audioGraph->Open(pSource, format, outputDevice, allowMixing, layout, m_initVolume, encoded ))
   {
     CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::Initialize: "
       "Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
@@ -121,7 +121,7 @@ bool CCoreAudioAEHALOSX::InitializePCMEncoded(ICoreAudioSource *pSource, AEAudio
   // Set the Sample Rate as defined by the spec.
   m_AudioDevice->SetNominalSampleRate((float)format.m_sampleRate);
 
-  if (!InitializePCM(pSource, format, false, outputDevice))
+  if (!InitializePCM(pSource, format, false, outputDevice, true))
     return false;
 
   return true;
