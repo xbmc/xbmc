@@ -980,15 +980,14 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
     else
     {
       CBookmark bookmark;
-      if (videodatabase.GetResumeBookMark(details.m_strFileNameAndPath, bookmark))
-      {
-        bookmark.timeInSeconds = position;
-      
-        int total = (int)parameterObject["resume"]["total"].asInteger();
-        if (total > 0)
-          bookmark.totalTimeInSeconds = total;
-        videodatabase.AddBookMarkToFile(details.m_strFileNameAndPath, bookmark, CBookmark::RESUME);
-      }
+      int total = (int)parameterObject["resume"]["total"].asInteger();
+      if (total <= 0 && !videodatabase.GetResumeBookMark(details.m_strFileNameAndPath, bookmark))
+        bookmark.totalTimeInSeconds = details.m_streamDetails.GetVideoDuration();
+      else
+        bookmark.totalTimeInSeconds = total;
+
+      bookmark.timeInSeconds = position;
+      videodatabase.AddBookMarkToFile(details.m_strFileNameAndPath, bookmark, CBookmark::RESUME);
     }
   }
 }
