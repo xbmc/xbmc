@@ -173,12 +173,6 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
         return true;
       }
     }
-    
-    if (field == "lastmodified" && item->m_dateTime.IsValid())
-    {
-      result[field] = item->m_dateTime.GetAsLocalizedDateTime();
-      return true;
-    }
 
     if (item->HasProperty(field))
     {
