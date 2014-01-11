@@ -27,6 +27,7 @@ endif
 
 LIBS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
+ifneq (@USE_STATIC_FFMPEG@,1)
   LIBS+=$(AVUTIL_SO) \
 	$(AVCODEC_SO) \
 	$(AVFORMAT_SO) \
@@ -35,10 +36,12 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 	$(SWSCALE_SO) \
 	$(SWRESAMPLE_SO)
 endif
+endif
 
 .PHONY: $(DIRS) codecs
 
 ifneq ($(findstring osx,$(ARCH)), osx)
+ifneq (@USE_STATIC_FFMPEG@,1)
 
 codecs: $(addprefix $(SYSDIR)/, $(LIBS));
 
@@ -70,6 +73,17 @@ ffmpeg/libavfilter/libavfilter.so : ffmpeg;
 ffmpeg/libswscale/libswscale.so   : ffmpeg;
 ffmpeg/libpostproc/libpostproc.so : ffmpeg;
 ffmpeg/libswresample/libswresample.so : ffmpeg;
+endif
+endif
+
+ifeq (@USE_STATIC_FFMPEG@,1)
+ffmpeg/libavutil/libavutil.a     : ffmpeg;
+ffmpeg/libavcodec/libavcodec.a   : ffmpeg;
+ffmpeg/libavformat/libavformat.a : ffmpeg;
+ffmpeg/libavfilter/libavfilter.a : ffmpeg;
+ffmpeg/libswscale/libswscale.a   : ffmpeg;
+ffmpeg/libpostproc/libpostproc.a : ffmpeg;
+ffmpeg/libswresample/libswresample.a : ffmpeg;
 endif
 
 ffmpeg:

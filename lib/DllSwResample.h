@@ -60,7 +60,7 @@ public:
   virtual int swr_set_compensation(struct SwrContext *s, int sample_delta, int compensation_distance) = 0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
+#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) || (defined USE_STATIC_FFMPEG)
 
 // Use direct mapping
 class DllSwResample : public DllDynamic, DllSwResampleInterface
@@ -71,7 +71,7 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
-#if !defined(TARGET_DARWIN)
+#if !defined(TARGET_DARWIN) && !defined(USE_STATIC_FFMPEG)
     CLog::Log(LOGDEBUG, "DllAvFormat: Using libswresample system library");
 #endif
     return true;

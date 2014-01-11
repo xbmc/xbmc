@@ -598,6 +598,7 @@ MAKE="${MAKE:-make}"
 OBJDUMP="${OBJDUMP:-objdump}"
 
 use_external_ffmpeg=no
+use_static_ffmpeg=no
 
 # ffmpeg needs the output of uname -s (e.x. linux, darwin) for the target_os
 # there is no autoconf variable which will give
@@ -627,6 +628,8 @@ case $host in
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86"
         use_cpu="i686"
+     else
+        target_platform=target_linux
      fi
      ;;
   x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*)
@@ -634,6 +637,8 @@ case $host in
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86_64"
         use_cpu="x86_64"
+     else
+        target_platform=target_linux
      fi
      ;;
   i386-*-freebsd*)
@@ -867,6 +872,15 @@ elif test "$use_arch" = "arm"; then
     fi
   fi
 fi
+if test "$target_platform" = "target_linux"; then
+  USE_STATIC_FFMPEG=1
+  use_static_ffmpeg=yes
+  AC_DEFINE([USE_STATIC_FFMPEG], [1], [link ffmpeg statically])
+  # ffmpeg may depend on gnutls and vorbisenc, we add those libs at the end of linker
+  # command in order to resolve any missing symbols
+  GNUTLS_ALL_LIBS=`${PKG_CONFIG} --static --libs-only-l --silence-errors gnutls`
+  VORBISENC_ALL_LIBS=`${PKG_CONFIG} --static --libs-only-l --silence-errors vorbisenc`
+fi 
 
 # Checks for library functions.
 AC_FUNC_ALLOCA
@@ -2601,6 +2615,7 @@ AC_SUBST(DISABLE_FISHBMC)
 AC_SUBST(DISABLE_PROJECTM)
 AC_SUBST(USE_SKIN_TOUCHED)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
+AC_SUBST(USE_STATIC_FFMPEG)
 AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
@@ -2645,6 +2660,8 @@ AC_SUBST(USE_ANDROID)
 AC_SUBST(GTEST_CONFIGURED)
 AC_SUBST(USE_DOXYGEN)
 AC_SUBST(USE_PVR_ADDONS)
+AC_SUBST(GNUTLS_ALL_LIBS)
+AC_SUBST(VORBISENC_ALL_LIBS)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
@@ -2802,7 +2819,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffserver \
       --disable-ffmpeg \
       --disable-crystalhd \
-      --enable-shared \
+      `if test "$use_static_ffmpeg" = "yes"; then echo --enable-static; else echo --enable-shared; fi` \
       --disable-doc \
       --enable-postproc \
       --enable-gpl \

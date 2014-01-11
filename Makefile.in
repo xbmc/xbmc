@@ -488,6 +488,17 @@ ifeq ($(findstring freebsd,@ARCH@),freebsd)
 DYNOBJSXBMC+= xbmc/freebsd/freebsd.a
 endif
 
+ifeq (@USE_STATIC_FFMPEG@,1)
+DYNOBJSXBMC += lib/ffmpeg/libavcodec/libavcodec.a \
+               lib/ffmpeg/libavfilter/libavfilter.a \
+               lib/ffmpeg/libswresample/libswresample.a \
+               lib/ffmpeg/libavformat/libavformat.a \
+               lib/ffmpeg/libavutil/libavutil.a \
+               lib/ffmpeg/libpostproc/libpostproc.a \
+               lib/ffmpeg/libswscale/libswscale.a
+LIBS+= @GNUTLS_ALL_LIBS@ @VORBISENC_ALL_LIBS@
+endif
+
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
 MAINOBJS=xbmc/xbmc.o
