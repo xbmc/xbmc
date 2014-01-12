@@ -31,10 +31,13 @@ CGenericTouchActionHandler &CGenericTouchActionHandler::Get()
 }
 
 void CGenericTouchActionHandler::OnTouchAbort()
-{ }
+{
+  m_gestures = 0;
+}
 
 bool CGenericTouchActionHandler::OnSingleTouchStart(float x, float y)
 {
+  m_gestures = QuerySupportedGestures((float)x, (float)y);
   focusControl(x, y);
 
   return true;
@@ -52,6 +55,7 @@ bool CGenericTouchActionHandler::OnSingleTouchMove(float x, float y, float offse
 
 bool CGenericTouchActionHandler::OnSingleTouchEnd(float x, float y)
 {
+  m_gestures = 0;
   return true;
 }
 
@@ -115,6 +119,13 @@ void CGenericTouchActionHandler::OnLongPress(float x, float y, int32_t pointers 
 void CGenericTouchActionHandler::OnSwipe(TouchMoveDirection direction, float xDown, float yDown, float xUp, float yUp, float velocityX, float velocityY, int32_t pointers /* = 1 */)
 {
   if (pointers <= 0 || pointers > 10)
+    return;
+
+  if (m_gestures == EVENT_RESULT_PAN_HORIZONTAL && (direction == TouchMoveDirectionLeft
+                                                  || direction == TouchMoveDirectionRight ))
+    return;
+  else if (m_gestures == EVENT_RESULT_PAN_VERTICAL && (direction == TouchMoveDirectionUp
+                                                  || direction == TouchMoveDirectionDown ))
     return;
 
   int actionId = 0;
