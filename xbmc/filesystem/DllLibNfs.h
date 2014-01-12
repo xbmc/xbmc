@@ -30,6 +30,13 @@ extern "C" {
 }
 #endif
 
+#if defined(TARGET_WINDOWS)
+struct __stat64;
+#define NFSSTAT struct __stat64
+#else
+#define NFSSTAT struct stat
+#endif
+
 class DllLibNfsInterface
 {
 public:
@@ -54,8 +61,8 @@ public:
   virtual void nfs_closedir(struct nfs_context *nfs,      struct nfsdir *nfsdir)=0;      
   virtual struct nfsdirent *nfs_readdir(struct nfs_context *nfs, struct nfsdir *nfsdir)=0;  
   virtual int nfs_mount(struct nfs_context *nfs,     const char *server,   const char *exportname)=0;
-  virtual int nfs_stat(struct nfs_context *nfs,      const char *path,     struct stat *st)=0;
-  virtual int nfs_fstat(struct nfs_context *nfs,     struct nfsfh *nfsfh,  struct stat *st)=0;
+  virtual int nfs_stat(struct nfs_context *nfs,      const char *path,     NFSSTAT *st)=0;
+  virtual int nfs_fstat(struct nfs_context *nfs,     struct nfsfh *nfsfh,  NFSSTAT *st)=0;
   virtual int nfs_truncate(struct nfs_context *nfs,  const char *path,     uint64_t length)=0;
   virtual int nfs_ftruncate(struct nfs_context *nfs, struct nfsfh *nfsfh,  uint64_t length)=0;
   virtual int nfs_opendir(struct nfs_context *nfs,   const char *path,     struct nfsdir **nfsdir)=0;
@@ -100,8 +107,8 @@ class DllLibNfs : public DllDynamic, DllLibNfsInterface
   DEFINE_METHOD2(void,nfs_closedir,  (struct nfs_context *p1, struct nfsdir *p2))        
   DEFINE_METHOD2(int, nfs_close,     (struct nfs_context *p1, struct nfsfh *p2)) 
   DEFINE_METHOD3(int, nfs_mount,     (struct nfs_context *p1, const char *p2,    const char *p3))
-  DEFINE_METHOD3(int, nfs_stat,      (struct nfs_context *p1, const char *p2,    struct stat *p3))
-  DEFINE_METHOD3(int, nfs_fstat,     (struct nfs_context *p1, struct nfsfh *p2,  struct stat *p3))
+  DEFINE_METHOD3(int, nfs_stat,      (struct nfs_context *p1, const char *p2,    NFSSTAT *p3))
+  DEFINE_METHOD3(int, nfs_fstat,     (struct nfs_context *p1, struct nfsfh *p2,  NFSSTAT *p3))
   DEFINE_METHOD3(int, nfs_truncate,  (struct nfs_context *p1, const char *p2,    uint64_t p3))
   DEFINE_METHOD3(int, nfs_ftruncate, (struct nfs_context *p1, struct nfsfh *p2,  uint64_t p3))
   DEFINE_METHOD3(int, nfs_opendir,   (struct nfs_context *p1, const char *p2,    struct nfsdir **p3))

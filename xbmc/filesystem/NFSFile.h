@@ -28,6 +28,7 @@
 #include <list>
 #include "SectionLoader.h"
 #include <map>
+#include "DllLibNfs.h" // for define NFSSTAT
 
 #ifdef TARGET_WINDOWS
 #define S_IRGRP 0
@@ -80,7 +81,7 @@ public:
   
   //special stat which uses its own context
   //needed for getting intervolume symlinks to work
-  int stat(const CURL &url, struct stat *statbuff);
+  int stat(const CURL &url, NFSSTAT *statbuff);
 
   void AddActiveConnection();
   void AddIdleConnection();

@@ -24,7 +24,6 @@
 #include "system.h"
 
 #ifdef HAS_FILESYSTEM_NFS
-#include "DllLibNfs.h"
 #include "NFSFile.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -430,7 +429,7 @@ void CNfsConnection::keepAlive(std::string _exportPath, struct nfsfh  *_pFileHan
   m_pLibNfs->nfs_lseek(pContext, _pFileHandle, offset, SEEK_SET, &offset);
 }
 
-int CNfsConnection::stat(const CURL &url, struct stat *statbuff)
+int CNfsConnection::stat(const CURL &url, NFSSTAT *statbuff)
 {
   CSingleLock lock(*this);
   int nfsRet = 0;
@@ -598,7 +597,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
     return -1;
    
 
-  struct stat tmpBuffer = {0};
+  NFSSTAT tmpBuffer = {0};
 
   ret = gNfsConnection.GetImpl()->nfs_stat(gNfsConnection.GetNfsContext(), filename.c_str(), &tmpBuffer);
   
@@ -612,6 +611,9 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   {  
     if(buffer)
     {
+#if defined(TARGET_WINDOWS)// TODO get rid of this define after gotham
+      memcpy(buffer, &tmpBuffer, sizeof(struct __stat64));
+#else
       memset(buffer, 0, sizeof(struct __stat64));
       buffer->st_dev = tmpBuffer.st_dev;
       buffer->st_ino = tmpBuffer.st_ino;
@@ -624,6 +626,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
       buffer->st_atime = tmpBuffer.st_atime;
       buffer->st_mtime = tmpBuffer.st_mtime;
       buffer->st_ctime = tmpBuffer.st_ctime;
+#endif
     }
   }
   return ret;
