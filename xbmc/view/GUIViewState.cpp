@@ -292,7 +292,7 @@ void CGUIViewState::SetSortMethod(SortBy sortBy, SortAttribute sortAttributes /*
   {
     if (m_sortMethods[i].m_sortDescription.sortBy == sortBy &&
        // don't care about SortAttributeIgnoreFolders as it wasn't part of the old sorting comparison
-        m_sortMethods[i].m_sortDescription.sortAttributes == (sortAttributes & ~SortAttributeIgnoreFolders))
+       (m_sortMethods[i].m_sortDescription.sortAttributes & ~SortAttributeIgnoreFolders) == (sortAttributes & ~SortAttributeIgnoreFolders))
     {
       m_currentSortMethod = i;
       break;
