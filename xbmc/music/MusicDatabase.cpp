@@ -4915,7 +4915,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
 
     // find all albums
     vector<int> albumIds;
-    CStdString sql = "select idAlbum FROM album WHERE lastScraped NOT NULL";
+    CStdString sql = "select idAlbum FROM album WHERE lastScraped IS NOT NULL";
     m_pDS->query(sql.c_str());
 
     int total = m_pDS->num_rows();
@@ -5002,7 +5002,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
 
     // find all artists
     vector<int> artistIds;
-    CStdString artistSQL = "SELECT idArtist FROM artist where lastScraped NOT NULL";
+    CStdString artistSQL = "SELECT idArtist FROM artist where lastScraped IS NOT NULL";
     m_pDS->query(artistSQL.c_str());
     total = m_pDS->num_rows();
     current = 0;
