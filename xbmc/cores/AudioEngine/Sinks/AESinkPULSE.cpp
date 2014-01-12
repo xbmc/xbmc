@@ -398,7 +398,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   if (!SetupContext(NULL, &m_Context, &m_MainLoop))
   {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
+    CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
     Deinitialize();
     return false;
   }
@@ -680,7 +680,7 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   if (!SetupContext(NULL, &context, &mainloop))
   {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
+    CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
     return;
   }
 
