@@ -127,7 +127,7 @@ bool CNFSDirectory::ResolveSymlink( const CStdString &dirName, struct nfsdirent 
   
   if(ret == 0)
   {
-    struct stat tmpBuffer = {0};      
+    NFSSTAT tmpBuffer = {0};
     fullpath = dirName;
     URIUtils::AddSlashAtEnd(fullpath);
     fullpath.append(resolvedLink);
@@ -350,7 +350,7 @@ bool CNFSDirectory::Exists(const char* strPath)
   if(!gNfsConnection.Connect(url,folderName))
     return false;
   
-  struct stat info;
+  NFSSTAT info;
   ret = gNfsConnection.GetImpl()->nfs_stat(gNfsConnection.GetNfsContext(), folderName.c_str(), &info);
   
   if (ret != 0)
