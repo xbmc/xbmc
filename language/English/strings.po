@@ -15014,3 +15014,13 @@ msgstr ""
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
 msgstr ""
+
+#: xbmc/network/upnp/UPnPPlayer.cpp
+msgctxt "#37022"
+msgid "UPnP Player"
+msgstr ""
+
+#: xbmc/network/upnp/UPnPPlayer.cpp
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr ""

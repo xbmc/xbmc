@@ -37,6 +37,8 @@
 #include "Application.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/Key.h"
+#include "dialogs/GUIDialogYesNo.h"
 
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")
@@ -161,6 +163,7 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
 , m_control(NULL)
 , m_delegate(NULL)
 , m_started(false)
+, m_stopremote(false)
 {
   m_control  = CUPnP::GetInstance()->m_MediaController;
 
@@ -301,6 +304,7 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
                                     , m_delegate), failed);
   }
 
+  m_stopremote = true;
   m_started = true;
   m_callback.OnPlayBackStarted();
   NPT_CHECK_LABEL_SEVERE(m_control->GetPositionInfo(m_delegate->m_device
@@ -360,12 +364,21 @@ failed:
 bool CUPnPPlayer::CloseFile(bool reopen)
 {
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
-  NPT_CHECK_LABEL(m_control->Stop(m_delegate->m_device
-                                , m_delegate->m_instance
-                                , m_delegate), failed);
-  if(!m_delegate->m_resevent.WaitMSec(10000)) goto failed;
-  NPT_CHECK_LABEL(m_delegate->m_resstatus, failed);
-  m_callback.OnPlayBackStopped();
+  if(m_stopremote)
+  {
+    NPT_CHECK_LABEL(m_control->Stop(m_delegate->m_device
+                                  , m_delegate->m_instance
+                                  , m_delegate), failed);
+    if(!m_delegate->m_resevent.WaitMSec(10000)) goto failed;
+    NPT_CHECK_LABEL(m_delegate->m_resstatus, failed);
+  }
+
+  if(m_started)
+  {
+    m_started = false;
+    m_callback.OnPlayBackStopped();
+  }
+
   return true;
 failed:
   CLog::Log(LOGERROR, "UPNP: CUPnPPlayer::CloseFile - unable to stop playback");
@@ -508,5 +521,23 @@ CStdString CUPnPPlayer::GetPlayingTitle()
 {
   return "";
 };
+
+bool CUPnPPlayer::OnAction(const CAction &action)
+{
+  switch (action.GetID())
+  {
+    case ACTION_STOP:
+      if(IsPlaying())
+      {
+        if(CGUIDialogYesNo::ShowAndGetInput(37022, 37023, 0, 0)) /* stop on remote system */
+          m_stopremote = true;
+        else
+          m_stopremote = false;
+        return false; /* let normal code handle the action */
+      }
+    default:
+      return false;
+  }
+}
 
 } /* namespace UPNP */

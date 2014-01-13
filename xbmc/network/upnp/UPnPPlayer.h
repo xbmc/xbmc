@@ -68,7 +68,7 @@ public:
   virtual bool IsCaching() const {return false;};
   virtual int GetCacheLevel() const {return -1;};
   virtual void DoAudioWork();
-
+  virtual bool OnAction(const CAction &action);
 
   virtual CStdString GetPlayingTitle();
 
@@ -78,6 +78,7 @@ private:
   CStdString             m_current_uri;
   CStdString             m_current_meta;
   bool                   m_started;
+  bool                   m_stopremote;
 };
 
 } /* namespace UPNP */
