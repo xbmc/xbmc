@@ -210,22 +210,16 @@ static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime& timeout, CGUI
   return NPT_FAILURE;
 }
 
-bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
+int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout)
 {
   CFileItem item(file);
   NPT_Reference<CThumbLoader> thumb_loader;
   NPT_Reference<PLT_MediaObject> obj;
   NPT_String path(file.GetPath().c_str());
   NPT_String tmp, resource;
-  XbmcThreads::EndTime timeout;
-  CGUIDialogBusy* dialog = NULL;
 
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
 
-  timeout.Set(10000);
-
-  /* if no path we want to attach to a already playing player */
-  if(path != "") {
     if (file.IsVideoDb())
       thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
     else if (item.IsMusicDb())
@@ -267,7 +261,6 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
                                          , m_delegate), failed);
     NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed);
     NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed);
-  }
 
 
   /* wait for PLAYING state */
@@ -303,6 +296,35 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
                                     , PLT_Didl::FormatTimeStamp((NPT_UInt32)options.starttime)
                                     , m_delegate), failed);
   }
+
+  return NPT_SUCCESS;
+failed:
+  return NPT_FAILURE;
+}
+
+bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
+{
+  CGUIDialogBusy* dialog = NULL;
+  XbmcThreads::EndTime timeout(10000);
+
+  /* if no path we want to attach to a already playing player */
+  if(file.GetPath() == "")
+  {
+    NPT_CHECK_LABEL_SEVERE(m_control->GetTransportInfo(m_delegate->m_device
+                                                     , m_delegate->m_instance
+                                                     , m_delegate), failed);
+
+    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout, dialog), failed);
+
+    /* make sure the attached player is actually playing */
+    { CSingleLock lock(m_delegate->m_section);
+      if(m_delegate->m_trainfo.cur_transport_state != "PLAYING"
+      && m_delegate->m_trainfo.cur_transport_state != "PAUSED_PLAYBACK")
+        goto failed;
+    }
+  }
+  else
+    NPT_CHECK_LABEL_SEVERE(PlayFile(file, options, dialog, timeout), failed);
 
   m_stopremote = true;
   m_started = true;

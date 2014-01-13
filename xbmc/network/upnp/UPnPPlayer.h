@@ -22,6 +22,10 @@
 #include "cores/IPlayer.h"
 
 class PLT_MediaController;
+class CGUIDialogBusy;
+
+namespace XbmcThreads { class EndTime; }
+
 
 namespace UPNP
 {
@@ -71,6 +75,8 @@ public:
   virtual bool OnAction(const CAction &action);
 
   virtual CStdString GetPlayingTitle();
+
+  int PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout);
 
 private:
   PLT_MediaController*   m_control;
