@@ -1433,6 +1433,8 @@ int CBuiltins::Execute(const CStdString& execString)
     CStdString path;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
+    g_mediaManager.GetNetworkLocations(shares);
+    g_mediaManager.GetRemovableDrives(shares);
     bool singleFile;
     bool thumbs=false;
     bool actorThumbs=false;
