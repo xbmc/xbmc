@@ -388,7 +388,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UITapGestureRecognizer *singleFingerSingleTap = [[UITapGestureRecognizer alloc]
                                                    initWithTarget:self action:@selector(handleSingleFingerSingleTap:)];
 
-  singleFingerSingleTap.delaysTouchesBegan = YES;
+  singleFingerSingleTap.delaysTouchesBegan = NO;
   singleFingerSingleTap.numberOfTapsRequired = 1;
   singleFingerSingleTap.numberOfTouchesRequired = 1;
 
@@ -401,7 +401,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UITapGestureRecognizer *doubleFingerSingleTap = [[UITapGestureRecognizer alloc]
     initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
 
-  doubleFingerSingleTap.delaysTouchesBegan = YES;
+  doubleFingerSingleTap.delaysTouchesBegan = NO;
   doubleFingerSingleTap.numberOfTapsRequired = 1;
   doubleFingerSingleTap.numberOfTouchesRequired = 2;
   [m_glView addGestureRecognizer:doubleFingerSingleTap];
@@ -411,8 +411,8 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UILongPressGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
     initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
 
-  singleFingerSingleLongTap.delaysTouchesBegan = YES;
-  singleFingerSingleLongTap.delaysTouchesEnded = YES;
+  singleFingerSingleLongTap.delaysTouchesBegan = NO;
+  singleFingerSingleLongTap.delaysTouchesEnded = NO;
   [m_glView addGestureRecognizer:singleFingerSingleLongTap];
   [singleFingerSingleLongTap release];
 
@@ -420,7 +420,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UISwipeGestureRecognizer *swipeLeft2 = [[UISwipeGestureRecognizer alloc]
                                             initWithTarget:self action:@selector(handleSwipe:)];
 
-  swipeLeft2.delaysTouchesBegan = YES;
+  swipeLeft2.delaysTouchesBegan = NO;
   swipeLeft2.numberOfTouchesRequired = 2;
   swipeLeft2.direction = UISwipeGestureRecognizerDirectionLeft;
   swipeLeft2.delegate = self;
@@ -431,7 +431,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
                                           initWithTarget:self action:@selector(handleSwipe:)];
 
-  swipeLeft.delaysTouchesBegan = YES;
+  swipeLeft.delaysTouchesBegan = NO;
   swipeLeft.numberOfTouchesRequired = 1;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
   swipeLeft.delegate = self;
@@ -442,7 +442,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
                                          initWithTarget:self action:@selector(handleSwipe:)];
   
-  swipeRight.delaysTouchesBegan = YES;
+  swipeRight.delaysTouchesBegan = NO;
   swipeRight.numberOfTouchesRequired = 1;
   swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
   swipeRight.delegate = self;
@@ -453,7 +453,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
                                          initWithTarget:self action:@selector(handleSwipe:)];
   
-  swipeUp.delaysTouchesBegan = YES;
+  swipeUp.delaysTouchesBegan = NO;
   swipeUp.numberOfTouchesRequired = 1;
   swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
   swipeUp.delegate = self;
@@ -464,7 +464,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
                                          initWithTarget:self action:@selector(handleSwipe:)];
   
-  swipeDown.delaysTouchesBegan = YES;
+  swipeDown.delaysTouchesBegan = NO;
   swipeDown.numberOfTouchesRequired = 1;
   swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
   swipeDown.delegate = self;
@@ -475,7 +475,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]
     initWithTarget:self action:@selector(handlePan:)];
 
-  pan.delaysTouchesBegan = YES;
+  pan.delaysTouchesBegan = NO;
   pan.maximumNumberOfTouches = 1;
   [m_glView addGestureRecognizer:pan];
   [pan release];
@@ -484,7 +484,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc]
     initWithTarget:self action:@selector(handlePinch:)];
 
-  pinch.delaysTouchesBegan = YES;
+  pinch.delaysTouchesBegan = NO;
   pinch.delegate = self;
   [m_glView addGestureRecognizer:pinch];
   [pinch release];
@@ -493,7 +493,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   UIRotationGestureRecognizer *rotate = [[UIRotationGestureRecognizer alloc]
                                          initWithTarget:self action:@selector(handleRotate:)];
 
-  rotate.delaysTouchesBegan = YES;
+  rotate.delaysTouchesBegan = NO;
   rotate.delegate = self;
   [m_glView addGestureRecognizer:rotate];
   [rotate release];
@@ -512,7 +512,19 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [self becomeFirstResponder];
 }
 //--------------------------------------------------------------
--(void)handlePinch:(UIPinchGestureRecognizer*)sender 
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    UITouch *touch = (UITouch *)[[touches allObjects] objectAtIndex:0];
+    CGPoint point = [touch locationInView:m_glView];
+    point.x *= screenScale;
+    point.y *= screenScale;
+    CGenericTouchActionHandler::Get().OnSingleTouchStart(point.x, point.y);
+  }
+}
+//--------------------------------------------------------------
+-(void)handlePinch:(UIPinchGestureRecognizer*)sender
 {
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
@@ -660,23 +672,6 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   }
 }
 //--------------------------------------------------------------
-- (void)postMouseMotionEvent:(CGPoint)point
-{
-  XBMC_Event newEvent;
-
-  memset(&newEvent, 0, sizeof(newEvent));
-
-  newEvent.type = XBMC_MOUSEMOTION;
-  newEvent.motion.type = XBMC_MOUSEMOTION;
-  newEvent.motion.which = 0;
-  newEvent.motion.state = 0;
-  newEvent.motion.x = point.x;
-  newEvent.motion.y = point.y;
-  newEvent.motion.xrel = 0;
-  newEvent.motion.yrel = 0;
-  CWinEvents::MessagePush(&newEvent);
-}
-//--------------------------------------------------------------
 - (IBAction)handleSingleFingerSingleTap:(UIGestureRecognizer *)sender 
 {
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
@@ -713,7 +708,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     {
       lastGesturePoint = point;
       // mark the control
-      CGenericTouchActionHandler::Get().OnSingleTouchStart((float)point.x, (float)point.y);
+      //CGenericTouchActionHandler::Get().OnSingleTouchStart((float)point.x, (float)point.y);
     }
 
     if (sender.state == UIGestureRecognizerStateEnded)
