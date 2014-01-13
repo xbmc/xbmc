@@ -220,47 +220,47 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
 
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
 
-    if (file.IsVideoDb())
-      thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
-    else if (item.IsMusicDb())
-      thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
+  if (file.IsVideoDb())
+    thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
+  else if (item.IsMusicDb())
+    thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
-    obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer());
-    if(obj.IsNull()) goto failed;
+  obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer());
+  if(obj.IsNull()) goto failed;
 
-    NPT_CHECK_LABEL_SEVERE(PLT_Didl::ToDidl(*obj, "", tmp), failed);
-    tmp.Insert(didl_header, 0);
-    tmp.Append(didl_footer);
+  NPT_CHECK_LABEL_SEVERE(PLT_Didl::ToDidl(*obj, "", tmp), failed);
+  tmp.Insert(didl_header, 0);
+  tmp.Append(didl_footer);
 
-    /* The resource uri's are stored in the Didl. We must choose the best resource
-     * for the playback device */
-    NPT_Cardinal res_index;
-    NPT_CHECK_LABEL_SEVERE(m_control->FindBestResource(m_delegate->m_device, *obj, res_index), failed);
-
-
-    /* dlna specifies that a return code of 705 should be returned
-     * if TRANSPORT_STATE is not STOPPED or NO_MEDIA_PRESENT */
-    NPT_CHECK_LABEL_SEVERE(m_control->Stop(m_delegate->m_device
-                                           , m_delegate->m_instance
-                                           , m_delegate), failed);
-    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed);
-    NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed);
+  /* The resource uri's are stored in the Didl. We must choose the best resource
+   * for the playback device */
+  NPT_Cardinal res_index;
+  NPT_CHECK_LABEL_SEVERE(m_control->FindBestResource(m_delegate->m_device, *obj, res_index), failed);
 
 
-    NPT_CHECK_LABEL_SEVERE(m_control->SetAVTransportURI(m_delegate->m_device
-                                                      , m_delegate->m_instance
-                                                      , obj->m_Resources[res_index].m_Uri
-                                                      , (const char*)tmp
-                                                      , m_delegate), failed);
-    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed);
-    NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed);
-
-    NPT_CHECK_LABEL_SEVERE(m_control->Play(m_delegate->m_device
+  /* dlna specifies that a return code of 705 should be returned
+   * if TRANSPORT_STATE is not STOPPED or NO_MEDIA_PRESENT */
+  NPT_CHECK_LABEL_SEVERE(m_control->Stop(m_delegate->m_device
                                          , m_delegate->m_instance
-                                         , "1"
                                          , m_delegate), failed);
-    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed);
-    NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed);
+  NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed);
+  NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed);
+
+
+  NPT_CHECK_LABEL_SEVERE(m_control->SetAVTransportURI(m_delegate->m_device
+                                                    , m_delegate->m_instance
+                                                    , obj->m_Resources[res_index].m_Uri
+                                                    , (const char*)tmp
+                                                    , m_delegate), failed);
+  NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed);
+  NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed);
+
+  NPT_CHECK_LABEL_SEVERE(m_control->Play(m_delegate->m_device
+                                       , m_delegate->m_instance
+                                       , "1"
+                                       , m_delegate), failed);
+  NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed);
+  NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed);
 
 
   /* wait for PLAYING state */
