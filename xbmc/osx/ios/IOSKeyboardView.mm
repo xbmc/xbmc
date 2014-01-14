@@ -61,14 +61,17 @@ static CEvent keyboardFinishedEvent;
                                        INPUT_BOX_HEIGHT);
     _textField = [[UITextField alloc] initWithFrame:textFieldFrame];
     _textField.clearButtonMode = UITextFieldViewModeAlways;
-    _textField.borderStyle = UITextBorderStyleRoundedRect;
+    // UITextBorderStyleRoundedRect; - with round rect we can't control backgroundcolor
+    _textField.borderStyle = UITextBorderStyleNone;    
     _textField.returnKeyType = UIReturnKeyDone;
     _textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    _textField.backgroundColor = [UIColor whiteColor];
     _textField.delegate = self;
     
     CGRect labelFrame = textFieldFrame;
     labelFrame.origin.x = 0;
     _heading = [[UILabel alloc] initWithFrame:labelFrame];
+    _heading.backgroundColor = [UIColor whiteColor];
     _heading.adjustsFontSizeToFitWidth = YES;
 
     [self addSubview:_heading];
