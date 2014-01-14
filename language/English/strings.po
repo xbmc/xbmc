@@ -1046,7 +1046,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#252"
-msgid "Output stereo to all speakers"
+msgid "Stereo upmix"
 msgstr ""
 
 msgctxt "#253"
@@ -2797,7 +2797,12 @@ msgctxt "#666"
 msgid "Verbose logging..."
 msgstr ""
 
-#empty strings from id 667 to 699
+#: system/settings/settings.xml
+msgctxt "#667"
+msgid "Enable Dolby Digital transcoding"
+msgstr ""
+
+#empty strings from id 668 to 699
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -14420,7 +14425,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36364"
-msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the speaker configuration."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14743,7 +14748,12 @@ msgctxt "#36428"
 msgid "Record"
 msgstr ""
 
-#empty strings from id 36429 to 36499
+#: system/settings/settings.xml
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - transcoding can lead to a reduction in sound quality"
+msgstr ""
+
+#empty strings from id 36430 to 36499
 #end reservation
 
 #: system/settings/settings.xml

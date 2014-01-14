@@ -2261,13 +2261,7 @@
           <level>2</level>
           <default>false</default>
           <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.channels">audiooutput.stereoupmix</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.stereoupmix</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.stereoupmix</condition>
-              </or>    
-            </dependency>
+            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.channels">audiooutput.stereoupmix</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
@@ -2347,6 +2341,20 @@
               <and>
                 <condition setting="audiooutput.passthrough" operator="is">true</condition>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="audiooutput.ac3transcode" type="boolean" label="667" help="36429">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="audiooutput.passthrough" operator="is">true</condition>
+                <condition setting="audiooutput.ac3passthrough" operator="is">true</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.ac3transcode</condition>
               </and>
             </dependency>
           </dependencies>
