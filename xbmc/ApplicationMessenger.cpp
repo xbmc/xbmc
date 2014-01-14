@@ -729,7 +729,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           {
             CGUIWindow *pWindow = g_windowManager.GetWindow(pMsg->dwParam1);  
             if (pWindow)
-              pWindow->OnAction(*action);
+            {
+              if (!pWindow->OnAction(*action))
+                g_application.OnAction(*action);
+            }
             else
               CLog::Log(LOGWARNING, "Failed to get window with ID %i to send an action to", pMsg->dwParam1);
           }
