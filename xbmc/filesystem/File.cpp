@@ -33,7 +33,6 @@
 #include "Util.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
-#include "settings/AdvancedSettings.h"
 
 #include "commons/Exception.h"
 
@@ -289,31 +288,17 @@ bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
 
     CURL url(URIUtils::SubstitutePath(strFileName));
 
-    /* 
-     * There are 4 buffer modes available (configurable in as.xml)
-     * 0) Buffer all internet filesystems (like 2 but additionally also ftp, webdav, etc.) (default)
-     * 1) Buffer all filesystems (including local)
-     * 2) Only buffer true internet filesystems (streams) (http, etc.)
-     * 3) No buffer
-     */
-    if ( (m_flags & READ_NO_CACHE) == 0 && !CUtil::IsPicture(strFileName) )
+    if (!(m_flags & READ_NO_CACHE))
     {
-      if (g_advancedSettings.m_networkBufferMode == 0 || g_advancedSettings.m_networkBufferMode == 2)
-      {
-        if (URIUtils::IsInternetStream(url, (g_advancedSettings.m_networkBufferMode == 0) ) )
-          m_flags |= READ_CACHED;
-      }
-      else if (g_advancedSettings.m_networkBufferMode == 1)
-      {
-        m_flags |= READ_CACHED; // Force cache for all others (in buffer mode 1)
-      }
-    }
+      if (URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(strFileName) )
+        m_flags |= READ_CACHED;
 
-    if (m_flags & READ_CACHED)
-    {
-      // for internet stream, if it contains multiple stream, file cache need handle it specially.
-      m_pFile = new CFileCache((m_flags & READ_MULTI_STREAM) != 0 && URIUtils::IsInternetStream(url, true));
-      return m_pFile->Open(url);
+      if (m_flags & READ_CACHED)
+      {
+        // for internet stream, if it contains multiple stream, file cache need handle it specially.
+        m_pFile = new CFileCache((m_flags & READ_MULTI_STREAM) != 0 && URIUtils::IsInternetStream(url, true));
+        return m_pFile->Open(url);
+      }
     }
 
     m_pFile = CFileFactory::CreateLoader(url);
