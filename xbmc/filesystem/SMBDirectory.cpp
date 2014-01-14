@@ -349,7 +349,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
 
 #if defined(TARGET_DARWIN)
   // Create the directory.
-  CURL::Decode(strMountPoint);
+  strMountPoint = CURL::Decode(strMountPoint);
   CreateDirectory(strMountPoint, NULL);
 
   // Massage the path.
@@ -399,7 +399,7 @@ void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &st
 #if defined(TARGET_DARWIN)
   // Decode the path.
   CStdString strMountPoint = GetMountPoint(strType, strName);
-  CURL::Decode(strMountPoint);
+  strMountPoint = CURL::Decode(strMountPoint);
 
   // Make the unmount command.
   CStdStringArray args;

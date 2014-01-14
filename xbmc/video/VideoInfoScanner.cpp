@@ -769,7 +769,7 @@ namespace VIDEO
       if (!EnumerateEpisodeItem(items[i].get(), episodeList))
       {
         CStdString decode(items[i]->GetPath());
-        CURL::Decode(decode);
+        decode = CURL::Decode(decode);
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file %s", CURL::GetRedacted(decode).c_str());
       }
     }
@@ -866,7 +866,7 @@ namespace VIDEO
 
     CStdString strLabel=item->GetPath();
     // URLDecode in case an episode is on a http/https/dav/davs:// source and URL-encoded like foo%201x01%20bar.avi
-    CURL::Decode(strLabel);
+    strLabel = CURL::Decode(strLabel);
 
     for (unsigned int i=0;i<expression.size();++i)
     {
@@ -1073,7 +1073,7 @@ namespace VIDEO
     }
 
     std::string redactPath = pItem->GetPath();
-    CURL::Decode(redactPath);
+    redactPath = CURL::Decode(redactPath);
     redactPath = CURL::GetRedacted(redactPath);
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to %s:%s", TranslateContent(content).c_str(), redactPath.c_str());

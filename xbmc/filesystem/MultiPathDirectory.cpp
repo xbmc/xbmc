@@ -152,7 +152,7 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
   if (pos != std::string::npos)
   {
     CStdString firstPath = strPath.substr(12, pos - 12);
-    CURL::Decode(firstPath);
+    firstPath = CURL::Decode(firstPath);
     return firstPath;
   }
   return "";
@@ -177,7 +177,7 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   for (unsigned int i = 0; i < vecTemp.size(); i++)
   {
     CStdString tempPath = vecTemp[i];
-    CURL::Decode(tempPath);
+    tempPath = CURL::Decode(tempPath);
     vecPaths.push_back(tempPath);
   }
   return true;
@@ -199,7 +199,7 @@ bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& s
   for (unsigned int i = 0; i < vecTemp.size(); i++)
   {
     CStdString tempPath = vecTemp[i];
-    CURL::Decode(tempPath);
+    tempPath = CURL::Decode(tempPath);
     if(tempPath == strPathToFind)
       return true;
   }
