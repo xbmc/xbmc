@@ -176,7 +176,7 @@ bool CMusicDatabase::CreateTables()
                 "strKaralyrics text, strKaraLyrFileCRC text )\n");
 
     CLog::Log(LOGINFO, "create album index");
-    m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
+    m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum(255))");
     CLog::Log(LOGINFO, "create album compilation index");
     m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
     CLog::Log(LOGINFO, "create unique album name index");
@@ -192,17 +192,17 @@ bool CMusicDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_2 ON album_genre ( idGenre, idAlbum )\n");
 
     CLog::Log(LOGINFO, "create genre index");
-    m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre)");
+    m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre(255))");
 
     CLog::Log(LOGINFO, "create artist indexes");
-    m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist)");
+    m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist(255))");
     m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
 
     CLog::Log(LOGINFO, "create path index");
-    m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
+    m_pDS->exec("CREATE INDEX idxPath ON path(strPath(255))");
 
     CLog::Log(LOGINFO, "create song index");
-    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
+    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle(255))");
     CLog::Log(LOGINFO, "create song index1");
     m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
     CLog::Log(LOGINFO, "create song index2");
@@ -4137,6 +4137,22 @@ bool CMusicDatabase::UpdateOldVersion(int version)
                 "  DELETE FROM art WHERE media_id=old.idSong AND media_type='song';"
                 " END");
   }
+  if (version < 44)
+  {
+    m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum(255))");
+    m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
+    m_pDS->exec("CREATE UNIQUE INDEX idxAlbum_2 ON album(strMusicBrainzAlbumID(36))");
+
+    m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist(255))");
+    m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
+
+    m_pDS->exec("DROP INDEX idxGenre ON genre");
+    m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre(255))");
+    m_pDS->exec("DROP INDEX idxPath ON path");
+    m_pDS->exec("CREATE INDEX idxPath ON path(strPath(255))");
+    m_pDS->exec("DROP INDEX idxSong ON song");
+    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle(255))");
+  }
   // always recreate the views after any table change
   CreateViews();
 
@@ -4145,7 +4161,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
 int CMusicDatabase::GetMinVersion() const
 {
-  return 43;
+  return 44;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
