@@ -85,7 +85,7 @@ static inline VASurfaceID GetSurfaceID(AVFrame *pic)
 
 static CDisplayPtr GetGlobalDisplay()
 {
-  static weak_ptr<CDisplay> display_global;
+  static boost::weak_ptr<CDisplay> display_global;
 
   CDisplayPtr display(display_global.lock());
   if(display)
