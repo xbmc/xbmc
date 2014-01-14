@@ -286,7 +286,7 @@ bool CTextureBundleXPR::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
     MEMORYSTATUSEX stat;
     stat.dwLength = sizeof(MEMORYSTATUSEX);
     GlobalMemoryStatusEx(&stat);
-    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %"PRIu64" bytes)", name.c_str(),
+    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %" PRIu64" bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize, stat.ullAvailPhys);
 #elif defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes)", name.c_str(),

@@ -584,7 +584,7 @@ int64_t CAFPFile::Seek(int64_t iFilePosition, int iWhence)
 
   if ( newOffset < 0 || newOffset > m_fileSize)
   {
-    CLog::Log(LOGERROR, "%s - Error( %"PRId64")", __FUNCTION__, newOffset);
+    CLog::Log(LOGERROR, "%s - Error( %" PRId64")", __FUNCTION__, newOffset);
     return -1;
   }
 

@@ -226,7 +226,7 @@ void CFileCache::Process()
         m_nSeekResult = m_source.Seek(cacheMaxPos, SEEK_SET);
         if (m_nSeekResult != cacheMaxPos)
         {
-          CLog::Log(LOGERROR,"CFileCache::Process - Error %d seeking. Seek returned %"PRId64, (int)GetLastError(), m_nSeekResult);
+          CLog::Log(LOGERROR,"CFileCache::Process - Error %d seeking. Seek returned %" PRId64, (int)GetLastError(), m_nSeekResult);
           m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
           sourceSeekFailed = true;
         }
@@ -422,14 +422,14 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     m_seekEvent.Set();
     if (!m_seekEnded.Wait())
     {
-      CLog::Log(LOGWARNING,"%s - seek to %"PRId64" failed.", __FUNCTION__, m_seekPos);
+      CLog::Log(LOGWARNING,"%s - seek to %" PRId64" failed.", __FUNCTION__, m_seekPos);
       return -1;
     }
 
     /* wait for any remainin data */
     if(m_seekPos < iTarget)
     {
-      CLog::Log(LOGDEBUG,"%s - waiting for position %"PRId64".", __FUNCTION__, iTarget);
+      CLog::Log(LOGDEBUG,"%s - waiting for position %" PRId64".", __FUNCTION__, iTarget);
       if(m_pCache->WaitForData((unsigned)(iTarget - m_seekPos), 10000) < iTarget - m_seekPos)
       {
         CLog::Log(LOGWARNING,"%s - failed to get remaining data", __FUNCTION__);

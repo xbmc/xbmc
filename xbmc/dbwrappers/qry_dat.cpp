@@ -216,7 +216,7 @@ string field_value::get_asString() const {
     }
     case ft_Int64: {
       char t[23];
-      sprintf(t,"%"PRId64,int64_value);
+      sprintf(t,"%" PRId64,int64_value);
       return tmp = t;
     }
     default:
@@ -317,7 +317,7 @@ char field_value::get_asChar() const {
     }
     case ft_Int64: {
       char t[24];
-      sprintf(t,"%"PRId64,int64_value);
+      sprintf(t,"%" PRId64,int64_value);
       return t[0];
     }
     default:

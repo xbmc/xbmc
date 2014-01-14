@@ -180,7 +180,7 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
   } else
   {
     CLog::Log(LOGERROR, "CZeroconfBrowserOSX::BrowserCallback returned"
-      "(domain = %d, error = %"PRId64")", (int)error->domain, (int64_t)error->error);
+      "(domain = %d, error = %" PRId64")", (int)error->domain, (int64_t)error->error);
   }
 }
 
@@ -261,7 +261,7 @@ bool CZeroconfBrowserOSX::doAddServiceType(const CStdString& fcr_service_type)
     CFRelease(p_browser);
     p_browser = NULL;
     CLog::Log(LOGERROR, "CFNetServiceBrowserSearchForServices returned"
-      "(domain = %d, error = %"PRId64")", (int)error.domain, (int64_t)error.error);
+      "(domain = %d, error = %" PRId64")", (int)error.domain, (int64_t)error.error);
   }
   else
   {

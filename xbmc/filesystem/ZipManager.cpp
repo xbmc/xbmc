@@ -63,7 +63,7 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
     map<CStdString,int64_t>::iterator it2=mZipDate.find(strFile);
-    CLog::Log(LOGDEBUG,"statdata: %"PRId64" new: %"PRIu64, it2->second, (uint64_t)m_StatData.st_mtime);
+    CLog::Log(LOGDEBUG,"statdata: %" PRId64" new: %" PRIu64, it2->second, (uint64_t)m_StatData.st_mtime);
 
       if (m_StatData.st_mtime == it2->second)
       {

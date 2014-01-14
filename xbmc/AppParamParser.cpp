@@ -99,7 +99,7 @@ void CAppParamParser::DisplayHelp()
   printf("  -p or --portable\tXBMC will look for configurations in install folder instead of ~/.xbmc\n");
   printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
 #ifdef HAS_LIRC
-  printf("  -l or --lircdev\tLircDevice to use default is "LIRC_DEVICE" .\n");
+  printf("  -l or --lircdev\tLircDevice to use default is " LIRC_DEVICE " .\n");
   printf("  -n or --nolirc\tdo not use Lirc, i.e. no remote input.\n");
 #endif
   printf("  --debug\t\tEnable debug logging\n");

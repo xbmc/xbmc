@@ -131,7 +131,7 @@ bool CXBTFReader::Open(const CStdString& fileName)
   int64_t pos = ftell(m_file);
   if (pos != (int64_t)m_xbtf.GetHeaderSize())
   {
-    printf("Expected header size (%"PRId64") != actual size (%"PRId64")\n", m_xbtf.GetHeaderSize(), pos);
+    printf("Expected header size (%" PRId64") != actual size (%" PRId64")\n", m_xbtf.GetHeaderSize(), pos);
     return false;
   }
 

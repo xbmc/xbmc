@@ -68,7 +68,7 @@ double CDVDClock::GetAbsoluteClock(bool interpolated /*= true*/)
   {
     static int64_t old;
     if(old > current)
-      CLog::Log(LOGWARNING, "CurrentHostCounter() moving backwords by %"PRId64" ticks with freq of %"PRId64, old - current, m_systemFrequency);
+      CLog::Log(LOGWARNING, "CurrentHostCounter() moving backwords by %" PRId64" ticks with freq of %" PRId64, old - current, m_systemFrequency);
     old = current;
   }
 #endif

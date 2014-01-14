@@ -333,7 +333,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
 
   if (HasCut() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %"PRIuS" cuts and %"PRIuS" scene markers in EDL file: %s", __FUNCTION__,
+    CLog::Log(LOGDEBUG, "%s - Read %" PRIuS" cuts and %" PRIuS" scene markers in EDL file: %s", __FUNCTION__,
               m_vecCuts.size(), m_vecSceneMarkers.size(), edlFilename.c_str());
     return true;
   }
@@ -414,7 +414,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
   }
   else if (HasCut())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %"PRIuS" commercial breaks from Comskip file: %s", __FUNCTION__, m_vecCuts.size(),
+    CLog::Log(LOGDEBUG, "%s - Read %" PRIuS" commercial breaks from Comskip file: %s", __FUNCTION__, m_vecCuts.size(),
               comskipFilename.c_str());
     return true;
   }
@@ -504,7 +504,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
   }
   else if (HasCut() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %"PRIuS" cuts and %"PRIuS" scene markers in VideoReDo file: %s", __FUNCTION__,
+    CLog::Log(LOGDEBUG, "%s - Read %" PRIuS" cuts and %" PRIuS" scene markers in VideoReDo file: %s", __FUNCTION__,
               m_vecCuts.size(), m_vecSceneMarkers.size(), videoReDoFilename.c_str());
     return true;
   }
@@ -587,7 +587,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
   }
   else if (HasCut())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %"PRIuS" commercial breaks from Beyond TV file: %s", __FUNCTION__, m_vecCuts.size(),
+    CLog::Log(LOGDEBUG, "%s - Read %" PRIuS" commercial breaks from Beyond TV file: %s", __FUNCTION__, m_vecCuts.size(),
               beyondTVFilename.c_str());
     return true;
   }
@@ -1010,7 +1010,7 @@ bool CEdl::ReadMythCommBreakList(const CStdString& strMovie, const float fFrames
 
   if (HasCut())
   {
-    CLog::Log(LOGDEBUG, "%s - Added %"PRIuS" commercial breaks from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
+    CLog::Log(LOGDEBUG, "%s - Added %" PRIuS" commercial breaks from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
               __FUNCTION__, m_vecCuts.size(), url.GetFileName().c_str(), fFramesPerSecond);
     return true;
   }
@@ -1063,7 +1063,7 @@ bool CEdl::ReadMythCutList(const CStdString& strMovie, const float fFramesPerSec
 
   if (found)
   {
-    CLog::Log(LOGDEBUG, "%s - Added %"PRIuS" cuts from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
+    CLog::Log(LOGDEBUG, "%s - Added %" PRIuS" cuts from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
               __FUNCTION__, m_vecCuts.size(), url.GetFileName().c_str(), fFramesPerSecond);
     return true;
   }

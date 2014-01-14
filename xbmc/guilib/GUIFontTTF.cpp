@@ -734,7 +734,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     if (!m_vertex)
     {
       free(old);
-      CLog::Log(LOGSEVERE, "%s: can't allocate %"PRIdS" bytes for texture", __FUNCTION__ , m_vertex_size * sizeof(SVertex));
+      CLog::Log(LOGSEVERE, "%s: can't allocate %" PRIdS" bytes for texture", __FUNCTION__ , m_vertex_size * sizeof(SVertex));
       return;
     }
   }
