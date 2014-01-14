@@ -68,6 +68,8 @@
         <setting id="audiooutput.dtshdpassthrough">
           <visible>false</visible>
         </setting>
+        <setting id="audiooutput.ac3transcode" help="37024">
+        </setting>
       </group>
     </category>
   </section>

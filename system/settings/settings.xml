@@ -2375,7 +2375,7 @@
         </setting>
         <setting id="audiooutput.ac3transcode" type="boolean" label="667" help="36429">
           <level>2</level>
-          <default>true</default>
+          <default>false</default>
           <dependencies>
             <dependency type="visible">
               <and>
