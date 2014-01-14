@@ -41,5 +41,8 @@ public:
   static void     ParseDevice(std::string &device, std::string &driver);
   static IAESink *Create(std::string &device, AEAudioFormat &desiredFormat, bool rawPassthrough);
   static void     EnumerateEx(AESinkInfoList &list, bool force = false); /* The force flag can be used to indicate the rescan devices */
+
+protected:
+  static IAESink *TrySink(std::string &driver, std::string &device, AEAudioFormat &format);
 };
 
