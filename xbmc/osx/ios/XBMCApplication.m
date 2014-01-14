@@ -25,6 +25,7 @@
 #import "XBMCController.h"
 #import "IOSScreenManager.h"
 #import "XBMCDebugHelpers.h"
+#import <objc/runtime.h>
 
 @implementation XBMCApplicationDelegate
 XBMCController *m_xbmcController;  
@@ -158,10 +159,18 @@ XBMCController *m_xbmcController;
 #define GSEVENTKEY_KEYCODE_64_BIT 19
 #define GSEVENT_TYPE_KEYUP 11
 
+#define MSHookMessageEx(class, selector, replacement, result) \
+(*(result) = method_setImplementation(class_getInstanceMethod((class), (selector)), (replacement)))
+
 static UniChar kGKKeyboardDirectionRight = 79;
 static UniChar kGKKeyboardDirectionLeft = 80;
 static UniChar kGKKeyboardDirectionDown = 81;
 static UniChar kGKKeyboardDirectionUp = 82;
+
+// pointer to the original hooked method
+static void (*UIApplication$sendEvent$Orig)(id, SEL, UIEvent*);
+
+static bool ios7Detected = false;
 
 void handleKeyCode(UniChar keyCode)
 {
@@ -184,34 +193,79 @@ void handleKeyCode(UniChar keyCode)
   [g_xbmcController sendKey:key];
 }
 
-void sendEvent(UIEvent *event)
+static void XBMCsendEvent(id _self, SEL _cmd, UIEvent *event)
 { 
-  //[super sendEvent:event];
+  // call super implementation
+  UIApplication$sendEvent$Orig(_self, _cmd, event);
 
   if ([event respondsToSelector:@selector(_gsEvent)]) 
   {
     // Key events come in form of UIInternalEvents.
     // They contain a GSEvent object which contains 
     // a GSEventRecord among other things
-    int *eventMem;
-    eventMem = (int *)[event performSelector:@selector(_gsEvent)];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    int *eventMem = (int *)[event performSelector:@selector(_gsEvent)];
+#pragma clang diagnostic pop
+
     if (eventMem) 
     {
       // So far we got a GSEvent :)
       int eventType = eventMem[GSEVENT_TYPE];
       if (eventType == GSEVENT_TYPE_KEYUP) 
       {
+        // support 32 and 64bit arm here...
+        int idx = GSEVENTKEY_KEYCODE;
+        if (sizeof(NSInteger) == 8)
+          idx = GSEVENTKEY_KEYCODE_64_BIT;
+        else if (ios7Detected)
+          idx = GSEVENTKEY_KEYCODE_IOS7;
+
         // Now we got a GSEventKey!
         
         // Read flags from GSEvent
         // for modifier keys if we want to use them somehow at a later time
         //int eventFlags = eventMem[GSEVENT_FLAGS];
         // Read keycode from GSEventKey
-        UniChar tmp = (UniChar)eventMem[GSEVENTKEY_KEYCODE];
+        UniChar tmp = (UniChar)eventMem[idx];
         handleKeyCode(tmp);
       }
     }
   }
+}
+
+// implicit called constructor for hooking into the sendEvent (ios < 7) or handleKeyUiEvent (ios 7 and later)
+// this one hooks us into the keyboard events
+__attribute__((constructor)) static void HookKeyboard(void)
+{
+  if (sizeof(NSUInteger) == 8)
+  {
+    kGKKeyboardDirectionDown = 31;
+    kGKKeyboardDirectionUp = 30;
+    kGKKeyboardDirectionRight = 29;
+    kGKKeyboardDirectionLeft = 28;
+    LOG(@"Detected 64bit system!!!");
+  }
+  else
+    LOG(@"Detected 32bit system!!!");
+  
+  NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+  {
+    // Hook into sendEvent: to get keyboard events.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+    if ([UIApplication  instancesRespondToSelector:@selector(handleKeyUIEvent:)])
+    {
+      ios7Detected  = true;
+      MSHookMessageEx(objc_getClass("UIApplication"), @selector(handleKeyUIEvent:), (IMP)&XBMCsendEvent, (IMP*)&UIApplication$sendEvent$Orig);
+    }
+    else if ([UIApplication  instancesRespondToSelector:@selector(sendEvent:)])
+      MSHookMessageEx(objc_getClass("UIApplication"), @selector(sendEvent:), (IMP)&XBMCsendEvent, (IMP*)&UIApplication$sendEvent$Orig);
+    else
+      ELOG(@"HookKeyboard: Couldn't hook any of the 2 known keyboard hooks (sendEvent or handleKeyUIEvent - cursor keys on btkeyboards won't work!");
+#pragma clang diagnostic pop
+  }
+  [pool release];
 }
 //---------------- HOOK FOR BT KEYBOARD CURSORS KEYS END----------------
 
