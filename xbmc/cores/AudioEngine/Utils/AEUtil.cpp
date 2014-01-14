@@ -28,6 +28,25 @@
 
 using namespace std;
 
+const unsigned int CAEUtil::CommonSampleRateList[] =
+{
+  5512,
+  8000,
+  11025,
+  16000,
+  22050,
+  32000,
+  44100,
+  48000,
+  64000,
+  88200,
+  96000,
+  176400,
+  192000,
+  384000,
+  0         // Last member always zero!
+};
+
 /* declare the rng seed and initialize it */
 unsigned int CAEUtil::m_seed = (unsigned int)(CurrentHostCounter() / 1000.0f);
 #ifdef __SSE2__
