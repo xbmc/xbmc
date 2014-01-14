@@ -225,7 +225,7 @@ void CMultiPathDirectory::AddToMultiPath(CStdString& strMultiPath, const CStdStr
   CStdString strPath1 = strPath;
   URIUtils::AddSlashAtEnd(strMultiPath);
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-  CURL::Encode(strPath1);
+  strPath1 = CURL::Encode(strPath1);
   strMultiPath += strPath1;
   strMultiPath += "/";
 }

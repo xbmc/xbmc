@@ -863,7 +863,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     if (status != AIRPLAY_STATUS_NEED_AUTH)
     {
       CStdString userAgent="AppleCoreMedia/1.0.0.8F455 (AppleTV; U; CPU OS 4_3 like Mac OS X; de_de)";
-      CURL::Encode(userAgent);
+      userAgent = CURL::Encode(userAgent);
       location += "|User-Agent=" + userAgent;
 
       CFileItem fileToPlay(location, false);

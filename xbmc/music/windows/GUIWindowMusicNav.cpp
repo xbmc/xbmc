@@ -767,7 +767,7 @@ void CGUIWindowMusicNav::DisplayEmptyDatabaseMessage(bool bDisplay)
 void CGUIWindowMusicNav::OnSearchUpdate()
 {
   CStdString search(GetProperty("search").asString());
-  CURL::Encode(search);
+  search = CURL::Encode(search);
   if (!search.empty())
   {
     CStdString path = "musicsearch://" + search + "/";

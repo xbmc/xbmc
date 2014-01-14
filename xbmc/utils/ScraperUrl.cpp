@@ -347,7 +347,7 @@ CStdString CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry &entry)
   if (entry.m_spoof.empty())
     return entry.m_url;
   CStdString spoof = entry.m_spoof;
-  CURL::Encode(spoof);
+  spoof = CURL::Encode(spoof);
   return entry.m_url + "|Referer=" + spoof;
 }
 

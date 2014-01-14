@@ -41,7 +41,7 @@ using namespace XFILE;
 CStdString URLEncode(const CStdString value)
 {
   CStdString encoded(value);
-  CURL::Encode(encoded);
+  encoded = CURL::Encode(encoded);
   return encoded;
 }
 

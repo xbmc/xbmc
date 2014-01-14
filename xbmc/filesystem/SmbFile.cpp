@@ -245,7 +245,7 @@ CStdString CSMB::URLEncode(const CURL &url)
 CStdString CSMB::URLEncode(const CStdString &value)
 {
   CStdString encoded(value);
-  CURL::Encode(encoded);
+  encoded = CURL::Encode(encoded);
   return encoded;
 }
 

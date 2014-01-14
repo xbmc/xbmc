@@ -529,7 +529,7 @@ void CScraperParser::Clean(CStdString& strDirty)
     if ((i2 = strDirty.find("!!!ENCODE!!!",i+12)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+12,i2-i-12);
-      CURL::Encode(strBuffer);
+      strBuffer = CURL::Encode(strBuffer);
       strDirty.replace(i, i2-i+12, strBuffer);
       i += strBuffer.size();
     }
