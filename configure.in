@@ -718,7 +718,6 @@ case $use_platform in
      use_arch="arm"
      use_cpu=arm1176jzf-s
      use_hardcoded_tables="yes"
-     use_alsa="no"
      ARCH="arm"
      AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
      USE_OMXLIB=1; AC_DEFINE([HAVE_OMXLIB],[1],["Define to 1 if OMX libs is enabled"])
