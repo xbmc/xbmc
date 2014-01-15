@@ -6,7 +6,6 @@ SRCS += DVDDemuxSPU.cpp
 SRCS += DVDFileInfo.cpp
 SRCS += DVDMessage.cpp
 SRCS += DVDMessageQueue.cpp
-SRCS += DVDMessageTracker.cpp
 SRCS += DVDOverlayContainer.cpp
 SRCS += DVDOverlayRenderer.cpp
 SRCS += DVDPlayer.cpp
