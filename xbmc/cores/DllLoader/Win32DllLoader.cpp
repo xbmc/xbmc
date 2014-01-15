@@ -161,11 +161,21 @@ bool Win32DllLoader::Load()
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
-    LPVOID lpMsgBuf;
     DWORD dw = GetLastError(); 
+    wchar_t* lpMsgBuf = NULL;
+    DWORD strLen = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPWSTR)&lpMsgBuf, 0, NULL);
+    if (strLen == 0)
+      strLen = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), (LPWSTR)&lpMsgBuf, 0, NULL);
 
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw, 0, (LPTSTR) &lpMsgBuf, 0, NULL );
-    CLog::Log(LOGERROR, "%s: Failed to load %s with error %d:%s", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw, lpMsgBuf);
+    if (strLen != 0)
+    {
+      std::string strMessage;
+      g_charsetConverter.wToUTF8(std::wstring(lpMsgBuf, strLen), strMessage);
+      CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %d: \"%s\"", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw, strMessage);
+    }
+    else
+      CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %d", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw);
+    
     LocalFree(lpMsgBuf);
     return false;
   }
