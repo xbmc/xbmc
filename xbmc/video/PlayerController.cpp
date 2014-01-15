@@ -86,6 +86,7 @@ bool CPlayerController::OnAction(const CAction &action)
       }
 
       case ACTION_NEXT_SUBTITLE:
+      case ACTION_CYCLE_SUBTITLE:
       {
         if (g_application.m_pPlayer->GetSubtitleCount() == 0)
           return true;
@@ -98,12 +99,15 @@ bool CPlayerController::OnAction(const CAction &action)
           if (++currentSub >= g_application.m_pPlayer->GetSubtitleCount())
           {
             currentSub = 0;
-            g_application.m_pPlayer->SetSubtitleVisible(false);
-            currentSubVisible = false;
+            if (action.GetID() == ACTION_NEXT_SUBTITLE)
+            {
+              g_application.m_pPlayer->SetSubtitleVisible(false);
+              currentSubVisible = false;
+            }
           }
           g_application.m_pPlayer->SetSubtitle(currentSub);
         }
-        else
+        else if (action.GetID() == ACTION_NEXT_SUBTITLE)
         {
           g_application.m_pPlayer->SetSubtitleVisible(true);
         }
