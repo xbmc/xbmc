@@ -416,8 +416,7 @@ void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &st
 
 CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdString &strName)
 {
-  CStdString strPath = strType + strName;
-  strPath = CURL::Encode(strPath);
+  CStdString strPath(CURL::Encode(strType + strName));
 
 #if defined(TARGET_DARWIN)
   CStdString str = getenv("HOME");
