@@ -29,6 +29,7 @@
 
 
 #include "GUIFontTTF.h"
+#include "system.h"
 
 
 /*!
@@ -43,6 +44,10 @@ public:
 
   virtual bool FirstBegin();
   virtual void LastEnd();
+#if HAS_GLES
+  virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const;
+  virtual void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const;
+#endif
 
 protected:
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);

@@ -89,6 +89,9 @@ public:
 
   void Begin();
   void End();
+  /* The next two should only be called if we've declared we can do hardware clipping */
+  virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const { assert(false); return CVertexBuffer(); }
+  virtual void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const {}
 
   const std::string& GetFileName() const { return m_strFileName; };
 
@@ -171,9 +174,9 @@ protected:
     float translateX;
     float translateY;
     float translateZ;
-    boost::shared_ptr<std::vector<SVertex> > vertexBuffer;
+    const CVertexBuffer *vertexBuffer;
     CRect clip;
-    CTranslatedVertices(float translateX, float translateY, float translateZ, boost::shared_ptr<std::vector<SVertex> > vertexBuffer, const CRect &clip) : translateX(translateX), translateY(translateY), translateZ(translateZ), vertexBuffer(vertexBuffer), clip(clip) {}
+    CTranslatedVertices(float translateX, float translateY, float translateZ, const CVertexBuffer *vertexBuffer, const CRect &clip) : translateX(translateX), translateY(translateY), translateZ(translateZ), vertexBuffer(vertexBuffer), clip(clip) {}
   };
   std::vector<CTranslatedVertices> m_vertexTrans;
   std::vector<SVertex> m_vertex;

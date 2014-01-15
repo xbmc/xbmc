@@ -242,14 +242,35 @@ struct CGUIFontCacheDynamicPosition
   }
 };
 
-struct CGUIFontCacheDynamicValue : public boost::shared_ptr<std::vector<SVertex> >
+struct CVertexBuffer
 {
-  void clear()
+  void *bufferHandle;
+  size_t size;
+  CVertexBuffer() : bufferHandle(NULL), size(0), m_font(NULL) {}
+  CVertexBuffer(void *bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
+  CVertexBuffer(const CVertexBuffer &other) : bufferHandle(other.bufferHandle), size(other.size), m_font(other.m_font)
   {
-    if (*this)
-      (*this)->clear();
+    /* In practice, the copy constructor is only called before a vertex buffer
+     * has been attached. If this should ever change, we'll need another support
+     * function in GUIFontTTFGL/DX to duplicate a buffer, given its handle. */
+    assert(other.bufferHandle == 0);
   }
+  CVertexBuffer &operator=(CVertexBuffer &other)
+  {
+    /* This is used with move-assignment semantics for initialising the object in the font cache */
+    assert(bufferHandle == 0);
+    bufferHandle = other.bufferHandle;
+    other.bufferHandle = 0;
+    size = other.size;
+    m_font = other.m_font;
+    return *this;
+  }
+  void clear();
+private:
+  const CGUIFontTTFBase *m_font;
 };
+
+typedef CVertexBuffer CGUIFontCacheDynamicValue;
 
 inline bool Match(const CGUIFontCacheDynamicPosition &a, const TransformMatrix &a_m,
                   const CGUIFontCacheDynamicPosition &b, const TransformMatrix &b_m,

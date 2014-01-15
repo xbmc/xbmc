@@ -110,3 +110,9 @@ template void CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDyna
 template CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheDynamicValue &CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition &, const vecColors &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
 template void CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Flush();
+
+void CVertexBuffer::clear()
+{
+  if (m_font != NULL)
+    m_font->DestroyVertexBuffer(*this);
+}

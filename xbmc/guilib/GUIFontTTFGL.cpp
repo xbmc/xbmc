@@ -52,6 +52,10 @@ CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName)
 
 CGUIFontTTFGL::~CGUIFontTTFGL(void)
 {
+  // It's important that all the CGUIFontCacheEntry objects are
+  // destructed before the CGUIFontTTFGL goes out of scope, because
+  // our virtual methods won't be accessible after this point
+  m_dynamicCache.Flush();
 }
 
 bool CGUIFontTTFGL::FirstBegin()
@@ -203,7 +207,6 @@ void CGUIFontTTFGL::LastEnd()
   if (m_vertexTrans.size() > 0)
   {
     // Deal with the vertices that can be hardware clipped and therefore translated
-    std::vector<SVertex> vecVertices;
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
       // Apply the clip rectangle
@@ -215,36 +218,17 @@ void CGUIFontTTFGL::LastEnd()
       glMatrixModview.Get().Translatef(m_vertexTrans[i].translateX, m_vertexTrans[i].translateY, m_vertexTrans[i].translateZ);
       glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
 
-      vecVertices.clear();
-      for (size_t j = 0; j < m_vertexTrans[i].vertexBuffer->size(); j += 4)
-      {
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j]);
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+1]);
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+2]);
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+1]);
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+3]);
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+2]);
-      }
-      SVertex *vertices = &vecVertices[0];
-
-      // Generate a unique buffer object name and put it in vertexBuffer
-      GLuint vertexBuffer;
-      glGenBuffers(1, &vertexBuffer);
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
-      glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-      // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
-      // binding point (i.e. our buffer object) and initialise it from the
-      // specified client-side pointer
-      glBufferData(GL_ARRAY_BUFFER, vecVertices.size() * sizeof *vertices, vertices, GL_STATIC_DRAW);
+      glBindBuffer(GL_ARRAY_BUFFER, (GLuint) m_vertexTrans[i].vertexBuffer->bufferHandle);
+
       // Set up the offsets of the various vertex attributes within the buffer
       // object bound to GL_ARRAY_BUFFER
       glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) offsetof(SVertex, x));
       glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(SVertex), (GLvoid *) offsetof(SVertex, r));
       glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) offsetof(SVertex, u));
+
       // Do the actual drawing operation, using the full set of vertices in the buffer
-      glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
-      // Release the buffer name for reuse
-      glDeleteBuffers(1, &vertexBuffer);
+      glDrawArrays(GL_TRIANGLES, 0, 6 * m_vertexTrans[i].vertexBuffer->size);
 
       glMatrixModview.Pop();
     }
@@ -264,6 +248,48 @@ void CGUIFontTTFGL::LastEnd()
   g_Windowing.DisableGUIShader();
 #endif
 }
+
+#if HAS_GLES
+CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vertices) const
+{
+  // Rearrange the vertices to describe triangles
+  std::vector<SVertex> triangleVertices;
+  triangleVertices.reserve(vertices.size() * 6 / 4);
+  for (size_t i = 0; i < vertices.size(); i += 4)
+  {
+    triangleVertices.push_back(vertices[i]);
+    triangleVertices.push_back(vertices[i+1]);
+    triangleVertices.push_back(vertices[i+2]);
+    triangleVertices.push_back(vertices[i+1]);
+    triangleVertices.push_back(vertices[i+3]);
+    triangleVertices.push_back(vertices[i+2]);
+  }
+
+  // Generate a unique buffer object name and put it in bufferHandle
+  GLuint bufferHandle;
+  glGenBuffers(1, &bufferHandle);
+  // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
+  glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
+  // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
+  // binding point (i.e. our buffer object) and initialise it from the
+  // specified client-side pointer
+  glBufferData(GL_ARRAY_BUFFER, triangleVertices.size() * sizeof (SVertex), &triangleVertices[0], GL_STATIC_DRAW);
+  // Unbind GL_ARRAY_BUFFER
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  return CVertexBuffer((void *) bufferHandle, vertices.size() / 4, this);
+}
+
+void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer &buffer) const
+{
+  if (buffer.bufferHandle != 0)
+  {
+    // Release the buffer name for reuse
+    glDeleteBuffers(1, (GLuint *) &buffer.bufferHandle);
+    buffer.bufferHandle = 0;
+  }
+}
+#endif
 
 CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
