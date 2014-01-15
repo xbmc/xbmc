@@ -171,10 +171,10 @@ bool Win32DllLoader::Load()
     {
       std::string strMessage;
       g_charsetConverter.wToUTF8(std::wstring(lpMsgBuf, strLen), strMessage);
-      CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %d: \"%s\"", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw, strMessage);
+      CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %lu: \"%s\"", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw, strMessage);
     }
     else
-      CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %d", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw);
+      CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %lu", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw);
     
     LocalFree(lpMsgBuf);
     return false;
