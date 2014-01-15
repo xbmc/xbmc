@@ -12146,7 +12146,12 @@ msgctxt "#25006"
 msgid "Select playback item"
 msgstr ""
 
-#empty strings from id 25007 to 29799
+#: xbmc/filesystem/BlurayDirectory.cpp
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr ""
+
+#empty strings from id 25008 to 29799
 #strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
 
 #: skin.confluence
