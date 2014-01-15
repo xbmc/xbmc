@@ -8,7 +8,7 @@ set buildno=14
 rem set sha1=
 
 echo Downloading deps
-%WORKSPACE%\project\BuildDependencies\bin\wget.exe -nv -O %WORKSPACE%\plex\Dependencies\windows-i386-xbmc-deps.tar.gz https://nightlies.plex.tv/plex-dependencies/plex-home-theater-deps-windows/%buildno%/windows-i386-xbmc-deps.tar.gz
+%WORKSPACE%\project\BuildDependencies\bin\wget.exe -nv --no-check-certificate -O %WORKSPACE%\plex\Dependencies\windows-i386-xbmc-deps.tar.gz https://nightlies.plex.tv/plex-dependencies/plex-home-theater-deps-windows/%buildno%/windows-i386-xbmc-deps.tar.gz
 echo Unpacking deps
 %WORKSPACE%\plex\scripts\tar.exe -C %WORKSPACE% -xzf %WORKSPACE%\plex\Dependencies\windows-i386-xbmc-deps.tar.gz
 
@@ -23,7 +23,7 @@ if not exist %DEPENDDIR%\vcredist\2010\vcredist_x86.exe (
 if not exist %DEPENDDIR%\vcredist\2012 mkdir %DEPENDDIR%\vcredist\2012
 if not exist %DEPENDDIR%\vcredist\2012\vcredist_x86.exe (
   echo Downloading vc110 redist...
-  %WORKSPACE%\Project\BuildDependencies\bin\wget -nv -O %DEPENDDIR%\vcredist\2012\vcredist_x86.exe https://nightlies.plex.tv/plex-dependencies/plex-home-theater-dependencies/win32/vcredist_x86.exe
+  %WORKSPACE%\Project\BuildDependencies\bin\wget -nv --no-check-certificate -O %DEPENDDIR%\vcredist\2012\vcredist_x86.exe https://nightlies.plex.tv/plex-dependencies/plex-home-theater-dependencies/win32/vcredist_x86.exe
 )
 
 if not exist %DEPENDDIR%\dxsetup mkdir %DEPENDDIR%\dxsetup
