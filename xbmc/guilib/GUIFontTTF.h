@@ -67,14 +67,6 @@ struct SVertex
   unsigned char r, g, b, a;
 #endif
   float u, v;
-  struct SVertex Offset(float translate[3]) const
-  {
-    SVertex out = *this;
-    out.x += translate[0];
-    out.y += translate[1];
-    out.z += translate[2];
-    return out;
-  }
 };
 
 

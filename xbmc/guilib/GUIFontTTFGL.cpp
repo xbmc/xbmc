@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "windowing/WindowingFactory.h"
+#include "guilib/MatrixGLES.h"
 
 // stuff for freetype
 #include <ft2build.h>
@@ -166,6 +167,7 @@ void CGUIFontTTFGL::LastEnd()
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
+  GLint modelLoc = g_Windowing.GUIShaderGetModel();
 
   // Enable the attributes used by this shader
   glEnableVertexAttribArray(posLoc);
@@ -204,25 +206,34 @@ void CGUIFontTTFGL::LastEnd()
     std::vector<SVertex> vecVertices;
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
-      float translate[3] = { m_vertexTrans[i].translateX, m_vertexTrans[i].translateY, m_vertexTrans[i].translateZ };
+      // Apply the translation to the currently active (top-of-stack) model view matrix
+      glMatrixModview.Push();
+      glMatrixModview.Get().Translatef(m_vertexTrans[i].translateX, m_vertexTrans[i].translateY, m_vertexTrans[i].translateZ);
+      glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
+
+      vecVertices.clear();
       for (size_t j = 0; j < m_vertexTrans[i].vertexBuffer->size(); j += 4)
       {
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j].Offset(translate));
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+1].Offset(translate));
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+2].Offset(translate));
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+1].Offset(translate));
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+3].Offset(translate));
-        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+2].Offset(translate));
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j]);
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+1]);
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+2]);
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+1]);
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+3]);
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+2]);
       }
+      SVertex *vertices = &vecVertices[0];
+
+      glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
+      // Normalize color values. Does not affect Performance at all.
+      glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
+      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
+
+      glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+
+      glMatrixModview.Pop();
     }
-    SVertex *vertices = &vecVertices[0];
-
-    glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
-    // Normalize color values. Does not affect Performance at all.
-    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
-
-    glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+    // Restore the original model view matrix
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
   }
 
   // Disable the attributes used by this shader

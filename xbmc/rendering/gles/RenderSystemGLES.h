@@ -97,6 +97,7 @@ public:
   GLint GUIShaderGetStep();
   GLint GUIShaderGetContrast();
   GLint GUIShaderGetBrightness();
+  GLint GUIShaderGetModel();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;

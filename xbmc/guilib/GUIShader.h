@@ -43,6 +43,7 @@ public:
   GLint GetStepLoc() { return m_hStep; }
   GLint GetContrastLoc() { return m_hContrast; }
   GLint GetBrightnessLoc() { return m_hBrightness; }
+  GLint GetModelLoc() { return m_hModel; }
   bool HardwareClipIsPossible() { return m_clipPossible; }
   GLfloat GetClipXFactor() { return m_clipXFactor; }
   GLfloat GetClipXOffset() { return m_clipXOffset; }

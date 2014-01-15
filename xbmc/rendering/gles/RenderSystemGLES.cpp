@@ -718,4 +718,12 @@ bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode)
   }
 }
 
+GLint CRenderSystemGLES::GUIShaderGetModel()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetModelLoc();
+
+  return -1;
+}
+
 #endif
