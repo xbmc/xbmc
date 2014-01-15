@@ -2900,10 +2900,8 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
     strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
 
   URIUtils::RemoveSlashAtEnd(strMovieName);
-  strMovieName = URIUtils::GetFileName(strMovieName);
-  strMovieName = CURL::Decode(strMovieName);
 
-  return strMovieName;
+  return CURL::Decode(URIUtils::GetFileName(strMovieName));
 }
 
 CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const

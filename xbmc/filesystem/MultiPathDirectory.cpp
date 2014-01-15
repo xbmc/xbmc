@@ -150,11 +150,7 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
 {
   size_t pos = strPath.find("/", 12);
   if (pos != std::string::npos)
-  {
-    CStdString firstPath = strPath.substr(12, pos - 12);
-    firstPath = CURL::Decode(firstPath);
-    return firstPath;
-  }
+    return CURL::Decode(strPath.substr(12, pos - 12));
   return "";
 }
 
@@ -176,9 +172,7 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   // check each item
   for (unsigned int i = 0; i < vecTemp.size(); i++)
   {
-    CStdString tempPath = vecTemp[i];
-    tempPath = CURL::Decode(tempPath);
-    vecPaths.push_back(tempPath);
+    vecPaths.push_back(CURL::Decode(vecTemp[i]));
   }
   return true;
 }
@@ -198,9 +192,7 @@ bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& s
   // check each item
   for (unsigned int i = 0; i < vecTemp.size(); i++)
   {
-    CStdString tempPath = vecTemp[i];
-    tempPath = CURL::Decode(tempPath);
-    if(tempPath == strPathToFind)
+    if (CURL::Decode(vecTemp[i]) == strPathToFind)
       return true;
   }
   return false;

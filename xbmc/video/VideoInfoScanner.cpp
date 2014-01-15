@@ -767,11 +767,7 @@ namespace VIDEO
         continue;
 
       if (!EnumerateEpisodeItem(items[i].get(), episodeList))
-      {
-        CStdString decode(items[i]->GetPath());
-        decode = CURL::Decode(decode);
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file %s", CURL::GetRedacted(decode).c_str());
-      }
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file %s", CURL::GetRedacted(CURL::Decode(items[i]->GetPath())).c_str());
     }
   }
 
@@ -1072,9 +1068,7 @@ namespace VIDEO
       strTitle = StringUtils::Format("%s - %ix%i - %s", showInfo->m_strTitle.c_str(), movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle.c_str());
     }
 
-    std::string redactPath = pItem->GetPath();
-    redactPath = CURL::Decode(redactPath);
-    redactPath = CURL::GetRedacted(redactPath);
+    std::string redactPath(CURL::GetRedacted(CURL::Decode(pItem->GetPath())));
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to %s:%s", TranslateContent(content).c_str(), redactPath.c_str());
     long lResult = -1;

@@ -398,8 +398,7 @@ void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &st
 {
 #if defined(TARGET_DARWIN)
   // Decode the path.
-  CStdString strMountPoint = GetMountPoint(strType, strName);
-  strMountPoint = CURL::Decode(strMountPoint);
+  CStdString strMountPoint(CURL::Decode(GetMountPoint(strType, strName)));
 
   // Make the unmount command.
   CStdStringArray args;
