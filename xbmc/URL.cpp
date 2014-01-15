@@ -37,13 +37,6 @@
 using namespace std;
 using namespace ADDON;
 
-CStdString URLEncodeInline(const CStdString& strData)
-{
-  CStdString buffer = strData;
-  buffer = CURL::Encode(buffer);
-  return buffer;
-}
-
 CURL::CURL(const CStdString& strURL1)
 {
   Parse(strURL1);
@@ -598,7 +591,7 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
       strHostName = m_strHostName;
 
     if (URIUtils::ProtocolHasEncodedHostname(m_strProtocol))
-      strURL += URLEncodeInline(strHostName);
+      strURL += Encode(strHostName);
     else
       strURL += strHostName;
 
@@ -643,11 +636,11 @@ CStdString CURL::GetWithoutFilename() const
   }
   else if (m_strUserName != "")
   {
-    strURL += URLEncodeInline(m_strUserName);
+    strURL += Encode(m_strUserName);
     if (m_strPassword != "")
     {
       strURL += ":";
-      strURL += URLEncodeInline(m_strPassword);
+      strURL += Encode(m_strPassword);
     }
     strURL += "@";
   }
@@ -657,7 +650,7 @@ CStdString CURL::GetWithoutFilename() const
   if (m_strHostName != "")
   {
     if( URIUtils::ProtocolHasEncodedHostname(m_strProtocol) )
-      strURL += URLEncodeInline(m_strHostName);
+      strURL += Encode(m_strHostName);
     else
       strURL += m_strHostName;
     if (HasPort())
