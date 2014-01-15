@@ -423,7 +423,7 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const CStdString &method, ITransp
   if (ParameterNotNull(parameterObject, "yearsactive"))
     CopyStringArray(parameterObject["yearsactive"], artist.yearsActive);
 
-  if (musicdatabase.UpdateArtist(artist) <= 0)
+  if (!musicdatabase.UpdateArtist(artist))
     return InternalError;
 
   CJSONRPCUtils::NotifyItemUpdated();
