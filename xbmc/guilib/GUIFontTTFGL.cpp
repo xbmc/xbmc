@@ -227,12 +227,24 @@ void CGUIFontTTFGL::LastEnd()
       }
       SVertex *vertices = &vecVertices[0];
 
-      glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
-      // Normalize color values. Does not affect Performance at all.
-      glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
-      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
-
+      // Generate a unique buffer object name and put it in vertexBuffer
+      GLuint vertexBuffer;
+      glGenBuffers(1, &vertexBuffer);
+      // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
+      glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+      // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
+      // binding point (i.e. our buffer object) and initialise it from the
+      // specified client-side pointer
+      glBufferData(GL_ARRAY_BUFFER, vecVertices.size() * sizeof *vertices, vertices, GL_STATIC_DRAW);
+      // Set up the offsets of the various vertex attributes within the buffer
+      // object bound to GL_ARRAY_BUFFER
+      glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) offsetof(SVertex, x));
+      glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(SVertex), (GLvoid *) offsetof(SVertex, r));
+      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) offsetof(SVertex, u));
+      // Do the actual drawing operation, using the full set of vertices in the buffer
       glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+      // Release the buffer name for reuse
+      glDeleteBuffers(1, &vertexBuffer);
 
       glMatrixModview.Pop();
     }
@@ -240,6 +252,8 @@ void CGUIFontTTFGL::LastEnd()
     g_Windowing.ResetScissors();
     // Restore the original model view matrix
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
+    // Unbind GL_ARRAY_BUFFER
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
 
   // Disable the attributes used by this shader
