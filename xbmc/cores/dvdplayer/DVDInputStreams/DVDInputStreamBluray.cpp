@@ -695,7 +695,7 @@ void CDVDInputStreamBluray::OverlayInit(SPlane& plane, int w, int h)
 void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int h)
 {
 #if(BD_OVERLAY_INTERFACE_VERSION >= 2)
-  CRect ovr(x
+  CRectInt ovr(x
           , y
           , x + w
           , y + h);
@@ -703,12 +703,12 @@ void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int
   /* fixup existing overlays */
   for(SOverlays::iterator it = plane.o.begin(); it != plane.o.end();)
   {
-    CRect old((*it)->x
+    CRectInt old((*it)->x
             , (*it)->y
             , (*it)->x + (*it)->width
             , (*it)->y + (*it)->height);
 
-    vector<CRect> rem = old.SubtractRect(ovr);
+    vector<CRectInt> rem = old.SubtractRect(ovr);
 
     /* if no overlap we are done */
     if(rem.size() == 1 && !(rem[0] != old))
@@ -718,7 +718,7 @@ void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int
     }
 
     SOverlays add;
-    for(vector<CRect>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
+    for(vector<CRectInt>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
     {
       SOverlay overlay(new CDVDOverlayImage(*(*it)
                                             , itr->x1
