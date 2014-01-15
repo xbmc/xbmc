@@ -85,6 +85,7 @@ bool CPlayerController::OnAction(const CAction &action)
       }
 
       case ACTION_NEXT_SUBTITLE:
+      case ACTION_CYCLE_SUBTITLE:
       {
         if (g_application.m_pPlayer->GetSubtitleCount() == 0)
           return true;
@@ -98,12 +99,15 @@ bool CPlayerController::OnAction(const CAction &action)
           if (CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream >= g_application.m_pPlayer->GetSubtitleCount())
           {
             CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = 0;
-            CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = false;
-            g_application.m_pPlayer->SetSubtitleVisible(false);
+            if (action.GetID() == ACTION_NEXT_SUBTITLE)
+            {
+              CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = false;
+              g_application.m_pPlayer->SetSubtitleVisible(false);
+            }
           }
           g_application.m_pPlayer->SetSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
         }
-        else
+        else if (action.GetID() == ACTION_NEXT_SUBTITLE)
         {
           CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = true;
           g_application.m_pPlayer->SetSubtitleVisible(true);
@@ -124,6 +128,7 @@ bool CPlayerController::OnAction(const CAction &action)
         }
         else
           sub = g_localizeStrings.Get(1223);
+
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
         return true;
       }
