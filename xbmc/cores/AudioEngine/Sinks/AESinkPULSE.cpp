@@ -195,6 +195,13 @@ struct SinkInfoStruct
   bool isHWDevice;
   bool device_not_found;
   pa_threaded_mainloop *mainloop;
+  SinkInfoStruct()
+  {
+    list = NULL;
+    isHWDevice = false;
+    device_not_found = false;
+    mainloop = NULL;
+  }
 };
 
 static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
