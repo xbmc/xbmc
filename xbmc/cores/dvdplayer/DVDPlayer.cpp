@@ -517,19 +517,11 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_HasAudio = false;
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
-
-#ifdef DVDDEBUG_MESSAGE_TRACKER
-  g_dvdMessageTracker.Init();
-#endif
 }
 
 CDVDPlayer::~CDVDPlayer()
 {
   CloseFile();
-
-#ifdef DVDDEBUG_MESSAGE_TRACKER
-  g_dvdMessageTracker.DeInit();
-#endif
 }
 
 bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
