@@ -988,6 +988,9 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIFont.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUIFontCache.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIFontManager.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -3865,6 +3868,9 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIFont.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUIFontCache.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIFontManager.h">

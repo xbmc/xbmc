@@ -29,6 +29,8 @@
 #include "windowing/WindowingFactory.h"
 #include "URL.h"
 #include "filesystem/File.h"
+#include "threads/SystemClock.h"
+#include "boost/make_shared.hpp"
 
 #include <math.h>
 
@@ -153,7 +155,7 @@ private:
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
 #define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
-CGUIFontTTFBase::CGUIFontTTFBase(const std::string& strFileName)
+CGUIFontTTFBase::CGUIFontTTFBase(const std::string& strFileName) : m_staticCache(*this)
 {
   m_texture = NULL;
   m_char = NULL;
@@ -354,108 +356,130 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
 {
   Begin();
 
-  std::vector<SVertex> &vertices = m_vertex;
-
-  // save the origin, which is scaled separately
-  m_originX = x;
-  m_originY = y;
-
-  // Check if we will really need to truncate or justify the text
-  if ( alignment & XBFONT_TRUNCATED )
+  uint32_t rawAlignment = alignment;
+  bool dirtyCache;
+  CGUIFontCacheStaticPosition staticPos(x, y);
+  boost::shared_ptr<std::vector<SVertex> > tempVertices = boost::make_shared<std::vector<SVertex> >();
+  boost::shared_ptr<std::vector<SVertex> > &vertices = m_staticCache.Lookup(staticPos,
+                                                                            colors, text,
+                                                                            alignment, maxPixelWidth,
+                                                                            scrolling,
+                                                                            XbmcThreads::SystemClockMillis(),
+                                                                            dirtyCache);
+  if (dirtyCache)
   {
-    if ( maxPixelWidth <= 0.0f || GetTextWidthInternal(text.begin(), text.end()) <= maxPixelWidth)
-      alignment &= ~XBFONT_TRUNCATED;
-  }
-  else if ( alignment & XBFONT_JUSTIFIED )
-  {
-    if ( maxPixelWidth <= 0.0f )
-      alignment &= ~XBFONT_JUSTIFIED;
-  }
+    // save the origin, which is scaled separately
+    m_originX = x;
+    m_originY = y;
 
-  // calculate sizing information
-  float startX = 0;
-  float startY = (alignment & XBFONT_CENTER_Y) ? -0.5f*m_cellHeight : 0;  // vertical centering
-
-  if ( alignment & (XBFONT_RIGHT | XBFONT_CENTER_X) )
-  {
-    // Get the extent of this line
-    float w = GetTextWidthInternal( text.begin(), text.end() );
-
-    if ( alignment & XBFONT_TRUNCATED && w > maxPixelWidth + 0.5f ) // + 0.5f due to rounding issues
-      w = maxPixelWidth;
-
-    if ( alignment & XBFONT_CENTER_X)
-      w *= 0.5f;
-    // Offset this line's starting position
-    startX -= w;
-  }
-
-  float spacePerLetter = 0; // for justification effects
-  if ( alignment & XBFONT_JUSTIFIED )
-  {
-    // first compute the size of the text to render in both characters and pixels
-    unsigned int lineChars = 0;
-    float linePixels = 0;
-    for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
-    {
-      Character *ch = GetCharacter(*pos);
-      if (ch)
-      { // spaces have multiple times the justification spacing of normal letters
-        lineChars += ((*pos & 0xffff) == L' ') ? justification_word_weight : 1;
-        linePixels += ch->advance;
-      }
-    }
-    if (lineChars > 1)
-      spacePerLetter = (maxPixelWidth - linePixels) / (lineChars - 1);
-  }
-  float cursorX = 0; // current position along the line
-
-  for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
-  {
-    // If starting text on a new line, determine justification effects
-    // Get the current letter in the std::string
-    color_t color = (*pos & 0xff0000) >> 16;
-    if (color >= colors.size())
-      color = 0;
-    color = colors[color];
-
-    // grab the next character
-    Character *ch = GetCharacter(*pos);
-    if (!ch) continue;
-
+    // Check if we will really need to truncate or justify the text
     if ( alignment & XBFONT_TRUNCATED )
     {
-      // Check if we will be exceeded the max allowed width
-      if ( cursorX + ch->advance + 3 * m_ellipsesWidth > maxPixelWidth )
-      {
-        // Yup. Let's draw the ellipses, then bail
-        // Perhaps we should really bail to the next line in this case??
-        Character *period = GetCharacter(L'.');
-        if (!period)
-          break;
-
-        for (int i = 0; i < 3; i++)
-        {
-          RenderCharacter(startX + cursorX, startY, period, color, !scrolling, vertices);
-          cursorX += period->advance;
-        }
-        break;
-      }
+      if ( maxPixelWidth <= 0.0f || GetTextWidthInternal(text.begin(), text.end()) <= maxPixelWidth)
+        alignment &= ~XBFONT_TRUNCATED;
     }
-    else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
-      break;  // exceeded max allowed width - stop rendering
+    else if ( alignment & XBFONT_JUSTIFIED )
+    {
+      if ( maxPixelWidth <= 0.0f )
+        alignment &= ~XBFONT_JUSTIFIED;
+    }
 
-    RenderCharacter(startX + cursorX, startY, ch, color, !scrolling, vertices);
+    // calculate sizing information
+    float startX = 0;
+    float startY = (alignment & XBFONT_CENTER_Y) ? -0.5f*m_cellHeight : 0;  // vertical centering
+
+    if ( alignment & (XBFONT_RIGHT | XBFONT_CENTER_X) )
+    {
+      // Get the extent of this line
+      float w = GetTextWidthInternal( text.begin(), text.end() );
+
+      if ( alignment & XBFONT_TRUNCATED && w > maxPixelWidth + 0.5f ) // + 0.5f due to rounding issues
+        w = maxPixelWidth;
+
+      if ( alignment & XBFONT_CENTER_X)
+        w *= 0.5f;
+      // Offset this line's starting position
+      startX -= w;
+    }
+
+    float spacePerLetter = 0; // for justification effects
     if ( alignment & XBFONT_JUSTIFIED )
     {
-      if ((*pos & 0xffff) == L' ')
-        cursorX += ch->advance + spacePerLetter * justification_word_weight;
-      else
-        cursorX += ch->advance + spacePerLetter;
+      // first compute the size of the text to render in both characters and pixels
+      unsigned int lineChars = 0;
+      float linePixels = 0;
+      for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
+      {
+        Character *ch = GetCharacter(*pos);
+        if (ch)
+        { // spaces have multiple times the justification spacing of normal letters
+          lineChars += ((*pos & 0xffff) == L' ') ? justification_word_weight : 1;
+          linePixels += ch->advance;
+        }
+      }
+      if (lineChars > 1)
+        spacePerLetter = (maxPixelWidth - linePixels) / (lineChars - 1);
     }
-    else
-      cursorX += ch->advance;
+    float cursorX = 0; // current position along the line
+
+    for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
+    {
+      // If starting text on a new line, determine justification effects
+      // Get the current letter in the CStdString
+      color_t color = (*pos & 0xff0000) >> 16;
+      if (color >= colors.size())
+        color = 0;
+      color = colors[color];
+
+      // grab the next character
+      Character *ch = GetCharacter(*pos);
+      if (!ch) continue;
+
+      if ( alignment & XBFONT_TRUNCATED )
+      {
+        // Check if we will be exceeded the max allowed width
+        if ( cursorX + ch->advance + 3 * m_ellipsesWidth > maxPixelWidth )
+        {
+          // Yup. Let's draw the ellipses, then bail
+          // Perhaps we should really bail to the next line in this case??
+          Character *period = GetCharacter(L'.');
+          if (!period)
+            break;
+
+          for (int i = 0; i < 3; i++)
+          {
+            RenderCharacter(startX + cursorX, startY, period, color, !scrolling, *tempVertices);
+            cursorX += period->advance;
+          }
+          break;
+        }
+      }
+      else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
+        break;  // exceeded max allowed width - stop rendering
+
+      RenderCharacter(startX + cursorX, startY, ch, color, !scrolling, *tempVertices);
+      if ( alignment & XBFONT_JUSTIFIED )
+      {
+        if ((*pos & 0xffff) == L' ')
+          cursorX += ch->advance + spacePerLetter * justification_word_weight;
+        else
+          cursorX += ch->advance + spacePerLetter;
+      }
+      else
+        cursorX += ch->advance;
+    }
+    m_staticCache.Lookup(staticPos,
+                         colors, text,
+                         rawAlignment, maxPixelWidth,
+                         scrolling,
+                         XbmcThreads::SystemClockMillis(),
+                         dirtyCache) = *static_cast<CGUIFontCacheStaticValue *>(&tempVertices);
+    /* Append the new vertices to the set collected since the first Begin() call */
+    m_vertex.insert(m_vertex.end(), tempVertices->begin(), tempVertices->end());
   }
+  else
+    /* Append the vertices from the cache to the set collected since the first Begin() call */
+    m_vertex.insert(m_vertex.end(), vertices->begin(), vertices->end());
 
   End();
 }

@@ -23,6 +23,7 @@ SRCS += GUIEditControl.cpp
 SRCS += GUIFadeLabelControl.cpp
 SRCS += GUIFixedListContainer.cpp
 SRCS += GUIFont.cpp
+SRCS += GUIFontCache.cpp
 SRCS += GUIFontManager.cpp
 SRCS += GUIFontTTF.cpp
 SRCS += GUIImage.cpp

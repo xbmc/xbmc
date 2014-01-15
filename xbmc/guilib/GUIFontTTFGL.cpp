@@ -221,6 +221,7 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   m_textureScaleX = 1.0f / m_textureWidth;
   if (m_textureHeight < newHeight)
     CLog::Log(LOGWARNING, "%s: allocated new texture with height of %d, requested %d", __FUNCTION__, m_textureHeight, newHeight);
+  m_staticCache.Flush();
 
   memset(newTexture->GetPixels(), 0, m_textureHeight * newTexture->GetPitch());
   if (m_texture)
