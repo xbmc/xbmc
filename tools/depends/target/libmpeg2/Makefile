@@ -51,6 +51,11 @@ ifeq ($(OS),android)
 	-$(READELF) --dynamic $(PREFIX)/lib/libxbmpeg2convert.so | grep ibrary
 	#
 endif
+#on ios we link statically against libmpeg2 because of crash&burn since ios7 - 
+#so remove the dylib so the linker doesn't see it
+ifeq ($(OS),ios)
+	rm -f $(PREFIX)/lib/libmpeg2.la $(PREFIX)/lib/libmpeg2.dylib $(PREFIX)/lib/libmpeg2.0.dylib
+endif
 	touch $@
 
 clean:
