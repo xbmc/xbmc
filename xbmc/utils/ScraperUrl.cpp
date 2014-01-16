@@ -262,9 +262,9 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   {
     std::string realHtmlCharset, converted;
     if (!CCharsetDetection::ConvertHtmlToUtf8(strHTML, converted, reportedCharset, realHtmlCharset))
-      CLog::Log(LOGWARNING, "%s: Can't find precise charset for \"%s\", using \"%s\" as fallback", __FUNCTION__, scrURL.m_url.c_str(), realHtmlCharset.c_str());
+      CLog::Log(LOGWARNING, "%s: Can't find precise charset for HTML \"%s\", using \"%s\" as fallback", __FUNCTION__, scrURL.m_url.c_str(), realHtmlCharset.c_str());
     else
-      CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for \"%s\"", __FUNCTION__, realHtmlCharset.c_str(), scrURL.m_url.c_str());
+      CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for HTML \"%s\"", __FUNCTION__, realHtmlCharset.c_str(), scrURL.m_url.c_str());
 
     strHTML = converted;
   }
@@ -276,7 +276,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     std::string realXmlCharset(xmlDoc.GetUsedCharset());
     if (!realXmlCharset.empty())
     {
-      CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for \"%s\"", __FUNCTION__, realXmlCharset.c_str(), scrURL.m_url.c_str());
+      CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for XML \"%s\"", __FUNCTION__, realXmlCharset.c_str(), scrURL.m_url.c_str());
       std::string converted;
       g_charsetConverter.ToUtf8(realXmlCharset, strHTML, converted);
       strHTML = converted;
@@ -288,16 +288,19 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     CCharsetDetection::ConvertPlainTextToUtf8(strHTML, converted, reportedCharset, realTextCharset);
     strHTML = converted;
     if (reportedCharset != realTextCharset)
-      CLog::Log(LOGWARNING, "%s: Using \"%s\" charset for \"%s\" instead of server reported \"%s\" charset", __FUNCTION__, realTextCharset.c_str(), scrURL.m_url.c_str(), reportedCharset.c_str());
+      CLog::Log(LOGWARNING, "%s: Using \"%s\" charset for plain text \"%s\" instead of server reported \"%s\" charset", __FUNCTION__, realTextCharset.c_str(), scrURL.m_url.c_str(), reportedCharset.c_str());
     else
-      CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for \"%s\"", __FUNCTION__, realTextCharset.c_str(), scrURL.m_url.c_str());
+      CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for plain text \"%s\"", __FUNCTION__, realTextCharset.c_str(), scrURL.m_url.c_str());
   }
-  else if (!reportedCharset.empty() && reportedCharset != "UTF-8")
+  else if (!reportedCharset.empty())
   {
     CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for \"%s\"", __FUNCTION__, reportedCharset.c_str(), scrURL.m_url.c_str());
-    std::string converted;
-    g_charsetConverter.ToUtf8(reportedCharset, strHTML, converted);
-    strHTML = converted;
+    if (reportedCharset != "UTF-8")
+    {
+      std::string converted;
+      g_charsetConverter.ToUtf8(reportedCharset, strHTML, converted);
+      strHTML = converted;
+    }
   }
   else
     CLog::Log(LOGDEBUG, "%s: Using content of \"%s\" as binary or text with \"UTF-8\" charset", __FUNCTION__, scrURL.m_url.c_str());
