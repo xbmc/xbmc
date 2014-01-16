@@ -1,6 +1,2 @@
 ; filename                        source of the file
-<<<<<<< HEAD
-libmicrohttpd-0.9.17-w32.zip                    https://nightlies.plex.tv/plex-dependencies/plex-home-theater-dependencies/win32
-=======
 libmicrohttpd-0.4.5-win32.7z                    http://mirrors.xbmc.org/build-deps/win32/
->>>>>>> parent of b50c725... Upgrade libmicrohttpd
