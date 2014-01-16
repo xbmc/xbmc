@@ -745,24 +745,21 @@ void CURL::Decode(CStdString& strURLData)
 
 void CURL::Encode(CStdString& strURLData)
 {
-  CStdString strResult;
+  std::string strResult;
 
   /* wonder what a good value is here is, depends on how often it occurs */
   strResult.reserve( strURLData.length() * 2 );
 
-  for (int i = 0; i < (int)strURLData.size(); ++i)
+  for (size_t i = 0; i < strURLData.size(); ++i)
   {
-    int kar = (unsigned char)strURLData[i];
-    //if (kar == ' ') strResult += '+'; // obsolete
-    if (isalnum(kar) || strchr("-_.!()" , kar) ) // Don't URL encode these according to RFC1738
-    {
-      strResult += kar;
-    }
+    const char kar = strURLData[i];
+    
+    // Don't URL encode "-_.!()" according to RFC1738
+    // TODO: Update it to "-_.~" after Gotham according to RFC3986
+    if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
+      strResult.push_back(kar);
     else
-    {
-      CStdString strTmp = StringUtils::Format("%%%02.2x", kar);
-      strResult += strTmp;
-    }
+      strResult += StringUtils::Format("%%%02.2x", (unsigned int)((unsigned char)kar)); // TODO: Change to "%%%02.2X" after Gotham
   }
   strURLData = strResult;
 }

@@ -572,8 +572,6 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
   if (!fFirst)
     StringUtils::Replace(sTitle, '-',' ');
 
-  StringUtils::ToLower(sTitle);
-
   vector<CStdString> vcsIn(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
   CURL::Encode(vcsIn[0]);
