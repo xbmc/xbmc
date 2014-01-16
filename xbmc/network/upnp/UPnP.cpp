@@ -183,8 +183,7 @@ public:
     {
         NPT_String path = "upnp://"+device->GetUUID()+"/";
         if (!NPT_StringsEqual(item_id, "0")) {
-            CStdString id = item_id;
-            CURL::Encode(id);
+            CStdString id(CURL::Encode(item_id));
             URIUtils::AddSlashAtEnd(id);
             path += id.c_str();
         }

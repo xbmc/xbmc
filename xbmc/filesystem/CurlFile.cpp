@@ -674,7 +674,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     /* url encoded. if handed from ftpdirectory */
     /* it won't be so let's handle that case    */
 
-    CStdString partial, filename(url2.GetFileName());
+    CStdString filename(url2.GetFileName());
     std::vector<std::string> array;
 
     // if server sent us the filename in non-utf8, we need send back with same encoding.
@@ -689,9 +689,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       if(it != array.begin())
         filename += "/";
 
-      partial = *it;
-      CURL::Encode(partial);
-      filename += partial;
+      filename += CURL::Encode(*it);
     }
 
     /* make sure we keep slashes */

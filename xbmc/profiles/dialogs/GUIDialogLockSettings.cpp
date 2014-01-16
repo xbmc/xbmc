@@ -49,8 +49,7 @@ void CGUIDialogLockSettings::SetupPage()
   // update our settings label
   if (m_bGetUser)
   {
-    CStdString strLabel2=m_strURL;
-    CURL::Decode(strLabel2);
+    CStdString strLabel2(CURL::Decode(m_strURL));
     CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20152), strLabel2.c_str());
     SET_CONTROL_LABEL(2, strLabel);
   }
@@ -123,8 +122,7 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
     if (m_bGetUser)
     {
       CStdString strHeading;
-      CStdString strDecodeUrl = m_strURL;
-      CURL::Decode(strDecodeUrl);
+      CStdString strDecodeUrl(CURL::Decode(m_strURL));
       strHeading = StringUtils::Format("%s %s", g_localizeStrings.Get(14062).c_str(), strDecodeUrl.c_str());
       if (CGUIKeyboardFactory::ShowAndGetInput(m_strUser,strHeading,true))
       {
@@ -187,8 +185,7 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
   }
   if (setting.id == 2 && m_bGetUser)
   {
-    CStdString strDecodeUrl = m_strURL;
-    CURL::Decode(strDecodeUrl);
+    CStdString strDecodeUrl(CURL::Decode(m_strURL));
     CStdString strHeading = StringUtils::Format("%s %s", g_localizeStrings.Get(20143).c_str(), strDecodeUrl.c_str());
     if (CGUIKeyboardFactory::ShowAndGetInput(m_locks.code,strHeading,true,true))
     {

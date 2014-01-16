@@ -38,8 +38,6 @@ extern "C" {
 }
 #endif
 
-CStdString URLEncode(CStdString str);
-
 class CAfpConnection : public CCriticalSection
 {
 public:

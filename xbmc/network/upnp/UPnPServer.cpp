@@ -225,7 +225,7 @@ NPT_String CUPnPServer::BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
     else
       filename = URIUtils::GetFileName(file_path);
 
-    CURL::Encode(filename);
+    filename = CURL::Encode(filename);
     md5state.append(file_path);
     md5state.getDigest(md5);
     md5 += "/" + filename;
@@ -988,7 +988,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
                             NPT_Map<NPT_String,NPT_String>&  new_vals,
                             const PLT_HttpRequestContext&    context)
 {
-    CStdString path = CURL::Decode(object_id);
+    CStdString path(CURL::Decode(object_id));
     CFileItem updated;
     updated.SetPath(path);
     CLog::Log(LOGINFO, "UPnP: OnUpdateObject: %s from %s", path.c_str(),

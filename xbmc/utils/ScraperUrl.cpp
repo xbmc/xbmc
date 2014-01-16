@@ -349,9 +349,8 @@ CStdString CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry &entry)
 {
   if (entry.m_spoof.empty())
     return entry.m_url;
-  CStdString spoof = entry.m_spoof;
-  CURL::Encode(spoof);
-  return entry.m_url + "|Referer=" + spoof;
+  
+  return entry.m_url + "|Referer=" + CStdString(CURL::Encode(entry.m_spoof));
 }
 
 void CScraperUrl::GetThumbURLs(std::vector<CStdString> &thumbs, const std::string &type, int season) const

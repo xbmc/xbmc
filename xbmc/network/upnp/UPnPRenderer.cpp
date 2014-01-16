@@ -210,7 +210,7 @@ CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest&              request,
             }
 
             // open the file
-            CStdString path = CURL::Decode((const char*) filepath);
+            CStdString path (CURL::Decode((const char*) filepath));
             NPT_File file(path.c_str());
             NPT_Result result = file.Open(NPT_FILE_OPEN_MODE_READ);
             if (NPT_FAILED(result)) {

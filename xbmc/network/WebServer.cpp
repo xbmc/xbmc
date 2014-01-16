@@ -853,8 +853,7 @@ bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::strin
       url = "image/";
     else
       url = "vfs/";
-    CURL::Encode(strPath);
-    url += strPath;
+    url += CURL::Encode(strPath);
     details["path"] = url;
     return true;
   }

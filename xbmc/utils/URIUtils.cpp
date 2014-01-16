@@ -1113,24 +1113,17 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
                                  const CStdString& strFilePathInArchive,
                                  const CStdString& strPwd)
 {
-  CStdString strBuffer;
-
   strUrlPath = strType+"://";
 
   if( !strPwd.empty() )
   {
-    strBuffer = strPwd;
-    CURL::Encode(strBuffer);
-    strUrlPath += strBuffer;
+    strUrlPath += CURL::Encode(strPwd);
     strUrlPath += "@";
   }
 
-  strBuffer = strArchivePath;
-  CURL::Encode(strBuffer);
+  strUrlPath += CURL::Encode(strArchivePath);
 
-  strUrlPath += strBuffer;
-
-  strBuffer = strFilePathInArchive;
+  CStdString strBuffer(strFilePathInArchive);
   StringUtils::Replace(strBuffer, '\\', '/');
   StringUtils::TrimLeft(strBuffer, "/");
 
@@ -1139,7 +1132,7 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
 
 #if 0 // options are not used
   strBuffer = strCachePath;
-  CURL::Encode(strBuffer);
+  strBuffer = CURL::Encode(strBuffer);
 
   strUrlPath += "?cache=";
   strUrlPath += strBuffer;

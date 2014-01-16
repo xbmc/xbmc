@@ -37,13 +37,6 @@
 using namespace std;
 using namespace ADDON;
 
-CStdString URLEncodeInline(const CStdString& strData)
-{
-  CStdString buffer = strData;
-  CURL::Encode(buffer);
-  return buffer;
-}
-
 CURL::CURL(const CStdString& strURL1)
 {
   Parse(strURL1);
@@ -128,7 +121,7 @@ void CURL::Parse(const CStdString& strURL1)
         if (!(s.st_mode & S_IFDIR))
 #endif
         {
-          Encode(archiveName);
+          archiveName = Encode(archiveName);
           if (is_apk)
           {
             CURL c("apk://" + archiveName + "/" + strURL.substr(iPos + 1));
@@ -335,12 +328,12 @@ void CURL::Parse(const CStdString& strURL1)
   /* decode urlencoding on this stuff */
   if(URIUtils::ProtocolHasEncodedHostname(m_strProtocol))
   {
-    Decode(m_strHostName);
+    m_strHostName = Decode(m_strHostName);
     SetHostName(m_strHostName);
   }
 
-  Decode(m_strUserName);
-  Decode(m_strPassword);
+  m_strUserName = Decode(m_strUserName);
+  m_strPassword = Decode(m_strPassword);
 }
 
 void CURL::SetFileName(const CStdString& strFileName)
@@ -598,7 +591,7 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
       strHostName = m_strHostName;
 
     if (URIUtils::ProtocolHasEncodedHostname(m_strProtocol))
-      strURL += URLEncodeInline(strHostName);
+      strURL += Encode(strHostName);
     else
       strURL += strHostName;
 
@@ -643,11 +636,11 @@ CStdString CURL::GetWithoutFilename() const
   }
   else if (m_strUserName != "")
   {
-    strURL += URLEncodeInline(m_strUserName);
+    strURL += Encode(m_strUserName);
     if (m_strPassword != "")
     {
       strURL += ":";
-      strURL += URLEncodeInline(m_strPassword);
+      strURL += Encode(m_strPassword);
     }
     strURL += "@";
   }
@@ -657,7 +650,7 @@ CStdString CURL::GetWithoutFilename() const
   if (m_strHostName != "")
   {
     if( URIUtils::ProtocolHasEncodedHostname(m_strProtocol) )
-      strURL += URLEncodeInline(m_strHostName);
+      strURL += Encode(m_strHostName);
     else
       strURL += m_strHostName;
     if (HasPort())
@@ -706,11 +699,11 @@ bool CURL::IsFullPath(const CStdString &url)
   return false;
 }
 
-void CURL::Decode(CStdString& strURLData)
+std::string CURL::Decode(const std::string& strURLData)
 //modified to be more accomodating - if a non hex value follows a % take the characters directly and don't raise an error.
 // However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {
-  CStdString strResult;
+  std::string strResult;
 
   /* result will always be less than source */
   strResult.reserve( strURLData.length() );
@@ -740,10 +733,11 @@ void CURL::Decode(CStdString& strURLData)
     }
     else strResult += kar;
   }
-  strURLData = strResult;
+  
+  return strResult;
 }
 
-void CURL::Encode(CStdString& strURLData)
+std::string CURL::Encode(const std::string& strURLData)
 {
   std::string strResult;
 
@@ -761,21 +755,8 @@ void CURL::Encode(CStdString& strURLData)
     else
       strResult += StringUtils::Format("%%%02.2x", (unsigned int)((unsigned char)kar)); // TODO: Change to "%%%02.2X" after Gotham
   }
-  strURLData = strResult;
-}
 
-std::string CURL::Decode(const std::string& strURLData)
-{
-  CStdString url = strURLData;
-  Decode(url);
-  return url;
-}
-
-std::string CURL::Encode(const std::string& strURLData)
-{
-  CStdString url = strURLData;
-  Encode(url);
-  return url;
+  return strResult;
 }
 
 CStdString CURL::TranslateProtocol(const CStdString& prot)

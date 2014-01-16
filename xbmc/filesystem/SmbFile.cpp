@@ -244,9 +244,7 @@ CStdString CSMB::URLEncode(const CURL &url)
 
 CStdString CSMB::URLEncode(const CStdString &value)
 {
-  CStdString encoded(value);
-  CURL::Encode(encoded);
-  return encoded;
+  return CURL::Encode(value);
 }
 
 /* This is called from CApplication::ProcessSlow() and is used to tell if smbclient have been idle for too long */

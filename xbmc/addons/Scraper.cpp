@@ -574,7 +574,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 
   vector<CStdString> vcsIn(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
-  CURL::Encode(vcsIn[0]);
+  vcsIn[0] = CURL::Encode(vcsIn[0]);
   if (!sYear.empty())
     vcsIn.push_back(sYear);
 
@@ -700,8 +700,8 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl, const CStdStr
   std::vector<CStdString> extras(2);
   g_charsetConverter.utf8To(SearchStringEncoding(), sAlbum, extras[0]);
   g_charsetConverter.utf8To(SearchStringEncoding(), sArtist, extras[1]);
-  CURL::Encode(extras[0]);
-  CURL::Encode(extras[1]);
+  extras[0] = CURL::Encode(extras[0]);
+  extras[1] = CURL::Encode(extras[1]);
   CScraperUrl scurl;
   vector<CStdString> vcsOut = RunNoThrow("CreateAlbumSearchUrl", scurl, fcurl, &extras);
   if (vcsOut.size() > 1)
@@ -796,7 +796,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl,
   // returns an XML <url> element parseable by CScraperUrl
   std::vector<CStdString> extras(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sArtist, extras[0]);
-  CURL::Encode(extras[0]);
+  extras[0] = CURL::Encode(extras[0]);
   CScraperUrl scurl;
   vector<CStdString> vcsOut = RunNoThrow("CreateArtistSearchUrl", scurl, fcurl, &extras);
 
@@ -1007,7 +1007,7 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl, const CScraperUrl &scurl,
   // pass in the original search string for chaining to search other sites
   vector<CStdString> vcIn;
   vcIn.push_back(sSearch);
-  CURL::Encode(vcIn[0]);
+  vcIn[0] = CURL::Encode(vcIn[0]);
 
   vector<CStdString> vcsOut = RunNoThrow("GetArtistDetails", scurl, fcurl, &vcIn);
 

@@ -382,10 +382,8 @@ static void OnDirectoryScanned(const CStdString& strDirectory)
 static CStdString Prettify(const CStdString& strDirectory)
 {
   CURL url(strDirectory);
-  CStdString strStrippedPath = url.GetWithoutUserDetails();
-  CURL::Decode(strStrippedPath);
 
-  return strStrippedPath;
+  return CURL::Decode(url.GetWithoutUserDetails());
 }
 
 bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)

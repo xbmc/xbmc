@@ -113,7 +113,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       CStdString strLinkTemp = strLinkBase;
 
       URIUtils::RemoveSlashAtEnd(strLinkTemp);
-      CURL::Decode(strLinkTemp);
+      strLinkTemp = CURL::Decode(strLinkTemp);
       if (fileCharset.empty())
         g_charsetConverter.unknownToUTF8(strLinkTemp);
       g_charsetConverter.utf8ToW(strLinkTemp, wLink, false);

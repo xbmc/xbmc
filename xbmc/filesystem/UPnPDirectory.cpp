@@ -152,7 +152,7 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
     CStdString uuid   = path.GetHostName();
     CStdString object = path.GetFileName();
     StringUtils::TrimRight(object, "/");
-    CURL::Decode(object);
+    object = CURL::Decode(object);
 
     PLT_DeviceDataReference device;
     if(!FindDeviceWait(upnp, uuid.c_str(), device)) {
@@ -225,9 +225,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         NPT_String object_id = (next_slash==-1)?"":path.SubString(next_slash+1);
         object_id.TrimRight("/");
         if (object_id.GetLength()) {
-            CStdString tmp = (char*) object_id;
-            CURL::Decode(tmp);
-            object_id = tmp;
+            object_id = CStdString(CURL::Decode((char*)object_id));
         }
 
         // try to find the device with wait on startup
@@ -333,7 +331,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             else
                 id = (const char*) (*entry)->m_ReferenceID;
 
-            CURL::Encode(id);
+            id = CURL::Encode(id);
             URIUtils::AddSlashAtEnd(id);
             pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/" + id.c_str()));
 

@@ -186,8 +186,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
         CFileItemPtr item(new CFileItem("", true));
         CURL url;
         url.SetProtocol("zeroconf");
-        CStdString service_path = CZeroconfBrowser::ZeroconfService::toPath(*it);
-        CURL::Encode(service_path);
+        CStdString service_path(CURL::Encode(CZeroconfBrowser::ZeroconfService::toPath(*it)));
         url.SetFileName(service_path);
         item->SetPath(url.Get());
 
@@ -205,8 +204,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
   else
   {
     //decode the path first
-    CStdString decoded = path;
-    CURL::Decode(decoded);
+    CStdString decoded(CURL::Decode(path));
     try
     {
       CZeroconfBrowser::ZeroconfService zeroconf_service = CZeroconfBrowser::ZeroconfService::fromPath(decoded);
