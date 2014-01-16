@@ -12133,12 +12133,12 @@ msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25004"
-msgid "Play main title: %d\nChapters: %u - duration: %s"
+msgid "Play main title: %d"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25005"
-msgid "Title: %d\nChapters: %u - duration: %s"
+msgid "Title: %d"
 msgstr ""
 
 #: xbmc\video\windows\GUIWindowVideoBase.cpp

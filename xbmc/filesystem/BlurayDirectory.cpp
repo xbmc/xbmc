@@ -63,10 +63,9 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const CS
   buf = StringUtils::Format("BDMV/PLAYLIST/%05d.mpls", title->playlist);
   path.SetFileName(buf);
   item->SetPath(path.Get());
-  int duration = (int)(title->duration / 90000);
-  item->GetVideoInfoTag()->m_duration = duration;
+  item->GetVideoInfoTag()->m_duration = (int)(title->duration / 90000);
   item->GetVideoInfoTag()->m_iTrack = title->playlist;
-  buf = StringUtils::Format(label.c_str(), title->playlist, title->chapter_count, StringUtils::SecondsToTimeString(duration).c_str());
+  buf = StringUtils::Format(label.c_str(), title->playlist);
   item->m_strTitle = buf;
   item->SetLabel(buf);
   item->m_dwSize = 0;
