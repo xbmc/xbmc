@@ -193,7 +193,15 @@ struct SinkInfoStruct
 {
   AEDeviceInfoList *list;
   bool isHWDevice;
+  bool device_not_found;
   pa_threaded_mainloop *mainloop;
+  SinkInfoStruct()
+  {
+    list = NULL;
+    isHWDevice = false;
+    device_not_found = false;
+    mainloop = NULL;
+  }
 };
 
 static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
@@ -201,6 +209,8 @@ static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void
   SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
   if (i && i->flags && (i->flags & PA_SINK_HARDWARE))
     sinkStruct->isHWDevice = true;
+  else if(!i)
+    sinkStruct->device_not_found = true;
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
 }
 
@@ -306,7 +316,7 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
     defaultDevice.m_deviceType = AE_DEVTYPE_PCM;
     sinkStruct->list->push_back(defaultDevice);
   }
-
+  bool valid = true;
   if (i && i->name)
   {
     CAEDeviceInfo device;
@@ -320,6 +330,11 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
     unsigned int device_type = AE_DEVTYPE_PCM; //0
 
     device.m_channels = PAChannelToAEChannelMap(i->channel_map);
+
+    // Don't add devices that would not have a channel map
+    if(device.m_channels.Count() == 0)
+      valid = false;
+
     device.m_sampleRates.assign(defaultSampleRates, defaultSampleRates + sizeof(defaultSampleRates) / sizeof(defaultSampleRates[0]));
 
     for (unsigned int j = 0; j < i->n_formats; j++)
@@ -350,9 +365,15 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
       device.m_deviceType = AE_DEVTYPE_IEC958;
     else
       device.m_deviceType = AE_DEVTYPE_PCM;
-
-    CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", device.m_displayName.c_str(), device.m_deviceName.c_str());
-    sinkStruct->list->push_back(device);
+    if(valid)
+    {
+      CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", device.m_displayName.c_str(), device.m_deviceName.c_str());
+      sinkStruct->list->push_back(device);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "PulseAudio: Skipped %s with devicestring %s", device.m_displayName.c_str(), device.m_deviceName.c_str());
+    }
  }
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
 }
@@ -387,7 +408,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   if (!SetupContext(NULL, &m_Context, &m_MainLoop))
   {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
+    CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
     Deinitialize();
     return false;
   }
@@ -472,8 +493,18 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   SinkInfoStruct sinkStruct;
   sinkStruct.mainloop = m_MainLoop;
   sinkStruct.isHWDevice = false;
+  sinkStruct.device_not_found = false;
+
   if (!isDefaultDevice)
     WaitForOperation(pa_context_get_sink_info_by_name(m_Context, device.c_str(),SinkInfoCallback, &sinkStruct), m_MainLoop, "Get Sink Info");
+
+  if(sinkStruct.device_not_found) // ActiveAE will open us again with a valid device name
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Sink %s not found", device.c_str());
+    pa_threaded_mainloop_unlock(m_MainLoop);
+    Deinitialize();
+    return false;
+  }
 
   // 200ms max latency
   // 50ms min packet size
@@ -516,7 +547,12 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   const pa_buffer_attr *a;
 
   if (!(a = pa_stream_get_buffer_attr(m_Stream)))
-      CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
+  {
+    CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
+    pa_threaded_mainloop_unlock(m_MainLoop);
+    Deinitialize();
+    return false;
+  }
   else
   {
     unsigned int packetSize = a->minreq;
@@ -664,7 +700,7 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   if (!SetupContext(NULL, &context, &mainloop))
   {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
+    CLog::Log(LOGNOTICE, "PulseAudio might not be running. Context was not created.");
     return;
   }
 

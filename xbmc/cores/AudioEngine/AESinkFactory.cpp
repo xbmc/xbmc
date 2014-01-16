@@ -176,6 +176,32 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
     list.push_back(info);
 
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+  // check if user wants us to do something specific
+  if (getenv("AE_SINK"))
+  {
+    std::string envSink = (std::string)getenv("AE_SINK");
+    std::transform(envSink.begin(), envSink.end(), envSink.begin(), ::toupper);
+    info.m_deviceInfoList.clear();
+    #if defined(HAS_PULSEAUDIO)
+    if (envSink == "PULSE")
+      CAESinkPULSE::EnumerateDevicesEx(info.m_deviceInfoList, force);
+    #endif
+    #if defined(HAS_ALSA)
+    if (envSink == "ALSA")
+      CAESinkALSA::EnumerateDevicesEx(info.m_deviceInfoList, force);
+    #endif
+    if (envSink == "OSS")
+      CAESinkOSS::EnumerateDevicesEx(info.m_deviceInfoList, force);
+
+    if(!info.m_deviceInfoList.empty())
+    {
+      info.m_sinkName = envSink;
+      list.push_back(info);
+      return;
+    }
+    else
+      CLog::Log(LOGNOTICE, "User specified Sink %s could not be enumerated", envSink.c_str());
+  }
 
   #if defined(HAS_PULSEAUDIO)
   info.m_deviceInfoList.clear();
@@ -194,6 +220,7 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
   CAESinkALSA::EnumerateDevicesEx(info.m_deviceInfoList, force);
   if(!info.m_deviceInfoList.empty())
     list.push_back(info);
+    return;
   #endif
 
   info.m_deviceInfoList.clear();
