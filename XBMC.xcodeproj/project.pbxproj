@@ -13294,6 +13294,7 @@
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 					"-lxslt",
+					"-lmpeg2",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
@@ -13409,6 +13410,7 @@
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 					"-lxslt",
+					"-lmpeg2",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
