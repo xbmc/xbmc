@@ -207,6 +207,10 @@ void CGUIFontTTFGL::LastEnd()
   if (m_vertexTrans.size() > 0)
   {
     // Deal with the vertices that can be hardware clipped and therefore translated
+
+    // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
+
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
       // Apply the clip rectangle
@@ -221,14 +225,21 @@ void CGUIFontTTFGL::LastEnd()
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
       glBindBuffer(GL_ARRAY_BUFFER, (GLuint) m_vertexTrans[i].vertexBuffer->bufferHandle);
 
-      // Set up the offsets of the various vertex attributes within the buffer
-      // object bound to GL_ARRAY_BUFFER
-      glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) offsetof(SVertex, x));
-      glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(SVertex), (GLvoid *) offsetof(SVertex, r));
-      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) offsetof(SVertex, u));
+      // Do the actual drawing operation, split into groups of characters no
+      // larger than the pre-determined size of the element array
+      for (size_t character = 0; m_vertexTrans[i].vertexBuffer->size > character; character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
+      {
+        size_t count = m_vertexTrans[i].vertexBuffer->size - character;
+        count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
 
-      // Do the actual drawing operation, using the full set of vertices in the buffer
-      glDrawArrays(GL_TRIANGLES, 0, 6 * m_vertexTrans[i].vertexBuffer->size);
+        // Set up the offsets of the various vertex attributes within the buffer
+        // object bound to GL_ARRAY_BUFFER
+        glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) (character*sizeof(SVertex)*4 + offsetof(SVertex, x)));
+        glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(SVertex), (GLvoid *) (character*sizeof(SVertex)*4 + offsetof(SVertex, r)));
+        glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) (character*sizeof(SVertex)*4 + offsetof(SVertex, u)));
+
+        glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
+      }
 
       glMatrixModview.Pop();
     }
@@ -236,8 +247,9 @@ void CGUIFontTTFGL::LastEnd()
     g_Windowing.ResetScissors();
     // Restore the original model view matrix
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
-    // Unbind GL_ARRAY_BUFFER
+    // Unbind GL_ARRAY_BUFFER and GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
 
   // Disable the attributes used by this shader
@@ -252,19 +264,6 @@ void CGUIFontTTFGL::LastEnd()
 #if HAS_GLES
 CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vertices) const
 {
-  // Rearrange the vertices to describe triangles
-  std::vector<SVertex> triangleVertices;
-  triangleVertices.reserve(vertices.size() * 6 / 4);
-  for (size_t i = 0; i < vertices.size(); i += 4)
-  {
-    triangleVertices.push_back(vertices[i]);
-    triangleVertices.push_back(vertices[i+1]);
-    triangleVertices.push_back(vertices[i+2]);
-    triangleVertices.push_back(vertices[i+1]);
-    triangleVertices.push_back(vertices[i+3]);
-    triangleVertices.push_back(vertices[i+2]);
-  }
-
   // Generate a unique buffer object name and put it in bufferHandle
   GLuint bufferHandle;
   glGenBuffers(1, &bufferHandle);
@@ -273,7 +272,7 @@ CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vert
   // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
   // binding point (i.e. our buffer object) and initialise it from the
   // specified client-side pointer
-  glBufferData(GL_ARRAY_BUFFER, triangleVertices.size() * sizeof (SVertex), &triangleVertices[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof (SVertex), &vertices[0], GL_STATIC_DRAW);
   // Unbind GL_ARRAY_BUFFER
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -391,5 +390,34 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
     m_updateY1 = m_updateY2 = 0;
   }
 }
+
+#if HAS_GLES
+void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
+{
+  // Bind a new buffer to the OpenGL context's GL_ELEMENT_ARRAY_BUFFER binding point
+  glGenBuffers(1, &m_elementArrayHandle);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
+  // Create an array holding the mesh indices to convert quads to triangles
+  GLushort index[ELEMENT_ARRAY_MAX_CHAR_INDEX][6];
+  for (size_t i = 0; i < ELEMENT_ARRAY_MAX_CHAR_INDEX; i++)
+  {
+    index[i][0] = 4*i;
+    index[i][1] = 4*i+1;
+    index[i][2] = 4*i+2;
+    index[i][3] = 4*i+1;
+    index[i][4] = 4*i+3;
+    index[i][5] = 4*i+2;
+  }
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof index, index, GL_STATIC_DRAW);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void CGUIFontTTFGL::DestroyStaticVertexBuffers(void)
+{
+  glDeleteBuffers(1, &m_elementArrayHandle);
+}
+
+GLuint CGUIFontTTFGL::m_elementArrayHandle;
+#endif
 
 #endif

@@ -30,6 +30,7 @@
 
 #include "GUIFontTTF.h"
 #include "system.h"
+#include "system_gl.h"
 
 
 /*!
@@ -47,13 +48,21 @@ public:
 #if HAS_GLES
   virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const;
   virtual void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const;
+  static void CreateStaticVertexBuffers(void);
+  static void DestroyStaticVertexBuffers(void);
 #endif
 
 protected:
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);
   virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2);
   virtual void DeleteHardwareTexture();
-    
+
+#if HAS_GLES
+#define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)
+
+  static GLuint m_elementArrayHandle;
+#endif
+
 private:
   unsigned int m_updateY1;
   unsigned int m_updateY2;
