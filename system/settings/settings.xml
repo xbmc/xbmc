@@ -415,6 +415,15 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
+        <setting id="videoplayer.useamcodec" type="boolean" label="13438" help="36422">
+          <requirement>HAVE_AMCODEC</requirement>
+          <level>2</level>
+          <default>true</default>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usevdpau" type="boolean" label="13425" help="36155">
           <requirement>HAVE_LIBVDPAU</requirement>
           <level>2</level>

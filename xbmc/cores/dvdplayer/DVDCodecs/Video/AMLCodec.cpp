@@ -1415,7 +1415,9 @@ CAMLCodec::~CAMLCodec()
 
 bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 {
+#ifdef TARGET_ANDROID
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder, android version %d", CAndroidFeatures::GetVersion());
+#endif
 
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_1st_pts = 0;
