@@ -511,7 +511,7 @@
 					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
 					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsVisible(2)">Conditional</animation>
-					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsVisible(501)">Conditional</animation>
+					<animation effect="slide" end="0,-95" time="0" condition="Skin.String(SectionType,music) | Window.IsVisible(501)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- secondary filters list -->
@@ -525,7 +525,7 @@
 					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
 					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
 					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-95" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19005">
@@ -555,10 +555,14 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
-					<animation effect="slide" end="0,-40" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
-					<animation effect="slide" end="0,-85" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-85" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-65" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-210" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-190" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- sorting list -->
@@ -569,10 +573,14 @@
 					<ondown>30000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-40" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-60" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
-					<animation effect="slide" end="0,-85" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-85" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-65" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-210" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-190" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
 				<control type="filterorderbutton" id="19011">
