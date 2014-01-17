@@ -1,0 +1,43 @@
+--- a/configure.in	Wed Apr 17 00:56:53 2013 -0700
++++ a/configure.in	Sun Jun 02 20:48:53 2013 +0600
+@@ -1169,6 +1169,17 @@ 
+             if test x$definitely_enable_video_x11_xrandr = xyes; then
+                 AC_DEFINE(SDL_VIDEO_DRIVER_X11_XRANDR)
+             fi
++            AC_MSG_CHECKING(for const parameter to _XData32)
++            have_const_param_xdata32=no
++            AC_TRY_COMPILE([
++              #include <X11/Xlibint.h>
++              extern int _XData32(Display *dpy,register _Xconst long *data,unsigned len);
++            ],[
++            ],[
++            have_const_param_xdata32=yes
++            AC_DEFINE(SDL_VIDEO_DRIVER_X11_CONST_PARAM_XDATA32)
++            ])
++            AC_MSG_RESULT($have_const_param_xdata32)
+         fi
+     fi
+ }
+--- a/include/SDL_config.h.in	Wed Apr 17 00:56:53 2013 -0700
++++ a/include/SDL_config.h.in	Sun Jun 02 20:48:53 2013 +0600
+@@ -283,6 +283,7 @@ 
+ #undef SDL_VIDEO_DRIVER_WINDIB
+ #undef SDL_VIDEO_DRIVER_WSCONS
+ #undef SDL_VIDEO_DRIVER_X11
++#undef SDL_VIDEO_DRIVER_X11_CONST_PARAM_XDATA32
+ #undef SDL_VIDEO_DRIVER_X11_DGAMOUSE
+ #undef SDL_VIDEO_DRIVER_X11_DYNAMIC
+ #undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XEXT
+--- a/src/video/x11/SDL_x11sym.h	Wed Apr 17 00:56:53 2013 -0700
++++ a/src/video/x11/SDL_x11sym.h	Sun Jun 02 20:48:53 2013 +0600
+@@ -165,7 +165,11 @@ 
+  */
+ #ifdef LONG64
+ SDL_X11_MODULE(IO_32BIT)
++#if SDL_VIDEO_DRIVER_X11_CONST_PARAM_XDATA32
++SDL_X11_SYM(int,_XData32,(Display *dpy,register _Xconst long *data,unsigned len),(dpy,data,len),return)
++#else
+ SDL_X11_SYM(int,_XData32,(Display *dpy,register long *data,unsigned len),(dpy,data,len),return)
++#endif
+ SDL_X11_SYM(void,_XRead32,(Display *dpy,register long *data,long len),(dpy,data,len),)
+ #endif
