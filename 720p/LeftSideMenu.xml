@@ -296,7 +296,7 @@
 			<control type="wraplist" id="1300">
 				<description>Home Secondary Menu</description>
 				<posx>0</posx>
-				<posy>297</posy>
+				<posy>303</posy>
 				<width>372</width>
 				<height>320</height>
 				<onup>1300</onup>
@@ -386,7 +386,7 @@
 			<control type="wraplist" id="1300">
 				<description>Home Secondary Menu</description>
 				<posx>0</posx>
-				<posy>347</posy>
+				<posy>353</posy>
 				<width>372</width>
 				<height>220</height>
 				<onup>1300</onup>
