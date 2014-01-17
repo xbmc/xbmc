@@ -58,6 +58,12 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     else if (message.GetSenderId() == FILTER_CLEAR_FILTER_BUTTON)
       OnAction(CAction(ACTION_CLEAR_FILTERS));
   }
+  else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
+  {
+    CGUIDialog *dialog = (CGUIDialog*) g_windowManager.GetWindow(WINDOW_DIALOG_FILTER_SORT);
+    if (dialog && dialog->IsActive())
+      dialog->Close();
+  }
 
   bool ret = CGUIMediaWindow::OnMessage(message);
 
