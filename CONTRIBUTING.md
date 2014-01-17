@@ -1,6 +1,6 @@
 ## Questions about XBMC?
 
-To get your questions answered, please ask in the XBMC [Forum] or on IRC: #xbmc on freenode.net or [webchat] 
+To get your questions answered, please ask in the XBMC [Forum] or on IRC: #xbmc on freenode.net
 
 Do not open an issue.
 
@@ -72,3 +72,5 @@ Please follow this process; it's the best way to get your work included in the p
 
 - [Open a Pull Request](https://help.github.com/articles/using-pull-requests) with a
     clear title and description.
+
+[Forum]: http://forum.xbmc.org/
