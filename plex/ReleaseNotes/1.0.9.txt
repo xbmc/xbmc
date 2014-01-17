@@ -1,0 +1,14 @@
+PHT fixes:
+  - Linux: Fixed ffmpeg related compile problems (Thanks Mark W)
+  - Windows: Fix crash on start 
+  - Close all filter dialogs when closing the MediaWindow
+  - Sort unwatched filter to the top of the list
+  - Fix subtitle/audio stream names. Now includes subtitle format and forced flag
+  - Removed Subtitle->Charset setting since the server always gives us UTF-8 subs
+  - Show left side menu in Queue/Recommends window
+  - Add new Universal Plex font to subtitles
+
+ Skin fixes:
+  - Fix vertical align position of Home secondary menu
+  - Don't show left side menu in Channels.
+  - Keep filters list vertical position consistent in all conditions.
