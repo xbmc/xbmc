@@ -34,7 +34,12 @@ class CPlexSectionFilter
       std::vector<CPlexSecondaryFilterPtr> filters;
       std::pair<std::string, CPlexSecondaryFilterPtr> f;
       BOOST_FOREACH(f, m_secondaryFilters)
-        filters.push_back(f.second);
+      {
+        if (f.second->getFilterType() == CPlexSecondaryFilter::FILTER_TYPE_BOOLEAN)
+          filters.insert(filters.begin(), f.second);
+        else
+          filters.push_back(f.second);
+      }
       return filters;
     }
 
