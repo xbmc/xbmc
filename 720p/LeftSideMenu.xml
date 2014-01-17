@@ -60,7 +60,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip)</visible>
+				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.content(channel)</visible>
 			</control>
 			<control type="image">
 				<posy>680</posy>
@@ -70,7 +70,7 @@
 				<aspectratio>scale</aspectratio>
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
 				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
-				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip)</visible>
+				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.content(channel)</visible>
 			</control>
 		</control>
 	</include>
@@ -460,7 +460,7 @@
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>!Container.Content(channel) + IsEmpty(Container.Property(PlexPreplay) | Container.Content(empty)</visible>
+			<visible>!Container.Content(channel) + [IsEmpty(Container.Property(PlexPreplay) | Container.Content(empty)]</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -586,7 +586,7 @@
 	<!-- Preplay menu -->
 	<include name="LeftSideMenuPreplay">
 		<control type="group">
-			<visible>Container.Content(movie) | Container.Content(episode) | Container.Content(clip)</visible>
+			<visible>Container.Content(movie) | Container.Content(episode) | Container.Content(clip) | [Container.Content(channel) + ListItem.Type(movie)] | [Container.Content(channel) + ListItem.Type(clip)]</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -681,117 +681,6 @@
 					<ondown>102</ondown>
 					<onclick>markaswatched</onclick>
 					<include>leftMenuPreplayButton</include>
-				</control>
-			</control>
-			<!-- menu inside -->
-			<control type="group" id="1300">
-				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202) + !Container.Content(episode) + !Container.Content(movie) + !Container.Content(clip)</visible>
-				<posx>-253</posx>
-				<posy>30</posy>
-				<width>253</width>
-				<height>650</height>
-				<ondown>19000</ondown>
-				<orientation>vertical</orientation>
-				<scrolltime>150</scrolltime>
-				<!-- OPTIONS DEV EXAMPLES, TO DELETE WHEN THE REAL LIST WORKS -->
-				<!-- options list title -->
-				<control type="label">
-					<description>Title</description>
-					<posy>90</posy>
-					<posx>253</posx>
-					<include>leftMenuTitle</include>
-					<label>Options</label>
-				</control>
-				<!-- options list -->
-				<control type="grouplist">
-					<posy>150</posy>
-					<posx>15</posx>
-					<ondown>1300</ondown>
-					<onup>1300</onup>
-					<onright>998</onright>
-					<itemgap>0</itemgap>
-					<control type="radiobutton" id="151">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<include>leftMenuFilterRadioButton</include>
-						<label>Show all media flags</label>
-						<onclick>Skin.ToggleSetting(ShowAllMediaFlags)</onclick>
-						<selected>Skin.HasSetting(ShowAllMediaFlags)</selected>
-					</control>
-					<control type="button" id="152">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>Go Home</label>
-						<onclick>ActivateWindow(Home)</onclick>
-					</control>
-					<control type="button" id="153">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<onclick>XBMC.Quit</onclick>
-						<label>Quit Plex</label>
-					</control>
-					<control type="button" id="154">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>Sleep</label>
-						<onclick>XBMC.Hibernate</onclick>
-					</control>
-					<!--><control type="button" id="155">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>Modify Art</label>
-					</control>-->
-				</control>
-				<!-- END OPTIONS DEV EXAMPLES TO DELETE -->
-				<!-- OPTIONS -->
-				<!-- options list title -->
-				<control type="label" id="19029">
-					<description>Title</description>
-					<posy>90</posy>
-					<posx>253</posx>
-					<include>leftMenuTitle</include>
-					<!-- LABEL TO DELETE WHEN HARD WIRED -->
-					<label>Options</label>
-				</control>
-				<!-- options list -->
-				<control type="grouplist" id="19020">
-					<posy>150</posy>
-					<posx>15</posx>
-					<ondown>19010</ondown>
-					<onright>777</onright>
-					<itemgap>0</itemgap>
-				</control>
-				<!-- options buttons -->
-				<control type="button" id="19021">
-					<textoffsetx>35</textoffsetx>
-					<include>leftMenuFormat</include>
-				</control>
-				<control type="radiobutton" id="19022">
-					<textoffsetx>35</textoffsetx>
-					<include>leftMenuFormat</include>
-					<include>leftMenuFilterRadioButton</include>
-				</control>
-				<!-- SORTING -->
-				<!-- sorting list title -->
-				<control type="label" id="19039">
-					<description>Title</description>
-					<posy>420</posy>
-					<posx>253</posx>
-					<include>leftMenuTitle</include>
-				</control>
-				<!-- sorting list -->
-				<control type="grouplist" id="19030">
-					<posy>485</posy>
-					<posx>10</posx>
-					<onup>19000</onup>
-					<onright>777</onright>
-					<itemgap>0</itemgap>
-				</control>
-				<!-- sorting buttons -->
-				<control type="radiobutton" id="19031">
-					<textoffsetx>30</textoffsetx>
-					<include>leftMenuFormat</include>
-					<include>leftMenuSortingButton</include>
 				</control>
 			</control>
 		</control>
