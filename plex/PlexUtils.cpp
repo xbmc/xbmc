@@ -441,6 +441,34 @@ std::string PlexUtils::GetPlexCrashPath()
   return CSpecialProtocol::TranslatePath("special://temp/CrashReports");
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString PlexUtils::GetPrettyStreamNameFromStreamItem(CFileItemPtr stream)
+{
+  CStdString name;
+
+  if (stream->HasProperty("language") && !stream->GetProperty("language").asString().empty())
+  {
+    name = stream->GetProperty("language").asString();
+    if (stream->GetProperty("streamType").asInteger() == PLEX_STREAM_AUDIO)
+    {
+      name += " (" + GetStreamCodecName(stream) + " " + GetStreamChannelName(stream) + ")";
+    }
+    else if (stream->HasProperty("format"))
+    {
+      name += " (" + boost::to_upper_copy(stream->GetProperty("format").asString());
+      if (stream->GetProperty("forced").asBoolean())
+        name += " " + g_localizeStrings.Get(52503) + ")";
+      else
+        name += ")";
+
+    }
+  }
+  else
+    name = g_localizeStrings.Get(1446);
+
+  return name;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 CStdString PlexUtils::GetPrettyStreamName(const CFileItem &fileItem, bool audio)
 {
@@ -468,15 +496,7 @@ CStdString PlexUtils::GetPrettyStreamName(const CFileItem &fileItem, bool audio)
   CStdString name;
   
   if (selectedStream)
-  {
-    if (selectedStream->HasProperty("language") && !selectedStream->GetProperty("language").asString().empty())
-    {
-      name = selectedStream->GetProperty("language").asString();
-      if (selectedStream->GetProperty("streamType").asInteger() == PLEX_STREAM_AUDIO)
-        name += " (" + GetStreamCodecName(selectedStream) + " " + GetStreamChannelName(selectedStream) + ")";
-    }
-    else name = g_localizeStrings.Get(1446);
-  }
+    name = GetPrettyStreamNameFromStreamItem(selectedStream);
   else
     name = g_localizeStrings.Get(231);
   

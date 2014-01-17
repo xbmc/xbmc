@@ -963,3 +963,7 @@ msgstr "Remote disconnected"
 msgctxt "#52502"
 msgid "Always transcode subtitles"
 msgstr "Always transcode subtitles"
+
+msgctxt "#52503"
+msgid "Forced"
+msgstr "Forced"
