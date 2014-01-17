@@ -29,9 +29,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
-/* PLEX */
-#include "PlatformDefs.h"
-/* END PLEX */
 #include <microhttpd.h>
 
 class CWebServer;
