@@ -128,7 +128,6 @@ bool CPlayerController::OnAction(const CAction &action)
         }
         else
           sub = g_localizeStrings.Get(1223);
-
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
         return true;
       }
