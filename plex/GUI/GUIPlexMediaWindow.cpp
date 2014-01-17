@@ -943,8 +943,10 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
     if (type == PLEX_DIR_TYPE_SEASON ||
         type == PLEX_DIR_TYPE_EPISODE ||
         type == PLEX_DIR_TYPE_VIDEO)
+    {
       CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::CheckPlexFilters setting preplay flag");
       list.SetProperty("PlexPreplay", "yes");
+    }
   }
 }
 
