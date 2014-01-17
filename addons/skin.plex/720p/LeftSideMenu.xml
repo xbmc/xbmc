@@ -460,7 +460,7 @@
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>IsEmpty(Container.Property(PlexPreplay) | Container.Content(empty)</visible>
+			<visible>!Container.Content(channel) + IsEmpty(Container.Property(PlexPreplay) | Container.Content(empty)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
