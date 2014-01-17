@@ -193,13 +193,13 @@ struct SinkInfoStruct
 {
   AEDeviceInfoList *list;
   bool isHWDevice;
-  bool device_not_found;
+  bool device_found;
   pa_threaded_mainloop *mainloop;
   SinkInfoStruct()
   {
     list = NULL;
     isHWDevice = false;
-    device_not_found = false;
+    device_found = true;
     mainloop = NULL;
   }
 };
@@ -207,10 +207,13 @@ struct SinkInfoStruct
 static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
   SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
-  if (i && i->flags && (i->flags & PA_SINK_HARDWARE))
-    sinkStruct->isHWDevice = true;
-  else if(!i)
-    sinkStruct->device_not_found = true;
+  if(i)
+  {
+    if (i->flags && (i->flags & PA_SINK_HARDWARE))
+      sinkStruct->isHWDevice = true;
+
+    sinkStruct->device_found = true;
+  }
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
 }
 
@@ -493,12 +496,12 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   SinkInfoStruct sinkStruct;
   sinkStruct.mainloop = m_MainLoop;
   sinkStruct.isHWDevice = false;
-  sinkStruct.device_not_found = false;
+  sinkStruct.device_found = false; // if sink is valid it will be set true in pa_context_get_sink_info_by_name
 
   if (!isDefaultDevice)
     WaitForOperation(pa_context_get_sink_info_by_name(m_Context, device.c_str(),SinkInfoCallback, &sinkStruct), m_MainLoop, "Get Sink Info");
 
-  if(sinkStruct.device_not_found) // ActiveAE will open us again with a valid device name
+  if(!sinkStruct.device_found) // ActiveAE will open us again with a valid device name
   {
     CLog::Log(LOGERROR, "PulseAudio: Sink %s not found", device.c_str());
     pa_threaded_mainloop_unlock(m_MainLoop);
