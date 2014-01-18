@@ -247,7 +247,7 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
     }
     
     if (!extraAudioFormats.empty())
-      tURL.SetProtocolOption("X-Plex-Client-Profile-Extra", extraAudioFormats);
+      tURL.SetOption("X-Plex-Client-Profile-Extra", extraAudioFormats);
   }
   
   /* since we are passing the URL to FFMPEG we need to pass our 
