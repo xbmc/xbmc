@@ -666,6 +666,7 @@ namespace INFO
 // forward
 class CInfoLabel;
 class CGUIWindow;
+class CPlayList;
 namespace EPG { class CEpgInfoTag; }
 
 // Info Flags

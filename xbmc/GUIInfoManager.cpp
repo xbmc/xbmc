@@ -3950,6 +3950,39 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
           strPlayCount = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_playCount);
         return strPlayCount;
       }
+    case VIDEOPLAYER_ENDTIME:
+      {
+        CDateTime time = CDateTime::GetCurrentDateTime();
+        time += CDateTimeSpan(0, 0, 0, GetPlayTimeRemaining());
+        return time.GetAsLocalizedTime("", false);
+      }
+    }
+
+    /* Next playing infos in case of valid playlist */
+    if (m_currentFile->HasProperty("playlistposition") && (int)m_currentFile->GetProperty("playlisttype").asInteger() == g_playlistPlayer.GetCurrentPlaylist())
+    {
+      int iNextItem = g_playlistPlayer.GetNextSong();
+      if (iNextItem)
+      {
+        CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
+        CFileItemPtr nextItem = playlist[iNextItem];
+
+        switch (item)
+        {
+          case VIDEOPLAYER_NEXT_TITLE:
+            return nextItem->GetVideoInfoTag()->m_strOriginalTitle;
+          case VIDEOPLAYER_NEXT_GENRE:
+            return StringUtils::Join(nextItem->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
+          case VIDEOPLAYER_NEXT_PLOT:
+            return nextItem->GetVideoInfoTag()->m_strPlot;
+          case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
+            return nextItem->GetVideoInfoTag()->m_strPlotOutline;
+          case VIDEOPLAYER_NEXT_DURATION:
+            if (nextItem->GetVideoInfoTag()->GetDuration() > 0)
+             return StringUtils::Format("%d", nextItem->GetVideoInfoTag()->GetDuration() / 60);
+            break;
+        }
+      }
     }
   }
   return "";
