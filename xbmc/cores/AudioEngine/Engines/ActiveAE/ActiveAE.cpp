@@ -993,6 +993,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         format.m_frameSize = 2* (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
         format.m_frames = AC3_FRAME_SIZE;
         format.m_sampleRate = 48000;
+        format.m_encodedRate = m_encoderFormat.m_sampleRate;
         if (m_encoderBuffers && initSink)
         {
           m_discardBufferPools.push_back(m_encoderBuffers);
