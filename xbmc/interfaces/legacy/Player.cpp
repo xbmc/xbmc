@@ -317,13 +317,13 @@ namespace XBMCAddon
       return g_application.m_pPlayer->IsPlayingVideo();
     }
 
-    String Player::getPlayingFile() throw (PlayerException)
+    String Player::getPlayingFile(bool unstacked /* = false */) throw (PlayerException)
     {
       XBMC_TRACE;
       if (!g_application.m_pPlayer->IsPlaying())
         throw PlayerException("XBMC is not playing any file");
 
-      return g_application.CurrentFile();
+      return g_application.CurrentFile(unstacked);
     }
 
     InfoTagVideo* Player::getVideoInfoTag() throw (PlayerException)

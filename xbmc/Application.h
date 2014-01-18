@@ -154,7 +154,7 @@ public:
   void UnloadSkin(bool forReload = false);
   bool LoadUserWindows();
   void ReloadSkin(bool confirm = false);
-  const CStdString& CurrentFile();
+  const CStdString& CurrentFile(bool unstacked = false);
   CFileItem& CurrentFileItem();
   virtual bool OnMessage(CGUIMessage& message);
   PLAYERCOREID GetCurrentPlayer();

@@ -224,7 +224,7 @@ namespace XBMCAddon
        * Throws: Exception, if player is not playing a file.
        */
       // Player_GetPlayingFile
-      String getPlayingFile() throw (PlayerException);
+      String getPlayingFile(bool unstacked = false) throw (PlayerException);
 
       /**
        * getTime() -- Returns the current time of the current playing media as fractional seconds.
