@@ -473,13 +473,13 @@ DYNOBJSXBMC+= xbmc/freebsd/freebsd.a
 endif
 
 ifeq (@USE_STATIC_FFMPEG@,1)
-FFMPEGOBJS = lib/ffmpeg/libavcodec/libavcodec.a \
-             lib/ffmpeg/libavfilter/libavfilter.a \
-             lib/ffmpeg/libswresample/libswresample.a \
-             lib/ffmpeg/libavformat/libavformat.a \
-             lib/ffmpeg/libavutil/libavutil.a \
-             lib/ffmpeg/libpostproc/libpostproc.a \
-             lib/ffmpeg/libswscale/libswscale.a
+FFMPEGOBJS = @FFMPEG_LIBDIR@/libavcodec.a \
+             @FFMPEG_LIBDIR@/libavfilter.a \
+             @FFMPEG_LIBDIR@/libswresample.a \
+             @FFMPEG_LIBDIR@/libavformat.a \
+             @FFMPEG_LIBDIR@/libavutil.a \
+             @FFMPEG_LIBDIR@/libpostproc.a \
+             @FFMPEG_LIBDIR@/libswscale.a
 DYNOBJSXBMC+= $(FFMPEGOBJS)
 LIBS+= @GNUTLS_ALL_LIBS@ @VORBISENC_ALL_LIBS@
 
