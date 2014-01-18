@@ -185,12 +185,15 @@ libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
 
-# External library message strings
-external_libraries_enabled="== Use of all supported external libraries enabled. =="
-external_libraries_disabled="== Use of all supported external libraries disabled. =="
 dashes="------------------------"
 final_message="\n  XBMC Configuration:"
 final_message="\n$dashes$final_message\n$dashes"
+
+AC_ARG_WITH([ffmpeg],
+  [AS_HELP_STRING([--with-ffmpeg],
+  [path to your ffmpeg install (default is search pkg-config or auto build)])],
+  [ffmpeg_dir=$with_ffmpeg],
+  [with_ffmpeg=auto])
 
 AC_ARG_ENABLE([shared-lib],
   [AS_HELP_STRING([--enable-shared-lib],
@@ -204,29 +207,11 @@ AC_ARG_ENABLE([debug],
   [use_debug=$enableval],
   [use_debug=yes])
 
-AC_ARG_WITH([arch],
-  [AS_HELP_STRING([--with-arch],
-  [build with given arch passing to internal ffmpeg (default is no, needed for crosscompiling)])],
-  [use_arch=$withval],
-  [use_arch=no])
-
 AC_ARG_WITH([platform],
   [AS_HELP_STRING([--with-platform],
   [use a pre-configured config for common arm boards])],
   [use_platform=$withval],
   [use_platform=none])
-
-AC_ARG_WITH([cpu],
-  [AS_HELP_STRING([--with-cpu],
-  [build with given cpu passing to ffmpeg (default is no)])],
-  [use_cpu=$withval],
-  [use_cpu=no])
-
-AC_ARG_ENABLE([neon],
-  [AS_HELP_STRING([--enable-neon],
-  [enable neon passing to ffmpeg (default is no)])],
-  [use_neon=$enableval],
-  [use_neon=no])
 
 AC_ARG_ENABLE([optimizations],
   [AS_HELP_STRING([--enable-optimizations],
@@ -420,12 +405,6 @@ AC_ARG_ENABLE([upnp],
   [use_upnp=$enableval],
   [use_upnp=yes])
 
-AC_ARG_ENABLE([ffmpeg_libvorbis],
-  [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
-  [enable FFmpeg vorbis encoding (default is no)])],
-  [use_ffmpeg_libvorbis=$enableval],
-  [use_ffmpeg_libvorbis=no])
-
 AC_ARG_ENABLE([dvdcss],
   [AS_HELP_STRING([--enable-dvdcss],
   [enable DVDCSS support (default is yes)])],
@@ -559,13 +538,6 @@ AC_ARG_ENABLE([codec],
   [add_codecs=$enableval],
   [add_codecs=no])
 
-### External libraries options
-AC_ARG_ENABLE([external-libraries],
-  [AS_HELP_STRING([--enable-external-libraries],
-  [enable use of all supported external libraries (default is no) 'Linux only'])],
-  [use_external_libraries=$enableval],
-  [use_external_libraries=no])
-
 AC_ARG_ENABLE([libav-compat],
   [AS_HELP_STRING([--enable-libav-compat],
   [build a wrapper around libav to provide the functions needed by XBMC. This is
@@ -597,17 +569,6 @@ PKG_PROG_PKG_CONFIG
 MAKE="${MAKE:-make}"
 OBJDUMP="${OBJDUMP:-objdump}"
 
-use_external_ffmpeg=no
-use_static_ffmpeg=no
-
-# ffmpeg needs the output of uname -s (e.x. linux, darwin) for the target_os
-# there is no autoconf variable which will give
-# the correct output format when doing cross compilation
-# so we have to use our own var here
-# defaults to the build side target_os
-# and should be overridden for cross below (see android)
-ffmpeg_target_os=$(tolower $(uname -s))
-
 # host detection and setup
 case $host in
   i*86*-linux-android*)
@@ -615,7 +576,6 @@ case $host in
      ARCH="i486-linux"
      use_arch="x86"
      use_cpu="i686"
-     ffmpeg_target_os=linux
      use_joystick=no
      use_gles=yes
      use_optical_drive=no
@@ -688,7 +648,6 @@ case $host in
   arm*-*-linux-gnu*)
      ARCH="arm"
      use_arch="arm"
-     ffmpeg_target_os=linux
      use_joystick=no
      use_neon=yes
      use_gles=yes
@@ -701,7 +660,6 @@ case $host in
      use_arch="arm"
      use_cpu=cortex-a9
      ARCH="arm"
-     ffmpeg_target_os=linux
      use_joystick=no
      use_neon=yes
      use_gles=yes
@@ -746,7 +704,6 @@ case $use_platform in
      USE_OMXLIB=1; AC_DEFINE([HAVE_OMXLIB],[1],["Define to 1 if OMX libs is enabled"])
      CFLAGS="$CFLAGS"
      CXXFLAGS="$CXXFLAGS"
-     ffmpeg_target_os=linux
      ;;
 esac
 
@@ -822,7 +779,6 @@ if echo "$ARCH" | grep -q "freebsd" ; then
   CXXFLAGS="$CXXFLAGS -I$LOCALBASE/include"
   CPPFLAGS="$CPPFLAGS -I$LOCALBASE/include"
   LDFLAGS="$LDFLAGS -L$LOCALBASE/lib"
-  FFMPEG_EXTRACFLAGS="-I$LOCALBASE/include"
 fi
 if test "$host_vendor" = "apple" ; then
   # standard xbmc paths
@@ -843,14 +799,12 @@ if test "$host_vendor" = "apple" ; then
     LIBS="$LIBS -framework SystemConfiguration"
     LIBS="$LIBS -framework VideoDecodeAcceleration"
   fi
-  USE_EXTERNAL_FFMPEG=1
 elif test "$target_platform" = "target_raspberry_pi"; then
   ARCH="arm"
   use_arch="arm"
 elif test "$use_arch" = "arm"; then
   CFLAGS="$CFLAGS -mno-apcs-stack-check"
   CXXFLAGS="$CXXFLAGS -mno-apcs-stack-check"
-  FFMPEG_EXTRACFLAGS=""
   if test "$use_tegra" = "yes"; then
     # Compile for ARMv7a architecture, need to test gcc for vfpv3-d16 support 
     SAVE_CFLAGS="$CFLAGS"
@@ -859,7 +813,6 @@ elif test "$use_arch" = "arm"; then
       [AC_LANG_SOURCE([int foo;])],
       [ CFLAGS="$SAVE_CFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         CXXFLAGS="$CXXFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
-        FFMPEG_EXTRACFLAGS="$FFMPEG_EXTRACFLAGS -mtune=cortex-a9 -mfpu=vfpv3-d16"
         use_cpu=cortex-a9],
       [ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
         CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"    
@@ -868,7 +821,6 @@ elif test "$use_arch" = "arm"; then
     if test "$use_neon" = "yes"; then 
       CFLAGS="$CFLAGS -mfpu=neon -mvectorize-with-neon-quad"
       CXXFLAGS="$CXXFLAGS -mfpu=neon -mvectorize-with-neon-quad"
-      FFMPEG_EXTRACFLAGS="$FFMPEG_EXTRACFLAGS -mfpu=neon"
     fi
   fi
 fi
@@ -1111,7 +1063,7 @@ if test "$gcrypt_headers_available" = "yes"; then
    AC_CHECK_LIB([gcrypt],[gcry_control],, AC_MSG_ERROR($missing_library))
    AC_DEFINE([HAVE_GCRYPT],[1],[Define if we have gcrypt])
 fi
-PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS], [1], [Define if we have gnutls]), AC_MSG_WARN("gnutls not found, ffmpeg TLS support disabled"))
+PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS], [1], [Define if we have gnutls]), AC_MSG_WARN("gnutls not found"))
 
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
@@ -1755,41 +1707,59 @@ else
   AC_MSG_NOTICE($libcap_disabled)
 fi
 
-### External libraries checks
+# FFmpeg
+FFMPEG_LIBNAMES="libavcodec >= 55.39.101
+                 libavfilter >= 3.90.100
+                 libavformat >= 55.19.104
+                 libavutil >= 52.48.101
+                 libpostproc >= 52.3.100
+                 libswscale >= 2.5.101
+                 libswresample >= 0.17.104"
 
-# Hacks for supporting libav
-
-USE_LIBAV_HACKS=0
-if test "$use_libav_hacks" = "yes"; then
-    export PKG_CONFIG_PATH="${srcdir}/lib/xbmc-libav-hacks/pkgconfig/:$PKG_CONFIG_PATH"
-    USE_LIBAV_HACKS=1
-    AC_DEFINE([USE_LIBAV_HACKS], [1], [Whether to use libav compatibility hacks.])
-fi
-
-# External FFmpeg
-if test "$use_external_ffmpeg" = "yes"; then
-  FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale libswresample"
-
+if test "$with_ffmpeg" = "auto" -o "$with_ffmpeg" = "yes"; then
+  # check for system installed ffmpeg. We require our specific versions.
   PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
-                    [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"],
-                    AC_MSG_ERROR($missing_library))
+    [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"; FFMPEG_FOUND="true"],
+    [FFMPEG_FOUND="false"])
 
-  # in case the headers are in a custom directory
-  SAVE_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
-
-  AC_CHECK_HEADERS([libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
-  [AC_MSG_ERROR($missing_headers)])
-
-  AC_MSG_NOTICE($external_ffmpeg_enabled)
-  USE_EXTERNAL_FFMPEG=1
-  AC_DEFINE([USE_EXTERNAL_FFMPEG], [1], [Whether to use external FFmpeg libraries.])
-
-  CPPFLAGS="$SAVE_CPPFLAGS"
-else
-  AC_MSG_NOTICE($external_ffmpeg_disabled)
-  USE_EXTERNAL_FFMPEG=0
+  if test "$with_ffmpeg" = "yes" -o "$FFMPEG_FOUND" != "true"; then
+    # ffmpeg not found with pkg-config, lets install it
+    AC_MSG_NOTICE("Installing FFmpeg")
+    ffmpeg_build=$(pwd)/tools/depends/target/ffmpeg
+    if test "$use_debug" != "yes"; then
+      OPTS="-r"
+    fi
+    if test "$use_optimizations" != "yes"; then
+      OPTS="${OPTS} --disable-optimizations" 
+    fi
+    CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" ${ffmpeg_build}/autobuild.sh ${OPTS}
+    export PKG_CONFIG_PATH="${ffmpeg_build}/ffmpeg-install/lib/pkgconfig:$PKG_CONFIG_PATH"
+  fi
+elif test "$with_ffmpeg" != ""; then
+  # user specified --with-ffmpeg=/path/to/ffmpeg, lets use it
+  AC_MSG_NOTICE("using ffmpeg: ${with_ffmpeg}")
+  export PKG_CONFIG_PATH="${with_ffmpeg}/lib/pkgconfig:$PKG_CONFIG_PATH"
 fi
+
+if test "$FFMPEG_FOUND" != "true"; then
+  PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
+    [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"; FFMPEG_FOUND="true"], 
+    [AC_MSG_ERROR("ffmpeg not found")])
+fi
+
+# get the libdir for static linking
+FFMPEG_LIBDIR=$(${PKG_CONFIG} --static --variable=libdir libavcodec)
+GNUTLS_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors gnutls)
+VORBISENC_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors vorbisenc)
+
+# in case the headers are in a custom directory
+SAVE_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
+
+AC_CHECK_HEADERS([libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,[AC_MSG_ERROR("ffmpeg headers missing")])
+# TODO: make this conditional
+USE_STATIC_FFMPEG=1 
+CPPFLAGS="$SAVE_CPPFLAGS"
 
 echo "Checking for SWIG installation"
 AC_PATH_PROG(SWIG_EXE, swig, "none")
@@ -2468,12 +2438,6 @@ fi
 
 ### External libraries messages
 
-if test "$use_external_ffmpeg" = "yes"; then
-  final_message="$final_message\n  External FFmpeg:\tYes"
-else
-  final_message="$final_message\n  External FFmpeg:\tNo"
-fi
-
 if test "$host_vendor" = "apple" ; then
   # built internal but referenced as external, we link directly to them.
   # this MUST be the last thing before OUTPUT_FILES as they do not
@@ -2613,9 +2577,11 @@ AC_SUBST(DISABLE_GOOM)
 AC_SUBST(DISABLE_RSXS)
 AC_SUBST(DISABLE_FISHBMC)
 AC_SUBST(DISABLE_PROJECTM)
-AC_SUBST(USE_SKIN_TOUCHED)
-AC_SUBST(USE_EXTERNAL_FFMPEG)
+AC_SUBST(FFMPEG_LIBDIR)
 AC_SUBST(USE_STATIC_FFMPEG)
+AC_SUBST(GNUTLS_ALL_LIBS)
+AC_SUBST(VORBISENC_ALL_LIBS)
+AC_SUBST(USE_SKIN_TOUCHED)
 AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
@@ -2713,134 +2679,6 @@ else
 fi
 ])
 ])
-
-XB_CONFIG_MODULE([lib/ffmpeg], [
-  if test "$host_vendor" = "apple" ; then
-    ffmpg_config="--target-os=$ffmpeg_target_os"
-    # handle disables first, we do individual enables later
-    ffmpg_config="$ffmpg_config --disable-muxers   --disable-encoders"
-    ffmpg_config="$ffmpg_config --disable-devices  --disable-doc"
-    ffmpg_config="$ffmpg_config --disable-ffplay   --disable-ffmpeg"
-    ffmpg_config="$ffmpg_config --disable-ffprobe  --disable-ffserver"
-    ffmpg_config="$ffmpg_config --enable-vda       --disable-crystalhd"
-    ffmpg_config="$ffmpg_config --disable-decoder=mpeg_xvmc"
-
-    # handle conditional enables/disables
-    if test "$use_debug" = "no"; then
-      ffmpg_config="$ffmpg_config --disable-debug"
-    fi
-    if test "$use_cpu"  != "no";  then
-      ffmpg_config="$ffmpg_config --cpu=$use_cpu"
-    fi
-    if test "$use_arch" != "no"; then
-      ffmpg_config="$ffmpg_config --arch=$use_arch --enable-cross-compile"
-    fi
-    if test "$use_arch"  = "arm"; then
-      ffmpg_config="$ffmpg_config --enable-pic"
-      ffmpg_config="$ffmpg_config --disable-armv5te --disable-armv6t2"
-      if test "$use_neon"  = "yes"; then
-        ffmpg_config="$ffmpg_config --enable-neon"
-      else
-        ffmpg_config="$ffmpg_config --disable-neon"
-      fi
-    else
-      ffmpg_config="$ffmpg_config --disable-amd3dnow"
-    fi
-    if test "$use_ffmpeg_libvorbis" = "yes"; then
-      ffmpg_config="$ffmpg_config --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis"
-    else
-      ffmpg_config="$ffmpg_config --disable-libvorbis"
-    fi
-    if test "$have_gnutls" = "yes"; then
-      ffmpg_config="$ffmpg_config --enable-gnutls"
-    fi
-
-    # handle individual enables
-    ffmpg_config="$ffmpg_config --enable-gpl"
-    ffmpg_config="$ffmpg_config --enable-postproc"
-    ffmpg_config="$ffmpg_config --enable-static      --enable-pthreads"
-    ffmpg_config="$ffmpg_config --enable-muxer=spdif --enable-muxer=adts --enable-muxer=asf --enable-muxer=ipod"
-    ffmpg_config="$ffmpg_config --enable-encoder=ac3 --enable-encoder=aac --enable-encoder=wmav2"
-    ffmpg_config="$ffmpg_config --enable-protocol=http"
-    ffmpg_config="$ffmpg_config --enable-runtime-cpudetect"
-
-    # ffmpeg will not compile with llvm-gcc-4.2, use clang instead
-    case $CC in
-      *llvm-gcc-4.2*)
-        ffmpg_config="$ffmpg_config --cc=clang" ;;
-      *)
-        ffmpg_config="$ffmpg_config --cc=$CC" ;;
-    esac
-    
-    # extra-cflags must be passed alone or it gets expanded wrong by the ffmpeg configure
-    FFMPEG_EXTRACFLAGS="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated="
-
-    LDFLAGS="$LDFLAGS" ./configure --extra-cflags="$FFMPEG_EXTRACFLAGS" $ffmpg_config --as="$AS"
-
-    # if using llvm-gcc-4.2 as assembler, -MMD is not enough to generate
-    # dependency files in the right place, replace it with something that works
-    case $AS in
-      *llvm-gcc-4.2*)
-        sed -ie "s#AS_DEPFLAGS=-MMD#AS_DEPFLAGS=-MMD -MF \$(\@:.o=.d) -MT \$\@#" config.mak ;;
-    esac
-
-    # ffmpeg will use yasm found at ${prefix}/bin during configure
-    # but then hardcodes 'yasm' in config.mak, fix it.
-    sed -ie "s#YASM=yasm#YASM=${YASM}#" config.mak
-    sed -ie "s#YASMDEP=yasm#YASMDEP=${YASM}#" config.mak
-    sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
-  else
-    CFLAGS="" \
-    CPPFLAGS="" \
-    CXXFLAGS="" \
-    LDFLAGS="$(echo "$LDFLAGS" | sed "s/-Wl,-Bsymbolic-functions//g")" \
-    ./configure \
-      --extra-cflags="$PASSED_CFLAGS $FFMPEG_EXTRACFLAGS" \
-      --disable-static \
-      `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
-      `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
-      `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
-      `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
-      `if test "$use_neon" = "yes"; then echo --enable-neon; else echo --disable-neon; fi`\
-      --target-os=$ffmpeg_target_os \
-      --disable-muxers \
-      --enable-muxer=spdif \
-      --enable-muxer=adts \
-      --enable-muxer=asf \
-      --enable-muxer=ipod \
-      --disable-encoders \
-      --enable-encoder=ac3 \
-      --enable-encoder=aac \
-      --enable-encoder=wmav2 \
-      `if test "$use_ffmpeg_libvorbis" = "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
-      --disable-decoder=mpeg_xvmc \
-      --disable-devices \
-      --disable-ffprobe \
-      --disable-ffplay \
-      --disable-ffserver \
-      --disable-ffmpeg \
-      --disable-crystalhd \
-      `if test "$use_static_ffmpeg" = "yes"; then echo --enable-static; else echo --enable-shared; fi` \
-      --disable-doc \
-      --enable-postproc \
-      --enable-gpl \
-      `if test "x$use_vdpau" != "xno"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
-      `if test "x$use_vaapi" != "xno"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
-      `if test "$use_optimizations" != "no"; then echo --enable-optimizations; else echo --disable-optimizations; fi` \
-      --enable-protocol=http \
-      `if test "$have_gnutls" = "yes"; then echo --enable-gnutls; fi` \
-      --enable-pthreads \
-      --enable-runtime-cpudetect \
-      `if test "$use_hardcoded_tables" = "yes"; then echo --enable-hardcoded-tables; else echo --disable-hardcoded-tables; fi`\
-      `if test "$target_platform" = "target_android" && test "$host_cpu" = "i686"; then echo --disable-mmx; fi #workaround for gcc 4.6 bug` \
-      `if test "$target_platform" = "target_android"; then echo "--custom-libname-with-major=\\$(SLIBPREF)\\$(FULLNAME)-\\$(LIBMAJOR)-${ARCH}\\$(SLIBSUF)"; \
-       else echo "--custom-libname-with-major=\\$(FULLNAME)-\\$(LIBMAJOR)-${ARCH}\\$(SLIBSUF)"; fi` \
-      `case $host_cpu in i?86*) echo --disable-pic ;; *) echo --enable-pic ;; esac` \
-      --cc="$CC" &&
-      sed -i -e "s#define HAVE_SYMVER 1#define HAVE_SYMVER 0#" config.h &&
-      sed -i -e "s#define HAVE_SYMVER_GNU_ASM 1#define HAVE_SYMVER_GNU_ASM 0#" config.h
-  fi
-], [$USE_EXTERNAL_FFMPEG])
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdcss], [
   ./configure \
