@@ -87,6 +87,114 @@
 				<visible>VideoPlayer.Content(Movies)</visible>
 			</control>
 			<control type="group" id="1">
+				<left>1160</left>
+				<top>185r</top>
+				<visible>Window.IsActive(VideoOSD) + [Player.Rewinding | Player.Forwarding]</visible>
+				<control type="image" id="1">
+					<left>10</left>
+					<top>0</top>
+					<width>80</width>
+					<height>50</height>
+					<texture>OSDSeekFrame.png</texture>
+				</control>
+				<control type="image" id="1">
+					<left>0</left>
+					<top>3</top>
+					<width>20</width>
+					<height>44</height>
+					<texture>OSDSeekRewind.png</texture>
+					<visible>Player.Rewinding</visible>
+				</control>
+				<control type="image" id="1">
+					<left>80</left>
+					<top>3</top>
+					<width>20</width>
+					<height>44</height>
+					<texture>OSDSeekForward.png</texture>
+					<visible>Player.Forwarding</visible>
+				</control>
+				<control type="image" id="1">
+					<left>28</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD2x.png</texture>
+					<visible>Player.Rewinding2x</visible>
+				</control>
+				<control type="image" id="1">
+					<left>25</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD4x.png</texture>
+					<visible>Player.Rewinding4x</visible>
+				</control>
+				<control type="image" id="1">
+					<left>22</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD8x.png</texture>
+					<visible>Player.Rewinding8x</visible>
+				</control>
+				<control type="image" id="1">
+					<left>19</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD16x.png</texture>
+					<visible>Player.Rewinding16x</visible>
+				</control>
+				<control type="image" id="1">
+					<left>17</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD32x.png</texture>
+					<visible>Player.Rewinding32x</visible>
+				</control>
+				<control type="image" id="1">
+					<left>34</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD2x.png</texture>
+					<visible>Player.Forwarding2x</visible>
+				</control>
+				<control type="image" id="1">
+					<left>37</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD4x.png</texture>
+					<visible>Player.Forwarding4x</visible>
+				</control>
+				<control type="image" id="1">
+					<left>40</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD8x.png</texture>
+					<visible>Player.Forwarding8x</visible>
+				</control>
+				<control type="image" id="1">
+					<left>43</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD16x.png</texture>
+					<visible>Player.Forwarding16x</visible>
+				</control>
+				<control type="image" id="1">
+					<left>45</left>
+					<top>4</top>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD32x.png</texture>
+					<visible>Player.Forwarding32x</visible>
+				</control>
+			</control>
+			<control type="group" id="1">
 				<left>330</left>
 				<top>185r</top>
 				<control type="label" id="1">
