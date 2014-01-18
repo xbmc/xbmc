@@ -12592,7 +12592,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#34100"
-msgid "Speaker Configuration"
+msgid "Number of channels"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14415,7 +14415,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded."
+msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
 msgstr ""
 
 #: system/settings/settings.xml
