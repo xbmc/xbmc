@@ -16,7 +16,7 @@
 				<left>0</left>
 				<top>0</top>
 				<width>850</width>
-				<height>600</height>
+				<height>630</height>
 				<texture border="40">$VAR[SelectBack]</texture>
 			</control>
 			<control type="image">
@@ -286,9 +286,9 @@
 		</control>
 		<control type="label">
 			<description>number of files/pages in list text label</description>
-			<left>595</left>
-			<top>542</top>
-			<width>230</width>
+			<left>275</left>
+			<top>572</top>
+			<width>550</width>
 			<height>35</height>
 			<font>font12</font>
 			<align>right</align>
@@ -296,14 +296,14 @@
 			<scroll>true</scroll>
 			<textcolor>grey</textcolor>
 			<label>([COLOR=blue]$INFO[Container(3).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages][/COLOR])</label>
-			<animation effect="slide" end="-120,30" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
+			<animation effect="slide" end="-120,0" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
 			<visible>Control.IsVisible(3)</visible>
 		</control>
 		<control type="label">
 			<description>number of files/pages in list text label</description>
-			<left>595</left>
-			<top>542</top>
-			<width>230</width>
+			<left>275</left>
+			<top>572</top>
+			<width>550</width>
 			<height>35</height>
 			<font>font12</font>
 			<align>right</align>
@@ -312,7 +312,7 @@
 			<textcolor>grey</textcolor>
 			<label>([COLOR=blue]$INFO[Container(6).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages][/COLOR])</label>
 			<wrapmultiline>true</wrapmultiline>
-			<animation effect="slide" end="-120,30" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
+			<animation effect="slide" end="-120,0" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
 			<visible>Control.IsVisible(6)</visible>
 		</control>
 		<control type="button" id="5">
