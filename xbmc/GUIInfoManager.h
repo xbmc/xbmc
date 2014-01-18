@@ -871,6 +871,7 @@ protected:
   CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, CStdString *fallback = NULL);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
+  int TranslateVideoPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   bool GetItemBool(const CGUIListItem *item, int condition) const;
 

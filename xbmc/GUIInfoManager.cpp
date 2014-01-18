@@ -1277,6 +1277,21 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
         return AddMultiInfo(GUIInfo(value, 1, position));
       }
     }
+    else if (info[0].name == "videoplayer")
+    { // TODO: these two don't allow duration(foo) and also don't allow more than this number of levels...
+      if (info[1].name == "position")
+      {
+        int position = atoi(info[1].param().c_str());
+        int value = TranslateVideoPlayerString(info[2].name); // videoplayer.position(foo).bar
+        return AddMultiInfo(GUIInfo(value, 0, position));
+      }
+      else if (info[1].name == "offset")
+      {
+        int position = atoi(info[1].param().c_str());
+        int value = TranslateVideoPlayerString(info[2].name); // videoplayer.offset(foo).bar
+        return AddMultiInfo(GUIInfo(value, 1, position));
+      }
+    }
     else if (info[0].name == "container")
     {
       int id = atoi(info[0].param().c_str());
@@ -1326,6 +1341,16 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   {
     if (info == musicplayer[i].str)
       return musicplayer[i].val;
+  }
+  return 0;
+}
+
+int CGUIInfoManager::TranslateVideoPlayerString(const CStdString &info) const
+{
+  for (size_t i = 0; i < sizeof(videoplayer) / sizeof(infomap); i++)
+  {
+    if (info == videoplayer[i].str)
+      return videoplayer[i].val;
   }
   return 0;
 }
