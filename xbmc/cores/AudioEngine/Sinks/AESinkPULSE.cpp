@@ -445,7 +445,22 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   if(!passthrough)
     pa_format_info_set_sample_format(info[0], AEFormatToPulseFormat(format.m_dataFormat));
   pa_format_info_set_channels(info[0], m_Channels);
-  unsigned int samplerate = passthrough ? format.m_encodedRate : format.m_sampleRate;
+
+  // PA requires m_encodedRate in order to do EAC3
+  unsigned int samplerate;
+  if (passthrough)
+  {
+    if (format.m_encodedRate == 0)
+    {
+      CLog::Log(LOGNOTICE, "PulseAudio: Passthrough in use but m_encodedRate is not set - fallback to m_sampleRate");
+      samplerate = format.m_sampleRate;
+    }
+    else
+      samplerate = format.m_encodedRate;
+  }
+  else
+    samplerate = format.m_sampleRate;
+
   pa_format_info_set_rate(info[0], samplerate);
 
   if (!pa_format_info_valid(info[0]))
@@ -496,10 +511,15 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   SinkInfoStruct sinkStruct;
   sinkStruct.mainloop = m_MainLoop;
   sinkStruct.isHWDevice = false;
-  sinkStruct.device_found = false; // if sink is valid it will be set true in pa_context_get_sink_info_by_name
+  sinkStruct.device_found = true; // needed to get default device opened
 
   if (!isDefaultDevice)
+  {
+    // we need to check if the device we want to open really exists
+    // default device is handled in a special manner
+    sinkStruct.device_found = false; // if sink is valid it will be set true in pa_context_get_sink_info_by_name
     WaitForOperation(pa_context_get_sink_info_by_name(m_Context, device.c_str(),SinkInfoCallback, &sinkStruct), m_MainLoop, "Get Sink Info");
+  }
 
   if(!sinkStruct.device_found) // ActiveAE will open us again with a valid device name
   {
