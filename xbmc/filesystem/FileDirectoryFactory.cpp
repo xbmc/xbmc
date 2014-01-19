@@ -132,7 +132,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     CDirectory::GetDirectory(strUrl, items, strMask);
     if (items.Size() == 0) // no files
       pItem->m_bIsFolder = true;
-    else if (items.Size() == 1 && items[0]->m_idepth == 0)
+    else if (items.Size() == 1 && items[0]->m_idepth == 0 && !items[0]->m_bIsFolder)
     {
       // one STORED file - collapse it down
       *pItem = *items[0];
@@ -154,7 +154,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     CDirectory::GetDirectory(strUrl, items, strMask);
     if (items.Size() == 0) // no files
       pItem->m_bIsFolder = true;
-    else if (items.Size() == 1 && items[0]->m_idepth == 0)
+    else if (items.Size() == 1 && items[0]->m_idepth == 0 && !items[0]->m_bIsFolder)
     {
       // one STORED file - collapse it down
       *pItem = *items[0];
@@ -202,7 +202,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     CDirectory::GetDirectory(strUrl, items, strMask);
     if (items.Size() == 0) // no files - hide this
       pItem->m_bIsFolder = true;
-    else if (items.Size() == 1 && items[0]->m_idepth == 0x30)
+    else if (items.Size() == 1 && items[0]->m_idepth == 0x30 && !items[0]->m_bIsFolder)
     {
       // one STORED file - collapse it down
       *pItem = *items[0];
