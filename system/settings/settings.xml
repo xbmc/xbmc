@@ -415,8 +415,16 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
+        <setting id="videoplayer.useframemtdec" type="boolean" label="13440" help="36423">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.useamcodec" type="boolean" label="13438" help="36422">
           <requirement>HAVE_AMCODEC</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
+          </dependencies>
           <level>2</level>
           <default>true</default>
           <updates>
@@ -426,6 +434,9 @@
         </setting>
         <setting id="videoplayer.usevdpau" type="boolean" label="13425" help="36155">
           <requirement>HAVE_LIBVDPAU</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
+          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
@@ -435,30 +446,47 @@
           <level>2</level>
           <default>true</default>
           <dependencies>
-            <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+            <dependency type="enable">
+              <and>
+                <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
+                <condition setting="videoplayer.useframemtdec" operator="is">false</condition> <!-- disable when frame threading is active -->
+              </and>
+            </dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usevaapi" type="boolean" label="13426" help="36156">
           <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
+          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
           <requirement>HasDXVA2</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
+          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usechd" type="boolean" label="13428" help="36159">
           <requirement>HasCrystalHDDevice</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
+          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.useomx" type="boolean" label="13430" help="36161">
           <requirement>HAVE_LIBOPENMAX</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
+          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
@@ -473,11 +501,6 @@
           <requirement>HAS_GL</requirement>
           <level>4</level>
           <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.useframemtdec" type="boolean" label="13440" help="36423">
-          <level>3</level>
-          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.adjustrefreshrate" type="integer" label="170" help="36164">
