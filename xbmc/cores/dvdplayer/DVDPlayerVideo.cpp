@@ -1157,7 +1157,9 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     iFrameSleep = 0;
   }
 
-  if( m_stalled )
+  if( m_started == false )
+    iSleepTime = 0.0;
+  else if( m_stalled )
     iSleepTime = iFrameSleep;
   else
     iSleepTime = iClockSleep;
