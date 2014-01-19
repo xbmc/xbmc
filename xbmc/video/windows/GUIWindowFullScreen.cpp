@@ -236,34 +236,40 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       if (g_application.CurrentFileItem().IsLiveTV())
       {
-          CPVRChannelPtr channel;
-        int iChannelNumber = -1;
-        g_PVRManager.GetCurrentChannel(channel);
+        CPVRChannelPtr playingChannel;
+        g_PVRManager.GetCurrentChannel(playingChannel);
 
         if (action.GetID() == REMOTE_0)
         {
-          iChannelNumber = g_PVRManager.GetPreviousChannel();
-          if (iChannelNumber > 0)
-            CLog::Log(LOGDEBUG, "switch to channel number %d", iChannelNumber);
-          else
-            CLog::Log(LOGDEBUG, "no previous channel number found");
+          CPVRChannelGroupPtr group = g_PVRChannelGroups->GetPreviousPlayedGroup();
+          if (group)
+          {
+            g_PVRManager.SetPlayingGroup(group);
+            CFileItemPtr fileItem = group->GetLastPlayedChannel(playingChannel->ChannelID());
+            if (fileItem && fileItem->HasPVRChannelInfoTag())
+            {
+              CLog::Log(LOGDEBUG, "%s - switch to channel number %d", __FUNCTION__, fileItem->GetPVRChannelInfoTag()->ChannelNumber());
+              g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) fileItem->GetPVRChannelInfoTag()->ChannelNumber()));
+            }
+          }
         }
         else
         {
           int autoCloseTime = CSettings::Get().GetBool("pvrplayback.confirmchannelswitch") ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
           CStdString strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
           if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
-            iChannelNumber = atoi(strChannel.c_str());
-        }
+          {
+            int iChannelNumber = atoi(strChannel.c_str());
+            if (iChannelNumber > 0 && iChannelNumber != playingChannel->ChannelNumber())
+            {
+              CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(playingChannel->IsRadio());
+              CFileItemPtr channel = selectedGroup->GetByChannelNumber(iChannelNumber);
+              if (!channel || !channel->HasPVRChannelInfoTag())
+                return false;
 
-        if (iChannelNumber > 0 && iChannelNumber != channel->ChannelNumber())
-        {
-          CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(channel->IsRadio());
-          CFileItemPtr channel = selectedGroup->GetByChannelNumber(iChannelNumber);
-          if (!channel || !channel->HasPVRChannelInfoTag())
-            return false;
-
-          g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
+              g_application.OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
+            }
+          }
         }
       }
       else

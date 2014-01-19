@@ -975,6 +975,8 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
       CDateTime::GetCurrentDateTime().GetAsTime(tNow);
       playingChannel->SetLastWatched(tNow);
       bPersistChannel = true;
+
+      m_channelGroups->SetLastPlayedGroup(GetPlayingGroup(playingChannel->IsRadio()));
     }
   }
 
@@ -1016,6 +1018,8 @@ void CPVRManager::CloseStream(void)
       CDateTime::GetCurrentDateTime().GetAsTime(tNow);
       channel->SetLastWatched(tNow);
       bPersistChannel = true;
+
+      m_channelGroups->SetLastPlayedGroup(GetPlayingGroup(channel->IsRadio()));
     }
 
     m_addons->CloseStream();
@@ -1218,6 +1222,8 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     time_t tNow;
     CDateTime::GetCurrentDateTime().GetAsTime(tNow);
     currentChannel->SetLastWatched(tNow);
+
+    m_channelGroups->SetLastPlayedGroup(GetPlayingGroup(currentChannel->IsRadio()));
   }
 
   // store channel settings
