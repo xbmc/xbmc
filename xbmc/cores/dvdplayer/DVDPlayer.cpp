@@ -4071,6 +4071,11 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     state.dts = m_CurrentVideo.dts;
   else if(m_CurrentAudio.dts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentAudio.dts;
+  else if(m_CurrentVideo.startpts != DVD_NOPTS_VALUE)
+    state.dts = m_CurrentVideo.startpts;
+  else if(m_CurrentAudio.startpts != DVD_NOPTS_VALUE)
+    state.dts = m_CurrentAudio.startpts;
+
 
   if(m_pDemuxer)
   {
