@@ -156,7 +156,7 @@ this case, type the following from the top source directory.
     $ ./xbmc.bin
 
 If you chose to install XBMC using '/usr' or '/usr/local' as the PREFIX, you
-can just issue 'xbmc' in a teminal session.
+can just issue 'xbmc' in a terminal session.
 
 If you overridden PREFIX to install XBMC into some non-standard location, you
 will have to run xbmc by directly running 'xbmc.bin'. For example.
