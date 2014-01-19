@@ -22,6 +22,10 @@
 #include "cores/IPlayer.h"
 
 class PLT_MediaController;
+class CGUIDialogBusy;
+
+namespace XbmcThreads { class EndTime; }
+
 
 namespace UPNP
 {
@@ -68,9 +72,11 @@ public:
   virtual bool IsCaching() const {return false;};
   virtual int GetCacheLevel() const {return -1;};
   virtual void DoAudioWork();
-
+  virtual bool OnAction(const CAction &action);
 
   virtual CStdString GetPlayingTitle();
+
+  int PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout);
 
 private:
   PLT_MediaController*   m_control;
@@ -78,6 +84,7 @@ private:
   CStdString             m_current_uri;
   CStdString             m_current_meta;
   bool                   m_started;
+  bool                   m_stopremote;
 };
 
 } /* namespace UPNP */
