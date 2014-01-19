@@ -628,7 +628,7 @@ unsigned int CCoreAudioAEStream::GetSpace()
 
 double CCoreAudioAEStream::GetDelay()
 {
-  if (m_delete || !m_Buffer)
+  if (m_delete || !m_Buffer || m_flushRequested)
     return 0.0f;
 
   double delayBuffer = (double)(m_Buffer->GetReadSize()) / (double)m_AvgBytesPerSec;
@@ -647,7 +647,7 @@ bool CCoreAudioAEStream::IsBuffering()
 
 double CCoreAudioAEStream::GetCacheTime()
 {
-  if (m_delete || !m_Buffer)
+  if (m_delete || !m_Buffer || m_flushRequested)
     return 0.0f;
   double delayBuffer = (double)(m_Buffer->GetReadSize()) / (double)m_AvgBytesPerSec;
   double delayTranscoder = 0.0;
