@@ -484,7 +484,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
 
       idx_mono = pDlgSelect->Add( g_localizeStrings.Get(36529) ); // mono / 2d
 
-      if(playing != RENDER_STEREO_MODE_OFF && g_Windowing.SupportsStereo(playing))
+      if(playing != RENDER_STEREO_MODE_OFF && playing != preferred && g_Windowing.SupportsStereo(playing))
         idx_playing = pDlgSelect->Add((CStdString)g_localizeStrings.Get(36532)
                                     + " ("
                                     + GetLabelForStereoMode(playing)
