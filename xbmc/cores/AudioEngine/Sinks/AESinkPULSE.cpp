@@ -511,10 +511,15 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   SinkInfoStruct sinkStruct;
   sinkStruct.mainloop = m_MainLoop;
   sinkStruct.isHWDevice = false;
-  sinkStruct.device_found = false; // if sink is valid it will be set true in pa_context_get_sink_info_by_name
+  sinkStruct.device_found = true; // needed to get default device opened
 
   if (!isDefaultDevice)
+  {
+    // we need to check if the device we want to open really exists
+    // default device is handled in a special manner
+    sinkStruct.device_found = false; // if sink is valid it will be set true in pa_context_get_sink_info_by_name
     WaitForOperation(pa_context_get_sink_info_by_name(m_Context, device.c_str(),SinkInfoCallback, &sinkStruct), m_MainLoop, "Get Sink Info");
+  }
 
   if(!sinkStruct.device_found) // ActiveAE will open us again with a valid device name
   {
