@@ -198,7 +198,7 @@ void CDVDPlayerSubtitle::CloseStream(bool flush)
     m_pOverlayContainer->Clear();
 }
 
-void CDVDPlayerSubtitle::Process(double pts)
+void CDVDPlayerSubtitle::Process(double pts, double offset)
 {
   CSingleLock lock(m_section);
 
@@ -220,6 +220,10 @@ void CDVDPlayerSubtitle::Process(double pts)
     // add all overlays which fit the pts
     while(pOverlay)
     {
+      pOverlay->iPTSStartTime -= offset;
+      if(pOverlay->iPTSStopTime != 0.0)
+        pOverlay->iPTSStopTime -= offset;
+
       m_pOverlayContainer->Add(pOverlay);
       pOverlay->Release();
       pOverlay = m_pSubtitleFileParser->Parse(pts);
