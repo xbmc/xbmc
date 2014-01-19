@@ -156,10 +156,10 @@ this case, type the following from the top source directory.
     $ ./xbmc.bin
 
 If you chose to install XBMC using '/usr' or '/usr/local' as the PREFIX, you
-can just issue 'xbmc' in a teminal session.
+can just issue 'xbmc' in a terminal session.
 
-If you overridden PREFIX to install XBMC into some non-standard location, you
-will have to run xbmc by directly running 'xbmc.bin'. For example.
+If you have overridden PREFIX to install XBMC into some non-standard location,
+you will have to run xbmc by directly running 'xbmc.bin'. For example.
 
     $ $HOME/xbmc/usr/share/xbmc.bin
 
@@ -169,8 +169,8 @@ in Settings->Videos->Player from "Auto Detect" to "VDPAU".
 -----------------------------------------------------------------------------
 6. Uninstalling
 -----------------------------------------------------------------------------
-Issue "make uninstall"  ("sudo make uninstall" if you user doesn't have write
-permission to the install directory) from your source tree. If you would like
+Issue "make uninstall" from your source tree (or "sudo make uninstall" if your
+user doesn't have write permission to the install directory). If you would like
 to also remove any settings and 3rd party addons (skins, scripts, etc) you
 should also run "rm -rf ~/.xbmc".
 
