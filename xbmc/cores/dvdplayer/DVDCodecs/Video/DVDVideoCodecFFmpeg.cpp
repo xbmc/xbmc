@@ -69,7 +69,8 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 {
   CDVDVideoCodecFFmpeg* ctx  = (CDVDVideoCodecFFmpeg*)avctx->opaque;
 
-  if(!ctx->IsHardwareAllowed())
+  // if frame threading is enabled hw accel is not allowed
+  if(!ctx->IsHardwareAllowed() || CSettings::Get().GetBool("videoplayer.useframemtdec"))
     return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 
   const PixelFormat * cur = fmt;
