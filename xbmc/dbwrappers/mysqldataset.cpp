@@ -308,6 +308,34 @@ int MysqlDatabase::copy(const char *backup_name) {
       }
       mysql_free_result(resViews);
     }
+    
+    // after all we have to recreate the triggers in backup database
+    // it is little more complicated then views
+    sprintf(sql, "SELECT TRIGGER_NAME, ACTION_TIMING, EVENT_MANIPULATION,"
+      			 "       EVENT_OBJECT_TABLE, ACTION_ORIENTATION, ACTION_STATEMENT"
+                 "  FROM INFORMATION_SCHEMA.TRIGGERS"
+                 " WHERE EVENT_OBJECT_SCHEMA = '%s'", db.c_str());
+    if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      throw DbErrors("Can't determine triggers to recreate.");
+
+    // get list of all triggers from old DB
+    MYSQL_RES* resTriggers = mysql_store_result(conn);
+
+    if (resTriggers)
+    {
+      while ( (row=mysql_fetch_row(resTriggers)) != NULL )
+      {
+        sprintf(sql, "CREATE TRIGGER %s.%s %s %s ON %s FOR EACH %s %s",
+                backup_name, row[0], row[1], row[2], row[3], row[4], row[5]);
+
+        if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+        {
+          mysql_free_result(resTriggers);
+          throw DbErrors("Can't create trigger '%s'\nError: %s", row[0], ret);
+        }
+      }
+      mysql_free_result(resTriggers);
+    }
   }
 
   return 1;
