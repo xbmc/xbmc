@@ -1339,6 +1339,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   else if (settings.channels <= AE_CH_LAYOUT_2_0 && // no multichannel pcm
            settings.passthrough &&
            settings.ac3passthrough &&
+           settings.ac3transcode &&
            !m_streams.empty() &&
            (format.m_channelLayout.Count() > 2 || settings.stereoupmix))
   {
@@ -2034,6 +2035,7 @@ void CActiveAE::LoadSettings()
 
   m_settings.passthrough = m_settings.config == AE_CONFIG_FIXED ? false : CSettings::Get().GetBool("audiooutput.passthrough");
   m_settings.ac3passthrough = CSettings::Get().GetBool("audiooutput.ac3passthrough");
+  m_settings.ac3transcode = CSettings::Get().GetBool("audiooutput.ac3transcode");
   m_settings.eac3passthrough = CSettings::Get().GetBool("audiooutput.eac3passthrough");
   m_settings.truehdpassthrough = CSettings::Get().GetBool("audiooutput.truehdpassthrough");
   m_settings.dtspassthrough = CSettings::Get().GetBool("audiooutput.dtspassthrough");
@@ -2098,6 +2100,7 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.audiodevice"       ||
       setting == "audiooutput.config"            ||
       setting == "audiooutput.ac3passthrough"    ||
+      setting == "audiooutput.ac3transcode"      ||
       setting == "audiooutput.eac3passthrough"   ||
       setting == "audiooutput.dtspassthrough"    ||
       setting == "audiooutput.truehdpassthrough" ||
@@ -2179,18 +2182,17 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
   }
   else if (settingId == "audiooutput.stereoupmix")
   {
-    if (m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.audiodevice")) != AE_DEVTYPE_IEC958)
-    {
-      if (CSettings::Get().GetInt("audiooutput.channels") > AE_CH_LAYOUT_2_0)
-        return true;
-    }
-    else
-    {
-      if (m_sink.HasPassthroughDevice() &&
-          CSettings::Get().GetBool("audiooutput.passthrough") &&
-          CSettings::Get().GetBool("audiooutput.ac3passthrough"))
-        return true;
-    }
+    if (m_sink.HasPassthroughDevice() ||
+        CSettings::Get().GetInt("audiooutput.channels") > AE_CH_LAYOUT_2_0)
+    return true;
+  }
+  else if (settingId == "audiooutput.ac3transcode")
+  {
+    if (m_sink.HasPassthroughDevice() &&
+        CSettings::Get().GetBool("audiooutput.ac3passthrough") &&
+        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED &&
+        (CSettings::Get().GetInt("audiooutput.channels") <= AE_CH_LAYOUT_2_0 || m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.audiodevice")) == AE_DEVTYPE_IEC958))
+      return true;
   }
   return false;
 }

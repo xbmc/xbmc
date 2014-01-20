@@ -1032,6 +1032,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("audiooutput.guisoundmode");
   settingSet.insert("audiooutput.stereoupmix");
   settingSet.insert("audiooutput.ac3passthrough");
+  settingSet.insert("audiooutput.ac3transcode");
   settingSet.insert("audiooutput.eac3passthrough");
   settingSet.insert("audiooutput.dtspassthrough");
   settingSet.insert("audiooutput.truehdpassthrough");
