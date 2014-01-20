@@ -29,6 +29,7 @@
 #ifdef TARGET_WINDOWS
 #include "utils/SystemInfo.h"
 #include "win32/WIN32Util.h"
+#include "utils/CharsetConverter.h"
 #endif
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
@@ -162,8 +163,14 @@ CStdString CNetwork::GetHostName(void)
   char hostName[128];
   if (gethostname(hostName, sizeof(hostName)))
     return CStdString("unknown");
-  else
-    return CStdString(hostName);
+
+  std::string hostStr;
+#ifdef TARGET_WINDOWS
+  g_charsetConverter.systemToUtf8(hostName, hostStr);
+#else
+  hostStr = hostName;
+#endif
+  return hostStr;
 }
 
 CNetworkInterface* CNetwork::GetFirstConnectedInterface()
