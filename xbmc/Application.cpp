@@ -3479,12 +3479,12 @@ void CApplication::Stop(int exitCode)
 
     CApplicationMessenger::Get().Cleanup();
 
+    CLog::Log(LOGNOTICE, "stop player");
+    m_pPlayer->ClosePlayer();
+
     StopPVRManager();
     StopServices();
     //Sleep(5000);
-
-    CLog::Log(LOGNOTICE, "stop player");
-    m_pPlayer->ClosePlayer();
 
 #if HAS_FILESYTEM_DAAP
     CLog::Log(LOGNOTICE, "stop daap clients");
