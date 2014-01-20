@@ -217,6 +217,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
   NPT_Reference<PLT_MediaObject> obj;
   NPT_String path(file.GetPath().c_str());
   NPT_String tmp, resource;
+  EMediaControllerQuirks quirks = EMEDIACONTROLLERQUIRKS_NONE;
 
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
 
@@ -231,6 +232,18 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
   NPT_CHECK_LABEL_SEVERE(PLT_Didl::ToDidl(*obj, "", tmp), failed);
   tmp.Insert(didl_header, 0);
   tmp.Append(didl_footer);
+
+  quirks = GetMediaControllerQuirks(m_delegate->m_device.AsPointer());
+  if (quirks & EMEDIACONTROLLERQUIRKS_X_MKV)
+  {
+    for (NPT_Cardinal i=0; i< obj->m_Resources.GetItemCount(); i++) {
+      if (obj->m_Resources[i].m_ProtocolInfo.GetContentType().Compare("video/x-matroska") == 0) {
+        NPT_String protocolInfo = obj->m_Resources[i].m_ProtocolInfo.ToString();
+        protocolInfo.Replace(":video/x-matroska:", ":video/x-mkv:");
+        obj->m_Resources[i].m_ProtocolInfo = PLT_ProtocolInfo(protocolInfo);
+      }
+    }
+  }
 
   /* The resource uri's are stored in the Didl. We must choose the best resource
    * for the playback device */
