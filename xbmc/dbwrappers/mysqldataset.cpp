@@ -303,7 +303,7 @@ int MysqlDatabase::copy(const char *backup_name) {
         if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
         {
           mysql_free_result(resViews);
-          throw DbErrors("Can't create view '%s'\nError: %s", db.c_str(), ret);
+          throw DbErrors("Can't create view '%s'\nError: %s", row[0], ret);
         }
       }
       mysql_free_result(resViews);
