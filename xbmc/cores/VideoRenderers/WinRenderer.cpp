@@ -393,14 +393,6 @@ unsigned int CWinRenderer::PreInit()
   g_Windowing.Get3DDevice()->GetDeviceCaps(&m_deviceCaps);
 
   m_formats.push_back(RENDER_FMT_YUV420P);
-  if(g_Windowing.IsTextureFormatOk(D3DFMT_L16, 0))
-  {
-    m_formats.push_back(RENDER_FMT_YUV420P10);
-    m_formats.push_back(RENDER_FMT_YUV420P16);
-  }
-  m_formats.push_back(RENDER_FMT_NV12);
-  m_formats.push_back(RENDER_FMT_YUYV422);
-  m_formats.push_back(RENDER_FMT_UYVY422);
 
   m_iRequestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
 
@@ -424,7 +416,18 @@ unsigned int CWinRenderer::PreInit()
 
     if (!m_processor->PreInit())
       CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA2 processor - skipping");
+    else
+      return 0;
   }
+  
+  if (g_Windowing.IsTextureFormatOk(D3DFMT_L16, 0))
+  {
+    m_formats.push_back(RENDER_FMT_YUV420P10);
+    m_formats.push_back(RENDER_FMT_YUV420P16);
+  }
+  m_formats.push_back(RENDER_FMT_NV12);
+  m_formats.push_back(RENDER_FMT_YUYV422);
+  m_formats.push_back(RENDER_FMT_UYVY422);
 
   return 0;
 }
