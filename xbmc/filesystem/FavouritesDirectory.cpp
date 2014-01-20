@@ -42,7 +42,7 @@ bool CFavouritesDirectory::GetDirectory(const CStdString& strPath, CFileItemList
   
   if (url.GetProtocol() == "favourites")
   {
-    Load(items); //load the default favourite files
+    return Load(items); //load the default favourite files
   }
   return LoadFavourites(strPath, items); //directly load the given file
 }
