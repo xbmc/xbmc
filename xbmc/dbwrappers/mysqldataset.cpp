@@ -284,30 +284,8 @@ int MysqlDatabase::copy(const char *backup_name) {
     }
     mysql_free_result(res);
 
-    // after table are recreated and repopulated we can recreate views
-    // grab a list of views and their definitions
-    sprintf(sql, "SELECT TABLE_NAME, VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = '%s'", db.c_str());
-    if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
-      throw DbErrors("Can't determine views to recreate.");
-
-    // get list of all views from old DB
-    MYSQL_RES* resViews = mysql_store_result(conn);
-
-    if (resViews)
-    {
-      while ( (row=mysql_fetch_row(resViews)) != NULL )
-      {
-        sprintf(sql, "CREATE VIEW %s.%s AS %s",
-                backup_name, row[0], row[1]);
-
-        if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
-        {
-          mysql_free_result(resViews);
-          throw DbErrors("Can't create view '%s'\nError: %d", row[0], ret);
-        }
-      }
-      mysql_free_result(resViews);
-    }
+    // we don't recreate views, indicies, or triggers on copy
+    // as we'll be dropping and recreating them anyway
   }
 
   return 1;
