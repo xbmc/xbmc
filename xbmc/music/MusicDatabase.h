@@ -478,6 +478,7 @@ private:
   /*! \brief (Re)Create the generic database views for songs and albums
    */
   virtual void CreateViews();
+  virtual void CreateTriggers();
 
   void SplitString(const CStdString &multiString, std::vector<std::string> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset();
