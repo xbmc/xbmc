@@ -251,6 +251,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
   NPT_CHECK_LABEL_SEVERE(m_control->FindBestResource(m_delegate->m_device, *obj, res_index), failed);
 
 
+  timeout.Set(timeout.GetInitialTimeoutValue());
   /* dlna specifies that a return code of 705 should be returned
    * if TRANSPORT_STATE is not STOPPED or NO_MEDIA_PRESENT */
   NPT_CHECK_LABEL_SEVERE(m_control->Stop(m_delegate->m_device
@@ -260,6 +261,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
   NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed);
 
 
+  timeout.Set(timeout.GetInitialTimeoutValue());
   NPT_CHECK_LABEL_SEVERE(m_control->SetAVTransportURI(m_delegate->m_device
                                                     , m_delegate->m_instance
                                                     , obj->m_Resources[res_index].m_Uri
@@ -268,6 +270,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
   NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed);
   NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed);
 
+  timeout.Set(timeout.GetInitialTimeoutValue());
   NPT_CHECK_LABEL_SEVERE(m_control->Play(m_delegate->m_device
                                        , m_delegate->m_instance
                                        , "1"
@@ -277,6 +280,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
 
 
   /* wait for PLAYING state */
+  timeout.Set(timeout.GetInitialTimeoutValue());
   do {
     NPT_CHECK_LABEL_SEVERE(m_control->GetTransportInfo(m_delegate->m_device
                                                      , m_delegate->m_instance
