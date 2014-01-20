@@ -54,8 +54,28 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
 
   unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
 
-  if (URIUtils::IsOnDVD(strFile) || URIUtils::IsBluray(strFile))
-    flags |= READ_NO_CACHE; // Never cache these
+  /*
+   * There are 4 buffer modes available (configurable in as.xml)
+   * 0) Buffer all internet filesystems (like 2 but additionally also ftp, webdav, etc.) (default)
+   * 1) Buffer all filesystems (including local)
+   * 2) Only buffer true internet filesystems (streams) (http, etc.)
+   * 3) No buffer
+   */
+  if (!URIUtils::IsOnDVD(strFile) && !URIUtils::IsBluray(strFile)) // Never cache these
+  {
+    if (g_advancedSettings.m_networkBufferMode == 0 || g_advancedSettings.m_networkBufferMode == 2)
+    {
+      if (URIUtils::IsInternetStream(CURL(strFile), (g_advancedSettings.m_networkBufferMode == 0) ) )
+        flags |= READ_CACHED;
+    }
+    else if (g_advancedSettings.m_networkBufferMode == 1)
+    {
+      flags |= READ_CACHED; // In buffer mode 1 force cache for (almost) all files
+    }
+  }
+
+  if (!(flags & READ_CACHED))
+    flags |= READ_NO_CACHE; // Make sure CFile honors our no-cache hint
 
   if (content == "video/mp4" || content == "video/x-msvideo" || content == "video/avi")
     flags |= READ_MULTI_STREAM;
