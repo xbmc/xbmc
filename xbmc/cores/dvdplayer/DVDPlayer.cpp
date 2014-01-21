@@ -1114,7 +1114,10 @@ void CDVDPlayer::Process()
       if (m_pDemuxer->SeekTime(starttime, false, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, starttime);
       else
+      {
         CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, starttime);
+        starttime = 0;
+      }
     }
 
     if(m_pSubtitleDemuxer)
@@ -1132,7 +1135,7 @@ void CDVDPlayer::Process()
 
   // make sure application know our info
   UpdateApplication(0);
-  UpdatePlayState(0);
+  UpdatePlayState(0, starttime);
 
   if(m_PlayerOptions.identify == false)
     m_callback.OnPlayBackStarted();
@@ -4059,7 +4062,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
 }
 
-void CDVDPlayer::UpdatePlayState(double timeout)
+void CDVDPlayer::UpdatePlayState(double timeout, double startTime/* = 0.0*/)
 {
   if(m_StateInput.timestamp != 0
   && m_StateInput.timestamp + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
@@ -4184,6 +4187,9 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     state.cache_bytes = 0;
 
   state.timestamp = CDVDClock::GetAbsoluteClock();
+
+  if (startTime > 0.0 && state.time == 0.0)
+    state.time = startTime;
 
   CSingleLock lock(m_StateSection);
   m_StateInput = state;

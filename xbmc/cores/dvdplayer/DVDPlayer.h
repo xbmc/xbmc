@@ -342,7 +342,7 @@ protected:
   void OpenDefaultStreams(bool reset = true);
 
   void UpdateApplication(double timeout);
-  void UpdatePlayState(double timeout);
+  void UpdatePlayState(double timeout, double startTime = 0.0);
   double m_UpdateApplication;
 
   bool m_bAbortRequest;
