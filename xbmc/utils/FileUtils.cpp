@@ -134,6 +134,8 @@ bool CFileUtils::RemoteAccessAllowed(const CStdString &strPath)
     return true;
   else if (StringUtils::StartsWithNoCase(realPath, "special://skin"))
     return true;
+  else if (StringUtils::StartsWithNoCase(realPath, "special://profile/addon_data"))
+    return true;
   else if (StringUtils::StartsWithNoCase(realPath, "addons://sources"))
     return true;
   else if (StringUtils::StartsWithNoCase(realPath, "upnp://"))
