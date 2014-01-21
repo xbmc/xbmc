@@ -23,6 +23,7 @@
 #include "XBMCApp.h"
 #include "guilib/Key.h"
 #include "windowing/WinEvents.h"
+#include "android/jni/KeyCharacterMap.h"
 
 
 typedef struct {
@@ -165,6 +166,10 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
   int32_t repeat  = AKeyEvent_getRepeatCount(event);
   int32_t keycode = AKeyEvent_getKeyCode(event);
 
+  int32_t deviceId = AInputEvent_getDeviceId(event);
+  CJNIKeyCharacterMap map = CJNIKeyCharacterMap::load(deviceId);
+  uint16_t unicode = map.get(keycode, state);
+
   // Check if we got some special key
   uint16_t sym = XBMCK_UNKNOWN;
   for (unsigned int index = 0; index < sizeof(keyMap) / sizeof(KeyMap); index++)
@@ -203,7 +208,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SHIFT_ON) ? "yes" : "no",
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
-      XBMC_Key((uint8_t)keycode, sym, modifiers, false);
+      XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, false);
       return true;
 
     case AKEY_EVENT_ACTION_UP:
@@ -214,7 +219,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SHIFT_ON) ? "yes" : "no",
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
-      XBMC_Key((uint8_t)keycode, sym, modifiers, true);
+      XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, true);
       return true;
 
     case AKEY_EVENT_ACTION_MULTIPLE:
@@ -241,7 +246,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
   return false;
 }
 
-void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, bool up)
+void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up)
 {
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(newEvent));
@@ -251,7 +256,7 @@ void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, bool 
   newEvent.key.type = type;
   newEvent.key.keysym.scancode = code;
   newEvent.key.keysym.sym = (XBMCKey)key;
-  newEvent.key.keysym.unicode = key;
+  newEvent.key.keysym.unicode = unicode;
   newEvent.key.keysym.mod = (XBMCMod)modifiers;
 
   //CXBMCApp::android_printf("XBMC_Key(%u, %u, 0x%04X, %d)", code, key, modifiers, up);

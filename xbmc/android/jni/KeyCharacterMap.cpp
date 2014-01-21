@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2012-2013 Team XBMC
+ *      Copyright (C) 2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,19 +18,21 @@
  *
  */
 
-#include <android/input.h>
+#include "KeyCharacterMap.h"
+#include "jutils/jutils-details.hpp"
 
-#include <stdint.h>
-#include <string>
-#include <vector>
+using namespace jni;
 
-class CAndroidKey
+CJNIKeyCharacterMap CJNIKeyCharacterMap::load(int deviceId)
 {
-public:
-  CAndroidKey() {};
- ~CAndroidKey() {};
+  return (CJNIKeyCharacterMap)call_static_method<jhobject>("android/view/KeyCharacterMap",
+    "load", "(I)Landroid/view/KeyCharacterMap;",
+    deviceId);
+}
 
-  bool onKeyboardEvent(AInputEvent *event);
-  void XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up);
-  void XBMC_JoyButton(uint8_t id, uint8_t button, bool up);
-};
+int CJNIKeyCharacterMap::get(int keyCode, int metaState)
+{
+  return call_method<int>(m_object,
+    "get", "(II)I",
+    keyCode, metaState);
+}

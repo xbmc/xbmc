@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2012-2013 Team XBMC
+ *      Copyright (C) 2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,19 +19,15 @@
  *
  */
 
-#include <android/input.h>
+#include "JNIBase.h"
 
-#include <stdint.h>
-#include <string>
-#include <vector>
-
-class CAndroidKey
+class CJNIURI;
+class CJNIKeyCharacterMap : public CJNIBase
 {
 public:
-  CAndroidKey() {};
- ~CAndroidKey() {};
+  CJNIKeyCharacterMap(const jni::jhobject &object) : CJNIBase(object) {}
+  ~CJNIKeyCharacterMap() {}
 
-  bool onKeyboardEvent(AInputEvent *event);
-  void XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up);
-  void XBMC_JoyButton(uint8_t id, uint8_t button, bool up);
+  static CJNIKeyCharacterMap load(int deviceId);
+  int get(int keyCode, int metaState);
 };

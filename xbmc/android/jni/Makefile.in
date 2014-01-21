@@ -49,6 +49,7 @@ SRCS      += SurfaceTexture.cpp
 SRCS      += View.cpp
 SRCS      += Window.cpp
 SRCS      += Build.cpp
+SRCS      += KeyCharacterMap.cpp
 
 LIB        = jni.a
 
