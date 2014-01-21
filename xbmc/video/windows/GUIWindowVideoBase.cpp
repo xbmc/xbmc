@@ -1371,7 +1371,18 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         CPlayerCoreFactory::Get().GetPlayers(*item, vecCores);
       g_application.m_eForcedNextPlayer = CPlayerCoreFactory::Get().SelectPlayerDialog(vecCores);
       if (g_application.m_eForcedNextPlayer != EPC_NONE)
-        OnClick(itemNumber);
+      {
+        // any other select actions but play or resume, resume, play or playpart
+        // don't make any sense here since the user already decided that he'd
+        // like to play the item (just with a specific player)
+        VideoSelectAction selectAction = (VideoSelectAction)CSettings::Get().GetInt("myvideos.selectaction");
+        if (selectAction != SELECT_ACTION_PLAY_OR_RESUME &&
+            selectAction != SELECT_ACTION_RESUME &&
+            selectAction != SELECT_ACTION_PLAY &&
+            selectAction != SELECT_ACTION_PLAYPART)
+          selectAction = SELECT_ACTION_PLAY_OR_RESUME;
+        return OnFileAction(itemNumber, selectAction);
+      }
       return true;
     }
 
