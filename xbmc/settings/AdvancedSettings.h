@@ -147,6 +147,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
     int m_videoSmallStepBackSeconds;
+    int m_videoSmallStepForwardSeconds;
     int m_videoSmallStepBackTries;
     int m_videoSmallStepBackDelay;
     bool m_videoUseTimeSeeking;

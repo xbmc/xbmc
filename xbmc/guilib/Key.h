@@ -174,6 +174,7 @@
 #define ACTION_OSD_SHOW_VALUE_PLUS  74  // increase value of current option in OSD. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_OSD_SHOW_VALUE_MIN   75  // decrease value of current option in OSD. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_SMALL_STEP_BACK      76  // jumps a few seconds back during playback of movie. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_SMALL_STEP_FORWARD   243  // jumps a few seconds forward during playback of movie. Can b used in videoFullScreen.xml window id=2005
 
 #define ACTION_PLAYER_FORWARD        77  // FF in current file played. global action, can be used anywhere
 #define ACTION_PLAYER_REWIND         78  // RW in current file played. global action, can be used anywhere

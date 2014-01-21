@@ -143,6 +143,7 @@ static const ActionMapping actions[] =
         {"osdvalueplus"      , ACTION_OSD_SHOW_VALUE_PLUS},
         {"osdvalueminus"     , ACTION_OSD_SHOW_VALUE_MIN},
         {"smallstepback"     , ACTION_SMALL_STEP_BACK},
+        {"smallstepforward"  , ACTION_SMALL_STEP_FORWARD},
         {"fastforward"       , ACTION_PLAYER_FORWARD},
         {"rewind"            , ACTION_PLAYER_REWIND},
         {"play"              , ACTION_PLAYER_PLAY},

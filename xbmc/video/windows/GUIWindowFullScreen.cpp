@@ -309,6 +309,18 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     return true;
     break;
+  case ACTION_SMALL_STEP_FORWARD:
+    if (m_timeCodePosition > 0)
+      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
+    else
+    {
+      int orgpos = (int)g_application.GetTime();
+      int jumpsize = g_advancedSettings.m_videoSmallStepForwardSeconds; // secs
+      int setpos = orgpos + jumpsize;
+      g_application.SeekTime((double)setpos);
+    }
+    return true;
+    break;  
   case ACTION_SMALL_STEP_BACK:
     if (m_timeCodePosition > 0)
       SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
