@@ -17,7 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
+#include "system.h"
+#ifdef HAVE_LIBBLURAY
 #include "BlurayDirectory.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -188,3 +189,4 @@ bool CBlurayDirectory::GetDirectory(const CStdString& path, CFileItemList &items
 
 
 } /* namespace XFILE */
+#endif
