@@ -35,6 +35,8 @@
 #include "URL.h"
 #include "guilib/Geometry.h"
 #include "utils/StringUtils.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -996,8 +998,17 @@ void CDVDInputStreamBluray::GetStreamInfo(int pid, char* language)
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
 {
-  if(!m_navmode || m_hold == HOLD_ERROR)
+  if(!m_navmode)
     return NEXTSTREAM_NONE;
+
+  if (m_hold == HOLD_ERROR)
+  {
+#if (BLURAY_VERSION < BLURAY_VERSION_CODE(0,3,0))
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray:: - libbluray navmode read error");
+    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25008), g_localizeStrings.Get(25009));
+#endif
+    return NEXTSTREAM_NONE;
+  }
 
   /* process any current event */
   ProcessEvent();
