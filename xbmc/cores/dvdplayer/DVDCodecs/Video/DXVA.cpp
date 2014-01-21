@@ -1025,7 +1025,7 @@ void CProcessor::Close()
 bool CProcessor::UpdateSize(const DXVA2_VideoDesc& dsc)
 {
   // TODO: print the D3FORMAT text version in log
-  CLog::Log(LOGDEBUG, "DXVA - cheking samples array size using %d render target", dsc.Format);
+  CLog::Log(LOGDEBUG, "DXVA - checking samples array size using %d render target", dsc.Format);
 
   GUID* deint_guid_list = NULL;
   unsigned guid_count = 0;
