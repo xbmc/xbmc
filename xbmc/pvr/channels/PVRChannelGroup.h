@@ -398,6 +398,13 @@ namespace PVR
      */
     CPVRChannelPtr GetByClient(int iUniqueChannelId, int iClientID) const;
 
+    /*!
+     * @brief Get a channel given it's unique ID.
+     * @param iUniqueID The unique ID.
+     * @return The channel or NULL if it wasn't found.
+     */
+    CPVRChannelPtr GetByUniqueID(int iUniqueID) const;
+
     void SetSelectedGroup(bool bSetTo);
     bool IsSelectedGroup(void) const;
 
@@ -486,13 +493,6 @@ namespace PVR
     CFileItemPtr GetByChannelUpDown(const CFileItem &channel, bool bChannelUp) const;
 
     void ResetChannelNumbers(void);
-
-    /*!
-     * @brief Get a channel given it's unique ID.
-     * @param iUniqueID The unique ID.
-     * @return The channel or NULL if it wasn't found.
-     */
-    CPVRChannelPtr GetByUniqueID(int iUniqueID) const;
 
     /*!
      * @brief Get a channel given it's channel ID.
