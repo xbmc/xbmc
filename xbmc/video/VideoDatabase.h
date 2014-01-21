@@ -792,6 +792,11 @@ private:
      episodes and music videos
    */
   virtual void CreateViews();
+  
+  /*! \brief (Re)Create the appropriate triggers in the same way during
+      the installation and update processes
+   */
+  virtual void CreateTriggers();
 
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
