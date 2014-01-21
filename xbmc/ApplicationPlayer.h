@@ -65,7 +65,7 @@ public:
   void ClosePlayerGapless(PLAYERCOREID newCore);
   void CreatePlayer(PLAYERCOREID newCore, IPlayerCallback& callback);
   PLAYERCOREID GetCurrentPlayer() const { return m_eCurrentPlayer; }
-  boost::shared_ptr<IPlayer> GetInternal() const;
+  IPlayer* GetInternal() const;
   int  GetPlaySpeed() const;
   bool HasPlayer() const;
   PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
