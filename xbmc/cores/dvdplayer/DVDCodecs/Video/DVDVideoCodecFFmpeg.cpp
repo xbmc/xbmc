@@ -34,6 +34,7 @@
 #endif
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/VideoSettings.h"
 #include "utils/log.h"
 #include "boost/shared_ptr.hpp"
 #include "threads/Atomics.h"
@@ -70,7 +71,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   CDVDVideoCodecFFmpeg* ctx  = (CDVDVideoCodecFFmpeg*)avctx->opaque;
 
   // if frame threading is enabled hw accel is not allowed
-  if(!ctx->IsHardwareAllowed() || CSettings::Get().GetBool("videoplayer.useframemtdec"))
+  if((EDECODEMETHOD) CSettings::Get().GetInt("videoplayer.decodingmethod") != VS_DECODEMETHOD_HARDWARE || !ctx->IsHardwareAllowed())
     return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 
   const PixelFormat * cur = fmt;
@@ -249,7 +250,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading for Hi10p: %d",
                         m_pCodecContext->thread_type);
   }
-  else if (CSettings::Get().GetBool("videoplayer.useframemtdec"))
+  else if ((EDECODEMETHOD) CSettings::Get().GetInt("videoplayer.decodingmethod") == VS_DECODEMETHOD_SOFTWARE && CSettings::Get().GetBool("videoplayer.useframemtdec"))
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading %d by videoplayer.useframemtdec",
                         m_pCodecContext->thread_type);

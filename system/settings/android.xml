@@ -8,10 +8,13 @@
     </category>
   </section>
   <section id="videos">
-    <category id="videoplayer">
-      <group id="2">
-        <setting id="videoplayer.usestagefright" type="boolean" label="13436" help="36260">
+    <category id="videoacceleration">
+      <group id="3">
+        <setting id="videoplayer.usestagefright" type="boolean" parent="videoplayer.decodingmethod" label="13436" help="36260">
           <requirement>HAVE_LIBSTAGEFRIGHTDECODER</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
           <level>2</level>
           <default>true</default>
           <updates>
@@ -19,8 +22,11 @@
           </updates>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.usemediacodec" type="boolean" label="13439" help="36544">
+        <setting id="videoplayer.usemediacodec" type="boolean" parent="videoplayer.decodingmethod" label="13439" help="36544">
           <visible>HAS_MEDIACODEC</visible>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
           <level>2</level>
           <default>true</default>
           <updates>
