@@ -7258,9 +7258,10 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr ""
 
+#. Name of a setting, asking to enter the path to a folder that contains icons for TV channels
 #: system/settings/settings.xml
 msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
+msgid "Folder with channel icons"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
@@ -7457,7 +7458,12 @@ msgctxt "#19065"
 msgid "Default EPG window"
 msgstr ""
 
-#empty string with id 19066
+#. Name of a shortcut to a custom folder for channel icons
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr ""
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -8357,7 +8363,35 @@ msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr ""
 
-#empty strings from id 19282 to 19498
+#. Label for a select option or list item, representing an icon graphic (like a TV channel icon)
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
+msgctxt "#19282"
+msgid "Current icon"
+msgstr ""
+
+#. Label for a select option or list item, representing an icon graphic (like a TV channel icon)
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
+msgctxt "#19283"
+msgid "No icon"
+msgstr ""
+
+#. Label for a select/menu option to select an icon graphic
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr ""
+
+#. Label for a select/menu option to select an icon graphic
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
+msgctxt "#19285"
+msgid "Browse for icon"
+msgstr ""
+
+#empty strings from id 19286 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"

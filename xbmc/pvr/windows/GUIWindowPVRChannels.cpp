@@ -94,7 +94,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);                                     /* switch to channel */
     buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
-    buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);                                     /* change icon */
+    buttons.Add(CONTEXT_BUTTON_SET_THUMB, 19284);                                     /* change icon */
     buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 19048);                                 /* group manager */
     buttons.Add(CONTEXT_BUTTON_HIDE, m_bShowHiddenChannels ? 19049 : 19054);          /* show/hide channel */
 
@@ -458,10 +458,10 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
 
     if (!channel->IconPath().empty())
     {
-      /* add the current thumb, if available */
+      /* add the current icon, if available */
       CFileItemPtr current(new CFileItem("thumb://Current", false));
       current->SetArt("thumb", channel->IconPath());
-      current->SetLabel(g_localizeStrings.Get(20016));
+      current->SetLabel(g_localizeStrings.Get(19282));
       items.Add(current);
     }
     else if (item->HasArt("thumb"))
@@ -469,14 +469,14 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
       /* already have a thumb that the share doesn't know about - must be a local one, so we may as well reuse it */
       CFileItemPtr current(new CFileItem("thumb://Current", false));
       current->SetArt("thumb", item->GetArt("thumb"));
-      current->SetLabel(g_localizeStrings.Get(20016));
+      current->SetLabel(g_localizeStrings.Get(19282));
       items.Add(current);
     }
 
     /* and add a "no thumb" entry as well */
     CFileItemPtr nothumb(new CFileItem("thumb://None", false));
     nothumb->SetIconImage(item->GetIconImage());
-    nothumb->SetLabel(g_localizeStrings.Get(20018));
+    nothumb->SetLabel(g_localizeStrings.Get(19283));
     items.Add(nothumb);
 
     CStdString strThumb;
@@ -485,11 +485,11 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
     {
       CMediaSource share1;
       share1.strPath = CSettings::Get().GetString("pvrmenu.iconpath");
-      share1.strName = g_localizeStrings.Get(19018);
+      share1.strName = g_localizeStrings.Get(19066);
       shares.push_back(share1);
     }
     g_mediaManager.GetLocalDrives(shares);
-    if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
+    if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(19285), strThumb, NULL, 19285))
       return bReturn;
 
     if (strThumb != "thumb://Current")

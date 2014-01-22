@@ -323,21 +323,21 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
   {
     CFileItemPtr current(new CFileItem("thumb://Current", false));
     current->SetArt("thumb", pItem->GetPVRChannelInfoTag()->IconPath());
-    current->SetLabel(g_localizeStrings.Get(20016));
+    current->SetLabel(g_localizeStrings.Get(19282));
     items.Add(current);
   }
   else if (pItem->HasArt("thumb"))
   { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
     CFileItemPtr current(new CFileItem("thumb://Current", false));
     current->SetArt("thumb", pItem->GetArt("thumb"));
-    current->SetLabel(g_localizeStrings.Get(20016));
+    current->SetLabel(g_localizeStrings.Get(19282));
     items.Add(current);
   }
 
   // and add a "no thumb" entry as well
   CFileItemPtr nothumb(new CFileItem("thumb://None", false));
   nothumb->SetIconImage(pItem->GetIconImage());
-  nothumb->SetLabel(g_localizeStrings.Get(20018));
+  nothumb->SetLabel(g_localizeStrings.Get(19283));
   items.Add(nothumb);
 
   CStdString strThumb;
@@ -346,11 +346,11 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
   {
     CMediaSource share1;
     share1.strPath = CSettings::Get().GetString("pvrmenu.iconpath");
-    share1.strName = g_localizeStrings.Get(19018);
+    share1.strName = g_localizeStrings.Get(19066);
     shares.push_back(share1);
   }
   g_mediaManager.GetLocalDrives(shares);
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(19285), strThumb, NULL, 19285))
     return false;
 
   if (strThumb == "thumb://Current")
