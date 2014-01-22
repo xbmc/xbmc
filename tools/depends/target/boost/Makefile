@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include add-arm-mem-barrier.patch fix-deprecated-swp.patch Makefile
+DEPS= ../../Makefile.include add-arm-mem-barrier.patch fix-deprecated-swp.patch fix_shared_ptr_multithread.patch Makefile
 
 #Headers Only!
 LIBNAME=boost
@@ -21,6 +21,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	echo '	;' >> $(PLATFORM)/tools/build/v2/user-config.jam
 	cd $(PLATFORM); patch -p1 < ../add-arm-mem-barrier.patch
 	cd $(PLATFORM); patch -p1 < ../fix-deprecated-swp.patch
+ifeq (arm, $(findstring arm, $(CPU)))
+	cd $(PLATFORM); patch -p0 < ../fix_shared_ptr_multithread.patch
+endif
 	cd $(PLATFORM); ./bootstrap.sh --prefix=$(PREFIX)
 
 .installed-$(PLATFORM): $(PLATFORM)
