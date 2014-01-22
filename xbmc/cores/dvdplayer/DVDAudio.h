@@ -30,7 +30,9 @@
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 class IAEStream;
 
-#include "DllAvCodec.h"
+extern "C" {
+#include "libavcodec/avcodec.h"
+}
 
 typedef struct stDVDAudioFrame DVDAudioFrame;
 

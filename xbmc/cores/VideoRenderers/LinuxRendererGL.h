@@ -112,8 +112,6 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class DllSwScale;
-
 class CLinuxRendererGL : public CBaseRenderer
 {
 public:
@@ -312,7 +310,6 @@ protected:
   float m_clearColour;
 
   // software scale library (fallback if required gl version is not available)
-  DllSwScale        *m_dllSwScale;
   BYTE              *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int       m_rgbBufferSize;
   GLuint             m_rgbPbo;

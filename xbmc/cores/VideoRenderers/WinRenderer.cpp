@@ -20,7 +20,7 @@
 
 #ifdef HAS_DX
 
-#include "DllSwScale.h"
+#include "libswscale/swscale.h"
 #include "Util.h"
 #include "WinRenderer.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"

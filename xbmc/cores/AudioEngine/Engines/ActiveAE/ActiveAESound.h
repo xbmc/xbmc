@@ -56,7 +56,7 @@ public:
   bool IsSeekPosible() { return m_isSeekPosible; }
 
   static int Read(void *h, uint8_t* buf, int size);
-  static offset_t Seek(void *h, offset_t pos, int whence);
+  static int64_t Seek(void *h, int64_t pos, int whence);
 
 protected:
   std::string m_filename;

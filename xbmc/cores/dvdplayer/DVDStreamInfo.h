@@ -25,7 +25,10 @@
 #endif
 
 #include "DVDDemuxers/DVDDemux.h"
-#include "DllAvCodec.h"
+
+extern "C" {
+#include "libavcodec/avcodec.h"
+}
 
 class CDemuxStream;
 

@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "DllAvCodec.h"
+#include "libavcodec/avcodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"

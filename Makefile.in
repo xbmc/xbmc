@@ -35,7 +35,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/libXDAAP/libxdaap.a \
                    lib/libhts/libhts.a \
                    lib/libsquish/libsquish.a \
-                   lib/xbmc-dll-symbols/dll-symbols.a \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
                    xbmc/cores/AudioEngine/audioengine.a \
@@ -185,10 +184,6 @@ endif
 
 ifeq (@USE_OMXPLAYER@,1)
 DIRECTORY_ARCHIVES += xbmc/cores/omxplayer/omxplayer.a
-endif
-
-ifeq (@USE_LIBAV_HACKS@,1)
-DIRECTORY_ARCHIVES += lib/xbmc-libav-hacks/dll-libavhacks.a
 endif
 
 PAPCODECS_DIRS= \
@@ -393,7 +388,6 @@ libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.gui
 	$(MAKE) -C lib/addons/library.xbmc.pvr
 dvdpcodecs: dllloader
-	$(MAKE) -C lib
 	$(MAKE) -C lib/libdvd
 
 ifeq (@USE_LIBSTAGEFRIGHT@,1)

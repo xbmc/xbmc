@@ -21,12 +21,14 @@
  */
 
 #include "system.h"
-#include "DllAvFormat.h"
-#include "DllAvCodec.h"
 
 #include <vector>
 #include <string>
 #include "cores/VideoRenderers/RenderFormats.h"
+
+extern "C" {
+#include "libavcodec/avcodec.h"
+}
 
 struct DVDCodecAvailableType 
 {

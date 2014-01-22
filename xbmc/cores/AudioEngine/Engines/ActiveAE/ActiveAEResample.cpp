@@ -19,24 +19,26 @@
  */
 
 #include "ActiveAEResample.h"
+#include "utils/log.h"
+
+extern "C" {
+#include "libavutil/channel_layout.h"
+#include "libavutil/opt.h"
+#include "libswresample/swresample.h"
+}
 
 using namespace ActiveAE;
 
 CActiveAEResample::CActiveAEResample()
 {
   m_pContext = NULL;
-  m_loaded = false;
-  if (m_dllAvUtil.Load() && m_dllSwResample.Load())
-    m_loaded = true;
+  m_loaded = true;
 }
 
 CActiveAEResample::~CActiveAEResample()
 {
   if (m_pContext)
-    m_dllSwResample.swr_free(&m_pContext);
-
-  m_dllAvUtil.Unload();
-  m_dllSwResample.Unload();
+    swr_free(&m_pContext);
 }
 
 bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality)
@@ -56,11 +58,11 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
   m_src_bits = src_bits;
 
   if (m_dst_chan_layout == 0)
-    m_dst_chan_layout = m_dllAvUtil.av_get_default_channel_layout(m_dst_channels);
+    m_dst_chan_layout = av_get_default_channel_layout(m_dst_channels);
   if (m_src_chan_layout == 0)
-    m_src_chan_layout = m_dllAvUtil.av_get_default_channel_layout(m_src_channels);
+    m_src_chan_layout = av_get_default_channel_layout(m_src_channels);
 
-  m_pContext = m_dllSwResample.swr_alloc_set_opts(NULL, m_dst_chan_layout, m_dst_fmt, m_dst_rate,
+  m_pContext = swr_alloc_set_opts(NULL, m_dst_chan_layout, m_dst_fmt, m_dst_rate,
                                                         m_src_chan_layout, m_src_fmt, m_src_rate,
                                                         0, NULL);
 
@@ -72,24 +74,24 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
 
   if(quality == AE_QUALITY_HIGH)
   {
-    m_dllAvUtil.av_opt_set_double(m_pContext, "cutoff", 1.0, 0);
-    m_dllAvUtil.av_opt_set_int(m_pContext,"filter_size", 256, 0);
+    av_opt_set_double(m_pContext, "cutoff", 1.0, 0);
+    av_opt_set_int(m_pContext,"filter_size", 256, 0);
   }
   else if(quality == AE_QUALITY_MID)
   {
     // 0.97 is default cutoff so use (1.0 - 0.97) / 2.0 + 0.97
-    m_dllAvUtil.av_opt_set_double(m_pContext, "cutoff", 0.985, 0);
-    m_dllAvUtil.av_opt_set_int(m_pContext,"filter_size", 64, 0);
+    av_opt_set_double(m_pContext, "cutoff", 0.985, 0);
+    av_opt_set_int(m_pContext,"filter_size", 64, 0);
   }
   else if(quality == AE_QUALITY_LOW)
   {
-    m_dllAvUtil.av_opt_set_double(m_pContext, "cutoff", 0.97, 0);
-    m_dllAvUtil.av_opt_set_int(m_pContext,"filter_size", 32, 0);
+    av_opt_set_double(m_pContext, "cutoff", 0.97, 0);
+    av_opt_set_int(m_pContext,"filter_size", 32, 0);
   }
 
   if (m_dst_fmt == AV_SAMPLE_FMT_S32 || m_dst_fmt == AV_SAMPLE_FMT_S32P)
   {
-    m_dllAvUtil.av_opt_set_int(m_pContext, "output_sample_bits", m_dst_bits, 0);
+    av_opt_set_int(m_pContext, "output_sample_bits", m_dst_bits, 0);
   }
 
   // tell resampler to clamp float values
@@ -98,7 +100,7 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
       (m_src_fmt == AV_SAMPLE_FMT_FLT || m_src_fmt == AV_SAMPLE_FMT_FLTP) &&
       !remapLayout && normalize)
   {
-     m_dllAvUtil.av_opt_set_double(m_pContext, "rematrix_maxval", 1.0, 0);
+     av_opt_set_double(m_pContext, "rematrix_maxval", 1.0, 0);
   }
 
   if (remapLayout)
@@ -118,10 +120,10 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
       }
     }
 
-    m_dllAvUtil.av_opt_set_int(m_pContext, "out_channel_count", m_dst_channels, 0);
-    m_dllAvUtil.av_opt_set_int(m_pContext, "out_channel_layout", m_dst_chan_layout, 0);
+    av_opt_set_int(m_pContext, "out_channel_count", m_dst_channels, 0);
+    av_opt_set_int(m_pContext, "out_channel_layout", m_dst_chan_layout, 0);
 
-    if (m_dllSwResample.swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
+    if (swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
     {
       CLog::Log(LOGERROR, "CActiveAEResample::Init - setting channel matrix failed");
       return false;
@@ -133,7 +135,7 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
     memset(m_rematrix, 0, sizeof(m_rematrix));
     for (int out=0; out<m_dst_channels; out++)
     {
-      uint64_t out_chan = m_dllAvUtil.av_channel_layout_extract_channel(m_dst_chan_layout, out);
+      uint64_t out_chan = av_channel_layout_extract_channel(m_dst_chan_layout, out);
       switch(out_chan)
       {
         case AV_CH_FRONT_LEFT:
@@ -159,14 +161,14 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
       }
     }
 
-    if (m_dllSwResample.swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
+    if (swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
     {
       CLog::Log(LOGERROR, "CActiveAEResample::Init - setting channel matrix failed");
       return false;
     }
   }
 
-  if(m_dllSwResample.swr_init(m_pContext) < 0)
+  if(swr_init(m_pContext) < 0)
   {
     CLog::Log(LOGERROR, "CActiveAEResample::Init - init resampler failed");
     return false;
@@ -178,7 +180,7 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
 {
   if (ratio != 1.0)
   {
-    if (m_dllSwResample.swr_set_compensation(m_pContext,
+    if (swr_set_compensation(m_pContext,
                                             (dst_samples*ratio-dst_samples)*m_dst_rate/m_src_rate,
                                              dst_samples*m_dst_rate/m_src_rate) < 0)
     {
@@ -187,7 +189,7 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
     }
   }
 
-  int ret = m_dllSwResample.swr_convert(m_pContext, dst_buffer, dst_samples, (const uint8_t**)src_buffer, src_samples);
+  int ret = swr_convert(m_pContext, dst_buffer, dst_samples, (const uint8_t**)src_buffer, src_samples);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CActiveAEResample::Resample - resample failed");
@@ -198,28 +200,28 @@ int CActiveAEResample::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t *
 
 int64_t CActiveAEResample::GetDelay(int64_t base)
 {
-  return m_dllSwResample.swr_get_delay(m_pContext, base);
+  return swr_get_delay(m_pContext, base);
 }
 
 int CActiveAEResample::GetBufferedSamples()
 {
-  return m_dllAvUtil.av_rescale_rnd(m_dllSwResample.swr_get_delay(m_pContext, m_src_rate),
+  return av_rescale_rnd(swr_get_delay(m_pContext, m_src_rate),
                                     m_dst_rate, m_src_rate, AV_ROUND_UP);
 }
 
 int CActiveAEResample::CalcDstSampleCount(int src_samples, int dst_rate, int src_rate)
 {
-  return m_dllAvUtil.av_rescale_rnd(src_samples, dst_rate, src_rate, AV_ROUND_UP);
+  return av_rescale_rnd(src_samples, dst_rate, src_rate, AV_ROUND_UP);
 }
 
 int CActiveAEResample::GetSrcBufferSize(int samples)
 {
-  return m_dllAvUtil.av_samples_get_buffer_size(NULL, m_src_channels, samples, m_src_fmt, 1);
+  return av_samples_get_buffer_size(NULL, m_src_channels, samples, m_src_fmt, 1);
 }
 
 int CActiveAEResample::GetDstBufferSize(int samples)
 {
-  return m_dllAvUtil.av_samples_get_buffer_size(NULL, m_dst_channels, samples, m_dst_fmt, 1);
+  return av_samples_get_buffer_size(NULL, m_dst_channels, samples, m_dst_fmt, 1);
 }
 
 uint64_t CActiveAEResample::GetAVChannelLayout(CAEChannelInfo &info)
@@ -342,5 +344,5 @@ uint64_t CActiveAEResample::GetAVChannel(enum AEChannel aechannel)
 
 int CActiveAEResample::GetAVChannelIndex(enum AEChannel aechannel, uint64_t layout)
 {
-  return m_dllAvUtil.av_get_channel_layout_channel_index(layout, GetAVChannel(aechannel));
+  return av_get_channel_layout_channel_index(layout, GetAVChannel(aechannel));
 }

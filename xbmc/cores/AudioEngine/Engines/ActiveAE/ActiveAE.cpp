@@ -178,10 +178,6 @@ void CActiveAE::Dispose()
   m_controlPort.Purge();
   m_dataPort.Purge();
   m_sink.Dispose();
-
-  m_dllAvFormat.Unload();
-  m_dllAvCodec.Unload();
-  m_dllAvUtil.Unload();
 }
 
 //-----------------------------------------------------------------------------
@@ -2041,7 +2037,7 @@ void CActiveAE::MixSounds(CSoundPacket &dstSample)
     int available_samples = it->sound->GetSound(false)->nb_samples - it->samples_played;
     int mix_samples = std::min(max_samples, available_samples);
     int start = it->samples_played *
-                m_dllAvUtil.av_get_bytes_per_sample(it->sound->GetSound(false)->config.fmt) *
+                av_get_bytes_per_sample(it->sound->GetSound(false)->config.fmt) *
                 it->sound->GetSound(false)->config.channels /
                 it->sound->GetSound(false)->planes;
 
@@ -2125,13 +2121,6 @@ void CActiveAE::LoadSettings()
 
 bool CActiveAE::Initialize()
 {
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllAvFormat.Load())
-  {
-    CLog::Log(LOGERROR,"CActiveAE::Initialize - failed to load ffmpeg libraries");
-    return false;
-  }
-  m_dllAvFormat.av_register_all();
-
   Create();
   Message *reply;
   if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT,
@@ -2387,19 +2376,19 @@ void CActiveAE::OnAppFocusChange(bool focus)
 uint8_t **CActiveAE::AllocSoundSample(SampleConfig &config, int &samples, int &bytes_per_sample, int &planes, int &linesize)
 {
   uint8_t **buffer;
-  planes = m_dllAvUtil.av_sample_fmt_is_planar(config.fmt) ? config.channels : 1;
+  planes = av_sample_fmt_is_planar(config.fmt) ? config.channels : 1;
   buffer = new uint8_t*[planes];
 
   // align buffer to 16 in order to be compatible with sse in CAEConvert
-  m_dllAvUtil.av_samples_alloc(buffer, &linesize, config.channels,
+  av_samples_alloc(buffer, &linesize, config.channels,
                                  samples, config.fmt, 16);
-  bytes_per_sample = m_dllAvUtil.av_get_bytes_per_sample(config.fmt);
+  bytes_per_sample = av_get_bytes_per_sample(config.fmt);
   return buffer;
 }
 
 void CActiveAE::FreeSoundSample(uint8_t **data)
 {
-  m_dllAvUtil.av_freep(data);
+  av_freep(data);
   delete [] data;
 }
 
@@ -2443,9 +2432,9 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   }
   int fileSize = sound->GetFileSize();
 
-  fmt_ctx = m_dllAvFormat.avformat_alloc_context();
-  unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(SOUNDBUFFER_SIZE+FF_INPUT_BUFFER_PADDING_SIZE);
-  io_ctx = m_dllAvFormat.avio_alloc_context(buffer, SOUNDBUFFER_SIZE, 0,
+  fmt_ctx = avformat_alloc_context();
+  unsigned char* buffer = (unsigned char*)av_malloc(SOUNDBUFFER_SIZE+FF_INPUT_BUFFER_PADDING_SIZE);
+  io_ctx = avio_alloc_context(buffer, SOUNDBUFFER_SIZE, 0,
                                             sound, CActiveAESound::Read, NULL, CActiveAESound::Seek);
   io_ctx->max_packet_size = sound->GetChunkSize();
   if(io_ctx->max_packet_size)
@@ -2456,22 +2445,22 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
 
   fmt_ctx->pb = io_ctx;
 
-  m_dllAvFormat.av_probe_input_buffer(io_ctx, &io_fmt, file.c_str(), NULL, 0, 0);
+  av_probe_input_buffer(io_ctx, &io_fmt, file.c_str(), NULL, 0, 0);
   if (!io_fmt)
   {
-    m_dllAvFormat.avformat_close_input(&fmt_ctx);
+    avformat_close_input(&fmt_ctx);
     delete sound;
     return NULL;
   }
 
   // find decoder
-  if (m_dllAvFormat.avformat_open_input(&fmt_ctx, file.c_str(), NULL, NULL) == 0)
+  if (avformat_open_input(&fmt_ctx, file.c_str(), NULL, NULL) == 0)
   {
     fmt_ctx->flags |= AVFMT_FLAG_NOPARSE;
-    if (m_dllAvFormat.avformat_find_stream_info(fmt_ctx, NULL) >= 0)
+    if (avformat_find_stream_info(fmt_ctx, NULL) >= 0)
     {
       dec_ctx = fmt_ctx->streams[0]->codec;
-      dec = m_dllAvCodec.avcodec_find_decoder(dec_ctx->codec_id);
+      dec = avcodec_find_decoder(dec_ctx->codec_id);
       config.sample_rate = dec_ctx->sample_rate;
       config.channels = dec_ctx->channels;
       config.channel_layout = dec_ctx->channel_layout;
@@ -2479,39 +2468,39 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   }
   if (dec == NULL)
   {
-    m_dllAvFormat.avformat_close_input(&fmt_ctx);
+    avformat_close_input(&fmt_ctx);
     delete sound;
     return NULL;
   }
 
-  dec_ctx = m_dllAvCodec.avcodec_alloc_context3(dec);
+  dec_ctx = avcodec_alloc_context3(dec);
   dec_ctx->sample_rate = config.sample_rate;
   dec_ctx->channels = config.channels;
   if (!config.channel_layout)
-    config.channel_layout = m_dllAvUtil.av_get_default_channel_layout(config.channels);
+    config.channel_layout = av_get_default_channel_layout(config.channels);
   dec_ctx->channel_layout = config.channel_layout;
 
   AVPacket avpkt;
   AVFrame *decoded_frame = NULL;
-  decoded_frame = m_dllAvCodec.avcodec_alloc_frame();
+  decoded_frame = avcodec_alloc_frame();
 
-  if (m_dllAvCodec.avcodec_open2(dec_ctx, dec, NULL) >= 0)
+  if (avcodec_open2(dec_ctx, dec, NULL) >= 0)
   {
     bool init = false;
 
     // decode until eof
-    m_dllAvCodec.av_init_packet(&avpkt);
+    av_init_packet(&avpkt);
     int len;
-    while (m_dllAvFormat.av_read_frame(fmt_ctx, &avpkt) >= 0)
+    while (av_read_frame(fmt_ctx, &avpkt) >= 0)
     {
       int got_frame = 0;
-      len = m_dllAvCodec.avcodec_decode_audio4(dec_ctx, decoded_frame, &got_frame, &avpkt);
+      len = avcodec_decode_audio4(dec_ctx, decoded_frame, &got_frame, &avpkt);
       if (len < 0)
       {
-        m_dllAvCodec.avcodec_close(dec_ctx);
-        m_dllAvUtil.av_free(dec_ctx);
-        m_dllAvUtil.av_free(&decoded_frame);
-        m_dllAvFormat.avformat_close_input(&fmt_ctx);
+        avcodec_close(dec_ctx);
+        av_free(dec_ctx);
+        av_free(&decoded_frame);
+        avformat_close_input(&fmt_ctx);
         delete sound;
         return NULL;
       }
@@ -2519,7 +2508,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
       {
         if (!init)
         {
-          int samples = fileSize / m_dllAvUtil.av_get_bytes_per_sample(dec_ctx->sample_fmt) / config.channels;
+          int samples = fileSize / av_get_bytes_per_sample(dec_ctx->sample_fmt) / config.channels;
           config.fmt = dec_ctx->sample_fmt;
           config.bits_per_sample = dec_ctx->bits_per_coded_sample;
           sound->InitSound(true, config, samples);
@@ -2529,12 +2518,12 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
                           decoded_frame->nb_samples, decoded_frame->linesize[0]);
       }
     }
-    m_dllAvCodec.avcodec_close(dec_ctx);
+    avcodec_close(dec_ctx);
   }
 
-  m_dllAvUtil.av_free(dec_ctx);
-  m_dllAvUtil.av_free(decoded_frame);
-  m_dllAvFormat.avformat_close_input(&fmt_ctx);
+  av_free(dec_ctx);
+  av_free(decoded_frame);
+  avformat_close_input(&fmt_ctx);
 
   sound->Finish();
 

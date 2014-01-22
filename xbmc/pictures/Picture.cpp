@@ -30,12 +30,16 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "DllSwScale.h"
 #include "guilib/Texture.h"
 #include "guilib/imagefactory.h"
+#include "cores/FFmpeg.h"
 #if defined(HAS_OMXPLAYER)
 #include "cores/omxplayer/OMXImage.h"
 #endif
+
+extern "C" {
+#include "libswscale/swscale.h"
+}
 
 using namespace XFILE;
 
@@ -230,9 +234,7 @@ void CPicture::GetScale(unsigned int width, unsigned int height, unsigned int &o
 bool CPicture::ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned int in_height, unsigned int in_pitch,
                           uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch)
 {
-  DllSwScale dllSwScale;
-  dllSwScale.Load();
-  struct SwsContext *context = dllSwScale.sws_getContext(in_width, in_height, PIX_FMT_BGRA,
+  struct SwsContext *context = sws_getContext(in_width, in_height, PIX_FMT_BGRA,
                                                          out_width, out_height, PIX_FMT_BGRA,
                                                          SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
@@ -243,8 +245,8 @@ bool CPicture::ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned in
 
   if (context)
   {
-    dllSwScale.sws_scale(context, src, srcStride, 0, in_height, dst, dstStride);
-    dllSwScale.sws_freeContext(context);
+    sws_scale(context, src, srcStride, 0, in_height, dst, dstStride);
+    sws_freeContext(context);
     return true;
   }
   return false;

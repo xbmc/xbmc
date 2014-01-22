@@ -528,9 +528,6 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
   m_DisplayState = VDPAU_OPEN;
   m_vdpauConfigured = false;
 
-  if (!m_dllAvUtil.Load())
-    return false;
-
   m_presentPicture = 0;
 
   {
@@ -614,10 +611,8 @@ void CDecoder::Close()
 
   if (m_hwContext.bitstream_buffers_allocated)
   {
-    m_dllAvUtil.av_freep(&m_hwContext.bitstream_buffers);
+    av_freep(&m_hwContext.bitstream_buffers);
   }
-
-  m_dllAvUtil.Unload();
 
   if (m_vdpauConfig.context)
     m_vdpauConfig.context->Release();

@@ -24,6 +24,8 @@
 #include "DVDVideoCodec.h"
 #include <boost/scoped_array.hpp>
 #include <boost/weak_ptr.hpp>
+#include "utils/log.h"
+#include "threads/SingleLock.h"
 
 #define CHECK(a) \
 do { \
