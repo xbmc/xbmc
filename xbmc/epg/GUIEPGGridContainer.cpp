@@ -978,6 +978,14 @@ void CGUIEPGGridContainer::UpdateItems()
         CFileItem *fileItem = (CFileItem *)item.get();
 
         m_gridIndex[row][savedBlock].item->SetProperty("GenreType", fileItem->GetEPGInfoTag()->GenreType());
+        if (fileItem->GetEPGInfoTag()->IsRunning())
+        {
+            m_gridIndex[row][savedBlock].item->SetProperty("IsRunning", "true");
+        }
+        else
+        {
+            m_gridIndex[row][savedBlock].item->ClearProperty("IsRunning");
+        }
         if (m_orientation == VERTICAL)
         {
           m_gridIndex[row][savedBlock].width   = itemSize*m_blockSize;
