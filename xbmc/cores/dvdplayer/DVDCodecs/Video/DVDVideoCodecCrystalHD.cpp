@@ -22,7 +22,9 @@
   #include "config.h"
 #elif defined(TARGET_WINDOWS)
 #include "system.h"
-#include "DllAvCodec.h"
+extern "C" {
+#include "libavcodec/avcodec.h"
+}
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)

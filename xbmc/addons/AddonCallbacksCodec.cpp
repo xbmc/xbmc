@@ -21,9 +21,12 @@
 #include "Application.h"
 #include "Addon.h"
 #include "AddonCallbacksCodec.h"
-#include "DllAvCodec.h"
-#include "DllAvFormat.h"
 #include "utils/StringUtils.h"
+
+extern "C" {
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+}
 
 namespace ADDON
 {
@@ -57,23 +60,12 @@ public:
 private:
   CCodecIds(void)
   {
-    DllAvCodec  dllAvCodec;
-    DllAvFormat dllAvFormat;
-
-    // load ffmpeg and register formats
-    if (!dllAvCodec.Load() || !dllAvFormat.Load())
-    {
-      CLog::Log(LOGWARNING, "failed to load ffmpeg");
-      return;
-    }
-    dllAvFormat.av_register_all();
-
     // get ids and names
     AVCodec* codec = NULL;
     xbmc_codec_t tmp;
-    while ((codec = dllAvCodec.av_codec_next(codec)))
+    while ((codec = av_codec_next(codec)))
     {
-      if (dllAvCodec.av_codec_is_decoder(codec))
+      if (av_codec_is_decoder(codec))
       {
         tmp.codec_type = (xbmc_codec_type_t)codec->type;
         tmp.codec_id   = codec->id;

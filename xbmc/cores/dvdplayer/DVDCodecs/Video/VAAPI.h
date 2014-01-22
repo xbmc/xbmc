@@ -21,7 +21,7 @@
 
 #include "system_gl.h"
 
-#include "DllAvCodec.h"
+#include "libavcodec/avcodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include <libavcodec/vaapi.h>
 #include <va/va.h>

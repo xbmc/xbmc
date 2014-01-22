@@ -40,19 +40,15 @@
 
 #include "system_gl.h"
 
-#include "DllAvUtil.h"
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "libavcodec/vdpau.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/glx.h>
 
-#include "DllAvUtil.h"
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "libavcodec/vdpau.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 #include "settings/VideoSettings.h"
@@ -61,6 +57,12 @@
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
 #include <list>
+#include <map>
+
+extern "C" {
+#include "libavutil/avutil.h"
+#include "libavcodec/vdpau.h"
+}
 
 using namespace Actor;
 
@@ -611,7 +613,6 @@ protected:
   CCriticalSection m_DecoderSection;
   CEvent         m_DisplayEvent;
 
-  DllAvUtil     m_dllAvUtil;
   ThreadIdentifier m_decoderThread;
   bool          m_vdpauConfigured;
   CVdpauConfig  m_vdpauConfig;

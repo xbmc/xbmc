@@ -26,7 +26,7 @@
   #include "config.h"
 #endif
 #include <vector>
-#include "DllAvCodec.h"
+#include "libavcodec/avcodec.h"
 
 struct AVStream;
 

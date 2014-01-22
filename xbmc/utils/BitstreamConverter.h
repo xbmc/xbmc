@@ -22,10 +22,13 @@
 #define _BITSTREAMCONVERTER_H_
 
 #include <stdint.h>
-#include "DllAvUtil.h"
-#include "DllAvFormat.h"
-#include "DllAvFilter.h"
-#include "DllAvCodec.h"
+
+extern "C" {
+#include "libavutil/avutil.h"
+#include "libavformat/avformat.h"
+#include "libavfilter/avfilter.h"
+#include "libavcodec/avcodec.h"
+}
 
 typedef struct {
   int       writer_le;
@@ -200,8 +203,6 @@ protected:
   int               m_extrasize;
   bool              m_convert_3byteTo4byteNALSize;
   bool              m_convert_bytestream;
-  DllAvUtil        *m_dllAvUtil;
-  DllAvFormat      *m_dllAvFormat;
   AVCodecID         m_codec;
 };
 
