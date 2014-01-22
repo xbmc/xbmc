@@ -11,6 +11,12 @@
         </setting>
       </group>
     </category>
+    <category id="videoprocessing">
+      <group id="1">
+        <setting id="videoplayer.hqscalers">
+          <visible>false</visible>
+        </setting>
+    </category>
   </section>
   <section id="music">
     <category id="audiocds">

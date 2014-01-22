@@ -387,114 +387,6 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="videoplayer.rendermethod" type="integer" label="13415" help="36153">
-          <level>2</level>
-          <default>0</default> <!-- RENDER_METHOD_AUTO -->
-          <constraints>
-            <options>rendermethods</options>
-          </constraints>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="videoplayer.hqscalers" type="integer" label="13435" help="36154">
-          <level>2</level>
-          <default>0</default>
-          <constraints>
-            <minimum>0</minimum>
-            <step>10</step>
-            <maximum>100</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14047</formatlabel>
-          </control>
-        </setting>
-        <setting id="videoplayer.useframemtdec" type="boolean" label="13440" help="36423">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.useamcodec" type="boolean" label="13438" help="36422">
-          <requirement>HAVE_AMCODEC</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
-          </dependencies>
-          <level>2</level>
-          <default>true</default>
-          <updates>
-            <update type="change" />
-          </updates>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.usevdpau" type="boolean" label="13425" help="36155">
-          <requirement>HAVE_LIBVDPAU</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
-          </dependencies>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.usevdpaumixer" type="boolean" label="13437" help="36421">
-          <requirement>HAVE_LIBVDPAU</requirement>
-          <level>2</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
-                <condition setting="videoplayer.useframemtdec" operator="is">false</condition> <!-- disable when frame threading is active -->
-              </and>
-            </dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.usevaapi" type="boolean" label="13426" help="36156">
-          <requirement>HAVE_LIBVA</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
-          </dependencies>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
-          <requirement>HasDXVA2</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
-          </dependencies>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.usechd" type="boolean" label="13428" help="36159">
-          <requirement>HasCrystalHDDevice</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
-          </dependencies>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.useomx" type="boolean" label="13430" help="36161">
-          <requirement>HAVE_LIBOPENMAX</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.useframemtdec" operator="is">false</dependency> <!-- disable when frame threading is active -->
-          </dependencies>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.usevideotoolbox" type="boolean" label="13432" help="36162">
-          <requirement>HasVideoToolBoxDecoder</requirement>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.usepbo" type="boolean" label="13424" help="36163">
-          <requirement>HAS_GL</requirement>
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videoplayer.adjustrefreshrate" type="integer" label="170" help="36164">
           <level>2</level>
           <default>0</default> <!-- ADJUST_REFRESHRATE_OFF -->
@@ -581,14 +473,71 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="videoplayer.vdpau_allow_xrandr" type="boolean" label="13122" help="36172">
-          <requirement>HAVE_LIBVDPAU</requirement>
-          <level>4</level>
-          <default>false</default>
+      </group>
+      <group id="3">
+        <setting id="videoplayer.teletextenabled" type="boolean" label="23050" help="36174">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.teletextscale" type="boolean" label="23055" help="36175">
+          <level>1</level>
+          <default>true</default>
           <control type="toggle" />
         </setting>
       </group>
-      <group id="3">
+      <group id="4">
+        <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="36537">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="36521">0</option> <!-- ASK     -->
+              <option label="36522">1</option> <!-- Preferred mode -->
+            </options>
+          </constraints>
+          <control type="spinner" format="integer" delayed="true"/>
+        </setting>
+        <setting id="videoplayer.quitstereomodeonstop" type="boolean" label="36526" help="36538">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+    <category id="videoprocessing" label="14101" help="36430">
+      <group id="1">
+        <setting id="videoplayer.rendermethod" type="integer" label="13415" help="36153">
+          <level>2</level>
+          <default>0</default> <!-- RENDER_METHOD_AUTO -->
+          <constraints>
+            <options>rendermethods</options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="videoplayer.hqscalers" type="integer" parent="videoplayer.rendermethod" label="13435" help="36154">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>10</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14047</formatlabel>
+          </control>
+        </setting>
+        <setting id="videoplayer.usepbo" type="boolean" parent="videoplayer.rendermethod" label="13424" help="36163">
+          <requirement>HAS_GL</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.rendermethod" operator="is">1</dependency> <!-- only supported with ARB -->
+          </dependencies>
+          <level>4</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
         <requirement>
           <and>
             <or>
@@ -603,32 +552,108 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-      </group>
-      <group id="4">
-        <setting id="videoplayer.teletextenabled" type="boolean" label="23050" help="36174">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.teletextscale" type="boolean" label="23055" help="36175">
-          <level>1</level>
-          <default>true</default>
+        <setting id="videoplayer.vdpau_allow_xrandr" type="boolean" label="13122" help="36172">
+          <level>4</level>
+          <default>false</default>
           <control type="toggle" />
         </setting>
       </group>
-      <group id="5">
-        <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="36537">
+      <group id="3">
+        <setting id="videoplayer.decodingmethod" type="integer" label="13441" help="36431">
           <level>2</level>
-          <default>0</default>
+          <default>1</default>
           <constraints>
             <options>
-              <option label="36521">0</option> <!-- ASK     -->
-              <option label="36522">1</option> <!-- Preferred mode -->
+              <option label="13442">0</option> <!-- Software     -->
+              <option label="13443">1</option> <!-- Hardware     -->
             </options>
           </constraints>
-          <control type="spinner" format="integer" delayed="true"/>
+          <control type="spinner" format="integer" />
         </setting>
-        <setting id="videoplayer.quitstereomodeonstop" type="boolean" label="36526" help="36538">
+        <setting id="videoplayer.useframemtdec" type="boolean" parent="videoplayer.decodingmethod" label="13440" help="36423">
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">0</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.useamcodec" type="boolean" parent="videoplayer.decodingmethod" label="13438" help="36422">
+          <requirement>HAVE_AMCODEC</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevdpau" type="boolean" parent="videoplayer.decodingmethod" label="13425" help="36155">
+          <requirement>HAVE_LIBVDPAU</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevdpaumixer" type="boolean" parent="videoplayer.usevdpau" label="13437" help="36421">
+          <requirement>HAVE_LIBVDPAU</requirement>
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
+                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevaapi" type="boolean" parent="videoplayer.decodingmethod" label="13426" help="36156">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usedxva2" type="boolean" parent="videoplayer.decodingmethod" label="13427" help="36158">
+          <requirement>HasDXVA2</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usechd" type="boolean" parent="videoplayer.decodingmethod" label="13428" help="36159">
+          <requirement>HasCrystalHDDevice</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.useomx" type="boolean" parent="videoplayer.decodingmethod" label="13430" help="36161">
+          <requirement>HAVE_LIBOPENMAX</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevideotoolbox" type="boolean" parent="videoplayer.decodingmethod" label="13432" help="36162">
+          <requirement>HasVideoToolBoxDecoder</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
+          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
