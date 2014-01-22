@@ -346,6 +346,7 @@ void CScraperParser::ParseXSLT(const CStdString& input, CStdString& dest, TiXmlE
     XSLTUtils xsltUtils;
     CStdString strXslt;
     strXslt << *pSheet;
+    ReplaceBuffers(strXslt);
 
     if (!xsltUtils.SetInput(input))
       CLog::Log(LOGDEBUG, "could not parse input XML");
