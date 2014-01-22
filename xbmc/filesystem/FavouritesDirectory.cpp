@@ -39,18 +39,18 @@ bool CFavouritesDirectory::GetDirectory(const CStdString& strPath, CFileItemList
 {
   items.Clear();
   CURL url(strPath);
-  
+
   if (url.GetProtocol() == "favourites")
   {
-    Load(items); //load the default favourite files
+    return Load(items); //load the default favourite files
   }
   return LoadFavourites(strPath, items); //directly load the given file
 }
-  
+
 bool CFavouritesDirectory::Exists(const char* strPath)
 {
   CURL url(strPath);
-  
+
   if (url.GetProtocol() == "favourites")
   {
     return XFILE::CFile::Exists("special://xbmc/system/favourites.xml") 
