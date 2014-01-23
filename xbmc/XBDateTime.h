@@ -173,6 +173,7 @@ public:
   bool SetFromDBDate(const CStdString &date);
   bool SetFromDBTime(const CStdString &time);
   bool SetFromW3CDate(const CStdString &date);
+  bool SetFromW3CDateTime(const CStdString &date, bool ignoreTimezone = false);
   bool SetFromUTCDateTime(const CDateTime &dateTime);
   bool SetFromUTCDateTime(const time_t &dateTime);
   bool SetFromRFC1123DateTime(const CStdString &dateTime);
@@ -196,6 +197,8 @@ public:
   CStdString GetAsLocalizedTime(const CStdString &format, bool withSeconds=true) const;
   CStdString GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
   CStdString GetAsRFC1123DateTime() const;
+  CStdString GetAsW3CDate() const;
+  CStdString GetAsW3CDateTime(bool asUtc = false) const;
 
   void SetValid(bool yesNo);
   bool IsValid() const;
