@@ -8060,8 +8060,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
       if (handle == NULL && progress != NULL)
       {
-        progress->SetPercentage(current * 100 / total);
-        progress->Progress();
+        int percentage = current * 100 / total;
+        if (percentage > progress->GetPercentage())
+        {
+          progress->SetPercentage(percentage);
+          progress->Progress();
+        }
         if (progress->IsCanceled())
         {
           progress->Close();
