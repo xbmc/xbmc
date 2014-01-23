@@ -559,7 +559,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     if (NPT_FAILED(str.ToInteger(value))) value = 0;
     m_MiscInfo.last_position = value;
 
-    PLT_XmlHelper::GetChildText(entry, "lastPlaybackTime", m_MiscInfo.last_time, didl_namespace_dc, 256);
+    PLT_XmlHelper::GetChildText(entry, "lastPlaybackTime", m_MiscInfo.last_time, didl_namespace_upnp, 256);
     NPT_String parsed_last_time;
     for (int format=0; format<=NPT_DateTime::FORMAT_RFC_1036; format++) {
         NPT_DateTime date;
