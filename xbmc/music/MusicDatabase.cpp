@@ -238,8 +238,8 @@ bool CMusicDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
     m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
 
-	// we create triggers here because we will need it later
-	CreateTriggers();
+    // we create triggers here because we will need it later
+    CreateTriggers();
 
     // we create views last to ensure all indexes are rolled in
     CreateViews();
@@ -4126,7 +4126,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("DROP TRIGGER IF EXISTS delete_album");
     m_pDS->exec("DROP TRIGGER IF EXISTS delete_artist");
 
-	CreateTriggers();
+    CreateTriggers();
   }
   if (version < 44)
   {
