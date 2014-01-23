@@ -83,17 +83,14 @@ void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
     lines.resize(iLine+1);
   lines[iLine] = label;
   std::string text = StringUtils::Join(lines, "\n");
-  if (text != m_text)
-  {
-    m_text = text;
-    SetInvalid();
-  }
+  SetText(text);
 }
 
 void CGUIDialogBoxBase::SetText(const CVariant& text)
 {
   std::string label = GetLocalized(text);
   CSingleLock lock(m_section);
+  StringUtils::Trim(label, "\n");
   if (label != m_text)
   {
     m_text = label;

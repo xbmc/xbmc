@@ -45,6 +45,8 @@ CGUITextBox::CGUITextBox(int parentID, int controlID, float posX, float posY, fl
   m_autoScrollDelay = 3000;
   m_autoScrollDelayTime = 0;
   m_autoScrollRepeatAnim = NULL;
+  m_minHeight = 0;
+  m_renderHeight = height;
 }
 
 CGUITextBox::CGUITextBox(const CGUITextBox &from)
@@ -55,6 +57,8 @@ CGUITextBox::CGUITextBox(const CGUITextBox &from)
   m_autoScrollCondition = from.m_autoScrollCondition;
   m_autoScrollTime = from.m_autoScrollTime;
   m_autoScrollDelay = from.m_autoScrollDelay;
+  m_minHeight = from.m_minHeight;
+  m_renderHeight = from.m_renderHeight;
   m_autoScrollRepeatAnim = NULL;
   if (from.m_autoScrollRepeatAnim)
     m_autoScrollRepeatAnim = new CAnimation(*from.m_autoScrollRepeatAnim);
@@ -85,6 +89,8 @@ bool CGUITextBox::UpdateColors()
   return changed;
 }
 
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
 void CGUITextBox::UpdateInfo(const CGUIListItem *item)
 {
   m_textColor = m_label.textColor;
@@ -98,7 +104,10 @@ void CGUITextBox::UpdateInfo(const CGUIListItem *item)
   ResetAutoScrolling();
 
   m_itemHeight = m_font ? m_font->GetLineHeight() : 10;
-  m_itemsPerPage = (unsigned int)(m_height / m_itemHeight);
+  float textHeight = m_itemHeight * m_lines.size();
+  float maxHeight = m_height ? m_height : textHeight;
+  m_renderHeight = m_minHeight ? CLAMP(textHeight, m_minHeight, maxHeight) : m_height;
+  m_itemsPerPage = (unsigned int)(m_renderHeight / m_itemHeight);
 
   UpdatePageControl();
 }
@@ -195,7 +204,7 @@ void CGUITextBox::Render()
   if (m_autoScrollRepeatAnim)
     g_graphicsContext.SetTransform(m_cachedTextMatrix);
 
-  if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
+  if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_renderHeight))
   {
     // we offset our draw position to take into account scrolling and whether or not our focused
     // item is offscreen "above" the list.
@@ -213,7 +222,7 @@ void CGUITextBox::Render()
     {
       m_font->Begin();
       int current = offset;
-      while (posY < m_posY + m_height && current < (int)m_lines.size())
+      while (posY < m_posY + m_renderHeight && current < (int)m_lines.size())
       {
         uint32_t align = m_label.align;
         if (m_lines[current].m_text.size() && m_lines[current].m_carriageReturn)
@@ -269,6 +278,19 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
   }
 
   return CGUIControl::OnMessage(message);
+}
+
+float CGUITextBox::GetHeight() const
+{
+  return m_renderHeight;
+}
+
+void CGUITextBox::SetMinHeight(float minHeight)
+{
+  if (m_minHeight != minHeight)
+    SetInvalid();
+  
+  m_minHeight = minHeight;
 }
 
 void CGUITextBox::UpdatePageControl()
