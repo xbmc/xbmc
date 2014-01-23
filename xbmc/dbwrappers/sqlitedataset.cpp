@@ -81,17 +81,17 @@ int callback(void* res_ptr,int ncol, char** reslt,char** cols)
 
 static int busy_callback(void*, int busyCount)
 {
-	Sleep(100);
-	OutputDebugString("SQLite collision\n");
-	return 1;
+  Sleep(100);
+  OutputDebugString("SQLite collision\n");
+  return 1;
 }
 
 //************* SqliteDatabase implementation ***************
 
 SqliteDatabase::SqliteDatabase() {
 
-  active = false;	
-  _in_transaction = false;		// for transaction
+  active = false;  
+  _in_transaction = false;    // for transaction
 
   error = "Unknown database error";//S_NO_CONNECTION;
   host = "localhost";
@@ -107,7 +107,7 @@ SqliteDatabase::~SqliteDatabase() {
 
 
 Dataset* SqliteDatabase::CreateDataset() const {
-	return new SqliteDataset((SqliteDatabase*)this); 
+  return new SqliteDataset((SqliteDatabase*)this); 
 }
 
 void SqliteDatabase::setHostName(const char *newHost) {
@@ -493,19 +493,19 @@ void SqliteDataset::make_query(StringList &_sql) {
 
 
   for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); i++) {
-	query = *i;
-	char* err=NULL; 
-	Dataset::parse_sql(query);
-	if (db->setErr(sqlite3_exec(this->handle(),query.c_str(),NULL,NULL,&err),query.c_str())!=SQLITE_OK) {
-	  throw DbErrors(db->getErrorMsg());
-	}
+  query = *i;
+  char* err=NULL; 
+  Dataset::parse_sql(query);
+  if (db->setErr(sqlite3_exec(this->handle(),query.c_str(),NULL,NULL,&err),query.c_str())!=SQLITE_OK) {
+    throw DbErrors(db->getErrorMsg());
+  }
   } // end of for
 
 
   if (db->in_transaction() && autocommit) db->commit_transaction();
 
   active = true;
-  ds_state = dsSelect;		
+  ds_state = dsSelect;    
   if (autorefresh)
     refresh();
 
@@ -630,7 +630,7 @@ int SqliteDataset::exec(const string &sql) {
 }
 
 int SqliteDataset::exec() {
-	return exec(sql);
+  return exec(sql);
 }
 
 const void* SqliteDataset::getExecRes() {
@@ -707,8 +707,8 @@ bool SqliteDataset::query(const string &q){
 }
 
 void SqliteDataset::open(const string &sql) {
-	set_select_sql(sql);
-	open();
+  set_select_sql(sql);
+  open();
 }
 
 void SqliteDataset::open() {
@@ -794,7 +794,7 @@ bool SqliteDataset::seek(int pos) {
   if (ds_state == dsSelect) {
     Dataset::seek(pos);
     fill_fields();
-    return true;	
+    return true;  
     }
   return false;
 }
