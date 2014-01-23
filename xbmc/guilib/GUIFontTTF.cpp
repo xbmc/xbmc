@@ -155,7 +155,7 @@ private:
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
 #define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
-CGUIFontTTFBase::CGUIFontTTFBase(const std::string& strFileName) : m_staticCache(*this)
+CGUIFontTTFBase::CGUIFontTTFBase(const std::string& strFileName) : m_staticCache(*this), m_dynamicCache(*this)
 {
   m_texture = NULL;
   m_char = NULL;
@@ -358,14 +358,29 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
 
   uint32_t rawAlignment = alignment;
   bool dirtyCache;
+  bool hardwareClipping = g_Windowing.ScissorsCanEffectClipping();
   CGUIFontCacheStaticPosition staticPos(x, y);
+  CGUIFontCacheDynamicPosition dynamicPos;
+  if (hardwareClipping)
+  {
+    dynamicPos = CGUIFontCacheDynamicPosition(g_graphicsContext.ScaleFinalXCoord(x, y),
+                                              g_graphicsContext.ScaleFinalYCoord(x, y),
+                                              g_graphicsContext.ScaleFinalZCoord(x, y));
+  }
   boost::shared_ptr<std::vector<SVertex> > tempVertices = boost::make_shared<std::vector<SVertex> >();
-  boost::shared_ptr<std::vector<SVertex> > &vertices = m_staticCache.Lookup(staticPos,
-                                                                            colors, text,
-                                                                            alignment, maxPixelWidth,
-                                                                            scrolling,
-                                                                            XbmcThreads::SystemClockMillis(),
-                                                                            dirtyCache);
+  boost::shared_ptr<std::vector<SVertex> > &vertices = hardwareClipping ?
+      static_cast<boost::shared_ptr<std::vector<SVertex> >&>(m_dynamicCache.Lookup(dynamicPos,
+                            colors, text,
+                            alignment, maxPixelWidth,
+                            scrolling,
+                            XbmcThreads::SystemClockMillis(),
+                            dirtyCache)) :
+      static_cast<boost::shared_ptr<std::vector<SVertex> >&>(m_staticCache.Lookup(staticPos,
+                           colors, text,
+                           alignment, maxPixelWidth,
+                           scrolling,
+                           XbmcThreads::SystemClockMillis(),
+                           dirtyCache));
   if (dirtyCache)
   {
     // save the origin, which is scaled separately
@@ -468,18 +483,46 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
       else
         cursorX += ch->advance;
     }
-    m_staticCache.Lookup(staticPos,
-                         colors, text,
-                         rawAlignment, maxPixelWidth,
-                         scrolling,
-                         XbmcThreads::SystemClockMillis(),
-                         dirtyCache) = *static_cast<CGUIFontCacheStaticValue *>(&tempVertices);
+    if (hardwareClipping)
+    {
+      m_dynamicCache.Lookup(dynamicPos,
+                            colors, text,
+                            rawAlignment, maxPixelWidth,
+                            scrolling,
+                            XbmcThreads::SystemClockMillis(),
+                            dirtyCache) = *static_cast<CGUIFontCacheDynamicValue *>(&tempVertices);
+    }
+    else
+    {
+      m_staticCache.Lookup(staticPos,
+                           colors, text,
+                           rawAlignment, maxPixelWidth,
+                           scrolling,
+                           XbmcThreads::SystemClockMillis(),
+                           dirtyCache) = *static_cast<CGUIFontCacheStaticValue *>(&tempVertices);
+    }
     /* Append the new vertices to the set collected since the first Begin() call */
     m_vertex.insert(m_vertex.end(), tempVertices->begin(), tempVertices->end());
   }
   else
-    /* Append the vertices from the cache to the set collected since the first Begin() call */
-    m_vertex.insert(m_vertex.end(), vertices->begin(), vertices->end());
+  {
+    if (hardwareClipping)
+    {
+      /* Apply the translation offset to the vertices from the cache after
+       * appending them to the set collected since the first Begin() call */
+      m_vertex.insert(m_vertex.end(), vertices->begin(), vertices->end());
+      SVertex *v;
+      for (v = &*m_vertex.end() - vertices->size(); v != &*m_vertex.end(); v++)
+      {
+        v->x += dynamicPos.m_x;
+        v->y += dynamicPos.m_y;
+        v->z += dynamicPos.m_z;
+      }
+    }
+    else
+      /* Append the vertices from the cache to the set collected since the first Begin() call */
+      m_vertex.insert(m_vertex.end(), vertices->begin(), vertices->end());
+  }
 
   End();
 }

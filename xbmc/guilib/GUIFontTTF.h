@@ -176,6 +176,7 @@ protected:
   XUTILS::auto_buffer m_fontFileInMemory; // used only in some cases, see CFreeTypeLibrary::GetFont()
 
   CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue> m_staticCache;
+  CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue> m_dynamicCache;
 
 private:
   virtual bool FirstBegin() = 0;

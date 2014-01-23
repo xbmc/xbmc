@@ -84,6 +84,9 @@ Value &CGUIFontCache<Position, Value>::Lookup(Position &pos,
   else
   {
     /* Cache hit */
+    /* Update the translation arguments so that they hold the offset to apply
+     * to the cached values (but only in the dynamic case) */
+    pos.UpdateWithOffsets(i->m_key.m_pos, scrolling);
     /* Update time in entry and move to the back of the list */
     i->m_lastUsedMillis = nowMillis;
     m_list.template get<Age>().relocate(m_list.template get<Age>().end(), m_list.template project<Age>(i));
@@ -102,3 +105,8 @@ template void CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStati
 template CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheStaticValue &CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Lookup(CGUIFontCacheStaticPosition &, const vecColors &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
 template void CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Flush();
+
+template void CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Reassign::operator()(CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue> &entry);
+template CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCacheEntry();
+template CGUIFontCacheDynamicValue &CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition &, const vecColors &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
+template void CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Flush();
