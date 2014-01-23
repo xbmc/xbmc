@@ -110,6 +110,8 @@ public:
   virtual void GetViewPort(CRect& viewPort) = 0;
   virtual void RestoreViewPort() {};
 
+  virtual bool ScissorsCanEffectClipping() { return false; }
+  virtual CRect ClipRectToScissorRect(const CRect &rect) { return CRect(); }
   virtual void SetScissors(const CRect &rect) = 0;
   virtual void ResetScissors() = 0;
 

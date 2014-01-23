@@ -528,6 +528,28 @@ void CRenderSystemGLES::SetViewPort(CRect& viewPort)
   m_viewPort[3] = viewPort.Height();
 }
 
+bool CRenderSystemGLES::ScissorsCanEffectClipping()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->HardwareClipIsPossible();
+
+  return false;
+}
+
+CRect CRenderSystemGLES::ClipRectToScissorRect(const CRect &rect)
+{
+  if (!m_pGUIshader[m_method])
+    return CRect();
+  float xFactor = m_pGUIshader[m_method]->GetClipXFactor();
+  float xOffset = m_pGUIshader[m_method]->GetClipXOffset();
+  float yFactor = m_pGUIshader[m_method]->GetClipYFactor();
+  float yOffset = m_pGUIshader[m_method]->GetClipYOffset();
+  return CRect(rect.x1 * xFactor + xOffset,
+               rect.y1 * yFactor + yOffset,
+               rect.x2 * xFactor + xOffset,
+               rect.y2 * yFactor + yOffset);
+}
+
 void CRenderSystemGLES::SetScissors(const CRect &rect)
 {
   if (!m_bRenderCreated)

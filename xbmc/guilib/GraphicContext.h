@@ -199,6 +199,7 @@ public:
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
+  CRect GetClipRegion();
   inline void AddGUITransform()
   {
     m_transforms.push(m_finalTransform);
