@@ -203,6 +203,10 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
     oldRT->Release();
   }
 
+  // MSDN says: Setting a new render target will cause the viewport 
+  // to be set to the full size of the new render target.
+  // So we need restore our viewport
+  g_Windowing.RestoreViewPort();
   return true;
 }
 
@@ -769,6 +773,10 @@ bool CConvolutionShaderSeparable::ClearIntermediateRenderTarget()
   currentRT->Release();
   intermediateRT->Release();
 
+  // MSDN says: Setting a new render target will cause the viewport 
+  // to be set to the full size of the new render target.
+  // So we need restore our viewport
+  g_Windowing.RestoreViewPort();
   return true;
 }
 
