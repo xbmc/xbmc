@@ -347,6 +347,8 @@
 #include "utils/AMLUtils.h"
 #endif
 
+#include "lib/ffmpeg.h"
+
 using namespace std;
 using namespace ADDON;
 using namespace XFILE;
@@ -776,6 +778,17 @@ bool CApplication::Create()
 #elif defined(TARGET_WINDOWS)
   CEnvironment::setenv("OS", "win32");
 #endif
+
+  // register ffmpeg lockmanager callback
+  av_lockmgr_register(&ffmpeg_lockmgr_cb);
+  // register avcodec
+  avcodec_register_all();
+  // register avformat
+  av_register_all();
+  // register avfilter
+  avfilter_register_all();
+  // set avutil callback
+  av_log_set_callback(ff_avutil_log);
 
   g_powerManager.Initialize();
 
@@ -3598,6 +3611,9 @@ void CApplication::Stop(int exitCode)
     // shutdown the AudioEngine
     CAEFactory::Shutdown();
     CAEFactory::UnLoadEngine();
+
+    // unregister ffmpeg lock manager call back
+    av_lockmgr_register(NULL);
 
     CLog::Log(LOGNOTICE, "stopped");
   }
