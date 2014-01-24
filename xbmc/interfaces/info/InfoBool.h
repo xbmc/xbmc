@@ -34,15 +34,7 @@ namespace INFO
 class InfoBool
 {
 public:
-  InfoBool(const std::string &expression, int context)
-    : m_value(false),
-      m_context(context),
-      m_listItemDependent(false),
-      m_expression(expression),
-      m_dirty(true)
-  {
-  };
-
+  InfoBool(const std::string &expression, int context);
   virtual ~InfoBool() {};
 
   /*! \brief Set the info bool dirty.

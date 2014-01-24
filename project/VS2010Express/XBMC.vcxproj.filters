@@ -1906,6 +1906,9 @@
     <ClCompile Include="..\..\xbmc\input\InertialScrollingHandler.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp">
+      <Filter>interfaces\info</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\info\InfoExpression.cpp">
       <Filter>interfaces\info</Filter>
     </ClCompile>
