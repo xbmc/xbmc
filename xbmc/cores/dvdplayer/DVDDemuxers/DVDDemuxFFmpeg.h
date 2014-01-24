@@ -24,12 +24,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include <map>
-
-extern "C" {
-#include "libavformat/avformat.h"
-#include "libavcodec/avcodec.h"
-#include "libavutil/avutil.h"
-}
+#include "lib/ffmpeg.h"
 
 class CDVDDemuxFFmpeg;
 class CURL;

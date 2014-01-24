@@ -106,7 +106,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
 
-  if(level >= AV_LOG_DEBUG && 
+  if(level >= AV_LOG_DEBUG &&
      (g_advancedSettings.m_extraLogLevels & LOGFFMPEG) == 0)
     return;
   else if(g_advancedSettings.m_logLevel <= LOG_LEVEL_NORMAL)
@@ -162,6 +162,42 @@ static int interrupt_cb(void* ctx)
   CDVDDemuxFFmpeg* demuxer = static_cast<CDVDDemuxFFmpeg*>(ctx);
   if(demuxer && demuxer->Aborted())
     return 1;
+  return 0;
+}
+
+/* callback for the ffmpeg lock manager */
+int ffmpeg_lockmgr_cb(void **mutex, enum AVLockOp operation)
+{
+  CSharedSection **lock = (CSharedSection **)mutex;
+
+  switch (operation)
+  {
+    case AV_LOCK_CREATE:
+    {
+      *lock = NULL;
+      *lock = new CSharedSection();
+      if (*lock == NULL)
+        return 1;
+      break;
+    }
+    case AV_LOCK_OBTAIN:
+      (*lock)->lock();
+      break;
+
+    case AV_LOCK_RELEASE:
+      (*lock)->unlock();
+      break;
+
+    case AV_LOCK_DESTROY:
+    {
+      delete *lock;
+      *lock = NULL;
+      break;
+    }
+
+    default:
+      return 1;
+  }
   return 0;
 }
 
