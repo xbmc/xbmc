@@ -1288,6 +1288,8 @@ namespace VIDEO
 
   std::string CVideoInfoScanner::GetFanart(CFileItem *pItem, bool useLocal)
   {
+    if (!pItem)
+      return "";
     std::string fanart = pItem->GetArt("fanart");
     if (fanart.empty() && useLocal)
       fanart = pItem->FindLocalArt("fanart.jpg", true);

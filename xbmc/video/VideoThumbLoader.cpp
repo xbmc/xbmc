@@ -295,8 +295,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
 
 bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive
-  ||  pItem->IsParentFolder())
+  if (pItem->m_bIsShareOrDrive || pItem->IsParentFolder() || pItem->GetPath() == "add")
     return false;
 
   if (pItem->HasVideoInfoTag()                         &&
