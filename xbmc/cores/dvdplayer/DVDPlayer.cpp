@@ -721,6 +721,12 @@ bool CDVDPlayer::OpenInputStream()
       }
     } // end loop over all subtitle files
 
+    /* In case we played this item before without external subs, enable here else
+     * they will not auto enable when external subs got added in the meantime
+     */
+    if (CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream < 0)
+      CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = true;
+
     CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleCached = true;
   }
 
