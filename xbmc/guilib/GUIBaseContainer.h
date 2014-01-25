@@ -198,6 +198,8 @@ protected:
   */
   inline int GetItemOffset() const { return CorrectOffset(GetOffset(), 0); }
 
+  virtual int GetPagingOffset(bool movedown) const;
+
   // autoscrolling
   INFO::InfoPtr m_autoScrollCondition;
   int           m_autoScrollMoveTime;   // time between to moves

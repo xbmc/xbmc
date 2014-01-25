@@ -1233,6 +1233,16 @@ int CGUIBaseContainer::GetCurrentPage() const
   return GetOffset() / m_itemsPerPage + 1;
 }
 
+int CGUIBaseContainer::GetPagingOffset(bool movedown) const
+{
+  if (movedown) {
+    int offset = GetOffset() + 2*m_itemsPerPage;
+    int nrOfItems = (int)GetRows();
+    return (offset > nrOfItems) ? (m_itemsPerPage + nrOfItems - offset) : m_itemsPerPage;
+  }
+  return (GetOffset() >= m_itemsPerPage) ? m_itemsPerPage : GetOffset();
+}
+
 void CGUIBaseContainer::GetCacheOffsets(int &cacheBefore, int &cacheAfter) const
 {
   if (m_scroller.IsScrollingDown())

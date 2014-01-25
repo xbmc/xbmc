@@ -307,10 +307,29 @@ bool CGUIPanelContainer::MoveDown(bool wrapAround)
       SetCursor(GetCursor() + m_itemsPerRow);
   }
   else if ((GetOffset() + 1 + GetCursor() / m_itemsPerRow) * m_itemsPerRow < (int)m_items.size())
-  { // we scroll to the next row, and move to last item if necessary
-    if ((GetOffset() + 1)*m_itemsPerRow + GetCursor() >= (int)m_items.size())
-      SetCursor((int)m_items.size() - 1 - (GetOffset() + 1)*m_itemsPerRow);
-    ScrollToOffset(GetOffset() + 1);
+  {
+    if (m_scroller.isPagingEnabled())
+    {
+      int pagingOffset = GetPagingOffset(true);
+      int cursorOffset = (pagingOffset - 1)*m_itemsPerRow;
+      // move to last item if necessary
+      if ((GetOffset() + pagingOffset)*m_itemsPerRow + GetCursor() - cursorOffset >= (int)m_items.size())
+      {
+        SetCursor((int)m_items.size() - 1 - (GetOffset() + 1)*m_itemsPerRow);
+      }
+      else
+      {
+        SetCursor(GetCursor() - cursorOffset);
+      }
+      ScrollToOffset(GetOffset() + pagingOffset);
+    }
+    else
+    {
+      // we scroll to the next row, and move to last item if necessary
+      if ((GetOffset() + 1)*m_itemsPerRow + GetCursor() >= (int)m_items.size())
+        SetCursor((int)m_items.size() - 1 - (GetOffset() + 1)*m_itemsPerRow);
+      ScrollToOffset(GetOffset() + 1);
+    }
   }
   else if (wrapAround)
   { // move first item in list
@@ -326,9 +345,23 @@ bool CGUIPanelContainer::MoveDown(bool wrapAround)
 bool CGUIPanelContainer::MoveUp(bool wrapAround)
 {
   if (GetCursor() >= m_itemsPerRow)
+  {
     SetCursor(GetCursor() - m_itemsPerRow);
+  }
   else if (GetOffset() > 0)
-    ScrollToOffset(GetOffset() - 1);
+  {
+    if (m_scroller.isPagingEnabled())
+    {
+      int pagingOffset = GetPagingOffset(false);
+      int cursorOffset = (pagingOffset - 1)*m_itemsPerRow;
+      SetCursor(GetCursor() + cursorOffset);
+      ScrollToOffset(GetOffset() - pagingOffset);
+    }
+    else
+    {
+      ScrollToOffset(GetOffset() - 1);
+    }
+  }
   else if (wrapAround)
   { // move last item in list in this column
     SetCursor((GetCursor() % m_itemsPerRow) + (m_itemsPerPage - 1) * m_itemsPerRow);

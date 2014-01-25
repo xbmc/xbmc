@@ -248,6 +248,15 @@ public:
   bool IsScrollingDown() const { return m_delta > 0; };
 
   unsigned int GetDuration() const { return m_duration; };
+
+  /**
+   * Paging
+   * If the selected item is on the beginning/end of a page and the user scrolls up/down,
+   * the list scrolls to the previous/next page of items instead of just to the next item
+   */
+  bool isPagingEnabled() const { return m_paging; };
+  void setPaging(bool paging) { m_paging = paging; };
+
 private:
   float Tween(float progress);
 
@@ -260,4 +269,6 @@ private:
 
   unsigned int m_duration;                //!< Brief duration of scroll
   boost::shared_ptr<Tweener> m_pTweener;
+
+  bool         m_paging;
 };

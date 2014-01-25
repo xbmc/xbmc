@@ -733,6 +733,7 @@ CScroller& CScroller::operator=(const CScroller &right)
   m_lastTime = right.m_lastTime;
   m_duration = right.m_duration;
   m_pTweener = right.m_pTweener;
+  m_paging = right.m_paging;
   return *this;
 }
 
