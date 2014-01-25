@@ -230,6 +230,8 @@ void CGUIListGroup::SetState(bool selected, bool focused)
       label->SetSelected(selected);
       label->SetScrolling(focused);
     }
+    else if ((*it)->GetControlType() == CGUIControl::GUICONTROL_LISTGROUP)
+      ((CGUIListGroup *)(*it))->SetState(selected, focused);
   }
 }
 
