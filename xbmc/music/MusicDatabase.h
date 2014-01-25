@@ -477,6 +477,7 @@ protected:
 private:
   /*! \brief (Re)Create the generic database views for songs and albums
    */
+  virtual void CreateIndexes();
   virtual void CreateViews();
   virtual void CreateTriggers();
 
