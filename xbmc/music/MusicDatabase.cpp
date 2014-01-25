@@ -126,6 +126,7 @@ bool CMusicDatabase::CreateTables()
                 " strImage text, strFanart text, "
                 " lastScraped varchar(20) default NULL, "
                 " dateAdded varchar (20) default NULL)");
+
     CLog::Log(LOGINFO, "create album table");
     m_pDS->exec("CREATE TABLE album (idAlbum integer primary key, "
                 " strAlbum varchar(256), strMusicBrainzAlbumID text, "
@@ -138,15 +139,21 @@ bool CMusicDatabase::CreateTables()
                 " iRating integer, "
                 " lastScraped varchar(20) default NULL, "
                 " dateAdded varchar (20) default NULL)");
+
     CLog::Log(LOGINFO, "create album_artist table");
-    m_pDS->exec("CREATE TABLE album_artist (idArtist integer, idAlbum integer, strJoinPhrase text, boolFeatured integer, iOrder integer, strArtist text)");
+    m_pDS->exec("CREATE TABLE album_artist (idArtist integer, idAlbum integer, "
+                " strJoinPhrase text, boolFeatured integer, "
+                " iOrder integer, strArtist text)");
+
     CLog::Log(LOGINFO, "create album_genre table");
     m_pDS->exec("CREATE TABLE album_genre (idGenre integer, idAlbum integer, iOrder integer)");
 
     CLog::Log(LOGINFO, "create genre table");
     m_pDS->exec("CREATE TABLE genre (idGenre integer primary key, strGenre varchar(256))");
+
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path (idPath integer primary key, strPath varchar(512), strHash text)");
+
     CLog::Log(LOGINFO, "create song table");
     m_pDS->exec("CREATE TABLE song (idSong integer primary key, "
                 " idAlbum integer, idPath integer, "
@@ -158,22 +165,57 @@ bool CMusicDatabase::CreateTables()
                 " idThumb integer, "
                 " lastplayed varchar(20) default NULL, "
                 " rating char default '0', comment text)");
+
     CLog::Log(LOGINFO, "create song_artist table");
-    m_pDS->exec("CREATE TABLE song_artist ( idArtist integer, idSong integer, strJoinPhrase text, boolFeatured integer, iOrder integer, strArtist text)");
+    m_pDS->exec("CREATE TABLE song_artist ( idArtist integer, idSong integer, "
+                " strJoinPhrase text, boolFeatured integer, "
+                " iOrder integer, strArtist text)");
+
     CLog::Log(LOGINFO, "create song_genre table");
     m_pDS->exec("CREATE TABLE song_genre (idGenre integer, idSong integer, iOrder integer)");
 
     CLog::Log(LOGINFO, "create albuminfosong table");
-    m_pDS->exec("CREATE TABLE albuminfosong (idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)");
+    m_pDS->exec("CREATE TABLE albuminfosong (idAlbumInfoSong integer primary key, "
+                " idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)");
 
     CLog::Log(LOGINFO, "create content table");
-    m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text, strSettings text)");
+    m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, "
+                " strContent text, strSettings text)");
+
     CLog::Log(LOGINFO, "create discography table");
     m_pDS->exec("CREATE TABLE discography (idArtist integer, strAlbum text, strYear text)");
 
     CLog::Log(LOGINFO, "create karaokedata table");
-    m_pDS->exec("CREATE TABLE karaokedata (iKaraNumber integer, idSong integer, iKaraDelay integer, strKaraEncoding text, "
-                "strKaralyrics text, strKaraLyrFileCRC text)");
+    m_pDS->exec("CREATE TABLE karaokedata (iKaraNumber integer, idSong integer, "
+                " iKaraDelay integer, strKaraEncoding text, "
+                " strKaralyrics text, strKaraLyrFileCRC text)");
+
+    CLog::Log(LOGINFO, "create art table ");
+    m_pDS->exec("CREATE TABLE art ( "
+                " art_id INTEGER PRIMARY KEY, "
+                " media_id INTEGER, "
+                " media_type TEXT, "
+                " type TEXT, "
+                " url TEXT)");
+
+    // we are creating all the analytics here
+    CreateIndexes();
+    CreateViews();
+    CreateTriggers();
+
+    // Add 'Karaoke' genre
+    AddGenre( "Karaoke" );
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s unable to create tables:%i", __FUNCTION__, (int)GetLastError());
+    RollbackTransaction();
+    return false;
+  }
+  CommitTransaction();
+  return true;
+}
+
 
     CLog::Log(LOGINFO, "create album index");
     m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum(255))");
