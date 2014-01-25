@@ -288,7 +288,6 @@ void CMusicDatabase::CreateIndexes()
 void CMusicDatabase::CreateViews()
 {
   CLog::Log(LOGINFO, "create song view");
-  m_pDS->exec("DROP VIEW IF EXISTS songview");
   m_pDS->exec("CREATE VIEW songview AS SELECT "
               "        song.idSong AS idSong, "
               "        song.strArtists AS strArtists,"
@@ -316,7 +315,6 @@ void CMusicDatabase::CreateViews()
               "    song.idSong=karaokedata.idSong");
 
   CLog::Log(LOGINFO, "create album view");
-  m_pDS->exec("DROP VIEW IF EXISTS albumview");
   m_pDS->exec("CREATE VIEW albumview AS SELECT "
               "        album.idAlbum AS idAlbum, "
               "        strAlbum, "
@@ -337,7 +335,6 @@ void CMusicDatabase::CreateViews()
               "   FROM album  ");
 
   CLog::Log(LOGINFO, "create artist view");
-  m_pDS->exec("DROP VIEW IF EXISTS artistview");
   m_pDS->exec("CREATE VIEW artistview AS SELECT"
               "  idArtist, strArtist, "
               "  strMusicBrainzArtistID, "
@@ -347,8 +344,7 @@ void CMusicDatabase::CreateViews()
               "  strYearsActive, strImage, strFanart "
               "FROM artist");
 
-  CLog::Log(LOGINFO, "create albumartistview");
-  m_pDS->exec("DROP VIEW IF EXISTS albumartistview");
+  CLog::Log(LOGINFO, "create albumartist view");
   m_pDS->exec("CREATE VIEW albumartistview AS SELECT"
               "  album_artist.idAlbum AS idAlbum, "
               "  album_artist.idArtist AS idArtist, "
@@ -360,8 +356,8 @@ void CMusicDatabase::CreateViews()
               "FROM album_artist "
               "JOIN artist ON "
               "     album_artist.idArtist = artist.idArtist");
-  CLog::Log(LOGINFO, "create songartistview");
-  m_pDS->exec("DROP VIEW IF EXISTS songartistview");
+
+  CLog::Log(LOGINFO, "create songartist view");
   m_pDS->exec("CREATE VIEW songartistview AS SELECT"
               "  song_artist.idSong AS idSong, "
               "  song_artist.idArtist AS idArtist, "
