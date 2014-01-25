@@ -348,7 +348,7 @@
 #include "utils/AMLUtils.h"
 #endif
 
-#include "lib/ffmpeg.h"
+#include "cores/FFmpeg.h"
 
 using namespace std;
 using namespace ADDON;

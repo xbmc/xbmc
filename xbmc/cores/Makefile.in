@@ -1,4 +1,5 @@
 SRCS = DummyVideoPlayer.cpp
+SRCS += FFmpeg.cpp
 
 LIB = cores.a
 
