@@ -246,6 +246,7 @@ bool CRepositoryUpdateJob::DoWork()
 
   CTextureDatabase textureDB;
   textureDB.Open();
+  textureDB.BeginMultipleExecute();
   for (map<string, AddonPtr>::const_iterator i = addons.begin(); i != addons.end(); ++i)
   {
     // manager told us to feck off
@@ -313,6 +314,7 @@ bool CRepositoryUpdateJob::DoWork()
     }
   }
   database.CommitMultipleExecute();
+  textureDB.CommitMultipleExecute();
 
   return true;
 }
