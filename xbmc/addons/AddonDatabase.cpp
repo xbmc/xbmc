@@ -634,26 +634,11 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
 
 bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& reason)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString sql = PrepareSQL("delete from broken where addonID='%s'", addonID.c_str());
-    m_pDS->exec(sql);
-
-    if (!reason.empty())
-    { // broken
-      sql = PrepareSQL("insert into broken(id, addonID, reason) values(NULL, '%s', '%s')", addonID.c_str(),reason.c_str());
-      m_pDS->exec(sql);
-    }
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
-  }
-  return false;
+  if (reason.empty())
+    return ExecuteQuery(PrepareSQL("DELETE FROM broken WHERE addonID='%s'", addonID.c_str()));
+  else
+    return ExecuteQuery(PrepareSQL("REPLACE INTO broken(addonID, reason) VALUES('%s', '%s')",
+                                   addonID.c_str(), reason.c_str()));
 }
 
 bool CAddonDatabase::HasAddon(const CStdString &addonID)
@@ -694,24 +679,7 @@ bool CAddonDatabase::IsSystemPVRAddonEnabled(const CStdString &addonID)
 
 CStdString CAddonDatabase::IsAddonBroken(const CStdString &addonID)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return "";
-    if (NULL == m_pDS.get()) return "";
-
-    CStdString sql = PrepareSQL("select reason from broken where addonID='%s'", addonID.c_str());
-    m_pDS->query(sql.c_str());
-    CStdString ret;
-    if (!m_pDS->eof())
-      ret = m_pDS->fv(0).get_asString();
-    m_pDS->close();
-    return ret;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
-  }
-  return "";
+  return GetSingleValue(PrepareSQL("SELECT reason FROM broken WHERE addonID='%s'", addonID.c_str()));
 }
 
 bool CAddonDatabase::HasDisabledAddons()
