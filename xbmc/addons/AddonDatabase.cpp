@@ -39,6 +39,17 @@ CAddonDatabase::~CAddonDatabase()
 {
 }
 
+int version_compare(const std::string &l, const std::string &r)
+{
+  return AddonVersion(l).compare(AddonVersion(r));
+}
+
+void CAddonDatabase::OnConnect()
+{
+  if (m_pDB.get())
+    m_pDB->add_collation("version", version_compare);
+}
+
 bool CAddonDatabase::Open()
 {
   return CDatabase::Open();
@@ -53,9 +64,9 @@ bool CAddonDatabase::CreateTables()
     CLog::Log(LOGINFO, "create addon table");
     m_pDS->exec("CREATE TABLE addon (id integer primary key, type text,"
                 "name text, summary text, description text, stars integer,"
-                "path text, addonID text, icon text, version text, "
+                "path text, addonID text, icon text, version text COLLATE version, "
                 "changelog text, fanart text, author text, disclaimer text,"
-                "minversion text)\n");
+                "minversion text COLLATE version)");
 
     CLog::Log(LOGINFO, "create addon index");
     m_pDS->exec("CREATE INDEX idxAddon ON addon(addonID)");
@@ -125,6 +136,18 @@ bool CAddonDatabase::UpdateOldVersion(int version)
     m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxPackage ON package(filename)");
   }
+  if (version < 17)
+  {
+    m_pDS->exec("CREATE TABLE addon_new (id integer primary key, type text,"
+                "name text, summary text, description text, stars integer,"
+                "path text, addonID text, icon text, version text COLLATE version, "
+                "changelog text, fanart text, author text, disclaimer text,"
+                "minversion text COLLATE version)");
+    m_pDS->exec("INSERT INTO addon_new SELECT * FROM addon");
+    m_pDS->exec("DROP TABLE addon");
+    m_pDS->exec("ALTER TABLE addon_new RENAME TO addon");
+    m_pDS->exec("CREATE INDEX idxAddon ON addon(addonID)");
+  }
   return true;
 }
 
@@ -183,40 +206,9 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
 
 bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS2.get()) return false;
-
-    // there may be multiple addons with this id (eg from different repositories) in the database,
-    // so we want to retrieve the latest version.  Order by version won't work as the database
-    // won't know that 1.10 > 1.2, so grab them all and order outside
-    CStdString sql = PrepareSQL("select id,version from addon where addonID='%s'",id.c_str());
-    m_pDS2->query(sql.c_str());
-
-    if (m_pDS2->eof())
-      return false;
-
-    AddonVersion maxversion("0.0.0");
-    int maxid = 0;
-    while (!m_pDS2->eof())
-    {
-      AddonVersion version(m_pDS2->fv(1).get_asString());
-      if (version > maxversion)
-      {
-        maxid = m_pDS2->fv(0).get_asInt();
-        maxversion = version;
-      }
-      m_pDS2->next();
-    }
-    return GetAddon(maxid,addon);
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, id.c_str());
-  }
-  addon.reset();
-  return false;
+  int row = atoi(GetSingleValue(PrepareSQL("SELECT id FROM addon "
+                                           "WHERE addonID = '%s' ORDER BY version DESC LIMIT 1", id.c_str())));
+  return GetAddon(row, addon);
 }
 
 bool CAddonDatabase::GetRepoForAddon(const CStdString& addonID, CStdString& repo)

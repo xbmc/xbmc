@@ -132,9 +132,10 @@ public:
   */
   bool RemovePackage(const CStdString& packageFileName);
 protected:
+  virtual void OnConnect();
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 16; }
+  virtual int GetMinVersion() const { return 17; }
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
