@@ -124,6 +124,11 @@ namespace ADDON
       && CompareComponent(Revision(), other.Revision()) == 0;
   }
 
+  bool AddonVersion::empty() const
+  {
+    return m_originalVersion.empty() || m_originalVersion == "0.0.0";
+  }
+
   CStdString AddonVersion::Print() const
   {
     return StringUtils::Format("%s %s", g_localizeStrings.Get(24051).c_str(), m_originalVersion.c_str());
