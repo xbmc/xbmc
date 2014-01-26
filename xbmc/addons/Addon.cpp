@@ -315,8 +315,7 @@ bool CAddon::MeetsVersion(const AddonVersion &version) const
   // if the addon is one of xbmc's extension point definitions (addonid starts with "xbmc.")
   // and the minversion is "0.0.0" i.e. no <backwards-compatibility> tag has been specified
   // we need to assume that the current version is not backwards-compatible and therefore check against the actual version
-  if (StringUtils::StartsWithNoCase(m_props.id, "xbmc.") &&
-     (strlen(m_props.minversion.c_str()) == 0 || StringUtils::EqualsNoCase(m_props.minversion.c_str(), "0.0.0")))
+  if (StringUtils::StartsWithNoCase(m_props.id, "xbmc.") && m_props.minversion.empty())
     return m_props.version == version;
 
   return m_props.minversion <= version && version <= m_props.version;
