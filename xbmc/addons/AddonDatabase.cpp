@@ -181,6 +181,39 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
   return -1;
 }
 
+AddonVersion CAddonDatabase::GetAddonVersion(const std::string &id)
+{
+  AddonVersion maxversion("0.0.0");
+  try
+  {
+    if (NULL == m_pDB.get()) return maxversion;
+    if (NULL == m_pDS2.get()) return maxversion;
+
+    // there may be multiple addons with this id (eg from different repositories) in the database,
+    // so we want to retrieve the latest version.  Order by version won't work as the database
+    // won't know that 1.10 > 1.2, so grab them all and order outside
+    CStdString sql = PrepareSQL("select version from addon where addonID='%s'",id.c_str());
+    m_pDS2->query(sql.c_str());
+
+    if (m_pDS2->eof())
+      return maxversion;
+
+    while (!m_pDS2->eof())
+    {
+      AddonVersion version(m_pDS2->fv(0).get_asString());
+      if (version > maxversion)
+        maxversion = version;
+      m_pDS2->next();
+    }
+    return maxversion;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, id.c_str());
+  }
+  return maxversion;
+}
+
 bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
 {
   try
