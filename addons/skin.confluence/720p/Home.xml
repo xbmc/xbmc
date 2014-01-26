@@ -921,14 +921,14 @@
 					</item>
 					<item id="10">
 						<label>31954</label>
-						<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
+						<onclick>ActivateWindow(Videos,library://video/movies/titles.xml,return)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMovieButton) + Library.HasContent(Movies)</visible>
 					</item>
 					<item id="11">
 						<label>31955</label>
-						<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
+						<onclick>ActivateWindow(Videos,library://video/tvshows/titles.xml,return)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoTVShowButton) + Library.HasContent(TVShows)</visible>
