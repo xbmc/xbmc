@@ -29,6 +29,10 @@
 #include "threads/SingleLock.h"
 #include "ApplicationMessenger.h"
 #include "FileItem.h"
+#include "video/VideoThumbLoader.h"
+#include "music/MusicThumbLoader.h"
+#include "pictures/PictureThumbLoader.h"
+#include "boost/make_shared.hpp"
 
 using namespace std;
 using namespace XFILE;
@@ -36,6 +40,14 @@ using namespace XFILE;
 class CDirectoryJob : public CJob
 {
 public:
+  typedef enum
+  {
+    VIDEO,
+    AUDIO,
+    PICTURE,
+    PROGRAM
+  } InfoTagType;
+
   CDirectoryJob(const std::string &url, int parentID) : m_url(url), m_parentID(parentID) { };
   virtual ~CDirectoryJob() {};
 
@@ -63,11 +75,46 @@ public:
         CGUIStaticItemPtr item(new CGUIStaticItem(*items[i]));
         if (item->HasProperty("node.visible"))
           item->SetVisibleCondition(item->GetProperty("node.visible").asString(), m_parentID);
+
+        getThumbLoader(item)->LoadItem(item.get());
+
         m_items.push_back(item);
       }
       m_target = items.GetProperty("node.target").asString();
     }
     return true;    
+  }
+
+  boost::shared_ptr<CThumbLoader> getThumbLoader(CGUIStaticItemPtr &item)
+  {
+    if (item->IsVideo())
+    {
+      initThumbLoader<CVideoThumbLoader>(VIDEO);
+      return m_thumbloaders[VIDEO];
+    }
+    if (item->IsAudio())
+    {
+      initThumbLoader<CMusicThumbLoader>(AUDIO);
+      return m_thumbloaders[AUDIO];
+    }
+    if (item->IsPicture())
+    {
+      initThumbLoader<CPictureThumbLoader>(PICTURE);
+      return m_thumbloaders[PICTURE];
+    }
+    initThumbLoader<CProgramThumbLoader>(PROGRAM);
+    return m_thumbloaders[PROGRAM];
+  }
+  
+  template<class CThumbLoaderClass>
+  void initThumbLoader(InfoTagType type)
+  {
+    if (!m_thumbloaders.count(type))
+    {
+      boost::shared_ptr<CThumbLoader> thumbLoader = boost::make_shared<CThumbLoaderClass>();
+      thumbLoader->OnLoaderStart();
+      m_thumbloaders.insert(make_pair(type, thumbLoader));
+    }
   }
 
   const std::vector<CGUIStaticItemPtr> &GetItems() const { return m_items; }
@@ -77,6 +124,7 @@ private:
   std::string m_target;
   int m_parentID;
   std::vector<CGUIStaticItemPtr> m_items;
+  std::map<InfoTagType, boost::shared_ptr<CThumbLoader> > m_thumbloaders;
 };
 
 CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID)
