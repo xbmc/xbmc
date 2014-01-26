@@ -230,7 +230,7 @@ protected:
   typedef std::map<int, SELECTED_EVENT> MAPCONTROLSELECTEDEVENTS;
   MAPCONTROLSELECTEDEVENTS m_mapSelectedEvents;
 
-  void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup);
+  void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect);
 
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   void ChangeButtonToEdit(int id, bool singleLabel = false);

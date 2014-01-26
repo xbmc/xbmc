@@ -257,7 +257,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
       {
         if (strcmpi(pControl->Value(), "control") == 0)
         {
-          LoadControl(pControl, NULL);
+          LoadControl(pControl, NULL, CRect(0, 0, (float)m_coordsRes.iWidth, (float)m_coordsRes.iHeight));
         }
         pControl = pControl->NextSiblingElement();
       }
@@ -279,19 +279,11 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
   return true;
 }
 
-void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
+void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect)
 {
   // get control type
   CGUIControlFactory factory;
 
-  CRect rect(0, 0, (float)m_coordsRes.iWidth, (float)m_coordsRes.iHeight);
-  if (pGroup)
-  {
-    rect.x1 = pGroup->GetXPosition();
-    rect.y1 = pGroup->GetYPosition();
-    rect.x2 = rect.x1 + pGroup->GetWidth();
-    rect.y2 = rect.y1 + pGroup->GetHeight();
-  }
   CGUIControl* pGUIControl = factory.Create(GetID(), rect, pControl);
   if (pGUIControl)
   {
@@ -314,10 +306,13 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
     // if the new control is a group, then add it's controls
     if (pGUIControl->IsGroup())
     {
+      CGUIControlGroup *grp = (CGUIControlGroup *)pGUIControl;
       TiXmlElement *pSubControl = pControl->FirstChildElement("control");
+      CRect grpRect(grp->GetXPosition(), grp->GetYPosition(),
+                    grp->GetXPosition() + grp->GetWidth(), grp->GetYPosition() + grp->GetHeight());
       while (pSubControl)
       {
-        LoadControl(pSubControl, (CGUIControlGroup *)pGUIControl);
+        LoadControl(pSubControl, grp, grpRect);
         pSubControl = pSubControl->NextSiblingElement("control");
       }
     }
