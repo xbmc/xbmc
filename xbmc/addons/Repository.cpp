@@ -242,7 +242,8 @@ bool CRepositoryUpdateJob::DoWork()
   // check for updates
   CAddonDatabase database;
   database.Open();
-  
+  database.BeginMultipleExecute();
+
   CTextureDatabase textureDB;
   textureDB.Open();
   for (map<string, AddonPtr>::const_iterator i = addons.begin(); i != addons.end(); ++i)
@@ -315,6 +316,7 @@ bool CRepositoryUpdateJob::DoWork()
       database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
     }
   }
+  database.CommitMultipleExecute();
 
   return true;
 }
