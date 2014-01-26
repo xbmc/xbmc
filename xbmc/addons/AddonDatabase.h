@@ -35,6 +35,9 @@ public:
   bool GetAddon(const CStdString& addonID, ADDON::AddonPtr& addon);
   bool GetAddons(ADDON::VECADDONS& addons);
 
+  /*! \brief grab the (largest) add-on version for an add-on */
+  ADDON::AddonVersion GetAddonVersion(const std::string &id);
+
   /*! \brief Grab the repository from which a given addon came
    \param addonID - the id of the addon in question
    \param repo [out] - the id of the repository

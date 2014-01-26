@@ -291,12 +291,8 @@ bool CRepositoryUpdateJob::DoWork()
 
     // Check if we should mark the add-on as broken.  We may have a newer version
     // of this add-on in the database or installed - if so, we keep it unbroken.
-    bool haveNewer = addon && addon->Version() > newAddon->Version();
-    if (!haveNewer)
-    {
-      AddonPtr dbAddon;
-      haveNewer = database.GetAddon(newAddon->ID(), dbAddon) && dbAddon->Version() > newAddon->Version();
-    }
+    bool haveNewer = (addon && addon->Version() > newAddon->Version()) ||
+                     database.GetAddonVersion(newAddon->ID()) > newAddon->Version();
     if (!haveNewer)
     {
       if (!newAddon->Props().broken.empty())

@@ -204,6 +204,11 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
   return -1;
 }
 
+AddonVersion CAddonDatabase::GetAddonVersion(const std::string &id)
+{
+  return AddonVersion(GetSingleValue(PrepareSQL("SELECT MAX(version) FROM addon WHERE addonID='%s'", id.c_str())));
+}
+
 bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
 {
   int row = atoi(GetSingleValue(PrepareSQL("SELECT id FROM addon "
