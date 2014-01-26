@@ -313,6 +313,48 @@ int SqliteDatabase::copy(const char *backup_name) {
   return rc;
 }
 
+int MysqlDatabase::drop_extras(void) {
+  // SqliteDatabase::copy used a full database copy, so we have a new version
+  // with all the analytics stuff. We should clean database from everything but data
+  if (active == false)
+    throw DbErrors("Can't drop extras database: no active connection...");
+
+  char sqlcmd[4096];
+  result_set res;
+
+  CLog::Log(LOGDEBUG, "Cleaning indexes from database %s at %s", db.c_str(), host.c_str());
+  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'index'");
+  if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+
+  for (int i=0; i < res.records.size(); i++) {
+    sprintf(sqlcmd,"DROP INDEX '%s'", res.records[i]->at(0).get_asString());
+    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL) != SQLITE_OK)) return DB_UNEXPECTED_RESULT;
+  }
+  res.clear();
+
+  CLog::Log(LOGDEBUG, "Cleaning views from database %s at %s", db.c_str(), host.c_str());
+  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'view'");
+  if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+
+  for (int i=0; i < res.records.size(); i++) {
+    sprintf(sqlcmd,"DROP VIEW '%s'", res.records[i]->at(0).get_asString());
+    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL) != SQLITE_OK)) return DB_UNEXPECTED_RESULT;
+  }
+  res.clear()
+
+  CLog::Log(LOGDEBUG, "Cleaning triggers from database %s at %s", db.c_str(), host.c_str());
+  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'trigger'");
+  if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
+
+  for (int i=0; i < res.records.size(); i++) {
+    sprintf(sqlcmd,"DROP TRIGGER '%s'", res.records[i]->at(0).get_asString());
+    if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL) != SQLITE_OK)) return DB_UNEXPECTED_RESULT;
+  }
+  // res would be cleared on destruct
+
+  return DB_COMMAND_OK;
+}
+
 int SqliteDatabase::drop() {
   if (active == false) throw DbErrors("Can't drop database: no active connection...");
   disconnect();
