@@ -802,9 +802,9 @@ CStdString CSmartPlaylistRule::FormatWhereClause(const CStdString &negate, const
     else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldStudio)
-      query = negate + " (" + GetField(FieldId, strType) + parameter + ")";
+      query = negate + " (" + GetField(m_field, strType) + parameter + ")";
     else if (m_field == FieldMPAA)
-      query = negate + " (" + GetField(FieldId, strType) +  parameter + ")";
+      query = negate + " (" + GetField(m_field, strType) +  parameter + ")";
   }
   if (m_field == FieldVideoResolution)
     query = table + ".idFile" + negate + GetVideoResolutionQuery(param);
