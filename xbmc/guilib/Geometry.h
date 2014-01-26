@@ -260,7 +260,7 @@ public:
 
   T x1, y1, x2, y2;
 private:
-  inline static float clamp_range(T x, T l, T h) XBMC_FORCE_INLINE
+  inline static T clamp_range(T x, T l, T h) XBMC_FORCE_INLINE
   {
     return (x > h) ? h : ((x < l) ? l : x);
   }

@@ -35,6 +35,8 @@
 #include "URL.h"
 #include "guilib/Geometry.h"
 #include "utils/StringUtils.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -556,15 +558,21 @@ void CDVDInputStreamBluray::ProcessEvent() {
     m_player->OnDVDNavResult((void*) &pid, 3);
     break;
 
-#ifdef HAVE_LIBBLURAY_BDJ
+#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(0,2,2))
   case BD_EVENT_MENU:
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST %d",
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_MENU %d",
         m_event.param);
     m_menu = !!m_event.param;
     break;
-
+#endif
+#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(0,3,0))
   case BD_EVENT_IDLE:
+#ifdef HAVE_LIBBLURAY_BDJ
     Sleep(100);
+#else
+    m_hold = HOLD_ERROR;
+    m_player->OnDVDNavResult(NULL, 6);
+#endif
     break;
 #endif
 
@@ -599,7 +607,16 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
       if(m_hold == HOLD_HELD)
         return 0;
 
+      if(m_hold == HOLD_ERROR)
+        return -1;
+
       result = m_dll->bd_read_ext (m_bd, buf, buf_size, &m_event);
+
+      if(result < 0)
+      {
+        m_hold = HOLD_ERROR;
+        return result;
+      }
 
       /* Check for holding events */
       switch(m_event.event) {
@@ -678,7 +695,7 @@ void CDVDInputStreamBluray::OverlayInit(SPlane& plane, int w, int h)
 void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int h)
 {
 #if(BD_OVERLAY_INTERFACE_VERSION >= 2)
-  CRect ovr(x
+  CRectInt ovr(x
           , y
           , x + w
           , y + h);
@@ -686,12 +703,12 @@ void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int
   /* fixup existing overlays */
   for(SOverlays::iterator it = plane.o.begin(); it != plane.o.end();)
   {
-    CRect old((*it)->x
+    CRectInt old((*it)->x
             , (*it)->y
             , (*it)->x + (*it)->width
             , (*it)->y + (*it)->height);
 
-    vector<CRect> rem = old.SubtractRect(ovr);
+    vector<CRectInt> rem = old.SubtractRect(ovr);
 
     /* if no overlap we are done */
     if(rem.size() == 1 && !(rem[0] != old))
@@ -701,7 +718,7 @@ void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int
     }
 
     SOverlays add;
-    for(vector<CRect>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
+    for(vector<CRectInt>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
     {
       SOverlay overlay(new CDVDOverlayImage(*(*it)
                                             , itr->x1
@@ -984,6 +1001,15 @@ CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
   if(!m_navmode)
     return NEXTSTREAM_NONE;
 
+  if (m_hold == HOLD_ERROR)
+  {
+#if (BLURAY_VERSION < BLURAY_VERSION_CODE(0,3,0))
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray:: - libbluray navmode read error");
+    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25008), g_localizeStrings.Get(25009));
+#endif
+    return NEXTSTREAM_NONE;
+  }
+
   /* process any current event */
   ProcessEvent();
 
@@ -1008,7 +1034,10 @@ void CDVDInputStreamBluray::UserInput(bd_vk_key_e vk)
 void CDVDInputStreamBluray::OnMenu()
 {
   if(m_bd == NULL || !m_navmode)
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - nav mode is not enabled");
     return;
+  }
 
   if(m_dll->bd_user_input(m_bd, -1, BD_VK_POPUP) >= 0)
     return;
@@ -1018,9 +1047,8 @@ void CDVDInputStreamBluray::OnMenu()
     return;
 
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - root failed, trying explicit");
-  if(m_dll->bd_menu_call(m_bd, -1) >= 0)
-    return;
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - root failed");
+  if(m_dll->bd_menu_call(m_bd, -1) <= 0)
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - root failed");
 }
 
 bool CDVDInputStreamBluray::IsInMenu()
@@ -1042,6 +1070,11 @@ void CDVDInputStreamBluray::SkipStill()
     m_hold = HOLD_HELD;
     m_dll->bd_read_skip_still(m_bd);
   }
+}
+
+bool CDVDInputStreamBluray::HasMenu()
+{
+  return m_navmode;
 }
 
 #endif
