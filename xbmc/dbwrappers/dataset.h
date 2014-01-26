@@ -60,6 +60,9 @@ class Dataset;		// forward declaration of class Dataset
 #define DB_UNEXPECTED		7	// This shouldn't ever happen
 #define DB_UNEXPECTED_RESULT   -1       //For integer functions
 
+/* comparator function for collation */
+typedef int (*compare_function)(const std::string &str1, const std::string &str2);
+
 /******************* Class Database definition ********************
 
    represents  connection with database server;
@@ -145,6 +148,9 @@ public:
   virtual void start_transaction() {};
   virtual void commit_transaction() {};
   virtual void rollback_transaction() {};
+
+/* virtual methods for collation */
+  virtual void add_collation(const char *type, compare_function function) {};
 
 /* virtual methods for formatting */
 

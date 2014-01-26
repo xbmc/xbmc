@@ -169,6 +169,10 @@ protected:
   uint32_t ComputeCRC(const CStdString &text);
 
   virtual bool Open();
+  /* \brief Callback executed once the database has been connected.
+     Custom database functions may be added during this call.
+   */
+  virtual void OnConnect() {};
   virtual bool CreateTables();
   virtual void CreateViews() {};
   virtual bool UpdateOldVersion(int version) { return true; };

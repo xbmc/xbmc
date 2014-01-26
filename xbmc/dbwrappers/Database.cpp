@@ -472,6 +472,9 @@ bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSett
   if (m_pDB->connect(create) != DB_CONNECTION_OK)
     return false;
 
+  // allow subclasses to modify the connection once connected
+  OnConnect();
+
   try
   {
     // test if db already exists, if not we need to create the tables

@@ -371,6 +371,19 @@ void SqliteDatabase::rollback_transaction() {
   }  
 }
 
+int comparator(void *func, int len1, const void *val1, int len2, const void *val2)
+{
+  compare_function f = (compare_function)func;
+  std::string l((const char *)val1, len1);
+  std::string r((const char *)val2, len2);
+  return f(l, r);
+}
+
+void SqliteDatabase::add_collation(const char *type, compare_function function) {
+  if (active) {
+    sqlite3_create_collation(conn, type, SQLITE_UTF8, (void *)function, comparator);
+  }
+}
 
 // methods for formatting
 // ---------------------------------------------

@@ -89,6 +89,8 @@ public:
   virtual void commit_transaction();
   virtual void rollback_transaction();
 
+  virtual void add_collation(const char *type, compare_function function);
+
 /* virtual methods for formatting */
   virtual std::string vprepare(const char *format, va_list args);
 
