@@ -66,13 +66,17 @@ static CEvent keyboardFinishedEvent;
     _textField.returnKeyType = UIReturnKeyDone;
     _textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     _textField.backgroundColor = [UIColor whiteColor];
+    _textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _textField.delegate = self;
     
     CGRect labelFrame = textFieldFrame;
     labelFrame.origin.x = 0;
-    _heading = [[UILabel alloc] initWithFrame:labelFrame];
+    _heading = [[UITextField alloc] initWithFrame:labelFrame];
+    _heading.borderStyle = UITextBorderStyleNone;
     _heading.backgroundColor = [UIColor whiteColor];
     _heading.adjustsFontSizeToFitWidth = YES;
+    _heading.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    _heading.enabled = NO;
 
     [self addSubview:_heading];
     [self addSubview:_textField];
