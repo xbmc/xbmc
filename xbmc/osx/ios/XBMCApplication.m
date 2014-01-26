@@ -30,6 +30,18 @@
 @implementation XBMCApplicationDelegate
 XBMCController *m_xbmcController;  
 
+// - iOS6 rotation API - will be called on iOS7 runtime!--------
+// - on iOS7 first application is asked for supported orientation
+// - then the controller of the current view is asked for supported orientation
+// - if both say OK - rotation is allowed
+- (NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window
+{
+  if ([[window rootViewController] respondsToSelector:@selector(supportedInterfaceOrientations)])
+    return [[window rootViewController] supportedInterfaceOrientations];
+  else
+    return (1 << UIInterfaceOrientationLandscapeRight) | (1 << UIInterfaceOrientationLandscapeLeft);
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
   PRINT_SIGNATURE();

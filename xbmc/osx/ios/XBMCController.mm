@@ -296,6 +296,14 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 }
 // END OF UIKeyInput protocol
 
+// - iOS6 rotation API - will be called on iOS7 runtime!--------
+- (NSUInteger)supportedInterfaceOrientations
+{
+  //mask defines available as of ios6 sdk
+  //return UIInterfaceOrientationMaskLandscape;
+  return (1 << UIInterfaceOrientationLandscapeLeft) | (1 << UIInterfaceOrientationLandscapeRight);
+}
+// - old rotation API will be called on iOS6 and lower - removed in iOS7
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {  
   //on external screens somehow the logic is rotated by 90°
