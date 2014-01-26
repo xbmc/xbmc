@@ -34,7 +34,6 @@ public:
   int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   bool GetAddon(const CStdString& addonID, ADDON::AddonPtr& addon);
   bool GetAddons(ADDON::VECADDONS& addons);
-  bool GetAddon(int id, ADDON::AddonPtr& addon);
 
   /*! \brief Grab the repository from which a given addon came
    \param addonID - the id of the addon in question
@@ -137,5 +136,7 @@ protected:
   virtual bool UpdateOldVersion(int version);
   virtual int GetMinVersion() const { return 16; }
   const char *GetBaseDBName() const { return "Addons"; }
+
+  bool GetAddon(int id, ADDON::AddonPtr& addon);
 };
 
