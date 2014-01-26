@@ -138,6 +138,9 @@ public:
 /* \brief copy database */
   virtual int copy(const char *new_name) { return -1; }
 
+/* \brief drop all extra analytics from database */
+  virtual int drop_analytics(void) { return -1; }
+
   virtual bool exists(void) { return false; }
 
 /* virtual methods for transaction */

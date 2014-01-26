@@ -69,6 +69,9 @@ public:
 /* \brief copy database */
   virtual int copy(const char *backup_name);
 
+/* \brief drop all extra analytics from database */
+  virtual int drop_analytics(void);
+
   virtual long nextid(const char* seq_name);
 
 /* virtual methods for transaction */
