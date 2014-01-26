@@ -1004,7 +1004,7 @@ CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
   if (m_hold == HOLD_ERROR)
   {
 #if (BLURAY_VERSION < BLURAY_VERSION_CODE(0,3,0))
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray:: - libbluray navmode read error");
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::NextStream - libbluray navigation mode read error");
     CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25008), g_localizeStrings.Get(25009));
 #endif
     return NEXTSTREAM_NONE;
@@ -1035,7 +1035,7 @@ void CDVDInputStreamBluray::OnMenu()
 {
   if(m_bd == NULL || !m_navmode)
   {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - nav mode is not enabled");
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - navigation mode not enabled");
     return;
   }
 
