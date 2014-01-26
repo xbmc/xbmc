@@ -138,5 +138,31 @@ protected:
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
+
+  /* keep in sync with the select in GetAddon */
+  enum _AddonFields
+  {
+    addon_id=0,
+    addon_type,
+    addon_name,
+    addon_summary,
+    addon_description,
+    addon_stars,
+    addon_path,
+    addon_addonID,
+    addon_icon,
+    addon_version,
+    addon_changelog,
+    addon_fanart,
+    addon_author,
+    addon_disclaimer,
+    addon_minversion,
+    broken_reason,
+    addonextra_key,
+    addonextra_value,
+    dependencies_addon,
+    dependencies_version,
+    dependencies_optional
+  } AddonFields;
 };
 
