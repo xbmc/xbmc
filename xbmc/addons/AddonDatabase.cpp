@@ -310,10 +310,8 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons)
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
-      sql = PrepareSQL("select id from addon where addonID='%s' order by version desc",m_pDS->fv(0).get_asString().c_str());
-      m_pDS2->query(sql.c_str());
       AddonPtr addon;
-      if (GetAddon(m_pDS2->fv(0).get_asInt(),addon))
+      if (GetAddon(m_pDS->fv(0).get_asString(),addon))
         addons.push_back(addon);
       m_pDS->next();
     }
@@ -519,7 +517,7 @@ bool CAddonDatabase::Search(const CStdString& search, VECADDONS& addons)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL=PrepareSQL("SELECT id FROM addon WHERE name LIKE '%%%s%%' OR summary LIKE '%%%s%%' OR description LIKE '%%%s%%'", search.c_str(), search.c_str(), search.c_str());
+    strSQL=PrepareSQL("SELECT addonID FROM addon WHERE name LIKE '%%%s%%' OR summary LIKE '%%%s%%' OR description LIKE '%%%s%%'", search.c_str(), search.c_str(), search.c_str());
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
 
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -528,7 +526,7 @@ bool CAddonDatabase::Search(const CStdString& search, VECADDONS& addons)
     while (!m_pDS->eof())
     {
       AddonPtr addon;
-      GetAddon(m_pDS->fv(0).get_asInt(),addon);
+      GetAddon(m_pDS->fv(0).get_asString(),addon);
       if (addon->Type() >= ADDON_UNKNOWN+1 && addon->Type() < ADDON_SCRAPER_LIBRARY)
         addons.push_back(addon);
       m_pDS->next();
