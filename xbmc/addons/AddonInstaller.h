@@ -24,6 +24,8 @@
 #include "utils/Stopwatch.h"
 #include "threads/Event.h"
 
+class CAddonDatabase;
+
 class CAddonInstaller : public IJobCallback
 {
 public:
@@ -68,9 +70,10 @@ public:
    Iterates through the addon's dependencies, checking they're installed or installable.
    Each dependency must also satisfies CheckDependencies in turn.
    \param addon the addon to check
+   \param database the database instance to update. Defaults to NULL.
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon);
+  bool CheckDependencies(const ADDON::AddonPtr &addon, CAddonDatabase *database = NULL);
 
   /*! \brief Update all repositories (if needed)
    Runs through all available repositories and queues an update of them if they
@@ -127,10 +130,11 @@ private:
    Each dependency must also satisfies CheckDependencies in turn.
    \param addon the addon to check
    \param preDeps previous dependencies encountered during recursion. aids in avoiding infinite recursion
+   \param database database instance to update
    \return true if dependencies are available, false otherwise.
    */
   bool CheckDependencies(const ADDON::AddonPtr &addon,
-                         std::vector<std::string>& preDeps);
+                         std::vector<std::string>& preDeps, CAddonDatabase &database);
 
   void PrunePackageCache();
   int64_t EnumeratePackageFolder(std::map<CStdString,CFileItemList*>& result);
