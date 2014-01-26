@@ -242,49 +242,56 @@ bool CAddonDatabase::GetRepoForAddon(const CStdString& addonID, CStdString& repo
   return false;
 }
 
-bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
+bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
 
-    CStdString sql = PrepareSQL("select * from addon where id=%i",id);
+    std::string sql = "SELECT addon.*,"
+                      "       broken.reason,"
+                      "       addonextra.key, addonextra.value,"
+                      "       dependencies.addon, dependencies.version, dependencies.optional"
+                      "  FROM addon"
+                      "    LEFT JOIN broken"
+                      "      ON broken.addonID = addon.addonID"
+                      "    LEFT JOIN addonextra"
+                      "      ON addonextra.id = addon.id"
+                      "    LEFT JOIN dependencies"
+                      "      ON dependencies.id = addon.id";
+
+    sql += PrepareSQL(" WHERE addon.id=%i", id);
+
     m_pDS2->query(sql.c_str());
     if (!m_pDS2->eof())
     {
-      AddonProps props(m_pDS2->fv("addonID" ).get_asString(),
-                       TranslateType(m_pDS2->fv("type").get_asString()),
-                       m_pDS2->fv("version").get_asString(),
-                       m_pDS2->fv("minversion").get_asString());
-      props.name = m_pDS2->fv("name").get_asString();
-      props.summary = m_pDS2->fv("summary").get_asString();
-      props.description = m_pDS2->fv("description").get_asString();
-      props.changelog = m_pDS2->fv("changelog").get_asString();
-      props.path = m_pDS2->fv("path").get_asString();
-      props.icon = m_pDS2->fv("icon").get_asString();
-      props.fanart = m_pDS2->fv("fanart").get_asString();
-      props.author = m_pDS2->fv("author").get_asString();
-      props.disclaimer = m_pDS2->fv("disclaimer").get_asString();
-      sql = PrepareSQL("select reason from broken where addonID='%s'",props.id.c_str());
-      m_pDS2->query(sql.c_str());
-      if (!m_pDS2->eof())
-        props.broken = m_pDS2->fv(0).get_asString();
+      const dbiplus::query_data &data = m_pDS2->get_result_set().records;
+      const dbiplus::sql_record* const record = data[0];
+      AddonProps props(record->at(addon_addonID).get_asString(),
+                       TranslateType(record->at(addon_type).get_asString()),
+                       record->at(addon_version).get_asString(),
+                       record->at(addon_minversion).get_asString());
+      props.name = record->at(addon_name).get_asString();
+      props.summary = record->at(addon_summary).get_asString();
+      props.description = record->at(addon_description).get_asString();
+      props.changelog = record->at(addon_changelog).get_asString();
+      props.path = record->at(addon_path).get_asString();
+      props.icon = record->at(addon_icon).get_asString();
+      props.fanart = record->at(addon_fanart).get_asString();
+      props.author = record->at(addon_author).get_asString();
+      props.disclaimer = record->at(addon_disclaimer).get_asString();
+      props.broken = record->at(broken_reason).get_asString();
 
-      sql = PrepareSQL("select key,value from addonextra where id=%i", id);
-      m_pDS2->query(sql.c_str());
-      while (!m_pDS2->eof())
+      /* while this is a cartesion join and we'll typically get multiple rows, we rely on the fact that
+         extrainfo and dependencies are maps, so insert() will insert the first instance only */
+      for (dbiplus::query_data::const_iterator i = data.begin(); i != data.end(); ++i)
       {
-        props.extrainfo.insert(make_pair(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString()));
-        m_pDS2->next();
-      }
-
-      sql = PrepareSQL("select addon,version,optional from dependencies where id=%i", id);
-      m_pDS2->query(sql.c_str());
-      while (!m_pDS2->eof())
-      {
-        props.dependencies.insert(make_pair(m_pDS2->fv(0).get_asString(), make_pair(AddonVersion(m_pDS2->fv(1).get_asString()), m_pDS2->fv(2).get_asBool())));
-        m_pDS2->next();
+        const dbiplus::sql_record* const record = *i;
+        if (!record->at(addonextra_key).get_asString().empty())
+          props.extrainfo.insert(make_pair(record->at(addonextra_key).get_asString(), record->at(addonextra_value).get_asString()));
+        if (!m_pDS2->fv(dependencies_addon).get_asString().empty())
+          props.dependencies.insert(make_pair(record->at(dependencies_addon).get_asString(), make_pair(AddonVersion(record->at(dependencies_version).get_asString()), record->at(dependencies_optional).get_asBool())));
       }
 
       addon = CAddonMgr::AddonFromProps(props);
