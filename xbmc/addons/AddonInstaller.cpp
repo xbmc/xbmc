@@ -307,20 +307,22 @@ void CAddonInstaller::InstallFromXBMCRepo(const set<CStdString> &addonIDs)
     Install(*i);
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
+bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, CAddonDatabase *database /* = NULL */)
 {
   std::vector<std::string> preDeps;
   preDeps.push_back(addon->ID());
-  return CheckDependencies(addon, preDeps);
+  CAddonDatabase localDB;
+  if (!database)
+    database = &localDB;
+  return CheckDependencies(addon, preDeps, *database);
 }
 
 bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
-                                        std::vector<std::string>& preDeps)
+                                        std::vector<std::string>& preDeps, CAddonDatabase &database)
 {
   if (!addon.get())
     return true; // a NULL addon has no dependencies
   ADDONDEPS deps = addon->GetDeps();
-  CAddonDatabase database;
   database.Open();
   for (ADDONDEPS::const_iterator i = deps.begin(); i != deps.end(); ++i)
   {
@@ -334,6 +336,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
       if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(version))
       { // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
         CLog::Log(LOGDEBUG, "Addon %s requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.c_str());
+        database.Close();
         return false;
       }
     }
@@ -341,11 +344,15 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     // TODO: should we assume that installed deps are OK?
     if (dep && std::find(preDeps.begin(), preDeps.end(), dep->ID()) == preDeps.end())
     {
-      if (!CheckDependencies(dep, preDeps))
+      if (!CheckDependencies(dep, preDeps, database))
+      {
+        database.Close();
         return false;
+      }
       preDeps.push_back(dep->ID());
     }
   }
+  database.Close();
   return true;
 }
 
