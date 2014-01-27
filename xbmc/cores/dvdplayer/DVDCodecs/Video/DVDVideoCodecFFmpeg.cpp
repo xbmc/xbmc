@@ -162,7 +162,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_iScreenHeight = 0;
   m_iOrientation = 0;
   m_bSoftware = false;
-  m_isHi10p = false;
+  m_isSWCodec = false;
   m_pHardware = NULL;
   m_iLastKeyframe = 0;
   m_dts = DVD_NOPTS_VALUE;
@@ -208,10 +208,15 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       // this is needed to not open the decoders
       m_bSoftware = true;
       // this we need to enable multithreading for hi10p via advancedsettings
-      m_isHi10p = true;
+      m_isSWCodec = true;
       break;
     }
   }
+  #ifdef AV_CODEC_ID_HEVC
+  else if (hints.codec == AV_CODEC_ID_HEVC)
+    m_isSWCodec = true;
+  #endif
+
 
   if(pCodec == NULL)
     pCodec = avcodec_find_decoder(hints.codec);
@@ -237,12 +242,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
    * sensitive to changes in frame sizes, and it causes crashes
    * during HW accell - so we unset it in this case.
    *
-   * When we detect Hi10p and user did not disable hi10pmultithreading
+   * When we detect a pure SW codec and user did not disable SWmultithreading
    * via advancedsettings.xml we keep the ffmpeg default thread type.
    * */
-  if(m_isHi10p && !g_advancedSettings.m_videoDisableHi10pMultithreading)
+  if(m_isSWCodec && !g_advancedSettings.m_videoDisableSWMultithreading)
   {
-    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading for Hi10p: %d",
+    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading for swcodec: %d",
                         m_pCodecContext->thread_type);
   }
   else if (CSettings::Get().GetBool("videoplayer.useframemtdec"))
