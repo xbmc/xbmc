@@ -37,6 +37,7 @@
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/DiscSettings.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -349,17 +350,19 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     return false;
   }
 
-  if(StringUtils::EqualsNoCase(filename, "index.bdmv"))
-  {
-    m_navmode = false;
-    m_title = GetTitleLongest();
-  }
-  else if(URIUtils::HasExtension(filename, ".mpls"))
+  int mode = CSettings::Get().GetInt("disc.playback");
+
+  if (URIUtils::HasExtension(filename, ".mpls"))
   {
     m_navmode = false;
     m_title = GetTitleFile(filename);
   }
-  else if(StringUtils::EqualsNoCase(filename, "MovieObject.bdmv"))
+  else if (mode == BD_PLAYBACK_MAIN_TITLE)
+  {
+    m_navmode = false;
+    m_title = GetTitleLongest();
+  }
+  else
   {
     m_navmode = true;
     if (m_navmode && !disc_info->first_play_supported) {
@@ -373,11 +376,6 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
 
     if(!m_navmode)
       m_title = GetTitleLongest();
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - unsupported bluray file selected %s", strPath.c_str());
-    return false;
   }
 
   if(m_navmode)
