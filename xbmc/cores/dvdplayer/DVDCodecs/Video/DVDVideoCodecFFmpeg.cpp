@@ -162,7 +162,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_iScreenHeight = 0;
   m_iOrientation = 0;
   m_bSoftware = false;
-  m_isHi10p = false;
+  m_isSWCodec = false;
   m_pHardware = NULL;
   m_iLastKeyframe = 0;
   m_dts = DVD_NOPTS_VALUE;
@@ -206,10 +206,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       // this is needed to not open the decoders
       m_bSoftware = true;
       // this we need to enable multithreading for hi10p via advancedsettings
-      m_isHi10p = true;
+      m_isSWCodec = true;
       break;
     }
   }
+  else if (hints.codec == AV_CODEC_ID_HEVC)
+    m_isSWCodec = true;
 
   if(pCodec == NULL)
     pCodec = avcodec_find_decoder(hints.codec);
@@ -235,12 +237,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
    * sensitive to changes in frame sizes, and it causes crashes
    * during HW accell - so we unset it in this case.
    *
-   * When we detect Hi10p and user did not disable hi10pmultithreading
+   * When we detect a pure SW codec and user did not disable SWmultithreading
    * via advancedsettings.xml we keep the ffmpeg default thread type.
    * */
-  if(m_isHi10p && !g_advancedSettings.m_videoDisableHi10pMultithreading)
+  if(m_isSWCodec && !g_advancedSettings.m_videoDisableSWMultithreading)
   {
-    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading for Hi10p: %d",
+    CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Keep default threading for swcodec: %d",
                         m_pCodecContext->thread_type);
   }
   else if ((EDECODEMETHOD) CSettings::Get().GetInt("videoplayer.decodingmethod") == VS_DECODEMETHOD_SOFTWARE && CSettings::Get().GetBool("videoplayer.useframemtdec"))
@@ -292,7 +294,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
   if( num_threads > 1 && !hints.software && m_pHardware == NULL // thumbnail extraction fails when run threaded
   && ( pCodec->id == AV_CODEC_ID_H264
-    || pCodec->id == AV_CODEC_ID_MPEG4 ))
+    || pCodec->id == AV_CODEC_ID_MPEG4
+    || pCodec->id == AV_CODEC_ID_HEVC))
     m_pCodecContext->thread_count = num_threads;
 
   if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
