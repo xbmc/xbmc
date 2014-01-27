@@ -261,10 +261,7 @@ CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, s
 
   // if any protocol options were set, restore them
   subStreamUrl.SetProtocolOptions(playlistUrl.GetProtocolOptions());
-  CStdString subStream = subStreamUrl.Get();
-
-  CLog::Log(LOGINFO, "Auto-selecting %s based on configured bandwidth.", subStream.c_str());
-  return subStream;
+  return subStreamUrl.Get();
 }
 
 std::map< CStdString, CStdString > CPlayListM3U::ParseStreamLine(const CStdString &streamLine)

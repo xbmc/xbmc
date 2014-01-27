@@ -22,6 +22,7 @@
 #include "xbmc/playlists/PlayListM3U.h"
 #include "settings/Settings.h"
 #include "Util.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 
@@ -56,7 +57,12 @@ bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content
     int bandwidth = CSettings::Get().GetInt("network.bandwidth");
     if(bandwidth <= 0)
       bandwidth = INT_MAX;
-    strFile = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(strFile, bandwidth);
+    std::string selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(strFile, bandwidth);
+    if (selected.compare(strFile) != 0)
+    {
+      CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.", selected.c_str());
+      strFile = selected.c_str();
+    }
   }
 
   if (!CDVDInputStream::Open(strFile, content))
