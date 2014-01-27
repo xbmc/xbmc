@@ -167,34 +167,65 @@ void CGUIFontTTFGL::LastEnd()
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
-  // stack object until VBOs will be used
-  std::vector<SVertex> vecVertices( 6 * (m_vertex.size() / 4) );
-  SVertex *vertices = &vecVertices[0];
-
-  for (size_t i=0; i<m_vertex.size(); i+=4)
-  {
-    *vertices++ = m_vertex[i];
-    *vertices++ = m_vertex[i+1];
-    *vertices++ = m_vertex[i+2];
-
-    *vertices++ = m_vertex[i+1];
-    *vertices++ = m_vertex[i+3];
-    *vertices++ = m_vertex[i+2];
-  }
-
-  vertices = &vecVertices[0];
-
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
-  // Normalize color values. Does not affect Performance at all.
-  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
-
+  // Enable the attributes used by this shader
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+  if (m_vertex.size() > 0)
+  {
+    // Deal with vertices that had to use software clipping
+    std::vector<SVertex> vecVertices( 6 * (m_vertex.size() / 4) );
+    SVertex *vertices = &vecVertices[0];
 
+    for (size_t i=0; i<m_vertex.size(); i+=4)
+    {
+      *vertices++ = m_vertex[i];
+      *vertices++ = m_vertex[i+1];
+      *vertices++ = m_vertex[i+2];
+
+      *vertices++ = m_vertex[i+1];
+      *vertices++ = m_vertex[i+3];
+      *vertices++ = m_vertex[i+2];
+    }
+
+    vertices = &vecVertices[0];
+
+    glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
+    // Normalize color values. Does not affect Performance at all.
+    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
+
+    glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+  }
+  if (m_vertexTrans.size() > 0)
+  {
+    // Deal with the vertices that can be hardware clipped and therefore translated
+    std::vector<SVertex> vecVertices;
+    for (size_t i = 0; i < m_vertexTrans.size(); i++)
+    {
+      float translate[3] = { m_vertexTrans[i].translateX, m_vertexTrans[i].translateY, m_vertexTrans[i].translateZ };
+      for (size_t j = 0; j < m_vertexTrans[i].vertexBuffer->size(); j += 4)
+      {
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j].Offset(translate));
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+1].Offset(translate));
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+2].Offset(translate));
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+1].Offset(translate));
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+3].Offset(translate));
+        vecVertices.push_back((*m_vertexTrans[i].vertexBuffer)[j+2].Offset(translate));
+      }
+    }
+    SVertex *vertices = &vecVertices[0];
+
+    glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
+    // Normalize color values. Does not affect Performance at all.
+    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
+
+    glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+  }
+
+  // Disable the attributes used by this shader
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
@@ -222,6 +253,7 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   if (m_textureHeight < newHeight)
     CLog::Log(LOGWARNING, "%s: allocated new texture with height of %d, requested %d", __FUNCTION__, m_textureHeight, newHeight);
   m_staticCache.Flush();
+  m_dynamicCache.Flush();
 
   memset(newTexture->GetPixels(), 0, m_textureHeight * newTexture->GetPitch());
   if (m_texture)
