@@ -967,14 +967,14 @@
 				<left>0</left>
 				<top>6</top>
 				<width>128</width>
-				<height>50</height>
+				<height>63</height>
 				<texture>SideFade.png</texture>
 			</control>
 			<control type="image">
 				<left>128r</left>
 				<top>6</top>
 				<width>128</width>
-				<height>60</height>
+				<height>63</height>
 				<texture flipx="true">SideFade.png</texture>
 			</control>
 		</control>
