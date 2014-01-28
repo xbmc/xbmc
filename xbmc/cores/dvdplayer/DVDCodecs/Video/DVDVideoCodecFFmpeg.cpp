@@ -478,6 +478,14 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   av_init_packet(&avpkt);
   avpkt.data = pData;
   avpkt.size = iSize;
+#define SET_PKT_TS(ts) \
+  if(ts != DVD_NOPTS_VALUE)\
+    avpkt.ts = (ts / DVD_TIME_BASE) * AV_TIME_BASE;\
+  else\
+    avpkt.ts = AV_NOPTS_VALUE
+  SET_PKT_TS(pts);
+  SET_PKT_TS(dts);
+#undef SET_PKT_TS
   /* We lie, but this flag is only used by pngdec.c.
    * Setting it correctly would allow CorePNG decoding. */
   avpkt.flags = AV_PKT_FLAG_KEY;
@@ -698,8 +706,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->dts = m_dts;
 
   m_dts = DVD_NOPTS_VALUE;
-  if (m_pFrame->reordered_opaque)
-    pDvdVideoPicture->pts = pts_itod(m_pFrame->reordered_opaque);
+
+  int64_t bpts = av_frame_get_best_effort_timestamp(m_pFrame);
+  if(bpts != AV_NOPTS_VALUE)
+    pDvdVideoPicture->pts = (double)bpts * DVD_TIME_BASE / AV_TIME_BASE;
   else
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
