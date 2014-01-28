@@ -1739,7 +1739,7 @@ void CDVDDemuxFFmpeg::ResetVideoStreams()
     if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO)
     {
       if (st->codec->extradata)
-        m_dllAvUtil.av_free(st->codec->extradata);
+        av_free(st->codec->extradata);
       st->codec->extradata = NULL;
       st->codec->width = 0;
     }
