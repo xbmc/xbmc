@@ -22,13 +22,12 @@
 
 #include "dxva2_internal.h"
 
+#define MAX_SLICES 1024
 struct dxva2_picture_context {
     DXVA_PictureParameters pp;
     DXVA_QmatrixData       qm;
     unsigned               slice_count;
-    DXVA_SliceInfo         *slice;
-    unsigned int           slice_alloc;
-
+    DXVA_SliceInfo         slice[MAX_SLICES];
     const uint8_t          *bitstream;
     unsigned               bitstream_size;
 };
@@ -220,19 +219,8 @@ static int dxva2_mpeg2_start_frame(AVCodecContext *avctx,
     fill_quantization_matrices(avctx, ctx, s, &ctx_pic->qm);
 
     ctx_pic->slice_count    = 0;
-    ctx_pic->slice          = NULL;
-    ctx_pic->slice_alloc    = 0;
     ctx_pic->bitstream_size = 0;
     ctx_pic->bitstream      = NULL;
-
-    if (ctx->last_slice_count > 0)
-    {
-        ctx_pic->slice = av_fast_realloc(NULL,
-                                         &ctx_pic->slice_alloc,
-                                         ctx->last_slice_count * sizeof(DXVA_SliceInfo));
-        if (!ctx_pic->slice)
-            return -1;
-    }
 
     return 0;
 }
@@ -244,14 +232,9 @@ static int dxva2_mpeg2_decode_slice(AVCodecContext *avctx,
     struct dxva2_picture_context *ctx_pic =
         s->current_picture_ptr->f.hwaccel_picture_private;
     unsigned position;
-    DXVA_SliceInfo* slice;
 
-    slice = av_fast_realloc(ctx_pic->slice,
-                            &ctx_pic->slice_alloc,
-                            (ctx_pic->slice_count + 1) * sizeof(DXVA_SliceInfo));
-    if (!slice)
+    if (ctx_pic->slice_count >= MAX_SLICES)
         return -1;
-    ctx_pic->slice = slice;
 
     if (!ctx_pic->bitstream)
         ctx_pic->bitstream = buffer;
@@ -268,7 +251,6 @@ static int dxva2_mpeg2_end_frame(AVCodecContext *avctx)
     struct MpegEncContext *s = avctx->priv_data;
     struct dxva2_picture_context *ctx_pic =
         s->current_picture_ptr->f.hwaccel_picture_private;
-    struct dxva_context *ctx = avctx->hwaccel_context;
     int ret;
 
     if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
@@ -280,7 +262,6 @@ static int dxva2_mpeg2_end_frame(AVCodecContext *avctx)
     if (!ret)
         ff_mpeg_draw_horiz_band(s, 0, avctx->height);
 
-    ctx->last_slice_count = ctx_pic->slice_count;
     return ret;
 }
 
