@@ -242,9 +242,11 @@ bool CRepositoryUpdateJob::DoWork()
   // check for updates
   CAddonDatabase database;
   database.Open();
-  
+  database.BeginMultipleExecute();
+
   CTextureDatabase textureDB;
   textureDB.Open();
+  textureDB.BeginMultipleExecute();
   for (map<string, AddonPtr>::const_iterator i = addons.begin(); i != addons.end(); ++i)
   {
     // manager told us to feck off
@@ -252,7 +254,7 @@ bool CRepositoryUpdateJob::DoWork()
       break;
 
     AddonPtr newAddon = i->second;
-    bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon);
+    bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon, &database);
     if (!deps_met && newAddon->Props().broken.empty())
       newAddon->Props().broken = "DEPSNOTMET";
 
@@ -290,12 +292,8 @@ bool CRepositoryUpdateJob::DoWork()
 
     // Check if we should mark the add-on as broken.  We may have a newer version
     // of this add-on in the database or installed - if so, we keep it unbroken.
-    bool haveNewer = addon && addon->Version() > newAddon->Version();
-    if (!haveNewer)
-    {
-      AddonPtr dbAddon;
-      haveNewer = database.GetAddon(newAddon->ID(), dbAddon) && dbAddon->Version() > newAddon->Version();
-    }
+    bool haveNewer = (addon && addon->Version() > newAddon->Version()) ||
+                     database.GetAddonVersion(newAddon->ID()) > newAddon->Version();
     if (!haveNewer)
     {
       if (!newAddon->Props().broken.empty())
@@ -315,6 +313,8 @@ bool CRepositoryUpdateJob::DoWork()
       database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
     }
   }
+  database.CommitMultipleExecute();
+  textureDB.CommitMultipleExecute();
 
   return true;
 }

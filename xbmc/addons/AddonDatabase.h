@@ -34,7 +34,9 @@ public:
   int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   bool GetAddon(const CStdString& addonID, ADDON::AddonPtr& addon);
   bool GetAddons(ADDON::VECADDONS& addons);
-  bool GetAddon(int id, ADDON::AddonPtr& addon);
+
+  /*! \brief grab the (largest) add-on version for an add-on */
+  ADDON::AddonVersion GetAddonVersion(const std::string &id);
 
   /*! \brief Grab the repository from which a given addon came
    \param addonID - the id of the addon in question
@@ -137,5 +139,33 @@ protected:
   virtual bool UpdateOldVersion(int version);
   virtual int GetMinVersion() const { return 16; }
   const char *GetBaseDBName() const { return "Addons"; }
+
+  bool GetAddon(int id, ADDON::AddonPtr& addon);
+
+  /* keep in sync with the select in GetAddon */
+  enum _AddonFields
+  {
+    addon_id=0,
+    addon_type,
+    addon_name,
+    addon_summary,
+    addon_description,
+    addon_stars,
+    addon_path,
+    addon_addonID,
+    addon_icon,
+    addon_version,
+    addon_changelog,
+    addon_fanart,
+    addon_author,
+    addon_disclaimer,
+    addon_minversion,
+    broken_reason,
+    addonextra_key,
+    addonextra_value,
+    dependencies_addon,
+    dependencies_version,
+    dependencies_optional
+  } AddonFields;
 };
 

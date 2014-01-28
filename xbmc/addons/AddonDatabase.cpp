@@ -181,6 +181,39 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
   return -1;
 }
 
+AddonVersion CAddonDatabase::GetAddonVersion(const std::string &id)
+{
+  AddonVersion maxversion("0.0.0");
+  try
+  {
+    if (NULL == m_pDB.get()) return maxversion;
+    if (NULL == m_pDS2.get()) return maxversion;
+
+    // there may be multiple addons with this id (eg from different repositories) in the database,
+    // so we want to retrieve the latest version.  Order by version won't work as the database
+    // won't know that 1.10 > 1.2, so grab them all and order outside
+    CStdString sql = PrepareSQL("select version from addon where addonID='%s'",id.c_str());
+    m_pDS2->query(sql.c_str());
+
+    if (m_pDS2->eof())
+      return maxversion;
+
+    while (!m_pDS2->eof())
+    {
+      AddonVersion version(m_pDS2->fv(0).get_asString());
+      if (version > maxversion)
+        maxversion = version;
+      m_pDS2->next();
+    }
+    return maxversion;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, id.c_str());
+  }
+  return maxversion;
+}
+
 bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
 {
   try
@@ -242,49 +275,56 @@ bool CAddonDatabase::GetRepoForAddon(const CStdString& addonID, CStdString& repo
   return false;
 }
 
-bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
+bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
 
-    CStdString sql = PrepareSQL("select * from addon where id=%i",id);
+    std::string sql = "SELECT addon.*,"
+                      "       broken.reason,"
+                      "       addonextra.key, addonextra.value,"
+                      "       dependencies.addon, dependencies.version, dependencies.optional"
+                      "  FROM addon"
+                      "    LEFT JOIN broken"
+                      "      ON broken.addonID = addon.addonID"
+                      "    LEFT JOIN addonextra"
+                      "      ON addonextra.id = addon.id"
+                      "    LEFT JOIN dependencies"
+                      "      ON dependencies.id = addon.id";
+
+    sql += PrepareSQL(" WHERE addon.id=%i", id);
+
     m_pDS2->query(sql.c_str());
     if (!m_pDS2->eof())
     {
-      AddonProps props(m_pDS2->fv("addonID" ).get_asString(),
-                       TranslateType(m_pDS2->fv("type").get_asString()),
-                       m_pDS2->fv("version").get_asString(),
-                       m_pDS2->fv("minversion").get_asString());
-      props.name = m_pDS2->fv("name").get_asString();
-      props.summary = m_pDS2->fv("summary").get_asString();
-      props.description = m_pDS2->fv("description").get_asString();
-      props.changelog = m_pDS2->fv("changelog").get_asString();
-      props.path = m_pDS2->fv("path").get_asString();
-      props.icon = m_pDS2->fv("icon").get_asString();
-      props.fanart = m_pDS2->fv("fanart").get_asString();
-      props.author = m_pDS2->fv("author").get_asString();
-      props.disclaimer = m_pDS2->fv("disclaimer").get_asString();
-      sql = PrepareSQL("select reason from broken where addonID='%s'",props.id.c_str());
-      m_pDS2->query(sql.c_str());
-      if (!m_pDS2->eof())
-        props.broken = m_pDS2->fv(0).get_asString();
+      const dbiplus::query_data &data = m_pDS2->get_result_set().records;
+      const dbiplus::sql_record* const record = data[0];
+      AddonProps props(record->at(addon_addonID).get_asString(),
+                       TranslateType(record->at(addon_type).get_asString()),
+                       record->at(addon_version).get_asString(),
+                       record->at(addon_minversion).get_asString());
+      props.name = record->at(addon_name).get_asString();
+      props.summary = record->at(addon_summary).get_asString();
+      props.description = record->at(addon_description).get_asString();
+      props.changelog = record->at(addon_changelog).get_asString();
+      props.path = record->at(addon_path).get_asString();
+      props.icon = record->at(addon_icon).get_asString();
+      props.fanart = record->at(addon_fanart).get_asString();
+      props.author = record->at(addon_author).get_asString();
+      props.disclaimer = record->at(addon_disclaimer).get_asString();
+      props.broken = record->at(broken_reason).get_asString();
 
-      sql = PrepareSQL("select key,value from addonextra where id=%i", id);
-      m_pDS2->query(sql.c_str());
-      while (!m_pDS2->eof())
+      /* while this is a cartesion join and we'll typically get multiple rows, we rely on the fact that
+         extrainfo and dependencies are maps, so insert() will insert the first instance only */
+      for (dbiplus::query_data::const_iterator i = data.begin(); i != data.end(); ++i)
       {
-        props.extrainfo.insert(make_pair(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString()));
-        m_pDS2->next();
-      }
-
-      sql = PrepareSQL("select addon,version,optional from dependencies where id=%i", id);
-      m_pDS2->query(sql.c_str());
-      while (!m_pDS2->eof())
-      {
-        props.dependencies.insert(make_pair(m_pDS2->fv(0).get_asString(), make_pair(AddonVersion(m_pDS2->fv(1).get_asString()), m_pDS2->fv(2).get_asBool())));
-        m_pDS2->next();
+        const dbiplus::sql_record* const record = *i;
+        if (!record->at(addonextra_key).get_asString().empty())
+          props.extrainfo.insert(make_pair(record->at(addonextra_key).get_asString(), record->at(addonextra_value).get_asString()));
+        if (!m_pDS2->fv(dependencies_addon).get_asString().empty())
+          props.dependencies.insert(make_pair(record->at(dependencies_addon).get_asString(), make_pair(AddonVersion(record->at(dependencies_version).get_asString()), record->at(dependencies_optional).get_asBool())));
       }
 
       addon = CAddonMgr::AddonFromProps(props);
@@ -310,10 +350,8 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons)
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
-      sql = PrepareSQL("select id from addon where addonID='%s' order by version desc",m_pDS->fv(0).get_asString().c_str());
-      m_pDS2->query(sql.c_str());
       AddonPtr addon;
-      if (GetAddon(m_pDS2->fv(0).get_asInt(),addon))
+      if (GetAddon(m_pDS->fv(0).get_asString(),addon))
         addons.push_back(addon);
       m_pDS->next();
     }
@@ -519,7 +557,7 @@ bool CAddonDatabase::Search(const CStdString& search, VECADDONS& addons)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL=PrepareSQL("SELECT id FROM addon WHERE name LIKE '%%%s%%' OR summary LIKE '%%%s%%' OR description LIKE '%%%s%%'", search.c_str(), search.c_str(), search.c_str());
+    strSQL=PrepareSQL("SELECT addonID FROM addon WHERE name LIKE '%%%s%%' OR summary LIKE '%%%s%%' OR description LIKE '%%%s%%'", search.c_str(), search.c_str(), search.c_str());
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
 
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -528,7 +566,7 @@ bool CAddonDatabase::Search(const CStdString& search, VECADDONS& addons)
     while (!m_pDS->eof())
     {
       AddonPtr addon;
-      GetAddon(m_pDS->fv(0).get_asInt(),addon);
+      GetAddon(m_pDS->fv(0).get_asString(),addon);
       if (addon->Type() >= ADDON_UNKNOWN+1 && addon->Type() < ADDON_SCRAPER_LIBRARY)
         addons.push_back(addon);
       m_pDS->next();
@@ -629,26 +667,11 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
 
 bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& reason)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString sql = PrepareSQL("delete from broken where addonID='%s'", addonID.c_str());
-    m_pDS->exec(sql);
-
-    if (!reason.empty())
-    { // broken
-      sql = PrepareSQL("insert into broken(id, addonID, reason) values(NULL, '%s', '%s')", addonID.c_str(),reason.c_str());
-      m_pDS->exec(sql);
-    }
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
-  }
-  return false;
+  if (reason.empty())
+    return ExecuteQuery(PrepareSQL("DELETE FROM broken WHERE addonID='%s'", addonID.c_str()));
+  else
+    return ExecuteQuery(PrepareSQL("REPLACE INTO broken(addonID, reason) VALUES('%s', '%s')",
+                                   addonID.c_str(), reason.c_str()));
 }
 
 bool CAddonDatabase::HasAddon(const CStdString &addonID)
@@ -689,24 +712,7 @@ bool CAddonDatabase::IsSystemPVRAddonEnabled(const CStdString &addonID)
 
 CStdString CAddonDatabase::IsAddonBroken(const CStdString &addonID)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return "";
-    if (NULL == m_pDS.get()) return "";
-
-    CStdString sql = PrepareSQL("select reason from broken where addonID='%s'", addonID.c_str());
-    m_pDS->query(sql.c_str());
-    CStdString ret;
-    if (!m_pDS->eof())
-      ret = m_pDS->fv(0).get_asString();
-    m_pDS->close();
-    return ret;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
-  }
-  return "";
+  return GetSingleValue(PrepareSQL("SELECT reason FROM broken WHERE addonID='%s'", addonID.c_str()));
 }
 
 bool CAddonDatabase::HasDisabledAddons()

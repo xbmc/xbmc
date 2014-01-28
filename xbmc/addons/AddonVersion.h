@@ -53,6 +53,7 @@ namespace ADDON
     bool operator==(const AddonVersion& other) const;
     CStdString Print() const;
     const char *c_str() const { return m_originalVersion.c_str(); };
+    bool empty() const;
 
     static bool SplitFileName(CStdString& ID, CStdString& version,
                               const CStdString& filename);
