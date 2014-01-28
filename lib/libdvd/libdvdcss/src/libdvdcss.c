@@ -537,26 +537,8 @@ LIBDVDCSS_EXPORT dvdcss_t dvdcss_open ( char *psz_target )
             goto nocache;
         }
 
-#ifdef _XBOX
-        //due to xbox file system having a limited length on folders/files, 
-        //make separate folder for disk name first
-        if(psz_title[0] == '\0')
-          strcat(psz_title, "NONAME");
-
-        i += sprintf( dvdcss->psz_cachefile + i, "/%s", psz_title);
-        
-        i_ret = mkdir( dvdcss->psz_cachefile );
-        if( i_ret < 0 && errno != EEXIST )
-        {
-            print_error( dvdcss, "failed creating cache titledirectory" );
-            dvdcss->psz_cachefile[0] = '\0';
-            goto nocache;
-        }
-        i += sprintf( dvdcss->psz_cachefile + i, "/%s%s", psz_serial, psz_key );
-#else
         i += sprintf( dvdcss->psz_cachefile + i, "/%s-%s%s", psz_title,
                       psz_serial, psz_key );
-#endif
 #if !defined( WIN32 ) || defined( SYS_CYGWIN )
         i_ret = mkdir( dvdcss->psz_cachefile, 0755 );
 #else

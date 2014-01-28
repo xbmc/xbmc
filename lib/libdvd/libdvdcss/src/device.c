@@ -24,7 +24,7 @@
  *****************************************************************************/
 
 /*
-	Modifications for XBMC are all contained within _XBOX (real xbox hardware) or WITH_CACHE
+	Modifications for XBMC are all contained within WITH_CACHE
 */
 
 /*****************************************************************************
@@ -372,20 +372,11 @@ int _dvdcss_open ( dvdcss_t dvdcss )
 
 #if defined( WIN32 )
     dvdcss->b_file = 1;
-#if defined( _XBOX )
-	// If we've passed over the device string make sure we don't try
-	// to use file based handling (libc) - we want Win2k routines ...
-	if (!stricmp(psz_device, "\\Device\\Cdrom0"))
-		dvdcss->b_file = 0;
-	else
-		dvdcss->b_file = stricmp(psz_device, "D:");
-#else
     /* If device is "X:" or "X:\", we are not actually opening a file. */
     if (psz_device[0] && psz_device[1] == ':' &&
        (!psz_device[2] || (psz_device[2] == '\\' && !psz_device[3])))
         dvdcss->b_file = 0;
 
-#endif	// _XBOX
     /* Initialize readv temporary buffer */
     dvdcss->p_readv_buffer   = NULL;
     dvdcss->i_readv_buf_size = 0;
@@ -463,13 +454,11 @@ int _dvdcss_close ( dvdcss_t dvdcss )
     }
     else /* ASPI */
     {
-#if !defined(_XBOX)
         struct w32_aspidev *fd = (struct w32_aspidev *) dvdcss->i_fd;
 
         /* Unload aspi and free w32_aspidev structure */
         FreeLibrary( (HMODULE) fd->hASPI );
         free( (void*) dvdcss->i_fd );
-#endif	// !_XBOX
     }
 
     /* Free readv temporary buffer */
@@ -525,14 +514,9 @@ static int libc_open ( dvdcss_t dvdcss, char const *psz_device )
 #if defined( WIN32 )
 static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
 {
-#ifdef _XBOX
-    char psz_dvd[70];
-    strcpy(psz_dvd, "cdrom0:");
-#else
     char psz_dvd[7];
     snprintf( psz_dvd, 7, "\\\\.\\%c:", psz_device[0] );
 
-#endif
     /* To work around an M$ bug in IOCTL_DVD_READ_STRUCTURE, we need read
      * _and_ write access to the device (so we can make SCSI Pass Through
      * Requests). Unfortunately this is only allowed if you have
@@ -546,7 +530,7 @@ static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
     DWORD flags = FILE_FLAG_NO_BUFFERING; /* we handle buffering ourself */
 #else
     DWORD flags = FILE_FLAG_RANDOM_ACCESS;
-#endif //!_XBOX
+#endif //!WITH_CACHE
 
     dvdcss->i_fd = (int)
                 CreateFile( psz_dvd, GENERIC_READ | GENERIC_WRITE,
