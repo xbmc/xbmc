@@ -1,6 +1,6 @@
-diff -uwr libdvdread-4.2.0/Makefile xbmc/lib/libdvd/libdvdread/Makefile
---- libdvdread-4.2.0/Makefile	2008-12-31 09:43:04 +0100
-+++ xbmc/lib/libdvd/libdvdread/Makefile	2013-02-07 14:42:34 +0100
+diff -uwr libdvdread-4.2.1/Makefile xbmc/lib/libdvd/libdvdread/Makefile
+--- libdvdread-4.2.1/Makefile	Wed Dec 31 08:43:04 2008
++++ xbmc/lib/libdvd/libdvdread/Makefile	Wed Jan 29 20:43:09 2014
 @@ -121,7 +121,7 @@
  # Clean targets
  
@@ -10,9 +10,12 @@ diff -uwr libdvdread-4.2.0/Makefile xbmc/lib/libdvd/libdvdread/Makefile
  
  
  distclean: clean
-diff -uwr libdvdread-4.2.0/src/dvd_input.h xbmc/lib/libdvd/libdvdread/src/dvd_input.h
---- libdvdread-4.2.0/src/dvd_input.h	2010-06-01 19:07:14 +0200
-+++ xbmc/lib/libdvd/libdvdread/src/dvd_input.h	2013-02-07 14:42:34 +0100
+Only in xbmc/lib/libdvd/libdvdread/: config.h
+Only in xbmc/lib/libdvd/libdvdread/: config.mak
+Only in xbmc/lib/libdvd/libdvdread/: obj
+diff -uwr libdvdread-4.2.1/src/dvd_input.h xbmc/lib/libdvd/libdvdread/src/dvd_input.h
+--- libdvdread-4.2.1/src/dvd_input.h	Tue Jun  1 18:07:14 2010
++++ xbmc/lib/libdvd/libdvdread/src/dvd_input.h	Sun Jan 26 18:36:38 2014
 @@ -34,6 +34,13 @@
  #if defined( __MINGW32__ )
  #   undef  lseek
@@ -27,10 +30,10 @@ diff -uwr libdvdread-4.2.0/src/dvd_input.h xbmc/lib/libdvd/libdvdread/src/dvd_in
  #   undef  off_t
  #   define off_t off64_t
  #   undef  stat
-diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_reader.c
---- libdvdread-4.2.0/src/dvd_reader.c	2011-06-15 20:09:16 +0200
-+++ xbmc/lib/libdvd/libdvdread/src/dvd_reader.c	2013-02-07 14:42:34 +0100
-@@ -32,6 +32,11 @@
+diff -uwr libdvdread-4.2.1/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_reader.c
+--- libdvdread-4.2.1/src/dvd_reader.c	Sun Mar 17 14:08:06 2013
++++ xbmc/lib/libdvd/libdvdread/src/dvd_reader.c	Wed Jan 29 20:48:38 2014
+@@ -33,6 +33,11 @@
  #include <unistd.h>
  #include <limits.h>
  #include <dirent.h>
@@ -42,7 +45,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
  
  /* misc win32 helpers */
  #ifdef WIN32
-@@ -105,6 +110,10 @@
+@@ -106,6 +111,10 @@
    uint32_t lb_start;
    uint32_t seek_pos;
  
@@ -53,7 +56,18 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
    /* Information required for a directory path drive. */
    size_t title_sizes[ TITLES_MAX ];
    dvd_input_t title_devs[ TITLES_MAX ];
-@@ -617,6 +626,10 @@
+@@ -417,8 +426,9 @@
+     if( !(path_copy = strdup( path ) ) )
+       goto DVDOpen_error;
+ 
+-#ifndef WIN32 /* don't have fchdir, and getcwd( NULL, ... ) is strange */
++#if !defined(WIN32) && !defined(_XBMC) /* don't have fchdir, and getcwd( NULL, ... ) is strange */
+               /* Also WIN32 does not have symlinks, so we don't need this bit of code. */
++			  /* XBMC also doesn't need symlink resolution */
+ 
+     /* Resolve any symlinks and get the absolute dir name. */
+     {
+@@ -618,6 +628,10 @@
    memset( dvd_file->title_devs, 0, sizeof( dvd_file->title_devs ) );
    dvd_file->filesize = len / DVD_VIDEO_LB_LEN;
  
@@ -64,7 +78,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
    return dvd_file;
  }
  
-@@ -628,6 +641,18 @@
+@@ -629,6 +643,18 @@
   */
  static int findDirFile( const char *path, const char *file, char *filename )
  {
@@ -83,7 +97,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
    DIR *dir;
    struct dirent *ent;
  
-@@ -644,6 +669,7 @@
+@@ -645,6 +671,7 @@
      }
    }
    closedir(dir);
@@ -91,7 +105,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
    return -1;
  }
  
-@@ -722,6 +748,9 @@
+@@ -723,6 +750,9 @@
    dvd_file->title_devs[ 0 ] = dev;
    dvd_file->filesize = dvd_file->title_sizes[ 0 ];
  
@@ -101,7 +115,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
    return dvd_file;
  }
  
-@@ -749,6 +778,9 @@
+@@ -750,6 +780,9 @@
    memset( dvd_file->title_devs, 0, sizeof( dvd_file->title_devs ) );
    dvd_file->filesize = len / DVD_VIDEO_LB_LEN;
  
@@ -111,7 +125,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
    /* Calculate the complete file size for every file in the VOBS */
    if( !menu ) {
      int cur;
-@@ -792,6 +824,10 @@
+@@ -793,6 +826,10 @@
    memset( dvd_file->title_devs, 0, sizeof( dvd_file->title_devs ) );
    dvd_file->filesize = 0;
  
@@ -122,7 +136,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
    if( menu ) {
      dvd_input_t dev;
  
-@@ -1203,6 +1239,100 @@
+@@ -1204,6 +1241,100 @@
    return ret + ret2;
  }
  
@@ -223,7 +237,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
  /* This is broken reading more than 2Gb at a time is ssize_t is 32-bit. */
  ssize_t DVDReadBlocks( dvd_file_t *dvd_file, int offset,
                         size_t block_count, unsigned char *data )
-@@ -1213,6 +1343,10 @@
+@@ -1214,6 +1345,10 @@
    if( dvd_file == NULL || offset < 0 || data == NULL )
      return -1;
  
@@ -234,7 +248,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
    /* Hack, and it will still fail for multiple opens in a threaded app ! */
    if( dvd_file->dvd->css_title != dvd_file->css_title ) {
      dvd_file->dvd->css_title = dvd_file->css_title;
-@@ -1295,6 +1429,10 @@
+@@ -1296,6 +1431,10 @@
      return 0;
    }
  
@@ -245,7 +259,7 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
    if( dvd_file->dvd->isImageFile ) {
      ret = DVDReadBlocksUDF( dvd_file, (uint32_t) seek_sector,
                              (size_t) numsec, secbuf, DVDINPUT_NOFLAGS );
-@@ -1302,6 +1440,7 @@
+@@ -1303,6 +1442,7 @@
      ret = DVDReadBlocksPath( dvd_file, seek_sector,
                               (size_t) numsec, secbuf, DVDINPUT_NOFLAGS );
    }
@@ -253,10 +267,10 @@ diff -uwr libdvdread-4.2.0/src/dvd_reader.c xbmc/lib/libdvd/libdvdread/src/dvd_r
  
    if( ret != (int) numsec ) {
      free( secbuf_base );
-Only in xbmc/lib/libdvd/libdvdread: version.h
-diff -uwr libdvdread-4.2.0/version.sh xbmc/lib/libdvd/libdvdread/version.sh
---- libdvdread-4.2.0/version.sh	2008-05-01 11:27:16 +0200
-+++ xbmc/lib/libdvd/libdvdread/version.sh	2013-02-07 14:42:34 +0100
+Only in xbmc/lib/libdvd/libdvdread/: version.h
+diff -uwr libdvdread-4.2.1/version.sh xbmc/lib/libdvd/libdvdread/version.sh
+--- libdvdread-4.2.1/version.sh	Thu May  1 10:27:16 2008
++++ xbmc/lib/libdvd/libdvdread/version.sh	Sun Jan 26 19:00:58 2014
 @@ -1,18 +1,18 @@
 -#!/bin/sh
 -
