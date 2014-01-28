@@ -170,6 +170,12 @@ void CLinuxTimezone::OnSettingChanged(const CSetting *setting)
   }
 }
 
+void CLinuxTimezone::OnSettingsLoaded()
+{
+  SetTimezone(CSettings::Get().GetString("locale.timezone"));
+  CDateTime::ResetTimezoneBias();
+}
+
 vector<CStdString> CLinuxTimezone::GetCounties()
 {
    return m_counties;
