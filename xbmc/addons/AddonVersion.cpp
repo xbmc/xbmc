@@ -107,21 +107,28 @@ namespace ADDON
 
   bool AddonVersion::operator<(const AddonVersion& other) const
   {
-    if (Epoch() != other.Epoch())
-      return Epoch() < other.Epoch();
-
-    int result = CompareComponent(Upstream(), other.Upstream());
-    if (result)
-      return (result < 0);
-
-    return (CompareComponent(Revision(), other.Revision()) < 0);
+    return compare(other) < 0;
   }
 
   bool AddonVersion::operator==(const AddonVersion& other) const
   {
-    return Epoch() == other.Epoch()
-      && CompareComponent(Upstream(), other.Upstream()) == 0
-      && CompareComponent(Revision(), other.Revision()) == 0;
+    return compare(other) == 0;
+  }
+
+  int AddonVersion::compare(const AddonVersion& other) const
+  {
+    int result = Epoch() - other.Epoch();
+    if (result)
+      return result;
+    result = CompareComponent(Upstream(), other.Upstream());
+    if (result)
+      return result;
+    return CompareComponent(Revision(), other.Revision());
+  }
+
+  bool AddonVersion::empty() const
+  {
+    return m_originalVersion.empty() || m_originalVersion == "0.0.0";
   }
 
   CStdString AddonVersion::Print() const

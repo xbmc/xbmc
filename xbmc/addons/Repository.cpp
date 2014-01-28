@@ -28,6 +28,7 @@
 #include "filesystem/PluginDirectory.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
+#include "threads/SystemClock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -242,9 +243,14 @@ bool CRepositoryUpdateJob::DoWork()
   // check for updates
   CAddonDatabase database;
   database.Open();
-  
+  database.BeginMultipleExecute();
+
+  unsigned int dep_time = 0, invalid_time = 0, update_time = 0, broken_time = 0, getaddon_time = 0;
+
   CTextureDatabase textureDB;
   textureDB.Open();
+  textureDB.BeginMultipleExecute();
+  unsigned int current_time = XbmcThreads::SystemClockMillis();
   for (map<string, AddonPtr>::const_iterator i = addons.begin(); i != addons.end(); ++i)
   {
     // manager told us to feck off
@@ -252,15 +258,17 @@ bool CRepositoryUpdateJob::DoWork()
       break;
 
     AddonPtr newAddon = i->second;
-    bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon);
+    bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon, &database);
     if (!deps_met && newAddon->Props().broken.empty())
       newAddon->Props().broken = "DEPSNOTMET";
+    dep_time += XbmcThreads::SystemClockMillis() - current_time; current_time = XbmcThreads::SystemClockMillis();
 
     // invalidate the art associated with this item
     if (!newAddon->Props().fanart.empty())
       textureDB.InvalidateCachedTexture(newAddon->Props().fanart);
     if (!newAddon->Props().icon.empty())
       textureDB.InvalidateCachedTexture(newAddon->Props().icon);
+    invalid_time += XbmcThreads::SystemClockMillis() - current_time; current_time = XbmcThreads::SystemClockMillis();
 
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(newAddon->ID(),addon);
@@ -287,14 +295,15 @@ bool CRepositoryUpdateJob::DoWork()
                                               addon->Name(),TOAST_DISPLAY_TIME,false,TOAST_DISPLAY_TIME);
       }
     }
+    update_time += XbmcThreads::SystemClockMillis() - current_time; current_time = XbmcThreads::SystemClockMillis();
 
     // Check if we should mark the add-on as broken.  We may have a newer version
     // of this add-on in the database or installed - if so, we keep it unbroken.
     bool haveNewer = addon && addon->Version() > newAddon->Version();
     if (!haveNewer)
     {
-      AddonPtr dbAddon;
-      haveNewer = database.GetAddon(newAddon->ID(), dbAddon) && dbAddon->Version() > newAddon->Version();
+      haveNewer = database.GetAddonVersion(newAddon->ID()) > newAddon->Version();
+      getaddon_time += XbmcThreads::SystemClockMillis() - current_time; current_time = XbmcThreads::SystemClockMillis();
     }
     if (!haveNewer)
     {
@@ -314,8 +323,14 @@ bool CRepositoryUpdateJob::DoWork()
       }
       database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
     }
+    broken_time += XbmcThreads::SystemClockMillis() - current_time; current_time = XbmcThreads::SystemClockMillis();
   }
+  database.CommitMultipleExecute();
+  broken_time += XbmcThreads::SystemClockMillis() - current_time; current_time = XbmcThreads::SystemClockMillis();
+  textureDB.CommitMultipleExecute();
+  invalid_time += XbmcThreads::SystemClockMillis() - current_time; current_time = XbmcThreads::SystemClockMillis();
 
+  CLog::Log(LOGDEBUG, "%s TIMING: dep %u, invalid %u, update %u, broken %u, getaddon %u", __FUNCTION__, dep_time, invalid_time, update_time, broken_time, getaddon_time);
   return true;
 }
 

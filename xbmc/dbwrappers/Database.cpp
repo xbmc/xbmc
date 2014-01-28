@@ -106,6 +106,7 @@ CDatabase::CDatabase(void)
   m_openCount = 0;
   m_sqlite = true;
   m_bMultiWrite = false;
+  m_multipleExecute = false;
 }
 
 CDatabase::~CDatabase(void)
@@ -193,8 +194,35 @@ bool CDatabase::DeleteValues(const CStdString &strTable, const Filter &filter /*
   return ExecuteQuery(strQuery);
 }
 
+bool CDatabase::BeginMultipleExecute()
+{
+  m_multipleExecute = true;
+  return true;
+}
+
+bool CDatabase::CommitMultipleExecute()
+{
+  m_multipleExecute = false;
+  BeginTransaction();
+  for (std::vector<std::string>::const_iterator i = m_multipleQueries.begin(); i != m_multipleQueries.end(); ++i)
+  {
+    if (!ExecuteQuery(*i))
+    {
+      RollbackTransaction();
+      return false;
+    }
+  }
+  return true;
+}
+
 bool CDatabase::ExecuteQuery(const CStdString &strQuery)
 {
+  if (m_multipleExecute)
+  {
+    m_multipleQueries.push_back(strQuery);
+    return true;
+  }
+
   bool bReturn = false;
 
   try
@@ -444,6 +472,9 @@ bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSett
   if (m_pDB->connect(create) != DB_CONNECTION_OK)
     return false;
 
+  // allow subclasses to modify the connection once connected
+  OnConnect();
+
   try
   {
     // test if db already exists, if not we need to create the tables
@@ -547,6 +578,7 @@ void CDatabase::Close()
   }
 
   m_openCount = 0;
+  m_multipleExecute = false;
 
   if (NULL == m_pDB.get() ) return ;
   if (NULL != m_pDS.get()) m_pDS->close();
