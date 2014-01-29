@@ -291,3 +291,16 @@ bool CPVRChannelGroupsContainer::CreateChannelEpgs(void)
   return m_groupsRadio->CreateChannelEpgs() &&
          m_groupsTV->CreateChannelEpgs();
 }
+
+CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetPreviousPlayedGroup(void)
+{
+  CSingleLock lock(m_critSection);
+  return m_lastPlayedGroups[0];
+}
+
+void CPVRChannelGroupsContainer::SetLastPlayedGroup(CPVRChannelGroupPtr group)
+{
+  CSingleLock lock(m_critSection);
+  m_lastPlayedGroups[0] = m_lastPlayedGroups[1];
+  m_lastPlayedGroups[1] = group;
+}

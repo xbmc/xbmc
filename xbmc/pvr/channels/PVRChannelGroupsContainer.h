@@ -188,6 +188,18 @@ namespace PVR
      */
     bool CreateChannelEpgs(void);
 
+    /*!
+     * @brief Return the group which was previous played.
+     * @return The group which was previous played.
+     */
+    CPVRChannelGroupPtr GetPreviousPlayedGroup(void);
+
+    /*!
+     * @brief Set the last played group.
+     * @param The last played group
+     */
+    void SetLastPlayedGroup(CPVRChannelGroupPtr group);
+
   protected:
     /*!
      * @brief Update the contents of all the groups in this container.
@@ -201,5 +213,6 @@ namespace PVR
     CCriticalSection   m_critSection;
     bool               m_bUpdateChannelsOnly;
     bool               m_bIsUpdating;
+    CPVRChannelGroupPtr m_lastPlayedGroups[2]; /*!< used to store the last played groups */
   };
 }
