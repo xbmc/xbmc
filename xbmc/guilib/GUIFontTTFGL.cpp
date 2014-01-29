@@ -206,6 +206,10 @@ void CGUIFontTTFGL::LastEnd()
     std::vector<SVertex> vecVertices;
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
+      // Apply the clip rectangle
+      CRect clip = g_Windowing.ClipRectToScissorRect(m_vertexTrans[i].clip);
+      g_Windowing.SetScissors(clip);
+
       // Apply the translation to the currently active (top-of-stack) model view matrix
       glMatrixModview.Push();
       glMatrixModview.Get().Translatef(m_vertexTrans[i].translateX, m_vertexTrans[i].translateY, m_vertexTrans[i].translateZ);
@@ -232,6 +236,8 @@ void CGUIFontTTFGL::LastEnd()
 
       glMatrixModview.Pop();
     }
+    // Restore the original scissor rectangle
+    g_Windowing.ResetScissors();
     // Restore the original model view matrix
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
   }

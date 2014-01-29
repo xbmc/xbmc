@@ -493,7 +493,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
                             scrolling,
                             XbmcThreads::SystemClockMillis(),
                             dirtyCache) = *static_cast<CGUIFontCacheDynamicValue *>(&tempVertices);
-      m_vertexTrans.push_back(CTranslatedVertices(0, 0, 0, tempVertices));
+      m_vertexTrans.push_back(CTranslatedVertices(0, 0, 0, tempVertices, g_graphicsContext.GetClipRegion()));
     }
     else
     {
@@ -510,7 +510,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
   else
   {
     if (hardwareClipping)
-      m_vertexTrans.push_back(CTranslatedVertices(dynamicPos.m_x, dynamicPos.m_y, dynamicPos.m_z, vertices));
+      m_vertexTrans.push_back(CTranslatedVertices(dynamicPos.m_x, dynamicPos.m_y, dynamicPos.m_z, vertices, g_graphicsContext.GetClipRegion()));
     else
       /* Append the vertices from the cache to the set collected since the first Begin() call */
       m_vertex.insert(m_vertex.end(), vertices->begin(), vertices->end());
