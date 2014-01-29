@@ -76,6 +76,22 @@ EClientQuirks GetClientQuirks(const PLT_HttpRequestContext* context)
 }
 
 /*----------------------------------------------------------------------
+|  GetMediaControllerQuirks
++---------------------------------------------------------------------*/
+EMediaControllerQuirks GetMediaControllerQuirks(const PLT_DeviceData *device)
+{
+    if (device == NULL)
+        return EMEDIACONTROLLERQUIRKS_NONE;
+
+    unsigned int quirks = 0;
+
+    if (device->m_Manufacturer.Find("Samsung Electronics") >= 0)
+        quirks |= EMEDIACONTROLLERQUIRKS_X_MKV;
+
+    return (EMediaControllerQuirks)quirks;
+}
+
+/*----------------------------------------------------------------------
 |   GetMimeType
 +---------------------------------------------------------------------*/
 NPT_String
