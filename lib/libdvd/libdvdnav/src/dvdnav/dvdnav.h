@@ -275,7 +275,7 @@ dvdnav_status_t dvdnav_part_play(dvdnav_t *self, int32_t title, int32_t part);
 /*
  * Plays the specified title, starting from the specified program
  */
-dvdnav_status_t dvdnav_program_play(dvdnav_t *this, int32_t title, int32_t pgcn, int32_t pgn);
+dvdnav_status_t dvdnav_program_play(dvdnav_t *self, int32_t title, int32_t pgcn, int32_t pgn);
 
 /*
  * Stores in *times an array (that the application *must* free) of
@@ -384,7 +384,7 @@ dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t *this,
  * Stop playing the current position and start playback of the title
  * from the specified timecode.
  *
- * Currently unimplemented!
+ * Currently implemented using interpolation, which is slightly inaccurate.
  */
 dvdnav_status_t dvdnav_time_search(dvdnav_t *self,
 				   uint64_t time);

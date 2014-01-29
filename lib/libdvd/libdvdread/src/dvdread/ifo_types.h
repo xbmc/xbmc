@@ -301,6 +301,7 @@ typedef struct {
   pgc_program_map_t  *program_map;
   cell_playback_t *cell_playback;
   cell_position_t *cell_position;
+  int      ref_count;
 } ATTRIBUTE_PACKED pgc_t;
 #define PGC_SIZE 236U
 
@@ -326,6 +327,7 @@ typedef struct {
   uint16_t zero_1;
   uint32_t last_byte;
   pgci_srp_t *pgci_srp;
+  int      ref_count;
 } ATTRIBUTE_PACKED pgcit_t;
 #define PGCIT_SIZE 8U
 

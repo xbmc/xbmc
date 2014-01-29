@@ -59,7 +59,7 @@
 #endif
 
 /*
-#define STRICT
+#define DVDNAV_STRICT
 */
 
 /* Local prototypes */
@@ -272,7 +272,7 @@ static int ifoOpenNewVTSI(vm_t *vm, dvd_reader_t *dvd, int vtsN) {
 /* Initialisation & Destruction */
 
 vm_t* vm_new_vm() {
-  return (vm_t*)calloc(sizeof(vm_t), sizeof(char));
+  return (vm_t*)calloc(1, sizeof(vm_t));
 }
 
 void vm_free_vm(vm_t *vm) {
@@ -357,6 +357,8 @@ int vm_reset(vm_t *vm, const char *dvdroot) {
   (vm->state).rsm_blockN         = 0;
 
   (vm->state).vtsN               = -1;
+
+  vm->hop_channel                = 0;
 
   if (vm->dvd && dvdroot) {
     /* a new dvd device has been requested */
@@ -1144,7 +1146,7 @@ static link_t play_Cell(vm_t *vm) {
     case 1: /*  Angle block */
       /* Loop and check each cell instead? So we don't get outside the block? */
       (vm->state).cellN += (vm->state).AGL_REG - 1;
-#ifdef STRICT
+#ifdef DVDNAV_STRICT
       assert((vm->state).cellN <= (vm->state).pgc->nr_of_cells);
       assert((vm->state).pgc->cell_playback[(vm->state).cellN - 1].block_mode != 0);
       assert((vm->state).pgc->cell_playback[(vm->state).cellN - 1].block_type == 1);
@@ -1777,7 +1779,8 @@ static int set_PGCN(vm_t *vm, int pgcN) {
   pgcit_t *pgcit;
 
   pgcit = get_PGCIT(vm);
-  assert(pgcit != NULL);  /* ?? Make this return -1 instead */
+  if (pgcit == NULL)
+    return 0;
 
   if(pgcN < 1 || pgcN > pgcit->nr_of_pgci_srp) {
 #ifdef TRACE

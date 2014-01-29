@@ -203,7 +203,7 @@ int64_t dvdnav_convert_time(dvd_time_t *time) {
   int64_t result;
   int64_t frames;
 
-  result  = (time->hour    >> 4  ) * 10 * 60 * 60 * 90000;
+  result  = (time->hour    >> 4  ) * 10 * 60 * 60 * 90000ull;
   result += (time->hour    & 0x0f)      * 60 * 60 * 90000;
   result += (time->minute  >> 4  )      * 10 * 60 * 90000;
   result += (time->minute  & 0x0f)           * 60 * 90000;
@@ -336,10 +336,9 @@ static int32_t dvdnav_get_vobu(dvdnav_t *this, dsi_t *nav_dsi, pci_t *nav_pci, d
     dvdnav_angle_change(this, 1);
   }
 #endif
-
   /* only use ILVU information if we are at the last vobunit in ILVU */
   /* otherwise we will miss nav packets from vobunits inbetween */
-  if(num_angle != 0 && (nav_dsi->sml_pbi.category & 0x5000) == 0x5000 ) {
+  if(num_angle != 0 && (nav_dsi->sml_pbi.category & DSI_ILVU_MASK) == (DSI_ILVU_BLOCK | DSI_ILVU_LAST)) {
 
     if((next = nav_pci->nsml_agli.nsml_agl_dsta[angle-1]) != 0) {
       if((next & 0x3fffffff) != 0) {
@@ -1163,7 +1162,7 @@ user_ops_t dvdnav_get_restrictions(dvdnav_t* this) {
   union {
     user_ops_t ops_struct;
     uint32_t   ops_int;
-  } ops;
+  } ops, tmp;
 
   ops.ops_int = 0;
 
@@ -1171,16 +1170,19 @@ user_ops_t dvdnav_get_restrictions(dvdnav_t* this) {
     printerr("Passed a NULL pointer.");
     return ops.ops_struct;
   }
+
   if(!this->started) {
     printerr("Virtual DVD machine not started.");
     return ops.ops_struct;
   }
 
   pthread_mutex_lock(&this->vm_lock); 
-  ops.ops_int |= *(uint32_t*)&this->pci.pci_gi.vobu_uop_ctl;
+  ops.ops_struct = this->pci.pci_gi.vobu_uop_ctl;
 
-  if(this->vm && this->vm->state.pgc)
-    ops.ops_int |= *(uint32_t*)&this->vm->state.pgc->prohibited_ops;
+  if(this->vm && this->vm->state.pgc) {
+    tmp.ops_struct = this->vm->state.pgc->prohibited_ops;
+    ops.ops_int |= tmp.ops_int;
+  }
   pthread_mutex_unlock(&this->vm_lock);
 
   return ops.ops_struct;
@@ -1444,4 +1446,3 @@ void dvdnav_unlock(dvdnav_t *self)
 }
 
 #endif // _XBMC
-
