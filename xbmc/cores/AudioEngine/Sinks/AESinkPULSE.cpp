@@ -282,7 +282,10 @@ static pa_channel_map AEChannelMapToPAChannel(CAEChannelInfo info)
   {
     pos = AEChannelToPAChannel(info[i]);
     if(pos != PA_CHANNEL_POSITION_INVALID)
-      map.channels++;
+    {
+      // remember channel name and increase channel count
+      map.map[map.channels++] = pos;
+    }
   }
   return map;
 }
@@ -443,7 +446,10 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   info[0] = pa_format_info_new();
   info[0]->encoding = AEFormatToPulseEncoding(format.m_dataFormat);
   if(!passthrough)
+  {
     pa_format_info_set_sample_format(info[0], AEFormatToPulseFormat(format.m_dataFormat));
+    pa_format_info_set_channel_map(info[0], &map);
+  }
   pa_format_info_set_channels(info[0], m_Channels);
 
   // PA requires m_encodedRate in order to do EAC3
@@ -473,7 +479,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   pa_sample_spec spec;
   #if PA_CHECK_VERSION(2,0,0)
-    pa_format_info_to_sample_spec(info[0], &spec, &map);
+    pa_format_info_to_sample_spec(info[0], &spec, NULL);
   #else
     spec.rate = (AEFormatToPulseEncoding(format.m_dataFormat) == PA_ENCODING_EAC3_IEC61937) ? 4 * samplerate : samplerate;
     spec.format = AEFormatToPulseFormat(format.m_dataFormat);
