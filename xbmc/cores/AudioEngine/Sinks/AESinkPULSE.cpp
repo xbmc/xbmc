@@ -282,7 +282,10 @@ static pa_channel_map AEChannelMapToPAChannel(CAEChannelInfo info)
   {
     pos = AEChannelToPAChannel(info[i]);
     if(pos != PA_CHANNEL_POSITION_INVALID)
-      map.channels++;
+    {
+      // remember channel name and increase channel count
+      map.map[map.channels++] = pos;
+    }
   }
   return map;
 }
