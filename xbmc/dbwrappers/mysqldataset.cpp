@@ -155,7 +155,7 @@ int MysqlDatabase::connect(bool create_new) {
         char sqlcmd[512];
         int ret;
 
-        sprintf(sqlcmd, "CREATE DATABASE `%s`", db.c_str());
+        sprintf(sqlcmd, "CREATE DATABASE `%s` CHARACTER SET utf8 COLLATE utf8_general_ci", db.c_str());
         if ( (ret=query_with_reconnect(sqlcmd)) != MYSQL_OK )
         {
           throw DbErrors("Can't create new database: '%s' (%d)", db.c_str(), ret);
@@ -250,7 +250,7 @@ int MysqlDatabase::copy(const char *backup_name) {
     }
 
     // create the new database
-    sprintf(sql, "CREATE DATABASE `%s`", backup_name);
+    sprintf(sql, "CREATE DATABASE `%s` CHARACTER SET utf8 COLLATE utf8_general_ci", backup_name);
     if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
     {
       mysql_free_result(res);
@@ -1375,7 +1375,8 @@ int MysqlDataset::exec(const string &sql) {
   }
 
   // force the charset and collation to UTF-8
-  if ( ci_find(qry, "CREATE TABLE") != string::npos )
+  if ( ci_find(qry, "CREATE TABLE") != string::npos 
+    || ci_find(qry, "CREATE TEMPORARY TABLE") != string::npos )
   {
     qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }

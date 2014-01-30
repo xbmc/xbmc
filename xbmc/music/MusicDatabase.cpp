@@ -2498,10 +2498,13 @@ bool CMusicDatabase::CleanupArtists()
     // (nested queries by Bobbin007)
     // must be executed AFTER the song, album and their artist link tables are cleaned.
     // don't delete the "Various Artists" string
-    CStdString strSQL = "delete from artist where idArtist not in (select idArtist from song_artist)";
-    strSQL += " and idArtist not in (select idArtist from album_artist)";
-    CStdString strSQL2;
-    m_pDS->exec(strSQL.c_str());
+
+    // Create temp table to avoid 1442 trigger hell on mysql
+    m_pDS->exec("CREATE TEMPORARY TABLE tmp_delartists (idArtist integer)");
+    m_pDS->exec("INSERT INTO tmp_delartists select idArtist from song_artist");
+    m_pDS->exec("INSERT INTO tmp_delartists select idArtist from album_artist");
+    m_pDS->exec("delete from artist where idArtist not in (select idArtist from tmp_delartists)");
+    m_pDS->exec("DROP TABLE tmp_delartists");
     return true;
   }
   catch (...)
