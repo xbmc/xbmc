@@ -55,7 +55,7 @@ void CAESinkPi::SetAudioDest()
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
   OMX_CONFIG_BRCMAUDIODESTINATIONTYPE audioDest;
   OMX_INIT_STRUCTURE(audioDest);
-  if (CSettings::Get().GetString("audiooutput.audiodevice") == "Pi:Analogue")
+  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
     strncpy((char *)audioDest.sName, "local", strlen("local"));
   else
     strncpy((char *)audioDest.sName, "hdmi", strlen("hdmi"));
