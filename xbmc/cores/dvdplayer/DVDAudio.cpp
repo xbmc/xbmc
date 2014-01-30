@@ -260,6 +260,8 @@ unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
     {
       m_iBufferSize = 0;
       CLog::Log(LOGERROR, "%s - failed to add leftover bytes to render", __FUNCTION__);
+      // we may have lost sync on an audio frame, flush stream to recover
+      Flush();
       return copied;
     }
 
