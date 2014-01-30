@@ -208,7 +208,10 @@ FLAC__StreamDecoderReadStatus FLACCodec::DecoderReadCallback(const FLAC__StreamD
 
   *bytes=pThis->m_file.Read(buffer, *bytes);
 
-  return FLAC__STREAM_DECODER_READ_STATUS_CONTINUE;
+  if (*bytes==0)
+    return FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM;
+  else
+    return FLAC__STREAM_DECODER_READ_STATUS_CONTINUE;
 }
 
 FLAC__StreamDecoderSeekStatus FLACCodec::DecoderSeekCallback(const FLAC__StreamDecoder *decoder, FLAC__uint64 absolute_byte_offset, void *client_data)
