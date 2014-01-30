@@ -58,6 +58,7 @@ static bool CanSurfaceRenderWhiteList(const std::string &name)
     "OMX.Nvidia",
     "OMX.rk",
     "OMX.qcom",
+    "OMX.Intel",
     NULL
   };
   for (const char **ptr = cansurfacerender_decoders; *ptr; ptr++)
@@ -916,9 +917,9 @@ void CDVDVideoCodecAndroidMediaCodec::OutputFormatChanged(void)
   else
   {
     // Android device quirks and fixes
-    if (stride <= 0)
+    if (stride <= width)
         stride = width;
-    if (slice_height <= 0)
+    if (slice_height <= height)
     {
       slice_height = height;
       if (color_format == CJNIMediaCodecInfoCodecCapabilities::COLOR_FormatYUV420Planar)
