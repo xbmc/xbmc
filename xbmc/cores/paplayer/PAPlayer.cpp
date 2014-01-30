@@ -520,6 +520,18 @@ bool PAPlayer::CloseFile(bool reopen)
 
   /* wait for the thread to terminate */
   StopThread(true);//true - wait for end of thread
+
+  // wait for any pending jobs to complete
+  {
+    CSharedLock lock(m_streamsLock);
+    while (m_jobCounter > 0)
+    {
+      lock.Leave();
+      m_jobEvent.WaitMSec(100);
+      lock.Enter();
+    }
+  }
+
   return true;
 }
 
@@ -551,17 +563,6 @@ void PAPlayer::Process()
     }
 
     GetTimeInternal(); //update for GUI
-  }
-
-  // wait for any pending jobs to complete
-  {
-    CSharedLock lock(m_streamsLock);
-    while (m_jobCounter > 0)
-    {
-      lock.Leave();
-      m_jobEvent.WaitMSec(100);
-      lock.Enter();
-    }
   }
 
   if(m_isFinished && !m_bStop)
