@@ -137,8 +137,10 @@ void CGUIButtonControl::ProcessText(unsigned int currentTime)
                   m_label2.GetRenderRect() != label2RenderRect);
 
     changed |= m_label2.SetColor(GetTextColor());
+    changed |= m_label2.Process(currentTime);
   }
   changed |= m_label.SetColor(GetTextColor());
+  changed |= m_label.Process(currentTime);
   if (changed)
     MarkDirtyRegion();
 }
