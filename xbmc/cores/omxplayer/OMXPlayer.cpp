@@ -868,16 +868,27 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
   OMXSelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
   PredicateSubtitleFilter psf(as.language);
   streams = m_SelectionStreams.RemoveIf(STREAM_SUBTITLE, psf);
+  bool relevant = true;
   PredicateSubtitlePriority psp(as.language);
-  std::stable_sort(streams.begin(), streams.end(), psp);
+  if (streams.empty())
+  {
+    // no relevant subtitles found ==> don't show any subtitle
+    relevant = false;
+    streams = m_SelectionStreams.Get(STREAM_SUBTITLE, psp);
+  }
+  else
+    std::stable_sort(streams.begin(), streams.end(), psp);
+
   valid   = false;
   for(OMXSelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
     if(OpenSubtitleStream(it->id, it->source))
     {
       valid = true;
-      if(it->flags & CDemuxStream::FLAG_FORCED)
+      if(relevant && it->flags & CDemuxStream::FLAG_FORCED)
         SetSubtitleVisibleInternal(true);
+      if (!relevant)
+        SetSubtitleVisibleInternal(false);
     }
   }
   if(!valid)
