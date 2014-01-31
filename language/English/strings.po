@@ -9846,7 +9846,12 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr ""
 
-#empty strings from id 20322 to 20323
+#empty string with id 20322
+
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr ""
 
 msgctxt "#20324"
 msgid "Play part..."
