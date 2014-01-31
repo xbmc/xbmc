@@ -31,6 +31,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "guilib/Key.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/VideoSettings.h"
@@ -114,7 +115,9 @@ CGUIDialogSubtitles::~CGUIDialogSubtitles(void)
 
 bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
 {
-  if  (message.GetMessage() == GUI_MSG_CLICKED)
+  if  (message.GetMessage() == GUI_MSG_CLICKED &&
+       (message.GetParam1() == ACTION_SELECT_ITEM ||
+        message.GetParam1() == ACTION_MOUSE_LEFT_CLICK))
   {
     int iControl = message.GetSenderId();
 
