@@ -505,4 +505,7 @@ protected:
   bool m_HasAudio;
 
   bool m_DemuxerPausePending;
+
+private:
+  virtual void SetSubtitleVisibleInternal(bool bVisible);
 };

@@ -862,7 +862,7 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
     CloseAudioStream(true);
 
   // enable  or disable subtitles
-  SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+  SetSubtitleVisibleInternal(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
   // open subtitle stream
   OMXSelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
@@ -877,7 +877,7 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
     {
       valid = true;
       if(it->flags & CDemuxStream::FLAG_FORCED)
-        m_omxPlayerVideo.EnableSubtitle(true);
+        SetSubtitleVisibleInternal(true);
     }
   }
   if(!valid)
@@ -885,7 +885,7 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
     CloseSubtitleStream(true);
     if (m_pInputStream && !(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY)))
     {
-      SetSubtitleVisible(false);
+      SetSubtitleVisibleInternal(false);
       if (GetSubtitleCount() > 0 && CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream == -1)
         CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = 0;
     }
@@ -2492,11 +2492,7 @@ void COMXPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE))
       {
         CDVDMsgBool* pValue = (CDVDMsgBool*)pMsg;
-
-        m_omxPlayerVideo.EnableSubtitle(pValue->m_value);
-
-        if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-          static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->EnableSubtitleStream(pValue->m_value);
+        SetSubtitleVisibleInternal(pValue->m_value);
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_STATE))
       {
@@ -3096,6 +3092,15 @@ void COMXPlayer::SetSubtitleVisible(bool bVisible)
   m_messenger.Put(new CDVDMsgBool(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE, bVisible));
 }
 
+void COMXPlayer::SetSubtitleVisibleInternal(bool bVisible)
+{
+  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
+  m_omxPlayerVideo.EnableSubtitle(bVisible);
+
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->EnableSubtitleStream(bVisible);
+}
+
 int COMXPlayer::GetAudioStreamCount()
 {
   return m_SelectionStreams.Count(STREAM_AUDIO);
@@ -3436,14 +3441,14 @@ bool COMXPlayer::AdaptForcedSubtitles()
         if(OpenSubtitleStream(it->id, it->source))
         {
           valid = true;
-          SetSubtitleVisible(true);
+          SetSubtitleVisibleInternal(true);
         }
       }
     }
     if(!valid)
     {
       CloseSubtitleStream(true);
-      SetSubtitleVisible(false);
+      SetSubtitleVisibleInternal(false);
     }
   }
   return valid;
@@ -3740,7 +3745,7 @@ int COMXPlayer::OnDVDNavResult(void* pData, int iMessage)
         int iStream = event->physical_wide;
         bool visible = !(iStream & 0x80);
 
-        SetSubtitleVisible(visible);
+        SetSubtitleVisibleInternal(visible);
 
         if (iStream >= 0)
           m_dvd.iSelectedSPUStream = (iStream & ~0x80);
