@@ -20,6 +20,10 @@
 
 //#define DEBUG_VERBOSE 1
 
+#ifdef HAS_IMXVPU
+#include <linux/mxcfb.h>
+#endif
+
 #include "system.h"
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
@@ -63,6 +67,11 @@
 #ifdef TARGET_DARWIN_IOS
 #include "osx/DarwinUtils.h"
 #endif
+
+#ifdef HAS_IMXVPU
+#include "DVDCodecs/Video/DVDVideoCodecIMX.h"
+#endif
+
 #if defined(HAS_LIBSTAGEFRIGHT)
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -100,6 +109,10 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
 #if defined(TARGET_ANDROID)
   mediacodec = NULL;
 #endif
+#ifdef HAS_IMXVPU
+  imxOutputFrame = NULL;
+#endif
+
 }
 
 CLinuxRendererGLES::YUVBUFFER::~YUVBUFFER()
@@ -109,6 +122,23 @@ CLinuxRendererGLES::YUVBUFFER::~YUVBUFFER()
 CLinuxRendererGLES::CLinuxRendererGLES()
 {
   m_textureTarget = GL_TEXTURE_2D;
+
+    /* FIXME a verifier */
+#if 0
+
+  for (int i = 0; i < NUM_BUFFERS; i++)
+  {
+#if defined(HAVE_LIBOPENMAX)
+    m_buffers[i].openMaxBuffer = 0;
+#endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+    m_buffers[i].cvBufferRef = NULL;
+#endif
+#ifdef HAS_IMXVPU
+    m_buffers[i].imx = NULL;
+#endif
+  }
+#endif
 
   m_renderMethod = RENDER_GLSL;
   m_oldRenderMethod = m_renderMethod;
@@ -498,18 +528,53 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
 
     CRect old = g_graphicsContext.GetScissors();
+    RESOLUTION res = GetResolution();
+    int iWidth = CDisplaySettings::Get().GetResolutionInfo(res).iWidth;
+    int iHeight = CDisplaySettings::Get().GetResolutionInfo(res).iHeight;
 
     g_graphicsContext.BeginPaint();
-    g_graphicsContext.SetScissors(m_destRect);
+    if (clear)
+    {
+      glScissor(0,
+                0,
+                iWidth,
+                iHeight);
+      glClearColor(GLfloat(0.0), GLfloat(0.0), GLfloat(0.0), 0);
+      glClear(GL_COLOR_BUFFER_BIT);
+    }
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClearColor(0, 0, 0, 0);
+    g_graphicsContext.SetScissors(m_destRect);
+   /* CLog::Log(LOGDEBUG, "%s - m_destRect : %f %f %f %f\n",
+              __FUNCTION__, m_destRect.x1,  m_destRect.x2, m_destRect.y1,m_destRect.y2);*/
+
+
+/*    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+    glClearColor(GLfloat(2.0/31.0), GLfloat(2.0/63.0), GLfloat(2.0/31.0), 0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     g_graphicsContext.SetScissors(old);
     g_graphicsContext.EndPaint();
+
+#ifdef HAS_IMXVPU
+    // FIXME : move in its own render mode instead of mixup with BYPASS
+    if (m_format == RENDER_FMT_IMX)
+    {
+      int index = m_iYV12RenderBuffer;
+      struct v4l2_crop crop;
+      crop.c.top = (int)m_destRect.y1;
+      crop.c.left = (int)m_destRect.x1;
+      crop.c.width =  (int)(m_destRect.x2 -  m_destRect.x1);
+      crop.c.height = (int)(m_destRect.y2 - m_destRect.y1);
+      CIMXOutputFrame *imxPicture = m_buffers[index].imxOutputFrame;
+      if (imxPicture != NULL)
+      {
+        imxPicture->Render(crop);
+        m_buffers[index].imxOutputFrame = NULL;
+      }
+    }
     return;
+#endif
   }
 
   // this needs to be checked after texture validation
@@ -596,6 +661,9 @@ unsigned int CLinuxRendererGLES::PreInit()
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   m_formats.push_back(RENDER_FMT_CVBREF);
+#endif
+#ifdef HAS_IMXVPU
+  m_formats.push_back(RENDER_FMT_IMX);
 #endif
 #ifdef HAS_LIBSTAGEFRIGHT
   m_formats.push_back(RENDER_FMT_EGLIMG);
@@ -726,6 +794,13 @@ void CLinuxRendererGLES::LoadShaders(int field)
         m_renderMethod = RENDER_CVREF;
         break;
       }
+      else if (m_format == RENDER_FMT_IMX)
+      {
+        CLog::Log(LOGNOTICE, "GL: IMX format Uses BYPASS render method");
+        m_renderMethod = RENDER_BYPASS;
+        break;
+      }
+      
       #if defined(TARGET_DARWIN_IOS)
       else if (ios_version < 5.0 && m_format == RENDER_FMT_YUV420P)
       {
@@ -890,6 +965,18 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
     SAFE_RELEASE(buf.mediacodec);
   }
 #endif
+#ifdef HAS_IMXVPU
+  if (buf.imxOutputFrame != NULL)
+  {
+    // If we take that branch the buffer was not queued to V4L2
+    // So release the picture now so that VPU will be given
+    // the buffer back as soon as next ::Decode() call
+    buf.imxOutputFrame->Release();
+    buf.imxOutputFrame = NULL;
+  }
+  return;
+#endif
+
 }
 
 void CLinuxRendererGLES::Render(DWORD flags, int index)
@@ -2667,6 +2754,15 @@ void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef, int index)
   CVBufferRetain(buf.cvBufferRef);
 }
 #endif
+
+#ifdef HAS_IMXVPU
+void CLinuxRendererGLES::AddProcessor(CIMXOutputFrame *imx, int index)
+{
+  YUVBUFFER &buf = m_buffers[index];
+  buf.imxOutputFrame = imx;
+}
+#endif
+
 #ifdef HAS_LIBSTAGEFRIGHT
 void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index)
 {
@@ -2687,6 +2783,7 @@ void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKH
 #endif
 }
 #endif
+
 
 #if defined(TARGET_ANDROID)
 void CLinuxRendererGLES::AddProcessor(CDVDMediaCodecInfo *mediacodec, int index)
