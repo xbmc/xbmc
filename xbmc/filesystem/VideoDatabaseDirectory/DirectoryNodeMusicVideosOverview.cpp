@@ -77,6 +77,7 @@ bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items) const
 
     pItem->m_bIsFolder = true;
     pItem->SetCanQueue(false);
+    pItem->SetSpecialSort(SortSpecialOnTop);
     items.Add(pItem);
   }
 

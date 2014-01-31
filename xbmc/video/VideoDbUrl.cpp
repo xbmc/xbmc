@@ -161,7 +161,13 @@ bool CVideoDbUrl::parse()
 
   // add options based on the QueryParams
   if (queryParams.GetActorId() != -1)
-    AddOption("actorid", (int)queryParams.GetActorId());
+  {
+    std::string optionName = "actorid";
+    if (m_type == "musicvideos")
+      optionName = "artistid";
+
+    AddOption(optionName, (int)queryParams.GetActorId());
+  }
   if (queryParams.GetAlbumId() != -1)
     AddOption("albumid", (int)queryParams.GetAlbumId());
   if (queryParams.GetCountryId() != -1)

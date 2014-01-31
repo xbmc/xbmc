@@ -21,6 +21,7 @@
 #include "DirectoryNodeGrouped.h"
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbUrl.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -68,7 +69,12 @@ bool CDirectoryNodeGrouped::GetContent(CFileItemList& items) const
   if (itemType.empty())
     return false;
 
-  return videodatabase.GetItems(BuildPath(), (VIDEODB_CONTENT_TYPE)params.GetContentType(), itemType, items);
+  // make sure to translate all IDs in the path into URL parameters
+  CVideoDbUrl videoUrl;
+  if (!videoUrl.FromString(BuildPath()))
+    return false;
+
+  return videodatabase.GetItems(videoUrl.ToString(), (VIDEODB_CONTENT_TYPE)params.GetContentType(), itemType, items);
 }
 
 std::string CDirectoryNodeGrouped::GetContentType() const

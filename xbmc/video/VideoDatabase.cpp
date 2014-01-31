@@ -5219,20 +5219,23 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+    CVideoDbUrl videoUrl;
+    if (!videoUrl.FromString(strBaseDir))
+      return false;
+
     CStdString strSQL = "select %s from musicvideoview ";
     Filter extFilter = filter;
+    extFilter.fields = PrepareSQL("musicvideoview.c%02d, musicvideoview.idMVideo, actors.strActor", VIDEODB_ID_MUSICVIDEO_ALBUM);
+    extFilter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
+    extFilter.AppendJoin(PrepareSQL("join actors on actors.idActor = artistlinkmusicvideo.idArtist"));
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      extFilter.fields = PrepareSQL("musicvideoview.c%02d, musicvideoview.idMVideo, actors.strActor, path.strPath", VIDEODB_ID_MUSICVIDEO_ALBUM);
-      extFilter.AppendJoin("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo join actors on actors.idActor = artistlinkmusicvideo.idArtist join files on files.idFile = musicvideoview.idFile join path on path.idPath = files.idPath");
+      extFilter.fields += " path.strPath";
+      extFilter.AppendJoin("join files on files.idFile = musicvideoview.idFile join path on path.idPath = files.idPath");
     }
-    else
-    {
-      extFilter.fields = PrepareSQL("musicvideoview.c%02d, musicvideoview.idMVideo, actors.strActor", VIDEODB_ID_MUSICVIDEO_ALBUM);
-      extFilter.AppendJoin("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo join actors on actors.idActor = artistlinkmusicvideo.idArtist");
-    }
+
     if (idArtist > -1)
-      extFilter.AppendWhere(PrepareSQL("artistlinkmusicvideo.idArtist = %i", idArtist));
+      videoUrl.AddOption("artistid", idArtist);
 
     extFilter.AppendGroup(PrepareSQL("musicvideoview.c%02d", VIDEODB_ID_MUSICVIDEO_ALBUM));
 
@@ -5244,8 +5247,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
     }
     strSQL = StringUtils::Format(strSQL.c_str(), !extFilter.fields.empty() ? extFilter.fields.c_str() : "*");
 
-    CVideoDbUrl videoUrl;
-    if (!BuildSQL(strBaseDir, strSQL, extFilter, strSQL, videoUrl))
+    if (!BuildSQL(videoUrl.ToString(), strSQL, extFilter, strSQL, videoUrl))
       return false;
 
     int iRowsFound = RunQuery(strSQL);
@@ -9870,14 +9872,19 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     option = options.find("artistid");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
+      if (itemType != "albums")
+        filter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
       filter.AppendWhere(PrepareSQL("artistlinkmusicvideo.idArtist = %i", (int)option->second.asInteger()));
     }
 
     option = options.find("artist");
     if (option != options.end())
     {
-      filter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo join actors on actors.idActor = artistlinkmusicvideo.idArtist"));
+      if (itemType != "albums")
+      {
+        filter.AppendJoin(PrepareSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo = musicvideoview.idMVideo"));
+        filter.AppendJoin(PrepareSQL("join actors on actors.idActor = artistlinkmusicvideo.idArtist"));
+      }
       filter.AppendWhere(PrepareSQL("actors.strActor like '%s'", option->second.asString().c_str()));
     }
 
