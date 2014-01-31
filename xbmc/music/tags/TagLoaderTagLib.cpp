@@ -129,6 +129,8 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, c
   TagLib::TrueAudio::File*   ttaFile = NULL;
   TagLib::WavPack::File*     wvFile = NULL;
   TagLib::XM::File*          xmFile = NULL;
+  TagLib::RIFF::WAV::File *  wavFile = NULL;
+  TagLib::RIFF::AIFF::File * aiffFile = NULL;
 
   if (strExtension == "ape")
     file = apeFile = new APE::File(stream);
@@ -154,6 +156,10 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, c
     file = ttaFile = new TrueAudio::File(stream, ID3v2::FrameFactory::instance());
   else if (strExtension == "wv")
     file = wvFile = new WavPack::File(stream);
+  else if (strExtension == "aif" || strExtension == "aiff")
+    file = aiffFile = new RIFF::AIFF::File(stream);
+  else if (strExtension == "wav")
+    file = wavFile = new RIFF::WAV::File(stream);
   else if (strExtension == "xm")
     file = xmFile = new XM::File(stream);
   else if (strExtension == "ogg")
@@ -208,6 +214,10 @@ bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, c
     xiph = dynamic_cast<Ogg::XiphComment *>(oggVorbisFile->tag());
   else if (ttaFile)
     id3v2 = ttaFile->ID3v2Tag(false);
+  else if (aiffFile)
+    id3v2 = aiffFile->tag();
+  else if (wavFile)
+    id3v2 = wavFile->tag();
   else if (wvFile)
     ape = wvFile->APETag(false);
   else if (mpcFile)
