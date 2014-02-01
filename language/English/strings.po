@@ -5992,15 +5992,35 @@ msgctxt "#13438"
 msgid "Allow hardware acceleration (amcodec)"
 msgstr ""
 
+#: system/settings/settings.xml
 msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr ""
 
+#: system/settings/settings.xml
 msgctxt "#13440"
 msgid "Allow frame-multi-threaded decoding"
 msgstr ""
 
-#empty strings from id 13441 to 13499
+#. Label for a setting to confiure the video decoding method
+#: system/settings/settings.xml
+msgctxt "#13441"
+msgid "Decoding method"
+msgstr ""
+
+#. Option for video related setting #13441: Decoding method
+#: system/settings/settings.xml
+msgctxt "#13442"
+msgid "Software"
+msgstr ""
+
+#. Option for video related setting #13441: Decoding method
+#: system/settings/settings.xml
+msgctxt "#13443"
+msgid "Hardware accelerated"
+msgstr ""
+
+#empty strings from id 13444 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
@@ -6595,7 +6615,13 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr ""
 
-#empty strings from id 14101 to 15011
+#. Name of a settings category related to video playback
+#: system/settings/settings.xml
+msgctxt "#14101"
+msgid "Processing"
+msgstr ""
+
+#empty strings from id 14102 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -8097,7 +8123,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
+msgid "Synchronise channel groups with backend(s)"
 msgstr ""
 
 msgctxt "#19222"
@@ -10589,7 +10615,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21366"
-msgid "Subtitle folder"
+msgid "Custom subtitle folder"
 msgstr ""
 
 msgctxt "#21367"
@@ -11003,7 +11029,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21460"
-msgid "Subtitle location"
+msgid "Subtitle position"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11055,12 +11081,12 @@ msgstr ""
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
 msgctxt "#21600"
-msgid "Prefer external subtitles"
+msgid "Prefer downloaded subtitles"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21601"
-msgid "Prefer external subtitles to internal ones"
+msgid "Prefer downloaded subtitles to default ones"
 msgstr ""
 
 #: xbmc/Util.cpp
@@ -13675,7 +13701,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13790,7 +13816,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36228"
-msgid "Show the last viewed channel if switching to live tv."
+msgid "Continue with the last viewed channel on startup."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13820,7 +13846,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36234"
-msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgid "Duration of instant recordings when pressing the record button. Defaults to 120 minutes."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14765,7 +14791,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36423"
-msgid "Use frame-multi-threaded decoding instead of hardware accelerated decoding (less reliable than default single thread mode)."
+msgid "Enables frame-multi-threaded decoding. Please note that it's less reliable than default single threaded mode."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14798,7 +14824,19 @@ msgctxt "#36429"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - transcoding can lead to a reduction in sound quality"
 msgstr ""
 
-#empty strings from id 36430 to 36499
+#. Description for setting category #14101: Video Processing
+#: system/settings/settings.xml
+msgctxt "#36430"
+msgid "Configure how videos will be processed. This includes things like decoding and scaling."
+msgstr ""
+
+#. Description for video related setting #13441: Decoding mode 
+#: system/settings/settings.xml
+msgctxt "#36431"
+msgid "Defines how video decoding should be performed in software (requires more CPU) or with hardware acceleration. Please not that [Hardware accelerated] might not apply for all video sources played, even if enabled."
+msgstr ""
+
+#empty strings from id 36432 to 36499
 #end reservation
 
 #: system/settings/settings.xml
