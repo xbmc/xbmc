@@ -3,7 +3,6 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998, 1999, 2000 VideoLAN
- * $Id: common.h 243 2011-10-26 05:01:11Z jb $
  *
  * Authors: Sam Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -34,11 +33,6 @@
 #   include <stdint.h>
 #elif defined( HAVE_INTTYPES_H )
 #   include <inttypes.h>
-#elif defined( SYS_CYGWIN )
-#   include <sys/types.h>
-    /* Cygwin only defines half of these... */
-    typedef u_int8_t            uint8_t;
-    typedef u_int32_t           uint32_t;
 #else
     /* Fallback types (very x86-centric, sorry) */
     typedef unsigned char       uint8_t;
@@ -48,6 +42,7 @@
 #endif
 
 #if defined( WIN32 )
+#   include <io.h>                                             /* _lseeki64 */
 
 #   ifndef PATH_MAX
 #      define PATH_MAX MAX_PATH
@@ -74,6 +69,7 @@ typedef __int64 off_t;
 #           define off_t __int64
 #       endif
 #       define stat _stati64
+#       define snprintf _snprintf
 #   endif
 
 #endif

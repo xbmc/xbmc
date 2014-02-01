@@ -2,7 +2,6 @@
  * ioctl.c: DVD ioctl replacement function
  *****************************************************************************
  * Copyright (C) 1999-2001 VideoLAN
- * $Id: ioctl.c 221 2009-02-09 00:45:44Z sam $
  *
  * Authors: Markus Kuespert <ltlBeBoy@beosmail.com>
  *          Sam Hocevar <sam@zoy.org>
@@ -41,7 +40,7 @@
 #if defined( WIN32 )
 #   include <windows.h>
 #   include <winioctl.h>
-#elif defined ( SYS_OS2 )
+#elif defined ( __OS2__ )
 #   define INCL_DOSFILEMGR
 #   define INCL_DOSDEVICES
 #   define INCL_DOSDEVIOCTL
@@ -65,10 +64,7 @@
 #ifdef DVD_STRUCT_IN_DVD_H
 #   include <dvd.h>
 #endif
-#ifdef DVD_STRUCT_IN_BSDI_DVDIOCTL_DVD_H
-#   include "bsdi_dvd.h"
-#endif
-#ifdef SYS_BEOS
+#ifdef __BEOS__
 #   include <malloc.h>
 #   include <scsi.h>
 #endif
@@ -97,7 +93,7 @@
 /*****************************************************************************
  * Local prototypes, BeOS specific
  *****************************************************************************/
-#if defined( SYS_BEOS )
+#if defined( __BEOS__ )
 static void BeInitRDC ( raw_device_command *, int );
 #endif
 
@@ -135,7 +131,7 @@ static void QNXInitCPT ( CAM_PASS_THRU *, int );
 /*****************************************************************************
  * Local prototypes, OS2 specific
  *****************************************************************************/
-#if defined( SYS_OS2 )
+#if defined( __OS2__ )
 static void OS2InitSDC( struct OS2_ExecSCSICmd *, int );
 #endif
 
@@ -147,9 +143,8 @@ int ioctl_ReadCopyright( int i_fd, int i_layer, int *pi_copyright )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_struct dvd;
+    dvd_struct dvd = { 0 };
 
-    memset( &dvd, 0, sizeof( dvd ) );
     dvd.type = DVD_STRUCT_COPYRIGHT;
     dvd.copyright.layer_num = i_layer;
 
@@ -158,9 +153,8 @@ int ioctl_ReadCopyright( int i_fd, int i_layer, int *pi_copyright )
     *pi_copyright = dvd.copyright.cpst;
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_struct dvd;
+    struct dvd_struct dvd = { 0 };
 
-    memset( &dvd, 0, sizeof( dvd ) );
     dvd.format = DVD_STRUCT_COPYRIGHT;
     dvd.layer_num = i_layer;
 
@@ -168,7 +162,7 @@ int ioctl_ReadCopyright( int i_fd, int i_layer, int *pi_copyright )
 
     *pi_copyright = dvd.cpst;
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_READ_DVD_STRUCTURE, 8 );
 
     rdc.command[ 6 ] = i_layer;
@@ -221,7 +215,7 @@ int ioctl_ReadCopyright( int i_fd, int i_layer, int *pi_copyright )
         /*  When using IOCTL_DVD_READ_STRUCTURE and
             DVD_COPYRIGHT_DESCRIPTOR, CopyrightProtectionType
             seems to be always 6 ???
-            To work around this MS bug we try to send a raw scsi command
+            To work around this MS bug we try to send a raw SCSI command
             instead (if we've got enough privileges to do so). */
 
         sptd.Cdb[ 6 ] = i_layer;
@@ -257,7 +251,7 @@ int ioctl_ReadCopyright( int i_fd, int i_layer, int *pi_copyright )
 
     *pi_copyright = p_buffer[4];
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_READ_DVD_STRUCTURE, 8 );
 
     sdc.command[ 6 ] = i_layer;
@@ -284,12 +278,10 @@ int ioctl_ReadDiscKey( int i_fd, int *pi_agid, uint8_t *p_key )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_struct dvd;
+    dvd_struct dvd = { 0 };
 
-    memset( &dvd, 0, sizeof( dvd ) );
     dvd.type = DVD_STRUCT_DISCKEY;
     dvd.disckey.agid = *pi_agid;
-    memset( dvd.disckey.value, 0, DVD_DISCKEY_SIZE );
 
     i_ret = ioctl( i_fd, DVD_READ_STRUCT, &dvd );
 
@@ -301,12 +293,10 @@ int ioctl_ReadDiscKey( int i_fd, int *pi_agid, uint8_t *p_key )
     memcpy( p_key, dvd.disckey.value, DVD_DISCKEY_SIZE );
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_struct dvd;
+    struct dvd_struct dvd = { 0 };
 
-    memset( &dvd, 0, sizeof( dvd ) );
     dvd.format = DVD_STRUCT_DISCKEY;
     dvd.agid = *pi_agid;
-    memset( dvd.data, 0, DVD_DISCKEY_SIZE );
 
     i_ret = ioctl( i_fd, DVDIOCREADSTRUCTURE, &dvd );
 
@@ -317,7 +307,7 @@ int ioctl_ReadDiscKey( int i_fd, int *pi_agid, uint8_t *p_key )
 
     memcpy( p_key, dvd.data, DVD_DISCKEY_SIZE );
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_READ_DVD_STRUCTURE, DVD_DISCKEY_SIZE + 4 );
 
     rdc.command[ 7 ]  = DVD_STRUCT_DISCKEY;
@@ -377,10 +367,8 @@ int ioctl_ReadDiscKey( int i_fd, int *pi_agid, uint8_t *p_key )
     if( WIN2K ) /* NT/2k/XP */
     {
         DWORD tmp;
-        uint8_t buffer[DVD_DISK_KEY_LENGTH];
+        uint8_t buffer[DVD_DISK_KEY_LENGTH] = { 0 };
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
-
-        memset( &buffer, 0, sizeof( buffer ) );
 
         key->KeyLength  = DVD_DISK_KEY_LENGTH;
         key->SessionId  = *pi_agid;
@@ -425,7 +413,7 @@ int ioctl_ReadDiscKey( int i_fd, int *pi_agid, uint8_t *p_key )
 
     memcpy( p_key, p_buffer + 4, DVD_DISCKEY_SIZE );
 
-#elif defined ( SYS_OS2 )
+#elif defined ( __OS2__ )
     INIT_SSC( GPCMD_READ_DVD_STRUCTURE, DVD_DISCKEY_SIZE + 4 );
 
     sdc.command[ 7 ]  = DVD_STRUCT_DISCKEY;
@@ -457,9 +445,8 @@ int ioctl_ReadTitleKey( int i_fd, int *pi_agid, int i_pos, uint8_t *p_key )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_authinfo auth_info;
+    dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.type = DVD_LU_SEND_TITLE_KEY;
     auth_info.lstk.agid = *pi_agid;
     auth_info.lstk.lba = i_pos;
@@ -469,9 +456,8 @@ int ioctl_ReadTitleKey( int i_fd, int *pi_agid, int i_pos, uint8_t *p_key )
     memcpy( p_key, auth_info.lstk.title_key, DVD_KEY_SIZE );
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
+    struct dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.format = DVD_REPORT_TITLE_KEY;
     auth_info.agid = *pi_agid;
     auth_info.lba = i_pos;
@@ -480,7 +466,7 @@ int ioctl_ReadTitleKey( int i_fd, int *pi_agid, int i_pos, uint8_t *p_key )
 
     memcpy( p_key, auth_info.keychal, DVD_KEY_SIZE );
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_REPORT_KEY, 12 );
 
     rdc.command[ 2 ] = ( i_pos >> 24 ) & 0xff;
@@ -545,10 +531,8 @@ int ioctl_ReadTitleKey( int i_fd, int *pi_agid, int i_pos, uint8_t *p_key )
     if( WIN2K ) /* NT/2k/XP */
     {
         DWORD tmp;
-        uint8_t buffer[DVD_TITLE_KEY_LENGTH];
+        uint8_t buffer[DVD_TITLE_KEY_LENGTH] = { 0 };
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
-
-        memset( &buffer, 0, sizeof( buffer ) );
 
         key->KeyLength  = DVD_TITLE_KEY_LENGTH;
         key->SessionId  = *pi_agid;
@@ -591,7 +575,7 @@ int ioctl_ReadTitleKey( int i_fd, int *pi_agid, int i_pos, uint8_t *p_key )
 
     memcpy( p_key, p_buffer + 5, DVD_KEY_SIZE );
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_REPORT_KEY, 12 );
 
     sdc.command[ 2 ] = ( i_pos >> 24 ) & 0xff;
@@ -623,9 +607,8 @@ int ioctl_ReportAgid( int i_fd, int *pi_agid )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_authinfo auth_info;
+    dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.type = DVD_LU_SEND_AGID;
     auth_info.lsa.agid = *pi_agid;
 
@@ -634,9 +617,8 @@ int ioctl_ReportAgid( int i_fd, int *pi_agid )
     *pi_agid = auth_info.lsa.agid;
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
+    struct dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.format = DVD_REPORT_AGID;
     auth_info.agid = *pi_agid;
 
@@ -644,7 +626,7 @@ int ioctl_ReportAgid( int i_fd, int *pi_agid )
 
     *pi_agid = auth_info.agid;
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_REPORT_KEY, 8 );
 
     rdc.command[ 10 ] = DVD_REPORT_AGID | (*pi_agid << 6);
@@ -719,7 +701,7 @@ int ioctl_ReportAgid( int i_fd, int *pi_agid )
 
     *pi_agid = p_buffer[ 7 ] >> 6;
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_REPORT_KEY, 8 );
 
     sdc.command[ 10 ] = DVD_REPORT_AGID | (*pi_agid << 6);
@@ -745,9 +727,8 @@ int ioctl_ReportChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_authinfo auth_info;
+    dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.type = DVD_LU_SEND_CHALLENGE;
     auth_info.lsc.agid = *pi_agid;
 
@@ -756,9 +737,8 @@ int ioctl_ReportChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
     memcpy( p_challenge, auth_info.lsc.chal, DVD_CHALLENGE_SIZE );
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
+    struct dvd_authinfo auth_info =  { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.format = DVD_REPORT_CHALLENGE;
     auth_info.agid = *pi_agid;
 
@@ -766,7 +746,7 @@ int ioctl_ReportChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
 
     memcpy( p_challenge, auth_info.keychal, DVD_CHALLENGE_SIZE );
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_REPORT_KEY, 16 );
 
     rdc.command[ 10 ] = DVD_REPORT_CHALLENGE | (*pi_agid << 6);
@@ -812,10 +792,8 @@ int ioctl_ReportChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
     if( WIN2K ) /* NT/2k/XP */
     {
         DWORD tmp;
-        uint8_t buffer[DVD_CHALLENGE_KEY_LENGTH];
+        uint8_t buffer[DVD_CHALLENGE_KEY_LENGTH] = { 0 };
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
-
-        memset( &buffer, 0, sizeof( buffer ) );
 
         key->KeyLength  = DVD_CHALLENGE_KEY_LENGTH;
         key->SessionId  = *pi_agid;
@@ -853,7 +831,7 @@ int ioctl_ReportChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
 
     memcpy( p_challenge, p_buffer + 4, DVD_CHALLENGE_SIZE );
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_REPORT_KEY, 16 );
 
     sdc.command[ 10 ] = DVD_REPORT_CHALLENGE | (*pi_agid << 6);
@@ -879,9 +857,8 @@ int ioctl_ReportASF( int i_fd, int *pi_remove_me, int *pi_asf )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_authinfo auth_info;
+    dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.type = DVD_LU_SEND_ASF;
     auth_info.lsasf.asf = *pi_asf;
 
@@ -890,9 +867,8 @@ int ioctl_ReportASF( int i_fd, int *pi_remove_me, int *pi_asf )
     *pi_asf = auth_info.lsasf.asf;
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
+    struct dvd_authinfo auth_info =  { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.format = DVD_REPORT_ASF;
     auth_info.asf = *pi_asf;
 
@@ -900,7 +876,7 @@ int ioctl_ReportASF( int i_fd, int *pi_remove_me, int *pi_asf )
 
     *pi_asf = auth_info.asf;
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_REPORT_KEY, 8 );
 
     rdc.command[ 10 ] = DVD_REPORT_ASF;
@@ -944,10 +920,8 @@ int ioctl_ReportASF( int i_fd, int *pi_remove_me, int *pi_asf )
     if( WIN2K ) /* NT/2k/XP */
     {
         DWORD tmp;
-        uint8_t buffer[DVD_ASF_LENGTH];
+        uint8_t buffer[DVD_ASF_LENGTH] = { 0 };
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
-
-        memset( &buffer, 0, sizeof( buffer ) );
 
         key->KeyLength  = DVD_ASF_LENGTH;
         key->KeyType    = DvdAsf;
@@ -986,7 +960,7 @@ int ioctl_ReportASF( int i_fd, int *pi_remove_me, int *pi_asf )
 
     *pi_asf = p_buffer[ 7 ] & 1;
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_REPORT_KEY, 8 );
 
     sdc.command[ 10 ] = DVD_REPORT_ASF;
@@ -1012,9 +986,8 @@ int ioctl_ReportKey1( int i_fd, int *pi_agid, uint8_t *p_key )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_authinfo auth_info;
+    dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.type = DVD_LU_SEND_KEY1;
     auth_info.lsk.agid = *pi_agid;
 
@@ -1023,9 +996,8 @@ int ioctl_ReportKey1( int i_fd, int *pi_agid, uint8_t *p_key )
     memcpy( p_key, auth_info.lsk.key, DVD_KEY_SIZE );
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
+    struct dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.format = DVD_REPORT_KEY1;
     auth_info.agid = *pi_agid;
 
@@ -1033,7 +1005,7 @@ int ioctl_ReportKey1( int i_fd, int *pi_agid, uint8_t *p_key )
 
     memcpy( p_key, auth_info.keychal, DVD_KEY_SIZE );
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_REPORT_KEY, 12 );
 
     rdc.command[ 10 ] = DVD_REPORT_KEY1 | (*pi_agid << 6);
@@ -1079,10 +1051,8 @@ int ioctl_ReportKey1( int i_fd, int *pi_agid, uint8_t *p_key )
     if( WIN2K ) /* NT/2k/XP */
     {
         DWORD tmp;
-        uint8_t buffer[DVD_BUS_KEY_LENGTH];
+        uint8_t buffer[DVD_BUS_KEY_LENGTH] = { 0 };
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
-
-        memset( &buffer, 0, sizeof( buffer ) );
 
         key->KeyLength  = DVD_BUS_KEY_LENGTH;
         key->SessionId  = *pi_agid;
@@ -1115,7 +1085,7 @@ int ioctl_ReportKey1( int i_fd, int *pi_agid, uint8_t *p_key )
 
     memcpy( p_key, p_buffer + 4, DVD_KEY_SIZE );
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_REPORT_KEY, 12 );
 
     sdc.command[ 10 ] = DVD_REPORT_KEY1 | (*pi_agid << 6);
@@ -1141,41 +1111,39 @@ int ioctl_InvalidateAgid( int i_fd, int *pi_agid )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_authinfo auth_info;
+    dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
-    auth_info.type = DVD_INVALIDATE_AGID;
+    auth_info.type = DVDCSS_INVALIDATE_AGID;
     auth_info.lsa.agid = *pi_agid;
 
     i_ret = ioctl( i_fd, DVD_AUTH, &auth_info );
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
+    struct dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
-    auth_info.format = DVD_INVALIDATE_AGID;
+    auth_info.format = DVDCSS_INVALIDATE_AGID;
     auth_info.agid = *pi_agid;
 
     i_ret = ioctl( i_fd, DVDIOCREPORTKEY, &auth_info );
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_REPORT_KEY, 0 );
 
-    rdc.command[ 10 ] = DVD_INVALIDATE_AGID | (*pi_agid << 6);
+    rdc.command[ 10 ] = DVDCSS_INVALIDATE_AGID | (*pi_agid << 6);
 
     i_ret = ioctl( i_fd, B_RAW_DEVICE_COMMAND, &rdc, sizeof(rdc) );
 
 #elif defined( HPUX_SCTL_IO )
     INIT_SCTL_IO( GPCMD_REPORT_KEY, 0 );
 
-    sctl_io.cdb[ 10 ] = DVD_INVALIDATE_AGID | (*pi_agid << 6);
+    sctl_io.cdb[ 10 ] = DVDCSS_INVALIDATE_AGID | (*pi_agid << 6);
 
     i_ret = ioctl( i_fd, SIOC_IO, &sctl_io );
 
 #elif defined( SOLARIS_USCSI )
     INIT_USCSI( GPCMD_REPORT_KEY, 0 );
 
-    rs_cdb.cdb_opaque[ 10 ] = DVD_INVALIDATE_AGID | (*pi_agid << 6);
+    rs_cdb.cdb_opaque[ 10 ] = DVDCSS_INVALIDATE_AGID | (*pi_agid << 6);
 
     i_ret = SolarisSendUSCSI( i_fd, &sc );
 
@@ -1212,7 +1180,7 @@ int ioctl_InvalidateAgid( int i_fd, int *pi_agid )
         ssc.CDBByte[ 9 ]  = 0;
 #endif
 
-        ssc.CDBByte[ 10 ] = DVD_INVALIDATE_AGID | (*pi_agid << 6);
+        ssc.CDBByte[ 10 ] = DVDCSS_INVALIDATE_AGID | (*pi_agid << 6);
 
         i_ret = WinSendSSC( i_fd, &ssc );
     }
@@ -1221,18 +1189,18 @@ int ioctl_InvalidateAgid( int i_fd, int *pi_agid )
 
     INIT_CPT( GPCMD_REPORT_KEY, 0 );
 
-    p_cpt->cam_cdb[ 10 ] = DVD_INVALIDATE_AGID | (*pi_agid << 6);
+    p_cpt->cam_cdb[ 10 ] = DVDCSS_INVALIDATE_AGID | (*pi_agid << 6);
 
     i_ret = devctl(i_fd, DCMD_CAM_PASS_THRU, p_cpt, structSize, NULL);
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_REPORT_KEY, 1 );
 
     sdc.data_length = 0;
     sdc.command[ 8 ] = 0;
     sdc.command[ 9 ] = 0;
 
-    sdc.command[ 10 ] = DVD_INVALIDATE_AGID | (*pi_agid << 6);
+    sdc.command[ 10 ] = DVDCSS_INVALIDATE_AGID | (*pi_agid << 6);
 
     i_ret = DosDevIOCtl(i_fd, IOCTL_CDROMDISK, CDROMDISK_EXECMD,
                         &sdc, sizeof(sdc), &ulParamLen,
@@ -1252,9 +1220,8 @@ int ioctl_SendChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_authinfo auth_info;
+    dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.type = DVD_HOST_SEND_CHALLENGE;
     auth_info.hsc.agid = *pi_agid;
 
@@ -1263,9 +1230,8 @@ int ioctl_SendChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
     i_ret = ioctl( i_fd, DVD_AUTH, &auth_info );
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
+    struct dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.format = DVD_SEND_CHALLENGE;
     auth_info.agid = *pi_agid;
 
@@ -1273,7 +1239,7 @@ int ioctl_SendChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
 
     i_ret = ioctl( i_fd, DVDIOCSENDKEY, &auth_info );
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_SEND_KEY, 16 );
 
     rdc.command[ 10 ] = DVD_SEND_CHALLENGE | (*pi_agid << 6);
@@ -1324,10 +1290,8 @@ int ioctl_SendChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
     if( WIN2K ) /* NT/2k/XP */
     {
         DWORD tmp;
-        uint8_t buffer[DVD_CHALLENGE_KEY_LENGTH];
+        uint8_t buffer[DVD_CHALLENGE_KEY_LENGTH] = { 0 };
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
-
-        memset( &buffer, 0, sizeof( buffer ) );
 
         key->KeyLength  = DVD_CHALLENGE_KEY_LENGTH;
         key->SessionId  = *pi_agid;
@@ -1362,7 +1326,7 @@ int ioctl_SendChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
 
     i_ret = devctl(i_fd, DCMD_CAM_PASS_THRU, p_cpt, structSize, NULL);
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_SEND_KEY, 16 );
 
     sdc.command[ 10 ] = DVD_SEND_CHALLENGE | (*pi_agid << 6);
@@ -1389,9 +1353,8 @@ int ioctl_SendKey2( int i_fd, int *pi_agid, uint8_t *p_key )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT )
-    dvd_authinfo auth_info;
+    dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.type = DVD_HOST_SEND_KEY2;
     auth_info.hsk.agid = *pi_agid;
 
@@ -1400,9 +1363,8 @@ int ioctl_SendKey2( int i_fd, int *pi_agid, uint8_t *p_key )
     i_ret = ioctl( i_fd, DVD_AUTH, &auth_info );
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
+    struct dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.format = DVD_SEND_KEY2;
     auth_info.agid = *pi_agid;
 
@@ -1410,7 +1372,7 @@ int ioctl_SendKey2( int i_fd, int *pi_agid, uint8_t *p_key )
 
     i_ret = ioctl( i_fd, DVDIOCSENDKEY, &auth_info );
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_SEND_KEY, 12 );
 
     rdc.command[ 10 ] = DVD_SEND_KEY2 | (*pi_agid << 6);
@@ -1461,10 +1423,8 @@ int ioctl_SendKey2( int i_fd, int *pi_agid, uint8_t *p_key )
     if( WIN2K ) /* NT/2k/XP */
     {
         DWORD tmp;
-        uint8_t buffer[DVD_BUS_KEY_LENGTH];
+        uint8_t buffer[DVD_BUS_KEY_LENGTH] = { 0 };
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
-
-        memset( &buffer, 0, sizeof( buffer ) );
 
         key->KeyLength  = DVD_BUS_KEY_LENGTH;
         key->SessionId  = *pi_agid;
@@ -1499,7 +1459,7 @@ int ioctl_SendKey2( int i_fd, int *pi_agid, uint8_t *p_key )
 
     i_ret = devctl(i_fd, DCMD_CAM_PASS_THRU, p_cpt, structSize, NULL);
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_SEND_KEY, 12 );
 
     sdc.command[ 10 ] = DVD_SEND_KEY2 | (*pi_agid << 6);
@@ -1526,9 +1486,8 @@ int ioctl_ReportRPC( int i_fd, int *p_type, int *p_mask, int *p_scheme )
     int i_ret;
 
 #if defined( HAVE_LINUX_DVD_STRUCT ) && defined( DVD_LU_SEND_RPC_STATE )
-    dvd_authinfo auth_info;
+    dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.type = DVD_LU_SEND_RPC_STATE;
 
     i_ret = ioctl( i_fd, DVD_AUTH, &auth_info );
@@ -1542,9 +1501,8 @@ int ioctl_ReportRPC( int i_fd, int *p_type, int *p_mask, int *p_scheme )
     i_ret = -1;
 
 #elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
+    struct dvd_authinfo auth_info = { 0 };
 
-    memset( &auth_info, 0, sizeof( auth_info ) );
     auth_info.format = DVD_REPORT_RPC;
 
     i_ret = ioctl( i_fd, DVDIOCREPORTKEY, &auth_info );
@@ -1553,7 +1511,7 @@ int ioctl_ReportRPC( int i_fd, int *p_type, int *p_mask, int *p_scheme )
     *p_mask = auth_info.region; // ??
     *p_scheme = auth_info.rpc_scheme;
 
-#elif defined( SYS_BEOS )
+#elif defined( __BEOS__ )
     INIT_RDC( GPCMD_REPORT_KEY, 8 );
 
     rdc.command[ 10 ] = DVD_REPORT_RPC;
@@ -1607,10 +1565,8 @@ int ioctl_ReportRPC( int i_fd, int *p_type, int *p_mask, int *p_scheme )
     if( WIN2K ) /* NT/2k/XP */
     {
         DWORD tmp;
-        uint8_t buffer[DVD_RPC_KEY_LENGTH];
+        uint8_t buffer[DVD_RPC_KEY_LENGTH] = { 0 };
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
-
-        memset( &buffer, 0, sizeof( buffer ) );
 
         key->KeyLength  = DVD_RPC_KEY_LENGTH;
         key->KeyType    = DvdGetRpcKey;
@@ -1653,7 +1609,7 @@ int ioctl_ReportRPC( int i_fd, int *p_type, int *p_mask, int *p_scheme )
     *p_mask = p_buffer[ 5 ];
     *p_scheme = p_buffer[ 6 ];
 
-#elif defined( SYS_OS2 )
+#elif defined( __OS2__ )
     INIT_SSC( GPCMD_REPORT_KEY, 8 );
 
     sdc.command[ 10 ] = DVD_REPORT_RPC;
@@ -1673,136 +1629,9 @@ int ioctl_ReportRPC( int i_fd, int *p_type, int *p_mask, int *p_scheme )
     return i_ret;
 }
 
-/*****************************************************************************
- * ioctl_SendRPC: set RPC status for the drive
- *****************************************************************************/
-int ioctl_SendRPC( int i_fd, int i_pdrc )
-{
-    int i_ret;
-
-#if defined( HAVE_LINUX_DVD_STRUCT ) && defined( DVD_HOST_SEND_RPC_STATE )
-    dvd_authinfo auth_info;
-
-    memset( &auth_info, 0, sizeof( auth_info ) );
-    auth_info.type = DVD_HOST_SEND_RPC_STATE;
-    auth_info.hrpcs.pdrc = i_pdrc;
-
-    i_ret = ioctl( i_fd, DVD_AUTH, &auth_info );
-
-#elif defined( HAVE_LINUX_DVD_STRUCT )
-    /* FIXME: OpenBSD doesn't know this */
-    i_ret = -1;
-
-#elif defined( HAVE_BSD_DVD_STRUCT )
-    struct dvd_authinfo auth_info;
-
-    memset( &auth_info, 0, sizeof( auth_info ) );
-    auth_info.format = DVD_SEND_RPC;
-    auth_info.region = i_pdrc;
-
-    i_ret = ioctl( i_fd, DVDIOCSENDKEY, &auth_info );
-
-#elif defined( SYS_BEOS )
-    INIT_RDC( GPCMD_SEND_KEY, 8 );
-
-    rdc.command[ 10 ] = DVD_SEND_RPC;
-
-    p_buffer[ 1 ] = 6;
-    p_buffer[ 4 ] = i_pdrc;
-
-    i_ret = ioctl( i_fd, B_RAW_DEVICE_COMMAND, &rdc, sizeof(rdc) );
-
-#elif defined( HPUX_SCTL_IO )
-    INIT_SCTL_IO( GPCMD_SEND_KEY, 8 );
-
-    sctl_io.cdb[ 10 ] = DVD_SEND_RPC;
-
-    p_buffer[ 1 ] = 6;
-    p_buffer[ 4 ] = i_pdrc;
-
-    i_ret = ioctl( i_fd, SIOC_IO, &sctl_io );
-
-#elif defined( SOLARIS_USCSI )
-    INIT_USCSI( GPCMD_SEND_KEY, 8 );
-
-    rs_cdb.cdb_opaque[ 10 ] = DVD_SEND_RPC;
-
-    p_buffer[ 1 ] = 6;
-    p_buffer[ 4 ] = i_pdrc;
-
-    i_ret = SolarisSendUSCSI( i_fd, &sc );
-
-    if( i_ret < 0 || sc.uscsi_status )
-    {
-        i_ret = -1;
-    }
-
-#elif defined( DARWIN_DVD_IOCTL )
-    INIT_DVDIOCTL( dk_dvd_send_key_t, DVDRegionPlaybackControlInfo,
-                   kDVDKeyFormatSetRegion );
-
-    dvd.keyClass = kDVDKeyClassCSS_CPPM_CPRM;
-    dvdbs.driveRegion = i_pdrc;
-
-    i_ret = ioctl( i_fd, DKIOCDVDSENDKEY, &dvd );
-
-#elif defined( WIN32 )
-    if( WIN2K ) /* NT/2k/XP */
-    {
-        INIT_SPTD( GPCMD_SEND_KEY, 8 );
-
-        sptd.Cdb[ 10 ] = DVD_SEND_RPC;
-
-        p_buffer[ 1 ] = 6;
-        p_buffer[ 4 ] = i_pdrc;
-
-        i_ret = SEND_SPTD( i_fd, &sptd, &tmp );
-    }
-    else
-    {
-        INIT_SSC( GPCMD_SEND_KEY, 8 );
-
-        ssc.CDBByte[ 10 ] = DVD_SEND_RPC;
-
-        p_buffer[ 1 ] = 6;
-        p_buffer[ 4 ] = i_pdrc;
-
-        i_ret = WinSendSSC( i_fd, &ssc );
-    }
-
-#elif defined( __QNXNTO__ )
-
-    INIT_CPT( GPCMD_SEND_KEY, 8 );
-
-    p_cpt->cam_cdb[ 10 ] = DVD_SEND_RPC;
-
-    p_buffer[ 1 ] = 6;
-    p_buffer[ 4 ] = i_pdrc;
-
-    i_ret = devctl(i_fd, DCMD_CAM_PASS_THRU, p_cpt, structSize, NULL);
-
-#elif defined( SYS_OS2 )
-    INIT_SSC( GPCMD_SEND_KEY, 8 );
-
-    sdc.command[ 10 ] = DVD_SEND_RPC;
-
-    p_buffer[ 1 ] = 6;
-    p_buffer[ 4 ] = i_pdrc;
-
-    i_ret = DosDevIOCtl( i_fd, IOCTL_CDROMDISK, CDROMDISK_EXECMD,
-                         &sdc, sizeof(sdc), &ulParamLen,
-                         p_buffer, sizeof(p_buffer), &ulDataLen );
-
-#else
-#   error "DVD ioctls are unavailable on this system"
-
-#endif
-    return i_ret;
-}
-
 /* Local prototypes */
 
-#if defined( SYS_BEOS )
+#if defined( __BEOS__ )
 /*****************************************************************************
  * BeInitRDC: initialize a RDC structure for the BeOS kernel
  *****************************************************************************
@@ -1872,7 +1701,7 @@ static void HPUXInitSCTL( struct sctl_io *sctl_io, int i_type )
 /*****************************************************************************
  * SolarisInitUSCSI: initialize a USCSICMD structure for the Solaris kernel
  *****************************************************************************
- * This function initializes a Solaris userspace scsi command structure for
+ * This function initializes a Solaris userspace SCSI command structure for
  * future use, either a read command or a write command.
  *****************************************************************************/
 static void SolarisInitUSCSI( struct uscsi_cmd *p_sc, int i_type )
@@ -1917,8 +1746,8 @@ static void SolarisInitUSCSI( struct uscsi_cmd *p_sc, int i_type )
  *
  * The code will fall back to the USCSICMD ioctl method, when
  * libsmedia.so is not available or does not export the
- * smedia_uscsi_cmd() function (on Solaris releases upto and including
- * Solaris 8). Fortunatelly, on these old releases non-root users are
+ * smedia_uscsi_cmd() function (on Solaris releases up to and including
+ * Solaris 8). Fortunately, on these old releases non-root users are
  * allowed to perform USCSICMD ioctls on removable media devices.
  *****************************************************************************/
 static int SolarisSendUSCSI( int i_fd, struct uscsi_cmd *p_sc )
@@ -2093,7 +1922,7 @@ static void QNXInitCPT( CAM_PASS_THRU * p_cpt, int i_type )
 }
 #endif
 
-#if defined( SYS_OS2 )
+#if defined( __OS2__ )
 /*****************************************************************************
  * OS2InitSDC: initialize a SDC structure for the Execute SCSI-command
  *****************************************************************************

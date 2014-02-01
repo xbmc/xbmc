@@ -12,7 +12,7 @@
 %define configure2_5x %configure
 %define make %__make
 %define makeinstall_std %makeinstall
-# adjust define for Redhat.
+# adjust define for Red Hat.
 %endif
 
 
@@ -32,8 +32,8 @@ Conflicts:	libdvdcss0.0.1, libdvdcss0.0.2
 libdvdcss is a simple library designed for accessing DVDs like a block device
 without having to bother about the decryption. The important features are:
  * Portability: currently supported platforms are GNU/Linux, FreeBSD, NetBSD,
-   OpenBSD, BSD/OS, BeOS, Windows 95/98/ME, Windows NT/2000/XP, MacOS X,
-   Solaris, HP-UX and OS/2.
+   OpenBSD, BeOS, Windows 98/ME, Windows NT/2000/XP, Mac OS X, Solaris,
+   HP-UX and OS/2.
  * Adaptability: unlike most similar projects, libdvdcss doesn't require the
    region of your drive to be set and will try its best to read from the disc
    even in the case of a region mismatch.
@@ -49,8 +49,8 @@ Provides:       %name = %version-%release
 libdvdcss is a simple library designed for accessing DVDs like a block device
 without having to bother about the decryption. The important features are:
  * Portability: currently supported platforms are GNU/Linux, FreeBSD, NetBSD,
-   OpenBSD, BSD/OS, BeOS, Windows 95/98/ME, Windows NT/2000/XP, MacOS X,
-   Solaris, HP-UX and OS/2.
+   OpenBSD, BeOS, Windows 98/ME, Windows NT/2000/XP, Mac OS X, Solaris,
+   HP-UX and OS/2.
  * Adaptability: unlike most similar projects, libdvdcss doesn't require the
    region of your drive to be set and will try its best to read from the disc
    even in the case of a region mismatch.
@@ -121,10 +121,10 @@ package installed.
 - new upstream release
 - improved robustness in case of read errors
 - key cache support
-- added more macros to fix RedHat build
+- added more macros to fix Red Hat build
 
 * Mon Nov 18 2002 Alexis de Lattre <alexis@videolan.org> 1.2.4-2
-- Changes in .spec file for RedHat and RPM 4.1
+- Changes in .spec file for Red Hat and RPM 4.1
 
 * Thu Nov 14 2002 Alexis de Lattre <alexis@videolan.org> 1.2.4-1
 - new upstream release
@@ -150,8 +150,8 @@ package installed.
 - major version is 2 (aka guillaume sux).
 - spec clean up: do not rm in %%prep, %%buildroot, %%makeinstall_std, %%provides %%version-%%release
 - added doc in devel
-- sync with cvs's one (%%description,%%files, conflicts).
-- fix url
+- sync with CVS's one (%%description,%%files, conflicts).
+- fix URL
 
 * Sat Apr 06 2002 Guillaume Rousse <rousse@ccr.jussieu.fr> 1.1.1-1plf
 - 1.1.1

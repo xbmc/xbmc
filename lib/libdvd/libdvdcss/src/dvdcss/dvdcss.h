@@ -10,7 +10,6 @@
 
 /*
  * Copyright (C) 1998-2008 VideoLAN
- * $Id: dvdcss.h 219 2009-02-09 00:03:47Z jb $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +59,8 @@ typedef struct dvdcss_s* dvdcss_t;
 #define LIBDVDCSS_EXPORT __declspec(dllexport) extern
 #elif defined(LIBDVDCSS_IMPORTS)
 #define LIBDVDCSS_EXPORT __declspec(dllimport) extern
+#elif defined(SUPPORT_ATTRIBUTE_VISIBILITY_DEFAULT)
+#define LIBDVDCSS_EXPORT __attribute__((visibility("default"))) extern
 #else
 #define LIBDVDCSS_EXPORT extern
 #endif

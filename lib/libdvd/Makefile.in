@@ -26,7 +26,7 @@ endif
 ifeq (@BUILD_DVDCSS@,1)
   DIRS += libdvdcss
   SOS += libdvdcss-$(ARCH).so
-  DVDCSS_A = libdvdcss/src/.libs/libdvdcss.a
+  DVDCSS_A = libdvdcss/.libs/libdvdcss.a
   DVDCSS_O = libdvdcss/src/.libs/*.o
   DVDNAV_PREREQ = libdvdcss
 endif
@@ -44,7 +44,7 @@ all: $(SLIB)
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 
-$(SYSDIR)/libdvdcss-$(ARCH).so:  $($(WRAPPER)) libdvdcss/src/.libs/libdvdcss.a
+$(SYSDIR)/libdvdcss-$(ARCH).so:  $($(WRAPPER)) libdvdcss/.libs/libdvdcss.a
 	$(CC) $(LDFLAGS) -Wl,-alias_list,$(WRAPPER_MACH_ALIAS) -o $@ \
 		$(WRAPPER) libdvdcss/src/*.o $(BUNDLE1_O)
 
@@ -54,7 +54,7 @@ $(SYSDIR)/libdvdnav-$(ARCH).so: $($(WRAPPER)) $(DVDCSS_A) libdvdread/obj/libdvdr
 
 else
 
-$(SYSDIR)/libdvdcss-$(ARCH).so: $(WRAPPER) libdvdcss/src/.libs/libdvdcss.a
+$(SYSDIR)/libdvdcss-$(ARCH).so: $(WRAPPER) libdvdcss/.libs/libdvdcss.a
 	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ \
 		libdvdcss/src/*.o -Wl,--unresolved-symbols=ignore-all -lm \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
@@ -66,7 +66,7 @@ $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER) $(DVDCSS_A) libdvdread/obj/libdvdread
 
 endif
 
-libdvdcss/src/.libs/libdvdcss.a: libdvdcss;
+libdvdcss/.libs/libdvdcss.a: libdvdcss;
 libdvdcss: compile
 	$(MAKE) -C $@
 

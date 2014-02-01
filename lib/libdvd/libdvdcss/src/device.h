@@ -2,7 +2,6 @@
  * device.h: DVD device access
  *****************************************************************************
  * Copyright (C) 1998-2002 VideoLAN
- * $Id: device.h 236 2010-08-02 15:59:13Z jb $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -26,11 +25,18 @@
 #ifndef DVDCSS_DEVICE_H
 #define DVDCSS_DEVICE_H
 
+#include "config.h"
+
 /*****************************************************************************
  * iovec structure: vectored data entry
  *****************************************************************************/
-#if defined( WIN32 ) && !defined( SYS_CYGWIN )
+#ifndef HAVE_SYS_UIO_H
 #   include <io.h>                                                 /* read() */
+struct iovec
+{
+    void *iov_base;     /* Pointer to data. */
+    size_t iov_len;     /* Length of data.  */
+};
 #else
 #   include <sys/types.h>
 #   include <sys/uio.h>                                      /* struct iovec */
@@ -38,13 +44,10 @@
 
 #include "dvdcss/dvdcss.h"
 
-#if defined( WIN32 ) && !defined( SYS_CYGWIN )
-struct iovec
-{
-    void *iov_base;     /* Pointer to data. */
-    size_t iov_len;     /* Length of data.  */
-};
+#if !defined(WIN32) && !defined(__OS2__)
+#   define DVDCSS_RAW_OPEN
 #endif
+
 
 /*****************************************************************************
  * Device reading prototypes
@@ -57,8 +60,6 @@ int  _dvdcss_close      ( dvdcss_t );
 /*****************************************************************************
  * Device reading prototypes, raw-device specific
  *****************************************************************************/
-#if !defined(WIN32) && !defined(SYS_OS2)
 int _dvdcss_raw_open     ( dvdcss_t, char const * );
-#endif
 
 #endif /* DVDCSS_DEVICE_H */

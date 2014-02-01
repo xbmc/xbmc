@@ -1,2494 +1,2236 @@
-------------------------------------------------------------------------
-r251 | jb | 2012-03-11 13:33:49 +0000 (Sun, 11 Mar 2012) | 3 lines
-Changed paths:
-   M /trunk/NEWS
-   M /trunk/configure.ac
-   M /trunk/doc/doxygen.cfg.in
+commit 8572e60d54aaa1f752ac5a1aa842183dab900420
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Feb 27 11:12:24 2013 +0100
 
-Prepare 1.2.12
+    NEWS
 
+commit 745ba0b4f6cdf773adecab0c79e09cceeb5ca982
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Feb 27 11:08:38 2013 +0100
 
-------------------------------------------------------------------------
-r250 | jb | 2012-03-11 12:37:40 +0000 (Sun, 11 Mar 2012) | 3 lines
-Changed paths:
-   M /trunk/AUTHORS
+    Simplify INSTALL document
 
-Update Authors file
+commit 2af9a1e3d10677c2aca1d798b2df4dd8044c258b
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Wed Feb 27 07:52:56 2013 +0100
 
+    build: use an alternative method for making O_BINARY use conditional.
+    
+    Instead of creating a new mode altogether, check for the definition of
+    O_BINARY in the headers, and if missing define it to zero.
+    
+    Signed-off-by: Diego Elio Pettenò <flameeyes@flameeyes.eu>
 
-------------------------------------------------------------------------
-r249 | jb | 2012-02-18 16:22:03 +0000 (Sat, 18 Feb 2012) | 4 lines
-Changed paths:
-   M /trunk/src/css.c
+commit ffb8bab440e45d12b12064720d7fbffbedbc0cb3
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Mon Feb 18 09:43:21 2013 -0800
 
-If unsure, assume the drive is of RPC-I type
+    build: set the libtool version info in configure.ac
+    
+    This follows the same pattern used for libdvdread/libdvdnav and xine.
+    
+    Signed-off-by: Diego Elio Pettenò <flameeyes@flameeyes.eu>
 
-This can happen when patched drives do not answer to ioctl_ReportRPC correctly
+commit 4742c52aa57ade08fc7b03bb0be871c978c9f782
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Tue Feb 19 15:23:17 2013 +0100
 
-------------------------------------------------------------------------
-r247 | jb | 2011-11-14 10:40:05 +0000 (Mon, 14 Nov 2011) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
+    build: proper dependencies for ChangeLog generation target
+    
+    This fixes the ChangeLog file getting continuously rebuilt instead
+    of after each Git commit, which is the case now.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
 
-Update Changelog
+commit 1d66d696a1d18db48a868cada1eb9b47cd7f5206
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Tue Feb 19 14:48:24 2013 +0100
 
+    INSTALL: Bootstrap with autoreconf now that ./bootstrap is gone
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
 
-------------------------------------------------------------------------
-r246 | jb | 2011-11-14 10:27:32 +0000 (Mon, 14 Nov 2011) | 3 lines
-Changed paths:
-   M /trunk/NEWS
-   M /trunk/configure.ac
-   M /trunk/doc/doxygen.cfg.in
-   M /trunk/msvc/config.h
+commit 45999b756e2b6491eabcd548f7eb1453ab7fb365
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Feb 14 22:59:20 2013 +0100
 
-Bumping version to 1.2.11
+    Next release will be 1.2.13
 
+commit 08198b1215e511c67d27e29594cb0ae1e282ceec
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 21:04:41 2013 +0100
 
-------------------------------------------------------------------------
-r245 | jb | 2011-11-14 10:26:47 +0000 (Mon, 14 Nov 2011) | 3 lines
-Changed paths:
-   M /trunk/INSTALL
-   M /trunk/README
+    Update some comments now that Windows 95 is no longer supported
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
 
-Update README and INSTALL to be a bit less out-of-date
+commit 3a5b5a7de809124d3ba1027bcb3dbc3aed97e8a4
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 20:22:39 2013 +0100
 
+    doxygen: Fix typo and drop wrong EXCLUDE
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
 
-------------------------------------------------------------------------
-r244 | jb | 2011-10-26 05:10:24 +0000 (Wed, 26 Oct 2011) | 3 lines
-Changed paths:
-   M /trunk/Makefile.am
+commit be8000902de468717540e678bdf9c000af2e98f3
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 18:58:52 2013 +0100
 
-Fix "doc" Makefile target
+    gitignore: Use directory-specific patterns; use wildcard for config.foo
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
 
+commit b9def08ea38f7509a039a362f20a996914c1545b
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 11:29:08 2013 -0800
 
-------------------------------------------------------------------------
-r243 | jb | 2011-10-26 05:01:11 +0000 (Wed, 26 Oct 2011) | 12 lines
-Changed paths:
-   M /trunk/src/common.h
+    src: mark tables static and constant.
 
-Win32: Drop #define of snprintf() to _snprintf() if the former is undefined.
+commit 391ba536164924b0a2b78d9c167661c717f3c2c2
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 11:16:33 2013 -0800
 
-This workaround was added for MinGW originally, but nowadays MinGW supports
-snprintf() directly so it has become unnecessary.
+    csstables: mark static constant.
 
-Furthermore this can play havoc with Cygwin which does not have a _snprintf()
-declaration and gives implicit function declaration warnings. Depending on
-compiler flags, this can be a fatal error.
+commit b3ee829a5e321539ff8ca377637e0b4ac8699ed0
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 11:14:33 2013 -0800
 
-Patch by Diego Biurrun - diego at biurrun d0t de
+    build: include the msvc directory in the distribution.
 
+commit 58355c7e8726444aea52b08958495ff43d58b8d5
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 11:08:57 2013 -0800
 
-------------------------------------------------------------------------
-r242 | jb | 2011-10-26 04:59:23 +0000 (Wed, 26 Oct 2011) | 8 lines
-Changed paths:
-   M /trunk/src/device.c
+    libdvdcss: use a static constant array instead of a variable to hold the cache sig.
 
-Win32: consistently use snprintf() instead of _snprintf()
+commit 5cb06542b1a0c88e585bb78dc00d0d31970e5833
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 11:03:13 2013 -0800
 
-Both functions are available on Cygwin and MinGW nowadays so there is
-no need to be inconsistent anymore.
+    ioctl: rename DVD_INVALIDATE_AGID to DVDCSS_INVALIDATE_AGID
+    
+    The reason for the rename is that the Linux kernel userspace headers
+    are defining their own version of DVD_INVALIDATE_AGID which has a
+    different meaning (it's an enumeration, not a command).
 
-Patch by Diego Biurrun - diego at biurrun d0t de
+commit 20621b7176cab00a967d98a3e25282a0d675b09c
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 10:58:20 2013 -0800
 
+    doxygen: update configuration file to avoid warnings.
 
-------------------------------------------------------------------------
-r241 | jb | 2011-08-16 10:41:24 +0000 (Tue, 16 Aug 2011) | 4 lines
-Changed paths:
-   M /trunk/INSTALL
-   M /trunk/README
+commit 76f088780b25aa2476039a98ee963de6533a8ca1
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 10:54:44 2013 -0800
 
-Fix typos in README and INSTALL
+    pkg-config: fix include path, it was always wrong.
+    
+    Not only the headers are installed in $includedir/dvdcss rather than
+    libdvdcss but there was a missing dollar sign in front of the first
+    variable.
 
-Patch by bryce, ref http://trac.videolan.org/vlc/ticket/5200
+commit 490cb7d934163e0ff0a319786720096b2bf2fd35
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 10:52:49 2013 -0800
 
-------------------------------------------------------------------------
-r240 | jb | 2011-03-23 15:00:06 +0000 (Wed, 23 Mar 2011) | 3 lines
-Changed paths:
-   M /trunk/src/libdvdcss.h
+    build: allow opt-out from maintainer mode.
+
+commit 5007bfb39187e6d0633f8d51a28c88b7c9a9ad48
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 10:51:50 2013 -0800
+
+    build: use dnl for comments in configure.ac.
 
-Remove excessive whitespace
+commit 29af7f48ed02aefb1342e5be57c0ae6a1336935c
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 07:32:00 2013 -0800
 
+    build: fix apidoc generation and install it as well.
+    
+    This removes the LaTeX documentation generation, and makes sure that
+    if doc is enabled, it's built and installed as well (using htmldir).
+
+commit 059709270c0abfc70bf4c493e0a3ca3e6225ea79
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 08:12:24 2013 -0800
+
+    build: generate ChangeLog from git, if git is present.
+    
+    This would work both from the repository and from the tarball.
+
+commit 75590b889feb6cf518d624fb014555269f53657f
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 08:05:09 2013 -0800
+
+    build: do not build the .tar.gz archive
+
+commit d3b3d398030dc1e57cebb7f9756c658b6f071eaf
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 07:58:45 2013 -0800
+
+    build: install the documentation files (but not INSTALL)
+    
+    The INSTALL file just needs to be distributed.
+
+commit e9a536a00d337e79fde3b69bf5461f8bedda9391
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 16:17:42 2013 +0100
+
+    Replace memset(0) by zero initializations
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+
+commit 1ea1dffd2d44956e8bd1ff92bdc2035376fb6272
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 18:24:01 2013 +0100
+
+    build: Use silent build rules by default
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+
+commit 043e7f53033b8ed8fd9b04f719e08c5cf23409e5
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 17:43:46 2013 +0100
+
+    build: Add -mwin32 to CFLAGS on Cygwin instead of globally defining WIN32
+    
+    It's better to have gcc enable all Windows-related flags and adjust its
+    behavior in a predictable fashion, rather than do parts of it manually.
+
+commit 5e6047bd1eacd57bb4e3164110b1c043f8ed30f1
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 18:22:15 2013 +0100
+
+    Fix a number of spelling and grammar errors
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+
+commit b3a1b17b01f8da7cf038bc7d01cd6c90582875f1
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 16:51:54 2013 +0100
+
+    gitignore: Add config.cache
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+
+commit 6ad715c39f7d0d06e7cc0e17190bf13ca3fe635f
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 16:48:04 2013 +0100
+
+    AUTHORS: Add Diego#1 and Diego#2
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 193ed81a73ccc8f54270810ee957f72447f2aa3f
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 16:46:27 2013 +0100
+
+    AUTHORS: Drop obsolete CVS/SVN login and snail-mail fields
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b0ab71d530b8a9553ce5d1986779ec8766c13e40
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 15:05:37 2013 +0100
+
+    Drop ChangeLog file; it is no longer necessary with Git.
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bec71804e527198aeaaccddba807e6aef1cd6a21
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 03:31:19 2013 +0100
+
+    Drop BSDI support code.
+    
+    Around 1100 out of 6100 lines total are dedicated to BSDI support.
+    This is a totally absurd ratio for a completely fringe OS.
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d7f38cee4dcb64f99f493e3a0dfeef57dd165be3
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 15:31:10 2013 +0100
+
+    AUTHORS: Convert to UTF-8
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5cf584c09e12517a889e176d1aa6a906d584b763
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 16:30:34 2013 +0100
+
+    Remove leftover Subversion $Id$ markers
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2fc9238f7fabd783cf681d14d2d9058071da4796
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 16:16:41 2013 +0100
+
+    dvd_region: Drop unused-but-set variable
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit dacda2a5596a9a956e7b192c87f9ab8eedb72c43
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 01:32:14 2013 +0100
+
+    build: Refactor an instance of system-specific O_BINARY-related ifdeffery
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 45b27b0629da78813838f6bcdaaf5421490ba44a
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 07:27:35 2013 -0800
+
+    git: ignore the libtool m4 files.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 14dc79797a4b0300572efe53b133c1971bdd1651
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 07:26:17 2013 -0800
+
+    build: get rid of recursion within doc/ for Doxygen API doc.
+    
+    It still recurses for latex documentation.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5c454e815a7abfeed7e48abc2a7df3071b16fcb4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Feb 14 16:46:40 2013 +0100
+
+    Win32: use the correct HAVE_BROKEN_MKDIR define
+
+commit c5fc11a1179a088c9cafb14a1b5cdf40adbb946c
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 06:48:36 2013 -0800
+
+    build: check for POSIX mkdir() function.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 391036711755ec403aca99e8668d5755a44be32f
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 07:11:22 2013 -0800
+
+    build: don't use tiered header checks.
+    
+    This check is more reliable, and should be easier to deal with.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1987df11ddbb2be00147e8affd66d740a84cfeee
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 07:00:25 2013 -0800
+
+    build: use m4/attributes.m4 from xine/feng to check for cflags and visibility.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 452734e367847d02f5bbbd3228bebf099d6abcd8
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 07:00:05 2013 -0800
+
+    build: add support for macros in m4/ directory
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d8d519ca07f7fd1fdc5853bd05b1e076e9df3601
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 06:54:45 2013 -0800
+
+    build: fix make dist now that the bootstrap script is gone
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 576475c03f4569b6678d7bea05988396eb2be3a7
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Thu Feb 14 06:35:31 2013 -0800
+
+    build: remove obsolete bootstrap script.
+    
+    Just run `autoreconf -i` and that would do.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 42ac89492c9de73f66b70643e0a1045ad7091f9a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Feb 14 13:05:33 2013 +0100
+
+    Win32: define and use _WIN32_IE for shell api
+    
+    This effectively drops support for Windows 95
+
+commit 2a6cd147d7347e509d628c1b9fe5763a97110920
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Wed Feb 13 19:04:24 2013 -0800
+
+    dvd_region: move ioctl_SendRPC in dvd_region.c; mark functions static.
+    
+    This basically ensures that no unused, unexported functions are built
+    into the library.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1ee4cfdfd0b57372111aec320597376805f4cc9d
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Wed Feb 13 19:02:08 2013 -0800
+
+    build: allow once again building of dvd_region binary
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit efd20464a07fdff475b6cecedb8b743f32efe905
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Wed Feb 13 19:01:23 2013 -0800
+
+    src: mark _dvdcss_titlekey static as it's never used outside of the unit
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 03949ac8b59f0cf68649745f8bc310da9d5a1e4f
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Wed Feb 13 17:39:01 2013 -0800
+
+    build: fix messed up rule in building latex documentation.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ee2b1c28e2b36e0c9fb0a8bd06d948bd4aae8ddf
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Wed Feb 13 17:36:48 2013 -0800
+
+    build: get rid of recursion for building the library and the csstest program.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 078b6df43b0482264defa2d2beeb9158e89b2da1
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Wed Feb 13 17:27:13 2013 -0800
+
+    build: update to libtool 2
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f72d6689a0dfd86667ac18d2ae48fa1a9271aeed
+Author: Diego Elio Pettenò <flameeyes@flameeyes.eu>
+Date:   Wed Feb 13 17:24:49 2013 -0800
+
+    build: update autotools to modern format.
+    
+    This includes quite a bit of fixes all around that allows it to build
+    with automake 1.13 and autoconf 2.68.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 24968037296bdb623fc5d47a699c226c4122d213
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Feb 14 01:49:28 2013 +0100
+
+    Win32: fix signedness warning
+
+commit 1517e70fbb0a94e75e9c2032a92f0b90b4026913
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Feb 14 01:42:14 2013 +0100
+
+    Fix compilation with MSVC
+
+commit d08ae210cac8a07ef80b361aaa6becb268e75a1f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Feb 14 01:00:39 2013 +0100
+
+    Win32: correct include for lseeki64
+
+commit b468e1f1ac9c4ec594aedcd68911bd1d2acff929
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 00:45:18 2013 +0100
+
+    build: Refactor system-specific ifdeffery around raw device access
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f25268db2b31006b3aa0ffeb011482328e0a86aa
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 00:06:58 2013 +0100
+
+    configure.ac: Remove unused global DVDCSSDIST preprocessor flag
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c5ef915232b096cbe750465066089bf926eea22a
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Feb 14 00:10:21 2013 +0100
+
+    build: Replace system-specific ifdeffery by proper sys/uio.h check
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0e48b8313f3b70bc0cb0806385f4c5786efd0c64
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Wed Feb 13 22:50:01 2013 +0100
+
+    device: Eliminate some unnecessary ifdefs
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 77f561a53feaf5b2ebaf55e00e43189c8b9be237
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Wed Feb 13 22:50:00 2013 +0100
+
+    build: win32: Surround Windows-specific code by appropriate ifdef
+    
+    Also drop the now unnecessary direct.h configure.ac check.
+    That header file is always available on Windows.
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 84b0992477e07748f6a8cb5109ed56616d6b10cb
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Wed Feb 13 14:43:52 2013 +0100
+
+    build: Drop unnecessary local SYS_BEOS config.h #define
+    
+    __BEOS__ is always available and can be used instead.
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a9bf4c166d6af89a7310a61ae082944f9d960b22
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Wed Feb 13 14:43:51 2013 +0100
+
+    build: Drop unnecessary local SYS_OS2 config.h #define
+    
+    __OS2__ is always available and can be used instead.
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0938da8a3ebb4b9e1e3c2383a4821fa8eb524a87
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Wed Feb 13 14:43:50 2013 +0100
+
+    build: Drop unnecessary local SYS_CYGWIN config.h #define
+    
+    __CYGWIN__ is always available and can be used instead.
+    
+    Signed-off-by: Diego Biurrun <diego@biurrun.de>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1fab727ead1c7f84300cae8d077a24c9c9aa83aa
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Mon Feb 11 01:21:26 2013 +0100
+
+    Win32: Fix broken mkdir() invocations that need to be mapped to _mkdir()
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c19c82dff9232cf8aa60dc0ff267e5e24dadbd90
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Sun Feb 10 12:59:16 2013 +0100
+
+    cygwin: Drop some obsolete POSIX int types fallbacks
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e7df02a90f2aff82d24603da162602ee381205d2
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Thu Jan 31 21:51:01 2013 +0100
+
+    ioctl.h Drop some pointless ifdefs around a set of harmless #defines
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ca926c62869bbb9079a2ddc1af5f7f08f356dd9b
+Author: Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+Date:   Tue Nov 6 18:15:08 2012 +0000
+
+    Use calloc instead of malloc+memset.
+    
+    Besides being simpler, it fixes the malloc failure
+    checks which currently are useless since we would
+    crash in memset first.
+
+commit 31bf1942f771409e9375a4daf8a53b309cd3a088
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 29 08:57:27 2012 +0000
+
+    Support ELF visibility attribute
+
+commit 5c8ae97ccd0b5ee13c66f249efb630645622eaf9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Jun 15 11:35:09 2012 +0000
+
+    Automake 12 is out
+
+commit 839b9184e8fb92040e2004845532f2b15c0e8f23
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Mar 11 13:35:44 2012 +0000
+
+    Update ChangeLog
+
+commit 673cf17677756d73647eaed5ceb2b2e108be1f93
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Mar 11 13:33:49 2012 +0000
+
+    Prepare 1.2.12
+
+commit f45f9f5f2fa97a0bd97c4bf84d72a01b2358a9ed
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Mar 11 12:37:40 2012 +0000
+
+    Update Authors file
+
+commit c514694dbbf9c94732a26678c144863a77e8bd58
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Feb 18 16:22:03 2012 +0000
+
+    If unsure, assume the drive is of RPC-I type
+    
+    This can happen when patched drives do not answer to ioctl_ReportRPC correctly
+
+commit 2b899f3b337a6687bd7c3f12a5b015f48ffbcbf3
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 14 10:40:05 2011 +0000
+
+    Update Changelog
+
+commit b6fd1d71afa8c1a858f2b1b69a5b03544af623f6
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 14 10:27:32 2011 +0000
+
+    Bumping version to 1.2.11
+
+commit d1052718b7d3f7394a0f3e15ff7131dfe63fd8b2
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 14 10:26:47 2011 +0000
+
+    Update README and INSTALL to be a bit less out-of-date
+
+commit c80446a871b52d3d5b6137339da5d42b2eab5f8e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Oct 26 05:10:24 2011 +0000
+
+    Fix "doc" Makefile target
+
+commit d938212b4f010a6fd9cba4910981dcd2ca858c26
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Wed Oct 26 05:01:11 2011 +0000
+
+    Win32: Drop #define of snprintf() to _snprintf() if the former is undefined.
+    
+    This workaround was added for MinGW originally, but nowadays MinGW supports
+    snprintf() directly so it has become unnecessary.
+    
+    Furthermore this can play havoc with Cygwin which does not have a _snprintf()
+    declaration and gives implicit function declaration warnings. Depending on
+    compiler flags, this can be a fatal error.
+
+commit 26a57f6d2bd5dc363850265f78371d05e1c554c3
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Wed Oct 26 04:59:23 2011 +0000
+
+    Win32: consistently use snprintf() instead of _snprintf()
+    
+    Both functions are available on Cygwin and MinGW nowadays so there is
+    no need to be inconsistent anymore.
+
+commit 46558053bb3a77808b709cc932dd7e1acbb93671
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Aug 16 10:41:24 2011 +0000
+
+    Fix typos in README and INSTALL
+
+commit 2bcd77d8847d10f3e0b2a2354e7c0949d3132dd2
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Mar 23 15:00:06 2011 +0000
+
+    Remove excessive whitespace
+
+commit 3c3553f2c613f207530c6e0a97854e5824e1b292
+Author: Thélesphonse Bigorneault <bigorneault@gmail.com>
+Date:   Wed Mar 23 14:59:36 2011 +0000
+
+    Fix a small memleak
+
+commit e97d03d78d77c8abeffd7c78e598c135e2b80efc
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Feb 9 22:48:29 2011 +0000
+
+    Update documentation version
+
+commit 8594af8c56bfcafd200ec6b26192d8d6941e1816
+Author: Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+Date:   Sat Sep 25 14:21:47 2010 +0000
+
+    Ensure dvdcss->css.p_disc_key is always initialized
+    even if _dvdcss_disckey fails.
 
-------------------------------------------------------------------------
-r239 | jb | 2011-03-23 14:59:36 +0000 (Wed, 23 Mar 2011) | 5 lines
-Changed paths:
-   M /trunk/src/css.c
+commit 0833399b2fa6595bd9f64e8b787fd7b5d63bbf06
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Mon Aug 2 15:59:13 2010 +0000
 
-Fix a small memleak
+    Make libdvdcss headers self-sufficient
+    
+    This patch adds required #includes to libdvdcss headers so that they can be used
+    without other headers as prerequisites.
+    This leaves out limits.h and stdint.h, for the moment, since they aren't on all systems.
 
-Reported by Thélesphonse Bigorneault
+commit 077025bf61d99c66bab6cea4e89ed85c749e126b
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Mon Aug 2 15:41:14 2010 +0000
 
+    Add multiple inclusion guards to header files
+    
+    Most header files in libdvdcss lack multiple inclusion guards, although they are
+    a sensible thing to have for header files. This adds them where currently missing.
 
-------------------------------------------------------------------------
-r238 | jb | 2011-02-09 22:48:29 +0000 (Wed, 09 Feb 2011) | 3 lines
-Changed paths:
-   M /trunk/doc/doxygen.cfg.in
+commit bdd3f4c9571ce12e97a3fb35ceff80b26648aa35
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Mon Aug 2 15:38:08 2010 +0000
 
-Update documentation version
+    Use filename as multiple inclusion guard
+    
+    For some reason bsdi_dvd.h does not use the (full) filename as multiple
+    inclusion guard.
 
+commit fa00691e5b3132ce622f52587d3008fa5d4ec3f8
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Mon Aug 2 14:04:16 2010 +0000
 
-------------------------------------------------------------------------
-r237 | reimar | 2010-09-25 14:21:47 +0000 (Sat, 25 Sep 2010) | 3 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
+    Shut up doxygen run
+    
+    Doxygen is terribly verbose by default and spams the console with useless by
+    the metric ton. This patch makes its output more terse and thus more sensible.
 
-Ensure dvdcss->css.p_disc_key is always initialized,
-even if _dvdcss_disckey fails.
+commit 034d9293bd0a87e13cae9163467c44d985422749
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon May 10 10:03:06 2010 +0000
 
-------------------------------------------------------------------------
-r236 | jb | 2010-08-02 15:59:13 +0000 (Mon, 02 Aug 2010) | 9 lines
-Changed paths:
-   M /trunk/src/css.h
-   M /trunk/src/device.h
-   M /trunk/src/libdvdcss.h
+    Try other methods also if GetBusKey fails instead of failing completely
 
-Make libdvdcss headers self-sufficient
+commit 4d5c816be5424993e41a7cac52967f42907e6128
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Sep 2 22:07:32 2009 +0000
 
-This patch adds required #includes to libdvdcss headers so that they can be used
-without other headers as prerequisites.
-This leaves out limits.h and stdint.h, for the moment, since they aren't on all systems.
+    Remove the RPC-II sanity check and only issue a warning. Capable drives are
+    far too common.
 
-Patch by Diego Biurrun - diego at biurrun d0t de
+commit badd91978ce04f611601e04fc17a3b14269e6362
+Author: KO Myung-Hun <komh@chollian.net>
+Date:   Wed Sep 2 22:01:07 2009 +0000
 
+    Use 64-bit IO and binary mode on OS/2.
 
-------------------------------------------------------------------------
-r235 | jb | 2010-08-02 15:41:14 +0000 (Mon, 02 Aug 2010) | 8 lines
-Changed paths:
-   M /trunk/src/common.h
-   M /trunk/src/css.h
-   M /trunk/src/csstables.h
-   M /trunk/src/device.h
-   M /trunk/src/ioctl.h
-   M /trunk/src/libdvdcss.h
+commit 25ebde2b7dce3735df7a279884105bf050633ec1
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed May 13 21:28:53 2009 +0000
 
-Add multiple inclusion guards to header files
+    Prepend 0x to the region mask for clarity.
 
-Most header files in libdvdcss lack multiple inclusion guards, although they are
-a sensible thing to have for header files. This adds them where currently missing.
+commit 6725efb8bae177132071298d72b387193fb7efaf
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed May 13 21:00:31 2009 +0000
 
-Patch by Diego Biurrun - diego at biurrun d0t de
+    Duh, typo in the RPC-II sanity check.
 
+commit 6cd5094c9d8aef3e27dcf6783a818356dd79b83e
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed May 13 20:54:40 2009 +0000
 
-------------------------------------------------------------------------
-r234 | jb | 2010-08-02 15:38:08 +0000 (Mon, 02 Aug 2010) | 7 lines
-Changed paths:
-   M /trunk/src/bsdi_dvd.h
+    Add support for the DVDCSS_IGNORE_RPC environment variable in order to
+    bypass our new RPC-II sanity check.
 
-Use filename as multiple inclusion guard
+commit e02b6b39da186c9ff25bcb093820f27fe105c6be
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed May 13 20:54:39 2009 +0000
 
-For some reason bsdi_dvd.h does not use the (full) filename as multiple
-inclusion guard.
+    Add a debug message in the copyright information retrieval.
 
-Patch by Diego Biurrun - diego at biurrun d0t de
+commit f6ecade747d6cdd63df205186cb27de2af9f3c9f
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed May 13 20:54:37 2009 +0000
 
-------------------------------------------------------------------------
-r233 | jb | 2010-08-02 14:04:16 +0000 (Mon, 02 Aug 2010) | 7 lines
-Changed paths:
-   M /trunk/doc/doxygen.cfg.in
+    Check drive's RPC status before trying to access a scrambled disc. Patch
+    provided by Ori Avtalion <ori@avtalion.name> and refactored by Sam Hocevar
+    <sam@hocevar.net>.
 
-Shut up doxygen run
+commit a0f00ca3209ce13e38872f43010badbb6e568f83
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed May 13 20:54:35 2009 +0000
 
-Doxygen is terribly verbose by default and spams the console with useless by
-the metric ton. This patch makes its output more terse and thus more sensible.
+    Fix a potential format string crash.
 
-Patch by Diego Biurrun - diego at biurrun d0t de
+commit a898069bcd19498a0fea789943c423a2d0f61dc0
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Feb 9 00:45:44 2009 +0000
 
-------------------------------------------------------------------------
-r232 | jb | 2010-08-02 13:56:10 +0000 (Mon, 02 Aug 2010) | 4 lines
-Changed paths:
-   M /trunk/src
+    Remove occurrences of "this program" from the license headers.
 
-svn:ignore src/libdvdcss.pc
+commit df8ce721b3c2fbd53107d2829f3bf50dadb8ee22
+Author: KO Myung-Hun <komh@chollian.net>
+Date:   Mon Feb 9 00:45:33 2009 +0000
 
-As tipped by Diego
+    Adding OS/2 support,
 
-------------------------------------------------------------------------
-r231 | jb | 2010-05-10 10:03:06 +0000 (Mon, 10 May 2010) | 5 lines
-Changed paths:
-   M /trunk/src/css.c
+commit e63008a10b3f48cc13820c111f463015e2fcd82e
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Mon Feb 9 00:03:47 2009 +0000
 
-Try other methods also if GetBusKey fails instead of failing completely
+    Update the FSF address.
 
-Patch from MPlayer, from Reimar Döffinger, forwarded by Diego Biurrun
+commit bd002e7573d719a9aa4f0aa1df0bcac2a89eb9f7
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Aug 29 19:00:14 2008 +0000
 
+      * Bump version number to 1.2.10.
+      * Update NEWS and ChangeLog.
 
-------------------------------------------------------------------------
-r230 | sam | 2009-09-02 22:07:32 +0000 (Wed, 02 Sep 2009) | 3 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
+commit 096408a09e1ab227b4af5e09dc4b40c0e61845fe
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Aug 29 18:57:52 2008 +0000
 
-Remove the RPC-II sanity check and only issue a warning. Capable drives are
-far too common.
+      * src/Makefile.am: bump the library minor version since we ship an extra
+        symbole (dvdcss_is_scrambled).
 
-------------------------------------------------------------------------
-r229 | sam | 2009-09-02 22:01:07 +0000 (Wed, 02 Sep 2009) | 2 lines
-Changed paths:
-   M /trunk/src/device.c
-
-Use 64-bit IO and binary mode on OS/2. Patch courtesy of KO Myung-Hun.
-
-------------------------------------------------------------------------
-r228 | sam | 2009-05-13 21:28:53 +0000 (Wed, 13 May 2009) | 1 line
-Changed paths:
-   M /trunk/src/css.c
-
-Prepend 0x to the region mask for clarity.
-------------------------------------------------------------------------
-r227 | sam | 2009-05-13 21:00:31 +0000 (Wed, 13 May 2009) | 1 line
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-Duh, typo in the RPC-II sanity check.
-------------------------------------------------------------------------
-r226 | sam | 2009-05-13 20:54:40 +0000 (Wed, 13 May 2009) | 2 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-
-Add support for the DVDCSS_IGNORE_RPC environment variable in order to
-bypass our new RPC-II sanity check.
-------------------------------------------------------------------------
-r225 | sam | 2009-05-13 20:54:39 +0000 (Wed, 13 May 2009) | 1 line
-Changed paths:
-   M /trunk/src/css.c
-
-Add a debug message in the copyright information retrieval.
-------------------------------------------------------------------------
-r224 | sam | 2009-05-13 20:54:37 +0000 (Wed, 13 May 2009) | 3 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/libdvdcss.c
-
-Check drive's RPC status before trying to access a scrambled disc. Patch
-provided by Ori Avtalion <ori@avtalion.name> and refactored by Sam Hocevar
-<sam@hocevar.net>.
-------------------------------------------------------------------------
-r223 | sam | 2009-05-13 20:54:35 +0000 (Wed, 13 May 2009) | 1 line
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-Fix a potential format string crash.
-------------------------------------------------------------------------
-r221 | sam | 2009-02-09 00:45:44 +0000 (Mon, 09 Feb 2009) | 1 line
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/device.c
-   M /trunk/src/error.c
-   M /trunk/src/ioctl.c
-   M /trunk/src/libdvdcss.c
-
-Remove occurrences of "this program" from the license headers.
-------------------------------------------------------------------------
-r220 | sam | 2009-02-09 00:45:33 +0000 (Mon, 09 Feb 2009) | 1 line
-Changed paths:
-   M /trunk/AUTHORS
-   M /trunk/configure.ac
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-
-Adding OS/2 support, courtesy of KO Myung-Hun <komh@chollian.net>.
-------------------------------------------------------------------------
-r219 | jb | 2009-02-09 00:03:47 +0000 (Mon, 09 Feb 2009) | 5 lines
-Changed paths:
-   M /trunk/src/common.h
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-   M /trunk/src/csstables.h
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/error.c
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-
-Update the FSF address.
-
-Patch by Diego Biurrun
-
-
-------------------------------------------------------------------------
-r218 | sam | 2008-08-29 19:00:14 +0000 (Fri, 29 Aug 2008) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/NEWS
-   M /trunk/configure.ac
-   M /trunk/msvc/config.h
-
-  * Bump version number to 1.2.10.
-  * Update NEWS and ChangeLog.
-------------------------------------------------------------------------
-r217 | sam | 2008-08-29 18:57:52 +0000 (Fri, 29 Aug 2008) | 2 lines
-Changed paths:
-   M /trunk/src/Makefile.am
-
-  * src/Makefile.am: bump the library minor version since we ship an extra
-    symbole (dvdcss_is_scrambled).
-------------------------------------------------------------------------
-r216 | sam | 2008-08-29 18:57:51 +0000 (Fri, 29 Aug 2008) | 1 line
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/src/Makefile.am
-   A /trunk/src/libdvdcss.pc.in
-
-  * Ship a .pc file with the library.
-------------------------------------------------------------------------
-r215 | sam | 2008-08-29 18:57:48 +0000 (Fri, 29 Aug 2008) | 1 line
-Changed paths:
-   M /trunk/libdvdcss.spec
-   M /trunk/src/common.h
-   M /trunk/src/css.c
-   M /trunk/src/device.h
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/error.c
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-   M /trunk/test/csstest.c
-
-  * Update copyeight information here and there.
-------------------------------------------------------------------------
-r214 | sam | 2008-08-29 18:57:45 +0000 (Fri, 29 Aug 2008) | 3 lines
-Changed paths:
-   A /trunk/.gitignore
-   M /trunk/bootstrap
-   M /trunk/configure.ac
-
-  * bootstrap: update bootstrapping script.
-  * configure.ac: hide autotools files in .auto/.
-  * .gitignore: add an ignore file for git-svn users.
-------------------------------------------------------------------------
-r213 | sam | 2008-08-29 18:57:42 +0000 (Fri, 29 Aug 2008) | 2 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-  * libdvdcss.c: ignore failure to get the disc key in case we have a
-    chance to decrypt anyway afterwards. Patch courtesy of Diego Biurrun.
-------------------------------------------------------------------------
-r212 | sam | 2008-07-13 12:52:22 +0000 (Sun, 13 Jul 2008) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-   M /trunk/src/csstables.h
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/ioctl.c
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-
-  * Convert all source code to UTF-8, or Doxygen will fail to generate proper
-    LaTeX documents.
-------------------------------------------------------------------------
-r211 | sam | 2008-07-13 12:52:19 +0000 (Sun, 13 Jul 2008) | 1 line
-Changed paths:
-   M /trunk/doc/doxygen.cfg.in
-
-  * Update outdated Doxygen configuration file using doxygen -u.
-------------------------------------------------------------------------
-r210 | massiot | 2008-07-12 12:19:57 +0000 (Sat, 12 Jul 2008) | 5 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/libdvdcss.c
-
- * src/libdvdcss.c: initialize p_disc_key in the case when DVD is encrypted
-   but no ioctl is available ;
- * src/css.c: initialize p_disc_key in the case when key decryption fails.
-Patch by Kirill Belokurov.
-
-------------------------------------------------------------------------
-r209 | massiot | 2008-07-11 17:23:25 +0000 (Fri, 11 Jul 2008) | 3 lines
-Changed paths:
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/libdvdcss.c
-
- * src/libdvdcss.c: add dvdcss_is_scrambled() function, patch courtesy of
-   Olivier Rolland.
-
-------------------------------------------------------------------------
-r208 | robux4 | 2008-01-07 16:48:35 +0000 (Mon, 07 Jan 2008) | 1 line
-Changed paths:
-   M /trunk/src/dvdcss/dvdcss.h
-
-nicer comment, patch by Diego Biurrun
-------------------------------------------------------------------------
-r207 | robux4 | 2007-09-17 12:10:20 +0000 (Mon, 17 Sep 2007) | 1 line
-Changed paths:
-   M /trunk/src/bsdi_dvd.h
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/ioctl.h
-
-(from Diego Biurrun) Identifiers starting with two underscores or an underscore and capital letters are reserved for the system in C.
-------------------------------------------------------------------------
-r206 | robux4 | 2007-09-17 12:07:41 +0000 (Mon, 17 Sep 2007) | 4 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-(from Diego Biurrun) This patch removes the following warning when compiling MPlayer:
-
-libdvdcss.c:145: warning: redundant redeclaration of 'dvdcss_interface_2'
-dvdcss/dvdcss.h:70: warning: previous declaration of 'dvdcss_interface_2' was here
-------------------------------------------------------------------------
-r205 | robux4 | 2007-07-29 10:14:53 +0000 (Sun, 29 Jul 2007) | 7 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-Pathc from iive (via Diego Biurrun)
-Date: Sat Jul  7 01:22:51 2007
-
-Fix crash on some DVDs
-sprintf(tmp,"%.02x",(char)0xef); would print "ffffffef" instead of "ef",
-in this case this leads to local array buffer overflow and hard to trace stack corruption.
-The quick, easy & dirty solution is to use (unsigned char) or (uint8_t)
-------------------------------------------------------------------------
-r204 | xtophe | 2007-07-15 22:23:39 +0000 (Sun, 15 Jul 2007) | 2 lines
-Changed paths:
-   M /trunk/bootstrap
-
-support automake 1.10
-
-------------------------------------------------------------------------
-r203 | robux4 | 2006-11-07 16:27:40 +0000 (Tue, 07 Nov 2006) | 2 lines
-Changed paths:
-   M /trunk/src/common.h
-   M /trunk/src/device.c
-
-fix cygwin compilation regarding the lseek change
-(patch by Diego Biurrun)
-------------------------------------------------------------------------
-r202 | robux4 | 2006-11-01 14:31:51 +0000 (Wed, 01 Nov 2006) | 2 lines
-Changed paths:
-   M /trunk/src/common.h
-
-fix compilation on MINGW (patch by Diego Biurrun)
-(lseek vs lseek64 typo)
-------------------------------------------------------------------------
-r201 | sam | 2006-09-19 23:03:53 +0000 (Tue, 19 Sep 2006) | 2 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-  * Fixed spelling in documentation. Also testing buildbot.
-
-------------------------------------------------------------------------
-r200 | sam | 2006-09-19 22:28:06 +0000 (Tue, 19 Sep 2006) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/libdvdcss.c
-
-  * Fix warnings due to signed / unsigned pointer targets.
-
-------------------------------------------------------------------------
-r199 | sam | 2006-09-19 22:27:46 +0000 (Tue, 19 Sep 2006) | 2 lines
-Changed paths:
-   M /trunk/bootstrap
-
-  * Update bootstrap script.
-
-------------------------------------------------------------------------
-r198 | robux4 | 2006-09-13 13:12:23 +0000 (Wed, 13 Sep 2006) | 4 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-fallback to USERPROFILE environment variable for caching CSS keys when
-HOME is not set (for MinGW builds running outside of MinGW).
-patch from MPlayer via Diego Biurrun (diego at biurrun dot de)
-
-------------------------------------------------------------------------
-r197 | robux4 | 2006-09-13 13:11:25 +0000 (Wed, 13 Sep 2006) | 2 lines
-Changed paths:
-   M /trunk/src/device.c
-
-now accepts X:\ as a device name, as well as X:
-patch from MPlayer via Diego Biurrun (diego at biurrun dot de)
-------------------------------------------------------------------------
-r196 | sam | 2006-03-30 14:31:12 +0000 (Thu, 30 Mar 2006) | 2 lines
-Changed paths:
-   M /trunk/configure.ac
-
-  * Oops, forgot to commit configure.ac when removing the debian/ directory.
-
-------------------------------------------------------------------------
-r195 | sam | 2006-03-30 14:30:43 +0000 (Thu, 30 Mar 2006) | 3 lines
-Changed paths:
-   M /trunk/Makefile.am
-   D /trunk/debian
-
-  * Removed the debian/ directory. Debian packaging is now handled
-    separately, in the pkg-multimedia repository.
-
-------------------------------------------------------------------------
-r194 | sam | 2006-01-26 20:48:06 +0000 (Thu, 26 Jan 2006) | 3 lines
-Changed paths:
-   M /trunk/src/device.c
-
-  * src/device.c: reduced code duplication and fixed a pointer/integer
-    confusion in the OS X drive detection.
-
-------------------------------------------------------------------------
-r193 | sam | 2005-11-09 22:12:32 +0000 (Wed, 09 Nov 2005) | 3 lines
-Changed paths:
-   M /trunk/src/common.h
-
-  * src/common.h: do not override lseek on Cygwin, only on mingw32. Cygwin
-    provides its own 64-bit offset lseek. Patch courtesy of the MPlayer team.
-
-------------------------------------------------------------------------
-r192 | sam | 2005-10-26 16:58:08 +0000 (Wed, 26 Oct 2005) | 2 lines
-Changed paths:
-   M /trunk/debian/control
-
-  * debian/control: build-depend on tetex-extra (needed by doxygen).
-
-------------------------------------------------------------------------
-r191 | robux4 | 2005-09-04 08:49:23 +0000 (Sun, 04 Sep 2005) | 1 line
-Changed paths:
-   M /trunk/src/dvdcss/dvdcss.h
-
-* libdvdcss: more fixes for DLL building
-------------------------------------------------------------------------
-r190 | robux4 | 2005-09-04 08:31:58 +0000 (Sun, 04 Sep 2005) | 1 line
-Changed paths:
-   M /trunk/msvc/config.h
-
-* libdvdcss: the current version is 1.2.9
-------------------------------------------------------------------------
-r189 | robux4 | 2005-09-04 08:31:26 +0000 (Sun, 04 Sep 2005) | 1 line
-Changed paths:
-   M /trunk/src/device.c
-
-* libdvdcss: MSVC7 compilation fixes (shouldn't break mingw32)
-------------------------------------------------------------------------
-r188 | robux4 | 2005-09-04 08:25:26 +0000 (Sun, 04 Sep 2005) | 1 line
-Changed paths:
-   M /trunk/src/common.h
-   M /trunk/src/ioctl.h
-   M /trunk/src/libdvdcss.h
-
-* libdvdcss: MSVC7 compilation fixes (shouldn't break mingw32)
-------------------------------------------------------------------------
-r187 | robux4 | 2005-09-04 07:54:41 +0000 (Sun, 04 Sep 2005) | 1 line
-Changed paths:
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/libdvdcss.c
-
-* libdvdcss: oops mismatch #ifdef
-------------------------------------------------------------------------
-r186 | robux4 | 2005-09-04 07:43:15 +0000 (Sun, 04 Sep 2005) | 1 line
-Changed paths:
-   M /trunk/AUTHORS
-   M /trunk/COPYING
-   M /trunk/ChangeLog
-   M /trunk/INSTALL
-   M /trunk/Makefile.am
-   M /trunk/NEWS
-   M /trunk/README
-   M /trunk/debian/Makefile.am
-   M /trunk/doc/Makefile.am
-   M /trunk/doc/doxygen.cfg.in
-   M /trunk/doc/footer.html
-   M /trunk/doc/header.html
-   M /trunk/msvc/config.h
-   M /trunk/msvc/csstest.dsp
-   M /trunk/msvc/libdvdcss.dsp
-   M /trunk/msvc/workspace.dsw
-   M /trunk/src/Makefile.am
-   M /trunk/src/bsdi_dvd.h
-   M /trunk/src/bsdi_ioctl.c
-   M /trunk/src/common.h
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-   M /trunk/src/csstables.h
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/dvdcss/Makefile.am
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/error.c
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-   M /trunk/test/Makefile.am
-   M /trunk/test/csstest.c
-   M /trunk/test/dvd_region.c
-
-* libdvdcss: set EOL style in SVN
-------------------------------------------------------------------------
-r185 | robux4 | 2005-09-04 07:39:37 +0000 (Sun, 04 Sep 2005) | 1 line
-Changed paths:
-   M /trunk/src/dvdcss/dvdcss.h
-
-* libdvdcss: better DLL/library difference
-------------------------------------------------------------------------
-r184 | robux4 | 2005-09-04 07:36:01 +0000 (Sun, 04 Sep 2005) | 1 line
-Changed paths:
-   M /trunk/src/dvdcss/dvdcss.h
-
-* libdvdcss: allow building DLL exports
-------------------------------------------------------------------------
-r183 | sam | 2005-09-03 13:17:55 +0000 (Sat, 03 Sep 2005) | 4 lines
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/doc
-   M /trunk/test
-
-  * configure.ac: patch from Diego Pettenò to let the user disable the
-    documentation build.
-  * test doc: added missing svn:ignore entries.
-
-------------------------------------------------------------------------
-r182 | massiot | 2005-09-01 17:12:42 +0000 (Thu, 01 Sep 2005) | 2 lines
-Changed paths:
-   M /trunk/bootstrap
-
- * Revert [181] since it breaks on some OS X versions.
-
-------------------------------------------------------------------------
-r181 | massiot | 2005-09-01 12:40:25 +0000 (Thu, 01 Sep 2005) | 3 lines
-Changed paths:
-   M /trunk/bootstrap
-
- * bootstrap: Use libtoolize instead of glibtoolize when it is available
-   because libtool under OS X sucks.
-
-------------------------------------------------------------------------
-r180 | massiot | 2005-08-31 19:07:00 +0000 (Wed, 31 Aug 2005) | 2 lines
-Changed paths:
-   M /trunk/src/device.c
-
- * src/device.c: Under Windows remove the trailing backslash.
-
-------------------------------------------------------------------------
-r179 | sam | 2005-08-30 10:20:18 +0000 (Tue, 30 Aug 2005) | 2 lines
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/src/Makefile.am
-
-  * configure.ac: forward -framework options to the linker.
-
-------------------------------------------------------------------------
-r178 | massiot | 2005-08-30 09:48:19 +0000 (Tue, 30 Aug 2005) | 2 lines
-Changed paths:
-   M /trunk/src/device.c
-
- * src/device.c: Fixed compilation under Darwin.
-
-------------------------------------------------------------------------
-r177 | sam | 2005-08-29 22:25:20 +0000 (Mon, 29 Aug 2005) | 2 lines
-Changed paths:
-   M /trunk/src/device.c
-
-  * src/device.c: tried to port the device autodetection to OS X.
-
-------------------------------------------------------------------------
-r176 | sam | 2005-08-29 22:02:55 +0000 (Mon, 29 Aug 2005) | 3 lines
-Changed paths:
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/libdvdcss.c
-
-  * src/device.c: if the target is the empty string, attempt to autodetect
-    the DVD drive instead of giving up.
-
-------------------------------------------------------------------------
-r175 | sam | 2005-08-23 16:15:38 +0000 (Tue, 23 Aug 2005) | 3 lines
-Changed paths:
-   M /trunk/doc/Makefile.am
-   D /trunk/doc/doxygen.cfg
-   A /trunk/doc/doxygen.cfg.in (from /trunk/doc/doxygen.cfg:174)
-
-  * doc/Makefile.am: fixed build in a separate directory. Patch courtesy
-    of Bernard Leak with a few additions.
-
-------------------------------------------------------------------------
-r173 | sam | 2005-07-11 12:32:57 +0000 (Mon, 11 Jul 2005) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-
-  * Updated ChangeLog.
-
-------------------------------------------------------------------------
-r172 | sam | 2005-07-11 12:31:58 +0000 (Mon, 11 Jul 2005) | 2 lines
-Changed paths:
-   M /trunk/src/Makefile.am
-
-  * src/Makefile.am: bumped libtool version information.
-
-------------------------------------------------------------------------
-r171 | sam | 2005-07-11 12:25:18 +0000 (Mon, 11 Jul 2005) | 2 lines
-Changed paths:
-   M /trunk/debian/changelog
-   M /trunk/debian/control
-
-  * debian/*: updated Debian packaging information.
-
-------------------------------------------------------------------------
-r170 | sam | 2005-07-11 12:23:07 +0000 (Mon, 11 Jul 2005) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-
-  * src/css.c: grmbl, compile fix.
-
-------------------------------------------------------------------------
-r169 | massiot | 2005-07-11 12:15:10 +0000 (Mon, 11 Jul 2005) | 2 lines
-Changed paths:
-   M /trunk/NEWS
-   M /trunk/configure.ac
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-
- * Bumped up version number to 1.2.9.
-
-------------------------------------------------------------------------
-r168 | sam | 2005-07-11 12:10:43 +0000 (Mon, 11 Jul 2005) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-
-  * src/css.c: reworked my verbosity patch to fix a compilation issue.
-
-------------------------------------------------------------------------
-r167 | sam | 2005-07-11 11:58:58 +0000 (Mon, 11 Jul 2005) | 3 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-
-  * src/ioctl.c: under Solaris, use libsmedia for ioctls when available. Code
-    reworked from a patch courtesy of the MPlayer team.
-
-------------------------------------------------------------------------
-r166 | sam | 2005-07-11 11:41:15 +0000 (Mon, 11 Jul 2005) | 3 lines
-Changed paths:
-   M /trunk/src/bsdi_ioctl.c
-
-  * src/bsdi_ioctl.c: use memset instead of bzero. Patch courtesy of the
-    MPlayer team.
-
-------------------------------------------------------------------------
-r165 | sam | 2005-07-11 11:32:33 +0000 (Mon, 11 Jul 2005) | 3 lines
-Changed paths:
-   M /trunk/src/device.c
-   M /trunk/src/ioctl.h
-
-  * src/device.c src/ioctl.h: cosmetic fix that uses real Win32 types for
-    dynamically loaded functions and gets rid of lvalue casts.
-
-------------------------------------------------------------------------
-r164 | sam | 2005-07-11 11:25:47 +0000 (Mon, 11 Jul 2005) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-
-  * src/css.c: be slightly more verbose in which keys we manipulate.
-
-------------------------------------------------------------------------
-r163 | sam | 2005-07-11 11:22:33 +0000 (Mon, 11 Jul 2005) | 2 lines
-Changed paths:
-   M /trunk/bootstrap
-
-  * bootstrap: allow to bootstrap with aclocal/automake version 1.9.
-
-------------------------------------------------------------------------
-r162 | gbazin | 2004-09-02 12:17:13 +0000 (Thu, 02 Sep 2004) | 1 line
-Changed paths:
-   M /trunk/src/common.h
-
-* src/common.h: use lseeki64 for file seeking on win32 (works above the 2.1G boundary).
-------------------------------------------------------------------------
-r161 | sam | 2004-08-13 13:53:27 +0000 (Fri, 13 Aug 2004) | 4 lines
-Changed paths:
-   M /trunk/src/css.c
-
-  * src/css.c:
-    + Save the cached key as ASCII in hexadecimal form.
-    + Overwrite cached files if the data was invalid.
-
-------------------------------------------------------------------------
-r160 | sam | 2004-08-13 13:40:44 +0000 (Fri, 13 Aug 2004) | 4 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-  * src/libdvdcss.c: 
-    + Recreate the cache dir information on each launch, in case the
-      information it contains ever changes.
-
-------------------------------------------------------------------------
-r159 | sam | 2004-08-11 23:26:35 +0000 (Wed, 11 Aug 2004) | 2 lines
-Changed paths:
-   M /trunk
-   M /trunk/Makefile.am
-   D /trunk/autotools
-   M /trunk/bootstrap
-   M /trunk/configure.ac
-
-  * Don't put autotools/ under revision control.
-
-------------------------------------------------------------------------
-r158 | sam | 2004-08-11 23:24:54 +0000 (Wed, 11 Aug 2004) | 2 lines
-Changed paths:
-   D /trunk/autotools/Makefile.am
-
-  * Don't put autotools/ under revision control.
-
-------------------------------------------------------------------------
-r157 | sam | 2004-08-11 23:04:39 +0000 (Wed, 11 Aug 2004) | 2 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-  * libdvdcss.spec: updated Red Hat rules for RH9.
-
-------------------------------------------------------------------------
-r156 | sam | 2004-08-11 22:59:42 +0000 (Wed, 11 Aug 2004) | 4 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-  * src/libdvdcss.c:
-    + Support for cache directory tags, as proposed on
-      http://www.brynosaurus.com/cachedir/spec.html .
-
-------------------------------------------------------------------------
-r155 | sam | 2004-08-11 22:15:30 +0000 (Wed, 11 Aug 2004) | 6 lines
-Changed paths:
-   M /trunk/AUTHORS
-   M /trunk/src/libdvdcss.c
-
-  * src/libdvdcss.c:
-    + Append the disc key to the cache directory name to avoid issues with
-      identical discs which have different encryption keys, thanks to Sven
-      Heithecker.
-    + Use - instead of # as a separator in the cache filename.
-
-------------------------------------------------------------------------
-r154 | sam | 2004-07-05 09:17:20 +0000 (Mon, 05 Jul 2004) | 2 lines
-Changed paths:
-   M /trunk/bootstrap
-
-  * bootstrap: fixed a syntax error.
-
-------------------------------------------------------------------------
-r153 | sam | 2004-07-05 09:15:35 +0000 (Mon, 05 Jul 2004) | 4 lines
-Changed paths:
-   M /trunk/bootstrap
-
-  * bootstrap:
-    + Run libtoolize before aclocal.
-    + Support automake 1.8.
-
-------------------------------------------------------------------------
-r152 | sam | 2004-02-24 15:47:00 +0000 (Tue, 24 Feb 2004) | 2 lines
-Changed paths:
-   M /trunk
-   D /trunk/.cvsignore
-   M /trunk/NEWS
-   M /trunk/README
-   M /trunk/autotools
-   D /trunk/autotools/.cvsignore
-   M /trunk/bootstrap
-   M /trunk/debian
-   D /trunk/debian/.cvsignore
-   M /trunk/doc
-   D /trunk/doc/.cvsignore
-   M /trunk/doc/footer.html
-   M /trunk/doc/header.html
-   M /trunk/msvc
-   D /trunk/msvc/.cvsignore
-   M /trunk/src
-   D /trunk/src/.cvsignore
-   M /trunk/src/bsdi_dvd.h
-   M /trunk/src/common.h
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-   M /trunk/src/csstables.h
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/dvdcss
-   D /trunk/src/dvdcss/.cvsignore
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/error.c
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-   M /trunk/test
-   D /trunk/test/.cvsignore
-
-  * Added proper SVN keywords to files and directories (for $Id and ignores).
-
-------------------------------------------------------------------------
-r141 | sam | 2003-12-11 15:13:40 +0000 (Thu, 11 Dec 2003) | 3 lines
-Changed paths:
-   M /trunk/doc/.cvsignore
-   M /trunk/doc/doxygen.cfg
-
-  * doc/doxygen.cfg: Updated doxygen configuration.
-  * doc/.cvsignore: Ignore stamp files.
-
-------------------------------------------------------------------------
-r140 | sam | 2003-12-11 15:12:42 +0000 (Thu, 11 Dec 2003) | 5 lines
-Changed paths:
-   M /trunk/src/device.c
-
-  * src/device.c:
-    + Store the off_t values for seek and read in a temporary variable to
-      work around a strange gentoo gcc behaviour as seen here:
-      http://www.via.ecp.fr/via/ml/libdvdcss-devel/200312/msg00000.html
-
-------------------------------------------------------------------------
-r139 | sam | 2003-11-26 20:16:38 +0000 (Wed, 26 Nov 2003) | 2 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-  * libdvdcss.spec: Fixed a syntax error (#1488).
-
-------------------------------------------------------------------------
-r138 | sam | 2003-11-06 10:12:38 +0000 (Thu, 06 Nov 2003) | 2 lines
-Changed paths:
-   M /trunk/bootstrap
-
-  * bootstrap: remove autom4te.cache before running autoconf
-
-------------------------------------------------------------------------
-r137 | sam | 2003-09-15 17:12:46 +0000 (Mon, 15 Sep 2003) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/libdvdcss.c
-
-  * libdvdcss.c: Added more debug messages.
-
-------------------------------------------------------------------------
-r136 | sam | 2003-09-09 13:17:24 +0000 (Tue, 09 Sep 2003) | 2 lines
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/src/css.c
-   M /trunk/src/device.c
-
-  * src/css.c, src/device.c: more meaningful error messages.
-
-------------------------------------------------------------------------
-r135 | sam | 2003-09-09 12:32:40 +0000 (Tue, 09 Sep 2003) | 4 lines
-Changed paths:
-   M /trunk/.cvsignore
-   M /trunk/Makefile.am
-   M /trunk/NEWS
-   M /trunk/README
-   M /trunk/configure.ac
-   M /trunk/debian/Makefile.am
-   M /trunk/debian/changelog
-   A /trunk/debian/compat
-   M /trunk/debian/control
-   M /trunk/debian/rules
-   M /trunk/doc/Makefile.am
-   M /trunk/doc/footer.html
-   M /trunk/doc/header.html
-   M /trunk/test/csstest.c
-
-  * configure.ac: check for doxygen and latex to build documentation.
-  * doc/Makefile.am: conditionally build documentation.
-  * debian/*: use debian/compat instead of DH_COMPAT.
-
-------------------------------------------------------------------------
-r134 | sam | 2003-09-09 12:05:44 +0000 (Tue, 09 Sep 2003) | 2 lines
-Changed paths:
-   M /trunk/bootstrap
-
-  * bootstrap: code clean-up.
-
-------------------------------------------------------------------------
-r133 | sam | 2003-09-09 10:03:48 +0000 (Tue, 09 Sep 2003) | 3 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/device.c
-   M /trunk/src/error.c
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-
-  * Changed _dvdcss_error and _dvdcss_debug to print_error and print_debug
-    because they aren't libdvdcss functions.
-
-------------------------------------------------------------------------
-r132 | gbazin | 2003-07-29 19:49:13 +0000 (Tue, 29 Jul 2003) | 3 lines
-Changed paths:
-   M /trunk/NEWS
-
-
-* NEWS: forgot to update this one for the release.
-
-------------------------------------------------------------------------
-r131 | gbazin | 2003-07-29 19:03:02 +0000 (Tue, 29 Jul 2003) | 3 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-
-* libdvdcss.spec: fixed typo.
-
-------------------------------------------------------------------------
-r130 | gbazin | 2003-07-28 23:41:52 +0000 (Mon, 28 Jul 2003) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/configure.ac
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-
-
-* ALL: bumped version number to 1.2.8
-
-------------------------------------------------------------------------
-r129 | sam | 2003-07-16 21:40:01 +0000 (Wed, 16 Jul 2003) | 7 lines
-Changed paths:
-   M /trunk/src/css.c
-
-  * src/css.c:
-    + Workaround in CrackTitleKey for strange discs that report read errors
-      seemingly at random. Testcase was on Linux 2.4.20, with a region 2 RPC2
-      drive, and the region 1 copy of "Chasing Amy".
-    + Used macros instead of numerals where appropriate.
-    + Fixed spelling here and there.
-
-------------------------------------------------------------------------
-r128 | gbazin | 2003-07-08 18:00:54 +0000 (Tue, 08 Jul 2003) | 3 lines
-Changed paths:
-   M /trunk/src/device.c
-
-
-* src/device.c: grmblgrmbl!! Fixed a bug that prevented encrypted dvds from working under win32.
-
-------------------------------------------------------------------------
-r127 | massiot | 2003-06-22 20:59:45 +0000 (Sun, 22 Jun 2003) | 2 lines
-Changed paths:
-   M /trunk/src/Makefile.am
-
-* Updated library version.
-
-------------------------------------------------------------------------
-r126 | sam | 2003-06-18 17:23:55 +0000 (Wed, 18 Jun 2003) | 2 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-  * ./src/libdvdcss.c: if DVDCSS_VERBOSE is greater than 2, do as if it was 2.
-
-------------------------------------------------------------------------
-r125 | sam | 2003-06-13 00:41:35 +0000 (Fri, 13 Jun 2003) | 12 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/NEWS
-   M /trunk/configure.ac
-   M /trunk/debian/changelog
-   M /trunk/debian/control
-   M /trunk/debian/rules
-   M /trunk/libdvdcss.spec
-
-  * Everything is ready for a 1.2.7 release.
-
-  * debian/control:
-    + Set policy to 3.5.10.
-    + Removed the leading "a" in the package description.
-    + Set the source section to libs.
-    + Set the -dev package section to libdevel.
-    + Changed the debhelper build dependency to (>=3.0).
-  * debian/rules:
-    + Added magic to avoid autotools timestamp skews on autobuilders (as if
-      libdvdcss was ever going to hit the Debian autobuilders anyway).
-
-------------------------------------------------------------------------
-r124 | sam | 2003-06-12 23:22:34 +0000 (Thu, 12 Jun 2003) | 6 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-  * ./src/libdvdcss.c: if DVDCSS_CACHE is not set, we force a default value.
-     - under Win32: C:\Documents and Settings\$USER\Application Data\dvdcss\
-     - under Unix and everything else: ${HOME}/.dvdcss/
-     - the special value DVDCSS_CACHE=off disables caching.
-  * ./src/libdvdcss.c: updated doxygen documentation accordingly.
-
-------------------------------------------------------------------------
-r123 | sam | 2003-06-12 23:15:18 +0000 (Thu, 12 Jun 2003) | 3 lines
-Changed paths:
-   M /trunk/Makefile.am
-   M /trunk/configure.ac
-
-  * ./Makefile.am: put autotools/ in DIST_SUBDIRS instead of SUBDIRS.
-  * ./configure.ac: forgot to generate autotools/Makefile.
-
-------------------------------------------------------------------------
-r122 | sam | 2003-06-10 22:50:31 +0000 (Tue, 10 Jun 2003) | 4 lines
-Changed paths:
-   M /trunk/Makefile.am
-   A /trunk/autotools
-   A /trunk/autotools/.cvsignore
-   A /trunk/autotools/Makefile.am
-   M /trunk/bootstrap
-   M /trunk/configure.ac
-
-  * ./configure.ac: make use of the autotools/ directory.
-  * ./bootstrap: libfool is a tool. Worked around its blatant ignorance of
-    the AC_CONFIG_AUX_DIR directive.
-
-------------------------------------------------------------------------
-r121 | sam | 2003-05-27 17:12:33 +0000 (Tue, 27 May 2003) | 4 lines
-Changed paths:
-   M /trunk/debian/changelog
-   M /trunk/debian/control
-
-  * ./debian/control: removed libc6-dev from libdvdcss2-dev's dependencies
-    because it is part of build-essential and it isn't even called libc6-dev
-    on all architectures.
-
-------------------------------------------------------------------------
-r120 | sam | 2003-05-16 22:12:48 +0000 (Fri, 16 May 2003) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-
-  * ./src/css.c: typos in comments.
-
-------------------------------------------------------------------------
-r119 | gbazin | 2003-04-11 10:00:29 +0000 (Fri, 11 Apr 2003) | 3 lines
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/src/common.h
-
-
-* configure.ac, src/common.h: fixes for the cygwin build using the mno-cygwin flag.
-
-------------------------------------------------------------------------
-r118 | yves | 2003-04-06 20:36:07 +0000 (Sun, 06 Apr 2003) | 2 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-better RH part thx Kipp Cannon <kipp@sgl.crestech.ca>
-
-------------------------------------------------------------------------
-r117 | gbazin | 2003-03-27 18:57:12 +0000 (Thu, 27 Mar 2003) | 3 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-
-* src/libdvdcss.c: CSS key cache collisions patch, courtesy of Michael Roitzsch.
-
-------------------------------------------------------------------------
-r116 | gbazin | 2003-03-22 16:37:37 +0000 (Sat, 22 Mar 2003) | 3 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-
-* src/libdvdcss.c: fix for NetBSD's mkdir that doesn't like trailing "/" on its argument. (courtesy of Christopher Richards)
-
-------------------------------------------------------------------------
-r115 | sam | 2003-03-10 18:01:40 +0000 (Mon, 10 Mar 2003) | 3 lines
-Changed paths:
-   M /trunk/debian/changelog
-   M /trunk/src/Makefile.am
-
-  * ./debian/changelog: updated Debian changelog.
-  * ./src/Makefile.am: bumped version information.
-
-------------------------------------------------------------------------
-r114 | alexis | 2003-03-10 17:41:31 +0000 (Mon, 10 Mar 2003) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/libdvdcss.spec
-
-- preparing the 1.2.6 release...
-
-------------------------------------------------------------------------
-r113 | massiot | 2003-03-09 23:50:42 +0000 (Sun, 09 Mar 2003) | 2 lines
-Changed paths:
-   M /trunk/NEWS
-   M /trunk/configure.ac
-
-Bumped up to 1.2.6.
-
-------------------------------------------------------------------------
-r112 | gbazin | 2003-03-09 23:34:18 +0000 (Sun, 09 Mar 2003) | 3 lines
-Changed paths:
-   M /trunk/src/common.h
-   M /trunk/src/error.c
-
-
-* src/common.h, src/error.c: fixed the PATH_MAX breakage on win32.
-
-------------------------------------------------------------------------
-r111 | massiot | 2003-02-04 11:54:36 +0000 (Tue, 04 Feb 2003) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/device.c
-   M /trunk/src/error.c
-
-Fixed compilation problems with PATH_MAX.
-
-------------------------------------------------------------------------
-r110 | massiot | 2003-01-29 22:59:35 +0000 (Wed, 29 Jan 2003) | 2 lines
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/src/libdvdcss.c
-
-Fixed MAX_PATH on Darwin.
-
-------------------------------------------------------------------------
-r109 | yves | 2003-01-28 07:58:22 +0000 (Tue, 28 Jan 2003) | 3 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-- release number is 1. do not forget to update it too, aka sam sux.
-- fix a redhat "macro".
-
-------------------------------------------------------------------------
-r108 | sam | 2003-01-28 01:17:02 +0000 (Tue, 28 Jan 2003) | 6 lines
-Changed paths:
-   M /trunk/ChangeLog
-   A /trunk/NEWS
-   M /trunk/configure.ac
-   M /trunk/debian/changelog
-   M /trunk/debian/rules
-   M /trunk/doc/doxygen.cfg
-   M /trunk/libdvdcss.spec
-   M /trunk/src/Makefile.am
-   M /trunk/test/Makefile.am
-
-  * updated ChangeLog.
-  * updated version numbers and timestamps everywhere.
-  * created NEWS file.
-  * ./configure.ac: BSD/OS compilation fix when a local copy of libdvd is
-    found on the system, thanks to Steven M. Schultz.
-
-------------------------------------------------------------------------
-r107 | sam | 2003-01-28 00:41:10 +0000 (Tue, 28 Jan 2003) | 3 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-   M /trunk/test/csstest.c
-
-  * ./test/csstest.c: we align our read buffer in case of raw device access.
-  * ./src/libdvdcss.c: updated documentation about raw devices.
-
-------------------------------------------------------------------------
-r106 | sam | 2003-01-27 16:57:19 +0000 (Mon, 27 Jan 2003) | 2 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-  * ./src/libdvdcss.c: disabled key cache when reading VOBs.
-
-------------------------------------------------------------------------
-r105 | sam | 2003-01-16 22:58:29 +0000 (Thu, 16 Jan 2003) | 2 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-  * ./src/ioctl.c, ./src/ioctl.h: removed minor gcc-isms.
-
-------------------------------------------------------------------------
-r104 | yves | 2003-01-16 14:45:14 +0000 (Thu, 16 Jan 2003) | 3 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-* macros to fix build on redhat system. put %define redhat80 to 1.
-* few fixes.
-
-------------------------------------------------------------------------
-r103 | sam | 2002-12-19 16:50:50 +0000 (Thu, 19 Dec 2002) | 4 lines
-Changed paths:
-   M /trunk/src/device.c
-
-  * ./src/device.c: seek() calls don't do anything if we're already at the
-    right position.
-  * ./src/device.c: we now handle partial reads.
-
-------------------------------------------------------------------------
-r102 | sam | 2002-12-19 15:44:30 +0000 (Thu, 19 Dec 2002) | 2 lines
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/src/css.c
-   M /trunk/src/libdvdcss.c
-
-  * ./configure.ac: added warning flags whenever possible.
-
-------------------------------------------------------------------------
-r101 | sam | 2002-12-19 15:36:04 +0000 (Thu, 19 Dec 2002) | 3 lines
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/src/device.c
-   M /trunk/src/libdvdcss.h
-
-  * ./src/device.c: dvdcss->i_pos now gets updated on each seek and each
-    read. Partial reads are not handled yet, but it's a step.
-
-------------------------------------------------------------------------
-r100 | sam | 2002-12-19 15:29:53 +0000 (Thu, 19 Dec 2002) | 3 lines
-Changed paths:
-   M /trunk/src/bsdi_dvd.h
-   M /trunk/src/bsdi_ioctl.c
-
-  * ./src/bsdi_ioctl.c, ./src/bsdi_dvd.h: updated the bsdi libdvd with
-    Steven M. Schultz's latest changes.
-
-------------------------------------------------------------------------
-r99 | sam | 2002-12-19 12:37:30 +0000 (Thu, 19 Dec 2002) | 2 lines
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/msvc/config.h
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-
-  * Ported the library build to Cygwin.
-
-------------------------------------------------------------------------
-r98 | sam | 2002-12-11 13:12:10 +0000 (Wed, 11 Dec 2002) | 2 lines
-Changed paths:
-   M /trunk/src/bsdi_dvd.h
-   M /trunk/src/bsdi_ioctl.c
-   M /trunk/src/device.c
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/libdvdcss.c
-
-  * minor coding style fixes.
-
-------------------------------------------------------------------------
-r97 | sam | 2002-12-10 10:43:25 +0000 (Tue, 10 Dec 2002) | 2 lines
-Changed paths:
-   M /trunk/msvc/csstest.dsp
-   M /trunk/msvc/libdvdcss.dsp
-   M /trunk/msvc/workspace.dsw
-
-  * ./msvc/*: grmbl, for some reason the project files were empty.
-
-------------------------------------------------------------------------
-r96 | sam | 2002-12-10 10:38:12 +0000 (Tue, 10 Dec 2002) | 2 lines
-Changed paths:
-   M /trunk/configure.ac
-   A /trunk/msvc
-   A /trunk/msvc/.cvsignore
-   A /trunk/msvc/config.h
-   A /trunk/msvc/csstest.dsp
-   A /trunk/msvc/libdvdcss.dsp
-   A /trunk/msvc/workspace.dsw
-   M /trunk/src/device.c
-   M /trunk/src/libdvdcss.c
-   M /trunk/test/csstest.c
-
-  * ./msvc/*: MS VC++ project files.
-
-------------------------------------------------------------------------
-r95 | babal | 2002-12-06 00:16:57 +0000 (Fri, 06 Dec 2002) | 3 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/device.c
-   M /trunk/src/error.c
-   M /trunk/src/libdvdcss.c
-
-- Early versions of Mingw32 (at least until 1.2) do not include
-  <limits.h> automatically, so PATH_MAX was undefined.
-
-------------------------------------------------------------------------
-r94 | sam | 2002-12-05 10:24:42 +0000 (Thu, 05 Dec 2002) | 4 lines
-Changed paths:
-   M /trunk/configure.ac
-   M /trunk/src/common.h
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-   M /trunk/src/csstables.h
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/error.c
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-
-  * ./src/libdvdcss.c: fixed Win32 mkdir() call.
-  * ALL: removed trailing spaces in files.
-  * ALL: moved everything to C99 integer types.
-
-------------------------------------------------------------------------
-r93 | sam | 2002-12-02 12:58:23 +0000 (Mon, 02 Dec 2002) | 2 lines
-Changed paths:
-   M /trunk/bootstrap
-
-  * ./bootstrap: we also look for glibtoolize (Closes: #37).
-
-------------------------------------------------------------------------
-r92 | jlj | 2002-12-02 07:38:21 +0000 (Mon, 02 Dec 2002) | 2 lines
-Changed paths:
-   M /trunk/src/device.h
-
-  ./src/device.h: Applied FreeBSD compile fix from Steven M. Schultz.
-
-------------------------------------------------------------------------
-r91 | jlj | 2002-11-25 18:44:31 +0000 (Mon, 25 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-   M /trunk/test/dvd_region.c
-
-  * ./src/ioctl.[ch]: Implemented ioctl_SendRPC.
-  * ./test/dvd_region.c: enabled set_region.
-
-------------------------------------------------------------------------
-r90 | sam | 2002-11-24 17:34:23 +0000 (Sun, 24 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/device.c
-   M /trunk/src/error.c
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-
-  * ./src/css.c, ./src/libdvdcss.c: applied a patch from the MPlayer folks
-    to cache title keys on disk.
-
-------------------------------------------------------------------------
-r89 | sam | 2002-11-21 12:13:20 +0000 (Thu, 21 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/debian/control
-
-  * ./debian/control: set the package sections to libs and devel instead of
-    graphics.
-
-------------------------------------------------------------------------
-r88 | alexis | 2002-11-17 23:46:44 +0000 (Sun, 17 Nov 2002) | 6 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-Changes in order to support RedHat and RPM 4.1 (courtesy of Ryurick
-Hristev and Kenton Groombridge).
-
-I have already uploaded new RPM packages on the FTP site (1.2.4-2) and
-updated the download page. Please test and give feedback.
-
-------------------------------------------------------------------------
-r87 | jlj | 2002-11-15 18:39:08 +0000 (Fri, 15 Nov 2002) | 2 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-  * ./src/ioctl.[ch]: ReportRPC win32 changes. Needs testing.
-
-------------------------------------------------------------------------
-r86 | gbazin | 2002-11-14 15:12:34 +0000 (Thu, 14 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-
-
-* updated the changelogs for the 1.2.4 release.
-
-------------------------------------------------------------------------
-r85 | sam | 2002-11-14 12:41:47 +0000 (Thu, 14 Nov 2002) | 6 lines
-Changed paths:
-   M /trunk/bootstrap
-   M /trunk/configure.ac
-   M /trunk/libdvdcss.spec
-
-  * ./configure.ac: explicitly set AC_CONFIG_AUX_DIR(.) so that people who
-    do bootstrap without paying attention to error messages don't screw up
-    packages :-)
-  * ./libdvdcss.spec: removed bootstrap from the build phase.
-  * ./bootstrap: we accept automake 1.7.
-
-------------------------------------------------------------------------
-r84 | gbazin | 2002-11-14 12:38:57 +0000 (Thu, 14 Nov 2002) | 9 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/ioctl.c
-
-
-* src/css.c src/ioctl.c, src/libdvdcss.c: changed the work-around to detect
-   if the dvd is encrypted on Win2K in non-administrator mode.
-   Because we cannot use an ioctl to get the copyright status of the DVD,
-   we try to get the disc key and if this succeed, we assume the DVD is
-   encrypted, otherwise we assume it to be unencrypted.
-   I hope this logic is not too much flawed... at least it seems to be working
-   with the few DVDs I've got.
-
-------------------------------------------------------------------------
-r83 | jlj | 2002-11-14 01:32:37 +0000 (Thu, 14 Nov 2002) | 2 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-
-  * ./src/ioctl.c: Broke OpenBSD port with my previous commit. Fixed.
-
-------------------------------------------------------------------------
-r82 | alexis | 2002-11-13 23:43:01 +0000 (Wed, 13 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-
-Added ./bootstrap for the build target
-
-------------------------------------------------------------------------
-r81 | gbazin | 2002-11-13 23:08:11 +0000 (Wed, 13 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-
-
-* update changelogs.
-
-------------------------------------------------------------------------
-r80 | jlj | 2002-11-13 22:45:05 +0000 (Wed, 13 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/AUTHORS
-   M /trunk/src/ioctl.c
-
-  * ./src/ioctl.c: cosmetic fixes.
-  * ./AUTHORS: updated my entry.
-
-------------------------------------------------------------------------
-r79 | alexis | 2002-11-13 22:24:41 +0000 (Wed, 13 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/configure.ac
-
-
-Update version number to 1.2.4
-
-------------------------------------------------------------------------
-r78 | alexis | 2002-11-13 22:14:28 +0000 (Wed, 13 Nov 2002) | 2 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-Update for 1.2.4 release.
-
-------------------------------------------------------------------------
-r77 | sam | 2002-11-13 22:11:38 +0000 (Wed, 13 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/debian/changelog
-
-  Updated Debian changelog (though there are no changes in this version
-  apart from Win32, so what's the point of building new packages :p)
-
-------------------------------------------------------------------------
-r76 | gbazin | 2002-11-13 21:23:08 +0000 (Wed, 13 Nov 2002) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
-
-
-* ChangeLog: updated changelog.
-
-------------------------------------------------------------------------
-r75 | gbazin | 2002-10-29 18:51:37 +0000 (Tue, 29 Oct 2002) | 4 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-
-
-* src/ioctl.c: fixed typo that prevented unencrypted DVDs to work in
-   non-administrator mode.
-
-------------------------------------------------------------------------
-r74 | gbazin | 2002-10-19 09:53:33 +0000 (Sat, 19 Oct 2002) | 4 lines
-Changed paths:
-   M /trunk/src/device.c
-   M /trunk/src/ioctl.h
-
-
-* src/device.c, src/ioctl.h: on win9x, when using ASPI, make sure the drive
-   we are trying to open is actually a cdrom/dvdrom drive.
-
-------------------------------------------------------------------------
-r73 | sam | 2002-10-18 18:48:59 +0000 (Fri, 18 Oct 2002) | 5 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-
-  * ./src/device.c: split the open, read and seek functions so that we can
-    use function pointers instead of doing the if(WIN2K) test.
-  * ./src/device.c: if the target is not a drive name such as F:, we open
-    it with the standard libc functions, even under Win32.
-
-------------------------------------------------------------------------
-r72 | massiot | 2002-10-12 23:02:49 +0000 (Sat, 12 Oct 2002) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-
-Updated changelog and release tag.
-
-------------------------------------------------------------------------
-r71 | gbazin | 2002-10-12 12:41:24 +0000 (Sat, 12 Oct 2002) | 4 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-
-* src/ioctl.c, src/ioctl.h: fix in ioctl_ReadCopyright to try to work around
-   the buggy IOCTL_DVD_READ_STRUCTURE on WinNT/2k/XP.
-
-------------------------------------------------------------------------
-r70 | sam | 2002-10-11 10:09:56 +0000 (Fri, 11 Oct 2002) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-
-  * Updated changelog and package files.
-
-------------------------------------------------------------------------
-r69 | sam | 2002-10-11 10:03:48 +0000 (Fri, 11 Oct 2002) | 6 lines
-Changed paths:
-   M /trunk/.cvsignore
-   M /trunk/Makefile.am
-   D /trunk/NEWS
-   M /trunk/bootstrap
-   A /trunk/configure.ac
-   D /trunk/configure.in
-   M /trunk/src/.cvsignore
-   M /trunk/src/Makefile.am
-   D /trunk/src/config.h.in
-
-  * ./configure.ac, ./bootstrap: used libdvbpsi's bootstrap, moved config.h
-    to ., renamed configure.in into configure.ac, removed useless files that
-    are autogenerated.
-  * ./src/Makefile.am: instead of using -no-undefined "only under BeOS" we
-    use it "never with MSVC".
-
-------------------------------------------------------------------------
-r68 | massiot | 2002-10-10 22:29:31 +0000 (Thu, 10 Oct 2002) | 2 lines
-Changed paths:
-   M /trunk/bootstrap
-
-Exit cleanly in case of error.
-
-------------------------------------------------------------------------
-r67 | massiot | 2002-10-10 21:40:41 +0000 (Thu, 10 Oct 2002) | 4 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/configure.in
-   M /trunk/src/config.h.in
-   M /trunk/src/css.c
-
-* Bumped up version number to 1.2.3 (soleil !).
-* Updated Changelog.
-* Merged in hh's patch for broken DVD drives/kernel/whatever.
-
-------------------------------------------------------------------------
-r66 | gbazin | 2002-10-10 12:44:28 +0000 (Thu, 10 Oct 2002) | 7 lines
-Changed paths:
-   M /trunk/AUTHORS
-   M /trunk/src/css.c
-   M /trunk/src/device.c
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-
-* src/css.c, src/device.c, src/ioctl.[ch]: We don't need to be in administrator mode
-anymore to authenticate the drive on Windows NT/2k/XP. As a result any user can now
-play a DVD on these OSs :)
-* src/ioctl.c: fixed ioctl_ReadTitleKey which wasn't working on Windows NT/2k/XP.
-Because of this bug, the disc and key methods for key decryption where not working.
-
-------------------------------------------------------------------------
-r65 | sam | 2002-10-07 16:37:15 +0000 (Mon, 07 Oct 2002) | 5 lines
-Changed paths:
-   M /trunk/configure.in
-   M /trunk/src/Makefile.am
-   M /trunk/src/config.h.in
-
-  * ./src/Makefile.am: -no-undefined is now only used under BeOS because it
-    causes the Win32 compilation to fail.
-  * ./configure.in, src/Makefile.am: used AM_CONDITIONAL to conditionally
-    build the BSDi stuff.
-
-------------------------------------------------------------------------
-r64 | sam | 2002-08-10 21:27:42 +0000 (Sat, 10 Aug 2002) | 2 lines
-Changed paths:
-   M /trunk/src/Makefile.am
-
-  * Bumped the revision number... thanks H�kan :-)
-
-------------------------------------------------------------------------
-r63 | sam | 2002-08-10 21:19:55 +0000 (Sat, 10 Aug 2002) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-
-  * ./src/css.c: removed useless debug messages on H�kan's advice.
-
-------------------------------------------------------------------------
-r62 | sam | 2002-08-10 20:21:54 +0000 (Sat, 10 Aug 2002) | 2 lines
-Changed paths:
-   M /trunk/AUTHORS
-   M /trunk/ChangeLog
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-   M /trunk/src/libdvdcss.c
-
-  * Updated release-related files.
-
-------------------------------------------------------------------------
-r61 | sam | 2002-08-10 17:42:09 +0000 (Sat, 10 Aug 2002) | 3 lines
-Changed paths:
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-  * ./src/ioctl.c: fixed ReportRPC for Win32.
-  * ./src/device.h: removed unneeded exported symbols.
-
-------------------------------------------------------------------------
-r60 | sam | 2002-08-10 14:27:26 +0000 (Sat, 10 Aug 2002) | 4 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-   M /trunk/src/device.c
-   M /trunk/src/device.h
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/error.c
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-   M /trunk/test/csstest.c
-
-  * ./src/dvdcss/dvdcss.h: marked deprecated stuff.
-  * ./test/csstest.c: more documentation.
-      see http://www.videolan.org/libdvdcss/doc/
-
-------------------------------------------------------------------------
-r59 | sam | 2002-08-10 12:56:04 +0000 (Sat, 10 Aug 2002) | 3 lines
-Changed paths:
-   M /trunk/.cvsignore
-   M /trunk/Makefile.am
-   D /trunk/Makefile.in
-   D /trunk/aclocal.m4
-   D /trunk/config.guess
-   D /trunk/config.sub
-   D /trunk/configure
-   M /trunk/configure.in
-   M /trunk/debian/.cvsignore
-   D /trunk/debian/Makefile.in
-   A /trunk/doc
-   A /trunk/doc/.cvsignore
-   A /trunk/doc/Makefile.am
-   A /trunk/doc/doxygen.cfg
-   A /trunk/doc/footer.html
-   A /trunk/doc/header.html
-   D /trunk/install-sh
-   D /trunk/ltmain.sh
-   D /trunk/missing
-   D /trunk/mkinstalldirs
-   M /trunk/src/.cvsignore
-   D /trunk/src/Makefile.in
-   M /trunk/src/dvdcss/.cvsignore
-   D /trunk/src/dvdcss/Makefile.in
-   M /trunk/src/libdvdcss.c
-   M /trunk/test/.cvsignore
-   D /trunk/test/Makefile.in
-
-  * ALL: removed autotools files.
-  * ./doc/*: added doxygen files.
-
-------------------------------------------------------------------------
-r58 | sam | 2002-08-10 12:21:28 +0000 (Sat, 10 Aug 2002) | 2 lines
-Changed paths:
-   M /trunk/src/dvdcss/dvdcss.h
-   M /trunk/src/libdvdcss.c
-
-  * ./src/libdvdcss.c, ./src/dvdcss/dvdcss.h: documented the API.
-
-------------------------------------------------------------------------
-r57 | sam | 2002-08-09 22:03:34 +0000 (Fri, 09 Aug 2002) | 4 lines
-Changed paths:
-   M /trunk/src/css.c
-
-  * ./src/css.c: in case of a region mismatch and when the drive needs to
-    be reset, we read the first sector of the disc instead of closing and
-    reopening it.
-
-------------------------------------------------------------------------
-r56 | sam | 2002-08-09 14:19:46 +0000 (Fri, 09 Aug 2002) | 3 lines
-Changed paths:
-   M /trunk/src/Makefile.am
-   M /trunk/src/Makefile.in
-
-  * ./src/Makefile.am: tell libtool that libdvdcss does not have undefined
-    symbols. Fix for BeOS courtesy of Andrew Bachmann.
-
-------------------------------------------------------------------------
-r55 | sam | 2002-08-09 14:10:43 +0000 (Fri, 09 Aug 2002) | 23 lines
-Changed paths:
-   M /trunk/Makefile.in
-   M /trunk/aclocal.m4
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/debian/Makefile.in
-   M /trunk/src/Makefile.am
-   M /trunk/src/Makefile.in
-   M /trunk/src/bsdi_ioctl.c
-   M /trunk/src/common.h
-   M /trunk/src/config.h.in
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-   A /trunk/src/device.c
-   A /trunk/src/device.h
-   M /trunk/src/dvdcss/Makefile.in
-   A /trunk/src/error.c
-   M /trunk/src/libdvdcss.c
-   M /trunk/src/libdvdcss.h
-   M /trunk/test/Makefile.in
-   M /trunk/test/csstest.c
-
-  * ./src/css.c: when the ReadTitleKey ioctl failed, reopen the device before
-    falling back to the title method.
-
-   Note: on my drive, this fixes the "ioctl_ReadTitleKey failed" error
-         many users have been reporting. Please test!
-
-   Note 2: I could not find any other way to reset the drive after a failed
-           ReadTitleKey ioctl than closing and opening the device again. If
-           I don't do that, read() fails with an Input/output error after a
-           while (but not immediately).
-
-  * ALL: libdvdcss builds with -ansi -pedantic. Yeah I like that :-)
-  * ./src/css.c: renamed a few functions so that they make more sense, added
-    debug messages here and there, fixed typos and speling.
-  * ./src/error.c: moved _dvdcss_error and _dvdcss_debug here.
-  * ./src/device.c: moved device reading functions from libdvdcss.c to here.
-  * ./src/device.c: errors from dvdcss_read are now properly handled; partial
-    reads still aren't though.
-  * ./src/libdvdcss.c: default verbosity is now 0, a library should not be
-    intrusive by default.
-  * ./test/csstest.c: additional error check.
-  * ./configure.in: removed the crap boolean_t detection.
-
-------------------------------------------------------------------------
-r54 | massiot | 2002-07-23 11:43:58 +0000 (Tue, 23 Jul 2002) | 2 lines
-Changed paths:
-   M /trunk/README
-
-Default method is now "key" :p.
-
-------------------------------------------------------------------------
-r53 | sam | 2002-07-16 22:47:40 +0000 (Tue, 16 Jul 2002) | 4 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/Makefile.in
-   M /trunk/aclocal.m4
-   M /trunk/config.guess
-   M /trunk/config.sub
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/debian/Makefile.in
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-   M /trunk/ltmain.sh
-   M /trunk/src/Makefile.in
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-   M /trunk/src/dvdcss/Makefile.in
-   M /trunk/src/libdvdcss.c
-   M /trunk/test/Makefile.am
-   M /trunk/test/Makefile.in
-
-  * ./test/Makefile.am: disabled dvd_region.
-  * ./src/css.c: speling fixes.
-  * ALL: re-ran bootstrap with more recent autotools.
-
-------------------------------------------------------------------------
-r52 | hjort | 2002-07-14 11:44:57 +0000 (Sun, 14 Jul 2002) | 3 lines
-Changed paths:
-   A /trunk/test/dvd_region.c
-
-New utility for querying (and eventualy setting) the region of a DVD drive
-using the ioctl wrappers in libdvdcss.
-
-------------------------------------------------------------------------
-r51 | hjort | 2002-07-12 23:28:42 +0000 (Fri, 12 Jul 2002) | 3 lines
-Changed paths:
-   M /trunk/configure.in
-   M /trunk/src/bsdi_ioctl.c
-
-Include config.h before testing defines in the BSDi ioctl code.  Add a bug
-fix from the author.  Remove the now unused parts from configure.in.
-
-------------------------------------------------------------------------
-r50 | hjort | 2002-07-12 21:06:41 +0000 (Fri, 12 Jul 2002) | 3 lines
-Changed paths:
-   M /trunk/src/Makefile.am
-   M /trunk/src/bsdi_ioctl.c
-   M /trunk/test/Makefile.am
-
-Fix so that the bsdi_*.[hc] files make it into the dist tar-ball.
-Correct the include path for the programs in test/.
-
-------------------------------------------------------------------------
-r49 | hjort | 2002-07-01 13:40:33 +0000 (Mon, 01 Jul 2002) | 3 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-Typo fix and fix the linked list code to not drop the list when instering
-at the head, from Adam Jones.
-
-------------------------------------------------------------------------
-r48 | hjort | 2002-07-01 10:36:37 +0000 (Mon, 01 Jul 2002) | 2 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-Patch for OS/2 from Alex Strelnikov.
-
-------------------------------------------------------------------------
-r47 | hjort | 2002-07-01 09:59:09 +0000 (Mon, 01 Jul 2002) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-
-Typo fix from Adam Jones.
-
-------------------------------------------------------------------------
-r46 | hjort | 2002-07-01 09:02:25 +0000 (Mon, 01 Jul 2002) | 2 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-Getting ReportRPC for WIN32 a bit closer to working.
-
-------------------------------------------------------------------------
-r45 | sam | 2002-06-04 07:10:07 +0000 (Tue, 04 Jun 2002) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/src/ioctl.c
-
-  * ./src/ioctl.c: implemented ioctl_ReportKey1 for HP-UX.
-
-------------------------------------------------------------------------
-r44 | sam | 2002-06-04 07:02:57 +0000 (Tue, 04 Jun 2002) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/src/libdvdcss.c
-
-  * ./src/libdvdcss.c: Win32 compilation fix.
-
-------------------------------------------------------------------------
-r43 | sam | 2002-06-02 16:18:45 +0000 (Sun, 02 Jun 2002) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-
-  * ALL: changed version number to 1.2.1.
-
-------------------------------------------------------------------------
-r42 | sam | 2002-06-02 16:14:48 +0000 (Sun, 02 Jun 2002) | 2 lines
-Changed paths:
-   M /trunk/AUTHORS
-   M /trunk/ChangeLog
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-  * ./src/ioctl.c, ./src/ioctl.h: QNX port, courtesy of Pascal Levesque.
-
-------------------------------------------------------------------------
-r41 | sam | 2002-06-02 16:05:34 +0000 (Sun, 02 Jun 2002) | 2 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/src/css.c
-
-  * ./src/css.c: applied H�kan's fix for the failure on region mismatch.
-
-------------------------------------------------------------------------
-r40 | sam | 2002-06-02 15:54:10 +0000 (Sun, 02 Jun 2002) | 3 lines
-Changed paths:
-   M /trunk/.cvsignore
-   M /trunk/ChangeLog
-   M /trunk/aclocal.m4
-   M /trunk/configure
-   M /trunk/libdvdcss.spec
-   M /trunk/ltmain.sh
-   M /trunk/src/libdvdcss.c
-
-  * ALL: switched to libtool 1.4.2a.
-  * ./src/libdvdcss.c: fixed an uninitialized variable.
-
-------------------------------------------------------------------------
-r39 | sam | 2002-05-26 14:22:23 +0000 (Sun, 26 May 2002) | 2 lines
-Changed paths:
-   M /trunk/src/dvdcss/dvdcss.h
-
-  * ./src/dvdcss/dvdcss.h: C++ compliant public header.
-
-------------------------------------------------------------------------
-r38 | sam | 2002-05-20 17:58:20 +0000 (Mon, 20 May 2002) | 4 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-   D /trunk/libtool
-
-  * Everything should be ready for 1.2.0.
-  * Updated ChangeLog.
-  * Removed libtool. It seems to be created automatically anyway.
-
-------------------------------------------------------------------------
-r37 | hjort | 2002-05-16 20:40:54 +0000 (Thu, 16 May 2002) | 4 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-New function _dvdcss_use_ioctls.  Avoid using the ioctl calls when
-they have no chans or working, this in turn avoids a spurious warning
-when they fail.
-
-------------------------------------------------------------------------
-r36 | hjort | 2002-05-16 20:12:04 +0000 (Thu, 16 May 2002) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-
-Update error message.
-
-------------------------------------------------------------------------
-r35 | hjort | 2002-05-16 12:10:29 +0000 (Thu, 16 May 2002) | 2 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-Default to 'key', rather than 'title', method.
-
-------------------------------------------------------------------------
-r34 | sam | 2002-05-15 20:27:04 +0000 (Wed, 15 May 2002) | 2 lines
-Changed paths:
-   M /trunk/libdvdcss.spec
-
-  * ./libdvdcss.spec: enhancements by Mandrakesoft.
-
-------------------------------------------------------------------------
-r33 | hjort | 2002-05-13 21:22:22 +0000 (Mon, 13 May 2002) | 3 lines
-Changed paths:
-   M /trunk/src/libdvdcss.c
-
-Correct serious bug in dvdcss_read for titles with all zero key (a unencrypted
-title on a CSS protected disc).
-
-------------------------------------------------------------------------
-r32 | jlj | 2002-05-05 22:21:51 +0000 (Sun, 05 May 2002) | 3 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-  * ./src/ioctl.[ch]: Darwin changes: Cleaned up the code, fixed
-    ReadTitleKey, and implemented ReportRPC.
-
-------------------------------------------------------------------------
-r31 | gbazin | 2002-04-26 20:47:08 +0000 (Fri, 26 Apr 2002) | 4 lines
-Changed paths:
-   M /trunk/INSTALL
-
-
-
-* updated win32 compilation instructions.
-
-------------------------------------------------------------------------
-r30 | sam | 2002-04-06 01:27:43 +0000 (Sat, 06 Apr 2002) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-
-
-  * libdvdcss-1.1.1 release.
-
-------------------------------------------------------------------------
-r29 | sam | 2002-04-06 01:11:05 +0000 (Sat, 06 Apr 2002) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/src/ioctl.c
-
-
-  * ./src/ioctl.c: OpenBSD compile fix. Thanks to ex0dus on #videolan.
-
-------------------------------------------------------------------------
-r28 | gbazin | 2002-04-05 00:26:25 +0000 (Fri, 05 Apr 2002) | 5 lines
-Changed paths:
-   M /trunk/INSTALL
-   M /trunk/src/css.c
-
-
-
-* updated INSTALL doc for the win32 build.
-* added small win32 specific error message that was also in the vlc tree.
-
-------------------------------------------------------------------------
-r27 | gbazin | 2002-04-04 23:44:20 +0000 (Thu, 04 Apr 2002) | 10 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-   M /trunk/src/libdvdcss.c
-
-
-
-* added two patches that have been forgot from the vlc tree.
-
- 1- Under NT/2K/XP try to open the dvd device in read only mode if we don't
-    have right access. With only read access we can't use ioctls but if the
-    disc has already been authenticated, then we can decrypt it with the
-    TITLE method.
- 2- Small compilation fix for msvc.
-
-------------------------------------------------------------------------
-r26 | sam | 2002-04-04 14:21:25 +0000 (Thu, 04 Apr 2002) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/src/libdvdcss.h
-
-
-  * ./src/libdvdcss.h: IRIX compile fix by Michael Pruett <michael@68k.org>.
-
-------------------------------------------------------------------------
-r25 | sam | 2002-04-04 01:26:54 +0000 (Thu, 04 Apr 2002) | 4 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/src/config.h.in
-   M /trunk/src/ioctl.c
-
-
-  * ./configure.in: BeOS bug fix. I'm so lame.
-  * ./src/ioctl.c: refuse to build if DVD ioctls weren't found.
-
-------------------------------------------------------------------------
-r24 | sam | 2002-04-03 23:34:30 +0000 (Wed, 03 Apr 2002) | 3 lines
-Changed paths:
-   M /trunk/test/.cvsignore
-
-
-  * Forgot to change test/.cvsignore ...
-
-------------------------------------------------------------------------
-r23 | sam | 2002-04-03 23:33:57 +0000 (Wed, 03 Apr 2002) | 6 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/test/Makefile.am
-   M /trunk/test/Makefile.in
-   A /trunk/test/csstest.c
-   D /trunk/test/test.c
-
-
-  * ./test/csstest.c: renamed test.c to csstest.c.
-
-   I hereby declare libdvdcss 1.1.0 ready to ship; it was successfully tested
-  on Linux, FreeBSD, MacOS X and BeOS, and compiles on Solaris.
-
-------------------------------------------------------------------------
-r22 | jlj | 2002-04-03 23:02:20 +0000 (Wed, 03 Apr 2002) | 3 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-
-
-  * ./src/ioctl.c: Fixed a Darwin typo I recently introduced.
-
-------------------------------------------------------------------------
-r21 | sam | 2002-04-03 22:31:42 +0000 (Wed, 03 Apr 2002) | 3 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/Makefile.in
-   M /trunk/configure
-   M /trunk/debian/Makefile.in
-   M /trunk/src/Makefile.in
-   M /trunk/src/dvdcss/Makefile.in
-   M /trunk/test/Makefile.in
-
-
-  * Run ./bootstrap.
-
-------------------------------------------------------------------------
-r20 | jlj | 2002-04-03 22:17:00 +0000 (Wed, 03 Apr 2002) | 3 lines
-Changed paths:
-   M /trunk/configure.in
-
-
-  * ./configure.in: Darwin compile fix (added -no-cpp-precomp)
-
-------------------------------------------------------------------------
-r19 | sam | 2002-04-03 21:31:52 +0000 (Wed, 03 Apr 2002) | 5 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/configure
-   M /trunk/debian/changelog
-   M /trunk/libdvdcss.spec
-   M /trunk/missing
-
-
-  * ./ChangeLog: everything should be ready for the 1.1.0 release.
-  * ./libdvdcss.spec: updated specfile for RPM generation.
-  * ./missing: commited libtool's latest version of this file.
-
-------------------------------------------------------------------------
-r18 | jlj | 2002-04-03 21:25:13 +0000 (Wed, 03 Apr 2002) | 3 lines
-Changed paths:
-   M /trunk/configure.in
-   M /trunk/src/config.h.in
-   M /trunk/src/ioctl.c
-
-
-  * Fixed a Darwin define problem.
-
-------------------------------------------------------------------------
-r17 | sam | 2002-04-03 15:19:22 +0000 (Wed, 03 Apr 2002) | 5 lines
-Changed paths:
-   M /trunk/ChangeLog
-   M /trunk/Makefile.am
-   M /trunk/config.guess
-   M /trunk/config.sub
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/src/Makefile.am
-   M /trunk/src/Makefile.in
-   M /trunk/src/css.c
-   A /trunk/src/dvdcss
-   A /trunk/src/dvdcss/.cvsignore
-   A /trunk/src/dvdcss/Makefile.am
-   A /trunk/src/dvdcss/Makefile.in
-   A /trunk/src/dvdcss/dvdcss.h
-   D /trunk/src/dvdcss.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/test/Makefile.am
-   M /trunk/test/Makefile.in
-   M /trunk/test/test.c
-
-
-  * ./src/dvdcss/dvdcss.h: moved dvdcss.h in a subdirectory so that we can
-    include <dvdcss/dvdcss.h> without having to make install.
-  * ./test/test.c: removed #ifdef DVDCSS_DIST.
-
-------------------------------------------------------------------------
-r16 | sam | 2002-04-03 06:12:50 +0000 (Wed, 03 Apr 2002) | 9 lines
-Changed paths:
-   M /trunk/AUTHORS
-   M /trunk/ChangeLog
-   M /trunk/Makefile.am
-   M /trunk/Makefile.in
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/debian/.cvsignore
-   A /trunk/debian/Makefile.am
-   A /trunk/debian/Makefile.in
-   M /trunk/debian/changelog
-   M /trunk/debian/rules
-   M /trunk/libtool
-   M /trunk/src/Makefile.am
-   M /trunk/src/Makefile.in
-   M /trunk/src/config.h.in
-   M /trunk/src/css.c
-   M /trunk/src/dvdcss.h
-   M /trunk/src/libdvdcss.c
-   M /trunk/test/Makefile.in
-   M /trunk/test/test.c
-
-
-  * ./ChangeLog: updated changelog.
-  * ./Makefile.am: added the debian dir to the targets.
-  * ./configure.in: switched to a more conventional versioning scheme.
-  * ./src/css.c: removed a useless #ifdef.
-  * ./src/dvdcss.h: added a versioned symbol to the API.
-  * ./src/Makefile.am: use <dvdcss/dvdcss.h> instead of <videolan/dvdcss.h>.
-  * ./test/test.c: test program is now up to date.
-
-------------------------------------------------------------------------
-r15 | hjort | 2002-03-09 17:57:53 +0000 (Sat, 09 Mar 2002) | 7 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-   M /trunk/src/libdvdcss.c
-
-Split the code into more functions. The disc and title decryption /
-cracking code is now each in it's own function.  Also moved the code that
-looks for a weak block in the VOB to crack the title key from out from
-the loop that reads them.  Added another crack method, it's disabled for
-now though.  Lowered some limits on the current 'weak' test.  Added more
-comments.
-
-------------------------------------------------------------------------
-r14 | hjort | 2002-03-09 17:35:49 +0000 (Sat, 09 Mar 2002) | 3 lines
-Changed paths:
-   M /trunk/configure.in
-
-Add -D_FILE_OFFSET_BITS=64 to the compile line to make off_t / lseek and
-other file access functions used in dvdcss be 64bit.
-
-------------------------------------------------------------------------
-r13 | hjort | 2002-03-09 17:24:28 +0000 (Sat, 09 Mar 2002) | 2 lines
-Changed paths:
-   M /trunk/test/test.c
-
-Tell libdvdcss to get the key for the block before we decrypt it.
-
-------------------------------------------------------------------------
-r12 | hjort | 2002-03-09 17:23:05 +0000 (Sat, 09 Mar 2002) | 2 lines
-Changed paths:
-   M /trunk/test/Makefile.am
-
-Don't link to libdl.
-
-------------------------------------------------------------------------
-r11 | sam | 2002-03-09 17:16:44 +0000 (Sat, 09 Mar 2002) | 3 lines
-Changed paths:
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/test/test.c
-
-
-  * Fixed compilation of test/test.c.
-
-------------------------------------------------------------------------
-r10 | sam | 2002-03-06 00:06:17 +0000 (Wed, 06 Mar 2002) | 3 lines
-Changed paths:
-   M /trunk/test/.cvsignore
-   A /trunk/test/test.c
-
-
-  * Updated misc control files and added the sample program.
-
-------------------------------------------------------------------------
-r9 | sam | 2002-03-06 00:04:41 +0000 (Wed, 06 Mar 2002) | 2 lines
-Changed paths:
-   M /trunk/Makefile.am
-   M /trunk/Makefile.in
-   M /trunk/aclocal.m4
-   M /trunk/config.guess
-   M /trunk/config.sub
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/debian/changelog
-   D /trunk/debian/libdvdcss2.shlibs
-   M /trunk/libtool
-   M /trunk/src/Makefile.am
-   M /trunk/src/Makefile.in
-   M /trunk/src/config.h.in
-   M /trunk/test/Makefile.am
-   M /trunk/test/Makefile.in
-
-*** empty log message ***
-
-------------------------------------------------------------------------
-r8 | hjort | 2002-02-25 18:21:57 +0000 (Mon, 25 Feb 2002) | 2 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-
-Cleanup some formating, indentation and types and add a small comment.
-
-------------------------------------------------------------------------
-r7 | hjort | 2002-02-03 14:54:53 +0000 (Sun, 03 Feb 2002) | 2 lines
-Changed paths:
-   M /trunk/src/ioctl.c
-   M /trunk/src/ioctl.h
-
-Add the WIN32 fix to GetTitleKey from the vlc/extra branch.
-
-------------------------------------------------------------------------
-r6 | hjort | 2002-02-03 14:53:10 +0000 (Sun, 03 Feb 2002) | 2 lines
-Changed paths:
-   M /trunk/configure.in
-
-Do check for the unistd.h header file.
-
-------------------------------------------------------------------------
-r5 | hjort | 2002-01-20 17:04:54 +0000 (Sun, 20 Jan 2002) | 7 lines
-Changed paths:
-   M /trunk/src/css.c
-   M /trunk/src/css.h
-
-Make CSSAuth more rubust, should now also work with drives that are not 100%
-compliant to the SFF-8090 standard.  AGID invalidation should now work,
-allowing us to recover from hung / failed authentications.  Corrected
-CSSGetASF, it does not take an AGID argument.  Move several data structures
-from the dvdcss handle to local variables in CSSAuth.  Remove CSSAuth as a
-externaly visible function in css.c.
-
-------------------------------------------------------------------------
-r4 | sam | 2001-12-22 00:52:46 +0000 (Sat, 22 Dec 2001) | 3 lines
-Changed paths:
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/libtool
-   A /trunk/src/.cvsignore
-   M /trunk/src/config.h.in
-   M /trunk/src/libdvdcss.c
-
-
-  * Win32 compilation fix.
-
-------------------------------------------------------------------------
-r3 | sam | 2001-12-22 00:26:17 +0000 (Sat, 22 Dec 2001) | 3 lines
-Changed paths:
-   M /trunk/configure
-   M /trunk/configure.in
-   M /trunk/src/config.h.in
-
-
-  * Attempt at fixing the Solaris port.
-
-------------------------------------------------------------------------
-r2 | sam | 2001-12-22 00:10:31 +0000 (Sat, 22 Dec 2001) | 3 lines
-Changed paths:
-   M /trunk/.cvsignore
-   A /trunk/Makefile.in
-   M /trunk/configure
-   M /trunk/configure.in
-   A /trunk/src/Makefile.in
-   M /trunk/test/.cvsignore
-   A /trunk/test/Makefile.in
-
-
-  * Forgot Makefile.in files.
-
-------------------------------------------------------------------------
-r1 | sam | 2001-12-22 00:08:13 +0000 (Sat, 22 Dec 2001) | 3 lines
-Changed paths:
-   A /trunk
-   A /trunk/.cvsignore
-   A /trunk/AUTHORS
-   A /trunk/COPYING
-   A /trunk/ChangeLog
-   A /trunk/INSTALL
-   A /trunk/Makefile.am
-   A /trunk/NEWS
-   A /trunk/README
-   A /trunk/aclocal.m4
-   A /trunk/bootstrap
-   A /trunk/config.guess
-   A /trunk/config.sub
-   A /trunk/configure
-   A /trunk/configure.in
-   A /trunk/debian
-   A /trunk/debian/.cvsignore
-   A /trunk/debian/changelog
-   A /trunk/debian/control
-   A /trunk/debian/libdvdcss2-dev.dirs
-   A /trunk/debian/libdvdcss2.copyright
-   A /trunk/debian/libdvdcss2.dirs
-   A /trunk/debian/libdvdcss2.shlibs
-   A /trunk/debian/rules
-   A /trunk/install-sh
-   A /trunk/libdvdcss.spec
-   A /trunk/libtool
-   A /trunk/ltmain.sh
-   A /trunk/missing
-   A /trunk/mkinstalldirs
-   A /trunk/src
-   A /trunk/src/Makefile.am
-   A /trunk/src/bsdi_dvd.h
-   A /trunk/src/bsdi_ioctl.c
-   A /trunk/src/common.h
-   A /trunk/src/config.h.in
-   A /trunk/src/css.c
-   A /trunk/src/css.h
-   A /trunk/src/csstables.h
-   A /trunk/src/dvdcss.h
-   A /trunk/src/ioctl.c
-   A /trunk/src/ioctl.h
-   A /trunk/src/libdvdcss.c
-   A /trunk/src/libdvdcss.h
-   A /trunk/test
-   A /trunk/test/.cvsignore
-   A /trunk/test/Makefile.am
-
-
-  * Initial commit. Hope it'll work.
-
-------------------------------------------------------------------------
+commit 17d92492cd2e7148060c3b0ac50f98a1ad4e17b8
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Aug 29 18:57:51 2008 +0000
+
+      * Ship a .pc file with the library.
+
+commit 4b86763e9c0f9ae871b901b222396cae5570f590
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Aug 29 18:57:48 2008 +0000
+
+      * Update copyeight information here and there.
+
+commit c909158f1f7064e60857e62d2c49e0d242f06db8
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Aug 29 18:57:45 2008 +0000
+
+      * bootstrap: update bootstrapping script.
+      * configure.ac: hide autotools files in .auto/.
+      * .gitignore: add an ignore file for git-svn users.
+
+commit b925ffff053d2fc5b0f1cb8ef41f64ecf6182ec3
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Fri Aug 29 18:57:42 2008 +0000
+
+      * libdvdcss.c: ignore failure to get the disc key in case we have a
+        chance to decrypt anyway afterwards.
+
+commit 502c6dbe21c613bb6d5b9c555df5aebd481b29d9
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sun Jul 13 12:52:22 2008 +0000
+
+      * Convert all source code to UTF-8, or Doxygen will fail to generate proper
+        LaTeX documents.
+
+commit da76746bcdd3620202cb68d5d438509f4d34f6c1
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sun Jul 13 12:52:19 2008 +0000
+
+      * Update outdated Doxygen configuration file using doxygen -u.
+
+commit 0aa362efa587ce310ec81fa79bc0442b4eaceb5e
+Author: Kirill Belokurov <kirill.belokurov@gmail.com>
+Date:   Sat Jul 12 12:19:57 2008 +0000
+
+     * src/libdvdcss.c: initialize p_disc_key in the case when DVD is encrypted
+       but no ioctl is available ;
+     * src/css.c: initialize p_disc_key in the case when key decryption fails.
+
+commit b3ef727c420cdd6ddb54c57f8c02b5871c3b36db
+Author: Olivier Rolland <billl@users.sourceforge.net>
+Date:   Fri Jul 11 17:23:25 2008 +0000
+
+     * src/libdvdcss.c: add dvdcss_is_scrambled() function,
+       Olivier Rolland.
+
+commit 1c1f814cb73f791e4dc997a4b66f81a0b2f0beaf
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Mon Jan 7 16:48:35 2008 +0000
+
+    Nicer comment
+
+commit 99febf7d3f6b71751a42930a3a01364c91e3fd83
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Mon Sep 17 12:10:20 2007 +0000
+
+     Identifiers starting with two underscores or an underscore and capital letters are reserved for the system in C.
+
+commit 73a1d090593af7bdb3756abf80e2bb6950635a15
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Mon Sep 17 12:07:41 2007 +0000
+
+     This patch removes the following warning when compiling MPlayer:
+    
+    libdvdcss.c:145: warning: redundant redeclaration of 'dvdcss_interface_2'
+    dvdcss/dvdcss.h:70: warning: previous declaration of 'dvdcss_interface_2' was here
+
+commit e0eb585a2591c45c3198c97a8fbd2ae1e4e85eea
+Author: Ivan Kalvachev <ikalvachev@gmail.com>
+Date:   Sun Jul 29 10:14:53 2007 +0000
+
+    Fix crash on some DVDs
+    sprintf(tmp,"%.02x",(char)0xef); would print "ffffffef" instead of "ef"
+    in this case this leads to local array buffer overflow and hard to trace stack corruption.
+    The quick, easy & dirty solution is to use (unsigned char) or (uint8_t)
+
+commit 191f02b68793cff37fa3908098208d9a5421e52b
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Jul 15 22:23:39 2007 +0000
+
+    support automake 1.10
+
+commit 2669f3af06e1f1eb47e8f26232ae48b060dd0a3b
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Tue Nov 7 16:27:40 2006 +0000
+
+    fix cygwin compilation regarding the lseek change
+
+commit ba022acfaa68203c2e17cdf7f14f51dc0ddadf56
+Author: Diego Biurrun <diego@biurrun.de>
+Date:   Wed Nov 1 14:31:51 2006 +0000
+
+    fix compilation on MINGW
+    (lseek vs lseek64 typo)
+
+commit 495740089fc87dc105166f3b4fcc7cd5e27cb11d
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Sep 19 23:03:53 2006 +0000
+
+      * Fixed spelling in documentation. Also testing buildbot.
+
+commit 0602e82b4aba7da791a9eaaeb3e18bc34b0a8e51
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Sep 19 22:28:06 2006 +0000
+
+      * Fix warnings due to signed / unsigned pointer targets.
+
+commit 72c5201bb08792fd0eb93e92be487b2afa2d13bd
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Sep 19 22:27:46 2006 +0000
+
+      * Update bootstrap script.
+
+commit e5208cfe7eb1e5f1dd38f5e4ed1d72a8f42a9cc9
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Wed Sep 13 13:12:23 2006 +0000
+
+    fallback to USERPROFILE environment variable for caching CSS keys when
+    HOME is not set (for MinGW builds running outside of MinGW).
+
+commit 93ad73f7db62a40c2fa97298004d0509ddb8db6c
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Wed Sep 13 13:11:25 2006 +0000
+
+    now accepts X:\ as a device name, as well as X:
+
+commit 4b0fa47cb1e6e860bdf80015010869033ead73e1
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Mar 30 14:31:12 2006 +0000
+
+      * Oops, forgot to commit configure.ac when removing the debian/ directory.
+
+commit 6d34e8e62d05d7d82583280e4f628799bf58d127
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Mar 30 14:30:43 2006 +0000
+
+      * Removed the debian/ directory. Debian packaging is now handled
+        separately, in the pkg-multimedia repository.
+
+commit bbd221a848a91ad4ff4768daf7939f155aa0a1e4
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Jan 26 20:48:06 2006 +0000
+
+      * src/device.c: reduced code duplication and fixed a pointer/integer
+        confusion in the OS X drive detection.
+
+commit 3ff0475329552066207a5b83ae014ddffc7b86a4
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Nov 9 22:12:32 2005 +0000
+
+      * src/common.h: do not override lseek on Cygwin, only on mingw32. Cygwin
+        provides its own 64-bit offset lseek.
+
+commit 2094820645b8689a700c64ed68b1c92f821e68a8
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Oct 26 16:58:08 2005 +0000
+
+      * debian/control: build-depend on tetex-extra (needed by doxygen).
+
+commit 1f2c5c1fc04d0caa3e2b6fb36047bd99251a5a9f
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Sun Sep 4 08:49:23 2005 +0000
+
+    * libdvdcss: more fixes for DLL building
+
+commit cd9be950885c2fd5b9086c9d39bfd54bf1826511
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Sun Sep 4 08:31:58 2005 +0000
+
+    * libdvdcss: the current version is 1.2.9
+
+commit 45f037d4544409de22d6534d9b9c0016863c2029
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Sun Sep 4 08:31:26 2005 +0000
+
+    * libdvdcss: MSVC7 compilation fixes (shouldn't break mingw32)
+
+commit 618d5b8125a10c9a7e584a15f2cfac4ea12c7a7c
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Sun Sep 4 08:25:26 2005 +0000
+
+    * libdvdcss: MSVC7 compilation fixes (shouldn't break mingw32)
+
+commit fb0405ccb37a2f9bf9e78e734e15332013325c42
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Sun Sep 4 07:54:41 2005 +0000
+
+    * libdvdcss: oops mismatch #ifdef
+
+commit d1b4617cddd389a4dd58c11d63d65ed9dfca71c8
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Sun Sep 4 07:43:15 2005 +0000
+
+    * libdvdcss: set EOL style in SVN
+
+commit c3f7706729224b5c7affefac22af2876e0cb2cc3
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Sun Sep 4 07:39:37 2005 +0000
+
+    * libdvdcss: better DLL/library difference
+
+commit a79d41d0732836555996d91bd254faf84492b783
+Author: Steve Lhomme <robux@videolan.org>
+Date:   Sun Sep 4 07:36:01 2005 +0000
+
+    * libdvdcss: allow building DLL exports
+
+commit 6e2d2c27f4569c38e4660f6285aa693be5e175e4
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Sep 3 13:17:55 2005 +0000
+
+      * configure.ac:
+        documentation build.
+      * test doc: added missing svn:ignore entries.
+
+commit c143e1462c9385bfcf328620987232051bb47ea5
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Thu Sep 1 17:12:42 2005 +0000
+
+     * Revert [181] since it breaks on some OS X versions.
+
+commit a6022a7fecf49abfb84e9c7b878bcad2d0893c48
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Thu Sep 1 12:40:25 2005 +0000
+
+     * bootstrap: Use libtoolize instead of glibtoolize when it is available
+       because libtool under OS X sucks.
+
+commit 02f6ff7dbba02695e244ab47e732f19d32c8071f
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Wed Aug 31 19:07:00 2005 +0000
+
+     * src/device.c: Under Windows remove the trailing backslash.
+
+commit 1a0bb73f345c8a6e652b4c04ef9ea80fb870d4ea
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Aug 30 10:20:18 2005 +0000
+
+      * configure.ac: forward -framework options to the linker.
+
+commit a985b4c89b17af19910e3972759f9a2c5c3a67bb
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Tue Aug 30 09:48:19 2005 +0000
+
+     * src/device.c: Fixed compilation under Darwin.
+
+commit 3b1e03fddcdc6bf40e472dd491fbb241b7dc6463
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Aug 29 22:25:20 2005 +0000
+
+      * src/device.c: tried to port the device autodetection to OS X.
+
+commit 13b4e10ccb98348e3e4b170373d74fbc062d2a6d
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Aug 29 22:02:55 2005 +0000
+
+      * src/device.c: if the target is the empty string, attempt to autodetect
+        the DVD drive instead of giving up.
+
+commit 0c4fd16c0e19b66ed0f3138fb2ceb8e063c8e8ad
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Aug 23 16:15:38 2005 +0000
+
+      * doc/Makefile.am: fixed build in a separate directory.
+        of Bernard Leak with a few additions.
+
+commit 3d721bb2323c99bb2f01d485d9b1e3e16eb1f4dd
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 12:32:57 2005 +0000
+
+      * Updated ChangeLog.
+
+commit a612b01c8e14583bb590a8bf32fe20418f68ec46
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 12:31:58 2005 +0000
+
+      * src/Makefile.am: bumped libtool version information.
+
+commit 3c807df5278e83ebba7522b30d21f1d22cf88d02
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 12:25:18 2005 +0000
+
+      * debian/*: updated Debian packaging information.
+
+commit 54d659860270fef27cffd5d76a13abb5a5a7542e
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 12:23:07 2005 +0000
+
+      * src/css.c: grmbl, compile fix.
+
+commit aff6ddcdebafea8c085f280808a732f1f1b76ec3
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Mon Jul 11 12:15:10 2005 +0000
+
+     * Bumped up version number to 1.2.9.
+
+commit f0e89dcf84cfae8cd6029b42d64a7f347fb02636
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 12:10:43 2005 +0000
+
+      * src/css.c: reworked my verbosity patch to fix a compilation issue.
+
+commit 1c7a44d2526fffcab4aef1376284bf80b53fb652
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 11:58:58 2005 +0000
+
+      * src/ioctl.c: under Solaris, use libsmedia for ioctls when available. Code
+        reworked from a
+
+commit cdd38de0e1113e141cd1988c7dfd43f9ee7f7a55
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 11:41:15 2005 +0000
+
+      * src/bsdi_ioctl.c: use memset instead of bzero.
+        MPlayer team.
+
+commit 30c2da59e16b6acc6afb42549b6dc799aad1b94a
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 11:32:33 2005 +0000
+
+      * src/device.c src/ioctl.h: cosmetic fix that uses real Win32 types for
+        dynamically loaded functions and gets rid of lvalue casts.
+
+commit 550db7cd68db23d12a21ce1512a692e9a7e7c882
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 11:25:47 2005 +0000
+
+      * src/css.c: be slightly more verbose in which keys we manipulate.
+
+commit 59e410e2c02b6f7c3c13c892401c48b1fefd63ca
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 11 11:22:33 2005 +0000
+
+      * bootstrap: allow to bootstrap with aclocal/automake version 1.9.
+
+commit 933f36763e17753b5ba1fefbe24620025852de7b
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Thu Sep 2 12:17:13 2004 +0000
+
+    * src/common.h: use lseeki64 for file seeking on win32 (works above the 2.1G boundary).
+
+commit b077da2918b1f24352dda95e92ee477359413345
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Aug 13 13:53:27 2004 +0000
+
+      * src/css.c:
+        + Save the cached key as ASCII in hexadecimal form.
+        + Overwrite cached files if the data was invalid.
+
+commit 2f4e0edf3179a52f6f287188202c3cf68a9b61a4
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Aug 13 13:40:44 2004 +0000
+
+      * src/libdvdcss.c:
+        + Recreate the cache dir information on each launch, in case the
+          information it contains ever changes.
+
+commit e33338ed892251f4b5f6fdc09662fe0a522f193a
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Aug 11 23:26:35 2004 +0000
+
+      * Don't put autotools/ under revision control.
+
+commit 9b1b0c2ee2b8d8fdf04a41f97c812e192a71bc64
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Aug 11 23:24:54 2004 +0000
+
+      * Don't put autotools/ under revision control.
+
+commit b3ab4e05fb469051f1f15d4deff3e61a06c2f2b0
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Aug 11 23:04:39 2004 +0000
+
+      * libdvdcss.spec: updated Red Hat rules for RH9.
+
+commit 5078a9cba248307a85cf3ba54590e6e3e20697c4
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Aug 11 22:59:42 2004 +0000
+
+      * src/libdvdcss.c:
+        + Support for cache directory tags, as proposed on
+          http://www.brynosaurus.com/cachedir/spec.html .
+
+commit 8b3ebecc097066cb94161c4427a6d76f3499c8da
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Aug 11 22:15:30 2004 +0000
+
+      * src/libdvdcss.c:
+        + Append the disc key to the cache directory name to avoid issues with
+          identical discs which have different encryption keys, thanks to Sven
+          Heithecker.
+        + Use - instead of # as a separator in the cache filename.
+
+commit c2a2a265ee490a9a59bed41d31cf65e5e23c4b82
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 5 09:17:20 2004 +0000
+
+      * bootstrap: fixed a syntax error.
+
+commit 0e8e26de1bab11ea514dea089f0a384983c27853
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jul 5 09:15:35 2004 +0000
+
+      * bootstrap:
+        + Run libtoolize before aclocal.
+        + Support automake 1.8.
+
+commit b5b08eea25b41a9cee3c1dbef2b949c92c4d2e11
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Feb 24 15:47:00 2004 +0000
+
+      * Added proper SVN keywords to files and directories (for $Id and ignores).
+
+commit f446439d00aa005e23a9b76f9ea63db4a050b3fe
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Dec 11 15:13:40 2003 +0000
+
+      * doc/doxygen.cfg: Updated doxygen configuration.
+      * doc/.cvsignore: Ignore stamp files.
+
+commit 1487a6073ca8fc2d5a068ebc83a754979057496a
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Dec 11 15:12:42 2003 +0000
+
+      * src/device.c:
+        + Store the off_t values for seek and read in a temporary variable to
+          work around a strange gentoo gcc behaviour as seen here:
+          http://www.via.ecp.fr/via/ml/libdvdcss-devel/200312/msg00000.html
+
+commit 7a98f74594c310b793d7e855931b5f30ec3cbf58
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Nov 26 20:16:38 2003 +0000
+
+      * libdvdcss.spec: Fixed a syntax error (#1488).
+
+commit 63e441f9c4396f7109586ca25765dc39dd7bdb3e
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Nov 6 10:12:38 2003 +0000
+
+      * bootstrap: remove autom4te.cache before running autoconf
+
+commit e3a18cd7c55a261796bfab29845852481f7a08e5
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Sep 15 17:12:46 2003 +0000
+
+      * libdvdcss.c: Added more debug messages.
+
+commit eeaf7ef062e799d49c8d56db3c7938acfa81e8ce
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Sep 9 13:17:24 2003 +0000
+
+      * src/css.c, src/device.c: more meaningful error messages.
+
+commit 9ae8f9d21ccad4155c7d379e071b04cb9712041b
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Sep 9 12:32:40 2003 +0000
+
+      * configure.ac: check for doxygen and latex to build documentation.
+      * doc/Makefile.am: conditionally build documentation.
+      * debian/*: use debian/compat instead of DH_COMPAT.
+
+commit 01e2c942ccd52849e0bbddbf57bee67dda781898
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Sep 9 12:05:44 2003 +0000
+
+      * bootstrap: code clean-up.
+
+commit ddfe2c316e0fd6819721f5e5ddb861f5df5e6ecf
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Sep 9 10:03:48 2003 +0000
+
+      * Changed _dvdcss_error and _dvdcss_debug to print_error and print_debug
+        because they aren't libdvdcss functions.
+
+commit 0104be9ede298780483f95736a7be2c619b766bb
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Tue Jul 29 19:49:13 2003 +0000
+
+    * NEWS: forgot to update this one for the release.
+
+commit 94aca59950ec9441bafa4dbd9889fd7b191002fc
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Tue Jul 29 19:03:02 2003 +0000
+
+    * libdvdcss.spec: fixed typo.
+
+commit a4ba0c9a4a12d7733f8f128d53a391833a440f77
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Mon Jul 28 23:41:52 2003 +0000
+
+    * ALL: bumped version number to 1.2.8
+
+commit 200baa1b6bf8e808f88532c48bb875d61b2621dc
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Jul 16 21:40:01 2003 +0000
+
+      * src/css.c:
+        + Workaround in CrackTitleKey for strange discs that report read errors
+          seemingly at random. Testcase was on Linux 2.4.20, with a region 2 RPC2
+          drive, and the region 1 copy of "Chasing Amy".
+        + Used macros instead of numerals where appropriate.
+        + Fixed spelling here and there.
+
+commit e128db913818655fb274750b597bb8ac7dd668c6
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Tue Jul 8 18:00:54 2003 +0000
+
+    * src/device.c: grmblgrmbl!! Fixed a bug that prevented encrypted dvds from working under win32.
+
+commit 3979509d01dfc9f969dee80cdb9d9d962b3cbc32
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Sun Jun 22 20:59:45 2003 +0000
+
+    * Updated library version.
+
+commit c2d6c5f6f862cbbdba032f4f8d89fc38324174fd
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Jun 18 17:23:55 2003 +0000
+
+      * ./src/libdvdcss.c: if DVDCSS_VERBOSE is greater than 2, do as if it was 2.
+
+commit 6d3c82cb01166d054ee8b83860b9b84cca6ab721
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Jun 13 00:41:35 2003 +0000
+
+      * Everything is ready for a 1.2.7 release.
+    
+      * debian/control:
+        + Set policy to 3.5.10.
+        + Removed the leading "a" in the package description.
+        + Set the source section to libs.
+        + Set the -dev package section to libdevel.
+        + Changed the debhelper build dependency to (>=3.0).
+      * debian/rules:
+        + Added magic to avoid autotools timestamp skews on autobuilders (as if
+          libdvdcss was ever going to hit the Debian autobuilders anyway).
+
+commit 990adc01b453c29557c7d6059cf2cefb397e014f
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Jun 12 23:22:34 2003 +0000
+
+      * ./src/libdvdcss.c: if DVDCSS_CACHE is not set, we force a default value.
+         - under Win32: C:\Documents and Settings\$USER\Application Data\dvdcss\
+         - under Unix and everything else: ${HOME}/.dvdcss/
+         - the special value DVDCSS_CACHE=off disables caching.
+      * ./src/libdvdcss.c: updated doxygen documentation accordingly.
+
+commit 01533ced72f6d115b24c29e9831c4f25d05afdbd
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Jun 12 23:15:18 2003 +0000
+
+      * ./Makefile.am: put autotools/ in DIST_SUBDIRS instead of SUBDIRS.
+      * ./configure.ac: forgot to generate autotools/Makefile.
+
+commit 65e94b3fc670ad9336788d9b264ef4bc1ebf7098
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Jun 10 22:50:31 2003 +0000
+
+      * ./configure.ac: make use of the autotools/ directory.
+      * ./bootstrap: libfool is a tool. Worked around its blatant ignorance of
+        the AC_CONFIG_AUX_DIR directive.
+
+commit 526cc26f2a9149d186be8ec6cb614bae81ee87ea
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue May 27 17:12:33 2003 +0000
+
+      * ./debian/control: removed libc6-dev from libdvdcss2-dev's dependencies
+        because it is part of build-essential and it isn't even called libc6-dev
+        on all architectures.
+
+commit ae48e7a8b9f2035549264a9de0faf7169501a40b
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri May 16 22:12:48 2003 +0000
+
+      * ./src/css.c: typos in comments.
+
+commit 91e835e396ca1ca7b14a3125f208b91382743fe2
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Fri Apr 11 10:00:29 2003 +0000
+
+    * configure.ac, src/common.h: fixes for the cygwin build using the mno-cygwin flag.
+
+commit f023e43583229b3feb6595549b464e9a0e1ebff6
+Author: Kipp Cannon <kipp@sgl.crestech.ca>
+Date:   Sun Apr 6 20:36:07 2003 +0000
+
+    better RH part
+
+commit 48049c60d7efc40abe610e6ad66f59dfb9bf91bb
+Author: Michael Roitzsch <mroi@users.sourceforge.net>
+Date:   Thu Mar 27 18:57:12 2003 +0000
+
+    * src/libdvdcss.c: CSS key cache collisions
+
+commit fbc894055ce61ae2f96fb9ed4bdfb8a749d4badf
+Author: Christopher Richards <richards+netbsd@CS.Princeton.EDU>
+Date:   Sat Mar 22 16:37:37 2003 +0000
+
+    * src/libdvdcss.c: fix for NetBSD's mkdir that doesn't like trailing "/" on its argument.
+
+commit bf60ff1858beb4442f19e8748a6a7dd725b8f1ce
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Mar 10 18:01:40 2003 +0000
+
+      * ./debian/changelog: updated Debian changelog.
+      * ./src/Makefile.am: bumped version information.
+
+commit 876f392b742ef2a6b021bed6ca806b58db90f943
+Author: Alexis de Lattre <alexis@videolan.org>
+Date:   Mon Mar 10 17:41:31 2003 +0000
+
+    - preparing the 1.2.6 release...
+
+commit 780d82a9fcc47a4301b4a6e1aa592d677d07d3a9
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Sun Mar 9 23:50:42 2003 +0000
+
+    Bumped up to 1.2.6.
+
+commit dd59304d26c2a437f7b24fcbded4ea5cf342d055
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Sun Mar 9 23:34:18 2003 +0000
+
+    * src/common.h, src/error.c: fixed the PATH_MAX breakage on win32.
+
+commit e5ad296c482b5709673718cdadf75f36f7ce3fa3
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Tue Feb 4 11:54:36 2003 +0000
+
+    Fixed compilation problems with PATH_MAX.
+
+commit 459106fb9464578122e4e116f5f14ee845a8e445
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Wed Jan 29 22:59:35 2003 +0000
+
+    Fixed MAX_PATH on Darwin.
+
+commit 6bb02c1025f263d353df1c23e16ecf980e9cbcc0
+Author: Yves Duret <yves@videolan.org>
+Date:   Tue Jan 28 07:58:22 2003 +0000
+
+    - release number is 1. do not forget to update it too, aka sam sux.
+    - fix a redhat "macro".
+
+commit 677d07cc4a8db65add1de6ca2750bec98db1b92b
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Jan 28 01:17:02 2003 +0000
+
+      * updated ChangeLog.
+      * updated version numbers and timestamps everywhere.
+      * created NEWS file.
+      * ./configure.ac: BSD/OS compilation fix when a local copy of libdvd is
+        found on the system, thanks to Steven M. Schultz.
+
+commit a8cdb36570a3b28e116c75c3a5bd38d71a6f2ccc
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Jan 28 00:41:10 2003 +0000
+
+      * ./test/csstest.c: we align our read buffer in case of raw device access.
+      * ./src/libdvdcss.c: updated documentation about raw devices.
+
+commit ebbbe9db422d99f182f7e95055c248ea1757e0ec
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Jan 27 16:57:19 2003 +0000
+
+      * ./src/libdvdcss.c: disabled key cache when reading VOBs.
+
+commit ce9d6dfbd44915a29f2821adc3400e35cfd1f9ba
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Jan 16 22:58:29 2003 +0000
+
+      * ./src/ioctl.c, ./src/ioctl.h: removed minor gcc-isms.
+
+commit 9968f73fc2129873c1d01f6b6ed0b6dc2fcc11a8
+Author: Yves Duret <yves@videolan.org>
+Date:   Thu Jan 16 14:45:14 2003 +0000
+
+    * macros to fix build on redhat system. put %define redhat80 to 1.
+    * few fixes.
+
+commit 8ac62497bbcd7a64fdc94e062d5ccae18756c7df
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Dec 19 16:50:50 2002 +0000
+
+      * ./src/device.c: seek() calls don't do anything if we're already at the
+        right position.
+      * ./src/device.c: we now handle partial reads.
+
+commit ba862c3860586c3d7248b6bd665440fe791d6c1a
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Dec 19 15:44:30 2002 +0000
+
+      * ./configure.ac: added warning flags whenever possible.
+
+commit 0463d939434af887912396dcbaa8e45010c66a3a
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Dec 19 15:36:04 2002 +0000
+
+      * ./src/device.c: dvdcss->i_pos now gets updated on each seek and each
+        read. Partial reads are not handled yet, but it's a step.
+
+commit aa2a222868f993d893b1448461292e95940f3aca
+Author: Steven M. Schultz <sms@2bsd.com>
+Date:   Thu Dec 19 15:29:53 2002 +0000
+
+      * ./src/bsdi_ioctl.c, ./src/bsdi_dvd.h: updated the bsdi libdvd with
+        Steven M. Schultz's latest changes.
+
+commit 50899042baa76832eeead4ab35fe0d49c4dd0b85
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Dec 19 12:37:30 2002 +0000
+
+      * Ported the library build to Cygwin.
+
+commit 80e3a9ea47d8d5358e4012e830bc500f0a1bb45e
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Dec 11 13:12:10 2002 +0000
+
+      * minor coding style fixes.
+
+commit 92ccdd74aa3facb7675afdcc46609505129f2735
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Dec 10 10:43:25 2002 +0000
+
+      * ./msvc/*: grmbl, for some reason the project files were empty.
+
+commit 66c539c3aa03aa8823c41e5698685a165fb30c7b
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Dec 10 10:38:12 2002 +0000
+
+      * ./msvc/*: MS VC++ project files.
+
+commit b1486f807e7429794eb1adf0b8427ff119e9d3f6
+Author: Boris Dorès <babal@videolan.org>
+Date:   Fri Dec 6 00:16:57 2002 +0000
+
+    - Early versions of Mingw32 (at least until 1.2) do not include
+      <limits.h> automatically, so PATH_MAX was undefined.
+
+commit d2edf451feb3e8762c4895665bc356f5f9bb12a9
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Dec 5 10:24:42 2002 +0000
+
+      * ./src/libdvdcss.c: fixed Win32 mkdir() call.
+      * ALL: removed trailing spaces in files.
+      * ALL: moved everything to C99 integer types.
+
+commit f5c2c0ffec64c0c04085e2f33e08ce1b29e17869
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Dec 2 12:58:23 2002 +0000
+
+      * ./bootstrap: we also look for glibtoolize (Closes: #37).
+
+commit 6e54085ac98d922e0b4372c63f8e51b1aeb37308
+Author: Steven M. Schultz <sms@2bsd.com>
+Date:   Mon Dec 2 07:38:21 2002 +0000
+
+      ./src/device.h: Applied FreeBSD compile fix
+
+commit 74a14cf8b238c1efb540e3cc83d9ee4b71a4a70d
+Author: Jon Lech Johansen <jlj@videolan.org>
+Date:   Mon Nov 25 18:44:31 2002 +0000
+
+      * ./src/ioctl.[ch]: Implemented ioctl_SendRPC.
+      * ./test/dvd_region.c: enabled set_region.
+
+commit ec1bd09bf4768c9641363c13af2248edd0e24c91
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sun Nov 24 17:34:23 2002 +0000
+
+      * ./src/css.c, ./src/libdvdcss.c: applied a
+        to cache title keys on disk.
+
+commit c8e2bf595185afd6835852e78e2318e9c9cbc049
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Nov 21 12:13:20 2002 +0000
+
+      * ./debian/control: set the package sections to libs and devel instead of
+        graphics.
+
+commit 222512d55d332448635aafa5734e29c56e6f1411
+Author: Alexis de Lattre <alexis@videolan.org>
+Date:   Sun Nov 17 23:46:44 2002 +0000
+
+    Changes in order to support RedHat and RPM 4.1
+    Hristev and Kenton Groombridge).
+    
+    I have already uploaded new RPM packages on the FTP site (1.2.4-2) and
+    updated the download page. Please test and give feedback.
+
+commit e24d72f5d84d7e1384544048f9befc987e68dc53
+Author: Jon Lech Johansen <jlj@videolan.org>
+Date:   Fri Nov 15 18:39:08 2002 +0000
+
+      * ./src/ioctl.[ch]: ReportRPC win32 changes. Needs testing.
+
+commit 00e3bb6ea62a6a5dace32cc43856ccd7a790a3c6
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Thu Nov 14 15:12:34 2002 +0000
+
+    * updated the changelogs for the 1.2.4 release.
+
+commit 26d4d93c453ace4533fdc6c9bce594ca7681dc46
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Nov 14 12:41:47 2002 +0000
+
+      * ./configure.ac: explicitly set AC_CONFIG_AUX_DIR(.) so that people who
+        do bootstrap without paying attention to error messages don't screw up
+        packages :-)
+      * ./libdvdcss.spec: removed bootstrap from the build phase.
+      * ./bootstrap: we accept automake 1.7.
+
+commit a150a631e85f3ee338597e29b29f5460e7a8d45f
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Thu Nov 14 12:38:57 2002 +0000
+
+    * src/css.c src/ioctl.c, src/libdvdcss.c: changed the work-around to detect
+       if the dvd is encrypted on Win2K in non-administrator mode.
+       Because we cannot use an ioctl to get the copyright status of the DVD
+       we try to get the disc key and if this succeed, we assume the DVD is
+       encrypted, otherwise we assume it to be unencrypted.
+       I hope this logic is not too much flawed... at least it seems to be working
+       with the few DVDs I've got.
+
+commit 33e1fe0bac871b3edb9e40291460cc1ab6bf50b1
+Author: Jon Lech Johansen <jlj@videolan.org>
+Date:   Thu Nov 14 01:32:37 2002 +0000
+
+      * ./src/ioctl.c: Broke OpenBSD port with my previous commit. Fixed.
+
+commit 8bb2cde6c72247d91309d5c387751329992f96e9
+Author: Alexis de Lattre <alexis@videolan.org>
+Date:   Wed Nov 13 23:43:01 2002 +0000
+
+    Added ./bootstrap for the build target
+
+commit 02a207d4836ef4321abc07b07a1b8872ab298cda
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Wed Nov 13 23:08:11 2002 +0000
+
+    * update changelogs.
+
+commit 5262add4fd5fa180629ec7ac8e775336182fa247
+Author: Jon Lech Johansen <jlj@videolan.org>
+Date:   Wed Nov 13 22:45:05 2002 +0000
+
+      * ./src/ioctl.c: cosmetic fixes.
+      * ./AUTHORS: updated my entry.
+
+commit 75999adf10f6c02fa7ccb0646671e13316e8b49b
+Author: Alexis de Lattre <alexis@videolan.org>
+Date:   Wed Nov 13 22:24:41 2002 +0000
+
+    Update version number to 1.2.4
+
+commit 9fb3b8e419730e4d77490c74cee9130ad3cb189d
+Author: Alexis de Lattre <alexis@videolan.org>
+Date:   Wed Nov 13 22:14:28 2002 +0000
+
+    Update for 1.2.4 release.
+
+commit b1905951e466d516bab39135e7409aa69b8663cf
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Nov 13 22:11:38 2002 +0000
+
+      Updated Debian changelog (though there are no changes in this version
+      apart from Win32, so what's the point of building new packages :p)
+
+commit c1f72ec02134082f74e1e9e4b0f1f88bdb70fd65
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Wed Nov 13 21:23:08 2002 +0000
+
+    * ChangeLog: updated changelog.
+
+commit a5a05b27dab063a9b6843f88a06b83dabbd5cb66
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Tue Oct 29 18:51:37 2002 +0000
+
+    * src/ioctl.c: fixed typo that prevented unencrypted DVDs to work in
+       non-administrator mode.
+
+commit 6b11d456299603869c7f87705c52b7aefff45a0b
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Sat Oct 19 09:53:33 2002 +0000
+
+    * src/device.c, src/ioctl.h: on win9x, when using ASPI, make sure the drive
+       we are trying to open is actually a cdrom/dvdrom drive.
+
+commit 06626375c5f96a98eabddcd928ba1c269665498f
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Oct 18 18:48:59 2002 +0000
+
+      * ./src/device.c: split the open, read and seek functions so that we can
+        use function pointers instead of doing the if(WIN2K) test.
+      * ./src/device.c: if the target is not a drive name such as F:, we open
+        it with the standard libc functions, even under Win32.
+
+commit 2b99a49bad03ee880d1a8a2ff65d9080be934f45
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Sat Oct 12 23:02:49 2002 +0000
+
+    Updated changelog and release tag.
+
+commit 7437133762469e397253814824ab38796f6ff017
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Sat Oct 12 12:41:24 2002 +0000
+
+    * src/ioctl.c, src/ioctl.h: fix in ioctl_ReadCopyright to try to work around
+       the buggy IOCTL_DVD_READ_STRUCTURE on WinNT/2k/XP.
+
+commit 36eaed48543affde3b3ee233901313d411625972
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Oct 11 10:09:56 2002 +0000
+
+      * Updated changelog and package files.
+
+commit fd8c3e8443673203b43c06292719a8a14792556f
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Oct 11 10:03:48 2002 +0000
+
+      * ./configure.ac, ./bootstrap: used libdvbpsi's bootstrap, moved config.h
+        to ., renamed configure.in into configure.ac, removed useless files that
+        are autogenerated.
+      * ./src/Makefile.am: instead of using -no-undefined "only under BeOS" we
+        use it "never with MSVC".
+
+commit f91c54a9ef1e65e9cecd9fa15f520d964e1f9f46
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Thu Oct 10 22:29:31 2002 +0000
+
+    Exit cleanly in case of error.
+
+commit 45abd81482068bfbccedc7a4eb5a555819cd443b
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Thu Oct 10 21:40:41 2002 +0000
+
+    * Bumped up version number to 1.2.3 (soleil !).
+    * Updated Changelog.
+    * Merged in hh's patch for broken DVD drives/kernel/whatever.
+
+commit 95671de3719a6b0943d7c86766e29c5646d191d8
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Thu Oct 10 12:44:28 2002 +0000
+
+    * src/css.c, src/device.c, src/ioctl.[ch]: We don't need to be in administrator mode
+    anymore to authenticate the drive on Windows NT/2k/XP. As a result any user can now
+    play a DVD on these OSs :)
+    * src/ioctl.c: fixed ioctl_ReadTitleKey which wasn't working on Windows NT/2k/XP.
+    Because of this bug, the disc and key methods for key decryption where not working.
+
+commit 3adf615d8ed7c70804844131e808ffaec923cb10
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon Oct 7 16:37:15 2002 +0000
+
+      * ./src/Makefile.am: -no-undefined is now only used under BeOS because it
+        causes the Win32 compilation to fail.
+      * ./configure.in, src/Makefile.am: used AM_CONDITIONAL to conditionally
+        build the BSDi stuff.
+
+commit 39b65aab22b68d7fe0f12380044e1f2d16cc30e2
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Aug 10 21:27:42 2002 +0000
+
+      * Bumped the revision number... thanks Håkan :-)
+
+commit a9aa3b2f714aad8a5d47c20b2741a8e4d3455c2b
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Aug 10 21:19:55 2002 +0000
+
+      * ./src/css.c: removed useless debug messages on Håkan's advice.
+
+commit 046d391fc90c62aa0afec5eb7c383c29b13bc885
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Aug 10 20:21:54 2002 +0000
+
+      * Updated release-related files.
+
+commit cf2eb147875db33b8aa06245b47ccea49b621d58
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Aug 10 17:42:09 2002 +0000
+
+      * ./src/ioctl.c: fixed ReportRPC for Win32.
+      * ./src/device.h: removed unneeded exported symbols.
+
+commit 04675299a604238ec1d03cbfdb7e1067f2416c5d
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Aug 10 14:27:26 2002 +0000
+
+      * ./src/dvdcss/dvdcss.h: marked deprecated stuff.
+      * ./test/csstest.c: more documentation.
+          see http://www.videolan.org/libdvdcss/doc/
+
+commit 03de9c0aca9a021f7c9137a530c22c39748acd5c
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Aug 10 12:56:04 2002 +0000
+
+      * ALL: removed autotools files.
+      * ./doc/*: added doxygen files.
+
+commit de6bee4f68f96174622a59de170b0b1edd071f33
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Aug 10 12:21:28 2002 +0000
+
+      * ./src/libdvdcss.c, ./src/dvdcss/dvdcss.h: documented the API.
+
+commit ba96985769d21f10d173aaed3f23cae051c8b610
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Aug 9 22:03:34 2002 +0000
+
+      * ./src/css.c: in case of a region mismatch and when the drive needs to
+        be reset, we read the first sector of the disc instead of closing and
+        reopening it.
+
+commit b45e2bc2d228c3b1ddadf2092af174f32f524280
+Author: Andrew Bachmann <bigorneault@gmail.com>
+Date:   Fri Aug 9 14:19:46 2002 +0000
+
+      * ./src/Makefile.am: tell libtool that libdvdcss does not have undefined
+        symbols. Fix for BeOS
+
+commit 068c36acd9849d770f1a263f06b6aa3d88fa176d
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Fri Aug 9 14:10:43 2002 +0000
+
+      * ./src/css.c: when the ReadTitleKey ioctl failed, reopen the device before
+        falling back to the title method.
+    
+       Note: on my drive, this fixes the "ioctl_ReadTitleKey failed" error
+             many users have been reporting. Please test!
+    
+       Note 2: I could not find any other way to reset the drive after a failed
+               ReadTitleKey ioctl than closing and opening the device again. If
+               I don't do that, read() fails with an Input/output error after a
+               while (but not immediately).
+    
+      * ALL: libdvdcss builds with -ansi -pedantic. Yeah I like that :-)
+      * ./src/css.c: renamed a few functions so that they make more sense, added
+        debug messages here and there, fixed typos and speling.
+      * ./src/error.c: moved _dvdcss_error and _dvdcss_debug here.
+      * ./src/device.c: moved device reading functions from libdvdcss.c to here.
+      * ./src/device.c: errors from dvdcss_read are now properly handled; partial
+        reads still aren't though.
+      * ./src/libdvdcss.c: default verbosity is now 0, a library should not be
+        intrusive by default.
+      * ./test/csstest.c: additional error check.
+      * ./configure.in: removed the crap boolean_t detection.
+
+commit 3e4c0bab24070a6ff4ae03dce631d74bc3a32133
+Author: Christophe Massiot <massiot@videolan.org>
+Date:   Tue Jul 23 11:43:58 2002 +0000
+
+    Default method is now "key" :p.
+
+commit d9b17d5db3a92b5425daf010617ed32dfe6b97b7
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Jul 16 22:47:40 2002 +0000
+
+      * ./test/Makefile.am: disabled dvd_region.
+      * ./src/css.c: speling fixes.
+      * ALL: re-ran bootstrap with more recent autotools.
+
+commit 6aa0ad6b9871d206fc0e582883297e117d6f0c5d
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Sun Jul 14 11:44:57 2002 +0000
+
+    New utility for querying (and eventualy setting) the region of a DVD drive
+    using the ioctl wrappers in libdvdcss.
+
+commit 517fa8b08d106c800f01c4f042d2b68d7036abd2
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Fri Jul 12 23:28:42 2002 +0000
+
+    Include config.h before testing defines in the BSDi ioctl code.  Add a bug
+    fix
+
+commit 7467476e5a7233cea3b639d8ae31a6882b4a7e7e
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Fri Jul 12 21:06:41 2002 +0000
+
+    Fix so that the bsdi_*.[hc] files make it into the dist tar-ball.
+    Correct the include path for the programs in test/.
+
+commit caf62fa7aa6cbf240e723a80031e0a0ece10c0ae
+Author: Adam Jones <adam@yggdrasl.demon.co.uk>
+Date:   Mon Jul 1 13:40:33 2002 +0000
+
+    Typo fix and fix the linked list code to not drop the list when instering
+    at the head.
+
+commit 35589cea2e9e39e5d65d2a2b146ea11bd0e65da6
+Author: Alex Strelnikov <lelik@os2.ru>
+Date:   Mon Jul 1 10:36:37 2002 +0000
+
+    Patch for OS/2.
+
+commit 71f84cb0068cdb7da5576c51fccc68039f2d217f
+Author: Adam Jones <adam@yggdrasl.demon.co.uk>
+Date:   Mon Jul 1 09:59:09 2002 +0000
+
+    Typo fix
+
+commit 763cb3c28ac91ae0b847a3b6913114c651d003ae
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Mon Jul 1 09:02:25 2002 +0000
+
+    Getting ReportRPC for WIN32 a bit closer to working.
+
+commit 75926842ab179c9354ff726532679b58c0fc7fb0
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Jun 4 07:10:07 2002 +0000
+
+      * ./src/ioctl.c: implemented ioctl_ReportKey1 for HP-UX.
+
+commit 060c45697b9bfd1cb834738e8da55357202713a8
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Tue Jun 4 07:02:57 2002 +0000
+
+      * ./src/libdvdcss.c: Win32 compilation fix.
+
+commit b2ee28c060e844ff81c23f0d5511d4a06ff62ec6
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sun Jun 2 16:18:45 2002 +0000
+
+      * ALL: changed version number to 1.2.1.
+
+commit d3e94a78bd73ebb34739c17d54290759aa0ae4d5
+Author: Pascal Levesque <bigorneault@gmail.com>
+Date:   Sun Jun 2 16:14:48 2002 +0000
+
+      * ./src/ioctl.c, ./src/ioctl.h: QNX port,
+
+commit 68b19d058bc17060167acf89a5650160aaf63610
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sun Jun 2 16:05:34 2002 +0000
+
+      * ./src/css.c: applied Håkan's fix for the failure on region mismatch.
+
+commit 5084f4c8bc77f27e1f3ae43bca348c9b7fcd82be
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sun Jun 2 15:54:10 2002 +0000
+
+      * ALL: switched to libtool 1.4.2a.
+      * ./src/libdvdcss.c: fixed an uninitialized variable.
+
+commit 63e6505bf228055c48961a1c179a05134f332d9a
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sun May 26 14:22:23 2002 +0000
+
+      * ./src/dvdcss/dvdcss.h: C++ compliant public header.
+
+commit bf99afa9ce226d011d11f997858fe83480e2ca30
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Mon May 20 17:58:20 2002 +0000
+
+      * Everything should be ready for 1.2.0.
+      * Updated ChangeLog.
+      * Removed libtool. It seems to be created automatically anyway.
+
+commit 9b0ed5b53779bf900ceb2f7e67adf805f56558f5
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Thu May 16 20:40:54 2002 +0000
+
+    New function _dvdcss_use_ioctls.  Avoid using the ioctl calls when
+    they have no chans or working, this in turn avoids a spurious warning
+    when they fail.
+
+commit 92de716371ea7782a6a50185ba9fe5666b054397
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Thu May 16 20:12:04 2002 +0000
+
+    Update error message.
+
+commit 4fb72bf9d49ff22be5970333517fdf46d91a2dd7
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Thu May 16 12:10:29 2002 +0000
+
+    Default to 'key', rather than 'title', method.
+
+commit aec848b3b897a553561f05f157ebb55a3326aa31
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed May 15 20:27:04 2002 +0000
+
+      * ./libdvdcss.spec: enhancements by Mandrakesoft.
+
+commit 92f445b1ca8d887d7e17aa56b988936e6f0af62e
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Mon May 13 21:22:22 2002 +0000
+
+    Correct serious bug in dvdcss_read for titles with all zero key (a unencrypted
+    title on a CSS protected disc).
+
+commit 2d49f15658d883dbbaf33b6506626096acaf4bf6
+Author: Jon Lech Johansen <jlj@videolan.org>
+Date:   Sun May 5 22:21:51 2002 +0000
+
+      * ./src/ioctl.[ch]: Darwin changes: Cleaned up the code, fixed
+        ReadTitleKey, and implemented ReportRPC.
+
+commit f8fb98585e75d726c4b8438a364a86da71ec5883
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Fri Apr 26 20:47:08 2002 +0000
+
+    * updated win32 compilation instructions.
+
+commit 5980793d8ef061203eb6fb995f328bb84483f1af
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Apr 6 01:27:43 2002 +0000
+
+      * libdvdcss-1.1.1 release.
+
+commit 4f917a3a9e234b5ddc40d21b690a13628ce35657
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Apr 6 01:11:05 2002 +0000
+
+      * ./src/ioctl.c: OpenBSD compile fix. Thanks to ex0dus on #videolan.
+
+commit 41fb39a4f483037f32a9a8d5abb491fd6a902739
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Fri Apr 5 00:26:25 2002 +0000
+
+    * updated INSTALL doc for the win32 build.
+    * added small win32 specific error message that was also in the vlc tree.
+
+commit 273ace3c9a24e0e2ef72c3892f67549c56ea25f6
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Thu Apr 4 23:44:20 2002 +0000
+
+    * added two patches that have been forgot from the vlc tree.
+    
+     1- Under NT/2K/XP try to open the dvd device in read only mode if we don't
+        have right access. With only read access we can't use ioctls but if the
+        disc has already been authenticated, then we can decrypt it with the
+        TITLE method.
+     2- Small compilation fix for msvc.
+
+commit 0329c59f62eec519e8cfacf20d11398f67819e60
+Author: Michael Pruett <michael@68k.org>
+Date:   Thu Apr 4 14:21:25 2002 +0000
+
+      * ./src/libdvdcss.h: IRIX compile fix
+
+commit 7e6e6cf923890b0378725ca1cc0361708f33745d
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Thu Apr 4 01:26:54 2002 +0000
+
+      * ./configure.in: BeOS bug fix. I'm so lame.
+      * ./src/ioctl.c: refuse to build if DVD ioctls weren't found.
+
+commit 75ffe329686f9bce2c84def92d6ecaa1373e1821
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Apr 3 23:34:30 2002 +0000
+
+      * Forgot to change test/.cvsignore ...
+
+commit cabb30c8ff86a6e618567e92ceab8e768e025495
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Apr 3 23:33:57 2002 +0000
+
+      * ./test/csstest.c: renamed test.c to csstest.c.
+    
+       I hereby declare libdvdcss 1.1.0 ready to ship; it was successfully tested
+      on Linux, FreeBSD, MacOS X and BeOS, and compiles on Solaris.
+
+commit 80a8d0599946bfbe09074f6d0653350270ab01fb
+Author: Jon Lech Johansen <jlj@videolan.org>
+Date:   Wed Apr 3 23:02:20 2002 +0000
+
+      * ./src/ioctl.c: Fixed a Darwin typo I recently introduced.
+
+commit f6b34d75b13106330213253856f354110efbb01c
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Apr 3 22:31:42 2002 +0000
+
+      * Run ./bootstrap.
+
+commit 217089d0d860a7535a2a947af271fc8d5773a63c
+Author: Jon Lech Johansen <jlj@videolan.org>
+Date:   Wed Apr 3 22:17:00 2002 +0000
+
+      * ./configure.in: Darwin compile fix (added -no-cpp-precomp)
+
+commit 0d817799e4288afb6a7f9fe02f6c0aaca4175a79
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Apr 3 21:31:52 2002 +0000
+
+      * ./ChangeLog: everything should be ready for the 1.1.0 release.
+      * ./libdvdcss.spec: updated specfile for RPM generation.
+      * ./missing: commited libtool's latest version of this file.
+
+commit 6288be6892eea448b8d239e06bdff779f95cfe87
+Author: Jon Lech Johansen <jlj@videolan.org>
+Date:   Wed Apr 3 21:25:13 2002 +0000
+
+      * Fixed a Darwin define problem.
+
+commit 58ecf1ad0b9c4d6f180ccf38a1184d0a75b46e8c
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Apr 3 15:19:22 2002 +0000
+
+      * ./src/dvdcss/dvdcss.h: moved dvdcss.h in a subdirectory so that we can
+        include <dvdcss/dvdcss.h> without having to make install.
+      * ./test/test.c: removed #ifdef DVDCSS_DIST.
+
+commit 9eb1d9cbe1ef96fae5c11479da2d3656e956e36b
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Apr 3 06:12:50 2002 +0000
+
+      * ./ChangeLog: updated changelog.
+      * ./Makefile.am: added the debian dir to the targets.
+      * ./configure.in: switched to a more conventional versioning scheme.
+      * ./src/css.c: removed a useless #ifdef.
+      * ./src/dvdcss.h: added a versioned symbol to the API.
+      * ./src/Makefile.am: use <dvdcss/dvdcss.h> instead of <videolan/dvdcss.h>.
+      * ./test/test.c: test program is now up to date.
+
+commit 9d7698f671f51ec94efbce21040c37d7eef88e61
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Sat Mar 9 17:57:53 2002 +0000
+
+    Split the code into more functions. The disc and title decryption /
+    cracking code is now each in it's own function.  Also moved the code that
+    looks for a weak block in the VOB to crack the title key from out from
+    the loop that reads them.  Added another crack method, it's disabled for
+    now though.  Lowered some limits on the current 'weak' test.  Added more
+    comments.
+
+commit ce5ffc6fe913e0720a7c8fed716990a5af4ee4c3
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Sat Mar 9 17:35:49 2002 +0000
+
+    Add -D_FILE_OFFSET_BITS=64 to the compile line to make off_t / lseek and
+    other file access functions used in dvdcss be 64bit.
+
+commit 061ebba29b2c295d9a2c160077293e09ddd96c19
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Sat Mar 9 17:24:28 2002 +0000
+
+    Tell libdvdcss to get the key for the block before we decrypt it.
+
+commit 0a1535afb01a0b39b678575c509c91695bff0f06
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Sat Mar 9 17:23:05 2002 +0000
+
+    Don't link to libdl.
+
+commit 7ea7bf9864f3599e7255bcb981920305b8122b33
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Mar 9 17:16:44 2002 +0000
+
+      * Fixed compilation of test/test.c.
+
+commit 3db91bb4dae32e2f639dcab6e9844482434ce520
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Mar 6 00:06:17 2002 +0000
+
+      * Updated misc control files and added the sample program.
+
+commit a68da5e6ae264f6f9d77bba4b08fae86473ddb4c
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Wed Mar 6 00:04:41 2002 +0000
+
+    * Enable test folder
+
+commit ad53e785b3558f82b50bb570f22187f46fee062b
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Mon Feb 25 18:21:57 2002 +0000
+
+    Cleanup some formating, indentation and types and add a small comment.
+
+commit 92cc4b7d1617d548a4a79895cfeccba10dcae92b
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Sun Feb 3 14:54:53 2002 +0000
+
+    Add the WIN32 fix to GetTitleKey from the vlc/extra branch.
+
+commit 1b06ce6cd351254c569c7718bce917f5e36767ac
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Sun Feb 3 14:53:10 2002 +0000
+
+    Do check for the unistd.h header file.
+
+commit 7c90c435f3841bb11872f2e88024dcfccaa30816
+Author: Håkan Hjort <d95hjort@dtek.chalmers.se>
+Date:   Sun Jan 20 17:04:54 2002 +0000
+
+    Make CSSAuth more rubust, should now also work with drives that are not 100%
+    compliant to the SFF-8090 standard.  AGID invalidation should now work
+    allowing us to recover from hung / failed authentications.  Corrected
+    CSSGetASF, it does not take an AGID argument.  Move several data structures
+    from the dvdcss handle to local variables in CSSAuth.  Remove CSSAuth as a
+    externaly visible function in css.c.
+
+commit 88a0017365d6c15fc32021330d768bd52e520bc4
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Dec 22 00:52:46 2001 +0000
+
+      * Win32 compilation fix.
+
+commit cd0dbd363b2fcd6bab58b9e48bd1130b2a418a9e
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Dec 22 00:26:17 2001 +0000
+
+      * Attempt at fixing the Solaris port.
+
+commit 475bc8f7db5a163c8fe2ded0b2dd501396acabc7
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Dec 22 00:10:31 2001 +0000
+
+      * Forgot Makefile.in files.
+
+commit dd20598e1c8038e8d75887ea843558c418fcd31f
+Author: Sam Hocevar <sam@videolan.org>
+Date:   Sat Dec 22 00:08:13 2001 +0000
+
+      * Initial commit. Hope it'll work.

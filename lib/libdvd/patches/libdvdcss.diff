@@ -1,7 +1,26 @@
-diff -uwr ../../libdvdcss-1.2.12/src/device.c lib/libdvd/libdvdcss/src/device.c
---- ../../libdvdcss-1.2.12/src/device.c	Sun Mar 11 23:07:48 2012
-+++ lib/libdvd/libdvdcss/src/device.c	Tue Jan 28 19:47:56 2014
-@@ -23,6 +23,10 @@
+Only in lib/libdvd/libdvdcss/: .libs
+diff -uwr ../libdvdcss-1.2.13/Makefile.am lib/libdvd/libdvdcss/Makefile.am
+--- ../libdvdcss-1.2.13/Makefile.am	Wed Feb 27 10:05:36 2013
++++ lib/libdvd/libdvdcss/Makefile.am	Sat Feb  1 22:41:19 2014
+@@ -4,13 +4,7 @@
+ 
+ dist_doc_DATA = AUTHORS COPYING NEWS README ChangeLog
+ 
+-DISTCLEANFILES = ChangeLog
+-
+-ChangeLog: $(wildcard $(srcdir)/.git/logs/HEAD)
+-	-cd $(srcdir) && git log > $(abs_builddir)/$(@)-tmp
+-	test -s $(@)-tmp && mv $(@)-tmp $(@)
+-	-rm -f $(@)-tmp
+-	test -e $(@) || touch $(@)
++DISTCLEANFILES = 
+ 
+ lib_LTLIBRARIES = libdvdcss.la
+ EXTRA_PROGRAMS = csstest dvd_region
+diff -uwr ../libdvdcss-1.2.13/src/device.c lib/libdvd/libdvdcss/src/device.c
+--- ../libdvdcss-1.2.13/src/device.c	Wed Feb 27 10:05:36 2013
++++ lib/libdvd/libdvdcss/src/device.c	Sat Feb  1 19:41:54 2014
+@@ -22,6 +22,10 @@
   * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
   *****************************************************************************/
  
@@ -12,7 +31,7 @@ diff -uwr ../../libdvdcss-1.2.12/src/device.c lib/libdvd/libdvdcss/src/device.c
  /*****************************************************************************
   * Preamble
   *****************************************************************************/
-@@ -521,17 +525,24 @@
+@@ -509,17 +513,24 @@
       * won't send back the right result).
       * (See Microsoft Q241374: Read and Write Access Required for SCSI
       * Pass Through Requests) */
@@ -39,7 +58,7 @@ diff -uwr ../../libdvdcss-1.2.12/src/device.c lib/libdvd/libdvdcss/src/device.c
  
      if( (HANDLE) dvdcss->i_fd == INVALID_HANDLE_VALUE )
      {
-@@ -727,6 +738,9 @@
+@@ -714,6 +725,9 @@
  static int win2k_seek( dvdcss_t dvdcss, int i_blocks )
  {
      LARGE_INTEGER li_seek;
@@ -49,7 +68,7 @@ diff -uwr ../../libdvdcss-1.2.12/src/device.c lib/libdvd/libdvdcss/src/device.c
  
  #ifndef INVALID_SET_FILE_POINTER
  #   define INVALID_SET_FILE_POINTER ((DWORD)-1)
-@@ -738,6 +752,28 @@
+@@ -725,6 +739,28 @@
          return i_blocks;
      }
  
@@ -78,7 +97,7 @@ diff -uwr ../../libdvdcss-1.2.12/src/device.c lib/libdvd/libdvdcss/src/device.c
      li_seek.QuadPart = (LONGLONG)i_blocks * DVDCSS_BLOCK_SIZE;
  
      li_seek.LowPart = SetFilePointer( (HANDLE) dvdcss->i_fd,
-@@ -827,6 +863,66 @@
+@@ -814,6 +850,66 @@
  {
      int i_bytes;
  
@@ -145,20 +164,23 @@ diff -uwr ../../libdvdcss-1.2.12/src/device.c lib/libdvd/libdvdcss/src/device.c
      if( !ReadFile( (HANDLE) dvdcss->i_fd, p_buffer,
                i_blocks * DVDCSS_BLOCK_SIZE,
                (LPDWORD)&i_bytes, NULL ) )
-@@ -837,6 +933,7 @@
+@@ -824,6 +920,7 @@
  
      dvdcss->i_pos += i_bytes / DVDCSS_BLOCK_SIZE;
      return i_bytes / DVDCSS_BLOCK_SIZE;
-+#endif // WITH_CACHE
++#endif // WITH_CACHE	
  }
  
  static int aspi_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
-Only in lib/libdvd/libdvdcss/src/: device.lo
-Only in lib/libdvd/libdvdcss/src/: device.o
-Only in lib/libdvd/libdvdcss/src/dvdcss: Makefile
-diff -uwr ../../libdvdcss-1.2.12/src/libdvdcss.c lib/libdvd/libdvdcss/src/libdvdcss.c
---- ../../libdvdcss-1.2.12/src/libdvdcss.c	Sun Mar 11 23:07:48 2012
-+++ lib/libdvd/libdvdcss/src/libdvdcss.c	Tue Jan 28 19:47:05 2014
+Only in lib/libdvd/libdvdcss/src: device.lo
+Only in lib/libdvd/libdvdcss/src: device.o
+Only in lib/libdvd/libdvdcss/src: error.lo
+Only in lib/libdvd/libdvdcss/src: error.o
+Only in lib/libdvd/libdvdcss/src: ioctl.lo
+Only in lib/libdvd/libdvdcss/src: ioctl.o
+diff -uwr ../libdvdcss-1.2.13/src/libdvdcss.c lib/libdvd/libdvdcss/src/libdvdcss.c
+--- ../libdvdcss-1.2.13/src/libdvdcss.c	Tue Feb 26 08:08:36 2013
++++ lib/libdvd/libdvdcss/src/libdvdcss.c	Sat Feb  1 18:37:25 2014
 @@ -195,6 +195,10 @@
      dvdcss->b_debug = 0;
      dvdcss->b_errors = 0;

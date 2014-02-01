@@ -2,41 +2,40 @@
 # 
 # Authors and contributors are listed alphabetically.
 # 
-# The fields are: name (N), email (E), web-address (W), CVS/SVN account login (C),
-# PGP key ID and fingerprint (P), description (D), and snail-mail address (S).
+# The fields are: name (N), email (E), web-address (W),
+# PGP key ID and fingerprint (P), description (D)
 
 N: Billy Biggs 
 E: vektor@dumbterm.net
 D: libdvdcss enhancements
 
-N: Stéphane Borel
+N: Diego Biurrun
+E: diego@biurrun.de
+D: misc build and portability fixes, cleanup
+
+N: StÃ©phane Borel
 E: stef@via.ecp.fr
-C: stef
-D: original CSS decryption code from vlc
+D: original CSS decryption code from VLC
 
 N: Sven Heithecker
 E: sven.heithecker@web.de
 D: cache bug fix for discs with identical content but different keys
 
-N: Håkan Hjort
+N: HÃ¥kan Hjort
 E: d95hjort@dtek.chalmers.se
-C: hjort
 D: Solaris port of the DVD ioctls
 D: libdvdcss enhancements
 
 N: Samuel Hocevar
 E: sam@zoy.org
-C: sam
-D: original CSS decryption code from vlc
+D: original CSS decryption code from VLC
 
 N: Eugenio Jarosiewicz
 E: ej0@cise.ufl.edu
-C: ej
-D: MacOS X DVD ioctls
+D: Mac OS X DVD ioctls
 
 N: Jon Lech Johansen
 E: jon-vl@nanocrew.net
-C: jlj
 D: Win32 port
 D: Fixes to the Darwin port
 
@@ -45,7 +44,6 @@ E: komh@chollian.net
 D: OS/2 port
 
 N: Jean-Baptiste Kempf
-C: jb
 E: jb@videolan.org
 D: maintainer
 
@@ -65,11 +63,15 @@ N: Christophe Massiot
 E: massiot@via.ecp.fr
 D: former maintainer
 
+N: Diego Elio PettenÃ²
+E: flameeyes@flameeyes.eu
+D: build system rewrite
+
 N: Steven M. Schultz
 E: sms@TO.GD-ES.COM
 D: BSD/OS port
 
-N: David Siebörger
+N: David SiebÃ¶rger
 E: drs-videolan@rucus.ru.ac.za
 D: HP-UX port of the DVD ioctls
 
@@ -83,5 +85,4 @@ D: FreeBSD DVD input patch
 
 N: Gildas Bazin
 E: gbazin@netcourrier.com
-C: gbazin
 D: various fixes to the Win32 port
