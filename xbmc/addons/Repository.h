@@ -58,8 +58,8 @@ namespace ADDON
     DirList m_dirs;
 
     static VECADDONS Parse(const DirInfo& dir);
-  private:
     static std::string FetchChecksum(const std::string& url);
+  private:
     CRepository(const CRepository &rhs);
   };
 
