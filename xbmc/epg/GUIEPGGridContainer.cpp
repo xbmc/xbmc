@@ -962,22 +962,25 @@ void CGUIEPGGridContainer::UpdateItems()
 
     for (int block = 0; block < m_blocks; block++)
     {
-      if (m_gridIndex[row][block].item != m_gridIndex[row][block+1].item)
+      CGUIListItemPtr item = m_gridIndex[row][block].item;
+
+      if (item != m_gridIndex[row][block+1].item)
       {
-        if (!m_gridIndex[row][block].item)
+        if (!item)
         {
-          CEpgInfoTag broadcast;
-          CFileItemPtr unknown(new CFileItem(broadcast));
+          CEpgInfoTag gapTag;
+          CFileItemPtr gapItem(new CFileItem(gapTag));
           for (int i = block ; i > block - itemSize; i--)
           {
-            m_gridIndex[row][i].item = unknown;
+            m_gridIndex[row][i].item = gapItem;
           }
         }
+        else
+        {
+          const CEpgInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();
+          m_gridIndex[row][savedBlock].item->SetProperty("GenreType", tag->GenreType());
+        }
 
-        CGUIListItemPtr item = m_gridIndex[row][block].item;
-        CFileItem *fileItem = (CFileItem *)item.get();
-
-        m_gridIndex[row][savedBlock].item->SetProperty("GenreType", fileItem->GetEPGInfoTag()->GenreType());
         if (m_orientation == VERTICAL)
         {
           m_gridIndex[row][savedBlock].width   = itemSize*m_blockSize;

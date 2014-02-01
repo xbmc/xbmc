@@ -628,7 +628,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
       it->second->ClearTimer();
       m_tags.erase(it++);
     }
-    else if (previousTag->EndAsUTC() != currentTag->StartAsUTC())
+    else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
     {
       previousTag->SetEndFromUTC(currentTag->StartAsUTC());
       if (bUpdateDb)
