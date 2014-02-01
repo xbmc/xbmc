@@ -50,16 +50,16 @@ bool CViewDatabase::Open()
 
 void CViewDatabase::CreateTables()
 {
-    CLog::Log(LOGINFO, "create view table");
-    m_pDS->exec("CREATE TABLE view ("
-                  "idView integer primary key,"
-                  "window integer,"
-                  "path text,"
-                  "viewMode integer,"
-                  "sortMethod integer,"
-                  "sortOrder integer,"
-                  "sortAttributes integer,"
-                  "skin text)\n");
+  CLog::Log(LOGINFO, "create view table");
+  m_pDS->exec("CREATE TABLE view ("
+                "idView integer primary key,"
+                "window integer,"
+                "path text,"
+                "viewMode integer,"
+                "sortMethod integer,"
+                "sortOrder integer,"
+                "sortAttributes integer,"
+                "skin text)\n");
 }
 
 void CViewDatabase::CreateAnalytics()

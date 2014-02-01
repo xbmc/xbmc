@@ -44,119 +44,119 @@ bool CPVRDatabase::Open()
 
 void CPVRDatabase::CreateTables()
 {
-    CLog::Log(LOGINFO, "PVR - %s - creating tables", __FUNCTION__);
+  CLog::Log(LOGINFO, "PVR - %s - creating tables", __FUNCTION__);
 
-    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'clients'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE clients ("
-          "idClient integer primary key, "
-          "sName    varchar(64), "
-          "sUid     varchar(32)"
-        ")"
-    );
+  CLog::Log(LOGDEBUG, "PVR - %s - creating table 'clients'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE clients ("
+        "idClient integer primary key, "
+        "sName    varchar(64), "
+        "sUid     varchar(32)"
+      ")"
+  );
 
-    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channels'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE channels ("
-          "idChannel            integer primary key, "
-          "iUniqueId            integer, "
-          "bIsRadio             bool, "
-          "bIsHidden            bool, "
-          "bIsUserSetIcon       bool, "
-          "bIsLocked            bool, "
-          "sIconPath            varchar(255), "
-          "sChannelName         varchar(64), "
-          "bIsVirtual           bool, "
-          "bEPGEnabled          bool, "
-          "sEPGScraper          varchar(32), "
-          "iLastWatched         integer,"
+  CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channels'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE channels ("
+        "idChannel            integer primary key, "
+        "iUniqueId            integer, "
+        "bIsRadio             bool, "
+        "bIsHidden            bool, "
+        "bIsUserSetIcon       bool, "
+        "bIsLocked            bool, "
+        "sIconPath            varchar(255), "
+        "sChannelName         varchar(64), "
+        "bIsVirtual           bool, "
+        "bEPGEnabled          bool, "
+        "sEPGScraper          varchar(32), "
+        "iLastWatched         integer,"
 
-          // TODO use mapping table
-          "iClientId            integer, "
-          "iClientChannelNumber integer, "
-          "sInputFormat         varchar(32), "
-          "sStreamURL           varchar(255), "
-          "iEncryptionSystem    integer, "
+        // TODO use mapping table
+        "iClientId            integer, "
+        "iClientChannelNumber integer, "
+        "sInputFormat         varchar(32), "
+        "sStreamURL           varchar(255), "
+        "iEncryptionSystem    integer, "
 
-          "idEpg                integer"
-        ")"
-    );
+        "idEpg                integer"
+      ")"
+  );
 
-    // TODO use a mapping table so multiple backends per channel can be implemented
-    //    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'map_channels_clients'", __FUNCTION__);
-    //    m_pDS->exec(
-    //        "CREATE TABLE map_channels_clients ("
-    //          "idChannel             integer primary key, "
-    //          "idClient              integer, "
-    //          "iClientChannelNumber  integer,"
-    //          "sInputFormat          string,"
-    //          "sStreamURL            string,"
-    //          "iEncryptionSystem     integer"
-    //        ");"
-    //    );
-    //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);");
+  // TODO use a mapping table so multiple backends per channel can be implemented
+  //    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'map_channels_clients'", __FUNCTION__);
+  //    m_pDS->exec(
+  //        "CREATE TABLE map_channels_clients ("
+  //          "idChannel             integer primary key, "
+  //          "idClient              integer, "
+  //          "iClientChannelNumber  integer,"
+  //          "sInputFormat          string,"
+  //          "sStreamURL            string,"
+  //          "iEncryptionSystem     integer"
+  //        ");"
+  //    );
+  //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);");
 
-    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channelgroups'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE channelgroups ("
-          "idGroup         integer primary key,"
-          "bIsRadio        bool, "
-          "iGroupType      integer, "
-          "sName           varchar(64)"
-        ")"
-    );
+  CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channelgroups'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE channelgroups ("
+        "idGroup         integer primary key,"
+        "bIsRadio        bool, "
+        "iGroupType      integer, "
+        "sName           varchar(64)"
+      ")"
+  );
 
-    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE map_channelgroups_channels ("
-          "idChannel      integer, "
-          "idGroup        integer, "
-          "iChannelNumber integer"
-        ")"
-    );
+  CLog::Log(LOGDEBUG, "PVR - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE map_channelgroups_channels ("
+        "idChannel      integer, "
+        "idGroup        integer, "
+        "iChannelNumber integer"
+      ")"
+  );
 
-    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channelsettings'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE channelsettings ("
-          "idChannel            integer primary key, "
-          "iInterlaceMethod     integer, "
-          "iViewMode            integer, "
-          "fCustomZoomAmount    float, "
-          "fPixelRatio          float, "
-          "iAudioStream         integer, "
-          "iSubtitleStream      integer,"
-          "fSubtitleDelay       float, "
-          "bSubtitles           bool, "
-          "fBrightness          float, "
-          "fContrast            float, "
-          "fGamma               float,"
-          "fVolumeAmplification float, "
-          "fAudioDelay          float, "
-          "bOutputToAllSpeakers bool, "
-          "bCrop                bool, "
-          "iCropLeft            integer, "
-          "iCropRight           integer, "
-          "iCropTop             integer, "
-          "iCropBottom          integer, "
-          "fSharpness           float, "
-          "fNoiseReduction      float, "
-          "fCustomVerticalShift float, "
-          "bCustomNonLinStretch bool, "
-          "bPostProcess         bool, "
-          "iScalingMethod       integer, "
-          "iDeinterlaceMode     integer "
-        ")"
-    );
+  CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channelsettings'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE channelsettings ("
+        "idChannel            integer primary key, "
+        "iInterlaceMethod     integer, "
+        "iViewMode            integer, "
+        "fCustomZoomAmount    float, "
+        "fPixelRatio          float, "
+        "iAudioStream         integer, "
+        "iSubtitleStream      integer,"
+        "fSubtitleDelay       float, "
+        "bSubtitles           bool, "
+        "fBrightness          float, "
+        "fContrast            float, "
+        "fGamma               float,"
+        "fVolumeAmplification float, "
+        "fAudioDelay          float, "
+        "bOutputToAllSpeakers bool, "
+        "bCrop                bool, "
+        "iCropLeft            integer, "
+        "iCropRight           integer, "
+        "iCropTop             integer, "
+        "iCropBottom          integer, "
+        "fSharpness           float, "
+        "fNoiseReduction      float, "
+        "fCustomVerticalShift float, "
+        "bCustomNonLinStretch bool, "
+        "bPostProcess         bool, "
+        "iScalingMethod       integer, "
+        "iDeinterlaceMode     integer "
+      ")"
+  );
 
-    // disable all PVR add-on when started the first time
-    ADDON::VECADDONS addons;
-    if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
-      CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
-    else
-    {
-      for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-        CAddonMgr::Get().DisableAddon(it->get()->ID());
-    }
+  // disable all PVR add-on when started the first time
+  ADDON::VECADDONS addons;
+  if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
+    CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
+  else
+  {
+    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
+      CAddonMgr::Get().DisableAddon(it->get()->ID());
+  }
 }
 
 void CPVRDatabase::CreateAnalytics()

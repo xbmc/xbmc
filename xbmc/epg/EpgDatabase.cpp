@@ -39,47 +39,47 @@ bool CEpgDatabase::Open(void)
 
 void CEpgDatabase::CreateTables(void)
 {
-    CLog::Log(LOGINFO, "EpgDB - %s - creating tables", __FUNCTION__);
+  CLog::Log(LOGINFO, "EpgDB - %s - creating tables", __FUNCTION__);
 
-    CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epg'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE epg ("
-          "idEpg           integer primary key, "
-          "sName           varchar(64),"
-          "sScraperName    varchar(32)"
-        ")"
-    );
+  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epg'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE epg ("
+        "idEpg           integer primary key, "
+        "sName           varchar(64),"
+        "sScraperName    varchar(32)"
+      ")"
+  );
 
-    CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epgtags'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE epgtags ("
-          "idBroadcast     integer primary key, "
-          "iBroadcastUid   integer, "
-          "idEpg           integer, "
-          "sTitle          varchar(128), "
-          "sPlotOutline    text, "
-          "sPlot           text, "
-          "iStartTime      integer, "
-          "iEndTime        integer, "
-          "iGenreType      integer, "
-          "iGenreSubType   integer, "
-          "sGenre          varchar(128), "
-          "iFirstAired     integer, "
-          "iParentalRating integer, "
-          "iStarRating     integer, "
-          "bNotify         bool, "
-          "iSeriesId       integer, "
-          "iEpisodeId      integer, "
-          "iEpisodePart    integer, "
-          "sEpisodeName    varchar(128)"
-        ")"
-    );
-    CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
-    m_pDS->exec("CREATE TABLE lastepgscan ("
-          "idEpg integer primary key, "
-          "sLastScan varchar(20)"
-        ")"
-    );
+  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epgtags'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE epgtags ("
+        "idBroadcast     integer primary key, "
+        "iBroadcastUid   integer, "
+        "idEpg           integer, "
+        "sTitle          varchar(128), "
+        "sPlotOutline    text, "
+        "sPlot           text, "
+        "iStartTime      integer, "
+        "iEndTime        integer, "
+        "iGenreType      integer, "
+        "iGenreSubType   integer, "
+        "sGenre          varchar(128), "
+        "iFirstAired     integer, "
+        "iParentalRating integer, "
+        "iStarRating     integer, "
+        "bNotify         bool, "
+        "iSeriesId       integer, "
+        "iEpisodeId      integer, "
+        "iEpisodePart    integer, "
+        "sEpisodeName    varchar(128)"
+      ")"
+  );
+  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
+  m_pDS->exec("CREATE TABLE lastepgscan ("
+        "idEpg integer primary key, "
+        "sLastScan varchar(20)"
+      ")"
+  );
 }
 
 void CEpgDatabase::CreateAnalytics()

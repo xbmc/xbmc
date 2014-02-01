@@ -83,155 +83,155 @@ bool CVideoDatabase::Open()
 
 void CVideoDatabase::CreateTables()
 {
-    CLog::Log(LOGINFO, "create bookmark table");
-    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
+  CLog::Log(LOGINFO, "create bookmark table");
+  m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
 
-    CLog::Log(LOGINFO, "create settings table");
-    m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
-                "ViewMode integer,ZoomAmount float, PixelRatio float, VerticalShift float, AudioStream integer, SubtitleStream integer,"
-                "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
-                "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
-                "CropRight integer, CropTop integer, CropBottom integer, Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
-                "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool)\n");
+  CLog::Log(LOGINFO, "create settings table");
+  m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
+              "ViewMode integer,ZoomAmount float, PixelRatio float, VerticalShift float, AudioStream integer, SubtitleStream integer,"
+              "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
+              "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
+              "CropRight integer, CropTop integer, CropBottom integer, Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
+              "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool)\n");
 
-    CLog::Log(LOGINFO, "create stacktimes table");
-    m_pDS->exec("CREATE TABLE stacktimes (idFile integer, times text)\n");
+  CLog::Log(LOGINFO, "create stacktimes table");
+  m_pDS->exec("CREATE TABLE stacktimes (idFile integer, times text)\n");
 
-    CLog::Log(LOGINFO, "create genre table");
-    m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
+  CLog::Log(LOGINFO, "create genre table");
+  m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
 
-    CLog::Log(LOGINFO, "create genrelinkmovie table");
-    m_pDS->exec("CREATE TABLE genrelinkmovie ( idGenre integer, idMovie integer)\n");
+  CLog::Log(LOGINFO, "create genrelinkmovie table");
+  m_pDS->exec("CREATE TABLE genrelinkmovie ( idGenre integer, idMovie integer)\n");
 
-    CLog::Log(LOGINFO, "create country table");
-    m_pDS->exec("CREATE TABLE country ( idCountry integer primary key, strCountry text)\n");
+  CLog::Log(LOGINFO, "create country table");
+  m_pDS->exec("CREATE TABLE country ( idCountry integer primary key, strCountry text)\n");
 
-    CLog::Log(LOGINFO, "create countrylinkmovie table");
-    m_pDS->exec("CREATE TABLE countrylinkmovie ( idCountry integer, idMovie integer)\n");
+  CLog::Log(LOGINFO, "create countrylinkmovie table");
+  m_pDS->exec("CREATE TABLE countrylinkmovie ( idCountry integer, idMovie integer)\n");
 
-    CLog::Log(LOGINFO, "create movie table");
-    CStdString columns = "CREATE TABLE movie ( idMovie integer primary key, idFile integer";
+  CLog::Log(LOGINFO, "create movie table");
+  CStdString columns = "CREATE TABLE movie ( idMovie integer primary key, idFile integer";
 
-    for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
-      columns += StringUtils::Format(",c%02d text", i);
+  for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
+    columns += StringUtils::Format(",c%02d text", i);
 
-    columns += ", idSet integer)";
-    m_pDS->exec(columns.c_str());
+  columns += ", idSet integer)";
+  m_pDS->exec(columns.c_str());
 
-    CLog::Log(LOGINFO, "create actorlinkmovie table");
-    m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer, strRole text, iOrder integer)\n");
+  CLog::Log(LOGINFO, "create actorlinkmovie table");
+  m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer, strRole text, iOrder integer)\n");
 
-    CLog::Log(LOGINFO, "create directorlinkmovie table");
-    m_pDS->exec("CREATE TABLE directorlinkmovie ( idDirector integer, idMovie integer)\n");
+  CLog::Log(LOGINFO, "create directorlinkmovie table");
+  m_pDS->exec("CREATE TABLE directorlinkmovie ( idDirector integer, idMovie integer)\n");
 
-    CLog::Log(LOGINFO, "create writerlinkmovie table");
-    m_pDS->exec("CREATE TABLE writerlinkmovie ( idWriter integer, idMovie integer)\n");
+  CLog::Log(LOGINFO, "create writerlinkmovie table");
+  m_pDS->exec("CREATE TABLE writerlinkmovie ( idWriter integer, idMovie integer)\n");
 
-    CLog::Log(LOGINFO, "create actors table");
-    m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
+  CLog::Log(LOGINFO, "create actors table");
+  m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
 
-    CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool, dateAdded text)");
+  CLog::Log(LOGINFO, "create path table");
+  m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool, dateAdded text)");
 
-    CLog::Log(LOGINFO, "create files table");
-    m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, playCount integer, lastPlayed text, dateAdded text)");
+  CLog::Log(LOGINFO, "create files table");
+  m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, playCount integer, lastPlayed text, dateAdded text)");
 
-    CLog::Log(LOGINFO, "create tvshow table");
-    columns = "CREATE TABLE tvshow ( idShow integer primary key";
+  CLog::Log(LOGINFO, "create tvshow table");
+  columns = "CREATE TABLE tvshow ( idShow integer primary key";
 
-    for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
-      columns += StringUtils::Format(",c%02d text", i);;
+  for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
+    columns += StringUtils::Format(",c%02d text", i);;
 
-    columns += ")";
-    m_pDS->exec(columns.c_str());
+  columns += ")";
+  m_pDS->exec(columns.c_str());
 
-    CLog::Log(LOGINFO, "create directorlinktvshow table");
-    m_pDS->exec("CREATE TABLE directorlinktvshow ( idDirector integer, idShow integer)\n");
+  CLog::Log(LOGINFO, "create directorlinktvshow table");
+  m_pDS->exec("CREATE TABLE directorlinktvshow ( idDirector integer, idShow integer)\n");
 
-    CLog::Log(LOGINFO, "create actorlinktvshow table");
-    m_pDS->exec("CREATE TABLE actorlinktvshow ( idActor integer, idShow integer, strRole text, iOrder integer)\n");
+  CLog::Log(LOGINFO, "create actorlinktvshow table");
+  m_pDS->exec("CREATE TABLE actorlinktvshow ( idActor integer, idShow integer, strRole text, iOrder integer)\n");
 
-    CLog::Log(LOGINFO, "create studiolinktvshow table");
-    m_pDS->exec("CREATE TABLE studiolinktvshow ( idStudio integer, idShow integer)\n");
+  CLog::Log(LOGINFO, "create studiolinktvshow table");
+  m_pDS->exec("CREATE TABLE studiolinktvshow ( idStudio integer, idShow integer)\n");
 
-    CLog::Log(LOGINFO, "create episode table");
-    columns = "CREATE TABLE episode ( idEpisode integer primary key, idFile integer";
-    for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
-    {
-      CStdString column;
-      if ( i == VIDEODB_ID_EPISODE_SEASON || i == VIDEODB_ID_EPISODE_EPISODE || i == VIDEODB_ID_EPISODE_BOOKMARK)
-        column = StringUtils::Format(",c%02d varchar(24)", i);
-      else
-        column = StringUtils::Format(",c%02d text", i);
+  CLog::Log(LOGINFO, "create episode table");
+  columns = "CREATE TABLE episode ( idEpisode integer primary key, idFile integer";
+  for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
+  {
+    CStdString column;
+    if ( i == VIDEODB_ID_EPISODE_SEASON || i == VIDEODB_ID_EPISODE_EPISODE || i == VIDEODB_ID_EPISODE_BOOKMARK)
+      column = StringUtils::Format(",c%02d varchar(24)", i);
+    else
+      column = StringUtils::Format(",c%02d text", i);
 
-      columns += column;
-    }
-    columns += ", idShow integer)";
-    m_pDS->exec(columns.c_str());
+    columns += column;
+  }
+  columns += ", idShow integer)";
+  m_pDS->exec(columns.c_str());
 
-    CLog::Log(LOGINFO, "create tvshowlinkpath table");
-    m_pDS->exec("CREATE TABLE tvshowlinkpath (idShow integer, idPath integer)\n");
+  CLog::Log(LOGINFO, "create tvshowlinkpath table");
+  m_pDS->exec("CREATE TABLE tvshowlinkpath (idShow integer, idPath integer)\n");
 
-    CLog::Log(LOGINFO, "create actorlinkepisode table");
-    m_pDS->exec("CREATE TABLE actorlinkepisode ( idActor integer, idEpisode integer, strRole text, iOrder integer)\n");
+  CLog::Log(LOGINFO, "create actorlinkepisode table");
+  m_pDS->exec("CREATE TABLE actorlinkepisode ( idActor integer, idEpisode integer, strRole text, iOrder integer)\n");
 
-    CLog::Log(LOGINFO, "create directorlinkepisode table");
-    m_pDS->exec("CREATE TABLE directorlinkepisode ( idDirector integer, idEpisode integer)\n");
+  CLog::Log(LOGINFO, "create directorlinkepisode table");
+  m_pDS->exec("CREATE TABLE directorlinkepisode ( idDirector integer, idEpisode integer)\n");
 
-    CLog::Log(LOGINFO, "create writerlinkepisode table");
-    m_pDS->exec("CREATE TABLE writerlinkepisode ( idWriter integer, idEpisode integer)\n");
+  CLog::Log(LOGINFO, "create writerlinkepisode table");
+  m_pDS->exec("CREATE TABLE writerlinkepisode ( idWriter integer, idEpisode integer)\n");
 
-    CLog::Log(LOGINFO, "create genrelinktvshow table");
-    m_pDS->exec("CREATE TABLE genrelinktvshow ( idGenre integer, idShow integer)\n");
+  CLog::Log(LOGINFO, "create genrelinktvshow table");
+  m_pDS->exec("CREATE TABLE genrelinktvshow ( idGenre integer, idShow integer)\n");
 
-    CLog::Log(LOGINFO, "create movielinktvshow table");
-    m_pDS->exec("CREATE TABLE movielinktvshow ( idMovie integer, IdShow integer)\n");
+  CLog::Log(LOGINFO, "create movielinktvshow table");
+  m_pDS->exec("CREATE TABLE movielinktvshow ( idMovie integer, IdShow integer)\n");
 
-    CLog::Log(LOGINFO, "create studio table");
-    m_pDS->exec("CREATE TABLE studio ( idStudio integer primary key, strStudio text)\n");
+  CLog::Log(LOGINFO, "create studio table");
+  m_pDS->exec("CREATE TABLE studio ( idStudio integer primary key, strStudio text)\n");
 
-    CLog::Log(LOGINFO, "create studiolinkmovie table");
-    m_pDS->exec("CREATE TABLE studiolinkmovie ( idStudio integer, idMovie integer)\n");
+  CLog::Log(LOGINFO, "create studiolinkmovie table");
+  m_pDS->exec("CREATE TABLE studiolinkmovie ( idStudio integer, idMovie integer)\n");
 
-    CLog::Log(LOGINFO, "create musicvideo table");
-    columns = "CREATE TABLE musicvideo ( idMVideo integer primary key, idFile integer";
-    for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
-      columns += StringUtils::Format(",c%02d text", i);;
+  CLog::Log(LOGINFO, "create musicvideo table");
+  columns = "CREATE TABLE musicvideo ( idMVideo integer primary key, idFile integer";
+  for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
+    columns += StringUtils::Format(",c%02d text", i);;
 
-    columns += ")";
-    m_pDS->exec(columns.c_str());
+  columns += ")";
+  m_pDS->exec(columns.c_str());
 
-    CLog::Log(LOGINFO, "create artistlinkmusicvideo table");
-    m_pDS->exec("CREATE TABLE artistlinkmusicvideo ( idArtist integer, idMVideo integer)\n");
+  CLog::Log(LOGINFO, "create artistlinkmusicvideo table");
+  m_pDS->exec("CREATE TABLE artistlinkmusicvideo ( idArtist integer, idMVideo integer)\n");
 
-    CLog::Log(LOGINFO, "create genrelinkmusicvideo table");
-    m_pDS->exec("CREATE TABLE genrelinkmusicvideo ( idGenre integer, idMVideo integer)\n");
+  CLog::Log(LOGINFO, "create genrelinkmusicvideo table");
+  m_pDS->exec("CREATE TABLE genrelinkmusicvideo ( idGenre integer, idMVideo integer)\n");
 
-    CLog::Log(LOGINFO, "create studiolinkmusicvideo table");
-    m_pDS->exec("CREATE TABLE studiolinkmusicvideo ( idStudio integer, idMVideo integer)\n");
+  CLog::Log(LOGINFO, "create studiolinkmusicvideo table");
+  m_pDS->exec("CREATE TABLE studiolinkmusicvideo ( idStudio integer, idMVideo integer)\n");
 
-    CLog::Log(LOGINFO, "create directorlinkmusicvideo table");
-    m_pDS->exec("CREATE TABLE directorlinkmusicvideo ( idDirector integer, idMVideo integer)\n");
+  CLog::Log(LOGINFO, "create directorlinkmusicvideo table");
+  m_pDS->exec("CREATE TABLE directorlinkmusicvideo ( idDirector integer, idMVideo integer)\n");
 
-    CLog::Log(LOGINFO, "create streaminfo table");
-    m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
-      "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
-      "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text, iVideoDuration integer, strStereoMode text)");
+  CLog::Log(LOGINFO, "create streaminfo table");
+  m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
+    "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
+    "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text, iVideoDuration integer, strStereoMode text)");
 
-   CLog::Log(LOGINFO, "create sets table");
-    m_pDS->exec("CREATE TABLE sets ( idSet integer primary key, strSet text)\n");
+ CLog::Log(LOGINFO, "create sets table");
+  m_pDS->exec("CREATE TABLE sets ( idSet integer primary key, strSet text)\n");
 
-    CLog::Log(LOGINFO, "create seasons table");
-    m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer)");
+  CLog::Log(LOGINFO, "create seasons table");
+  m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer)");
 
-    CLog::Log(LOGINFO, "create art table");
-    m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
+  CLog::Log(LOGINFO, "create art table");
+  m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
 
-    CLog::Log(LOGINFO, "create tag table");
-    m_pDS->exec("CREATE TABLE tag (idTag integer primary key, strTag text)");
+  CLog::Log(LOGINFO, "create tag table");
+  m_pDS->exec("CREATE TABLE tag (idTag integer primary key, strTag text)");
 
-    CLog::Log(LOGINFO, "create taglinks table");
-    m_pDS->exec("CREATE TABLE taglinks (idTag integer, idMedia integer, media_type TEXT)");
+  CLog::Log(LOGINFO, "create taglinks table");
+  m_pDS->exec("CREATE TABLE taglinks (idTag integer, idMedia integer, media_type TEXT)");
 }
 
 void CVideoDatabase::CreateAnalytics()

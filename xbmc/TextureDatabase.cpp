@@ -163,14 +163,14 @@ bool CTextureDatabase::Open()
 
 void CTextureDatabase::CreateTables()
 {
-    CLog::Log(LOGINFO, "create texture table");
-    m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
+  CLog::Log(LOGINFO, "create texture table");
+  m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
 
-    CLog::Log(LOGINFO, "create sizes table, index,  and trigger");
-    m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
+  CLog::Log(LOGINFO, "create sizes table, index,  and trigger");
+  m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
 
-    CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path (id integer primary key, url text, type text, texture text)\n");
+  CLog::Log(LOGINFO, "create path table");
+  m_pDS->exec("CREATE TABLE path (id integer primary key, url text, type text, texture text)\n");
 }
 
 void CTextureDatabase::CreateAnalytics()
