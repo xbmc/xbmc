@@ -148,6 +148,8 @@ namespace PERIPHERALS
 
     virtual bool FindComPort(CStdString &strLocation) { return false; }
 
+    virtual bool IsInitialised(void) const { return m_bInitialised; }
+
   protected:
     virtual void Process(void);
     virtual bool ScanForDevices(void);
