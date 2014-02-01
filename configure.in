@@ -188,9 +188,6 @@ libcec_disabled="== libcec disabled. CEC adapter support will not be available. 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
 external_libraries_disabled="== Use of all supported external libraries disabled. =="
-external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
-external_ffmpeg_disabled="== Use of external ffmpeg disabled. =="
-ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
 dashes="------------------------"
 final_message="\n  XBMC Configuration:"
 final_message="\n$dashes$final_message\n$dashes"
@@ -569,12 +566,6 @@ AC_ARG_ENABLE([external-libraries],
   [use_external_libraries=$enableval],
   [use_external_libraries=no])
 
-AC_ARG_ENABLE([external-ffmpeg],
-  [AS_HELP_STRING([--enable-external-ffmpeg],
-  [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
-  [use_external_ffmpeg=$enableval],
-  [use_external_ffmpeg=$use_external_libraries])
-
 AC_ARG_ENABLE([libav-compat],
   [AS_HELP_STRING([--enable-libav-compat],
   [build a wrapper around libav to provide the functions needed by XBMC. This is
@@ -605,6 +596,8 @@ AC_PROG_MAKE_SET
 PKG_PROG_PKG_CONFIG
 MAKE="${MAKE:-make}"
 OBJDUMP="${OBJDUMP:-objdump}"
+
+use_external_ffmpeg=no
 
 # ffmpeg needs the output of uname -s (e.x. linux, darwin) for the target_os
 # there is no autoconf variable which will give
