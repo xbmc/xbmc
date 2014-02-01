@@ -249,6 +249,8 @@ void CAdvancedSettings::Initialize()
 
   m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
+  m_buttonFirstTickRate = 500;
+  m_buttonConsecutiveTicksRate = 100;
 
   m_playlistAsFolders = true;
   m_detectAsUdf = false;
@@ -1037,6 +1039,14 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
+
+  pElement = pRootElement->FirstChildElement("buttontickrate");
+  if (pElement)
+  {
+    XMLUtils::GetInt(pElement, "firsttick", m_buttonFirstTickRate, 5, 5000);
+    XMLUtils::GetInt(pElement, "consecutiveticks", m_buttonConsecutiveTicksRate, 5, 5000);
+    }
+
   XMLUtils::GetUInt(pRootElement, "fanartres", m_fanartRes, 0, 1080);
   XMLUtils::GetUInt(pRootElement, "imageres", m_imageRes, 0, 1080);
 #if !defined(TARGET_RASPBERRY_PI)

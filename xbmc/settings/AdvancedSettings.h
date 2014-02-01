@@ -237,6 +237,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     StringMapping m_pathSubstitutions;
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
+    int m_buttonFirstTickRate;
+    int m_buttonConsecutiveTicksRate;
 
     bool m_playlistAsFolders;
     bool m_detectAsUdf;

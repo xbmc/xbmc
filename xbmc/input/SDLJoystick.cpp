@@ -364,9 +364,9 @@ bool CJoystick::GetHat(int &id, int &position,bool consider_repeat)
       return true;
     }
     nowTicks = SDL_GetTicks();
-    if ((nowTicks-m_pressTicksHat)<500) // 500ms delay before we repeat
+    if ((nowTicks-m_pressTicksHat)<g_advancedSettings.m_buttonFirstTickRate) // Delay before we repeat, default 500ms, can be set in advancedsettings.xml
       return false;
-    if ((nowTicks-lastTicks)<100) // 100ms delay before successive repeats
+    if ((nowTicks-lastTicks)<g_advancedSettings.m_buttonConsecutiveTicksRate) // Delay before successive repeats, default 100ms, can be set in advancedsettings.xml
       return false;
 
     lastTicks = nowTicks;
@@ -402,11 +402,11 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
       return true;
     }
     nowTicks = SDL_GetTicks();
-    if ((nowTicks-m_pressTicksButton)<500) // 500ms delay before we repeat
+    if ((nowTicks-m_pressTicksButton)<g_advancedSettings.m_buttonFirstTickRate) // Delay before we repeat, default 500ms, can be set in advancedsettings.xml
     {
       return false;
     }
-    if ((nowTicks-lastTicks)<100) // 100ms delay before successive repeats
+    if ((nowTicks-lastTicks)<g_advancedSettings.m_buttonConsecutiveTicksRate) // Delay before successive repeats, default 100ms, can be set in advancedsettings.xml
     {
       return false;
     }
