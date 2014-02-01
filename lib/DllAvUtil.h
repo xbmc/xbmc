@@ -116,7 +116,7 @@ public:
 #endif
 };
 
-#if defined (USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
+#if defined (USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) || (defined USE_STATIC_FFMPEG)
 // Use direct layer
 class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
 {
@@ -174,7 +174,7 @@ public:
    // DLL faking.
    virtual bool ResolveExports() { return true; }
    virtual bool Load() {
-#if !defined(TARGET_DARWIN)
+#if !defined(TARGET_DARWIN) && !defined(USE_STATIC_FFMPEG)
      CLog::Log(LOGDEBUG, "DllAvUtilBase: Using libavutil system library");
 #endif
      return true;

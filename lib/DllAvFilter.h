@@ -104,7 +104,7 @@ public:
 #endif
 };
 
-#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
+#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) || (defined USE_STATIC_FFMPEG)
 // Use direct mapping
 class DllAvFilter : public DllDynamic, DllAvFilterInterface
 {

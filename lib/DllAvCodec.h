@@ -94,7 +94,7 @@ public:
   virtual AVDictionary* av_frame_get_metadata(const AVFrame* frame)=0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
+#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) || (defined USE_STATIC_FFMPEG)
 
 // Use direct layer
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
@@ -166,7 +166,7 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
-#if !defined(TARGET_DARWIN)
+#if !defined(TARGET_DARWIN) && !defined(USE_STATIC_FFMPEG)
     CLog::Log(LOGDEBUG, "DllAvCodec: Using libavcodec system library");
 #endif
     return true;

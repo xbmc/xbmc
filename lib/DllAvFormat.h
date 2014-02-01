@@ -41,7 +41,7 @@ extern "C" {
   void xbmc_read_frame_flush(AVFormatContext *s);
 #else
   #include "libavformat/avformat.h"
-  #if defined(TARGET_DARWIN)
+  #if defined(TARGET_DARWIN) || defined(USE_STATIC_FFMPEG)
     void ff_read_frame_flush(AVFormatContext *s);    // internal replacement 
     #define xbmc_read_frame_flush ff_read_frame_flush
   #endif
@@ -73,7 +73,7 @@ public:
   virtual int av_read_play(AVFormatContext *s)=0;
   virtual int av_read_pause(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
-#if (!defined USE_EXTERNAL_FFMPEG) && (!defined TARGET_DARWIN)
+#if (!defined USE_EXTERNAL_FFMPEG) && (!defined TARGET_DARWIN) && (!defined USE_STATIC_FFMPEG)
   virtual int avformat_find_stream_info_dont_call(AVFormatContext *ic, AVDictionary **options)=0;
 #endif
   virtual int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options)=0;
@@ -108,7 +108,7 @@ public:
 #endif
 };
 
-#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
+#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) || (defined USE_STATIC_FFMPEG)
 
 // Use direct mapping
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
@@ -170,7 +170,7 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
-#if !defined(TARGET_DARWIN)
+#if !defined(TARGET_DARWIN) && !defined(USE_STATIC_FFMPEG)
     CLog::Log(LOGDEBUG, "DllAvFormat: Using libavformat system library");
 #endif
     CSingleLock lock(DllAvCodec::m_critSection);
