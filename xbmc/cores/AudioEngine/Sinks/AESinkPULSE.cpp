@@ -472,6 +472,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   if (!pa_format_info_valid(info[0]))
   {
     CLog::Log(LOGERROR, "PulseAudio: Invalid format info");
+    pa_format_info_free(info[0]);
     pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
     return false;
@@ -488,6 +489,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   if (!pa_sample_spec_valid(&spec))
   {
     CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
+    pa_format_info_free(info[0]);
     pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
     return false;
