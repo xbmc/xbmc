@@ -327,7 +327,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   InitSettings(dbSettings);
 
   CStdString dbName = dbSettings.name;
-  dbName += StringUtils::Format("%d", GetMinVersion());
+  dbName += StringUtils::Format("%d", GetSchemaVersion());
   return Connect(dbName, dbSettings, false);
 }
 
@@ -366,7 +366,7 @@ bool CDatabase::Update(const DatabaseSettings &settings)
   DatabaseSettings dbSettings = settings;
   InitSettings(dbSettings);
 
-  int version = GetMinVersion();
+  int version = GetSchemaVersion();
   CStdString latestDb = dbSettings.name;
   latestDb += StringUtils::Format("%d", version);
 
@@ -379,9 +379,9 @@ bool CDatabase::Update(const DatabaseSettings &settings)
     if (Connect(dbName, dbSettings, false))
     {
       // Database exists, take a copy for our current version (if needed) and reopen that one
-      if (version < GetMinVersion())
+      if (version < GetSchemaVersion())
       {
-        CLog::Log(LOGNOTICE, "Old database found - updating from version %i to %i", version, GetMinVersion());
+        CLog::Log(LOGNOTICE, "Old database found - updating from version %i to %i", version, GetSchemaVersion());
 
         bool copy_fail = false;
 
@@ -528,9 +528,9 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
     CLog::Log(LOGERROR, "Can't update database %s from version %i - it's too old", dbName.c_str(), version);
     return false;
   }
-  else if (version < GetMinVersion())
+  else if (version < GetSchemaVersion())
   {
-    CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
+    CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetSchemaVersion());
     bool success = true;
     BeginTransaction();
     try
@@ -543,19 +543,19 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "Exception updating database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
+      CLog::Log(LOGERROR, "Exception updating database %s from version %i to %i", dbName.c_str(), version, GetSchemaVersion());
       success = false;
     }
     if (!success)
     {
-      CLog::Log(LOGERROR, "Error updating database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
+      CLog::Log(LOGERROR, "Error updating database %s from version %i to %i", dbName.c_str(), version, GetSchemaVersion());
       RollbackTransaction();
       return false;
     }
     CommitTransaction();
-    CLog::Log(LOGINFO, "Update to version %i successful", GetMinVersion());
+    CLog::Log(LOGINFO, "Update to version %i successful", GetSchemaVersion());
   }
-  else if (version > GetMinVersion())
+  else if (version > GetSchemaVersion())
   {
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
     return false;
@@ -687,7 +687,7 @@ bool CDatabase::CreateDatabase()
   {
     CLog::Log(LOGINFO, "creating version table");
     m_pDS->exec("CREATE TABLE version (idVersion integer, iCompressCount integer)\n");
-    CStdString strSQL=PrepareSQL("INSERT INTO version (idVersion,iCompressCount) values(%i,0)\n", GetMinVersion());
+    CStdString strSQL=PrepareSQL("INSERT INTO version (idVersion,iCompressCount) values(%i,0)\n", GetSchemaVersion());
     m_pDS->exec(strSQL.c_str());
 
     CreateTables();
@@ -705,7 +705,7 @@ bool CDatabase::CreateDatabase()
 
 void CDatabase::UpdateVersionNumber()
 {
-  CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
+  CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetSchemaVersion());
   m_pDS->exec(strSQL.c_str());
 }
 

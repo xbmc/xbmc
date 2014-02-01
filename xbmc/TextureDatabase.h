@@ -126,6 +126,6 @@ protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
-  virtual int GetMinVersion() const { return 13; };
+  virtual int GetSchemaVersion() const { return 13; };
   const char *GetBaseDBName() const { return "Textures"; };
 };

@@ -4001,7 +4001,7 @@ void CMusicDatabase::UpdateTables(int version)
   }
 }
 
-int CMusicDatabase::GetMinVersion() const
+int CMusicDatabase::GetSchemaVersion() const
 {
   return 44;
 }

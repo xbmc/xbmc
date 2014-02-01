@@ -4448,7 +4448,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE streamdetails ADD strStereoMode text");
 }
 
-int CVideoDatabase::GetMinVersion() const
+int CVideoDatabase::GetSchemaVersion() const
 {
   return 77;
 }

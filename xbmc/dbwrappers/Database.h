@@ -194,7 +194,10 @@ protected:
   /* \brief The minimum schema version that we support updating from.
    */
   virtual int GetMinSchemaVersion() const { return 0; };
-  virtual int GetMinVersion() const=0;
+
+  /* \brief The current schema version.
+   */
+  virtual int GetSchemaVersion() const=0;
   virtual const char *GetBaseDBName() const=0;
 
   int GetDBVersion();
