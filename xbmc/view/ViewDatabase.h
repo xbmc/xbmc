@@ -34,7 +34,7 @@ public:
   bool ClearViewStates(int windowID);
 
 protected:
-  virtual bool CreateTables();
+  virtual void CreateTables();
   virtual bool UpdateOldVersion(int version);
   virtual int GetMinVersion() const { return 6; };
   const char *GetBaseDBName() const { return "ViewModes"; };

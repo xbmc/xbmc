@@ -81,7 +81,7 @@ bool CVideoDatabase::Open()
   return CDatabase::Open(g_advancedSettings.m_databaseVideo);
 }
 
-bool CVideoDatabase::CreateTables()
+void CVideoDatabase::CreateTables()
 {
   /* indexes should be added on any columns that are used in in  */
   /* a where or a join. primary key on a column is the same as a */
@@ -93,11 +93,6 @@ bool CVideoDatabase::CreateTables()
   /* select * from actorlinkmovie where idMovie = 1, can not take       */
   /* advantage of a index that has been created on ( idGenre, idMovie ) */
   /*, hower on on ( idMovie, idGenre ) will be considered for use       */
-
-  BeginTransaction();
-  try
-  {
-    CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create bookmark table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
@@ -349,15 +344,6 @@ bool CVideoDatabase::CreateTables()
 
     // we create views last to ensure all indexes are rolled in
     CreateViews();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s unable to create tables:%i", __FUNCTION__, (int)GetLastError());
-    RollbackTransaction();
-    return false;
-  }
-  CommitTransaction();
-  return true;
 }
 
 void CVideoDatabase::CreateViews()

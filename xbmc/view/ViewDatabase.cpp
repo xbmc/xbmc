@@ -48,12 +48,8 @@ bool CViewDatabase::Open()
   return CDatabase::Open();
 }
 
-bool CViewDatabase::CreateTables()
+void CViewDatabase::CreateTables()
 {
-  try
-  {
-    CDatabase::CreateTables();
-
     CLog::Log(LOGINFO, "create view table");
     m_pDS->exec("CREATE TABLE view ("
                   "idView integer primary key,"
@@ -68,15 +64,6 @@ bool CViewDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX idxViews ON view(path)");
     CLog::Log(LOGINFO, "create view - window index");
     m_pDS->exec("CREATE INDEX idxViewsWindow ON view(window)");
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s unable to create tables:%u",
-              __FUNCTION__, GetLastError());
-    return false;
-  }
-
-  return true;
 }
 
 bool CViewDatabase::UpdateOldVersion(int version)

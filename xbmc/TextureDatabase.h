@@ -123,7 +123,7 @@ protected:
    */
   unsigned int GetURLHash(const CStdString &url) const;
 
-  virtual bool CreateTables();
+  virtual void CreateTables();
   virtual bool UpdateOldVersion(int version);
   virtual int GetMinVersion() const { return 13; };
   const char *GetBaseDBName() const { return "Textures"; };

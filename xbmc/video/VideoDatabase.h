@@ -785,7 +785,7 @@ protected:
   CStdString GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
 
 private:
-  virtual bool CreateTables();
+  virtual void CreateTables();
   virtual bool UpdateOldVersion(int version);
 
   /*! \brief (Re)Create the generic database views for movies, tvshows,

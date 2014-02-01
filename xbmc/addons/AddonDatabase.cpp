@@ -44,12 +44,8 @@ bool CAddonDatabase::Open()
   return CDatabase::Open();
 }
 
-bool CAddonDatabase::CreateTables()
+void CAddonDatabase::CreateTables()
 {
-  try
-  {
-    CDatabase::CreateTables();
-
     CLog::Log(LOGINFO, "create addon table");
     m_pDS->exec("CREATE TABLE addon (id integer primary key, type text,"
                 "name text, summary text, description text, stars integer,"
@@ -94,14 +90,6 @@ bool CAddonDatabase::CreateTables()
     CLog::Log(LOGINFO, "create package table");
     m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxPackage ON package(filename)");
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s unable to create tables", __FUNCTION__);
-    return false;
-  }
-
-  return true;
 }
 
 bool CAddonDatabase::UpdateOldVersion(int version)

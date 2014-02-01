@@ -148,9 +148,8 @@ namespace EPG
   protected:
     /*!
      * @brief Create the EPG database tables.
-     * @return True if the tables were created successfully, false otherwise.
      */
-    virtual bool CreateTables(void);
+    virtual void CreateTables();
 
     /*!
      * @brief Update an old version of the database.

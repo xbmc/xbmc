@@ -37,16 +37,8 @@ bool CEpgDatabase::Open(void)
   return CDatabase::Open(g_advancedSettings.m_databaseEpg);
 }
 
-bool CEpgDatabase::CreateTables(void)
+void CEpgDatabase::CreateTables(void)
 {
-  bool bReturn(false);
-
-  try
-  {
-    CDatabase::CreateTables();
-
-    BeginTransaction();
-
     CLog::Log(LOGINFO, "EpgDB - %s - creating tables", __FUNCTION__);
 
     CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epg'", __FUNCTION__);
@@ -91,20 +83,6 @@ bool CEpgDatabase::CreateTables(void)
           "sLastScan varchar(20)"
         ")"
     );
-
-    CommitTransaction();
-
-    bReturn = true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "EpgDB - %s - unable to create EPG tables:%i",
-        __FUNCTION__, (int)GetLastError());
-    RollbackTransaction();
-    bReturn = false;
-  }
-
-  return bReturn;
 }
 
 bool CEpgDatabase::UpdateOldVersion(int iVersion)

@@ -221,7 +221,7 @@ namespace PVR
      * @brief Create the PVR database tables.
      * @return True if the tables were created successfully, false otherwise.
      */
-    bool CreateTables();
+    void CreateTables();
 
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group);
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);

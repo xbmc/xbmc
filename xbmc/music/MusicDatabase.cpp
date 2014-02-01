@@ -110,13 +110,8 @@ bool CMusicDatabase::Open()
   return CDatabase::Open(g_advancedSettings.m_databaseMusic);
 }
 
-bool CMusicDatabase::CreateTables()
+void CMusicDatabase::CreateTables()
 {
-  BeginTransaction();
-  try
-  {
-    CDatabase::CreateTables();
-
     CLog::Log(LOGINFO, "create artist table");
     m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, "
                 " strArtist varchar(256), strMusicBrainzArtistID text, "
@@ -264,15 +259,6 @@ bool CMusicDatabase::CreateTables()
 
     // Add 'Karaoke' genre
     AddGenre( "Karaoke" );
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s unable to create tables:%i", __FUNCTION__, (int)GetLastError());
-    RollbackTransaction();
-    return false;
-  }
-  CommitTransaction();
-  return true;
 }
 
 void CMusicDatabase::CreateViews()

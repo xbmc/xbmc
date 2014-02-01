@@ -161,12 +161,8 @@ bool CTextureDatabase::Open()
   return CDatabase::Open();
 }
 
-bool CTextureDatabase::CreateTables()
+void CTextureDatabase::CreateTables()
 {
-  try
-  {
-    CDatabase::CreateTables();
-
     CLog::Log(LOGINFO, "create texture table");
     m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
 
@@ -185,14 +181,6 @@ bool CTextureDatabase::CreateTables()
     // TODO: Should the path index be a covering index? (we need only retrieve texture)
     CLog::Log(LOGINFO, "create path index");
     m_pDS->exec("CREATE INDEX idxPath ON path(url, type)");
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s unable to create tables", __FUNCTION__);
-    return false;
-  }
-
-  return true;
 }
 
 bool CTextureDatabase::UpdateOldVersion(int version)

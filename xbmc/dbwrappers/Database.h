@@ -169,8 +169,17 @@ protected:
   uint32_t ComputeCRC(const CStdString &text);
 
   virtual bool Open();
-  virtual bool CreateTables();
-  virtual void CreateViews() {};
+
+  /*! \brief Create database tables and analytics as needed.
+   Calls CreateTables() on child classes.
+   */
+  bool CreateDatabase();
+
+  /* \brief Create tables for the current database schema.
+   Will be called on database creation.
+   */
+  virtual void CreateTables()=0;
+
   virtual bool UpdateOldVersion(int version) { return true; };
 
   virtual int GetMinVersion() const=0;
