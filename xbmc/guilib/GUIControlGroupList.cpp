@@ -292,6 +292,7 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
       control->SetNavigationAction(ACTION_MOVE_DOWN, m_actionDown, false);
     }
     control->SetNavigationAction(ACTION_NAV_BACK, m_actionBack, false);
+    control->SetNavigationAction(ACTION_SHOW_INFO, m_actionInfo, false);
 
     if (!m_useControlPositions)
       control->SetPosition(0,0);

@@ -677,7 +677,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float width = 0, height = 0;
   float minHeight = 0, minWidth = 0;
 
-  CGUIAction leftActions, rightActions, upActions, downActions, backActions, nextActions, prevActions;
+  CGUIAction leftActions, rightActions, upActions, downActions, backActions, infoActions, nextActions, prevActions;
 
   int pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
@@ -829,6 +829,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetActions(pControlNode, "onnext",  nextActions);
   GetActions(pControlNode, "onprev",  prevActions);
   GetActions(pControlNode, "onback",  backActions);
+  GetActions(pControlNode, "oninfo",  infoActions);
 
   if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
   {
@@ -1437,7 +1438,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);
     control->SetColorDiffuse(colorDiffuse);
-    control->SetNavigationActions(upActions, downActions, leftActions, rightActions, backActions);
+    control->SetNavigationActions(upActions, downActions, leftActions, rightActions, backActions, infoActions);
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);

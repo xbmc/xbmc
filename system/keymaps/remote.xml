@@ -91,7 +91,6 @@
   </global>
   <Home>
     <remote>
-      <info>XBMC.ActivateWindow(SystemInfo)</info>
       <clear>XBMC.ActivateWindow(Weather)</clear>
       <hash>XBMC.ActivateWindow(Settings)</hash>
     </remote>

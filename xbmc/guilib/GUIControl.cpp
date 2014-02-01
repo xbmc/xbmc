@@ -213,6 +213,9 @@ bool CGUIControl::OnAction(const CAction &action)
     case ACTION_NAV_BACK:
       return OnBack();
 
+    case ACTION_SHOW_INFO:
+      return OnInfo();
+
     case ACTION_NEXT_CONTROL:
       OnNextControl();
       return true;
@@ -259,6 +262,11 @@ void CGUIControl::OnRight()
 bool CGUIControl::OnBack()
 {
   return Navigate(ACTION_NAV_BACK);
+}
+
+bool CGUIControl::OnInfo()
+{
+  return Navigate(ACTION_SHOW_INFO);
 }
 
 void CGUIControl::OnNextControl()
@@ -457,13 +465,14 @@ CRect CGUIControl::CalcRenderRegion() const
   return CRect(tl.x, tl.y, br.x, br.y);
 }
 
-void CGUIControl::SetNavigation(int up, int down, int left, int right, int back)
+void CGUIControl::SetNavigation(int up, int down, int left, int right, int back, int info)
 {
   m_actionUp.SetNavigation(up);
   m_actionDown.SetNavigation(down);
   m_actionLeft.SetNavigation(left);
   m_actionRight.SetNavigation(right);
   m_actionBack.SetNavigation(back);
+  m_actionInfo.SetNavigation(info);
 }
 
 void CGUIControl::SetTabNavigation(int next, int prev)
@@ -474,13 +483,15 @@ void CGUIControl::SetTabNavigation(int next, int prev)
 
 void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
                                        const CGUIAction &left, const CGUIAction &right,
-                                       const CGUIAction &back, bool replace)
+                                       const CGUIAction &back, const CGUIAction &info,
+                                       bool replace)
 {
   if (!m_actionLeft.HasAnyActions()  || replace) m_actionLeft  = left;
   if (!m_actionRight.HasAnyActions() || replace) m_actionRight = right;
   if (!m_actionUp.HasAnyActions()    || replace) m_actionUp    = up;
   if (!m_actionDown.HasAnyActions()  || replace) m_actionDown  = down;
   if (!m_actionBack.HasAnyActions()  || replace) m_actionBack  = back;
+  if (!m_actionInfo.HasAnyActions()  || replace) m_actionInfo  = info;
 }
 
 void CGUIControl::SetNavigationAction(int direction, const CGUIAction &action, bool replace /*= true*/)
@@ -506,6 +517,9 @@ void CGUIControl::SetNavigationAction(int direction, const CGUIAction &action, b
   case ACTION_NAV_BACK:
     if (!m_actionBack.HasAnyActions() || replace)
       m_actionBack = action;
+  case ACTION_SHOW_INFO:
+    if (!m_actionInfo.HasAnyActions() || replace)
+      m_actionInfo = action;
     break;
   }
 }
@@ -918,6 +932,9 @@ bool CGUIControl::GetNavigationAction(int direction, CGUIAction& action) const
     return true;
   case ACTION_NAV_BACK:
     action = m_actionBack;
+    return true;
+  case ACTION_SHOW_INFO:
+    action = m_actionInfo;
     return true;
   default:
     return false;

@@ -102,6 +102,7 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnBack();
+  virtual bool OnInfo();
   virtual void OnNextControl();
   virtual void OnPrevControl();
   virtual void OnFocus() {};
@@ -179,7 +180,7 @@ public:
    */
   virtual CRect CalcRenderRegion() const;
 
-  virtual void SetNavigation(int up, int down, int left, int right, int back = 0);
+  virtual void SetNavigation(int up, int down, int left, int right, int back = 0, int info = 0);
   virtual void SetTabNavigation(int next, int prev);
 
   /*! \brief Set actions to perform on navigation
@@ -194,13 +195,15 @@ public:
    */
   virtual void SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
                                     const CGUIAction &left, const CGUIAction &right,
-                                    const CGUIAction &back, bool replace = true);
+                                    const CGUIAction &back, const CGUIAction &info,
+                                    bool replace = true);
   void SetNavigationAction(int direction, const CGUIAction &action, bool replace = true);
   int GetControlIdUp() const { return m_actionUp.GetNavigation(); };
   int GetControlIdDown() const { return  m_actionDown.GetNavigation(); };
   int GetControlIdLeft() const { return m_actionLeft.GetNavigation(); };
   int GetControlIdRight() const { return m_actionRight.GetNavigation(); };
   int GetControlIdBack() const { return m_actionBack.GetNavigation(); };
+  int GetControlIdInfo() const { return m_actionInfo.GetNavigation(); };
   bool GetNavigationAction(int direction, CGUIAction& action) const;
   /*! \brief  Start navigating in given direction.
    */
@@ -321,6 +324,7 @@ protected:
   CGUIAction m_actionBack;
   CGUIAction m_actionNext;
   CGUIAction m_actionPrev;
+  CGUIAction m_actionInfo;
 
   float m_posX;
   float m_posY;

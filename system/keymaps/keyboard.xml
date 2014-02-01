@@ -160,7 +160,6 @@
   </LoginScreen>
   <Home>
     <keyboard>
-      <i>info</i>
       <end mod="ctrl">XBMC.ShutDown()</end>
     </keyboard>
   </Home>

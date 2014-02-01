@@ -746,7 +746,14 @@ bool CGUIBaseContainer::OnClick(int actionID)
   }
   // Don't know what to do, so send to our parent window.
   CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID, subItem);
-  return SendWindowMessage(msg);
+  if (SendWindowMessage(msg))
+    return true;
+
+  // Return custom info action if there was no info action in our parent window
+  if (actionID == ACTION_SHOW_INFO)
+    return OnInfo();
+
+  return false;
 }
 
 CStdString CGUIBaseContainer::GetDescription() const
