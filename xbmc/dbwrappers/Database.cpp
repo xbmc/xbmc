@@ -370,7 +370,7 @@ bool CDatabase::Update(const DatabaseSettings &settings)
   CStdString latestDb = dbSettings.name;
   latestDb += StringUtils::Format("%d", version);
 
-  while (version >= 0)
+  while (version >= GetMinSchemaVersion())
   {
     CStdString dbName = dbSettings.name;
     if (version)
@@ -523,7 +523,12 @@ int CDatabase::GetDBVersion()
 bool CDatabase::UpdateVersion(const CStdString &dbName)
 {
   int version = GetDBVersion();
-  if (version < GetMinVersion())
+  if (version < GetMinSchemaVersion())
+  {
+    CLog::Log(LOGERROR, "Can't update database %s from version %i - it's too old", dbName.c_str(), version);
+    return false;
+  }
+  else if (version < GetMinVersion())
   {
     CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
     bool success = false;

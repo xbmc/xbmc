@@ -93,12 +93,6 @@ bool CEpgDatabase::UpdateOldVersion(int iVersion)
 {
   bool bReturn = true;
 
-  if (iVersion < 4)
-  {
-    CLog::Log(LOGERROR, "EpgDB - %s - updating from table versions < 4 not supported. please delete '%s'", __FUNCTION__, GetBaseDBName());
-    return false;
-  }
-
   BeginTransaction();
 
   try

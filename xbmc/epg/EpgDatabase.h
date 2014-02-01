@@ -162,5 +162,6 @@ namespace EPG
      * @return True if it was updated successfully, false otherwise.
      */
     virtual bool UpdateOldVersion(int version);
+    virtual int GetMinSchemaVersion() const { return 4; }
   };
 }

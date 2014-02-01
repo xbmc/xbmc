@@ -237,6 +237,7 @@ namespace PVR
      * @return True if it was updated successfully, false otherwise.
      */
     bool UpdateOldVersion(int version);
+    int GetMinSchemaVersion() { return 11; }
 
     bool PersistGroupMembers(CPVRChannelGroup &group);
 

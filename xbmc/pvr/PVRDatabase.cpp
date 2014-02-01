@@ -175,13 +175,6 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
 
   try
   {
-    if (iVersion < 11)
-    {
-      CLog::Log(LOGERROR, "PVR - %s - updating from table versions < 11 not supported. please delete '%s'",
-          __FUNCTION__, GetBaseDBName());
-      bReturn = false;
-    }
-    else
     {
       if (iVersion < 13)
         m_pDS->exec("ALTER TABLE channels ADD idEpg integer;");
