@@ -61,6 +61,14 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="3">
+        <setting id="audiooutput.truehdpassthrough">
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.dtshdpassthrough">
+          <visible>false</visible>
+        </setting>
+      </group>
     </category>
   </section>
 </settings>
