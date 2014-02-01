@@ -1716,34 +1716,36 @@ FFMPEG_LIBNAMES="libavcodec >= 55.39.101
                  libswscale >= 2.5.101
                  libswresample >= 0.17.104"
 
-ffmpeg_build="$(pwd)/tools/depends/target/ffmpeg"
-if test "$use_debug" != "yes"; then
-  FFMPEG_OPTS="-r"
-fi
-if test "$use_optimizations" != "yes"; then
-  FFMPEG_OPTS="${FFMPEG_OPTS} --disable-optimizations" 
-fi
-
-if test "$with_ffmpeg" = "auto" -o "$with_ffmpeg" = "yes"; then
-  # check for system installed ffmpeg. We require our specific versions.
-  PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
-    [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"; FFMPEG_FOUND="true"],
-    [FFMPEG_FOUND="false"])
-
-  if test "$with_ffmpeg" = "yes" -o "$FFMPEG_FOUND" != "true"; then
-    # ffmpeg not found with pkg-config, lets install it
-    AC_MSG_NOTICE("Installing FFmpeg")
-    CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" ${ffmpeg_build}/autobuild.sh ${FFMPEG_OPTS}
-    export PKG_CONFIG_PATH="${ffmpeg_build}/ffmpeg-install/lib/pkgconfig:$PKG_CONFIG_PATH"
+if test "$cross_compiling" != "yes"; then
+  ffmpeg_build="$(pwd)/tools/depends/target/ffmpeg"
+  if test "$use_debug" != "yes"; then
+    FFMPEG_OPTS="-r"
   fi
-elif test "$with_ffmpeg" = "force"; then
-  # always build our ffmpeg
-  AC_MSG_NOTICE("FFmpeg installation forced by user - installing our version")
-  CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" ${ffmpeg_build}/autobuild.sh ${FFMPEG_OPTS}
-elif test "$with_ffmpeg" != "no"; then
-  # user passed --with-ffmpeg=/some/path, lets use it
-  AC_MSG_NOTICE("using ffmpeg: ${with_ffmpeg}")
-  export PKG_CONFIG_PATH="${with_ffmpeg}/lib/pkgconfig:$PKG_CONFIG_PATH"
+  if test "$use_optimizations" != "yes"; then
+    FFMPEG_OPTS="${FFMPEG_OPTS} --disable-optimizations"
+  fi
+
+  if test "$with_ffmpeg" = "auto" -o "$with_ffmpeg" = "yes"; then
+    # check for system installed ffmpeg. We require our specific versions.
+    PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
+      [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"; FFMPEG_FOUND="true"],
+      [FFMPEG_FOUND="false"])
+
+    if test "$with_ffmpeg" = "yes" -o "$FFMPEG_FOUND" != "true"; then
+      # ffmpeg not found with pkg-config, lets install it
+      AC_MSG_NOTICE("Installing FFmpeg")
+      CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" ${ffmpeg_build}/autobuild.sh ${FFMPEG_OPTS}
+      export PKG_CONFIG_PATH="${ffmpeg_build}/ffmpeg-install/lib/pkgconfig:$PKG_CONFIG_PATH"
+    fi
+  elif test "$with_ffmpeg" = "force"; then
+    # always build our ffmpeg
+    AC_MSG_NOTICE("FFmpeg installation forced by user - installing our version")
+    CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" ${ffmpeg_build}/autobuild.sh ${FFMPEG_OPTS}
+  elif test "$with_ffmpeg" != "no"; then
+    # user passed --with-ffmpeg=/some/path, lets use it
+    AC_MSG_NOTICE("using ffmpeg: ${with_ffmpeg}")
+    export PKG_CONFIG_PATH="${with_ffmpeg}/lib/pkgconfig:$PKG_CONFIG_PATH"
+  fi
 fi
 
 if test "$FFMPEG_FOUND" != "true"; then
