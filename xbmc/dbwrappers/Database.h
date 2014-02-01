@@ -171,7 +171,7 @@ protected:
   virtual bool Open();
 
   /*! \brief Create database tables and analytics as needed.
-   Calls CreateTables() on child classes.
+   Calls CreateTables() and CreateAnalytics() on child classes.
    */
   bool CreateDatabase();
 
@@ -179,6 +179,11 @@ protected:
    Will be called on database creation.
    */
   virtual void CreateTables()=0;
+
+  /* \brief Create views, indices and triggers for the current database schema.
+   Will be called on database creation and database update.
+   */
+  virtual void CreateAnalytics()=0;
 
   virtual bool UpdateOldVersion(int version) { return true; };
 

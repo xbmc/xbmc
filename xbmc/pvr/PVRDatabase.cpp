@@ -81,7 +81,6 @@ void CPVRDatabase::CreateTables()
           "idEpg                integer"
         ")"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
 
     // TODO use a mapping table so multiple backends per channel can be implemented
     //    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'map_channels_clients'", __FUNCTION__);
@@ -106,7 +105,6 @@ void CPVRDatabase::CreateTables()
           "sName           varchar(64)"
         ")"
     );
-    m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
 
     CLog::Log(LOGDEBUG, "PVR - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
     m_pDS->exec(
@@ -116,7 +114,6 @@ void CPVRDatabase::CreateTables()
           "iChannelNumber integer"
         ")"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
 
     CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channelsettings'", __FUNCTION__);
     m_pDS->exec(
@@ -160,6 +157,14 @@ void CPVRDatabase::CreateTables()
       for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
         CAddonMgr::Get().DisableAddon(it->get()->ID());
     }
+}
+
+void CPVRDatabase::CreateAnalytics()
+{
+  CLog::Log(LOGINFO, "%s - creating indices", __FUNCTION__);
+  m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
+  m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
+  m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
 }
 
 bool CPVRDatabase::UpdateOldVersion(int iVersion)

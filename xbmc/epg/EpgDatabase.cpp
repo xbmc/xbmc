@@ -74,15 +74,19 @@ void CEpgDatabase::CreateTables(void)
           "sEpisodeName    varchar(128)"
         ")"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
-    m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
-
     CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
     m_pDS->exec("CREATE TABLE lastepgscan ("
           "idEpg integer primary key, "
           "sLastScan varchar(20)"
         ")"
     );
+}
+
+void CEpgDatabase::CreateAnalytics()
+{
+  CLog::Log(LOGDEBUG, "%s - creating indices", __FUNCTION__);
+  m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
+  m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
 }
 
 bool CEpgDatabase::UpdateOldVersion(int iVersion)

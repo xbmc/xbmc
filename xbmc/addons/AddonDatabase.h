@@ -136,6 +136,7 @@ public:
   bool RemovePackage(const CStdString& packageFileName);
 protected:
   virtual void CreateTables();
+  virtual void CreateAnalytics();
   virtual bool UpdateOldVersion(int version);
   virtual int GetMinVersion() const { return 16; }
   const char *GetBaseDBName() const { return "Addons"; }

@@ -469,6 +469,7 @@ protected:
   std::map<CStdString, CAlbum> m_albumCache;
 
   virtual void CreateTables();
+  virtual void CreateAnalytics();
   virtual int GetMinVersion() const;
 
   const char *GetBaseDBName() const { return "MyMusic"; };

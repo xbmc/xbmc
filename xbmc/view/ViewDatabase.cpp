@@ -60,10 +60,13 @@ void CViewDatabase::CreateTables()
                   "sortOrder integer,"
                   "sortAttributes integer,"
                   "skin text)\n");
-    CLog::Log(LOGINFO, "create view index");
-    m_pDS->exec("CREATE INDEX idxViews ON view(path)");
-    CLog::Log(LOGINFO, "create view - window index");
-    m_pDS->exec("CREATE INDEX idxViewsWindow ON view(window)");
+}
+
+void CViewDatabase::CreateAnalytics()
+{
+  CLog::Log(LOGINFO, "%s - creating indicies", __FUNCTION__);
+  m_pDS->exec("CREATE INDEX idxViews ON view(path)");
+  m_pDS->exec("CREATE INDEX idxViewsWindow ON view(window)");
 }
 
 bool CViewDatabase::UpdateOldVersion(int version)

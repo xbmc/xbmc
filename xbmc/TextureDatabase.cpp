@@ -166,21 +166,24 @@ void CTextureDatabase::CreateTables()
     CLog::Log(LOGINFO, "create texture table");
     m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
 
-    CLog::Log(LOGINFO, "create textures index");
-    m_pDS->exec("CREATE INDEX idxTexture ON texture(url)");
-
     CLog::Log(LOGINFO, "create sizes table, index,  and trigger");
     m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
-    m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
-    m_pDS->exec("CREATE INDEX idxSize2 ON sizes(idtexture, width, height)");
-    m_pDS->exec("CREATE TRIGGER textureDelete AFTER delete ON texture FOR EACH ROW BEGIN delete from sizes where sizes.idtexture=old.id; END");
 
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path (id integer primary key, url text, type text, texture text)\n");
+}
 
-    // TODO: Should the path index be a covering index? (we need only retrieve texture)
-    CLog::Log(LOGINFO, "create path index");
-    m_pDS->exec("CREATE INDEX idxPath ON path(url, type)");
+void CTextureDatabase::CreateAnalytics()
+{
+  CLog::Log(LOGINFO, "%s creating indices", __FUNCTION__);
+  m_pDS->exec("CREATE INDEX idxTexture ON texture(url)");
+  m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
+  m_pDS->exec("CREATE INDEX idxSize2 ON sizes(idtexture, width, height)");
+  // TODO: Should the path index be a covering index? (we need only retrieve texture)
+  m_pDS->exec("CREATE INDEX idxPath ON path(url, type)");
+
+  CLog::Log(LOGINFO, "%s creating triggers", __FUNCTION__);
+  m_pDS->exec("CREATE TRIGGER textureDelete AFTER delete ON texture FOR EACH ROW BEGIN delete from sizes where sizes.idtexture=old.id; END");
 }
 
 bool CTextureDatabase::UpdateOldVersion(int version)

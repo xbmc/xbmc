@@ -684,6 +684,7 @@ bool CDatabase::CreateDatabase()
     m_pDS->exec(strSQL.c_str());
 
     CreateTables();
+    CreateAnalytics();
   }
   catch (...)
   {

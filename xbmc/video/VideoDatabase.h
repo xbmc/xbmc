@@ -786,6 +786,7 @@ protected:
 
 private:
   virtual void CreateTables();
+  virtual void CreateAnalytics();
   virtual bool UpdateOldVersion(int version);
 
   /*! \brief (Re)Create the generic database views for movies, tvshows,

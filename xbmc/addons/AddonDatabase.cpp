@@ -53,18 +53,11 @@ void CAddonDatabase::CreateTables()
                 "changelog text, fanart text, author text, disclaimer text,"
                 "minversion text)\n");
 
-    CLog::Log(LOGINFO, "create addon index");
-    m_pDS->exec("CREATE INDEX idxAddon ON addon(addonID)");
-
     CLog::Log(LOGINFO, "create addonextra table");
     m_pDS->exec("CREATE TABLE addonextra (id integer, key text, value text)\n");
 
-    CLog::Log(LOGINFO, "create addonextra index");
-    m_pDS->exec("CREATE INDEX idxAddonExtra ON addonextra(id)");
-
     CLog::Log(LOGINFO, "create dependencies table");
     m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
-    m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
 
     CLog::Log(LOGINFO, "create repo table");
     m_pDS->exec("CREATE TABLE repo (id integer primary key, addonID text,"
@@ -72,24 +65,32 @@ void CAddonDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create addonlinkrepo table");
     m_pDS->exec("CREATE TABLE addonlinkrepo (idRepo integer, idAddon integer)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
 
     CLog::Log(LOGINFO, "create disabled table");
     m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxDisabled ON disabled(addonID)");
 
     CLog::Log(LOGINFO, "create broken table");
     m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
 
     CLog::Log(LOGINFO, "create blacklist table");
     m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
 
     CLog::Log(LOGINFO, "create package table");
     m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxPackage ON package(filename)");
+}
+
+void CAddonDatabase::CreateAnalytics()
+{
+  CLog::Log(LOGINFO, "%s creating indicies", __FUNCTION__);
+  m_pDS->exec("CREATE INDEX idxAddon ON addon(addonID)");
+  m_pDS->exec("CREATE INDEX idxAddonExtra ON addonextra(id)");
+  m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
+  m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
+  m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
+  m_pDS->exec("CREATE UNIQUE INDEX idxDisabled ON disabled(addonID)");
+  m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
+  m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
+  m_pDS->exec("CREATE UNIQUE INDEX idxPackage ON package(filename)");
 }
 
 bool CAddonDatabase::UpdateOldVersion(int version)

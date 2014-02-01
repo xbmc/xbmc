@@ -222,6 +222,7 @@ namespace PVR
      * @return True if the tables were created successfully, false otherwise.
      */
     void CreateTables();
+    void CreateAnalytics();
 
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group);
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);

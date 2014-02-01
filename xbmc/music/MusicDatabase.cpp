@@ -170,95 +170,99 @@ void CMusicDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE karaokedata ( iKaraNumber integer, idSong integer, iKaraDelay integer, strKaraEncoding text, "
                 "strKaralyrics text, strKaraLyrFileCRC text )\n");
 
-    CLog::Log(LOGINFO, "create album index");
-    m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum(255))");
-    CLog::Log(LOGINFO, "create album compilation index");
-    m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
-    CLog::Log(LOGINFO, "create unique album name index");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbum_2 ON album(strMusicBrainzAlbumID(36))");
-
-    CLog::Log(LOGINFO, "create album_artist indexes");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_1 ON album_artist ( idAlbum, idArtist )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_2 ON album_artist ( idArtist, idAlbum )\n");
-    m_pDS->exec("CREATE INDEX idxAlbumArtist_3 ON album_artist ( boolFeatured )\n");
-
-    CLog::Log(LOGINFO, "create album_genre indexes");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_1 ON album_genre ( idAlbum, idGenre )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_2 ON album_genre ( idGenre, idAlbum )\n");
-
-    CLog::Log(LOGINFO, "create genre index");
-    m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre(255))");
-
-    CLog::Log(LOGINFO, "create artist indexes");
-    m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist(255))");
-    m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
-
-    CLog::Log(LOGINFO, "create path index");
-    m_pDS->exec("CREATE INDEX idxPath ON path(strPath(255))");
-
-    CLog::Log(LOGINFO, "create song index");
-    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle(255))");
-    CLog::Log(LOGINFO, "create song index1");
-    m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
-    CLog::Log(LOGINFO, "create song index2");
-    m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
-    CLog::Log(LOGINFO, "create song index3");
-    m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
-    CLog::Log(LOGINFO, "create song index6");
-    m_pDS->exec("CREATE INDEX idxSong6 ON song( idPath, strFileName(255) )");
-    CLog::Log(LOGINFO, "create song index7");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSong7 ON song( idAlbum, strMusicBrainzTrackID(36) )");
-
-    CLog::Log(LOGINFO, "create song_artist indexes");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_2 ON song_artist ( idArtist, idSong )\n");
-    m_pDS->exec("CREATE INDEX idxSongArtist_3 ON song_artist ( boolFeatured )\n");
-
-    CLog::Log(LOGINFO, "create song_genre indexes");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_1 ON song_genre ( idSong, idGenre )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_2 ON song_genre ( idGenre, idSong )\n");
-    //m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
-
-    CLog::Log(LOGINFO, "create albuminfosong indexes");
-    m_pDS->exec("CREATE INDEX idxAlbumInfoSong_1 ON albuminfosong ( idAlbumInfo )\n");
-
-    CLog::Log(LOGINFO, "create karaokedata index");
-    m_pDS->exec("CREATE INDEX idxKaraNumber on karaokedata(iKaraNumber)");
-    m_pDS->exec("CREATE INDEX idxKarSong on karaokedata(idSong)");
-
-    CLog::Log(LOGINFO, "create discography indexes");
-    m_pDS->exec("CREATE INDEX idxDiscography_1 ON discography ( idArtist )\n");
-
-    CLog::Log(LOGINFO, "create art table and index");
+    CLog::Log(LOGINFO, "create art table");
     m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
-    m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
-
-    CLog::Log(LOGINFO, "create triggers");
-    m_pDS->exec("CREATE TRIGGER tgrDeleteAlbum AFTER delete ON album FOR EACH ROW BEGIN"
-                "  DELETE FROM song WHERE song.idAlbum = old.idAlbum;"
-                "  DELETE FROM album_artist WHERE album_artist.idAlbum = old.idAlbum;"
-                "  DELETE FROM album_genre WHERE album_genre.idAlbum = old.idAlbum;"
-                "  DELETE FROM albuminfosong WHERE albuminfosong.idAlbumInfo=old.idAlbum;"
-                "  DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album';"
-                " END");
-    m_pDS->exec("CREATE TRIGGER tgrDeleteArtist AFTER delete ON artist FOR EACH ROW BEGIN"
-                "  DELETE FROM album_artist WHERE album_artist.idArtist = old.idArtist;"
-                "  DELETE FROM song_artist WHERE song_artist.idArtist = old.idArtist;"
-                "  DELETE FROM discography WHERE discography.idArtist = old.idArtist;"
-                "  DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist';"
-                " END");
-    m_pDS->exec("CREATE TRIGGER tgrDeleteSong AFTER delete ON song FOR EACH ROW BEGIN"
-                "  DELETE FROM song_artist WHERE song_artist.idSong = old.idSong;"
-                "  DELETE FROM song_genre WHERE song_genre.idSong = old.idSong;"
-                "  DELETE FROM karaokedata WHERE karaokedata.idSong = old.idSong;"
-                "  DELETE FROM art WHERE media_id=old.idSong AND media_type='song';"
-                " END");
-
-    // we create views last to ensure all indexes are rolled in
-    CreateViews();
 
     // Add 'Karaoke' genre
     AddGenre( "Karaoke" );
+}
+
+void CMusicDatabase::CreateAnalytics()
+{
+  CLog::Log(LOGINFO, "create album index");
+  m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum(255))");
+  CLog::Log(LOGINFO, "create album compilation index");
+  m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
+  CLog::Log(LOGINFO, "create unique album name index");
+  m_pDS->exec("CREATE UNIQUE INDEX idxAlbum_2 ON album(strMusicBrainzAlbumID(36))");
+
+  CLog::Log(LOGINFO, "create album_artist indexes");
+  m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_1 ON album_artist ( idAlbum, idArtist )\n");
+  m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_2 ON album_artist ( idArtist, idAlbum )\n");
+  m_pDS->exec("CREATE INDEX idxAlbumArtist_3 ON album_artist ( boolFeatured )\n");
+
+  CLog::Log(LOGINFO, "create album_genre indexes");
+  m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_1 ON album_genre ( idAlbum, idGenre )\n");
+  m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_2 ON album_genre ( idGenre, idAlbum )\n");
+
+  CLog::Log(LOGINFO, "create genre index");
+  m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre(255))");
+
+  CLog::Log(LOGINFO, "create artist indexes");
+  m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist(255))");
+  m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
+
+  CLog::Log(LOGINFO, "create path index");
+  m_pDS->exec("CREATE INDEX idxPath ON path(strPath(255))");
+
+  CLog::Log(LOGINFO, "create song index");
+  m_pDS->exec("CREATE INDEX idxSong ON song(strTitle(255))");
+  CLog::Log(LOGINFO, "create song index1");
+  m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
+  CLog::Log(LOGINFO, "create song index2");
+  m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
+  CLog::Log(LOGINFO, "create song index3");
+  m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
+  CLog::Log(LOGINFO, "create song index6");
+  m_pDS->exec("CREATE INDEX idxSong6 ON song( idPath, strFileName(255) )");
+  CLog::Log(LOGINFO, "create song index7");
+  m_pDS->exec("CREATE UNIQUE INDEX idxSong7 ON song( idAlbum, strMusicBrainzTrackID(36) )");
+
+  CLog::Log(LOGINFO, "create song_artist indexes");
+  m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist )\n");
+  m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_2 ON song_artist ( idArtist, idSong )\n");
+  m_pDS->exec("CREATE INDEX idxSongArtist_3 ON song_artist ( boolFeatured )\n");
+
+  CLog::Log(LOGINFO, "create song_genre indexes");
+  m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_1 ON song_genre ( idSong, idGenre )\n");
+  m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_2 ON song_genre ( idGenre, idSong )\n");
+  //m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
+
+  CLog::Log(LOGINFO, "create albuminfosong indexes");
+  m_pDS->exec("CREATE INDEX idxAlbumInfoSong_1 ON albuminfosong ( idAlbumInfo )\n");
+
+  CLog::Log(LOGINFO, "create karaokedata index");
+  m_pDS->exec("CREATE INDEX idxKaraNumber on karaokedata(iKaraNumber)");
+  m_pDS->exec("CREATE INDEX idxKarSong on karaokedata(idSong)");
+
+  CLog::Log(LOGINFO, "create discography indexes");
+  m_pDS->exec("CREATE INDEX idxDiscography_1 ON discography ( idArtist )\n");
+
+  m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
+
+  CLog::Log(LOGINFO, "create triggers");
+  m_pDS->exec("CREATE TRIGGER tgrDeleteAlbum AFTER delete ON album FOR EACH ROW BEGIN"
+              "  DELETE FROM song WHERE song.idAlbum = old.idAlbum;"
+              "  DELETE FROM album_artist WHERE album_artist.idAlbum = old.idAlbum;"
+              "  DELETE FROM album_genre WHERE album_genre.idAlbum = old.idAlbum;"
+              "  DELETE FROM albuminfosong WHERE albuminfosong.idAlbumInfo=old.idAlbum;"
+              "  DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album';"
+              " END");
+  m_pDS->exec("CREATE TRIGGER tgrDeleteArtist AFTER delete ON artist FOR EACH ROW BEGIN"
+              "  DELETE FROM album_artist WHERE album_artist.idArtist = old.idArtist;"
+              "  DELETE FROM song_artist WHERE song_artist.idArtist = old.idArtist;"
+              "  DELETE FROM discography WHERE discography.idArtist = old.idArtist;"
+              "  DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist';"
+              " END");
+  m_pDS->exec("CREATE TRIGGER tgrDeleteSong AFTER delete ON song FOR EACH ROW BEGIN"
+              "  DELETE FROM song_artist WHERE song_artist.idSong = old.idSong;"
+              "  DELETE FROM song_genre WHERE song_genre.idSong = old.idSong;"
+              "  DELETE FROM karaokedata WHERE karaokedata.idSong = old.idSong;"
+              "  DELETE FROM art WHERE media_id=old.idSong AND media_type='song';"
+              " END");
+
+  // we create views last to ensure all indexes are rolled in
+  CreateViews();
 }
 
 void CMusicDatabase::CreateViews()
