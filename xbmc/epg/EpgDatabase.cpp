@@ -105,17 +105,6 @@ bool CEpgDatabase::UpdateOldVersion(int iVersion)
   {
     if (iVersion < 5)
       m_pDS->exec("ALTER TABLE epgtags ADD sGenre varchar(128);");
-    if (iVersion < 6)
-    {
-      m_pDS->exec("DROP INDEX idx_epg_iBroadcastUid;");
-      m_pDS->exec("DROP INDEX idx_epg_idEpg;");
-      m_pDS->exec("DROP INDEX idx_epg_iStartTime;");
-      m_pDS->exec("DROP INDEX idx_epg_iEndTime;");
-    }
-    if (iVersion < 7)
-    {
-      m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
-    }
   }
   catch (...)
   {

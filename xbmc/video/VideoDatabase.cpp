@@ -357,7 +357,6 @@ void CVideoDatabase::CreateAnalytics()
 void CVideoDatabase::CreateViews()
 {
   CLog::Log(LOGINFO, "create episodeview");
-  m_pDS->exec("DROP VIEW IF EXISTS episodeview");
   CStdString episodeview = PrepareSQL("CREATE VIEW episodeview AS SELECT "
                                       "  episode.*,"
                                       "  files.strFileName AS strFileName,"
@@ -387,7 +386,6 @@ void CVideoDatabase::CreateViews()
   m_pDS->exec(episodeview.c_str());
 
   CLog::Log(LOGINFO, "create tvshowview");
-  m_pDS->exec("DROP VIEW IF EXISTS tvshowview");
   CStdString tvshowview = PrepareSQL("CREATE VIEW tvshowview AS SELECT "
                                      "  tvshow.*,"
                                      "  path.strPath AS strPath,"
@@ -409,7 +407,6 @@ void CVideoDatabase::CreateViews()
   m_pDS->exec(tvshowview.c_str());
 
   CLog::Log(LOGINFO, "create musicvideoview");
-  m_pDS->exec("DROP VIEW IF EXISTS musicvideoview");
   m_pDS->exec("CREATE VIEW musicvideoview AS SELECT"
               "  musicvideo.*,"
               "  files.strFileName as strFileName,"
@@ -428,7 +425,6 @@ void CVideoDatabase::CreateViews()
               "    bookmark.idFile=musicvideo.idFile AND bookmark.type=1");
 
   CLog::Log(LOGINFO, "create movieview");
-  m_pDS->exec("DROP VIEW IF EXISTS movieview");
   m_pDS->exec("CREATE VIEW movieview AS SELECT"
               "  movie.*,"
               "  sets.strSet AS strSet,"
@@ -4244,13 +4240,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     UpdateBasePath("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH);
     UpdateBasePath("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, true);
   }
-  if (iVersion < 46)
-  { // add indices for dir entry lookups
-    m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c22(255) )");
-    m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c13(255) )");
-    m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c18(255) )");
-    m_pDS->exec("CREATE INDEX ixTVShowBasePath ON tvshow ( c16(255) )");
-  }
   if (iVersion < 50)
   {
     m_pDS->exec("ALTER TABLE settings ADD ScalingMethod integer");
@@ -4265,29 +4254,16 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     m_pDS->exec("ALTER TABLE actorlinkepisode ADD iOrder integer");
   }
   if (iVersion < 52)
-  { // Add basepath link to path table for faster content retrieval, and indicies
+  { // Add basepath link to path table for faster content retrieval
     m_pDS->exec("ALTER TABLE movie ADD c23 text");
     m_pDS->exec("ALTER TABLE episode ADD c23 text");
     m_pDS->exec("ALTER TABLE musicvideo ADD c23 text");
     m_pDS->exec("ALTER TABLE tvshow ADD c23 text");
-    m_pDS->dropIndex("movie", "ixMovieBasePath");
-    m_pDS->dropIndex("musicvideo", "ixMusicVideoBasePath");
-    m_pDS->dropIndex("episode", "ixEpisodeBasePath");
-    m_pDS->dropIndex("tvshow", "ixTVShowBasePath");
-    m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c23(12) )");
-    m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c14(12) )");
-    m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c19(12) )");
-    m_pDS->exec("CREATE INDEX ixTVShowBasePath ON tvshow ( c17(12) )");
     // now update the base path links
     UpdateBasePathID("movie", "idMovie", VIDEODB_ID_BASEPATH, VIDEODB_ID_PARENTPATHID);
     UpdateBasePathID("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
     UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
     UpdateBasePathID("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_TV_PARENTPATHID);
-  }
-  if (iVersion < 54)
-  { // Change INDEX for bookmark table
-    m_pDS->dropIndex("bookmark", "ix_bookmark");
-    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
   }
   if (iVersion < 55)
   {
@@ -4315,7 +4291,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   if (iVersion < 62)
   { // add seasons table
     m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer)");
-    m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
     // insert all seasons for each show
     m_pDS->query("SELECT idShow FROM tvshow");
     while (!m_pDS->eof())
@@ -4324,7 +4299,9 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
                                   "  SELECT DISTINCT"
                                   "    idShow,c%02d"
                                   "  FROM"
-                                  "    episodeview"
+                                  "    episode"
+                                  "  JOIN tvshowlinkepisode ON"
+                                  "    episode.idEpisode=tvshowlinkepisode.idEpisode"
                                   "  WHERE idShow=%i", VIDEODB_ID_EPISODE_SEASON, m_pDS->fv(0).get_asInt());
       m_pDS2->exec(sql.c_str());
       // and the "all seasons node"
@@ -4336,14 +4313,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   if (iVersion < 63)
   { // add art table
     m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
-    m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
-    m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; END");
-    m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idShow AND media_type='tvshow'; END");
-    m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; END");
-    m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; END");
-    m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; END");
-    m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; END");
-    m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); END");
 
     CMediaSettings::Get().SetVideoNeedsUpdate(63);
     CSettings::Get().Save();
@@ -4360,18 +4329,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->next();
     }
     m_pDS->exec("DROP TABLE tvshowlinkepisode");
-    m_pDS->exec("CREATE INDEX ix_episode_show1 on episode(idEpisode,idShow)");
-    m_pDS->exec("CREATE INDEX ix_episode_show2 on episode(idShow,idEpisode)");
   }
   if (iVersion < 67)
   {
     m_pDS->exec("CREATE TABLE tag (idTag integer primary key, strTag text)");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_tag_1 ON tag (strTag(255))");
-
     m_pDS->exec("CREATE TABLE taglinks (idTag integer, idMedia integer, media_type TEXT)");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_taglinks_1 ON taglinks (idTag, media_type(20), idMedia)");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_taglinks_2 ON taglinks (idMedia, media_type(20), idTag)");
-    m_pDS->exec("CREATE INDEX ix_taglinks_3 ON taglinks (media_type(20))");
   }
   if (iVersion < 68)
   { // add idSet to movie table
@@ -4454,44 +4416,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       }
     }
   }
-  if (iVersion < 73)
-  {
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_movie");
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_tvshow");
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_musicvideo");
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_episode");
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_season");
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_set");
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_person");
-
-    m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN "
-                "DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; "
-                "DELETE FROM taglinks WHERE idMedia=old.idMovie AND media_type='movie'; "
-                "END");
-    m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
-                "DELETE FROM art WHERE media_id=old.idShow AND media_type='tvshow'; "
-                "DELETE FROM taglinks WHERE idMedia=old.idShow AND media_type='tvshow'; "
-                "END");
-    m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN "
-                "DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
-                "DELETE FROM taglinks WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
-                "END");
-    m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN "
-                "DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; "
-                "END");
-    m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN "
-                "DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; "
-                "END");
-    m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN "
-                "DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; "
-                "END");
-    m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN "
-                "DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); "
-                "END");
-    m_pDS->exec("CREATE TRIGGER delete_tag AFTER DELETE ON taglinks FOR EACH ROW BEGIN "
-                "DELETE FROM tag WHERE idTag=old.idTag AND idTag NOT IN (SELECT DISTINCT idTag FROM taglinks); "
-                "END");
-  }
   if (iVersion < 74)
   { // update the runtime columns
     vector< pair<string, int> > tables;
@@ -4515,13 +4439,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
         m_pDS->exec(PrepareSQL("update %s set c%02d=%d where id%s=%d", (i->first=="mvideo")?"musicvideo":i->first.c_str(), i->second, j->second, i->first.c_str(), j->first));
     }
   }
-  if (iVersion < 75)
-  { // make indices on path, file non-unique (mysql has a prefix index, and prefixes aren't necessarily unique)
-    m_pDS->dropIndex("path", "ix_path");
-    m_pDS->dropIndex("files", "ix_files");
-    m_pDS->exec("CREATE INDEX ix_path ON path ( strPath(255) )");
-    m_pDS->exec("CREATE INDEX ix_files ON files ( idPath, strFilename(255) )");
-  }
   if (iVersion < 76)
   {
     m_pDS->exec("ALTER TABLE settings ADD StereoMode integer");
@@ -4530,8 +4447,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   if (iVersion < 77)
     m_pDS->exec("ALTER TABLE streamdetails ADD strStereoMode text");
 
-  // always recreate the view after any table change
-  CreateViews();
   return true;
 }
 

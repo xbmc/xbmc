@@ -249,7 +249,6 @@ void CMusicDatabase::CreateAnalytics()
 void CMusicDatabase::CreateViews()
 {
   CLog::Log(LOGINFO, "create song view");
-  m_pDS->exec("DROP VIEW IF EXISTS songview");
   m_pDS->exec("CREATE VIEW songview AS SELECT "
               "        song.idSong AS idSong, "
               "        song.strArtists AS strArtists,"
@@ -277,7 +276,6 @@ void CMusicDatabase::CreateViews()
               "    song.idSong=karaokedata.idSong");
 
   CLog::Log(LOGINFO, "create album view");
-  m_pDS->exec("DROP VIEW IF EXISTS albumview");
   m_pDS->exec("CREATE VIEW albumview AS SELECT "
               "        album.idAlbum AS idAlbum, "
               "        strAlbum, "
@@ -298,7 +296,6 @@ void CMusicDatabase::CreateViews()
               "   FROM album  ");
 
   CLog::Log(LOGINFO, "create artist view");
-  m_pDS->exec("DROP VIEW IF EXISTS artistview");
   m_pDS->exec("CREATE VIEW artistview AS SELECT"
               "  idArtist, strArtist, "
               "  strMusicBrainzArtistID, "
@@ -308,8 +305,7 @@ void CMusicDatabase::CreateViews()
               "  strYearsActive, strImage, strFanart "
               "FROM artist");
 
-  CLog::Log(LOGINFO, "create albumartistview");
-  m_pDS->exec("DROP VIEW IF EXISTS albumartistview");
+  CLog::Log(LOGINFO, "create albumartist view");
   m_pDS->exec("CREATE VIEW albumartistview AS SELECT"
               "  album_artist.idAlbum AS idAlbum, "
               "  album_artist.idArtist AS idArtist, "
@@ -321,8 +317,8 @@ void CMusicDatabase::CreateViews()
               "FROM album_artist "
               "JOIN artist ON "
               "     album_artist.idArtist = artist.idArtist");
-  CLog::Log(LOGINFO, "create songartistview");
-  m_pDS->exec("DROP VIEW IF EXISTS songartistview");
+
+  CLog::Log(LOGINFO, "create songartist view");
   m_pDS->exec("CREATE VIEW songartistview AS SELECT"
               "  song_artist.idSong AS idSong, "
               "  song_artist.idArtist AS idArtist, "
@@ -3645,14 +3641,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       }
     }
   }
-  if (version < 17)
-  {
-    m_pDS->exec("CREATE INDEX idxAlbum2 ON album(idArtist)");
-    m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
-    m_pDS->exec("CREATE INDEX idxSong4 ON song(idArtist)");
-    m_pDS->exec("CREATE INDEX idxSong5 ON song(idGenre)");
-    m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
-  }
   if (version < 19)
   {
     int len = g_advancedSettings.m_musicItemSeparator.size() + 1;
@@ -3665,9 +3653,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
   if (version < 21)
   {
     m_pDS->exec("CREATE TABLE album_artist ( idArtist integer, idAlbum integer, boolFeatured integer, iOrder integer )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_1 ON album_artist ( idAlbum, idArtist )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_2 ON album_artist ( idArtist, idAlbum )\n");
-    m_pDS->exec("CREATE INDEX idxAlbumArtist_3 ON album_artist ( boolFeatured )\n");
     m_pDS->exec("INSERT INTO album_artist (idArtist, idAlbum, boolFeatured, iOrder) SELECT idArtist, idAlbum, 1, iPosition FROM exartistalbum");
     m_pDS->exec("REPLACE INTO album_artist (idArtist, idAlbum, boolFeatured, iOrder) SELECT idArtist, idAlbum, 0, 0 FROM album");
 
@@ -3708,16 +3693,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
     m_pDS->exec("DROP TABLE album");
     m_pDS->exec("ALTER TABLE album_new RENAME TO album");
-    m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
     m_pDS->exec("DROP TABLE IF EXISTS exartistalbum");
   }
 
   if (version < 22)
   {
     m_pDS->exec("CREATE TABLE song_artist ( idArtist integer, idSong integer, boolFeatured integer, iOrder integer )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_2 ON song_artist ( idArtist, idSong )\n");
-    m_pDS->exec("CREATE INDEX idxSongArtist_3 ON song_artist ( boolFeatured )\n");
     m_pDS->exec("INSERT INTO song_artist (idArtist, idSong, boolFeatured, iOrder) SELECT idArtist, idSong, 1, iPosition FROM exartistsong");
     m_pDS->exec("REPLACE INTO song_artist (idArtist, idSong, boolFeatured, iOrder) SELECT idArtist, idSong, 0, 0 FROM song");
 
@@ -3758,19 +3739,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
     m_pDS->exec("DROP TABLE song");
     m_pDS->exec("ALTER TABLE song_new RENAME TO song");
-    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
-    m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
-    m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
-    m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
-    m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
     m_pDS->exec("DROP TABLE IF EXISTS exartistsong");
   }
 
   if (version < 23)
   {
     m_pDS->exec("CREATE TABLE album_genre ( idGenre integer, idAlbum integer, iOrder integer )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_1 ON album_genre ( idAlbum, idGenre )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_2 ON album_genre ( idGenre, idAlbum )\n");
     m_pDS->exec("INSERT INTO album_genre ( idGenre, idAlbum, iOrder) SELECT idGenre, idAlbum, iPosition FROM exgenrealbum");
     m_pDS->exec("REPLACE INTO album_genre ( idGenre, idAlbum, iOrder) SELECT idGenre, idAlbum, 0 FROM album");
 
@@ -3811,15 +3785,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
     m_pDS->exec("DROP TABLE album");
     m_pDS->exec("ALTER TABLE album_new RENAME TO album");
-    m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
     m_pDS->exec("DROP TABLE IF EXISTS exgenrealbum");
   }
 
   if (version < 24)
   {
     m_pDS->exec("CREATE TABLE song_genre ( idGenre integer, idSong integer, iOrder integer )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_1 ON song_genre ( idSong, idGenre )\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_2 ON song_genre ( idGenre, idSong )\n");
     m_pDS->exec("INSERT INTO song_genre ( idGenre, idSong, iOrder) SELECT idGenre, idSong, iPosition FROM exgenresong");
     m_pDS->exec("REPLACE INTO song_genre ( idGenre, idSong, iOrder) SELECT idGenre, idSong, 0 FROM song");
 
@@ -3860,27 +3831,17 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
     m_pDS->exec("DROP TABLE song");
     m_pDS->exec("ALTER TABLE song_new RENAME TO song");
-    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
-    m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
-    m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
-    m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
-    m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
     m_pDS->exec("DROP TABLE IF EXISTS exgenresong");
   }
 
   if (version < 25)
   {
     m_pDS->exec("ALTER TABLE album ADD bCompilation integer not null default '0'");
-    m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
   }
 
   if (version < 26)
   { // add art table
     m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
-    m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
-    m_pDS->exec("CREATE TRIGGER delete_song AFTER DELETE ON song FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSong AND media_type='song'; END");
-    m_pDS->exec("CREATE TRIGGER delete_album AFTER DELETE ON album FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album'; END");
-    m_pDS->exec("CREATE TRIGGER delete_artist AFTER DELETE ON artist FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist'; END");
   }
 
   if (version < 27)
@@ -3922,11 +3883,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
         m_pDS->exec(PrepareSQL("UPDATE song SET strFileName='%s' WHERE idSong=%d", filename.c_str(), i->first));
     }
   }
-  if (version < 33)
-  {
-    m_pDS->exec("DROP INDEX idxSong6 ON song");
-    m_pDS->exec("CREATE INDEX idxSong6 on song( idPath, strFileName(255) )");
-  }
 
   if (version < 34)
   {
@@ -3937,20 +3893,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     
     m_pDS->exec("DROP TABLE song");
     m_pDS->exec("ALTER TABLE song_new RENAME TO song");
-    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
-    m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
-    m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
-    m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
-    m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
-
+ 
     m_pDS->exec("UPDATE song SET strMusicBrainzTrackID = NULL");
-    m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
   }
 
   if (version < 35)
   {
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbum_2 ON album(strMusicBrainzAlbumID(36))");
-    m_pDS->exec("CREATE UNIQUE INDEX idxSong7 ON song( idAlbum, strMusicBrainzTrackID(36) )");
     m_pDS->exec("ALTER TABLE album_artist ADD strJoinPhrase text\n");
     m_pDS->exec("ALTER TABLE song_artist ADD strJoinPhrase text\n");
     CMediaSettings::Get().SetMusicNeedsUpdate(35);
@@ -3977,12 +3925,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
         m_pDS->exec(PrepareSQL("UPDATE content SET strPath='%s' WHERE strPath='%s'", path.c_str(), originalPath.c_str()).c_str());
       }
     }
-  }
- 
-  if (version < 37)
-  {
-    m_pDS->exec("DROP INDEX idxSong6 ON song");
-    m_pDS->exec("CREATE INDEX idxSong6 on song( idPath, strFileName(255) )");
   }
 
   if (version < 39)
@@ -4020,7 +3962,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
                 " strType, iRating "
                 " FROM album LEFT JOIN albuminfo ON album.idAlbum = albuminfo.idAlbum");
     m_pDS->exec("UPDATE albuminfosong SET idAlbumInfo = (SELECT idAlbum FROM albuminfo WHERE albuminfo.idAlbumInfo = albuminfosong.idAlbumInfo)");
-    m_pDS->exec("CREATE INDEX idxAlbumInfoSong_1 ON albuminfosong ( idAlbumInfo )\n");
     m_pDS->exec(PrepareSQL("UPDATE album_new SET lastScraped='%s' WHERE idAlbum IN (SELECT idAlbum FROM albuminfo)", CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str()));
     m_pDS->exec("DROP TABLE album");
     m_pDS->exec("DROP TABLE albuminfo");
@@ -4055,7 +3996,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("DROP TABLE artist");
     m_pDS->exec("DROP TABLE artistinfo");
     m_pDS->exec("ALTER TABLE artist_new RENAME TO artist");
-    m_pDS->exec("CREATE INDEX idxDiscography_1 ON discography ( idArtist )\n");
   }
   if (version < 42)
   {
@@ -4075,61 +4015,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("UPDATE song_artist SET strJoinPhrase = '' WHERE 100*idSong+iOrder IN (SELECT id FROM (SELECT 100*idSong+max(iOrder) AS id FROM song_artist GROUP BY idSong) AS sub)");
     m_pDS->exec("UPDATE album_artist SET strJoinPhrase = '' WHERE 100*idAlbum+iOrder IN (SELECT id FROM (SELECT 100*idAlbum+max(iOrder) AS id FROM album_artist GROUP BY idAlbum) AS sub)");
   }
-  if (version < 43)
-  { // (re)create triggers
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrAlbumSong");
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrAlbumArtist");
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrAlbumGenre");
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrAlbumInfoSong");
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrArtistAlbum");
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrArtistSong");
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrArtistDiscography");
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrSongArtist");
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrSongGenre");
-    m_pDS->exec("DROP TRIGGER IF EXISTS tgrSongKaraokedata");
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_song");
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_album");
-    m_pDS->exec("DROP TRIGGER IF EXISTS delete_artist");
-
-    m_pDS->exec("CREATE TRIGGER delete_album AFTER delete ON album FOR EACH ROW BEGIN"
-                "  DELETE FROM song WHERE song.idAlbum = old.idAlbum;"
-                "  DELETE FROM album_artist WHERE album_artist.idAlbum = old.idAlbum;"
-                "  DELETE FROM album_genre WHERE album_genre.idAlbum = old.idAlbum;"
-                "  DELETE FROM albuminfosong WHERE albuminfosong.idAlbumInfo=old.idAlbum;"
-                "  DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album';"
-                " END");
-    m_pDS->exec("CREATE TRIGGER delete_artist AFTER delete ON artist FOR EACH ROW BEGIN"
-                "  DELETE FROM album_artist WHERE album_artist.idArtist = old.idArtist;"
-                "  DELETE FROM song_artist WHERE song_artist.idArtist = old.idArtist;"
-                "  DELETE FROM discography WHERE discography.idArtist = old.idArtist;"
-                "  DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist';"
-                " END");
-    m_pDS->exec("CREATE TRIGGER delete_song AFTER delete ON song FOR EACH ROW BEGIN"
-                "  DELETE FROM song_artist WHERE song_artist.idSong = old.idSong;"
-                "  DELETE FROM song_genre WHERE song_genre.idSong = old.idSong;"
-                "  DELETE FROM karaokedata WHERE karaokedata.idSong = old.idSong;"
-                "  DELETE FROM art WHERE media_id=old.idSong AND media_type='song';"
-                " END");
-  }
-  if (version < 44)
-  {
-    m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum(255))");
-    m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
-    m_pDS->exec("CREATE UNIQUE INDEX idxAlbum_2 ON album(strMusicBrainzAlbumID(36))");
-
-    m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist(255))");
-    m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
-
-    m_pDS->exec("DROP INDEX idxGenre ON genre");
-    m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre(255))");
-    m_pDS->exec("DROP INDEX idxPath ON path");
-    m_pDS->exec("CREATE INDEX idxPath ON path(strPath(255))");
-    m_pDS->exec("DROP INDEX idxSong ON song");
-    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle(255))");
-  }
-  // always recreate the views after any table change
-  CreateViews();
-
   return true;
 }
 

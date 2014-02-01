@@ -530,9 +530,14 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
     BeginTransaction();
     try
     {
+      // drop old analytics, update table(s), recreate analytics, update version
+      m_pDB->drop_analytics();
       success = UpdateOldVersion(version);
       if (success)
+      {
+        CreateAnalytics();
         success = UpdateVersionNumber();
+      }
     }
     catch (...)
     {

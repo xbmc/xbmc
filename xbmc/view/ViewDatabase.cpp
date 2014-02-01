@@ -102,8 +102,6 @@ bool CViewDatabase::UpdateOldVersion(int version)
   {
     // convert the "path" table
     m_pDS->exec("CREATE TABLE tmp_view AS SELECT * FROM view");
-    m_pDS->exec("DROP INDEX idxViews");
-    m_pDS->exec("DROP INDEX idxViewsWindow");
     m_pDS->exec("DROP TABLE view");
 
     m_pDS->exec("CREATE TABLE view ("
@@ -115,8 +113,6 @@ bool CViewDatabase::UpdateOldVersion(int version)
                 "sortOrder integer,"
                 "sortAttributes integer,"
                 "skin text)\n");
-    m_pDS->exec("CREATE INDEX idxViews ON view(path)");
-    m_pDS->exec("CREATE INDEX idxViewsWindow ON view(window)");
     
     m_pDS->query("SELECT * FROM tmp_view");
     while (!m_pDS->eof())

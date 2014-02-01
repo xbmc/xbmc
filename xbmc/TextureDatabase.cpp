@@ -214,24 +214,18 @@ bool CTextureDatabase::UpdateOldVersion(int version)
   }
   if (version < 9)
   { // get rid of the old path table and add the type column
-    m_pDS->dropIndex("path", "idxPath");
     m_pDS->exec("DROP TABLE path");
     m_pDS->exec("CREATE TABLE path (id integer primary key, urlhash integer, url text, type text, texture text)\n");
-    m_pDS->exec("CREATE INDEX idxPath ON path(urlhash, type)");
   }
   if (version < 10)
   { // get rid of urlhash in both tables...
-    m_pDS->dropIndex("path", "idxPath");
     m_pDS->exec("DROP TABLE path");
     m_pDS->exec("CREATE TABLE path (id integer primary key, url text, type text, texture text)\n");
-    m_pDS->exec("CREATE INDEX idxPath ON path(url, type)");
 
-    m_pDS->dropIndex("texture", "idxTexture");
     m_pDS->exec("CREATE TEMPORARY TABLE texture_backup(id,url,cachedurl,usecount,lastusetime,imagehash,lasthashcheck)");
     m_pDS->exec("INSERT INTO texture_backup SELECT id,url,cachedurl,usecount,lastusetime,imagehash,lasthashcheck FROM texture");
     m_pDS->exec("DROP TABLE texture");
     m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, usecount integer, lastusetime text, imagehash text, lasthashcheck text)");
-    m_pDS->exec("CREATE INDEX idxTexture ON texture(url)");
     m_pDS->exec("INSERT INTO texture SELECT * FROM texture_backup");
     m_pDS->exec("DROP TABLE texture_backup");
   }
@@ -243,14 +237,7 @@ bool CTextureDatabase::UpdateOldVersion(int version)
   { // create new sizes table and move usecount info to it.
     m_pDS->exec("DROP TABLE texture");
     m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
-    m_pDS->exec("CREATE INDEX idxTexture ON texture(url)");
     m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
-    m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
-    m_pDS->exec("CREATE TRIGGER textureDelete AFTER delete ON texture FOR EACH ROW BEGIN delete from sizes where sizes.idtexture=old.id; END");
-  }
-  if (version < 13)
-  { // index for updateusecount
-    m_pDS->exec("CREATE INDEX idxSize2 ON sizes(idtexture, width, height)");
   }
   return true;
 }

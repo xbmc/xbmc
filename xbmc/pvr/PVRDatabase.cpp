@@ -183,9 +183,6 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
     }
     else
     {
-      if (iVersion < 12)
-        m_pDS->exec("DROP VIEW vw_last_watched;");
-
       if (iVersion < 13)
         m_pDS->exec("ALTER TABLE channels ADD idEpg integer;");
 
@@ -208,17 +205,6 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
         m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 2 WHERE iInterlaceMethod NOT IN (0,1)"); // anything other than none: method auto => mode force
         m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 1 WHERE iInterlaceMethod = 1"); // method auto => mode auto
         m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 0, iInterlaceMethod = 1 WHERE iInterlaceMethod = 0"); // method none => mode off, method auto
-      }
-      if (iVersion < 18)
-      {
-        m_pDS->exec("DROP INDEX idx_channels_iClientId;");
-        m_pDS->exec("DROP INDEX idx_channels_iLastWatched;");
-        m_pDS->exec("DROP INDEX idx_channels_bIsRadio;");
-        m_pDS->exec("DROP INDEX idx_channels_bIsHidden;");
-        m_pDS->exec("DROP INDEX idx_idChannel_idGroup;");
-        m_pDS->exec("DROP INDEX idx_idGroup_iChannelNumber;");
-        m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
-        m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
       }
       if (iVersion < 19)
       {
