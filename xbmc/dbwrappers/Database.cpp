@@ -531,18 +531,15 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
   else if (version < GetMinVersion())
   {
     CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
-    bool success = false;
+    bool success = true;
     BeginTransaction();
     try
     {
       // drop old analytics, update table(s), recreate analytics, update version
       m_pDB->drop_analytics();
-      success = UpdateOldVersion(version);
-      if (success)
-      {
-        CreateAnalytics();
-        success = UpdateVersionNumber();
-      }
+      UpdateTables(version);
+      CreateAnalytics();
+      UpdateVersionNumber();
     }
     catch (...)
     {
@@ -706,11 +703,10 @@ bool CDatabase::CreateDatabase()
   return true;
 }
 
-bool CDatabase::UpdateVersionNumber()
+void CDatabase::UpdateVersionNumber()
 {
   CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
   m_pDS->exec(strSQL.c_str());
-  return true;
 }
 
 bool CDatabase::BuildSQL(const CStdString &strQuery, const Filter &filter, CStdString &strSQL)

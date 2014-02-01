@@ -167,78 +167,57 @@ void CPVRDatabase::CreateAnalytics()
   m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
 }
 
-bool CPVRDatabase::UpdateOldVersion(int iVersion)
+void CPVRDatabase::UpdateTables(int iVersion)
 {
-  bool bReturn = true;
+  if (iVersion < 13)
+    m_pDS->exec("ALTER TABLE channels ADD idEpg integer;");
 
-  BeginTransaction();
+  if (iVersion < 14)
+    m_pDS->exec("ALTER TABLE channelsettings ADD fCustomVerticalShift float;");
 
-  try
+  if (iVersion < 15)
   {
+    m_pDS->exec("ALTER TABLE channelsettings ADD bCustomNonLinStretch bool;");
+    m_pDS->exec("ALTER TABLE channelsettings ADD bPostProcess bool;");
+    m_pDS->exec("ALTER TABLE channelsettings ADD iScalingMethod integer;");
+  }
+  if (iVersion < 16)
+  {
+    /* sqlite apparently can't delete columns from an existing table, so just leave the extra column alone */
+  }
+  if (iVersion < 17)
+  {
+    m_pDS->exec("ALTER TABLE channelsettings ADD iDeinterlaceMode integer");
+    m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 2 WHERE iInterlaceMethod NOT IN (0,1)"); // anything other than none: method auto => mode force
+    m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 1 WHERE iInterlaceMethod = 1"); // method auto => mode auto
+    m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 0, iInterlaceMethod = 1 WHERE iInterlaceMethod = 0"); // method none => mode off, method auto
+  }
+  if (iVersion < 19)
+  {
+    // bit of a hack, but we need to keep the version/contents of the non-pvr databases the same to allow clean upgrades
+    ADDON::VECADDONS addons;
+    if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
+      CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
+    else
     {
-      if (iVersion < 13)
-        m_pDS->exec("ALTER TABLE channels ADD idEpg integer;");
-
-      if (iVersion < 14)
-        m_pDS->exec("ALTER TABLE channelsettings ADD fCustomVerticalShift float;");
-
-      if (iVersion < 15)
+      CAddonDatabase database;
+      database.Open();
+      for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
       {
-        m_pDS->exec("ALTER TABLE channelsettings ADD bCustomNonLinStretch bool;");
-        m_pDS->exec("ALTER TABLE channelsettings ADD bPostProcess bool;");
-        m_pDS->exec("ALTER TABLE channelsettings ADD iScalingMethod integer;");
+        if (!database.IsSystemPVRAddonEnabled(it->get()->ID()))
+          CAddonMgr::Get().DisableAddon(it->get()->ID());
       }
-      if (iVersion < 16)
-      {
-        /* sqlite apparently can't delete columns from an existing table, so just leave the extra column alone */
-      }
-      if (iVersion < 17)
-      {
-        m_pDS->exec("ALTER TABLE channelsettings ADD iDeinterlaceMode integer");
-        m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 2 WHERE iInterlaceMethod NOT IN (0,1)"); // anything other than none: method auto => mode force
-        m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 1 WHERE iInterlaceMethod = 1"); // method auto => mode auto
-        m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 0, iInterlaceMethod = 1 WHERE iInterlaceMethod = 0"); // method none => mode off, method auto
-      }
-      if (iVersion < 19)
-      {
-        // bit of a hack, but we need to keep the version/contents of the non-pvr databases the same to allow clean upgrades
-        ADDON::VECADDONS addons;
-        if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true)) == false)
-          CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
-        else
-        {
-          CAddonDatabase database;
-          database.Open();
-          for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-          {
-            if (!database.IsSystemPVRAddonEnabled(it->get()->ID()))
-              CAddonMgr::Get().DisableAddon(it->get()->ID());
-          }
-          database.Close();
-        }
-      }
-      if (iVersion < 20)
-        m_pDS->exec("ALTER TABLE channels ADD bIsUserSetIcon bool");
-
-      if (iVersion < 21)
-        m_pDS->exec("ALTER TABLE channelgroups ADD iGroupType integer");
-
-      if (iVersion < 22)
-        m_pDS->exec("ALTER TABLE channels ADD bIsLocked bool");
+      database.Close();
     }
   }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "PVR - %s - error attempting to update the database version!", __FUNCTION__);
-    bReturn = false;
-  }
+  if (iVersion < 20)
+    m_pDS->exec("ALTER TABLE channels ADD bIsUserSetIcon bool");
 
-  if (bReturn)
-    CommitTransaction();
-  else
-    RollbackTransaction();
+  if (iVersion < 21)
+    m_pDS->exec("ALTER TABLE channelgroups ADD iGroupType integer");
 
-  return bReturn;
+  if (iVersion < 22)
+    m_pDS->exec("ALTER TABLE channels ADD bIsLocked bool");
 }
 
 int CPVRDatabase::GetLastChannelId(void)

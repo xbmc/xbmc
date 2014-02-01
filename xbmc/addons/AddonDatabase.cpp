@@ -93,7 +93,7 @@ void CAddonDatabase::CreateAnalytics()
   m_pDS->exec("CREATE UNIQUE INDEX idxPackage ON package(filename)");
 }
 
-bool CAddonDatabase::UpdateOldVersion(int version)
+void CAddonDatabase::UpdateTables(int version)
 {
   if (version < 13)
   {
@@ -111,7 +111,6 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   {
     m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
   }
-  return true;
 }
 
 int CAddonDatabase::AddAddon(const AddonPtr& addon,

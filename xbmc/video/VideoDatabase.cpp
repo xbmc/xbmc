@@ -4147,7 +4147,7 @@ public:
   string media_type;
 };
 
-bool CVideoDatabase::UpdateOldVersion(int iVersion)
+void CVideoDatabase::UpdateTables(int iVersion)
 {
   if (iVersion < 43)
   {
@@ -4446,8 +4446,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   }
   if (iVersion < 77)
     m_pDS->exec("ALTER TABLE streamdetails ADD strStereoMode text");
-
-  return true;
 }
 
 int CVideoDatabase::GetMinVersion() const

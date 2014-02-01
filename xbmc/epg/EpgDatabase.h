@@ -159,9 +159,8 @@ namespace EPG
     /*!
      * @brief Update an old version of the database.
      * @param version The version to update the database from.
-     * @return True if it was updated successfully, false otherwise.
      */
-    virtual bool UpdateOldVersion(int version);
+    virtual void UpdateTables(int version);
     virtual int GetMinSchemaVersion() const { return 4; }
   };
 }

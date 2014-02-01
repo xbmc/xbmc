@@ -69,7 +69,7 @@ void CViewDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxViewsWindow ON view(window)");
 }
 
-bool CViewDatabase::UpdateOldVersion(int version)
+void CViewDatabase::UpdateTables(int version)
 {
   if (version < 4)
     m_pDS->exec("alter table view add skin text");
@@ -128,8 +128,6 @@ bool CViewDatabase::UpdateOldVersion(int version)
     }
     m_pDS->exec("DROP TABLE tmp_view");
   }
-
-  return true;
 }
 
 bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState &state, const CStdString &skin)

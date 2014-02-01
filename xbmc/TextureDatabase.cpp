@@ -186,7 +186,7 @@ void CTextureDatabase::CreateAnalytics()
   m_pDS->exec("CREATE TRIGGER textureDelete AFTER delete ON texture FOR EACH ROW BEGIN delete from sizes where sizes.idtexture=old.id; END");
 }
 
-bool CTextureDatabase::UpdateOldVersion(int version)
+void CTextureDatabase::UpdateTables(int version)
 {
   if (version < 7)
   { // update all old thumb://foo urls to image://foo?size=thumb
@@ -239,7 +239,6 @@ bool CTextureDatabase::UpdateOldVersion(int version)
     m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
     m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
   }
-  return true;
 }
 
 bool CTextureDatabase::IncrementUseCount(const CTextureDetails &details)

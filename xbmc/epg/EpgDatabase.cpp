@@ -89,29 +89,10 @@ void CEpgDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
 }
 
-bool CEpgDatabase::UpdateOldVersion(int iVersion)
+void CEpgDatabase::UpdateTables(int iVersion)
 {
-  bool bReturn = true;
-
-  BeginTransaction();
-
-  try
-  {
-    if (iVersion < 5)
-      m_pDS->exec("ALTER TABLE epgtags ADD sGenre varchar(128);");
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "Error attempting to update the database version!");
-    bReturn = false;
-  }
-
-  if (bReturn)
-    CommitTransaction();
-  else
-    RollbackTransaction();
-
-  return bReturn;
+  if (iVersion < 5)
+    m_pDS->exec("ALTER TABLE epgtags ADD sGenre varchar(128);");
 }
 
 bool CEpgDatabase::DeleteEpg(void)

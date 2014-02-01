@@ -185,7 +185,11 @@ protected:
    */
   virtual void CreateAnalytics()=0;
 
-  virtual bool UpdateOldVersion(int version) { return true; };
+  /* \brief Update database tables to the current version.
+   Note that analytics (views, indices, triggers) are not present during this
+   function, so don't rely on them.
+   */
+  virtual void UpdateTables(int version) {};
 
   /* \brief The minimum schema version that we support updating from.
    */
@@ -207,7 +211,7 @@ protected:
 private:
   void InitSettings(DatabaseSettings &dbSettings);
   bool Connect(const CStdString &dbName, const DatabaseSettings &db, bool create);
-  bool UpdateVersionNumber();
+  void UpdateVersionNumber();
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */
   unsigned int m_openCount;

@@ -3552,7 +3552,7 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
   return GetSongsByWhere(musicUrl.ToString(), filter, items, sortDescription);
 }
 
-bool CMusicDatabase::UpdateOldVersion(int version)
+void CMusicDatabase::UpdateTables(int version)
 {
   if (version < 16)
   {
@@ -3660,11 +3660,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     strSQL=PrepareSQL("SELECT album.idAlbum AS idAlbum, strExtraArtists,"
                       "  album.idArtist AS idArtist, strArtist FROM album "
                       "  LEFT OUTER JOIN artist ON album.idArtist=artist.idArtist");
-    if (!m_pDS->query(strSQL.c_str()))
-    {
-      CLog::Log(LOGDEBUG, "%s could not upgrade albums table", __FUNCTION__);
-      return false;
-    }
+    m_pDS->query(strSQL.c_str());
 
     VECALBUMS albums;
     while (!m_pDS->eof())
@@ -3706,11 +3702,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     strSQL=PrepareSQL("SELECT song.idSong AS idSong, strExtraArtists,"
                       "  song.idArtist AS idArtist, strArtist FROM song "
                       "  LEFT OUTER JOIN artist ON song.idArtist=artist.idArtist");
-    if (!m_pDS->query(strSQL.c_str()))
-    {
-      CLog::Log(LOGDEBUG, "%s could not upgrade songs table", __FUNCTION__);
-      return false;
-    }
+    m_pDS->query(strSQL.c_str());
 
     VECSONGS songs;
     while (!m_pDS->eof())
@@ -3752,11 +3744,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     strSQL=PrepareSQL("SELECT album.idAlbum AS idAlbum, strExtraGenres,"
                       "  album.idGenre AS idGenre, strGenre FROM album "
                       "  JOIN genre ON album.idGenre=genre.idGenre");
-    if (!m_pDS->query(strSQL.c_str()))
-    {
-      CLog::Log(LOGDEBUG, "%s could not upgrade albums table", __FUNCTION__);
-      return false;
-    }
+    m_pDS->query(strSQL.c_str());
 
     VECALBUMS albums;
     while (!m_pDS->eof())
@@ -3798,11 +3786,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     strSQL=PrepareSQL("SELECT song.idSong AS idSong, strExtraGenres,"
                       "  song.idGenre AS idGenre, strGenre FROM song "
                       "  JOIN genre ON song.idGenre=genre.idGenre");
-    if (!m_pDS->query(strSQL.c_str()))
-    {
-      CLog::Log(LOGDEBUG, "%s could not upgrade songs table", __FUNCTION__);
-      return false;
-    }
+    m_pDS->query(strSQL.c_str());
 
     VECSONGS songs;
     while (!m_pDS->eof())
@@ -4015,7 +3999,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     m_pDS->exec("UPDATE song_artist SET strJoinPhrase = '' WHERE 100*idSong+iOrder IN (SELECT id FROM (SELECT 100*idSong+max(iOrder) AS id FROM song_artist GROUP BY idSong) AS sub)");
     m_pDS->exec("UPDATE album_artist SET strJoinPhrase = '' WHERE 100*idAlbum+iOrder IN (SELECT id FROM (SELECT 100*idAlbum+max(iOrder) AS id FROM album_artist GROUP BY idAlbum) AS sub)");
   }
-  return true;
 }
 
 int CMusicDatabase::GetMinVersion() const

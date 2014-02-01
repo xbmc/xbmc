@@ -497,7 +497,7 @@ private:
   bool CleanupAlbums();
   bool CleanupArtists();
   bool CleanupGenres();
-  virtual bool UpdateOldVersion(int version);
+  virtual void UpdateTables(int version);
   bool SearchArtists(const CStdString& search, CFileItemList &artists);
   bool SearchAlbums(const CStdString& search, CFileItemList &albums);
   bool SearchSongs(const CStdString& strSearch, CFileItemList &songs);
