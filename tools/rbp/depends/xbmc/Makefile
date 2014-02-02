@@ -5,6 +5,7 @@ SOURCE=../../../../
 
 ifeq ($(USE_BUILDROOT),1)
 	export PATH:=$(PREFIX)/bin:$(BUILDROOT)/output/host/usr/bin:$(SYSROOT)/usr/bin:$(PATH)
+	export PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig
 endif
 
 CONFIGURE=./configure --prefix=$(PREFIX) --build=$(BUILD) --host=$(HOST) \
