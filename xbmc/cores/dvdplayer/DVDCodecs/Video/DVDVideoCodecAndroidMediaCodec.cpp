@@ -917,6 +917,13 @@ void CDVDVideoCodecAndroidMediaCodec::OutputFormatChanged(void)
   else
   {
     // Android device quirks and fixes
+
+    // Samsung Quirk: ignore width/height/stride/slice: http://code.google.com/p/android/issues/detail?id=37768#c3
+    if (strstr(m_codecname.c_str(), "OMX.SEC.avc.dec") != NULL || strstr(m_codecname.c_str(), "OMX.SEC.avcdec") != NULL)
+    {
+      width = stride = m_hints.width;
+      height = slice_height = m_hints.height;
+    }
     if (stride <= width)
         stride = width;
     if (slice_height <= height)
