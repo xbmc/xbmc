@@ -693,10 +693,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Għażel destinazzjoni"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Output Speakers kollha"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Numru ta' kanali"
@@ -1444,10 +1440,6 @@ msgstr "Pożizzjoni tal-OSD"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Krediti"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -5409,10 +5401,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Neħħi Media Share"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Fowlder Preferut tas-sottutitoli"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Fowlder Alternattiv ghas-sottotitoli u filmati"
@@ -5968,6 +5956,10 @@ msgstr "Servers"
 msgctxt "#24027"
 msgid "Weather"
 msgstr "It-temp"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Daħħal Search String"
 
 msgctxt "#34123"
 msgid "Never"

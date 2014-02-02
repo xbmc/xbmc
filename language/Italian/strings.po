@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Seleziona la cartella di destinazione"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Uscita stereo su tutte le casse"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Numero di canali"
@@ -1716,10 +1712,6 @@ msgstr "Posizione OSD"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Riconoscimenti"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -4977,10 +4969,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Abilita accelerazione hardware (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Frame Multi Threaded Decoding (less reliable)"
-msgstr "Decodifica frame Multi-Thread (meno affidabile)"
-
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Metodo di sincronizzazione A/V"
@@ -6000,10 +5988,6 @@ msgstr "Interfaccia PVR %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Registrazioni TV"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Cartella predefinita per le miniature del PVR"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -8881,10 +8865,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Rimuovi condivisioni media"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Cartella sottotitoli"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Film & cartella sottotitoli alternativa"
@@ -9252,10 +9232,6 @@ msgstr "Raggruppa per"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "mixed"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Cartella dei sottotitoli"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10217,6 +10193,10 @@ msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Seleziona il servizio predefinito per la ricerca dei sottotitoli dei film"
 
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Inserire stringa da cercare"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notifiche"
@@ -10600,10 +10580,6 @@ msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Configurazione altoparlanti"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -12021,17 +11997,9 @@ msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr "Seleziona come impostare le proprietà dell'output audio: [Fixed] - le proprietà vengono impostate ogni volta su specifici valori di campionamento e configurazione degli altoparlanti; [Best Match] - le proprietà vengono impostate per combaciare il più possibile con le proprietà della sorgente; [Optimized] - le proprietà vengono impostate all'inizio della riproduzione e non cambieranno al cambiare delle proprietà della sorgente."
 
-msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded."
-msgstr "Selezionare il numero massimo di canali audio / altoparlanti disponibili per l'audio decodificato."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Amplifica le tracce AC3 ridotte a 2 canali."
-
-msgctxt "#36364"
-msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
-msgstr "Selezionare per abilitare l'upmixing di 2 canali sorgente stereo al numero di canali audio specificati dalla configurazione degli altoparlanti."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12264,10 +12232,6 @@ msgstr "L'esclusione del mixer VDPAU risparmia risorse di sistema, ma riduce leg
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Abilita la decodifica hardware per il video utilizzando il decoder AMLogic"
-
-msgctxt "#36423"
-msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
-msgstr "Usa la decodifica dei frame ffmpeg tramite thread multipli quando la decodifica hardware non funziona o è disabilitata. (meno affidabile rispetto alla modalità a thread singolo)"
 
 msgctxt "#36426"
 msgid "Switch to channel"

@@ -4789,10 +4789,6 @@ msgctxt "#21336"
 msgid "Connecting to: %s"
 msgstr "በ መገናኘት ላይ: %s"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "የ ንዑስ አርእስት ፎልደር"
-
 msgctxt "#21371"
 msgid "Thumbnail"
 msgstr "የ አውራ ጥፍር"
@@ -5476,10 +5472,6 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "ስፒከር ማዋቀሪያ "
 
 msgctxt "#34101"
 msgid "2.0"

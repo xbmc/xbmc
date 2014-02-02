@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Izberite ciljno mapo"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Stereo zvok na vse zvočnike"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Število kanalov"
@@ -1717,10 +1713,6 @@ msgctxt "#470"
 msgid "Credits"
 msgstr "Zasluge"
 
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modčip"
-
 msgctxt "#474"
 msgid "Off"
 msgstr "Izključi"
@@ -1883,7 +1875,7 @@ msgstr "Kompilacije"
 
 msgctxt "#522"
 msgid "Remove source"
-msgstr "Odstrani izvor"
+msgstr "Odstrani vir"
 
 msgctxt "#523"
 msgid "Switch media"
@@ -2289,6 +2281,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Po meri"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "ReplayGain"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "ReplayGain prilagoditev glasnosti"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Uporabi nivoje posnetkov"
@@ -2639,11 +2639,11 @@ msgstr "Ime brezžičnega omrežja (ESSID)"
 
 msgctxt "#777"
 msgid "Wireless password"
-msgstr "Geslo za brezžično omrežje"
+msgstr "Geslo brezžičnega omrežja"
 
 msgctxt "#778"
 msgid "Wireless security"
-msgstr "Varnost za brezžično omrežje"
+msgstr "Zaščita brezžičnega omrežja"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2839,7 +2839,7 @@ msgstr "Vnesite uporabniško ime"
 
 msgctxt "#1020"
 msgid "Add %s source"
-msgstr "Dodaj izvor %s"
+msgstr "Dodaj vir %s"
 
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
@@ -2863,15 +2863,15 @@ msgstr "Informacij o mapi ni mogoče pridobiti."
 
 msgctxt "#1026"
 msgid "Add source"
-msgstr "Dodaj izvor"
+msgstr "Dodaj vir"
 
 msgctxt "#1027"
 msgid "Edit source"
-msgstr "Uredi izvor"
+msgstr "Uredi vir"
 
 msgctxt "#1028"
 msgid "Edit %s source"
-msgstr "Uredi izvor %s"
+msgstr "Uredi vir %s"
 
 msgctxt "#1029"
 msgid "Enter the new label"
@@ -2987,7 +2987,7 @@ msgstr "SOCKS5"
 
 msgctxt "#1185"
 msgid "SOCKS5 with remote dns resolving"
-msgstr "SOCKS5 z oddaljenim DNS razreševanjem"
+msgstr "SOCKS5 z oddaljenim razreševanjem DNS"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -3919,7 +3919,7 @@ msgstr "Spremeni zaščito"
 
 msgctxt "#12357"
 msgid "Source lock"
-msgstr "Vir zaščite"
+msgstr "Zaščita vira"
 
 msgctxt "#12358"
 msgid "Password entry was blank. Try again."
@@ -4751,7 +4751,7 @@ msgstr "Prednastavitev"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualisation"
-msgstr "Ni prednastavitev za vizualizacijo"
+msgstr "Ni prednastavitev za to vizualizacijo"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualisation"
@@ -5031,11 +5031,11 @@ msgstr "%.1f sekund"
 
 msgctxt "#13554"
 msgid "%d Minute"
-msgstr "%d minut"
+msgstr "%d minuta"
 
 msgctxt "#13555"
 msgid "%d Minutes"
-msgstr "%d Minut"
+msgstr "%d minut"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -5968,10 +5968,6 @@ msgstr "Hrbtenica PVR %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "TV posnetki"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Privzete mapa za sličice PVR"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -7647,7 +7643,7 @@ msgstr "Ime profila"
 
 msgctxt "#20094"
 msgid "Media sources"
-msgstr "Predstavni vir"
+msgstr "Predstavni viri"
 
 msgctxt "#20095"
 msgid "Enter profile lock code"
@@ -8251,7 +8247,7 @@ msgstr "Ali želite preiskati za vsebinami tudi v podmapah?"
 
 msgctxt "#20336"
 msgid "Unlock sources"
-msgstr "Odkleni izvore"
+msgstr "Odkleni vire"
 
 msgctxt "#20337"
 msgid "Actor"
@@ -8845,10 +8841,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Odstrani skupno rabo"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Mapa podnapisov"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Mapa s filmom & dodatnimi podnapisi"
@@ -8911,7 +8903,7 @@ msgstr "Vnesite ime novega seznama predvajanja"
 
 msgctxt "#21382"
 msgid "Show \"Add source\" buttons in file lists"
-msgstr "Prikaži gumb \"Dodaj izvor\" v seznamih datotek"
+msgstr "Prikaži gumb \"Dodaj vir\" v seznamih datotek"
 
 msgctxt "#21383"
 msgid "Enable scrollbars"
@@ -9216,10 +9208,6 @@ msgstr "Združi po"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "mešano"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Položaj podnapisov"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9583,7 +9571,7 @@ msgstr "Posodabljaj knjižnico v ozadju"
 
 msgctxt "#22002"
 msgid "DNS suffix"
-msgstr "DNS pripona"
+msgstr "Pripona DNS"
 
 msgctxt "#22003"
 msgid "%2.3fs"
@@ -10181,6 +10169,10 @@ msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Izberite storitev, ki se bo uporabljala kot privzeta za iskanje podnapisov za filme"
 
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Vnesite iskalni niz"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Obvestila"
@@ -10565,10 +10557,6 @@ msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Sistem zvočnikov"
-
 msgctxt "#34101"
 msgid "2.0"
 msgstr "2.0"
@@ -10655,7 +10643,7 @@ msgstr "Prejšnjega vira predvajanja ni mogoče najti"
 
 msgctxt "#34300"
 msgid "Failed to start Zeroconf"
-msgstr "Zagon Zeroconf ni uspel"
+msgstr "Zeroconf-a ni bilo mogoče zagnati"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
@@ -10667,11 +10655,11 @@ msgstr "AirPlay zahteva omogočen Zeroconf."
 
 msgctxt "#34303"
 msgid "Unable to stop Zeroconf"
-msgstr "Zaustavitev Zeroconf-a je spodletela."
+msgstr "Zeroconf-a ni bilo mogoče ustaviti"
 
 msgctxt "#34304"
 msgid "AirPlay and AirTunes depend on Zeroconf running."
-msgstr "AirPlay in AirTunes sta odvisna od delovanja Zeroconf."
+msgstr "AirPlay in AirTunes za delovanje potrebujeta Zeroconf."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10971,7 +10959,7 @@ msgstr "Izberite pisavo uporabniškega vmesnika. Zbirke pisav so nastavljene pre
 
 msgctxt "#36108"
 msgid "Resize the view of the GUI."
-msgstr "Spremeni velikost pogleda GUI."
+msgstr "Spremenite velikost uporabniškega vmesnika."
 
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
@@ -10979,7 +10967,7 @@ msgstr "Izberite privzeto okno, ki se bo prikazalo ob zagonu XBMC-ja."
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the User Interface."
-msgstr "Izberi ali onemogoči nastavitev zvoka uporabljeno v Uporabniškem vmesniku."
+msgstr "Izberite ali onemogočite zvočno shemo, uporabljeno v uporabniškem vmesniku."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -10999,11 +10987,11 @@ msgstr "Izberite jezik uporabniškega vmesnika."
 
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
-msgstr "Izberi vrsto zapisa za temperaturo, čas in datum. Razpoložljive možnosti so odvisne od izbranega jezika."
+msgstr "Izberite vrsto zapisa temperature, časa in datuma. Razpoložljive možnosti so odvisne od izbranega jezika."
 
 msgctxt "#36116"
 msgid "Choose which character set is used for displaying text in the GUI."
-msgstr "Izberi nabor znakov za prikaz besedila v grafičnem vmesniku."
+msgstr "Izberite nabor znakov za prikaz besedila v uporabniškem vmesniku."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11043,7 +11031,7 @@ msgstr "Dovolite brisanje in preimenovanje datotek s pomočjo uporabniškega vme
 
 msgctxt "#36126"
 msgid "Show the add source button from root sections of the user interface."
-msgstr "Pokaži gumb Dodaj vir iz koreninskih odsekov uporabniškega vmesnika."
+msgstr "Prikažite gumb Dodaj vir iz koreninskih odsekov uporabniškega vmesnika."
 
 msgctxt "#36127"
 msgid "Show hidden files and directories."
@@ -11745,6 +11733,10 @@ msgctxt "#36320"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
 
+msgctxt "#36321"
+msgid "Display name of the XBMC installation when using various network services."
+msgstr "Prikaži ime instalacije XBMC ob uporabi različnih omrežnih storitev."
+
 msgctxt "#36322"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
@@ -11980,6 +11972,10 @@ msgstr "Določite kako dolgo je lahko XBMC nedejaven preden se izklopi."
 msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "Določite dejanje ko je XBMC nedejaven dalj časa."
+
+msgctxt "#36391"
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr "Vklopite ali izklopite zapisovanje razhroščevanja. Uporabno za odpravljanje težav."
 
 msgctxt "#36392"
 msgid "No info available yet."
@@ -12241,6 +12237,10 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Nastavi vizualno globino podnapisov za stereoskopske video posnetke.Višja kot je vrednost, bližje bodo vidni podnapisi."
 
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Omeji ločljivost grafičnega uporabniškega vmesnika za prihranitev pomnilnika. Ne vpliva na predvajanje videa. Uporabite 1080 za neomejeno. Zahteva ponovni zagon."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Slabovidni)"
@@ -12288,3 +12288,11 @@ msgstr "Ojačaj glasnost sredinskega kanala pri združevanju kanalov"
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
 msgstr "Omogoči sistemske tipke kot so printscreen, atl-tab in tipke za zvok v celozaslonskem načinu"
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Omogoči grafično podobo z višjo barvno globino"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Nastavi omejitev ločljivosti grafičnega uporabniškega vmesnika"

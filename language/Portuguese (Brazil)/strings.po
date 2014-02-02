@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Selecionar diretório de destino"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Saída estéreo em todos os alto-falantes"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Número de canais"
@@ -1716,10 +1712,6 @@ msgstr "Posição do painel OSD"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Créditos"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -4981,10 +4973,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permitir aceleração por hardware (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Frame Multi Threaded Decoding (less reliable)"
-msgstr "Decodificando múltiplos segmentos de frames ffmpeg (menos confiável)"
-
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Método de syncronização de A/V"
@@ -6008,10 +5996,6 @@ msgstr "PVR Backend %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Gravações da TV"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Pasta padrão para miniaturas PVR"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -8897,10 +8881,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Remover compartilhamento de mídia"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Pasta de legendas"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Filme & diretório de legenda alternativo"
@@ -8931,7 +8911,7 @@ msgstr "Saída de vídeo"
 
 msgctxt "#21374"
 msgid "Video aspect"
-msgstr "Aspecto de vídeo"
+msgstr "Relação de aspecto"
 
 msgctxt "#21375"
 msgid "Normal"
@@ -9268,10 +9248,6 @@ msgstr "Agrupado por"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "Mixado"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Local da Legenda"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9711,7 +9687,7 @@ msgstr "Guia"
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimise black bars"
-msgstr "Erro da proporção de aspecto para minimizar barras pretas"
+msgstr "Permitir erro na relação de aspecto para minimizar as barras pretas"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
@@ -10233,6 +10209,14 @@ msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Selecione o serviço que será utilizado como padrão para procurar legendas de Filmes"
 
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Texto para procura manual"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Entre com o título para procura manual"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notificações"
@@ -10616,10 +10600,6 @@ msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Configurar alto-falantes"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -11275,7 +11255,7 @@ msgstr "Selecione a qualidade de reamostragem para casos em que a saída de áud
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
-msgstr "Permitir que o reprodutor de vídeo ignore a taxa de aspecto até uma certa quantidade, de modo a preencher com o vídeo uma área maior da tela."
+msgstr "Permitir que o reprodutor de vídeo ignore relação de aspecto até uma certa quantidade, de modo a preencher com o vídeo uma área maior da tela."
 
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
@@ -11315,7 +11295,7 @@ msgstr "Quando um arquivo é analisado e inserido na biblioteca, será exibido o
 
 msgctxt "#36180"
 msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
-msgstr "Extrair miniaturas e informação, como os codecs e a taxa de aspecto, para exibir na Biblioteca."
+msgstr "Extrair miniaturas e informação, como os codecs e a relação de aspecto, para exibir na Biblioteca."
 
 msgctxt "#36181"
 msgid "No info available yet."
@@ -11472,6 +11452,10 @@ msgstr "Nenhuma informação disponível ainda"
 msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Padrão de janela EPG para exibir. A Linha do Tempo é a vista padrão."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
+msgstr "Número de dias de dados EPG a importar do backend. O padrão é 3 dias."
 
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
@@ -12037,17 +12021,9 @@ msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr "Selecione como as propriedades de saída de áudio são definidas: [fixo] - propriedades de saída são definidas pela taxa de amostragem especificada e configuração dos alto-falantes e irão ser iguais em todos os momentos [Melhor Compatibilidade] - propriedades de saída serão ajustados para respeitarem as características das fontes, sempre que possível; [Otimizado] - propriedades de saída são definidas no início da reprodução e não irão mudar se ocorrerem alterações nas fontes."
 
-msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded."
-msgstr "Selecione o número máximo de canais de áudio disponíveis para áudio decodificado."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Ampliar os fluxos AC3 que foram misturados para 2 canais"
-
-msgctxt "#36364"
-msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
-msgstr "Selecione para ativar upmixing de fonte de 2 canais em esteréo para o número de canais de áudio especificados na configuração de alto-falantes."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12281,10 +12257,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Ativar decodificação de vídeo por hardware usando decoder AMLogic"
 
-msgctxt "#36423"
-msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
-msgstr "Usar a decodificação de segmentos múltiplos ffmpeg quando a decodificação por hardware não funcionar ou estiver desativada. (Menos confiável do que o modo padrão de decodificação única)"
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "lecione o que vai acontecer quando um item é selecionado EPG: [Mostrar menu de contexto] irá acionar o menu contextual aonde você poderá escolher novas ações; [Mudar para o canal] irá imediatamente sintonizar o canal selecionado; [Mostrar informações] irá mostrar informações detalhadas como enredo e outras opções; [Gravar] criará um temporizador de gravação para o item selecionado."
@@ -12449,6 +12421,14 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Define a profundidade visual de legendas para vídeos estereoscópicos. Quanto maior o valor, mais próximo das legendas aparecerão para o telespectador."
 
+msgctxt "#36547"
+msgid "Use higher quality textures for covers and fanart (uses more memory)"
+msgstr "Usar texturas de maior qualidade para as capas e fanart (usa mais memória)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Limitar a resolução da interface gráfica para economizar memória. Não afeta a reprodução de vídeo. Use 1080 para ilimitado. Requer reinicializar."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Deficiente Visual)"
@@ -12495,4 +12475,12 @@ msgstr "Aumente canal central quando downmixing"
 
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
-msgstr "Ativar teclas de sistema como printscreen, alt-tab e teclas de voluma quando em tela cheia"
+msgstr "Ativar teclas de sistema como printscreen, alt-tab e teclas de volume quando em tela cheia"
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Ativar maior profundidade nas cores dos artworks"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Setar o limite para resolução da interface gráfica"

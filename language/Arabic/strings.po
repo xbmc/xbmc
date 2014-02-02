@@ -861,10 +861,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "حدد دليل الوجهة"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "إخراج النظام الصوتي لجميع المكبرات"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "عدد القنوات"
@@ -1672,10 +1668,6 @@ msgstr "وضعية OSD"
 msgctxt "#470"
 msgid "Credits"
 msgstr "الاعتمادات"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -5433,10 +5425,6 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr "تسجيلات TV"
 
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "مصدر افتراضي لصور PVR مصغرة"
-
 msgctxt "#19019"
 msgid "Channels"
 msgstr "محطات"
@@ -8049,10 +8037,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "إزالة مشاركة الوسائط"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "مجلد الترجمة"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "دليل ترجمة الفيديو البديل"
@@ -8408,10 +8392,6 @@ msgstr "امتلاء الذاكرة الؤقتة قبل الوصول لحجم ا
 msgctxt "#21456"
 msgid "External storage"
 msgstr "تخزين خارجي"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "موقع الترجمة "
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9217,6 +9197,10 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "بعض ملفات الغلاف مفقودة"
 
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "أدخل نص البحث"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "الإشعارات"
@@ -9588,10 +9572,6 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "إعداد المكبر"
 
 msgctxt "#34101"
 msgid "2.0"

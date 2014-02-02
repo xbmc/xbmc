@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Выберите папку назначения"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Выводить стерео на все колонки"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Количество каналов"
@@ -1716,10 +1712,6 @@ msgstr "Положение экранного меню (OSD)"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Создатели"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "МOD-чип"
 
 msgctxt "#474"
 msgid "Off"
@@ -4981,10 +4973,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Включить аппаратное ускорение (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Frame Multi Threaded Decoding (less reliable)"
-msgstr "Многопоточное декодирование (менее надежно)"
-
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Синхронизация А/В"
@@ -6008,10 +5996,6 @@ msgstr "Сервер PVR %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Записи ТВ"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Папка по умолчанию для эскизов PVR"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -8897,10 +8881,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Удалить медиаресурс"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Папка субтитров"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Папка для фильмов и альтернативных субтитров"
@@ -9268,10 +9248,6 @@ msgstr "Группировать по"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "смешанно"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Расположение субтитров"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10233,6 +10209,14 @@ msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Выбор службы, используемой по умолчанию для поиска субтитров к фильмам."
 
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Заданная строка поиска"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Строка поиска"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Уведомления"
@@ -10616,10 +10600,6 @@ msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Конфигурация колонок"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -11473,6 +11453,10 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Показываемое по умолчанию окно EPG. По умолчанию — расписание."
 
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
+msgstr "Интервал времени в днях, за который данные EPG импортируются с ТВ-серверов. По умолчанию — 3 дня."
+
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Интервал времени между импортом данных EPG с ТВ-серверов. По умолчанию — 120 минут."
@@ -12037,17 +12021,9 @@ msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr "Настройка выбора параметров аудиовыхода: [Фиксир.] — всегда использовать указанную частоту сэмплирования и конфигурацию колонок; [Наилучш.] — параметры аудиовыхода выбираются, чтобы наилучшим образом соответствовать источнику; [Оптимизир.] — параметры аудиовыхода задаются в начале воспроизведения и не меняются при изменение параметров источника."
 
-msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded."
-msgstr "Выбрать максимальное число аудироканалов/колонок для декодированного аудиопотока."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Увеличивать громкость звуковых дорожек AC3 при микшировании до стерео."
-
-msgctxt "#36364"
-msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
-msgstr "Преобразовывать 2-канальное стерео в многоканальный звук. Количество каналов определяется конфигурацией колонок."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12281,10 +12257,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Включение аппаратного декодирования видеофайлов при помощи декодера AMLogic."
 
-msgctxt "#36423"
-msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
-msgstr "Использовать многопоточное декодирование ffmpeg, если аппаратное декодирование не работает или отключено. (Менее надежно, чем однопоточный режим, используемый по умолчанию.)"
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Действие при выборе элемента EPG. [Показать контекстное меню] — вывод контекстного меню для выбора дальнейших действий; [Переключиться на канал] — мгновенное переключение на соответствующий канал; [Показать сведения] — подробные сведения о сюжете и другие параметры; [Запись] — создание таймера записи для выбранного элемента."
@@ -12449,6 +12421,14 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Настройка визуальной глубины субтитров для стереоскопического видео. Чем выше значение, тем ближе субтитры к зрителю."
 
+msgctxt "#36547"
+msgid "Use higher quality textures for covers and fanart (uses more memory)"
+msgstr "Высококачественные текстуры для обложек и фанарта (повышенное использование памяти)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Ограничение разрешения интерфейса, чтобы сэкономить память. Не влияет на воспроизведение видео. 1080 — без ограничений. Требуется перезапуск."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Для глухих)"
@@ -12496,3 +12476,11 @@ msgstr "Усиливать центральный канал при микшир
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
 msgstr "Разрешить системные комбинации клавиш, например PRINT SCREEN, ALT+TAB, клавиши громкости, в полноэкранном режиме."
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Разрешить картинки с расширенной глубиной цвета"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Ограничить разрешение интерфейса"

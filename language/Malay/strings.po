@@ -805,10 +805,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Pilih destinasi direktori"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Output stereo ke semua pembesar suara"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Jumlah saluran"

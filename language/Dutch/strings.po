@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Selecteer doelmap"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Geluid naar alle luidsprekers"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Aantal kanalen"
@@ -1716,10 +1712,6 @@ msgstr "OSD-positie"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Credits"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -4981,10 +4973,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Hardwareversnelling toestaan (mediacodec)"
 
-msgctxt "#13440"
-msgid "Frame Multi Threaded Decoding (less reliable)"
-msgstr "Frame multi-threaded decodering (minder betrouwbaar)"
-
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V-synchronisatiemethode"
@@ -6008,10 +5996,6 @@ msgstr "PVR server %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "TV opnames"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Standaard map voor TV thumbnails"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -8897,10 +8881,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Gedeelde media verwijderen"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Map voor ondertitels..."
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Video - alternatieve ondertitelmap"
@@ -9268,10 +9248,6 @@ msgstr "Groepeer bij"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "gemixed"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Locatie van de ondertitels"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10233,6 +10209,14 @@ msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Selecteer dienst dat zal worden gebruikt als standaard om te zoeken voor film ondertitels"
 
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Handmatige zoekopdracht"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Geef zoekopdracht"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Mededelingen"
@@ -10616,10 +10600,6 @@ msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Aantal geluidskanalen"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -11395,7 +11375,7 @@ msgstr "Kies de standaardbron voor TV showinformatie. Zie de Add-ons Beheerder v
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
-msgstr "Standaard scraper voor het toevoegen van musicvideos aan je bilbiotheek."
+msgstr "Standaard scraper voor het toevoegen van muziekvideo`s aan je bibliotheek."
 
 msgctxt "#36201"
 msgid "No info available yet."
@@ -11472,6 +11452,10 @@ msgstr "Nog geen informatie beschikbaar."
 msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Standaard EPG venster. Standaard is dit ingesteld op Tijdlijn."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
+msgstr "Aantal dagen van EPG gegevens te importeren vanuit de back-ends. Standaard 3 dagen."
 
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
@@ -12037,17 +12021,9 @@ msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr "Selecteer hoe de eigenschappen van de geluidsuitvoer zijn ingesteld: [Vast] - uitvoer eigenschappen zijn ingesteld naar de gespecificeerde sampling rate & speaker configuratie ten alle tijde; [Beste overeenkomst] - uitvoereigenschappen zijn zo ingesteld dat ze altijd zo dicht mogelijk overeenkomen met de broneigenschappen als mogelijk; [Geoptimaliseerd] - uitvoereigenschappen zijn ingesteld bij het begin van afspelen en zullen niet veranderen als de eigenschappen van de bron veranderen."
 
-msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded."
-msgstr "Selecteer het maximum aantal geluidskanalen/speakers beschikbaar voor gedecodeerde geluiden."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Versterk AC3 geluid dat gedownmixt werd naar 2 kanalen."
-
-msgctxt "#36364"
-msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
-msgstr "Selecteer om upmixing te activeren van 2-kanaals stereobronnen naar het aantal geluidskanalen gespecificeerd door de speaker configuratie."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12281,10 +12257,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Schakel Hardware video decodering in met gebruik van AMLogic decoder"
 
-msgctxt "#36423"
-msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
-msgstr "Gebruik ffmpeg frame multi-thread decoderen wanneer hardware decodering niet werkt of is gedeactiveerd. (Minder betrouwbaar dan de standaard single thread modus)"
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Selecteer wat er moet gebeuren wanneer een EPG item is geselecteerd: [Toon context menu] zal het contextuele menu activeren van waaruit je vervolgacties kan kiezen; [Verander naar kanaal] Zal gelijk afstemmen naar het gerealteerde kanaal; [Toon informatie] zal een gedetailleerd informatiescherm tonen met plot en vervolgopties; [Opnemen] Zal een opname timer creëren voor het geselecteerde item."
@@ -12449,6 +12421,14 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Stelt de visuele diepte van ondertitels in voor stereoscopische video`s. Hoe hoger de waarde, des te dichterbij zullen de ondertitels verschijnen voor de kijker."
 
+msgctxt "#36547"
+msgid "Use higher quality textures for covers and fanart (uses more memory)"
+msgstr "Gebruik hogere kwaliteitstexturen voor covers en fan-art (gebruikt meer geheugen)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Limiteert de resolutie van de GUI om geheugen te besparen. dit beïnvloed niet het afspelen van video`s. gebruik 1080p voor ongelimiteerd. Vereist een Herstart."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Slechtzienden)"
@@ -12496,3 +12476,11 @@ msgstr "Boost middenkanaal bij downmixen"
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
 msgstr "Activeer systeemknoppen zoals Printscreen, Alt-tab en volumeknoppen bij volledig scherm"
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Activeer een hogere kleurdiepte voor artwork"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Stel GUI resolutielimiet in"

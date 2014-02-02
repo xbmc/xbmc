@@ -689,10 +689,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "चुन्लेना अभिप्राय की निदेशिका"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "ओउत्पुत सभी वक्तों करने के लिए स्तेरेओ"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "मर्गें की संख्या"
@@ -3053,10 +3049,6 @@ msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "शेयर और UPnP के माध्यम से वीडियो संगीत पुस्तकालयों"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "उपशीर्षक फ़ोल्डर"
-
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
 msgstr "माउस सक्षम"
@@ -3240,10 +3232,6 @@ msgstr "अधिसूचनाएं"
 msgctxt "#33068"
 msgid "Background"
 msgstr "पृष्ठभूमि"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "वक्ता विन्यास"
 
 msgctxt "#35502"
 msgid "Name"

@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Seleccionar carpeta destino"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Saída estéreo a todos os altofalantes"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Número de canles"
@@ -1712,10 +1708,6 @@ msgstr "Posición do OSD"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Créditos"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -3707,7 +3699,7 @@ msgstr "Información do Álbum"
 
 msgctxt "#10524"
 msgid "Movie info"
-msgstr "Información da Película"
+msgstr "Info. do filme"
 
 msgctxt "#12000"
 msgid "Select dialogue"
@@ -4651,7 +4643,7 @@ msgstr "Apagar LED durante a reprodución"
 
 msgctxt "#13346"
 msgid "Movie information"
-msgstr "Información da película"
+msgstr "Información do filme"
 
 msgctxt "#13347"
 msgid "Queue item"
@@ -5607,7 +5599,7 @@ msgstr "Introducir novo título"
 
 msgctxt "#16009"
 msgid "Enter the movie name"
-msgstr "Introducir nome da película"
+msgstr "Introducir o nome do filme"
 
 msgctxt "#16010"
 msgid "Enter the profile name"
@@ -5992,10 +5984,6 @@ msgstr "Motor do PVR %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Gravacións de TV"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Cartafol predefinido das miniaturas do PVR"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -8251,7 +8239,7 @@ msgstr "Buscar destino"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr "As películas están en cartafois separados que concordan co seu título"
+msgstr "Os filmes están en cartafoles separados que concordan co seu título"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -8287,7 +8275,7 @@ msgstr "Actor"
 
 msgctxt "#20338"
 msgid "Movie"
-msgstr "Película"
+msgstr "Filme"
 
 msgctxt "#20339"
 msgid "Director"
@@ -8303,7 +8291,7 @@ msgstr "desta ruta da bibloteca de XBMC?"
 
 msgctxt "#20342"
 msgid "Movies"
-msgstr "Películas"
+msgstr "Filmes"
 
 msgctxt "#20343"
 msgid "TV shows"
@@ -8431,7 +8419,7 @@ msgstr "Tempada"
 
 msgctxt "#20374"
 msgid "Downloading movie information"
-msgstr "Descargando información da película"
+msgstr "Descargando información do filme"
 
 msgctxt "#20375"
 msgid "Unassign content"
@@ -8479,7 +8467,7 @@ msgstr "Borrar enlace á serie de TV"
 
 msgctxt "#20386"
 msgid "Recently added movies"
-msgstr "Películas engadidas recentemente"
+msgstr "Filmes engadidas recentemente"
 
 msgctxt "#20387"
 msgid "Recently added episodes"
@@ -8763,11 +8751,11 @@ msgstr "Nivelar a xerarquía da biblioteca"
 
 msgctxt "#20457"
 msgid "Movie set"
-msgstr "Conxunto de Películas"
+msgstr "Conxunto de filmes"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr "Agrupar películas en conxuntos"
+msgstr "Agrupar filmes en conxuntos"
 
 msgctxt "#20459"
 msgid "Tags"
@@ -8873,13 +8861,9 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Borrar recurso compartido"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Cartafol de subtítulos"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
-msgstr "Cartafol de Película e subtítulos alternativos"
+msgstr "Cartafol de filme e subtítulos alternativos"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
@@ -9063,7 +9047,7 @@ msgstr "Scrapers"
 
 msgctxt "#21413"
 msgid "Default movie scraper"
-msgstr "Scraper predefinido para películas "
+msgstr "Scraper predefinido para filmes "
 
 msgctxt "#21414"
 msgid "Default tvshow scraper"
@@ -9244,10 +9228,6 @@ msgstr "Agrupado por"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "mesturado"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Localización dos subtítulos"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9839,7 +9819,7 @@ msgstr "Fontes dos medios"
 
 msgctxt "#24007"
 msgid "Movie information"
-msgstr "Información das Películas"
+msgstr "Información dos filmes"
 
 msgctxt "#24008"
 msgid "Screensaver"
@@ -10208,6 +10188,10 @@ msgstr "Servizo de Filmes Predefinido"
 msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Escolla o servizo a empregar de xeito predefinido para buscar os subtítulos dos Filmes"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Introducir cadea de búsqueda"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10592,10 +10576,6 @@ msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Configuración do altofalante"
 
 msgctxt "#34101"
 msgid "2.0"

@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Hedef klasörü seç"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Stereo ses çıkışını bütün hoparlörlere ver"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanal sayısı"
@@ -1192,6 +1188,10 @@ msgstr "Çerçeve hızı çeviricisi"
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Sabit"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "İyileştirilmiş"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1645,6 +1645,10 @@ msgctxt "#457"
 msgid "Switch view"
 msgstr "Görünümü değiştir"
 
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Örnekleme hızını sınırla (kHz)"
+
 msgctxt "#459"
 msgid "Subs"
 msgstr "Altyazılar"
@@ -1692,10 +1696,6 @@ msgstr "OSD konumu"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Jenerik"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -1771,7 +1771,7 @@ msgstr "Genel ses boşluk payı"
 
 msgctxt "#495"
 msgid "Upsample videos to GUI resolution"
-msgstr "Videoları arayüz çözünülürlüğüne yükselt"
+msgstr "Videoları Grafik Kullanıcı Arabirimi çözünürlüğüne yükselt"
 
 msgctxt "#496"
 msgid "Calibration"
@@ -3431,7 +3431,7 @@ msgstr "Ayarlar - Ekran"
 
 msgctxt "#10010"
 msgid "Settings - Appearance - GUI Calibration"
-msgstr "Ayarlar - Görünüm - Arayüz Ayarı"
+msgstr "Ayarlar - Görünüm - Grafik Kullanıcı Arabirimi Ayarlama"
 
 msgctxt "#10011"
 msgid "Settings - Videos - Screen Calibration"
@@ -3517,6 +3517,10 @@ msgctxt "#10040"
 msgid "Add-on browser"
 msgstr "Eklenti tarayıcısı"
 
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Yukarıdaki ayarları varsayılana sıfırla"
+
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Bu kategorideki ayarları sıfırlamak istediğinize emin misiniz?"
@@ -3528,6 +3532,14 @@ msgstr "Yardım"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Yardım mevcut değil"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Görünen bütün ayarları varsayılan değerlerine sıfırlar."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Kategori mevcut değil."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -3865,6 +3877,10 @@ msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Parola deneme hakkı tükendi."
 
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Sistem şimdi kapatılacak."
+
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Öğe kilitli"
@@ -4165,6 +4181,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Çözünürlük kaydedilsin mi?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Bu değişikliği korumak ister misiniz?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Yüksek kalite upscaling"
@@ -4208,6 +4228,10 @@ msgstr "VDPAU HQ Upscaling düzeyi"
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
 msgstr "VDPAU Stüdyo düzeyi renk dönüştürme"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Dış görünüm korunsun mu?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -5243,7 +5267,7 @@ msgstr "Tarih biçimi"
 
 msgctxt "#14053"
 msgid "GUI filters"
-msgstr "Arayüz filtreleri"
+msgstr "Grafik Kullanıcı Arabirimi filtreleri"
 
 msgctxt "#14055"
 msgid "Use background scanning"
@@ -5841,6 +5865,10 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
 
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-processing"
@@ -5932,10 +5960,6 @@ msgstr "PVR Arka Uç %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "TV kayıtları"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "PVR küçük resimleri için varsayılan klasör"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -6248,6 +6272,10 @@ msgstr "Kayıt için ad girin"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Uyarı"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Hizmet"
 
 msgctxt "#19101"
 msgid "Provider"
@@ -8789,10 +8817,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Ortam paylaşımını kaldır"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Altyazı klasörü"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Film ve alternatif altyazı klasörü"
@@ -8843,7 +8867,7 @@ msgstr "480p'yi etkinleştir"
 
 msgctxt "#21379"
 msgid "Enable 720p"
-msgstr "720p'ti etkinleştir"
+msgstr "720p'yi etkinleştir"
 
 msgctxt "#21380"
 msgid "Enable 1080i"
@@ -9161,10 +9185,6 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "karışık"
 
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Altyazı konumu"
-
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Sabit"
@@ -9196,6 +9216,14 @@ msgstr "%d ile %d arasında"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s ile %s arasında"
+
+msgctxt "#21600"
+msgid "Prefer external subtitles"
+msgstr "Harici altyazıları tercih et."
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Harici)"
 
 msgctxt "#21800"
 msgid "File name"
@@ -10053,6 +10081,10 @@ msgctxt "#24104"
 msgid "Add-on is incompatible due to unmet dependencies."
 msgstr "Eklenti karşılanamayan bağımlılıklar olduğu için uyumsuz."
 
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Altyazılar aranıyor ..."
+
 msgctxt "#24108"
 msgid "%d subtitles found"
 msgstr "%d altyazı bulundu"
@@ -10076,6 +10108,22 @@ msgstr "Hiçbir altyazı hizmeti yüklü değil"
 msgctxt "#24115"
 msgid "Save subtitles to movie folder"
 msgstr "Altyazıları film klasörüne kaydet"
+
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr "Varsayılan TV Hizmeti"
+
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr "Varsayılan Film Hizmeti"
+
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "El ile arama dizesi"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Arama dizesi girin"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10461,10 +10509,6 @@ msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Hoparlör Yapılandırması"
-
 msgctxt "#34101"
 msgid "2.0"
 msgstr "2.0"
@@ -10507,7 +10551,7 @@ msgstr "7.1"
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
-msgstr "Grafik kullanıcı arabirimi seslerini çal"
+msgstr "Grafik Kullanıcı Arabirimi seslerini çal"
 
 msgctxt "#34121"
 msgid "Only when playback stopped"
@@ -10559,7 +10603,7 @@ msgstr "Apple'ın Bonjour Hizmeti yüklü mü? Daha fazla bilgi için günlük d
 
 msgctxt "#34302"
 msgid "AirPlay requires Zeroconf to be enabled."
-msgstr "AirPlay Zeroconf un seçilebilir olmasını gerektirir."
+msgstr "AirPlay için Zeroconf'un etkin olması gerekir."
 
 msgctxt "#34303"
 msgid "Unable to stop Zeroconf"
@@ -10867,7 +10911,7 @@ msgstr "Kullanıcı arabiriminde gösterilecek yazı tipini seçiniz. Yazı tipl
 
 msgctxt "#36108"
 msgid "Resize the view of the GUI."
-msgstr "Grafiksel Kullanıcı Arabirimi görüntüsünü yeniden ölçülendir."
+msgstr "Grafik Kullanıcı Arabirimi görüntüsünü yeniden boyutlandır."
 
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
@@ -10899,7 +10943,7 @@ msgstr "Sıcaklık, tarih ve zaman formatını seçin. Mevcut seçenekler seçti
 
 msgctxt "#36116"
 msgid "Choose which character set is used for displaying text in the GUI."
-msgstr "Grafik Kullanıcı Arabirimini gösterirken hangi karakter setinin kullanılacağını seçiniz."
+msgstr "Grafik Kullanıcı Arabirimini gösterirken hangi karakter kümesinin kullanılacağını seçiniz."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11023,7 +11067,7 @@ msgstr "Bilgi mevcut değil."
 
 msgctxt "#36152"
 msgid "Enable automatic playback of the next file in the list of the selected item."
-msgstr "Seçililer listesindeki bir sonraki dosyayı otomatik oynatmayı aktifleştir."
+msgstr "Seçililer listesindeki bir sonraki dosyayı otomatik oynatmayı etkinleştir."
 
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
@@ -11184,6 +11228,10 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr "XBMC üzerinde el ile yapılandırmak yerine arka uç numaralarını kullan."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11411,7 +11459,7 @@ msgstr "Karaoke sırasında kullanılacak yazı tipi rengini seçiniz."
 
 msgctxt "#36298"
 msgid "Select the character set used during karoake."
-msgstr "Karaoke sırasında kullanılacak geçerli karakter setini seçiniz."
+msgstr "Karaoke sırasında kullanılacak karakter kümesini seçiniz."
 
 msgctxt "#36299"
 msgid "No info available yet."
@@ -11507,19 +11555,27 @@ msgstr "Bilgi mevcut değil."
 
 msgctxt "#36323"
 msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
-msgstr "UPnP serverı aç. Bu özellik herhangi bir UPnP istemcisine akış yapmanızı sağlar."
+msgstr "UPnP sunucusunu etkinleştir. Bu özellik herhangi bir UPnP istemcisine akış yapmanızı sağlar."
 
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
-msgstr "El ile ya da otomatik kitaplık güncelleme sorunu olursa UPnP istemcilerini uyar."
+msgstr "El ile ya da otomatik kitaplık güncellemesi olduğunda UPnP istemcilerine bildir."
 
 msgctxt "#36325"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36326"
+msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "UPnP istemcisini etkinleştir. Bu özellik herhangi bir UPnP sunucusundan akış yapmanızı ve oynatımı sunucudan kontrol etmenizi sağlar."
+
 msgctxt "#36327"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr "Dahili web sunucusu aracılığıyla XBMC kontrolü için uzak kullanıcıları etkinleştirin."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -11825,6 +11881,10 @@ msgctxt "#36426"
 msgid "Switch to channel"
 msgstr "Kanal değiştir"
 
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Bilgileri görüntüle"
+
 msgctxt "#36428"
 msgid "Record"
 msgstr "Kayıt"
@@ -11953,6 +12013,14 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Video dosyalarının donanımsal çözülmesini etkinleştir."
 
+msgctxt "#36547"
+msgid "Use higher quality textures for covers and fanart (uses more memory)"
+msgstr "Kapaklar ve fanart için yüksek kaliteli dokular kullan (daha fazla bellek kullanır)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Bellek tasarrufu için Grafik Kullanıcı Arabirimi çözünürlüğünü sınırlar. Video oynatımını etkilemez. Sınırsız için 1080 kullanın. Yeniden başlatma gerektirir."
+
 msgctxt "#37001"
 msgid "(Directors Comments)"
 msgstr "(Yönetmen Yorumları)"
@@ -11984,3 +12052,11 @@ msgstr "Çift ses çıkışı"
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
 msgstr "Tam ekranda printscreen, alt-tab ve ses ayarı tuşları gibi sistem tuşlarını etkinleştirir"
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Daha yüksek artwork renk derinliğini etkinleştir"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Grafik Kullanıcı Arabirimi çözünürlük sınırını ayarla"

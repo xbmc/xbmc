@@ -685,6 +685,14 @@ msgctxt "#199"
 msgid "Web interface"
 msgstr "Pārlūka saskarne"
 
+msgctxt "#202"
+msgid "Tagline"
+msgstr "Devīze"
+
+msgctxt "#203"
+msgid "Plot outline"
+msgstr "Sižeta izklāsts"
+
 msgctxt "#205"
 msgid "Votes"
 msgstr "Balsis"
@@ -769,6 +777,10 @@ msgctxt "#228"
 msgid "Shuffle playlist on load"
 msgstr "Jaukt atskaņošanas sarakstu pēc ielādes"
 
+msgctxt "#229"
+msgid "HDD spindown time"
+msgstr "HDD apturēšanas laiks"
+
 msgctxt "#230"
 msgid "Video filters"
 msgstr "Video filtri"
@@ -781,9 +793,45 @@ msgctxt "#232"
 msgid "Point"
 msgstr "Punkts"
 
+msgctxt "#233"
+msgid "Linear"
+msgstr "Lineārais"
+
+msgctxt "#234"
+msgid "Anisotropic"
+msgstr "Anizotrops"
+
+msgctxt "#235"
+msgid "Quincunx"
+msgstr "Kvinkunces"
+
+msgctxt "#236"
+msgid "Gaussian cubic"
+msgstr "Gausa kubiskais"
+
+msgctxt "#237"
+msgid "Minification"
+msgstr "Samazinošais"
+
 msgctxt "#238"
 msgid "Magnification"
 msgstr "Palielinājums"
+
+msgctxt "#239"
+msgid "Clear playlist on finish"
+msgstr "Notīrīt spēļsarakstu pie finiša"
+
+msgctxt "#240"
+msgid "Display Mode"
+msgstr "Attēlojuma režīms"
+
+msgctxt "#241"
+msgid "Full Screen #%d"
+msgstr "Pilnekrāns #%d"
+
+msgctxt "#242"
+msgid "Windowed"
+msgstr "Logs"
 
 msgctxt "#243"
 msgid "Refresh Rate"
@@ -792,6 +840,10 @@ msgstr "Atsvaidzes Intensitāte"
 msgctxt "#244"
 msgid "Full screen"
 msgstr "Pilnekrāns"
+
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Mērogošana: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pikseļi: %2.2f:1) (VShift: %2.2f)"
 
 msgctxt "#247"
 msgid "Scripts"
@@ -805,17 +857,53 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Mūzika"
 
+msgctxt "#251"
+msgid "Select destination directory"
+msgstr "Izvēlēties gala direktoriju"
+
+msgctxt "#253"
+msgid "Number of channels"
+msgstr "Kanālu skaits"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS spējīgs uztvērējs"
+
+msgctxt "#255"
+msgid "CDDB"
+msgstr "CDDB"
+
+msgctxt "#256"
+msgid "Fetching CD information"
+msgstr "Nolasa CD informāciju"
+
 msgctxt "#257"
 msgid "Error"
 msgstr "Kļūda"
+
+msgctxt "#258"
+msgid "Enable tag reading"
+msgstr "Ieslēgt tagu lasīšanu"
 
 msgctxt "#259"
 msgid "Opening"
 msgstr "Atver"
 
+msgctxt "#260"
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
 msgctxt "#261"
 msgid "Waiting for start..."
 msgstr "Gaida sākumu..."
+
+msgctxt "#262"
+msgid "Scripts output"
+msgstr "Skriptu izvade"
+
+msgctxt "#263"
+msgid "Allow control of XBMC via HTTP"
+msgstr "Atļaut XBMC kontroli no HTTP"
 
 msgctxt "#264"
 msgid "Record"
@@ -849,21 +937,81 @@ msgctxt "#271"
 msgid "Top 100"
 msgstr "Top 100"
 
+msgctxt "#272"
+msgid "Top-Left overscan compensation"
+msgstr "Augšējā-kreisā pārskenēšanas kompensācija"
+
+msgctxt "#273"
+msgid "Bottom-Right overscan compensation"
+msgstr "Apakšējā-labējā pārskenēšanas kompensācija"
+
+msgctxt "#274"
+msgid "Subtitle positioning"
+msgstr "Subtitru novietošana"
+
 msgctxt "#275"
 msgid "Pixel ratio adjustment"
 msgstr "Pikseļu attiecības pielāgošana"
+
+msgctxt "#276"
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Pielāgo bultu, lai izmainītu pārskenēšanas daudzumu"
+
+msgctxt "#277"
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Pielāgo joslu, lai izmainītu subtitru novietojumu"
+
+msgctxt "#278"
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Pielāgo taisnstūri, lai tas ir perfekts kvadrāts"
+
+msgctxt "#279"
+msgid "Unable to load settings"
+msgstr "Nespēj ielādēt iestatījumus"
+
+msgctxt "#280"
+msgid "Using default settings"
+msgstr "Izmanto noklusētos iestatījumus"
 
 msgctxt "#281"
 msgid "Please check the XML files"
 msgstr "Lūdzu pārbaudi XML failus"
 
+msgctxt "#282"
+msgid "Found %i items"
+msgstr "Atrasti %i ieraksti"
+
+msgctxt "#283"
+msgid "Search results"
+msgstr "Meklēšanas rezultāti"
+
 msgctxt "#284"
 msgid "No results found"
 msgstr "Nekas netika atrasts"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Vēlamā audio valoda"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Vēlamā subtitru valoda"
+
+msgctxt "#287"
+msgid "Subtitles"
+msgstr "Subtitri"
+
 msgctxt "#288"
 msgid "Font"
 msgstr "Fonts"
+
+msgctxt "#289"
+msgid "Size"
+msgstr "Izmērs"
+
+msgctxt "#290"
+msgid "Dynamic range compression"
+msgstr "Dinamiskā diapazona kompresija"
 
 msgctxt "#291"
 msgid "Video"
@@ -873,6 +1021,42 @@ msgctxt "#292"
 msgid "Audio"
 msgstr "Audio"
 
+msgctxt "#293"
+msgid "Browse for subtitles"
+msgstr "Pārlūkot subtitrus"
+
+msgctxt "#294"
+msgid "Create bookmark"
+msgstr "Izveidot grāmatzīmi"
+
+msgctxt "#296"
+msgid "Clear bookmarks"
+msgstr "Notīrīt grāmatzīmes"
+
+msgctxt "#297"
+msgid "Audio offset"
+msgstr "Audio nobīde"
+
+msgctxt "#298"
+msgid "Bookmarks"
+msgstr "Grāmatzīmes"
+
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 spējīgs uztvērējs"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 spējīgs uztvērējs"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 spējīgs uztvērējs"
+
+msgctxt "#303"
+msgid "Delay"
+msgstr "Aizkave"
+
 msgctxt "#304"
 msgid "Language"
 msgstr "Valoda"
@@ -880,6 +1064,18 @@ msgstr "Valoda"
 msgctxt "#305"
 msgid "Enabled"
 msgstr "Ieslēgts"
+
+msgctxt "#306"
+msgid "Non-interleaved"
+msgstr "Ne-mijkārtots"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Sākotnējā straumes valoda"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "Lietotāja saskarnes valoda"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -921,6 +1117,22 @@ msgctxt "#321"
 msgid "Error cleaning artists"
 msgstr "Kļūda tīrot izpildītājus"
 
+msgctxt "#322"
+msgid "Cleaning genres..."
+msgstr "Tīra žanrus..."
+
+msgctxt "#323"
+msgid "Error cleaning genres"
+msgstr "Kļūda, tīrot žanrus"
+
+msgctxt "#324"
+msgid "Cleaning paths..."
+msgstr "Tīra ceļus..."
+
+msgctxt "#325"
+msgid "Error cleaning paths"
+msgstr "Kļūda, tīrot ceļus"
+
 msgctxt "#326"
 msgid "Cleaning albums..."
 msgstr "Tīra albumus..."
@@ -949,9 +1161,29 @@ msgctxt "#332"
 msgid "Error compressing database"
 msgstr "Kļūda saspiežot datubāzi"
 
+msgctxt "#333"
+msgid "Do you want to clean the library?"
+msgstr "Vai vēlaties iztīrīt bibliotēku?"
+
+msgctxt "#334"
+msgid "Clean library..."
+msgstr "Tīra bibliotēku..."
+
 msgctxt "#335"
 msgid "Start"
 msgstr "Sākt"
+
+msgctxt "#336"
+msgid "Framerate conversion"
+msgstr "Kadru biežuma konversija"
+
+msgctxt "#338"
+msgid "Fixed"
+msgstr "Fiksēts"
+
+msgctxt "#340"
+msgid "Various artists"
+msgstr "Dažādi izpildītāji"
 
 msgctxt "#341"
 msgid "Play disc"
@@ -961,6 +1193,10 @@ msgctxt "#342"
 msgid "Movies"
 msgstr "Filmas"
 
+msgctxt "#343"
+msgid "Adjust framerate"
+msgstr "Pielāgot kadru biežumu"
+
 msgctxt "#344"
 msgid "Actors"
 msgstr "Aktieri"
@@ -969,13 +1205,33 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Gads"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD spējīgs uztvērējs"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD spējīgs uztvērējs"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programmas"
 
+msgctxt "#351"
+msgid "Off"
+msgstr "Izslēgts"
+
+msgctxt "#352"
+msgid "Dim"
+msgstr "Izdzist"
+
 msgctxt "#353"
 msgid "Black"
 msgstr "Melns"
+
+msgctxt "#354"
+msgid "Matrix trails"
+msgstr "Matricas celiņi"
 
 msgctxt "#355"
 msgid "Screensaver time"
@@ -984,6 +1240,10 @@ msgstr "Ekrānsaudzētāja laiks"
 msgctxt "#356"
 msgid "Screensaver mode"
 msgstr "Ekrānsaudzētāja veids"
+
+msgctxt "#357"
+msgid "Shutdown function timer"
+msgstr "Izslēgšanas funkcijas taimeris"
 
 msgctxt "#358"
 msgid "All albums"
@@ -997,9 +1257,21 @@ msgctxt "#360"
 msgid "Screensaver"
 msgstr "Ekrānsaudzētājs"
 
+msgctxt "#361"
+msgid "R. Slideshow"
+msgstr "Rekurs. slīdīte"
+
+msgctxt "#362"
+msgid "Screensaver dim level"
+msgstr "Ekrānsaudzētāja izdzišanas līmenis"
+
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Kārtot pēc: Faila"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) spējīgs uztvērējs"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1020,6 +1292,10 @@ msgstr "IMDb"
 msgctxt "#369"
 msgid "Title"
 msgstr "Nosaukums"
+
+msgctxt "#370"
+msgid "Thunderstorms"
+msgstr "pērkona negaisi"
 
 msgctxt "#371"
 msgid "Partly"
@@ -1044,6 +1320,10 @@ msgstr "Sniegs"
 msgctxt "#376"
 msgid "Rain"
 msgstr "Lietus"
+
+msgctxt "#377"
+msgid "Light"
+msgstr "viegls"
 
 msgctxt "#378"
 msgid "AM"
@@ -1165,6 +1445,38 @@ msgctxt "#409"
 msgid "Defaults"
 msgstr "Noklusējums"
 
+msgctxt "#410"
+msgid "Accessing weather service"
+msgstr "Piekļūst laikapstākļu servisam"
+
+msgctxt "#411"
+msgid "Getting weather for:"
+msgstr "Saņem laikapstākļus par:"
+
+msgctxt "#412"
+msgid "Unable to get weather data"
+msgstr "Nevar saņemt laikapstākļu datus"
+
+msgctxt "#413"
+msgid "Manual"
+msgstr "Pašrocīgi"
+
+msgctxt "#414"
+msgid "No review for this album"
+msgstr "Šim albumam nav pārskats"
+
+msgctxt "#415"
+msgid "Downloading thumbnail..."
+msgstr "Lejupielādēju sīktēlu..."
+
+msgctxt "#416"
+msgid "Not available"
+msgstr "Nav pieejams"
+
+msgctxt "#417"
+msgid "View: Big icons"
+msgstr "Skats: lielas ikonas"
+
 msgctxt "#418"
 msgid "Low"
 msgstr "Zems"
@@ -1173,9 +1485,25 @@ msgctxt "#419"
 msgid "High"
 msgstr "Augsts"
 
+msgctxt "#422"
+msgid "Delete album info"
+msgstr "Dzēst albuma info"
+
+msgctxt "#423"
+msgid "Delete CD information"
+msgstr "Dzēst CD informāciju"
+
 msgctxt "#424"
 msgid "Select"
 msgstr "Izvēlēties"
+
+msgctxt "#425"
+msgid "No album information found"
+msgstr "Albuma informācija nav atrasta"
+
+msgctxt "#426"
+msgid "No CD information found"
+msgstr "CD informācija nav atrasta"
 
 msgctxt "#427"
 msgid "Disc"
@@ -1185,9 +1513,57 @@ msgctxt "#428"
 msgid "Insert correct CD/DVD"
 msgstr "Ievietojiet pareizu CD/DVD"
 
+msgctxt "#429"
+msgid "Please insert the following disc:"
+msgstr "Lūdzu, ievietojiet šādu disku:"
+
+msgctxt "#430"
+msgid "Sort by: DVD#"
+msgstr "Kārtot pēc: DVD#"
+
+msgctxt "#431"
+msgid "No cache"
+msgstr "Bez kešatmiņas"
+
+msgctxt "#432"
+msgid "Remove movie from library"
+msgstr "Izņemt filmu no bibliotēkas"
+
+msgctxt "#433"
+msgid "Really remove '%s'?"
+msgstr "Tiešām noņemt '%s'?"
+
+msgctxt "#434"
+msgid "From %s at %i %s"
+msgstr "No %s ar %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Nav atrasts optisko disku dzinis"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Lai spēlētu šo video, nepieciešams optisko disku dzinis"
+
+msgctxt "#437"
+msgid "Removable disk"
+msgstr "Noņemams disks"
+
 msgctxt "#438"
 msgid "Opening file"
 msgstr "Atver failu"
+
+msgctxt "#439"
+msgid "Cache"
+msgstr "Kešatmiņa"
+
+msgctxt "#441"
+msgid "UDF"
+msgstr "UDF"
+
+msgctxt "#442"
+msgid "Local network"
+msgstr "Lokālais tīkls"
 
 msgctxt "#443"
 msgid "Internet"
@@ -1205,13 +1581,73 @@ msgctxt "#446"
 msgid "DVD"
 msgstr "DVD"
 
+msgctxt "#447"
+msgid "Autorun media"
+msgstr "Pašspēlējošs medijs"
+
 msgctxt "#449"
 msgid "Enabled"
 msgstr "Ieslēgts"
 
+msgctxt "#450"
+msgid "Columns"
+msgstr "Ailes"
+
+msgctxt "#451"
+msgid "Row 1 address"
+msgstr "1. rindas adrese"
+
+msgctxt "#452"
+msgid "Row 2 address"
+msgstr "2. rindas adrese"
+
+msgctxt "#453"
+msgid "Row 3 address"
+msgstr "3. rindas adrese"
+
+msgctxt "#454"
+msgid "Row 4 address"
+msgstr "4. rindas adrese"
+
+msgctxt "#455"
+msgid "Rows"
+msgstr "Rindas"
+
 msgctxt "#456"
 msgid "Mode"
 msgstr "Veids"
+
+msgctxt "#457"
+msgid "Switch view"
+msgstr "Pārslēgt skatu"
+
+msgctxt "#459"
+msgid "Subs"
+msgstr "Subi"
+
+msgctxt "#460"
+msgid "Audio stream"
+msgstr "Audio straume"
+
+msgctxt "#461"
+msgid "[active]"
+msgstr "[aktīvs]"
+
+msgctxt "#462"
+msgid "Subtitle"
+msgstr "Subtitri"
+
+msgctxt "#463"
+msgid "Backlight"
+msgstr "Izgaismojums"
+
+msgctxt "#464"
+msgid "Brightness"
+msgstr "Spilgtums"
+
+msgctxt "#465"
+msgid "Contrast"
+msgstr "Kontrasts"
 
 msgctxt "#466"
 msgid "Gamma"
@@ -1221,13 +1657,325 @@ msgctxt "#467"
 msgid "Type"
 msgstr "Tips"
 
+msgctxt "#468"
+msgid "Move the bar to change the OSD position"
+msgstr "Pārvieto joslu, lai izmainītu OSD novietojumu"
+
+msgctxt "#469"
+msgid "OSD position"
+msgstr "OSD novietojums"
+
+msgctxt "#470"
+msgid "Credits"
+msgstr "Titri"
+
+msgctxt "#474"
+msgid "Off"
+msgstr "Izslēgts"
+
+msgctxt "#475"
+msgid "Music only"
+msgstr "Tikai mūzika"
+
+msgctxt "#476"
+msgid "Music & video"
+msgstr "Mūzika & video"
+
+msgctxt "#477"
+msgid "Unable to load playlist"
+msgstr "Nevar ielādēt spēļsarakstu"
+
+msgctxt "#478"
+msgid "OSD"
+msgstr "OSD"
+
+msgctxt "#479"
+msgid "Skin & language"
+msgstr "Apvalks & valoda"
+
+msgctxt "#480"
+msgid "Appearance"
+msgstr "Izskats"
+
+msgctxt "#481"
+msgid "Audio options"
+msgstr "Audio opcijas"
+
+msgctxt "#482"
+msgid "About XBMC"
+msgstr "Par XBMC"
+
+msgctxt "#485"
+msgid "Delete album"
+msgstr "Dzēst albumu"
+
+msgctxt "#486"
+msgid "Repeat"
+msgstr "Atkārtot"
+
+msgctxt "#487"
+msgid "Repeat one"
+msgstr "Atkārtot vienu"
+
+msgctxt "#488"
+msgid "Repeat folder"
+msgstr "Atkārtot mapi"
+
+msgctxt "#489"
+msgid "Play the next song automatically"
+msgstr "Spēlēt nākamo dziesmu automātiski"
+
+msgctxt "#491"
+msgid "- Use big icons"
+msgstr "- Izmantot lielas ikonas"
+
+msgctxt "#492"
+msgid "Resize VobSubs"
+msgstr "Mainīt VobSubu izmēru"
+
+msgctxt "#493"
+msgid "Advanced options (Experts Only!)"
+msgstr "Papildus opcijas (Tikai ekspertiem!)"
+
+msgctxt "#494"
+msgid "Overall audio headroom"
+msgstr "Kopējais audiospējas līmenis"
+
+msgctxt "#495"
+msgid "Upsample videos to GUI resolution"
+msgstr "Pārsemplo video līdz GUI izšķirstpējai"
+
+msgctxt "#496"
+msgid "Calibration"
+msgstr "Kalibrēšana"
+
+msgctxt "#497"
+msgid "Show file extensions"
+msgstr "Rādīt failu paplašinājumus"
+
+msgctxt "#498"
+msgid "Sort by: Type"
+msgstr "Kārtot pēc: tipa"
+
+msgctxt "#499"
+msgid "Unable to connect to online lookup service"
+msgstr "Nevar savienoties ar tiešaistes uzmeklēšanas servisu"
+
+msgctxt "#500"
+msgid "Downloading album information failed"
+msgstr "Albuma informācijas lejupielāde neizdevās"
+
+msgctxt "#501"
+msgid "Looking for album names..."
+msgstr "Uzmeklēju albuma nosaukumus..."
+
+msgctxt "#502"
+msgid "Open"
+msgstr "Atvērt"
+
+msgctxt "#503"
+msgid "Busy"
+msgstr "Aizņemts"
+
+msgctxt "#504"
+msgid "Empty"
+msgstr "Tukšs"
+
+msgctxt "#505"
+msgid "Loading media info from files..."
+msgstr "Ielādēju mediju info no failiem..."
+
+msgctxt "#507"
+msgid "Sort by: Usage"
+msgstr "Kārtot pēc: lietojuma"
+
+msgctxt "#511"
+msgid "Enable video mode switching"
+msgstr "Ieslēgt video režīma pārslēgšanu"
+
+msgctxt "#512"
+msgid "Startup window"
+msgstr "Uzsākšanas logs"
+
+msgctxt "#513"
+msgid "Home window"
+msgstr "Sākuma logs"
+
+msgctxt "#514"
+msgid "Manual settings"
+msgstr "Pašrocīgi iestatījumi"
+
+msgctxt "#515"
+msgid "Genre"
+msgstr "Žanrs"
+
+msgctxt "#517"
+msgid "Recently played albums"
+msgstr "Nesen spēlētie albumi"
+
+msgctxt "#518"
+msgid "Launch"
+msgstr "Palaist"
+
+msgctxt "#519"
+msgid "Launch in..."
+msgstr "Palaiž pēc..."
+
+msgctxt "#521"
+msgid "Compilations"
+msgstr "Kompilācijas"
+
+msgctxt "#522"
+msgid "Remove source"
+msgstr "Noņemt avotu"
+
+msgctxt "#523"
+msgid "Switch media"
+msgstr "Pārslēgt mediju"
+
+msgctxt "#524"
+msgid "Select playlist"
+msgstr "Izvēlēties spēļsarakstu"
+
+msgctxt "#525"
+msgid "New playlist..."
+msgstr "Jauns spēļsaraksts..."
+
+msgctxt "#526"
+msgid "Add to playlist"
+msgstr "Pievienot spēļsarakstam"
+
+msgctxt "#527"
+msgid "Manually add to library"
+msgstr "Pašrocīgi pievienot bibliotēkai"
+
+msgctxt "#528"
+msgid "Enter title"
+msgstr "Ievadīt nosaukumu"
+
+msgctxt "#529"
+msgid "Error: Duplicate title"
+msgstr "Kļūda: nosaukums dublējas"
+
+msgctxt "#530"
+msgid "Select genre"
+msgstr "Izvēlēties žanru"
+
+msgctxt "#531"
+msgid "New genre"
+msgstr "Jauns žanrs"
+
+msgctxt "#532"
+msgid "Manual addition"
+msgstr "Pašrocīga pievienošana"
+
+msgctxt "#533"
+msgid "Enter genre"
+msgstr "Ievadīt žanru"
+
+msgctxt "#534"
+msgid "View: %s"
+msgstr "Skats: %s"
+
+msgctxt "#535"
+msgid "List"
+msgstr "Saraksts"
+
+msgctxt "#536"
+msgid "Icons"
+msgstr "Ikonas"
+
+msgctxt "#537"
+msgid "Big list"
+msgstr "Liels saraksts"
+
+msgctxt "#538"
+msgid "Big icons"
+msgstr "Lielas ikonas"
+
+msgctxt "#539"
+msgid "Wide"
+msgstr "Plats"
+
+msgctxt "#540"
+msgid "Big wide"
+msgstr "Liels plats"
+
+msgctxt "#541"
+msgid "Album icons"
+msgstr "Albuma ikonas"
+
+msgctxt "#542"
+msgid "DVD icons"
+msgstr "DVD ikonas"
+
 msgctxt "#543"
 msgid "DVD"
 msgstr "DVD"
 
+msgctxt "#544"
+msgid "Media info"
+msgstr "Mediju info"
+
+msgctxt "#545"
+msgid "Audio output device"
+msgstr "Audio izvades ierīce"
+
+msgctxt "#546"
+msgid "Passthrough output device"
+msgstr "Tranzīta izvades ierīce"
+
+msgctxt "#547"
+msgid "No biography for this artist"
+msgstr "Šim izpldītājam nav biogrāfija"
+
+msgctxt "#548"
+msgid "Downmix multichannel audio to stereo"
+msgstr "Samiksēt daudzkanālu audio uz stereo"
+
+msgctxt "#550"
+msgid "Sort by: %s"
+msgstr "Kārtot pēc: %s"
+
+msgctxt "#551"
+msgid "Name"
+msgstr "Vārds"
+
+msgctxt "#552"
+msgid "Date"
+msgstr "Datums"
+
+msgctxt "#553"
+msgid "Size"
+msgstr "Izmērs"
+
+msgctxt "#554"
+msgid "Track"
+msgstr "Celiņš"
+
+msgctxt "#555"
+msgid "Time"
+msgstr "Laiks"
+
 msgctxt "#556"
 msgid "Title"
 msgstr "Nosaukums"
+
+msgctxt "#557"
+msgid "Artist"
+msgstr "Izpildītājs"
+
+msgctxt "#558"
+msgid "Album"
+msgstr "Albums"
+
+msgctxt "#559"
+msgid "Playlist"
+msgstr "Spēļsaraksts"
+
+msgctxt "#560"
+msgid "ID"
+msgstr "ID"
 
 msgctxt "#561"
 msgid "File"
@@ -1237,13 +1985,45 @@ msgctxt "#562"
 msgid "Year"
 msgstr "Gads"
 
+msgctxt "#563"
+msgid "Rating"
+msgstr "Vērtējums"
+
 msgctxt "#564"
 msgid "Type"
 msgstr "Tips"
 
+msgctxt "#565"
+msgid "Usage"
+msgstr "Lietojums"
+
+msgctxt "#566"
+msgid "Album artist"
+msgstr "Albuma izpildītājs"
+
+msgctxt "#567"
+msgid "Play count"
+msgstr "Atskaņošanas skaits"
+
+msgctxt "#568"
+msgid "Last played"
+msgstr "Pēdējie atskaņotie"
+
+msgctxt "#569"
+msgid "Comment"
+msgstr "Komentārs"
+
+msgctxt "#570"
+msgid "Date added"
+msgstr "Pievienošanas datums"
+
 msgctxt "#571"
 msgid "Default"
 msgstr "Noklusētais"
+
+msgctxt "#572"
+msgid "Studio"
+msgstr "Studija"
 
 msgctxt "#573"
 msgid "Path"
@@ -1253,29 +2033,385 @@ msgctxt "#574"
 msgid "Country"
 msgstr "Valsts"
 
+msgctxt "#575"
+msgid "In progress"
+msgstr "Progress"
+
+msgctxt "#576"
+msgid "Times played"
+msgstr "Atskaņošanas reizes"
+
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Uzņemšanas datums"
+
+msgctxt "#580"
+msgid "Sort direction"
+msgstr "Kārtošanas virziens"
+
+msgctxt "#581"
+msgid "Sort method"
+msgstr "Kartošanas metode"
+
+msgctxt "#582"
+msgid "View mode"
+msgstr "Skata režīms"
+
+msgctxt "#583"
+msgid "Remember views for different folders"
+msgstr "Atcerēties dažādu mapju skatus"
+
+msgctxt "#584"
+msgid "Ascending"
+msgstr "Augošā secībā"
+
+msgctxt "#585"
+msgid "Descending"
+msgstr "Dilstošā secībā"
+
+msgctxt "#586"
+msgid "Edit playlist"
+msgstr "Labot spēļsarakstu"
+
+msgctxt "#587"
+msgid "Filter"
+msgstr "Filtrs"
+
+msgctxt "#588"
+msgid "Cancel party mode"
+msgstr "Atcelt ballītes režīmu"
+
+msgctxt "#589"
+msgid "Party mode"
+msgstr "Ballītes režīms"
+
+msgctxt "#590"
+msgid "Random"
+msgstr "Nejaušs"
+
+msgctxt "#591"
+msgid "Off"
+msgstr "Izslēgts"
+
+msgctxt "#592"
+msgid "One"
+msgstr "Viens"
+
+msgctxt "#593"
+msgid "All"
+msgstr "Visi"
+
+msgctxt "#594"
+msgid "Off"
+msgstr "Izslēgts"
+
+msgctxt "#595"
+msgid "Repeat: Off"
+msgstr "Atkārtot: izslēgts"
+
+msgctxt "#596"
+msgid "Repeat: One"
+msgstr "Atkārtot: viens"
+
+msgctxt "#597"
+msgid "Repeat: All"
+msgstr "Atkārtot: visi"
+
+msgctxt "#600"
+msgid "Rip audio CD"
+msgstr "Izvilkt audio no CD"
+
 msgctxt "#601"
 msgid "Medium"
 msgstr "Vidējs"
+
+msgctxt "#602"
+msgid "Standard"
+msgstr "Standarta"
+
+msgctxt "#603"
+msgid "Extreme"
+msgstr "Ekstrēms"
+
+msgctxt "#604"
+msgid "Constant bitrate"
+msgstr "Konstants bitu ātrums"
+
+msgctxt "#605"
+msgid "Ripping..."
+msgstr "Izvelku..."
+
+msgctxt "#607"
+msgid "To:"
+msgstr "Uz:"
+
+msgctxt "#608"
+msgid "Could not rip CD or track"
+msgstr "Nevar izvilkt no CD vai celiņa"
+
+msgctxt "#609"
+msgid "CDDARipPath is not set."
+msgstr "CDDARipPath nav norādīts."
+
+msgctxt "#610"
+msgid "Rip audio track"
+msgstr "Izvilkt audio celiņu"
+
+msgctxt "#611"
+msgid "Enter number"
+msgstr "Ievadīt numuru"
+
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Biti/sempls"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Sempla ātrums"
+
+msgctxt "#620"
+msgid "Audio CDs"
+msgstr "Audio diski"
+
+msgctxt "#621"
+msgid "Encoder"
+msgstr "Kodētājs"
+
+msgctxt "#622"
+msgid "Quality"
+msgstr "Kvalitāte"
+
+msgctxt "#623"
+msgid "Bitrate"
+msgstr "Bitu ātrums"
+
+msgctxt "#624"
+msgid "Include track number"
+msgstr "Iekļaut celiņa numuru"
+
+msgctxt "#625"
+msgid "All songs of"
+msgstr "Visas dziesmas no"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Notiek TV pārraides"
+
+msgctxt "#629"
+msgid "View mode"
+msgstr "Skata režīms"
+
+msgctxt "#630"
+msgid "Normal"
+msgstr "Normāls"
+
+msgctxt "#631"
+msgid "Zoom"
+msgstr "Zooms"
+
+msgctxt "#632"
+msgid "Stretch 4:3"
+msgstr "Stiepts 4:3"
+
+msgctxt "#633"
+msgid "Wide Zoom"
+msgstr "Plats zooms"
+
+msgctxt "#634"
+msgid "Stretch 16:9"
+msgstr "Stiepts 16:9"
+
+msgctxt "#635"
+msgid "Original Size"
+msgstr "Sākotnējais lielums"
+
+msgctxt "#636"
+msgid "Custom"
+msgstr "Pielāgots"
+
+msgctxt "#639"
+msgid "Use track levels"
+msgstr "No celiņu līmeņa"
+
+msgctxt "#640"
+msgid "Use album levels"
+msgstr "No albuma līmeņa"
+
+msgctxt "#644"
+msgid "Crop black bars"
+msgstr "Nogriezt malnās malas"
+
+msgctxt "#645"
+msgid "Need to unpack a big file. Continue?"
+msgstr "Jāatpako liels fails. Turpināt?"
+
+msgctxt "#646"
+msgid "Remove from library"
+msgstr "Izņemt no bibliotēkas"
+
+msgctxt "#647"
+msgid "Export video library"
+msgstr "Eksportēt video bibliotēku"
+
+msgctxt "#648"
+msgid "Import video library"
+msgstr "Importēt video bibliotēku"
+
+msgctxt "#649"
+msgid "Importing"
+msgstr "Importē"
+
+msgctxt "#650"
+msgid "Exporting"
+msgstr "Eksportē"
+
+msgctxt "#651"
+msgid "Browse for library"
+msgstr "Pārlūko bibliotēku"
 
 msgctxt "#652"
 msgid "Years"
 msgstr "Gadi"
 
+msgctxt "#653"
+msgid "Update library"
+msgstr "Atjaunināt bibliotēku"
+
+msgctxt "#654"
+msgid "Show debug info"
+msgstr "Rādīt atkļūdošanas info"
+
+msgctxt "#655"
+msgid "Browse for executable"
+msgstr "Pārlūko izpildāmu failu"
+
+msgctxt "#656"
+msgid "Browse for playlist"
+msgstr "Pārlūkot spēļsarakstu"
+
+msgctxt "#657"
+msgid "Browse for folder"
+msgstr "Pārlūko mapi"
+
+msgctxt "#658"
+msgid "Song information"
+msgstr "Dziesmas informācija"
+
+msgctxt "#659"
+msgid "Non-linear stretch"
+msgstr "Nelineāra izstiepšana"
+
+msgctxt "#660"
+msgid "Volume amplification"
+msgstr "Skaļuma pastiprināšana"
+
+msgctxt "#661"
+msgid "Choose export folder"
+msgstr "Izvēlēties eksportēšanas mapi"
+
+msgctxt "#662"
+msgid "This file is no longer available."
+msgstr "Šis fails vairs nav pieejams."
+
+msgctxt "#663"
+msgid "Would you like to remove it from the library?"
+msgstr "Vai vēlaties to izņemt no bibliotēkas?"
+
+msgctxt "#664"
+msgid "Browse for Script"
+msgstr "Pārlūko skriptu"
+
+msgctxt "#665"
+msgid "Compression level"
+msgstr "Saspiešanas līmenis"
+
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Izvērsta reģistrēšana..."
+
+msgctxt "#700"
+msgid "Cleaning up library"
+msgstr "Uzkopj bibliotēku"
+
+msgctxt "#701"
+msgid "Removing old songs from the library"
+msgstr "Izņem vecas dziesmas no bibliotēkas"
+
+msgctxt "#702"
+msgid "This path has been scanned before"
+msgstr "Šis ceļš jau ir skenēts"
+
+msgctxt "#705"
+msgid "Network"
+msgstr "Tīkls"
+
 msgctxt "#706"
 msgid "Server"
 msgstr "Serveris"
+
+msgctxt "#708"
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Interneta piekļuvei izmantot HTTP starpniekserveri"
+
+msgctxt "#711"
+msgid "Internet Protocol (IP)"
+msgstr "Interneta protokols (IP)"
+
+msgctxt "#712"
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Norādīts nederīgs ports. Vērtībai jābūt no 1 līdz 65535."
 
 msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP proxy"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Piešķiršana"
+
+msgctxt "#716"
+msgid "Automatic (DHCP)"
+msgstr "Automatiski (DHCP)"
+
+msgctxt "#717"
+msgid "Manual (Static)"
+msgstr "Pašrocīgi (statiski)"
+
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP adrese"
 
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Tīkla maska"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Noklusētā vārteja"
+
 msgctxt "#722"
 msgid "DNS server"
 msgstr "DNS serveris"
+
+msgctxt "#723"
+msgid "Save & restart"
+msgstr "Saglabāt & pārstartēt"
+
+msgctxt "#724"
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Norādīta nederīga adrese. Vērtībai jābūt AAA.BBB.CCC.DDD"
+
+msgctxt "#725"
+msgid "with numbers between 0 and 255."
+msgstr "ar numuriem no 0 līdz 255."
+
+msgctxt "#726"
+msgid "Changes not saved. Continue without saving?"
+msgstr "Izmaiņas nav saglabātas. Turpināt nesaglabājot?"
+
+msgctxt "#727"
+msgid "Web server"
+msgstr "Tīmekļa serveris"
 
 msgctxt "#728"
 msgid "FTP server"
@@ -1284,6 +2420,46 @@ msgstr "FTP serveris"
 msgctxt "#730"
 msgid "Port"
 msgstr "Ports"
+
+msgctxt "#732"
+msgid "Save & apply"
+msgstr "Saglabāt & pielietot"
+
+msgctxt "#733"
+msgid "Password"
+msgstr "Parole"
+
+msgctxt "#734"
+msgid "No pass"
+msgstr "Nav parole"
+
+msgctxt "#735"
+msgid "Character set"
+msgstr "Rakstzīmju kopa"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Stils"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Krāsa"
+
+msgctxt "#738"
+msgid "Normal"
+msgstr "Normāls"
+
+msgctxt "#739"
+msgid "Bold"
+msgstr "Treknraksts"
+
+msgctxt "#740"
+msgid "Italics"
+msgstr "Slīpraksts"
+
+msgctxt "#741"
+msgid "Bold italics"
+msgstr "Treknraksts slīpraksts"
 
 msgctxt "#742"
 msgid "White"
@@ -1297,6 +2473,54 @@ msgctxt "#744"
 msgid "Files"
 msgstr "Faili"
 
+msgctxt "#745"
+msgid "No scanned information for this view"
+msgstr "Nav skenēta informācija šim skatam"
+
+msgctxt "#746"
+msgid "Please turn off library mode"
+msgstr "Lūdzu, izslēdziet bibliotēkas režīmu"
+
+msgctxt "#747"
+msgid "Error loading image"
+msgstr "Kļūda ielādējot attēlu"
+
+msgctxt "#748"
+msgid "Edit path"
+msgstr "Labot ceļu"
+
+msgctxt "#749"
+msgid "Mirror image"
+msgstr "Spoguļattēls"
+
+msgctxt "#750"
+msgid "Are you sure?"
+msgstr "Vai esat pārliecināts?"
+
+msgctxt "#751"
+msgid "Removing source"
+msgstr "Noņem avotu"
+
+msgctxt "#754"
+msgid "Add program link"
+msgstr "Pievienot programmas saiti"
+
+msgctxt "#755"
+msgid "Edit program path"
+msgstr "Labot programmas ceļu"
+
+msgctxt "#756"
+msgid "Edit program name"
+msgstr "Labot programmas nosaukumu"
+
+msgctxt "#757"
+msgid "Edit path depth"
+msgstr "Labot ceļa dziļumu"
+
+msgctxt "#759"
+msgid "View: Big list"
+msgstr "Skats: liels saraksts"
+
 msgctxt "#760"
 msgid "Yellow"
 msgstr "Dzeltens"
@@ -1308,6 +2532,66 @@ msgstr "Balts"
 msgctxt "#762"
 msgid "Blue"
 msgstr "Zils"
+
+msgctxt "#763"
+msgid "Bright green"
+msgstr "Gaišzaļš"
+
+msgctxt "#764"
+msgid "Yellow green"
+msgstr "Dzeltenzaļš"
+
+msgctxt "#765"
+msgid "Cyan"
+msgstr "Ciāna"
+
+msgctxt "#766"
+msgid "Light grey"
+msgstr "Gaišpelēks"
+
+msgctxt "#767"
+msgid "Grey"
+msgstr "Pelēks"
+
+msgctxt "#770"
+msgid "Error %i: share not available"
+msgstr "Kļūda %i: šāre nav pieejama"
+
+msgctxt "#772"
+msgid "Audio output"
+msgstr "Audio izvade"
+
+msgctxt "#773"
+msgid "Seeking"
+msgstr "Novietošana"
+
+msgctxt "#774"
+msgid "Slideshow folder"
+msgstr "Slīdītes mape"
+
+msgctxt "#775"
+msgid "Network interface"
+msgstr "Tīkla saskarne"
+
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "Bezvadu tīkla nosaukums (ESSID)"
+
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Bezvadu parole"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Bezvadu drošība"
+
+msgctxt "#779"
+msgid "Save and apply network interface settings"
+msgstr "Saglabāt un pielietot tīkla saskarnes iestatījumus"
+
+msgctxt "#780"
+msgid "No encryption"
+msgstr "Nav šifrēšanas"
 
 msgctxt "#781"
 msgid "WEP"
@@ -1321,25 +2605,301 @@ msgctxt "#783"
 msgid "WPA2"
 msgstr "WPA2"
 
+msgctxt "#784"
+msgid "Applying network interface settings. Please wait."
+msgstr "Pielieto tīkla saskarnes iestatījumus. Lūdzu, uzgaidiet."
+
+msgctxt "#785"
+msgid "Network interface restarted successfully."
+msgstr "Tīkla saskarne veiksmīgi pārstartēta."
+
+msgctxt "#786"
+msgid "Network interface did not start successfully."
+msgstr "Tīkla saskarne nevarēja iestartēties."
+
+msgctxt "#787"
+msgid "Interface disabled"
+msgstr "Saskarne atslēgta"
+
+msgctxt "#788"
+msgid "Network interface disabled successfully."
+msgstr "Tīkla saskarne veiksmīgi atslēgta."
+
+msgctxt "#789"
+msgid "Wireless network name (ESSID)"
+msgstr "Bezvadu tīkla nosaukums (ESSID)"
+
+msgctxt "#790"
+msgid "Remote control"
+msgstr "Tālvadības pults"
+
+msgctxt "#791"
+msgid "Allow programs on this system to control XBMC"
+msgstr "Atļaut citām šīs sistēmas programmām kontrolēt XBMC"
+
 msgctxt "#792"
 msgid "Port"
 msgstr "Ports"
+
+msgctxt "#793"
+msgid "Port range"
+msgstr "Porta apgabals"
+
+msgctxt "#794"
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Atļaut citu sistēmu programmām kontrolēt XBMC"
+
+msgctxt "#795"
+msgid "Initial repeat delay (ms)"
+msgstr "Sākotnējā atkārtošanas aizkave (ms)"
+
+msgctxt "#796"
+msgid "Continuous repeat delay (ms)"
+msgstr "Tālākā atkārtošanas aizkave (ms)"
+
+msgctxt "#797"
+msgid "Maximum number of clients"
+msgstr "Maksimālais klientu skaits"
+
+msgctxt "#798"
+msgid "Internet access"
+msgstr "Interneta piekļuve"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Bibliotēkas atjauninājums"
+
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Mūzikas bibliotēkā nepieciešams pārskenēt tagus no failiem."
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Vai vēlaties skenēt tagad?"
+
+msgctxt "#850"
+msgid "Invalid port number entered"
+msgstr "Ievadīts nederīgs porta numurs"
+
+msgctxt "#851"
+msgid "Valid port range is 1-65535"
+msgstr "Derīgais porta apgabals ir 1-65535"
+
+msgctxt "#852"
+msgid "Valid port range is 1024-65535"
+msgstr "Derīgais porta apgabals ir 1024-65535"
+
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Pievieno attēlus..."
+
+msgctxt "#998"
+msgid "Add Music..."
+msgstr "Pievieno mūziku..."
+
+msgctxt "#999"
+msgid "Add Videos..."
+msgstr "Pievieno video..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Priekšskatīt"
+
+msgctxt "#1001"
+msgid "Unable to connect"
+msgstr "Nevar savienoties"
+
+msgctxt "#1002"
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC nevarēja savienoties ar tīkla vietu."
+
+msgctxt "#1003"
+msgid "This could be due to the network not being connected."
+msgstr "Tas varētu būt tāpēc, ka tīkls nav pievienots."
+
+msgctxt "#1004"
+msgid "Would you like to add it anyway?"
+msgstr "Vai tomēr vēlaties to pievienot?"
 
 msgctxt "#1006"
 msgid "IP address"
 msgstr "IP adrese"
 
+msgctxt "#1007"
+msgid "Add network location"
+msgstr "Pievienot tīkla vietu"
+
 msgctxt "#1008"
 msgid "Protocol"
 msgstr "Protocols"
+
+msgctxt "#1009"
+msgid "Server address"
+msgstr "Servera adrese"
+
+msgctxt "#1010"
+msgid "Server name"
+msgstr "Servera nosaukums"
+
+msgctxt "#1011"
+msgid "Remote path"
+msgstr "Attālais ceļš"
+
+msgctxt "#1012"
+msgid "Shared folder"
+msgstr "Koplietota mape"
 
 msgctxt "#1013"
 msgid "Port"
 msgstr "Ports"
 
+msgctxt "#1014"
+msgid "Username"
+msgstr "Lietotājvārds"
+
+msgctxt "#1015"
+msgid "Browse for network server"
+msgstr "Pārlūkot tīkla serveri"
+
+msgctxt "#1016"
+msgid "Enter the network address of the server"
+msgstr "Ievadīt servera tīkla adresi"
+
+msgctxt "#1017"
+msgid "Enter the path on the server"
+msgstr "Ievadīt ceļu uz servera"
+
+msgctxt "#1018"
+msgid "Enter the port number"
+msgstr "Ievadīt porta numuru"
+
+msgctxt "#1019"
+msgid "Enter the username"
+msgstr "Ievadīt lietotājvārdu"
+
+msgctxt "#1020"
+msgid "Add %s source"
+msgstr "Pievienot %s avotu"
+
+msgctxt "#1021"
+msgid "Enter the paths or browse for the media locations."
+msgstr "Ievadiet ceļus vai pārlūkojiet mediju vietas."
+
+msgctxt "#1022"
+msgid "Enter a name for this media Source."
+msgstr "Ievadiet nosaukumu šim mediju avotam."
+
+msgctxt "#1023"
+msgid "Browse for new share"
+msgstr "Pārlūkot jaunu koplietojumu"
+
+msgctxt "#1024"
+msgid "Browse"
+msgstr "Pārlūkot"
+
+msgctxt "#1025"
+msgid "Could not retrieve directory information."
+msgstr "Nevarēja izgūt direktorijas informāciju."
+
+msgctxt "#1026"
+msgid "Add source"
+msgstr "Pievienotu avotu"
+
+msgctxt "#1027"
+msgid "Edit source"
+msgstr "Labot avotu"
+
+msgctxt "#1028"
+msgid "Edit %s source"
+msgstr "Labot %s avotu"
+
+msgctxt "#1029"
+msgid "Enter the new label"
+msgstr "Ievadīt jaunu etiķeti"
+
+msgctxt "#1030"
+msgid "Browse for image"
+msgstr "Pārlūkot attēlu"
+
+msgctxt "#1031"
+msgid "Browse for image folder"
+msgstr "Pārlūkot attēlu mapi"
+
+msgctxt "#1032"
+msgid "Add network location..."
+msgstr "Pievieno tīkla vietu..."
+
+msgctxt "#1033"
+msgid "Browse for file"
+msgstr "Pārlūkot failu"
+
+msgctxt "#1034"
+msgid "Submenu"
+msgstr "Apakšizvēlne"
+
+msgctxt "#1035"
+msgid "Enable submenu buttons"
+msgstr "Ieslēgt apakšizvēlnes pogas"
+
+msgctxt "#1036"
+msgid "Favourites"
+msgstr "Izlase"
+
+msgctxt "#1037"
+msgid "Video Add-ons"
+msgstr "Video pielikumi"
+
+msgctxt "#1038"
+msgid "Music Add-ons"
+msgstr "Mūzikas pielikumi"
+
+msgctxt "#1039"
+msgid "Picture Add-ons"
+msgstr "Attēlu pielikumi"
+
+msgctxt "#1040"
+msgid "Loading directory"
+msgstr "Ielādē direktoriju"
+
+msgctxt "#1041"
+msgid "Retrieved %i items"
+msgstr "Izgūti %i ieraksti"
+
+msgctxt "#1042"
+msgid "Retrieved %i of %i items"
+msgstr "Izgūti %i no %i ierakstiem"
+
+msgctxt "#1043"
+msgid "Program Add-ons"
+msgstr "Programmu pielikumi"
+
+msgctxt "#1045"
+msgid "Add-on settings"
+msgstr "Pielikuma iestatījumi"
+
+msgctxt "#1046"
+msgid "Access points"
+msgstr "Piekļuves punkti"
+
 msgctxt "#1047"
 msgid "Other..."
 msgstr "Citi..."
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "Lietotājvārds"
+
+msgctxt "#1049"
+msgid "Script settings"
+msgstr "Skripta iestatījumi"
+
+msgctxt "#1050"
+msgid "Singles"
+msgstr "Singli"
+
+msgctxt "#1051"
+msgid "Enter web address"
+msgstr "Ievadiet tīmekļa adresi"
 
 msgctxt "#1180"
 msgid "Proxy type"
@@ -1361,6 +2921,38 @@ msgctxt "#1184"
 msgid "SOCKS5"
 msgstr "SOCKS5"
 
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 ar attālinātu dns atrisināšanu"
+
+msgctxt "#1200"
+msgid "SMB client"
+msgstr "SMB klients"
+
+msgctxt "#1202"
+msgid "Workgroup"
+msgstr "Darbgrupa"
+
+msgctxt "#1203"
+msgid "Default username"
+msgstr "Noklusētais lietotājvārds"
+
+msgctxt "#1204"
+msgid "Default password"
+msgstr "Noklusētā parole"
+
+msgctxt "#1207"
+msgid "WINS server"
+msgstr "WINS serveris"
+
+msgctxt "#1208"
+msgid "Mount SMB shares"
+msgstr "Piemontē SMB koplietojumus"
+
+msgctxt "#1210"
+msgid "Remove"
+msgstr "Noņemt"
+
 msgctxt "#1211"
 msgid "Music"
 msgstr "Mūzika"
@@ -1377,6 +2969,102 @@ msgctxt "#1214"
 msgid "Files"
 msgstr "Faili"
 
+msgctxt "#1215"
+msgid "Music & video "
+msgstr "Mūzika & video"
+
+msgctxt "#1216"
+msgid "Music & pictures"
+msgstr "Mūzika & attēli"
+
+msgctxt "#1217"
+msgid "Music & files"
+msgstr "Mūzika & faili"
+
+msgctxt "#1218"
+msgid "Video & pictures"
+msgstr "Video & attēli"
+
+msgctxt "#1219"
+msgid "Video & files"
+msgstr "Video & faili"
+
+msgctxt "#1220"
+msgid "Pictures & files"
+msgstr "Attēli & faili"
+
+msgctxt "#1221"
+msgid "Music & video & pictures"
+msgstr "Mūzika & video & attēli"
+
+msgctxt "#1222"
+msgid "Music & video & pictures & files"
+msgstr "Mūzika & video & attēli & faili"
+
+msgctxt "#1223"
+msgid "Disabled"
+msgstr "Izslēgts"
+
+msgctxt "#1226"
+msgid "Files & music & video"
+msgstr "Faili & mūzika & video"
+
+msgctxt "#1227"
+msgid "Files & pictures & music"
+msgstr "Faili & attēli & mūzika"
+
+msgctxt "#1228"
+msgid "Files & pictures & video"
+msgstr "Faili & attēli & video"
+
+msgctxt "#1229"
+msgid "Music & programs"
+msgstr "Mūzika & programmas"
+
+msgctxt "#1230"
+msgid "Video & programs"
+msgstr "Video & programmas"
+
+msgctxt "#1231"
+msgid "Pictures & programs"
+msgstr "Attēli & programmas"
+
+msgctxt "#1232"
+msgid "Music & video & pictures & programs"
+msgstr "Mūzika & video & attēli & programmas"
+
+msgctxt "#1233"
+msgid "Programs & video & music"
+msgstr "Programmas & video & mūzika"
+
+msgctxt "#1234"
+msgid "Programs & pictures & music"
+msgstr "Programmas & attēli & mūzika"
+
+msgctxt "#1235"
+msgid "Programs & pictures & video"
+msgstr "Programmas & attēli & video"
+
+msgctxt "#1259"
+msgid "Zeroconf"
+msgstr "Zeroconf"
+
+msgctxt "#1260"
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Paziņot šos servisus citām sistēmām, izmantojot Zeroconf"
+
+msgctxt "#1270"
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "Atļaut XBMC saņemt AirPlay saturu"
+
+msgctxt "#1271"
+msgid "Device name"
+msgstr "Ierīces nosaukums"
+
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Izmantot paroles aizsardzību"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
@@ -1385,13 +3073,261 @@ msgctxt "#1274"
 msgid "AirTunes"
 msgstr "AirTunes"
 
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Filtrs %s"
+
+msgctxt "#1300"
+msgid "Custom audio device"
+msgstr "Pielāgota audio ierīce"
+
+msgctxt "#1301"
+msgid "Custom passthrough device"
+msgstr "Pielāgota tranzīta ierīce"
+
+msgctxt "#1396"
+msgid "Drifting"
+msgstr "slīdošs"
+
+msgctxt "#1397"
+msgid "and"
+msgstr "un"
+
+msgctxt "#1398"
+msgid "Freezing"
+msgstr "saldējošs"
+
+msgctxt "#1399"
+msgid "Late"
+msgstr "vēlu"
+
+msgctxt "#1400"
+msgid "Isolated"
+msgstr "izolēts"
+
+msgctxt "#1401"
+msgid "Thundershowers"
+msgstr "pērkona lietus"
+
+msgctxt "#1402"
+msgid "Thunder"
+msgstr "pērkons"
+
 msgctxt "#1403"
 msgid "Sun"
 msgstr "Svēt"
 
+msgctxt "#1404"
+msgid "Heavy"
+msgstr "stiprs"
+
+msgctxt "#1405"
+msgid "in"
+msgstr "iekš"
+
+msgctxt "#1406"
+msgid "the"
+msgstr " "
+
+msgctxt "#1407"
+msgid "Vicinity"
+msgstr "apkārtnē"
+
+msgctxt "#1408"
+msgid "Ice"
+msgstr "ledus"
+
+msgctxt "#1409"
+msgid "Crystals"
+msgstr "kristāli"
+
+msgctxt "#1410"
+msgid "Calm"
+msgstr "mierīgs"
+
+msgctxt "#1411"
+msgid "with"
+msgstr "ar"
+
+msgctxt "#1412"
+msgid "windy"
+msgstr "vējains"
+
+msgctxt "#1413"
+msgid "Patches"
+msgstr "vietām"
+
+msgctxt "#1414"
+msgid "Thunderstorm"
+msgstr "pērkona negaiss"
+
+msgctxt "#1415"
+msgid "Drizzle"
+msgstr "smalks lietus"
+
+msgctxt "#1416"
+msgid "Foggy"
+msgstr "miglains"
+
+msgctxt "#1417"
+msgid "Grains"
+msgstr "graudi"
+
+msgctxt "#1418"
+msgid "Thunderstorms"
+msgstr "pērkona negaisi"
+
+msgctxt "#1419"
+msgid "Shallow"
+msgstr "sekls"
+
+msgctxt "#1420"
+msgid "Moderate"
+msgstr "vidējs"
+
+msgctxt "#1421"
+msgid "Very High"
+msgstr "ļoti augsts"
+
+msgctxt "#1422"
+msgid "Windy"
+msgstr "vējains"
+
+msgctxt "#1423"
+msgid "Mist"
+msgstr "migla"
+
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "samācies"
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "krusas graudi"
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr "krusa"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "dūmi"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "vulkāniski"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "pelni"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "plaši"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "putekļi"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "smiltis"
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr "smidzina"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "virpuļi"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "smilšu vētra"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "pūš"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "krusa"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "Mazs"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "un"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "slapjdraņķis"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "ar"
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "iespējams"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "arī"
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "virpulis"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "mākonis"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "nezināms"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "brāzmas"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "nokrišņu daudzums"
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "daļēji"
+
+msgctxt "#1450"
+msgid "Put display to sleep when idle"
+msgstr "Nelieietošanas laikā aizmidzināt ekrānu"
+
+msgctxt "#2050"
+msgid "Runtime"
+msgstr "Izpildlaiks"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Tukšs saraksts"
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "Devās atpakaļ uz pamatsarakstu, jo aktīvais saraksts ir iztukšots"
+
+msgctxt "#2100"
+msgid "Script failed! : %s"
+msgstr "Skripts neizdevās! : %s"
+
+msgctxt "#2101"
+msgid "Newer version needed - See log"
+msgstr "Vajag jaunāku versiju - skatīt žunrnālu"
+
+msgctxt "#10000"
+msgid "Home"
+msgstr "Sākums"
 
 msgctxt "#10001"
 msgid "Programs"
@@ -1417,21 +3353,277 @@ msgctxt "#10006"
 msgid "Videos"
 msgstr "Video"
 
+msgctxt "#10007"
+msgid "System information"
+msgstr "Sistēmas informācija"
+
+msgctxt "#10008"
+msgid "Settings - General"
+msgstr "Iestatījumi - pamata"
+
+msgctxt "#10009"
+msgid "Settings - Screen"
+msgstr "Iestatījumi - ekrāna"
+
+msgctxt "#10010"
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Iestatījumi - izskata - GUI kalibrēšana"
+
+msgctxt "#10011"
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Iestatījumi - video - ekrāna kalibrēšana"
+
+msgctxt "#10012"
+msgid "Settings - Pictures"
+msgstr "Iestatījumi - attēli"
+
+msgctxt "#10013"
+msgid "Settings - Programs"
+msgstr "Iestatījumi - programmas"
+
+msgctxt "#10014"
+msgid "Settings - Weather"
+msgstr "Iestatījumi - laikapstākļi"
+
+msgctxt "#10015"
+msgid "Settings - Music"
+msgstr "Iestatījumi - mūzika"
+
+msgctxt "#10016"
+msgid "Settings - System"
+msgstr "Iestatījumi - sistēma"
+
+msgctxt "#10017"
+msgid "Settings - Videos"
+msgstr "Iestatījumi - video"
+
+msgctxt "#10018"
+msgid "Settings - Network"
+msgstr "Iestatījumi - tīkls"
+
+msgctxt "#10019"
+msgid "Settings - Appearance"
+msgstr "Iestatījumi - izskats"
+
 msgctxt "#10020"
 msgid "Scripts"
 msgstr "Skripti"
+
+msgctxt "#10021"
+msgid "Web Browser"
+msgstr "Tīmekļa pārlūks"
 
 msgctxt "#10025"
 msgid "Videos"
 msgstr "Video"
 
+msgctxt "#10028"
+msgid "Videos/Playlist"
+msgstr "Video/Spēļsaraksts"
+
+msgctxt "#10029"
+msgid "Login screen"
+msgstr "Pieteikšanās ekrāns"
+
+msgctxt "#10034"
+msgid "Settings - Profiles"
+msgstr "Iestatījumi - Profili"
+
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Atiestatīt"
+
+msgctxt "#10037"
+msgid "Standard"
+msgstr "Standarta"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Vai tiešām vēlaties atiestatīt iestatījumus šajā kategorijā?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Palīdzība"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Palīdzība nav pieejama"
+
+msgctxt "#10126"
+msgid "File browser"
+msgstr "Failu pārlūks"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Tīkla uzstādīšana"
+
+msgctxt "#10129"
+msgid "Media source"
+msgstr "Mediju avots"
+
+msgctxt "#10130"
+msgid "Profile settings"
+msgstr "Profila iestatījumi"
+
+msgctxt "#10131"
+msgid "Lock settings"
+msgstr "Slēdzenes iestatījumi"
+
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Satura iestatījumi"
+
+msgctxt "#10134"
+msgid "Favourites"
+msgstr "Izlase"
+
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Dziesmas/Info"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Gudrā spēļsaraksta redaktors"
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Gudrā spēļsaraksta noteikumu redaktors"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Attēli/Info"
+
+msgctxt "#10140"
+msgid "Add-on settings"
+msgstr "Pielikuma iestatījumi"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Pielikumi/Info"
+
+msgctxt "#10210"
+msgid "Looking for subtitles..."
+msgstr "Uzmeklēju subtitrus..."
+
+msgctxt "#10211"
+msgid "Looking for or caching subtitles..."
+msgstr "Uzmeklēju vai iekešoju subtitrus..."
+
+msgctxt "#10212"
+msgid "terminating"
+msgstr "izbeigšana"
+
+msgctxt "#10213"
+msgid "buffering"
+msgstr "buferizācija"
+
+msgctxt "#10214"
+msgid "Opening stream"
+msgstr "Atver straumi"
+
+msgctxt "#10500"
+msgid "Music/Playlist"
+msgstr "Mūzika/Spēļsaraksts"
+
+msgctxt "#10501"
+msgid "Music/Files"
+msgstr "Mūzika/Faili"
+
+msgctxt "#10502"
+msgid "Music/Library"
+msgstr "Mūzika/Bibliotēka"
+
+msgctxt "#10503"
+msgid "Playlist editor"
+msgstr "Spēļsaraksta redaktors"
+
+msgctxt "#10504"
+msgid "Top 100 songs"
+msgstr "Top 100 dziesmas"
+
+msgctxt "#10505"
+msgid "Top 100 albums"
+msgstr "Top 100 albumi"
+
 msgctxt "#10506"
 msgid "Programs"
 msgstr "Programmas"
 
+msgctxt "#10507"
+msgid "Configuration"
+msgstr "Konfigurācija"
+
+msgctxt "#10508"
+msgid "Weather forecast"
+msgstr "Laikaprognoze"
+
+msgctxt "#10509"
+msgid "Network gaming"
+msgstr "Tīkla spēles"
+
+msgctxt "#10510"
+msgid "Extensions"
+msgstr "Paplašinājumi"
+
 msgctxt "#10511"
 msgid "System info"
 msgstr "Sistēmas informācija"
+
+msgctxt "#10516"
+msgid "Music - Library"
+msgstr "Mūzika - Bibliotēka"
+
+msgctxt "#10517"
+msgid "Now Playing - Music"
+msgstr "Pašlaik atskaņo - Mūzika"
+
+msgctxt "#10522"
+msgid "Now Playing - Videos"
+msgstr "Pašlaik atskaņo - Video"
+
+msgctxt "#10523"
+msgid "Album info"
+msgstr "Albuma info"
+
+msgctxt "#10524"
+msgid "Movie info"
+msgstr "Filmas info"
+
+msgctxt "#12001"
+msgid "Music/Info"
+msgstr "Mūzika/Info"
+
+msgctxt "#12003"
+msgid "Videos/Info"
+msgstr "Video/Info"
+
+msgctxt "#12004"
+msgid "Scripts/Info"
+msgstr "Skripti/Info"
+
+msgctxt "#12005"
+msgid "Fullscreen video"
+msgstr "Pilnekrāna video"
+
+msgctxt "#12009"
+msgid "Rebuild index..."
+msgstr "Pārbūvē indeksu..."
+
+msgctxt "#12010"
+msgid "Return to music window"
+msgstr "Atpakaļ pie mūzikas loga"
+
+msgctxt "#12011"
+msgid "Return to videos window"
+msgstr "Atpakaļ pie video loga"
+
+msgctxt "#12021"
+msgid "Start from beginning"
+msgstr "Sākt no sākuma"
+
+msgctxt "#12022"
+msgid "Resume from %s"
+msgstr "Atsākt no %s"
 
 msgctxt "#12310"
 msgid "0"
@@ -1473,9 +3665,217 @@ msgctxt "#12319"
 msgid "9"
 msgstr "9"
 
+msgctxt "#12320"
+msgid "c"
+msgstr "c"
+
 msgctxt "#12321"
 msgid "Ok"
 msgstr "Labi"
+
+msgctxt "#12322"
+msgid "*"
+msgstr "*"
+
+msgctxt "#12325"
+msgid "Locked! Enter code..."
+msgstr "Slēgts! Ievadiet kodu..."
+
+msgctxt "#12326"
+msgid "Enter password"
+msgstr "Ievadiet paroli"
+
+msgctxt "#12327"
+msgid "Enter master code"
+msgstr "Ievadiet galveno kodu"
+
+msgctxt "#12328"
+msgid "Enter unlock code"
+msgstr "Ievadiet slēdzenes kodu"
+
+msgctxt "#12329"
+msgid "or press C to cancel"
+msgstr "vai spiediet C, lai atceltu"
+
+msgctxt "#12330"
+msgid "Enter gamepad button combo and"
+msgstr "Ievadiet spēļvadnes kombinēto pogu un"
+
+msgctxt "#12331"
+msgid "press OK, or Back to cancel"
+msgstr "nospiediet OK vai Atpakaļ, lai atceltu"
+
+msgctxt "#12332"
+msgid "Set lock"
+msgstr "Iestatīt slēdzeni"
+
+msgctxt "#12333"
+msgid "Unlock"
+msgstr "Atbloķēt"
+
+msgctxt "#12334"
+msgid "Reset lock"
+msgstr "Atiestatīt slēdzeni"
+
+msgctxt "#12335"
+msgid "Remove lock"
+msgstr "Noņemt slēdzeni"
+
+msgctxt "#12337"
+msgid "Numeric password"
+msgstr "Ciparu parole"
+
+msgctxt "#12338"
+msgid "Gamepad button combo"
+msgstr "Spēļvadnes kombinētā poga"
+
+msgctxt "#12339"
+msgid "Full-text password"
+msgstr "Pilna teksta parole"
+
+msgctxt "#12340"
+msgid "Enter new password"
+msgstr "Ievadiet jauno paroli"
+
+msgctxt "#12341"
+msgid "Re-Enter new password"
+msgstr "Ievadiet vēlreiz jauno paroli"
+
+msgctxt "#12342"
+msgid "Incorrect password,"
+msgstr "Nepareiza parole,"
+
+msgctxt "#12343"
+msgid "retries left "
+msgstr "atlikuši mēģinājumi"
+
+msgctxt "#12344"
+msgid "Passwords entered did not match."
+msgstr "Ievadītās paroles nesakrīt."
+
+msgctxt "#12345"
+msgid "Access denied"
+msgstr "Piekļuve liegta"
+
+msgctxt "#12346"
+msgid "Password retry limit exceeded."
+msgstr "Paroles ievades limits ir pārsniegts."
+
+msgctxt "#12348"
+msgid "Item locked"
+msgstr "Ieraksts aizslēgts"
+
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Atjaunina video bibliotēkas mākslu"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "Apstrāde %s"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "Mākslas kešatmiņu video bibliotēkā ir jāatjaunina."
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Lejupielāde nav nepieciešama."
+
+msgctxt "#12353"
+msgid "Reactivate lock"
+msgstr "Atjaunot slēdzeni"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Vai vēlaties tagad to atjaunināt?"
+
+msgctxt "#12356"
+msgid "Change lock"
+msgstr "Mainīt slēdzeni"
+
+msgctxt "#12357"
+msgid "Source lock"
+msgstr "Avota slēdzene"
+
+msgctxt "#12358"
+msgid "Password entry was blank. Try again."
+msgstr "Paroles ievade bija tukša. Mēģiniet vēlreiz."
+
+msgctxt "#12360"
+msgid "Master lock"
+msgstr "Galvenā slēdzene"
+
+msgctxt "#12362"
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Izslēgt sistēmu, ja galvenās atslēgas ievadīšanas reizes izsmeltas"
+
+msgctxt "#12367"
+msgid "Master code is not valid"
+msgstr "Galvenais kods ir nederīgs"
+
+msgctxt "#12368"
+msgid "Please enter a valid master code"
+msgstr "Lūdzu, ievadiet derīgu galveno kodu"
+
+msgctxt "#12373"
+msgid "Settings & file manager"
+msgstr "Iestatījumi & failu pārvaldnieks"
+
+msgctxt "#12376"
+msgid "Set as default for all videos"
+msgstr "Iestatīt kā noklusējumu visiem video"
+
+msgctxt "#12377"
+msgid "This will reset any previously saved values"
+msgstr "Šī darbība atiestatīs visas iepriekš saglabātās vērtības"
+
+msgctxt "#12378"
+msgid "Amount of time to display each image"
+msgstr "Laiks, kurā jāparāda katrs attēls"
+
+msgctxt "#12379"
+msgid "Use pan and zoom effects"
+msgstr "Izmantot bīdīšanas un zooma efektu"
+
+msgctxt "#12383"
+msgid "12 hour clock"
+msgstr "12 stundu pulkstenis"
+
+msgctxt "#12384"
+msgid "24 hour clock"
+msgstr "24 stundu pulkstenis"
+
+msgctxt "#12385"
+msgid "Day/Month"
+msgstr "Diena/Mēnesis"
+
+msgctxt "#12386"
+msgid "Month/Day"
+msgstr "Mēnesis/Diena"
+
+msgctxt "#12390"
+msgid "System uptime"
+msgstr "Sistēmas mašīnlaiks"
+
+msgctxt "#12391"
+msgid "Minutes"
+msgstr "Minūtes"
+
+msgctxt "#12392"
+msgid "Hours"
+msgstr "Stundas"
+
+msgctxt "#12393"
+msgid "Days"
+msgstr "Dienas"
+
+msgctxt "#12394"
+msgid "Total uptime"
+msgstr "Kopējais mašīnlaiks"
+
+msgctxt "#12395"
+msgid "Battery level"
+msgstr "Baterijas līmenis"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -1485,9 +3885,373 @@ msgctxt "#12900"
 msgid "Screensaver"
 msgstr "Ekrānsaudzētājs"
 
+msgctxt "#12901"
+msgid "Fullscreen OSD"
+msgstr "Pilnekrāna OSD"
+
+msgctxt "#13000"
+msgid "System"
+msgstr "Sistēma"
+
+msgctxt "#13001"
+msgid "Immediate HD spindown"
+msgstr "Tūlītēja HD apstāšanās"
+
+msgctxt "#13002"
+msgid "Video only"
+msgstr "Tikai video"
+
+msgctxt "#13003"
+msgid "- Delay"
+msgstr "- Aizkave"
+
+msgctxt "#13004"
+msgid "- Minimum file duration"
+msgstr "- Minimālais faila ilgums"
+
+msgctxt "#13005"
+msgid "Shutdown"
+msgstr "Izslēgšana"
+
+msgctxt "#13008"
+msgid "Shutdown function"
+msgstr "Izslēgšanas funkcija"
+
+msgctxt "#13009"
+msgid "Quit"
+msgstr "Beigt"
+
+msgctxt "#13010"
+msgid "Hibernate"
+msgstr "Hibernēt"
+
+msgctxt "#13011"
+msgid "Suspend"
+msgstr "Gatavības režīms"
+
+msgctxt "#13012"
+msgid "Exit"
+msgstr "Iziet"
+
+msgctxt "#13013"
+msgid "Reboot"
+msgstr "Atsāknēt"
+
+msgctxt "#13015"
+msgid "Power button action"
+msgstr "Ieslēgšanas pogas darbība"
+
+msgctxt "#13016"
+msgid "Power off System"
+msgstr "Izslēgt datorsistēmu"
+
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "Kavēt izslēgšanu nelietošanas laikā"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "Atļaut izslēgšanu nelietošanas laikā"
+
+msgctxt "#13020"
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Vai darbojas cita sesija, varbūt caur ssh?"
+
+msgctxt "#13021"
+msgid "Mounted removable harddrive"
+msgstr "Noņemamais disks piemontēts"
+
+msgctxt "#13022"
+msgid "Unsafe device removal"
+msgstr "Nedroša ierīces noņemšana"
+
+msgctxt "#13023"
+msgid "Successfully removed device"
+msgstr "Ierīce noņemta veiksmīgi"
+
+msgctxt "#13024"
+msgid "Joystick plugged"
+msgstr "Pievienota kursorsvira"
+
+msgctxt "#13025"
+msgid "Joystick unplugged"
+msgstr "Kursorsvira atvienota"
+
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "Piekļūstot mēģināt pamodināt attālus serverus"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Wake on Lan (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Gaidu savienojumu ar tīklu..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Neizdevās izpildīt Wake on Lan!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Gaidu servera pamošanos..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Paplašināti gaida servera pamošanos..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Gaidu servisu palaišanos..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "MAC atklāšana"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Atjaunināts %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Atrada par %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Neizdevās par %s"
+
+msgctxt "#13050"
+msgid "Running low on battery"
+msgstr "Baterija iet uz beigām"
+
+msgctxt "#13100"
+msgid "Flicker filter"
+msgstr "Mirgoņas filtrs"
+
+msgctxt "#13101"
+msgid "Let driver choose (requires restart)"
+msgstr "Ļaut dzinim izvēlēties (nepieciešams pārstartēt)"
+
+msgctxt "#13105"
+msgid "Vertical blank sync"
+msgstr "Vertikālā tukšuma sinhronizācija"
+
+msgctxt "#13106"
+msgid "Disabled"
+msgstr "Izslēgts"
+
+msgctxt "#13107"
+msgid "Enabled during video playback"
+msgstr "Ieslēgts, spēlējot video"
+
+msgctxt "#13108"
+msgid "Always enabled"
+msgstr "Vienmēr ieslēgts"
+
+msgctxt "#13109"
+msgid "Test & apply resolution"
+msgstr "Testēt & pielietot izšķirtspēju"
+
+msgctxt "#13110"
+msgid "Save resolution?"
+msgstr "Saglabāt izšķirtspēju?"
+
+msgctxt "#13112"
+msgid "High quality upscaling"
+msgstr "Palielināt ar augstu kvalitāti"
+
+msgctxt "#13113"
+msgid "Disabled"
+msgstr "Izslēgts"
+
+msgctxt "#13114"
+msgid "Enabled for SD content"
+msgstr "Ieslēgts SD saturam"
+
+msgctxt "#13115"
+msgid "Always enabled"
+msgstr "Vienmēr ieslēgts"
+
+msgctxt "#13116"
+msgid "Upscaling method"
+msgstr "Palielināšanas metode"
+
+msgctxt "#13117"
+msgid "Bicubic"
+msgstr "Bikubiska"
+
+msgctxt "#13118"
+msgid "Lanczos"
+msgstr "Lanczos"
+
+msgctxt "#13119"
+msgid "Sinc"
+msgstr "Sinc"
+
 msgctxt "#13120"
 msgid "VDPAU"
 msgstr "VDPAU"
+
+msgctxt "#13121"
+msgid "VDPAU HQ Upscaling level"
+msgstr "VDPAU HQ palielināšanas līmenis"
+
+msgctxt "#13130"
+msgid "Blank other displays"
+msgstr "Aptumšot pārējos ekrānus"
+
+msgctxt "#13131"
+msgid "Disabled"
+msgstr "Izslēgts"
+
+msgctxt "#13132"
+msgid "Blank displays"
+msgstr "Aptumšoti ekrāni"
+
+msgctxt "#13140"
+msgid "Active connections detected!"
+msgstr "Atklāti aktīvi savienojumi!"
+
+msgctxt "#13141"
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Ja turpināsit, iespējams, vairs nevarēsit kontrolēt"
+
+msgctxt "#13142"
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "XBMC. Vai tiešām vēlaties apturēt notikumu serveri"
+
+msgctxt "#13144"
+msgid "Change Apple Remote mode?"
+msgstr "Vai mainīt Apple tālvadības režīmu?"
+
+msgctxt "#13145"
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Ja pašlaik lietojat Apple tālvadību, lai kontrolētu"
+
+msgctxt "#13146"
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC, šī iestatījuma izmaiņa var ietekmēt spēju"
+
+msgctxt "#13147"
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "turpināt tā kontroli. Vai vēlaties turpināt?"
+
+msgctxt "#13159"
+msgid "Subnet mask"
+msgstr "Apakštīkla maska"
+
+msgctxt "#13160"
+msgid "Gateway"
+msgstr "Vārteja"
+
+msgctxt "#13161"
+msgid "Primary DNS"
+msgstr "Primārais DNS"
+
+msgctxt "#13170"
+msgid "Never"
+msgstr "Nekad"
+
+msgctxt "#13171"
+msgid "Immediately"
+msgstr "Tūlīt"
+
+msgctxt "#13172"
+msgid "After %i secs"
+msgstr "Pēc %i sekundēm"
+
+msgctxt "#13173"
+msgid "HDD install date:"
+msgstr "HDD instalēšanas datums:"
+
+msgctxt "#13174"
+msgid "HDD power cycle count:"
+msgstr "HDD dabības ciklu skaits:"
+
+msgctxt "#13200"
+msgid "Profiles"
+msgstr "Profili"
+
+msgctxt "#13201"
+msgid "Delete profile '%s'?"
+msgstr "Dzēst profilu '%s'?"
+
+msgctxt "#13204"
+msgid "Last loaded profile:"
+msgstr "Pēdējais ielādētais profils:"
+
+msgctxt "#13205"
+msgid "Unknown"
+msgstr "nezināms"
+
+msgctxt "#13206"
+msgid "Overwrite"
+msgstr "Pārrakstīt"
+
+msgctxt "#13208"
+msgid "Alarm clock"
+msgstr "Modinātājs"
+
+msgctxt "#13209"
+msgid "Alarm clock interval (in minutes)"
+msgstr "Modinātāja intervāls (minūtēs)"
+
+msgctxt "#13210"
+msgid "Started, alarm in %im"
+msgstr "Sākts, modinās pēc %im"
+
+msgctxt "#13211"
+msgid "Alarm!"
+msgstr "Modinātājs!"
+
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "Atcelts ar palikušām %im%"
+
+msgctxt "#13213"
+msgid "%2.0fm"
+msgstr "%2.0fm"
+
+msgctxt "#13214"
+msgid "%2.0fs"
+msgstr "%2.0fs"
+
+msgctxt "#13249"
+msgid "Search for subtitles in RARs"
+msgstr "Meklēt subtitrus RAR failos"
+
+msgctxt "#13250"
+msgid "Browse for subtitle..."
+msgstr "Pārlūkot subtitrus..."
+
+msgctxt "#13251"
+msgid "Move item"
+msgstr "Pārvietot ierakstu"
+
+msgctxt "#13252"
+msgid "Move item here"
+msgstr "Pārvietot ierakstu šeit"
+
+msgctxt "#13253"
+msgid "Cancel move"
+msgstr "Atcelt pārvietošanu"
+
+msgctxt "#13270"
+msgid "Hardware:"
+msgstr "Aparatūra:"
+
+msgctxt "#13271"
+msgid "CPU Usage:"
+msgstr "CPU lietojums:"
+
+msgctxt "#13274"
+msgid "Connected, but no DNS is available."
+msgstr "Savienots, bet neviens DNS nedarbojas."
+
+msgctxt "#13275"
+msgid "Hard Disk"
+msgstr "Cietais disks"
 
 msgctxt "#13276"
 msgid "DVD-ROM"
@@ -1501,29 +4265,545 @@ msgctxt "#13278"
 msgid "Default"
 msgstr "Noklusētais"
 
+msgctxt "#13279"
+msgid "Network"
+msgstr "Tīkls"
+
 msgctxt "#13280"
 msgid "Video"
 msgstr "Video"
+
+msgctxt "#13281"
+msgid "Hardware"
+msgstr "Aparatūra"
+
+msgctxt "#13283"
+msgid "Operating system:"
+msgstr "Operētājsistēma:"
+
+msgctxt "#13284"
+msgid "CPU speed:"
+msgstr "CPU ātrums:"
+
+msgctxt "#13286"
+msgid "Video encoder:"
+msgstr "Video kodētājs:"
+
+msgctxt "#13287"
+msgid "Screen resolution:"
+msgstr "Ekrāna izšķirtspēja:"
+
+msgctxt "#13292"
+msgid "A/V cable:"
+msgstr "A/V kabelis:"
+
+msgctxt "#13294"
+msgid "DVD region:"
+msgstr "DVD reģions:"
+
+msgctxt "#13295"
+msgid "Internet:"
+msgstr "Internets:"
+
+msgctxt "#13296"
+msgid "Connected"
+msgstr "Savienots"
+
+msgctxt "#13297"
+msgid "Not connected. Check network settings."
+msgstr "Nav savienots. Pārbaudiet tīkla iestatījumus."
+
+msgctxt "#13299"
+msgid "Target temperature"
+msgstr "Mērķa temperatūra"
+
+msgctxt "#13300"
+msgid "Fan speed"
+msgstr "Ventilatora ātrums"
+
+msgctxt "#13301"
+msgid "Auto temperature control"
+msgstr "Auto temperatūras kontrole"
+
+msgctxt "#13302"
+msgid "Fan speed override"
+msgstr "Ignorēt ventilatora ātrumu"
+
+msgctxt "#13303"
+msgid "Fonts"
+msgstr "Fonti"
+
+msgctxt "#13304"
+msgid "Enable flipping bi-directional strings"
+msgstr "Ieslēgt divvirzienu virkņu apgriešanu"
+
+msgctxt "#13305"
+msgid "Show RSS news feeds"
+msgstr "Rādīt RSS ziņu barotnes"
+
+msgctxt "#13306"
+msgid "Show parent folder items"
+msgstr "Rādīt vecāku mapes ierakstus"
+
+msgctxt "#13307"
+msgid "Track naming template"
+msgstr "Celiņa nosaukšanas veidne"
+
+msgctxt "#13308"
+msgid "Do you wish to reboot your system"
+msgstr "Vai vēlies pārstartēt datorsistēmu"
+
+msgctxt "#13309"
+msgid "instead of just XBMC?"
+msgstr "nevis tikai XBMC?"
+
+msgctxt "#13310"
+msgid "Zoom effect"
+msgstr "Zoom efekts"
+
+msgctxt "#13311"
+msgid "Float effect"
+msgstr "Peldošs efekts"
+
+msgctxt "#13312"
+msgid "Black bar reduction"
+msgstr "Melno malu samazināšana"
+
+msgctxt "#13313"
+msgid "Restart"
+msgstr "Pārstartēt"
+
+msgctxt "#13314"
+msgid "Crossfade between songs"
+msgstr "Pārklāšanās starp dziesmām"
+
+msgctxt "#13315"
+msgid "Regenerate thumbnails"
+msgstr "Pārģenerēt sīktēlus"
+
+msgctxt "#13316"
+msgid "Recursive thumbnails"
+msgstr "Rekursīvi sīktēli"
+
+msgctxt "#13317"
+msgid "View slideshow"
+msgstr "Skatīt slīdīti"
+
+msgctxt "#13318"
+msgid "Recursive slideshow"
+msgstr "Rekursīva slīdīte"
 
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Stereo"
 
+msgctxt "#13321"
+msgid "Left only"
+msgstr "Tikai pa kreisi"
+
+msgctxt "#13322"
+msgid "Right only"
+msgstr "Tikai pa labi"
+
+msgctxt "#13323"
+msgid "Enable karaoke support"
+msgstr "Ieslēgt karaoke atbalstu"
+
+msgctxt "#13324"
+msgid "Background transparency"
+msgstr "Fona caurspīdīgums"
+
+msgctxt "#13325"
+msgid "Foreground transparency"
+msgstr "Priekšplāna curspīdīgums"
+
+msgctxt "#13326"
+msgid "A/V delay"
+msgstr "A/V aizkave"
+
 msgctxt "#13327"
 msgid "Karaoke"
 msgstr "Karaoke"
+
+msgctxt "#13328"
+msgid "%s not found"
+msgstr "%s nav atrasts"
+
+msgctxt "#13329"
+msgid "Error opening %s"
+msgstr "Kļūda atverot %s"
+
+msgctxt "#13330"
+msgid "Unable to load %s"
+msgstr "Nevar ielādēt %s"
+
+msgctxt "#13331"
+msgid "Error: Out of memory"
+msgstr "Kļūda: atmiņa ir pilna"
+
+msgctxt "#13332"
+msgid "Move up"
+msgstr "Aušup"
+
+msgctxt "#13333"
+msgid "Move down"
+msgstr "Lejup"
+
+msgctxt "#13334"
+msgid "Edit label"
+msgstr "Labot etiķeti"
+
+msgctxt "#13335"
+msgid "Make default"
+msgstr "Padarīt par noklusējumu"
+
+msgctxt "#13336"
+msgid "Remove button"
+msgstr "Noņemt pogu"
+
+msgctxt "#13340"
+msgid "Leave as is"
+msgstr "Atstāt, kā ir"
+
+msgctxt "#13341"
+msgid "Green"
+msgstr "Zaļš"
+
+msgctxt "#13342"
+msgid "Orange"
+msgstr "Oranžs"
+
+msgctxt "#13343"
+msgid "Red"
+msgstr "Sarkans"
+
+msgctxt "#13344"
+msgid "Cycle"
+msgstr "Cikls"
+
+msgctxt "#13345"
+msgid "Switch LED off on playback"
+msgstr "Izslēgt LED, kad atskaņo"
+
+msgctxt "#13346"
+msgid "Movie information"
+msgstr "Informācija par filmu"
+
+msgctxt "#13347"
+msgid "Queue item"
+msgstr "Ierindot ierakstu"
+
+msgctxt "#13348"
+msgid "Search IMDb..."
+msgstr "Meklē IMDb..."
+
+msgctxt "#13349"
+msgid "Scan for new content"
+msgstr "Meklē jaunu saturu"
+
+msgctxt "#13350"
+msgid "Now playing..."
+msgstr "Pašlaik atskaņoju..."
+
+msgctxt "#13351"
+msgid "Album information"
+msgstr "Albuma informācija"
+
+msgctxt "#13352"
+msgid "Scan item to library"
+msgstr "Skenēt ierakstu bibliotēkā"
+
+msgctxt "#13353"
+msgid "Stop scanning"
+msgstr "Apturēt skenēšanu"
+
+msgctxt "#13354"
+msgid "Render method"
+msgstr "Renderēšanas metode"
+
+msgctxt "#13355"
+msgid "Low quality pixel shader"
+msgstr "Zemas kvalitātes pikseļu ēnotājs"
+
+msgctxt "#13356"
+msgid "Hardware overlays"
+msgstr "Aparatūras pārklājumi"
+
+msgctxt "#13357"
+msgid "High quality pixel shader"
+msgstr "Augstas kvalitātes pikseļu ēnotājs"
+
+msgctxt "#13358"
+msgid "Play item"
+msgstr "Atskaņot ierakstu"
+
+msgctxt "#13359"
+msgid "Set artist thumb"
+msgstr "Iestatīt izpildītāja sīktēlu"
+
+msgctxt "#13360"
+msgid "Automatically generate thumbnails"
+msgstr "Automātiski ģenerēt sīktēlus"
+
+msgctxt "#13361"
+msgid "Enable voice"
+msgstr "Ieslēgt balsi"
+
+msgctxt "#13375"
+msgid "Enable device"
+msgstr "Ieslēgt ierīci"
+
+msgctxt "#13376"
+msgid "Volume"
+msgstr "Skaļums"
+
+msgctxt "#13377"
+msgid "Default view mode"
+msgstr "Noklusētais skata režīms"
+
+msgctxt "#13378"
+msgid "Default brightness"
+msgstr "Noklusētais spilgtums"
+
+msgctxt "#13379"
+msgid "Default contrast"
+msgstr "Noklusētais kontrasts"
+
+msgctxt "#13380"
+msgid "Default gamma"
+msgstr "Noklusētā gamma"
+
+msgctxt "#13381"
+msgid "Resume video"
+msgstr "Atsākt video"
+
+msgctxt "#13382"
+msgid "Voice mask - Port 1"
+msgstr "Balss maska - Ports 1"
+
+msgctxt "#13383"
+msgid "Voice mask - Port 2"
+msgstr "Balss maska - Ports 2"
+
+msgctxt "#13384"
+msgid "Voice mask - Port 3"
+msgstr "Balss maska - Ports 3"
+
+msgctxt "#13385"
+msgid "Voice mask - Port 4"
+msgstr "Balss maska - Ports 4"
+
+msgctxt "#13386"
+msgid "Use time based seeking"
+msgstr "Izmantot novietošanu pēc laika"
+
+msgctxt "#13387"
+msgid "Track naming template - right"
+msgstr "Celiņa nosaukšanas veidne - pa labi"
+
+msgctxt "#13388"
+msgid "Preset"
+msgstr "Sagatave"
+
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "Nav pieejamas sagataves\nšai vizualizācijai"
+
+msgctxt "#13391"
+msgid "Eject/Load"
+msgstr "Izstumt/Ievilkt"
+
+msgctxt "#13393"
+msgid "Calculate size"
+msgstr "Izskaitļo izmēru"
+
+msgctxt "#13394"
+msgid "Calculating folder size"
+msgstr "Izskaitļo mapes izmēru"
+
+msgctxt "#13395"
+msgid "Video settings"
+msgstr "Video iestatījumi"
+
+msgctxt "#13396"
+msgid "Audio and subtitle settings"
+msgstr "Audio un subtitru iestatījumi"
+
+msgctxt "#13397"
+msgid "Enable subtitles"
+msgstr "Ieslēgt subtitrus"
 
 msgctxt "#13398"
 msgid "Shortcuts"
 msgstr "Saīsnes"
 
+msgctxt "#13399"
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Vārdu ignorēšana kārtojot (piem.,\\\"the\\\")"
+
+msgctxt "#13400"
+msgid "Crossfade between songs on the same album"
+msgstr "Pārklāšanās starp dziesmām vienā albumā"
+
+msgctxt "#13401"
+msgid "Browse for %s"
+msgstr "Pārlūkot %s"
+
+msgctxt "#13402"
+msgid "Show track position"
+msgstr "Rādīt pozīciju celiņā"
+
+msgctxt "#13403"
+msgid "Clear default"
+msgstr "Notīrīt noklusējumu"
+
+msgctxt "#13404"
+msgid "Resume"
+msgstr "Atsākt"
+
+msgctxt "#13405"
+msgid "Get thumb"
+msgstr "Iegūt sīktēlu"
+
+msgctxt "#13406"
+msgid "Picture information"
+msgstr "Attēla informācija"
+
+msgctxt "#13407"
+msgid "%s presets"
+msgstr "%s sagataves"
+
+msgctxt "#13408"
+msgid "(IMDb user rating)"
+msgstr "(IMDb lietotāju vērtējums)"
+
 msgctxt "#13409"
 msgid "Top 250"
 msgstr "Top 250"
 
+msgctxt "#13410"
+msgid "Tune in on Last.fm"
+msgstr "Uzregulēt Last.fm"
+
+msgctxt "#13411"
+msgid "Minimum fan speed"
+msgstr "Minimālais ventilatora ātrums"
+
+msgctxt "#13412"
+msgid "Play from here"
+msgstr "Atskaņot no šīs vietas"
+
+msgctxt "#13413"
+msgid "Downloading"
+msgstr "Lejupielādē"
+
+msgctxt "#13414"
+msgid "Include artists who appear only on compilations"
+msgstr "Iekļaut izpildītājus, kuri parādās tikai kompilācijās"
+
+msgctxt "#13415"
+msgid "Render method"
+msgstr "Renderēšanas metode"
+
+msgctxt "#13416"
+msgid "Auto detect"
+msgstr "Auto noteikšana"
+
+msgctxt "#13417"
+msgid "Basic shaders (ARB)"
+msgstr "Pamata šeideri (ARB)"
+
+msgctxt "#13418"
+msgid "Advanced shaders (GLSL)"
+msgstr "Papildu šeideri (GLSL)"
+
+msgctxt "#13419"
+msgid "Software"
+msgstr "Programmatūra"
+
+msgctxt "#13420"
+msgid "Remove safely"
+msgstr "Droši noņemt"
+
 msgctxt "#13421"
 msgid "VDPAU"
 msgstr "VDPAU"
+
+msgctxt "#13422"
+msgid "Start slideshow here"
+msgstr "Sākt slīdīti šeit"
+
+msgctxt "#13423"
+msgid "Remember for this path"
+msgstr "Atcerieties šo ceļu"
+
+msgctxt "#13424"
+msgid "Use pixel buffer objects"
+msgstr "Izmantot pikseļu bufera objektus"
+
+msgctxt "#13425"
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Atļaut aparatūras paātrinājumu (VDPAU)"
+
+msgctxt "#13426"
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Atļaut aparatūras paātrinājumu (VAAPI)"
+
+msgctxt "#13427"
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Atļaut aparatūras paātrinājumu (DXVA2)"
+
+msgctxt "#13428"
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Atļaut aparatūras paātrinājumu (CrystalHD)"
+
+msgctxt "#13429"
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Atļaut aparatūras paātrinājumu (VDADecoder)"
+
+msgctxt "#13430"
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Atļaut aparatūras paātrinājumu (OpenMax)"
+
+msgctxt "#13431"
+msgid "Pixel Shaders"
+msgstr "Pikseļu ēnotāji"
+
+msgctxt "#13432"
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "Atļaut aparatūras paātrinājumu (VideoToolbox)"
+
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Atskaņot nākamo video automātiski"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Atskaņot tikai šo"
+
+msgctxt "#13500"
+msgid "A/V sync method"
+msgstr "A/V sinhr. metode"
+
+msgctxt "#13501"
+msgid "Audio clock"
+msgstr "Audio pulkstenis"
+
+msgctxt "#13502"
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "Video pulkstenis (Nomet/piekāš audio)"
+
+msgctxt "#13503"
+msgid "Video clock (Resample audio)"
+msgstr "Video pulkstenis (pārsemplo audio)"
+
+msgctxt "#13505"
+msgid "Resample quality"
+msgstr "Pārsempla kvalitāte"
+
+msgctxt "#13506"
+msgid "Low(fast)"
+msgstr "Zems(ātrs)"
 
 msgctxt "#13507"
 msgid "Medium"
@@ -1533,13 +4813,237 @@ msgctxt "#13508"
 msgid "High"
 msgstr "Augsts"
 
+msgctxt "#13509"
+msgid "Really high(slow!)"
+msgstr "Patiešām augsts(lēns!)"
+
+msgctxt "#13510"
+msgid "Sync playback to display"
+msgstr "Sinhr. atskaņošanu ar ekrānu"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Izvēlēties mākslu"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Pašreizējā māksla"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Attālā māksla"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Lokālā māksla"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Nav māksla"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "PIevienot mākslu"
+
+msgctxt "#13550"
+msgid "Pause during refresh rate change"
+msgstr "Pauze, samainot pārzīmēšanas ātrumu"
+
+msgctxt "#13551"
+msgid "Off"
+msgstr "Izslēgts"
+
+msgctxt "#13552"
+msgid "%.1f Second"
+msgstr "%.1f sekunde"
+
+msgctxt "#13553"
+msgid "%.1f Seconds"
+msgstr "%.1f sekundes"
+
+msgctxt "#13600"
+msgid "Apple remote"
+msgstr "Apple tālvadība"
+
+msgctxt "#13602"
+msgid "Allow start of XBMC using the remote"
+msgstr "Atļaut ieslēgt XBMC ar tālvadības pulti"
+
+msgctxt "#13603"
+msgid "Sequence delay time"
+msgstr "Secības aizkaves laiks"
+
+msgctxt "#13610"
+msgid "Disabled"
+msgstr "Izslēgts"
+
+msgctxt "#13611"
+msgid "Standard"
+msgstr "Standarta"
+
+msgctxt "#13612"
+msgid "Universal Remote"
+msgstr "Universālā pults"
+
+msgctxt "#13613"
+msgid "Multi Remote (Harmony)"
+msgstr "Multi tālvadība (Harmony)"
+
+msgctxt "#13620"
+msgid "Apple Remote Error"
+msgstr "Apple tālvadības kļūda"
+
+msgctxt "#13621"
+msgid "Apple Remote support could be enabled."
+msgstr "Apple tālvadības atbalstu var ieslēgt."
+
+msgctxt "#14000"
+msgid "Stack"
+msgstr "Ielikt stekā"
+
+msgctxt "#14001"
+msgid "Unstack"
+msgstr "Izjaukt no steka"
+
+msgctxt "#14003"
+msgid "Downloading playlist file..."
+msgstr "Lejupielādēju spēļsaraksta failu..."
+
+msgctxt "#14004"
+msgid "Downloading streams list..."
+msgstr "Lejupielādēju straumju sarakstu..."
+
+msgctxt "#14005"
+msgid "Parsing streams list..."
+msgstr "Parsēju straumju sarakstu..."
+
+msgctxt "#14006"
+msgid "Downloading streams list failed"
+msgstr "Plūsmu saraksta lejupielāde neizdevās"
+
+msgctxt "#14007"
+msgid "Downloading playlist file failed"
+msgstr "Neizdevās lejupielādēt spēļsaraksta failu"
+
+msgctxt "#14009"
+msgid "Games directory"
+msgstr "Spēļu direktorija"
+
+msgctxt "#14010"
+msgid "Auto switch to thumbs based on"
+msgstr "Auto pārslēgšanās uz sīktēliem, pamatojoties uz"
+
+msgctxt "#14011"
+msgid "Enable auto switching to thumbs view"
+msgstr "Ieslēgt auto pārslēgšanu uz sīktēlu skatu"
+
+msgctxt "#14012"
+msgid "- Use large icons"
+msgstr "- Lietot lielas ikonas"
+
+msgctxt "#14013"
+msgid "- Switch based on"
+msgstr "- Pārslēgt pēc"
+
+msgctxt "#14014"
+msgid "- Percentage"
+msgstr "- Procenti"
+
+msgctxt "#14015"
+msgid "No files and at least one thumb"
+msgstr "Nav failu un vismaz viens sīktēls"
+
+msgctxt "#14016"
+msgid "At least one file and thumb"
+msgstr "Vismaz viens fails un sīktēls"
+
+msgctxt "#14017"
+msgid "Percentage of thumbs"
+msgstr "Sīktēlu procenti"
+
+msgctxt "#14018"
+msgid "View options"
+msgstr "Skata opcijas"
+
+msgctxt "#14019"
+msgid "Change area code 1"
+msgstr "Mainīt apgabala kodu 1"
+
+msgctxt "#14020"
+msgid "Change area code 2"
+msgstr "Mainīt apgabala kodu 2"
+
+msgctxt "#14021"
+msgid "Change area code 3"
+msgstr "Mainīt apgabala kodu 3"
+
+msgctxt "#14022"
+msgid "Library"
+msgstr "Bibliotēka"
+
+msgctxt "#14023"
+msgid "No TV"
+msgstr "Nav TV"
+
+msgctxt "#14024"
+msgid "Enter the nearest large town"
+msgstr "Ievadiet tuvāko lielpilsētu"
+
+msgctxt "#14026"
+msgid "Video cache - DVD-ROM"
+msgstr "Video kešatmiņa - DVD-ROM"
+
+msgctxt "#14027"
+msgid "Local Network"
+msgstr "Lokālais tīkls"
+
 msgctxt "#14028"
 msgid "Internet"
 msgstr "Internets"
 
+msgctxt "#14030"
+msgid "Audio cache - DVD-ROM"
+msgstr "Audio kešatmiņa - DVD-ROM"
+
+msgctxt "#14031"
+msgid "Local Network"
+msgstr "Lokālais tīkls"
+
 msgctxt "#14032"
 msgid "Internet"
 msgstr "Internets"
+
+msgctxt "#14034"
+msgid "DVD cache - DVD-ROM"
+msgstr "DVD kešatmiņa - DVD-ROM"
+
+msgctxt "#14035"
+msgid "Local Network"
+msgstr "Lokālais tīkls"
+
+msgctxt "#14036"
+msgid "Services"
+msgstr "Servisi"
+
+msgctxt "#14038"
+msgid "Network settings changed"
+msgstr "īkla iestatījumi mainījušies"
+
+msgctxt "#14039"
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC pieprasa pārstartēt, lai izmainītu"
+
+msgctxt "#14040"
+msgid "network setup.  Would you like to restart now?"
+msgstr "tīkla uzstādījumus. Vai vēlaties pārstartēt tagad?"
+
+msgctxt "#14041"
+msgid "Internet connection bandwidth limitation"
+msgstr "Interneta savienojuma caurlaidības ierobežošana"
+
+msgctxt "#14043"
+msgid "- Shutdown while playing"
+msgstr "- Izslēgšana, kamēr spēlē"
 
 msgctxt "#14044"
 msgid "%i min"
@@ -1569,25 +5073,293 @@ msgctxt "#14050"
 msgid "%i.0 dB"
 msgstr "%i.0 dB"
 
+msgctxt "#14051"
+msgid "Time format"
+msgstr "Laika formāts"
+
+msgctxt "#14052"
+msgid "Date format"
+msgstr "Datuma formāts"
+
+msgctxt "#14053"
+msgid "GUI filters"
+msgstr "GUI filtri"
+
+msgctxt "#14055"
+msgid "Use background scanning"
+msgstr "Izmantot skenēšanu fonā"
+
+msgctxt "#14056"
+msgid "Stop scan"
+msgstr "Apturēt skenēšanu"
+
+msgctxt "#14057"
+msgid "Not possible while scanning for media info"
+msgstr "Nav iespējams, kamēr skenē medija info"
+
+msgctxt "#14058"
+msgid "Film grain effect"
+msgstr "Filmas graudains efekts"
+
+msgctxt "#14059"
+msgid "Search for thumbnails on remote shares"
+msgstr "Meklēt sīktēlus attālos koplietojumos"
+
+msgctxt "#14060"
+msgid "Unknown type cache - Internet"
+msgstr "Nezināma tipa kešatmiņa - internets"
+
 msgctxt "#14061"
 msgid "Auto"
 msgstr "Auto"
+
+msgctxt "#14062"
+msgid "Enter username for"
+msgstr "Ievadiet lietotājvārdu"
+
+msgctxt "#14063"
+msgid "Date & time"
+msgstr "Datums & laiks"
+
+msgctxt "#14064"
+msgid "Set date"
+msgstr "Iestatīt datumu"
+
+msgctxt "#14065"
+msgid "Set time"
+msgstr "Iestatīt laiku"
+
+msgctxt "#14066"
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Ievadiet laiku 24 stundu HH:MM formātā"
+
+msgctxt "#14067"
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Ievadiet datumu DD/MM/GGGG formātā"
+
+msgctxt "#14068"
+msgid "Enter the IP address"
+msgstr "Ievadiet IP adresi"
+
+msgctxt "#14069"
+msgid "Apply these settings now?"
+msgstr "Vai pielietot šos iestatījumus?"
+
+msgctxt "#14070"
+msgid "Apply changes now"
+msgstr "Tūlīt pielietot izmaiņas"
+
+msgctxt "#14071"
+msgid "Allow file renaming and deletion"
+msgstr "Atļaut pārdēvēt un dzēst failus"
+
+msgctxt "#14074"
+msgid "Set timezone"
+msgstr "Iestatīt laika joslu"
+
+msgctxt "#14075"
+msgid "Use daylight saving time"
+msgstr "Lietot ziemas/vasaras laiku"
+
+msgctxt "#14076"
+msgid "Add to favourites"
+msgstr "Pievienot izlasei"
+
+msgctxt "#14077"
+msgid "Remove from favourites"
+msgstr "Noņemt no izlases"
+
+msgctxt "#14078"
+msgid "Colours"
+msgstr "Krāsas"
+
+msgctxt "#14079"
+msgid "Timezone country"
+msgstr "Laika joslas valsts"
+
+msgctxt "#14080"
+msgid "Timezone"
+msgstr "Laika josla"
+
+msgctxt "#14081"
+msgid "File lists"
+msgstr "Failu saraksti"
+
+msgctxt "#14082"
+msgid "Show EXIF picture information"
+msgstr "Rādīt attēla EXIF informāciju"
+
+msgctxt "#14083"
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Izmantot pilnekrāna logu, nevis patiesi visu ekrānu"
+
+msgctxt "#14084"
+msgid "Queue songs on selection"
+msgstr "Ierindot dziesmas pie atlases"
+
+msgctxt "#14086"
+msgid "Playback"
+msgstr "Atskaņošana"
+
+msgctxt "#14087"
+msgid "DVDs"
+msgstr "DVD diski"
+
+msgctxt "#14088"
+msgid "Play DVDs automatically"
+msgstr "Automātiski atskaņot DVD"
+
+msgctxt "#14089"
+msgid "Font to use for text subtitles"
+msgstr "Teksta subtitru fonts"
+
+msgctxt "#14090"
+msgid "International"
+msgstr "Starptautisks"
+
+msgctxt "#14091"
+msgid "Character set"
+msgstr "Rakstzīmju kopa"
+
+msgctxt "#14092"
+msgid "Debugging"
+msgstr "Atkļūdošana"
+
+msgctxt "#14093"
+msgid "Security"
+msgstr "Drošība"
+
+msgctxt "#14094"
+msgid "Input devices"
+msgstr "Ievadierīces"
+
+msgctxt "#14095"
+msgid "Power saving"
+msgstr "Enerģijas taupīšana"
+
+msgctxt "#14096"
+msgid "Rip"
+msgstr "Izvilkt"
+
+msgctxt "#14097"
+msgid "Audio CD Insert Action"
+msgstr "Audio CD ievietošanas darbība"
 
 msgctxt "#14098"
 msgid "Play"
 msgstr "Atskaņot"
 
+msgctxt "#14099"
+msgid "Eject disc when CD ripping is complete"
+msgstr "Izstumt disku, kad izvilkšana no CD ir pabeigta"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "Apturēt izvilkšanu no CD"
+
+msgctxt "#15015"
+msgid "Remove"
+msgstr "Noņemt"
+
+msgctxt "#15016"
+msgid "Games"
+msgstr "Spēles"
+
 msgctxt "#15019"
 msgid "Add"
 msgstr "Pievienot"
+
+msgctxt "#15052"
+msgid "Password"
+msgstr "Parole"
+
+msgctxt "#15100"
+msgid "Library"
+msgstr "Bibliotēka"
+
+msgctxt "#15101"
+msgid "Database"
+msgstr "Datubāze"
+
+msgctxt "#15102"
+msgid "* All albums"
+msgstr "* Visi albumi"
+
+msgctxt "#15103"
+msgid "* All artists"
+msgstr "* Visi izpildītāji"
+
+msgctxt "#15104"
+msgid "* All songs"
+msgstr "* Visas dziesmas"
+
+msgctxt "#15105"
+msgid "* All genres"
+msgstr "* Visi žanri"
+
+msgctxt "#15107"
+msgid "Buffering..."
+msgstr "Buferoju..."
+
+msgctxt "#15108"
+msgid "Navigation sounds"
+msgstr "Navigācijas skaņas"
 
 msgctxt "#15109"
 msgid "Skin default"
 msgstr "Ādiņas noklusētie iestatījumi"
 
+msgctxt "#15111"
+msgid "Theme"
+msgstr "Tēma"
+
+msgctxt "#15112"
+msgid "Default theme"
+msgstr "Noklusētā tēma"
+
 msgctxt "#15200"
 msgid "Last.fm"
 msgstr "Last.fm"
+
+msgctxt "#15207"
+msgid "Connected"
+msgstr "Savienots"
+
+msgctxt "#15208"
+msgid "Not connected"
+msgstr "Nav savienots"
+
+msgctxt "#15213"
+msgid "Play using..."
+msgstr "Atskaņo ar..."
+
+msgctxt "#15215"
+msgid "Hide file names in thumbs view"
+msgstr "Slēpt failu nosaukumus sīktēlu skatā"
+
+msgctxt "#15216"
+msgid "Play in party mode"
+msgstr "Atskaņot ballītes režīmā"
+
+msgctxt "#15300"
+msgid "Path not found or invalid"
+msgstr "Ceļš nav atrasts vai ir nederīgs"
+
+msgctxt "#15301"
+msgid "Could not connect to network server"
+msgstr "Nevar savienoties ar tīkla serveri"
+
+msgctxt "#15302"
+msgid "No servers found"
+msgstr "Neviens serveris nav atrasts"
+
+msgctxt "#15303"
+msgid "Workgroup not found"
+msgstr "Darbgrupa nav atrasta"
+
+msgctxt "#15310"
+msgid "Opening multi-path source"
+msgstr "Multi-ceļa avota atvēršana"
 
 msgctxt "#15311"
 msgid "Path:"
@@ -1597,13 +5369,217 @@ msgctxt "#16000"
 msgid "General"
 msgstr "Vispārīgi"
 
+msgctxt "#16002"
+msgid "Internet lookup"
+msgstr "Uzmeklēšana internetā"
+
+msgctxt "#16003"
+msgid "Player"
+msgstr "Atskaņotājs"
+
+msgctxt "#16004"
+msgid "Play media from disc"
+msgstr "Atskaņot mediju no diska"
+
+msgctxt "#16008"
+msgid "Enter new title"
+msgstr "Ievadiet jauno nosaukumu"
+
+msgctxt "#16009"
+msgid "Enter the movie name"
+msgstr "Ievadiet filmas nosaukumu"
+
+msgctxt "#16010"
+msgid "Enter the profile name"
+msgstr "Ievadiet profila nosaukumu"
+
+msgctxt "#16011"
+msgid "Enter the album name"
+msgstr "Ievadiet albuma nosaukumu"
+
+msgctxt "#16012"
+msgid "Enter the playlist name"
+msgstr "Ievadiet spēļsaraksta nosaukumu"
+
+msgctxt "#16013"
+msgid "Enter new filename"
+msgstr "Ievadiet jaunu faila nosaukumu"
+
+msgctxt "#16014"
+msgid "Enter folder name"
+msgstr "Ievadiet mapes nosaukumu"
+
+msgctxt "#16015"
+msgid "Enter directory"
+msgstr "Ievadiet direktoriju"
+
+msgctxt "#16016"
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Pieejamās opcijas: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+msgctxt "#16017"
+msgid "Enter search string"
+msgstr "Ievadiet meklējamo virkni"
+
 msgctxt "#16018"
 msgid "None"
 msgstr "Nav"
 
+msgctxt "#16019"
+msgid "Auto select"
+msgstr "Automātiski atlasīt"
+
+msgctxt "#16020"
+msgid "De-interlace"
+msgstr "De-interlace"
+
+msgctxt "#16021"
+msgid "Bob"
+msgstr "Bob"
+
+msgctxt "#16022"
+msgid "Bob (inverted)"
+msgstr "Bob (invertētais)"
+
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Atceļu..."
+
+msgctxt "#16025"
+msgid "Enter the artist name"
+msgstr "Ievadiet izpildītāju"
+
+msgctxt "#16026"
+msgid "Playback failed"
+msgstr "Neizdevās atskaņot"
+
+msgctxt "#16027"
+msgid "One or more items failed to play."
+msgstr "Neizdevās atskaņot vienu vai vairākus ierakstus."
+
+msgctxt "#16028"
+msgid "Enter value"
+msgstr "Ievadiet vērtību"
+
+msgctxt "#16029"
+msgid "Check the log file for details."
+msgstr "Detalizētu info meklējiet žurnālā."
+
+msgctxt "#16030"
+msgid "Party mode aborted."
+msgstr "Ballītes režīms atsaukts."
+
+msgctxt "#16031"
+msgid "No matching songs in the library."
+msgstr "Bibliotēkā nav atbilstošas dziesmas."
+
+msgctxt "#16033"
+msgid "Could not open database."
+msgstr "Nevar atvērt datubāzi."
+
+msgctxt "#16034"
+msgid "Could not get songs from database."
+msgstr "Nevar iegūt dziesmas no datubāzes."
+
+msgctxt "#16035"
+msgid "Party mode playlist"
+msgstr "Balītes režīma spēļsaraksts"
+
+msgctxt "#16036"
+msgid "De-interlace (Half)"
+msgstr "De-interlace (daļējs)"
+
+msgctxt "#16037"
+msgid "Deinterlace video"
+msgstr "Deinterlace video"
+
+msgctxt "#16038"
+msgid "Deinterlace method"
+msgstr "Deinterlace metode"
+
+msgctxt "#16039"
+msgid "Off"
+msgstr "Izslēgts"
+
 msgctxt "#16040"
 msgid "Auto"
 msgstr "Auto"
+
+msgctxt "#16041"
+msgid "On"
+msgstr "Darbojas"
+
+msgctxt "#16100"
+msgid "All Videos"
+msgstr "Visi video"
+
+msgctxt "#16101"
+msgid "Unwatched"
+msgstr "Neskatītie"
+
+msgctxt "#16102"
+msgid "Watched"
+msgstr "Apskatītie"
+
+msgctxt "#16103"
+msgid "Mark as watched"
+msgstr "Atzīmēt kā apskatītu"
+
+msgctxt "#16104"
+msgid "Mark as unwatched"
+msgstr "Atzīmēt kā neskatītu"
+
+msgctxt "#16105"
+msgid "Edit title"
+msgstr "Labot nosaukumu"
+
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Pārvaldīt..."
+
+msgctxt "#16200"
+msgid "Operation was aborted"
+msgstr "Operāciju atsauca"
+
+msgctxt "#16201"
+msgid "Copy failed"
+msgstr "Neizdevās kopēt"
+
+msgctxt "#16202"
+msgid "Failed to copy at least one file"
+msgstr "Neizdevās kopēt vismaz vienu failu"
+
+msgctxt "#16203"
+msgid "Move failed"
+msgstr "Neizdevās pārvietot"
+
+msgctxt "#16204"
+msgid "Failed to move at least one file"
+msgstr "Neizdevās pārvietot vismaz vienu failu"
+
+msgctxt "#16205"
+msgid "Delete failed"
+msgstr "Neizdevās dzēst"
+
+msgctxt "#16206"
+msgid "Failed to delete at least one file"
+msgstr "Neizdevās dzēst vismaz vienu failu"
+
+msgctxt "#16300"
+msgid "Video scaling method"
+msgstr "Video mērogošanas metode"
+
+msgctxt "#16301"
+msgid "Nearest neighbour"
+msgstr "Tuvākais kaimiņš"
+
+msgctxt "#16302"
+msgid "Bilinear"
+msgstr "Bilineāri"
+
+msgctxt "#16303"
+msgid "Bicubic"
+msgstr "Bikubiska"
 
 msgctxt "#16304"
 msgid "Lanczos2"
@@ -1617,17 +5593,129 @@ msgctxt "#16306"
 msgid "Sinc8"
 msgstr "Sinc8"
 
+msgctxt "#16307"
+msgid "Bicubic (software)"
+msgstr "Bikubiski (programmatūra)"
+
+msgctxt "#16308"
+msgid "Lanczos (software)"
+msgstr "Lanczos (programmatūra)"
+
+msgctxt "#16309"
+msgid "Sinc (software)"
+msgstr "Sinc (programmatūra)"
+
+msgctxt "#16310"
+msgid "Temporal"
+msgstr "Pagaidu"
+
+msgctxt "#16311"
+msgid "Temporal/Spatial"
+msgstr "Pagaidu/Telpiski"
+
+msgctxt "#16312"
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU)Trokšņa samazināšana"
+
+msgctxt "#16313"
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU)Asums"
+
+msgctxt "#16314"
+msgid "Inverse Telecine"
+msgstr "Inversais telekino"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Auto"
+
+msgctxt "#16317"
+msgid "Temporal (Half)"
+msgstr "Pagaidu (daļējs)"
+
+msgctxt "#16318"
+msgid "Temporal/Spatial (Half)"
+msgstr "Pagaidu/Telpiski (daļējs)"
 
 msgctxt "#16319"
 msgid "DXVA"
 msgstr "DXVA"
 
+msgctxt "#16320"
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+msgctxt "#16321"
+msgid "DXVA Best"
+msgstr "DXVA labākais"
+
+msgctxt "#16322"
+msgid "Spline36"
+msgstr "Spline36"
+
+msgctxt "#16324"
+msgid "Software Blend"
+msgstr "Programmatūras Blend"
+
 msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr "VDPAU - Bob"
+
+msgctxt "#16400"
+msgid "Post-processing"
+msgstr "Pēcapstrāde"
+
+msgctxt "#17500"
+msgid "Display sleep timeout"
+msgstr "Ekrāna aizmigšanas noilgums"
+
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i MB"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i stundas"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i dienas"
+
+msgctxt "#19000"
+msgid "Switch to channel"
+msgstr "Pārslēgt uz kanālu"
+
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "Atdaliet meklēšanas vārdus ar AND, OR un/vai NOT,"
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr "vai izmantojiet frāzes, lai atrastu precīzu atbilstību, piemēram, \"The wizard of Oz\"."
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Atrast līdzīgas programmas"
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "Importē klientu EPG"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "PVR straumes informācija"
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr "Uztveršanas ierīce"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "Ierīces statuss"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Signāla kvalitāte"
 
 msgctxt "#19009"
 msgid "SNR"
@@ -1641,6 +5729,34 @@ msgctxt "#19011"
 msgid "UNC"
 msgstr "UNC"
 
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "PVR aizmugursistēma"
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr "Bezmaksas FTA"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Fiksēts"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Šifrēšana"
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr "PVR aizmugursistēma %i - %s"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "TV ieraksti"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Kanāli"
+
 msgctxt "#19020"
 msgid "TV"
 msgstr "TV"
@@ -1649,45 +5765,2397 @@ msgctxt "#19021"
 msgid "Radio"
 msgstr "Radio"
 
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Slēpts"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "TV kanāli"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Radio kanāli"
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "Gaidāmie ieraksti"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Pievieno taimeri..."
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "Nav meklēšanas rezultāti"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "Nav EPG ieraksti"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Kanāls"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Pašlaik"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "Nākamais"
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Laika skala"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Informācija"
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "Šī kanāla ierakstīšana jau sākta"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "%s nevar atskaņot. Detaļas redzamas žurnālā."
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "Šo ierakstu nevar atskaņot. Detaļas redzamas žurnālā."
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Rādīt signāla kvalitāti"
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "PVR aizmugursistēma neatbalsta."
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Vai tiešām paslēpt šo kanālu?"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Taimeris"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "Vai tiešām pārdēvēt šo ierakstu?"
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "Vai tiešām pārdēvēt šo taimeri?"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Ierakstu"
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "Lūdzu, pārbaudiet konfigurāciju vai skatiet detaļas žurnālā."
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "PVR klienti vēl nav ieslēgušies. Gaidiet PVR klientu ieslēgšanos vai skatiet detaļas žurnālā."
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Jauns kanāls"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Programmas info"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Grupu pārvaldība"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Rādīt kanālu"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Rādīt redzamos kanālus"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Rādīt slēptos kanālus"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "Pārvietot kanālu uz:"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "Ierakstu informācija"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Slēpt kanālu"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "Informācija nav pieejama"
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr "Jauns taimeris"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "Labot taimeri"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "Taimeris palaists"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Apturēt ierakstīšanu"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "Dzēst taimeri"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Uzstādīt taimeri"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Kārtot pēc: kanāla"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "Uz sākumu"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "Uz beigām"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "Noklusētais EPG logs"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "Šis pasākumu jau ieraksta."
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "Šo ierakstu nevar izdzēst. Detaļas redzamas žurnālā."
 
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
 
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "EPG atjaunināšanas intervāls"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "Nesaglabāt EPG datubāzē"
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Aizkavēt kanālu pārslēgšanos"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Aktīvs:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "Vārds:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Mape:"
+
 msgctxt "#19077"
 msgid "Radio:"
 msgstr "Radio:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Kanāls:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Diena:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Sākas:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Beidzas:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Prioritāte:"
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Mūžs (dienas):"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "Pirmā diena:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "Nezināms kanāls %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "Pr-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Ot-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-Tr-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Ce-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-Pk-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-Se-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-Sv"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "Pr-Ot-Tr-Ce-Pk-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "Pr-Ot-Tr-Ce-Pk-Se-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "Pr-Ot-Tr-Ce-Pk-Se-Sv"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-Se-Sv"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "Ievadiet ieraksta nosaukumu"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Brīdinājums"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "Lūdzu, pārslēdziet citu kanālu."
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "Ievadiet ierakstu mapes nosaukumu"
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "Nākamais taimeris"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "ar"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "Nevar saglabāt taimeri. Detaļas redzamas žurnālā."
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Radās negaidīta kļūda. Mēģiniet vēlāk vēlreiz vai skatiet detaļas žurnālā."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "PVR aizmugursistēmas kļūda. Detaļas redzamas žurnālā."
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Versija"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Adrese"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Diskizmērs"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Meklēt kanālus"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "Meklēšanas laikā PVR funkcijas nevar izmantot."
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "Kurā serverī vēlaties meklēt?"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "Klienta numurs"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Izvairīties no atkārtošanās"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "Šim taimerim Joprojām notiek ieraksts. Vai tiešām vēlaties dzēst šo taimeri?"
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr "Tikai bezmaksas pārraidītie kanāli"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "Ignorēt esošos taimerus"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "Ignorēt esošos ierakstus"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Sākuma laiks"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Beigu laiks"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Sākuma datums"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Beigu datums"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Minimālais ilgums"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Maksimālais ilgums"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Ietver nezināmus žanrus"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Meklēšanas virkne"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Apraksts iekļauj"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "Reģistrjūtīgs"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Kanāls nav pieejams"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Grupas nav definētas"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Lūdzu, vispirms izveidojiet grupu"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Jaunās grupas nosaukums"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Grupa"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Meklēšanas ceļvedis"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Grupu pārvaldība"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Grupas nav definētas"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Grupēti"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Grupas"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "PVR aizmugursistēma neatbalsta šo darbību. Detaļas redzamas žurnālā."
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Kanāls"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Pr"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Ot"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Tr"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Ce"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Pk"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Se"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Sv"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "no"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Nākamais ieraksts"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Pašreiz notiek ieraksts"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "no"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "uz"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "Aktivizēta ierakstīšana"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Ieraksti"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Nevar sākt ierakstu. Detaļas redzamas žurnālā."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Slēdzis"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "PVR informācija"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Skenēt trūkstošās ikonas"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "Slēpt video informācijas lodziņu"
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "Noilgums, pēc kura sākt spēlēt"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Tūlītējā ieraksta ilgums"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Noklusētā ierakstīšanas prioritāte"
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "Noklusētais ieraksta kalpošanas laiks"
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "Robeža ieraksta sākumā"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "Robeža ieraksta beigās"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Atskaņošana"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Rādīt kanāla informāciju, pārslēdzot kanālus"
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "Automātiski paslēpt kanāla informāciju"
 
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Izvēlne/OSD"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "Redzamais dienu skaits EPG"
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr "Kanāla informācijas ilgums"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "Atiestatīt PVR datubāzi"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "Visi dati PVR datubāzē tiek dzēsti"
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "Atiestatīt EPG datubāzi"
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "Notiek EPG atiestatīšana"
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "Uzsākot turpināt pēdējo skatīto kanālu"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "PVR serviss"
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr "Neviena no pieslēgtajām PVR aizmugursistēmām neatbalsta kanālu skenēšanu."
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "Kanālu skenēšanu nevar sākt. Detaļas redzamas žurnālā."
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Turpināt?"
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr "Klienta darbības"
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "PVR klienta specifiskās darbības"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "Iesākas ieraksts no: %s"
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr "Pabeigts ieraksts no: %s"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Kanālu pārvaldnieks"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "EPG avots:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Kanāla nosaukums:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Kanāla ikona:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Labot kanālu"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Jauns kanāls"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Grupu pārvaldība"
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "Aktivizēt EPG:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Grupa:"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "Ievadiet jaunā kanāla nosaukumu"
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "XBMC virtuālā aizmugursistēma"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "Klients"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Dzēst kanālu"
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "Šis saraksts satur izmaiņas"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "Izvēlēties aizmugursistēmu"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Ievadiet derīgu vietrādi URL jaunajam kanālam"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "PVR aizmugursistēma neatbalsta taimerus."
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Visi radio kanāli"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Visi TV kanāli"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Redzams"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Negrupēti kanāli"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Kanāli no"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "Sinhronizēt kanālu grupas ar aizmugursistēmām"
+
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Ierakstīšana atcelta"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Ierakstīšana ieplānota"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Ierakstīšana sākta"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Ierakstīšana pabeigta"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Ieraksts izdzēsts"
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "Aizvērt kanāla OSD pēc kanālu pārslēgšanas"
+
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr "Vienmēr izmantot kanālu secību no aizmugursistēmas(ām)"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Notīrīt meklēšanas rezultātus"
+
+msgctxt "#19233"
+msgid "Display a notification on timer updates"
+msgstr "Rādīt paziņojumu par taimera atjaunināšanu"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "PVR pārvaldnieks ieslēdzas"
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "Ielādē kanālus no klientiem"
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr "Ielādē taimerus no klientiem"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "Ielādē ierakstus no klientiem"
+
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr "Ieslēdz fona pavedienus"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "PVR pārvaldnieks ir ieslēgts bez ieslēgtiem PVR "
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "pielikumiem. Jāieslēdz vismaz viens pielikums."
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr "Aizmugursistēmas gaidīšanas laiks"
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Iestatīt atmodināšanas komandu (cmd [timestamp])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "Pamosties pirms ierakstīšanas"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "Ikdienas pamošanās"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Ikdienas pamošanās laiks (HH:MM:SS)"
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "Filtrēt kanālus"
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr "Ielādē EPG no datubāzes"
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr "Atjauno EPG informāciju"
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr "Vai ieplānot EPG atjauninājumu šim kanālam?"
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr "EPG atjauninājums kanālam ieplānots"
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr "EPG atjaunināšana kanālam neizdevās"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "Sākt ierakstīšanu"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Apturēt ierakstīšanu"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Aizslēgts kanāls"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "Atbloķēt kanālu"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Vecāku kontrole"
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "Notiek atbloķēšana"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "Mainīt PIN"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "Vecāku kontrole. Ievadiet PIN:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "Aizslēgts kanāls. Ievadiet PIN:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Nepareizs PIN"
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr "Ievadītais PIN kods bija nepareizs."
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Vecāku slēdzene"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Vecāku slēdzene:"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr "Nerādīt 'informācija nav pieejama' etiķetes"
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "Nerādīt brīdinājumus par zaudētu savienojumu"
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* Visi ieraksti"
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "Jums nepieciešams uztvērējs, aizmugursistēmas programma un"
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "Lūdzu, apmeklējiet xbmc.org/pvr, lai uzzinātu vairāk."
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Konflikta brīdinājums"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Konflikta kļūda"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Ierakstīšanas konflikts"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Ierakstīšanas kļūda"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Klientam specifiskais"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Klienta specifiskie iestatījumi"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Apstiprināt kanālu pārslēgšanu, nospiežot OK"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "Cits/nezināms"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Filma/drāma"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Detektīvs/trilleris"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "Piedzīvojumu/vesterns/kara"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Zin.fantastika/fantāzija/šausmu"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Komēdija"
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Ziepene/melodrāma/folklora"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Romantika"
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Nopietna/klasiska/reliģiska/vēsturiska/drāma"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "Pieaugušo filma/drāma"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "Ziņas/pašreizējie notikumi"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Ziņas/laikaprognoze"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "Ziņu žurnāls"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Dokumentālā"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "Diskusija/intervija/debates"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "Pārraide/spēļu pārraide"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "Spēļu pārrraide/viktorīna/konkurss"
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "Dāžāda satura pārraide"
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "Sarunu pārraide"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Sports"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "Īpašs notikums"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Sporta žunāls"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Futbols"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Teniss/skvošs"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Komandu sports"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Vieglatlētika"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Motorsports"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Ūdenssports"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Ziemassports"
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "Jāšanas sports"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "Cīņu sports"
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "Bērnu/jauniešu programmas"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Pirmsskolas bērnu programmas"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "Izklaides programmas vecumā no 6- 14"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "Izklaides programmas vecumā no 10- 16"
+
+msgctxt "#19568"
+msgid "Informational/Educational/School Programme"
+msgstr "Informatīvas/izglītības/mācību programmas"
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr "Multenes/lelles"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "Mūzika/balets/deja"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Rocks/pops"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "Nopietnā/klasiskā mūzika"
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr "Tautas/tradicionālā mūzika"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "Mūzikls/opera"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Balets"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "Māksla/kultūra"
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "Skatuves māksla"
+
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "Tēlotājmāksla"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Reliģija"
+
+msgctxt "#19600"
+msgid "Popular Culture/Traditional Arts"
+msgstr "Popkultūra/tradicionālā māksla"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Literatūra"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "Filma/kino"
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr "Eksperimentālā filma/video"
+
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr "Pārraidīšana/prese"
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr "Jauns medijs"
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr "Mākslas/kultūras žurnāli"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Mode"
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "Sociāls/politika/ekonomika"
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr "Žurnāli/atskaites/dokumentālās"
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr "Ekonomika/sociālie padomi"
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr "Ievērojami cilvēki"
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr "Izglītība/zinātne/fakti"
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr "Daba/dzīvnieki/vide"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Tehnoloģijas/dabas zinātnes"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "Medicīna/fizioloģija/psiholoģija"
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr "Ārzemes/ekspedīcijas"
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr "Sociālās/garīgās zinātes"
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr "Tālākizglītība"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Valodas"
+
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr "Brīvais laiks/hobiji"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "Tūrisms/ceļošana"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "Mājamatniecība"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "Autosports"
+
+msgctxt "#19648"
+msgid "Fitness &amp; Health"
+msgstr "Fitness un veselība"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Ēdiena gatavošana"
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "Reklāma/iepirkšanās"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "Dārzkopība"
+
+msgctxt "#19660"
+msgid "Special Characteristics"
+msgstr "Īpašas iezīmes"
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr "Oriģinālvaloda"
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr "Melns un balts"
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr "Nepublicēts"
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr "Tiešā pārraide"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Drāma"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Detektīvs/trilleris"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "Piedzīvojumu/vesterns/kara"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Zin.fantastikas/fantāzijas/šausmu"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Komēdija"
+
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Ziepene/melodrāma/folklora"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Romantika"
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr "Nopietnā/klasiski reliģiskā/vēsturiskā"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Pieaugušo"
+
+msgctxt "#20000"
+msgid "Saved music folder"
+msgstr "Saglabātās mūzikas mape"
+
+msgctxt "#20001"
+msgid "Use external DVD player"
+msgstr "Izmantot ārējo DVD atskaņotāju"
+
+msgctxt "#20002"
+msgid "External DVD player"
+msgstr "Ārējais DVD atskaņotājs"
+
+msgctxt "#20003"
+msgid "Trainers folder"
+msgstr "Pasniedzēju mape"
+
+msgctxt "#20004"
+msgid "Screenshot folder"
+msgstr "Ekrānattēlu mape"
+
+msgctxt "#20006"
+msgid "Playlists folder"
+msgstr "Spēļsarakstu mape"
+
+msgctxt "#20007"
+msgid "Recordings"
+msgstr "Ieraksti"
+
+msgctxt "#20008"
+msgid "Screenshots"
+msgstr "Ekrānattēli"
+
+msgctxt "#20009"
+msgid "Use XBMC"
+msgstr "Izmanto XBMC"
+
+msgctxt "#20011"
+msgid "Music playlists"
+msgstr "Mūzikas spēļsaraksti"
+
+msgctxt "#20012"
+msgid "Video playlists"
+msgstr "Video spēļsaraksti"
+
+msgctxt "#20013"
+msgid "Do you wish to launch the game?"
+msgstr "Vai palaist spēli?"
+
+msgctxt "#20014"
+msgid "Sort by: Playlist"
+msgstr "Kārtot pēc: spēļsaraksta"
+
+msgctxt "#20015"
+msgid "Remote thumb"
+msgstr "Attālais sīktēls"
+
+msgctxt "#20016"
+msgid "Current thumb"
+msgstr "Pašreizējais sīktēls"
+
+msgctxt "#20017"
+msgid "Local thumb"
+msgstr "Lokālais sīktēls"
+
+msgctxt "#20018"
+msgid "No thumb"
+msgstr "Nav sīktēls"
+
+msgctxt "#20019"
+msgid "Choose thumbnail"
+msgstr "Izvēlēties sīktēlu"
+
+msgctxt "#20023"
+msgid "Conflict"
+msgstr "Konflikts"
+
+msgctxt "#20024"
+msgid "Scan new"
+msgstr "Skenēt jaunu"
+
+msgctxt "#20025"
+msgid "Scan all"
+msgstr "Skenēt visu"
+
+msgctxt "#20026"
+msgid "Region"
+msgstr "Reģions"
+
+msgctxt "#20037"
+msgid "Summary"
+msgstr "Kopsavilkums"
+
+msgctxt "#20038"
+msgid "Lock music window"
+msgstr "Bloķēt mūzikas logu"
+
+msgctxt "#20039"
+msgid "Lock videos window"
+msgstr "Bloķēt video logu"
+
+msgctxt "#20040"
+msgid "Lock pictures window"
+msgstr "Bloķēt attēlu logu"
+
+msgctxt "#20041"
+msgid "Lock programs & scripts windows"
+msgstr "Bloķēt programmu & skriptu logu"
+
+msgctxt "#20042"
+msgid "Lock file manager"
+msgstr "Aizslēgt failu pārvaldnieku"
+
+msgctxt "#20043"
+msgid "Lock settings"
+msgstr "Slēdzenes iestatījumi"
+
+msgctxt "#20044"
+msgid "Start fresh"
+msgstr "Sākt no jauna"
+
+msgctxt "#20045"
+msgid "Enter master mode"
+msgstr "Ieiet galvenajā režīmā"
+
+msgctxt "#20046"
+msgid "Leave master mode"
+msgstr "Iziet no galvenā režīma"
+
+msgctxt "#20047"
+msgid "Create profile '%s'?"
+msgstr "Izveidot profilu '%s'?"
+
+msgctxt "#20048"
+msgid "Start with fresh settings"
+msgstr "Sākt ar jauniem iestatījumiem"
+
+msgctxt "#20049"
+msgid "Best available"
+msgstr "Labākais pieejamais"
+
+msgctxt "#20050"
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "Auto-pārslēgšana starp 16x9 un 4x3"
+
+msgctxt "#20051"
+msgid "Treat stacked files as single file"
+msgstr "Lietot stekā ielādētus failus kā vienu failu"
+
+msgctxt "#20052"
+msgid "Caution"
+msgstr "Brīdinājums"
+
+msgctxt "#20053"
+msgid "Left master mode"
+msgstr "Pameta galveno režīmu"
+
+msgctxt "#20054"
+msgid "Entered master mode"
+msgstr "Iegāja galvenajā režīmā"
+
+msgctxt "#20055"
+msgid "Allmusic.com thumb"
+msgstr "Allmusic.com sīktēls"
+
+msgctxt "#20057"
+msgid "Remove thumbnail"
+msgstr "Noņemt sīktēlu"
+
+msgctxt "#20058"
+msgid "Add profile..."
+msgstr "Pievieno profilu..."
+
+msgctxt "#20059"
+msgid "Query info for all albums"
+msgstr "Vaicāt info par visiem albumiem"
+
+msgctxt "#20060"
+msgid "Media info"
+msgstr "Mediju info"
+
+msgctxt "#20061"
+msgid "Separate"
+msgstr "Atsevišķi"
+
+msgctxt "#20062"
+msgid "Shares with default"
+msgstr "Koplietojumi ar noklusējumu"
+
+msgctxt "#20063"
+msgid "Shares with default (read only)"
+msgstr "Koplietojumi ar noklusējumu (tikai lasāmi)"
+
+msgctxt "#20064"
+msgid "Copy default"
+msgstr "Kopēt noklusējumu"
+
+msgctxt "#20065"
+msgid "Profile picture"
+msgstr "Profila attēls"
+
+msgctxt "#20066"
+msgid "Lock preferences"
+msgstr "Slēdzenes preferences"
+
+msgctxt "#20067"
+msgid "Edit profile"
+msgstr "Labot profilu"
+
+msgctxt "#20068"
+msgid "Profile lock"
+msgstr "Profila slēdzene"
+
+msgctxt "#20069"
+msgid "Could not create folder"
+msgstr "Nevar izveidot mapi"
+
+msgctxt "#20070"
+msgid "Profile directory"
+msgstr "Profila direktorija"
+
+msgctxt "#20071"
+msgid "Start with fresh media sources"
+msgstr "Sākt ar svaigiem mediju avotiem"
+
+msgctxt "#20072"
+msgid "Make sure the selected folder is writable"
+msgstr "Pārliecinieties, vai atlasītā mape ir rakstāma"
+
+msgctxt "#20073"
+msgid "and that the new folder name is valid"
+msgstr "un ka jaunās mapes nosaukums ir derīgs"
+
+msgctxt "#20074"
+msgid "MPAA rating"
+msgstr "MPAA vērtējums"
+
+msgctxt "#20075"
+msgid "Enter master lock code"
+msgstr "Ievadiet galvenās slēdzenes kodu"
+
+msgctxt "#20076"
+msgid "Ask for master lock code on startup"
+msgstr "Ieslēdzot prasīt galvenās slēdzenes kodu"
+
+msgctxt "#20077"
+msgid "Skin settings"
+msgstr "Apvalka iestatījumi"
+
+msgctxt "#20078"
+msgid "- no link set -"
+msgstr "- saite nav iestatīta -"
+
+msgctxt "#20079"
+msgid "Enable animations"
+msgstr "Ieslēgt animāciju"
+
+msgctxt "#20080"
+msgid "Disable RSS during music"
+msgstr "Izslēgt RSS mūzikas laikā"
+
+msgctxt "#20081"
+msgid "Enable shortcut buttons"
+msgstr "Ieslēgt īsceļu pogas"
+
+msgctxt "#20082"
+msgid "Show programs in main menu"
+msgstr "Rādīt programmas galvenajā izvēlnē"
+
+msgctxt "#20083"
+msgid "Show music info"
+msgstr "Rādīt mūzikas info"
+
+msgctxt "#20084"
+msgid "Show weather info"
+msgstr "Rādīt laikapstākļu info"
+
+msgctxt "#20085"
+msgid "Show system info"
+msgstr "Rādīt sistēmas info"
+
+msgctxt "#20088"
+msgid "Weather info"
+msgstr "Laikapstākļu info"
+
+msgctxt "#20089"
+msgid "Drive space free"
+msgstr "Brīvā vieta diskā"
+
+msgctxt "#20090"
+msgid "Enter the name of an existing share"
+msgstr "Ievadiet esošā koplietojuma nosaukumu"
+
+msgctxt "#20091"
+msgid "Lock code"
+msgstr "Slēdzenes kods"
+
+msgctxt "#20092"
+msgid "Load profile"
+msgstr "Ielādēt profilu"
+
+msgctxt "#20093"
+msgid "Profile name"
+msgstr "Profila nosaukums"
+
+msgctxt "#20094"
+msgid "Media sources"
+msgstr "Mediju avoti"
+
+msgctxt "#20095"
+msgid "Enter profile lock code"
+msgstr "Ievadiet profila slēdzenes kodu"
+
+msgctxt "#20096"
+msgid "Login screen"
+msgstr "Pieteikšanās ekrāns"
+
+msgctxt "#20097"
+msgid "Fetching album info"
+msgstr "Uzmeklē albuma info"
+
+msgctxt "#20098"
+msgid "Fetching info for album"
+msgstr "Uzmeklē info par albumu"
+
+msgctxt "#20099"
+msgid "Can't rip CD or track while playing from CD"
+msgstr "Nevar izvilkt no CD vai celiņa, kamēr to atskaņo"
+
+msgctxt "#20100"
+msgid "Master lock code and settings"
+msgstr "Galvenās slēdzenes kods un iestatījumi"
+
+msgctxt "#20101"
+msgid "Entering master lock code always enables master mode"
+msgstr "Ievadot galvenās slēdzenes kodu, vienmēr ieslēdzas galvenais režīms"
+
+msgctxt "#20102"
+msgid "or copy from default?"
+msgstr "vai kopēt no noklusējuma?"
+
+msgctxt "#20103"
+msgid "Save changes to profile?"
+msgstr "Saglabāt izmaiņas profilā?"
+
+msgctxt "#20104"
+msgid "Old settings found."
+msgstr "Atrasti vecie iestatījumi."
+
+msgctxt "#20105"
+msgid "Do you want to use them?"
+msgstr "Vēlaties tos izmantot?"
+
+msgctxt "#20106"
+msgid "Old media sources found."
+msgstr "Atrasti veco mediju avoti."
+
+msgctxt "#20107"
+msgid "Separate (locked)"
+msgstr "Atsevišķs (bloķēts)"
+
+msgctxt "#20108"
+msgid "Root"
+msgstr "Sakne"
+
+msgctxt "#20109"
+msgid "Zoom"
+msgstr "Zooms"
+
+msgctxt "#20110"
+msgid "UPnP settings"
+msgstr "UPnP iestatījumi"
+
+msgctxt "#20111"
+msgid "Autostart UPnP client"
+msgstr "Autostartēt UPnP klientu"
+
+msgctxt "#20112"
+msgid "Last login: %s"
+msgstr "Pēdējā pieteikšanās: %s"
+
+msgctxt "#20113"
+msgid "Never logged on"
+msgstr "Nekad nav pieteicies"
+
+msgctxt "#20114"
+msgid "Profile %i / %i"
+msgstr "Profils %i / %i"
+
+msgctxt "#20115"
+msgid "User login / Select a profile"
+msgstr "LIetotāja pieteikšanās / Izvēlieties profilu"
+
+msgctxt "#20116"
+msgid "Use lock on login screen"
+msgstr "Izmantot slēdzeni piesakoties"
+
+msgctxt "#20117"
+msgid "Invalid lock code."
+msgstr "Nederīgs slēdzenes kods."
+
+msgctxt "#20118"
+msgid "This requires the master lock to be set."
+msgstr "Tas pieprasa, lai tiktu uzstādīta galvenā slēdzene."
+
+msgctxt "#20119"
+msgid "Would you like to set it now?"
+msgstr "Vai vēlaties to iestatīt tūlīt?"
+
+msgctxt "#20120"
+msgid "Loading program information"
+msgstr "Ielādē programmas informāciju"
+
+msgctxt "#20121"
+msgid "Party on!"
+msgstr "Ballīte sākas!"
+
+msgctxt "#20122"
+msgid "True"
+msgstr "Patiess"
+
+msgctxt "#20123"
+msgid "Mixing drinks"
+msgstr "Sajauc dzērienus"
+
+msgctxt "#20124"
+msgid "Filling glasses"
+msgstr "Piepilda glāzes"
+
+msgctxt "#20125"
+msgid "Logged on as"
+msgstr "Pieteicies kā"
+
+msgctxt "#20126"
+msgid "Log off"
+msgstr "Atteikties"
+
+msgctxt "#20128"
+msgid "Go to root"
+msgstr "Doties uz sakni"
+
+msgctxt "#20132"
+msgid "Restart video"
+msgstr "Pārstartēt video"
+
+msgctxt "#20133"
+msgid "Edit network location"
+msgstr "Labot tīkla atrašanās vietu"
+
+msgctxt "#20134"
+msgid "Remove network location"
+msgstr "Noņemt tīkla atrašanās vietu"
+
+msgctxt "#20135"
+msgid "Do you want to scan the folder?"
+msgstr "Vai vēlaties skenēt šo mapi?"
+
+msgctxt "#20136"
+msgid "Memory unit"
+msgstr "Atmiņas ierīce"
+
+msgctxt "#20137"
+msgid "Memory unit mounted"
+msgstr "Atmiņas ierīce piemontēta"
+
+msgctxt "#20138"
+msgid "Unable to mount memory unit"
+msgstr "Nevar piemontēt atmiņas ierīci"
+
+msgctxt "#20139"
+msgid "In port %i, slot %i"
+msgstr "Partā %i, slotā %i"
+
+msgctxt "#20140"
+msgid "Lock screensaver"
+msgstr "Aizslēgt ekrānsaudzētāju"
+
+msgctxt "#20141"
+msgid "Set"
+msgstr "Iestatīt"
+
+msgctxt "#20142"
+msgid "Username"
+msgstr "Lietotājvārds"
+
+msgctxt "#20143"
+msgid "Enter password for"
+msgstr "Ievadiet paroli"
+
+msgctxt "#20144"
+msgid "Shutdown timer"
+msgstr "Izslēgšanas taimeris"
+
+msgctxt "#20145"
+msgid "Shutdown interval (in minutes)"
+msgstr "Izslēgšanas intervāls (minūtēs)"
+
+msgctxt "#20146"
+msgid "Started, shutdown in %im"
+msgstr "Uzsākts, izslēgšana pēc %im"
+
+msgctxt "#20147"
+msgid "Shutdown in 30 minutes"
+msgstr "Izslēgšana pēc 30 minutēm"
+
+msgctxt "#20148"
+msgid "Shutdown in 60 minutes"
+msgstr "Izslēgšana pēc 60 minutēm"
+
+msgctxt "#20149"
+msgid "Shutdown in 120 minutes"
+msgstr "Izslēgšana pēc 120 minutēm"
+
+msgctxt "#20150"
+msgid "Custom shutdown timer"
+msgstr "PIelāgots izslēgšanas taimeris"
+
+msgctxt "#20151"
+msgid "Cancel shutdown timer"
+msgstr "Atcelt izslēgšanas taimeri"
+
+msgctxt "#20152"
+msgid "Lock preferences for %s"
+msgstr "Aizslēgt %s preferences"
+
+msgctxt "#20153"
+msgid "Browse..."
+msgstr "Pārlūko..."
+
+msgctxt "#20154"
+msgid "Summary information"
+msgstr "Kopsavilkuma informācija"
+
+msgctxt "#20155"
+msgid "Storage information"
+msgstr "Krātuves informācija"
+
+msgctxt "#20156"
+msgid "Hard disk information"
+msgstr "Cietā diska informācija"
+
+msgctxt "#20157"
+msgid "DVD-ROM information"
+msgstr "DVD-ROM informācija"
+
+msgctxt "#20158"
+msgid "Network information"
+msgstr "Tīkla informācija"
+
+msgctxt "#20159"
+msgid "Video information"
+msgstr "Video informācija"
+
+msgctxt "#20160"
+msgid "Hardware information"
+msgstr "Aparatūras informācija"
+
+msgctxt "#20161"
+msgid "Total"
+msgstr "Kopā"
+
+msgctxt "#20162"
+msgid "Used"
+msgstr "Izmantots"
+
+msgctxt "#20163"
+msgid "of"
+msgstr "arī"
+
+msgctxt "#20164"
+msgid "Locking not supported"
+msgstr "Aizslēgšana nav atbalstīta"
+
+msgctxt "#20165"
+msgid "Not locked"
+msgstr "Nav aizslēgts"
+
+msgctxt "#20166"
+msgid "Locked"
+msgstr "Aizslēgts"
+
+msgctxt "#20167"
+msgid "Frozen"
+msgstr "Saldēts"
+
+msgctxt "#20168"
+msgid "Requires reset"
+msgstr "Nepieciešams atiestatīt"
+
+msgctxt "#20169"
+msgid "Week"
+msgstr "Nedēļa"
+
+msgctxt "#20170"
+msgid "Line"
+msgstr "Līnija"
+
+msgctxt "#20171"
+msgid "Windows network (SMB)"
+msgstr "Windows tīkls (SMB)"
+
+msgctxt "#20172"
+msgid "XBMSP server"
+msgstr "XBMSP serveris"
 
 msgctxt "#20173"
 msgid "FTP server"
 msgstr "FTP serveris"
 
+msgctxt "#20174"
+msgid "iTunes music share (DAAP)"
+msgstr "iTunes mūzikas koplietojums (DAAP)"
+
+msgctxt "#20175"
+msgid "UPnP server"
+msgstr "UPnP serveris"
+
+msgctxt "#20176"
+msgid "Show video info"
+msgstr "Rādīt video info"
+
+msgctxt "#20177"
+msgid "Done"
+msgstr "Pabeigts"
+
+msgctxt "#20178"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#20179"
+msgid "Caps Lock"
+msgstr "Lielie burti"
+
+msgctxt "#20180"
+msgid "Symbols"
+msgstr "Simboli"
+
+msgctxt "#20181"
+msgid "Backspace"
+msgstr "Backspace"
+
+msgctxt "#20182"
+msgid "Space"
+msgstr "Tukšums"
+
+msgctxt "#20183"
+msgid "Reload skin"
+msgstr "Pārlādēt apvalku"
+
+msgctxt "#20184"
+msgid "Rotate pictures using EXIF information"
+msgstr "Pagriezt bildes pēc EXIF informācijas"
+
+msgctxt "#20185"
+msgid "Use poster view styles for TV shows"
+msgstr "TV pārraidēm izmantot plakātu skata stilu"
+
+msgctxt "#20186"
+msgid "Please wait"
+msgstr "Lūdzu, gaidiet"
+
+msgctxt "#20187"
+msgid "UPnP"
+msgstr "UPnP"
+
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Paziņot bibliotēkas atjauninājumus pa UPnP"
+
+msgctxt "#20189"
+msgid "Enable auto scrolling for plot & review"
+msgstr "Ieslēgt auto ritināšanu sižetam & pārskatam"
+
+msgctxt "#20190"
+msgid "Custom"
+msgstr "Pielāgots"
+
+msgctxt "#20191"
+msgid "Enable debug logging"
+msgstr "Ieslēgt atkļūdošanas reģistrēšanu"
+
+msgctxt "#20192"
+msgid "Download additional information during updates"
+msgstr "Atjaunināšanas laikā lejupielādēt papildinformāciju "
+
+msgctxt "#20193"
+msgid "Default service for album information"
+msgstr "Noklusētais serviss informācijai par albumu"
+
+msgctxt "#20194"
+msgid "Default service for artist information"
+msgstr "Noklusētais serviss informācijai par izpildītāju"
+
+msgctxt "#20195"
+msgid "Change scraper"
+msgstr "Mainīt skrāpi"
+
+msgctxt "#20196"
+msgid "Export music library"
+msgstr "Eksportēt mūzikas bibliotēku"
+
+msgctxt "#20197"
+msgid "Import music library"
+msgstr "Importēt mūzikas bibliotēku"
+
+msgctxt "#20198"
+msgid "No artist found!"
+msgstr "Izpildītājs nav atrasts!"
+
+msgctxt "#20199"
+msgid "Downloading artist info failed"
+msgstr "Izpildītāja info lejupielāde neizdevās"
+
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Android mūzika"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Android video"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Android attēli"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Android foto"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Android lietotnes"
+
+msgctxt "#20250"
+msgid "Party on! (videos)"
+msgstr "Ballīte sākas! (video)"
+
+msgctxt "#20251"
+msgid "Mixing drinks (videos)"
+msgstr "Jaucam dzērienus (video)"
+
+msgctxt "#20252"
+msgid "Filling glasses (videos)"
+msgstr "Pildam glāzes (video)"
+
+msgctxt "#20253"
+msgid "WebDAV server (HTTP)"
+msgstr "WebDAV serveris (HTTP)"
+
+msgctxt "#20254"
+msgid "WebDAV server (HTTPS)"
+msgstr "WebDAV serveris (HTTPS)"
+
+msgctxt "#20255"
+msgid "First logon, edit your profile"
+msgstr "Pirmā pieteikšanās, labot savu profilu"
+
+msgctxt "#20256"
+msgid "HTS Tvheadend client"
+msgstr "HTS Tvheadend klients"
+
+msgctxt "#20257"
+msgid "VDR Streamdev client"
+msgstr "VDR Streamdev klients"
+
+msgctxt "#20258"
+msgid "MythTV client"
+msgstr "MythTV klients"
+
+msgctxt "#20259"
+msgid "Network Filesystem (NFS)"
+msgstr "Network Filesystem (NFS)"
+
+msgctxt "#20260"
+msgid "Secure Shell (SSH/SFTP)"
+msgstr "Secure Shell (SSH/SFTP)"
+
+msgctxt "#20261"
+msgid "Apple Filing Protocol (AFP)"
+msgstr "Apple Filing Protocol (AFP)"
+
+msgctxt "#20300"
+msgid "Web server directory (HTTP)"
+msgstr "Tīmekļa servera direktorija (HTTP)"
+
+msgctxt "#20301"
+msgid "Web server directory (HTTPS)"
+msgstr "Tīmekļa servera direktorija (HTTPS)"
+
+msgctxt "#20302"
+msgid "Unable to write to folder:"
+msgstr "Nevar ierakstīt mapē:"
+
+msgctxt "#20303"
+msgid "Do you want to skip and proceed?"
+msgstr "Vai vēlaties izlaist un turpināt?"
+
+msgctxt "#20304"
+msgid "RSS Feed"
+msgstr "RSS plūsma"
+
+msgctxt "#20307"
+msgid "Secondary DNS"
+msgstr "Sekundārais DNS"
+
+msgctxt "#20308"
+msgid "DHCP server:"
+msgstr "DHCP serveris:"
+
+msgctxt "#20309"
+msgid "Make new folder"
+msgstr "Izveidot jaunu mapi"
+
+msgctxt "#20311"
+msgid "Unknown or onboard (protected)"
+msgstr "Nezināms vai jau sistēmā (aizsargāts)"
+
+msgctxt "#20314"
+msgid "Videos - Library"
+msgstr "Video - Bibliotēka"
+
+msgctxt "#20316"
+msgid "Sort by: ID"
+msgstr "Kārtot pēc: ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Skenē filmas ar %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Skenē mūzikas video ar %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Skenē TV pārraides ar %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Skenē izpildītājus ar %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Skenē albumus ar %s"
+
+msgctxt "#20324"
+msgid "Play part..."
+msgstr "Atskaņo daļu..."
+
+msgctxt "#20325"
+msgid "Calibration reset"
+msgstr "Kalibrācijas atiestatīšana"
+
+msgctxt "#20326"
+msgid "This will reset the calibration values for %s"
+msgstr "Šī darbība atiestatīs kalibrācijas vērtības %s"
+
+msgctxt "#20327"
+msgid "to it's default values."
+msgstr "uz to noklusējuma vērtībām."
+
+msgctxt "#20328"
+msgid "Browse for destination"
+msgstr "Pārlūkot mērķi"
+
+msgctxt "#20329"
+msgid "Movies are in separate folders that match the movie title"
+msgstr "Filmas ir atsevišķās mapēs, kas atbilst filmas nosaukumam"
+
+msgctxt "#20330"
+msgid "Use folder names for lookups"
+msgstr "Uzmeklēšanā izmantot mapju nosaukumus"
+
 msgctxt "#20331"
 msgid "File"
 msgstr "Fails"
+
+msgctxt "#20332"
+msgid "Use file or folder names in lookups?"
+msgstr "Vai izmantot uzmeklēšanā failu / mapju nosaukumus?"
+
+msgctxt "#20333"
+msgid "Set content"
+msgstr "Iestatīt saturu"
+
+msgctxt "#20334"
+msgid "Folder"
+msgstr "Mape"
+
+msgctxt "#20335"
+msgid "Look for content recursively?"
+msgstr "Vai meklēt saturu rekursīvi?"
+
+msgctxt "#20336"
+msgid "Unlock sources"
+msgstr "Atbloķēt avotus"
+
+msgctxt "#20337"
+msgid "Actor"
+msgstr "Aktieris"
+
+msgctxt "#20338"
+msgid "Movie"
+msgstr "Filma"
+
+msgctxt "#20339"
+msgid "Director"
+msgstr "Režisors"
+
+msgctxt "#20340"
+msgid "Do you want to remove all items within"
+msgstr "Vai vēlaties izņemt no XBMC bibliotēkas visus ierakstus,"
+
+msgctxt "#20341"
+msgid "this path from the XBMC library?"
+msgstr " kas atrodas šajā ceļā?"
 
 msgctxt "#20342"
 msgid "Movies"
 msgstr "Filmas"
 
+msgctxt "#20343"
+msgid "TV shows"
+msgstr "TV pārraides"
+
+msgctxt "#20344"
+msgid "This directory contains"
+msgstr "Šī derektorija satur"
+
+msgctxt "#20345"
+msgid "Run automated scan"
+msgstr "Palaist automātisko skenēšanu"
+
+msgctxt "#20346"
+msgid "Scan recursively"
+msgstr "Rekursīvi skenēt"
+
+msgctxt "#20347"
+msgid "as"
+msgstr "kā"
+
+msgctxt "#20348"
+msgid "Directors"
+msgstr "Režisori"
+
+msgctxt "#20349"
+msgid "No video files found in this path!"
+msgstr "Šajā ceļā nav atrasti video faili!"
+
+msgctxt "#20350"
+msgid "votes"
+msgstr "balsis"
+
+msgctxt "#20351"
+msgid "TV show information"
+msgstr "TV pārraides informācija"
+
+msgctxt "#20352"
+msgid "Episode information"
+msgstr "Sērijas informācija"
+
+msgctxt "#20353"
+msgid "Loading TV show details"
+msgstr "TV pārraides detaļu ielādēšana"
+
+msgctxt "#20354"
+msgid "Fetching episode guide"
+msgstr "Uzmeklē sēriju gidu"
+
+msgctxt "#20355"
+msgid "Loading info for episodes in directory"
+msgstr "Ielādē direktorijā info par sērijām"
+
+msgctxt "#20356"
+msgid "Select TV show:"
+msgstr "Izvēlēties TV pārraidi:"
+
+msgctxt "#20357"
+msgid "Enter the TV show name"
+msgstr "Ievadiet TV pārraides nosaukumu"
+
+msgctxt "#20358"
+msgid "Season %i"
+msgstr "Sezona %i"
+
+msgctxt "#20359"
+msgid "Episode"
+msgstr "Sērija"
+
+msgctxt "#20360"
+msgid "Episodes"
+msgstr "Sērijas"
+
+msgctxt "#20361"
+msgid "Loading episode details"
+msgstr "Ielādē sērijas detaļas"
+
+msgctxt "#20362"
+msgid "Remove episode from library"
+msgstr "Izņem sēriju no bibliotēkas"
+
+msgctxt "#20363"
+msgid "Remove TV show from library"
+msgstr "Izņem TV pārraidi no bibliotēkas"
+
+msgctxt "#20364"
+msgid "TV show"
+msgstr "TV pārraide"
+
+msgctxt "#20365"
+msgid "Episode plot"
+msgstr "Sērijas sižets"
+
+msgctxt "#20366"
+msgid "* All seasons"
+msgstr "* Visas sezonas"
+
+msgctxt "#20367"
+msgid "Hide watched"
+msgstr "Slēpt apskatīto"
+
+msgctxt "#20368"
+msgid "Prod code"
+msgstr "Prod kods"
+
+msgctxt "#20369"
+msgid "Show plot for unwatched items"
+msgstr "Rādīt sižetu neskatītiem ierakstiem"
+
+msgctxt "#20370"
+msgid "* Hidden to prevent spoilers *"
+msgstr "* Slēpts, lai nebūtu spoileris *"
+
+msgctxt "#20371"
+msgid "Set season thumb"
+msgstr "Iestatīt sezonas sīktēlu"
+
+msgctxt "#20372"
+msgid "Season image"
+msgstr "Sezonas attēls"
+
+msgctxt "#20373"
+msgid "Season"
+msgstr "Sezona"
+
+msgctxt "#20374"
+msgid "Downloading movie information"
+msgstr "Lejupielādē filmas informāciju"
+
+msgctxt "#20375"
+msgid "Unassign content"
+msgstr "Neiedalīts saturs"
+
+msgctxt "#20376"
+msgid "Original title"
+msgstr "Oriģinālnosaukums"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Fanu māksla"
 
+msgctxt "#20420"
+msgid "Never"
+msgstr "Nekad"
+
+msgctxt "#20429"
+msgid "Separate"
+msgstr "Atsevišķi"
+
 msgctxt "#20445"
 msgid "Fanart"
 msgstr "Fanu māksla"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Jauns tags..."
+
+msgctxt "#21359"
+msgid "Add media share..."
+msgstr "Pievieno mediju koplietojumu..."
+
+msgctxt "#21375"
+msgid "Normal"
+msgstr "Normāls"
+
+msgctxt "#21385"
+msgid "Open"
+msgstr "Atvērt"
 
 msgctxt "#21387"
 msgid "Fast"
@@ -1697,9 +8165,33 @@ msgctxt "#21417"
 msgid "Settings"
 msgstr "Iestatījumi"
 
+msgctxt "#21423"
+msgid "New rule..."
+msgstr "Jauns likums..."
+
+msgctxt "#21437"
+msgid "New smart playlist..."
+msgstr "Jauns gudrais spēļsaraksts..."
+
+msgctxt "#21440"
+msgid "Home folder"
+msgstr "Sākuma mape"
+
+msgctxt "#21452"
+msgid "Get More..."
+msgstr "Iegūt vairāk..."
+
+msgctxt "#21461"
+msgid "Fixed"
+msgstr "Fiksēts"
+
 msgctxt "#21805"
 msgid "Resolution"
 msgstr "Izšķirtspēja"
+
+msgctxt "#21806"
+msgid "Comment"
+msgstr "Komentārs"
 
 msgctxt "#21837"
 msgid "ISO"
@@ -1737,21 +8229,81 @@ msgctxt "#22030"
 msgid "Font"
 msgstr "Fonts"
 
+msgctxt "#22031"
+msgid "Size"
+msgstr "Izmērs"
+
+msgctxt "#22032"
+msgid "Colours"
+msgstr "Krāsas"
+
+msgctxt "#22036"
+msgid "Import karaoke titles..."
+msgstr "Importēt karaoke titrus..."
+
+msgctxt "#22038"
+msgid "Export karaoke titles..."
+msgstr "Eksportēt karaoke titrus..."
+
 msgctxt "#22082"
 msgid "More..."
 msgstr "Vairāk..."
+
+msgctxt "#24005"
+msgid "Media sources"
+msgstr "Mediju avoti"
+
+msgctxt "#24007"
+msgid "Movie information"
+msgstr "Informācija par filmu"
 
 msgctxt "#24008"
 msgid "Screensaver"
 msgstr "Ekrānsaudzētājs"
 
+msgctxt "#24012"
+msgid "Subtitles"
+msgstr "Subtitri"
+
 msgctxt "#24013"
 msgid "Lyrics"
 msgstr "Lirika"
 
+msgctxt "#24016"
+msgid "Album information"
+msgstr "Albuma informācija"
+
+msgctxt "#24018"
+msgid "Services"
+msgstr "Servisi"
+
 msgctxt "#24027"
 msgid "Weather"
 msgstr "Laika apstākļi"
+
+msgctxt "#24090"
+msgid "Lock Add-on manager"
+msgstr "Aizslēgt pielikumu pārvaldnieku"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Meklēju subtitrus ..."
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Lejupielādēju subtitrus ..."
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Ievadiet meklējamo virkni"
+
+msgctxt "#25002"
+msgid "Select from all titles ..."
+msgstr "Izvēlēties no visiem nosaukumiem ..."
+
+msgctxt "#33021"
+msgid "Precipitation"
+msgstr "nokrišņu daudzums"
 
 msgctxt "#33063"
 msgid "Options"
@@ -1829,13 +8381,93 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Izvēlieties rīcību, kad skaņa nav nepieciešama atskaņošanai vai saskarnei. [Vienmēr] - izvada nepārtrauktu, bet nedzirdamu signālu, lai uzturētu audio ierīci gatavībā jaunām skaņām, taču tas var arī nobloķēt skaņu no citām lietotnēm. [1- 10 minūtes] - līdzīgs Vienmēr, taču pēc izvēlētā laika audio ieiet gatavības režīmā. [Izslēgts] - audio izvade ieiet gatavības režīmā. Piezīme - varat palaist garām skaņas, ja audio iegājis gatavības režīmā."
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "Nekad"
+
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Lokācija"
 
+msgctxt "#35502"
+msgid "Name"
+msgstr "Vārds"
+
+msgctxt "#36016"
+msgid "Connected"
+msgstr "Savienots"
+
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Audio jāpaliek sinhronam. To var panākt ar pārsemplošanu, pakešu izlaišanu/dublēšanu vai arī, regulējot pulksteni, ja sinhronums zaudēts pārāk daudz."
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "Importē kanālu grupas no PVR aizmugursistēmas (ja atbalstīts). Izdzēsīs lietotāja izveidotās grupas, ja tās nebūs atrodamas aizmugursistēmā."
+
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "Prasa pin kodu, lai piekļūtu vecāku slēgtajiem kanāliem. Kanāli var tikt slēgti kanālu redaktora galvenajā cilnē. Vecāku slēgtos kanālus nevar atskaņot vai ierakstīt, ja nav ievadīts pin kods, un EPG informācija par šiem kanāliem ir noslēpta."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Ievadiet jaunu pin kodu, lai atslēgtu vecāku sēgtos kanālus."
+
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
+msgstr "Atkārtoti prasīt pin kodu, piekļūstot vecāku slēgtajiem kanāliem, ja kods nav bijis prasīts šo laika sprīdi. Noklusējums ir 300 sekundes. "
+
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Testē musturus ekrāna aparatūras kalibrēšanai."
+
+msgctxt "#36391"
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr "Ieslēgt vai izslēgt atkļūdošanas reģistrēšanu. Noder problēmu risināšanai."
+
+msgctxt "#36395"
+msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
+msgstr "Atver galvenās slēdzenes dialogu, kur iespējams konfigurēt galvenās slēdzenes opcijas."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Definē PIN kodu, kas tiek izmantots galvenajā slēdzenē."
+
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup "
+msgstr "Ja ieslēgts, galvenais slēdzenes kods tiks pieprasīts, lai atbloķētu XBMC pie startēšanas"
+
+msgctxt "#36426"
+msgid "Switch to channel"
+msgstr "Pārslēgt uz kanālu"
 
 msgctxt "#36428"
 msgid "Record"
@@ -1844,3 +8476,7 @@ msgstr "Ierakstīt"
 msgctxt "#36502"
 msgid "None"
 msgstr "Nav"
+
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr "Izvēlēties alternatīvo režīmu..."

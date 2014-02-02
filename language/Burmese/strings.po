@@ -4729,10 +4729,6 @@ msgctxt "#21337"
 msgid "TuxBox device"
 msgstr "TuxBox device"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "စာတန်းထိုး ဖိုင်တွဲ"
-
 msgctxt "#21371"
 msgid "Thumbnail"
 msgstr "Thumbnail"
@@ -4864,10 +4860,6 @@ msgstr "နောက်ထပ်ရရှိရန်"
 msgctxt "#21454"
 msgid "Cache full"
 msgstr "Cache ပြည့်နေသည်"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "စာတန်းထိုးမည့်နေရာ"
 
 msgctxt "#21461"
 msgid "Fixed"

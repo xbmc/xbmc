@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Интихоби директорияи ҷои таъинот"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Барориши стерео ба ҳамаи динамикҳо"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Миқдори шабакаҳо"
@@ -1716,10 +1712,6 @@ msgstr "Ҷойгиршавии менюи экран (OSD)"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Таҳиягарон"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "МOD-чип"
 
 msgctxt "#474"
 msgid "Off"
@@ -4981,10 +4973,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Фаъол кардани шитоби сахтафзор (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Frame Multi Threaded Decoding (less reliable)"
-msgstr "Рамзгузории кадрҳои серришта (ноустувор)"
-
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Усули ҳамоҳангсозии A/V"
@@ -6008,10 +5996,6 @@ msgstr "Сервери PVR %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Сабтҳои ТВ"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Ҷузвдони пешфарз барои эскизҳои PVR"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -8897,10 +8881,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Тоза кардани манбаи медиа"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Ҷузвдони зерунвонҳо"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Директорияи филмҳо ва зерунвонҳои иловагӣ"
@@ -9268,10 +9248,6 @@ msgstr "Гурӯҳбандӣ аз рӯи"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "омехташуда"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Ҷойгиршавии зерунвон"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10233,6 +10209,14 @@ msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Хидматеро барои истифода ҳамчун хидмати пешфарз ҳангоми ҷустуҷӯи зерунвонҳои филмҳо интихоб намоед"
 
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Ҷустуҷӯи дастӣ"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Сатри ҷустуҷӯ"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Огоҳиҳо"
@@ -10616,10 +10600,6 @@ msgstr "Аудиои MPEG-4 (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Аудиои Windows Media 2 (FFmpeg wmav2)"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Танзимоти динамикҳо"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -11473,6 +11453,10 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Равзанаи пешфарзи EPG барои намоиш. Қимати пешфарз - Хати вақт."
 
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
+msgstr "Миқдори рӯзҳо барои ворид кардани иттилооти EPG аз серверҳо. Қимати пешфарз 3 рӯз мебошад."
+
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Фосилаи вақт байни воридотҳои иттилооти EPG аз серверҳои мултимедиавӣ. Қимати пешфарз - 120 дақиқа."
@@ -12037,17 +12021,9 @@ msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr "Интихоб кунед, ки чӣ тавр хусусиятҳои барориши аудио кор мекунанд: [Fixed] - хусусиятҳои барориш ҳамеша басомади садои муайян ва танзимоти динамикҳоро истифода мекунад; [Best Match] - хусусиятҳои барориш ҳамеша хуусиятҳои манбаро истифода мекунанд; [Optimized] - хусусиятҳои барориш дар оғози пахш танзим мешаванд ва тағйир дода намешавнд, агар хусусиятҳои манба тағйир дода нашаванд."
 
-msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded."
-msgstr "Интихоби меъёри аксари шабакаҳо/динамикҳои аудиоии дастрас барои аудиои рамзшуда."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Афзудани баландии садои роҳчаҳои AC3 ҳангоми омезиши шабака то сатҳи стерео (2 шабака)."
-
-msgctxt "#36364"
-msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
-msgstr "Фаъол кардани омезиши 2 манбаи шабакаи стереоии муайяншуда мувофиқи танзимоти динамикҳо."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12281,10 +12257,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Фаъол кардани рамзгузори сахтафзории видеоӣ тавассути рамзгузори AMLogic."
 
-msgctxt "#36423"
-msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
-msgstr "Истифодаи рамзгузори серриштаи кадрҳои ffmpeg вақте ки рамзгузори сахтафзорӣ кор намекунад ё ғайрифаъол аст. (қобилияти итминонаш нисбат ба ҳолати пешфарзи якриштаӣ паст аст)"
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Амалро барои объекти интихобшудаи EPG интихоб намоед: [Намоиши менюи марбут] менюи марбутро барои интихоби амалҳои иловагӣ намоиш медиҳад; [Гузариш ба канал] канали марбутро дарҳол танзим мекунад; [Намоиши иттилоот] иттилооти ботафсилро бо сужет ва имконоти иловагӣ намоиш медиҳад; [Сабт] вақтсанҷи сабтро барои объекти интихобшуда оғоз мекунад."
@@ -12449,6 +12421,14 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Қаъри стереоскопии зерунвонҳоро барои видеоҳои стереоскопӣ танзим мекунад. Қимати баланд зерунвонҳоро барои тамошобин наздиқтар намоиш медиҳад."
 
+msgctxt "#36547"
+msgid "Use higher quality textures for covers and fanart (uses more memory)"
+msgstr "Истифодаи текстураи баландсифат барои муқова ва тасвирҳои (ҳофизаи зиёдро истифода мебарад)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Возеҳии интерфейси графикиро барои кам истифодаи ҳофиза маҳдуд мекунад. Ба сифати пахши видео таъсир намерасонад. Қимати 1080 барои номаҳдуд. Бояд бозоғозӣ карда шавад."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Барои нобино)"
@@ -12496,3 +12476,11 @@ msgstr "Баландкунии садои шабакаи марказӣ ҳанг
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
 msgstr "Тугмаҳои системавиро монанди \"printscreen\", \"alt-tab\" ва \"тугмаҳои баландии садо\" дар экрани пурра фаъол мекунад"
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Фаъол кардани тасвирзҳо бо ранги қаъри баланд"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Танзими ҳудуди возеҳии интерфейси графикӣ"

@@ -1789,10 +1789,6 @@ msgctxt "#20342"
 msgid "Movies"
 msgstr "Filmlər"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Subtitrlərin qovluqu"
-
 msgctxt "#21375"
 msgid "Normal"
 msgstr "Normal"

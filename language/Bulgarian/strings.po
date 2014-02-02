@@ -159,11 +159,11 @@ msgstr "нед."
 
 msgctxt "#51"
 msgid "Jan"
-msgstr "ян."
+msgstr "януари"
 
 msgctxt "#52"
 msgid "Feb"
-msgstr "февр."
+msgstr "февруари"
 
 msgctxt "#53"
 msgid "Mar"
@@ -171,7 +171,7 @@ msgstr "март"
 
 msgctxt "#54"
 msgid "Apr"
-msgstr "апр."
+msgstr "април"
 
 msgctxt "#55"
 msgid "May"
@@ -187,23 +187,23 @@ msgstr "юли"
 
 msgctxt "#58"
 msgid "Aug"
-msgstr "авг."
+msgstr "август"
 
 msgctxt "#59"
 msgid "Sep"
-msgstr "септ."
+msgstr "септември"
 
 msgctxt "#60"
 msgid "Oct"
-msgstr "окт."
+msgstr "октомври"
 
 msgctxt "#61"
 msgid "Nov"
-msgstr "ное."
+msgstr "ноември"
 
 msgctxt "#62"
 msgid "Dec"
-msgstr "дек."
+msgstr "декември"
 
 msgctxt "#71"
 msgid "N"
@@ -295,19 +295,19 @@ msgstr "Променливо"
 
 msgctxt "#98"
 msgid "View: Auto"
-msgstr "Вид: Автоматичен"
+msgstr "Изглед: Автоматичен"
 
 msgctxt "#99"
 msgid "View: Auto big"
-msgstr "Вид: Автоматичен (едър)"
+msgstr "Изглед: Автоматичен (едър)"
 
 msgctxt "#100"
 msgid "View: Icons"
-msgstr "Вид: Икони"
+msgstr "Изглед: Икони"
 
 msgctxt "#101"
 msgid "View: List"
-msgstr "Вид: Списък"
+msgstr "Изглед: Списък"
 
 msgctxt "#102"
 msgid "Scan"
@@ -567,7 +567,7 @@ msgstr "Има диск"
 
 msgctxt "#166"
 msgid "Skin"
-msgstr "Облик"
+msgstr "Облици"
 
 msgctxt "#167"
 msgid "Cancel file operations"
@@ -584,6 +584,10 @@ msgstr "Резолюция"
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Синхронизирай честотата на екрана с видеото"
+
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Заглавие за сортиране"
 
 msgctxt "#172"
 msgid "Release date"
@@ -683,7 +687,7 @@ msgstr "Зареждане на детайлите за филма"
 
 msgctxt "#199"
 msgid "Web interface"
-msgstr "Уеб интерфейс"
+msgstr "Уеб интерфейси"
 
 msgctxt "#202"
 msgid "Tagline"
@@ -865,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Изберете целева папка"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Извеждай стерео сигнала до всички високоговорители"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Брой на каналите"
@@ -923,11 +923,11 @@ msgstr "Спри записа"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Сорт. по: Аудио запис"
+msgstr "Подредба: Аудио запис"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "Сорт. по: Време"
+msgstr "Подредба: Време"
 
 msgctxt "#268"
 msgid "Sort by: Title"
@@ -935,11 +935,11 @@ msgstr "Сортиране : Заглавие"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "Сорт. по: Артист"
+msgstr "Подредба: Артист"
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "Сорт. по: Албум"
+msgstr "Подредба: Албум"
 
 msgctxt "#271"
 msgid "Top 100"
@@ -991,7 +991,7 @@ msgstr "Намерени са %i  елемента"
 
 msgctxt "#283"
 msgid "Search results"
-msgstr "Резултати от търсенето"
+msgstr "Резултат от търсенето"
 
 msgctxt "#284"
 msgid "No results found"
@@ -1071,7 +1071,7 @@ msgstr "Език"
 
 msgctxt "#305"
 msgid "Enabled"
-msgstr "Включено"
+msgstr "Включена"
 
 msgctxt "#306"
 msgid "Non-interleaved"
@@ -1283,7 +1283,7 @@ msgstr "Степен на затъмняване от скрийнсейвъра
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "Сорт. по: Файл"
+msgstr "Подредба: Файл"
 
 msgctxt "#364"
 msgid "Dolby Digital (AC3) capable receiver"
@@ -1307,7 +1307,7 @@ msgstr "IMDb"
 
 msgctxt "#369"
 msgid "Title"
-msgstr "Заглавие"
+msgstr "Заглавия"
 
 msgctxt "#370"
 msgid "Thunderstorms"
@@ -1491,7 +1491,7 @@ msgstr "Не е налична"
 
 msgctxt "#417"
 msgid "View: Big icons"
-msgstr "Вид: Големи икони"
+msgstr "Изглед: Големи икони"
 
 msgctxt "#418"
 msgid "Low"
@@ -1539,7 +1539,7 @@ msgstr "Моля, въведете следния диск"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
-msgstr "Сорт. по: DVD№"
+msgstr "Подредба: DVD№"
 
 msgctxt "#431"
 msgid "No cache"
@@ -1647,7 +1647,7 @@ msgstr "Режим"
 
 msgctxt "#457"
 msgid "Switch view"
-msgstr "Превключи вида"
+msgstr "Превключи изгледа"
 
 msgctxt "#459"
 msgid "Subs"
@@ -1696,10 +1696,6 @@ msgstr "Позиция на OSD"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Заслуги"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -1819,7 +1815,7 @@ msgstr "Зареждане на информация от файлове..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "Сорт. по: Употреба"
+msgstr "Подредба: Употреба"
 
 msgctxt "#510"
 msgid "Enable visualisations"
@@ -1911,7 +1907,7 @@ msgstr "Въведете жанр"
 
 msgctxt "#534"
 msgid "View: %s"
-msgstr "Вид: %s"
+msgstr "Изглед: %s"
 
 msgctxt "#535"
 msgid "List"
@@ -1971,7 +1967,7 @@ msgstr "Смесвай многоканалното аудио до два ст�
 
 msgctxt "#550"
 msgid "Sort by: %s"
-msgstr "Сорт. по: %s"
+msgstr "Подредба: %s"
 
 msgctxt "#551"
 msgid "Name"
@@ -2039,11 +2035,11 @@ msgstr "Артист на албум"
 
 msgctxt "#567"
 msgid "Play count"
-msgstr "Брой възпроизвеждания"
+msgstr "Брой гледания"
 
 msgctxt "#568"
 msgid "Last played"
-msgstr "Последно възпроизвеждане"
+msgstr "Последно гледан на"
 
 msgctxt "#569"
 msgid "Comment"
@@ -2075,7 +2071,7 @@ msgstr "В процес"
 
 msgctxt "#576"
 msgid "Times played"
-msgstr "Брой възпроизвеждания"
+msgstr "Брой гледания"
 
 msgctxt "#577"
 msgid "Date Taken"
@@ -2091,11 +2087,11 @@ msgstr "Метод на сортиране"
 
 msgctxt "#582"
 msgid "View mode"
-msgstr "Вид (режим)"
+msgstr "Изглед (режим)"
 
 msgctxt "#583"
 msgid "Remember views for different folders"
-msgstr "Различен вид за отделните папки"
+msgstr "Различен изглед за отделните папки"
 
 msgctxt "#584"
 msgid "Ascending"
@@ -2235,7 +2231,7 @@ msgstr "Гледани сериали"
 
 msgctxt "#629"
 msgid "View mode"
-msgstr "Вид (режим)"
+msgstr "Изглед (режим)"
 
 msgctxt "#630"
 msgid "Normal"
@@ -2527,7 +2523,7 @@ msgstr "Файлове"
 
 msgctxt "#745"
 msgid "No scanned information for this view"
-msgstr "Няма сканирана информация за този вид"
+msgstr "Няма сканирана информация за този изглед"
 
 msgctxt "#746"
 msgid "Please turn off library mode"
@@ -2571,7 +2567,7 @@ msgstr "Редактирай дълбочина на пътя"
 
 msgctxt "#759"
 msgid "View: Big list"
-msgstr "Вид: Голям лист"
+msgstr "Изглед: Голям списък"
 
 msgctxt "#760"
 msgid "Yellow"
@@ -2723,7 +2719,7 @@ msgstr "Музикалната библиотека изисква повтор�
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
-msgstr "Искате ли да сканирате сега?"
+msgstr "Да бъдат ли сканирани сега?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3431,7 +3427,7 @@ msgstr "Основни"
 
 msgctxt "#10037"
 msgid "Standard"
-msgstr "Стандарт"
+msgstr "Стандартни"
 
 msgctxt "#10038"
 msgid "Advanced"
@@ -4147,7 +4143,7 @@ msgstr "VDPAU ниво на Upscaling с високо качество"
 
 msgctxt "#13123"
 msgid "Keep skin?"
-msgstr "Желаете да ползвате този облик?"
+msgstr "Желаете ли да ползвате облика?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4449,6 +4445,10 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Рекурсивно слайдшоу"
 
+msgctxt "#13319"
+msgid "Randomise"
+msgstr "В случаен ред"
+
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Стерео"
@@ -4615,7 +4615,7 @@ msgstr "Сила на звука"
 
 msgctxt "#13377"
 msgid "Default view mode"
-msgstr "Стандартен режим на вида"
+msgstr "Стандартен изглед"
 
 msgctxt "#13378"
 msgid "Default brightness"
@@ -5019,7 +5019,7 @@ msgstr "Автопревключване на миниатюри, когато"
 
 msgctxt "#14011"
 msgid "Enable auto switching to thumbs view"
-msgstr "Автопревключване на вид с миниатюри"
+msgstr "Автопревключване на изглед с миниатюри"
 
 msgctxt "#14012"
 msgid "- Use large icons"
@@ -5427,7 +5427,7 @@ msgstr "Възпроизведи чрез..."
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
-msgstr "При вид с миниатюри скрий имената на файловете"
+msgstr "При изглед с миниатюри скрий имената на файловете"
 
 msgctxt "#15216"
 msgid "Play in party mode"
@@ -5611,11 +5611,11 @@ msgstr "Всички видеа"
 
 msgctxt "#16101"
 msgid "Unwatched"
-msgstr "Негледани"
+msgstr "Неизгледани"
 
 msgctxt "#16102"
 msgid "Watched"
-msgstr "Гледани"
+msgstr "Изгледани"
 
 msgctxt "#16103"
 msgid "Mark as watched"
@@ -5853,10 +5853,6 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Записи от ТВ"
 
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Стандартна папка за миниатюри на записи"
-
 msgctxt "#19019"
 msgid "Channels"
 msgstr "Канали"
@@ -5891,7 +5887,7 @@ msgstr "Добави брояч"
 
 msgctxt "#19027"
 msgid "No search results"
-msgstr "Няма резултати от търсенето"
+msgstr "Няма резултат от търсенето"
 
 msgctxt "#19028"
 msgid "No EPG entries"
@@ -6595,11 +6591,11 @@ msgstr "Скривай OSD за канала при превключване н�
 
 msgctxt "#19232"
 msgid "Clear search results"
-msgstr "Изчисти резултатите от търсенето"
+msgstr "Изчисти резултата от търсенето"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
-msgstr "Уведомяване при обновяване на брояч"
+msgstr "Известяване при обновяване на брояч"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -7091,7 +7087,7 @@ msgstr "Желаете ли играта да бъде стартирана?"
 
 msgctxt "#20014"
 msgid "Sort by: Playlist"
-msgstr "Сорт. по: Плейлист"
+msgstr "Подредба: Плейлист"
 
 msgctxt "#20015"
 msgid "Remote thumb"
@@ -7487,7 +7483,7 @@ msgstr "Отписване"
 
 msgctxt "#20128"
 msgid "Go to root"
-msgstr "Отиди в основната"
+msgstr "Към в основната папка"
 
 msgctxt "#20129"
 msgid "Weave"
@@ -7715,7 +7711,7 @@ msgstr "Ротирай снимките въз основа на EXIF инфор
 
 msgctxt "#20185"
 msgid "Use poster view styles for TV shows"
-msgstr "За ТВ Сериали ползвай вид с плакати"
+msgstr "За ТВ Сериали ползвай изглед с плакати"
 
 msgctxt "#20186"
 msgid "Please wait"
@@ -8071,7 +8067,7 @@ msgstr "ТВ Сериал"
 
 msgctxt "#20365"
 msgid "Episode plot"
-msgstr "Сюжет на епизода"
+msgstr "Сюжет на епизод"
 
 msgctxt "#20366"
 msgid "* All seasons"
@@ -8079,7 +8075,7 @@ msgstr "* Всички сезони"
 
 msgctxt "#20367"
 msgid "Hide watched"
-msgstr "Без гледаните"
+msgstr "Без изгледаните"
 
 msgctxt "#20368"
 msgid "Prod code"
@@ -8087,7 +8083,7 @@ msgstr "Код на продукта"
 
 msgctxt "#20369"
 msgid "Show plot for unwatched items"
-msgstr "Показвай сюжета за негледаните елементи"
+msgstr "Показвай сюжета за неизгледаните"
 
 msgctxt "#20370"
 msgid "* Hidden to prevent spoilers *"
@@ -8375,7 +8371,7 @@ msgstr "Отдалечен fanart"
 
 msgctxt "#20442"
 msgid "Change content"
-msgstr "Промени съдържанието"
+msgstr "Промяна на съдържанието"
 
 msgctxt "#20443"
 msgid "Do you want to refresh info for all"
@@ -8479,7 +8475,7 @@ msgstr "Без (Премахване от \"%s\")"
 
 msgctxt "#20468"
 msgid "Add movie to a new set"
-msgstr "Добавяне към нова поредица"
+msgstr "Нова поредица"
 
 msgctxt "#20469"
 msgid "Keep current set (%s)"
@@ -8540,10 +8536,6 @@ msgstr "Редактирай споделения медиен ресурс"
 msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Премахни споделения медиен ресурс"
-
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Папка за субтитри"
 
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
@@ -8912,10 +8904,6 @@ msgstr "Групиране по"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "смесено"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Позиция на субтитрите"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9791,7 +9779,7 @@ msgstr "Повредена"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
-msgstr "Желаете ли да превключите на този облик?"
+msgstr "Превключване на облика?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
@@ -9872,6 +9860,10 @@ msgstr "Услуга за филми"
 msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Изберете коя услуга да се ползва при стандартно търсене на субтитри за филм"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Въведете низ за търсене"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10111,7 +10103,7 @@ msgstr "Настройване на"
 
 msgctxt "#33060"
 msgid "Power"
-msgstr "Изключи"
+msgstr "Изключи..."
 
 msgctxt "#33061"
 msgid "Menu"
@@ -10257,10 +10249,6 @@ msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Конфигурация на високоговорителите"
-
 msgctxt "#34101"
 msgid "2.0"
 msgstr "2.0"
@@ -10307,7 +10295,7 @@ msgstr "Изберете поведение когато не се възпро�
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
-msgstr "Просвирвай звуци от потребителския интерфейс"
+msgstr "Озвучаване на потребителския интерфейс"
 
 msgctxt "#34121"
 msgid "Only when playback stopped"
@@ -10675,7 +10663,7 @@ msgstr "При стартиране на  XBMC коя от началните с
 
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the User Interface."
-msgstr "Изберете пакет от звуци, който да се ползва при работата с потребителския интерфейс. Ако желаете можете да изключите звуковите ефекти."
+msgstr "Изберете пакет от звуци, който да се ползва за озвучаване на потребителския интерфейс. Ако желаете можете да изключите звуковите ефекти."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -10795,7 +10783,7 @@ msgstr "Все още не е налична информация."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
-msgstr "Показва сюжета и за негледаните файлове в библиотеката."
+msgstr "Показва сюжета и за неизгледаните файлове в библиотеката."
 
 msgctxt "#36142"
 msgid "No info available yet."
@@ -10919,7 +10907,7 @@ msgstr "Все още не е налична информация."
 
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "Превключва между \"Запитване\", \"Възпроизведи\", \"Възобнови\" и \"Покажи информация\". \"Запитване\" ще извежда меню с наличните опции. \"Възобнови\" ще започва възпроизвеждане на видео файла от точката до която сте гледали последния път. \"Покажи информация\" ще извежда прозорец с информация за избрания елемент."
+msgstr "Превключва между \"Запитване\", \"Възпроизведи\", \"Възобнови\" и \"Покажи информация\". \"Запитване\" ще извежда меню с наличните опции. \"Възобнови\" ще започва възпроизвеждане на видео файла от точката до която сте гледали последния път. \"Покажи информация\" ще извежда прозореца с информация за избрания елемент."
 
 msgctxt "#36178"
 msgid "No info available yet."
@@ -11493,6 +11481,10 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
 msgstr "Когато ползвате няколко екрана тези които не изобразяват XBMC ще бъдат затъмнени."
 
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Тестови модели за калибриране на дисплея."
+
 msgctxt "#36359"
 msgid "No info available yet."
 msgstr "Все още не е налична информация."
@@ -11500,10 +11492,6 @@ msgstr "Все още не е налична информация."
 msgctxt "#36360"
 msgid "No info available yet."
 msgstr "Все още не е налична информация."
-
-msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded."
-msgstr "Задайте максималния брой налични аудио канали/високоговорители за възпроизвеждане на декодирания аудио сигнал."
 
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
@@ -11540,6 +11528,10 @@ msgstr "Изберете кое устройство да възпроизвеж
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
 msgstr "Изберете устройство което да декодира кодираните формати. Това са форматите от списъка \"Приемникът ми поддържа...\" по-долу."
+
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Определя поведението на звуците от потребителския интерфейс - кога да се възпроизвеждат. Като звука издаван при при навигиране из менютата и за оповестяване на важно известие."
 
 msgctxt "#36374"
 msgid "No info available yet."
@@ -11729,6 +11721,10 @@ msgctxt "#36426"
 msgid "Switch to channel"
 msgstr "Превключи на канал"
 
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Покажи информация"
+
 msgctxt "#36428"
 msgid "Record"
 msgstr "Запис"
@@ -11763,7 +11759,7 @@ msgstr "Предпочитан режим"
 
 msgctxt "#36526"
 msgid "Disable stereoscopic mode when playback is stopped"
-msgstr "Изключване на стереоскопичния режим при спиране на възпроизвеждането"
+msgstr "Изключи стереоскопичния режим при спиране на възпроизвеждането"
 
 msgctxt "#36527"
 msgid "This video is stereoscopic. Select playback mode"
@@ -11843,7 +11839,11 @@ msgstr "(Коментари на режисьора)"
 
 msgctxt "#37014"
 msgid "Last used profile"
-msgstr "Последно ползван профил"
+msgstr "Последния ползван профил"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Преглед на плейлиста"
 
 msgctxt "#37016"
 msgid "Select this option if your receiver is capable of decoding E-AC3 streams."

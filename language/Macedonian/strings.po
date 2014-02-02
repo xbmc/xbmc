@@ -857,10 +857,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Изаберете целна папка"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Стерео излез кон сите звучници"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Број на канали"
@@ -1632,10 +1628,6 @@ msgstr "OSD позиција"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Заслуги"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Изме. чип"
 
 msgctxt "#474"
 msgid "Off"
@@ -7201,10 +7193,6 @@ msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Споделувај видео и музички библиотеки преку UPnP"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Титл фолдер"
-
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Игнорирај фонтови во ASS/SSA титлови"
@@ -7552,10 +7540,6 @@ msgstr "Кешот се преполни пред да има доволно п�
 msgctxt "#21457"
 msgid "Watched episode count"
 msgstr "Број на гледани епизоди"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Локација на титл"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -8069,6 +8053,10 @@ msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
 msgstr "Дали сакате да ја поставите оваа маска?"
 
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Внесите збор за пребарување"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Нотификации"
@@ -8232,10 +8220,6 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Конфигурација на звучници"
 
 msgctxt "#34101"
 msgid "2.0"

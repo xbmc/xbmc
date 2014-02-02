@@ -797,10 +797,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Mo'ljal direktoriyasini tanlash"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Stereo hamma karnaylarga chiqarish"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanallar soni"

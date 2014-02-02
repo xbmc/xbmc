@@ -585,6 +585,10 @@ msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Ajustar frecuencia de refresco de pantalla al video"
 
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Ordenar título"
+
 msgctxt "#172"
 msgid "Release date"
 msgstr "Fecha de publicación"
@@ -864,10 +868,6 @@ msgstr "Visualización"
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Seleccione carpeta destino"
-
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Salida estéreo a todos los altavoces"
 
 msgctxt "#253"
 msgid "Number of channels"
@@ -1597,6 +1597,10 @@ msgctxt "#447"
 msgid "Autorun media"
 msgstr "Reproducir automáticamente"
 
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "Receptor Dolby Digital (AC3) compatible"
+
 msgctxt "#449"
 msgid "Enabled"
 msgstr "Activado"
@@ -1680,10 +1684,6 @@ msgstr "Posición del OSD"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Créditos"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
 
 msgctxt "#474"
 msgid "Off"
@@ -2253,6 +2253,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Personalizado"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "ReplayGain"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "Ajustes de volumen ReplayGain"
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Usar volumen de la pista"
@@ -2260,6 +2268,18 @@ msgstr "Usar volumen de la pista"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Usar volumen del álbum"
+
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "Nivel de Preamplificacion - Archivos con ReplayGain"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "Nivel de Preamplificacion - Archivos sin ReplayGain"
+
+msgctxt "#643"
+msgid "Avoid clipping on ReplayGained files"
+msgstr "Evitar distorsión en archivos con ReplayGain"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2871,15 +2891,15 @@ msgstr "Favoritos"
 
 msgctxt "#1037"
 msgid "Video Add-ons"
-msgstr "Addons de Vídeo"
+msgstr "Complementos de Vídeo"
 
 msgctxt "#1038"
 msgid "Music Add-ons"
-msgstr "Addons de Música"
+msgstr "Complementos de Música"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "Addons de Imágenes"
+msgstr "Complementos de Imágenes"
 
 msgctxt "#1040"
 msgid "Loading directory"
@@ -2895,7 +2915,7 @@ msgstr "%i de %i elementos obtenidos"
 
 msgctxt "#1043"
 msgid "Program Add-ons"
-msgstr "Addons de Aplicaciones"
+msgstr "Complementos de Aplicaciones"
 
 msgctxt "#1045"
 msgid "Add-on settings"
@@ -3465,6 +3485,10 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "Estándar"
 
+msgctxt "#10040"
+msgid "Add-on browser"
+msgstr "Navegador de complementos"
+
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Estas seguro de querer resetear los ajustes en esta categoria?"
@@ -3480,6 +3504,10 @@ msgstr "No hay ayuda disponible"
 msgctxt "#10100"
 msgid "Yes/No dialogue"
 msgstr "Cuadro de diálogo Sí/No"
+
+msgctxt "#10101"
+msgid "Progress dialogue"
+msgstr "Diálogo de Progreso"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3621,9 +3649,17 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Infor de película"
 
+msgctxt "#12000"
+msgid "Select dialogue"
+msgstr "Seleccionar Dialogo"
+
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Música/info"
+
+msgctxt "#12002"
+msgid "Dialogue OK"
+msgstr "Diálogo Bien \"OK\""
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3640,6 +3676,10 @@ msgstr "Vídeo a pantalla completa"
 msgctxt "#12006"
 msgid "Audio visualisation"
 msgstr "Visualización de audio"
+
+msgctxt "#12008"
+msgid "File stacking dialogue"
+msgstr " Diálogo de apilado de archivos"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -4137,6 +4177,10 @@ msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "Nivel de reescalado HQ VDPAU"
 
+msgctxt "#13122"
+msgid "VDPAU Studio level colour conversion"
+msgstr "Conversión de color VDPAU con calidad de estudio"
+
 msgctxt "#13130"
 msgid "Blank other displays"
 msgstr "Blanquear otras pantallas"
@@ -4188,6 +4232,10 @@ msgstr "Puerta de enlace"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "DNS Primario"
+
+msgctxt "#13162"
+msgid "Initialise failed"
+msgstr "Fallo en inicialización"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4649,9 +4697,21 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Ajustes Predeterminados"
 
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "No hay plantillas predeterminadas\ndisponibles para esta visualización"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualisation"
+msgstr "No hay ajustes disponibles\npara esta visualización"
+
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Expulsar/Cargar"
+
+msgctxt "#13392"
+msgid "Use visualisation if playing audio"
+msgstr "Usar visualización mientras se reproduce sonido"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4857,6 +4917,10 @@ msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Clock de video (Re-muestreo de audio)"
 
+msgctxt "#13504"
+msgid "Maximum speedup/slowdown amount (%)"
+msgstr "Maximo cantidad (%) de  velocidad rapida/lenta"
+
 msgctxt "#13505"
 msgid "Resample quality"
 msgstr "Calidad de Re-muestreo"
@@ -5048,6 +5112,10 @@ msgstr "Sin TV"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Introduzca la ciudad grande más cercana"
+
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Hard disk"
+msgstr "Cache de Video/Audio/DVD  - Discoduro"
 
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
@@ -5393,6 +5461,10 @@ msgctxt "#15213"
 msgid "Play using..."
 msgstr "Reproducir Usando..."
 
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronisation"
+msgstr "Usar sincronización A/V suavizada"
+
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
 msgstr "Ocultar nombres de fichero en vista de miniaturas"
@@ -5689,6 +5761,10 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Telecine inverso"
 
+msgctxt "#16315"
+msgid "Lanczos3 optimised"
+msgstr "Lanczos3 optimizado"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Auto"
@@ -5716,6 +5792,10 @@ msgstr "DXVA Best"
 msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
+
+msgctxt "#16323"
+msgid "Spline36 optimised"
+msgstr "Spline36 optimisado"
 
 msgctxt "#16324"
 msgid "Software Blend"
@@ -5816,10 +5896,6 @@ msgstr "PVR Backend %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Grabaciones de TV"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Carpeta predeterminada para miniaturas de PVR"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -6757,6 +6833,10 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Todas las grabaciones"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "No se han encontrado Complementos PVR"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Usted necesita un sintonizador, software, y un"
@@ -7428,6 +7508,14 @@ msgstr "Mostrar info de clima"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Mostrar info de sistema"
+
+msgctxt "#20086"
+msgid "Show available disk space C: E: F:"
+msgstr "Mostrar espacio disponible en C: E: F:"
+
+msgctxt "#20087"
+msgid "Show available disk space E: F: G:"
+msgstr "Mostrar espacio disponible en E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -8649,10 +8737,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Eliminar Compartición"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Carpeta de subtítulos"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Carpeta de subtítulos de películas y otros"
@@ -9020,10 +9104,6 @@ msgstr "Agrupar por"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "mezclado"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Ubicación de subtitulos"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9587,7 +9667,7 @@ msgstr "Add-on"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr "Add-ons"
+msgstr "Complementos"
 
 msgctxt "#24002"
 msgid "Add-on options"
@@ -9691,11 +9771,11 @@ msgstr "Error loading settings"
 
 msgctxt "#24032"
 msgid "All Add-ons"
-msgstr "All Add-ons"
+msgstr "Todos los Complementos"
 
 msgctxt "#24033"
 msgid "Get Add-ons"
-msgstr "Get Add-ons"
+msgstr "Obtener Complementos"
 
 msgctxt "#24034"
 msgid "Check for updates"
@@ -9719,7 +9799,7 @@ msgstr "Install"
 
 msgctxt "#24039"
 msgid "Disabled Add-ons"
-msgstr "Disabled Add-ons"
+msgstr "Deshabilitar Complementos"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
@@ -9747,7 +9827,7 @@ msgstr "Volver a versión anterior"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
-msgstr "Available Add-ons"
+msgstr "Complementos Disponibles"
 
 msgctxt "#24051"
 msgid "Version:"
@@ -9779,7 +9859,7 @@ msgstr "Hay disponible una actualización del Add-on!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Add-ons activados"
+msgstr "Complementos Habilitados"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -9799,7 +9879,7 @@ msgstr "Cancelar descarga de Add-on?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr "Add-ons siendo descargados"
+msgstr "Complementos  actualmente Descargandose"
 
 msgctxt "#24068"
 msgid "Update available"
@@ -9884,6 +9964,10 @@ msgstr "Imposible cargar la mascara"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "A la mascara le faltan algunos archivos"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Introduzca la cadena de búsqueda"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10265,10 +10349,6 @@ msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Configuración de parlantes"
-
 msgctxt "#34101"
 msgid "2.0"
 msgstr "2.0"
@@ -10505,6 +10585,10 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "No se pudo detectar puerto CEC. Configurelo manualmente."
 
+msgctxt "#36012"
+msgid "Could not initialise the CEC adaptor. Please check your settings."
+msgstr "No se pudo inicializar el adaptador CEC. favor de revisar sus ajustes."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "puerto HDMI"
@@ -10512,6 +10596,10 @@ msgstr "puerto HDMI"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Connectado"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
+msgstr "No se puede inicializar el adaptador CEC: libCEC no se encuentra en su sistema."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10568,6 +10656,10 @@ msgstr "Se ha perdido la conexión"
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adaptor"
 msgstr "Este usuario no tiene permisos para abrir el adaptador CEC"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adaptor"
+msgstr "El puerto esta ocupado. Solo un programa puede acceder al adaptador CEC"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
@@ -10720,6 +10812,10 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Establecer cantidad de tiempo de inactividad antes de mostrar el protector de pantalla."
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Selecciona el protector de pantalla. XBMC debe forzar el 'brillo' del protector de pantalla cuando la reproduccion de video en pantalla completa este pausada o una caja de dialogo este activa."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -10889,6 +10985,10 @@ msgctxt "#36176"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "Alternar entre Eleccion, Reproducir (predetermindo), Reanudar y mostrar la informacion. Elija un elemento, por ejemplo, abrir un directorio en modo de archivos. Reanudar retomará los vídeos automáticamente desde la última posición en la que estabas mirandolo, incluso cuando reinicias el sistema."
+
 msgctxt "#36178"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -10975,7 +11075,7 @@ msgstr "Selecciona la fuente de informacion de peliculas predeterminada. Ver el 
 
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
-msgstr "Elige la fuente por omisión de la información de un programa de TV. Para opciones, mira en el administrador de Add-ons."
+msgstr "Elige la fuente predeterminada de la información de un programa de TV. Para opciones, mira en el administrador de Complementos."
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
@@ -11104,6 +11204,22 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36234"
 msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
 msgstr "Duración de la grabación cuando presionas el botón de grabar, o cuando creas un temporizador manual nuevo. Por omisión, 180 minutos."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Prioridad de la grabacion. Numero mas alto significa mas alta prioridad. Predeterminado a 50. No soportado por todos los complementos y backends."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Borrar grabaciones despues de este tiempo. Predeterminado 99 dias. No soportado por todos los Complementos y backends."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Iniciar grabacions antes del tiempo actual. Predeterminado a 2 minutos. No soportado por todos los Complementos y backends."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Finalizar grabaciones despues del tiempo actual. Predeterminado a 10 minutos. No soportado por todos los Complementos y backends."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -11825,6 +11941,14 @@ msgctxt "#36504"
 msgid "Side by side"
 msgstr "Lado a lado"
 
+msgctxt "#36505"
+msgid "Anaglyph Red/Cyan"
+msgstr "Anáglifo Rojo/Cyan"
+
+msgctxt "#36506"
+msgid "Anaglyph Green/Magenta"
+msgstr "Anáglifo Verde/Magenta"
+
 msgctxt "#36507"
 msgid "Interlaced"
 msgstr "Interlazado"
@@ -11832,6 +11956,10 @@ msgstr "Interlazado"
 msgctxt "#36508"
 msgid "Hardware Based"
 msgstr "Basado en hardware"
+
+msgctxt "#36509"
+msgid "Monoscopic - 2D"
+msgstr "Monoscopio - 2D"
 
 msgctxt "#36520"
 msgid "Playback mode of stereoscopic videos"
@@ -11849,6 +11977,10 @@ msgctxt "#36524"
 msgid "Preferred mode"
 msgstr "Modo preferido"
 
+msgctxt "#36525"
+msgid "Same as movie (autodetect)"
+msgstr "Igual como pelicula (autodetectar)"
+
 msgctxt "#36526"
 msgid "Disable stereoscopic mode when playback is stopped"
 msgstr "Deshabilite modo estereoscópico cuando se para la reproducción."
@@ -11861,9 +11993,29 @@ msgctxt "#36528"
 msgid "Select stereoscopic mode"
 msgstr "Seleccionar modo esteroscópico"
 
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "Mono (2D)"
+
 msgctxt "#36530"
 msgid "Preferred mode"
 msgstr "Modo preferido"
+
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr "Seleccione modo alternativo ..."
+
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr "Igual como pelicula"
+
+msgctxt "#36535"
+msgid "Stereoscopic mode of video"
+msgstr "Modo de video estereoscopico "
+
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr "Modo estereoscópico invertido"
 
 msgctxt "#36537"
 msgid "No info available yet."
@@ -11880,6 +12032,10 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36540"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
+
+msgctxt "#36541"
+msgid "Allows volume control from AirPlay clients."
+msgstr "Permitir control de volumen desde clientes AirPlay ."
 
 msgctxt "#36542"
 msgid "Output to both analogue (headphones) and HDMI"

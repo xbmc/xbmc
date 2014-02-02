@@ -861,10 +861,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Виберіть папку призначення"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Виводити стерео на всі динаміки"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Кількість каналів"
@@ -1672,10 +1668,6 @@ msgstr "Положення екранного меню (OSD)"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Автори"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "МOD-схема"
 
 msgctxt "#474"
 msgid "Off"
@@ -4013,6 +4005,26 @@ msgctxt "#13031"
 msgid "Extended wait for server to wake up..."
 msgstr "Тривале очікування прокидання сервера…"
 
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Очікування запуску служб…"
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "Виявлення MAC"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Оновлено для %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Знайдено для %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Не вдалося для %s"
+
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr "Низький заряд батареї"
@@ -4769,6 +4781,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Грати лише цей файл"
 
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "Високоякісне масштабування більше, ніж"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Синхронізація А/В"
@@ -4828,6 +4844,10 @@ msgstr "Локальна картинка"
 msgctxt "#13515"
 msgid "No art"
 msgstr "Без картинки"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Додати картинку"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5729,10 +5749,6 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Записи ТБ"
 
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Папка для ескізів PVR за промовчанням"
-
 msgctxt "#19019"
 msgid "Channels"
 msgstr "Канали"
@@ -5796,6 +5812,10 @@ msgstr "Відомості"
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Запис цього каналу вже почався"
+
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "Не вдалося відтворити %s. Див. журнал."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -8297,6 +8317,10 @@ msgctxt "#20417"
 msgid "Writer"
 msgstr "Сценарій"
 
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Сценаристи"
+
 msgctxt "#20419"
 msgid "Replace file names with library titles"
 msgstr "Показувати назви з медіатеки замість імен файлів"
@@ -8473,6 +8497,26 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "Вибрати %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Змінити кіноцикл"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Вибрати кіноцикл"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "Не в циклі (видалити з %s)"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Додати фільм до нового циклу"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "Зберегти поточний цикл (%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Показувати приховані файли та папки"
@@ -8513,9 +8557,17 @@ msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Увімкнути доступ до медіатеки за UPnP"
 
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Шукати віддалені плеєри UPnP"
+
 msgctxt "#21362"
 msgid "Bookmark created"
 msgstr "Закладку створено"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Створено закладку серії"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8524,10 +8576,6 @@ msgstr "Змінити медіаресурс"
 msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Видалити медіаресурс"
-
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Папка субтитрів"
 
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
@@ -8893,9 +8941,9 @@ msgctxt "#21458"
 msgid "Group by"
 msgstr "Групування"
 
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Розміщення субтитрів"
+msgctxt "#21459"
+msgid "mixed"
+msgstr "мікс"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9060,6 +9108,18 @@ msgstr "Висота GPS"
 msgctxt "#21843"
 msgid "Orientation"
 msgstr "Орієнтація"
+
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "Дод. розміщення"
+
+msgctxt "#21858"
+msgid "Image type"
+msgstr "Тим картинки"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Час створення"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -9725,6 +9785,10 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "У обкладинці бракує файлів"
 
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Рядок пошуку"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Сповіщення"
@@ -10092,10 +10156,6 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Конфігурація динаміків"
 
 msgctxt "#34101"
 msgid "2.0"

@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Seleccionar pasta de destino"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Emitir estéreo para todas as colunas"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Número de canais"
@@ -1717,10 +1713,6 @@ msgctxt "#470"
 msgid "Credits"
 msgstr "Créditos"
 
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Modchip"
-
 msgctxt "#474"
 msgid "Off"
 msgstr "Desligado"
@@ -2407,7 +2399,7 @@ msgstr "Nível de compressão"
 
 msgctxt "#666"
 msgid "Verbose logging..."
-msgstr "Verbose logging..."
+msgstr "Registo Verbose..."
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -3411,7 +3403,7 @@ msgstr "Script falhou!: %s"
 
 msgctxt "#2101"
 msgid "Newer version needed - See log"
-msgstr "É necessária uma nova versão - verifique log"
+msgstr "É necessária uma nova versão - verifique o registo"
 
 msgctxt "#10000"
 msgid "Home"
@@ -4981,10 +4973,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permitir aceleração por hardware (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Frame Multi Threaded Decoding (less reliable)"
-msgstr "Descodificação de Frames Multi-Tarefa (menos fiável)"
-
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Método de sincronia A/V"
@@ -5699,7 +5687,7 @@ msgstr "Introduza o valor"
 
 msgctxt "#16029"
 msgid "Check the log file for details."
-msgstr "Verifique os detalhes no ficheiro de log."
+msgstr "Verifique os detalhes no ficheiro de registo."
 
 msgctxt "#16030"
 msgid "Party mode aborted."
@@ -6009,10 +5997,6 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Gravações de TV"
 
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Pasta padrão para miniaturas do PVR"
-
 msgctxt "#19019"
 msgid "Channels"
 msgstr "Canais"
@@ -6079,11 +6063,11 @@ msgstr "Este canal já está a ser gravado"
 
 msgctxt "#19035"
 msgid "%s could not be played. Check the log for details."
-msgstr "Não foi possível reproduzir %s. Verifique o log para detalhes."
+msgstr "Não foi possível reproduzir %s. Verifique o registo para detalhes."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
-msgstr "Esta gravação não pode ser reproduzida. Verifique os detalhes no log."
+msgstr "Esta gravação não pode ser reproduzida. Verifique os detalhes no registo."
 
 msgctxt "#19037"
 msgid "Show signal quality"
@@ -6115,11 +6099,11 @@ msgstr "Gravação"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr "Por favor, confirme a sua configuração ou verifique mais detalhes no log."
+msgstr "Por favor, confirme a sua configuração ou verifique mais detalhes no registo."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Nenhum cliente PVR foi iniciado. Espere até os clientes PVR iniciarem, ou verifique mais detalhes no log."
+msgstr "Nenhum cliente PVR foi iniciado. Espere até os clientes PVR iniciarem, ou verifique mais detalhes no registo."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6359,15 +6343,15 @@ msgstr "a"
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr "Não foi possível gravar o temporizador. Veja mais detalhes no log."
+msgstr "Não foi possível gravar o temporizador. Veja mais detalhes no registo."
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
-msgstr "Ocorreu um erro inesperado. Por favor tente mais tarde ou veja mais detalhes no log."
+msgstr "Ocorreu um erro inesperado. Por favor tente mais tarde ou veja mais detalhes no registo."
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr "Erro da backend PVR. Veja mais detalhes no log."
+msgstr "Erro da backend PVR. Veja mais detalhes no registo."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6499,7 +6483,7 @@ msgstr "Grupos"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr "A backend PVR não permite essa acção. Verifique mais detalhes no log."
+msgstr "A backend PVR não permite essa acção. Verifique mais detalhes no registo."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6563,7 +6547,7 @@ msgstr "Gravações"
 
 msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
-msgstr "Não é possível iniciar a gravação. Verifique mais detalhes no log."
+msgstr "Não é possível iniciar a gravação. Verifique mais detalhes no registo."
 
 msgctxt "#19165"
 msgid "Switch"
@@ -6671,7 +6655,7 @@ msgstr "Nenhuma das backend PVR ligadas permite procurar canais"
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
-msgstr "Não foi possível iniciar a procura de canais. Verifique mais detalhes no log."
+msgstr "Não foi possível iniciar a procura de canais. Verifique mais detalhes no registo."
 
 msgctxt "#19194"
 msgid "Continue?"
@@ -6791,7 +6775,7 @@ msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
-msgstr "Não foi possível activar nenhum add-on de PVR. Para mais informação, verifique as configurações ou o log."
+msgstr "Não foi possível activar nenhum add-on de PVR. Para mais informação, verifique as configurações ou o registo."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -8897,10 +8881,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Remover partilha de conteúdo"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Pasta de legendas"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Pasta alternativa de vídeo e legendas"
@@ -9268,10 +9248,6 @@ msgstr "Agrupar por"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "mistura"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Posição das legendas"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -9967,7 +9943,7 @@ msgstr "Forçar actualização"
 
 msgctxt "#24036"
 msgid "Change log"
-msgstr "Log de alterações"
+msgstr "Registo de alterações"
 
 msgctxt "#24037"
 msgid "Uninstall"
@@ -10039,7 +10015,7 @@ msgstr "Licença:"
 
 msgctxt "#24054"
 msgid "Changelog"
-msgstr "Changelog"
+msgstr "Registo de Alterações"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -10232,6 +10208,14 @@ msgstr "Serviço Padrão para Filmes"
 msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Escolher o serviço que será usado como padrão ao procurar legendas de Séries TV"
+
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Expressão de busca manual"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Introduza texto a procurar"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10519,7 +10503,7 @@ msgstr "Ver Readme"
 
 msgctxt "#33073"
 msgid "View Changelog"
-msgstr "Ver mudanças"
+msgstr "Ver Registo de Alterações"
 
 msgctxt "#33074"
 msgid "This version of %s requires an"
@@ -10617,10 +10601,6 @@ msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Áudio Windows Media 2 (FFmpeg wmav2)"
 
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Configuração das Colunas"
-
 msgctxt "#34101"
 msgid "2.0"
 msgstr "2.0"
@@ -10715,7 +10695,7 @@ msgstr "Não foi possível iniciar Zeroconf"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr "O serviço Apple Bonjour está instalado? Veja o ficheiro log para mais informações."
+msgstr "O serviço Apple Bonjour está instalado? Veja o ficheiro de registo para mais informações."
 
 msgctxt "#34302"
 msgid "AirPlay requires Zeroconf to be enabled."
@@ -11473,6 +11453,10 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Padrão de janela EPG para exibir. A Linha do Tempo é a vista padrão."
 
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
+msgstr "Número de dias para importar dados EPG da backend. O padrão é de 3 dias."
+
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Intervalo de tempo entre importações de dados EPG da backend. O padrão é 120 minutos."
@@ -12037,17 +12021,9 @@ msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr "Seleccionar como as propriedades da saída de áudio são definidas: [Fixa] - as propriedades de saída são definidas para a mesma taxa de amostragem e configuração de colunas em todos os momentos; [Melhor Correspondência] - as propriedades de saída são definidas para serem sempre uma correspondência o mais aproximada possível às propriedades da fonte; [Optimizado] - as propriedades de saída são definidas no início da reprodução e não serão alteradas se as propriedades da fonte mudarem."
 
-msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded."
-msgstr "Seleccionar o número máximo de canais/colunas áudio disponíveis para descodificação de áudio."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Aumentar volume em pistas AC3 que foram remisturadas para 2 canais."
-
-msgctxt "#36364"
-msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
-msgstr "Remisturar fontes com 2 canais estéreo, para que o número de canais áudio corresponda ao número de colunas."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12155,7 +12131,7 @@ msgstr "Definir a acção a realizar pelo XBMC quando estiver inactivo durante u
 
 msgctxt "#36391"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
-msgstr "Activar o registo de depuração. É útil para resolução de problemas."
+msgstr "Activar ou desactivar o registo de depuração. É útil para resolução de problemas."
 
 msgctxt "#36392"
 msgid "No info available yet."
@@ -12280,10 +12256,6 @@ msgstr "Ignorar o misturador VDPAU irá poupar recursos em sistemas menos podero
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Activa a descodificação por hardware com o descodificador AMLogic"
-
-msgctxt "#36423"
-msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
-msgstr "Usar descodificação ffmpeg de frames multi-tarefa quando a descodificação hardware não funciona ou está desactivada. (menos fiável do que o modo padrão de tarefa única)"
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -12449,6 +12421,14 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Definir a profundidade visual das legendas para vídeos estereoscópicos. Quanto mais alto o valor, mais próximas ficarão as legendas do espectador."
 
+msgctxt "#36547"
+msgid "Use higher quality textures for covers and fanart (uses more memory)"
+msgstr "Usar texturas de maior qualidade para capas e fanart (utiliza mais memória)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Limitar resolução da interface para poupar memória. Isto não afecta a reprodução de vídeo. Use 1080 para resolução ilimitada. Requer um reinício do XBMC."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Deficientes Visuais)"
@@ -12496,3 +12476,11 @@ msgstr "Aumentar volume do canal central ao fazer remisturas diminuídas"
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
 msgstr "Activar teclas de sistema como printscreen, alt-tab e teclas de volume quando em ecrã cheio."
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Activar artwork com maior profundidade de cor"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Definir limite de resolução da interface"

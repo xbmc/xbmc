@@ -869,10 +869,6 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Επιλογή φακέλου προορισμού"
 
-msgctxt "#252"
-msgid "Output stereo to all speakers"
-msgstr "Στέρεο έξοδος σε όλα τα ηχεία"
-
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Αριθμός καναλιών"
@@ -1716,10 +1712,6 @@ msgstr "Θέση απεικονίσεων οθόνης (OSD)"
 msgctxt "#470"
 msgid "Credits"
 msgstr "Συντελεστές"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr "Τσιπάκι"
 
 msgctxt "#474"
 msgid "Off"
@@ -4981,10 +4973,6 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Χρήση επιτάχυνσης υλικού (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Frame Multi Threaded Decoding (less reliable)"
-msgstr "Πολυνηματική Αποκωδικοποίηση Καρέ (λιγότερο αξιόπιστη)"
-
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Μέθοδος συγχρονισμού A/V"
@@ -6008,10 +5996,6 @@ msgstr "PVR Backend %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Τηλεοπτικές εγγραφές"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr "Προεπιλεγμένος φάκελος για μικρογραφίες PVR"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -8897,10 +8881,6 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Αφαίρεση κοινόχρηστων πολυμέσων"
 
-msgctxt "#21366"
-msgid "Subtitle folder"
-msgstr "Φάκελος υποτίτλων"
-
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Ταινία & εναλλακτικός φάκελος υποτίτλων"
@@ -9268,10 +9248,6 @@ msgstr "Σε γκρουπ ανά"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "ανάμικτα"
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr "Θέση υποτίτλου"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10233,6 +10209,14 @@ msgctxt "#24119"
 msgid "Select service that will be used as default to search for Movie subtitles"
 msgstr "Επιλογή της υπηρεσίας που θα είναι η προεπιλογή για αναζήτηση υποτίτλων Ταινιών"
 
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Κείμενο χειροκίνητης αναζήτησης"
+
+msgctxt "#24121"
+msgid "Enter search string"
+msgstr "Εισαγωγή κειμένου αναζήτησης"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Ειδοποιήσεις"
@@ -10616,10 +10600,6 @@ msgstr "Ήχος MPEG-4 Audio (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Ήχος Windows Media Audio 2 (FFmpeg wmav2)"
-
-msgctxt "#34100"
-msgid "Speaker Configuration"
-msgstr "Διάταξη ηχείων"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -11473,6 +11453,10 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Παράθυρο EPG που θα εμφανίζεται. Προεπιλογή είναι το Χρονοδιάγραμμα."
 
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
+msgstr "Πλήθος ημερών δεδομένων EPG για τις οποίες θα γίνει εισαγωγή από τα backend. Προεπιλογή είναι οι 3 ημέρες."
+
 msgctxt "#36221"
 msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
 msgstr "Χρονικό διάστημα ανάμεσα στις εισαγωγές δεδομένων EPG από τα backend. Προεπιλογή είναι τα 120 λεπτά."
@@ -12037,17 +12021,9 @@ msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr "Επιλογή της μεθόδου ορισμού των ιδιοτήτων της εξόδου ήχου: [Σταθερή] - οι ιδιότητες της εξόδου ορίζονται πάντα στον καθορισμένο ρυθμό δειγματοληψίας & τη διαμόρφωση των ηχείων. [Καλύτερη Αντιστοιχία] - οι ιδιότητες της εξόδου ορίζονται πάντα να είναι κατά το δυνατόν πιο κοντά στις ιδιότητες της πηγής. [Βελτιστοποιημένο] - οι ιδιότητες της εξόδου ορίζονται κατά την έναρξη της αναπαραγωγής, και δεν αλλάζουν ακόμα και αν αλλάξουν οι ιδιότητες της πηγής."
 
-msgctxt "#36362"
-msgid "Select the maximum number of audio channels/speakers available for audio decoded."
-msgstr "Επιλογή του μέγιστου πλήθους καναλιών/ηχείων που είναι διαθέσιμα για αποκωδικοποίηση ήχου."
-
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Ενίσχυση των ροών AC3 που έχουν υποστεί υποβιβαστεί σε 2 κανάλια."
-
-msgctxt "#36364"
-msgid "Select to enable upmixing of 2 channel stereo sources to the number of audio channels specified by the speaker configuration."
-msgstr "Επιλογή για να γίνεται αναβάθμιση καναλιών σε στερεοφωνικές πηγές (2 καν.) στο πλήθος των καναλιών ήχου που ορίζεται από τη διαμόρφωση των ηχείων."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12281,10 +12257,6 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Ενεργοποίηση αποκωδικοποίησης υλικού AMLogic των αρχείων βίντεο"
 
-msgctxt "#36423"
-msgid "Use ffmpeg frame multiple thread decoding when hardware decoding not working or disabled. (less reliable than default single thread mode)"
-msgstr "Χρήση ffmpeg πολυνηματικής αποκωδικοποίησης καρέ όταν δε δουλεύει ή είναι ανενεργή η αποκωδικοποίηση υλικού (λιγότερο αξιόπιστη από την προεπιλεγμένη λειτουργία)."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Ορισμός της ενέργειας όταν έχει επιλεγεί ένα αντικείμενο EPG: Η [Εμφάνιση μενού επιλογών] θα ενεργοποιήσει το αντίστοιχο μενού από όπου μπορείτε να επιλέξετε περαιτέρω ενέργειες. Η [Μετάβαση σε κανάλι] θα αλλάξει άμεσα το κανάλι σε αυτό που θέλετε. Η [Προβολή πληροφοριών] θα εμφανίσει αναλυτικές πληροφορίες, συμπεριλαμβανομένης της πλοκής και επιπλέον επιλογών. Η [Εγγραφή] θα ενεργοποιήσει ένα χρονοδιακόπτη εγγραφής για το επιλεγμένο αντικείμενο."
@@ -12449,6 +12421,14 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr "Ορισμός του οπτικού βάθους υποτίτλων σε στερεοσκοπικά βίντεο. Όσο υψηλότερη είναι η τιμή, τόσο πιο κοντά στο θεατή θα φαίνονται οι υπότιτλοι."
 
+msgctxt "#36547"
+msgid "Use higher quality textures for covers and fanart (uses more memory)"
+msgstr "Χρήση εικόνων υψηλότερης ανάλυσης για εξώφυλλα και fanart (απαιτεί περισσότερη μνήμη)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Περιορισμός της ανάλυσης του Περιβάλλοντος Εργασίας για χρήση λιγότερης μνήμης. Δεν επηρεάζεται η αναπαραγωγή βίντεο. Η τιμή 1080 αντιστοιχεί σε απεριόριστη χρήση μνήμης. Απαιτεί επανεκκίνηση."
+
 msgctxt "#37000"
 msgid "(Visually Impaired)"
 msgstr "(Για Άτομα με Προβλήματα Όρασης)"
@@ -12496,3 +12476,11 @@ msgstr "Ενίσχυση του κεντρικού καναλιού κατά τ�
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
 msgstr "Ενεργοποίηση πλήκτρων συστήματος όπως το printscreen, το alt-tab και των πλήκτρων ήχου κατά την πλήρη οθόνη"
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Ενεργοποίηση εικόνων υψηλότερου χρωματικού βάθους"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Ορισμός ορίου ανάλυσης του Περιβάλλοντος Εργασίας"
