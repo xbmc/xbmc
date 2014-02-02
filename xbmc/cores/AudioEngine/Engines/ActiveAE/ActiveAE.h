@@ -28,6 +28,7 @@
 #include "cores/AudioEngine/Interfaces/AESound.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "guilib/DispResource.h"
+#include <queue>
 
 // ffmpeg
 #include "DllAvFormat.h"
@@ -73,6 +74,7 @@ public:
     INIT = 0,
     RECONFIGURE,
     SUSPEND,
+    DEVICECHANGE,
     MUTE,
     VOLUME,
     PAUSESTREAM,
@@ -224,6 +226,7 @@ public:
   virtual bool SupportsQualityLevel(enum AEQuality level);
   virtual bool IsSettingVisible(const std::string &settingId);
   virtual void KeepConfiguration(unsigned int millis);
+  virtual void DeviceChange();
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback();
@@ -292,6 +295,7 @@ protected:
   XbmcThreads::EndTime m_extDrainTimer;
   unsigned int m_extKeepConfig;
   bool m_extDeferData;
+  std::queue<time_t> m_extLastDeviceChange;
 
   enum
   {

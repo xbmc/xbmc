@@ -404,3 +404,9 @@ void CAEFactory::KeepConfiguration(unsigned int millis)
   if (AE)
     AE->KeepConfiguration(millis);
 }
+
+void CAEFactory::DeviceChange()
+{
+  if (AE)
+    AE->DeviceChange();
+}
