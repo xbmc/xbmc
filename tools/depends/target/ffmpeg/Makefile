@@ -9,7 +9,7 @@ APPLY_PATCHES=no
 LIBNAME=ffmpeg
 # ffmpeg GIT
 BASE_URL=https://github.com/FernetMenta/FFmpeg/archive
-VERSION=9292bac08d62b92fcd66a8df468741190269f510
+VERSION=11086c540305ffb208e6fc17d301db989d3c4151
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
 
