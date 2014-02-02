@@ -10589,7 +10589,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21366"
-msgid "Subtitle folder"
+msgid "Custom subtitle folder"
 msgstr ""
 
 msgctxt "#21367"
@@ -11003,7 +11003,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21460"
-msgid "Subtitle location"
+msgid "Subtitle location on screen"
 msgstr ""
 
 #: system/settings/settings.xml
