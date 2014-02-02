@@ -809,9 +809,6 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
   if(!valid)
     CloseAudioStream(true);
 
-  // enable  or disable subtitles
-  m_dvdPlayerVideo.EnableSubtitle(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
-
   // open subtitle stream
   SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
   PredicateSubtitleFilter psf(as.language);
@@ -833,10 +830,10 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
     if(OpenSubtitleStream(it->id, it->source))
     {
       valid = true;
-      if(relevant && it->flags & CDemuxStream::FLAG_FORCED)
-        SetSubtitleVisibleInternal(true);
-      if (!relevant)
-        SetSubtitleVisibleInternal(false);
+      if (!CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
+        relevant = relevant && (it->flags & CDemuxStream::FLAG_FORCED);
+
+      SetSubtitleVisibleInternal(relevant);
     }
   }
   if(!valid)
