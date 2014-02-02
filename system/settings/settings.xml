@@ -453,6 +453,7 @@
           <default>true</default>
           <dependencies>
             <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevdpaumpeg2" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
@@ -462,6 +463,7 @@
           <default>false</default>
           <dependencies>
             <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevdpaumpeg4" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
@@ -471,6 +473,7 @@
           <default>true</default>
           <dependencies>
             <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevdpauvc1" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
@@ -487,6 +490,7 @@
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapimpeg2" operator="is">true</dependency>
           </dependencies>
           <level>3</level>
           <default>true</default>
@@ -496,6 +500,7 @@
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapimpeg4" operator="is">true</dependency>
           </dependencies>
           <level>3</level>
           <default>true</default>
@@ -505,6 +510,7 @@
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
           </dependencies>
           <level>3</level>
           <default>false</default>
