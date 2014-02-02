@@ -96,6 +96,8 @@ public:
   static void SettingOptionsStereoscopicModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
   static void SettingOptionsPreferredStereoscopicViewModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
 
+  static RESOLUTION GetResolutionFromString(const std::string &strResolution);
+
 protected:
   CDisplaySettings();
   CDisplaySettings(const CDisplaySettings&);
@@ -104,7 +106,6 @@ protected:
 
   DisplayMode GetCurrentDisplayMode() const;
 
-  static RESOLUTION GetResolutionFromString(const std::string &strResolution);
   static std::string GetStringFromResolution(RESOLUTION resolution, float refreshrate = 0.0f);
   static RESOLUTION GetResolutionForScreen();
 
