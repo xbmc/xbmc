@@ -8,10 +8,6 @@ SRCS += DVDAudioCodecLPcm.cpp
 SRCS += DVDAudioCodecPassthrough.cpp
 SRCS += DVDAudioCodecPcm.cpp
 
-ifeq ($(findstring osx,@ARCH@),osx)
-SRCS += DVDAudioCodecPassthroughFFmpeg.cpp
-endif
-
 LIB=Audio.a
 
 include @abs_top_srcdir@/Makefile.include
