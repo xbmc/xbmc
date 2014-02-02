@@ -937,7 +937,7 @@ void CDVDVideoCodecAndroidMediaCodec::OutputFormatChanged(void)
         // NVidia Tegra 3 on Nexus 7 does not set slice_heights
         if (strstr(m_codecname.c_str(), "OMX.Nvidia.") != NULL)
         {
-          slice_height = (((height) + 31) & ~31);
+          slice_height = (((height) + 15) & ~15);
           CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: NVidia Tegra 3 quirk, slice_height(%d)", slice_height);
         }
       }
