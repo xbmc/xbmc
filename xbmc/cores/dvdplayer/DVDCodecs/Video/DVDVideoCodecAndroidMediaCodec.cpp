@@ -842,8 +842,11 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
           if (i > 0)
             height = (m_videobuffer.iHeight + 1) / 2;
 
-          for (int j = 0; j < height; j++, src += src_stride, dst += dst_stride)
-            memcpy(dst, src, dst_stride);
+          if (src_stride == dst_stride)
+            memcpy(dst, src, dst_stride * height);
+          else
+            for (int j = 0; j < height; j++, src += src_stride, dst += dst_stride)
+              memcpy(dst, src, dst_stride);
         }
       }
       m_codec->releaseOutputBuffer(index, false);
