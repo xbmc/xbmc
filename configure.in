@@ -1742,9 +1742,9 @@ if test "$FFMPEG_FOUND" != "true"; then
 fi
 
 # get the libdir for static linking
-FFMPEG_LIBDIR=$(${PKG_CONFIG} --static --variable=libdir libavcodec)
-GNUTLS_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors gnutls)
-VORBISENC_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors vorbisenc)
+FFMPEG_LIBDIR=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --static --variable=libdir libavcodec)
+GNUTLS_ALL_LIBS=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --static --libs-only-l --silence-errors gnutls)
+VORBISENC_ALL_LIBS=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --static --libs-only-l --silence-errors vorbisenc)
 
 # in case the headers are in a custom directory
 SAVE_CPPFLAGS="$CPPFLAGS"
