@@ -1,0 +1,29 @@
+From f65afef1df49f53e14c8d4173ff960fff8d44ecb Mon Sep 17 00:00:00 2001
+From: Rainer Hochecker <fernetmenta@online.de>
+Date: Tue, 3 Dec 2013 10:03:04 +0100
+Subject: [PATCH] mpegts: do not set pts for missing dts in video streams
+
+Signed-off-by: Michael Niedermayer <michaelni@gmx.at>
+---
+ libavformat/mpegts.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
+index 59b0058..d67c63a 100644
+--- a/libavformat/mpegts.c
++++ b/libavformat/mpegts.c
+@@ -972,7 +972,10 @@ static int mpegts_push_data(MpegTSFilter *filter,
+                 pes->pts = AV_NOPTS_VALUE;
+                 pes->dts = AV_NOPTS_VALUE;
+                 if ((flags & 0xc0) == 0x80) {
+-                    pes->dts = pes->pts = ff_parse_pes_pts(r);
++                    pes->pts = ff_parse_pes_pts(r);
++                    /* video pts is not monotonic, can't be used for dts */
++                    if (pes->st->codec->codec_type != AVMEDIA_TYPE_VIDEO)
++                        pes->dts = pes->pts;
+                     r += 5;
+                 } else if ((flags & 0xc0) == 0xc0) {
+                     pes->pts = ff_parse_pes_pts(r);
+-- 
+1.8.5-rc3
+

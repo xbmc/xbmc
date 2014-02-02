@@ -1,0 +1,225 @@
+\input texinfo @c -*- texinfo -*-
+
+@settitle ffplay Documentation
+@titlepage
+@center @titlefont{ffplay Documentation}
+@end titlepage
+
+@top
+
+@contents
+
+@chapter Synopsis
+
+ffplay [@var{options}] [@file{input_file}]
+
+@chapter Description
+@c man begin DESCRIPTION
+
+FFplay is a very simple and portable media player using the FFmpeg
+libraries and the SDL library. It is mostly used as a testbed for the
+various FFmpeg APIs.
+@c man end
+
+@chapter Options
+@c man begin OPTIONS
+
+@include avtools-common-opts.texi
+
+@section Main options
+
+@table @option
+@item -x @var{width}
+Force displayed width.
+@item -y @var{height}
+Force displayed height.
+@item -s @var{size}
+Set frame size (WxH or abbreviation), needed for videos which do
+not contain a header with the frame size like raw YUV.  This option
+has been deprecated in favor of private options, try -video_size.
+@item -an
+Disable audio.
+@item -vn
+Disable video.
+@item -ss @var{pos}
+Seek to a given position in seconds.
+@item -t @var{duration}
+play <duration> seconds of audio/video
+@item -bytes
+Seek by bytes.
+@item -nodisp
+Disable graphical display.
+@item -f @var{fmt}
+Force format.
+@item -window_title @var{title}
+Set window title (default is the input filename).
+@item -loop @var{number}
+Loops movie playback <number> times. 0 means forever.
+@item -showmode @var{mode}
+Set the show mode to use.
+Available values for @var{mode} are:
+@table @samp
+@item 0, video
+show video
+@item 1, waves
+show audio waves
+@item 2, rdft
+show audio frequency band using RDFT ((Inverse) Real Discrete Fourier Transform)
+@end table
+
+Default value is "video", if video is not present or cannot be played
+"rdft" is automatically selected.
+
+You can interactively cycle through the available show modes by
+pressing the key @key{w}.
+
+@item -vf @var{filter_graph}
+Create the filter graph specified by @var{filter_graph} and use it to
+filter the video stream.
+
+@var{filter_graph} is a description of the filter graph to apply to
+the stream, and must have a single video input and a single video
+output. In the filter graph, the input is associated to the label
+@code{in}, and the output to the label @code{out}. See the
+ffmpeg-filters manual for more information about the filtergraph
+syntax.
+
+@item -i @var{input_file}
+Read @var{input_file}.
+@end table
+
+@section Advanced options
+@table @option
+@item -pix_fmt @var{format}
+Set pixel format.
+This option has been deprecated in favor of private options, try -pixel_format.
+@item -stats
+Show the stream duration, the codec parameters, the current position in
+the stream and the audio/video synchronisation drift.
+@item -bug
+Work around bugs.
+@item -fast
+Non-spec-compliant optimizations.
+@item -genpts
+Generate pts.
+@item -rtp_tcp
+Force RTP/TCP protocol usage instead of RTP/UDP. It is only meaningful
+if you are streaming with the RTSP protocol.
+@item -sync @var{type}
+Set the master clock to audio (@code{type=audio}), video
+(@code{type=video}) or external (@code{type=ext}). Default is audio. The
+master clock is used to control audio-video synchronization. Most media
+players use audio as master clock, but in some cases (streaming or high
+quality broadcast) it is necessary to change that. This option is mainly
+used for debugging purposes.
+@item -threads @var{count}
+Set the thread count.
+@item -ast @var{audio_stream_number}
+Select the desired audio stream number, counting from 0. The number
+refers to the list of all the input audio streams. If it is greater
+than the number of audio streams minus one, then the last one is
+selected, if it is negative the audio playback is disabled.
+@item -vst @var{video_stream_number}
+Select the desired video stream number, counting from 0. The number
+refers to the list of all the input video streams. If it is greater
+than the number of video streams minus one, then the last one is
+selected, if it is negative the video playback is disabled.
+@item -sst @var{subtitle_stream_number}
+Select the desired subtitle stream number, counting from 0. The number
+refers to the list of all the input subtitle streams. If it is greater
+than the number of subtitle streams minus one, then the last one is
+selected, if it is negative the subtitle rendering is disabled.
+@item -autoexit
+Exit when video is done playing.
+@item -exitonkeydown
+Exit if any key is pressed.
+@item -exitonmousedown
+Exit if any mouse button is pressed.
+
+@item -codec:@var{media_specifier} @var{codec_name}
+Force a specific decoder implementation for the stream identified by
+@var{media_specifier}, which can assume the values @code{a} (audio),
+@code{v} (video), and @code{s} subtitle.
+
+@item -acodec @var{codec_name}
+Force a specific audio decoder.
+
+@item -vcodec @var{codec_name}
+Force a specific video decoder.
+
+@item -scodec @var{codec_name}
+Force a specific subtitle decoder.
+@end table
+
+@section While playing
+
+@table @key
+@item q, ESC
+Quit.
+
+@item f
+Toggle full screen.
+
+@item p, SPC
+Pause.
+
+@item a
+Cycle audio channel.
+
+@item v
+Cycle video channel.
+
+@item t
+Cycle subtitle channel.
+
+@item w
+Show audio waves.
+
+@item left/right
+Seek backward/forward 10 seconds.
+
+@item down/up
+Seek backward/forward 1 minute.
+
+@item page down/page up
+Seek backward/forward 10 minutes.
+
+@item mouse click
+Seek to percentage in file corresponding to fraction of width.
+
+@end table
+
+@c man end
+
+@chapter See Also
+
+@ifhtml
+@url{ffmpeg.html,ffmpeg}, @url{ffprobe.html,ffprobe}, @url{ffserver.html,ffserver},
+@url{ffmpeg-utils.html,ffmpeg-utils},
+@url{ffmpeg-scaler.html,ffmpeg-scaler},
+@url{ffmpeg-resampler.html,ffmpeg-resampler},
+@url{ffmpeg-codecs.html,ffmpeg-codecs},
+@url{ffmpeg-bitstream-filters.html,ffmpeg-bitstream-filters},
+@url{ffmpeg-formats.html,ffmpeg-formats},
+@url{ffmpeg-devices.html,ffmpeg-devices},
+@url{ffmpeg-protocols.html,ffmpeg-protocols},
+@url{ffmpeg-filters.html,ffmpeg-filters}
+@end ifhtml
+
+@ifnothtml
+ffmpeg(1), ffprobe(1), ffserver(1),
+ffmpeg-utils(1), ffmpeg-scaler(1), ffmpeg-resampler(1),
+ffmpeg-codecs(1), ffmpeg-bitstream-filters(1), ffmpeg-formats(1),
+ffmpeg-devices(1), ffmpeg-protocols(1), ffmpeg-filters(1)
+@end ifnothtml
+
+@include authors.texi
+
+@ignore
+
+@setfilename ffplay
+@settitle FFplay media player
+
+@end ignore
+
+@bye

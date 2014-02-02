@@ -1,0 +1,6 @@
+vcodec=libx264
+
+vprofile=baseline
+level=13
+maxrate=768000
+bufsize=3000000

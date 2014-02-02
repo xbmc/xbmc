@@ -1,0 +1,116 @@
+# no horiz rules between sections
+$end_section = \&FFmpeg_end_section;
+sub FFmpeg_end_section($$)
+{
+}
+
+$EXTRA_HEAD =
+'<link rel="icon" href="favicon.png" type="image/png" />
+';
+
+$CSS_LINES = $ENV{"FFMPEG_CSS"} || <<EOT;
+<link rel="stylesheet" type="text/css" href="default.css" />
+EOT
+
+my $TEMPLATE_HEADER = $ENV{"FFMPEG_HEADER"} || <<EOT;
+<link rel="icon" href="favicon.png" type="image/png" />
+</head>
+<body>
+<div id="container">
+EOT
+
+$PRE_BODY_CLOSE = '</div></div>';
+
+$SMALL_RULE = '';
+$BODYTEXT = '';
+
+$print_page_foot = \&FFmpeg_print_page_foot;
+sub FFmpeg_print_page_foot($$)
+{
+    my $fh = shift;
+    my $program_string = defined &T2H_DEFAULT_program_string ?
+        T2H_DEFAULT_program_string() : program_string();
+    print $fh '<footer class="footer pagination-right">' . "\n";
+    print $fh '<span class="label label-info">' . $program_string;
+    print $fh "</span></footer></div>\n";
+}
+
+$float = \&FFmpeg_float;
+
+sub FFmpeg_float($$$$)
+{
+    my $text = shift;
+    my $float = shift;
+    my $caption = shift;
+    my $shortcaption = shift;
+
+    my $label = '';
+    if (exists($float->{'id'}))
+    {
+        $label = &$anchor($float->{'id'});
+    }
+    my $class = '';
+    my $subject = '';
+
+    if ($caption =~ /NOTE/)
+    {
+        $class = "alert alert-info";
+    }
+    elsif ($caption =~ /IMPORTANT/)
+    {
+        $class = "alert alert-warning";
+    }
+
+    return '<div class="float ' . $class . '">' . "$label\n" . $text . '</div>';
+}
+
+$print_page_head = \&FFmpeg_print_page_head;
+sub FFmpeg_print_page_head($$)
+{
+    my $fh = shift;
+    my $longtitle = "$Texi2HTML::THISDOC{'fulltitle_no_texi'}";
+    $longtitle .= ": $Texi2HTML::NO_TEXI{'This'}" if exists $Texi2HTML::NO_TEXI{'This'};
+    my $description = $DOCUMENT_DESCRIPTION;
+    $description = $longtitle if (!defined($description));
+    $description = "<meta name=\"description\" content=\"$description\">" if
+         ($description ne '');
+    $description = $Texi2HTML::THISDOC{'documentdescription'} if (defined($Texi2HTML::THISDOC{'documentdescription'}));
+    my $encoding = '';
+    $encoding = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=$ENCODING\">" if (defined($ENCODING) and ($ENCODING ne ''));
+    $longtitle =~ s/Documentation.*//g;
+    $longtitle = "FFmpeg documentation : " . $longtitle;
+
+    print $fh <<EOT;
+<!DOCTYPE html>
+<html>
+$Texi2HTML::THISDOC{'copying'}<!-- Created on $Texi2HTML::THISDOC{today} by $Texi2HTML::THISDOC{program} -->
+<!--
+$Texi2HTML::THISDOC{program_authors}
+-->
+<head>
+<title>$longtitle</title>
+
+$description
+<meta name="keywords" content="$longtitle">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="$Texi2HTML::THISDOC{program}">
+$encoding
+$CSS_LINES
+$TEMPLATE_HEADER
+EOT
+}
+
+# declare encoding in header
+$IN_ENCODING = $ENCODING = "utf-8";
+
+# no navigation elements
+$SECTION_NAVIGATION = 0;
+# the same for texi2html 5.0
+$HEADERS = 0;
+
+# TOC and Chapter headings link
+$TOC_LINKS = 1;
+
+# print the TOC where @contents is used
+$INLINE_CONTENTS = 1;
