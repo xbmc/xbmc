@@ -405,6 +405,12 @@ bool CDatabase::Update(const DatabaseSettings &settings)
           CLog::Log(LOGERROR, "Unable to open freshly copied database %s", latestDb.c_str());
           return false;
         }
+        else {
+          // TODO: maybe it would be necessary to add some error handling code
+          // but I cannot see any actual reason to do it here
+          // In any way, we are cleaning the fresh copy off from all triggers, indexes and views
+          m_pDB->drop_extras();
+        }
       }
 
       // yay - we have a copy of our db, now do our worst with it
