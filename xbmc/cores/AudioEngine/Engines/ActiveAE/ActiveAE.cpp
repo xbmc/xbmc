@@ -961,6 +961,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     AEAudioFormat outputFormat;
     if (m_mode == MODE_RAW)
     {
+      inputFormat.m_frames = m_sinkFormat.m_frames;
       outputFormat = inputFormat;
       sinkInputFormat = m_sinkFormat;
     }
