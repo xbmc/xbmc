@@ -796,6 +796,7 @@
           <default>-</default>
           <constraints>
             <addontype>xbmc.subtitle.module</addontype>
+            <allowempty>true</allowempty>
           </constraints>
           <control type="button" format="addon" />
         </setting>
@@ -804,6 +805,7 @@
           <default>-</default>
           <constraints>
             <addontype>xbmc.subtitle.module</addontype>
+            <allowempty>true</allowempty>
           </constraints>
           <control type="button" format="addon" />
         </setting>
