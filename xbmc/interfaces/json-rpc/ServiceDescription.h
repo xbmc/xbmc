@@ -581,6 +581,7 @@ namespace JSONRPC
         "\"properties\": {"
           "\"name\": { \"type\": \"string\", \"required\": true },"
           "\"role\": { \"type\": \"string\", \"required\": true },"
+          "\"order\": { \"type\": \"integer\", \"required\": true },"
           "\"thumbnail\": { \"type\": \"string\" }"
         "},"
         "\"additionalProperties\": false"
