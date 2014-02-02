@@ -22,7 +22,7 @@ msgstr "Променете вашите"
 
 msgctxt "#31003"
 msgid "Power Options"
-msgstr "Настройки на захранването"
+msgstr "Изключи..."
 
 msgctxt "#31004"
 msgid "Working..."
@@ -30,7 +30,7 @@ msgstr "Работи..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "Скрий информацията"
+msgstr "Без информация"
 
 msgctxt "#31006"
 msgid "View Options"
@@ -70,7 +70,7 @@ msgstr "Място"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
-msgstr "Плакати-поредица"
+msgstr "Плакати"
 
 msgctxt "#31029"
 msgid "Fanart"
@@ -230,7 +230,7 @@ msgstr "Ползвай за фон възпроизвежданата в мом�
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Тематични мелодии от ТВ Сериали във видео библиотеката (добавка TvTunes)"
+msgstr "Възпроизвеждай мелодии от ТВ Сериали в библиотеката (добавка TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -466,7 +466,7 @@ msgstr "[B]КОНФИГУРИРАЙТЕ ДОБАВКИТЕ[/B][CR][CR]Управ
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]Конфигурирайте Телевията[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]КОНФИГУРИРАЙТЕ ТЕЛЕВИЗИЯТА[/B][CR][CR]Change full screen info · Manage EPG data settings"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Налични са локални субтитри"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Вписване"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Изберете потребителски профил,[CR]за да продължите"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Определя да се ползва или не, екрана за вписване"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Определя кой профил да се ползва за вписване, когато екрана за вписване е изключен"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

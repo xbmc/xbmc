@@ -406,7 +406,7 @@ msgstr "ย้อนกลับเร็ว"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "เมนู ภาพยนต์"
+msgstr "เมนู ภาพยนตร์"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "พบคำบรรยายภายใน"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "ลงชื่อเข้าใช้"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "เลือกโปรไฟล์ ผู้ใช้ XBMC ของคุณ[CR]เพื่อเข้าสู่ระบบและดำเนินการต่อไป"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "แสดงหรือซ่อน หน้าจอลงชื่อเข้าใช้เมื่อเริ่มต้น"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "เลือกโปรไฟล์ที่จะใช้ในตอนเริ่มต้น เมื่อหน้าจอลงชื่อเข้าใช้ถูกปิดการใช้งาน"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

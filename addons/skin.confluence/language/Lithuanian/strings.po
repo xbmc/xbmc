@@ -438,7 +438,7 @@ msgstr "Arial pagrindu"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B][COLOR=blue]TEMINĖS IŠVAIZDOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Pakeisti teminę išvaizdą · Nustatyti kalbą ir regioną · Konfiguruoti failų sąrašą"
+msgstr "[B][COLOR=blue]TEMINĖS IŠVAIZDOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Pakeisti teminę išvaizdą · Nustatyti kalbą ir regioną · Konfigūruoti failų sąrašą"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -466,7 +466,7 @@ msgstr "[B][COLOR=blue]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyt
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]][COLOR=blue]KONFIGŪRUOTI TV NUSTATYMUS[/COLOR][/B][CR][CR]Pakeisti viso ekrano info · Tvarkyti EPG duomenų parametrus"
+msgstr "[B][COLOR=blue]KONFIGŪRUOTI TV NUSTATYMUS[/COLOR][/B][CR][CR]Pakeisti viso ekrano info · Tvarkyti EPG duomenų parametrus"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Prieinami lokaliniai subtitrai"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Prisijungti"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Pasirinkite XBMC vartotojo profilį[CR]įeikite į sistemą ir tęskite."
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Rodyti arba slėpti prisijungimo ekraną paleidimo metu."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Pasirinkite profilį, kuris bus naudojamas paleidžiant kai prisijungimo ekranas yra išjungtas."
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -566,7 +578,7 @@ msgstr "NUOTRAUKOS"
 
 msgctxt "#31952"
 msgid "LIVE TV"
-msgstr "TIESIOGINIS TV"
+msgstr "LIVE TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"

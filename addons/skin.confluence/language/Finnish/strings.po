@@ -112,6 +112,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "KELAUS TAAKSEPÄIN"
 
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "HAKEE"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Päättymisaika"
@@ -515,6 +519,10 @@ msgstr "SÄÄ"
 msgctxt "#31951"
 msgid "PICTURES"
 msgstr "KUVAT"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "LIVE-TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"

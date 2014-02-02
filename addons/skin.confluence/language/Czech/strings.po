@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Místní titulky k dispozici"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Přihlášení"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Vyberte profil XBMC[CR]pro přihlášení a pokračování"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Zobrazit, nebo skrýt, přihlašovací obrazovku při spuštění."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Vyberte výchozí profil po spuštění, pokud je prihlašovací obrazovka zakázána."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

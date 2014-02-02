@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "有本地語言的字幕可選用"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "登入"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "選擇您的 XBMC 使用者設定檔[CR]登入並繼續"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "啟動時顯示或隱藏登入畫面"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "選擇登入畫面停用是要使用的設定檔。"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.2.7"
+  version="2.2.8"
   name="Confluence"
   provider-name="Jezz_X, Team XBMC">
   <requires>
@@ -171,7 +171,7 @@
     <disclaimer lang="sk">Confluence je predvolený skin pre XBMC, jeho odstránenie môže spôsobiť problémy</disclaimer>
     <disclaimer lang="sl">Confluence je privzeta preobleka za XBMC, njena odstranitev lahko povzroči težave</disclaimer>
     <disclaimer lang="sq">Confluence është maska kryesore së XBMC, fshirja e saj mund të shkaktoj çështje.</disclaimer>
-    <disclaimer lang="sv">Confluence är standardskal för XBMC, att ta bort detta skal kan skapa problem.</disclaimer>
+    <disclaimer lang="sv">Confluence är standardskal för XBMC. Att ta bort detta skal kan skapa problem.</disclaimer>
     <disclaimer lang="ta_IN">Confluence தான் XBMC யின் இயல்புநிலை அலங்காரம், அதை நீக்குவதால் சிக்கல்கள் ஏற்படலாம்</disclaimer>
     <disclaimer lang="tg">Пӯсти ҳамҷараёнӣ ҳамчун пӯсти пешфарз барои XBMC истифода шуда истодааст ва агар онро тоза кунед, мӯшкилӣ метавонад ба вуҷуд ояд</disclaimer>
     <disclaimer lang="th">Confluence เป็นสกินเริ่มต้นสำหรับ XBMC การลบมัน อาจทำให้เกิดปัญหา</disclaimer>

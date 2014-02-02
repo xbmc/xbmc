@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Зерунвонҳои маҳаллӣ дастрасанд"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Вуруд"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Барои ворид шудан ва идома додан[CR]профили корбари XBMC-ро интихоб кунед"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Намоиш додан ё пинҳон кардани экрани вуруд дар оғози кори система."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Профилеро, ки дар оғози кори система, ҳангоми ғайрифаъол будани экрани вуруд, истифода мешавад."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Video OSD"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Úroveň nastavení"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Odkazy"
@@ -476,9 +480,25 @@ msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Táto záložka zvýrazňuje, že sa na bočnej strane okna nachádza skryté menu. Aby ste sa k nemu dostali, kurzorovými tlačidlami na vašom diaľkovom ovládači alebo klávesnici choďte doľava, prípadne umiestnite kurzor myši ponad túto záložku. [CR][CR]Kliknutím na tlačidlo \"Ok\" sa zavrie toto dialógové okno. V budúcnosti sa už nezobrazí."
 
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Dostupné lokálne titulky"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Prihlásiť"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Prihlásenie užívateľa[CR]Pokračujte výberom profilu"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Zobraziť alebo skryť prihlasovaciu obrazovku pri štarte."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Zvoľte profil, ktorý bude použitý pri štarte, ak je prihlasovacia obrazovka vypnutá."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

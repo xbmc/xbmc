@@ -314,7 +314,7 @@ msgstr "Agochar cartel"
 
 msgctxt "#31308"
 msgid "Movie Details"
-msgstr "Detalles da Película"
+msgstr "Detalles do Filme"
 
 msgctxt "#31309"
 msgid "Memory Used:"
@@ -382,7 +382,7 @@ msgstr "[B]Temporizador estabrecido![/B] [COLOR=grey2] - Apagado automático de 
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Prema o botón para reproducir[CR][CR]Trailer da Película"
+msgstr "Prema o botón para reproducir[CR][CR]Trailer do filme"
 
 msgctxt "#31331"
 msgid "Album Details"
@@ -406,7 +406,7 @@ msgstr "Atrás"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "Menú de Película"
+msgstr "Menú do filme"
 
 msgctxt "#31356"
 msgid "Download Subtitles"

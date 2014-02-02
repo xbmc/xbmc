@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Διαθέσιμος υπότιτλος τοπικά"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Σύνδεση"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Επιλέξτε προφίλ χρήστη για το XBMC[CR]για να συνδεθείτε και να συνεχίσετε"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Εμφάνιση ή απόκρυψη της οθόνης σύνδεσης κατά την εκκίνηση."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Επιλογή του προφίλ που θα χρησιμοποιηθεί κατά την εκκίνηση αν έχει απενεργοποιηθεί η οθόνη σύνδεσης."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

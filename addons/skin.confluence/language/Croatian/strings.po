@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Lokalni podnaslovi dostupni"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Prijava"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Odaberite svoj XBMC korisnički profil[CR]za prijavu i nastavak"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Prikaži ili sakrij zaslon prijave pri pokretanju."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Odaberite profil koji će se koristiti pri pokretanju kada je zaslon prijave onemogućen."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

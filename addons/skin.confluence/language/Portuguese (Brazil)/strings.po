@@ -484,9 +484,21 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Legenda local disponível"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Login"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Selecione seu Perfil de usuário XBMC[CR]para conectar e continue"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Mostrar ou Ocultar a tela de login ao inicializar."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Selecione o perfil que será utilizado na inicialização quando a tela de login estiver desativada."
 
 msgctxt "#31501"
 msgid "Scheduled Time"
