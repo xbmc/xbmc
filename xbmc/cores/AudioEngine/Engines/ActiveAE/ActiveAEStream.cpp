@@ -118,7 +118,7 @@ void CActiveAEStream::InitRemapper()
       for(unsigned int j=0; j<m_format.m_channelLayout.Count(); j++)
       {
         idx = m_remapper->GetAVChannelIndex(m_format.m_channelLayout[j], avLayout);
-        if (idx == i)
+        if (idx == (int)i)
         {
           ffmpegLayout += m_format.m_channelLayout[j];
           break;
@@ -134,7 +134,7 @@ void CActiveAEStream::InitRemapper()
       for(unsigned int j=0; j<m_format.m_channelLayout.Count(); j++)
       {
         idx = m_remapper->GetAVChannelIndex(m_format.m_channelLayout[j], avLayout);
-        if (idx == i)
+        if (idx == (int)i)
         {
           remapLayout += ffmpegLayout[j];
           break;
