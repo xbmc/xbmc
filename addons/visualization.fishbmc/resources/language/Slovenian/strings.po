@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Detail [CPU intensive]"
-msgstr "Podrobnosti [CPU zahtevno]"
+msgstr "Podrobno [CPU zahtevno]"
 
 msgctxt "#30001"
 msgid "Low"
-msgstr "Min."
+msgstr "Nizko"
 
 msgctxt "#30002"
 msgid "Normal"
@@ -30,7 +30,7 @@ msgstr "Običajno"
 
 msgctxt "#30003"
 msgid "High"
-msgstr "Visoka"
+msgstr "Visoko"
 
 msgctxt "#30004"
 msgid "Extreme"
@@ -50,7 +50,7 @@ msgstr "Zelo nizko"
 
 msgctxt "#30008"
 msgid "Low"
-msgstr "Min."
+msgstr "Nizko"
 
 msgctxt "#30009"
 msgid "Normal"
@@ -58,8 +58,8 @@ msgstr "Običajno"
 
 msgctxt "#30010"
 msgid "High"
-msgstr "Visoka"
+msgstr "Visoko"
 
 msgctxt "#30011"
 msgid "Use a Persistence File [faster startup]"
-msgstr "Uporabi Obstojno datoteko [hitrejši zagon]"
+msgstr "Uporabi stalno datoteko [hitrejši zagon]"

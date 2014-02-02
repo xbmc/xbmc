@@ -36,6 +36,10 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Extrém"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Ideges Mód [több mód váltakozik]"
+
 msgctxt "#30006"
 msgid "Speed [skip some frames]"
 msgstr "Sebesség [néhány képkocka átugrása]"
@@ -55,3 +59,7 @@ msgstr "Normál"
 msgctxt "#30010"
 msgid "High"
 msgstr "Magas"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Tárolt fálj használata [gyorsabb indulás]"

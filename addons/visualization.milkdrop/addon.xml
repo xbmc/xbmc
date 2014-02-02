@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.milkdrop"
-  version="1.0.13"
+  version="1.0.14"
   name="MilkDrop"
   provider-name="Team XBMC">
   <extension
@@ -36,6 +36,7 @@
     <summary lang="ja">MilkDrop - 音楽の波の上を飛ぶ</summary>
     <summary lang="ko">MilkDrop은 사운드웨이브 속으로 날아가는듯한 효과를 보여줍니다.</summary>
     <summary lang="lt">MilkDrop nukelia Jus i nuostabu skrydi virs debesu, istiesu fantastisku garsu gausa</summary>
+    <summary lang="lv">MilkDrop paņem Jūs līdzi lidojumā cauri skaņu viļņiem, kurus dzirdat</summary>
     <summary lang="mk">MilkDrop ве прелетува преку брановите на музиката која ја слушате</summary>
     <summary lang="nl">Met MilkDrop vliegt u mee door de soundwaves die je hoort</summary>
     <summary lang="no">MilkDrop tar deg med på en flyreise gjennom lydbølgene du hører</summary>

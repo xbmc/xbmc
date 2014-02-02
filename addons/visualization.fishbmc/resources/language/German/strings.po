@@ -36,9 +36,13 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Höchste Qualität"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Nervöser Modus [mehr Modi Änderungen]"
+
 msgctxt "#30006"
 msgid "Speed [skip some frames]"
-msgstr "Geschwindigkeit[Überspringe einige Frames]"
+msgstr "Geschwindigkeit [Überspringe einige Frames]"
 
 msgctxt "#30007"
 msgid "Very Low"
@@ -55,3 +59,7 @@ msgstr "Normal"
 msgctxt "#30010"
 msgid "High"
 msgstr "Hoch"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Persistente Datei benutzen [schnellerer Start]"

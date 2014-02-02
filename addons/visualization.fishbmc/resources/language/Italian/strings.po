@@ -16,6 +16,10 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Dettagli [uso CPU intensivo]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Basso"
@@ -32,6 +36,14 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Estremo"
 
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Velocità [salta più frame]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Molto bassa"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "Basso"
@@ -43,3 +55,7 @@ msgstr "Normale"
 msgctxt "#30010"
 msgid "High"
 msgstr "Alta"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Usa un file di persistenza [avvio più rapido]"

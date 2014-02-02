@@ -36,6 +36,18 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Najwyższa"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Tryb Nerwowy [więcej zmian trybów]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Szybkość [pomiń niektóre klatki]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Bardzo niskie"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "min."

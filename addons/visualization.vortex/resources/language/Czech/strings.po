@@ -16,6 +16,10 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Náhodné předvolby"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Čas mezi předvolbami"
@@ -23,6 +27,30 @@ msgstr "Čas mezi předvolbami"
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Dodatečný náhodný čas"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Uzamknout předvolbu"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Povolit překlady"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Zastavit první předvolbu"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Zobrazit FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Zobrazit ladící konzoli"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Zobrazit analýzu zvuku"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

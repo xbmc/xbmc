@@ -1,6 +1,6 @@
 # XBMC Media Center language file
-# Addon Name: projectM
-# Addon id: visualization.projectm
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -16,57 +16,37 @@ msgstr ""
 "Language: lv\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
-msgctxt "#30000"
-msgid "Render Quality"
-msgstr "Renderēšanas kvalitāte"
-
 msgctxt "#30001"
-msgid "Low"
-msgstr "Zems"
-
-msgctxt "#30002"
-msgid "Medium"
-msgstr "Vidējs"
-
-msgctxt "#30003"
-msgid "High"
-msgstr "Augsts"
-
-msgctxt "#30004"
-msgid "Maximum"
-msgstr "Maksimums"
-
-msgctxt "#30005"
-msgid "Shuffle Mode"
-msgstr "Jaukšanas režīms"
-
-msgctxt "#30006"
-msgid "Smooth Preset Duration"
-msgstr "Gluda sagataves darbība "
-
-msgctxt "#30007"
-msgid "Preset Duration"
-msgstr "Sagatavju ilgums"
+msgid "Time Between Presets"
+msgstr "Laiks starp sagatavēm"
 
 msgctxt "#30008"
-msgid "Beat Sensitivity"
-msgstr "Sitienu jūtīgums"
+msgid "Enable Stereo 3D"
+msgstr "Ieslēgt Stereo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
 msgstr "Sagatavju paka"
 
 msgctxt "#30010"
-msgid "Default Pack"
-msgstr "Noklusētā paka"
+msgid "User Preset Folder        "
+msgstr "Lietotāja sagatavju mape"
 
 msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "Sagatavju jaukšanas režīms"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "WA51 sagataves"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Winamp sagataves"
+
+msgctxt "#30022"
 msgid "User Defined Preset Folder"
 msgstr "Lietotāja definēta sagatavju mape"
-
-msgctxt "#30012"
-msgid "User Preset Folder"
-msgstr "Lietotāja sagataves mape"
 
 msgctxt "#30050"
 msgid "%2.0f secs"
@@ -75,3 +55,7 @@ msgstr "%2.0f sekundes"
 msgctxt "#30051"
 msgid "%2.0f %%"
 msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

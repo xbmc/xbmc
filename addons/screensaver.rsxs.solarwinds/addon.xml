@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.13"
+  version="1.0.14"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -90,7 +90,7 @@
     <description lang="ja">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="ko">매혹적인 파티클 이펙트 화면보호기입니다. 아주 다양한 패턴의 보여줍니다.</description>
     <description lang="lt">Tai labai itaigus dalelių poveikio ekrano užsklanda. Jūs galite pasiekti nuostabių ivairių modelių nustatymuose. </description>
-    <description lang="lv">Hipnotizējoši daļiņu ekrānsaudzētājs. jūs spēsiet gūt apbrīnojumu daudzumu dažādus veidu.</description>
+    <description lang="lv">Šis ir ļoti valdzinošs daļiņu efekta ekrānsaudzētājs. Jūs redzēsit, ka tas spēj izveidot neticamu skaitu dažādu musturu.</description>
     <description lang="mk">Ова е заштита на екран со смирувачки честички. Ќе откриете дека можете да постигнете зачудувачки шеми.</description>
     <description lang="nl">Dit is een erg hypnotiserende screensaver. Je kunt ongelooflijk veel verschillende patronen bekomen.</description>
     <description lang="no">Dette er en veldig hypnotiserende skjermsparer med partikkeleffekter. Du får se at der fins en utrolig mengde forskjellige mønster.</description>

@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30001"
 msgid "Low"
-msgstr "Mín"
+msgstr "Baix"
 
 msgctxt "#30002"
 msgid "Normal"
@@ -32,9 +32,13 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Extrem"
 
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Molt baix"
+
 msgctxt "#30008"
 msgid "Low"
-msgstr "Mín"
+msgstr "Baix"
 
 msgctxt "#30009"
 msgid "Normal"
@@ -43,3 +47,7 @@ msgstr "Normal"
 msgctxt "#30010"
 msgid "High"
 msgstr "Alt"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Utilitzeu un arxiu de persistència [inici més ràpid]"

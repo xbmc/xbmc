@@ -20,13 +20,25 @@ msgctxt "#30001"
 msgid "Low"
 msgstr "Zems"
 
+msgctxt "#30002"
+msgid "Normal"
+msgstr "Normāls"
+
 msgctxt "#30003"
 msgid "High"
 msgstr "Augsts"
 
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "Ekstrēms"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "Zems"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "Normāls"
 
 msgctxt "#30010"
 msgid "High"

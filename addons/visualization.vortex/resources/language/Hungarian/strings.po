@@ -16,6 +16,10 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Véletlen Beállítások"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Idő a beállításkészletek között"
@@ -24,9 +28,17 @@ msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Többlet véletlen idő"
 
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Beállítások zárolása"
+
 msgctxt "#30004"
 msgid "Enable Transitions"
 msgstr "Átfedések engedélyezése"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Első beállítás megállítása"
 
 msgctxt "#30006"
 msgid "Show FPS"

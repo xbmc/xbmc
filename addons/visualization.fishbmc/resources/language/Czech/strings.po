@@ -16,9 +16,13 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Podrobnosti [náročné na CPU]"
+
 msgctxt "#30001"
 msgid "Low"
-msgstr "Nízká"
+msgstr "Nízké"
 
 msgctxt "#30002"
 msgid "Normal"
@@ -26,11 +30,19 @@ msgstr "Normální"
 
 msgctxt "#30003"
 msgid "High"
-msgstr "Vysoká"
+msgstr "Vysoké"
 
 msgctxt "#30004"
 msgid "Extreme"
-msgstr "Vysoká"
+msgstr "Vysoké"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Rychlost [přeskakuje některé snímky]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Velmi nízká"
 
 msgctxt "#30008"
 msgid "Low"

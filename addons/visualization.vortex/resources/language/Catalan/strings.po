@@ -16,13 +16,25 @@ msgstr ""
 "Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Predefinits aleatoris"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Temps entre predefinits"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "Temps Aleatori Addicional"
+msgstr "Temps aleatori addicional"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Mostra els FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Mostra la consola de depuració"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

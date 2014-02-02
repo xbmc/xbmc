@@ -16,9 +16,13 @@ msgstr ""
 "Language: sk\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Detailný [náročný na CPU]"
+
 msgctxt "#30001"
 msgid "Low"
-msgstr "Noc"
+msgstr "Nízky"
 
 msgctxt "#30002"
 msgid "Normal"
@@ -26,15 +30,27 @@ msgstr "Normálny"
 
 msgctxt "#30003"
 msgid "High"
-msgstr "Vysoká"
+msgstr "Vysoký"
 
 msgctxt "#30004"
 msgid "Extreme"
-msgstr "Extrémna"
+msgstr "Extrémnz"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Nervózny režim [viac zmien módov]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Rýchlosť [vynechať niektoré snímky]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Veľmi nízky"
 
 msgctxt "#30008"
 msgid "Low"
-msgstr "Noc"
+msgstr "Nízky"
 
 msgctxt "#30009"
 msgid "Normal"
@@ -42,4 +58,8 @@ msgstr "Normálny"
 
 msgctxt "#30010"
 msgid "High"
-msgstr "Vysoká"
+msgstr "Vysoký"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Použiť trvalý súbor [rýchlejší štart]"
