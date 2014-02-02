@@ -164,16 +164,6 @@
           <control type="list" format="string" />
         </setting>
       </group>
-      <group id="4">
-        <setting id="locale.audiolanguage" type="string" label="285" help="36119">
-          <level>1</level>
-          <default>original</default>
-          <constraints>
-            <options>streamlanguages</options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-      </group>
     </category>
     <category id="filelists" label="14081" help="36121">
       <group id="1">
@@ -379,6 +369,16 @@
       </group>
     </category>
     <category id="videoplayer" label="14086" help="36151">
+      <group id="6">
+        <setting id="locale.audiolanguage" type="string" label="285" help="36119">
+          <level>1</level>
+          <default>original</default>
+          <constraints>
+            <options>streamlanguages</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
       <group id="1">
         <setting id="videoplayer.autoplaynextitem" type="boolean" label="13433" help="36152">
           <level>1</level>
