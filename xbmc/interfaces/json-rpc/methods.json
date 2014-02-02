@@ -27,9 +27,13 @@
     "returns": {
       "type": "object",
       "properties": {
-        "major": { "type": "integer", "minimum": 0, "required": true, "description": "Bumped on backwards incompatible changes to the API definition" },
-        "minor": { "type": "integer", "minimum": 0, "required": true, "description": "Bumped on backwards compatible additions/changes to the API definition" },
-        "patch": { "type": "integer", "minimum": 0, "required": true, "description": "Bumped on any changes to the internal implementation but not to the API definition" }
+        "version": { "type": "object", "required": true,
+          "properties": {
+            "major": { "type": "integer", "minimum": 0, "required": true, "description": "Bumped on backwards incompatible changes to the API definition" },
+            "minor": { "type": "integer", "minimum": 0, "required": true, "description": "Bumped on backwards compatible additions/changes to the API definition" },
+            "patch": { "type": "integer", "minimum": 0, "required": true, "description": "Bumped on any changes to the internal implementation but not to the API definition" }
+          }
+        }
       }
     }
   },

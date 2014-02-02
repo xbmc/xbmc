@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.13.3";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.13.4";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -581,6 +581,7 @@ namespace JSONRPC
         "\"properties\": {"
           "\"name\": { \"type\": \"string\", \"required\": true },"
           "\"role\": { \"type\": \"string\", \"required\": true },"
+          "\"order\": { \"type\": \"integer\", \"required\": true },"
           "\"thumbnail\": { \"type\": \"string\" }"
         "},"
         "\"additionalProperties\": false"
@@ -1665,9 +1666,13 @@ namespace JSONRPC
       "\"returns\": {"
         "\"type\": \"object\","
         "\"properties\": {"
-          "\"major\": { \"type\": \"integer\", \"minimum\": 0, \"required\": true, \"description\": \"Bumped on backwards incompatible changes to the API definition\" },"
-          "\"minor\": { \"type\": \"integer\", \"minimum\": 0, \"required\": true, \"description\": \"Bumped on backwards compatible additions/changes to the API definition\" },"
-          "\"patch\": { \"type\": \"integer\", \"minimum\": 0, \"required\": true, \"description\": \"Bumped on any changes to the internal implementation but not to the API definition\" }"
+          "\"version\": { \"type\": \"object\", \"required\": true,"
+            "\"properties\": {"
+              "\"major\": { \"type\": \"integer\", \"minimum\": 0, \"required\": true, \"description\": \"Bumped on backwards incompatible changes to the API definition\" },"
+              "\"minor\": { \"type\": \"integer\", \"minimum\": 0, \"required\": true, \"description\": \"Bumped on backwards compatible additions/changes to the API definition\" },"
+              "\"patch\": { \"type\": \"integer\", \"minimum\": 0, \"required\": true, \"description\": \"Bumped on any changes to the internal implementation but not to the API definition\" }"
+            "}"
+          "}"
         "}"
       "}"
     "}",
