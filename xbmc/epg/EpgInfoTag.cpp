@@ -204,6 +204,7 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
 void CEpgInfoTag::Serialize(CVariant &value) const
 {
   value["broadcastid"] = m_iUniqueBroadcastID;
+  value["parentalrating"] = m_iParentalRating;
   value["rating"] = m_iStarRating;
   value["title"] = m_strTitle;
   value["plotoutline"] = m_strPlotOutline;
