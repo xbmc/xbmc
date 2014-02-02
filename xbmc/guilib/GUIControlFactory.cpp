@@ -1386,6 +1386,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     if (infoLabels.size())
       ((CGUITextBox *)control)->SetInfo(infoLabels[0]);
     ((CGUITextBox *)control)->SetAutoScrolling(pControlNode);
+    ((CGUITextBox *)control)->SetMinHeight(minHeight);
   }
   else if (type == CGUIControl::GUICONTROL_SELECTBUTTON)
   {
