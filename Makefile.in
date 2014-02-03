@@ -538,6 +538,17 @@ endif
 xbmc/main/main.a: force
 	$(MAKE) -C xbmc/main
 
+lib/ffmpeg/libavcodec/libavcodec.a: ffmpeg 
+lib/ffmpeg/libavfilter/libavfilter.a: ffmpeg
+lib/ffmpeg/libswresample/libswresample.a: ffmpeg
+lib/ffmpeg/libavformat/libavformat.a: ffmpeg
+lib/ffmpeg/libavutil/libavutil.a: ffmpeg
+lib/ffmpeg/libpostproc/libpostproc.a: ffmpeg
+lib/ffmpeg/libswscale/libswscale.a: ffmpeg
+
+ffmpeg: force
+	$(MAKE) -C lib/ffmpeg
+
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS) xbmc/main/main.a
 
 ifeq ($(findstring osx,@ARCH@), osx)
