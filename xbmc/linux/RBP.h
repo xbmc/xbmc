@@ -50,6 +50,8 @@ public:
   void Deinitialize();
   int GetArmMem() { return m_arm_mem; }
   int GetGpuMem() { return m_gpu_mem; }
+  bool GetCodecMpg2() { return m_codec_mpg2_enabled; }
+  bool GetCodecWvc1() { return m_codec_wvc1_enabled; }
   void GetDisplaySize(int &width, int &height);
   // stride can be null for packed output
   unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue, bool video_only = true);
@@ -62,6 +64,8 @@ private:
   bool       m_omx_image_init;
   int        m_arm_mem;
   int        m_gpu_mem;
+  bool       m_codec_mpg2_enabled;
+  bool       m_codec_wvc1_enabled;
   COMXCore   *m_OMX;
   class DllLibOMXCore;
   CCriticalSection m_critSection;
