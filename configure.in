@@ -157,6 +157,10 @@ libusb_disabled="== libusb disabled. Plug and play USB device support will not b
 libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
+exynos4_enabled="== Exynos4 enabled. =="
+exynos4_disabled="== Exynos4 disabled. =="
+exynos5_enabled="== Exynos4 enabled. =="
+exynos5_disabled="== Exynos4 disabled. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -518,6 +522,18 @@ AC_ARG_ENABLE([external-ffmpeg],
   [use_external_ffmpeg=$enableval],
   [use_external_ffmpeg=$use_external_libraries])
 
+AC_ARG_ENABLE([exynos4],
+  [AS_HELP_STRING([--enable-exynos4],
+  [enable use of Exynos4 hardware decoder (default is no) 'Linux only'])],
+  [use_exynos4=$enableval],
+  [use_exynos4=no])
+
+AC_ARG_ENABLE([exynos5],
+  [AS_HELP_STRING([--enable-exynos5],
+  [enable use of Exynos5 hardware decoder (default is no) 'Linux only'])],
+  [use_exynos5=$enableval],
+  [use_exynos5=no])
+
 ### End of external library options
 
 if test "x$host_vendor" != "xapple"; then
@@ -675,6 +691,26 @@ case $use_platform in
      CXXFLAGS="$CXXFLAGS"
      ffmpeg_target_os=linux
      ;;
+  hybris)
+     target_platform=target_hybris
+     ARCH="arm"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_HYBRIS")
+     AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
+     AC_DEFINE(HAS_HYBRIS, [1], [Define if supporting Hybris based systems])
+     USE_HYBRIS=1
+     CFLAGS="$CFLAGS"
+     CXXFLAGS="$CXXFLAGS"
+     PKG_CHECK_MODULES([HWCOMPOSEREGL],  [hwcomposer-egl >= 0.1],
+       [INCLUDES="$INCLUDES -I/usr/include/hybris $HWCOMPOSEREGL_CFLAGS"; LIBS="$LIBS $HWCOMPOSEREGL_LIBS"],
+       AC_MSG_ERROR($missing_library))
+     PKG_CHECK_MODULES([HYBRISEGL],  [hybris-egl-platform >= 0.1],
+       [INCLUDES="$INCLUDES $HYBRISEGL_CFLAGS"; LIBS="$LIBS $HYBRISEGL_LIBS"],
+       AC_MSG_ERROR($missing_library))
+     PKG_CHECK_MODULES([LIBHARDWARE],  [libhardware >= 0.1],
+       [INCLUDES="$INCLUDES $LIBHARDWARE_CFLAGS"; LIBS="$LIBS $LIBHARDWARE_LIBS -lsync -lmedia"],
+       AC_MSG_ERROR($missing_library))
+     ;;
+
 esac
 
 if test "$build_shared_lib" = "yes"; then
@@ -1463,9 +1499,9 @@ if test "x$use_libcec" != "xno"; then
   # libcec is dyloaded, so we need to check for its headers and link any depends.
   if test "x$use_libcec" != "xno"; then
     if test "x$use_libcec" != "xauto"; then
-      PKG_CHECK_MODULES([CEC],[libcec >= 2.1.0],,[use_libcec="no";AC_MSG_ERROR($libcec_disabled)])
+      PKG_CHECK_MODULES([CEC],[libcec >= 1.6.0],,[use_libcec="no";AC_MSG_ERROR($libcec_disabled)])
     else
-      PKG_CHECK_MODULES([CEC],[libcec >= 2.1.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
+      PKG_CHECK_MODULES([CEC],[libcec >= 1.6.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
     fi
 
     if test "x$use_libcec" != "xno"; then
@@ -1481,6 +1517,16 @@ if test "x$use_libcec" != "xno"; then
 else
   use_libcec="no"
   AC_MSG_NOTICE($libcec_disabled)
+fi
+
+USE_EXYNOS4=0
+if test "x$use_exynos4" != "xno"; then
+  USE_EXYNOS4=1;AC_DEFINE(HAVE_EXYNOS4,[1],["Define if Exynos4 platform hardware decoder is present"])
+fi
+
+USE_EXYNOS5=0
+if test "x$use_exynos5" != "xno"; then
+  USE_EXYNOS5=1;AC_DEFINE(HAVE_EXYNOS5,[1],["Define if Exynos5 platform hardware decoder is present"])
 fi
 
 # libcap
@@ -2235,6 +2281,18 @@ else
   final_message="$final_message\n  libcec support:\tNo"
 fi
 
+if test "x$use_exynos4" != "xno"; then
+  final_message="$final_message\n  Exynos4 support:\tYes"
+else
+  final_message="$final_message\n  Exynos4 support:\tNo"
+fi
+
+if test "x$use_exynos5" != "xno"; then
+  final_message="$final_message\n  Exynos5 support:\tYes"
+else
+  final_message="$final_message\n  Exynos5 support:\tNo"
+fi
+
 if test "x$use_libmp3lame" != "xno"; then
   final_message="$final_message\n  libmp3lame support:\tYes"
 else
@@ -2430,6 +2488,9 @@ AC_SUBST(USE_ANDROID)
 AC_SUBST(GTEST_CONFIGURED)
 AC_SUBST(USE_DOXYGEN)
 AC_SUBST(USE_PVR_ADDONS)
+AC_SUBST(USE_EXYNOS4)
+AC_SUBST(USE_EXYNOS5)
+AC_SUBST(USE_HYBRIS)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

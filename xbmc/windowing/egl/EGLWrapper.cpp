@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
+#include "EGLNativeTypeHybris.h"
 #include "system.h"
 
 #ifdef HAS_EGL
@@ -83,6 +83,21 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
       }
     }
   }
+
+  if (!ret)
+  {
+    delete nativeGuess;
+    nativeGuess = new CEGLNativeTypeHybris;
+    if (nativeGuess->CheckCompatibility())
+    {
+      if(implementation == nativeGuess->GetNativeName() || implementation == "auto")
+      {
+        m_nativeTypes = nativeGuess;
+        ret = true;
+      }
+    }
+  }
+
 
   if (ret && m_nativeTypes)
     m_nativeTypes->Initialize();
@@ -265,7 +280,7 @@ bool CEGLWrapper::CreateSurface(EGLDisplay display, EGLConfig config, EGLSurface
   EGLNativeWindowType *nativeWindow=NULL;
   if (!m_nativeTypes->GetNativeWindow((XBNativeWindowType**)&nativeWindow))
     return false;
-
+  
   *surface = eglCreateWindowSurface(display, config, *nativeWindow, NULL);
   CheckError();
   return *surface != EGL_NO_SURFACE;
@@ -358,6 +373,7 @@ bool CEGLWrapper::SetVSync(EGLDisplay display, bool enable)
   EGLBoolean status;
   // depending how buffers are setup, eglSwapInterval
   // might fail so let caller decide if this is an error.
+  enable = true;
   status = eglSwapInterval(display, enable ? 1 : 0);
   CheckError();
   return status;

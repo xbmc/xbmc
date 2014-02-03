@@ -3,7 +3,9 @@ INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 SRCS  = DVDVideoCodecFFmpeg.cpp
 SRCS += DVDVideoCodecLibMpeg2.cpp
 SRCS += DVDVideoPPFFmpeg.cpp
-
+ifeq (@USE_HYBRIS@,1)
+SRCS += DVDVideoCodecHybris.cpp
+endif
 ifeq (@USE_VDPAU@,1)
 SRCS += VDPAU.cpp
 endif
@@ -23,8 +25,16 @@ SRCS += OpenMaxVideo.cpp
 SRCS += DVDVideoCodecOpenMax.cpp
 endif
 
+ifeq (@USE_EXYNOS4@,1)
+SRCS += DVDVideoCodecExynos4.cpp
+endif
+
+ifeq (@USE_EXYNOS5@,1)
+SRCS += DVDVideoCodecExynos5.cpp
+SRCS += deinterleave_chroma.neon.S
+endif
+
 LIB=Video.a
 
 include @abs_top_srcdir@/Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
-
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(patsubst %.S,,$(SRCS)))) 
