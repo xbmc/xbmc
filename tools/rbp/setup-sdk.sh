@@ -23,7 +23,7 @@ fi
 
 if [ -d $XBMCPREFIX ]
 then
-  [ -w $XBMCPREFIX ] || SUDO="sudo"
+  [ -O $XBMCPREFIX ] || SUDO="sudo"
 else
   [ -w $(dirname $XBMCPREFIX) ] || SUDO="sudo"
 fi
