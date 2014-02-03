@@ -520,6 +520,12 @@ ifneq (@USE_LIBXBMC@,1)
 MAINOBJS+=xbmc/main/main.o
 endif
 
+xbmc/xbmc.o: xbmc/xbmc.a
+
+xbmc/android/activity/android_main.o: xbmc/android/activity/activity.a
+
+xbmc/main/main.o: xbmc/main/main.a
+
 # sync these entries manually with tools/depends/target/xbmc-addon-bindings/Makefile
 BINDINGS =xbmc/addons/include/xbmc_addon_cpp_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_dll.h
