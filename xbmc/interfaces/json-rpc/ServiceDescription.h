@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.13.4";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.13.5";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -826,7 +826,7 @@ namespace JSONRPC
                   "\"endtime\", \"runtime\", \"progress\", \"progresspercentage\","
                   "\"genre\", \"episodename\", \"episodenum\", \"episodepart\","
                   "\"firstaired\", \"hastimer\", \"isactive\", \"parentalrating\","
-                  "\"wasactive\", \"thumbnail\" ]"
+                  "\"wasactive\", \"thumbnail\", \"rating\" ]"
       "}"
     "}",
     "\"PVR.Details.Broadcast\": {"
@@ -848,9 +848,10 @@ namespace JSONRPC
         "\"firstaired\": { \"type\": \"string\" },"
         "\"hastimer\": { \"type\": \"boolean\" },"
         "\"isactive\": { \"type\": \"boolean\" },"
-        "\"rating\": { \"type\": \"integer\" },"
+        "\"parentalrating\": { \"type\": \"integer\" },"
         "\"wasactive\": { \"type\": \"boolean\" },"
-        "\"thumbnail\": { \"type\": \"string\" }"
+        "\"thumbnail\": { \"type\": \"string\" },"
+        "\"rating\": { \"type\": \"integer\" }"
       "}"
     "}",
     "\"Textures.Details.Size\": {"

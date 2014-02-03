@@ -799,7 +799,7 @@
                 "endtime", "runtime", "progress", "progresspercentage",
                 "genre", "episodename", "episodenum", "episodepart",
                 "firstaired", "hastimer", "isactive", "parentalrating",
-                "wasactive", "thumbnail" ]
+                "wasactive", "thumbnail", "rating" ]
     }
   },
   "PVR.Details.Broadcast": {
@@ -821,9 +821,10 @@
       "firstaired": { "type": "string" },
       "hastimer": { "type": "boolean" },
       "isactive": { "type": "boolean" },
-      "rating": { "type": "integer" },
+      "parentalrating": { "type": "integer" },
       "wasactive": { "type": "boolean" },
-      "thumbnail": { "type": "string" }
+      "thumbnail": { "type": "string" },
+      "rating": { "type": "integer" }
     }
   },
   "Textures.Details.Size": {
