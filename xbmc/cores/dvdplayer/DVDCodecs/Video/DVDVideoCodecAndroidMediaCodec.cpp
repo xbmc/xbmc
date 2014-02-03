@@ -842,8 +842,11 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
           if (i > 0)
             height = (m_videobuffer.iHeight + 1) / 2;
 
-          for (int j = 0; j < height; j++, src += src_stride, dst += dst_stride)
-            memcpy(dst, src, dst_stride);
+          if (src_stride == dst_stride)
+            memcpy(dst, src, dst_stride * height);
+          else
+            for (int j = 0; j < height; j++, src += src_stride, dst += dst_stride)
+              memcpy(dst, src, dst_stride);
         }
       }
       m_codec->releaseOutputBuffer(index, false);
@@ -917,6 +920,13 @@ void CDVDVideoCodecAndroidMediaCodec::OutputFormatChanged(void)
   else
   {
     // Android device quirks and fixes
+
+    // Samsung Quirk: ignore width/height/stride/slice: http://code.google.com/p/android/issues/detail?id=37768#c3
+    if (strstr(m_codecname.c_str(), "OMX.SEC.avc.dec") != NULL || strstr(m_codecname.c_str(), "OMX.SEC.avcdec") != NULL)
+    {
+      width = stride = m_hints.width;
+      height = slice_height = m_hints.height;
+    }
     if (stride <= width)
         stride = width;
     if (slice_height <= height)
@@ -927,7 +937,7 @@ void CDVDVideoCodecAndroidMediaCodec::OutputFormatChanged(void)
         // NVidia Tegra 3 on Nexus 7 does not set slice_heights
         if (strstr(m_codecname.c_str(), "OMX.Nvidia.") != NULL)
         {
-          slice_height = (((height) + 31) & ~31);
+          slice_height = (((height) + 15) & ~15);
           CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: NVidia Tegra 3 quirk, slice_height(%d)", slice_height);
         }
       }
