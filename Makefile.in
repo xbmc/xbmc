@@ -549,7 +549,7 @@ lib/ffmpeg/libswscale/libswscale.a: ffmpeg
 ffmpeg: force
 	$(MAKE) -C lib/ffmpeg
 
-xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS) xbmc/main/main.a
+xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin xbmc/main/main.a -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
