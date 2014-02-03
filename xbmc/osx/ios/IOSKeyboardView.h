@@ -43,6 +43,7 @@
 - (void) setHidden:(BOOL)hidden;
 - (void) activate;
 - (void) deactivate;
+- (void) setKeyboardText:(NSString*)aText closeKeyboard:(BOOL)closeKeyboard;
 - (void) textChanged:(NSNotification*)aNotification;
 - (void) setCancelFlag:(bool *)cancelFlag;
 - (void) doDeactivate:(NSDictionary *)dict;

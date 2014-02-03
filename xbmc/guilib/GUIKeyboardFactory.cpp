@@ -34,6 +34,7 @@
 #include "osx/ios/IOSKeyboard.h"
 #endif
 
+CGUIKeyboard *CGUIKeyboardFactory::g_activedKeyboard = NULL;
 FILTERING CGUIKeyboardFactory::m_filtering = FILTERING_NONE;
 
 CGUIKeyboardFactory::CGUIKeyboardFactory(void)
@@ -68,6 +69,14 @@ void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typed
   }
 }
 
+bool CGUIKeyboardFactory::SendTextToActiveKeyboard(const std::string &aTextString, bool closeKeyboard /* = false */)
+{
+  if (!g_activedKeyboard)
+    return false;
+  return g_activedKeyboard->SetTextToKeyboard(aTextString, closeKeyboard);
+}
+
+
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
 //          false - unsuccessful display of the keyboard or cancelled editing
@@ -95,8 +104,10 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
 
   if(kb)
   {
+    g_activedKeyboard = kb;
     kb->startAutoCloseTimer(autoCloseMs);
     confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, headingStr, hiddenInput);
+    g_activedKeyboard = NULL;
     if(needsFreeing)
       delete kb;
   }
