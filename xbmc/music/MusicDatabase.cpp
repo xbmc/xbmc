@@ -3830,7 +3830,7 @@ void CMusicDatabase::UpdateTables(int version)
 
   if (version < 27)
   {
-    m_pDS->exec("DROP TABLE thumb");
+    m_pDS->exec("DROP TABLE IF EXISTS thumb");
 
     CMediaSettings::Get().SetMusicNeedsUpdate(27);
     CSettings::Get().Save();

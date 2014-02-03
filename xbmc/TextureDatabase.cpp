@@ -214,12 +214,12 @@ void CTextureDatabase::UpdateTables(int version)
   }
   if (version < 9)
   { // get rid of the old path table and add the type column
-    m_pDS->exec("DROP TABLE path");
+    m_pDS->exec("DROP TABLE IF EXISTS path");
     m_pDS->exec("CREATE TABLE path (id integer primary key, urlhash integer, url text, type text, texture text)\n");
   }
   if (version < 10)
   { // get rid of urlhash in both tables...
-    m_pDS->exec("DROP TABLE path");
+    m_pDS->exec("DROP TABLE IF EXISTS path");
     m_pDS->exec("CREATE TABLE path (id integer primary key, url text, type text, texture text)\n");
 
     m_pDS->exec("CREATE TEMPORARY TABLE texture_backup(id,url,cachedurl,usecount,lastusetime,imagehash,lasthashcheck)");
@@ -235,7 +235,7 @@ void CTextureDatabase::UpdateTables(int version)
   }
   if (version < 12)
   { // create new sizes table and move usecount info to it.
-    m_pDS->exec("DROP TABLE texture");
+    m_pDS->exec("DROP TABLE IF EXISTS texture");
     m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
     m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
   }
