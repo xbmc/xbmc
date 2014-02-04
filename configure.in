@@ -60,10 +60,10 @@ AC_DEFUN([XB_FIND_SONAME],
     fi
   elif [[ "$host_vendor" != "apple" ]]; then
     AC_MSG_CHECKING([for lib$2 soname])
-    $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
+    $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS $4 -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
     if [[ -z $$1_FILENAME ]]; then
       #try gold linker syntax
-      $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS -l$2 -Wl,-t 3>&1 1>&2 2>&3 | grep "lib$2")
+      $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS $4 -l$2 -Wl,-t 3>&1 1>&2 2>&3 | grep "lib$2")
     fi
     if [[ ! -z $$1_FILENAME ]]; then
       $1_SONAME=$($OBJDUMP -p $$1_FILENAME | grep "SONAME.*$2" | awk '{V=2; print $V}')
@@ -1201,7 +1201,8 @@ AS_CASE([x$use_libbluray],
 AS_CASE([x$use_libbluray],
   [xyes],[
     INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
-    XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
+    LIBBLURAY_LIB_BASENAME=`$PKG_CONFIG --libs-only-L "libbluray >= 0.2.1"`;
+    XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray], [$LIBBLURAY_LIB_BASENAME])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
     AC_CHECK_LIB([bluray], [bd_register_argb_overlay_proc],
