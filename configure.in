@@ -2719,7 +2719,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
     # handle disables first, we do individual enables later
     ffmpg_config="$ffmpg_config --disable-muxers   --disable-encoders"
     ffmpg_config="$ffmpg_config --disable-devices  --disable-doc"
-    ffmpg_config="$ffmpg_config --disable-ffplay   --disable-ffmpeg"
+    ffmpg_config="$ffmpg_config --disable-ffplay   --enable-ffmpeg"
     ffmpg_config="$ffmpg_config --disable-ffprobe  --disable-ffserver"
     ffmpg_config="$ffmpg_config --enable-vda       --disable-crystalhd"
     ffmpg_config="$ffmpg_config --disable-decoder=mpeg_xvmc"
@@ -2817,7 +2817,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffprobe \
       --disable-ffplay \
       --disable-ffserver \
-      --disable-ffmpeg \
+      --enable-ffmpeg \
       --disable-crystalhd \
       `if test "$use_static_ffmpeg" = "yes"; then echo --enable-static; else echo --enable-shared; fi` \
       --disable-doc \
