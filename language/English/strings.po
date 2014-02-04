@@ -8767,7 +8767,7 @@ msgstr ""
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19648"
-msgid "Fitness &amp; Health"
+msgid "Fitness & Health"
 msgstr ""
 
 #: xbmc/epg/Epg.cpp
@@ -8799,7 +8799,7 @@ msgstr ""
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19662"
-msgid "Black &amp; White"
+msgid "Black & White"
 msgstr ""
 
 #: xbmc/epg/Epg.cpp
