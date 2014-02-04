@@ -361,9 +361,6 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
   m_submitted_eos = false;
   m_failed_eos    = false;
 
-  if(!m_decoded_width || !m_decoded_height)
-    return false;
-
   if(hints.extrasize > 0 && hints.extradata != NULL)
   {
     m_extrasize = hints.extrasize;
