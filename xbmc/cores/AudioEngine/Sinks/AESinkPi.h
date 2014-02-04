@@ -60,6 +60,7 @@ private:
   uint32_t             m_submitted;
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_input;
   COMXCoreComponent    m_omx_render;
+  bool                 m_passthrough;
 };
 
 #endif
