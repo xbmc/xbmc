@@ -961,6 +961,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     AEAudioFormat outputFormat;
     if (m_mode == MODE_RAW)
     {
+      inputFormat.m_frames = m_sinkFormat.m_frames;
       outputFormat = inputFormat;
       sinkInputFormat = m_sinkFormat;
     }
@@ -2034,6 +2035,8 @@ void CActiveAE::LoadSettings()
   m_settings.guisoundmode = CSettings::Get().GetInt("audiooutput.guisoundmode");
 
   m_settings.passthrough = m_settings.config == AE_CONFIG_FIXED ? false : CSettings::Get().GetBool("audiooutput.passthrough");
+  if (!m_sink.HasPassthroughDevice())
+    m_settings.passthrough = false;
   m_settings.ac3passthrough = CSettings::Get().GetBool("audiooutput.ac3passthrough");
   m_settings.ac3transcode = CSettings::Get().GetBool("audiooutput.ac3transcode");
   m_settings.eac3passthrough = CSettings::Get().GetBool("audiooutput.eac3passthrough");
