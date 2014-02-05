@@ -209,6 +209,11 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
       CLog::Log(LOGDEBUG, "Sink removed");
       CAEFactory::DeviceChange();
     }
+    else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_CHANGE)
+    {
+      CLog::Log(LOGDEBUG, "Sink changed");
+      //CAEFactory::DeviceChange();
+    }    
   }
 }
 
