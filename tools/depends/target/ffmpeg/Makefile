@@ -18,13 +18,13 @@ ffmpg_config += --enable-muxer=spdif --enable-muxer=adts
 ffmpg_config += --enable-muxer=asf --enable-muxer=ipod
 ffmpg_config += --enable-encoder=ac3 --enable-encoder=aac
 ffmpg_config += --enable-encoder=wmav2 --enable-protocol=http
-ffmpg_config += --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis
 ifeq ($(CROSS_COMPILING), yes)
   ffmpg_config += --arch=$(CPU) --enable-cross-compile
 endif
 ifeq ($(OS), linux)
   ffmpg_config += --target-os=$(OS) --cpu=$(CPU)
   ffmpg_config += --enable-vdpau --enable-vaapi --enable-gnutls
+  ffmpg_config += --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis
 endif
 ifeq ($(OS), android)
   ifeq ($(findstring arm, $(CPU)), arm)
