@@ -236,7 +236,7 @@ void CGUIDialogSubtitles::FillServices()
   }
 
   std::string defaultService;
-  const CFileItem &item = g_application.CurrentFileItem();
+  const CFileItem &item = g_application.CurrentUnstackedItem();
   if (item.GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS ||
       item.GetVideoContentType() == VIDEODB_CONTENT_EPISODES)
     // Set default service for tv shows
@@ -406,6 +406,8 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
   CStdString strFileName;
   CStdString strDestPath;
+#if 0
+  // TODO: Code to download all subtitles for all stack items in one run
   if (g_application.CurrentFileItem().IsStack())
   {
     for (int i = 0; i < items->Size(); i++)
@@ -414,17 +416,22 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 //    CLog::Log(LOGDEBUG, "Stack Subs [%s} Found", vecItems[i]->GetLabel().c_str());
     }
   }
-  else if (StringUtils::StartsWith(g_application.CurrentFile(), "http://"))
+#endif
+
+  // Get (unstacked) path
+  const CStdString &strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
+
+  if (StringUtils::StartsWith(strCurrentFile, "http://"))
   {
     strFileName = "TemporarySubs";
     strDestPath = "special://temp/";
   }
   else
   {
-    strFileName = URIUtils::GetFileName(g_application.CurrentFile());
+    strFileName = URIUtils::GetFileName(strCurrentFile);
     if (CSettings::Get().GetBool("subtitles.savetomoviefolder"))
     {
-      strDestPath = URIUtils::GetDirectory(g_application.CurrentFile());
+      strDestPath = URIUtils::GetDirectory(strCurrentFile);
       if (!CUtil::SupportsWriteFileOperations(strDestPath))
         strDestPath.clear();
     }

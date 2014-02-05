@@ -156,6 +156,7 @@ public:
   void ReloadSkin(bool confirm = false);
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
+  CFileItem& CurrentUnstackedItem();
   virtual bool OnMessage(CGUIMessage& message);
   PLAYERCOREID GetCurrentPlayer();
   virtual void OnPlayBackEnded();

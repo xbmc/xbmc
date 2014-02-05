@@ -5216,6 +5216,14 @@ CFileItem& CApplication::CurrentFileItem()
   return *m_itemCurrentFile;
 }
 
+CFileItem& CApplication::CurrentUnstackedItem()
+{
+  if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
+    return *(*m_currentStack)[m_currentStackPosition];
+  else
+    return *m_itemCurrentFile;
+}
+
 void CApplication::ShowVolumeBar(const CAction *action)
 {
   CGUIDialog *volumeBar = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
