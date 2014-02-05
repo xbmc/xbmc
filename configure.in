@@ -2867,7 +2867,6 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
     --disable-strip \
     --disable-opts \
     --cc="$CC" &&
-  $MAKE dvdread-config &&
   mkdir -p `pwd`/../includes/dvdread
   cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   cp `pwd`/../libdvdread/src/dvdread/*.h `pwd`/../includes/dvdread
@@ -2877,7 +2876,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
   ./configure2 \
     --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../includes $DROID_DVDLIB_SEEK64" \
     --extra-ldflags="-L`pwd`/../libdvdread/obj" \
-    --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
+    --with-dvdread-config="`pwd`/../dvdread-config" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \
