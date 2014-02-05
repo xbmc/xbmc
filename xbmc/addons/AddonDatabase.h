@@ -138,6 +138,7 @@ protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
+  virtual int GetMinSchemaVersion() const { return 15; }
   virtual int GetSchemaVersion() const { return 16; }
   const char *GetBaseDBName() const { return "Addons"; }
 

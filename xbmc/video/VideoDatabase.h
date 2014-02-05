@@ -801,31 +801,13 @@ private:
    */
   int RunQuery(const CStdString &sql);
 
-  /*! \brief Update routine for base path of videos
-   Only required for videodb version < 59
-   \param table the table to update
-   \param id the primary id in the given table
-   \param column the basepath column to update
-   \param shows whether we're fetching shows (defaults to false)
-   \param where restrict updating of items that match the where clause
-   */
-  void UpdateBasePath(const char *table, const char *id, int column, bool shows = false, const CStdString &where = "");
-
-  /*! \brief Update routine for base path id of videos
-   Only required for videodb version < 59
-   \param table the table to update
-   \param id the primary id in the given table
-   \param column the column of the basepath
-   \param idColumn the column of the parent path id to update
-   */
-  void UpdateBasePathID(const char *table, const char *id, int column, int idColumn);
-
   /*! \brief Determine whether the path is using lookup using folders
    \param path the path to check
    \param shows whether this path is from a tvshow (defaults to false)
    */
   bool LookupByFolders(const CStdString &path, bool shows = false);
 
+  virtual int GetMinSchemaVersion() const { return 60; };
   virtual int GetSchemaVersion() const;
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };

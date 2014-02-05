@@ -95,18 +95,6 @@ void CAddonDatabase::CreateAnalytics()
 
 void CAddonDatabase::UpdateTables(int version)
 {
-  if (version < 13)
-  {
-    m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
-  }
-  if (version < 14)
-  {
-    m_pDS->exec("ALTER TABLE addon add minversion text");
-  }
-  if (version < 15)
-  {
-    m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
-  }
   if (version < 16)
   {
     m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
