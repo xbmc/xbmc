@@ -15084,3 +15084,8 @@ msgstr ""
 msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"
 msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#37024"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
+msgstr ""
