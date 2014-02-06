@@ -691,6 +691,7 @@ public:
     }
   }
 
+  bool isMovieSetArtwork(const std::string &setName, const std::string &mediaType, const std::string &mediaFile);
   void SetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType, const std::string &url);
   void SetArtForItem(int mediaId, const std::string &mediaType, const std::map<std::string, std::string> &art);
   bool GetArtForItem(int mediaId, const std::string &mediaType, std::map<std::string, std::string> &art);

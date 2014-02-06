@@ -111,6 +111,7 @@ public:
   typedef std::vector< SActorInfo >::const_iterator iCast;
   CStdString m_strSet;
   int m_iSetId;
+  std::map<std::string, std::string> m_setArt;  // Movie set artwork
   std::vector<std::string> m_tags;
   CStdString m_strFile;
   CStdString m_strPath;

@@ -1080,6 +1080,52 @@ namespace VIDEO
       if (!strTrailer.empty())
         movieDetails.m_strTrailer = strTrailer;
 
+      // BEGIN: Look for set artwork
+      if (!movieDetails.m_strSet.empty() && useLocal)
+      {
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Locate artwork for movie set '%s'", movieDetails.m_strSet.c_str());
+        std::string image;
+
+        // Check movie folder itself for set artwork, <set name>-poster.jpg|png and <set name>-fanart.jpg|png
+        if (movieDetails.m_setArt["poster"].empty() || movieDetails.m_setArt["poster"].compare(art["poster"]))
+        {
+          image = CVideoThumbLoader::GetLocalArt(*pItem, movieDetails.m_strSet + "-poster", true);
+          movieDetails.m_setArt["poster"] = (!image.empty()) ? image : (!movieDetails.m_setArt["poster"].empty()) ? movieDetails.m_setArt["poster"] : art["poster"];
+        }
+
+        if (movieDetails.m_setArt["fanart"].empty() || movieDetails.m_setArt["fanart"].compare(art["fanart"]))
+        {
+          image = CVideoThumbLoader::GetLocalArt(*pItem, movieDetails.m_strSet + "-fanart", true);
+          movieDetails.m_setArt["fanart"] = (!image.empty()) ? image : (!movieDetails.m_setArt["fanart"].empty()) ? movieDetails.m_setArt["fanart"] : art["fanart"];
+        }
+
+        // Check parent folder for set artwork, poster.jpg|png and folder.jpg|png
+        if (pItem->m_idepth >= 1)
+        {
+          CStdString setPath = URIUtils::GetParentPath(movieDetails.m_basePath);
+          URIUtils::RemoveSlashAtEnd(setPath);
+          CStdString setPathName = URIUtils::GetFileName(setPath);
+
+          if (movieDetails.m_strSet.Compare(setPathName) || setPathName.Compare(movieDetails.m_strSet.Left(setPathName.length())))
+          {
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Movie Set '%s', fuzzy name match with parent path: %s", movieDetails.m_strSet.c_str(), setPathName.c_str());
+            CFileItemPtr parent(new CFileItem(setPath, true));
+
+            image = CVideoThumbLoader::GetLocalArt(*parent, "poster", true);
+            if (!image.empty())
+              movieDetails.m_setArt["poster"] = image;
+
+            image = CVideoThumbLoader::GetLocalArt(*parent, "fanart", true);
+            if (!image.empty())
+              movieDetails.m_setArt["fanart"] = image;
+          }
+        }
+
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Movie Set '%s' Poster: %s", movieDetails.m_strSet.c_str(), movieDetails.m_setArt["poster"].c_str());
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Movie Set '%s' Fanart: %s", movieDetails.m_strSet.c_str(), movieDetails.m_setArt["fanart"].c_str());
+      }  
+      // END: Look for set artwork
+
       lResult = m_database.SetDetailsForMovie(pItem->GetPath(), movieDetails, art);
       movieDetails.m_iDbId = lResult;
       movieDetails.m_type = "movie";
