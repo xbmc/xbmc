@@ -1,18 +1,11 @@
 include ../../Makefile.include
 include ../depends.mk
-DEPS= ../../Makefile.include ../depends.mk Makefile
+include ../../../depends/target/ffmpeg/FFMPEG-VERSION
+DEPS= ../../Makefile.include ../depends.mk ../../../depends/target/ffmpeg/FFMPEG-VERSION Makefile
 
 # set to "yes" to enable patching
 # we don't apply patches until we move to a vanilla ffmpeg tarball
 APPLY_PATCHES=no
-
-# lib name, version
-LIBNAME=ffmpeg
-# ffmpeg GIT
-BASE_URL=https://github.com/FernetMenta/FFmpeg/archive
-VERSION=11086c540305ffb208e6fc17d301db989d3c4151
-ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-
 
 # configuration settings
 ffmpg_config = --sysroot=$(SYSROOT) --prefix=$(PREFIX)
