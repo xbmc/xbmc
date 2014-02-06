@@ -19,14 +19,12 @@
 #
 
 
-
 MYDIR=$(cd $(dirname $0); pwd)
 cd $MYDIR
 FFMPEG_PREFIX=${MYDIR}/ffmpeg-install
-BUILDTHREADS=${BUILDTHREADS:-"2"}
 
-BASE_URL=https://github.com/FernetMenta/FFmpeg/archive
-VERSION=$(grep "VERSION=" Makefile | sed 's/VERSION=//g')
+BASE_URL=$(grep "BASE_URL=" FFMPEG-VERSION | sed 's/BASE_URL=//g')
+VERSION=$(grep "VERSION=" FFMPEG-VERSION | sed 's/VERSION=//g')
 ARCHIVE=ffmpeg-${VERSION}.tar.gz
 
 function usage {
@@ -102,6 +100,8 @@ do
   esac
 done
 
+BUILDTHREADS=${BUILDTHREADS:-$(grep -c processor /proc/cpuinfo)}
+
 [ -z ${VERSION} ] && exit 3
 if [ -f ${FFMPEG_PREFIX}/lib/pkgconfig/libavcodec.pc ] && [ -f .ffmpeg-installed ]
 then
@@ -112,7 +112,7 @@ fi
 [ -f ${ARCHIVE} ] || curl -Ls --create-dirs -f -o ${ARCHIVE} ${BASE_URL}/${VERSION}.tar.gz
 [ $downloadonly ] && exit 0
 
-[ -d ffmpeg-${VERSION} ] && rm -rf ffmpeg-${VERSION}
+[ -d ffmpeg-${VERSION} ] && rm -rf ffmpeg-${VERSION} && rm .ffmpeg-installed >/dev/null 2>&1
 if [ -d ${FFMPEG_PREFIX} ]
 then
   [ -w ${FFMPEG_PREFIX} ] || SUDO="sudo"
