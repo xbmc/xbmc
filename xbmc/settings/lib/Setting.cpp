@@ -1145,7 +1145,8 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
 
   // get the default value
   CStdString value;
-  if (XMLUtils::GetString(node, SETTING_XML_ELM_DEFAULT, value) && !value.empty())
+  if (XMLUtils::GetString(node, SETTING_XML_ELM_DEFAULT, value) &&
+     (!value.empty() || m_allowEmpty))
     m_value = m_default = value;
   else if (!update && !m_allowEmpty)
   {
