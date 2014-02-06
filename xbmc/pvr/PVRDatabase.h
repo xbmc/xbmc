@@ -59,7 +59,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetMinVersion() const { return 22; };
+    virtual int GetSchemaVersion() const { return 22; };
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -221,7 +221,8 @@ namespace PVR
      * @brief Create the PVR database tables.
      * @return True if the tables were created successfully, false otherwise.
      */
-    bool CreateTables();
+    void CreateTables();
+    void CreateAnalytics();
 
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group);
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);
@@ -233,9 +234,9 @@ namespace PVR
     /*!
      * @brief Update an old version of the database.
      * @param version The version to update the database from.
-     * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateOldVersion(int version);
+    void UpdateTables(int version);
+    int GetMinSchemaVersion() { return 11; }
 
     bool PersistGroupMembers(CPVRChannelGroup &group);
 

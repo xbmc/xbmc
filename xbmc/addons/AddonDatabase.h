@@ -135,9 +135,11 @@ public:
   */
   bool RemovePackage(const CStdString& packageFileName);
 protected:
-  virtual bool CreateTables();
-  virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 16; }
+  virtual void CreateTables();
+  virtual void CreateAnalytics();
+  virtual void UpdateTables(int version);
+  virtual int GetMinSchemaVersion() const { return 15; }
+  virtual int GetSchemaVersion() const { return 16; }
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);

@@ -48,38 +48,28 @@ bool CViewDatabase::Open()
   return CDatabase::Open();
 }
 
-bool CViewDatabase::CreateTables()
+void CViewDatabase::CreateTables()
 {
-  try
-  {
-    CDatabase::CreateTables();
-
-    CLog::Log(LOGINFO, "create view table");
-    m_pDS->exec("CREATE TABLE view ("
-                  "idView integer primary key,"
-                  "window integer,"
-                  "path text,"
-                  "viewMode integer,"
-                  "sortMethod integer,"
-                  "sortOrder integer,"
-                  "sortAttributes integer,"
-                  "skin text)\n");
-    CLog::Log(LOGINFO, "create view index");
-    m_pDS->exec("CREATE INDEX idxViews ON view(path)");
-    CLog::Log(LOGINFO, "create view - window index");
-    m_pDS->exec("CREATE INDEX idxViewsWindow ON view(window)");
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s unable to create tables:%u",
-              __FUNCTION__, GetLastError());
-    return false;
-  }
-
-  return true;
+  CLog::Log(LOGINFO, "create view table");
+  m_pDS->exec("CREATE TABLE view ("
+                "idView integer primary key,"
+                "window integer,"
+                "path text,"
+                "viewMode integer,"
+                "sortMethod integer,"
+                "sortOrder integer,"
+                "sortAttributes integer,"
+                "skin text)\n");
 }
 
-bool CViewDatabase::UpdateOldVersion(int version)
+void CViewDatabase::CreateAnalytics()
+{
+  CLog::Log(LOGINFO, "%s - creating indicies", __FUNCTION__);
+  m_pDS->exec("CREATE INDEX idxViews ON view(path)");
+  m_pDS->exec("CREATE INDEX idxViewsWindow ON view(window)");
+}
+
+void CViewDatabase::UpdateTables(int version)
 {
   if (version < 4)
     m_pDS->exec("alter table view add skin text");
@@ -112,8 +102,6 @@ bool CViewDatabase::UpdateOldVersion(int version)
   {
     // convert the "path" table
     m_pDS->exec("CREATE TABLE tmp_view AS SELECT * FROM view");
-    m_pDS->exec("DROP INDEX idxViews");
-    m_pDS->exec("DROP INDEX idxViewsWindow");
     m_pDS->exec("DROP TABLE view");
 
     m_pDS->exec("CREATE TABLE view ("
@@ -125,8 +113,6 @@ bool CViewDatabase::UpdateOldVersion(int version)
                 "sortOrder integer,"
                 "sortAttributes integer,"
                 "skin text)\n");
-    m_pDS->exec("CREATE INDEX idxViews ON view(path)");
-    m_pDS->exec("CREATE INDEX idxViewsWindow ON view(window)");
     
     m_pDS->query("SELECT * FROM tmp_view");
     while (!m_pDS->eof())
@@ -142,8 +128,6 @@ bool CViewDatabase::UpdateOldVersion(int version)
     }
     m_pDS->exec("DROP TABLE tmp_view");
   }
-
-  return true;
 }
 
 bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState &state, const CStdString &skin)

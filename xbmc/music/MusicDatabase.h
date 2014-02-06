@@ -468,8 +468,10 @@ protected:
   std::map<CStdString, int> m_thumbCache;
   std::map<CStdString, CAlbum> m_albumCache;
 
-  virtual bool CreateTables();
-  virtual int GetMinVersion() const;
+  virtual void CreateTables();
+  virtual void CreateAnalytics();
+  virtual int GetMinSchemaVersion() const { return 18; }
+  virtual int GetSchemaVersion() const;
 
   const char *GetBaseDBName() const { return "MyMusic"; };
 
@@ -496,7 +498,7 @@ private:
   bool CleanupAlbums();
   bool CleanupArtists();
   bool CleanupGenres();
-  virtual bool UpdateOldVersion(int version);
+  virtual void UpdateTables(int version);
   bool SearchArtists(const CStdString& search, CFileItemList &artists);
   bool SearchAlbums(const CStdString& search, CFileItemList &albums);
   bool SearchSongs(const CStdString& strSearch, CFileItemList &songs);

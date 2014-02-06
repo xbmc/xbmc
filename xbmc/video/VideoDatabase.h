@@ -68,47 +68,47 @@ namespace VIDEO
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
 #define VIDEODB_MAX_COLUMNS 24
-#define VIDEODB_DETAILS_FILEID			1
+#define VIDEODB_DETAILS_FILEID      1
 
-#define VIDEODB_DETAILS_MOVIE_SET_ID			VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_MOVIE_SET_NAME		VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_MOVIE_FILE			VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_MOVIE_PATH			VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_MOVIE_PLAYCOUNT		VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_MOVIE_LASTPLAYED		VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_MOVIE_DATEADDED		VIDEODB_MAX_COLUMNS + 8
-#define VIDEODB_DETAILS_MOVIE_RESUME_TIME		VIDEODB_MAX_COLUMNS + 9
-#define VIDEODB_DETAILS_MOVIE_TOTAL_TIME		VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_MOVIE_SET_ID            VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_MOVIE_SET_NAME          VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_MOVIE_FILE              VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_MOVIE_PATH              VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_MOVIE_PLAYCOUNT         VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_MOVIE_LASTPLAYED        VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_MOVIE_DATEADDED         VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_MOVIE_RESUME_TIME       VIDEODB_MAX_COLUMNS + 9
+#define VIDEODB_DETAILS_MOVIE_TOTAL_TIME        VIDEODB_MAX_COLUMNS + 10
 
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_ID     VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_EPISODE_FILE          VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_EPISODE_PATH          VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_EPISODE_PLAYCOUNT     VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_EPISODE_LASTPLAYED    VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_EPISODE_DATEADDED     VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME   VIDEODB_MAX_COLUMNS + 8
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO VIDEODB_MAX_COLUMNS + 9
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED  VIDEODB_MAX_COLUMNS + 10
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA   VIDEODB_MAX_COLUMNS + 11
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_PATH   VIDEODB_MAX_COLUMNS + 12
-#define VIDEODB_DETAILS_EPISODE_RESUME_TIME   VIDEODB_MAX_COLUMNS + 13
-#define VIDEODB_DETAILS_EPISODE_TOTAL_TIME    VIDEODB_MAX_COLUMNS + 14
-#define VIDEODB_DETAILS_EPISODE_SEASON_ID     VIDEODB_MAX_COLUMNS + 15
-						
-#define VIDEODB_DETAILS_TVSHOW_PATH		VIDEODB_MAX_COLUMNS + 1
-#define VIDEODB_DETAILS_TVSHOW_DATEADDED		VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_TVSHOW_LASTPLAYED	VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES	VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_TVSHOW_NUM_WATCHED	VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_TVSHOW_NUM_SEASONS	VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_ID       VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_EPISODE_FILE            VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_EPISODE_PATH            VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_EPISODE_PLAYCOUNT       VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_EPISODE_LASTPLAYED      VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_EPISODE_DATEADDED       VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME     VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO   VIDEODB_MAX_COLUMNS + 9
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED    VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA     VIDEODB_MAX_COLUMNS + 11
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_PATH     VIDEODB_MAX_COLUMNS + 12
+#define VIDEODB_DETAILS_EPISODE_RESUME_TIME     VIDEODB_MAX_COLUMNS + 13
+#define VIDEODB_DETAILS_EPISODE_TOTAL_TIME      VIDEODB_MAX_COLUMNS + 14
+#define VIDEODB_DETAILS_EPISODE_SEASON_ID       VIDEODB_MAX_COLUMNS + 15
 
-#define VIDEODB_DETAILS_MUSICVIDEO_FILE			VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_MUSICVIDEO_PATH			VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT		VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED		VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_MUSICVIDEO_DATEADDED		VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_MUSICVIDEO_RESUME_TIME		VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_MUSICVIDEO_TOTAL_TIME		VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_TVSHOW_PATH             VIDEODB_MAX_COLUMNS + 1
+#define VIDEODB_DETAILS_TVSHOW_DATEADDED        VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_TVSHOW_LASTPLAYED       VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES     VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_TVSHOW_NUM_WATCHED      VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_TVSHOW_NUM_SEASONS      VIDEODB_MAX_COLUMNS + 6
+
+#define VIDEODB_DETAILS_MUSICVIDEO_FILE         VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_MUSICVIDEO_PATH         VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT    VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED   VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_MUSICVIDEO_DATEADDED    VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_MUSICVIDEO_RESUME_TIME  VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_MUSICVIDEO_TOTAL_TIME   VIDEODB_MAX_COLUMNS + 8
 
 #define VIDEODB_TYPE_STRING 1
 #define VIDEODB_TYPE_INT 2
@@ -785,8 +785,9 @@ protected:
   CStdString GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
 
 private:
-  virtual bool CreateTables();
-  virtual bool UpdateOldVersion(int version);
+  virtual void CreateTables();
+  virtual void CreateAnalytics();
+  virtual void UpdateTables(int version);
 
   /*! \brief (Re)Create the generic database views for movies, tvshows,
      episodes and music videos
@@ -800,32 +801,14 @@ private:
    */
   int RunQuery(const CStdString &sql);
 
-  /*! \brief Update routine for base path of videos
-   Only required for videodb version < 59
-   \param table the table to update
-   \param id the primary id in the given table
-   \param column the basepath column to update
-   \param shows whether we're fetching shows (defaults to false)
-   \param where restrict updating of items that match the where clause
-   */
-  void UpdateBasePath(const char *table, const char *id, int column, bool shows = false, const CStdString &where = "");
-
-  /*! \brief Update routine for base path id of videos
-   Only required for videodb version < 59
-   \param table the table to update
-   \param id the primary id in the given table
-   \param column the column of the basepath
-   \param idColumn the column of the parent path id to update
-   */
-  void UpdateBasePathID(const char *table, const char *id, int column, int idColumn);
-
   /*! \brief Determine whether the path is using lookup using folders
    \param path the path to check
    \param shows whether this path is from a tvshow (defaults to false)
    */
   bool LookupByFolders(const CStdString &path, bool shows = false);
 
-  virtual int GetMinVersion() const;
+  virtual int GetMinSchemaVersion() const { return 60; };
+  virtual int GetSchemaVersion() const;
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 

@@ -37,116 +37,62 @@ bool CEpgDatabase::Open(void)
   return CDatabase::Open(g_advancedSettings.m_databaseEpg);
 }
 
-bool CEpgDatabase::CreateTables(void)
+void CEpgDatabase::CreateTables(void)
 {
-  bool bReturn(false);
+  CLog::Log(LOGINFO, "EpgDB - %s - creating tables", __FUNCTION__);
 
-  try
-  {
-    CDatabase::CreateTables();
+  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epg'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE epg ("
+        "idEpg           integer primary key, "
+        "sName           varchar(64),"
+        "sScraperName    varchar(32)"
+      ")"
+  );
 
-    BeginTransaction();
-
-    CLog::Log(LOGINFO, "EpgDB - %s - creating tables", __FUNCTION__);
-
-    CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epg'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE epg ("
-          "idEpg           integer primary key, "
-          "sName           varchar(64),"
-          "sScraperName    varchar(32)"
-        ")"
-    );
-
-    CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epgtags'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE epgtags ("
-          "idBroadcast     integer primary key, "
-          "iBroadcastUid   integer, "
-          "idEpg           integer, "
-          "sTitle          varchar(128), "
-          "sPlotOutline    text, "
-          "sPlot           text, "
-          "iStartTime      integer, "
-          "iEndTime        integer, "
-          "iGenreType      integer, "
-          "iGenreSubType   integer, "
-          "sGenre          varchar(128), "
-          "iFirstAired     integer, "
-          "iParentalRating integer, "
-          "iStarRating     integer, "
-          "bNotify         bool, "
-          "iSeriesId       integer, "
-          "iEpisodeId      integer, "
-          "iEpisodePart    integer, "
-          "sEpisodeName    varchar(128)"
-        ")"
-    );
-    m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
-    m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
-
-    CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
-    m_pDS->exec("CREATE TABLE lastepgscan ("
-          "idEpg integer primary key, "
-          "sLastScan varchar(20)"
-        ")"
-    );
-
-    CommitTransaction();
-
-    bReturn = true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "EpgDB - %s - unable to create EPG tables:%i",
-        __FUNCTION__, (int)GetLastError());
-    RollbackTransaction();
-    bReturn = false;
-  }
-
-  return bReturn;
+  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epgtags'", __FUNCTION__);
+  m_pDS->exec(
+      "CREATE TABLE epgtags ("
+        "idBroadcast     integer primary key, "
+        "iBroadcastUid   integer, "
+        "idEpg           integer, "
+        "sTitle          varchar(128), "
+        "sPlotOutline    text, "
+        "sPlot           text, "
+        "iStartTime      integer, "
+        "iEndTime        integer, "
+        "iGenreType      integer, "
+        "iGenreSubType   integer, "
+        "sGenre          varchar(128), "
+        "iFirstAired     integer, "
+        "iParentalRating integer, "
+        "iStarRating     integer, "
+        "bNotify         bool, "
+        "iSeriesId       integer, "
+        "iEpisodeId      integer, "
+        "iEpisodePart    integer, "
+        "sEpisodeName    varchar(128)"
+      ")"
+  );
+  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
+  m_pDS->exec("CREATE TABLE lastepgscan ("
+        "idEpg integer primary key, "
+        "sLastScan varchar(20)"
+      ")"
+  );
 }
 
-bool CEpgDatabase::UpdateOldVersion(int iVersion)
+void CEpgDatabase::CreateAnalytics()
 {
-  bool bReturn = true;
+  CLog::Log(LOGDEBUG, "%s - creating indices", __FUNCTION__);
+  m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
+  m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
+}
 
-  if (iVersion < 4)
-  {
-    CLog::Log(LOGERROR, "EpgDB - %s - updating from table versions < 4 not supported. please delete '%s'", __FUNCTION__, GetBaseDBName());
-    return false;
-  }
-
-  BeginTransaction();
-
-  try
-  {
-    if (iVersion < 5)
-      m_pDS->exec("ALTER TABLE epgtags ADD sGenre varchar(128);");
-    if (iVersion < 6)
-    {
-      m_pDS->exec("DROP INDEX idx_epg_iBroadcastUid;");
-      m_pDS->exec("DROP INDEX idx_epg_idEpg;");
-      m_pDS->exec("DROP INDEX idx_epg_iStartTime;");
-      m_pDS->exec("DROP INDEX idx_epg_iEndTime;");
-    }
-    if (iVersion < 7)
-    {
-      m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
-    }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "Error attempting to update the database version!");
-    bReturn = false;
-  }
-
-  if (bReturn)
-    CommitTransaction();
-  else
-    RollbackTransaction();
-
-  return bReturn;
+void CEpgDatabase::UpdateTables(int iVersion)
+{
+  if (iVersion < 5)
+    m_pDS->exec("ALTER TABLE epgtags ADD sGenre varchar(128);");
 }
 
 bool CEpgDatabase::DeleteEpg(void)
