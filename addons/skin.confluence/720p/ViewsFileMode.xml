@@ -295,6 +295,13 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
+						<posx>3</posx>
+						<posy>131</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+					</control>
+					<control type="image">
 						<left>170</left>
 						<top>130</top>
 						<width>30</width>
@@ -338,6 +345,13 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
+						<posx>3</posx>
+						<posy>131</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+					</control>
+					<control type="image">
 						<left>180</left>
 						<top>130</top>
 						<width>30</width>
@@ -369,6 +383,13 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
+						<posx>5</posx>
+						<posy>200</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+					</control>
+					<control type="image">
 						<left>170</left>
 						<top>210</top>
 						<width>30</width>
@@ -398,6 +419,13 @@
 						<align>center</align>
 						<aligny>center</aligny>
 						<info>ListItem.Label</info>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>200</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
 					</control>
 					<control type="image">
 						<left>170</left>
