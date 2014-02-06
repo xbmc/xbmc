@@ -52,9 +52,7 @@ CDecoder::Desc decoder_profiles[] = {
 {"VC1_SIMPLE",   VDP_DECODER_PROFILE_VC1_SIMPLE},
 {"VC1_MAIN",     VDP_DECODER_PROFILE_VC1_MAIN},
 {"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
-#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_ASP
 {"MPEG4_PART2_ASP", VDP_DECODER_PROFILE_MPEG4_PART2_ASP},
-#endif
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CDecoder::Desc);
 
@@ -849,12 +847,10 @@ void CDecoder::ReadFormatOf( AVCodecID codec
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
-#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_ASP
     case AV_CODEC_ID_MPEG4:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
-#endif
     default:
       vdp_decoder_profile = 0;
       vdp_chroma_type     = 0;
