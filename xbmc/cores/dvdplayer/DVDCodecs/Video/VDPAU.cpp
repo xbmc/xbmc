@@ -531,7 +531,7 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
       vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_query_caps(m_vdpauConfig.context->GetDevice(),
        profile, &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
       /* Test to make Sure there is a Possibility the Codec will Work */
-      if(vdp_st != VDP_STATUS_OK)
+      if(CheckStatus(vdp_st, __LINE__))
       {
         CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st);
         return false;
@@ -548,7 +548,7 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
       /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
       vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(m_vdpauConfig.context->GetDevice(), profile, avctx->coded_width, avctx->coded_height, 5, &m_vdpauConfig.vdpDecoder);
 
-      if(vdp_st != VDP_STATUS_OK)
+      if(CheckStatus(vdp_st, __LINE__))
       {
         CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st);
         return false;
