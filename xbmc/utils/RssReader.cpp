@@ -283,10 +283,9 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           if (htmlText.Equals("div") || htmlText.Equals("span"))
             htmlText = childNode->FirstChild()->FirstChild()->Value();
 
-          CStdStringW unicodeText, unicodeText2;
-
-          g_charsetConverter.utf8ToW(htmlText, unicodeText2, m_rtlText);
-          html.ConvertHTMLToW(unicodeText2, unicodeText);
+          CStdStringW unicodeText;
+          // FIXME: we want to convert only xml (not HTML) entities here? 
+          g_charsetConverter.utf8ToW(HTML::CHTMLUtil::DecodeHTMLCharRefs(htmlText), unicodeText, m_rtlText);
 
           mTagElements.insert(StrPair(*i, unicodeText));
         }

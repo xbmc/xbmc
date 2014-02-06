@@ -509,12 +509,7 @@ void CScraperParser::Clean(CStdString& strDirty)
     size_t i2;
     if ((i2 = strDirty.find("!!!FIXCHARS!!!",i+14)) != std::string::npos)
     {
-      strBuffer = strDirty.substr(i+14,i2-i-14);
-      CStdStringW wbuffer;
-      g_charsetConverter.toW(strBuffer,wbuffer,GetSearchStringEncoding());
-      CStdStringW wConverted;
-      HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
-      g_charsetConverter.fromW(wConverted,strBuffer,GetSearchStringEncoding());
+      strBuffer = HTML::CHTMLUtil::DecodeHTMLCharRefs(strDirty.substr(i + 14, i2 - i - 14));
       StringUtils::Trim(strBuffer);
       ConvertJSON(strBuffer);
       strDirty.replace(i, i2-i+14, strBuffer);
