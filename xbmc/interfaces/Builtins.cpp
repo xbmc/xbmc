@@ -510,8 +510,6 @@ int CBuiltins::Execute(const CStdString& execString)
       // format: SWWWWWHHHHHRRR.RRRRRP, where,
       //  S = screen, W = width, H = height, R = refresh, P = interlace
       res = CDisplaySettings::GetResolutionFromString(parameter);
-      const char *strMode = CDisplaySettings::Get().GetResolutionInfo(res).strMode.c_str();
-      CLog::Log(LOGERROR,"resolution:res(%d), parameter(%s), strMode(%s)", res, parameter.c_str(), strMode);
     }
     if (g_graphicsContext.IsValidResolution(res))
     {
