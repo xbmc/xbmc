@@ -66,6 +66,8 @@ config.log
 .project
 .cproject
 
+/nbproject
+
 # /
 /.dummy
 /.dummy.in
