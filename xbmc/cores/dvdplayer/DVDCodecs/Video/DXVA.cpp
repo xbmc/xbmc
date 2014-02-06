@@ -46,8 +46,6 @@
 #include "win32/WIN32Util.h"
 #include "utils/Log.h"
 
-#define ALLOW_ADDING_SURFACES 0
-
 using namespace DXVA;
 using namespace AUTOPTR;
 using namespace std;
@@ -502,7 +500,7 @@ CDecoder::CDecoder()
   memset(&m_format, 0, sizeof(m_format));
   m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
   m_context->cfg     = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
-  m_context->surface = (IDirect3DSurface9**)calloc(m_buffer_max, sizeof(IDirect3DSurface9*));
+  m_context->surface = (IDirect3DSurface9**)calloc(DXVA2_MAX_SURFACES, sizeof(IDirect3DSurface9*));
   g_Windowing.Register(this);
 }
 
@@ -734,17 +732,10 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   if (surfaces > m_shared)
     m_shared = surfaces;
 
-  if(avctx->refs > m_refs)
-    m_refs = avctx->refs;
+  m_refs = std::min<int>(DXVA2_MAX_SURFACES, std::max<int>(20 + DXVA2_QUEUE_SURFACES, avctx->refs) - m_shared);
 
-  if(m_refs == 0)
-  {
-    if(avctx->codec_id == AV_CODEC_ID_H264)
-      m_refs = 16;
-    else
-      m_refs = 2;
-  }
-  CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
+  CLog::Log(LOGDEBUG, __FUNCTION__" - source requires %d references", avctx->refs);
+  CLog::Log(LOGDEBUG, __FUNCTION__" - will allocate %d surfaces", m_refs);
 
   DXVA2_ConfigPictureDecode config = {};
   if (!m_dxva_context->GetConfig(m_input, &m_format, config))
@@ -845,20 +836,6 @@ int CDecoder::Check(AVCodecContext* avctx)
     }
     return VC_FLUSHED;
   }
-  else
-  {
-    if(avctx->refs > m_refs)
-    {
-      CLog::Log(LOGWARNING, "CDecoder::Check - number of required reference frames increased, recreating decoder");
-#if ALLOW_ADDING_SURFACES
-      if(!OpenDecoder())
-        return VC_ERROR;
-#else
-      Close();
-      return VC_FLUSHED;
-#endif
-    }
-  }
 
   // Status reports are available only for the DXVA2_ModeH264 and DXVA2_ModeVC1 modes
   if(avctx->codec_id != AV_CODEC_ID_H264
@@ -902,7 +879,7 @@ bool CDecoder::OpenDecoder()
   SAFE_RELEASE(m_decoder);
   m_context->decoder = NULL;
 
-  m_context->surface_count = m_refs + 1 + 1 + m_shared; // refs + 1 decode + 1 libavcodec safety + processor buffer
+  m_context->surface_count = std::min<unsigned>(DXVA2_MAX_SURFACES, m_refs + m_shared); // refs + processor buffer
 
   if(m_context->surface_count > m_buffer_count)
   {
@@ -946,7 +923,6 @@ void CDecoder::RelBuffer(uint8_t *data)
     if(m_buffer[i].surface == surface)
     {
       m_buffer[i].used = false;
-      m_buffer[i].age  = ++m_buffer_age;
       break;
     }
   }
@@ -971,49 +947,41 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
       return -1;
     }
   }
-
-  int           count = 0;
-  SVideoBuffer* buf   = NULL;
-  for(unsigned i = 0; i < m_buffer_count; i++)
+  unsigned int i;
+  int old, old_unused;
+  for (i = 0, old = 0, old_unused = -1; i < m_buffer_count; i++) 
   {
-    if(m_buffer[i].used)
-      count++;
-    else
-    {
-      if(!buf || buf->age > m_buffer[i].age)
-        buf = m_buffer+i;
-    }
+    SVideoBuffer* buf = &m_buffer[i];
+    if (!buf->used && (old_unused == -1 || buf->age < m_buffer[old_unused].age))
+      old_unused = i;
+    if (buf->age < m_buffer[old].age)
+      old = i;
   }
-
-  if(count >= m_refs+2)
+  if (old_unused == -1) 
   {
-    m_refs++;
-#if ALLOW_ADDING_SURFACES
-    if(!OpenDecoder())
-      return -1;
-    return GetBuffer(avctx, pic);
-#else
-    Close();
-    return -1;
-#endif
-  }
+    CLog::Log(LOGERROR, __FUNCTION__" - unable to find unused buffer, using oldest");
+    i = old;
+  } 
+  else 
+    i = old_unused;
 
-  if(!buf)
+  LPDIRECT3DSURFACE9 pSurface = m_buffer[i].surface;
+  if(!pSurface)
   {
-    CLog::Log(LOGERROR, "DXVA - unable to find new unused buffer");
+    CLog::Log(LOGERROR, __FUNCTION__" - There is a buffer, but no D3D Surace? WTF?");
     return -1;
   }
+
+  m_buffer[i].age  = ++m_buffer_age;
+  m_buffer[i].used = true;
+
+  memset(pic->data, 0, sizeof(pic->data));
+  memset(pic->linesize, 0, sizeof(pic->linesize));
 
   pic->reordered_opaque = avctx->reordered_opaque;
+  pic->data[0] = pic->data[3] = (uint8_t*)pSurface;
 
-  for(unsigned i = 0; i < 4; i++)
-  {
-    pic->data[i] = NULL;
-    pic->linesize[i] = 0;
-  }
 
-  pic->data[0] = (uint8_t*)buf->surface;
-  pic->data[3] = (uint8_t*)buf->surface;
   AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, avctx->opaque, 0);
   if (!buffer)
   {
@@ -1021,7 +989,6 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
     return -1;
   }
   pic->buf[0] = buffer;
-  buf->used = true;
 
   Acquire();
 

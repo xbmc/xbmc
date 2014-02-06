@@ -30,6 +30,9 @@
 #include "settings/VideoSettings.h"
 #include "guilib/Geometry.h"
 
+#define DXVA2_MAX_SURFACES 32
+#define DXVA2_QUEUE_SURFACES 4
+
 namespace DXVA {
 
 #define CHECK(a) \
@@ -136,8 +139,7 @@ protected:
   HANDLE                       m_device;
   GUID                         m_input;
   DXVA2_VideoDesc              m_format;
-  static const unsigned        m_buffer_max = 32;
-  SVideoBuffer                 m_buffer[m_buffer_max];
+  SVideoBuffer                 m_buffer[DXVA2_MAX_SURFACES];
   unsigned                     m_buffer_count;
   unsigned                     m_buffer_age;
   int                          m_refs;
