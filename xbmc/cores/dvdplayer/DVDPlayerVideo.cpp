@@ -994,7 +994,6 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_CVBREF:    return "BGRA";
     case RENDER_FMT_EGLIMG:    return "EGLIMG";
     case RENDER_FMT_BYPASS:    return "BYPASS";
-    case RENDER_FMT_IMX:       return "IMX";
     case RENDER_FMT_MEDIACODEC:return "MEDIACODEC";
     case RENDER_FMT_NONE:      return "NONE";
   }

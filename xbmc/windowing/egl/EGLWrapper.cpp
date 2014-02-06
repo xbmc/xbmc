@@ -17,7 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "EGLNativeTypeIMX.h"
 #include "system.h"
 
 #ifdef HAS_EGL
@@ -26,6 +25,9 @@
 #include "EGLNativeTypeAmlogic.h"
 #include "EGLNativeTypeRaspberryPI.h"
 #include "EGLNativeTypeWayland.h"
+#ifdef HAS_IMXVPU
+#include "EGLNativeTypeIMX.h"
+#endif
 #include "EGLWrapper.h"
 
 #define CheckError() m_result = eglGetError(); if(m_result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, m_result);
@@ -82,8 +84,11 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
   if ((nativeGuess = CreateEGLNativeType<CEGLNativeTypeWayland>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation)) ||
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation)) ||
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation)))
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation))
+#ifdef HAS_IMXVPU
+      || (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation))
+#endif
+      )
   {
     m_nativeTypes = nativeGuess;
 

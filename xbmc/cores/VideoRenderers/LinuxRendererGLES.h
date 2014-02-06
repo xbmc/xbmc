@@ -42,7 +42,6 @@ namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
 class CDVDVideoCodecStageFright;
 class CDVDMediaCodecInfo;
-class CIMXOutputFrame;
 typedef std::vector<int>     Features;
 
 
@@ -170,9 +169,6 @@ public:
 #ifdef HAS_LIBSTAGEFRIGHT
   virtual void         AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index);
 #endif
-#ifdef HAS_IMXVPU
-  virtual void         AddProcessor(CIMXOutputFrame *imx,  int index);
-#endif
 #if defined(TARGET_ANDROID)
   // mediaCodec
   virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
@@ -283,9 +279,6 @@ protected:
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
     struct __CVBuffer *cvBufferRef;
-#endif
-#ifdef HAS_IMXVPU
-    CIMXOutputFrame *imxOutputFrame;
 #endif
 #ifdef HAS_LIBSTAGEFRIGHT
     CDVDVideoCodecStageFright* stf;
