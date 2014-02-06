@@ -1833,17 +1833,18 @@ if test "x$use_vdpau" != "xno"; then
     fi
     USE_VDPAU=0
   else
-    USE_VDPAU=1
-    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [],
-      [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
-    [if test "x$use_vdpau" = "xyes"; then
-      USE_VDPAU=0
-      AC_MSG_ERROR([$vdpau_not_found])
-    else
-      use_vdpau="no"
-      USE_VDPAU=0
-      AC_MSG_RESULT($vdpau_not_found)
-    fi])
+    if test "x$use_vdpau" = xyes; then
+      PKG_CHECK_EXISTS([vdpau], [use_vdpau=yes], [use_vdpau=no])
+      if test "x$use_vdpau" = "xyes"; then
+        PKG_CHECK_MODULES([VDPAU], [vdpau >= 0.4.1], [use_vdpau=yes], [use_vdpau=no])
+      fi
+      if test "x$use_vdpau" = "xyes"; then
+        USE_VDPAU=1
+      else
+        USE_VDPAU=0
+        AC_MSG_ERROR([$vdpau_not_found])
+      fi   
+	fi
   fi
 else
   USE_VDPAU=0
