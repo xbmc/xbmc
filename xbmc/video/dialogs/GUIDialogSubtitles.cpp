@@ -115,13 +115,13 @@ CGUIDialogSubtitles::~CGUIDialogSubtitles(void)
 
 bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
 {
-  if  (message.GetMessage() == GUI_MSG_CLICKED &&
-       (message.GetParam1() == ACTION_SELECT_ITEM ||
-        message.GetParam1() == ACTION_MOUSE_LEFT_CLICK))
+  if (message.GetMessage() == GUI_MSG_CLICKED)
   {
     int iControl = message.GetSenderId();
+    bool selectAction = (message.GetParam1() == ACTION_SELECT_ITEM ||
+                         message.GetParam1() == ACTION_MOUSE_LEFT_CLICK);
 
-    if (iControl == CONTROL_SUBLIST)
+    if (selectAction && iControl == CONTROL_SUBLIST)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_SUBLIST);
       OnMessage(msg);
@@ -131,7 +131,7 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
         Download(*m_subtitles->Get(item));
       return true;
     }
-    else if (iControl == CONTROL_SERVICELIST)
+    else if (selectAction && iControl == CONTROL_SERVICELIST)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_SERVICELIST);
       OnMessage(msg);
