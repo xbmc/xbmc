@@ -83,6 +83,8 @@ class CGUIKeyboard : public ITimerCallback
       if (m_idleTimer.IsRunning()) 
         m_idleTimer.Restart();
     }
+
+    virtual bool SetTextToKeyboard(const std::string &text, bool closeKeyboard = false) { return false; }
     
   private:
     CTimer m_idleTimer;

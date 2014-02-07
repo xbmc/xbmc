@@ -235,6 +235,9 @@ public:
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
   void SendAction(const CAction &action, int windowID = WINDOW_INVALID, bool waitResult=true);
 
+  //! \brief Send text to currently focused window / keyboard.
+  void SendText(const std::string &aTextString, bool closeKeyboard = false);
+
   /*! \brief Send a GUIMessage, optionally waiting before it's processed to return.
    Should be used to send messages to the GUI from other threads.
    \param msg the GUIMessage to send.

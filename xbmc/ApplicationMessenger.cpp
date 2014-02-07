@@ -38,6 +38,7 @@
 #include "FileItem.h"
 #include "guilib/GUIDialog.h"
 #include "guilib/Key.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
 #include "cores/IPlayer.h"
@@ -1259,6 +1260,21 @@ void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windo
   tMsg.dwParam1 = windowID == WINDOW_INVALID ? 0 : windowID;
   tMsg.lpVoid = new CGUIMessage(message);
   SendMessage(tMsg, waitResult);
+}
+
+void CApplicationMessenger::SendText(const std::string &aTextString, bool closeKeyboard /* = false */)
+{
+  if (CGUIKeyboardFactory::SendTextToActiveKeyboard(aTextString, closeKeyboard))
+    return;
+
+  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+  if (!window)
+    return;
+
+  CGUIMessage msg(GUI_MSG_SET_TEXT, 0, 0);
+  msg.SetLabel(aTextString);
+  msg.SetParam1(closeKeyboard ? 1 : 0);
+  SendGUIMessage(msg, window->GetID());
 }
 
 vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString> &properties)

@@ -80,6 +80,14 @@ void CIOSKeyboard::Cancel()
   m_bCanceled = true;
 }
 
+bool CIOSKeyboard::SetTextToKeyboard(const std::string &text, bool closeKeyboard /* = false */)
+{
+  if (!g_pIosKeyboard)
+    return false;
+  [g_pIosKeyboard setKeyboardText:[NSString stringWithUTF8String:text.c_str()] closeKeyboard:closeKeyboard?YES:NO];
+  return true;
+}
+
 //wrap our callback between objc and c++
 void CIOSKeyboard::fireCallback(const std::string &str)
 {

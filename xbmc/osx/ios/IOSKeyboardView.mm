@@ -261,6 +261,24 @@ static CEvent keyboardFinishedEvent;
   }
 }
 
+- (void) setKeyboardText:(NSString*)aText closeKeyboard:(BOOL)closeKeyboard
+{
+  LOG(@"%s: %@, %d", __PRETTY_FUNCTION__, aText, closeKeyboard);
+  if([NSThread currentThread] != [NSThread mainThread])
+  {
+    [self performSelectorOnMainThread:@selector(setDefault:) withObject:aText  waitUntilDone:YES];
+  }
+  else
+  {
+    [self setDefault:aText];
+  }
+  if (closeKeyboard)
+  {
+    _confirmed = YES;
+    [self deactivate];
+  }
+}
+
 - (void) setHeading:(NSString *)heading
 {
   if (heading && heading.length > 0) {
