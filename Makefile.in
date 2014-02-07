@@ -549,7 +549,18 @@ endif
 xbmc/main/main.a: force
 	$(MAKE) -C xbmc/main
 
-xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS) xbmc/main/main.a
+lib/ffmpeg/libavcodec/libavcodec.a: ffmpeg 
+lib/ffmpeg/libavfilter/libavfilter.a: ffmpeg
+lib/ffmpeg/libswresample/libswresample.a: ffmpeg
+lib/ffmpeg/libavformat/libavformat.a: ffmpeg
+lib/ffmpeg/libavutil/libavutil.a: ffmpeg
+lib/ffmpeg/libpostproc/libpostproc.a: ffmpeg
+lib/ffmpeg/libswscale/libswscale.a: ffmpeg
+
+ffmpeg: force
+	$(MAKE) -C lib/ffmpeg
+
+xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin xbmc/main/main.a -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
