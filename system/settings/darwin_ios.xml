@@ -43,18 +43,6 @@
           <default>Default</default>
           <visible>false</visible>
         </setting>
-        <setting id="audiooutput.ac3passthrough">
-          <requirement>IsAppleTV2</requirement>
-        </setting>
-        <setting id="audiooutput.dtspassthrough">
-          <requirement>IsAppleTV2</requirement>
-        </setting>
-        <setting id="audiooutput.truehdpassthrough">
-          <visible>false</visible>
-        </setting>
-        <setting id="audiooutput.dtshdpassthrough">
-          <visible>false</visible>
-        </setting>
       </group>
     </category>
     <category id="input">
