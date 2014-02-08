@@ -635,18 +635,16 @@ void CWakeOnAccess::OnSettingsLoaded()
   LoadFromXML();
 }
 
-void CWakeOnAccess::OnSettingsSaved() const
+void CWakeOnAccess::OnSettingsSaved()
 {
   bool enabled = CSettings::Get().GetBool("powermanagement.wakeonaccess");
 
   if (enabled != IsEnabled())
   {
-    CWakeOnAccess& woa = CWakeOnAccess::Get();
-
-    woa.SetEnabled(enabled);
+    SetEnabled(enabled);
 
     if (enabled)
-      woa.QueueMACDiscoveryForAllRemotes();
+      QueueMACDiscoveryForAllRemotes();
   }
 }
 

@@ -52,7 +52,7 @@ public:
 
    This callback can be used to trigger saving other settings.
    */
-  virtual void OnSettingsSaved() const { }
+  virtual void OnSettingsSaved() { }
   /*!
    \brief Setting values have been unloaded.
 
