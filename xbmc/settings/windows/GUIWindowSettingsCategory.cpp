@@ -32,6 +32,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -378,6 +379,8 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 bool CGUIWindowSettingsCategory::OnBack(int actionID)
 {
   m_settings.Save();
+  // For mastercode
+  CProfilesManager::Get().Save();
   m_lastControlID = 0; // don't save the control as we go to a different window each time
   
   return CGUIWindow::OnBack(actionID);
