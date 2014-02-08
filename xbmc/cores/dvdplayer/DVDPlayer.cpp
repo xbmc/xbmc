@@ -1026,12 +1026,13 @@ void CDVDPlayer::Process()
   if (CDVDInputStream::IMenus* ptr = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream))
   {
     CLog::Log(LOGNOTICE, "DVDPlayer: playing a file with menu's");
-    if(CDVDInputStreamNavigator* nav = dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream))
+    CDVDInputStreamNavigator* nav = dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream);
+    if(nav)
       m_PlayerOptions.starttime = 0;
 
     if(m_PlayerOptions.state.size() > 0)
       ptr->SetState(m_PlayerOptions.state);
-    else if(CDVDInputStreamNavigator* nav = dynamic_cast<CDVDInputStreamNavigator*>(m_pInputStream))
+    else if(nav)
       nav->EnableSubtitleStream(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 
     CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleCached = true;
