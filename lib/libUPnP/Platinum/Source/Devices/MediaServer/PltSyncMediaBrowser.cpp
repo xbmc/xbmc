@@ -191,6 +191,28 @@ PLT_SyncMediaBrowser::OnGetSearchCapabilitiesResult(NPT_Result               res
 }
 
 /*----------------------------------------------------------------------
+|   PLT_SyncMediaBrowser::OnGetSortCapabilitiesResult
++---------------------------------------------------------------------*/
+void
+PLT_SyncMediaBrowser::OnGetSortCapabilitiesResult(NPT_Result               res,
+                                                  PLT_DeviceDataReference& device,
+                                                  NPT_String               sortCapabilities,
+                                                  void*                    userdata)
+{
+  NPT_COMPILER_UNUSED(device);
+
+  if (!userdata) return;
+
+  PLT_CapabilitiesDataReference* data = (PLT_CapabilitiesDataReference*) userdata;
+  (*data)->res = res;
+  if (NPT_SUCCEEDED(res)) {
+      (*data)->capabilities = sortCapabilities;
+  }
+  (*data)->shared_var.SetValue(1);
+  delete data;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_SyncMediaBrowser::OnMSStateVariablesChanged
 +---------------------------------------------------------------------*/
 void 
@@ -329,6 +351,39 @@ PLT_SyncMediaBrowser::GetSearchCapabilitiesSync(PLT_DeviceDataReference& device,
     }
 
     searchCapabilities = capabilities_data->capabilities;
+
+done:
+    return res;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_SyncMediaBrowser::GetSortCapabilitiesSync
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_SyncMediaBrowser::GetSortCapabilitiesSync(PLT_DeviceDataReference& device, 
+                                              NPT_String&              sortCapabilities)
+{
+    NPT_Result res;
+
+    PLT_CapabilitiesDataReference capabilities_data(new PLT_CapabilitiesData(), true);
+    capabilities_data->shared_var.SetValue(0);
+
+    // send of the GetSortCapabilities packet. Note that this will
+    // not block. There is a call to WaitForResponse in order
+    // to block until the response comes back.
+    res = PLT_MediaBrowser::GetSortCapabilities(device,
+        new PLT_CapabilitiesDataReference(capabilities_data));
+    NPT_CHECK_SEVERE(res);
+
+    res = WaitForResponse(capabilities_data->shared_var);
+    NPT_CHECK_LABEL_WARNING(res, done);
+
+    if (NPT_FAILED(capabilities_data->res)) {
+        res = capabilities_data->res;
+        NPT_CHECK_LABEL_WARNING(res, done);
+    }
+
+    sortCapabilities = capabilities_data->capabilities;
 
 done:
     return res;

@@ -115,6 +115,10 @@ public:
                                                PLT_DeviceDataReference& device, 
                                                NPT_String               searchCapabilities, 
                                                void*                    userdata);
+    virtual void OnGetSortCapabilitiesResult(NPT_Result               res,
+                                             PLT_DeviceDataReference& device,
+                                             NPT_String               sortCapabilities,
+                                             void*                    userdata);
 
     // methods
     void       SetContainerListener(PLT_MediaContainerChangesListener* listener) {
@@ -136,6 +140,9 @@ public:
 
     NPT_Result GetSearchCapabilitiesSync(PLT_DeviceDataReference& device,
                                          NPT_String&              searchCapabilities);
+
+    NPT_Result GetSortCapabilitiesSync(PLT_DeviceDataReference& device,
+                                       NPT_String&              sortCapabilities);
 
     const NPT_Lock<PLT_DeviceMap>& GetMediaServersMap() const { return m_MediaServers; }
     bool IsCached(const char* uuid, const char* object_id);
