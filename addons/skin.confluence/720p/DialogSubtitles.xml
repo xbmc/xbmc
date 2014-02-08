@@ -15,13 +15,14 @@
 				<description>Fake button for mouse control</description>
 				<left>880</left>
 				<top>0</top>
-				<width>20</width>
+				<width>80</width>
 				<height>720</height>
 				<label>-</label>
 				<font>-</font>
 				<texturenofocus>-</texturenofocus>
 				<texturefocus>-</texturefocus>
 				<visible>true</visible>
+				<onfocus>SetFocus(150)</onfocus>
 			</control>
 			<control type="image">
 				<description>media info background image</description>
