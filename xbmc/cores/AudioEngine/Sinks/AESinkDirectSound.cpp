@@ -23,7 +23,6 @@
 #include "AESinkDirectSound.h"
 #include "utils/Log.h"
 #include <initguid.h>
-#include <Mmreg.h>
 #include <list>
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"

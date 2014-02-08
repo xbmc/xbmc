@@ -22,7 +22,6 @@
 #include <Audioclient.h>
 #include <avrt.h>
 #include <initguid.h>
-#include <Mmreg.h>
 #include <stdint.h>
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -34,7 +33,6 @@
 #include "utils/CharsetConverter.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include <Mmreg.h>
-#include <mmdeviceapi.h>
 #include "utils/StringUtils.h"
 
 #pragma comment(lib, "Avrt.lib")
