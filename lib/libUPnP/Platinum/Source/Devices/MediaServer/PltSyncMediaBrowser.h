@@ -61,6 +61,14 @@ typedef struct PLT_BrowseData {
 
 typedef NPT_Reference<PLT_BrowseData> PLT_BrowseDataReference;
 
+typedef struct PLT_CapabilitiesData {
+    NPT_SharedVariable shared_var;
+    NPT_Result         res;
+    NPT_String         capabilities;
+} PLT_CapabilitiesData;
+
+typedef NPT_Reference<PLT_CapabilitiesData> PLT_CapabilitiesDataReference;
+
 // explicitely specify res otherwise WMP won't return a URL!
 #define PLT_DEFAULT_FILTER  "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork"
 
@@ -103,6 +111,10 @@ public:
                                 PLT_DeviceDataReference& device, 
                                 PLT_BrowseInfo*          info, 
                                 void*                    userdata);
+    virtual void OnGetSearchCapabilitiesResult(NPT_Result               res, 
+                                               PLT_DeviceDataReference& device, 
+                                               NPT_String               searchCapabilities, 
+                                               void*                    userdata);
 
     // methods
     void       SetContainerListener(PLT_MediaContainerChangesListener* listener) {
@@ -121,6 +133,9 @@ public:
                           PLT_MediaObjectListReference& list,
                           NPT_Int32                     start = 0,
                           NPT_Cardinal                  max_results = 0); // 0 means all
+
+    NPT_Result GetSearchCapabilitiesSync(PLT_DeviceDataReference& device,
+                                         NPT_String&              searchCapabilities);
 
     const NPT_Lock<PLT_DeviceMap>& GetMediaServersMap() const { return m_MediaServers; }
     bool IsCached(const char* uuid, const char* object_id);

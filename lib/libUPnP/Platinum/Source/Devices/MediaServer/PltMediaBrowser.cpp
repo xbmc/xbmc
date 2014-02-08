@@ -305,6 +305,33 @@ PLT_MediaBrowser::Browse(PLT_DeviceDataReference& device,
 }
 
 /*----------------------------------------------------------------------
+|   PLT_MediaBrowser::GetSearchCapabilities
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_MediaBrowser::GetSearchCapabilities(PLT_DeviceDataReference& device,
+                                        void*                    userdata)
+{
+    // verify device still in our list
+    PLT_DeviceDataReference device_data;
+    NPT_CHECK_WARNING(FindServer(device->GetUUID(), device_data));
+
+    // create action
+    PLT_ActionReference action;
+    NPT_CHECK_SEVERE(m_CtrlPoint->CreateAction(
+        device, 
+        "urn:schemas-upnp-org:service:ContentDirectory:1",
+        "GetSearchCapabilities",
+        action));
+
+    // invoke the action
+    if (NPT_FAILED(m_CtrlPoint->InvokeAction(action, userdata))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_MediaBrowser::OnActionResponse
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -322,6 +349,8 @@ PLT_MediaBrowser::OnActionResponse(NPT_Result           res,
         return OnBrowseResponse(res, device, action, userdata);
     } else if (actionName.Compare("Search", true) == 0) {
         return OnSearchResponse(res, device, action, userdata);
+    } else if (actionName.Compare("GetSearchCapabilities", true) == 0) {
+        return OnGetSearchCapabilitiesResponse(res, device, action, userdata);
     }
 
     return NPT_SUCCESS;
@@ -432,6 +461,35 @@ PLT_MediaBrowser::OnSearchResponse(NPT_Result               res,
 
 bad_action:
     m_Delegate->OnSearchResult(NPT_FAILURE, device, NULL, userdata);
+    return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaBrowser::OnGetSearchCapabilitiesResponse
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaBrowser::OnGetSearchCapabilitiesResponse(NPT_Result               res, 
+                                                  PLT_DeviceDataReference& device, 
+                                                  PLT_ActionReference&     action, 
+                                                  void*                    userdata)
+{
+    NPT_String value;
+
+    if (!m_Delegate) return NPT_SUCCESS;
+
+    if (NPT_FAILED(res) || action->GetErrorCode() != 0) {
+        goto bad_action;
+    }
+
+    if (NPT_FAILED(action->GetArgumentValue("SearchCaps", value)))  {
+        goto bad_action;
+    }
+
+    m_Delegate->OnGetSearchCapabilitiesResult(NPT_SUCCESS, device, value, userdata);
+    return NPT_SUCCESS;
+
+bad_action:
+    m_Delegate->OnGetSearchCapabilitiesResult(NPT_FAILURE, device, value, userdata);
     return NPT_FAILURE;
 }
 
