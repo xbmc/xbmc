@@ -863,7 +863,7 @@ void vm_get_angle_info(vm_t *vm, int *current, int *num_avail) {
   }
 }
 
-// XBMC #if 0
+#if 0
 /* currently unused */
 void vm_get_audio_info(vm_t *vm, int *current, int *num_avail) {
   switch ((vm->state).domain) {
@@ -901,7 +901,7 @@ void vm_get_subp_info(vm_t *vm, int *current, int *num_avail) {
     break;
   }
 }
-// XBMC #endif
+#endif
 
 void vm_get_video_res(vm_t *vm, int *width, int *height) {
   video_attr_t attr = vm_get_video_attr(vm);
