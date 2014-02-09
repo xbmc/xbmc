@@ -146,7 +146,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 
 static void ff_flush_avutil_log_buffers(void)
 {
-  CSingleLock lock(DllAvCodec::m_critSection);
+  CSingleLock lock(m_logSection);
 
   /* Loop through the logbuffer list and remove any blank buffers
      If the thread using the buffer is still active, it will just
