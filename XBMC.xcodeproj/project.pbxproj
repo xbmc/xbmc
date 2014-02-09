@@ -13252,7 +13252,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",
-					"-Wl,-undefined,dynamic_lookup",
+					"-Wl,-undefined,dynamic_lookup\n-Wl,-undefined,dynamic_lookup\n-Wl,-undefined,dynamic_lookup",
 					"-Wl,-read_only_relocs,suppress",
 					"-Wl,-all_load",
 					"-L$XBMC_DEPENDS/lib",
@@ -13289,10 +13289,11 @@
 					"-lswresample",
 					"-lswscale",
 					"-ltag",
+					"-lxslt",
+					"-lxml2",
+					"-lmpeg2",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
-					"-lxslt",
-					"-lmpeg2",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
@@ -13405,10 +13406,11 @@
 					"-lswresample",
 					"-lswscale",
 					"-ltag",
+					"-lxslt",
+					"-lxml2",
+					"-lmpeg2",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
-					"-lxslt",
-					"-lmpeg2",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PREBINDING = NO;
