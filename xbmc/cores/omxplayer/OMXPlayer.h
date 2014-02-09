@@ -148,14 +148,6 @@ public:
     return streams;
   }
 
-  template<typename Filter>
-  OMXSelectionStreams RemoveIf(StreamType type, Filter filter)
-  {
-    OMXSelectionStreams streams = Get(type);
-    streams.erase(std::remove_if(streams.begin(), streams.end(), filter), streams.end());
-    return streams;
-  }
-
   void             Clear   (StreamType type, StreamSource source);
   int              Source  (StreamSource source, std::string filename);
 

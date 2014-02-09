@@ -231,17 +231,27 @@ private:
   bool original;
   bool preferextsubs;
   bool subson;
+  PredicateSubtitleFilter filter;
 public:
   PredicateSubtitlePriority(std::string& lang)
     : audiolang(lang),
       original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original")),
       preferextsubs(CSettings::Get().GetBool("subtitles.preferexternal")),
-      subson(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn)
+      subson(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn),
+      filter(lang)
   {
   };
 
+  bool relevant(const SelectionStream& ss) const
+  {
+    return !filter(ss);
+  }
+
   bool operator()(const SelectionStream& lh, const SelectionStream& rh) const
   {
+    PREDICATE_RETURN(relevant(lh)
+                   , relevant(rh));
+
     PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream
                    , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
 
@@ -810,30 +820,31 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
     CloseAudioStream(true);
 
   // enable  or disable subtitles
-  SetSubtitleVisibleInternal(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+  bool visible = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn;
 
   // open subtitle stream
   SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
-  PredicateSubtitleFilter psf(as.language);
-  streams = m_SelectionStreams.RemoveIf(STREAM_SUBTITLE, psf);
   PredicateSubtitlePriority psp(as.language);
-  std::stable_sort(streams.begin(), streams.end(), psp);
+  streams = m_SelectionStreams.Get(STREAM_SUBTITLE, psp);
   valid   = false;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
     if(OpenSubtitleStream(it->id, it->source))
     {
       valid = true;
-      if(it->flags & CDemuxStream::FLAG_FORCED)
-        SetSubtitleVisibleInternal(true);
+      if(!psp.relevant(*it))
+        visible = false;
+      else if(it->flags & CDemuxStream::FLAG_FORCED)
+        visible = true;
     }
   }
   if(!valid)
   {
     CloseSubtitleStream(true);
-    if (m_pInputStream && !(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY)))
-      SetSubtitleVisibleInternal(false);
+    visible = false;
   }
+
+  SetSubtitleVisibleInternal(visible);
 
   // open teletext stream
   streams = m_SelectionStreams.Get(STREAM_TELETEXT);
