@@ -515,23 +515,66 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       return g_application.OnAppCommand(newEvent.appcommand.action);
     case XBMC_TOUCH:
     {
-      int windowId = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
-
       if (newEvent.touch.action == ACTION_TOUCH_TAP)
       { // Send a mouse motion event with no dx,dy for getting the current guiitem selected
         g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, newEvent.touch.x, newEvent.touch.y, 0, 0));
       }
       int actionId = 0;
       if (newEvent.touch.action == ACTION_GESTURE_BEGIN || newEvent.touch.action == ACTION_GESTURE_END)
-      {
         actionId = newEvent.touch.action;
-        windowId = WINDOW_INVALID;
+      else
+      {
+        int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+        // change this if we have a dialog up
+        if (g_windowManager.HasModalDialog())
+        {
+          iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+        }
+        if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
+        { // fullscreen info dialog - special case
+          CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
+          if (actionId <= 0)
+            iWin = WINDOW_FULLSCREEN_VIDEO;  // fallthrough to the main window
+        }
+        if (actionId <= 0)
+        {
+          if (iWin == WINDOW_FULLSCREEN_VIDEO)
+          {
+            // current active window is full screen video.
+            if (g_application.m_pPlayer->IsInMenu())
+            {
+              // if player is in some sort of menu, (ie DVDMENU) map buttons differently
+              CButtonTranslator::GetInstance().TranslateTouchAction(WINDOW_VIDEO_MENU, newEvent.touch.action, newEvent.touch.pointers, actionId);
+            }
+            else if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+            {
+              // check for PVR specific keymaps in FULLSCREEN_VIDEO window
+              CButtonTranslator::GetInstance().TranslateTouchAction(WINDOW_FULLSCREEN_LIVETV, newEvent.touch.action, newEvent.touch.pointers, actionId);
+
+              // if no PVR specific action/mapping is found, fall back to default
+              if (actionId <= 0)
+                CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
+            }
+            else
+            {
+              // in any other case use the fullscreen window section of keymap.xml to map key->action
+              CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
+            }
+          }
+          else  // iWin != WINDOW_FULLSCREEN_VIDEO
+            CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
+        }
       }
-      else if (!CButtonTranslator::GetInstance().TranslateTouchAction(newEvent.touch.action, newEvent.touch.pointers, windowId, actionId) ||
-          actionId <= 0)
+
+      if (actionId <= 0)
         return false;
 
-      CApplicationMessenger::Get().SendAction(CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2), windowId, false);
+      if ((actionId >= ACTION_TOUCH_TAP && actionId <= ACTION_GESTURE_END)
+          || (actionId >= ACTION_MOUSE_START && actionId <= ACTION_MOUSE_END) )
+        CApplicationMessenger::Get().SendAction(CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2), WINDOW_INVALID, false);
+      else
+        CApplicationMessenger::Get().SendAction(CAction(actionId), WINDOW_INVALID, false);
+
       // Post an unfocus message for touch device after the action.
       if (newEvent.touch.action == ACTION_GESTURE_END || newEvent.touch.action == ACTION_TOUCH_TAP)
       {
@@ -540,6 +583,13 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
     }
+    case XBMC_SETFOCUS:
+      // Reset the screensaver
+      g_application.ResetScreenSaver();
+      g_application.WakeUpScreenSaverAndDPMS();
+      // Send a mouse motion event with no dx,dy for getting the current guiitem selected
+      g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, newEvent.focus.x, newEvent.focus.y, 0, 0));
+      break;
   }
   return true;
 }
