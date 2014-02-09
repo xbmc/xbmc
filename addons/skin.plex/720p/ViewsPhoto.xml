@@ -135,14 +135,14 @@
 		</control>
 	</include>
 	<include name="PhotoLabel">
-		<posy>138</posy>
+		<posy>141</posy>
 		<posx>76</posx>
 		<width>110</width>
 		<height>20</height>
 		<align>center</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
-		<font>Condensed-14</font>
+		<font>Regular-14</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<!-- LibraryPhoto -->
@@ -185,7 +185,7 @@
 				<align>left</align>
 				<aligny>center</aligny>
 				<label>$INFO[Container.FirstTitle]</label>
-				<font>CondensedBold-36</font>
+				<font>Bold-36</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>ff222222</shadowcolor>
 			</control>
@@ -197,7 +197,7 @@
 				<align>right</align>
 				<aligny>center</aligny>
 				<label> 2011</label>
-				<font>CondensedBold-36</font>
+				<font>Bold-36</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>ff222222</shadowcolor>
 			</control>

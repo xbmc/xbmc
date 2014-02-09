@@ -37,7 +37,7 @@
 	<include name="MenuFocusedLabel">
 		<control type="group">
 			<posx>363</posx>
-			<posy>450</posy>
+			<posy>456</posy>
 			<include>ShowHomeClassic</include>
 			<control type="label">
 				<width>353</width>
@@ -45,7 +45,7 @@
 				<label>$INFO[Container(300).ListItem(0).Label]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>CondensedBold-36</font>
+				<font>Bold-36</font>
 				<textcolor>orange</textcolor>
 				<shadowcolor>FF222222</shadowcolor>
 			</control>
@@ -57,7 +57,7 @@
 				<label>$INFO[Container(300).ListItem(0).Label2]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>CondensedBold-16</font>
+				<font>Bold-16</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>FF222222</shadowcolor>
 				<visible>!IsEmpty(Container(300).ListItem(0).Label2)</visible>
@@ -87,7 +87,7 @@
 			<control type="wraplist" id="300">
 				<description>Home Main Menu</description>
 				<posx>0</posx>
-				<posy>97</posy>
+				<posy>103</posy>
 				<width>372</width>
 				<height>570</height>
 				<onup>300</onup>
@@ -117,7 +117,7 @@
 						<info>ListItem.Label</info>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>Condensed-28</font>
+						<font>Regular-28</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>FF333333</shadowcolor>
 					</control>
@@ -131,7 +131,7 @@
 						<label>$INFO[ListItem.Title]</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
@@ -143,7 +143,7 @@
 						<label>$INFO[ListItem.Label2]</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-16</font>
+						<font>Bold-16</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 						<visible>!IsEmpty(ListItem.Property(SectionNameCollision))</visible>

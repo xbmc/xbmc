@@ -363,8 +363,12 @@ void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
   for (int i = 0; i < results->Size(); i ++)
   {
     CFileItemPtr item = results->Get(i);
-    item->SetProperty("plexServerName", server->GetName());
-    item->SetProperty("plexServerOwner", server->GetOwner());
+
+    if (item && server)
+    {
+      item->SetProperty("plexServerName", server->GetName());
+      item->SetProperty("plexServerOwner", server->GetOwner());
+    }
 
     if (item && m_resultMap.find(item->GetPlexDirectoryType()) != m_resultMap.end())
     {
@@ -377,6 +381,14 @@ void CGUIWindowPlexSearch::ProcessResults(CFileItemList* results)
       else
         list = mappedRes[item->GetPlexDirectoryType()];
       list->Add(item);
+    }
+    else if (item && item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PROVIDER)
+    {
+      CLog::Log(LOGDEBUG, "CGUIWindowPlexSearch::ProcessResults got provider, sending additional requests");
+
+      CURL u(item->GetPath());
+      u.SetOption("query", m_currentSearchString);
+      m_currentSearchId.push_back(CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(u), this, CJob::PRIORITY_LOW));
     }
   }
 

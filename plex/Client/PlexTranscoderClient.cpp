@@ -104,7 +104,7 @@ int CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr server, int c
       PlexServerList allServers = g_plexApplication.serverManager->GetAllServers();
       BOOST_FOREACH(CPlexServerPtr s, allServers)
       {
-        if (s->IsComplete() && s->SupportsVideoTranscoding())
+        if (s && s->IsComplete() && s->SupportsVideoTranscoding())
         {
           server = s;
           break;
@@ -124,7 +124,7 @@ int CPlexTranscoderClient::SelectATranscoderQuality(CPlexServerPtr server, int c
   if (currentQuality == 0)
     select->SetSelected(0);
   
-  if (server->SupportsVideoTranscoding())
+  if (server && server->SupportsVideoTranscoding())
   {
     int idx = 1;
     BOOST_FOREACH(std::string qual, qualities)
@@ -216,12 +216,16 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   tURL.SetOption("videoResolution", _resolutions[bitrate]);
   
   /* PHT can render subtitles itself no need to include them in the transcoded video
-   * UNLESS it's a embedded subtitle, we can't extract it from the file */
-  CFileItemPtr subStream = PlexUtils::GetItemSelectedStreamOfType(item, PLEX_STREAM_SUBTITLE);
-  if (subStream && subStream->HasProperty("key"))
+   * UNLESS it's a embedded subtitle, we can't extract it from the file or UNLESS the
+   * user have checked the always transcode subtitles option in settings */
+  if (!g_guiSettings.GetBool("plexmediaserver.transcodesubtitles"))
   {
-    CLog::Log(LOGDEBUG, "CPlexTranscoderClient::GetTranscodeURL file has a selected subtitle that is external.");
-    tURL.SetOption("skipSubtitles", "1");
+    CFileItemPtr subStream = PlexUtils::GetItemSelectedStreamOfType(item, PLEX_STREAM_SUBTITLE);
+    if (subStream && subStream->HasProperty("key"))
+    {
+      CLog::Log(LOGDEBUG, "CPlexTranscoderClient::GetTranscodeURL file has a selected subtitle that is external.");
+      tURL.SetOption("skipSubtitles", "1");
+    }
   }
   
   CStdString extraAudioFormats;
@@ -243,7 +247,7 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
     }
     
     if (!extraAudioFormats.empty())
-      tURL.SetProtocolOption("X-Plex-Client-Profile-Extra", extraAudioFormats);
+      tURL.SetOption("X-Plex-Client-Profile-Extra", extraAudioFormats);
   }
   
   /* since we are passing the URL to FFMPEG we need to pass our 
@@ -256,9 +260,7 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-CURL CPlexTranscoderClient::GetTranscodeStopURL(CPlexServerPtr server)
+std::string CPlexTranscoderClient::GetCurrentSession()
 {
-  CURL url = server->BuildPlexURL("/video/:/transcode/universal/stop");
-  url.SetOption("session", g_guiSettings.GetString("system.uuid"));
-  return url;
+  return g_guiSettings.GetString("system.uuid");
 }

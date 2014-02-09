@@ -3,7 +3,7 @@
 	<include name="debugFont">
 		<width>570</width>
 		<height>12</height>
-		<font>Condensed-12</font>
+		<font>Regular-12</font>
 		<textcolor>white</textcolor>
 		<align>left</align>
 		<scroll>false</scroll>
@@ -174,6 +174,10 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
+					<label>Skin.AspectRatio : [COLOR=orangeLight]$INFO[Skin.AspectRatio][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
 					<label>System.Memory(used) : [COLOR=orangeLight]$INFO[System.Memory(used)][/COLOR]</label>
 				</control>
 				<control type="label">
@@ -257,6 +261,26 @@
 					<include>debugFont</include>
 					<label>Container.Property(primaryFilterActivated) :</label>
 					<visible>IsEmpty(Container.Property(primaryFilterActivated))</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(secondaryFilterActivated) : [COLOR=orangeLight]1[/COLOR]</label>
+					<visible>!IsEmpty(Container.Property(secondaryFilterActivated))</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(secondaryFilterActivated) :</label>
+					<visible>IsEmpty(Container.Property(secondaryFilterActivated))</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(PlexPreplay) : [COLOR=orangeLight]1[/COLOR]</label>
+					<visible>!IsEmpty(Container.Property(PlexPreplay))</visible>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
+					<label>Container.Property(PlexPreplay) :</label>
+					<visible>IsEmpty(Container.Property(PlexPreplay))</visible>
 				</control>
 				<!--><control type="label">
 					<include>debugFont</include>

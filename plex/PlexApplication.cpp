@@ -29,6 +29,8 @@
 #include "PlexFilterManager.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "dialogs/GUIDialogVideoOSD.h"
+#include "GUIWindowManager.h"
 
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
@@ -254,7 +256,19 @@ void PlexApplication::sendNetworkLog(int level, const std::string &logline)
 void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0 && stricmp(message, "OnPlay") == 0)
+  {
     m_triedToRestart = false;
+
+    CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+    if (g_application.IsPlayingVideo() && osd && osd->IsOpenedFromPause())
+      CApplicationMessenger::Get().Close(osd, false);
+  }
+  else if (flag == ANNOUNCEMENT::Player && stricmp(sender, "xbmc") == 0 && stricmp(message, "OnPause") == 0)
+  {
+    CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+    if (g_application.IsPlayingVideo() && osd && !osd->IsActive())
+      CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
+  }
   else if (flag == ANNOUNCEMENT::System && stricmp(sender, "xbmc") == 0 && stricmp(message, "onQuit") == 0)
   {
     CLog::Log(LOGINFO, "CPlexApplication shutting down!");

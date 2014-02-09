@@ -319,6 +319,8 @@
 #define ACTION_MARK_AS_UNWATCHED      300
 #define ACTION_MARK_AS_WATCHED        301
 #define ACTION_CLEAR_FILTERS          302
+#define ACTION_PLEX_CYCLE_PRIMARY_FILTER 303
+#define ACTION_PLEX_TOGGLE_UNWATCHED_FILTER 304
 /* END PLEX */
 
 // Window ID defines to make the code a bit more readable

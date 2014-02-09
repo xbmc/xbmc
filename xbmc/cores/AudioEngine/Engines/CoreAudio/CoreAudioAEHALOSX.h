@@ -55,7 +55,7 @@ public:
   CCoreAudioAEHALOSX();
   virtual ~CCoreAudioAEHALOSX();
 
-  virtual bool  InitializePCM(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, AudioDeviceID outputDevice);
+  virtual bool  InitializePCM(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, AudioDeviceID outputDevice, bool encoded = false);
   virtual bool  InitializePCMEncoded(ICoreAudioSource *pSource, AEAudioFormat &format, AudioDeviceID outputDevice);
   virtual bool  InitializeEncoded(AudioDeviceID outputDevice, AEAudioFormat &format);
   virtual bool  Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device, float initVolume);

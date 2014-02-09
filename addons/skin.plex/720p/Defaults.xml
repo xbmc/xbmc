@@ -96,7 +96,7 @@
 		<height>190</height>
 		<align>left</align>
 		<aligny>top</aligny>
-		<font>Condensed-17</font>
+		<font>Regular-17</font>
 		<textcolor>white</textcolor>
 		<shadowcolor>ff222222</shadowcolor>
 		<textureup>-</textureup>
@@ -124,7 +124,7 @@
 		<sliderheight>22</sliderheight>
 		<align>left</align>
 		<aligny>center</aligny>
-		<font>Condensed-18</font>
+		<font>Regular-18</font>
 		<textoffsetx>20</textoffsetx>
 		<textoffsety>0</textoffsety>
 		<textcolor>Unfocused</textcolor>

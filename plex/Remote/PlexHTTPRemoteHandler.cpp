@@ -535,7 +535,9 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     g_application.WakeUpScreenSaverAndDPMS();
 
     g_application.ResetSystemIdleTimer();
-    g_audioManager.PlayActionSound(actionId);
+
+    if (!g_application.IsPlaying())
+      g_audioManager.PlayActionSound(actionId);
 
     CApplicationMessenger::Get().SendAction(actionId, WINDOW_INVALID, false);
 
@@ -716,15 +718,11 @@ CPlexRemoteSubscriberPtr CPlexHTTPRemoteHandler::getSubFromRequest(const HTTPReq
   }
   
   char ipstr[INET_ADDRSTRLEN];
-#if MHD_VERSION > 0x00090600
-  sockaddr *so = MHD_get_connection_info(request.connection, MHD_CONNECTION_INFO_CLIENT_ADDRESS)->client_addr;
-  strncpy(ipstr, so->sa_data, INET_ADDRSTRLEN);
-#else
-  struct sockaddr_in *so = MHD_get_connection_info(request.connection, MHD_CONNECTION_INFO_CLIENT_ADDRESS)->client_addr;
 
+  struct sockaddr_in *so = (struct sockaddr_in *)MHD_get_connection_info(request.connection, MHD_CONNECTION_INFO_CLIENT_ADDRESS)->client_addr;
   boost::system::error_code ec;
   boost::asio::detail::socket_ops::inet_ntop(AF_INET, &(so->sin_addr), ipstr, INET_ADDRSTRLEN, 0, ec);
-#endif
+
   if (!so)
     return CPlexRemoteSubscriberPtr();
   
@@ -783,13 +781,13 @@ void CPlexHTTPRemoteHandler::setStreams(const ArgMap &arguments)
   if (arguments.find("subtitleStreamID") != arguments.end())
   {
     int subStreamID = boost::lexical_cast<int>(arguments.find("subtitleStreamID")->second);
-    bool visible = subStreamID != -1;
+    bool visible = subStreamID != 0;
 
-    if (subStreamID == -1)
+    if (subStreamID == 0)
     {
       stream = CFileItemPtr(new CFileItem);
       stream->SetProperty("streamType", PLEX_STREAM_SUBTITLE);
-      stream->SetProperty("id", -1);
+      stream->SetProperty("id", 0);
     }
     else
     {
@@ -953,7 +951,7 @@ void CPlexHTTPRemoteHandler::resources()
   player->SetAttribute("machineIdentifier", g_guiSettings.GetString("system.uuid").c_str());
   player->SetAttribute("product", "Plex Home Theater");
   player->SetAttribute("platform", PlexUtils::GetMachinePlatform());
-  player->SetAttribute("platformvVersion", PlexUtils::GetMachinePlatformVersion());
+  player->SetAttribute("platformVersion", PlexUtils::GetMachinePlatformVersion());
   player->SetAttribute("deviceClass", "pc");
 
   mediaContainer->LinkEndChild(player);

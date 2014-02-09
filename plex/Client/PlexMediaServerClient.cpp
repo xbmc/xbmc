@@ -100,10 +100,22 @@ void CPlexMediaServerClient::SelectStream(const CFileItemPtr &item,
 void CPlexMediaServerClient::SetItemWatchStatus(const CFileItemPtr &item, bool watched, bool sendMessage)
 {
   CURL u = GetItemURL(item);
-  
-  u.SetFileName(GetPrefix(item) + (watched ? "scrobble" : "unscrobble"));
+
+  std::string action = watched ? "scrobble" : "unscrobble";
+
+  if (u.GetHostName() == "node" || u.GetHostName() == "myplex")
+  {
+    u.SetHostName("myplex");
+    u.SetFileName("/pms/:/" + action);
+    u.SetOption("identifier", PLEX_IDENTIFIER_MYPLEX);
+  }
+  else
+  {
+    u.SetFileName("/:/" + action);
+    u.SetOption("identifier", PLEX_IDENTIFIER_LIBRARY);
+  }
+
   u.SetOption("key", item->GetProperty("ratingKey").asString());
-  u.SetOption("identifier", item->GetProperty("identifier").asString());
 
   if (!sendMessage)
   {
@@ -169,7 +181,17 @@ void CPlexMediaServerClient::SetViewMode(CFileItemPtr item, int viewMode, int so
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerClient::StopTranscodeSession(CPlexServerPtr server)
 {
-  AddJob(new CPlexMediaServerClientJob(CPlexTranscoderClient::GetTranscodeStopURL(server)));
+  CURL u = server->BuildPlexURL("/video/:/transcode/universal/stop");
+  u.SetOption("session", CPlexTranscoderClient::GetCurrentSession());
+  AddJob(new CPlexMediaServerClientJob(u));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexMediaServerClient::SendTranscoderPing(CPlexServerPtr server)
+{
+  CURL u = server->BuildPlexURL("/video/:/transcode/universal/ping");
+  u.SetOption("session", CPlexTranscoderClient::GetCurrentSession());
+  AddJob(new CPlexMediaServerClientJob(u));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

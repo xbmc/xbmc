@@ -279,6 +279,8 @@ void CGUIWindowPlexPreplayVideo::UpdateItem()
   if (m_vecItems->GetContent() == "clips")
     m_vecItems->SetContent("clip");
 
+  m_vecItems->SetProperty("PlexPreplay", "yes");
+
   g_plexApplication.m_preplayItem = m_vecItems->Get(0);
   g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems->Get(0));
 }

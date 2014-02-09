@@ -204,9 +204,6 @@ CStdString CPlexNavigationHelper::ShowPluginSearch(CFileItemPtr item)
   CStdString strSearchTerm = "";
   if (CGUIKeyboardFactory::ShowAndGetInput(strSearchTerm, item->GetProperty("prompt").asString(), false))
   {
-    // Encode the query.
-    CURL::Encode(strSearchTerm);
-
     // Find the ? if there is one.
     CURL u(item->GetPath());
     u.SetOption("query", strSearchTerm);

@@ -51,7 +51,7 @@ CCoreAudioGraph::~CCoreAudioGraph()
 }
 
 bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
-  AudioDeviceID deviceId, bool allowMixing, AudioChannelLayoutTag layoutTag, float initVolume)
+  AudioDeviceID deviceId, bool allowMixing, AudioChannelLayoutTag layoutTag, float initVolume, bool encoded)
 {
   AudioStreamBasicDescription fmt = {0};
   AudioStreamBasicDescription inputFormat = {0};
@@ -89,7 +89,7 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
     return false;
   m_audioUnit->SetBus(GetFreeBus());
 
-  m_audioUnit->GetFormatDesc(format, &inputFormat, &fmt);
+  m_audioUnit->GetFormatDesc(format, &inputFormat, &fmt, encoded);
 
   if (!m_audioUnit->EnableInputOuput())
     return false;

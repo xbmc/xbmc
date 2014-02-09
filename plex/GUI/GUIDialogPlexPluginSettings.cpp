@@ -159,33 +159,25 @@ bool CPlexPluginSettings::Save(const CStdString& path)
 {
   // Build up URL parameters with id and value.
   TiXmlElement* root = m_userXmlDoc.RootElement();
-  string params = "?";
+  CURL postURL(path);
   
   for (TiXmlElement* setting = root->FirstChildElement("setting"); setting; setting = setting->NextSiblingElement("setting"))
   {
     const char* id = setting->Attribute("id");
     const char* value = setting->Attribute("value");
     
-    if (id)
-    {
-      CStdString strName = id;
-      CStdString strValue = value;
-      
-      CURL::Encode(strName);
-      CURL::Encode(strValue);
-      params += strName + "=" + strValue + "&";
-    }
+    if (id && value && strlen(value) > 0)
+      postURL.SetOption(id, value);
   }
   
   // Compute the new path.
-  string strPath = path;
-  strPath += "set" + params.substr(0, params.size()-1);
+  PlexUtils::AppendPathToURL(postURL, "set");
   
   // Send the parameters back to the Plex Media Server.
   CFileItemList fileItems;
   CPlexDirectory plexDir;
   
-  if (plexDir.GetDirectory(strPath, fileItems))
+  if (plexDir.GetDirectory(postURL, fileItems))
   {
     // Display a message if there is one.
     if (fileItems.m_displayMessage)

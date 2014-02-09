@@ -4257,6 +4257,21 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
       if (!m_itemCurrentFile->IsStack())
         *m_itemCurrentFile = newItem;
     }
+
+    /* let's set some options if we need to */
+    CFileItemPtr mediaPart = CPlexMediaDecisionEngine::getMediaPart(newItem);
+    if (mediaPart)
+    {
+      CFileItemPtr videoStream = PlexUtils::GetSelectedStreamOfType(mediaPart, PLEX_STREAM_VIDEO);
+      if (videoStream)
+      {
+        if (videoStream->GetProperty("scanType").asString() == "interlaced")
+        {
+          CLog::Log(LOGDEBUG, "CApplication::PlayFile interlaced video found, switching player options to de-interlacing");
+          g_settings.m_currentVideoSettings.m_DeinterlaceMode = VS_DEINTERLACEMODE_FORCE;
+        }
+      }
+    }
   }
   /* END PLEX */
 
@@ -4660,12 +4675,6 @@ void CApplication::OnPlayBackPaused()
   param["player"]["speed"] = 0;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   CAnnouncementManager::Announce(Player, "xbmc", "OnPause", m_itemCurrentFile, param);
-
-  /* PLEX */
-  CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-  if (IsPlayingVideo() && osd && !osd->IsActive())
-    CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
-  /* END PLEX */
 }
 
 void CApplication::OnPlayBackResumed()
@@ -4678,12 +4687,6 @@ void CApplication::OnPlayBackResumed()
   param["player"]["speed"] = 1;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
-
-  /* PLEX */
-  CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-  if (IsPlayingVideo() && osd && osd->IsOpenedFromPause())
-    CApplicationMessenger::Get().Close(osd, false);
-  /* PLEX */
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -6375,15 +6378,6 @@ void CApplication::UpdateFileState(const string& aState, bool force)
   {
     if (g_plexApplication.timelineManager)
       g_plexApplication.timelineManager->ReportProgress(m_itemCurrentFile, state, GetTime() * 1000, force);
-
-    // Update the item in place.
-    CGUIMediaWindow* mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_FILES);
-    if (mediaWindow)
-      mediaWindow->UpdateSelectedItem(m_itemCurrentFile);
-
-    mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
-    if (mediaWindow)
-      mediaWindow->UpdateSelectedItem(m_itemCurrentFile);
   }
 }
 

@@ -639,7 +639,7 @@ void CGUISettings::Initialize()
 
   // Playback/Subtitles
   CSettingsCategory* sub = AddCategory(SETTINGS_VIDEOS, "subtitles", 287);
-  AddString(sub, "subtitles.font", 14089, "Arial", SPIN_CONTROL_TEXT);
+  AddString(sub, "subtitles.font", 14089, "Plex", SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
 
   map<int, int> fontStyles;
@@ -650,7 +650,7 @@ void CGUISettings::Initialize()
 
   AddInt(sub, "subtitles.style", 736, FONT_STYLE_BOLD, fontStyles, SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
-  AddString(sub, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
+  AddString(NULL, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddBool(sub,"subtitles.overrideassfonts", 21368, false);
   AddSeparator(NULL, "subtitles.sep1");
   AddPath(NULL, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
@@ -911,6 +911,8 @@ void CGUISettings::Initialize()
   // TODO: Hook this up to preferred channel quality picker (should be like 1080p, 720p, 480p, SD)
   AddString(qual, "plexmediaserver.onlinemediaqualitystr", 52203, g_localizeStrings.Get(13181), BUTTON_CONTROL_MISC_INPUT);
   AddInt(NULL, "plexmediaserver.onlinemediaquality", 52201, 0, 0, 1, INT_MAX, SPIN_CONTROL_INT);
+
+  AddBool(qual, "plexmediaserver.transcodesubtitles", 52502, false);
 
   CSettingsCategory* pms = AddCategory(SETTINGS_SERVICE, "plexmediaserver", 40210);
   AddBool(pms, "plexmediaserver.manualaddress", 40211, false);

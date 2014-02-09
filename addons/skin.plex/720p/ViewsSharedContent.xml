@@ -72,7 +72,7 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Label]</label>
-		<font>CondensedBold-26</font>
+		<font>Bold-26</font>
 		<shadowcolor>FF222222</shadowcolor>
 	</include>	
 	<include name="SharedContentLeafsTitle2">
@@ -84,7 +84,7 @@
 		<aligny>center</aligny>
 		<label>$INFO[ListItem.Property(sourceTitle)] &#xB7; $INFO[ListItem.Property(serverName)]</label>
 		<textcolor>greyLighter</textcolor>
-		<font>Condensed-17</font>
+		<font>Regular-17</font>
 		<shadowcolor>FF222222</shadowcolor>
 	</include>	
 	<include name="SharedContent">

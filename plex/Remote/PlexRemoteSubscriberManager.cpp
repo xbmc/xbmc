@@ -82,9 +82,11 @@ CPlexRemoteSubscriberPtr CPlexRemoteSubscriberManager::addSubscriber(CPlexRemote
     m_map[subscriber->getUUID()] = subscriber;
     CLog::Log(LOGDEBUG, "CPlexRemoteSubscriberManager::addSubscriber added %s:%d [%s]",
               subscriber->getURL().GetHostName().c_str(), subscriber->getURL().GetPort(), subscriber->getUUID().c_str());
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52500),
-                                          subscriber->getName().empty() ? CStdString(subscriber->getURL().GetHostName()) : CStdString(subscriber->getName()),
-                                          TOAST_DISPLAY_TIME, false);
+
+    if (!g_application.IsPlayingVideo())
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52500),
+                                            subscriber->getName().empty() ? CStdString(subscriber->getURL().GetHostName()) : CStdString(subscriber->getName()),
+                                            TOAST_DISPLAY_TIME, false);
   }
   
   g_plexApplication.timer.SetTimeout(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, this);
@@ -117,9 +119,10 @@ void CPlexRemoteSubscriberManager::removeSubscriber(CPlexRemoteSubscriberPtr sub
   if (m_map.size() == 0)
     g_plexApplication.timer.RemoveTimeout(this);
 
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52501),
-                                        subscriber->getName().empty() ? CStdString(subscriber->getURL().GetHostName()) : CStdString(subscriber->getName()),
-                                        TOAST_DISPLAY_TIME, false);
+  if (!g_application.IsPlayingVideo())
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52501),
+                                          subscriber->getName().empty() ? CStdString(subscriber->getURL().GetHostName()) : CStdString(subscriber->getName()),
+                                          TOAST_DISPLAY_TIME, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

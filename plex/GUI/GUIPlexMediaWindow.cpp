@@ -58,6 +58,12 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     else if (message.GetSenderId() == FILTER_CLEAR_FILTER_BUTTON)
       OnAction(CAction(ACTION_CLEAR_FILTERS));
   }
+  else if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
+  {
+    CGUIDialog *dialog = (CGUIDialog*) g_windowManager.GetWindow(WINDOW_DIALOG_FILTER_SORT);
+    if (dialog && dialog->IsActive())
+      dialog->Close();
+  }
 
   bool ret = CGUIMediaWindow::OnMessage(message);
 
@@ -389,25 +395,81 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.GetID() == ACTION_CLEAR_FILTERS)
+  else if (action.GetID() == ACTION_CLEAR_FILTERS ||
+           action.GetID() == ACTION_PLEX_TOGGLE_UNWATCHED_FILTER ||
+           action.GetID() == ACTION_PLEX_CYCLE_PRIMARY_FILTER)
   {
     CPlexSectionFilterPtr sectionFilter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
     if (sectionFilter)
     {
-      sectionFilter->clearFilters();
-      updateFilterButtons(sectionFilter, true, !sectionFilter->secondaryFiltersActivated());
+      if (action.GetID() == ACTION_CLEAR_FILTERS)
+      {
+        sectionFilter->clearFilters();
+        updateFilterButtons(sectionFilter, true, !sectionFilter->secondaryFiltersActivated());
 
-      /* set focus to the next filter */
-      CGUIControl* ctrl = (CGUIControl*)GetControl(FILTER_SECONDARY_BUTTONS_START);
-      if (ctrl)
-        ctrl->SetFocus(true);
+        /* set focus to the next filter */
+        CGUIControl* ctrl = (CGUIControl*)GetControl(FILTER_SECONDARY_BUTTONS_START);
+        if (ctrl)
+          ctrl->SetFocus(true);
 
-      m_clearFilterButton->SetFocus(false);
-      m_clearFilterButton->SetVisible(false);
+        m_clearFilterButton->SetFocus(false);
+        m_clearFilterButton->SetVisible(false);
 
-      g_plexApplication.filterManager->saveFiltersToDisk();
-      Update(m_sectionRoot.Get(), false, true);
-      return true;
+        g_plexApplication.filterManager->saveFiltersToDisk();
+        Update(m_sectionRoot.Get(), false, true);
+        return true;
+      }
+      else if (action.GetID() == ACTION_PLEX_CYCLE_PRIMARY_FILTER)
+      {
+        PlexStringPairVector vec = sectionFilter->getPrimaryFilters();
+        CStdString curr = sectionFilter->currentPrimaryFilter();
+        int idx = 0;
+
+        BOOST_FOREACH(PlexStringPair p, vec)
+        {
+          if (p.first == curr)
+          {
+            if (idx + 1 < vec.size())
+              idx ++;
+            else
+              idx = 0;
+            break;
+          }
+          idx ++;
+        }
+
+        OnFilterButton(FILTER_PRIMARY_BUTTONS_START + idx);
+        std::string filterName = vec.at(idx).second;
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Switched primary filter to: ", filterName, 3000, false);
+      }
+      else if (action.GetID() == ACTION_PLEX_TOGGLE_UNWATCHED_FILTER)
+      {
+        if (sectionFilter->currentPrimaryFilter() == "all")
+        {
+          std::vector<CPlexSecondaryFilterPtr> secFilters = sectionFilter->getSecondaryFilters();
+
+          int i = 0;
+          bool found = false;
+          bool enabled;
+
+          BOOST_FOREACH(CPlexSecondaryFilterPtr p, secFilters)
+          {
+            if (p->getFilterName() == "unwatched" || p->getFilterName() == "unwatchedLeaves")
+            {
+              found = true;
+              enabled = !p->isSelected();
+              break;
+            }
+            i ++;
+          }
+
+          if (found)
+          {
+            OnFilterButton(FILTER_SECONDARY_BUTTONS_START + i);
+            CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Filter unwatched", enabled ? "Enabled" : "Disabled", 3000, false);
+          }
+        }
+      }
     }
   }
   else if (action.GetID() == ACTION_TOGGLE_WATCHED)
@@ -457,6 +519,8 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
   }
   
   bool ret = CGUIMediaWindow::GetDirectory(u.Get(), items);
+
+  m_thumbCache.Load(items);
 
   CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(u.GetHostName());
   if (server && server->GetActiveConnection() && server->GetActiveConnection()->IsLocal())
@@ -553,6 +617,8 @@ void CGUIPlexMediaWindow::OnJobComplete(unsigned int jobID, bool success, CJob *
     CFileItemList* list = new CFileItemList;
     list->Copy(fjob->m_items);
 
+    m_thumbCache.Load(*list);
+
     if (list)
     {
       CGUIMessage msg(GUI_MSG_PLEX_PAGE_LOADED, 0, GetID(), 0, 0, list);
@@ -574,6 +640,19 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
   {
     if (!PlexUtils::CurrentSkinHasPreplay() || item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK || item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO)
       return OnPlayMedia(iItem);
+  }
+
+  if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_SEASON ||
+      item->GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW)
+  {
+    CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+    CPlexSecondaryFilterPtr unwatchedFilter = filter->getSecondaryFilterOfName("unwatchedLeaves");
+    if (filter && filter->currentPrimaryFilter() == "all" && unwatchedFilter && unwatchedFilter->isSelected())
+    {
+      CURL u(item->GetPath());
+      u.SetOption("unwatched", "1");
+      item->SetPath(u.Get());
+    }
   }
 
   CStdString newUrl = m_navHelper.navigateToItem(item, m_vecItems->GetPath(), GetID());
@@ -852,8 +931,12 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
 {
   CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
 
-  list.SetProperty("hasAdvancedFilters", (filter && filter->hasAdvancedFilters()) ? "yes" : "");
-  list.SetProperty("primaryFilterActivated", (!filter || !filter->secondaryFiltersActivated()) ? "yes" : "");
+  if (filter)
+  {
+    list.SetProperty("hasAdvancedFilters", filter->hasAdvancedFilters() ? "yes" : "");
+    list.SetProperty("primaryFilterActivated", filter->secondaryFiltersActivated() ? "" : "yes");
+    list.SetProperty("secondaryFilterActivated", filter->hasActiveSecondaryFilters() ? "yes" : "");
+  }
 
   CFileItemPtr section = g_plexApplication.dataLoader->GetSection(m_sectionRoot);
   if (section && section->GetPlexDirectoryType() == PLEX_DIR_TYPE_HOME_MOVIES)
@@ -861,6 +944,20 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
 
   if (filter && filter->currentPrimaryFilter() == "folder")
     list.SetContent("folders");
+
+  /* check if we have gone deeper down or not */
+  CURL newPath(list.GetPath());
+  if (m_startDirectory != newPath.GetUrlWithoutOptions())
+  {
+    EPlexDirectoryType type = list.GetPlexDirectoryType();
+    if (type == PLEX_DIR_TYPE_SEASON ||
+        type == PLEX_DIR_TYPE_EPISODE ||
+        type == PLEX_DIR_TYPE_VIDEO)
+    {
+      CLog::Log(LOGDEBUG, "CGUIPlexMediaWindow::CheckPlexFilters setting preplay flag");
+      list.SetProperty("PlexPreplay", "yes");
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

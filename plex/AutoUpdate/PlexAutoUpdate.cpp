@@ -147,7 +147,7 @@ void CPlexAutoUpdate::OnTimeout()
 
     if (m_forced)
     {
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", "A new version downloading in the background", 10000, false);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, "Update available!", "A new version is downloading in the background", 10000, false);
       m_forced = false;
     }
     return;

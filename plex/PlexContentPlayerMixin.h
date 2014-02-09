@@ -104,7 +104,11 @@ class PlexContentPlayerMixin
       CStdString key;
       if (type == PLEX_DIR_TYPE_TRACK)
       {
-        key = file->GetProperty("parentPath").asString();
+        if (file->HasProperty("parentPath"))
+          key = file->GetProperty("parentPath").asString();
+        else if (file->HasProperty("parentKey"))
+          key = file->GetProperty("parentKey").asString();
+
       }
       else if (type == PLEX_DIR_TYPE_ALBUM)
       {
@@ -165,6 +169,8 @@ class PlexContentPlayerMixin
     else
     {
       CFileItemPtr rFile = file;
+
+      g_playlistPlayer.Clear();
 
       if (type == PLEX_DIR_TYPE_SHOW)
       {

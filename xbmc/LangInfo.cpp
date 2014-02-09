@@ -385,6 +385,10 @@ CStdString CLangInfo::GetGuiCharSet() const
 
 CStdString CLangInfo::GetSubtitleCharSet() const
 {
+  /* PLEX Always set the Subtitle charset to UTF-8 since we get it from the server */
+  return "UTF-8";
+  /* END PLEX */
+
   CStdString strCharSet=g_guiSettings.GetString("subtitles.charset");
   if (strCharSet=="DEFAULT")
     strCharSet=m_currentRegion->m_strSubtitleCharSet;

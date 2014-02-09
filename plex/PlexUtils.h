@@ -36,6 +36,7 @@ namespace PlexUtils
   bool CurrentSkinHasFilters();
   
   std::string GetPlexCrashPath();
+  CStdString GetPrettyStreamNameFromStreamItem(CFileItemPtr stream);
   CStdString GetPrettyStreamName(const CFileItem& fileItem, bool audio);
 
   CStdString GetSHA1SumFromURL(const CURL &url);

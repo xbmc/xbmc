@@ -242,12 +242,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
     return 0;
 
   /* encode it */
-#ifndef __PLEX__
   int size = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, m_Buffer + IEC61937_DATA_OFFSET, FF_MIN_BUFFER_SIZE, (short*)data);
-#else
-  int size=0;
-  return 0;
-#endif
 
   /* pack it into an IEC958 frame */
   m_BufferSize = m_PackFunc(NULL, size, m_Buffer);

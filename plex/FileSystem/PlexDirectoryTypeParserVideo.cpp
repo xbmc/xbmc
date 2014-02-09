@@ -217,13 +217,7 @@ void CPlexDirectoryTypeParserVideo::ParseMediaStreams(CFileItem &mediaPart, TiXm
   {
     CFileItemPtr mediaStream = CPlexDirectory::NewPlexElement(stream, mediaPart, mediaPart.GetPath());
 
-    /* Set a sensible Label so we can use this in dialogs */
-    CStdString streamName = mediaStream->HasProperty("language") ? mediaStream->GetProperty("language").asString() : CStdString(g_localizeStrings.Get(1446));
-    if (mediaStream->GetProperty("streamType").asInteger() == PLEX_STREAM_AUDIO)
-      streamName += " (" + PlexUtils::GetStreamCodecName(mediaStream) + " " + boost::to_upper_copy(PlexUtils::GetStreamChannelName(mediaStream)) + ")";
-    else if (mediaStream->GetProperty("streamType").asInteger() == PLEX_STREAM_VIDEO)
-      streamName += " (" + PlexUtils::GetStreamCodecName(mediaStream) + ")";
-
+    CStdString streamName = PlexUtils::GetPrettyStreamNameFromStreamItem(mediaStream);
     mediaStream->SetLabel(streamName);
 
     /* FIXME: legacy, calling code should check if the

@@ -263,13 +263,16 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
     }
 
     std::string location = "navigation";
-    int currentWindow = g_windowManager.GetActiveWindow();
-    if (g_application.IsPlayingFullScreenVideo())
-      location = "fullScreenVideo";
-    else if (currentWindow == WINDOW_SLIDESHOW)
-      location = "fullScreenPhoto";
-    else if (currentWindow == WINDOW_NOW_PLAYING || currentWindow == WINDOW_VISUALISATION)
-      location = "fullScreenMusic";
+    if (m_currentStates[type] != MEDIA_STATE_STOPPED)
+    {
+      int currentWindow = g_windowManager.GetActiveWindow();
+      if (g_application.IsPlayingFullScreenVideo())
+        location = "fullScreenVideo";
+      else if (currentWindow == WINDOW_SLIDESHOW)
+        location = "fullScreenPhoto";
+      else if (currentWindow == WINDOW_NOW_PLAYING || currentWindow == WINDOW_VISUALISATION)
+        location = "fullScreenMusic";
+    }
 
     options.AddOption("location", location);
 
@@ -350,6 +353,12 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server");
     g_plexApplication.mediaServerClient->SendServerTimeline(m_currentItems[type], GetCurrentTimeline(type));
+
+    /* now we can see if we need to ping the transcoder as well */
+    if (type == VIDEO && state == MEDIA_STATE_PAUSED && currentItem &&
+        currentItem->GetProperty("plexDidTranscode").asBoolean() && server)
+      g_plexApplication.mediaServerClient->SendTranscoderPing(server);
+
     m_serverTimer.restart();
   }
 

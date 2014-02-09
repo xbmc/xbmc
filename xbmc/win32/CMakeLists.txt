@@ -1,4 +1,5 @@
 find_all_sources(. WINSRC)
 list(REMOVE_ITEM WINSRC ./pch.cpp)
 list(REMOVE_ITEM WINSRC ./WMIInterface.cpp)
+list(REMOVE_ITEM WINSRC ./Win32DelayedDllLoad.cpp)
 add_sources(${WINSRC})

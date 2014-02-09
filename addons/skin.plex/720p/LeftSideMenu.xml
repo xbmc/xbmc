@@ -60,7 +60,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-filters-icon.png</texture>
 				<colordiffuse>FF999999</colordiffuse>
-				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip)</visible>
+				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.content(channel)</visible>
 			</control>
 			<control type="image">
 				<posy>680</posy>
@@ -70,7 +70,7 @@
 				<aspectratio>scale</aspectratio>
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
 				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
-				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip)</visible>
+				<visible>!Container.content(movie) + !Container.content(episode) + !Container.content(clip) + !Container.content(channel)</visible>
 			</control>
 		</control>
 	</include>
@@ -163,7 +163,7 @@
 	<include name="leftMenuTitle">
 		<textoffsety>5</textoffsety>
 		<textoffsetx>20</textoffsetx>
-		<font>Condensed-26</font>
+		<font>Regular-26</font>
 		<height>55</height>
 		<textcolor>FFCCCCCC</textcolor>
 		<shadowcolor>black</shadowcolor>
@@ -177,11 +177,11 @@
 	</include>
 	<include name="leftMenuFormat">
 		<width>250</width>
-		<height>26</height>
+		<height>24</height>
 		<align>right</align>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>34</textoffsetx>
-		<font>Condensed-17</font>
+		<font>Regular-17</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>FFCCCCCC</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -198,7 +198,7 @@
 		<align>left</align>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>10</textoffsetx>
-		<font>CondensedBold-17</font>
+		<font>Bold-17</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>white</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -214,7 +214,7 @@
 		<align>right</align>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>0</textoffsetx>
-		<font>CondensedBold-17</font>
+		<font>Bold-17</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>white</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -230,7 +230,7 @@
 		<align>right</align>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>0</textoffsetx>
-		<font>Condensed-26</font>
+		<font>Regular-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>FFCCCCCC</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -256,7 +256,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<textoffsetx>10</textoffsetx>
-		<font>Condensed-17</font>
+		<font>Regular-17</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>FFCCCCCC</textcolor>
 		<focusedcolor>orangeLight</focusedcolor>
@@ -296,7 +296,7 @@
 			<control type="wraplist" id="1300">
 				<description>Home Secondary Menu</description>
 				<posx>0</posx>
-				<posy>297</posy>
+				<posy>303</posy>
 				<width>372</width>
 				<height>320</height>
 				<onup>1300</onup>
@@ -323,7 +323,7 @@
 						<info>ListItem.Label</info>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>Condensed-28</font>
+						<font>Regular-28</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>FF333333</shadowcolor>
 					</control>
@@ -337,7 +337,7 @@
 						<info>ListItem.Label</info>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
@@ -349,7 +349,6 @@
 						<label> $LOCALIZE[31952]</label>
 						<onclick>Dialog.Close(4998)</onclick>
 						<onclick>Plex.ActivateWindow(1,plexserver://channeldirectory,return)</onclick>
-						<visible>!Skin.HasSetting(HideAppStore)</visible>
 						<textcolor>50FFFFFF</textcolor>
 					</item>
 					<item id="6">
@@ -380,10 +379,88 @@
 			</control>
 		</control>
 	</include>
+	<include name="PivotMenuHomeMinimal">
+		<!-- Main Menu -->
+		<control type="group" id="1400">
+			<!-- list -->
+			<control type="wraplist" id="1300">
+				<description>Home Secondary Menu</description>
+				<posx>0</posx>
+				<posy>353</posy>
+				<width>372</width>
+				<height>220</height>
+				<onup>1300</onup>
+				<ondown>1300</ondown>
+				<onleft>-</onleft>
+				<onright>Dialog.Close(4998)</onright>
+				<focusposition>1</focusposition>
+				<scrolltime>200</scrolltime>
+				<animation type="WindowOpen" condition="true" reversible="false">
+					<effect type="rotatey" center="304" start="-90,455" end="0,455" time="300"/>
+					<effect type="fade" start="0" end="100" time="50" delay="0"/>
+				</animation>
+				<animation type="WindowClose" condition="true" reversible="false">
+					<effect type="rotatey" center="304" start="0,455" end="-90,455" time="300"/>
+					<effect type="fade" start="100" end="0" time="230"/>
+				</animation>
+				<itemlayout width="600" height="50">
+					<control type="label">
+						<posx>372</posx>
+						<posy>20</posy>
+						<width>360</width>
+						<height>0</height>
+						<label>$INFO[ListItem.Title]</label>
+						<info>ListItem.Label</info>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>Regular-28</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>FF333333</shadowcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="600" height="120">
+					<control type="label">
+						<posx>363</posx>
+						<posy>53</posy>
+						<width>353</width>
+						<height>0</height>
+						<info>ListItem.Label</info>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>Bold-36</font>
+						<textcolor>orange</textcolor>
+						<shadowcolor>FF222222</shadowcolor>
+					</control>
+				</focusedlayout>
+				<!-- additional menu items -->
+				<content>
+					<item id="12">
+						<description>Channel Directory</description>
+						<label> $LOCALIZE[31952]</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>Plex.ActivateWindow(1,plexserver://channeldirectory,return)</onclick>
+						<textcolor>50FFFFFF</textcolor>
+					</item>
+					<item id="6">
+						<description>Preferences</description>
+						<label>$LOCALIZE[31955]</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
+					</item>
+					<item id="112">
+						<description>Sleep</description>
+						<label>$LOCALIZE[31960]</label>
+						<onclick>Dialog.Close(4998)</onclick>
+						<onclick>Plex.Suspend</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+	</include>
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>[!Container.Content(movie) + !Container.Content(episode) + !Container.Content(episodes) + !Container.Content(seasons) + !Container.Content(songs) + !Container.Content(albums) + !Container.Content(channel)] | [Container.Content(Albums) + !IsEmpty(Container.Property(mixedParents))] | [!IsEmpty(Container.Property(primaryFilterActivated)) + !Container.Content(songs)] | Container.Content(empty)</visible>
+			<visible>!Container.Content(channel) + [IsEmpty(Container.Property(PlexPreplay) | Container.Content(empty)]</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -431,9 +508,10 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>FILTER</label>
-					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-100" time="0" condition="Skin.String(SectionType,photos) | Window.IsVisible(2)">Conditional</animation>
-					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsVisible(501)">Conditional</animation>
+					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
+					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsVisible(2)">Conditional</animation>
+					<animation effect="slide" end="0,-95" time="0" condition="Skin.String(SectionType,music) | Window.IsVisible(501)">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- secondary filters list -->
@@ -444,9 +522,10 @@
 					<ondown>32000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-127" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-100" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-80" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-107" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="Skin.String(SectionType,tvshows) | Container.Content(tvshows)">Conditional</animation>
+					<animation effect="slide" end="0,-115" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
+					<animation effect="slide" end="0,-95" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19005">
@@ -464,7 +543,7 @@
 				<control type="label" id="19007">
 					<textoffsetx>40</textoffsetx>
 					<include>leftMenuFormat</include>
-					<font>Condensed-14</font>
+					<font>Regular-14</font>
 					<shadowcolor>ff222222</shadowcolor>
 					<textcolor>FFFFCCCC</textcolor>
 				</control>
@@ -476,9 +555,14 @@
 					<posx>255</posx>
 					<include>leftMenuTitle</include>
 					<label>SORT</label>
-					<animation effect="slide" end="0,-10" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-30" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-85" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-65" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-210" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-190" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 					<visible>!IsEmpty(Container.Property(HasAdvancedFilters))</visible>
 				</control>
 				<!-- sorting list -->
@@ -489,9 +573,14 @@
 					<ondown>30000</ondown>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<animation effect="slide" end="0,-10" time="0" condition="Skin.String(SectionType,movies) | Container.Content(movies)">Conditional</animation>
-					<animation effect="slide" end="0,-30" time="0" condition="Skin.String(SectionType,photos) | Window.IsActive(2)">Conditional</animation>
-					<animation effect="slide" end="0,-160" time="0" condition="Skin.String(SectionType,music) | Window.IsActive(501)">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-20" time="0" condition="[Skin.String(SectionType,movies) | Container.Content(movies)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-60" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-40" time="0" condition="[Skin.String(SectionType,tvshows) | Container.Content(tvshows)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-85" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-65" time="0" condition="[Skin.String(SectionType,photos) | Window.IsActive(2)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-210" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
+					<animation effect="slide" end="0,-190" time="0" condition="[Skin.String(SectionType,music) | Window.IsActive(501)] + !IsEmpty(Container.Property(secondaryFilterActivated))">Conditional</animation>
 				</control>
 				<!-- sorting buttons -->
 				<control type="filterorderbutton" id="19011">
@@ -505,7 +594,7 @@
 	<!-- Preplay menu -->
 	<include name="LeftSideMenuPreplay">
 		<control type="group">
-			<visible>Container.Content(movie) | Container.Content(episode) | Container.Content(clip)</visible>
+			<visible>Container.Content(movie) | Container.Content(episode) | Container.Content(clip) | [Container.Content(channel) + ListItem.Type(movie)] | [Container.Content(channel) + ListItem.Type(clip)]</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -602,117 +691,6 @@
 					<include>leftMenuPreplayButton</include>
 				</control>
 			</control>
-			<!-- menu inside -->
-			<control type="group" id="1300">
-				<visible allowhiddenfocus="false">!Container.Content(secondary) + !Window.IsActive(10202) + !Container.Content(episode) + !Container.Content(movie) + !Container.Content(clip)</visible>
-				<posx>-253</posx>
-				<posy>30</posy>
-				<width>253</width>
-				<height>650</height>
-				<ondown>19000</ondown>
-				<orientation>vertical</orientation>
-				<scrolltime>150</scrolltime>
-				<!-- OPTIONS DEV EXAMPLES, TO DELETE WHEN THE REAL LIST WORKS -->
-				<!-- options list title -->
-				<control type="label">
-					<description>Title</description>
-					<posy>90</posy>
-					<posx>253</posx>
-					<include>leftMenuTitle</include>
-					<label>Options</label>
-				</control>
-				<!-- options list -->
-				<control type="grouplist">
-					<posy>150</posy>
-					<posx>15</posx>
-					<ondown>1300</ondown>
-					<onup>1300</onup>
-					<onright>998</onright>
-					<itemgap>0</itemgap>
-					<control type="radiobutton" id="151">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<include>leftMenuFilterRadioButton</include>
-						<label>Show all media flags</label>
-						<onclick>Skin.ToggleSetting(ShowAllMediaFlags)</onclick>
-						<selected>Skin.HasSetting(ShowAllMediaFlags)</selected>
-					</control>
-					<control type="button" id="152">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>Go Home</label>
-						<onclick>ActivateWindow(Home)</onclick>
-					</control>
-					<control type="button" id="153">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<onclick>XBMC.Quit</onclick>
-						<label>Quit Plex</label>
-					</control>
-					<control type="button" id="154">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>Sleep</label>
-						<onclick>XBMC.Hibernate</onclick>
-					</control>
-					<!--><control type="button" id="155">
-						<textoffsetx>35</textoffsetx>
-						<include>leftMenuFormat</include>
-						<label>Modify Art</label>
-					</control>-->
-				</control>
-				<!-- END OPTIONS DEV EXAMPLES TO DELETE -->
-				<!-- OPTIONS -->
-				<!-- options list title -->
-				<control type="label" id="19029">
-					<description>Title</description>
-					<posy>90</posy>
-					<posx>253</posx>
-					<include>leftMenuTitle</include>
-					<!-- LABEL TO DELETE WHEN HARD WIRED -->
-					<label>Options</label>
-				</control>
-				<!-- options list -->
-				<control type="grouplist" id="19020">
-					<posy>150</posy>
-					<posx>15</posx>
-					<ondown>19010</ondown>
-					<onright>777</onright>
-					<itemgap>0</itemgap>
-				</control>
-				<!-- options buttons -->
-				<control type="button" id="19021">
-					<textoffsetx>35</textoffsetx>
-					<include>leftMenuFormat</include>
-				</control>
-				<control type="radiobutton" id="19022">
-					<textoffsetx>35</textoffsetx>
-					<include>leftMenuFormat</include>
-					<include>leftMenuFilterRadioButton</include>
-				</control>
-				<!-- SORTING -->
-				<!-- sorting list title -->
-				<control type="label" id="19039">
-					<description>Title</description>
-					<posy>420</posy>
-					<posx>253</posx>
-					<include>leftMenuTitle</include>
-				</control>
-				<!-- sorting list -->
-				<control type="grouplist" id="19030">
-					<posy>485</posy>
-					<posx>10</posx>
-					<onup>19000</onup>
-					<onright>777</onright>
-					<itemgap>0</itemgap>
-				</control>
-				<!-- sorting buttons -->
-				<control type="radiobutton" id="19031">
-					<textoffsetx>30</textoffsetx>
-					<include>leftMenuFormat</include>
-					<include>leftMenuSortingButton</include>
-				</control>
-			</control>
 		</control>
 	</include>
 	<!-- Settings menu -->
@@ -734,7 +712,7 @@
 						<label>$LOCALIZE[31606] $INFO[Container(997).ListItem(0).Label]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>ff111111</shadowcolor>
 						<animation effect="fade" time="300" start="0" end="100">Focus</animation>
@@ -746,7 +724,7 @@
 						<label>$VAR[TopBarSelectedItemStrings]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>CondensedBold-36</font>
+						<font>Bold-36</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>ff111111</shadowcolor>
 						<animation effect="fade" time="300" start="0" end="30" condition="true">Conditional</animation>

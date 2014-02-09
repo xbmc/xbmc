@@ -28,7 +28,7 @@ public:
   static bool ShouldTranscode(CPlexServerPtr server, const CFileItem& item);
   static CURL GetTranscodeURL(CPlexServerPtr server, const CFileItem& item);
   static std::string GetCurrentBitrate(bool local);
-  static CURL GetTranscodeStopURL(CPlexServerPtr server);
+  static std::string GetCurrentSession();
   static PlexIntStringMap getOnlineQualties();
   static int SelectAOnlineQuality(int currentQuality);
   static int getBandwidthForQuality(int quality);

@@ -297,6 +297,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     || pCodec->id == CODEC_ID_MPEG4 ))
     m_pCodecContext->thread_count = num_threads;
 
+  /* PLEX */
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::Open will use %d threads to decode. num_threads = %d, software: %s, p_hardWare: %s, codecId: %d",
+            m_pCodecContext->thread_count, num_threads, hints.software ? "Yes" : "No", m_pHardware == NULL ? "No" : "Yes", pCodec->id);
+  /* END PLEX */
+
   if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
