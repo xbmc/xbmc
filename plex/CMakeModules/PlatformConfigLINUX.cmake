@@ -45,6 +45,10 @@ else()
   set(FFMPEG_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/lib/ffmpeg ${CMAKE_BINARY_DIR}/lib/ffmpeg/ffmpeg/src/ffmpeg-build)
 endif()
 
+if(ENABLE_PYTHON)
+   list(APPEND LINK_PKG Python)
+endif(ENABLE_PYTHON)
+
 foreach(l ${LINK_PKG})
   plex_find_package(${l} 1 1)
 endforeach()
