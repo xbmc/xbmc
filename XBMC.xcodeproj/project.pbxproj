@@ -13252,7 +13252,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",
-					"-Wl,-undefined,dynamic_lookup\n-Wl,-undefined,dynamic_lookup\n-Wl,-undefined,dynamic_lookup",
+					"-Wl,-undefined,dynamic_lookup",
 					"-Wl,-read_only_relocs,suppress",
 					"-Wl,-all_load",
 					"-L$XBMC_DEPENDS/lib",
