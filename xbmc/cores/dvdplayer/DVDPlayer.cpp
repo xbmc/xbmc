@@ -839,10 +839,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
     }
   }
   if(!valid)
-  {
     CloseSubtitleStream(true);
-    visible = false;
-  }
 
   SetSubtitleVisibleInternal(visible);
 
