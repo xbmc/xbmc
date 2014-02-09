@@ -620,10 +620,9 @@ void CDecoder::CheckUseFilter()
       m_use_filter = false;
       return;
     }
-    VASurfaceStatus surf_status;
     VAImage image;
     VASurfaceID surface = m_surfaces_free.front()->m_id;
-    VAStatus status = status = vaDeriveImage(m_display->get(), surface, &image);
+    VAStatus status = vaDeriveImage(m_display->get(), surface, &image);
     m_use_filter = true;
     if (status != VA_STATUS_SUCCESS)
     {
