@@ -306,6 +306,7 @@ protected:
   bool ShowPVRChannelInfo();
 
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "", CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
+  void SetSubtitleVisibleInternal(bool bVisible);
 
   /**
    * one of the DVD_PLAYSPEED defines
