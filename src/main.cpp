@@ -9,6 +9,8 @@
 
 #include "tinythread.h"
 
+#include "UpdateDialogNull.h"
+
 #if defined(PLATFORM_LINUX)
   #include "UpdateDialogGtkFactory.h"
   #include "UpdateDialogAscii.h"
@@ -172,6 +174,9 @@ int main(int argc, char** argv)
 
 UpdateDialog* createUpdateDialog()
 {
+#if defined(DISABLE_GUI)
+	return new UpdateDialogNull();
+#endif
 #if defined(PLATFORM_WINDOWS)
 	return new UpdateDialogWin32();
 #elif defined(PLATFORM_MAC)
