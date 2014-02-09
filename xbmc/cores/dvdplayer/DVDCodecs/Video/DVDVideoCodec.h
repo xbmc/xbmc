@@ -21,9 +21,18 @@
  */
 
 #include "system.h"
+#include "DllAvFormat.h"
+#include "DllAvCodec.h"
 
 #include <vector>
+#include <string>
 #include "cores/VideoRenderers/RenderFormats.h"
+
+struct DVDCodecAvailableType 
+{
+  AVCodecID codec;
+  const char* setting;
+};
 
 // when modifying these structures, make sure you update all codecs accordingly
 #define FRAME_TYPE_UNDEF 0
@@ -263,4 +272,15 @@ public:
    * be retained when calling decode on the next demux packet
    */
   virtual unsigned GetAllowedReferences() { return 0; }
+
+  /**
+   * Hide or Show Settings depending on the currently running hardware 
+   *
+   */
+   static bool IsSettingVisible(const std::string &condition, const std::string &value, const std::string &settingId);
+
+  /**
+  * Interact with user settings so that user disabled codecs are disabled
+  */
+  static bool IsCodecDisabled(DVDCodecAvailableType* map, unsigned int size, AVCodecID id);
 };

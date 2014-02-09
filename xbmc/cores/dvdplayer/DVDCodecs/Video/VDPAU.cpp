@@ -42,6 +42,16 @@ using namespace VDPAU;
 
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
+// settings codecs mapping
+DVDCodecAvailableType g_vdpau_available[] = {
+  { AV_CODEC_ID_H263, "videoplayer.usevdpaumpeg4" },
+  { AV_CODEC_ID_MPEG4, "videoplayer.usevdpaumpeg4" },
+  { AV_CODEC_ID_WMV3, "videoplayer.usevdpauvc1" },
+  { AV_CODEC_ID_VC1, "videoplayer.usevdpauvc1" },
+  { AV_CODEC_ID_MPEG2VIDEO, "videoplayer.usevdpaumpeg2" },
+};
+const size_t settings_count = sizeof(g_vdpau_available) / sizeof(DVDCodecAvailableType);
+
 CDecoder::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
 {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
@@ -483,8 +493,12 @@ CDecoder::CDecoder() : m_vdpauOutput(&m_inMsgEvent)
   m_vdpauConfig.context = 0;
 }
 
-bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned int surfaces)
 {
+  // check if user wants to decode this format with VDPAU
+  if (CDVDVideoCodec::IsCodecDisabled(g_vdpau_available, settings_count, avctx->codec_id))
+    return false;
+
 #ifndef GL_NV_vdpau_interop
   CLog::Log(LOGNOTICE, "VDPAU: compilation without required extension GL_NV_vdpau_interop");
   return false;
@@ -503,9 +517,6 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int 
   }
   m_vdpauConfig.numRenderBuffers = surfaces;
   m_decoderThread = CThread::GetCurrentThreadId();
-
-  if ((avctx->codec_id == AV_CODEC_ID_MPEG4) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
-    return false;
 
   if (!CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
     return false;

@@ -20,7 +20,6 @@
 #include "system.h"
 #ifdef HAVE_LIBVA
 #include "windowing/WindowingFactory.h"
-#include "settings/Settings.h"
 #include "VAAPI.h"
 #include "DVDVideoCodec.h"
 #include <boost/scoped_array.hpp>
@@ -51,6 +50,16 @@ do { \
 using namespace std;
 using namespace boost;
 using namespace VAAPI;
+
+// settings codecs mapping
+DVDCodecAvailableType g_vaapi_available[] = {
+  { AV_CODEC_ID_H263, "videoplayer.usevaapimpeg4" },
+  { AV_CODEC_ID_MPEG4, "videoplayer.usevaapimpeg4" },
+  { AV_CODEC_ID_WMV3, "videoplayer.usevaapivc1" },
+  { AV_CODEC_ID_VC1, "videoplayer.usevaapivc1" },
+  { AV_CODEC_ID_MPEG2VIDEO, "videoplayer.usevaapimpeg2" },
+};
+const size_t settings_count = sizeof(g_vaapi_available) / sizeof(DVDCodecAvailableType);
 
 static int compare_version(int major_l, int minor_l, int micro_l, int major_r, int minor_r, int micro_r)
 {
@@ -269,6 +278,10 @@ void CDecoder::Close()
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int surfaces)
 {
+  // check if user wants to decode this format with VAAPI
+  if (CDVDVideoCodec::IsCodecDisabled(g_vaapi_available, settings_count, avctx->codec_id))
+    return false;
+
   VAEntrypoint entrypoint = VAEntrypointVLD;
   VAProfile    profile;
 

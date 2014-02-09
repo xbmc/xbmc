@@ -105,8 +105,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #endif
 #ifdef HAVE_LIBVA
     // mpeg4 vaapi decoding is disabled
-    if(*cur == PIX_FMT_VAAPI_VLD && CSettings::Get().GetBool("videoplayer.usevaapi") 
-    && (avctx->codec_id != AV_CODEC_ID_MPEG4 || g_advancedSettings.m_videoAllowMpeg4VAAPI)) 
+    if(*cur == PIX_FMT_VAAPI_VLD && CSettings::Get().GetBool("videoplayer.usevaapi"))
     {
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
       if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))

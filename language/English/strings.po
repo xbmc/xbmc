@@ -6000,7 +6000,79 @@ msgctxt "#13440"
 msgid "Allow frame-multi-threaded decoding"
 msgstr ""
 
-#empty strings from id 13441 to 13499
+#. Description of Mpeg-2 Codec for VDPAU
+#: system/settings/settings.xml
+msgctxt "#13441"
+msgid "Use Mpeg-2 VDPAU"
+msgstr ""
+
+#. Description of setting #13441 'Use Mpeg-2 VDPAU'
+#: system/settings/settings.xml
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr ""
+
+#. Description of Mpeg-4 Codec for VDPAU
+#: system/settings/settings.xml
+msgctxt "#13443"
+msgid "Use Mpeg-4 VDPAU"
+msgstr ""
+
+#. Description of setting #13443 'Use Mpeg-4 VDPAU'
+#: system/settings/settings.xml
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr ""
+
+#. Description of VC-1 Codec for VDPAU
+#: system/settings/settings.xml
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr ""
+
+#. Description of setting #13445 'Use VC-1 VDPAU'
+#: system/settings/settings.xml
+msgctxt "#13446"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
+msgstr ""
+
+#. Description of Mpeg-2 Codec for VAAPI
+#: system/settings/settings.xml
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr ""
+
+#. Description of setting #13447 'Use Mpeg-2 VAAPI'
+#: system/settings/settings.xml
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
+msgstr ""
+
+#. Description of Mpeg-4 Codec for VAAPI
+#: system/settings/settings.xm
+msgctxt "#13449"
+msgid "Use Mpeg-4 VAAPI"
+msgstr ""
+
+#. Description of setting #13449 'Use Mpeg-4 VAAPI'
+#: system/settings/settings.xml
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
+msgstr ""
+
+#. Description of VC-1 Codec for VAAPI
+#: system/settings/settings.xm
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr ""
+
+#. Description of setting #13451 'Use VC-1 VAAPI'
+#: system/settings/settings.xml
+msgctxt "#13452"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
+msgstr ""
+
+#empty strings from id 13453 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"

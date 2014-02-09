@@ -447,6 +447,36 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.usevdpaumpeg2" type="boolean" parent="videoplayer.usevdpau" label="13441" help="13442">
+          <requirement>HAVE_LIBVDPAU</requirement>
+          <level>3</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevdpaumpeg2" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevdpaumpeg4" type="boolean" parent="videoplayer.usevdpau" label="13443" help="13444">
+          <requirement>HAVE_LIBVDPAU</requirement>
+          <level>3</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevdpaumpeg4" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevdpauvc1" type="boolean" parent="videoplayer.usevdpau" label="13445" help="13446">
+          <requirement>HAVE_LIBVDPAU</requirement>
+          <level>3</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevdpauvc1" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usevaapi" type="boolean" label="13426" help="36156">
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
@@ -454,6 +484,36 @@
           </dependencies>
           <level>2</level>
           <default>true</default>
+          <control type="toggle" />
+        </setting>
+       <setting id="videoplayer.usevaapimpeg2" type="boolean" parent="videoplayer.usevaapi" label="13447" help="13448">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapimpeg2" operator="is">true</dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevaapimpeg4" type="boolean" parent="videoplayer.usevaapi" label="13449" help="13450">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapimpeg4" operator="is">true</dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usevaapivc1" type="boolean" parent="videoplayer.usevaapi" label="13451" help="13452">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+            <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
+          </dependencies>
+          <level>3</level>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">

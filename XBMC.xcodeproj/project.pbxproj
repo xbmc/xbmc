@@ -3122,6 +3122,9 @@
 		F58E293911FFC103006F4D46 /* DVDInputStreamBluray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58E293711FFC103006F4D46 /* DVDInputStreamBluray.cpp */; };
 		F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */; };
 		F595994510E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F595994410E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp */; };
+		F597B05B18A804E0005AADAE /* DVDVideoCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F597B05A18A804E0005AADAE /* DVDVideoCodec.cpp */; };
+		F597B05C18A804E0005AADAE /* DVDVideoCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F597B05A18A804E0005AADAE /* DVDVideoCodec.cpp */; };
+		F597B05D18A804E0005AADAE /* DVDVideoCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F597B05A18A804E0005AADAE /* DVDVideoCodec.cpp */; };
 		F59876C00FBA351D008EF4FB /* VideoReferenceClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59876BF0FBA351D008EF4FB /* VideoReferenceClock.cpp */; };
 		F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59879070FBAA0C3008EF4FB /* QuartzCore.framework */; };
 		F5987F050FBDF274008EF4FB /* DPMSSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987F040FBDF274008EF4FB /* DPMSSupport.cpp */; };
@@ -5464,6 +5467,7 @@
 		F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConvolutionKernels.cpp; sourceTree = "<group>"; };
 		F595994310E9F322004B58B3 /* DVDVideoCodecCrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecCrystalHD.h; sourceTree = "<group>"; };
 		F595994410E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecCrystalHD.cpp; sourceTree = "<group>"; };
+		F597B05A18A804E0005AADAE /* DVDVideoCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodec.cpp; sourceTree = "<group>"; };
 		F59876BE0FBA351D008EF4FB /* VideoReferenceClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoReferenceClock.h; sourceTree = "<group>"; };
 		F59876BF0FBA351D008EF4FB /* VideoReferenceClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoReferenceClock.cpp; sourceTree = "<group>"; };
 		F59879070FBAA0C3008EF4FB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -7630,6 +7634,7 @@
 				F5F240EB110A4F76009126C6 /* CrystalHD.cpp */,
 				F5F240EC110A4F76009126C6 /* CrystalHD.h */,
 				E38E153B0D25F9F900618676 /* DllLibMpeg2.h */,
+				F597B05A18A804E0005AADAE /* DVDVideoCodec.cpp */,
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
 				F595994410E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp */,
 				F595994310E9F322004B58B3 /* DVDVideoCodecCrystalHD.h */,
@@ -9835,6 +9840,7 @@
 				E38E20440D25F9FD00618676 /* DirectoryNodeTop100.cpp in Sources */,
 				E38E20460D25F9FD00618676 /* DirectoryNodeYearAlbum.cpp in Sources */,
 				E38E20470D25F9FD00618676 /* DirectoryNodeYearSong.cpp in Sources */,
+				F597B05B18A804E0005AADAE /* DVDVideoCodec.cpp in Sources */,
 				E38E20490D25F9FD00618676 /* QueryParams.cpp in Sources */,
 				E38E204A0D25F9FD00618676 /* MusicDatabaseDirectory.cpp in Sources */,
 				E38E204B0D25F9FD00618676 /* MusicSearchDirectory.cpp in Sources */,
@@ -11312,6 +11318,7 @@
 				DFF0F2C417528350002DA3A4 /* TextureGL.cpp in Sources */,
 				DFF0F2C517528350002DA3A4 /* TextureManager.cpp in Sources */,
 				DFF0F2C617528350002DA3A4 /* VisibleEffect.cpp in Sources */,
+				F597B05D18A804E0005AADAE /* DVDVideoCodec.cpp in Sources */,
 				DFF0F2C717528350002DA3A4 /* XBTF.cpp in Sources */,
 				DFF0F2C817528350002DA3A4 /* XBTFReader.cpp in Sources */,
 				DFF0F2C917528350002DA3A4 /* GenericTouchActionHandler.cpp in Sources */,
@@ -12032,6 +12039,7 @@
 				E49911E1174E5D3700741B6D /* DVDInputStreamHTSP.cpp in Sources */,
 				E49911E2174E5D3700741B6D /* DVDInputStreamHttp.cpp in Sources */,
 				E49911E3174E5D3700741B6D /* DVDInputStreamMemory.cpp in Sources */,
+				F597B05C18A804E0005AADAE /* DVDVideoCodec.cpp in Sources */,
 				E49911E4174E5D3700741B6D /* DVDInputStreamNavigator.cpp in Sources */,
 				E49911E5174E5D3700741B6D /* DVDInputStreamPVRManager.cpp in Sources */,
 				E49911E6174E5D3700741B6D /* DVDInputStreamRTMP.cpp in Sources */,
