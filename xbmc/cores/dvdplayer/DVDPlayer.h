@@ -154,14 +154,6 @@ public:
     return streams;
   }
 
-  template<typename Filter>
-  SelectionStreams RemoveIf(StreamType type, Filter filter)
-  {
-    SelectionStreams streams = Get(type);
-    streams.erase(std::remove_if(streams.begin(), streams.end(), filter), streams.end());
-    return streams;
-  }
-
   void             Clear   (StreamType type, StreamSource source);
   int              Source  (StreamSource source, std::string filename);
 
@@ -301,6 +293,7 @@ protected:
   bool ShowPVRChannelInfo();
 
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "", CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
+  void SetSubtitleVisibleInternal(bool bVisible);
 
   /**
    * one of the DVD_PLAYSPEED defines
