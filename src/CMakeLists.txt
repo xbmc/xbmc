@@ -14,9 +14,12 @@ endif()
 
 if (LINUX)
 	find_package(GTK2 REQUIRED gtk)
-	include_directories(${GTK2_INCLUDE_DIRS})
-	add_library(updatergtk SHARED UpdateDialogGtk.cpp UpdateDialogGtk.h)
-	target_link_libraries(updatergtk ${GTK2_LIBRARIES})
+	if(GTK2_FOUND)
+		add_definitions(-DHAVE_GTK2)
+		include_directories(${GTK2_INCLUDE_DIRS})
+		add_library(updatergtk SHARED UpdateDialogGtk.cpp UpdateDialogGtk.h)
+		target_link_libraries(updatergtk ${GTK2_LIBRARIES})
+	endif(GTK2_FOUND)
 endif()
 
 add_definitions(-DTIXML_USE_STL)
@@ -74,7 +77,7 @@ if (UNIX)
 	set(SOURCES ${SOURCES} UpdateDialogAscii.cpp)
 endif()
 
-if (LINUX)
+if (LINUX AND GTK2_FOUND)
 	# embed the GTK helper library into the updater binary.
 	# At runtime it will be extracted and loaded if the
 	# GTK libraries are available

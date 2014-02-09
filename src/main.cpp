@@ -182,7 +182,11 @@ UpdateDialog* createUpdateDialog()
 #elif defined(PLATFORM_MAC)
 	return new UpdateDialogCocoa();
 #elif defined(PLATFORM_LINUX)
+#ifdef HAVE_GTK2
 	UpdateDialog* dialog = UpdateDialogGtkFactory::createDialog();
+#else
+	UpdateDialog* dialog = NULL;
+#endif
 	if (!dialog)
 	{
 		dialog = new UpdateDialogAscii();
