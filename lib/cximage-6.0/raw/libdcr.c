@@ -837,6 +837,9 @@ int DCR_CLASS dcr_ljpeg_diff (DCRAW* p, struct dcr_decode *dindex)
 {
 	int len, diff;
 
+	if (!dindex)
+		longjmp (p->failure, 2);
+
 	while (dindex->branch[0])
 		dindex = dindex->branch[dcr_getbits(p, 1)];
 	len = dindex->leaf;
@@ -894,6 +897,10 @@ void DCR_CLASS dcr_lossless_jpeg_load_raw(DCRAW* p)
 	ushort *rp;
 
 	if (!dcr_ljpeg_start (p,&jh, 0)) return;
+
+	if (jh.wide<1 || jh.high<1 || jh.clrs<1 || jh.bits<1)
+		longjmp (p->failure, 2);
+
 	jwide = jh.wide * jh.clrs;
 
 	for (jrow=0; jrow < jh.high; jrow++) {
@@ -922,6 +929,8 @@ void DCR_CLASS dcr_lossless_jpeg_load_raw(DCRAW* p)
 			}
 			if (++col >= p->raw_width)
 				col = (row++,0);
+			if (row >= p->raw_height)
+				longjmp (p->failure, 3);
 		}
 	}
 	free (jh.row);
@@ -4973,6 +4982,7 @@ int DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base)
 				p->data_offset = dcr_get4(p)+base;
 				ifd++;  break;
 			}
+			if(len > 1000) len=1000; /* 1000 SubIFDs is enough */
 			while (len--) {
 				i = dcr_ftell(p->obj_);
 				dcr_fseek(p->obj_, dcr_get4(p)+base, SEEK_SET);
@@ -5161,7 +5171,7 @@ guess_cfa_pc:
 		case 50714:			/* BlackLevel */
 		case 50715:			/* BlackLevelDeltaH */
 		case 50716:			/* BlackLevelDeltaV */
-			for (dblack=i=0; i < (int)len; i++)
+			for (dblack=i=0; i < (int)len && i < 65536; i++)
 				dblack += dcr_getreal(p, type);
 			p->black += (unsigned int)(dblack/len + 0.5);
 			break;
@@ -5275,9 +5285,11 @@ void DCR_CLASS dcr_parse_tiff (DCRAW* p, int base)
 	if (p->thumb_offset) {
 		dcr_fseek(p->obj_, p->thumb_offset, SEEK_SET);
 		if (dcr_ljpeg_start (p,&jh, 1)) {
-			p->thumb_misc   = jh.bits;
-			p->thumb_width  = jh.wide;
-			p->thumb_height = jh.high;
+			if ((unsigned)jh.bits<17 && (unsigned)jh.wide < 0x10000 && (unsigned)jh.high < 0x10000) {
+				p->thumb_misc   = jh.bits;
+				p->thumb_width  = jh.wide;
+				p->thumb_height = jh.high;
+			}
 		}
 	}
 	for (i=0; i < (int)p->tiff_nifds; i++) {
@@ -5285,6 +5297,8 @@ void DCR_CLASS dcr_parse_tiff (DCRAW* p, int base)
 			max_samp = p->tiff_ifd[i].samples;
 		if (max_samp > 3) max_samp = 3;
 		if ((p->tiff_ifd[i].comp != 6 || p->tiff_ifd[i].samples != 3) &&
+		        (unsigned)(p->tiff_ifd[i].width | p->tiff_ifd[i].height) < 0x10000 &&
+			(unsigned)p->tiff_ifd[i].bps < 33 && (unsigned)p->tiff_ifd[i].samples < 13 &&
 			p->tiff_ifd[i].width*p->tiff_ifd[i].height > p->raw_width*p->raw_height) {
 			p->raw_width     = p->tiff_ifd[i].width;
 			p->raw_height    = p->tiff_ifd[i].height;
@@ -5348,6 +5362,8 @@ void DCR_CLASS dcr_parse_tiff (DCRAW* p, int base)
 	if (p->tiff_bps == 8 && p->tiff_samples == 4) p->is_raw = 0;
 	for (i=0; i < (int)p->tiff_nifds; i++)
 		if (i != raw && p->tiff_ifd[i].samples == max_samp &&
+			p->tiff_ifd[i].bps>0 && p->tiff_ifd[i].bps < 33 &&
+			(unsigned)(p->tiff_ifd[i].width | p->tiff_ifd[i].height) < 0x10000 &&
 			p->tiff_ifd[i].width * p->tiff_ifd[i].height / SQR(p->tiff_ifd[i].bps+1) >
 			(int)(p->thumb_width *       p->thumb_height / SQR(p->thumb_misc+1))) {
 			p->thumb_width  = p->tiff_ifd[i].width;
