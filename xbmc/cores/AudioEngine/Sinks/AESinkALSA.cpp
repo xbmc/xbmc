@@ -973,6 +973,18 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
             /* snd_hctl_close also closes ctlhandle */
             snd_hctl_close(hctl);
 
+            // regarding data formats we don't trust ELD
+            // push all passthrough formats to the list
+            AEDataFormatList::iterator it;
+            for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
+            {
+              if (!AE_IS_RAW(i))
+                continue;
+              it = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), i);
+              if (it == info.m_dataFormats.end())
+                info.m_dataFormats.push_back(i);
+            }
+
             if (badHDMI)
             {
               /* 
