@@ -24,6 +24,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 ifeq (arm, $(findstring arm, $(CPU)))
 	cd $(PLATFORM); patch -p0 < ../fix_shared_ptr_multithread.patch
 endif
+	cd $(PLATFORM); patch -p1 < ../fix-self-assignment-warnings.patch
 	cd $(PLATFORM); ./bootstrap.sh --prefix=$(PREFIX)
 
 .installed-$(PLATFORM): $(PLATFORM)
