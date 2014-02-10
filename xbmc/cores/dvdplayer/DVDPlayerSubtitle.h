@@ -38,7 +38,7 @@ public:
   CDVDPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer);
   ~CDVDPlayerSubtitle();
 
-  void Process(double pts);
+  void Process(double pts, double offset);
   void Flush();
   void FindSubtitles(const char* strFilename);
   int GetSubtitleCount();

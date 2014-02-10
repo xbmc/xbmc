@@ -1380,7 +1380,7 @@ void COMXPlayer::Process()
     UpdateApplication(1000);
 
     // make sure we run subtitle process here
-    m_dvdPlayerSubtitle.Process(m_clock.GetClock() - m_omxPlayerVideo.GetSubtitleDelay());
+    m_dvdPlayerSubtitle.Process(m_clock.GetClock() + m_State.time_offset - m_omxPlayerVideo.GetSubtitleDelay(), m_State.time_offset);
 
     // OMX emergency exit
     if(HasAudio() && m_omxPlayerAudio.BadState())
