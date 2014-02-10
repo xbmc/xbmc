@@ -59,7 +59,7 @@
       <skipminus>SkipPrevious</skipminus>
       <display>FullScreen</display>
       <start>PreviousMenu</start>
-      <record>Screenshot</record>
+      <record>Record</record>
       <volumeplus>VolumeUp</volumeplus>
       <volumeminus>VolumeDown</volumeminus>
       <mute>Mute</mute>

@@ -242,6 +242,7 @@ static const ActionMapping actions[] =
         {"playpvr"               , ACTION_PVR_PLAY},
         {"playpvrtv"             , ACTION_PVR_PLAY_TV},
         {"playpvrradio"          , ACTION_PVR_PLAY_RADIO},
+        {"record"                , ACTION_RECORD},
 
         // Mouse actions
         {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},
