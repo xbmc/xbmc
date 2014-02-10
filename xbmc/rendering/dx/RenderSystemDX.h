@@ -61,6 +61,7 @@ public:
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
+  virtual void RestoreViewPort();
 
   virtual void SetScissors(const CRect &rect);
   virtual void ResetScissors();

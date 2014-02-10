@@ -954,6 +954,14 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
   m_pD3DDevice->SetViewport(&m_viewPort);
 }
 
+void CRenderSystemDX::RestoreViewPort()
+{
+  if (!m_bRenderCreated)
+    return;
+
+  m_pD3DDevice->SetViewport(&m_viewPort);
+}
+
 void CRenderSystemDX::SetScissors(const CRect& rect)
 {
   if (!m_bRenderCreated)
