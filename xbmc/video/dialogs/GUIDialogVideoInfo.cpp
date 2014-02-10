@@ -1306,7 +1306,6 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavail
   if (!DeleteVideoItemFromDatabase(item, unavailable))
     return false;
 
-  bool result = true;
   // check if the user is allowed to delete the actual file as well
   if ((CProfilesManager::Get().GetCurrentProfile().getLockMode() == LOCK_MODE_EVERYONE ||
        !CProfilesManager::Get().GetCurrentProfile().filesLocked() ||
@@ -1335,13 +1334,13 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavail
       // HACK: stacked files need to be treated as folders in order to be deleted
       if (item->IsStack())
         item->m_bIsFolder = true;
-      result = CFileUtils::DeleteItem(item);
+      CFileUtils::DeleteItem(item);
     }
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
 
-  return result;
+  return true;
 }
 
 bool CGUIDialogVideoInfo::ManageMovieSets(const CFileItemPtr &item)
