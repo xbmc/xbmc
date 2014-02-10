@@ -1746,14 +1746,8 @@ FFMPEG_LIBDIR=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --static --variable=libd
 GNUTLS_ALL_LIBS=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --static --libs-only-l --silence-errors gnutls)
 VORBISENC_ALL_LIBS=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --static --libs-only-l --silence-errors vorbisenc)
 
-# in case the headers are in a custom directory
-SAVE_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
-
-AC_CHECK_HEADERS([libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,[AC_MSG_ERROR("ffmpeg headers missing")])
 # TODO: make this conditional
 USE_STATIC_FFMPEG=1 
-CPPFLAGS="$SAVE_CPPFLAGS"
 
 echo "Checking for SWIG installation"
 AC_PATH_PROG(SWIG_EXE, swig, "none")
