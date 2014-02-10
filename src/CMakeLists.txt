@@ -121,7 +121,7 @@ endif()
 
 if (UNIX)
   target_link_libraries(updatershared pthread)
-  if(SYSTEM_NAME STREQUAL "Linux")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_libraries(updatershared dl)
   endif()
 endif()
