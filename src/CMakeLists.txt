@@ -5,7 +5,7 @@ find_package(Threads REQUIRED)
 include(GenerateCppResourceFile)
 
 if (UNIX)
-	add_definitions(-Wall -Wno-non-virtual-dtor -Werror -Wconversion)
+	add_definitions(-Wall -Wno-non-virtual-dtor -Wconversion)
 endif()
 
 if (UNIX AND NOT APPLE)
