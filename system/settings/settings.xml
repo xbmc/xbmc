@@ -513,6 +513,8 @@
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
           </dependencies>
           <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
         <setting id="videoplayer.usevaapiswfilter" type="boolean" parent="videoplayer.usevaapi" label="13453" help="36430">
           <requirement>HAVE_LIBVA</requirement>
