@@ -70,7 +70,7 @@ void UpdaterOptions::parseOldFormatArgs(int argc, char** argv)
 			// binary.  On Mac and Linux this differs from the root of
 			// the installation directory
 
-#ifdef PLATFORM_LINUX
+#if defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD)
 			// the main binary is in lib/mendeleydesktop/libexec,
 			// go up 3 levels
 			installDir = FileUtils::canonicalPath((value + "/../../../").c_str());

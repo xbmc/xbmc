@@ -20,7 +20,7 @@ void TestUpdaterOptions::testOldFormatArgs()
 	// CurrentDir is the path to the directory containing the main
 	// Mendeley Desktop binary, on Linux and Mac this differs from
 	// the root of the install directory
-#ifdef PLATFORM_LINUX
+#if defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD)
 	appDir = "/tmp/path-to-app/lib/mendeleydesktop/libexec/";
 	FileUtils::mkpath(appDir);
 #elif defined(PLATFORM_MAC)
@@ -41,7 +41,7 @@ void TestUpdaterOptions::testOldFormatArgs()
 	options.parse(argc,argv);
 
 	TEST_COMPARE(options.mode,UpdateInstaller::Setup);
-#ifdef PLATFORM_LINUX
+#if defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD)
 	TEST_COMPARE(options.installDir,"/tmp/path-to-app");
 #elif defined(PLATFORM_MAC)
 	// /tmp is a symlink to /private/tmp on Mac

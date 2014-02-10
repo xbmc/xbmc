@@ -5,6 +5,10 @@
  #define PLATFORM_LINUX
 #endif
 
+#ifdef __FreeBSD__
+ #define PLATFORM_FREEBSD
+#endif
+
 #ifdef WIN32
  #define PLATFORM_WINDOWS
  #include <windows.h>
@@ -18,7 +22,7 @@
  #define PLATFORM_MAC
 #endif
 
-#if defined(PLATFORM_LINUX) || defined(PLATFORM_MAC)
+#if defined(PLATFORM_LINUX) || defined(PLATFORM_MAC) || defined(PLATFORM_FREEBSD)
  #define PLATFORM_UNIX
 #endif
 
