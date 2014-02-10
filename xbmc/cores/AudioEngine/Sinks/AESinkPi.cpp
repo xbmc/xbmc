@@ -284,6 +284,9 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_channels += AE_CH_FR;
   m_info.m_sampleRates.push_back(48000);
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
+  m_info.m_dataFormats.push_back(AE_FMT_AC3);
+  m_info.m_dataFormats.push_back(AE_FMT_DTS);
+  m_info.m_dataFormats.push_back(AE_FMT_EAC3);
 
   list.push_back(m_info);
 
