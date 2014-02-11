@@ -176,12 +176,9 @@ ifeq (@HAVE_XBMC_NONFREE@,1)
 DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
 endif
 
-BIN_DIRS = $(dir $(DIRECTORY_ARCHIVES)) $(dir $(NWAOBJSXBMC))
-
 ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
-DIRECTORY_ARCHIVES += xbmc/android/activity/activity.a
 DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
 DIRECTORY_ARCHIVES += xbmc/android/jni/jni.a
 endif
@@ -271,9 +268,6 @@ TOUCHED_MEDIA=addons/skin.touched/media
 SKIN_DIRS+=$(TOUCHED_MEDIA)
 endif
 
-DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) xbmc/main
-
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
 CXXFLAGS=@CXXFLAGS@
@@ -360,12 +354,6 @@ endif
 # Setup some dependencies for subdir makes
 xbmc/cores/paplayer/paplayer.a: papcodecs
 $(DVDPLAYER_ARCHIVES)         : dvdpcodecs
-
-$(NWAOBJSXBMC): force
-	@$(MAKE) $(if $(V),,-s) -C $(@D)
-
-$(DIRECTORY_ARCHIVES): force
-	@$(MAKE) $(if $(V),,-s) -C $(@D)
 
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
 	$(MAKE) -C lib/cpluff/libcpluff
@@ -469,8 +457,6 @@ xcode_depends: \
 	lib/libXDAAP/libxdaap.a \
 	lib/SlingboxLib/SlingboxLib.a
 
-OBJSXBMC =$(DIRECTORY_ARCHIVES)
-
 DYNOBJSXBMC= \
 	xbmc/linux/linux.a \
 	xbmc/network/network.a \
@@ -502,15 +488,25 @@ LIBS+= @GNUTLS_ALL_LIBS@ @VORBISENC_ALL_LIBS@
 $(FFMPEGOBJS): dvdpcodecs
 endif
 
+ifneq (@USE_LIBXBMC@,1)
+MAINOBJS+=xbmc/main/main.a
+else
+ifeq (@USE_ANDROID@,1)
+MAINOBJS+=xbmc/android/activity/activity.a
+endif # USE_ANDROID
+endif # USE_LIBXBMC
+
+
+OBJSXBMC =$(DIRECTORY_ARCHIVES)
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
-MAINOBJS=xbmc/xbmc.o
-ifeq (@USE_ANDROID@,1)
-MAINOBJS+=xbmc/android/activity/android_main.o
-endif
-ifneq (@USE_LIBXBMC@,1)
-MAINOBJS+=xbmc/main/main.o
-endif
+BIN_DIRS = $(dir $(DIRECTORY_ARCHIVES)) $(dir $(NWAOBJSXBMC)) $(dir $(MAINOBJS))
+
+DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) xbmc/main
+
+$(NWAOBJSXBMC) $(DIRECTORY_ARCHIVES) $(MAINOBJS): force
+	@$(MAKE) $(if $(V),,-s) -C $(@D)
 
 # sync these entries manually with tools/depends/target/xbmc-addon-bindings/Makefile
 BINDINGS =xbmc/addons/include/xbmc_addon_cpp_dll.h
@@ -533,17 +529,17 @@ BINDINGS+=xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxPacket.h
 
 libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -read_only_relocs suppress
+	$(SILENT_LD) $(CXX) $(LDFLAGS) -bundle -o $@ $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -read_only_relocs suppress
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(MAINOBJS) -Wl,--start-group $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(MAINOBJS) -Wl,--no-whole-archive,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
 endif
 
-xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS) xbmc/main/main.a
+xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin xbmc/main/main.a -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin $(MAINOBJS) -Wl,--start-group $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
