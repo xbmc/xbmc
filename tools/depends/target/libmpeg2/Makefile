@@ -29,6 +29,7 @@ ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p1 < ../03-config-fix.patch
 endif
 	cd $(PLATFORM); patch -p1 < ../04-clang-fix.patch
+	cd $(PLATFORM); patch -p0 < ../05-upstream-motion_comp_arm_s.S-is-not-PIC-enough.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
