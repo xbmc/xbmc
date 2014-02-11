@@ -1009,6 +1009,9 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
       if (!info.m_displayNameExtra.empty())
         info.m_displayNameExtra += ' ';
       info.m_displayNameExtra += "S/PDIF";
+
+      info.m_dataFormats.push_back(AE_FMT_AC3);
+      info.m_dataFormats.push_back(AE_FMT_DTS);
     }
     else if (info.m_displayNameExtra.empty())
     {
