@@ -30,9 +30,11 @@
 #include "guilib/DispResource.h"
 
 // ffmpeg
-#include "DllAvFormat.h"
-#include "DllAvCodec.h"
-#include "DllAvUtil.h"
+extern "C" {
+#include "libavformat/avformat.h"
+#include "libavcodec/avcodec.h"
+#include "libavutil/avutil.h"
+}
 
 class IAESink;
 class IAEEncoder;
@@ -339,11 +341,6 @@ protected:
   IAudioCallback *m_audioCallback;
   bool m_vizInitialized;
   CCriticalSection m_vizLock;
-
-  // ffmpeg
-  DllAvFormat m_dllAvFormat;
-  DllAvCodec  m_dllAvCodec;
-  DllAvUtil   m_dllAvUtil;
 
   // polled via the interface
   float m_aeVolume;

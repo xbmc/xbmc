@@ -23,7 +23,11 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
-#include "DllSwScale.h"
+#include "cores/FFmpeg.h"
+
+extern "C" {
+#include "libswscale/swscale.h"
+}
 
 // allocate a new picture (PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
@@ -241,12 +245,6 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
 
       //if this is going to be used for anything else than testing the renderer
       //the library should not be loaded on every function call
-      DllSwScale  dllSwScale;
-      if (!dllSwScale.Load())
-      {
-        CLog::Log(LOGERROR,"CDVDCodecUtils::ConvertToYUY2Picture - failed to load rescale libraries!");
-      }
-      else
       {
         // Perform the scaling.
         uint8_t* src[] =       { pSrc->data[0],          pSrc->data[1],      pSrc->data[2],      NULL };
@@ -260,11 +258,11 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
         else
           dstformat = PIX_FMT_YUYV422;
 
-        struct SwsContext *ctx = dllSwScale.sws_getContext(pSrc->iWidth, pSrc->iHeight, PIX_FMT_YUV420P,
-                                                           pPicture->iWidth, pPicture->iHeight, dstformat,
+        struct SwsContext *ctx = sws_getContext(pSrc->iWidth, pSrc->iHeight, PIX_FMT_YUV420P,
+                                                           pPicture->iWidth, pPicture->iHeight, (AVPixelFormat)dstformat,
                                                            SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
-        dllSwScale.sws_scale(ctx, src, srcStride, 0, pSrc->iHeight, dst, dstStride);
-        dllSwScale.sws_freeContext(ctx);
+        sws_scale(ctx, src, srcStride, 0, pSrc->iHeight, dst, dstStride);
+        sws_freeContext(ctx);
       }
     }
     else
@@ -456,6 +454,7 @@ static const EFormatMap g_format_map[] = {
 ,  { PIX_FMT_YUV420P16,   RENDER_FMT_YUV420P16  }
 ,  { PIX_FMT_UYVY422,     RENDER_FMT_UYVY422    }
 ,  { PIX_FMT_YUYV422,     RENDER_FMT_YUYV422    }
+,  { PIX_FMT_NV12,        RENDER_FMT_NV12       }
 ,  { PIX_FMT_VAAPI_VLD,   RENDER_FMT_VAAPI      }
 ,  { PIX_FMT_DXVA2_VLD,   RENDER_FMT_DXVA       }
 ,  { PIX_FMT_NONE     ,   RENDER_FMT_NONE       }

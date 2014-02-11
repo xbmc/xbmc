@@ -5,9 +5,9 @@ SCRIPT_PATH=$(cd `dirname $0` && pwd)
 USE_BUILDROOT=1
 
 if [ "$USE_BUILDROOT" = "1" ]; then
-  BUILDROOT=/opt/xbmc-bcm/buildroot
-  TARBALLS=/opt/xbmc-tarballs
-  XBMCPREFIX=/opt/xbmc-bcm/xbmc-bin
+  BUILDROOT=${BUILDROOT:-"/opt/xbmc-bcm/buildroot"}
+  TARBALLS=${TARBALLS:-"/opt/xbmc-tarballs"}
+  XBMCPREFIX=${XBMCPREFIX:-"/opt/xbmc-bcm/xbmc-bin"}
 
   SDKSTAGE=$BUILDROOT/output/staging
   TARGETFS=$BUILDROOT/output/target
@@ -21,8 +21,15 @@ else
   BUILDROOT=/opt/bcm-rootfs
 fi
 
-sudo mkdir -p $XBMCPREFIX
-sudo chmod 777 $XBMCPREFIX
+if [ -d $XBMCPREFIX ]
+then
+  [ -O $XBMCPREFIX ] || SUDO="sudo"
+else
+  [ -w $(dirname $XBMCPREFIX) ] || SUDO="sudo"
+fi
+
+$SUDO mkdir -p $XBMCPREFIX
+$SUDO chmod 777 $XBMCPREFIX
 mkdir -p $XBMCPREFIX/lib
 mkdir -p $XBMCPREFIX/include
 

@@ -21,14 +21,13 @@
  */
 
 #include "DVDDemux.h"
-#include "DllAvFormat.h"
-#include "DllAvCodec.h"
-#include "DllAvUtil.h"
-
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
-
 #include <map>
+
+extern "C" {
+#include "libavformat/avformat.h"
+}
 
 class CDVDDemuxFFmpeg;
 class CURL;
@@ -89,7 +88,7 @@ public:
   CDVDDemuxFFmpeg();
   virtual ~CDVDDemuxFFmpeg();
 
-  bool Open(CDVDInputStream* pInput);
+  bool Open(CDVDInputStream* pInput, bool streaminfo = true);
   void Dispose();
   void Reset();
   void Flush();
@@ -100,6 +99,7 @@ public:
   DemuxPacket* Read();
 
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
+  bool SeekTimeDiscont(int64_t pts, bool backwards);
   bool SeekByte(int64_t pos);
   int GetStreamLength();
   CDemuxStream* GetStream(int iStreamId);
@@ -127,6 +127,9 @@ protected:
   CDemuxStream* GetStreamInternal(int iStreamId);
   void CreateStreams(unsigned int program = UINT_MAX);
   void DisposeStreams();
+  void ParsePacket(AVPacket *pkt);
+  bool IsVideoReady();
+  void ResetVideoStreams();
 
   AVDictionary *GetFFMpegOptionsFromURL(const CURL &url);
   double ConvertTimestamp(int64_t pts, int den, int num);
@@ -138,10 +141,6 @@ protected:
   std::vector<std::map<int, CDemuxStream*>::iterator> m_stream_index;
 
   AVIOContext* m_ioContext;
-
-  DllAvFormat m_dllAvFormat;
-  DllAvCodec  m_dllAvCodec;
-  DllAvUtil   m_dllAvUtil;
 
   double   m_iCurrentPts; // used for stream length estimation
   bool     m_bMatroska;
@@ -158,5 +157,9 @@ protected:
     AVPacket pkt;       // packet ffmpeg returned
     int      result;    // result from av_read_packet
   }m_pkt;
+
+  bool m_bPtsWrap, m_bPtsWrapChecked;
+  int64_t m_iStartTime, m_iMaxTime, m_iEndTime;
+  bool m_streaminfo;
 };
 

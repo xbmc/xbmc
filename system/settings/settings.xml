@@ -516,6 +516,15 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.usevaapiswfilter" type="boolean" parent="videoplayer.usevaapi" label="13453" help="36430">
+          <requirement>HAVE_LIBVA</requirement>
+          <dependencies>
+            <dependency type="visible" setting="videoplayer.usevaapi" operator="is">true</dependency>
+          </dependencies>
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
           <requirement>HasDXVA2</requirement>
           <dependencies>
@@ -2163,6 +2172,21 @@
   <section id="system" label="13000" help="36349">
     <category id="videoscreen" label="21373" help="36350">
       <group id="1">
+        <setting id="videoscreen.monitor" type="string" label="246" help="">
+          <visible>HAS_GLX</visible>
+          <level>0</level>
+          <default>Default</default>
+          <constraints>
+            <options>monitors</options>
+          </constraints>
+          <control type="spinner" format="string" delayed="true" />
+        </setting>
+        <setting id="videoscreen.monitorsingle" type="boolean" label="14101" help="">
+          <visible>HAS_GLX</visible>
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoscreen.screen" type="integer" label="240" help="36351">
           <level>0</level>
           <default>0</default>
@@ -2184,6 +2208,7 @@
             <dependency type="enable" setting="videoscreen.screen" operator="!is">-1</dependency> <!-- DM_WINDOWED -->
             <dependency type="update" setting="videoscreen.screen" />
             <dependency type="update" setting="videoscreen.screenmode" />
+            <dependency type="update" setting="videoscreen.monitor" />
           </dependencies>
           <control type="list" format="string" />
         </setting>
@@ -2213,6 +2238,7 @@
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.blankdisplays" type="boolean" label="13130" help="36355">
+          <visible>!HAS_GLX</visible>
           <level>1</level>
           <default>false</default>
           <dependencies>

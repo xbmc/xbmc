@@ -22,7 +22,6 @@
 #include "DVDVideoCodec.h"
 #include <CoreVideo/CoreVideo.h>
 
-class DllSwScale;
 class CBitstreamConverter;
 struct frame_queue;
 
@@ -66,6 +65,5 @@ protected:
 
   CBitstreamConverter *m_bitstream;
 
-  DllSwScale        *m_dllSwScale;
   DVDVideoPicture   m_videobuffer;
 };

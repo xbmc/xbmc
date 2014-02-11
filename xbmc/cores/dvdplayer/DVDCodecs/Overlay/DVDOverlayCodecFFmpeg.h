@@ -21,8 +21,11 @@
  */
 
 #include "DVDOverlayCodec.h"
-#include "DllAvCodec.h"
-#include "DllAvUtil.h"
+
+extern "C" {
+#include "libavcodec/avcodec.h"
+#include "libavutil/avutil.h"
+}
 
 class CDVDOverlaySpu;
 class CDVDOverlayText;
@@ -50,8 +53,4 @@ private:
 
   int             m_width;
   int             m_height;
-
-  DllAvCodec      m_dllAvCodec;
-  DllAvUtil       m_dllAvUtil;
-
 };

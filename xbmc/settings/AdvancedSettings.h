@@ -160,6 +160,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_videoPercentSeekBackwardBig;
     CStdString m_videoPPFFmpegDeint;
     CStdString m_videoPPFFmpegPostProc;
+    int m_videoVDPAUdeintHD;
+    int m_videoVDPAUdeintSD;
     bool m_videoVDPAUtelecine;
     bool m_videoVDPAUdeintSkipChromaHD;
     bool m_musicUseTimeSeeking;
@@ -192,7 +194,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVANoDeintProcForProgressive;
     int  m_videoFpsDetect;
     int  m_videoBusyDialogDelay_ms;
-    bool m_videoDisableHi10pMultithreading;
+    bool m_videoDisableSWMultithreading;
     StagefrightConfig m_stagefrightConfig;
 
     CStdString m_videoDefaultPlayer;

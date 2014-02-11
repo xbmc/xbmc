@@ -19,8 +19,11 @@
  *
  */
 
-#include "DllAvCodec.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+
+extern "C" {
+#include "libavcodec/avcodec.h"
+}
 
 /**
  * IAEEncoder interface for on the fly audio compression

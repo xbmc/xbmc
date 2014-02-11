@@ -22,9 +22,9 @@
 
 #include <list>
 #include "system.h"
-#include "DllAvFormat.h"
-#include "DllAvCodec.h"
-#include "DllAvUtil.h"
+#include "libavformat/avformat.h"
+#include "libavcodec/avcodec.h"
+#include "libavutil/avutil.h"
 
 #include "DVDAudioCodec.h"
 
@@ -49,10 +49,6 @@ public:
   virtual const char* GetName()  { return "PassthroughFFmpeg"; }
   virtual int GetBufferSize();
 private:
-  DllAvFormat m_dllAvFormat;
-  DllAvUtil   m_dllAvUtil;
-  DllAvCodec  m_dllAvCodec;
-
   typedef struct
   {
     int      size;

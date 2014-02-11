@@ -39,8 +39,6 @@ typedef struct frame_queue {
   struct frame_queue  *nextframe;
 } frame_queue;
 
-class DllAvUtil;
-class DllAvFormat;
 class CDVDVideoCodecVideoToolBox : public CDVDVideoCodec
 {
 public:
@@ -80,9 +78,6 @@ protected:
 
   bool              m_convert_bytestream;
   bool              m_convert_3byteTo4byteNALSize;
-
-  DllAvUtil         *m_dllAvUtil;
-  DllAvFormat       *m_dllAvFormat;
 };
 
 #endif

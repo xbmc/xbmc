@@ -1019,7 +1019,9 @@ msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr ""
 
-#empty string with id 246
+msgctxt "#246"
+msgid "Monitor"
+msgstr ""
 
 msgctxt "#247"
 msgid "Scripts"
@@ -6072,7 +6074,13 @@ msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
 msgstr ""
 
-#empty strings from id 13453 to 13499
+#. Description of setting #13453 'Use SW Filter for VAAPI'
+#: system/settings/settings.xml
+msgctxt "#13453"
+msgid "Use SW Filter for VAAPI"
+msgstr ""
+
+#empty strings from id 13454 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
@@ -6535,7 +6543,7 @@ msgctxt "#14071"
 msgid "Allow file renaming and deletion"
 msgstr ""
 
-#empty strings from id 14072 to 14073
+#empty strings from id 14073 to 14073
 
 msgctxt "#14074"
 msgid "Set timezone"
@@ -6667,7 +6675,12 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr ""
 
-#empty strings from id 14101 to 15011
+#: xbmc/settings/settings.xml
+msgctxt "#14101"
+msgid "Switch off other Monitor"
+msgstr ""
+
+#empty strings from id 14102 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -14870,7 +14883,12 @@ msgctxt "#36429"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - transcoding can lead to a reduction in sound quality"
 msgstr ""
 
-#empty strings from id 36430 to 36499
+#: system/settings/settings.xml
+msgctxt "#36430"
+msgid "This option enables the deinterlacing methods available for software decoding. It gives the possiblity to use high quality deinterlacers in combination with VAAPI."
+msgstr ""
+
+#empty strings from id 36431 to 36499
 #end reservation
 
 #: system/settings/settings.xml

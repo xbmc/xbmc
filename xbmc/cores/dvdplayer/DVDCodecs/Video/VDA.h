@@ -21,7 +21,7 @@
 
 #include "system_gl.h"
 
-#include "DllAvCodec.h"
+#include "libavcodec/avcodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 
 struct vda_context;

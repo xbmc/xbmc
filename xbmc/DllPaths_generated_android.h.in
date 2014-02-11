@@ -75,15 +75,6 @@
 #define DLL_PATH_LIBMAD        "@MAD_SONAME@"
 #define DLL_PATH_LIBSTAGEFRIGHTICS    "libXBMCvcodec_stagefrightICS-@ARCH@.so"
 
-/* ffmpeg */
-#define DLL_PATH_LIBAVCODEC    "libavcodec-54-@ARCH@.so"
-#define DLL_PATH_LIBAVFORMAT   "libavformat-54-@ARCH@.so"
-#define DLL_PATH_LIBAVUTIL     "libavutil-52-@ARCH@.so"
-#define DLL_PATH_LIBPOSTPROC   "libpostproc-52-@ARCH@.so"
-#define DLL_PATH_LIBSWSCALE    "libswscale-2-@ARCH@.so"
-#define DLL_PATH_LIBAVFILTER   "libavfilter-3-@ARCH@.so"
-#define DLL_PATH_LIBSWRESAMPLE "libswresample-0-@ARCH@.so"
-
 /* cdrip */
 #define DLL_PATH_LAME_ENC      "@LAMEENC_SONAME@"
 #define DLL_PATH_OGG           "@OGG_SONAME@"

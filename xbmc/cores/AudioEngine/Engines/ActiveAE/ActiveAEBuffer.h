@@ -19,11 +19,14 @@
  *
  */
 
-#include "DllAvUtil.h"
-#include "DllSwResample.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include <deque>
+
+extern "C" {
+#include "libavutil/avutil.h"
+#include "libswresample/swresample.h"
+}
 
 namespace ActiveAE
 {
