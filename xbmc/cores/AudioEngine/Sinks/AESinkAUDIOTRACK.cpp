@@ -257,10 +257,15 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_sampleRates.clear();
 
   m_info.m_deviceType = AE_DEVTYPE_PCM;
+  m_info.m_dataFormats.push_back(AE_FMT_S16LE);
 #if defined(HAS_LIBAMCODEC)
   // AML devices can do passthough
   if (aml_present())
+  {
     m_info.m_deviceType = AE_DEVTYPE_HDMI;
+    m_info.m_dataFormats.push_back(AE_FMT_AC3);
+    m_info.m_dataFormats.push_back(AE_FMT_DTS);
+  }
 #endif
   m_info.m_deviceName = "AudioTrack";
   m_info.m_displayName = "android";
@@ -269,7 +274,6 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_channels += AE_CH_FR;
   m_info.m_sampleRates.push_back(44100);
   m_info.m_sampleRates.push_back(48000);
-  m_info.m_dataFormats.push_back(AE_FMT_S16LE);
 #if 0 //defined(__ARM_NEON__)
   if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
     m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
