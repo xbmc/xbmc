@@ -276,7 +276,13 @@ unsigned int CActiveAEStream::AddData(void *data, unsigned int size)
       }
     }
     if (!m_inMsgEvent.WaitMSec(200))
+    {
+      double cachetime = GetCacheTime();
+      CSingleLock lock(m_streamLock);
+      CLog::Log(LOGWARNING, "CActiveAEStream::AddData - timeout waiting for buffer, paused: %d, cache time: %f, free buffers: %d",
+                             m_paused, cachetime, m_streamFreeBuffers);
       break;
+    }
   }
   return copied;
 }
