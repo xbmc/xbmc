@@ -33,6 +33,7 @@
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecInfo.h"
 
 class CRenderCapture;
 
@@ -173,6 +174,7 @@ public:
   // mediaCodec
   virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
 #endif
+  virtual void         AddProcessor(CDVDVideoCodecBuffer *codecinfo, int index);
 
 protected:
   virtual void Render(DWORD flags, int index);
@@ -211,6 +213,8 @@ protected:
   void UploadSurfaceTexture(int index);
   void DeleteSurfaceTexture(int index);
   bool CreateSurfaceTexture(int index);
+
+  void UploadYV12BufferTexture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
@@ -288,6 +292,7 @@ protected:
     // mediacodec
     CDVDMediaCodecInfo *mediacodec;
 #endif
+    CDVDVideoCodecBuffer *codecinfo;
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];

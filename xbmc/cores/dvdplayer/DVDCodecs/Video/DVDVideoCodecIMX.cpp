@@ -316,6 +316,8 @@ CDVDVideoCodecIMX::CDVDVideoCodecIMX()
   {
     m_usePTS = false;
   }
+  m_converter = NULL;
+  m_convert_bitstream = false;
 }
 
 CDVDVideoCodecIMX::~CDVDVideoCodecIMX()
@@ -767,13 +769,7 @@ bool CDVDVideoCodecIMX::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   if (pDvdVideoPicture)
   {
-    //clear frame display flag
-    VpuDecRetCode ret = VPU_DecOutFrameDisplayed(m_vpuHandle, m_frameInfo.pDisplayFrameBuf);
-    if(ret != VPU_DEC_RET_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: vpu clear frame display failure: ret=%d \r\n",__FUNCTION__,ret);
-      return false;
-    }
+    SAFE_RELEASE(pDvdVideoPicture->codecinfo);
   }
 
   return true;
@@ -805,15 +801,18 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->iDisplayWidth = ((pDvdVideoPicture->iWidth * m_frameInfo.pExtInfo->nQ16ShiftWidthDivHeightRatio) + 32767) >> 16;
     pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
   }
-  pDvdVideoPicture->format = RENDER_FMT_YUV420P;
-  pDvdVideoPicture->iLineSize[0] = m_frameInfo.pDisplayFrameBuf->nStrideY;
-  pDvdVideoPicture->iLineSize[1] = m_frameInfo.pDisplayFrameBuf->nStrideC;
-  pDvdVideoPicture->iLineSize[2] = m_frameInfo.pDisplayFrameBuf->nStrideC;
-  pDvdVideoPicture->iLineSize[3] = 0;
-  pDvdVideoPicture->data[0] = m_frameInfo.pDisplayFrameBuf->pbufVirtY;
-  pDvdVideoPicture->data[1] = m_frameInfo.pDisplayFrameBuf->pbufVirtCb;
-  pDvdVideoPicture->data[2] = m_frameInfo.pDisplayFrameBuf->pbufVirtCr;
-  pDvdVideoPicture->data[3] = 0;
+
+  pDvdVideoPicture->format = RENDER_FMT_YV12_BUFFER;
+
+  pDvdVideoPicture->codecinfo = new CDVDVideoCodecIMXBuffer(m_vpuHandle, m_frameInfo);
+  pDvdVideoPicture->codecinfo->iLineSize[0] = m_frameInfo.pDisplayFrameBuf->nStrideY;
+  pDvdVideoPicture->codecinfo->iLineSize[1] = m_frameInfo.pDisplayFrameBuf->nStrideC;
+  pDvdVideoPicture->codecinfo->iLineSize[2] = m_frameInfo.pDisplayFrameBuf->nStrideC;
+  pDvdVideoPicture->codecinfo->iLineSize[3] = 0;
+  pDvdVideoPicture->codecinfo->data[0] = m_frameInfo.pDisplayFrameBuf->pbufVirtY;
+  pDvdVideoPicture->codecinfo->data[1] = m_frameInfo.pDisplayFrameBuf->pbufVirtCb;
+  pDvdVideoPicture->codecinfo->data[2] = m_frameInfo.pDisplayFrameBuf->pbufVirtCr;
+  pDvdVideoPicture->codecinfo->data[3] = 0;
 
   return true;
 }
@@ -830,4 +829,39 @@ void CDVDVideoCodecIMX::SetDropState(bool bDrop)
     m_dropState = bDrop;
     CLog::Log(LOGNOTICE, "%s : %d\n", __FUNCTION__, bDrop);
   }
+}
+
+/*******************************************/
+
+CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer(VpuDecHandle handle, VpuDecOutFrameInfo frameInfo)
+  : m_refs(1)
+  , m_vpuHandle(handle)
+  , m_frameInfo(frameInfo)
+{
+}
+
+void CDVDVideoCodecIMXBuffer::Lock()
+{
+  AtomicIncrement(&m_refs);
+}
+
+long CDVDVideoCodecIMXBuffer::Release()
+{
+  long count = AtomicDecrement(&m_refs);
+  if (count == 0)
+  {
+    VpuDecRetCode ret = VPU_DecOutFrameDisplayed(m_vpuHandle, m_frameInfo.pDisplayFrameBuf);
+    if(ret != VPU_DEC_RET_SUCCESS)
+    {
+      CLog::Log(LOGERROR, "%s: vpu clear frame display failure: ret=%d \r\n",__FUNCTION__,ret);
+    }
+    delete this;
+  }
+
+  return count;
+}
+
+CDVDVideoCodecIMXBuffer::~CDVDVideoCodecIMXBuffer()
+{
+  assert(m_refs == 0);
 }

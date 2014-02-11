@@ -23,6 +23,7 @@
 #include <imx-mm/vpu/vpu_wrapper.h>
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
+#include "DVDVideoCodecInfo.h"
 #include "threads/CriticalSection.h"
 #include "utils/BitstreamConverter.h"
 
@@ -44,6 +45,24 @@ typedef struct
   unsigned int phyMem_cpuAddr[VPU_DEC_MAX_NUM_MEM_NUM];
   unsigned int phyMem_size[VPU_DEC_MAX_NUM_MEM_NUM];
 } DecMemInfo;
+
+class CDVDVideoCodecIMXBuffer : public CDVDVideoCodecBuffer
+{
+public:
+  CDVDVideoCodecIMXBuffer(VpuDecHandle handle, VpuDecOutFrameInfo frameInfo);
+
+  // reference counting
+  virtual void                Lock();
+  virtual long                Release();
+
+protected:
+  // private because we are reference counted
+  virtual            ~CDVDVideoCodecIMXBuffer();
+
+  long                m_refs;
+  VpuDecHandle        m_vpuHandle;         // Handle for VPU library calls
+  VpuDecOutFrameInfo  m_frameInfo;
+};
 
 class CDVDVideoCodecIMX : public CDVDVideoCodec
 {

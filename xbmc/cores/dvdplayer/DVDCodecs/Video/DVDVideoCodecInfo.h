@@ -1,7 +1,5 @@
-#ifndef _RENDER_FORMATS_H_
-#define _RENDER_FORMATS_H_
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2010-2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,24 +18,20 @@
  *
  */
 
-enum ERenderFormat {
-  RENDER_FMT_NONE = 0,
-  RENDER_FMT_YUV420P,
-  RENDER_FMT_YUV420P10,
-  RENDER_FMT_YUV420P16,
-  RENDER_FMT_VDPAU,
-  RENDER_FMT_VDPAU_420,
-  RENDER_FMT_NV12,
-  RENDER_FMT_UYVY422,
-  RENDER_FMT_YUYV422,
-  RENDER_FMT_DXVA,
-  RENDER_FMT_VAAPI,
-  RENDER_FMT_OMXEGL,
-  RENDER_FMT_CVBREF,
-  RENDER_FMT_BYPASS,
-  RENDER_FMT_EGLIMG,
-  RENDER_FMT_MEDIACODEC,
-  RENDER_FMT_YV12_BUFFER,
+#ifndef DVDVIDEOCODECINFO_H
+#define DVDVIDEOCODECINFO_H
+
+#include "cores/VideoRenderers/RenderFormats.h"
+
+class CDVDVideoCodecBuffer
+{
+public:
+  // reference counting
+  virtual void                Lock() = 0;
+  virtual long                Release() = 0;
+
+  uint8_t*            data[4];      // [4] = alpha channel, currently not used
+  int                 iLineSize[4];   // [4] = alpha channel, currently not used
 };
 
-#endif
+#endif // DVDVIDEOCODECINFO_H
