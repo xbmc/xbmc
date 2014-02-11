@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "video/VideoInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
 #include "URL.h"
 
 namespace XFILE
@@ -201,6 +202,8 @@ CStdString CFavouritesDirectory::GetExecutePath(const CFileItem &item, const std
   {
     if (item.IsVideoDb() && item.HasVideoInfoTag())
       execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath).c_str());
+    else if (item.IsMusicDb() && item.HasMusicInfoTag())
+      execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()).c_str());
     else
       execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetPath()).c_str());
   }
