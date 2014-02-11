@@ -96,10 +96,10 @@ void CProfilesManager::OnSettingsLoaded()
   CDirectory::Create(URIUtils::AddFileToFolder(strDir,"mixed"));
 }
 
-bool CProfilesManager::OnSettingsSaved()
+void CProfilesManager::OnSettingsSaved()
 {
   // save mastercode
-  return Save();
+  Save();
 }
 
 void CProfilesManager::OnSettingsCleared()

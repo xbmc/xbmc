@@ -35,7 +35,7 @@ public:
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
   virtual void OnSettingsLoaded();
-  virtual void OnSettingsSaved() const;
+  virtual void OnSettingsSaved();
 
   // struct to keep per host settings
   struct WakeUpEntry

@@ -834,11 +834,14 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
     XMLUtils::GetInt(pRootElement, "loglevel", m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
-    CSettingBool *setting = (CSettingBool *)CSettings::Get().GetSetting("debug.showloginfo");
-    if (setting != NULL)
+    const char* hide = pElement->Attribute("hide");
+    if (hide == NULL || strnicmp("false", hide, 4) != 0)
     {
-      const char* hide;
-      if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
+      CSetting *setting = CSettings::Get().GetSetting("debug.showloginfo");
+      if (setting != NULL)
+        setting->SetVisible(false);
+      setting = CSettings::Get().GetSetting("debug.setextraloglevel");
+      if (setting != NULL)
         setting->SetVisible(false);
     }
     g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
