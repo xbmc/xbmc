@@ -107,6 +107,30 @@ bool CActiveAESink::HasPassthroughDevice()
   return false;
 }
 
+bool CActiveAESink::SupportsFormat(const std::string &device, AEDataFormat format)
+{
+  std::string dev = device;
+  std::string dri;
+  CAESinkFactory::ParseDevice(dev, dri);
+  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+  {
+    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    {
+      CAEDeviceInfo& info = *itt2;
+      if (info.m_deviceName == dev)
+      {
+        AEDataFormatList::iterator itt3;
+        itt3 = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), format);
+        if (itt3 != info.m_dataFormats.end())
+          return true;
+        else
+          return false;
+      }
+    }
+  }
+  return false;
+}
+
 enum SINK_STATES
 {
   S_TOP = 0,                      // 0

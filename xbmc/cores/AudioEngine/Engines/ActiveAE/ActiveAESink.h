@@ -97,6 +97,7 @@ public:
   void Dispose();
   AEDeviceType GetDeviceType(const std::string &device);
   bool HasPassthroughDevice();
+  bool SupportsFormat(const std::string &device, AEDataFormat format);
   CSinkControlProtocol m_controlPort;
   CSinkDataProtocol m_dataPort;
 

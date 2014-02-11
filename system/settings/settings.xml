@@ -2454,7 +2454,8 @@
             <dependency type="visible">
               <and>
                 <condition setting="audiooutput.passthrough" operator="is">true</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.eac3passthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.eac3passthrough</condition>
               </and>
             </dependency>
           </dependencies>

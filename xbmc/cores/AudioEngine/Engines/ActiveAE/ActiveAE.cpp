@@ -2123,17 +2123,9 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
 
 bool CActiveAE::SupportsRaw(AEDataFormat format)
 {
-  if (!m_sink.HasPassthroughDevice())
+  if (!m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), format))
     return false;
 
-  // those formats require HDMI
-  if (format == AE_FMT_DTSHD || format == AE_FMT_TRUEHD)
-  {
-    if(m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.passthroughdevice")) != AE_DEVTYPE_HDMI)
-      return false;
-  }
-
-  // TODO: check ELD?
   return true;
 }
 
@@ -2171,16 +2163,20 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
   }
   else if (settingId == "audiooutput.truehdpassthrough")
   {
-    if (m_sink.HasPassthroughDevice() &&
-        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED &&
-        m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.passthroughdevice")) == AE_DEVTYPE_HDMI)
+    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_TRUEHD) &&
+        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
       return true;
   }
   else if (settingId == "audiooutput.dtshdpassthrough")
   {
-    if (m_sink.HasPassthroughDevice() &&
-        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED &&
-        m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.passthroughdevice")) == AE_DEVTYPE_HDMI)
+    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_DTSHD) &&
+        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
+      return true;
+  }
+  else if (settingId == "audiooutput.eac3passthrough")
+  {
+    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_EAC3) &&
+        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
       return true;
   }
   else if (settingId == "audiooutput.stereoupmix")
