@@ -272,7 +272,8 @@ SKIN_DIRS+=$(TOUCHED_MEDIA)
 endif
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) xbmc/main
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) \
+        xbmc/main xbmc/android/activity xbmc
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -512,9 +513,9 @@ ifneq (@USE_LIBXBMC@,1)
 MAINOBJS+=xbmc/main/main.o
 endif
 
-xbmc/xbmc.o: xbmc/xbmc.a
+xbmc/xbmc.o xbmc/xbmc.a: xbmc
 
-xbmc/android/activity/android_main.o: xbmc/android/activity/activity.a
+xbmc/android/activity/android_main.o xbmc/android/activity/activity.a: xbmc/android/activity
 
 xbmc/main/main.o xbmc/main/main.a: xbmc/main
 
