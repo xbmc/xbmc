@@ -137,7 +137,7 @@ wayland_disabled="== Wayland disabled. =="
 x11_enabled="== X11 enabled. =="
 x11_disabled="== X11 disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
-pulse_disabled="== PulseAudio support manually disabled. =="
+pulse_disabled="== PulseAudio support disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
 hal_not_found="== Could not find hal. HAL support disabled. =="
@@ -1327,17 +1327,17 @@ if test "x$use_pulse" != "xno"; then
     fi
     USE_PULSE=0
   else
-    AC_CHECK_LIB([pulse],[main],,pulse_found="no")
-    AC_CHECK_LIB([pulse-simple],[main],,pulse_found="no")
+    PKG_CHECK_MODULES([PULSE], [libpulse >= 1.0],
+      [INCLUDES="$INCLUDES $PULSE_CFLAGS"; LIBS="$LIBS $PULSE_LIBS"; USE_PULSE=1;
+        HAVE_LIBPULSE=1; AC_DEFINE([HAVE_LIBPULSE],[1],[Pulse audio enabled])],
+      [pulse_found="no"; USE_PULSE=0; HAVE_LIBPULSE=0])
 
-    if test "x$pulse_found" != "xno"; then
-      USE_PULSE=1
-    elif test "x$use_pulse" = "xyes"; then
-      AC_MSG_ERROR($pulse_not_found)
-    else
-      use_pulse=no
-      USE_PULSE=0
-      AC_MSG_RESULT($pulse_not_found)
+    if test "$pulse_found" = "no"; then
+      if test "x$use_pulse" = "xyes"; then
+        AC_MSG_ERROR($pulse_not_found)
+      else
+        AC_MSG_RESULT($pulse_disabled)
+      fi
     fi
   fi
 else
@@ -2643,6 +2643,7 @@ AC_SUBST(USE_LIBAFPCLIENT)
 AC_SUBST(USE_AIRPLAY)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
+AC_SUBST(HAVE_LIBPULSE)
 AC_SUBST(USE_XRANDR)
 AC_SUBST(USE_ALSA)
 AC_SUBST(USE_TEXTUREPACKER)
