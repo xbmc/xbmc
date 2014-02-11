@@ -22,18 +22,21 @@
  */
 
 #include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
 #include "utils/StdString.h"
 #include <vector>
 #include <map>
 
 class CSetting;
 
-class CLinuxTimezone : public ISettingCallback
+class CLinuxTimezone : public ISettingCallback, public ISettingsHandler
 {
 public:
    CLinuxTimezone();
 
    virtual void OnSettingChanged(const CSetting *setting);
+
+   virtual void OnSettingsLoaded();
 
    CStdString GetOSConfiguredTimezone();
 
