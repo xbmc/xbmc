@@ -13299,7 +13299,6 @@
 					"-ltag",
 					"-lxslt",
 					"-lxml2",
-					"-lmpeg2",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -13416,7 +13415,6 @@
 					"-ltag",
 					"-lxslt",
 					"-lxml2",
-					"-lmpeg2",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
