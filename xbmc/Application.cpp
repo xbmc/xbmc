@@ -1746,8 +1746,10 @@ bool CApplication::StartWebServer()
       std::vector<std::pair<std::string, std::string> > txt;
       started = true;
       // publish web frontend and API services
+#ifndef __PLEX__
 #ifdef HAS_WEB_INTERFACE
       CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
+#endif
 #endif
 #ifdef HAS_JSONRPC
       CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-h._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
