@@ -9,8 +9,8 @@
 	#define XML_ATTRIBUTE TiXmlAttribute
 #else
 	#include "rapidxml.hpp"
-	#define XML_ELEMENT xml_node<>
-	#define XML_ATTRIBUTE xml_attribute<>
+  #define XML_ELEMENT rapidxml::xml_node<>
+  #define XML_ATTRIBUTE rapidxml::xml_attribute<>
 
 #endif
 

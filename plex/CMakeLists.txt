@@ -43,6 +43,10 @@ if(TARGET_WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /DELAYLOAD:dnssd.dll /DELAYLOAD:dwmapi.dll /DELAYLOAD:libmicrohttpd-5.dll /DELAYLOAD:sqlite3.dll /DELAYLOAD:libsamplerate-0.dll /MANIFEST:NO")
 endif(TARGET_WIN32)
 
+OPTION(USE_RAPIDXML "Use RAPIDXML instead of TinyXML - Faster" OFF)
+if(USE_RAPIDXML)
+  add_definitions(-DUSE_RAPIDXML)
+endif(USE_RAPIDXML)
 
 add_subdirectory(CrashReporter)
 add_subdirectory(Client)
