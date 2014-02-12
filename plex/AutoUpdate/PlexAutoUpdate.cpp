@@ -36,7 +36,7 @@ using namespace XFILE;
 CPlexAutoUpdate::CPlexAutoUpdate()
   : m_forced(false), m_isSearching(false), m_isDownloading(false), m_ready(false), m_percentage(0)
 {
-  m_url = CURL("https://my.plexapp.com/updater/products/2/check.xml");
+  m_url = CURL("https://plex.tv/updater/products/2/check.xml");
 
   m_searchFrequency = 86400000; /* default to 24h */
 

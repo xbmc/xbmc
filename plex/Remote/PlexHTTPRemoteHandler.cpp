@@ -244,7 +244,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
         token = serverURL.GetOption("X-Plex-Token");
 
       server->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED,
-                                                                   serverURL.GetHostName(), serverURL.GetPort(), token)));
+                                                                   serverURL.GetHostName(), serverURL.GetPort(), "http", token)));
     }
   }
 

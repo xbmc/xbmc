@@ -6,17 +6,14 @@
 
 using namespace XFILE;
 
-CPlexConnection::CPlexConnection(int type, const CStdString& host, int port, const CStdString& token) :
+CPlexConnection::CPlexConnection(int type, const CStdString& host, int port, const CStdString& schema, const CStdString& token) :
   m_type(type), m_state(CONNECTION_STATE_UNKNOWN), m_token(token)
 {
   m_url.SetHostName(host);
   m_url.SetPort(port);
-  m_refreshed = true;
-  if (port == 443)
-    m_url.SetProtocol("https");
-  else
-    m_url.SetProtocol("http");
+  m_url.SetProtocol(schema);
 
+  m_refreshed = true;
   m_http.SetTimeout(3);
 }
 
@@ -129,6 +126,7 @@ void CPlexConnection::save(TiXmlNode* server)
   conn.SetAttribute("port", m_url.GetPort());
   conn.SetAttribute("token", m_token.c_str());
   conn.SetAttribute("type", m_type);
+  conn.SetAttribute("scheme", (std::string)m_url.GetProtocol());
 
   server->InsertEndChild(conn);
 }
@@ -136,7 +134,7 @@ void CPlexConnection::save(TiXmlNode* server)
 CPlexConnectionPtr CPlexConnection::load(TiXmlElement *element)
 {
   int port, type;
-  std::string host, token;
+  std::string host, token, scheme;
 
   if (element->QueryStringAttribute("host", &host) != TIXML_SUCCESS)
     return CPlexConnectionPtr();
@@ -150,7 +148,10 @@ CPlexConnectionPtr CPlexConnection::load(TiXmlElement *element)
   if (element->QueryIntAttribute("type", &type) != TIXML_SUCCESS)
     return CPlexConnectionPtr();
 
-  CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(type, host, port, token));
+  if (element->QueryStringAttribute("scheme", &scheme) != TIXML_SUCCESS)
+    scheme = "http";
+
+  CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(type, host, port, scheme, token));
 
   return connection;
 }

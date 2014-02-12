@@ -55,12 +55,13 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
       CStdString address = serverItem->GetProperty("address").asString();
       CStdString token = serverItem->GetProperty("accessToken").asString();
       CStdString localAddresses = serverItem->GetProperty("localAddresses").asString();
+      CStdString schema = serverItem->GetProperty("scheme").asString();
       int port = serverItem->GetProperty("port").asInteger();
 
       if (address.empty() || token.empty())
         continue;
 
-      CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, address, port, token));
+      CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, address, port, schema, token));
       server->AddConnection(connection);
 
       /* only add localConnections for non-shared servers */
@@ -69,7 +70,7 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
         CStdStringArray addressList = StringUtils::SplitString(localAddresses, ",", 0);
         BOOST_FOREACH(CStdString laddress, addressList)
         {
-          CPlexConnectionPtr lconn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, laddress, DEFAULT_PORT, token));
+          CPlexConnectionPtr lconn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, laddress, DEFAULT_PORT, schema, token));
           server->AddConnection(lconn);
         }
       }
