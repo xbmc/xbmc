@@ -11,12 +11,13 @@
 
 #include "FileItem.h"
 #include "FileSystem/PlexDirectory.h"
+#include "XMLChoice.h"
 
 class CPlexDirectoryTypeParserBase
 {
   public:
     CPlexDirectoryTypeParserBase() {}
-    virtual void Process(CFileItem& item, CFileItem& mediaContainer, TiXmlElement* itemElement) {}
+    virtual void Process(CFileItem& item, CFileItem& mediaContainer, XML_ELEMENT* itemElement) {}
 
     static CPlexDirectoryTypeParserBase* GetDirectoryTypeParser(EPlexDirectoryType type);
 };

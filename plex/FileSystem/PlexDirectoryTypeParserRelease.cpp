@@ -3,9 +3,13 @@
 #include "PlexAttributeParser.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexDirectoryTypeParserRelease::Process(CFileItem &item, CFileItem &mediaContainer, TiXmlElement *itemElement)
+void CPlexDirectoryTypeParserRelease::Process(CFileItem &item, CFileItem &mediaContainer, XML_ELEMENT *itemElement)
 {
-  for (TiXmlElement* package = itemElement->FirstChildElement(); package ; package = package->NextSiblingElement())
+#ifndef USE_RAPIDXML
+  for (XML_ELEMENT* package = itemElement->FirstChildElement(); package; package = package->NextSiblingElement())
+#else
+  for (XML_ELEMENT* package = itemElement->first_node(); package; package = package->next_sibling())
+#endif
   {
     CFileItemPtr pItem = XFILE::CPlexDirectory::NewPlexElement(package, item, item.GetPath());
     if(!pItem)

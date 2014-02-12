@@ -46,7 +46,7 @@ using namespace XFILE;
  */
 
 void
-CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContainer, TiXmlElement *itemElement)
+CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContainer, XML_ELEMENT *itemElement)
 {
   /* Element recevied here is the <Video> tag */
   CVideoInfoTag videoTag;
@@ -153,11 +153,14 @@ CPlexDirectoryTypeParserVideo::Process(CFileItem &item, CFileItem &mediaContaine
 
 /* Loop over <Media> tags under <Video> */
 void
-CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, TiXmlElement *element)
+CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *element)
 {
   int thumbIdx = 0;
-
-  for (TiXmlElement* media = element->FirstChildElement(); media ; media = media->NextSiblingElement())
+#ifndef USE_RAPIDXML
+  for (XML_ELEMENT* media = element->FirstChildElement(); media; media = media->NextSiblingElement())
+#else
+  for (XML_ELEMENT* media = element->first_node(); media; media = media->next_sibling())
+#endif
   {
     CFileItemPtr mediaItem = CPlexDirectory::NewPlexElement(media, item, item.GetPath());
 
@@ -192,9 +195,13 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, TiXmlElement *el
   SetTagsAsProperties(item);
 }
 
-void CPlexDirectoryTypeParserVideo::ParseMediaParts(CFileItem &mediaItem, TiXmlElement* element)
+void CPlexDirectoryTypeParserVideo::ParseMediaParts(CFileItem &mediaItem, XML_ELEMENT* element)
 {
-  for (TiXmlElement* part = element->FirstChildElement(); part; part = part->NextSiblingElement())
+#ifndef USE_RAPIDXML
+  for (XML_ELEMENT* part = element->FirstChildElement(); part; part = part->NextSiblingElement())
+#else
+  for (XML_ELEMENT* part = element->first_node(); part; part = part->next_sibling())
+#endif
   {
     CFileItemPtr mediaPart = CPlexDirectory::NewPlexElement(part, mediaItem, mediaItem.GetPath());
 
@@ -211,9 +218,13 @@ void CPlexDirectoryTypeParserVideo::ParseMediaParts(CFileItem &mediaItem, TiXmlE
   }
 }
 
-void CPlexDirectoryTypeParserVideo::ParseMediaStreams(CFileItem &mediaPart, TiXmlElement* element)
+void CPlexDirectoryTypeParserVideo::ParseMediaStreams(CFileItem &mediaPart, XML_ELEMENT* element)
 {
-  for (TiXmlElement* stream = element->FirstChildElement(); stream; stream = stream->NextSiblingElement())
+#ifndef USE_RAPIDXML
+  for (XML_ELEMENT* stream = element->FirstChildElement(); stream; stream = stream->NextSiblingElement())
+#else
+  for (XML_ELEMENT* stream = element->first_node(); stream; stream = stream->next_sibling())
+#endif
   {
     CFileItemPtr mediaStream = CPlexDirectory::NewPlexElement(stream, mediaPart, mediaPart.GetPath());
 

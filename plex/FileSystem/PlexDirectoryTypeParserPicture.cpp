@@ -10,7 +10,7 @@
 #include "PlexAttributeParser.h"
 #include "pictures/PictureInfoTag.h"
 
-void CPlexDirectoryTypeParserPicture::Process(CFileItem &item, CFileItem &mediaContainer, TiXmlElement *itemElement)
+void CPlexDirectoryTypeParserPicture::Process(CFileItem &item, CFileItem &mediaContainer, XML_ELEMENT *itemElement)
 {
   ParseMediaNodes(item, itemElement);
   if (item.m_mediaItems.size() > 0 && item.m_mediaItems[0]->m_mediaParts.size() > 0)

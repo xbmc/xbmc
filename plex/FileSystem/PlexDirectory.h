@@ -11,7 +11,7 @@
 
 #include "filesystem/IDirectory.h"
 #include "URL.h"
-#include "XBMCTinyXML.h"
+#include "XMLChoice.h"
 #include "FileItem.h"
 
 #include "PlexAttributeParser.h"
@@ -63,10 +63,10 @@ namespace XFILE
       static CFileItemListPtr GetFilterList() { return CFileItemListPtr(); }
       CStdString GetData() const { return m_data; }
 
-      static void CopyAttributes(TiXmlElement* element, CFileItem* fileItem, const CURL &url);
-      static CFileItemPtr NewPlexElement(TiXmlElement *element, const CFileItem& parentItem, const CURL &url = CURL());
+      static void CopyAttributes(XML_ELEMENT* element, CFileItem* fileItem, const CURL &url);
+      static CFileItemPtr NewPlexElement(XML_ELEMENT *element, const CFileItem& parentItem, const CURL &url = CURL());
 
-      static bool IsFolder(const CFileItemPtr& item, TiXmlElement* element);
+      static bool IsFolder(const CFileItemPtr& item, XML_ELEMENT* element);
 
       long GetHTTPResponseCode() const { return m_file.GetLastHTTPResponseCode(); }
     
@@ -77,8 +77,8 @@ namespace XFILE
       static bool CachePath(const CStdString& path);
 
     private:
-      bool ReadMediaContainer(TiXmlElement* root, CFileItemList& mediaContainer);
-      void ReadChildren(TiXmlElement* element, CFileItemList& container);
+      bool ReadMediaContainer(XML_ELEMENT* root, CFileItemList& mediaContainer);
+      void ReadChildren(XML_ELEMENT* element, CFileItemList& container);
 
       CStdString m_body;
       CStdString m_data;
