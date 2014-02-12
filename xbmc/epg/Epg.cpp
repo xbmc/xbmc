@@ -198,7 +198,7 @@ bool CEpg::InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded /* = true */)
 
   if (bUpdateIfNeeded)
   {
-    CDateTime lastActiveTag;
+    CEpgInfoTagPtr lastActiveTag;
 
     /* one of the first items will always match if the list is sorted */
     for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
@@ -210,14 +210,14 @@ bool CEpg::InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded /* = true */)
         return true;
       }
       else if (it->second->WasActive())
-        lastActiveTag = it->first;
+        lastActiveTag = it->second;
     }
 
-    /* there might be a gap between the last and next event. just return the last if found */
-    map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.find(lastActiveTag);
-    if (it != m_tags.end())
+    /* there might be a gap between the last and next event. return the last if found and it ended not more than 5 minutes ago */
+    if (lastActiveTag &&
+        lastActiveTag->EndAsUTC() + CDateTimeSpan(0, 0, 5, 0) >= CDateTime::GetUTCDateTime())
     {
-      tag = *it->second;
+      tag = *lastActiveTag;
       return true;
     }
   }
