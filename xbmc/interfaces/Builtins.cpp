@@ -569,9 +569,15 @@ int CBuiltins::Execute(const CStdString& execString)
             parameters.insert(parameters.begin(), params.begin() + 1, params.end());
             urlParameters = "?" + StringUtils::JoinString(parameters, "&");
           }
+          else
+          {
+            // Add '/' if addon is run without params (will be removed later so it's safe)
+            // Otherwise there are 2 entries for the same plugin in ViewModesX.db
+            urlParameters = "/";
+          }
 
           if (plugin->Provides(CPluginSource::VIDEO))
-            cmd = StringUtils::Format("ActivateWindow(Video,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
+            cmd = StringUtils::Format("ActivateWindow(Videos,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
           else if (plugin->Provides(CPluginSource::AUDIO))
             cmd = StringUtils::Format("ActivateWindow(Music,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
           else if (plugin->Provides(CPluginSource::EXECUTABLE))
