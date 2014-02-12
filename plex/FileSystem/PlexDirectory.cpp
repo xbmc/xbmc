@@ -86,6 +86,9 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     m_url.RemoveProtocolOption("containerStart");
   }
 
+  CStopWatch httpTimer;
+  httpTimer.StartZero();
+
   if (m_body.empty())
     httpSuccess = m_file.Get(m_url.Get(), m_data);
   else
@@ -100,6 +103,8 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     }
     return false;
   }
+
+  CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory::Timing took %f seconds to download XML document", httpTimer.GetElapsedSeconds());
 
   {
 
@@ -148,7 +153,7 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
 
   float elapsed = timer.GetElapsedSeconds();
 
-  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory returning a directory after %f seconds with %d items with content %s", elapsed, fileItems.Size(), fileItems.GetContent().c_str());
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory::Timing returning a directory after total %f seconds with %d items with content %s", elapsed, fileItems.Size(), fileItems.GetContent().c_str());
 
   return true;
 }
