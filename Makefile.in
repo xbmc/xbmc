@@ -272,7 +272,8 @@ SKIN_DIRS+=$(TOUCHED_MEDIA)
 endif
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) xbmc/main
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) \
+        xbmc/main xbmc/android/activity xbmc
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -489,14 +490,17 @@ DYNOBJSXBMC+= xbmc/freebsd/freebsd.a
 endif
 
 ifeq (@USE_STATIC_FFMPEG@,1)
-DYNOBJSXBMC += lib/ffmpeg/libavcodec/libavcodec.a \
-               lib/ffmpeg/libavfilter/libavfilter.a \
-               lib/ffmpeg/libswresample/libswresample.a \
-               lib/ffmpeg/libavformat/libavformat.a \
-               lib/ffmpeg/libavutil/libavutil.a \
-               lib/ffmpeg/libpostproc/libpostproc.a \
-               lib/ffmpeg/libswscale/libswscale.a
+FFMPEGOBJS = lib/ffmpeg/libavcodec/libavcodec.a \
+             lib/ffmpeg/libavfilter/libavfilter.a \
+             lib/ffmpeg/libswresample/libswresample.a \
+             lib/ffmpeg/libavformat/libavformat.a \
+             lib/ffmpeg/libavutil/libavutil.a \
+             lib/ffmpeg/libpostproc/libpostproc.a \
+             lib/ffmpeg/libswscale/libswscale.a
+DYNOBJSXBMC+= $(FFMPEGOBJS)
 LIBS+= @GNUTLS_ALL_LIBS@ @VORBISENC_ALL_LIBS@
+
+$(FFMPEGOBJS): dvdpcodecs
 endif
 
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
@@ -508,6 +512,12 @@ endif
 ifneq (@USE_LIBXBMC@,1)
 MAINOBJS+=xbmc/main/main.o
 endif
+
+xbmc/xbmc.o xbmc/xbmc.a: xbmc
+
+xbmc/android/activity/android_main.o xbmc/android/activity/activity.a: xbmc/android/activity
+
+xbmc/main/main.o xbmc/main/main.a: xbmc/main
 
 # sync these entries manually with tools/depends/target/xbmc-addon-bindings/Makefile
 BINDINGS =xbmc/addons/include/xbmc_addon_cpp_dll.h
@@ -534,9 +544,6 @@ ifeq ($(findstring osx,@ARCH@), osx)
 else
 	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(MAINOBJS) -Wl,--start-group $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group -Wl,--no-undefined $(NWAOBJSXBMC) $(LIBS)
 endif
-
-xbmc/main/main.a: force
-	$(MAKE) -C xbmc/main
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS) xbmc/main/main.a
 
