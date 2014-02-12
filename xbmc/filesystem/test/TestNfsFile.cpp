@@ -18,7 +18,7 @@
  *
  */
 
-#include "filesystem/NfsFile.h"
+#include "filesystem/NFSFile.h"
 #include "test/TestUtils.h"
 
 #include <errno.h>
