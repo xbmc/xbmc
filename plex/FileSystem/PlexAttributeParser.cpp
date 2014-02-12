@@ -93,12 +93,12 @@ void CPlexAttributeParserKey::Process(const CURL& url, const CStdString &key, co
   item->SetProperty("unprocessed_" + key, value);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CPlexAttributeParserMediaUrl::GetImageURL(const CURL &url, const CStdString &source, int height, int width)
 {
   CURL mediaUrl(url);
   CURL imageURL;
-  
+
   /* reset the options to not bust cache stuff */
   mediaUrl.SetOptions("");
 
@@ -112,67 +112,61 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
       mediaUrl.SetHostName("myplex");
   }
 
-  if (boost::starts_with(value, "http://") || boost::starts_with(value, "https://"))
+  if (boost::starts_with(source, "http://") || boost::starts_with(source, "https://"))
   {
-    imageURL = CURL(value);
+    imageURL = CURL(source);
   }
   else
   {
     imageURL.SetProtocol("http");
     imageURL.SetHostName("127.0.0.1");
     imageURL.SetPort(32400);
-    if (boost::starts_with(value, "/"))
-      imageURL.SetFileName(value.substr(1, std::string::npos));
+    if (boost::starts_with(source, "/"))
+      imageURL.SetFileName(source.substr(1, std::string::npos));
     else
-      imageURL.SetFileName(value);
+      imageURL.SetFileName(source);
   }
 
-  CStdString width="0", height="0";
-  CStdString propertyName = key;
-  if (key == "thumb" || key == "poster" || key == "grandparentThumb")
-  {
-    width = height = "320";
-    if (key == "poster")
-    {
-      Process(url, "bigPoster", value, item);
-      Process(url, "originalPoster", value, item);
-    }
-    else if (key == "thumb")
-      Process(url, "bigThumb", value, item);
-    else if (key == "grandparentThumb")
-      Process(url, "bigGrandparentThumb", value, item);
-  }
-  else if (key == "bigPoster" || key == "bigThumb" || key == "bigGrandparentThumb")
-  {
-    width = height = "720";
-  }
-  else if (key == "banner")
-  {
-    width = "800";
-    height = "200";
-  }
-  else if (key == "art")
-  {
-    width = "1920";
-    height = "1080";
-    propertyName = PLEX_ART_FANART;
-  }
-  else if (key == "picture")
-  {
-    width = "1920";
-    height = "1080";
-  }
-
-  mediaUrl.SetOption("width", width);
-  mediaUrl.SetOption("height", height);
+  mediaUrl.SetOption("width", boost::lexical_cast<CStdString>(width));
+  mediaUrl.SetOption("height", boost::lexical_cast<CStdString>(height));
   mediaUrl.SetOption("url", imageURL.Get());
   if (g_advancedSettings.m_bForceJpegImageFormat)
     mediaUrl.SetOption("format", "jpg");
 
   mediaUrl.SetFileName("photo/:/transcode");
 
-  //CLog::Log(LOGDEBUG, "CPlexAttributeParserMediaUrl::Process setting %s = %s for item %s", propertyName.c_str(), mediaUrl.Get().c_str(), item.GetLabel().c_str());
-  item->SetArt(propertyName, mediaUrl.Get());
+  return mediaUrl.Get();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
+{
+
+  if (key == "thumb")
+  {
+    item->SetArt("smallThumb", GetImageURL(url, value, 320, 320));
+    item->SetArt("thumb", GetImageURL(url, value, 720, 720));
+    item->SetArt("bigThumb", GetImageURL(url, value, 0, 0));
+  }
+  else if (key == "poster")
+  {
+    item->SetArt("smallPoster", GetImageURL(url, value, 320, 320));
+    item->SetArt("poster", GetImageURL(url, value, 720, 720));
+    item->SetArt("bigPoster", GetImageURL(url, value, 0, 0));
+  }
+  else if (key == "grandparentThumb")
+  {
+    item->SetArt("smallGrandparentThumb", GetImageURL(url, value, 320, 320));
+    item->SetArt("grandparentThumb", GetImageURL(url, value, 720, 720));
+    item->SetArt(PLEX_ART_TVSHOW_THUMB, GetImageURL(url, value, 720, 720));
+    item->SetArt("bigGrandparentThumb", GetImageURL(url, value, 0, 0));
+  }
+  else if (key == "banner")
+    item->SetArt("banner", GetImageURL(url, value, 200, 800));
+  else if (key == "art")
+    item->SetArt(PLEX_ART_FANART, GetImageURL(url, value, 1080, 1920));
+  else if (key == "picture")
+    item->SetArt("picture", GetImageURL(url, value, 1080, 1920));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
