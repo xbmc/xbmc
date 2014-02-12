@@ -129,18 +129,22 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
 
   CStdString width="0", height="0";
   CStdString propertyName = key;
-  if (key == "thumb" || key == "poster")
+  if (key == "thumb" || key == "poster" || key == "grandparentThumb")
   {
-    width = height = "720";
+    width = height = "320";
     if (key == "poster")
     {
       Process(url, "bigPoster", value, item);
+      Process(url, "originalPoster", value, item);
     }
+    else if (key == "thumb")
+      Process(url, "bigThumb", value, item);
+    else if (key == "grandparentThumb")
+      Process(url, "bigGrandparentThumb", value, item);
   }
-  else if (key == "grandparentThumb")
+  else if (key == "bigPoster" || key == "bigThumb" || key == "bigGrandparentThumb")
   {
     width = height = "720";
-    propertyName = PLEX_ART_TVSHOW_THUMB;
   }
   else if (key == "banner")
   {
