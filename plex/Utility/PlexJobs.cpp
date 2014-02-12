@@ -60,30 +60,21 @@ bool CPlexVideoThumbLoaderJob::DoWork()
   if (!m_item->IsPlexMediaServer())
     return false;
 
-  if (m_item->HasArt("thumb") &&
-      !CTextureCache::Get().HasCachedImage(m_item->GetArt("thumb")))
-    CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("thumb"));
+  CStdStringArray art;
+  art.push_back("smallThumb");
+  art.push_back("smallPoster");
+  art.push_back("smallGrandparentThumb");
 
-  if (ShouldCancel(1, 5))
-    return false;
+  int i = 0;
+  BOOST_FOREACH(CStdString artKey, art)
+  {
+    if (m_item->HasArt(artKey) &&
+        !CTextureCache::Get().HasCachedImage(m_item->GetArt(artKey)))
+      CTextureCache::Get().BackgroundCacheImage(m_item->GetArt(artKey));
 
-  if (m_item->HasArt("fanart") &&
-      !CTextureCache::Get().HasCachedImage(m_item->GetArt("fanart")))
-    CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("fanart"));
-
-  if (ShouldCancel(2, 5))
-    return false;
-
-  if (m_item->HasArt("grandParentThumb") &&
-      !CTextureCache::Get().HasCachedImage(m_item->GetArt("grandParentThumb")))
-    CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("grandParentThumb"));
-
-  if (ShouldCancel(3, 5))
-    return false;
-
-  if (m_item->HasArt("bigPoster") &&
-      !CTextureCache::Get().HasCachedImage(m_item->GetArt("bigPoster")))
-    CTextureCache::Get().BackgroundCacheImage(m_item->GetArt("bigPoster"));
+    if (ShouldCancel(i++, art.size()))
+      return false;
+  }
 
   return true;
 }
