@@ -29,6 +29,7 @@ ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p1 < ../03-config-fix.patch
 endif
 	cd $(PLATFORM); patch -p1 < ../04-clang-fix.patch
+	cd $(PLATFORM); patch -p0 < ../05-upstream-motion_comp_arm_s.S-is-not-PIC-enough.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
@@ -50,11 +51,6 @@ ifeq ($(OS),android)
 	$(RPL) -e "libmpeg2convert.so.0" "libxbmpeg2convert.so" $(PREFIX)/lib/libxbmpeg2convert.so
 	-$(READELF) --dynamic $(PREFIX)/lib/libxbmpeg2convert.so | grep ibrary
 	#
-endif
-#on ios we link statically against libmpeg2 because of crash&burn since ios7 - 
-#so remove the dylib so the linker doesn't see it
-ifeq ($(OS),ios)
-	rm -f $(PREFIX)/lib/libmpeg2.la $(PREFIX)/lib/libmpeg2.dylib $(PREFIX)/lib/libmpeg2.0.dylib
 endif
 	touch $@
 
