@@ -136,15 +136,14 @@ TEST_F(TestCharsetConverter, utf16LEtoW)
   EXPECT_STREQ(refstrw1.c_str(), varstrw1.c_str());
 }
 
-TEST_F(TestCharsetConverter, subtitleCharsetToW)
+TEST_F(TestCharsetConverter, subtitleCharsetToUtf8)
 {
-  varstra1 = "test subtitleCharsetToW";
-  refstrw1 = L"test subtitleCharsetToW";
-  varstrw1.clear();
-  g_charsetConverter.subtitleCharsetToW(varstra1, varstrw1);
+  refstra1 = "test subtitleCharsetToW";
+  varstra1.clear();
+  g_charsetConverter.subtitleCharsetToUtf8(refstra1, varstra1);
 
   /* Assign refstra1 to refstrw1 so that we can compare */
-  EXPECT_STREQ(refstrw1.c_str(), varstrw1.c_str());
+  EXPECT_STREQ(refstra1.c_str(), varstra1.c_str());
 }
 
 TEST_F(TestCharsetConverter, utf8ToStringCharset_1)
