@@ -98,8 +98,8 @@ CStdString CPlexAttributeParserMediaUrl::GetImageURL(const CURL &url, const CStd
 {
   CURL mediaUrl(url);
   CURL imageURL;
+  CUrlOptions options;
 
-  /* reset the options to not bust cache stuff */
   mediaUrl.SetOptions("");
 
   if ((mediaUrl.GetHostName() == "myplex" || mediaUrl.GetHostName() == "node") && g_plexApplication.serverManager)
@@ -127,11 +127,13 @@ CStdString CPlexAttributeParserMediaUrl::GetImageURL(const CURL &url, const CStd
       imageURL.SetFileName(source);
   }
 
-  mediaUrl.SetOption("width", boost::lexical_cast<CStdString>(width));
-  mediaUrl.SetOption("height", boost::lexical_cast<CStdString>(height));
-  mediaUrl.SetOption("url", imageURL.Get());
+  options.AddOption("width", boost::lexical_cast<CStdString>(width));
+  options.AddOption("height", boost::lexical_cast<CStdString>(height));
+  options.AddOption("url", imageURL.Get());
   if (g_advancedSettings.m_bForceJpegImageFormat)
-    mediaUrl.SetOption("format", "jpg");
+    options.AddOption("format", "jpg");
+
+  mediaUrl.AddOptions(options);
 
   mediaUrl.SetFileName("photo/:/transcode");
 
