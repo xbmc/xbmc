@@ -42,7 +42,7 @@
 			<posy>13</posy>
 			<width>166</width>
 			<height>166</height>
-			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(thumb)]</texture>
+			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Art(smallThumb)]</texture>
 			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		</control>
 	</include>

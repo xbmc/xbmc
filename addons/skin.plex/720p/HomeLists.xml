@@ -101,7 +101,7 @@
 			<width>118</width>
 			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(smallThumb)]</texture>
 			<visible>!ListItem.Type(episode)</visible>
 		</control>
 		<control type="image">
@@ -109,7 +109,7 @@
 			<width>118</width>
 			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
+			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(smallGrandparentThumb)]</texture>
 			<visible>ListItem.Type(episode)</visible>
 		</control>
 	</include>
@@ -274,7 +274,7 @@
 			<width>126</width>
 			<height>126</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(smallThumb)]</texture>
 		</control>
 	</include>
 	<include name="ListItemSquareSelected">
@@ -358,7 +358,7 @@
 			<width>196</width>
 			<height>116</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Art(smallThumb)]</texture>
 		</control>
 	</include>
 	<include name="ListItemWideCard">
