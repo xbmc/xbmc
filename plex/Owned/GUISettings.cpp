@@ -367,6 +367,31 @@ void CGUISettings::Initialize()
   AddBool(aocat, "audiooutput.dtshdpassthrough" , 347, false );
 #endif
 
+  AddBool(ao, "audiooutput.normalizelevels", 346, true);
+
+  map<int,int> channelLayout;
+  for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
+    channelLayout.insert(make_pair(34100 + layout, layout));
+  AddInt(ao, "audiooutput.channels", 18110, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+
+#if !defined(TARGET_RASPBERRY_PI)
+#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
+  CStdString defaultDeviceName = "Default";
+#else
+  CStdString defaultDeviceName;
+  CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
+#endif
+  AddString(ao, "audiooutput.audiodevice", 545, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
+  AddString(ao, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
+#else
+  AddSeparator(ao, "audiooutput.sep1");
+  AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
+  AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
+  AddSeparator(ao, "audiooutput.sep2");
+#endif
+#endif
+
 #if !defined(TARGET_RASPBERRY_PI)
   map<int,int> guimode;
   guimode.insert(make_pair(34121, AE_SOUND_IDLE  ));
@@ -374,6 +399,8 @@ void CGUISettings::Initialize()
   guimode.insert(make_pair(34123, AE_SOUND_OFF   ));
   AddInt(NULL, "audiooutput.guisoundmode", 34120, AE_SOUND_ALWAYS, guimode, SPIN_CONTROL_TEXT);
 #endif
+
+
 
   // System/Power saving
   CSettingsCategory* pwm = AddCategory(SETTINGS_SYSTEM, "powermanagement", 14095);
@@ -545,32 +572,6 @@ void CGUISettings::Initialize()
   AddBool(advs, "debug.visualizedirtyregions", 18114, false);
   AddInt(advs, "debug.dirtyregionsalgorithm", 18115, 1, 0, 1, 3, SPIN_CONTROL_INT);
   AddInt(advs, "debug.dirtyregionsnofliptimeout", 18116, 0, 0, 100, 10000, SPIN_CONTROL_INT);
-
-  AddString(advs, "advanced.labelaudio", 292, "", BUTTON_CONTROL_STANDARD);
-  AddBool(advs, "audiooutput.normalizelevels", 346, true);
-
-  map<int,int> channelLayout;
-  for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
-    channelLayout.insert(make_pair(34100 + layout, layout));
-  AddInt(advs, "audiooutput.channels", 18110, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
-
-#if !defined(TARGET_RASPBERRY_PI)
-#if defined(TARGET_DARWIN)
-#if defined(TARGET_DARWIN_IOS)
-  CStdString defaultDeviceName = "Default";
-#else
-  CStdString defaultDeviceName;
-  CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
-#endif
-  AddString(advs, "audiooutput.audiodevice", 545, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
-  AddString(advs, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
-#else
-  AddSeparator(advs, "audiooutput.sep1");
-  AddString   (advs, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
-  AddString   (advs, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
-  AddSeparator(advs, "audiooutput.sep2");
-#endif
-#endif
 
   AddString(advs, "advanced.labeldebug", 18112, "", BUTTON_CONTROL_STANDARD);
   AddBool(advs, "debug.showloginfo", 20191, false);
