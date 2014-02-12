@@ -511,8 +511,8 @@
   </Favourites>
   <FullscreenLiveTV>
     <remote>
-      <left>PreviousChannelGroup</left>
-      <right>NextChannelGroup</right>
+      <left>StepBack</left>
+      <right>StepForward</right>
       <up>ChannelUp</up>
       <down>ChannelDown</down>
     </remote>
