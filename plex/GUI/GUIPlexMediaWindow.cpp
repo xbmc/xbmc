@@ -44,6 +44,8 @@
 
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 
+//#define USE_PAGING 1
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 {
@@ -95,12 +97,14 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 
     case GUI_MSG_ITEM_SELECT:
     {
+#ifdef USE_PAGING
       int currentIdx = m_viewControl.GetSelectedItem();
       if (currentIdx > m_pagingOffset && m_currentJobId == -1)
       {
         /* the user selected something in the middle of where we loaded, let's just cheat and fill in everything */
         LoadPage(m_pagingOffset, currentIdx + PLEX_DEFAULT_PAGE_SIZE);
       }
+#endif
       break;
     }
 
@@ -160,6 +164,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::InsertPage(CFileItemList* items)
 {
+#ifdef USE_PAGING
   int nItem = m_viewControl.GetSelectedItem();
   CStdString strSelected;
   if (nItem >= 0)
@@ -177,6 +182,7 @@ void CGUIPlexMediaWindow::InsertPage(CFileItemList* items)
   m_viewControl.SetSelectedItem(strSelected);
 
   delete items;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -486,6 +492,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 
   bool ret = CGUIMediaWindow::OnAction(action);
 
+#ifdef USE_PAGING
   if ((action.GetID() > ACTION_NONE &&
       action.GetID() <= ACTION_PAGE_DOWN) ||
       action.GetID() >= KEY_ASCII) // KEY_ASCII means that we letterjumped.
@@ -495,6 +502,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
     else if (m_viewControl.GetSelectedItem() >= (m_pagingOffset - (PLEX_DEFAULT_PAGE_SIZE/2)))
       LoadNextPage();
   }
+#endif
 
   return ret;
 }
@@ -503,9 +511,13 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   CURL u(strDirectory);
+#ifdef USE_PAGING
   u.SetProtocolOption("containerStart", "0");
   u.SetProtocolOption("containerSize", boost::lexical_cast<std::string>(PLEX_DEFAULT_PAGE_SIZE));
   m_pagingOffset = PLEX_DEFAULT_PAGE_SIZE - 1;
+#else
+  m_pagingOffset = -1;
+#endif
 
   if (u.GetProtocol() == "plexserver" &&
       (u.GetHostName() != "channels" && u.GetHostName() != "shared" && u.GetHostName() != "channeldirectory"))
@@ -526,6 +538,7 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
   if (server && server->GetActiveConnection() && server->GetActiveConnection()->IsLocal())
     g_directoryCache.ClearDirectory(u.Get());
   
+#ifdef USE_PAGING
   if (items.HasProperty("totalSize"))
   {
     if (items.GetProperty("totalSize").asInteger() > PLEX_DEFAULT_PAGE_SIZE)
@@ -567,6 +580,7 @@ bool CGUIPlexMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItem
       }
     }
   }
+#endif
   return ret;
 }
 
