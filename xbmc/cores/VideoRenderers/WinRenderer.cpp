@@ -390,6 +390,14 @@ unsigned int CWinRenderer::PreInit()
 
   m_formats.clear();
   m_formats.push_back(RENDER_FMT_YUV420P);
+  if (g_Windowing.IsTextureFormatOk(D3DFMT_L16, 0))
+  {
+    m_formats.push_back(RENDER_FMT_YUV420P10);
+    m_formats.push_back(RENDER_FMT_YUV420P16);
+  }
+  m_formats.push_back(RENDER_FMT_NV12);
+  m_formats.push_back(RENDER_FMT_YUYV422);
+  m_formats.push_back(RENDER_FMT_UYVY422);
 
   m_iRequestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
 
@@ -415,18 +423,6 @@ unsigned int CWinRenderer::PreInit()
         SAFE_DELETE(m_processor);
       }
     }
-  }
-  // allow other color spaces besides YV12 in case DXVA rendering is not used or not available
-  if (!m_processor || (m_iRequestedMethod != RENDER_METHOD_DXVA && m_iRequestedMethod != RENDER_METHOD_DXVAHD))
-  {
-    if (g_Windowing.IsTextureFormatOk(D3DFMT_L16, 0))
-    {
-      m_formats.push_back(RENDER_FMT_YUV420P10);
-      m_formats.push_back(RENDER_FMT_YUV420P16);
-    }
-    m_formats.push_back(RENDER_FMT_NV12);
-    m_formats.push_back(RENDER_FMT_YUYV422);
-    m_formats.push_back(RENDER_FMT_UYVY422);
   }
   return 0;
 }

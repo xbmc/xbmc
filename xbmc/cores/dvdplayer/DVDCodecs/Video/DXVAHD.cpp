@@ -108,14 +108,15 @@ static std::string GUIDToString(const GUID& guid)
 
 CProcessorHD::CProcessorHD()
 {
-  m_pDXVAHD = NULL;
-  m_pDXVAVP = NULL;
-  m_index   = 0;
-  m_frame   = 0;
-  g_Windowing.Register(this);
+  m_pDXVAHD      = NULL;
+  m_pDXVAVP      = NULL;
+  m_index        = 0;
+  m_frame        = 0;
+  m_surfaces     = NULL;
+  m_context      = NULL;
+  m_sw_scale_ctx = NULL;
 
-  m_surfaces = NULL;
-  m_context  = NULL;
+  g_Windowing.Register(this);
 }
 
 CProcessorHD::~CProcessorHD()
@@ -129,6 +130,12 @@ void CProcessorHD::UnInit()
   CSingleLock lock(m_section);
   Close();
   SAFE_RELEASE(m_pDXVAHD);
+
+  if (m_sw_scale_ctx)
+  {
+    sws_freeContext(m_sw_scale_ctx);
+    m_sw_scale_ctx = NULL;
+  }
 }
 
 void CProcessorHD::Close()
@@ -290,9 +297,8 @@ bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned in
   }
   else
   {
-    // Only NV12 software colorspace conversion is implemented for now
     m_format = (D3DFORMAT)MAKEFOURCC('N','V','1','2');
-    if (!CreateSurfaces())
+    if (!CreateSurfaces() || !InitSWScaleContext(width, height, format, RENDER_FMT_NV12))
       return false;
   }
 
@@ -393,59 +399,19 @@ REFERENCE_TIME CProcessorHD::Add(DVDVideoPicture* picture)
     }
 
     case RENDER_FMT_YUV420P:
+    case RENDER_FMT_YUV420P10:
+    case RENDER_FMT_YUV420P16:
+    case RENDER_FMT_NV12:
+    case RENDER_FMT_UYVY422:
+    case RENDER_FMT_YUYV422:
     {
-      if (!m_surfaces)
-      {
-        CLog::Log(LOGWARNING, __FUNCTION__" - not initialized.");
-        return 0;
-      }
-
       surface = m_surfaces[m_index];
       m_index = (m_index + 1) % m_size;
-
       context = m_context;
-  
-      D3DLOCKED_RECT rectangle;
-      if (FAILED(surface->LockRect(&rectangle, NULL, 0)))
-      {
-        return 0;
-      }
 
-      // Convert to NV12 - Luma
-      // TODO: Optimize this later using shaders/swscale/etc.
-      uint8_t *s = picture->data[0];
-      uint8_t* bits = (uint8_t*)(rectangle.pBits);
-      for (unsigned y = 0; y < picture->iHeight; y++)
-      {
-        memcpy(bits, s, picture->iWidth);
-        s += picture->iLineSize[0];
-        bits += rectangle.Pitch;
-      }
-
-      D3DSURFACE_DESC desc;
-      if (FAILED(surface->GetDesc(&desc)))
-      {
+      if (!CopyPictureToSurface(picture, surface))
         return 0;
-      }
-
-      // Convert to NV12 - Chroma
-      uint8_t *s_u, *s_v, *d_uv;
-      for (unsigned y = 0; y < picture->iHeight/2; y++)
-      {
-        s_u = picture->data[1] + (y * picture->iLineSize[1]);
-        s_v = picture->data[2] + (y * picture->iLineSize[2]);
-        d_uv = ((uint8_t*)(rectangle.pBits)) + (desc.Height + y) * rectangle.Pitch;
-        for (unsigned x = 0; x < picture->iWidth/2; x++)
-        {
-          *d_uv++ = *s_u++;
-          *d_uv++ = *s_v++;
-        }
-      }
-  
-      if (FAILED(surface->UnlockRect()))
-      {
-        return 0;
-      }
+ 
       break;
     }
     

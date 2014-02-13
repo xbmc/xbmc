@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "libavcodec/avcodec.h"
+#include "cores/FFmpeg.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"
@@ -138,6 +138,8 @@ protected:
   virtual bool OpenProcessor();
   virtual bool SelectProcessor();
   virtual void EvaluateQuirkNoDeintProcForProg();
+  virtual bool InitSWScaleContext(UINT width, UINT height, unsigned int srcFormat, unsigned int dstFormat);
+  virtual bool CopyPictureToSurface(DVDVideoPicture* picture, IDirect3DSurface9* surface);
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
@@ -161,19 +163,20 @@ protected:
 
   struct SVideoSample
   {
-    DXVA2_VideoSample sample;
-    CSurfaceContext* context;
+    DXVA2_VideoSample  sample;
+    CSurfaceContext   *context;
   };
 
   typedef std::deque<SVideoSample> SSamples;
-  SSamples          m_sample;
+  SSamples            m_sample;
 
-  CCriticalSection  m_section;
+  CCriticalSection    m_section;
 
-  LPDIRECT3DSURFACE9* m_surfaces;
-  CSurfaceContext* m_context;
+  LPDIRECT3DSURFACE9 *m_surfaces;
+  CSurfaceContext    *m_context;
 
-  bool             m_quirk_nodeintprocforprog;
+  bool                m_quirk_nodeintprocforprog;
+  struct SwsContext  *m_sw_scale_ctx;
 };
 
 };
