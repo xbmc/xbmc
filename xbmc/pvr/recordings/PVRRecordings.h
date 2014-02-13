@@ -35,6 +35,7 @@ namespace PVR
     CCriticalSection             m_critSection;
     bool                         m_bIsUpdating;
     std::vector<CPVRRecording *> m_recordings;
+    unsigned int                 m_iLastId;
 
     virtual void UpdateFromClients(void);
     virtual CStdString TrimSlashes(const CStdString &strOrig) const;
@@ -71,6 +72,7 @@ namespace PVR
     CFileItemPtr GetByPath(const CStdString &path);
     void SetPlayCount(const CFileItem &item, int iPlayCount);
     void GetAll(CFileItemList &items);
+    CFileItemPtr GetById(unsigned int iId) const;
 
     bool HasAllRecordingsPathExtension(const CStdString &strDirectory);
   };

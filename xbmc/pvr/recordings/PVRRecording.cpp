@@ -81,7 +81,8 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strTitle           == right.m_strTitle &&
        m_strIconPath        == right.m_strIconPath &&
        m_strThumbnailPath   == right.m_strThumbnailPath &&
-       m_strFanartPath      == right.m_strFanartPath);
+       m_strFanartPath      == right.m_strFanartPath &&
+       m_iRecordingId       == right.m_iRecordingId);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -103,6 +104,7 @@ void CPVRRecording::Reset(void)
   m_strThumbnailPath   = StringUtils::EmptyString;
   m_strFanartPath      = StringUtils::EmptyString;
   m_bGotMetaData       = false;
+  m_iRecordingId       = 0;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();

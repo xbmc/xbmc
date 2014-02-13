@@ -39,7 +39,8 @@
 using namespace PVR;
 
 CPVRRecordings::CPVRRecordings(void) :
-    m_bIsUpdating(false)
+    m_bIsUpdating(false),
+    m_iLastId(0)
 {
 
 }
@@ -456,6 +457,19 @@ void CPVRRecordings::GetAll(CFileItemList &items)
   }
 }
 
+CFileItemPtr CPVRRecordings::GetById(unsigned int iId) const
+{
+  CFileItemPtr item;
+  CSingleLock lock(m_critSection);
+  for (std::vector<CPVRRecording *>::const_iterator it = m_recordings.begin(); !item && it != m_recordings.end(); ++it)
+  {
+    if (iId == (*it)->m_iRecordingId)
+      item = CFileItemPtr(new CFileItem(**it));
+  }
+
+  return item;
+}
+
 CFileItemPtr CPVRRecordings::GetByPath(const CStdString &path)
 {
   CURL url(path);
@@ -510,6 +524,7 @@ void CPVRRecordings::UpdateEntry(const CPVRRecording &tag)
   {
     CPVRRecording *newTag = new CPVRRecording();
     newTag->Update(tag);
+    newTag->m_iRecordingId = ++m_iLastId;
     m_recordings.push_back(newTag);
   }
 }
