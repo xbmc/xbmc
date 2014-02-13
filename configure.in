@@ -18,6 +18,9 @@ tolower(){
   echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
 }
 
+# workaround for autotools that don't set this
+abs_top_srcdir=${abs_top_srcdir=$(cd $srcdir; pwd)}
+
 # check for enabling additional players
 AC_DEFUN([XB_ADD_PLAYER],
 [
@@ -757,7 +760,7 @@ AC_CHECK_PROG(HAVE_GIT,git,"yes","no",)
 if test "$GIT_REV" = ""; then
   if test -f VERSION ; then
     GIT_REV=$(awk 'END{print substr($1,1,16)}' VERSION)
-  elif test "$HAVE_GIT" = "yes" -a -d $(abs_top_srcdir)/.git; then
+  elif test "$HAVE_GIT" = "yes" -a -d ${abs_top_srcdir}/.git; then
     GIT_REV=$(git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}')
   else
     GIT_REV="Unknown"
