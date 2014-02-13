@@ -39,16 +39,6 @@ static void libass_log(int level, const char *fmt, va_list args, void *data)
 
 CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 {
-
-  /* PLEX */
-  // Make sure we set up the environment for SSA+fontconfig.
-#ifdef TARGET_WINDOWS
-  SetEnvironmentVariable("FONTCONFIG_PATH", CSpecialProtocol::TranslatePath(CStdString("special://xbmc/fontconfig")).c_str());
-#else
-  setenv("FONTCONFIG_PATH", CSpecialProtocol::TranslatePath(CStdString("special://xbmc/fontconfig")).c_str(), 1);
-#endif
-  /* END PLEX */
-
   m_track = NULL;
   m_library = NULL;
   m_renderer = NULL;
@@ -87,9 +77,6 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
   strPath = "special://xbmc/media/Fonts/";
   strPath += g_guiSettings.GetString("subtitles.font");
-  /* PLEX */
-  strPath += ".ttf";
-  /* END PLEX */
   int fc = !g_guiSettings.GetBool("subtitles.overrideassfonts");
 
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
