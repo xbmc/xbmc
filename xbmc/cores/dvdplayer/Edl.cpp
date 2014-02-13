@@ -190,37 +190,27 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
 
   bool bError = false;
   int iLine = 0;
-  CStdString strBuffer;
-  while (edlFile.ReadString(strBuffer.GetBuffer(1024), 1024))
+  std::vector<char> buffer(1024);
+  while (edlFile.ReadString(&buffer[0], 1024))
   {
-    strBuffer.ReleaseBuffer();
-
+    std::string strBuffer(buffer.begin(), buffer.end());
     // Log any errors from previous run in the loop
     if (bError)
       CLog::Log(LOGWARNING, "%s - Error on line %i in EDL file: %s", __FUNCTION__, iLine, edlFilename.c_str());
 
     bError = false;
-
     iLine++;
 
-    CStdStringArray strFields(2);
-    int iAction;
-    int iFieldsRead = sscanf(strBuffer, "%512s %512s %i", strFields[0].GetBuffer(512),
-                             strFields[1].GetBuffer(512), &iAction);
-    strFields[0].ReleaseBuffer();
-    strFields[1].ReleaseBuffer();
-
-    if (iFieldsRead != 2 && iFieldsRead != 3) // Make sure we read the right number of fields
+    vector<string> strFields = StringUtils::Split(strBuffer, " ");
+    if (strFields.size() != 2 && strFields.size() != 3) // Make sure we read the right number of fields
     {
       bError = true;
       continue;
     }
 
-    if (iFieldsRead == 2) // If only 2 fields read, then assume it's a scene marker.
-    {
-      iAction = atoi(strFields[1]);
+    int iAction = atoi(strFields[strFields.size() == 2 ? 1 : 2].c_str());
+    if (strFields.size() == 2) // If only 2 fields read, then assume it's a scene marker.
       strFields[1] = strFields[0];
-    }
 
     /*
      * For each of the first two fields read, parse based on whether it is a time string
@@ -268,7 +258,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
       }
       else // Plain old seconds in float format, e.g. 123.45
       {
-        iCutStartEnd[i] = (int64_t)(atof(strFields[i]) * 1000); // seconds to ms
+        iCutStartEnd[i] = (int64_t)(atof(strFields[i].c_str()) * 1000); // seconds to ms
       }
     }
 
@@ -322,8 +312,6 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
       continue;
     }
   }
-
-  strBuffer.ReleaseBuffer();
 
   if (bError) // Log last line warning, if there was one, since while loop will have terminated.
     CLog::Log(LOGWARNING, "%s - Error on line %i in EDL file: %s", __FUNCTION__, iLine, edlFilename.c_str());

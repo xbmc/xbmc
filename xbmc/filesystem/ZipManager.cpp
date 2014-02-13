@@ -178,9 +178,9 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     }
 
     // Get the filename just after the central file header
-    CStdString strName;
-    mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
-    strName.ReleaseBuffer();
+    std::vector<char> buffer(ze.flength);
+    mFile.Read(&buffer[0], ze.flength);
+    std::string strName(buffer.begin(), buffer.end());
     g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());

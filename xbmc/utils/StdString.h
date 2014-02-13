@@ -2398,40 +2398,6 @@ public:
     }
   #endif
 
-  // -------------------------------------------------------------------------
-  // CStdStr -- Direct access to character buffer.  In the MS' implementation,
-  // the at() function that we use here also calls _Freeze() providing us some
-  // protection from multithreading problems associated with ref-counting.
-    // In VC 7 and later, of course, the ref-counting stuff is gone.
-  // -------------------------------------------------------------------------
-
-  CT* GetBuf(int nMinLen=-1)
-  {
-    if ( static_cast<int>(this->size()) < nMinLen )
-      this->resize(static_cast<MYSIZE>(nMinLen));
-
-    return this->empty() ? const_cast<CT*>(this->data()) : &(this->at(0));
-  }
-
-  CT* SetBuf(int nLen)
-  {
-    nLen = ( nLen > 0 ? nLen : 0 );
-    if ( this->capacity() < 1 && nLen == 0 )
-      this->resize(1);
-
-    this->resize(static_cast<MYSIZE>(nLen));
-    return const_cast<CT*>(this->data());
-  }
-  void RelBuf(int nNewLen=-1)
-  {
-    this->resize(static_cast<MYSIZE>(nNewLen > -1 ? nNewLen :
-                                                        sslen(this->c_str())));
-  }
-
-  void BufferRel()     { RelBuf(); }      // backwards compatability
-  CT*  Buffer()       { return GetBuf(); }  // backwards compatability
-  CT*  BufferSet(int nLen) { return SetBuf(nLen);}// backwards compatability
-
   bool Equals(const CT* pT, bool bUseCase=false) const
   {
     return  0 == (bUseCase ? this->compare(pT) : ssicmp(this->c_str(), pT));
@@ -2598,19 +2564,6 @@ public:
     return static_cast<int>(this->capacity());
   }
 
-  // -------------------------------------------------------------------------
-  // GetXXXX -- Direct access to character buffer
-  // -------------------------------------------------------------------------
-  CT* GetBuffer(int nMinLen=-1)
-  {
-    return GetBuf(nMinLen);
-  }
-
-  CT* GetBufferSetLength(int nLen)
-  {
-    return BufferSet(nLen);
-  }
-
 #ifndef SS_ANSI
   bool LoadString(UINT nId)
   {
@@ -2621,11 +2574,6 @@ public:
   void MakeReverse()
   {
     std::reverse(this->begin(), this->end());
-  }
-
-  void ReleaseBuffer(int nNewLen=-1)
-  {
-    RelBuf(nNewLen);
   }
 
 #ifndef SS_ANSI
