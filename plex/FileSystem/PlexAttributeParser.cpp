@@ -174,11 +174,12 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
 ////////////////////////////////////////////////////////////////////////////////
 void CPlexAttributeParserMediaFlag::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
-  static std::map<std::string,std::string> FlagsMap;
+  static std::map<std::string, std::string> FlagsMap;
 
-  if (( got != FlagsMap.end()) && true)
+  std::map<std::string, std::string>::iterator got = FlagsMap.find(key);
+  if ((got != FlagsMap.end()) && true)
   {
-    item->SetArt("mediaTag::" + key,got->second);
+    item->SetArt("mediaTag::" + key, got->second);
     item->SetProperty("mediaTag-" + key, value);
   }
   else
