@@ -304,9 +304,18 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
 
   bool stateChange = false;
 
-  if (currentItem != m_currentItems[type])
+  CLog::Log(LOGDEBUG, "PlexTimelineManager::ReportProgress reporting for %s, current is %s", currentItem->GetLabel().c_str(), m_currentItems[type] ? m_currentItems[type]->GetLabel().c_str() : "none");
+
+  if (!m_currentItems[type] || currentItem->GetPath() != m_currentItems[type]->GetPath())
   {
-    m_currentItems[type] = currentItem;
+    if (m_currentStates[type] != MEDIA_STATE_STOPPED && m_currentItems[type])
+    {
+      // we need to stop the old media before playing the new one.
+      CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress Old item was never stopped, sending stop timeline now.");
+      ReportProgress(m_currentItems[type], MEDIA_STATE_STOPPED, m_currentItems[type]->GetProperty("viewOffset").asInteger(), true);
+    }
+    /* we need a copy */
+    m_currentItems[type] = CFileItemPtr(new CFileItem(*currentItem.get()));
     stateChange = true;
   }
 
@@ -351,7 +360,8 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &currentItem, CPlex
 
   if (force || stateChange || m_serverTimer.elapsedMs() >= serverTimeout)
   {
-    CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server");
+    CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server: (%s) %s [%lld/%lld]",
+              StateToString(m_currentStates[type]).c_str(), m_currentItems[type]->GetLabel().c_str(), currentPosition, GetItemDuration(m_currentItems[type]));
     g_plexApplication.mediaServerClient->SendServerTimeline(m_currentItems[type], GetCurrentTimeline(type));
 
     /* now we can see if we need to ping the transcoder as well */
