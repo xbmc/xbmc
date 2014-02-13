@@ -41,6 +41,7 @@ using namespace EPG;
 CPVRTimers::CPVRTimers(void)
 {
   m_bIsUpdating = false;
+  m_iLastId     = 0;
 }
 
 CPVRTimers::~CPVRTimers(void)
@@ -151,6 +152,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
           addEntry = itr->second;
         }
 
+        newTimer->m_iTimerId = ++m_iLastId;
         addEntry->push_back(newTimer);
         UpdateEpgEvent(newTimer);
         bChanged = true;
@@ -285,6 +287,7 @@ bool CPVRTimers::UpdateFromClient(const CPVRTimerInfoTag &timer)
     {
       addEntry = itr->second;
     }
+    tag->m_iTimerId = ++m_iLastId;
     addEntry->push_back(tag);
   }
 
@@ -740,4 +743,33 @@ void CPVRTimers::UpdateChannels(void)
     for (vector<CPVRTimerInfoTagPtr>::iterator timerIt = it->second->begin(); timerIt != it->second->end(); timerIt++)
       (*timerIt)->UpdateChannel();
   }
+}
+
+void CPVRTimers::GetAll(CFileItemList& items) const
+{
+  CFileItemPtr item;
+  CSingleLock lock(m_critSection);
+  for (map<CDateTime, vector<CPVRTimerInfoTagPtr>* >::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
+  {
+    for (vector<CPVRTimerInfoTagPtr>::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); timerIt++)
+    {
+      item.reset(new CFileItem(**timerIt));
+      items.Add(item);
+    }
+  }
+}
+
+CPVRTimerInfoTagPtr CPVRTimers::GetById(unsigned int iTimerId) const
+{
+  CPVRTimerInfoTagPtr item;
+  CSingleLock lock(m_critSection);
+  for (map<CDateTime, vector<CPVRTimerInfoTagPtr>* >::const_iterator it = m_tags.begin(); !item && it != m_tags.end(); it++)
+  {
+    for (vector<CPVRTimerInfoTagPtr>::const_iterator timerIt = it->second->begin(); !item && timerIt != it->second->end(); timerIt++)
+    {
+      if ((*timerIt)->m_iTimerId == iTimerId)
+        item = *timerIt;
+    }
+  }
+  return item;
 }

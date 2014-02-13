@@ -64,6 +64,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_StopTime           = m_StartTime;
   m_state              = PVR_TIMER_STATE_SCHEDULED;
   m_FirstDay.SetValid(false);
+  m_iTimerId           = 0;
 }
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channel, unsigned int iClientId)
@@ -93,6 +94,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channe
   m_bIsRadio           = channel && channel->IsRadio();
   m_state              = timer.state;
   m_strFileNameAndPath = StringUtils::Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex);
+  m_iTimerId           = 0;
 
   UpdateSummary();
 }
@@ -123,7 +125,8 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iClientId          == right.m_iClientId &&
           m_iMarginStart       == right.m_iMarginStart &&
           m_iMarginEnd         == right.m_iMarginEnd &&
-          m_state              == right.m_state);
+          m_state              == right.m_state &&
+          m_iTimerId           == right.m_iTimerId);
 }
 
 CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
@@ -148,6 +151,7 @@ CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
   m_iMarginEnd         = orig.m_iMarginEnd;
   m_state              = orig.m_state;
   m_iChannelNumber     = orig.m_iChannelNumber;
+  m_iTimerId           = orig.m_iTimerId;
 
   return *this;
 }
