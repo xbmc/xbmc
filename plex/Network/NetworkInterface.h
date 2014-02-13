@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <boost/asio.hpp>
+
 #include <vector>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>

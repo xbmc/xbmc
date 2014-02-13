@@ -45,8 +45,8 @@ public:
   void share(const CFileItemPtr &item, const CStdString &network, const CStdString &message);
 
   CURL GetItemURL(CFileItemPtr item);
-
   void SendTranscoderPing(CPlexServerPtr server);
+  void publishDevice();
 
   private:
   CStdString GetPrefix(const CFileItemPtr& item) const

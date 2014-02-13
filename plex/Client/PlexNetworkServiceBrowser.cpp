@@ -1,5 +1,6 @@
 #include "PlexNetworkServiceBrowser.h"
 #include "PlexApplication.h"
+#include "PlexMediaServerClient.h"
 
 #include <vector>
 
@@ -61,6 +62,9 @@ void CPlexNetworkServiceBrowser::handleNetworkChange(const vector<NetworkInterfa
 
   // refresh myPlex as well
   g_plexApplication.myPlexManager->Refresh();
+
+  // publish our device to plex
+  g_plexApplication.mediaServerClient->publishDevice();
 }
 
 void
