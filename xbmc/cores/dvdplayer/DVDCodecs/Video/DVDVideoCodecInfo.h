@@ -21,15 +21,16 @@
 #ifndef DVDVIDEOCODECINFO_H
 #define DVDVIDEOCODECINFO_H
 
-#include "cores/VideoRenderers/RenderFormats.h"
-
 class CDVDVideoCodecBuffer
 {
 public:
   // reference counting
   virtual void                Lock() = 0;
   virtual long                Release() = 0;
+  virtual bool                IsValid() = 0;
 
+  uint32_t            iWidth;
+  uint32_t            iHeight;
   uint8_t*            data[4];      // [4] = alpha channel, currently not used
   int                 iLineSize[4];   // [4] = alpha channel, currently not used
 };

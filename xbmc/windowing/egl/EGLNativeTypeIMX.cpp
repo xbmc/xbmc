@@ -52,7 +52,7 @@ bool CEGLNativeTypeIMX::CheckCompatibility()
 void CEGLNativeTypeIMX::Initialize()
 {  
   struct mxcfb_gbl_alpha alpha;
-  int fd, fd2;
+  int fd;
 
   
   fd = open("/dev/fb0",O_RDWR);
@@ -61,46 +61,20 @@ void CEGLNativeTypeIMX::Initialize()
     CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.\n", __FUNCTION__);
     return;
   }
-  fd2 = open("/dev/fb1",O_RDWR);
-  if (fd2 < 0)
-  {
-    CLog::Log(LOGERROR, "%s - Error while opening /dev/fb1.\n", __FUNCTION__);
-    return;
-  }
-  
   /* Store screen info */
   if (ioctl(fd, FBIOGET_VSCREENINFO, &m_screeninfo) != 0)
   {
     CLog::Log(LOGERROR, "%s - Error while querying frame buffer.\n", __FUNCTION__);
     return;
   }
-  /* Configure overlay in the same way as BG plane */
-  if (ioctl(fd2, FBIOPUT_VSCREENINFO, &m_screeninfo) != 0)
-  {
-    CLog::Log(LOGERROR, "%s - Error while setting overlay frame buffer.\n", __FUNCTION__);
-    return;
-  }
       
-  /* set fb0 as the only visible layer - ioctl on /dev/fb0 so that fb0 is BG and fb1 is FG */
-  alpha.alpha = 255;
-  alpha.enable = 1;
-  if (ioctl(fd, MXCFB_SET_GBL_ALPHA, &alpha) != 0)
-  {
-    CLog::Log(LOGERROR, "%s - Error while initializing frame buffer.\n", __FUNCTION__);
-  }
- 
   /* Unblank the fbs */
   if (ioctl(fd, FBIOBLANK, 0) < 0)
   {
     CLog::Log(LOGERROR, "%s - Error while unblanking fb0.\n", __FUNCTION__);
   }
-  if (ioctl(fd2, FBIOBLANK, 0) < 0)
-  {
-    CLog::Log(LOGERROR, "%s - Error while unblanking fb0.\n", __FUNCTION__);
-  }
   
   close(fd);
-  close(fd2);
   
   return;
 }
@@ -109,7 +83,6 @@ void CEGLNativeTypeIMX::Destroy()
 {
   struct fb_fix_screeninfo fixed_info;
   void *fb_buffer;
-  struct mxcfb_gbl_alpha alpha;
   int fd;
 
   fd = open("/dev/fb0",O_RDWR);
@@ -118,13 +91,6 @@ void CEGLNativeTypeIMX::Destroy()
     CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.\n", __FUNCTION__);
     return;
   }   
-  /* only fb0 visible */
-  alpha.alpha = 255;
-  alpha.enable = 1;
-  if (ioctl(fd, MXCFB_SET_GBL_ALPHA, &alpha) != 0)
-  {
-    CLog::Log(LOGERROR, "%s - Error while initializing frame buffer.\n", __FUNCTION__);
-  }
   
   ioctl( fd, FBIOGET_FSCREENINFO, &fixed_info);  
   /* Black fb0 */
@@ -140,19 +106,6 @@ void CEGLNativeTypeIMX::Destroy()
   }
  
   close(fd); 
-
-  /* Blank overlay */
-  fd = open("/dev/fb1",O_RDWR);
-  if (fd < 0)
-  {
-    CLog::Log(LOGERROR, "%s - Error while opening /dev/fb1.\n", __FUNCTION__);
-    return;
-  }
-  if (ioctl(fd, FBIOBLANK, 1) < 0)
-  {
-    CLog::Log(LOGERROR, "%s - Error while blanking fb1.\n", __FUNCTION__);
-  }  
-  close(fd);
   
   return;
 }
