@@ -27,8 +27,8 @@ msgid "xbmc media center"
 msgstr "Plex for Home Theater"
 
 msgctxt "#10"
-msgid "myPlex"
-msgstr "myPlex"
+msgid "Plex"
+msgstr "Plex"
 
 #empty strings from id 11 to 262
 
@@ -810,12 +810,12 @@ msgid "Clear Filters"
 msgstr "Clear Filters"
 
 msgctxt "#44100"
-msgid "Sign in to myPlex"
-msgstr "Sign in to myPlex"
+msgid "Sign in to Plex"
+msgstr "Sign in to Plex"
 
 msgctxt "#44101"
-msgid "From your computer go to http://my.plexapp.com/pin"
-msgstr "From your computer go to http://my.plexapp.com/pin"
+msgid "From your computer go to http://plex.tv/pin"
+msgstr "From your computer go to http://plex.tv/pin"
 
 msgctxt "#44102"
 msgid "retrieving code..."
@@ -830,16 +830,16 @@ msgid "Hooray we are signed in!"
 msgstr "Hooray we are signed in!"
 
 msgctxt "#44105"
-msgid "Signed in to myPlex"
-msgstr "Signed in to myPlex"
+msgid "Signed in to Plex"
+msgstr "Signed in to Plex"
 
 msgctxt "#44200"
 msgid "PlexPass Required"
 msgstr "PlexPass Required"
 
 msgctxt "#44201"
-msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr "For this preview release, you must be signed into myPlex and have a PlexPass"
+msgid "For this preview release, you must be signed into Plex and have a PlexPass"
+msgstr "For this preview release, you must be signed into Plex and have a PlexPass"
 
 msgctxt "#44202"
 msgid "Press OK to be taken to the Settings screen"
@@ -921,8 +921,8 @@ msgid "Online video quality"
 msgstr "Online video quality"
 
 msgctxt "#52210"
-msgid "Show myPlex queue and recommendations"
-msgstr "Show myPlex queue and recommendations"
+msgid "Show queue and recommendations"
+msgstr "Show queue and recommendations"
 
 msgctxt "#52300"
 msgid "Media Server went away"
@@ -937,8 +937,8 @@ msgid "No linked social accounts"
 msgstr "No linked social accounts"
 
 msgctxt "#52401"
-msgid "Go to http://my.plexapp.com to link your account"
-msgstr "Go to http://my.plexapp.com to link your account"
+msgid "Go to http://plex.tv to link your account"
+msgstr "Go to http://plex.tv to link your account"
 
 msgctxt "#52402"
 msgid "Enter message"

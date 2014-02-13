@@ -113,7 +113,7 @@ CPlexConnection::ConnectionTypeName(CPlexConnection::ConnectionType type)
   if (type & CONNECTION_MANUAL)
     typeName += "(manual)";
   if (type & CONNECTION_MYPLEX)
-    typeName += "(myplex)";
+    typeName += "(plex.tv)";
 
   return typeName;
 }
@@ -126,7 +126,7 @@ void CPlexConnection::save(TiXmlNode* server)
   conn.SetAttribute("port", m_url.GetPort());
   conn.SetAttribute("token", m_token.c_str());
   conn.SetAttribute("type", m_type);
-  conn.SetAttribute("scheme", (std::string)m_url.GetProtocol());
+  conn.SetAttribute("scheme", (std::string) m_url.GetProtocol());
 
   server->InsertEndChild(conn);
 }
