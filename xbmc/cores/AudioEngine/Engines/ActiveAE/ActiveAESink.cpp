@@ -114,17 +114,20 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEDataFormat forma
   CAESinkFactory::ParseDevice(dev, dri);
   for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
   {
-    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    if (dri == itt->m_sinkName)
     {
-      CAEDeviceInfo& info = *itt2;
-      if (info.m_deviceName == dev)
+      for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
       {
-        AEDataFormatList::iterator itt3;
-        itt3 = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), format);
-        if (itt3 != info.m_dataFormats.end())
-          return true;
-        else
-          return false;
+        CAEDeviceInfo& info = *itt2;
+        if (info.m_deviceName == dev)
+        {
+          AEDataFormatList::iterator itt3;
+          itt3 = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), format);
+          if (itt3 != info.m_dataFormats.end())
+            return true;
+          else
+            return false;
+        }
       }
     }
   }
