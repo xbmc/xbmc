@@ -59,11 +59,6 @@ bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::s
 
 bool CDVDVideoCodec::IsCodecDisabled(DVDCodecAvailableType* map, unsigned int size, AVCodecID id)
 {
-  std::string gpuvendor = g_Windowing.GetRenderVendor();
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  if (gpuvendor.compare(0, 6, "nvidia") == 0) // all is fine on nvidia
-    return false;
-
   int index = -1;
   for (unsigned int i = 0; i < size; ++i)
   {
