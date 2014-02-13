@@ -253,6 +253,12 @@ static DWORD VP3DeviceID [] = {
   0x0000
 };
 
+static DWORD IVC1DeviceID [] = {
+  0x015a, // Ivy Bridge
+  0x0412, // Haswell
+  0x0000
+};
+
 typedef struct {
     DWORD VendorID;
     DWORD DeviceID;
@@ -434,8 +440,33 @@ static bool HasVP3WidthBug(AVCodecContext *avctx)
   return false;
 }
 
+static bool IntelVC1NotSupportedYet(AVCodecContext *avctx)
+{
+  // Latest Intel drivers advertise "VC-1 VLD 2010" DXVA decoding capability
+  // on Haswell/Ivy, which isn't working with our current version of FFMPEG.
+  //               !! Re-check after next FFMPEG update !!
+
+  D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
+
+  if(AIdentifier.VendorId == PCIV_Intel &&
+    (avctx->codec_id == AV_CODEC_ID_VC1 || avctx->codec_id == AV_CODEC_ID_WMV3))
+  {
+    // Check against a list of known incompatible device IDs
+    for (unsigned idx = 0; IVC1DeviceID[idx] != 0; idx++)
+      if (IVC1DeviceID[idx] == AIdentifier.DeviceId)
+        return true;
+  }
+  return false;
+}
+
 static bool CheckCompatibility(AVCodecContext *avctx)
 {
+  if (IntelVC1NotSupportedYet(avctx))
+  {
+    CLog::Log(LOGWARNING,"DXVA - VC-1 acceleration disabled for Intel hardware.");
+    return false;
+  }
+
   // The incompatibilities are all for H264
   if(avctx->codec_id != AV_CODEC_ID_H264)
     return true;
@@ -505,7 +536,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
     const GUID *g            = &input_list[i];
     const dxva2_mode_t *mode = dxva2_find_mode(g);
     if(mode)
-      CLog::Log(LOGDEBUG, "DXVA - supports '%s'", mode->name);
+      CLog::Log(LOGDEBUG, "DXVA - supports %s '%s'", GUIDToString(*g).c_str(), mode->name);
     else
       CLog::Log(LOGDEBUG, "DXVA - supports %s", GUIDToString(*g).c_str());
   }
