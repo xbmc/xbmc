@@ -683,7 +683,7 @@ void CPlexHTTPRemoteHandler::sendVKey(const ArgMap &arguments)
 void CPlexHTTPRemoteHandler::subscribe(const HTTPRequest &request, const ArgMap &arguments)
 {
   CPlexRemoteSubscriberPtr sub = getSubFromRequest(request, arguments);
-  if (sub)
+  if (sub && g_plexApplication.remoteSubscriberManager && g_plexApplication.timelineManager)
   {
     g_plexApplication.remoteSubscriberManager->addSubscriber(sub);
     g_plexApplication.timelineManager->SendTimelineToSubscriber(sub);
@@ -693,7 +693,8 @@ void CPlexHTTPRemoteHandler::subscribe(const HTTPRequest &request, const ArgMap 
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::unsubscribe(const HTTPRequest &request, const ArgMap &arguments)
 {
-  g_plexApplication.remoteSubscriberManager->removeSubscriber(getSubFromRequest(request, arguments));
+  if (g_plexApplication.remoteSubscriberManager)
+    g_plexApplication.remoteSubscriberManager->removeSubscriber(getSubFromRequest(request, arguments));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -843,7 +844,8 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
   if (!name.empty())
     pollSubscriber->setName(name);
 
-  pollSubscriber = g_plexApplication.remoteSubscriberManager->addSubscriber(pollSubscriber);
+  if (g_plexApplication.remoteSubscriberManager && g_plexApplication.timelineManager)
+    pollSubscriber = g_plexApplication.remoteSubscriberManager->addSubscriber(pollSubscriber);
 
   if (arguments.find("wait") != arguments.end())
   {

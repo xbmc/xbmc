@@ -306,6 +306,7 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     OnTimeout();
     
     delete remoteSubscriberManager;
+    remoteSubscriberManager = NULL;
     
 //    backgroundMusicPlayer->Die();
 //    delete backgroundMusicPlayer;
