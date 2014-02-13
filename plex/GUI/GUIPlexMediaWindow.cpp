@@ -660,12 +660,15 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
       item->GetPlexDirectoryType() == PLEX_DIR_TYPE_SHOW)
   {
     CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
-    CPlexSecondaryFilterPtr unwatchedFilter = filter->getSecondaryFilterOfName("unwatchedLeaves");
-    if (filter && filter->currentPrimaryFilter() == "all" && unwatchedFilter && unwatchedFilter->isSelected())
+    if (filter && filter->currentPrimaryFilter() == "all")
     {
-      CURL u(item->GetPath());
-      u.SetOption("unwatched", "1");
-      item->SetPath(u.Get());
+      CPlexSecondaryFilterPtr unwatchedFilter = filter->getSecondaryFilterOfName("unwatchedLeaves");
+      if (unwatchedFilter && unwatchedFilter->isSelected())
+      {
+        CURL u(item->GetPath());
+        u.SetOption("unwatched", "1");
+        item->SetPath(u.Get());
+      }
     }
   }
 
