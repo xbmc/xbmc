@@ -576,8 +576,8 @@ void CGUISettings::Initialize()
   AddString(advs, "advanced.labeldebug", 18112, "", BUTTON_CONTROL_STANDARD);
   AddBool(advs, "debug.showloginfo", 20191, false);
   AddBool(advs, "debug.networklogging", 52404, false);
+  AddBool(advs, "advanced.collectanalytics", 52504, true);
   AddPath(NULL, "debug.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-
 
   // Unused/hidden network settings
   if (g_application.IsStandAlone())

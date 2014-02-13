@@ -967,3 +967,7 @@ msgstr "Always transcode subtitles"
 msgctxt "#52503"
 msgid "Forced"
 msgstr "Forced"
+
+msgctxt "#52504"
+msgid "Allow Plex collect anonymous data to improve your experience"
+msgstr "Allow Plex collect anonymous data to improve your experience"

@@ -11,7 +11,9 @@ class CPlexAnalytics : public ANNOUNCEMENT::IAnnouncer, public IPlexGlobalTimeou
 {
   public:
     CPlexAnalytics();
-    void didUpgradeEvent(bool success, const std::string& fromVersion, const std::string& toVersion, bool delta);
+    void didUpgradeEvent(bool success, const std::string& fromVersion, const std::string& toVersion, bool delta);  
+    void startLogging();
+    void stopLogging();
 
   private:
     void setCustomDimensions(CUrlOptions &options);

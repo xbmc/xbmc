@@ -88,6 +88,9 @@ PlexApplication::Start()
     }
   }
 
+  if (g_guiSettings.GetBool("advanced.collectanalytics"))
+    analytics->startLogging();
+
   myPlexManager->Create();
 }
 

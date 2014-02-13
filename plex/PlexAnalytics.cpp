@@ -54,8 +54,20 @@ CPlexAnalytics::CPlexAnalytics() : m_firstEvent(true), m_numberOfPlays(0)
 
   m_baseOptions.AddOption("sr", resStr);
 #endif
+}
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexAnalytics::startLogging()
+{
+  g_plexApplication.timer.RemoveTimeout(this);
   g_plexApplication.timer.SetTimeout(INITIAL_EVENT_DELAY * 1000, this);
+  m_sessionLength.restart();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexAnalytics::stopLogging()
+{
+  g_plexApplication.timer.RemoveTimeout(this);
   m_sessionLength.restart();
 }
 
