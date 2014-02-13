@@ -2502,60 +2502,11 @@ public:
     }
   #endif
 
-#ifndef SS_NO_LOCALE
-  int Collate(PCMYSTR szThat) const
-  {
-    return sscoll(this->c_str(), this->length(), szThat, sslen(szThat));
-  }
-
-  int CollateNoCase(PCMYSTR szThat) const
-  {
-    return ssicoll(this->c_str(), this->length(), szThat, sslen(szThat));
-  }
-#endif
   int FindOneOf(PCMYSTR szCharSet) const
   {
     MYSIZE nIdx = this->find_first_of(szCharSet);
     return static_cast<int>(MYBASE::npos == nIdx ? -1 : nIdx);
   }
-
-#ifndef SS_ANSI
-  void FormatMessage(PCMYSTR szFormat, ...) throw(std::exception)
-  {
-    va_list argList;
-    va_start(argList, szFormat);
-    PMYSTR szTemp;
-    if ( ssfmtmsg(FORMAT_MESSAGE_FROM_STRING|FORMAT_MESSAGE_ALLOCATE_BUFFER,
-             szFormat, 0, 0,
-             reinterpret_cast<PMYSTR>(&szTemp), 0, &argList) == 0 ||
-       szTemp == 0 )
-    {
-      throw std::runtime_error("out of memory");
-    }
-    *this = szTemp;
-    LocalFree(szTemp);
-    va_end(argList);
-  }
-
-  void FormatMessage(UINT nFormatId, ...) throw(std::exception)
-  {
-    MYTYPE sFormat;
-    VERIFY(sFormat.LoadString(nFormatId));
-    va_list argList;
-    va_start(argList, nFormatId);
-    PMYSTR szTemp;
-    if ( ssfmtmsg(FORMAT_MESSAGE_FROM_STRING|FORMAT_MESSAGE_ALLOCATE_BUFFER,
-             sFormat, 0, 0,
-             reinterpret_cast<PMYSTR>(&szTemp), 0, &argList) == 0 ||
-      szTemp == 0)
-    {
-      throw std::runtime_error("out of memory");
-    }
-    *this = szTemp;
-    LocalFree(szTemp);
-    va_end(argList);
-  }
-#endif
 
   // GetAllocLength -- an MSVC7 function but it costs us nothing to add it.
 
@@ -2570,11 +2521,6 @@ public:
     return this->Load(nId);
   }
 #endif
-
-  void MakeReverse()
-  {
-    std::reverse(this->begin(), this->end());
-  }
 
 #ifndef SS_ANSI
   BSTR SetSysString(BSTR* pbstr) const
@@ -3018,49 +2964,6 @@ inline CStdStringW operator+(const CStdStringW& s1, PCSTR pA)
 }
 
 
-// New-style format function is a template
-
-#ifdef SS_SAFE_FORMAT
-
-template<>
-struct FmtArg<CStdStringA>
-{
-    explicit FmtArg(const CStdStringA& arg) : a_(arg) {}
-    PCSTR operator()() const { return a_.c_str(); }
-    const CStdStringA& a_;
-private:
-    FmtArg<CStdStringA>& operator=(const FmtArg<CStdStringA>&) { return *this; }
-};
-template<>
-struct FmtArg<CStdStringW>
-{
-    explicit FmtArg(const CStdStringW& arg) : a_(arg) {}
-    PCWSTR operator()() const { return a_.c_str(); }
-    const CStdStringW& a_;
-private:
-    FmtArg<CStdStringW>& operator=(const FmtArg<CStdStringW>&) { return *this; }
-};
-
-template<>
-struct FmtArg<std::string>
-{
-    explicit FmtArg(const std::string& arg) : a_(arg) {}
-    PCSTR operator()() const { return a_.c_str(); }
-    const std::string& a_;
-private:
-    FmtArg<std::string>& operator=(const FmtArg<std::string>&) { return *this; }
-};
-template<>
-struct FmtArg<std::wstring>
-{
-    explicit FmtArg(const std::wstring& arg) : a_(arg) {}
-    PCWSTR operator()() const { return a_.c_str(); }
-    const std::wstring& a_;
-private:
-    FmtArg<std::wstring>& operator=(const FmtArg<std::wstring>&) {return *this;}
-};
-#endif // #ifdef SS_SAFEFORMAT
-
 #ifndef SS_ANSI
   // SSResourceHandle: our MFC-like resource handle
   inline HMODULE& SSResourceHandle()
@@ -3069,7 +2972,6 @@ private:
     return hModuleSS;
   }
 #endif
-
 
 // In MFC builds, define some global serialization operators
 // Special operators that allow us to serialize CStdStrings to CArchives.
