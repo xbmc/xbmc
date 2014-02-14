@@ -746,7 +746,7 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
   {
     CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item->GetProperty("plexserver").asString());
     if (server && server->SupportsDeletion())
-      buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
+      buttons.Add(CONTEXT_BUTTON_DELETE, 117);
   }
 }
 

@@ -478,7 +478,7 @@ bool CGUIWindowHome::OnPopupMenu()
 
       CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(fileItem->GetProperty("plexserver").asString());
       if (server && server->SupportsDeletion())
-        buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
+        buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
       int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
 
