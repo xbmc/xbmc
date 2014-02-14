@@ -175,6 +175,9 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
 void CPlexAttributeParserMediaFlag::Process(const CURL &url, const CStdString &key, const CStdString &value, CFileItem *item)
 {
   static std::map<std::string, std::string> FlagsMap;
+  static CCriticalSection FlagsMapSection;
+  CSingleLock Lock(FlagsMapSection);
+
   std::map<std::string, std::string>::const_iterator got = FlagsMap.find(key + "|" + value);
   if ((got != FlagsMap.end()) && true)
   {
