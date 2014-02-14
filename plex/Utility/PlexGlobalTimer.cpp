@@ -12,10 +12,15 @@ CPlexGlobalTimer::~CPlexGlobalTimer()
 
 void CPlexGlobalTimer::StopAllTimers()
 {
+  CSingleLock lk(m_timerLock);
+
   m_running = false;
   m_timeouts.clear();
   CLog::Log(LOGDEBUG, "CPlexGlobalTimer::StopAllTimers signaling the timer thread to quit");
   m_timerEvent.Set();
+
+  lk.unlock();
+
   StopThread(true);
   CLog::Log(LOGDEBUG, "CPlexGlobalTimer::StopAllTimers timer thread dead");
 }
@@ -118,6 +123,8 @@ void CPlexGlobalTimer::Process()
         break;
 
       lk.lock();
+      if (!m_running)
+        return;
     }
 
     timeoutPair p = m_timeouts.at(0);
@@ -129,6 +136,9 @@ void CPlexGlobalTimer::Process()
     if (msecsToSleep <= 0 || !m_timerEvent.WaitMSec(msecsToSleep))
     {
       lk.lock();
+      if (!m_running)
+        return;
+
       CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process firing callback");
       m_timeouts.erase(m_timeouts.begin());
       CJobManager::GetInstance().AddJob(new CPlexGlobalTimerJob(p.second), NULL, CJob::PRIORITY_HIGH);
