@@ -37,6 +37,7 @@
 #include "DirectoryCache.h"
 
 #include "XMLChoice.h"
+#include "AdvancedSettings.h"
 
 
 using namespace XFILE;
@@ -427,8 +428,12 @@ CPlexDirectory::ReadChildren(XML_ELEMENT* root, CFileItemList& container)
 #endif
   {
     CFileItemPtr item = CPlexDirectory::NewPlexElement(element, container, m_url);
+
+    if (boost::ends_with(item->GetPath(), "/allLeaves") && g_advancedSettings.m_bVideoLibraryHideAllItems)
+      continue;
+
     CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(item->GetPlexDirectoryType())->Process(*item, container, element);
-    
+
     /* forward some mediaContainer properties */
     item->SetProperty("containerKey", container.GetProperty("unprocessed_key"));
     
