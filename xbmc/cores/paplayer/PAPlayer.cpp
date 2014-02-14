@@ -815,6 +815,10 @@ int64_t PAPlayer::GetTimeInternal()
     time -= m_currentStream->m_stream->GetDelay();
   time = time * 1000.0;
 
+  /* PLEX */
+  time += m_currentStream->m_startOffset;
+  /* END PLEX */
+
   m_playerGUIData.m_time = (int64_t)time; //update for GUI
 
   return (int64_t)time;

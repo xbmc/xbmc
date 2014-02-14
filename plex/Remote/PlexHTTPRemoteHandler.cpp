@@ -347,9 +347,14 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     catch (boost::bad_lexical_cast) { }
 
     item->SetProperty("viewOffset", offint);
-    item->m_lStartOffset = offint != 0 ? STARTOFFSET_RESUME : 0;
+    if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK)
+      item->m_lStartOffset = (offint / 1000) * 75;
+    else
+      item->m_lStartOffset = offint != 0 ? STARTOFFSET_RESUME : 0;
   }
 
+  /* make sure that the playlist player doesn't reset our position */
+  item->SetProperty("forceStartOffset", true);
   
   if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK)
   {
