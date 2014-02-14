@@ -443,7 +443,7 @@ CPlexServerPtr CPlexServer::load(TiXmlElement *element)
   if (element->QueryBoolAttribute("owned", &owned) != TIXML_SUCCESS)
     return fail;
 
-  element->QueryBoolAttribute("synced", &synced) != TIXML_SUCCESS;
+  element->QueryBoolAttribute("synced", &synced);
 
   CPlexServerPtr server = CPlexServerPtr(new CPlexServer(uuid, name, owned, synced));
 
