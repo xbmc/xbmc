@@ -20,6 +20,7 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
 {
   CPlexServerPtr myplex = g_plexApplication.serverManager->FindByUUID("myplex");
   CURL url = myplex->BuildPlexURL("pms/servers");
+  url.SetOption("includeLite", "1");
 
   XFILE::CPlexDirectory dir;
   CFileItemList list;
@@ -58,11 +59,14 @@ CMyPlexManager::EMyPlexError CMyPlexScanner::DoScan()
       CStdString schema = serverItem->GetProperty("scheme").asString();
       int port = serverItem->GetProperty("port").asInteger();
 
-      if (address.empty() || token.empty())
+      if (token.empty())
         continue;
 
-      CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, address, port, schema, token));
-      server->AddConnection(connection);
+      if (!address.empty())
+      {
+        CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MYPLEX, address, port, schema, token));
+        server->AddConnection(connection);
+      }
 
       /* only add localConnections for non-shared servers */
       if (owned && !localAddresses.empty())
