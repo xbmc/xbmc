@@ -634,7 +634,8 @@ CStdString CURL::GetWithoutFilename() const
     strURL += m_strDomain;
     strURL += ";";
   }
-  else if (m_strUserName != "")
+
+  if (m_strUserName != "")
   {
     strURL += Encode(m_strUserName);
     if (m_strPassword != "")
