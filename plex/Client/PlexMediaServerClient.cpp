@@ -6,7 +6,7 @@
 //
 //
 
-#include "NetworkInterface.h"
+#include <boost/asio.hpp>
 
 #include "PlexMediaServerClient.h"
 
@@ -35,6 +35,7 @@
 #include "URIUtils.h"
 #include "PlexServer.h"
 #include "PlexFile.h"
+#include "NetworkInterface.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CURL CPlexMediaServerClient::GetItemURL(CFileItemPtr item)
@@ -99,19 +100,19 @@ void CPlexMediaServerClient::publishDevice()
   CURL u = myPlexServer->BuildURL(path);
 
   std::vector<NetworkInterface> allInterfaces;
-  NetworkInterface::GetAll(allInterfaces);
+  NetworkInterface::GetCachedList(allInterfaces);
   CStdStringArray interfaceOptions;
 
-  BOOST_FOREACH(NetworkInterface interface, allInterfaces)
+  BOOST_FOREACH(NetworkInterface& xface, allInterfaces)
   {
-    if (interface.loopback() == false && boost::starts_with(interface.name(), "v") == false)
+    if (xface.loopback() == false && boost::starts_with(xface.name(), "v") == false)
     {
       // Avoid APIPA addresses.
-      if (boost::starts_with(interface.address(), "169.254.") == false)
+      if (boost::starts_with(xface.address(), "169.254.") == false)
       {
         CURL deviceAddr;
         deviceAddr.SetProtocol("http");
-        deviceAddr.SetHostName(interface.address());
+        deviceAddr.SetHostName(xface.address());
         deviceAddr.SetPort(boost::lexical_cast<int>(g_guiSettings.GetString("services.webserverport")));
         CLog::Log(LOGDEBUG, "CPlexMediaServerClient::publishDevice Adding interface: %s for publishing", deviceAddr.Get().c_str());
 
