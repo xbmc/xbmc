@@ -296,7 +296,7 @@ void CGUISettings::Initialize()
   AddString(myPlex, "myplex.signin", isSignedIn ? 44002 : 44100, "", BUTTON_CONTROL_STANDARD);
   AddBool(myPlex, "myplex.searchsharedlibraries", 13143, true);
   AddBool(myPlex, "myplex.enablequeueandrec", 52210, true);
-
+  AddBool(myPlex, "myplex.hidecloudsync", 52505, false);
 
   // System/Input devices
   CSettingsCategory* in = AddCategory(SETTINGS_SYSTEM, "input", 14094);

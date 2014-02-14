@@ -256,6 +256,7 @@ static AttributeMap g_attributeMap = boost::assign::list_of<AttributePair>
                                      ("search", g_parserBool)
                                      ("live", g_parserBool)
                                      ("autoupdate", g_parserBool)
+                                     ("synced", g_parserBool)
 
                                      ("key", g_parserKey)
                                      ("theme", g_parserKey)

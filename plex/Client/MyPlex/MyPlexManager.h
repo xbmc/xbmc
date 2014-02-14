@@ -45,6 +45,7 @@ class CMyPlexManager : public CThread
     void Login(const CStdString& username, const CStdString& password);
     void Logout();
     void Refresh() { m_state = STATE_REFRESH; Poke(); }
+    void Rescan() { m_state = STATE_LOGGEDIN; Poke(); }
 
     void SetSectionMap(const CMyPlexSectionMap &map) { m_sectionMap = map; }
     CMyPlexSectionMap GetSectionMap() const { return m_sectionMap; }

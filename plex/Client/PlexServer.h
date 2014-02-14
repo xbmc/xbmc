@@ -35,8 +35,8 @@ class CPlexServerConnTestThread : public CThread
 class CPlexServer : public boost::enable_shared_from_this<CPlexServer>
 {
 public:
-  CPlexServer(const CStdString& uuid, const CStdString& name, bool owned)
-    : m_owned(owned), m_uuid(uuid), m_name(name) {}
+  CPlexServer(const CStdString& uuid, const CStdString& name, bool owned, bool synced = false)
+    : m_owned(owned), m_uuid(uuid), m_name(name), m_synced(synced) {}
 
   CPlexServer() {}
 
@@ -58,6 +58,7 @@ public:
   CStdString GetServerClass() const { return m_serverClass; }
   bool GetOwned() const { return m_owned; }
   bool IsComplete() const { return m_complete; }
+  bool GetSynced() const { return m_synced; }
 
   CPlexServerPtr GetShared() { return shared_from_this(); }
   CPlexConnectionPtr GetActiveConnection() const;
@@ -95,6 +96,7 @@ public:
 
 private:
   bool m_owned;
+  bool m_synced;
   CStdString m_uuid;
   CStdString m_name;
   CStdString m_version;

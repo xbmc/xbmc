@@ -2264,6 +2264,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       pSettingString->SetLabel(44003);
     }
   }
+  else if (strSetting.Equals("myplex.hidecloudsync"))
+  {
+    g_plexApplication.myPlexManager->Rescan();
+  }
   else if (strSetting.Equals("backgroundmusic.thememusicenabled") || strSetting.Left(23).Equals("backgroundmusic.bgmusic"))
   {
     CGUIMessage msg(GUI_MSG_BG_MUSIC_SETTINGS_UPDATED, 0, 0);

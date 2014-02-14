@@ -397,6 +397,10 @@ CPlexServer::toString() const
 
 void CPlexServer::save(TiXmlNode *parent)
 {
+  /* never serialize cloud sync servers */
+  if (m_synced)
+    return;
+
   CSingleLock lk(m_serverLock);
 
   TiXmlElement serverEl("server");
@@ -406,6 +410,7 @@ void CPlexServer::save(TiXmlNode *parent)
   serverEl.SetAttribute("uuid", m_uuid.c_str());
   serverEl.SetAttribute("owner", m_owner.c_str());
 
+  serverEl.SetAttribute("synced", m_synced);
   serverEl.SetAttribute("owned", m_owned);
   serverEl.SetAttribute("serverClass", m_serverClass.c_str());
   serverEl.SetAttribute("supportsDeletion", m_supportsDeletion);
@@ -425,7 +430,7 @@ void CPlexServer::save(TiXmlNode *parent)
 CPlexServerPtr CPlexServer::load(TiXmlElement *element)
 {
   std::string name, uuid;
-  bool owned;
+  bool owned, synced = false;
 
   CPlexServerPtr fail;
 
@@ -438,7 +443,9 @@ CPlexServerPtr CPlexServer::load(TiXmlElement *element)
   if (element->QueryBoolAttribute("owned", &owned) != TIXML_SUCCESS)
     return fail;
 
-  CPlexServerPtr server = CPlexServerPtr(new CPlexServer(uuid, name, owned));
+  element->QueryBoolAttribute("synced", &synced) != TIXML_SUCCESS;
+
+  CPlexServerPtr server = CPlexServerPtr(new CPlexServer(uuid, name, owned, synced));
 
   element->QueryStringAttribute("version", &server->m_version);
   element->QueryStringAttribute("owner", &server->m_owner);

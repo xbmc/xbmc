@@ -971,3 +971,7 @@ msgstr "Forced"
 msgctxt "#52504"
 msgid "Allow Plex collect anonymous data to improve your experience"
 msgstr "Allow Plex collect anonymous data to improve your experience"
+
+msgctxt "#52505"
+msgid "Hide CloudSync sections"
+msgstr "Hide CloudSync sections"
