@@ -25,9 +25,8 @@
 				<top>20</top>
 				<width>32</width>
 				<height>32</height>
-				<texture>busy.png</texture>
+				<texture>busy.gif</texture>
 				<aspectratio>keep</aspectratio>
-				<animation effect="rotate" start="0" end="360" center="36,36" time="1200" loop="true" condition="true">conditional</animation>
 			</control>
 			<control type="label">
 				<description>Busy label</description>
