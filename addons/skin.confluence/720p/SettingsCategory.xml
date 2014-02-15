@@ -73,7 +73,7 @@
 				<itemgap>-1</itemgap>
 				<onleft>5</onleft>
 				<onright>5</onright>
-				<onup>20</onup>
+				<onup>3</onup>
 				<ondown>20</ondown>
 			</control>
 			<control type="button" id="20">
