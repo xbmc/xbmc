@@ -392,6 +392,7 @@ unsigned int CWinRenderer::PreInit()
 
   g_Windowing.Get3DDevice()->GetDeviceCaps(&m_deviceCaps);
 
+  m_formats.clear();
   m_formats.push_back(RENDER_FMT_YUV420P);
 
   m_iRequestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
