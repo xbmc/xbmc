@@ -35,6 +35,7 @@
 #include "settings/DisplaySettings.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
+#include "OverlayRendererUtil.h"
 #include "OverlayRendererGUI.h"
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "OverlayRendererGL.h"
@@ -273,6 +274,8 @@ void CRenderer::Render(COverlay* o)
     }
 
   }
+
+  state.x += GetStereoscopicDepth();
 
   o->Render(state);
 }
