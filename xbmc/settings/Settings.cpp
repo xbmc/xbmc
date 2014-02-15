@@ -469,7 +469,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->UnregisterSettingsHandler(&CRssManager::Get());
   m_settingsManager->UnregisterSettingsHandler(&g_application);
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
   m_settingsManager->UnregisterSettingsHandler(&g_timezone);
 #endif
 
@@ -981,7 +981,7 @@ void CSettings::InitializeISettingsHandlers()
   m_settingsManager->RegisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->RegisterSettingsHandler(&CRssManager::Get());
   m_settingsManager->RegisterSettingsHandler(&g_application);
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
   m_settingsManager->RegisterSettingsHandler(&g_timezone);
 #endif
 }
