@@ -56,7 +56,6 @@ private:
   CCoreAudioDevice   m_device;
   CCoreAudioStream   m_outputStream;
   unsigned int       m_latentFrames;
-  unsigned int       m_outputBufferIndex;
 
   bool               m_outputBitstream;   ///< true if we're bistreaming into a LinearPCM stream rather than AC3 stream.
   int16_t           *m_outputBuffer;      ///< buffer for bitstreaming
