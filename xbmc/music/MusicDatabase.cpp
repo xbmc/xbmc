@@ -1555,7 +1555,7 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.albumArtist = StringUtils::Split(record->at(offset + song_strAlbumArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
 
   // Get filename with full path
-  song.strFileName = URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString());
+  song.strFileName = URIUtils::AddFileToFolder(record->at(offset + song_strPath).get_asString(), record->at(offset + song_strFileName).get_asString());
   return song;
 }
 
