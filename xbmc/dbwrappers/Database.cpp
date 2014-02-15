@@ -212,6 +212,7 @@ bool CDatabase::CommitMultipleExecute()
       return false;
     }
   }
+  CommitTransaction();
   return true;
 }
 
