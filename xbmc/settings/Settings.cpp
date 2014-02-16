@@ -414,10 +414,10 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("skinfonts");
   m_settingsManager->UnregisterSettingOptionsFiller("skinsounds");
   m_settingsManager->UnregisterSettingOptionsFiller("skinthemes");
-#if defined(TARGET_LINUX)
+#if defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   m_settingsManager->UnregisterSettingOptionsFiller("timezonecountries");
   m_settingsManager->UnregisterSettingOptionsFiller("timezones");
-#endif // defined(TARGET_LINUX)
+#endif // defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   m_settingsManager->UnregisterSettingOptionsFiller("verticalsyncs");
 
   // unregister ISettingCallback implementations
@@ -438,9 +438,9 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&g_passwordManager);
   m_settingsManager->UnregisterCallback(&PVR::g_PVRManager);
   m_settingsManager->UnregisterCallback(&CRssManager::Get());
-#if defined(TARGET_LINUX)
+#if defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   m_settingsManager->UnregisterCallback(&g_timezone);
-#endif // defined(TARGET_LINUX)
+#endif // defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   m_settingsManager->UnregisterCallback(&g_weatherManager);
   m_settingsManager->UnregisterCallback(&PERIPHERALS::CPeripherals::Get());
 #if defined(TARGET_DARWIN_OSX)
@@ -469,7 +469,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->UnregisterSettingsHandler(&CRssManager::Get());
   m_settingsManager->UnregisterSettingsHandler(&g_application);
-#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
+#if defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   m_settingsManager->UnregisterSettingsHandler(&g_timezone);
 #endif
 
@@ -773,7 +773,7 @@ void CSettings::InitializeDefaults()
   ((CSettingAddon*)m_settingsManager->GetSetting("lookandfeel.skin"))->SetDefault("skin.touched");
 #endif
 
-#if defined(TARGET_POSIX)
+#if defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting("locale.timezonecountry");
   CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting("locale.timezone");
 
@@ -781,7 +781,7 @@ void CSettings::InitializeDefaults()
     timezonecountry->SetDefault(g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()));
   if (timezone->IsVisible())
     timezone->SetDefault(g_timezone.GetOSConfiguredTimezone());
-#endif // defined(TARGET_POSIX)
+#endif // defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
 
 #if defined(TARGET_WINDOWS)
   #if defined(HAS_DX)
@@ -850,10 +850,10 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("skinfonts", ADDON::CSkinInfo::SettingOptionsSkinFontsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinsounds", ADDON::CSkinInfo::SettingOptionsSkinSoundFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinthemes", ADDON::CSkinInfo::SettingOptionsSkinThemesFiller);
-#ifdef TARGET_LINUX
+#if defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   m_settingsManager->RegisterSettingOptionsFiller("timezonecountries", CLinuxTimezone::SettingOptionsTimezoneCountriesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("timezones", CLinuxTimezone::SettingOptionsTimezonesFiller);
-#endif
+#endif // defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   m_settingsManager->RegisterSettingOptionsFiller("verticalsyncs", CDisplaySettings::SettingOptionsVerticalSyncsFiller);
 }
 
@@ -981,7 +981,7 @@ void CSettings::InitializeISettingsHandlers()
   m_settingsManager->RegisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->RegisterSettingsHandler(&CRssManager::Get());
   m_settingsManager->RegisterSettingsHandler(&g_application);
-#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
+#if defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   m_settingsManager->RegisterSettingsHandler(&g_timezone);
 #endif
 }
@@ -1147,7 +1147,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("lookandfeel.rssedit");
   m_settingsManager->RegisterCallback(&CRssManager::Get(), settingSet);
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_POSIX) && !defined(TARGET_ANDROID)
   settingSet.clear();
   settingSet.insert("locale.timezone");
   settingSet.insert("locale.timezonecountry");
