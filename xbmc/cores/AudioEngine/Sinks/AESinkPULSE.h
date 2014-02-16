@@ -52,6 +52,7 @@ private:
   static bool SetupContext(const char *host, pa_context **context, pa_threaded_mainloop **mainloop);
 
   bool m_IsAllocated;
+  bool m_passthrough;
 
   AEAudioFormat m_format;
   unsigned int m_BytesPerSecond;
