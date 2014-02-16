@@ -1963,7 +1963,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   {
     CFileItemPtr item = m_items[(int)(*it)->at(FieldId).asInteger()];
     // Set the sort label in the CFileItem
-    item->SetSortLabel(CStdStringW((*it)->at(FieldSort).asWideString()));
+    item->SetSortLabel(wstring((*it)->at(FieldSort).asWideString()));
 
     sortedFileItems.push_back(item);
   }

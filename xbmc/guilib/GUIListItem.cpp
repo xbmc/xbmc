@@ -105,12 +105,12 @@ void CGUIListItem::SetSortLabel(const CStdString &label)
   // no need to invalidate - this is never shown in the UI
 }
 
-void CGUIListItem::SetSortLabel(const CStdStringW &label)
+void CGUIListItem::SetSortLabel(const wstring &label)
 {
   m_sortLabel = label;
 }
 
-const CStdStringW& CGUIListItem::GetSortLabel() const
+const wstring& CGUIListItem::GetSortLabel() const
 {
   return m_sortLabel;
 }

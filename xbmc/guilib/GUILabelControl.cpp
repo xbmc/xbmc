@@ -50,7 +50,7 @@ void CGUILabelControl::ShowCursor(bool bShow)
 void CGUILabelControl::SetCursorPos(int iPos)
 {
   CStdString labelUTF8 = m_infoLabel.GetLabel(m_parentID);
-  CStdStringW label;
+  wstring label;
   g_charsetConverter.utf8ToW(labelUTF8, label);
   if (iPos > (int)label.length()) iPos = label.length();
   if (iPos < 0) iPos = 0;
@@ -124,7 +124,7 @@ typedef struct InsertPointInfo
   Type type;
   int blockLength;
   int priority; // only used when same pos, same type, same blocklength
-  CStdStringW text;
+  wstring text;
 } InsertPointInfo;
 
 void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
@@ -134,7 +134,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
   bool changed = false;
   if (m_startHighlight < m_endHighlight || m_startSelection < m_endSelection || m_bShowCursor)
   {
-    CStdStringW utf16;
+    wstring utf16;
     g_charsetConverter.utf8ToW(label, utf16);
     vecText text; text.reserve(utf16.size()+1);
     vecColors colors;

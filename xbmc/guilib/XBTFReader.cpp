@@ -60,7 +60,7 @@ bool CXBTFReader::Open(const CStdString& fileName)
   m_fileName = fileName;
 
 #ifdef TARGET_WINDOWS
-  CStdStringW strPathW;
+  wstring strPathW;
   g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(m_fileName), strPathW, false);
   m_file = _wfopen(strPathW.c_str(), L"rb");
 #else

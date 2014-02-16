@@ -487,7 +487,7 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
   WCHAR cVolumenName[128];
   WCHAR cFSName[128];
   URIUtils::AddSlashAtEnd(strDevice);
-  if(GetVolumeInformationW(CStdStringW(strDevice).c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
+  if(GetVolumeInformationW(wstring(strDevice).c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
   g_charsetConverter.wToUTF8(cVolumenName, strDevice);
   return StringUtils::TrimRight(strDevice, " ");

@@ -413,7 +413,7 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   si.dwFlags = STARTF_USESHOWWINDOW;
   si.wShowWindow = m_hideconsole ? SW_HIDE : SW_SHOW;
 
-  CStdStringW WstrPath, WstrSwitches;
+  wstring WstrPath, WstrSwitches;
   g_charsetConverter.utf8ToW(strPath, WstrPath);
   g_charsetConverter.utf8ToW(strSwitches, WstrSwitches);
 

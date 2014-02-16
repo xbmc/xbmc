@@ -398,7 +398,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
   if (strPath.find("..") != std::string::npos)
   {
     //expand potential relative path to full path
-    CStdStringW strPathW;
+    wstring strPathW;
     g_charsetConverter.utf8ToW(strPath, strPathW, false);
     CWIN32Util::AddExtraLongPathPrefix(strPathW);
     const unsigned int bufSize = GetFullPathNameW(strPathW, 0, NULL, NULL);

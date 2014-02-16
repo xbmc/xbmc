@@ -37,6 +37,7 @@
 #include "FileCache.h"
 #include <climits>
 
+using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 
@@ -152,7 +153,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   
   bool result=false;
 
-  CStdStringW wBuffer, wConverted;
+  wstring wBuffer, wConverted;
   g_charsetConverter.utf8ToW(strBuffer, wBuffer, false);
   HTML::CHTMLUtil::ConvertHTMLToW(wBuffer, wConverted);
   g_charsetConverter.wToUTF8(wConverted, strBuffer);

@@ -21,6 +21,8 @@
 #include "GUILabel.h"
 #include <limits>
 
+using namespace std;
+
 CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow)
     : m_label(labelInfo)
     , m_textLayout(labelInfo.font, overflow == OVER_FLOW_WRAP, height)
@@ -180,7 +182,7 @@ bool CGUILabel::SetText(const CStdString &label)
     return false;
 }
 
-bool CGUILabel::SetTextW(const CStdStringW &label)
+bool CGUILabel::SetTextW(const wstring &label)
 {
   if (m_textLayout.UpdateW(label, m_maxRect.Width(), m_invalid))
   {

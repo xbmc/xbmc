@@ -238,7 +238,7 @@ void CLog::OutputDebugString(const std::string& line)
 #if defined(TARGET_WINDOWS)
   // we can't use charsetconverter here as it's initialized later than CLog and deinitialized early
   int bufSize = MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, NULL, 0);
-  CStdStringW wstr (L"", bufSize);
+  wstring wstr (L"", bufSize);
   if ( MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, wstr.GetBuf(bufSize), bufSize) == bufSize )
   {
     wstr.RelBuf();

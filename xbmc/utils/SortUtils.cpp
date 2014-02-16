@@ -637,7 +637,7 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
             item->insert(pair<Field, CVariant>(*field, CVariant::ConstNullVariant));
         }
 
-        CStdStringW sortLabel;
+        wstring sortLabel;
         g_charsetConverter.utf8ToW(preparator(attributes, *item), sortLabel, false);
         item->insert(pair<Field, CVariant>(FieldSort, CVariant(sortLabel)));
       }
@@ -676,7 +676,7 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
             (*item)->insert(pair<Field, CVariant>(*field, CVariant::ConstNullVariant));
         }
 
-        CStdStringW sortLabel;
+        wstring sortLabel;
         g_charsetConverter.utf8ToW(preparator(attributes, **item), sortLabel, false);
         (*item)->insert(pair<Field, CVariant>(FieldSort, CVariant(sortLabel)));
       }

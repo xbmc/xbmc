@@ -36,6 +36,8 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 typedef struct
 {
   unsigned int   text;
@@ -495,7 +497,7 @@ void CKaraokeLyricsText::rescanLyrics()
       ld.offset_start = prev_line_idx;
 
       // This piece extracts the first character of a new string and makes it uppercase in Unicode way
-      CStdStringW temptext;
+      wstring temptext;
       g_charsetConverter.utf8ToW( line_text, temptext );
 
       // This is pretty ugly upper/lowercase for Russian unicode character set
@@ -608,7 +610,7 @@ void CKaraokeLyricsText::rescanLyrics()
   bool invalid_timing_reported = false;
   for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
   {
-    CStdStringW utf16;
+    wstring utf16;
     g_charsetConverter.utf8ToW( m_lyrics[i].text, utf16 );
 
     // Skip empty lyrics
@@ -688,7 +690,7 @@ void CKaraokeLyricsText::rescanLyrics()
 
 float CKaraokeLyricsText::getStringWidth(const CStdString & text)
 {
-  CStdStringW utf16;
+  wstring utf16;
   vecText utf32;
 
   g_charsetConverter.utf8ToW(text, utf16);

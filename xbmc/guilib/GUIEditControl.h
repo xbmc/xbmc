@@ -88,7 +88,7 @@ protected:
   virtual void ProcessText(unsigned int currentTime);
   virtual void RenderText();
   virtual CGUILabel::COLOR GetTextColor() const;
-  CStdStringW GetDisplayedText() const;
+  std::wstring GetDisplayedText() const;
   void RecalcLabelPosition();
   void ValidateCursor();
   void UpdateText(bool sendUpdate = true);
@@ -96,7 +96,7 @@ protected:
   void OnSMSCharacter(unsigned int key);
   void DefaultConstructor();  
 
-  virtual bool ValidateInput(const CStdStringW &data) const;
+  virtual bool ValidateInput(const std::wstring &data) const;
   void ValidateInput();
 
   /*! \brief Clear out the current text input if it's an MD5 password.
@@ -104,7 +104,7 @@ protected:
    */
   bool ClearMD5();
   
-  CStdStringW m_text2;
+  std::wstring m_text2;
   CStdString  m_text;
   CGUIInfoLabel m_hintInfo;
   float m_textOffset;

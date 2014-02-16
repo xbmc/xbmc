@@ -98,9 +98,9 @@ void CKeyboardLayoutConfiguration::readCharMapFromXML(const TiXmlElement* pXMLMa
       CStdString strOutChar = pEntry->Attribute("outchar");
       if (strInChar.length() > 0 && strOutChar.length() > 0)
       {
-        CStdStringW fromStr;
+        wstring fromStr;
         g_charsetConverter.utf8ToW(strInChar, fromStr);
-        CStdStringW toStr;
+        wstring toStr;
         g_charsetConverter.utf8ToW(strOutChar, toStr);
         if (fromStr.size()==1 && toStr.size()==1)
         {
@@ -137,7 +137,7 @@ void CKeyboardLayoutConfiguration::readByteMapFromXML(const TiXmlElement* pXMLMa
       if (strInHex.length() > 0 && strOutChar.length() > 0)
       {
         CStdString hexValue = strInHex;
-        CStdStringW toStr;
+        wstring toStr;
         g_charsetConverter.utf8ToW(strOutChar, toStr);
 
         int from;

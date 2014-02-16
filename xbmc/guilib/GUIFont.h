@@ -90,7 +90,7 @@ public:
   unsigned int characterPos;
   unsigned int initialWait;
   float initialPos;
-  CStdStringW suffix;
+  std::wstring suffix;
 
   static const int defaultSpeed = 60;
 private:

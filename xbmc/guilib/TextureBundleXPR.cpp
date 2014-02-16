@@ -148,7 +148,7 @@ bool CTextureBundleXPR::OpenBundle()
   strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 
 #ifndef TARGET_POSIX
-  CStdStringW strPathW;
+  wstring strPathW;
   g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(strPath), strPathW, false);
   m_hFile = _wfopen(strPathW.c_str(), L"rb");
 #else

@@ -30,6 +30,7 @@ class CURL
 {
 public:
   CURL(const std::string& strURL);
+  CURL(const std::wstring& strURL);
   CURL();
   virtual ~CURL(void);
 

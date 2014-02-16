@@ -819,7 +819,7 @@ void DllLoader::UnloadSymbols()
 
       try
       {
-        CStdStringW strNameW;
+        wstring strNameW;
         g_charsetConverter.utf8ToW(GetName(), strNameW);
 
         // Get the address of the global struct g_dmi
@@ -832,7 +832,7 @@ void DllLoader::UnloadSymbols()
         //  Search for the dll we are unloading...
         while (entry)
         {
-          CStdStringW baseName=(wchar_t*)((LDR_DATA_TABLE_ENTRY*)entry)->BaseDllName.Buffer;
+          wstring baseName=(wchar_t*)((LDR_DATA_TABLE_ENTRY*)entry)->BaseDllName.Buffer;
           if (StringUtils::EqualsNoCase(baseName, strNameW))
           {
             // ...and remove it from the LoadedModuleList and free its memory.

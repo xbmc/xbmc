@@ -285,7 +285,7 @@ static const HTMLMapping mappings[] =
    {L"&zwnj;",    0x200C},
    {NULL,         L'\0'}};
 
-void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStripped)
+void CHTMLUtil::ConvertHTMLToW(const wstring& strHTML, wstring& strStripped)
 {
   /* TODO:STRING_CLEANUP */
   if (strHTML.size() == 0)
@@ -297,7 +297,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
   strStripped = strHTML;
   while (mappings[iPos].html)
   {
-    StringUtils::Replace(strStripped, mappings[iPos].html,CStdStringW(1, mappings[iPos].w));
+    StringUtils::Replace(strStripped, mappings[iPos].html,wstring(1, mappings[iPos].w));
     iPos++;
   }
 
@@ -306,7 +306,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
   {
     size_t iStart = iPos + 1;
     iPos += 2;
-    CStdStringW num;
+    wstring num;
     int base = 10;
     if (strStripped[iPos+1] == L'x')
     {
@@ -326,7 +326,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
     else
       num = StringUtils::Format(L"&#x%ls;", num.c_str());
 
-    StringUtils::Replace(strStripped, num,CStdStringW(1,val));
+    StringUtils::Replace(strStripped, num,wstring(1,val));
     iPos = strStripped.find(L"&#", iStart);
   }
 }

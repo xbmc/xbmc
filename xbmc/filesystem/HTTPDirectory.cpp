@@ -31,6 +31,7 @@
 #include "utils/HTMLUtil.h"
 #include "climits"
 
+using namespace std;
 using namespace XFILE;
 
 CHTTPDirectory::CHTTPDirectory(void){}
@@ -93,7 +94,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
       CStdString strNameTemp = StringUtils::Trim(strName);
 
-      CStdStringW wName, wLink, wConverted;
+      wstring wName, wLink, wConverted;
       if (fileCharset.empty())
         g_charsetConverter.unknownToUTF8(strNameTemp);
       g_charsetConverter.utf8ToW(strNameTemp, wName, false);

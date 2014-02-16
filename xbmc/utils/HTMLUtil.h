@@ -34,6 +34,6 @@ public:
   void getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue);
   void getAttributeOfTag(const CStdString& strTagAndValue, const CStdString& strTag, CStdString& strValue);
   static void RemoveTags(CStdString& strHTML);
-  static void ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStripped);
+  static void ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStripped);
 };
 }

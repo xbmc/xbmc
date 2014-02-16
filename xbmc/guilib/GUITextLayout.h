@@ -86,9 +86,9 @@ public:
    */
   float GetTextWidth() const { return m_textWidth; };
   
-  float GetTextWidth(const CStdStringW &text) const;
+  float GetTextWidth(const std::wstring &text) const;
   bool Update(const CStdString &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
-  bool UpdateW(const CStdStringW &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
+  bool UpdateW(const std::wstring &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
 
   /*! \brief Update text from a pre-styled vecText/vecColors combination
    Allows styled text to be passed directly to the text layout.
@@ -114,9 +114,9 @@ protected:
   void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
   void WrapText(const vecText &text, float maxWidth);
   static void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
-  static CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
+  static std::wstring BidiFlip(const std::wstring &text, bool forceLTRReadingOrder);
   void CalcTextExtent();
-  void UpdateCommon(const CStdStringW &text, float maxWidth, bool forceLTRReadingOrder);
+  void UpdateCommon(const std::wstring &text, float maxWidth, bool forceLTRReadingOrder);
 
   // our text to render
   vecColors m_colors;
@@ -133,7 +133,7 @@ protected:
   color_t m_textColor;
 
   std::string m_lastUtf8Text;
-  CStdStringW m_lastText;
+  std::wstring m_lastText;
   float m_textWidth;
   float m_textHeight;
 private:
@@ -147,9 +147,9 @@ private:
     return ch == L' ' || (ch >=0x4e00 && ch <= 0x9fff);
   };
   static void AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32);
-  static void AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32);
-  static void ParseText(const CStdStringW &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText);
+  static void AppendToUTF32(const std::wstring &utf16, character_t colStyle, vecText &utf32);
+  static void ParseText(const std::wstring &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText);
 
-  static void utf8ToW(const CStdString &utf8, CStdStringW &utf16);
+  static void utf8ToW(const CStdString &utf8, std::wstring &utf16);
 };
 

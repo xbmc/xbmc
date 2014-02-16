@@ -72,11 +72,11 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void Backspace();
     void SendSearchMessage();
 
-    CStdStringW m_strEdit;
+    std::wstring m_strEdit;
     int m_iCursorPos;
 
     // holds the spelling region of keystrokes/text generated from 'input method'
-    CStdStringW m_strEditing;
+    std::wstring m_strEditing;
     int m_iEditingOffset;
     int m_iEditingLength;
 

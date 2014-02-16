@@ -257,7 +257,7 @@ static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 
 static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
 {
-  CStdStringW strwname;
+  wstring strwname;
   g_charsetConverter.utf8ToW(data->name, strwname, false);
   size_t size = sizeof(wdata->name) / sizeof(wchar_t);
   wcsncpy(wdata->name, strwname.c_str(), size);
@@ -808,7 +808,7 @@ extern "C"
 
       // Make sure the slashes are correct & translate the path
       struct _wfinddata64i32_t wdata;
-      CStdStringW strwfile;
+      wstring strwfile;
       g_charsetConverter.utf8ToW(CUtil::ValidatePath(CSpecialProtocol::TranslatePath(str)), strwfile, false);
       intptr_t ret = _wfindfirst64i32(strwfile.c_str(), &wdata);
       if (ret != -1)
@@ -1913,7 +1913,7 @@ extern "C"
     // Make sure the slashes are correct & translate the path
     CStdString strPath = CUtil::ValidatePath(CSpecialProtocol::TranslatePath(dir));
 #ifndef TARGET_POSIX
-    CStdStringW strWPath;
+    wstring strWPath;
     g_charsetConverter.utf8ToW(strPath, strWPath, false);
     return _wmkdir(strWPath.c_str());
 #else

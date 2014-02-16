@@ -49,15 +49,15 @@ private:
   void Process();
   bool Parse(int iFeed);
   void GetNewsItems(TiXmlElement* channelXmlNode, int iFeed);
-  void AddString(CStdStringW aString, int aColour, int iFeed);
+  void AddString(std::wstring aString, int aColour, int iFeed);
   void UpdateFeed();
   virtual void OnExit();
   int GetQueueSize();
 
   IRssObserver* m_pObserver;
 
-  std::vector<CStdStringW> m_strFeed;
-  std::vector<CStdStringW> m_strColors;
+  std::vector<std::wstring> m_strFeed;
+  std::vector<std::wstring> m_strColors;
   std::vector<SYSTEMTIME *> m_vecTimeStamps;
   std::vector<int> m_vecUpdateTimes;
   int m_spacesBetweenFeeds;

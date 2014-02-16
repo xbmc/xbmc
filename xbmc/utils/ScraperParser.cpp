@@ -510,9 +510,9 @@ void CScraperParser::Clean(CStdString& strDirty)
     if ((i2 = strDirty.find("!!!FIXCHARS!!!",i+14)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+14,i2-i-14);
-      CStdStringW wbuffer;
+      wstring wbuffer;
       g_charsetConverter.toW(strBuffer,wbuffer,GetSearchStringEncoding());
-      CStdStringW wConverted;
+      wstring wConverted;
       HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
       g_charsetConverter.fromW(wConverted,strBuffer,GetSearchStringEncoding());
       StringUtils::Trim(strBuffer);

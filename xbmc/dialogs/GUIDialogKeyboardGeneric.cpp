@@ -34,6 +34,8 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/CharsetConverter.h"
 
+using namespace std;
+
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
@@ -321,7 +323,7 @@ void CGUIDialogKeyboardGeneric::SetText(const CStdString& aTextString)
 
 void CGUIDialogKeyboardGeneric::InputText(const CStdString& aTextString)
 {
-  CStdStringW newStr;
+  wstring newStr;
   g_charsetConverter.utf8ToW(aTextString, newStr);
   if (!newStr.empty())
   {
@@ -379,7 +381,7 @@ void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice 
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
-    CStdStringW edit = m_strEdit;
+    wstring edit = m_strEdit;
     pEdit->SetHighlight(0, 0);
     pEdit->SetSelection(0, 0);
     if (m_hiddenInput)
@@ -750,7 +752,7 @@ bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const
 
 void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
 {
-  CStdStringW unicode_text;
+  wstring unicode_text;
   CStdStringA utf8_text;
 
 // Get text from the clipboard
@@ -764,8 +766,8 @@ void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
     size_t i = GetCursorPos();
     if (i > m_strEdit.size())
       i = m_strEdit.size();
-    CStdStringW left_end = m_strEdit.substr(0, i);
-    CStdStringW right_end = m_strEdit.substr(i);
+    wstring left_end = m_strEdit.substr(0, i);
+    wstring right_end = m_strEdit.substr(i);
 
     m_strEdit = left_end;
     m_strEdit.append(unicode_text);
