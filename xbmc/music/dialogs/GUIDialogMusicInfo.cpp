@@ -233,7 +233,7 @@ void CGUIDialogMusicInfo::SetDiscography()
     int idAlbum = -1;
     for (vector<int>::const_iterator album = albumsByArtist.begin(); album != albumsByArtist.end(); ++album)
     {
-      if (database.GetAlbumById(*album).Equals(item->GetLabel()))
+      if (StringUtils::EqualsNoCase(database.GetAlbumById(*album), item->GetLabel()))
       {
         idAlbum = *album;
         item->GetMusicInfoTag()->SetDatabaseId(idAlbum, "album");
@@ -514,10 +514,10 @@ void CGUIDialogMusicInfo::OnGetFanart()
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
-  if (result.Equals("fanart://Current"))
+  if (StringUtils::EqualsNoCase(result, "fanart://Current"))
    return;
 
-  if (result.Equals("fanart://Local"))
+  if (StringUtils::EqualsNoCase(result, "fanart://Local"))
     result = strLocal;
 
   if (StringUtils::StartsWith(result, "fanart://Remote"))
@@ -526,7 +526,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
     m_artist.fanart.SetPrimaryFanart(iFanart);
     result = m_artist.fanart.GetImageURL();
   }
-  else if (result.Equals("fanart://None") || !CFile::Exists(result))
+  else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
     result.clear();
 
   if (flip && !result.empty())

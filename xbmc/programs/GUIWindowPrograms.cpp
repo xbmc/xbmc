@@ -192,7 +192,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
 CStdString CGUIWindowPrograms::GetStartFolder(const CStdString &dir)
 {
-  if (dir.Equals("Plugins") || dir.Equals("Addons"))
+  if (StringUtils::EqualsNoCase(dir, "Plugins") || StringUtils::EqualsNoCase(dir, "Addons"))
     return "addons://sources/executable/";
     
   SetupShares();

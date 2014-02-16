@@ -37,6 +37,7 @@
 #include "threads/SingleLock.h"
 #include "log.h"
 #include "utils/FileUtils.h"
+#include "utils/StringUtils.h"
 
 #define RSS_COLOR_BODY      0
 #define RSS_COLOR_HEADLINE  1
@@ -271,7 +272,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 
       for (i = m_tagSet.begin(); i != m_tagSet.end(); i++)
       {
-        if (!childNode->NoChildren() && i->Equals(strName))
+        if (!childNode->NoChildren() && StringUtils::EqualsNoCase(*i, strName))
         {
           CStdString htmlText = childNode->FirstChild()->Value();
 
@@ -280,7 +281,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           // <title>
           //  <div dir="RTL">��� ����: ���� �� �����</div>
           // </title>
-          if (htmlText.Equals("div") || htmlText.Equals("span"))
+          if (StringUtils::EqualsNoCase(htmlText, "div") || StringUtils::EqualsNoCase(htmlText, "span"))
             htmlText = childNode->FirstChild()->FirstChild()->Value();
 
           CStdStringW unicodeText, unicodeText2;

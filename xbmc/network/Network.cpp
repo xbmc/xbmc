@@ -26,6 +26,7 @@
 #include "ApplicationMessenger.h"
 #include "network/NetworkServices.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #ifdef TARGET_WINDOWS
 #include "utils/SystemInfo.h"
 #include "win32/WIN32Util.h"
@@ -228,7 +229,7 @@ CNetworkInterface* CNetwork::GetInterfaceByName(CStdString& name)
    while (iter != ifaces.end())
    {
       CNetworkInterface* iface = *iter;
-      if (iface && iface->GetName().Equals(name))
+      if (iface && StringUtils::EqualsNoCase(iface->GetName(), name))
          return iface;
       ++iter;
    }

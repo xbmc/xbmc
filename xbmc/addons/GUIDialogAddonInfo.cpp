@@ -292,7 +292,7 @@ void CGUIDialogAddonInfo::OnRollback()
   for (unsigned int i=0;i<m_rollbackVersions.size();++i)
   {
     CStdString label(m_rollbackVersions[i]);
-    if (m_rollbackVersions[i].Equals(m_localAddon->Version().c_str()))
+    if (StringUtils::EqualsNoCase(m_rollbackVersions[i], m_localAddon->Version().c_str()))
      label += " "+g_localizeStrings.Get(24094);
    if (database.IsAddonBlacklisted(m_localAddon->ID(),label))
      label += " "+g_localizeStrings.Get(24095);
@@ -417,7 +417,7 @@ void CGUIDialogAddonInfo::GrabRollbackVersions()
       continue;
     CStdString ID, version;
     AddonVersion::SplitFileName(ID,version,items[i]->GetLabel());
-    if (ID.Equals(m_localAddon->ID()))
+    if (StringUtils::EqualsNoCase(ID, m_localAddon->ID()))
     {
       CStdString hash, path(items[i]->GetPath());
       if (db.GetPackageHash(m_localAddon->ID(), path, hash))

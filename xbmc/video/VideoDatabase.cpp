@@ -5753,16 +5753,16 @@ bool CVideoDatabase::GetItems(const CStdString &strBaseDir, CFileItemList &items
 bool CVideoDatabase::GetItems(const CStdString &strBaseDir, const CStdString &mediaType, const CStdString &itemType, CFileItemList &items, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */)
 {
   VIDEODB_CONTENT_TYPE contentType;
-  if (mediaType.Equals("movies"))
+  if (StringUtils::EqualsNoCase(mediaType, "movies"))
     contentType = VIDEODB_CONTENT_MOVIES;
-  else if (mediaType.Equals("tvshows"))
+  else if (StringUtils::EqualsNoCase(mediaType, "tvshows"))
   {
-    if (itemType.Equals("episodes"))
+    if (StringUtils::EqualsNoCase(itemType, "episodes"))
       contentType = VIDEODB_CONTENT_EPISODES;
     else
       contentType = VIDEODB_CONTENT_TVSHOWS;
   }
-  else if (mediaType.Equals("musicvideos"))
+  else if (StringUtils::EqualsNoCase(mediaType, "musicvideos"))
     contentType = VIDEODB_CONTENT_MUSICVIDEOS;
   else
     return false;
@@ -5772,37 +5772,37 @@ bool CVideoDatabase::GetItems(const CStdString &strBaseDir, const CStdString &me
 
 bool CVideoDatabase::GetItems(const CStdString &strBaseDir, VIDEODB_CONTENT_TYPE mediaType, const CStdString &itemType, CFileItemList &items, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */)
 {
-  if (itemType.Equals("movies") && (mediaType == VIDEODB_CONTENT_MOVIES || mediaType == VIDEODB_CONTENT_MOVIE_SETS))
+  if (StringUtils::EqualsNoCase(itemType, "movies") && (mediaType == VIDEODB_CONTENT_MOVIES || mediaType == VIDEODB_CONTENT_MOVIE_SETS))
     return GetMoviesByWhere(strBaseDir, filter, items, sortDescription);
-  else if (itemType.Equals("tvshows") && mediaType == VIDEODB_CONTENT_TVSHOWS)
+  else if (StringUtils::EqualsNoCase(itemType, "tvshows") && mediaType == VIDEODB_CONTENT_TVSHOWS)
     return GetTvShowsByWhere(strBaseDir, filter, items, sortDescription);
-  else if (itemType.Equals("musicvideos") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
+  else if (StringUtils::EqualsNoCase(itemType, "musicvideos") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
     return GetMusicVideosByWhere(strBaseDir, filter, items, true, sortDescription);
-  else if (itemType.Equals("episodes") && mediaType == VIDEODB_CONTENT_EPISODES)
+  else if (StringUtils::EqualsNoCase(itemType, "episodes") && mediaType == VIDEODB_CONTENT_EPISODES)
     return GetEpisodesByWhere(strBaseDir, filter, items, true, sortDescription);
-  else if (itemType.Equals("seasons") && mediaType == VIDEODB_CONTENT_TVSHOWS)
+  else if (StringUtils::EqualsNoCase(itemType, "seasons") && mediaType == VIDEODB_CONTENT_TVSHOWS)
     return GetSeasonsNav(strBaseDir, items);
-  else if (itemType.Equals("genres"))
+  else if (StringUtils::EqualsNoCase(itemType, "genres"))
     return GetGenresNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("years"))
+  else if (StringUtils::EqualsNoCase(itemType, "years"))
     return GetYearsNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("actors"))
+  else if (StringUtils::EqualsNoCase(itemType, "actors"))
     return GetActorsNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("directors"))
+  else if (StringUtils::EqualsNoCase(itemType, "directors"))
     return GetDirectorsNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("writers"))
+  else if (StringUtils::EqualsNoCase(itemType, "writers"))
     return GetWritersNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("studios"))
+  else if (StringUtils::EqualsNoCase(itemType, "studios"))
     return GetStudiosNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("sets"))
+  else if (StringUtils::EqualsNoCase(itemType, "sets"))
     return GetSetsNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("countries"))
+  else if (StringUtils::EqualsNoCase(itemType, "countries"))
     return GetCountriesNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("tags"))
+  else if (StringUtils::EqualsNoCase(itemType, "tags"))
     return GetTagsNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("artists") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
+  else if (StringUtils::EqualsNoCase(itemType, "artists") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
     return GetActorsNav(strBaseDir, items, mediaType, filter);
-  else if (itemType.Equals("albums") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
+  else if (StringUtils::EqualsNoCase(itemType, "albums") && mediaType == VIDEODB_CONTENT_MUSICVIDEOS)
     return GetMusicVideoAlbumsNav(strBaseDir, items, -1, filter);
 
   return false;
@@ -5810,21 +5810,21 @@ bool CVideoDatabase::GetItems(const CStdString &strBaseDir, VIDEODB_CONTENT_TYPE
 
 CStdString CVideoDatabase::GetItemById(const CStdString &itemType, int id)
 {
-  if (itemType.Equals("genres"))
+  if (StringUtils::EqualsNoCase(itemType, "genres"))
     return GetGenreById(id);
-  else if (itemType.Equals("years"))
+  else if (StringUtils::EqualsNoCase(itemType, "years"))
     return StringUtils::Format("%d", id);
-  else if (itemType.Equals("actors") || itemType.Equals("directors") || itemType.Equals("artists"))
+  else if (StringUtils::EqualsNoCase(itemType, "actors") || StringUtils::EqualsNoCase(itemType, "directors") || StringUtils::EqualsNoCase(itemType, "artists"))
     return GetPersonById(id);
-  else if (itemType.Equals("studios"))
+  else if (StringUtils::EqualsNoCase(itemType, "studios"))
     return GetStudioById(id);
-  else if (itemType.Equals("sets"))
+  else if (StringUtils::EqualsNoCase(itemType, "sets"))
     return GetSetById(id);
-  else if (itemType.Equals("countries"))
+  else if (StringUtils::EqualsNoCase(itemType, "countries"))
     return GetCountryById(id);
-  else if (itemType.Equals("tags"))
+  else if (StringUtils::EqualsNoCase(itemType, "tags"))
     return GetTagById(id);
-  else if (itemType.Equals("albums"))
+  else if (StringUtils::EqualsNoCase(itemType, "albums"))
     return GetMusicVideoAlbumById(id);
 
   return "";
@@ -6085,7 +6085,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
           CFileItemPtr jItem = items.Get(j);
 
           // matching title? append information
-          if (jItem->GetVideoInfoTag()->m_strTitle.Equals(strTitle))
+          if (StringUtils::EqualsNoCase(jItem->GetVideoInfoTag()->m_strTitle, strTitle))
           {
             if (jItem->GetVideoInfoTag()->m_premiered != 
                 pItem->GetVideoInfoTag()->m_premiered)
@@ -6167,7 +6167,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
           // compare path, season, episode
           if (
             jTag &&
-            jTag->m_strPath.Equals(strPath) &&
+            StringUtils::EqualsNoCase(jTag->m_strPath, strPath) &&
             jTag->m_iSeason == iSeason &&
             jTag->m_iEpisode == iEpisode
             )

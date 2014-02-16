@@ -59,7 +59,7 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
     {
       int width = atoi(CAddonMgr::Get().GetExtValue(*i, "@width"));
       int height = atoi(CAddonMgr::Get().GetExtValue(*i, "@height"));
-      bool defRes = CAddonMgr::Get().GetExtValue(*i, "@default").Equals("true");
+      bool defRes = StringUtils::EqualsNoCase(CAddonMgr::Get().GetExtValue(*i, "@default"), "true");
       CStdString folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
       float aspect = 0;
       CStdStringArray fracs;
@@ -243,17 +243,17 @@ void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
 
 bool CSkinInfo::TranslateResolution(const CStdString &name, RESOLUTION_INFO &res)
 {
-  if (name.Equals("pal"))
+  if (StringUtils::EqualsNoCase(name, "pal"))
     res = RESOLUTION_INFO(720, 576, 4.0f/3, "pal");
-  else if (name.Equals("pal16x9"))
+  else if (StringUtils::EqualsNoCase(name, "pal16x9"))
     res = RESOLUTION_INFO(720, 576, 16.0f/9, "pal16x9");
-  else if (name.Equals("ntsc"))
+  else if (StringUtils::EqualsNoCase(name, "ntsc"))
     res = RESOLUTION_INFO(720, 480, 4.0f/3, "ntsc");
-  else if (name.Equals("ntsc16x9"))
+  else if (StringUtils::EqualsNoCase(name, "ntsc16x9"))
     res = RESOLUTION_INFO(720, 480, 16.0f/9, "ntsc16x9");
-  else if (name.Equals("720p"))
+  else if (StringUtils::EqualsNoCase(name, "720p"))
     res = RESOLUTION_INFO(1280, 720, 0, "720p");
-  else if (name.Equals("1080i"))
+  else if (StringUtils::EqualsNoCase(name, "1080i"))
     res = RESOLUTION_INFO(1920, 1080, 0, "1080i");
   else
     return false;

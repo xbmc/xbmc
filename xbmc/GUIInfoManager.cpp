@@ -1028,7 +1028,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
       }
       if (prop.name == "property")
       {
-        if (prop.param().Equals("fanart_image"))
+        if (StringUtils::EqualsNoCase(prop.param(), "fanart_image"))
           return AddMultiInfo(GUIInfo(PLAYER_ITEM_ART, ConditionalStringParameter("fanart")));
         return AddListItemProp(prop.param(), MUSICPLAYER_PROPERTY_OFFSET);
       }
@@ -1084,15 +1084,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
       if (prop.name == "sortdirection")
       {
         SortOrder order = SortOrderNone;
-        if (prop.param().Equals("ascending"))
+        if (StringUtils::EqualsNoCase(prop.param(), "ascending"))
           order = SortOrderAscending;
-        else if (prop.param().Equals("descending"))
+        else if (StringUtils::EqualsNoCase(prop.param(), "descending"))
           order = SortOrderDescending;
         return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
       }
       else if (prop.name == "sort")
       {
-        if (prop.param().Equals("songrating"))
+        if (StringUtils::EqualsNoCase(prop.param(), "songrating"))
           return AddMultiInfo(GUIInfo(CONTAINER_SORT_METHOD, SortByRating));
       }
     }
@@ -1222,9 +1222,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition, bool 
         else
         {
           int playlistid = PLAYLIST_NONE;
-          if (prop.param().Equals("video"))
+          if (StringUtils::EqualsNoCase(prop.param(), "video"))
             playlistid = PLAYLIST_VIDEO;
-          else if (prop.param().Equals("music"))
+          else if (StringUtils::EqualsNoCase(prop.param(), "music"))
             playlistid = PLAYLIST_MUSIC;
 
           if (playlistid > PLAYLIST_NONE)
@@ -1311,7 +1311,7 @@ int CGUIInfoManager::TranslateListItem(const Property &info)
   }
   if (info.name == "property" && info.num_params() == 1)
   {
-    if (info.param().Equals("fanart_image"))
+    if (StringUtils::EqualsNoCase(info.param(), "fanart_image"))
       return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
     return AddListItemProp(info.param());
   }
@@ -1333,17 +1333,17 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
 TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
 {
   if (format.empty()) return TIME_FORMAT_GUESS;
-  else if (format.Equals("hh")) return TIME_FORMAT_HH;
-  else if (format.Equals("mm")) return TIME_FORMAT_MM;
-  else if (format.Equals("ss")) return TIME_FORMAT_SS;
-  else if (format.Equals("hh:mm")) return TIME_FORMAT_HH_MM;
-  else if (format.Equals("mm:ss")) return TIME_FORMAT_MM_SS;
-  else if (format.Equals("hh:mm:ss")) return TIME_FORMAT_HH_MM_SS;
-  else if (format.Equals("hh:mm:ss xx")) return TIME_FORMAT_HH_MM_SS_XX;
-  else if (format.Equals("h")) return TIME_FORMAT_H;
-  else if (format.Equals("h:mm:ss")) return TIME_FORMAT_H_MM_SS;
-  else if (format.Equals("h:mm:ss xx")) return TIME_FORMAT_H_MM_SS_XX;
-  else if (format.Equals("xx")) return TIME_FORMAT_XX;
+  else if (StringUtils::EqualsNoCase(format, "hh")) return TIME_FORMAT_HH;
+  else if (StringUtils::EqualsNoCase(format, "mm")) return TIME_FORMAT_MM;
+  else if (StringUtils::EqualsNoCase(format, "ss")) return TIME_FORMAT_SS;
+  else if (StringUtils::EqualsNoCase(format, "hh:mm")) return TIME_FORMAT_HH_MM;
+  else if (StringUtils::EqualsNoCase(format, "mm:ss")) return TIME_FORMAT_MM_SS;
+  else if (StringUtils::EqualsNoCase(format, "hh:mm:ss")) return TIME_FORMAT_HH_MM_SS;
+  else if (StringUtils::EqualsNoCase(format, "hh:mm:ss xx")) return TIME_FORMAT_HH_MM_SS_XX;
+  else if (StringUtils::EqualsNoCase(format, "h")) return TIME_FORMAT_H;
+  else if (StringUtils::EqualsNoCase(format, "h:mm:ss")) return TIME_FORMAT_H_MM_SS;
+  else if (StringUtils::EqualsNoCase(format, "h:mm:ss xx")) return TIME_FORMAT_H_MM_SS_XX;
+  else if (StringUtils::EqualsNoCase(format, "xx")) return TIME_FORMAT_XX;
   return TIME_FORMAT_GUESS;
 }
 
@@ -1748,7 +1748,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
       if (window)
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().GetPath());
-        if (url.GetProtocol().Equals("plugin"))
+        if (StringUtils::EqualsNoCase(url.GetProtocol(), "plugin"))
         {
           strLabel = url.GetFileName();
           URIUtils::RemoveSlashAtEnd(strLabel);
@@ -1912,7 +1912,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
   case SYSTEM_FRIENDLY_NAME:
     {
       CStdString friendlyName = CSettings::Get().GetString("services.devicename");
-      if (friendlyName.Equals("XBMC"))
+      if (StringUtils::EqualsNoCase(friendlyName, "XBMC"))
         strLabel = StringUtils::Format("%s (%s)", friendlyName.c_str(), g_application.getNetwork().GetHostName().c_str());
       else
         strLabel = friendlyName;
@@ -2700,7 +2700,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
           StringUtils::ToLower(theme);
           URIUtils::RemoveExtension(theme);
-          bReturn = theme.Equals(m_stringParameters[info.GetData1()]);
+          bReturn = StringUtils::EqualsNoCase(theme, m_stringParameters[info.GetData1()]);
         }
         break;
       case STRING_IS_EMPTY:
@@ -2726,9 +2726,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             compare = m_stringParameters[info.GetData2()];
           }
           if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-            bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(compare);
+            bReturn = StringUtils::EqualsNoCase(GetItemImage((const CFileItem *)item, info.GetData1()), compare);
           else
-            bReturn = GetImage(info.GetData1(), contextWindow).Equals(compare);
+            bReturn = StringUtils::EqualsNoCase(GetImage(info.GetData1(), contextWindow), compare);
         }
         break;
       case INTEGER_GREATER_THAN:
@@ -2837,7 +2837,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_nextWindowID);
-          if (window && URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(m_stringParameters[info.GetData2()]))
+          if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
@@ -2847,7 +2847,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_prevWindowID);
-          if (window && URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(m_stringParameters[info.GetData2()]))
+          if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
@@ -2880,7 +2880,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case SYSTEM_SETTING:
         {
-          if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
+          if (StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], "hidewatched") )
           {
             CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
@@ -2926,7 +2926,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             if (window)
               content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
           }
-          bReturn = m_stringParameters[info.GetData2()].Equals(content);
+          bReturn = StringUtils::EqualsNoCase(m_stringParameters[info.GetData2()], content);
         }
         break;
       case CONTAINER_ROW:
@@ -2982,7 +2982,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             strContent = "livetv";
           if (m_currentFile->HasPVRChannelInfoTag())
             strContent = "livetv";
-          bReturn = m_stringParameters[info.GetData1()].Equals(strContent);
+          bReturn = StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], strContent);
         }
         break;
       case CONTAINER_SORT_METHOD:
@@ -4327,7 +4327,7 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter, boo
 {
   // check to see if we have this parameter already
   for (unsigned int i = 0; i < m_stringParameters.size(); i++)
-    if (parameter.Equals(m_stringParameters[i], caseSensitive))
+    if (caseSensitive ? parameter == m_stringParameters[i] : StringUtils::EqualsNoCase(parameter, m_stringParameters[i]))
       return (int)i;
   // return the new offset
   m_stringParameters.push_back(parameter);
@@ -5106,7 +5106,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       if (!g_application.m_strPlayListFile.empty())
       {
         //playlist file that is currently playing or the playlistitem that is currently playing.
-        return g_application.m_strPlayListFile.Equals(((const CFileItem *)item)->GetPath()) || m_currentFile->IsSamePath((const CFileItem *)item);
+        return StringUtils::EqualsNoCase(g_application.m_strPlayListFile, ((const CFileItem *)item)->GetPath()) || m_currentFile->IsSamePath((const CFileItem *)item);
       }
       return m_currentFile->IsSamePath((const CFileItem *)item);
     }
@@ -5214,8 +5214,8 @@ void CGUIInfoManager::UpdateFromTuxBox()
   // Set m_currentMovieDuration
   if(!g_tuxbox.sCurSrvData.current_event_duration.empty() &&
     !g_tuxbox.sCurSrvData.next_event_description.empty() &&
-    !g_tuxbox.sCurSrvData.current_event_duration.Equals("-") &&
-    !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+    !StringUtils::EqualsNoCase(g_tuxbox.sCurSrvData.current_event_duration, "-") &&
+    !StringUtils::EqualsNoCase(g_tuxbox.sCurSrvData.next_event_description, "-"))
   {
     StringUtils::Replace(g_tuxbox.sCurSrvData.current_event_duration, "(","");
     StringUtils::Replace(g_tuxbox.sCurSrvData.current_event_duration, ")","");
@@ -5231,8 +5231,8 @@ void CGUIInfoManager::UpdateFromTuxBox()
   //Set strVideoGenre
   if (!g_tuxbox.sCurSrvData.current_event_description.empty() &&
     !g_tuxbox.sCurSrvData.next_event_description.empty() &&
-    !g_tuxbox.sCurSrvData.current_event_description.Equals("-") &&
-    !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
+    !StringUtils::EqualsNoCase(g_tuxbox.sCurSrvData.current_event_description, "-") &&
+    !StringUtils::EqualsNoCase(g_tuxbox.sCurSrvData.next_event_description, "-"))
   {
     CStdString genre = StringUtils::Format("%s %s  -  (%s: %s)",
                                            g_localizeStrings.Get(143).c_str(),
@@ -5243,7 +5243,7 @@ void CGUIInfoManager::UpdateFromTuxBox()
   }
 
   //Set m_currentMovie.m_director
-  if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") &&
+  if (!StringUtils::EqualsNoCase(g_tuxbox.sCurSrvData.current_event_details, "-") &&
     !g_tuxbox.sCurSrvData.current_event_details.empty())
   {
     m_currentFile->GetVideoInfoTag()->m_director = StringUtils::Split(g_tuxbox.sCurSrvData.current_event_details, g_advancedSettings.m_videoItemSeparator);
@@ -5505,7 +5505,7 @@ int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name, int con
   for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
        it != m_skinVariableStrings.end(); ++it)
   {
-    if (it->GetName().Equals(name) && it->GetContext() == context)
+    if (StringUtils::EqualsNoCase(it->GetName(), name) && it->GetContext() == context)
       return it - m_skinVariableStrings.begin() + CONDITIONAL_LABEL_START;
   }
   return 0;

@@ -140,7 +140,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const CStdString &strName) cons
   CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
-    if ((*it)->GroupName().Equals(strName))
+    if (StringUtils::EqualsNoCase((*it)->GroupName(), strName))
       return *it;
   }
 

@@ -584,7 +584,7 @@ bool CMythDirectory::IsVisible(const cmyth_proginfo_t program)
    * Recordings that are "pending delete" will have a program flag mask that matches
    * FL_DELETEPENDING = 0x00000080.
    */
-  return !(group.Equals("LiveTV") || group.Equals("Deleted") || flags & 0x00000080);
+  return !(StringUtils::EqualsNoCase(group, "LiveTV") || StringUtils::EqualsNoCase(group, "Deleted") || flags & 0x00000080);
 }
 
 bool CMythDirectory::IsMovie(const cmyth_proginfo_t program)

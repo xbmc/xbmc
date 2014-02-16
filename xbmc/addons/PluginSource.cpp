@@ -73,13 +73,13 @@ void CPluginSource::SetProvides(const CStdString &content)
 
 CPluginSource::Content CPluginSource::Translate(const CStdString &content)
 {
-  if (content.Equals("audio"))
+  if (StringUtils::EqualsNoCase(content, "audio"))
     return CPluginSource::AUDIO;
-  else if (content.Equals("image"))
+  else if (StringUtils::EqualsNoCase(content, "image"))
     return CPluginSource::IMAGE;
-  else if (content.Equals("executable"))
+  else if (StringUtils::EqualsNoCase(content, "executable"))
     return CPluginSource::EXECUTABLE;
-  else if (content.Equals("video"))
+  else if (StringUtils::EqualsNoCase(content, "video"))
     return CPluginSource::VIDEO;
   else
     return CPluginSource::UNKNOWN;

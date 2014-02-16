@@ -46,7 +46,7 @@ CDirectoryNodeMusicVideosOverview::CDirectoryNodeMusicVideosOverview(const CStdS
 NODE_TYPE CDirectoryNodeMusicVideosOverview::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(MusicVideoChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(MusicVideoChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), MusicVideoChildren[i].id.c_str()))
       return MusicVideoChildren[i].node;
 
   return NODE_TYPE_NONE;
@@ -55,7 +55,7 @@ NODE_TYPE CDirectoryNodeMusicVideosOverview::GetChildType() const
 CStdString CDirectoryNodeMusicVideosOverview::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(MusicVideoChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(MusicVideoChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), MusicVideoChildren[i].id.c_str()))
       return g_localizeStrings.Get(MusicVideoChildren[i].label);
   return "";
 }

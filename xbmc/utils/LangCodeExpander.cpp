@@ -152,7 +152,7 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, 
 
     for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
     {
-      if (strTwoCharCodeLower.Equals(CharCode2To3[index].old))
+      if (StringUtils::EqualsNoCase(strTwoCharCodeLower, CharCode2To3[index].old))
       {
         if (checkWin32Locales && CharCode2To3[index].win_id)
         {
@@ -177,8 +177,8 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
   {
     for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
     {
-      if (strCharCode.Equals(CharCode2To3[index].id) ||
-           (checkWin32Locales && CharCode2To3[index].win_id != NULL && strCharCode.Equals(CharCode2To3[index].win_id)) )
+      if (StringUtils::EqualsNoCase(strCharCode, CharCode2To3[index].id) ||
+           (checkWin32Locales && CharCode2To3[index].win_id != NULL && StringUtils::EqualsNoCase(strCharCode, CharCode2To3[index].win_id)) )
       {
         strThreeCharCode = strCharCode;
         return true;
@@ -186,7 +186,7 @@ bool CLangCodeExpander::ConvertToThreeCharCode(CStdString& strThreeCharCode, con
     }
     for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
     {
-      if (strCharCode.Equals(RegionCode2To3[index].id))
+      if (StringUtils::EqualsNoCase(strCharCode, RegionCode2To3[index].id))
       {
         strThreeCharCode = strCharCode;
         return true;
@@ -229,7 +229,7 @@ bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& strTw
   StringUtils::Trim(strLower);
   for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
   {
-    if (strLower.Equals(RegionCode2To3[index].old))
+    if (StringUtils::EqualsNoCase(strLower, RegionCode2To3[index].old))
     {
       strThreeCharCode = RegionCode2To3[index].id;
       return true;
@@ -248,8 +248,8 @@ bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const CStdString& strWin
   StringUtils::ToLower(strLower);
   for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
   {
-    if ((CharCode2To3[index].win_id && strLower.Equals(CharCode2To3[index].win_id)) ||
-         strLower.Equals(CharCode2To3[index].id))
+    if ((CharCode2To3[index].win_id && StringUtils::EqualsNoCase(strLower, CharCode2To3[index].win_id)) ||
+         StringUtils::EqualsNoCase(strLower, CharCode2To3[index].id))
     {
       strThreeCharCode = CharCode2To3[index].id;
       return true;
@@ -278,7 +278,7 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
   {
     for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
     {
-      if (lang.Equals(CharCode2To3[index].id) || (CharCode2To3[index].win_id && lang.Equals(CharCode2To3[index].win_id)))
+      if (StringUtils::EqualsNoCase(lang, CharCode2To3[index].id) || (CharCode2To3[index].win_id && StringUtils::EqualsNoCase(lang, CharCode2To3[index].win_id)))
       {
         code = CharCode2To3[index].old;
         return true;
@@ -287,7 +287,7 @@ bool CLangCodeExpander::ConvertToTwoCharCode(CStdString& code, const CStdString&
 
     for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
     {
-      if (lang.Equals(RegionCode2To3[index].id))
+      if (StringUtils::EqualsNoCase(lang, RegionCode2To3[index].id))
       {
         code = RegionCode2To3[index].old;
         return true;
@@ -329,7 +329,7 @@ bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
   STRINGLOOKUPTABLE::iterator it;
   for (it = m_mapUser.begin(); it != m_mapUser.end() ; it++)
   {
-    if (descTmp.Equals(it->second))
+    if (StringUtils::EqualsNoCase(descTmp, it->second))
     {
       code = it->first;
       return true;
@@ -337,7 +337,7 @@ bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
   }
   for(unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
   {
-    if (descTmp.Equals(g_iso639_1[i].name))
+    if (StringUtils::EqualsNoCase(descTmp, g_iso639_1[i].name))
     {
       CodeToString(g_iso639_1[i].code, code);
       return true;
@@ -345,7 +345,7 @@ bool CLangCodeExpander::ReverseLookup(const CStdString& desc, CStdString& code)
   }
   for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
   {
-    if (descTmp.Equals(g_iso639_2[i].name))
+    if (StringUtils::EqualsNoCase(descTmp, g_iso639_2[i].name))
     {
       CodeToString(g_iso639_2[i].code, code);
       return true;
@@ -426,7 +426,7 @@ void CLangCodeExpander::CodeToString(long code, CStdString& ret)
 
 bool CLangCodeExpander::CompareFullLangNames(const CStdString& lang1, const CStdString& lang2)
 {
-  if (lang1.Equals(lang2))
+  if (StringUtils::EqualsNoCase(lang1, lang2))
     return true;
 
   CStdString expandedLang1, expandedLang2, code1, code2;
@@ -443,7 +443,7 @@ bool CLangCodeExpander::CompareFullLangNames(const CStdString& lang1, const CStd
 
   Lookup(expandedLang1, code1);
   Lookup(expandedLang2, code2);
-  return expandedLang1.Equals(expandedLang2);
+  return StringUtils::EqualsNoCase(expandedLang1, expandedLang2);
 }
 
 std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */) const
@@ -469,7 +469,7 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format 
 
 bool CLangCodeExpander::CompareLangCodes(const CStdString& code1, const CStdString& code2)
 {
-  if (code1.Equals(code2))
+  if (StringUtils::EqualsNoCase(code1, code2))
     return true;
 
   CStdString expandedLang1, expandedLang2;
@@ -480,7 +480,7 @@ bool CLangCodeExpander::CompareLangCodes(const CStdString& code1, const CStdStri
   if (!Lookup(expandedLang2, code2))
     return false;
 
-  return expandedLang1.Equals(expandedLang2);
+  return StringUtils::EqualsNoCase(expandedLang1, expandedLang2);
 }
 
 CStdString CLangCodeExpander::ConvertToISO6392T(const CStdString& lang)

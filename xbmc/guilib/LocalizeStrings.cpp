@@ -26,6 +26,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/POUtils.h"
+#include "utils/StringUtils.h"
 #include "filesystem/Directory.h"
 #include "threads/SingleLock.h"
 
@@ -62,12 +63,12 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
   CStdString encoding;
   if (!LoadStr2Mem(path, language, encoding))
   {
-    if (language.Equals(SOURCE_LANGUAGE)) // no fallback, nothing to do
+    if (StringUtils::EqualsNoCase(language, SOURCE_LANGUAGE)) // no fallback, nothing to do
       return false;
   }
 
   // load the fallback
-  if (!language.Equals(SOURCE_LANGUAGE))
+  if (!StringUtils::EqualsNoCase(language, SOURCE_LANGUAGE))
     LoadStr2Mem(path, SOURCE_LANGUAGE, encoding);
 
   return true;
@@ -86,7 +87,7 @@ bool CLocalizeStrings::LoadStr2Mem(const CStdString &pathname_in, const CStdStri
   }
 
   if (LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), encoding, offset,
-      language.Equals(SOURCE_LANGUAGE)))
+      StringUtils::EqualsNoCase(language, SOURCE_LANGUAGE)))
     return true;
 
   CLog::Log(LOGDEBUG, "LocalizeStrings: no strings.po file exist at %s, fallback to strings.xml",
@@ -184,7 +185,7 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
 
 bool CLocalizeStrings::Load(const CStdString& strPathName, const CStdString& strLanguage)
 {
-  bool bLoadFallback = !strLanguage.Equals(SOURCE_LANGUAGE);
+  bool bLoadFallback = !StringUtils::EqualsNoCase(strLanguage, SOURCE_LANGUAGE);
 
   CStdString encoding;
   CSingleLock lock(m_critSection);

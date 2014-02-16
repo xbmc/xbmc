@@ -47,7 +47,7 @@ NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType() const
     return NODE_TYPE_EPISODES;
 
   for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(TvShowChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), TvShowChildren[i].id.c_str()))
       return TvShowChildren[i].node;
 
   return NODE_TYPE_NONE;
@@ -56,7 +56,7 @@ NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType() const
 CStdString CDirectoryNodeTvShowsOverview::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(TvShowChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), TvShowChildren[i].id.c_str()))
       return g_localizeStrings.Get(TvShowChildren[i].label);
   return "";
 }

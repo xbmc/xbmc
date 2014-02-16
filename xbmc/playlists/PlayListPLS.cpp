@@ -100,7 +100,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
     }
     strLine = szLine;
     StringUtils::Trim(strLine);
-    if(strLine.Equals(START_PLAYLIST_MARKER))
+    if(StringUtils::EqualsNoCase(strLine, START_PLAYLIST_MARKER))
       break;
 
     // if there is something else before playlist marker, this isn't a pls file
@@ -136,7 +136,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
         }
 
         // Skip self - do not load playlist recursively
-        if (URIUtils::GetFileName(strValue).Equals(URIUtils::GetFileName(strFileName)))
+        if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strValue), URIUtils::GetFileName(strFileName)))
           continue;
 
         if (m_vecItems[idx - 1]->GetLabel().empty())

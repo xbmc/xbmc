@@ -118,11 +118,11 @@ namespace XFILE
                        Extension2 = itRegExp->GetMatch(4);
             if (offset)
               Title2 = File2.substr(0, itRegExp->GetSubStart(2));
-            if (Title1.Equals(Title2))
+            if (StringUtils::EqualsNoCase(Title1, Title2))
             {
-              if (!Volume1.Equals(Volume2))
+              if (!StringUtils::EqualsNoCase(Volume1, Volume2))
               {
-                if (Ignore1.Equals(Ignore2) && Extension1.Equals(Extension2))
+                if (StringUtils::EqualsNoCase(Ignore1, Ignore2) && StringUtils::EqualsNoCase(Extension1, Extension2))
                 {
                   // got it
                   strStackTitle = Title1 + Ignore1 + Extension1;

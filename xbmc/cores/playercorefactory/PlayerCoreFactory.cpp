@@ -102,14 +102,14 @@ PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const CStdString& strCoreName) co
   {
     // Dereference "*default*player" aliases
     CStdString strRealCoreName;
-    if (strCoreName.Equals("audiodefaultplayer", false)) strRealCoreName = g_advancedSettings.m_audioDefaultPlayer;
-    else if (strCoreName.Equals("videodefaultplayer", false)) strRealCoreName = g_advancedSettings.m_videoDefaultPlayer;
-    else if (strCoreName.Equals("videodefaultdvdplayer", false)) strRealCoreName = g_advancedSettings.m_videoDefaultDVDPlayer;
+    if (StringUtils::EqualsNoCase(strCoreName, "audiodefaultplayer")) strRealCoreName = g_advancedSettings.m_audioDefaultPlayer;
+    else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultplayer")) strRealCoreName = g_advancedSettings.m_videoDefaultPlayer;
+    else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultdvdplayer")) strRealCoreName = g_advancedSettings.m_videoDefaultDVDPlayer;
     else strRealCoreName = strCoreName;
 
     for(PLAYERCOREID i = 0; i < m_vecCoreConfigs.size(); i++)
     {
-      if (m_vecCoreConfigs[i]->GetName().Equals(strRealCoreName, false))
+      if (StringUtils::EqualsNoCase(m_vecCoreConfigs[i]->GetName(), strRealCoreName))
         return i+1;
     }
     CLog::Log(LOGWARNING, "CPlayerCoreFactory::GetPlayerCore(%s): no such core: %s", strCoreName.c_str(), strRealCoreName.c_str());
@@ -176,7 +176,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   {
     // We no longer force PAPlayer as our default audio player (used to be true):
     bool bAdd = false;
-    if (url.GetProtocol().Equals("mms"))
+    if (StringUtils::EqualsNoCase(url.GetProtocol(), "mms"))
     {
        bAdd = false;
     }
@@ -191,8 +191,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     if (bAdd)
     {
-      if ((url.GetFileType().Equals("ac3") && !CAEFactory::SupportsRaw(AE_FMT_AC3))
-            || (url.GetFileType().Equals("dts") && !CAEFactory::SupportsRaw(AE_FMT_DTS)))
+      if ((StringUtils::EqualsNoCase(url.GetFileType(), "ac3") && !CAEFactory::SupportsRaw(AE_FMT_AC3)) ||
+          (StringUtils::EqualsNoCase(url.GetFileType(), "dts") && !CAEFactory::SupportsRaw(AE_FMT_DTS)))
       {
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding DVDPlayer (%d)", EPC_DVDPLAYER);
         vecCores.push_back(EPC_DVDPLAYER);

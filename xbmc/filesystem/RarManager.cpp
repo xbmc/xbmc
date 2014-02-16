@@ -167,7 +167,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
           g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
         else
           g_charsetConverter.unknownToUTF8(pIterator->item.Name, strName);
-        if (strName.Equals(strPath))
+        if (StringUtils::EqualsNoCase(strName, strPath))
         {
           iOffset = pIterator->item.iOffset;
           break;

@@ -70,7 +70,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
   StringUtils::ToLower(strExtension);
 
 #ifdef HAS_FILESYSTEM
-  if ((strExtension.Equals(".ogg") || strExtension.Equals(".oga")) && CFile::Exists(strPath))
+  if ((StringUtils::EqualsNoCase(strExtension, ".ogg") || StringUtils::EqualsNoCase(strExtension, ".oga")) && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new COGGFileDirectory;
     //  Has the ogg file more than one bitstream?
@@ -82,7 +82,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
-  if (strExtension.Equals(".nsf") && CFile::Exists(strPath))
+  if (StringUtils::EqualsNoCase(strExtension, ".nsf") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new CNSFFileDirectory;
     //  Has the nsf file more than one track?
@@ -92,7 +92,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
-  if (strExtension.Equals(".sid") && CFile::Exists(strPath))
+  if (StringUtils::EqualsNoCase(strExtension, ".sid") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new CSIDFileDirectory;
     //  Has the sid file more than one track?
@@ -123,7 +123,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
 
 #endif
 #if defined(TARGET_ANDROID)
-  if (strExtension.Equals(".apk"))
+  if (StringUtils::EqualsNoCase(strExtension, ".apk"))
   {
     CStdString strUrl;
     URIUtils::CreateArchivePath(strUrl, "apk", strPath, "");
@@ -145,7 +145,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     return NULL;
   }
 #endif
-  if (strExtension.Equals(".zip"))
+  if (StringUtils::EqualsNoCase(strExtension, ".zip"))
   {
     CStdString strUrl;
     URIUtils::CreateArchivePath(strUrl, "zip", strPath, "");
@@ -166,7 +166,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     }
     return NULL;
   }
-  if (strExtension.Equals(".rar") || strExtension.Equals(".001"))
+  if (StringUtils::EqualsNoCase(strExtension, ".rar") || StringUtils::EqualsNoCase(strExtension, ".001"))
   {
     CStdString strUrl;
     URIUtils::CreateArchivePath(strUrl, "rar", strPath, "");
@@ -175,7 +175,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     StringUtils::Tokenize(strPath,tokens,".");
     if (tokens.size() > 2)
     {
-      if (strExtension.Equals(".001"))
+      if (StringUtils::EqualsNoCase(strExtension, ".001"))
       {
         if (StringUtils::EqualsNoCase(tokens[tokens.size()-2], "ts")) // .ts.001 - treat as a movie file to scratch some users itch
           return NULL;
@@ -219,7 +219,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     }
     return NULL;
   }
-  if (strExtension.Equals(".xsp"))
+  if (StringUtils::EqualsNoCase(strExtension, ".xsp"))
   { // XBMC Smart playlist - just XML renamed to XSP
     // read the name of the playlist in
     CSmartPlaylist playlist;

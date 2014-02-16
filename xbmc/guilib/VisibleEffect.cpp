@@ -630,11 +630,11 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
     type = node->Attribute("type");
 
   if (StringUtils::StartsWithNoCase(type, "visible")) m_type = ANIM_TYPE_VISIBLE;
-  else if (type.Equals("hidden")) m_type = ANIM_TYPE_HIDDEN;
-  else if (type.Equals("focus"))  m_type = ANIM_TYPE_FOCUS;
-  else if (type.Equals("unfocus"))  m_type = ANIM_TYPE_UNFOCUS;
-  else if (type.Equals("windowopen"))  m_type = ANIM_TYPE_WINDOW_OPEN;
-  else if (type.Equals("windowclose"))  m_type = ANIM_TYPE_WINDOW_CLOSE;
+  else if (StringUtils::EqualsNoCase(type, "hidden")) m_type = ANIM_TYPE_HIDDEN;
+  else if (StringUtils::EqualsNoCase(type, "focus"))  m_type = ANIM_TYPE_FOCUS;
+  else if (StringUtils::EqualsNoCase(type, "unfocus"))  m_type = ANIM_TYPE_UNFOCUS;
+  else if (StringUtils::EqualsNoCase(type, "windowopen"))  m_type = ANIM_TYPE_WINDOW_OPEN;
+  else if (StringUtils::EqualsNoCase(type, "windowclose"))  m_type = ANIM_TYPE_WINDOW_CLOSE;
   // sanity check
   if (m_type == ANIM_TYPE_CONDITIONAL)
   {
@@ -675,17 +675,17 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
 void CAnimation::AddEffect(const CStdString &type, const TiXmlElement *node, const CRect &rect)
 {
   CAnimEffect *effect = NULL;
-  if (type.Equals("fade"))
+  if (StringUtils::EqualsNoCase(type, "fade"))
     effect = new CFadeEffect(node, m_type < 0);
-  else if (type.Equals("slide"))
+  else if (StringUtils::EqualsNoCase(type, "slide"))
     effect = new CSlideEffect(node);
-  else if (type.Equals("rotate"))
+  else if (StringUtils::EqualsNoCase(type, "rotate"))
     effect = new CRotateEffect(node, CAnimEffect::EFFECT_TYPE_ROTATE_Z);
-  else if (type.Equals("rotatey"))
+  else if (StringUtils::EqualsNoCase(type, "rotatey"))
     effect = new CRotateEffect(node, CAnimEffect::EFFECT_TYPE_ROTATE_Y);
-  else if (type.Equals("rotatex"))
+  else if (StringUtils::EqualsNoCase(type, "rotatex"))
     effect = new CRotateEffect(node, CAnimEffect::EFFECT_TYPE_ROTATE_X);
-  else if (type.Equals("zoom"))
+  else if (StringUtils::EqualsNoCase(type, "zoom"))
     effect = new CZoomEffect(node, rect);
 
   if (effect)

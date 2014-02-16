@@ -437,17 +437,17 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLaye
 
   CStdString strPath = "videodb://";
   /* select which video content to get genres from*/
-  if (media.Equals("movie"))
+  if (StringUtils::EqualsNoCase(media, "movie"))
   {
     idContent = VIDEODB_CONTENT_MOVIES;
     strPath += "movies";
   }
-  else if (media.Equals("tvshow"))
+  else if (StringUtils::EqualsNoCase(media, "tvshow"))
   {
     idContent = VIDEODB_CONTENT_TVSHOWS;
     strPath += "tvshows";
   }
-  else if (media.Equals("musicvideo"))
+  else if (StringUtils::EqualsNoCase(media, "musicvideo"))
   {
     idContent = VIDEODB_CONTENT_MUSICVIDEOS;
     strPath += "musicvideos";

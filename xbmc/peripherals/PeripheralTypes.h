@@ -118,24 +118,21 @@ namespace PERIPHERALS
 
     static PeripheralType GetTypeFromString(const CStdString &strType)
     {
-      CStdString strTypeLowerCase(strType);
-      StringUtils::ToLower(strTypeLowerCase);
-
-      if (strTypeLowerCase.Equals("bluetooth"))
+      if (StringUtils::EqualsNoCase(strType, "bluetooth"))
         return PERIPHERAL_BLUETOOTH;
-      else if (strTypeLowerCase.Equals("cec"))
+      else if (StringUtils::EqualsNoCase(strType, "cec"))
         return PERIPHERAL_CEC;
-      else if (strTypeLowerCase.Equals("disk"))
+      else if (StringUtils::EqualsNoCase(strType, "disk"))
           return PERIPHERAL_DISK;
-      else if (strTypeLowerCase.Equals("hid"))
+      else if (StringUtils::EqualsNoCase(strType, "hid"))
         return PERIPHERAL_HID;
-      else if (strTypeLowerCase.Equals("nic"))
+      else if (StringUtils::EqualsNoCase(strType, "nic"))
         return PERIPHERAL_NIC;
-      else if (strTypeLowerCase.Equals("nyxboard"))
+      else if (StringUtils::EqualsNoCase(strType, "nyxboard"))
         return PERIPHERAL_NYXBOARD;
-      else if (strTypeLowerCase.Equals("tuner"))
+      else if (StringUtils::EqualsNoCase(strType, "tuner"))
         return PERIPHERAL_TUNER;
-      else if (strTypeLowerCase.Equals("imon"))
+      else if (StringUtils::EqualsNoCase(strType, "imon"))
         return PERIPHERAL_IMON;
 
       return PERIPHERAL_UNKNOWN;
@@ -160,16 +157,13 @@ namespace PERIPHERALS
 
     static PeripheralBusType GetBusTypeFromString(const CStdString &strType)
     {
-      CStdString strTypeLowerCase(strType);
-      StringUtils::ToLower(strTypeLowerCase);
-
-      if (strTypeLowerCase.Equals("usb"))
+      if (StringUtils::EqualsNoCase(strType, "usb"))
         return PERIPHERAL_BUS_USB;
-      else if (strTypeLowerCase.Equals("pci"))
+      else if (StringUtils::EqualsNoCase(strType, "pci"))
         return PERIPHERAL_BUS_PCI;
-      else if (strTypeLowerCase.Equals("rpi"))
+      else if (StringUtils::EqualsNoCase(strType, "rpi"))
         return PERIPHERAL_BUS_RPI;
-      else if (strTypeLowerCase.Equals("cec"))
+      else if (StringUtils::EqualsNoCase(strType, "cec"))
         return PERIPHERAL_BUS_CEC;
 
       return PERIPHERAL_BUS_UNKNOWN;
@@ -220,7 +214,7 @@ namespace PERIPHERALS
              m_iProductId == right.m_iProductId &&
              m_type       == right.m_type &&
              m_busType    == right.m_busType &&
-             m_strLocation.Equals(right.m_strLocation);
+             StringUtils::EqualsNoCase(m_strLocation, right.m_strLocation);
     }
 
     bool operator !=(const PeripheralScanResult& right) const

@@ -100,86 +100,86 @@ namespace JSONRPC
       else
         sortAttributes = SortAttributeNone;
 
-      if (order.Equals("ascending"))
+      if (StringUtils::EqualsNoCase(order, "ascending"))
         sortOrder = SortOrderAscending;
-      else if (order.Equals("descending"))
+      else if (StringUtils::EqualsNoCase(order, "descending"))
         sortOrder = SortOrderDescending;
       else
         return false;
 
-      if (method.Equals("none"))
+      if (StringUtils::EqualsNoCase(method, "none"))
         sortBy = SortByNone;
-      else if (method.Equals("label"))
+      else if (StringUtils::EqualsNoCase(method, "label"))
         sortBy = SortByLabel;
-      else if (method.Equals("date"))
+      else if (StringUtils::EqualsNoCase(method, "date"))
         sortBy = SortByDate;
-      else if (method.Equals("size"))
+      else if (StringUtils::EqualsNoCase(method, "size"))
         sortBy = SortBySize;
-      else if (method.Equals("file"))
+      else if (StringUtils::EqualsNoCase(method, "file"))
         sortBy = SortByFile;
-      else if (method.Equals("path"))
+      else if (StringUtils::EqualsNoCase(method, "path"))
         sortBy = SortByPath;
-      else if (method.Equals("drivetype"))
+      else if (StringUtils::EqualsNoCase(method, "drivetype"))
         sortBy = SortByDriveType;
-      else if (method.Equals("title"))
+      else if (StringUtils::EqualsNoCase(method, "title"))
         sortBy = SortByTitle;
-      else if (method.Equals("track"))
+      else if (StringUtils::EqualsNoCase(method, "track"))
         sortBy = SortByTrackNumber;
-      else if (method.Equals("time"))
+      else if (StringUtils::EqualsNoCase(method, "time"))
         sortBy = SortByTime;
-      else if (method.Equals("artist"))
+      else if (StringUtils::EqualsNoCase(method, "artist"))
         sortBy = SortByArtist;
-      else if (method.Equals("album"))
+      else if (StringUtils::EqualsNoCase(method, "album"))
         sortBy = SortByAlbum;
-      else if (method.Equals("albumtype"))
+      else if (StringUtils::EqualsNoCase(method, "albumtype"))
         sortBy = SortByAlbumType;
-      else if (method.Equals("genre"))
+      else if (StringUtils::EqualsNoCase(method, "genre"))
         sortBy = SortByGenre;
-      else if (method.Equals("country"))
+      else if (StringUtils::EqualsNoCase(method, "country"))
         sortBy = SortByCountry;
-      else if (method.Equals("year"))
+      else if (StringUtils::EqualsNoCase(method, "year"))
         sortBy = SortByYear;
-      else if (method.Equals("rating"))
+      else if (StringUtils::EqualsNoCase(method, "rating"))
         sortBy = SortByRating;
-      else if (method.Equals("votes"))
+      else if (StringUtils::EqualsNoCase(method, "votes"))
         sortBy = SortByVotes;
-      else if (method.Equals("top250"))
+      else if (StringUtils::EqualsNoCase(method, "top250"))
         sortBy = SortByTop250;
-      else if (method.Equals("programcount"))
+      else if (StringUtils::EqualsNoCase(method, "programcount"))
         sortBy = SortByProgramCount;
-      else if (method.Equals("playlist"))
+      else if (StringUtils::EqualsNoCase(method, "playlist"))
         sortBy = SortByPlaylistOrder;
-      else if (method.Equals("episode"))
+      else if (StringUtils::EqualsNoCase(method, "episode"))
         sortBy = SortByEpisodeNumber;
-      else if (method.Equals("season"))
+      else if (StringUtils::EqualsNoCase(method, "season"))
         sortBy = SortBySeason;
-      else if (method.Equals("totalepisodes"))
+      else if (StringUtils::EqualsNoCase(method, "totalepisodes"))
         sortBy = SortByNumberOfEpisodes;
-      else if (method.Equals("watchedepisodes"))
+      else if (StringUtils::EqualsNoCase(method, "watchedepisodes"))
         sortBy = SortByNumberOfWatchedEpisodes;
-      else if (method.Equals("tvshowstatus"))
+      else if (StringUtils::EqualsNoCase(method, "tvshowstatus"))
         sortBy = SortByTvShowStatus;
-      else if (method.Equals("tvshowtitle"))
+      else if (StringUtils::EqualsNoCase(method, "tvshowtitle"))
         sortBy = SortByTvShowTitle;
-      else if (method.Equals("sorttitle"))
+      else if (StringUtils::EqualsNoCase(method, "sorttitle"))
         sortBy = SortBySortTitle;
-      else if (method.Equals("productioncode"))
+      else if (StringUtils::EqualsNoCase(method, "productioncode"))
         sortBy = SortByProductionCode;
-      else if (method.Equals("mpaa"))
+      else if (StringUtils::EqualsNoCase(method, "mpaa"))
         sortBy = SortByMPAA;
-      else if (method.Equals("studio"))
+      else if (StringUtils::EqualsNoCase(method, "studio"))
         sortBy = SortByStudio;
-      else if (method.Equals("dateadded"))
+      else if (StringUtils::EqualsNoCase(method, "dateadded"))
         sortBy = SortByDateAdded;
-      else if (method.Equals("lastplayed"))
+      else if (StringUtils::EqualsNoCase(method, "lastplayed"))
         sortBy = SortByLastPlayed;
-      else if (method.Equals("playcount"))
+      else if (StringUtils::EqualsNoCase(method, "playcount"))
         sortBy = SortByPlaycount;
-      else if (method.Equals("listeners"))
+      else if (StringUtils::EqualsNoCase(method, "listeners"))
         sortBy = SortByListeners;
-      else if (method.Equals("bitrate"))
+      else if (StringUtils::EqualsNoCase(method, "bitrate"))
         sortBy = SortByBitrate;
-      else if (method.Equals("random"))
+      else if (StringUtils::EqualsNoCase(method, "random"))
         sortBy = SortByRandom;
       else
         return false;

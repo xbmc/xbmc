@@ -138,7 +138,7 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
     bool found = false;
     for (ResolutionInfos::const_iterator  it = m_calibrations.begin(); it != m_calibrations.end(); ++it)
     {
-      if (it->strMode.Equals(cal.strMode))
+      if (StringUtils::EqualsNoCase(it->strMode, cal.strMode))
       {
         found = true;
         break;
@@ -376,7 +376,7 @@ void CDisplaySettings::ApplyCalibrations()
     {
       if (res == RES_WINDOW)
         continue;
-      if (itCal->strMode.Equals(m_resolutions[res].strMode))
+      if (StringUtils::EqualsNoCase(itCal->strMode, m_resolutions[res].strMode))
       {
         // overscan
         m_resolutions[res].Overscan.left = itCal->Overscan.left;
@@ -429,7 +429,7 @@ void CDisplaySettings::UpdateCalibrations()
     bool found = false;
     for (ResolutionInfos::iterator itCal = m_calibrations.begin(); itCal != m_calibrations.end(); ++itCal)
     {
-      if (itCal->strMode.Equals(m_resolutions[res].strMode))
+      if (StringUtils::EqualsNoCase(itCal->strMode, m_resolutions[res].strMode))
       {
         // TODO: erase calibrations with default values
         *itCal = m_resolutions[res];

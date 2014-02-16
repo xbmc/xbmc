@@ -759,7 +759,7 @@ void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
 bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
   if (m_strPath.empty()
-   || m_strPath.Equals("add")
+   || StringUtils::EqualsNoCase(m_strPath, "add")
    || IsInternetStream()
    || IsParentFolder()
    || IsVirtualDirectoryRoot()
@@ -806,9 +806,9 @@ bool CFileItem::IsVideo() const
   if( StringUtils::StartsWithNoCase(m_mimetype, "application/") )
   { /* check for some standard types */
     extension = m_mimetype.substr(12);
-    if( extension.Equals("ogg")
-     || extension.Equals("mp4")
-     || extension.Equals("mxf") )
+    if( StringUtils::EqualsNoCase(extension, "ogg")
+     || StringUtils::EqualsNoCase(extension, "mp4")
+     || StringUtils::EqualsNoCase(extension, "mxf") )
      return true;
   }
 
@@ -864,9 +864,9 @@ bool CFileItem::IsAudio() const
   if( StringUtils::StartsWithNoCase(m_mimetype, "application/") )
   { /* check for some standard types */
     CStdString extension = m_mimetype.substr(12);
-    if( extension.Equals("ogg")
-     || extension.Equals("mp4")
-     || extension.Equals("mxf") )
+    if( StringUtils::EqualsNoCase(extension, "ogg")
+     || StringUtils::EqualsNoCase(extension, "mp4")
+     || StringUtils::EqualsNoCase(extension, "mxf") )
      return true;
   }
 
@@ -1004,12 +1004,12 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
   CStdString strFileName = URIUtils::GetFileName(m_strPath);
   if (bIfos)
   {
-    if (strFileName.Equals("video_ts.ifo")) return true;
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.ifo")) return true;
     if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, "_0.ifo") && strFileName.length() == 12) return true;
   }
   if (bVobs)
   {
-    if (strFileName.Equals("video_ts.vob")) return true;
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.vob")) return true;
     if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, ".vob")) return true;
   }
 
@@ -1019,7 +1019,7 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 bool CFileItem::IsBDFile() const
 {
   CStdString strFileName = URIUtils::GetFileName(m_strPath);
-  return (strFileName.Equals("index.bdmv"));
+  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv"));
 }
 
 bool CFileItem::IsRAR() const
@@ -1186,13 +1186,13 @@ bool CFileItem::IsHD() const
 bool CFileItem::IsMusicDb() const
 {
   CURL url(m_strPath);
-  return url.GetProtocol().Equals("musicdb");
+  return StringUtils::EqualsNoCase(url.GetProtocol(), "musicdb");
 }
 
 bool CFileItem::IsVideoDb() const
 {
   CURL url(m_strPath);
-  return url.GetProtocol().Equals("videodb");
+  return StringUtils::EqualsNoCase(url.GetProtocol(), "videodb");
 }
 
 bool CFileItem::IsVirtualDirectoryRoot() const
@@ -1664,7 +1664,7 @@ bool CFileItemList::Contains(const CStdString& fileName) const
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     const CFileItemPtr pItem = m_items[i];
-    if (pItem->GetPath().Equals(fileName))
+    if (StringUtils::EqualsNoCase(pItem->GetPath(), fileName))
       return true;
   }
   return false;
@@ -1848,7 +1848,7 @@ CFileItemPtr CFileItemList::Get(const CStdString& strPath)
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];
-    if (pItem->GetPath().Equals(strPath))
+    if (StringUtils::EqualsNoCase(pItem->GetPath(), strPath))
       return pItem;
   }
 
@@ -1871,7 +1871,7 @@ const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];
-    if (pItem->GetPath().Equals(strPath))
+    if (StringUtils::EqualsNoCase(pItem->GetPath(), strPath))
       return pItem;
   }
 
@@ -2510,11 +2510,11 @@ void CFileItemList::StackFiles()
                         Extension2  = expr->GetMatch(4);
             if (offset)
               Title2 = file2.substr(0, expr->GetSubStart(2));
-            if (Title1.Equals(Title2))
+            if (StringUtils::EqualsNoCase(Title1, Title2))
             {
-              if (!Volume1.Equals(Volume2))
+              if (!StringUtils::EqualsNoCase(Volume1, Volume2))
               {
-                if (Ignore1.Equals(Ignore2) && Extension1.Equals(Extension2))
+                if (StringUtils::EqualsNoCase(Ignore1, Ignore2) && StringUtils::EqualsNoCase(Extension1, Extension2))
                 {
                   if (stack.size() == 0)
                   {
@@ -2532,7 +2532,7 @@ void CFileItemList::StackFiles()
                   break;
                 }
               }
-              else if (!Ignore1.Equals(Ignore2)) // False positive, try again with offset
+              else if (!StringUtils::EqualsNoCase(Ignore1, Ignore2)) // False positive, try again with offset
               {
                 offset = expr->GetSubStart(3);
                 break;

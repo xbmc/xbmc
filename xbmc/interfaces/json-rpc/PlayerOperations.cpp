@@ -347,13 +347,13 @@ JSONRPC_STATUS CPlayerOperations::Seek(const CStdString &method, ITransportLayer
       else if (parameterObject["value"].isString())
       {
         CStdString step = parameterObject["value"].asString();
-        if (step.Equals("smallforward"))
+        if (StringUtils::EqualsNoCase(step, "smallforward"))
           CBuiltins::Execute("playercontrol(smallskipforward)");
-        else if (step.Equals("smallbackward"))
+        else if (StringUtils::EqualsNoCase(step, "smallbackward"))
           CBuiltins::Execute("playercontrol(smallskipbackward)");
-        else if (step.Equals("bigforward"))
+        else if (StringUtils::EqualsNoCase(step, "bigforward"))
           CBuiltins::Execute("playercontrol(bigskipforward)");
-        else if (step.Equals("bigbackward"))
+        else if (StringUtils::EqualsNoCase(step, "bigbackward"))
           CBuiltins::Execute("playercontrol(bigskipbackward)");
         else
           return InvalidParams;
@@ -1001,7 +1001,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
 
   int playlist = GetPlaylist(player);
 
-  if (property.Equals("type"))
+  if (StringUtils::EqualsNoCase(property, "type"))
   {
     switch (player)
     {
@@ -1021,7 +1021,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         return FailedToExecute;
     }
   }
-  else if (property.Equals("partymode"))
+  else if (StringUtils::EqualsNoCase(property, "partymode"))
   {
     switch (player)
     {
@@ -1044,7 +1044,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         return FailedToExecute;
     }
   }
-  else if (property.Equals("speed"))
+  else if (StringUtils::EqualsNoCase(property, "speed"))
   {
     CGUIWindowSlideShow *slideshow = NULL;
     switch (player)
@@ -1066,7 +1066,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         return FailedToExecute;
     }
   }
-  else if (property.Equals("time"))
+  else if (StringUtils::EqualsNoCase(property, "time"))
   {
     switch (player)
     {
@@ -1095,7 +1095,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         return FailedToExecute;
     }
   }
-  else if (property.Equals("percentage"))
+  else if (StringUtils::EqualsNoCase(property, "percentage"))
   {
     CGUIWindowSlideShow *slideshow = NULL;
     switch (player)
@@ -1128,7 +1128,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         return FailedToExecute;
     }
   }
-  else if (property.Equals("totaltime"))
+  else if (StringUtils::EqualsNoCase(property, "totaltime"))
   {
     switch (player)
     {
@@ -1157,11 +1157,11 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         return FailedToExecute;
     }
   }
-  else if (property.Equals("playlistid"))
+  else if (StringUtils::EqualsNoCase(property, "playlistid"))
   {
     result = playlist;
   }
-  else if (property.Equals("position"))
+  else if (StringUtils::EqualsNoCase(property, "position"))
   {
     CGUIWindowSlideShow *slideshow = NULL;
     switch (player)
@@ -1187,7 +1187,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("repeat"))
+  else if (StringUtils::EqualsNoCase(property, "repeat"))
   {
     switch (player)
     {
@@ -1219,7 +1219,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("shuffled"))
+  else if (StringUtils::EqualsNoCase(property, "shuffled"))
   {
     CGUIWindowSlideShow *slideshow = NULL;
     switch (player)
@@ -1248,7 +1248,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("canseek"))
+  else if (StringUtils::EqualsNoCase(property, "canseek"))
   {
     switch (player)
     {
@@ -1263,7 +1263,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("canchangespeed"))
+  else if (StringUtils::EqualsNoCase(property, "canchangespeed"))
   {
     switch (player)
     {
@@ -1278,7 +1278,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("canmove"))
+  else if (StringUtils::EqualsNoCase(property, "canmove"))
   {
     switch (player)
     {
@@ -1293,7 +1293,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("canzoom"))
+  else if (StringUtils::EqualsNoCase(property, "canzoom"))
   {
     switch (player)
     {
@@ -1308,7 +1308,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("canrotate"))
+  else if (StringUtils::EqualsNoCase(property, "canrotate"))
   {
     switch (player)
     {
@@ -1323,7 +1323,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("canshuffle"))
+  else if (StringUtils::EqualsNoCase(property, "canshuffle"))
   {
     switch (player)
     {
@@ -1338,7 +1338,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("canrepeat"))
+  else if (StringUtils::EqualsNoCase(property, "canrepeat"))
   {
     switch (player)
     {
@@ -1353,7 +1353,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("currentaudiostream"))
+  else if (StringUtils::EqualsNoCase(property, "currentaudiostream"))
   {
     switch (player)
     {
@@ -1386,7 +1386,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("audiostreams"))
+  else if (StringUtils::EqualsNoCase(property, "audiostreams"))
   {
     result = CVariant(CVariant::VariantTypeArray);
     switch (player)
@@ -1418,7 +1418,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("subtitleenabled"))
+  else if (StringUtils::EqualsNoCase(property, "subtitleenabled"))
   {
     switch (player)
     {
@@ -1433,7 +1433,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("currentsubtitle"))
+  else if (StringUtils::EqualsNoCase(property, "currentsubtitle"))
   {
     switch (player)
     {
@@ -1463,7 +1463,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("subtitles"))
+  else if (StringUtils::EqualsNoCase(property, "subtitles"))
   {
     result = CVariant(CVariant::VariantTypeArray);
     switch (player)
@@ -1492,7 +1492,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
-  else if (property.Equals("live"))
+  else if (StringUtils::EqualsNoCase(property, "live"))
     result = IsPVRChannel();
   else
     return InvalidParams;

@@ -256,16 +256,16 @@ JSONRPC_STATUS CPVROperations::GetPropertyValue(const CStdString &property, CVar
 {
   bool started = g_PVRManager.IsStarted();
 
-  if (property.Equals("available"))
+  if (StringUtils::EqualsNoCase(property, "available"))
     result = started;
-  else if (property.Equals("recording"))
+  else if (StringUtils::EqualsNoCase(property, "recording"))
   {
     if (started)
       result = g_PVRManager.IsRecording();
     else
       result = false;
   }
-  else if (property.Equals("scanning"))
+  else if (StringUtils::EqualsNoCase(property, "scanning"))
   {
     if (started)
       result = g_PVRManager.IsRunningChannelScan();

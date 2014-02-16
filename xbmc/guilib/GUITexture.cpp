@@ -23,6 +23,7 @@
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -648,7 +649,7 @@ bool CGUITextureBase::SetAspectRatio(const CAspectRatio &aspect)
 
 bool CGUITextureBase::SetFileName(const CStdString& filename)
 {
-  if (m_info.filename.Equals(filename)) return false;
+  if (StringUtils::EqualsNoCase(m_info.filename, filename)) return false;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
   FreeResources();

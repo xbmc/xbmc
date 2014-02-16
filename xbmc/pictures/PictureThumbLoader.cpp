@@ -28,6 +28,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "video/VideoThumbLoader.h"
@@ -150,7 +151,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     }
   }
   if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->m_bIsShareOrDrive
-      && !pItem->IsParentFolder() && !pItem->GetPath().Equals("add"))
+      && !pItem->IsParentFolder() && !StringUtils::EqualsNoCase(pItem->GetPath(), "add"))
   {
     // first check for a folder.jpg
     CStdString thumb = "folder.jpg";

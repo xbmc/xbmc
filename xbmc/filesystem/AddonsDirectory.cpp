@@ -59,36 +59,36 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   VECADDONS addons;
   // get info from repository
   bool reposAsFolders = true;
-  if (path.GetHostName().Equals("enabled"))
+  if (StringUtils::EqualsNoCase(path.GetHostName(), "enabled"))
   {
     CAddonMgr::Get().GetAllAddons(addons, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
     items.SetLabel(g_localizeStrings.Get(24062));
   }
-  else if (path.GetHostName().Equals("disabled"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "disabled"))
   { // grab all disabled addons, including disabled repositories
     reposAsFolders = false;
     CAddonMgr::Get().GetAllAddons(addons, false, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24039));
     items.SetLabel(g_localizeStrings.Get(24039));
   }
-  else if (path.GetHostName().Equals("outdated"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "outdated"))
   {
     reposAsFolders = false;
     CAddonMgr::Get().GetAllOutdatedAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24043));
     items.SetLabel(g_localizeStrings.Get(24043));
   }
-  else if (path.GetHostName().Equals("repos"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "repos"))
   {
     CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,true);
     items.SetLabel(g_localizeStrings.Get(24033)); // Get Add-ons
   }
-  else if (path.GetHostName().Equals("sources"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "sources"))
   {
     return GetScriptsAndPlugins(path.GetFileName(), items);
   }
-  else if (path.GetHostName().Equals("all"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "all"))
   {
     CAddonDatabase database;
     database.Open();
@@ -96,7 +96,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     items.SetProperty("reponame",g_localizeStrings.Get(24032));
     items.SetLabel(g_localizeStrings.Get(24032));
   }
-  else if (path.GetHostName().Equals("search"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "search"))
   {
     CStdString search(path.GetFileName());
     if (search.empty() && !GetKeyboardInput(16017, search))
@@ -133,7 +133,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   if (path.GetFileName().empty())
   {
-    if (!path.GetHostName().Equals("repos"))
+    if (!StringUtils::EqualsNoCase(path.GetHostName(), "repos"))
     {
       for (int i=ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
       {
@@ -174,7 +174,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   items.SetPath(strPath);
   GenerateListing(path, addons, items, reposAsFolders);
   // check for available updates
-  if (path.GetHostName().Equals("enabled"))
+  if (StringUtils::EqualsNoCase(path.GetHostName(), "enabled"))
   {
     CAddonDatabase database;
     database.Open();
@@ -190,7 +190,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
     }
   }
-  if (path.GetHostName().Equals("repos") && items.Size() > 1)
+  if (StringUtils::EqualsNoCase(path.GetHostName(), "repos") && items.Size() > 1)
   {
     CFileItemPtr item(new CFileItem("addons://all/",true));
     item->SetLabel(g_localizeStrings.Get(24032));
@@ -247,12 +247,12 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CS
   CFileItemPtr item(new CFileItem(path, folder));
 
   CStdString strLabel(addon->Name());
-  if (url.GetHostName().Equals("search"))
+  if (StringUtils::EqualsNoCase(url.GetHostName(), "search"))
     strLabel = StringUtils::Format("%s - %s", TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
 
   item->SetLabel(strLabel);
 
-  if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
+  if (!(StringUtils::EqualsNoCase(basePath, "addons://") && addon->Type() == ADDON_REPOSITORY))
     item->SetLabel2(addon->Version().c_str());
   item->SetArt("thumb", addon->Icon());
   item->SetLabelPreformated(true);

@@ -94,7 +94,7 @@ bool CPVRRecordings::IsDirectoryMember(const CStdString &strDirectory, const CSt
 
   /* Case-insensitive comparison since sub folders are created with case-insensitive matching (GetSubDirectories) */
   return StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory) &&
-      (!bDirectMember || strUseEntryDirectory.Equals(strUseDirectory));
+      (!bDirectMember || StringUtils::EqualsNoCase(strUseEntryDirectory, strUseDirectory));
 }
 
 void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *results)
@@ -244,7 +244,7 @@ bool CPVRRecordings::HasAllRecordingsPathExtension(const CStdString &strDirector
     return false;
 
   if (strUseDir.size() == strAllRecordingsPathExtension.size())
-    return strUseDir.Equals(strAllRecordingsPathExtension);
+    return StringUtils::EqualsNoCase(strUseDir, strAllRecordingsPathExtension);
 
   return StringUtils::EndsWith(strUseDir, "/" + strAllRecordingsPathExtension);
 }
@@ -430,7 +430,7 @@ void CPVRRecordings::SetPlayCount(const CFileItem &item, int iPlayCount)
   for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
   {
     CPVRRecording *current = m_recordings.at(iRecordingPtr);
-    if (current->m_iClientId == recording->m_iClientId && current->m_strRecordingId.Equals(recording->m_strRecordingId))
+    if (current->m_iClientId == recording->m_iClientId && StringUtils::EqualsNoCase(current->m_strRecordingId, recording->m_strRecordingId))
     {
       current->SetPlayCount(iPlayCount);
       break;
@@ -468,7 +468,7 @@ CFileItemPtr CPVRRecordings::GetByPath(const CStdString &path)
   {
     for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
     {
-      if(path.Equals(m_recordings.at(iRecordingPtr)->m_strFileNameAndPath))
+      if(StringUtils::EqualsNoCase(path, m_recordings.at(iRecordingPtr)->m_strFileNameAndPath))
       {
         CFileItemPtr fileItem(new CFileItem(*m_recordings.at(iRecordingPtr)));
         return fileItem;
@@ -498,7 +498,7 @@ void CPVRRecordings::UpdateEntry(const CPVRRecording &tag)
   {
     CPVRRecording *currentTag = m_recordings.at(iRecordingPtr);
     if (currentTag->m_iClientId == tag.m_iClientId &&
-        currentTag->m_strRecordingId.Equals(tag.m_strRecordingId))
+        StringUtils::EqualsNoCase(currentTag->m_strRecordingId, tag.m_strRecordingId))
     {
       currentTag->Update(tag);
       bFound = true;

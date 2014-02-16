@@ -188,7 +188,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     URIUtils::AddSlashAtEnd(myStrPath); //be sure the dir ends with a slash    
     CStdString path(myStrPath + strFile);
 
-    if (!strFile.Equals(".") && !strFile.Equals("..") && !strFile.Equals("lost+found"))
+    if (!StringUtils::EqualsNoCase(strFile, ".") && !StringUtils::EqualsNoCase(strFile, "..") && !StringUtils::EqualsNoCase(strFile, "lost+found"))
     {
       int64_t iSize = 0;
       bool bIsDir = aDir.type;

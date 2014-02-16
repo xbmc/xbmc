@@ -146,7 +146,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
                                                CContextButtons& buttons)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (pItem->GetPath().Equals("addons://enabled/"))
+  if (StringUtils::EqualsNoCase(pItem->GetPath(), "addons://enabled/"))
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
   
   AddonPtr addon;
@@ -169,7 +169,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
                                              CONTEXT_BUTTON button)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (pItem->GetPath().Equals("addons://enabled/"))
+  if (StringUtils::EqualsNoCase(pItem->GetPath(), "addons://enabled/"))
   {
     if (button == CONTEXT_BUTTON_SCAN)
     {
@@ -240,7 +240,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     CGUIDialogAddonInfo::ShowForItem(item);
     return true;
   }
-  if (item->GetPath().Equals("addons://search/"))
+  if (StringUtils::EqualsNoCase(item->GetPath(), "addons://search/"))
     return Update(item->GetPath());
 
   return CGUIMediaWindow::OnClick(iItem);
@@ -271,7 +271,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
                                           CFileItemList& items)
 {
   bool result;
-  if (strDirectory.Equals("addons://downloading/"))
+  if (StringUtils::EqualsNoCase(strDirectory, "addons://downloading/"))
   {
     VECADDONS addons;
     CAddonInstaller::Get().GetInstallList(addons);

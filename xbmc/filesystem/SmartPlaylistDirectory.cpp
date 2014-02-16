@@ -92,9 +92,9 @@ namespace XFILE
       }
     }
 
-    if (playlist.GetType().Equals("movies") ||
-        playlist.GetType().Equals("tvshows") ||
-        playlist.GetType().Equals("episodes"))
+    if (StringUtils::EqualsNoCase(playlist.GetType(), "movies") ||
+        StringUtils::EqualsNoCase(playlist.GetType(), "tvshows") ||
+        StringUtils::EqualsNoCase(playlist.GetType(), "episodes"))
     {
       CVideoDatabase db;
       if (db.Open())
@@ -166,7 +166,7 @@ namespace XFILE
       if (db.Open())
       {
         CSmartPlaylist plist(playlist);
-        if (playlist.GetType().Equals("mixed") || playlist.GetType().empty())
+        if (StringUtils::EqualsNoCase(playlist.GetType(), "mixed") || playlist.GetType().empty())
           plist.SetType("songs");
 
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(plist.GetType());
@@ -226,13 +226,14 @@ namespace XFILE
       }
     }
 
-    if (playlist.GetType().Equals("musicvideos") || playlist.GetType().Equals("mixed"))
+    if (StringUtils::EqualsNoCase(playlist.GetType(), "musicvideos") ||
+        StringUtils::EqualsNoCase(playlist.GetType(), "mixed"))
     {
       CVideoDatabase db;
       if (db.Open())
       {
         CSmartPlaylist mvidPlaylist(playlist);
-        if (playlist.GetType().Equals("mixed"))
+        if (StringUtils::EqualsNoCase(playlist.GetType(), "mixed"))
           mvidPlaylist.SetType("musicvideos");
 
         CStdString baseDir = strBaseDir;
@@ -309,9 +310,9 @@ namespace XFILE
       item->m_iprogramCount = i;  // hack for playlist order
     }
 
-    if (playlist.GetType().Equals("mixed"))
+    if (StringUtils::EqualsNoCase(playlist.GetType(), "mixed"))
       return success || success2;
-    else if (playlist.GetType().Equals("musicvideos"))
+    else if (StringUtils::EqualsNoCase(playlist.GetType(), "musicvideos"))
       return success2;
     else
       return success;

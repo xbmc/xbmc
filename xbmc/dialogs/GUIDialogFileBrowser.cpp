@@ -102,7 +102,7 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
       CFileItemPtr pItem = (*m_vecItems)[iItem];
       for (unsigned int i=0;i<m_shares.size();++i)
       {
-        if (m_shares[i].strName.Equals(pItem->GetLabel()) && m_shares[i].m_ignore)
+        if (StringUtils::EqualsNoCase(m_shares[i].strName, pItem->GetLabel()) && m_shares[i].m_ignore)
           return false;
       }
 
@@ -155,7 +155,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         bFool = true;
         if (iSource > -1 && iSource < (int)m_shares.size())
         {
-          if (m_shares[iSource].strPath.Equals(m_selectedPath))
+          if (StringUtils::EqualsNoCase(m_shares[iSource].strPath, m_selectedPath))
             bFool = false;
         }
 

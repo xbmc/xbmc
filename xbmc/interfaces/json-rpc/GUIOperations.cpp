@@ -128,14 +128,14 @@ JSONRPC_STATUS CGUIOperations::GetStereoscopicModes(const CStdString &method, IT
 
 JSONRPC_STATUS CGUIOperations::GetPropertyValue(const CStdString &property, CVariant &result)
 {
-  if (property.Equals("currentwindow"))
+  if (StringUtils::EqualsNoCase(property, "currentwindow"))
   {
     result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentWindow"));
     result["id"] = g_windowManager.GetFocusedWindow();
   }
-  else if (property.Equals("currentcontrol"))
+  else if (StringUtils::EqualsNoCase(property, "currentcontrol"))
     result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentControl"));
-  else if (property.Equals("skin"))
+  else if (StringUtils::EqualsNoCase(property, "skin"))
   {
     CStdString skinId = CSettings::Get().GetString("lookandfeel.skin");
     AddonPtr addon;
@@ -145,9 +145,9 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const CStdString &property, CVar
     if (addon.get())
       result["name"] = addon->Name();
   }
-  else if (property.Equals("fullscreen"))
+  else if (StringUtils::EqualsNoCase(property, "fullscreen"))
     result = g_application.IsFullScreen();
-  else if (property.Equals("stereoscopicmode"))
+  else if (StringUtils::EqualsNoCase(property, "stereoscopicmode"))
     result = GetStereoModeObjectFromGuiMode( CStereoscopicsManager::Get().GetStereoMode() );
   else
     return InvalidParams;

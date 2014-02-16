@@ -137,7 +137,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
         CLog::Log(LOGERROR, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
         return false;
       }
-      if( strXMLRootString.Equals(root->Value()) && bIsBouquet)
+      if( StringUtils::EqualsNoCase(strXMLRootString, root->Value()) && bIsBouquet)
       {
         data.clear();
         if (enigma2)
@@ -145,7 +145,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
         else
           result = g_tuxbox.ParseBouquets(root, items, url, strFilter, strXMLChildString);
       }
-      else if( strXMLRootString.Equals(root->Value()) && !strFilter.empty() )
+      else if( StringUtils::EqualsNoCase(strXMLRootString, root->Value()) && !strFilter.empty() )
       {
         data.clear();
         if (enigma2)

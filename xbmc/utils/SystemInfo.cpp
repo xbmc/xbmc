@@ -268,7 +268,7 @@ bool CSysInfo::GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
-  if( !drive.empty() && !drive.Equals("*") )
+  if( !drive.empty() && !StringUtils::EqualsNoCase(drive, "*") )
   {
 #ifdef TARGET_WINDOWS
     UINT uidriveType = GetDriveType(( drive + ":\\" ));

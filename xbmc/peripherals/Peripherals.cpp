@@ -484,14 +484,14 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
                            (strcmp(currentNode->Attribute("configurable"), "no") != 0 &&
                             strcmp(currentNode->Attribute("configurable"), "false") != 0 &&
                             strcmp(currentNode->Attribute("configurable"), "0") != 0));
-    if (strSettingsType.Equals("bool"))
+    if (StringUtils::EqualsNoCase(strSettingsType, "bool"))
     {
       bool bValue = (strcmp(currentNode->Attribute("value"), "no") != 0 &&
                      strcmp(currentNode->Attribute("value"), "false") != 0 &&
                      strcmp(currentNode->Attribute("value"), "0") != 0);
       setting = new CSettingBool(strKey, iLabelId, bValue);
     }
-    else if (strSettingsType.Equals("int"))
+    else if (StringUtils::EqualsNoCase(strSettingsType, "int"))
     {
       int iValue = currentNode->Attribute("value") ? atoi(currentNode->Attribute("value")) : 0;
       int iMin   = currentNode->Attribute("min") ? atoi(currentNode->Attribute("min")) : 0;
@@ -499,7 +499,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       int iMax   = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 255;
       setting = new CSettingInt(strKey, iLabelId, iValue, iMin, iStep, iMax);
     }
-    else if (strSettingsType.Equals("float"))
+    else if (StringUtils::EqualsNoCase(strSettingsType, "float"))
     {
       float fValue = currentNode->Attribute("value") ? (float) atof(currentNode->Attribute("value")) : 0;
       float fMin   = currentNode->Attribute("min") ? (float) atof(currentNode->Attribute("min")) : 0;
@@ -507,7 +507,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       float fMax   = currentNode->Attribute("max") ? (float) atof(currentNode->Attribute("max")) : 0;
       setting = new CSettingNumber(strKey, iLabelId, fValue, fMin, fStep, fMax);
     }
-    else if (strSettingsType.Equals("enum"))
+    else if (StringUtils::EqualsNoCase(strSettingsType, "enum"))
     {
       CStdString strEnums(currentNode->Attribute("lvalues"));
       if (!strEnums.empty())
@@ -570,7 +570,7 @@ void CPeripherals::GetDirectory(const CStdString &strPath, CFileItemList &items)
   CSingleLock lock(m_critSection);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
   {
-    if (strBus.Equals("all") || strBus.Equals(PeripheralTypeTranslator::BusTypeToString(m_busses.at(iBusPtr)->Type())))
+    if (StringUtils::EqualsNoCase(strBus, "all") || StringUtils::EqualsNoCase(strBus, PeripheralTypeTranslator::BusTypeToString(m_busses.at(iBusPtr)->Type())))
       m_busses.at(iBusPtr)->GetDirectory(strPath, items);
   }
 }
@@ -586,7 +586,7 @@ CPeripheral *CPeripherals::GetByPath(const CStdString &strPath) const
   CSingleLock lock(m_critSection);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
   {
-    if (strBus.Equals(PeripheralTypeTranslator::BusTypeToString(m_busses.at(iBusPtr)->Type())))
+    if (StringUtils::EqualsNoCase(strBus, PeripheralTypeTranslator::BusTypeToString(m_busses.at(iBusPtr)->Type())))
       return m_busses.at(iBusPtr)->GetByPath(strPath);
   }
 

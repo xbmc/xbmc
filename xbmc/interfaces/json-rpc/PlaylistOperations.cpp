@@ -237,7 +237,7 @@ void CPlaylistOperations::NotifyAll()
 
 JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(int playlist, const CStdString &property, CVariant &result)
 {
-  if (property.Equals("type"))
+  if (StringUtils::EqualsNoCase(property, "type"))
   {
     switch (playlist)
     {
@@ -258,7 +258,7 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(int playlist, const CStdStr
         break;
     }
   }
-  else if (property.Equals("size"))
+  else if (StringUtils::EqualsNoCase(property, "size"))
   {
     CFileItemList list;
     CGUIWindowSlideShow *slideshow = NULL;

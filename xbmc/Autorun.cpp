@@ -39,6 +39,7 @@
 #include "storage/MediaManager.h"
 #include "video/VideoDatabase.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #ifdef HAS_CDDA_RIPPER
@@ -169,7 +170,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         name = URIUtils::GetFileName(name);
 
         // Check if the current foldername indicates a DVD structure (name is "VIDEO_TS")
-        if (name.Equals("VIDEO_TS") && bAllowVideo
+        if (StringUtils::EqualsNoCase(name, "VIDEO_TS") && bAllowVideo
         && (bypassSettings || CSettings::Get().GetBool("dvds.autorun")))
         {
           CStdString path = URIUtils::AddFileToFolder(pItem->GetPath(), "VIDEO_TS.IFO");
@@ -189,7 +190,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         // Check if the current foldername indicates a Blu-Ray structure (default is "BDMV").
         // A BR should also include an "AACS" folder for encryption, Sony-BRs can also include update folders for PS3 (PS3_UPDATE / PS3_VPRM).
         // ToDo: for the time beeing, the DVD autorun settings are used to determine if the BR should be started automatically.
-        if (name.Equals("BDMV") && bAllowVideo
+        if (StringUtils::EqualsNoCase(name, "BDMV") && bAllowVideo
         && (bypassSettings || CSettings::Get().GetBool("dvds.autorun")))
         {
           CFileItem item(URIUtils::AddFileToFolder(pItem->GetPath(), "index.bdmv"), false);
@@ -209,7 +210,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         CFileItemList items, sitems;
         
         // Advanced Content HD DVD (most discs?)
-        if (name.Equals("ADV_OBJ"))
+        if (StringUtils::EqualsNoCase(name, "ADV_OBJ"))
         {
           CLog::Log(LOGINFO,"HD DVD: Checking for playlist.");
           // find playlist file
@@ -226,7 +227,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         }
 
         // Standard Content HD DVD (few discs?)
-        if (name.Equals("HVDVD_TS") && bAllowVideo
+        if (StringUtils::EqualsNoCase(name, "HVDVD_TS") && bAllowVideo
         && (bypassSettings || CSettings::Get().GetBool("dvds.autorun")))
         {
           if (hddvdname == "")
@@ -312,9 +313,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 				
         // Video CDs can have multiple file formats. First we need to determine which one is used on the CD
         CStdString strExt;
-        if (name.Equals("MPEGAV"))
+        if (StringUtils::EqualsNoCase(name, "MPEGAV"))
           strExt = ".dat";
-        if (name.Equals("MPEG2"))
+        if (StringUtils::EqualsNoCase(name, "MPEG2"))
           strExt = ".mpg";
 
         // If a file format was extracted we are sure this is a VCD. Autoplay if settings indicate we should.

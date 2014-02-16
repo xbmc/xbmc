@@ -108,7 +108,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     else
     {
       node = LoadXML(xml);
-      if (node && URIUtils::GetFileName(xml).Equals("index.xml"))
+      if (node && StringUtils::EqualsNoCase(URIUtils::GetFileName(xml), "index.xml"))
       { // set the label on our items
         CStdString label;
         if (XMLUtils::GetString(node, "label", label))

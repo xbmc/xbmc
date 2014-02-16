@@ -21,6 +21,7 @@
 #include "AddonManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "system.h"
 
 using namespace std;
@@ -34,7 +35,7 @@ CService::CService(const cp_extension_t *ext)
   BuildServiceType();
 
   CStdString start = CAddonMgr::Get().GetExtValue(ext->configuration, "@start");
-  if (start.Equals("startup"))
+  if (StringUtils::EqualsNoCase(start, "startup"))
     m_startOption = STARTUP;
 }
 
@@ -103,7 +104,7 @@ void CService::BuildServiceType()
 #ifdef HAS_PYTHON
   CStdString pythonExt = ADDON_PYTHON_EXT;
   pythonExt.erase(0, 2);
-  if ( ext.Equals(pythonExt) )
+  if ( StringUtils::EqualsNoCase(ext, pythonExt) )
     m_type = PYTHON;
   else
 #endif

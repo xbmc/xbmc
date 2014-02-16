@@ -293,7 +293,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     AVDictionary *options = GetFFMpegOptionsFromURL(url);
 
     int result=-1;
-    if (protocol.Equals("mms"))
+    if (StringUtils::EqualsNoCase(protocol, "mms"))
     {
       // try mmsh, then mmst
       url.SetProtocol("mmsh");
@@ -592,7 +592,7 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
 
   AVDictionary *options = NULL;
 
-  if (protocol.Equals("http") || protocol.Equals("https"))
+  if (StringUtils::EqualsNoCase(protocol, "http") || StringUtils::EqualsNoCase(protocol, "https"))
   {
     std::map<CStdString, CStdString> protocolOptions;
     url.GetProtocolOptions(protocolOptions);
@@ -603,14 +603,14 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
       const CStdString &name = it->first;
       const CStdString &value = it->second;
 
-      if (name.Equals("seekable"))
+      if (StringUtils::EqualsNoCase(name, "seekable"))
         m_dllAvUtil.av_dict_set(&options, "seekable", value.c_str(), 0);
-      else if (name.Equals("User-Agent"))
+      else if (StringUtils::EqualsNoCase(name, "User-Agent"))
       {
         m_dllAvUtil.av_dict_set(&options, "user-agent", value.c_str(), 0);
         hasUserAgent = true;
       }
-      else if (!name.Equals("auth") && !name.Equals("Encoding"))
+      else if (!StringUtils::EqualsNoCase(name, "auth") && !StringUtils::EqualsNoCase(name, "Encoding"))
         // all other protocol options can be added as http header.
         headers.append(name).append(": ").append(value).append("\r\n");
     }

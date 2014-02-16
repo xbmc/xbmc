@@ -166,10 +166,10 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
     if (CGUIDialogFileBrowser::ShowAndGetImage(items,shares,g_localizeStrings.Get(1030),strThumb) &&
-        !strThumb.Equals("thumb://Current"))
+        !StringUtils::EqualsNoCase(strThumb, "thumb://Current"))
     {
       m_bNeedSave = true;
-      m_strThumb = strThumb.Equals("thumb://None") ? "" : strThumb;
+      m_strThumb = StringUtils::EqualsNoCase(strThumb, "thumb://None") ? "" : strThumb;
 
       CGUIImage *pImage = (CGUIImage*)GetControl(2);
       if (pImage)

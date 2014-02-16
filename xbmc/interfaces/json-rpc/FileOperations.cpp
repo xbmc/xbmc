@@ -85,17 +85,17 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
 
   CStdStringArray regexps;
   CStdString extensions = "";
-  if (media.Equals("video"))
+  if (StringUtils::EqualsNoCase(media, "video"))
   {
     regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
     extensions = g_advancedSettings.m_videoExtensions;
   }
-  else if (media.Equals("music"))
+  else if (StringUtils::EqualsNoCase(media, "music"))
   {
     regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
     extensions = g_advancedSettings.m_musicExtensions;
   }
-  else if (media.Equals("pictures"))
+  else if (StringUtils::EqualsNoCase(media, "pictures"))
   {
     regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
     extensions = g_advancedSettings.m_pictureExtensions;
@@ -239,9 +239,9 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPt
   CStdString strFilename = originalItem->GetPath();
   if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFile::Exists(strFilename)))
   {
-    if (media.Equals("video"))
+    if (StringUtils::EqualsNoCase(media, "video"))
       status = CVideoLibrary::FillFileItem(strFilename, item, parameterObject);
-    else if (media.Equals("music"))
+    else if (StringUtils::EqualsNoCase(media, "music"))
       status = CAudioLibrary::FillFileItem(strFilename, item, parameterObject);
 
     if (status && item->GetLabel().empty())
@@ -294,17 +294,17 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       CStdString extensions = "";
       CStdStringArray regexps;
 
-      if (media.Equals("video"))
+      if (StringUtils::EqualsNoCase(media, "video"))
       {
         regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
         extensions = g_advancedSettings.m_videoExtensions;
       }
-      else if (media.Equals("music"))
+      else if (StringUtils::EqualsNoCase(media, "music"))
       {
         regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
         extensions = g_advancedSettings.m_musicExtensions;
       }
-      else if (media.Equals("pictures"))
+      else if (StringUtils::EqualsNoCase(media, "pictures"))
       {
         regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
         extensions = g_advancedSettings.m_pictureExtensions;

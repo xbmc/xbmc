@@ -2398,11 +2398,6 @@ public:
     }
   #endif
 
-  bool Equals(const CT* pT, bool bUseCase=false) const
-  {
-    return  0 == (bUseCase ? this->compare(pT) : ssicmp(this->c_str(), pT));
-  }
-
   // -------------------------------------------------------------------------
   // FUNCTION:  CStdStr::Load
   // REMARKS:

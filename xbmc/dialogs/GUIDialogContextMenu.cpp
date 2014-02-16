@@ -456,7 +456,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       CStdString defaultSource(GetDefaultShareNameByType(type));
       if (!defaultSource.empty())
       {
-        if (share->strName.Equals(defaultSource))
+        if (StringUtils::EqualsNoCase(share->strName, defaultSource))
           ClearDefault(type);
       }
       CMediaSourceSettings::Get().DeleteSource(type, share->strName, share->strPath);
@@ -737,13 +737,13 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
 {
   // create menu
   CContextButtons choices;
-  if (!strType.Equals("music"))
+  if (!StringUtils::EqualsNoCase(strType, "music"))
     choices.Add(WINDOW_MUSIC_FILES, 2);
-  if (!strType.Equals("video"))
+  if (!StringUtils::EqualsNoCase(strType, "video"))
     choices.Add(WINDOW_VIDEO_FILES, 3);
-  if (!strType.Equals("pictures"))
+  if (!StringUtils::EqualsNoCase(strType, "pictures"))
     choices.Add(WINDOW_PICTURES, 1);
-  if (!strType.Equals("files"))
+  if (!StringUtils::EqualsNoCase(strType, "files"))
     choices.Add(WINDOW_FILES, 7);
 
   int window = ShowAndGetChoice(choices);

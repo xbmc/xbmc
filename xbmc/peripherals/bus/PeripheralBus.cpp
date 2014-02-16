@@ -303,7 +303,7 @@ CPeripheral *CPeripheralBus::GetByPath(const CStdString &strPath) const
   CSingleLock lock(m_critSection);
   for (unsigned int iDevicePtr = 0; iDevicePtr < m_peripherals.size(); iDevicePtr++)
   {
-    if (strPath.Equals(m_peripherals.at(iDevicePtr)->FileLocation()))
+    if (StringUtils::EqualsNoCase(strPath, m_peripherals.at(iDevicePtr)->FileLocation()))
       return m_peripherals.at(iDevicePtr);
   }
 

@@ -118,7 +118,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
       if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        if (!m_vecItems->GetPath().Equals("special://musicplaylists/"))
+        if (!StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://musicplaylists/"))
           Update("special://musicplaylists/");
       }
       else if (iControl == CONTROL_BTNSCAN)
@@ -293,8 +293,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
   if (item)
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::MusicPlaylistsLocation()) ||
-                       m_vecItems->GetPath().Equals("special://musicplaylists/");
+    bool inPlaylists = StringUtils::EqualsNoCase(m_vecItems->GetPath(), CUtil::MusicPlaylistsLocation()) ||
+                       StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://musicplaylists/");
 
     if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == "sources://music/")
     {
@@ -369,7 +369,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     if (g_application.IsMusicScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
     else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
-             !item->GetPath().Equals("add") && !item->IsParentFolder() &&
+             !StringUtils::EqualsNoCase(item->GetPath(), "add") && !item->IsParentFolder() &&
              !item->IsPlugin()                                         &&
              !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
             (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))

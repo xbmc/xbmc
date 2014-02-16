@@ -25,6 +25,7 @@
 #include "utils/RecentlyAddedJob.h"
 #include "interfaces/AnnouncementManager.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
@@ -65,8 +66,8 @@ void CGUIWindowHome::OnInitWindow()
 {  
   // for shared databases (ie mysql) always force an update on return to home
   // this is a temporary solution until remote announcements can be delivered
-  if ( g_advancedSettings.m_databaseVideo.type.Equals("mysql") ||
-       g_advancedSettings.m_databaseMusic.type.Equals("mysql") )
+  if ( StringUtils::EqualsNoCase(g_advancedSettings.m_databaseVideo.type, "mysql") ||
+       StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql") )
     m_updateRA = (Audio | Video | Totals);
   AddRecentlyAddedJobs( m_updateRA );
 

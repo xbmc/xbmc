@@ -111,9 +111,9 @@ void CTuxBoxService::Process()
     {
       CLog::Log(LOGDEBUG, "%s - receive current service data was successful", __FUNCTION__);
       if(!strCurrentServiceName.empty()&&
-        !strCurrentServiceName.Equals("NULL") &&
+        !StringUtils::EqualsNoCase(strCurrentServiceName, "NULL") &&
         !g_tuxbox.sCurSrvData.service_name.empty() &&
-        !g_tuxbox.sCurSrvData.service_name.Equals("-") &&
+        !StringUtils::EqualsNoCase(g_tuxbox.sCurSrvData.service_name, "-") &&
         !g_tuxbox.vVideoSubChannel.mode)
       {
         //Detect Channel Change
@@ -148,7 +148,7 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
   }
   else
   {
-    if(!sBoxStatus.recording.Equals("1")) //Don't Show this Dialog, if the Box is in Recording mode! A previos YN Dialog was send to user!
+    if(!StringUtils::EqualsNoCase(sBoxStatus.recording, "1")) //Don't Show this Dialog, if the Box is in Recording mode! A previos YN Dialog was send to user!
     {
       CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
       CLog::Log(LOGDEBUG, "%s - WARNING: Zaping Failed no Zap Point found!", __FUNCTION__);
@@ -295,7 +295,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
           CStdString strItemName = pIt->FirstChild()->Value();
 
           pIt = pNode->FirstChild("reference");
-          if (strFilter.Equals(pIt->FirstChild()->Value()))
+          if (StringUtils::EqualsNoCase(strFilter, pIt->FirstChild()->Value()))
           {
             pIt = pNode->FirstChild("service");
             if (!pIt)
@@ -434,7 +434,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, const CStdString &pathOption)
   //Check Recording State!
   if(GetHttpXML(urlx,"boxstatus"))
   {
-    if(sBoxStatus.recording.Equals("1"))
+    if(StringUtils::EqualsNoCase(sBoxStatus.recording, "1"))
     {
       CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
       CLog::Log(LOGDEBUG, "%s - WARNING: Device is Recording! Record Mode is: %s", __FUNCTION__,sBoxStatus.recording.c_str());
@@ -470,7 +470,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, const CStdString &pathOption)
     //Extract StreamInformations
     int iRetry=0;
     //PMT must be a valid value to be sure that the ZAP is OK and we can stream!
-    while(sStrmInfo.pmt.Equals("ffffffffh") && iRetry!=10) //try 10 Times
+    while(StringUtils::EqualsNoCase(sStrmInfo.pmt, "ffffffffh") && iRetry!=10) //try 10 Times
     {
       CLog::Log(LOGDEBUG, "%s - Requesting STREAMINFO! TryCount: %i!", __FUNCTION__,iRetry);
       GetHttpXML(urlx,"streaminfo");
@@ -479,16 +479,16 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, const CStdString &pathOption)
     }
 
     // PMT Not Valid? Try Time 10 reached, checking for advancedSettings m_iTuxBoxZapWaitTime
-    if(sStrmInfo.pmt.Equals("ffffffffh") && g_advancedSettings.m_iTuxBoxZapWaitTime > 0 )
+    if(StringUtils::EqualsNoCase(sStrmInfo.pmt, "ffffffffh") && g_advancedSettings.m_iTuxBoxZapWaitTime > 0 )
     {
       iRetry = 0;
       CLog::Log(LOGDEBUG, "%s - Starting TuxBox ZapWaitTimer!", __FUNCTION__);
-      while(sStrmInfo.pmt.Equals("ffffffffh") && iRetry!=10) //try 10 Times
+      while(StringUtils::EqualsNoCase(sStrmInfo.pmt, "ffffffffh") && iRetry!=10) //try 10 Times
       {
         CLog::Log(LOGDEBUG, "%s - Requesting STREAMINFO! TryCount: %i!", __FUNCTION__,iRetry);
         GetHttpXML(urlx,"streaminfo");
         iRetry=iRetry+1;
-        if(sStrmInfo.pmt.Equals("ffffffffh"))
+        if(StringUtils::EqualsNoCase(sStrmInfo.pmt, "ffffffffh"))
         {
           CLog::Log(LOGERROR, "%s - STREAMINFO ERROR! Could not receive all data, TryCount: %i!", __FUNCTION__,iRetry);
           CLog::Log(LOGERROR, "%s - PMT is: %s (not a Valid Value)! Waiting %i sec.", __FUNCTION__,sStrmInfo.pmt.c_str(), g_advancedSettings.m_iTuxBoxZapWaitTime);
@@ -498,7 +498,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, const CStdString &pathOption)
     }
 
     //PMT Failed! No StreamInformations availible.. closing stream
-    if (sStrmInfo.pmt.Equals("ffffffffh"))
+    if (StringUtils::EqualsNoCase(sStrmInfo.pmt, "ffffffffh"))
     {
       CLog::Log(LOGERROR, "%s-------------------------------------------------------------", __FUNCTION__);
       CLog::Log(LOGERROR, "%s - STREAMINFO ERROR! Could not receive all data, TryCount: %i!", __FUNCTION__,iRetry);
@@ -726,23 +726,23 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
   // Check and Set URL Request Option
   if(!strRequestType.empty())
   {
-    if(strRequestType.Equals("streaminfo"))
+    if(StringUtils::EqualsNoCase(strRequestType, "streaminfo"))
     {
       url.SetOptions("xml/streaminfo");
     }
-    else if(strRequestType.Equals("currentservicedata"))
+    else if(StringUtils::EqualsNoCase(strRequestType, "currentservicedata"))
     {
       url.SetOptions("xml/currentservicedata");
     }
-    else if(strRequestType.Equals("boxstatus"))
+    else if(StringUtils::EqualsNoCase(strRequestType, "boxstatus"))
     {
       url.SetOptions("xml/boxstatus");
     }
-    else if(strRequestType.Equals("boxinfo"))
+    else if(StringUtils::EqualsNoCase(strRequestType, "boxinfo"))
     {
       url.SetOptions("xml/boxinfo");
     }
-    else if(strRequestType.Equals("serviceepg"))
+    else if(StringUtils::EqualsNoCase(strRequestType, "serviceepg"))
     {
       url.SetOptions("xml/serviceepg");
     }
@@ -792,15 +792,15 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
 
       XMLRoot = doc.RootElement();
       CStdString strRoot = XMLRoot->Value();
-      if( strRoot.Equals("streaminfo"))
+      if( StringUtils::EqualsNoCase(strRoot, "streaminfo"))
         return StreamInformations(XMLRoot);
-      if(strRoot.Equals("currentservicedata"))
+      if(StringUtils::EqualsNoCase(strRoot, "currentservicedata"))
         return CurrentServiceData(XMLRoot);
-      if(strRoot.Equals("boxstatus"))
+      if(StringUtils::EqualsNoCase(strRoot, "boxstatus"))
         return BoxStatus(XMLRoot);
-      if(strRoot.Equals("boxinfo"))
+      if(StringUtils::EqualsNoCase(strRoot, "boxinfo"))
         return BoxInfo(XMLRoot);
-      if(strRoot.Equals("serviceepg") || strRoot.Equals("service_epg"))
+      if(StringUtils::EqualsNoCase(strRoot, "serviceepg") || StringUtils::EqualsNoCase(strRoot, "service_epg"))
         return ServiceEPG(XMLRoot);
 
       CLog::Log(LOGERROR, "%s - Unable to parse xml", __FUNCTION__);
@@ -1550,7 +1550,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
       if(pService->Attribute("png"))
         strPng = StringUtils::Format("%s", pService->Attribute("png"));
 
-      if(strName.Equals(strServiceName))
+      if(StringUtils::EqualsNoCase(strName, strServiceName))
       {
         strPng = StringUtils::Format("%s%s", piconPath.c_str(), strPng.c_str());
         StringUtils::ToLower(strPng);
@@ -1631,22 +1631,22 @@ CStdString CTuxBoxUtil::DetectSubMode(CStdString strSubMode, CStdString& strXMLR
   {
     CStdString strTemp;
     strTemp = strSubMode.at(ipointSubMode + 9);
-    if(strTemp.Equals("1"))
+    if(StringUtils::EqualsNoCase(strTemp, "1"))
     {
       strXMLRootString = StringUtils::Format("unknowns");
       strXMLChildString = StringUtils::Format("unknown");
     }
-    else if(strTemp.Equals("2"))
+    else if(StringUtils::EqualsNoCase(strTemp, "2"))
     {
       strXMLRootString = StringUtils::Format("satellites");
       strXMLChildString = StringUtils::Format("satellite");
     }
-    else if(strTemp.Equals("3"))
+    else if(StringUtils::EqualsNoCase(strTemp, "3"))
     {
       strXMLRootString = StringUtils::Format("providers");
       strXMLChildString = StringUtils::Format("provider");
     }
-    else if(strTemp.Equals("4"))
+    else if(StringUtils::EqualsNoCase(strTemp, "4"))
     {
       strXMLRootString = StringUtils::Format("bouquets");
       strXMLChildString = StringUtils::Format("bouquet");

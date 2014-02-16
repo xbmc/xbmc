@@ -35,6 +35,7 @@
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/StringUtils.h"
 #include "cores/IPlayer.h"
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -69,7 +70,7 @@ bool CPVRClients::IsInUse(const std::string& strAddonId) const
   CSingleLock lock(m_critSection);
 
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (itr->second->Enabled() && itr->second->ID().Equals(strAddonId.c_str()))
+    if (itr->second->Enabled() && StringUtils::EqualsNoCase(itr->second->ID(), strAddonId.c_str()))
       return true;
   return false;
 }

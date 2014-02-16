@@ -110,13 +110,13 @@ JSONRPC_STATUS CApplicationOperations::Quit(const CStdString &method, ITransport
 
 JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const CStdString &property, CVariant &result)
 {
-  if (property.Equals("volume"))
+  if (StringUtils::EqualsNoCase(property, "volume"))
     result = (int)g_application.GetVolume();
-  else if (property.Equals("muted"))
+  else if (StringUtils::EqualsNoCase(property, "muted"))
     result = g_application.IsMuted();
-  else if (property.Equals("name"))
+  else if (StringUtils::EqualsNoCase(property, "name"))
     result = "XBMC";
-  else if (property.Equals("version"))
+  else if (StringUtils::EqualsNoCase(property, "version"))
   {
     result = CVariant(CVariant::VariantTypeObject);
     result["major"] = VERSION_MAJOR;

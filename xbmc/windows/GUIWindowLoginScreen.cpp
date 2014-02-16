@@ -205,7 +205,7 @@ void CGUIWindowLoginScreen::Update()
       strLabel = StringUtils::Format(g_localizeStrings.Get(20112).c_str(), profile->getDate().c_str());
     item->SetLabel2(strLabel);
     item->SetArt("thumb", profile->getThumb());
-    if (profile->getThumb().empty() || profile->getThumb().Equals("-"))
+    if (profile->getThumb().empty() || StringUtils::EqualsNoCase(profile->getThumb(), "-"))
       item->SetArt("thumb", "unknown-user.png");
     item->SetLabelPreformated(true);
     m_vecItems->Add(item);

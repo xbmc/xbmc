@@ -101,7 +101,7 @@ void CGUIInfoColor::Parse(const CStdString &label, int context)
 {
   // Check for the standard $INFO[] block layout, and strip it if present
   CStdString label2 = label;
-  if (label.Equals("-", false))
+  if (StringUtils::EqualsNoCase(label, "-"))
     return;
 
   if (StringUtils::StartsWithNoCase(label, "$var["))

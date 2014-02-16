@@ -225,7 +225,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
               OnDeleteItem(iItem);
 
             // or be at the video playlists location
-            else if (m_vecItems->GetPath().Equals("special://videoplaylists/"))
+            else if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://videoplaylists/"))
               OnDeleteItem(iItem);
             else
               return false;
@@ -271,7 +271,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   if (!pItem)
     return;
 
-  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->GetPath().Equals("add") ||
+  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || StringUtils::EqualsNoCase(pItem->GetPath(), "add") ||
      (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
     return;
 
@@ -981,7 +981,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->GetPath().Equals("add") || item->IsParentFolder() ||
+  if (StringUtils::EqualsNoCase(item->GetPath(), "add") || item->IsParentFolder() ||
      (item->IsPlayList() && !URIUtils::HasExtension(item->GetPath(), ".strm")))
     return false;
 
@@ -1200,7 +1200,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
-      if (!item->GetPath().Equals("add") && !item->IsPlugin() &&
+      if (!StringUtils::EqualsNoCase(item->GetPath(), "add") && !item->IsPlugin() &&
           !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
       {
         if (URIUtils::IsStack(path))
@@ -1628,7 +1628,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   }
 
   if ((CSettings::Get().GetBool("filelists.allowfiledeletion") ||
-       m_vecItems->GetPath().Equals("special://videoplaylists/")) &&
+       StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://videoplaylists/")) &&
       CUtil::SupportsWriteFileOperations(item->GetPath()))
     CFileUtils::DeleteItem(item);
 }
@@ -1783,7 +1783,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     CVideoDatabaseDirectory dir;
     dir.GetQueryParams(items.GetPath(), params);
     VIDEODATABASEDIRECTORY::NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_strFilterPath);
-    if (items.GetContent().Equals("movies") && params.GetSetId() <= 0 &&
+    if (StringUtils::EqualsNoCase(items.GetContent(), "movies") && params.GetSetId() <= 0 &&
         nodeType == NODE_TYPE_TITLE_MOVIES &&
        (CSettings::Get().GetBool("videolibrary.groupmoviesets") || (StringUtils::EqualsNoCase(group, "sets") && mixed)))
     {
@@ -1807,7 +1807,7 @@ bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   CStdString content = items.GetContent();
   if ((items.IsVideoDb() || CanContainFilter(m_strFilterPath)) &&
-      (content.Equals("movies") || content.Equals("tvshows") || content.Equals("episodes") || content.Equals("musicvideos")))
+      (StringUtils::EqualsNoCase(content, "movies") || StringUtils::EqualsNoCase(content, "tvshows") || StringUtils::EqualsNoCase(content, "episodes") || StringUtils::EqualsNoCase(content, "musicvideos")))
     return true;
 
   return false;
@@ -2022,9 +2022,9 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, bool scanAll)
 
 CStdString CGUIWindowVideoBase::GetStartFolder(const CStdString &dir)
 {
-  if (dir.Equals("$PLAYLISTS") || dir.Equals("Playlists"))
+  if (StringUtils::EqualsNoCase(dir, "$PLAYLISTS") || StringUtils::EqualsNoCase(dir, "Playlists"))
     return "special://videoplaylists/";
-  else if (dir.Equals("Plugins") || dir.Equals("Addons"))
+  else if (StringUtils::EqualsNoCase(dir, "Plugins") || StringUtils::EqualsNoCase(dir, "Addons"))
     return "addons://sources/video/";
   return CGUIMediaWindow::GetStartFolder(dir);
 }

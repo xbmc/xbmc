@@ -353,7 +353,7 @@ struct AddonIdFinder
     
     bool operator()(const AddonPtr& addon) 
     { 
-      return m_id.Equals(addon->ID()); 
+      return StringUtils::EqualsNoCase(m_id, addon->ID()); 
     }
     private:
     CStdString m_id;

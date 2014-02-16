@@ -244,7 +244,7 @@ void GUIFontManager::Unload(const CStdString& strFontName)
 {
   for (vector<CGUIFont*>::iterator iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
   {
-    if ((*iFont)->GetFontName().Equals(strFontName))
+    if (StringUtils::EqualsNoCase((*iFont)->GetFontName(), strFontName))
     {
       delete (*iFont);
       m_vecFonts.erase(iFont);
@@ -271,7 +271,7 @@ CGUIFontTTFBase* GUIFontManager::GetFontFile(const CStdString& strFileName)
   for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)
   {
     CGUIFontTTFBase* pFont = (CGUIFontTTFBase *)m_vecFontFiles[i];
-    if (pFont->GetFileName().Equals(strFileName))
+    if (StringUtils::EqualsNoCase(pFont->GetFileName(), strFileName))
       return pFont;
   }
   return NULL;
@@ -282,11 +282,11 @@ CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName, bool fallback /
   for (int i = 0; i < (int)m_vecFonts.size(); ++i)
   {
     CGUIFont* pFont = m_vecFonts[i];
-    if (pFont->GetFontName().Equals(strFontName))
+    if (StringUtils::EqualsNoCase(pFont->GetFontName(), strFontName))
       return pFont;
   }
   // fall back to "font13" if we have none
-  if (fallback && !strFontName.empty() && !strFontName.Equals("-") && !strFontName.Equals("font13"))
+  if (fallback && !strFontName.empty() && !StringUtils::EqualsNoCase(strFontName, "-") && !StringUtils::EqualsNoCase(strFontName, "font13"))
     return GetFont("font13");
   return NULL;
 }

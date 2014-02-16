@@ -81,7 +81,7 @@ void CURL::Parse(const CStdString& strURL1)
   //
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
-  if (strURL.Equals("?", true)) return;
+  if (strURL == "?") return;
 
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
@@ -149,11 +149,11 @@ void CURL::Parse(const CStdString& strURL1)
   // they are all local protocols and have no server part, port number, special options, etc.
   // this removes the need for special handling below.
   if (
-    m_strProtocol.Equals("stack") ||
-    m_strProtocol.Equals("virtualpath") ||
-    m_strProtocol.Equals("multipath") ||
-    m_strProtocol.Equals("filereader") ||
-    m_strProtocol.Equals("special")
+    StringUtils::EqualsNoCase(m_strProtocol, "stack") ||
+    StringUtils::EqualsNoCase(m_strProtocol, "virtualpath") ||
+    StringUtils::EqualsNoCase(m_strProtocol, "multipath") ||
+    StringUtils::EqualsNoCase(m_strProtocol, "filereader") ||
+    StringUtils::EqualsNoCase(m_strProtocol, "special")
     )
   {
     SetFileName(strURL.substr(iPos));
@@ -170,26 +170,26 @@ void CURL::Parse(const CStdString& strURL1)
 
   //TODO fix all Addon paths
   CStdString strProtocol2 = GetTranslatedProtocol();
-  if(m_strProtocol.Equals("rss") ||
-     m_strProtocol.Equals("rar") ||
-     m_strProtocol.Equals("addons") ||
-     m_strProtocol.Equals("image") ||
-     m_strProtocol.Equals("videodb") ||
-     m_strProtocol.Equals("musicdb") ||
-     m_strProtocol.Equals("androidapp"))
+  if(StringUtils::EqualsNoCase(m_strProtocol, "rss") ||
+     StringUtils::EqualsNoCase(m_strProtocol, "rar") ||
+     StringUtils::EqualsNoCase(m_strProtocol, "addons") ||
+     StringUtils::EqualsNoCase(m_strProtocol, "image") ||
+     StringUtils::EqualsNoCase(m_strProtocol, "videodb") ||
+     StringUtils::EqualsNoCase(m_strProtocol, "musicdb") ||
+     StringUtils::EqualsNoCase(m_strProtocol, "androidapp"))
     sep = "?";
   else
-  if(strProtocol2.Equals("http")
-    || strProtocol2.Equals("https")
-    || strProtocol2.Equals("plugin")
-    || strProtocol2.Equals("addons")
-    || strProtocol2.Equals("hdhomerun")
-    || strProtocol2.Equals("rtsp")
-    || strProtocol2.Equals("apk")
-    || strProtocol2.Equals("zip"))
+  if(StringUtils::EqualsNoCase(strProtocol2, "http")
+    || StringUtils::EqualsNoCase(strProtocol2, "https")
+    || StringUtils::EqualsNoCase(strProtocol2, "plugin")
+    || StringUtils::EqualsNoCase(strProtocol2, "addons")
+    || StringUtils::EqualsNoCase(strProtocol2, "hdhomerun")
+    || StringUtils::EqualsNoCase(strProtocol2, "rtsp")
+    || StringUtils::EqualsNoCase(strProtocol2, "apk")
+    || StringUtils::EqualsNoCase(strProtocol2, "zip"))
     sep = "?;#|";
-  else if(strProtocol2.Equals("ftp")
-       || strProtocol2.Equals("ftps"))
+  else if(StringUtils::EqualsNoCase(strProtocol2, "ftp")
+       || StringUtils::EqualsNoCase(strProtocol2, "ftps"))
     sep = "?;|";
 
   if(sep)
@@ -214,7 +214,7 @@ void CURL::Parse(const CStdString& strURL1)
   if(iSlash >= iEnd)
     iSlash = std::string::npos; // was an invalid slash as it was contained in options
 
-  if( !m_strProtocol.Equals("iso9660") )
+  if( !StringUtils::EqualsNoCase(m_strProtocol, "iso9660") )
   {
     size_t iAlphaSign = strURL.find("@", iPos);
     if (iAlphaSign != std::string::npos && iAlphaSign < iEnd && (iAlphaSign < iSlash || iSlash == std::string::npos))
@@ -223,7 +223,7 @@ void CURL::Parse(const CStdString& strURL1)
       CStdString strUserNamePassword = strURL.substr(iPos, iAlphaSign - iPos);
 
       // first extract domain, if protocol is smb
-      if (m_strProtocol.Equals("smb"))
+      if (StringUtils::EqualsNoCase(m_strProtocol, "smb"))
       {
         size_t iSemiColon = strUserNamePassword.find(";");
 
@@ -534,7 +534,7 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
 {
   std::string strURL;
 
-  if (m_strProtocol.Equals("stack"))
+  if (StringUtils::EqualsNoCase(m_strProtocol, "stack"))
   {
     CFileItemList items;
     std::string strURL2;
@@ -683,7 +683,7 @@ bool CURL::IsLocal() const
 
 bool CURL::IsLocalHost() const
 {
-  return (m_strHostName.Equals("localhost") || m_strHostName.Equals("127.0.0.1"));
+  return (StringUtils::EqualsNoCase(m_strHostName, "localhost") || StringUtils::EqualsNoCase(m_strHostName, "127.0.0.1"));
 }
 
 bool CURL::IsFileOnly(const CStdString &url)

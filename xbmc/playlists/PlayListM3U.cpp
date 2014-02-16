@@ -119,7 +119,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         continue; // assume a comment or something else we don't support
 
       // Skip self - do not load playlist recursively
-      if (URIUtils::GetFileName(strFileName).Equals(m_strPlayListName))
+      if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strFileName), m_strPlayListName))
         continue;
 
       if (strFileName.length() > 0)

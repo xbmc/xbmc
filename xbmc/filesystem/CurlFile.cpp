@@ -524,24 +524,24 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if( m_ftpauth.length() > 0 )
   {
     g_curlInterface.easy_setopt(h, CURLOPT_FTP_SSL, CURLFTPSSL_TRY);
-    if( m_ftpauth.Equals("any") )
+    if( StringUtils::EqualsNoCase(m_ftpauth, "any") )
       g_curlInterface.easy_setopt(h, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_DEFAULT);
-    else if( m_ftpauth.Equals("ssl") )
+    else if( StringUtils::EqualsNoCase(m_ftpauth, "ssl") )
       g_curlInterface.easy_setopt(h, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_SSL);
-    else if( m_ftpauth.Equals("tls") )
+    else if( StringUtils::EqualsNoCase(m_ftpauth, "tls") )
       g_curlInterface.easy_setopt(h, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_TLS);
   }
 
   // setup requested http authentication method
   if(m_httpauth.length() > 0)
   {
-    if( m_httpauth.Equals("any") )
+    if( StringUtils::EqualsNoCase(m_httpauth, "any") )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-    else if( m_httpauth.Equals("anysafe") )
+    else if( StringUtils::EqualsNoCase(m_httpauth, "anysafe") )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE);
-    else if( m_httpauth.Equals("digest") )
+    else if( StringUtils::EqualsNoCase(m_httpauth, "digest") )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
-    else if( m_httpauth.Equals("ntlm") )
+    else if( StringUtils::EqualsNoCase(m_httpauth, "ntlm") )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
   }
 
@@ -657,8 +657,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   CStdString strProtocol = url2.GetTranslatedProtocol();
   url2.SetProtocol(strProtocol);
 
-  if( strProtocol.Equals("ftp")
-  ||  strProtocol.Equals("ftps") )
+  if( StringUtils::EqualsNoCase(strProtocol, "ftp")
+  ||  StringUtils::EqualsNoCase(strProtocol, "ftps") )
   {
     // we was using url optons for urls, keep the old code work and warning
     if (!url2.GetOptions().empty())
@@ -714,8 +714,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     }
     m_ftppasvip = url2.HasProtocolOption("pasvip") && url2.GetProtocolOption("pasvip") != "0";
   }
-  else if( strProtocol.Equals("http")
-       ||  strProtocol.Equals("https"))
+  else if( StringUtils::EqualsNoCase(strProtocol, "http")
+       ||  StringUtils::EqualsNoCase(strProtocol, "https"))
   {
     if (CSettings::Get().GetBool("network.usehttpproxy")
         && !CSettings::Get().GetString("network.httpproxyserver").empty()
@@ -750,27 +750,27 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         const CStdString &name = it->first;
         const CStdString &value = it->second;
 
-        if(name.Equals("auth"))
+        if(StringUtils::EqualsNoCase(name, "auth"))
         {
           m_httpauth = value;
           if(m_httpauth.empty())
             m_httpauth = "any";
         }
-        else if (name.Equals("Referer"))
+        else if (StringUtils::EqualsNoCase(name, "Referer"))
           SetReferer(value);
-        else if (name.Equals("User-Agent"))
+        else if (StringUtils::EqualsNoCase(name, "User-Agent"))
           SetUserAgent(value);
-        else if (name.Equals("Cookie"))
+        else if (StringUtils::EqualsNoCase(name, "Cookie"))
           SetCookie(value);
-        else if (name.Equals("Encoding"))
+        else if (StringUtils::EqualsNoCase(name, "Encoding"))
           SetContentEncoding(value);
-        else if (name.Equals("noshout") && value.Equals("true"))
+        else if (StringUtils::EqualsNoCase(name, "noshout") && StringUtils::EqualsNoCase(value, "true"))
           m_skipshout = true;
-        else if (name.Equals("seekable") && value.Equals("0"))
+        else if (StringUtils::EqualsNoCase(name, "seekable") && StringUtils::EqualsNoCase(value, "0"))
           m_seekable = false;
-        else if (name.Equals("Accept-Charset"))
+        else if (StringUtils::EqualsNoCase(name, "Accept-Charset"))
           SetAcceptCharset(value);
-        else if (name.Equals("HttpProxy"))
+        else if (StringUtils::EqualsNoCase(name, "HttpProxy"))
           SetStreamProxy(value, PROXY_HTTP);
         else
           SetRequestHeader(name, value);
@@ -935,7 +935,8 @@ bool CCurlFile::Open(const CURL& url)
   }
 
   m_multisession = false;
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+  if(StringUtils::EqualsNoCase(url2.GetProtocol(), "http") ||
+     StringUtils::EqualsNoCase(url2.GetProtocol(), "https"))
   {
     m_multisession = true;
     if(m_state->m_httpheader.GetValue("Server").find("Portable SDK for UPnP devices") != std::string::npos)
@@ -952,8 +953,8 @@ bool CCurlFile::Open(const CURL& url)
     m_seekable = false;
   if (m_seekable)
   {
-    if(url2.GetProtocol().Equals("http")
-    || url2.GetProtocol().Equals("https"))
+    if(StringUtils::EqualsNoCase(url2.GetProtocol(), "http")
+    || StringUtils::EqualsNoCase(url2.GetProtocol(), "https"))
     {
       // if server says explicitly it can't seek, respect that
       if(StringUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Accept-Ranges"),"none"))

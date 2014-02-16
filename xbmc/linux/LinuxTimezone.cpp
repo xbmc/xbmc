@@ -266,7 +266,7 @@ void CLinuxTimezone::SettingOptionsTimezonesFiller(const CSetting *setting, std:
   vector<CStdString> timezones = g_timezone.GetTimezonesByCountry(CSettings::Get().GetString("locale.timezonecountry"));
   for (unsigned int i = 0; i < timezones.size(); i++)
   {
-    if (!found && timezones[i].Equals(current.c_str()))
+    if (!found && StringUtils::EqualsNoCase(timezones[i], current.c_str()))
       found = true;
 
     list.push_back(make_pair(timezones[i], timezones[i]));

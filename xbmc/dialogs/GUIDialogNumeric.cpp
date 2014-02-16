@@ -781,7 +781,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
     return true;
   }
 
-  if (strToVerify.Equals(md5pword2))
+  if (StringUtils::EqualsNoCase(strToVerify, md5pword2))
     return true;  // entered correct password
 
   // incorrect password

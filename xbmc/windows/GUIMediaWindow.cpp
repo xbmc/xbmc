@@ -757,7 +757,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", url.GetRedacted().c_str());
     // Try to return to the previous directory, if not the same
     // else fallback to root
-    if (strDirectory.Equals(strCurrentDirectory) || !Update(m_history.RemoveParentPath()))
+    if (StringUtils::EqualsNoCase(strDirectory, strCurrentDirectory) || !Update(m_history.RemoveParentPath()))
       Update(""); // Fallback to root
 
     // Return false to be able to eg. show
@@ -790,14 +790,14 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     else if (iWindow == WINDOW_FILES || iWindow == WINDOW_PROGRAMS)
       showLabel = 1026;
   }
-  if (m_vecItems->GetPath().Equals("sources://video/"))
+  if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "sources://video/"))
     showLabel = 999;
-  else if (m_vecItems->GetPath().Equals("sources://music/"))
+  else if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "sources://music/"))
     showLabel = 998;
-  else if (m_vecItems->GetPath().Equals("sources://pictures/"))
+  else if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "sources://pictures/"))
     showLabel = 997;
-  else if (m_vecItems->GetPath().Equals("sources://programs/") ||
-           m_vecItems->GetPath().Equals("sources://files/"))
+  else if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "sources://programs/") ||
+           StringUtils::EqualsNoCase(m_vecItems->GetPath(), "sources://files/"))
     showLabel = 1026;
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
@@ -877,7 +877,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
 bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
 {
   CStdString strCurrentDirectory = m_vecItems->GetPath();
-  if (strCurrentDirectory.Equals("?"))
+  if (StringUtils::EqualsNoCase(strCurrentDirectory, "?"))
     return false;
 
   if (clearCache)
@@ -996,7 +996,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     // path to be able to come back to the filtered view
     CStdString strCurrentDirectory = m_vecItems->GetPath();
     if (m_canFilterAdvanced && !m_filter.IsEmpty() &&
-      !m_strFilterPath.Equals(strCurrentDirectory))
+      !StringUtils::EqualsNoCase(m_strFilterPath, strCurrentDirectory))
     {
       m_history.RemoveParentPath();
       m_history.AddPath(strCurrentDirectory, m_strFilterPath);
@@ -1142,7 +1142,7 @@ void CGUIMediaWindow::GoParentFolder()
   while (!strParent.empty())
   {
     URIUtils::AddSlashAtEnd(strParent);
-    if (strParent.Equals(strPath))
+    if (StringUtils::EqualsNoCase(strParent, strPath))
       m_history.RemoveParentPath();
     else
       break;
@@ -1553,7 +1553,8 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     return;
 
   // TODO: FAVOURITES Conditions on masterlock and localisation
-  if (!item->IsParentFolder() && !item->GetPath().Equals("add") && !item->GetPath().Equals("newplaylist://") &&
+  if (!item->IsParentFolder() &&
+      !StringUtils::EqualsNoCase(item->GetPath(), "add") && !StringUtils::EqualsNoCase(item->GetPath(), "newplaylist://") && // should this be startswith?
       !StringUtils::StartsWithNoCase(item->GetPath(), "newsmartplaylist://") && !StringUtils::StartsWithNoCase(item->GetPath(), "newtag://") &&
       !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/") && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
   {
@@ -1954,7 +1955,7 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
 
 CStdString CGUIMediaWindow::GetStartFolder(const CStdString &dir)
 {
-  if (dir.Equals("$ROOT") || dir.Equals("Root"))
+  if (StringUtils::EqualsNoCase(dir, "$ROOT") || StringUtils::EqualsNoCase(dir, "Root"))
     return "";
   return dir;
 }

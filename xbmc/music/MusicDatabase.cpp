@@ -4651,15 +4651,15 @@ bool CMusicDatabase::GetItems(const CStdString &strBaseDir, CFileItemList &items
 
 bool CMusicDatabase::GetItems(const CStdString &strBaseDir, const CStdString &itemType, CFileItemList &items, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */)
 {
-  if (itemType.Equals("genres"))
+  if (StringUtils::EqualsNoCase(itemType, "genres"))
     return GetGenresNav(strBaseDir, items, filter);
-  else if (itemType.Equals("years"))
+  else if (StringUtils::EqualsNoCase(itemType, "years"))
     return GetYearsNav(strBaseDir, items, filter);
-  else if (itemType.Equals("artists"))
+  else if (StringUtils::EqualsNoCase(itemType, "artists"))
     return GetArtistsNav(strBaseDir, items, !CSettings::Get().GetBool("musiclibrary.showcompilationartists"), -1, -1, -1, filter, sortDescription);
-  else if (itemType.Equals("albums"))
+  else if (StringUtils::EqualsNoCase(itemType, "albums"))
     return GetAlbumsByWhere(strBaseDir, filter, items, sortDescription);
-  else if (itemType.Equals("songs"))
+  else if (StringUtils::EqualsNoCase(itemType, "songs"))
     return GetSongsByWhere(strBaseDir, filter, items, sortDescription);
 
   return false;
@@ -4667,13 +4667,13 @@ bool CMusicDatabase::GetItems(const CStdString &strBaseDir, const CStdString &it
 
 CStdString CMusicDatabase::GetItemById(const CStdString &itemType, int id)
 {
-  if (itemType.Equals("genres"))
+  if (StringUtils::EqualsNoCase(itemType, "genres"))
     return GetGenreById(id);
-  else if (itemType.Equals("years"))
+  else if (StringUtils::EqualsNoCase(itemType, "years"))
     return StringUtils::Format("%d", id);
-  else if (itemType.Equals("artists"))
+  else if (StringUtils::EqualsNoCase(itemType, "artists"))
     return GetArtistById(id);
-  else if (itemType.Equals("albums"))
+  else if (StringUtils::EqualsNoCase(itemType, "albums"))
     return GetAlbumById(id);
 
   return "";

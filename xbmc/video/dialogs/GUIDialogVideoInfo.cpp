@@ -192,7 +192,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       if (IsActive() && message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
         CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
-        if (item && m_movieItem->GetPath().Equals(item->GetPath()))
+        if (item && StringUtils::EqualsNoCase(m_movieItem->GetPath(), item->GetPath()))
         { // Just copy over the stream details and the thumb if we don't already have one
           if (!m_movieItem->HasArt("thumb"))
             m_movieItem->SetArt("thumb", item->GetArt("thumb"));
@@ -841,10 +841,10 @@ void CGUIDialogVideoInfo::OnGetFanart()
   AddItemPathToFileBrowserSources(sources, item);
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || StringUtils::EqualsNoCase(result, "fanart://Current"))
     return;   // user cancelled
 
-  if (result.Equals("fanart://Local"))
+  if (StringUtils::EqualsNoCase(result, "fanart://Local"))
     result = strLocal;
 
   if (StringUtils::StartsWith(result, "fanart://Remote"))
@@ -860,7 +860,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
     }
     result = m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL();
   }
-  else if (result.Equals("fanart://None") || !CFile::Exists(result))
+  else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
     result.clear();
 
   // set the fanart image
@@ -973,7 +973,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
   }
   else
   {
-    if (item->GetOverlayImage().Equals("OverlayWatched.png"))
+    if (StringUtils::EqualsNoCase(item->GetOverlayImage(), "OverlayWatched.png"))
       buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
     else
       buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
@@ -1314,7 +1314,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavail
   {
     CStdString strDeletePath = item->GetVideoInfoTag()->GetPath();
 
-    if (URIUtils::GetFileName(strDeletePath).Equals("VIDEO_TS.IFO"))
+    if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strDeletePath), "VIDEO_TS.IFO"))
     {
       strDeletePath = URIUtils::GetDirectory(strDeletePath);
       if (StringUtils::EndsWithNoCase(strDeletePath, "video_ts/"))

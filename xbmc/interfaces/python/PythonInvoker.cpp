@@ -558,7 +558,7 @@ void CPythonInvoker::onError()
     {
       CStdString path;
       URIUtils::Split(m_source, path, script);
-      if (script.Equals("default.py"))
+      if (StringUtils::EqualsNoCase(script, "default.py"))
       {
         CStdString path2;
         URIUtils::RemoveSlashAtEnd(path);

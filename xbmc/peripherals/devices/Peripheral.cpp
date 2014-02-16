@@ -421,7 +421,7 @@ bool CPeripheral::SetSetting(const CStdString &strKey, const CStdString &strValu
     else if ((*it).second.m_setting->GetType() == SettingTypeNumber)
       bChanged = SetSetting(strKey, (float) (strValue.empty() ? 0 : atof(strValue.c_str())));
     else if ((*it).second.m_setting->GetType() == SettingTypeBool)
-      bChanged = SetSetting(strKey, strValue.Equals("1"));
+      bChanged = SetSetting(strKey, StringUtils::EqualsNoCase(strValue, "1"));
   }
   return bChanged;
 }
@@ -528,7 +528,7 @@ void CPeripheral::ClearSettings(void)
 
 bool CPeripheral::operator ==(const PeripheralScanResult& right) const
 {
-  return m_strLocation.Equals(right.m_strLocation);
+  return StringUtils::EqualsNoCase(m_strLocation, right.m_strLocation);
 }
 
 bool CPeripheral::operator !=(const PeripheralScanResult& right) const

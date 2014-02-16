@@ -22,6 +22,7 @@
 #include "utils/XMLUtils.h"
 #include "GUIControlFactory.h"
 #include "GUIInfoManager.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 using namespace std;
@@ -101,13 +102,13 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
     const CStdString &name = i->second;
     bool preferTexture = strnicmp("label", name.c_str(), 5) != 0;
     CStdString value(info.GetLabel(contextWindow, preferTexture));
-    if (name.Equals("label"))
+    if (StringUtils::EqualsNoCase(name, "label"))
       SetLabel(value);
-    else if (name.Equals("label2"))
+    else if (StringUtils::EqualsNoCase(name, "label2"))
       SetLabel2(value);
-    else if (name.Equals("thumb"))
+    else if (StringUtils::EqualsNoCase(name, "thumb"))
       SetArt("thumb", value);
-    else if (name.Equals("icon"))
+    else if (StringUtils::EqualsNoCase(name, "icon"))
       SetIconImage(value);
     else
       SetProperty(name, value.c_str());

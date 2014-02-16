@@ -1205,34 +1205,34 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
     CStdString method = itr->substr(1);
 
     /* resource specific */
-    if (method.Equals("res@duration"))
+    if (StringUtils::EqualsNoCase(method, "res@duration"))
       sorting.sortBy = SortByTime;
-    else if (method.Equals("res@size"))
+    else if (StringUtils::EqualsNoCase(method, "res@size"))
       sorting.sortBy = SortBySize;
-    else if (method.Equals("res@bitrate"))
+    else if (StringUtils::EqualsNoCase(method, "res@bitrate"))
       sorting.sortBy = SortByBitrate;
 
     /* dc: */
-    else if (method.Equals("dc:date"))
+    else if (StringUtils::EqualsNoCase(method, "dc:date"))
       sorting.sortBy = SortByDate;
-    else if (method.Equals("dc:title"))
+    else if (StringUtils::EqualsNoCase(method, "dc:title"))
     {
       sorting.sortBy = SortByTitle;
       sorting.sortAttributes = SortAttributeIgnoreArticle;
     }
 
     /* upnp: */
-    else if (method.Equals("upnp:album"))
+    else if (StringUtils::EqualsNoCase(method, "upnp:album"))
       sorting.sortBy = SortByAlbum;
-    else if (method.Equals("upnp:artist") || method.Equals("upnp:albumArtist"))
+    else if (StringUtils::EqualsNoCase(method, "upnp:artist") || StringUtils::EqualsNoCase(method, "upnp:albumArtist"))
       sorting.sortBy = SortByArtist;
-    else if (method.Equals("upnp:episodeNumber"))
+    else if (StringUtils::EqualsNoCase(method, "upnp:episodeNumber"))
       sorting.sortBy = SortByEpisodeNumber;
-    else if (method.Equals("upnp:genre"))
+    else if (StringUtils::EqualsNoCase(method, "upnp:genre"))
       sorting.sortBy = SortByGenre;
-    else if (method.Equals("upnp:originalTrackNumber"))
+    else if (StringUtils::EqualsNoCase(method, "upnp:originalTrackNumber"))
       sorting.sortBy = SortByTrackNumber;
-    else if(method.Equals("upnp:rating"))
+    else if(StringUtils::EqualsNoCase(method, "upnp:rating"))
       sorting.sortBy = SortByRating;
     else {
       CLog::Log(LOGINFO, "UPnP: unsupported sort criteria '%s' passed", method.c_str());

@@ -119,17 +119,17 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const CStdString &method, ITrans
 		// Create password hash from the provided password if md5 is not used
     CStdString md5pword2;
     CStdString encryption = passwordObject["encryption"].asString();
-    if (encryption.Equals("none"))
+    if (StringUtils::EqualsNoCase(encryption, "none"))
 		{
 			XBMC::XBMC_MD5 md5state;
 			md5state.append(password);
 			md5state.getDigest(md5pword2);
 		}
-		else if (encryption.Equals("md5"))
+		else if (StringUtils::EqualsNoCase(encryption, "md5"))
 			md5pword2 = password;
 
 		// Verify profided password
-    if (strToVerify.Equals(md5pword2))
+    if (StringUtils::EqualsNoCase(strToVerify, md5pword2))
 		  bLoadProfile = true;
 	}
 

@@ -839,7 +839,7 @@ extern "C"
     while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
       return -1; // no free slots
-    if (url.GetProtocol().Equals("filereader"))
+    if (StringUtils::EqualsNoCase(url.GetProtocol(), "filereader"))
     {
       CURL url2(url.GetFileName());
       url = url2;
@@ -964,7 +964,7 @@ extern "C"
       return NULL; // no free slots
     }
 
-    if (url.GetProtocol().Equals("filereader"))
+    if (StringUtils::EqualsNoCase(url.GetProtocol(), "filereader"))
     {
       CURL url2(url.GetFileName());
       url = url2;

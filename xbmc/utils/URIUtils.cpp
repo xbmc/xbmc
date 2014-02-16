@@ -257,18 +257,18 @@ void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
 
 bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
 {
-  return prot.Equals("zip")
-      || prot.Equals("rar")
-      || prot.Equals("apk")
-      || prot.Equals("bluray")
-      || prot.Equals("udf");
+  return StringUtils::EqualsNoCase(prot, "zip")
+      || StringUtils::EqualsNoCase(prot, "rar")
+      || StringUtils::EqualsNoCase(prot, "apk")
+      || StringUtils::EqualsNoCase(prot, "bluray")
+      || StringUtils::EqualsNoCase(prot, "udf");
 }
 
 bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
 {
   return ProtocolHasParentInHostname(prot)
-      || prot.Equals("musicsearch")
-      || prot.Equals("image");
+      || StringUtils::EqualsNoCase(prot, "musicsearch")
+      || StringUtils::EqualsNoCase(prot, "image");
 }
 
 bool URIUtils::ProtocolHasEncodedFilename(const CStdString& prot)
@@ -665,7 +665,7 @@ bool URIUtils::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension = GetExtension(strFile);
 
-  if (strExtension.Equals(".001") && !StringUtils::EndsWithNoCase(strFile, ".ts.001"))
+  if (StringUtils::EqualsNoCase(strExtension, ".001") && !StringUtils::EndsWithNoCase(strFile, ".ts.001"))
     return true;
 
   if (StringUtils::EqualsNoCase(strExtension, ".cbr"))
@@ -731,25 +731,25 @@ bool URIUtils::IsSpecial(const CStdString& strFile)
 bool URIUtils::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("plugin");
+  return StringUtils::EqualsNoCase(url.GetProtocol(), "plugin");
 }
 
 bool URIUtils::IsScript(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("script");
+  return StringUtils::EqualsNoCase(url.GetProtocol(), "script");
 }
 
 bool URIUtils::IsAddonsPath(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("addons");
+  return StringUtils::EqualsNoCase(url.GetProtocol(), "addons");
 }
 
 bool URIUtils::IsSourcesPath(const CStdString& strPath)
 {
   CURL url(strPath);
-  return url.GetProtocol().Equals("sources");
+  return StringUtils::EqualsNoCase(url.GetProtocol(), "sources");
 }
 
 bool URIUtils::IsCDDA(const CStdString& strFile)
@@ -943,7 +943,7 @@ bool URIUtils::IsAndroidApp(const CStdString &path)
 bool URIUtils::IsLibraryFolder(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("library");
+  return StringUtils::EqualsNoCase(url.GetProtocol(), "library");
 }
 
 bool URIUtils::IsDOSPath(const CStdString &path)
@@ -1025,7 +1025,7 @@ bool URIUtils::CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdSt
   CStdString strc1 = strPath1, strc2 = strPath2;
   RemoveSlashAtEnd(strc1);
   RemoveSlashAtEnd(strc2);
-  return strc1.Equals(strc2);
+  return StringUtils::EqualsNoCase(strc1, strc2);
 }
 
 

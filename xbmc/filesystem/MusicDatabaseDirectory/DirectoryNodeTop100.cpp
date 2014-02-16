@@ -40,7 +40,7 @@ CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectory
 NODE_TYPE CDirectoryNodeTop100::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
-    if (GetName().Equals(Top100Children[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), Top100Children[i].id.c_str()))
       return Top100Children[i].node;
 
   return NODE_TYPE_NONE;
@@ -49,7 +49,7 @@ NODE_TYPE CDirectoryNodeTop100::GetChildType() const
 CStdString CDirectoryNodeTop100::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
-    if (GetName().Equals(Top100Children[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), Top100Children[i].id.c_str()))
       return g_localizeStrings.Get(Top100Children[i].label);
   return "";
 }

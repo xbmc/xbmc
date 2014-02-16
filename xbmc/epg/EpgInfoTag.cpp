@@ -491,7 +491,7 @@ void CEpgInfoTag::SetPlot(const CStdString &strPlot)
   bool bUpdate(false);
   {
     CSingleLock lock(m_critSection);
-    bUpdate = !m_strPlot.Equals(strPlot);
+    bUpdate = !StringUtils::EqualsNoCase(m_strPlot, strPlot);
     m_bChanged |= bUpdate;
     m_strPlot = strPlot;
   }

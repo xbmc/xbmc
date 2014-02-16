@@ -272,7 +272,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
     do
     {
       CFileItemPtr pItem2 = items.Get(j);
-      if (!pItem2->GetLabel().Equals(pItem1->GetLabel()))
+      if (!StringUtils::EqualsNoCase(pItem2->GetLabel(), pItem1->GetLabel()))
         break;
 
       // ignore any filefolders which may coincidently have

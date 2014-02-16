@@ -78,13 +78,13 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     if (context == PARTYMODECONTEXT_UNKNOWN)
     {
       //get it from the xsp file
-      m_bIsVideo = (m_type.Equals("video") || m_type.Equals("musicvideos") || m_type.Equals("mixed"));
+      m_bIsVideo = (StringUtils::EqualsNoCase(m_type, "video") || StringUtils::EqualsNoCase(m_type, "musicvideos") || StringUtils::EqualsNoCase(m_type, "mixed"));
     }
 
-    if (m_type.Equals("mixed"))
+    if (StringUtils::EqualsNoCase(m_type, "mixed"))
       playlist.SetType("songs");
 
-    if (m_type.Equals("mixed"))
+    if (StringUtils::EqualsNoCase(m_type, "mixed"))
       playlist.SetType("video");
 
     playlist.SetType(m_type);
@@ -108,7 +108,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   ClearState();
   unsigned int time = XbmcThreads::SystemClockMillis();
   vector< pair<int,int> > songIDs;
-  if (m_type.Equals("songs") || m_type.Equals("mixed"))
+  if (StringUtils::EqualsNoCase(m_type, "songs") || StringUtils::EqualsNoCase(m_type, "mixed"))
   {
     CMusicDatabase db;
     if (db.Open())
@@ -119,7 +119,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
       m_iMatchingSongs = (int)db.GetSongIDs(m_strCurrentFilterMusic, songIDs);
-      if (m_iMatchingSongs < 1 && m_type.Equals("songs"))
+      if (m_iMatchingSongs < 1 && StringUtils::EqualsNoCase(m_type, "songs"))
       {
         pDialog->Close();
         db.Close();
@@ -136,7 +136,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     db.Close();
   }
 
-  if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
+  if (StringUtils::EqualsNoCase(m_type, "musicvideos") || StringUtils::EqualsNoCase(m_type, "mixed"))
   {
     vector< pair<int,int> > songIDs2;
     CVideoDatabase db;
@@ -200,7 +200,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
 
   pDialog->Close();
   // open now playing window
-  if (m_type.Equals("songs"))
+  if (StringUtils::EqualsNoCase(m_type, "songs"))
   {
     if (g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
       g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
@@ -311,7 +311,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
   // distribute between types if mixed
   int iSongsToAdd=iSongs;
   int iVidsToAdd=iSongs;
-  if (m_type.Equals("mixed"))
+  if (StringUtils::EqualsNoCase(m_type, "mixed"))
   {
     if (iSongs == 1)
     {
@@ -330,7 +330,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
   }
 
   // add songs to fill queue
-  if (m_type.Equals("songs") || m_type.Equals("mixed"))
+  if (StringUtils::EqualsNoCase(m_type, "songs") || StringUtils::EqualsNoCase(m_type, "mixed"))
   {
     CMusicDatabase database;
     if (database.Open())
@@ -377,7 +377,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
     }
     database.Close();
   }
-  if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
+  if (StringUtils::EqualsNoCase(m_type, "musicvideos") || StringUtils::EqualsNoCase(m_type, "mixed"))
   {
     CVideoDatabase database;
     if (database.Open())

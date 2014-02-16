@@ -2078,7 +2078,7 @@ bool CApplication::LoadUserWindows()
           // Root element should be <window>
           TiXmlElement* pRootElement = xmlDoc.RootElement();
           CStdString strValue = pRootElement->Value();
-          if (!strValue.Equals("window"))
+          if (!StringUtils::EqualsNoCase(strValue, "window"))
           {
             CLog::Log(LOGERROR, "file: %s doesnt contain <window>", skinFile.c_str());
             continue;
@@ -2106,11 +2106,11 @@ bool CApplication::LoadUserWindows()
           CStdString visibleCondition;
           CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
-          if (strType.Equals("dialog"))
+          if (StringUtils::EqualsNoCase(strType, "dialog"))
             pWindow = new CGUIDialog(id + WINDOW_HOME, skinFile);
-          else if (strType.Equals("submenu"))
+          else if (StringUtils::EqualsNoCase(strType, "submenu"))
             pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, skinFile);
-          else if (strType.Equals("buttonmenu"))
+          else if (StringUtils::EqualsNoCase(strType, "buttonmenu"))
             pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, skinFile);
           else
             pWindow = new CGUIWindow(id + WINDOW_HOME, skinFile);
@@ -5778,14 +5778,14 @@ bool CApplication::AlwaysProcess(const CAction& action)
     StringUtils::ToLower(builtInFunction);
 
     // should this button be handled normally or just cancel the screensaver?
-    if (   builtInFunction.Equals("powerdown")
-        || builtInFunction.Equals("reboot")
-        || builtInFunction.Equals("restart")
-        || builtInFunction.Equals("restartapp")
-        || builtInFunction.Equals("suspend")
-        || builtInFunction.Equals("hibernate")
-        || builtInFunction.Equals("quit")
-        || builtInFunction.Equals("shutdown"))
+    if (   StringUtils::EqualsNoCase(builtInFunction, "powerdown")
+        || StringUtils::EqualsNoCase(builtInFunction, "reboot")
+        || StringUtils::EqualsNoCase(builtInFunction, "restart")
+        || StringUtils::EqualsNoCase(builtInFunction, "restartapp")
+        || StringUtils::EqualsNoCase(builtInFunction, "suspend")
+        || StringUtils::EqualsNoCase(builtInFunction, "hibernate")
+        || StringUtils::EqualsNoCase(builtInFunction, "quit")
+        || StringUtils::EqualsNoCase(builtInFunction, "shutdown"))
     {
       return true;
     }

@@ -88,7 +88,7 @@ CONTENT_TYPE TranslateContent(const CStdString &string)
   for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
   {
     const ContentMapping &map = content[index];
-    if (string.Equals(map.name))
+    if (StringUtils::EqualsNoCase(string, map.name))
       return map.type;
   }
   return CONTENT_NONE;
@@ -130,7 +130,7 @@ CScraper::CScraper(const cp_extension_t *ext) : CAddon(ext), m_fLoaded(false)
   if (ext)
   {
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "@language");
-    m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"@requiressettings").Equals("true");
+    m_requiressettings = StringUtils::EqualsNoCase(CAddonMgr::Get().GetExtValue(ext->configuration,"@requiressettings"), "true");
     CStdString persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "@cachepersistence");
     if (!persistence.empty())
       m_persistence.SetFromTimeString(persistence);
@@ -360,7 +360,7 @@ bool CScraper::Load()
     ADDONDEPS::iterator itr = deps.begin();
     while (itr != deps.end())
     {
-      if (itr->first.Equals("xbmc.metadata"))
+      if (StringUtils::EqualsNoCase(itr->first, "xbmc.metadata"))
       {
         ++itr;
         continue;

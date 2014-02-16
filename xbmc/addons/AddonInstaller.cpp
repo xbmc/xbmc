@@ -549,7 +549,7 @@ bool CAddonInstallJob::DoWork()
       if (!m_hash.empty())
       {
         md5 = CUtil::GetFileMD5(package);
-        if (!md5.Equals(m_hash))
+        if (!StringUtils::EqualsNoCase(md5, m_hash))
         {
           CFile::Delete(package);
           ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
@@ -647,7 +647,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
   CStdString referer = StringUtils::Format("Referer=%s-%s.zip",m_addon->ID().c_str(),m_addon->Version().c_str());
   for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
   {
-    if (it->first.Equals("xbmc.metadata"))
+    if (StringUtils::EqualsNoCase(it->first, "xbmc.metadata"))
       continue;
 
     const CStdString &addonID = it->first;

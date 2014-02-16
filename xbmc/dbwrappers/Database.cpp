@@ -337,7 +337,7 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
   m_sqlite = true;
 
 #ifdef HAS_MYSQL
-  if ( dbSettings.type.Equals("mysql") )
+  if ( StringUtils::EqualsNoCase(dbSettings.type, "mysql") )
   {
     // check we have all information before we cancel the fallback
     if ( ! (dbSettings.host.empty() ||
@@ -348,7 +348,7 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
   }
   else
 #else
-  if ( dbSettings.type.Equals("mysql") )
+  if ( StringUtils::EqualsNoCase(dbSettings.type, "mysql") )
     CLog::Log(LOGERROR, "MySQL library requested but MySQL support is not compiled in. Falling back to sqlite3.");
 #endif
   {
@@ -432,12 +432,12 @@ bool CDatabase::Update(const DatabaseSettings &settings)
 bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSettings, bool create)
 {
   // create the appropriate database structure
-  if (dbSettings.type.Equals("sqlite3"))
+  if (StringUtils::EqualsNoCase(dbSettings.type, "sqlite3"))
   {
     m_pDB.reset( new SqliteDatabase() ) ;
   }
 #ifdef HAS_MYSQL
-  else if (dbSettings.type.Equals("mysql"))
+  else if (StringUtils::EqualsNoCase(dbSettings.type, "mysql"))
   {
     m_pDB.reset( new MysqlDatabase() ) ;
   }
@@ -478,7 +478,7 @@ bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSett
     // test if db already exists, if not we need to create the tables
     if (!m_pDB->exists() && create)
     {
-      if (dbSettings.type.Equals("sqlite3"))
+      if (StringUtils::EqualsNoCase(dbSettings.type, "sqlite3"))
       {
         //  Modern file systems have a cluster/block size of 4k.
         //  To gain better performance when performing write
@@ -494,7 +494,7 @@ bool CDatabase::Connect(const CStdString &dbName, const DatabaseSettings &dbSett
     }
 
     // sqlite3 post connection operations
-    if (dbSettings.type.Equals("sqlite3"))
+    if (StringUtils::EqualsNoCase(dbSettings.type, "sqlite3"))
     {
       m_pDS->exec("PRAGMA cache_size=4096\n");
       m_pDS->exec("PRAGMA synchronous='NORMAL'\n");

@@ -409,7 +409,7 @@ CStdString CDatabaseQueryRule::FormatWhereClause(const CStdString &negate, const
       query += " OR " + GetField(m_field,strType) + " IS NULL";
   }
 
-  if (query.Equals(negate + parameter))
+  if (StringUtils::EqualsNoCase(query, negate + parameter))
     query = "1";
   return query;
 }

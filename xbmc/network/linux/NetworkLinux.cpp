@@ -375,7 +375,7 @@ void CNetworkLinux::GetMacAddress(CStdString interfaceName, char rawMac[6])
 
   for(interface = list; interface != NULL; interface = interface->ifa_next)
   {
-    if(CStdString(interface->ifa_name).Equals(interfaceName))
+    if(StringUtils::EqualsNoCase(interface->ifa_name, interfaceName.c_str()))
     {
       if ( (interface->ifa_addr->sa_family == AF_LINK) && (((const struct sockaddr_dl *) interface->ifa_addr)->sdl_type == IFT_ETHER) ) 
       {

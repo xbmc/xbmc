@@ -55,7 +55,7 @@ CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirec
 NODE_TYPE CDirectoryNodeOverview::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(OverviewChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), OverviewChildren[i].id.c_str()))
       return OverviewChildren[i].node;
   return NODE_TYPE_NONE;
 }
@@ -63,7 +63,7 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType() const
 CStdString CDirectoryNodeOverview::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(OverviewChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), OverviewChildren[i].id.c_str()))
       return g_localizeStrings.Get(OverviewChildren[i].label);
   return "";
 }

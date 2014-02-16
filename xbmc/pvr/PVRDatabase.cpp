@@ -565,7 +565,7 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
 
     // XXX work around for frodo: fix this up so it uses one query for all db types
     // mysql doesn't support subqueries when deleting and sqlite doesn't support joins when deleting
-    if (g_advancedSettings.m_databaseTV.type.Equals("mysql"))
+    if (StringUtils::EqualsNoCase(g_advancedSettings.m_databaseTV.type, "mysql"))
     {
       CStdString strQuery = PrepareSQL("DELETE m FROM map_channelgroups_channels m LEFT JOIN channels c ON (c.idChannel = m.idChannel) WHERE c.idChannel IS NULL");
       bDelete = ExecuteQuery(strQuery);

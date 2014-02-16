@@ -111,7 +111,7 @@ void CEpg::SetName(const CStdString &strName)
 {
   CSingleLock lock(m_critSection);
 
-  if (!m_strName.Equals(strName))
+  if (!StringUtils::EqualsNoCase(m_strName, strName))
   {
     m_bChanged = true;
     m_strName = strName;
@@ -122,7 +122,7 @@ void CEpg::SetScraperName(const CStdString &strScraperName)
 {
   CSingleLock lock(m_critSection);
 
-  if (!m_strScraperName.Equals(strScraperName))
+  if (!StringUtils::EqualsNoCase(m_strScraperName, strScraperName))
   {
     m_bChanged = true;
     m_strScraperName = strScraperName;

@@ -148,7 +148,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     {
       for (i=0;i<pShares->size();++i)
       {
-        if ((*pShares)[i].strName.Equals(strName))
+        if (StringUtils::EqualsNoCase((*pShares)[i].strName, strName))
           break;
       }
       if (i < pShares->size()) // found a match -  try next
@@ -173,7 +173,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
   {
     for (unsigned int i=0;i<pShares->size();++i)
     {
-      if ((*pShares)[i].strName.Equals(share))
+      if (StringUtils::EqualsNoCase((*pShares)[i].strName, share))
         return ShowAndEditMediaSource(type,(*pShares)[i]);
     }
   }
@@ -200,7 +200,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
     {
       for (i=0;i<pShares->size();++i)
       {
-        if ((*pShares)[i].strName.Equals(strName))
+        if (StringUtils::EqualsNoCase((*pShares)[i].strName, strName))
           break;
       }
       if (i < pShares->size() && (*pShares)[i].strName != strOldName) // found a match -  try next

@@ -193,14 +193,14 @@ CAfpConnection::afpConnnectError CAfpConnection::Connect(const CURL& url)
   m_pLibAfp->afp_default_url(&tmpurl);
 
   // if hostname has changed - assume server changed
-  if (!nonConstUrl.GetHostName().Equals(m_pAfpUrl->servername, false)|| (m_pAfpServer && m_pAfpServer->connect_state == 0))
+  if (!StringUtils::EqualsNoCase(nonConstUrl.GetHostName(), m_pAfpUrl->servername)|| (m_pAfpServer && m_pAfpServer->connect_state == 0))
   {
     serverChanged = true;
     Disconnect();
   }
 
   // if volume changed - also assume server changed (afpclient can't reuse old servobject it seems)
-  if (!nonConstUrl.GetShareName().Equals(m_pAfpUrl->volumename, false))
+  if (!StringUtils::EqualsNoCase(nonConstUrl.GetShareName(), m_pAfpUrl->volumename))
   {
    // no reusing of old server object possible with libafpclient it seems...
     serverChanged = true;

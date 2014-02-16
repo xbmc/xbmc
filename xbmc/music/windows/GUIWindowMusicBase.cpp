@@ -201,7 +201,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         {
           // is delete allowed?
           // must be at the playlists directory
-          if (m_vecItems->GetPath().Equals("special://musicplaylists/"))
+          if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://musicplaylists/"))
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
@@ -1156,7 +1156,7 @@ bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   CStdString content = items.GetContent();
   if ((items.IsMusicDb() || CanContainFilter(m_strFilterPath)) &&
-      (content.Equals("artists") || content.Equals("albums") || content.Equals("songs")))
+      (StringUtils::EqualsNoCase(content, "artists") || StringUtils::EqualsNoCase(content, "albums") || StringUtils::EqualsNoCase(content, "songs")))
     return true;
 
   return false;
@@ -1190,9 +1190,9 @@ void CGUIWindowMusicBase::OnInitWindow()
 
 CStdString CGUIWindowMusicBase::GetStartFolder(const CStdString &dir)
 {
-  if (dir.Equals("Plugins") || dir.Equals("Addons"))
+  if (StringUtils::EqualsNoCase(dir, "Plugins") || StringUtils::EqualsNoCase(dir, "Addons"))
     return "addons://sources/audio/";
-  else if (dir.Equals("$PLAYLISTS") || dir.Equals("Playlists"))
+  else if (StringUtils::EqualsNoCase(dir, "$PLAYLISTS") || StringUtils::EqualsNoCase(dir, "Playlists"))
     return "special://musicplaylists/";
   return CGUIMediaWindow::GetStartFolder(dir);
 }

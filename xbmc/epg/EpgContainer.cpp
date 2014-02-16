@@ -328,7 +328,8 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const CStdString &strName, co
   CEpg* epg = GetById(iEpgID);
   if (epg)
   {
-    if (!epg->Name().Equals(strName) || !epg->ScraperName().Equals(strScraperName))
+    if (!StringUtils::EqualsNoCase(epg->Name(), strName) ||
+        !StringUtils::EqualsNoCase(epg->ScraperName(), strScraperName))
     {
       // current table data differs from the info in the db
       epg->SetChanged();

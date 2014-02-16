@@ -427,7 +427,7 @@ void CScraperParser::ParseNext(TiXmlElement* element)
       CStdString strSetting;
       if (m_scraper && m_scraper->HasSettings())
         strSetting = m_scraper->GetSetting(szConditional);
-      bExecute = bInverse != strSetting.Equals("true");
+      bExecute = bInverse != StringUtils::EqualsNoCase(strSetting, "true");
     }
 
     if (bExecute)

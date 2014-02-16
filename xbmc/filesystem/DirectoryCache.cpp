@@ -186,7 +186,7 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 #ifdef _DEBUG
     m_cacheHits++;
 #endif
-    return (strPath.Equals(storedPath) || dir->m_Items->Contains(strFile));
+    return (StringUtils::EqualsNoCase(strPath, storedPath) || dir->m_Items->Contains(strFile));
   }
 #ifdef _DEBUG
   m_cacheMisses++;

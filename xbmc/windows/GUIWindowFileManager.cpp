@@ -322,7 +322,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->m_bIsFolder && (!pItem->m_dwSize || pItem->GetPath().Equals("add")))
+    if (pItem->m_bIsFolder && (!pItem->m_dwSize || StringUtils::EqualsNoCase(pItem->GetPath(), "add")))
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
@@ -1219,7 +1219,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
   if (!strDestination.empty())
   {
     // open root
-    if (strDestination.Equals("$ROOT"))
+    if (StringUtils::EqualsNoCase(strDestination, "$ROOT"))
     {
       m_Directory[0]->SetPath("");
       CLog::Log(LOGINFO, "  Success! Opening root listing.");

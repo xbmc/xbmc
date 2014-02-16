@@ -1159,7 +1159,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
 
   for (unsigned int index=0;index < sizeof(actions)/sizeof(actions[0]);++index)
   {
-    if (strAction.Equals(actions[index].name))
+    if (StringUtils::EqualsNoCase(strAction, actions[index].name))
     {
       action = actions[index].action;
       break;
@@ -1212,7 +1212,7 @@ int CButtonTranslator::TranslateWindow(const CStdString &window)
   // run through the window structure
   for (unsigned int index = 0; index < sizeof(windows) / sizeof(windows[0]); ++index)
   {
-    if (strWindow.Equals(windows[index].name))
+    if (StringUtils::EqualsNoCase(strWindow, windows[index].name))
       return windows[index].action;
   }
 
@@ -1227,34 +1227,34 @@ uint32_t CButtonTranslator::TranslateGamepadString(const char *szButton)
   uint32_t buttonCode = 0;
   CStdString strButton = szButton;
   StringUtils::ToLower(strButton);
-  if (strButton.Equals("a")) buttonCode = KEY_BUTTON_A;
-  else if (strButton.Equals("b")) buttonCode = KEY_BUTTON_B;
-  else if (strButton.Equals("x")) buttonCode = KEY_BUTTON_X;
-  else if (strButton.Equals("y")) buttonCode = KEY_BUTTON_Y;
-  else if (strButton.Equals("white")) buttonCode = KEY_BUTTON_WHITE;
-  else if (strButton.Equals("black")) buttonCode = KEY_BUTTON_BLACK;
-  else if (strButton.Equals("start")) buttonCode = KEY_BUTTON_START;
-  else if (strButton.Equals("back")) buttonCode = KEY_BUTTON_BACK;
-  else if (strButton.Equals("leftthumbbutton")) buttonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
-  else if (strButton.Equals("rightthumbbutton")) buttonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
-  else if (strButton.Equals("leftthumbstick")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK;
-  else if (strButton.Equals("leftthumbstickup")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_UP;
-  else if (strButton.Equals("leftthumbstickdown")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
-  else if (strButton.Equals("leftthumbstickleft")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
-  else if (strButton.Equals("leftthumbstickright")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
-  else if (strButton.Equals("rightthumbstick")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
-  else if (strButton.Equals("rightthumbstickup")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-  else if (strButton.Equals("rightthumbstickdown")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-  else if (strButton.Equals("rightthumbstickleft")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-  else if (strButton.Equals("rightthumbstickright")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-  else if (strButton.Equals("lefttrigger")) buttonCode = KEY_BUTTON_LEFT_TRIGGER;
-  else if (strButton.Equals("righttrigger")) buttonCode = KEY_BUTTON_RIGHT_TRIGGER;
-  else if (strButton.Equals("leftanalogtrigger")) buttonCode = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
-  else if (strButton.Equals("rightanalogtrigger")) buttonCode = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
-  else if (strButton.Equals("dpadleft")) buttonCode = KEY_BUTTON_DPAD_LEFT;
-  else if (strButton.Equals("dpadright")) buttonCode = KEY_BUTTON_DPAD_RIGHT;
-  else if (strButton.Equals("dpadup")) buttonCode = KEY_BUTTON_DPAD_UP;
-  else if (strButton.Equals("dpaddown")) buttonCode = KEY_BUTTON_DPAD_DOWN;
+  if (StringUtils::EqualsNoCase(strButton, "a")) buttonCode = KEY_BUTTON_A;
+  else if (StringUtils::EqualsNoCase(strButton, "b")) buttonCode = KEY_BUTTON_B;
+  else if (StringUtils::EqualsNoCase(strButton, "x")) buttonCode = KEY_BUTTON_X;
+  else if (StringUtils::EqualsNoCase(strButton, "y")) buttonCode = KEY_BUTTON_Y;
+  else if (StringUtils::EqualsNoCase(strButton, "white")) buttonCode = KEY_BUTTON_WHITE;
+  else if (StringUtils::EqualsNoCase(strButton, "black")) buttonCode = KEY_BUTTON_BLACK;
+  else if (StringUtils::EqualsNoCase(strButton, "start")) buttonCode = KEY_BUTTON_START;
+  else if (StringUtils::EqualsNoCase(strButton, "back")) buttonCode = KEY_BUTTON_BACK;
+  else if (StringUtils::EqualsNoCase(strButton, "leftthumbbutton")) buttonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
+  else if (StringUtils::EqualsNoCase(strButton, "rightthumbbutton")) buttonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
+  else if (StringUtils::EqualsNoCase(strButton, "leftthumbstick")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK;
+  else if (StringUtils::EqualsNoCase(strButton, "leftthumbstickup")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+  else if (StringUtils::EqualsNoCase(strButton, "leftthumbstickdown")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+  else if (StringUtils::EqualsNoCase(strButton, "leftthumbstickleft")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+  else if (StringUtils::EqualsNoCase(strButton, "leftthumbstickright")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+  else if (StringUtils::EqualsNoCase(strButton, "rightthumbstick")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
+  else if (StringUtils::EqualsNoCase(strButton, "rightthumbstickup")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+  else if (StringUtils::EqualsNoCase(strButton, "rightthumbstickdown")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+  else if (StringUtils::EqualsNoCase(strButton, "rightthumbstickleft")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+  else if (StringUtils::EqualsNoCase(strButton, "rightthumbstickright")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+  else if (StringUtils::EqualsNoCase(strButton, "lefttrigger")) buttonCode = KEY_BUTTON_LEFT_TRIGGER;
+  else if (StringUtils::EqualsNoCase(strButton, "righttrigger")) buttonCode = KEY_BUTTON_RIGHT_TRIGGER;
+  else if (StringUtils::EqualsNoCase(strButton, "leftanalogtrigger")) buttonCode = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
+  else if (StringUtils::EqualsNoCase(strButton, "rightanalogtrigger")) buttonCode = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+  else if (StringUtils::EqualsNoCase(strButton, "dpadleft")) buttonCode = KEY_BUTTON_DPAD_LEFT;
+  else if (StringUtils::EqualsNoCase(strButton, "dpadright")) buttonCode = KEY_BUTTON_DPAD_RIGHT;
+  else if (StringUtils::EqualsNoCase(strButton, "dpadup")) buttonCode = KEY_BUTTON_DPAD_UP;
+  else if (StringUtils::EqualsNoCase(strButton, "dpaddown")) buttonCode = KEY_BUTTON_DPAD_DOWN;
   else CLog::Log(LOGERROR, "Gamepad Translator: Can't find button %s", strButton.c_str());
   return buttonCode;
 }
@@ -1266,67 +1266,67 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   uint32_t buttonCode = 0;
   CStdString strButton = szButton;
   StringUtils::ToLower(strButton);
-  if (strButton.Equals("left")) buttonCode = XINPUT_IR_REMOTE_LEFT;
-  else if (strButton.Equals("right")) buttonCode = XINPUT_IR_REMOTE_RIGHT;
-  else if (strButton.Equals("up")) buttonCode = XINPUT_IR_REMOTE_UP;
-  else if (strButton.Equals("down")) buttonCode = XINPUT_IR_REMOTE_DOWN;
-  else if (strButton.Equals("select")) buttonCode = XINPUT_IR_REMOTE_SELECT;
-  else if (strButton.Equals("back")) buttonCode = XINPUT_IR_REMOTE_BACK;
-  else if (strButton.Equals("menu")) buttonCode = XINPUT_IR_REMOTE_MENU;
-  else if (strButton.Equals("info")) buttonCode = XINPUT_IR_REMOTE_INFO;
-  else if (strButton.Equals("display")) buttonCode = XINPUT_IR_REMOTE_DISPLAY;
-  else if (strButton.Equals("title")) buttonCode = XINPUT_IR_REMOTE_TITLE;
-  else if (strButton.Equals("play")) buttonCode = XINPUT_IR_REMOTE_PLAY;
-  else if (strButton.Equals("pause")) buttonCode = XINPUT_IR_REMOTE_PAUSE;
-  else if (strButton.Equals("reverse")) buttonCode = XINPUT_IR_REMOTE_REVERSE;
-  else if (strButton.Equals("forward")) buttonCode = XINPUT_IR_REMOTE_FORWARD;
-  else if (strButton.Equals("skipplus")) buttonCode = XINPUT_IR_REMOTE_SKIP_PLUS;
-  else if (strButton.Equals("skipminus")) buttonCode = XINPUT_IR_REMOTE_SKIP_MINUS;
-  else if (strButton.Equals("stop")) buttonCode = XINPUT_IR_REMOTE_STOP;
-  else if (strButton.Equals("zero")) buttonCode = XINPUT_IR_REMOTE_0;
-  else if (strButton.Equals("one")) buttonCode = XINPUT_IR_REMOTE_1;
-  else if (strButton.Equals("two")) buttonCode = XINPUT_IR_REMOTE_2;
-  else if (strButton.Equals("three")) buttonCode = XINPUT_IR_REMOTE_3;
-  else if (strButton.Equals("four")) buttonCode = XINPUT_IR_REMOTE_4;
-  else if (strButton.Equals("five")) buttonCode = XINPUT_IR_REMOTE_5;
-  else if (strButton.Equals("six")) buttonCode = XINPUT_IR_REMOTE_6;
-  else if (strButton.Equals("seven")) buttonCode = XINPUT_IR_REMOTE_7;
-  else if (strButton.Equals("eight")) buttonCode = XINPUT_IR_REMOTE_8;
-  else if (strButton.Equals("nine")) buttonCode = XINPUT_IR_REMOTE_9;
+  if (StringUtils::EqualsNoCase(strButton, "left")) buttonCode = XINPUT_IR_REMOTE_LEFT;
+  else if (StringUtils::EqualsNoCase(strButton, "right")) buttonCode = XINPUT_IR_REMOTE_RIGHT;
+  else if (StringUtils::EqualsNoCase(strButton, "up")) buttonCode = XINPUT_IR_REMOTE_UP;
+  else if (StringUtils::EqualsNoCase(strButton, "down")) buttonCode = XINPUT_IR_REMOTE_DOWN;
+  else if (StringUtils::EqualsNoCase(strButton, "select")) buttonCode = XINPUT_IR_REMOTE_SELECT;
+  else if (StringUtils::EqualsNoCase(strButton, "back")) buttonCode = XINPUT_IR_REMOTE_BACK;
+  else if (StringUtils::EqualsNoCase(strButton, "menu")) buttonCode = XINPUT_IR_REMOTE_MENU;
+  else if (StringUtils::EqualsNoCase(strButton, "info")) buttonCode = XINPUT_IR_REMOTE_INFO;
+  else if (StringUtils::EqualsNoCase(strButton, "display")) buttonCode = XINPUT_IR_REMOTE_DISPLAY;
+  else if (StringUtils::EqualsNoCase(strButton, "title")) buttonCode = XINPUT_IR_REMOTE_TITLE;
+  else if (StringUtils::EqualsNoCase(strButton, "play")) buttonCode = XINPUT_IR_REMOTE_PLAY;
+  else if (StringUtils::EqualsNoCase(strButton, "pause")) buttonCode = XINPUT_IR_REMOTE_PAUSE;
+  else if (StringUtils::EqualsNoCase(strButton, "reverse")) buttonCode = XINPUT_IR_REMOTE_REVERSE;
+  else if (StringUtils::EqualsNoCase(strButton, "forward")) buttonCode = XINPUT_IR_REMOTE_FORWARD;
+  else if (StringUtils::EqualsNoCase(strButton, "skipplus")) buttonCode = XINPUT_IR_REMOTE_SKIP_PLUS;
+  else if (StringUtils::EqualsNoCase(strButton, "skipminus")) buttonCode = XINPUT_IR_REMOTE_SKIP_MINUS;
+  else if (StringUtils::EqualsNoCase(strButton, "stop")) buttonCode = XINPUT_IR_REMOTE_STOP;
+  else if (StringUtils::EqualsNoCase(strButton, "zero")) buttonCode = XINPUT_IR_REMOTE_0;
+  else if (StringUtils::EqualsNoCase(strButton, "one")) buttonCode = XINPUT_IR_REMOTE_1;
+  else if (StringUtils::EqualsNoCase(strButton, "two")) buttonCode = XINPUT_IR_REMOTE_2;
+  else if (StringUtils::EqualsNoCase(strButton, "three")) buttonCode = XINPUT_IR_REMOTE_3;
+  else if (StringUtils::EqualsNoCase(strButton, "four")) buttonCode = XINPUT_IR_REMOTE_4;
+  else if (StringUtils::EqualsNoCase(strButton, "five")) buttonCode = XINPUT_IR_REMOTE_5;
+  else if (StringUtils::EqualsNoCase(strButton, "six")) buttonCode = XINPUT_IR_REMOTE_6;
+  else if (StringUtils::EqualsNoCase(strButton, "seven")) buttonCode = XINPUT_IR_REMOTE_7;
+  else if (StringUtils::EqualsNoCase(strButton, "eight")) buttonCode = XINPUT_IR_REMOTE_8;
+  else if (StringUtils::EqualsNoCase(strButton, "nine")) buttonCode = XINPUT_IR_REMOTE_9;
   // additional keys from the media center extender for xbox remote
-  else if (strButton.Equals("power")) buttonCode = XINPUT_IR_REMOTE_POWER;
-  else if (strButton.Equals("mytv")) buttonCode = XINPUT_IR_REMOTE_MY_TV;
-  else if (strButton.Equals("mymusic")) buttonCode = XINPUT_IR_REMOTE_MY_MUSIC;
-  else if (strButton.Equals("mypictures")) buttonCode = XINPUT_IR_REMOTE_MY_PICTURES;
-  else if (strButton.Equals("myvideo")) buttonCode = XINPUT_IR_REMOTE_MY_VIDEOS;
-  else if (strButton.Equals("record")) buttonCode = XINPUT_IR_REMOTE_RECORD;
-  else if (strButton.Equals("start")) buttonCode = XINPUT_IR_REMOTE_START;
-  else if (strButton.Equals("volumeplus")) buttonCode = XINPUT_IR_REMOTE_VOLUME_PLUS;
-  else if (strButton.Equals("volumeminus")) buttonCode = XINPUT_IR_REMOTE_VOLUME_MINUS;
-  else if (strButton.Equals("channelplus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
-  else if (strButton.Equals("channelminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
-  else if (strButton.Equals("pageplus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
-  else if (strButton.Equals("pageminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
-  else if (strButton.Equals("mute")) buttonCode = XINPUT_IR_REMOTE_MUTE;
-  else if (strButton.Equals("recordedtv")) buttonCode = XINPUT_IR_REMOTE_RECORDED_TV;
-  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
-  else if (strButton.Equals("livetv")) buttonCode = XINPUT_IR_REMOTE_LIVE_TV;
-  else if (strButton.Equals("liveradio")) buttonCode = XINPUT_IR_REMOTE_LIVE_RADIO;
-  else if (strButton.Equals("epgsearch")) buttonCode = XINPUT_IR_REMOTE_EPG_SEARCH;
-  else if (strButton.Equals("star")) buttonCode = XINPUT_IR_REMOTE_STAR;
-  else if (strButton.Equals("hash")) buttonCode = XINPUT_IR_REMOTE_HASH;
-  else if (strButton.Equals("clear")) buttonCode = XINPUT_IR_REMOTE_CLEAR;
-  else if (strButton.Equals("enter")) buttonCode = XINPUT_IR_REMOTE_ENTER;
-  else if (strButton.Equals("xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
-  else if (strButton.Equals("playlist")) buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
-  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
-  else if (strButton.Equals("teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
-  else if (strButton.Equals("red")) buttonCode = XINPUT_IR_REMOTE_RED;
-  else if (strButton.Equals("green")) buttonCode = XINPUT_IR_REMOTE_GREEN;
-  else if (strButton.Equals("yellow")) buttonCode = XINPUT_IR_REMOTE_YELLOW;
-  else if (strButton.Equals("blue")) buttonCode = XINPUT_IR_REMOTE_BLUE;
-  else if (strButton.Equals("subtitle")) buttonCode = XINPUT_IR_REMOTE_SUBTITLE;
-  else if (strButton.Equals("language")) buttonCode = XINPUT_IR_REMOTE_LANGUAGE;
+  else if (StringUtils::EqualsNoCase(strButton, "power")) buttonCode = XINPUT_IR_REMOTE_POWER;
+  else if (StringUtils::EqualsNoCase(strButton, "mytv")) buttonCode = XINPUT_IR_REMOTE_MY_TV;
+  else if (StringUtils::EqualsNoCase(strButton, "mymusic")) buttonCode = XINPUT_IR_REMOTE_MY_MUSIC;
+  else if (StringUtils::EqualsNoCase(strButton, "mypictures")) buttonCode = XINPUT_IR_REMOTE_MY_PICTURES;
+  else if (StringUtils::EqualsNoCase(strButton, "myvideo")) buttonCode = XINPUT_IR_REMOTE_MY_VIDEOS;
+  else if (StringUtils::EqualsNoCase(strButton, "record")) buttonCode = XINPUT_IR_REMOTE_RECORD;
+  else if (StringUtils::EqualsNoCase(strButton, "start")) buttonCode = XINPUT_IR_REMOTE_START;
+  else if (StringUtils::EqualsNoCase(strButton, "volumeplus")) buttonCode = XINPUT_IR_REMOTE_VOLUME_PLUS;
+  else if (StringUtils::EqualsNoCase(strButton, "volumeminus")) buttonCode = XINPUT_IR_REMOTE_VOLUME_MINUS;
+  else if (StringUtils::EqualsNoCase(strButton, "channelplus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
+  else if (StringUtils::EqualsNoCase(strButton, "channelminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
+  else if (StringUtils::EqualsNoCase(strButton, "pageplus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
+  else if (StringUtils::EqualsNoCase(strButton, "pageminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
+  else if (StringUtils::EqualsNoCase(strButton, "mute")) buttonCode = XINPUT_IR_REMOTE_MUTE;
+  else if (StringUtils::EqualsNoCase(strButton, "recordedtv")) buttonCode = XINPUT_IR_REMOTE_RECORDED_TV;
+  else if (StringUtils::EqualsNoCase(strButton, "guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
+  else if (StringUtils::EqualsNoCase(strButton, "livetv")) buttonCode = XINPUT_IR_REMOTE_LIVE_TV;
+  else if (StringUtils::EqualsNoCase(strButton, "liveradio")) buttonCode = XINPUT_IR_REMOTE_LIVE_RADIO;
+  else if (StringUtils::EqualsNoCase(strButton, "epgsearch")) buttonCode = XINPUT_IR_REMOTE_EPG_SEARCH;
+  else if (StringUtils::EqualsNoCase(strButton, "star")) buttonCode = XINPUT_IR_REMOTE_STAR;
+  else if (StringUtils::EqualsNoCase(strButton, "hash")) buttonCode = XINPUT_IR_REMOTE_HASH;
+  else if (StringUtils::EqualsNoCase(strButton, "clear")) buttonCode = XINPUT_IR_REMOTE_CLEAR;
+  else if (StringUtils::EqualsNoCase(strButton, "enter")) buttonCode = XINPUT_IR_REMOTE_ENTER;
+  else if (StringUtils::EqualsNoCase(strButton, "xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
+  else if (StringUtils::EqualsNoCase(strButton, "playlist")) buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
+  else if (StringUtils::EqualsNoCase(strButton, "guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
+  else if (StringUtils::EqualsNoCase(strButton, "teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
+  else if (StringUtils::EqualsNoCase(strButton, "red")) buttonCode = XINPUT_IR_REMOTE_RED;
+  else if (StringUtils::EqualsNoCase(strButton, "green")) buttonCode = XINPUT_IR_REMOTE_GREEN;
+  else if (StringUtils::EqualsNoCase(strButton, "yellow")) buttonCode = XINPUT_IR_REMOTE_YELLOW;
+  else if (StringUtils::EqualsNoCase(strButton, "blue")) buttonCode = XINPUT_IR_REMOTE_BLUE;
+  else if (StringUtils::EqualsNoCase(strButton, "subtitle")) buttonCode = XINPUT_IR_REMOTE_SUBTITLE;
+  else if (StringUtils::EqualsNoCase(strButton, "language")) buttonCode = XINPUT_IR_REMOTE_LANGUAGE;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
   return buttonCode;
 }
@@ -1373,7 +1373,7 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   if (!szButton) 
     return 0;
   CStdString strKey = szButton;
-  if (strKey.Equals("key"))
+  if (StringUtils::EqualsNoCase(strKey, "key"))
   {
     std::string strID;
     if (pButton->QueryValueAttribute("id", &strID) == TIXML_SUCCESS)
@@ -1430,7 +1430,7 @@ uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
   StringUtils::ToLower(strAppCommand);
 
   for (int i = 0; i < sizeof(appcommands)/sizeof(appcommands[0]); i++)
-    if (strAppCommand.Equals(appcommands[i].name))
+    if (StringUtils::EqualsNoCase(strAppCommand, appcommands[i].name))
       return appcommands[i].action | KEY_APPCOMMAND;
 
   CLog::Log(LOGERROR, "%s: Can't find appcommand %s", __FUNCTION__, szButton);
@@ -1445,7 +1445,7 @@ uint32_t CButtonTranslator::TranslateMouseCommand(const char *szButton)
   StringUtils::ToLower(strMouseCommand);
 
   for (unsigned int i = 0; i < sizeof(mousecommands)/sizeof(mousecommands[0]); i++)
-    if (strMouseCommand.Equals(mousecommands[i].name))
+    if (StringUtils::EqualsNoCase(strMouseCommand, mousecommands[i].name))
       return mousecommands[i].action | KEY_MOUSE;
 
   CLog::Log(LOGERROR, "%s: Can't find mouse command %s", __FUNCTION__, szButton);
@@ -1490,7 +1490,7 @@ uint32_t CButtonTranslator::TranslateTouchCommand(TiXmlElement *pButton, CButton
   uint32_t actionId = ACTION_NONE;
   for (unsigned int i = 0; i < sizeof(touchcommands)/sizeof(touchcommands[0]); i++)
   {
-    if (strTouchCommand.Equals(touchcommands[i].name))
+    if (StringUtils::EqualsNoCase(strTouchCommand, touchcommands[i].name))
     {
       actionId = touchcommands[i].action;
       break;

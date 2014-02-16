@@ -517,7 +517,7 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
                                , m_pCodecContext->pix_fmt) == m_formats.end();
 
     bool need_reopen  = false;
-    if(!m_filters.Equals(m_filters_next))
+    if(!StringUtils::EqualsNoCase(m_filters, m_filters_next))
       need_reopen = true;
 
     if(m_pFilterIn)

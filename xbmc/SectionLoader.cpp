@@ -25,6 +25,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -53,7 +54,7 @@ LibraryLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnl
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_strDllName.Equals(dllname))
+    if (StringUtils::EqualsNoCase(dll.m_strDllName, dllname))
     {
       dll.m_lReferenceCount++;
       return dll.m_pDll;
@@ -85,7 +86,7 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_strDllName.Equals(dllname))
+    if (StringUtils::EqualsNoCase(dll.m_strDllName, dllname))
     {
       dll.m_lReferenceCount--;
       if (0 == dll.m_lReferenceCount)

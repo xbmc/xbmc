@@ -714,7 +714,7 @@ void CMusicInfoTag::AppendArtist(const CStdString &artist)
 {
   for (unsigned int index = 0; index < m_artist.size(); index++)
   {
-    if (artist.Equals(m_artist.at(index).c_str()))
+    if (StringUtils::EqualsNoCase(artist, m_artist.at(index).c_str()))
       return;
   }
 
@@ -725,7 +725,7 @@ void CMusicInfoTag::AppendAlbumArtist(const CStdString &albumArtist)
 {
   for (unsigned int index = 0; index < m_albumArtist.size(); index++)
   {
-    if (albumArtist.Equals(m_albumArtist.at(index).c_str()))
+    if (StringUtils::EqualsNoCase(albumArtist, m_albumArtist.at(index).c_str()))
       return;
   }
 
@@ -736,7 +736,7 @@ void CMusicInfoTag::AppendGenre(const CStdString &genre)
 {
   for (unsigned int index = 0; index < m_genre.size(); index++)
   {
-    if (genre.Equals(m_genre.at(index).c_str()))
+    if (StringUtils::EqualsNoCase(genre, m_genre.at(index).c_str()))
       return;
   }
 

@@ -879,12 +879,14 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
         {
           CStdString playlistQuery;
           // only playlists of same type will be part of the query
-          if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().empty())
+          if (StringUtils::EqualsNoCase(playlist.GetType(), strType) ||
+              (StringUtils::EqualsNoCase(playlist.GetType(), "mixed") && (strType == "songs" || strType == "musicvideos")) ||
+              playlist.GetType().empty())
           {
             playlist.SetType(strType);
             playlistQuery = playlist.GetWhereClause(db, referencedPlaylists);
           }
-          if (playlist.GetType().Equals(strType))
+          if (StringUtils::EqualsNoCase(playlist.GetType(), strType))
           {
             if ((*it)->m_operator == CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL)
               currentRule = StringUtils::Format("NOT (%s)", playlistQuery.c_str());
@@ -1343,15 +1345,15 @@ bool CSmartPlaylist::IsEmpty(bool ignoreSortAndLimit /* = true */) const
 
 bool CSmartPlaylist::CheckTypeCompatibility(const CStdString &typeLeft, const CStdString &typeRight)
 {
-  if (typeLeft.Equals(typeRight))
+  if (StringUtils::EqualsNoCase(typeLeft, typeRight))
     return true;
 
-  if (typeLeft.Equals("mixed") &&
-     (typeRight.Equals("songs") || typeRight.Equals("musicvideos")))
+  if (StringUtils::EqualsNoCase(typeLeft, "mixed") &&
+     (StringUtils::EqualsNoCase(typeRight, "songs") || StringUtils::EqualsNoCase(typeRight, "musicvideos")))
     return true;
 
-  if (typeRight.Equals("mixed") &&
-     (typeLeft.Equals("songs") || typeLeft.Equals("musicvideos")))
+  if (StringUtils::EqualsNoCase(typeRight, "mixed") &&
+     (StringUtils::EqualsNoCase(typeLeft, "songs") || StringUtils::EqualsNoCase(typeLeft, "musicvideos")))
     return true;
 
   return false;

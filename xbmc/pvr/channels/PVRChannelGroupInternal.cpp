@@ -76,7 +76,7 @@ void CPVRChannelGroupInternal::CheckGroupName(void)
 
   /* check whether the group name is still correct, or channels will fail to load after the language setting changed */
   CStdString strNewGroupName = g_localizeStrings.Get(m_bRadio ? 19216 : 19217);
-  if (!m_strGroupName.Equals(strNewGroupName))
+  if (!StringUtils::EqualsNoCase(m_strGroupName, strNewGroupName))
   {
     SetGroupName(strNewGroupName, true);
     UpdateChannelPaths();

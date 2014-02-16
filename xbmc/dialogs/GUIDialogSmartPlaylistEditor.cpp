@@ -420,24 +420,24 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
   vector<PLAYLIST_TYPE> allowedTypes;
-  if (m_mode.Equals("partymusic"))
+  if (StringUtils::EqualsNoCase(m_mode, "partymusic"))
   {
     allowedTypes.push_back(TYPE_SONGS);
     allowedTypes.push_back(TYPE_MIXED);
   }
-  else if (m_mode.Equals("partyvideo"))
+  else if (StringUtils::EqualsNoCase(m_mode, "partyvideo"))
   {
     allowedTypes.push_back(TYPE_MUSICVIDEOS);
     allowedTypes.push_back(TYPE_MIXED);
   }
-  else if (m_mode.Equals("music"))
+  else if (StringUtils::EqualsNoCase(m_mode, "music"))
   { // music types + mixed
     allowedTypes.push_back(TYPE_SONGS);
     allowedTypes.push_back(TYPE_ALBUMS);
     allowedTypes.push_back(TYPE_ARTISTS);
     allowedTypes.push_back(TYPE_MIXED);
   }
-  else if (m_mode.Equals("video"))
+  else if (StringUtils::EqualsNoCase(m_mode, "video"))
   { // general category for videos
     allowedTypes.push_back(TYPE_MOVIES);
     allowedTypes.push_back(TYPE_TVSHOWS);
@@ -479,7 +479,7 @@ void CGUIDialogSmartPlaylistEditor::OnDeinitWindow(int nextWindowID)
 CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE CGUIDialogSmartPlaylistEditor::ConvertType(const CStdString &type)
 {
   for (unsigned int i = 0; i < NUM_TYPES; i++)
-    if (type.Equals(types[i].string))
+    if (StringUtils::EqualsNoCase(type, types[i].string))
       return types[i].type;
   assert(false);
   return TYPE_SONGS;
@@ -568,9 +568,9 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path, const C
   if (!editor) return false;
 
   editor->m_mode = type;
-  if (path.Equals(CProfilesManager::Get().GetUserDataItem("PartyMode.xsp").c_str()))
+  if (StringUtils::EqualsNoCase(path, CProfilesManager::Get().GetUserDataItem("PartyMode.xsp").c_str()))
     editor->m_mode = "partymusic";
-  if (path.Equals(CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp").c_str()))
+  if (StringUtils::EqualsNoCase(path, CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp").c_str()))
     editor->m_mode = "partyvideo";
 
   CSmartPlaylist playlist;

@@ -219,31 +219,31 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
 CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
 {
   CStdString path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
-  if (path.Equals("musicdb://genres/"))
+  if (StringUtils::EqualsNoCase(path, "musicdb://genres/"))
     return "Genres";
-  else if (path.Equals("musicdb://artists/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://artists/"))
     return "Artists";
-  else if (path.Equals("musicdb://albums/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://albums/"))
     return "Albums";
-  else if (path.Equals("musicdb://songs/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://songs/"))
     return "Songs";
-  else if (path.Equals("musicdb://top100/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://top100/"))
     return "Top100";
-  else if (path.Equals("musicdb://top100/songs/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://top100/songs/"))
     return "Top100Songs";
-  else if (path.Equals("musicdb://top100/albums/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://top100/albums/"))
     return "Top100Albums";
-  else if (path.Equals("musicdb://recentlyaddedalbums/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://recentlyaddedalbums/"))
     return "RecentlyAddedAlbums";
-  else if (path.Equals("musicdb://recentlyplayedalbums/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://recentlyplayedalbums/"))
     return "RecentlyPlayedAlbums";
-  else if (path.Equals("musicdb://compilations/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://compilations/"))
     return "Compilations";
-  else if (path.Equals("musicdb://years/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://years/"))
     return "Years";
-  else if (path.Equals("musicdb://singles/"))
+  else if (StringUtils::EqualsNoCase(path, "musicdb://singles/"))
     return "Singles";
-  else if (path.Equals("special://musicplaylists/"))
+  else if (StringUtils::EqualsNoCase(path, "special://musicplaylists/"))
     return "Playlists";
   else
   {
@@ -334,9 +334,9 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     else if (node == NODE_TYPE_YEAR)
       items.SetContent("years");
   }
-  else if (strDirectory.Equals("special://musicplaylists/"))
+  else if (StringUtils::EqualsNoCase(strDirectory, "special://musicplaylists/"))
     items.SetContent("playlists");
-  else if (strDirectory.Equals("plugin://music/"))
+  else if (StringUtils::EqualsNoCase(strDirectory, "plugin://music/"))
     items.SetContent("plugins");
   else if (items.IsPlayList())
     items.SetContent("songs");
@@ -372,7 +372,7 @@ void CGUIWindowMusicNav::UpdateButtons()
   CStdString strLabel;
 
   // "Playlists"
-  if (m_vecItems->GetPath().Equals("special://musicplaylists/"))
+  if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://musicplaylists/"))
     strLabel = g_localizeStrings.Get(136);
   // "{Playlist Name}"
   else if (m_vecItems->IsPlayList())
@@ -432,8 +432,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   if (item && !StringUtils::StartsWithNoCase(item->GetPath(), "addons://more/"))
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::MusicPlaylistsLocation()) ||
-                       m_vecItems->GetPath().Equals("special://musicplaylists/");
+    bool inPlaylists = StringUtils::EqualsNoCase(m_vecItems->GetPath(), CUtil::MusicPlaylistsLocation()) ||
+                       StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://musicplaylists/");
 
     CMusicDatabaseDirectory dir;
     // enable music info button on an album or on a song.
@@ -490,7 +490,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
          nodetype == NODE_TYPE_OVERVIEW ||
          nodetype == NODE_TYPE_TOP100))
     {
-      if (!item->GetPath().Equals(CSettings::Get().GetString("mymusic.defaultlibview").c_str()))
+      if (!StringUtils::EqualsNoCase(item->GetPath(), CSettings::Get().GetString("mymusic.defaultlibview")))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
       if (strcmp(CSettings::Get().GetString("mymusic.defaultlibview").c_str(), ""))
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
@@ -538,7 +538,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_DELETE, 646);
       }
     }
-    if (inPlaylists && !URIUtils::GetFileName(item->GetPath()).Equals("PartyMode.xsp")
+    if (inPlaylists && !StringUtils::EqualsNoCase(URIUtils::GetFileName(item->GetPath()), "PartyMode.xsp")
                     && (item->IsPlayList() || item->IsSmartPlayList()))
       buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
@@ -692,7 +692,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         content = CONTENT_ARTISTS;
       }
 
-      if (m_vecItems->GetPath().Equals("musicdb://genres/") || item->GetPath().Equals("musicdb://artists/"))
+      if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "musicdb://genres/") || StringUtils::EqualsNoCase(item->GetPath(), "musicdb://artists/"))
       {
         content = CONTENT_ARTISTS;
       }
@@ -837,29 +837,29 @@ void CGUIWindowMusicNav::AddSearchFolder()
 
 CStdString CGUIWindowMusicNav::GetStartFolder(const CStdString &dir)
 {
-  if (dir.Equals("Genres"))
+  if (StringUtils::EqualsNoCase(dir, "Genres"))
     return "musicdb://genres/";
-  else if (dir.Equals("Artists"))
+  else if (StringUtils::EqualsNoCase(dir, "Artists"))
     return "musicdb://artists/";
-  else if (dir.Equals("Albums"))
+  else if (StringUtils::EqualsNoCase(dir, "Albums"))
     return "musicdb://albums/";
-  else if (dir.Equals("Singles"))
+  else if (StringUtils::EqualsNoCase(dir, "Singles"))
     return "musicdb://singles/";
-  else if (dir.Equals("Songs"))
+  else if (StringUtils::EqualsNoCase(dir, "Songs"))
     return "musicdb://songs/";
-  else if (dir.Equals("Top100"))
+  else if (StringUtils::EqualsNoCase(dir, "Top100"))
     return "musicdb://top100/";
-  else if (dir.Equals("Top100Songs"))
+  else if (StringUtils::EqualsNoCase(dir, "Top100Songs"))
     return "musicdb://top100/songs/";
-  else if (dir.Equals("Top100Albums"))
+  else if (StringUtils::EqualsNoCase(dir, "Top100Albums"))
     return "musicdb://top100/albums/";
-  else if (dir.Equals("RecentlyAddedAlbums"))
+  else if (StringUtils::EqualsNoCase(dir, "RecentlyAddedAlbums"))
     return "musicdb://recentlyaddedalbums/";
-  else if (dir.Equals("RecentlyPlayedAlbums"))
+  else if (StringUtils::EqualsNoCase(dir, "RecentlyPlayedAlbums"))
    return "musicdb://recentlyplayedalbums/";
-  else if (dir.Equals("Compilations"))
+  else if (StringUtils::EqualsNoCase(dir, "Compilations"))
     return "musicdb://compilations/";
-  else if (dir.Equals("Years"))
+  else if (StringUtils::EqualsNoCase(dir, "Years"))
     return "musicdb://years/";
   return CGUIWindowMusicBase::GetStartFolder(dir);
 }

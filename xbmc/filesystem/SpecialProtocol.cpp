@@ -87,7 +87,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
 {
   CURL url(path);
   // check for special-protocol, if not, return
-  if (!url.GetProtocol().Equals("special"))
+  if (!StringUtils::EqualsNoCase(url.GetProtocol(), "special"))
   {
     return path;
   }
@@ -97,7 +97,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
 CStdString CSpecialProtocol::TranslatePath(const CURL &url)
 {
   // check for special-protocol, if not, return
-  if (!url.GetProtocol().Equals("special"))
+  if (!StringUtils::EqualsNoCase(url.GetProtocol(), "special"))
   {
 #if defined(TARGET_POSIX) && defined(_DEBUG)
     CStdString path(url.Get());
@@ -129,37 +129,37 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
   else
     RootDir = FullFileName;
 
-  if (RootDir.Equals("subtitles"))
+  if (StringUtils::EqualsNoCase(RootDir, "subtitles"))
     translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString("subtitles.custompath"), FileName);
-  else if (RootDir.Equals("userdata"))
+  else if (StringUtils::EqualsNoCase(RootDir, "userdata"))
     translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), FileName);
-  else if (RootDir.Equals("database"))
+  else if (StringUtils::EqualsNoCase(RootDir, "database"))
     translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetDatabaseFolder(), FileName);
-  else if (RootDir.Equals("thumbnails"))
+  else if (StringUtils::EqualsNoCase(RootDir, "thumbnails"))
     translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), FileName);
-  else if (RootDir.Equals("recordings") || RootDir.Equals("cdrips"))
+  else if (StringUtils::EqualsNoCase(RootDir, "recordings") || StringUtils::EqualsNoCase(RootDir, "cdrips"))
     translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString("audiocds.recordingpath"), FileName);
-  else if (RootDir.Equals("screenshots"))
+  else if (StringUtils::EqualsNoCase(RootDir, "screenshots"))
     translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString("debug.screenshotpath"), FileName);
-  else if (RootDir.Equals("musicplaylists"))
+  else if (StringUtils::EqualsNoCase(RootDir, "musicplaylists"))
     translatedPath = URIUtils::AddFileToFolder(CUtil::MusicPlaylistsLocation(), FileName);
-  else if (RootDir.Equals("videoplaylists"))
+  else if (StringUtils::EqualsNoCase(RootDir, "videoplaylists"))
     translatedPath = URIUtils::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName);
-  else if (RootDir.Equals("skin"))
+  else if (StringUtils::EqualsNoCase(RootDir, "skin"))
     translatedPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName);
-  else if (RootDir.Equals("logpath"))
+  else if (StringUtils::EqualsNoCase(RootDir, "logpath"))
     translatedPath = URIUtils::AddFileToFolder(g_advancedSettings.m_logFolder, FileName);
 
 
   // from here on, we have our "real" special paths
-  else if (RootDir.Equals("xbmc") ||
-           RootDir.Equals("xbmcbin") ||
-           RootDir.Equals("home") ||
-           RootDir.Equals("userhome") ||
-           RootDir.Equals("temp") ||
-           RootDir.Equals("profile") ||
-           RootDir.Equals("masterprofile") ||
-           RootDir.Equals("frameworks"))
+  else if (StringUtils::EqualsNoCase(RootDir, "xbmc") ||
+           StringUtils::EqualsNoCase(RootDir, "xbmcbin") ||
+           StringUtils::EqualsNoCase(RootDir, "home") ||
+           StringUtils::EqualsNoCase(RootDir, "userhome") ||
+           StringUtils::EqualsNoCase(RootDir, "temp") ||
+           StringUtils::EqualsNoCase(RootDir, "profile") ||
+           StringUtils::EqualsNoCase(RootDir, "masterprofile") ||
+           StringUtils::EqualsNoCase(RootDir, "frameworks"))
   {
     CStdString basePath = GetPath(RootDir);
     if (!basePath.empty())

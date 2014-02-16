@@ -107,7 +107,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     md5state.append(m_strUserInput);
     md5state.getDigest(md5pword2);
 
-    if (!m_strPassword.Equals(md5pword2))
+    if (!StringUtils::EqualsNoCase(m_strPassword, md5pword2))
     {
       // incorrect password entered
       m_iRetries--;

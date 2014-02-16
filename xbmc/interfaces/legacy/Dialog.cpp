@@ -266,11 +266,11 @@ namespace XBMCAddon
       if (!icon.empty())
         strIcon = icon;
       
-      if (strIcon.Equals(getNOTIFICATION_INFO()))
+      if (StringUtils::EqualsNoCase(strIcon, getNOTIFICATION_INFO()))
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, iTime, sound);
-      else if (strIcon.Equals(getNOTIFICATION_WARNING()))
+      else if (StringUtils::EqualsNoCase(strIcon, getNOTIFICATION_WARNING()))
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, heading, message, iTime, sound);
-      else if (strIcon.Equals(getNOTIFICATION_ERROR()))
+      else if (StringUtils::EqualsNoCase(strIcon, getNOTIFICATION_ERROR()))
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, iTime, sound);
       else
         CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime, sound);

@@ -370,7 +370,7 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
 
 void CGUIWindowMusicPlaylistEditor::LoadPlaylist(const CStdString &playlist)
 {
-  if (playlist.Equals("newplaylist://"))
+  if (StringUtils::EqualsNoCase(playlist, "newplaylist://"))
   {
     ClearPlaylist();
     m_strLoadedPlaylist.clear();

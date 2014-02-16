@@ -178,7 +178,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         itemPath += "|" + url2.GetProtocolOptions();
       item.SetPath(itemPath);
 
-      if (!item.GetPath().Equals(strPath))
+      if (!StringUtils::EqualsNoCase(item.GetPath(), strPath))
       {
         CFileItemPtr pItem(new CFileItem(item));
         items.Add(pItem);

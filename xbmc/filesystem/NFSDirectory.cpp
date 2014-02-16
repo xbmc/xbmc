@@ -196,9 +196,9 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if(!gNfsConnection.Connect(url,strDirName))
   {
     //connect has failed - so try to get the exported filesystms if no path is given to the url
-    if(url.GetShareName().Equals(""))
+    if(StringUtils::EqualsNoCase(url.GetShareName(), ""))
     {
-      if(url.GetHostName().Equals(""))
+      if(StringUtils::EqualsNoCase(url.GetHostName(), ""))
       {
         return GetServerList(items);
       }

@@ -96,13 +96,13 @@ JSONRPC_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLay
 
 JSONRPC_STATUS CSystemOperations::GetPropertyValue(int permissions, const CStdString &property, CVariant &result)
 {
-  if (property.Equals("canshutdown"))
+  if (StringUtils::EqualsNoCase(property, "canshutdown"))
     result = g_powerManager.CanPowerdown() && (permissions & ControlPower);
-  else if (property.Equals("cansuspend"))
+  else if (StringUtils::EqualsNoCase(property, "cansuspend"))
     result = g_powerManager.CanSuspend() && (permissions & ControlPower);
-  else if (property.Equals("canhibernate"))
+  else if (StringUtils::EqualsNoCase(property, "canhibernate"))
     result = g_powerManager.CanHibernate() && (permissions & ControlPower);
-  else if (property.Equals("canreboot"))
+  else if (StringUtils::EqualsNoCase(property, "canreboot"))
     result = g_powerManager.CanReboot() && (permissions & ControlPower);
   else
     return InvalidParams;

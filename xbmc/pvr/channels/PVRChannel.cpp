@@ -211,7 +211,7 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   CSingleLock lock(m_critSection);
   if (m_strChannelName.empty())
     SetChannelName(channel.ClientChannelName());
-  if (m_strIconPath.empty()||(!m_strIconPath.Equals(channel.IconPath()) && !IsUserSetIcon()))
+  if (m_strIconPath.empty()||(!StringUtils::EqualsNoCase(m_strIconPath, channel.IconPath()) && !IsUserSetIcon()))
     SetIconPath(channel.IconPath());
 
   return m_bChanged;

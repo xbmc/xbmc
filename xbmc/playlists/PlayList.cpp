@@ -25,6 +25,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "interfaces/AnnouncementManager.h"
@@ -461,7 +462,7 @@ bool CPlayList::Expand(int position)
   // remove any item that points back to itself
   for(int i = 0;i<playlist->size();i++)
   {
-    if( (*playlist)[i]->GetPath().Equals( item->GetPath() ) )
+    if (StringUtils::EqualsNoCase((*playlist)[i]->GetPath(), item->GetPath()))
     {
       playlist->Remove(i);
       i--;

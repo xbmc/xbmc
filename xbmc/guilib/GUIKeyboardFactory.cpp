@@ -219,7 +219,7 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CS
     XBMC::XBMC_MD5 md5state;
     md5state.append(strUserInput);
     md5state.getDigest(md5pword2);
-    if (strPassword.Equals(md5pword2))
+    if (StringUtils::EqualsNoCase(strPassword, md5pword2))
       return 0;     // user entered correct password
     else return 1;  // user must have entered an incorrect password
   }

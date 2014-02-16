@@ -458,7 +458,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   CFile::Cache(strUrl, strSubPath);
 
   // for ".sub" subtitles we check if ".idx" counterpart exists and copy that as well
-  if (strSubExt.Equals(".sub"))
+  if (StringUtils::EqualsNoCase(strSubExt, ".sub"))
   {
     strUrl = URIUtils::ReplaceExtension(strUrl, ".idx");
     if(CFile::Exists(strUrl))

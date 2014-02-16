@@ -99,49 +99,49 @@ void CLangInfo::CRegion::SetDefaults()
 
 void CLangInfo::CRegion::SetTempUnit(const CStdString& strUnit)
 {
-  if (strUnit.Equals("F"))
+  if (StringUtils::EqualsNoCase(strUnit, "F"))
     m_tempUnit=TEMP_UNIT_FAHRENHEIT;
-  else if (strUnit.Equals("K"))
+  else if (StringUtils::EqualsNoCase(strUnit, "K"))
     m_tempUnit=TEMP_UNIT_KELVIN;
-  else if (strUnit.Equals("C"))
+  else if (StringUtils::EqualsNoCase(strUnit, "C"))
     m_tempUnit=TEMP_UNIT_CELSIUS;
-  else if (strUnit.Equals("Re"))
+  else if (StringUtils::EqualsNoCase(strUnit, "Re"))
     m_tempUnit=TEMP_UNIT_REAUMUR;
-  else if (strUnit.Equals("Ra"))
+  else if (StringUtils::EqualsNoCase(strUnit, "Ra"))
     m_tempUnit=TEMP_UNIT_RANKINE;
-  else if (strUnit.Equals("Ro"))
+  else if (StringUtils::EqualsNoCase(strUnit, "Ro"))
     m_tempUnit=TEMP_UNIT_ROMER;
-  else if (strUnit.Equals("De"))
+  else if (StringUtils::EqualsNoCase(strUnit, "De"))
     m_tempUnit=TEMP_UNIT_DELISLE;
-  else if (strUnit.Equals("N"))
+  else if (StringUtils::EqualsNoCase(strUnit, "N"))
     m_tempUnit=TEMP_UNIT_NEWTON;
 }
 
 void CLangInfo::CRegion::SetSpeedUnit(const CStdString& strUnit)
 {
-  if (strUnit.Equals("kmh"))
+  if (StringUtils::EqualsNoCase(strUnit, "kmh"))
     m_speedUnit=SPEED_UNIT_KMH;
-  else if (strUnit.Equals("mpmin"))
+  else if (StringUtils::EqualsNoCase(strUnit, "mpmin"))
     m_speedUnit=SPEED_UNIT_MPMIN;
-  else if (strUnit.Equals("mps"))
+  else if (StringUtils::EqualsNoCase(strUnit, "mps"))
     m_speedUnit=SPEED_UNIT_MPS;
-  else if (strUnit.Equals("fth"))
+  else if (StringUtils::EqualsNoCase(strUnit, "fth"))
     m_speedUnit=SPEED_UNIT_FTH;
-  else if (strUnit.Equals("ftm"))
+  else if (StringUtils::EqualsNoCase(strUnit, "ftm"))
     m_speedUnit=SPEED_UNIT_FTMIN;
-  else if (strUnit.Equals("fts"))
+  else if (StringUtils::EqualsNoCase(strUnit, "fts"))
     m_speedUnit=SPEED_UNIT_FTS;
-  else if (strUnit.Equals("mph"))
+  else if (StringUtils::EqualsNoCase(strUnit, "mph"))
     m_speedUnit=SPEED_UNIT_MPH;
-  else if (strUnit.Equals("kts"))
+  else if (StringUtils::EqualsNoCase(strUnit, "kts"))
     m_speedUnit=SPEED_UNIT_KTS;
-  else if (strUnit.Equals("beaufort"))
+  else if (StringUtils::EqualsNoCase(strUnit, "beaufort"))
     m_speedUnit=SPEED_UNIT_BEAUFORT;
-  else if (strUnit.Equals("inchs"))
+  else if (StringUtils::EqualsNoCase(strUnit, "inchs"))
     m_speedUnit=SPEED_UNIT_INCHPS;
-  else if (strUnit.Equals("yards"))
+  else if (StringUtils::EqualsNoCase(strUnit, "yards"))
     m_speedUnit=SPEED_UNIT_YARDPS;
-  else if (strUnit.Equals("fpf"))
+  else if (StringUtils::EqualsNoCase(strUnit, "fpf"))
     m_speedUnit=SPEED_UNIT_FPF;
 }
 
@@ -284,7 +284,7 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
     {
       CStdString strForceUnicodeFont = ((TiXmlElement*) pGui)->Attribute("unicodefont");
 
-      if (strForceUnicodeFont.Equals("true"))
+      if (StringUtils::EqualsNoCase(strForceUnicodeFont, "true"))
         m_defaultRegion.m_forceUnicodeFont=true;
 
       m_defaultRegion.m_strGuiCharSet=pGui->FirstChild()->Value();
@@ -683,7 +683,7 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
     CStdString region = regions[i];
     list.push_back(make_pair(region, region));
 
-    if (!match && region.Equals(((CSettingString*)setting)->GetValue().c_str()))
+    if (!match && StringUtils::EqualsNoCase(region, ((CSettingString*)setting)->GetValue().c_str()))
     {
       match = true;
       current = region;

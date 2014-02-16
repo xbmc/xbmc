@@ -49,7 +49,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (!reader.Open(url))
     return false;
 
-  bool serverNotUseUTF8 = url.GetProtocolOption("utf8").Equals("0");
+  bool serverNotUseUTF8 = StringUtils::EqualsNoCase(url.GetProtocolOption("utf8"), "0");
 
   char buffer[MAX_PATH + 1024];
   while( reader.ReadString(buffer, sizeof(buffer)) )
@@ -71,7 +71,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       CStdString name;
       name.assign(parse.getName());
 
-      if( name.Equals("..") || name.Equals(".") )
+      if( StringUtils::EqualsNoCase(name, "..") || StringUtils::EqualsNoCase(name, ".") )
         continue;
 
       // server returned filename could in utf8 or non-utf8 encoding

@@ -306,7 +306,7 @@ bool CGUIPassword::CheckLock(LockType btnType, const CStdString& strPassword, in
 bool CGUIPassword::CheckLock(LockType btnType, const CStdString& strPassword, int iHeading, bool& bCanceled)
 {
   bCanceled = false;
-  if (btnType == LOCK_MODE_EVERYONE || strPassword.Equals("-")        ||
+  if (btnType == LOCK_MODE_EVERYONE || StringUtils::EqualsNoCase(strPassword, "-")        ||
       CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser)
     return true;
 

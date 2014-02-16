@@ -238,7 +238,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 {
   strTitleAndYear = strFileName;
 
-  if (strFileName.Equals(".."))
+  if (StringUtils::EqualsNoCase(strFileName, ".."))
    return;
 
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
@@ -550,7 +550,7 @@ void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 int CUtil::GetDVDIfoTitle(const CStdString& strFile)
 {
   CStdString strFilename = URIUtils::GetFileName(strFile);
-  if (strFilename.Equals("video_ts.ifo")) return 0;
+  if (StringUtils::EqualsNoCase(strFilename, "video_ts.ifo")) return 0;
   //VTS_[TITLE]_0.IFO
   return atoi(strFilename.substr(4, 2).c_str());
 }
@@ -1192,7 +1192,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       if (iPos != std::string::npos && iPos > 1)
         strName = strName.substr(0, iPos - 1);
     }
-    if (strPath.Equals(strName))
+    if (StringUtils::EqualsNoCase(strPath, strName))
     {
       bIsSourceName = true;
       return i;
@@ -1220,7 +1220,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
     if (share.strPath.substr(0,8) == "shout://")
     {
       CURL url(share.strPath);
-      if (strPath.Equals(url.GetHostName()))
+      if (StringUtils::EqualsNoCase(strPath, url.GetHostName()))
         return i;
     }
 
@@ -1385,7 +1385,7 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
   CDirectory::GetDirectory(strPath,myItems,"",DIR_FLAG_NO_FILE_DIRS);
   for (int i=0;i<myItems.Size();++i)
   {
-    if (myItems[i]->m_bIsFolder && !myItems[i]->GetPath().Equals(".."))
+    if (myItems[i]->m_bIsFolder && !StringUtils::EqualsNoCase(myItems[i]->GetPath(), ".."))
     {
       item.Add(myItems[i]);
       CUtil::GetRecursiveDirsListing(myItems[i]->GetPath(),item);
@@ -1951,7 +1951,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
       for (unsigned int i=0; i<strLookInPaths.size(); i++)
       {
         // if movie file is inside cd-dir, this directory can exist in vector already
-        if (strLookInPaths[i].Equals( strPath2 ) )
+        if (StringUtils::EqualsNoCase(strLookInPaths[i], strPath2))
           pathAlreadyAdded = true;
       }
       if (CDirectory::Exists(strPath2) && !pathAlreadyAdded) 
@@ -2207,7 +2207,7 @@ bool CUtil::FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const C
       if (URIUtils::IsInArchive(vecSubtitles[j]))
         strSubDirectory = CURL::Decode(strSubDirectory);
       if (URIUtils::HasExtension(strSubFile, ".sub") &&
-          (URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")) ||
+          (StringUtils::EqualsNoCase(URIUtils::ReplaceExtension(strIdxFile,""), URIUtils::ReplaceExtension(strSubFile,"")) ||
            (strSubDirectory.size() >= 11 &&
             StringUtils::EqualsNoCase(strSubDirectory.substr(6, strSubDirectory.length()-11), URIUtils::ReplaceExtension(strIdxPath,"")))))
       {
@@ -2236,7 +2236,7 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
       CStdString strIdxDirectory;
       URIUtils::Split(vecSubtitles[j], strIdxDirectory, strIdxFile);
       if (URIUtils::HasExtension(strIdxFile, ".idx") &&
-          (URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")) ||
+          (StringUtils::EqualsNoCase(URIUtils::ReplaceExtension(strIdxFile,""), URIUtils::ReplaceExtension(strSubFile,"")) ||
            (strSubDirectory.size() >= 11 &&
             StringUtils::EqualsNoCase(strSubDirectory.substr(6, strSubDirectory.length()-11), URIUtils::ReplaceExtension(vecSubtitles[j],"")))))
         return true;

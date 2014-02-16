@@ -437,7 +437,7 @@ bool CWakeOnAccess::FindOrTouchHostEntry (const CStdString& hostName, WakeUpEntr
   {
     WakeUpEntry& server = *i;
 
-    if (hostName.Equals(server.host.c_str()))
+    if (StringUtils::EqualsNoCase(hostName, server.host.c_str()))
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
 
@@ -466,7 +466,7 @@ void CWakeOnAccess::TouchHostEntry (const CStdString& hostName)
   {
     WakeUpEntry& server = *i;
 
-    if (hostName.Equals(server.host.c_str()))
+    if (StringUtils::EqualsNoCase(hostName, server.host.c_str()))
     {
       server.nextWake = CDateTime::GetCurrentDateTime() + server.timeout;
       return;
@@ -477,7 +477,7 @@ void CWakeOnAccess::TouchHostEntry (const CStdString& hostName)
 static void AddHost (const CStdString& host, vector<string>& hosts)
 {
   for (vector<string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
-    if (host.Equals((*it).c_str()))
+    if (StringUtils::EqualsNoCase(host, (*it).c_str()))
       return; // allready there ..
 
   if (!host.empty())
@@ -486,7 +486,7 @@ static void AddHost (const CStdString& host, vector<string>& hosts)
 
 static void AddHostFromDatabase(const DatabaseSettings& setting, vector<string>& hosts)
 {
-  if (setting.type.Equals("mysql"))
+  if (StringUtils::EqualsNoCase(setting.type, "mysql"))
     AddHost(setting.host, hosts);
 }
 
@@ -562,10 +562,10 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const CStdString& host, const CStdStr
 
   for (EntriesVector::iterator i = m_entries.begin(); i != m_entries.end(); ++i)
   {
-    if (host.Equals(i->host.c_str()))
+    if (StringUtils::EqualsNoCase(host, i->host.c_str()))
     {
       CLog::Log(LOGDEBUG, "%s - Update existing entry for host '%s'", __FUNCTION__, host.c_str());
-      if (!mac.Equals(i->mac.c_str()))
+      if (!StringUtils::EqualsNoCase(mac, i->mac.c_str()))
       {
         if (IsEnabled()) // show notification only if we have general feature enabled
         {

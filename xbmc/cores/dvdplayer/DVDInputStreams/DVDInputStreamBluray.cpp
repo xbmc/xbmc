@@ -351,7 +351,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     return false;
   }
 
-  if(filename.Equals("index.bdmv"))
+  if(StringUtils::EqualsNoCase(filename, "index.bdmv"))
   {
     m_navmode = false;
     m_title = GetTitleLongest();
@@ -361,7 +361,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     m_navmode = false;
     m_title = GetTitleFile(filename);
   }
-  else if(filename.Equals("MovieObject.bdmv"))
+  else if(StringUtils::EqualsNoCase(filename, "MovieObject.bdmv"))
   {
     m_navmode = true;
     if (m_navmode && !disc_info->first_play_supported) {

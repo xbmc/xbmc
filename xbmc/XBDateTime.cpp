@@ -1033,7 +1033,7 @@ bool CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
   int month = 0;
   for (unsigned int index = 0; index < 12; index++)
   {
-    if (strMonth.Equals(MONTH_NAMES[index]))
+    if (StringUtils::EqualsNoCase(strMonth, MONTH_NAMES[index]))
     {
       month = index + 1;
       break;

@@ -560,9 +560,9 @@ void CRarFile::InitFromUrl(const CURL& url)
       CStdString strOption = StringUtils::Left((*it), iEqual);
       CStdString strValue = StringUtils::Mid((*it), iEqual+1);
 
-      if( strOption.Equals("flags") )
+      if( StringUtils::EqualsNoCase(strOption, "flags") )
         m_bFileOptions = atoi(strValue.c_str());
-      else if( strOption.Equals("cache") )
+      else if( StringUtils::EqualsNoCase(strOption, "cache") )
         m_strCacheDir = strValue;
     }
   }

@@ -49,7 +49,7 @@ CDirectoryNodeMoviesOverview::CDirectoryNodeMoviesOverview(const CStdString& str
 NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(MovieChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), MovieChildren[i].id.c_str()))
       return MovieChildren[i].node;
   
   return NODE_TYPE_NONE;
@@ -58,7 +58,7 @@ NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType() const
 CStdString CDirectoryNodeMoviesOverview::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(MovieChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), MovieChildren[i].id.c_str()))
       return g_localizeStrings.Get(MovieChildren[i].label);
   return "";
 }

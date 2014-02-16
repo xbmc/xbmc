@@ -756,7 +756,7 @@ void CGUIDialogAddonSettings::CreateControls()
 
        if (!lvalues.empty())
           StringUtils::Tokenize(lvalues, valuesVec, "|");
-        else if (values.Equals("$HOURS"))
+        else if (StringUtils::EqualsNoCase(values, "$HOURS"))
         {
           for (unsigned int i = 0; i < 24; i++)
           {
@@ -955,7 +955,7 @@ vector<std::string> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString 
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
-    if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
+    if ((StringUtils::EqualsNoCase(mask, "/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
     {
       if (hideExtensions)
         pItem->RemoveExtension();
@@ -1039,28 +1039,28 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
         break;
     }
 
-    if (condVec[0].Equals("eq"))
+    if (StringUtils::EqualsNoCase(condVec[0], "eq"))
     {
       if (bCompare)
-        bCondition &= value.Equals(condVec[2]);
+        bCondition &= StringUtils::EqualsNoCase(value, condVec[2]);
       else
-        bCondition |= value.Equals(condVec[2]);
+        bCondition |= StringUtils::EqualsNoCase(value, condVec[2]);
     }
-    else if (condVec[0].Equals("!eq"))
+    else if (StringUtils::EqualsNoCase(condVec[0], "!eq"))
     {
       if (bCompare)
-        bCondition &= !value.Equals(condVec[2]);
+        bCondition &= !StringUtils::EqualsNoCase(value, condVec[2]);
       else
-        bCondition |= !value.Equals(condVec[2]);
+        bCondition |= !StringUtils::EqualsNoCase(value, condVec[2]);
     }
-    else if (condVec[0].Equals("gt"))
+    else if (StringUtils::EqualsNoCase(condVec[0], "gt"))
     {
       if (bCompare)
         bCondition &= (atoi(value) > atoi(condVec[2]));
       else
         bCondition |= (atoi(value) > atoi(condVec[2]));
     }
-    else if (condVec[0].Equals("lt"))
+    else if (StringUtils::EqualsNoCase(condVec[0], "lt"))
     {
       if (bCompare)
         bCondition &= (atoi(value) < atoi(condVec[2]));

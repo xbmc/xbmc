@@ -110,7 +110,7 @@ TYPE TranslateType(const CStdString &string)
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
     const TypeMapping &map = types[index];
-    if (string.Equals(map.name))
+    if (StringUtils::EqualsNoCase(string, map.name))
       return map.type;
   }
   return ADDON_UNKNOWN;
@@ -130,7 +130,7 @@ const CStdString GetIcon(const ADDON::TYPE& type)
 #define EMPTY_IF(x,y) \
   { \
     CStdString fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
-    if (fan.Equals("true")) \
+    if (StringUtils::EqualsNoCase(fan, "true")) \
       y.clear(); \
   }
 

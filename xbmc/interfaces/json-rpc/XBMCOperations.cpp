@@ -65,15 +65,15 @@ JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITrans
 
     // Need to override power management of whats in infomanager since jsonrpc
     // have a security layer aswell.
-    if (field.Equals("system.canshutdown"))
+    if (StringUtils::EqualsNoCase(field, "system.canshutdown"))
       result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
-    else if (field.Equals("system.canpowerdown"))
+    else if (StringUtils::EqualsNoCase(field, "system.canpowerdown"))
       result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
-    else if (field.Equals("system.cansuspend"))
+    else if (StringUtils::EqualsNoCase(field, "system.cansuspend"))
       result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanSuspend() && CanControlPower);
-    else if (field.Equals("system.canhibernate"))
+    else if (StringUtils::EqualsNoCase(field, "system.canhibernate"))
       result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanHibernate() && CanControlPower);
-    else if (field.Equals("system.canreboot"))
+    else if (StringUtils::EqualsNoCase(field, "system.canreboot"))
       result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanReboot() && CanControlPower);
     else
       info.push_back(parameterObject["booleans"][i].asString());
