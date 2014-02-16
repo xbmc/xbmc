@@ -36,15 +36,33 @@ CSong::CSong(CFileItem& item)
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
   artist = tag.GetArtist();
-  bool hasMusicBrainzArtist = !tag.GetMusicBrainzArtistID().empty();
-  const vector<string>& artists = hasMusicBrainzArtist ? tag.GetMusicBrainzArtistID() : tag.GetArtist();
-  for (vector<string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
-  {
-    CStdString artistName = hasMusicBrainzArtist && !artist.empty() ? artist[0] : *it;
-    CStdString artistId = hasMusicBrainzArtist ? *it : StringUtils::EmptyString;
-    CStdString strJoinPhrase = (it == --artists.end() ? "" : g_advancedSettings.m_musicItemSeparator);
-    CArtistCredit artistCredit(artistName, artistId, strJoinPhrase);
-    artistCredits.push_back(artistCredit);
+  if (!tag.GetMusicBrainzArtistID().empty())
+  { // have musicbrainz artist info, so use it
+    for (size_t i = 0; i < tag.GetMusicBrainzArtistID().size(); i++)
+    {
+      CStdString artistId = tag.GetMusicBrainzArtistID()[i];
+      CStdString artistName;
+      /*
+       We try and get the corresponding artist name from the album artist tag.
+       We match on the same index, and if that fails just use the first name we have.
+       */
+      if (!artist.empty())
+        artistName = (i < artist.size()) ? artist[i] : artist[0];
+      if (artistName.empty())
+        artistName = artistId;
+      CStdString strJoinPhrase = (i == tag.GetMusicBrainzArtistID().size()-1) ? "" : g_advancedSettings.m_musicItemSeparator;
+      CArtistCredit artistCredit(artistName, artistId, strJoinPhrase);
+      artistCredits.push_back(artistCredit);
+    }
+  }
+  else
+  { // no musicbrainz info, so fill in directly
+    for (vector<string>::const_iterator it = tag.GetArtist().begin(); it != tag.GetArtist().end(); ++it)
+    {
+      CStdString strJoinPhrase = (it == --tag.GetArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
+      CArtistCredit artistCredit(*it, "", strJoinPhrase);
+      artistCredits.push_back(artistCredit);
+    }
   }
   strAlbum = tag.GetAlbum();
   albumArtist = tag.GetAlbumArtist();
