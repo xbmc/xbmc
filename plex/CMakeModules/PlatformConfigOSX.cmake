@@ -110,7 +110,7 @@ set(ffmpeg_libs
 )
 
 if(ENABLE_PYTHON)
-  list(APPEND external_libs python2.6)
+  plex_find_package(Python 1 1)
 endif()
 
 set(non_link_libs
