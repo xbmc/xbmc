@@ -2964,13 +2964,13 @@ bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     // get data from returned rows
     while (!m_pDS->eof())
     {
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv("iYear").get_asString()));
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
       SYSTEMTIME stTime;
-      stTime.wYear = (WORD)m_pDS->fv("iYear").get_asInt();
+      stTime.wYear = (WORD)m_pDS->fv(0).get_asInt();
       pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
 
       CMusicDbUrl itemUrl = musicUrl;
-      CStdString strDir = StringUtils::Format("%ld/", m_pDS->fv("iYear").get_asInt());
+      CStdString strDir = StringUtils::Format("%ld/", m_pDS->fv(0).get_asInt());
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
