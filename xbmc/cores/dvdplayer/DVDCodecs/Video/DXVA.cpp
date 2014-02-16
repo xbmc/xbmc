@@ -254,8 +254,25 @@ static DWORD VP3DeviceID [] = {
 };
 
 static DWORD IVC1DeviceID [] = {
-  0x015a, // Ivy Bridge
-  0x0412, // Haswell
+  0x0162, // HD 4000
+  0x0166, // HD 4000
+  0x0152, // HD Graphics
+  0x0156, // HD Graphics
+  0x016a, // HD Graphics (Server)
+  0x0402, // HD Graphics (Classic)
+  0x0406, // HD Graphics (Classic)
+  0x0412, // HD 4600 (Classic)
+  0x0416, // HD 4600 (Classic)
+  0x041E, // HD 4400 (Classic)
+  0x0A06, // HD Graphics (ULT)
+  0x0A16, // HD Graphics (ULT)
+  0x0A26, // HD Graphics 5000 (ULT)
+  0x0A2E, // Iris 5100 (ULT)
+  0x0A1E, // HD Graphics (ULT)
+  0x0A0E, // HD Graphics (ULT)
+  0x0D26, // Iris Pro 5200 (CRW)
+  0x0D22, // Iris Pro 5200 (CRW)
+  0x041A, // HD P4600/P4700 (Server)
   0x0000
 };
 
