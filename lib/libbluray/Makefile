@@ -25,7 +25,7 @@ ifeq ($(OSTYPE),Darwin)
   LDFLAGS=-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -L/opt/local/lib
   CPPFLAGS=-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -I /opt/local/include
 else
-  prefix=/usr
+  prefix=/usr/local
 endif
 
 ifeq ($(OSTYPE),Darwin)
