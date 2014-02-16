@@ -594,7 +594,7 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
 void CGUIEditControl::OnPasteClipboard()
 {
   wstring unicode_text;
-  CStdStringA utf8_text;
+  std::string utf8_text;
 
 // Get text from the clipboard
   utf8_text = g_Windowing.GetClipboardText();

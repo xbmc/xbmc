@@ -315,7 +315,7 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
 
 wstring CGUITextLayout::BidiFlip(const wstring &text, bool forceLTRReadingOrder)
 {
-  CStdStringA utf8text;
+  std::string utf8text;
   wstring visualText;
 
   // convert to utf8, and back to utf16 with bidi flipping

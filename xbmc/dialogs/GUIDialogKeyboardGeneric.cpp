@@ -753,7 +753,7 @@ bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const
 void CGUIDialogKeyboardGeneric::OnPasteClipboard(void)
 {
   wstring unicode_text;
-  CStdStringA utf8_text;
+  std::string utf8_text;
 
 // Get text from the clipboard
   utf8_text = g_Windowing.GetClipboardText();

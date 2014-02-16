@@ -49,7 +49,7 @@ bool CDVDSubtitleTagSami::Init()
 
 void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len, const char* lang)
 {
-  CStdStringA strUTF8;
+  std::string strUTF8;
   strUTF8.assign(line, len);
   StringUtils::Trim(strUTF8);
 
