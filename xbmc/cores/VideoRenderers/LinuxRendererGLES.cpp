@@ -1483,10 +1483,10 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
   }
 
   // Set texture coordinates (MediaCodec is flipped in y)
-  tex[0][0] = tex[3][0] = 0.0f;
-  tex[0][1] = tex[1][1] = 1.0f;
-  tex[1][0] = tex[2][0] = 1.0f;
-  tex[2][1] = tex[3][1] = 0.0f;
+  tex[0][0] = tex[3][0] = plane.rect.x1;
+  tex[0][1] = tex[1][1] = plane.rect.y2;
+  tex[1][0] = tex[2][0] = plane.rect.x2;
+  tex[2][1] = tex[3][1] = plane.rect.y1;
 
   for(int i = 0; i < 4; i++)
   {
@@ -2455,6 +2455,27 @@ void CLinuxRendererGLES::DeleteSurfaceTexture(int index)
 }
 bool CLinuxRendererGLES::CreateSurfaceTexture(int index)
 {
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANE  &plane  = fields[0][0];
+
+  memset(&im    , 0, sizeof(im));
+  memset(&fields, 0, sizeof(fields));
+
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+
+  plane.texwidth  = im.width;
+  plane.texheight = im.height;
+  plane.pixpertex_x = 1;
+  plane.pixpertex_y = 1;
+
+  if(m_renderMethod & RENDER_POT)
+  {
+    plane.texwidth  = NP2(plane.texwidth);
+    plane.texheight = NP2(plane.texheight);
+  }
+
   return true;
 }
 
