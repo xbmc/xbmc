@@ -304,7 +304,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
           std::string type = item->GetMusicInfoTag()->GetType();
           if (type == "album" || type == "song" || type == "artist")
             object["type"] = type;
-          else
+          else if (!item->m_bIsFolder)
             object["type"] = "song";
         }
         else if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_type.empty())
