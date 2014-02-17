@@ -313,7 +313,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedSongs(const CStdString &method, IT
     amount = 0;
 
   CFileItemList items;
-  if (!musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://", items, (unsigned int)amount))
+  if (!musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", items, (unsigned int)amount))
     return InternalError;
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
@@ -359,7 +359,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedSongs(const CStdString &method, I
     return InternalError;
 
   CFileItemList items;
-  if (!musicdatabase.GetRecentlyPlayedAlbumSongs("musicdb://", items))
+  if (!musicdatabase.GetRecentlyPlayedAlbumSongs("musicdb://songs/", items))
     return InternalError;
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
