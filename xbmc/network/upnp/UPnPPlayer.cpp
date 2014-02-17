@@ -262,8 +262,6 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
       m_delegate->m_trainfo.cur_transport_state != "STOPPED")
   {
     timeout.Set(timeout.GetInitialTimeoutValue());
-    /* dlna specifies that a return code of 705 should be returned
-     * if TRANSPORT_STATE is not STOPPED or NO_MEDIA_PRESENT */
     NPT_CHECK_LABEL_SEVERE(m_control->Stop(m_delegate->m_device
                                            , m_delegate->m_instance
                                            , m_delegate), failed);
