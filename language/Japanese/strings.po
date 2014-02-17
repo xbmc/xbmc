@@ -6981,10 +6981,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "クルマ"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "フィットネス &amp; 健康"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "クッキング"
@@ -7004,10 +7000,6 @@ msgstr "特別な特徴"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "オリジナル言語"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "白黒"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -10108,6 +10100,10 @@ msgstr "MPEG-4 オーディオ (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media オーディオ 2 (FFmpeg wmav2)"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "チャンネル数"
 
 msgctxt "#34101"
 msgid "2.0"

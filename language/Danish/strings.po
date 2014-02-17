@@ -6989,10 +6989,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Motor"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fitness &amp; Sundhed"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Madlavning"
@@ -7012,10 +7008,6 @@ msgstr "Specielle karaktertræk"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Oprindeligt sprog"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Sort &amp; Hvid"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -10145,6 +10137,10 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Antal lydkanaler"
+
 msgctxt "#34101"
 msgid "2.0"
 msgstr "2.0"
@@ -11224,6 +11220,10 @@ msgstr "Hvis EXIF information findes (date, time, camera used, etc.), vil den bl
 msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."
 msgstr "Automatisk genererer miniature billeder, når en mappe med billeder åbnes."
+
+msgctxt "#36308"
+msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
+msgstr "Billeder roteres automatisk i forhold til tilgængelig EXIF information hvis fundet."
 
 msgctxt "#36310"
 msgid "No info available yet."

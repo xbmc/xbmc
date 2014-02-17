@@ -5321,10 +5321,6 @@ msgctxt "#19661"
 msgid "Original Language"
 msgstr "Ngôn ngữ gốc"
 
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Đen trắng"
-
 msgctxt "#19663"
 msgid "Unpublished"
 msgstr "Chưa phát hành"
@@ -6528,6 +6524,10 @@ msgstr "Máy chủ liên lạc"
 msgctxt "#33200"
 msgid "Detected New Connection"
 msgstr "Phát hiện kết nối mới"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Số lượng kênh"
 
 msgctxt "#34101"
 msgid "2.0"

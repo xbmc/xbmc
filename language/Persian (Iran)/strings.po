@@ -6549,6 +6549,10 @@ msgctxt "#33081"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "این فایل چند بخشی است, قسمت مورد نظر را برای پخش انتخاب کنید."
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "تعداد کانال ها"
+
 msgctxt "#34122"
 msgid "Always"
 msgstr "همیشه"

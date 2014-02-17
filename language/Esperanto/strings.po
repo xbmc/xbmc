@@ -3889,6 +3889,10 @@ msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Tajpi Search String"
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Nombro de kanaloj"
+
 msgctxt "#34123"
 msgid "Never"
 msgstr "Never"

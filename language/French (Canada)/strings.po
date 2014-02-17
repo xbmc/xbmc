@@ -869,6 +869,10 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Choisir le répertoire de destination"
 
+msgctxt "#252"
+msgid "Stereo upmix"
+msgstr "Surmixage stéréo"
+
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Nombre de canaux"
@@ -1559,7 +1563,7 @@ msgstr "Pas de cache"
 
 msgctxt "#432"
 msgid "Remove movie from library"
-msgstr "Enlever le film de la médiathèque"
+msgstr "Enlever le film de la vidéothèque"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
@@ -2323,11 +2327,11 @@ msgstr "Retirer de la médiathèque"
 
 msgctxt "#647"
 msgid "Export video library"
-msgstr "Exporter la médiathèque vidéo"
+msgstr "Exporter la vidéothèque"
 
 msgctxt "#648"
 msgid "Import video library"
-msgstr "Importer une médiathèque vidéo"
+msgstr "Importer une vidéothèque"
 
 msgctxt "#649"
 msgid "Importing"
@@ -2401,13 +2405,17 @@ msgctxt "#666"
 msgid "Verbose logging..."
 msgstr "Journalisation bavarde..."
 
+msgctxt "#667"
+msgid "Enable Dolby Digital transcoding"
+msgstr "Activer le transcodage « Dolby Digital »"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Épurement de la médiathèque"
 
 msgctxt "#701"
 msgid "Removing old songs from the library"
-msgstr "Suppression des anciens morceaux de la médiathèque"
+msgstr "Suppression des anciens morceaux de la musithèque"
 
 msgctxt "#702"
 msgid "This path has been scanned before"
@@ -2743,7 +2751,7 @@ msgstr "Mise-à-jour de la médiathèque"
 
 msgctxt "#800"
 msgid "Music library needs to rescan tags from files."
-msgstr "La médiathèque doit à nouveau obtenir les balises à partir des fichiers."
+msgstr "La musithèque doit à nouveau obtenir les balises à partir des fichiers."
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -3651,7 +3659,7 @@ msgstr "Musique/Fichiers"
 
 msgctxt "#10502"
 msgid "Music/Library"
-msgstr "Musique/Médiathèque"
+msgstr "Musique/Musithèque"
 
 msgctxt "#10503"
 msgid "Playlist editor"
@@ -3691,7 +3699,7 @@ msgstr "Informations du système"
 
 msgctxt "#10516"
 msgid "Music - Library"
-msgstr "Musique - Médiathèque"
+msgstr "Musique - Musithèque"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
@@ -3907,7 +3915,7 @@ msgstr "Élément verrouillé"
 
 msgctxt "#12349"
 msgid "Updating video library art"
-msgstr "Mise à jour des illustrations de la médiathèque vidéo"
+msgstr "Mise à jour des illustrations de la vidéothèque"
 
 msgctxt "#12350"
 msgid "Processing %s"
@@ -3915,7 +3923,7 @@ msgstr "Traitement de %s"
 
 msgctxt "#12351"
 msgid "The art cache in your video library needs updating."
-msgstr "Besoin de mise à jour du cache des illustrations de la médiathèque vidéo."
+msgstr "Besoin de mise à jour du cache des illustrations de la vidéothèque"
 
 msgctxt "#12352"
 msgid "No downloading is needed."
@@ -4675,7 +4683,7 @@ msgstr "Information sur l'album"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Balayer les éléments vers la médiathèque"
+msgstr "Intégrer à la musithèque"
 
 msgctxt "#13353"
 msgid "Stop scanning"
@@ -4973,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Autoriser l'accélération matérielle (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Allow frame-multi-threaded decoding"
+msgstr "Permettre le décodage image-multifil"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Méthode de synchro. A/V"
@@ -5183,7 +5195,7 @@ msgstr "Changer le code de zone 3"
 
 msgctxt "#14022"
 msgid "Library"
-msgstr "Médiathèque"
+msgstr "Musithèque"
 
 msgctxt "#14023"
 msgid "No TV"
@@ -5495,7 +5507,7 @@ msgstr "Mot de passe"
 
 msgctxt "#15100"
 msgid "Library"
-msgstr "Médiathèque"
+msgstr "Musithèque"
 
 msgctxt "#15101"
 msgid "Database"
@@ -5695,7 +5707,7 @@ msgstr "Mode fête interrompu."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
-msgstr "Aucun morceau correspondant dans la médiathèque."
+msgstr "Aucun morceau correspondant dans la musithèque."
 
 msgctxt "#16032"
 msgid "Could not initialise database."
@@ -5997,6 +6009,10 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Enregistrements TV"
 
+msgctxt "#19018"
+msgid "Folder with channel icons"
+msgstr "Dossier avec icônes de chaînes"
+
 msgctxt "#19019"
 msgid "Channels"
 msgstr "Chaînes"
@@ -6184,6 +6200,10 @@ msgstr "Aller à la fin"
 msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "Fenêtre du GEP par défaut"
+
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "Icônes de chaînes"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -7009,6 +7029,22 @@ msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Confirmer le changement de chaîne en appuyant sur OK"
 
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "Icône de chaîne"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "Aucune icône"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "Choisir une icône"
+
+msgctxt "#19285"
+msgid "Browse for icon"
+msgstr "Rechercher des icônes"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Autre/Inconnu"
@@ -7293,10 +7329,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Automobile"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Conditionnement physique et santé"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Cuisine"
@@ -7316,10 +7348,6 @@ msgstr "Caractéristiques spéciales"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Langue d'origine"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Noir et blanc"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8083,11 +8111,11 @@ msgstr "Changer le récupérateur"
 
 msgctxt "#20196"
 msgid "Export music library"
-msgstr "Exporter la médiathèque musicale"
+msgstr "Exporter la musithèque"
 
 msgctxt "#20197"
 msgid "Import music library"
-msgstr "Importer une médiathèque musicale"
+msgstr "Importer une musithèque"
 
 msgctxt "#20198"
 msgid "No artist found!"
@@ -8211,7 +8239,7 @@ msgstr "Inconnu ou embarqué (protégé)"
 
 msgctxt "#20314"
 msgid "Videos - Library"
-msgstr "Vidéos - Médiathèque"
+msgstr "Vidéos - Vidéothèque"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
@@ -8236,6 +8264,10 @@ msgstr "Analyse des artistes avec %s"
 msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Analyse des albums avec %s"
+
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Intrigue du film"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -8391,11 +8423,11 @@ msgstr "Chargement des détails des épisodes"
 
 msgctxt "#20362"
 msgid "Remove episode from library"
-msgstr "Retirer l'épisode de la médiathèque"
+msgstr "Retirer l'épisode de la vidéothèque"
 
 msgctxt "#20363"
 msgid "Remove TV show from library"
-msgstr "Retirer l'émission de la médiathèque"
+msgstr "Retirer l'émission de la vidéothèque"
 
 msgctxt "#20364"
 msgid "TV show"
@@ -8511,7 +8543,7 @@ msgstr "Vidéos musicales"
 
 msgctxt "#20392"
 msgid "Remove music video from library"
-msgstr "Retirer la vidéo musicale de la médiathèque"
+msgstr "Retirer la vidéo musicale de la vidéothèque"
 
 msgctxt "#20393"
 msgid "Music video information"
@@ -8551,7 +8583,7 @@ msgstr "Lire la vidéo musicale"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Télécharger les imagettes d'acteur lors de l'ajout à la médiathèque"
+msgstr "Télécharger les imagettes d'acteur lors de l'ajout à la vidéothèque"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
@@ -8881,6 +8913,10 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Enlever le partage média"
 
+msgctxt "#21366"
+msgid "Custom subtitle folder"
+msgstr "Dossier personnalisé des sous-titres"
+
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Répertoire du film & des sous-titres alternatifs"
@@ -8951,7 +8987,7 @@ msgstr "Activer les barres de défilement"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
-msgstr "Activer le filtre Masquer vue dans la médiathèque"
+msgstr "Activer le filtre Masquer vue dans la vidéothèque"
 
 msgctxt "#21385"
 msgid "Open"
@@ -9248,6 +9284,10 @@ msgstr "Grouper par"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "mélangé"
+
+msgctxt "#21460"
+msgid "Subtitle location on screen"
+msgstr "Emplacement des sous-titres à l'écran"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10245,6 +10285,18 @@ msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Choisir l'élément à lire"
 
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "Chapitres : %u -durée : %s"
+
+msgctxt "#25008"
+msgid "Blu-ray Disc playback failed"
+msgstr "Échec lors de la lecture du disque Blu-ray"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray Disc is not supported"
+msgstr "Le menu de ce disque Blu-ray n'est pas pris en charge"
+
 msgctxt "#29800"
 msgid "Library Mode"
 msgstr "Mode médiathèque"
@@ -10600,6 +10652,10 @@ msgstr "Audio MPEG-4 (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Nombre de canaux"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -11139,7 +11195,7 @@ msgstr "Pas d'information actuellement disponible."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
-msgstr "Afficher le résumé pour les média non vus de la bibliothèque Vidéo"
+msgstr "Afficher le résumé pour les média non vus de la vidéothèque"
 
 msgctxt "#36142"
 msgid "No info available yet."
@@ -11171,11 +11227,11 @@ msgstr "Retirer les éléments de votre bibliothèque qui n'ont pas pu être tro
 
 msgctxt "#36149"
 msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
-msgstr "Exporter la base de données de la bibliothèque Vidéo au format XML. Cela peut potentiellement écraser les fichiers XML déjà présents."
+msgstr "Exporter la base de données de la vidéothèque au format XML. Cela peut potentiellement écraser les fichiers XML déjà présents."
 
 msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
-msgstr "Importer un fichier XML vers la base de données de la bibliothèque Vidéo."
+msgstr "Importer un fichier XML vers la base de données de la vidéothèque."
 
 msgctxt "#36151"
 msgid "No info available yet."
@@ -11375,7 +11431,7 @@ msgstr "Sélectionner la source d'information par défaut pour les séries TV. V
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
-msgstr "Scraper par défaut utilisé pour ajouter les vidéos musicales dans votre bibliothèque."
+msgstr "Scraper par défaut utilisé pour ajouter les vidéos musicales dans votre vidéothèque."
 
 msgctxt "#36201"
 msgid "No info available yet."
@@ -12021,9 +12077,17 @@ msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr "Sélectionner commet les propriétés de la sortie audio seront positionnées : [Fixe] - les propriétés de sortie sont positionnées pour le taux d'échantillonnage spécifié et les configuration des enceintes une fois pour toute ; [Meilleure correspondance] - les propriétés de sortie sont positionnées pour être toujours le plus proche possible de la source ; [Optimisé] - les propriétés de sortie sont positionnées au début de la lecture et ne changeront pas si les propriétés de la source changent."
 
+msgctxt "#36362"
+msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
+msgstr "Choisir le nombre de canaux pris en charge par la connexion audio, ou le nombre de haut-parleurs dans le cas de connexions analogues. Ce paramètre ne s'applique pas à l'audio passthrough. Note : SPDIF prend en charge seulement les canaux 2.0 mais peut quand même fournir une sortie audio multiplexée en utilisant un format pris en charge par passthrough."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Amplifier les flux AC3 qui ont été réduit à 2 voies."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the speaker configuration."
+msgstr "Choisir pour activer le surmixage de 2 canaux audio vers le nombre de canaux audio spécifiés par la configuration des haut-parleurs."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12257,6 +12321,10 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Activer le décodage vidéo matériel en utilisant le décodeur AMLogic"
 
+msgctxt "#36423"
+msgid "Use frame-multi-threaded decoding instead of hardware accelerated decoding (less reliable than default single thread mode)."
+msgstr "Utiliser le décodage image-multifil au lieu du décodage accéléré par le matériel (moins fiable que le mode par défaut à un exétron) "
+
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Choisir ce qu'il se passera quand un élément du GEP est sélectionné : [Afficher le menu contextuel] l'activera vous permettant de choisir d'autres actions; [Changer de chaîne] syntonisera instantanément la chaîne; [Afficher les informations] affichera les informations détaillées avec l'histoire et d'autres options; [Enregistrer] créera une minuterie d'enregistrement pour l'élément choisi."
@@ -12276,6 +12344,10 @@ msgstr "Afficher les informations"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Enregistrer"
+
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - transcoding can lead to a reduction in sound quality"
+msgstr "Choisir ceci si la connexion de sortie audio ne prend en charge que l'audio multiplexé tel que « Dolby Digital 5.0 ». Ceci permet d'écouter de l'audio multiplexé tel que AAC 5.1 ou Flac 5.1 en son ambiophonique 5.1. Note : le transcodage peut entraîner une réduction de la qualité sonore."
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
@@ -12484,3 +12556,11 @@ msgstr "Activer les illustrations à plus grande profondeur de couleurs"
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
 msgstr "Définir une limite de résolution de l'interface utilisateur"
+
+msgctxt "#37022"
+msgid "UPnP Player"
+msgstr "Lecteur UPnP"
+
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr "Désirez-vous arrêter la lecture sur le périphérique distant?"

@@ -6741,10 +6741,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Automobilism"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fitness și sănătate"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Gătit"
@@ -6764,10 +6760,6 @@ msgstr "Caracteristici speciale"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Limbă originală"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Alb-negru"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -9816,6 +9808,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Număr de canale"
 
 msgctxt "#34101"
 msgid "2.0"

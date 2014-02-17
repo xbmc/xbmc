@@ -3597,10 +3597,6 @@ msgctxt "#19645"
 msgid "Tourism/Travel"
 msgstr "Sayohat/Safar"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fitnes va Sog'liq"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Pazandalik"
@@ -3608,10 +3604,6 @@ msgstr "Pazandalik"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Asl til"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Qora va oq"
 
 msgctxt "#19676"
 msgid "Drama"
@@ -4080,6 +4072,10 @@ msgstr "%s kun"
 msgctxt "#33063"
 msgid "Options"
 msgstr "Parametrlar"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Kanallar soni"
 
 msgctxt "#34101"
 msgid "2.0"

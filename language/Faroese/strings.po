@@ -5561,10 +5561,6 @@ msgctxt "#19645"
 msgid "Tourism/Travel"
 msgstr "Ferðavinna og ferðing"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Rørsla og heilsa"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Matgerð"
@@ -5576,10 +5572,6 @@ msgstr "Urtagarðar"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Uppruna mál"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Svart og hvítt"
 
 msgctxt "#19664"
 msgid "Live Broadcast"
@@ -8244,6 +8236,10 @@ msgstr "Remote samskiftis ambætari"
 msgctxt "#33200"
 msgid "Detected New Connection"
 msgstr "Fann nýggja íbinding"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Tal av kanalum"
 
 msgctxt "#34120"
 msgid "Play GUI sounds"

@@ -1835,7 +1835,7 @@ msgstr "Pārslēgt mediju"
 
 msgctxt "#524"
 msgid "Select playlist"
-msgstr "Izvēlēties spēļsarakstu"
+msgstr "Atlasīt spēļsarakstu"
 
 msgctxt "#525"
 msgid "New playlist..."
@@ -1859,7 +1859,7 @@ msgstr "Kļūda: nosaukums dublējas"
 
 msgctxt "#530"
 msgid "Select genre"
-msgstr "Izvēlēties žanru"
+msgstr "Atlasīt žanru"
 
 msgctxt "#531"
 msgid "New genre"
@@ -3588,6 +3588,10 @@ msgstr "Albuma info"
 msgctxt "#10524"
 msgid "Movie info"
 msgstr "Filmas info"
+
+msgctxt "#12000"
+msgid "Select dialogue"
+msgstr "Atlasiet dialogu"
 
 msgctxt "#12001"
 msgid "Music/Info"
@@ -6467,7 +6471,7 @@ msgstr "Šis saraksts satur izmaiņas"
 
 msgctxt "#19213"
 msgid "Select backend"
-msgstr "Izvēlēties aizmugursistēmu"
+msgstr "Atlasīt aizmugursistēmu"
 
 msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
@@ -6997,10 +7001,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Autosports"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fitness un veselība"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Ēdiena gatavošana"
@@ -7020,10 +7020,6 @@ msgstr "Īpašas iezīmes"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Oriģinālvaloda"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Melns un balts"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8043,7 +8039,7 @@ msgstr "Ielādē direktorijā info par sērijām"
 
 msgctxt "#20356"
 msgid "Select TV show:"
-msgstr "Izvēlēties TV pārraidi:"
+msgstr "Atlasīt TV pārraidi:"
 
 msgctxt "#20357"
 msgid "Enter the TV show name"
@@ -8125,6 +8121,18 @@ msgctxt "#20376"
 msgid "Original title"
 msgstr "Oriģinālnosaukums"
 
+msgctxt "#20379"
+msgid "Selected folder contains a single TV show"
+msgstr "Atlasītā mape satur vienu TV pārraidi"
+
+msgctxt "#20380"
+msgid "Exclude selected folder from scans"
+msgstr "Neiekļaut atlasīto mapi skenēšanā"
+
+msgctxt "#20383"
+msgid "Selected folder contains a single video"
+msgstr "Atlasītā mape satur vienu video"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Fanu māksla"
@@ -8144,6 +8152,14 @@ msgstr "Fanu māksla"
 msgctxt "#20462"
 msgid "New tag..."
 msgstr "Jauns tags..."
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Atlasīts %s"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Atlasīt filmu kopumu"
 
 msgctxt "#21359"
 msgid "Add media share..."
@@ -8205,6 +8221,10 @@ msgctxt "#21875"
 msgid "Country"
 msgstr "Valsts"
 
+msgctxt "#21890"
+msgid "Select artist"
+msgstr "Atlasīt izpildītāju"
+
 msgctxt "#22002"
 msgid "DNS suffix"
 msgstr "DNS suffikss"
@@ -8241,9 +8261,17 @@ msgctxt "#22036"
 msgid "Import karaoke titles..."
 msgstr "Importēt karaoke titrus..."
 
+msgctxt "#22037"
+msgid "Show song selector automatically"
+msgstr "Automātiski rādīt dziesmas izvēlētāju"
+
 msgctxt "#22038"
 msgid "Export karaoke titles..."
 msgstr "Eksportēt karaoke titrus..."
+
+msgctxt "#22079"
+msgid "Default select action"
+msgstr "Noklusētā atlasīšanas darbība"
 
 msgctxt "#22082"
 msgid "More..."
@@ -8299,7 +8327,7 @@ msgstr "Ievadiet meklējamo virkni"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr "Izvēlēties no visiem nosaukumiem ..."
+msgstr "Atlasīt no visiem nosaukumiem ..."
 
 msgctxt "#33021"
 msgid "Precipitation"
@@ -8340,6 +8368,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Kanālu skaits"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -8425,6 +8457,46 @@ msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Atlasīt mediju logu, ko XBMC parāda palažoties."
+
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the User Interface."
+msgstr "Atlasiet vai izslēdziet skaņas shēmu, ko izmanto lietotāja saskarne."
+
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Atlasiet temperatūras, laika un datuma formātu. Pieejamās opcijas ir atkarīgas no izvēlētās valodas."
+
+msgctxt "#36117"
+msgid "Select country location."
+msgstr "Atlasiet valsts atrašanās vietu."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Atlasiet savu pašreizējo laika joslu."
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Atlasiet noklusēto audio celiņu, ja pieejami dažādi valodu celiņi."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Atlasiet noklusētos subtitrus, ja pieejami subtitri dažādās valodās."
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Atlasiet ekrānsaudzētāju. XBMC forsēs ekrānsaudzētāju \"Izdzist\", ja pilnekrāna video būs pauze vai būs aktivizēts dialoga logs."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Atlasītā ekrānsaudzētāja priekšapskate."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list of the selected item."
+msgstr "Ieslēgt automātiskui nākamā faila atskaņošanu spēļsarakstā, kurā atlasīts ieraksts."
+
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "Audio jāpaliek sinhronam. To var panākt ar pārsemplošanu, pakešu izlaišanu/dublēšanu vai arī, regulējot pulksteni, ja sinhronums zaudēts pārāk daudz."
@@ -8445,9 +8517,21 @@ msgctxt "#36250"
 msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
 msgstr "Atkārtoti prasīt pin kodu, piekļūstot vecāku slēgtajiem kanāliem, ja kods nav bijis prasīts šo laika sprīdi. Noklusējums ir 300 sekundes. "
 
+msgctxt "#36273"
+msgid "Select the visualisation that will be displayed while listening to music."
+msgstr "Atlasiet vizualizāciju, kuru attēlot, kamēr klausās mūziku."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karoake."
+msgstr "Atlasiet fonta krāsu, ko lieto karaokes laikā."
+
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Testē musturus ekrāna aparatūras kalibrēšanai."
+
+msgctxt "#36362"
+msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
+msgstr "Atlasiet, cik kanālus atbalsta audio savienojums vai cik skaļruņu ir pieslēgti ar analogajiem savienojumiem. Šo iestatījumu nepiemēro caurspēlējošam audio. Piezīme - SPDIF atbalsta tikai 2.0 kanālus, taču tik un tā spēj izvadīt daudzkanālu audio, izmantojot formātu, kuru atbalsta caurspēlēšanai."
 
 msgctxt "#36391"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -8473,6 +8557,10 @@ msgctxt "#36428"
 msgid "Record"
 msgstr "Ierakstīt"
 
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - transcoding can lead to a reduction in sound quality"
+msgstr "Atlasiet šo, ja audio izejas savienojums atbalsta tikai daudzkanālu audio ar Dolby Digital 5.1 - tas ļaus daudzkanālu audio AAC5.1 vai FLAC5.1 formātā klausīties ar 5.1 visaptverošu skaņu. Piezīme - pārkodēšana var samazināt skaņas kvalitāti"
+
 msgctxt "#36502"
 msgid "None"
 msgstr "Nav"
@@ -8480,3 +8568,7 @@ msgstr "Nav"
 msgctxt "#36531"
 msgid "Select alternate mode..."
 msgstr "Izvēlēties alternatīvo režīmu..."
+
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "Atlasiet šo opciju, ja Jūsu atskaņotājs spēj dekodēt E-AC3 straumes."

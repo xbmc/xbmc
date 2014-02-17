@@ -2389,6 +2389,10 @@ msgctxt "#666"
 msgid "Verbose logging..."
 msgstr "詳細記錄..."
 
+msgctxt "#667"
+msgid "Enable Dolby Digital transcoding"
+msgstr "啟用杜比數位轉碼"
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "清除音樂資料庫"
@@ -3713,6 +3717,10 @@ msgctxt "#12006"
 msgid "Audio visualisation"
 msgstr "音效視覺效果"
 
+msgctxt "#12008"
+msgid "File stacking dialogue"
+msgstr "檔案堆疊對話框"
+
 msgctxt "#12009"
 msgid "Rebuild index..."
 msgstr "重建目錄索引…"
@@ -3868,6 +3876,10 @@ msgstr "拒絕讀取"
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "已達密碼重試次數限制。"
+
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "系統將要立刻關閉電源。"
 
 msgctxt "#12348"
 msgid "Item locked"
@@ -4212,6 +4224,10 @@ msgstr "VDPAU 硬體解碼"
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "VDPAU 高品質倍線等級"
+
+msgctxt "#13122"
+msgid "VDPAU Studio level colour conversion"
+msgstr "VDPAU 視聽室等級色彩轉換"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4924,6 +4940,10 @@ msgstr "允許硬體加速 (amcodec)"
 msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "允許硬體加速 (MediaCodec)"
+
+msgctxt "#13440"
+msgid "Allow frame-multi-threaded decoding"
+msgstr "允許多執行緒解碼"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5933,6 +5953,10 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr "電視錄影"
 
+msgctxt "#19018"
+msgid "Folder with channel icons"
+msgstr "頻道圖示的資料夾"
+
 msgctxt "#19019"
 msgid "Channels"
 msgstr "頻道"
@@ -6120,6 +6144,10 @@ msgstr "到最後"
 msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "預設的電子節目表視窗"
+
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "頻道圖示"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6697,6 +6725,10 @@ msgctxt "#19222"
 msgid "EPG"
 msgstr "電子節目表"
 
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "沒有 PVR 附加元件可以被啟用。請檢查你的設定或者查閱日誌以取得更多資訊。"
+
 msgctxt "#19224"
 msgid "Recording aborted"
 msgstr "錄影已放棄"
@@ -6737,6 +6769,10 @@ msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "定時器更新時顯示通知"
 
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "使用後端頻道號碼（只適用於1個已啟用的 PVR 附加元件）"
+
 msgctxt "#19235"
 msgid "PVR manager is starting up"
 msgstr "PVR 管理員啟動中"
@@ -6757,9 +6793,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "開始背景執行緒"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "沒有啟用任何 PVR 附加元件"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR 管理員已啟用，但沒有啟用任何"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "啟用的 PVR 附加元件。請至少啟用一個附加元件。"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6916,6 +6960,22 @@ msgstr "客戶端專用設定"
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "轉台時需要按「確定」確認"
+
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "目前的圖示"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "無圖示"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "選擇圖示"
+
+msgctxt "#19285"
+msgid "Browse for icon"
+msgstr "瀏覽圖示"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7201,10 +7261,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "駕駛"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "健身與健康"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "烹飪"
@@ -7224,10 +7280,6 @@ msgstr "特殊特性"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "其他語言"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "黑白"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8785,6 +8837,10 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "移除媒體共享"
 
+msgctxt "#21366"
+msgid "Custom subtitle folder"
+msgstr "自訂字幕資料夾"
+
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "電影和替代字幕資料夾"
@@ -9152,6 +9208,10 @@ msgstr "群組分類依據"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "混合"
+
+msgctxt "#21460"
+msgid "Subtitle location on screen"
+msgstr "字幕在螢幕中的位置"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10149,6 +10209,18 @@ msgctxt "#25006"
 msgid "Select playback item"
 msgstr "選擇播放項目"
 
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "章節：%u - 長度：%s"
+
+msgctxt "#25008"
+msgid "Blu-ray Disc playback failed"
+msgstr "播放藍光光碟失敗"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray Disc is not supported"
+msgstr "不支援這片藍光光碟的選單"
+
 msgctxt "#29800"
 msgid "Library Mode"
 msgstr "資料庫模式"
@@ -10504,6 +10576,10 @@ msgstr "MPEG-4 音效 (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows 媒體音效 2 (FFmpeg wmav2)"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "通道數"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -11677,9 +11753,17 @@ msgctxt "#36331"
 msgid "Define webserver password."
 msgstr "設定網頁伺服器的密碼。"
 
+msgctxt "#36332"
+msgid "Select between web interfaces installed via the Add-on Manager."
+msgstr "從附加元件管理員選擇一個已安裝的網頁介面。"
+
 msgctxt "#36333"
 msgid "No info available yet."
 msgstr "無可用資訊。"
+
+msgctxt "#36334"
+msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
+msgstr "允許這個電腦上的程式透過網路介面或者 JSON-RPC 介面協定控制 XBMC。"
 
 msgctxt "#36335"
 msgid "No info available yet."
@@ -11752,6 +11836,14 @@ msgstr "無可用資訊。"
 msgctxt "#36353"
 msgid "No info available yet."
 msgstr "無可用資訊。"
+
+msgctxt "#36354"
+msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimising other applications. Uses a bit more resources and playback may be slightly less smooth."
+msgstr "主要好處是在有多螢幕的情況下，不用將其他應用程式最小化就可以使用 XBMC。這會使用稍微多一點資源，且播放時可能會稍微不那麼流暢。"
+
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgstr "在多螢幕設置中，用來顯示 XBMC 以外的螢幕會變全黑。"
 
 msgctxt "#36359"
 msgid "No info available yet."
@@ -11957,6 +12049,10 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality"
+msgstr "略過 VDPAU 混合器可在較低端的系統上節省資源但會稍微降低圖像的品質"
+
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "啟用 AMLogic 硬體解碼。"
@@ -11997,6 +12093,14 @@ msgctxt "#36507"
 msgid "Interlaced"
 msgstr "交錯掃描"
 
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "基於硬體"
+
+msgctxt "#36509"
+msgid "Monoscopic - 2D"
+msgstr "2D"
+
 msgctxt "#36520"
 msgid "Playback mode of stereoscopic videos"
 msgstr "3D 立體影片的播放模式"
@@ -12004,6 +12108,10 @@ msgstr "3D 立體影片的播放模式"
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "問我"
+
+msgctxt "#36522"
+msgid "Use preferred mode"
+msgstr "使用偏好的模式"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12025,6 +12133,10 @@ msgctxt "#36528"
 msgid "Select stereoscopic mode"
 msgstr "選擇 3D 立體模式"
 
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "2D"
+
 msgctxt "#36530"
 msgid "Preferred mode"
 msgstr "偏好的模式"
@@ -12040,6 +12152,10 @@ msgstr "選擇聲音要如何下降混合，例如從 5.1 到 2.0：[啟用] 維
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
 msgstr "影片的 3D 立體模式"
+
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr "相反的 3D 立體模式"
 
 msgctxt "#36537"
 msgid "No info available yet."
@@ -12124,3 +12240,11 @@ msgstr "在全螢幕時啟用如 printscreen、alt-tab 和音量控制等系統�
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
 msgstr "設定使用者介面的解析度限制"
+
+msgctxt "#37022"
+msgid "UPnP Player"
+msgstr "UPnP 播放器"
+
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr "你想要停止遠端裝置上的播放嗎？"

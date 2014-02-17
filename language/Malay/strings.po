@@ -1565,6 +1565,10 @@ msgctxt "#33081"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "Fail ini disusun tindan. Pilih bahagian yang anda ingin mainkan."
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Jumlah saluran"
+
 msgctxt "#34122"
 msgid "Always"
 msgstr "Sentiasa"

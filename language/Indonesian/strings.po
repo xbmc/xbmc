@@ -6989,10 +6989,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Motor"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Kebugaran &amp; Kesehatan"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Memasak"
@@ -7012,10 +7008,6 @@ msgstr "Karakteristik Khusus"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Bahasa Asli"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Hitam &amp; Putih"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -10144,6 +10136,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Jumlah saluran"
 
 msgctxt "#34101"
 msgid "2.0"

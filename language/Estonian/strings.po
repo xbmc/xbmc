@@ -7037,10 +7037,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Moto"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fitness &amp; Tervis"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Kokandus"
@@ -7060,10 +7056,6 @@ msgstr "Eriomadused"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Algupärane keel"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Must &amp; Valge"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8119,7 +8111,7 @@ msgstr "Osa"
 
 msgctxt "#20360"
 msgid "Episodes"
-msgstr "Osad"
+msgstr "Osa"
 
 msgctxt "#20361"
 msgid "Loading episode details"
@@ -10208,6 +10200,10 @@ msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Kanalite arv"
 
 msgctxt "#34101"
 msgid "2.0"

@@ -7005,10 +7005,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Autoilu"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Kuntoilu ja terveys"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Ruuanlaitto"
@@ -7028,10 +7024,6 @@ msgstr "Erikoisominaisuudet"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Alkuperäisellä kielellä"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Mustavalkoinen"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -10132,6 +10124,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Kanavien määrä"
 
 msgctxt "#34101"
 msgid "2.0"

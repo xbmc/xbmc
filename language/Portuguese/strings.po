@@ -869,6 +869,10 @@ msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Seleccionar pasta de destino"
 
+msgctxt "#252"
+msgid "Stereo upmix"
+msgstr "Remistura estéreo aumentada"
+
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Número de canais"
@@ -1423,7 +1427,7 @@ msgstr "Névoa"
 
 msgctxt "#396"
 msgid "Select location"
-msgstr "Seleccione o local"
+msgstr "Local"
 
 msgctxt "#397"
 msgid "Refresh time"
@@ -2400,6 +2404,10 @@ msgstr "Nível de compressão"
 msgctxt "#666"
 msgid "Verbose logging..."
 msgstr "Registo Verbose..."
+
+msgctxt "#667"
+msgid "Enable Dolby Digital transcoding"
+msgstr "Activar transcodificação Dolby Digital"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -3695,11 +3703,11 @@ msgstr "Música - Biblioteca"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
-msgstr "A reproduzir - Música"
+msgstr "Em reprodução - Música"
 
 msgctxt "#10522"
 msgid "Now Playing - Videos"
-msgstr "A reproduzir - Vídeo"
+msgstr "Em reprodução - Vídeo"
 
 msgctxt "#10523"
 msgid "Album info"
@@ -4667,7 +4675,7 @@ msgstr "Procurar novo conteúdo"
 
 msgctxt "#13350"
 msgid "Now playing..."
-msgstr "A reproduzir agora..."
+msgstr "Em reprodução..."
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4973,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Permitir aceleração por hardware (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Allow frame-multi-threaded decoding"
+msgstr "Activar descodificação de frames multi-tarefa"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Método de sincronia A/V"
@@ -5019,7 +5031,7 @@ msgstr "Sincronizar vídeo com ecrã"
 
 msgctxt "#13511"
 msgid "Choose art"
-msgstr "Escolher imagem"
+msgstr "Imagem"
 
 msgctxt "#13512"
 msgid "Current art"
@@ -5599,7 +5611,7 @@ msgstr "Pesquisa Internet"
 
 msgctxt "#16003"
 msgid "Player"
-msgstr "Reprodutor"
+msgstr "Leitor"
 
 msgctxt "#16004"
 msgid "Play media from disc"
@@ -5997,6 +6009,10 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Gravações de TV"
 
+msgctxt "#19018"
+msgid "Folder with channel icons"
+msgstr "Pasta com ícones de canais"
+
 msgctxt "#19019"
 msgid "Channels"
 msgstr "Canais"
@@ -6184,6 +6200,10 @@ msgstr "Ir para o fim"
 msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "Janela padrão de PVR"
+
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "Ícones de canais"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -7009,6 +7029,22 @@ msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Confirmar mudanças de canal premindo OK"
 
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "Ícone actual"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "Sem ícone"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "Escolher ícone"
+
+msgctxt "#19285"
+msgid "Browse for icon"
+msgstr "Procurar ícone"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Outro/Desconhecido"
@@ -7293,10 +7329,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Desportos Motorizados"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Forma Física/Saúde"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Culinária"
@@ -7316,10 +7348,6 @@ msgstr "Características Especiais"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Idioma original"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Preto / Branco"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -7371,11 +7399,11 @@ msgstr "Pasta para guardar músicas"
 
 msgctxt "#20001"
 msgid "Use external DVD player"
-msgstr "Usar reprodutor DVD externo"
+msgstr "Usar leitor DVD externo"
 
 msgctxt "#20002"
 msgid "External DVD player"
-msgstr "Reprodutor DVD externo"
+msgstr "Leitor DVD externo"
 
 msgctxt "#20003"
 msgid "Trainers folder"
@@ -8237,6 +8265,10 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Pesquisando álbuns em %s"
 
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Enredo do filme"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Reproduzir parte ..."
@@ -8863,7 +8895,7 @@ msgstr "Partilhar vídeos e música através de UPnP"
 
 msgctxt "#21361"
 msgid "Look for remote UPnP players"
-msgstr "Procurar reprodutores UPnP remotos"
+msgstr "Procurar leitores UPnP remotos"
 
 msgctxt "#21362"
 msgid "Bookmark created"
@@ -8881,13 +8913,17 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Remover partilha de conteúdo"
 
+msgctxt "#21366"
+msgid "Custom subtitle folder"
+msgstr "Pasta de legendas personalizada"
+
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Pasta alternativa de vídeo e legendas"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr "Ignorar os tipos de letra em legendas ASS/SSA"
+msgstr "Ignorar tipos de letra em legendas ASS/SSA"
 
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
@@ -9249,6 +9285,10 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "mistura"
 
+msgctxt "#21460"
+msgid "Subtitle location on screen"
+msgstr "Posição das legendas no ecrã"
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Fixa"
@@ -9563,7 +9603,7 @@ msgstr "Escolha o artista"
 
 msgctxt "#21891"
 msgid "Artist information"
-msgstr "Informação do artista"
+msgstr "Informação de artista"
 
 msgctxt "#21892"
 msgid "Instruments"
@@ -9807,11 +9847,11 @@ msgstr "Colocar a escala do Teletexto como 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
-msgstr "Reprodutor externo activo"
+msgstr "Leitor externo activo"
 
 msgctxt "#23101"
 msgid "Click OK to terminate the player"
-msgstr "Seleccione OK para encerrar o reprodutor"
+msgstr "Seleccione OK para encerrar o leitor"
 
 msgctxt "#23104"
 msgid "Click OK when playback has ended"
@@ -9879,7 +9919,7 @@ msgstr "Informação de álbuns"
 
 msgctxt "#24017"
 msgid "Artist information"
-msgstr "Informação do artista"
+msgstr "Informação de artista"
 
 msgctxt "#24018"
 msgid "Services"
@@ -10151,7 +10191,7 @@ msgstr "O add-on é incompatível devido a dependências não encontradas."
 
 msgctxt "#24105"
 msgid "Pause when searching for subtitles"
-msgstr "Pausas ao procurar legendas"
+msgstr "Pausar ao procurar legendas"
 
 msgctxt "#24106"
 msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
@@ -10211,7 +10251,7 @@ msgstr "Escolher o serviço que será usado como padrão ao procurar legendas de
 
 msgctxt "#24120"
 msgid "Manual search string"
-msgstr "Expressão de busca manual"
+msgstr "Procura manual"
 
 msgctxt "#24121"
 msgid "Enter search string"
@@ -10244,6 +10284,18 @@ msgstr "Titulo: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Escolher item de reprodução"
+
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "Capítulos: %u - duração: %s"
+
+msgctxt "#25008"
+msgid "Blu-ray Disc playback failed"
+msgstr "A reprodução do disco Blu-ray falhou"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray Disc is not supported"
+msgstr "O menu deste disco Blu-ray não é suportado"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10311,7 +10363,7 @@ msgstr "Longo"
 
 msgctxt "#33014"
 msgid "Use DVD player instead of regular player"
-msgstr "Usar reprodutor de DVD em vez do reprodutor normal"
+msgstr "Usar leitor de DVD em vez do leitor normal"
 
 msgctxt "#33015"
 msgid "Ask for download before playing video"
@@ -10600,6 +10652,10 @@ msgstr "Áudio MPEG-4 (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Áudio Windows Media 2 (FFmpeg wmav2)"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Número de canais"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -11255,7 +11311,7 @@ msgstr "Seleccionar a qualidade de remasterização para casos em que a saída d
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
-msgstr "Permitir que o reprodutor de vídeo ignore o rácio de aspecto por uma certa quantidade, de modo a preencher uma área maior do ecrã com o vídeo."
+msgstr "Permitir que o leitor de vídeo ignore o rácio de aspecto por uma certa quantidade, de modo a preencher uma área maior do ecrã com o vídeo."
 
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
@@ -12021,9 +12077,17 @@ msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
 msgstr "Seleccionar como as propriedades da saída de áudio são definidas: [Fixa] - as propriedades de saída são definidas para a mesma taxa de amostragem e configuração de colunas em todos os momentos; [Melhor Correspondência] - as propriedades de saída são definidas para serem sempre uma correspondência o mais aproximada possível às propriedades da fonte; [Optimizado] - as propriedades de saída são definidas no início da reprodução e não serão alteradas se as propriedades da fonte mudarem."
 
+msgctxt "#36362"
+msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
+msgstr "Seleccionar o número de canais suportados pela ligação áudio, ou o número de colunas disponível através de ligação analógica. Esta definição não se aplica a áudio de passagem. Nota - a ligação SPDIF suporta apenas 2.0 canais, mas mesmo assim pode emitir áudio multi-canal usando um formato suportado pelo áudio de passagem."
+
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Aumentar volume em pistas AC3 que foram remisturadas para 2 canais."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the speaker configuration."
+msgstr "Seleccionar para activar a remistura aumentada de 2 canais de áudio para o número de canais áudio especificados na configuração das colunas."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12257,6 +12321,10 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "Activa a descodificação por hardware com o descodificador AMLogic"
 
+msgctxt "#36423"
+msgid "Use frame-multi-threaded decoding instead of hardware accelerated decoding (less reliable than default single thread mode)."
+msgstr "Usar descodificação de frames multi-tarefa em vez de descodificação por hardware (menos fiável do que o modo padrão de tarefa única)"
+
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "Seleccionar o que acontece quando um item do EPG é seleccionado: [Exibir Menu de Contexto] irá exibir o menu de contexto, de onde poderá escolher outras acções.; [Mudar Para Canal] irá sintonizar imediatamente o canal relacionado; [Exibir Informação] exibirá informação detalhada, com argumento e mais opções; [Gravar] irá criar um temporizador de gravação para o item seleccionado."
@@ -12276,6 +12344,10 @@ msgstr "Exibir informação"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Gravar"
+
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - transcoding can lead to a reduction in sound quality"
+msgstr "Seleccionar se a ligação de saída áudio suporta apenas áudio multi-canal como o Dolby Digital 5.1. Isto permite que o áudio multi-canal como o AAC5.1 ou o FLAC5.1 possa ser ouvido em som surround 5.1. Nota - a transcodificação pode resultar numa menor qualidade de som."
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
@@ -12484,3 +12556,11 @@ msgstr "Activar artwork com maior profundidade de cor"
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
 msgstr "Definir limite de resolução da interface"
+
+msgctxt "#37022"
+msgid "UPnP Player"
+msgstr "Leitor UPnP"
+
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr "Quer parar a reprodução no dispositivo remoto?"

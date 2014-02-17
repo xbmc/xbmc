@@ -3233,6 +3233,10 @@ msgctxt "#33068"
 msgid "Background"
 msgstr "पृष्ठभूमि"
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "मर्गें की संख्या"
+
 msgctxt "#35502"
 msgid "Name"
 msgstr "नाम"

@@ -6985,10 +6985,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "மோட்டாரிங்கு"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "உடற்பயிற்சி & உடல்நலம்"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "சமையல்"
@@ -7008,10 +7004,6 @@ msgstr "சிறப்பு இயல்புகள்"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "அசல் மொழி"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "கருப்பு &amp; வெள்ளை"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -10140,6 +10132,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "தடங்களின் எண்ணிக்கை"
 
 msgctxt "#34101"
 msgid "2.0"

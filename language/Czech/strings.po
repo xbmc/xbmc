@@ -6925,10 +6925,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Motorismus"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fitness a zdraví"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Vaření"
@@ -6948,10 +6944,6 @@ msgstr "Zvláštní charakteristiky"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Původní jazyk"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Černobílý"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -10028,6 +10020,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Počet kanálů"
 
 msgctxt "#34101"
 msgid "2.0"

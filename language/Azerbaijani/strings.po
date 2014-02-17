@@ -1841,6 +1841,10 @@ msgctxt "#24027"
 msgid "Weather"
 msgstr "Hava durumu"
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Kanalların sayısı"
+
 msgctxt "#35502"
 msgid "Name"
 msgstr "Ad"

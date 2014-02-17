@@ -6737,10 +6737,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Automovilismo"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fitness &amp; Salud"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Cocina"
@@ -6760,10 +6756,6 @@ msgstr "Características Especiales"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Idioma Original"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Blanco &amp; Negro"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -9812,6 +9804,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Número de canales"
 
 msgctxt "#34101"
 msgid "2.0"

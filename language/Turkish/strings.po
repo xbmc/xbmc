@@ -1923,7 +1923,7 @@ msgstr "Büyük liste"
 
 msgctxt "#538"
 msgid "Big icons"
-msgstr "Büyük simge"
+msgstr "Büyük simgeler"
 
 msgctxt "#539"
 msgid "Wide"
@@ -2067,7 +2067,7 @@ msgstr "Ülke"
 
 msgctxt "#575"
 msgid "In progress"
-msgstr "İşlem sürüyor"
+msgstr "Devam ediyor"
 
 msgctxt "#576"
 msgid "Times played"
@@ -2383,7 +2383,7 @@ msgstr "Sıkıştırma düzeyi"
 
 msgctxt "#666"
 msgid "Verbose logging..."
-msgstr "Ayrıntılı kayıt tutma..."
+msgstr "Ayrıntılı günlük..."
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2839,7 +2839,7 @@ msgstr "%s kaynağını ekle"
 
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
-msgstr "Yolları girin veya ortam konumlarına gözatın."
+msgstr "Yolları gir veya ortam konumlarına gözat."
 
 msgctxt "#1022"
 msgid "Enter a name for this media Source."
@@ -4933,6 +4933,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Sadece bunu oynat"
 
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "Yukarıdaki ölçeklendirmeler için Yüksek Kalite Ölçekleyiciyi etkinleştir"
+
 msgctxt "#13436"
 msgid "Allow hardware acceleration (libstagefright)"
 msgstr "Donanımsal hızlandırmasına izin ver (libstagefright)"
@@ -5119,7 +5123,7 @@ msgstr "Küçük resim görünümüne otomatik değiştirmeyi etkinleştir"
 
 msgctxt "#14012"
 msgid "- Use large icons"
-msgstr "- Büyük simge kullan"
+msgstr "- Büyük simgeleri kullan"
 
 msgctxt "#14013"
 msgid "- Switch based on"
@@ -5440,6 +5444,18 @@ msgstr "CD kopyalama işlemi bitince diski çıkar"
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "CD kopyalamayı durdur"
+
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Kullanılamayan kaynak"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "%s ortam öğeleri ile ne yapmak istiyor sunuz?"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Sakla"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5961,6 +5977,10 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr "TV kayıtları"
 
+msgctxt "#19018"
+msgid "Folder with channel icons"
+msgstr "Kanal simgelerini içeren klasör"
+
 msgctxt "#19019"
 msgid "Channels"
 msgstr "Kanallar"
@@ -6149,6 +6169,10 @@ msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "Varsayılan EPG penceresi"
 
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "Kanal simgeleri"
+
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr "Bu olay zaten kaydedilmektedir."
@@ -6160,6 +6184,10 @@ msgstr "Bu kayıt silinemez. Detaylar için günlük dosyasına bakın."
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Şimdi git"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -6957,6 +6985,22 @@ msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Kanal değiştirmeyi OK'e basarak onaylayın"
 
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "Varsayılan simge"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "Simge yok"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "Simge seç"
+
+msgctxt "#19285"
+msgid "Browse for icon"
+msgstr "Simgeye Gözat"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Diğer/Bilinmeyen"
@@ -7241,10 +7285,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Motor"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Spor ve Sağlık"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Yemek Pişirme"
@@ -7264,10 +7304,6 @@ msgstr "Karakteristik"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Özgün Dil"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Siyah ve Beyaz"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8045,6 +8081,14 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Sanatçı bilgisi indirilemedi"
 
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Çevrimiçi bilgiyi kullanarak şarkı etiketlerinin üzerine yaz"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Bu etkinleştirildiğinde, albümler ve sanatçılar için indirilen herhangi bir bilgi, sizin ayarladığınız türler, yıl, sanatçı, tarz vb. gibi şarkı etiketlerinizin üzerine yazılır. Eğer şarkı etiketlerinde MusicBrainz tanımlayıcıları varsa yararlıdır."
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "Android müzik"
@@ -8176,6 +8220,10 @@ msgstr "Sanatçılar %s kullanılarak taranıyor"
 msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Albümler %s kullanılarak taranıyor"
+
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Film içeriği"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -8705,13 +8753,17 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr "Dinleyiciler"
 
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr "Kitaplık hiyerarşisini düzleştir"
+
 msgctxt "#20457"
 msgid "Movie set"
 msgstr "Film kümesi"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr "Group movies in sets"
+msgstr "Kümelerin içindeki filmleri grupla"
 
 msgctxt "#20459"
 msgid "Tags"
@@ -8816,6 +8868,10 @@ msgstr "Ortam paylaşımını düzenle"
 msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Ortam paylaşımını kaldır"
+
+msgctxt "#21366"
+msgid "Custom subtitle folder"
+msgstr "Özel altyazı klasörü"
 
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
@@ -9184,6 +9240,10 @@ msgstr "Grup"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "karışık"
+
+msgctxt "#21460"
+msgid "Subtitle location on screen"
+msgstr "Altyazının ekrandaki konumu"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10097,6 +10157,14 @@ msgctxt "#24110"
 msgid "Downloading subtitles ..."
 msgstr "Altyazılar indiriliyor..."
 
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Altyazıları indirmek için diller:"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Altyazıları ararken kullanılacak dilleri ayarlayın. Bütün altyazı hizmetleri her dili desteklemez."
+
 msgctxt "#24113"
 msgid "Failed to download subtitle"
 msgstr "Altyazı indirilemedi"
@@ -10113,9 +10181,17 @@ msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Varsayılan TV Hizmeti"
 
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles"
+msgstr "TV Programı altyazılarını aramak için kullanılacak varsayılan hizmeti seçin."
+
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "Varsayılan Film Hizmeti"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles"
+msgstr "Film altyazılarını aramak için kullanılacak varsayılan hizmeti seçin."
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -10152,6 +10228,18 @@ msgstr "Başlık: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Çalınacak öğeyi seç"
+
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "Bölümler: %u - süre: %s"
+
+msgctxt "#25008"
+msgid "Blu-ray Disc playback failed"
+msgstr "Blu-ray Disk çalma başarısız"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray Disc is not supported"
+msgstr "Bu Blu-ray Disk menüsü desteklenmiyor"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10509,6 +10597,10 @@ msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Kanal sayısı"
+
 msgctxt "#34101"
 msgid "2.0"
 msgstr "2.0"
@@ -10647,7 +10739,7 @@ msgstr "Enter için 1 parmakla tek dokunma"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr "Kısayol menüsü için 2 parmakla tek dokunma veya 1 parmakla uzun bas"
+msgstr "İçerik menüsü için 2 parmakla tek dokunma veya 1 parmakla uzun bas"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -10979,7 +11071,7 @@ msgstr "Sıralama işlemleri sırasında bazı belirteçleri yoksay. Örneğin, 
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
-msgstr "Kullanıcı arayüzünden dosyaları silmeyi ve yeniden adlandırmayı etkin kıl. (klavyeden C'ye basın)"
+msgstr "İçerik menüsü aracılığıyla, kullanıcı arabirimi üzerinden dosyaları silmeye ve yeniden adlandırmaya izin ver. (bu menüyü getirmek için klavyeden C'ye basın)"
 
 msgctxt "#36126"
 msgid "Show the add source button from root sections of the user interface."
@@ -11004,6 +11096,10 @@ msgstr "Özel ekran koruyucu ayarlarını değiştir. Kullanılabilir seçenekle
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Seçilen ekran koruyucuyu göster."
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Medya duraklatıldığında ekranı karart. Karartma ekran koruyucu modu için geçerli değil."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -11040,6 +11136,14 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
 msgstr "Medya taranırken aktör küçük resimlerini al."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "TV Programı sezon düğümünü kaldır,  'Yalnızca bir sezon ise' (varsayılan) ile 'Her zaman' ve 'Asla' arasında geçiş yapar."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Film kitaplığına göz atarken 'Film kümeleri'ndeki filmleri grupla."
 
 msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
@@ -11229,6 +11333,18 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "XBMC'nin Kişisel Video Kaydedici (PVR) özelliklerini etkinleştir. En az bir PVR eklentisinin yüklü olması gerekir."
+
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "Kanal guruplarını PVR arka uçtan al (destekleniyorsa). Eğer arka uçta bulunmuyorsa kullanıcının oluşturduğu guruplar silinir."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgstr "Kanalları sunucudaki kanal numarasına göre sırala, fakat kanallar için XBMC'nin kendi numaralandırmasını kullanır."
+
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
 msgstr "XBMC üzerinde el ile yapılandırmak yerine arka uç numaralarını kullan."
@@ -11237,9 +11353,13 @@ msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
 msgstr "Kanal sırası, kanal ismi, simge vb. değiştirmeye izin veren kanal yöneticisini aç."
 
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "Kanalları aramak için arka uça talimat ver (destekleniyorsa)."
+
 msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
-msgstr "Kanal ve EPG veritabanını silin ve sonra verileri arka uçtan yeniden alın."
+msgstr "Kanal ve EPG veritabanını sil ve sonra veriyi arka uçtan tekrar al."
 
 msgctxt "#36210"
 msgid "No info available yet."
@@ -11281,6 +11401,14 @@ msgctxt "#36219"
 msgid "Default EPG window to show. Defaults to Timeline."
 msgstr "Varsayılan EPG penceresini göstermek için. Varsayılan: Zaman çizelgesi"
 
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
+msgstr "EPG verisini arka uçtan alma gün sayısı. Varsayılan 3 gün."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
+msgstr "EPG verisini arka uçtan alma süresi. Varsayılan 120 dakika."
+
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "CPU kullanımını azaltmak için TV oynatılırken EPG verilerini alma."
@@ -11288,6 +11416,14 @@ msgstr "CPU kullanımını azaltmak için TV oynatılırken EPG verilerini alma.
 msgctxt "#36223"
 msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
 msgstr "EPG verisi, varsayılan olarak XBMC yeniden başlatıldığında EPG verisinin alınmasını hızlandırmak için yerel veritabanında depolanır."
+
+msgctxt "#36224"
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgstr "Kanal için EPG verisi alınamaz ise 'hiçbir bilgi yok' etiketlerini gizle."
+
+msgctxt "#36225"
+msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgstr "XBMC'nin içindeki EPG veritabanını sil ve sonra veriyi arka uçtan tekrar al."
 
 msgctxt "#36226"
 msgid "No info available yet."
@@ -11300,6 +11436,10 @@ msgstr "Seçilen kanalın görüntüsünü tam ekran yerine küçük bir kutuda 
 msgctxt "#36228"
 msgid "Show the last viewed channel if switching to live tv."
 msgstr "Canlı TV ye geçildiğinde son seyredilen kanala geç."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Codec bilgisi penceresinde sinyal kalitesi bilgisini göster (eklenti ve arka uç tarafından destekleniyorsa)."
 
 msgctxt "#36230"
 msgid "No info available yet."
@@ -11316,6 +11456,22 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36233"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
+msgstr "Kayıt önceliği. Daha yüksek bir sayı daha yüksek öncelik anlamına gelir. Varsayılan değer 50. Bütün eklentiler ve arka uçlar tarafından desteklenmez."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
+msgstr "Kayıdı bu zamandan sonra sil. Varsayılan değer 99 gün. Bütün eklentiler ve arka uçlar tarafından desteklenmez."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
+msgstr "Gerçek zamanından önce kayıtları başlat. Varsayılan değer 2 dakika. Bütün eklentiler ve arka uçlar tarafından desteklenmez."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
+msgstr "Gerçek zamanından sonra kayıtları durdur. Varsayılan değer 10 dakika. Bütün eklentiler ve arka uçlar tarafından desteklenmez."
 
 msgctxt "#36240"
 msgid "No info available yet."
@@ -11379,7 +11535,7 @@ msgstr "MüzikKıtaplığı veritabanını XML dosyasına dışa aktar. Bu iste�
 
 msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
-msgstr "XML dosyasındanMüzik Kitaplığı veritabanı içine aktar."
+msgstr "XML dosyasından Müzik Kitaplığı veritabanı içine aktar."
 
 msgctxt "#36264"
 msgid "No info available yet."
@@ -11428,6 +11584,10 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "CD lerin sürücüye konulduklarında otomatik olarak başlatır."
+
+msgctxt "#36286"
+msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Etiketler: [B]%N[/B]: ParçaNumarası, [B]%S[/B]: DiskNumarası, [B]%A[/B]: Artist, [B]%T[/B]: Başlık, [B]%B[/B]: Albüm, [B]%G[/B]: Tarz, [B]%Y[/B]: Yıl, [B]%F[/B]: DosyaAdı, [B]%D[/B]: Süre, [B]%J[/B]: Tarih, [B]%R[/B]: Derecelendirme, [B]%I[/B]: DosyaBoyutu."
 
 msgctxt "#36290"
 msgid "For FLAC define compression level, default 5"
@@ -11701,6 +11861,10 @@ msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Eğer alıcınız DTS-HD çözme desteğine sahipse bu seçeneği seçin."
 
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Menü gezintisi ve önemli bildirimler gibi arayüz seslerinin nasıl işlendiğini yapılandır."
+
 msgctxt "#36374"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
@@ -11755,7 +11919,7 @@ msgstr "Uzun bir süre boşta kaldığında XBMC'nin ne yapması gerektiğini ta
 
 msgctxt "#36391"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
-msgstr "Hata ayıklamayı aç ya da kapat. Sorun giderme için kullanışlıdır."
+msgstr "Hata ayıklama günlüğünü aç veya kapat. Sorun giderme için kullanışlıdır."
 
 msgctxt "#36392"
 msgid "No info available yet."
@@ -11876,6 +12040,14 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr "AMLogic kod çözücü kullanarak donanımsal video çözücüyü etkinleştir"
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Bir EPG öğesi seçildiğinde ne olacağını seçin: [İçerik menüsünü göster] daha fazla eylem seçebileceğiniz içerik menüsünü tetikler; [Kanal değiştir] ilgili kanala ağnında geçer; [Bilgileri görüntüle] içerik ile ayrıntılı bilgi ve daha fazla seçenek gösterir; [Kayıt] seçili öğe için bir kayıt zamanlayıcısı yaratır."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "İçerik menüsünü göster"
 
 msgctxt "#36426"
 msgid "Switch to channel"
@@ -12013,6 +12185,14 @@ msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Video dosyalarının donanımsal çözülmesini etkinleştir."
 
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Stereoskopik altyazı derinliği"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Stereoskopik videolar için altyazı görsel derinliğini ayarlar. Değer ne kadar yüksek olursa altyazı izleyiciye daha yakın görünecektir."
+
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "Kapaklar ve fanart için yüksek kaliteli dokular kullan (daha fazla bellek kullanır)"
@@ -12060,3 +12240,11 @@ msgstr "Daha yüksek artwork renk derinliğini etkinleştir"
 msgctxt "#37021"
 msgid "Set GUI resolution limit"
 msgstr "Grafik Kullanıcı Arabirimi çözünürlük sınırını ayarla"
+
+msgctxt "#37022"
+msgid "UPnP Player"
+msgstr "UPnP Oynatıcı"
+
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr "Uzak aygıttaki oynatımı durdurmak istiyor musunuz?"

@@ -4057,10 +4057,6 @@ msgctxt "#19661"
 msgid "Original Language"
 msgstr "မူလဘာသာစကား"
 
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Black &amp; White"
-
 msgctxt "#19680"
 msgid "Comedy"
 msgstr "ဟာ"
@@ -5544,6 +5540,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "ချယ်နယ်များအရေအတွက်"
 
 msgctxt "#34101"
 msgid "2.0"

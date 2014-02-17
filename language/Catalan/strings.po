@@ -7249,10 +7249,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Automobilisme"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fitness &amp; Salut"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Cuina"
@@ -7272,10 +7268,6 @@ msgstr "Característiques especials"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Idioma original"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Blanc i negre"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -10516,6 +10508,10 @@ msgstr "MPEG-4 Audio (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Número de canals"
 
 msgctxt "#34101"
 msgid "2.0"

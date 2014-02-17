@@ -6733,10 +6733,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Motorry"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fiksheid &amp; Gesondheid"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Kook"
@@ -6756,10 +6752,6 @@ msgstr "Spesiale karakestieke"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Oorspronklike Taal"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Swart &amp; Wit"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -9808,6 +9800,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Aantal kanale"
 
 msgctxt "#34101"
 msgid "2.0"

@@ -6333,10 +6333,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Motorra"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Kirola eta osasuna"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Sukaldaritza"
@@ -6356,10 +6352,6 @@ msgstr "Ezaugarri bereziak"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Jatorriko hizkuntza"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Txuri-beltza"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -9384,6 +9376,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Kanal kopurua"
 
 msgctxt "#34101"
 msgid "2.0"

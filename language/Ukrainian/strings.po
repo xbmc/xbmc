@@ -7017,10 +7017,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Авто/мото"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Здоров'я та фітнес"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Кулінарія"
@@ -7040,10 +7036,6 @@ msgstr "Особливі властивості"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Оригінальна мова"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Ч-Б"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -10156,6 +10148,10 @@ msgstr "VAAPI"
 msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Кількість каналів"
 
 msgctxt "#34101"
 msgid "2.0"

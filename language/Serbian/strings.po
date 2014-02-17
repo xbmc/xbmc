@@ -7681,6 +7681,10 @@ msgctxt "#34003"
 msgid "DXVA2"
 msgstr "DXVA"
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Broj kanala"
+
 msgctxt "#34101"
 msgid "2.0"
 msgstr "2.0"

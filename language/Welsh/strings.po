@@ -6885,10 +6885,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Moduro"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Fitrwydd ac Iechyd"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Coginio"
@@ -6908,10 +6904,6 @@ msgstr "Nodweddion Arbennig"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Iaith Wreiddiol"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Du a Gwyn"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -9980,6 +9972,10 @@ msgstr "Sain MPEG-4 (FFmpeg M4A AAC)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Sain Windows Media 2 (FFmpeg wmav2)"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Nifer o sianeli"
 
 msgctxt "#34101"
 msgid "2.0"

@@ -1069,6 +1069,10 @@ msgctxt "#33081"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "Tập tin này bị lỗi, hãy chọn một phần khác để phát."
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Số kênh"
+
 msgctxt "#35000"
 msgid "Peripherals"
 msgstr "Peripherals"

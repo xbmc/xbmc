@@ -8641,6 +8641,10 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Fjöldi rása"
+
 msgctxt "#34101"
 msgid "2.0"
 msgstr "2.0"

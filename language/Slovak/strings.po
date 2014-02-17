@@ -7285,10 +7285,6 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Motorizmus"
 
-msgctxt "#19648"
-msgid "Fitness &amp; Health"
-msgstr "Zdravie a fitness"
-
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Varenie"
@@ -7308,10 +7304,6 @@ msgstr "Zvláštne charakteristiky"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "V pôvodnom znení"
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr "Čiernobiely"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -10580,6 +10572,10 @@ msgstr "MPEG-4 Audio (AAC FFmpeg M4A)"
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
 msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
+
+msgctxt "#34100"
+msgid "Number of channels"
+msgstr "Počet kanálov"
 
 msgctxt "#34101"
 msgid "2.0"
