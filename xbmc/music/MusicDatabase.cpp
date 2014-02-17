@@ -292,8 +292,11 @@ void CMusicDatabase::CreateViews()
               "        album.strImage as strImage, "
               "        iRating, "
               "        bCompilation, "
-              "        (SELECT MIN(iTimesPlayed) AS iTimesPlayed FROM song WHERE song.idAlbum = album.idAlbum)"
-              "   FROM album  ");
+              "        MIN(song.iTimesPlayed) AS iTimesPlayed "
+              "FROM album"
+              " LEFT OUTER JOIN song ON"
+              "   album.idAlbum=song.idAlbum "
+              "GROUP BY album.idAlbum");
 
   CLog::Log(LOGINFO, "create artist view");
   m_pDS->exec("CREATE VIEW artistview AS SELECT"
@@ -2964,13 +2967,13 @@ bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     // get data from returned rows
     while (!m_pDS->eof())
     {
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv("iYear").get_asString()));
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
       SYSTEMTIME stTime;
-      stTime.wYear = (WORD)m_pDS->fv("iYear").get_asInt();
+      stTime.wYear = (WORD)m_pDS->fv(0).get_asInt();
       pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
 
       CMusicDbUrl itemUrl = musicUrl;
-      CStdString strDir = StringUtils::Format("%ld/", m_pDS->fv("iYear").get_asInt());
+      CStdString strDir = StringUtils::Format("%ld/", m_pDS->fv(0).get_asInt());
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
@@ -3916,7 +3919,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 45;
+  return 46;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
