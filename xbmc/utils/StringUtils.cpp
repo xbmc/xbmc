@@ -476,30 +476,16 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
   return true;
 }
 
-void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result)
-{
-  result = "";
-  for(CStdStringArray::const_iterator it = strings.begin(); it != strings.end(); it++ )
-    result += (*it) + delimiter;
-
-  if(result != "")
-    result.erase(result.size()-delimiter.size(), delimiter.size());
-}
-
-CStdString StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter)
-{
-  CStdString result;
-  JoinString(strings, delimiter, result);
-  return result;
-}
-
 CStdString StringUtils::Join(const vector<string> &strings, const CStdString& delimiter)
 {
-  CStdStringArray strArray;
-  for (unsigned int index = 0; index < strings.size(); index++)
-    strArray.push_back(strings.at(index));
+  CStdString result = "";
+  for(vector<string>::const_iterator it = strings.begin(); it != strings.end(); it++ )
+    result += (*it) + (std::string) delimiter;
+  
+  if(result != "")
+    result.erase(result.size()-delimiter.size(), delimiter.size());
 
-  return JoinString(strArray, delimiter);
+  return result;
 }
 
 // Splits the string input into pieces delimited by delimiter.
