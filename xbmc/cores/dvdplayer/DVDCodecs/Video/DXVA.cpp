@@ -689,7 +689,16 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   avctx->release_buffer  = RelBufferS;
   avctx->hwaccel_context = m_context;
 
-  if (IsL41LimitedATI())
+  D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
+  if (AIdentifier.VendorId == PCIV_Intel && m_input == DXVADDI_Intel_ModeH264_E)
+  {
+#ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
+    m_context->workaround |= FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO;
+#else
+    CLog::Log(LOGWARNING, "DXVA - used Intel ClearVideo decoder, but no support workaround for it in libavcodec");
+#endif
+  }
+  else if (AIdentifier.VendorId == PCIV_ATI && IsL41LimitedATI())
   {
 #ifdef FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG
     m_context->workaround |= FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG;
