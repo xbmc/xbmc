@@ -288,14 +288,14 @@
 	</include>
 	<include name="ListItemSquareTitleAlbum">
 		<control type="label">
-			<posy>213</posy>
+			<posy>214</posy>
 			<include>ListItemTitle1</include>
 			<label>$INFO[ListItem.Album]</label>
 		</control>
 	</include>
 	<include name="ListItemSquareTitleArtist">
 		<control type="label">
-			<posy>189</posy>
+			<posy>190</posy>
 			<include>ListItemTitle1</include>
 			<label>$INFO[ListItem.Artist]</label>
 		</control>
@@ -349,7 +349,7 @@
 	</include>
 	<include name="ListItemWideTitle">
 		<control type="label">
-			<posy>207</posy>
+			<posy>209</posy>
 			<include>ListItemTitleWide</include>
 			<textcolor>white</textcolor>
 			<label>$INFO[ListItem.Title]</label>
@@ -358,14 +358,14 @@
 	<include name="ListItemWideTitleProvider">
 		<control type="label">
 			<visible>IsEmpty(ListItem.Property(Recommender))</visible>
-			<posy>179</posy>
+			<posy>182</posy>
 			<include>ListItemTitleWide</include>
 			<textcolor>FF999999</textcolor>
 			<label>$INFO[ListItem.Property(sourceTitle)]</label>
 		</control>
 		<control type="label">
 			<visible>!IsEmpty(ListItem.Property(Recommender))</visible>
-			<posy>179</posy>
+			<posy>182</posy>
 			<include>ListItemTitleWide</include>
 			<textcolor>FF999999</textcolor>
 			<label>$INFO[ListItem.Property(Recommender)]$INFO[ListItem.Property(sourceTitle), [COLOR=orange]&#xB7;[/COLOR] ]</label>
