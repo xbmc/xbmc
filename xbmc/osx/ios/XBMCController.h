@@ -51,7 +51,6 @@ typedef enum
   UIInterfaceOrientation orientation;
   
   bool m_isPlayingBeforeInactive;
-  bool m_isInterrupted;
   UIBackgroundTaskIdentifier m_bgTask;
   NSTimer *m_networkAutoSuspendTimer;
   IOSPlaybackState m_playbackState;
@@ -74,8 +73,6 @@ typedef enum
 - (void) enterBackground;
 - (void) enterForeground;
 - (void) becomeInactive;
-- (void) beginInterruption;
-- (void) endInterruption;
 - (void) setIOSNowPlayingInfo:(NSDictionary *)info;
 - (void) sendKey: (XBMCKey) key;
 - (void) observeDefaultCenterStuff: (NSNotification *) notification;
