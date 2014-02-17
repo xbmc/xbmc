@@ -85,7 +85,7 @@
 using namespace std;
 using namespace ADDON;
 
-CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
+CGUIMediaWindow::CGUIMediaWindow(int id, string xmlFile)
     : CGUIWindow(id, xmlFile)
 {
   m_loadType = KEEP_IN_MEMORY;

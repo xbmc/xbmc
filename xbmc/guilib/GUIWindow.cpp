@@ -54,7 +54,7 @@ bool CGUIWindow::icompare::operator()(const CStdString &s1, const CStdString &s2
   return StringUtils::CompareNoCase(s1, s2) < 0;
 }
 
-CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
+CGUIWindow::CGUIWindow(int id, const string &xmlFile)
 {
   SetID(id);
   SetProperty("xmlfile", xmlFile);

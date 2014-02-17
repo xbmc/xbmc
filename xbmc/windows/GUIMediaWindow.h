@@ -34,7 +34,7 @@ class CFileItemList;
 class CGUIMediaWindow : public CGUIWindow
 {
 public:
-  CGUIMediaWindow(int id, const char *xmlFile);
+  CGUIMediaWindow(int id, std::string xmlFile);
   virtual ~CGUIMediaWindow(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
