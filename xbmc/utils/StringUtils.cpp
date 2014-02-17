@@ -59,6 +59,16 @@ string StringUtils::Format(const char *fmt, ...)
   return str;
 }
 
+string StringUtils::Format(const std::string fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  string str = FormatV(fmt.c_str(), args);
+  va_end(args);
+  
+  return str;
+}
+
 string StringUtils::FormatV(const char *fmt, va_list args)
 {
   if (fmt == NULL)
@@ -108,6 +118,16 @@ wstring StringUtils::Format(const wchar_t *fmt, ...)
   va_list args;
   va_start(args, fmt);
   wstring str = FormatV(fmt, args);
+  va_end(args);
+  
+  return str;
+}
+
+wstring StringUtils::Format(const std::wstring fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  wstring str = FormatV(fmt.c_str(), args);
   va_end(args);
   
   return str;

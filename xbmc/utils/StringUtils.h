@@ -51,8 +51,10 @@ public:
   \return Formatted string
   */
   static std::string Format(const char *fmt, ...);
+  static std::string Format(const std::string fmt, ...);
   static std::string FormatV(const char *fmt, va_list args);
   static std::wstring Format(const wchar_t *fmt, ...);
+  static std::wstring Format(const std::wstring fmt, ...);
   static std::wstring FormatV(const wchar_t *fmt, va_list args);
   static void ToUpper(std::string &str);
   static void ToUpper(std::wstring &str);
