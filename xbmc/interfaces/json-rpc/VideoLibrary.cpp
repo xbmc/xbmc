@@ -490,13 +490,11 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
 
-  // we need to manually remove tags/taglinks for now because they aren't replaced
-  // due to scrapers not supporting them
-  videodatabase.RemoveTagsFromItem(id, "movie");
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
-  if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
+  if (videodatabase.UpdateDetailsForMovie(infos.m_strFileNameAndPath, infos, artwork, updatedDetails, id) <= 0)
     return InternalError;
 
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, "movie", removedArtwork))
@@ -537,7 +535,8 @@ JSONRPC_STATUS CVideoLibrary::SetMovieSetDetails(const CStdString &method, ITran
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   if (videodatabase.SetDetailsForMovieSet(infos, artwork, id) <= 0)
     return InternalError;
@@ -572,7 +571,8 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   // we need to manually remove tags/taglinks for now because they aren't replaced
   // due to scrapers not supporting them
@@ -617,7 +617,8 @@ JSONRPC_STATUS CVideoLibrary::SetSeasonDetails(const CStdString &method, ITransp
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   if (videodatabase.SetDetailsForSeason(infos, artwork, infos.m_iIdShow, id) <= 0)
     return InternalError;
@@ -660,7 +661,8 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITrans
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, artwork, tvshowid, id) <= 0)
     return InternalError;
@@ -706,7 +708,8 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
-  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
+  std::set<std::string> updatedDetails;
+  UpdateVideoTag(parameterObject, infos, artwork, removedArtwork, updatedDetails);
 
   // we need to manually remove tags/taglinks for now because they aren't replaced
   // due to scrapers not supporting them
@@ -992,80 +995,115 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
   }
 }
 
-void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork)
+
+// Can these be made generic?  or does the CVariant block that?
+void CVideoLibrary::UpdateVideoTag (const CVariant &parameterObject, std::string fieldName, std::string &FieldToUpdate, std::set<std::string> &updatedDetails)
 {
-  if (ParameterNotNull(parameterObject, "title"))
-    details.m_strTitle = parameterObject["title"].asString();
-  if (ParameterNotNull(parameterObject, "playcount"))
-    details.m_playCount = (int)parameterObject["playcount"].asInteger();
-  if (ParameterNotNull(parameterObject, "runtime"))
-    details.m_duration = (int)parameterObject["runtime"].asInteger();
-  if (ParameterNotNull(parameterObject, "director"))
-    CopyStringArray(parameterObject["director"], details.m_director);
-  if (ParameterNotNull(parameterObject, "studio"))
-    CopyStringArray(parameterObject["studio"], details.m_studio);
-  if (ParameterNotNull(parameterObject, "year"))
-    details.m_iYear = (int)parameterObject["year"].asInteger();
-  if (ParameterNotNull(parameterObject, "plot"))
-    details.m_strPlot = parameterObject["plot"].asString();
-  if (ParameterNotNull(parameterObject, "album"))
-    details.m_strAlbum = parameterObject["album"].asString();
-  if (ParameterNotNull(parameterObject, "artist"))
-    CopyStringArray(parameterObject["artist"], details.m_artist);
-  if (ParameterNotNull(parameterObject, "genre"))
-    CopyStringArray(parameterObject["genre"], details.m_genre);
-  if (ParameterNotNull(parameterObject, "track"))
-    details.m_iTrack = (int)parameterObject["track"].asInteger();
-  if (ParameterNotNull(parameterObject, "rating"))
-    details.m_fRating = parameterObject["rating"].asFloat();
-  if (ParameterNotNull(parameterObject, "mpaa"))
-    details.m_strMPAARating = parameterObject["mpaa"].asString();
-  if (ParameterNotNull(parameterObject, "imdbnumber"))
-    details.m_strIMDBNumber = parameterObject["imdbnumber"].asString();
-  if (ParameterNotNull(parameterObject, "premiered"))
-    details.m_premiered.SetFromDBDate(parameterObject["premiered"].asString());
-  if (ParameterNotNull(parameterObject, "votes"))
-    details.m_strVotes = parameterObject["votes"].asString();
-  if (ParameterNotNull(parameterObject, "lastplayed"))
-    details.m_lastPlayed.SetFromDBDateTime(parameterObject["lastplayed"].asString());
-  if (ParameterNotNull(parameterObject, "firstaired"))
-    details.m_firstAired.SetFromDBDateTime(parameterObject["firstaired"].asString());
-  if (ParameterNotNull(parameterObject, "productioncode"))
-    details.m_strProductionCode = parameterObject["productioncode"].asString();
-  if (ParameterNotNull(parameterObject, "season"))
-    details.m_iSeason = (int)parameterObject["season"].asInteger();
-  if (ParameterNotNull(parameterObject, "episode"))
-    details.m_iEpisode = (int)parameterObject["episode"].asInteger();
-  if (ParameterNotNull(parameterObject, "originaltitle"))
-    details.m_strOriginalTitle = parameterObject["originaltitle"].asString();
-  if (ParameterNotNull(parameterObject, "trailer"))
-    details.m_strTrailer = parameterObject["trailer"].asString();
-  if (ParameterNotNull(parameterObject, "tagline"))
-    details.m_strTagLine = parameterObject["tagline"].asString();
-  if (ParameterNotNull(parameterObject, "plotoutline"))
-    details.m_strPlotOutline = parameterObject["plotoutline"].asString();
-  if (ParameterNotNull(parameterObject, "writer"))
-    CopyStringArray(parameterObject["writer"], details.m_writingCredits);
-  if (ParameterNotNull(parameterObject, "country"))
-    CopyStringArray(parameterObject["country"], details.m_country);
-  if (ParameterNotNull(parameterObject, "top250"))
-    details.m_iTop250 = (int)parameterObject["top250"].asInteger();
-  if (ParameterNotNull(parameterObject, "sorttitle"))
-    details.m_strSortTitle = parameterObject["sorttitle"].asString();
-  if (ParameterNotNull(parameterObject, "episodeguide"))
-    details.m_strEpisodeGuide = parameterObject["episodeguide"].asString();
-  if (ParameterNotNull(parameterObject, "set"))
-    details.m_strSet = parameterObject["set"].asString();
-  if (ParameterNotNull(parameterObject, "showlink"))
-    CopyStringArray(parameterObject["showlink"], details.m_showLink);
+  if (ParameterNotNull(parameterObject, fieldName))
+  {
+    std::string NewValue = parameterObject[fieldName].asString();
+    if (FieldToUpdate.compare(NewValue))
+    {
+      FieldToUpdate = NewValue;
+      updatedDetails.insert(fieldName);
+    }
+  }
+}
+
+void CVideoLibrary::UpdateVideoTag (const CVariant &parameterObject, std::string fieldName, int &FieldToUpdate, std::set<std::string> &updatedDetails)
+{
+  if (ParameterNotNull(parameterObject, fieldName))
+  {
+    int NewValue = (int)parameterObject[fieldName].asInteger();
+    if (FieldToUpdate != NewValue)
+    {
+      FieldToUpdate = NewValue;
+      updatedDetails.insert(fieldName);
+    }
+  }
+}
+
+void CVideoLibrary::UpdateVideoTag (const CVariant &parameterObject, std::string fieldName, float &FieldToUpdate, std::set<std::string> &updatedDetails)
+{
+  if (ParameterNotNull(parameterObject, fieldName))
+  {
+    float NewValue = parameterObject[fieldName].asFloat();
+    if (FieldToUpdate != NewValue)
+    {
+      FieldToUpdate = NewValue;
+      updatedDetails.insert(fieldName);
+    }
+  }
+}
+
+void CVideoLibrary::UpdateVideoTag (const CVariant &parameterObject, std::string fieldName, std::vector<std::string> &FieldToUpdate, std::set<std::string> &updatedDetails)
+{
+  if (ParameterNotNull(parameterObject, fieldName))
+  {
+    CopyStringArray(parameterObject[fieldName], FieldToUpdate);
+    updatedDetails.insert(fieldName);    
+  }
+}
+
+void CVideoLibrary::UpdateVideoTag (const CVariant &parameterObject, std::string fieldName, CDateTime &FieldToUpdate, std::set<std::string> &updatedDetails)
+{
+  if (ParameterNotNull(parameterObject, fieldName))
+  {
+    FieldToUpdate.SetFromDBDate(parameterObject[fieldName].asString());
+    updatedDetails.insert(fieldName);    
+  }
+}
+
+void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork,	std::set<std::string> &updatedDetails)
+{
+  UpdateVideoTag(parameterObject, "title", details.m_strTitle, updatedDetails);
+  UpdateVideoTag(parameterObject, "playcount", details.m_playCount, updatedDetails);
+  UpdateVideoTag(parameterObject, "runtime", details.m_duration, updatedDetails);
+  UpdateVideoTag(parameterObject, "director", details.m_director, updatedDetails);
+  UpdateVideoTag(parameterObject, "studio", details.m_studio, updatedDetails);
+  UpdateVideoTag(parameterObject, "year", details.m_iYear, updatedDetails);
+  UpdateVideoTag(parameterObject, "plot", details.m_strPlot, updatedDetails);
+  UpdateVideoTag(parameterObject, "album", details.m_strAlbum, updatedDetails);
+  UpdateVideoTag(parameterObject, "artist", details.m_artist, updatedDetails);
+  UpdateVideoTag(parameterObject, "genre", details.m_genre, updatedDetails);
+  UpdateVideoTag(parameterObject, "track", details.m_iTrack, updatedDetails);
+  UpdateVideoTag(parameterObject, "rating", details.m_fRating, updatedDetails);
+  UpdateVideoTag(parameterObject, "mpaa", details.m_strMPAARating, updatedDetails);
+  UpdateVideoTag(parameterObject, "imdbnumber", details.m_strIMDBNumber, updatedDetails);
+  UpdateVideoTag(parameterObject, "premiered", details.m_premiered, updatedDetails);
+  UpdateVideoTag(parameterObject, "votes", details.m_strVotes, updatedDetails);
+  UpdateVideoTag(parameterObject, "lastplayed", details.m_lastPlayed, updatedDetails);
+  UpdateVideoTag(parameterObject, "firstaired", details.m_firstAired, updatedDetails);
+  UpdateVideoTag(parameterObject, "productioncode", details.m_strProductionCode, updatedDetails);
+  UpdateVideoTag(parameterObject, "season", details.m_iSeason, updatedDetails);
+  UpdateVideoTag(parameterObject, "episode", details.m_iEpisode, updatedDetails);
+  UpdateVideoTag(parameterObject, "originaltitle", details.m_strOriginalTitle, updatedDetails);
+  UpdateVideoTag(parameterObject, "trailer", details.m_strTrailer, updatedDetails);
+  UpdateVideoTag(parameterObject, "tagline", details.m_strTagLine, updatedDetails);
+  UpdateVideoTag(parameterObject, "plotoutline", details.m_strPlotOutline, updatedDetails);
+  UpdateVideoTag(parameterObject, "writer", details.m_writingCredits, updatedDetails);
+  UpdateVideoTag(parameterObject, "country", details.m_country, updatedDetails);
+  UpdateVideoTag(parameterObject, "top250", details.m_iTop250, updatedDetails);
+  UpdateVideoTag(parameterObject, "sorttitle", details.m_strSortTitle, updatedDetails);
+  UpdateVideoTag(parameterObject, "episodeguide", details.m_strEpisodeGuide, updatedDetails);
+  UpdateVideoTag(parameterObject, "set", details.m_strSet, updatedDetails);
+  UpdateVideoTag(parameterObject, "showlink", details.m_showLink, updatedDetails);
+  UpdateVideoTag(parameterObject, "tag", details.m_tags, updatedDetails);
+
   if (ParameterNotNull(parameterObject, "thumbnail"))
+  {
     artwork["thumb"] = parameterObject["thumbnail"].asString();
+    updatedDetails.insert("art");
+  }
   if (ParameterNotNull(parameterObject, "fanart"))
+  {
     artwork["fanart"] = parameterObject["fanart"].asString();
-  if (ParameterNotNull(parameterObject, "tag"))
-    CopyStringArray(parameterObject["tag"], details.m_tags);
+    updatedDetails.insert("art");
+  }
+
   if (ParameterNotNull(parameterObject, "art"))
   {
+    updatedDetails.insert("art");
     CVariant art = parameterObject["art"];
     for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
     {
