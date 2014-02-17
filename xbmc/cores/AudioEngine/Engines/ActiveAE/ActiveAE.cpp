@@ -649,7 +649,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     case AE_TOP_CONFIGURED_IDLE:
-      if (port == NULL) // timeout
+      if (port == &m_controlPort)
       {
         switch (signal)
         {
@@ -667,6 +667,14 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_state = AE_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           return;
+        default:
+          break;
+        }
+      }
+      else if (port == NULL) // timeout
+      {
+        switch (signal)
+        {
         case CActiveAEControlProtocol::TIMEOUT:
           ResampleSounds();
           ClearDiscardedBuffers();
