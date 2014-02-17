@@ -494,7 +494,7 @@ msgstr "Izberite vaš XBMC uporabniški profil[CR]za prijavo in nadaljujte"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
-msgstr "Ob zagonu prikaži ali skrij okno za prijavo."
+msgstr "Ob zagonu prikažite ali skrijte okno za prijavo."
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."

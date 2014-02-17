@@ -230,7 +230,7 @@ msgstr "Afficher la visualisation en cours de lecture en arrière-plan"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Jouer les génériques TV dans la médiathèque vidéo (extension TvTunes)"
+msgstr "Jouer les génériques TV de vidéothèque (extension TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -442,11 +442,11 @@ msgstr "[B]CONFIGURATION DES PARAMÈTRES APPARENCE[/B][CR][CR]Changer le thème 
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES VIDÉO[/B][CR][CR]Gérer votre médiathèque vidéo · Définir les options de lecture · Changer les options des listes de vidéos[CR]Définir la police des sous-titres"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES VIDÉO[/B][CR][CR]Gérer votre vidéothèque · Définir les options de lecture · Changer les options des listes de vidéos[CR]Définir la police des sous-titres"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES MUSIQUE[/B][CR][CR]Gérer votre médiathèque musique · Définir les options de lecture · Changer les options des listes de musique[CR]Paramétrer les soumissions de chansons · Définir les options karaoké"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES MUSIQUE[/B][CR][CR]Gérer votre musithèque musique · Définir les options de lecture · Changer les options des listes de musique[CR]Paramétrer les soumissions de chansons · Définir les options karaoké"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"

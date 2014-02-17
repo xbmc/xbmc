@@ -116,6 +116,10 @@ msgctxt "#31046"
 msgid "SEEKING"
 msgstr "בחיפוש"
 
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "קביעוני חיזוי"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "זמן סיום"
@@ -220,6 +224,10 @@ msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "הצג ברקע \"מנגן כעת\" וידאו"
 
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "הצג חיזוי \"מנגן עכשיו\" ברקע"
+
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
 msgstr "נגן נעימות של סדרות טלוויזיה בספריית סדרות הטלווויזיה (תוסף TvTunes)"
@@ -231,6 +239,10 @@ msgstr "TvTunes"
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "מילות שירים"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "הסתר חיזוי פאנארט במסך מלא"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -468,9 +480,17 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "כתובית מקומית זמינה"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "כניסה"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "בחר בפרופיל משתמש XBMC [CR]שלך כדי להתחבר ולהמשיך"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "הצג או הסתר מסך התחברות בהפעלה."
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
@@ -566,7 +586,7 @@ msgstr "סרטים"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "תכניות טלוויזיה"
+msgstr "סדרות"
 
 msgctxt "#31956"
 msgid "MUSIC"
