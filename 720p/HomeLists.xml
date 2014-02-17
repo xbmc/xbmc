@@ -113,36 +113,12 @@
 			<visible>ListItem.Type(episode)</visible>
 		</control>
 	</include>
-	<include name="ListItemPosterSelected">
-		<control type="image">
-			<width>146</width>
-			<height>205</height>
-			<include>Shadow</include>
-		</control>
+	<include name="ListItemPosterSelectedBorder">
 		<control type="image">
 			<include>PosListItemSelected</include>
 			<width>124</width>
-			<height>182</height>
-			<texture background="true">default-poster-small.png</texture>
+			<height>183</height>
 			<include>Border</include>
-		</control>
-		<control type="image">
-			<include>PosListItemSelected</include>
-			<width>124</width>
-			<height>182</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-			<include>Border</include>
-			<visible>!ListItem.Type(episode)</visible>
-		</control>
-		<control type="image">
-			<include>PosListItemSelected</include>
-			<width>124</width>
-			<height>182</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
-			<include>Border</include>
-			<visible>ListItem.Type(episode)</visible>
 		</control>
 	</include>
 	<include name="ListItemPosterCard">
@@ -277,27 +253,11 @@
 			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(smallThumb)]</texture>
 		</control>
 	</include>
-	<include name="ListItemSquareSelected">
-		<control type="image">
-			<posx>25</posx>
-			<posy>37</posy>
-			<width>150</width>
-			<height>150</height>
-			<include>Shadow</include>
-		</control>
+	<include name="ListItemSquareSelectedBorder">
 		<control type="image">
 			<include>PosListItemSelected</include>
 			<width>132</width>
 			<height>132</height>
-			<texture background="true">default-square-small.png</texture>
-			<include>Border</include>
-		</control>
-		<control type="image">
-			<include>PosListItemSelected</include>
-			<width>132</width>
-			<height>132</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 			<include>Border</include>
 		</control>
 	</include>
@@ -359,6 +319,14 @@
 			<height>116</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Art(smallThumb)]</texture>
+		</control>
+	</include>
+	<include name="ListItemWideSelectedBorder">
+		<control type="image">
+			<include>PosListItemSelected</include>
+			<width>202</width>
+			<height>123</height>
+			<include>Border</include>
 		</control>
 	</include>
 	<include name="ListItemWideCard">
@@ -605,13 +573,15 @@
 							<control type="group">
 								<posy>-3</posy>
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + Control.IsVisible(11000)</visible>
-								<include>ListItemPosterSelected</include>
+								<include>ListItemPoster</include>
+								<include>ListItemPosterSelectedBorder</include>
 							</control>
 							<!-- movie & episode when only this list is visible -->
 							<control type="group">
 								<posy>100</posy>
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + !Control.IsVisible(11000)</visible>
-								<include>ListItemPosterSelected</include>
+								<include>ListItemPoster</include>
+								<include>ListItemPosterSelectedBorder</include>
 							</control>
 						</focusedlayout>
 					</control>
@@ -699,27 +669,31 @@
 							<control type="group">
 								<visible>ListItem.Type(album)</visible>
 								<include>ListItemSquareCard</include>
-								<include>ListItemSquareSelected</include>
+								<include>ListItemSquare</include>
 								<include>ListItemSquareTitleArtist</include>
 								<include>ListItemSquareTitleAlbum</include>
+								<include>ListItemSquareSelectedBorder</include>
 							</control>
 							<!-- photos -->
 							<control type="group">
 								<visible>ListItem.Type(photo)</visible>
 								<include>ListItemSquareCard</include>
-								<include>ListItemSquareSelected</include>
+								<include>ListItemSquare</include>
 								<include>ListItemSquareTitle</include>
+								<include>ListItemSquareSelectedBorder</include>
 							</control>
 							<!-- movie & episode when both lists are visible -->
 							<control type="group">
 								<posy>100</posy>
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie) | ListItem.Type(season)] + Control.IsVisible(11001)</visible>
-								<include>ListItemPosterSelected</include>
+								<include>ListItemPoster</include>
+								<include>ListItemPosterSelectedBorder</include>
 							</control>
 							<!-- tv show episode when  only this list is visible -->
 							<control type="group">
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie) | ListItem.Type(season)] + !Control.IsVisible(11001)</visible>
-								<include>ListItemPosterSelected</include>
+								<include>ListItemPoster</include>
+								<include>ListItemPosterSelectedBorder</include>
 							</control>
 						</focusedlayout>
 					</control>
@@ -788,13 +762,7 @@
 								<include>ListItemWide</include>
 								<include>ListItemWideTitleProvider</include>
 								<include>ListItemWideTitle</include>
-								<control type="image">
-									<posy>50</posy>
-									<posx>37</posx>
-									<width>196</width>
-									<height>118</height>
-									<include>Border</include>
-								</control>
+								<include>ListItemWideSelectedBorder</include>
 							</control>
 							<!-- when only this list is visible -->
 							<control type="group">
@@ -805,13 +773,7 @@
 								<include>ListItemWide</include>
 								<include>ListItemWideTitleProvider</include>
 								<include>ListItemWideTitle</include>
-								<control type="image">
-									<posy>50</posy>
-									<posx>37</posx>
-									<width>196</width>
-									<height>118</height>
-									<include>Border</include>
-								</control>
+								<include>ListItemWideSelectedBorder</include>
 							</control>
 						</focusedlayout>
 					</control>
@@ -867,13 +829,7 @@
 								<include>ListItemWide</include>
 								<include>ListItemWideTitleProvider</include>
 								<include>ListItemWideTitle</include>
-								<control type="image">
-									<posy>50</posy>
-									<posx>37</posx>
-									<width>196</width>
-									<height>118</height>
-									<include>Border</include>
-								</control>
+								<include>ListItemWideSelectedBorder</include>
 							</control>
 							<!-- when only this list is visible -->
 							<control type="group">
@@ -884,13 +840,7 @@
 								<include>ListItemWide</include>
 								<include>ListItemWideTitleProvider</include>
 								<include>ListItemWideTitle</include>
-								<control type="image">
-									<posy>50</posy>
-									<posx>37</posx>
-									<width>196</width>
-									<height>118</height>
-									<include>Border</include>
-								</control>
+								<include>ListItemWideSelectedBorder</include>
 							</control>
 						</focusedlayout>
 					</control>
@@ -936,8 +886,9 @@
 							<control type="group">
 								<visible>ListItem.Type(channel)</visible>
 								<include>ListItemSquareCard</include>
-								<include>ListItemSquareSelected</include>
+								<include>ListItemSquare</include>
 								<include>ListItemSquareTitle</include>
+								<include>ListItemSquareSelectedBorder</include>
 							</control>
 						</focusedlayout>
 						<height>200</height>
