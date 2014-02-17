@@ -2865,6 +2865,9 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
     strSQL=PrepareSQL("delete from countrylinkmovie where idMovie=%i", idMovie);
     m_pDS->exec(strSQL.c_str());
 
+    strSQL=PrepareSQL("delete from writerlinkmovie where idMovie=%i", idMovie);
+    m_pDS->exec(strSQL.c_str());
+
     DeleteStreamDetails(GetFileId(strFilenameAndPath));
 
     // keep the movie table entry, linking to tv shows, and bookmarks
