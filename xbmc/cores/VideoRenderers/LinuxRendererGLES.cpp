@@ -2706,9 +2706,6 @@ void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
   plane.texheight = codecinfo->iHeight;
 
   CalculateTextureSourceRects(index, 1);
-
-  CLog::Log(LOGDEBUG, "U  %dx%d  ->  %dx%d", codecinfo->iWidth, codecinfo->iHeight,
-            plane.rect.x2-plane.rect.x1, plane.rect.y2-plane.rect.y1);
 #endif
 }
 void CLinuxRendererGLES::DeleteIMXMAPTexture(int index)
