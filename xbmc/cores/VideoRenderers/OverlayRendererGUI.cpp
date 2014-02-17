@@ -166,7 +166,7 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   mat.m[0][3] = rd.x1;
   mat.m[1][3] = rd.y1;
 
-  float x = state.x + GetStereoscopicDepth(), y = state.y;
+  float x = state.x, y = state.y;
   mat.InverseTransformPosition(x, y);
 
   g_graphicsContext.SetTransform(mat, 1.0f, 1.0f);
