@@ -510,6 +510,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
   int demuxer_bytes = iSize;
   uint8_t *demuxer_content = pData;
   bool retry = false;
+  bool frameConsumed = false;
 
 #ifdef IMX_PROFILE
   static unsigned long long previous, current;
@@ -546,31 +547,6 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
       }
       else
         CLog::Log(LOGERROR,"%s - bitstream_convert error", __FUNCTION__);
-    }
-
-    if (pts != DVD_NOPTS_VALUE)
-    {
-      if (m_tsSyncRequired)
-      {
-        m_tsSyncRequired = false;
-        resyncTSManager(m_tsm, llrint(pts) * 1000, MODE_AI);
-      }
-      //TSManagerReceive2(m_tsm, llrint(pts) * 1000, iSize);
-      TSManagerReceive(m_tsm, llrint(pts) * 1000);
-    }
-    else
-    {
-      //If no pts but dts available (AVI container for instance) then use this one
-      if (dts !=  DVD_NOPTS_VALUE)
-      {
-        if (m_tsSyncRequired)
-        {
-          m_tsSyncRequired = false;
-          resyncTSManager(m_tsm, llrint(dts) * 1000, MODE_AI);
-        }
-        //TSManagerReceive2(m_tsm, llrint(dts) * 1000, iSize);
-        TSManagerReceive(m_tsm, llrint(dts) * 1000);
-      }
     }
 
     inData.nSize = demuxer_bytes;
@@ -646,6 +622,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
         {
           CLog::Log(LOGERROR, "%s - VPU error retireving info about consummed frame (%d).\n", __FUNCTION__, ret);
         }
+        frameConsumed = true;
         // FIXME TSManagerValid2(m_tsm, frameLengthInfo.nFrameLength + frameLengthInfo.nStuffLength, frameLengthInfo.pFrame);
         //CLog::Log(LOGDEBUG, "%s - size : %d - key consummed : %x\n",  __FUNCTION__, frameLengthInfo.nFrameLength + frameLengthInfo.nStuffLength, frameLengthInfo.pFrame);
       }//VPU_DEC_ONE_FRM_CONSUMED
@@ -710,7 +687,6 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
         TSManagerSend(m_tsm);
       }
 
-
       if (!(decRet & VPU_DEC_OUTPUT_DIS)  &&
            (inData.nSize != 0))
       {
@@ -724,6 +700,34 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
 
     } while (retry == true);
   } //(pData && iSize)
+
+  if (frameConsumed)
+  {
+    if (pts != DVD_NOPTS_VALUE)
+    {
+      if (m_tsSyncRequired)
+      {
+        m_tsSyncRequired = false;
+        resyncTSManager(m_tsm, llrint(pts) * 1000, MODE_AI);
+      }
+      //TSManagerReceive2(m_tsm, llrint(pts) * 1000, iSize);
+      TSManagerReceive(m_tsm, llrint(pts) * 1000);
+    }
+    else
+    {
+      //If no pts but dts available (AVI container for instance) then use this one
+      if (dts !=  DVD_NOPTS_VALUE)
+      {
+        if (m_tsSyncRequired)
+        {
+          m_tsSyncRequired = false;
+          resyncTSManager(m_tsm, llrint(dts) * 1000, MODE_AI);
+        }
+        //TSManagerReceive2(m_tsm, llrint(dts) * 1000, iSize);
+        TSManagerReceive(m_tsm, llrint(dts) * 1000);
+      }
+    }
+  }
 
   if (retStatus == 0)
   {
@@ -789,8 +793,9 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
   pDvdVideoPicture->iWidth = m_frameInfo.pExtInfo->FrmCropRect.nRight - m_frameInfo.pExtInfo->FrmCropRect.nLeft;
   pDvdVideoPicture->iHeight = m_frameInfo.pExtInfo->FrmCropRect.nBottom - m_frameInfo.pExtInfo->FrmCropRect.nTop;
-  pDvdVideoPicture->iDisplayWidth = m_frameInfo.pExtInfo->FrmCropRect.nRight - m_frameInfo.pExtInfo->FrmCropRect.nLeft;
-  pDvdVideoPicture->iDisplayHeight = m_frameInfo.pExtInfo->FrmCropRect.nBottom - m_frameInfo.pExtInfo->FrmCropRect.nTop;
+
+  pDvdVideoPicture->iDisplayWidth = ((pDvdVideoPicture->iWidth * m_frameInfo.pExtInfo->nQ16ShiftWidthDivHeightRatio) + 32767) >> 16;
+  pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
 
   pDvdVideoPicture->codecinfo = new CDVDVideoCodecIMXBuffer(m_frameInfo);
   pDvdVideoPicture->codecinfo->iWidth = m_frameInfo.pExtInfo->nFrmWidth;
