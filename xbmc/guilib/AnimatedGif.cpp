@@ -602,13 +602,13 @@ int LZWDecoder (char * bufIn, char * bufOut,
     // (EXCEPT IF PREVIOUS CODE WAS A CLEARCODE)
     if (PrevCode != ClearCode)
     {
-      Prefix[NextEntry] = PrevCode;
-      Suffix[NextEntry] = (unsigned char) OutCode;
-      NextEntry++;
-
       // Prevent Translation table overflow:
       if (NextEntry >= LZW_SIZETABLE)
         return 0;
+
+      Prefix[NextEntry] = PrevCode;
+      Suffix[NextEntry] = (unsigned char) OutCode;
+      NextEntry++;
 
       // INCREASE CodeSize IF NextEntry IS INVALID WITH CURRENT CodeSize
       if (NextEntry >= (1 << CodeSize))
