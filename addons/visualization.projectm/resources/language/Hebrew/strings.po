@@ -38,7 +38,7 @@ msgstr "מקסימום"
 
 msgctxt "#30005"
 msgid "Shuffle Mode"
-msgstr "מצב אקראי"
+msgstr "מצב מעורבב"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
@@ -46,7 +46,7 @@ msgstr "Smooth Preset Duration"
 
 msgctxt "#30007"
 msgid "Preset Duration"
-msgstr "Preset Duration"
+msgstr "משך קביעון"
 
 msgctxt "#30008"
 msgid "Beat Sensitivity"
@@ -54,7 +54,7 @@ msgstr "רגישות קצב"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Preset Pack"
+msgstr "חבילת קביעונים"
 
 msgctxt "#30010"
 msgid "Default Pack"
@@ -62,11 +62,11 @@ msgstr "ערכת ברירת מחדל"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"
-msgstr "User Defined Preset Folder"
+msgstr "תיקית קביעוני הגדרת משתמש"
 
 msgctxt "#30012"
 msgid "User Preset Folder"
-msgstr "User Preset Folder"
+msgstr "תיקית קביעוני משתמש"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

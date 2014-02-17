@@ -22,7 +22,7 @@ msgstr "Otomatik Karıştırma Zamanı"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Ön Ayarlar Arasındaki Zaman"
+msgstr "Önayarlar Arasındaki Zaman"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -58,7 +58,7 @@ msgstr "Önayar Paketi"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Kullanıcı Ön Ayar Klasörü"
+msgstr "Kullanıcı Önayar Klasörü"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
@@ -66,15 +66,15 @@ msgstr "Karıştırma Modunu Önayarla"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
-msgstr "WA51 Ön Ayarları"
+msgstr "WA51 Önayarları"
 
 msgctxt "#30021"
 msgid "Winamp Presets"
-msgstr "Winamp Ön Ayarları"
+msgstr "Winamp Önayarları"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Kullanıcı Tanımlı Ön Ayar Klasörü"
+msgstr "Kullanıcı Tanımlı Önayar Klasörü"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

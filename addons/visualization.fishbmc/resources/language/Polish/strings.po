@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Detail [CPU intensive]"
-msgstr "Obciążenie [CPU]"
+msgstr "Szczegółowe [silne obciążenie procesora]"
 
 msgctxt "#30001"
 msgid "Low"
@@ -59,3 +59,7 @@ msgstr "Zwykły"
 msgctxt "#30010"
 msgid "High"
 msgstr "Wysoka"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Zapisuj do pliku [szybsze uruchomienie]"

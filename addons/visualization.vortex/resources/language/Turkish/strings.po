@@ -16,13 +16,41 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Rastgele Önayarlar"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Ön Ayarlar Arasındaki Zaman"
+msgstr "Önayarlar Arasındaki Zaman"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "İlave Rasgele Zaman"
+msgstr "İlave Rastgele Zaman"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Önayarları Kilitle"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Geçişleri Etkinleştir"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "İlk önayarı durdur"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "FPS'yi göster"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Hata ayıklama konsolunu göster"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Ses analizlerini göster"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

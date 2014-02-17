@@ -16,30 +16,50 @@ msgstr ""
 "Language: hr\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Pojedinosti [CPU intenzivno]"
+
 msgctxt "#30001"
 msgid "Low"
-msgstr "Niska"
+msgstr "Nisko"
 
 msgctxt "#30002"
 msgid "Normal"
-msgstr "Normalan"
+msgstr "Normalno"
 
 msgctxt "#30003"
 msgid "High"
-msgstr "Visoka"
+msgstr "Visoko"
 
 msgctxt "#30004"
 msgid "Extreme"
 msgstr "Ekstremno"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Nervozan način [više promjena načina]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Brže [preskoči neke sličice]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Vrlo nisko"
+
 msgctxt "#30008"
 msgid "Low"
-msgstr "Niska"
+msgstr "Nisko"
 
 msgctxt "#30009"
 msgid "Normal"
-msgstr "Normalan"
+msgstr "Normalno"
 
 msgctxt "#30010"
 msgid "High"
-msgstr "Visoka"
+msgstr "Visoko"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Koristi stalnu datoteku [brže pokretanje]"

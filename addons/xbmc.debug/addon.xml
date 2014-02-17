@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.debug" version="0.1.11" provider-name="Team XBMC" name="Log">
+<addon id="xbmc.debug" version="0.1.12" provider-name="Team XBMC" name="Log">
   <backwards-compatibility abi="0.1"/>
   <requires>
     <c-pluff version="0.1"/>
@@ -27,6 +27,7 @@
     <summary lang="is">Viðbót til þess að bæta skráningu á sérsniði</summary>
     <summary lang="it">Addon per migliorare la personalizzazione di logging</summary>
     <summary lang="ja">ログのカスタマイズ性をより良くするアドオン</summary>
+    <summary lang="ko">로깅 개인화를 향상시켜주는 에드온</summary>
     <summary lang="lt">Priedų registravimo adaptacija</summary>
     <summary lang="lv">Pievienojumprogramma, ierakstījumu žurnalā pielāgošanai</summary>
     <summary lang="my">logging စိတ်ကြိုက်ပြုပြင် မှုကို တိုးတက်စေသော Addon</summary>
@@ -41,7 +42,7 @@
     <summary lang="sv">Tillägg för att förbättra loggningen av anpassningsmöjligheterna</summary>
     <summary lang="ta_IN">தனிப்பயனாக்கு பதிவை மேம்படுத்துவதற்கான துணை-பயன்</summary>
     <summary lang="tg">Барномаи иловагӣ барои такмили танзимоти воридшавӣ</summary>
-    <summary lang="tr">Kayıt defteri kişiselleştirmesini geliştirmek için eklenti</summary>
+    <summary lang="tr">Günlük kişiselleştirilebilirliğini geliştirmek için eklenti</summary>
     <summary lang="zh">增强日志定制功能的插件</summary>
     <summary lang="zh_TW">用以改善記錄檔之客製性靈活度的外掛</summary>
     <platform>all</platform>

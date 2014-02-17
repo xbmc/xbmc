@@ -16,17 +16,41 @@ msgstr ""
 "Language: he\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "קביעונים אקראים"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Time Between Presets"
+msgstr "זמן בין קביעונים"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Additional Random Time"
 
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "נעל קביעון"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "הפעל מעברים"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "עצור קביעון ראשון"
+
 msgctxt "#30006"
 msgid "Show FPS"
 msgstr "הצג FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "הצג קונסולת debug"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "הצג ניתוח אודיו"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

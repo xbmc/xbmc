@@ -16,6 +16,10 @@ msgstr ""
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Slumpmässiga förval"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Tid mellan förval"
@@ -23,6 +27,30 @@ msgstr "Tid mellan förval"
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Extra slumpmässig tid"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Lås förval"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Aktivera övergångar"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Stoppa första förvalet"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Visa FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Visa debugkonsol"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Visa audioanalys"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

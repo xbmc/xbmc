@@ -22,7 +22,7 @@ msgstr "Automatic Blend Time"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Time Between Presets"
+msgstr "זמן בין קביעונים"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -54,27 +54,27 @@ msgstr "הפעל סטריאו 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Preset Pack"
+msgstr "חבילת קביעונים"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "User Preset Folder        "
+msgstr "תיקית קביעוני משתמש"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Preset Shuffle Mode"
+msgstr "קביעון מצב מעורבב"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
-msgstr "WA51 Presets"
+msgstr "קביעוני WA51"
 
 msgctxt "#30021"
 msgid "Winamp Presets"
-msgstr "Winamp Presets"
+msgstr "קביעוני Winamp"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "User Defined Preset Folder"
+msgstr "תיקית קביעוני הגדרת משתמש"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

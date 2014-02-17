@@ -42,11 +42,11 @@ msgstr "Karıştırma Modu"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
-msgstr "Akıcı Ön Ayar Süresi"
+msgstr "Akıcı Önayar Süresi"
 
 msgctxt "#30007"
 msgid "Preset Duration"
-msgstr "Ön Ayar Süresi"
+msgstr "Önayar Süresi"
 
 msgctxt "#30008"
 msgid "Beat Sensitivity"
@@ -62,11 +62,11 @@ msgstr "Varsayılan Paket"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"
-msgstr "Kullanıcı Tanımlı Ön Ayar Klasörü"
+msgstr "Kullanıcı Tanımlı Önayar Klasörü"
 
 msgctxt "#30012"
 msgid "User Preset Folder"
-msgstr "Kullanıcı Ön Ayar Klasörü"
+msgstr "Kullanıcı Önayar Klasörü"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

@@ -32,9 +32,21 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "최대"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "과민성 모드 [잦은 모드 변경]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "속도 [프레임 건너 뜀]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "매우 낮음"
+
 msgctxt "#30008"
 msgid "Low"
-msgstr "최저"
+msgstr "낮음"
 
 msgctxt "#30009"
 msgid "Normal"

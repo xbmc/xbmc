@@ -32,6 +32,10 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "קיצוני"
 
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "נמוך מאוד"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "נמוך"

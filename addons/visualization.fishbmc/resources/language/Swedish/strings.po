@@ -16,6 +16,10 @@ msgstr ""
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Detalj [CPU-intensiv]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Låg"
@@ -31,6 +35,18 @@ msgstr "Hög"
 msgctxt "#30004"
 msgid "Extreme"
 msgstr "Extrem"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Nervöst läge [fler lägesbyten]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Snabb [hoppar över några bildrutor]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Väldigt låg"
 
 msgctxt "#30008"
 msgid "Low"
