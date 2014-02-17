@@ -1978,7 +1978,7 @@ CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min,
 // Merge/refactor the above
 CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, const std::vector<VIDEODB_IDS> simpleUpdates, const SDbTableOffsets *offsets, std::vector<std::string> conditions) const
 {
-  for (std::vector<VIDEODB_IDS>::const_iterator it = simpleUpdates.cbegin(); it != simpleUpdates.cend(); ++it)
+  for (std::vector<VIDEODB_IDS>::const_iterator it = simpleUpdates.begin(); it != simpleUpdates.end(); ++it)
   {
     int i = *it;
     switch (offsets[i].type)
@@ -2182,14 +2182,14 @@ bool PendingUpdates(const std::set<std::string> &updatedDetails, std::vector<VID
   // I can't help but feel this is a lot of syntatic sugar just to lookup an element and determine what to do with it
   // Probably still better than a massive if statement
 
-    for (std::set<std::string>::const_iterator it = updatedDetails.cbegin(); it!=updatedDetails.cend(); ++it)
+    for (std::set<std::string>::const_iterator it = updatedDetails.begin(); it != updatedDetails.end(); ++it)
     {
       std::string updatedDetail = *it;
 
       // look up in the map.
       std::map<std::string,VIDEODB_IDS>::const_iterator mapIt = MovieUpdateDetails::updateDetails.find(updatedDetail);
 
-      if (mapIt == MovieUpdateDetails::updateDetails.cend())
+      if (mapIt == MovieUpdateDetails::updateDetails.end())
       {
         // we can't do anything with this
         // should trace what we can't use
@@ -2232,7 +2232,7 @@ int CVideoDatabase::UpdateDetailsForMovie(const CStdString& strFilenameAndPath, 
     BeginTransaction();
 
     // process the simple updates
-    for (vector<VIDEODB_IDS>::const_iterator simpleUpdateIt= simpleUpdates.cbegin() ; simpleUpdateIt != simpleUpdates.cend(); ++simpleUpdateIt)
+    for (vector<VIDEODB_IDS>::const_iterator simpleUpdateIt = simpleUpdates.begin() ; simpleUpdateIt != simpleUpdates.end(); ++simpleUpdateIt)
     {
 
       switch (*simpleUpdateIt)
@@ -2305,6 +2305,9 @@ int CVideoDatabase::UpdateDetailsForMovie(const CStdString& strFilenameAndPath, 
             AddCountryToMovie(idMovie, AddCountry(details.m_country[i]));
         }
         break;
+      default:
+        // Nothing to do for most of the simple changes
+        break;
       }
     }
 
@@ -2313,7 +2316,7 @@ int CVideoDatabase::UpdateDetailsForMovie(const CStdString& strFilenameAndPath, 
     bool idSetUpdate = false;
 
     // process the simple updates
-    for (vector<std::string>::const_iterator complexUpdateIt= complexUpdates.cbegin() ; complexUpdateIt != complexUpdates.cend(); ++complexUpdateIt)
+    for (vector<std::string>::const_iterator complexUpdateIt = complexUpdates.begin() ; complexUpdateIt != complexUpdates.end(); ++complexUpdateIt)
     {
 
       if (*complexUpdateIt == "set")
