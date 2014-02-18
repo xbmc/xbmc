@@ -371,25 +371,25 @@ uint32_t Xcddb::calc_disc_id(int tot_trks, toc cdtoc[])
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-void Xcddb::addTitle(const char *buffer)
+void Xcddb::addTitle(string buffer)
 {
-  char value[2048];
+  string value;
   int trk_nr = 0;
   //TTITLEN
   if (buffer[7] == '=')
   { //Einstellig
     trk_nr = buffer[6] - 47;
-    strcpy(value, buffer + 8);
+    value = buffer.substr(8);
   }
   else if (buffer[8] == '=')
   { //Zweistellig
     trk_nr = ((buffer[6] - 48) * 10) + buffer[7] - 47;
-    strcpy(value, buffer + 9);
+    value = buffer.substr(9);
   }
   else if (buffer[9] == '=')
   { //Dreistellig
     trk_nr = ((buffer[6] - 48) * 100) + ((buffer[7] - 48) * 10) + buffer[8] - 47;
-    strcpy(value, buffer + 10);
+    value = buffer.substr(10);
   }
   else
   {
@@ -397,9 +397,7 @@ void Xcddb::addTitle(const char *buffer)
   }
 
   // track artist" / "track title
-  CStdString strValue = value;
-  CStdStringArray values;
-  StringUtils::SplitString(value, " / ", values);
+  std::vector<std::string> values = StringUtils::Split(value, " / ");
   if (values.size() > 1)
   {
     g_charsetConverter.unknownToUTF8(values[0]);
@@ -587,35 +585,34 @@ void Xcddb::parseData(const char *buffer)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-void Xcddb::addExtended(const char *buffer)
+void Xcddb::addExtended(string buffer)
 {
-  char value[2048];
+  string value;
   int trk_nr = 0;
   //TTITLEN
   if (buffer[5] == '=')
   { //Einstellig
     trk_nr = buffer[4] - 47;
-    strcpy(value, buffer + 6);
+    value = buffer.substr(6);
   }
   else if (buffer[6] == '=')
   { //Zweistellig
     trk_nr = ((buffer[4] - 48) * 10) + buffer[5] - 47;
-    strcpy(value, buffer + 7);
+    value = buffer.substr(7);
   }
   else if (buffer[7] == '=')
   { //Dreistellig
     trk_nr = ((buffer[4] - 48) * 100) + ((buffer[5] - 48) * 10) + buffer[6] - 47;
-    strcpy(value, buffer + 8);
+    value = buffer.substr(8);
   }
   else
   {
     return ;
   }
 
-  CStdString strValue;
-  CStdString strValueUtf8=value;
+  string strValue;
   // You never know if you really get UTF-8 strings from cddb
-  g_charsetConverter.unknownToUTF8(strValueUtf8, strValue);
+  g_charsetConverter.unknownToUTF8(value, strValue);
   m_mapExtended_track[trk_nr] = strValue;
 }
 

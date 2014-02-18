@@ -108,8 +108,8 @@ protected:
   CStdString m_strYear;
   CStdString m_strGenre;
 
-  void addTitle(const char *buffer);
-  void addExtended(const char *buffer);
+  void addTitle(std::string buffer);
+  void addExtended(std::string buffer);
   void parseData(const char *buffer);
   bool Send( const void *buffer, int bytes );
   bool Send( const char *buffer);
