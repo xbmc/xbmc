@@ -91,13 +91,15 @@ void CEGLNativeTypeRaspberryPI::Initialize()
   m_dispman_element2        = DISPMANX_NO_HANDLE;
   m_dispman_display         = DISPMANX_NO_HANDLE;
 
+  /* PLEX */
 #if defined(__PLEX__)
   m_width                   = 1920;
   m_height                  = 1080;
 #else
   m_width                   = 1280;
   m_height                  = 720;
-#endif  
+#endif
+  /* END PLEX */
   m_initDesktopRes          = true;
 
   m_DllBcmHost = new DllBcmHost;
@@ -671,11 +673,13 @@ void CEGLNativeTypeRaspberryPI::CallbackTvServiceCallback(void *userdata, uint32
 
 bool CEGLNativeTypeRaspberryPI::ClampToGUIDisplayLimits(int &width, int &height)
 {
+   /* PLEX */
 #if defined(__PLEX__)
   const int max_width = 1920, max_height = 1080;
 #else
   const int max_width = 1280, max_height = 720;  
 #endif
+   /* END PLEX */
   float ar = (float)width/(float)height;
   // bigger than maximum, so need to clamp
   if (width > max_width || height > max_height) {
