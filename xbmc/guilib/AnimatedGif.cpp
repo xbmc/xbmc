@@ -403,6 +403,10 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
       NextImage->Init(gifid.Width, gifid.Height, LocalColorMap ? (gifid.PackedFields&7) + 1 : GlobalBPP);
 
+      /* verify that all the image is inside the screen dimensions */
+      if (gifid.xPos + gifid.Width > giflsd.ScreenWidth || gifid.yPos + gifid.Height > giflsd.ScreenHeight)
+        return 0;
+
       // Fill NextImage Data
       NextImage->xPos = gifid.xPos;
       NextImage->yPos = gifid.yPos;
