@@ -564,7 +564,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
 
     deviceInfo.m_deviceName       = strDevName;
     deviceInfo.m_displayName      = strWinDevType.append(strFriendlyName);
-    deviceInfo.m_displayNameExtra = std::string("DirectSound: ").append(strFriendlyName);
+    deviceInfo.m_displayNameExtra = std::string("DIRECTSOUND: ").append(strFriendlyName);
     deviceInfo.m_deviceType       = aeDeviceType;
 
     deviceInfoList.push_back(deviceInfo);

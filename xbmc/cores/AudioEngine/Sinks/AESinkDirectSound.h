@@ -29,7 +29,7 @@
 class CAESinkDirectSound : public IAESink
 {
 public:
-  virtual const char *GetName() { return "DirectSound"; }
+  virtual const char *GetName() { return "DIRECTSOUND"; }
 
   CAESinkDirectSound();
   virtual ~CAESinkDirectSound();
