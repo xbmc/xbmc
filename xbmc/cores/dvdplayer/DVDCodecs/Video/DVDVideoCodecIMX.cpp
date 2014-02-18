@@ -563,10 +563,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
   {
     if (m_outputBuffers[i]->Rendered())
     {
-      ret = VPU_DecOutFrameDisplayed(m_vpuHandle, &m_vpuFrameBuffers[i]);
-#ifdef TRACE_FRAMES
-      CLog::Log(LOGDEBUG, "-  %02d\n", i);
-#endif
+      ret = m_outputBuffers[i]->ClearDisplay(&m_vpuHandle);
       if(ret != VPU_DEC_RET_SUCCESS)
       {
         CLog::Log(LOGERROR, "%s: vpu clear frame display failure: ret=%d \r\n",__FUNCTION__,ret);
@@ -855,7 +852,7 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
   {
     CDVDVideoCodecIMXBuffer *buffer = m_outputBuffers[idx];
-    buffer->Queue(&m_vpuFrameBuffers[idx]);
+    buffer->Queue(m_frameInfo.pDisplayFrameBuf);
     pDvdVideoPicture->codecinfo = buffer;
 
 #ifdef TRACE_FRAMES
@@ -903,17 +900,28 @@ CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer()
 
 void CDVDVideoCodecIMXBuffer::Lock()
 {
+#ifdef TRACE_FRAMES
+  long count = AtomicIncrement(&m_refs);
+  CLog::Log(LOGDEBUG, "R+ %02d  -  ref : %d\n", m_idx, count);
+#else
   AtomicIncrement(&m_refs);
+#endif
 }
 
 long CDVDVideoCodecIMXBuffer::Release()
 {
   long count = AtomicDecrement(&m_refs);
+#ifdef TRACE_FRAMES
+  CLog::Log(LOGDEBUG, "R- %02d  -  ref : %d\n", m_idx, count);
+#endif
   if (count == 1)
   {
     // If count drops to 1 then the only reference is being held by the codec
     // that it can be released in the next Decode call.
     m_rendered = true;
+#ifdef TRACE_FRAMES
+    CLog::Log(LOGDEBUG, "R  %02d\n", m_idx);
+#endif
   }
   else if (count == 0)
   {
@@ -948,6 +956,16 @@ void CDVDVideoCodecIMXBuffer::Queue(VpuFrameBuffer *buffer)
 {
   m_frameBuffer = buffer;
   m_rendered = false;
+}
+
+VpuDecRetCode CDVDVideoCodecIMXBuffer::ClearDisplay(VpuDecHandle *handle)
+{
+  VpuDecRetCode ret = VPU_DecOutFrameDisplayed(*handle, m_frameBuffer);
+#ifdef TRACE_FRAMES
+  CLog::Log(LOGDEBUG, "-  %02d\n", m_idx);
+#endif
+  m_rendered = false;
+  return ret;
 }
 
 CDVDVideoCodecIMXBuffer::~CDVDVideoCodecIMXBuffer()

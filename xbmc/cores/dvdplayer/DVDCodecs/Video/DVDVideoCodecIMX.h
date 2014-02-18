@@ -64,6 +64,7 @@ public:
   void               Invalidate();
   bool               Rendered();
   void               Queue(VpuFrameBuffer *buffer);
+  VpuDecRetCode      ClearDisplay(VpuDecHandle *handle);
 
 protected:
   // private because we are reference counted
