@@ -348,16 +348,27 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode) return false;
+
   const char *border = pNode->Attribute("border");
   if (border)
     GetRectFromString(border, image.border);
+
   image.orientation = 0;
+
   const char *flipX = pNode->Attribute("flipx");
   if (flipX && strcmpi(flipX, "true") == 0) image.orientation = 1;
+
   const char *flipY = pNode->Attribute("flipy");
   if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
-  image.diffuse = pNode->Attribute("diffuse");
-  image.diffuseColor.Parse(pNode->Attribute("colordiffuse"), 0);
+
+  const char *diffuse = pNode->Attribute("diffuse");
+  if (diffuse)
+    image.diffuse = diffuse;
+
+  const char *colordiffuse = pNode->Attribute("colordiffuse");
+  if (colordiffuse)
+    image.diffuseColor.Parse(pNode->Attribute("colordiffuse"), 0);
+
   const char *background = pNode->Attribute("background");
   if (background && strnicmp(background, "true", 4) == 0)
     image.useLarge = true;
@@ -501,7 +512,11 @@ bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode, const char* strT
     if (pElement->FirstChild())
     {
       CGUIAction::cond_action_pair pair;
-      pair.condition = pElement->Attribute("condition");
+
+      const char *condition = pElement->Attribute("condition");
+      if (condition)
+        pair.condition = condition;
+
       pair.action = pElement->FirstChild()->Value();
       action.m_actions.push_back(pair);
     }
@@ -580,7 +595,11 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
   if (label.empty() || label == "-")
     return false;
 
-  string fallback = element->Attribute("fallback");
+  string fallback;
+  const char *fallbackattr = element->Attribute("fallback");
+  if (fallbackattr)
+    fallback = fallbackattr;
+
   if (StringUtils::IsNaturalNumber(label))
     label = g_localizeStrings.Get(atoi(label.c_str()));
   if (StringUtils::IsNaturalNumber(fallback))

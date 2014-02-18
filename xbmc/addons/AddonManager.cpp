@@ -761,7 +761,12 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<stri
 {
   if (!base || !path)
     return false;
-  string all = m_cpluff->lookup_cfg_value(base, path);
+
+  string all;
+  const char *cfg_value = m_cpluff->lookup_cfg_value(base, path);
+  if (cfg_value)
+    all = m_cpluff->lookup_cfg_value(base, path);
+
   if (all.empty())
     return false;
   result = StringUtils::Split(all, " ");

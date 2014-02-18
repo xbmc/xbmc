@@ -452,9 +452,18 @@ bool CPeripherals::LoadMappings(void)
       }
     }
 
-    mapping.m_busType       = PeripheralTypeTranslator::GetBusTypeFromString(currentNode->Attribute("bus"));
-    mapping.m_class         = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("class"));
-    mapping.m_mappedTo      = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("mapTo"));
+    const char *bus = currentNode->Attribute("bus");
+    if (bus)
+      mapping.m_busType       = PeripheralTypeTranslator::GetBusTypeFromString(bus);
+
+    const char *clazz = currentNode->Attribute("class");
+    if (clazz)
+      mapping.m_class         = PeripheralTypeTranslator::GetTypeFromString(clazz);
+
+    const char *mapTo = currentNode->Attribute("mapTo");
+    if (mapTo)
+      mapping.m_mappedTo      = PeripheralTypeTranslator::GetTypeFromString(mapTo);
+    
     GetSettingsFromMappingsFile(currentNode, mapping.m_settings);
 
     m_mappings.push_back(mapping);
@@ -472,11 +481,19 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<string
   while (currentNode)
   {
     CSetting *setting = NULL;
-    string strKey(currentNode->Attribute("key"));
+    string strKey;
+    const char *key = currentNode->Attribute("key");
+    if (key)
+      strKey = key;
+
     if (strKey.empty())
       continue;
 
-    string strSettingsType(currentNode->Attribute("type"));
+    string strSettingsType;
+    const char *type = currentNode->Attribute("type");
+    if (type)
+      strSettingsType = type;
+
     int iLabelId = currentNode->Attribute("label") ? atoi(currentNode->Attribute("label")) : -1;
     bool bConfigurable = (!currentNode->Attribute("configurable") ||
                           strcmp(currentNode->Attribute("configurable"), "") == 0 ||

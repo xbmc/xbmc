@@ -64,14 +64,21 @@ bool CFanart::Unpack()
   TiXmlElement *fanart = doc.FirstChildElement("fanart");
   while (fanart)
   {
-    string url = fanart->Attribute("url");
+    string url;
+    const char *urlattr = fanart->Attribute("url");
+    if (urlattr)
+       url = fanart->Attribute("url");
+
     TiXmlElement *fanartThumb = fanart->FirstChildElement("thumb");
     while (fanartThumb)
     {
       SFanartData data;
       if (url.empty())
       {
-        data.strImage = fanartThumb->GetText();
+        const char *image = fanartThumb->GetText();
+        if (image)
+          data.strImage = image;
+
         if (fanartThumb->Attribute("preview"))
           data.strPreview = fanartThumb->Attribute("preview");
       }
@@ -81,8 +88,12 @@ bool CFanart::Unpack()
         if (fanartThumb->Attribute("preview"))
           data.strPreview = URIUtils::AddFileToFolder(url, fanartThumb->Attribute("preview"));
       }
-      data.strResolution = fanartThumb->Attribute("dim");
-      ParseColors(fanartThumb->Attribute("colors"), data.strColors);
+      if (fanartThumb->Attribute("dim"))
+        data.strResolution = fanartThumb->Attribute("dim");
+
+      if (fanartThumb->Attribute("colors"))
+        ParseColors(fanartThumb->Attribute("colors"), data.strColors);
+
       m_fanart.push_back(data);
       fanartThumb = fanartThumb->NextSiblingElement("thumb");
     }

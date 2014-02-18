@@ -282,7 +282,10 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
     const TiXmlNode *pGui = pCharSets->FirstChild("gui");
     if (pGui && !pGui->NoChildren())
     {
-      string strForceUnicodeFont = ((TiXmlElement*) pGui)->Attribute("unicodefont");
+      string strForceUnicodeFont;
+      const char *unicodefont = ((TiXmlElement*) pGui)->Attribute("unicodefont");
+      if (unicodefont != NULL)
+        strForceUnicodeFont = unicodefont;
 
       if (StringUtils::EqualsNoCase(strForceUnicodeFont, "true"))
         m_defaultRegion.m_forceUnicodeFont=true;
