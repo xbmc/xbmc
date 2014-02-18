@@ -161,7 +161,7 @@ CStdString CSmartPlaylistRule::TranslateField(int field) const
   return "none";
 }
 
-SortBy CSmartPlaylistRule::TranslateOrder(const char *order)
+SortBy CSmartPlaylistRule::TranslateOrder(string order)
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (StringUtils::EqualsNoCase(order, fields[i].string)) return fields[i].sort;
@@ -175,7 +175,7 @@ CStdString CSmartPlaylistRule::TranslateOrder(SortBy order)
   return "none";
 }
 
-Field CSmartPlaylistRule::TranslateGroup(const char *group)
+Field CSmartPlaylistRule::TranslateGroup(string group)
 {
   for (unsigned int i = 0; i < NUM_GROUPS; i++)
   {

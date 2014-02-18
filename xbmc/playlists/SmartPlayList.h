@@ -38,10 +38,10 @@ public:
 
   CStdString                  GetLocalizedRule() const;
 
-  static SortBy               TranslateOrder(const char *order);
   static CStdString           TranslateOrder(SortBy order);
-  static Field                TranslateGroup(const char *group);
   static CStdString           TranslateGroup(Field group);
+  static SortBy               TranslateOrder(std::string order);
+  static Field                TranslateGroup(std::string group);
 
   static CStdString           GetLocalizedField(int field);
   static CStdString           GetLocalizedGroup(Field group);
