@@ -66,6 +66,8 @@ config.log
 .project
 .cproject
 
+/nbproject
+
 # /
 /.dummy
 /.dummy.in
@@ -210,6 +212,7 @@ lib/cmyth/Makefile
 /lib/gtest/build-aux/config.h
 /lib/gtest/build-aux/config.h.in~
 /lib/gtest/build-aux/stamp-h1
+/lib/gtest/build-aux/test-driver
 /lib/gtest/fused-src/
 /lib/gtest/lib/
 /lib/gtest/libtool
