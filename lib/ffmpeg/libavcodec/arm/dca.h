@@ -30,9 +30,9 @@
 
 #define decode_blockcodes decode_blockcodes
 static inline int decode_blockcodes(int code1, int code2, int levels,
-                                    int *values)
+                                    int32_t *values)
 {
-    int v0, v1, v2, v3, v4, v5;
+    int32_t v0, v1, v2, v3, v4, v5;
 
     __asm__ ("smmul   %0,  %6,  %10           \n"
              "smmul   %3,  %7,  %10           \n"
@@ -101,3 +101,4 @@ static inline void int8x8_fmul_int32(float *dst, const int8_t *src, int scale)
 #endif
 
 #endif /* AVCODEC_ARM_DCA_H */
+

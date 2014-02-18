@@ -35,6 +35,9 @@
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
+#if defined(HAS_IMXVPU)
+#include "Video/DVDVideoCodecIMX.h"
+#endif
 #include "Video/DVDVideoCodecStageFright.h"
 #if defined(HAVE_LIBCRYSTALHD)
 #include "Video/DVDVideoCodecCrystalHD.h"
@@ -194,7 +197,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 #elif defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
   hwSupport += "VAAPI:no ";
 #endif
-
+#if defined(HAS_IMXVPU)
+  hwSupport += "iMXVPU:yes ";
+#else
+  hwSupport += "iMXVPU:no ";
+#endif  
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
 #if defined(HAS_LIBAMCODEC)
   // amcodec can handle dvd playback.
@@ -208,6 +215,15 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
     }
   }
 
+/*#endif*/
+  
+#if defined(HAS_IMXVPU)
+  if (!hint.software)
+  {
+    if ( (pCodec = OpenCodec(new CDVDVideoCodecIMX(), hint, options)) ) return pCodec;
+  }
+#endif
+  
 #if defined(TARGET_DARWIN_OSX)
   if (!hint.software && CSettings::Get().GetBool("videoplayer.usevda"))
   {
