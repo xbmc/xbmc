@@ -87,7 +87,7 @@ public:
     PLT_MediaController*        m_MediaController;
 
 private:
-    CStdString                  m_IP;
+    std::string                  m_IP;
     PLT_UPnP*                   m_UPnP;
     CDeviceHostReferenceHolder* m_ServerHolder;
     CRendererReferenceHolder*   m_RendererHolder;

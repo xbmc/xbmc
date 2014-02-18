@@ -82,7 +82,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
       break;
     }
 
-    CStdString strHiddenInput(m_strUserInput);
+    string strHiddenInput(m_strUserInput);
     for (int i = 0; i < (int)strHiddenInput.size(); i++)
     {
       strHiddenInput[i] = m_cHideInputChar;
@@ -104,7 +104,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     m_bConfirmed = false;
     m_bCanceled = false;
 
-    CStdString md5pword2;
+    string md5pword2;
     XBMC::XBMC_MD5 md5state;
     md5state.append(m_strUserInput);
     md5state.getDigest(md5pword2);
@@ -172,10 +172,10 @@ bool CGUIDialogGamepad::OnMessage(CGUIMessage& message)
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param bHideUserInput Masks user input as asterisks if set as true.  Currently not yet implemented.
 // \return true if successful display and user input. false if unsuccessful display, no user input, or canceled editing.
-bool CGUIDialogGamepad::ShowAndGetInput(CStdString& aTextString, const CStdString &dlgHeading, bool bHideUserInput)
+bool CGUIDialogGamepad::ShowAndGetInput(string& aTextString, const string &dlgHeading, bool bHideUserInput)
 {
   // Prompt user for input
-  CStdString strUserInput = "";
+  string strUserInput = "";
   if (ShowAndVerifyInput(strUserInput, dlgHeading, aTextString, "", "", true, bHideUserInput))
   {
     // user entry was blank
@@ -195,10 +195,10 @@ bool CGUIDialogGamepad::ShowAndGetInput(CStdString& aTextString, const CStdStrin
 // \brief Show gamepad keypad twice to get and confirm a user-entered password string.
 // \param strNewPassword String to preload into the keyboard accumulator. Overwritten with user input if return=true.
 // \return true if successful display and user input entry/re-entry. false if unsuccessful display, no user input, or canceled editing.
-bool CGUIDialogGamepad::ShowAndVerifyNewPassword(CStdString& strNewPassword)
+bool CGUIDialogGamepad::ShowAndVerifyNewPassword(string& strNewPassword)
 {
   // Prompt user for password input
-  CStdString strUserInput = "";
+  string strUserInput = "";
   if (ShowAndVerifyInput(strUserInput, "12340", "12330", "12331", "", true, true))
   {
     // TODO: Show error to user saying the password entry was blank
@@ -228,9 +228,9 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(CStdString& strNewPassword)
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param iRetries If greater than 0, shows "Incorrect password, %d retries left" on dialog line 2, else line 2 is blank.
 // \return 0 if successful display and user input. 1 if unsuccessful input. -1 if no user input or canceled editing.
-int CGUIDialogGamepad::ShowAndVerifyPassword(CStdString& strPassword, const CStdString& dlgHeading, int iRetries)
+int CGUIDialogGamepad::ShowAndVerifyPassword(string& strPassword, const string& dlgHeading, int iRetries)
 {
-  CStdString strLine2 = "";
+  string strLine2 = "";
   if (0 < iRetries)
   {
     // Show a string telling user they have iRetries retries left
@@ -238,7 +238,7 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdString& strPassword, const CStd
   }
 
   // make a copy of strPassword to prevent from overwriting it later
-  CStdString strPassTemp = strPassword;
+  string strPassTemp = strPassword;
   if (ShowAndVerifyInput(strPassTemp, dlgHeading, g_localizeStrings.Get(12330), g_localizeStrings.Get(12331), strLine2, true, true))
   {
     // user entered correct password
@@ -262,9 +262,9 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdString& strPassword, const CStd
 // \param bGetUserInput If set as true and return=true, strToVerify is overwritten with user input string.
 // \param bHideInputChars Masks user input as asterisks if set as true.  Currently not yet implemented.
 // \return true if successful display and user input. false if unsuccessful display, no user input, or canceled editing.
-bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdString& dlgHeading,
-    const CStdString& dlgLine0, const CStdString& dlgLine1,
-    const CStdString& dlgLine2, bool bGetUserInput, bool bHideInputChars)
+bool CGUIDialogGamepad::ShowAndVerifyInput(string& strToVerify, const string& dlgHeading,
+    const string& dlgLine0, const string& dlgLine1,
+    const string& dlgLine2, bool bGetUserInput, bool bHideInputChars)
 {
   // Prompt user for password input
   CGUIDialogGamepad *pDialog = (CGUIDialogGamepad *)g_windowManager.GetWindow(WINDOW_DIALOG_GAMEPAD);

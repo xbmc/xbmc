@@ -38,10 +38,10 @@ CUDFDirectory::~CUDFDirectory(void)
 {
 }
 
-bool CUDFDirectory::GetDirectory(const CStdString& strPath,
+bool CUDFDirectory::GetDirectory(const string& strPath,
                                  CFileItemList &items)
 {
-  CStdString strRoot, strSub;
+  string strRoot, strSub;
   CURL url;
   if(StringUtils::StartsWith(strPath, "udf://"))
   {
@@ -73,7 +73,7 @@ bool CUDFDirectory::GetDirectory(const CStdString& strPath,
   {
     if (dp->d_type == DVD_DT_DIR)
     {
-      CStdString strDir = (char*)dp->d_name;
+      string strDir = (char*)dp->d_name;
       if (strDir != "." && strDir != "..")
       {
         CFileItemPtr pItem(new CFileItem((char*)dp->d_name));

@@ -32,6 +32,6 @@ namespace XFILE
     virtual ~CASAPFileDirectory(void);
   private:
     DllASAP m_dll;
-    virtual int GetTrackCount(const CStdString& strPath);
+    virtual int GetTrackCount(const std::string& strPath);
   };
 }

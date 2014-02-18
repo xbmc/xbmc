@@ -37,7 +37,7 @@
 
 using namespace std;
 
-CScraperUrl::CScraperUrl(const CStdString& strUrl)
+CScraperUrl::CScraperUrl(const string& strUrl)
 {
   relevance = 0;
   ParseString(strUrl);
@@ -68,7 +68,7 @@ void CScraperUrl::Clear()
 
 bool CScraperUrl::Parse()
 {
-  CStdString strToParse = m_xml;
+  string strToParse = m_xml;
   m_xml.clear();
   return ParseString(strToParse);
 }
@@ -120,7 +120,7 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
   return true;
 }
 
-bool CScraperUrl::ParseString(CStdString strUrl)
+bool CScraperUrl::ParseString(string strUrl)
 {
   if (strUrl.empty())
     return false;
@@ -196,11 +196,11 @@ unsigned int CScraperUrl::GetMaxSeasonThumb() const
   return maxSeason;
 }
 
-bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCurlFile& http, const CStdString& cacheContext)
+bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCurlFile& http, const string& cacheContext)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);
-  CStdString strCachePath;
+  string strCachePath;
 
   if (scrURL.m_isgz)
     http.SetContentEncoding("gzip");
@@ -221,11 +221,11 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     }
   }
 
-  CStdString strHTML1(strHTML);
+  string strHTML1(strHTML);
 
   if (scrURL.m_post)
   {
-    CStdString strOptions = url.GetOptions();
+    string strOptions = url.GetOptions();
     strOptions = strOptions.substr(1);
     url.SetOptions("");
 
@@ -307,7 +307,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 
   if (!scrURL.m_cache.empty())
   {
-    CStdString strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath,
+    string strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath,
                               "scrapers/" + cacheContext + "/" + scrURL.m_cache);
     XFILE::CFile file;
     if (file.OpenForWrite(strCachePath,true))
@@ -319,7 +319,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 
 // XML format is of strUrls is:
 // <TAG><url>...</url>...</TAG> (parsed by ParseElement) or <url>...</url> (ditto)
-bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
+bool CScraperUrl::ParseEpisodeGuide(string strUrls)
 {
   if (strUrls.empty())
     return false;
@@ -345,12 +345,12 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
   return true;
 }
 
-CStdString CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry &entry)
+string CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry &entry)
 {
   if (entry.m_spoof.empty())
     return entry.m_url;
   
-  return entry.m_url + "|Referer=" + CStdString(CURL::Encode(entry.m_spoof));
+  return entry.m_url + "|Referer=" + string(CURL::Encode(entry.m_spoof));
 }
 
 void CScraperUrl::GetThumbURLs(std::vector<string> &thumbs, const std::string &type, int season) const

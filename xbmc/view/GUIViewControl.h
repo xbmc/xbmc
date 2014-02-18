@@ -43,7 +43,7 @@ public:
   void SetItems(CFileItemList &items);
 
   void SetSelectedItem(int item);
-  void SetSelectedItem(const CStdString &itemPath);
+  void SetSelectedItem(const std::string &itemPath);
 
   int GetSelectedItem() const;
   void SetFocused();
@@ -61,7 +61,7 @@ protected:
   int GetSelectedItem(const CGUIControl *control) const;
   void UpdateContents(const CGUIControl *control, int currentItem);
   void UpdateView();
-  void UpdateViewAsControl(const CStdString &viewLabel);
+  void UpdateViewAsControl(const std::string &viewLabel);
   void UpdateViewVisibility();
   int GetView(VIEW_TYPE type, int id) const;
 

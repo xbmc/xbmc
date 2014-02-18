@@ -59,7 +59,7 @@ namespace EPG
 
     static int RemoveDuplicates(CFileItemList &results);
 
-    CStdString    m_strSearchTerm;            /*!< The term to search for */
+    std::string    m_strSearchTerm;            /*!< The term to search for */
     bool          m_bIsCaseSensitive;         /*!< Do a case sensitive search */
     bool          m_bSearchInDescription;     /*!< Search for strSearchTerm in the description too */
     int           m_iGenreType;               /*!< The genre type for an entry */

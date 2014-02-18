@@ -311,7 +311,7 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
   return true;
 }
 
-void CGUIDialogKeyboardGeneric::SetText(const CStdString& aTextString)
+void CGUIDialogKeyboardGeneric::SetText(const string& aTextString)
 {
   m_strEdit.clear();
   m_strEditing.clear();
@@ -321,7 +321,7 @@ void CGUIDialogKeyboardGeneric::SetText(const CStdString& aTextString)
   SetCursorPos(m_strEdit.size());
 }
 
-void CGUIDialogKeyboardGeneric::InputText(const CStdString& aTextString)
+void CGUIDialogKeyboardGeneric::InputText(const string& aTextString)
 {
   wstring newStr;
   g_charsetConverter.utf8ToW(aTextString, newStr);
@@ -335,7 +335,7 @@ void CGUIDialogKeyboardGeneric::InputText(const CStdString& aTextString)
   }
 }
 
-void CGUIDialogKeyboardGeneric::InputTextEditing(const CStdString& aTextString, int start, int length)
+void CGUIDialogKeyboardGeneric::InputTextEditing(const string& aTextString, int start, int length)
 {
   m_strEditing.clear();
   m_iEditingOffset = start;
@@ -346,9 +346,9 @@ void CGUIDialogKeyboardGeneric::InputTextEditing(const CStdString& aTextString, 
   SetCursorPos(GetCursorPos());
 }
 
-CStdString CGUIDialogKeyboardGeneric::GetText() const
+string CGUIDialogKeyboardGeneric::GetText() const
 {
-  CStdString utf8String;
+  string utf8String;
   g_charsetConverter.wToUTF8(m_strEdit, utf8String);
   return utf8String;
 }
@@ -403,7 +403,7 @@ void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice 
         pEdit->SetSelection(m_iCursorPos + m_iEditingOffset, m_iCursorPos + m_iEditingOffset + m_iEditingLength);
     }
     // convert back to utf8
-    CStdString utf8Edit;
+    string utf8Edit;
     g_charsetConverter.wToUTF8(edit, utf8Edit);
     pEdit->SetLabel(utf8Edit);
     // Send off a search message
@@ -561,7 +561,7 @@ void CGUIDialogKeyboardGeneric::UpdateButtons()
   char szLabel[2];
   szLabel[0] = 32;
   szLabel[1] = 0;
-  CStdString aLabel = szLabel;
+  string aLabel = szLabel;
 
   // set numerals
   for (int iButton = 48; iButton <= 57; iButton++)
@@ -656,9 +656,9 @@ void CGUIDialogKeyboardGeneric::OnIPAddress()
 {
   // find any IP address in the current string if there is any
   // We match to #.#.#.#
-  CStdString utf8String;
+  string utf8String;
   g_charsetConverter.wToUTF8(m_strEdit, utf8String);
-  CStdString ip;
+  string ip;
   CRegExp reg;
   reg.RegComp("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+");
   int start = reg.RegFind(utf8String.c_str());
@@ -690,7 +690,7 @@ void CGUIDialogKeyboardGeneric::ResetShiftAndSymbols()
 
 const char* CGUIDialogKeyboardGeneric::s_charsSeries[10] = { " 0!@#$%^&*()[]{}<>/\\|", ".,1;:\'\"-+_=?`~", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
 
-void CGUIDialogKeyboardGeneric::SetControlLabel(int id, const CStdString &label)
+void CGUIDialogKeyboardGeneric::SetControlLabel(int id, const string &label)
 { // find all controls with this id, and set all their labels
   CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), id);
   message.SetLabel(label);

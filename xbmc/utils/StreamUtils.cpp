@@ -22,7 +22,7 @@
 
 using namespace std;
 
-int StreamUtils::GetCodecPriority(const CStdString &codec)
+int StreamUtils::GetCodecPriority(const string &codec)
 {
   /*
    * Technically flac, truehd, and dtshd_ma are equivalently good as they're all lossless. However,

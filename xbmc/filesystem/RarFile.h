@@ -81,10 +81,10 @@ namespace XFILE
     unsigned int          Write(void *lpBuf, int64_t uiBufSize);
 
   protected:
-    CStdString m_strCacheDir;
-    CStdString m_strRarPath;
-    CStdString m_strPassword;
-    CStdString m_strPathInRar;
+    std::string m_strCacheDir;
+    std::string m_strRarPath;
+    std::string m_strPassword;
+    std::string m_strPathInRar;
     BYTE m_bFileOptions;
     void Init();
     void InitFromUrl(const CURL& url);

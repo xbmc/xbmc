@@ -51,7 +51,7 @@ class CAirTunesServer : public CThread, public ANNOUNCEMENT::IAnnouncer
 public:
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
-  static bool StartServer(int port, bool nonlocal, bool usePassword, const CStdString &password="");
+  static bool StartServer(int port, bool nonlocal, bool usePassword, const std::string &password="");
   static void StopServer(bool bWait);
   static bool IsRunning();
   static void SetMetadataFromBuffer(const char *buffer, unsigned int size);
@@ -63,7 +63,7 @@ protected:
 private:
   CAirTunesServer(int port, bool nonlocal);
   ~CAirTunesServer();
-  bool Initialize(const CStdString &password);
+  bool Initialize(const std::string &password);
   void Deinitialize();
   static void RefreshCoverArt();
   static void RefreshMetadata();
@@ -77,7 +77,7 @@ private:
   static DllLibShairport *m_pLibShairport;//the lib
 #endif
   static CAirTunesServer *ServerInstance;
-  static CStdString m_macAddress;
+  static std::string m_macAddress;
   static CCriticalSection m_metadataLock;
   static std::string m_metadata[3];//0 - album, 1 - title, 2 - artist
   static bool m_streamStarted;

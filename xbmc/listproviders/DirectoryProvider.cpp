@@ -111,7 +111,7 @@ bool CDirectoryProvider::Update(bool refresh)
   }
 
   // update the URL and fire off a new job if needed
-  CStdString value(m_url.GetLabel(m_parentID, false));
+  string value(m_url.GetLabel(m_parentID, false));
   if (value != m_currentUrl)
   {
     m_currentUrl = value;

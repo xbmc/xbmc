@@ -55,7 +55,7 @@ bool CXBTFReader::IsOpen() const
   return m_file != NULL;
 }
 
-bool CXBTFReader::Open(const CStdString& fileName)
+bool CXBTFReader::Open(const string& fileName)
 {
   m_fileName = fileName;
 
@@ -168,14 +168,14 @@ time_t CXBTFReader::GetLastModificationTimestamp()
   return fileStat.st_mtime;
 }
 
-bool CXBTFReader::Exists(const CStdString& name)
+bool CXBTFReader::Exists(const string& name)
 {
   return Find(name) != NULL;
 }
 
-CXBTFFile* CXBTFReader::Find(const CStdString& name)
+CXBTFFile* CXBTFReader::Find(const string& name)
 {
-  std::map<CStdString, CXBTFFile>::iterator iter = m_filesMap.find(name);
+  std::map<string, CXBTFFile>::iterator iter = m_filesMap.find(name);
   if (iter == m_filesMap.end())
   {
     return NULL;

@@ -42,7 +42,7 @@ CCDDADirectory::~CCDDADirectory(void)
 }
 
 
-bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CCDDADirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   // Reads the tracks from an audio cd
 
@@ -72,11 +72,11 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       continue;
 
     // Format standard cdda item label
-    CStdString strLabel = StringUtils::Format("Track %02.2i", i);
+    string strLabel = StringUtils::Format("Track %02.2i", i);
 
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_bIsFolder = false;
-    CStdString path = StringUtils::Format("cdda://local/%02.2i.cdda", i);
+    string path = StringUtils::Format("cdda://local/%02.2i.cdda", i);
     pItem->SetPath(path);
 
     struct __stat64 s64;

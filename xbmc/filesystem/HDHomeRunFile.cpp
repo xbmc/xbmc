@@ -50,7 +50,7 @@ CHomeRunFile::~CHomeRunFile()
 
 bool CHomeRunFile::Exists(const CURL& url)
 {
-  CStdString path(url.GetFileName());
+  string path(url.GetFileName());
 
   /*
    * HDHomeRun URLs are of the form hdhomerun://1014F6D1/tuner0?channel=qam:108&program=10

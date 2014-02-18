@@ -41,7 +41,7 @@ public:
 
   static bool Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE musicContext = CONTENT_NONE);
   static bool Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, CONTENT_TYPE musicContext = CONTENT_NONE);
-  static bool ShowForDirectory(const CStdString& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
+  static bool ShowForDirectory(const std::string& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 protected:
@@ -68,9 +68,9 @@ protected:
   std::map<CONTENT_TYPE, ADDON::AddonPtr>  m_lastSelected;
   CFileItemList* m_vecItems;
 
-  CStdString m_strContentType;
+  std::string m_strContentType;
   ADDON::AddonPtr m_scraper;
-  CStdString m_defaultScraper;
+  std::string m_defaultScraper;
   CONTENT_TYPE m_content;
   CONTENT_TYPE m_origContent;
 };

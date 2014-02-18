@@ -39,7 +39,7 @@ Node OverviewChildren[] = {
                             { NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS, "recentlyaddedmusicvideos", 20390 },
                           };
 
-CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeOverview::CDirectoryNodeOverview(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent)
 {
 
@@ -54,7 +54,7 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType() const
   return NODE_TYPE_NONE;
 }
 
-CStdString CDirectoryNodeOverview::GetLocalizedName() const
+string CDirectoryNodeOverview::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
     if (StringUtils::EqualsNoCase(GetName(), OverviewChildren[i].id.c_str()))
@@ -99,7 +99,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
     if (hasMusicVideos)
       vec.push_back(make_pair("recentlyaddedmusicvideos", 20390)); // Recently Added Music Videos
   }
-  CStdString path = BuildPath();
+  string path = BuildPath();
   for (unsigned int i = 0; i < vec.size(); ++i)
   {
     CFileItemPtr pItem(new CFileItem(path + vec[i].first + "/", true));

@@ -54,7 +54,7 @@ CKaraokeLyricsManager::~ CKaraokeLyricsManager()
   }
 }
 
-bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
+bool CKaraokeLyricsManager::Start(const string & strSongPath)
 {
   CSingleLock lock (m_CritSection);
 

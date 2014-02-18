@@ -38,8 +38,8 @@ public:
   CLangCodeExpander(void);
   ~CLangCodeExpander(void);
 
-  bool Lookup(CStdString& desc, const CStdString& code);
-  bool Lookup(CStdString& desc, const int code);
+  bool Lookup(std::string& desc, const std::string& code);
+  bool Lookup(std::string& desc, const int code);
 
   /** \brief Determines if two english language names represent the same language.
   *   \param[in] lang1 The first language string to compare given as english language name.
@@ -47,7 +47,7 @@ public:
   *   \return true if the two language strings represent the same language, false otherwise.
   *   For example "Abkhaz" and "Abkhazian" represent the same language.
   */ 
-  bool CompareFullLangNames(const CStdString& lang1, const CStdString& lang2);
+  bool CompareFullLangNames(const std::string& lang1, const std::string& lang2);
 
   /** \brief Determines if two languages given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B codes represent the same language.
   *   \param[in] code1 The first language to compare given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B code.
@@ -55,7 +55,7 @@ public:
   *   \return true if the two language codes represent the same language, false otherwise.
   *   For example "ger", "deu" and "de" represent the same language.
   */ 
-  bool CompareLangCodes(const CStdString& code1, const CStdString& code2);
+  bool CompareLangCodes(const std::string& code1, const std::string& code2);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
@@ -65,7 +65,7 @@ public:
   *   \param[in] checkXbmcLocales Try to find in XBMC specific locales
   *   \return true if the conversion succeeded, false otherwise. 
   */ 
-  bool ConvertToTwoCharCode(CStdString& code, const CStdString& lang, bool checkXbmcLocales = true);
+  bool ConvertToTwoCharCode(std::string& code, const std::string& lang, bool checkXbmcLocales = true);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
@@ -73,13 +73,13 @@ public:
   *   \param[in] lang The language that should be converted.
   *   \return The 3-Char ISO 639-2/T code of lang if that code exists, lang otherwise.
   */
-  CStdString ConvertToISO6392T(const CStdString& lang);
-  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool checkWin32Locales = false);
-  bool ConvertToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strCharCode, bool checkXbmcLocales = true, bool checkWin32Locales = false);
+  std::string ConvertToISO6392T(const std::string& lang);
+  bool ConvertTwoToThreeCharCode(std::string& strThreeCharCode, const std::string& strTwoCharCode, bool checkWin32Locales = false);
+  bool ConvertToThreeCharCode(std::string& strThreeCharCode, const std::string& strCharCode, bool checkXbmcLocales = true, bool checkWin32Locales = false);
 
 #ifdef TARGET_WINDOWS
-  bool ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode);
-  bool ConvertWindowsToGeneralCharCode(const CStdString& strWindowsCharCode, CStdString& strThreeCharCode);
+  bool ConvertLinuxToWindowsRegionCodes(const std::string& strTwoCharCode, std::string& strThreeCharCode);
+  bool ConvertWindowsToGeneralCharCode(const std::string& strWindowsCharCode, std::string& strThreeCharCode);
 #endif
 
   void LoadUserCodes(const TiXmlElement* pRootElement);
@@ -93,13 +93,13 @@ protected:
   *   \param[in] code The language code given as a long, see #MAKECODE(a, b, c, d).
   *   \param[out] ret The string representation of the given language code code.
   */ 
-  void CodeToString(long code, CStdString& ret);
+  void CodeToString(long code, std::string& ret);
 
-  typedef std::map<CStdString, CStdString> STRINGLOOKUPTABLE;
+  typedef std::map<std::string, std::string> STRINGLOOKUPTABLE;
   STRINGLOOKUPTABLE m_mapUser;
 
-  bool LookupInDb(CStdString& desc, const CStdString& code);
-  bool LookupInMap(CStdString& desc, const CStdString& code);
+  bool LookupInDb(std::string& desc, const std::string& code);
+  bool LookupInMap(std::string& desc, const std::string& code);
 
   /** \brief Looks up the ISO 639-1, ISO 639-2/T, or ISO 639-2/B, whichever it finds first,
   *          code of the given english language name.
@@ -107,7 +107,7 @@ protected:
   *   \param[out] code The ISO 639-1, ISO 639-2/T, or ISO 639-2/B code of the given language desc.
   *   \return true if the a code was found, false otherwise.
   */ 
-  bool ReverseLookup(const CStdString& desc, CStdString& code);
+  bool ReverseLookup(const std::string& desc, std::string& code);
 };
 
 extern CLangCodeExpander g_LangCodeExpander;

@@ -75,14 +75,14 @@ public:
 protected:
   static enum PixelFormat GetFormat(struct AVCodecContext * avctx, const PixelFormat * fmt);
 
-  int  FilterOpen(const CStdString& filters, bool scale);
+  int  FilterOpen(const std::string& filters, bool scale);
   void FilterClose();
   int  FilterProcess(AVFrame* frame);
 
   void UpdateName()
   {
     if(m_pCodecContext->codec->name)
-      m_name = CStdString("ff-") + m_pCodecContext->codec->name;
+      m_name = std::string("ff-") + m_pCodecContext->codec->name;
     else
       m_name = "ffmpeg";
 
@@ -93,8 +93,8 @@ protected:
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
 
-  CStdString       m_filters;
-  CStdString       m_filters_next;
+  std::string       m_filters;
+  std::string       m_filters_next;
   AVFilterGraph*   m_pFilterGraph;
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;

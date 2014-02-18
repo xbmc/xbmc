@@ -119,12 +119,12 @@ void CGUISpinControlEx::SetEnabled(bool bEnable)
   CGUISpinControl::SetEnabled(bEnable);
 }
 
-const CStdString CGUISpinControlEx::GetCurrentLabel() const
+const string CGUISpinControlEx::GetCurrentLabel() const
 {
   return CGUISpinControl::GetLabel();
 }
 
-CStdString CGUISpinControlEx::GetDescription() const
+string CGUISpinControlEx::GetDescription() const
 {
   return StringUtils::Format("%s (%s)", m_buttonControl.GetDescription().c_str(), GetLabel().c_str());
 }

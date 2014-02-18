@@ -98,7 +98,7 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
 
 // \brief Show CGUIDialogNetworkSetup dialog and prompt for a new network address.
 // \return True if the network address is valid, false otherwise.
-bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(CStdString &path)
+bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(string &path)
 {
   CGUIDialogNetworkSetup *dialog = (CGUIDialogNetworkSetup *)g_windowManager.GetWindow(WINDOW_DIALOG_NETWORK_SETUP);
   if (!dialog) return false;
@@ -178,11 +178,11 @@ void CGUIDialogNetworkSetup::OnServerBrowse()
 {
   // open a filebrowser dialog with the current address
   VECSOURCES shares;
-  CStdString path = ConstructPath();
+  string path = ConstructPath();
   // get the share as the base path
   CMediaSource share;
-  CStdString basePath = path;
-  CStdString tempPath;
+  string basePath = path;
+  string tempPath;
   while (URIUtils::GetParentPath(basePath, tempPath))
     basePath = tempPath;
   share.strPath = basePath;
@@ -334,7 +334,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                                               m_protocol == NET_PROTOCOL_AFP));
 }
 
-CStdString CGUIDialogNetworkSetup::ConstructPath() const
+string CGUIDialogNetworkSetup::ConstructPath() const
 {
   CURL url;
   if (m_protocol == NET_PROTOCOL_SMB)
@@ -400,10 +400,10 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   return url.Get();
 }
 
-void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
+void CGUIDialogNetworkSetup::SetPath(const string &path)
 {
   CURL url(path);
-  const CStdString &protocol = url.GetProtocol();
+  const string &protocol = url.GetProtocol();
   if (protocol == "smb")
     m_protocol = NET_PROTOCOL_SMB;
   else if (protocol == "ftp")

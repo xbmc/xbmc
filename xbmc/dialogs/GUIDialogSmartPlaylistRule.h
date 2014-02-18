@@ -35,7 +35,7 @@ public:
   virtual void OnWindowLoaded();
   virtual void OnDeinitWindow(int nextWindowID);
 
-  static bool EditRule(CSmartPlaylistRule &rule, const CStdString& type="songs");
+  static bool EditRule(CSmartPlaylistRule &rule, const std::string& type="songs");
 
 protected:
   void OnField();
@@ -48,5 +48,5 @@ protected:
 
   CSmartPlaylistRule m_rule;
   bool m_cancelled;
-  CStdString m_type;
+  std::string m_type;
 };

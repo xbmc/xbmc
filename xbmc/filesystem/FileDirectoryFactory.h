@@ -30,6 +30,6 @@ class CFileDirectoryFactory
 public:
   CFileDirectoryFactory(void);
   virtual ~CFileDirectoryFactory(void);
-  static IFileDirectory* Create(const CStdString& strPath, CFileItem* pItem, const CStdString& strMask="");
+  static IFileDirectory* Create(const std::string& strPath, CFileItem* pItem, const std::string& strMask="");
 };
 }

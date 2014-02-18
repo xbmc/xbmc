@@ -45,7 +45,7 @@ namespace ADDON
 
 CCriticalSection CAddonStatusHandler::m_critSection;
 
-CAddonStatusHandler::CAddonStatusHandler(const CStdString &addonID, ADDON_STATUS status, CStdString message, bool sameThread)
+CAddonStatusHandler::CAddonStatusHandler(const string &addonID, ADDON_STATUS status, string message, bool sameThread)
   : CThread("AddonStatus " + addonID)
 {
   if (!CAddonMgr::Get().GetAddon(addonID, m_addon))
@@ -84,7 +84,7 @@ void CAddonStatusHandler::Process()
 {
   CSingleLock lock(m_critSection);
 
-  CStdString heading = StringUtils::Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
+  string heading = StringUtils::Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
 
   /* AddOn lost connection to his backend (for ones that use Network) */
   if (m_status == ADDON_STATUS_LOST_CONNECTION)

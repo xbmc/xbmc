@@ -69,11 +69,11 @@ void CVirtualDirectory::SetSources(const VECSOURCES& vecSources)
     and icons have to be set manually.
  */
 
-bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CVirtualDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   return GetDirectory(strPath,items,true);
 }
-bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories)
+bool CVirtualDirectory::GetDirectory(const string& strPath, CFileItemList &items, bool bUseFileDirectories)
 {
   int flags = m_flags;
   if (!bUseFileDirectories)
@@ -102,9 +102,9 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
  \note The parameter \e strPath can not be a share with directory. Eg. "iso9660://dir" will return \e false.
     It must be "iso9660://".
  */
-bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources, CStdString *name) const
+bool CVirtualDirectory::IsSource(const string& strPath, VECSOURCES *sources, string *name) const
 {
-  CStdString strPathCpy = strPath;
+  string strPathCpy = strPath;
   StringUtils::TrimRight(strPathCpy, "/\\");
 
   // just to make sure there's no mixed slashing in share/default defines
@@ -121,7 +121,7 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources,
   for (int i = 0; i < (int)shares.size(); ++i)
   {
     const CMediaSource& share = shares.at(i);
-    CStdString strShare = share.strPath;
+    string strShare = share.strPath;
     StringUtils::TrimRight(strShare, "/\\");
     if(URIUtils::IsDOSPath(strShare))
       StringUtils::Replace(strShare, '/', '\\');
@@ -142,7 +142,7 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath, VECSOURCES *sources,
  \note The parameter \e path CAN be a share with directory. Eg. "iso9660://dir" will
        return the same as "iso9660://".
  */
-bool CVirtualDirectory::IsInSource(const CStdString &path) const
+bool CVirtualDirectory::IsInSource(const string &path) const
 {
   bool isSourceName;
   VECSOURCES shares;

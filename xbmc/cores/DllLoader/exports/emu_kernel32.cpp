@@ -103,7 +103,7 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
 #ifdef TARGET_WINDOWS
 static void to_WIN32_FIND_DATA(LPWIN32_FIND_DATAW wdata, LPWIN32_FIND_DATA data)
 {
-  CStdString strname;
+  string strname;
   g_charsetConverter.wToUTF8(wdata->cFileName, strname);
   size_t size = sizeof(data->cFileName) / sizeof(char);
   strncpy(data->cFileName, strname.c_str(), size);

@@ -67,7 +67,7 @@ public:
       FT_Done_FreeType(m_library);
   }
 
-  FT_Face GetFont(const CStdString &filename, float size, float aspect)
+  FT_Face GetFont(const string &filename, float size, float aspect)
   {
     // don't have it yet - create it
     if (!m_library)
@@ -131,7 +131,7 @@ private:
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
 #define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
-CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
+CGUIFontTTFBase::CGUIFontTTFBase(const string& strFileName)
 {
   m_texture = NULL;
   m_char = NULL;
@@ -221,7 +221,7 @@ void CGUIFontTTFBase::Clear()
   m_vertex_count = 0;
 }
 
-bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing, bool border)
+bool CGUIFontTTFBase::Load(const string& strFilename, float height, float aspect, float lineSpacing, bool border)
 {
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
@@ -370,7 +370,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
   for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
   {
     // If starting text on a new line, determine justification effects
-    // Get the current letter in the CStdString
+    // Get the current letter in the string
     color_t color = (*pos & 0xff0000) >> 16;
     if (color >= colors.size())
       color = 0;

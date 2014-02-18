@@ -37,14 +37,14 @@ VGMCodec::~VGMCodec()
   DeInit();
 }
 
-bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool VGMCodec::Init(const string &strFile, unsigned int filecache)
 {
   if (!m_dll.Load())
     return false; // error logged previously
 
   m_dll.Init();
 
-  //CStdString strFileToLoad = "filereader://"+strFile;
+  //string strFileToLoad = "filereader://"+strFile;
   XFILE::CFile::Cache(strFile,"special://temp/"+URIUtils::GetFileName(strFile));
 
   //m_vgm = m_dll.LoadVGM(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
@@ -108,7 +108,7 @@ bool VGMCodec::CanInit()
   return m_dll.CanLoad();
 }
 
-bool VGMCodec::IsSupportedFormat(const CStdString& strExt)
+bool VGMCodec::IsSupportedFormat(const string& strExt)
 {
   if (strExt == "aax" ||
       strExt == "acm" ||

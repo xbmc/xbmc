@@ -162,13 +162,13 @@ void CGUIWindowWeather::UpdateLocations()
   
   for (unsigned int i = 1; i <= m_maxLocation; i++)
   {
-    CStdString strLabel = g_weatherManager.GetLocation(i);
+    string strLabel = g_weatherManager.GetLocation(i);
     if (strLabel.size() > 1) //got the location string yet?
     {
       size_t iPos = strLabel.rfind(", ");
       if (iPos != std::string::npos)
       {
-        CStdString strLabel2(strLabel);
+        string strLabel2(strLabel);
         strLabel = strLabel2.substr(0,iPos);
       }
       msg2.SetParam1(i);
@@ -250,7 +250,7 @@ void CGUIWindowWeather::SetLocation(int loc)
   {
     ClearProperties();
     g_weatherManager.SetArea(loc);
-    CStdString strLabel = g_weatherManager.GetLocation(loc);
+    string strLabel = g_weatherManager.GetLocation(loc);
     size_t iPos = strLabel.rfind(", ");
     if (iPos != std::string::npos)
       strLabel = strLabel.substr(0, iPos);
@@ -275,12 +275,12 @@ void CGUIWindowWeather::SetProperties()
   SetProperty("Current.DewPoint", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP));
   SetProperty("Current.Humidity", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
   // we use the icons code number for fanart as it's the safest way
-  CStdString fanartcode = URIUtils::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  string fanartcode = URIUtils::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
   URIUtils::RemoveExtension(fanartcode);
   SetProperty("Current.FanartCode", fanartcode);
 
   // Future weather
-  CStdString day;
+  string day;
   for (int i = 0; i < NUM_DAYS; i++)
   {
     day = StringUtils::Format("Day%i.", i);
@@ -312,7 +312,7 @@ void CGUIWindowWeather::ClearProperties()
   SetProperty("Current.FanartCode", "");
   
   // Future weather
-  CStdString day;
+  string day;
   for (int i = 0; i < NUM_DAYS; i++)
   {
     day = StringUtils::Format("Day%i.", i);

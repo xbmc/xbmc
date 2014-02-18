@@ -286,7 +286,7 @@ bool CRenderSystemGL::ClearBuffers(color_t color)
 
 bool CRenderSystemGL::IsExtSupported(const char* extension)
 {
-  CStdString name;
+  string name;
   name  = " ";
   name += extension;
   name += " ";

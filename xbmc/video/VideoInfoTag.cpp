@@ -94,7 +94,7 @@ void CVideoInfoTag::Reset()
   m_type.clear();
 }
 
-bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo, const TiXmlElement *additionalNode)
+bool CVideoInfoTag::Save(TiXmlNode *node, const string &tag, bool savePathInfo, const TiXmlElement *additionalNode)
 {
   if (!node) return false;
 
@@ -356,7 +356,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar >> info.strRole;
       ar >> info.order;
       ar >> info.thumb;
-      CStdString strXml;
+      string strXml;
       ar >> strXml;
       info.thumbUrl.ParseString(strXml);
       m_cast.push_back(info);
@@ -404,7 +404,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iIdShow;
     ar >> m_strShowPath;
 
-    CStdString dateAdded;
+    string dateAdded;
     ar >> dateAdded;
     m_dateAdded.SetFromDBDateTime(dateAdded);
     ar >> m_type;
@@ -551,12 +551,12 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   }
 }
 
-const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
+const string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
 {
-  CStdString strLabel;
+  string strLabel;
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
   {
-    CStdString character;
+    string character;
     if (it->strRole.empty() || !bIncludeRole)
       character = StringUtils::Format("%s\n", it->strName.c_str());
     else
@@ -599,7 +599,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   XMLUtils::GetString(movie, "outline", m_strPlotOutline);
   XMLUtils::GetString(movie, "plot", m_strPlot);
   XMLUtils::GetString(movie, "tagline", m_strTagLine);
-  CStdString runtime;
+  string runtime;
   if (XMLUtils::GetString(movie, "runtime", runtime) && !runtime.empty())
     m_duration = GetDurationFromMinuteString(runtime);
   XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
@@ -618,7 +618,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   XMLUtils::GetString(movie, "basepath", m_basePath);
 
   size_t iThumbCount = m_strPictureURL.m_url.size();
-  CStdString xmlAdd = m_strPictureURL.m_xml;
+  string xmlAdd = m_strPictureURL.m_xml;
 
   const TiXmlElement* thumb = movie->FirstChildElement("thumb");
   while (thumb)
@@ -626,7 +626,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     m_strPictureURL.ParseElement(thumb);
     if (prioritise)
     {
-      CStdString temp;
+      string temp;
       temp << *thumb;
       xmlAdd = temp+xmlAdd;
     }
@@ -766,7 +766,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     // we prioritise mixed-mode nfo's with fanart set
     if (prioritise)
     {
-      CStdString temp;
+      string temp;
       temp << *fanart;
       m_fanart.m_xml = temp+m_fanart.m_xml;
     }

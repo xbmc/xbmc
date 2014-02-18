@@ -70,7 +70,7 @@ public:
   virtual void SetLabel2(const std::string &text);
   void SetHint(const CGUIInfoLabel& hint);
 
-  virtual CStdString GetLabel2() const;
+  virtual std::string GetLabel2() const;
 
   unsigned int GetCursorPosition() const;
   void SetCursorPosition(unsigned int iPosition);
@@ -105,7 +105,7 @@ protected:
   bool ClearMD5();
   
   std::wstring m_text2;
-  CStdString  m_text;
+  std::string  m_text;
   CGUIInfoLabel m_hintInfo;
   float m_textOffset;
   float m_textWidth;

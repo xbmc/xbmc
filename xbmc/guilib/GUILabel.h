@@ -70,7 +70,7 @@ public:
   float angle;
   CGUIFont *font;
   int scrollSpeed; 
-  CStdString scrollSuffix;
+  std::string scrollSuffix;
 };
 
 /*!
@@ -117,10 +117,10 @@ public:
   
   /*! \brief Set the text to be displayed in the label
    Updates the label control and recomputes final position and size
-   \param text CStdString to set as this labels text
+   \param text std::string to set as this labels text
    \sa SetTextW, SetStyledText
    */
-  bool SetText(const CStdString &label);
+  bool SetText(const std::string &label);
 
   /*! \brief Set the text to be displayed in the label
    Updates the label control and recomputes final position and size

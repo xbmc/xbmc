@@ -87,7 +87,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             CSettingBool *boolSetting = (CSettingBool *) setting;
             if (boolSetting)
             {
-              m_boolSettings.insert(make_pair(CStdString(boolSetting->GetId()), boolSetting->GetValue()));
+              m_boolSettings.insert(make_pair(string(boolSetting->GetId()), boolSetting->GetValue()));
               AddBool(m_settingId++, boolSetting->GetLabel(), &m_boolSettings[boolSetting->GetId()], true);
             }
           }
@@ -99,12 +99,12 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             {
               if (intSetting->GetOptions().empty())
               {
-                m_intSettings.insert(make_pair(CStdString(intSetting->GetId()), (float) intSetting->GetValue()));
+                m_intSettings.insert(make_pair(string(intSetting->GetId()), (float) intSetting->GetValue()));
                 AddSlider(m_settingId++, intSetting->GetLabel(), &m_intSettings[intSetting->GetId()], (float)intSetting->GetMinimum(), (float)intSetting->GetStep(), (float)intSetting->GetMaximum(), CGUIDialogVideoSettings::FormatInteger, false);
               }
               else
               {
-                m_intTextSettings.insert(make_pair(CStdString(intSetting->GetId()), intSetting->GetValue()));
+                m_intTextSettings.insert(make_pair(string(intSetting->GetId()), intSetting->GetValue()));
                 vector<pair<int, int> > entries;
                 StaticIntegerSettingOptions::const_iterator entriesItr = intSetting->GetOptions().begin();
                 while (entriesItr != intSetting->GetOptions().end())
@@ -122,7 +122,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             CSettingNumber *floatSetting = (CSettingNumber *) setting;
             if (floatSetting)
             {
-              m_floatSettings.insert(make_pair(CStdString(floatSetting->GetId()), (float)floatSetting->GetValue()));
+              m_floatSettings.insert(make_pair(string(floatSetting->GetId()), (float)floatSetting->GetValue()));
               AddSlider(m_settingId++, floatSetting->GetLabel(), &m_floatSettings[floatSetting->GetId()], (float)floatSetting->GetMinimum(), (float)floatSetting->GetStep(), (float)floatSetting->GetMaximum(), CGUIDialogVideoSettings::FormatFloat, false);
             }
           }
@@ -132,7 +132,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             CSettingString *stringSetting = (CSettingString *) setting;
             if (stringSetting)
             {
-              m_stringSettings.insert(make_pair(CStdString(stringSetting->GetId()), stringSetting->GetValue()));
+              m_stringSettings.insert(make_pair(string(stringSetting->GetId()), stringSetting->GetValue()));
               AddString(m_settingId++, stringSetting->GetLabel(), &m_stringSettings[stringSetting->GetId()]);
             }
           }
@@ -162,35 +162,35 @@ void CGUIDialogPeripheralSettings::UpdatePeripheralSettings(void)
   if (!peripheral)
     return;
 
-  map<CStdString, bool>::iterator boolItr = m_boolSettings.begin();
+  map<string, bool>::iterator boolItr = m_boolSettings.begin();
   while (boolItr != m_boolSettings.end())
   {
     peripheral->SetSetting((*boolItr).first, (*boolItr).second);
     ++boolItr;
   }
 
-  map<CStdString, float>::iterator intItr = m_intSettings.begin();
+  map<string, float>::iterator intItr = m_intSettings.begin();
   while (intItr != m_intSettings.end())
   {
     peripheral->SetSetting((*intItr).first, (int) (*intItr).second);
     ++intItr;
   }
 
-  map<CStdString, int>::iterator intTextItr = m_intTextSettings.begin();
+  map<string, int>::iterator intTextItr = m_intTextSettings.begin();
   while (intTextItr != m_intTextSettings.end())
   {
     peripheral->SetSetting((*intTextItr).first, (*intTextItr).second);
     ++intTextItr;
   }
 
-  map<CStdString, float>::iterator floatItr = m_floatSettings.begin();
+  map<string, float>::iterator floatItr = m_floatSettings.begin();
   while (floatItr != m_floatSettings.end())
   {
     peripheral->SetSetting((*floatItr).first, (*floatItr).second);
     ++floatItr;
   }
 
-  map<CStdString, CStdString>::iterator stringItr = m_stringSettings.begin();
+  map<string, string>::iterator stringItr = m_stringSettings.begin();
   while (stringItr != m_stringSettings.end())
   {
     peripheral->SetSetting((*stringItr).first, (*stringItr).second);

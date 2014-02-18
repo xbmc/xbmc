@@ -42,12 +42,12 @@ CLocalizeStrings::~CLocalizeStrings(void)
 
 }
 
-CStdString CLocalizeStrings::ToUTF8(const CStdString& strEncoding, const CStdString& str)
+string CLocalizeStrings::ToUTF8(const string& strEncoding, const string& str)
 {
   if (strEncoding.empty())
     return str;
 
-  CStdString ret;
+  string ret;
   g_charsetConverter.ToUtf8(strEncoding, str, ret);
   return ret;
 }
@@ -58,11 +58,11 @@ void CLocalizeStrings::ClearSkinStrings()
   Clear(31000, 31999);
 }
 
-bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString& language)
+bool CLocalizeStrings::LoadSkinStrings(const string& path, const string& language)
 {
   ClearSkinStrings();
   // load the skin strings in.
-  CStdString encoding;
+  string encoding;
   if (!LoadStr2Mem(path, language, encoding))
   {
     if (StringUtils::EqualsNoCase(language, SOURCE_LANGUAGE)) // no fallback, nothing to do
@@ -76,10 +76,10 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
   return true;
 }
 
-bool CLocalizeStrings::LoadStr2Mem(const CStdString &pathname_in, const CStdString &language,
-                                   CStdString &encoding, uint32_t offset /* = 0 */)
+bool CLocalizeStrings::LoadStr2Mem(const string &pathname_in, const string &language,
+                                   string &encoding, uint32_t offset /* = 0 */)
 {
-  CStdString pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + language);
+  string pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + language);
   if (!XFILE::CDirectory::Exists(pathname))
   {
     CLog::Log(LOGDEBUG,
@@ -97,7 +97,7 @@ bool CLocalizeStrings::LoadStr2Mem(const CStdString &pathname_in, const CStdStri
   return LoadXML(URIUtils::AddFileToFolder(pathname, "strings.xml"), encoding, offset);
 }
 
-bool CLocalizeStrings::LoadPO(const CStdString &filename, CStdString &encoding,
+bool CLocalizeStrings::LoadPO(const string &filename, string &encoding,
                               uint32_t offset /* = 0 */, bool bSourceLanguage)
 {
   CPODocument PODoc;
@@ -152,7 +152,7 @@ bool CLocalizeStrings::LoadPO(const CStdString &filename, CStdString &encoding,
   return true;
 }
 
-bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, uint32_t offset /* = 0 */)
+bool CLocalizeStrings::LoadXML(const string &filename, string &encoding, uint32_t offset /* = 0 */)
 {
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(filename))
@@ -163,7 +163,7 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (!pRootElement || pRootElement->NoChildren() ||
-       pRootElement->ValueStr()!=CStdString("strings"))
+       pRootElement->ValueStr()!=string("strings"))
   {
     CLog::Log(LOGERROR, "%s Doesn't contain <strings>", filename.c_str());
     return false;
@@ -185,11 +185,11 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
   return true;
 }
 
-bool CLocalizeStrings::Load(const CStdString& strPathName, const CStdString& strLanguage)
+bool CLocalizeStrings::Load(const string& strPathName, const string& strLanguage)
 {
   bool bLoadFallback = !StringUtils::EqualsNoCase(strLanguage, SOURCE_LANGUAGE);
 
-  CStdString encoding;
+  string encoding;
   CSingleLock lock(m_critSection);
   Clear();
 
@@ -232,9 +232,9 @@ bool CLocalizeStrings::Load(const CStdString& strPathName, const CStdString& str
   return true;
 }
 
-static CStdString szEmptyString = "";
+static string szEmptyString = "";
 
-const CStdString& CLocalizeStrings::Get(uint32_t dwCode) const
+const string& CLocalizeStrings::Get(uint32_t dwCode) const
 {
   ciStrings i = m_strings.find(dwCode);
   if (i == m_strings.end())

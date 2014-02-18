@@ -32,7 +32,7 @@ DllDynamic::DllDynamic()
   m_DelayUnload=true;
 }
 
-DllDynamic::DllDynamic(const CStdString& strDllName)
+DllDynamic::DllDynamic(const string& strDllName)
 {
   m_strDllName=strDllName;
   m_dll=NULL;
@@ -84,7 +84,7 @@ bool DllDynamic::EnableDelayedUnload(bool bOnOff)
   return true;
 }
 
-bool DllDynamic::SetFile(const CStdString& strDllName)
+bool DllDynamic::SetFile(const string& strDllName)
 {
   if (m_dll)
     return false;

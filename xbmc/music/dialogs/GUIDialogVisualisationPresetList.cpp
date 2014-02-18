@@ -127,7 +127,7 @@ void CGUIDialogVisualisationPresetList::OnInitWindow()
 void CGUIDialogVisualisationPresetList::Update()
 {
   m_vecPresets->Clear();
-  CStdString strHeading;
+  string strHeading;
   if (m_viz)
   {
     strHeading = StringUtils::Format(g_localizeStrings.Get(13407).c_str(), m_viz->Name().c_str());

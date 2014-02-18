@@ -190,7 +190,7 @@ namespace PVR
      * @param dwInfo The string to get.
      * @return The requested string or an empty one if it wasn't found.
      */
-    bool TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const;
+    bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
 
     /*!
      * @brief Get a GUIInfoManager integer.
@@ -621,7 +621,7 @@ namespace PVR
      * @param strText The current status.
      * @param iProgress The current progress in %.
      */
-    void ShowProgressDialog(const CStdString &strText, int iProgress);
+    void ShowProgressDialog(const std::string &strText, int iProgress);
 
     /*!
      * @brief Hide the progress dialog if it's visible.

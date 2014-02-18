@@ -81,7 +81,7 @@ namespace UPNP
   const NPT_String GetProtocolInfo(const CFileItem& item, const char* protocol, const PLT_HttpRequestContext* context = NULL);
 
 
-  const CStdString& CorrectAllItemsSortHack(const CStdString &item);
+  const std::string& CorrectAllItemsSortHack(const std::string &item);
 
   NPT_Result PopulateTagFromObject(MUSIC_INFO::CMusicInfoTag& tag,
                                    PLT_MediaObject&           object,

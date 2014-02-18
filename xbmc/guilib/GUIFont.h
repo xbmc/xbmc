@@ -55,7 +55,7 @@ class CGUIFontTTFBase;
 class CScrollInfo
 {
 public:
-  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const CStdString &scrollSuffix = " | ");
+  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const std::string &scrollSuffix = " | ");
 
   void SetSpeed(int speed)
   {
@@ -105,11 +105,11 @@ private:
 class CGUIFont
 {
 public:
-  CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor,
+  CGUIFont(const std::string& strFontName, uint32_t style, color_t textColor,
 	   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font);
   virtual ~CGUIFont();
 
-  CStdString& GetFontName();
+  std::string& GetFontName();
 
   void DrawText( float x, float y, color_t color, color_t shadowColor,
                  const vecText &text, uint32_t alignment, float maxPixelWidth)
@@ -151,7 +151,7 @@ public:
   void SetFont(CGUIFontTTFBase* font);
 
 protected:
-  CStdString m_strFontName;
+  std::string m_strFontName;
   uint32_t m_style;
   color_t m_shadowColor;
   color_t m_textColor;

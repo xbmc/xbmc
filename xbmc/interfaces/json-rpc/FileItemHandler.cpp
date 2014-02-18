@@ -381,7 +381,7 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
   CVideoLibrary::FillFileItemList(parameterObject, list);
   CFileOperations::FillFileItemList(parameterObject, list);
 
-  CStdString file = parameterObject["file"].asString();
+  string file = parameterObject["file"].asString();
   if (!file.empty() && (URIUtils::IsURL(file) || (CFile::Exists(file) && !CDirectory::Exists(file))))
   {
     bool added = false;

@@ -52,8 +52,8 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   if (!reg.RegComp("<SYNC START=([0-9]+)>"))
     return false;
 
-  CStdString strFileName;
-  CStdString strClassID;
+  string strFileName;
+  string strClassID;
   strFileName = URIUtils::GetFileName(m_filename);
 
   CDVDSubtitleTagSami TagConv;
@@ -86,7 +86,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
     const char* text = line;
     if (pos > -1)
     {
-      CStdString start = reg.GetMatch(1);
+      string start = reg.GetMatch(1);
       if(pOverlay)
       {
         TagConv.ConvertLine(pOverlay, text, pos, lang);

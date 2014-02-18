@@ -37,13 +37,13 @@ using namespace XFILE;
 CHTTPDirectory::CHTTPDirectory(void){}
 CHTTPDirectory::~CHTTPDirectory(void){}
 
-bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CHTTPDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CCurlFile http;
   CURL url(strPath);
 
-  CStdString strName, strLink;
-  CStdString strBasePath = url.GetFileName();
+  string strName, strLink;
+  string strBasePath = url.GetFileName();
 
   if(!http.Open(url))
   {
@@ -73,7 +73,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   char buffer[MAX_PATH + 1024];
   while(http.ReadString(buffer, sizeof(buffer)-1))
   {
-    CStdString strBuffer = buffer;
+    string strBuffer = buffer;
     std::string fileCharset(http.GetServerReportedCharset());
     if (!fileCharset.empty() && fileCharset != "UTF-8")
     {
@@ -92,7 +92,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       if(strLink[0] == '/')
         strLink = strLink.substr(1);
 
-      CStdString strNameTemp = StringUtils::Trim(strName);
+      string strNameTemp = StringUtils::Trim(strName);
 
       wstring wName, wLink, wConverted;
       if (fileCharset.empty())
@@ -102,8 +102,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       g_charsetConverter.wToUTF8(wConverted, strNameTemp);
       URIUtils::RemoveSlashAtEnd(strNameTemp);
 
-      CStdString strLinkBase = strLink;
-      CStdString strLinkOptions;
+      string strLinkBase = strLink;
+      string strLinkOptions;
 
       // split link with url options
       size_t pos = strLinkBase.find('?');
@@ -111,7 +111,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         strLinkOptions = strLinkBase.substr(pos);
         strLinkBase.erase(pos);
       }
-      CStdString strLinkTemp = strLinkBase;
+      string strLinkTemp = strLinkBase;
 
       URIUtils::RemoveSlashAtEnd(strLinkTemp);
       strLinkTemp = CURL::Decode(strLinkTemp);
@@ -138,7 +138,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         if(URIUtils::HasSlashAtEnd(pItem->GetPath(), true))
           pItem->m_bIsFolder = true;
 
-        CStdString day, month, year, hour, minute;
+        string day, month, year, hour, minute;
 
         if (reDateTime.RegFind(strBuffer.c_str()) >= 0)
         {

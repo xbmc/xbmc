@@ -24,7 +24,7 @@
 
 using namespace std;
 
-CProfile::CLock::CLock(LockType type, const CStdString &password)
+CProfile::CLock::CLock(LockType type, const string &password)
 {
   programs = false;
   pictures = false;
@@ -46,7 +46,7 @@ void CProfile::CLock::Validate()
     code = "-";
 }
 
-CProfile::CProfile(const CStdString &directory, const CStdString &name, const int id)
+CProfile::CProfile(const string &directory, const string &name, const int id)
 {
   m_id = id;
   m_directory = directory;
@@ -63,8 +63,8 @@ CProfile::~CProfile(void)
 
 void CProfile::setDate()
 {
-  CStdString strDate = g_infoManager.GetDate(true);
-  CStdString strTime = g_infoManager.GetTime();
+  string strDate = g_infoManager.GetDate(true);
+  string strTime = g_infoManager.GetTime();
   if (strDate.empty() || strTime.empty())
     setDate("-");
   else

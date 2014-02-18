@@ -186,7 +186,7 @@ namespace XBMCAddon
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       XBMC_TRACE;
-      CStdString lang = CSettings::Get().GetString("locale.language");
+      string lang = CSettings::Get().GetString("locale.language");
 
       switch (format)
       {
@@ -194,19 +194,19 @@ namespace XBMCAddon
         {
           if (region)
           {
-            CStdString region = "-" + g_langInfo.GetCurrentRegion();
+            string region = "-" + g_langInfo.GetCurrentRegion();
             return (lang += region);
           }
           return lang;
         }
       case CLangCodeExpander::ISO_639_1:
         {
-          CStdString langCode;
+          string langCode;
           g_LangCodeExpander.ConvertToTwoCharCode(langCode, lang);
           if (region)
           {
-            CStdString region = g_langInfo.GetRegionLocale();
-            CStdString region2Code;
+            string region = g_langInfo.GetRegionLocale();
+            string region2Code;
             g_LangCodeExpander.ConvertToTwoCharCode(region2Code, region);
             region2Code = "-" + region2Code;
             return (langCode += region2Code);
@@ -215,12 +215,12 @@ namespace XBMCAddon
         }
       case CLangCodeExpander::ISO_639_2:
         {
-          CStdString langCode;
+          string langCode;
           g_LangCodeExpander.ConvertToThreeCharCode(langCode, lang);
           if (region)
           {
-            CStdString region = g_langInfo.GetRegionLocale();
-            CStdString region3Code;
+            string region = g_langInfo.GetRegionLocale();
+            string region3Code;
             g_LangCodeExpander.ConvertToThreeCharCode(region3Code, region);
             region3Code = "-" + region3Code;
             return (langCode += region3Code);
@@ -393,11 +393,11 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       CFileItem item(path, false);
-      CStdString strName = item.GetMovieName(usefoldername);
+      string strName = item.GetMovieName(usefoldername);
 
-      CStdString strTitleAndYear;
-      CStdString strTitle;
-      CStdString strYear;
+      string strTitleAndYear;
+      string strTitle;
+      string strYear;
       CUtil::CleanString(strName, strTitle, strTitleAndYear, strYear, usefoldername);
       return Tuple<String,String>(strTitle,strYear);
     }
@@ -411,7 +411,7 @@ namespace XBMCAddon
     String getRegion(const char* id)
     {
       XBMC_TRACE;
-      CStdString result;
+      string result;
 
       if (strcmpi(id, "datelong") == 0)
         {
@@ -494,7 +494,7 @@ namespace XBMCAddon
 
     String convertLanguage(const char* language, int format)
     {
-      CStdString convertedLanguage;
+      string convertedLanguage;
       switch (format)
       {
       case CLangCodeExpander::ENGLISH_NAME:

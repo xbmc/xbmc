@@ -37,7 +37,7 @@ public:
   void Create(IRssObserver* aObserver, const std::vector<std::string>& aUrl, const std::vector<int>& times, int spacesBetweenFeeds, bool rtl);
   bool Parse(const std::string& data, int iFeed, const std::string& charset);
   void getFeed(vecText &text);
-  void AddTag(const CStdString &addTag);
+  void AddTag(const std::string &addTag);
   void AddToQueue(int iAdd);
   void UpdateObserver();
   void SetObserver(IRssObserver* observer);
@@ -62,7 +62,7 @@ private:
   std::vector<int> m_vecUpdateTimes;
   int m_spacesBetweenFeeds;
   CXBMCTinyXML m_xml;
-  std::list<CStdString> m_tagSet;
+  std::list<std::string> m_tagSet;
   std::vector<std::string> m_vecUrls;
   std::vector<int> m_vecQueue;
   bool m_bIsRunning;

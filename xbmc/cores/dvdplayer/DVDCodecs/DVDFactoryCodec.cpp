@@ -147,7 +147,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
 
   //when support for a hardware decoder is not compiled in
   //only print it if it's actually available on the platform
-  CStdString hwSupport;
+  string hwSupport;
 #if defined(TARGET_DARWIN_OSX)
   hwSupport += "VDADecoder:yes ";
 #endif
@@ -321,7 +321,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   }
 #endif
 
-  CStdString value = StringUtils::Format("%d", surfaces);
+  string value = StringUtils::Format("%d", surfaces);
   options.m_keys.push_back(CDVDCodecOption("surfaces", value));
   if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options)) ) return pCodec;
 

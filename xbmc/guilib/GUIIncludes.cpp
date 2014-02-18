@@ -94,7 +94,7 @@ void CGUIIncludes::ClearIncludes()
   m_files.clear();
 }
 
-bool CGUIIncludes::LoadIncludes(const CStdString &includeFile)
+bool CGUIIncludes::LoadIncludes(const string &includeFile)
 {
   // check to see if we already have this loaded
   if (HasIncludeFile(includeFile))
@@ -127,8 +127,8 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
   {
     if (node->Attribute("name") && node->FirstChild())
     {
-      CStdString tagName = node->Attribute("name");
-      m_includes.insert(pair<CStdString, TiXmlElement>(tagName, *node));
+      string tagName = node->Attribute("name");
+      m_includes.insert(pair<string, TiXmlElement>(tagName, *node));
     }
     else if (node->Attribute("file"))
     { // load this file in as well
@@ -142,8 +142,8 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
   {
     if (node->Attribute("type") && node->FirstChild())
     {
-      CStdString tagName = node->Attribute("type");
-      m_defaults.insert(pair<CStdString, TiXmlElement>(tagName, *node));
+      string tagName = node->Attribute("type");
+      m_defaults.insert(pair<string, TiXmlElement>(tagName, *node));
     }
     node = node->NextSiblingElement("default");
   }
@@ -153,7 +153,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
   {
     if (node->Attribute("name") && node->FirstChild())
     {
-      CStdString tagName = node->Attribute("name");
+      string tagName = node->Attribute("name");
       m_constants.insert(make_pair(tagName, node->FirstChild()->ValueStr()));
     }
     node = node->NextSiblingElement("constant");
@@ -164,7 +164,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
   {
     if (node->Attribute("name") && node->FirstChild())
     {
-      CStdString tagName = node->Attribute("name");
+      string tagName = node->Attribute("name");
       m_skinvariables.insert(make_pair(tagName, *node));
     }
     node = node->NextSiblingElement("variable");
@@ -173,7 +173,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
   return true;
 }
 
-bool CGUIIncludes::HasIncludeFile(const CStdString &file) const
+bool CGUIIncludes::HasIncludeFile(const string &file) const
 {
   for (iFiles it = m_files.begin(); it != m_files.end(); ++it)
     if (*it == file) return true;
@@ -201,11 +201,11 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
   if (!node) return;
 
   // First add the defaults if this is for a control
-  CStdString type;
+  string type;
   if (node->ValueStr() == "control")
   {
     type = node->Attribute("type");
-    map<CStdString, TiXmlElement>::const_iterator it = m_defaults.find(type);
+    map<string, TiXmlElement>::const_iterator it = m_defaults.find(type);
     if (it != m_defaults.end())
     {
       // we don't insert <left> et. al. if <posx> or <posy> is specified
@@ -254,8 +254,8 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
         continue;
       }
     }
-    CStdString tagName = include->FirstChild()->Value();
-    map<CStdString, TiXmlElement>::const_iterator it = m_includes.find(tagName);
+    string tagName = include->FirstChild()->Value();
+    map<string, TiXmlElement>::const_iterator it = m_includes.find(tagName);
     if (it != m_includes.end())
     { // found the tag(s) to include - let's replace it
       const TiXmlElement &element = (*it).second;
@@ -291,21 +291,21 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
     node->FirstChild()->SetValue(ResolveConstant(node->FirstChild()->ValueStr()));
 }
 
-CStdString CGUIIncludes::ResolveConstant(const CStdString &constant) const
+string CGUIIncludes::ResolveConstant(const string &constant) const
 {
   vector<string> values = StringUtils::Split(constant, ",");
   for (unsigned int i = 0; i < values.size(); ++i)
   {
-    map<CStdString, CStdString>::const_iterator it = m_constants.find(values[i]);
+    map<string, string>::const_iterator it = m_constants.find(values[i]);
     if (it != m_constants.end())
       values[i] = it->second;
   }
   return StringUtils::Join(values, ",");
 }
 
-const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const CStdString& name, int context)
+const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const string& name, int context)
 {
-  map<CStdString, TiXmlElement>::const_iterator it = m_skinvariables.find(name);
+  map<string, TiXmlElement>::const_iterator it = m_skinvariables.find(name);
   if (it != m_skinvariables.end())
     return INFO::CSkinVariable::CreateFromXML(it->second, context);
   return NULL;

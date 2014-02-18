@@ -530,7 +530,7 @@ bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
   if (!PlayFile(&channelItem))
   {
     // CHANNELNAME could not be played. Check the log for details.
-    CStdString msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str());
+    string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str());
     CGUIDialogOK::ShowAndGetInput(19033, 0, msg, 0);
     return false;
   }
@@ -608,7 +608,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
   if (!item->HasPVRRecordingInfoTag())
     return false;
 
-  CStdString stream = item->GetPVRRecordingInfoTag()->m_strStreamURL;
+  string stream = item->GetPVRRecordingInfoTag()->m_strStreamURL;
   if (stream == "")
   {
     CApplicationMessenger::Get().PlayFile(*item, false);
@@ -617,17 +617,17 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
 
   /* Isolate the folder from the filename */
   size_t found = stream.find_last_of("/");
-  if (found == CStdString::npos)
+  if (found == string::npos)
     found = stream.find_last_of("\\");
 
-  if (found != CStdString::npos)
+  if (found != string::npos)
   {
     /* Check here for asterisk at the begin of the filename */
     if (stream[found+1] == '*')
     {
       /* Create a "stack://" url with all files matching the extension */
-      CStdString ext = URIUtils::GetExtension(stream);
-      CStdString dir = stream.substr(0, found).c_str();
+      string ext = URIUtils::GetExtension(stream);
+      string dir = stream.substr(0, found).c_str();
 
       CFileItemList items;
       CDirectory::GetDirectory(dir, items);
@@ -644,7 +644,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
       {
         /* If we have a stack change the path of the item to it */
         CStackDirectory dir;
-        CStdString stackPath = dir.ConstructStackPath(items, stack);
+        string stackPath = dir.ConstructStackPath(items, stack);
         item->SetPath(stackPath);
       }
     }
@@ -711,10 +711,10 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
 
     if (!bSwitchSuccessful)
     {
-      CStdString channelName = g_localizeStrings.Get(19029); // Channel
+      string channelName = g_localizeStrings.Get(19029); // Channel
       if (channel)
         channelName = channel->ChannelName();
-      CStdString msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
+      string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
 
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
               g_localizeStrings.Get(19166), // PVR information

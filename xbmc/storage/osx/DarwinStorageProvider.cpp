@@ -69,7 +69,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   {
     unsigned i, count = 0;
     struct statfs *buf = NULL;
-    CStdString mountpoint, devicepath;
+    string mountpoint, devicepath;
 
     count = getmntinfo(&buf, 0);
     for (i=0; i<count; i++)
@@ -111,7 +111,7 @@ void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
   {
     unsigned i, count = 0;
     struct statfs *buf = NULL;
-    CStdString mountpoint, devicepath;
+    string mountpoint, devicepath;
 
     count = getmntinfo(&buf, 0);
     for (i=0; i<count; i++)
@@ -168,7 +168,7 @@ vector<string> CDarwinStorageProvider::GetDiskUsage()
   return result;
 }
 
-bool CDarwinStorageProvider::Eject(CStdString mountpath)
+bool CDarwinStorageProvider::Eject(string mountpath)
 {
   return false;
 }

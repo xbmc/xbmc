@@ -40,7 +40,7 @@ bool CVideoDbUrl::parse()
   if (m_url.GetProtocol() != "videodb" || m_url.GetFileName().empty())
     return false;
 
-  CStdString path = m_url.Get();
+  string path = m_url.Get();
   VIDEODATABASEDIRECTORY::NODE_TYPE dirType = CVideoDatabaseDirectory::GetDirectoryType(path);
   VIDEODATABASEDIRECTORY::NODE_TYPE childType = CVideoDatabaseDirectory::GetDirectoryChildType(path);
 

@@ -42,8 +42,8 @@ CAlbum::CAlbum(const CFileItem& item)
   { // have musicbrainz artist info, so use it
     for (size_t i = 0; i < tag.GetMusicBrainzAlbumArtistID().size(); i++)
     {
-      CStdString artistId = tag.GetMusicBrainzAlbumArtistID()[i];
-      CStdString artistName;
+      string artistId = tag.GetMusicBrainzAlbumArtistID()[i];
+      string artistName;
       /*
        We try and get the corresponding artist name from the album artist tag.
        We match on the same index, and if that fails just use the first name we have.
@@ -62,7 +62,7 @@ CAlbum::CAlbum(const CFileItem& item)
       }
       if (artistName.empty())
         artistName = artistId;
-      CStdString strJoinPhrase = (i == tag.GetMusicBrainzAlbumArtistID().size()-1) ? "" : g_advancedSettings.m_musicItemSeparator;
+      string strJoinPhrase = (i == tag.GetMusicBrainzAlbumArtistID().size()-1) ? "" : g_advancedSettings.m_musicItemSeparator;
       CArtistCredit artistCredit(artistName, tag.GetMusicBrainzAlbumArtistID()[i], strJoinPhrase);
       artistCredits.push_back(artistCredit);
     }
@@ -71,7 +71,7 @@ CAlbum::CAlbum(const CFileItem& item)
   { // no musicbrainz info, so fill in directly
     for (vector<string>::const_iterator it = tag.GetAlbumArtist().begin(); it != tag.GetAlbumArtist().end(); ++it)
     {
-      CStdString strJoinPhrase = (it == --tag.GetAlbumArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
+      string strJoinPhrase = (it == --tag.GetAlbumArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
       CArtistCredit artistCredit(*it, "", strJoinPhrase);
       artistCredits.push_back(artistCredit);
     }
@@ -135,12 +135,12 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   infoSongs = source.infoSongs;
 }
 
-CStdString CAlbum::GetArtistString() const
+string CAlbum::GetArtistString() const
 {
   return StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);
 }
 
-CStdString CAlbum::GetGenreString() const
+string CAlbum::GetGenreString() const
 {
   return StringUtils::Join(genre, g_advancedSettings.m_musicItemSeparator);
 }
@@ -199,14 +199,14 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   }
 
   size_t iThumbCount = thumbURL.m_url.size();
-  CStdString xmlAdd = thumbURL.m_xml;
+  string xmlAdd = thumbURL.m_xml;
   const TiXmlElement* thumb = album->FirstChildElement("thumb");
   while (thumb)
   {
     thumbURL.ParseElement(thumb);
     if (prioritise)
     {
-      CStdString temp;
+      string temp;
       temp << *thumb;
       xmlAdd = temp+xmlAdd;
     }
@@ -290,7 +290,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
         bIncrement = true;
 
       XMLUtils::GetString(node,"title",song.strTitle);
-      CStdString strDur;
+      string strDur;
       XMLUtils::GetString(node,"duration",strDur);
       song.iDuration = StringUtils::TimeStringToSeconds(strDur);
 
@@ -305,7 +305,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   return true;
 }
 
-bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath)
+bool CAlbum::Save(TiXmlNode *node, const string &tag, const string& strPath)
 {
   if (!node) return false;
 

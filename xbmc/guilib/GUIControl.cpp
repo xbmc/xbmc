@@ -393,7 +393,7 @@ void CGUIControl::SetEnabled(bool bEnable)
   }
 }
 
-void CGUIControl::SetEnableCondition(const CStdString &expression)
+void CGUIControl::SetEnableCondition(const string &expression)
 {
   if (expression == "true")
     m_enabled = true;
@@ -670,7 +670,7 @@ void CGUIControl::SetInitialVisibility()
   MarkDirtyRegion();
 }
 
-void CGUIControl::SetVisibleCondition(const CStdString &expression, const CStdString &allowHiddenFocus)
+void CGUIControl::SetVisibleCondition(const string &expression, const string &allowHiddenFocus)
 {
   if (expression == "true")
     m_visible = VISIBLE;

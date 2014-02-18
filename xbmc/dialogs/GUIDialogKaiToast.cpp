@@ -79,22 +79,22 @@ void CGUIDialogKaiToast::OnWindowLoaded()
     m_defaultIcon = image->GetFileName();
 }
 
-void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
+void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const string& aCaption, const string& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
 {
   AddToQueue("", eType, aCaption, aDescription, displayTime, withSound, messageTime);
 }
 
-void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CStdString& aDescription)
+void CGUIDialogKaiToast::QueueNotification(const string& aCaption, const string& aDescription)
 {
   QueueNotification("", aCaption, aDescription);
 }
 
-void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
+void CGUIDialogKaiToast::QueueNotification(const string& aImageFile, const string& aCaption, const string& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
 {
   AddToQueue(aImageFile, Default, aCaption, aDescription, displayTime, withSound, messageTime);
 }
 
-void CGUIDialogKaiToast::AddToQueue(const CStdString& aImageFile, const eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
+void CGUIDialogKaiToast::AddToQueue(const string& aImageFile, const eMessageType eType, const string& aCaption, const string& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
 {
   CSingleLock lock(m_critical);
 
@@ -136,7 +136,7 @@ bool CGUIDialogKaiToast::DoWork()
     CGUIImage *image = (CGUIImage *)GetControl(POPUP_ICON);
     if (image)
     {
-      CStdString strTypeImage = toast.imagefile;
+      string strTypeImage = toast.imagefile;
 
       if (strTypeImage.empty())
       {

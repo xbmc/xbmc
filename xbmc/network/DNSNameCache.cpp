@@ -39,7 +39,7 @@ CDNSNameCache::CDNSNameCache(void)
 CDNSNameCache::~CDNSNameCache(void)
 {}
 
-bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddress)
+bool CDNSNameCache::Lookup(const string& strHostName, string& strIpAddress)
 {
   if (strHostName.empty() && strIpAddress.empty())
     return false;
@@ -63,7 +63,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
   char nmb_ip[100];
   char line[200];
 
-  CStdString cmd = "nmblookup " + strHostName;
+  string cmd = "nmblookup " + strHostName;
   FILE* fp = popen(cmd.c_str(), "r");
   if (fp)
   {
@@ -102,7 +102,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
   return false;
 }
 
-bool CDNSNameCache::GetCached(const CStdString& strHostName, CStdString& strIpAddress)
+bool CDNSNameCache::GetCached(const string& strHostName, string& strIpAddress)
 {
   CSingleLock lock(m_critical);
 
@@ -121,7 +121,7 @@ bool CDNSNameCache::GetCached(const CStdString& strHostName, CStdString& strIpAd
   return false;
 }
 
-void CDNSNameCache::Add(const CStdString &strHostName, const CStdString &strIpAddress)
+void CDNSNameCache::Add(const string &strHostName, const string &strIpAddress)
 {
   CDNSName dnsName;
 

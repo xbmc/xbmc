@@ -258,10 +258,10 @@ void CGUIEditControl::OnClick()
   if (GetParentID() == WINDOW_DIALOG_KEYBOARD)
     return;
 
-  CStdString utf8;
+  string utf8;
   g_charsetConverter.wToUTF8(m_text2, utf8);
   bool textChanged = false;
-  CStdString heading = g_localizeStrings.Get(m_inputHeading ? m_inputHeading : 16028);
+  string heading = g_localizeStrings.Get(m_inputHeading ? m_inputHeading : 16028);
   switch (m_inputType)
   {
     case INPUT_TYPE_READONLY:
@@ -527,9 +527,9 @@ void CGUIEditControl::SetLabel2(const std::string &text)
   }
 }
 
-CStdString CGUIEditControl::GetLabel2() const
+string CGUIEditControl::GetLabel2() const
 {
-  CStdString text;
+  string text;
   g_charsetConverter.wToUTF8(m_text2, text);
   if (m_inputType == INPUT_TYPE_PASSWORD_MD5 && !m_isMD5)
     return XBMC::XBMC_MD5::GetMD5(text);

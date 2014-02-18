@@ -39,19 +39,19 @@ public:
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   // override base class methods
-  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
+  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
   virtual void PlayItem(int iItem);
   virtual void OnWindowLoaded();
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual bool OnClick(int iItem);
-  virtual CStdString GetStartFolder(const CStdString &url);
+  virtual std::string GetStartFolder(const std::string &url);
 
-  bool GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items);
+  bool GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
-  CStdString GetQuickpathName(const CStdString& strPath) const;
+  std::string GetQuickpathName(const std::string& strPath) const;
 
   VECSOURCES m_shares;
 

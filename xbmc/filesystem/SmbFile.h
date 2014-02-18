@@ -53,14 +53,14 @@ public:
   void SetActivityTime();
   void AddActiveConnection();
   void AddIdleConnection();
-  CStdString URLEncode(const CStdString &value);
-  CStdString URLEncode(const CURL &url);
+  std::string URLEncode(const std::string &value);
+  std::string URLEncode(const CURL &url);
 
   DWORD ConvertUnixToNT(int error);
 private:
   SMBCCTX *m_context;
-  CStdString m_strLastHost;
-  CStdString m_strLastShare;
+  std::string m_strLastHost;
+  std::string m_strLastShare;
 #ifdef TARGET_POSIX
   int m_OpenConnections;
   unsigned int m_IdleTimeout;
@@ -75,7 +75,7 @@ class CSmbFile : public IFile
 {
 public:
   CSmbFile();
-  int OpenFile(const CURL &url, CStdString& strAuth);
+  int OpenFile(const CURL &url, std::string& strAuth);
   virtual ~CSmbFile();
   virtual void Close();
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
@@ -96,8 +96,8 @@ public:
 
 protected:
   CURL m_url;
-  bool IsValidFile(const CStdString& strFileName);
-  CStdString GetAuthenticatedPath(const CURL &url);
+  bool IsValidFile(const std::string& strFileName);
+  std::string GetAuthenticatedPath(const CURL &url);
   int64_t m_fileSize;
   int m_fd;
 };

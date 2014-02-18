@@ -405,8 +405,8 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     return;
   }
 
-  CStdString strFileName;
-  CStdString strDestPath;
+  string strFileName;
+  string strDestPath;
 #if 0
   // TODO: Code to download all subtitles for all stack items in one run
   if (g_application.CurrentFileItem().IsStack())
@@ -420,7 +420,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 #endif
 
   // Get (unstacked) path
-  const CStdString &strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
+  const string &strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
 
   if (StringUtils::StartsWith(strCurrentFile, "http://"))
   {
@@ -445,15 +445,15 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     }
   }
   // Extract the language and appropriate extension
-  CStdString strSubLang;
+  string strSubLang;
   g_LangCodeExpander.ConvertToTwoCharCode(strSubLang, language);
-  CStdString strUrl = items->Get(0)->GetPath();
-  CStdString strSubExt = URIUtils::GetExtension(strUrl);
+  string strUrl = items->Get(0)->GetPath();
+  string strSubExt = URIUtils::GetExtension(strUrl);
 
   // construct subtitle path
   URIUtils::RemoveExtension(strFileName);
-  CStdString strSubName = StringUtils::Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
-  CStdString strSubPath = URIUtils::AddFileToFolder(strDestPath, strSubName);
+  string strSubName = StringUtils::Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
+  string strSubPath = URIUtils::AddFileToFolder(strDestPath, strSubName);
 
   // and copy the file across
   CFile::Cache(strUrl, strSubPath);
@@ -464,7 +464,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     strUrl = URIUtils::ReplaceExtension(strUrl, ".idx");
     if(CFile::Exists(strUrl))
     {
-      CStdString strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
+      string strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
       strSubPath = URIUtils::AddFileToFolder(strDestPath, strSubNameIdx);
       CFile::Cache(strUrl, strSubPath);
     }

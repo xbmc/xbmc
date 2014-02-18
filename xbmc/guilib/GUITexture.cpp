@@ -33,7 +33,7 @@ CTextureInfo::CTextureInfo()
   useLarge = false;
 }
 
-CTextureInfo::CTextureInfo(const CStdString &file)
+CTextureInfo::CTextureInfo(const string &file)
 {
   orientation = 0;
   useLarge = false;
@@ -647,7 +647,7 @@ bool CGUITextureBase::SetAspectRatio(const CAspectRatio &aspect)
     return false;
 }
 
-bool CGUITextureBase::SetFileName(const CStdString& filename)
+bool CGUITextureBase::SetFileName(const string& filename)
 {
   if (StringUtils::EqualsNoCase(m_info.filename, filename)) return false;
   // Don't completely free resources here - we may be just changing

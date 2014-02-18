@@ -29,7 +29,7 @@ namespace ADDON
 CPluginSource::CPluginSource(const AddonProps &props)
   : CAddon(props)
 {
-  CStdString provides;
+  string provides;
   InfoMap::const_iterator i = Props().extrainfo.find("provides");
   if (i != Props().extrainfo.end())
     provides = i->second;
@@ -39,7 +39,7 @@ CPluginSource::CPluginSource(const AddonProps &props)
 CPluginSource::CPluginSource(const cp_extension_t *ext)
   : CAddon(ext)
 {
-  CStdString provides;
+  string provides;
   if (ext)
   {
     provides = CAddonMgr::Get().GetExtValue(ext->configuration, "provides");
@@ -54,7 +54,7 @@ AddonPtr CPluginSource::Clone() const
   return AddonPtr(new CPluginSource(*this));
 }
 
-void CPluginSource::SetProvides(const CStdString &content)
+void CPluginSource::SetProvides(const string &content)
 {
  if (!content.empty())
   {
@@ -70,7 +70,7 @@ void CPluginSource::SetProvides(const CStdString &content)
     m_providedContent.insert(EXECUTABLE);
 }
 
-CPluginSource::Content CPluginSource::Translate(const CStdString &content)
+CPluginSource::Content CPluginSource::Translate(const string &content)
 {
   if (StringUtils::EqualsNoCase(content, "audio"))
     return CPluginSource::AUDIO;

@@ -29,9 +29,9 @@ class CGUIDialogLockSettings : public CGUIDialogSettings
 public:
   CGUIDialogLockSettings(void);
   virtual ~CGUIDialogLockSettings(void);
-  static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader=20091);
+  static bool ShowAndGetLock(LockType& iLockMode, std::string& strPassword, int iHeader=20091);
   static bool ShowAndGetLock(CProfile::CLock &locks, int iButtonLabel = 20091, bool bConditional = false, bool bDetails = true);
-  static bool ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL, bool *saveUserDetails);
+  static bool ShowAndGetUserAndPassword(std::string& strUser, std::string& strPassword, const std::string& strURL, bool *saveUserDetails);
 protected:
   virtual void OnCancel();
   virtual void SetupPage();
@@ -40,8 +40,8 @@ protected:
   void EnableDetails(bool bEnable);
 
   CProfile::CLock m_locks;
-  CStdString m_strUser;
-  CStdString m_strURL;
+  std::string m_strUser;
+  std::string m_strURL;
   bool m_bChanged;
   bool m_bDetails;
   bool m_bConditionalDetails;

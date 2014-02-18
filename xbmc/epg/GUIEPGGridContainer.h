@@ -66,7 +66,7 @@ namespace EPG
     virtual bool OnMessage(CGUIMessage& message);
     virtual void SetFocus(bool bOnOff);
 
-    virtual CStdString GetDescription() const;
+    virtual std::string GetDescription() const;
     const int GetNumChannels()   { return m_channels; };
     virtual int GetSelectedItem() const;
     const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
@@ -79,7 +79,7 @@ namespace EPG
     void LoadContent(TiXmlElement *content);
 
     virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
-    virtual CStdString GetLabel(int info) const;
+    virtual std::string GetLabel(int info) const;
 
     virtual int  CorrectOffset(int offset, int cursor) const;
 
@@ -95,7 +95,7 @@ namespace EPG
     void GoToNow();
     void SetStartEnd(CDateTime start, CDateTime end);
     void SetChannel(const PVR::CPVRChannel &channel);
-    void SetChannel(const CStdString &channel);
+    void SetChannel(const std::string &channel);
 
   protected:
     bool OnClick(int actionID);
@@ -233,6 +233,6 @@ namespace EPG
     float m_channelScrollSpeed;
     float m_channelScrollOffset;
 
-    CStdString m_label;
+    std::string m_label;
   };
 }

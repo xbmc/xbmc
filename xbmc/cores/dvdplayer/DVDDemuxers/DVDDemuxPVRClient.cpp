@@ -471,7 +471,7 @@ std::string CDVDDemuxPVRClient::GetFileName()
     return "";
 }
 
-void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, CStdString &strName)
+void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, string &strName)
 {
   CDemuxStream *stream = GetStream(iStreamId);
   if (stream)

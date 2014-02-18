@@ -53,12 +53,12 @@ public:
   virtual void FreeResources(bool immediately = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetInvalid();
-  const CStdString GetCurrentLabel() const;
+  const std::string GetCurrentLabel() const;
   void SetText(const std::string & aLabel) {m_buttonControl.SetLabel(aLabel);};
   virtual void SetEnabled(bool bEnable);
   virtual float GetXPosition() const { return m_buttonControl.GetXPosition();};
   virtual float GetYPosition() const { return m_buttonControl.GetYPosition();};
-  virtual CStdString GetDescription() const;
+  virtual std::string GetDescription() const;
   virtual bool HitTest(const CPoint &point) const { return m_buttonControl.HitTest(point); };
   void SetSpinPosition(float spinPosX);
 

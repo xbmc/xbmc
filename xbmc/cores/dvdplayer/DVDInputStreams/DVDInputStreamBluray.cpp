@@ -148,7 +148,7 @@ BD_DIR_H *DllLibbluray::dir_open(const char* dirname)
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening dir %s\n", dirname);
     SDirState *st = new SDirState();
 
-    CStdString strDirname(dirname);
+    string strDirname(dirname);
 
     if(!CDirectory::GetDirectory(strDirname, st->list))
     {
@@ -255,9 +255,9 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   if(m_player == NULL)
     return false;
 
-  CStdString strPath(strFile);
-  CStdString filename;
-  CStdString root;
+  string strPath(strFile);
+  string filename;
+  string root;
 
   if(StringUtils::StartsWithNoCase(strPath, "bluray:"))
   {

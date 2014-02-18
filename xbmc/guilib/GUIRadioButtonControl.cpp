@@ -186,9 +186,9 @@ void CGUIRadioButtonControl::SetHeight(float height)
   SetPosition(GetXPosition(), GetYPosition());
 }
 
-CStdString CGUIRadioButtonControl::GetDescription() const
+string CGUIRadioButtonControl::GetDescription() const
 {
-  CStdString strLabel = CGUIButtonControl::GetDescription();
+  string strLabel = CGUIButtonControl::GetDescription();
   if (m_bSelected)
     strLabel += " (*)";
   else
@@ -206,7 +206,7 @@ bool CGUIRadioButtonControl::UpdateColors()
   return changed;
 }
 
-void CGUIRadioButtonControl::SetToggleSelect(const CStdString &toggleSelect)
+void CGUIRadioButtonControl::SetToggleSelect(const string &toggleSelect)
 {
   m_toggleSelect = g_infoManager.Register(toggleSelect, GetParentID());
 }

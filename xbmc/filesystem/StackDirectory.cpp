@@ -37,7 +37,7 @@ namespace XFILE
   {
   }
 
-  bool CStackDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
+  bool CStackDirectory::GetDirectory(const string& strPath, CFileItemList& items)
   {
     items.Clear();
     vector<string> files;
@@ -46,7 +46,7 @@ namespace XFILE
 
     for (unsigned int i = 0; i < files.size(); i++)
     {
-      CStdString file = files[i];
+      string file = files[i];
       CFileItemPtr item(new CFileItem(file));
       item->SetPath(file);
       item->m_bIsFolder = false;
@@ -55,14 +55,14 @@ namespace XFILE
     return true;
   }
 
-  CStdString CStackDirectory::GetStackedTitlePath(const CStdString &strPath)
+  string CStackDirectory::GetStackedTitlePath(const string &strPath)
   {
     // Load up our REs
     VECCREGEXP  RegExps;
     CRegExp     tempRE(true, CRegExp::autoUtf8);
     const std::vector<std::string>& strRegExps = g_advancedSettings.m_videoStackRegExps;
     std::vector<std::string>::const_iterator itRegExp = strRegExps.begin();
-    vector<pair<int, CStdString> > badStacks;
+    vector<pair<int, string> > badStacks;
     while (itRegExp != strRegExps.end())
     {
       tempRE.RegComp(*itRegExp);
@@ -75,21 +75,21 @@ namespace XFILE
     return GetStackedTitlePath(strPath, RegExps);
   }
 
-  CStdString CStackDirectory::GetStackedTitlePath(const CStdString &strPath, VECCREGEXP& RegExps)
+  string CStackDirectory::GetStackedTitlePath(const string &strPath, VECCREGEXP& RegExps)
   {
     CStackDirectory stack;
     CFileItemList   files;
-    CStdString      strStackTitlePath,
+    string      strStackTitlePath,
                     strCommonDir        = URIUtils::GetParentPath(strPath);
 
     stack.GetDirectory(strPath, files);
 
     if (files.Size() > 1)
     {
-      CStdString strStackTitle;
+      string strStackTitle;
 
-      CStdString File1 = URIUtils::GetFileName(files[0]->GetPath());
-      CStdString File2 = URIUtils::GetFileName(files[1]->GetPath());
+      string File1 = URIUtils::GetFileName(files[0]->GetPath());
+      string File2 = URIUtils::GetFileName(files[1]->GetPath());
       // Check if source path uses URL encoding
       if (URIUtils::ProtocolHasEncodedFilename(CURL(strCommonDir).GetProtocol()))
       {
@@ -104,7 +104,7 @@ namespace XFILE
       {
         if (itRegExp->RegFind(File1, offset) != -1)
         {
-          CStdString Title1     = itRegExp->GetMatch(1),
+          string Title1     = itRegExp->GetMatch(1),
                      Volume1    = itRegExp->GetMatch(2),
                      Ignore1    = itRegExp->GetMatch(3),
                      Extension1 = itRegExp->GetMatch(4);
@@ -112,7 +112,7 @@ namespace XFILE
             Title1 = File1.substr(0, itRegExp->GetSubStart(2));
           if (itRegExp->RegFind(File2, offset) != -1)
           {
-            CStdString Title2     = itRegExp->GetMatch(1),
+            string Title2     = itRegExp->GetMatch(1),
                        Volume2    = itRegExp->GetMatch(2),
                        Ignore2    = itRegExp->GetMatch(3),
                        Extension2 = itRegExp->GetMatch(4);
@@ -154,14 +154,14 @@ namespace XFILE
     return strStackTitlePath;
   }
 
-  CStdString CStackDirectory::GetFirstStackedFile(const CStdString &strPath)
+  string CStackDirectory::GetFirstStackedFile(const string &strPath)
   {
     // the stacked files are always in volume order, so just get up to the first filename
     // occurence of " , "
-    CStdString file, folder;
+    string file, folder;
     size_t pos = strPath.find(" , ");
     if (pos != std::string::npos)
-      URIUtils::Split((CStdString)strPath.substr(0, pos), folder, file);
+      URIUtils::Split((string)strPath.substr(0, pos), folder, file);
     else
       URIUtils::Split(strPath, folder, file); // single filed stacks - should really not happen
 
@@ -172,12 +172,12 @@ namespace XFILE
     return URIUtils::AddFileToFolder(folder, file);
   }
 
-  bool CStackDirectory::GetPaths(const CStdString& strPath, vector<string>& vecPaths)
+  bool CStackDirectory::GetPaths(const string& strPath, vector<string>& vecPaths)
   {
     // format is:
     // stack://file1 , file2 , file3 , file4
     // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.
-    CStdString path = strPath;
+    string path = strPath;
     // remove stack:// from the beginning
     path = path.substr(8);
     
@@ -193,13 +193,13 @@ namespace XFILE
     return true;
   }
 
-  CStdString CStackDirectory::ConstructStackPath(const CFileItemList &items, const vector<int> &stack)
+  string CStackDirectory::ConstructStackPath(const CFileItemList &items, const vector<int> &stack)
   {
     // no checks on the range of stack here.
     // we replace all instances of comma's with double comma's, then separate
     // the files using " , ".
-    CStdString stackedPath = "stack://";
-    CStdString folder, file;
+    string stackedPath = "stack://";
+    string folder, file;
     URIUtils::Split(items[stack[0]]->GetPath(), folder, file);
     stackedPath += folder;
     // double escape any occurence of commas
@@ -217,22 +217,7 @@ namespace XFILE
     return stackedPath;
   }
 
-  bool CStackDirectory::ConstructStackPath(const vector<string> &paths, CStdString& stackedPath)
-  {
-    vector<string> pathsT;
-    pathsT.reserve(paths.size());
-    for (vector<string>::const_iterator path = paths.begin();
-         path != paths.end(); ++path)
-    {
-      pathsT.push_back(*path);
-    }
-    std::string stackedPathT = stackedPath;
-    bool retVal = ConstructStackPath(pathsT, stackedPathT);
-    stackedPath = stackedPathT;
-    return retVal;
-  }
-
-  bool CStackDirectory::ConstructStackPath(const vector<std::string> &paths, std::string& stackedPath)
+  bool CStackDirectory::ConstructStackPath(const vector<string> &paths, string& stackedPath)
   {
     if (paths.size() < 2)
       return false;

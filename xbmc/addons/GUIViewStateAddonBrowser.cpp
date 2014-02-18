@@ -48,7 +48,7 @@ void CGUIViewStateAddonBrowser::SaveViewState()
   SaveViewToDb(m_items.GetPath(), WINDOW_ADDON_BROWSER);
 }
 
-CStdString CGUIViewStateAddonBrowser::GetExtensions()
+string CGUIViewStateAddonBrowser::GetExtensions()
 {
   return "";
 }

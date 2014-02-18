@@ -41,11 +41,11 @@ namespace PERIPHERALS
 
     CFileItem *                      m_item;
     bool                             m_bIsInitialising;
-    std::map<CStdString, bool>       m_boolSettings;
-    std::map<CStdString, float>      m_intSettings;
-    std::map<CStdString, int>        m_intTextSettings;
-    std::map<CStdString, float>      m_floatSettings;
-    std::map<CStdString, CStdString> m_stringSettings;
+    std::map<std::string, bool>       m_boolSettings;
+    std::map<std::string, float>      m_intSettings;
+    std::map<std::string, int>        m_intTextSettings;
+    std::map<std::string, float>      m_floatSettings;
+    std::map<std::string, std::string> m_stringSettings;
     int                              m_settingId;
   };
 }

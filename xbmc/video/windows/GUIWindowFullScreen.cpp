@@ -257,7 +257,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         else
         {
           int autoCloseTime = CSettings::Get().GetBool("pvrplayback.confirmchannelswitch") ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
-          CStdString strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
+          string strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
           if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
           {
             int iChannelNumber = atoi(strChannel.c_str());
@@ -448,7 +448,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         // Get the currently selected label of the Select button
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
         OnMessage(msg);
-        CStdString strLabel = msg.GetLabel();
+        string strLabel = msg.GetLabel();
 
         CPVRChannelPtr playingChannel;
         if (g_PVRManager.GetCurrentChannel(playingChannel))
@@ -554,7 +554,7 @@ void CGUIWindowFullScreen::FrameMove()
   if (m_showCodec)
   {
     // show audio codec info
-    CStdString strAudio, strVideo, strGeneral;
+    string strAudio, strVideo, strGeneral;
     g_application.m_pPlayer->GetAudioInfo(strAudio);
     {
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
@@ -571,19 +571,19 @@ void CGUIWindowFullScreen::FrameMove()
     // show general info
     g_application.m_pPlayer->GetGeneralInfo(strGeneral);
     {
-      CStdString strGeneralFPS;
+      string strGeneralFPS;
 #if defined(TARGET_DARWIN)
       // We show CPU usage for the entire process, as it's arguably more useful.
       double dCPU = m_resourceCounter.GetCPUUsage();
-      CStdString strCores;
+      string strCores;
       strCores = StringUtils::Format("cpu:%.0f%%", dCPU);
 #else
-      CStdString strCores = g_cpuInfo.GetCoresUsageString();
+      string strCores = g_cpuInfo.GetCoresUsageString();
 #endif
       int    missedvblanks;
       int    refreshrate;
       double clockspeed;
-      CStdString strClock;
+      string strClock;
 
       if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
         strClock = StringUtils::Format("S( refresh:%i missed:%i speed:%+.3f%% %s )"
@@ -615,9 +615,9 @@ void CGUIWindowFullScreen::FrameMove()
 
     {
       // get the "View Mode" string
-      CStdString strTitle = g_localizeStrings.Get(629);
-      CStdString strMode = g_localizeStrings.Get(630 + CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
-      CStdString strInfo = StringUtils::Format("%s : %s", strTitle.c_str(), strMode.c_str());
+      string strTitle = g_localizeStrings.Get(629);
+      string strMode = g_localizeStrings.Get(630 + CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+      string strInfo = StringUtils::Format("%s : %s", strTitle.c_str(), strMode.c_str());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
       msg.SetLabel(strInfo);
       OnMessage(msg);
@@ -630,7 +630,7 @@ void CGUIWindowFullScreen::FrameMove()
       float xscale = (float)res.iScreenWidth  / (float)res.iWidth;
       float yscale = (float)res.iScreenHeight / (float)res.iHeight;
 
-      CStdString strSizing = StringUtils::Format(g_localizeStrings.Get(245),
+      string strSizing = StringUtils::Format(g_localizeStrings.Get(245),
                                                  (int)info.SrcRect.Width(),
                                                  (int)info.SrcRect.Height(),
                                                  (int)(info.DestRect.Width() * xscale),
@@ -645,7 +645,7 @@ void CGUIWindowFullScreen::FrameMove()
     }
     // show resolution information
     {
-      CStdString strStatus;
+      string strStatus;
       if (g_Windowing.IsFullScreen())
         strStatus = StringUtils::Format("%s %ix%i@%.2fHz - %s",
                                         g_localizeStrings.Get(13287).c_str(),
@@ -673,7 +673,7 @@ void CGUIWindowFullScreen::FrameMove()
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
     }
-    CStdString strDispTime = "00:00:00";
+    string strDispTime = "00:00:00";
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
 

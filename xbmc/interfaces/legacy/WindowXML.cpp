@@ -79,13 +79,13 @@ namespace XBMCAddon
 
     protected:
       // CGUIWindow
-      virtual bool LoadXML(const CStdString &strPath, const CStdString &strPathLower)
+      virtual bool LoadXML(const string &strPath, const string &strPathLower)
       { XBMC_TRACE; return up() ? CGUIMediaWindow::LoadXML(strPath,strPathLower) : xwin->LoadXML(strPath,strPathLower); }
 
       // CGUIMediaWindow
       virtual void GetContextButtons(int itemNumber, CContextButtons &buttons)
       { XBMC_TRACE; if (up()) CGUIMediaWindow::GetContextButtons(itemNumber,buttons); else xwin->GetContextButtons(itemNumber,buttons); }
-      virtual bool Update(const CStdString &strPath)
+      virtual bool Update(const string &strPath)
       { XBMC_TRACE; return up() ? CGUIMediaWindow::Update(strPath) : xwin->Update(strPath); }
       virtual void SetupShares() { XBMC_TRACE; if(up()) CGUIMediaWindow::SetupShares(); else checkedv(SetupShares()); }
 
@@ -104,18 +104,18 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       RESOLUTION_INFO res;
-      CStdString strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
+      string strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
 
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        CStdString str("none");
+        string str("none");
         ADDON::AddonProps props(str, ADDON::ADDON_SKIN, "", "");
         ADDON::CSkinInfo::TranslateResolution(defaultRes, res);
 
         // Check for the matching folder for the skin in the fallback skins folder
-        CStdString fallbackPath = URIUtils::AddFileToFolder(scriptPath, "resources");
+        string fallbackPath = URIUtils::AddFileToFolder(scriptPath, "resources");
         fallbackPath = URIUtils::AddFileToFolder(fallbackPath, "skins");
-        CStdString basePath = URIUtils::AddFileToFolder(fallbackPath, g_SkinInfo->ID());
+        string basePath = URIUtils::AddFileToFolder(fallbackPath, g_SkinInfo->ID());
 
         strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
 
@@ -383,8 +383,8 @@ namespace XBMCAddon
     void WindowXML::AllocResources(bool forceLoad /*= FALSE */)
     {
       XBMC_TRACE;
-      CStdString tmpDir = URIUtils::GetDirectory(ref(window)->GetProperty("xmlfile").asString());
-      CStdString fallbackMediaPath;
+      string tmpDir = URIUtils::GetDirectory(ref(window)->GetProperty("xmlfile").asString());
+      string fallbackMediaPath;
       URIUtils::GetParentPath(tmpDir, fallbackMediaPath);
       URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
       m_mediaDir = fallbackMediaPath;
@@ -445,7 +445,7 @@ namespace XBMCAddon
         return false;
       }
 
-      CStdString xml;
+      string xml;
       char *buffer = new char[(unsigned int)file.GetLength()+1];
       if(buffer == NULL)
         return false;

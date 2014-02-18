@@ -403,7 +403,7 @@ OSStatus CCoreAudioStream::HardwareStreamListener(AudioObjectID inObjectID,
       // hardware physical format has changed.
       if (AudioObjectGetPropertyData(ca_stream->m_StreamId, &inAddresses[i], 0, NULL, &propertySize, &actualFormat) == noErr)
       {
-        CStdString formatString;
+        string formatString;
         CLog::Log(LOGINFO, "CCoreAudioStream::HardwareStreamListener: "
           "Hardware physical format changed to %s", StreamDescriptionToString(actualFormat, formatString));
         ca_stream->m_physical_format_event.Set();
@@ -416,7 +416,7 @@ OSStatus CCoreAudioStream::HardwareStreamListener(AudioObjectID inObjectID,
       UInt32 propertySize = sizeof(AudioStreamBasicDescription);
       if (AudioObjectGetPropertyData(ca_stream->m_StreamId, &inAddresses[i], 0, NULL, &propertySize, &actualFormat) == noErr)
       {
-        CStdString formatString;
+        string formatString;
         CLog::Log(LOGINFO, "CCoreAudioStream::HardwareStreamListener: "
           "Hardware virtual format changed to %s", StreamDescriptionToString(actualFormat, formatString));
         ca_stream->m_virtual_format_event.Set();

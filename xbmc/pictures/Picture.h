@@ -26,7 +26,7 @@ class CBaseTexture;
 class CPicture
 {
 public:
-  static bool CreateThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const CStdString &thumbFile);
+  static bool CreateThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const std::string &thumbFile);
 
   /*! \brief Create a tiled thumb of the given files
    \param files the files to create the thumb from
@@ -64,7 +64,7 @@ class CThumbnailWriter : public CJob
 {
   public:
     //WARNING: buffer is deleted from DoWork()
-    CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const CStdString& thumbFile);
+    CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const std::string& thumbFile);
     bool DoWork();
 
   private:
@@ -72,6 +72,6 @@ class CThumbnailWriter : public CJob
     int            m_width;
     int            m_height;
     int            m_stride;
-    CStdString     m_thumbFile;
+    std::string     m_thumbFile;
 };
 

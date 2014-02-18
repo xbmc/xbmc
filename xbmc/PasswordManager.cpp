@@ -46,8 +46,8 @@ bool CPasswordManager::AuthenticateURL(CURL &url)
 
   if (!m_loaded)
     Load();
-  CStdString lookup(GetLookupPath(url));
-  map<CStdString, CStdString>::const_iterator it = m_temporaryCache.find(lookup);
+  string lookup(GetLookupPath(url));
+  map<string, string>::const_iterator it = m_temporaryCache.find(lookup);
   if (it == m_temporaryCache.end())
   { // second step, try something that doesn't quite match
     it = m_temporaryCache.find(GetServerLookup(lookup));
@@ -66,9 +66,9 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 {
   CSingleLock lock(m_critSection);
 
-  CStdString passcode;
-  CStdString username = url.GetUserName();
-  CStdString path = GetLookupPath(url);
+  string passcode;
+  string username = url.GetUserName();
+  string path = GetLookupPath(url);
 
   bool saveDetails = false;
   if (!CGUIDialogLockSettings::ShowAndGetUserAndPassword(username, passcode, url.GetWithoutUserDetails(), &saveDetails))
@@ -90,8 +90,8 @@ void CPasswordManager::SaveAuthenticatedURL(const CURL &url, bool saveToProfile)
 
   CSingleLock lock(m_critSection);
 
-  CStdString path = GetLookupPath(url);
-  CStdString authenticatedPath = url.Get();
+  string path = GetLookupPath(url);
+  string authenticatedPath = url.Get();
 
   if (!m_loaded)
     Load();
@@ -117,7 +117,7 @@ void CPasswordManager::Clear()
 void CPasswordManager::Load()
 {
   Clear();
-  CStdString passwordsFile = CProfilesManager::Get().GetUserDataItem("passwords.xml");
+  string passwordsFile = CProfilesManager::Get().GetUserDataItem("passwords.xml");
   if (XFILE::CFile::Exists(passwordsFile))
   {
     CXBMCTinyXML doc;
@@ -134,7 +134,7 @@ void CPasswordManager::Load()
     const TiXmlElement *path = root->FirstChildElement("path");
     while (path)
     {
-      CStdString from, to;
+      string from, to;
       if (XMLUtils::GetPath(path, "from", from) && XMLUtils::GetPath(path, "to", to))
       {
         m_permanentCache[from] = to;
@@ -158,7 +158,7 @@ void CPasswordManager::Save() const
   if (!root)
     return;
 
-  for (map<CStdString, CStdString>::const_iterator i = m_permanentCache.begin(); i != m_permanentCache.end(); ++i)
+  for (map<string, string>::const_iterator i = m_permanentCache.begin(); i != m_permanentCache.end(); ++i)
   {
     TiXmlElement pathElement("path");
     TiXmlNode *path = root->InsertEndChild(pathElement);
@@ -169,12 +169,12 @@ void CPasswordManager::Save() const
   doc.SaveFile(CProfilesManager::Get().GetUserDataItem("passwords.xml"));
 }
 
-CStdString CPasswordManager::GetLookupPath(const CURL &url) const
+string CPasswordManager::GetLookupPath(const CURL &url) const
 {
   return "smb://" + url.GetHostName() + "/" + url.GetShareName();
 }
 
-CStdString CPasswordManager::GetServerLookup(const CStdString &path) const
+string CPasswordManager::GetServerLookup(const string &path) const
 {
   CURL url(path);
   return "smb://" + url.GetHostName() + "/";

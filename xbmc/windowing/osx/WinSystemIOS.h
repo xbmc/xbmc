@@ -36,7 +36,7 @@ public:
 
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem();
-  virtual bool CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
   virtual bool DestroyWindow();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
@@ -69,7 +69,7 @@ protected:
   void        *m_glView; // EAGLView opaque
   void        *m_WorkingContext; // shared EAGLContext opaque
   bool         m_bWasFullScreenBeforeMinimize;
-  CStdString   m_eglext;
+  std::string   m_eglext;
   int          m_iVSyncErrors;
   
 private:

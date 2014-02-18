@@ -100,13 +100,13 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
 int DllAvFormat::m_avformat_refcnt = 0;
 CCriticalSection DllAvCodec::m_critSection;
 static CCriticalSection m_logSection;
-std::map<uintptr_t, CStdString> g_logbuffer;
+std::map<uintptr_t, string> g_logbuffer;
 
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
   CSingleLock lock(m_logSection);
   uintptr_t threadId = (uintptr_t)CThread::GetCurrentThreadId();
-  CStdString &buffer = g_logbuffer[threadId];
+  string &buffer = g_logbuffer[threadId];
 
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
 
@@ -125,14 +125,14 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
     default            : type = LOGDEBUG;   break;
   }
 
-  CStdString message = StringUtils::FormatV(format, va);
-  CStdString prefix = StringUtils::Format("ffmpeg[%X]: ", threadId);
+  string message = StringUtils::FormatV(format, va);
+  string prefix = StringUtils::Format("ffmpeg[%X]: ", threadId);
   if(avc)
   {
     if(avc->item_name)
-      prefix += CStdString("[") + avc->item_name(ptr) + "] ";
+      prefix += string("[") + avc->item_name(ptr) + "] ";
     else if(avc->class_name)
-      prefix += CStdString("[") + avc->class_name + "] ";
+      prefix += string("[") + avc->class_name + "] ";
   }
 
   buffer += message;
@@ -153,7 +153,7 @@ static void ff_flush_avutil_log_buffers(void)
   /* Loop through the logbuffer list and remove any blank buffers
      If the thread using the buffer is still active, it will just
      add a new buffer next time it writes to the log */
-  std::map<uintptr_t, CStdString>::iterator it;
+  std::map<uintptr_t, string>::iterator it;
   for (it = g_logbuffer.begin(); it != g_logbuffer.end(); )
     if ((*it).second.empty())
       g_logbuffer.erase(it++);
@@ -290,7 +290,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
     CURL url = m_pInput->GetURL();
-    CStdString protocol = url.GetProtocol();
+    string protocol = url.GetProtocol();
 
     AVDictionary *options = GetFFMpegOptionsFromURL(url);
 
@@ -590,20 +590,20 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
 
 AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
 {
-  CStdString protocol = url.GetProtocol();
+  string protocol = url.GetProtocol();
 
   AVDictionary *options = NULL;
 
   if (StringUtils::EqualsNoCase(protocol, "http") || StringUtils::EqualsNoCase(protocol, "https"))
   {
-    std::map<CStdString, CStdString> protocolOptions;
+    std::map<string, string> protocolOptions;
     url.GetProtocolOptions(protocolOptions);
     std::string headers;
     bool hasUserAgent = false;
-    for(std::map<CStdString, CStdString>::const_iterator it = protocolOptions.begin(); it != protocolOptions.end(); ++it)
+    for(std::map<string, string>::const_iterator it = protocolOptions.begin(); it != protocolOptions.end(); ++it)
     {
-      const CStdString &name = it->first;
-      const CStdString &value = it->second;
+      const string &name = it->first;
+      const string &value = it->second;
 
       if (StringUtils::EqualsNoCase(name, "seekable"))
         m_dllAvUtil.av_dict_set(&options, "seekable", value.c_str(), 0);
@@ -1418,7 +1418,7 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
 }
 
-void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
+void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, string &strName)
 {
   CDemuxStream *stream = GetStream(iStreamId);
   if (stream)

@@ -89,8 +89,8 @@ namespace JSONRPC
 
     static bool ParseSorting(const CVariant &parameterObject, SortBy &sortBy, SortOrder &sortOrder, SortAttribute &sortAttributes)
     {
-      CStdString method = parameterObject["sort"]["method"].asString();
-      CStdString order = parameterObject["sort"]["order"].asString();
+      std::string method = parameterObject["sort"]["method"].asString();
+      std::string order = parameterObject["sort"]["order"].asString();
       StringUtils::ToLower(method);
       StringUtils::ToLower(order);
 
@@ -519,7 +519,7 @@ namespace JSONRPC
         stringArray.push_back(it->asString());
     }
 
-    static bool GetXspFiltering(const CStdString &type, const CVariant &filter, CStdString &xsp)
+    static bool GetXspFiltering(const std::string &type, const CVariant &filter, std::string &xsp)
     {
       if (type.empty() || !filter.isObject())
         return false;

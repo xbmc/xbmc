@@ -199,9 +199,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   return CGUIWindowVideoBase::OnMessage(message);
 }
 
-CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
+string CGUIWindowVideoNav::GetQuickpathName(const string& strPath) const
 {
-  CStdString path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
+  string path = CLegacyPathTranslation::TranslateVideoDbPath(strPath);
   if (StringUtils::EqualsNoCase(path, "videodb://movies/genres/"))
     return "MovieGenres";
   else if (StringUtils::EqualsNoCase(path, "videodb://movies/titles/"))
@@ -267,7 +267,7 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
   }
 }
 
-bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowVideoNav::GetDirectory(const string &strDirectory, CFileItemList &items)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -410,7 +410,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
-      CStdString label;
+      string label;
       if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("video"), &label)) 
         items.SetLabel(label);
       if (!items.IsSourcesPath())
@@ -443,7 +443,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
   if (!items.GetContent().empty() && !items.IsPlugin())
     return; // don't load for listings that have content set and weren't created from plugins
 
-  CStdString content = items.GetContent();
+  string content = items.GetContent();
   // determine content only if it isn't set
   if (content.empty())
   {
@@ -543,11 +543,11 @@ void CGUIWindowVideoNav::UpdateButtons()
       StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
-  CStdString items = StringUtils::Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  string items = StringUtils::Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
-  CStdString strLabel;
+  string strLabel;
 
   // "Playlists"
   if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://videoplaylists/"))
@@ -556,7 +556,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   else if (m_vecItems->IsPlayList())
   {
     // get playlist name from path
-    CStdString strDummy;
+    string strDummy;
     URIUtils::Split(m_vecItems->GetPath(), strDummy, strLabel);
   }
   else if (StringUtils::EqualsNoCase(m_vecItems->GetPath(), "sources://video/"))
@@ -582,7 +582,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsPlugin() && !m_vecItems->IsScript());
 }
 
-bool CGUIWindowVideoNav::GetFilteredItems(const CStdString &filter, CFileItemList &items)
+bool CGUIWindowVideoNav::GetFilteredItems(const string &filter, CFileItemList &items)
 {
   bool listchanged = CGUIMediaWindow::GetFilteredItems(filter, items);
   listchanged |= ApplyWatchedFilter(items);
@@ -594,12 +594,12 @@ bool CGUIWindowVideoNav::GetFilteredItems(const CStdString &filter, CFileItemLis
 /// \brief video databases and return the found \e items
 /// \param strSearch The search string
 /// \param items Items Found
-void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
+void CGUIWindowVideoNav::DoSearch(const string& strSearch, CFileItemList& items)
 {
   CFileItemList tempItems;
-  CStdString strGenre = g_localizeStrings.Get(515); // Genre
-  CStdString strActor = g_localizeStrings.Get(20337); // Actor
-  CStdString strDirector = g_localizeStrings.Get(20339); // Director
+  string strGenre = g_localizeStrings.Get(515); // Genre
+  string strActor = g_localizeStrings.Get(20337); // Actor
+  string strDirector = g_localizeStrings.Get(20339); // Director
 
   //get matching names
   m_database.GetMoviesByName(strSearch, tempItems);
@@ -675,7 +675,7 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
     scraper = m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath);
   else
   {
-    CStdString strPath,strFile;
+    string strPath,strFile;
     URIUtils::Split(pItem->GetPath(),strPath,strFile);
     scraper = m_database.GetScraperForPath(strPath);
   }
@@ -701,7 +701,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     pDialog->SetHeading(432);
-    CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(433),pItem->GetLabel().c_str());
+    string strLabel = StringUtils::Format(g_localizeStrings.Get(433),pItem->GetLabel().c_str());
     pDialog->SetLine(1, strLabel);
     pDialog->SetLine(2, "");;
     pDialog->DoModal();
@@ -722,7 +722,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     pDialog->SetHeading(432);
-    CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(433), pItem->GetLabel().c_str());
+    string strLabel = StringUtils::Format(g_localizeStrings.Get(433), pItem->GetLabel().c_str());
     pDialog->SetLine(1, strLabel);
     pDialog->SetLine(2, "");
     pDialog->DoModal();
@@ -975,7 +975,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_GO_TO_ARTIST:
     {
-      CStdString strPath;
+      string strPath;
       CMusicDatabase database;
       database.Open();
       strPath = StringUtils::Format("musicdb://artists/%ld/",
@@ -985,7 +985,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_GO_TO_ALBUM:
     {
-      CStdString strPath;
+      string strPath;
       CMusicDatabase database;
       database.Open();
       strPath = StringUtils::Format("musicdb://albums/%ld/",
@@ -1038,7 +1038,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     }
 
     //Get the new title
-    CStdString strTag;
+    string strTag;
     if (!CGUIKeyboardFactory::ShowAndGetInput(strTag, g_localizeStrings.Get(20462), false))
       return true;
 
@@ -1047,22 +1047,22 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
       return true;
 
     // get the media type and convert from plural to singular (by removing the trailing "s")
-    CStdString mediaType = item->GetPath().substr(9);
+    string mediaType = item->GetPath().substr(9);
     mediaType = mediaType.substr(0, mediaType.size() - 1);
-    CStdString localizedType = CGUIDialogVideoInfo::GetLocalizedVideoType(mediaType);
+    string localizedType = CGUIDialogVideoInfo::GetLocalizedVideoType(mediaType);
     if (localizedType.empty())
       return true;
 
     if (!videodb.GetSingleValue("tag", "tag.idTag", videodb.PrepareSQL("tag.strTag = '%s' AND tag.idTag IN (SELECT taglinks.idTag FROM taglinks WHERE taglinks.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
     {
-      CStdString strError = StringUtils::Format(g_localizeStrings.Get(20463), strTag.c_str());
+      string strError = StringUtils::Format(g_localizeStrings.Get(20463), strTag.c_str());
       CGUIDialogOK::ShowAndGetInput(20462, "", strError, "");
       return true;
     }
 
     int idTag = videodb.AddTag(strTag);
     CFileItemList items;
-    CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20464), localizedType.c_str());
+    string strLabel = StringUtils::Format(g_localizeStrings.Get(20464), localizedType.c_str());
     if (CGUIDialogVideoInfo::GetItemsForTag(strLabel, mediaType, items, idTag))
     {
       for (int index = 0; index < items.Size(); index++)
@@ -1081,7 +1081,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
   return CGUIWindowVideoBase::OnClick(iItem);
 }
 
-CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
+string CGUIWindowVideoNav::GetStartFolder(const string &dir)
 {
   if (StringUtils::EqualsNoCase(dir, "MovieGenres"))
     return "videodb://movies/genres/";

@@ -108,7 +108,7 @@ CFileFactory::~CFileFactory()
 {
 }
 
-IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
+IFile* CFileFactory::CreateLoader(const string& strFileName)
 {
   CURL url(strFileName);
   return CreateLoader(url);
@@ -119,7 +119,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   if (!CWakeOnAccess::Get().WakeUpHost(url))
     return NULL;
 
-  CStdString strProtocol = url.GetProtocol();
+  string strProtocol = url.GetProtocol();
   StringUtils::ToLower(strProtocol);
 
 #if defined(TARGET_ANDROID)

@@ -48,14 +48,14 @@ public:
 
 bool CSaveFileStateJob::DoWork()
 {
-  CStdString progressTrackingFile = m_item.GetPath();
+  std::string progressTrackingFile = m_item.GetPath();
 
   if (m_item.HasVideoInfoTag() && StringUtils::StartsWith(m_item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
     progressTrackingFile = m_item.GetVideoInfoTag()->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
   else if (m_item.HasProperty("original_listitem_url"))
   {
     // only use original_listitem_url for Python, UPnP and Bluray sources
-    CStdString original = m_item.GetProperty("original_listitem_url").asString();
+    std::string original = m_item.GetProperty("original_listitem_url").asString();
     if (URIUtils::IsPlugin(original) || URIUtils::IsUPnP(original) || URIUtils::IsBluray(m_item.GetPath()))
       progressTrackingFile = original;
   }

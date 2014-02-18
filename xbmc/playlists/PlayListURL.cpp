@@ -39,10 +39,10 @@ CPlayListURL::CPlayListURL(void)
 CPlayListURL::~CPlayListURL(void)
 {}
 
-bool CPlayListURL::Load(const CStdString& strFileName)
+bool CPlayListURL::Load(const string& strFileName)
 {
   char szLine[4096];
-  CStdString strLine;
+  string strLine;
 
   Clear();
 

@@ -55,7 +55,7 @@ public:
 
   CGUIString(iString start, iString end, bool carriageReturn);
 
-  CStdString GetAsString() const;
+  std::string GetAsString() const;
 
   vecText m_text;
   bool m_carriageReturn; // true if we have a carriage return here
@@ -87,7 +87,7 @@ public:
   float GetTextWidth() const { return m_textWidth; };
   
   float GetTextWidth(const std::wstring &text) const;
-  bool Update(const CStdString &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
+  bool Update(const std::string &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
   bool UpdateW(const std::wstring &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
 
   /*! \brief Update text from a pre-styled vecText/vecColors combination
@@ -107,8 +107,8 @@ public:
   void SetMaxHeight(float fHeight);
 
 
-  static void DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align);
-  static void Filter(CStdString &text);
+  static void DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const std::string &text, uint32_t align);
+  static void Filter(std::string &text);
 
 protected:
   void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
@@ -146,10 +146,10 @@ private:
     character_t ch = letter & 0xffff;
     return ch == L' ' || (ch >=0x4e00 && ch <= 0x9fff);
   };
-  static void AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32);
+  static void AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32);
   static void AppendToUTF32(const std::wstring &utf16, character_t colStyle, vecText &utf32);
   static void ParseText(const std::wstring &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText);
 
-  static void utf8ToW(const CStdString &utf8, std::wstring &utf16);
+  static void utf8ToW(const std::string &utf8, std::wstring &utf16);
 };
 

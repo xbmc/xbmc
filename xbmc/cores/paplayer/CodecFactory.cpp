@@ -44,7 +44,7 @@
 
 using namespace std;
 
-ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
+ICodec* CodecFactory::CreateCodec(const string& strFileType)
 {
   if (StringUtils::EqualsNoCase(strFileType, "mp3") || StringUtils::EqualsNoCase(strFileType, "mp2"))
     return new MP3Codec();
@@ -117,7 +117,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   return NULL;
 }
 
-ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdString& strContent, unsigned int filecache)
+ICodec* CodecFactory::CreateCodecDemux(const string& strFile, const string& strContent, unsigned int filecache)
 {
   CURL urlFile(strFile);
   if( StringUtils::EqualsNoCase(strContent, "audio/mpeg")
@@ -200,7 +200,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   return CreateCodec(urlFile.GetFileType());
 }
 
-ICodec* CodecFactory::CreateOGGCodec(const CStdString& strFile,
+ICodec* CodecFactory::CreateOGGCodec(const string& strFile,
                                      unsigned int filecache)
 {
   // oldnemesis: we want to use OGGCodec() for OGG music since unlike DVDCodec 

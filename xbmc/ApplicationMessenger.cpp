@@ -406,7 +406,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
         {
           CFileItemList items;
-          CStdString strPath;
+          string strPath;
           if (URIUtils::IsZIP(pMsg->strParam))
             URIUtils::CreateArchivePath(strPath, "zip", pMsg->strParam.c_str(), "");
           else
@@ -446,8 +446,8 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         pSlideShow->Reset();
 
         CFileItemList items;
-        CStdString strPath = pMsg->strParam;
-        CStdString extensions = g_advancedSettings.m_pictureExtensions;
+        string strPath = pMsg->strParam;
+        string extensions = g_advancedSettings.m_pictureExtensions;
         if (pMsg->dwParam1)
           extensions += "|.tbn";
         CUtil::GetRecursiveListing(strPath, items, extensions);
@@ -881,7 +881,7 @@ void CApplicationMessenger::ProcessWindowMessages()
   }
 }
 
-int CApplicationMessenger::SetResponse(CStdString response)
+int CApplicationMessenger::SetResponse(string response)
 {
   CSingleLock lock (m_critBuffer);
   bufferResponse=response;
@@ -889,16 +889,16 @@ int CApplicationMessenger::SetResponse(CStdString response)
   return 0;
 }
 
-CStdString CApplicationMessenger::GetResponse()
+string CApplicationMessenger::GetResponse()
 {
-  CStdString tmp;
+  string tmp;
   CSingleLock lock (m_critBuffer);
   tmp=bufferResponse;
   lock.Leave();
   return tmp;
 }
 
-void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
+void CApplicationMessenger::ExecBuiltIn(const string &command, bool wait)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
   tMsg.strParam = command;
@@ -1201,7 +1201,7 @@ void CApplicationMessenger::Minimize(bool wait)
   SendMessage(tMsg, wait);
 }
 
-void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)
+void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const string &param)
 {
   ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};
   tMsg.lpVoid = pDialog;
@@ -1210,7 +1210,7 @@ void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CS
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::ExecOS(const CStdString &command, bool waitExit)
+void CApplicationMessenger::ExecOS(const string &command, bool waitExit)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_OS};
   tMsg.strParam = command;
@@ -1306,7 +1306,7 @@ void CApplicationMessenger::ShowVolumeBar(bool up)
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::SetSplashMessage(const CStdString& message)
+void CApplicationMessenger::SetSplashMessage(const string& message)
 {
   ThreadMessage tMsg = {TMSG_SPLASH_MESSAGE};
   tMsg.strParam = message;

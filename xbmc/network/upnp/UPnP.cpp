@@ -183,7 +183,7 @@ public:
     {
         NPT_String path = "upnp://"+device->GetUUID()+"/";
         if (!NPT_StringsEqual(item_id, "0")) {
-            CStdString id(CURL::Encode(item_id));
+            string id(CURL::Encode(item_id));
             URIUtils::AddSlashAtEnd(id);
             path += id.c_str();
         }
@@ -556,7 +556,7 @@ CUPnP::StartServer()
     if (!m_ServerHolder->m_Device.IsNull()) return false;
 
     // load upnpserver.xml
-    CStdString filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
+    string filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
     CUPnPSettings::Get().Load(filename);
 
     // create the server with a XBox compatible friendlyname and UUID from upnpserver.xml if found
@@ -635,7 +635,7 @@ bool CUPnP::StartRenderer()
 {
     if (!m_RendererHolder->m_Device.IsNull()) return false;
 
-    CStdString filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
+    string filename = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "upnpserver.xml");
     CUPnPSettings::Get().Load(filename);
 
     m_RendererHolder->m_Device = CreateRenderer(CUPnPSettings::Get().GetRendererPort());

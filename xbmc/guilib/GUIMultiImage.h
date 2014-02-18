@@ -57,7 +57,7 @@ public:
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual void SetInvalid();
   virtual bool CanFocus() const;
-  virtual CStdString GetDescription() const;
+  virtual std::string GetDescription() const;
 
   void SetInfo(const CGUIInfoLabel &info);
   void SetAspectRatio(const CAspectRatio &ratio);
@@ -73,16 +73,16 @@ protected:
   class CMultiImageJob : public CJob
   {
   public:
-    CMultiImageJob(const CStdString &path);
+    CMultiImageJob(const std::string &path);
     virtual bool DoWork();
     virtual const char *GetType() const { return "multiimage"; };
 
     std::vector<std::string> m_files;
-    CStdString              m_path;
+    std::string              m_path;
   };
 
   CGUIInfoLabel m_texturePath;
-  CStdString m_currentPath;
+  std::string m_currentPath;
   unsigned int m_currentImage;
   CStopWatch m_imageTimer;
   unsigned int m_timePerImage;

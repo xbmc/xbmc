@@ -30,7 +30,7 @@ class CAppParamParser
   private:
     bool m_testmode;
     CFileItemList m_playlist;
-    void ParseArg(const CStdString &arg);
+    void ParseArg(const std::string &arg);
     void DisplayHelp();
     void DisplayVersion();
     void EnableDebugMode();

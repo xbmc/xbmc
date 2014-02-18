@@ -50,11 +50,11 @@ CRTVDirectory::~CRTVDirectory(void)
 }
 
 //*********************************************************************************************
-bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CRTVDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CURL url(strPath);
 
-  CStdString strRoot = strPath;
+  string strRoot = strPath;
   URIUtils::AddSlashAtEnd(strRoot);
 
   // Host name is "*" so we try to discover all ReplayTVs.  This requires some trickery but works.
@@ -95,7 +95,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     }
     else
     {
-      CStdString strURL, strRTV;
+      string strURL, strRTV;
       size_t pos;
 
       // Isolate the IP from the URL and replace the "*" with the real IP
@@ -115,7 +115,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
 
   // Allow for ReplayTVs on ports other than 80
-  CStdString strHostAndPort;
+  string strHostAndPort;
   strHostAndPort = url.GetHostName();
   if (url.HasPort())
   {
@@ -151,7 +151,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     const TiXmlNode *pChild = pRootElement->FirstChild();
     while (pChild > 0)
     {
-      CStdString strTagName = pChild->Value();
+      string strTagName = pChild->Value();
 
       if ( !strcmpi(strTagName.c_str(), "ITEM") )
       {
@@ -190,7 +190,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         // RECORDED
         if (recordedNode)
         {
-          CStdString strRecorded = recordedNode->FirstChild()->Value();
+          string strRecorded = recordedNode->FirstChild()->Value();
 
           if (strRecorded.size() >= 19)
           {

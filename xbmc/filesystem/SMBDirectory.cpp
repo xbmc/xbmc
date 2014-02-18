@@ -56,7 +56,7 @@ using namespace std;
 struct CachedDirEntry
 {
   unsigned int type;
-  CStdString name;
+  string name;
 };
 
 CSMBDirectory::CSMBDirectory(void)
@@ -69,7 +69,7 @@ CSMBDirectory::~CSMBDirectory(void)
   smb.AddIdleConnection();
 }
 
-bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CSMBDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
 
@@ -82,8 +82,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CURL url(strPath);
 
   //Separate roots for the authentication and the containing items to allow browsing to work correctly
-  CStdString strRoot = strPath;
-  CStdString strAuth;
+  string strRoot = strPath;
+  string strAuth;
 
   lock.Leave(); // OpenDir is locked
   int fd = OpenDir(url, strAuth);
@@ -93,7 +93,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   URIUtils::AddSlashAtEnd(strRoot);
   URIUtils::AddSlashAtEnd(strAuth);
 
-  CStdString strFile;
+  string strFile;
 
   // need to keep the samba lock for as short as possible.
   // so we first cache all directory entries and then go over them again asking for stat
@@ -142,7 +142,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
-          const CStdString strFullName = strAuth + smb.URLEncode(strFile);
+          const string strFullName = strAuth + smb.URLEncode(strFile);
 
           lock.Enter();
 
@@ -183,7 +183,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       if (bIsDir)
       {
         CFileItemPtr pItem(new CFileItem(strFile));
-        CStdString path(strRoot);
+        string path(strRoot);
 
         // needed for network / workgroup browsing
         // skip if root if we are given a server
@@ -224,14 +224,14 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 int CSMBDirectory::Open(const CURL &url)
 {
   smb.Init();
-  CStdString strAuth;
+  string strAuth;
   return OpenDir(url, strAuth);
 }
 
 /// \brief Checks authentication against SAMBA share and prompts for username and password if needed
 /// \param strAuth The SMB style path
 /// \return SMB file descriptor
-int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
+int CSMBDirectory::OpenDir(const CURL& url, string& strAuth)
 {
   int fd = -1;
 
@@ -258,7 +258,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 
   while (fd < 0) /* only to avoid goto in following code */
   {
-    CStdString cError;
+    string cError;
 
     if (errno == EACCES)
     {
@@ -294,7 +294,7 @@ bool CSMBDirectory::Create(const char* strPath)
 
   CURL url(strPath);
   CPasswordManager::GetInstance().AuthenticateURL(url);
-  CStdString strFileName = smb.URLEncode(url);
+  string strFileName = smb.URLEncode(url);
 
   int result = smbc_mkdir(strFileName.c_str(), 0);
   success = (result == 0 || EEXIST == errno);
@@ -311,7 +311,7 @@ bool CSMBDirectory::Remove(const char* strPath)
 
   CURL url(strPath);
   CPasswordManager::GetInstance().AuthenticateURL(url);
-  CStdString strFileName = smb.URLEncode(url);
+  string strFileName = smb.URLEncode(url);
 
   int result = smbc_rmdir(strFileName.c_str());
 
@@ -331,7 +331,7 @@ bool CSMBDirectory::Exists(const char* strPath)
 
   CURL url(strPath);
   CPasswordManager::GetInstance().AuthenticateURL(url);
-  CStdString strFileName = smb.URLEncode(url);
+  string strFileName = smb.URLEncode(url);
 
   struct stat info;
   if (smbc_stat(strFileName.c_str(), &info) != 0)
@@ -340,12 +340,12 @@ bool CSMBDirectory::Exists(const char* strPath)
   return (info.st_mode & S_IFDIR) ? true : false;
 }
 
-CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString &strType, const CStdString &strName,
-    const CStdString &strUser, const CStdString &strPass)
+string CSMBDirectory::MountShare(const string &smbPath, const string &strType, const string &strName,
+    const string &strUser, const string &strPass)
 {
   UnMountShare(strType, strName);
 
-  CStdString strMountPoint = GetMountPoint(strType, strName);
+  string strMountPoint = GetMountPoint(strType, strName);
 
 #if defined(TARGET_DARWIN)
   // Create the directory.
@@ -353,7 +353,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
   CreateDirectory(strMountPoint.c_str(), NULL);
 
   // Massage the path.
-  CStdString smbFullPath = "//";
+  string smbFullPath = "//";
   if (smbFullPath.length() > 0)
   {
     smbFullPath += strUser;
@@ -363,7 +363,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
     smbFullPath += "@";
   }
 
-  CStdString newPath = smbPath;
+  string newPath = smbPath;
   StringUtils::TrimLeft(newPath, "/");
   smbFullPath += newPath;
 
@@ -381,7 +381,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
 #else
   CUtil::SudoCommand("mkdir -p " + strMountPoint);
 
-  CStdString strCmd = "mount -t cifs " + smbPath + " " + strMountPoint +
+  string strCmd = "mount -t cifs " + smbPath + " " + strMountPoint +
     " -o rw,nobrl,directio";
   if (!strUser.empty())
     strCmd += ",user=" + strUser + ",password=" + strPass;
@@ -394,11 +394,11 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
   return StringUtils::EmptyString;
 }
 
-void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &strName)
+void CSMBDirectory::UnMountShare(const string &strType, const string &strName)
 {
 #if defined(TARGET_DARWIN)
   // Decode the path.
-  CStdString strMountPoint(CURL::Decode(GetMountPoint(strType, strName)));
+  string strMountPoint(CURL::Decode(GetMountPoint(strType, strName)));
 
   // Make the unmount command.
   std::vector<std::string> args;
@@ -408,17 +408,17 @@ void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &st
   // Execute command.
   CUtil::Command(args);
 #else
-  CStdString strCmd = "umount " + GetMountPoint(strType, strName);
+  string strCmd = "umount " + GetMountPoint(strType, strName);
   CUtil::SudoCommand(strCmd);
 #endif
 }
 
-CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdString &strName)
+string CSMBDirectory::GetMountPoint(const string &strType, const string &strName)
 {
-  CStdString strPath(CURL::Encode(strType + strName));
+  string strPath(CURL::Encode(strType + strName));
 
 #if defined(TARGET_DARWIN)
-  CStdString str = getenv("HOME");
+  string str = getenv("HOME");
   return str + "/" + XBMC_SMB_MOUNT_PATH + strPath;
 #else
   return XBMC_SMB_MOUNT_PATH + strPath;

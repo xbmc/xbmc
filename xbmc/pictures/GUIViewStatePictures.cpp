@@ -67,12 +67,12 @@ void CGUIViewStateWindowPictures::SaveViewState()
   SaveViewToDb(m_items.GetPath(), WINDOW_PICTURES, CViewStateSettings::Get().Get("pictures"));
 }
 
-CStdString CGUIViewStateWindowPictures::GetLockType()
+string CGUIViewStateWindowPictures::GetLockType()
 {
   return "pictures";
 }
 
-CStdString CGUIViewStateWindowPictures::GetExtensions()
+string CGUIViewStateWindowPictures::GetExtensions()
 {
   if (CSettings::Get().GetBool("pictures.showvideos"))
     return g_advancedSettings.m_pictureExtensions+"|"+g_advancedSettings.m_videoExtensions;

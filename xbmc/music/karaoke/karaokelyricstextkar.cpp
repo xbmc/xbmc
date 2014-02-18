@@ -36,7 +36,7 @@ typedef struct
 {
   unsigned int  clocks;
   unsigned int  track;
-  CStdString    text;
+  string    text;
   unsigned int  flags;
 
 } MidiLyrics;
@@ -134,7 +134,7 @@ class MidiTimestamp
 
 
 
-CKaraokeLyricsTextKAR::CKaraokeLyricsTextKAR( const CStdString & midiFile )
+CKaraokeLyricsTextKAR::CKaraokeLyricsTextKAR( const string & midiFile )
   : CKaraokeLyricsText()
 {
   m_midiData = 0;
@@ -597,9 +597,9 @@ void CKaraokeLyricsTextKAR::readData(void * buf, unsigned int length)
     *((char*)buf + i) = readByte();
 }
 
-CStdString CKaraokeLyricsTextKAR::convertText( const char * data )
+string CKaraokeLyricsTextKAR::convertText( const char * data )
 {
-  CStdString strUTF8;
+  string strUTF8;
 
   // Use some heuristics; need to replace by real detection stuff later
   if (CUtf8Utils::isValidUtf8(data) || CSettings::Get().GetString("karaoke.charset") == "DEFAULT")

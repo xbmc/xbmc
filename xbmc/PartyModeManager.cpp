@@ -55,11 +55,11 @@ CPartyModeManager::~CPartyModeManager(void)
 {
 }
 
-bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUSIC*/, const CStdString& strXspPath /*= ""*/)
+bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUSIC*/, const string& strXspPath /*= ""*/)
 {
   // Filter using our PartyMode xml file
   CSmartPlaylist playlist;
-  CStdString partyModePath;
+  string partyModePath;
   bool playlistLoaded;
 
   m_bIsVideo = context == PARTYMODECONTEXT_VIDEO;
@@ -113,7 +113,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CMusicDatabase db;
     if (db.Open())
     {
-      set<CStdString> playlists;
+      set<string> playlists;
       if ( playlistLoaded )
         m_strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
 
@@ -123,14 +123,14 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
       {
         pDialog->Close();
         db.Close();
-        OnError(16031, (CStdString)"Party mode found no matching songs. Aborting.");
+        OnError(16031, (string)"Party mode found no matching songs. Aborting.");
         return false;
       }
     }
     else
     {
       pDialog->Close();
-      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
+      OnError(16033, (string)"Party mode could not open database. Aborting.");
       return false;
     }
     db.Close();
@@ -142,7 +142,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CVideoDatabase db;
     if (db.Open())
     {
-      set<CStdString> playlists;
+      set<string> playlists;
       if ( playlistLoaded )
         m_strCurrentFilterVideo = playlist.GetWhereClause(db, playlists);
 
@@ -152,14 +152,14 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
       {
         pDialog->Close();
         db.Close();
-        OnError(16031, (CStdString)"Party mode found no matching songs. Aborting.");
+        OnError(16031, (string)"Party mode found no matching songs. Aborting.");
         return false;
       }
     }
     else
     {
       pDialog->Close();
-      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
+      OnError(16033, (string)"Party mode could not open database. Aborting.");
       return false;
     }
     db.Close();
@@ -348,7 +348,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       bool error(false);
       for (int i = 0; i < iSongsToAdd; i++)
       {
-        pair<CStdString,CStdString> whereClause = GetWhereClauseWithHistory();
+        pair<string,string> whereClause = GetWhereClauseWithHistory();
         CFileItemPtr item(new CFileItem);
         int songID;
         if (database.GetRandomSong(item.get(), songID, whereClause.first))
@@ -366,13 +366,13 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       if (error)
       {
         database.Close();
-        OnError(16034, (CStdString)"Cannot get songs from database. Aborting.");
+        OnError(16034, (string)"Cannot get songs from database. Aborting.");
         return false;
       }
     }
     else
     {
-      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
+      OnError(16033, (string)"Party mode could not open database. Aborting.");
       return false;
     }
     database.Close();
@@ -395,7 +395,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       bool error(false);
       for (int i = 0; i < iVidsToAdd; i++)
       {
-        pair<CStdString,CStdString> whereClause = GetWhereClauseWithHistory();
+        pair<string,string> whereClause = GetWhereClauseWithHistory();
         CFileItemPtr item(new CFileItem);
         int songID;
         if (database.GetRandomMusicVideo(item.get(), songID, whereClause.second))
@@ -413,13 +413,13 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       if (error)
       {
         database.Close();
-        OnError(16034, (CStdString)"Cannot get songs from database. Aborting.");
+        OnError(16034, (string)"Cannot get songs from database. Aborting.");
         return false;
       }
     }
     else
     {
-      OnError(16033, (CStdString)"Party mode could not open database. Aborting.");
+      OnError(16033, (string)"Party mode could not open database. Aborting.");
       return false;
     }
     database.Close();
@@ -504,7 +504,7 @@ void CPartyModeManager::Play(int iPos)
   Process();
 }
 
-void CPartyModeManager::OnError(int iError, const CStdString&  strLogMessage)
+void CPartyModeManager::OnError(int iError, const string&  strLogMessage)
 {
   // open error dialog
   CGUIDialogOK::ShowAndGetInput(257, 16030, iError, 0);
@@ -601,12 +601,12 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 
     vector<pair<int,int> > chosenSongIDs;
     GetRandomSelection(songIDs, iMissingSongs, chosenSongIDs);
-    CStdString sqlWhereMusic = "songview.idSong IN (";
-    CStdString sqlWhereVideo = "idMVideo IN (";
+    string sqlWhereMusic = "songview.idSong IN (";
+    string sqlWhereVideo = "idMVideo IN (";
 
     for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
-      CStdString song = StringUtils::Format("%i,", it->second);
+      string song = StringUtils::Format("%i,", it->second);
       if (it->first == 1)
         sqlWhereMusic += song;
       if (it->first == 2)
@@ -642,7 +642,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
   return true;
 }
 
-pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
+pair<string,string> CPartyModeManager::GetWhereClauseWithHistory() const
 {
   // now add this on to the normal where clause
   std::vector<std::string> historyItemsMusic;

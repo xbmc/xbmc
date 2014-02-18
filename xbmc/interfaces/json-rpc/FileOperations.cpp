@@ -36,9 +36,9 @@ using namespace std;
 using namespace XFILE;
 using namespace JSONRPC;
 
-JSONRPC_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::GetRootDirectory(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CStdString media = parameterObject["media"].asString();
+  string media = parameterObject["media"].asString();
   StringUtils::ToLower(media);
 
   VECSOURCES *sources = CMediaSourceSettings::Get().GetSources(media);
@@ -73,19 +73,19 @@ JSONRPC_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITran
   return OK;
 }
 
-JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::GetDirectory(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CStdString media = parameterObject["media"].asString();
+  string media = parameterObject["media"].asString();
   StringUtils::ToLower(media);
 
   CFileItemList items;
-  CStdString strPath = parameterObject["directory"].asString();
+  string strPath = parameterObject["directory"].asString();
 
   if (!CFileUtils::RemoteAccessAllowed(strPath))
     return InvalidParams;
 
   std::vector<std::string> regexps;
-  CStdString extensions = "";
+  string extensions = "";
   if (StringUtils::EqualsNoCase(media, "video"))
   {
     regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
@@ -161,16 +161,16 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
   return InvalidParams;
 }
 
-JSONRPC_STATUS CFileOperations::GetFileDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::GetFileDetails(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CStdString file = parameterObject["file"].asString();
+  string file = parameterObject["file"].asString();
   if (!CFile::Exists(file))
     return InvalidParams;
 
   if (!CFileUtils::RemoteAccessAllowed(file))
     return InvalidParams;
 
-  CStdString path = URIUtils::GetDirectory(file);
+  string path = URIUtils::GetDirectory(file);
 
   CFileItemList items;
   if (path.empty() || !CDirectory::GetDirectory(path, items) || !items.Contains(file))
@@ -205,7 +205,7 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const CStdString &method, ITransp
   return OK;
 }
 
-JSONRPC_STATUS CFileOperations::PrepareDownload(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::PrepareDownload(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string protocol;
   if (transport->PrepareDownload(parameterObject["path"].asString().c_str(), result["details"], protocol))
@@ -223,12 +223,12 @@ JSONRPC_STATUS CFileOperations::PrepareDownload(const CStdString &method, ITrans
   return InvalidParams;
 }
 
-JSONRPC_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::Download(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return transport->Download(parameterObject["path"].asString().c_str(), result) ? OK : InvalidParams;
 }
 
-bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPtr &item, CStdString media /* = "" */, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
+bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPtr &item, string media /* = "" */, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   if (originalItem.get() == NULL)
     return false;
@@ -237,7 +237,7 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPt
   *item = *originalItem;
 
   bool status = false;
-  CStdString strFilename = originalItem->GetPath();
+  string strFilename = originalItem->GetPath();
   if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFile::Exists(strFilename)))
   {
     if (StringUtils::EqualsNoCase(media, "video"))
@@ -247,7 +247,7 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPt
 
     if (status && item->GetLabel().empty())
     {
-      CStdString label = originalItem->GetLabel();
+      string label = originalItem->GetLabel();
       if (label.empty())
       {
         bool isDir = CDirectory::Exists(strFilename);
@@ -263,7 +263,7 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPt
       if (originalItem->GetLabel().empty())
       {
         bool isDir = CDirectory::Exists(strFilename);
-        CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
+        string label = CUtil::GetTitleFromPath(strFilename, isDir);
         if (label.empty())
           return false;
 
@@ -285,14 +285,14 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
 {
   if (parameterObject.isMember("directory"))
   {
-    CStdString media =  parameterObject["media"].asString();
+    string media =  parameterObject["media"].asString();
     StringUtils::ToLower(media);
 
-    CStdString strPath = parameterObject["directory"].asString();
+    string strPath = parameterObject["directory"].asString();
     if (!strPath.empty())
     {
       CFileItemList items;
-      CStdString extensions = "";
+      string extensions = "";
       std::vector<std::string> regexps;
 
       if (StringUtils::EqualsNoCase(media, "video"))

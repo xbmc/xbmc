@@ -46,11 +46,11 @@ private:
 
   struct CResult
   {
-    CResult(const CStdString& dir, const CStdString& listDir) : m_event(true), m_dir(dir), m_listDir(listDir), m_result(false) {}
+    CResult(const string& dir, const string& listDir) : m_event(true), m_dir(dir), m_listDir(listDir), m_result(false) {}
     CEvent        m_event;
     CFileItemList m_list;
-    CStdString    m_dir;
-    CStdString    m_listDir;
+    string    m_dir;
+    string    m_listDir;
     bool          m_result;
   };
 
@@ -77,7 +77,7 @@ private:
 
 public:
 
-  CGetDirectory(boost::shared_ptr<IDirectory>& imp, const CStdString& dir, const CStdString& listDir)
+  CGetDirectory(boost::shared_ptr<IDirectory>& imp, const string& dir, const string& listDir)
     : m_result(new CResult(dir, listDir))
   {
     m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, m_result)
@@ -117,7 +117,7 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, const CStdString &strMask /*=""*/, int flags /*=DIR_FLAG_DEFAULTS*/, bool allowThreads /* = false */)
+bool CDirectory::GetDirectory(const string& strPath, CFileItemList &items, const string &strMask /*=""*/, int flags /*=DIR_FLAG_DEFAULTS*/, bool allowThreads /* = false */)
 {
   CHints hints;
   hints.flags = flags;
@@ -125,11 +125,11 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
   return GetDirectory(strPath, items, hints, allowThreads);
 }
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, const CHints &hints, bool allowThreads)
+bool CDirectory::GetDirectory(const string& strPath, CFileItemList &items, const CHints &hints, bool allowThreads)
 {
   try
   {
-    CStdString realPath = URIUtils::SubstitutePath(strPath);
+    string realPath = URIUtils::SubstitutePath(strPath);
     boost::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (!pDirectory.get())
       return false;
@@ -244,11 +244,11 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
   return false;
 }
 
-bool CDirectory::Create(const CStdString& strPath)
+bool CDirectory::Create(const string& strPath)
 {
   try
   {
-    CStdString realPath = URIUtils::SubstitutePath(strPath);
+    string realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Create(realPath.c_str()))
@@ -263,11 +263,11 @@ bool CDirectory::Create(const CStdString& strPath)
   return false;
 }
 
-bool CDirectory::Exists(const CStdString& strPath, bool bUseCache /* = true */)
+bool CDirectory::Exists(const string& strPath, bool bUseCache /* = true */)
 {
   try
   {
-    CStdString realPath = URIUtils::SubstitutePath(strPath);
+    string realPath = URIUtils::SubstitutePath(strPath);
     if (bUseCache)
     {
       bool bPathInCache;
@@ -290,11 +290,11 @@ bool CDirectory::Exists(const CStdString& strPath, bool bUseCache /* = true */)
   return false;
 }
 
-bool CDirectory::Remove(const CStdString& strPath)
+bool CDirectory::Remove(const string& strPath)
 {
   try
   {
-    CStdString realPath = URIUtils::SubstitutePath(strPath);
+    string realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Remove(realPath.c_str()))
@@ -312,7 +312,7 @@ bool CDirectory::Remove(const CStdString& strPath)
   return false;
 }
 
-void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &mask)
+void CDirectory::FilterFileDirectories(CFileItemList &items, const string &mask)
 {
   for (int i=0; i< items.Size(); ++i)
   {

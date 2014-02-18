@@ -62,7 +62,7 @@ protected:
   CFileItemList* m_serviceItems;
   std::string    m_currentService;
   std::string    m_status;
-  CStdString     m_strManualSearch;
+  std::string     m_strManualSearch;
   bool           m_pausedOnRun;
   bool           m_updateSubsList; ///< true if we need to update our subs list
 };

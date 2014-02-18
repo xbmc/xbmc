@@ -25,7 +25,7 @@
 //  Purpose:   ATL split string utility
 //  Author:    Paul J. Weiss
 //
-//  Modified to support J O'Leary's CStdString class by kraqh3d
+//  Modified to support J O'Leary's std::string class by kraqh3d
 //
 //------------------------------------------------------------------------
 
@@ -89,12 +89,12 @@ public:
   static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
   static bool EndsWithNoCase(const std::string &str1, const char *s2);
 
-  static CStdString Join(const std::vector<std::string> &strings, const CStdString& delimiter);
+  static std::string Join(const std::vector<std::string> &strings, const std::string& delimiter);
   static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
-  static int FindNumber(const CStdString& strInput, const CStdString &strFind);
+  static int FindNumber(const std::string& strInput, const std::string &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
-  static long TimeStringToSeconds(const CStdString &timeString);
-  static void RemoveCRLF(CStdString& strLine);
+  static long TimeStringToSeconds(const std::string &timeString);
+  static void RemoveCRLF(std::string& strLine);
 
   /*! \brief utf8 version of strlen - skips any non-starting bytes in the count, thus returning the number of utf8 characters
    \param s c-string to find the length of.
@@ -108,21 +108,21 @@ public:
    \return the formatted time
    \sa TIME_FORMAT
    */
-  static CStdString SecondsToTimeString(long seconds, TIME_FORMAT format = TIME_FORMAT_GUESS);
+  static std::string SecondsToTimeString(long seconds, TIME_FORMAT format = TIME_FORMAT_GUESS);
 
   /*! \brief check whether a string is a natural number.
    Matches [ \t]*[0-9]+[ \t]*
    \param str the string to check
    \return true if the string is a natural number, false otherwise.
    */
-  static bool IsNaturalNumber(const CStdString& str);
+  static bool IsNaturalNumber(const std::string& str);
 
   /*! \brief check whether a string is an integer.
    Matches [ \t]*[\-]*[0-9]+[ \t]*
    \param str the string to check
    \return true if the string is an integer, false otherwise.
    */
-  static bool IsInteger(const CStdString& str);
+  static bool IsInteger(const std::string& str);
 
   /* The next several isasciiXX and asciiXXvalue functions are locale independent (US-ASCII only),
    * as opposed to standard ::isXX (::isalpha, ::isdigit...) which are locale dependent.
@@ -149,18 +149,18 @@ public:
   {
     return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr) || isasciidigit(chr); 
   }
-  static CStdString SizeToString(int64_t size);
-  static const CStdString EmptyString;
+  static std::string SizeToString(int64_t size);
+  static const std::string EmptyString;
   static const std::string Empty;
   static size_t FindWords(const char *str, const char *wordLowerCase);
-  static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
-  static int DateStringToYYYYMMDD(const CStdString &dateString);
-  static void WordToDigits(CStdString &word);
-  static CStdString CreateUUID();
-  static bool ValidateUUID(const CStdString &uuid); // NB only validates syntax
-  static double CompareFuzzy(const CStdString &left, const CStdString &right);
-  static int FindBestMatch(const CStdString &str, const std::vector<std::string> &strings, double &matchscore);
-  static bool ContainsKeyword(const CStdString &str, const std::vector<std::string> &keywords);
+  static int FindEndBracket(const std::string &str, char opener, char closer, int startPos = 0);
+  static int DateStringToYYYYMMDD(const std::string &dateString);
+  static void WordToDigits(std::string &word);
+  static std::string CreateUUID();
+  static bool ValidateUUID(const std::string &uuid); // NB only validates syntax
+  static double CompareFuzzy(const std::string &left, const std::string &right);
+  static int FindBestMatch(const std::string &str, const std::vector<std::string> &strings, double &matchscore);
+  static bool ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords);
 
   /*! \brief Escapes the given string to be able to be used as a parameter.
 
@@ -173,5 +173,5 @@ public:
   static std::string Paramify(const std::string &param);
   static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters);
 private:
-  static CStdString m_lastUUID;
+  static std::string m_lastUUID;
 };

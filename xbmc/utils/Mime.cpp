@@ -530,7 +530,7 @@ string CMime::GetMimeType(const string &extension)
 
 string CMime::GetMimeType(const CFileItem &item)
 {
-  CStdString path = item.GetPath();
+  string path = item.GetPath();
   if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().empty())
     path = item.GetVideoInfoTag()->GetPath();
   else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().empty())
@@ -550,7 +550,7 @@ string CMime::GetMimeType(const CURL &url, bool lookup)
     if (!lookup)
       return strMimeType;
 
-    CStdString strmime;
+    string strmime;
     XFILE::CCurlFile::GetMimeType(url, strmime);
 
     // try to get mime-type again but with an NSPlayer User-Agent

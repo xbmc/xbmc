@@ -230,9 +230,9 @@ const BUILT_IN commands[] = {
   { "SetStereoMode",              true,   "Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, monoscopic)" }
 };
 
-bool CBuiltins::HasCommand(const CStdString& execString)
+bool CBuiltins::HasCommand(const string& execString)
 {
-  CStdString function;
+  string function;
   vector<string> parameters;
   CUtil::SplitExecFunction(execString, function, parameters);
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
@@ -243,7 +243,7 @@ bool CBuiltins::HasCommand(const CStdString& execString)
   return false;
 }
 
-void CBuiltins::GetHelp(CStdString &help)
+void CBuiltins::GetHelp(string &help)
 {
   help.clear();
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
@@ -255,15 +255,15 @@ void CBuiltins::GetHelp(CStdString &help)
   }
 }
 
-int CBuiltins::Execute(const CStdString& execString)
+int CBuiltins::Execute(const string& execString)
 {
   // Get the text after the "XBMC."
-  CStdString execute;
+  string execute;
   vector<string> params;
   CUtil::SplitExecFunction(execString, execute, params);
   StringUtils::ToLower(execute);
-  CStdString parameter = params.size() ? params[0] : "";
-  CStdString strParameterCaseIntact = parameter;
+  string parameter = params.size() ? params[0] : "";
+  string strParameterCaseIntact = parameter;
 
   if (StringUtils::EqualsNoCase(execute, "reboot") ||
       StringUtils::EqualsNoCase(execute, "restart") ||
@@ -351,7 +351,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params.size())
     {
       // get the parameters
-      CStdString strSaveToPath = params[0];
+      string strSaveToPath = params[0];
       bool sync = false;
       if (params.size() >= 2)
         sync = StringUtils::EqualsNoCase(params[1], "sync");
@@ -360,7 +360,7 @@ int CBuiltins::Execute(const CStdString& execString)
       {
         if (CDirectory::Exists(strSaveToPath))
         {
-          CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%03d.png"), 999);
+          string file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%03d.png"), 999);
 
           if (!file.empty())
           {
@@ -381,7 +381,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (StringUtils::EqualsNoCase(execute, "activatewindow") || StringUtils::EqualsNoCase(execute, "replacewindow"))
   {
     // get the parameters
-    CStdString strWindow;
+    string strWindow;
     if (params.size())
     {
       strWindow = params[0];
@@ -411,7 +411,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if ((StringUtils::EqualsNoCase(execute, "activatewindowandfocus") || StringUtils::EqualsNoCase(execute, "replacewindowandfocus")) && params.size())
   {
-    CStdString strWindow = params[0];
+    string strWindow = params[0];
 
     // confirm the window destination is valid prior to switching
     int iWindow = CButtonTranslator::TranslateWindow(strWindow);
@@ -443,7 +443,7 @@ int CBuiltins::Execute(const CStdString& execString)
 #if defined(TARGET_DARWIN_OSX)
     if (URIUtils::HasExtension(strParameterCaseIntact, ".applescript|.scpt"))
     {
-      CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
+      string osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
       Cocoa_DoAppleScriptFile(osxPath.c_str());
     }
     else
@@ -459,7 +459,7 @@ int CBuiltins::Execute(const CStdString& execString)
         argv[0] = path[path.size() - 1];
 
       AddonPtr script;
-      CStdString scriptpath(params[0]);
+      string scriptpath(params[0]);
       if (CAddonMgr::Get().GetAddon(params[0], script))
         scriptpath = script->LibPath();
 
@@ -474,7 +474,7 @@ int CBuiltins::Execute(const CStdString& execString)
 #endif
   else if (StringUtils::EqualsNoCase(execute, "stopscript"))
   {
-    CStdString scriptpath(params[0]);
+    string scriptpath(params[0]);
 
     // Test to see if the param is an addon ID
     AddonPtr script;
@@ -515,7 +515,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (StringUtils::EqualsNoCase(execute, "extract") && params.size())
   {
     // Detects if file is zip or rar then extracts
-    CStdString strDestDirect;
+    string strDestDirect;
     if (params.size() < 2)
       strDestDirect = URIUtils::GetDirectory(params[0]);
     else
@@ -556,11 +556,11 @@ int CBuiltins::Execute(const CStdString& execString)
       if (CAddonMgr::Get().GetAddon(params[0],addon) && addon)
       {
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
-        CStdString cmd;
+        string cmd;
         if (plugin && addon->Type() == ADDON_PLUGIN)
         {
-          CStdString addonid = params[0];
-          CStdString urlParameters;
+          string addonid = params[0];
+          string urlParameters;
           std::vector<std::string> parameters;
           if (params.size() == 2 &&
              (StringUtils::StartsWith(params[1], "/") || StringUtils::StartsWith(params[1], "?")))
@@ -675,7 +675,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (item.m_bIsFolder)
     {
       CFileItemList items;
-      CStdString extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.m_musicExtensions;
+      string extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.m_musicExtensions;
       CDirectory::GetDirectory(item.GetPath(),items,extensions);
       
       bool containsMusic = false, containsVideo = false;
@@ -861,7 +861,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (StringUtils::StartsWithNoCase(parameter, "seekpercentage"))
     {
-      CStdString offset = "";
+      string offset = "";
       if (parameter.size() == 14)
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
       else if (parameter.size() < 17) // arg must be at least "(N)"
@@ -890,7 +890,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (StringUtils::StartsWithNoCase(parameter, "partymode"))
     {
-      CStdString strXspPath = "";
+      string strXspPath = "";
       //empty param=music, "music"=music, "video"=video, else xsp path
       PartyModeContext context = PARTYMODECONTEXT_MUSIC;
       if (parameter.size() > 9)
@@ -1013,11 +1013,11 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     // playlist.playoffset(offset)
     // playlist.playoffset(music|video,offset)
-    CStdString strPos = parameter;
+    string strPos = parameter;
     if (params.size() > 1)
     {
       // ignore any other parameters if present
-      CStdString strPlaylist = params[0];
+      string strPlaylist = params[0];
       strPos = params[1];
 
       int iPlaylist = PLAYLIST_NONE;
@@ -1073,12 +1073,12 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
     { // check if shutdown is specified in particular, and get the time for it
-      CStdString strHeading;
+      string strHeading;
       if (StringUtils::EqualsNoCase(parameter, "shutdowntimer"))
         strHeading = g_localizeStrings.Get(20145);
       else
         strHeading = g_localizeStrings.Get(13209);
-      CStdString strTime;
+      string strTime;
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         seconds = static_cast<float>(atoi(strTime.c_str())*60);
       else
@@ -1178,7 +1178,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       for (unsigned int i=0;i<vecTheme.size();++i)
       {
-        CStdString strTmpTheme(CSettings::Get().GetString("lookandfeel.skintheme"));
+        string strTmpTheme(CSettings::Get().GetString("lookandfeel.skintheme"));
         URIUtils::RemoveExtension(strTmpTheme);
         if (StringUtils::EqualsNoCase(vecTheme[i], strTmpTheme))
         {
@@ -1198,13 +1198,13 @@ int CBuiltins::Execute(const CStdString& execString)
     if (iTheme < -1)
       iTheme = vecTheme.size()-1;
 
-    CStdString strSkinTheme = "SKINDEFAULT";
+    string strSkinTheme = "SKINDEFAULT";
     if (iTheme != -1 && iTheme < (int)vecTheme.size())
       strSkinTheme = vecTheme[iTheme];
 
     CSettings::Get().SetString("lookandfeel.skintheme", strSkinTheme);
     // also set the default color theme
-    CStdString colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
+    string colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
     if (StringUtils::EqualsNoCase(colorTheme, "Textures.xml"))
       colorTheme = "defaults.xml";
     CSettings::Get().SetString("lookandfeel.skincolors", colorTheme);
@@ -1227,7 +1227,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
       stringno = CSkinSettings::Get().TranslateString(params[0]);
-    CStdString value = CSkinSettings::Get().GetString(stringno);
+    string value = CSkinSettings::Get().GetString(stringno);
     VECSOURCES localShares;
     g_mediaManager.GetLocalDrives(localShares);
     if (StringUtils::EqualsNoCase(execute, "skin.setstring"))
@@ -1257,7 +1257,7 @@ int CBuiltins::Execute(const CStdString& execString)
       // Note. can only browse one addon type from here
       // if browsing for addons, required param[1] is addontype string, with optional param[2]
       // as contenttype string see IAddon.h & ADDON::TranslateXX
-      CStdString strMask = (params.size() > 1) ? params[1] : "";
+      string strMask = (params.size() > 1) ? params[1] : "";
       StringUtils::ToLower(strMask);
       ADDON::TYPE type;
       if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
@@ -1267,13 +1267,13 @@ int CBuiltins::Execute(const CStdString& execString)
         url.SetHostName("enabled");
         url.SetFileName(strMask+"/");
         localShares.clear();
-        CStdString content = (params.size() > 2) ? params[2] : "";
+        string content = (params.size() > 2) ? params[2] : "";
         StringUtils::ToLower(content);
         url.SetPassword(content);
-        CStdString strMask;
+        string strMask;
         if (type == ADDON_SCRIPT)
           strMask = ".py";
-        CStdString replace;
+        string replace;
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {
           if (StringUtils::StartsWithNoCase(replace, "addons://"))
@@ -1332,7 +1332,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (type != ADDON_UNKNOWN)
         types.push_back(type);
     }
-    CStdString result;
+    string result;
     if (types.size() > 0 && CGUIWindowAddonBrowser::SelectAddonID(types, result, true) == 1)
     {
       CSkinSettings::Get().SetString(stringno, result);
@@ -1437,7 +1437,7 @@ int CBuiltins::Execute(const CStdString& execString)
     int iHeading = 647;
     if (StringUtils::EqualsNoCase(params[0], "music"))
       iHeading = 20196;
-    CStdString path;
+    string path;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     g_mediaManager.GetNetworkLocations(shares);
@@ -1637,7 +1637,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (StringUtils::EqualsNoCase(execute, "addon.default.set") && params.size() == 1)
   {
-    CStdString addonID;
+    string addonID;
     TYPE type = TranslateType(params[0]);
     bool allowNone = false;
     if (type == ADDON_VIZ)
@@ -1694,7 +1694,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (StringUtils::EqualsNoCase(execute, "lirc.send"))
   {
-    CStdString command;
+    string command;
     for (int i = 0; i < (int)params.size(); i++)
     {
       command += params[i];

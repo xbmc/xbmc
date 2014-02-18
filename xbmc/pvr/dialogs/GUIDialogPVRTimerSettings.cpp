@@ -72,7 +72,7 @@ void CGUIDialogPVRTimerSettings::AddChannelNames(CFileItemList &channelsList, SE
 
   for (int i = 0; i < channelsList.Size(); i++)
   {
-    CStdString string;
+    string string;
     CFileItemPtr item = channelsList[i];
     const CPVRChannel *channel = item->GetPVRChannelInfoTag();
     string = StringUtils::Format("%i %s", channel->ChannelNumber(), channel->ChannelName().c_str());
@@ -199,7 +199,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
 
     for (int i = 1; i < 365; ++i)
     {
-      CStdString string = time.GetAsLocalizedDate();
+      string string = time.GetAsLocalizedDate();
       daystrings.push_back(string);
       time += CDateTimeSpan(1, 0, 0, 0);
     }
@@ -238,7 +238,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
 
     for (int i = 1; i < 365; ++i)
     {
-      CStdString string = time.GetAsLocalizedDate();
+      string string = time.GetAsLocalizedDate();
       daystrings.push_back(string);
       time += CDateTimeSpan(1, 0, 0, 0);
     }

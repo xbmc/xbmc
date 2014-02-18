@@ -28,7 +28,7 @@ class CPlayListXML :
 public:
   CPlayListXML(void);
   virtual ~CPlayListXML(void);
-  virtual bool Load(const CStdString& strFileName);
-  virtual void Save(const CStdString& strFileName) const;
+  virtual bool Load(const std::string& strFileName);
+  virtual void Save(const std::string& strFileName) const;
 };
 }

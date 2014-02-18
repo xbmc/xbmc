@@ -42,7 +42,7 @@ CZeroconfDirectory::~CZeroconfDirectory()
 
 namespace
 {
-  CStdString GetHumanReadableProtocol(std::string const& fcr_service_type)
+  string GetHumanReadableProtocol(std::string const& fcr_service_type)
   {
     if(fcr_service_type == "_smb._tcp.")
       return "SAMBA";
@@ -63,7 +63,7 @@ namespace
     //fallback, just return the received type
     return fcr_service_type;
   }
-  bool GetXBMCProtocol(std::string const& fcr_service_type, CStdString& fr_protocol)
+  bool GetXBMCProtocol(std::string const& fcr_service_type, string& fr_protocol)
   {
     if(fcr_service_type == "_smb._tcp.")
       fr_protocol = "smb";
@@ -97,9 +97,9 @@ bool GetDirectoryFromTxtRecords(CZeroconfBrowser::ZeroconfService zeroconf_servi
   //if we have some records
   if(!txtRecords.empty())
   {
-    CStdString path;
-    CStdString username;
-    CStdString password;
+    string path;
+    string username;
+    string password;
   
     //search for a path key entry
     CZeroconfBrowser::ZeroconfService::tTxtRecordMap::iterator it = txtRecords.find(TXT_RECORD_PATH_KEY);
@@ -136,7 +136,7 @@ bool GetDirectoryFromTxtRecords(CZeroconfBrowser::ZeroconfService zeroconf_servi
     if( !path.empty())
     {
       CFileItemPtr item(new CFileItem("", true));
-      CStdString urlStr(url.Get());
+      string urlStr(url.Get());
       //if path has a leading slash (sure it should have one)
       if( path.at(0) == '/' )
       {
@@ -170,10 +170,10 @@ bool GetDirectoryFromTxtRecords(CZeroconfBrowser::ZeroconfService zeroconf_servi
   return ret;
 }
 
-bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CZeroconfDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   assert(strPath.substr(0, 11) == "zeroconf://");
-  CStdString path = strPath.substr(11, strPath.length());
+  string path = strPath.substr(11, strPath.length());
   URIUtils::RemoveSlashAtEnd(path);
   if(path.empty())
   {
@@ -181,18 +181,18 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
     for(std::vector<CZeroconfBrowser::ZeroconfService>::iterator it = found_services.begin(); it != found_services.end(); ++it)
     {
       //only use discovered services we can connect to through directory
-      CStdString tmp;
+      string tmp;
       if(GetXBMCProtocol(it->GetType(), tmp))
       {
         CFileItemPtr item(new CFileItem("", true));
         CURL url;
         url.SetProtocol("zeroconf");
-        CStdString service_path(CURL::Encode(CZeroconfBrowser::ZeroconfService::toPath(*it)));
+        string service_path(CURL::Encode(CZeroconfBrowser::ZeroconfService::toPath(*it)));
         url.SetFileName(service_path);
         item->SetPath(url.Get());
 
         //now do the formatting
-        CStdString protocol = GetHumanReadableProtocol(it->GetType());
+        string protocol = GetHumanReadableProtocol(it->GetType());
         item->SetLabel(it->GetName() + " (" + protocol  + ")");
         item->SetLabelPreformated(true);
         //just set the default folder icon
@@ -205,7 +205,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
   else
   {
     //decode the path first
-    CStdString decoded(CURL::Decode(path));
+    string decoded(CURL::Decode(path));
     try
     {
       CZeroconfBrowser::ZeroconfService zeroconf_service = CZeroconfBrowser::ZeroconfService::fromPath(decoded);
@@ -223,7 +223,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
         service.SetHostName(zeroconf_service.GetIP());
         //do protocol conversion (_smb._tcp -> smb)
         //ToDo: try automatic conversion -> remove leading '_' and '._tcp'?
-        CStdString protocol;
+        string protocol;
         if(!GetXBMCProtocol(zeroconf_service.GetType(), protocol))
         {
           CLog::Log(LOGERROR, "CZeroconfDirectory::GetDirectory Unknown service type (%s), skipping; ", zeroconf_service.GetType().c_str());

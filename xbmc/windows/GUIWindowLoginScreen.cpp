@@ -141,7 +141,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   // this forces only navigation type actions to be performed.
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
-    CStdString actionName = action.GetName();
+    string actionName = action.GetName();
     StringUtils::ToLower(actionName);
     if (actionName.find("shutdown") != std::string::npos)
       CBuiltins::Execute(action.GetName());
@@ -161,7 +161,7 @@ void CGUIWindowLoginScreen::FrameMove()
   if (GetFocusedControlID() == CONTROL_BIG_LIST && g_windowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
-  CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20114), m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
+  string strLabel = StringUtils::Format(g_localizeStrings.Get(20114), m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
@@ -200,7 +200,7 @@ void CGUIWindowLoginScreen::Update()
   {
     const CProfile *profile = CProfilesManager::Get().GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
-    CStdString strLabel;
+    string strLabel;
     if (profile->getDate().empty())
       strLabel = g_localizeStrings.Get(20113);
     else

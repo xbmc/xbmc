@@ -169,7 +169,7 @@ bool CGUILabel::SetStyledText(const vecText &text, const vecColors &colors)
   return true;
 }
 
-bool CGUILabel::SetText(const CStdString &label)
+bool CGUILabel::SetText(const string &label)
 {
   if (m_textLayout.Update(label, m_maxRect.Width(), m_invalid))
   { // needed an update - reset scrolling and update our text layout

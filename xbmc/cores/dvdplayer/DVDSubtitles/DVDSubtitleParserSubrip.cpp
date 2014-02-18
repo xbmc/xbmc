@@ -47,7 +47,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
     return false;
 
   char line[1024];
-  CStdString strLine;
+  string strLine;
 
   while (m_pStream->ReadLine(line, sizeof(line)))
   {

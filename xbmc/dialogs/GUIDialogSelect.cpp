@@ -164,7 +164,7 @@ void CGUIDialogSelect::Reset()
   m_selectedItems->Clear();
 }
 
-int CGUIDialogSelect::Add(const CStdString& strLabel)
+int CGUIDialogSelect::Add(const string& strLabel)
 {
   CFileItemPtr pItem(new CFileItem(strLabel));
   m_vecList->Add(pItem);
@@ -205,7 +205,7 @@ const CFileItemPtr CGUIDialogSelect::GetSelectedItem()
   return m_selectedItems->Size() > 0 ? m_selectedItems->Get(0) : CFileItemPtr(new CFileItem);
 }
 
-const CStdString& CGUIDialogSelect::GetSelectedLabelText()
+const string& CGUIDialogSelect::GetSelectedLabelText()
 {
   return GetSelectedItem()->GetLabel();
 }
@@ -250,7 +250,7 @@ void CGUIDialogSelect::SetSelected(int iSelected)
   m_selectedItems->Add(m_vecList->Get(iSelected));
 }
 
-void CGUIDialogSelect::SetSelected(const CStdString &strSelectedLabel)
+void CGUIDialogSelect::SetSelected(const string &strSelectedLabel)
 {
   if (strSelectedLabel.empty())
     return;
@@ -326,7 +326,7 @@ void CGUIDialogSelect::OnInitWindow()
   }
   m_viewControl.SetCurrentView(m_useDetails ? CONTROL_DETAILS : CONTROL_LIST);
 
-  CStdString items = StringUtils::Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
+  string items = StringUtils::Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES, items);
   
   if (m_multiSelection)

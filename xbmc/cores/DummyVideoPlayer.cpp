@@ -172,17 +172,17 @@ void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   }
 }
 
-void CDummyVideoPlayer::GetAudioInfo(CStdString& strAudioInfo)
+void CDummyVideoPlayer::GetAudioInfo(string& strAudioInfo)
 {
   strAudioInfo = "DummyVideoPlayer - nothing to see here";
 }
 
-void CDummyVideoPlayer::GetVideoInfo(CStdString& strVideoInfo)
+void CDummyVideoPlayer::GetVideoInfo(string& strVideoInfo)
 {
   strVideoInfo = "DummyVideoPlayer - nothing to see here";
 }
 
-void CDummyVideoPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
+void CDummyVideoPlayer::GetGeneralInfo(string& strGeneralInfo)
 {
   strGeneralInfo = "DummyVideoPlayer - what are you still looking for?";
 }
@@ -257,12 +257,12 @@ void CDummyVideoPlayer::ShowOSD(bool bOnoff)
 {
 }
 
-CStdString CDummyVideoPlayer::GetPlayerState()
+string CDummyVideoPlayer::GetPlayerState()
 {
   return "";
 }
 
-bool CDummyVideoPlayer::SetPlayerState(CStdString state)
+bool CDummyVideoPlayer::SetPlayerState(string state)
 {
   return true;
 }
@@ -292,7 +292,7 @@ void CDummyVideoPlayer::Render()
     int mins = (int)(m_clock / 60000);
     int secs = (int)((m_clock / 1000) % 60);
     int ms = (int)(m_clock % 1000);
-    CStdString currentTime = StringUtils::Format("Video goes here %02i:%02i:%03i", mins, secs, ms);
+    string currentTime = StringUtils::Format("Video goes here %02i:%02i:%03i", mins, secs, ms);
     float posX = (vw.x1 + vw.x2) * 0.5f;
     float posY = (vw.y1 + vw.y2) * 0.5f;
     CGUITextLayout::DrawText(font, posX, posY, 0xffffffff, 0, currentTime, XBFONT_CENTER_X | XBFONT_CENTER_Y);

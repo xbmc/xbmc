@@ -129,7 +129,7 @@ bool CPVRRecording::Delete(void)
   return true;
 }
 
-bool CPVRRecording::Rename(const CStdString &strNewName)
+bool CPVRRecording::Rename(const string &strNewName)
 {
   m_strTitle = StringUtils::Format("%s", strNewName.c_str());
   PVR_ERROR error = g_PVRClients->RenameRecording(*this);
@@ -262,11 +262,11 @@ void CPVRRecording::Update(const CPVRRecording &tag)
     m_resumePoint.totalTimeInSeconds = tag.m_resumePoint.totalTimeInSeconds;
   }
 
-  CStdString strShow = StringUtils::Format("%s - ", g_localizeStrings.Get(20364).c_str());
+  string strShow = StringUtils::Format("%s - ", g_localizeStrings.Get(20364).c_str());
   if (StringUtils::StartsWithNoCase(m_strPlotOutline, strShow))
   {
-    CStdString strEpisode = m_strPlotOutline;
-    CStdString strTitle = m_strDirectory;
+    string strEpisode = m_strPlotOutline;
+    string strTitle = m_strDirectory;
     
     size_t pos = strTitle.rfind('/');
     strTitle.erase(0, pos + 1);
@@ -287,10 +287,10 @@ void CPVRRecording::UpdatePath(void)
   }
   else
   {
-    CStdString strTitle(m_strTitle);
-    CStdString strDatetime(m_recordingTime.GetAsSaveString());
-    CStdString strDirectory;
-    CStdString strChannel;
+    string strTitle(m_strTitle);
+    string strDatetime(m_recordingTime.GetAsSaveString());
+    string strDirectory;
+    string strChannel;
     StringUtils::Replace(strTitle, '/',' ');
 
     if (!m_strDirectory.empty())
@@ -309,7 +309,7 @@ const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
   return tmp;
 }
 
-CStdString CPVRRecording::GetTitleFromURL(const CStdString &url)
+string CPVRRecording::GetTitleFromURL(const string &url)
 {
   CRegExp reg(true);
   if (reg.RegComp("pvr://recordings/(.*/)*(.*), TV( \\(.*\\))?, "

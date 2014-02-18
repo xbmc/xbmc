@@ -166,14 +166,14 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     xmlControl->SetAttribute("type", lpszType);
   if (m_controlID != 0)
   {
-    CStdString str = StringUtils::Format("%u", m_controlID);
+    string str = StringUtils::Format("%u", m_controlID);
     xmlControl->SetAttribute("id", str.c_str());
   }
 
   float pct = (float)GetTotalTime() / (float)m_pProfiler->GetTotalTime();
   if (pct > 0.01f)
   {
-    CStdString str = StringUtils::Format("%.0f", pct * 100.0f);
+    string str = StringUtils::Format("%.0f", pct * 100.0f);
     xmlControl->SetAttribute("percent", str.c_str());
   }
 
@@ -190,7 +190,7 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
   unsigned int rend = m_renderTime / 100;
   if (vis || rend)
   {
-    CStdString val;
+    string val;
     TiXmlElement *elem = new TiXmlElement("rendertime");
     xmlControl->LinkEndChild(elem);
     val = StringUtils::Format("%u", rend);
@@ -345,7 +345,7 @@ bool CGUIControlProfiler::SaveResults(void)
   doc.InsertEndChild(decl);
 
   TiXmlElement *root = new TiXmlElement("guicontrolprofiler");
-  CStdString str = StringUtils::Format("%d", m_iFrameCount);
+  string str = StringUtils::Format("%d", m_iFrameCount);
   root->SetAttribute("framecount", str.c_str());
   root->SetAttribute("timeunit", "ms");
   doc.LinkEndChild(root);

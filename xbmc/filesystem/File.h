@@ -102,8 +102,8 @@ public:
   CFile();
   ~CFile();
 
-  bool Open(const CStdString& strFileName, const unsigned int flags = 0);
-  bool OpenForWrite(const CStdString& strFileName, bool bOverWrite = false);
+  bool Open(const std::string& strFileName, const unsigned int flags = 0);
+  bool OpenForWrite(const std::string& strFileName, bool bOverWrite = false);
   unsigned int Read(void* lpBuf, int64_t uiBufSize);
   bool ReadString(char *szLine, int iLineLength);
   int Write(const void* lpBuf, int64_t uiBufSize);
@@ -136,13 +136,13 @@ public:
 
   IFile *GetImplemenation() { return m_pFile; }
 
-  static bool Exists(const CStdString& strFileName, bool bUseCache = true);
-  static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
+  static bool Exists(const std::string& strFileName, bool bUseCache = true);
+  static int  Stat(const std::string& strFileName, struct __stat64* buffer);
   int Stat(struct __stat64 *buffer);
-  static bool Delete(const CStdString& strFileName);
-  static bool Rename(const CStdString& strFileName, const CStdString& strNewFileName);
-  static bool Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
-  static bool SetHidden(const CStdString& fileName, bool hidden);
+  static bool Delete(const std::string& strFileName);
+  static bool Rename(const std::string& strFileName, const std::string& strNewFileName);
+  static bool Cache(const std::string& strFileName, const std::string& strDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
+  static bool SetHidden(const std::string& fileName, bool hidden);
 
 private:
   unsigned int m_flags;
@@ -182,7 +182,7 @@ public:
   CFileStream(int backsize = 0);
   ~CFileStream();
 
-  bool Open(const CStdString& filename);
+  bool Open(const std::string& filename);
   bool Open(const CURL& filename);
   void Close();
 

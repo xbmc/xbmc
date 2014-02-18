@@ -58,7 +58,7 @@ namespace XbmcCommons
   private:
 
     std::string classname;
-    CStdString message;
+    std::string message;
 
   protected:
     static ILogger* logger;

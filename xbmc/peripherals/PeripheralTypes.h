@@ -83,9 +83,9 @@ namespace PERIPHERALS
     std::vector<PeripheralID>                     m_PeripheralID;
     PeripheralBusType                             m_busType;
     PeripheralType                                m_class;
-    CStdString                                    m_strDeviceName;
+    std::string                                    m_strDeviceName;
     PeripheralType                                m_mappedTo;
-    std::map<CStdString, PeripheralDeviceSetting> m_settings;
+    std::map<std::string, PeripheralDeviceSetting> m_settings;
   };
 
   class PeripheralTypeTranslator
@@ -116,7 +116,7 @@ namespace PERIPHERALS
       }
     };
 
-    static PeripheralType GetTypeFromString(const CStdString &strType)
+    static PeripheralType GetTypeFromString(const std::string &strType)
     {
       if (StringUtils::EqualsNoCase(strType, "bluetooth"))
         return PERIPHERAL_BLUETOOTH;
@@ -155,7 +155,7 @@ namespace PERIPHERALS
       }
     };
 
-    static PeripheralBusType GetBusTypeFromString(const CStdString &strType)
+    static PeripheralBusType GetBusTypeFromString(const std::string &strType)
     {
       if (StringUtils::EqualsNoCase(strType, "usb"))
         return PERIPHERAL_BUS_USB;
@@ -176,7 +176,7 @@ namespace PERIPHERALS
       return iVal;
     };
 
-    static void FormatHexString(int iVal, CStdString &strHexString)
+    static void FormatHexString(int iVal, std::string &strHexString)
     {
       if (iVal < 0)
         iVal = 0;
@@ -223,11 +223,11 @@ namespace PERIPHERALS
     }
 
     PeripheralType    m_type;
-    CStdString        m_strLocation;
+    std::string        m_strLocation;
     int               m_iVendorId;
     int               m_iProductId;
     PeripheralType    m_mappedType;
-    CStdString        m_strDeviceName;
+    std::string        m_strDeviceName;
     PeripheralBusType m_busType;
     PeripheralBusType m_mappedBusType;
     unsigned int      m_iSequence; // when more than one adapter of the same type is found
@@ -235,7 +235,7 @@ namespace PERIPHERALS
 
   struct PeripheralScanResults
   {
-    bool GetDeviceOnLocation(const CStdString& strLocation, PeripheralScanResult* result) const
+    bool GetDeviceOnLocation(const std::string& strLocation, PeripheralScanResult* result) const
     {
       for (std::vector<PeripheralScanResult>::const_iterator it = m_results.begin(); it != m_results.end(); it++)
       {

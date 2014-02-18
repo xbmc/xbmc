@@ -259,7 +259,7 @@ bool CGUIWindowPVRTimers::OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON 
       return bReturn;
     CPVRTimerInfoTag *timer = item->GetPVRTimerInfoTag();
 
-    CStdString strNewName(timer->m_strTitle);
+    string strNewName(timer->m_strTitle);
     if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19042), false))
       g_PVRTimers->RenameTimer(*item, strNewName);
   }

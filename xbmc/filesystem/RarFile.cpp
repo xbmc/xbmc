@@ -200,7 +200,7 @@ bool CRarFile::Open(const CURL& url)
       if ((!info || !CFile::Exists(info->m_strCachedPath)) && m_bFileOptions & EXFILE_NOCACHE)
         return false;
       m_bUseFile = true;
-      CStdString strPathInCache;
+      string strPathInCache;
 
       if (!g_RarManager.CacheRarredFile(strPathInCache, m_strRarPath, m_strPathInRar,
                                         EXFILE_AUTODELETE | m_bFileOptions, m_strCacheDir,
@@ -557,8 +557,8 @@ void CRarFile::InitFromUrl(const CURL& url)
     size_t iEqual = (*it).find('=');
     if(iEqual != std::string::npos)
     {
-      CStdString strOption = StringUtils::Left((*it), iEqual);
-      CStdString strValue = StringUtils::Mid((*it), iEqual+1);
+      string strOption = StringUtils::Left((*it), iEqual);
+      string strValue = StringUtils::Mid((*it), iEqual+1);
 
       if( StringUtils::EqualsNoCase(strOption, "flags") )
         m_bFileOptions = atoi(strValue.c_str());
@@ -696,7 +696,7 @@ bool CRarFile::OpenInArchive()
 
       if (m_pArc->GetHeaderType() == FILE_HEAD)
       {
-        CStdString strFileName;
+        string strFileName;
 
         if (wcslen(m_pArc->NewLhd.FileNameW) > 0)
         {

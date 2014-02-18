@@ -31,10 +31,10 @@ CHTMLUtil::CHTMLUtil(void)
 CHTMLUtil::~CHTMLUtil(void)
 {}
 
-int CHTMLUtil::FindTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos) const
+int CHTMLUtil::FindTag(const string& strHTML, const string& strTag, string& strtagFound, int iPos) const
 {
-  CStdString strHTMLLow = strHTML;
-  CStdString strTagLow = strTag;
+  string strHTMLLow = strHTML;
+  string strTagLow = strTag;
   StringUtils::ToLower(strHTMLLow);
   StringUtils::ToLower(strTagLow);
   strtagFound = "";
@@ -51,10 +51,10 @@ int CHTMLUtil::FindTag(const CStdString& strHTML, const CStdString& strTag, CStd
   return iStart;
 }
 
-int CHTMLUtil::FindClosingTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos) const
+int CHTMLUtil::FindClosingTag(const string& strHTML, const string& strTag, string& strtagFound, int iPos) const
 {
-  CStdString strHTMLLow = strHTML;
-  CStdString strTagLow = strTag;
+  string strHTMLLow = strHTML;
+  string strTagLow = strTag;
   StringUtils::ToLower(strHTMLLow);
   StringUtils::ToLower(strTagLow);
   strtagFound = "";
@@ -78,7 +78,7 @@ int CHTMLUtil::FindClosingTag(const CStdString& strHTML, const CStdString& strTa
   return iStart;
 }
 
-void CHTMLUtil::getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue)
+void CHTMLUtil::getValueOfTag(const string& strTagAndValue, string& strValue)
 {
   // strTagAndValue contains:
   // like <a href=blablabla.....>value</a>
@@ -93,7 +93,7 @@ void CHTMLUtil::getValueOfTag(const CStdString& strTagAndValue, CStdString& strV
   }
 }
 
-void CHTMLUtil::getAttributeOfTag(const CStdString& strTagAndValue, const CStdString& strTag, CStdString& strValue)
+void CHTMLUtil::getAttributeOfTag(const string& strTagAndValue, const string& strTag, string& strValue)
 {
   // strTagAndValue contains:
   // like <a href=""value".....
@@ -122,10 +122,10 @@ void CHTMLUtil::getAttributeOfTag(const CStdString& strTagAndValue, const CStdSt
   }
 }
 
-void CHTMLUtil::RemoveTags(CStdString& strHTML)
+void CHTMLUtil::RemoveTags(string& strHTML)
 {
   int iNested = 0;
-  CStdString strReturn = "";
+  string strReturn = "";
   for (int i = 0; i < (int) strHTML.size(); ++i)
   {
     if (strHTML[i] == '<') iNested++;

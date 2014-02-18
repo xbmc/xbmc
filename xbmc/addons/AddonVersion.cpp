@@ -31,7 +31,7 @@ using namespace std;
 
 namespace ADDON
 {
-  AddonVersion::AddonVersion(const CStdString& version)
+  AddonVersion::AddonVersion(const string& version)
   {
     m_originalVersion = version;
     if (m_originalVersion.empty())
@@ -131,13 +131,13 @@ namespace ADDON
     return m_originalVersion.empty() || m_originalVersion == "0.0.0";
   }
 
-  CStdString AddonVersion::Print() const
+  string AddonVersion::Print() const
   {
     return StringUtils::Format("%s %s", g_localizeStrings.Get(24051).c_str(), m_originalVersion.c_str());
   }
 
-  bool AddonVersion::SplitFileName(CStdString& ID, CStdString& version,
-                                   const CStdString& filename)
+  bool AddonVersion::SplitFileName(string& ID, string& version,
+                                   const string& filename)
   {
     size_t dpos = filename.rfind("-");
     if (dpos == std::string::npos)

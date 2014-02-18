@@ -35,9 +35,9 @@ CGUIString::CGUIString(iString start, iString end, bool carriageReturn)
   m_carriageReturn = carriageReturn;
 }
 
-CStdString CGUIString::GetAsString() const
+string CGUIString::GetAsString() const
 {
-  CStdString text;
+  string text;
   for (unsigned int i = 0; i < m_text.size(); i++)
     text += (char)(m_text[i] & 0xff);
   return text;
@@ -215,7 +215,7 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
   m_font->End();
 }
 
-bool CGUITextLayout::Update(const CStdString &text, float maxWidth, bool forceUpdate /*= false*/, bool forceLTRReadingOrder /*= false*/)
+bool CGUITextLayout::Update(const string &text, float maxWidth, bool forceUpdate /*= false*/, bool forceLTRReadingOrder /*= false*/)
 {
   if (text == m_lastUtf8Text && !forceUpdate)
     return false;
@@ -325,7 +325,7 @@ wstring CGUITextLayout::BidiFlip(const wstring &text, bool forceLTRReadingOrder)
   return visualText;
 }
 
-void CGUITextLayout::Filter(CStdString &text)
+void CGUITextLayout::Filter(string &text)
 {
   wstring utf16;
   utf8ToW(text, utf16);
@@ -438,7 +438,7 @@ void CGUITextLayout::ParseText(const wstring &text, uint32_t defaultStyle, color
         newColor = colorStack.top();
         colorTagChange = true;
       }
-      if (finish != CStdString::npos)
+      if (finish != string::npos)
         pos = finish + 1;
     }
 
@@ -627,7 +627,7 @@ float CGUITextLayout::GetTextWidth(const wstring &text) const
   return m_font->GetTextWidth(utf32);
 }
 
-void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align)
+void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const string &text, uint32_t align)
 {
   if (!font) return;
   vecText utf32;
@@ -643,7 +643,7 @@ void CGUITextLayout::AppendToUTF32(const wstring &utf16, character_t colStyle, v
     utf32.push_back(utf16[i] | colStyle);
 }
 
-void CGUITextLayout::utf8ToW(const CStdString &utf8, wstring &utf16)
+void CGUITextLayout::utf8ToW(const string &utf8, wstring &utf16)
 {
 #ifdef WORK_AROUND_NEEDED_FOR_LINE_BREAKS
   // NOTE: This appears to strip \n characters from text.  This may be a consequence of incorrect
@@ -665,7 +665,7 @@ void CGUITextLayout::utf8ToW(const CStdString &utf8, wstring &utf16)
 #endif
 }
 
-void CGUITextLayout::AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32)
+void CGUITextLayout::AppendToUTF32(const string &utf8, character_t colStyle, vecText &utf32)
 {
   wstring utf16;
   utf8ToW(utf8, utf16);

@@ -66,7 +66,7 @@ void CEdl::Clear()
   m_iTotalCutTime = 0;
 }
 
-bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameRate, const int iHeight)
+bool CEdl::ReadEditDecisionLists(const string& strMovie, const float fFrameRate, const int iHeight)
 {
   /*
    * The frame rate hints returned from ffmpeg for the video stream do not appear to take into
@@ -173,11 +173,11 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
   return bFound;
 }
 
-bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadEdl(const string& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
-  CStdString edlFilename(URIUtils::ReplaceExtension(strMovie, ".edl"));
+  string edlFilename(URIUtils::ReplaceExtension(strMovie, ".edl"));
   if (!CFile::Exists(edlFilename))
     return false;
 
@@ -331,11 +331,11 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
   }
 }
 
-bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadComskip(const string& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
-  CStdString comskipFilename(URIUtils::ReplaceExtension(strMovie, ".txt"));
+  string comskipFilename(URIUtils::ReplaceExtension(strMovie, ".txt"));
   if (!CFile::Exists(comskipFilename))
     return false;
 
@@ -411,7 +411,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
   }
 }
 
-bool CEdl::ReadVideoReDo(const CStdString& strMovie)
+bool CEdl::ReadVideoReDo(const string& strMovie)
 {
   /*
    * VideoReDo file is strange. Tags are XML like, but it isn't an XML file.
@@ -420,7 +420,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
    */
 
   Clear();
-  CStdString videoReDoFilename(URIUtils::ReplaceExtension(strMovie, ".Vprj"));
+  string videoReDoFilename(URIUtils::ReplaceExtension(strMovie, ".Vprj"));
   if (!CFile::Exists(videoReDoFilename))
     return false;
 
@@ -502,11 +502,11 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
   }
 }
 
-bool CEdl::ReadBeyondTV(const CStdString& strMovie)
+bool CEdl::ReadBeyondTV(const string& strMovie)
 {
   Clear();
 
-  CStdString beyondTVFilename(URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml"));
+  string beyondTVFilename(URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml"));
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
@@ -585,7 +585,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
   }
 }
 
-bool CEdl::ReadPvr(const CStdString &strMovie)
+bool CEdl::ReadPvr(const string &strMovie)
 {
   if (!PVR::g_PVRManager.IsStarted())
   {
@@ -771,7 +771,7 @@ bool CEdl::WriteMPlayerEdl()
     return false;
   }
 
-  CStdString strBuffer;
+  string strBuffer;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     /*
@@ -794,7 +794,7 @@ bool CEdl::WriteMPlayerEdl()
   return true;
 }
 
-CStdString CEdl::GetMPlayerEdl()
+string CEdl::GetMPlayerEdl()
 {
   return MPLAYER_EDL_FILENAME;
 }
@@ -853,9 +853,9 @@ bool CEdl::HasSceneMarker()
   return !m_vecSceneMarkers.empty();
 }
 
-CStdString CEdl::GetInfo()
+string CEdl::GetInfo()
 {
-  CStdString strInfo = "";
+  string strInfo = "";
   if (HasCut())
   {
     int cutCount = 0, muteCount = 0, commBreakCount = 0;
@@ -951,14 +951,14 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneM
   return bFound;
 }
 
-CStdString CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
+string CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
 {
-  CStdString strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
+  string strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
   strTimeString += StringUtils::Format(".%03i", iMilliseconds % 1000);
   return strTimeString;
 }
 
-bool CEdl::ReadMythCommBreakList(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadMythCommBreakList(const string& strMovie, const float fFramesPerSecond)
 {
   /*
    * Exists() sets up all the internal bits needed for GetCommBreakList().
@@ -1008,7 +1008,7 @@ bool CEdl::ReadMythCommBreakList(const CStdString& strMovie, const float fFrames
   }
 }
 
-bool CEdl::ReadMythCutList(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadMythCutList(const string& strMovie, const float fFramesPerSecond)
 {
   /*
    * Exists() sets up all the internal bits needed for GetCutList().

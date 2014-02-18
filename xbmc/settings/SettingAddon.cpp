@@ -60,7 +60,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
   }
     
   bool ok = false;
-  CStdString strAddonType;
+  string strAddonType;
   const TiXmlNode *constraints = node->FirstChild("constraints");
   if (constraints != NULL)
   {

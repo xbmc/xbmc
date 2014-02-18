@@ -24,7 +24,7 @@
 //  Purpose:   ATL split string utility
 //  Author:    Paul J. Weiss
 //
-//  Modified to use J O'Leary's CStdString class by kraqh3d
+//  Modified to use J O'Leary's string class by kraqh3d
 //
 //------------------------------------------------------------------------
 
@@ -45,9 +45,9 @@ using namespace std;
 const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
 
 /* empty string for use in returns by ref */
-const CStdString StringUtils::EmptyString = "";
+const string StringUtils::EmptyString = "";
 const std::string StringUtils::Empty = "";
-CStdString StringUtils::m_lastUUID = "";
+string StringUtils::m_lastUUID = "";
 
 string StringUtils::Format(const char *fmt, ...)
 {
@@ -476,9 +476,9 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
   return true;
 }
 
-CStdString StringUtils::Join(const vector<string> &strings, const CStdString& delimiter)
+string StringUtils::Join(const vector<string> &strings, const string& delimiter)
 {
-  CStdString result = "";
+  string result = "";
   for(vector<string>::const_iterator it = strings.begin(); it != strings.end(); it++ )
     result += (*it) + (std::string) delimiter;
   
@@ -550,7 +550,7 @@ vector<string> StringUtils::Split(const std::string& input, const std::string& d
 }
 
 // returns the number of occurrences of strFind in strInput.
-int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFind)
+int StringUtils::FindNumber(const string& strInput, const string &strFind)
 {
   size_t pos = strInput.find(strFind, 0);
   int numfound = 0;
@@ -628,7 +628,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *rig
   return 0; // files are the same
 }
 
-int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
+int StringUtils::DateStringToYYYYMMDD(const string &dateString)
 {
   std::vector<std::string> days = StringUtils::Split(dateString, "-");
   if (days.size() == 1)
@@ -641,9 +641,9 @@ int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
     return -1;
 }
 
-long StringUtils::TimeStringToSeconds(const CStdString &timeString)
+long StringUtils::TimeStringToSeconds(const string &timeString)
 {
-  CStdString strCopy(timeString);
+  string strCopy(timeString);
   StringUtils::Trim(strCopy);
   if(StringUtils::EndsWithNoCase(strCopy, " min"))
   {
@@ -663,7 +663,7 @@ long StringUtils::TimeStringToSeconds(const CStdString &timeString)
   }
 }
 
-CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
+string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 {
   int hh = lSeconds / 3600;
   lSeconds = lSeconds % 3600;
@@ -672,7 +672,7 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 
   if (format == TIME_FORMAT_GUESS)
     format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
-  CStdString strHMS;
+  string strHMS;
   if (format & TIME_FORMAT_HH)
     strHMS += StringUtils::Format("%02.2i", hh);
   else if (format & TIME_FORMAT_H)
@@ -684,7 +684,7 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
   return strHMS;
 }
 
-bool StringUtils::IsNaturalNumber(const CStdString& str)
+bool StringUtils::IsNaturalNumber(const string& str)
 {
   size_t i = 0, n = 0;
   // allow whitespace,digits,whitespace
@@ -699,7 +699,7 @@ bool StringUtils::IsNaturalNumber(const CStdString& str)
   return i == str.size() && n > 0;
 }
 
-bool StringUtils::IsInteger(const CStdString& str)
+bool StringUtils::IsInteger(const string& str)
 {
   size_t i = 0, n = 0;
   // allow whitespace,-,digits,whitespace
@@ -738,14 +738,14 @@ int StringUtils::asciixdigitvalue(char chr)
 }
 
 
-void StringUtils::RemoveCRLF(CStdString& strLine)
+void StringUtils::RemoveCRLF(string& strLine)
 {
   StringUtils::TrimRight(strLine, "\n\r");
 }
 
-CStdString StringUtils::SizeToString(int64_t size)
+string StringUtils::SizeToString(int64_t size)
 {
-  CStdString strLabel;
+  string strLabel;
   const char prefixes[] = {' ','k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
   unsigned int i = 0;
   double s = (double)size;
@@ -836,11 +836,11 @@ size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
     // and repeat until we're done
   } while (*s);
 
-  return CStdString::npos;
+  return string::npos;
 }
 
 // assumes it is called from after the first open bracket is found
-int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer, int startPos)
+int StringUtils::FindEndBracket(const string &str, char opener, char closer, int startPos)
 {
   int blocks = 1;
   for (unsigned int i = startPos; i < str.size(); i++)
@@ -855,10 +855,10 @@ int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer,
     }
   }
 
-  return (int)CStdString::npos;
+  return (int)string::npos;
 }
 
-void StringUtils::WordToDigits(CStdString &word)
+void StringUtils::WordToDigits(string &word)
 {
   static const char word_to_letter[] = "22233344455566677778889999";
   StringUtils::ToLower(word);
@@ -876,7 +876,7 @@ void StringUtils::WordToDigits(CStdString &word)
   }
 }
 
-CStdString StringUtils::CreateUUID()
+string StringUtils::CreateUUID()
 {
   /* This function generate a DCE 1.1, ISO/IEC 11578:1996 and IETF RFC-4122
   * Version 4 conform local unique UUID based upon random number generation.
@@ -923,19 +923,19 @@ CStdString StringUtils::CreateUUID()
   return UuidStrTmp;
 }
 
-bool StringUtils::ValidateUUID(const CStdString &uuid)
+bool StringUtils::ValidateUUID(const string &uuid)
 {
   CRegExp guidRE;
   guidRE.RegComp(ADDON_GUID_RE);
   return (guidRE.RegFind(uuid.c_str()) == 0);
 }
 
-double StringUtils::CompareFuzzy(const CStdString &left, const CStdString &right)
+double StringUtils::CompareFuzzy(const string &left, const string &right)
 {
   return (0.5 + fstrcmp(left.c_str(), right.c_str(), 0.0) * (left.length() + right.length())) / 2.0;
 }
 
-int StringUtils::FindBestMatch(const CStdString &str, const std::vector<std::string> &strings, double &matchscore)
+int StringUtils::FindBestMatch(const string &str, const std::vector<std::string> &strings, double &matchscore)
 {
   int best = -1;
   matchscore = 0;
@@ -954,7 +954,7 @@ int StringUtils::FindBestMatch(const CStdString &str, const std::vector<std::str
   return best;
 }
 
-bool StringUtils::ContainsKeyword(const CStdString &str, const std::vector<std::string> &keywords)
+bool StringUtils::ContainsKeyword(const string &str, const std::vector<std::string> &keywords)
 {
   for (std::vector<std::string>::const_iterator it = keywords.begin(); it != keywords.end(); it++)
   {

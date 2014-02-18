@@ -72,7 +72,7 @@ bool CRTVFile::Open(const char* strHostName, const char* strFileName, int iport)
   m_iport = iport;
 
   // Allow for ReplayTVs on ports other than 80
-  CStdString strHostAndPort;
+  string strHostAndPort;
   strHostAndPort = strHostName;
   if (iport)
   {

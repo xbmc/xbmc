@@ -135,7 +135,7 @@ private:
 
   static FT_Error MyFaceRequester(FTC_FaceID face_id, FT_Library library, FT_Pointer request_data, FT_Face *aface);
 
-  CStdString          m_teletextFont;     /* Path to teletext font */
+  std::string          m_teletextFont;     /* Path to teletext font */
   int                 m_YOffset;          /* Swap position for Front buffer and Back buffer */
   color_t            *m_TextureBuffer;    /* Texture buffer to hold generated data */
   bool                m_updateTexture;    /* Update the texture if set */

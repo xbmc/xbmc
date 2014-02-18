@@ -29,14 +29,13 @@ namespace XFILE
   public:
     CStackDirectory();
     ~CStackDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
-    static CStdString GetStackedTitlePath(const CStdString &strPath);
-    static CStdString GetStackedTitlePath(const CStdString &strPath, VECCREGEXP& RegExps);
-    static CStdString GetFirstStackedFile(const CStdString &strPath);
-    static bool GetPaths(const CStdString& strPath, std::vector<std::string>& vecPaths);
-    static CStdString ConstructStackPath(const CFileItemList& items, const std::vector<int> &stack);
-    static bool ConstructStackPath(const std::vector<std::string> &paths, CStdString &stackedPath);
+    virtual bool GetDirectory(const std::string& strPath, CFileItemList& items);
+    virtual bool IsAllowed(const std::string &strFile) const { return true; };
+    static std::string GetStackedTitlePath(const std::string &strPath);
+    static std::string GetStackedTitlePath(const std::string &strPath, VECCREGEXP& RegExps);
+    static std::string GetFirstStackedFile(const std::string &strPath);
+    static bool GetPaths(const std::string& strPath, std::vector<std::string>& vecPaths);
+    static std::string ConstructStackPath(const CFileItemList& items, const std::vector<int> &stack);
     static bool ConstructStackPath(const std::vector<std::string> &paths, std::string &stackedPath);
   };
 }

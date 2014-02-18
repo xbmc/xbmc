@@ -86,7 +86,7 @@ CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
   return NULL;
 }
 
-bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir)
+bool CPluginDirectory::StartScript(const string& strPath, bool retrievingDir)
 {
   CURL url(strPath);
 
@@ -98,13 +98,13 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   }
 
   // get options
-  CStdString options = url.GetOptions();
+  string options = url.GetOptions();
   URIUtils::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
                                     // is needed for all others, as XBMC adds slashes to "folders"
   url.SetOptions(""); // do this because we can then use the url to generate the basepath
                       // which is passed to the plugin (and represents the share)
 
-  CStdString basePath(url.Get());
+  string basePath(url.Get());
   // reset our wait event, and grab a new handle
   m_fetchComplete.Reset();
   int handle = getNewHandle(this);
@@ -119,7 +119,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   m_totalItems = 0;
 
   // setup our parameters to send the script
-  CStdString strHandle = StringUtils::Format("%i", handle);
+  string strHandle = StringUtils::Format("%i", handle);
   vector<string> argv;
   argv.push_back(basePath);
   argv.push_back(strHandle);
@@ -128,11 +128,11 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
   bool success = false;
-  CStdString file = m_addon->LibPath();
+  string file = m_addon->LibPath();
   int id = CScriptInvocationManager::Get().Execute(file, m_addon, argv);
   if (id >= 0)
   { // wait for our script to finish
-    CStdString scriptName = m_addon->Name();
+    string scriptName = m_addon->Name();
     success = WaitOnScriptResult(file, id, scriptName, retrievingDir);
   }
   else
@@ -144,7 +144,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   return success;
 }
 
-bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &resultItem)
+bool CPluginDirectory::GetPluginResult(const string& strPath, CFileItem &resultItem)
 {
   CURL url(strPath);
   CPluginDirectory* newDir = new CPluginDirectory();
@@ -215,7 +215,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   dir->m_fetchComplete.Set();
 }
 
-void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const CStdString &label2Mask)
+void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const string &label2Mask)
 {
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);
@@ -345,8 +345,8 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
       }
     case SORT_METHOD_PLAYLIST_ORDER:
       {
-        CStdString strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-        CStdString strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
+        string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
+        string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
 
         dir->m_listItems->AddSortMethod(SortByPlaylistOrder, 559, LABEL_MASKS(strTrackLeft, strTrackRight));
         break;
@@ -403,7 +403,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
   }
 }
 
-bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
+bool CPluginDirectory::GetDirectory(const string& strPath, CFileItemList& items)
 {
   CURL url(strPath);
 
@@ -415,7 +415,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   return success;
 }
 
-bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
+bool CPluginDirectory::RunScriptWithParams(const string& strPath)
 {
   CURL url(strPath);
   if (url.GetHostName().empty()) // called with no script - should never happen
@@ -429,16 +429,16 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   }
 
   // options
-  CStdString options = url.GetOptions();
+  string options = url.GetOptions();
   URIUtils::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
                                     // is needed for all others, as XBMC adds slashes to "folders"
   url.SetOptions(""); // do this because we can then use the url to generate the basepath
                       // which is passed to the plugin (and represents the share)
 
-  CStdString basePath(url.Get());
+  string basePath(url.Get());
 
   // setup our parameters to send the script
-  CStdString strHandle = StringUtils::Format("%i", -1);
+  string strHandle = StringUtils::Format("%i", -1);
   vector<string> argv;
   argv.push_back(basePath);
   argv.push_back(strHandle);
@@ -454,7 +454,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   return false;
 }
 
-bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, int scriptId, const CStdString &scriptName, bool retrievingDir)
+bool CPluginDirectory::WaitOnScriptResult(const string &scriptPath, int scriptId, const string &scriptName, bool retrievingDir)
 {
   const unsigned int timeBeforeProgressBar = 1500;
   const unsigned int timeToKillScript = 1000;
@@ -559,7 +559,7 @@ void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem 
   dir->m_fetchComplete.Set();
 }
 
-CStdString CPluginDirectory::GetSetting(int handle, const CStdString &strID)
+string CPluginDirectory::GetSetting(int handle, const string &strID)
 {
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);
@@ -569,7 +569,7 @@ CStdString CPluginDirectory::GetSetting(int handle, const CStdString &strID)
     return "";
 }
 
-void CPluginDirectory::SetSetting(int handle, const CStdString &strID, const CStdString &value)
+void CPluginDirectory::SetSetting(int handle, const string &strID, const string &value)
 {
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);
@@ -577,7 +577,7 @@ void CPluginDirectory::SetSetting(int handle, const CStdString &strID, const CSt
     dir->m_addon->UpdateSetting(strID, value);
 }
 
-void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
+void CPluginDirectory::SetContent(int handle, const string &strContent)
 {
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);
@@ -585,7 +585,7 @@ void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
     dir->m_listItems->SetContent(strContent);
 }
 
-void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue)
+void CPluginDirectory::SetProperty(int handle, const string &strProperty, const string &strValue)
 {
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);

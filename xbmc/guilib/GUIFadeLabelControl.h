@@ -52,7 +52,7 @@ public:
 
 protected:
   virtual bool UpdateColors();
-  virtual CStdString GetDescription() const;
+  virtual std::string GetDescription() const;
   void AddLabel(const std::string &label);
 
   /*! \brief retrieve the current label for display
@@ -63,7 +63,7 @@ protected:
 
    \return the label that should be displayed.  If empty, there is no label available.
    */
-  CStdString GetLabel();
+  std::string GetLabel();
 
   std::vector< CGUIInfoLabel > m_infoLabels;
   unsigned int m_currentLabel;

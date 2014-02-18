@@ -25,7 +25,7 @@
 using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_TITLE_MOVIES, strName, pParent)
 {
 

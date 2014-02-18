@@ -47,7 +47,7 @@ bool SoLoader::Load()
   if (m_soHandle != NULL)
     return true;
 
-  CStdString strFileName= CSpecialProtocol::TranslatePath(GetFileName());
+  string strFileName= CSpecialProtocol::TranslatePath(GetFileName());
   int flags = RTLD_LAZY;
   if (strFileName == "xbmc.so")
   {

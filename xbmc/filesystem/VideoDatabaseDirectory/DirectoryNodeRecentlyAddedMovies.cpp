@@ -24,7 +24,7 @@
 using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeRecentlyAddedMovies::CDirectoryNodeRecentlyAddedMovies(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeRecentlyAddedMovies::CDirectoryNodeRecentlyAddedMovies(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_RECENTLY_ADDED_MOVIES, strName, pParent)
 {
 

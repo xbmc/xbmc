@@ -121,7 +121,7 @@ typedef struct
   unsigned int dwMessage;
   unsigned int dwParam1;
   unsigned int dwParam2;
-  CStdString strParam;
+  std::string strParam;
   std::vector<std::string> params;
   boost::shared_ptr<CEvent> waitEvent;
   void* lpVoid;
@@ -209,7 +209,7 @@ public:
   void ActivateScreensaver();
   void SwitchToFullscreen(); //
   void Minimize(bool wait = false);
-  void ExecOS(const CStdString &command, bool waitExit = false);
+  void ExecOS(const std::string &command, bool waitExit = false);
   void UserEvent(int code);
   //! \brief Set the tag for the currently playing song
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag& tag);
@@ -223,13 +223,13 @@ public:
   bool CECActivateSource();
   bool CECStandby();
 
-  CStdString GetResponse();
-  int SetResponse(CStdString response);
-  void ExecBuiltIn(const CStdString &command, bool wait = false);
+  std::string GetResponse();
+  int SetResponse(std::string response);
+  void ExecBuiltIn(const std::string &command, bool wait = false);
 
   void NetworkMessage(unsigned int dwMessage, unsigned int dwParam = 0);
 
-  void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
+  void DoModal(CGUIDialog *pDialog, int iWindowID, const std::string &param = "");
   void Show(CGUIDialog *pDialog);
   void Close(CGUIWindow *window, bool forceClose, bool waitResult = true, int nextWindowID = 0, bool enableSound = true);
   void ActivateWindow(int windowID, const std::vector<std::string> &params, bool swappingWindows);
@@ -251,7 +251,7 @@ public:
 
   void ShowVolumeBar(bool up);
 
-  void SetSplashMessage(const CStdString& message);
+  void SetSplashMessage(const std::string& message);
   void SetSplashMessage(int stringID);
   
   bool SetupDisplay();
@@ -271,7 +271,7 @@ private:
   std::queue<ThreadMessage*> m_vecWindowMessages;
   CCriticalSection m_critSection;
   CCriticalSection m_critBuffer;
-  CStdString bufferResponse;
+  std::string bufferResponse;
 };
 
 XBMC_GLOBAL_REF(CApplicationMessenger,s_messenger);

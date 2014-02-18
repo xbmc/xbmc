@@ -69,7 +69,7 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
   // We only handle "select" if a song is selected
   if ( m_songSelected )
   {
-    CStdString path = m_karaokeSong.strFileName;
+    string path = m_karaokeSong.strFileName;
     CFileItemPtr pItem( new CFileItem( path, false) );
     m_songSelected = false;
 
@@ -170,7 +170,7 @@ void CGUIDialogKaraokeSongSelector::UpdateData()
   if ( m_updateData )
   {
     // Update on-screen labels
-    CStdString message = StringUtils::Format("%06d", m_selectedNumber);
+    string message = StringUtils::Format("%06d", m_selectedNumber);
     message = g_localizeStrings.Get(179) + ": " + message; // Translated "Song"
 
     SET_CONTROL_LABEL(CONTROL_LABEL_SONGNUMBER, message);
@@ -252,7 +252,7 @@ void CGUIDialogKaraokeSongSelector::OnDeinitWindow(int nextWindowID)
 }
 
 
-void CGUIDialogKaraokeSongSelectorSmall::DoModal(unsigned int startcode, int iWindowID, const CStdString & param)
+void CGUIDialogKaraokeSongSelectorSmall::DoModal(unsigned int startcode, int iWindowID, const string & param)
 {
   m_songSelected = false;
   m_selectedNumber = 0;
@@ -262,7 +262,7 @@ void CGUIDialogKaraokeSongSelectorSmall::DoModal(unsigned int startcode, int iWi
 }
 
 
-void CGUIDialogKaraokeSongSelectorLarge::DoModal(int iWindowID, const CStdString & param)
+void CGUIDialogKaraokeSongSelectorLarge::DoModal(int iWindowID, const string & param)
 {
   m_songSelected = false;
   m_selectedNumber = 0;

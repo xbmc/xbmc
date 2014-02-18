@@ -431,7 +431,7 @@ typedef struct TextCacheStruct_t
   short           pop, gpop, drcs, gdrcs;
   unsigned short *ColorTable;
 
-  CStdString      line30;
+  std::string      line30;
 } TextCacheStruct_t;
 
 /* struct for all Information needed for Page Rendering */

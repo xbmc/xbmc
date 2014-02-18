@@ -51,9 +51,9 @@ float square_error(float x, float y)
   return std::max(yonx, xony);
 }
 
-static CStdString ModeFlagsToString(unsigned int flags, bool identifier)
+static string ModeFlagsToString(unsigned int flags, bool identifier)
 {
-  CStdString res;
+  string res;
   if(flags & D3DPRESENTFLAG_INTERLACED)
     res += "i";
   else

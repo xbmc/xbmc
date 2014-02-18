@@ -36,7 +36,7 @@ CMusicInfoTagLoaderNSF::~CMusicInfoTagLoaderNSF()
 {
 }
 
-int CMusicInfoTagLoaderNSF::GetStreamCount(const CStdString& strFileName)
+int CMusicInfoTagLoaderNSF::GetStreamCount(const string& strFileName)
 {
   if (!m_dll.Load())
     return 0;
@@ -53,7 +53,7 @@ int CMusicInfoTagLoaderNSF::GetStreamCount(const CStdString& strFileName)
   return result;
 }
 
-bool CMusicInfoTagLoaderNSF::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
+bool CMusicInfoTagLoaderNSF::Load(const string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   tag.SetLoaded(false);
 

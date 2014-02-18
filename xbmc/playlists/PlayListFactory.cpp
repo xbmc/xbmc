@@ -31,7 +31,7 @@
 using namespace std;
 using namespace PLAYLIST;
 
-CPlayList* CPlayListFactory::Create(const CStdString& filename)
+CPlayList* CPlayListFactory::Create(const string& filename)
 {
   CFileItem item(filename,false);
   return Create(item);
@@ -45,7 +45,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
     if (item.GetMimeType().empty())
       const_cast<CFileItem&>(item).FillInMimeType();
 
-    CStdString strMimeType = item.GetMimeType();
+    string strMimeType = item.GetMimeType();
     StringUtils::ToLower(strMimeType);
 
     if (strMimeType == "video/x-ms-asf"
@@ -73,7 +73,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
       return new CPlayListWPL();
   }
 
-  CStdString extension = URIUtils::GetExtension(item.GetPath());
+  string extension = URIUtils::GetExtension(item.GetPath());
   StringUtils::ToLower(extension);
 
   if (extension == ".m3u" || extension == ".strm")
@@ -106,7 +106,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
 bool CPlayListFactory::IsPlaylist(const CFileItem& item)
 {
-  CStdString strMimeType = item.GetMimeType();
+  string strMimeType = item.GetMimeType();
   StringUtils::ToLower(strMimeType);
 
 /* These are abit uncertain 
@@ -133,7 +133,7 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
   return IsPlaylist(item.GetPath());
 }
 
-bool CPlayListFactory::IsPlaylist(const CStdString& filename)
+bool CPlayListFactory::IsPlaylist(const string& filename)
 {
   return URIUtils::HasExtension(filename,
                      ".m3u|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml");

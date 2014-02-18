@@ -28,9 +28,9 @@ namespace XFILE
     public:
       CHTTPDirectory(void);
       virtual ~CHTTPDirectory(void);
-      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+      virtual bool GetDirectory(const std::string& strPath, CFileItemList &items);
       virtual bool Exists(const char* strPath);
-      virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
+      virtual DIR_CACHE_TYPE GetCacheType(const std::string& strPath) const { return DIR_CACHE_ONCE; };
     private:
   };
 }

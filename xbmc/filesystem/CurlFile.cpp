@@ -71,7 +71,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if ((g_advancedSettings.m_extraLogLevels & LOGCURL) == 0)
     return 0;
 
-  CStdString strLine;
+  string strLine;
   strLine.append(output, size);
   std::vector<std::string> vecLines;
   StringUtils::Tokenize(strLine, vecLines, "\r\n");
@@ -451,7 +451,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // set username and password for current handle
   if (m_username.length() > 0 && m_password.length() > 0)
   {
-    CStdString userpwd = m_username + ":" + m_password;
+    string userpwd = m_username + ":" + m_password;
     g_curlInterface.easy_setopt(h, CURLOPT_USERPWD, userpwd.c_str());
   }
 
@@ -467,8 +467,8 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
 
   // Enable cookie engine for current handle to re-use them in future requests
-  CStdString strCookieFile;
-  CStdString strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.m_cachePath);
+  string strCookieFile;
+  string strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.m_cachePath);
   strCookieFile = URIUtils::AddFileToFolder(strTempPath, "cookies.dat");
 
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, strCookieFile.c_str());
@@ -621,7 +621,7 @@ void CCurlFile::SetRequestHeaders(CReadState* state)
   MAPHTTPHEADERS::iterator it;
   for(it = m_requestheaders.begin(); it != m_requestheaders.end(); it++)
   {
-    CStdString buffer = it->first + ": " + it->second;
+    string buffer = it->first + ": " + it->second;
     state->m_curlHeaderList = g_curlInterface.slist_append(state->m_curlHeaderList, buffer.c_str());
   }
 
@@ -646,7 +646,7 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
   if (StringUtils::EqualsNoCase(h.GetMimeType(),"text/html")
   &&  !h.GetValue("Content-Disposition").empty() )
   {
-    CStdString strValue = h.GetValue("Content-Disposition");
+    string strValue = h.GetValue("Content-Disposition");
     if (strValue.find("filename=") != std::string::npos &&
         strValue.find(".flv") != std::string::npos)
       h.AddParam("Content-Type", "video/flv");
@@ -655,7 +655,7 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
 
 void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 {
-  CStdString strProtocol = url2.GetTranslatedProtocol();
+  string strProtocol = url2.GetTranslatedProtocol();
   url2.SetProtocol(strProtocol);
 
   if( StringUtils::EqualsNoCase(strProtocol, "ftp")
@@ -675,7 +675,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     /* url encoded. if handed from ftpdirectory */
     /* it won't be so let's handle that case    */
 
-    CStdString filename(url2.GetFileName());
+    string filename(url2.GetFileName());
     std::vector<std::string> array;
 
     // if server sent us the filename in non-utf8, we need send back with same encoding.
@@ -739,17 +739,17 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_password = url2.GetPassWord();
 
     // handle any protocol options
-    std::map<CStdString, CStdString> options;
+    std::map<string, string> options;
     url2.GetProtocolOptions(options);
     if (options.size() > 0)
     {
       // clear protocol options
       url2.SetProtocolOptions("");
       // set xbmc headers
-      for(std::map<CStdString, CStdString>::const_iterator it = options.begin(); it != options.end(); ++it)
+      for(std::map<string, string>::const_iterator it = options.begin(); it != options.end(); ++it)
       {
-        const CStdString &name = it->first;
-        const CStdString &value = it->second;
+        const string &name = it->first;
+        const string &value = it->second;
 
         if(StringUtils::EqualsNoCase(name, "auth"))
         {
@@ -785,7 +785,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_url = url2.Get();
 }
 
-void CCurlFile::SetStreamProxy(const CStdString &proxy, ProxyType type)
+void CCurlFile::SetStreamProxy(const string &proxy, ProxyType type)
 {
   CURL url(proxy);
   m_proxy = url.GetWithoutUserDetails();
@@ -796,21 +796,21 @@ void CCurlFile::SetStreamProxy(const CStdString &proxy, ProxyType type)
   CLog::Log(LOGDEBUG, "Overriding proxy from URL parameter: %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
 }
 
-bool CCurlFile::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
+bool CCurlFile::Post(const string& strURL, const string& strPostData, string& strHTML)
 {
   m_postdata = strPostData;
   m_postdataset = true;
   return Service(strURL, strHTML);
 }
 
-bool CCurlFile::Get(const CStdString& strURL, CStdString& strHTML)
+bool CCurlFile::Get(const string& strURL, string& strHTML)
 {
   m_postdata = "";
   m_postdataset = false;
   return Service(strURL, strHTML);
 }
 
-bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
+bool CCurlFile::Service(const string& strURL, string& strHTML)
 {
   if (Open(strURL))
   {
@@ -824,7 +824,7 @@ bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
   return false;
 }
 
-bool CCurlFile::ReadData(CStdString& strHTML)
+bool CCurlFile::ReadData(string& strHTML)
 {
   int size_read = 0;
   int data_size = 0;
@@ -841,11 +841,11 @@ bool CCurlFile::ReadData(CStdString& strHTML)
   return true;
 }
 
-bool CCurlFile::Download(const CStdString& strURL, const CStdString& strFileName, LPDWORD pdwSize)
+bool CCurlFile::Download(const string& strURL, const string& strFileName, LPDWORD pdwSize)
 {
   CLog::Log(LOGINFO, "CCurlFile::Download - %s->%s", strURL.c_str(), strFileName.c_str());
 
-  CStdString strData;
+  string strData;
   if (!Get(strURL, strData))
     return false;
 
@@ -871,7 +871,7 @@ bool CCurlFile::Download(const CStdString& strURL, const CStdString& strFileName
 // Detect whether we are "online" or not! Very simple and dirty!
 bool CCurlFile::IsInternet(bool checkDNS /* = true */)
 {
-  CStdString strURL = "http://www.google.com";
+  string strURL = "http://www.google.com";
   if (!checkDNS)
     strURL = "http://74.125.19.103"; // www.google.com ip
 
@@ -1553,12 +1553,12 @@ void CCurlFile::ClearRequestHeaders()
   m_requestheaders.clear();
 }
 
-void CCurlFile::SetRequestHeader(CStdString header, CStdString value)
+void CCurlFile::SetRequestHeader(string header, string value)
 {
   m_requestheaders[header] = value;
 }
 
-void CCurlFile::SetRequestHeader(CStdString header, long value)
+void CCurlFile::SetRequestHeader(string header, long value)
 {
   m_requestheaders[header] = StringUtils::Format("%ld", value);
 }
@@ -1591,7 +1591,7 @@ bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   }
 }
 
-bool CCurlFile::GetMimeType(const CURL &url, CStdString &content, CStdString useragent)
+bool CCurlFile::GetMimeType(const CURL &url, string &content, string useragent)
 {
   CCurlFile file;
   if (!useragent.empty())

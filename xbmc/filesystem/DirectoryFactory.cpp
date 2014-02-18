@@ -123,7 +123,7 @@ using namespace XFILE;
  \return IDirectory object to access the directories on the share.
  \sa IDirectory
  */
-IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
+IDirectory* CDirectoryFactory::Create(const string& strPath)
 {
   CURL url(strPath);
   if (!CWakeOnAccess::Get().WakeUpHost(url))
@@ -134,7 +134,7 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (pDir)
     return pDir;
 
-  CStdString strProtocol = url.GetProtocol();
+  string strProtocol = url.GetProtocol();
 
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "special") return new CSpecialProtocolDirectory();

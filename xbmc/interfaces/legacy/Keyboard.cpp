@@ -45,7 +45,7 @@ namespace XBMCAddon
       DelayedCallGuard dg(languageHook);
       // using keyboardfactory method to get native keyboard if there is.
       strText = strDefault;
-      CStdString text(strDefault);
+      string text(strDefault);
       bConfirmed = CGUIKeyboardFactory::ShowAndGetInput(text, strHeading, true, bHidden, autoclose * 1000);
       strText = text;
     }

@@ -150,7 +150,7 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin(void)
   pSpin->AddLabel("-", EPG_SEARCH_UNSET);
   for (int i = 1; i < 12*60/5; i++)
   {
-    CStdString string;
+    string string;
     string = StringUtils::Format(g_localizeStrings.Get(14044), i*5);
     pSpin->AddLabel(string, i*5);
   }
@@ -165,7 +165,7 @@ void CGUIDialogPVRGuideSearch::UpdateDurationSpin(void)
   pSpin->AddLabel("-", EPG_SEARCH_UNSET);
   for (int i = 1; i < 12*60/5; i++)
   {
-    CStdString string;
+    string string;
     string = StringUtils::Format(g_localizeStrings.Get(14044), i*5);
     pSpin->AddLabel(string, i*5);
   }
@@ -231,7 +231,7 @@ void CGUIDialogPVRGuideSearch::OnWindowLoaded()
   return CGUIDialog::OnWindowLoaded();
 }
 
-void CGUIDialogPVRGuideSearch::ReadDateTime(const CStdString &strDate, const CStdString &strTime, CDateTime &dateTime) const
+void CGUIDialogPVRGuideSearch::ReadDateTime(const string &strDate, const string &strTime, CDateTime &dateTime) const
 {
   int iHours, iMinutes;
   sscanf(strTime.c_str(), "%d:%d", &iHours, &iMinutes);
@@ -241,7 +241,7 @@ void CGUIDialogPVRGuideSearch::ReadDateTime(const CStdString &strDate, const CSt
 
 void CGUIDialogPVRGuideSearch::OnSearch()
 {
-  CStdString              strTmp;
+  string              strTmp;
   CGUISpinControlEx      *pSpin;
   CGUIEditControl        *pEdit;
   CGUIRadioButtonControl *pRadioButton;

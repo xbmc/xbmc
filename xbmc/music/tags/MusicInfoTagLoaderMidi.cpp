@@ -44,11 +44,11 @@ CMusicInfoTagLoaderMidi::~CMusicInfoTagLoaderMidi()
 // A good intention of creating a pattern-based artist/song recognition engine failed greatly. Simple formats
 // like %A-%T fail greatly with artists like A-HA and songs like "Ob-la-Di ob-la-Da.mid". So if anyone has
 // a good idea which would include cases from above, I'd be happy to hear about it.
-bool CMusicInfoTagLoaderMidi::Load(const CStdString & strFileName, CMusicInfoTag & tag, EmbeddedArt *art)
+bool CMusicInfoTagLoaderMidi::Load(const string & strFileName, CMusicInfoTag & tag, EmbeddedArt *art)
 {
   tag.SetURL(strFileName);
 
-  CStdString path, title;
+  string path, title;
   URIUtils::Split( strFileName, path, title);
   URIUtils::RemoveExtension( title );
 
@@ -58,7 +58,7 @@ bool CMusicInfoTagLoaderMidi::Load(const CStdString & strFileName, CMusicInfoTag
 
   if ( !path.empty() )
   {
-    CStdString artist = URIUtils::GetFileName( path );
+    string artist = URIUtils::GetFileName( path );
     if ( !artist.empty() )
       tag.SetArtist( artist );
   }

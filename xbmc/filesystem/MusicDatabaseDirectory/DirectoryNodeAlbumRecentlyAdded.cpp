@@ -26,7 +26,7 @@
 using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeAlbumRecentlyAdded::CDirectoryNodeAlbumRecentlyAdded(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeAlbumRecentlyAdded::CDirectoryNodeAlbumRecentlyAdded(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_ALBUM_RECENTLY_ADDED, strName, pParent)
 {
 
@@ -40,7 +40,7 @@ NODE_TYPE CDirectoryNodeAlbumRecentlyAdded::GetChildType() const
   return NODE_TYPE_SONG;
 }
 
-CStdString CDirectoryNodeAlbumRecentlyAdded::GetLocalizedName() const
+string CDirectoryNodeAlbumRecentlyAdded::GetLocalizedName() const
 {
   if (GetID() == -1)
     return g_localizeStrings.Get(15102); // All Albums
@@ -66,7 +66,7 @@ bool CDirectoryNodeAlbumRecentlyAdded::GetContent(CFileItemList& items) const
   for (int i=0; i<(int)albums.size(); ++i)
   {
     CAlbum& album=albums[i];
-    CStdString strDir = StringUtils::Format("%s%ld/", BuildPath().c_str(), album.idAlbum);
+    string strDir = StringUtils::Format("%s%ld/", BuildPath().c_str(), album.idAlbum);
     CFileItemPtr pItem(new CFileItem(strDir, album));
     items.Add(pItem);
   }

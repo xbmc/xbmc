@@ -68,7 +68,7 @@ bool CDAVFile::Execute(const CURL& url)
 
   if (lastResponseCode == 207)
   {
-    CStdString strResponse;
+    string strResponse;
     ReadData(strResponse);
 
     CXBMCTinyXML davResponse;
@@ -87,7 +87,7 @@ bool CDAVFile::Execute(const CURL& url)
     {
       if (CDAVCommon::ValueWithoutNamespace(pChild, "response"))
       {
-        CStdString sRetCode = CDAVCommon::GetStatusTag(pChild->ToElement());
+        string sRetCode = CDAVCommon::GetStatusTag(pChild->ToElement());
         CRegExp rxCode;
         rxCode.RegComp("HTTP/1\\.1\\s(\\d+)\\s.*"); 
         if (rxCode.RegFind(sRetCode) >= 0)
@@ -113,7 +113,7 @@ bool CDAVFile::Delete(const CURL& url)
     return false;
 
   CDAVFile dav;
-  CStdString strRequest = "DELETE";
+  string strRequest = "DELETE";
 
   dav.SetCustomRequest(strRequest);
  
@@ -136,10 +136,10 @@ bool CDAVFile::Rename(const CURL& url, const CURL& urlnew)
   CDAVFile dav;
 
   CURL url2(urlnew);
-  CStdString strProtocol = url2.GetTranslatedProtocol();
+  string strProtocol = url2.GetTranslatedProtocol();
   url2.SetProtocol(strProtocol);
 
-  CStdString strRequest = "MOVE";
+  string strRequest = "MOVE";
   dav.SetCustomRequest(strRequest);
   dav.SetRequestHeader("Destination", url2.GetWithoutUserDetails());
 

@@ -31,7 +31,7 @@ public:
   virtual ~CHTMLRow(void);
   int GetColumns() const;
   const std::string& GetColumValue(int iColumn) const;
-  void Parse(const CStdString& strTableRow);
+  void Parse(const std::string& strTableRow);
 
 protected:
   std::vector<std::string> m_vecColums;
@@ -42,7 +42,7 @@ class CHTMLTable
 public:
   CHTMLTable(void);
   virtual ~CHTMLTable(void);
-  void Parse(const CStdString& strHTML);
+  void Parse(const std::string& strHTML);
   int GetRows() const;
   const CHTMLRow& GetRow(int iRow) const;
 protected:

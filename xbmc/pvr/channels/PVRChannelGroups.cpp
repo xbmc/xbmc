@@ -99,14 +99,14 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
   return true;
 }
 
-CFileItemPtr CPVRChannelGroups::GetByPath(const CStdString &strPath) const
+CFileItemPtr CPVRChannelGroups::GetByPath(const string &strPath) const
 {
   // get the filename from curl
   CURL url(strPath);
-  CStdString strFileName = url.GetFileName();
+  string strFileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(strFileName);
 
-  CStdString strCheckPath;
+  string strCheckPath;
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
     // check if the path matches
@@ -136,7 +136,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetById(int iGroupId) const
   return empty;
 }
 
-CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const CStdString &strName) const
+CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const string &strName) const
 {
   CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
@@ -347,7 +347,7 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
   int iReturn(0);
   CSingleLock lock(m_critSection);
 
-  CStdString strPath;
+  string strPath;
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
     strPath = StringUtils::Format("channels/%s/%i", m_bRadio ? "radio" : "tv", (*it)->GroupID());
@@ -426,7 +426,7 @@ void CPVRChannelGroups::SetSelectedGroup(CPVRChannelGroupPtr group)
   group->Renumber();
 }
 
-bool CPVRChannelGroups::AddGroup(const CStdString &strName)
+bool CPVRChannelGroups::AddGroup(const string &strName)
 {
   bool bPersist(false);
   CPVRChannelGroupPtr group;

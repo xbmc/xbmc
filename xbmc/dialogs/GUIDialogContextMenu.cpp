@@ -63,14 +63,14 @@ using namespace std;
 #define BUTTON_START          1001
 #define BUTTON_END            (BUTTON_START + (int)m_buttons.size() - 1)
 
-void CContextButtons::Add(unsigned int button, const CStdString &label)
+void CContextButtons::Add(unsigned int button, const string &label)
 {
-  push_back(pair<unsigned int, CStdString>(button, label));
+  push_back(pair<unsigned int, string>(button, label));
 }
 
 void CContextButtons::Add(unsigned int button, int label)
 {
-  push_back(pair<unsigned int, CStdString>(button, g_localizeStrings.Get(label)));
+  push_back(pair<unsigned int, string>(button, g_localizeStrings.Get(label)));
 }
 
 CGUIDialogContextMenu::CGUIDialogContextMenu(void)
@@ -286,7 +286,7 @@ float CGUIDialogContextMenu::GetWidth() const
     return CGUIDialog::GetWidth();
 }
 
-bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY)
+bool CGUIDialogContextMenu::SourcesMenu(const string &strType, const CFileItemPtr item, float posX, float posY)
 {
   // TODO: This should be callable even if we don't have any valid items
   if (!item)
@@ -302,7 +302,7 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
   return false;
 }
 
-void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFileItemPtr item, CContextButtons &buttons)
+void CGUIDialogContextMenu::GetContextButtons(const string &type, const CFileItemPtr item, CContextButtons &buttons)
 {
   // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
   if (item && item->IsRemovable())
@@ -381,7 +381,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     buttons.Add(CONTEXT_BUTTON_REACTIVATE_LOCK, 12353);
 }
 
-bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileItemPtr item, CONTEXT_BUTTON button)
+bool CGUIDialogContextMenu::OnContextButton(const string &type, const CFileItemPtr item, CONTEXT_BUTTON button)
 {
   // Add Source doesn't require a valid share
   if (button == CONTEXT_BUTTON_ADD_SOURCE)
@@ -453,7 +453,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     // prompt user if they want to really delete the source
     if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
     { // check default before we delete, as deletion will kill the share object
-      CStdString defaultSource(GetDefaultShareNameByType(type));
+      string defaultSource(GetDefaultShareNameByType(type));
       if (!defaultSource.empty())
       {
         if (StringUtils::EqualsNoCase(share->strName, defaultSource))
@@ -508,7 +508,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         items.Add(current);
       }
       // see if there's a local thumb for this item
-      CStdString folderThumb = item->GetFolderThumb();
+      string folderThumb = item->GetFolderThumb();
       if (XFILE::CFile::Exists(folderThumb))
       {
         CFileItemPtr local(new CFileItem("thumb://Local", false));
@@ -522,7 +522,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       nothumb->SetLabel(g_localizeStrings.Get(20018));
       items.Add(nothumb);
 
-      CStdString strThumb;
+      string strThumb;
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares);
       if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
@@ -560,7 +560,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
-      CStdString strNewPassword = "";
+      string strNewPassword = "";
       if (!CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPassword))
         return false;
       // password entry and re-entry succeeded, write out the lock data
@@ -622,8 +622,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
-      CStdString strNewPW;
-      CStdString strNewLockMode;
+      string strNewPW;
+      string strNewLockMode;
       if (CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW))
         strNewLockMode = StringUtils::Format("%i",share->m_iLockMode);
       else
@@ -643,7 +643,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   return false;
 }
 
-CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFileItem *item)
+CMediaSource *CGUIDialogContextMenu::GetShare(const string &type, const CFileItem *item)
 {
   VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(type);
   if (!shares || !item) return NULL;
@@ -707,10 +707,10 @@ void CGUIDialogContextMenu::OnDeinitWindow(int nextWindowID)
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
-CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &strType)
+string CGUIDialogContextMenu::GetDefaultShareNameByType(const string &strType)
 {
   VECSOURCES *pShares = CMediaSourceSettings::Get().GetSources(strType);
-  CStdString strDefault = CMediaSourceSettings::Get().GetDefaultSource(strType);
+  string strDefault = CMediaSourceSettings::Get().GetDefaultSource(strType);
 
   if (!pShares) return "";
 
@@ -722,18 +722,18 @@ CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &st
   return pShares->at(iIndex).strName;
 }
 
-void CGUIDialogContextMenu::SetDefault(const CStdString &strType, const CStdString &strDefault)
+void CGUIDialogContextMenu::SetDefault(const string &strType, const string &strDefault)
 {
   CMediaSourceSettings::Get().SetDefaultSource(strType, strDefault);
   CMediaSourceSettings::Get().Save();
 }
 
-void CGUIDialogContextMenu::ClearDefault(const CStdString &strType)
+void CGUIDialogContextMenu::ClearDefault(const string &strType)
 {
   SetDefault(strType, "");
 }
 
-void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdString& strPath)
+void CGUIDialogContextMenu::SwitchMedia(const string& strType, const string& strPath)
 {
   // create menu
   CContextButtons choices;

@@ -618,7 +618,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
 
   const TiXmlElement *effect = node->FirstChildElement("effect");
 
-  CStdString type = node->FirstChild()->Value();
+  string type = node->FirstChild()->Value();
   m_type = ANIM_TYPE_CONDITIONAL;
   if (effect) // new layout
     type = node->Attribute("type");
@@ -651,7 +651,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   if (!effect)
   { // old layout:
     // <animation effect="fade" start="0" end="100" delay="10" time="2000" condition="blahdiblah" reversible="false">focus</animation>
-    CStdString type = node->Attribute("effect");
+    string type = node->Attribute("effect");
     AddEffect(type, node, rect);
   }
   while (effect)
@@ -660,13 +660,13 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
     //   <effect type="fade" start="0" end="100" delay="10" time="2000" />
     //   ...
     // </animation>
-    CStdString type = effect->Attribute("type");
+    string type = effect->Attribute("type");
     AddEffect(type, effect, rect);
     effect = effect->NextSiblingElement("effect");
   }
 }
 
-void CAnimation::AddEffect(const CStdString &type, const TiXmlElement *node, const CRect &rect)
+void CAnimation::AddEffect(const string &type, const TiXmlElement *node, const CRect &rect)
 {
   CAnimEffect *effect = NULL;
   if (StringUtils::EqualsNoCase(type, "fade"))

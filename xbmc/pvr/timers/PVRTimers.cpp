@@ -123,7 +123,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
           if (bStateChanged && g_PVRManager.IsStarted())
           {
-            CStdString strMessage;
+            string strMessage;
             existingTimer->GetNotificationText(strMessage);
             timerNotifications.push_back(strMessage);
           }
@@ -158,7 +158,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
         if (g_PVRManager.IsStarted())
         {
-          CStdString strMessage;
+          string strMessage;
           newTimer->GetNotificationText(strMessage);
           timerNotifications.push_back(strMessage);
         }
@@ -186,7 +186,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
         if (g_PVRManager.IsStarted())
         {
-          CStdString strMessage;
+          string strMessage;
           strMessage = StringUtils::Format("%s: '%s'",
                                            (timer->EndAsUTC() <= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()) ?
                                            g_localizeStrings.Get(19227).c_str() :
@@ -394,13 +394,13 @@ bool CPVRTimers::HasActiveTimers(void) const
   return false;
 }
 
-bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items) const
+bool CPVRTimers::GetDirectory(const string& strPath, CFileItemList &items) const
 {
-  CStdString base(strPath);
+  string base(strPath);
   URIUtils::RemoveSlashAtEnd(base);
 
   CURL url(strPath);
-  CStdString fileName = url.GetFileName();
+  string fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
 
   if (fileName == "timers")
@@ -552,7 +552,7 @@ bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */)
   return tag->DeleteFromClient(bForce);
 }
 
-bool CPVRTimers::RenameTimer(CFileItem &item, const CStdString &strNewName)
+bool CPVRTimers::RenameTimer(CFileItem &item, const string &strNewName)
 {
   /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())

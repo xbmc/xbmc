@@ -197,7 +197,7 @@ void SetSFXExt(wchar *SFXName)
 
 char *GetExt(const char *Name)
 {
-  CStdString strExtension = URIUtils::GetExtension(Name);
+  string strExtension = URIUtils::GetExtension(Name);
   return((char *)strstr((char *)Name,strExtension.c_str()));
 }
 

@@ -39,7 +39,7 @@ CMultiPathFile::~CMultiPathFile(void)
 bool CMultiPathFile::Open(const CURL& url)
 {
   // grab the filename off the url
-  CStdString path, fileName;
+  string path, fileName;
   URIUtils::Split(url.Get(), path, fileName);
   vector<string> vecPaths;
   if (!CMultiPathDirectory::GetPaths(path, vecPaths))
@@ -47,7 +47,7 @@ bool CMultiPathFile::Open(const CURL& url)
 
   for (unsigned int i = 0; i < vecPaths.size(); i++)
   {
-    CStdString filePath = vecPaths[i];
+    string filePath = vecPaths[i];
     filePath = URIUtils::AddFileToFolder(filePath, fileName);
     if (m_file.Open(filePath))
       return true;
@@ -58,7 +58,7 @@ bool CMultiPathFile::Open(const CURL& url)
 bool CMultiPathFile::Exists(const CURL& url)
 {
   // grab the filename off the url
-  CStdString path, fileName;
+  string path, fileName;
   URIUtils::Split(url.Get(), path, fileName);
   vector<string> vecPaths;
   if (!CMultiPathDirectory::GetPaths(path, vecPaths))
@@ -66,7 +66,7 @@ bool CMultiPathFile::Exists(const CURL& url)
 
   for (unsigned int i = 0; i < vecPaths.size(); i++)
   {
-    CStdString filePath = vecPaths[i];
+    string filePath = vecPaths[i];
     filePath = URIUtils::AddFileToFolder(filePath, fileName);
     if (CFile::Exists(filePath))
       return true;
@@ -77,7 +77,7 @@ bool CMultiPathFile::Exists(const CURL& url)
 int CMultiPathFile::Stat(const CURL& url, struct __stat64* buffer)
 {
   // grab the filename off the url
-  CStdString path, fileName;
+  string path, fileName;
   URIUtils::Split(url.Get(), path, fileName);
   vector<string> vecPaths;
   if (!CMultiPathDirectory::GetPaths(path, vecPaths))
@@ -85,7 +85,7 @@ int CMultiPathFile::Stat(const CURL& url, struct __stat64* buffer)
 
   for (unsigned int i = 0; i < vecPaths.size(); i++)
   {
-    CStdString filePath = vecPaths[i];
+    string filePath = vecPaths[i];
     filePath = URIUtils::AddFileToFolder(filePath, fileName);
     int ret = CFile::Stat(filePath, buffer);
     if (ret == 0)

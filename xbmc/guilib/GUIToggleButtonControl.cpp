@@ -147,7 +147,7 @@ void CGUIToggleButtonControl::SetAltLabel(const string &label)
     m_selectButton.SetLabel(label);
 }
 
-CStdString CGUIToggleButtonControl::GetDescription() const
+string CGUIToggleButtonControl::GetDescription() const
 {
   if (m_bSelected)
     return m_selectButton.GetDescription();
@@ -168,7 +168,7 @@ void CGUIToggleButtonControl::OnClick()
     CGUIButtonControl::OnClick();
 }
 
-void CGUIToggleButtonControl::SetToggleSelect(const CStdString &toggleSelect)
+void CGUIToggleButtonControl::SetToggleSelect(const string &toggleSelect)
 {
   m_toggleSelect = g_infoManager.Register(toggleSelect, GetParentID());
 }

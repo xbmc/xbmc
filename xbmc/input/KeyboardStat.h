@@ -51,7 +51,7 @@ public:
   const CKey ProcessKeyDown(XBMC_keysym& keysym);
   void       ProcessKeyUp(void);
 
-  CStdString GetKeyName(int KeyID);
+  std::string GetKeyName(int KeyID);
 
 private:
   bool LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode);

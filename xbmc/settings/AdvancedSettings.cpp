@@ -408,11 +408,11 @@ void CAdvancedSettings::Initialize()
   m_extraLogLevels = 0;
 
   #if defined(TARGET_DARWIN)
-    CStdString logDir = getenv("HOME");
+    string logDir = getenv("HOME");
     #if defined(TARGET_DARWIN_OSX)
     logDir += "/Library/Logs/";
     #else // ios/atv2
-    logDir += "/" + CStdString(DarwinGetXbmcRootFolder()) + "/";
+    logDir += "/" + string(DarwinGetXbmcRootFolder()) + "/";
     #endif
     m_logFolder = logDir;
   #else
@@ -442,7 +442,7 @@ bool CAdvancedSettings::Load()
   return true;
 }
 
-void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
+void CAdvancedSettings::ParseSettingsFile(const string &file)
 {
   CXBMCTinyXML advancedXML;
   if (!CFile::Exists(file))
@@ -961,7 +961,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
-  CStdString tmp;
+  string tmp;
   if (XMLUtils::GetPath(pRootElement, "cachepath", tmp))
     m_cachePath = tmp;
   URIUtils::AddSlashAtEnd(m_cachePath);
@@ -1005,7 +1005,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     TiXmlNode* pSubstitute = pPathSubstitution->FirstChildElement("substitute");
     while (pSubstitute)
     {
-      CStdString strFrom, strTo;
+      string strFrom, strTo;
       TiXmlNode* pFrom = pSubstitute->FirstChild("from");
       if (pFrom)
         strFrom = CSpecialProtocol::TranslatePath(pFrom->FirstChild()->Value()).c_str();
@@ -1073,8 +1073,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     TiXmlElement* element = pHostEntries->FirstChildElement("entry");
     while(element)
     {
-      CStdString name  = element->Attribute("name");
-      CStdString value;
+      string name  = element->Attribute("name");
+      string value;
       if(element->GetText())
         value = element->GetText();
 
@@ -1240,18 +1240,18 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
         int iDefaultSeason = 1;
         if (pRegExp->ToElement())
         {
-          CStdString byDate = pRegExp->ToElement()->Attribute("bydate");
+          string byDate = pRegExp->ToElement()->Attribute("bydate");
           if(stricmp(byDate.c_str(), "true") == 0)
           {
             bByDate = true;
           }
-          CStdString defaultSeason = pRegExp->ToElement()->Attribute("defaultseason");
+          string defaultSeason = pRegExp->ToElement()->Attribute("defaultseason");
           if(!defaultSeason.empty())
           {
             iDefaultSeason = atoi(defaultSeason.c_str());
           }
         }
-        CStdString regExp = pRegExp->FirstChild()->Value();
+        string regExp = pRegExp->FirstChild()->Value();
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp,iDefaultSeason));
         else
@@ -1292,7 +1292,7 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, std::vector
     {
       if (pRegExp->FirstChild())
       {
-        CStdString regExp = pRegExp->FirstChild()->Value();
+        string regExp = pRegExp->FirstChild()->Value();
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, regExp);
         else
@@ -1305,9 +1305,9 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, std::vector
   }
 }
 
-void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions)
+void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, string& extensions)
 {
-  CStdString extraExtensions;
+  string extraExtensions;
   if (XMLUtils::GetString(pRootElement, "add", extraExtensions) && !extraExtensions.empty())
     extensions += "|" + extraExtensions;
   if (XMLUtils::GetString(pRootElement, "remove", extraExtensions) && !extraExtensions.empty())
@@ -1323,7 +1323,7 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
   }
 }
 
-void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
+void CAdvancedSettings::AddSettingsFile(const string &filename)
 {
   m_settingsFiles.push_back(filename);
 }
@@ -1364,7 +1364,7 @@ void CAdvancedSettings::SetExtraLogsFromAddon(ADDON::IAddon* addon)
   m_extraLogLevels = 0;
   for (int i=LOGMASKBIT;i<31;++i)
   {
-    CStdString str = StringUtils::Format("bit%i", i-LOGMASKBIT+1);
+    string str = StringUtils::Format("bit%i", i-LOGMASKBIT+1);
     if (addon->GetSetting(str) == "true")
       m_extraLogLevels |= (1 << i);
   }

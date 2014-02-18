@@ -28,7 +28,7 @@ namespace XbmcCommons
 {
   void ILogger::Log(int loglevel, const char *format, ... )
   {
-    CStdString strData;
+    string strData;
 
     strData.reserve(16384);
     va_list va;

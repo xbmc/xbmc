@@ -322,7 +322,7 @@ public:
   void SetLabel(const std::string& strLabel);
   void SetLabel(int iString);               // for convience - looks up in strings.xml
   const std::string& GetLabel() const;
-  void SetStringParam(const CStdString &strParam);
+  void SetStringParam(const std::string &strParam);
   void SetStringParams(const std::vector<std::string> &params);
   const std::string& GetStringParam(size_t param = 0) const;
   size_t GetNumStringParams() const;
@@ -338,6 +338,6 @@ private:
   int m_param2;
   CGUIListItemPtr m_item;
 
-  static CStdString empty_string;
+  static std::string empty_string;
 };
 #endif

@@ -62,7 +62,7 @@ void CTextureCache::Deinitialize()
   m_database.Close();
 }
 
-bool CTextureCache::IsCachedImage(const CStdString &url) const
+bool CTextureCache::IsCachedImage(const string &url) const
 {
   if (url != "-" && !CURL::IsFullPath(url))
     return true;
@@ -74,16 +74,16 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
   return false;
 }
 
-bool CTextureCache::HasCachedImage(const CStdString &url)
+bool CTextureCache::HasCachedImage(const string &url)
 {
   CTextureDetails details;
-  CStdString cachedImage(GetCachedImage(url, details));
+  string cachedImage(GetCachedImage(url, details));
   return (!cachedImage.empty() && cachedImage != url);
 }
 
-CStdString CTextureCache::GetCachedImage(const CStdString &image, CTextureDetails &details, bool trackUsage)
+string CTextureCache::GetCachedImage(const string &image, CTextureDetails &details, bool trackUsage)
 {
-  CStdString url = CTextureUtils::UnwrapImageURL(image);
+  string url = CTextureUtils::UnwrapImageURL(image);
 
   if (IsCachedImage(url))
     return url;
@@ -103,16 +103,16 @@ bool CTextureCache::CanCacheImageURL(const CURL &url)
   return (url.GetUserName().empty() || url.GetUserName() == "music");
 }
 
-CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)
+string CTextureCache::CheckCachedImage(const string &url, bool returnDDS, bool &needsRecaching)
 {
   CTextureDetails details;
-  CStdString path(GetCachedImage(url, details, true));
+  string path(GetCachedImage(url, details, true));
   needsRecaching = !details.hash.empty();
   if (!path.empty())
   {
     if (!needsRecaching && returnDDS && !URIUtils::IsInPath(url, "special://skin/")) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
     { // check for dds version
-      CStdString ddsPath = URIUtils::ReplaceExtension(path, ".dds");
+      string ddsPath = URIUtils::ReplaceExtension(path, ".dds");
       if (CFile::Exists(ddsPath))
         return ddsPath;
       if (g_advancedSettings.m_useDDSFanart)
@@ -123,10 +123,10 @@ CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS
   return "";
 }
 
-void CTextureCache::BackgroundCacheImage(const CStdString &url)
+void CTextureCache::BackgroundCacheImage(const string &url)
 {
   CTextureDetails details;
-  CStdString path(GetCachedImage(url, details));
+  string path(GetCachedImage(url, details));
   if (!path.empty() && details.hash.empty())
     return; // image is already cached and doesn't need to be checked further
 
@@ -134,18 +134,18 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
   AddJob(new CTextureCacheJob(CTextureUtils::UnwrapImageURL(url), details.hash));
 }
 
-bool CTextureCache::CacheImage(const CStdString &image, CTextureDetails &details)
+bool CTextureCache::CacheImage(const string &image, CTextureDetails &details)
 {
-  CStdString path = GetCachedImage(image, details);
+  string path = GetCachedImage(image, details);
   if (path.empty()) // not cached
     path = CacheImage(image, NULL, &details);
 
   return !path.empty();
 }
 
-CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **texture, CTextureDetails *details)
+string CTextureCache::CacheImage(const string &image, CBaseTexture **texture, CTextureDetails *details)
 {
-  CStdString url = CTextureUtils::UnwrapImageURL(image);
+  string url = CTextureUtils::UnwrapImageURL(image);
   CSingleLock lock(m_processingSection);
   if (m_processinglist.find(url) == m_processinglist.end())
   {
@@ -177,11 +177,11 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
   return GetCachedImage(url, *details, true);
 }
 
-void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)
+void CTextureCache::ClearCachedImage(const string &url, bool deleteSource /*= false */)
 {
   // TODO: This can be removed when the texture cache covers everything.
-  CStdString path = deleteSource ? url : "";
-  CStdString cachedFile;
+  string path = deleteSource ? url : "";
+  string cachedFile;
   if (ClearCachedTexture(url, cachedFile))
     path = GetCachedPath(cachedFile);
   if (CFile::Exists(path))
@@ -193,7 +193,7 @@ void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*
 
 bool CTextureCache::ClearCachedImage(int id)
 {
-  CStdString cachedFile;
+  string cachedFile;
   if (ClearCachedTexture(id, cachedFile))
   {
     cachedFile = GetCachedPath(cachedFile);
@@ -207,13 +207,13 @@ bool CTextureCache::ClearCachedImage(int id)
   return false;
 }
 
-bool CTextureCache::GetCachedTexture(const CStdString &url, CTextureDetails &details)
+bool CTextureCache::GetCachedTexture(const string &url, CTextureDetails &details)
 {
   CSingleLock lock(m_databaseSection);
   return m_database.GetCachedTexture(url, details);
 }
 
-bool CTextureCache::AddCachedTexture(const CStdString &url, const CTextureDetails &details)
+bool CTextureCache::AddCachedTexture(const string &url, const CTextureDetails &details)
 {
   CSingleLock lock(m_databaseSection);
   return m_database.AddCachedTexture(url, details);
@@ -232,34 +232,34 @@ void CTextureCache::IncrementUseCount(const CTextureDetails &details)
   }
 }
 
-bool CTextureCache::SetCachedTextureValid(const CStdString &url, bool updateable)
+bool CTextureCache::SetCachedTextureValid(const string &url, bool updateable)
 {
   CSingleLock lock(m_databaseSection);
   return m_database.SetCachedTextureValid(url, updateable);
 }
 
-bool CTextureCache::ClearCachedTexture(const CStdString &url, CStdString &cachedURL)
+bool CTextureCache::ClearCachedTexture(const string &url, string &cachedURL)
 {
   CSingleLock lock(m_databaseSection);
   return m_database.ClearCachedTexture(url, cachedURL);
 }
 
-bool CTextureCache::ClearCachedTexture(int id, CStdString &cachedURL)
+bool CTextureCache::ClearCachedTexture(int id, string &cachedURL)
 {
   CSingleLock lock(m_databaseSection);
   return m_database.ClearCachedTexture(id, cachedURL);
 }
 
-CStdString CTextureCache::GetCacheFile(const CStdString &url)
+string CTextureCache::GetCacheFile(const string &url)
 {
   Crc32 crc;
   crc.ComputeFromLowerCase(url);
-  CStdString hex = StringUtils::Format("%08x", (unsigned int)crc);
-  CStdString hash = StringUtils::Format("%c/%s", hex[0], hex.c_str());
+  string hex = StringUtils::Format("%08x", (unsigned int)crc);
+  string hash = StringUtils::Format("%c/%s", hex[0], hex.c_str());
   return hash;
 }
 
-CStdString CTextureCache::GetCachedPath(const CStdString &file)
+string CTextureCache::GetCachedPath(const string &file)
 {
   return URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), file);
 }
@@ -276,7 +276,7 @@ void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
 
   { // remove from our processing list
     CSingleLock lock(m_processingSection);
-    std::set<CStdString>::iterator i = m_processinglist.find(job->m_url);
+    std::set<string>::iterator i = m_processinglist.find(job->m_url);
     if (i != m_processinglist.end())
       m_processinglist.erase(i);
   }
@@ -302,7 +302,7 @@ void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, uns
     {
       CSingleLock lock(m_processingSection);
       const CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
-      std::set<CStdString>::iterator i = m_processinglist.find(cacheJob->m_url);
+      std::set<string>::iterator i = m_processinglist.find(cacheJob->m_url);
       if (i == m_processinglist.end())
       {
         m_processinglist.insert(cacheJob->m_url);
@@ -315,13 +315,13 @@ void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, uns
     CJobQueue::OnJobProgress(jobID, progress, total, job);
 }
 
-bool CTextureCache::Export(const CStdString &image, const CStdString &destination, bool overwrite)
+bool CTextureCache::Export(const string &image, const string &destination, bool overwrite)
 {
   CTextureDetails details;
-  CStdString cachedImage(GetCachedImage(image, details));
+  string cachedImage(GetCachedImage(image, details));
   if (!cachedImage.empty())
   {
-    CStdString dest = destination + URIUtils::GetExtension(cachedImage);
+    string dest = destination + URIUtils::GetExtension(cachedImage);
     if (overwrite || !CFile::Exists(dest))
     {
       if (CFile::Cache(cachedImage, dest))
@@ -332,10 +332,10 @@ bool CTextureCache::Export(const CStdString &image, const CStdString &destinatio
   return false;
 }
 
-bool CTextureCache::Export(const CStdString &image, const CStdString &destination)
+bool CTextureCache::Export(const string &image, const string &destination)
 {
   CTextureDetails details;
-  CStdString cachedImage(GetCachedImage(image, details));
+  string cachedImage(GetCachedImage(image, details));
   if (!cachedImage.empty())
   {
     if (CFile::Cache(cachedImage, destination))

@@ -46,20 +46,20 @@ CPVRDirectory::~CPVRDirectory()
 
 bool CPVRDirectory::Exists(const char* strPath)
 {
-  CStdString directory(strPath);
+  string directory(strPath);
   if (directory.substr(0,17) == "pvr://recordings/")
     return true;
   else
     return false;
 }
 
-bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CPVRDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
-  CStdString base(strPath);
+  string base(strPath);
   URIUtils::RemoveSlashAtEnd(base);
 
   CURL url(strPath);
-  CStdString fileName = url.GetFileName();
+  string fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
   CLog::Log(LOGDEBUG, "CPVRDirectory::GetDirectory(%s)", base.c_str());
   items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
@@ -112,18 +112,18 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   return false;
 }
 
-bool CPVRDirectory::SupportsWriteFileOperations(const CStdString& strPath)
+bool CPVRDirectory::SupportsWriteFileOperations(const string& strPath)
 {
   CURL url(strPath);
-  CStdString filename = url.GetFileName();
+  string filename = url.GetFileName();
 
   return URIUtils::IsPVRRecording(filename);
 }
 
-bool CPVRDirectory::IsLiveTV(const CStdString& strPath)
+bool CPVRDirectory::IsLiveTV(const string& strPath)
 {
   CURL url(strPath);
-  CStdString filename = url.GetFileName();
+  string filename = url.GetFileName();
 
   return URIUtils::IsLiveTV(filename);
 }

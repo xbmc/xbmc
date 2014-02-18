@@ -54,7 +54,7 @@ public:
   MP3Codec();
   virtual ~MP3Codec();
 
-  virtual bool Init(const CStdString &strFile, unsigned int filecache);
+  virtual bool Init(const std::string &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual bool CanSeek();
   virtual int64_t Seek(int64_t iSeekTime);

@@ -154,12 +154,12 @@ int CMusicInfoTag::GetDuration() const
   return m_iDuration;
 }
 
-const CStdString& CMusicInfoTag::GetTitle() const
+const string& CMusicInfoTag::GetTitle() const
 {
   return m_strTitle;
 }
 
-const CStdString& CMusicInfoTag::GetURL() const
+const string& CMusicInfoTag::GetURL() const
 {
   return m_strURL;
 }
@@ -169,7 +169,7 @@ const std::vector<std::string>& CMusicInfoTag::GetArtist() const
   return m_artist;
 }
 
-const CStdString& CMusicInfoTag::GetAlbum() const
+const string& CMusicInfoTag::GetAlbum() const
 {
   return m_strAlbum;
 }
@@ -209,17 +209,17 @@ const std::string &CMusicInfoTag::GetType() const
   return m_type;
 }
 
-CStdString CMusicInfoTag::GetYearString() const
+string CMusicInfoTag::GetYearString() const
 {
   return m_dwReleaseDate.wYear ? StringUtils::Format("%i", m_dwReleaseDate.wYear) : StringUtils::Empty;
 }
 
-const CStdString &CMusicInfoTag::GetComment() const
+const string &CMusicInfoTag::GetComment() const
 {
   return m_strComment;
 }
 
-const CStdString &CMusicInfoTag::GetLyrics() const
+const string &CMusicInfoTag::GetLyrics() const
 {
   return m_strLyrics;
 }
@@ -279,17 +279,17 @@ int CMusicInfoTag::HasReplayGainInfo() const
   return m_iHasGainInfo;
 }
 
-void CMusicInfoTag::SetURL(const CStdString& strURL)
+void CMusicInfoTag::SetURL(const string& strURL)
 {
   m_strURL = strURL;
 }
 
-void CMusicInfoTag::SetTitle(const CStdString& strTitle)
+void CMusicInfoTag::SetTitle(const string& strTitle)
 {
   m_strTitle = Trim(strTitle);
 }
 
-void CMusicInfoTag::SetArtist(const CStdString& strArtist)
+void CMusicInfoTag::SetArtist(const string& strArtist)
 {
   if (!strArtist.empty())
     SetArtist(StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
@@ -302,7 +302,7 @@ void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists)
   m_artist = artists;
 }
 
-void CMusicInfoTag::SetAlbum(const CStdString& strAlbum)
+void CMusicInfoTag::SetAlbum(const string& strAlbum)
 {
   m_strAlbum = Trim(strAlbum);
 }
@@ -312,7 +312,7 @@ void CMusicInfoTag::SetAlbumId(const int iAlbumId)
   m_iAlbumId = iAlbumId;
 }
 
-void CMusicInfoTag::SetAlbumArtist(const CStdString& strAlbumArtist)
+void CMusicInfoTag::SetAlbumArtist(const string& strAlbumArtist)
 {
   if (!strAlbumArtist.empty())
     SetAlbumArtist(StringUtils::Split(strAlbumArtist, g_advancedSettings.m_musicItemSeparator));
@@ -325,7 +325,7 @@ void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists)
   m_albumArtist = albumArtists;
 }
 
-void CMusicInfoTag::SetGenre(const CStdString& strGenre)
+void CMusicInfoTag::SetGenre(const string& strGenre)
 {
   if (!strGenre.empty())
     SetGenre(StringUtils::Split(strGenre, g_advancedSettings.m_musicItemSeparator));
@@ -375,12 +375,12 @@ void CMusicInfoTag::SetDuration(int iSec)
   m_iDuration = iSec;
 }
 
-void CMusicInfoTag::SetComment(const CStdString& comment)
+void CMusicInfoTag::SetComment(const string& comment)
 {
   m_strComment = comment;
 }
 
-void CMusicInfoTag::SetLyrics(const CStdString& lyrics)
+void CMusicInfoTag::SetLyrics(const string& lyrics)
 {
   m_strLyrics = lyrics;
 }
@@ -400,7 +400,7 @@ void CMusicInfoTag::SetPlayCount(int playcount)
   m_iTimesPlayed = playcount;
 }
 
-void CMusicInfoTag::SetLastPlayed(const CStdString& lastplayed)
+void CMusicInfoTag::SetLastPlayed(const string& lastplayed)
 {
   m_lastPlayed.SetFromDBDateTime(lastplayed);
 }
@@ -425,7 +425,7 @@ bool CMusicInfoTag::Loaded() const
   return m_bLoaded;
 }
 
-const CStdString& CMusicInfoTag::GetMusicBrainzTrackID() const
+const string& CMusicInfoTag::GetMusicBrainzTrackID() const
 {
   return m_strMusicBrainzTrackID;
 }
@@ -435,7 +435,7 @@ const std::vector<std::string>& CMusicInfoTag::GetMusicBrainzArtistID() const
   return m_musicBrainzArtistID;
 }
 
-const CStdString& CMusicInfoTag::GetMusicBrainzAlbumID() const
+const string& CMusicInfoTag::GetMusicBrainzAlbumID() const
 {
   return m_strMusicBrainzAlbumID;
 }
@@ -445,12 +445,12 @@ const std::vector<std::string>& CMusicInfoTag::GetMusicBrainzAlbumArtistID() con
   return m_musicBrainzAlbumArtistID;
 }
 
-const CStdString& CMusicInfoTag::GetMusicBrainzTRMID() const
+const string& CMusicInfoTag::GetMusicBrainzTRMID() const
 {
   return m_strMusicBrainzTRMID;
 }
 
-void CMusicInfoTag::SetMusicBrainzTrackID(const CStdString& strTrackID)
+void CMusicInfoTag::SetMusicBrainzTrackID(const string& strTrackID)
 {
   m_strMusicBrainzTrackID=strTrackID;
 }
@@ -460,7 +460,7 @@ void CMusicInfoTag::SetMusicBrainzArtistID(const std::vector<std::string>& music
   m_musicBrainzArtistID = musicBrainzArtistId;
 }
 
-void CMusicInfoTag::SetMusicBrainzAlbumID(const CStdString& strAlbumID)
+void CMusicInfoTag::SetMusicBrainzAlbumID(const string& strAlbumID)
 {
   m_strMusicBrainzAlbumID=strAlbumID;
 }
@@ -470,7 +470,7 @@ void CMusicInfoTag::SetMusicBrainzAlbumArtistID(const std::vector<std::string>& 
   m_musicBrainzAlbumArtistID = musicBrainzAlbumArtistId;
 }
 
-void CMusicInfoTag::SetMusicBrainzTRMID(const CStdString& strTRMID)
+void CMusicInfoTag::SetMusicBrainzTRMID(const string& strTRMID)
 {
   m_strMusicBrainzTRMID=strTRMID;
 }
@@ -711,7 +711,7 @@ void CMusicInfoTag::Clear()
   m_iHasGainInfo = 0;
 }
 
-void CMusicInfoTag::AppendArtist(const CStdString &artist)
+void CMusicInfoTag::AppendArtist(const string &artist)
 {
   for (unsigned int index = 0; index < m_artist.size(); index++)
   {
@@ -722,7 +722,7 @@ void CMusicInfoTag::AppendArtist(const CStdString &artist)
   m_artist.push_back(artist);
 }
 
-void CMusicInfoTag::AppendAlbumArtist(const CStdString &albumArtist)
+void CMusicInfoTag::AppendAlbumArtist(const string &albumArtist)
 {
   for (unsigned int index = 0; index < m_albumArtist.size(); index++)
   {
@@ -733,7 +733,7 @@ void CMusicInfoTag::AppendAlbumArtist(const CStdString &albumArtist)
   m_albumArtist.push_back(albumArtist);
 }
 
-void CMusicInfoTag::AppendGenre(const CStdString &genre)
+void CMusicInfoTag::AppendGenre(const string &genre)
 {
   for (unsigned int index = 0; index < m_genre.size(); index++)
   {
@@ -744,9 +744,9 @@ void CMusicInfoTag::AppendGenre(const CStdString &genre)
   m_genre.push_back(genre);
 }
 
-CStdString CMusicInfoTag::Trim(const CStdString &value) const
+string CMusicInfoTag::Trim(const string &value) const
 {
-  CStdString trimmedValue(value);
+  string trimmedValue(value);
   StringUtils::TrimLeft(trimmedValue, " ");
   StringUtils::TrimRight(trimmedValue, " \n\r");
   return trimmedValue;

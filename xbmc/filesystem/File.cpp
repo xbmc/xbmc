@@ -136,7 +136,7 @@ void* auto_buffer::detach(void)
 
 
 // This *looks* like a copy function, therefor the name "Cache" is misleading
-bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
+bool CFile::Cache(const string& strFileName, const string& strDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
   CFile file;
 
@@ -154,7 +154,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     if (URIUtils::IsHD(strDest)) // create possible missing dirs
     {
       vector<std::string> tokens;
-      CStdString strDirectory = URIUtils::GetDirectory(strDest);
+      string strDirectory = URIUtils::GetDirectory(strDest);
       URIUtils::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
@@ -166,7 +166,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
         pathsep = "/";
 #endif
         StringUtils::Tokenize(url.GetFileName(),tokens,pathsep.c_str());
-        CStdString strCurrPath;
+        string strCurrPath;
         // Handle special
         if (!url.GetProtocol().empty()) {
           pathsep = "/";
@@ -269,7 +269,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 }
 
 //*********************************************************************************************
-bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
+bool CFile::Open(const string& strFileName, const unsigned int flags)
 {
   m_flags = flags;
   try
@@ -373,11 +373,11 @@ bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
   return false;
 }
 
-bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
+bool CFile::OpenForWrite(const string& strFileName, bool bOverWrite)
 {
   try
   {
-    CStdString storedFileName = URIUtils::SubstitutePath(strFileName);
+    string storedFileName = URIUtils::SubstitutePath(strFileName);
     CURL url(storedFileName);
 
     m_pFile = CFileFactory::CreateLoader(url);
@@ -398,7 +398,7 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
   return false;
 }
 
-bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
+bool CFile::Exists(const string& strFileName, bool bUseCache /* = true */)
 {
   CURL url = URIUtils::SubstitutePath(strFileName);
   
@@ -483,7 +483,7 @@ bool CFile::SkipNext()
   return false;
 }
 
-int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
+int CFile::Stat(const string& strFileName, struct __stat64* buffer)
 {
   if (!buffer)
     return -1;
@@ -790,7 +790,7 @@ int CFile::Write(const void* lpBuf, int64_t uiBufSize)
   return -1;
 }
 
-bool CFile::Delete(const CStdString& strFileName)
+bool CFile::Delete(const string& strFileName)
 {
   try
   {
@@ -816,7 +816,7 @@ bool CFile::Delete(const CStdString& strFileName)
   return false;
 }
 
-bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileName)
+bool CFile::Rename(const string& strFileName, const string& strNewFileName)
 {
   try
   {
@@ -843,7 +843,7 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
   return false;
 }
 
-bool CFile::SetHidden(const CStdString& fileName, bool hidden)
+bool CFile::SetHidden(const string& fileName, bool hidden)
 {
   try
   {
@@ -1102,7 +1102,7 @@ bool CFileStream::Open(const CURL& filename)
   Close();
 
   // NOTE: This is currently not translated - reason is that all entry points into CFileStream::Open currently
-  //       go from the CStdString version below.  We may have to change this in future, but I prefer not decoding
+  //       go from the string version below.  We may have to change this in future, but I prefer not decoding
   //       the URL and re-encoding, or applying the translation twice.
   m_file = CFileFactory::CreateLoader(filename);
   if(m_file && m_file->Open(filename))
@@ -1129,7 +1129,7 @@ void CFileStream::Close()
   SAFE_DELETE(m_file);
 }
 
-bool CFileStream::Open(const CStdString& filename)
+bool CFileStream::Open(const string& filename)
 {
   return Open(CURL(URIUtils::SubstitutePath(filename)));
 }

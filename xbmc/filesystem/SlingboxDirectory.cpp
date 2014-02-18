@@ -32,7 +32,7 @@ CSlingboxDirectory::~CSlingboxDirectory()
 {
 }
 
-bool CSlingboxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CSlingboxDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   // Create generic Watch Slingbox item
   CFileItemPtr item(new CFileItem(strPath, false));

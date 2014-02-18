@@ -55,7 +55,7 @@
 
 using namespace std;
 
-bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
+bool CDVDFileInfo::GetFileDuration(const string &path, int& duration)
 {
   std::auto_ptr<CDVDInputStream> input;
   std::auto_ptr<CDVDDemux> demux;
@@ -93,7 +93,7 @@ int DegreeToOrientation(int degrees)
   }
 }
 
-bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &details, CStreamDetails *pStreamDetails)
+bool CDVDFileInfo::ExtractThumb(const string &strPath, CTextureDetails &details, CStreamDetails *pStreamDetails)
 {
   std::string redactPath = CURL::GetRedacted(strPath);
   unsigned int nTime = XbmcThreads::SystemClockMillis();
@@ -146,7 +146,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
 
     //extern subtitles
     vector<string> filenames;
-    CStdString video_path;
+    string video_path;
     if (strPath.empty())
       video_path = pInputStream->GetFileName();
     else
@@ -159,7 +159,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
       // if vobsub subtitle:
       if (URIUtils::GetExtension(filenames[i]) == ".idx")
       {
-        CStdString strSubFile;
+        string strSubFile;
         if ( CUtil::FindVobSubPair(filenames, filenames[i], strSubFile) )
           AddExternalSubtitleToDetails(video_path, *pStreamDetails, filenames[i], strSubFile);
       }
@@ -325,14 +325,14 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (!pItem)
     return false;
 
-  CStdString strFileNameAndPath;
+  string strFileNameAndPath;
   if (pItem->HasVideoInfoTag())
     strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
 
   if (strFileNameAndPath.empty())
     strFileNameAndPath = pItem->GetPath();
 
-  CStdString playablePath = strFileNameAndPath;
+  string playablePath = strFileNameAndPath;
   if (URIUtils::IsStack(playablePath))
     playablePath = XFILE::CStackDirectory::GetFirstStackedFile(playablePath);
 
@@ -375,7 +375,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
 }
 
 /* returns true if details have been added */
-bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const CStdString &path)
+bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const string &path)
 {
   bool retVal = false;
   details.Reset();
@@ -452,7 +452,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
   return retVal;
 }
 
-bool CDVDFileInfo::AddExternalSubtitleToDetails(const CStdString &path, CStreamDetails &details, const std::string& filename, const std::string& subfilename)
+bool CDVDFileInfo::AddExternalSubtitleToDetails(const string &path, CStreamDetails &details, const std::string& filename, const std::string& subfilename)
 {
   std::string ext = URIUtils::GetExtension(filename);
   std::string vobsubfile = subfilename;
@@ -474,7 +474,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const CStdString &path, CStreamD
       std::string lang = stream->language;
       if (lang.length() == 2)
       {
-        CStdString lang3;
+        string lang3;
         g_LangCodeExpander.ConvertToThreeCharCode(lang3, lang);
         dsub->m_strLanguage = lang3;
       }
@@ -486,7 +486,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const CStdString &path, CStreamD
   }
   if(ext == ".sub")
   {
-    CStdString strReplace(URIUtils::ReplaceExtension(filename,".idx"));
+    string strReplace(URIUtils::ReplaceExtension(filename,".idx"));
     if (XFILE::CFile::Exists(strReplace))
       return false;
   }

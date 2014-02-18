@@ -35,9 +35,9 @@ CISO9660Directory::CISO9660Directory(void)
 CISO9660Directory::~CISO9660Directory(void)
 {}
 
-bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CISO9660Directory::GetDirectory(const string& strPath, CFileItemList &items)
 {
-  CStdString strRoot = strPath;
+  string strRoot = strPath;
   URIUtils::AddSlashAtEnd(strRoot);
 
   // Scan active disc if not done before
@@ -51,8 +51,8 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString strSearchMask;
-  CStdString strDirectory = url.GetFileName();
+  string strSearchMask;
+  string strDirectory = url.GetFileName();
   if (strDirectory != "")
   {
     strSearchMask = StringUtils::Format("\\%s", strDirectory.c_str());
@@ -76,11 +76,11 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
     {
       if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
       {
-        CStdString strDir = wfd.cFileName;
+        string strDir = wfd.cFileName;
         if (strDir != "." && strDir != "..")
         {
           CFileItemPtr pItem(new CFileItem(wfd.cFileName));
-          CStdString path = strRoot + wfd.cFileName;
+          string path = strRoot + wfd.cFileName;
           URIUtils::AddSlashAtEnd(path);
           pItem->SetPath(path);
           pItem->m_bIsFolder = true;

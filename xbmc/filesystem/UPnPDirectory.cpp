@@ -42,7 +42,7 @@ using namespace UPNP;
 namespace XFILE
 {
 
-static CStdString GetContentMapping(NPT_String& objectClass)
+static string GetContentMapping(NPT_String& objectClass)
 {
     struct SClassMapping
     {
@@ -150,8 +150,8 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
     if(!upnp)
         return false;
 
-    CStdString uuid   = path.GetHostName();
-    CStdString object = path.GetFileName();
+    string uuid   = path.GetHostName();
+    string object = path.GetFileName();
     StringUtils::TrimRight(object, "/");
     object = CURL::Decode(object);
 
@@ -184,7 +184,7 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
 |   CUPnPDirectory::GetDirectory
 +---------------------------------------------------------------------*/
 bool
-CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+CUPnPDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
     CUPnP* upnp = CUPnP::GetInstance();
 
@@ -208,7 +208,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             NPT_String uuid = (*device)->GetUUID();
 
             CFileItemPtr pItem(new CFileItem((const char*)name));
-            pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/"));
+            pItem->SetPath(string((const char*) "upnp://" + uuid + "/"));
             pItem->m_bIsFolder = true;
             pItem->SetArt("thumb", (const char*)(*device)->GetIconUrl("image/png"));
 
@@ -326,7 +326,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 continue;
             }
 
-            CStdString id;
+            string id;
             if ((*entry)->m_ReferenceID.IsEmpty())
                 id = (const char*) (*entry)->m_ObjectID;
             else
@@ -334,7 +334,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
             id = CURL::Encode(id);
             URIUtils::AddSlashAtEnd(id);
-            pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/" + id.c_str()));
+            pItem->SetPath(string((const char*) "upnp://" + uuid + "/" + id.c_str()));
 
             items.Add(pItem);
 

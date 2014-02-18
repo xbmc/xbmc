@@ -226,7 +226,7 @@ CD3DEffect::~CD3DEffect()
   Release();
 }
 
-bool CD3DEffect::Create(const CStdString &effectString, DefinesMap* defines)
+bool CD3DEffect::Create(const string &effectString, DefinesMap* defines)
 {
   Release();
   m_effectString = effectString;
@@ -340,7 +340,7 @@ bool CD3DEffect::CreateEffect()
     return true;
   else if(pError)
   {
-    CStdString error;
+    string error;
     error.assign((const char*)pError->GetBufferPointer(), pError->GetBufferSize());
     CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): %s", error.c_str());
   }

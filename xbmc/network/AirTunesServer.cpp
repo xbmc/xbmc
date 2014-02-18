@@ -69,7 +69,7 @@ DllLibShairplay *CAirTunesServer::m_pLibShairplay = NULL;
 DllLibShairport *CAirTunesServer::m_pLibShairport = NULL;
 #endif
 CAirTunesServer *CAirTunesServer::ServerInstance = NULL;
-CStdString CAirTunesServer::m_macAddress;
+string CAirTunesServer::m_macAddress;
 std::string CAirTunesServer::m_metadata[3];
 CCriticalSection CAirTunesServer::m_metadataLock;
 bool CAirTunesServer::m_streamStarted = false;
@@ -544,10 +544,10 @@ int shairport_log(const char* msg, size_t msgSize)
 
 #endif
 
-bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, const CStdString &password/*=""*/)
+bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, const string &password/*=""*/)
 {
   bool success = false;
-  CStdString pw = password;
+  string pw = password;
   CNetworkInterface *net = g_application.getNetwork().GetFirstConnectedInterface();
   StopServer(true);
 
@@ -557,7 +557,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
     StringUtils::Replace(m_macAddress, ":","");
     while (m_macAddress.size() < 12)
     {
-      m_macAddress = CStdString("0") + m_macAddress;
+      m_macAddress = string("0") + m_macAddress;
     }
   }
   else
@@ -581,7 +581,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
 
   if (success)
   {
-    CStdString appName = StringUtils::Format("%s@%s",
+    string appName = StringUtils::Format("%s@%s",
                                              m_macAddress.c_str(),
                                              g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str());
 
@@ -682,7 +682,7 @@ void CAirTunesServer::Process()
 #endif
 }
 
-bool CAirTunesServer::Initialize(const CStdString &password)
+bool CAirTunesServer::Initialize(const string &password)
 {
   bool ret = false;
 
@@ -732,9 +732,9 @@ bool CAirTunesServer::Initialize(const CStdString &password)
 #else
 
   int numArgs = 3;
-  CStdString hwStr;
-  CStdString pwStr;
-  CStdString portStr;
+  string hwStr;
+  string pwStr;
+  string portStr;
 
   hwStr = StringUtils::Format("--mac=%s", m_macAddress.c_str());
   pwStr = StringUtils::Format("--password=%s",password.c_str());

@@ -86,7 +86,7 @@ void CGUIDialogAccessPoints::OnInitWindow()
 
   m_accessPoints->Clear();
 
-  CStdString ifaceName(m_interfaceName);
+  string ifaceName(m_interfaceName);
   CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
   m_aps = iface->GetAccessPoints();
 
@@ -114,12 +114,12 @@ void CGUIDialogAccessPoints::OnInitWindow()
   OnMessage(msg);
 }
 
-void CGUIDialogAccessPoints::SetInterfaceName(CStdString interfaceName)
+void CGUIDialogAccessPoints::SetInterfaceName(string interfaceName)
 {
   m_interfaceName = interfaceName;
 }
 
-CStdString CGUIDialogAccessPoints::GetSelectedAccessPointEssId()
+string CGUIDialogAccessPoints::GetSelectedAccessPointEssId()
 {
   return m_selectedAPEssId;
 }

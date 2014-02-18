@@ -113,7 +113,7 @@ void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogL
         break;
     }
 
-    CStdString strXbmcMessage = StringUtils::Format("AddOnLog: %s: %s", addonHelper->m_addon->Name().c_str(), strMessage);
+    string strXbmcMessage = StringUtils::Format("AddOnLog: %s: %s", addonHelper->m_addon->Name().c_str(), strMessage);
     CLog::Log(xbmcLogLevel, "%s", strXbmcMessage.c_str());
   }
   catch (std::exception &e)
@@ -254,7 +254,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
 
 char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
 {
-  CStdString string;
+  string string;
   if (strSource != NULL)
     g_charsetConverter.unknownToUTF8(strSource, string);
   else
@@ -271,7 +271,7 @@ char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCod
 
   CAddonCallbacksAddon* addonHelper = helper->GetHelperAddon();
 
-  CStdString string;
+  string string;
   if (dwCode >= 30000 && dwCode <= 30999)
     string = addonHelper->m_addon->GetString(dwCode).c_str();
   else if (dwCode >= 32000 && dwCode <= 32999)
@@ -289,7 +289,7 @@ char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
   if (!helper)
     return NULL;
 
-  CStdString string = g_langInfo.GetDVDMenuLanguage();
+  string string = g_langInfo.GetDVDMenuLanguage();
 
   char* buffer = strdup(string.c_str());
   return buffer;

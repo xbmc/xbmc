@@ -33,7 +33,7 @@ namespace XFILE
  Example:
 
  \verbatim
- CStdString strShare="iso9660://";
+ std::string strShare="iso9660://";
 
  IDirectory* pDir=CDirectoryFactory::Create(strShare);
  \endverbatim
@@ -45,6 +45,6 @@ namespace XFILE
 class CDirectoryFactory
 {
 public:
-  static IDirectory* Create(const CStdString& strPath);
+  static IDirectory* Create(const std::string& strPath);
 };
 }

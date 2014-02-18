@@ -47,7 +47,7 @@ const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
   return *this;
 }
 
-bool CPictureInfoTag::Load(const CStdString &path)
+bool CPictureInfoTag::Load(const string &path)
 {
   m_isLoaded = false;
 
@@ -70,12 +70,12 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_isLoaded;
     ar << m_isInfoSetExternally;
     ar << m_exifInfo.ApertureFNumber;
-    ar << CStdString(m_exifInfo.CameraMake);
-    ar << CStdString(m_exifInfo.CameraModel);
+    ar << string(m_exifInfo.CameraMake);
+    ar << string(m_exifInfo.CameraModel);
     ar << m_exifInfo.CCDWidth;
     ar << GetInfo(SLIDE_EXIF_COMMENT); // Store and restore the comment charset converted
-    ar << CStdString(m_exifInfo.Description);
-    ar << CStdString(m_exifInfo.DateTime);
+    ar << string(m_exifInfo.Description);
+    ar << string(m_exifInfo.DateTime);
     for (int i = 0; i < 10; i++)
       ar << m_exifInfo.DateTimeOffsets[i];
     ar << m_exifInfo.DigitalZoomRatio;
@@ -88,9 +88,9 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_exifInfo.FocalLength;
     ar << m_exifInfo.FocalLength35mmEquiv;
     ar << m_exifInfo.GpsInfoPresent;
-    ar << CStdString(m_exifInfo.GpsAlt);
-    ar << CStdString(m_exifInfo.GpsLat);
-    ar << CStdString(m_exifInfo.GpsLong);
+    ar << string(m_exifInfo.GpsAlt);
+    ar << string(m_exifInfo.GpsLat);
+    ar << string(m_exifInfo.GpsLong);
     ar << m_exifInfo.Height;
     ar << m_exifInfo.IsColor;
     ar << m_exifInfo.ISOequivalent;
@@ -108,30 +108,30 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_exifInfo.Width;
     ar << m_dateTimeTaken;
 
-    ar << CStdString(m_iptcInfo.Author);
-    ar << CStdString(m_iptcInfo.Byline);
-    ar << CStdString(m_iptcInfo.BylineTitle);
-    ar << CStdString(m_iptcInfo.Caption);
-    ar << CStdString(m_iptcInfo.Category);
-    ar << CStdString(m_iptcInfo.City);
-    ar << CStdString(m_iptcInfo.Urgency);
-    ar << CStdString(m_iptcInfo.CopyrightNotice);
-    ar << CStdString(m_iptcInfo.Country);
-    ar << CStdString(m_iptcInfo.CountryCode);
-    ar << CStdString(m_iptcInfo.Credit);
-    ar << CStdString(m_iptcInfo.Date);
-    ar << CStdString(m_iptcInfo.Headline);
-    ar << CStdString(m_iptcInfo.Keywords);
-    ar << CStdString(m_iptcInfo.ObjectName);
-    ar << CStdString(m_iptcInfo.ReferenceService);
-    ar << CStdString(m_iptcInfo.Source);
-    ar << CStdString(m_iptcInfo.SpecialInstructions);
-    ar << CStdString(m_iptcInfo.State);
-    ar << CStdString(m_iptcInfo.SupplementalCategories);
-    ar << CStdString(m_iptcInfo.TransmissionReference);
-    ar << CStdString(m_iptcInfo.TimeCreated);
-    ar << CStdString(m_iptcInfo.SubLocation);
-    ar << CStdString(m_iptcInfo.ImageType);
+    ar << string(m_iptcInfo.Author);
+    ar << string(m_iptcInfo.Byline);
+    ar << string(m_iptcInfo.BylineTitle);
+    ar << string(m_iptcInfo.Caption);
+    ar << string(m_iptcInfo.Category);
+    ar << string(m_iptcInfo.City);
+    ar << string(m_iptcInfo.Urgency);
+    ar << string(m_iptcInfo.CopyrightNotice);
+    ar << string(m_iptcInfo.Country);
+    ar << string(m_iptcInfo.CountryCode);
+    ar << string(m_iptcInfo.Credit);
+    ar << string(m_iptcInfo.Date);
+    ar << string(m_iptcInfo.Headline);
+    ar << string(m_iptcInfo.Keywords);
+    ar << string(m_iptcInfo.ObjectName);
+    ar << string(m_iptcInfo.ReferenceService);
+    ar << string(m_iptcInfo.Source);
+    ar << string(m_iptcInfo.SpecialInstructions);
+    ar << string(m_iptcInfo.State);
+    ar << string(m_iptcInfo.SupplementalCategories);
+    ar << string(m_iptcInfo.TransmissionReference);
+    ar << string(m_iptcInfo.TimeCreated);
+    ar << string(m_iptcInfo.SubLocation);
+    ar << string(m_iptcInfo.ImageType);
   }
   else
   {
@@ -207,12 +207,12 @@ void CPictureInfoTag::Archive(CArchive& ar)
 void CPictureInfoTag::Serialize(CVariant& value) const
 {
   value["aperturefnumber"] = m_exifInfo.ApertureFNumber;
-  value["cameramake"] = CStdString(m_exifInfo.CameraMake);
-  value["cameramodel"] = CStdString(m_exifInfo.CameraModel);
+  value["cameramake"] = string(m_exifInfo.CameraMake);
+  value["cameramodel"] = string(m_exifInfo.CameraModel);
   value["ccdwidth"] = m_exifInfo.CCDWidth;
   value["comments"] = GetInfo(SLIDE_EXIF_COMMENT); // Charset conversion
-  value["description"] = CStdString(m_exifInfo.Description);
-  value["datetime"] = CStdString(m_exifInfo.DateTime);
+  value["description"] = string(m_exifInfo.Description);
+  value["datetime"] = string(m_exifInfo.DateTime);
   for (int i = 0; i < 10; i++)
     value["datetimeoffsets"][i] = m_exifInfo.DateTimeOffsets[i];
   value["digitalzoomratio"] = m_exifInfo.DigitalZoomRatio;
@@ -225,9 +225,9 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["focallength"] = m_exifInfo.FocalLength;
   value["focallength35mmequiv"] = m_exifInfo.FocalLength35mmEquiv;
   value["gpsinfopresent"] = m_exifInfo.GpsInfoPresent;
-  value["gpsinfo"]["alt"] = CStdString(m_exifInfo.GpsAlt);
-  value["gpsinfo"]["lat"] = CStdString(m_exifInfo.GpsLat);
-  value["gpsinfo"]["long"] = CStdString(m_exifInfo.GpsLong);
+  value["gpsinfo"]["alt"] = string(m_exifInfo.GpsAlt);
+  value["gpsinfo"]["lat"] = string(m_exifInfo.GpsLat);
+  value["gpsinfo"]["long"] = string(m_exifInfo.GpsLong);
   value["height"] = m_exifInfo.Height;
   value["iscolor"] = m_exifInfo.IsColor;
   value["isoequivalent"] = m_exifInfo.ISOequivalent;
@@ -244,30 +244,30 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["whitebalance"] = m_exifInfo.Whitebalance;
   value["width"] = m_exifInfo.Width;
 
-  value["author"] = CStdString(m_iptcInfo.Author);
-  value["byline"] = CStdString(m_iptcInfo.Byline);
-  value["bylinetitle"] = CStdString(m_iptcInfo.BylineTitle);
-  value["caption"] = CStdString(m_iptcInfo.Caption);
-  value["category"] = CStdString(m_iptcInfo.Category);
-  value["city"] = CStdString(m_iptcInfo.City);
-  value["urgency"] = CStdString(m_iptcInfo.Urgency);
-  value["copyrightnotice"] = CStdString(m_iptcInfo.CopyrightNotice);
-  value["country"] = CStdString(m_iptcInfo.Country);
-  value["countrycode"] = CStdString(m_iptcInfo.CountryCode);
-  value["credit"] = CStdString(m_iptcInfo.Credit);
-  value["date"] = CStdString(m_iptcInfo.Date);
-  value["headline"] = CStdString(m_iptcInfo.Headline);
-  value["keywords"] = CStdString(m_iptcInfo.Keywords);
-  value["objectname"] = CStdString(m_iptcInfo.ObjectName);
-  value["referenceservice"] = CStdString(m_iptcInfo.ReferenceService);
-  value["source"] = CStdString(m_iptcInfo.Source);
-  value["specialinstructions"] = CStdString(m_iptcInfo.SpecialInstructions);
-  value["state"] = CStdString(m_iptcInfo.State);
-  value["supplementalcategories"] = CStdString(m_iptcInfo.SupplementalCategories);
-  value["transmissionreference"] = CStdString(m_iptcInfo.TransmissionReference);
-  value["timecreated"] = CStdString(m_iptcInfo.TimeCreated);
-  value["sublocation"] = CStdString(m_iptcInfo.SubLocation);
-  value["imagetype"] = CStdString(m_iptcInfo.ImageType);
+  value["author"] = string(m_iptcInfo.Author);
+  value["byline"] = string(m_iptcInfo.Byline);
+  value["bylinetitle"] = string(m_iptcInfo.BylineTitle);
+  value["caption"] = string(m_iptcInfo.Caption);
+  value["category"] = string(m_iptcInfo.Category);
+  value["city"] = string(m_iptcInfo.City);
+  value["urgency"] = string(m_iptcInfo.Urgency);
+  value["copyrightnotice"] = string(m_iptcInfo.CopyrightNotice);
+  value["country"] = string(m_iptcInfo.Country);
+  value["countrycode"] = string(m_iptcInfo.CountryCode);
+  value["credit"] = string(m_iptcInfo.Credit);
+  value["date"] = string(m_iptcInfo.Date);
+  value["headline"] = string(m_iptcInfo.Headline);
+  value["keywords"] = string(m_iptcInfo.Keywords);
+  value["objectname"] = string(m_iptcInfo.ObjectName);
+  value["referenceservice"] = string(m_iptcInfo.ReferenceService);
+  value["source"] = string(m_iptcInfo.Source);
+  value["specialinstructions"] = string(m_iptcInfo.SpecialInstructions);
+  value["state"] = string(m_iptcInfo.State);
+  value["supplementalcategories"] = string(m_iptcInfo.SupplementalCategories);
+  value["transmissionreference"] = string(m_iptcInfo.TransmissionReference);
+  value["timecreated"] = string(m_iptcInfo.TimeCreated);
+  value["sublocation"] = string(m_iptcInfo.SubLocation);
+  value["imagetype"] = string(m_iptcInfo.ImageType);
 }
 
 void CPictureInfoTag::ToSortable(SortItem& sortable, Field field) const
@@ -278,7 +278,7 @@ void CPictureInfoTag::ToSortable(SortItem& sortable, Field field) const
 
 void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *dest, size_t length)
 {
-  CStdString temp;
+  string temp;
   ar >> temp;
   length = min((size_t)temp.size(), length - 1);
   if (!temp.empty())
@@ -286,12 +286,12 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *dest, size_t leng
   dest[length] = 0;
 }
 
-const CStdString CPictureInfoTag::GetInfo(int info) const
+const string CPictureInfoTag::GetInfo(int info) const
 {
   if (!m_isLoaded && !m_isInfoSetExternally) // If no metadata has been loaded from the picture file or set with SetInfo(), just return
     return "";
 
-  CStdString value;
+  string value;
   switch (info)
   {
   case SLIDE_RESOLUTION:
@@ -540,7 +540,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
   return value;
 }
 
-int CPictureInfoTag::TranslateString(const CStdString &info)
+int CPictureInfoTag::TranslateString(const string &info)
 {
   if (StringUtils::EqualsNoCase(info, "filename")) return SLIDE_FILE_NAME;
   else if (StringUtils::EqualsNoCase(info, "path")) return SLIDE_FILE_PATH;
@@ -605,7 +605,7 @@ int CPictureInfoTag::TranslateString(const CStdString &info)
   return 0;
 }
 
-void CPictureInfoTag::SetInfo(int info, const CStdString& value)
+void CPictureInfoTag::SetInfo(int info, const string& value)
 {
   switch (info)
   {
@@ -642,7 +642,7 @@ void CPictureInfoTag::ConvertDateTime()
 {
   if (strlen(m_exifInfo.DateTime) >= 19 && m_exifInfo.DateTime[0] != ' ')
   {
-    CStdString dateTime = m_exifInfo.DateTime;
+    string dateTime = m_exifInfo.DateTime;
     int year  = atoi(dateTime.substr(0, 4).c_str());
     int month = atoi(dateTime.substr(5, 2).c_str());
     int day   = atoi(dateTime.substr(8, 2).c_str());

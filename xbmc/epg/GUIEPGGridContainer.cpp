@@ -1260,12 +1260,12 @@ void CGUIEPGGridContainer::OnRight()
   }
 }
 
-void CGUIEPGGridContainer::SetChannel(const CStdString &channel)
+void CGUIEPGGridContainer::SetChannel(const string &channel)
 {
   int iChannelIndex(-1);
   for (unsigned int iIndex = 0; iIndex < m_channelItems.size(); iIndex++)
   {
-    CStdString strPath = m_channelItems[iIndex]->GetProperty("path").asString(StringUtils::EmptyString);
+    string strPath = m_channelItems[iIndex]->GetProperty("path").asString(StringUtils::EmptyString);
     if (strPath == channel)
     {
       iChannelIndex = iIndex;
@@ -1521,9 +1521,9 @@ CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag)
   return CGUIListItemPtr();
 }
 
-CStdString CGUIEPGGridContainer::GetLabel(int info) const
+string CGUIEPGGridContainer::GetLabel(int info) const
 {
-  CStdString label;
+  string label;
   switch (info)
   {
   case CONTAINER_NUM_PAGES:
@@ -1807,9 +1807,9 @@ void CGUIEPGGridContainer::UpdateLayout(bool updateAllItems)
   CalculateLayout();
 }
 
-CStdString CGUIEPGGridContainer::GetDescription() const
+string CGUIEPGGridContainer::GetDescription() const
 {
-  CStdString strLabel;
+  string strLabel;
   int item = GetSelectedItem();
   if (item >= 0 && item < (int)m_programmeItems.size())
   {

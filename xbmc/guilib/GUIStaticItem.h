@@ -87,7 +87,7 @@ public:
 
   const CGUIAction &GetClickActions() const { return m_clickActions; };
 private:
-  typedef std::vector< std::pair<CGUIInfoLabel, CStdString> > InfoVector;
+  typedef std::vector< std::pair<CGUIInfoLabel, std::string> > InfoVector;
   InfoVector m_info;
   INFO::InfoPtr m_visCondition;
   bool m_visState;

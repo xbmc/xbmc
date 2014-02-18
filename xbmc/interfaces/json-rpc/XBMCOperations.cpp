@@ -27,13 +27,13 @@
 using namespace JSONRPC;
 using namespace std;
 
-JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   vector<string> info;
 
   for (unsigned int i = 0; i < parameterObject["labels"].size(); i++)
   {
-   CStdString field = parameterObject["labels"][i].asString();
+   string field = parameterObject["labels"][i].asString();
     StringUtils::ToLower(field);
 
     info.push_back(parameterObject["labels"][i].asString());
@@ -53,7 +53,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITranspo
   return OK;
 }
 
-JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::vector<string> info;
 
@@ -61,7 +61,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITrans
 
   for (unsigned int i = 0; i < parameterObject["booleans"].size(); i++)
   {
-    CStdString field = parameterObject["booleans"][i].asString();
+    string field = parameterObject["booleans"][i].asString();
     StringUtils::ToLower(field);
 
     // Need to override power management of whats in infomanager since jsonrpc

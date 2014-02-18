@@ -37,7 +37,7 @@ namespace XFILE
   {
   }
 
-  bool CPlaylistFileDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
+  bool CPlaylistFileDirectory::GetDirectory(const string& strPath, CFileItemList& items)
   {
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPath));
     if ( NULL != pPlayList.get())
@@ -58,7 +58,7 @@ namespace XFILE
     return true;
   }
 
-  bool CPlaylistFileDirectory::ContainsFiles(const CStdString& strPath)
+  bool CPlaylistFileDirectory::ContainsFiles(const string& strPath)
   {
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPath));
     if ( NULL != pPlayList.get())

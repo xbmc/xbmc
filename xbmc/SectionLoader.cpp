@@ -45,7 +45,7 @@ CSectionLoader::~CSectionLoader(void)
   UnloadAll();
 }
 
-LibraryLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnload /*=true*/, bool bLoadSymbols /*=false*/)
+LibraryLoader *CSectionLoader::LoadDLL(const string &dllname, bool bDelayUnload /*=true*/, bool bLoadSymbols /*=false*/)
 {
   CSingleLock lock(g_sectionLoader.m_critSection);
 
@@ -77,7 +77,7 @@ LibraryLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnl
   return newDLL.m_pDll;
 }
 
-void CSectionLoader::UnloadDLL(const CStdString &dllname)
+void CSectionLoader::UnloadDLL(const string &dllname)
 {
   CSingleLock lock(g_sectionLoader.m_critSection);
 

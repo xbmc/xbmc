@@ -51,7 +51,7 @@ namespace XFILE
   {
   }
 
-  bool CSmartPlaylistDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
+  bool CSmartPlaylistDirectory::GetDirectory(const string& strPath, CFileItemList& items)
   {
     // Load in the SmartPlaylist and get the WHERE query
     CSmartPlaylist playlist;
@@ -64,7 +64,7 @@ namespace XFILE
     return result;
   }
   
-  bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const CStdString &strBaseDir /* = "" */, bool filter /* = false */)
+  bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const string &strBaseDir /* = "" */, bool filter /* = false */)
   {
     bool success = false, success2 = false;
     vector<string> virtualFolders;
@@ -79,7 +79,7 @@ namespace XFILE
     items.SetSortIgnoreFolders((sorting.sortAttributes & SortAttributeIgnoreFolders) == SortAttributeIgnoreFolders);
 
     string option = !filter ? "xsp" : "filter";
-    const CStdString& group = playlist.GetGroup();
+    const string& group = playlist.GetGroup();
     bool isGrouped = !group.empty() && !StringUtils::EqualsNoCase(group, "none") && !playlist.IsGroupMixed();
 
     // get all virtual folders and add them to the item list
@@ -103,7 +103,7 @@ namespace XFILE
       {
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(playlist.GetType());
 
-        CStdString baseDir = strBaseDir;
+        string baseDir = strBaseDir;
         if (strBaseDir.empty())
         {
           switch (mediaType)
@@ -139,7 +139,7 @@ namespace XFILE
           return false;
 
         // store the smartplaylist as JSON in the URL as well
-        CStdString xsp;
+        string xsp;
         if (!playlist.IsEmpty(filter))
         {
           if (!playlist.SaveAsJson(xsp, !filter))
@@ -173,7 +173,7 @@ namespace XFILE
 
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(plist.GetType());
 
-        CStdString baseDir = strBaseDir;
+        string baseDir = strBaseDir;
         if (strBaseDir.empty())
         {
           baseDir = "musicdb://";
@@ -208,7 +208,7 @@ namespace XFILE
           return false;
 
         // store the smartplaylist as JSON in the URL as well
-        CStdString xsp;
+        string xsp;
         if (!plist.IsEmpty(filter))
         {
           if (!plist.SaveAsJson(xsp, !filter))
@@ -238,7 +238,7 @@ namespace XFILE
         if (StringUtils::EqualsNoCase(playlist.GetType(), "mixed"))
           mvidPlaylist.SetType("musicvideos");
 
-        CStdString baseDir = strBaseDir;
+        string baseDir = strBaseDir;
         if (baseDir.empty())
         {
           baseDir = "videodb://musicvideos/";
@@ -255,7 +255,7 @@ namespace XFILE
           return false;
 
         // store the smartplaylist as JSON in the URL as well
-        CStdString xsp;
+        string xsp;
         if (!mvidPlaylist.IsEmpty(filter))
         {
           if (!mvidPlaylist.SaveAsJson(xsp, !filter))
@@ -320,13 +320,13 @@ namespace XFILE
       return success;
   }
 
-  bool CSmartPlaylistDirectory::ContainsFiles(const CStdString& strPath)
+  bool CSmartPlaylistDirectory::ContainsFiles(const string& strPath)
   {
     // smart playlists always have files??
     return true;
   }
 
-  CStdString CSmartPlaylistDirectory::GetPlaylistByName(const CStdString& name, const CStdString& playlistType)
+  string CSmartPlaylistDirectory::GetPlaylistByName(const string& name, const string& playlistType)
   {
     CFileItemList list;
     bool filesExist = false;

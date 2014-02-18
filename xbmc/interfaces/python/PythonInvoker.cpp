@@ -78,9 +78,9 @@ extern "C"
 
 CCriticalSection CPythonInvoker::s_critical;
 
-static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
+static const string getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
 {
-  CStdString message;
+  string message;
   CSingleLock l(*(languageHook.get()));
   std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
@@ -146,7 +146,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 {
   // copy the code/script into a local string buffer
 #ifdef TARGET_WINDOWS
-  CStdString strsrc = script;
+  string strsrc = script;
   g_charsetConverter.utf8ToSystem(strsrc);
   m_source = new char[strsrc.length() + 1];
   strcpy(m_source, strsrc);
@@ -189,7 +189,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
-  CStdString scriptDir = URIUtils::GetDirectory(CSpecialProtocol::TranslatePath(m_source));
+  string scriptDir = URIUtils::GetDirectory(CSpecialProtocol::TranslatePath(m_source));
   URIUtils::RemoveSlashAtEnd(scriptDir);
   addPath(scriptDir);
 
@@ -529,7 +529,7 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   PyObject *pyaddonid = PyString_FromString(m_addon->ID().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);
 
-  CStdString version = ADDON::GetXbmcApiVersionDependency(m_addon);
+  string version = ADDON::GetXbmcApiVersionDependency(m_addon);
   PyObject *pyxbmcapiversion = PyString_FromString(version.c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
 
@@ -550,17 +550,17 @@ void CPythonInvoker::onError()
   CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
   if (pDlgToast != NULL)
   {
-    CStdString desc;
-    CStdString script;
+    string desc;
+    string script;
     if (m_addon.get() != NULL)
       script = m_addon->Name();
     else
     {
-      CStdString path;
+      string path;
       URIUtils::Split(m_source, path, script);
       if (StringUtils::EqualsNoCase(script, "default.py"))
       {
-        CStdString path2;
+        string path2;
         URIUtils::RemoveSlashAtEnd(path);
         URIUtils::Split(path, path2, script);
       }
@@ -603,7 +603,7 @@ void CPythonInvoker::addPath(const std::string& path)
     m_pythonPath += PY_PATH_SEP;
 
 #if defined(TARGET_WINDOWS)
-  CStdString tmp(path);
+  string tmp(path);
   g_charsetConverter.utf8ToSystem(tmp);
   m_pythonPath += tmp;
 #else

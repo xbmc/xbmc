@@ -59,8 +59,8 @@ public:
   static CCdInfo* GetCdInfo();
   static CEvent m_evAutorun;
 
-  static const CStdString &GetDVDLabel();
-  static const CStdString &GetDVDPath();
+  static const std::string &GetDVDLabel();
+  static const std::string &GetDVDPath();
 
   static void UpdateState();
 protected:
@@ -69,7 +69,7 @@ protected:
 
 
   void DetectMediaType();
-  void SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel );
+  void SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDDA, const std::string& strDiscLabel );
 
 private:
   static CCriticalSection m_muReadingMedia;
@@ -86,8 +86,8 @@ private:
   DWORD m_dwTrayCount;
   DWORD m_dwLastTrayState;
 
-  static CStdString m_diskLabel;
-  static CStdString m_diskPath;
+  static std::string m_diskLabel;
+  static std::string m_diskPath;
 
   boost::shared_ptr<CLibcdio> m_cdio;
 };

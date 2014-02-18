@@ -178,7 +178,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
   RESOLUTION_INFO res;
-  CStdString strSkinPath;
+  string strSkinPath;
   if (!forceFallback)
   {
     /* Check to see if the XML file exists in current skin. If not use
@@ -188,7 +188,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
     if (!XFILE::CFile::Exists(strSkinPath))
     {
       /* Check for the matching folder for the skin in the fallback skins folder */
-      CStdString basePath = URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources");
+      string basePath = URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources");
       basePath = URIUtils::AddFileToFolder(basePath, "skins");
       basePath = URIUtils::AddFileToFolder(basePath, URIUtils::GetFileName(g_SkinInfo->Path()));
       strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
@@ -204,9 +204,9 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
   if (forceFallback)
   {
     //FIXME make this static method of current skin?
-    CStdString str("none");
+    string str("none");
     AddonProps props(str, ADDON_SKIN, str, str);
-    CStdString basePath = URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources");
+    string basePath = URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources");
     basePath = URIUtils::AddFileToFolder(basePath, "skins");
     basePath = URIUtils::AddFileToFolder(basePath, defaultSkin);
     props.path = basePath;
@@ -518,7 +518,7 @@ void CAddonCallbacksGUI::Window_SetProperty(void *addonData, GUIHANDLE handle, c
   if (!pWindow)
     return;
 
-  CStdString lowerKey = key;
+  string lowerKey = key;
   StringUtils::ToLower(lowerKey);
 
   Lock();
@@ -545,7 +545,7 @@ void CAddonCallbacksGUI::Window_SetPropertyInt(void *addonData, GUIHANDLE handle
   if (!pWindow)
     return;
 
-  CStdString lowerKey = key;
+  string lowerKey = key;
   StringUtils::ToLower(lowerKey);
 
   Lock();
@@ -572,7 +572,7 @@ void CAddonCallbacksGUI::Window_SetPropertyBool(void *addonData, GUIHANDLE handl
   if (!pWindow)
     return;
 
-  CStdString lowerKey = key;
+  string lowerKey = key;
   StringUtils::ToLower(lowerKey);
 
   Lock();
@@ -599,7 +599,7 @@ void CAddonCallbacksGUI::Window_SetPropertyDouble(void *addonData, GUIHANDLE han
   if (!pWindow)
     return;
 
-  CStdString lowerKey = key;
+  string lowerKey = key;
   StringUtils::ToLower(lowerKey);
 
   Lock();
@@ -626,7 +626,7 @@ const char* CAddonCallbacksGUI::Window_GetProperty(void *addonData, GUIHANDLE ha
   if (!pWindow)
     return NULL;
 
-  CStdString lowerKey = key;
+  string lowerKey = key;
   StringUtils::ToLower(lowerKey);
 
   Lock();
@@ -655,7 +655,7 @@ int CAddonCallbacksGUI::Window_GetPropertyInt(void *addonData, GUIHANDLE handle,
   if (!pWindow)
     return -1;
 
-  CStdString lowerKey = key;
+  string lowerKey = key;
   StringUtils::ToLower(lowerKey);
 
   Lock();
@@ -684,7 +684,7 @@ bool CAddonCallbacksGUI::Window_GetPropertyBool(void *addonData, GUIHANDLE handl
   if (!pWindow)
     return false;
   
-  CStdString lowerKey = key;
+  string lowerKey = key;
   StringUtils::ToLower(lowerKey);
 
   Lock();
@@ -713,7 +713,7 @@ double CAddonCallbacksGUI::Window_GetPropertyDouble(void *addonData, GUIHANDLE h
   if (!pWindow)
     return 0.0;
   
-  CStdString lowerKey = key;
+  string lowerKey = key;
   StringUtils::ToLower(lowerKey);
 
   Lock();
@@ -1131,7 +1131,7 @@ const char* CAddonCallbacksGUI::Control_Progress_GetDescription(void *addonData,
     return NULL;
 
   CGUIProgressControl *pControl = (CGUIProgressControl*)handle;
-  CStdString string = pControl->GetDescription();
+  string string = pControl->GetDescription();
 
   char *buffer = (char*) malloc (string.length()+1);
   strcpy(buffer, string.c_str());
@@ -1169,7 +1169,7 @@ const char* CAddonCallbacksGUI::ListItem_GetLabel(void *addonData, GUIHANDLE han
   if (!helper || !handle)
     return NULL;
 
-  CStdString string = ((CFileItem*)handle)->GetLabel();
+  string string = ((CFileItem*)handle)->GetLabel();
   char *buffer = (char*) malloc (string.length()+1);
   strcpy(buffer, string.c_str());
   return buffer;
@@ -1190,7 +1190,7 @@ const char* CAddonCallbacksGUI::ListItem_GetLabel2(void *addonData, GUIHANDLE ha
   if (!helper || !handle)
     return NULL;
 
-  CStdString string = ((CFileItem*)handle)->GetLabel2();
+  string string = ((CFileItem*)handle)->GetLabel2();
 
   char *buffer = (char*) malloc (string.length()+1);
   strcpy(buffer, string.c_str());
@@ -1296,7 +1296,7 @@ void CAddonCallbacksGUI::RenderAddon_Delete(void *addonData, GUIHANDLE handle)
 
 
 
-CGUIAddonWindow::CGUIAddonWindow(int id, CStdString strXML, CAddon* addon)
+CGUIAddonWindow::CGUIAddonWindow(int id, string strXML, CAddon* addon)
  : CGUIMediaWindow(id, strXML)
  , m_iWindowId(id)
  , m_iOldWindowId(0)
@@ -1430,8 +1430,8 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
 
 void CGUIAddonWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
-  CStdString tmpDir = URIUtils::GetDirectory(GetProperty("xmlfile").asString());
-  CStdString fallbackMediaPath;
+  string tmpDir = URIUtils::GetDirectory(GetProperty("xmlfile").asString());
+  string fallbackMediaPath;
   URIUtils::GetParentPath(tmpDir, fallbackMediaPath);
   URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
   m_mediaDir = fallbackMediaPath;
@@ -1547,7 +1547,7 @@ void CGUIAddonWindow::SetupShares()
 }
 
 
-CGUIAddonWindowDialog::CGUIAddonWindowDialog(int id, CStdString strXML, CAddon* addon)
+CGUIAddonWindowDialog::CGUIAddonWindowDialog(int id, string strXML, CAddon* addon)
 : CGUIAddonWindow(id,strXML,addon)
 {
   m_bRunning = false;

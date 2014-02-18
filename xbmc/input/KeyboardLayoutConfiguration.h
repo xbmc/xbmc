@@ -44,7 +44,7 @@ public:
   CKeyboardLayoutConfiguration();
   ~CKeyboardLayoutConfiguration();
 
-  bool Load(const CStdString& strFileName);
+  bool Load(const std::string& strFileName);
 
   bool containsChangeXbmcCharRegardlessModifiers(WCHAR key);
   bool containsChangeXbmcCharWithRalt(WCHAR key);

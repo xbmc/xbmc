@@ -71,12 +71,12 @@ protected:
   CSmartPlaylistRule* AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
   void DeleteRule(Field field);
   void GetRange(const Filter &filter, float &min, float &interval, float &max, RANGEFORMATFUNCTION &formatFunction);
-  bool GetMinMax(const CStdString &table, const CStdString &field, float &min, float &max, const CDatabase::Filter &filter = CDatabase::Filter());
+  bool GetMinMax(const std::string &table, const std::string &field, float &min, float &max, const CDatabase::Filter &filter = CDatabase::Filter());
 
-  static CStdString RangeAsFloat(float valueLower, float valueUpper, float minimum);
-  static CStdString RangeAsInt(float valueLower, float valueUpper, float minimum);
-  static CStdString RangeAsDate(float valueLower, float valueUpper, float minimum);
-  static CStdString RangeAsTime(float valueLower, float valueUpper, float minimum);
+  static std::string RangeAsFloat(float valueLower, float valueUpper, float minimum);
+  static std::string RangeAsInt(float valueLower, float valueUpper, float minimum);
+  static std::string RangeAsDate(float valueLower, float valueUpper, float minimum);
+  static std::string RangeAsTime(float valueLower, float valueUpper, float minimum);
 
   CDbUrl* m_dbUrl;
   std::string m_mediaType;

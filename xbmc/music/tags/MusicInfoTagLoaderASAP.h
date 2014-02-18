@@ -30,7 +30,7 @@ namespace MUSIC_INFO
     CMusicInfoTagLoaderASAP(void);
     virtual ~CMusicInfoTagLoaderASAP();
 
-    virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
+    virtual bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
   private:
     DllASAP m_dll;
   };

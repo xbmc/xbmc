@@ -72,7 +72,7 @@ bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
         OnCancel();
       else if (iControl == CONTROL_VALUE)
       {
-        CStdString parameter;
+        string parameter;
         OnEditChanged(iControl, parameter);
         m_rule.SetParameter(parameter);
       }
@@ -254,7 +254,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     // Note: This can cause infinite loops (playlist that refers to the same playlist) but I don't
     //       think there's any decent way to deal with this, as the infinite loop may be an arbitrary
     //       number of playlists deep, eg playlist1 -> playlist2 -> playlist3 ... -> playlistn -> playlist1
-    CStdString path = "special://videoplaylists/";
+    string path = "special://videoplaylists/";
     if (StringUtils::EqualsNoCase(m_type, "songs") || StringUtils::EqualsNoCase(m_type, "albums") || StringUtils::EqualsNoCase(m_type, "artists"))
       path = "special://musicplaylists/";
     XFILE::CDirectory::GetDirectory(path, items, ".xsp", XFILE::DIR_FLAG_NO_FILE_DIRS);
@@ -291,7 +291,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     g_mediaManager.GetLocalDrives(sources);
     
-    CStdString path = m_rule.GetParameter();
+    string path = m_rule.GetParameter();
     CGUIDialogFileBrowser::ShowAndGetDirectory(sources, g_localizeStrings.Get(657), path, false);
     if (m_rule.m_parameter.size() > 0)
       m_rule.m_parameter.clear();
@@ -330,7 +330,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
   pDialog->SetItems(&items);
-  CStdString strHeading = StringUtils::Format(g_localizeStrings.Get(13401).c_str(), g_localizeStrings.Get(iLabel).c_str());
+  string strHeading = StringUtils::Format(g_localizeStrings.Get(13401).c_str(), g_localizeStrings.Get(iLabel).c_str());
   pDialog->SetHeading(strHeading);
   pDialog->SetMultiSelection(m_rule.m_field != FieldPlaylist && m_rule.m_field != FieldVirtualFolder);
 
@@ -516,7 +516,7 @@ void CGUIDialogSmartPlaylistRule::OnDeinitWindow(int nextWindowID)
   SendMessage(GUI_MSG_LABEL_RESET, CONTROL_OPERATOR);
 }
 
-bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdString& type)
+bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const string& type)
 {
   CGUIDialogSmartPlaylistRule *editor = (CGUIDialogSmartPlaylistRule *)g_windowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
   if (!editor) return false;

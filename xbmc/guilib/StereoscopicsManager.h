@@ -49,9 +49,9 @@ public:
   RENDER_STEREO_MODE GetStereoMode(void);
   RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1);
   std::string DetectStereoModeByString(const std::string &needle);
-  RENDER_STEREO_MODE GetStereoModeByUserChoice(const CStdString &heading = "");
+  RENDER_STEREO_MODE GetStereoModeByUserChoice(const std::string &heading = "");
   RENDER_STEREO_MODE GetStereoModeOfPlayingVideo(void);
-  CStdString GetLabelForStereoMode(const RENDER_STEREO_MODE &mode);
+  std::string GetLabelForStereoMode(const RENDER_STEREO_MODE &mode);
   RENDER_STEREO_MODE GetPreferredPlaybackMode(void);
   int ConvertVideoToGuiStereoMode(const std::string &mode);
   /**

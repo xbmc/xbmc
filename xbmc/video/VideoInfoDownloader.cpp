@@ -49,7 +49,7 @@ CVideoInfoDownloader::~CVideoInfoDownloader()
 }
 
 // return value: 0 = we failed, -1 = we failed and reported an error, 1 = success
-int CVideoInfoDownloader::InternalFindMovie(const CStdString &strMovie,
+int CVideoInfoDownloader::InternalFindMovie(const string &strMovie,
                                             MOVIELIST& movielist,
                                             bool cleanChars /* = true */)
 {
@@ -115,7 +115,7 @@ void CVideoInfoDownloader::Process()
   m_state = DO_NOTHING;
 }
 
-int CVideoInfoDownloader::FindMovie(const CStdString &strMovie,
+int CVideoInfoDownloader::FindMovie(const string &strMovie,
                                     MOVIELIST& movieList,
                                     CGUIDialogProgress *pProgress /* = NULL */)
 {

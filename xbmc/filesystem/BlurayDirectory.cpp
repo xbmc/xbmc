@@ -58,10 +58,10 @@ void CBlurayDirectory::Dispose()
   m_dll = NULL;
 }
 
-CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const CStdString& label)
+CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const string& label)
 {
-  CStdString buf;
-  CStdString chap;
+  string buf;
+  string chap;
   CFileItemPtr item(new CFileItem("", false));
   CURL path(m_url);
   buf = StringUtils::Format("BDMV/PLAYLIST/%05d.mpls", title->playlist);
@@ -86,7 +86,7 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const CS
 void CBlurayDirectory::GetTitles(bool main, CFileItemList &items)
 {
   unsigned titles = m_dll->bd_get_titles(m_bd, TITLES_RELEVANT, 0);
-  CStdString buf;
+  string buf;
 
   std::vector<BLURAY_TITLE_INFO*> buffer;
 
@@ -147,12 +147,12 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     items.Add(item);
 }
 
-bool CBlurayDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
+bool CBlurayDirectory::GetDirectory(const string& path, CFileItemList &items)
 {
   Dispose();
   m_url.Parse(path);
-  CStdString root = m_url.GetHostName();
-  CStdString file = m_url.GetFileName();
+  string root = m_url.GetHostName();
+  string file = m_url.GetFileName();
   URIUtils::RemoveSlashAtEnd(file);
   URIUtils::RemoveSlashAtEnd(root);
 

@@ -205,25 +205,25 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
   {
     SET_CONTROL_LABEL(controlID,setting.name);
     CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(controlID);
-    if (pControl && setting.data) pControl->SetLabel2(*(CStdString *)setting.data);
+    if (pControl && setting.data) pControl->SetLabel2(*(string *)setting.data);
   }
   else if (setting.type == SettingInfo::EDIT)
   {
     SET_CONTROL_LABEL(controlID, setting.name);
-    if (setting.data) SET_CONTROL_LABEL2(controlID, string(*(CStdString *)setting.data));
+    if (setting.data) SET_CONTROL_LABEL2(controlID, string(*(string *)setting.data));
   }
   else if (setting.type == SettingInfo::EDIT_NUM)
   {
     CGUIEditControl *pControl = (CGUIEditControl *)GetControl(controlID);
     if (pControl && setting.data) {
-      CStdString strIndex = StringUtils::Format("%i", *(int *)setting.data);
+      string strIndex = StringUtils::Format("%i", *(int *)setting.data);
       pControl->SetLabel2(strIndex);
     }
   }
   else if (setting.type == SettingInfo::STRING)
   {
     SET_CONTROL_LABEL(controlID, setting.name);
-    string strNewValue = string(*(CStdString *)setting.data);
+    string strNewValue = string(*(string *)setting.data);
     if (strNewValue.empty())
       strNewValue = "-";
     SET_CONTROL_LABEL2(controlID, strNewValue);
@@ -281,18 +281,18 @@ void CGUIDialogSettings::OnClick(int iID)
   else if (setting.type == SettingInfo::BUTTON_DIALOG)
   {
     CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(iID);
-    if (setting.data) *(CStdString *)setting.data = pControl->GetLabel2();
+    if (setting.data) *(string *)setting.data = pControl->GetLabel2();
   }
   else if (setting.type == SettingInfo::EDIT)
   {
     CGUIEditControl *pControl = (CGUIEditControl *)GetControl(iID);
-    if (setting.data) *(CStdString *)setting.data = pControl->GetLabel2();
+    if (setting.data) *(string *)setting.data = pControl->GetLabel2();
   }
   else if (setting.type == SettingInfo::EDIT_NUM)
   {
     CGUIEditControl *pControl = (CGUIEditControl *)GetControl(iID);
     if (setting.data) {
-        CStdString strIndex = pControl->GetLabel2();
+        string strIndex = pControl->GetLabel2();
         *(int *)setting.data = atol(strIndex.c_str());
     }
   }
@@ -320,8 +320,8 @@ void CGUIDialogSettings::OnClick(int iID)
   }
   else if (setting.type == SettingInfo::STRING)
   {
-    CGUIKeyboardFactory::ShowAndGetInput(*(CStdString *) setting.data, true);
-    string strNewValue = string(*(CStdString *)setting.data);
+    CGUIKeyboardFactory::ShowAndGetInput(*(string *) setting.data, true);
+    string strNewValue = string(*(string *)setting.data);
     if (strNewValue.empty())
       strNewValue = "-";
     SET_CONTROL_LABEL2(iID, strNewValue);
@@ -362,7 +362,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     if (!pControl) return ;
     ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
     pControl->SetWidth(width);
-	if (setting.data) ((CGUIButtonControl *)pControl)->SetLabel2(*(CStdString *)setting.data);
+	if (setting.data) ((CGUIButtonControl *)pControl)->SetLabel2(*(string *)setting.data);
   }
   else if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton)
   {
@@ -379,7 +379,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     if (!pControl) return ;
     ((CGUIEditControl *)pControl)->SetLabel(setting.name);
     pControl->SetWidth(width);
-    if (setting.data) ((CGUIEditControl *)pControl)->SetLabel2(*(CStdString *)setting.data);
+    if (setting.data) ((CGUIEditControl *)pControl)->SetLabel2(*(string *)setting.data);
   }
   else if (setting.type == SettingInfo::EDIT_NUM && m_pOriginalEditNum)
   {
@@ -389,7 +389,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     pControl->SetWidth(width);
     ((CGUIEditControl *)pControl)->SetInputType(CGUIEditControl::INPUT_TYPE_NUMBER, 0);
     if (setting.data) {
-        CStdString strIndex = StringUtils::Format("%i", *(int *)setting.data);
+        string strIndex = StringUtils::Format("%i", *(int *)setting.data);
         ((CGUIEditControl *)pControl)->SetLabel2(strIndex);
     }
   }
@@ -438,7 +438,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
     ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
-    string strValue = string(*(CStdString *)setting.data);
+    string strValue = string(*(string *)setting.data);
     if (strValue.empty())
       strValue = "-";
     ((CGUIButtonControl *)pControl)->SetLabel2(strValue);
@@ -478,7 +478,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     delete pControl;
 }
 
-void CGUIDialogSettings::AddEdit(unsigned int id, int label, CStdString *str, bool enabled)
+void CGUIDialogSettings::AddEdit(unsigned int id, int label, string *str, bool enabled)
 {
   SettingInfo setting;
   setting.id = id;
@@ -514,7 +514,7 @@ void CGUIDialogSettings::AddButton(unsigned int id, int label, float *current, f
   m_settings.push_back(setting);
 }
 
-void CGUIDialogSettings::AddButton(unsigned int id, int label, CStdString *str, bool bOn)
+void CGUIDialogSettings::AddButton(unsigned int id, int label, string *str, bool bOn)
 {
   SettingInfo setting;
   setting.id = id;
@@ -525,7 +525,7 @@ void CGUIDialogSettings::AddButton(unsigned int id, int label, CStdString *str, 
   m_settings.push_back(setting);
 }
 
-void CGUIDialogSettings::AddString(unsigned int id, int label, CStdString *current)
+void CGUIDialogSettings::AddString(unsigned int id, int label, string *current)
 {
   SettingInfo setting;
   setting.id = id;
@@ -580,7 +580,7 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsig
   setting.data = current;
   for (unsigned int i = min; i <= max; i++)
   {
-    CStdString format;
+    string format;
     if (i == min && minLabel)
       format = minLabel;
     else
@@ -590,7 +590,7 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsig
   m_settings.push_back(setting);
 }
 
-void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, vector<pair<int, CStdString> > &values)
+void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, vector<pair<int, string> > &values)
 {
   SettingInfo setting;
   setting.id = id;
@@ -605,7 +605,7 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, vecto
 
 void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, vector<pair<int, int> > &values)
 {
-  vector<pair<int, CStdString> > entries;
+  vector<pair<int, string> > entries;
   for(unsigned i = 0; i < values.size(); i++)
     entries.push_back(make_pair(values[i].first, g_localizeStrings.Get(values[i].second)));
   AddSpin(id, label, current, entries);

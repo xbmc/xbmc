@@ -56,7 +56,7 @@ SPCCodec::~SPCCodec()
   DeInit();
 }
 
-bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool SPCCodec::Init(const string &strFile, unsigned int filecache)
 {
   // SNESAPU can ONLY be opened and used by one instance (lot's of statics).
   // So to work around this problem with SNESAPU, we need to make sure that

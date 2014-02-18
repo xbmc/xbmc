@@ -113,7 +113,7 @@ NPT_String
 GetMimeType(const CFileItem& item,
             const PLT_HttpRequestContext* context /* = NULL */)
 {
-    CStdString path = item.GetPath();
+    string path = item.GetPath();
     if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().empty()) {
         path = item.GetVideoInfoTag()->GetPath();
     } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().empty()) {
@@ -559,7 +559,7 @@ BuildObject(CFileItem&                    item,
     // set a title for the object
     if (object->m_Title.IsEmpty()) {
         if (!item.GetLabel().empty()) {
-            CStdString title = item.GetLabel();
+            string title = item.GetLabel();
             if (item.IsPlayList() || !item.m_bIsFolder) URIUtils::RemoveExtension(title);
             object->m_Title = title.c_str();
         }
@@ -601,8 +601,8 @@ failure:
 /*----------------------------------------------------------------------
 |   CUPnPServer::CorrectAllItemsSortHack
 +---------------------------------------------------------------------*/
-const CStdString&
-CorrectAllItemsSortHack(const CStdString &item)
+const string&
+CorrectAllItemsSortHack(const string &item)
 {
     // This is required as in order for the "* All Albums" etc. items to sort
     // correctly, they must have fake artist/album etc. information generated.
@@ -921,7 +921,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     {
       if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
       {
-        CStdString prop = StringUtils::Format("upnp:subtitle:%d", ++subs);
+        string prop = StringUtils::Format("upnp:subtitle:%d", ++subs);
         item.SetProperty(prop, (const char*)res.m_Uri);
         break;
       }

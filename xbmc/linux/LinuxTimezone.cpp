@@ -46,15 +46,15 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
    char* line = NULL;
    size_t linelen = 0;
    int nameonfourthfield = 0;
-   CStdString s;
+   string s;
    std::vector<std::string> tokens;
 
    // Load timezones
    FILE* fp = fopen("/usr/share/zoneinfo/zone.tab", "r");
    if (fp)
    {
-      CStdString countryCode;
-      CStdString timezoneName;
+      string countryCode;
+      string timezoneName;
 
       while (getdelim(&line, &linelen, '\n', fp) > 0)
       {
@@ -108,8 +108,8 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
    }
    if (fp)
    {
-      CStdString countryCode;
-      CStdString countryName;
+      string countryCode;
+      string countryName;
 
       while (getdelim(&line, &linelen, '\n', fp) > 0)
       {
@@ -181,21 +181,21 @@ vector<string> CLinuxTimezone::GetCounties()
    return m_counties;
 }
 
-vector<string> CLinuxTimezone::GetTimezonesByCountry(const CStdString country)
+vector<string> CLinuxTimezone::GetTimezonesByCountry(const string country)
 {
    return m_timezonesByCountryCode[m_countryByName[country]];
 }
 
-CStdString CLinuxTimezone::GetCountryByTimezone(const CStdString timezone)
+string CLinuxTimezone::GetCountryByTimezone(const string timezone)
 {
 #if defined(TARGET_DARWIN)
-   return CStdString("?");
+   return string("?");
 #else
    return m_countryByCode[m_countriesByTimezoneName[timezone]];
 #endif
 }
 
-void CLinuxTimezone::SetTimezone(CStdString timezoneName)
+void CLinuxTimezone::SetTimezone(string timezoneName)
 {
   bool use_timezone = false;
   
@@ -215,7 +215,7 @@ void CLinuxTimezone::SetTimezone(CStdString timezoneName)
   }
 }
 
-CStdString CLinuxTimezone::GetOSConfiguredTimezone()
+string CLinuxTimezone::GetOSConfiguredTimezone()
 {
    char timezoneName[255];
 

@@ -67,7 +67,7 @@ void CKaraokeWindowBackground::Init(CGUIWindow * wnd)
   m_ImgControl = (CGUIImage*) wnd->GetControl( CONTROL_ID_IMG );
 
   // Init visialisation variables
-  CStdString defBkgType = g_advancedSettings.m_karaokeDefaultBackgroundType;
+  string defBkgType = g_advancedSettings.m_karaokeDefaultBackgroundType;
 
   if ( defBkgType.empty() || defBkgType == "none" )
   {
@@ -167,7 +167,7 @@ void CKaraokeWindowBackground::StartVisualisation()
 }
 
 
-void CKaraokeWindowBackground::StartImage( const CStdString& path )
+void CKaraokeWindowBackground::StartImage( const string& path )
 {
   // Showing controls
   m_ImgControl->SetVisible( true );
@@ -180,7 +180,7 @@ void CKaraokeWindowBackground::StartImage( const CStdString& path )
 }
 
 
-void CKaraokeWindowBackground::StartVideo( const CStdString& path )
+void CKaraokeWindowBackground::StartVideo( const string& path )
 {
   if ( !m_videoPlayer )
 	m_videoPlayer = new KaraokeVideoBackground();

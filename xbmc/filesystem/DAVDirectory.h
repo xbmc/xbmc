@@ -30,11 +30,11 @@ namespace XFILE
     public:
       CDAVDirectory(void);
       virtual ~CDAVDirectory(void);
-      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+      virtual bool GetDirectory(const std::string& strPath, CFileItemList &items);
       virtual bool Create(const char* strPath);
       virtual bool Exists(const char* strPath);
       virtual bool Remove(const char* strPath);
-      virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
+      virtual DIR_CACHE_TYPE GetCacheType(const std::string& strPath) const { return DIR_CACHE_ONCE; };
     private:
       void ParseResponse(const TiXmlElement *pElement, CFileItem &item);
   };

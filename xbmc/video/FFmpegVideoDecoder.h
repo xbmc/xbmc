@@ -59,7 +59,7 @@ public:
    * 
    * @param filename The video file name, which must be translated through CSpecialProtocol::TranslatePath()
    */
-  bool open( const CStdString& filename );
+  bool open( const std::string& filename );
 
   /**
    * Returns true if the decoder has the video file opened.
@@ -111,7 +111,7 @@ public:
   /**
    * Returns the error message text if opening the video failed
    */  
-  CStdString getErrorMsg() const;
+  std::string getErrorMsg() const;
 
   /**
    * Decodes and renders the next video frame into the provided texture which
@@ -157,7 +157,7 @@ private:
   unsigned int     m_frameRGBwidth;
   unsigned int     m_frameRGBheight;
   
-  CStdString       m_errorMsg;
+  std::string       m_errorMsg;
 };
 
 #endif

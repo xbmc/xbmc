@@ -41,7 +41,7 @@ PCMCodec::~PCMCodec()
   DeInit();
 }
 
-bool PCMCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool PCMCodec::Init(const string &strFile, unsigned int filecache)
 {
   m_file.Close();
   if (!m_file.Open(strFile, READ_CACHED))
@@ -97,7 +97,7 @@ bool PCMCodec::CanInit()
   return true;
 }
 
-void PCMCodec::SetMimeParams(const CStdString& strMimeParams)
+void PCMCodec::SetMimeParams(const string& strMimeParams)
 {
   // if there are no parameters, the default is 2 channels, 44100 samples/sec
   m_Channels = 2;

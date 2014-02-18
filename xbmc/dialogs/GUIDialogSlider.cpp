@@ -75,7 +75,7 @@ bool CGUIDialogSlider::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogSlider::SetSlider(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
+void CGUIDialogSlider::SetSlider(const string &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
 {
   SET_CONTROL_LABEL(CONTROL_HEADING, label);
   CGUISliderControl *slider = (CGUISliderControl *)GetControl(CONTROL_SLIDER);
@@ -103,7 +103,7 @@ void CGUIDialogSlider::OnWindowLoaded()
   CGUIDialog::OnWindowLoaded();
 }
 
-void CGUIDialogSlider::ShowAndGetInput(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
+void CGUIDialogSlider::ShowAndGetInput(const string &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
 {
   // grab the slider dialog
   CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);

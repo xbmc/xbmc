@@ -144,14 +144,14 @@ bool CExternalPlayer::IsPlaying() const
 
 void CExternalPlayer::Process()
 {
-  CStdString mainFile = m_launchFilename;
-  CStdString archiveContent = "";
+  string mainFile = m_launchFilename;
+  string archiveContent = "";
 
   if (m_args.find("{0}") == std::string::npos)
   {
     // Unwind archive names
     CURL url(m_launchFilename);
-    CStdString protocol = url.GetProtocol();
+    string protocol = url.GetProtocol();
     if (protocol == "zip" || protocol == "rar"/* || protocol == "iso9660" ??*/ || protocol == "udf")
     {
       mainFile = url.GetHostName();
@@ -182,7 +182,7 @@ void CExternalPlayer::Process()
       if (vecSplit.size() != 4)
         continue;
 
-      CStdString strMatch = vecSplit[0];
+      string strMatch = vecSplit[0];
       StringUtils::Replace(strMatch, ",,",",");
       bool bCaseless = vecSplit[3].find('i') != std::string::npos;
       CRegExp regExp(bCaseless, CRegExp::autoUtf8);
@@ -195,7 +195,7 @@ void CExternalPlayer::Process()
 
       if (regExp.RegFind(mainFile) > -1)
       {
-        CStdString strPat = vecSplit[1];
+        string strPat = vecSplit[1];
         StringUtils::Replace(strPat, ",,",",");
 
         if (!regExp.RegComp(strPat.c_str()))
@@ -204,7 +204,7 @@ void CExternalPlayer::Process()
           continue;
         }
 
-        CStdString strRep = vecSplit[2];
+        string strRep = vecSplit[2];
         StringUtils::Replace(strRep, ",,",",");
         bool bGlobal = vecSplit[3].find('g') != std::string::npos;
         bool bStop = vecSplit[3].find('s') != std::string::npos;
@@ -229,8 +229,8 @@ void CExternalPlayer::Process()
   CLog::Log(LOGNOTICE, "%s: Start", __FUNCTION__);
 
   // make sure we surround the arguments with quotes where necessary
-  CStdString strFName;
-  CStdString strFArgs;
+  string strFName;
+  string strFArgs;
 #if defined(TARGET_WINDOWS)
   // W32 batch-file handline
   if (StringUtils::EndsWith(m_filename, ".bat") || StringUtils::EndsWith(m_filename, ".cmd"))
@@ -537,17 +537,17 @@ void CExternalPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }
 
-void CExternalPlayer::GetAudioInfo(CStdString& strAudioInfo)
+void CExternalPlayer::GetAudioInfo(string& strAudioInfo)
 {
   strAudioInfo = "CExternalPlayer:GetAudioInfo";
 }
 
-void CExternalPlayer::GetVideoInfo(CStdString& strVideoInfo)
+void CExternalPlayer::GetVideoInfo(string& strVideoInfo)
 {
   strVideoInfo = "CExternalPlayer:GetVideoInfo";
 }
 
-void CExternalPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
+void CExternalPlayer::GetGeneralInfo(string& strGeneralInfo)
 {
   strGeneralInfo = "CExternalPlayer:GetGeneralInfo";
 }
@@ -620,12 +620,12 @@ void CExternalPlayer::ShowOSD(bool bOnoff)
 {
 }
 
-CStdString CExternalPlayer::GetPlayerState()
+string CExternalPlayer::GetPlayerState()
 {
   return "";
 }
 
-bool CExternalPlayer::SetPlayerState(CStdString state)
+bool CExternalPlayer::SetPlayerState(string state)
 {
   return true;
 }
@@ -639,7 +639,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   }
   else
   {
-    CStdString xml;
+    string xml;
     xml<<*pConfig;
     CLog::Log(LOGERROR, "ExternalPlayer Error: filename element missing from: %s", xml.c_str());
     return false;
@@ -661,7 +661,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   if (XMLUtils::GetBoolean(pConfig, "hidecursor", bHideCursor) && bHideCursor)
     m_warpcursor = WARP_BOTTOM_RIGHT;
 
-  CStdString warpCursor;
+  string warpCursor;
   if (XMLUtils::GetString(pConfig, "warpcursor", warpCursor) && !warpCursor.empty())
   {
     if (warpCursor == "bottomright") m_warpcursor = WARP_BOTTOM_RIGHT;
@@ -731,9 +731,9 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
       bool bGlobal = szGlobal && stricmp(szGlobal, "true") == 0;
       bool bStop = szStop && stricmp(szStop, "true") == 0;
 
-      CStdString strMatch;
-      CStdString strPat;
-      CStdString strRep;
+      string strMatch;
+      string strPat;
+      string strRep;
       XMLUtils::GetString(pReplacer,"match",strMatch);
       XMLUtils::GetString(pReplacer,"pat",strPat);
       XMLUtils::GetString(pReplacer,"rep",strRep);
@@ -748,7 +748,7 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
         StringUtils::Replace(strPat, ",",",,");
         StringUtils::Replace(strRep, ",",",,");
 
-        CStdString strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
+        string strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, strReplacer);
         else

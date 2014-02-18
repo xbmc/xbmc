@@ -56,7 +56,7 @@ public:
   // 2.  If it's using a filereader, initialize it with the appropriate cache size.
   // 3.  Load the file (or at least attempt to load it)
   // 4.  Fill in the m_TotalTime, m_SampleRate, m_BitsPerSample and m_Channels parameters.
-  virtual bool Init(const CStdString &strFile, unsigned int filecache)=0;
+  virtual bool Init(const std::string &strFile, unsigned int filecache)=0;
 
   // DeInit()
   // Should just cleanup anything as necessary.  No need to free buffers here if they
@@ -103,7 +103,7 @@ public:
   int m_BitsPerSample;
   enum AEDataFormat m_DataFormat;
   int m_Bitrate;
-  CStdString m_CodecName;
+  std::string m_CodecName;
   MUSIC_INFO::CMusicInfoTag m_tag;
   XFILE::CFile m_file;
 

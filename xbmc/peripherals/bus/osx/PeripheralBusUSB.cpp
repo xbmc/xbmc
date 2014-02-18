@@ -37,7 +37,7 @@ using namespace PERIPHERALS;
 
 typedef struct USBDevicePrivateData {
   CPeripheralBusUSB     *refCon;
-  CStdString            deviceName;
+  string            deviceName;
   io_object_t           notification;
   PeripheralScanResult  result;
 } USBDevicePrivateData;

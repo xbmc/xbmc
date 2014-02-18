@@ -214,7 +214,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
 
   //##########################################################
   // Compose the cddb query string
-  CStdString read_buffer = getInexactCommand(inexact_list_select);
+  string read_buffer = getInexactCommand(inexact_list_select);
   if (read_buffer.size() == 0)
   {
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Size of inexaxt_list_select are 0");
@@ -233,7 +233,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
-  CStdString recv_buffer = Recv(true);
+  string recv_buffer = Recv(true);
   m_lastError = atoi(recv_buffer.c_str());
   switch(m_lastError)
   {
@@ -413,9 +413,9 @@ void Xcddb::addTitle(string buffer)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-const CStdString& Xcddb::getInexactCommand(int select) const
+const string& Xcddb::getInexactCommand(int select) const
 {
-  typedef map<int, CStdString>::const_iterator iter;
+  typedef map<int, string>::const_iterator iter;
   iter i = m_mapInexact_cddb_command_list.find(select);
   if (i == m_mapInexact_cddb_command_list.end())
     return m_strNull;
@@ -423,9 +423,9 @@ const CStdString& Xcddb::getInexactCommand(int select) const
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-const CStdString& Xcddb::getInexactArtist(int select) const
+const string& Xcddb::getInexactArtist(int select) const
 {
-  typedef map<int, CStdString>::const_iterator iter;
+  typedef map<int, string>::const_iterator iter;
   iter i = m_mapInexact_artist_list.find(select);
   if (i == m_mapInexact_artist_list.end())
     return m_strNull;
@@ -433,9 +433,9 @@ const CStdString& Xcddb::getInexactArtist(int select) const
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-const CStdString& Xcddb::getInexactTitle(int select) const
+const string& Xcddb::getInexactTitle(int select) const
 {
-  typedef map<int, CStdString>::const_iterator iter;
+  typedef map<int, string>::const_iterator iter;
   iter i = m_mapInexact_title_list.find(select);
   if (i == m_mapInexact_title_list.end())
     return m_strNull;
@@ -443,9 +443,9 @@ const CStdString& Xcddb::getInexactTitle(int select) const
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-const CStdString& Xcddb::getTrackArtist(int track) const
+const string& Xcddb::getTrackArtist(int track) const
 {
-  typedef map<int, CStdString>::const_iterator iter;
+  typedef map<int, string>::const_iterator iter;
   iter i = m_mapArtists.find(track);
   if (i == m_mapArtists.end())
     return m_strNull;
@@ -453,9 +453,9 @@ const CStdString& Xcddb::getTrackArtist(int track) const
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-const CStdString& Xcddb::getTrackTitle(int track) const
+const string& Xcddb::getTrackTitle(int track) const
 {
-  typedef map<int, CStdString>::const_iterator iter;
+  typedef map<int, string>::const_iterator iter;
   iter i = m_mapTitles.find(track);
   if (i == m_mapTitles.end())
     return m_strNull;
@@ -463,13 +463,13 @@ const CStdString& Xcddb::getTrackTitle(int track) const
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-void Xcddb::getDiskTitle(CStdString& strdisk_title) const
+void Xcddb::getDiskTitle(string& strdisk_title) const
 {
   strdisk_title = m_strDisk_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-void Xcddb::getDiskArtist(CStdString& strdisk_artist) const
+void Xcddb::getDiskArtist(string& strdisk_artist) const
 {
   strdisk_artist = m_strDisk_artist;
 }
@@ -479,8 +479,8 @@ void Xcddb::parseData(const char *buffer)
 {
   //writeLog("parseData Start");
 
-  std::map<CStdString, CStdString> keywords;
-  std::list<CStdString> keywordsOrder; // remember order of keywords as it appears in data received from CDDB
+  std::map<string, string> keywords;
+  std::list<string> keywordsOrder; // remember order of keywords as it appears in data received from CDDB
 
   // Collect all the keywords and put them in map. 
   // Multiple occurrences of the same keyword indicate that 
@@ -496,15 +496,15 @@ void Xcddb::parseData(const char *buffer)
       char *s = strstr(line, "=");
       if (s != NULL)
       {
-        CStdString strKeyword(line, s - line);
+        string strKeyword(line, s - line);
         StringUtils::TrimRight(strKeyword);
 
-        CStdString strValue(s+1);
+        string strValue(s+1);
         StringUtils::Replace(strValue, "\\n", "\n");
         StringUtils::Replace(strValue, "\\t", "\t");
         StringUtils::Replace(strValue, "\\\\", "\\");
 
-        std::map<CStdString, CStdString>::const_iterator it = keywords.find(strKeyword);
+        std::map<string, string>::const_iterator it = keywords.find(strKeyword);
         if (it != keywords.end())
           strValue = it->second + strValue; // keyword occured before, concatenate
         else
@@ -516,10 +516,10 @@ void Xcddb::parseData(const char *buffer)
   }
 
   // parse keywords 
-  for (std::list<CStdString>::const_iterator it = keywordsOrder.begin(); it != keywordsOrder.end(); ++it)
+  for (std::list<string>::const_iterator it = keywordsOrder.begin(); it != keywordsOrder.end(); ++it)
   {
-    CStdString strKeyword = *it;
-    CStdString strValue = keywords[strKeyword];
+    string strKeyword = *it;
+    string strValue = keywords[strKeyword];
 
     /* TODO:STRING_CLEANUP */
     if (strKeyword == "DTITLE")
@@ -549,7 +549,7 @@ void Xcddb::parseData(const char *buffer)
       addTitle(strKeyword + "=" + strValue);
     else if (strKeyword == "EXTD")
     {
-      CStdString strExtd(strValue);
+      string strExtd(strValue);
 
       if (m_strYear.empty())
       {
@@ -567,7 +567,7 @@ void Xcddb::parseData(const char *buffer)
         size_t iPos = strExtd.find("ID3G: ");
         if (iPos != std::string::npos)
         {
-          CStdString strGenre = strExtd.substr(iPos + 5, 4);
+          string strGenre = strExtd.substr(iPos + 5, 4);
           StringUtils::TrimLeft(strGenre);
           if (StringUtils::IsNaturalNumber(strGenre))
           {
@@ -617,9 +617,9 @@ void Xcddb::addExtended(string buffer)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-const CStdString& Xcddb::getTrackExtended(int track) const
+const string& Xcddb::getTrackExtended(int track) const
 {
-  typedef map<int, CStdString>::const_iterator iter;
+  typedef map<int, string>::const_iterator iter;
   iter i = m_mapExtended_track.find(track);
   if (i == m_mapExtended_track.end())
     return m_strNull;
@@ -719,12 +719,12 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
 
   m_mapInexact_cddb_command_list[line_cnt] = cddb_command;
 
-  CStdString strArtist=artist;
+  string strArtist=artist;
   // You never know if you really get UTF-8 strings from cddb
   g_charsetConverter.unknownToUTF8(artist, strArtist);
   m_mapInexact_artist_list[line_cnt] = strArtist;
 
-  CStdString strTitle=title;
+  string strTitle=title;
   // You never know if you really get UTF-8 strings from cddb
   g_charsetConverter.unknownToUTF8(title, strTitle);
   m_mapInexact_title_list[line_cnt] = strTitle;
@@ -735,13 +735,13 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-void Xcddb::setCDDBIpAdress(const CStdString& ip_adress)
+void Xcddb::setCDDBIpAdress(const string& ip_adress)
 {
   m_cddb_ip_adress = ip_adress;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-void Xcddb::setCacheDir(const CStdString& pCacheDir )
+void Xcddb::setCacheDir(const string& pCacheDir )
 {
   cCacheDir = pCacheDir;
 }
@@ -795,13 +795,13 @@ bool Xcddb::isCDCached( int nr_of_tracks, toc cdtoc[] )
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-const CStdString& Xcddb::getYear() const
+const string& Xcddb::getYear() const
 {
   return m_strYear;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-const CStdString& Xcddb::getGenre() const
+const string& Xcddb::getGenre() const
 {
   return m_strGenre;
 }
@@ -853,7 +853,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
     m_lastError = E_NETWORK_ERROR_OPEN_SOCKET;
     return false;
   }
-  CStdString recv_buffer = Recv(false);
+  string recv_buffer = Recv(false);
   m_lastError = atoi(recv_buffer.c_str());
   switch(m_lastError)
   {
@@ -872,10 +872,10 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   //##########################################################
   // Send the Hello message
-  CStdString version = g_infoManager.GetLabel(SYSTEM_BUILD_VERSION);
+  string version = g_infoManager.GetLabel(SYSTEM_BUILD_VERSION);
   if (version.find(" ") != std::string::npos)
     version = version.substr(0, version.find(" "));
-  CStdString strGreeting = "cddb hello xbmc xbmc.org XBMC " + version;
+  string strGreeting = "cddb hello xbmc xbmc.org XBMC " + version;
   if ( ! Send(strGreeting.c_str()) )
   {
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", strGreeting.c_str());
@@ -958,7 +958,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
     return false;
   }
   // 200 rock d012180e Soundtrack / Hackers
-  CStdString read_buffer;
+  string read_buffer;
   recv_buffer = Recv(false);
   m_lastError = atoi(recv_buffer.c_str());
   switch(m_lastError)
@@ -1066,16 +1066,16 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
   return XFILE::CFile::Exists(GetCacheFile(pInfo->GetCddbDiscId()));
 }
 
-CStdString Xcddb::GetCacheFile(uint32_t disc_id) const
+string Xcddb::GetCacheFile(uint32_t disc_id) const
 {
-  CStdString strFileName;
+  string strFileName;
   strFileName = StringUtils::Format("%x.cddb", disc_id);
   return URIUtils::AddFileToFolder(cCacheDir, strFileName);
 }
 
-CStdString Xcddb::TrimToUTF8(const CStdString &untrimmedText)
+string Xcddb::TrimToUTF8(const string &untrimmedText)
 {
-  CStdString text(untrimmedText);
+  string text(untrimmedText);
   StringUtils::Trim(text);
   // You never know if you really get UTF-8 strings from cddb
   g_charsetConverter.unknownToUTF8(text);

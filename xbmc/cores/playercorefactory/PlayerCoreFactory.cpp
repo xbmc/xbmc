@@ -82,7 +82,7 @@ template<typename T> void unique (T &con)
   con.erase (end, con.end());
 }
 
-IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCallback& callback) const
+IPlayer* CPlayerCoreFactory::CreatePlayer(const string& strCore, IPlayerCallback& callback) const
 {
   return CreatePlayer(GetPlayerCore(strCore), callback );
 }
@@ -96,13 +96,13 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const PLAYERCOREID eCore, IPlayerCallb
   return m_vecCoreConfigs[eCore-1]->CreatePlayer(callback);
 }
 
-PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const CStdString& strCoreName) const
+PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const string& strCoreName) const
 {
   CSingleLock lock(m_section);
   if (!strCoreName.empty())
   {
     // Dereference "*default*player" aliases
-    CStdString strRealCoreName;
+    string strRealCoreName;
     if (StringUtils::EqualsNoCase(strCoreName, "audiodefaultplayer")) strRealCoreName = g_advancedSettings.m_audioDefaultPlayer;
     else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultplayer")) strRealCoreName = g_advancedSettings.m_videoDefaultPlayer;
     else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultdvdplayer")) strRealCoreName = g_advancedSettings.m_videoDefaultDVDPlayer;
@@ -118,13 +118,13 @@ PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const CStdString& strCoreName) co
   return EPC_NONE;
 }
 
-CStdString CPlayerCoreFactory::GetPlayerName(const PLAYERCOREID eCore) const
+string CPlayerCoreFactory::GetPlayerName(const PLAYERCOREID eCore) const
 {
   CSingleLock lock(m_section);
   return m_vecCoreConfigs[eCore-1]->GetName();
 }
 
-CPlayerCoreConfig* CPlayerCoreFactory::GetPlayerConfig(const CStdString& strCoreName) const
+CPlayerCoreConfig* CPlayerCoreFactory::GetPlayerConfig(const string& strCoreName) const
 {
   CSingleLock lock(m_section);
   PLAYERCOREID id = GetPlayerCore(strCoreName);
@@ -270,7 +270,7 @@ PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, fl
   if (vecCores.size())
   {
     //Add default player
-    CStdString strCaption = CPlayerCoreFactory::GetPlayerName(vecCores[0]);
+    string strCaption = CPlayerCoreFactory::GetPlayerName(vecCores[0]);
     strCaption += " (";
     strCaption += g_localizeStrings.Get(13278);
     strCaption += ")";
@@ -361,8 +361,8 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     TiXmlElement* pPlayer = pPlayers->FirstChildElement("player");
     while (pPlayer)
     {
-      CStdString name = pPlayer->Attribute("name");
-      CStdString type = pPlayer->Attribute("type");
+      string name = pPlayer->Attribute("name");
+      string type = pPlayer->Attribute("type");
       if (type.length() == 0) type = name;
       StringUtils::ToLower(type);
 
@@ -414,7 +414,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
   return true;
 }
 
-void CPlayerCoreFactory::OnPlayerDiscovered(const CStdString& id, const CStdString& name, EPLAYERCORES core)
+void CPlayerCoreFactory::OnPlayerDiscovered(const string& id, const string& name, EPLAYERCORES core)
 {
   CSingleLock lock(m_section);
   std::vector<CPlayerCoreConfig *>::iterator it;
@@ -436,7 +436,7 @@ void CPlayerCoreFactory::OnPlayerDiscovered(const CStdString& id, const CStdStri
   m_vecCoreConfigs.push_back(player);
 }
 
-void CPlayerCoreFactory::OnPlayerRemoved(const CStdString& id)
+void CPlayerCoreFactory::OnPlayerRemoved(const string& id)
 {
   CSingleLock lock(m_section);
   std::vector<CPlayerCoreConfig *>::iterator it;

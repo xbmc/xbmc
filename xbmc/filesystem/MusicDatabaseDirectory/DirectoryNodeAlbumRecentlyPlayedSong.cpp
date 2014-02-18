@@ -24,7 +24,7 @@
 using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeAlbumRecentlyPlayedSong::CDirectoryNodeAlbumRecentlyPlayedSong(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeAlbumRecentlyPlayedSong::CDirectoryNodeAlbumRecentlyPlayedSong(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS, strName, pParent)
 {
 
@@ -36,7 +36,7 @@ bool CDirectoryNodeAlbumRecentlyPlayedSong::GetContent(CFileItemList& items) con
   if (!musicdatabase.Open())
     return false;
 
-  CStdString strBaseDir=BuildPath();
+  string strBaseDir=BuildPath();
   bool bSuccess=musicdatabase.GetRecentlyPlayedAlbumSongs(strBaseDir, items);
 
   musicdatabase.Close();

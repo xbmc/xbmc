@@ -22,7 +22,7 @@
 
 using namespace std;
 
-CGUIDialogSubMenu::CGUIDialogSubMenu(int id, const CStdString &xmlFile)
+CGUIDialogSubMenu::CGUIDialogSubMenu(int id, const string &xmlFile)
     : CGUIDialog(id, xmlFile)
 {
 }

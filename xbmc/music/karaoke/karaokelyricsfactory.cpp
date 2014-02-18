@@ -33,11 +33,11 @@
 using namespace std;
 
 // A helper function to have all the checks in a single place
-bool CheckAndCreateLyrics( const CStdString & songName, CKaraokeLyrics ** lyricptr )
+bool CheckAndCreateLyrics( const string & songName, CKaraokeLyrics ** lyricptr )
 {
-  CStdString filename = songName;
+  string filename = songName;
   URIUtils::RemoveExtension( filename );
-  CStdString ext = URIUtils::GetExtension(songName);
+  string ext = URIUtils::GetExtension(songName);
 
   // LRC lyrics have .lrc extension
   if ( XFILE::CFile::Exists( filename + ".lrc" ) )
@@ -83,7 +83,7 @@ bool CheckAndCreateLyrics( const CStdString & songName, CKaraokeLyrics ** lyricp
 }
 
 
-CKaraokeLyrics * CKaraokeLyricsFactory::CreateLyrics( const CStdString & songName )
+CKaraokeLyrics * CKaraokeLyricsFactory::CreateLyrics( const string & songName )
 {
   CKaraokeLyrics * lyricptr = 0;
 
@@ -92,7 +92,7 @@ CKaraokeLyrics * CKaraokeLyricsFactory::CreateLyrics( const CStdString & songNam
 }
 
 
-bool CKaraokeLyricsFactory::HasLyrics(const CStdString & songName)
+bool CKaraokeLyricsFactory::HasLyrics(const string & songName)
 {
   return CheckAndCreateLyrics( songName, 0 );
 }

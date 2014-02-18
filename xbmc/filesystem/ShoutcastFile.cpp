@@ -140,7 +140,7 @@ void CShoutcastFile::Close()
 
 bool CShoutcastFile::ExtractTagInfo(const char* buf)
 {
-  CStdString strBuffer = buf;
+  string strBuffer = buf;
 
   if (!m_fileCharset.empty())
   {

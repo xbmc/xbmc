@@ -81,7 +81,7 @@ int CGUIAction::GetNavigation() const
 void CGUIAction::SetNavigation(int id)
 {
   if (id == 0) return;
-  CStdString strId = StringUtils::Format("%i", id);
+  string strId = StringUtils::Format("%i", id);
   for (iActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
   {
     if (StringUtils::IsInteger(it->action) && it->condition.empty())

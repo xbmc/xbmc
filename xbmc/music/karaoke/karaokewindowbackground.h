@@ -45,10 +45,10 @@ public:
   virtual void StartVisualisation();
 
   // Start with song-specific still image background
-  virtual void StartImage( const CStdString& path );
+  virtual void StartImage( const std::string& path );
 
   // Start with song-specific video background
-  virtual void StartVideo( const CStdString& path = "" );
+  virtual void StartVideo( const std::string& path = "" );
 
   // Start with default (setting-specific) background
   virtual void StartDefault();
@@ -96,7 +96,7 @@ private:
 
   // For default visualisation mode
   BackgroundMode             m_defaultMode;
-  CStdString                 m_path; // image
+  std::string                 m_path; // image
 };
 
 #endif

@@ -29,9 +29,9 @@ public:
 
 protected:
   virtual VECSOURCES& GetSources();
-  virtual CStdString GetLockType();
+  virtual std::string GetLockType();
   virtual int GetPlaylist();
-  virtual CStdString GetExtensions();
+  virtual std::string GetExtensions();
 };
 
 class CGUIViewStateWindowVideoFiles : public CGUIViewStateWindowVideo

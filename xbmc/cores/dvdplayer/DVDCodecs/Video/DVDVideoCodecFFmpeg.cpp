@@ -701,7 +701,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   return true;
 }
 
-int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
+int CDVDVideoCodecFFmpeg::FilterOpen(const string& filters, bool scale)
 {
   int result;
   AVBufferSinkParams *buffersink_params;
@@ -727,7 +727,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
   AVFilter* srcFilter = m_dllAvFilter.avfilter_get_by_name("buffer");
   AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
 
-  CStdString args = StringUtils::Format("%d:%d:%d:%d:%d:%d:%d",
+  string args = StringUtils::Format("%d:%d:%d:%d:%d:%d:%d",
                                         m_pCodecContext->width,
                                         m_pCodecContext->height,
                                         m_pCodecContext->pix_fmt,

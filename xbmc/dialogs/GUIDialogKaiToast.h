@@ -37,9 +37,9 @@ public:
 
   struct Notification
   {
-    CStdString caption;
-    CStdString description;
-    CStdString imagefile;
+    std::string caption;
+    std::string description;
+    std::string imagefile;
     eMessageType eType;
     unsigned int displayTime;
     unsigned int messageTime;
@@ -48,9 +48,9 @@ public:
 
   typedef std::queue<Notification> TOASTQUEUE;
 
-  static void QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true, unsigned int messageTime = TOAST_MESSAGE_TIME);
-  static void QueueNotification(const CStdString& aCaption, const CStdString& aDescription);
-  static void QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true, unsigned int messageTime = TOAST_MESSAGE_TIME);
+  static void QueueNotification(eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true, unsigned int messageTime = TOAST_MESSAGE_TIME);
+  static void QueueNotification(const std::string& aCaption, const std::string& aDescription);
+  static void QueueNotification(const std::string& aImageFile, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true, unsigned int messageTime = TOAST_MESSAGE_TIME);
   bool DoWork();
 
   virtual bool OnMessage(CGUIMessage& message);
@@ -59,14 +59,14 @@ public:
   void ResetTimer();
 
 protected:
-  static void AddToQueue(const CStdString& aImageFile, const eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime, bool withSound, unsigned int messageTime);
+  static void AddToQueue(const std::string& aImageFile, const eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime, bool withSound, unsigned int messageTime);
 
   unsigned int m_timer;
 
   unsigned int m_toastDisplayTime;
   unsigned int m_toastMessageTime;
 
-  CStdString m_defaultIcon;
+  std::string m_defaultIcon;
   
   static TOASTQUEUE m_notifications;
   static CCriticalSection m_critical;

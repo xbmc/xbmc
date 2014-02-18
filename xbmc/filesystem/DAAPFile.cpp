@@ -81,7 +81,7 @@ void CDaapClient::Release()
   }
 }
 
-DAAP_SClientHost* CDaapClient::GetHost(const CStdString &strHost)
+DAAP_SClientHost* CDaapClient::GetHost(const string &strHost)
 {
   try
   {
@@ -169,7 +169,7 @@ bool CDAAPFile::Open(const CURL& url)
   m_url = url;
 
   CLog::Log(LOGDEBUG, "CDAAPFile::Open(%s)", url.GetFileName().c_str());
-  CStdString host = url.GetHostName();
+  string host = url.GetHostName();
   if (url.HasPort())
     host = StringUtils::Format("%s:%i", url.GetHostName().c_str(), url.GetPort());
   m_thisHost = g_DaapClient.GetHost(host);
@@ -189,7 +189,7 @@ bool CDAAPFile::Open(const CURL& url)
 
   //m_curl.SetRequestHeader(HEADER_VERSION, "3.0");
   m_curl.SetRequestHeader(HEADER_REQUESTID, requestid);
-  m_curl.SetRequestHeader(HEADER_VALIDATE, CStdString(hash));
+  m_curl.SetRequestHeader(HEADER_VALIDATE, string(hash));
   m_curl.SetRequestHeader(HEADER_ACCESS_INDEX, 2);
 
   m_url.SetProtocol("http");
@@ -227,7 +227,7 @@ int64_t CDAAPFile::Seek(int64_t iFilePosition, int iWhence)
   GenerateHash(m_thisHost->version_major, (unsigned char*)(m_hashurl.c_str()), 2, (unsigned char*)hash, requestid);
 
   m_curl.SetRequestHeader(HEADER_REQUESTID, requestid);
-  m_curl.SetRequestHeader(HEADER_VALIDATE, CStdString(hash));
+  m_curl.SetRequestHeader(HEADER_VALIDATE, string(hash));
 
   return m_curl.Seek(iFilePosition, iWhence);
 }

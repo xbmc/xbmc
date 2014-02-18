@@ -52,10 +52,10 @@ public:
 
   typedef struct
   {
-    CStdString ID;
-    CStdString Name;
-    CStdString Lang;
-    CStdString SAMIType;
+    std::string ID;
+    std::string Name;
+    std::string Lang;
+    std::string SAMIType;
   } SLangclass;
 
   std::vector<SLangclass> m_Langclass;

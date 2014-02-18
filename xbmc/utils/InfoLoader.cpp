@@ -42,7 +42,7 @@ void CInfoLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   m_busy = false;
 }
 
-CStdString CInfoLoader::GetInfo(int info)
+string CInfoLoader::GetInfo(int info)
 {
   // Refresh if need be
   if (m_refreshTime < CTimeUtils::GetFrameTime() && !m_busy)
@@ -57,12 +57,12 @@ CStdString CInfoLoader::GetInfo(int info)
   return TranslateInfo(info);
 }
 
-CStdString CInfoLoader::BusyInfo(int info) const
+string CInfoLoader::BusyInfo(int info) const
 {
   return g_localizeStrings.Get(503);
 }
 
-CStdString CInfoLoader::TranslateInfo(int info) const
+string CInfoLoader::TranslateInfo(int info) const
 {
   return "";
 }

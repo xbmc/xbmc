@@ -322,7 +322,7 @@ CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
   return NULL;
 }
 
-void CEpgContainer::InsertFromDatabase(int iEpgID, const CStdString &strName, const CStdString &strScraperName)
+void CEpgContainer::InsertFromDatabase(int iEpgID, const string &strName, const string &strScraperName)
 {
   // table might already have been created when pvr channels were loaded
   CEpg* epg = GetById(iEpgID);
@@ -455,7 +455,7 @@ void CEpgContainer::ShowProgressDialog(bool bUpdating /* = true */)
   }
 }
 
-void CEpgContainer::UpdateProgressDialog(int iCurrent, int iMax, const CStdString &strText)
+void CEpgContainer::UpdateProgressDialog(int iCurrent, int iMax, const string &strText)
 {
   if (!m_progressHandle)
     ShowProgressDialog();

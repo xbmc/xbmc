@@ -142,7 +142,7 @@ void CGUIWindowKaraokeLyrics::newSong(CKaraokeLyrics * lyrics)
   // Set up current background mode
   if ( m_Lyrics->HasVideo() )
   {
-    CStdString path;
+    string path;
     int64_t offset;
 
     // Start the required video

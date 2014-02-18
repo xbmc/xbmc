@@ -255,13 +255,13 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
     return;
   }
 
-  CStdString strLine1;
+  string strLine1;
   if (bOnOff)
     strLine1 = StringUtils::Format(g_localizeStrings.Get(19197), client->Name().c_str());
   else
     strLine1 = StringUtils::Format(g_localizeStrings.Get(19198), client->Name().c_str());
 
-  CStdString strLine2;
+  string strLine2;
   if (strName)
     strLine2 = strName;
   else if (strFileName)

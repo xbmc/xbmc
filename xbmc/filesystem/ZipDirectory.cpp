@@ -41,9 +41,9 @@ namespace XFILE
   {
   }
 
-  bool CZipDirectory::GetDirectory(const CStdString& strPathOrig, CFileItemList& items)
+  bool CZipDirectory::GetDirectory(const string& strPathOrig, CFileItemList& items)
   {
-    CStdString strPath;
+    string strPath;
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
     if( !StringUtils::StartsWithNoCase(strPathOrig, "zip://") )
@@ -53,16 +53,16 @@ namespace XFILE
 
     CURL url(strPath);
 
-    CStdString strArchive = url.GetHostName();
-    CStdString strOptions = url.GetOptions();
-    CStdString strPathInZip = url.GetFileName();
+    string strArchive = url.GetHostName();
+    string strOptions = url.GetOptions();
+    string strPathInZip = url.GetFileName();
 
     url.SetOptions(""); // delete options to have a clean path to add stuff too
     url.SetFileName(""); // delete filename too as our names later will contain it
 
-    CStdString strSlashPath = url.Get();
+    string strSlashPath = url.Get();
 
-    CStdString strBuffer;
+    string strBuffer;
 
     // the RAR code depends on things having a "/" at the end of the path
     URIUtils::AddSlashAtEnd(strSlashPath);
@@ -80,7 +80,7 @@ namespace XFILE
 
     for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
     {
-      CStdString strEntryName(ze->name);
+      string strEntryName(ze->name);
       StringUtils::Replace(strEntryName, '\\','/');
       if (strEntryName == strPathInZip) // skip the listed dir
         continue;
@@ -142,7 +142,7 @@ namespace XFILE
     return true;
   }
 
-  bool CZipDirectory::ContainsFiles(const CStdString& strPath)
+  bool CZipDirectory::ContainsFiles(const string& strPath)
   {
     vector<SZipEntry> items;
     g_ZipManager.GetZipList(strPath,items);

@@ -61,12 +61,12 @@ CFileDirectoryFactory::~CFileDirectoryFactory(void)
 {}
 
 // return NULL + set pItem->m_bIsFolder to remove it completely from list.
-IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileItem* pItem, const CStdString& strMask)
+IFileDirectory* CFileDirectoryFactory::Create(const string& strPath, CFileItem* pItem, const string& strMask)
 {
   if (URIUtils::IsStack(strPath)) // disqualify stack as we need to work with each of the parts instead
     return NULL;
 
-  CStdString strExtension=URIUtils::GetExtension(strPath);
+  string strExtension=URIUtils::GetExtension(strPath);
   StringUtils::ToLower(strExtension);
 
 #ifdef HAS_FILESYSTEM
@@ -125,7 +125,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
 #if defined(TARGET_ANDROID)
   if (StringUtils::EqualsNoCase(strExtension, ".apk"))
   {
-    CStdString strUrl;
+    string strUrl;
     URIUtils::CreateArchivePath(strUrl, "apk", strPath, "");
 
     CFileItemList items;
@@ -147,7 +147,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
 #endif
   if (StringUtils::EqualsNoCase(strExtension, ".zip"))
   {
-    CStdString strUrl;
+    string strUrl;
     URIUtils::CreateArchivePath(strUrl, "zip", strPath, "");
 
     CFileItemList items;
@@ -168,7 +168,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
   }
   if (StringUtils::EqualsNoCase(strExtension, ".rar") || StringUtils::EqualsNoCase(strExtension, ".001"))
   {
-    CStdString strUrl;
+    string strUrl;
     URIUtils::CreateArchivePath(strUrl, "rar", strPath, "");
 
     vector<std::string> tokens;
@@ -180,15 +180,15 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
         if (StringUtils::EqualsNoCase(tokens[tokens.size()-2], "ts")) // .ts.001 - treat as a movie file to scratch some users itch
           return NULL;
       }
-      CStdString token = tokens[tokens.size()-2];
+      string token = tokens[tokens.size()-2];
       if (StringUtils::StartsWithNoCase(token, "part")) // only list '.part01.rar'
       {
         // need this crap to avoid making mistakes - yeyh for the new rar naming scheme :/
         struct __stat64 stat;
         int digits = token.size()-4;
-        CStdString strFormat = StringUtils::Format("part%%0%ii", digits);
-        CStdString strNumber = StringUtils::Format(strFormat.c_str(), 1);
-        CStdString strPath2 = strPath;
+        string strFormat = StringUtils::Format("part%%0%ii", digits);
+        string strNumber = StringUtils::Format(strFormat.c_str(), 1);
+        string strPath2 = strPath;
         StringUtils::Replace(strPath2,token,strNumber);
         if (atoi(token.substr(4).c_str()) > 1 && CFile::Stat(strPath2,&stat) == 0)
         {

@@ -62,7 +62,7 @@ public:
 
   void SetPageControl(int id);
 
-  virtual CStdString GetDescription() const;
+  virtual std::string GetDescription() const;
   virtual void SaveStates(std::vector<CControlState> &states);
   virtual int GetSelectedItem() const;
 
@@ -75,7 +75,7 @@ public:
   virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
 
   virtual bool GetCondition(int condition, int data) const;
-  virtual CStdString GetLabel(int info) const;
+  virtual std::string GetLabel(int info) const;
 
   /*! \brief Set the list provider for this container (for python).
    \param provider the list provider to use for this container.
@@ -173,7 +173,7 @@ protected:
   void OnPrevLetter();
   void OnJumpLetter(char letter, bool skip = false);
   void OnJumpSMS(int letter);
-  std::vector< std::pair<int, CStdString> > m_letterOffsets;
+  std::vector< std::pair<int, std::string> > m_letterOffsets;
 
   /*! \brief Set the cursor position
    Should be used by all base classes rather than directly setting it, as
@@ -216,7 +216,7 @@ private:
 
   // letter match searching
   CStopWatch m_matchTimer;
-  CStdString m_match;
+  std::string m_match;
   float m_scrollItemsPerFrame;
 
   static const int letter_match_timeout = 1000;

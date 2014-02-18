@@ -41,7 +41,7 @@ namespace ADDON
   class AddonVersion : public boost::totally_ordered<AddonVersion> {
   public:
     AddonVersion(const AddonVersion& other) : mUpstream(NULL), mRevision(NULL) { *this = other; }
-    explicit AddonVersion(const CStdString& version);
+    explicit AddonVersion(const std::string& version);
     ~AddonVersion();
 
     int Epoch() const { return mEpoch; }
@@ -51,16 +51,16 @@ namespace ADDON
     AddonVersion& operator=(const AddonVersion& other);
     bool operator<(const AddonVersion& other) const;
     bool operator==(const AddonVersion& other) const;
-    CStdString Print() const;
+    std::string Print() const;
     const char *c_str() const { return m_originalVersion.c_str(); };
     bool empty() const;
 
-    static bool SplitFileName(CStdString& ID, CStdString& version,
-                              const CStdString& filename);
+    static bool SplitFileName(std::string& ID, std::string& version,
+                              const std::string& filename);
 
     static bool Test();
   protected:
-    CStdString m_originalVersion;
+    std::string m_originalVersion;
     int mEpoch;
     char *mUpstream;
     char *mRevision;

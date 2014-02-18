@@ -557,7 +557,7 @@ failed:
   return 0;
 };
 
-CStdString CUPnPPlayer::GetPlayingTitle()
+string CUPnPPlayer::GetPlayingTitle()
 {
   return "";
 };

@@ -145,7 +145,7 @@ void MP3Codec::OnFileReaderClearEvent()
   FlushDecoder();
 }
 
-bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
+bool MP3Codec::Init(const string &strFile, unsigned int filecache)
 {
   if (!m_dll.Load())
     return false;

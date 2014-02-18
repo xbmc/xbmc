@@ -38,13 +38,13 @@ public:
 
    virtual void OnSettingsLoaded();
 
-   CStdString GetOSConfiguredTimezone();
+   std::string GetOSConfiguredTimezone();
 
    std::vector<std::string> GetCounties();
-   std::vector<std::string> GetTimezonesByCountry(const CStdString country);
-   CStdString GetCountryByTimezone(const CStdString timezone);
+   std::vector<std::string> GetTimezonesByCountry(const std::string country);
+   std::string GetCountryByTimezone(const std::string timezone);
 
-   void SetTimezone(CStdString timezone);
+   void SetTimezone(std::string timezone);
    int m_IsDST;
 
    static void SettingOptionsTimezoneCountriesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
@@ -52,11 +52,11 @@ public:
 
 private:
    std::vector<std::string> m_counties;
-   std::map<CStdString, CStdString> m_countryByCode;
-   std::map<CStdString, CStdString> m_countryByName;
+   std::map<std::string, std::string> m_countryByCode;
+   std::map<std::string, std::string> m_countryByName;
 
-   std::map<CStdString, std::vector<std::string> > m_timezonesByCountryCode;
-   std::map<CStdString, CStdString> m_countriesByTimezoneName;
+   std::map<std::string, std::vector<std::string> > m_timezonesByCountryCode;
+   std::map<std::string, std::string> m_countriesByTimezoneName;
 };
 
 extern CLinuxTimezone g_timezone;

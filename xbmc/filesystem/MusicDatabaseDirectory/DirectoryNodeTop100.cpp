@@ -31,7 +31,7 @@ Node Top100Children[] = {
                           { NODE_TYPE_ALBUM_TOP100, "albums",  10505 },
                         };
 
-CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeTop100::CDirectoryNodeTop100(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_TOP100, strName, pParent)
 {
 
@@ -46,7 +46,7 @@ NODE_TYPE CDirectoryNodeTop100::GetChildType() const
   return NODE_TYPE_NONE;
 }
 
-CStdString CDirectoryNodeTop100::GetLocalizedName() const
+string CDirectoryNodeTop100::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
     if (StringUtils::EqualsNoCase(GetName(), Top100Children[i].id.c_str()))
@@ -59,7 +59,7 @@ bool CDirectoryNodeTop100::GetContent(CFileItemList& items) const
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
   {
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(Top100Children[i].label)));
-    CStdString strDir = StringUtils::Format("%s/", Top100Children[i].id.c_str());
+    string strDir = StringUtils::Format("%s/", Top100Children[i].id.c_str());
     pItem->SetPath(BuildPath() + strDir);
     pItem->m_bIsFolder = true;
     items.Add(pItem);

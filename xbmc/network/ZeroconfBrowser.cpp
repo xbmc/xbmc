@@ -42,8 +42,8 @@ using namespace std;
 //should be optimized away
 class CZeroconfBrowserDummy : public CZeroconfBrowser
 {
-  virtual bool doAddServiceType(const CStdString&){return false;}
-  virtual bool doRemoveServiceType(const CStdString&){return false;}
+  virtual bool doAddServiceType(const string&){return false;}
+  virtual bool doRemoveServiceType(const string&){return false;}
   virtual std::vector<ZeroconfService> doGetFoundServices(){return std::vector<ZeroconfService>();}
   virtual bool doResolveService(ZeroconfService&, double){return false;}
 };
@@ -95,7 +95,7 @@ void CZeroconfBrowser::Stop()
   m_started = false;
 }
 
-bool CZeroconfBrowser::AddServiceType(const CStdString& fcr_service_type /*const CStdString& domain*/ )
+bool CZeroconfBrowser::AddServiceType(const string& fcr_service_type /*const string& domain*/ )
 {
   CSingleLock lock(*mp_crit_sec);
   std::pair<tServices::iterator, bool> ret = m_services.insert(fcr_service_type);
@@ -110,7 +110,7 @@ bool CZeroconfBrowser::AddServiceType(const CStdString& fcr_service_type /*const
   return true;
 }
 
-bool CZeroconfBrowser::RemoveServiceType(const CStdString& fcr_service_type)
+bool CZeroconfBrowser::RemoveServiceType(const string& fcr_service_type)
 {
   CSingleLock lock(*mp_crit_sec);
   tServices::iterator ret = m_services.find(fcr_service_type);
@@ -180,19 +180,19 @@ void CZeroconfBrowser::ReleaseInstance()
 
 CZeroconfBrowser::ZeroconfService::ZeroconfService():m_port(0){}
 
-CZeroconfBrowser::ZeroconfService::ZeroconfService(const CStdString& fcr_name, const CStdString& fcr_type, const CStdString& fcr_domain):
+CZeroconfBrowser::ZeroconfService::ZeroconfService(const string& fcr_name, const string& fcr_type, const string& fcr_domain):
   m_name(fcr_name),
   m_domain(fcr_domain),
   m_port(0)
 {
   SetType(fcr_type);
 }
-void CZeroconfBrowser::ZeroconfService::SetName(const CStdString& fcr_name)
+void CZeroconfBrowser::ZeroconfService::SetName(const string& fcr_name)
 {
   m_name = fcr_name;
 }
 
-void CZeroconfBrowser::ZeroconfService::SetType(const CStdString& fcr_type)
+void CZeroconfBrowser::ZeroconfService::SetType(const string& fcr_type)
 {
   if(fcr_type.empty())
     throw std::runtime_error("CZeroconfBrowser::ZeroconfService::SetType invalid type: "+ fcr_type);
@@ -203,17 +203,17 @@ void CZeroconfBrowser::ZeroconfService::SetType(const CStdString& fcr_type)
     m_type = fcr_type;
 }
 
-void CZeroconfBrowser::ZeroconfService::SetDomain(const CStdString& fcr_domain)
+void CZeroconfBrowser::ZeroconfService::SetDomain(const string& fcr_domain)
 {
   m_domain = fcr_domain;
 }
 
-void CZeroconfBrowser::ZeroconfService::SetHostname(const CStdString& fcr_hostname)
+void CZeroconfBrowser::ZeroconfService::SetHostname(const string& fcr_hostname)
 {
   m_hostname = fcr_hostname;
 }
 
-void CZeroconfBrowser::ZeroconfService::SetIP(const CStdString& fcr_ip)
+void CZeroconfBrowser::ZeroconfService::SetIP(const string& fcr_ip)
 {
   m_ip = fcr_ip;
 }
@@ -234,12 +234,12 @@ void CZeroconfBrowser::ZeroconfService::SetTxtRecords(const tTxtRecordMap& txt_r
   }
 }
 
-CStdString CZeroconfBrowser::ZeroconfService::toPath(const ZeroconfService& fcr_service)
+string CZeroconfBrowser::ZeroconfService::toPath(const ZeroconfService& fcr_service)
 {
-  return CStdString(fcr_service.m_type + "@" + fcr_service.m_domain + "@" + fcr_service.m_name);
+  return string(fcr_service.m_type + "@" + fcr_service.m_domain + "@" + fcr_service.m_name);
 }
 
-CZeroconfBrowser::ZeroconfService CZeroconfBrowser::ZeroconfService::fromPath(const CStdString& fcr_path)
+CZeroconfBrowser::ZeroconfService CZeroconfBrowser::ZeroconfService::fromPath(const string& fcr_path)
 {
   if( fcr_path.empty() )
     throw std::runtime_error("CZeroconfBrowser::ZeroconfService::fromPath input string empty!");

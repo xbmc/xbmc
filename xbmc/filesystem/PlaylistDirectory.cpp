@@ -37,7 +37,7 @@ CPlaylistDirectory::~CPlaylistDirectory()
 
 }
 
-bool CPlaylistDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CPlaylistDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CURL url(strPath);
 

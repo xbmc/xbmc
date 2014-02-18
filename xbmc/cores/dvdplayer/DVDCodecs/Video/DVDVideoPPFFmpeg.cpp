@@ -23,7 +23,7 @@
 
 using namespace std;
 
-CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const CStdString& mType)
+CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const string& mType)
 {
   m_sType = mType;
   m_pMode = m_pContext = NULL;
@@ -95,7 +95,7 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
     return false;
 }
 
-void CDVDVideoPPFFmpeg::SetType(const CStdString& mType, bool deinterlace)
+void CDVDVideoPPFFmpeg::SetType(const string& mType, bool deinterlace)
 {
   m_deinterlace = deinterlace;
 

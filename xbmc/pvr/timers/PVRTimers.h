@@ -105,7 +105,7 @@ namespace PVR
      * @param items The results.
      * @return True when the path was valid, false otherwise.
      */
-    bool GetDirectory(const CStdString& strPath, CFileItemList &items) const;
+    bool GetDirectory(const std::string& strPath, CFileItemList &items) const;
 
     /*!
      * @brief Delete all timers on a channel.
@@ -144,7 +144,7 @@ namespace PVR
      * @brief Rename a timer on the client. Doesn't update the timer in the container. The backend will do this.
      * @return True if it was sent correctly, false if not.
      */
-    static bool RenameTimer(CFileItem &item, const CStdString &strNewName);
+    static bool RenameTimer(CFileItem &item, const std::string &strNewName);
 
     /**
      * @brief Update the timer on the client. Doesn't update the timer in the container. The backend will do this.

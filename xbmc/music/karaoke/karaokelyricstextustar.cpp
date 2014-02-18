@@ -30,7 +30,7 @@
 
 using namespace std;
 
-CKaraokeLyricsTextUStar::CKaraokeLyricsTextUStar( const CStdString & lyricsFile )
+CKaraokeLyricsTextUStar::CKaraokeLyricsTextUStar( const string & lyricsFile )
   : CKaraokeLyricsText()
 {
   m_lyricsFile = lyricsFile;
@@ -42,7 +42,7 @@ CKaraokeLyricsTextUStar::~CKaraokeLyricsTextUStar()
 }
 
 
-vector<string> CKaraokeLyricsTextUStar::readFile(const CStdString & lyricsFile, bool report_errors )
+vector<string> CKaraokeLyricsTextUStar::readFile(const string & lyricsFile, bool report_errors )
 {
   vector<string> lines;
 
@@ -106,7 +106,7 @@ vector<string> CKaraokeLyricsTextUStar::readFile(const CStdString & lyricsFile, 
 }
 
 
-bool CKaraokeLyricsTextUStar::isValidFile(const CStdString & lyricsFile)
+bool CKaraokeLyricsTextUStar::isValidFile(const string & lyricsFile)
 {
   vector<string> lines = readFile( lyricsFile, false );
 
@@ -121,7 +121,7 @@ bool CKaraokeLyricsTextUStar::isValidFile(const CStdString & lyricsFile)
 bool CKaraokeLyricsTextUStar::Load()
 {
   // Header parameters
-  CStdString coverimage, bgimage;
+  string coverimage, bgimage;
   int bpm = 0, startoffsetms = 0;
   bool relative = false;
 
@@ -148,8 +148,8 @@ bool CKaraokeLyricsTextUStar::Load()
       return false;
     }
 
-    CStdString key = lines[idx].substr(1, offset - 1);
-    CStdString value = lines[idx].substr(offset + 1);
+    string key = lines[idx].substr(1, offset - 1);
+    string value = lines[idx].substr(offset + 1);
 
     if ( key == "TITLE" )
       m_songName = value;

@@ -56,16 +56,16 @@ bool CTextureBundleXBT::OpenBundle()
   Cleanup();
 
   // Find the correct texture file (skin or theme)
-  CStdString strPath;
+  string strPath;
 
   if (m_themeBundle)
   {
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
-    CStdString theme = CSettings::Get().GetString("lookandfeel.skintheme");
+    string theme = CSettings::Get().GetString("lookandfeel.skintheme");
     if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
-      CStdString themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
+      string themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
       strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
       strPath = URIUtils::AddFileToFolder(strPath, themeXBT);
     }
@@ -99,7 +99,7 @@ bool CTextureBundleXBT::OpenBundle()
   return true;
 }
 
-bool CTextureBundleXBT::HasFile(const CStdString& Filename)
+bool CTextureBundleXBT::HasFile(const string& Filename)
 {
   if (!m_XBTFReader.IsOpen() && !OpenBundle())
     return false;
@@ -111,11 +111,11 @@ bool CTextureBundleXBT::HasFile(const CStdString& Filename)
       return false;
   }
 
-  CStdString name = Normalize(Filename);
+  string name = Normalize(Filename);
   return m_XBTFReader.Exists(name);
 }
 
-void CTextureBundleXBT::GetTexturesFromPath(const CStdString &path, vector<string> &textures)
+void CTextureBundleXBT::GetTexturesFromPath(const string &path, vector<string> &textures)
 {
   if (path.size() > 1 && path[1] == ':')
     return;
@@ -123,22 +123,22 @@ void CTextureBundleXBT::GetTexturesFromPath(const CStdString &path, vector<strin
   if (!m_XBTFReader.IsOpen() && !OpenBundle())
     return;
 
-  CStdString testPath = Normalize(path);
+  string testPath = Normalize(path);
   URIUtils::AddSlashAtEnd(testPath);
 
   std::vector<CXBTFFile>& files = m_XBTFReader.GetFiles();
   for (size_t i = 0; i < files.size(); i++)
   {
-    CStdString path = files[i].GetPath();
+    string path = files[i].GetPath();
     if (StringUtils::StartsWithNoCase(path, testPath))
       textures.push_back(path);
   }
 }
 
-bool CTextureBundleXBT::LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
+bool CTextureBundleXBT::LoadTexture(const string& Filename, CBaseTexture** ppTexture,
                                      int &width, int &height)
 {
-  CStdString name = Normalize(Filename);
+  string name = Normalize(Filename);
 
   CXBTFFile* file = m_XBTFReader.Find(name);
   if (!file)
@@ -159,10 +159,10 @@ bool CTextureBundleXBT::LoadTexture(const CStdString& Filename, CBaseTexture** p
   return true;
 }
 
-int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
+int CTextureBundleXBT::LoadAnim(const string& Filename, CBaseTexture*** ppTextures,
                               int &width, int &height, int& nLoops, int** ppDelays)
 {
-  CStdString name = Normalize(Filename);
+  string name = Normalize(Filename);
 
   CXBTFFile* file = m_XBTFReader.Find(name);
   if (!file)
@@ -194,7 +194,7 @@ int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTe
   return nTextures;
 }
 
-bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, CBaseTexture** ppTexture)
+bool CTextureBundleXBT::ConvertFrameToTexture(const string& name, CXBTFFrame& frame, CBaseTexture** ppTexture)
 {
   // found texture - allocate the necessary buffers
   squish::u8 *buffer = new squish::u8[(size_t)frame.GetPackedSize()];
@@ -260,9 +260,9 @@ void CTextureBundleXBT::SetThemeBundle(bool themeBundle)
 
 // normalize to how it's stored within the bundle
 // lower case + using forward slash rather than back slash
-CStdString CTextureBundleXBT::Normalize(const CStdString &name)
+string CTextureBundleXBT::Normalize(const string &name)
 {
-  CStdString newName(name);
+  string newName(name);
   
   StringUtils::Trim(newName);
   StringUtils::ToLower(newName);

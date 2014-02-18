@@ -72,7 +72,7 @@ void CGUIWindowPictures::OnInitWindow()
   if (m_slideShowStarted)
   {
     CGUIWindowSlideShow* wndw = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-    CStdString path;
+    string path;
     if (wndw && wndw->GetCurrentSlide())
       path = URIUtils::GetDirectory(wndw->GetCurrentSlide()->GetPath());
     if (StringUtils::EqualsNoCase(path, m_vecItems->GetPath()))
@@ -264,7 +264,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
     m_dlgProgress->Close();
 }
 
-bool CGUIWindowPictures::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowPictures::Update(const string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -277,7 +277,7 @@ bool CGUIWindowPictures::Update(const CStdString &strDirectory, bool updateFilte
     m_thumbLoader.Load(*m_vecItems);
 
   CPictureThumbLoader thumbLoader;
-  CStdString thumb = thumbLoader.GetCachedImage(*m_vecItems, "thumb");
+  string thumb = thumbLoader.GetCachedImage(*m_vecItems, "thumb");
   m_vecItems->SetArt("thumb", thumb);
 
   return true;
@@ -290,7 +290,7 @@ bool CGUIWindowPictures::OnClick(int iItem)
 
   if (pItem->IsCBZ() || pItem->IsCBR())
   {
-    CStdString strComicPath;
+    string strComicPath;
     if (pItem->IsCBZ())
       URIUtils::CreateArchivePath(strComicPath, "zip", pItem->GetPath(), "");
     else
@@ -305,12 +305,12 @@ bool CGUIWindowPictures::OnClick(int iItem)
   return false;
 }
 
-bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemList& items)
+bool CGUIWindowPictures::GetDirectory(const string &strDirectory, CFileItemList& items)
 {
   if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
     return false;
 
-  CStdString label;
+  string label;
   if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("pictures"), &label)) 
     items.SetLabel(label);
 
@@ -329,7 +329,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
-  CStdString strPicture = pItem->GetPath();
+  string strPicture = pItem->GetPath();
 
 #ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
@@ -379,7 +379,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   return true;
 }
 
-void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
+void CGUIWindowPictures::OnShowPictureRecursive(const string& strPath)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
@@ -399,12 +399,12 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
   }
 }
 
-void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
+void CGUIWindowPictures::OnSlideShowRecursive(const string &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
   {   
-    CStdString strExtensions;
+    string strExtensions;
     CFileItemList items;
     CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
     if (viewState)
@@ -425,7 +425,7 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
 
 void CGUIWindowPictures::OnSlideShowRecursive()
 {
-  CStdString strEmpty = "";
+  string strEmpty = "";
   OnSlideShowRecursive(m_vecItems->GetPath());
 }
 
@@ -434,12 +434,12 @@ void CGUIWindowPictures::OnSlideShow()
   OnSlideShow(m_vecItems->GetPath());
 }
 
-void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
+void CGUIWindowPictures::OnSlideShow(const string &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
   {    
-    CStdString strExtensions;
+    string strExtensions;
     CFileItemList items;
     CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
     if (viewState)
@@ -565,7 +565,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
   CPictureThumbLoader::ProcessFoldersAndArchives(pItem);
 }
 
-void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
+void CGUIWindowPictures::LoadPlayList(const string& strPlayList)
 {
   CLog::Log(LOGDEBUG,"CGUIWindowPictures::LoadPlayList()... converting playlist into slideshow: %s", strPlayList.c_str());
   auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
@@ -625,7 +625,7 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
   }
 }
 
-CStdString CGUIWindowPictures::GetStartFolder(const CStdString &dir)
+string CGUIWindowPictures::GetStartFolder(const string &dir)
 {
   if (StringUtils::EqualsNoCase(dir, "Plugins") || StringUtils::EqualsNoCase(dir, "Addons"))
     return "addons://sources/image/";

@@ -26,7 +26,7 @@ using namespace std;
 using namespace XFILE;
 using namespace MUSIC_GRABBER;
 
-CMusicArtistInfo::CMusicArtistInfo(const CStdString& strArtist, const CScraperUrl& strArtistURL)
+CMusicArtistInfo::CMusicArtistInfo(const string& strArtist, const CScraperUrl& strArtistURL)
 {
   m_artist.strArtist = strArtist;
   m_artistURL = strArtistURL;
@@ -40,7 +40,7 @@ void CMusicArtistInfo::SetArtist(const CArtist& artist)
 }
 
 bool CMusicArtistInfo::Load(CCurlFile& http, const ADDON::ScraperPtr& scraper,
-  const CStdString &strSearch)
+  const string &strSearch)
 {
   return m_bLoaded = scraper->GetArtistDetails(http, m_artistURL, strSearch, m_artist);
 }

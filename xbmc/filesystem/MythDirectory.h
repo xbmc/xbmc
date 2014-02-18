@@ -40,23 +40,23 @@ public:
   CMythDirectory();
   virtual ~CMythDirectory();
 
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  virtual bool GetDirectory(const std::string& strPath, CFileItemList &items);
   virtual bool Exists(const char* strPath);
-  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
-  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
+  virtual bool IsAllowed(const std::string &strFile) const { return true; };
+  virtual DIR_CACHE_TYPE GetCacheType(const std::string& strPath) const;
 
-  static bool SupportsWriteFileOperations(const CStdString& strPath);
-  static bool IsLiveTV(const CStdString& strPath);
+  static bool SupportsWriteFileOperations(const std::string& strPath);
+  static bool IsLiveTV(const std::string& strPath);
 
 private:
   void Release();
-  bool GetGuide(const CStdString& base, CFileItemList &items);
-  bool GetGuideForChannel(const CStdString& base, CFileItemList &items, const int channelNumber);
-  bool GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type = ALL, const CStdString& filter = "");
-  bool GetTvShowFolders(const CStdString& base, CFileItemList &items);
-  bool GetChannels(const CStdString& base, CFileItemList &items);
+  bool GetGuide(const std::string& base, CFileItemList &items);
+  bool GetGuideForChannel(const std::string& base, CFileItemList &items, const int channelNumber);
+  bool GetRecordings(const std::string& base, CFileItemList &items, enum FilterType type = ALL, const std::string& filter = "");
+  bool GetTvShowFolders(const std::string& base, CFileItemList &items);
+  bool GetChannels(const std::string& base, CFileItemList &items);
 
-  CStdString GetValue(char* str)           { return m_session->GetValue(str); }
+  std::string GetValue(char* str)           { return m_session->GetValue(str); }
   CDateTime  GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); }
   bool IsVisible(const cmyth_proginfo_t program);
   bool IsMovie(const cmyth_proginfo_t program);

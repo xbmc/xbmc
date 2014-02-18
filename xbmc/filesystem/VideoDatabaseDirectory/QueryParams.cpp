@@ -44,7 +44,7 @@ CQueryParams::CQueryParams()
   m_idTag = -1;
 }
 
-void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName)
+void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const string& strNodeName)
 {
   long idDb=atol(strNodeName.c_str());
 

@@ -46,7 +46,7 @@ namespace XFILE
 using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeOverview::CDirectoryNodeOverview(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent)
 {
 
@@ -60,7 +60,7 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType() const
   return NODE_TYPE_NONE;
 }
 
-CStdString CDirectoryNodeOverview::GetLocalizedName() const
+string CDirectoryNodeOverview::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
     if (StringUtils::EqualsNoCase(GetName(), OverviewChildren[i].id.c_str()))
@@ -87,7 +87,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
       continue;
 
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(OverviewChildren[i].label)));
-    CStdString strDir = StringUtils::Format("%s/", OverviewChildren[i].id.c_str());
+    string strDir = StringUtils::Format("%s/", OverviewChildren[i].id.c_str());
     pItem->SetPath(BuildPath() + strDir);
     pItem->m_bIsFolder = true;
     pItem->SetCanQueue(false);
