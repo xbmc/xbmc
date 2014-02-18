@@ -35,13 +35,15 @@ XbmcCommons::ILogger* CThread::logger = NULL;
 
 #include "threads/platform/ThreadImpl.cpp"
 
+using namespace std;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 #define LOG if(logger) logger->Log
 
-CThread::CThread(const char* ThreadName)
+CThread::CThread(string ThreadName)
 : m_StopEvent(true,true), m_TermEvent(true), m_StartEvent(true)
 {
   m_bStop = false;
@@ -54,7 +56,7 @@ CThread::CThread(const char* ThreadName)
 
   m_pRunnable=NULL;
 
-  if (ThreadName)
+  if (!ThreadName.empty())
     m_ThreadName = ThreadName;
 }
 
@@ -71,8 +73,7 @@ CThread::CThread(IRunnable* pRunnable, const char* ThreadName)
 
   m_pRunnable=pRunnable;
 
-  if (ThreadName)
-    m_ThreadName = ThreadName;
+  m_ThreadName = ThreadName;
 }
 
 CThread::~CThread()

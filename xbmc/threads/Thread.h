@@ -52,7 +52,7 @@ class CThread
   static XbmcCommons::ILogger* logger;
 
 protected:
-  CThread(const char* ThreadName);
+  CThread(std::string ThreadName);
 
 public:
   CThread(IRunnable* pRunnable, const char* ThreadName);
