@@ -274,12 +274,12 @@ void CGUIDialogSelect::SetSelected(std::vector<int> selectedIndexes)
     SetSelected(*it);
 }
 
-void CGUIDialogSelect::SetSelected(const std::vector<CStdString> &selectedLabels)
+void CGUIDialogSelect::SetSelected(const vector<string> &selectedLabels)
 {
   if (selectedLabels.empty())
     return;
 
-  for (std::vector<CStdString>::const_iterator it = selectedLabels.begin(); it != selectedLabels.end(); it++)
+  for (vector<string>::const_iterator it = selectedLabels.begin(); it != selectedLabels.end(); it++)
     SetSelected(*it);
 }
 

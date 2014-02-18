@@ -35,7 +35,7 @@ public:
   void Cleanup();
   void SetThemeBundle(bool themeBundle);
   bool HasFile(const CStdString& Filename);
-  void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
+  void GetTexturesFromPath(const CStdString &path, std::vector<std::string> &textures);
   static CStdString Normalize(const CStdString &name);
 
   bool LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,

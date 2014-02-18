@@ -582,16 +582,14 @@ CStdString calcResponse(const CStdString& username,
 CStdString getFieldFromString(const CStdString &str, const char* field)
 {
   CStdString tmpStr;
-  CStdStringArray tmpAr1;
-  CStdStringArray tmpAr2;
-
-  StringUtils::SplitString(str, ",", tmpAr1);
+  std::vector<std::string> tmpAr1 = StringUtils::Split(str, ",");
 
   for(unsigned int i = 0;i<tmpAr1.size();i++)
   {
     if (tmpAr1[i].find(field) != std::string::npos)
     {
-      if (StringUtils::SplitString(tmpAr1[i], "=", tmpAr2) == 2)
+      std::vector<std::string> tmpAr2 = StringUtils::Split(tmpAr1[i], "=");
+      if (tmpAr2.size() == 2)
       {
         StringUtils::Replace(tmpAr2[1], "\"", "");//remove quotes
         return tmpAr2[1];

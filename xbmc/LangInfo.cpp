@@ -387,7 +387,7 @@ bool CLangInfo::CheckLanguage(const std::string& language)
   return li.Load("special://xbmc/language/" + language + "/langinfo.xml", true);
 }
 
-void CLangInfo::LoadTokens(const TiXmlNode* pTokens, vector<CStdString>& vecTokens)
+void CLangInfo::LoadTokens(const TiXmlNode* pTokens, vector<string>& vecTokens)
 {
   if (pTokens && !pTokens->NoChildren())
   {
@@ -578,7 +578,7 @@ const CStdString& CLangInfo::GetMeridiemSymbol(MERIDIEM_SYMBOL symbol) const
 }
 
 // Fills the array with the region names available for this language
-void CLangInfo::GetRegionNames(CStdStringArray& array)
+void CLangInfo::GetRegionNames(std::vector<std::string>& array)
 {
   for (ITMAPREGIONS it=m_regions.begin(); it!=m_regions.end(); ++it)
   {
@@ -673,7 +673,7 @@ void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std
 
 void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
-  CStdStringArray regions;
+  std::vector<std::string> regions;
   g_langInfo.GetRegionNames(regions);
   sort(regions.begin(), regions.end(), sortstringbyname());
 

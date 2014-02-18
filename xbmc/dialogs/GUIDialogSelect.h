@@ -51,7 +51,7 @@ public:
   void SetSelected(int iSelected);
   void SetSelected(const CStdString &strSelectedLabel);
   void SetSelected(std::vector<int> selectedIndexes);
-  void SetSelected(const std::vector<CStdString> &selectedLabels);
+  void SetSelected(const std::vector<std::string> &selectedLabels);
   void SetUseDetails(bool useDetails);
   void SetMultiSelection(bool multiSelection);
 protected:

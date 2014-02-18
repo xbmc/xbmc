@@ -101,7 +101,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 {
   bool bChanged(false);
   bool bAddedOrDeleted(false);
-  vector<CStdString> timerNotifications;
+  vector<string> timerNotifications;
 
   CSingleLock lock(m_critSection);
 

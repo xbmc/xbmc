@@ -43,7 +43,7 @@ private:
   void ExtractSearchTerms(const CStdString &strSearchTerm, TextSearchDefault defaultSearchMode);
 
   bool                     m_bCaseSensitive;
-  std::vector<CStdString>  m_AND;
-  std::vector<CStdString>  m_OR;
-  std::vector<CStdString>  m_NOT;
+  std::vector<std::string>  m_AND;
+  std::vector<std::string>  m_OR;
+  std::vector<std::string>  m_NOT;
 };

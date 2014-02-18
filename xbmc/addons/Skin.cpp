@@ -62,9 +62,9 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
       bool defRes = StringUtils::EqualsNoCase(CAddonMgr::Get().GetExtValue(*i, "@default"), "true");
       CStdString folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
       float aspect = 0;
-      CStdStringArray fracs;
+      
       CStdString strAspect = CAddonMgr::Get().GetExtValue(*i, "@aspect");
-      StringUtils::SplitString(strAspect, ":", fracs);
+      vector<string> fracs = StringUtils::Split(strAspect, ":");
       if (fracs.size() == 2)
         aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
       if (width > 0 && height > 0)
@@ -231,7 +231,7 @@ bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
   return true;
 }
 
-void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
+void CSkinInfo::GetSkinPaths(std::vector<string> &paths) const
 {
   RESOLUTION_INFO res;
   GetSkinPath("Home.xml", &res);
@@ -442,7 +442,7 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vec
   list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard Textures.xpr/xbt will be used
 
   // search for themes in the current skin!
-  vector<CStdString> vecTheme;
+  vector<string> vecTheme;
   CUtil::GetSkinThemes(vecTheme);
 
   // sort the themes for GUI and list them

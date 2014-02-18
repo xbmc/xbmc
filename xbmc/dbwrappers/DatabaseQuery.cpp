@@ -174,7 +174,7 @@ bool CDatabaseQueryRule::Save(TiXmlNode *parent) const
   rule.SetAttribute("field", TranslateField(m_field).c_str());
   rule.SetAttribute("operator", TranslateOperator(m_operator).c_str());
 
-  for (vector<CStdString>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); it++)
+  for (vector<string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); it++)
   {
     TiXmlElement value("value");
     TiXmlText text(it->c_str());
@@ -196,7 +196,7 @@ bool CDatabaseQueryRule::Save(CVariant &obj) const
   obj["operator"] = TranslateOperator(m_operator);
 
   obj["value"] = CVariant(CVariant::VariantTypeArray);
-  for (vector<CStdString>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); it++)
+  for (vector<string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); it++)
     obj["value"].push_back(*it);
 
   return true;
@@ -231,16 +231,16 @@ void CDatabaseQueryRule::GetAvailableOperators(std::vector<std::string> &operato
 
 CStdString CDatabaseQueryRule::GetParameter() const
 {
-  return StringUtils::JoinString(m_parameter, RULE_VALUE_SEPARATOR);
+  return StringUtils::Join(m_parameter, RULE_VALUE_SEPARATOR);
 }
 
 void CDatabaseQueryRule::SetParameter(const CStdString &value)
 {
   m_parameter.clear();
-  StringUtils::SplitString(value, RULE_VALUE_SEPARATOR, m_parameter);
+  m_parameter = StringUtils::Split(value, RULE_VALUE_SEPARATOR);
 }
 
-void CDatabaseQueryRule::SetParameter(const std::vector<CStdString> &values)
+void CDatabaseQueryRule::SetParameter(const std::vector<string> &values)
 {
   m_parameter.assign(values.begin(), values.end());
 }
@@ -258,9 +258,8 @@ CStdString CDatabaseQueryRule::FormatParameter(const CStdString &operatorString,
   CStdString parameter;
   if (GetFieldType(m_field) == TEXTIN_FIELD)
   {
-    CStdStringArray split;
-    StringUtils::SplitString(param, ",", split);
-    for (CStdStringArray::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
+    std::vector<std::string> split = StringUtils::Split(param, ",");
+    for (std::vector<std::string>::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
     {
       if (!parameter.empty())
         parameter += ",";
@@ -373,7 +372,7 @@ CStdString CDatabaseQueryRule::GetWhereClause(const CDatabase &db, const CStdStr
 
   // now the query parameter
   CStdString wholeQuery;
-  for (vector<CStdString>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
+  for (vector<string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
   {
     CStdString query = "(" + FormatWhereClause(negate, operatorString, *it, db, strType) + ")";
 

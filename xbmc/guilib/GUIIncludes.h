@@ -59,8 +59,8 @@ private:
   std::map<CStdString, TiXmlElement> m_defaults;
   std::map<CStdString, TiXmlElement> m_skinvariables;
   std::map<CStdString, CStdString> m_constants;
-  std::vector<CStdString> m_files;
-  typedef std::vector<CStdString>::const_iterator iFiles;
+  std::vector<std::string> m_files;
+  typedef std::vector<std::string>::const_iterator iFiles;
 
   std::set<std::string> m_constantAttributes;
   std::set<std::string> m_constantNodes;

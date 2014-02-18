@@ -908,7 +908,7 @@ CStdString CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, co
   return rule;
 }
 
-void CSmartPlaylistRuleCombination::GetVirtualFolders(const CStdString& strType, std::vector<CStdString> &virtualFolders) const
+void CSmartPlaylistRuleCombination::GetVirtualFolders(const CStdString& strType, std::vector<string> &virtualFolders) const
 {
   for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)
   {
@@ -1306,7 +1306,7 @@ CStdString CSmartPlaylist::GetWhereClause(const CDatabase &db, set<CStdString> &
   return m_ruleCombination.GetWhereClause(db, GetType(), referencedPlaylists);
 }
 
-void CSmartPlaylist::GetVirtualFolders(std::vector<CStdString> &virtualFolders) const
+void CSmartPlaylist::GetVirtualFolders(std::vector<string> &virtualFolders) const
 {
   m_ruleCombination.GetVirtualFolders(GetType(), virtualFolders);
 }

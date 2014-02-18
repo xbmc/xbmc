@@ -40,7 +40,7 @@ class CKaraokeLyricsTextUStar : public CKaraokeLyricsText
     static bool isValidFile( const CStdString & lyricsFile );
 
   private:
-    static std::vector<CStdString> readFile( const CStdString & lyricsFile, bool report_errors );
+    static std::vector<std::string> readFile( const CStdString & lyricsFile, bool report_errors );
 
   private:
     CStdString     m_lyricsFile;

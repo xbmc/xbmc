@@ -37,7 +37,7 @@
 using namespace std;
 using namespace ADDON;
 
-CURL::CURL(const CStdString& strURL1)
+CURL::CURL(const std::string& strURL1)
 {
   Parse(strURL1);
 }

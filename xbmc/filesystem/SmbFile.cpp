@@ -235,7 +235,7 @@ CStdString CSMB::URLEncode(const CURL &url)
   for( it = parts.begin(); it != parts.end(); it++ )
   {
     flat += "/";
-    flat += URLEncode((*it));
+    flat += URLEncode(it->c_str());
   }
 
   /* okey options should go here, thou current samba doesn't support any */

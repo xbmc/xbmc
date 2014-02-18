@@ -155,12 +155,12 @@ void CGUIMessage::SetStringParam(const CStdString& strParam)
     m_params.push_back(strParam);
 }
 
-void CGUIMessage::SetStringParams(const vector<CStdString> &params)
+void CGUIMessage::SetStringParams(const vector<string> &params)
 {
   m_params = params;
 }
 
-const CStdString& CGUIMessage::GetStringParam(size_t param) const
+const std::string& CGUIMessage::GetStringParam(size_t param) const
 {
   if (param >= m_params.size())
     return empty_string;

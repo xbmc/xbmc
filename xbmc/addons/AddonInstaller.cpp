@@ -117,7 +117,7 @@ bool CAddonInstaller::IsDownloading() const
 void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 {
   CSingleLock lock(m_critSection);
-  vector<CStdString> addonIDs;
+  vector<string> addonIDs;
   for (JobMap::const_iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
   {
     if (i->second.jobID)
@@ -127,7 +127,7 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 
   CAddonDatabase database;
   database.Open();
-  for (vector<CStdString>::iterator it = addonIDs.begin(); it != addonIDs.end();++it)
+  for (vector<string>::iterator it = addonIDs.begin(); it != addonIDs.end();++it)
   {
     AddonPtr addon;
     if (database.GetAddon(*it, addon))

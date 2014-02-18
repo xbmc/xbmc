@@ -213,7 +213,7 @@ void CScreenShot::TakeScreenshot(const CStdString &filename, bool sync)
 void CScreenShot::TakeScreenshot()
 {
   static bool savingScreenshots = false;
-  static vector<CStdString> screenShots;
+  static vector<string> screenShots;
   bool promptUser = false;
   CStdString strDir;
 

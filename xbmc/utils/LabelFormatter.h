@@ -82,7 +82,7 @@ private:
   CStdString GetMaskContent(const CMaskString &mask, const CFileItem *item) const;
   void FillMusicMaskContent(const char mask, const CStdString &value, MUSIC_INFO::CMusicInfoTag *tag) const;
 
-  std::vector<CStdString>   m_staticContent[2];
+  std::vector<std::string>   m_staticContent[2];
   std::vector<CMaskString>  m_dynamicContent[2];
   bool                 m_hideFileExtensions;
 };

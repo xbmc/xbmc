@@ -104,7 +104,7 @@ public:
   /*! \brief Retrieve the skin paths to search for skin XML files
    \param paths [out] vector of paths to search, in order.
    */
-  void GetSkinPaths(std::vector<CStdString> &paths) const;
+  void GetSkinPaths(std::vector<std::string> &paths) const;
 
   bool IsInUse() const;
 

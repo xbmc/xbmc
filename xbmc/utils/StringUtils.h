@@ -92,8 +92,6 @@ public:
   static void JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result);
   static CStdString JoinString(const CStdStringArray &strings, const CStdString& delimiter);
   static CStdString Join(const std::vector<std::string> &strings, const CStdString& delimiter);
-  static int SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings = 0);
-  static CStdStringArray SplitString(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings = 0);
   static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
   static int FindNumber(const CStdString& strInput, const CStdString &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
@@ -163,8 +161,8 @@ public:
   static CStdString CreateUUID();
   static bool ValidateUUID(const CStdString &uuid); // NB only validates syntax
   static double CompareFuzzy(const CStdString &left, const CStdString &right);
-  static int FindBestMatch(const CStdString &str, const CStdStringArray &strings, double &matchscore);
-  static bool ContainsKeyword(const CStdString &str, const CStdStringArray &keywords);
+  static int FindBestMatch(const CStdString &str, const std::vector<std::string> &strings, double &matchscore);
+  static bool ContainsKeyword(const CStdString &str, const std::vector<std::string> &keywords);
 
   /*! \brief Escapes the given string to be able to be used as a parameter.
 

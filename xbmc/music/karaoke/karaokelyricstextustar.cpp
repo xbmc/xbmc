@@ -42,14 +42,14 @@ CKaraokeLyricsTextUStar::~CKaraokeLyricsTextUStar()
 }
 
 
-std::vector< CStdString > CKaraokeLyricsTextUStar::readFile(const CStdString & lyricsFile, bool report_errors )
+vector<string> CKaraokeLyricsTextUStar::readFile(const CStdString & lyricsFile, bool report_errors )
 {
-  std::vector< CStdString > lines;
+  vector<string> lines;
 
   XFILE::CFile file;
 
   if ( !file.Open( lyricsFile ) )
-    return std::vector< CStdString >();
+    return vector<string>();
 
   unsigned int lyricSize = (unsigned int) file.GetLength();
 
@@ -58,7 +58,7 @@ std::vector< CStdString > CKaraokeLyricsTextUStar::readFile(const CStdString & l
     if ( report_errors )
       CLog::Log( LOGERROR, "UStar lyric loader: lyric file %s has zero length", lyricsFile.c_str() );
 
-    return std::vector< CStdString >();
+    return vector<string>();
   }
 
   // Read the file into memory array
@@ -68,7 +68,7 @@ std::vector< CStdString > CKaraokeLyricsTextUStar::readFile(const CStdString & l
 
   // Read the whole file
   if ( file.Read( &lyricData[0], lyricSize) != lyricSize )
-    return std::vector< CStdString >(); // disk error?
+    return vector<string>(); // disk error?
 
   file.Close();
 
@@ -108,7 +108,7 @@ std::vector< CStdString > CKaraokeLyricsTextUStar::readFile(const CStdString & l
 
 bool CKaraokeLyricsTextUStar::isValidFile(const CStdString & lyricsFile)
 {
-  std::vector< CStdString > lines = readFile( lyricsFile, false );
+  vector<string> lines = readFile( lyricsFile, false );
 
   if ( lines.size() == 0 )
     return false;
@@ -126,7 +126,7 @@ bool CKaraokeLyricsTextUStar::Load()
   bool relative = false;
 
   // Read the text file
-  std::vector< CStdString > lines = readFile( m_lyricsFile, true );
+  vector<string> lines = readFile( m_lyricsFile, true );
 
   if ( lines.size() == 0 )
     return false;

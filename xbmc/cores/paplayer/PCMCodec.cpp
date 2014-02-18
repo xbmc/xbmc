@@ -99,28 +99,25 @@ bool PCMCodec::CanInit()
 
 void PCMCodec::SetMimeParams(const CStdString& strMimeParams)
 {
-  CStdStringArray mimeParams;
-
   // if there are no parameters, the default is 2 channels, 44100 samples/sec
   m_Channels = 2;
   m_SampleRate = 44100;
 
-  StringUtils::SplitString(strMimeParams, ";", mimeParams);
+  std::vector<std::string> mimeParams = StringUtils::Split(strMimeParams, ";");
   for (size_t i = 0; i < mimeParams.size(); i++)
   {
-    CStdStringArray thisParam;
-    StringUtils::SplitString(mimeParams[i], "=", thisParam, 2);
+    std::vector<std::string> thisParam = StringUtils::Split(mimeParams[i], "=");
     if (thisParam.size() > 1)
     {
       if (thisParam[0] == "rate")
       {
         StringUtils::Trim(thisParam[1]);
-        m_SampleRate = atoi(thisParam[1]);
+        m_SampleRate = atoi(thisParam[1].c_str());
       }
       else if (thisParam[0] == "channels")
       {
         StringUtils::Trim(thisParam[1]);
-        m_Channels = atoi(thisParam[1]);
+        m_Channels = atoi(thisParam[1].c_str());
       }
     }
   }

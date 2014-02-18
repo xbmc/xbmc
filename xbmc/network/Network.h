@@ -136,8 +136,8 @@ public:
    virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) = 0;
 
    // Get/set the nameserver(s)
-   virtual std::vector<CStdString> GetNameServers(void) = 0;
-   virtual void SetNameServers(std::vector<CStdString> nameServers) = 0;
+   virtual std::vector<std::string> GetNameServers(void) = 0;
+   virtual void SetNameServers(std::vector<std::string> nameServers) = 0;
 
    // callback from application controlled thread to handle any setup
    void NetworkMessage(EMESSAGE message, int param);

@@ -368,8 +368,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
 void CGUIControlFactory::GetRectFromString(const CStdString &string, CRect &rect)
 {
   // format is rect="left[,top,right,bottom]"
-  CStdStringArray strRect;
-  StringUtils::SplitString(string, ",", strRect);
+  std::vector<std::string> strRect = StringUtils::Split(string, ",");
   if (strRect.size() == 1)
   {
     rect.x1 = (float)atof(strRect[0].c_str());
@@ -422,7 +421,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, CStd
 {
   const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
-  vector<CStdString> conditions;
+  vector<string> conditions;
   while (node)
   {
     const char *hidden = node->Attribute("allowhiddenfocus");

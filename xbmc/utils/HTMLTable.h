@@ -30,11 +30,11 @@ public:
   CHTMLRow(void);
   virtual ~CHTMLRow(void);
   int GetColumns() const;
-  const CStdString& GetColumValue(int iColumn) const;
+  const std::string& GetColumValue(int iColumn) const;
   void Parse(const CStdString& strTableRow);
 
 protected:
-  std::vector<CStdString> m_vecColums;
+  std::vector<std::string> m_vecColums;
 };
 
 class CHTMLTable

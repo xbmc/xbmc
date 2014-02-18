@@ -517,7 +517,7 @@ namespace XBMCAddon
       DelayedCallGuard dcguard(languageHook);
       popActiveWindowId();
 
-      std::vector<CStdString> params;
+      vector<string> params;
       CApplicationMessenger::Get().ActivateWindow(iWindowId, params, false);
     }
 
@@ -684,7 +684,7 @@ namespace XBMCAddon
       if (!existingWindow)
         PulseActionEvent();
 
-      std::vector<CStdString> params;
+      std::vector<string> params;
       {
         DelayedCallGuard dcguard(languageHook);
         CApplicationMessenger::Get().ActivateWindow(iOldWindowId, params, false);

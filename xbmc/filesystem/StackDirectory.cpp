@@ -40,7 +40,7 @@ namespace XFILE
   bool CStackDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
   {
     items.Clear();
-    CStdStringArray files;
+    vector<string> files;
     if (!GetPaths(strPath, files))
       return false;   // error in path
 
@@ -60,8 +60,8 @@ namespace XFILE
     // Load up our REs
     VECCREGEXP  RegExps;
     CRegExp     tempRE(true, CRegExp::autoUtf8);
-    const CStdStringArray& strRegExps = g_advancedSettings.m_videoStackRegExps;
-    CStdStringArray::const_iterator itRegExp = strRegExps.begin();
+    const std::vector<std::string>& strRegExps = g_advancedSettings.m_videoStackRegExps;
+    std::vector<std::string>::const_iterator itRegExp = strRegExps.begin();
     vector<pair<int, CStdString> > badStacks;
     while (itRegExp != strRegExps.end())
     {
@@ -172,7 +172,7 @@ namespace XFILE
     return URIUtils::AddFileToFolder(folder, file);
   }
 
-  bool CStackDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
+  bool CStackDirectory::GetPaths(const CStdString& strPath, vector<string>& vecPaths)
   {
     // format is:
     // stack://file1 , file2 , file3 , file4
@@ -182,12 +182,12 @@ namespace XFILE
     path = path.substr(8);
     
     vecPaths.clear();
-    StringUtils::SplitString(path, " , ", vecPaths);
+    vecPaths = StringUtils::Split(path, " , ");
     if (vecPaths.empty())
       return false;
 
     // because " , " is used as a seperator any "," in the real paths are double escaped
-    for (vector<CStdString>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); itPath++)
+    for (vector<string>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); itPath++)
       StringUtils::Replace(*itPath, ",,", ",");
 
     return true;
@@ -217,11 +217,11 @@ namespace XFILE
     return stackedPath;
   }
 
-  bool CStackDirectory::ConstructStackPath(const vector<CStdString> &paths, CStdString& stackedPath)
+  bool CStackDirectory::ConstructStackPath(const vector<string> &paths, CStdString& stackedPath)
   {
     vector<string> pathsT;
     pathsT.reserve(paths.size());
-    for (vector<CStdString>::const_iterator path = paths.begin();
+    for (vector<string>::const_iterator path = paths.begin();
          path != paths.end(); ++path)
     {
       pathsT.push_back(*path);

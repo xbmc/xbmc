@@ -91,7 +91,7 @@ public:
 
   void ProcessEvents();
 
-  std::vector<CStdString> GetDiskUsage();
+  std::vector<std::string> GetDiskUsage();
 
   virtual void OnStorageAdded(const CStdString &label, const CStdString &path);
   virtual void OnStorageSafelyRemoved(const CStdString &label);

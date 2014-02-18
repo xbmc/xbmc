@@ -77,7 +77,7 @@ public:
   virtual ~CSmartPlaylistRuleCombination() { }
 
   CStdString GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const;
-  void GetVirtualFolders(const CStdString& strType, std::vector<CStdString> &virtualFolders) const;
+  void GetVirtualFolders(const CStdString& strType, std::vector<std::string> &virtualFolders) const;
 
   void AddRule(const CSmartPlaylistRule &rule);
 };
@@ -136,7 +136,7 @@ public:
    \param needWhere whether we need to prepend the where clause with "WHERE "
    */
   CStdString GetWhereClause(const CDatabase &db, std::set<CStdString> &referencedPlaylists) const;
-  void GetVirtualFolders(std::vector<CStdString> &virtualFolders) const;
+  void GetVirtualFolders(std::vector<std::string> &virtualFolders) const;
 
   CStdString GetSaveLocation() const;
 

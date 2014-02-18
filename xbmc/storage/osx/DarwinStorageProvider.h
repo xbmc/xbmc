@@ -33,7 +33,7 @@ public:
   virtual void GetLocalDrives(VECSOURCES &localDrives);
   virtual void GetRemovableDrives(VECSOURCES &removableDrives);
 
-  virtual std::vector<CStdString> GetDiskUsage(void);
+  virtual std::vector<std::string> GetDiskUsage(void);
 
   virtual bool Eject(CStdString mountpath);
 

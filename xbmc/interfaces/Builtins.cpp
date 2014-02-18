@@ -233,7 +233,7 @@ const BUILT_IN commands[] = {
 bool CBuiltins::HasCommand(const CStdString& execString)
 {
   CStdString function;
-  vector<CStdString> parameters;
+  vector<string> parameters;
   CUtil::SplitExecFunction(execString, function, parameters);
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
@@ -259,7 +259,7 @@ int CBuiltins::Execute(const CStdString& execString)
 {
   // Get the text after the "XBMC."
   CStdString execute;
-  vector<CStdString> params;
+  vector<string> params;
   CUtil::SplitExecFunction(execString, execute, params);
   StringUtils::ToLower(execute);
   CStdString parameter = params.size() ? params[0] : "";
@@ -419,7 +419,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-      vector<CStdString> dummy;
+      vector<string> dummy;
       g_windowManager.ActivateWindow(iWindow, dummy, !StringUtils::EqualsNoCase(execute, "activatewindowandfocus"));
 
       unsigned int iPtr = 1;
@@ -450,12 +450,11 @@ int CBuiltins::Execute(const CStdString& execString)
 #endif
     {
       vector<string> argv;
-      for (vector<CStdString>::const_iterator param = params.begin(); param != params.end(); ++param)
+      for (vector<string>::const_iterator param = params.begin(); param != params.end(); ++param)
         argv.push_back(*param);
 
-      vector<CStdString> path;
       //split the path up to find the filename
-      StringUtils::SplitString(params[0],"\\",path);
+      vector<string> path = StringUtils::Split(params[0], "\\");
       if (path.size())
         argv[0] = path[path.size() - 1];
 
@@ -562,14 +561,14 @@ int CBuiltins::Execute(const CStdString& execString)
         {
           CStdString addonid = params[0];
           CStdString urlParameters;
-          CStdStringArray parameters;
+          std::vector<std::string> parameters;
           if (params.size() == 2 &&
              (StringUtils::StartsWith(params[1], "/") || StringUtils::StartsWith(params[1], "?")))
             urlParameters = params[1];
           else if (params.size() > 1)
           {
             parameters.insert(parameters.begin(), params.begin() + 1, params.end());
-            urlParameters = "?" + StringUtils::JoinString(parameters, "&");
+            urlParameters = "?" + StringUtils::Join(parameters, "&");
           }
           else
           {
@@ -589,12 +588,12 @@ int CBuiltins::Execute(const CStdString& execString)
           else
             // Pass the script name (params[0]) and all the parameters
             // (params[1] ... params[x]) separated by a comma to RunPlugin
-            cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::JoinString(params, ",").c_str());
+            cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
         }
         else if (addon->Type() >= ADDON_SCRIPT && addon->Type() <= ADDON_SCRIPT_LYRICS)
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunScript
-          cmd = StringUtils::Format("RunScript(%s)", StringUtils::JoinString(params, ",").c_str());
+          cmd = StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str());
 
         return Execute(cmd);
       }
@@ -612,7 +611,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (params.size() > 2)
         data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
 
-      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0], params[1], data);
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
     }
     else
       CLog::Log(LOGERROR, "XBMC.NotifyAll needs two parameters");
@@ -765,7 +764,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
-    vector<CStdString> strParams;
+    vector<string> strParams;
     strParams.push_back(params[0]);
     strParams.push_back(beginSlidePath);
     msg.SetStringParams(strParams);
@@ -1169,7 +1168,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (StringUtils::EqualsNoCase(execute, "skin.theme"))
   {
     // enumerate themes
-    vector<CStdString> vecTheme;
+    vector<string> vecTheme;
     CUtil::GetSkinThemes(vecTheme);
 
     int iTheme = -1;
@@ -1707,7 +1706,7 @@ int CBuiltins::Execute(const CStdString& execString)
 #endif
   else if (StringUtils::EqualsNoCase(execute, "weather.locationset"))
   {
-    int loc = atoi(params[0]);
+    int loc = atoi(params[0].c_str());
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, 0, loc);
     g_windowManager.SendMessage(msg, WINDOW_WEATHER);
   }

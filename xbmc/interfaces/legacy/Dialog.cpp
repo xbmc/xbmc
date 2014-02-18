@@ -181,7 +181,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
-      CStdStringArray tmpret;
+      std::vector<std::string> tmpret;
       String lmask = mask;
       if (!shares) 
         throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
@@ -198,7 +198,7 @@ namespace XBMCAddon
 
       std::vector<String> valuelist;
       int index = 0;
-      for (CStdStringArray::iterator iter = tmpret.begin(); iter != tmpret.end(); ++iter)
+      for (std::vector<std::string>::iterator iter = tmpret.begin(); iter != tmpret.end(); ++iter)
         valuelist[index++] = (*iter);
 
       return valuelist;

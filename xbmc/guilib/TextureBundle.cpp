@@ -59,7 +59,7 @@ bool CTextureBundle::HasFile(const CStdString& Filename)
   }
 }
 
-void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures)
+void CTextureBundle::GetTexturesFromPath(const CStdString &path, vector<string> &textures)
 {
   if (m_useXBT)
   {

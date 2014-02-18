@@ -322,8 +322,8 @@ void CGUIDialogMediaFilter::CreateSettings()
         float *valueUpper = new float();
         if (filter.rule != NULL && filter.rule->m_parameter.size() == 2)
         {
-          *valueLower = (float)strtod(filter.rule->m_parameter.at(0), NULL);
-          *valueUpper = (float)strtod(filter.rule->m_parameter.at(1), NULL);
+          *valueLower = (float)strtod(filter.rule->m_parameter.at(0).c_str(), NULL);
+          *valueUpper = (float)strtod(filter.rule->m_parameter.at(1).c_str(), NULL);
         }
         else
         {

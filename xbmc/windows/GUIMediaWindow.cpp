@@ -118,8 +118,7 @@ void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
   if (element && element->FirstChild())
   { // format is <views>50,29,51,95</views>
     CStdString allViews = element->FirstChild()->Value();
-    CStdStringArray views;
-    StringUtils::SplitString(allViews, ",", views);
+    std::vector<std::string> views = StringUtils::Split(allViews, ",");
     for (unsigned int i = 0; i < views.size(); i++)
     {
       int controlID = atol(views[i].c_str());
@@ -690,7 +689,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
 
   int iWindow = GetID();
-  CStdStringArray regexps;
+  std::vector<std::string> regexps;
 
   // TODO: Do we want to limit the directories we apply the video ones to?
   if (iWindow == WINDOW_VIDEO_NAV)

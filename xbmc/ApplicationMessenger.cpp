@@ -754,7 +754,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         if (pMsg->lpVoid)
         {
-          vector<CStdString> *infoLabels = (vector<CStdString> *)pMsg->lpVoid;
+          vector<string> *infoLabels = (vector<string> *)pMsg->lpVoid;
           for (unsigned int i = 0; i < pMsg->params.size(); i++)
             infoLabels->push_back(g_infoManager.GetLabel(g_infoManager.TranslateString(pMsg->params[i])));
         }
@@ -1239,7 +1239,7 @@ void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool wait
   SendMessage(tMsg, waitResult);
 }
 
-void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString> &params, bool swappingWindows)
+void CApplicationMessenger::ActivateWindow(int windowID, const vector<string> &params, bool swappingWindows)
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, (unsigned int)windowID, swappingWindows ? 1u : 0u};
   tMsg.params = params;
@@ -1277,9 +1277,9 @@ void CApplicationMessenger::SendText(const std::string &aTextString, bool closeK
   SendGUIMessage(msg, window->GetID());
 }
 
-vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString> &properties)
+vector<string> CApplicationMessenger::GetInfoLabels(const vector<string> &properties)
 {
-  vector<CStdString> infoLabels;
+  vector<string> infoLabels;
 
   ThreadMessage tMsg = {TMSG_GUI_INFOLABEL};
   tMsg.params = properties;
@@ -1288,7 +1288,7 @@ vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString>
   return infoLabels;
 }
 
-vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<CStdString> &properties)
+vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<string> &properties)
 {
   vector<bool> infoLabels;
 
@@ -1373,7 +1373,7 @@ void CApplicationMessenger::LoadProfile(unsigned int idx)
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::StartAndroidActivity(const vector<CStdString> &params)
+void CApplicationMessenger::StartAndroidActivity(const vector<string> &params)
 {
   ThreadMessage tMsg = {TMSG_START_ANDROID_ACTIVITY};
   tMsg.params = params;

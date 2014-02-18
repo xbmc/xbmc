@@ -71,8 +71,8 @@ namespace ADDON
     bool IsLocked();
     unsigned GetPreset();
     CStdString GetPresetName();
-    bool GetPresetList(std::vector<CStdString>& vecpresets);
-    bool GetSubModuleList(std::vector<CStdString>& vecmodules);
+    bool GetPresetList(std::vector<std::string>& vecpresets);
+    bool GetSubModuleList(std::vector<std::string>& vecmodules);
     static CStdString GetFriendlyName(const CStdString& vis, const CStdString& module);
     void Destroy();
 
@@ -90,9 +90,9 @@ namespace ADDON
     int m_height;
 
     // cached preset list
-    std::vector<CStdString> m_presets;
+    std::vector<std::string> m_presets;
     // cached submodule list
-    std::vector<CStdString> m_submodules;
+    std::vector<std::string> m_submodules;
     int m_currentModule;
 
     // audio properties

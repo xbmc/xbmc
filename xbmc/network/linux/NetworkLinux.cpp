@@ -467,9 +467,9 @@ void CNetworkLinux::queryInterfaceList()
 #endif
 }
 
-std::vector<CStdString> CNetworkLinux::GetNameServers(void)
+std::vector<string> CNetworkLinux::GetNameServers(void)
 {
-   std::vector<CStdString> result;
+   std::vector<string> result;
 
 #if defined(TARGET_DARWIN)
   //only finds the primary dns (0 :)
@@ -512,7 +512,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
    return result;
 }
 
-void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
+void CNetworkLinux::SetNameServers(std::vector<string> nameServers)
 {
 #if !defined(TARGET_ANDROID)
    FILE* fp = fopen("/etc/resolv.conf", "w");

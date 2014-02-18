@@ -368,7 +368,7 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
   smbFullPath += newPath;
 
   // Make the mount command.
-  CStdStringArray args;
+  std::vector<std::string> args;
   args.push_back("/sbin/mount_smbfs");
   args.push_back("-o");
   args.push_back("nobrowse");
@@ -401,7 +401,7 @@ void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &st
   CStdString strMountPoint(CURL::Decode(GetMountPoint(strType, strName)));
 
   // Make the unmount command.
-  CStdStringArray args;
+  std::vector<std::string> args;
   args.push_back("/sbin/umount");
   args.push_back(strMountPoint);
 

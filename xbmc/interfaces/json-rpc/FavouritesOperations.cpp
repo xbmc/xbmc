@@ -52,7 +52,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, IT
     CFileItemPtr item = favourites.Get(i);
 
     CStdString function;
-    vector<CStdString> parameters;
+    vector<string> parameters;
     CUtil::SplitExecFunction(item->GetPath(), function, parameters);
     if (parameters.size() == 0)
       continue;
@@ -67,7 +67,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, IT
       if (fields.find("window") != fields.end())
       {
         if (StringUtils::IsNaturalNumber(parameters[0]))
-          object["window"] = CButtonTranslator::TranslateWindow(strtol(parameters[0], NULL, 10));
+          object["window"] = CButtonTranslator::TranslateWindow(strtol(parameters[0].c_str(), NULL, 10));
         else
           object["window"] = parameters[0];
       }

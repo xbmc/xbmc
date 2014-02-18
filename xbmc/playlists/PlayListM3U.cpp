@@ -277,12 +277,12 @@ std::map< CStdString, CStdString > CPlayListM3U::ParseStreamLine(const CStdStrin
   CStdString strParams(streamLine.substr(strlen(M3U_STREAM_MARKER) + 1));
 
   // separate the parameters
-  CStdStringArray vecParams = StringUtils::SplitString(strParams, ",");
+  std::vector<std::string> vecParams = StringUtils::Split(strParams, ",");
   for (size_t i = 0; i < vecParams.size(); i++)
   {
     // split the param, ensure there was an =
     StringUtils::Trim(vecParams[i]);
-    CStdStringArray vecTuple = StringUtils::SplitString(vecParams[i], "=");
+    std::vector<std::string> vecTuple = StringUtils::Split(vecParams[i], "=");
     if (vecTuple.size() < 2)
       continue;
 

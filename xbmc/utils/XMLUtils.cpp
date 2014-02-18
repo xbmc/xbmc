@@ -272,8 +272,7 @@ bool XMLUtils::GetDateTime(const TiXmlNode* pRootNode, const char* strTag, CDate
 
 void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strSeparator, const CStdString& strValue)
 {
-  CStdStringArray list;
-  StringUtils::SplitString(strValue,strSeparator,list);
+  std::vector<std::string> list = StringUtils::Split(strValue,strSeparator);
   for (unsigned int i=0;i<list.size() && !list[i].empty();++i)
     SetString(pRootNode,strTag,list[i]);
 }

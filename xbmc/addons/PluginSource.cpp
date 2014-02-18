@@ -56,10 +56,9 @@ AddonPtr CPluginSource::Clone() const
 
 void CPluginSource::SetProvides(const CStdString &content)
 {
-  vector<CStdString> provides;
-  if (!content.empty())
+ if (!content.empty())
   {
-    StringUtils::SplitString(content, " ", provides);
+    vector<string> provides = StringUtils::Split(content, " ");
     for (unsigned int i = 0; i < provides.size(); ++i)
     {
       Content content = Translate(provides[i]);

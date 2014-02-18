@@ -59,9 +59,9 @@ struct STREAMINFO
 };
 struct VIDEOSUBCHANNEL
 {
-  std::vector<CStdString> reference;
-  std::vector<CStdString> name;
-  std::vector<CStdString> selected;
+  std::vector<std::string> reference;
+  std::vector<std::string> name;
+  std::vector<std::string> selected;
   CStdString current_name;
   bool mode;
 };

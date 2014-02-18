@@ -386,7 +386,7 @@ namespace XBMCAddon
     String translatePath(const String& path)
     {
       XBMC_TRACE;
-      return CSpecialProtocol::TranslatePath(path);
+      return CSpecialProtocol::TranslatePath(path.c_str());
     }
 
     Tuple<String,String> getCleanMovieTitle(const String& path, bool usefoldername)

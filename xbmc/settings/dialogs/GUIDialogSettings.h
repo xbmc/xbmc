@@ -31,7 +31,7 @@ class CGUIEditControl;
 class CGUIImage;
 class CGUIEditControl;
 
-typedef std::vector<CStdString> SETTINGSTRINGS;
+typedef std::vector<std::string> SETTINGSTRINGS;
 typedef CStdString (*FORMATFUNCTION) (float value, float min);
 typedef CStdString (*RANGEFORMATFUNCTION) (float valueLower, float valueUpper, float min);
 

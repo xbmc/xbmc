@@ -40,8 +40,8 @@ public:
 
    CStdString GetOSConfiguredTimezone();
 
-   std::vector<CStdString> GetCounties();
-   std::vector<CStdString> GetTimezonesByCountry(const CStdString country);
+   std::vector<std::string> GetCounties();
+   std::vector<std::string> GetTimezonesByCountry(const CStdString country);
    CStdString GetCountryByTimezone(const CStdString timezone);
 
    void SetTimezone(CStdString timezone);
@@ -51,11 +51,11 @@ public:
    static void SettingOptionsTimezonesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
 private:
-   std::vector<CStdString> m_counties;
+   std::vector<std::string> m_counties;
    std::map<CStdString, CStdString> m_countryByCode;
    std::map<CStdString, CStdString> m_countryByName;
 
-   std::map<CStdString, std::vector<CStdString> > m_timezonesByCountryCode;
+   std::map<CStdString, std::vector<std::string> > m_timezonesByCountryCode;
    std::map<CStdString, CStdString> m_countriesByTimezoneName;
 };
 

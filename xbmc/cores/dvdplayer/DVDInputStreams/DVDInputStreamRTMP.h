@@ -46,7 +46,7 @@ protected:
   bool       m_eof;
   bool       m_bPaused;
   char*      m_sStreamPlaying;
-  std::vector<CStdString> m_optionvalues;
+  std::vector<std::string> m_optionvalues;
 
   RTMP       *m_rtmp;
   DllLibRTMP m_libRTMP;

@@ -3946,10 +3946,9 @@ bool CVideoDatabase::GetStackTimes(const CStdString &filePath, vector<int> &time
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
     { // get the video settings info
-      CStdStringArray timeString;
       int timeTotal = 0;
-      StringUtils::SplitString(m_pDS->fv("times").get_asString(), ",", timeString);
       times.clear();
+      std::vector<std::string> timeString = StringUtils::Split(m_pDS->fv("times").get_asString(), ",");
       for (unsigned int i = 0; i < timeString.size(); i++)
       {
         times.push_back(atoi(timeString[i].c_str()));
@@ -3998,7 +3997,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
 {
   if(URIUtils::IsMultiPath(strPath))
   {
-    vector<CStdString> paths;
+    vector<string> paths;
     CMultiPathDirectory::GetPaths(strPath, paths);
 
     for(unsigned i=0;i<paths.size();i++)
@@ -4079,7 +4078,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
   // if we have a multipath, set scraper for all contained paths too
   if(URIUtils::IsMultiPath(filePath))
   {
-    vector<CStdString> paths;
+    vector<string> paths;
     CMultiPathDirectory::GetPaths(filePath, paths);
 
     for(unsigned i=0;i<paths.size();i++)
@@ -4336,7 +4335,7 @@ bool CVideoDatabase::GetPlayCounts(const CStdString &strPath, CFileItemList &ite
 {
   if(URIUtils::IsMultiPath(strPath))
   {
-    vector<CStdString> paths;
+    vector<string> paths;
     CMultiPathDirectory::GetPaths(strPath, paths);
 
     bool ret = false;
@@ -6151,7 +6150,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
         CStdString strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
         bool bDvdFolder = StringUtils::EndsWithNoCase(strFileNameAndPath, "video_ts.ifo");
 
-        vector<CStdString> paths;
+        vector<string> paths;
         paths.push_back(strFileNameAndPath);
         CLog::Log(LOGDEBUG, "Stack episode (%i,%i):[%s]", iSeason, iEpisode, paths[0].c_str());
 
@@ -9188,7 +9187,7 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   
   if(URIUtils::IsMultiPath(path))
   {
-    vector<CStdString> paths;
+    vector<string> paths;
     CMultiPathDirectory::GetPaths(path, paths);
 
     for(unsigned i=0;i<paths.size();i++)

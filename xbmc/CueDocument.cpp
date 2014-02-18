@@ -261,7 +261,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
   }
 }
 
-void CCueDocument::GetMediaFiles(vector<CStdString>& mediaFiles)
+void CCueDocument::GetMediaFiles(vector<string>& mediaFiles)
 {
   set<CStdString> uniqueFiles;
   for (int i = 0; i < m_iTotalTracks; i++)
@@ -334,8 +334,7 @@ int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
   }
   StringUtils::TrimLeft(numberTime);
   // split the resulting string
-  CStdStringArray time;
-  StringUtils::SplitString(numberTime, ":", time);
+  std::vector<std::string> time = StringUtils::Split(numberTime, ":");
   if (time.size() != 3)
     return -1;
 

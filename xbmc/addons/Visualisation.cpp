@@ -361,7 +361,7 @@ bool CVisualisation::UpdateTrack()
   return handled;
 }
 
-bool CVisualisation::GetPresetList(std::vector<CStdString> &vecpresets)
+bool CVisualisation::GetPresetList(std::vector<string> &vecpresets)
 {
   vecpresets = m_presets;
   return !m_presets.empty();
@@ -394,7 +394,7 @@ bool CVisualisation::GetPresets()
   return (!m_presets.empty());
 }
 
-bool CVisualisation::GetSubModuleList(std::vector<CStdString> &vecmodules)
+bool CVisualisation::GetSubModuleList(std::vector<string> &vecmodules)
 {
   vecmodules = m_submodules;
   return !m_submodules.empty();

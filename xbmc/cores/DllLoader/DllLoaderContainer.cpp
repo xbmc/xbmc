@@ -156,15 +156,15 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   }
 
   //  in environment variable?
-  CStdStringArray vecEnv;
+  std::vector<std::string> vecEnv;
 
 #if defined(TARGET_ANDROID)
   CStdString systemLibs = getenv("XBMC_ANDROID_SYSTEM_LIBS");
-  StringUtils::SplitString(systemLibs, ":", vecEnv);
+  vecEnv = StringUtils::Split(systemLibs, ":");
   CStdString localLibs = getenv("XBMC_ANDROID_LIBS");
   vecEnv.insert(vecEnv.begin(),localLibs);
 #else
-  StringUtils::SplitString(ENV_PATH, ";", vecEnv);
+  vecEnv = StringUtils::Split(ENV_PATH, ";");
 #endif
   LibraryLoader* pDll = NULL;
 

@@ -35,7 +35,7 @@ int CHTMLRow::GetColumns() const
   return (int)m_vecColums.size();
 }
 
-const CStdString& CHTMLRow::GetColumValue(int iColumn) const
+const std::string& CHTMLRow::GetColumValue(int iColumn) const
 {
   return m_vecColums[iColumn];
 }

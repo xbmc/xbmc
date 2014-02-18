@@ -1264,7 +1264,7 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
   }
 }
 
-void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings)
+void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string>& settings)
 {
   TiXmlElement *pElement = pRootElement;
   while (pElement)
@@ -1312,8 +1312,7 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
     extensions += "|" + extraExtensions;
   if (XMLUtils::GetString(pRootElement, "remove", extraExtensions) && !extraExtensions.empty())
   {
-    CStdStringArray exts;
-    StringUtils::SplitString(extraExtensions,"|",exts);
+    std::vector<std::string> exts = StringUtils::Split(extraExtensions,"|");
     for (unsigned int i=0;i<exts.size();++i)
     {
       size_t iPos = extensions.find(exts[i]);

@@ -127,7 +127,7 @@ const CWeatherInfo &CWeatherJob::GetInfo() const
   return m_info;
 }
 
-void CWeatherJob::LocalizeOverviewToken(CStdString &token)
+void CWeatherJob::LocalizeOverviewToken(std::string &token)
 {
   // This routine is case-insensitive. 
   CStdString strLocStr = "";
@@ -147,8 +147,7 @@ void CWeatherJob::LocalizeOverviewToken(CStdString &token)
 
 void CWeatherJob::LocalizeOverview(CStdString &str)
 {
-  CStdStringArray words;
-  StringUtils::SplitString(str, " ", words);
+  std::vector<std::string> words = StringUtils::Split(str, " ");
   str.clear();
   for (unsigned int i = 0; i < words.size(); i++)
   {

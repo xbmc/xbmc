@@ -124,13 +124,13 @@ public:
   const CStdString& GetSpeedUnitString() const;
   CLangInfo::SPEED_UNIT GetSpeedUnit() const;
 
-  void GetRegionNames(CStdStringArray& array);
+  void GetRegionNames(std::vector<std::string>& array);
   void SetCurrentRegion(const CStdString& strName);
   const CStdString& GetCurrentRegion() const;
 
   static bool CheckLanguage(const std::string& language);
 
-  static void LoadTokens(const TiXmlNode* pTokens, std::vector<CStdString>& vecTokens);
+  static void LoadTokens(const TiXmlNode* pTokens, std::vector<std::string>& vecTokens);
 
   static void SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);

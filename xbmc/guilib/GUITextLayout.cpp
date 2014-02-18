@@ -649,8 +649,7 @@ void CGUITextLayout::utf8ToW(const CStdString &utf8, CStdStringW &utf16)
   // NOTE: This appears to strip \n characters from text.  This may be a consequence of incorrect
   //       expression of the \n in utf8 (we just use character code 10) or it might be something
   //       more sinister.  For now, we use the workaround below.
-  CStdStringArray multiLines;
-  StringUtils::SplitString(utf8, "\n", multiLines);
+  std::vector<std::string> multiLines = StringUtils::Split(utf8, "\n");
   for (unsigned int i = 0; i < multiLines.size(); i++)
   {
     CStdStringW line;

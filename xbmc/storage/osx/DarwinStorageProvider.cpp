@@ -145,9 +145,9 @@ void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 #endif
 }
 
-std::vector<CStdString> CDarwinStorageProvider::GetDiskUsage()
+vector<string> CDarwinStorageProvider::GetDiskUsage()
 {
-  std::vector<CStdString> result;
+  vector<string> result;
   char line[1024];
 
 #ifdef TARGET_DARWIN_IOS

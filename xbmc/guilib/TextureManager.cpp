@@ -570,7 +570,7 @@ void CGUITextureManager::AddTexturePath(const CStdString &texturePath)
 void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
 {
   CSingleLock lock(m_section);
-  for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+  for (vector<string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
   {
     if (*it == texturePath)
     {
@@ -587,7 +587,7 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, boo
   else
   { // texture doesn't include the full path, so check all fallbacks
     CSingleLock lock(m_section);
-    for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+    for (vector<string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
     {
       CStdString path = URIUtils::AddFileToFolder(it->c_str(), "media");
       path = URIUtils::AddFileToFolder(path, textureName);
@@ -606,7 +606,7 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, boo
   return "";
 }
 
-void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items)
+void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<string> &items)
 {
   m_TexBundle[0].GetTexturesFromPath(texturePath, items);
   if (items.empty())

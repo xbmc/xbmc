@@ -148,14 +148,14 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
 {
   std::string stereoMode;
   CStdString searchString(needle);
-  CStdStringArray tags;
+  std::vector<std::string> tags;
   StringUtils::ToUpper(searchString);
 
   CStdString tag( g_advancedSettings.m_stereoscopicflags_sbs );
   if (stereoMode.empty() && !tag.empty())
   {
     StringUtils::ToUpper(tag);
-    StringUtils::SplitString(tag, "|", tags);
+    tags = StringUtils::Split(tag, "|");
     if (StringUtils::ContainsKeyword(searchString, tags))
       stereoMode = "left_right";
   }
@@ -164,7 +164,7 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
   if (stereoMode.empty() && !tag.empty())
   {
     StringUtils::ToUpper(tag);
-    StringUtils::SplitString(tag, "|", tags);
+    tags = StringUtils::Split(tag, "|");
     if (StringUtils::ContainsKeyword(searchString, tags))
       stereoMode = "top_bottom";
   }

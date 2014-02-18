@@ -51,7 +51,7 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 {
   CLog::Log(LOGDEBUG,"CMultiPathDirectory::GetDirectory(%s)", strPath.c_str());
 
-  vector<CStdString> vecPaths;
+  vector<string> vecPaths;
   if (!GetPaths(strPath, vecPaths))
     return false;
 
@@ -118,7 +118,7 @@ bool CMultiPathDirectory::Exists(const char* strPath)
 {
   CLog::Log(LOGDEBUG,"Testing Existence (%s)", strPath);
 
-  vector<CStdString> vecPaths;
+  vector<string> vecPaths;
   if (!GetPaths(strPath, vecPaths))
     return false;
 
@@ -133,7 +133,7 @@ bool CMultiPathDirectory::Exists(const char* strPath)
 
 bool CMultiPathDirectory::Remove(const char* strPath)
 {
-  vector<CStdString> vecPaths;
+  vector<string> vecPaths;
   if (!GetPaths(strPath, vecPaths))
     return false;
 
@@ -154,7 +154,7 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
   return "";
 }
 
-bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
+bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<string>& vecPaths)
 {
   vecPaths.clear();
   CStdString strPath1 = strPath;
@@ -164,8 +164,7 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   URIUtils::RemoveSlashAtEnd(strPath1);
 
   // split on "/"
-  vector<CStdString> vecTemp;
-  StringUtils::SplitString(strPath1, "/", vecTemp);
+  vector<string> vecTemp = StringUtils::Split(strPath1, "/");
   if (vecTemp.size() == 0)
     return false;
 
@@ -184,8 +183,7 @@ bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& s
   URIUtils::RemoveSlashAtEnd(strPath1);
 
   // split on "/"
-  vector<CStdString> vecTemp;
-  StringUtils::SplitString(strPath1, "/", vecTemp);
+  vector<string> vecTemp = StringUtils::Split(strPath1, "/");
   if (vecTemp.size() == 0)
     return false;
 
@@ -220,7 +218,7 @@ void CMultiPathDirectory::AddToMultiPath(CStdString& strMultiPath, const CStdStr
   strMultiPath += "/";
 }
 
-CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vecPaths)
+CStdString CMultiPathDirectory::ConstructMultiPath(const vector<string> &vecPaths)
 {
   // we replace all instances of comma's with double comma's, then separate
   // the paths using " , "
@@ -307,7 +305,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 
 bool CMultiPathDirectory::SupportsWriteFileOperations(const CStdString &strPath)
 {
-  vector<CStdString> paths;
+  vector<string> paths;
   GetPaths(strPath, paths);
   for (unsigned int i = 0; i < paths.size(); ++i)
     if (CUtil::SupportsWriteFileOperations(paths[i]))

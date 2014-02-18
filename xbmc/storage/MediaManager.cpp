@@ -662,7 +662,7 @@ void CMediaManager::ProcessEvents()
   }
 }
 
-std::vector<CStdString> CMediaManager::GetDiskUsage()
+std::vector<string> CMediaManager::GetDiskUsage()
 {
   CSingleLock lock(m_CritSecStorageProvider);
   return m_platformStorage->GetDiskUsage();

@@ -398,8 +398,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             bool bUseFileDirectories = false;
             if (option)
             {
-              vector<CStdString> options;
-              StringUtils::SplitString(option, "|", options);
+              vector<string> options = StringUtils::Split(option, "|");
               bUseThumbs = find(options.begin(), options.end(), "usethumbs") != options.end();
               bUseFileDirectories = find(options.begin(), options.end(), "treatasfolder") != options.end();
             }
@@ -455,8 +454,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           const char *strType = setting->Attribute("addontype");
           if (strType)
           {
-            CStdStringArray addonTypes;
-            StringUtils::SplitString(strType, ",", addonTypes);
+            std::vector<std::string> addonTypes = StringUtils::Split(strType, ",");
             vector<ADDON::TYPE> types;
             for (unsigned int i = 0 ; i < addonTypes.size() ; i++)
             {
@@ -472,11 +470,10 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               if (multiSelect)
               {
                 // construct vector of addon IDs (IDs are comma seperated in single string)
-                CStdStringArray addonIDs;
-                StringUtils::SplitString(value, ",", addonIDs);
+                std::vector<std::string> addonIDs = StringUtils::Split(value, ",");
                 if (CGUIWindowAddonBrowser::SelectAddonID(types, addonIDs, false) == 1)
                 {
-                  StringUtils::JoinString(addonIDs, ",", value);
+                  value = StringUtils::Join(addonIDs, ",");
                   ((CGUIButtonControl*) control)->SetLabel2(GetAddonNames(value));
                 }
               }
@@ -855,18 +852,17 @@ void CGUIDialogAddonSettings::CreateControls()
         float fMin = 0.0f;
         float fMax = 100.0f;
         float fInc = 1.0f;
-        vector<CStdString> range;
-        StringUtils::SplitString(setting->Attribute("range"), ",", range);
+        vector<string> range = StringUtils::Split(setting->Attribute("range"), ",");
         if (range.size() > 1)
         {
-          fMin = (float)atof(range[0]);
+          fMin = (float)atof(range[0].c_str());
           if (range.size() > 2)
           {
-            fMax = (float)atof(range[2]);
-            fInc = (float)atof(range[1]);
+            fMax = (float)atof(range[2].c_str());
+            fInc = (float)atof(range[1].c_str());
           }
           else
-            fMax = (float)atof(range[1]);
+            fMax = (float)atof(range[1].c_str());
         }
 
         CStdString option = setting->Attribute("option");
@@ -918,9 +914,8 @@ void CGUIDialogAddonSettings::CreateControls()
 CStdString CGUIDialogAddonSettings::GetAddonNames(const CStdString& addonIDslist) const
 {
   CStdString retVal;
-  CStdStringArray addons;
-  StringUtils::SplitString(addonIDslist, ",", addons);
-  for (CStdStringArray::const_iterator it = addons.begin(); it != addons.end() ; it ++)
+  std::vector<std::string> addons = StringUtils::Split(addonIDslist, ",");
+  for (std::vector<std::string>::const_iterator it = addons.begin(); it != addons.end() ; it ++)
   {
     if (!retVal.empty())
       retVal += ", ";
@@ -1011,10 +1006,10 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
 
   for (unsigned int i = 0; i < conditionVec.size(); i++)
   {
-    vector<CStdString> condVec;
+    vector<string> condVec;
     if (!TranslateSingleString(conditionVec[i], condVec)) continue;
 
-    const CGUIControl* control2 = GetControl(controlId + atoi(condVec[1]));
+    const CGUIControl* control2 = GetControl(controlId + atoi(condVec[1].c_str()));
     if (!control2)
       continue;
       
@@ -1077,7 +1072,7 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
   return bCondition;
 }
 
-bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strCondition, vector<CStdString> &condVec)
+bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strCondition, vector<string> &condVec)
 {
   CStdString strTest = strCondition;
   StringUtils::ToLower(strTest);

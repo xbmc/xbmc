@@ -71,8 +71,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const CStdString& strPath)
   CStdString strDirectory=url.GetFileName();
   URIUtils::RemoveSlashAtEnd(strDirectory);
 
-  CStdStringArray Path;
-  StringUtils::SplitString(strDirectory, "/", Path);
+  std::vector<std::string> Path = StringUtils::Split(strDirectory, "/");
   if (!strDirectory.empty())
     Path.insert(Path.begin(), "");
 
@@ -200,7 +199,7 @@ bool CDirectoryNode::GetContent(CFileItemList& items) const
 //  Creates a musicdb url
 CStdString CDirectoryNode::BuildPath() const
 {
-  CStdStringArray array;
+  std::vector<std::string> array;
 
   if (!m_strName.empty())
     array.insert(array.begin(), m_strName);

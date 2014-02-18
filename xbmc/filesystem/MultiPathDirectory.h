@@ -36,9 +36,9 @@ public:
 
   static CStdString GetFirstPath(const CStdString &strPath);
   static bool SupportsWriteFileOperations(const CStdString &strPath);
-  static bool GetPaths(const CStdString& strPath, std::vector<CStdString>& vecPaths);
+  static bool GetPaths(const CStdString& strPath, std::vector<std::string>& vecPaths);
   static bool HasPath(const CStdString& strPath, const CStdString& strPathToFind);
-  static CStdString ConstructMultiPath(const std::vector<CStdString> &vecPaths);
+  static CStdString ConstructMultiPath(const std::vector<std::string> &vecPaths);
   static CStdString ConstructMultiPath(const std::set<CStdString> &setPaths);
 
 private:

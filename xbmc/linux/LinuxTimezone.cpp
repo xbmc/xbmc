@@ -77,13 +77,13 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
 
          if (m_timezonesByCountryCode.count(countryCode) == 0)
          {
-            vector<CStdString> timezones;
+            vector<string> timezones;
             timezones.push_back(timezoneName);
             m_timezonesByCountryCode[countryCode] = timezones;
          }
          else
          {
-            vector<CStdString>& timezones = m_timezonesByCountryCode[countryCode];
+            vector<string>& timezones = m_timezonesByCountryCode[countryCode];
             timezones.push_back(timezoneName);
          }
 
@@ -176,12 +176,12 @@ void CLinuxTimezone::OnSettingsLoaded()
   CDateTime::ResetTimezoneBias();
 }
 
-vector<CStdString> CLinuxTimezone::GetCounties()
+vector<string> CLinuxTimezone::GetCounties()
 {
    return m_counties;
 }
 
-vector<CStdString> CLinuxTimezone::GetTimezonesByCountry(const CStdString country)
+vector<string> CLinuxTimezone::GetTimezonesByCountry(const CStdString country)
 {
    return m_timezonesByCountryCode[m_countryByName[country]];
 }
@@ -254,7 +254,7 @@ CStdString CLinuxTimezone::GetOSConfiguredTimezone()
 
 void CLinuxTimezone::SettingOptionsTimezoneCountriesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
-  vector<CStdString> countries = g_timezone.GetCounties();
+  vector<string> countries = g_timezone.GetCounties();
   for (unsigned int i = 0; i < countries.size(); i++)
     list.push_back(make_pair(countries[i], countries[i]));
 }
@@ -263,7 +263,7 @@ void CLinuxTimezone::SettingOptionsTimezonesFiller(const CSetting *setting, std:
 {
   current = ((const CSettingString*)setting)->GetValue();
   bool found = false;
-  vector<CStdString> timezones = g_timezone.GetTimezonesByCountry(CSettings::Get().GetString("locale.timezonecountry"));
+  vector<string> timezones = g_timezone.GetTimezonesByCountry(CSettings::Get().GetString("locale.timezonecountry"));
   for (unsigned int i = 0; i < timezones.size(); i++)
   {
     if (!found && StringUtils::EqualsNoCase(timezones[i], current.c_str()))

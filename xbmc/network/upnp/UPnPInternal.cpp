@@ -264,7 +264,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
                       EClientQuirks          quirks)
 {
     // some usefull buffers
-    CStdStringArray strings;
+    std::vector<std::string> strings;
 
     if (!tag.m_strFileNameAndPath.empty() && file_path)
       *file_path = tag.m_strFileNameAndPath.c_str();
@@ -444,7 +444,7 @@ BuildObject(CFileItem&                    item,
         container->m_ObjectClass.type = "object.container";
         container->m_ChildrenCount = -1;
 
-        CStdStringArray strings;
+        std::vector<std::string> strings;
 
         /* this might be overkill, but hey */
         if (item.IsMusicDb()) {

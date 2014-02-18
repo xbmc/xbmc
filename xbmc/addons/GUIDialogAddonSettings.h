@@ -75,7 +75,7 @@ private:
 
   void SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);
-  bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
+  bool TranslateSingleString(const CStdString &strCondition, std::vector<std::string> &enableVec);
 
   const TiXmlElement *GetFirstSetting() const;
 

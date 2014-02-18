@@ -47,10 +47,10 @@ public:
   static bool ShowAndGetFile(const VECSOURCES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetFile(const CStdString &directory, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false, bool singleList = false);
   static bool ShowAndGetSource(CStdString &path, bool allowNetworkShares, VECSOURCES* additionalShare = NULL, const CStdString& strType="");
-  static bool ShowAndGetFileList(const VECSOURCES &shares, const CStdString &mask, const CStdString &heading, CStdStringArray &path, bool useThumbs = false, bool useFileDirectories = false);
+  static bool ShowAndGetFileList(const VECSOURCES &shares, const CStdString &mask, const CStdString &heading, std::vector<std::string> &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetImage(const VECSOURCES &shares, const CStdString &heading, CStdString &path);
   static bool ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const CStdString &heading, CStdString &path, bool* flip=NULL, int label=21371);
-  static bool ShowAndGetImageList(const VECSOURCES &shares, const CStdString &heading, CStdStringArray &path);
+  static bool ShowAndGetImageList(const VECSOURCES &shares, const CStdString &heading, std::vector<std::string> &path);
 
   void SetSources(const VECSOURCES &shares);
 
@@ -90,7 +90,7 @@ protected:
   bool m_useFileDirectories;
   bool m_singleList;              // if true, we have no shares or anything
   bool m_multipleSelection;
-  CStdStringArray m_markedPath;
+  std::vector<std::string> m_markedPath;
 
   CPictureThumbLoader m_thumbLoader;
   CGUIViewControl m_viewControl;

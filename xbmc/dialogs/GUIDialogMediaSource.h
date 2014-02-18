@@ -54,7 +54,7 @@ protected:
   int GetSelectedItem();
   void HighlightItem(int item);
 
-  std::vector<CStdString> GetPaths();
+  std::vector<std::string> GetPaths();
 
   CStdString m_type;
   CStdString m_name;

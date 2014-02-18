@@ -77,7 +77,7 @@ protected:
     virtual bool DoWork();
     virtual const char *GetType() const { return "multiimage"; };
 
-    std::vector<CStdString> m_files;
+    std::vector<std::string> m_files;
     CStdString              m_path;
   };
 
@@ -91,7 +91,7 @@ protected:
   bool m_loop;
 
   bool m_bDynamicResourceAlloc;
-  std::vector<CStdString> m_files;
+  std::vector<std::string> m_files;
 
   CGUIImage m_image;
 

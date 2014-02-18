@@ -29,7 +29,7 @@
 class CURL
 {
 public:
-  CURL(const CStdString& strURL);
+  CURL(const std::string& strURL);
   CURL();
   virtual ~CURL(void);
 

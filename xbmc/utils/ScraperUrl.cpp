@@ -353,7 +353,7 @@ CStdString CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry &entry)
   return entry.m_url + "|Referer=" + CStdString(CURL::Encode(entry.m_spoof));
 }
 
-void CScraperUrl::GetThumbURLs(std::vector<CStdString> &thumbs, const std::string &type, int season) const
+void CScraperUrl::GetThumbURLs(std::vector<string> &thumbs, const std::string &type, int season) const
 {
   for (vector<SUrlEntry>::const_iterator iter = m_url.begin(); iter != m_url.end(); ++iter)
   {

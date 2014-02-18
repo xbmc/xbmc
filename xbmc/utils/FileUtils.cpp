@@ -86,7 +86,7 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
     CLog::Log(LOGINFO,"FileUtils: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
     if (URIUtils::IsMultiPath(strFileAndPath))
     { // special case for multipath renames - rename all the paths.
-      vector<CStdString> paths;
+      vector<string> paths;
       CMultiPathDirectory::GetPaths(strFileAndPath, paths);
       bool success = false;
       for (unsigned int i = 0; i < paths.size(); ++i)

@@ -241,7 +241,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   if (StringUtils::EqualsNoCase(strFileName, ".."))
    return;
 
-  const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
+  const std::vector<std::string> &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
   CRegExp reTags(true, CRegExp::autoUtf8);
   CRegExp reYear(false, CRegExp::autoUtf8);
@@ -514,7 +514,7 @@ bool CUtil::IsPicture(const CStdString& strFile)
                   g_advancedSettings.m_pictureExtensions + "|.tbn|.dds");
 }
 
-bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
+bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const std::vector<std::string>& regexps)
 {
   if (strFileOrFolder.empty())
     return false;
@@ -876,10 +876,10 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
     return false;
   }
 
-  CStdStringArray dirs = URIUtils::SplitPath(strPath);
+  std::vector<std::string> dirs = URIUtils::SplitPath(strPath);
   CStdString dir(dirs.front());
   URIUtils::AddSlashAtEnd(dir);
-  for (CStdStringArray::iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
+  for (std::vector<std::string>::iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
   {
     dir = URIUtils::AddFileToFolder(dir, *it);
     CDirectory::Create(dir);
@@ -924,13 +924,13 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
     return strPathAndFile; // we don't support writing anywhere except HD, SMB, NFS and AFP - no need to legalize path
 
   bool trailingSlash = URIUtils::HasSlashAtEnd(strPathAndFile);
-  CStdStringArray dirs = URIUtils::SplitPath(strPathAndFile);
+  std::vector<std::string> dirs = URIUtils::SplitPath(strPathAndFile);
   // we just add first token to path and don't legalize it - possible values: 
   // "X:" (local win32), "" (local unix - empty string before '/') or
   // "protocol://domain"
   CStdString dir(dirs.front());
   URIUtils::AddSlashAtEnd(dir);
-  for (CStdStringArray::iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
+  for (std::vector<std::string>::iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
     dir = URIUtils::AddFileToFolder(dir, MakeLegalFileName(*it, LegalType));
   if (trailingSlash) URIUtils::AddSlashAtEnd(dir);
   return dir;
@@ -1002,7 +1002,7 @@ bool CUtil::IsUsingTTFSubtitles()
 bool CUtil::TestSplitExec()
 {
   CStdString function;
-  vector<CStdString> params;
+  vector<string> params;
   CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\test\\foo\")", function, params);
   if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo")
     return false;
@@ -1026,7 +1026,7 @@ bool CUtil::TestSplitExec()
 }
 #endif
 
-void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function, vector<CStdString> &parameters)
+void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function, vector<string> &parameters)
 {
   CStdString paramString;
 
@@ -1048,7 +1048,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
   SplitParams(paramString, parameters);
 }
 
-void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &parameters)
+void CUtil::SplitParams(const CStdString &paramString, std::vector<string> &parameters)
 {
   bool inQuotes = false;
   bool lastEscaped = false; // only every second character can be escaped
@@ -1225,7 +1225,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
     }
 
     // doesnt match a name, so try the source path
-    vector<CStdString> vecPaths;
+    vector<string> vecPaths;
 
     // add any concatenated paths if they exist
     if (share.vecPaths.size() > 0)
@@ -1319,7 +1319,7 @@ CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 
 CStdString CUtil::MusicPlaylistsLocation()
 {
-  vector<CStdString> vec;
+  vector<string> vec;
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music"));
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "mixed"));
   return XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
@@ -1327,7 +1327,7 @@ CStdString CUtil::MusicPlaylistsLocation()
 
 CStdString CUtil::VideoPlaylistsLocation()
 {
-  vector<CStdString> vec;
+  vector<string> vec;
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "video"));
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "mixed"));
   return XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
@@ -1528,7 +1528,7 @@ CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)
   return "";
 }
 
-void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
+void CUtil::GetSkinThemes(vector<string>& vecTheme)
 {
   CStdString strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
   CFileItemList items;
@@ -1564,15 +1564,13 @@ void CUtil::InitRandomSeed()
 #ifdef TARGET_POSIX
 bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
 {
-  CStdStringArray args;
-
-  StringUtils::SplitString(cmdLine, ",", args);
+  std::vector<std::string> args = StringUtils::Split(cmdLine, ",");
 
   // Strip quotes and whitespace around the arguments, or exec will fail.
   // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
   // But it's still limited, for example quotes inside the strings are not expanded, etc.
   // TODO: Maybe some python library routine can parse this more properly ?
-  for (CStdStringArray::iterator it = args.begin(); it != args.end(); ++it)
+  for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it)
   {
     size_t pos;
     pos = it->find_first_not_of(" \t\n\"'");
@@ -1593,7 +1591,7 @@ bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
 //
 // FIXME, this should be merged with the function below.
 //
-bool CUtil::Command(const CStdStringArray& arrArgs, bool waitExit)
+bool CUtil::Command(const std::vector<std::string>& arrArgs, bool waitExit)
 {
 #ifdef _DEBUG
   printf("Executing: ");
@@ -1645,8 +1643,7 @@ bool CUtil::SudoCommand(const CStdString &strCommand)
     close(0); // close stdin to avoid sudo request password
     close(1);
     close(2);
-    CStdStringArray arrArgs;
-    StringUtils::SplitString(strCommand, " ", arrArgs);
+    std::vector<std::string> arrArgs = StringUtils::Split(strCommand, " ");
     if (arrArgs.size() > 0)
     {
       char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
@@ -1844,7 +1841,7 @@ CStdString CUtil::GetFrameworksPath(bool forPython)
   return strFrameworksPath;
 }
 
-void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles )
+void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<string>& vecSubtitles )
 {
   unsigned int startTimer = XbmcThreads::SystemClockMillis();
   
@@ -1863,7 +1860,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     "Subtitle",
     NULL};
   
-  vector<CStdString> vecExtensionsCached;
+  vector<string> vecExtensionsCached;
   
   CFileItem item(strMovie, false);
   if ( item.IsInternetStream()
@@ -1874,7 +1871,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     || !item.IsVideo())
     return;
   
-  vector<CStdString> strLookInPaths;
+  vector<string> strLookInPaths;
   
   CStdString strMovieFileName;
   CStdString strPath;
@@ -1910,10 +1907,9 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   int iSize = strLookInPaths.size();
   for (int i=0; i<iSize; ++i)
   {
-    CStdStringArray directories;
-    int nTokens = StringUtils::SplitString( strLookInPaths[i], "/", directories );
-    if (nTokens == 1)
-      StringUtils::SplitString( strLookInPaths[i], "\\", directories );
+    std::vector<std::string> directories = StringUtils::Split(strLookInPaths[i], "/");
+    if (directories.size() == 1)
+      directories = StringUtils::Split(strLookInPaths[i], "\\");
 
     // if it's inside a cdX dir, add parent path
     if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && StringUtils::StartsWithNoCase(directories[directories.size()-2], "cd")) // SplitString returns empty token as last item, hence size-2
@@ -2050,7 +2046,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
 }
 
-int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<CStdString>& vecSubtitles )
+int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<string>& vecSubtitles )
 {
   int nSubtitlesAdded = 0;
   CFileItemList ItemList;
@@ -2192,7 +2188,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const CStdString& strVideo, con
 
 /*! \brief in a vector of subtitles finds the corresponding .sub file for a given .idx file
  */
-bool CUtil::FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const CStdString& strIdxPath, CStdString& strSubPath )
+bool CUtil::FindVobSubPair( const std::vector<string>& vecSubtitles, const CStdString& strIdxPath, CStdString& strSubPath )
 {
   if (URIUtils::HasExtension(strIdxPath, ".idx"))
   {
@@ -2201,8 +2197,8 @@ bool CUtil::FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const C
     URIUtils::Split(strIdxPath, strIdxDirectory, strIdxFile);
     for (unsigned int j=0; j < vecSubtitles.size(); j++)
     {
-      CStdString strSubFile;
-      CStdString strSubDirectory;
+      std::string strSubFile;
+      std::string strSubDirectory;
       URIUtils::Split(vecSubtitles[j], strSubDirectory, strSubFile);
       if (URIUtils::IsInArchive(vecSubtitles[j]))
         strSubDirectory = CURL::Decode(strSubDirectory);
@@ -2221,7 +2217,7 @@ bool CUtil::FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const C
 
 /*! \brief checks if in the vector of subtitles the given .sub file has a corresponding idx and hence is a vobsub file
  */
-bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdString& strSubPath )
+bool CUtil::IsVobSub( const std::vector<string>& vecSubtitles, const CStdString& strSubPath )
 {
   if (URIUtils::HasExtension(strSubPath, ".sub"))
   {
@@ -2232,8 +2228,8 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
       strSubDirectory = CURL::Decode(strSubDirectory);
     for (unsigned int j=0; j < vecSubtitles.size(); j++)
     {
-      CStdString strIdxFile;
-      CStdString strIdxDirectory;
+      std::string strIdxFile;
+      std::string strIdxDirectory;
       URIUtils::Split(vecSubtitles[j], strIdxDirectory, strIdxFile);
       if (URIUtils::HasExtension(strIdxFile, ".idx") &&
           (StringUtils::EqualsNoCase(URIUtils::ReplaceExtension(strIdxFile,""), URIUtils::ReplaceExtension(strSubFile,"")) ||

@@ -77,8 +77,8 @@ public:
    virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
 
    // Get/set the nameserver(s)
-   virtual std::vector<CStdString> GetNameServers(void);
-   virtual void SetNameServers(std::vector<CStdString> nameServers);
+   virtual std::vector<std::string> GetNameServers(void);
+   virtual void SetNameServers(std::vector<std::string> nameServers);
 
    friend class CNetworkInterfaceLinux;
 

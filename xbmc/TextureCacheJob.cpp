@@ -150,9 +150,8 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
     CStdString optionString = thumbURL.GetOptions().empty() ? "" : thumbURL.GetOptions().substr(1);
     StringUtils::TrimRight(optionString, "/"); // In case XBMC adds a slash.
 
-    std::vector<CStdString> options;
-    StringUtils::SplitString(optionString, "&", options);
-    for (std::vector<CStdString>::iterator i = options.begin(); i != options.end(); i++)
+    vector<string> options = StringUtils::Split(optionString, "&");
+    for (vector<string>::iterator i = options.begin(); i != options.end(); i++)
     {
       CStdString option, value;
       size_t pos = i->find('=');
