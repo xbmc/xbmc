@@ -412,7 +412,9 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, c
       size_t finish = text.find(L']', pos + 5);
       if (on && finish != std::string::npos && text.find(L"[/COLOR]",finish) != std::string::npos)
       {
-        color_t color = g_colorManager.GetColor(text.substr(pos + 5, finish - pos - 5));
+        std::string strColor;
+        g_charsetConverter.wToUTF8(text.substr(pos + 5, finish - pos - 5), strColor);
+        color_t color = g_colorManager.GetColor(strColor);
         vecColors::const_iterator it = std::find(colors.begin(), colors.end(), color);
         if (it == colors.end())
         { // create new color
