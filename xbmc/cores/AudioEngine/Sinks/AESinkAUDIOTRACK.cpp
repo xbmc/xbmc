@@ -260,7 +260,11 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 #if defined(HAS_LIBAMCODEC)
   // AML devices can do passthough
   if (aml_present())
+  {
     m_info.m_deviceType = AE_DEVTYPE_HDMI;
+    m_info.m_dataFormats.push_back(AE_FMT_AC3);
+    m_info.m_dataFormats.push_back(AE_FMT_DTS);
+  }
 #endif
   m_info.m_deviceName = "AudioTrack";
   m_info.m_displayName = "android";
