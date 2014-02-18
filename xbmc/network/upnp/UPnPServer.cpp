@@ -257,7 +257,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
         path.TrimRight("/");
         if (path.StartsWith("virtualpath://")) {
             object = new PLT_MediaContainer;
-            object->m_Title = item->GetLabel();
+            object->m_Title = item->GetLabel().c_str();
             object->m_ObjectClass.type = "object.container";
             object->m_ObjectID = path;
 
@@ -275,7 +275,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
     } else {
         // db path handling
         NPT_String file_path, share_name;
-        file_path = item->GetPath();
+        file_path = item->GetPath().c_str();
         share_name = "";
 
         if (path.StartsWith("musicdb://")) {
@@ -1153,7 +1153,7 @@ CUPnPServer::ServeFile(const NPT_HttpRequest&              request,
 
         NPT_List<NPT_String>::Iterator url = files.GetFirstItem();
         for (;url;url++) {
-            output += "#EXTINF:-1," + URIUtils::GetFileName((const char*)*url);
+            output += ("#EXTINF:-1," + URIUtils::GetFileName((const char*)*url)).c_str();
             output += "\r\n";
             output += BuildSafeResourceUri(
                           rooturi,

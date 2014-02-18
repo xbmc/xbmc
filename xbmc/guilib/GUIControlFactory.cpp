@@ -533,7 +533,7 @@ bool CGUIControlFactory::GetScroller(const TiXmlNode *control, const CStdString 
   if (node)
   {
     unsigned int scrollTime;
-    if (XMLUtils::GetUInt(control, scrollerTag, scrollTime))
+    if (XMLUtils::GetUInt(control, scrollerTag.c_str(), scrollTime))
     {
       scroller = CScroller(scrollTime, CAnimEffect::GetTweener(node));
       return true;
@@ -583,9 +583,9 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
 
   CStdString fallback = element->Attribute("fallback");
   if (StringUtils::IsNaturalNumber(label))
-    label = g_localizeStrings.Get(atoi(label));
+    label = g_localizeStrings.Get(atoi(label.c_str()));
   if (StringUtils::IsNaturalNumber(fallback))
-    fallback = g_localizeStrings.Get(atoi(fallback));
+    fallback = g_localizeStrings.Get(atoi(fallback.c_str()));
   else
     g_charsetConverter.unknownToUTF8(fallback);
   infoLabel.SetLabel(label, fallback, parentID);
@@ -638,7 +638,7 @@ CStdString CGUIControlFactory::FilterLabel(const CStdString &label)
 {
   CStdString viewLabel = label;
   if (StringUtils::IsNaturalNumber(viewLabel))
-    viewLabel = g_localizeStrings.Get(atoi(label));
+    viewLabel = g_localizeStrings.Get(atoi(label.c_str()));
   else
     g_charsetConverter.unknownToUTF8(viewLabel);
   return viewLabel;

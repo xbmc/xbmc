@@ -89,7 +89,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   // on error, check if path exists at all, this will return true if empty folder
   if (!hFind.isValid())
-      return Exists(strPath1);
+      return Exists(strPath1.c_str());
 
   if (hFind.isValid())
   {

@@ -214,7 +214,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
           else if (strcmpi(type, "number") == 0 || strcmpi(type, "enum") == 0 ||
                    strcmpi(type, "labelenum") == 0)
           {
-            *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id));
+            *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id).c_str());
             return true;
           }
           else if (strcmpi(type, "bool") == 0)
@@ -227,12 +227,12 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
             const char *option = setting->Attribute("option");
             if (option && strcmpi(option, "int") == 0)
             {
-              *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id));
+              *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id).c_str());
               return true;
             }
             else
             {
-              *(float*) settingValue = (float) atof(addonHelper->m_addon->GetSetting(id));
+              *(float*) settingValue = (float) atof(addonHelper->m_addon->GetSetting(id).c_str());
               return true;
             }
           }

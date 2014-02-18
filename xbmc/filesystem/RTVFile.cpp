@@ -108,7 +108,7 @@ bool CRTVFile::Open(const char* strHostName, const char* strFileName, int iport)
 
 bool CRTVFile::Open(const CURL& url)
 {
-  return Open(url.GetHostName(), url.GetFileName(), url.GetPort());
+  return Open(url.GetHostName().c_str(), url.GetFileName().c_str(), url.GetPort());
 }
 
 bool CRTVFile::Exists(const CURL& url)

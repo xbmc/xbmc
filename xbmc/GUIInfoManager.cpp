@@ -4346,7 +4346,7 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   { // grab the property
     CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
     CStdString val = item->GetProperty(property).asString();
-    value = atoi(val);
+    value = atoi(val.c_str());
     return true;
   }
 

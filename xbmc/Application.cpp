@@ -2175,7 +2175,7 @@ float CApplication::GetDimScreenSaverLevel() const
     return 0;
 
   if (!m_screenSaver->GetSetting("level").empty())
-    return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));
+    return 100.0f - (float)atof(m_screenSaver->GetSetting("level").c_str());
   return 100.0f;
 }
 

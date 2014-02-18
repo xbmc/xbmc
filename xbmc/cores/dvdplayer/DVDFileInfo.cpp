@@ -64,7 +64,7 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
   if (!input.get())
     return false;
 
-  if (!input->Open(path, ""))
+  if (!input->Open(path.c_str(), ""))
     return false;
 
   demux.reset(CDVDFactoryDemuxer::CreateDemuxer(input.get()));

@@ -389,7 +389,7 @@ bool CDatabase::Update(const DatabaseSettings &settings)
 
         try
         {
-          m_pDB->copy(latestDb);
+          m_pDB->copy(latestDb.c_str());
         }
         catch(...)
         {

@@ -3060,7 +3060,7 @@ bool CMusicDatabase::GetCommonNav(const CStdString &strBaseDir, const CStdString
     // get data from returned rows
     while (!m_pDS->eof())
     {
-      string labelValue = m_pDS->fv(labelField).get_asString();
+      string labelValue = m_pDS->fv(labelField.c_str()).get_asString();
       CFileItemPtr pItem(new CFileItem(labelValue));
       
       CMusicDbUrl itemUrl = musicUrl;
@@ -4261,7 +4261,7 @@ bool CMusicDatabase::GetCompilationSongs(const CStdString& strBaseDir, CFileItem
 
 int CMusicDatabase::GetCompilationAlbumsCount()
 {
-  return strtol(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1"), NULL, 10);
+  return strtol(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1").c_str(), NULL, 10);
 }
 
 void CMusicDatabase::SplitString(const CStdString &multiString, vector<string> &vecStrings, CStdString &extraStrings)
@@ -5070,7 +5070,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
       outdoc = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
           "<body>\n<table>\n";
 
-      file.Write( outdoc, outdoc.size() );
+      file.Write( outdoc.c_str(), outdoc.size() );
     }
 
     while (!m_pDS->eof())
@@ -5083,7 +5083,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
       else
         outdoc = songnum + "\t" + StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + "\t" + song.strTitle + "\t" + song.strFileName + "\r\n";
 
-      file.Write( outdoc, outdoc.size() );
+      file.Write( outdoc.c_str(), outdoc.size() );
 
       if ((current % 50) == 0 && progress)
       {
@@ -5105,7 +5105,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     if ( asHTML )
     {
       outdoc = "</table>\n</body>\n</html>\n";
-      file.Write( outdoc, outdoc.size() );
+      file.Write( outdoc.c_str(), outdoc.size() );
     }
 
     file.Close();

@@ -226,7 +226,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   //##########################################################
   // Read the data from cddb
   Recv(false); //erstmal den Müll abholen
-  if ( !Send(read_buffer) )
+  if ( !Send(read_buffer.c_str()) )
   {
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error sending \"%s\"", read_buffer.c_str());
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select pInfo == NULL");
@@ -571,7 +571,7 @@ void Xcddb::parseData(const char *buffer)
           StringUtils::TrimLeft(strGenre);
           if (StringUtils::IsNaturalNumber(strGenre))
           {
-            int iGenre = strtol(strGenre, NULL, 10);
+            int iGenre = strtol(strGenre.c_str(), NULL, 10);
             m_strGenre = TagLib::ID3v1::genre(iGenre).to8Bit(true);
           }
         }
@@ -995,7 +995,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   //##########################################################
   // Read the data from cddb
-  if ( !Send(read_buffer) )
+  if ( !Send(read_buffer.c_str()) )
   {
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", read_buffer.c_str());
     m_lastError = E_NETWORK_ERROR_SEND;

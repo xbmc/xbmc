@@ -326,9 +326,9 @@ static void ParseItemVoddler(CFileItem* item, SResources& resources, TiXmlElemen
     resources.push_back(res);
   }
   else if(name == "year")
-    vtag->m_iYear = atoi(text);
+    vtag->m_iYear = atoi(text.c_str());
   else if(name == "rating")
-    vtag->m_fRating = (float)atof(text);
+    vtag->m_fRating = (float)atof(text.c_str());
   else if(name == "tagline")
     vtag->m_strTagLine = text;
   else if(name == "posterwall")
@@ -355,11 +355,11 @@ static void ParseItemBoxee(CFileItem* item, SResources& resources, TiXmlElement*
   else if(name == "runtime")
     vtag->m_duration = StringUtils::TimeStringToSeconds(text);
   else if(name == "episode")
-    vtag->m_iEpisode = atoi(text);
+    vtag->m_iEpisode = atoi(text.c_str());
   else if(name == "season")
-    vtag->m_iSeason = atoi(text);
+    vtag->m_iSeason = atoi(text.c_str());
   else if(name == "view-count")
-    vtag->m_playCount = atoi(text);
+    vtag->m_playCount = atoi(text.c_str());
   else if(name == "tv-show-title")
     vtag->m_strShowTitle = text;
   else if(name == "release-date")
@@ -371,17 +371,17 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = element->GetText();
   if     (name == "episode")
-    vtag->m_iEpisode = atoi(text);
+    vtag->m_iEpisode = atoi(text.c_str());
   else if(name == "season")
-    vtag->m_iSeason = atoi(text);
+    vtag->m_iSeason = atoi(text.c_str());
   else if(name == "views")
-    vtag->m_playCount = atoi(text);
+    vtag->m_playCount = atoi(text.c_str());
   else if(name == "airdate")
     vtag->m_firstAired.SetFromDateString(text);
   else if(name == "userrating")
     vtag->m_fRating = (float)atof(text.c_str());
   else if(name == "duration")
-    vtag->m_duration = atoi(text);
+    vtag->m_duration = atoi(text.c_str());
   else if(name == "durationstr")
     vtag->m_duration = StringUtils::TimeStringToSeconds(text);
 }

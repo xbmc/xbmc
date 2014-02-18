@@ -736,7 +736,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
                                         m_pCodecContext->sample_aspect_ratio.num,
                                         m_pCodecContext->sample_aspect_ratio.den);
 
-  if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterIn, srcFilter, "src", args, NULL, m_pFilterGraph)) < 0)
+  if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterIn, srcFilter, "src", args.c_str(), NULL, m_pFilterGraph)) < 0)
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_create_filter: src");
     return result;

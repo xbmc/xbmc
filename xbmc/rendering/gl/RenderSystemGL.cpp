@@ -557,10 +557,10 @@ void CRenderSystemGL::CalculateMaxTexturesize()
   // Problem noticed on:
   // iMac with ATI Radeon X1600, both on 10.5.8 (GL_VERSION: 2.0 ATI-1.5.48)
   // and 10.6.2 (GL_VERSION: 2.0 ATI-1.6.6)
-  if (strcmp(m_RenderRenderer, "ATI Radeon X1600 OpenGL Engine") == 0)
+  if (strcmp(m_RenderRenderer.c_str(), "ATI Radeon X1600 OpenGL Engine") == 0)
     m_maxTextureSize = 2048;
   // Mac mini G4 with ATI Radeon 9200 (GL_VERSION: 1.3 ATI-1.5.48)
-  else if (strcmp(m_RenderRenderer, "ATI Radeon 9200 OpenGL Engine") == 0)
+  else if (strcmp(m_RenderRenderer.c_str(), "ATI Radeon 9200 OpenGL Engine") == 0)
     m_maxTextureSize = 1024;
 #endif
 

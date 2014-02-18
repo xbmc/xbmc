@@ -270,7 +270,7 @@ std::map< CStdString, CStdString > CPlayListM3U::ParseStreamLine(const CStdStrin
   std::map< CStdString, CStdString > params;
 
   // ensure the line has something beyond the stream marker and ':'
-  if (strlen(streamLine) < strlen(M3U_STREAM_MARKER) + 2)
+  if (strlen(streamLine.c_str()) < strlen(M3U_STREAM_MARKER) + 2)
     return params;
 
   // get the actual params following the :

@@ -959,7 +959,7 @@ extern "C" HANDLE WINAPI dllCreateFileA(
     IN HANDLE hTemplateFile
     )
 {
-  return CreateFileA(CSpecialProtocol::TranslatePath(lpFileName), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+  return CreateFileA(CSpecialProtocol::TranslatePath(lpFileName).c_str(), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
 extern "C" BOOL WINAPI dllLockFile(HANDLE hFile, DWORD dwFileOffsetLow, DWORD dwFileOffsetHigh, DWORD nNumberOffBytesToLockLow, DWORD nNumberOffBytesToLockHigh)

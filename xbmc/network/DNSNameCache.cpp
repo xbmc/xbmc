@@ -64,7 +64,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
   char line[200];
 
   CStdString cmd = "nmblookup " + strHostName;
-  FILE* fp = popen(cmd, "r");
+  FILE* fp = popen(cmd.c_str(), "r");
   if (fp)
   {
     while (fgets(line, sizeof line, fp))

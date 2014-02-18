@@ -542,7 +542,7 @@ void CPVRGUIInfo::CharInfoUNC(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoFrontendName(CStdString &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strAdapterName, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strAdapterName, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strAdapterName);
@@ -550,7 +550,7 @@ void CPVRGUIInfo::CharInfoFrontendName(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoFrontendStatus(CStdString &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strAdapterStatus, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strAdapterStatus, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strAdapterStatus);
@@ -631,7 +631,7 @@ void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoService(CStdString &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strServiceName, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strServiceName, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strServiceName);
@@ -639,7 +639,7 @@ void CPVRGUIInfo::CharInfoService(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoMux(CStdString &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strMuxName, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strMuxName, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strMuxName);
@@ -647,7 +647,7 @@ void CPVRGUIInfo::CharInfoMux(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoProvider(CStdString &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strProviderName, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strProviderName, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strProviderName);

@@ -535,8 +535,8 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
 
 
   CDVDInputStreamNavigator dvdNavigator(NULL);
-  dvdNavigator.Open(pathVideoTS, "");
   CStdString labelString;
+  dvdNavigator.Open(pathVideoTS.c_str(), "");
   dvdNavigator.GetDVDTitleString(labelString);
   CStdString serialString;
   dvdNavigator.GetDVDSerialString(serialString);

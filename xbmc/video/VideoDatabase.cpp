@@ -990,7 +990,7 @@ int CVideoDatabase::GetTvShowId(const CStdString& strPath)
     int iFound=0;
 
     strSQL=PrepareSQL("select idShow from tvshowlinkpath where tvshowlinkpath.idPath=%i",idPath);
-    m_pDS->query(strSQL);
+    m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
       iFound = 1;
 
@@ -1258,7 +1258,7 @@ int CVideoDatabase::AddToTable(const CStdString& table, const CStdString& firstF
     }
     else
     {
-      int id = m_pDS->fv(firstField).get_asInt();
+      int id = m_pDS->fv(firstField.c_str()).get_asInt();
       m_pDS->close();
       return id;
     }
@@ -3265,7 +3265,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   try
   {
     CStdString strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", tag.m_iFileId);
-    pDS->query(strSQL);
+    pDS->query(strSQL.c_str());
 
     while (!pDS->eof())
     {
@@ -4245,7 +4245,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     {
       std::string filename = i->second;
       bool update = URIUtils::UpdateUrlEncoding(filename) &&
-                    (!m_pDS->query(PrepareSQL("SELECT idFile FROM files WHERE strFilename = '%s'", filename.c_str())) || m_pDS->num_rows() <= 0);
+                    (!m_pDS->query(PrepareSQL("SELECT idFile FROM files WHERE strFilename = '%s'", filename.c_str()).c_str()) || m_pDS->num_rows() <= 0);
       m_pDS->close();
 
       if (update)

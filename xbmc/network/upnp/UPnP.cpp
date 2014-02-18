@@ -525,14 +525,14 @@ CUPnPServer*
 CUPnP::CreateServer(int port /* = 0 */)
 {
     CUPnPServer* device =
-        new CUPnPServer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),
+        new CUPnPServer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str(),
                         CUPnPSettings::Get().GetServerUUID().length() ? CUPnPSettings::Get().GetServerUUID().c_str() : NULL,
                         port);
 
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
     // but it doesn't work anyways as it requires multicast for XP to detect us
     device->m_PresentationURL =
-        NPT_HttpUrl(m_IP,
+        NPT_HttpUrl(m_IP.c_str(),
                     CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
 
@@ -609,13 +609,13 @@ CUPnPRenderer*
 CUPnP::CreateRenderer(int port /* = 0 */)
 {
     CUPnPRenderer* device =
-        new CUPnPRenderer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),
+        new CUPnPRenderer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str(),
                           false,
                           (CUPnPSettings::Get().GetRendererUUID().length() ? CUPnPSettings::Get().GetRendererUUID().c_str() : NULL),
                           port);
 
     device->m_PresentationURL =
-        NPT_HttpUrl(m_IP,
+        NPT_HttpUrl(m_IP.c_str(),
                     CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
     device->m_ModelName        = "XBMC Media Center";

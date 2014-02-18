@@ -1040,7 +1040,7 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
   const ICodec* codec = si->m_decoder.GetCodec();
 
   m_playerGUIData.m_audioBitrate = codec ? codec->m_Bitrate : 0;
-  strncpy(m_playerGUIData.m_codec,codec ? codec->m_CodecName : "",20);
+  strncpy(m_playerGUIData.m_codec, (codec ? codec->m_CodecName : "").c_str(), 20);
   m_playerGUIData.m_cacheLevel   = codec ? codec->GetCacheLevel() : 0;
 
   int64_t total = si->m_decoder.TotalTime();

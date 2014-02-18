@@ -89,7 +89,7 @@ std::list<std::string> CNfsConnection::GetExportList(const CURL &url)
     if(HandleDyLoad())
     {
       struct exportnode *exportlist, *tmp;
-      exportlist = m_pLibNfs->mount_getexports(m_resolvedHostName);
+      exportlist = m_pLibNfs->mount_getexports(m_resolvedHostName.c_str());
       tmp = exportlist;
 
       for(tmp = exportlist; tmp!=NULL; tmp=tmp->ex_next)

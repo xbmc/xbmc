@@ -135,7 +135,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
     CStdString newName = "special://temp/";
     newName += url.GetFileName();
     CFile::Cache(sName, newName);
-    return FindModule(newName, sCurrentDir, bLoadSymbols);
+    return FindModule(newName.c_str(), sCurrentDir, bLoadSymbols);
   }
 
   if (CURL::IsFullPath(sName))

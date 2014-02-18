@@ -727,7 +727,7 @@ void CKaraokeLyricsText::saveLyrics()
   if ( !file.OpenForWrite( "special://temp/tmp.lrc", true ) )
     return;
 
-  file.Write( out, out.size() );
+  file.Write( out.c_str(), out.size() );
 }
 
 

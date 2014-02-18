@@ -51,7 +51,7 @@ bool CSlingboxFile::Open(const CURL& url)
     uiPort = (unsigned int)url.GetPort();
   else
     uiPort = 5001;
-  m_pSlingbox->SetAddress(url.GetHostName(), uiPort);
+  m_pSlingbox->SetAddress(url.GetHostName().c_str(), uiPort);
 
   // Prepare to connect to the Slingbox
   bool bAdmin;
@@ -67,7 +67,7 @@ bool CSlingboxFile::Open(const CURL& url)
   }
 
   // Connect to the Slingbox
-  if (m_pSlingbox->Connect(bAdmin, url.GetPassWord()))
+  if (m_pSlingbox->Connect(bAdmin, url.GetPassWord().c_str()))
   {
     CLog::Log(LOGDEBUG, "%s - Successfully connected to Slingbox: %s",
       __FUNCTION__, url.GetHostName().c_str());
@@ -95,12 +95,12 @@ bool CSlingboxFile::Open(const CURL& url)
   // Set correct input
   if (url.GetFileNameWithoutPath() != "")
   {
-    if (m_pSlingbox->SetInput(atoi(url.GetFileNameWithoutPath())))
+    if (m_pSlingbox->SetInput(atoi(url.GetFileNameWithoutPath().c_str())))
       CLog::Log(LOGDEBUG, "%s - Successfully requested change to input %i on Slingbox: %s",
-        __FUNCTION__, atoi(url.GetFileNameWithoutPath()), url.GetHostName().c_str());
+        __FUNCTION__, atoi(url.GetFileNameWithoutPath().c_str()), url.GetHostName().c_str());
     else
       CLog::Log(LOGERROR, "%s - Error requesting change to input %i on Slingbox: %s",
-        __FUNCTION__, atoi(url.GetFileNameWithoutPath()), url.GetHostName().c_str());
+        __FUNCTION__, atoi(url.GetFileNameWithoutPath().c_str()), url.GetHostName().c_str());
   }
 
   // Load the video settings
@@ -144,13 +144,13 @@ bool CSlingboxFile::Open(const CURL& url)
   {
     if (m_pSlingbox->GetInput() == -1)
       CLog::Log(LOGDEBUG, "%s - Unable to confirm change to input %i on Slingbox: %s",
-        __FUNCTION__, atoi(url.GetFileNameWithoutPath()), url.GetHostName().c_str());
-    else if (m_pSlingbox->GetInput() == atoi(url.GetFileNameWithoutPath()))
+        __FUNCTION__, atoi(url.GetFileNameWithoutPath().c_str()), url.GetHostName().c_str());
+    else if (m_pSlingbox->GetInput() == atoi(url.GetFileNameWithoutPath().c_str()))
       CLog::Log(LOGDEBUG, "%s - Comfirmed change to input %i on Slingbox: %s",
-        __FUNCTION__, atoi(url.GetFileNameWithoutPath()), url.GetHostName().c_str());
+        __FUNCTION__, atoi(url.GetFileNameWithoutPath().c_str()), url.GetHostName().c_str());
     else
       CLog::Log(LOGERROR, "%s - Error changing to input %i on Slingbox: %s",
-        __FUNCTION__, atoi(url.GetFileNameWithoutPath()), url.GetHostName().c_str());
+        __FUNCTION__, atoi(url.GetFileNameWithoutPath().c_str()), url.GetHostName().c_str());
   }
 
   return true;

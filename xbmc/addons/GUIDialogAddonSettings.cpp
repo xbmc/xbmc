@@ -293,7 +293,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               StringUtils::Tokenize(setting->Attribute("lvalues"), valuesVec, "|");
               for (unsigned int i = 0; i < valuesVec.size(); i++)
               {
-                if (i == (unsigned int)atoi(value))
+                if (i == (unsigned int)atoi(value.c_str()))
                   selected = i;
                 CStdString localized = m_addon->GetString(atoi(valuesVec[i].c_str()));
                 if (localized.empty())
@@ -792,7 +792,7 @@ void CGUIDialogAddonSettings::CreateControls()
           ((CGUISpinControlEx*) pControl)->SetValueFromLabel(m_settings[id]);
         }
         else
-          ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings[id]));
+          ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings[id].c_str()));
 
       }
       else if (strcmpi(type, "fileenum") == 0)
@@ -842,7 +842,7 @@ void CGUIDialogAddonSettings::CreateControls()
             valuestring = StringUtils::Format(valueformat.c_str(), rangestart+(rangeend-rangestart)/(elements-1)*i);
           ((CGUISpinControlEx *)pControl)->AddLabel(valuestring, i);
         }
-        ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings[id]));
+        ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings[id].c_str()));
       }
       // Sample: <setting id="mysettingname" type="slider" label="30000" range="5,5,60" option="int" default="5"/>
       // to make ints from 5-60 with 5 steps
@@ -882,7 +882,7 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISettingsSliderControl *)pControl)->SetType(iType);
         ((CGUISettingsSliderControl *)pControl)->SetFloatRange(fMin, fMax);
         ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(fInc);
-        ((CGUISettingsSliderControl *)pControl)->SetFloatValue((float)atof(m_settings[id]));
+        ((CGUISettingsSliderControl *)pControl)->SetFloatValue((float)atof(m_settings[id].c_str()));
       }
       else if (strcmpi(type, "lsep") == 0)
       {
@@ -1056,16 +1056,16 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
     else if (StringUtils::EqualsNoCase(condVec[0], "gt"))
     {
       if (bCompare)
-        bCondition &= (atoi(value) > atoi(condVec[2]));
+        bCondition &= (atoi(value.c_str()) > atoi(condVec[2].c_str()));
       else
-        bCondition |= (atoi(value) > atoi(condVec[2]));
+        bCondition |= (atoi(value.c_str()) > atoi(condVec[2].c_str()));
     }
     else if (StringUtils::EqualsNoCase(condVec[0], "lt"))
     {
       if (bCompare)
-        bCondition &= (atoi(value) < atoi(condVec[2]));
+        bCondition &= (atoi(value.c_str()) < atoi(condVec[2].c_str()));
       else
-        bCondition |= (atoi(value) < atoi(condVec[2]));
+        bCondition |= (atoi(value.c_str()) < atoi(condVec[2].c_str()));
     }
   }
   

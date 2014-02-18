@@ -57,8 +57,8 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   {
     for (ELEMENTS::iterator i = elements.begin(); i != elements.end(); ++i)
     {
-      int width = atoi(CAddonMgr::Get().GetExtValue(*i, "@width"));
-      int height = atoi(CAddonMgr::Get().GetExtValue(*i, "@height"));
+      int width = atoi(CAddonMgr::Get().GetExtValue(*i, "@width").c_str());
+      int height = atoi(CAddonMgr::Get().GetExtValue(*i, "@height").c_str());
       bool defRes = StringUtils::EqualsNoCase(CAddonMgr::Get().GetExtValue(*i, "@default"), "true");
       CStdString folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
       float aspect = 0;

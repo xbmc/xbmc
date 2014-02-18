@@ -88,7 +88,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
             CMediaSource share;
 
             share.strPath = mountpoint;
-            Cocoa_GetVolumeNameFromMountPoint(mountpoint, share.strName);
+            Cocoa_GetVolumeNameFromMountPoint(mountpoint.c_str(), share.strName);
             share.m_ignore = true;
             localDrives.push_back(share);
           }
@@ -130,7 +130,7 @@ void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
             CMediaSource share;
 
             share.strPath = mountpoint;
-            Cocoa_GetVolumeNameFromMountPoint(mountpoint, share.strName);
+            Cocoa_GetVolumeNameFromMountPoint(mountpoint.c_str(), share.strName);
             share.m_ignore = true;
             removableDrives.push_back(share);
           }

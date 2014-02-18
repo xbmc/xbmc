@@ -48,7 +48,7 @@ bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
   XFILE::CFile::Cache(strFile,"special://temp/"+URIUtils::GetFileName(strFile));
 
   //m_vgm = m_dll.LoadVGM(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
-  m_vgm = m_dll.LoadVGM("special://temp/"+URIUtils::GetFileName(strFile),&m_SampleRate,&m_BitsPerSample,&m_Channels);
+  m_vgm = m_dll.LoadVGM(("special://temp/"+URIUtils::GetFileName(strFile)).c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
   if (!m_vgm)
   {
     CLog::Log(LOGERROR,"%s: error opening file %s!",__FUNCTION__,strFile.c_str());

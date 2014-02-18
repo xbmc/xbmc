@@ -36,6 +36,6 @@ namespace XbmcCommons
     strData = StringUtils::FormatV(format,va);
     va_end(va);
 
-    log(loglevel, strData);
+    log(loglevel, strData.c_str());
   }
 }

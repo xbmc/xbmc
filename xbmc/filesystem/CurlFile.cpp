@@ -906,7 +906,7 @@ bool CCurlFile::Open(const CURL& url)
 
   ASSERT(!(!m_state->m_easyHandle ^ !m_state->m_multiHandle));
   if( m_state->m_easyHandle == NULL )
-    g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle );
+    g_curlInterface.easy_aquire(url2.GetProtocol().c_str(), url2.GetHostName().c_str(), &m_state->m_easyHandle, &m_state->m_multiHandle );
 
   // setup common curl options
   SetCommonOptions(m_state);
@@ -984,7 +984,7 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
   CLog::Log(LOGDEBUG, "CCurlFile::OpenForWrite(%p) %s", (void*)this, CURL::GetRedacted(m_url).c_str());
 
   ASSERT(m_state->m_easyHandle == NULL);
-  g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle);
+  g_curlInterface.easy_aquire(url2.GetProtocol().c_str(), url2.GetHostName().c_str(), &m_state->m_easyHandle, &m_state->m_multiHandle);
 
     // setup common curl options
   SetCommonOptions(m_state);
@@ -1091,7 +1091,7 @@ bool CCurlFile::Exists(const CURL& url)
   ParseAndCorrectUrl(url2);
 
   ASSERT(m_state->m_easyHandle == NULL);
-  g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
+  g_curlInterface.easy_aquire(url2.GetProtocol().c_str(), url2.GetHostName().c_str(), &m_state->m_easyHandle, NULL);
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
@@ -1176,7 +1176,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
     m_oldState = m_state;
     m_state = new CReadState();
 
-    g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName(), &m_state->m_easyHandle, &m_state->m_multiHandle );
+    g_curlInterface.easy_aquire(url.GetProtocol().c_str(), url.GetHostName().c_str(), &m_state->m_easyHandle, &m_state->m_multiHandle );
 
     m_state->m_fileSize = m_oldState->m_fileSize;
   }
@@ -1242,7 +1242,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   ParseAndCorrectUrl(url2);
 
   ASSERT(m_state->m_easyHandle == NULL);
-  g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
+  g_curlInterface.easy_aquire(url2.GetProtocol().c_str(), url2.GetHostName().c_str(), &m_state->m_easyHandle, NULL);
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
@@ -1621,7 +1621,7 @@ bool CCurlFile::GetCookies(const CURL &url, std::string &cookies)
   XCURL::CURLM*          multiHandle;
 
   // get the cookies list
-  g_curlInterface.easy_aquire(url.GetProtocol(), url.GetHostName(), &easyHandle, &multiHandle);
+  g_curlInterface.easy_aquire(url.GetProtocol().c_str(), url.GetHostName().c_str(), &easyHandle, &multiHandle);
   if (CURLE_OK == g_curlInterface.easy_getinfo(easyHandle, CURLINFO_COOKIELIST, &curlCookies))
   {
     // iterate over each cookie and format it into an RFC 2109 formatted Set-Cookie string

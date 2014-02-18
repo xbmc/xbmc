@@ -68,7 +68,7 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.so", 999);
   XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);
 
-  m_loader = new SoLoader(m_loader_name);
+  m_loader = new SoLoader(m_loader_name.c_str());
 #else
   m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.dll", 999);
   XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);

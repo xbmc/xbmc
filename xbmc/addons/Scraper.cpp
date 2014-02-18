@@ -653,7 +653,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 
         double yearScore = 0;
         if (!sYear.empty() && !sCompareYear.empty())
-          yearScore = std::max(0.0, 1-0.5*abs(atoi(sYear)-atoi(sCompareYear)));
+          yearScore = std::max(0.0, 1-0.5*abs(atoi(sYear.c_str())-atoi(sCompareYear.c_str())));
 
         scurlMovie.relevance = fstrcmp(sMatchTitle.c_str(), sCompareTitle.c_str(), 0.0) + yearScore;
 
@@ -913,7 +913,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
         if (XMLUtils::GetString(pxeMovie, "aired", sDate) && sDate.length() == 10)
         {
           tm tm;
-          if (strptime(sDate, "%Y-%m-%d", &tm))
+          if (strptime(sDate.c_str(), "%Y-%m-%d", &tm))
             ep.cDate.SetDate(1900+tm.tm_year, tm.tm_mon + 1, tm.tm_mday);
         }
         vcep.push_back(ep);

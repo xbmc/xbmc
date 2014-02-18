@@ -328,8 +328,8 @@ CUPnPRenderer::UpdateState()
     } else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
         avt->SetStateVariable("TransportState", "PLAYING");
 
-        avt->SetStateVariable("AVTransportURI" , g_infoManager.GetPictureLabel(SLIDE_FILE_PATH));
-        avt->SetStateVariable("CurrentTrackURI", g_infoManager.GetPictureLabel(SLIDE_FILE_PATH));
+        avt->SetStateVariable("AVTransportURI" , g_infoManager.GetPictureLabel(SLIDE_FILE_PATH).c_str());
+        avt->SetStateVariable("CurrentTrackURI", g_infoManager.GetPictureLabel(SLIDE_FILE_PATH).c_str());
         avt->SetStateVariable("TransportPlaySpeed", "1");
 
         CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);

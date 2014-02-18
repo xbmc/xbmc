@@ -287,7 +287,7 @@ bool CJSONRPC::HandleMethodCall(const CVariant& request, CVariant& response, ITr
     JSONRPC::MethodCall method;
     CVariant params;
 
-    if ((errorCode = CJSONServiceDescription::CheckCall(methodName, request["params"], transport, client, isNotification, method, params)) == OK)
+    if ((errorCode = CJSONServiceDescription::CheckCall(methodName.c_str(), request["params"], transport, client, isNotification, method, params)) == OK)
       errorCode = method(methodName, transport, client, params, result);
     else
       result = params;

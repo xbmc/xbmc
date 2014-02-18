@@ -498,7 +498,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
         else if ((strcmpi(type, "enum") == 0 || strcmpi(type,"integer") == 0) ||
           strcmpi(type, "labelenum") == 0 || strcmpi(type, "rangeofnum") == 0)
         {
-          int tmp = atoi(GetSetting(id));
+          int tmp = atoi(GetSetting(id).c_str());
           status = m_pDll->SetSetting(id, (int*) &tmp);
         }
         else if (strcmpi(type, "bool") == 0)
@@ -509,7 +509,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
         else if (strcmpi(type, "rangeofnum") == 0 || strcmpi(type, "slider") == 0 ||
                  strcmpi(type, "number") == 0)
         {
-          float tmpf = (float)atof(GetSetting(id));
+          float tmpf = (float)atof(GetSetting(id).c_str());
           int   tmpi;
 
           if (option && strcmpi(option,"int") == 0)

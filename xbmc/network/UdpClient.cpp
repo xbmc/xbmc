@@ -114,7 +114,7 @@ bool CUdpClient::Send(CStdString aIpAddress, int aPort, CStdString& aMessage)
   SOCKADDR_IN addr;
   addr.sin_family = AF_INET;
   addr.sin_port = htons(aPort);
-  addr.sin_addr.s_addr = inet_addr(aIpAddress);
+  addr.sin_addr.s_addr = inet_addr(aIpAddress.c_str());
   memset(&addr.sin_zero, 0, sizeof(addr.sin_zero));
 
   UdpCommand transmit = {addr, aMessage, NULL, 0};
@@ -262,7 +262,7 @@ bool CUdpClient::DispatchNextCommand()
 
     do
     {
-      ret = sendto(client_socket, command.message, command.message.size(), 0, (struct sockaddr *) & command.address, sizeof(command.address));
+      ret = sendto(client_socket, command.message.c_str(), command.message.size(), 0, (struct sockaddr *) & command.address, sizeof(command.address));
     }
     while (ret == -1 && !m_bStop);
   }

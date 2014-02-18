@@ -91,7 +91,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
     CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
     try
     {
-      m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
+      m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
     }
     catch (std::exception e)
     {

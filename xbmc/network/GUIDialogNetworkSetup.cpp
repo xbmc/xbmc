@@ -393,7 +393,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_NFS))
       && !m_port.empty() && atoi(m_port.c_str()) > 0)
   {
-    url.SetPort(atoi(m_port));
+    url.SetPort(atoi(m_port.c_str()));
   }
   if (!m_path.empty())
     url.SetFileName(m_path);

@@ -195,8 +195,8 @@ bool CNetwork::HasInterfaceForIP(unsigned long address)
       CNetworkInterface* iface = *iter;
       if (iface && iface->IsConnected())
       {
-         subnet = ntohl(inet_addr(iface->GetCurrentNetmask()));
-         local = ntohl(inet_addr(iface->GetCurrentIPAddress()));
+         subnet = ntohl(inet_addr(iface->GetCurrentNetmask().c_str()));
+         local = ntohl(inet_addr(iface->GetCurrentIPAddress().c_str()));
          if( (address & subnet) == (local & subnet) )
             return true;
       }

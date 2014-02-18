@@ -226,7 +226,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         NPT_String object_id = (next_slash==-1)?"":path.SubString(next_slash+1);
         object_id.TrimRight("/");
         if (object_id.GetLength()) {
-            object_id = CStdString(CURL::Decode((char*)object_id));
+            object_id = CURL::Decode((char*)object_id).c_str();
         }
 
         // try to find the device with wait on startup

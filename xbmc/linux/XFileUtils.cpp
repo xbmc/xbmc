@@ -110,9 +110,9 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 #if defined(TARGET_ANDROID)
   // android is more strict with the sort function. Let's hope it is implemented correctly.
   typedef int (*sortFunc)(const struct dirent ** a, const struct dirent **b);
-  int n = scandir(strDir, &namelist, 0, (sortFunc)alphasort);
+  int n = scandir(strDir.c_str(), &namelist, 0, (sortFunc)alphasort);
 #else
-  int n = scandir(strDir, &namelist, 0, alphasort);
+  int n = scandir(strDir.c_str(), &namelist, 0, alphasort);
 #endif
 
   CXHandle *pHandle = new CXHandle(CXHandle::HND_FIND_FILE);
@@ -156,7 +156,7 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
 
   struct stat64 fileStat;
   memset(&fileStat, 0, sizeof(fileStat));
-  stat64(strFileNameTest, &fileStat);
+  stat64(strFileNameTest.c_str(), &fileStat);
 
   bool bIsDir = false;
   if (S_ISDIR(fileStat.st_mode))
@@ -175,7 +175,7 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   if (strFileName[0] == '.')
     lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_HIDDEN;
 
-  if (access(strFileName, R_OK) == 0 && access(strFileName, W_OK) != 0)
+  if (access(strFileName.c_str(), R_OK) == 0 && access(strFileName.c_str(), W_OK) != 0)
     lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
 
   TimeTToFileTime(fileStat.st_ctime, &lpFindData->ftCreationTime);
@@ -302,7 +302,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   // if FILE_FLAG_DELETE_ON_CLOSE then "unlink" the file (delete)
   // the file will be deleted when the last open descriptor is closed.
   if (dwFlagsAndAttributes & FILE_FLAG_DELETE_ON_CLOSE)
-    unlink(strResultFile);
+    unlink(strResultFile.c_str());
 
   return result;
 }
@@ -603,7 +603,7 @@ BOOL GetDiskFreeSpaceEx(
 #if defined(TARGET_ANDROID) || defined(TARGET_DARWIN)
   struct statfs fsInfo;
   // is 64-bit on android and darwin (10.6SDK + any iOS)
-  if (statfs(CSpecialProtocol::TranslatePath(lpDirectoryName), &fsInfo) != 0)
+  if (statfs(CSpecialProtocol::TranslatePath(lpDirectoryName).c_str(), &fsInfo) != 0)
     return false;
 #else
   struct statfs64 fsInfo;
