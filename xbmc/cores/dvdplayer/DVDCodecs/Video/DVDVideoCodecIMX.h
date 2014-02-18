@@ -29,6 +29,7 @@
 
 
 //#define IMX_PROFILE
+#define TRACE_FRAMES
 
 /* FIXME TODO Develop real proper CVPUBuffer class */
 #define VPU_DEC_MAX_NUM_MEM_NUM 20
@@ -49,19 +50,31 @@ typedef struct
 class CDVDVideoCodecIMXBuffer : public CDVDVideoCodecBuffer
 {
 public:
-  CDVDVideoCodecIMXBuffer(VpuDecOutFrameInfo frameInfo);
+#ifdef TRACE_FRAMES
+  CDVDVideoCodecIMXBuffer(int idx);
+#else
+  CDVDVideoCodecIMXBuffer();
+#endif
 
   // reference counting
-  virtual void                Lock();
-  virtual long                Release();
-  virtual bool                IsValid();
+  virtual void       Lock();
+  virtual long       Release();
+  virtual bool       IsValid();
+
+  void               Invalidate();
+  bool               Rendered();
+  void               Queue(VpuFrameBuffer *buffer);
 
 protected:
   // private because we are reference counted
   virtual            ~CDVDVideoCodecIMXBuffer();
 
+#ifdef TRACE_FRAMES
+  int                 m_idx;
+#endif
   long                m_refs;
-  VpuDecOutFrameInfo  m_frameInfo;
+  VpuFrameBuffer     *m_frameBuffer;
+  bool                m_rendered;
 };
 
 class CDVDVideoCodecIMX : public CDVDVideoCodec
@@ -89,20 +102,23 @@ protected:
   bool VpuAllocBuffers(VpuMemInfo *);
   bool VpuFreeBuffers(void);
   bool VpuAllocFrameBuffers(void);
+  int  VpuFindBuffer(void *frameAddr);
 
   static const int    m_extraVpuBuffers;   // Number of additional buffers for VPU
+  static CCriticalSection m_codecBufferLock;
 
   CDVDStreamInfo      m_hints;             // Hints from demuxer at stream opening
   const char         *m_pFormatName;       // Current decoder format name
   VpuDecOpenParam     m_decOpenParam;      // Parameters required to call VPU_DecOpen
   DecMemInfo          m_decMemInfo;        // VPU dedicated memory description
-  static VpuDecHandle m_vpuHandle;         // Handle for VPU library calls
+  VpuDecHandle        m_vpuHandle;         // Handle for VPU library calls
   VpuDecInitInfo      m_initInfo;          // Initial info returned from VPU at decoding start
   void               *m_tsm;               // fsl Timestamp manager (from gstreamer implementation)
   bool                m_tsSyncRequired;    // state whether timestamp manager has to be sync'ed
   bool                m_dropState;         // Current drop state
   int                 m_vpuFrameBufferNum; // Total number of allocated frame buffers
   VpuFrameBuffer     *m_vpuFrameBuffers;   // Table of VPU frame buffers description
+  CDVDVideoCodecIMXBuffer **m_outputBuffers;
   VpuMemDesc         *m_extraMem;          // Table of allocated extra Memory
 //  VpuMemDesc         *m_outputBuffers;     // Table of buffers out of VPU (used to call properly VPU_DecOutFrameDisplayed)
   int                 m_frameCounter;      // Decoded frames counter
@@ -110,5 +126,4 @@ protected:
   VpuDecOutFrameInfo  m_frameInfo;
   CBitstreamConverter *m_converter;
   bool                m_convert_bitstream;
-
 };
