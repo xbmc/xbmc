@@ -320,6 +320,7 @@ CDVDVideoCodecIMX::CDVDVideoCodecIMX()
   memset(&m_decMemInfo, 0, sizeof(DecMemInfo));
   m_vpuHandle = 0;
   m_vpuFrameBuffers = NULL;
+  m_outputBuffers = NULL;
   m_extraMem = NULL;
   m_vpuFrameBufferNum = 0;
   m_tsSyncRequired = true;
@@ -393,14 +394,14 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   case CODEC_ID_H264:
     m_decOpenParam.CodecFormat = VPU_V_AVC;
     m_pFormatName = "iMX-h264";
-    if (hints.extrasize < 7 || hints.extradata == NULL)
+    if (hints.extradata)
     {
-      CLog::Log(LOGNOTICE,
-          "%s - avcC data too small or missing", __FUNCTION__);
-      return false;
+      if ( *(char*)hints.extradata == 1 )
+      {
+        m_converter         = new CBitstreamConverter();
+        m_convert_bitstream = m_converter->Open(hints.codec, (uint8_t *)hints.extradata, hints.extrasize, true);
+      }
     }
-    m_converter     = new CBitstreamConverter();
-    m_convert_bitstream = m_converter->Open(hints.codec, (uint8_t *)hints.extradata, hints.extrasize, true);
     break;
   case CODEC_ID_VC1:
     m_decOpenParam.CodecFormat = VPU_V_VC1_AP;
