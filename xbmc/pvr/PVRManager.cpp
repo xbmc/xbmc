@@ -1323,10 +1323,8 @@ bool CPVRManager::IsIdle(void) const
     const CDateTime next = m_timers->GetNextEventTime();
     const CDateTimeSpan delta = next - now;
 
-    if (delta < idle)
-    {
+    if (delta <= idle)
       return false;
-    }
   }
 
   return true;
