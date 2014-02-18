@@ -135,12 +135,12 @@ const string GetIcon(const ADDON::TYPE& type)
   }
 
 AddonProps::AddonProps(const cp_extension_t *ext)
-  : id(ext->plugin->identifier)
-  , version(ext->plugin->version)
-  , minversion(ext->plugin->abi_bw_compatibility)
-  , name(ext->plugin->name)
-  , path(ext->plugin->plugin_path)
-  , author(ext->plugin->provider_name)
+  : id(ext->plugin->identifier ? ext->plugin->identifier : "")
+  , version(ext->plugin->version ? ext->plugin->version : "")
+  , minversion(ext->plugin->abi_bw_compatibility ? ext->plugin->abi_bw_compatibility : "")
+  , name(ext->plugin->name ? ext->plugin->name : "")
+  , path(ext->plugin->plugin_path ? ext->plugin->plugin_path : "")
+  , author(ext->plugin->provider_name ? ext->plugin->provider_name : "")
   , stars(0)
 {
   if (ext->ext_point_id)
@@ -170,12 +170,12 @@ AddonProps::AddonProps(const cp_extension_t *ext)
 }
 
 AddonProps::AddonProps(const cp_plugin_info_t *plugin)
-  : id(plugin->identifier)
-  , version(plugin->version)
-  , minversion(plugin->abi_bw_compatibility)
-  , name(plugin->name)
-  , path(plugin->plugin_path)
-  , author(plugin->provider_name)
+  : id(plugin->identifier ? plugin->identifier : "")
+  , version(plugin->version ? plugin->version : "")
+  , minversion(plugin->abi_bw_compatibility ? plugin->abi_bw_compatibility : "")
+  , name(plugin->name ? plugin->name : "")
+  , path(plugin->plugin_path ? plugin->plugin_path : "")
+  , author(plugin->provider_name ? plugin->provider_name : "")
   , stars(0)
 {
   BuildDependencies(plugin);
