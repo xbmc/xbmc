@@ -49,7 +49,7 @@ LibraryLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnl
 {
   CSingleLock lock(g_sectionLoader.m_critSection);
 
-  if (!dllname) return NULL;
+  if (dllname.empty()) return NULL;
   // check if it's already loaded, and increase the reference count if so
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
@@ -81,7 +81,7 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
 {
   CSingleLock lock(g_sectionLoader.m_critSection);
 
-  if (!dllname) return;
+  if (dllname.empty()) return;
   // check if it's already loaded, and decrease the reference count if so
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {

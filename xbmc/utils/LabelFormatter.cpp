@@ -285,7 +285,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     }
     break;
   case 'O':
-    if (movie && movie->m_strMPAARating)
+    if (movie && !movie->m_strMPAARating.empty())
     {// MPAA Rating
       value = movie->m_strMPAARating;
     }

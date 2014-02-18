@@ -128,20 +128,25 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
           if (URIUtils::HasExtension(library, ".py"))
             return AddonPtr(new CScreenSaver(props));
         }
-#if defined(TARGET_ANDROID)                                                                                                                                                      
-          if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_android")) && value.empty())                                                                
+#if defined(TARGET_ANDROID)
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_android");
+        if (value.empty())
             break;                                                                                                                                                                 
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_linux");
+        if (value.empty())
           break;
 #elif defined(TARGET_WINDOWS) && defined(HAS_SDL_OPENGL)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_wingl")) && value.empty())
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_wingl");
+        if (value.empty())
           break;
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_windx")) && value.empty())
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_windx");
+        if (value.empty())
           break;
 #elif defined(TARGET_DARWIN)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_osx")) && value.empty())
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_osx");
+        if (value.empty())
           break;
 #endif
         if (type == ADDON_VIZ)
