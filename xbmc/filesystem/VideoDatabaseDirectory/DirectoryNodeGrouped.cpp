@@ -23,6 +23,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 
+using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CDirectoryNodeGrouped::CDirectoryNodeGrouped(NODE_TYPE type, const CStdString& strName, CDirectoryNode* pParent)

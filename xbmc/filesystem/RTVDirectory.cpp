@@ -29,6 +29,7 @@
 #include "utils/StringUtils.h"
 #include "FileItem.h"
 
+using namespace std;
 using namespace XFILE;
 
 extern "C"

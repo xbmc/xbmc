@@ -35,6 +35,7 @@
 #pragma comment(lib, "libcdio.dll.lib")
 #endif
 
+using namespace std;
 using namespace MEDIA_DETECT;
 
 boost::shared_ptr<CLibcdio> CLibcdio::m_pInstance;

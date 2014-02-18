@@ -52,6 +52,8 @@
 #include "utils/AliasShortcutUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 {
   if (lpFindData == NULL || szPath == NULL)

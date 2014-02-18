@@ -46,6 +46,7 @@
 #include "URL.h"
 #include "windowing/WindowingFactory.h"
 
+using namespace std;
 
 struct StereoModeMap
 {

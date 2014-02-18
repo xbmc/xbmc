@@ -28,6 +28,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+using namespace std;
+
 CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : ISetting(id, settingsManager),
     m_callback(NULL),

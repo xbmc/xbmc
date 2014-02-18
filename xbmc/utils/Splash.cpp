@@ -28,6 +28,7 @@
 #include "rendering/RenderSystem.h"
 #include "log.h"
 
+using namespace std;
 using namespace XFILE;
 
 CSplash::CSplash(const CStdString& imageName) : CThread("Splash")

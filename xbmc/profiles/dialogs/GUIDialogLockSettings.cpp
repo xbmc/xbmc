@@ -28,6 +28,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CGUIDialogLockSettings::CGUIDialogLockSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_LOCK_SETTINGS, "LockSettings.xml")
 {

@@ -21,6 +21,8 @@
 #include "OggCallback.h"
 #include "FileItem.h"
 
+using namespace std;
+
 COggCallback::COggCallback(XFILE::CFile& file) : m_file(file)
 {
 }

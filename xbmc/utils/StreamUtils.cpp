@@ -20,6 +20,8 @@
 
 #include "StreamUtils.h"
 
+using namespace std;
+
 int StreamUtils::GetCodecPriority(const CStdString &codec)
 {
   /*

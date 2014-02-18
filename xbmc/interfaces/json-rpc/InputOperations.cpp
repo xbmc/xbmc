@@ -29,6 +29,7 @@
 #include "input/XBMC_vkeys.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
 using namespace JSONRPC;
 
 //TODO the breakage of the screensaver should be refactored

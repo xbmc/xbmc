@@ -24,6 +24,7 @@
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "MusicInfoTag.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderDatabase::CMusicInfoTagLoaderDatabase(void)

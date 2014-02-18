@@ -29,6 +29,7 @@
 
 #include "lib/libXDAAP/private.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define HEDAER_VERSION       "Client-DAAP-Version"

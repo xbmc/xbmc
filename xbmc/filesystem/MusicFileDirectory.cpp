@@ -24,6 +24,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 

@@ -28,6 +28,7 @@
 #include "pvr/PVRManager.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace PVR;
 
 CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void) :

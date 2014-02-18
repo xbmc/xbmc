@@ -27,6 +27,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
 
+using namespace std;
 using namespace PCRE;
 
 #ifndef PCRE_UCP

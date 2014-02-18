@@ -22,6 +22,7 @@
 #include "utils/URIUtils.h"
 #include "MusicInfoTag.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 

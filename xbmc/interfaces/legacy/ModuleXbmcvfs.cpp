@@ -26,6 +26,8 @@
 #include "utils/URIUtils.h"
 #include "Util.h"
 
+using namespace std;
+
 namespace XBMCAddon
 {
 

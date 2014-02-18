@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define AFP_MAX_READ_SIZE 131072

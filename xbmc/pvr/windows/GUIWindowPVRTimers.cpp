@@ -31,6 +31,7 @@
 #include "GUIWindowPVR.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
 using namespace PVR;
 
 CGUIWindowPVRTimers::CGUIWindowPVRTimers(CGUIWindowPVR *parent) :

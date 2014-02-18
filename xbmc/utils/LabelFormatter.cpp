@@ -31,6 +31,7 @@
 #include "URIUtils.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 /* LabelFormatter

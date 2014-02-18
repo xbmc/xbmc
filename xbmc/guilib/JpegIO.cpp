@@ -30,6 +30,8 @@
 #include "utils/StringUtils.h"
 #include <setjmp.h>
 
+using namespace std;
+
 #define EXIF_TAG_ORIENTATION    0x0112
 
 struct my_error_mgr

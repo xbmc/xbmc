@@ -21,7 +21,7 @@
 #include "HTMLTable.h"
 #include "HTMLUtil.h"
 
-
+using namespace std;
 using namespace HTML;
 
 CHTMLRow::CHTMLRow(void)

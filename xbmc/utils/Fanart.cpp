@@ -23,6 +23,8 @@
 #include "URIUtils.h"
 #include "StringUtils.h"
 
+using namespace std;
+
 const unsigned int CFanart::max_fanart_colors=3;
 
 

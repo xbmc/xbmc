@@ -48,6 +48,7 @@
 #include "pictures/PictureInfoTag.h"
 #include "pictures/PictureThumbLoader.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define MAX_ZOOM_FACTOR                     10

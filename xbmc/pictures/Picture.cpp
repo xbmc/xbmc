@@ -37,6 +37,7 @@
 #include "cores/omxplayer/OMXImage.h"
 #endif
 
+using namespace std;
 using namespace XFILE;
 
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)

@@ -33,6 +33,8 @@
 #include "win32/WIN32Util.h"
 #endif
 
+using namespace std;
+
 #define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
 #define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
 #define m_repeatCount XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatCount

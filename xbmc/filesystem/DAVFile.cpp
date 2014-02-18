@@ -29,6 +29,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/RegExp.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace XCURL;
 

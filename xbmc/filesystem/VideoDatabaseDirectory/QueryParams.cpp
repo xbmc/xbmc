@@ -22,6 +22,7 @@
 #include "video/VideoDatabase.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CQueryParams::CQueryParams()

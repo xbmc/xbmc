@@ -56,6 +56,8 @@
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
 
+using namespace std;
+
 #define MAXPRESENTDELAY 0.500
 
 /* at any point we want an exclusive lock on rendermanager */

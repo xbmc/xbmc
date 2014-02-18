@@ -28,6 +28,7 @@
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
+using namespace std;
 using namespace PVR;
 
 CDemuxStreamPVRInternal::CDemuxStreamPVRInternal(CDVDDemuxPVRClient *parent)

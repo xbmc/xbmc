@@ -34,6 +34,8 @@
 #include "music/MusicThumbLoader.h"
 #include "video/VideoThumbLoader.h"
 
+using namespace std;
+
 #define NUM_ITEMS 10
 
 CRecentlyAddedJob::CRecentlyAddedJob(int flag)

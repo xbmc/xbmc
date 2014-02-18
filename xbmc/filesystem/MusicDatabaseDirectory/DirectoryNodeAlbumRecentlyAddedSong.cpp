@@ -21,6 +21,7 @@
 #include "DirectoryNodeAlbumRecentlyAddedSong.h"
 #include "music/MusicDatabase.h"
 
+using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeAlbumRecentlyAddedSong::CDirectoryNodeAlbumRecentlyAddedSong(const CStdString& strName, CDirectoryNode* pParent)

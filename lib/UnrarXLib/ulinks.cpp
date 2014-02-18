@@ -2,6 +2,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 
 int ExtractLink(ComprDataIO &DataIO,Archive &Arc,char *DestName,uint &LinkCRC,bool Create)
 {

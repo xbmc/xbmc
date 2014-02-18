@@ -31,6 +31,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
+using namespace std;
+
 namespace
 {
   //helper for getting a the txt-records list

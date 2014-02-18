@@ -27,6 +27,8 @@
 #include "utils/log.h"
 #include "cores/AudioEngine/AEFactory.h"
 
+using namespace std;
+
 //These values are forced to allow spdif out
 #define OUT_SAMPLESIZE 16
 #define OUT_CHANNELS   2

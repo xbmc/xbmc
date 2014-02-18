@@ -24,6 +24,7 @@
 #include "profiles/ProfilesManager.h"
 #include "utils/md5.h"
 
+using namespace std;
 using namespace JSONRPC;
 
 JSONRPC_STATUS CProfilesOperations::GetProfiles(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

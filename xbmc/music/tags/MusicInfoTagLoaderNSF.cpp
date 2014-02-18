@@ -24,6 +24,7 @@
 
 #include <fstream>
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderNSF::CMusicInfoTagLoaderNSF(void)

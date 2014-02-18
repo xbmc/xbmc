@@ -25,6 +25,7 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 

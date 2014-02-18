@@ -62,6 +62,8 @@
 #include <linux/version.h>
 #endif
 
+using namespace std;
+
 CSysInfo g_sysinfo;
 
 CSysInfoJob::CSysInfoJob()

@@ -21,6 +21,8 @@
 #include "Crc32.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 uint32_t  crc_tab[256] =
 {
  0x00000000L, 0x04C11DB7L, 0x09823B6EL, 0x0D4326D9L,

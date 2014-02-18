@@ -30,6 +30,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "settings/Settings.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace PVR;
 

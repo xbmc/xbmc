@@ -62,6 +62,7 @@
 #endif
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace boost;
 
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx

@@ -33,6 +33,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 
+using namespace std;
 using namespace PVR;
 using namespace EPG;
 

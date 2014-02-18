@@ -26,6 +26,8 @@
 #include "settings/Settings.h"
 #include "addons/GUIWindowAddonBrowser.h"
 
+using namespace std;
+
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
 

@@ -43,6 +43,7 @@
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace ADDON;
 
 CGUIControlBaseSetting::CGUIControlBaseSetting(int id, CSetting *pSetting)

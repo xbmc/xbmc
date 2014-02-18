@@ -27,6 +27,8 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 
+using namespace std;
+
 CAsyncFileCopy::CAsyncFileCopy() : CThread("AsyncFileCopy")
 {
   m_cancelled = false;

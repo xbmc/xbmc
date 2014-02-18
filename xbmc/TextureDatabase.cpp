@@ -26,6 +26,8 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+using namespace std;
+
 enum TextureField
 {
   TF_None = 0,

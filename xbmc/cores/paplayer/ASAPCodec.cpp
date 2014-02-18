@@ -22,6 +22,7 @@
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 
+using namespace std;
 
 ASAPCodec::ASAPCodec()
 {

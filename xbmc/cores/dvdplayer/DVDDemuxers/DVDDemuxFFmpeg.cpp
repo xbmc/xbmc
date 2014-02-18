@@ -51,6 +51,8 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 
+using namespace std;
+
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;

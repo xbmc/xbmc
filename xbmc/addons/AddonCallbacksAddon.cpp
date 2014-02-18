@@ -33,6 +33,7 @@
 #include "utils/StringUtils.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
 
+using namespace std;
 using namespace XFILE;
 
 namespace ADDON

@@ -25,6 +25,8 @@
 #include "utils/log.h"
 #undef BOOL
 
+using namespace std;
+
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGL/OpenGL.h>

@@ -30,6 +30,8 @@
 #include "filesystem/Directory.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
+
 CLocalizeStrings::CLocalizeStrings(void)
 {
 

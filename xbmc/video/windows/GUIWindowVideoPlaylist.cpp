@@ -37,6 +37,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace PLAYLIST;
 
 #define CONTROL_BTNVIEWASICONS     2

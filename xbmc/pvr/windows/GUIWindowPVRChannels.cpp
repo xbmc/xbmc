@@ -42,6 +42,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
 using namespace PVR;
 using namespace EPG;
 

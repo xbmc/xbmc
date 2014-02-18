@@ -23,6 +23,8 @@
 #include "utils/RegExp.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
+
 NSFCodec::NSFCodec()
 {
   m_iTrack = 0;

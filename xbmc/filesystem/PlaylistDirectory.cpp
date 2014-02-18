@@ -23,6 +23,7 @@
 #include "URL.h"
 #include "playlists/PlayList.h"
 
+using namespace std;
 using namespace PLAYLIST;
 using namespace XFILE;
 

@@ -25,6 +25,8 @@
 #include "PlatformDefs.h" //for strcasecmp
 #endif
 
+using namespace std;
+
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& hexValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );

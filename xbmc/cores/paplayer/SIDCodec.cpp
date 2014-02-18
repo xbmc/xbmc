@@ -25,6 +25,8 @@
 #include "utils/URIUtils.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
+using namespace std;
+
 SIDCodec::SIDCodec()
 {
   m_CodecName = "sid";

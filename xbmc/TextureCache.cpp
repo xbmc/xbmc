@@ -31,6 +31,7 @@
 #include "URL.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 CTextureCache &CTextureCache::Get()

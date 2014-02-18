@@ -97,6 +97,7 @@
 #include "utils/StringUtils.h"
 #include "network/WakeOnAccess.h"
 
+using namespace std;
 using namespace XFILE;
 
 CFileFactory::CFileFactory()

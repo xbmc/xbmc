@@ -40,6 +40,7 @@
 #include "cores/paplayer/ASAPCodec.h"
 #endif
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderFactory::CMusicInfoTagLoaderFactory()

@@ -30,7 +30,7 @@
 #include "utils/Variant.h"
 #include "interfaces/AnnouncementManager.h"
 
-//using namespace std;
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace PLAYLIST;

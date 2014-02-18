@@ -27,6 +27,8 @@
 #include "android/loader/AndroidDyload.h"
 #endif
 
+using namespace std;
+
 SoLoader::SoLoader(const char *so, bool bGlobal) : LibraryLoader(so)
 {
   m_soHandle = NULL;

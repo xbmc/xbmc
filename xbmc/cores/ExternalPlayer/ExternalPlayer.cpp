@@ -60,6 +60,7 @@
 // Default time after which the item's playcount is incremented
 #define DEFAULT_PLAYCOUNT_MIN_TIME 10
 
+using namespace std;
 using namespace XFILE;
 
 #if defined(TARGET_WINDOWS)

@@ -25,6 +25,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 EmbeddedArtInfo::EmbeddedArtInfo(size_t siz, const std::string &mim)

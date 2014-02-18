@@ -34,6 +34,8 @@
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;

@@ -48,6 +48,7 @@
 #include "URL.h"
 #include "view/ViewState.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_LIST          450

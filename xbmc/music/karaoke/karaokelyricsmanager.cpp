@@ -35,6 +35,8 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+using namespace std;
+
 CKaraokeLyricsManager::CKaraokeLyricsManager()
 {
   m_Lyrics = 0;

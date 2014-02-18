@@ -22,6 +22,8 @@
 #include "cores/DllLoader/DllLoader.h"
 #include "utils/log.h"
 
+using namespace std;
+
 YMCodec::YMCodec()
 {
   m_CodecName = "ym";

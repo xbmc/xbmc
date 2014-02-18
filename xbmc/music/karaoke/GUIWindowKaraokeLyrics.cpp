@@ -29,6 +29,7 @@
 #include "karaokewindowbackground.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
 
 CGUIWindowKaraokeLyrics::CGUIWindowKaraokeLyrics(void)
   : CGUIWindow(WINDOW_KARAOKELYRICS, "MusicKaraokeLyrics.xml")

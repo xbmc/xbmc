@@ -34,6 +34,7 @@
 #include "filesystem/File.h"
 #include "settings/Settings.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;

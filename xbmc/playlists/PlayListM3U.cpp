@@ -30,6 +30,7 @@
 #include "settings/AdvancedSettings.h"
 #include "music/tags/MusicInfoTag.h"
 
+using namespace std;
 using namespace PLAYLIST;
 using namespace XFILE;
 

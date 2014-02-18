@@ -42,6 +42,7 @@
 
 #define PLAYERCOREFACTORY_XML "playercorefactory.xml"
 
+using namespace std;
 using namespace AUTOPTR;
 
 CPlayerCoreFactory::CPlayerCoreFactory()

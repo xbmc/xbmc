@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 CUDFDirectory::CUDFDirectory(void)

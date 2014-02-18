@@ -114,6 +114,7 @@
 #include "AndroidAppDirectory.h"
 #endif
 
+using namespace std;
 using namespace XFILE;
 
 /*!

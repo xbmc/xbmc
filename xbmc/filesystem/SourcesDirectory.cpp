@@ -30,6 +30,7 @@
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 CSourcesDirectory::CSourcesDirectory(void)

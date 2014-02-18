@@ -45,6 +45,7 @@
 #include "Util.h"
 #include "video/VideoDatabase.h"
 
+using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 

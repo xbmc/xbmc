@@ -21,6 +21,7 @@
 #include "DirectoryNodeAlbumTop100Song.h"
 #include "music/MusicDatabase.h"
 
+using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeAlbumTop100Song::CDirectoryNodeAlbumTop100Song(const CStdString& strName, CDirectoryNode* pParent)

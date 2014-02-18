@@ -29,6 +29,7 @@
 
 #include "karaokelyricstextkar.h"
 
+using namespace std;
 
 // Parsed lyrics
 typedef struct

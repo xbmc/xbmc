@@ -29,6 +29,8 @@
 #include "ApplicationMessenger.h"
 #include "utils/Variant.h"
 
+using namespace std;
+
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 
 namespace XBMCAddon

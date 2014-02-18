@@ -23,6 +23,7 @@
 #include "utils/log.h"
 #include "URL.h"
 
+using namespace std;
 using namespace XFILE;
 
 CSFTPDirectory::CSFTPDirectory(void)

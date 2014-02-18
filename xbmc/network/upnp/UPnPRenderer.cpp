@@ -42,6 +42,7 @@
 #include "playlists/PlayList.h"
 #include "GUIUserMessages.h"
 
+using namespace std;
 using namespace ANNOUNCEMENT;
 
 namespace UPNP

@@ -23,6 +23,8 @@
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 bool CGUIControlProfiler::m_bIsRunning = false;
 
 CGUIControlProfilerItem::CGUIControlProfilerItem(CGUIControlProfiler *pProfiler, CGUIControlProfilerItem *pParent, CGUIControl *pControl)

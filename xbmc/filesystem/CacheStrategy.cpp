@@ -32,6 +32,7 @@
 #include "PlatformDefs.h" //for PRIdS, PRId64
 #endif
 
+using namespace std;
 using namespace XFILE;
 
 CCacheStrategy::CCacheStrategy() : m_bEndOfInput(false)

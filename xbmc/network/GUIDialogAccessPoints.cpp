@@ -28,6 +28,8 @@
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
+
 #define CONTROL_ACCESS_POINTS 3
 
 CGUIDialogAccessPoints::CGUIDialogAccessPoints(void)

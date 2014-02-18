@@ -29,6 +29,8 @@
 #include <string.h>
 #include "PlatformDefs.h"
 
+using namespace std;
+
 #define READ_STR(str, size, file) \
   if (!fread(str, size, 1, file)) \
     return false;

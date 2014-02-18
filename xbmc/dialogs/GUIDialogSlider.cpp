@@ -24,6 +24,8 @@
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
+
 #define CONTROL_HEADING 10
 #define CONTROL_SLIDER  11
 #define CONTROL_LABEL   12

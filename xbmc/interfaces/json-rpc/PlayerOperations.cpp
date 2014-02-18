@@ -45,6 +45,7 @@
 #include "cores/IPlayer.h"
 #include "settings/MediaSettings.h"
 
+using namespace std;
 using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace PVR;

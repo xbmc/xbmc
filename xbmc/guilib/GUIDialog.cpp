@@ -28,6 +28,8 @@
 #include "ApplicationMessenger.h"
 #include "Key.h"
 
+using namespace std;
+
 CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
     : CGUIWindow(id, xmlFile)
 {

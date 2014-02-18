@@ -30,6 +30,8 @@
 #endif
 #include "osx/CocoaInterface.h"
 
+using namespace std;
+
 bool CDarwinStorageProvider::m_event = false;
 
 CDarwinStorageProvider::CDarwinStorageProvider()

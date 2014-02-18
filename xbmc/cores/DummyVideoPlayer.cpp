@@ -31,6 +31,8 @@
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread("DummyVideoPlayer")

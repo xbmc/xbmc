@@ -50,7 +50,7 @@
 #include "cdioSupport.h"
 #include "storage/MediaManager.h"
 
-
+using namespace std;
 using namespace XFILE;
 using namespace MEDIA_DETECT;
 

@@ -35,14 +35,14 @@
 #include "PasswordManager.h"
 #include "DllLibAfp.h"
 
+using namespace std;
+using namespace XFILE;
+
 struct CachedDirEntry
 {
   unsigned int type;
   CStdString name;
 };
-
-using namespace XFILE;
-using namespace std;
 
 CAFPDirectory::CAFPDirectory(void)
 {

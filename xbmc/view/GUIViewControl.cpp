@@ -28,6 +28,8 @@
 #include "guilib/WindowIDs.h"
 #include "guilib/IGUIContainer.h"
 
+using namespace std;
+
 CGUIViewControl::CGUIViewControl(void)
 {
   m_viewAsControl = -1;

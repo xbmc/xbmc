@@ -22,6 +22,7 @@
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 
+using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CDirectoryNodeTitleTvShows::CDirectoryNodeTitleTvShows(const CStdString& strName, CDirectoryNode* pParent)

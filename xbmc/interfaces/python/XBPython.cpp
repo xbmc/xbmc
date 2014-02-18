@@ -54,6 +54,7 @@
 #include "interfaces/python/AddonPythonInvoker.h"
 #include "interfaces/python/PythonInvoker.h"
 
+using namespace std;
 using namespace ANNOUNCEMENT;
 
 XBPython::XBPython()

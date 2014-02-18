@@ -37,6 +37,7 @@
 #include "mysqldataset.h"
 #endif
 
+using namespace std;
 using namespace AUTOPTR;
 using namespace dbiplus;
 

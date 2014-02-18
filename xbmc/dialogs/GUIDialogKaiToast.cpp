@@ -32,6 +32,8 @@
 #define POPUP_ICON_WARNING        404
 #define POPUP_ICON_ERROR          405
 
+using namespace std;
+
 CGUIDialogKaiToast::TOASTQUEUE CGUIDialogKaiToast::m_notifications;
 CCriticalSection CGUIDialogKaiToast::m_critical;
 

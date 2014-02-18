@@ -35,6 +35,8 @@
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
 
+using namespace std;
+
 #if !defined(HAS_ZEROCONF)
 //dummy implementation used if no zeroconf is present
 //should be optimized away

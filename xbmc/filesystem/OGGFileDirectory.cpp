@@ -22,6 +22,7 @@
 #include "cores/paplayer/OggCallback.h"
 #include "File.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 

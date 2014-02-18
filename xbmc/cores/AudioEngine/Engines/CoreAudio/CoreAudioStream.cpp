@@ -24,6 +24,8 @@
 #include "utils/log.h"
 #include "utils/StdString.h"
 
+using namespace std;
+
 CCoreAudioStream::CCoreAudioStream() :
   m_StreamId  (0    )
 {

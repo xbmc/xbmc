@@ -26,6 +26,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CGUIColorManager g_colorManager;
 
 CGUIColorManager::CGUIColorManager(void)

@@ -39,6 +39,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <VideoDecodeAcceleration/VDADecoder.h>
 
+using namespace std;
+
 // extra flags not defined in VDADecoder.h
 enum {
   kVDADecodeInfo_Asynchronous = 1UL << 0,

@@ -42,6 +42,8 @@
 #include "PCMCodec.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
   if (StringUtils::EqualsNoCase(strFileType, "mp3") || StringUtils::EqualsNoCase(strFileType, "mp2"))

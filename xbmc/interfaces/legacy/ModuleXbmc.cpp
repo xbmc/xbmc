@@ -64,6 +64,8 @@
 #include "Exception.h"
 #include <vector>
 
+using namespace std;
+
 namespace XBMCAddon
 {
 

@@ -7,6 +7,8 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
+
 //static File *CreatedFiles[32];
 static int RemoveCreatedActive=0;
 

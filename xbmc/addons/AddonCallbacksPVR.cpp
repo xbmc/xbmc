@@ -33,6 +33,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 
+using namespace std;
 using namespace PVR;
 using namespace EPG;
 

@@ -26,6 +26,7 @@
 
 #include <sys/stat.h>
 
+using namespace std;
 using namespace XFILE;
 
 CMusicDatabaseFile::CMusicDatabaseFile(void)

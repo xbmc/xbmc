@@ -24,6 +24,8 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CDVDSubtitleTagSami::~CDVDSubtitleTagSami()
 {
   delete m_tags;

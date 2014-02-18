@@ -66,6 +66,8 @@
 #include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
 {
   try

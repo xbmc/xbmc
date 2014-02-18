@@ -28,6 +28,8 @@
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
+
 #define CONTROL_PROTOCOL        10
 #define CONTROL_SERVER_ADDRESS  11
 #define CONTROL_SERVER_BROWSE   12

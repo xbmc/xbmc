@@ -38,6 +38,8 @@
 #include "utils/StringUtils.h"
 #include "view/ViewStateSettings.h"
 
+using namespace std;
+
 CGUIPassword::CGUIPassword(void)
 {
   iMasterLockRetriesLeft = -1;

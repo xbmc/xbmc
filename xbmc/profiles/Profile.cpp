@@ -22,6 +22,8 @@
 #include "GUIInfoManager.h"
 #include "utils/XMLUtils.h"
 
+using namespace std;
+
 CProfile::CLock::CLock(LockType type, const CStdString &password)
 {
   programs = false;

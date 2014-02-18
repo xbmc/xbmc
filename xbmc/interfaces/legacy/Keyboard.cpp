@@ -26,6 +26,8 @@
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "ApplicationMessenger.h"
 
+using namespace std;
+
 namespace XBMCAddon
 {
   namespace xbmc

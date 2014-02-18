@@ -25,6 +25,8 @@
 
 #include <string>
 
+using namespace std;
+
 namespace PythonBindings
 {
   TypeInfo::TypeInfo(const std::type_info& ti) : swigType(NULL), parentType(NULL), typeIndex(ti)

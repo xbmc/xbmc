@@ -37,6 +37,7 @@
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_PROFILES 2

@@ -28,6 +28,8 @@
 #include "utils/StringUtils.h"
 #include "video/VideoDatabase.h"
 
+using namespace std;
+
 std::string DatabaseUtils::MediaTypeToString(MediaType mediaType)
 {
   switch (mediaType)

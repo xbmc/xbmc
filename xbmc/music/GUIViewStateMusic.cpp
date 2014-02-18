@@ -35,6 +35,7 @@
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 

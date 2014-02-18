@@ -30,6 +30,7 @@
 
 #include "epg/Epg.h"
 
+using namespace std;
 using namespace PVR;
 using namespace EPG;
 

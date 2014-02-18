@@ -26,6 +26,8 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 namespace XFILE
 {
   CRarDirectory::CRarDirectory()

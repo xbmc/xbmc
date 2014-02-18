@@ -39,6 +39,8 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CPlayerController::CPlayerController()
 {
   m_sliderAction = 0;

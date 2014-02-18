@@ -27,6 +27,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
+using namespace std;
+
 CDNSNameCache g_DNSCache;
 
 CCriticalSection CDNSNameCache::m_critical;

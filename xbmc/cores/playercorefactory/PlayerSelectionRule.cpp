@@ -27,6 +27,8 @@
 #include "utils/RegExp.h"
 #include "utils/XBMCTinyXML.h"
 
+using namespace std;
+
 CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
 {
   Initialize(pRule);

@@ -27,6 +27,8 @@
 #include "utils/XMLUtils.h"
 #include "video/VideoInfoTag.h"
 
+using namespace std;
+
 #define ID_BUTTON_PLAY      11
 #define ID_BUTTON_EJECT     10
 

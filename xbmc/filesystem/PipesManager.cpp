@@ -26,6 +26,7 @@
 #define min(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
+using namespace std;
 using namespace XFILE;
 
 

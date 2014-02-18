@@ -30,6 +30,8 @@
 #include <ksmedia.h>
 #endif
 
+using namespace std;
+
 typedef struct
 {
   char chunk_id[4];

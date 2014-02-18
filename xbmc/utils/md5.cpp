@@ -21,6 +21,8 @@
 #include "md5.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 typedef unsigned char md5byte;
 
 static void MD5Init(struct MD5Context *context);

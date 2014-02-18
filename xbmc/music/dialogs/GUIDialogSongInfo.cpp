@@ -41,6 +41,7 @@
 #include "storage/MediaManager.h"
 #include "GUIDialogMusicInfo.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_OK        10

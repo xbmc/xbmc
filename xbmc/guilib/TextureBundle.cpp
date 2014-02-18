@@ -21,6 +21,8 @@
 #include "system.h"
 #include "TextureBundle.h"
 
+using namespace std;
+
 CTextureBundle::CTextureBundle(void)
 {
   m_useXPR = false;

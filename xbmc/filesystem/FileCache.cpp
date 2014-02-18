@@ -31,6 +31,7 @@
 #include "utils/TimeUtils.h"
 #include "settings/AdvancedSettings.h"
 
+using namespace std;
 using namespace AUTOPTR;
 using namespace XFILE;
 

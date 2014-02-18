@@ -30,6 +30,7 @@
 #include "guilib/WindowIDs.h"
 #include "view/ViewStateSettings.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 

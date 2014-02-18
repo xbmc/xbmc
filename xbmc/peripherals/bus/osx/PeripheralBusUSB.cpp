@@ -25,6 +25,7 @@
 
 #include <sys/param.h>
 
+using namespace std;
 using namespace PERIPHERALS;
 
 #ifdef TARGET_DARWIN_OSX

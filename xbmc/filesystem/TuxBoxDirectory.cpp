@@ -31,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 CTuxBoxDirectory::CTuxBoxDirectory(void)

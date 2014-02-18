@@ -22,6 +22,7 @@
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIButtonControl.h"
 
+using namespace std;
 
 #define CONTROL_BUTTON_LABEL  3100
 

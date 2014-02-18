@@ -23,6 +23,7 @@
 #include "music/MusicDatabase.h"
 #include "settings/Settings.h"
 
+using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeArtist::CDirectoryNodeArtist(const CStdString& strName, CDirectoryNode* pParent)

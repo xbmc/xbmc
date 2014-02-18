@@ -25,6 +25,8 @@
 #include "utils/StringUtils.h"
 #include "GUIWindowManager.h"
 
+using namespace std;
+
 static const SliderAction actions[] = {
   {"seek",    "PlayerControl(SeekPercentage(%2f))", PLAYER_PROGRESS, false},
   {"volume",  "SetVolume(%2f)",                     PLAYER_VOLUME,   true}

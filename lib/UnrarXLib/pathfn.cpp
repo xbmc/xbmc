@@ -3,6 +3,8 @@
 #include "rar.hpp"
 #include "utils/URIUtils.h"
 
+using namespace std;
+
 char* PointToName(const char *Path)
 {
   //const char *Found=NULL;

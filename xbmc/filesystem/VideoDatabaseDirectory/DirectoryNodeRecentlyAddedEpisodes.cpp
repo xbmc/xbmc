@@ -21,6 +21,7 @@
 #include "DirectoryNodeRecentlyAddedEpisodes.h"
 #include "video/VideoDatabase.h"
 
+using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CDirectoryNodeRecentlyAddedEpisodes::CDirectoryNodeRecentlyAddedEpisodes(const CStdString& strName, CDirectoryNode* pParent)

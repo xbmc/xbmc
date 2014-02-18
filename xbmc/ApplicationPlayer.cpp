@@ -22,6 +22,8 @@
 #include "cores/IPlayer.h"
 #include "Application.h"
 
+using namespace std;
+
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB
 

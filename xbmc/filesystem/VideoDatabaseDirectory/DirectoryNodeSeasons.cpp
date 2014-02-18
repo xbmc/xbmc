@@ -28,6 +28,7 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CDirectoryNodeSeasons::CDirectoryNodeSeasons(const CStdString& strName, CDirectoryNode* pParent)

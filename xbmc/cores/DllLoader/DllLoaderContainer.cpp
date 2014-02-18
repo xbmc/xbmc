@@ -54,7 +54,7 @@
 //Define this to get loggin on all calls to load/unload of dlls
 //#define LOGALL
 
-
+using namespace std;
 using namespace XFILE;
 
 LibraryLoader* DllLoaderContainer::m_dlls[64] = {};

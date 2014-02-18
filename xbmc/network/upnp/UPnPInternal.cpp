@@ -40,6 +40,7 @@
 #include "ThumbLoader.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 

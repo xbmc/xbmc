@@ -20,6 +20,7 @@
 
 #include "DirectoryNodeRoot.h"
 
+using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeRoot::CDirectoryNodeRoot(const CStdString& strName, CDirectoryNode* pParent)

@@ -28,6 +28,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 #define CONTROL_LIST           2
 #define CONTROL_PRESETS_LABEL  3
 #define CONTROL_NONE_AVAILABLE 4

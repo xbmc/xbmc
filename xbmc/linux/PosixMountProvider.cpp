@@ -23,6 +23,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+using namespace std;
+
 CPosixMountProvider::CPosixMountProvider()
 {
   m_removableLength = 0;

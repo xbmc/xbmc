@@ -34,6 +34,8 @@
 #include <lzo/lzo1x.h>
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 #ifdef TARGET_WINDOWS
 #pragma comment(lib,"liblzo2.lib")
 #endif

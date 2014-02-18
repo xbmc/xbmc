@@ -26,6 +26,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "PictureInfoTag.h"
 
+using namespace std;
+
 #define CONTROL_PICTURE_INFO 5
 
 #define SLIDE_STRING_BASE 21800 - SLIDE_INFO_START

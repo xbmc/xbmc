@@ -34,6 +34,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "view/ViewStateSettings.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 

@@ -43,6 +43,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 namespace XBMCAddon
 {
   namespace xbmcgui

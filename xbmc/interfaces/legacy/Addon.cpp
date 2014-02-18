@@ -27,6 +27,7 @@
 #include "GUIUserMessages.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace ADDON;
 
 namespace XBMCAddon

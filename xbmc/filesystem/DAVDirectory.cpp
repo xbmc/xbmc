@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 CDAVDirectory::CDAVDirectory(void) {}

@@ -30,6 +30,8 @@
 #include "utils/StringUtils.h"
 #include "addons/Addon.h"
 
+using namespace std;
+
 // These #defs are for WindowXML
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3

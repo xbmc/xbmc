@@ -41,6 +41,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "epg/EpgContainer.h"
 
+using namespace std;
 using namespace PVR;
 using namespace EPG;
 

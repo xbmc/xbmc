@@ -21,6 +21,8 @@
 #include "GUIListLabel.h"
 #include <limits>
 
+using namespace std;
+
 CGUIListLabel::CGUIListLabel(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_label(posX, posY, width, height, labelInfo, alwaysScroll ? CGUILabel::OVER_FLOW_SCROLL : CGUILabel::OVER_FLOW_TRUNCATE)

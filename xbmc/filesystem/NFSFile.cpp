@@ -53,6 +53,7 @@
 #define CONTEXT_NEW      1    //new context created
 #define CONTEXT_CACHED   2    //context cached and therefore already mounted (no new mount needed)
 
+using namespace std;
 using namespace XFILE;
 
 CNfsConnection::CNfsConnection()

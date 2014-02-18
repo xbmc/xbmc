@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "karaokelyricscdg.h"
 
+using namespace std;
 
 CKaraokeLyricsCDG::CKaraokeLyricsCDG( const CStdString& cdgFile )
   : CKaraokeLyrics()

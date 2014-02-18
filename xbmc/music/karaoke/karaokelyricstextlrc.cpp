@@ -30,6 +30,8 @@
 
 #include "karaokelyricstextlrc.h"
 
+using namespace std;
+
 enum ParserState
 {
   PARSER_INIT,    // looking for time

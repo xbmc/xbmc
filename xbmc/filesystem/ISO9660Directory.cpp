@@ -26,6 +26,7 @@
 #include "URL.h"
 #include "FileItem.h"
 
+using namespace std;
 using namespace XFILE;
 
 CISO9660Directory::CISO9660Directory(void)

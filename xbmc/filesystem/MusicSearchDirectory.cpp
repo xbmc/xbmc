@@ -27,6 +27,7 @@
 #include "utils/TimeUtils.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
 using namespace XFILE;
 
 CMusicSearchDirectory::CMusicSearchDirectory(void)

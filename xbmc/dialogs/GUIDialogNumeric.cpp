@@ -38,6 +38,7 @@
 #define CONTROL_NEXT          22
 #define CONTROL_BACKSPACE     23
 
+using namespace std;
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)
     : CGUIDialog(WINDOW_DIALOG_NUMERIC, "DialogNumeric.xml")

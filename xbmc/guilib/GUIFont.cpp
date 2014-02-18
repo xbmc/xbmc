@@ -28,6 +28,8 @@
 
 #include "utils/CharsetConverter.h"
 
+using namespace std;
+
 #define ROUND(x) (float)(MathUtils::round_int(x))
 
 CScrollInfo::CScrollInfo(unsigned int wait /* = 50 */, float pos /* = 0 */,

@@ -36,6 +36,7 @@
 #include "utils/TimeUtils.h"
 #include "commons/Exception.h"
 
+using namespace std;
 using namespace XFILE;
 
 void xb_smbc_log(const char* msg)

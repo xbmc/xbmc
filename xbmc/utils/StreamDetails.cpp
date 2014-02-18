@@ -25,6 +25,8 @@
 #include "LangInfo.h"
 #include "utils/LangCodeExpander.h"
 
+using namespace std;
+
 const float VIDEOASPECT_EPSILON = 0.025f;
 
 void CStreamDetail::Archive(CArchive &ar)

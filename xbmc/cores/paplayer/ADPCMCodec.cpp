@@ -22,6 +22,8 @@
 #include "utils/log.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
+using namespace std;
+
 ADPCMCodec::ADPCMCodec()
 {
   m_CodecName = "adpcm";

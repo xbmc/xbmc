@@ -20,6 +20,7 @@
 
 #include "DirectoryNodeRoot.h"
 
+using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CDirectoryNodeRoot::CDirectoryNodeRoot(const CStdString& strName, CDirectoryNode* pParent)

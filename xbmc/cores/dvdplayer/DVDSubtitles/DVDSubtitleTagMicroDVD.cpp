@@ -23,6 +23,8 @@
 #include "utils/StdString.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 void CDVDSubtitleTagMicroDVD::ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len)
 {
   CStdString strUTF8;

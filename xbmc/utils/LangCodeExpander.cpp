@@ -24,6 +24,8 @@
 #include "utils/log.h" 
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 #define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 #define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
 

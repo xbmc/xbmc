@@ -32,6 +32,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "URL.h"
 
+using namespace std;
+
 namespace XFILE
 {
 

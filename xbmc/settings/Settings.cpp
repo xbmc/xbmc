@@ -95,6 +95,7 @@
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 #define SETTINGS_XML_ROOT   "settings"
 
+using namespace std;
 using namespace XFILE;
 
 bool AddonHasSettings(const std::string &condition, const std::string &value, const std::string &settingId)

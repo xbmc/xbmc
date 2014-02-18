@@ -34,6 +34,7 @@
 #include "WIN32Util.h"
 #endif
 
+using namespace std;
 using namespace XFILE;
 
 namespace XFILE

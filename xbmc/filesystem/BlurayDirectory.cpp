@@ -29,6 +29,8 @@
 #include "video/VideoInfoTag.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
+
 namespace XFILE
 {
 

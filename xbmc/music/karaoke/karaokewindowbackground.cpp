@@ -33,6 +33,7 @@
 #include "karaokewindowbackground.h"
 #include "karaokevideobackground.h"
 
+using namespace std;
 
 #define CONTROL_ID_VIS           1
 #define CONTROL_ID_IMG           2

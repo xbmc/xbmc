@@ -34,6 +34,8 @@
 #include "video/FFmpegVideoDecoder.h"
 #include "system.h"
 
+using namespace std;
+
 KaraokeVideoBackground::KaraokeVideoBackground()
 {
   m_decoder = new FFmpegVideoDecoder();

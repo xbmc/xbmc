@@ -21,6 +21,8 @@
 #include "system.h"
 #include "Key.h"
 
+using namespace std;
+
 CKey::CKey(void)
 {
   Reset();

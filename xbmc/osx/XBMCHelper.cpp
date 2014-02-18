@@ -38,6 +38,8 @@
 
 #include "threads/Atomics.h"
 
+using namespace std;
+
 static long sg_singleton_lock_variable = 0;
 XBMCHelper* XBMCHelper::smp_instance = 0;
 

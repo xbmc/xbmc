@@ -23,6 +23,7 @@
 #include "utils/StringUtils.h"
 #include "MusicInfoTag.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderASAP::CMusicInfoTagLoaderASAP()

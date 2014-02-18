@@ -25,6 +25,7 @@
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 
+using namespace std;
 using namespace XFILE;
 
 CSpecialProtocolDirectory::CSpecialProtocolDirectory(void)

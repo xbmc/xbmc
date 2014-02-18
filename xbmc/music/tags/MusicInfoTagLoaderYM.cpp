@@ -22,6 +22,7 @@
 #include "MusicInfoTag.h"
 #include "utils/log.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderYM::CMusicInfoTagLoaderYM(void)

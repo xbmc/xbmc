@@ -22,6 +22,8 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
+
 VGMCodec::VGMCodec()
 {
   m_CodecName = "vgm";

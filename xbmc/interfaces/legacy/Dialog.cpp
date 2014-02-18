@@ -31,6 +31,8 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 
 namespace XBMCAddon

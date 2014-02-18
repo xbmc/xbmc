@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeAlbumRecentlyPlayed::CDirectoryNodeAlbumRecentlyPlayed(const CStdString& strName, CDirectoryNode* pParent)

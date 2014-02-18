@@ -27,6 +27,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 namespace ADDON
 {
   AddonVersion::AddonVersion(const CStdString& version)

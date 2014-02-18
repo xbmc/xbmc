@@ -20,6 +20,7 @@
 
 #include "QueryParams.h"
 
+using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CQueryParams::CQueryParams()

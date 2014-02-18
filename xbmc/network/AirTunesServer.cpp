@@ -59,6 +59,7 @@
 
 #define TMP_COVERART_PATH "special://temp/airtunes_album_thumb.jpg"
 
+using namespace std;
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
 

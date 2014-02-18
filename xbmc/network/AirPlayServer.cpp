@@ -44,6 +44,7 @@
 #include "cores/IPlayer.h"
 #include "interfaces/AnnouncementManager.h"
 
+using namespace std;
 using namespace ANNOUNCEMENT;
 
 #ifdef TARGET_WINDOWS

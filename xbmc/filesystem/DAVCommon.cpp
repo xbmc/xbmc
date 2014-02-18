@@ -22,6 +22,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"   
 
+using namespace std;
 using namespace XFILE;
 
 /*

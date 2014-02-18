@@ -23,6 +23,8 @@
 #include "utils/EndianSwap.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 PCMCodec::PCMCodec()
 {
   m_CodecName = "pcm";

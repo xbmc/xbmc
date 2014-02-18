@@ -37,6 +37,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_PROFILE_IMAGE       2

@@ -28,6 +28,7 @@
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
 
+using namespace std;
 using namespace XFILE;
 
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)

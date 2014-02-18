@@ -31,6 +31,7 @@
 #include "cores/DllLoader/Win32DllLoader.h"
 #endif
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 

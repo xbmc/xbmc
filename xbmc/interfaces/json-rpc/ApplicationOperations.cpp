@@ -30,6 +30,7 @@
 #include "GitRevision.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace JSONRPC;
 
 JSONRPC_STATUS CApplicationOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

@@ -26,6 +26,7 @@
 #include "PasswordManager.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 IDirectory::IDirectory(void)

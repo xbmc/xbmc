@@ -28,6 +28,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace PLAYLIST;
 
 CPlayList* CPlayListFactory::Create(const CStdString& filename)

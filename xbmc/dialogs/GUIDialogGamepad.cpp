@@ -28,6 +28,8 @@
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
+
 CGUIDialogGamepad::CGUIDialogGamepad(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogGamepad.xml")
 {

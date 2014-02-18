@@ -35,6 +35,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
 using namespace PVR;
 
 #define CHANNELS_REFRESH_INTERVAL 5000

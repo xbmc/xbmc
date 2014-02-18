@@ -22,6 +22,7 @@
 #include "music/tags/MusicInfoTagLoaderNSF.h"
 #include "music/tags/MusicInfoTag.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 

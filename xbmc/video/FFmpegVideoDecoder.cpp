@@ -27,6 +27,7 @@
 
 #include "FFmpegVideoDecoder.h"
 
+using namespace std;
 
 FFmpegVideoDecoder::FFmpegVideoDecoder()
 {

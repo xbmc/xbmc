@@ -35,6 +35,7 @@
 #include "utils/StringUtils.h"
 #include "addons/AddonManager.h"
 
+using namespace std;
 using namespace ADDON;
 
 #define CONTROL_BTNREFRESH             2

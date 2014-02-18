@@ -36,6 +36,8 @@
 #include "settings/Settings.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
+
 /* AV_PKT_FLAG_KEY was named PKT_FLAG_KEY in older versions of libavcodec */
 #ifndef AV_PKT_FLAG_KEY
 #define AV_PKT_FLAG_KEY PKT_FLAG_KEY

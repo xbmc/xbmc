@@ -23,6 +23,8 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "music/tags/TagLoaderTagLib.h"
 
+using namespace std;
+
 FLACCodec::FLACCodec()
 {
   m_SampleRate = 0;

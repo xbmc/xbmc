@@ -38,6 +38,8 @@
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
+
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_LOAD_PLAYLIST      6

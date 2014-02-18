@@ -66,6 +66,7 @@
 #include "linux/LinuxResourceCounter.h"
 #endif
 
+using namespace std;
 using namespace PVR;
 
 #define BLUE_BAR                          0

@@ -25,6 +25,8 @@
 #include "guilib/Key.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CAutorunMediaJob::CAutorunMediaJob(const CStdString &label, const CStdString &path)
 {
   m_label = label;

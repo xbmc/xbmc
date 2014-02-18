@@ -34,6 +34,8 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 
 #include "commons/Exception.h"
 
+using namespace std;
+
 #define DLL_PROCESS_DETACH   0
 #define DLL_PROCESS_ATTACH   1
 #define DLL_THREAD_ATTACH    2

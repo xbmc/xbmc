@@ -34,6 +34,8 @@
 #include "osx/ios/IOSKeyboard.h"
 #endif
 
+using namespace std;
+
 CGUIKeyboard *CGUIKeyboardFactory::g_activedKeyboard = NULL;
 FILTERING CGUIKeyboardFactory::m_filtering = FILTERING_NONE;
 

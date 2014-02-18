@@ -36,6 +36,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
 
+using namespace std;
 using namespace PVR;
 
 CPVRRecordings::CPVRRecordings(void) :

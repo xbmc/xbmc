@@ -32,6 +32,8 @@
 
 #include <arpa/inet.h>
 
+using namespace std;
+
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 
 CUdpClient::CUdpClient(void) : CThread("UDPClient")

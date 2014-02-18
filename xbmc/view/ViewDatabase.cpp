@@ -30,6 +30,7 @@
 #include "dbwrappers/dataset.h"
 #include "SortFileItem.h"
 
+using namespace std;
 
 //********************************************************************************************************************************
 CViewDatabase::CViewDatabase(void)

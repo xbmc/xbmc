@@ -28,6 +28,8 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 
+using namespace std;
+
 CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg) : CThread("GUIDialogCache")
 {
   m_strHeader = strHeader;

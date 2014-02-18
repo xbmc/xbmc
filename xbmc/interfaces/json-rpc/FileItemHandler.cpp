@@ -43,6 +43,7 @@
 #include "epg/Epg.h"
 #include "epg/EpgContainer.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;

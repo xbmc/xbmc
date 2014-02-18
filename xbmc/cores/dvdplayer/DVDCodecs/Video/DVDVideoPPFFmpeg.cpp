@@ -21,6 +21,8 @@
 #include "DVDVideoPPFFmpeg.h"
 #include "utils/log.h"
 
+using namespace std;
+
 CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const CStdString& mType)
 {
   m_sType = mType;

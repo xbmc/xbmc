@@ -24,6 +24,8 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "music/tags/TagLoaderTagLib.h"
 
+using namespace std;
+
 #define BYTES2INT(b1,b2,b3,b4) (((b1 & 0xFF) << (3*8)) | \
 ((b2 & 0xFF) << (2*8)) | \
 ((b3 & 0xFF) << (1*8)) | \

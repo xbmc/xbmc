@@ -20,6 +20,7 @@
 
 #include "HTTPFile.h"
 
+using namespace std;
 using namespace XFILE;
 
 CHTTPFile::CHTTPFile(void)

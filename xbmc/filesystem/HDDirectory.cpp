@@ -46,6 +46,7 @@ typedef WIN32_FIND_DATA LOCAL_WIN32_FIND_DATA;
 #define LocalFindNextFile FindNextFile
 #endif
 
+using namespace std;
 using namespace AUTOPTR;
 using namespace XFILE;
 

@@ -41,6 +41,7 @@
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 

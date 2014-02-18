@@ -41,6 +41,8 @@
 #include "osx/DarwinUtils.h"
 #undef BOOL
 
+using namespace std;
+
 #import <SDL/SDL_video.h>
 #import <SDL/SDL_events.h>
 

@@ -44,6 +44,9 @@
 
 #include <libsmbclient.h>
 
+using namespace XFILE;
+using namespace std;
+
 #if defined(TARGET_DARWIN)
 #define XBMC_SMB_MOUNT_PATH "Library/Application Support/XBMC/Mounts/"
 #else
@@ -55,9 +58,6 @@ struct CachedDirEntry
   unsigned int type;
   CStdString name;
 };
-
-using namespace XFILE;
-using namespace std;
 
 CSMBDirectory::CSMBDirectory(void)
 {

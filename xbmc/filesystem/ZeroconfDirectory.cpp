@@ -28,6 +28,7 @@
 #include "Directory.h"
 #include "utils/log.h"
 
+using namespace std;
 using namespace XFILE;
 
 CZeroconfDirectory::CZeroconfDirectory()

@@ -35,6 +35,7 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 
+using namespace std;
 using namespace ADDON;
 
 namespace XFILE

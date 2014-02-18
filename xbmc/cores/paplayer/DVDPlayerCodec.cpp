@@ -34,6 +34,8 @@
 
 #include "AudioDecoder.h"
 
+using namespace std;
+
 DVDPlayerCodec::DVDPlayerCodec()
 {
   m_CodecName = "DVDPlayer";

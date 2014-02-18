@@ -26,6 +26,8 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 #define CONTROL_LABEL_SONGNUMBER    401
 #define CONTROL_LABEL_SONGNAME      402
 

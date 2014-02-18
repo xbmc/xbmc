@@ -30,6 +30,8 @@
 #include "../DllLoader/Win32DllLoader.h"
 #endif
 
+using namespace std;
+
 static const char * DEFAULT_SOUNDFONT_FILE = "special://masterprofile/timidity/soundfont.sf2";
 
 TimidityCodec::TimidityCodec()

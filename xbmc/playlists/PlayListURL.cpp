@@ -23,6 +23,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace PLAYLIST;
 using namespace XFILE;
 

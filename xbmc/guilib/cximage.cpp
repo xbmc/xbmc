@@ -21,6 +21,8 @@
 #include "cximage.h"
 #include "utils/log.h"
 
+using namespace std;
+
 CXImage::CXImage(const std::string& strMimeType): m_strMimeType(strMimeType), m_thumbnailbuffer(NULL)
 {
   m_hasAlpha = false;

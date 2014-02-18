@@ -24,6 +24,8 @@
 #include "Key.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
     : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
 {

@@ -31,6 +31,8 @@
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 
+using namespace std;
+
 namespace XBMCAddon
 {
   namespace xbmcgui

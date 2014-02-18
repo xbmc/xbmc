@@ -31,6 +31,8 @@
 #define CONTROL_BUTTON        5
 #define CONTROL_DETAILS       6
 
+using namespace std;
+
 CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {

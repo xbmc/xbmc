@@ -37,6 +37,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "guilib/Key.h"
 
+using namespace std;
 using namespace PLAYLIST;
 
 CPlayListPlayer::CPlayListPlayer(void)

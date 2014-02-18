@@ -23,6 +23,7 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 
+using namespace std;
 using namespace XFILE;
 
 DllDynamic::DllDynamic()

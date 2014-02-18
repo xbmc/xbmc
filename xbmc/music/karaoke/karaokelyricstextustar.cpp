@@ -28,6 +28,7 @@
 #include "utils/StringUtils.h"
 #include "karaokelyricstextustar.h"
 
+using namespace std;
 
 CKaraokeLyricsTextUStar::CKaraokeLyricsTextUStar( const CStdString & lyricsFile )
   : CKaraokeLyricsText()

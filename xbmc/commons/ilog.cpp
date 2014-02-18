@@ -22,6 +22,8 @@
 #include "utils/StdString.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 namespace XbmcCommons
 {
   void ILogger::Log(int loglevel, const char *format, ... )

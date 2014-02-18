@@ -23,6 +23,7 @@
 #include "FileReaderFile.h"
 #include "URL.h"
 
+using namespace std;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////

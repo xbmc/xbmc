@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include <cstdio>
 
+using namespace std;
 using namespace XFILE;
 
 ModplugCodec::ModplugCodec()

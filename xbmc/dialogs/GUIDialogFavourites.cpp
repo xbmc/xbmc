@@ -31,6 +31,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define FAVOURITES_LIST 450

@@ -27,6 +27,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
 
+using namespace std;
 using namespace PLAYLIST;
 using namespace XFILE;
 

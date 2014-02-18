@@ -40,6 +40,8 @@
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
 
+using namespace std;
+
 namespace BCM
 {
   #if defined(TARGET_WINDOWS)
