@@ -2217,6 +2217,9 @@ int CVideoDatabase::UpdateDetailsForMovie(const CStdString& strFilenameAndPath, 
   if (idMovie < 0)
     return idMovie;
 
+  if (updatedDetails.size() == 0)
+    return idMovie;
+
   vector<VIDEODB_IDS> simpleUpdates;
   vector<std::string> complexUpdates;
   if (!PendingUpdates(updatedDetails, simpleUpdates, complexUpdates))
