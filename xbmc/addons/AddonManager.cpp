@@ -605,10 +605,10 @@ bool CAddonMgr::IsAddonDisabled(const std::string& ID)
   return ret;
 }
 
-const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
+string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
 {
   if (!root)
-    return NULL;
+    return StringUtils::EmptyString;
 
   const cp_cfg_element_t *eng = NULL;
   for (unsigned int i = 0; i < root->num_children; i++)
@@ -618,12 +618,12 @@ const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
     { // see if we have a "lang" attribute
       const char *lang = m_cpluff->lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
       if (lang && 0 == strcmp(lang,g_langInfo.GetLanguageLocale(true).c_str()))
-        return child.value;
+        return child.value ? child.value : StringUtils::EmptyString;
       if (!lang || 0 == strcmp(lang, "en"))
         eng = &child;
     }
   }
-  return (eng) ? eng->value : NULL;
+  return (eng && eng->value) ? eng->value : StringUtils::EmptyString;
 }
 
 AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)

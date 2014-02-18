@@ -110,7 +110,7 @@ namespace ADDON
     bool HasOutdatedAddons(bool enabled = true);
     std::string GetString(const std::string &id, const int number);
 
-    const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
+    std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
     void FindAddons();
     void RemoveAddon(const std::string& ID);
