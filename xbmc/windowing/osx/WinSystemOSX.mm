@@ -798,12 +798,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   {
     if (m_can_display_switch)
     {
-      // send pre-configuration change now and do not
-      //  wait for switch videomode callback. This gives just
-      //  a little more advanced notice of the display pre-change.
-      if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
-        CheckDisplayChanging(kCGDisplayBeginConfigurationFlag);
-
       // switch videomode
       SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
       m_lastDisplayNr = res.iScreen;
