@@ -107,7 +107,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     {
       if (bCurrentFileChanged)
       {
-        OutputDebugString("Track split over multiple files, unsupported ('" + strFile + "')\n");
+        CLog::Log(LOGDEBUG, "Track split over multiple files, unsupported ('%s')\n", strFile.c_str());
         return false;
       }
 
@@ -115,7 +115,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       time = ExtractTimeFromIndex(strLine);
       if (time == -1)
       { // Error!
-        OutputDebugString("Mangled Time in INDEX 0x tag in CUE file!\n");
+        CLog::Log(LOGDEBUG, "Mangled Time in INDEX 0x tag in CUE file!\n");
         return false;
       }
       if (m_iTotalTracks > 0)  // Set the end time of the last track
