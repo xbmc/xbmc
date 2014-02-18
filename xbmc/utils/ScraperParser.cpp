@@ -538,32 +538,32 @@ void CScraperParser::Clean(CStdString& strDirty)
   }
 }
 
-void CScraperParser::ConvertJSON(CStdString &string)
+void CScraperParser::ConvertJSON(CStdString &source)
 {
   CRegExp reg;
   reg.RegComp("\\\\u([0-f]{4})");
-  while (reg.RegFind(string.c_str()) > -1)
+  while (reg.RegFind(source.c_str()) > -1)
   {
     int pos = reg.GetSubStart(1);
     std::string szReplace(reg.GetMatch(1));
 
-    CStdString replace = StringUtils::Format("&#x%s;", szReplace.c_str());
-    string.replace(string.begin()+pos-2, string.begin()+pos+4, replace);
+    string replace = StringUtils::Format("&#x%s;", szReplace.c_str());
+    source.replace(source.begin()+pos-2, source.begin()+pos+4, replace);
   }
 
   CRegExp reg2;
   reg2.RegComp("\\\\x([0-9]{2})([^\\\\]+;)");
-  while (reg2.RegFind(string.c_str()) > -1)
+  while (reg2.RegFind(source.c_str()) > -1)
   {
     int pos1 = reg2.GetSubStart(1);
     int pos2 = reg2.GetSubStart(2);
     std::string szHexValue(reg2.GetMatch(1));
 
-    CStdString replace = StringUtils::Format("%c", strtol(szHexValue.c_str(), NULL, 16));
-    string.replace(string.begin()+pos1-2, string.begin()+pos2+reg2.GetSubLength(2), replace);
+    string replace = StringUtils::Format("%c", strtol(szHexValue.c_str(), NULL, 16));
+    source.replace(source.begin()+pos1-2, source.begin()+pos2+reg2.GetSubLength(2), replace);
   }
 
-  StringUtils::Replace(string, "\\\"","\"");
+  StringUtils::Replace(source, "\\\"","\"");
 }
 
 void CScraperParser::ClearBuffers()

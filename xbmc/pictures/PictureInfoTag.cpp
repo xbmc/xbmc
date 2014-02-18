@@ -276,14 +276,14 @@ void CPictureInfoTag::ToSortable(SortItem& sortable, Field field) const
     sortable[FieldDateTaken] = m_dateTimeTaken.GetAsDBDateTime();
 }
 
-void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t length)
+void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *dest, size_t length)
 {
   CStdString temp;
   ar >> temp;
   length = min((size_t)temp.size(), length - 1);
   if (!temp.empty())
-    memcpy(string, temp.c_str(), length);
-  string[length] = 0;
+    memcpy(dest, temp.c_str(), length);
+  dest[length] = 0;
 }
 
 const CStdString CPictureInfoTag::GetInfo(int info) const

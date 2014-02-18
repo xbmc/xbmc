@@ -75,7 +75,7 @@ private:
   void ParseXSLT(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend);
   void ParseNext(TiXmlElement* element);
   void Clean(CStdString& strDirty);
-  void ConvertJSON(CStdString &string);
+  void ConvertJSON(CStdString &source);
   void ClearBuffers();
   void GetBufferParams(bool* result, const char* attribute, bool defvalue);
   void InsertToken(CStdString& strOutput, int buf, const char* token);

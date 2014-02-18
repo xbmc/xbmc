@@ -1215,43 +1215,43 @@ int CBuiltins::Execute(const CStdString& execString)
            StringUtils::EqualsNoCase(execute, "skin.setpath") || StringUtils::EqualsNoCase(execute, "skin.setnumeric") || StringUtils::EqualsNoCase(execute, "skin.setlargeimage"))
   {
     // break the parameter up if necessary
-    int string = 0;
+    int stringno = 0;
     if (params.size() > 1)
     {
-      string = CSkinSettings::Get().TranslateString(params[0]);
+      stringno = CSkinSettings::Get().TranslateString(params[0]);
       if (StringUtils::EqualsNoCase(execute, "skin.setstring"))
       {
-        CSkinSettings::Get().SetString(string, params[1]);
+        CSkinSettings::Get().SetString(stringno, params[1]);
         CSettings::Get().Save();
         return 0;
       }
     }
     else
-      string = CSkinSettings::Get().TranslateString(params[0]);
-    CStdString value = CSkinSettings::Get().GetString(string);
+      stringno = CSkinSettings::Get().TranslateString(params[0]);
+    CStdString value = CSkinSettings::Get().GetString(stringno);
     VECSOURCES localShares;
     g_mediaManager.GetLocalDrives(localShares);
     if (StringUtils::EqualsNoCase(execute, "skin.setstring"))
     {
       if (CGUIKeyboardFactory::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
     else if (StringUtils::EqualsNoCase(execute, "skin.setnumeric"))
     {
       if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(611)))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
     else if (StringUtils::EqualsNoCase(execute, "skin.setimage"))
     {
       if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
     else if (StringUtils::EqualsNoCase(execute, "skin.setlargeimage"))
     {
       VECSOURCES *shares = CMediaSourceSettings::Get().GetSources("pictures");
       if (!shares) shares = &localShares;
       if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
     else if (StringUtils::EqualsNoCase(execute, "skin.setfile"))
     {
@@ -1278,9 +1278,9 @@ int CBuiltins::Execute(const CStdString& execString)
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {
           if (StringUtils::StartsWithNoCase(replace, "addons://"))
-            CSkinSettings::Get().SetString(string, URIUtils::GetFileName(replace));
+            CSkinSettings::Get().SetString(stringno, URIUtils::GetFileName(replace));
           else
-            CSkinSettings::Get().SetString(string, replace);
+            CSkinSettings::Get().SetString(stringno, replace);
         }
       }
       else 
@@ -1299,7 +1299,7 @@ int CBuiltins::Execute(const CStdString& execString)
           }
         }
         if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
-          CSkinSettings::Get().SetString(string, value);
+          CSkinSettings::Get().SetString(stringno, value);
       }
     }
     else // StringUtils::EqualsNoCase(execute, "skin.setpath"))
@@ -1319,13 +1319,13 @@ int CBuiltins::Execute(const CStdString& execString)
         }
       }
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
     CSettings::Get().Save();
   }
   else if (StringUtils::EqualsNoCase(execute, "skin.setaddon") && params.size() > 1)
   {
-    int string = CSkinSettings::Get().TranslateString(params[0]);
+    int stringno = CSkinSettings::Get().TranslateString(params[0]);
     vector<ADDON::TYPE> types;
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
@@ -1336,7 +1336,7 @@ int CBuiltins::Execute(const CStdString& execString)
     CStdString result;
     if (types.size() > 0 && CGUIWindowAddonBrowser::SelectAddonID(types, result, true) == 1)
     {
-      CSkinSettings::Get().SetString(string, result);
+      CSkinSettings::Get().SetString(stringno, result);
       CSettings::Get().Save();
     }
   }

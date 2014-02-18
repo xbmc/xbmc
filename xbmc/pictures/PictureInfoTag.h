@@ -115,7 +115,7 @@ public:
    */
   const CDateTime& GetDateTimeTaken() const;
 private:
-  void GetStringFromArchive(CArchive &ar, char *string, size_t length);
+  void GetStringFromArchive(CArchive &ar, char *dest, size_t length);
   ExifInfo_t m_exifInfo;
   IPTCInfo_t m_iptcInfo;
   bool       m_isLoaded;             // Set to true if metadata has been loaded from the picture file successfully
