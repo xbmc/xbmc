@@ -478,7 +478,7 @@ void CDVDVideoCodecIMX::Dispose(void)
   // Invalidate output buffers to prevent the renderer from mapping this memory
   for (i=0; i<m_vpuFrameBufferNum; i++)
   {
-    m_outputBuffers[i]->Invalidate();
+    m_outputBuffers[i]->Invalidate(&m_vpuHandle);
     SAFE_RELEASE(m_outputBuffers[i]);
   }
 
@@ -801,8 +801,8 @@ void CDVDVideoCodecIMX::Reset()
   m_tsSyncRequired = true;
 
   /* Invalidate all buffers */
-  for(int i = 0; i < m_vpuFrameBufferNum; i++)
-    m_outputBuffers[i]->Invalidate();
+  for(i = 0; i < m_vpuFrameBufferNum; i++)
+    m_outputBuffers[i]->Invalidate(&m_vpuHandle);
 
   /* Flush VPU */
   ret = VPU_DecFlushAll(m_vpuHandle);
@@ -923,7 +923,8 @@ long CDVDVideoCodecIMXBuffer::Release()
   {
     // If count drops to 1 then the only reference is being held by the codec
     // that it can be released in the next Decode call.
-    m_rendered = true;
+    if(m_frameBuffer != NULL)
+      m_rendered = true;
 #ifdef TRACE_FRAMES
     CLog::Log(LOGDEBUG, "R  %02d\n", m_idx);
 #endif
@@ -946,9 +947,19 @@ bool CDVDVideoCodecIMXBuffer::IsValid()
   return m_frameBuffer != NULL;
 }
 
-void CDVDVideoCodecIMXBuffer::Invalidate()
+void CDVDVideoCodecIMXBuffer::Invalidate(VpuDecHandle *handle)
 {
   CSingleLock lock(CDVDVideoCodecIMX::m_codecBufferLock);
+#ifdef TRACE_FRAMES
+  CLog::Log(LOGDEBUG, "I  %02d\n", m_idx);
+#endif
+  if((m_frameBuffer != NULL) && *handle)
+  {
+    VpuDecRetCode ret = VPU_DecOutFrameDisplayed(*handle, m_frameBuffer);
+    if(ret != VPU_DEC_RET_SUCCESS)
+      CLog::Log(LOGERROR, "%s: vpu clear frame display failure: ret=%d \r\n",__FUNCTION__,ret);
+  }
+
   m_frameBuffer = NULL;
   m_rendered = false;
 }
@@ -971,6 +982,7 @@ VpuDecRetCode CDVDVideoCodecIMXBuffer::ClearDisplay(VpuDecHandle *handle)
   CLog::Log(LOGDEBUG, "-  %02d\n", m_idx);
 #endif
   m_rendered = false;
+  m_frameBuffer = NULL;
   return ret;
 }
 
