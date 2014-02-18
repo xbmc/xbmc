@@ -3906,6 +3906,11 @@
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
 		AE4E87A617354C4A00D15206 /* XSLTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSLTUtils.h; sourceTree = "<group>"; };
+		AE54006E18B30E9500439852 /* IDirtyRegionSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDirtyRegionSolver.h; sourceTree = "<group>"; };
+		AE54006F18B30E9500439852 /* IGUIContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IGUIContainer.h; sourceTree = "<group>"; };
+		AE54007018B30E9500439852 /* IRenderingCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRenderingCallback.h; sourceTree = "<group>"; };
+		AE54007118B311A100439852 /* GUIDialogAccessPoints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogAccessPoints.h; sourceTree = "<group>"; };
+		AE54007218B3128800439852 /* MythSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MythSession.h; sourceTree = "<group>"; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
 		AE84CB5C15A5B8BA00A3810E /* TagLibVFSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLibVFSStream.h; sourceTree = "<group>"; };
 		AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxBXA.cpp; sourceTree = "<group>"; };
@@ -5963,10 +5968,13 @@
 				18B7C7991294222E009E7A26 /* GUIWrappingListContainer.cpp */,
 				18B7C73F1294222D009E7A26 /* GUIWrappingListContainer.h */,
 				18B7C7401294222D009E7A26 /* IAudioDeviceChangedCallback.h */,
+				AE54006E18B30E9500439852 /* IDirtyRegionSolver.h */,
+				AE54006F18B30E9500439852 /* IGUIContainer.h */,
 				DF404A3616B9896C00D8023E /* iimage.h */,
 				DF404A3716B9896C00D8023E /* imagefactory.cpp */,
 				DF404A3816B9896C00D8023E /* imagefactory.h */,
 				18B7C7411294222D009E7A26 /* IMsgTargetCallback.h */,
+				AE54007018B30E9500439852 /* IRenderingCallback.h */,
 				18B7C79A1294222E009E7A26 /* IWindowManagerCallback.cpp */,
 				18B7C7421294222D009E7A26 /* IWindowManagerCallback.h */,
 				32C631261423A90F00F18420 /* JpegIO.cpp */,
@@ -6392,6 +6400,7 @@
 				E3E91FFB0D8C61DF002BF43D /* EventServer.cpp */,
 				6E97BDC10DA2B620003A2A89 /* EventServer.h */,
 				E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */,
+				AE54007118B311A100439852 /* GUIDialogAccessPoints.h */,
 				E38E17C00D25F9FA00618676 /* GUIDialogNetworkSetup.cpp */,
 				E38E17C10D25F9FA00618676 /* GUIDialogNetworkSetup.h */,
 				E38E1E6B0D25F9FD00618676 /* Network.cpp */,
@@ -7976,6 +7985,7 @@
 				810C9FA70D67D1FB0095F5DD /* MythFile.cpp */,
 				810C9FA80D67D1FB0095F5DD /* MythFile.h */,
 				E3BBB7980D7EA78A00CAAFD3 /* MythSession.cpp */,
+				AE54007218B3128800439852 /* MythSession.h */,
 				DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */,
 				DF0DF15A13A3ADA7008ED511 /* NFSDirectory.h */,
 				DF93D67D1444A8B0007C6459 /* NFSFile.cpp */,
