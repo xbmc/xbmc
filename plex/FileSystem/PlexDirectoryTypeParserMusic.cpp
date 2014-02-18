@@ -142,7 +142,10 @@ CPlexDirectoryTypeParserTrack::Process(CFileItem &item, CFileItem &mediaContaine
   if (item.m_mediaItems.size() > 0)
   {
     CFileItemPtr firstMedia = item.m_mediaItems[0];
-    item.m_mapProperties.insert(firstMedia->m_mapProperties.begin(), firstMedia->m_mapProperties.end());
+    const boost::unordered_map<CStdString, CVariant> pMap = firstMedia->GetAllProperties();
+    std::pair<CStdString, CVariant> p;
+    BOOST_FOREACH(p, pMap)
+      item.SetProperty(p.first, p.second);
 
     if (firstMedia->m_mediaParts.size() > 0)
       song.strFileName = firstMedia->m_mediaParts[0]->GetPath();

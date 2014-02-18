@@ -39,15 +39,7 @@ class CArchive;
 class CVariant;
 
 /* PLEX */
-struct icompare
-{
-  bool operator()(const CStdString &s1, const CStdString &s2) const
-  {
-    return s1.CompareNoCase(s2) < 0;
-  }
-};
-
-typedef std::map<CStdString, CVariant, icompare> PropertyMap;
+#include <boost/unordered_map.hpp>
 /* END PLEX */
 
 /*!
@@ -195,8 +187,8 @@ public:
   void SetArt(const std::string &type, int index, const std::string &url);
   std::string GetArt(const std::string &type, int index) const;
   bool HasArt(const std::string &type, int index) const;
-
   void RemoveArt(const std::string &type);
+  const boost::unordered_map<CStdString, CVariant>& GetAllProperties() const { return m_mapProperties; }
   /* END PLEX */
 
 protected:
@@ -208,16 +200,17 @@ protected:
   CGUIListItemLayout *m_focusedLayout;
   bool m_bSelected;     // item is selected or not
 
-  /* PLEX */
-public:
+#ifndef __PLEX__
+  struct icompare
+  {
+    bool operator()(const CStdString &s1, const CStdString &s2) const;
+  };
+
+  typedef std::map<CStdString, CVariant, icompare> PropertyMap;
+#else
+  typedef boost::unordered_map<CStdString, CVariant> PropertyMap;
+#endif
   PropertyMap m_mapProperties;
-
-  PropertyMap& GetPropertyDict() { return m_mapProperties; }
-
-protected:
-  CStdString m_strGrandparentThumbnailImage;
-  std::vector<CStdString> m_strThumbnailImageList;
-  /* END PLEX */
 
 private:
   CStdStringW m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
