@@ -475,6 +475,13 @@ void CDVDVideoCodecIMX::Dispose(void)
   bool VPU_loaded = m_vpuHandle;
   int i;
 
+  // Invalidate output buffers to prevent the renderer from mapping this memory
+  for (i=0; i<m_vpuFrameBufferNum; i++)
+  {
+    m_outputBuffers[i]->Invalidate();
+    SAFE_RELEASE(m_outputBuffers[i]);
+  }
+
   if (m_vpuHandle)
   {
     ret = VPU_DecFlushAll(m_vpuHandle);
@@ -488,13 +495,6 @@ void CDVDVideoCodecIMX::Dispose(void)
       CLog::Log(LOGERROR, "%s - VPU close failed with error code %d.\n", __FUNCTION__, ret);
     }
     m_vpuHandle = 0;
-  }
-
-  // Invalidate output buffers to prevent the renderer from mapping this memory
-  for (i=0; i<m_vpuFrameBufferNum; i++)
-  {
-    m_outputBuffers[i]->Invalidate();
-    SAFE_RELEASE(m_outputBuffers[i]);
   }
 
   // Clear memory

@@ -1629,6 +1629,9 @@ void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
 #endif
 
   YUVPLANE &plane = m_buffers[index].fields[field][0];
+  CDVDVideoCodecBuffer* codecinfo = m_buffers[index].codecinfo;
+
+  if((codecinfo == NULL) || !codecinfo->IsValid()) return;
 
   glDisable(GL_DEPTH_TEST);
 
