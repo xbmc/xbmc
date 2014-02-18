@@ -97,7 +97,7 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
 
   if (!httpSuccess)
   {
-    CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory failed to fetch data from %s: %ld", m_url.Get().c_str(), m_file.GetLastHTTPResponseCode());
+    CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory failed to fetch data from %s: %ld", m_url.Get().c_str(), m_file.GetLastHTTPResponseCode());
     if (m_file.GetLastHTTPResponseCode() == 500)
     {
       /* internal server error, we should handle this .. */
@@ -105,7 +105,7 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return false;
   }
 
-  CLog::Log(LOGERROR, "CPlexDirectory::GetDirectory::Timing took %f seconds to download XML document", httpTimer.GetElapsedSeconds());
+  CLog::Log(LOGDEBUG, "CPlexDirectory::GetDirectory::Timing took %f seconds to download XML document", httpTimer.GetElapsedSeconds());
 
   {
 
