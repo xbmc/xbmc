@@ -793,12 +793,16 @@ out_error:
 
 void CDVDVideoCodecIMX::Reset()
 {
-  int ret;
+  int ret, i;
 
   CLog::Log(LOGDEBUG, "%s - called\n", __FUNCTION__);
 
   /* We have to resync timestamp manager */
   m_tsSyncRequired = true;
+
+  /* Invalidate all buffers */
+  for(int i = 0; i < m_vpuFrameBufferNum; i++)
+    m_outputBuffers[i]->Invalidate();
 
   /* Flush VPU */
   ret = VPU_DecFlushAll(m_vpuHandle);
@@ -946,6 +950,7 @@ void CDVDVideoCodecIMXBuffer::Invalidate()
 {
   CSingleLock lock(CDVDVideoCodecIMX::m_codecBufferLock);
   m_frameBuffer = NULL;
+  m_rendered = false;
 }
 
 bool CDVDVideoCodecIMXBuffer::Rendered()
