@@ -469,6 +469,7 @@ void CGUIViewState::SetSortOrder(SortOrder sortOrder)
 
 void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
 { // get our view state from the db
+#ifndef __PLEX__
   CViewDatabase db;
   if (db.Open())
   {
@@ -482,10 +483,12 @@ void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
     }
     db.Close();
   }
+#endif
 }
 
 void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState)
 {
+#ifndef __PLEX__
   CViewDatabase db;
   if (db.Open())
   {
@@ -497,6 +500,7 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
     if (viewState)
       g_settings.Save();
   }
+#endif
 }
 
 void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks)

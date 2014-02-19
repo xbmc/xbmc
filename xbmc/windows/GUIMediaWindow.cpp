@@ -81,6 +81,7 @@
 #include "filesystem/CurlFile.h"
 #include "Client/PlexServerManager.h"
 #include "plex/PlexApplication.h"
+#include "ViewDatabase.h"
 /* END PLEX */
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -489,13 +490,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         m_guiState->SaveViewAsControl(viewMode);
 #endif
 
-      /* PLEX */
-      g_plexApplication.mediaServerClient->SetViewMode(CFileItemPtr(new CFileItem(*m_vecItems)), viewMode);
-      CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage updating viewMode to %d", viewMode);
-      m_vecItems->SetProperty("viewMode", viewMode);
-      g_directoryCache.ClearDirectory(m_vecItems->GetPath());
-      /* END PLEX */
-
       UpdateButtons();
       return true;
     }
@@ -591,22 +585,7 @@ void CGUIMediaWindow::UpdateButtons()
     }
 
     // Update list/thumb control
-#ifndef __PLEX__
     m_viewControl.SetCurrentView(m_guiState->GetViewAsControl());
-#endif
-    /* PLEX */
-    // If we have a default view mode, use that instead
-    if (CurrentDirectory().HasProperty("viewMode"))
-    {
-      CLog::Log(LOGDEBUG, "CGUIMediaWindow::UpdateButtons setting viewMode to %lld", CurrentDirectory().GetProperty("viewMode").asInteger());
-      m_viewControl.SetCurrentView(CurrentDirectory().GetProperty("viewMode").asInteger());
-    }
-
-    // Otherwise, use the global default
-    else
-      m_viewControl.SetCurrentView(DEFAULT_MODE_FOR_DISABLED_VIEWS);
-
-    /* END PLEX */
 
     // Update sort by button
     if (m_guiState->GetSortMethod()==SORT_METHOD_NONE)

@@ -68,6 +68,7 @@ class CGUIPlexMediaWindow : public CGUIMediaWindow, public IJobCallback, public 
     static CURL GetRealDirectoryUrl(const CStdString &strDirectory);
 
     void CheckPlexFilters(CFileItemList &list);
+    void UpdateButtons();
 
   private:
     void AddFilters();

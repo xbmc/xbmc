@@ -38,6 +38,8 @@
 #include "Client/PlexServerDataLoader.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "Client/PlexExtraInfoLoader.h"
+#include "ViewDatabase.h"
+#include "ViewState.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
@@ -155,7 +157,33 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     {
       InsertPage((CFileItemList*)message.GetPointer());
     }
-      
+
+    case GUI_MSG_CHANGE_VIEW_MODE:
+    {
+      int viewMode = 0;
+      if (message.GetParam1())  // we have an id
+        viewMode = m_viewControl.GetViewModeByID(message.GetParam1());
+      else if (message.GetParam2())
+        viewMode = m_viewControl.GetNextViewMode((int)message.GetParam2());
+
+      g_plexApplication.mediaServerClient->SetViewMode(CFileItemPtr(new CFileItem(*m_vecItems)), viewMode);
+      CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnMessage updating viewMode to %d", viewMode);
+      m_vecItems->SetProperty("viewMode", viewMode);
+      g_directoryCache.ClearDirectory(m_vecItems->GetPath());
+
+      CViewDatabase db;
+      if (db.Open())
+      {
+        CViewState state;
+        state.m_viewMode = viewMode;
+
+        db.SetViewState(m_sectionRoot.Get(), GetID(), state, g_guiSettings.GetString("lookandfeel.skin"));
+        db.Close();
+      }
+
+      UpdateButtons();
+      break;
+    }
   }
 
   return ret;
@@ -975,6 +1003,29 @@ void CGUIPlexMediaWindow::CheckPlexFilters(CFileItemList &list)
       list.SetProperty("PlexPreplay", "yes");
     }
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::UpdateButtons()
+{
+  CViewDatabase db;
+  int viewMode = -1;
+
+  if (db.Open())
+  {
+    CViewState state;
+    if (db.GetViewState(m_sectionRoot.Get(), GetID(), state, g_guiSettings.GetString("lookandfeel.skin")))
+    {
+      CLog::Log(LOGDEBUG, "GUIPlexMediaWindow::UpdateButtons got viewMode from db: %d", state.m_viewMode);
+      viewMode = state.m_viewMode;
+    }
+  }
+
+  if (viewMode == -1 && CurrentDirectory().HasProperty("viewMode"))
+    viewMode = (int)CurrentDirectory().GetProperty("viewMode").asInteger();
+
+  CLog::Log(LOGDEBUG, "CGUIMediaWindow::UpdateButtons setting viewMode to %d", viewMode);
+  m_viewControl.SetCurrentView(viewMode);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
