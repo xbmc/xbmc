@@ -4,7 +4,6 @@
 #include "dbwrappers/dataset.h"
 #include "log.h"
 
-#include "ConvUtils.h"
 #include "StringUtils.h"
 #include <boost/foreach.hpp>
 
@@ -24,8 +23,7 @@ bool CPlexServerCacheDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to create tables:%u",
-              __FUNCTION__, GetLastError());
+    CLog::Log(LOGERROR, "%s unable to create tables", __FUNCTION__);
     return false;
   }
 
@@ -44,7 +42,7 @@ bool CPlexServerCacheDatabase::clearTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CPlexServerCacheDatabase::clearTables failed to empty out the tables: %u", GetLastError());
+    CLog::Log(LOGERROR, "CPlexServerCacheDatabase::clearTables failed to empty out the tables");
     return false;
   }
 
@@ -72,7 +70,7 @@ bool CPlexServerCacheDatabase::storeServer(const CPlexServerPtr &server)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CPlexServerCacheDatabase:storeServer failed to store server %s: %u", server->GetName().c_str(), GetLastError());
+    CLog::Log(LOGERROR, "CPlexServerCacheDatabase:storeServer failed to store server %s", server->GetName().c_str());
     return false;
   }
 
@@ -100,7 +98,7 @@ bool CPlexServerCacheDatabase::storeConnection(const CStdString &uuid, const CPl
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "CPlexServerCacheDatabase::storeConnection failed to store connection %s: %u", connection->GetAddress().Get().c_str(), GetLastError());
+    CLog::Log(LOGERROR, "CPlexServerCacheDatabase::storeConnection failed to store connection %s", connection->GetAddress().Get().c_str());
     return false;
   }
 
