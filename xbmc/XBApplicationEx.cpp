@@ -82,7 +82,13 @@ INT CXBApplicationEx::Run()
 
   unsigned int lastFrameTime = 0;
   unsigned int frameTime = 0;
+  /* PLEX */
+#if defined(TARGET_RASPBERRY_PI) && defined(__PLEX__)
+  const unsigned int noRenderFrameTime = 66;  // Simulates ~15fps
+#else
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
+#endif
+  /* END PLEX */
 
 #ifdef XBMC_TRACK_EXCEPTIONS
   BYTE processExceptionCount = 0;
