@@ -109,6 +109,7 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
       if (reMount.RegFind(line) != -1)
       {
         bool accepted = false;
+        std::string device   = reMount.GetReplaceString("\\1");
         std::string mountStr = reMount.GetReplaceString("\\2");
         std::string fsStr    = reMount.GetReplaceString("\\3");
         const char* mount = mountStr.c_str();
@@ -123,8 +124,9 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
             || strcmp(fs, "fusefs") == 0 || strcmp(fs, "hfs") == 0)
           accepted = true;
 
-        // Ignore everything but usb
-        if (!StringUtils::StartsWith(mountStr, "/mnt/usb"))
+        // Ignore sdcards
+        if (!StringUtils::StartsWith(device, "/dev/block/vold/") ||
+            mountStr.find("sdcard") != std::string::npos)
           accepted = false;
 
         if(accepted)
