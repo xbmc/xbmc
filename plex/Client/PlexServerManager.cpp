@@ -16,6 +16,7 @@
 #include "settings/GUISettings.h"
 
 #include "PlexApplication.h"
+#include "PlexServerCacheDatabase.h"
 
 using namespace std;
 
@@ -323,65 +324,34 @@ CPlexServerManager::NotifyAboutServer(CPlexServerPtr server, bool added)
 
 void CPlexServerManager::save()
 {
-  CXBMCTinyXML xml;
-  TiXmlElement srvmgr("serverManager");
-  srvmgr.SetAttribute("version", PLEX_SERVER_MANAGER_XML_FORMAT_VERSION);
-
-  if (m_bestServer)
-    srvmgr.SetAttribute("bestServer", m_bestServer->GetUUID().c_str());
-
-  TiXmlNode *root = xml.InsertEndChild(srvmgr);
-
   CSingleLock lk(m_serverManagerLock);
-
-  BOOST_FOREACH(PlexServerPair p, m_serverMap)
+  CPlexServerCacheDatabase db;
+  if (db.Open())
   {
-    p.second->save(root);
+    db.cacheServers();
+    db.Close();
   }
-
-  xml.SaveFile(PLEX_SERVER_MANAGER_XML_FILE);
 }
 
 void CPlexServerManager::load()
 {
-  /* now load our saved state */
-  if (XFILE::CFile::Exists(PLEX_SERVER_MANAGER_XML_FILE))
+  CSingleLock lk(m_serverManagerLock);
+
+  CPlexServerCacheDatabase db;
+  if (db.Open())
   {
-    CXBMCTinyXML doc;
-    if (doc.LoadFile(PLEX_SERVER_MANAGER_XML_FILE))
+    PlexServerList list;
+    if (db.getCachedServers(list))
     {
-      TiXmlElement* element = doc.FirstChildElement();
-      if (!element)
-        return;
-
-      std::string bestServer;
-      element->QueryStringAttribute("bestServer", &bestServer);
-
-      element = element->FirstChildElement();
-
-      while (element)
+      BOOST_FOREACH(CPlexServerPtr server, list)
       {
-        CPlexServerPtr server = CPlexServer::load(element);
-        if (server)
-        {
-          CLog::Log(LOGDEBUG, "CPlexServerManager::load got server %s from xml file", server->GetName().c_str());
-          m_serverMap[server->GetUUID()] = server;
-          NotifyAboutServer(server);
-        }
-
-        element = element->NextSiblingElement();
+        CLog::Log(LOGDEBUG, "CPlexServerManager::load found cached server %s", server->GetName().c_str());
+        m_serverMap[server->GetUUID()] = server;
       }
-
-      if (!bestServer.empty())
-        SetBestServer(FindByUUID(bestServer), true);
     }
-    else
-    {
-      CLog::Log(LOGWARNING, "CPlexServerManager::load failed to open %s: %s", PLEX_SERVER_MANAGER_XML_FILE, doc.ErrorDesc());
-    }
-
-    CLog::Log(LOGDEBUG, "CPlexServerManager::load Got %ld servers from plexservermanager.xml", m_serverMap.size());
+    db.Close();
   }
+  lk.unlock();
 
   m_manualServerManager.checkManualServersAsync();
 }
@@ -390,6 +360,8 @@ void CPlexServerManager::load()
 void CPlexServerManager::Stop()
 {
   m_stopped = true;
+  save();
+
   if (IsRunningReachabilityTests())
   {
     if (!m_reachabilityTestEvent.WaitMSec(10 * 1000))

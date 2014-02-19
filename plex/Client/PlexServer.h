@@ -77,6 +77,14 @@ public:
   void AddConnection(CPlexConnectionPtr connection);
 
   void SetOwner(const CStdString &owner) { m_owner = owner; }
+  void SetVersion(const CStdString& version) { m_version = version; }
+  void SetSupportsVideoTranscoding(bool support) { m_supportsVideoTranscoding = support; }
+  void SetSupportsAudioTranscoding(bool support) { m_supportsAudioTranscoding = support; }
+  void SetSupportsDeletion(bool support) { m_supportsDeletion = support; }
+
+  void SetTranscoderQualities(std::vector<std::string>& qualties) { m_transcoderQualities = qualties; }
+  void SetTranscoderBitrates(std::vector<std::string>& bitrates) { m_transcoderQualities = bitrates; }
+  void SetTranscoderResolutions(std::vector<std::string>& resolutions) { m_transcoderResolutions = resolutions; }
   
   std::vector<std::string> GetTranscoderQualities() const { return m_transcoderQualities; }
   std::vector<std::string> GetTranscoderBitrates() const { return m_transcoderBitrates; }
@@ -88,10 +96,7 @@ public:
   
   bool HasAuthToken() const;
   std::string GetAnyToken() const;
-  
-  void save(TiXmlNode* parent);
-  static CPlexServerPtr load(TiXmlElement* element);
-  
+    
   void SetActiveConnection(CPlexConnectionPtr connection) { m_activeConnection = connection; }
 
 private:

@@ -29,6 +29,10 @@
 #include "epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
 
+/* PLEX */
+#include "plex/Client/PlexServerCacheDatabase.h"
+/* END PLEX */
+
 using namespace std;
 using namespace EPG;
 using namespace PVR;
@@ -51,6 +55,11 @@ void CDatabaseManager::Initialize(bool addonsOnly)
 {
   Deinitialize();
   { CAddonDatabase db; UpdateDatabase(db); }
+
+  /* PLEX */
+  { CPlexServerCacheDatabase db; UpdateDatabase(db); }
+  /* END PLEX */
+
   if (addonsOnly)
     return;
   CLog::Log(LOGDEBUG, "%s, updating databases...", __FUNCTION__);
@@ -63,6 +72,7 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   { CVideoDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseVideo); }
   { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
   { CEpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
+
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
 }
 

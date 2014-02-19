@@ -83,9 +83,6 @@ public:
 
   int m_type;
 
-  void save(TiXmlNode* server);
-  static CPlexConnectionPtr load(TiXmlElement* element);
-
   XFILE::CCurlFile m_http;
 
 private:
