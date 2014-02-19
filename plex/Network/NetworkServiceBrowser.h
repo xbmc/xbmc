@@ -121,7 +121,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
       if (xface.name()[0] != 'v')
       {
         string broadcast = xface.broadcast();
-        dprintf("NetworkService: Browsing on interface %s on broadcast address %s.", xface.address().c_str(), broadcast.c_str());
+        dprintf("NetworkService: Browsing on interface %s on broadcast address %s (index: %d)", xface.address().c_str(), broadcast.c_str(), interfaceIndex);
         
         // Create the new socket, and bind to any port. It doesn't matter, we just need to be able to receive
         // a UDP reply packet.
@@ -240,7 +240,7 @@ class NetworkServiceBrowser : public NetworkServiceBase
           if (oldService)
           {
             if (m_endpoint.address().to_string() != "127.0.0.1" &&  // Not loopback
-                (interfaceIndex <= oldService->interfaceIndex() ||  // Either better index or...
+                (interfaceIndex < oldService->interfaceIndex() ||   // Either better index or...
                  oldService->timeSinceLastSeen() * 1000 > 2 * m_refreshTime)) // ...old service hasn't been seen.
             {
               // Whack the old one and treat it as an update.
