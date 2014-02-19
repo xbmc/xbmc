@@ -30,6 +30,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <map>
 
 CAndroidStorageProvider::CAndroidStorageProvider()
 {
@@ -98,10 +99,10 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
   // mounted usb disks
-  char*                   buf     = NULL;
-  FILE*                   pipe;
-  std::vector<CStdString> result;
-  CRegExp                 reMount;
+  char*                               buf     = NULL;
+  FILE*                               pipe;
+  std::map<std::string, std::string>  result;
+  CRegExp                             reMount;
   reMount.RegComp("^(.+?)\\s+(.+?)\\s+(.+?)\\s");
 
   /* /proc/mounts is only guaranteed atomic for the current read
@@ -158,7 +159,6 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
         std::string device   = reMount.GetReplaceString("\\1");
         std::string mountStr = reMount.GetReplaceString("\\2");
         std::string fsStr    = reMount.GetReplaceString("\\3");
-        const char* mount = mountStr.c_str();
         const char* fs    = fsStr.c_str();
 
         // Here we choose which filesystems are approved
@@ -176,17 +176,17 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
           accepted = false;
 
         if(accepted)
-          result.push_back(mount);
+          result[device] = mountStr;
       }
       line = strtok_r(NULL, "\n", &saveptr);
     }
     free(buf);
   }
 
-  for (unsigned int i = 0; i < result.size(); i++)
+  for (std::map<std::string, std::string>::const_iterator i = result.begin(); i != result.end(); ++i)
   {
     CMediaSource share;
-    share.strPath = unescape(result[i]);
+    share.strPath = unescape(i->second);
     share.strName = URIUtils::GetFileName(share.strPath);
     share.m_ignore = true;
     removableDrives.push_back(share);
