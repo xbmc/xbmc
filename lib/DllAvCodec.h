@@ -56,7 +56,7 @@ public:
   virtual ~DllAvCodecInterface() {}
   virtual void avcodec_register_all(void)=0;
   virtual void avcodec_flush_buffers(AVCodecContext *avctx)=0;
-  virtual int avcodec_open2_dont_call(AVCodecContext *avctx, AVCodec *codec, AVDictionary **options)=0;
+  virtual int avcodec_open2_dont_call(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options)=0;
   virtual AVCodec *avcodec_find_decoder(enum AVCodecID id)=0;
   virtual AVCodec *avcodec_find_encoder(enum AVCodecID id)=0;
   virtual int avcodec_close_dont_call(AVCodecContext *avctx)=0;
@@ -109,12 +109,12 @@ public:
     ::avcodec_register_all();
   }
   virtual void avcodec_flush_buffers(AVCodecContext *avctx) { ::avcodec_flush_buffers(avctx); }
-  virtual int avcodec_open2(AVCodecContext *avctx, AVCodec *codec, AVDictionary **options)
+  virtual int avcodec_open2(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
     return ::avcodec_open2(avctx, codec, options);
   }
-  virtual int avcodec_open2_dont_call(AVCodecContext *avctx, AVCodec *codec, AVDictionary **options) { *(volatile int *)0x0 = 0; return 0; }
+  virtual int avcodec_open2_dont_call(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options) { *(volatile int *)0x0 = 0; return 0; }
   virtual int avcodec_close_dont_call(AVCodecContext *avctx) { *(volatile int *)0x0 = 0; return 0; }
   virtual AVCodec *avcodec_find_decoder(enum AVCodecID id) { return ::avcodec_find_decoder(id); }
   virtual AVCodec *avcodec_find_encoder(enum AVCodecID id) { return ::avcodec_find_encoder(id); }
@@ -178,7 +178,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 {
   DECLARE_DLL_WRAPPER(DllAvCodec, DLL_PATH_LIBAVCODEC)
   DEFINE_FUNC_ALIGNED1(void, __cdecl, avcodec_flush_buffers, AVCodecContext*)
-  DEFINE_FUNC_ALIGNED3(int, __cdecl, avcodec_open2_dont_call, AVCodecContext*, AVCodec *, AVDictionary **)
+  DEFINE_FUNC_ALIGNED3(int, __cdecl, avcodec_open2_dont_call, AVCodecContext*, const AVCodec *, AVDictionary **)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_video2, AVCodecContext*, AVFrame*, int*, AVPacket*)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_audio4, AVCodecContext*, AVFrame*, int*, AVPacket*)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_subtitle2, AVCodecContext*, AVSubtitle*, int*, AVPacket*)
@@ -255,7 +255,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 
 public:
     static CCriticalSection m_critSection;
-    int avcodec_open2(AVCodecContext *avctx, AVCodec *codec, AVDictionary **options)
+    int avcodec_open2(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options)
     {
       CSingleLock lock(DllAvCodec::m_critSection);
       return avcodec_open2_dont_call(avctx,codec, options);
