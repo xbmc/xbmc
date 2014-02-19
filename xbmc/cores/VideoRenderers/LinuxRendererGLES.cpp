@@ -2702,14 +2702,12 @@ void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
     glBindTexture(m_textureTarget, 0);
 
     plane.flipindex = m_buffers[index].flipindex;
+    plane.texwidth  = codecinfo->iWidth;
+    plane.texheight = codecinfo->iHeight;
+
+    CalculateTextureSourceRects(index, 1);
   }
 
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
-  plane.texwidth  = codecinfo->iWidth;
-  plane.texheight = codecinfo->iHeight;
-
-  CalculateTextureSourceRects(index, 1);
 #endif
 }
 void CLinuxRendererGLES::DeleteIMXMAPTexture(int index)
