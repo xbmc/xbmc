@@ -3,8 +3,8 @@
 MAKEFLAGS=""
 BGPROCESSFILE="$2"
 
-BASE_URL=https://github.com/FernetMenta/FFmpeg/archive
-VERSION=9292bac08d62b92fcd66a8df468741190269f510
+BASE_URL=$(grep "BASE_URL=" ../../tools/depends/target/ffmpeg/FFMPEG-VERSION | sed 's/BASE_URL=//g')
+VERSION=$(grep "VERSION=" ../../tools/depends/target/ffmpeg/FFMPEG-VERSION | sed 's/VERSION=//g')
 LIBNAME=ffmpeg
 ARCHIVE=$LIBNAME-$VERSION.tar.gz
 
