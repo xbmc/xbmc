@@ -29,7 +29,7 @@
 
 
 //#define IMX_PROFILE
-#define TRACE_FRAMES
+//#define TRACE_FRAMES
 
 /* FIXME TODO Develop real proper CVPUBuffer class */
 #define VPU_DEC_MAX_NUM_MEM_NUM 20
@@ -65,6 +65,8 @@ public:
   bool               Rendered();
   void               Queue(VpuFrameBuffer *buffer);
   VpuDecRetCode      ClearDisplay(VpuDecHandle *handle);
+  void               SetPts(double pts);
+  double             GetPts(void) const;
 
 protected:
   // private because we are reference counted
@@ -76,6 +78,7 @@ protected:
   long                m_refs;
   VpuFrameBuffer     *m_frameBuffer;
   bool                m_rendered;
+  double              m_pts;
 };
 
 class CDVDVideoCodecIMX : public CDVDVideoCodec
@@ -114,7 +117,6 @@ protected:
   DecMemInfo          m_decMemInfo;        // VPU dedicated memory description
   VpuDecHandle        m_vpuHandle;         // Handle for VPU library calls
   VpuDecInitInfo      m_initInfo;          // Initial info returned from VPU at decoding start
-  void               *m_tsm;               // fsl Timestamp manager (from gstreamer implementation)
   bool                m_tsSyncRequired;    // state whether timestamp manager has to be sync'ed
   bool                m_dropState;         // Current drop state
   int                 m_vpuFrameBufferNum; // Total number of allocated frame buffers
