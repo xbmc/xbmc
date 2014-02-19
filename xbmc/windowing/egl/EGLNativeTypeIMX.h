@@ -28,11 +28,11 @@ class CEGLNativeTypeIMX : public CEGLNativeType
 public:
   CEGLNativeTypeIMX();
   virtual ~CEGLNativeTypeIMX();
-  virtual std::string GetNativeName() const { return "iMX"; };
+  virtual std::string GetNativeName() const { return "iMX"; }
   virtual bool  CheckCompatibility();
   virtual void  Initialize();
   virtual void  Destroy();
-  virtual int   GetQuirks() { return EGL_QUIRK_NONE; };
+  virtual int   GetQuirks() { return EGL_QUIRK_NONE; }
 
   virtual bool  CreateNativeDisplay();
   virtual bool  CreateNativeWindow();

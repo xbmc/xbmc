@@ -97,8 +97,7 @@ AllocFailure:
 
 int CDVDVideoCodecIMX::VpuFindBuffer(void *frameAddr)
 {
-  int i;
-  for (i=0; i<m_vpuFrameBufferNum; i++)
+  for (int i=0; i<m_vpuFrameBufferNum; i++)
   {
     if (m_vpuFrameBuffers[i].pbufY == frameAddr)
       return i;
@@ -108,13 +107,12 @@ int CDVDVideoCodecIMX::VpuFindBuffer(void *frameAddr)
 
 bool CDVDVideoCodecIMX::VpuFreeBuffers(void)
 {
-  int i;
   VpuMemDesc vpuMem;
   VpuDecRetCode vpuRet;
   bool ret = true;
 
   //free virtual mem
-  for(i=0; i<m_decMemInfo.nVirtNum; i++)
+  for(int i=0; i<m_decMemInfo.nVirtNum; i++)
   {
     if (m_decMemInfo.virtMem[i])
       free((void*)m_decMemInfo.virtMem[i]);
@@ -122,7 +120,7 @@ bool CDVDVideoCodecIMX::VpuFreeBuffers(void)
   m_decMemInfo.nVirtNum = 0;
 
   //free physical mem
-  for(i=0; i<m_decMemInfo.nPhyNum; i++)
+  for(int i=0; i<m_decMemInfo.nPhyNum; i++)
   {
     vpuMem.nPhyAddr = m_decMemInfo.phyMem_phyAddr[i];
     vpuMem.nVirtAddr = m_decMemInfo.phyMem_virtAddr[i];
@@ -209,7 +207,6 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
 {
   VpuDecRetCode ret;
   VpuMemDesc vpuMem;
-  int i;
   int totalSize=0;
   int mvSize=0;
   int ySize=0;
@@ -247,7 +244,7 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
 
   m_outputBuffers = new CDVDVideoCodecIMXBuffer*[m_vpuFrameBufferNum];
 
-  for (i = 0 ; i < m_vpuFrameBufferNum; i++)
+  for (int i=0 ; i < m_vpuFrameBufferNum; i++)
   {
     totalSize=(ySize+uvSize+mvSize+nAlign)*1;
 
@@ -270,24 +267,24 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
     ptr=(unsigned char*)vpuMem.nPhyAddr;
     ptrVirt=(unsigned char*)vpuMem.nVirtAddr;
 
-    /*align the base address*/
+    //align the base address
     if(nAlign>1)
     {
       ptr=(unsigned char*)Align(ptr,nAlign);
       ptrVirt=(unsigned char*)Align(ptrVirt,nAlign);
     }
 
-    /* fill stride info */
+    // fill stride info
     m_vpuFrameBuffers[i].nStrideY=yStride;
     m_vpuFrameBuffers[i].nStrideC=uvStride;
 
-    /* fill phy addr*/
+    // fill phy addr
     m_vpuFrameBuffers[i].pbufY=ptr;
     m_vpuFrameBuffers[i].pbufCb=ptr+ySize;
     m_vpuFrameBuffers[i].pbufCr=0;
     m_vpuFrameBuffers[i].pbufMvCol=ptr+ySize+uvSize;
     //ptr+=ySize+uSize+vSize+mvSize;
-    /* fill virt addr */
+    // fill virt addr
     m_vpuFrameBuffers[i].pbufVirtY=ptrVirt;
     m_vpuFrameBuffers[i].pbufVirtCb=ptrVirt+ySize;
     m_vpuFrameBuffers[i].pbufVirtCr=0;
@@ -363,10 +360,9 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   }
   if (m_hints.extrasize)
   {
-    unsigned int  i;
     char buf[4096];
 
-    for (i = 0; i < m_hints.extrasize; i++)
+    for (int i=0; i < m_hints.extrasize; i++)
       sprintf(buf+i*2, "%02x", ((uint8_t*)m_hints.extradata)[i]);
     CLog::Log(LOGDEBUG, "Decode: MEDIAINFO: extradata %d %s\n", m_hints.extrasize, buf);
   }
@@ -429,19 +425,19 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     m_pFormatName = "iMX-vp8";
     break;
   case CODEC_ID_MSMPEG4V3:
-    m_decOpenParam.CodecFormat = VPU_V_XVID; /* VPU_V_DIVX3 */
+    m_decOpenParam.CodecFormat = VPU_V_XVID; // VPU_V_DIVX3
     m_pFormatName = "iMX-divx3";
     break;
   case CODEC_ID_MPEG4:
     switch(m_hints.codec_tag)
     {
     case _4CC('D','I','V','X'):
-      m_decOpenParam.CodecFormat = VPU_V_XVID; /* VPU_V_DIVX4 */
+      m_decOpenParam.CodecFormat = VPU_V_XVID; // VPU_V_DIVX4
       m_pFormatName = "iMX-divx4";
       break;
     case _4CC('D','X','5','0'):
     case _4CC('D','I','V','5'):
-      m_decOpenParam.CodecFormat = VPU_V_XVID; /* VPU_V_DIVX56 */
+      m_decOpenParam.CodecFormat = VPU_V_XVID; // VPU_V_DIVX56
       m_pFormatName = "iMX-divx5";
       break;
     case _4CC('X','V','I','D'):
@@ -468,10 +464,9 @@ void CDVDVideoCodecIMX::Dispose(void)
 {
   VpuDecRetCode  ret;
   bool VPU_loaded = m_vpuHandle;
-  int i;
 
   // Invalidate output buffers to prevent the renderer from mapping this memory
-  for (i=0; i<m_vpuFrameBufferNum; i++)
+  for (int i=0; i<m_vpuFrameBufferNum; i++)
   {
     m_outputBuffers[i]->Invalidate(&m_vpuHandle);
     SAFE_RELEASE(m_outputBuffers[i]);
@@ -530,7 +525,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
   VpuDecFrameLengthInfo frameLengthInfo;
   VpuBufferNode inData;
   VpuDecRetCode ret;
-  int decRet = 0, i;
+  int decRet = 0;
   int retStatus = 0;
   int demuxer_bytes = iSize;
   uint8_t *demuxer_content = pData;
@@ -549,7 +544,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
       return VC_ERROR;
   }
 
-  for (i=0; i < m_vpuFrameBufferNum; i++)
+  for (int i=0; i < m_vpuFrameBufferNum; i++)
   {
     if (m_outputBuffers[i]->Rendered())
     {
@@ -589,7 +584,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
     inData.nSize = demuxer_bytes;
     inData.pPhyAddr = NULL;
     inData.pVirAddr = demuxer_content;
-    /* FIXME TODO VP8 & DivX3 require specific sCodecData values */
+    // FIXME TODO VP8 & DivX3 require specific sCodecData values
     if ((m_decOpenParam.CodecFormat == VPU_V_MPEG2) ||
         (m_decOpenParam.CodecFormat == VPU_V_VC1_AP)||
         (m_decOpenParam.CodecFormat == VPU_V_XVID))
@@ -621,7 +616,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
       }
 
       if (decRet & VPU_DEC_INIT_OK)
-      /* VPU decoding init OK : We can retrieve stream info */
+      // VPU decoding init OK : We can retrieve stream info
       {
         ret = VPU_DecGetInitialInfo(m_vpuHandle, &m_initInfo);
         if (ret == VPU_DEC_RET_SUCCESS)
@@ -650,7 +645,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
           CLog::Log(LOGERROR, "%s - VPU get initial info failed (%d).\n", __FUNCTION__, ret);
           goto out_error;
         }
-      }//VPU_DEC_INIT_OK
+      } //VPU_DEC_INIT_OK
 
       if (decRet & VPU_DEC_ONE_FRM_CONSUMED)
       {
@@ -665,24 +660,20 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
           if (idx != -1)
           {
             if (pts != DVD_NOPTS_VALUE)
-            {
               m_outputBuffers[idx]->SetPts(pts);
-            }
             else if (dts !=  DVD_NOPTS_VALUE)
-            {
               m_outputBuffers[idx]->SetPts(dts);
-            }
           }
           else
           {
             CLog::Log(LOGERROR, "%s - could not find frame buffer\n", __FUNCTION__);
           }
         }
-      }//VPU_DEC_ONE_FRM_CONSUMED
+      } //VPU_DEC_ONE_FRM_CONSUMED
 
       if ((decRet & VPU_DEC_OUTPUT_DIS) ||
           (decRet & VPU_DEC_OUTPUT_MOSAIC_DIS))
-      /* Frame ready to be displayed */
+      // Frame ready to be displayed
       {
         if (retStatus & VC_PICTURE)
             CLog::Log(LOGERROR, "%s - Second picture in the same decode call !\n", __FUNCTION__);
@@ -739,9 +730,9 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
       if (!(decRet & VPU_DEC_OUTPUT_DIS)  &&
            (inData.nSize != 0))
       {
-        /* Let's process again as VPU_DEC_NO_ENOUGH_INBUF was not set
-         * and we don't have an image ready if we reach that point
-         */
+        // Let's process again as VPU_DEC_NO_ENOUGH_INBUF was not set
+        // and we don't have an image ready if we reach that point
+
         inData.pVirAddr = NULL;
         inData.nSize = 0;
         retry = true;
@@ -766,18 +757,18 @@ out_error:
 
 void CDVDVideoCodecIMX::Reset()
 {
-  int ret, i;
+  int ret;
 
   CLog::Log(LOGDEBUG, "%s - called\n", __FUNCTION__);
 
-  /* We have to resync timestamp manager */
+  // We have to resync timestamp manager
   m_tsSyncRequired = true;
 
-  /* Invalidate all buffers */
-  for(i = 0; i < m_vpuFrameBufferNum; i++)
+  // Invalidate all buffers
+  for(int i=0; i < m_vpuFrameBufferNum; i++)
     m_outputBuffers[i]->Invalidate(&m_vpuHandle);
 
-  /* Flush VPU */
+  // Flush VPU
   ret = VPU_DecFlushAll(m_vpuHandle);
   if (ret != VPU_DEC_RET_SUCCESS)
   {
@@ -851,10 +842,10 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 void CDVDVideoCodecIMX::SetDropState(bool bDrop)
 {
 
-  /* We are fast enough to continue to really decode every frames
-   * and avoid artefacts...
-   * (Of course these frames won't be rendered but only decoded !)
-   */
+  // We are fast enough to continue to really decode every frames
+  // and avoid artefacts...
+  // (Of course these frames won't be rendered but only decoded !)
+
   if (m_dropState != bDrop)
   {
     m_dropState = bDrop;
