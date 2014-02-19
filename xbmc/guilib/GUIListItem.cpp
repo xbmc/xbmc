@@ -22,7 +22,7 @@
 #include "GUIListItemLayout.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
-#include "utils/Variant.h"
+
 
 /* PLEX */
 #include "boost/format.hpp"
@@ -399,29 +399,6 @@ void CGUIListItem::SetInvalid()
 {
   if (m_layout) m_layout->SetInvalid();
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
-}
-
-void CGUIListItem::SetProperty(const CStdString &strKey, const CVariant &value)
-{
-  m_mapProperties[strKey] = value;
-}
-
-CVariant CGUIListItem::GetProperty(const CStdString &strKey) const
-{
-  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
-  if (iter == m_mapProperties.end())
-    return CVariant(CVariant::VariantTypeNull);
-
-  return iter->second;
-}
-
-bool CGUIListItem::HasProperty(const CStdString &strKey) const
-{
-  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
-  if (iter == m_mapProperties.end())
-    return false;
-
-  return true;
 }
 
 void CGUIListItem::ClearProperty(const CStdString &strKey)
