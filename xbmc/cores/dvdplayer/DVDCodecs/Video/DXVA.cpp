@@ -44,6 +44,7 @@
 #include "settings/MediaSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "win32/WIN32Util.h"
+#include "utils/Log.h"
 
 #define ALLOW_ADDING_SURFACES 0
 

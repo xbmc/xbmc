@@ -3104,6 +3104,9 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\FFmpeg.cpp">
+      <Filter>cores</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6093,6 +6096,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\IMMNotificationClient.h">
       <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\FFmpeg.h">
+      <Filter>cores</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -91,6 +91,7 @@ echo configuring $LIBNAME
 
 make $MAKEFLAGS &&
 cp lib*/*.dll .libs/ &&
+cp lib*/*.lib .libs/ &&
 cp .libs/avcodec-*.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avformat-*.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avutil-*.dll /xbmc/system/players/dvdplayer/ &&
