@@ -39,7 +39,6 @@ class CArchive;
 class CVariant;
 
 /* PLEX */
-#define BOOST_NO_0X_HDR_INITIALIZER_LIST
 #include <boost/unordered_map.hpp>
 /* END PLEX */
 
