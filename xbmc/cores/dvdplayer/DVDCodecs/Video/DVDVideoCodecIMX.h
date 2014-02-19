@@ -61,10 +61,9 @@ public:
   virtual long       Release();
   virtual bool       IsValid();
 
-  void               Invalidate(VpuDecHandle *handle);
   bool               Rendered();
   void               Queue(VpuFrameBuffer *buffer);
-  VpuDecRetCode      ClearDisplay(VpuDecHandle *handle);
+  VpuDecRetCode      ReleaseFramebuffer(VpuDecHandle *handle);
   void               SetPts(double pts);
   double             GetPts(void) const;
 
