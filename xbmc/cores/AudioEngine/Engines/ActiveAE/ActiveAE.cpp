@@ -930,6 +930,11 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   if (m_streams.empty())
   {
     inputFormat = m_sinkFormat;
+    if (m_sinkFormat.m_channelLayout.Count() > m_sinkRequestFormat.m_channelLayout.Count())
+    {
+      inputFormat.m_channelLayout = m_sinkRequestFormat.m_channelLayout;
+      inputFormat.m_channelLayout.ResolveChannels(m_sinkFormat.m_channelLayout);
+    }
     inputFormat.m_dataFormat = AE_FMT_FLOAT;
     inputFormat.m_frameSize = inputFormat.m_channelLayout.Count() *
                               (CAEUtil::DataFormatToBits(inputFormat.m_dataFormat) >> 3);
@@ -1023,6 +1028,16 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       outputFormat.m_dataFormat = AE_FMT_FLOAT;
       outputFormat.m_frameSize = outputFormat.m_channelLayout.Count() *
                                  (CAEUtil::DataFormatToBits(outputFormat.m_dataFormat) >> 3);
+
+      // due to channel ordering of the driver, a sink may return more channels than
+      // requested, i.e. 2.1 request returns FL,FR,BL,BR,FC,LFE for ALSA
+      // in this case we need to downmix to requested format
+      if (m_sinkFormat.m_channelLayout.Count() > m_sinkRequestFormat.m_channelLayout.Count())
+      {
+        outputFormat.m_channelLayout = m_sinkRequestFormat.m_channelLayout;
+        outputFormat.m_channelLayout.ResolveChannels(m_sinkFormat.m_channelLayout);
+      }
+
       // TODO: adjust to decoder
       sinkInputFormat = outputFormat;
     }
