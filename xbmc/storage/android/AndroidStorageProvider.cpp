@@ -27,6 +27,9 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 
 CAndroidStorageProvider::CAndroidStorageProvider()
 {
@@ -95,16 +98,59 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
   // mounted usb disks
+  char*                   buf     = NULL;
+  FILE*                   pipe;
   std::vector<CStdString> result;
-  CRegExp reMount;
+  CRegExp                 reMount;
   reMount.RegComp("^(.+?)\\s+(.+?)\\s+(.+?)\\s");
-  char line[1024];
 
-  FILE* pipe = fopen("/proc/mounts", "r");
-
-  if (pipe)
+  /* /proc/mounts is only guaranteed atomic for the current read
+   * operation, so we need to read it all at once.
+   */
+  if ((pipe = fopen("/proc/mounts", "r")))
   {
-    while (fgets(line, sizeof(line) - 1, pipe))
+    char*   new_buf;
+    size_t  buf_len = 4096;
+
+    while ((new_buf = (char*)realloc(buf, buf_len * sizeof(char))))
+    {
+      size_t nread;
+
+      buf   = new_buf;
+      nread = fread(buf, sizeof(char), buf_len, pipe);
+
+      if (nread == buf_len)
+      {
+        rewind(pipe);
+        buf_len *= 2;
+      }
+      else
+      {
+        buf[nread] = '\0';
+        if (!feof(pipe))
+          new_buf = NULL;
+        break;
+      }
+    }
+
+    if (!new_buf)
+    {
+      free(buf);
+      buf = NULL;
+    }
+    fclose(pipe);
+  }
+  else
+    CLog::Log(LOGERROR, "Cannot read mount points");
+
+  if (buf)
+  {
+    char* line;
+    char* saveptr = NULL;
+
+    line = strtok_r(buf, "\n", &saveptr);
+
+    while (line)
     {
       if (reMount.RegFind(line) != -1)
       {
@@ -132,10 +178,10 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
         if(accepted)
           result.push_back(mount);
       }
+      line = strtok_r(NULL, "\n", &saveptr);
     }
-    fclose(pipe);
-  } else
-    CLog::Log(LOGERROR, "Cannot read mount points");
+    free(buf);
+  }
 
   for (unsigned int i = 0; i < result.size(); i++)
   {
