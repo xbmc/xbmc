@@ -46,6 +46,9 @@
 
   !include Sections.nsh
 
+  ;include things required to check installation OS
+  !include "WinVer.nsh"
+
 ;--- Component support macros: ---
 ; The code for the add/remove functionality is from:
 ;   http://nsis.sourceforge.net/Add/Remove_Functionality
@@ -747,26 +750,6 @@ FunctionEnd
 ; determine admin versus local install
 Function un.onInit
 
-  ClearErrors
-  UserInfo::GetName
-  IfErrors noLM
-  Pop $0
-  UserInfo::GetAccountType
-  Pop $1
-  StrCmp $1 "Admin" 0 +3
-    SetShellVarContext all
-    ;MessageBox MB_OK 'User "$0" is in the Admin group'
-    Goto done
-  StrCmp $1 "Power" 0 +3
-    SetShellVarContext all
-    ;MessageBox MB_OK 'User "$0" is in the Power Users group'
-    Goto done
-
-  noLM:
-    ;Get installation folder from registry if available
-
-  done:
-  
   ; Detect Media Center
   ; 4.0 - Media Center 2005 with Update Rollup 2
   ; 5.0 - Media Center on Windows Vista
@@ -793,7 +776,7 @@ Function un.onInit
     ${EndIf}
 
   ${EndIf}
-
+  
 FunctionEnd
 
 ;--- Add/Remove callback functions: ---
@@ -932,6 +915,12 @@ SectionEnd
 ; "Program Files" for AllUsers, "My Documents" for JustMe...
 
 Function .onInit
+
+  ${IfNot} ${AtLeastWinVista}
+    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows Vista or above required.$\nThis program can not be run on Windows XP"
+    Quit
+  ${EndIf}
+
   StrCmp "@CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL@" "ON" 0 inst
 
   ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\@CPACK_PACKAGE_INSTALL_REGISTRY_KEY@" "UninstallString"
