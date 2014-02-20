@@ -173,6 +173,7 @@ namespace PVR
     CStdString            m_strFileNameAndPath; /*!< @brief filename is only for reference */
     int                   m_iChannelNumber;     /*!< @brief integer value of the channel number */
     bool                  m_bIsRadio;           /*!< @brief is radio channel if set */
+    unsigned int          m_iTimerId;           /*!< @brief id that won't change as long as XBMC is running */
 
     CPVRChannelPtr        m_channel;
     unsigned int          m_iMarginStart;       /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */

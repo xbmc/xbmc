@@ -227,6 +227,8 @@ CFileItem::CFileItem(const CPVRRecording& record)
   m_strLabel2 = record.m_strPlot;
 
   FillInMimeType(false);
+
+  SetProperty("recordingid", record.m_iRecordingId);
 }
 
 CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
@@ -252,6 +254,10 @@ CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
     SetIconImage(timer.ChannelIcon());
 
   FillInMimeType(false);
+
+  SetProperty("timerclient", timer.m_iClientId);
+  SetProperty("timerclientid", timer.m_iClientIndex);
+  SetProperty("timerid", timer.m_iTimerId);
 }
 
 CFileItem::CFileItem(const CArtist& artist)
