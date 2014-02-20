@@ -24,6 +24,7 @@
 #include "DynamicDll.h"
 
 #include "cores/dvdplayer/DVDClock.h"
+#include "cores/VideoRenderers/RenderFlags.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "guilib/GraphicContext.h"
 #include "settings/MediaSettings.h"
@@ -241,6 +242,14 @@ public:
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 // AppContext - Application state
+#define MODE_3D_DISABLE         0x00000000
+#define MODE_3D_LR              0x00000101
+#define MODE_3D_BT              0x00000201
+#define MODE_3D_TO_2D_L         0x00000102
+#define MODE_3D_TO_2D_R         0x00000902
+#define MODE_3D_TO_2D_T         0x00000202
+#define MODE_3D_TO_2D_B         0x00000a02
+
 #define PTS_FREQ        90000
 #define UNIT_FREQ       96000
 #define AV_SYNC_THRESH  PTS_FREQ*30
@@ -1667,7 +1676,6 @@ void CAMLCodec::CloseDecoder()
   aml_set_sysfs_int("/sys/class/tsync/enable", 1);
 
   ShowMainVideo(false);
-
 }
 
 void CAMLCodec::Reset()
@@ -2053,6 +2061,27 @@ void CAMLCodec::GetRenderFeatures(Features &renderFeatures)
   return;
 }
 
+void CAMLCodec::SetVideo3dMode(const int mode3d)
+{
+  aml_set_sysfs_int("/sys/class/ppmgr/ppmgr_3d_mode", mode3d);
+}
+
+std::string CAMLCodec::GetStereoMode()
+{
+  std::string  stereo_mode;
+
+  switch(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoMode)
+  {
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
+    default:                                  stereo_mode = m_hints.stereo_mode; break;
+  }
+
+  if(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert)
+    stereo_mode = RenderManager::GetStereoModeInvert(stereo_mode);
+  return stereo_mode;
+}
+
 void CAMLCodec::RenderFeaturesCallBack(const void *ctx, Features &renderFeatures)
 {
   CAMLCodec *codec = (CAMLCodec*)ctx;
@@ -2065,6 +2094,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   // this routine gets called every video frame
   // and is in the context of the renderer thread so
   // do not do anything stupid here.
+  bool update = false;
 
   // video zoom adjustment.
   float zoom = CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount;
@@ -2087,13 +2117,38 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     m_brightness = brightness;
   }
 
-  // check if destination rect or video view mode has changed
-  if ((m_dst_rect != DestRect) || (m_view_mode != CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode))
+  // video view mode
+  int view_mode = CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode;
+  if (m_view_mode != view_mode)
+  {
+    m_view_mode = view_mode;
+    update = true;
+  }
+
+  // video stereo mode/view.
+  RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
+  if (m_stereo_mode != stereo_mode)
+  {
+    m_stereo_mode = stereo_mode;
+    update = true;
+  }
+  RENDER_STEREO_VIEW stereo_view = g_graphicsContext.GetStereoView();
+  if (m_stereo_view != stereo_view)
+  {
+    // left/right/top/bottom eye,
+    // this might change every other frame.
+    // we do not care but just track it.
+    m_stereo_view = stereo_view;
+  }
+
+  // dest_rect
+  if (m_dst_rect != DestRect)
   {
     m_dst_rect  = DestRect;
-    m_view_mode = CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode;
+    update = true;
   }
-  else
+
+  if (!update)
   {
     // mainvideo 'should' be showing already if we get here, make sure.
     ShowMainVideo(true);
@@ -2117,26 +2172,58 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     dst_rect.y2 *= yscale;
   }
 
-  ShowMainVideo(false);
+#if 0
+  std::string rectangle = StringUtils::Format("%i,%i,%i,%i",
+    (int)dst_rect.x1, (int)dst_rect.y1,
+    (int)dst_rect.Width(), (int)dst_rect.Height());
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:dst_rect(%s)", rectangle.c_str());
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:m_stereo_mode(%d)", m_stereo_mode);
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:m_stereo_view(%d)", m_stereo_view);
+#endif
+
+  if (m_stereo_mode == RENDER_STEREO_MODE_MONO)
+  {
+    std::string mode = GetStereoMode();
+    CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:mode(%s)", mode.c_str());
+    if (mode == "left_right")
+      SetVideo3dMode(MODE_3D_TO_2D_L);
+    else if (mode == "right_left")
+      SetVideo3dMode(MODE_3D_TO_2D_R);
+    else if (mode == "top_bottom")
+      SetVideo3dMode(MODE_3D_TO_2D_T);
+    else if (mode == "bottom_top")
+      SetVideo3dMode(MODE_3D_TO_2D_B);
+    else
+      SetVideo3dMode(MODE_3D_DISABLE);
+  }
+  else if (m_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+  {
+    dst_rect.x2 *= 2.0;
+    //SetVideo3dMode(MODE_3D_LR);
+    SetVideo3dMode(MODE_3D_DISABLE);
+  }
+  else if (m_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+  {
+    dst_rect.y2 *= 2.0;
+    //SetVideo3dMode(MODE_3D_BT);
+    SetVideo3dMode(MODE_3D_DISABLE);
+  }
+  else
+  {
+    SetVideo3dMode(MODE_3D_DISABLE);
+  }
 
   // goofy 0/1 based difference in aml axis coordinates.
   // fix them.
   dst_rect.x2--;
   dst_rect.y2--;
 
-  char video_axis[256] = {0};
+  char video_axis[256] = {};
   sprintf(video_axis, "%d %d %d %d", (int)dst_rect.x1, (int)dst_rect.y1, (int)dst_rect.x2, (int)dst_rect.y2);
+
   aml_set_sysfs_str("/sys/class/video/axis", video_axis);
   // make sure we are in 'full stretch' so we can stretch
   aml_set_sysfs_int("/sys/class/video/screen_mode", 1);
-
-/*
-  CStdString rectangle;
-  rectangle.Format("%i,%i,%i,%i",
-    (int)dst_rect.x1, (int)dst_rect.y1,
-    (int)dst_rect.Width(), (int)dst_rect.Height());
-  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:dst_rect(%s)", rectangle.c_str());
-*/
 
   // we only get called once gui has changed to something
   // that would show video playback, so show it.
