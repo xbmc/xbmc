@@ -51,13 +51,14 @@ bool CDVDInputStreamFFmpeg::IsEOF()
 bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content)
 {
   CFileItem item(strFile, false);
+  std::string selected;
   if (item.IsInternetStream() && item.IsType(".m3u8"))
   {
     // get the available bandwidth and  determine the most appropriate stream
     int bandwidth = CSettings::Get().GetInt("network.bandwidth");
     if(bandwidth <= 0)
       bandwidth = INT_MAX;
-    std::string selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(strFile, bandwidth);
+    selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(strFile, bandwidth);
     if (selected.compare(strFile) != 0)
     {
       CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.", selected.c_str());
