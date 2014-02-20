@@ -356,6 +356,9 @@ bool CWakeOnAccess::WakeUpHost (const CStdString& hostName, const string& custom
 
     bool ret = WakeUpHost(server);
 
+    if (!ret) // extra log if we fail for some reason
+      CLog::Log(LOGWARNING,"WakeOnAccess failed to bring up [%s] - there may be trouble ahead !", hostName.c_str());
+
     TouchHostEntry(hostName);
 
     return ret;
@@ -416,11 +419,12 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
     }
   }
 
+  // we have ping response ; just add extra wait-for-services before returning if requested
+
   {
     WaitCondition waitObj ; // wait uninteruptable fixed time for services ..
 
-    if (ProgressDialogHelper::Success != dlg.ShowAndWait (waitObj, server.wait_services_sec, LOCALIZED(13032)))
-      return false;
+    dlg.ShowAndWait (waitObj, server.wait_services_sec, LOCALIZED(13032));
 
     CLog::Log(LOGNOTICE,"WakeOnAccess sequence completed, server started");
   }
