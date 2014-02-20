@@ -169,6 +169,78 @@ bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
   return !(*this == right);
 }
 
+void CPVRTimerInfoTag::Serialize(CVariant &value) const
+{
+  value["channelid"] = m_channel != NULL ? m_channel->ChannelID() : -1;
+  value["summary"] = m_strSummary;
+  value["isradio"] = m_bIsRadio;
+  value["repeating"] = m_bIsRepeating;
+  value["starttime"] = m_StartTime.IsValid() ? m_StartTime.GetAsDBDateTime() : "";
+  value["endtime"] = m_StopTime.IsValid() ? m_StopTime.GetAsDBDateTime() : "";
+  value["runtime"] = m_StartTime.IsValid() && m_StopTime.IsValid() ? (m_StopTime - m_StartTime).GetSecondsTotal() : 0;
+  value["firstday"] = m_FirstDay.IsValid() ? m_FirstDay.GetAsDBDate() : "";
+
+  CVariant weekdays(CVariant::VariantTypeArray);
+  if (m_iWeekdays & 0x01)
+    weekdays.push_back("monday");
+  if (m_iWeekdays & 0x02)
+    weekdays.push_back("tuesday");
+  if (m_iWeekdays & 0x04)
+    weekdays.push_back("wednesday");
+  if (m_iWeekdays & 0x08)
+    weekdays.push_back("thursday");
+  if (m_iWeekdays & 0x10)
+    weekdays.push_back("friday");
+  if (m_iWeekdays & 0x20)
+    weekdays.push_back("saturday");
+  if (m_iWeekdays & 0x40)
+    weekdays.push_back("sunday");
+  value["weekdays"] = weekdays;
+
+  value["priority"] = m_iPriority;
+  value["lifetime"] = m_iLifetime;
+  value["title"] = m_strTitle;
+  value["directory"] = m_strDirectory;
+  value["startmargin"] = m_iMarginStart;
+  value["endmargin"] = m_iMarginEnd;
+
+  value["timerid"] = m_iTimerId;
+
+  switch (m_state)
+  {
+  case PVR_TIMER_STATE_NEW:
+    value["state"] = "new";
+    break;
+  case PVR_TIMER_STATE_SCHEDULED:
+    value["state"] = "scheduled";
+    break;
+  case PVR_TIMER_STATE_RECORDING:
+    value["state"] = "recording";
+    break;
+  case PVR_TIMER_STATE_COMPLETED:
+    value["state"] = "completed";
+    break;
+  case PVR_TIMER_STATE_ABORTED:
+    value["state"] = "aborted";
+    break;
+  case PVR_TIMER_STATE_CANCELLED:
+    value["state"] = "cancelled";
+    break;
+  case PVR_TIMER_STATE_CONFLICT_OK:
+    value["state"] = "conflict_ok";
+    break;
+  case PVR_TIMER_STATE_CONFLICT_NOK:
+    value["state"] = "conflict_notok";
+    break;
+  case PVR_TIMER_STATE_ERROR:
+    value["state"] = "error";
+    break;
+  default:
+    value["state"] = "unknown";
+    break;
+  }
+}
+
 int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
 {
   CSingleLock lock(m_critSection);

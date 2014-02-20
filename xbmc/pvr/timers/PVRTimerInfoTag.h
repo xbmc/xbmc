@@ -39,6 +39,7 @@
 
 #include "XBDateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "utils/ISerializable.h"
 
 #include <boost/shared_ptr.hpp>
 
@@ -63,7 +64,7 @@ namespace PVR
   typedef boost::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
   #define PVR_VIRTUAL_CHANNEL_UID (-1)
 
-  class CPVRTimerInfoTag
+  class CPVRTimerInfoTag : public ISerializable
   {
     friend class CPVRTimers;
     friend class CGUIDialogPVRTimerSettings;
@@ -76,6 +77,8 @@ namespace PVR
     bool operator ==(const CPVRTimerInfoTag& right) const;
     bool operator !=(const CPVRTimerInfoTag& right) const;
     CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig);
+
+    virtual void Serialize(CVariant &value) const;
 
     int Compare(const CPVRTimerInfoTag &timer) const;
 
