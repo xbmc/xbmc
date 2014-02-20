@@ -61,14 +61,14 @@ void CEGLNativeTypeIMX::Initialize()
     CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.\n", __FUNCTION__);
     return;
   }
-  /* Store screen info */
+  // Store screen info
   if (ioctl(fd, FBIOGET_VSCREENINFO, &m_screeninfo) != 0)
   {
     CLog::Log(LOGERROR, "%s - Error while querying frame buffer.\n", __FUNCTION__);
     return;
   }
       
-  /* Unblank the fbs */
+  // Unblank the fbs
   if (ioctl(fd, FBIOBLANK, 0) < 0)
   {
     CLog::Log(LOGERROR, "%s - Error while unblanking fb0.\n", __FUNCTION__);
@@ -93,7 +93,7 @@ void CEGLNativeTypeIMX::Destroy()
   }   
   
   ioctl( fd, FBIOGET_FSCREENINFO, &fixed_info);  
-  /* Black fb0 */
+  // Black fb0
   fb_buffer = mmap(NULL, fixed_info.smem_len, PROT_WRITE, MAP_SHARED, fd, 0);
   if (fb_buffer == MAP_FAILED)
   {
@@ -112,7 +112,7 @@ void CEGLNativeTypeIMX::Destroy()
 
 bool CEGLNativeTypeIMX::CreateNativeDisplay()
 {
-  /* EGL will be rendered on fb0 */
+  // EGL will be rendered on fb0
   m_display = fbGetDisplayByIndex(0);
   m_nativeDisplay = &m_display;
   return true;

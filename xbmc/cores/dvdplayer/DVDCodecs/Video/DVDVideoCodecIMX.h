@@ -31,7 +31,7 @@
 //#define IMX_PROFILE
 //#define TRACE_FRAMES
 
-/* FIXME TODO Develop real proper CVPUBuffer class */
+// FIXME TODO Develop real proper CVPUBuffer class
 #define VPU_DEC_MAX_NUM_MEM_NUM 20
 typedef struct
 {
