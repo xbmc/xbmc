@@ -27,6 +27,7 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include "utils/log.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "guilib/gui3d.h"
 
@@ -36,13 +37,12 @@ CEGLNativeTypeIMX::CEGLNativeTypeIMX()
 
 CEGLNativeTypeIMX::~CEGLNativeTypeIMX()
 {
-} 
+}
 
 bool CEGLNativeTypeIMX::CheckCompatibility()
 {
-  char name[256] = {0};
-  get_sysfs_str("/sys/class/graphics/fb0/device/modalias", name, 255);
-  CStdString strName = name;
+  std::string strName;
+  get_sysfs_str("/sys/class/graphics/fb0/device/modalias", strName);
   StringUtils::Trim(strName);
   if (strName == "platform:mxc_sdc_fb")
     return true;
@@ -50,32 +50,38 @@ bool CEGLNativeTypeIMX::CheckCompatibility()
 }
 
 void CEGLNativeTypeIMX::Initialize()
-{  
-  struct mxcfb_gbl_alpha alpha;
+{
   int fd;
 
-  
   fd = open("/dev/fb0",O_RDWR);
   if (fd < 0)
   {
     CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.\n", __FUNCTION__);
     return;
   }
-  // Store screen info
-  if (ioctl(fd, FBIOGET_VSCREENINFO, &m_screeninfo) != 0)
-  {
-    CLog::Log(LOGERROR, "%s - Error while querying frame buffer.\n", __FUNCTION__);
-    return;
-  }
-      
-  // Unblank the fbs
+
+  // Unblank the fb
   if (ioctl(fd, FBIOBLANK, 0) < 0)
   {
     CLog::Log(LOGERROR, "%s - Error while unblanking fb0.\n", __FUNCTION__);
   }
-  
+
   close(fd);
-  
+
+  // Check if we can change the framebuffer resolution
+  fd = open("/sys/class/graphics/fb0/mode", O_RDWR);
+  if (fd >= 0)
+  {
+    CLog::Log(LOGNOTICE, "%s - graphics sysfs is writable", __FUNCTION__);
+    m_readonly = false;
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "%s - graphics sysfs is read-only", __FUNCTION__);
+    m_readonly = true;
+  }
+  close(fd);
+
   return;
 }
 
@@ -90,23 +96,23 @@ void CEGLNativeTypeIMX::Destroy()
   {
     CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.\n", __FUNCTION__);
     return;
-  }   
-  
-  ioctl( fd, FBIOGET_FSCREENINFO, &fixed_info);  
+  }
+
+  ioctl( fd, FBIOGET_FSCREENINFO, &fixed_info);
   // Black fb0
   fb_buffer = mmap(NULL, fixed_info.smem_len, PROT_WRITE, MAP_SHARED, fd, 0);
   if (fb_buffer == MAP_FAILED)
   {
     CLog::Log(LOGERROR, "%s - fb mmap failed %s.\n", __FUNCTION__, strerror(errno));
   }
-  else 
+  else
   {
     memset(fb_buffer, 0x0, fixed_info.smem_len);
     munmap(fb_buffer, fixed_info.smem_len);
   }
- 
-  close(fd); 
-  
+
+  close(fd);
+
   return;
 }
 
@@ -120,14 +126,16 @@ bool CEGLNativeTypeIMX::CreateNativeDisplay()
 
 bool CEGLNativeTypeIMX::CreateNativeWindow()
 {
-  m_window = fbCreateWindow(m_display, 0, 0, m_screeninfo.xres, m_screeninfo.yres);
+  m_window = fbCreateWindow(m_display, 0, 0, 0, 0);
   m_nativeWindow = &m_window;
   return true;
-}  
+}
 
 bool CEGLNativeTypeIMX::GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const
 {
   if (!nativeDisplay)
+    return false;
+  if (!m_nativeDisplay)
     return false;
   *nativeDisplay = (XBNativeDisplayType*)m_nativeDisplay;
   return true;
@@ -137,67 +145,76 @@ bool CEGLNativeTypeIMX::GetNativeWindow(XBNativeWindowType **nativeWindow) const
 {
   if (!nativeWindow)
     return false;
+  if (!m_nativeWindow || !m_window)
+    return false;
   *nativeWindow = (XBNativeWindowType*)m_nativeWindow;
   return true;
 }
 
 bool CEGLNativeTypeIMX::DestroyNativeDisplay()
 {
+  if (m_display)
+    fbDestroyDisplay(m_display);
+  m_display =  NULL;
   return true;
 }
 
 bool CEGLNativeTypeIMX::DestroyNativeWindow()
 {
+  if (m_window)
+    fbDestroyWindow(m_window);
+  m_window =  NULL;
   return true;
 }
 
 bool CEGLNativeTypeIMX::GetNativeResolution(RESOLUTION_INFO *res) const
 {
-  double drate = 0, hrate = 0, vrate = 0;
-  if (!res)
-    return false;
-
-  drate = 1e12 / m_screeninfo.pixclock;
-  hrate = drate / (m_screeninfo.left_margin + m_screeninfo.xres +  m_screeninfo.right_margin + m_screeninfo.hsync_len);
-  vrate = hrate / (m_screeninfo.upper_margin + m_screeninfo.yres + m_screeninfo.lower_margin + m_screeninfo.vsync_len);
-
-  res->iWidth = m_screeninfo.xres;
-  res->iHeight = m_screeninfo.yres;
-  res->iScreenWidth  = res->iWidth;
-  res->iScreenHeight = res->iHeight;
-  res->fRefreshRate = lrint(vrate);
-  res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-  res->iScreen       = 0;
-  res->bFullScreen   = true;
-  res->iSubtitles    = (int)(0.965 * res->iHeight);
-  res->fPixelRatio   = 1.0f;
-  res->strMode = StringUtils::Format("%dx%d @ %.2f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
-  res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-
-  return res->iWidth > 0 && res->iHeight> 0;
+  std::string mode;
+  get_sysfs_str("/sys/class/graphics/fb0/mode", mode);
+  return ModeToResolution(mode, res);
 }
 
 bool CEGLNativeTypeIMX::SetNativeResolution(const RESOLUTION_INFO &res)
 {
-  return false;
+  if (m_readonly)
+    return false;
+
+  DestroyNativeWindow();
+  DestroyNativeDisplay();
+
+  set_sysfs_str("/sys/class/graphics/fb0/mode", res.strId);
+
+  CreateNativeDisplay();
+
+  CLog::Log(LOGDEBUG, "%s: %s",__FUNCTION__, res.strId.c_str());
+  return true;
 }
 
 bool CEGLNativeTypeIMX::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
+  if (m_readonly)
+    return false;
+
+  std::string valstr;
+  get_sysfs_str("/sys/class/graphics/fb0/modes", valstr);
+  std::vector<CStdString> probe_str;
+  StringUtils::SplitString(valstr, "\n", probe_str);
+
+  resolutions.clear();
   RESOLUTION_INFO res;
-  bool ret = false;
-  ret = GetNativeResolution(&res);
-  if (ret && res.iWidth > 1 && res.iHeight > 1)
+  for (size_t i = 0; i < probe_str.size(); i++)
   {
-    resolutions.push_back(res);
-    return true;
+    if(!StringUtils::StartsWith(probe_str[i], "S:"))
+      continue;
+    if(ModeToResolution(probe_str[i], &res))
+      resolutions.push_back(res);
   }
-  return false;
+  return resolutions.size() > 0;
 }
 
 bool CEGLNativeTypeIMX::GetPreferredResolution(RESOLUTION_INFO *res) const
 {
-  return false;
+  return GetNativeResolution(res);
 }
 
 bool CEGLNativeTypeIMX::ShowWindow(bool show)
@@ -206,20 +223,80 @@ bool CEGLNativeTypeIMX::ShowWindow(bool show)
   return false;
 }
 
-int CEGLNativeTypeIMX::get_sysfs_str(const char *path, char *valstr, const int size) const
+int CEGLNativeTypeIMX::get_sysfs_str(std::string path, std::string& valstr) const
 {
-  int fd = open(path, O_RDONLY);
+  int len;
+  char buf[256] = {0};
+
+  int fd = open(path.c_str(), O_RDONLY);
   if (fd >= 0)
   {
-    int len = read(fd, valstr, size - 1);
-    if (len != -1 )
-      valstr[len] = '\0';
+    while ((len = read(fd, buf, 255)) > 0)
+      valstr.append(buf, len);
     close(fd);
   }
   else
   {
-    sprintf(valstr, "%s", "fail");
+    CLog::Log(LOGERROR, "%s: error reading %s",__FUNCTION__, path.c_str());
+    valstr = "fail";
     return -1;
   }
   return 0;
 }
+
+int CEGLNativeTypeIMX::set_sysfs_str(std::string path, std::string val) const
+{
+  int fd = open(path.c_str(), O_WRONLY);
+  if (fd >= 0)
+  {
+    val += '\n';
+    write(fd, val.c_str(), val.size());
+    close(fd);
+    return 0;
+  }
+  CLog::Log(LOGERROR, "%s: error writing %s",__FUNCTION__, path.c_str());
+  return -1;
+}
+
+bool CEGLNativeTypeIMX::ModeToResolution(std::string mode, RESOLUTION_INFO *res) const
+{
+  if (!res)
+    return false;
+
+  res->iWidth = 0;
+  res->iHeight= 0;
+
+  if(mode.empty())
+    return false;
+
+  std::string fromMode = StringUtils::Mid(mode, 2);
+  StringUtils::Trim(fromMode);
+
+  CRegExp split(true);
+  split.RegComp("([0-9]+)x([0-9]+)([pi])-([0-9]+)");
+  if (split.RegFind(fromMode) < 0)
+    return false;
+
+  int w = atoi(split.GetMatch(1).c_str());
+  int h = atoi(split.GetMatch(2).c_str());
+  std::string p = split.GetMatch(3);
+  int r = atoi(split.GetMatch(4).c_str());
+
+  res->iWidth = w;
+  res->iHeight= h;
+  res->iScreenWidth = w;
+  res->iScreenHeight= h;
+  res->fRefreshRate = r;
+  res->dwFlags = p[0] == 'p' ? D3DPRESENTFLAG_PROGRESSIVE : D3DPRESENTFLAG_INTERLACED;
+
+  res->iScreen       = 0;
+  res->bFullScreen   = true;
+  res->iSubtitles    = (int)(0.965 * res->iHeight);
+  res->fPixelRatio   = 1.0f;
+  res->strMode       = StringUtils::Format("%dx%d @ %.2f%s - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
+                                           res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+  res->strId         = mode;
+
+  return res->iWidth > 0 && res->iHeight> 0;
+}
+

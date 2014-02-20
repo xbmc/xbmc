@@ -48,15 +48,13 @@ public:
   virtual bool  GetPreferredResolution(RESOLUTION_INFO *res) const;
 
   virtual bool  ShowWindow(bool show);
-  
-  protected:
-  int get_sysfs_str(const char *path, char *valstr, const int size) const;
-  bool ModeToResolution(const char *mode, RESOLUTION_INFO *res) const;
-  
-  EGLNativeDisplayType m_display;
-  EGLNativeWindowType  m_window;
 
 protected:
-  struct fb_var_screeninfo m_screeninfo;
+  bool m_readonly;
+  int get_sysfs_str(std::string path, std::string& valstr) const;
+  int set_sysfs_str(std::string path, std::string val) const;
+  bool ModeToResolution(std::string mode, RESOLUTION_INFO *res) const;
 
+  EGLNativeDisplayType m_display;
+  EGLNativeWindowType  m_window;
 };
