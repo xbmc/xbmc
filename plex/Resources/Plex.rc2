@@ -55,8 +55,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,9,9,0
- PRODUCTVERSION 0,9,9,0
+ FILEVERSION PLEX_WINDOWS_VERSION
+ PRODUCTVERSION PLEX_WINDOWS_VERSION
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -74,9 +74,9 @@ BEGIN
             VALUE "CompanyName", "Plex, Inc."
             VALUE "FileDescription", "Plex Home Theater"
             VALUE "FileVersion", PLEX_VERSION
-            VALUE "InternalName", "Plex.exe"
+            VALUE "InternalName", "Plex Home Theater.exe"
             VALUE "LegalCopyright", "Copyright (c) Plex, Inc.  All rights reserved."
-            VALUE "OriginalFilename", "PlexHomeTheater.exe"
+            VALUE "OriginalFilename", "Plex Home Theater.exe"
             VALUE "ProductName", "Plex Home Theater"
             VALUE "ProductVersion", PLEX_VERSION
         END
