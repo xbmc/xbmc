@@ -64,6 +64,8 @@ namespace PVR
     bool operator ==(const CPVRRecording& right) const;
     bool operator !=(const CPVRRecording& right) const;
 
+    virtual void Serialize(CVariant& value) const;
+
     /*!
      * @brief Reset this tag to it's initial state.
      */
