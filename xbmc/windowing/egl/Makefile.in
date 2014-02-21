@@ -24,6 +24,10 @@ SRCS+= wayland/Callback.cpp \
        wayland/XBMCSurface.cpp
 endif
 
+ifeq (@USE_IMXVPU@,1)
+SRCS+= EGLNativeTypeIMX.cpp
+endif
+
 LIB = windowing_egl.a
 
 include ../../../Makefile.include

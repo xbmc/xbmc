@@ -33,6 +33,7 @@
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecInfo.h"
 
 class CRenderCapture;
 
@@ -89,7 +90,8 @@ enum RenderMethod
   RENDER_CVREF  = 0x080,
   RENDER_BYPASS = 0x100,
   RENDER_EGLIMG = 0x200,
-  RENDER_MEDIACODEC = 0x400
+  RENDER_MEDIACODEC = 0x400,
+  RENDER_IMXMAP = 0x800
 };
 
 enum RenderQuality
@@ -173,6 +175,7 @@ public:
   // mediaCodec
   virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
 #endif
+  virtual void         AddProcessor(CDVDVideoCodecBuffer *codecinfo, int index);
 
 protected:
   virtual void Render(DWORD flags, int index);
@@ -212,6 +215,12 @@ protected:
   void DeleteSurfaceTexture(int index);
   bool CreateSurfaceTexture(int index);
 
+  void UploadYV12BufferTexture(int index);
+
+  void UploadIMXMAPTexture(int index);
+  void DeleteIMXMAPTexture(int index);
+  bool CreateIMXMAPTexture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -222,6 +231,7 @@ protected:
   void RenderEglImage(int index, int field);       // Android OES texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
   void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
+  void RenderIMXMAPTexture(int index, int field); // IMXMAP rendering
 
   CFrameBufferObject m_fbo;
 
@@ -288,6 +298,7 @@ protected:
     // mediacodec
     CDVDMediaCodecInfo *mediacodec;
 #endif
+    CDVDVideoCodecBuffer *codecinfo;
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];

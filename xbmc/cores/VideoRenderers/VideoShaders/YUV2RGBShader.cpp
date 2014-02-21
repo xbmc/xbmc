@@ -39,12 +39,12 @@
 //
 // Transformation matrixes for different colorspaces.
 //
-static float yuv_coef_bt601[4][4] = 
+static float yuv_coef_bt601[4][4] =
 {
     { 1.0f,      1.0f,     1.0f,     0.0f },
     { 0.0f,     -0.344f,   1.773f,   0.0f },
     { 1.403f,   -0.714f,   0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f } 
+    { 0.0f,      0.0f,     0.0f,     0.0f }
 };
 
 static float yuv_coef_bt709[4][4] =
@@ -55,7 +55,7 @@ static float yuv_coef_bt709[4][4] =
     { 0.0f,      0.0f,     0.0f,     0.0f }
 };
 
-static float yuv_coef_ebu[4][4] = 
+static float yuv_coef_ebu[4][4] =
 {
     { 1.0f,      1.0f,     1.0f,     0.0f },
     { 0.0f,     -0.3960f,  2.029f,   0.0f },
@@ -74,19 +74,19 @@ static float yuv_coef_smtp240m[4][4] =
 static float** PickYUVConversionMatrix(unsigned flags)
 {
   // Pick the matrix.
-   
+
    switch(CONF_FLAGS_YUVCOEF_MASK(flags))
    {
      case CONF_FLAGS_YUVCOEF_240M:
        return (float**)yuv_coef_smtp240m; break;
      case CONF_FLAGS_YUVCOEF_BT709:
        return (float**)yuv_coef_bt709; break;
-     case CONF_FLAGS_YUVCOEF_BT601:    
+     case CONF_FLAGS_YUVCOEF_BT601:
        return (float**)yuv_coef_bt601; break;
      case CONF_FLAGS_YUVCOEF_EBU:
        return (float**)yuv_coef_ebu; break;
    }
-   
+
    return (float**)yuv_coef_bt601;
 }
 
@@ -228,7 +228,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
   m_hProj   = -1;
   m_hModel  = -1;
   m_hAlpha  = -1;
-  if (m_format == RENDER_FMT_YUV420P)
+  if (m_format == RENDER_FMT_YUV420P || m_format == RENDER_FMT_YV12_BUFFER)
     m_defines += "#define XBMC_YV12\n";
   else if (m_format == RENDER_FMT_NV12)
     m_defines += "#define XBMC_NV12\n";
