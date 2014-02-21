@@ -401,6 +401,31 @@ void CGUIListItem::SetInvalid()
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
 }
 
+#ifndef __PLEX__
+void CGUIListItem::SetProperty(const CStdString &strKey, const CVariant &value)
+{
+  m_mapProperties[strKey] = value;
+}
+
+CVariant CGUIListItem::GetProperty(const CStdString &strKey) const
+{
+  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
+  if (iter == m_mapProperties.end())
+    return CVariant(CVariant::VariantTypeNull);
+
+  return iter->second;
+}
+
+bool CGUIListItem::HasProperty(const CStdString &strKey) const
+{
+  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
+  if (iter == m_mapProperties.end())
+    return false;
+
+  return true;
+}
+#endif
+
 void CGUIListItem::ClearProperty(const CStdString &strKey)
 {
   PropertyMap::iterator iter = m_mapProperties.find(strKey);

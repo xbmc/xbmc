@@ -159,12 +159,14 @@ public:
 
   bool m_bIsFolder;     ///< is item a folder or a file
 
-  /* PLEX */
+#ifdef __PLEX__
   inline void SetProperty(const CStdString &strKey, const CVariant &value)
   {
     m_mapProperties[strKey] = value;
   }
-  /* END PLEX */
+#else
+  void SetProperty(const CStdString &strKey, const CVariant &value);
+#endif
 
   void IncrementProperty(const CStdString &strKey, int nVal);
   void IncrementProperty(const CStdString &strKey, double dVal);
@@ -181,7 +183,7 @@ public:
   void Archive(CArchive& ar);
   void Serialize(CVariant& value);
 
-  /* PLEX */
+#ifdef __PLEX__
   inline bool HasProperty(const CStdString &strKey) const
   {
     PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
@@ -190,12 +192,14 @@ public:
 
     return true;
   }
-  /* END PLEX */
+#else
+  bool HasProperty(const CStdString &strKey) const;
+#endif
 
   bool       HasProperties() const { return m_mapProperties.size() > 0; };
   void       ClearProperty(const CStdString &strKey);
 
-  /* PLEX */
+#ifdef __PLEX__
   inline CVariant GetProperty(const CStdString &strKey) const
   {
     PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
@@ -204,6 +208,9 @@ public:
 
     return iter->second;
   }
+#else
+  CVariant GetProperty(const CStdString &strKey) const;
+#endif
 
   int GetOverlayImageID() const { return m_overlayIcon; }
 
