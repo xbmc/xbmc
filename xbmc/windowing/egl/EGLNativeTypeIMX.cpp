@@ -29,7 +29,9 @@
 #include "utils/log.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/Environment.h"
 #include "guilib/gui3d.h"
+#include "windowing/WindowingFactory.h"
 
 CEGLNativeTypeIMX::CEGLNativeTypeIMX()
 {
@@ -118,6 +120,9 @@ void CEGLNativeTypeIMX::Destroy()
 
 bool CEGLNativeTypeIMX::CreateNativeDisplay()
 {
+  // Force double-buffering
+  CEnvironment::setenv("FB_MULTI_BUFFER", "2", 0);
+
   // EGL will be rendered on fb0
   m_display = fbGetDisplayByIndex(0);
   m_nativeDisplay = &m_display;
@@ -219,7 +224,12 @@ bool CEGLNativeTypeIMX::GetPreferredResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeIMX::ShowWindow(bool show)
 {
-  // CLog::Log(LOGERROR, "%s - call CEGLNativeTypeIMX::ShowWindow with %d.\n", __FUNCTION__, show);
+  // Force vsync by default
+  eglSwapInterval(g_Windowing.GetEGLDisplay(), 1);
+  EGLint result = eglGetError();
+  if(result != EGL_SUCCESS)
+    CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, result);
+
   return false;
 }
 
