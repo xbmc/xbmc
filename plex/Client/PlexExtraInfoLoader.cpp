@@ -96,7 +96,7 @@ void CPlexExtraInfoLoader::CopyProperties(CFileItemList* list, CFileItemPtr extr
 
     /* copy Properties */
     std::pair<CStdString, CVariant> p;
-    const boost::unordered_map<CStdString, CVariant> pMap = extraItem->GetAllProperties();
+    const PropertyMap pMap = extraItem->GetAllProperties();
     BOOST_FOREACH(p, pMap)
     {
       /* we only insert the properties if they are not available */

@@ -39,7 +39,7 @@ class CArchive;
 class CVariant;
 
 /* PLEX */
-#include <boost/unordered_map.hpp>
+#include "PlexTypes.h"
 /* END PLEX */
 
 /*!
@@ -188,7 +188,7 @@ public:
   std::string GetArt(const std::string &type, int index) const;
   bool HasArt(const std::string &type, int index) const;
   void RemoveArt(const std::string &type);
-  const boost::unordered_map<CStdString, CVariant>& GetAllProperties() const { return m_mapProperties; }
+  const PropertyMap& GetAllProperties() const { return m_mapProperties; }
   /* END PLEX */
 
 protected:
@@ -207,10 +207,10 @@ protected:
   };
 
   typedef std::map<CStdString, CVariant, icompare> PropertyMap;
-#else
-  typedef boost::unordered_map<CStdString, CVariant> PropertyMap;
 #endif
+
   PropertyMap m_mapProperties;
+
 
 private:
   CStdStringW m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting

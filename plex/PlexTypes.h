@@ -5,6 +5,10 @@
 #include <map>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/unordered_map.hpp>
+#include <boost/algorithm/string.hpp>
+#include "Variant.h"
+#include "StdString.h"
 
 enum EPlexDirectoryType
 {
@@ -191,5 +195,35 @@ typedef std::map<std::string, CPlexServerPtr> PlexServerMap;
 typedef std::pair<std::string, CPlexServerPtr> PlexServerPair;
 
 #define PLEX_DEFAULT_PAGE_SIZE 50
+
+/* Property map definition */
+
+struct __ihash : std::unary_function<CStdString, std::size_t>
+{
+    bool operator()(const CStdString& x) const
+    {
+      std::size_t seed = 0;
+      std::locale locale;
+      std::string src = x;
+
+      for(std::string::const_iterator it = src.begin();
+          it != src.end(); ++it)
+      {
+          boost::hash_combine(seed, std::toupper(*it, locale));
+      }
+
+      return seed;
+    }
+};
+
+struct __icompare : std::binary_function<CStdString, CStdString, bool>
+{
+  bool operator()(const CStdString &s1, const CStdString &s2) const
+  {
+    return boost::iequals(s1, s2, std::locale());
+  }
+};
+
+typedef boost::unordered_map<CStdString, CVariant, __ihash, __icompare> PropertyMap;
 
 #endif
