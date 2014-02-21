@@ -299,7 +299,7 @@ bool CPVRChannel::IsRecording(void) const
   return g_PVRTimers->IsRecordingOnChannel(*this);
 }
 
-bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon /* = false */)
+bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon /* = false */, bool bForceUserSetIconUpdate /* = false*/)
 {
   CSingleLock lock(m_critSection);
 
@@ -310,8 +310,10 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon
     SetChanged();
     m_bChanged = true;
 
+    if (bForceUserSetIconUpdate )
+      m_bIsUserSetIcon = bIsUserSetIcon;
     /* did the user change the icon? */
-    if (bIsUserSetIcon)
+    else if (bIsUserSetIcon)
       m_bIsUserSetIcon = !m_strIconPath.empty();
 	  
     return true;

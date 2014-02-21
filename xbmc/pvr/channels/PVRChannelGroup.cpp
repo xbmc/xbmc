@@ -240,6 +240,17 @@ bool CPVRChannelGroup::SetChannelIconPath(CPVRChannelPtr channel, const std::str
   return false;
 }
 
+bool CPVRChannelGroup::VerifyChannelIconPath(CPVRChannelPtr channel)
+{
+  if (CFile::Exists(channel->IconPath()))
+    return true;
+  else
+  {
+    channel->SetIconPath(std::string(), false, true);
+    return false;
+  }
+}
+
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
   if (CSettings::Get().GetString("pvrmenu.iconpath").empty())
@@ -257,7 +268,11 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
     /* skip if an icon is already set */
     if (!groupMember.channel->IconPath().empty())
-      continue;
+    {
+      //check if the file exist or empty it
+      if(VerifyChannelIconPath(groupMember.channel))
+        continue;
+    }
 
     CStdString strBasePath = CSettings::Get().GetString("pvrmenu.iconpath");
     CStdString strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
