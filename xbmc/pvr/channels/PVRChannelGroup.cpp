@@ -1207,7 +1207,7 @@ void CPVRChannelGroup::SetPreventSortAndRenumber(bool bPreventSortAndRenumber /*
   m_bPreventSortAndRenumber = bPreventSortAndRenumber;
 }
 
-bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const CStdString &strChannelName, const CStdString &strIconPath, const CStdString &strStreamURL)
+bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const CStdString &strChannelName, const CStdString &strIconPath, const CStdString &strStreamURL, bool bUserSetIcon)
 {
   if (!item.HasPVRChannelInfoTag())
     return false;
@@ -1222,7 +1222,7 @@ bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool b
   channel->SetChannelName(strChannelName);
   channel->SetHidden(bHidden);
   channel->SetLocked(bParentalLocked);
-  channel->SetIconPath(strIconPath);
+  channel->SetIconPath(strIconPath, bUserSetIcon);
 
   if (bVirtual)
     channel->SetStreamURL(strStreamURL);
