@@ -268,8 +268,6 @@ CPlexServerManager::ClearBestServer()
 
 void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool success)
 {
-  if (m_stopped) return;
-
   int reachThreads = 0;
 
   {
@@ -362,8 +360,22 @@ void CPlexServerManager::Stop()
   m_stopped = true;
   save();
 
+  CLog::Log(LOGDEBUG, "CPlexServerManager::Stop asked to stop...");
+
+  CSingleLock lk(m_serverManagerLock);
+
   if (IsRunningReachabilityTests())
   {
+    CLog::Log(LOGDEBUG, "CPlexServerManager::Stop still running reachability tests...");
+    std::pair<std::string, CPlexServerReachabilityThread*> p;
+    BOOST_FOREACH(p, m_reachabilityThreads)
+    {
+      CLog::Log(LOGDEBUG, "CPlexServerManager::Stop canceling reachtests for server %s", p.second->m_server->GetName().c_str());
+      p.second->m_server->CancelReachabilityTests();
+    }
+
+    lk.unlock();
+
     if (!m_reachabilityTestEvent.WaitMSec(10 * 1000))
     {
       CLog::Log(LOGWARNING, "CPlexServerManager::Stop waited 10 seconds for the reachability stuff to finish, will just kill and move on.");

@@ -213,6 +213,14 @@ CPlexServer::UpdateReachability()
   return (bool)m_bestConnection;
 }
 
+void CPlexServer::CancelReachabilityTests()
+{
+  CSingleLock lk(m_connTestThreadLock);
+
+  BOOST_FOREACH(CPlexServerConnTestThread* thread, m_connTestThreads)
+    thread->Cancel();
+}
+
 void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, int state)
 {
   {

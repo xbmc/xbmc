@@ -50,6 +50,7 @@ public:
   void Merge(CPlexServerPtr otherServer);
 
   bool UpdateReachability();
+  void CancelReachabilityTests();
 
   CStdString GetName() const { return m_name; }
   CStdString GetUUID() const { return m_uuid; }
