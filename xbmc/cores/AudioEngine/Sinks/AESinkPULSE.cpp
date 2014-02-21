@@ -483,7 +483,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
   m_Channels = format.m_channelLayout.Count();
 
-  pa_cvolume_reset(&m_Volume, m_Channels);
+  pa_cvolume_init(&m_Volume);
 
   pa_format_info *info[1];
   info[0] = pa_format_info_new();
