@@ -217,7 +217,7 @@ unsigned int CDVDAudio::AddPacketsRenderer(unsigned char* data, unsigned int len
     if (len < m_dwPacketSize)
       break;
 
-    if (copied == 0 && timeout < CDVDClock::GetAbsoluteClock())
+    if (timeout < CDVDClock::GetAbsoluteClock())
     {
       CLog::Log(LOGERROR, "CDVDAudio::AddPacketsRenderer - timeout adding data to renderer");
       break;
