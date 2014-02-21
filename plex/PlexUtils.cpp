@@ -537,3 +537,18 @@ CStdString PlexUtils::GetXMLString(const CXBMCTinyXML &document)
 
   return printer.Str();
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::MakeWakeupPipe(SOCKET *pipe)
+{
+#define _USE_PIPE
+#ifdef _USE_PIPE
+  if (::pipe(pipe) == -1)
+  {
+    CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to create a POSIX pipe");
+    return false;
+  }
+  return true;
+#else
+#endif
+}

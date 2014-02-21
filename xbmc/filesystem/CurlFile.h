@@ -128,17 +128,14 @@ namespace XFILE
 
           /* PLEX */
           CStdString    m_strDeadEndUrl; // If we can't redirect, this holds the last URL.
-          int           m_ticklePipe[2];
+          SOCKET        m_ticklePipe[2];
           std::string   m_url; // this is the URL that we are fetching, mostly for debug purpose.
-
           bool          m_hasTicklePipe;
 
           void Cancel()
           {
-#ifndef TARGET_WINDOWS
             if (m_hasTicklePipe)
               write(m_ticklePipe[1], "Q", 1);
-#endif
             m_cancelled = true;
           }
           /* END PLEX */

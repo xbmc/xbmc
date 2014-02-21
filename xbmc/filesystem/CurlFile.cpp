@@ -48,6 +48,7 @@
 #include "Application.h"
 #include "FileItem.h"
 #include "Variant.h"
+#include "PlexUtils.h"
 /* END PLEX */
 
 using namespace XFILE;
@@ -221,14 +222,12 @@ CCurlFile::CReadState::CReadState()
   m_sendRange = true;
   m_headerdone = false;
 
-#ifndef TARGET_WINDOWS
+  /* PLEX */
   m_hasTicklePipe = true;
-  if (::pipe(m_ticklePipe) == -1)
-  {
-    CLog::Log(LOGWARNING, "CCurlFile::CReadState::CReadState failed when creating a pipe!");
+
+  if (!PlexUtils::MakeWakeupPipe(m_ticklePipe))
     m_hasTicklePipe = false;
-  }
-#endif
+  /* END PLEX */
 }
 
 CCurlFile::CReadState::~CReadState()
@@ -1520,7 +1519,7 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
         {
           if (FD_ISSET(m_ticklePipe[0], &fdread))
           {
-            CLog::Log(LOGINFO, "The curl loop was woken up.");
+            CLog::Log(LOGINFO, "CCurlFile::CReadState::FillBuffer [%s] terminated", m_url.c_str());
             char theTickleByte;
             ::read(m_ticklePipe[0], &theTickleByte, 1);
           }
