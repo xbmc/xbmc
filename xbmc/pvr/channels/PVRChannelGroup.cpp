@@ -240,17 +240,6 @@ bool CPVRChannelGroup::SetChannelIconPath(CPVRChannelPtr channel, const std::str
   return false;
 }
 
-bool CPVRChannelGroup::VerifyChannelIconPath(CPVRChannelPtr channel)
-{
-  if (CFile::Exists(channel->IconPath()))
-    return true;
-  else
-  {
-    channel->SetIconPath(std::string(), false, true);
-    return false;
-  }
-}
-
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
   if (CSettings::Get().GetString("pvrmenu.iconpath").empty())
@@ -266,35 +255,63 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   {
     PVRChannelGroupMember groupMember = m_members.at(ptr);
 
-    /* skip if an icon is already set */
-    if (!groupMember.channel->IconPath().empty())
-    {
-      //check if the file exist or empty it
-      if(VerifyChannelIconPath(groupMember.channel))
+    /* skip if an icon is already set  and exists*/
+    if (!groupMember.channel->IsIconExists())
+      groupMember.channel->SetIconPath(std::string(), false);
+    else
         continue;
-    }
 
     CStdString strBasePath = CSettings::Get().GetString("pvrmenu.iconpath");
-    CStdString strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
-
-    CStdString strIconPath = strBasePath + strSanitizedChannelName;
-    StringUtils::ToLower(strSanitizedChannelName);
-    CStdString strIconPathLower = strBasePath + strSanitizedChannelName;
+    CStdString strSanitizedClientChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
+    
+    CStdString strIconPath = strBasePath + strSanitizedClientChannelName;
+    StringUtils::ToLower(strSanitizedClientChannelName);
+    CStdString strIconPathLower = strBasePath + strSanitizedClientChannelName;
     CStdString strIconPathUid;
     strIconPathUid = StringUtils::Format("%08d", groupMember.channel->UniqueID());
     strIconPathUid = URIUtils::AddFileToFolder(strBasePath, strIconPathUid);
 
-    SetChannelIconPath(groupMember.channel, strIconPath      + ".tbn") ||
-    SetChannelIconPath(groupMember.channel, strIconPath      + ".jpg") ||
-    SetChannelIconPath(groupMember.channel, strIconPath      + ".png") ||
+    bool bIconFound =
+      SetChannelIconPath(groupMember.channel, strIconPath      + ".tbn") ||
+      SetChannelIconPath(groupMember.channel, strIconPath      + ".jpg") ||
+      SetChannelIconPath(groupMember.channel, strIconPath      + ".png") ||
 
-    SetChannelIconPath(groupMember.channel, strIconPathLower + ".tbn") ||
-    SetChannelIconPath(groupMember.channel, strIconPathLower + ".jpg") ||
-    SetChannelIconPath(groupMember.channel, strIconPathLower + ".png") ||
+      SetChannelIconPath(groupMember.channel, strIconPathLower + ".tbn") ||
+      SetChannelIconPath(groupMember.channel, strIconPathLower + ".jpg") ||
+      SetChannelIconPath(groupMember.channel, strIconPathLower + ".png") ||
 
-    SetChannelIconPath(groupMember.channel, strIconPathUid   + ".tbn") ||
-    SetChannelIconPath(groupMember.channel, strIconPathUid   + ".jpg") ||
-    SetChannelIconPath(groupMember.channel, strIconPathUid   + ".png");
+      SetChannelIconPath(groupMember.channel, strIconPathUid   + ".tbn") ||
+      SetChannelIconPath(groupMember.channel, strIconPathUid   + ".jpg") ||
+      SetChannelIconPath(groupMember.channel, strIconPathUid   + ".png");
+
+    // Lets do the same with the DB Channel Name if those are different
+    if(!bIconFound)
+    {
+      CStdString strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ChannelName());
+      CStdString strIconPath2 = strBasePath + strSanitizedChannelName;
+
+      if(strIconPath2 != strIconPath)
+      {
+        bIconFound =
+          SetChannelIconPath(groupMember.channel, strIconPath2      + ".tbn") ||
+          SetChannelIconPath(groupMember.channel, strIconPath2      + ".jpg") ||
+          SetChannelIconPath(groupMember.channel, strIconPath2      + ".png") ;
+            
+        if(!bIconFound)
+        {
+          CStdString strSanitizedLowerChannelName = strSanitizedChannelName;
+          StringUtils::ToLower(strSanitizedLowerChannelName);
+          CStdString strIconPathLower2 = strBasePath + strSanitizedLowerChannelName;
+          // Do not search Lowercase if user only changed a letter case ...
+          if(strIconPathLower2 != strIconPathLower)
+          {
+            SetChannelIconPath(groupMember.channel, strIconPathLower2      + ".tbn") ||
+            SetChannelIconPath(groupMember.channel, strIconPathLower2      + ".jpg") ||
+            SetChannelIconPath(groupMember.channel, strIconPathLower2      + ".png") ;
+          }
+        }      
+      } 
+    }
 
     if (bUpdateDb)
       groupMember.channel->Persist();

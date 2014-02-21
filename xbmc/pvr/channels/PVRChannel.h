@@ -155,15 +155,19 @@ namespace PVR
      * @return True if this user changed icon via GUI. False if not.
      */
     bool IsUserSetIcon(void) const;
-	  
+
+     /*!
+     * @return True if the channel icon path exists
+     */
+    bool IsIconExists(void) const;
+    
     /*!
      * @brief Set the path to the icon for this channel.
      * @param strIconPath The new path.
      * @param bIsUserSetIcon true if user changed the icon via GUI, false otherwise.
-     * @param bForceUserSetIconUpdate true if UserSetIcon need to be updated even if IconPath is Empty
      * @return True if the something changed, false otherwise.
      */
-    bool SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon = false, bool bForceUserSetIconUpdate = false);
+    bool SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon = false);
 
     /*!
      * @return The name for this channel used by XBMC.

@@ -417,14 +417,6 @@ namespace PVR
      */
     bool SetChannelIconPath(CPVRChannelPtr channel, const std::string& strIconPath);
 
-     /*!
-      * @brief Verify that Icon path exists and empty it if not
-      * @param channel The channel to verify
-      * @return True if the path exists and is not updated, false otherwise
-      */
-
-     bool VerifyChannelIconPath(CPVRChannelPtr channel);
-
     /*!
      * @brief Load the channels stored in the database.
      * @param bCompress If true, compress the database after storing the channels.
