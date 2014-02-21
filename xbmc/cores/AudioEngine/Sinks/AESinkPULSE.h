@@ -22,9 +22,11 @@
 #include "system.h"
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "Utils/AEDeviceInfo.h"
 #include "Utils/AEUtil.h"
 #include <pulse/pulseaudio.h>
+#include "threads/CriticalSection.h"
 
 class CAESinkPULSE : public IAESink
 {
@@ -46,6 +48,8 @@ public:
   virtual void SetVolume(float volume);
 
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
+  bool IsInitialized();
+  CCriticalSection m_sec;
 private:
   bool Pause(bool pause);
   static inline bool WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry);
