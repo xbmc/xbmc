@@ -27,6 +27,8 @@
 #include "android/loader/AndroidDyload.h"
 #endif
 
+using namespace std;
+
 SoLoader::SoLoader(const char *so, bool bGlobal) : LibraryLoader(so)
 {
   m_soHandle = NULL;
@@ -45,7 +47,7 @@ bool SoLoader::Load()
   if (m_soHandle != NULL)
     return true;
 
-  CStdString strFileName= CSpecialProtocol::TranslatePath(GetFileName());
+  string strFileName= CSpecialProtocol::TranslatePath(GetFileName());
   int flags = RTLD_LAZY;
   if (strFileName == "xbmc.so")
   {

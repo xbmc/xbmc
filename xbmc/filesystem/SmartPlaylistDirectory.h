@@ -31,13 +31,13 @@ namespace XFILE
   public:
     CSmartPlaylistDirectory();
     ~CSmartPlaylistDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
-    virtual bool ContainsFiles(const CStdString& strPath);
+    virtual bool GetDirectory(const std::string& strPath, CFileItemList& items);
+    virtual bool IsAllowed(const std::string &strFile) const { return true; };
+    virtual bool ContainsFiles(const std::string& strPath);
     virtual bool Remove(const char *strPath);
 
-    static bool GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const CStdString &strBaseDir = "", bool filter = false);
+    static bool GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const std::string &strBaseDir = "", bool filter = false);
 
-    static CStdString GetPlaylistByName(const CStdString& name, const CStdString& playlistType);
+    static std::string GetPlaylistByName(const std::string& name, const std::string& playlistType);
   };
 }

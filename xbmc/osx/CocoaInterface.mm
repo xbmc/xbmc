@@ -25,6 +25,8 @@
 #include "utils/log.h"
 #undef BOOL
 
+using namespace std;
+
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGL/OpenGL.h>
@@ -262,7 +264,7 @@ char* Cocoa_MountPoint2DeviceName(char *path)
   return path;
 }
 
-bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volumeName)
+bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, string &volumeName)
 {
   CCocoaAutoPool pool;
   unsigned i, count = 0;

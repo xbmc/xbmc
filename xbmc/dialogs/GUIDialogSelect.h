@@ -37,21 +37,21 @@ public:
   virtual bool OnBack(int actionID);
 
   void Reset();
-  int  Add(const CStdString& strLabel);
+  int  Add(const std::string& strLabel);
   int  Add(const CFileItem* pItem);
   void Add(const CFileItemList& items);
   void SetItems(CFileItemList* items);
   int GetSelectedLabel() const;
-  const CStdString& GetSelectedLabelText();
+  const std::string& GetSelectedLabelText();
   const CFileItemPtr GetSelectedItem();
   const CFileItemList& GetSelectedItems() const;
   void EnableButton(bool enable, int string);
   bool IsButtonPressed();
   void Sort(bool bSortOrder = true);
   void SetSelected(int iSelected);
-  void SetSelected(const CStdString &strSelectedLabel);
+  void SetSelected(const std::string &strSelectedLabel);
   void SetSelected(std::vector<int> selectedIndexes);
-  void SetSelected(const std::vector<CStdString> &selectedLabels);
+  void SetSelected(const std::vector<std::string> &selectedLabels);
   void SetUseDetails(bool useDetails);
   void SetMultiSelection(bool multiSelection);
 protected:

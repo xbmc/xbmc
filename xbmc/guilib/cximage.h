@@ -30,7 +30,7 @@ public:
 
   virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
   virtual bool Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
-  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, 
                                           unsigned char* &bufferout, unsigned int &bufferoutSize);
   virtual void ReleaseThumbnailBuffer();
 

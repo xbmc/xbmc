@@ -25,11 +25,11 @@
 class CAutorunMediaJob : public CJob
 {
 public:
-  CAutorunMediaJob(const CStdString &label, const CStdString &path);
+  CAutorunMediaJob(const std::string &label, const std::string &path);
 
   virtual bool DoWork();
 private:
   const char *GetWindowString(int selection);
 
-  CStdString m_path, m_label;
+  std::string m_path, m_label;
 };

@@ -68,7 +68,7 @@ int CHTTPVfsHandler::HandleHTTPRequest(const HTTPRequest &request)
             if (source->m_iHasLock == 2 || !source->m_allowSharing)
               continue;
 
-            for (vector<CStdString>::const_iterator path = source->vecPaths.begin(); path != source->vecPaths.end(); path++)
+            for (vector<string>::const_iterator path = source->vecPaths.begin(); path != source->vecPaths.end(); path++)
             {
               string realSourcePath = URIUtils::GetRealPath(*path);
               if (URIUtils::IsInPath(realPath, realSourcePath))

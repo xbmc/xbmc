@@ -34,6 +34,8 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 
 #include "commons/Exception.h"
 
+using namespace std;
+
 #define DLL_PROCESS_DETACH   0
 #define DLL_PROCESS_ATTACH   1
 #define DLL_THREAD_ATTACH    2
@@ -144,7 +146,7 @@ int DllLoader::Parse()
 {
   int iResult = 0;
 
-  CStdString strFileName= GetFileName();
+  string strFileName= GetFileName();
   FILE* fp = fopen_utf8(CSpecialProtocol::TranslatePath(strFileName).c_str(), "rb");
 
   if (fp)
@@ -817,7 +819,7 @@ void DllLoader::UnloadSymbols()
 
       try
       {
-        CStdStringW strNameW;
+        wstring strNameW;
         g_charsetConverter.utf8ToW(GetName(), strNameW);
 
         // Get the address of the global struct g_dmi
@@ -830,8 +832,8 @@ void DllLoader::UnloadSymbols()
         //  Search for the dll we are unloading...
         while (entry)
         {
-          CStdStringW baseName=(wchar_t*)((LDR_DATA_TABLE_ENTRY*)entry)->BaseDllName.Buffer;
-          if (baseName.Equals(strNameW))
+          wstring baseName=(wchar_t*)((LDR_DATA_TABLE_ENTRY*)entry)->BaseDllName.Buffer;
+          if (StringUtils::EqualsNoCase(baseName, strNameW))
           {
             // ...and remove it from the LoadedModuleList and free its memory.
             LIST_ENTRY* back=entry->Blink;

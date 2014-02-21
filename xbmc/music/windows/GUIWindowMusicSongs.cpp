@@ -43,6 +43,8 @@
 #include "cores/IPlayer.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
@@ -97,7 +99,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       // Only update thumb on a local drive
       if (directory.IsHD())
       {
-        CStdString strParent;
+        string strParent;
         URIUtils::GetParentPath(directory.GetPath(), strParent);
         if (directory.GetPath() == m_vecItems->GetPath() || strParent == m_vecItems->GetPath())
           Refresh();
@@ -118,7 +120,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
       if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        if (!m_vecItems->GetPath().Equals("special://musicplaylists/"))
+        if (!StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://musicplaylists/"))
           Update("special://musicplaylists/");
       }
       else if (iControl == CONTROL_BTNSCAN)
@@ -164,7 +166,7 @@ bool CGUIWindowMusicSongs::OnAction(const CAction& action)
 
 void CGUIWindowMusicSongs::OnScan(int iItem)
 {
-  CStdString strPath;
+  string strPath;
   if (iItem < 0 || iItem >= m_vecItems->Size())
     strPath = m_vecItems->GetPath();
   else if (m_vecItems->Get(iItem)->m_bIsFolder)
@@ -177,7 +179,7 @@ void CGUIWindowMusicSongs::OnScan(int iItem)
   DoScan(strPath);
 }
 
-void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
+void CGUIWindowMusicSongs::DoScan(const string &strPath)
 {
   if (g_application.IsMusicScanning())
   {
@@ -194,7 +196,7 @@ void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
   return;
 }
 
-bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+bool CGUIWindowMusicSongs::GetDirectory(const string &strDirectory, CFileItemList &items)
 {
   if (!CGUIWindowMusicBase::GetDirectory(strDirectory, items))
     return false;
@@ -202,7 +204,7 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
   // check for .CUE files here.
   items.FilterCueItems();
 
-  CStdString label;
+  string label;
   if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("music"), &label)) 
     items.SetLabel(label);
 
@@ -280,7 +282,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Update object count label
-  CStdString items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
+  string items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 
@@ -293,8 +295,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
   if (item)
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::MusicPlaylistsLocation()) ||
-                       m_vecItems->GetPath().Equals("special://musicplaylists/");
+    bool inPlaylists = StringUtils::EqualsNoCase(m_vecItems->GetPath(), CUtil::MusicPlaylistsLocation()) ||
+                       StringUtils::EqualsNoCase(m_vecItems->GetPath(), "special://musicplaylists/");
 
     if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == "sources://music/")
     {
@@ -369,7 +371,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     if (g_application.IsMusicScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
     else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
-             !item->GetPath().Equals("add") && !item->IsParentFolder() &&
+             !StringUtils::EqualsNoCase(item->GetPath(), "add") && !item->IsParentFolder() &&
              !item->IsPlugin()                                         &&
              !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
             (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
@@ -463,7 +465,7 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 
-bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowMusicSongs::Update(const string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -492,7 +494,7 @@ void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
   }
 }
 
-CStdString CGUIWindowMusicSongs::GetStartFolder(const CStdString &dir)
+string CGUIWindowMusicSongs::GetStartFolder(const string &dir)
 {
   SetupShares();
   VECSOURCES shares;

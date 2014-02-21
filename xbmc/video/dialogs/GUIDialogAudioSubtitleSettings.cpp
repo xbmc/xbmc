@@ -136,14 +136,14 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
   // left, right or both
   if (!setting.max)
   {
-    CStdString strAudioInfo;
+    string strAudioInfo;
     g_application.m_pPlayer->GetAudioInfo(strAudioInfo);
     /* TODO:STRING_CLEANUP */
     int iNumChannels = 0;
     size_t pos = strAudioInfo.find("chns:");
     if (pos != std::string::npos)
       iNumChannels = atoi(strAudioInfo.substr(pos + 5).c_str());
-    CStdString strAudioCodec;
+    string strAudioCodec;
     if (strAudioInfo.size() > 7)
       strAudioCodec = strAudioInfo.substr(7, strAudioInfo.find(") VBR") - 5);
     bool bDTS = strstr(strAudioCodec.c_str(), "DTS") != 0;
@@ -166,8 +166,8 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
   // cycle through each audio stream and add it to our list control
   for (int i = 0; i <= setting.max; ++i)
   {
-    CStdString strItem;
-    CStdString strLanguage;
+    string strItem;
+    string strLanguage;
 
     SPlayerAudioStreamInfo info;
     g_application.m_pPlayer->GetAudioStreamInfo(i, info);
@@ -215,8 +215,8 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     SPlayerSubtitleStreamInfo info;
     g_application.m_pPlayer->GetSubtitleStreamInfo(i, info);
 
-    CStdString strItem;
-    CStdString strLanguage;
+    string strItem;
+    string strLanguage;
 
     if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
       strLanguage = g_localizeStrings.Get(13205); // Unknown
@@ -302,7 +302,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
   {
-    CStdString strPath;
+    string strPath;
     if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
     {
       CURL url(g_application.CurrentFileItem().GetPath());
@@ -311,14 +311,14 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
     else
       strPath = g_application.CurrentFileItem().GetPath();
 
-    CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
+    string strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
     VECSOURCES shares(*CMediaSourceSettings::Get().GetSources("video"));
     if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() != -1 && !CSettings::Get().GetString("subtitles.custompath").empty())
     {
       CMediaSource share;
-      std::vector<CStdString> paths;
+      std::vector<string> paths;
       paths.push_back(URIUtils::GetDirectory(strPath));
       paths.push_back(CSettings::Get().GetString("subtitles.custompath"));
       share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
@@ -381,19 +381,19 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
   CGUIDialogSettings::FrameMove();
 }
 
-CStdString CGUIDialogAudioSubtitleSettings::PercentAsDecibel(float value, float interval)
+string CGUIDialogAudioSubtitleSettings::PercentAsDecibel(float value, float interval)
 {
   return StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(value));;
 }
 
-CStdString CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float interval)
+string CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float interval)
 {
   return StringUtils::Format("%2.1f dB", value);;
 }
 
-CStdString CGUIDialogAudioSubtitleSettings::FormatDelay(float value, float interval)
+string CGUIDialogAudioSubtitleSettings::FormatDelay(float value, float interval)
 {
-  CStdString text;
+  string text;
   if (fabs(value) < 0.5f*interval)
     text = StringUtils::Format(g_localizeStrings.Get(22003).c_str(), 0.0);
   else if (value < 0)

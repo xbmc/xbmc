@@ -47,11 +47,11 @@ CMultiPathDirectory::CMultiPathDirectory()
 CMultiPathDirectory::~CMultiPathDirectory()
 {}
 
-bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CMultiPathDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CLog::Log(LOGDEBUG,"CMultiPathDirectory::GetDirectory(%s)", strPath.c_str());
 
-  vector<CStdString> vecPaths;
+  vector<string> vecPaths;
   if (!GetPaths(strPath, vecPaths))
     return false;
 
@@ -118,7 +118,7 @@ bool CMultiPathDirectory::Exists(const char* strPath)
 {
   CLog::Log(LOGDEBUG,"Testing Existence (%s)", strPath);
 
-  vector<CStdString> vecPaths;
+  vector<string> vecPaths;
   if (!GetPaths(strPath, vecPaths))
     return false;
 
@@ -133,7 +133,7 @@ bool CMultiPathDirectory::Exists(const char* strPath)
 
 bool CMultiPathDirectory::Remove(const char* strPath)
 {
-  vector<CStdString> vecPaths;
+  vector<string> vecPaths;
   if (!GetPaths(strPath, vecPaths))
     return false;
 
@@ -146,7 +146,7 @@ bool CMultiPathDirectory::Remove(const char* strPath)
   return success;
 }
 
-CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
+string CMultiPathDirectory::GetFirstPath(const string &strPath)
 {
   size_t pos = strPath.find("/", 12);
   if (pos != std::string::npos)
@@ -154,18 +154,17 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
   return "";
 }
 
-bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
+bool CMultiPathDirectory::GetPaths(const string& strPath, vector<string>& vecPaths)
 {
   vecPaths.clear();
-  CStdString strPath1 = strPath;
+  string strPath1 = strPath;
 
   // remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
   strPath1 = strPath1.substr(12);
   URIUtils::RemoveSlashAtEnd(strPath1);
 
   // split on "/"
-  vector<CStdString> vecTemp;
-  StringUtils::SplitString(strPath1, "/", vecTemp);
+  vector<string> vecTemp = StringUtils::Split(strPath1, "/");
   if (vecTemp.size() == 0)
     return false;
 
@@ -177,15 +176,14 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   return true;
 }
 
-bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& strPathToFind)
+bool CMultiPathDirectory::HasPath(const string& strPath, const string& strPathToFind)
 {
   // remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
-  CStdString strPath1 = strPath.substr(12);
+  string strPath1 = strPath.substr(12);
   URIUtils::RemoveSlashAtEnd(strPath1);
 
   // split on "/"
-  vector<CStdString> vecTemp;
-  StringUtils::SplitString(strPath1, "/", vecTemp);
+  vector<string> vecTemp = StringUtils::Split(strPath1, "/");
   if (vecTemp.size() == 0)
     return false;
 
@@ -198,12 +196,12 @@ bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& s
   return false;
 }
 
-CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, const vector<int> &stack)
+string CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, const vector<int> &stack)
 {
   // we replace all instances of comma's with double comma's, then separate
   // the paths using " , "
   //CLog::Log(LOGDEBUG, "Building multipath");
-  CStdString newPath = "multipath://";
+  string newPath = "multipath://";
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
   for (unsigned int i = 0; i < stack.size(); ++i)
     AddToMultiPath(newPath, items[stack[i]]->GetPath());
@@ -212,7 +210,7 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, c
   return newPath;
 }
 
-void CMultiPathDirectory::AddToMultiPath(CStdString& strMultiPath, const CStdString& strPath)
+void CMultiPathDirectory::AddToMultiPath(string& strMultiPath, const string& strPath)
 {
   URIUtils::AddSlashAtEnd(strMultiPath);
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
@@ -220,12 +218,12 @@ void CMultiPathDirectory::AddToMultiPath(CStdString& strMultiPath, const CStdStr
   strMultiPath += "/";
 }
 
-CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vecPaths)
+string CMultiPathDirectory::ConstructMultiPath(const vector<string> &vecPaths)
 {
   // we replace all instances of comma's with double comma's, then separate
   // the paths using " , "
   //CLog::Log(LOGDEBUG, "Building multipath");
-  CStdString newPath = "multipath://";
+  string newPath = "multipath://";
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
     AddToMultiPath(newPath, vecPaths[i]);
@@ -233,10 +231,10 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vec
   return newPath;
 }
 
-CStdString CMultiPathDirectory::ConstructMultiPath(const std::set<CStdString> &setPaths)
+string CMultiPathDirectory::ConstructMultiPath(const std::set<string> &setPaths)
 {
-  CStdString newPath = "multipath://";
-  for (std::set<CStdString>::const_iterator path = setPaths.begin(); path != setPaths.end(); ++path)
+  string newPath = "multipath://";
+  for (std::set<string>::const_iterator path = setPaths.begin(); path != setPaths.end(); ++path)
     AddToMultiPath(newPath, *path);
 
   return newPath;
@@ -272,7 +270,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
     do
     {
       CFileItemPtr pItem2 = items.Get(j);
-      if (!pItem2->GetLabel().Equals(pItem1->GetLabel()))
+      if (!StringUtils::EqualsNoCase(pItem2->GetLabel(), pItem1->GetLabel()))
         break;
 
       // ignore any filefolders which may coincidently have
@@ -290,7 +288,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
     if (stack.size() > 1)
     {
       // we have a multipath so remove the items and add the new item
-      CStdString newPath = ConstructMultiPath(items, stack);
+      string newPath = ConstructMultiPath(items, stack);
       for (unsigned int k = stack.size() - 1; k > 0; --k)
         items.Remove(stack[k]);
       pItem1->SetPath(newPath);
@@ -305,9 +303,9 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
             items.Size(), XbmcThreads::SystemClockMillis() - time);
 }
 
-bool CMultiPathDirectory::SupportsWriteFileOperations(const CStdString &strPath)
+bool CMultiPathDirectory::SupportsWriteFileOperations(const string &strPath)
 {
-  vector<CStdString> paths;
+  vector<string> paths;
   GetPaths(strPath, paths);
   for (unsigned int i = 0; i < paths.size(); ++i)
     if (CUtil::SupportsWriteFileOperations(paths[i]))

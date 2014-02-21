@@ -27,6 +27,7 @@
 #include "addons/AddonManager.h"
 #include "AddonDatabase.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 
@@ -47,7 +48,7 @@ void CGUIViewStateAddonBrowser::SaveViewState()
   SaveViewToDb(m_items.GetPath(), WINDOW_ADDON_BROWSER);
 }
 
-CStdString CGUIViewStateAddonBrowser::GetExtensions()
+string CGUIViewStateAddonBrowser::GetExtensions()
 {
   return "";
 }

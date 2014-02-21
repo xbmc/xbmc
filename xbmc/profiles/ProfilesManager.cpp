@@ -133,7 +133,7 @@ bool CProfilesManager::Load(const std::string &file)
         XMLUtils::GetInt(rootElement, XML_AUTO_LOGIN, m_autoLoginProfile);
         XMLUtils::GetInt(rootElement, XML_NEXTID, m_nextProfileId);
         
-        CStdString defaultDir("special://home/userdata");
+        string defaultDir("special://home/userdata");
         if (!CDirectory::Exists(defaultDir))
           defaultDir = "special://xbmc/userdata";
         
@@ -502,7 +502,7 @@ std::string CProfilesManager::GetLibraryFolder() const
 
 std::string CProfilesManager::GetSettingsFile() const
 {
-  CStdString settings;
+  string settings;
   if (m_currentProfile == 0)
     return "special://masterprofile/guisettings.xml";
 

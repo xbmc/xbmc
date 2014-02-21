@@ -23,6 +23,8 @@
 #include "GUIFontManager.h"
 #include "Key.h"
 
+using namespace std;
+
 CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, float posX, float posY, float width, float height,
     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
     const CLabelInfo& labelInfo,
@@ -184,9 +186,9 @@ void CGUIRadioButtonControl::SetHeight(float height)
   SetPosition(GetXPosition(), GetYPosition());
 }
 
-CStdString CGUIRadioButtonControl::GetDescription() const
+string CGUIRadioButtonControl::GetDescription() const
 {
-  CStdString strLabel = CGUIButtonControl::GetDescription();
+  string strLabel = CGUIButtonControl::GetDescription();
   if (m_bSelected)
     strLabel += " (*)";
   else
@@ -204,7 +206,7 @@ bool CGUIRadioButtonControl::UpdateColors()
   return changed;
 }
 
-void CGUIRadioButtonControl::SetToggleSelect(const CStdString &toggleSelect)
+void CGUIRadioButtonControl::SetToggleSelect(const string &toggleSelect)
 {
   m_toggleSelect = g_infoManager.Register(toggleSelect, GetParentID());
 }

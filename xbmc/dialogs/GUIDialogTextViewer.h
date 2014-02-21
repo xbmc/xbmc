@@ -30,13 +30,13 @@ public:
   virtual ~CGUIDialogTextViewer(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  void SetText(const CStdString& strText) { m_strText = strText; }
-  void SetHeading(const CStdString& strHeading) { m_strHeading = strHeading; }
+  void SetText(const std::string& strText) { m_strText = strText; }
+  void SetHeading(const std::string& strHeading) { m_strHeading = strHeading; }
 protected:
   virtual void OnDeinitWindow(int nextWindowID);
 
-  CStdString m_strText;
-  CStdString m_strHeading;
+  std::string m_strText;
+  std::string m_strHeading;
 
   void SetText();
   void SetHeading();

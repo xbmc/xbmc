@@ -42,85 +42,87 @@
 #include "PCMCodec.h"
 #include "utils/StringUtils.h"
 
-ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
+using namespace std;
+
+ICodec* CodecFactory::CreateCodec(const string& strFileType)
 {
-  if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
+  if (StringUtils::EqualsNoCase(strFileType, "mp3") || StringUtils::EqualsNoCase(strFileType, "mp2"))
     return new MP3Codec();
-  else if (strFileType.Equals("pcm") || strFileType.Equals("l16"))
+  else if (StringUtils::EqualsNoCase(strFileType, "pcm") || StringUtils::EqualsNoCase(strFileType, "l16"))
     return new PCMCodec();
-  else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
+  else if (StringUtils::EqualsNoCase(strFileType, "ape") || StringUtils::EqualsNoCase(strFileType, "mac"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("cdda"))
+  else if (StringUtils::EqualsNoCase(strFileType, "cdda"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
+  else if (StringUtils::EqualsNoCase(strFileType, "mpc") || StringUtils::EqualsNoCase(strFileType, "mp+") || StringUtils::EqualsNoCase(strFileType, "mpp"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("shn"))
+  else if (StringUtils::EqualsNoCase(strFileType, "shn"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("mka"))
+  else if (StringUtils::EqualsNoCase(strFileType, "mka"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("flac"))
+  else if (StringUtils::EqualsNoCase(strFileType, "flac"))
     return new FLACCodec();
-  else if (strFileType.Equals("wav"))
+  else if (StringUtils::EqualsNoCase(strFileType, "wav"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("dts") || strFileType.Equals("ac3") ||
-           strFileType.Equals("m4a") || strFileType.Equals("aac") ||
-           strFileType.Equals("pvr"))
+  else if (StringUtils::EqualsNoCase(strFileType, "dts") || StringUtils::EqualsNoCase(strFileType, "ac3") ||
+           StringUtils::EqualsNoCase(strFileType, "m4a") || StringUtils::EqualsNoCase(strFileType, "aac") ||
+           StringUtils::EqualsNoCase(strFileType, "pvr"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("wv"))
+  else if (StringUtils::EqualsNoCase(strFileType, "wv"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("669")  ||  strFileType.Equals("abc") ||
-           strFileType.Equals("amf")  ||  strFileType.Equals("ams") ||
-           strFileType.Equals("dbm")  ||  strFileType.Equals("dmf") ||
-           strFileType.Equals("dsm")  ||  strFileType.Equals("far") ||
-           strFileType.Equals("it")   ||  strFileType.Equals("j2b") ||
-           strFileType.Equals("mdl")  ||  strFileType.Equals("med") ||
-           strFileType.Equals("mod")  ||  strFileType.Equals("itgz")||
-           strFileType.Equals("mt2")  ||  strFileType.Equals("mtm") ||
-           strFileType.Equals("okt")  ||  strFileType.Equals("pat") ||
-           strFileType.Equals("psm")  ||  strFileType.Equals("ptm") ||
-           strFileType.Equals("s3m")  ||  strFileType.Equals("stm") ||
-           strFileType.Equals("ult")  ||  strFileType.Equals("umx") ||
-           strFileType.Equals("xm")   || strFileType.Equals("mdgz") ||
-           strFileType.Equals("s3gz") || strFileType.Equals("xmgz"))
+  else if (StringUtils::EqualsNoCase(strFileType, "669")  ||  StringUtils::EqualsNoCase(strFileType, "abc") ||
+           StringUtils::EqualsNoCase(strFileType, "amf")  ||  StringUtils::EqualsNoCase(strFileType, "ams") ||
+           StringUtils::EqualsNoCase(strFileType, "dbm")  ||  StringUtils::EqualsNoCase(strFileType, "dmf") ||
+           StringUtils::EqualsNoCase(strFileType, "dsm")  ||  StringUtils::EqualsNoCase(strFileType, "far") ||
+           StringUtils::EqualsNoCase(strFileType, "it")   ||  StringUtils::EqualsNoCase(strFileType, "j2b") ||
+           StringUtils::EqualsNoCase(strFileType, "mdl")  ||  StringUtils::EqualsNoCase(strFileType, "med") ||
+           StringUtils::EqualsNoCase(strFileType, "mod")  ||  StringUtils::EqualsNoCase(strFileType, "itgz")||
+           StringUtils::EqualsNoCase(strFileType, "mt2")  ||  StringUtils::EqualsNoCase(strFileType, "mtm") ||
+           StringUtils::EqualsNoCase(strFileType, "okt")  ||  StringUtils::EqualsNoCase(strFileType, "pat") ||
+           StringUtils::EqualsNoCase(strFileType, "psm")  ||  StringUtils::EqualsNoCase(strFileType, "ptm") ||
+           StringUtils::EqualsNoCase(strFileType, "s3m")  ||  StringUtils::EqualsNoCase(strFileType, "stm") ||
+           StringUtils::EqualsNoCase(strFileType, "ult")  ||  StringUtils::EqualsNoCase(strFileType, "umx") ||
+           StringUtils::EqualsNoCase(strFileType, "xm")   || StringUtils::EqualsNoCase(strFileType, "mdgz") ||
+           StringUtils::EqualsNoCase(strFileType, "s3gz") || StringUtils::EqualsNoCase(strFileType, "xmgz"))
     return new ModplugCodec();
-  else if (strFileType.Equals("nsf") || strFileType.Equals("nsfstream"))
+  else if (StringUtils::EqualsNoCase(strFileType, "nsf") || StringUtils::EqualsNoCase(strFileType, "nsfstream"))
     return new NSFCodec();
 #ifdef HAS_SPC_CODEC
-  else if (strFileType.Equals("spc"))
+  else if (StringUtils::EqualsNoCase(strFileType, "spc"))
     return new SPCCodec();
 #endif
-  else if (strFileType.Equals("sid") || strFileType.Equals("sidstream"))
+  else if (StringUtils::EqualsNoCase(strFileType, "sid") || StringUtils::EqualsNoCase(strFileType, "sidstream"))
     return new SIDCodec();
   else if (VGMCodec::IsSupportedFormat(strFileType))
     return new VGMCodec();
-  else if (strFileType.Equals("ym"))
+  else if (StringUtils::EqualsNoCase(strFileType, "ym"))
     return new YMCodec();
-  else if (strFileType.Equals("wma"))
+  else if (StringUtils::EqualsNoCase(strFileType, "wma"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
+  else if (StringUtils::EqualsNoCase(strFileType, "aiff") || StringUtils::EqualsNoCase(strFileType, "aif"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("xwav"))
+  else if (StringUtils::EqualsNoCase(strFileType, "xwav"))
     return new ADPCMCodec();
   else if (TimidityCodec::IsSupportedFormat(strFileType))
     return new TimidityCodec();
 #ifdef HAS_ASAP_CODEC
-  else if (ASAPCodec::IsSupportedFormat(strFileType) || strFileType.Equals("asapstream"))
+  else if (ASAPCodec::IsSupportedFormat(strFileType) || StringUtils::EqualsNoCase(strFileType, "asapstream"))
     return new ASAPCodec();
 #endif
-  else if (strFileType.Equals("tta"))
+  else if (StringUtils::EqualsNoCase(strFileType, "tta"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("tak"))
+  else if (StringUtils::EqualsNoCase(strFileType, "tak"))
     return new DVDPlayerCodec();
 
   return NULL;
 }
 
-ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdString& strContent, unsigned int filecache)
+ICodec* CodecFactory::CreateCodecDemux(const string& strFile, const string& strContent, unsigned int filecache)
 {
   CURL urlFile(strFile);
-  if( strContent.Equals("audio/mpeg")
-  ||  strContent.Equals("audio/mpeg3")
-  ||  strContent.Equals("audio/mp3") )
+  if( StringUtils::EqualsNoCase(strContent, "audio/mpeg")
+  ||  StringUtils::EqualsNoCase(strContent, "audio/mpeg3")
+  ||  StringUtils::EqualsNoCase(strContent, "audio/mp3") )
     return new MP3Codec();
   else if (StringUtils::StartsWithNoCase(strContent, "audio/l16"))
   {
@@ -128,17 +130,20 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     pcm_codec->SetMimeParams(strContent);
     return pcm_codec;
   }
-  else if( strContent.Equals("audio/aac") || strContent.Equals("audio/aacp") ||
-      strContent.Equals("audio/x-ms-wma") ||
-      strContent.Equals("audio/x-ape") || strContent.Equals("audio/ape"))
+  else if (StringUtils::EqualsNoCase(strContent, "audio/aac") ||
+           StringUtils::EqualsNoCase(strContent, "audio/aacp") ||
+           StringUtils::EqualsNoCase(strContent, "audio/x-ms-wma") ||
+           StringUtils::EqualsNoCase(strContent, "audio/x-ape") ||
+           StringUtils::EqualsNoCase(strContent, "audio/ape"))
   {
     DVDPlayerCodec *pCodec = new DVDPlayerCodec;
     pCodec->SetContentType(strContent);
     return pCodec;
   }
-  else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
+  else if (StringUtils::EqualsNoCase(strContent, "application/ogg") ||
+           StringUtils::EqualsNoCase(strContent, "audio/ogg"))
     return CreateOGGCodec(strFile,filecache);
-  else if (strContent.Equals("audio/x-xbmc-pcm"))
+  else if (StringUtils::EqualsNoCase(strContent, "audio/x-xbmc-pcm"))
   {
     // audio/x-xbmc-pcm this is the used codec for AirTunes
     // (apples audio only streaming)
@@ -146,7 +151,9 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     dvdcodec->SetContentType(strContent);
     return dvdcodec;
   }
-  else if (strContent.Equals("audio/flac") || strContent.Equals("audio/x-flac") || strContent.Equals("application/x-flac"))
+  else if (StringUtils::EqualsNoCase(strContent, "audio/flac") ||
+           StringUtils::EqualsNoCase(strContent, "audio/x-flac") ||
+           StringUtils::EqualsNoCase(strContent, "application/x-flac"))
     return new FLACCodec();
 
   if (urlFile.GetProtocol() == "shout")
@@ -154,7 +161,9 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return new MP3Codec(); // if we got this far with internet radio - content-type was wrong. gamble on mp3.
   }
 
-  if (urlFile.GetFileType().Equals("wav") || strContent.Equals("audio/wav") || strContent.Equals("audio/x-wav"))
+  if (StringUtils::EqualsNoCase(urlFile.GetFileType(), "wav") ||
+      StringUtils::EqualsNoCase(strContent, "audio/wav") ||
+      StringUtils::EqualsNoCase(strContent, "audio/x-wav"))
   {
     ICodec* codec;
     //lets see what it contains...
@@ -182,14 +191,16 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     }
     delete codec;
   }
-  else if (urlFile.GetFileType().Equals("ogg") || urlFile.GetFileType().Equals("oggstream") || urlFile.GetFileType().Equals("oga"))
+  else if (StringUtils::EqualsNoCase(urlFile.GetFileType(), "ogg") ||
+           StringUtils::EqualsNoCase(urlFile.GetFileType(), "oggstream") ||
+           StringUtils::EqualsNoCase(urlFile.GetFileType(), "oga"))
     return CreateOGGCodec(strFile,filecache);
 
   //default
   return CreateCodec(urlFile.GetFileType());
 }
 
-ICodec* CodecFactory::CreateOGGCodec(const CStdString& strFile,
+ICodec* CodecFactory::CreateOGGCodec(const string& strFile,
                                      unsigned int filecache)
 {
   // oldnemesis: we want to use OGGCodec() for OGG music since unlike DVDCodec 

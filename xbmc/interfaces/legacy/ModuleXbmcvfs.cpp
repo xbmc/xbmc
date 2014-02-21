@@ -26,6 +26,8 @@
 #include "utils/URIUtils.h"
 #include "Util.h"
 
+using namespace std;
+
 namespace XBMCAddon
 {
 
@@ -83,7 +85,7 @@ namespace XBMCAddon
     Tuple<std::vector<String>, std::vector<String> > listdir(const String& path)
     {
       CFileItemList items;
-      CStdString strSource;
+      string strSource;
       strSource = path;
       XFILE::CDirectory::GetDirectory(strSource, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
 
@@ -93,17 +95,17 @@ namespace XBMCAddon
 
       for (int i=0; i < items.Size(); i++)
       {
-        CStdString itemPath = items[i]->GetPath();
+        string itemPath = items[i]->GetPath();
         
         if (URIUtils::HasSlashAtEnd(itemPath)) // folder
         {
           URIUtils::RemoveSlashAtEnd(itemPath);
-          CStdString strFileName = URIUtils::GetFileName(itemPath);
+          string strFileName = URIUtils::GetFileName(itemPath);
           ret.first().push_back(strFileName);
         }
         else // file
         {
-          CStdString strFileName = URIUtils::GetFileName(itemPath);
+          string strFileName = URIUtils::GetFileName(itemPath);
           ret.second().push_back(strFileName);
         }
       }

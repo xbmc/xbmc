@@ -62,6 +62,7 @@
 #endif
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace boost;
 
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
@@ -517,7 +518,7 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
                                , m_pCodecContext->pix_fmt) == m_formats.end();
 
     bool need_reopen  = false;
-    if(!m_filters.Equals(m_filters_next))
+    if(!StringUtils::EqualsNoCase(m_filters, m_filters_next))
       need_reopen = true;
 
     if(m_pFilterIn)
@@ -700,7 +701,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   return true;
 }
 
-int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
+int CDVDVideoCodecFFmpeg::FilterOpen(const string& filters, bool scale)
 {
   int result;
   AVBufferSinkParams *buffersink_params;
@@ -726,7 +727,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
   AVFilter* srcFilter = m_dllAvFilter.avfilter_get_by_name("buffer");
   AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
 
-  CStdString args = StringUtils::Format("%d:%d:%d:%d:%d:%d:%d",
+  string args = StringUtils::Format("%d:%d:%d:%d:%d:%d:%d",
                                         m_pCodecContext->width,
                                         m_pCodecContext->height,
                                         m_pCodecContext->pix_fmt,
@@ -735,7 +736,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
                                         m_pCodecContext->sample_aspect_ratio.num,
                                         m_pCodecContext->sample_aspect_ratio.den);
 
-  if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterIn, srcFilter, "src", args, NULL, m_pFilterGraph)) < 0)
+  if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterIn, srcFilter, "src", args.c_str(), NULL, m_pFilterGraph)) < 0)
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_create_filter: src");
     return result;

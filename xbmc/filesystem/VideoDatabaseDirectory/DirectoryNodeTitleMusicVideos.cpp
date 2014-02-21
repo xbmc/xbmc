@@ -22,9 +22,10 @@
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 
+using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitleMusicVideos::CDirectoryNodeTitleMusicVideos(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeTitleMusicVideos::CDirectoryNodeTitleMusicVideos(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_TITLE_MUSICVIDEOS, strName, pParent)
 {
 

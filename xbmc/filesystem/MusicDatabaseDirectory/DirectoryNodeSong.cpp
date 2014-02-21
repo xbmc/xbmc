@@ -22,9 +22,10 @@
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
 
+using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeSong::CDirectoryNodeSong(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeSong::CDirectoryNodeSong(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_SONG, strName, pParent)
 {
 
@@ -39,7 +40,7 @@ bool CDirectoryNodeSong::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  CStdString strBaseDir=BuildPath();
+  string strBaseDir=BuildPath();
   bool bSuccess=musicdatabase.GetSongsNav(strBaseDir, items, params.GetGenreId(), params.GetArtistId(), params.GetAlbumId());
 
   musicdatabase.Close();

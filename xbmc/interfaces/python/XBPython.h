@@ -80,12 +80,12 @@ public:
   void UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback);
   void UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback);
-  void OnSettingsChanged(const CStdString &strings);
+  void OnSettingsChanged(const std::string &strings);
   void OnScreensaverActivated();
   void OnScreensaverDeactivated();
   void OnDatabaseUpdated(const std::string &database);
   void OnDatabaseScanStarted(const std::string &database);
-  void OnAbortRequested(const CStdString &ID="");
+  void OnAbortRequested(const std::string &ID="");
   void OnNotification(const std::string &sender, const std::string &method, const std::string &data);
 
   virtual void Process();

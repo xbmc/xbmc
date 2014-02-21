@@ -45,12 +45,12 @@ protected:
    \param isDefault whether this is the default profile or not
    \return true if the profile path has been changed, false otherwise.
    */
-  bool OnProfilePath(CStdString &dir, bool isDefault);
+  bool OnProfilePath(std::string &dir, bool isDefault);
 
   bool m_bNeedSave;
-  CStdString m_strName;
-  CStdString m_strThumb;
-  CStdString m_strDirectory;
+  std::string m_strName;
+  std::string m_strThumb;
+  std::string m_strDirectory;
   int m_iSourcesMode;
   int m_iDbMode;
   bool m_bIsDefault;
@@ -58,6 +58,6 @@ protected:
   bool m_bShowDetails;
 
   CProfile::CLock m_locks;
-  CStdString m_strDefaultImage;
+  std::string m_strDefaultImage;
 };
 

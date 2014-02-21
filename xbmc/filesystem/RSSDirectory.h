@@ -31,14 +31,14 @@ namespace XFILE
   public:
     CRSSDirectory();
     virtual ~CRSSDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    virtual bool GetDirectory(const std::string& strPath, CFileItemList &items);
     virtual bool Exists(const char* strPath);
-    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
-    virtual bool ContainsFiles(const CStdString& strPath);
-    virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
+    virtual bool IsAllowed(const std::string &strFile) const { return true; };
+    virtual bool ContainsFiles(const std::string& strPath);
+    virtual DIR_CACHE_TYPE GetCacheType(const std::string& strPath) const { return DIR_CACHE_ONCE; };
   protected:
     // key is path, value is cache invalidation date
-    static std::map<CStdString,CDateTime> m_cache;
+    static std::map<std::string,CDateTime> m_cache;
     static CCriticalSection m_section;
   };
 }

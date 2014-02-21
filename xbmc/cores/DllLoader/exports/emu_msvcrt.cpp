@@ -201,7 +201,7 @@ extern "C" void __stdcall update_emu_environ()
       && CSettings::Get().GetInt("network.httpproxyport") > 0
       && CSettings::Get().GetInt("network.httpproxytype") == 0)
   {
-    CStdString strProxy;
+    string strProxy;
     if (!CSettings::Get().GetString("network.httpproxyusername").empty() &&
         !CSettings::Get().GetString("network.httpproxypassword").empty())
     {
@@ -242,7 +242,7 @@ static int convert_fmode(const char* mode)
 #ifdef TARGET_WINDOWS
 static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 {
-  CStdString strname;
+  string strname;
   g_charsetConverter.wToUTF8(wdata->name, strname);
   size_t size = sizeof(data->name) / sizeof(char);
   strncpy(data->name, strname.c_str(), size);
@@ -257,7 +257,7 @@ static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 
 static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
 {
-  CStdStringW strwname;
+  wstring strwname;
   g_charsetConverter.utf8ToW(data->name, strwname, false);
   size_t size = sizeof(wdata->name) / sizeof(wchar_t);
   wcsncpy(wdata->name, strwname.c_str(), size);
@@ -808,7 +808,7 @@ extern "C"
 
       // Make sure the slashes are correct & translate the path
       struct _wfinddata64i32_t wdata;
-      CStdStringW strwfile;
+      wstring strwfile;
       g_charsetConverter.utf8ToW(CUtil::ValidatePath(CSpecialProtocol::TranslatePath(str)), strwfile, false);
       intptr_t ret = _wfindfirst64i32(strwfile.c_str(), &wdata);
       if (ret != -1)
@@ -816,11 +816,11 @@ extern "C"
       return ret;
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
-    CStdString strURL(file);
-    CStdString strMask;
+    string strURL(file);
+    string strMask;
     if (url.GetFileName().find("*.*") != string::npos)
     {
-      CStdString strReplaced = url.GetFileName();
+      string strReplaced = url.GetFileName();
       StringUtils::Replace(strReplaced, "*.*","");
       url.SetFileName(strReplaced);
     }
@@ -831,7 +831,7 @@ extern "C"
     }
     else if (url.GetFileName().find("*") != string::npos)
     {
-      CStdString strReplaced = url.GetFileName();
+      string strReplaced = url.GetFileName();
       StringUtils::Replace(strReplaced, "*","");
       url.SetFileName(strReplaced);
     }
@@ -839,7 +839,7 @@ extern "C"
     while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
       return -1; // no free slots
-    if (url.GetProtocol().Equals("filereader"))
+    if (StringUtils::EqualsNoCase(url.GetProtocol(), "filereader"))
     {
       CURL url2(url.GetFileName());
       url = url2;
@@ -952,7 +952,7 @@ extern "C"
     CURL url(CSpecialProtocol::TranslatePath(file));
     if (url.IsLocal())
     { // Make sure the slashes are correct & translate the path
-      return opendir(CUtil::ValidatePath(url.Get().c_str()));
+      return opendir(CUtil::ValidatePath(url.Get()).c_str());
     }
 
     // locate next free directory
@@ -964,7 +964,7 @@ extern "C"
       return NULL; // no free slots
     }
 
-    if (url.GetProtocol().Equals("filereader"))
+    if (StringUtils::EqualsNoCase(url.GetProtocol(), "filereader"))
     {
       CURL url2(url.GetFileName());
       url = url2;
@@ -1483,7 +1483,7 @@ extern "C"
 
   int dllvprintf(const char *format, va_list va)
   {
-    CStdString buffer = StringUtils::FormatV(format, va);
+    string buffer = StringUtils::FormatV(format, va);
     CLog::Log(LOGDEBUG, "  msg: %s", buffer.c_str());
     return buffer.length();
   }
@@ -1911,9 +1911,9 @@ extern "C"
     if (!dir) return -1;
 
     // Make sure the slashes are correct & translate the path
-    CStdString strPath = CUtil::ValidatePath(CSpecialProtocol::TranslatePath(dir));
+    string strPath = CUtil::ValidatePath(CSpecialProtocol::TranslatePath(dir));
 #ifndef TARGET_POSIX
-    CStdStringW strWPath;
+    wstring strWPath;
     g_charsetConverter.utf8ToW(strPath, strWPath, false);
     return _wmkdir(strWPath.c_str());
 #else

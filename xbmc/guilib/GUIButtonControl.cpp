@@ -122,7 +122,7 @@ void CGUIButtonControl::ProcessText(unsigned int currentTime)
   changed |= m_label.SetScrolling(HasFocus());
 
   // render the second label if it exists
-  CStdString label2(m_info2.GetLabel(m_parentID));
+  string label2(m_info2.GetLabel(m_parentID));
   changed |= m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
   changed |= m_label2.SetText(label2);
   if (!label2.empty())
@@ -277,19 +277,19 @@ EVENT_RESULT CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEv
   return EVENT_RESULT_UNHANDLED;
 }
 
-CStdString CGUIButtonControl::GetDescription() const
+string CGUIButtonControl::GetDescription() const
 {
-  CStdString strLabel(m_info.GetLabel(m_parentID));
+  string strLabel(m_info.GetLabel(m_parentID));
   return strLabel;
 }
 
-CStdString CGUIButtonControl::GetLabel2() const
+string CGUIButtonControl::GetLabel2() const
 {
-  CStdString strLabel(m_info2.GetLabel(m_parentID));
+  string strLabel(m_info2.GetLabel(m_parentID));
   return strLabel;
 }
 
-void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &strText, color_t textColor, color_t shadowColor, color_t focusedColor)
+void CGUIButtonControl::PythonSetLabel(const string &strFont, const string &strText, color_t textColor, color_t shadowColor, color_t focusedColor)
 {
   m_label.GetLabelInfo().font = g_fontManager.GetFont(strFont);
   m_label.GetLabelInfo().textColor = textColor;

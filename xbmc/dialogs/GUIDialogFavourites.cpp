@@ -31,6 +31,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define FAVOURITES_LIST 450
@@ -103,7 +104,7 @@ void CGUIDialogFavourites::OnClick(int item)
 
   // grab our message, close the dialog, and send
   CFileItemPtr pItem = (*m_favourites)[item];
-  CStdString execute(pItem->GetPath());
+  string execute(pItem->GetPath());
 
   Close();
 
@@ -181,7 +182,7 @@ void CGUIDialogFavourites::OnRename(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  CStdString label((*m_favourites)[item]->GetLabel());
+  string label((*m_favourites)[item]->GetLabel());
   if (CGUIKeyboardFactory::ShowAndGetInput(label, g_localizeStrings.Get(16008), false))
     (*m_favourites)[item]->SetLabel(label);
 
@@ -214,7 +215,7 @@ void CGUIDialogFavourites::OnSetThumb(int item)
   none->SetLabel(g_localizeStrings.Get(20018));
   items.Add(none);
 
-  CStdString thumb;
+  string thumb;
   VECSOURCES sources;
   g_mediaManager.GetLocalDrives(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), thumb))

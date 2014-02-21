@@ -49,8 +49,8 @@ void CGUILabelControl::ShowCursor(bool bShow)
 
 void CGUILabelControl::SetCursorPos(int iPos)
 {
-  CStdString labelUTF8 = m_infoLabel.GetLabel(m_parentID);
-  CStdStringW label;
+  string labelUTF8 = m_infoLabel.GetLabel(m_parentID);
+  wstring label;
   g_charsetConverter.utf8ToW(labelUTF8, label);
   if (iPos > (int)label.length()) iPos = label.length();
   if (iPos < 0) iPos = 0;
@@ -124,17 +124,17 @@ typedef struct InsertPointInfo
   Type type;
   int blockLength;
   int priority; // only used when same pos, same type, same blocklength
-  CStdStringW text;
+  wstring text;
 } InsertPointInfo;
 
 void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 {
-  CStdString label(m_infoLabel.GetLabel(m_parentID));
+  string label(m_infoLabel.GetLabel(m_parentID));
 
   bool changed = false;
   if (m_startHighlight < m_endHighlight || m_startSelection < m_endSelection || m_bShowCursor)
   {
-    CStdStringW utf16;
+    wstring utf16;
     g_charsetConverter.utf8ToW(label, utf16);
     vecText text; text.reserve(utf16.size()+1);
     vecColors colors;
@@ -272,7 +272,7 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
-CStdString CGUILabelControl::ShortenPath(const CStdString &path)
+string CGUILabelControl::ShortenPath(const string &path)
 {
   if (m_width == 0 || path.empty())
     return path;
@@ -292,7 +292,7 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
   if ( cDelim == '\0' )
     return path;
 
-  CStdString workPath(path);
+  string workPath(path);
   // remove trailing slashes
   if (workPath.size() > 3)
     if (!StringUtils::EndsWith(workPath, "://") &&
@@ -340,7 +340,7 @@ void CGUILabelControl::SetSelection(unsigned int start, unsigned int end)
   m_endSelection = end;
 }
 
-CStdString CGUILabelControl::GetDescription() const
+string CGUILabelControl::GetDescription() const
 {
   return m_infoLabel.GetLabel(m_parentID);
 }

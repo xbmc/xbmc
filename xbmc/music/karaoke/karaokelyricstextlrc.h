@@ -30,7 +30,7 @@
 class CKaraokeLyricsTextLRC : public CKaraokeLyricsText
 {
   public:
-    CKaraokeLyricsTextLRC( const CStdString & lyricsFile );
+    CKaraokeLyricsTextLRC( const std::string & lyricsFile );
     ~CKaraokeLyricsTextLRC();
 
     //! Parses the lyrics or song file, and loads the lyrics into memory. Returns true if the
@@ -42,7 +42,7 @@ class CKaraokeLyricsTextLRC : public CKaraokeLyricsText
     bool ParserNormal(char *lyricData, unsigned int lyricSize, int timing_correction);
     bool ParserMultiTime(char *lyricData, unsigned int lyricSize, int timing_correction);
 
-    CStdString     m_lyricsFile;
+    std::string     m_lyricsFile;
 };
 
 #endif

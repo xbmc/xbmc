@@ -35,6 +35,7 @@
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/StringUtils.h"
 #include "cores/IPlayer.h"
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -69,7 +70,7 @@ bool CPVRClients::IsInUse(const std::string& strAddonId) const
   CSingleLock lock(m_critSection);
 
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (itr->second->Enabled() && itr->second->ID().Equals(strAddonId.c_str()))
+    if (itr->second->Enabled() && StringUtils::EqualsNoCase(itr->second->ID(), strAddonId.c_str()))
       return true;
   return false;
 }
@@ -239,7 +240,7 @@ bool CPVRClients::HasConnectedClients(void) const
   return false;
 }
 
-bool CPVRClients::GetClientName(int iClientId, CStdString &strName) const
+bool CPVRClients::GetClientName(int iClientId, string &strName) const
 {
   bool bReturn(false);
   PVR_CLIENT client;
@@ -275,15 +276,15 @@ int CPVRClients::GetPlayingClientID(void) const
   return -EINVAL;
 }
 
-const CStdString CPVRClients::GetPlayingClientName(void) const
+const string CPVRClients::GetPlayingClientName(void) const
 {
   CSingleLock lock(m_critSection);
   return m_strPlayingClientName;
 }
 
-CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)
+string CPVRClients::GetStreamURL(const CPVRChannel &tag)
 {
-  CStdString strReturn;
+  string strReturn;
   PVR_CLIENT client;
   if (GetConnectedClient(tag.ClientID(), client))
     strReturn = client->GetLiveStreamURL(tag);
@@ -436,7 +437,7 @@ PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
   return error;
 }
 
-PVR_ERROR CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName)
+PVR_ERROR CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const string &strNewName)
 {
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
 
@@ -1020,7 +1021,7 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
 
   CGUIDialogOK::ShowAndGetInput(19240, 19241, 19242, 19243);
 
-  vector<CStdString> params;
+  vector<string> params;
   params.push_back("addons://disabled/xbmc.pvrclient");
   params.push_back("return");
   g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
@@ -1143,7 +1144,7 @@ void CPVRClients::Notify(const Observable &obs, const ObservableMessage msg)
     UpdateAddons();
 }
 
-bool CPVRClients::GetClient(const CStdString &strId, AddonPtr &addon) const
+bool CPVRClients::GetClient(const string &strId, AddonPtr &addon) const
 {
   CSingleLock lock(m_critSection);
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
@@ -1339,9 +1340,9 @@ void CPVRClients::PauseStream(bool bPaused)
     client->PauseStream(bPaused);
 }
 
-CStdString CPVRClients::GetCurrentInputFormat(void) const
+string CPVRClients::GetCurrentInputFormat(void) const
 {
-  CStdString strReturn;
+  string strReturn;
   CPVRChannelPtr currentChannel;
   if (GetPlayingChannel(currentChannel))
     strReturn = currentChannel->InputFormat();

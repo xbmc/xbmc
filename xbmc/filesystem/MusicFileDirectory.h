@@ -30,13 +30,13 @@ namespace XFILE
     public:
       CMusicFileDirectory(void);
       virtual ~CMusicFileDirectory(void);
-      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+      virtual bool GetDirectory(const std::string& strPath, CFileItemList &items);
       virtual bool Exists(const char* strPath);
-      virtual bool ContainsFiles(const CStdString& strPath);
-      virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+      virtual bool ContainsFiles(const std::string& strPath);
+      virtual bool IsAllowed(const std::string &strFile) const { return true; };
     protected:
-      virtual int GetTrackCount(const CStdString& strPath) = 0;
-      CStdString m_strExt;
+      virtual int GetTrackCount(const std::string& strPath) = 0;
+      std::string m_strExt;
       MUSIC_INFO::CMusicInfoTag m_tag;
   };
 }

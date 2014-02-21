@@ -38,7 +38,7 @@ using namespace PVR;
 using namespace EPG;
 using namespace std;
 
-CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &strScraperName /* = "" */, bool bLoadedFromDb /* = false */) :
+CEpg::CEpg(int iEpgID, const string &strName /* = "" */, const string &strScraperName /* = "" */, bool bLoadedFromDb /* = false */) :
     m_bChanged(!bLoadedFromDb),
     m_bTagsChanged(false),
     m_bLoaded(false),
@@ -107,22 +107,22 @@ CEpg &CEpg::operator =(const CEpg &right)
 /** @name Public methods */
 //@{
 
-void CEpg::SetName(const CStdString &strName)
+void CEpg::SetName(const string &strName)
 {
   CSingleLock lock(m_critSection);
 
-  if (!m_strName.Equals(strName))
+  if (!StringUtils::EqualsNoCase(m_strName, strName))
   {
     m_bChanged = true;
     m_strName = strName;
   }
 }
 
-void CEpg::SetScraperName(const CStdString &strScraperName)
+void CEpg::SetScraperName(const string &strScraperName)
 {
   CSingleLock lock(m_critSection);
 
-  if (!m_strScraperName.Equals(strScraperName))
+  if (!StringUtils::EqualsNoCase(m_strScraperName, strScraperName))
   {
     m_bChanged = true;
     m_strScraperName = strScraperName;
@@ -693,7 +693,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
 
 //@}
 
-const CStdString &CEpg::ConvertGenreIdToString(int iID, int iSubID)
+const string &CEpg::ConvertGenreIdToString(int iID, int iSubID)
 {
   unsigned int iLabelId = 19499;
   switch (iID)

@@ -43,6 +43,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 namespace XBMCAddon
 {
   namespace xbmcgui
@@ -276,8 +278,8 @@ namespace XBMCAddon
         (float)dwPosY,
         (float)dwWidth,
         (float)dwHeight,
-        (CStdString)strTextureFocus,
-        (CStdString)strTextureNoFocus,
+        (string)strTextureFocus,
+        (string)strTextureNoFocus,
         label);
 
       CGUIButtonControl* pGuiButtonControl =
@@ -441,7 +443,7 @@ namespace XBMCAddon
     {
       pGUIControl = new CGUIImage(iParentId, iControlId,
             (float)dwPosX, (float)dwPosY, (float)dwWidth, (float)dwHeight,
-            (CStdString)strFileName);
+            (string)strFileName);
 
       if (pGUIControl && aspectRatio <= CAspectRatio::AR_KEEP)
         ((CGUIImage *)pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)aspectRatio);
@@ -497,9 +499,9 @@ namespace XBMCAddon
       pGUIControl = new CGUIProgressControl(iParentId, iControlId,
          (float)dwPosX, (float)dwPosY,
          (float)dwWidth,(float)dwHeight,
-         (CStdString)strTextureBg,(CStdString)strTextureLeft,
-         (CStdString)strTextureMid,(CStdString)strTextureRight,
-         (CStdString)strTextureOverlay);
+         (string)strTextureBg,(string)strTextureLeft,
+         (string)strTextureMid,(string)strTextureRight,
+         (string)strTextureOverlay);
 
       if (pGUIControl && colorDiffuse)
         ((CGUIProgressControl *)pGUIControl)->SetColorDiffuse(colorDiffuse);
@@ -545,8 +547,8 @@ namespace XBMCAddon
     {
       pGUIControl = new CGUISliderControl(iParentId, iControlId,(float)dwPosX, (float)dwPosY,
                                           (float)dwWidth,(float)dwHeight,
-                                          (CStdString)strTextureBack,(CStdString)strTexture,
-                                          (CStdString)strTextureFoc,0);   
+                                          (string)strTextureBack,(string)strTexture,
+                                          (string)strTextureFoc,0);   
     
       return pGUIControl;
     }  
@@ -709,13 +711,13 @@ namespace XBMCAddon
         (float)dwPosY,
         (float)dwWidth,
         (float)dwHeight,
-        (CStdString)strTextureFocus,
-        (CStdString)strTextureNoFocus,
+        (string)strTextureFocus,
+        (string)strTextureNoFocus,
         label,
-        (CStdString)strTextureRadioOnFocus,
-        (CStdString)strTextureRadioOnNoFocus,
-        (CStdString)strTextureRadioOffFocus,
-        (CStdString)strTextureRadioOffNoFocus);
+        (string)strTextureRadioOnFocus,
+        (string)strTextureRadioOnNoFocus,
+        (string)strTextureRadioOffFocus,
+        (string)strTextureRadioOffNoFocus);
 
       CGUIRadioButtonControl* pGuiButtonControl =
         (CGUIRadioButtonControl*)pGUIControl;
@@ -799,12 +801,10 @@ namespace XBMCAddon
         const String& cAttr = pTuple.second();
 
         TiXmlElement pNode("animation");
-        CStdStringArray attrs;
-        StringUtils::SplitString(cAttr.c_str(), " ", attrs);
+        std::vector<std::string> attrs = StringUtils::Split(cAttr.c_str(), " ");
         for (unsigned int i = 0; i < attrs.size(); i++)
         {
-          CStdStringArray attrs2;
-          StringUtils::SplitString(attrs[i], "=", attrs2);
+          std::vector<std::string> attrs2 = StringUtils::Split(attrs[i], "=");
           if (attrs2.size() == 2)
             pNode.SetAttribute(attrs2[0], attrs2[1]);
         }
@@ -1070,8 +1070,8 @@ namespace XBMCAddon
         (float)dwPosY,
         (float)dwWidth,
         (float)dwHeight,
-        (CStdString)strTextureFocus,
-        (CStdString)strTextureNoFocus,
+        (string)strTextureFocus,
+        (string)strTextureNoFocus,
         label,
         strText);
 
@@ -1187,8 +1187,8 @@ namespace XBMCAddon
         (float)dwWidth,
         (float)dwHeight - pControlSpin->dwHeight - 5,
         label, label2,
-        (CStdString)strTextureButton,
-        (CStdString)strTextureButtonFocus,
+        (string)strTextureButton,
+        (string)strTextureButtonFocus,
         (float)itemHeight,
         (float)imageWidth, (float)imageHeight,
         (float)space);

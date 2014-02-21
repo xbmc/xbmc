@@ -112,7 +112,7 @@ static const ControlMapping controls[] =
     {"epggrid",           CGUIControl::GUICONTAINER_EPGGRID},
     {"panel",             CGUIControl::GUICONTAINER_PANEL}};
 
-CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const CStdString &type)
+CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const string &type)
 {
   for (unsigned int i = 0; i < sizeof(controls) / sizeof(controls[0]); ++i)
     if (StringUtils::EqualsNoCase(type, controls[i].name))
@@ -120,7 +120,7 @@ CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const CStd
   return CGUIControl::GUICONTROL_UNKNOWN;
 }
 
-CStdString CGUIControlFactory::TranslateControlType(CGUIControl::GUICONTROLTYPES type)
+string CGUIControlFactory::TranslateControlType(CGUIControl::GUICONTROLTYPES type)
 {
   for (unsigned int i = 0; i < sizeof(controls) / sizeof(controls[0]); ++i)
     if (type == controls[i].type)
@@ -297,7 +297,7 @@ bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTa
 
 bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspect)
 {
-  CStdString ratio;
+  string ratio;
   const TiXmlElement *node = pRootNode->FirstChildElement(strTag);
   if (!node || !node->FirstChild())
     return false;
@@ -311,7 +311,7 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
   const char *attribute = node->Attribute("align");
   if (attribute)
   {
-    CStdString align(attribute);
+    string align(attribute);
     if (StringUtils::EqualsNoCase(align, "center")) aspect.align = ASPECT_ALIGN_CENTER | (aspect.align & ASPECT_ALIGNY_MASK);
     else if (StringUtils::EqualsNoCase(align, "right")) aspect.align = ASPECT_ALIGN_RIGHT | (aspect.align & ASPECT_ALIGNY_MASK);
     else if (StringUtils::EqualsNoCase(align, "left")) aspect.align = ASPECT_ALIGN_LEFT | (aspect.align & ASPECT_ALIGNY_MASK);
@@ -319,7 +319,7 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
   attribute = node->Attribute("aligny");
   if (attribute)
   {
-    CStdString align(attribute);
+    string align(attribute);
     if (StringUtils::EqualsNoCase(align, "center")) aspect.align = ASPECT_ALIGNY_CENTER | (aspect.align & ASPECT_ALIGN_MASK);
     else if (StringUtils::EqualsNoCase(align, "bottom")) aspect.align = ASPECT_ALIGNY_BOTTOM | (aspect.align & ASPECT_ALIGN_MASK);
     else if (StringUtils::EqualsNoCase(align, "top")) aspect.align = ASPECT_ALIGNY_TOP | (aspect.align & ASPECT_ALIGN_MASK);
@@ -327,7 +327,7 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
   attribute = node->Attribute("scalediffuse");
   if (attribute)
   {
-    CStdString scale(attribute);
+    string scale(attribute);
     if (StringUtils::EqualsNoCase(scale, "true") || StringUtils::EqualsNoCase(scale, "yes"))
       aspect.scaleDiffuse = true;
     else
@@ -348,16 +348,27 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode) return false;
+
   const char *border = pNode->Attribute("border");
   if (border)
     GetRectFromString(border, image.border);
+
   image.orientation = 0;
+
   const char *flipX = pNode->Attribute("flipx");
   if (flipX && strcmpi(flipX, "true") == 0) image.orientation = 1;
+
   const char *flipY = pNode->Attribute("flipy");
   if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
-  image.diffuse = pNode->Attribute("diffuse");
-  image.diffuseColor.Parse(pNode->Attribute("colordiffuse"), 0);
+
+  const char *diffuse = pNode->Attribute("diffuse");
+  if (diffuse)
+    image.diffuse = diffuse;
+
+  const char *colordiffuse = pNode->Attribute("colordiffuse");
+  if (colordiffuse)
+    image.diffuseColor.Parse(pNode->Attribute("colordiffuse"), 0);
+
   const char *background = pNode->Attribute("background");
   if (background && strnicmp(background, "true", 4) == 0)
     image.useLarge = true;
@@ -365,11 +376,10 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   return true;
 }
 
-void CGUIControlFactory::GetRectFromString(const CStdString &string, CRect &rect)
+void CGUIControlFactory::GetRectFromString(const string &string, CRect &rect)
 {
   // format is rect="left[,top,right,bottom]"
-  CStdStringArray strRect;
-  StringUtils::SplitString(string, ",", strRect);
+  std::vector<std::string> strRect = StringUtils::Split(string, ",");
   if (strRect.size() == 1)
   {
     rect.x1 = (float)atof(strRect[0].c_str());
@@ -391,7 +401,7 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
 
-  CStdString strAlign = pNode->FirstChild()->Value();
+  string strAlign = pNode->FirstChild()->Value();
   if (strAlign == "right" || strAlign == "bottom") alignment = XBFONT_RIGHT;
   else if (strAlign == "center") alignment = XBFONT_CENTER_X;
   else if (strAlign == "justify") alignment = XBFONT_JUSTIFIED;
@@ -407,7 +417,7 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
     return false;
   }
 
-  CStdString strAlign = pNode->FirstChild()->Value();
+  string strAlign = pNode->FirstChild()->Value();
 
   alignment = 0;
   if (strAlign == "center")
@@ -418,11 +428,11 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, CStdString &condition, CStdString &allowHiddenFocus)
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, string &condition, string &allowHiddenFocus)
 {
   const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
-  vector<CStdString> conditions;
+  vector<string> conditions;
   while (node)
   {
     const char *hidden = node->Attribute("allowhiddenfocus");
@@ -447,9 +457,9 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, CStd
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, CStdString &condition)
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, string &condition)
 {
-  CStdString allowHiddenFocus;
+  string allowHiddenFocus;
   return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
@@ -475,7 +485,7 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, in
         const char *end = hidden.Attribute("end");
         if (start && end)
         {
-          CStdString temp = end;
+          string temp = end;
           hidden.SetAttribute("end", start);
           hidden.SetAttribute("start", temp.c_str());
         }
@@ -502,7 +512,11 @@ bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode, const char* strT
     if (pElement->FirstChild())
     {
       CGUIAction::cond_action_pair pair;
-      pair.condition = pElement->Attribute("condition");
+
+      const char *condition = pElement->Attribute("condition");
+      if (condition)
+        pair.condition = condition;
+
       pair.action = pElement->FirstChild()->Value();
       action.m_actions.push_back(pair);
     }
@@ -527,13 +541,13 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
   return false;
 }
 
-bool CGUIControlFactory::GetScroller(const TiXmlNode *control, const CStdString &scrollerTag, CScroller& scroller)
+bool CGUIControlFactory::GetScroller(const TiXmlNode *control, const string &scrollerTag, CScroller& scroller)
 {
   const TiXmlElement* node = control->FirstChildElement(scrollerTag);
   if (node)
   {
     unsigned int scrollTime;
-    if (XMLUtils::GetUInt(control, scrollerTag, scrollTime))
+    if (XMLUtils::GetUInt(control, scrollerTag.c_str(), scrollTime))
     {
       scroller = CScroller(scrollTime, CAnimEffect::GetTweener(node));
       return true;
@@ -564,7 +578,7 @@ bool CGUIControlFactory::GetInfoColor(const TiXmlNode *control, const char *strT
   return false;
 }
 
-void CGUIControlFactory::GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel, int parentID)
+void CGUIControlFactory::GetInfoLabel(const TiXmlNode *pControlNode, const string &labelTag, CGUIInfoLabel &infoLabel, int parentID)
 {
   vector<CGUIInfoLabel> labels;
   GetInfoLabels(pControlNode, labelTag, labels, parentID);
@@ -577,22 +591,26 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
   if (!element || !element->FirstChild())
     return false;
 
-  CStdString label = element->FirstChild()->Value();
+  string label = element->FirstChild()->Value();
   if (label.empty() || label == "-")
     return false;
 
-  CStdString fallback = element->Attribute("fallback");
+  string fallback;
+  const char *fallbackattr = element->Attribute("fallback");
+  if (fallbackattr)
+    fallback = fallbackattr;
+
   if (StringUtils::IsNaturalNumber(label))
-    label = g_localizeStrings.Get(atoi(label));
+    label = g_localizeStrings.Get(atoi(label.c_str()));
   if (StringUtils::IsNaturalNumber(fallback))
-    fallback = g_localizeStrings.Get(atoi(fallback));
+    fallback = g_localizeStrings.Get(atoi(fallback.c_str()));
   else
     g_charsetConverter.unknownToUTF8(fallback);
   infoLabel.SetLabel(label, fallback, parentID);
   return true;
 }
 
-void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, vector<CGUIInfoLabel> &infoLabels, int parentID)
+void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const string &labelTag, vector<CGUIInfoLabel> &infoLabels, int parentID)
 {
   // we can have the following infolabels:
   // 1.  <number>1234</number> -> direct number
@@ -602,7 +620,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
   int labelNumber = 0;
   if (XMLUtils::GetInt(pControlNode, "number", labelNumber))
   {
-    CStdString label = StringUtils::Format("%i", labelNumber);
+    string label = StringUtils::Format("%i", labelNumber);
     infoLabels.push_back(CGUIInfoLabel(label));
     return; // done
   }
@@ -617,7 +635,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
   const TiXmlNode *infoNode = pControlNode->FirstChild("info");
   if (infoNode)
   { // <info> nodes override <label>'s (backward compatibility)
-    CStdString fallback;
+    string fallback;
     if (infoLabels.size())
       fallback = infoLabels[0].GetLabel(0);
     infoLabels.clear();
@@ -625,7 +643,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
     {
       if (infoNode->FirstChild())
       {
-        CStdString info = StringUtils::Format("$INFO[%s]", infoNode->FirstChild()->Value());
+        string info = StringUtils::Format("$INFO[%s]", infoNode->FirstChild()->Value());
         infoLabels.push_back(CGUIInfoLabel(info, fallback, parentID));
       }
       infoNode = infoNode->NextSibling("info");
@@ -634,17 +652,17 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
 }
 
 // Convert a string to a GUI label, by translating/parsing the label for localisable strings
-CStdString CGUIControlFactory::FilterLabel(const CStdString &label)
+string CGUIControlFactory::FilterLabel(const string &label)
 {
-  CStdString viewLabel = label;
+  string viewLabel = label;
   if (StringUtils::IsNaturalNumber(viewLabel))
-    viewLabel = g_localizeStrings.Get(atoi(label));
+    viewLabel = g_localizeStrings.Get(atoi(label.c_str()));
   else
     g_charsetConverter.unknownToUTF8(viewLabel);
   return viewLabel;
 }
 
-bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTag, CStdString &text)
+bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTag, string &text)
 {
   if (!XMLUtils::GetString(pRootNode, strTag, text))
     return false;
@@ -655,9 +673,9 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
   return true;
 }
 
-CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
+string CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
 {
-  CStdString type;
+  string type;
   const char *szType = pControlNode->Attribute("type");
   if (szType)
     type = szType;
@@ -669,7 +687,7 @@ CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
 CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer)
 {
   // get the control type
-  CStdString strType = GetType(pControlNode);
+  string strType = GetType(pControlNode);
   CGUIControl::GUICONTROLTYPES type = TranslateControlType(strType);
 
   int id = 0;
@@ -683,17 +701,17 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
   int defaultControl = 0;
   bool  defaultAlways = false;
-  CStdString strTmp;
+  string strTmp;
   int singleInfo = 0;
-  CStdString strLabel;
+  string strLabel;
   int iUrlSet=0;
-  CStdString toggleSelect;
+  string toggleSelect;
 
   float spinWidth = 16;
   float spinHeight = 16;
   float spinPosX = 0, spinPosY = 0;
   float checkWidth = 0, checkHeight = 0;
-  CStdString strSubType;
+  string strSubType;
   int iType = SPIN_CONTROL_TYPE_TEXT;
   int iMin = 0;
   int iMax = 100;
@@ -729,8 +747,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CGUIAction focusActions;
   CGUIAction unfocusActions;
   CGUIAction textChangeActions;
-  CStdString strTitle = "";
-  CStdString strRSSTags = "";
+  string strTitle = "";
+  string strRSSTags = "";
 
   float buttonGap = 5;
   int iMovementRange = 0;
@@ -740,8 +758,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     aspect.ratio = CAspectRatio::AR_KEEP;
 #endif
 
-  CStdString allowHiddenFocus;
-  CStdString enableCondition;
+  string allowHiddenFocus;
+  string enableCondition;
 
   vector<CAnimation> animations;
 
@@ -769,9 +787,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float radioPosX = 0;
   float radioPosY = 0;
 
-  CStdString altLabel;
-  CStdString strLabel2;
-  CStdString action;
+  string altLabel;
+  string strLabel2;
+  string action;
 
   int focusPosition = 0;
   int scrollTime = 200;
@@ -785,7 +803,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool   hasCamera = false;
   bool resetOnLabelChange = true;
   bool bPassword = false;
-  CStdString visibleCondition;
+  string visibleCondition;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
@@ -856,7 +874,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
   int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
   if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = (float)-angle;
-  CStdString strFont;
+  string strFont;
   if (XMLUtils::GetString(pControlNode, "font", strFont))
     labelInfo.font = g_fontManager.GetFont(strFont);
   uint32_t alignY = 0;
@@ -872,7 +890,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   focusActions.m_sendThreadMessages = unfocusActions.m_sendThreadMessages = true;
   GetActions(pControlNode, "altclick", altclickActions);
 
-  CStdString infoString;
+  string infoString;
   if (XMLUtils::GetString(pControlNode, "info", infoString))
     singleInfo = g_infoManager.TranslateString(infoString);
 
@@ -1015,7 +1033,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetFloat(pControlNode, "radioheight", radioHeight);
   XMLUtils::GetFloat(pControlNode, "radioposx", radioPosX);
   XMLUtils::GetFloat(pControlNode, "radioposy", radioPosY);
-  CStdString borderStr;
+  string borderStr;
   if (XMLUtils::GetString(pControlNode, "bordersize", borderStr))
     GetRectFromString(borderStr, borderSize);
 
@@ -1032,7 +1050,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   // view type
   VIEW_TYPE viewType = VIEW_TYPE_NONE;
-  CStdString viewLabel;
+  string viewLabel;
   if (type == CGUIControl::GUICONTAINER_PANEL)
   {
     viewType = VIEW_TYPE_ICON;
@@ -1051,7 +1069,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   TiXmlElement *itemElement = pControlNode->FirstChildElement("viewtype");
   if (itemElement && itemElement->FirstChild())
   {
-    CStdString type = itemElement->FirstChild()->Value();
+    string type = itemElement->FirstChild()->Value();
     if (type == "list")
       viewType = VIEW_TYPE_LIST;
     else if (type == "icon")

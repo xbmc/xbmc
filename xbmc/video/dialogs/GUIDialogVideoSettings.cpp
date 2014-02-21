@@ -268,12 +268,12 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_PVRManager.TriggerSaveChannelSettings();
 }
 
-CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)
+string CGUIDialogVideoSettings::FormatInteger(float value, float minimum)
 {
   return StringUtils::Format("%i", MathUtils::round_int(value));
 }
 
-CStdString CGUIDialogVideoSettings::FormatFloat(float value, float minimum)
+string CGUIDialogVideoSettings::FormatFloat(float value, float minimum)
 {
   return StringUtils::Format("%2.2f", value);
 }

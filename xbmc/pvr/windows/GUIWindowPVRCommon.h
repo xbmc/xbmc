@@ -137,7 +137,7 @@ namespace PVR
     virtual bool OnContextButtonSortByChannel(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button);
 
-    virtual void BeforeUpdate(const CStdString &strDirectory) {}
+    virtual void BeforeUpdate(const std::string &strDirectory) {}
     virtual void AfterUpdate(CFileItemList& items) {}
 
     CGUIWindowPVR *  m_parent;

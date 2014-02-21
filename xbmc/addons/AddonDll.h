@@ -49,7 +49,7 @@ namespace ADDON
 
     // addon settings
     virtual void SaveSettings();
-    virtual CStdString GetSetting(const CStdString& key);
+    virtual std::string GetSetting(const std::string& key);
 
     ADDON_STATUS Create();
     virtual void Stop();
@@ -158,14 +158,14 @@ AddonPtr CAddonDll<TheDll, TheStruct, TheProps>::Clone() const
 template<class TheDll, typename TheStruct, typename TheProps>
 bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 {
-  CStdString strFileName;
+  std::string strFileName;
   if (!m_bIsChild)
   {
     strFileName = LibPath();
   }
   else
   { //FIXME hack to load same Dll twice
-    CStdString extension = URIUtils::GetExtension(m_strLibName);
+    std::string extension = URIUtils::GetExtension(m_strLibName);
     strFileName = "special://temp/" + m_strLibName;
     URIUtils::RemoveExtension(strFileName);
     strFileName += "-" + ID() + extension;
@@ -182,14 +182,14 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   // The usual soname requirements apply. no subdirs, and filename is ^lib.*\.so$
   if (!CFile::Exists(strFileName))
   {
-    CStdString tempbin = getenv("XBMC_ANDROID_LIBS");
+    std::string tempbin = getenv("XBMC_ANDROID_LIBS");
     strFileName = tempbin + "/" + m_strLibName;
   }
 #endif
   if (!CFile::Exists(strFileName))
   {
-    CStdString temp = CSpecialProtocol::TranslatePath("special://xbmc/");
-    CStdString tempbin = CSpecialProtocol::TranslatePath("special://xbmcbin/");
+    std::string temp = CSpecialProtocol::TranslatePath("special://xbmc/");
+    std::string tempbin = CSpecialProtocol::TranslatePath("special://xbmcbin/");
     strFileName.erase(0, temp.size());
     strFileName = tempbin + strFileName;
     if (!CFile::Exists(strFileName))
@@ -423,7 +423,7 @@ TiXmlElement CAddonDll<TheDll, TheStruct, TheProps>::MakeSetting(DllSetting& set
       node.SetAttribute("id", setting.id);
       node.SetAttribute("type", "enum");
       node.SetAttribute("label", setting.label);
-      CStdString values;
+      std::string values;
       for (unsigned int i = 0; i < setting.entry.size(); i++)
       {
         values.append(setting.entry[i]);
@@ -449,7 +449,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::SaveSettings()
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
-CStdString CAddonDll<TheDll, TheStruct, TheProps>::GetSetting(const CStdString& key)
+std::string CAddonDll<TheDll, TheStruct, TheProps>::GetSetting(const std::string& key)
 {
   return CAddon::GetSetting(key);
 }
@@ -498,7 +498,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
         else if ((strcmpi(type, "enum") == 0 || strcmpi(type,"integer") == 0) ||
           strcmpi(type, "labelenum") == 0 || strcmpi(type, "rangeofnum") == 0)
         {
-          int tmp = atoi(GetSetting(id));
+          int tmp = atoi(GetSetting(id).c_str());
           status = m_pDll->SetSetting(id, (int*) &tmp);
         }
         else if (strcmpi(type, "bool") == 0)
@@ -509,7 +509,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
         else if (strcmpi(type, "rangeofnum") == 0 || strcmpi(type, "slider") == 0 ||
                  strcmpi(type, "number") == 0)
         {
-          float tmpf = (float)atof(GetSetting(id));
+          float tmpf = (float)atof(GetSetting(id).c_str());
           int   tmpi;
 
           if (option && strcmpi(option,"int") == 0)

@@ -38,6 +38,8 @@
 
 #include "threads/Atomics.h"
 
+using namespace std;
+
 static long sg_singleton_lock_variable = 0;
 XBMCHelper* XBMCHelper::smp_instance = 0;
 
@@ -67,7 +69,7 @@ XBMCHelper::XBMCHelper()
   , m_errorStarting(false)
 {
   // Compute the XBMC_HOME path.
-  CStdString homePath;
+  string homePath;
   CUtil::GetHomePath(homePath);
   m_homepath = homePath;
 

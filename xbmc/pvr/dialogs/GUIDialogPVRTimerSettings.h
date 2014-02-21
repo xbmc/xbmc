@@ -48,8 +48,8 @@ namespace PVR
 
     SYSTEMTIME                          timerStartTime;
     SYSTEMTIME                          timerEndTime;
-    CStdString                          timerStartTimeStr;
-    CStdString                          timerEndTimeStr;
+    std::string                          timerStartTimeStr;
+    std::string                          timerEndTimeStr;
     int                                 m_tmp_iFirstDay;
     int                                 m_tmp_day;
     bool                                m_bTimerActive;

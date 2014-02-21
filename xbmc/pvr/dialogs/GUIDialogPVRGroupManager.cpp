@@ -93,7 +93,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
 
   if (iControl == BUTTON_NEWGROUP)
   {
-    CStdString strGroupName = "";
+    string strGroupName = "";
     /* prompt for a group name */
     if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, g_localizeStrings.Get(19139), false))
     {
@@ -157,7 +157,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(CGUIMessage &message)
     if (!m_selectedGroup)
       return bReturn;
 
-    CStdString strGroupName(m_selectedGroup->GroupName());
+    string strGroupName(m_selectedGroup->GroupName());
     if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, g_localizeStrings.Get(19139), false))
     {
       if (strGroupName != "")
@@ -340,7 +340,7 @@ void CGUIDialogPVRGroupManager::Update()
 
     if (m_selectedGroup->IsInternalGroup())
     {
-      CStdString strNewLabel;
+      string strNewLabel;
       strNewLabel = StringUtils::Format("%s %s",
                                         g_localizeStrings.Get(19022).c_str(),
                                         m_bIsRadio ? g_localizeStrings.Get(19024).c_str() : g_localizeStrings.Get(19023).c_str());
@@ -353,7 +353,7 @@ void CGUIDialogPVRGroupManager::Update()
     }
     else
     {
-      CStdString strNewLabel;
+      string strNewLabel;
       strNewLabel = StringUtils::Format("%s", g_localizeStrings.Get(19219).c_str());
       SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
 

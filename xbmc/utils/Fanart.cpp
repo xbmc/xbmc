@@ -23,6 +23,8 @@
 #include "URIUtils.h"
 #include "StringUtils.h"
 
+using namespace std;
+
 const unsigned int CFanart::max_fanart_colors=3;
 
 
@@ -62,14 +64,21 @@ bool CFanart::Unpack()
   TiXmlElement *fanart = doc.FirstChildElement("fanart");
   while (fanart)
   {
-    CStdString url = fanart->Attribute("url");
+    string url;
+    const char *urlattr = fanart->Attribute("url");
+    if (urlattr)
+       url = fanart->Attribute("url");
+
     TiXmlElement *fanartThumb = fanart->FirstChildElement("thumb");
     while (fanartThumb)
     {
       SFanartData data;
       if (url.empty())
       {
-        data.strImage = fanartThumb->GetText();
+        const char *image = fanartThumb->GetText();
+        if (image)
+          data.strImage = image;
+
         if (fanartThumb->Attribute("preview"))
           data.strPreview = fanartThumb->Attribute("preview");
       }
@@ -79,8 +88,12 @@ bool CFanart::Unpack()
         if (fanartThumb->Attribute("preview"))
           data.strPreview = URIUtils::AddFileToFolder(url, fanartThumb->Attribute("preview"));
       }
-      data.strResolution = fanartThumb->Attribute("dim");
-      ParseColors(fanartThumb->Attribute("colors"), data.strColors);
+      if (fanartThumb->Attribute("dim"))
+        data.strResolution = fanartThumb->Attribute("dim");
+
+      if (fanartThumb->Attribute("colors"))
+        ParseColors(fanartThumb->Attribute("colors"), data.strColors);
+
       m_fanart.push_back(data);
       fanartThumb = fanartThumb->NextSiblingElement("thumb");
     }
@@ -89,7 +102,7 @@ bool CFanart::Unpack()
   return true;
 }
 
-CStdString CFanart::GetImageURL(unsigned int index) const
+string CFanart::GetImageURL(unsigned int index) const
 {
   if (index >= m_fanart.size())
     return "";
@@ -97,7 +110,7 @@ CStdString CFanart::GetImageURL(unsigned int index) const
   return m_fanart[index].strImage;
 }
 
-CStdString CFanart::GetPreviewURL(unsigned int index) const
+string CFanart::GetPreviewURL(unsigned int index) const
 {
   if (index >= m_fanart.size())
     return "";
@@ -105,7 +118,7 @@ CStdString CFanart::GetPreviewURL(unsigned int index) const
   return m_fanart[index].strPreview.empty() ? m_fanart[index].strImage : m_fanart[index].strPreview;
 }
 
-const CStdString CFanart::GetColor(unsigned int index) const
+const string CFanart::GetColor(unsigned int index) const
 {
   if (index >= max_fanart_colors || m_fanart.size() == 0 ||
       m_fanart[0].strColors.size() < index*9+8)
@@ -133,7 +146,7 @@ unsigned int CFanart::GetNumFanarts()
   return m_fanart.size();
 }
 
-bool CFanart::ParseColors(const CStdString &colorsIn, CStdString &colorsOut)
+bool CFanart::ParseColors(const string &colorsIn, string &colorsOut)
 {
   // Formats:
   // 0: XBMC ARGB Hexadecimal string comma seperated "FFFFFFFF,DDDDDDDD,AAAAAAAA"
@@ -149,12 +162,10 @@ bool CFanart::ParseColors(const CStdString &colorsIn, CStdString &colorsOut)
   if (colorsIn[0] == '|')
   { // need conversion
     colorsOut.clear();
-    CStdStringArray strColors;
-    StringUtils::SplitString(colorsIn, "|", strColors);
+    std::vector<std::string> strColors = StringUtils::Split(colorsIn, "|");
     for (int i = 0; i < std::min((int)strColors.size()-1, (int)max_fanart_colors); i++)
     { // split up each color
-      CStdStringArray strTriplets;
-      StringUtils::SplitString(strColors[i+1], ",", strTriplets);
+      std::vector<std::string> strTriplets = StringUtils::Split(strColors[i+1], ",");
       if (strTriplets.size() == 3)
       { // convert
         if (colorsOut.size())

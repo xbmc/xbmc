@@ -22,6 +22,7 @@
 #include "TextureManager.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -100,9 +101,9 @@ void CGUIImage::AllocateOnDemand()
 void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // check whether our image failed to allocate, and if so drop back to the fallback image
-  if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
+  if (m_texture.FailedToAlloc() && !StringUtils::EqualsNoCase(m_texture.GetFileName(), m_info.GetFallback()))
   {
-    if (!m_currentFallback.empty() && !m_texture.GetFileName().Equals(m_currentFallback))
+    if (!m_currentFallback.empty() && !StringUtils::EqualsNoCase(m_texture.GetFileName(), m_currentFallback))
       m_texture.SetFileName(m_currentFallback);
     else
       m_texture.SetFileName(m_info.GetFallback());
@@ -293,7 +294,7 @@ CRect CGUIImage::CalcRenderRegion() const
   return CGUIControl::CalcRenderRegion().Intersect(region);
 }
 
-const CStdString &CGUIImage::GetFileName() const
+const string &CGUIImage::GetFileName() const
 {
   return m_texture.GetFileName();
 }
@@ -310,7 +311,7 @@ void CGUIImage::SetCrossFade(unsigned int time)
     m_crossFadeTime = 1;
 }
 
-void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant, const bool useCache)
+void CGUIImage::SetFileName(const string& strFileName, bool setConstant, const bool useCache)
 {
   if (setConstant)
     m_info.SetLabel(strFileName, "", GetParentID());
@@ -321,7 +322,7 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant, con
   if (m_crossFadeTime)
   {
     // set filename on the next texture
-    if (m_currentTexture.Equals(strFileName))
+    if (StringUtils::EqualsNoCase(m_currentTexture, strFileName))
       return; // nothing to do - we already have this image
 
     if (m_texture.ReadyToRender() || m_texture.GetFileName().empty())
@@ -331,7 +332,7 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant, con
     }
     m_currentFadeTime = 0;
   }
-  if (!m_currentTexture.Equals(strFileName))
+  if (!StringUtils::EqualsNoCase(m_currentTexture, strFileName))
   { // texture is changing - attempt to load it, and save the name in m_currentTexture.
     // we'll check whether it loaded or not in Render()
     m_currentTexture = strFileName;
@@ -394,7 +395,7 @@ unsigned char CGUIImage::GetFadeLevel(unsigned int time) const
   return (unsigned char)(255.0f * (1 - pow(1-alpha, amount))/alpha);
 }
 
-CStdString CGUIImage::GetDescription(void) const
+string CGUIImage::GetDescription(void) const
 {
   return GetFileName();
 }

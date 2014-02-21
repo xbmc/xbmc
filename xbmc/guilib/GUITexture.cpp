@@ -23,6 +23,7 @@
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -32,7 +33,7 @@ CTextureInfo::CTextureInfo()
   useLarge = false;
 }
 
-CTextureInfo::CTextureInfo(const CStdString &file)
+CTextureInfo::CTextureInfo(const string &file)
 {
   orientation = 0;
   useLarge = false;
@@ -646,9 +647,9 @@ bool CGUITextureBase::SetAspectRatio(const CAspectRatio &aspect)
     return false;
 }
 
-bool CGUITextureBase::SetFileName(const CStdString& filename)
+bool CGUITextureBase::SetFileName(const string& filename)
 {
-  if (m_info.filename.Equals(filename)) return false;
+  if (StringUtils::EqualsNoCase(m_info.filename, filename)) return false;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
   FreeResources();

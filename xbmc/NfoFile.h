@@ -46,13 +46,13 @@ public:
     ERROR_NFO    = 4
   };
 
-  NFOResult Create(const CStdString&, const ADDON::ScraperPtr&, int episode=-1,
-                   const CStdString& strPath2="");
+  NFOResult Create(const std::string&, const ADDON::ScraperPtr&, int episode=-1,
+                   const std::string& strPath2="");
   template<class T>
     bool GetDetails(T& details,const char* document=NULL, bool prioritise=false)
   {
     CXBMCTinyXML doc;
-    CStdString strDoc;
+    std::string strDoc;
     if (document)
       strDoc = document;
     else
@@ -74,7 +74,7 @@ private:
   ADDON::TYPE m_type;
   CScraperUrl m_scurl;
 
-  int Load(const CStdString&);
+  int Load(const std::string&);
   int Scrape(ADDON::ScraperPtr& scraper);
 };
 

@@ -23,6 +23,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+using namespace std;
+
 CPosixMountProvider::CPosixMountProvider()
 {
   m_removableLength = 0;
@@ -36,7 +38,7 @@ void CPosixMountProvider::Initialize()
 
 void CPosixMountProvider::GetDrives(VECSOURCES &drives)
 {
-  std::vector<CStdString> result;
+  vector<string> result;
 
   CRegExp reMount;
 #if defined(TARGET_DARWIN)
@@ -55,8 +57,8 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
       if (reMount.RegFind(line) != -1)
       {
         bool accepted = false;
-        std::string mountStr = reMount.GetReplaceString("\\1");
-        std::string fsStr    = reMount.GetReplaceString("\\2");
+        string mountStr = reMount.GetReplaceString("\\1");
+        string fsStr    = reMount.GetReplaceString("\\2");
         const char* mount = mountStr.c_str();
         const char* fs    = fsStr.c_str();
 
@@ -90,9 +92,9 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
   }
 }
 
-std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
+vector<string> CPosixMountProvider::GetDiskUsage()
 {
-  std::vector<CStdString> result;
+  vector<string> result;
   char line[1024];
 
 #if defined(TARGET_DARWIN)

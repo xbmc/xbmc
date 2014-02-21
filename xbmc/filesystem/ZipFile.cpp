@@ -46,10 +46,10 @@ CZipFile::~CZipFile()
 
 bool CZipFile::Open(const CURL&url)
 {
-  CStdString strOpts = url.GetOptions();
+  string strOpts = url.GetOptions();
   CURL url2(url);
   url2.SetOptions("");
-  CStdString strPath = url2.Get();
+  string strPath = url2.Get();
   if (!g_ZipManager.GetZipEntry(strPath,mZipItem))
     return false;
 

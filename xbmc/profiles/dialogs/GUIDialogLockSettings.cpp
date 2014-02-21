@@ -28,6 +28,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CGUIDialogLockSettings::CGUIDialogLockSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_LOCK_SETTINGS, "LockSettings.xml")
 {
@@ -49,8 +51,8 @@ void CGUIDialogLockSettings::SetupPage()
   // update our settings label
   if (m_bGetUser)
   {
-    CStdString strLabel2(CURL::Decode(m_strURL));
-    CStdString strLabel = StringUtils::Format(g_localizeStrings.Get(20152), strLabel2.c_str());
+    string strLabel2(CURL::Decode(m_strURL));
+    string strLabel = StringUtils::Format(g_localizeStrings.Get(20152), strLabel2.c_str());
     SET_CONTROL_LABEL(2, strLabel);
   }
   else
@@ -121,8 +123,8 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
   {
     if (m_bGetUser)
     {
-      CStdString strHeading;
-      CStdString strDecodeUrl(CURL::Decode(m_strURL));
+      string strHeading;
+      string strDecodeUrl(CURL::Decode(m_strURL));
       strHeading = StringUtils::Format("%s %s", g_localizeStrings.Get(14062).c_str(), strDecodeUrl.c_str());
       if (CGUIKeyboardFactory::ShowAndGetInput(m_strUser,strHeading,true))
       {
@@ -140,7 +142,7 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
     
     int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
 
-    CStdString newPassword;
+    string newPassword;
     LockType iLockMode = LOCK_MODE_UNKNOWN;
     bool bResult = false;
     switch(choice)
@@ -185,8 +187,8 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
   }
   if (setting.id == 2 && m_bGetUser)
   {
-    CStdString strDecodeUrl(CURL::Decode(m_strURL));
-    CStdString strHeading = StringUtils::Format("%s %s", g_localizeStrings.Get(20143).c_str(), strDecodeUrl.c_str());
+    string strDecodeUrl(CURL::Decode(m_strURL));
+    string strHeading = StringUtils::Format("%s %s", g_localizeStrings.Get(20143).c_str(), strDecodeUrl.c_str());
     if (CGUIKeyboardFactory::ShowAndGetInput(m_locks.code,strHeading,true,true))
     {
       m_settings[1].name = StringUtils::Format("%s (%s)", g_localizeStrings.Get(12326).c_str(), g_localizeStrings.Get(20141).c_str());
@@ -199,7 +201,7 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
     m_bChanged = true;
 }
 
-bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL, bool *saveUserDetails)
+bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(string& strUser, string& strPassword, const string& strURL, bool *saveUserDetails)
 {
   CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
   if (!dialog) return false;
@@ -220,7 +222,7 @@ bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(CStdString& strUser, CStd
   return false;
 }
 
-bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader)
+bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, string& strPassword, int iHeader)
 {
   CProfile::CLock locks(iLockMode, strPassword);
   if (ShowAndGetLock(locks, iHeader, false, false))

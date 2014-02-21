@@ -26,6 +26,8 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 namespace XFILE
 {
   CRarDirectory::CRarDirectory()
@@ -36,9 +38,9 @@ namespace XFILE
   {
   }
 
-  bool CRarDirectory::GetDirectory(const CStdString& strPathOrig, CFileItemList& items)
+  bool CRarDirectory::GetDirectory(const string& strPathOrig, CFileItemList& items)
   {
-    CStdString strPath;
+    string strPath;
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
     if( !StringUtils::StartsWithNoCase(strPathOrig, "rar://") )
@@ -47,12 +49,12 @@ namespace XFILE
       strPath = strPathOrig;
 
     CURL url(strPath);
-    CStdString strArchive = url.GetHostName();
-    CStdString strOptions = url.GetOptions();
-    CStdString strPathInArchive = url.GetFileName();
+    string strArchive = url.GetHostName();
+    string strOptions = url.GetOptions();
+    string strPathInArchive = url.GetFileName();
     url.SetOptions("");
 
-    CStdString strSlashPath = url.Get();
+    string strSlashPath = url.Get();
 
     // the RAR code depends on things having a "\" at the end of the path
     URIUtils::AddSlashAtEnd(strSlashPath);
@@ -86,7 +88,7 @@ namespace XFILE
     return false;
   }
 
-  bool CRarDirectory::ContainsFiles(const CStdString& strPath)
+  bool CRarDirectory::ContainsFiles(const string& strPath)
   {
     CFileItemList items;
     if (g_RarManager.GetFilesInRar(items,strPath))

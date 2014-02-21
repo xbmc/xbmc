@@ -41,7 +41,7 @@ bool CMusicDbUrl::parse()
   if (m_url.GetProtocol() != "musicdb" || m_url.GetFileName().empty())
     return false;
 
-  CStdString path = m_url.Get();
+  string path = m_url.Get();
   NODE_TYPE dirType = CMusicDatabaseDirectory::GetDirectoryType(path);
   NODE_TYPE childType = CMusicDatabaseDirectory::GetDirectoryChildType(path);
 

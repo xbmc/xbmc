@@ -2,6 +2,9 @@
 
 #include "rar.hpp"
 #include "utils/URIUtils.h"
+#include "utils/CharsetConverter.h"
+
+using namespace std;
 
 char* PointToName(const char *Path)
 {
@@ -194,14 +197,19 @@ void SetSFXExt(wchar *SFXName)
 
 char *GetExt(const char *Name)
 {
-  CStdString strExtension = URIUtils::GetExtension(Name);
+  string strExtension = URIUtils::GetExtension(Name);
   return((char *)strstr((char *)Name,strExtension.c_str()));
 }
 
 wchar *GetExt(const wchar *Name)
 {
-  CStdString strExtension = URIUtils::GetExtension(Name);
-  return((wchar *)wcsstr((wchar_t *)Name,CStdStringW(strExtension).c_str()));
+  string strName;
+  g_charsetConverter.wToUTF8(Name, strName);
+  string strExtension = URIUtils::GetExtension(strName);
+
+  wstring strExtensionW;
+  g_charsetConverter.utf8ToW(strExtension, strExtensionW);
+  return((wchar *)wcsstr((wchar_t *)Name, strExtensionW.c_str()));
 }
 
 

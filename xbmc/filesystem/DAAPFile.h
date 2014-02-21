@@ -43,9 +43,9 @@ public:
   ~CDaapClient();
 
   DAAP_SClient *m_pClient;
-  DAAP_SClientHost* GetHost(const CStdString &srtHost);
-  std::map<CStdString, DAAP_SClientHost*> m_mapHosts;
-  typedef std::map<CStdString, DAAP_SClientHost*>::iterator ITHOST;
+  DAAP_SClientHost* GetHost(const std::string &srtHost);
+  std::map<std::string, DAAP_SClientHost*> m_mapHosts;
+  typedef std::map<std::string, DAAP_SClientHost*>::iterator ITHOST;
 
   DAAP_Status m_Status;
 
@@ -96,7 +96,7 @@ protected:
 
   bool m_bOpened;
 
-  CStdString m_hashurl; // the url that should be used in hash calculation
+  std::string m_hashurl; // the url that should be used in hash calculation
   CURL       m_url;     // the complete url we have connected too
   CCurlFile  m_curl;
 };

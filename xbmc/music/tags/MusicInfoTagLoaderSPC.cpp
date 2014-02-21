@@ -25,6 +25,7 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 
@@ -94,7 +95,7 @@ CMusicInfoTagLoaderSPC::~CMusicInfoTagLoaderSPC()
 {
 }
 
-bool CMusicInfoTagLoaderSPC::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
+bool CMusicInfoTagLoaderSPC::Load(const string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   tag.SetLoaded(false);
 

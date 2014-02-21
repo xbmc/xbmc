@@ -290,7 +290,7 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  CStdString Vendor = g_Windowing.GetRenderVendor();
+  string Vendor = g_Windowing.GetRenderVendor();
   if (StringUtils::StartsWithNoCase(Vendor, "ati"))
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GL_VENDOR: %s, using ati workaround", Vendor.c_str());
@@ -409,7 +409,7 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
     return false;
   }
 
-  CStdString Vendor = VendorPtr;
+  string Vendor = VendorPtr;
   StringUtils::ToLower(Vendor);
   if (Vendor.find("nvidia") == std::string::npos)
   {
@@ -833,7 +833,7 @@ bool CVideoReferenceClock::SetupD3D()
       Measures.push_back(MeasureRefreshrate(MEASURETIME));
 
     //build up a string of measured rates
-    CStdString StrRates;
+    string StrRates;
     for (list<double>::iterator it = Measures.begin(); it != Measures.end(); it++)
       StrRates += StringUtils::Format("%.2f ", *it);
 

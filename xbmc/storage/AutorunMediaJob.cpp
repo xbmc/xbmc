@@ -25,7 +25,9 @@
 #include "guilib/Key.h"
 #include "utils/StringUtils.h"
 
-CAutorunMediaJob::CAutorunMediaJob(const CStdString &label, const CStdString &path)
+using namespace std;
+
+CAutorunMediaJob::CAutorunMediaJob(const string &label, const string &path)
 {
   m_label = label;
   m_path  = path;
@@ -54,7 +56,7 @@ bool CAutorunMediaJob::DoWork()
   int selection = pDialog->GetSelectedLabel();
   if (selection >= 0)
   {
-    CStdString strAction = StringUtils::Format("ActivateWindow(%s, %s)", GetWindowString(selection), m_path.c_str());
+    string strAction = StringUtils::Format("ActivateWindow(%s, %s)", GetWindowString(selection), m_path.c_str());
     CBuiltins::Execute(strAction);
   }
 

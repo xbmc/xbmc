@@ -35,14 +35,14 @@
 #include "PasswordManager.h"
 #include "DllLibAfp.h"
 
+using namespace std;
+using namespace XFILE;
+
 struct CachedDirEntry
 {
   unsigned int type;
-  CStdString name;
+  string name;
 };
-
-using namespace XFILE;
-using namespace std;
 
 CAFPDirectory::CAFPDirectory(void)
 {
@@ -54,14 +54,14 @@ CAFPDirectory::~CAFPDirectory(void)
   gAfpConnection.AddIdleConnection();
 }
 
-bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString &fileName, 
+bool CAFPDirectory::ResolveSymlink( const string &dirName, const string &fileName, 
                                     struct stat *stat, CURL &resolvedUrl)
 {
   CSingleLock lock(gAfpConnection); 
   int ret = 0;  
   bool retVal = true;
   char resolvedLink[MAX_PATH];
-  CStdString fullpath = dirName;
+  string fullpath = dirName;
   URIUtils::AddSlashAtEnd(fullpath);
   fullpath += fileName;
   
@@ -115,7 +115,7 @@ bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString 
 }
 
 
-bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CAFPDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   // We accept afp://[[user[:password@]]server[/share[/path[/file]]]]
   // silence gdb breaking on signal SIGUSR2 with "handle SIGUSR2 nostop noprint"
@@ -138,7 +138,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     }
     return false;
   }
-  CStdString strDirName = gAfpConnection.GetPath(url);
+  string strDirName = gAfpConnection.GetPath(url);
 
   vector<CachedDirEntry> vecEntries;
   struct afp_file_info *dirEnt = NULL;
@@ -183,12 +183,12 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   {
     CachedDirEntry aDir = vecEntries[i];
     // We use UTF-8 internally, as does AFP
-    CStdString strFile = aDir.name;
-    CStdString myStrPath(strPath);
+    string strFile = aDir.name;
+    string myStrPath(strPath);
     URIUtils::AddSlashAtEnd(myStrPath); //be sure the dir ends with a slash    
-    CStdString path(myStrPath + strFile);
+    string path(myStrPath + strFile);
 
-    if (!strFile.Equals(".") && !strFile.Equals("..") && !strFile.Equals("lost+found"))
+    if (!StringUtils::EqualsNoCase(strFile, ".") && !StringUtils::EqualsNoCase(strFile, "..") && !StringUtils::EqualsNoCase(strFile, "lost+found"))
     {
       int64_t iSize = 0;
       bool bIsDir = aDir.type;
@@ -202,7 +202,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
-          CStdString strFullName = strDirName + strFile;
+          string strFullName = strDirName + strFile;
 
           lock.Enter();
 
@@ -280,7 +280,7 @@ bool CAFPDirectory::Create(const char* strPath)
   if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return false;
 
-  CStdString strFilename = gAfpConnection.GetPath(url);
+  string strFilename = gAfpConnection.GetPath(url);
 
   int result = gAfpConnection.GetImpl()->afp_wrap_mkdir(gAfpConnection.GetVolume(), strFilename.c_str(), 0);
 
@@ -298,7 +298,7 @@ bool CAFPDirectory::Remove(const char *strPath)
   if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return false;
 
-  CStdString strFileName = gAfpConnection.GetPath(url);
+  string strFileName = gAfpConnection.GetPath(url);
 
   int result = gAfpConnection.GetImpl()->afp_wrap_rmdir(gAfpConnection.GetVolume(), strFileName.c_str());
 
@@ -319,7 +319,7 @@ bool CAFPDirectory::Exists(const char *strPath)
   if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return false;
 
-  CStdString strFileName(gAfpConnection.GetPath(url));
+  string strFileName(gAfpConnection.GetPath(url));
 
   struct stat info;
   if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFileName.c_str(), &info) != 0)

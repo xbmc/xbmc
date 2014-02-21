@@ -58,35 +58,35 @@ namespace XFILE
       virtual bool ReadString(char *szLine, int iLineLength)     { return m_state->ReadString(szLine, iLineLength); }
       virtual unsigned int Read(void* lpBuf, int64_t uiBufSize)  { return m_state->Read(lpBuf, uiBufSize); }
       virtual int Write(const void* lpBuf, int64_t uiBufSize);
-      virtual CStdString GetMimeType()                           { return m_state->m_httpheader.GetMimeType(); }
-      virtual CStdString GetContent()                            { return GetMimeType(); }
+      virtual std::string GetMimeType()                           { return m_state->m_httpheader.GetMimeType(); }
+      virtual std::string GetContent()                            { return GetMimeType(); }
       virtual int IoControl(EIoControl request, void* param);
       virtual std::string GetContentCharset(void)                { return GetServerReportedCharset(); }
 
-      bool Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML);
-      bool Get(const CStdString& strURL, CStdString& strHTML);
-      bool ReadData(CStdString& strHTML);
-      bool Download(const CStdString& strURL, const CStdString& strFileName, LPDWORD pdwSize = NULL);
+      bool Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML);
+      bool Get(const std::string& strURL, std::string& strHTML);
+      bool ReadData(std::string& strHTML);
+      bool Download(const std::string& strURL, const std::string& strFileName, LPDWORD pdwSize = NULL);
       bool IsInternet(bool checkDNS = true);
       void Cancel();
       void Reset();
-      void SetUserAgent(CStdString sUserAgent)                   { m_userAgent = sUserAgent; }
-      void SetProxy(CStdString &proxy)                           { m_proxy = proxy; }
-      void SetProxyUserPass(CStdString &proxyuserpass)           { m_proxyuserpass = proxyuserpass; }
+      void SetUserAgent(std::string sUserAgent)                   { m_userAgent = sUserAgent; }
+      void SetProxy(std::string &proxy)                           { m_proxy = proxy; }
+      void SetProxyUserPass(std::string &proxyuserpass)           { m_proxyuserpass = proxyuserpass; }
       void SetProxyType(ProxyType proxytype)                     { m_proxytype = proxytype; }
-      void SetStreamProxy(const CStdString &proxy, ProxyType type);
-      void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
+      void SetStreamProxy(const std::string &proxy, ProxyType type);
+      void SetCustomRequest(std::string &request)                 { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
-      void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
+      void SetContentEncoding(std::string encoding)               { m_contentencoding = encoding; }
       void SetAcceptCharset(const std::string& charset)          { m_acceptCharset = charset; }
       void SetTimeout(int connecttimeout)                        { m_connecttimeout = connecttimeout; }
       void SetLowSpeedTime(int lowspeedtime)                     { m_lowspeedtime = lowspeedtime; }
-      void SetPostData(CStdString postdata)                      { m_postdata = postdata; }
-      void SetReferer(CStdString referer)                        { m_referer = referer; }
-      void SetCookie(CStdString cookie)                          { m_cookie = cookie; }
-      void SetMimeType(CStdString mimetype)                      { SetRequestHeader("Content-Type", mimetype); }
-      void SetRequestHeader(CStdString header, CStdString value);
-      void SetRequestHeader(CStdString header, long value);
+      void SetPostData(std::string postdata)                      { m_postdata = postdata; }
+      void SetReferer(std::string referer)                        { m_referer = referer; }
+      void SetCookie(std::string cookie)                          { m_cookie = cookie; }
+      void SetMimeType(std::string mimetype)                      { SetRequestHeader("Content-Type", mimetype); }
+      void SetRequestHeader(std::string header, std::string value);
+      void SetRequestHeader(std::string header, long value);
 
       void ClearRequestHeaders();
       void SetBufferSize(unsigned int size);
@@ -96,7 +96,7 @@ namespace XFILE
 
       /* static function that will get content type of a file */
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
-      static bool GetMimeType(const CURL &url, CStdString &content, CStdString useragent="");
+      static bool GetMimeType(const CURL &url, std::string &content, std::string useragent="");
 
       /* static function that will get cookies stored by CURL in RFC 2109 format */
       static bool GetCookies(const CURL &url, std::string &cookies);
@@ -152,7 +152,7 @@ namespace XFILE
       void SetCommonOptions(CReadState* state);
       void SetRequestHeaders(CReadState* state);
       void SetCorrectHeaders(CReadState* state);
-      bool Service(const CStdString& strURL, CStdString& strHTML);
+      bool Service(const std::string& strURL, std::string& strHTML);
 
     protected:
       CReadState*     m_state;
@@ -160,23 +160,23 @@ namespace XFILE
       unsigned int    m_bufferSize;
       int64_t         m_writeOffset;
 
-      CStdString      m_url;
-      CStdString      m_userAgent;
-      CStdString      m_proxy;
-      CStdString      m_proxyuserpass;
+      std::string      m_url;
+      std::string      m_userAgent;
+      std::string      m_proxy;
+      std::string      m_proxyuserpass;
       ProxyType       m_proxytype;
-      CStdString      m_customrequest;
-      CStdString      m_contentencoding;
+      std::string      m_customrequest;
+      std::string      m_contentencoding;
       std::string     m_acceptCharset;
-      CStdString      m_ftpauth;
-      CStdString      m_ftpport;
-      CStdString      m_binary;
-      CStdString      m_postdata;
-      CStdString      m_referer;
-      CStdString      m_cookie;
-      CStdString      m_username;
-      CStdString      m_password;
-      CStdString      m_httpauth;
+      std::string      m_ftpauth;
+      std::string      m_ftpport;
+      std::string      m_binary;
+      std::string      m_postdata;
+      std::string      m_referer;
+      std::string      m_cookie;
+      std::string      m_username;
+      std::string      m_password;
+      std::string      m_httpauth;
       bool            m_ftppasvip;
       int             m_connecttimeout;
       int             m_lowspeedtime;
@@ -195,7 +195,7 @@ namespace XFILE
 
       int             m_stillRunning;     // Is background url fetch still in progress?
 
-      typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
+      typedef std::map<std::string, std::string> MAPHTTPHEADERS;
       MAPHTTPHEADERS m_requestheaders;
 
       long            m_httpresponse;

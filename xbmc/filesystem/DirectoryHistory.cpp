@@ -25,7 +25,7 @@
 
 using namespace std;
 
-const CStdString& CDirectoryHistory::CPathHistoryItem::GetPath(bool filter /* = false */) const
+const string& CDirectoryHistory::CPathHistoryItem::GetPath(bool filter /* = false */) const
 {
   if (filter && !m_strFilterPath.empty())
     return m_strFilterPath;
@@ -39,20 +39,20 @@ CDirectoryHistory::~CDirectoryHistory()
   m_vecPathHistory.clear();
 }
 
-void CDirectoryHistory::RemoveSelectedItem(const CStdString& strDirectory)
+void CDirectoryHistory::RemoveSelectedItem(const string& strDirectory)
 {
   HistoryMap::iterator iter = m_vecHistory.find(preparePath(strDirectory));
   if (iter != m_vecHistory.end())
     m_vecHistory.erase(iter);
 }
 
-void CDirectoryHistory::SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory)
+void CDirectoryHistory::SetSelectedItem(const string& strSelectedItem, const string& strDirectory)
 {
   if (strSelectedItem.empty())
     return;
   
-  CStdString strDir = preparePath(strDirectory);
-  CStdString strItem = preparePath(strSelectedItem, false);
+  string strDir = preparePath(strDirectory);
+  string strItem = preparePath(strSelectedItem, false);
   
   HistoryMap::iterator iter = m_vecHistory.find(strDir);
   if (iter != m_vecHistory.end())
@@ -67,7 +67,7 @@ void CDirectoryHistory::SetSelectedItem(const CStdString& strSelectedItem, const
   m_vecHistory[strDir] = item;
 }
 
-const CStdString& CDirectoryHistory::GetSelectedItem(const CStdString& strDirectory) const
+const string& CDirectoryHistory::GetSelectedItem(const string& strDirectory) const
 {
   HistoryMap::const_iterator iter = m_vecHistory.find(preparePath(strDirectory));
   if (iter != m_vecHistory.end())
@@ -76,7 +76,7 @@ const CStdString& CDirectoryHistory::GetSelectedItem(const CStdString& strDirect
   return StringUtils::EmptyString;
 }
 
-void CDirectoryHistory::AddPath(const CStdString& strPath, const CStdString &strFilterPath /* = "" */)
+void CDirectoryHistory::AddPath(const string& strPath, const string &strFilterPath /* = "" */)
 {
   if (!m_vecPathHistory.empty() && m_vecPathHistory.back().m_strPath == strPath)
     return;
@@ -87,7 +87,7 @@ void CDirectoryHistory::AddPath(const CStdString& strPath, const CStdString &str
   m_vecPathHistory.push_back(item);
 }
 
-void CDirectoryHistory::AddPathFront(const CStdString& strPath, const CStdString &strFilterPath /* = "" */)
+void CDirectoryHistory::AddPathFront(const string& strPath, const string &strFilterPath /* = "" */)
 {
   CPathHistoryItem item;
   item.m_strPath = strPath;
@@ -95,7 +95,7 @@ void CDirectoryHistory::AddPathFront(const CStdString& strPath, const CStdString
   m_vecPathHistory.insert(m_vecPathHistory.begin(), item);
 }
 
-CStdString CDirectoryHistory::GetParentPath(bool filter /* = false */)
+string CDirectoryHistory::GetParentPath(bool filter /* = false */)
 {
   if (m_vecPathHistory.empty())
     return StringUtils::EmptyString;
@@ -103,12 +103,12 @@ CStdString CDirectoryHistory::GetParentPath(bool filter /* = false */)
   return m_vecPathHistory.back().GetPath(filter);
 }
 
-CStdString CDirectoryHistory::RemoveParentPath(bool filter /* = false */)
+string CDirectoryHistory::RemoveParentPath(bool filter /* = false */)
 {
   if (m_vecPathHistory.empty())
     return StringUtils::EmptyString;
 
-  CStdString strParent = GetParentPath(filter);
+  string strParent = GetParentPath(filter);
   m_vecPathHistory.pop_back();
   return strParent;
 }
@@ -136,9 +136,9 @@ void CDirectoryHistory::DumpPathHistory()
     CLog::Log(LOGDEBUG, "  %02i.[%s; %s]", i, m_vecPathHistory[i].m_strPath.c_str(), m_vecPathHistory[i].m_strFilterPath.c_str());
 }
 
-CStdString CDirectoryHistory::preparePath(const CStdString &strDirectory, bool tolower /* = true */)
+string CDirectoryHistory::preparePath(const string &strDirectory, bool tolower /* = true */)
 {
-  CStdString strDir = strDirectory;
+  string strDir = strDirectory;
   if (tolower)
     StringUtils::ToLower(strDir);
 

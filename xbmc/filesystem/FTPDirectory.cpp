@@ -33,13 +33,13 @@ using namespace XFILE;
 CFTPDirectory::CFTPDirectory(void){}
 CFTPDirectory::~CFTPDirectory(void){}
 
-bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CFTPDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CCurlFile reader;
 
   CURL url(strPath);
 
-  CStdString path = url.GetFileName();
+  string path = url.GetFileName();
   if( !path.empty() && !StringUtils::EndsWith(path, "/") )
   {
     path += "/";
@@ -49,12 +49,12 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (!reader.Open(url))
     return false;
 
-  bool serverNotUseUTF8 = url.GetProtocolOption("utf8").Equals("0");
+  bool serverNotUseUTF8 = StringUtils::EqualsNoCase(url.GetProtocolOption("utf8"), "0");
 
   char buffer[MAX_PATH + 1024];
   while( reader.ReadString(buffer, sizeof(buffer)) )
   {
-    CStdString strBuffer = buffer;
+    string strBuffer = buffer;
 
     StringUtils::RemoveCRLF(strBuffer);
 
@@ -68,10 +68,10 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         continue;
 
       /* buffer name */
-      CStdString name;
+      string name;
       name.assign(parse.getName());
 
-      if( name.Equals("..") || name.Equals(".") )
+      if( StringUtils::EqualsNoCase(name, "..") || StringUtils::EqualsNoCase(name, ".") )
         continue;
 
       // server returned filename could in utf8 or non-utf8 encoding
@@ -92,7 +92,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       CFileItemPtr pItem(new CFileItem(name));
 
       pItem->m_bIsFolder = (bool)(parse.getFlagtrycwd() != 0);
-      CStdString filePath = path + name;
+      string filePath = path + name;
       if (pItem->m_bIsFolder)
         URIUtils::AddSlashAtEnd(filePath);
 
@@ -114,7 +114,7 @@ bool CFTPDirectory::Exists(const char* strPath)
 {
   // make sure ftp dir ends with slash,
   // curl need to known it's a dir to check ftp directory existence.
-  CStdString file = strPath;
+  string file = strPath;
   URIUtils::AddSlashAtEnd(file);
 
   CCurlFile ftp;

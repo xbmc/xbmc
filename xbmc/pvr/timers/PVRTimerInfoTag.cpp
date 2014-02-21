@@ -232,9 +232,9 @@ void CPVRTimerInfoTag::UpdateSummary(void)
 /**
  * Get the status string of this Timer, is used by the GUIInfoManager
  */
-CStdString CPVRTimerInfoTag::GetStatus() const
+string CPVRTimerInfoTag::GetStatus() const
 {
-  CStdString strReturn = g_localizeStrings.Get(305);
+  string strReturn = g_localizeStrings.Get(305);
   CSingleLock lock(m_critSection);
   if (m_strFileNameAndPath == "pvr://timers/add.timer")
     strReturn = g_localizeStrings.Get(19026);
@@ -286,7 +286,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
   return true;
 }
 
-bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
+bool CPVRTimerInfoTag::RenameOnClient(const string &strNewName)
 {
   {
     CSingleLock lock(m_critSection);
@@ -379,18 +379,18 @@ int CPVRTimerInfoTag::ChannelNumber() const
   return channeltag ? channeltag->ChannelNumber() : 0;
 }
 
-CStdString CPVRTimerInfoTag::ChannelName() const
+string CPVRTimerInfoTag::ChannelName() const
 {
-  CStdString strReturn;
+  string strReturn;
   CPVRChannelPtr channeltag = ChannelTag();
   if (channeltag)
     strReturn = channeltag->ChannelName();
   return strReturn;
 }
 
-CStdString CPVRTimerInfoTag::ChannelIcon() const
+string CPVRTimerInfoTag::ChannelIcon() const
 {
-  CStdString strReturn;
+  string strReturn;
   CPVRChannelPtr channeltag = ChannelTag();
   if (channeltag)
     strReturn = channeltag->IconPath();
@@ -512,7 +512,7 @@ CDateTime CPVRTimerInfoTag::FirstDayAsLocalTime(void) const
   return retVal;
 }
 
-void CPVRTimerInfoTag::GetNotificationText(CStdString &strText) const
+void CPVRTimerInfoTag::GetNotificationText(string &strText) const
 {
   CSingleLock lock(m_critSection);
   switch (m_state)
@@ -546,7 +546,7 @@ void CPVRTimerInfoTag::QueueNotification(void) const
 {
   if (CSettings::Get().GetBool("pvrrecord.timernotifications"))
   {
-    CStdString strMessage;
+    string strMessage;
     GetNotificationText(strMessage);
 
     if (!strMessage.empty())
@@ -591,23 +591,23 @@ void CPVRTimerInfoTag::UpdateChannel(void)
   m_channel = g_PVRChannelGroups->Get(m_bIsRadio)->GetGroupAll()->GetByClient(m_iClientChannelUid, m_iClientId);
 }
 
-CStdString CPVRTimerInfoTag::Title(void) const
+string CPVRTimerInfoTag::Title(void) const
 {
-  CStdString strReturn;
+  string strReturn;
   strReturn = m_strTitle;
   return strReturn;
 }
 
-CStdString CPVRTimerInfoTag::Summary(void) const
+string CPVRTimerInfoTag::Summary(void) const
 {
-  CStdString strReturn;
+  string strReturn;
   strReturn = m_strSummary;
   return strReturn;
 }
 
-CStdString CPVRTimerInfoTag::Path(void) const
+string CPVRTimerInfoTag::Path(void) const
 {
-  CStdString strReturn;
+  string strReturn;
   strReturn = m_strFileNameAndPath;
   return strReturn;
 }

@@ -258,10 +258,10 @@ void CGUIEditControl::OnClick()
   if (GetParentID() == WINDOW_DIALOG_KEYBOARD)
     return;
 
-  CStdString utf8;
+  string utf8;
   g_charsetConverter.wToUTF8(m_text2, utf8);
   bool textChanged = false;
-  CStdString heading = g_localizeStrings.Get(m_inputHeading ? m_inputHeading : 16028);
+  string heading = g_localizeStrings.Get(m_inputHeading ? m_inputHeading : 16028);
   switch (m_inputType)
   {
     case INPUT_TYPE_READONLY:
@@ -279,7 +279,7 @@ void CGUIEditControl::OnClick()
       dateTime.SetFromDBTime(utf8);
       SYSTEMTIME time;
       dateTime.GetAsSystemTime(time);
-      if (CGUIDialogNumeric::ShowAndGetTime(time, heading > 0 ? heading : g_localizeStrings.Get(21420)))
+      if (CGUIDialogNumeric::ShowAndGetTime(time, heading.empty() ? g_localizeStrings.Get(21420) : heading))
       {
         dateTime = CDateTime(time);
         utf8 = dateTime.GetAsLocalizedTime("", false);
@@ -295,7 +295,7 @@ void CGUIEditControl::OnClick()
         dateTime = CDateTime(2000, 1, 1, 0, 0, 0);
       SYSTEMTIME date;
       dateTime.GetAsSystemTime(date);
-      if (CGUIDialogNumeric::ShowAndGetDate(date, heading > 0 ? heading : g_localizeStrings.Get(21420)))
+      if (CGUIDialogNumeric::ShowAndGetDate(date, heading.empty() ? g_localizeStrings.Get(21420) : heading))
       {
         dateTime = CDateTime(date);
         utf8 = dateTime.GetAsDBDate();
@@ -359,7 +359,7 @@ void CGUIEditControl::RecalcLabelPosition()
   // ensure that our cursor is within our width
   ValidateCursor();
 
-  CStdStringW text = GetDisplayedText();
+  wstring text = GetDisplayedText();
   m_textWidth = m_label.CalcTextWidth(text + L'|');
   float beforeCursorWidth = m_label.CalcTextWidth(text.substr(0, m_cursorPos));
   float afterCursorWidth = m_label.CalcTextWidth(text.substr(0, m_cursorPos) + L'|');
@@ -438,11 +438,11 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
         align |= (m_label2.GetLabelInfo().align & 3);
       }
     }
-    CStdStringW text = GetDisplayedText();
+    wstring text = GetDisplayedText();
     // add the cursor if we're focused
     if (HasFocus() && m_inputType != INPUT_TYPE_READONLY)
     {
-      CStdStringW col;
+      wstring col;
       if ((m_focusCounter % 64) > 32)
         col = L"|";
       else
@@ -490,11 +490,11 @@ void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)
   m_hintInfo = hint;
 }
 
-CStdStringW CGUIEditControl::GetDisplayedText() const
+wstring CGUIEditControl::GetDisplayedText() const
 {
   if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
   {
-    CStdStringW text;
+    wstring text;
     text.append(m_text2.size(), L'*');
     return text;
   }
@@ -515,7 +515,7 @@ void CGUIEditControl::SetLabel(const std::string &text)
 
 void CGUIEditControl::SetLabel2(const std::string &text)
 {
-  CStdStringW newText;
+  wstring newText;
   g_charsetConverter.utf8ToW(text, newText);
   if (newText != m_text2)
   {
@@ -527,9 +527,9 @@ void CGUIEditControl::SetLabel2(const std::string &text)
   }
 }
 
-CStdString CGUIEditControl::GetLabel2() const
+string CGUIEditControl::GetLabel2() const
 {
-  CStdString text;
+  string text;
   g_charsetConverter.wToUTF8(m_text2, text);
   if (m_inputType == INPUT_TYPE_PASSWORD_MD5 && !m_isMD5)
     return XBMC::XBMC_MD5::GetMD5(text);
@@ -593,8 +593,8 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
 
 void CGUIEditControl::OnPasteClipboard()
 {
-  CStdStringW unicode_text;
-  CStdStringA utf8_text;
+  wstring unicode_text;
+  std::string utf8_text;
 
 // Get text from the clipboard
   utf8_text = g_Windowing.GetClipboardText();
@@ -603,8 +603,8 @@ void CGUIEditControl::OnPasteClipboard()
   // Insert the pasted text at the current cursor position.
   if (unicode_text.length() > 0)
   {
-    CStdStringW left_end = m_text2.substr(0, m_cursorPos);
-    CStdStringW right_end = m_text2.substr(m_cursorPos);
+    wstring left_end = m_text2.substr(0, m_cursorPos);
+    wstring right_end = m_text2.substr(m_cursorPos);
 
     m_text2 = left_end;
     m_text2.append(unicode_text);
@@ -625,7 +625,7 @@ void CGUIEditControl::SetInputValidation(StringValidation::Validator inputValida
   ValidateInput();
 }
 
-bool CGUIEditControl::ValidateInput(const CStdStringW &data) const
+bool CGUIEditControl::ValidateInput(const wstring &data) const
 {
   if (m_inputValidator == NULL)
     return true;

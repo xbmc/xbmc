@@ -324,7 +324,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   {
     if (pPathName->FirstChild())
     {
-      CStdString strPath = pPathName->FirstChild()->ValueStr();
+      string strPath = pPathName->FirstChild()->ValueStr();
 
       // make sure there are no virtualpaths or stack paths defined in sources.xml
       if (!URIUtils::IsStack(strPath))
@@ -355,7 +355,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   if (strName.empty() || vecPaths.empty())
     return false;
 
-  vector<CStdString> verifiedPaths;
+  vector<string> verifiedPaths;
   // disallowed for files, or theres only a single path in the vector
   if (StringUtils::EqualsNoCase(category, "files") || vecPaths.size() == 1)
     verifiedPaths.push_back(vecPaths[0]);

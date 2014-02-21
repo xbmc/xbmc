@@ -36,6 +36,8 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 typedef struct
 {
   unsigned int   text;
@@ -104,7 +106,7 @@ void CKaraokeLyricsText::clearLyrics()
 }
 
 
-void CKaraokeLyricsText::addLyrics(const CStdString & text, unsigned int timing, unsigned int flags, unsigned int pitch)
+void CKaraokeLyricsText::addLyrics(const string & text, unsigned int timing, unsigned int flags, unsigned int pitch)
 {
   Lyric line;
 
@@ -140,7 +142,7 @@ bool CKaraokeLyricsText::InitGraphics()
   if ( m_lyrics.empty() )
     return false;
 
-  CStdString fontPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CSettings::Get().GetString("karaoke.font"));
+  string fontPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CSettings::Get().GetString("karaoke.font"));
   if (!XFILE::CFile::Exists(fontPath))
       fontPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", CSettings::Get().GetString("karaoke.font"));
   m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
@@ -468,7 +470,7 @@ void CKaraokeLyricsText::rescanLyrics()
   const RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
   float maxWidth = (float) info.Overscan.right - info.Overscan.left;
 
-  CStdString line_text;
+  string line_text;
   int prev_line_idx = -1;
   int prev_line_timediff = -1;
 
@@ -495,7 +497,7 @@ void CKaraokeLyricsText::rescanLyrics()
       ld.offset_start = prev_line_idx;
 
       // This piece extracts the first character of a new string and makes it uppercase in Unicode way
-      CStdStringW temptext;
+      wstring temptext;
       g_charsetConverter.utf8ToW( line_text, temptext );
 
       // This is pretty ugly upper/lowercase for Russian unicode character set
@@ -503,7 +505,7 @@ void CKaraokeLyricsText::rescanLyrics()
         ld.upper_start = temptext[0] <= 0x42F;
       else
       {
-        CStdString lower = m_lyrics[i].text;
+        string lower = m_lyrics[i].text;
         StringUtils::ToLower(lower);
         ld.upper_start = (m_lyrics[i].text == lower);
       }
@@ -608,7 +610,7 @@ void CKaraokeLyricsText::rescanLyrics()
   bool invalid_timing_reported = false;
   for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
   {
-    CStdStringW utf16;
+    wstring utf16;
     g_charsetConverter.utf8ToW( m_lyrics[i].text, utf16 );
 
     // Skip empty lyrics
@@ -686,9 +688,9 @@ void CKaraokeLyricsText::rescanLyrics()
 }
 
 
-float CKaraokeLyricsText::getStringWidth(const CStdString & text)
+float CKaraokeLyricsText::getStringWidth(const string & text)
 {
-  CStdStringW utf16;
+  wstring utf16;
   vecText utf32;
 
   g_charsetConverter.utf8ToW(text, utf16);
@@ -704,11 +706,11 @@ void CKaraokeLyricsText::saveLyrics()
 {
   XFILE::CFile file;
 
-  CStdString out;
+  string out;
 
   for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
   {
-    CStdString timing = StringUtils::Format("%02d:%02d.%d",
+    string timing = StringUtils::Format("%02d:%02d.%d",
                                             m_lyrics[i].timing / 600,
                                             (m_lyrics[i].timing % 600) / 10,
                                             (m_lyrics[i].timing % 10));
@@ -727,7 +729,7 @@ void CKaraokeLyricsText::saveLyrics()
   if ( !file.OpenForWrite( "special://temp/tmp.lrc", true ) )
     return;
 
-  file.Write( out, out.size() );
+  file.Write( out.c_str(), out.size() );
 }
 
 
@@ -741,7 +743,7 @@ bool CKaraokeLyricsText::HasVideo()
   return m_videoFile.empty() ? false : true;
 }
 
-void CKaraokeLyricsText::GetVideoParameters(CStdString & path, int64_t & offset)
+void CKaraokeLyricsText::GetVideoParameters(string & path, int64_t & offset)
 {
   path = m_videoFile;
   offset = m_videoOffset;

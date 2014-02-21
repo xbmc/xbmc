@@ -57,14 +57,14 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   {
     for (ELEMENTS::iterator i = elements.begin(); i != elements.end(); ++i)
     {
-      int width = atoi(CAddonMgr::Get().GetExtValue(*i, "@width"));
-      int height = atoi(CAddonMgr::Get().GetExtValue(*i, "@height"));
-      bool defRes = CAddonMgr::Get().GetExtValue(*i, "@default").Equals("true");
-      CStdString folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
+      int width = atoi(CAddonMgr::Get().GetExtValue(*i, "@width").c_str());
+      int height = atoi(CAddonMgr::Get().GetExtValue(*i, "@height").c_str());
+      bool defRes = StringUtils::EqualsNoCase(CAddonMgr::Get().GetExtValue(*i, "@default"), "true");
+      string folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
       float aspect = 0;
-      CStdStringArray fracs;
-      CStdString strAspect = CAddonMgr::Get().GetExtValue(*i, "@aspect");
-      StringUtils::SplitString(strAspect, ":", fracs);
+      
+      string strAspect = CAddonMgr::Get().GetExtValue(*i, "@aspect");
+      vector<string> fracs = StringUtils::Split(strAspect, ":");
       if (fracs.size() == 2)
         aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
       if (width > 0 && height > 0)
@@ -79,13 +79,13 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   }
   else
   { // no resolutions specified -> backward compatibility
-    CStdString defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultwideresolution");
+    string defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultwideresolution");
     if (defaultWide.empty())
       defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolution");
     TranslateResolution(defaultWide, m_defaultRes);
   }
 
-  CStdString str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
+  string str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
   if (!str.empty())
     m_effectsSlowDown = (float)atof(str.c_str());
   else
@@ -146,12 +146,12 @@ void CSkinInfo::Start()
   }
 }
 
-CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION_INFO *res, const CStdString& strBaseDir /* = "" */) const
+string CSkinInfo::GetSkinPath(const string& strFile, RESOLUTION_INFO *res, const string& strBaseDir /* = "" */) const
 {
   if (m_resolutions.empty())
     return ""; // invalid skin
 
-  CStdString strPathToUse = Path();
+  string strPathToUse = Path();
   if (!strBaseDir.empty())
     strPathToUse = strBaseDir;
 
@@ -164,7 +164,7 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION_INFO *re
   const RESOLUTION_INFO &target = g_graphicsContext.GetResInfo();
   *res = *std::min_element(m_resolutions.begin(), m_resolutions.end(), closestRes(target));
 
-  CStdString strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode);
+  string strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode);
   strPath = URIUtils::AddFileToFolder(strPath, strFile);
   if (CFile::Exists(strPath))
     return strPath;
@@ -177,7 +177,7 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION_INFO *re
   return strPath;
 }
 
-bool CSkinInfo::HasSkinFile(const CStdString &strFile) const
+bool CSkinInfo::HasSkinFile(const string &strFile) const
 {
   return CFile::Exists(GetSkinPath(strFile));
 }
@@ -189,7 +189,7 @@ double CSkinInfo::GetMinVersion()
 
 void CSkinInfo::LoadIncludes()
 {
-  CStdString includesPath = CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("includes.xml"));
+  string includesPath = CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("includes.xml"));
   CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
   m_includes.ClearIncludes();
   m_includes.LoadIncludes(includesPath);
@@ -231,7 +231,7 @@ bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
   return true;
 }
 
-void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
+void CSkinInfo::GetSkinPaths(std::vector<string> &paths) const
 {
   RESOLUTION_INFO res;
   GetSkinPath("Home.xml", &res);
@@ -241,19 +241,19 @@ void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
     paths.push_back(URIUtils::AddFileToFolder(Path(), m_defaultRes.strMode));
 }
 
-bool CSkinInfo::TranslateResolution(const CStdString &name, RESOLUTION_INFO &res)
+bool CSkinInfo::TranslateResolution(const string &name, RESOLUTION_INFO &res)
 {
-  if (name.Equals("pal"))
+  if (StringUtils::EqualsNoCase(name, "pal"))
     res = RESOLUTION_INFO(720, 576, 4.0f/3, "pal");
-  else if (name.Equals("pal16x9"))
+  else if (StringUtils::EqualsNoCase(name, "pal16x9"))
     res = RESOLUTION_INFO(720, 576, 16.0f/9, "pal16x9");
-  else if (name.Equals("ntsc"))
+  else if (StringUtils::EqualsNoCase(name, "ntsc"))
     res = RESOLUTION_INFO(720, 480, 4.0f/3, "ntsc");
-  else if (name.Equals("ntsc16x9"))
+  else if (StringUtils::EqualsNoCase(name, "ntsc16x9"))
     res = RESOLUTION_INFO(720, 480, 16.0f/9, "ntsc16x9");
-  else if (name.Equals("720p"))
+  else if (StringUtils::EqualsNoCase(name, "720p"))
     res = RESOLUTION_INFO(1280, 720, 0, "720p");
-  else if (name.Equals("1080i"))
+  else if (StringUtils::EqualsNoCase(name, "1080i"))
     res = RESOLUTION_INFO(1920, 1080, 0, "1080i");
   else
     return false;
@@ -274,14 +274,14 @@ bool CSkinInfo::IsInUse() const
   return CSettings::Get().GetString("lookandfeel.skin") == ID();
 }
 
-const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const CStdString& name, int context)
+const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const string& name, int context)
 {
   return m_includes.CreateSkinVariable(name, context);
 }
 
 void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
-  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
+  string settingValue = ((const CSettingString*)setting)->GetValue();
   // Remove the .xml extension from the Themes
   if (URIUtils::HasExtension(settingValue, ".xml"))
     URIUtils::RemoveExtension(settingValue);
@@ -322,7 +322,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
 
 void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
-  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
+  string settingValue = ((const CSettingString*)setting)->GetValue();
   bool currentValueSet = false;
   std::string strPath = g_SkinInfo->GetSkinPath("Font.xml");
 
@@ -390,7 +390,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vect
 
 void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
-  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
+  string settingValue = ((const CSettingString*)setting)->GetValue();
   current = "SKINDEFAULT";
 
   //find skins...
@@ -431,7 +431,7 @@ void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vect
 void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
 {
   // get the choosen theme and remove the extension from the current theme (backward compat)
-  CStdString settingValue = ((const CSettingString*)setting)->GetValue();
+  string settingValue = ((const CSettingString*)setting)->GetValue();
   URIUtils::RemoveExtension(settingValue);
   current = "SKINDEFAULT";
 
@@ -442,7 +442,7 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vec
   list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard Textures.xpr/xbt will be used
 
   // search for themes in the current skin!
-  vector<CStdString> vecTheme;
+  vector<string> vecTheme;
   CUtil::GetSkinThemes(vecTheme);
 
   // sort the themes for GUI and list them

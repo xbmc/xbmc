@@ -46,6 +46,7 @@
 #include "URL.h"
 #include "windowing/WindowingFactory.h"
 
+using namespace std;
 
 struct StereoModeMap
 {
@@ -146,15 +147,15 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetNextSupportedStereoMode(const RENDE
 std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &needle)
 {
   std::string stereoMode;
-  CStdString searchString(needle);
-  CStdStringArray tags;
+  string searchString(needle);
+  std::vector<std::string> tags;
   StringUtils::ToUpper(searchString);
 
-  CStdString tag( g_advancedSettings.m_stereoscopicflags_sbs );
+  string tag( g_advancedSettings.m_stereoscopicflags_sbs );
   if (stereoMode.empty() && !tag.empty())
   {
     StringUtils::ToUpper(tag);
-    StringUtils::SplitString(tag, "|", tags);
+    tags = StringUtils::Split(tag, "|");
     if (StringUtils::ContainsKeyword(searchString, tags))
       stereoMode = "left_right";
   }
@@ -163,7 +164,7 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
   if (stereoMode.empty() && !tag.empty())
   {
     StringUtils::ToUpper(tag);
-    StringUtils::SplitString(tag, "|", tags);
+    tags = StringUtils::Split(tag, "|");
     if (StringUtils::ContainsKeyword(searchString, tags))
       stereoMode = "top_bottom";
   }
@@ -176,7 +177,7 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
   return stereoMode;
 }
 
-RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const CStdString &heading)
+RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const string &heading)
 {
   RENDER_STEREO_MODE mode = GetStereoMode();
   // if no stereo mode is set already, suggest mode of current video by preselecting it
@@ -198,7 +199,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const CStdSt
     if (g_Windowing.SupportsStereo(selectableMode))
     {
       selectableModes.push_back(selectableMode);
-      CStdString label = g_localizeStrings.Get(36502+i);
+      string label = g_localizeStrings.Get(36502+i);
       pDlgSelect->Add( label );
       if (mode == selectableMode)
         pDlgSelect->SetSelected( label );
@@ -220,7 +221,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeOfPlayingVideo(void)
 {
   RENDER_STEREO_MODE mode = RENDER_STEREO_MODE_OFF;
 
-  CStdString playerMode = g_infoManager.GetLabel(VIDEOPLAYER_STEREOSCOPIC_MODE);
+  string playerMode = g_infoManager.GetLabel(VIDEOPLAYER_STEREOSCOPIC_MODE);
   if (!playerMode.empty())
   {
     int convertedMode = ConvertVideoToGuiStereoMode(playerMode);
@@ -232,7 +233,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeOfPlayingVideo(void)
   return mode;
 }
 
-CStdString CStereoscopicsManager::GetLabelForStereoMode(const RENDER_STEREO_MODE &mode)
+string CStereoscopicsManager::GetLabelForStereoMode(const RENDER_STEREO_MODE &mode)
 {
   return g_localizeStrings.Get(36502 + mode);
 }

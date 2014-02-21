@@ -39,7 +39,7 @@ CVTPDirectory::~CVTPDirectory()
   delete m_session;
 }
 
-bool CVTPDirectory::GetChannels(const CStdString& base, CFileItemList &items)
+bool CVTPDirectory::GetChannels(const string& base, CFileItemList &items)
 {
   vector<CVTPSession::Channel> channels;
   if(!m_session->GetChannels(channels))
@@ -50,7 +50,7 @@ bool CVTPDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   {
     CFileItemPtr item(new CFileItem("", false));
 
-    CStdString buffer = StringUtils::Format("%s/%d.ts", base.c_str(), it->index);
+    string buffer = StringUtils::Format("%s/%d.ts", base.c_str(), it->index);
     item->SetPath(buffer);
     item->m_strTitle = it->name;
     buffer = StringUtils::Format("%d - %s", it->index, it->name.c_str());
@@ -61,14 +61,14 @@ bool CVTPDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   return true;
 }
 
-bool CVTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CVTPDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CURL url(strPath);
 
   if(url.GetHostName() == "")
     url.SetHostName("localhost");
 
-  CStdString base = url.Get();
+  string base = url.Get();
   URIUtils::RemoveSlashAtEnd(base);
 
   // add port after, it changes the structure

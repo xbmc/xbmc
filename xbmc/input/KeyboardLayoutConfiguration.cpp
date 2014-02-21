@@ -45,7 +45,7 @@ void CKeyboardLayoutConfiguration::SetDefaults()
   m_deriveXbmcCharFromVkeyWithRalt.clear();
 }
 
-bool CKeyboardLayoutConfiguration::Load(const CStdString& strFileName)
+bool CKeyboardLayoutConfiguration::Load(const string& strFileName)
 {
   SetDefaults();
 
@@ -57,8 +57,8 @@ bool CKeyboardLayoutConfiguration::Load(const CStdString& strFileName)
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if (strValue != CStdString("keyboard_layout"))
+  string strValue = pRootElement->Value();
+  if (strValue != string("keyboard_layout"))
   {
     CLog::Log(LOGERROR, "%s Doesn't contain <keyboard_layout>", strFileName.c_str());
     return false;
@@ -94,13 +94,13 @@ void CKeyboardLayoutConfiguration::readCharMapFromXML(const TiXmlElement* pXMLMa
     const TiXmlElement* pEntry = pXMLMap->FirstChildElement();
     while (pEntry)
     {
-      CStdString strInChar = pEntry->Attribute("inchar");
-      CStdString strOutChar = pEntry->Attribute("outchar");
+      string strInChar = pEntry->Attribute("inchar");
+      string strOutChar = pEntry->Attribute("outchar");
       if (strInChar.length() > 0 && strOutChar.length() > 0)
       {
-        CStdStringW fromStr;
+        wstring fromStr;
         g_charsetConverter.utf8ToW(strInChar, fromStr);
-        CStdStringW toStr;
+        wstring toStr;
         g_charsetConverter.utf8ToW(strOutChar, toStr);
         if (fromStr.size()==1 && toStr.size()==1)
         {
@@ -132,12 +132,12 @@ void CKeyboardLayoutConfiguration::readByteMapFromXML(const TiXmlElement* pXMLMa
     const TiXmlElement* pEntry = pXMLMap->FirstChildElement();
     while (pEntry)
     {
-      CStdString strInHex = pEntry->Attribute("inhex");
-      CStdString strOutChar = pEntry->Attribute("outchar");
+      string strInHex = pEntry->Attribute("inhex");
+      string strOutChar = pEntry->Attribute("outchar");
       if (strInHex.length() > 0 && strOutChar.length() > 0)
       {
-        CStdString hexValue = strInHex;
-        CStdStringW toStr;
+        string hexValue = strInHex;
+        wstring toStr;
         g_charsetConverter.utf8ToW(strOutChar, toStr);
 
         int from;

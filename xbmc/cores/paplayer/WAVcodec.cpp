@@ -30,6 +30,8 @@
 #include <ksmedia.h>
 #endif
 
+using namespace std;
+
 typedef struct
 {
   char chunk_id[4];
@@ -61,7 +63,7 @@ WAVCodec::~WAVCodec()
   DeInit();
 }
 
-bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool WAVCodec::Init(const string &strFile, unsigned int filecache)
 {
   m_file.Close();
   if (!m_file.Open(strFile, READ_CACHED))

@@ -45,7 +45,7 @@ using namespace XFILE;
 using namespace std;
 using namespace VIDEO;
 
-CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& target)
+CThumbExtractor::CThumbExtractor(const CFileItem& item, const string& listpath, bool thumb, const string& target)
 {
   m_listpath = listpath;
   m_target = target;
@@ -176,13 +176,13 @@ void CVideoThumbLoader::OnLoaderFinish()
   CThumbLoader::OnLoaderFinish();
 }
 
-static void SetupRarOptions(CFileItem& item, const CStdString& path)
+static void SetupRarOptions(CFileItem& item, const string& path)
 {
-  CStdString path2(path);
+  string path2(path);
   if (item.IsVideoDb() && item.HasVideoInfoTag())
     path2 = item.GetVideoInfoTag()->m_strFileNameAndPath;
   CURL url(path2);
-  CStdString opts = url.GetOptions();
+  string opts = url.GetOptions();
   if (opts.find("flags") != std::string::npos)
     return;
   if (opts.size())
@@ -334,14 +334,14 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   if (!pItem->m_bIsFolder && pItem->IsVideo())
   {
     // An auto-generated thumb may have been cached on a different device - check we have it here
-    CStdString url = pItem->GetArt("thumb");
+    string url = pItem->GetArt("thumb");
     if (StringUtils::StartsWith(url, "image://video@") && !CTextureCache::Get().HasCachedImage(url))
       pItem->SetArt("thumb", "");
 
     if (!pItem->HasArt("thumb"))
     {
       // create unique thumb for auto generated thumbs
-      CStdString thumbURL = GetEmbeddedThumbURL(*pItem);
+      string thumbURL = GetEmbeddedThumbURL(*pItem);
       if (CTextureCache::Get().HasCachedImage(thumbURL))
       {
         CTextureCache::Get().BackgroundCacheImage(thumbURL);
@@ -361,7 +361,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
                CSettings::Get().GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
-        CStdString path(item.GetPath());
+        string path(item.GetPath());
         if (URIUtils::IsInRAR(item.GetPath()))
           SetupRarOptions(item,path);
 
@@ -379,7 +379,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
         !pItem->GetVideoInfoTag()->HasStreamDetails() ) )
     {
       CFileItem item(*pItem);
-      CStdString path(item.GetPath());
+      string path(item.GetPath());
       if (URIUtils::IsInRAR(item.GetPath()))
         SetupRarOptions(item,path);
       CThumbExtractor* extract = new CThumbExtractor(item,path,false);
@@ -454,7 +454,7 @@ bool CVideoThumbLoader::FillThumb(CFileItem &item)
 {
   if (item.HasArt("thumb"))
     return true;
-  CStdString thumb = GetCachedImage(item, "thumb");
+  string thumb = GetCachedImage(item, "thumb");
   if (thumb.empty())
   {
     thumb = GetLocalArt(item, "thumb");
@@ -499,9 +499,9 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
   return art;
 }
 
-CStdString CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
+string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 {
-  CStdString path(item.GetPath());
+  string path(item.GetPath());
   if (item.IsVideoDb() && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   if (URIUtils::IsStack(path))

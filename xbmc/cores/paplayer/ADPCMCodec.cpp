@@ -22,6 +22,8 @@
 #include "utils/log.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
+using namespace std;
+
 ADPCMCodec::ADPCMCodec()
 {
   m_CodecName = "adpcm";
@@ -34,7 +36,7 @@ ADPCMCodec::~ADPCMCodec()
   DeInit();
 }
 
-bool ADPCMCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool ADPCMCodec::Init(const string &strFile, unsigned int filecache)
 {
   DeInit();
 

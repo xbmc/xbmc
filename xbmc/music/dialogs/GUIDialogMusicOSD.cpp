@@ -26,6 +26,8 @@
 #include "settings/Settings.h"
 #include "addons/GUIWindowAddonBrowser.h"
 
+using namespace std;
+
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
 
@@ -48,7 +50,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       unsigned int iControl = message.GetSenderId();
       if (iControl == CONTROL_VIS_BUTTON)
       {
-        CStdString addonID;
+        string addonID;
         if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID, true) == 1)
         {
           CSettings::Get().SetString("musicplayer.visualisation", addonID);

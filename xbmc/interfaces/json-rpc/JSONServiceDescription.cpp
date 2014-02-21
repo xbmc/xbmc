@@ -616,7 +616,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
   if (!name.empty())
     errorData["name"] = name;
   SchemaValueTypeToJson(type, errorData["type"]);
-  CStdString errorMessage;
+  string errorMessage;
 
   if (referencedType != NULL && !referencedTypeSet)
     Set(referencedType);
@@ -1157,7 +1157,7 @@ JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap()
 
 void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(JSONSchemaTypeDefinitionPtr property)
 {
-  CStdString name = property->name;
+  string name = property->name;
   StringUtils::ToLower(name);
   m_propertiesmap[name] = property;
 }
@@ -1693,7 +1693,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
 
   if (filterByName.size() > 0)
   {
-    CStdString name = filterByName;
+    string name = filterByName;
 
     if (filterByType == "method")
     {
@@ -2011,7 +2011,7 @@ void CJSONServiceDescription::CJsonRpcMethodMap::clear()
 
 void CJSONServiceDescription::CJsonRpcMethodMap::add(const JsonRpcMethod &method)
 {
-  CStdString name = method.name;
+  string name = method.name;
   StringUtils::ToLower(name);
   m_actionmap[name] = method;
 }

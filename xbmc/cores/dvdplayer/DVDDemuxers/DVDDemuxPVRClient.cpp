@@ -28,6 +28,7 @@
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
+using namespace std;
 using namespace PVR;
 
 CDemuxStreamPVRInternal::CDemuxStreamPVRInternal(CDVDDemuxPVRClient *parent)
@@ -470,7 +471,7 @@ std::string CDVDDemuxPVRClient::GetFileName()
     return "";
 }
 
-void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, CStdString &strName)
+void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, string &strName)
 {
   CDemuxStream *stream = GetStream(iStreamId);
   if (stream)

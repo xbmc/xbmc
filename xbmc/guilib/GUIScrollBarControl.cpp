@@ -22,6 +22,8 @@
 #include "Key.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 #define MIN_NIB_SIZE 4.0f
 
 CGUIScrollBar::CGUIScrollBar(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, ORIENTATION orientation, bool showOnePage)
@@ -360,7 +362,7 @@ EVENT_RESULT CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent 
   return EVENT_RESULT_UNHANDLED;
 }
 
-CStdString CGUIScrollBar::GetDescription() const
+string CGUIScrollBar::GetDescription() const
 {
   return StringUtils::Format("%i/%i", m_offset, m_numItems);
 }

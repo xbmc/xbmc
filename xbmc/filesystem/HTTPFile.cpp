@@ -20,6 +20,7 @@
 
 #include "HTTPFile.h"
 
+using namespace std;
 using namespace XFILE;
 
 CHTTPFile::CHTTPFile(void)
@@ -46,7 +47,7 @@ int CHTTPFile::Write(const void* lpBuf, int64_t uiBufSize)
   if (!m_openedforwrite)
     return -1;
 
-  CStdString myPostData((char*) lpBuf);
+  string myPostData((char*) lpBuf);
   if ((int64_t)myPostData.length() != uiBufSize)
     return -1;
 

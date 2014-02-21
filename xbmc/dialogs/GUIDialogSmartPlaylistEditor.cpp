@@ -164,8 +164,8 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
   // save our playlist
   if (m_path.empty())
   {
-    CStdString filename(CUtil::MakeLegalFileName(m_playlist.m_playlistName));
-    CStdString path;
+    string filename(CUtil::MakeLegalFileName(m_playlist.m_playlistName));
+    string path;
     if (CGUIKeyboardFactory::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
       path = URIUtils::AddFileToFolder(systemPlaylistsPath, m_playlist.GetSaveLocation());
@@ -185,8 +185,8 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     // this occurs if the user switches from music video <> songs <> mixed
     if (StringUtils::StartsWith(m_path, systemPlaylistsPath))
     {
-      CStdString filename = URIUtils::GetFileName(m_path);
-      CStdString strFolder = m_path.substr(systemPlaylistsPath.size(), m_path.size() - filename.size() - systemPlaylistsPath.size() - 1);
+      string filename = URIUtils::GetFileName(m_path);
+      string strFolder = m_path.substr(systemPlaylistsPath.size(), m_path.size() - filename.size() - systemPlaylistsPath.size() - 1);
       if (strFolder != m_playlist.GetSaveLocation())
       { // move to the correct folder
         XFILE::CFile::Delete(m_path);
@@ -407,7 +407,7 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
   for (unsigned int i = 0; i < sizeof(limits) / sizeof(int); i++)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIMIT, limits[i]);
-    CStdString label = StringUtils::Format(g_localizeStrings.Get(21436).c_str(), limits[i]);
+    string label = StringUtils::Format(g_localizeStrings.Get(21436).c_str(), limits[i]);
     msg.SetLabel(label);
     OnMessage(msg);
   }
@@ -420,24 +420,24 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
   vector<PLAYLIST_TYPE> allowedTypes;
-  if (m_mode.Equals("partymusic"))
+  if (StringUtils::EqualsNoCase(m_mode, "partymusic"))
   {
     allowedTypes.push_back(TYPE_SONGS);
     allowedTypes.push_back(TYPE_MIXED);
   }
-  else if (m_mode.Equals("partyvideo"))
+  else if (StringUtils::EqualsNoCase(m_mode, "partyvideo"))
   {
     allowedTypes.push_back(TYPE_MUSICVIDEOS);
     allowedTypes.push_back(TYPE_MIXED);
   }
-  else if (m_mode.Equals("music"))
+  else if (StringUtils::EqualsNoCase(m_mode, "music"))
   { // music types + mixed
     allowedTypes.push_back(TYPE_SONGS);
     allowedTypes.push_back(TYPE_ALBUMS);
     allowedTypes.push_back(TYPE_ARTISTS);
     allowedTypes.push_back(TYPE_MIXED);
   }
-  else if (m_mode.Equals("video"))
+  else if (StringUtils::EqualsNoCase(m_mode, "video"))
   { // general category for videos
     allowedTypes.push_back(TYPE_MOVIES);
     allowedTypes.push_back(TYPE_TVSHOWS);
@@ -476,10 +476,10 @@ void CGUIDialogSmartPlaylistEditor::OnDeinitWindow(int nextWindowID)
   m_ruleLabels->Clear();
 }
 
-CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE CGUIDialogSmartPlaylistEditor::ConvertType(const CStdString &type)
+CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE CGUIDialogSmartPlaylistEditor::ConvertType(const string &type)
 {
   for (unsigned int i = 0; i < NUM_TYPES; i++)
-    if (type.Equals(types[i].string))
+    if (StringUtils::EqualsNoCase(type, types[i].string))
       return types[i].type;
   assert(false);
   return TYPE_SONGS;
@@ -494,7 +494,7 @@ int CGUIDialogSmartPlaylistEditor::GetLocalizedType(PLAYLIST_TYPE type)
   return 0;
 }
 
-CStdString CGUIDialogSmartPlaylistEditor::ConvertType(PLAYLIST_TYPE type)
+string CGUIDialogSmartPlaylistEditor::ConvertType(PLAYLIST_TYPE type)
 {
   for (unsigned int i = 0; i < NUM_TYPES; i++)
     if (types[i].type == type)
@@ -549,7 +549,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleAdd()
   UpdateButtons();
 }
 
-bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const CStdString &type)
+bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const string &type)
 {
   CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)g_windowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
   if (!editor) return false;
@@ -562,15 +562,15 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const CStdString &type)
   return !editor->m_cancelled;
 }
 
-bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path, const CStdString &type)
+bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const string &path, const string &type)
 {
   CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)g_windowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
   if (!editor) return false;
 
   editor->m_mode = type;
-  if (path.Equals(CProfilesManager::Get().GetUserDataItem("PartyMode.xsp").c_str()))
+  if (StringUtils::EqualsNoCase(path, CProfilesManager::Get().GetUserDataItem("PartyMode.xsp").c_str()))
     editor->m_mode = "partymusic";
-  if (path.Equals(CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp").c_str()))
+  if (StringUtils::EqualsNoCase(path, CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp").c_str()))
     editor->m_mode = "partyvideo";
 
   CSmartPlaylist playlist;

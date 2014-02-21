@@ -96,7 +96,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
         // This is tricky - ideally we want to completely save the state of this dialog,
         // close it while linking to the addon manager, then reopen it on return.
         // For now, we just close the dialog + send the GetPath() to open the addons window
-        CStdString content = m_vecItems->Get(iSelected)->GetPath().substr(14);
+        string content = m_vecItems->Get(iSelected)->GetPath().substr(14);
         OnCancel();
         Close();
         CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
@@ -277,7 +277,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
     return;
 
   AddonPtr addon;
-  CStdString defaultID;
+  string defaultID;
   if (CAddonMgr::Get().GetDefault(type, addon))
     defaultID = addon->ID();
 
@@ -370,7 +370,7 @@ CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
   return m_vecItems->Get(item);
 }
 
-bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings)
+bool CGUIDialogContentSettings::ShowForDirectory(const string& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings)
 {
   CVideoDatabase database;
   database.Open();

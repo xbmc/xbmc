@@ -22,10 +22,11 @@
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIButtonControl.h"
 
+using namespace std;
 
 #define CONTROL_BUTTON_LABEL  3100
 
-CGUIDialogButtonMenu::CGUIDialogButtonMenu(int id, const CStdString &xmlFile)
+CGUIDialogButtonMenu::CGUIDialogButtonMenu(int id, const string &xmlFile)
 : CGUIDialog(id, xmlFile)
 {
   m_loadType = KEEP_IN_MEMORY;

@@ -33,6 +33,7 @@
 #include "GUITexture.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 #include "Key.h"
 
 using namespace std;
@@ -325,23 +326,23 @@ void CGUIWindowManager::PreviousWindow()
   return;
 }
 
-void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)
+void CGUIWindowManager::ChangeActiveWindow(int newWindow, const string& strPath)
 {
-  vector<CStdString> params;
+  vector<string> params;
   if (!strPath.empty())
     params.push_back(strPath);
   ActivateWindow(newWindow, params, true);
 }
 
-void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
+void CGUIWindowManager::ActivateWindow(int iWindowID, const string& strPath)
 {
-  vector<CStdString> params;
+  vector<string> params;
   if (!strPath.empty())
     params.push_back(strPath);
   ActivateWindow(iWindowID, params, false);
 }
 
-void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
+void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<string>& params, bool swappingWindows)
 {
   if (!g_application.IsCurrentThread())
   {
@@ -356,7 +357,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& 
   }
 }
 
-void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
+void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<string>& params, bool swappingWindows)
 {
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)
@@ -891,16 +892,16 @@ bool CGUIWindowManager::IsWindowActive(int id, bool ignoreClosing /* = true */) 
   return false; // window isn't active
 }
 
-bool CGUIWindowManager::IsWindowActive(const CStdString &xmlFile, bool ignoreClosing /* = true */) const
+bool CGUIWindowManager::IsWindowActive(const string &xmlFile, bool ignoreClosing /* = true */) const
 {
   CSingleLock lock(g_graphicsContext);
   CGUIWindow *window = GetWindow(GetActiveWindow());
-  if (window && URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(xmlFile)) return true;
+  if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), xmlFile)) return true;
   // run through the dialogs
   for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     CGUIWindow *window = *it;
-    if (URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(xmlFile) && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
+    if (StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), xmlFile) && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
       return true;
   }
   return false; // window isn't active
@@ -911,7 +912,7 @@ bool CGUIWindowManager::IsWindowVisible(int id) const
   return IsWindowActive(id, false);
 }
 
-bool CGUIWindowManager::IsWindowVisible(const CStdString &xmlFile) const
+bool CGUIWindowManager::IsWindowVisible(const string &xmlFile) const
 {
   return IsWindowActive(xmlFile, false);
 }
@@ -1020,10 +1021,10 @@ bool CGUIWindowManager::IsWindowTopMost(int id) const
   return false;
 }
 
-bool CGUIWindowManager::IsWindowTopMost(const CStdString &xmlFile) const
+bool CGUIWindowManager::IsWindowTopMost(const string &xmlFile) const
 {
   CGUIWindow *topMost = GetTopMostDialog();
-  if (topMost && URIUtils::GetFileName(topMost->GetProperty("xmlfile").asString()).Equals(xmlFile))
+  if (topMost && StringUtils::EqualsNoCase(URIUtils::GetFileName(topMost->GetProperty("xmlfile").asString()), xmlFile))
     return true;
   return false;
 }

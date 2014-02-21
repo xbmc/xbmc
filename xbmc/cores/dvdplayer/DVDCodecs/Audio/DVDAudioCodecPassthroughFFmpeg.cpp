@@ -27,6 +27,8 @@
 #include "utils/log.h"
 #include "cores/AudioEngine/AEFactory.h"
 
+using namespace std;
+
 //These values are forced to allow spdif out
 #define OUT_SAMPLESIZE 16
 #define OUT_CHANNELS   2
@@ -74,7 +76,7 @@ CDVDAudioCodecPassthroughFFmpeg::~CDVDAudioCodecPassthroughFFmpeg(void)
 }
 
 /*===================== MUXER FUNCTIONS ========================*/
-bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdString muxerName, Muxer &muxer)
+bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, string muxerName, Muxer &muxer)
 {
   CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Trying to setup %s muxer", muxerName.c_str());
 

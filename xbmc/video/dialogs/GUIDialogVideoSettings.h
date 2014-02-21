@@ -29,8 +29,8 @@ public:
   CGUIDialogVideoSettings(void);
   virtual ~CGUIDialogVideoSettings(void);
 
-  static CStdString FormatInteger(float value, float minimum);
-  static CStdString FormatFloat(float value, float minimum);
+  static std::string FormatInteger(float value, float minimum);
+  static std::string FormatFloat(float value, float minimum);
 
 protected:
   virtual void CreateSettings();

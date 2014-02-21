@@ -50,7 +50,7 @@
 #include "cdioSupport.h"
 #include "storage/MediaManager.h"
 
-
+using namespace std;
 using namespace XFILE;
 using namespace MEDIA_DETECT;
 
@@ -60,8 +60,8 @@ int CDetectDVDMedia::m_DriveState = DRIVE_CLOSED_NO_MEDIA;
 CCdInfo* CDetectDVDMedia::m_pCdInfo = NULL;
 time_t CDetectDVDMedia::m_LastPoll = 0;
 CDetectDVDMedia* CDetectDVDMedia::m_pInstance = NULL;
-CStdString CDetectDVDMedia::m_diskLabel = "";
-CStdString CDetectDVDMedia::m_diskPath = "";
+string CDetectDVDMedia::m_diskLabel = "";
+string CDetectDVDMedia::m_diskPath = "";
 
 CDetectDVDMedia::CDetectDVDMedia() : CThread("DetectDVDMedia")
 {
@@ -220,7 +220,7 @@ void CDetectDVDMedia::DetectMediaType()
   bool bCDDA(false);
   CLog::Log(LOGINFO, "Detecting DVD-ROM media filesystem...");
 
-  CStdString strNewUrl;
+  string strNewUrl;
   CCdIoSupport cdio;
 
   // Delete old CD-Information
@@ -286,7 +286,7 @@ void CDetectDVDMedia::DetectMediaType()
     CLog::Log(LOGWARNING, "Filesystem is not supported");
   }
 
-  CStdString strLabel = "";
+  string strLabel = "";
   if (bCDDA)
   {
     strLabel = "Audio-CD";
@@ -300,9 +300,9 @@ void CDetectDVDMedia::DetectMediaType()
   SetNewDVDShareUrl( strNewUrl , bCDDA, strLabel);
 }
 
-void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel )
+void CDetectDVDMedia::SetNewDVDShareUrl( const string& strNewUrl, bool bCDDA, const string& strDiscLabel )
 {
-  CStdString strDescription = "DVD";
+  string strDescription = "DVD";
   if (bCDDA) strDescription = "CD";
 
   if (strDiscLabel != "") strDescription = strDiscLabel;
@@ -489,12 +489,12 @@ CCdInfo* CDetectDVDMedia::GetCdInfo()
   return pCdInfo;
 }
 
-const CStdString &CDetectDVDMedia::GetDVDLabel()
+const string &CDetectDVDMedia::GetDVDLabel()
 {
   return m_diskLabel;
 }
 
-const CStdString &CDetectDVDMedia::GetDVDPath()
+const string &CDetectDVDMedia::GetDVDPath()
 {
   return m_diskPath;
 }

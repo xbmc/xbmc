@@ -52,12 +52,14 @@
 #include "utils/AliasShortcutUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 {
   if (lpFindData == NULL || szPath == NULL)
     return NULL;
 
-  CStdString strPath(szPath);
+  string strPath(szPath);
 
   if (IsAliasShortcut(strPath))
     TranslateAliasShortcut(strPath);
@@ -81,8 +83,8 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 
   size_t nFilePos = strPath.rfind(XBMC_FILE_SEP);
 
-  CStdString strDir = ".";
-  CStdString strFiles = strPath;
+  string strDir = ".";
+  string strFiles = strPath;
 
   if (nFilePos > 0)
   {
@@ -93,7 +95,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   if (strFiles == "*.*")
      strFiles = "*";
 
-  strFiles = CStdString("^") + strFiles + "$";
+  strFiles = string("^") + strFiles + "$";
   StringUtils::Replace(strFiles, ".","\\.");
   StringUtils::Replace(strFiles, "*",".*");
   StringUtils::Replace(strFiles, "?",".");
@@ -108,9 +110,9 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 #if defined(TARGET_ANDROID)
   // android is more strict with the sort function. Let's hope it is implemented correctly.
   typedef int (*sortFunc)(const struct dirent ** a, const struct dirent **b);
-  int n = scandir(strDir, &namelist, 0, (sortFunc)alphasort);
+  int n = scandir(strDir.c_str(), &namelist, 0, (sortFunc)alphasort);
 #else
-  int n = scandir(strDir, &namelist, 0, alphasort);
+  int n = scandir(strDir.c_str(), &namelist, 0, alphasort);
 #endif
 
   CXHandle *pHandle = new CXHandle(CXHandle::HND_FIND_FILE);
@@ -118,7 +120,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 
   while (n-- > 0)
   {
-    CStdString strComp(namelist[n]->d_name);
+    string strComp(namelist[n]->d_name);
     StringUtils::ToLower(strComp);
 
     if (re.RegFind(strComp.c_str()) >= 0)
@@ -146,15 +148,15 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   if ((unsigned int) hHandle->m_nFindFileIterator >= hHandle->m_FindFileResults.size())
     return FALSE;
 
-  CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
-  CStdString strFileNameTest = hHandle->m_FindFileDir + strFileName;
+  string strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
+  string strFileNameTest = hHandle->m_FindFileDir + strFileName;
 
   if (IsAliasShortcut(strFileNameTest))
     TranslateAliasShortcut(strFileNameTest);
 
   struct stat64 fileStat;
   memset(&fileStat, 0, sizeof(fileStat));
-  stat64(strFileNameTest, &fileStat);
+  stat64(strFileNameTest.c_str(), &fileStat);
 
   bool bIsDir = false;
   if (S_ISDIR(fileStat.st_mode))
@@ -173,7 +175,7 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   if (strFileName[0] == '.')
     lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_HIDDEN;
 
-  if (access(strFileName, R_OK) == 0 && access(strFileName, W_OK) != 0)
+  if (access(strFileName.c_str(), R_OK) == 0 && access(strFileName.c_str(), W_OK) != 0)
     lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
 
   TimeTToFileTime(fileStat.st_ctime, &lpFindData->ftCreationTime);
@@ -255,7 +257,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   // with this flag set to work correctly
   flags |= O_NONBLOCK;
 
-  CStdString strResultFile(lpFileName);
+  string strResultFile(lpFileName);
 
   fd = open(lpFileName, flags, mode);
 
@@ -265,7 +267,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   {
     // Failed to open file. maybe due to case sensitivity.
     // Try opening the same name in lower case.
-    CStdString igFileName = CSpecialProtocol::TranslatePathConvertCase(lpFileName);
+    string igFileName = CSpecialProtocol::TranslatePathConvertCase(lpFileName);
     fd = open(igFileName.c_str(), flags, mode);
     if (fd != -1)
     {
@@ -300,7 +302,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   // if FILE_FLAG_DELETE_ON_CLOSE then "unlink" the file (delete)
   // the file will be deleted when the last open descriptor is closed.
   if (dwFlagsAndAttributes & FILE_FLAG_DELETE_ON_CLOSE)
-    unlink(strResultFile);
+    unlink(strResultFile.c_str());
 
   return result;
 }
@@ -329,7 +331,7 @@ BOOL DeleteFile(LPCTSTR lpFileName)
   }
   else if (errno == ENOENT)
   {
-    CStdString strLower(lpFileName);
+    string strLower(lpFileName);
     StringUtils::ToLower(strLower);
     CLog::Log(LOGERROR,"%s - cant delete file <%s>. trying lower case <%s>", __FUNCTION__, lpFileName, strLower.c_str());
     if (unlink(strLower.c_str()) == 0)
@@ -366,7 +368,7 @@ BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
   }
   else if (errno == ENOENT)
   {
-    CStdString strLower(lpExistingFileName);
+    string strLower(lpExistingFileName);
     StringUtils::ToLower(strLower);
     CLog::Log(LOGERROR,"%s - cant move file <%s>. trying lower case <%s>", __FUNCTION__, lpExistingFileName, strLower.c_str());
     if (rename(strLower.c_str(), lpNewFileName) == 0) {
@@ -397,13 +399,13 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
     return 0;
   }
 
-  CStdString strResultFile(lpExistingFileName);
+  string strResultFile(lpExistingFileName);
 
   // Open the files
   int sf = open(lpExistingFileName, O_RDONLY);
   if (sf == -1 && errno == ENOENT) // important to check reason for fail. only if its "file does not exist" shall we try lower case.
   {
-    CStdString strLower(lpExistingFileName);
+    string strLower(lpExistingFileName);
     StringUtils::ToLower(strLower);
 
     // failed to open file. maybe due to case sensitivity. try opening the same name in lower case.
@@ -526,7 +528,7 @@ BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttri
   if (errno == ENOENT)
   {
     CLog::Log(LOGWARNING,"%s, cant create dir <%s>. trying lower case.", __FUNCTION__, lpPathName);
-    CStdString strLower(lpPathName);
+    string strLower(lpPathName);
     StringUtils::ToLower(strLower);
 
     if (mkdir(strLower.c_str(), 0755) == 0)
@@ -544,7 +546,7 @@ BOOL   RemoveDirectory(LPCTSTR lpPathName)
   if (errno == ENOENT)
   {
     CLog::Log(LOGWARNING,"%s, cant remove dir <%s>. trying lower case.", __FUNCTION__, lpPathName);
-    CStdString strLower(lpPathName);
+    string strLower(lpPathName);
     StringUtils::ToLower(strLower);
 
     if (rmdir(strLower.c_str()) == 0 || errno == ENOENT)
@@ -601,7 +603,7 @@ BOOL GetDiskFreeSpaceEx(
 #if defined(TARGET_ANDROID) || defined(TARGET_DARWIN)
   struct statfs fsInfo;
   // is 64-bit on android and darwin (10.6SDK + any iOS)
-  if (statfs(CSpecialProtocol::TranslatePath(lpDirectoryName), &fsInfo) != 0)
+  if (statfs(CSpecialProtocol::TranslatePath(lpDirectoryName).c_str(), &fsInfo) != 0)
     return false;
 #else
   struct statfs64 fsInfo;

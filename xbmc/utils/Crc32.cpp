@@ -21,6 +21,8 @@
 #include "Crc32.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 uint32_t  crc_tab[256] =
 {
  0x00000000L, 0x04C11DB7L, 0x09823B6EL, 0x0D4326D9L,
@@ -105,14 +107,14 @@ void Crc32::Compute(const char* buffer, size_t count)
       m_crc = (m_crc << 8) ^ crc_tab[((m_crc >> 24) ^ *buffer++) & 0xFF];
 }
 
-void Crc32::Compute(const CStdString& strValue)
+void Crc32::Compute(const string& strValue)
 {
   Compute(strValue.c_str(), strValue.size());
 }
 
-void Crc32::ComputeFromLowerCase(const CStdString& strValue)
+void Crc32::ComputeFromLowerCase(const string& strValue)
 {
-  CStdString strLower = strValue;
+  string strLower = strValue;
   StringUtils::ToLower(strLower);
   Compute(strLower.c_str(), strLower.size());
 }

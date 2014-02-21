@@ -58,7 +58,7 @@ namespace XFILE
 
     IFile *GetFileImp();
 
-    virtual CStdString GetContent();
+    virtual std::string GetContent();
     virtual std::string GetContentCharset(void);
 
   private:
@@ -66,7 +66,7 @@ namespace XFILE
     bool      m_bDeleteCache;
     int        m_seekPossible;
     CFile      m_source;
-    CStdString    m_sourcePath;
+    std::string    m_sourcePath;
     CEvent      m_seekEvent;
     CEvent      m_seekEnded;
     int64_t      m_nSeekResult;

@@ -32,11 +32,13 @@
 #include "music/tags/MusicInfoTag.h"
 #include "URL.h"
 
+using namespace std;
+
 namespace XFILE
 {
 
 
-bool CFavouritesDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CFavouritesDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   items.Clear();
   CURL url(strPath);
@@ -63,7 +65,7 @@ bool CFavouritesDirectory::Exists(const char* strPath)
 bool CFavouritesDirectory::Load(CFileItemList &items)
 {
   items.Clear();
-  CStdString favourites;
+  string favourites;
 
   favourites = "special://xbmc/system/favourites.xml";
   if(XFILE::CFile::Exists(favourites))
@@ -79,7 +81,7 @@ bool CFavouritesDirectory::Load(CFileItemList &items)
   return true;
 }
 
-bool CFavouritesDirectory::LoadFavourites(const CStdString& strPath, CFileItemList& items)
+bool CFavouritesDirectory::LoadFavourites(const string& strPath, CFileItemList& items)
 {
   CXBMCTinyXML doc;
   if (!doc.LoadFile(strPath))
@@ -120,7 +122,7 @@ bool CFavouritesDirectory::LoadFavourites(const CStdString& strPath, CFileItemLi
 
 bool CFavouritesDirectory::Save(const CFileItemList &items)
 {
-  CStdString favourites;
+  string favourites;
   CXBMCTinyXML doc;
   TiXmlElement xmlRootElement("favourites");
   TiXmlNode *rootNode = doc.InsertEndChild(xmlRootElement);
@@ -150,7 +152,7 @@ bool CFavouritesDirectory::AddOrRemove(CFileItem *item, int contextWindow)
   CFileItemList items;
   Load(items);
 
-  CStdString executePath(GetExecutePath(*item, contextWindow));
+  string executePath(GetExecutePath(*item, contextWindow));
 
   CFileItemPtr match = items.Get(executePath);
   if (match)
@@ -179,14 +181,14 @@ bool CFavouritesDirectory::IsFavourite(CFileItem *item, int contextWindow)
   return items.Contains(GetExecutePath(*item, contextWindow));
 }
 
-CStdString CFavouritesDirectory::GetExecutePath(const CFileItem &item, int contextWindow)
+string CFavouritesDirectory::GetExecutePath(const CFileItem &item, int contextWindow)
 {
   return GetExecutePath(item, StringUtils::Format("%i", contextWindow));
 }
 
-CStdString CFavouritesDirectory::GetExecutePath(const CFileItem &item, const std::string &contextWindow)
+string CFavouritesDirectory::GetExecutePath(const CFileItem &item, const std::string &contextWindow)
 {
-  CStdString execute;
+  string execute;
   if (item.m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
                             !(item.IsSmartPlayList() || item.IsPlayList())))
   {

@@ -601,13 +601,13 @@ extern "C" void __stdcall update_emu_environ();
 // Utility function used to copy files from the application bundle
 // over to the user data directory in Application Support/XBMC.
 //
-static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &file)
+static void CopyUserDataIfNeeded(const string &strPath, const string &file)
 {
-  CStdString destPath = URIUtils::AddFileToFolder(strPath, file);
+  string destPath = URIUtils::AddFileToFolder(strPath, file);
   if (!CFile::Exists(destPath))
   {
     // need to copy it across
-    CStdString srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
+    string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
     CFile::Cache(srcPath, destPath);
   }
 }
@@ -622,7 +622,7 @@ void CApplication::Preflight()
 
   // run any platform preflight scripts.
 #if defined(TARGET_DARWIN_OSX)
-  CStdString install_path;
+  string install_path;
 
   CUtil::GetHomePath(install_path);
   setenv("XBMC_HOME", install_path.c_str(), 0);
@@ -754,14 +754,14 @@ bool CApplication::Create()
 #endif
   CSpecialProtocol::LogPaths();
 
-  CStdString executable = CUtil::ResolveExecutablePath();
+  string executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
   CLog::Log(LOGNOTICE, "Local hostname: %s", m_network->GetHostName().c_str());
   CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_advancedSettings.m_logFolder.c_str());
   CRegExp::LogCheckUtf8Support();
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
-  CStdString strExecutablePath;
+  string strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
 
 #ifdef HAS_XRANDR
@@ -812,17 +812,17 @@ bool CApplication::Create()
   update_emu_environ();//apply the GUI settings
 
   // Load the langinfo to have user charset <-> utf-8 conversion
-  CStdString strLanguage = CSettings::Get().GetString("locale.language");
+  string strLanguage = CSettings::Get().GetString("locale.language");
   strLanguage[0] = toupper(strLanguage[0]);
 
-  CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
+  string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
 
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
   g_langInfo.SetAudioLanguage(CSettings::Get().GetString("locale.audiolanguage"));
   g_langInfo.SetSubtitleLanguage(CSettings::Get().GetString("locale.subtitlelanguage"));
 
-  CStdString strLanguagePath = "special://xbmc/language/";
+  string strLanguagePath = "special://xbmc/language/";
 
   CLog::Log(LOGINFO, "load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath, strLanguage))
@@ -983,7 +983,7 @@ bool CApplication::CreateGUI()
 
   if (g_advancedSettings.m_splashImage)
   {
-    CStdString strUserSplash = "special://home/media/Splash.png";
+    string strUserSplash = "special://home/media/Splash.png";
     if (CFile::Exists(strUserSplash))
     {
       CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
@@ -1068,19 +1068,19 @@ bool CApplication::InitDirectoriesLinux()
 */
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  CStdString userName;
+  string userName;
   if (getenv("USER"))
     userName = getenv("USER");
   else
     userName = "root";
 
-  CStdString userHome;
+  string userHome;
   if (getenv("HOME"))
     userHome = getenv("HOME");
   else
     userHome = "/root";
 
-  CStdString xbmcBinPath, xbmcPath;
+  string xbmcBinPath, xbmcPath;
   CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
   xbmcPath = getenv("XBMC_HOME");
 
@@ -1113,7 +1113,7 @@ bool CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
-    CStdString strTempPath = userHome;
+    string strTempPath = userHome;
     strTempPath = URIUtils::AddFileToFolder(strTempPath, ".xbmc/temp");
     if (getenv("XBMC_TEMP"))
       strTempPath = getenv("XBMC_TEMP");
@@ -1135,7 +1135,7 @@ bool CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
     CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = xbmcPath;
+    string strTempPath = xbmcPath;
     strTempPath = URIUtils::AddFileToFolder(strTempPath, "portable_data/temp");
     if (getenv("XBMC_TEMP"))
       strTempPath = getenv("XBMC_TEMP");
@@ -1155,30 +1155,30 @@ bool CApplication::InitDirectoriesLinux()
 bool CApplication::InitDirectoriesOSX()
 {
 #if defined(TARGET_DARWIN)
-  CStdString userName;
+  string userName;
   if (getenv("USER"))
     userName = getenv("USER");
   else
     userName = "root";
 
-  CStdString userHome;
+  string userHome;
   if (getenv("HOME"))
     userHome = getenv("HOME");
   else
     userHome = "/root";
 
-  CStdString xbmcPath;
+  string xbmcPath;
   CUtil::GetHomePath(xbmcPath);
   setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
 #if defined(TARGET_DARWIN_IOS)
-  CStdString fontconfigPath;
+  string fontconfigPath;
   fontconfigPath = xbmcPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
   setenv("FONTCONFIG_FILE", fontconfigPath.c_str(), 0);
 #endif
 
   // setup path to our internal dylibs so loader can find them
-  CStdString frameworksPath = CUtil::GetFrameworksPath();
+  string frameworksPath = CUtil::GetFrameworksPath();
   CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
 
   // OSX always runs with m_bPlatformDirectories == true
@@ -1188,8 +1188,8 @@ bool CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetXBMCBinPath(xbmcPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
     #if defined(TARGET_DARWIN_IOS)
-      CSpecialProtocol::SetHomePath(userHome + "/" + CStdString(DarwinGetXbmcRootFolder()) + "/XBMC");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CStdString(DarwinGetXbmcRootFolder()) + "/XBMC/userdata");
+      CSpecialProtocol::SetHomePath(userHome + "/" + string(DarwinGetXbmcRootFolder()) + "/XBMC");
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + string(DarwinGetXbmcRootFolder()) + "/XBMC/userdata");
     #else
       CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
       CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
@@ -1197,9 +1197,9 @@ bool CApplication::InitDirectoriesOSX()
 
     // location for temp files
     #if defined(TARGET_DARWIN_IOS)
-      CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  CStdString(DarwinGetXbmcRootFolder()) + "/XBMC/temp");
+      string strTempPath = URIUtils::AddFileToFolder(userHome,  string(DarwinGetXbmcRootFolder()) + "/XBMC/temp");
     #else
-      CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
+      string strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
       CDirectory::Create(strTempPath);
       strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
     #endif
@@ -1207,7 +1207,7 @@ bool CApplication::InitDirectoriesOSX()
 
     // xbmc.log file location
     #if defined(TARGET_DARWIN_IOS)
-      strTempPath = userHome + "/" + CStdString(DarwinGetXbmcRootFolder());
+      strTempPath = userHome + "/" + string(DarwinGetXbmcRootFolder());
     #else
       strTempPath = userHome + "/Library/Logs";
     #endif
@@ -1226,7 +1226,7 @@ bool CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
     CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = URIUtils::AddFileToFolder(xbmcPath, "portable_data/temp");
+    string strTempPath = URIUtils::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
@@ -1242,14 +1242,14 @@ bool CApplication::InitDirectoriesOSX()
 bool CApplication::InitDirectoriesWin32()
 {
 #ifdef TARGET_WINDOWS
-  CStdString xbmcPath;
+  string xbmcPath;
 
   CUtil::GetHomePath(xbmcPath);
   CEnvironment::setenv("XBMC_HOME", xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
   CSpecialProtocol::SetXBMCPath(xbmcPath);
 
-  CStdString strWin32UserFolder = CWIN32Util::GetProfilePath();
+  string strWin32UserFolder = CWIN32Util::GetProfilePath();
 
   g_advancedSettings.m_logFolder = strWin32UserFolder;
   CSpecialProtocol::SetHomePath(strWin32UserFolder);
@@ -1641,7 +1641,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
   else if (settingId == "lookandfeel.skintheme")
   {
     // also set the default color theme
-    CStdString colorTheme = ((CSettingString*)setting)->GetValue();
+    string colorTheme = ((CSettingString*)setting)->GetValue();
     URIUtils::RemoveExtension(colorTheme);
     if (StringUtils::EqualsNoCase(colorTheme, "Textures"))
       colorTheme = "defaults";
@@ -1867,7 +1867,7 @@ bool CApplication::Save(TiXmlNode *settings) const
   return true;
 }
 
-bool CApplication::LoadSkin(const CStdString& skinID)
+bool CApplication::LoadSkin(const string& skinID)
 {
   if (m_skinReloading)
     return false;
@@ -1940,7 +1940,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(CSettings::Get().GetString("lookandfeel.font")))
   {
     CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
-    CStdString strFontSet;
+    string strFontSet;
     if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
     {
       CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
@@ -1955,7 +1955,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   g_fontManager.LoadFonts(CSettings::Get().GetString("lookandfeel.font"));
 
   // load in the skin strings
-  CStdString langPath = URIUtils::AddFileToFolder(skin->Path(), "language");
+  string langPath = URIUtils::AddFileToFolder(skin->Path(), "language");
   URIUtils::AddSlashAtEnd(langPath);
 
   g_localizeStrings.LoadSkinStrings(langPath, CSettings::Get().GetString("locale.language"));
@@ -2053,7 +2053,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 bool CApplication::LoadUserWindows()
 {
   // Start from wherever home.xml is
-  std::vector<CStdString> vecSkinPath;
+  std::vector<string> vecSkinPath;
   g_SkinInfo->GetSkinPaths(vecSkinPath);
   for (unsigned int i = 0;i < vecSkinPath.size();++i)
   {
@@ -2065,7 +2065,7 @@ bool CApplication::LoadUserWindows()
       {
         if (items[i]->m_bIsFolder)
           continue;
-        CStdString skinFile = URIUtils::GetFileName(items[i]->GetPath());
+        string skinFile = URIUtils::GetFileName(items[i]->GetPath());
         if (StringUtils::StartsWithNoCase(skinFile, "custom"))
         {
           CXBMCTinyXML xmlDoc;
@@ -2077,8 +2077,8 @@ bool CApplication::LoadUserWindows()
 
           // Root element should be <window>
           TiXmlElement* pRootElement = xmlDoc.RootElement();
-          CStdString strValue = pRootElement->Value();
-          if (!strValue.Equals("window"))
+          string strValue = pRootElement->Value();
+          if (!StringUtils::EqualsNoCase(strValue, "window"))
           {
             CLog::Log(LOGERROR, "file: %s doesnt contain <window>", skinFile.c_str());
             continue;
@@ -2087,7 +2087,7 @@ bool CApplication::LoadUserWindows()
           // Read the <type> element to get the window type to create
           // If no type is specified, create a CGUIWindow as default
           CGUIWindow* pWindow = NULL;
-          CStdString strType;
+          string strType;
           if (pRootElement->Attribute("type"))
             strType = pRootElement->Attribute("type");
           else
@@ -2103,14 +2103,14 @@ bool CApplication::LoadUserWindows()
             if (pType && pType->FirstChild())
               id = atol(pType->FirstChild()->Value());
           }
-          CStdString visibleCondition;
+          string visibleCondition;
           CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
-          if (strType.Equals("dialog"))
+          if (StringUtils::EqualsNoCase(strType, "dialog"))
             pWindow = new CGUIDialog(id + WINDOW_HOME, skinFile);
-          else if (strType.Equals("submenu"))
+          else if (StringUtils::EqualsNoCase(strType, "submenu"))
             pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, skinFile);
-          else if (strType.Equals("buttonmenu"))
+          else if (StringUtils::EqualsNoCase(strType, "buttonmenu"))
             pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, skinFile);
           else
             pWindow = new CGUIWindow(id + WINDOW_HOME, skinFile);
@@ -2175,7 +2175,7 @@ float CApplication::GetDimScreenSaverLevel() const
     return 0;
 
   if (!m_screenSaver->GetSetting("level").empty())
-    return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));
+    return 100.0f - (float)atof(m_screenSaver->GetSetting("level").c_str());
   return 100.0f;
 }
 
@@ -2987,7 +2987,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     }
 
     int actionID;
-    CStdString actionName;
+    string actionName;
     bool fullrange;
     if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_BUTTON, actionID, actionName, fullrange))
     {
@@ -3009,7 +3009,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     }
 
     int actionID;
-    CStdString actionName;
+    string actionName;
     bool fullrange;
     if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_AXIS, actionID, actionName, fullrange))
     {
@@ -3043,7 +3043,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     }
 
     int actionID;
-    CStdString actionName;
+    string actionName;
     bool fullrange;
 
     bid = position<<16|bid;
@@ -3267,7 +3267,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
 
    int iWin = GetActiveWindowID();
    int actionID;
-   CStdString actionName;
+   string actionName;
    bool fullRange = false;
 
    // Translate using regular joystick translator.
@@ -3966,7 +3966,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
       {
         options.starttime = 0.0f;
         CBookmark bookmark;
-        CStdString path = item.GetPath();
+        string path = item.GetPath();
         if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
           path = item.GetVideoInfoTag()->m_strFileNameAndPath;
         else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
@@ -5045,7 +5045,7 @@ void CApplication::Process()
     m_loggingIn = false;
 
     // autoexec.py - profile
-    CStdString strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/autoexec.py");
+    string strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/autoexec.py");
 
     if (XFILE::CFile::Exists(strAutoExecPy))
       CScriptInvocationManager::Get().Execute(strAutoExecPy);
@@ -5253,7 +5253,7 @@ void CApplication::Restart(bool bSamePosition)
   double time = GetTime();
 
   // get player state, needed for dvd's
-  CStdString state = m_pPlayer->GetPlayerState();
+  string state = m_pPlayer->GetPlayerState();
 
   // set the requested starttime
   m_itemCurrentFile->m_lStartOffset = (long)(time * 75.0);
@@ -5263,7 +5263,7 @@ void CApplication::Restart(bool bSamePosition)
     m_pPlayer->SetPlayerState(state);
 }
 
-const CStdString& CApplication::CurrentFile()
+const string& CApplication::CurrentFile()
 {
   return m_itemCurrentFile->GetPath();
 }
@@ -5637,7 +5637,7 @@ void CApplication::StartVideoCleanup()
   m_videoInfoScanner->CleanDatabase();
 }
 
-void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
+void CApplication::StartVideoScan(const string &strDirectory, bool scanAll)
 {
   if (m_videoInfoScanner->IsScanning())
     return;
@@ -5647,7 +5647,7 @@ void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
   m_videoInfoScanner->Start(strDirectory,scanAll);
 }
 
-void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
+void CApplication::StartMusicScan(const string &strDirectory, int flags)
 {
   if (m_musicInfoScanner->IsScanning())
     return;
@@ -5666,7 +5666,7 @@ void CApplication::StartMusicScan(const CStdString &strDirectory, int flags)
   m_musicInfoScanner->Start(strDirectory, flags);
 }
 
-void CApplication::StartMusicAlbumScan(const CStdString& strDirectory,
+void CApplication::StartMusicAlbumScan(const string& strDirectory,
                                        bool refresh)
 {
   if (m_musicInfoScanner->IsScanning())
@@ -5677,7 +5677,7 @@ void CApplication::StartMusicAlbumScan(const CStdString& strDirectory,
   m_musicInfoScanner->FetchAlbumInfo(strDirectory,refresh);
 }
 
-void CApplication::StartMusicArtistScan(const CStdString& strDirectory,
+void CApplication::StartMusicArtistScan(const string& strDirectory,
                                         bool refresh)
 {
   if (m_musicInfoScanner->IsScanning())
@@ -5712,7 +5712,7 @@ void CApplication::CheckPlayingProgress()
   }
 }
 
-bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist, int track)
+bool CApplication::ProcessAndStartPlaylist(const string& strPlayList, CPlayList& playlist, int iPlaylist, int track)
 {
   CLog::Log(LOGDEBUG,"CApplication::ProcessAndStartPlaylist(%s, %i)",strPlayList.c_str(), iPlaylist);
 
@@ -5772,20 +5772,20 @@ bool CApplication::AlwaysProcess(const CAction& action)
   // check if this button is mapped to a built-in function
   if (!action.GetName().empty())
   {
-    CStdString builtInFunction;
-    vector<CStdString> params;
+    string builtInFunction;
+    vector<string> params;
     CUtil::SplitExecFunction(action.GetName(), builtInFunction, params);
     StringUtils::ToLower(builtInFunction);
 
     // should this button be handled normally or just cancel the screensaver?
-    if (   builtInFunction.Equals("powerdown")
-        || builtInFunction.Equals("reboot")
-        || builtInFunction.Equals("restart")
-        || builtInFunction.Equals("restartapp")
-        || builtInFunction.Equals("suspend")
-        || builtInFunction.Equals("hibernate")
-        || builtInFunction.Equals("quit")
-        || builtInFunction.Equals("shutdown"))
+    if (   StringUtils::EqualsNoCase(builtInFunction, "powerdown")
+        || StringUtils::EqualsNoCase(builtInFunction, "reboot")
+        || StringUtils::EqualsNoCase(builtInFunction, "restart")
+        || StringUtils::EqualsNoCase(builtInFunction, "restartapp")
+        || StringUtils::EqualsNoCase(builtInFunction, "suspend")
+        || StringUtils::EqualsNoCase(builtInFunction, "hibernate")
+        || StringUtils::EqualsNoCase(builtInFunction, "quit")
+        || StringUtils::EqualsNoCase(builtInFunction, "shutdown"))
     {
       return true;
     }
@@ -5817,20 +5817,20 @@ CPerformanceStats &CApplication::GetPerformanceStats()
 }
 #endif
 
-bool CApplication::SetLanguage(const CStdString &strLanguage)
+bool CApplication::SetLanguage(const string &strLanguage)
 {
-  CStdString strPreviousLanguage = CSettings::Get().GetString("locale.language");
-  CStdString strNewLanguage = strLanguage;
+  string strPreviousLanguage = CSettings::Get().GetString("locale.language");
+  string strNewLanguage = strLanguage;
   if (strNewLanguage != strPreviousLanguage)
   {
-    CStdString strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
+    string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
     if (!g_langInfo.Load(strLangInfoPath))
       return false;
 
     if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
     {
       CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
-      CStdString strFontSet;
+      string strFontSet;
       if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
         strNewLanguage = strFontSet;
       else

@@ -22,6 +22,7 @@
 #include "File.h"
 #include "music/tags/MusicInfoTagLoaderASAP.h"
 
+using namespace std;
 using namespace XFILE;
 
 CASAPFileDirectory::CASAPFileDirectory()
@@ -33,7 +34,7 @@ CASAPFileDirectory::~CASAPFileDirectory()
 {
 }
 
-int CASAPFileDirectory::GetTrackCount(const CStdString &strPath)
+int CASAPFileDirectory::GetTrackCount(const string &strPath)
 {
   if (!m_dll.Load())
     return 0;

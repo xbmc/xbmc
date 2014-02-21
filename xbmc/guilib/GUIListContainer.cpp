@@ -24,6 +24,8 @@
 #include "Key.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
     : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
 {
@@ -295,8 +297,8 @@ CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, fl
   CGUIListItemLayout layout;
   layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, "", "");
   m_layouts.push_back(layout);
-  CStdString condition = StringUtils::Format("control.hasfocus(%i)", controlID);
-  CStdString condition2 = "!" + condition;
+  string condition = StringUtils::Format("control.hasfocus(%i)", controlID);
+  string condition2 = "!" + condition;
   CGUIListItemLayout focusLayout;
   focusLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, condition2, condition);
   m_focusedLayouts.push_back(focusLayout);

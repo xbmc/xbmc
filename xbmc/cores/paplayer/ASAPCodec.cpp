@@ -22,6 +22,7 @@
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 
+using namespace std;
 
 ASAPCodec::ASAPCodec()
 {
@@ -32,16 +33,16 @@ ASAPCodec::~ASAPCodec()
 {
 }
 
-bool ASAPCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool ASAPCodec::Init(const string &strFile, unsigned int filecache)
 {
   if (!m_dll.Load())
     return false;
 
-  CStdString strFileToLoad = strFile;
+  string strFileToLoad = strFile;
   int song = -1;
   if (URIUtils::HasExtension(strFile, ".asapstream"))
   {
-    CStdString strFileName = URIUtils::GetFileName(strFile);
+    string strFileName = URIUtils::GetFileName(strFile);
     size_t iStart = strFileName.rfind('-') + 1;
     song = atoi(strFileName.substr(iStart, strFileName.size() - iStart - 11).c_str()) - 1;
     strFileToLoad = URIUtils::GetDirectory(strFile);
@@ -81,11 +82,11 @@ bool ASAPCodec::CanInit()
   return m_dll.CanLoad();
 }
 
-bool ASAPCodec::IsSupportedFormat(const CStdString &strExt)
+bool ASAPCodec::IsSupportedFormat(const string &strExt)
 {
   if(strExt.empty())
     return false;
-  CStdString ext = strExt;
+  string ext = strExt;
   if (ext[0] == '.')
     ext.erase(0, 1);
   return ext == "sap"

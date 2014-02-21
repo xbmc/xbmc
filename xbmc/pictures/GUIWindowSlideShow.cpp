@@ -48,6 +48,7 @@
 #include "pictures/PictureInfoTag.h"
 #include "pictures/PictureThumbLoader.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define MAX_ZOOM_FACTOR                     10
@@ -131,7 +132,7 @@ void CBackgroundPicLoader::Process()
               count, totalTime, totalTime / count);
 }
 
-void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight)
+void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const string &strFileName, const int maxWidth, const int maxHeight)
 {
   m_iPic = iPic;
   m_iSlideNumber = iSlideNumber;
@@ -332,7 +333,7 @@ void CGUIWindowSlideShow::ShowPrevious()
 }
 
 
-void CGUIWindowSlideShow::Select(const CStdString& strPicture)
+void CGUIWindowSlideShow::Select(const string& strPicture)
 {
   for (int i = 0; i < m_slides->Size(); ++i)
   {
@@ -504,7 +505,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (!m_Image[m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading())
   { // load first image
     CFileItemPtr item = m_slides->Get(m_iCurrentSlide);
-    CStdString picturePath = GetPicturePath(item.get());
+    string picturePath = GetPicturePath(item.get());
     if (!picturePath.empty())
     {
       if (item->IsVideo())
@@ -532,7 +533,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   { // load the next image
     m_iLastFailedNextSlide = -1;
     CFileItemPtr item = m_slides->Get(m_iNextSlide);
-    CStdString picturePath = GetPicturePath(item.get());
+    string picturePath = GetPicturePath(item.get());
     if (!picturePath.empty() && (!item->IsVideo() || !m_bSlideShow || m_bPause))
     {
       if (item->IsVideo())
@@ -940,7 +941,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SHOW_PICTURE:
     {
-      CStdString strFile = message.GetStringParam();
+      string strFile = message.GetStringParam();
       Reset();
       CFileItem item(strFile, false);
       Add(&item);
@@ -950,7 +951,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_START_SLIDESHOW:
     {
-      CStdString strFolder = message.GetStringParam();
+      string strFolder = message.GetStringParam();
       unsigned int iParams = message.GetParam1();
       std::string beginSlidePath = message.GetStringParam(1);
       //decode params
@@ -1129,7 +1130,7 @@ CSlideShowPic::DISPLAY_EFFECT CGUIWindowSlideShow::GetDisplayEffect(int iSlideNu
     return CSlideShowPic::EFFECT_NO_TIMEOUT;
 }
 
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, CBaseTexture* pTexture, bool bFullSize)
+void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const string &strFileName, CBaseTexture* pTexture, bool bFullSize)
 {
   if (pTexture)
   {
@@ -1148,7 +1149,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const CStdString
     if (URIUtils::IsInRAR(m_slides->Get(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides->Get(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
     {
       CURL url(m_slides->Get(m_iCurrentSlide)->GetPath());
-      CStdString strHostName = url.GetHostName();
+      string strHostName = url.GetHostName();
       if (URIUtils::HasExtension(strHostName, ".cbr|.cbz"))
       {
         m_Image[iPic].m_bIsComic = true;
@@ -1188,10 +1189,10 @@ int CGUIWindowSlideShow::CurrentSlide() const
   return m_iCurrentSlide + 1;
 }
 
-void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
+void CGUIWindowSlideShow::AddFromPath(const string &strPath,
                                       bool bRecursive, 
                                       SortBy method, SortOrder order, SortAttribute sortAttributes,
-                                      const CStdString &strExtensions)
+                                      const string &strExtensions)
 {
   if (strPath!="")
   {
@@ -1208,12 +1209,12 @@ void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
   }
 }
 
-void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, 
+void CGUIWindowSlideShow::RunSlideShow(const string &strPath, 
                                        bool bRecursive /* = false */, bool bRandom /* = false */,
-                                       bool bNotRandom /* = false */, const CStdString &beginSlidePath /* = "" */,
+                                       bool bNotRandom /* = false */, const string &beginSlidePath /* = "" */,
                                        bool startSlideShow /* = true */, SortBy method /* = SortByLabel */, 
                                        SortOrder order /* = SortOrderAscending */, SortAttribute sortAttributes /* = SortAttributeNone */,
-                                       const CStdString &strExtensions)
+                                       const string &strExtensions)
 {
   // stop any video
   if (g_application.m_pPlayer->IsPlayingVideo())
@@ -1249,12 +1250,12 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath,
   g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
-void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursivePaths, SortBy method, SortOrder order, SortAttribute sortAttributes)
+void CGUIWindowSlideShow::AddItems(const string &strPath, path_set *recursivePaths, SortBy method, SortOrder order, SortAttribute sortAttributes)
 {
   // check whether we've already added this path
   if (recursivePaths)
   {
-    CStdString path(strPath);
+    string path(strPath);
     URIUtils::RemoveSlashAtEnd(path);
     if (recursivePaths->find(path) != recursivePaths->end())
       return;
@@ -1289,10 +1290,10 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   maxHeight = g_Windowing.GetMaxTextureSize();
 }
 
-CStdString CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
+string CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
 {
   bool isVideo = item->IsVideo();
-  CStdString picturePath = item->GetPath();
+  string picturePath = item->GetPath();
   if (isVideo)
   {
     picturePath = item->GetArt("thumb");

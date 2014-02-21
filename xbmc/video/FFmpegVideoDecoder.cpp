@@ -27,6 +27,7 @@
 
 #include "FFmpegVideoDecoder.h"
 
+using namespace std;
 
 FFmpegVideoDecoder::FFmpegVideoDecoder()
 {
@@ -145,7 +146,7 @@ const AVCodec * FFmpegVideoDecoder::getAVCodec() const
   return m_pCodec;
 }
 
-CStdString FFmpegVideoDecoder::getErrorMsg() const
+string FFmpegVideoDecoder::getErrorMsg() const
 {
   return m_errorMsg;
 }
@@ -156,7 +157,7 @@ double FFmpegVideoDecoder::getLastFrameTime() const
 }
 
 
-bool FFmpegVideoDecoder::open( const CStdString& filename )
+bool FFmpegVideoDecoder::open( const string& filename )
 {
   // See http://dranger.com/ffmpeg/tutorial01.html
   close();

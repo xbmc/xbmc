@@ -42,9 +42,9 @@ public:
   double timeInSeconds;
   double totalTimeInSeconds;
   long partNumber;
-  CStdString thumbNailImage;
-  CStdString playerState;
-  CStdString player;
+  std::string thumbNailImage;
+  std::string playerState;
+  std::string player;
   long seasonNumber;
   long episodeNumber;
 

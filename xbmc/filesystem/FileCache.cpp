@@ -31,6 +31,7 @@
 #include "utils/TimeUtils.h"
 #include "settings/AdvancedSettings.h"
 
+using namespace std;
 using namespace AUTOPTR;
 using namespace XFILE;
 
@@ -475,7 +476,7 @@ void CFileCache::StopThread(bool bWait /*= true*/)
   CThread::StopThread(bWait);
 }
 
-CStdString CFileCache::GetContent()
+string CFileCache::GetContent()
 {
   if (!m_source.GetImplemenation())
     return IFile::GetContent();

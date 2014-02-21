@@ -28,7 +28,7 @@ namespace XFILE
     class CDirectoryNodeYearSong : public CDirectoryNode
     {
     public:
-      CDirectoryNodeYearSong(const CStdString& strName, CDirectoryNode* pParent);
+      CDirectoryNodeYearSong(const std::string& strName, CDirectoryNode* pParent);
     protected:
       virtual bool GetContent(CFileItemList& items) const;
     };

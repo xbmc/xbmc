@@ -31,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 CTuxBoxDirectory::CTuxBoxDirectory(void)
@@ -41,25 +42,25 @@ CTuxBoxDirectory::~CTuxBoxDirectory(void)
 {
 }
 
-bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CTuxBoxDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   // so we know that we have enigma2
   static bool enigma2 = false;
   // Detect and delete slash at end
-  CStdString strRoot = strPath;
+  string strRoot = strPath;
   URIUtils::RemoveSlashAtEnd(strRoot);
 
   //Get the request strings
-  CStdString strBQRequest;
-  CStdString strXMLRootString;
-  CStdString strXMLChildString;
+  string strBQRequest;
+  string strXMLRootString;
+  string strXMLChildString;
   if(!GetRootAndChildString(strRoot, strBQRequest, strXMLRootString, strXMLChildString))
     return false;
 
   //Set url Protocol
   CURL url(strRoot);
-  CStdString strFilter;
-  CStdString protocol = url.GetProtocol();
+  string strFilter;
+  string protocol = url.GetProtocol();
   url.SetProtocol("http");
   bool bIsBouquet=false;
 
@@ -77,7 +78,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       bIsBouquet = false; //On Empty is Bouquet
       if (enigma2)
       {
-        CStdString strPort = StringUtils::Format(":%i",url.GetPort());
+        string strPort = StringUtils::Format(":%i",url.GetPort());
         if (!StringUtils::EndsWith(strRoot, strPort)) // If not root dir, enable Channels
           strFilter = "e2"; // Disable Bouquets for Enigma2
 
@@ -113,7 +114,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       int size_read = 0;
       int size_total = (int)http.GetLength();
       int data_size = 0;
-      CStdString data;
+      string data;
       data.reserve(size_total);
 
       // read response from server into string buffer
@@ -137,7 +138,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
         CLog::Log(LOGERROR, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
         return false;
       }
-      if( strXMLRootString.Equals(root->Value()) && bIsBouquet)
+      if( StringUtils::EqualsNoCase(strXMLRootString, root->Value()) && bIsBouquet)
       {
         data.clear();
         if (enigma2)
@@ -145,7 +146,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
         else
           result = g_tuxbox.ParseBouquets(root, items, url, strFilter, strXMLChildString);
       }
-      else if( strXMLRootString.Equals(root->Value()) && !strFilter.empty() )
+      else if( StringUtils::EqualsNoCase(strXMLRootString, root->Value()) && !strFilter.empty() )
       {
         data.clear();
         if (enigma2)
@@ -185,7 +186,7 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   return result;
 }
 
-void CTuxBoxDirectory::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
+void CTuxBoxDirectory::GetRootAndChildStringEnigma2(string& strBQRequest, string& strXMLRootString, string& strXMLChildString )
 {
   // Allways take getallservices for Enigma2
   strBQRequest = "web/getallservices"; //Bouquets and Channels
@@ -193,7 +194,7 @@ void CTuxBoxDirectory::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CS
   strXMLChildString = StringUtils::Format("e2bouquet");
 }
 
-bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
+bool CTuxBoxDirectory::GetRootAndChildString(const string strPath, string& strBQRequest, string& strXMLRootString, string& strXMLChildString )
 {
   //Advanced Settings: RootMode! Movies:
   if(g_advancedSettings.m_iTuxBoxDefaultRootMenu == 3) //Movies! Fixed-> mode=3&submode=4
@@ -221,7 +222,7 @@ bool CTuxBoxDirectory::GetRootAndChildString(const CStdString strPath, CStdStrin
       // Detect the RootMode !
       if (strPath.find("?mode=") != std::string::npos)
       {
-        CStdString strMode;
+        string strMode;
         bReqMoRe=false;
         strMode = g_tuxbox.DetectSubMode(strPath, strXMLRootString, strXMLChildString);
       }

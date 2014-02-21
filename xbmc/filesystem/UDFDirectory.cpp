@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 CUDFDirectory::CUDFDirectory(void)
@@ -37,10 +38,10 @@ CUDFDirectory::~CUDFDirectory(void)
 {
 }
 
-bool CUDFDirectory::GetDirectory(const CStdString& strPath,
+bool CUDFDirectory::GetDirectory(const string& strPath,
                                  CFileItemList &items)
 {
-  CStdString strRoot, strSub;
+  string strRoot, strSub;
   CURL url;
   if(StringUtils::StartsWith(strPath, "udf://"))
   {
@@ -59,10 +60,10 @@ bool CUDFDirectory::GetDirectory(const CStdString& strPath,
   URIUtils::AddSlashAtEnd(strSub);
 
   udf25 udfIsoReader;
-  if(!udfIsoReader.Open(url.GetHostName()))
+  if(!udfIsoReader.Open(url.GetHostName().c_str()))
      return false;
 
-  udf_dir_t *dirp = udfIsoReader.OpenDir(strSub);
+  udf_dir_t *dirp = udfIsoReader.OpenDir(strSub.c_str());
 
   if (dirp == NULL)
     return false;
@@ -72,7 +73,7 @@ bool CUDFDirectory::GetDirectory(const CStdString& strPath,
   {
     if (dp->d_type == DVD_DT_DIR)
     {
-      CStdString strDir = (char*)dp->d_name;
+      string strDir = (char*)dp->d_name;
       if (strDir != "." && strDir != "..")
       {
         CFileItemPtr pItem(new CFileItem((char*)dp->d_name));

@@ -46,6 +46,7 @@ typedef WIN32_FIND_DATA LOCAL_WIN32_FIND_DATA;
 #define LocalFindNextFile FindNextFile
 #endif
 
+using namespace std;
 using namespace AUTOPTR;
 using namespace XFILE;
 
@@ -55,17 +56,17 @@ CHDDirectory::CHDDirectory(void)
 CHDDirectory::~CHDDirectory(void)
 {}
 
-bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
+bool CHDDirectory::GetDirectory(const string& strPath1, CFileItemList &items)
 {
   LOCAL_WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString strPath=strPath1;
+  string strPath=strPath1;
 
   if (IsAliasShortcut(strPath))
     TranslateAliasShortcut(strPath);
 
-  CStdString strRoot = strPath;
+  string strRoot = strPath;
   CURL url(strPath);
 
   URIUtils::AddSlashAtEnd(strRoot);
@@ -80,7 +81,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   std::wstring strSearchMask(CWIN32Util::ConvertPathToWin32Form(strRoot));
   strSearchMask += L"*.*";
 #else
-  CStdString strSearchMask(strRoot);
+  string strSearchMask(strRoot);
 #endif
 
   FILETIME localTime;
@@ -88,7 +89,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   // on error, check if path exists at all, this will return true if empty folder
   if (!hFind.isValid())
-      return Exists(strPath1);
+      return Exists(strPath1.c_str());
 
   if (hFind.isValid())
   {
@@ -96,7 +97,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
     {
       if (wfd.cFileName[0] != 0)
       {
-        CStdString strLabel;
+        string strLabel;
 #ifdef TARGET_WINDOWS
         g_charsetConverter.wToUTF8(wfd.cFileName,strLabel, true);
 #else
@@ -107,7 +108,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           if (strLabel != "." && strLabel != "..")
           {
             CFileItemPtr pItem(new CFileItem(strLabel));
-            CStdString itemPath(URIUtils::AddFileToFolder(strRoot, strLabel));
+            string itemPath(URIUtils::AddFileToFolder(strRoot, strLabel));
             URIUtils::AddSlashAtEnd(itemPath);
             pItem->SetPath(itemPath);
             pItem->m_bIsFolder = true;
@@ -144,7 +145,7 @@ bool CHDDirectory::Create(const char* strPath)
 {
   if (!strPath || !*strPath)
     return false;
-  CStdString strPath1 = strPath;
+  string strPath1 = strPath;
   URIUtils::AddSlashAtEnd(strPath1);
 
 #ifdef TARGET_WINDOWS

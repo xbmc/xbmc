@@ -73,7 +73,7 @@ private:
   } Muxer;
 
   Muxer      m_SPDIF, m_ADTS;
-  bool       SetupMuxer(CDVDStreamInfo &hints, CStdString muxerName, Muxer &muxer);
+  bool       SetupMuxer(CDVDStreamInfo &hints, std::string muxerName, Muxer &muxer);
   static int MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size);
   void       WriteFrame(Muxer &muxer, uint8_t *pData, int iSize);
   int        GetMuxerData(Muxer &muxer, uint8_t** dst);

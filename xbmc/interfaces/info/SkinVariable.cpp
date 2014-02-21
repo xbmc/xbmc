@@ -65,12 +65,12 @@ int CSkinVariableString::GetContext() const
   return m_context;
 }
 
-const CStdString& CSkinVariableString::GetName() const
+const string& CSkinVariableString::GetName() const
 {
   return m_name;
 }
 
-CStdString CSkinVariableString::GetValue(bool preferImage /* = false*/, const CGUIListItem *item /* = NULL */)
+string CSkinVariableString::GetValue(bool preferImage /* = false*/, const CGUIListItem *item /* = NULL */)
 {
   for (VECCONDITIONLABELPAIR::const_iterator it = m_conditionLabelPairs.begin() ; it != m_conditionLabelPairs.end(); ++it)
   {

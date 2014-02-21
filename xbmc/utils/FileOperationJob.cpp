@@ -48,7 +48,7 @@ CFileOperationJob::CFileOperationJob()
 }
 
 CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,
-                                    const CStdString& strDestFile,
+                                    const string& strDestFile,
                                     bool displayProgress,
                                     int heading, int line)
 {
@@ -59,7 +59,7 @@ CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,
   SetFileOperation(action, items, strDestFile);
 }
 
-void CFileOperationJob::SetFileOperation(FileAction action, CFileItemList &items, const CStdString &strDestFile)
+void CFileOperationJob::SetFileOperation(FileAction action, CFileItemList &items, const string &strDestFile)
 {
   m_action = action;
   m_strDestFile = strDestFile;
@@ -97,7 +97,7 @@ bool CFileOperationJob::DoWork()
   return success;
 }
 
-bool CFileOperationJob::DoProcessFile(FileAction action, const CStdString& strFileA, const CStdString& strFileB, FileOperationList &fileOperations, double &totalTime)
+bool CFileOperationJob::DoProcessFile(FileAction action, const string& strFileA, const string& strFileB, FileOperationList &fileOperations, double &totalTime)
 {
   int64_t time = 1;
 
@@ -115,7 +115,7 @@ bool CFileOperationJob::DoProcessFile(FileAction action, const CStdString& strFi
   return true;
 }
 
-bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& strPath, const CStdString& strDestFile, FileOperationList &fileOperations, double &totalTime)
+bool CFileOperationJob::DoProcessFolder(FileAction action, const string& strPath, const string& strDestFile, FileOperationList &fileOperations, double &totalTime)
 {
   // check whether this folder is a filedirectory - if so, we don't process it's contents
   CFileItem item(strPath, false);
@@ -147,16 +147,16 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
   return true;
 }
 
-bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, const CStdString& strDestFile, FileOperationList &fileOperations, double &totalTime)
+bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, const string& strDestFile, FileOperationList &fileOperations, double &totalTime)
 {
   for (int iItem = 0; iItem < items.Size(); ++iItem)
   {
     CFileItemPtr pItem = items[iItem];
     if (pItem->IsSelected())
     {
-      CStdString strNoSlash = pItem->GetPath();
+      string strNoSlash = pItem->GetPath();
       URIUtils::RemoveSlashAtEnd(strNoSlash);
-      CStdString strFileName = URIUtils::GetFileName(strNoSlash);
+      string strFileName = URIUtils::GetFileName(strNoSlash);
 
       // special case for upnp
       if (URIUtils::IsUPnP(items.GetPath()) || URIUtils::IsUPnP(pItem->GetPath()))
@@ -174,7 +174,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         strFileName = CUtil::MakeLegalFileName(strFileName);
       }
 
-      CStdString strnewDestFile;
+      string strnewDestFile;
       if(!strDestFile.empty()) // only do this if we have a destination
         strnewDestFile = URIUtils::ChangeBasePath(pItem->GetPath(), strFileName, strDestFile); // Convert (URL) encoding + slashes (if source / target differ)
 
@@ -201,7 +201,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
   return true;
 }
 
-CFileOperationJob::CFileOperation::CFileOperation(FileAction action, const CStdString &strFileA, const CStdString &strFileB, int64_t time) : m_action(action), m_strFileA(strFileA), m_strFileB(strFileB), m_time(time)
+CFileOperationJob::CFileOperation::CFileOperation(FileAction action, const string &strFileA, const string &strFileB, int64_t time) : m_action(action), m_strFileA(strFileA), m_strFileB(strFileB), m_time(time)
 {
 }
 
@@ -212,9 +212,9 @@ struct DataHolder
   double opWeight;
 };
 
-CStdString CFileOperationJob::GetActionString(FileAction action)
+string CFileOperationJob::GetActionString(FileAction action)
 {
-  CStdString result;
+  string result;
   switch (action)
   {
     case ActionCopy:
@@ -306,7 +306,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
   return bResult;
 }
 
-inline bool CFileOperationJob::CanBeRenamed(const CStdString &strFileA, const CStdString &strFileB)
+inline bool CFileOperationJob::CanBeRenamed(const string &strFileA, const string &strFileB)
 {
 #ifndef TARGET_POSIX
   if (strFileA[1] == ':' && strFileA[0] == strFileB[0])
@@ -335,7 +335,7 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
 
   if (data->base->m_handle)
   {
-    CStdString line;
+    string line;
     line = StringUtils::Format("%s (%s)",
                                data->base->GetCurrentFile().c_str(),
                                data->base->GetAverageSpeed().c_str());

@@ -22,6 +22,8 @@
 #include "cores/IPlayer.h"
 #include "Application.h"
 
+using namespace std;
+
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB
 
@@ -150,7 +152,7 @@ int CApplicationPlayer::GetChapterCount()
     return 0;
 }
 
-void CApplicationPlayer::GetChapterName(CStdString& strChapterName)
+void CApplicationPlayer::GetChapterName(string& strChapterName)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
@@ -262,7 +264,7 @@ void CApplicationPlayer::SeekTime(int64_t iTime)
     player->SeekTime(iTime);
 }
 
-CStdString CApplicationPlayer::GetPlayingTitle()
+string CApplicationPlayer::GetPlayingTitle()
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
@@ -408,7 +410,7 @@ void CApplicationPlayer::DoAudioWork()
     player->DoAudioWork();
 }
 
-CStdString CApplicationPlayer::GetPlayerState()
+string CApplicationPlayer::GetPlayerState()
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
@@ -429,7 +431,7 @@ bool CApplicationPlayer::GetStreamDetails(CStreamDetails &details)
   return (player && player->GetStreamDetails(details));
 }
 
-bool CApplicationPlayer::SetPlayerState(CStdString state)
+bool CApplicationPlayer::SetPlayerState(string state)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   return (player && player->SetPlayerState(state));
@@ -505,7 +507,7 @@ void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
     player->SetSubtitleVisible(bVisible);
 }
 
-int  CApplicationPlayer::AddSubtitle(const CStdString& strSubPath)
+int  CApplicationPlayer::AddSubtitle(const string& strSubPath)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
@@ -562,21 +564,21 @@ void CApplicationPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)
     player->GetSubtitleCapabilities(subCaps);
 }
 
-void CApplicationPlayer::GetAudioInfo( CStdString& strAudioInfo)
+void CApplicationPlayer::GetAudioInfo( string& strAudioInfo)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->GetAudioInfo(strAudioInfo);
 }
 
-void CApplicationPlayer::GetVideoInfo( CStdString& strVideoInfo)
+void CApplicationPlayer::GetVideoInfo( string& strVideoInfo)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->GetVideoInfo(strVideoInfo);
 }
 
-void CApplicationPlayer::GetGeneralInfo( CStdString& strVideoInfo)
+void CApplicationPlayer::GetGeneralInfo( string& strVideoInfo)
 {
   boost::shared_ptr<IPlayer> player = GetInternal();
   if (player)

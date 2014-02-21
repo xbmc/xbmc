@@ -341,5 +341,5 @@ public:
   /*
    * return a user-presentable codec name of the given stream
    */
-  virtual void GetStreamCodecName(int iStreamId, CStdString &strName) {};
+  virtual void GetStreamCodecName(int iStreamId, std::string &strName) {};
 };

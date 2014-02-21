@@ -980,7 +980,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   return m_bFullScreenRoot;
 }
 
-void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
+void CGraphicContext::SetMediaDir(const string &strMediaDir)
 {
   g_TextureManager.SetTexturePath(strMediaDir);
   m_strMediaDir = strMediaDir;

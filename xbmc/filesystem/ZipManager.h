@@ -100,16 +100,16 @@ public:
   CZipManager();
   ~CZipManager();
 
-  bool GetZipList(const CStdString& strPath, std::vector<SZipEntry>& items);
-  bool GetZipEntry(const CStdString& strPath, SZipEntry& item);
-  bool ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
-  void CleanUp(const CStdString& strArchive, const CStdString& strPath); // deletes extracted archive. use with care!
-  void release(const CStdString& strPath); // release resources used by list zip
+  bool GetZipList(const std::string& strPath, std::vector<SZipEntry>& items);
+  bool GetZipEntry(const std::string& strPath, SZipEntry& item);
+  bool ExtractArchive(const std::string& strArchive, const std::string& strPath);
+  void CleanUp(const std::string& strArchive, const std::string& strPath); // deletes extracted archive. use with care!
+  void release(const std::string& strPath); // release resources used by list zip
   static void readHeader(const char* buffer, SZipEntry& info);
   static void readCHeader(const char* buffer, SZipEntry& info);
 private:
-  std::map<CStdString,std::vector<SZipEntry> > mZipMap;
-  std::map<CStdString,int64_t> mZipDate;
+  std::map<std::string,std::vector<SZipEntry> > mZipMap;
+  std::map<std::string,int64_t> mZipDate;
 };
 
 extern CZipManager g_ZipManager;

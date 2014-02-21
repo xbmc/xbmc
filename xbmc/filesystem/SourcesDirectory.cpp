@@ -30,6 +30,7 @@
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 CSourcesDirectory::CSourcesDirectory(void)
@@ -40,12 +41,12 @@ CSourcesDirectory::~CSourcesDirectory(void)
 {
 }
 
-bool CSourcesDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CSourcesDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   // break up our path
   // format is:  sources://<type>/
   CURL url(strPath);
-  CStdString type(url.GetFileName());
+  string type(url.GetFileName());
   URIUtils::RemoveSlashAtEnd(type);
 
   VECSOURCES sources;
@@ -69,13 +70,13 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     if (StringUtils::StartsWithNoCase(pItem->GetPath(), "musicsearch://"))
       pItem->SetCanQueue(false);
     
-    CStdString strIcon;
+    string strIcon;
     // We have the real DVD-ROM, set icon on disktype
     if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD && share.m_strThumbnailImage.empty())
     {
       CUtil::GetDVDDriveIcon( pItem->GetPath(), strIcon );
       // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
-      CStdString strThumb = "special://temp/dvdicon.tbn";
+      string strThumb = "special://temp/dvdicon.tbn";
       if (XFILE::CFile::Exists(strThumb))
         pItem->SetArt("thumb", strThumb);
     }

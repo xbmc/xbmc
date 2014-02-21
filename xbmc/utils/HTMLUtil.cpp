@@ -31,10 +31,10 @@ CHTMLUtil::CHTMLUtil(void)
 CHTMLUtil::~CHTMLUtil(void)
 {}
 
-int CHTMLUtil::FindTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos) const
+int CHTMLUtil::FindTag(const string& strHTML, const string& strTag, string& strtagFound, int iPos) const
 {
-  CStdString strHTMLLow = strHTML;
-  CStdString strTagLow = strTag;
+  string strHTMLLow = strHTML;
+  string strTagLow = strTag;
   StringUtils::ToLower(strHTMLLow);
   StringUtils::ToLower(strTagLow);
   strtagFound = "";
@@ -51,10 +51,10 @@ int CHTMLUtil::FindTag(const CStdString& strHTML, const CStdString& strTag, CStd
   return iStart;
 }
 
-int CHTMLUtil::FindClosingTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos) const
+int CHTMLUtil::FindClosingTag(const string& strHTML, const string& strTag, string& strtagFound, int iPos) const
 {
-  CStdString strHTMLLow = strHTML;
-  CStdString strTagLow = strTag;
+  string strHTMLLow = strHTML;
+  string strTagLow = strTag;
   StringUtils::ToLower(strHTMLLow);
   StringUtils::ToLower(strTagLow);
   strtagFound = "";
@@ -78,7 +78,7 @@ int CHTMLUtil::FindClosingTag(const CStdString& strHTML, const CStdString& strTa
   return iStart;
 }
 
-void CHTMLUtil::getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue)
+void CHTMLUtil::getValueOfTag(const string& strTagAndValue, string& strValue)
 {
   // strTagAndValue contains:
   // like <a href=blablabla.....>value</a>
@@ -93,7 +93,7 @@ void CHTMLUtil::getValueOfTag(const CStdString& strTagAndValue, CStdString& strV
   }
 }
 
-void CHTMLUtil::getAttributeOfTag(const CStdString& strTagAndValue, const CStdString& strTag, CStdString& strValue)
+void CHTMLUtil::getAttributeOfTag(const string& strTagAndValue, const string& strTag, string& strValue)
 {
   // strTagAndValue contains:
   // like <a href=""value".....
@@ -122,10 +122,10 @@ void CHTMLUtil::getAttributeOfTag(const CStdString& strTagAndValue, const CStdSt
   }
 }
 
-void CHTMLUtil::RemoveTags(CStdString& strHTML)
+void CHTMLUtil::RemoveTags(string& strHTML)
 {
   int iNested = 0;
-  CStdString strReturn = "";
+  string strReturn = "";
   for (int i = 0; i < (int) strHTML.size(); ++i)
   {
     if (strHTML[i] == '<') iNested++;
@@ -285,7 +285,7 @@ static const HTMLMapping mappings[] =
    {L"&zwnj;",    0x200C},
    {NULL,         L'\0'}};
 
-void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStripped)
+void CHTMLUtil::ConvertHTMLToW(const wstring& strHTML, wstring& strStripped)
 {
   /* TODO:STRING_CLEANUP */
   if (strHTML.size() == 0)
@@ -297,7 +297,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
   strStripped = strHTML;
   while (mappings[iPos].html)
   {
-    StringUtils::Replace(strStripped, mappings[iPos].html,CStdStringW(1, mappings[iPos].w));
+    StringUtils::Replace(strStripped, mappings[iPos].html,wstring(1, mappings[iPos].w));
     iPos++;
   }
 
@@ -306,7 +306,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
   {
     size_t iStart = iPos + 1;
     iPos += 2;
-    CStdStringW num;
+    wstring num;
     int base = 10;
     if (strStripped[iPos+1] == L'x')
     {
@@ -326,7 +326,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
     else
       num = StringUtils::Format(L"&#x%ls;", num.c_str());
 
-    StringUtils::Replace(strStripped, num,CStdStringW(1,val));
+    StringUtils::Replace(strStripped, num,wstring(1,val));
     iPos = strStripped.find(L"&#", iStart);
   }
 }

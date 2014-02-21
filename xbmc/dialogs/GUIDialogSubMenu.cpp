@@ -20,7 +20,9 @@
 
 #include "GUIDialogSubMenu.h"
 
-CGUIDialogSubMenu::CGUIDialogSubMenu(int id, const CStdString &xmlFile)
+using namespace std;
+
+CGUIDialogSubMenu::CGUIDialogSubMenu(int id, const string &xmlFile)
     : CGUIDialog(id, xmlFile)
 {
 }

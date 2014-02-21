@@ -58,7 +58,7 @@ public:
   void SetSelected(bool bOnOff);
   bool GetSelected() const;
 
-  void PythonSetLabel(const CStdString &strFont, const std::string &strText, color_t textColor);
+  void PythonSetLabel(const std::string &strFont, const std::string &strText, color_t textColor);
   void PythonSetDisabledColor(color_t disabledColor);
 
 protected:

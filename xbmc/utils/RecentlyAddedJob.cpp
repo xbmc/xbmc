@@ -34,6 +34,8 @@
 #include "music/MusicThumbLoader.h"
 #include "video/VideoThumbLoader.h"
 
+using namespace std;
+
 #define NUM_ITEMS 10
 
 CRecentlyAddedJob::CRecentlyAddedJob(int flag)
@@ -63,8 +65,8 @@ bool CRecentlyAddedJob::UpdateVideo()
     for (; i < items.Size(); ++i)
     {
       CFileItemPtr item = items.Get(i);
-      CStdString   value = StringUtils::Format("%i", i + 1);
-      CStdString   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);;
+      string   value = StringUtils::Format("%i", i + 1);
+      string   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);;
       
       home->SetProperty("LatestMovie." + value + ".Title"       , item->GetLabel());
       home->SetProperty("LatestMovie." + value + ".Rating"      , strRating);
@@ -83,7 +85,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   } 
   for (; i < NUM_ITEMS; ++i)
   {
-    CStdString value = StringUtils::Format("%i", i + 1);
+    string value = StringUtils::Format("%i", i + 1);
     home->SetProperty("LatestMovie." + value + ".Title"       , "");
     home->SetProperty("LatestMovie." + value + ".Thumb"       , "");
     home->SetProperty("LatestMovie." + value + ".Rating"      , "");
@@ -105,9 +107,9 @@ bool CRecentlyAddedJob::UpdateVideo()
       CFileItemPtr item          = TVShowItems.Get(i);
       int          EpisodeSeason = item->GetVideoInfoTag()->m_iSeason;
       int          EpisodeNumber = item->GetVideoInfoTag()->m_iEpisode;
-      CStdString   EpisodeNo = StringUtils::Format("s%02de%02d", EpisodeSeason, EpisodeNumber);
-      CStdString   value = StringUtils::Format("%i", i + 1);
-      CStdString   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
+      string   EpisodeNo = StringUtils::Format("s%02de%02d", EpisodeSeason, EpisodeNumber);
+      string   value = StringUtils::Format("%i", i + 1);
+      string   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
 
       CFileItem show(item->GetVideoInfoTag()->m_strShowPath, true);
 
@@ -135,7 +137,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   } 
   for (; i < NUM_ITEMS; ++i)
   {
-    CStdString value = StringUtils::Format("%i", i + 1);
+    string value = StringUtils::Format("%i", i + 1);
     home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , "");
     home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , "");
     home->SetProperty("LatestEpisode." + value + ".Rating"        , "");      
@@ -158,7 +160,7 @@ bool CRecentlyAddedJob::UpdateVideo()
     for (; i < MusicVideoItems.Size(); ++i)
     {
       CFileItemPtr item = MusicVideoItems.Get(i);
-      CStdString   value = StringUtils::Format("%i", i + 1);
+      string   value = StringUtils::Format("%i", i + 1);
 
       home->SetProperty("LatestMusicVideo." + value + ".Title"       , item->GetLabel());
       home->SetProperty("LatestMusicVideo." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
@@ -176,7 +178,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   }
   for (; i < NUM_ITEMS; ++i)
   {
-    CStdString value = StringUtils::Format("%i", i + 1);
+    string value = StringUtils::Format("%i", i + 1);
     home->SetProperty("LatestMusicVideo." + value + ".Title"       , "");
     home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , "");
     home->SetProperty("LatestMusicVideo." + value + ".Year"        , "");
@@ -211,16 +213,16 @@ bool CRecentlyAddedJob::UpdateMusic()
   if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", musicItems, NUM_ITEMS))
   {
     long idAlbum = -1;
-    CStdString strAlbumThumb;
-    CStdString strAlbumFanart;
+    string strAlbumThumb;
+    string strAlbumFanart;
     for (; i < musicItems.Size(); ++i)
     {
       CFileItemPtr item = musicItems.Get(i);
-      CStdString   value = StringUtils::Format("%i", i + 1);
+      string   value = StringUtils::Format("%i", i + 1);
       
-      CStdString   strRating;
-      CStdString   strAlbum  = item->GetMusicInfoTag()->GetAlbum();
-      CStdString   strArtist = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
+      string   strRating;
+      string   strAlbum  = item->GetMusicInfoTag()->GetAlbum();
+      string   strArtist = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
 
       if (idAlbum != item->GetMusicInfoTag()->GetAlbumId())
       {
@@ -249,7 +251,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   }
   for (; i < NUM_ITEMS; ++i)
   {
-    CStdString value = StringUtils::Format("%i", i + 1);
+    string value = StringUtils::Format("%i", i + 1);
     home->SetProperty("LatestSong." + value + ".Title"   , "");
     home->SetProperty("LatestSong." + value + ".Year"    , "");
     home->SetProperty("LatestSong." + value + ".Artist"  , "");      
@@ -268,12 +270,12 @@ bool CRecentlyAddedJob::UpdateMusic()
     for (; i < (int)albums.size(); ++i)
     {
       CAlbum&    album=albums[i];
-      CStdString value = StringUtils::Format("%i", i + 1);
-      CStdString strThumb = musicdatabase.GetArtForItem(album.idAlbum, "album", "thumb");
-      CStdString strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, "album", "fanart");
-      CStdString strDBpath = StringUtils::Format("musicdb://albums/%i/", album.idAlbum);
-      CStdString strSQLAlbum = StringUtils::Format("idAlbum=%i", album.idAlbum);
-      CStdString strArtist = musicdatabase.GetSingleValue("albumview", "strArtists", strSQLAlbum);
+      string value = StringUtils::Format("%i", i + 1);
+      string strThumb = musicdatabase.GetArtForItem(album.idAlbum, "album", "thumb");
+      string strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, "album", "fanart");
+      string strDBpath = StringUtils::Format("musicdb://albums/%i/", album.idAlbum);
+      string strSQLAlbum = StringUtils::Format("idAlbum=%i", album.idAlbum);
+      string strArtist = musicdatabase.GetSingleValue("albumview", "strArtists", strSQLAlbum);
       
       home->SetProperty("LatestAlbum." + value + ".Title"   , album.strAlbum);
       home->SetProperty("LatestAlbum." + value + ".Year"    , album.iYear);
@@ -286,7 +288,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   }
   for (; i < NUM_ITEMS; ++i)
   {
-    CStdString value = StringUtils::Format("%i", i + 1);
+    string value = StringUtils::Format("%i", i + 1);
     home->SetProperty("LatestAlbum." + value + ".Title"   , "");
     home->SetProperty("LatestAlbum." + value + ".Year"    , "");
     home->SetProperty("LatestAlbum." + value + ".Artist"  , "");      
@@ -313,20 +315,20 @@ bool CRecentlyAddedJob::UpdateTotal()
   CMusicDatabase musicdatabase;
   
   musicdatabase.Open();
-  int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)"));
-  int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)"));
-  int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)"));
+  int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
+  int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
+  int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)").c_str());
   musicdatabase.Close();
  
   videodatabase.Open();
-  int tvShowCount     = atoi(videodatabase.GetSingleValue("tvshowview"     , "count(1)"));
-  int movieTotals     = atoi(videodatabase.GetSingleValue("movieview"      , "count(1)"));
-  int movieWatched    = atoi(videodatabase.GetSingleValue("movieview"      , "count(playCount)"));
-  int MusVidTotals    = atoi(videodatabase.GetSingleValue("musicvideoview" , "count(1)"));
-  int MusVidWatched   = atoi(videodatabase.GetSingleValue("musicvideoview" , "count(playCount)"));
-  int EpWatched       = atoi(videodatabase.GetSingleValue("tvshowview"     , "sum(watchedcount)"));
-  int EpCount         = atoi(videodatabase.GetSingleValue("tvshowview"     , "sum(totalcount)"));
-  int TvShowsWatched  = atoi(videodatabase.GetSingleValue("tvshowview"     , "sum(watchedcount = totalcount)"));
+  int tvShowCount     = atoi(videodatabase.GetSingleValue("tvshowview"     , "count(1)").c_str());
+  int movieTotals     = atoi(videodatabase.GetSingleValue("movieview"      , "count(1)").c_str());
+  int movieWatched    = atoi(videodatabase.GetSingleValue("movieview"      , "count(playCount)").c_str());
+  int MusVidTotals    = atoi(videodatabase.GetSingleValue("musicvideoview" , "count(1)").c_str());
+  int MusVidWatched   = atoi(videodatabase.GetSingleValue("musicvideoview" , "count(playCount)").c_str());
+  int EpWatched       = atoi(videodatabase.GetSingleValue("tvshowview"     , "sum(watchedcount)").c_str());
+  int EpCount         = atoi(videodatabase.GetSingleValue("tvshowview"     , "sum(totalcount)").c_str());
+  int TvShowsWatched  = atoi(videodatabase.GetSingleValue("tvshowview"     , "sum(watchedcount = totalcount)").c_str());
   videodatabase.Close();
   
   home->SetProperty("TVShows.Count"         , tvShowCount);

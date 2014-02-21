@@ -29,7 +29,7 @@
 
 using namespace std;
 
-CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, CStdString& strRSSTags)
+CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, string& strRSSTags)
 : CGUIControl(parentID, controlID, posX, posY, width, height),
   m_label(labelInfo),
   m_channelColor(channelColor),
@@ -124,9 +124,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
       {
         if (m_strRSSTags != "")
         {
-          CStdStringArray vecSplitTags;
-
-          StringUtils::SplitString(m_strRSSTags, ",", vecSplitTags);
+          std::vector<std::string> vecSplitTags = StringUtils::Split(m_strRSSTags, ",");
 
           for (unsigned int i = 0;i < vecSplitTags.size();i++)
             m_pReader->AddTag(vecSplitTags[i]);

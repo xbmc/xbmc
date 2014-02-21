@@ -23,6 +23,7 @@
 #include "URL.h"
 #include "playlists/PlayList.h"
 
+using namespace std;
 using namespace PLAYLIST;
 using namespace XFILE;
 
@@ -36,7 +37,7 @@ CPlaylistDirectory::~CPlaylistDirectory()
 
 }
 
-bool CPlaylistDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CPlaylistDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CURL url(strPath);
 

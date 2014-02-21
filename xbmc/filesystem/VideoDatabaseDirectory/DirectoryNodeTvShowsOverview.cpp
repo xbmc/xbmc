@@ -24,6 +24,7 @@
 #include "video/VideoDbUrl.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 Node TvShowChildren[] = {
@@ -35,7 +36,7 @@ Node TvShowChildren[] = {
                           { NODE_TYPE_TAGS,          "tags",     20459 }
                         };
 
-CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const CStdString& strName, CDirectoryNode* pParent)
+CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const string& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_TVSHOWS_OVERVIEW, strName, pParent)
 {
 
@@ -47,16 +48,16 @@ NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType() const
     return NODE_TYPE_EPISODES;
 
   for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(TvShowChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), TvShowChildren[i].id.c_str()))
       return TvShowChildren[i].node;
 
   return NODE_TYPE_NONE;
 }
 
-CStdString CDirectoryNodeTvShowsOverview::GetLocalizedName() const
+string CDirectoryNodeTvShowsOverview::GetLocalizedName() const
 {
   for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
-    if (GetName().Equals(TvShowChildren[i].id.c_str()))
+    if (StringUtils::EqualsNoCase(GetName(), TvShowChildren[i].id.c_str()))
       return g_localizeStrings.Get(TvShowChildren[i].label);
   return "";
 }
@@ -72,7 +73,7 @@ bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items) const
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(TvShowChildren[i].label)));
 
     CVideoDbUrl itemUrl = videoUrl;
-    CStdString strDir = StringUtils::Format("%s/", TvShowChildren[i].id.c_str());
+    string strDir = StringUtils::Format("%s/", TvShowChildren[i].id.c_str());
     itemUrl.AppendPath(strDir);
     pItem->SetPath(itemUrl.ToString());
 

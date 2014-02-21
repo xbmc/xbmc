@@ -37,9 +37,10 @@
 #include "cores/omxplayer/OMXImage.h"
 #endif
 
+using namespace std;
 using namespace XFILE;
 
-bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)
+bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const string &thumbFile)
 {
   CLog::Log(LOGDEBUG, "cached image '%s' size %dx%d", thumbFile.c_str(), width, height);
   if (URIUtils::HasExtension(thumbFile, ".jpg"))
@@ -74,7 +75,7 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   return false;
 }
 
-CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const CStdString& thumbFile)
+CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const string& thumbFile)
 {
   m_buffer    = buffer;
   m_width     = width;

@@ -25,6 +25,7 @@
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 
+using namespace std;
 using namespace XFILE;
 
 CSpecialProtocolDirectory::CSpecialProtocolDirectory(void)
@@ -35,10 +36,10 @@ CSpecialProtocolDirectory::~CSpecialProtocolDirectory(void)
 {
 }
 
-bool CSpecialProtocolDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CSpecialProtocolDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
-  CStdString untranslatedPath = strPath;  // Why do I need a copy??? - the GetDirectory() call below will override strPath???
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
+  string untranslatedPath = strPath;  // Why do I need a copy??? - the GetDirectory() call below will override strPath???
+  string translatedPath = CSpecialProtocol::TranslatePath(strPath);
   if (CDirectory::GetDirectory(translatedPath, items, m_strFileMask, m_flags | DIR_FLAG_GET_HIDDEN))
   { // replace our paths as necessary
     items.SetPath(untranslatedPath);
@@ -55,18 +56,18 @@ bool CSpecialProtocolDirectory::GetDirectory(const CStdString& strPath, CFileIte
 
 bool CSpecialProtocolDirectory::Create(const char* strPath)
 {
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
+  string translatedPath = CSpecialProtocol::TranslatePath(strPath);
   return CDirectory::Create(translatedPath.c_str());
 }
 
 bool CSpecialProtocolDirectory::Remove(const char* strPath)
 {
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
+  string translatedPath = CSpecialProtocol::TranslatePath(strPath);
   return CDirectory::Remove(translatedPath.c_str());
 }
 
 bool CSpecialProtocolDirectory::Exists(const char* strPath)
 {
-  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
+  string translatedPath = CSpecialProtocol::TranslatePath(strPath);
   return CDirectory::Exists(translatedPath.c_str());
 }

@@ -103,7 +103,7 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
 #ifdef TARGET_WINDOWS
 static void to_WIN32_FIND_DATA(LPWIN32_FIND_DATAW wdata, LPWIN32_FIND_DATA data)
 {
-  CStdString strname;
+  string strname;
   g_charsetConverter.wToUTF8(wdata->cFileName, strname);
   size_t size = sizeof(data->cFileName) / sizeof(char);
   strncpy(data->cFileName, strname.c_str(), size);
@@ -128,7 +128,7 @@ static void to_WIN32_FIND_DATA(LPWIN32_FIND_DATAW wdata, LPWIN32_FIND_DATA data)
 
 static void to_WIN32_FIND_DATAW(LPWIN32_FIND_DATA data, LPWIN32_FIND_DATAW wdata)
 {
-  CStdStringW strwname;
+  wstring strwname;
   g_charsetConverter.utf8ToW(data->cFileName, strwname, false);
   size_t size = sizeof(wdata->cFileName) / sizeof(wchar_t);
   wcsncpy(wdata->cFileName, strwname.c_str(), size);
@@ -166,7 +166,7 @@ extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA
 
 #ifdef TARGET_WINDOWS
   struct _WIN32_FIND_DATAW FindFileDataW;
-  CStdStringW strwfile;
+  wstring strwfile;
   g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(p), strwfile, false);
   HANDLE res = FindFirstFileW(strwfile.c_str(), &FindFileDataW);
   if (res != INVALID_HANDLE_VALUE)
@@ -959,7 +959,7 @@ extern "C" HANDLE WINAPI dllCreateFileA(
     IN HANDLE hTemplateFile
     )
 {
-  return CreateFileA(CSpecialProtocol::TranslatePath(lpFileName), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+  return CreateFileA(CSpecialProtocol::TranslatePath(lpFileName).c_str(), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
 extern "C" BOOL WINAPI dllLockFile(HANDLE hFile, DWORD dwFileOffsetLow, DWORD dwFileOffsetHigh, DWORD nNumberOffBytesToLockLow, DWORD nNumberOffBytesToLockHigh)

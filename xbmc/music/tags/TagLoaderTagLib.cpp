@@ -59,8 +59,8 @@ public:
   virtual ~TagStringHandler() {}
   virtual String parse(const ByteVector &data) const
   {
-    CStdString strSource(data.data(), data.size());
-    CStdString strUTF8;
+    string strSource(data.data(), data.size());
+    string strUTF8;
     g_charsetConverter.unknownToUTF8(strSource, strUTF8);
     return String(strUTF8, String::UTF8);
   }
@@ -86,14 +86,14 @@ static const vector<string> StringListToVectorString(const StringList& stringLis
   return values;
 }
 
-bool CTagLoaderTagLib::Load(const CStdString& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
+bool CTagLoaderTagLib::Load(const string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
 {
   return Load(strFileName, tag, "", art);
 }
 
-bool CTagLoaderTagLib::Load(const CStdString& strFileName, CMusicInfoTag& tag, const CStdString& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
+bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, const string& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
 {  
-  CStdString strExtension = URIUtils::GetExtension(strFileName);
+  string strExtension = URIUtils::GetExtension(strFileName);
   StringUtils::ToLower(strExtension);
   StringUtils::TrimLeft(strExtension, ".");
 

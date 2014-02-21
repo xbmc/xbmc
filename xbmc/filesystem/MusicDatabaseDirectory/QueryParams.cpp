@@ -20,6 +20,7 @@
 
 #include "QueryParams.h"
 
+using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CQueryParams::CQueryParams()
@@ -31,7 +32,7 @@ CQueryParams::CQueryParams()
   m_year=-1;
 }
 
-void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName)
+void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const string& strNodeName)
 {
   long idDb=atol(strNodeName.c_str());
 

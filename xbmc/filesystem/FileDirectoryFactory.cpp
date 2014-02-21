@@ -61,16 +61,16 @@ CFileDirectoryFactory::~CFileDirectoryFactory(void)
 {}
 
 // return NULL + set pItem->m_bIsFolder to remove it completely from list.
-IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileItem* pItem, const CStdString& strMask)
+IFileDirectory* CFileDirectoryFactory::Create(const string& strPath, CFileItem* pItem, const string& strMask)
 {
   if (URIUtils::IsStack(strPath)) // disqualify stack as we need to work with each of the parts instead
     return NULL;
 
-  CStdString strExtension=URIUtils::GetExtension(strPath);
+  string strExtension=URIUtils::GetExtension(strPath);
   StringUtils::ToLower(strExtension);
 
 #ifdef HAS_FILESYSTEM
-  if ((strExtension.Equals(".ogg") || strExtension.Equals(".oga")) && CFile::Exists(strPath))
+  if ((StringUtils::EqualsNoCase(strExtension, ".ogg") || StringUtils::EqualsNoCase(strExtension, ".oga")) && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new COGGFileDirectory;
     //  Has the ogg file more than one bitstream?
@@ -82,7 +82,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
-  if (strExtension.Equals(".nsf") && CFile::Exists(strPath))
+  if (StringUtils::EqualsNoCase(strExtension, ".nsf") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new CNSFFileDirectory;
     //  Has the nsf file more than one track?
@@ -92,7 +92,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
-  if (strExtension.Equals(".sid") && CFile::Exists(strPath))
+  if (StringUtils::EqualsNoCase(strExtension, ".sid") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new CSIDFileDirectory;
     //  Has the sid file more than one track?
@@ -123,9 +123,9 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
 
 #endif
 #if defined(TARGET_ANDROID)
-  if (strExtension.Equals(".apk"))
+  if (StringUtils::EqualsNoCase(strExtension, ".apk"))
   {
-    CStdString strUrl;
+    string strUrl;
     URIUtils::CreateArchivePath(strUrl, "apk", strPath, "");
 
     CFileItemList items;
@@ -145,9 +145,9 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     return NULL;
   }
 #endif
-  if (strExtension.Equals(".zip"))
+  if (StringUtils::EqualsNoCase(strExtension, ".zip"))
   {
-    CStdString strUrl;
+    string strUrl;
     URIUtils::CreateArchivePath(strUrl, "zip", strPath, "");
 
     CFileItemList items;
@@ -166,29 +166,29 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     }
     return NULL;
   }
-  if (strExtension.Equals(".rar") || strExtension.Equals(".001"))
+  if (StringUtils::EqualsNoCase(strExtension, ".rar") || StringUtils::EqualsNoCase(strExtension, ".001"))
   {
-    CStdString strUrl;
+    string strUrl;
     URIUtils::CreateArchivePath(strUrl, "rar", strPath, "");
 
     vector<std::string> tokens;
     StringUtils::Tokenize(strPath,tokens,".");
     if (tokens.size() > 2)
     {
-      if (strExtension.Equals(".001"))
+      if (StringUtils::EqualsNoCase(strExtension, ".001"))
       {
         if (StringUtils::EqualsNoCase(tokens[tokens.size()-2], "ts")) // .ts.001 - treat as a movie file to scratch some users itch
           return NULL;
       }
-      CStdString token = tokens[tokens.size()-2];
+      string token = tokens[tokens.size()-2];
       if (StringUtils::StartsWithNoCase(token, "part")) // only list '.part01.rar'
       {
         // need this crap to avoid making mistakes - yeyh for the new rar naming scheme :/
         struct __stat64 stat;
         int digits = token.size()-4;
-        CStdString strFormat = StringUtils::Format("part%%0%ii", digits);
-        CStdString strNumber = StringUtils::Format(strFormat.c_str(), 1);
-        CStdString strPath2 = strPath;
+        string strFormat = StringUtils::Format("part%%0%ii", digits);
+        string strNumber = StringUtils::Format(strFormat.c_str(), 1);
+        string strPath2 = strPath;
         StringUtils::Replace(strPath2,token,strNumber);
         if (atoi(token.substr(4).c_str()) > 1 && CFile::Stat(strPath2,&stat) == 0)
         {
@@ -219,7 +219,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
     }
     return NULL;
   }
-  if (strExtension.Equals(".xsp"))
+  if (StringUtils::EqualsNoCase(strExtension, ".xsp"))
   { // XBMC Smart playlist - just XML renamed to XSP
     // read the name of the playlist in
     CSmartPlaylist playlist;

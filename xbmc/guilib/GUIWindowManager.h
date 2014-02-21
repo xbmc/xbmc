@@ -58,9 +58,9 @@ public:
   void AddCustomWindow(CGUIWindow* pWindow);
   void Remove(int id);
   void Delete(int id);
-  void ActivateWindow(int iWindowID, const CStdString &strPath = "");
-  void ChangeActiveWindow(int iNewID, const CStdString &strPath = "");
-  void ActivateWindow(int iWindowID, const std::vector<CStdString>& params, bool swappingWindows = false);
+  void ActivateWindow(int iWindowID, const std::string &strPath = "");
+  void ChangeActiveWindow(int iNewID, const std::string &strPath = "");
+  void ActivateWindow(int iWindowID, const std::vector<std::string>& params, bool swappingWindows = false);
   void PreviousWindow();
 
   void CloseDialogs(bool forceClose = false) const;
@@ -133,9 +133,9 @@ public:
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
   bool IsWindowVisible(int id) const;
   bool IsWindowTopMost(int id) const;
-  bool IsWindowActive(const CStdString &xmlFile, bool ignoreClosing = true) const;
-  bool IsWindowVisible(const CStdString &xmlFile) const;
-  bool IsWindowTopMost(const CStdString &xmlFile) const;
+  bool IsWindowActive(const std::string &xmlFile, bool ignoreClosing = true) const;
+  bool IsWindowVisible(const std::string &xmlFile) const;
+  bool IsWindowTopMost(const std::string &xmlFile) const;
   bool IsOverlayAllowed() const;
   void ShowOverlay(CGUIWindow::OVERLAY_STATE state);
   void GetActiveModelessWindows(std::vector<int> &ids);
@@ -154,7 +154,7 @@ private:
   CGUIWindow *GetTopMostDialog() const;
 
   friend class CApplicationMessenger;
-  void ActivateWindow_Internal(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
+  void ActivateWindow_Internal(int windowID, const std::vector<std::string> &params, bool swappingWindows);
 
   typedef std::map<int, CGUIWindow *> WindowMap;
   WindowMap m_mapWindows;

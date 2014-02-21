@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 CDAVDirectory::CDAVDirectory(void) {}
@@ -53,7 +54,7 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
   {
     if (CDAVCommon::ValueWithoutNamespace(pResponseChild, "href"))
     {
-      CStdString path(pResponseChild->ToElement()->GetText());
+      string path(pResponseChild->ToElement()->GetText());
       URIUtils::RemoveSlashAtEnd(path);
       item.SetPath(path);
     }
@@ -109,11 +110,11 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
   }
 }
 
-bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CDAVDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CCurlFile dav;
   CURL url(strPath);
-  CStdString strRequest = "PROPFIND";
+  string strRequest = "PROPFIND";
 
   dav.SetCustomRequest(strRequest);
   dav.SetMimeType("text/xml; charset=\"utf-8\"");
@@ -136,7 +137,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     return false;
   }
 
-  CStdString strResponse;
+  string strResponse;
   dav.ReadData(strResponse);
 
   std::string fileCharset(dav.GetServerReportedCharset());
@@ -161,11 +162,11 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       CURL url2(strPath);
       CURL url3(item.GetPath());
 
-      CStdString itemPath(URIUtils::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName()));
+      string itemPath(URIUtils::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName()));
 
       if (item.GetLabel().empty())
       {
-        CStdString name(itemPath);
+        string name(itemPath);
         URIUtils::RemoveSlashAtEnd(name);
         item.SetLabel(URIUtils::GetFileName(CURL::Decode(name)));
       }
@@ -178,7 +179,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         itemPath += "|" + url2.GetProtocolOptions();
       item.SetPath(itemPath);
 
-      if (!item.GetPath().Equals(strPath))
+      if (!StringUtils::EqualsNoCase(item.GetPath(), strPath))
       {
         CFileItemPtr pItem(new CFileItem(item));
         items.Add(pItem);
@@ -195,7 +196,7 @@ bool CDAVDirectory::Create(const char* strPath)
 {
   CDAVFile dav;
   CURL url(strPath);
-  CStdString strRequest = "MKCOL";
+  string strRequest = "MKCOL";
 
   dav.SetCustomRequest(strRequest);
  
@@ -216,7 +217,7 @@ bool CDAVDirectory::Exists(const char* strPath)
 
   // Set the PROPFIND custom request else we may not find folders, depending
   // on the server's configuration
-  CStdString strRequest = "PROPFIND";
+  string strRequest = "PROPFIND";
   dav.SetCustomRequest(strRequest);
   dav.SetRequestHeader("depth", 0);
 
@@ -228,7 +229,7 @@ bool CDAVDirectory::Remove(const char* strPath)
 {
   CDAVFile dav;
   CURL url(strPath);
-  CStdString strRequest = "DELETE";
+  string strRequest = "DELETE";
 
   dav.SetCustomRequest(strRequest);
  

@@ -27,6 +27,7 @@
 #include "utils/TimeUtils.h"
 #include "guilib/LocalizeStrings.h"
 
+using namespace std;
 using namespace XFILE;
 
 CMusicSearchDirectory::CMusicSearchDirectory(void)
@@ -37,12 +38,12 @@ CMusicSearchDirectory::~CMusicSearchDirectory(void)
 {
 }
 
-bool CMusicSearchDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CMusicSearchDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   // break up our path
   // format is:  musicsearch://<url encoded search string>
   CURL url(strPath);
-  CStdString search(url.GetHostName());
+  string search(url.GetHostName());
 
   if (search.empty())
     return false;

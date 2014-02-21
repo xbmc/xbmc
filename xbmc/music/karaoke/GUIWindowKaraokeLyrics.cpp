@@ -29,6 +29,7 @@
 #include "karaokewindowbackground.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
 
 CGUIWindowKaraokeLyrics::CGUIWindowKaraokeLyrics(void)
   : CGUIWindow(WINDOW_KARAOKELYRICS, "MusicKaraokeLyrics.xml")
@@ -141,7 +142,7 @@ void CGUIWindowKaraokeLyrics::newSong(CKaraokeLyrics * lyrics)
   // Set up current background mode
   if ( m_Lyrics->HasVideo() )
   {
-    CStdString path;
+    string path;
     int64_t offset;
 
     // Start the required video

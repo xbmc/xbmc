@@ -49,12 +49,12 @@
 
 using namespace std;
 
-bool CGUIWindow::icompare::operator()(const CStdString &s1, const CStdString &s2) const
+bool CGUIWindow::icompare::operator()(const string &s1, const string &s2) const
 {
   return StringUtils::CompareNoCase(s1, s2) < 0;
 }
 
-CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
+CGUIWindow::CGUIWindow(int id, const string &xmlFile)
 {
   SetID(id);
   SetProperty("xmlfile", xmlFile);
@@ -81,7 +81,7 @@ CGUIWindow::~CGUIWindow(void)
   delete m_windowXMLRootElement;
 }
 
-bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
+bool CGUIWindow::Load(const string& strFileName, bool bContainsPath)
 {
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceSample aSample("WindowLoad-" + strFileName, true);
@@ -111,8 +111,8 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   CLog::Log(LOGINFO, "Loading skin file: %s, load type: %s", strFileName.c_str(), strLoadType);
   
   // Find appropriate skin folder + resolution to load from
-  CStdString strPath;
-  CStdString strLowerPath;
+  string strPath;
+  string strLowerPath;
   if (bContainsPath)
     strPath = strFileName;
   else
@@ -135,7 +135,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   return ret;
 }
 
-bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
+bool CGUIWindow::LoadXML(const string &strPath, const string &strLowerPath)
 {
   // load window xml if we don't have it stored yet
   if (!m_windowXMLRootElement)
@@ -189,7 +189,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
   TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
   {
-    CStdString strValue = pChild->Value();
+    string strValue = pChild->Value();
     if (strValue == "type" && pChild->FirstChild())
     {
       // if we have are a window type (ie not a dialog), and we have <type>dialog</type>
@@ -210,7 +210,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
     }
     else if (strValue == "visible" && pChild->FirstChild())
     {
-      CStdString condition;
+      string condition;
       CGUIControlFactory::GetConditionalVisibility(pRootElement, condition);
       m_visibleCondition = g_infoManager.Register(condition, GetID());
     }
@@ -731,7 +731,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 
   if (forceLoad)
   {
-    CStdString xmlFile = GetProperty("xmlfile").asString();
+    string xmlFile = GetProperty("xmlfile").asString();
     if (xmlFile.size())
     {
       bool bHasPath = xmlFile.find("\\") != std::string::npos || xmlFile.find("/") != std::string::npos;
@@ -985,7 +985,7 @@ CRect CGUIWindow::GetScaledBounds() const
   return rect;
 }
 
-void CGUIWindow::OnEditChanged(int id, CStdString &text)
+void CGUIWindow::OnEditChanged(int id, string &text)
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), id);
   OnMessage(msg);
@@ -1026,16 +1026,16 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 #endif
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, const CVariant &value)
+void CGUIWindow::SetProperty(const string &strKey, const CVariant &value)
 {
   CSingleLock lock(*this);
   m_mapProperties[strKey] = value;
 }
 
-CVariant CGUIWindow::GetProperty(const CStdString &strKey) const
+CVariant CGUIWindow::GetProperty(const string &strKey) const
 {
   CSingleLock lock(*this);
-  std::map<CStdString, CVariant, icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  std::map<string, CVariant, icompare>::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return CVariant(CVariant::VariantTypeNull);
 

@@ -43,8 +43,8 @@ struct OrigFontInfo
 {
    int size;
    float aspect;
-   CStdString fontFilePath;
-   CStdString fileName;
+   std::string fontFilePath;
+   std::string fileName;
    RESOLUTION_INFO sourceRes;
    bool preserveAspect;
    bool border;
@@ -62,10 +62,10 @@ public:
 
   virtual bool OnMessage(CGUIMessage &message);
 
-  void Unload(const CStdString& strFontName);
-  void LoadFonts(const CStdString& strFontSet);
-  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border = false, float lineSpacing = 1.0f, float aspect = 1.0f, const RESOLUTION_INFO *res = NULL, bool preserveAspect = false);
-  CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
+  void Unload(const std::string& strFontName);
+  void LoadFonts(const std::string& strFontSet);
+  CGUIFont* LoadTTF(const std::string& strFontName, const std::string& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border = false, float lineSpacing = 1.0f, float aspect = 1.0f, const RESOLUTION_INFO *res = NULL, bool preserveAspect = false);
+  CGUIFont* GetFont(const std::string& strFontName, bool fallback = true);
 
   /*! \brief return a default font
    \param border whether the font should be a font with an outline
@@ -77,8 +77,8 @@ public:
   void FreeFontFile(CGUIFontTTFBase *pFont);
 
   bool IsFontSetUnicode() const { return m_fontsetUnicode; }
-  bool IsFontSetUnicode(const CStdString& strFontSet);
-  bool GetFirstFontSetUnicode(CStdString& strFontSet);
+  bool IsFontSetUnicode(const std::string& strFontSet);
+  bool GetFirstFontSetUnicode(std::string& strFontSet);
 
   static void SettingOptionsFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
@@ -86,7 +86,7 @@ protected:
   void ReloadTTFFonts();
   static void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect);
   void LoadFonts(const TiXmlNode* fontNode);
-  CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
+  CGUIFontTTFBase* GetFontFile(const std::string& strFontFile);
   bool OpenFontFile(CXBMCTinyXML& xmlDoc);
 
   std::vector<CGUIFont*> m_vecFonts;

@@ -37,5 +37,5 @@ public:
   virtual int GetPriority() const { return 2; }
 
 private:
-  CStdString m_path;
+  std::string m_path;
 };

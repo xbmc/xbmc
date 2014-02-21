@@ -67,7 +67,7 @@ public:
    \return Returns \e true, if successfull.
    \sa CDirectoryFactory
    */
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items) = 0;
+  virtual bool GetDirectory(const std::string& strPath, CFileItemList &items) = 0;
   /*!
    \brief Retrieve the progress of the current directory fetch (if possible).
    \return the progress as a float in the range 0..100.
@@ -105,16 +105,16 @@ public:
   \param strFile File to test.
   \return Returns \e true if the file should be listed
   */
-  virtual bool IsAllowed(const CStdString& strFile) const;
+  virtual bool IsAllowed(const std::string& strFile) const;
 
   /*!
   \brief How this directory should be cached
   \param strPath Directory at hand.
   \return Returns the cache type.
   */
-  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
+  virtual DIR_CACHE_TYPE GetCacheType(const std::string& strPath) const { return DIR_CACHE_ONCE; };
 
-  void SetMask(const CStdString& strMask);
+  void SetMask(const std::string& strMask);
   void SetFlags(int flags);
 
   /*! \brief Process additional requirements before the directory fetch is performed.
@@ -136,7 +136,7 @@ protected:
    \return true if keyboard input has been received. False if it hasn't.
    \sa ProcessRequirements
    */
-  bool GetKeyboardInput(const CVariant &heading, CStdString &input);
+  bool GetKeyboardInput(const CVariant &heading, std::string &input);
 
   /*! \brief Show an error dialog on failure of GetDirectory call
    Call this method from the GetDirectory method to set an error message to be shown to the user
@@ -155,9 +155,9 @@ protected:
    \param url the URL to authenticate.
    \sa ProcessRequirements
    */
-  void RequireAuthentication(const CStdString &url);
+  void RequireAuthentication(const std::string &url);
 
-  CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
+  std::string m_strFileMask;  ///< Holds the file mask specified by SetMask()
 
   int m_flags; ///< Directory flags - see DIR_FLAG
 

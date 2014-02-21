@@ -20,6 +20,7 @@
 
 #include "SIDFileDirectory.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
@@ -32,7 +33,7 @@ CSIDFileDirectory::~CSIDFileDirectory(void)
 {
 }
 
-int CSIDFileDirectory::GetTrackCount(const CStdString& strPath)
+int CSIDFileDirectory::GetTrackCount(const string& strPath)
 {
   DllSidplay2 m_dll;
   if (!m_dll.Load())

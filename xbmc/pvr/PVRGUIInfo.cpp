@@ -250,7 +250,7 @@ void CPVRGUIInfo::UpdateQualityData(void)
 void CPVRGUIInfo::UpdateMisc(void)
 {
   bool bStarted = g_PVRManager.IsStarted();
-  CStdString strPlayingClientName      = bStarted ? g_PVRClients->GetPlayingClientName() : StringUtils::EmptyString;
+  string strPlayingClientName      = bStarted ? g_PVRClients->GetPlayingClientName() : StringUtils::EmptyString;
   bool       bHasRecordings            = bStarted && g_PVRRecordings->GetNumRecordings() > 0;
   bool       bIsPlayingTV              = bStarted && g_PVRClients->IsPlayingTV();
   bool       bIsPlayingRadio           = bStarted && g_PVRClients->IsPlayingRadio();
@@ -269,7 +269,7 @@ void CPVRGUIInfo::UpdateMisc(void)
   m_bIsPlayingEncryptedStream = bIsPlayingEncryptedStream;
 }
 
-bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
+bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, string &strValue) const
 {
   bool bReturn(true);
   CSingleLock lock(m_critSection);
@@ -437,62 +437,62 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
   return iReturn;
 }
 
-void CPVRGUIInfo::CharInfoActiveTimerTitle(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoActiveTimerTitle(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strActiveTimerTitle.c_str());
 }
 
-void CPVRGUIInfo::CharInfoActiveTimerChannelName(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoActiveTimerChannelName(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strActiveTimerChannelName.c_str());
 }
 
-void CPVRGUIInfo::CharInfoActiveTimerChannelIcon(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoActiveTimerChannelIcon(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strActiveTimerChannelIcon.c_str());
 }
 
-void CPVRGUIInfo::CharInfoActiveTimerDateTime(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoActiveTimerDateTime(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strActiveTimerTime.c_str());
 }
 
-void CPVRGUIInfo::CharInfoNextTimerTitle(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoNextTimerTitle(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strNextRecordingTitle.c_str());
 }
 
-void CPVRGUIInfo::CharInfoNextTimerChannelName(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoNextTimerChannelName(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strNextRecordingChannelName.c_str());
 }
 
-void CPVRGUIInfo::CharInfoNextTimerChannelIcon(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoNextTimerChannelIcon(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strNextRecordingChannelIcon.c_str());
 }
 
-void CPVRGUIInfo::CharInfoNextTimerDateTime(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoNextTimerDateTime(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strNextRecordingTime.c_str());
 }
 
-void CPVRGUIInfo::CharInfoPlayingDuration(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoPlayingDuration(string &strValue) const
 {
   strValue = StringUtils::Format("%s", StringUtils::SecondsToTimeString(m_iDuration / 1000, TIME_FORMAT_GUESS).c_str());
 }
 
-void CPVRGUIInfo::CharInfoPlayingTime(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoPlayingTime(string &strValue) const
 {
   strValue = StringUtils::Format("%s", StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS).c_str());
 }
 
-void CPVRGUIInfo::CharInfoNextTimer(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoNextTimer(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strNextTimerInfo.c_str());
 }
 
-void CPVRGUIInfo::CharInfoBackendNumber(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoBackendNumber(string &strValue) const
 {
   if (m_iActiveClients > 0)
     strValue = StringUtils::Format("%u %s %u", m_iAddonInfoToggleCurrent+1, g_localizeStrings.Get(20163).c_str(), m_iActiveClients);
@@ -500,63 +500,63 @@ void CPVRGUIInfo::CharInfoBackendNumber(CStdString &strValue) const
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(14023).c_str());
 }
 
-void CPVRGUIInfo::CharInfoTotalDiskSpace(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoTotalDiskSpace(string &strValue) const
 {
   strValue = StringUtils::Format("%s", m_strTotalDiskspace.c_str());
 }
 
-void CPVRGUIInfo::CharInfoVideoBR(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoVideoBR(string &strValue) const
 {
   strValue = StringUtils::Format("%.2f Mbit/s", m_qualityInfo.dVideoBitrate);
 }
 
-void CPVRGUIInfo::CharInfoAudioBR(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoAudioBR(string &strValue) const
 {
   strValue = StringUtils::Format("%.0f kbit/s", m_qualityInfo.dAudioBitrate);
 }
 
-void CPVRGUIInfo::CharInfoDolbyBR(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoDolbyBR(string &strValue) const
 {
   strValue = StringUtils::Format("%.0f kbit/s", m_qualityInfo.dDolbyBitrate);
 }
 
-void CPVRGUIInfo::CharInfoSignal(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoSignal(string &strValue) const
 {
   strValue = StringUtils::Format("%d %%", m_qualityInfo.iSignal / 655);
 }
 
-void CPVRGUIInfo::CharInfoSNR(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoSNR(string &strValue) const
 {
   strValue = StringUtils::Format("%d %%", m_qualityInfo.iSNR / 655);
 }
 
-void CPVRGUIInfo::CharInfoBER(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoBER(string &strValue) const
 {
   strValue = StringUtils::Format("%08X", m_qualityInfo.iBER);
 }
 
-void CPVRGUIInfo::CharInfoUNC(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoUNC(string &strValue) const
 {
   strValue = StringUtils::Format("%08X", m_qualityInfo.iUNC);
 }
 
-void CPVRGUIInfo::CharInfoFrontendName(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoFrontendName(string &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strAdapterName, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strAdapterName, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strAdapterName);
 }
 
-void CPVRGUIInfo::CharInfoFrontendStatus(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoFrontendStatus(string &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strAdapterStatus, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strAdapterStatus, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strAdapterStatus);
 }
 
-void CPVRGUIInfo::CharInfoBackendName(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoBackendName(string &strValue) const
 {
   if (m_strBackendName.empty())
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
@@ -564,7 +564,7 @@ void CPVRGUIInfo::CharInfoBackendName(CStdString &strValue) const
     strValue = StringUtils::Format("%s", m_strBackendName.c_str());
 }
 
-void CPVRGUIInfo::CharInfoBackendVersion(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoBackendVersion(string &strValue) const
 {
   if (m_strBackendVersion.empty())
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
@@ -572,7 +572,7 @@ void CPVRGUIInfo::CharInfoBackendVersion(CStdString &strValue) const
     strValue = StringUtils::Format("%s",  m_strBackendVersion.c_str());
 }
 
-void CPVRGUIInfo::CharInfoBackendHost(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoBackendHost(string &strValue) const
 {
   if (m_strBackendHost.empty())
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
@@ -580,7 +580,7 @@ void CPVRGUIInfo::CharInfoBackendHost(CStdString &strValue) const
     strValue = StringUtils::Format("%s", m_strBackendHost.c_str());
 }
 
-void CPVRGUIInfo::CharInfoBackendDiskspace(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoBackendDiskspace(string &strValue) const
 {
   if (m_strBackendDiskspace.empty())
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
@@ -588,7 +588,7 @@ void CPVRGUIInfo::CharInfoBackendDiskspace(CStdString &strValue) const
     strValue = StringUtils::Format("%s", m_strBackendDiskspace.c_str());
 }
 
-void CPVRGUIInfo::CharInfoBackendChannels(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoBackendChannels(string &strValue) const
 {
   if (m_strBackendChannels.empty())
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
@@ -596,7 +596,7 @@ void CPVRGUIInfo::CharInfoBackendChannels(CStdString &strValue) const
     strValue = StringUtils::Format("%s", m_strBackendChannels.c_str());
 }
 
-void CPVRGUIInfo::CharInfoBackendTimers(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoBackendTimers(string &strValue) const
 {
   if (m_strBackendTimers.empty())
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
@@ -604,7 +604,7 @@ void CPVRGUIInfo::CharInfoBackendTimers(CStdString &strValue) const
     strValue = StringUtils::Format("%s", m_strBackendTimers.c_str());
 }
 
-void CPVRGUIInfo::CharInfoBackendRecordings(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoBackendRecordings(string &strValue) const
 {
   if (m_strBackendRecordings.empty())
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
@@ -612,7 +612,7 @@ void CPVRGUIInfo::CharInfoBackendRecordings(CStdString &strValue) const
     strValue = StringUtils::Format("%s", m_strBackendRecordings.c_str());
 }
 
-void CPVRGUIInfo::CharInfoPlayingClientName(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoPlayingClientName(string &strValue) const
 {
   if (m_strPlayingClientName.empty())
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
@@ -620,7 +620,7 @@ void CPVRGUIInfo::CharInfoPlayingClientName(CStdString &strValue) const
     strValue = StringUtils::Format("%s", m_strPlayingClientName.c_str());
 }
 
-void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoEncryption(string &strValue) const
 {
   CPVRChannelPtr channel;
   if (g_PVRClients->GetPlayingChannel(channel))
@@ -629,25 +629,25 @@ void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
     strValue = StringUtils::EmptyString;
 }
 
-void CPVRGUIInfo::CharInfoService(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoService(string &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strServiceName, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strServiceName, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strServiceName);
 }
 
-void CPVRGUIInfo::CharInfoMux(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoMux(string &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strMuxName, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strMuxName, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strMuxName);
 }
 
-void CPVRGUIInfo::CharInfoProvider(CStdString &strValue) const
+void CPVRGUIInfo::CharInfoProvider(string &strValue) const
 {
-  if (!strcmp(m_qualityInfo.strProviderName, StringUtils::EmptyString))
+  if (!strcmp(m_qualityInfo.strProviderName, StringUtils::EmptyString.c_str()))
     strValue = StringUtils::Format("%s", g_localizeStrings.Get(13205).c_str());
   else
     strValue = StringUtils::Format("%s", m_qualityInfo.strProviderName);
@@ -655,13 +655,13 @@ void CPVRGUIInfo::CharInfoProvider(CStdString &strValue) const
 
 void CPVRGUIInfo::UpdateBackendCache(void)
 {
-  CStdString strBackendName;
-  CStdString strBackendVersion;
-  CStdString strBackendHost;
-  CStdString strBackendDiskspace;
-  CStdString strBackendTimers;
-  CStdString strBackendRecordings;
-  CStdString strBackendChannels;
+  string strBackendName;
+  string strBackendVersion;
+  string strBackendHost;
+  string strBackendDiskspace;
+  string strBackendTimers;
+  string strBackendRecordings;
+  string strBackendChannels;
   int        iActiveClients(0);
 
   if (!AddonInfoToggle())
@@ -743,11 +743,11 @@ void CPVRGUIInfo::UpdateTimersCache(void)
 
 void CPVRGUIInfo::UpdateNextTimer(void)
 {
-  CStdString strNextRecordingTitle;
-  CStdString strNextRecordingChannelName;
-  CStdString strNextRecordingChannelIcon;
-  CStdString strNextRecordingTime;
-  CStdString strNextTimerInfo;
+  string strNextRecordingTitle;
+  string strNextRecordingChannelName;
+  string strNextRecordingChannelIcon;
+  string strNextRecordingTime;
+  string strNextTimerInfo;
 
   CFileItemPtr tag = g_PVRTimers->GetNextActiveTimer();
   if (tag && tag->HasPVRTimerInfoTag())
@@ -778,10 +778,10 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
   if (!TimerInfoToggle())
     return;
 
-  CStdString strActiveTimerTitle;
-  CStdString strActiveTimerChannelName;
-  CStdString strActiveTimerChannelIcon;
-  CStdString strActiveTimerTime;
+  string strActiveTimerTitle;
+  string strActiveTimerChannelName;
+  string strActiveTimerChannelIcon;
+  string strActiveTimerTime;
 
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
   if (m_iRecordingTimerAmount > 0)

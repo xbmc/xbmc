@@ -27,6 +27,8 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 
+using namespace std;
+
 CAsyncFileCopy::CAsyncFileCopy() : CThread("AsyncFileCopy")
 {
   m_cancelled = false;
@@ -41,7 +43,7 @@ CAsyncFileCopy::~CAsyncFileCopy()
   StopThread();
 }
 
-bool CAsyncFileCopy::Copy(const CStdString &from, const CStdString &to, const CStdString &heading)
+bool CAsyncFileCopy::Copy(const string &from, const string &to, const string &heading)
 {
   // reset the variables to their appropriate states
   m_from = from;
@@ -75,7 +77,7 @@ bool CAsyncFileCopy::Copy(const CStdString &from, const CStdString &to, const CS
     // and update the dialog as we go
     if (dlg && dlg->IsDialogRunning())
     {
-      CStdString speedString = StringUtils::Format("%2.2f KB/s", m_speed / 1024);
+      string speedString = StringUtils::Format("%2.2f KB/s", m_speed / 1024);
       dlg->SetHeading(heading);
       dlg->SetLine(0, url1.Get());
       dlg->SetLine(1, url2.Get());

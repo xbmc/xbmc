@@ -32,17 +32,17 @@ namespace XFILE
   class CFavouritesDirectory : public IDirectory
   {
   public:
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    virtual bool GetDirectory(const std::string& strPath, CFileItemList &items);
     virtual bool Exists(const char* strPath);
     static bool Load(CFileItemList &items);
-    static bool LoadFavourites(const CStdString& strPath, CFileItemList& items);
+    static bool LoadFavourites(const std::string& strPath, CFileItemList& items);
 
     static bool AddOrRemove(CFileItem *item, int contextWindow);
     static bool Save(const CFileItemList& items);
     static bool IsFavourite(CFileItem *item, int contextWindow);
 
-    static CStdString GetExecutePath(const CFileItem &item, int contextWindow);
-    static CStdString GetExecutePath(const CFileItem &item, const std::string &contextWindow);
+    static std::string GetExecutePath(const CFileItem &item, int contextWindow);
+    static std::string GetExecutePath(const CFileItem &item, const std::string &contextWindow);
   private:
   };
   

@@ -32,16 +32,16 @@ class CAFPDirectory : public IDirectory
 public:
   CAFPDirectory(void);
   virtual ~CAFPDirectory(void);
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return DIR_CACHE_ONCE; };
+  virtual bool GetDirectory(const std::string& strPath, CFileItemList &items);
+  virtual DIR_CACHE_TYPE GetCacheType(const std::string &strPath) const { return DIR_CACHE_ONCE; };
   virtual bool Create(const char* strPath);
   virtual bool Exists(const char* strPath);
   virtual bool Remove(const char* strPath);
 
   afp_file_info *Open(const CURL &url);
 private:
-  afp_file_info *OpenDir(const CURL &url, CStdString& strAuth);
-  bool ResolveSymlink( const CStdString &dirName, const CStdString &fileName, 
+  afp_file_info *OpenDir(const CURL &url, std::string& strAuth);
+  bool ResolveSymlink( const std::string &dirName, const std::string &fileName, 
                        struct stat *stat, CURL &resolvedUrl);
 };
 }

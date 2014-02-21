@@ -34,6 +34,8 @@
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
@@ -78,8 +80,8 @@ void CRenderSystemGL::CheckOpenGLQuirks()
   if (StringUtils::EqualsNoCase(m_RenderVendor, "nouveau"))
     m_renderQuirks |= RENDER_QUIRKS_YV12_PREFERED;
 
-  if (m_RenderVendor.Equals("Tungsten Graphics, Inc.")
-  ||  m_RenderVendor.Equals("Tungsten Graphics, Inc"))
+  if (StringUtils::EqualsNoCase(m_RenderVendor, "Tungsten Graphics, Inc.")
+  ||  StringUtils::EqualsNoCase(m_RenderVendor, "Tungsten Graphics, Inc"))
   {
     unsigned major, minor, micro;
     if (sscanf(m_RenderVersion.c_str(), "%*s Mesa %u.%u.%u", &major, &minor, &micro) == 3)
@@ -284,7 +286,7 @@ bool CRenderSystemGL::ClearBuffers(color_t color)
 
 bool CRenderSystemGL::IsExtSupported(const char* extension)
 {
-  CStdString name;
+  string name;
   name  = " ";
   name += extension;
   name += " ";
@@ -555,10 +557,10 @@ void CRenderSystemGL::CalculateMaxTexturesize()
   // Problem noticed on:
   // iMac with ATI Radeon X1600, both on 10.5.8 (GL_VERSION: 2.0 ATI-1.5.48)
   // and 10.6.2 (GL_VERSION: 2.0 ATI-1.6.6)
-  if (strcmp(m_RenderRenderer, "ATI Radeon X1600 OpenGL Engine") == 0)
+  if (strcmp(m_RenderRenderer.c_str(), "ATI Radeon X1600 OpenGL Engine") == 0)
     m_maxTextureSize = 2048;
   // Mac mini G4 with ATI Radeon 9200 (GL_VERSION: 1.3 ATI-1.5.48)
-  else if (strcmp(m_RenderRenderer, "ATI Radeon 9200 OpenGL Engine") == 0)
+  else if (strcmp(m_RenderRenderer.c_str(), "ATI Radeon 9200 OpenGL Engine") == 0)
     m_maxTextureSize = 1024;
 #endif
 

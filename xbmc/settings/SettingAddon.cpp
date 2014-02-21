@@ -25,6 +25,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+using namespace std;
+
 #define XML_ELM_DEFAULT     "default"
 
 CSettingAddon::CSettingAddon(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
@@ -58,7 +60,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
   }
     
   bool ok = false;
-  CStdString strAddonType;
+  string strAddonType;
   const TiXmlNode *constraints = node->FirstChild("constraints");
   if (constraints != NULL)
   {

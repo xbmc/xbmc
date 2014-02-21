@@ -42,6 +42,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
 using namespace PVR;
 using namespace EPG;
 
@@ -222,7 +223,7 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
 
   SetSelectedGroup(currentGroup);
 
-  CStdString strPath;
+  string strPath;
   strPath = StringUtils::Format("pvr://channels/%s/%s/",
       m_bRadio ? "radio" : "tv",
       m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName().c_str());
@@ -411,7 +412,7 @@ bool CGUIWindowPVRChannels::OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON 
     if (!channel || channel->IsRadio() != m_bRadio)
       return bReturn;
 
-    CStdString strIndex;
+    string strIndex;
     strIndex = StringUtils::Format("%i", channel->ChannelNumber());
     CGUIDialogNumeric::ShowAndGetNumber(strIndex, g_localizeStrings.Get(19052));
     int newIndex = atoi(strIndex.c_str());
@@ -479,7 +480,7 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
     nothumb->SetLabel(g_localizeStrings.Get(19283));
     items.Add(nothumb);
 
-    CStdString strThumb;
+    string strThumb;
     VECSOURCES shares;
     if (CSettings::Get().GetString("pvrmenu.iconpath") != "")
     {
@@ -531,7 +532,7 @@ bool CGUIWindowPVRChannels::OnContextButtonFilter(CFileItem *item, CONTEXT_BUTTO
 
   if (button == CONTEXT_BUTTON_FILTER)
   {
-    CStdString filter = m_parent->GetProperty("filter").asString();
+    string filter = m_parent->GetProperty("filter").asString();
     CGUIKeyboardFactory::ShowAndGetFilter(filter, false);
     m_parent->OnFilterItems(filter);
 
@@ -578,7 +579,7 @@ bool CGUIWindowPVRChannels::OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BU
 
     bReturn = UpdateEpgForChannel(item);
 
-    CStdString strMessage = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(bReturn ? 19253 : 19254).c_str(), channel->ChannelName().c_str());
+    string strMessage = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(bReturn ? 19253 : 19254).c_str(), channel->ChannelName().c_str());
     CGUIDialogKaiToast::QueueNotification(bReturn ? CGUIDialogKaiToast::Info : CGUIDialogKaiToast::Error,
         g_localizeStrings.Get(19166),
         strMessage);

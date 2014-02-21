@@ -62,6 +62,8 @@
 #include <linux/version.h>
 #endif
 
+using namespace std;
+
 CSysInfo g_sysinfo;
 
 CSysInfoJob::CSysInfoJob()
@@ -86,7 +88,7 @@ const CSysData &CSysInfoJob::GetData() const
   return m_info;
 }
 
-CStdString CSysInfoJob::GetCPUFreqInfo()
+string CSysInfoJob::GetCPUFreqInfo()
 {
   double CPUFreq = GetCPUFrequency();
   return StringUtils::Format("%4.2fMHz", CPUFreq);;
@@ -103,7 +105,7 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
   return CSysData::DISCONNECTED;
 }
 
-CStdString CSysInfoJob::GetMACAddress()
+string CSysInfoJob::GetMACAddress()
 {
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
@@ -113,12 +115,12 @@ CStdString CSysInfoJob::GetMACAddress()
   return "";
 }
 
-CStdString CSysInfoJob::GetVideoEncoder()
+string CSysInfoJob::GetVideoEncoder()
 {
   return "GPU: " + g_Windowing.GetRenderRenderer();
 }
 
-CStdString CSysInfoJob::GetBatteryLevel()
+string CSysInfoJob::GetBatteryLevel()
 {
   return StringUtils::Format("%d%%", g_powerManager.BatteryLevel());
 }
@@ -149,9 +151,9 @@ bool CSysInfoJob::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, in
   return true;
 }
 
-CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
+string CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
 {
-  CStdString strSystemUptime;
+  string strSystemUptime;
   int iInputMinutes, iMinutes,iHours,iDays;
 
   if(bTotalUptime)
@@ -187,7 +189,7 @@ CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   return strSystemUptime;
 }
 
-CStdString CSysInfo::TranslateInfo(int info) const
+string CSysInfo::TranslateInfo(int info) const
 {
   switch(info)
   {
@@ -262,19 +264,19 @@ bool CSysInfo::Save(TiXmlNode *settings) const
   return true;
 }
 
-bool CSysInfo::GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
+bool CSysInfo::GetDiskSpace(const string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
   bool bRet= false;
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
-  if( !drive.empty() && !drive.Equals("*") )
+  if( !drive.empty() && !StringUtils::EqualsNoCase(drive, "*") )
   {
 #ifdef TARGET_WINDOWS
     UINT uidriveType = GetDriveType(( drive + ":\\" ));
     if(uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
 #endif
-      bRet= ( 0 != GetDiskFreeSpaceEx( ( drive + ":\\" ), NULL, &ULTotal, &ULTotalFree) );
+      bRet= ( 0 != GetDiskFreeSpaceEx( ( drive + ":\\" ).c_str(), NULL, &ULTotal, &ULTotalFree) );
   }
   else
   {
@@ -338,52 +340,52 @@ bool CSysInfo::GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree
   return bRet;
 }
 
-CStdString CSysInfo::GetCPUModel()
+string CSysInfo::GetCPUModel()
 {
   return "CPU: " + g_cpuInfo.getCPUModel();
 }
 
-CStdString CSysInfo::GetCPUBogoMips()
+string CSysInfo::GetCPUBogoMips()
 {
   return "BogoMips: " + g_cpuInfo.getCPUBogoMips();
 }
 
-CStdString CSysInfo::GetCPUHardware()
+string CSysInfo::GetCPUHardware()
 {
   return "Hardware: " + g_cpuInfo.getCPUHardware();
 }
 
-CStdString CSysInfo::GetCPURevision()
+string CSysInfo::GetCPURevision()
 {
   return "Revision: " + g_cpuInfo.getCPURevision();
 }
 
-CStdString CSysInfo::GetCPUSerial()
+string CSysInfo::GetCPUSerial()
 {
   return "Serial: " + g_cpuInfo.getCPUSerial();
 }
 
-CStdString CSysInfo::GetManufacturer()
+string CSysInfo::GetManufacturer()
 {
-  CStdString manufacturer = "";
+  string manufacturer = "";
 #if defined(TARGET_ANDROID)
   manufacturer = CJNIBuild::MANUFACTURER;
 #endif
   return manufacturer;
 }
 
-CStdString CSysInfo::GetModel()
+string CSysInfo::GetModel()
 {
-  CStdString model = "";
+  string model = "";
 #if defined(TARGET_ANDROID)
   model = CJNIBuild::MODEL;
 #endif
   return model;
 }
 
-CStdString CSysInfo::GetProduct()
+string CSysInfo::GetProduct()
 {
-  CStdString product = "";
+  string product = "";
 #if defined(TARGET_ANDROID)
   product = CJNIBuild::PRODUCT;
 #endif
@@ -489,7 +491,7 @@ int CSysInfo::GetXbmcBitness(void)
 #endif
 }
 
-CStdString CSysInfo::GetKernelVersion()
+string CSysInfo::GetKernelVersion()
 {
 #if defined(TARGET_DARWIN)
   return g_sysinfo.GetUnameVersion();
@@ -574,16 +576,16 @@ bool CSysInfo::HasInternet()
   return (m_info.internetState = CSysInfoJob::GetInternetState()) == CSysData::CONNECTED;
 }
 
-CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
+string CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
 {
  int percent;
  return GetHddSpaceInfo( percent, drive, shortText);
 }
 
-CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
+string CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
 {
   int total, totalFree, totalUsed, percentFree, percentused;
-  CStdString strRet;
+  string strRet;
   percent = 0;
   if (g_sysinfo.GetDiskSpace("", total, totalFree, totalUsed, percentFree, percentused))
   {
@@ -632,7 +634,7 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
 }
 
 #if defined(TARGET_LINUX)
-CStdString CSysInfo::GetLinuxDistro()
+string CSysInfo::GetLinuxDistro()
 {
 #if defined(TARGET_ANDROID)
   return "Android";
@@ -647,7 +649,7 @@ CStdString CSysInfo::GetLinuxDistro()
                                         "/etc/arch-release",
                                         "/etc/buildroot-release",
                                         NULL };
-  CStdString result("");
+  string result("");
   char buffer[256] = {'\0'};
 
   /* Try reading PRETTY_NAME from /etc/os-release first.
@@ -743,9 +745,9 @@ CStdString CSysInfo::GetLinuxDistro()
 #endif
 
 #ifdef TARGET_POSIX
-CStdString CSysInfo::GetUnameVersion()
+string CSysInfo::GetUnameVersion()
 {
-  CStdString result = "";
+  string result = "";
 
 #if defined(TARGET_ANDROID)
   struct utsname name;
@@ -783,12 +785,12 @@ CStdString CSysInfo::GetUnameVersion()
 #endif
 
 #if defined(TARGET_WINDOWS)
-CStdString CSysInfo::GetUAWindowsVersion()
+string CSysInfo::GetUAWindowsVersion()
 {
   OSVERSIONINFOEX osvi = {};
 
   osvi.dwOSVersionInfoSize = sizeof(osvi);
-  CStdString strVersion = "Windows NT";
+  string strVersion = "Windows NT";
 
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
@@ -818,9 +820,9 @@ CStdString CSysInfo::GetUAWindowsVersion()
 #endif
 
 
-CStdString CSysInfo::GetUserAgent()
+string CSysInfo::GetUserAgent()
 {
-  CStdString result;
+  string result;
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
 #if defined(TARGET_WINDOWS)
   result += GetUAWindowsVersion();

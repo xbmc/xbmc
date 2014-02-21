@@ -35,6 +35,7 @@ extern "C" {
 #include "libhts/htsmsg_binary.h"
 }
 
+using namespace std;
 using namespace XFILE;
 using namespace HTSP;
 
@@ -418,7 +419,7 @@ bool CHTSPDirectory::GetTag(const CURL &base, CFileItemList &items)
 }
 
 
-bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CHTSPDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CURL                    url(strPath);
 
@@ -439,7 +440,7 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     items.Add(item);
 
     STags tags = m_session->GetTags();
-    CStdString filename, label;
+    string filename, label;
     for(STags::iterator it = tags.begin(); it != tags.end(); it++)
     {
       filename = StringUtils::Format("tags/%d/", it->second.id);

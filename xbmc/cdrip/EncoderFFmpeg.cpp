@@ -36,6 +36,8 @@
 #include "settings/Settings.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
+
 /* AV_PKT_FLAG_KEY was named PKT_FLAG_KEY in older versions of libavcodec */
 #ifndef AV_PKT_FLAG_KEY
 #define AV_PKT_FLAG_KEY PKT_FLAG_KEY
@@ -62,7 +64,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_dllAvFormat.av_register_all();
   m_dllAvCodec.avcodec_register_all();
 
-  CStdString filename = URIUtils::GetFileName(strFile);
+  string filename = URIUtils::GetFileName(strFile);
   if(m_dllAvFormat.avformat_alloc_output_context2(&m_Format,NULL,NULL,filename.c_str()))
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Unable to guess the output format for the file %s", filename.c_str());
@@ -249,7 +251,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   return true;
 }
 
-void CEncoderFFmpeg::SetTag(const CStdString tag, const CStdString value)
+void CEncoderFFmpeg::SetTag(const string tag, const string value)
 {
   m_dllAvUtil.av_dict_set(&m_Format->metadata, tag.c_str(), value.c_str(), 0);
 }

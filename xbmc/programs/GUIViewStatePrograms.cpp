@@ -28,6 +28,7 @@
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
 
+using namespace std;
 using namespace XFILE;
 
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
@@ -48,12 +49,12 @@ void CGUIViewStateWindowPrograms::SaveViewState()
   SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS, CViewStateSettings::Get().Get("programs"));
 }
 
-CStdString CGUIViewStateWindowPrograms::GetLockType()
+string CGUIViewStateWindowPrograms::GetLockType()
 {
   return "programs";
 }
 
-CStdString CGUIViewStateWindowPrograms::GetExtensions()
+string CGUIViewStateWindowPrograms::GetExtensions()
 {
   return ".xbe|.cut";
 }

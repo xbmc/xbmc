@@ -74,6 +74,6 @@ protected:
 
   // rollback data
   void GrabRollbackVersions();
-  std::vector<CStdString> m_rollbackVersions;
+  std::vector<std::string> m_rollbackVersions;
 };
 

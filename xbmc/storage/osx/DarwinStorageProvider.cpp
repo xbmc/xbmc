@@ -30,6 +30,8 @@
 #endif
 #include "osx/CocoaInterface.h"
 
+using namespace std;
+
 bool CDarwinStorageProvider::m_event = false;
 
 CDarwinStorageProvider::CDarwinStorageProvider()
@@ -67,7 +69,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   {
     unsigned i, count = 0;
     struct statfs *buf = NULL;
-    CStdString mountpoint, devicepath;
+    string mountpoint, devicepath;
 
     count = getmntinfo(&buf, 0);
     for (i=0; i<count; i++)
@@ -86,7 +88,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
             CMediaSource share;
 
             share.strPath = mountpoint;
-            Cocoa_GetVolumeNameFromMountPoint(mountpoint, share.strName);
+            Cocoa_GetVolumeNameFromMountPoint(mountpoint.c_str(), share.strName);
             share.m_ignore = true;
             localDrives.push_back(share);
           }
@@ -109,7 +111,7 @@ void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
   {
     unsigned i, count = 0;
     struct statfs *buf = NULL;
-    CStdString mountpoint, devicepath;
+    string mountpoint, devicepath;
 
     count = getmntinfo(&buf, 0);
     for (i=0; i<count; i++)
@@ -128,7 +130,7 @@ void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
             CMediaSource share;
 
             share.strPath = mountpoint;
-            Cocoa_GetVolumeNameFromMountPoint(mountpoint, share.strName);
+            Cocoa_GetVolumeNameFromMountPoint(mountpoint.c_str(), share.strName);
             share.m_ignore = true;
             removableDrives.push_back(share);
           }
@@ -143,9 +145,9 @@ void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 #endif
 }
 
-std::vector<CStdString> CDarwinStorageProvider::GetDiskUsage()
+vector<string> CDarwinStorageProvider::GetDiskUsage()
 {
-  std::vector<CStdString> result;
+  vector<string> result;
   char line[1024];
 
 #ifdef TARGET_DARWIN_IOS
@@ -166,7 +168,7 @@ std::vector<CStdString> CDarwinStorageProvider::GetDiskUsage()
   return result;
 }
 
-bool CDarwinStorageProvider::Eject(CStdString mountpath)
+bool CDarwinStorageProvider::Eject(string mountpath)
 {
   return false;
 }

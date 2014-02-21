@@ -26,6 +26,7 @@
 
 #include <sys/stat.h>
 
+using namespace std;
 using namespace XFILE;
 
 CMusicDatabaseFile::CMusicDatabaseFile(void)
@@ -37,14 +38,14 @@ CMusicDatabaseFile::~CMusicDatabaseFile(void)
   Close();
 }
 
-CStdString CMusicDatabaseFile::TranslateUrl(const CURL& url)
+string CMusicDatabaseFile::TranslateUrl(const CURL& url)
 {
   CMusicDatabase musicDatabase;
   if (!musicDatabase.Open())
     return "";
 
-  CStdString strFileName=URIUtils::GetFileName(url.Get());
-  CStdString strExtension = URIUtils::GetExtension(strFileName);
+  string strFileName=URIUtils::GetFileName(url.Get());
+  string strExtension = URIUtils::GetExtension(strFileName);
   URIUtils::RemoveExtension(strFileName);
 
   if (!StringUtils::IsNaturalNumber(strFileName))

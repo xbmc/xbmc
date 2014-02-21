@@ -41,7 +41,7 @@ using namespace std;
 #if defined(HAS_GL) || defined(HAS_GLES)
 
 
-CGUIFontTTFGL::CGUIFontTTFGL(const CStdString& strFileName)
+CGUIFontTTFGL::CGUIFontTTFGL(const string& strFileName)
 : CGUIFontTTFBase(strFileName)
 {
 }

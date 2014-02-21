@@ -37,7 +37,7 @@ namespace PVR
     CGUIWindowPVRRecordings(CGUIWindowPVR *parent);
     virtual ~CGUIWindowPVRRecordings(void) {};
 
-    static CStdString GetResumeString(const CFileItem& item);
+    static std::string GetResumeString(const CFileItem& item);
 
     void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     bool OnAction(const CAction &action);
@@ -49,7 +49,7 @@ namespace PVR
     void ResetObservers(void);
 
   protected:
-    virtual void BeforeUpdate(const CStdString &strDirectory);
+    virtual void BeforeUpdate(const std::string &strDirectory);
     virtual void AfterUpdate(CFileItemList& items);
 
   private:
@@ -62,7 +62,7 @@ namespace PVR
     bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
-    CStdString m_strSelectedPath;
+    std::string m_strSelectedPath;
     CVideoThumbLoader m_thumbLoader;
     CVideoDatabase m_database;
   };

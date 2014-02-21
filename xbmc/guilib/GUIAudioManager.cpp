@@ -131,7 +131,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 }
 
 // \brief Play a sound given by filename
-void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
+void CGUIAudioManager::PlayPythonSound(const string& strFileName)
 {
   CSingleLock lock(m_cs);
 
@@ -152,7 +152,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   if (!sound)
     return;
 
-  m_pythonSounds.insert(pair<const CStdString, IAESound*>(strFileName, sound));
+  m_pythonSounds.insert(pair<const string, IAESound*>(strFileName, sound));
   sound->Play();
 }
 
@@ -214,7 +214,7 @@ bool CGUIAudioManager::Load()
   else
     m_strMediaDir = URIUtils::AddFileToFolder("special://xbmc/sounds", CSettings::Get().GetString("lookandfeel.soundskin"));
 
-  CStdString strSoundsXml = URIUtils::AddFileToFolder(m_strMediaDir, "sounds.xml");
+  string strSoundsXml = URIUtils::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
   //  Load our xml file
   CXBMCTinyXML xmlDoc;
@@ -229,7 +229,7 @@ bool CGUIAudioManager::Load()
   }
 
   TiXmlElement* pRoot = xmlDoc.RootElement();
-  CStdString strValue = pRoot->Value();
+  string strValue = pRoot->Value();
   if ( strValue != "sounds")
   {
     CLog::Log(LOGNOTICE, "%s Doesn't contain <sounds>", strSoundsXml.c_str());
@@ -252,13 +252,13 @@ bool CGUIAudioManager::Load()
       }
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");
-      CStdString strFile;
+      string strFile;
       if (pFileNode && pFileNode->FirstChild())
         strFile += pFileNode->FirstChild()->Value();
 
       if (id > 0 && !strFile.empty())
       {
-        CStdString filename = URIUtils::AddFileToFolder(m_strMediaDir, strFile);
+        string filename = URIUtils::AddFileToFolder(m_strMediaDir, strFile);
         IAESound *sound = LoadSound(filename);
         if (sound)
           m_actionSoundMap.insert(pair<int, IAESound *>(id, sound));
@@ -299,7 +299,7 @@ bool CGUIAudioManager::Load()
   return true;
 }
 
-IAESound* CGUIAudioManager::LoadSound(const CStdString &filename)
+IAESound* CGUIAudioManager::LoadSound(const string &filename)
 {
   CSingleLock lock(m_cs);
   soundCache::iterator it = m_soundCache.find(filename);
@@ -336,7 +336,7 @@ void CGUIAudioManager::FreeSound(IAESound *sound)
 }
 
 // \brief Load a window node of the config file (sounds.xml)
-IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier)
+IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const string& strIdentifier)
 {
   if (!pWindowNode)
     return NULL;

@@ -114,8 +114,8 @@ void CPeripherals::Clear(void)
   /* delete mappings */
   for (unsigned int iMappingPtr = 0; iMappingPtr < m_mappings.size(); iMappingPtr++)
   {
-    map<CStdString, PeripheralDeviceSetting> settings = m_mappings.at(iMappingPtr).m_settings;
-    for (map<CStdString, PeripheralDeviceSetting>::iterator itr = settings.begin(); itr != settings.end(); ++itr)
+    map<string, PeripheralDeviceSetting> settings = m_mappings.at(iMappingPtr).m_settings;
+    for (map<string, PeripheralDeviceSetting>::iterator itr = settings.begin(); itr != settings.end(); ++itr)
       delete itr->second.m_setting;
     m_mappings.at(iMappingPtr).m_settings.clear();
   }
@@ -159,7 +159,7 @@ CPeripheralBus *CPeripherals::GetBusByType(const PeripheralBusType type) const
   return bus;
 }
 
-CPeripheral *CPeripherals::GetPeripheralAtLocation(const CStdString &strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
+CPeripheral *CPeripherals::GetPeripheralAtLocation(const string &strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
   CSingleLock lock(m_critSection);
   CPeripheral *peripheral(NULL);
@@ -177,12 +177,12 @@ CPeripheral *CPeripherals::GetPeripheralAtLocation(const CStdString &strLocation
   return peripheral;
 }
 
-bool CPeripherals::HasPeripheralAtLocation(const CStdString &strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
+bool CPeripherals::HasPeripheralAtLocation(const string &strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
   return (GetPeripheralAtLocation(strLocation, busType) != NULL);
 }
 
-CPeripheralBus *CPeripherals::GetBusWithDevice(const CStdString &strLocation) const
+CPeripheralBus *CPeripherals::GetBusWithDevice(const string &strLocation) const
 {
   CSingleLock lock(m_critSection);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
@@ -366,7 +366,7 @@ bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScan
 
     if (bProductMatch && bBusMatch && bClassMatch)
     {
-      CStdString strVendorId, strProductId;
+      string strVendorId, strProductId;
       PeripheralTypeTranslator::FormatHexString(result.m_iVendorId, strVendorId);
       PeripheralTypeTranslator::FormatHexString(result.m_iProductId, strProductId);
       CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__, strVendorId.c_str(), strProductId.c_str(), mapping.m_strDeviceName.c_str(), PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
@@ -403,7 +403,7 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
 
     if (bBusMatch && bProductMatch && bClassMatch)
     {
-      for (map<CStdString, PeripheralDeviceSetting>::const_iterator itr = mapping->m_settings.begin(); itr != mapping->m_settings.end(); ++itr)
+      for (map<string, PeripheralDeviceSetting>::const_iterator itr = mapping->m_settings.begin(); itr != mapping->m_settings.end(); ++itr)
         peripheral.AddSetting((*itr).first, (*itr).second.m_setting, (*itr).second.m_order);
     }
   }
@@ -427,35 +427,43 @@ bool CPeripherals::LoadMappings(void)
 
   for (TiXmlElement *currentNode = pRootElement->FirstChildElement("peripheral"); currentNode; currentNode = currentNode->NextSiblingElement("peripheral"))
   {
-    CStdStringArray vpArray, idArray;
     PeripheralID id;
     PeripheralDeviceMapping mapping;
 
-    mapping.m_strDeviceName = currentNode->Attribute("name") ? CStdString(currentNode->Attribute("name")) : StringUtils::EmptyString;
+    mapping.m_strDeviceName = currentNode->Attribute("name") ? string(currentNode->Attribute("name")) : StringUtils::EmptyString;
 
     // If there is no vendor_product attribute ignore this entry
     if (currentNode->Attribute("vendor_product"))
     {
       // The vendor_product attribute is a list of comma separated vendor:product pairs
-      StringUtils::SplitString(currentNode->Attribute("vendor_product"), ",", vpArray);
+      vector<string> vpArray = StringUtils::Split(currentNode->Attribute("vendor_product"), ",");
       for (unsigned int i = 0; i < vpArray.size(); i++)
       {
-        StringUtils::SplitString(vpArray[i], ":", idArray);
+        vector<string> idArray = StringUtils::Split(vpArray[i], ":");
         if (idArray.size() != 2)
         {
           CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
           continue;
         }
 
-        id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0]);
-        id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1]);
+        id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0].c_str());
+        id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1].c_str());
         mapping.m_PeripheralID.push_back(id);
       }
     }
 
-    mapping.m_busType       = PeripheralTypeTranslator::GetBusTypeFromString(currentNode->Attribute("bus"));
-    mapping.m_class         = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("class"));
-    mapping.m_mappedTo      = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("mapTo"));
+    const char *bus = currentNode->Attribute("bus");
+    if (bus)
+      mapping.m_busType       = PeripheralTypeTranslator::GetBusTypeFromString(bus);
+
+    const char *clazz = currentNode->Attribute("class");
+    if (clazz)
+      mapping.m_class         = PeripheralTypeTranslator::GetTypeFromString(clazz);
+
+    const char *mapTo = currentNode->Attribute("mapTo");
+    if (mapTo)
+      mapping.m_mappedTo      = PeripheralTypeTranslator::GetTypeFromString(mapTo);
+    
     GetSettingsFromMappingsFile(currentNode, mapping.m_settings);
 
     m_mappings.push_back(mapping);
@@ -465,7 +473,7 @@ bool CPeripherals::LoadMappings(void)
   return true;
 }
 
-void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdString, PeripheralDeviceSetting> &settings)
+void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<string, PeripheralDeviceSetting> &settings)
 {
   TiXmlElement *currentNode = xmlNode->FirstChildElement("setting");
   int iMaxOrder = 0;
@@ -473,25 +481,33 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
   while (currentNode)
   {
     CSetting *setting = NULL;
-    CStdString strKey(currentNode->Attribute("key"));
+    string strKey;
+    const char *key = currentNode->Attribute("key");
+    if (key)
+      strKey = key;
+
     if (strKey.empty())
       continue;
 
-    CStdString strSettingsType(currentNode->Attribute("type"));
+    string strSettingsType;
+    const char *type = currentNode->Attribute("type");
+    if (type)
+      strSettingsType = type;
+
     int iLabelId = currentNode->Attribute("label") ? atoi(currentNode->Attribute("label")) : -1;
     bool bConfigurable = (!currentNode->Attribute("configurable") ||
                           strcmp(currentNode->Attribute("configurable"), "") == 0 ||
                            (strcmp(currentNode->Attribute("configurable"), "no") != 0 &&
                             strcmp(currentNode->Attribute("configurable"), "false") != 0 &&
                             strcmp(currentNode->Attribute("configurable"), "0") != 0));
-    if (strSettingsType.Equals("bool"))
+    if (StringUtils::EqualsNoCase(strSettingsType, "bool"))
     {
       bool bValue = (strcmp(currentNode->Attribute("value"), "no") != 0 &&
                      strcmp(currentNode->Attribute("value"), "false") != 0 &&
                      strcmp(currentNode->Attribute("value"), "0") != 0);
       setting = new CSettingBool(strKey, iLabelId, bValue);
     }
-    else if (strSettingsType.Equals("int"))
+    else if (StringUtils::EqualsNoCase(strSettingsType, "int"))
     {
       int iValue = currentNode->Attribute("value") ? atoi(currentNode->Attribute("value")) : 0;
       int iMin   = currentNode->Attribute("min") ? atoi(currentNode->Attribute("min")) : 0;
@@ -499,7 +515,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       int iMax   = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 255;
       setting = new CSettingInt(strKey, iLabelId, iValue, iMin, iStep, iMax);
     }
-    else if (strSettingsType.Equals("float"))
+    else if (StringUtils::EqualsNoCase(strSettingsType, "float"))
     {
       float fValue = currentNode->Attribute("value") ? (float) atof(currentNode->Attribute("value")) : 0;
       float fMin   = currentNode->Attribute("min") ? (float) atof(currentNode->Attribute("min")) : 0;
@@ -507,9 +523,9 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
       float fMax   = currentNode->Attribute("max") ? (float) atof(currentNode->Attribute("max")) : 0;
       setting = new CSettingNumber(strKey, iLabelId, fValue, fMin, fStep, fMax);
     }
-    else if (strSettingsType.Equals("enum"))
+    else if (StringUtils::EqualsNoCase(strSettingsType, "enum"))
     {
-      CStdString strEnums(currentNode->Attribute("lvalues"));
+      string strEnums(currentNode->Attribute("lvalues"));
       if (!strEnums.empty())
       {
         vector< pair<int,int> > enums;
@@ -523,7 +539,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
     }
     else
     {
-      CStdString strValue(currentNode->Attribute("value"));
+      string strValue(currentNode->Attribute("value"));
       setting = new CSettingString(strKey, iLabelId, strValue);
     }
 
@@ -552,41 +568,41 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
   }
 
   /* add the settings without an order attribute or an invalid order attribute set at the end */
-  for (map<CStdString, PeripheralDeviceSetting>::iterator it = settings.begin(); it != settings.end(); ++it)
+  for (map<string, PeripheralDeviceSetting>::iterator it = settings.begin(); it != settings.end(); ++it)
   {
     if (it->second.m_order == 0)
       it->second.m_order = ++iMaxOrder;
   }
 }
 
-void CPeripherals::GetDirectory(const CStdString &strPath, CFileItemList &items) const
+void CPeripherals::GetDirectory(const string &strPath, CFileItemList &items) const
 {
   if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
     return;
 
-  CStdString strPathCut = strPath.substr(14);
-  CStdString strBus = strPathCut.substr(0, strPathCut.find('/'));
+  string strPathCut = strPath.substr(14);
+  string strBus = strPathCut.substr(0, strPathCut.find('/'));
 
   CSingleLock lock(m_critSection);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
   {
-    if (strBus.Equals("all") || strBus.Equals(PeripheralTypeTranslator::BusTypeToString(m_busses.at(iBusPtr)->Type())))
+    if (StringUtils::EqualsNoCase(strBus, "all") || StringUtils::EqualsNoCase(strBus, PeripheralTypeTranslator::BusTypeToString(m_busses.at(iBusPtr)->Type())))
       m_busses.at(iBusPtr)->GetDirectory(strPath, items);
   }
 }
 
-CPeripheral *CPeripherals::GetByPath(const CStdString &strPath) const
+CPeripheral *CPeripherals::GetByPath(const string &strPath) const
 {
   if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
     return NULL;
 
-  CStdString strPathCut = strPath.substr(14);
-  CStdString strBus = strPathCut.substr(0, strPathCut.find('/'));
+  string strPathCut = strPath.substr(14);
+  string strBus = strPathCut.substr(0, strPathCut.find('/'));
 
   CSingleLock lock(m_critSection);
   for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
   {
-    if (strBus.Equals(PeripheralTypeTranslator::BusTypeToString(m_busses.at(iBusPtr)->Type())))
+    if (StringUtils::EqualsNoCase(strBus, PeripheralTypeTranslator::BusTypeToString(m_busses.at(iBusPtr)->Type())))
       return m_busses.at(iBusPtr)->GetByPath(strPath);
   }
 

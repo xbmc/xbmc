@@ -37,6 +37,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_PROFILE_IMAGE       2
@@ -150,7 +151,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
   }
   if (setting.id == 2)
   {
-    CStdString strThumb;
+    string strThumb;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     CFileItemList items;
@@ -166,10 +167,10 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
     if (CGUIDialogFileBrowser::ShowAndGetImage(items,shares,g_localizeStrings.Get(1030),strThumb) &&
-        !strThumb.Equals("thumb://Current"))
+        !StringUtils::EqualsNoCase(strThumb, "thumb://Current"))
     {
       m_bNeedSave = true;
-      m_strThumb = strThumb.Equals("thumb://None") ? "" : strThumb;
+      m_strThumb = StringUtils::EqualsNoCase(strThumb, "thumb://None") ? "" : strThumb;
 
       CGUIImage *pImage = (CGUIImage*)GetControl(2);
       if (pImage)
@@ -218,14 +219,14 @@ void CGUIDialogProfileSettings::OnCancel()
   m_bNeedSave = false;
 }
 
-bool CGUIDialogProfileSettings::OnProfilePath(CStdString &dir, bool isDefault)
+bool CGUIDialogProfileSettings::OnProfilePath(string &dir, bool isDefault)
 {
   VECSOURCES shares;
   CMediaSource share;
   share.strName = "Profiles";
   share.strPath = "special://masterprofile/profiles/";
   shares.push_back(share);
-  CStdString strDirectory;
+  string strDirectory;
   if (dir.empty())
     strDirectory = share.strPath;
   else
@@ -275,11 +276,11 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     if (!CGUIKeyboardFactory::ShowAndGetInput(dialog->m_strName,g_localizeStrings.Get(20093),false) || dialog->m_strName.empty())
       return false;
     // create a default path
-    CStdString defaultDir = URIUtils::AddFileToFolder("profiles",CUtil::MakeLegalFileName(dialog->m_strName));
+    string defaultDir = URIUtils::AddFileToFolder("profiles",CUtil::MakeLegalFileName(dialog->m_strName));
     URIUtils::AddSlashAtEnd(defaultDir);
     CDirectory::Create(URIUtils::AddFileToFolder("special://masterprofile/", defaultDir));
     // prompt for the user to change it if they want
-    CStdString userDir = defaultDir;
+    string userDir = defaultDir;
     if (dialog->OnProfilePath(userDir, false)) // can't be the master user
     {
       if (!StringUtils::StartsWith(userDir, defaultDir)) // user chose a different folder
@@ -309,7 +310,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     {
       if (dialog->m_strName.empty() || dialog->m_strDirectory.empty())
         return false;
-      /*CStdString strLabel;
+      /*string strLabel;
       strLabel.Format(g_localizeStrings.Get(20047),dialog->m_strName);
       if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(20058),strLabel,dialog->m_strDirectory,""))
       {

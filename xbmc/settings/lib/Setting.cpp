@@ -28,6 +28,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+using namespace std;
+
 CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : ISetting(id, settingsManager),
     m_callback(NULL),
@@ -1144,7 +1146,7 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
   }
 
   // get the default value
-  CStdString value;
+  string value;
   if (XMLUtils::GetString(node, SETTING_XML_ELM_DEFAULT, value) &&
      (!value.empty() || m_allowEmpty))
     m_value = m_default = value;

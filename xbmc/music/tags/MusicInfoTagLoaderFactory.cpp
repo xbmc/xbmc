@@ -40,6 +40,7 @@
 #include "cores/paplayer/ASAPCodec.h"
 #endif
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderFactory::CMusicInfoTagLoaderFactory()
@@ -48,7 +49,7 @@ CMusicInfoTagLoaderFactory::CMusicInfoTagLoaderFactory()
 CMusicInfoTagLoaderFactory::~CMusicInfoTagLoaderFactory()
 {}
 
-IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& strFileName)
+IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const string& strFileName)
 {
   // dont try to read the tags for streams & shoutcast
   CFileItem item(strFileName, false);
@@ -58,7 +59,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   if (item.IsMusicDb())
     return new CMusicInfoTagLoaderDatabase();
 
-  CStdString strExtension = URIUtils::GetExtension(strFileName);
+  string strExtension = URIUtils::GetExtension(strFileName);
   StringUtils::ToLower(strExtension);
   StringUtils::TrimLeft(strExtension, ".");
 

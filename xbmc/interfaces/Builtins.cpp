@@ -230,10 +230,10 @@ const BUILT_IN commands[] = {
   { "SetStereoMode",              true,   "Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, monoscopic)" }
 };
 
-bool CBuiltins::HasCommand(const CStdString& execString)
+bool CBuiltins::HasCommand(const string& execString)
 {
-  CStdString function;
-  vector<CStdString> parameters;
+  string function;
+  vector<string> parameters;
   CUtil::SplitExecFunction(execString, function, parameters);
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
@@ -243,7 +243,7 @@ bool CBuiltins::HasCommand(const CStdString& execString)
   return false;
 }
 
-void CBuiltins::GetHelp(CStdString &help)
+void CBuiltins::GetHelp(string &help)
 {
   help.clear();
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
@@ -255,61 +255,63 @@ void CBuiltins::GetHelp(CStdString &help)
   }
 }
 
-int CBuiltins::Execute(const CStdString& execString)
+int CBuiltins::Execute(const string& execString)
 {
   // Get the text after the "XBMC."
-  CStdString execute;
-  vector<CStdString> params;
+  string execute;
+  vector<string> params;
   CUtil::SplitExecFunction(execString, execute, params);
   StringUtils::ToLower(execute);
-  CStdString parameter = params.size() ? params[0] : "";
-  CStdString strParameterCaseIntact = parameter;
+  string parameter = params.size() ? params[0] : "";
+  string strParameterCaseIntact = parameter;
 
-  if (execute.Equals("reboot") || execute.Equals("restart") || execute.Equals("reset"))  //Will reboot the system
+  if (StringUtils::EqualsNoCase(execute, "reboot") ||
+      StringUtils::EqualsNoCase(execute, "restart") ||
+      StringUtils::EqualsNoCase(execute, "reset"))  //Will reboot the system
   {
     CApplicationMessenger::Get().Restart();
   }
-  else if (execute.Equals("shutdown"))
+  else if (StringUtils::EqualsNoCase(execute, "shutdown"))
   {
     CApplicationMessenger::Get().Shutdown();
   }
-  else if (execute.Equals("powerdown"))
+  else if (StringUtils::EqualsNoCase(execute, "powerdown"))
   {
     CApplicationMessenger::Get().Powerdown();
   }
-  else if (execute.Equals("restartapp"))
+  else if (StringUtils::EqualsNoCase(execute, "restartapp"))
   {
     CApplicationMessenger::Get().RestartApp();
   }
-  else if (execute.Equals("hibernate"))
+  else if (StringUtils::EqualsNoCase(execute, "hibernate"))
   {
     CApplicationMessenger::Get().Hibernate();
   }
-  else if (execute.Equals("suspend"))
+  else if (StringUtils::EqualsNoCase(execute, "suspend"))
   {
     CApplicationMessenger::Get().Suspend();
   }
-  else if (execute.Equals("quit"))
+  else if (StringUtils::EqualsNoCase(execute, "quit"))
   {
     CApplicationMessenger::Get().Quit();
   }
-  else if (execute.Equals("inhibitidleshutdown"))
+  else if (StringUtils::EqualsNoCase(execute, "inhibitidleshutdown"))
   {
-    bool inhibit = (params.size() == 1 && params[0].Equals("true"));
+    bool inhibit = (params.size() == 1 && StringUtils::EqualsNoCase(params[0], "true"));
     CApplicationMessenger::Get().InhibitIdleShutdown(inhibit);
   }
-  else if (execute.Equals("activatescreensaver"))
+  else if (StringUtils::EqualsNoCase(execute, "activatescreensaver"))
   {
     CApplicationMessenger::Get().ActivateScreensaver();
   }
-  else if (execute.Equals("minimize"))
+  else if (StringUtils::EqualsNoCase(execute, "minimize"))
   {
     CApplicationMessenger::Get().Minimize();
   }
-  else if (execute.Equals("loadprofile"))
+  else if (StringUtils::EqualsNoCase(execute, "loadprofile"))
   {
     int index = CProfilesManager::Get().GetProfileIndex(parameter);
-    bool prompt = (params.size() == 2 && params[1].Equals("prompt"));
+    bool prompt = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "prompt"));
     bool bCanceled;
     if (index >= 0
         && (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
@@ -318,7 +320,7 @@ int CBuiltins::Execute(const CStdString& execString)
       CApplicationMessenger::Get().LoadProfile(index);
     }
   }
-  else if (execute.Equals("mastermode"))
+  else if (StringUtils::EqualsNoCase(execute, "mastermode"))
   {
     if (g_passwordManager.bMasterUser)
     {
@@ -337,28 +339,28 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
     g_windowManager.SendMessage(msg);
   }
-  else if (execute.Equals("setguilanguage"))
+  else if (StringUtils::EqualsNoCase(execute, "setguilanguage"))
   {
     if (params.size())
     {
       CApplicationMessenger::Get().SetGUILanguage(params[0]);
     }
   }
-  else if (execute.Equals("takescreenshot"))
+  else if (StringUtils::EqualsNoCase(execute, "takescreenshot"))
   {
     if (params.size())
     {
       // get the parameters
-      CStdString strSaveToPath = params[0];
+      string strSaveToPath = params[0];
       bool sync = false;
       if (params.size() >= 2)
-        sync = params[1].Equals("sync");
+        sync = StringUtils::EqualsNoCase(params[1], "sync");
 
       if (!strSaveToPath.empty())
       {
         if (CDirectory::Exists(strSaveToPath))
         {
-          CStdString file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%03d.png"), 999);
+          string file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%03d.png"), 999);
 
           if (!file.empty())
           {
@@ -376,10 +378,10 @@ int CBuiltins::Execute(const CStdString& execString)
     else
       CScreenShot::TakeScreenshot();
   }
-  else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
+  else if (StringUtils::EqualsNoCase(execute, "activatewindow") || StringUtils::EqualsNoCase(execute, "replacewindow"))
   {
     // get the parameters
-    CStdString strWindow;
+    string strWindow;
     if (params.size())
     {
       strWindow = params[0];
@@ -392,7 +394,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-      g_windowManager.ActivateWindow(iWindow, params, !execute.Equals("activatewindow"));
+      g_windowManager.ActivateWindow(iWindow, params, !StringUtils::EqualsNoCase(execute, "activatewindow"));
     }
     else
     {
@@ -400,16 +402,16 @@ int CBuiltins::Execute(const CStdString& execString)
       return false;
     }
   }
-  else if ((execute.Equals("setfocus") || execute.Equals("control.setfocus")) && params.size())
+  else if ((StringUtils::EqualsNoCase(execute, "setfocus") || StringUtils::EqualsNoCase(execute, "control.setfocus")) && params.size())
   {
     int controlID = atol(params[0].c_str());
     int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
     CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
   }
-  else if ((execute.Equals("activatewindowandfocus") || execute.Equals("replacewindowandfocus")) && params.size())
+  else if ((StringUtils::EqualsNoCase(execute, "activatewindowandfocus") || StringUtils::EqualsNoCase(execute, "replacewindowandfocus")) && params.size())
   {
-    CStdString strWindow = params[0];
+    string strWindow = params[0];
 
     // confirm the window destination is valid prior to switching
     int iWindow = CButtonTranslator::TranslateWindow(strWindow);
@@ -417,8 +419,8 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-      vector<CStdString> dummy;
-      g_windowManager.ActivateWindow(iWindow, dummy, !execute.Equals("activatewindowandfocus"));
+      vector<string> dummy;
+      g_windowManager.ActivateWindow(iWindow, dummy, !StringUtils::EqualsNoCase(execute, "activatewindowandfocus"));
 
       unsigned int iPtr = 1;
       while (params.size() > iPtr + 1)
@@ -436,29 +438,28 @@ int CBuiltins::Execute(const CStdString& execString)
       return false;
     }
   }
-  else if (execute.Equals("runscript") && params.size())
+  else if (StringUtils::EqualsNoCase(execute, "runscript") && params.size())
   {
 #if defined(TARGET_DARWIN_OSX)
     if (URIUtils::HasExtension(strParameterCaseIntact, ".applescript|.scpt"))
     {
-      CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
+      string osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
       Cocoa_DoAppleScriptFile(osxPath.c_str());
     }
     else
 #endif
     {
       vector<string> argv;
-      for (vector<CStdString>::const_iterator param = params.begin(); param != params.end(); ++param)
+      for (vector<string>::const_iterator param = params.begin(); param != params.end(); ++param)
         argv.push_back(*param);
 
-      vector<CStdString> path;
       //split the path up to find the filename
-      StringUtils::SplitString(params[0],"\\",path);
+      vector<string> path = StringUtils::Split(params[0], "\\");
       if (path.size())
         argv[0] = path[path.size() - 1];
 
       AddonPtr script;
-      CStdString scriptpath(params[0]);
+      string scriptpath(params[0]);
       if (CAddonMgr::Get().GetAddon(params[0], script))
         scriptpath = script->LibPath();
 
@@ -466,14 +467,14 @@ int CBuiltins::Execute(const CStdString& execString)
     }
   }
 #if defined(TARGET_DARWIN_OSX)
-  else if (execute.Equals("runapplescript"))
+  else if (StringUtils::EqualsNoCase(execute, "runapplescript"))
   {
     Cocoa_DoAppleScript(strParameterCaseIntact.c_str());
   }
 #endif
-  else if (execute.Equals("stopscript"))
+  else if (StringUtils::EqualsNoCase(execute, "stopscript"))
   {
-    CStdString scriptpath(params[0]);
+    string scriptpath(params[0]);
 
     // Test to see if the param is an addon ID
     AddonPtr script;
@@ -482,39 +483,39 @@ int CBuiltins::Execute(const CStdString& execString)
 
     CScriptInvocationManager::Get().Stop(scriptpath);
   }
-  else if (execute.Equals("system.exec"))
+  else if (StringUtils::EqualsNoCase(execute, "system.exec"))
   {
     CApplicationMessenger::Get().Minimize();
     CApplicationMessenger::Get().ExecOS(parameter, false);
   }
-  else if (execute.Equals("system.execwait"))
+  else if (StringUtils::EqualsNoCase(execute, "system.execwait"))
   {
     CApplicationMessenger::Get().Minimize();
     CApplicationMessenger::Get().ExecOS(parameter, true);
   }
-  else if (execute.Equals("resolution"))
+  else if (StringUtils::EqualsNoCase(execute, "resolution"))
   {
     RESOLUTION res = RES_PAL_4x3;
-    if (parameter.Equals("pal")) res = RES_PAL_4x3;
-    else if (parameter.Equals("pal16x9")) res = RES_PAL_16x9;
-    else if (parameter.Equals("ntsc")) res = RES_NTSC_4x3;
-    else if (parameter.Equals("ntsc16x9")) res = RES_NTSC_16x9;
-    else if (parameter.Equals("720p")) res = RES_HDTV_720p;
-    else if (parameter.Equals("720pSBS")) res = RES_HDTV_720pSBS;
-    else if (parameter.Equals("720pTB")) res = RES_HDTV_720pTB;
-    else if (parameter.Equals("1080pSBS")) res = RES_HDTV_1080pSBS;
-    else if (parameter.Equals("1080pTB")) res = RES_HDTV_1080pTB;
-    else if (parameter.Equals("1080i")) res = RES_HDTV_1080i;
+    if (StringUtils::EqualsNoCase(parameter, "pal")) res = RES_PAL_4x3;
+    else if (StringUtils::EqualsNoCase(parameter, "pal16x9")) res = RES_PAL_16x9;
+    else if (StringUtils::EqualsNoCase(parameter, "ntsc")) res = RES_NTSC_4x3;
+    else if (StringUtils::EqualsNoCase(parameter, "ntsc16x9")) res = RES_NTSC_16x9;
+    else if (StringUtils::EqualsNoCase(parameter, "720p")) res = RES_HDTV_720p;
+    else if (StringUtils::EqualsNoCase(parameter, "720pSBS")) res = RES_HDTV_720pSBS;
+    else if (StringUtils::EqualsNoCase(parameter, "720pTB")) res = RES_HDTV_720pTB;
+    else if (StringUtils::EqualsNoCase(parameter, "1080pSBS")) res = RES_HDTV_1080pSBS;
+    else if (StringUtils::EqualsNoCase(parameter, "1080pTB")) res = RES_HDTV_1080pTB;
+    else if (StringUtils::EqualsNoCase(parameter, "1080i")) res = RES_HDTV_1080i;
     if (g_graphicsContext.IsValidResolution(res))
     {
       CDisplaySettings::Get().SetCurrentResolution(res, true);
       g_application.ReloadSkin();
     }
   }
-  else if (execute.Equals("extract") && params.size())
+  else if (StringUtils::EqualsNoCase(execute, "extract") && params.size())
   {
     // Detects if file is zip or rar then extracts
-    CStdString strDestDirect;
+    string strDestDirect;
     if (params.size() < 2)
       strDestDirect = URIUtils::GetDirectory(params[0]);
     else
@@ -531,7 +532,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else
       CLog::Log(LOGERROR, "XBMC.Extract, No archive given");
   }
-  else if (execute.Equals("runplugin"))
+  else if (StringUtils::EqualsNoCase(execute, "runplugin"))
   {
     if (params.size())
     {
@@ -547,7 +548,7 @@ int CBuiltins::Execute(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.RunPlugin called with no arguments.");
     }
   }
-  else if (execute.Equals("runaddon"))
+  else if (StringUtils::EqualsNoCase(execute, "runaddon"))
   {
     if (params.size())
     {
@@ -555,19 +556,19 @@ int CBuiltins::Execute(const CStdString& execString)
       if (CAddonMgr::Get().GetAddon(params[0],addon) && addon)
       {
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
-        CStdString cmd;
+        string cmd;
         if (plugin && addon->Type() == ADDON_PLUGIN)
         {
-          CStdString addonid = params[0];
-          CStdString urlParameters;
-          CStdStringArray parameters;
+          string addonid = params[0];
+          string urlParameters;
+          std::vector<std::string> parameters;
           if (params.size() == 2 &&
              (StringUtils::StartsWith(params[1], "/") || StringUtils::StartsWith(params[1], "?")))
             urlParameters = params[1];
           else if (params.size() > 1)
           {
             parameters.insert(parameters.begin(), params.begin() + 1, params.end());
-            urlParameters = "?" + StringUtils::JoinString(parameters, "&");
+            urlParameters = "?" + StringUtils::Join(parameters, "&");
           }
           else
           {
@@ -587,12 +588,12 @@ int CBuiltins::Execute(const CStdString& execString)
           else
             // Pass the script name (params[0]) and all the parameters
             // (params[1] ... params[x]) separated by a comma to RunPlugin
-            cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::JoinString(params, ",").c_str());
+            cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
         }
         else if (addon->Type() >= ADDON_SCRIPT && addon->Type() <= ADDON_SCRIPT_LYRICS)
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunScript
-          cmd = StringUtils::Format("RunScript(%s)", StringUtils::JoinString(params, ",").c_str());
+          cmd = StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str());
 
         return Execute(cmd);
       }
@@ -602,7 +603,7 @@ int CBuiltins::Execute(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.RunAddon called with no arguments.");
     }
   }
-  else if (execute.Equals("notifyall"))
+  else if (StringUtils::EqualsNoCase(execute, "notifyall"))
   {
     if (params.size() > 1)
     {
@@ -610,12 +611,12 @@ int CBuiltins::Execute(const CStdString& execString)
       if (params.size() > 2)
         data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
 
-      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0], params[1], data);
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
     }
     else
       CLog::Log(LOGERROR, "XBMC.NotifyAll needs two parameters");
   }
-  else if (execute.Equals("playmedia"))
+  else if (StringUtils::EqualsNoCase(execute, "playmedia"))
   {
     if (!params.size())
     {
@@ -642,17 +643,17 @@ int CBuiltins::Execute(const CStdString& execString)
     int playOffset = 0;
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
-      if (params[i].Equals("isdir"))
+      if (StringUtils::EqualsNoCase(params[i], "isdir"))
         item.m_bIsFolder = true;
-      else if (params[i].Equals("1")) // set fullscreen or windowed
+      else if (StringUtils::EqualsNoCase(params[i], "1")) // set fullscreen or windowed
         CMediaSettings::Get().SetVideoStartWindowed(true);
-      else if (params[i].Equals("resume"))
+      else if (StringUtils::EqualsNoCase(params[i], "resume"))
       {
         // force the item to resume (if applicable) (see CApplication::PlayMedia)
         item.m_lStartOffset = STARTOFFSET_RESUME;
         askToResume = false;
       }
-      else if (params[i].Equals("noresume"))
+      else if (StringUtils::EqualsNoCase(params[i], "noresume"))
       {
         // force the item to start at the beginning (m_lStartOffset is initialized to 0)
         askToResume = false;
@@ -674,7 +675,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (item.m_bIsFolder)
     {
       CFileItemList items;
-      CStdString extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.m_musicExtensions;
+      string extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.m_musicExtensions;
       CDirectory::GetDirectory(item.GetPath(),items,extensions);
       
       bool containsMusic = false, containsVideo = false;
@@ -717,7 +718,7 @@ int CBuiltins::Execute(const CStdString& execString)
       }
     }
   }
-  else if (execute.Equals("showPicture"))
+  else if (StringUtils::EqualsNoCase(execute, "showPicture"))
   {
     if (!params.size())
     {
@@ -729,7 +730,7 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
-  else if (execute.Equals("slideShow") || execute.Equals("recursiveslideShow"))
+  else if (StringUtils::EqualsNoCase(execute, "slideShow") || StringUtils::EqualsNoCase(execute, "recursiveslideShow"))
   {
     if (!params.size())
     {
@@ -739,7 +740,7 @@ int CBuiltins::Execute(const CStdString& execString)
     std::string beginSlidePath;
     // leave RecursiveSlideShow command as-is
     unsigned int flags = 0;
-    if (execute.Equals("RecursiveSlideShow"))
+    if (StringUtils::EqualsNoCase(execute, "RecursiveSlideShow"))
       flags |= 1;
 
     // SlideShow(dir[,recursive][,[not]random][,pause][,beginslide="/path/to/start/slide.jpg"])
@@ -749,13 +750,13 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       for (unsigned int i = 1 ; i < params.size() ; i++)
       {
-        if (params[i].Equals("recursive"))
+        if (StringUtils::EqualsNoCase(params[i], "recursive"))
           flags |= 1;
-        else if (params[i].Equals("random")) // set fullscreen or windowed
+        else if (StringUtils::EqualsNoCase(params[i], "random")) // set fullscreen or windowed
           flags |= 2;
-        else if (params[i].Equals("notrandom"))
+        else if (StringUtils::EqualsNoCase(params[i], "notrandom"))
           flags |= 4;
-        else if (params[i].Equals("pause"))
+        else if (StringUtils::EqualsNoCase(params[i], "pause"))
           flags |= 8;
         else if (StringUtils::StartsWithNoCase(params[i], "beginslide="))
           beginSlidePath = params[i].substr(11);
@@ -763,27 +764,27 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
-    vector<CStdString> strParams;
+    vector<string> strParams;
     strParams.push_back(params[0]);
     strParams.push_back(beginSlidePath);
     msg.SetStringParams(strParams);
     CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
-  else if (execute.Equals("reloadskin"))
+  else if (StringUtils::EqualsNoCase(execute, "reloadskin"))
   {
     //  Reload the skin
     g_application.ReloadSkin(!params.empty() && StringUtils::EqualsNoCase(params[0], "confirm"));
   }
-  else if (execute.Equals("unloadskin"))
+  else if (StringUtils::EqualsNoCase(execute, "unloadskin"))
   {
     g_application.UnloadSkin(true); // we're reloading the skin after this
   }
-  else if (execute.Equals("refreshrss"))
+  else if (StringUtils::EqualsNoCase(execute, "refreshrss"))
   {
     CRssManager::Get().Reload();
   }
-  else if (execute.Equals("playercontrol"))
+  else if (StringUtils::EqualsNoCase(execute, "playercontrol"))
   {
     g_application.ResetScreenSaver();
     g_application.WakeUpScreenSaverAndDPMS();
@@ -792,7 +793,7 @@ int CBuiltins::Execute(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
       return -3;
     }
-    if (parameter.Equals("play"))
+    if (StringUtils::EqualsNoCase(parameter, "play"))
     { // play/pause
       // either resume playing, or pause
       if (g_application.m_pPlayer->IsPlaying())
@@ -803,20 +804,20 @@ int CBuiltins::Execute(const CStdString& execString)
           g_application.m_pPlayer->Pause();
       }
     }
-    else if (parameter.Equals("stop"))
+    else if (StringUtils::EqualsNoCase(parameter, "stop"))
     {
       g_application.StopPlaying();
     }
-    else if (parameter.Equals("rewind") || parameter.Equals("forward"))
+    else if (StringUtils::EqualsNoCase(parameter, "rewind") || StringUtils::EqualsNoCase(parameter, "forward"))
     {
       if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
       {
         int iPlaySpeed = g_application.m_pPlayer->GetPlaySpeed();
-        if (parameter.Equals("rewind") && iPlaySpeed == 1) // Enables Rewinding
+        if (StringUtils::EqualsNoCase(parameter, "rewind") && iPlaySpeed == 1) // Enables Rewinding
           iPlaySpeed *= -2;
-        else if (parameter.Equals("rewind") && iPlaySpeed > 1) //goes down a notch if you're FFing
+        else if (StringUtils::EqualsNoCase(parameter, "rewind") && iPlaySpeed > 1) //goes down a notch if you're FFing
           iPlaySpeed /= 2;
-        else if (parameter.Equals("forward") && iPlaySpeed < 1) //goes up a notch if you're RWing
+        else if (StringUtils::EqualsNoCase(parameter, "forward") && iPlaySpeed < 1) //goes up a notch if you're RWing
         {
           iPlaySpeed /= 2;
           if (iPlaySpeed == -1) iPlaySpeed = 1;
@@ -830,37 +831,37 @@ int CBuiltins::Execute(const CStdString& execString)
         g_application.m_pPlayer->SetPlaySpeed(iPlaySpeed, g_application.IsMutedInternal());
       }
     }
-    else if (parameter.Equals("next"))
+    else if (StringUtils::EqualsNoCase(parameter, "next"))
     {
       g_application.OnAction(CAction(ACTION_NEXT_ITEM));
     }
-    else if (parameter.Equals("previous"))
+    else if (StringUtils::EqualsNoCase(parameter, "previous"))
     {
       g_application.OnAction(CAction(ACTION_PREV_ITEM));
     }
-    else if (parameter.Equals("bigskipbackward"))
+    else if (StringUtils::EqualsNoCase(parameter, "bigskipbackward"))
     {
       if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(false, true);
     }
-    else if (parameter.Equals("bigskipforward"))
+    else if (StringUtils::EqualsNoCase(parameter, "bigskipforward"))
     {
       if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(true, true);
     }
-    else if (parameter.Equals("smallskipbackward"))
+    else if (StringUtils::EqualsNoCase(parameter, "smallskipbackward"))
     {
       if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(false, false);
     }
-    else if (parameter.Equals("smallskipforward"))
+    else if (StringUtils::EqualsNoCase(parameter, "smallskipforward"))
     {
       if (g_application.m_pPlayer->IsPlaying())
         g_application.m_pPlayer->Seek(true, false);
     }
     else if (StringUtils::StartsWithNoCase(parameter, "seekpercentage"))
     {
-      CStdString offset = "";
+      string offset = "";
       if (parameter.size() == 14)
         CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
       else if (parameter.size() < 17) // arg must be at least "(N)"
@@ -877,19 +878,19 @@ int CBuiltins::Execute(const CStdString& execString)
           g_application.SeekPercentage(offsetpercent);
       }
     }
-    else if( parameter.Equals("showvideomenu") )
+    else if( StringUtils::EqualsNoCase(parameter, "showvideomenu") )
     {
       if( g_application.m_pPlayer->IsPlaying() )
         g_application.m_pPlayer->OnAction(CAction(ACTION_SHOW_VIDEOMENU));
     }
-    else if( parameter.Equals("record") )
+    else if( StringUtils::EqualsNoCase(parameter, "record") )
     {
       if( g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->CanRecord())
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
     }
     else if (StringUtils::StartsWithNoCase(parameter, "partymode"))
     {
-      CStdString strXspPath = "";
+      string strXspPath = "";
       //empty param=music, "music"=music, "video"=video, else xsp path
       PartyModeContext context = PARTYMODECONTEXT_MUSIC;
       if (parameter.size() > 9)
@@ -908,20 +909,20 @@ int CBuiltins::Execute(const CStdString& execString)
       else
         g_partyModeManager.Enable(context, strXspPath);
     }
-    else if (parameter.Equals("random")    ||
-             parameter.Equals("randomoff") ||
-             parameter.Equals("randomon"))
+    else if (StringUtils::EqualsNoCase(parameter, "random")    ||
+             StringUtils::EqualsNoCase(parameter, "randomoff") ||
+             StringUtils::EqualsNoCase(parameter, "randomon"))
     {
       // get current playlist
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
 
       // reverse the current setting
       bool shuffled = g_playlistPlayer.IsShuffled(iPlaylist);
-      if ((shuffled && parameter.Equals("randomon")) || (!shuffled && parameter.Equals("randomoff")))
+      if ((shuffled && StringUtils::EqualsNoCase(parameter, "randomon")) || (!shuffled && StringUtils::EqualsNoCase(parameter, "randomoff")))
         return 0;
 
       // check to see if we should notify the user
-      bool notify = (params.size() == 2 && params[1].Equals("notify"));
+      bool notify = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "notify"));
       g_playlistPlayer.SetShuffle(iPlaylist, !shuffled, notify);
 
       // save settings for now playing windows
@@ -948,11 +949,11 @@ int CBuiltins::Execute(const CStdString& execString)
       PLAYLIST::REPEAT_STATE previous_state = g_playlistPlayer.GetRepeat(iPlaylist);
 
       PLAYLIST::REPEAT_STATE state;
-      if (parameter.Equals("repeatall"))
+      if (StringUtils::EqualsNoCase(parameter, "repeatall"))
         state = PLAYLIST::REPEAT_ALL;
-      else if (parameter.Equals("repeatone"))
+      else if (StringUtils::EqualsNoCase(parameter, "repeatone"))
         state = PLAYLIST::REPEAT_ONE;
-      else if (parameter.Equals("repeatoff"))
+      else if (StringUtils::EqualsNoCase(parameter, "repeatoff"))
         state = PLAYLIST::REPEAT_NONE;
       else if (previous_state == PLAYLIST::REPEAT_NONE)
         state = PLAYLIST::REPEAT_ALL;
@@ -965,7 +966,7 @@ int CBuiltins::Execute(const CStdString& execString)
         return 0;
 
       // check to see if we should notify the user
-      bool notify = (params.size() == 2 && params[1].Equals("notify"));
+      bool notify = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "notify"));
       g_playlistPlayer.SetRepeat(iPlaylist, state, notify);
 
       // save settings for now playing windows
@@ -985,16 +986,16 @@ int CBuiltins::Execute(const CStdString& execString)
       g_windowManager.SendThreadMessage(msg);
     }
   }
-  else if (execute.Equals("playwith"))
+  else if (StringUtils::EqualsNoCase(execute, "playwith"))
   {
     g_application.m_eForcedNextPlayer = CPlayerCoreFactory::Get().GetPlayerCore(parameter);
     g_application.OnAction(CAction(ACTION_PLAYER_PLAY));
   }
-  else if (execute.Equals("mute"))
+  else if (StringUtils::EqualsNoCase(execute, "mute"))
   {
     g_application.ToggleMute();
   }
-  else if (execute.Equals("setvolume"))
+  else if (StringUtils::EqualsNoCase(execute, "setvolume"))
   {
     float oldVolume = g_application.GetVolume();
     float volume = (float)strtod(parameter.c_str(), NULL);
@@ -1002,27 +1003,27 @@ int CBuiltins::Execute(const CStdString& execString)
     g_application.SetVolume(volume);
     if(oldVolume != volume)
     {
-      if(params.size() > 1 && params[1].Equals("showVolumeBar"))    
+      if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))    
       {
         CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);  
       }
     }
   }
-  else if (execute.Equals("playlist.playoffset"))
+  else if (StringUtils::EqualsNoCase(execute, "playlist.playoffset"))
   {
     // playlist.playoffset(offset)
     // playlist.playoffset(music|video,offset)
-    CStdString strPos = parameter;
+    string strPos = parameter;
     if (params.size() > 1)
     {
       // ignore any other parameters if present
-      CStdString strPlaylist = params[0];
+      string strPlaylist = params[0];
       strPos = params[1];
 
       int iPlaylist = PLAYLIST_NONE;
-      if (strPlaylist.Equals("music"))
+      if (StringUtils::EqualsNoCase(strPlaylist, "music"))
         iPlaylist = PLAYLIST_MUSIC;
-      else if (strPlaylist.Equals("video"))
+      else if (StringUtils::EqualsNoCase(strPlaylist, "video"))
         iPlaylist = PLAYLIST_VIDEO;
 
       // unknown playlist
@@ -1049,17 +1050,17 @@ int CBuiltins::Execute(const CStdString& execString)
     else
       g_playlistPlayer.Play(pos);
   }
-  else if (execute.Equals("playlist.clear"))
+  else if (StringUtils::EqualsNoCase(execute, "playlist.clear"))
   {
     g_playlistPlayer.Clear();
   }
 #ifdef HAS_DVD_DRIVE
-  else if (execute.Equals("ejecttray"))
+  else if (StringUtils::EqualsNoCase(execute, "ejecttray"))
   {
     g_mediaManager.ToggleTray();
   }
 #endif
-  else if( execute.Equals("alarmclock") && params.size() > 1 )
+  else if( StringUtils::EqualsNoCase(execute, "alarmclock") && params.size() > 1 )
   {
     // format is alarmclock(name,command[,seconds,true]);
     float seconds = 0;
@@ -1072,12 +1073,12 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
     { // check if shutdown is specified in particular, and get the time for it
-      CStdString strHeading;
+      string strHeading;
       if (StringUtils::EqualsNoCase(parameter, "shutdowntimer"))
         strHeading = g_localizeStrings.Get(20145);
       else
         strHeading = g_localizeStrings.Get(13209);
-      CStdString strTime;
+      string strTime;
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         seconds = static_cast<float>(atoi(strTime.c_str())*60);
       else
@@ -1101,7 +1102,7 @@ int CBuiltins::Execute(const CStdString& execString)
       return false;
     g_alarmClock.Start(params[0], seconds, params[1], silent, loop);
   }
-  else if (execute.Equals("notification"))
+  else if (StringUtils::EqualsNoCase(execute, "notification"))
   {
     if (params.size() < 2)
       return -1;
@@ -1112,14 +1113,14 @@ int CBuiltins::Execute(const CStdString& execString)
     else
       CGUIDialogKaiToast::QueueNotification(params[0],params[1]);
   }
-  else if (execute.Equals("cancelalarm"))
+  else if (StringUtils::EqualsNoCase(execute, "cancelalarm"))
   {
     bool silent = false;
     if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
       silent = true;
     g_alarmClock.Stop(params[0],silent);
   }
-  else if (execute.Equals("playdvd"))
+  else if (StringUtils::EqualsNoCase(execute, "playdvd"))
   {
 #ifdef HAS_DVD_DRIVE
     bool restart = false;
@@ -1128,19 +1129,19 @@ int CBuiltins::Execute(const CStdString& execString)
     CAutorun::PlayDisc(g_mediaManager.GetDiscPath(), true, restart);
 #endif
   }
-  else if (execute.Equals("ripcd"))
+  else if (StringUtils::EqualsNoCase(execute, "ripcd"))
   {
 #ifdef HAS_CDDA_RIPPER
     CCDDARipper::GetInstance().RipCD();
 #endif
   }
-  else if (execute.Equals("skin.togglesetting"))
+  else if (StringUtils::EqualsNoCase(execute, "skin.togglesetting"))
   {
     int setting = CSkinSettings::Get().TranslateBool(parameter);
     CSkinSettings::Get().SetBool(setting, !CSkinSettings::Get().GetBool(setting));
     CSettings::Get().Save();
   }
-  else if (execute.Equals("skin.setbool") && params.size())
+  else if (StringUtils::EqualsNoCase(execute, "skin.setbool") && params.size())
   {
     if (params.size() > 1)
     {
@@ -1154,20 +1155,20 @@ int CBuiltins::Execute(const CStdString& execString)
     CSkinSettings::Get().SetBool(setting, true);
     CSettings::Get().Save();
   }
-  else if (execute.Equals("skin.reset"))
+  else if (StringUtils::EqualsNoCase(execute, "skin.reset"))
   {
     CSkinSettings::Get().Reset(parameter);
     CSettings::Get().Save();
   }
-  else if (execute.Equals("skin.resetsettings"))
+  else if (StringUtils::EqualsNoCase(execute, "skin.resetsettings"))
   {
     CSkinSettings::Get().Reset();
     CSettings::Get().Save();
   }
-  else if (execute.Equals("skin.theme"))
+  else if (StringUtils::EqualsNoCase(execute, "skin.theme"))
   {
     // enumerate themes
-    vector<CStdString> vecTheme;
+    vector<string> vecTheme;
     CUtil::GetSkinThemes(vecTheme);
 
     int iTheme = -1;
@@ -1177,9 +1178,9 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       for (unsigned int i=0;i<vecTheme.size();++i)
       {
-        CStdString strTmpTheme(CSettings::Get().GetString("lookandfeel.skintheme"));
+        string strTmpTheme(CSettings::Get().GetString("lookandfeel.skintheme"));
         URIUtils::RemoveExtension(strTmpTheme);
-        if (vecTheme[i].Equals(strTmpTheme))
+        if (StringUtils::EqualsNoCase(vecTheme[i], strTmpTheme))
         {
           iTheme=i;
           break;
@@ -1197,66 +1198,66 @@ int CBuiltins::Execute(const CStdString& execString)
     if (iTheme < -1)
       iTheme = vecTheme.size()-1;
 
-    CStdString strSkinTheme = "SKINDEFAULT";
+    string strSkinTheme = "SKINDEFAULT";
     if (iTheme != -1 && iTheme < (int)vecTheme.size())
       strSkinTheme = vecTheme[iTheme];
 
     CSettings::Get().SetString("lookandfeel.skintheme", strSkinTheme);
     // also set the default color theme
-    CStdString colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
-    if (colorTheme.Equals("Textures.xml"))
+    string colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
+    if (StringUtils::EqualsNoCase(colorTheme, "Textures.xml"))
       colorTheme = "defaults.xml";
     CSettings::Get().SetString("lookandfeel.skincolors", colorTheme);
     g_application.ReloadSkin();
   }
-  else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") ||
-           execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric") || execute.Equals("skin.setlargeimage"))
+  else if (StringUtils::EqualsNoCase(execute, "skin.setstring") || StringUtils::EqualsNoCase(execute, "skin.setimage") || StringUtils::EqualsNoCase(execute, "skin.setfile") ||
+           StringUtils::EqualsNoCase(execute, "skin.setpath") || StringUtils::EqualsNoCase(execute, "skin.setnumeric") || StringUtils::EqualsNoCase(execute, "skin.setlargeimage"))
   {
     // break the parameter up if necessary
-    int string = 0;
+    int stringno = 0;
     if (params.size() > 1)
     {
-      string = CSkinSettings::Get().TranslateString(params[0]);
-      if (execute.Equals("skin.setstring"))
+      stringno = CSkinSettings::Get().TranslateString(params[0]);
+      if (StringUtils::EqualsNoCase(execute, "skin.setstring"))
       {
-        CSkinSettings::Get().SetString(string, params[1]);
+        CSkinSettings::Get().SetString(stringno, params[1]);
         CSettings::Get().Save();
         return 0;
       }
     }
     else
-      string = CSkinSettings::Get().TranslateString(params[0]);
-    CStdString value = CSkinSettings::Get().GetString(string);
+      stringno = CSkinSettings::Get().TranslateString(params[0]);
+    string value = CSkinSettings::Get().GetString(stringno);
     VECSOURCES localShares;
     g_mediaManager.GetLocalDrives(localShares);
-    if (execute.Equals("skin.setstring"))
+    if (StringUtils::EqualsNoCase(execute, "skin.setstring"))
     {
       if (CGUIKeyboardFactory::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
-    else if (execute.Equals("skin.setnumeric"))
+    else if (StringUtils::EqualsNoCase(execute, "skin.setnumeric"))
     {
       if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(611)))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
-    else if (execute.Equals("skin.setimage"))
+    else if (StringUtils::EqualsNoCase(execute, "skin.setimage"))
     {
       if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
-    else if (execute.Equals("skin.setlargeimage"))
+    else if (StringUtils::EqualsNoCase(execute, "skin.setlargeimage"))
     {
       VECSOURCES *shares = CMediaSourceSettings::Get().GetSources("pictures");
       if (!shares) shares = &localShares;
       if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
-    else if (execute.Equals("skin.setfile"))
+    else if (StringUtils::EqualsNoCase(execute, "skin.setfile"))
     {
       // Note. can only browse one addon type from here
       // if browsing for addons, required param[1] is addontype string, with optional param[2]
       // as contenttype string see IAddon.h & ADDON::TranslateXX
-      CStdString strMask = (params.size() > 1) ? params[1] : "";
+      string strMask = (params.size() > 1) ? params[1] : "";
       StringUtils::ToLower(strMask);
       ADDON::TYPE type;
       if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
@@ -1266,19 +1267,19 @@ int CBuiltins::Execute(const CStdString& execString)
         url.SetHostName("enabled");
         url.SetFileName(strMask+"/");
         localShares.clear();
-        CStdString content = (params.size() > 2) ? params[2] : "";
+        string content = (params.size() > 2) ? params[2] : "";
         StringUtils::ToLower(content);
         url.SetPassword(content);
-        CStdString strMask;
+        string strMask;
         if (type == ADDON_SCRIPT)
           strMask = ".py";
-        CStdString replace;
+        string replace;
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {
           if (StringUtils::StartsWithNoCase(replace, "addons://"))
-            CSkinSettings::Get().SetString(string, URIUtils::GetFileName(replace));
+            CSkinSettings::Get().SetString(stringno, URIUtils::GetFileName(replace));
           else
-            CSkinSettings::Get().SetString(string, replace);
+            CSkinSettings::Get().SetString(stringno, replace);
         }
       }
       else 
@@ -1297,10 +1298,10 @@ int CBuiltins::Execute(const CStdString& execString)
           }
         }
         if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
-          CSkinSettings::Get().SetString(string, value);
+          CSkinSettings::Get().SetString(stringno, value);
       }
     }
-    else // execute.Equals("skin.setpath"))
+    else // StringUtils::EqualsNoCase(execute, "skin.setpath"))
     {
       g_mediaManager.GetNetworkLocations(localShares);
       if (params.size() > 1)
@@ -1317,13 +1318,13 @@ int CBuiltins::Execute(const CStdString& execString)
         }
       }
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::Get().SetString(stringno, value);
     }
     CSettings::Get().Save();
   }
-  else if (execute.Equals("skin.setaddon") && params.size() > 1)
+  else if (StringUtils::EqualsNoCase(execute, "skin.setaddon") && params.size() > 1)
   {
-    int string = CSkinSettings::Get().TranslateString(params[0]);
+    int stringno = CSkinSettings::Get().TranslateString(params[0]);
     vector<ADDON::TYPE> types;
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
@@ -1331,14 +1332,14 @@ int CBuiltins::Execute(const CStdString& execString)
       if (type != ADDON_UNKNOWN)
         types.push_back(type);
     }
-    CStdString result;
+    string result;
     if (types.size() > 0 && CGUIWindowAddonBrowser::SelectAddonID(types, result, true) == 1)
     {
-      CSkinSettings::Get().SetString(string, result);
+      CSkinSettings::Get().SetString(stringno, result);
       CSettings::Get().Save();
     }
   }
-  else if (execute.Equals("dialog.close") && params.size())
+  else if (StringUtils::EqualsNoCase(execute, "dialog.close") && params.size())
   {
     bool bForce = false;
     if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
@@ -1355,7 +1356,7 @@ int CBuiltins::Execute(const CStdString& execString)
         ((CGUIDialog *)window)->Close(bForce);
     }
   }
-  else if (execute.Equals("system.logoff"))
+  else if (StringUtils::EqualsNoCase(execute, "system.logoff"))
   {
     // there was a commit from cptspiff here which was reverted
     // for keeping the behaviour from Eden in Frodo - see
@@ -1379,28 +1380,28 @@ int CBuiltins::Execute(const CStdString& execString)
     if (!CNetworkServices::Get().StartEventServer()) // event server could be needed in some situations
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
   }
-  else if (execute.Equals("pagedown"))
+  else if (StringUtils::EqualsNoCase(execute, "pagedown"))
   {
     int id = atoi(parameter.c_str());
     CGUIMessage message(GUI_MSG_PAGE_DOWN, g_windowManager.GetFocusedWindow(), id);
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("pageup"))
+  else if (StringUtils::EqualsNoCase(execute, "pageup"))
   {
     int id = atoi(parameter.c_str());
     CGUIMessage message(GUI_MSG_PAGE_UP, g_windowManager.GetFocusedWindow(), id);
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("updatelibrary") && params.size())
+  else if (StringUtils::EqualsNoCase(execute, "updatelibrary") && params.size())
   {
-    if (params[0].Equals("music"))
+    if (StringUtils::EqualsNoCase(params[0], "music"))
     {
       if (g_application.IsMusicScanning())
         g_application.StopMusicScan();
       else
         g_application.StartMusicScan(params.size() > 1 ? params[1] : "");
     }
-    if (params[0].Equals("video"))
+    if (StringUtils::EqualsNoCase(params[0], "video"))
     {
       if (g_application.IsVideoScanning())
         g_application.StopVideoScan();
@@ -1408,16 +1409,16 @@ int CBuiltins::Execute(const CStdString& execString)
         g_application.StartVideoScan(params.size() > 1 ? params[1] : "");
     }
   }
-  else if (execute.Equals("cleanlibrary"))
+  else if (StringUtils::EqualsNoCase(execute, "cleanlibrary"))
   {
-    if (!params.size() || params[0].Equals("video"))
+    if (!params.size() || StringUtils::EqualsNoCase(params[0], "video"))
     {
       if (!g_application.IsVideoScanning())
          g_application.StartVideoCleanup();
       else
         CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning or cleaning");
     }
-    else if (params[0].Equals("music"))
+    else if (StringUtils::EqualsNoCase(params[0], "music"))
     {
       if (!g_application.IsMusicScanning())
       {
@@ -1431,12 +1432,12 @@ int CBuiltins::Execute(const CStdString& execString)
         CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
     }
   }
-  else if (execute.Equals("exportlibrary"))
+  else if (StringUtils::EqualsNoCase(execute, "exportlibrary"))
   {
     int iHeading = 647;
-    if (params[0].Equals("music"))
+    if (StringUtils::EqualsNoCase(params[0], "music"))
       iHeading = 20196;
-    CStdString path;
+    string path;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     g_mediaManager.GetNetworkLocations(shares);
@@ -1448,7 +1449,7 @@ int CBuiltins::Execute(const CStdString& execString)
     bool cancelled=false;
 
     if (params.size() > 1)
-      singleFile = params[1].Equals("true");
+      singleFile = StringUtils::EqualsNoCase(params[1], "true");
     else
       singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
 
@@ -1458,7 +1459,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (singleFile)
     {
       if (params.size() > 2)
-        thumbs = params[2].Equals("true");
+        thumbs = StringUtils::EqualsNoCase(params[2], "true");
       else
         thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     }
@@ -1466,10 +1467,10 @@ int CBuiltins::Execute(const CStdString& execString)
     if (cancelled)
       return -1;
 
-    if (thumbs && params[0].Equals("video"))
+    if (thumbs && StringUtils::EqualsNoCase(params[0], "video"))
     {
       if (params.size() > 4)
-        actorThumbs = params[4].Equals("true");
+        actorThumbs = StringUtils::EqualsNoCase(params[4], "true");
       else
         actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
     }
@@ -1480,7 +1481,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (singleFile)
     {
       if (params.size() > 3)
-        overwrite = params[3].Equals("true");
+        overwrite = StringUtils::EqualsNoCase(params[3], "true");
       else
         overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     }
@@ -1494,7 +1495,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CGUIDialogFileBrowser::ShowAndGetDirectory(shares,
 				  g_localizeStrings.Get(661), path, true))
     {
-      if (params[0].Equals("video"))
+      if (StringUtils::EqualsNoCase(params[0], "video"))
       {
         CVideoDatabase videodatabase;
         videodatabase.Open();
@@ -1512,19 +1513,19 @@ int CBuiltins::Execute(const CStdString& execString)
       }
     }
   }
-  else if (execute.Equals("control.move") && params.size() > 1)
+  else if (StringUtils::EqualsNoCase(execute, "control.move") && params.size() > 1)
   {
     CGUIMessage message(GUI_MSG_MOVE_OFFSET, g_windowManager.GetFocusedWindow(), atoi(params[0].c_str()), atoi(params[1].c_str()));
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("container.refresh"))
+  else if (StringUtils::EqualsNoCase(execute, "container.refresh"))
   { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
     //       This shouldn't stop a dialog intercepting it though.
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
     message.SetStringParam(parameter);
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("container.update") && params.size())
+  else if (StringUtils::EqualsNoCase(execute, "container.update") && params.size())
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
     message.SetStringParam(params[0]);
@@ -1532,42 +1533,42 @@ int CBuiltins::Execute(const CStdString& execString)
       message.SetParam2(1); // reset the history
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("container.nextviewmode"))
+  else if (StringUtils::EqualsNoCase(execute, "container.nextviewmode"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, 0, 1);
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("container.previousviewmode"))
+  else if (StringUtils::EqualsNoCase(execute, "container.previousviewmode"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, 0, -1);
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("container.setviewmode"))
+  else if (StringUtils::EqualsNoCase(execute, "container.setviewmode"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("container.nextsortmethod"))
+  else if (StringUtils::EqualsNoCase(execute, "container.nextsortmethod"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, 0, 1);
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("container.previoussortmethod"))
+  else if (StringUtils::EqualsNoCase(execute, "container.previoussortmethod"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, 0, -1);
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("container.setsortmethod"))
+  else if (StringUtils::EqualsNoCase(execute, "container.setsortmethod"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("container.sortdirection"))
+  else if (StringUtils::EqualsNoCase(execute, "container.sortdirection"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, g_windowManager.GetActiveWindow(), 0, 0);
     g_windowManager.SendMessage(message);
   }
-  else if (execute.Equals("control.message") && params.size() >= 2)
+  else if (StringUtils::EqualsNoCase(execute, "control.message") && params.size() >= 2)
   {
     int controlID = atoi(params[0].c_str());
     int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindow(params[2]) : g_windowManager.GetActiveWindow();
@@ -1582,7 +1583,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (params[1] == "click")
       g_windowManager.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
   }
-  else if (execute.Equals("sendclick") && params.size())
+  else if (StringUtils::EqualsNoCase(execute, "sendclick") && params.size())
   {
     if (params.size() == 2)
     {
@@ -1597,7 +1598,7 @@ int CBuiltins::Execute(const CStdString& execString)
       g_windowManager.SendMessage(message);
     }
   }
-  else if (execute.Equals("action") && params.size())
+  else if (StringUtils::EqualsNoCase(execute, "action") && params.size())
   {
     // try translating the action from our ButtonTranslator
     int actionID;
@@ -1607,23 +1608,23 @@ int CBuiltins::Execute(const CStdString& execString)
       CApplicationMessenger::Get().SendAction(CAction(actionID), windowID);
     }
   }
-  else if (execute.Equals("setproperty") && params.size() >= 2)
+  else if (StringUtils::EqualsNoCase(execute, "setproperty") && params.size() >= 2)
   {
     CGUIWindow *window = g_windowManager.GetWindow(params.size() > 2 ? CButtonTranslator::TranslateWindow(params[2]) : g_windowManager.GetFocusedWindow());
     if (window)
       window->SetProperty(params[0],params[1]);
   }
-  else if (execute.Equals("clearproperty") && params.size())
+  else if (StringUtils::EqualsNoCase(execute, "clearproperty") && params.size())
   {
     CGUIWindow *window = g_windowManager.GetWindow(params.size() > 1 ? CButtonTranslator::TranslateWindow(params[1]) : g_windowManager.GetFocusedWindow());
     if (window)
       window->SetProperty(params[0],"");
   }
-  else if (execute.Equals("wakeonlan"))
+  else if (StringUtils::EqualsNoCase(execute, "wakeonlan"))
   {
     g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
   }
-  else if (execute.Equals("addon.default.opensettings") && params.size() == 1)
+  else if (StringUtils::EqualsNoCase(execute, "addon.default.opensettings") && params.size() == 1)
   {
     AddonPtr addon;
     ADDON::TYPE type = TranslateType(params[0]);
@@ -1634,9 +1635,9 @@ int CBuiltins::Execute(const CStdString& execString)
         g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
     }
   }
-  else if (execute.Equals("addon.default.set") && params.size() == 1)
+  else if (StringUtils::EqualsNoCase(execute, "addon.default.set") && params.size() == 1)
   {
-    CStdString addonID;
+    string addonID;
     TYPE type = TranslateType(params[0]);
     bool allowNone = false;
     if (type == ADDON_VIZ)
@@ -1650,50 +1651,50 @@ int CBuiltins::Execute(const CStdString& execString)
         g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
     }
   }
-  else if (execute.Equals("addon.opensettings") && params.size() == 1)
+  else if (StringUtils::EqualsNoCase(execute, "addon.opensettings") && params.size() == 1)
   {
     AddonPtr addon;
     if (CAddonMgr::Get().GetAddon(params[0], addon))
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
-  else if (execute.Equals("updateaddonrepos"))
+  else if (StringUtils::EqualsNoCase(execute, "updateaddonrepos"))
   {
     CAddonInstaller::Get().UpdateRepos(true);
   }
-  else if (execute.Equals("updatelocaladdons"))
+  else if (StringUtils::EqualsNoCase(execute, "updatelocaladdons"))
   {
     CAddonMgr::Get().FindAddons();
   }
-  else if (execute.Equals("toggledpms"))
+  else if (StringUtils::EqualsNoCase(execute, "toggledpms"))
   {
     g_application.ToggleDPMS(true);
   }
-  else if (execute.Equals("cectogglestate"))
+  else if (StringUtils::EqualsNoCase(execute, "cectogglestate"))
   {
     CApplicationMessenger::Get().CECToggleState();
   }
-  else if (execute.Equals("cecactivatesource"))
+  else if (StringUtils::EqualsNoCase(execute, "cecactivatesource"))
   {
     CApplicationMessenger::Get().CECActivateSource();
   }
-  else if (execute.Equals("cecstandby"))
+  else if (StringUtils::EqualsNoCase(execute, "cecstandby"))
   {
     CApplicationMessenger::Get().CECStandby();
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  else if (execute.Equals("lirc.stop"))
+  else if (StringUtils::EqualsNoCase(execute, "lirc.stop"))
   {
     g_RemoteControl.Disconnect();
     g_RemoteControl.setUsed(false);
   }
-  else if (execute.Equals("lirc.start"))
+  else if (StringUtils::EqualsNoCase(execute, "lirc.start"))
   {
     g_RemoteControl.setUsed(true);
     g_RemoteControl.Initialize();
   }
-  else if (execute.Equals("lirc.send"))
+  else if (StringUtils::EqualsNoCase(execute, "lirc.send"))
   {
-    CStdString command;
+    string command;
     for (int i = 0; i < (int)params.size(); i++)
     {
       command += params[i];
@@ -1703,51 +1704,51 @@ int CBuiltins::Execute(const CStdString& execString)
     g_RemoteControl.AddSendCommand(command);
   }
 #endif
-  else if (execute.Equals("weather.locationset"))
+  else if (StringUtils::EqualsNoCase(execute, "weather.locationset"))
   {
-    int loc = atoi(params[0]);
+    int loc = atoi(params[0].c_str());
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, 0, loc);
     g_windowManager.SendMessage(msg, WINDOW_WEATHER);
   }
-  else if (execute.Equals("weather.locationnext"))
+  else if (StringUtils::EqualsNoCase(execute, "weather.locationnext"))
   {
     CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 1);
     g_windowManager.SendMessage(msg, WINDOW_WEATHER);
   }
-  else if (execute.Equals("weather.locationprevious"))
+  else if (StringUtils::EqualsNoCase(execute, "weather.locationprevious"))
   {
     CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, -1);
     g_windowManager.SendMessage(msg, WINDOW_WEATHER);
   }
-  else if (execute.Equals("weather.refresh"))
+  else if (StringUtils::EqualsNoCase(execute, "weather.refresh"))
   {
     CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 0);
     g_windowManager.SendMessage(msg, WINDOW_WEATHER);
   }
-  else if (execute.Equals("videolibrary.search"))
+  else if (StringUtils::EqualsNoCase(execute, "videolibrary.search"))
   {
     CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
     g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
   }
-  else if (execute.Equals("toggledebug"))
+  else if (StringUtils::EqualsNoCase(execute, "toggledebug"))
   {
     bool debug = CSettings::Get().GetBool("debug.showloginfo");
     CSettings::Get().SetBool("debug.showloginfo", !debug);
     g_advancedSettings.SetDebugMode(!debug);
   }
-  else if (execute.Equals("startpvrmanager"))
+  else if (StringUtils::EqualsNoCase(execute, "startpvrmanager"))
   {
     g_application.StartPVRManager();
   }
-  else if (execute.Equals("stoppvrmanager"))
+  else if (StringUtils::EqualsNoCase(execute, "stoppvrmanager"))
   {
     g_application.StopPVRManager();
   }
-  else if (execute.Equals("StartAndroidActivity") && params.size() > 0)
+  else if (StringUtils::EqualsNoCase(execute, "StartAndroidActivity") && params.size() > 0)
   {
     CApplicationMessenger::Get().StartAndroidActivity(params);
   }
-  else if (execute.Equals("SetStereoMode") && !parameter.empty())
+  else if (StringUtils::EqualsNoCase(execute, "SetStereoMode") && !parameter.empty())
   {
     CAction action = CStereoscopicsManager::Get().ConvertActionCommandToAction(execute, parameter);
     if (action.GetID() != ACTION_NONE)

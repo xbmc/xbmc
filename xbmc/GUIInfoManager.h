@@ -724,7 +724,7 @@ public:
    \param context the context window
    \return an identifier used to reference this expression
    */
-  INFO::InfoPtr Register(const CStdString &expression, int context = 0);
+  INFO::InfoPtr Register(const std::string &expression, int context = 0);
 
   /*! \brief Evaluate a boolean expression
    \param expression the expression to evaluate
@@ -732,9 +732,9 @@ public:
    \return the value of the evaluated expression.
    \sa Register
    */
-  bool EvaluateBool(const CStdString &expression, int context = 0);
+  bool EvaluateBool(const std::string &expression, int context = 0);
 
-  int TranslateString(const CStdString &strCondition);
+  int TranslateString(const std::string &strCondition);
 
   /*! \brief Get integer value of info.
    \param value int reference to pass value of given info
@@ -745,20 +745,20 @@ public:
    \sa GetItemInt, GetMultiInfoInt
    */
   bool GetInt(int &value, int info, int contextWindow = 0, const CGUIListItem *item = NULL) const;
-  CStdString GetLabel(int info, int contextWindow = 0, CStdString *fallback = NULL);
+  std::string GetLabel(int info, int contextWindow = 0, std::string *fallback = NULL);
 
-  CStdString GetImage(int info, int contextWindow, CStdString *fallback = NULL);
+  std::string GetImage(int info, int contextWindow, std::string *fallback = NULL);
 
-  CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
-  CStdString GetDate(bool bNumbersOnly = false);
-  CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+  std::string GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+  std::string GetDate(bool bNumbersOnly = false);
+  std::string GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
   void SetCurrentItem(CFileItem &item);
   void ResetCurrentItem();
   // Current song stuff
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
   void SetCurrentSong(CFileItem &item);
-  void SetCurrentAlbumThumb(const CStdString &thumbFileName);
+  void SetCurrentAlbumThumb(const std::string &thumbFileName);
   void SetCurrentMovie(CFileItem &item);
   void SetCurrentSlide(CFileItem &item);
   const CFileItem &GetCurrentSlide() const;
@@ -769,22 +769,22 @@ public:
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
-  CStdString GetMusicLabel(int item);
-  CStdString GetMusicTagLabel(int info, const CFileItem *item);
-  CStdString GetVideoLabel(int item);
-  CStdString GetPlaylistLabel(int item, int playlistid = -1 /* PLAYLIST_NONE */) const;
-  CStdString GetMusicPartyModeLabel(int item);
-  const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
-  CStdString GetPictureLabel(int item);
+  std::string GetMusicLabel(int item);
+  std::string GetMusicTagLabel(int info, const CFileItem *item);
+  std::string GetVideoLabel(int item);
+  std::string GetPlaylistLabel(int item, int playlistid = -1 /* PLAYLIST_NONE */) const;
+  std::string GetMusicPartyModeLabel(int item);
+  const std::string GetMusicPlaylistInfo(const GUIInfo& info);
+  std::string GetPictureLabel(int item);
 
   int64_t GetPlayTime() const;  // in ms
-  CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
-  CStdString GetCurrentSeekTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+  std::string GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+  std::string GetCurrentSeekTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   int GetPlayTimeRemaining() const;
   int GetTotalPlayTime() const;
-  CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
-  CStdString GetVersion();
-  CStdString GetBuild();
+  std::string GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
+  std::string GetVersion();
+  std::string GetBuild();
 
   bool GetDisplayAfterSeek();
   void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
@@ -808,8 +808,8 @@ public:
 
   void ResetCache();
   bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
-  CStdString GetItemLabel(const CFileItem *item, int info, CStdString *fallback = NULL);
-  CStdString GetItemImage(const CFileItem *item, int info, CStdString *fallback = NULL);
+  std::string GetItemLabel(const CFileItem *item, int info, std::string *fallback = NULL);
+  std::string GetItemImage(const CFileItem *item, int info, std::string *fallback = NULL);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
@@ -828,13 +828,13 @@ public:
   void SetLibraryBool(int condition, bool value);
   bool GetLibraryBool(int condition);
   void ResetLibraryBools();
-  CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
+  std::string LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
 
-  int TranslateSingleString(const CStdString &strCondition);
+  int TranslateSingleString(const std::string &strCondition);
 
   int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
-  int TranslateSkinVariableString(const CStdString& name, int context);
-  CStdString GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=NULL);
+  int TranslateSkinVariableString(const std::string& name, int context);
+  std::string GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=NULL);
 
   /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
   bool ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map);
@@ -844,7 +844,7 @@ public:
 protected:
   friend class INFO::InfoSingle;
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
-  int TranslateSingleString(const CStdString &strCondition, bool &listItemDependent);
+  int TranslateSingleString(const std::string &strCondition, bool &listItemDependent);
 
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
@@ -855,22 +855,22 @@ protected:
   class Property
   {
   public:
-    Property(const CStdString &property, const CStdString &parameters);
+    Property(const std::string &property, const std::string &parameters);
 
-    const CStdString &param(unsigned int n = 0) const;
+    const std::string &param(unsigned int n = 0) const;
     unsigned int num_params() const;
 
-    CStdString name;
+    std::string name;
   private:
-    std::vector<CStdString> params;
+    std::vector<std::string> params;
   };
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
-  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, CStdString *fallback = NULL);
+  std::string GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, std::string *fallback = NULL);
   int TranslateListItem(const Property &info);
-  int TranslateMusicPlayerString(const CStdString &info) const;
-  TIME_FORMAT TranslateTimeFormat(const CStdString &format);
+  int TranslateMusicPlayerString(const std::string &info) const;
+  TIME_FORMAT TranslateTimeFormat(const std::string &format);
   bool GetItemBool(const CGUIListItem *item, int condition) const;
 
   /*! \brief Split an info string into it's constituent parts and parameters
@@ -883,13 +883,13 @@ protected:
    \param infoString the original string
    \param info the resulting pairs of info and parameters.
    */
-  void SplitInfoString(const CStdString &infoString, std::vector<Property> &info);
+  void SplitInfoString(const std::string &infoString, std::vector<Property> &info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
-  int ConditionalStringParameter(const CStdString &strParameter, bool caseSensitive = false);
+  int ConditionalStringParameter(const std::string &strParameter, bool caseSensitive = false);
   int AddMultiInfo(const GUIInfo &info);
-  int AddListItemProp(const CStdString &str, int offset=0);
+  int AddListItemProp(const std::string &str, int offset=0);
 
   /*!
    * @brief Get the EPG tag that is currently active
@@ -899,17 +899,17 @@ protected:
   bool GetEpgInfoTag(EPG::CEpgInfoTag& tag) const;
 
   // Conditional string parameters are stored here
-  CStdStringArray m_stringParameters;
+  std::vector<std::string> m_stringParameters;
 
   // Array of multiple information mapped to a single integer lookup
   std::vector<GUIInfo> m_multiInfo;
   std::vector<std::string> m_listitemProperties;
 
-  CStdString m_currentMovieDuration;
+  std::string m_currentMovieDuration;
 
   // Current playing stuff
   CFileItem* m_currentFile;
-  CStdString m_currentMovieThumb;
+  std::string m_currentMovieThumb;
   CFileItem* m_currentSlide;
 
   // fan stuff

@@ -46,14 +46,14 @@ public:
     internetState = UNKNOWN;
   };
 
-  CStdString systemUptime;
-  CStdString systemTotalUptime;
+  std::string systemUptime;
+  std::string systemTotalUptime;
   INTERNET_STATE internetState;
-  CStdString videoEncoder;
-  CStdString cpuFrequency;
-  CStdString kernelVersion;
-  CStdString macAddress;
-  CStdString batteryLevel;
+  std::string videoEncoder;
+  std::string cpuFrequency;
+  std::string kernelVersion;
+  std::string macAddress;
+  std::string batteryLevel;
 };
 
 class CSysInfoJob : public CJob
@@ -68,11 +68,11 @@ public:
 private:
   bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
   double GetCPUFrequency();
-  CStdString GetSystemUpTime(bool bTotalUptime);
-  CStdString GetCPUFreqInfo();
-  CStdString GetMACAddress();
-  CStdString GetVideoEncoder();
-  CStdString GetBatteryLevel();
+  std::string GetSystemUpTime(bool bTotalUptime);
+  std::string GetCPUFreqInfo();
+  std::string GetMACAddress();
+  std::string GetVideoEncoder();
+  std::string GetBatteryLevel();
 
   CSysData m_info;
 };
@@ -99,20 +99,20 @@ public:
 
   char MD5_Sign[32 + 1];
 
-  bool GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware);
-  bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
-  bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
+  bool GetDVDInfo(std::string& strDVDModel, std::string& strDVDFirmware);
+  bool GetHDDInfo(std::string& strHDDModel, std::string& strHDDSerial,std::string& strHDDFirmware,std::string& strHDDpw,std::string& strHDDLockState);
+  bool GetRefurbInfo(std::string& rfi_FirstBootTime, std::string& rfi_PowerCycleCount);
 
 #if defined(TARGET_LINUX)
-  CStdString GetLinuxDistro();
+  std::string GetLinuxDistro();
 #endif
 #ifdef TARGET_POSIX
-  CStdString GetUnameVersion();
+  std::string GetUnameVersion();
 #endif
 #if defined(TARGET_WINDOWS)
-  CStdString GetUAWindowsVersion();
+  std::string GetUAWindowsVersion();
 #endif
-  CStdString GetUserAgent();
+  std::string GetUserAgent();
   bool HasInternet();
   bool IsAppleTV2();
   bool HasVideoToolBoxDecoder();
@@ -122,18 +122,18 @@ public:
   static WindowsVersion GetWindowsVersion();
   static int GetKernelBitness(void);
   static int GetXbmcBitness(void);
-  static CStdString GetKernelVersion();
-  CStdString GetCPUModel();
-  CStdString GetCPUBogoMips();
-  CStdString GetCPUHardware();
-  CStdString GetCPURevision();
-  CStdString GetCPUSerial();
-  CStdString GetManufacturer();
-  CStdString GetProduct();
-  CStdString GetModel();
-  bool GetDiskSpace(const CStdString& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
-  CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
-  CStdString GetHddSpaceInfo(int drive, bool shortText=false);
+  static std::string GetKernelVersion();
+  std::string GetCPUModel();
+  std::string GetCPUBogoMips();
+  std::string GetCPUHardware();
+  std::string GetCPURevision();
+  std::string GetCPUSerial();
+  std::string GetManufacturer();
+  std::string GetProduct();
+  std::string GetModel();
+  bool GetDiskSpace(const std::string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
+  std::string GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
+  std::string GetHddSpaceInfo(int drive, bool shortText=false);
 
   int GetTotalUptime() const { return m_iSystemTimeTotalUp; }
   void SetTotalUptime(int uptime) { m_iSystemTimeTotalUp = uptime; }
@@ -144,7 +144,7 @@ public:
 
 protected:
   virtual CJob *GetJob() const;
-  virtual CStdString TranslateInfo(int info) const;
+  virtual std::string TranslateInfo(int info) const;
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
 private:

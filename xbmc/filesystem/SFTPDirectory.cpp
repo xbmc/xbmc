@@ -23,6 +23,7 @@
 #include "utils/log.h"
 #include "URL.h"
 
+using namespace std;
 using namespace XFILE;
 
 CSFTPDirectory::CSFTPDirectory(void)
@@ -33,7 +34,7 @@ CSFTPDirectory::~CSFTPDirectory(void)
 {
 }
 
-bool CSFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CSFTPDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
   CURL url(strPath);
 

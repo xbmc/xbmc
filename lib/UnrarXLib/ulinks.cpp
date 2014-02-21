@@ -2,6 +2,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 
 int ExtractLink(ComprDataIO &DataIO,Archive &Arc,char *DestName,uint &LinkCRC,bool Create)
 {
@@ -14,7 +15,7 @@ int ExtractLink(ComprDataIO &DataIO,Archive &Arc,char *DestName,uint &LinkCRC,bo
     FileName[DataSize]=0;
     if (Create)
     {
-      CStdString strPath = URIUtils::GetDirectory(DestName);
+      string strPath = URIUtils::GetDirectory(DestName);
       CUtil::CreateDirectoryEx(strPath);
       if (symlink(FileName,DestName)==-1)
       {

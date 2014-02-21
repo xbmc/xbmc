@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include <cstdio>
 
+using namespace std;
 using namespace XFILE;
 
 ModplugCodec::ModplugCodec()
@@ -39,7 +40,7 @@ ModplugCodec::~ModplugCodec()
   DeInit();
 }
 
-bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool ModplugCodec::Init(const string &strFile, unsigned int filecache)
 {
   DeInit();
 

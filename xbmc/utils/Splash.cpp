@@ -28,9 +28,10 @@
 #include "rendering/RenderSystem.h"
 #include "log.h"
 
+using namespace std;
 using namespace XFILE;
 
-CSplash::CSplash(const CStdString& imageName) : CThread("Splash")
+CSplash::CSplash(const string& imageName) : CThread("Splash")
 {
   m_ImageName = imageName;
   fade = 0.5;
@@ -58,7 +59,7 @@ void CSplash::Show()
   Show("");
 }
 
-void CSplash::Show(const CStdString& message)
+void CSplash::Show(const string& message)
 {
   g_graphicsContext.Lock();
   g_graphicsContext.Clear();

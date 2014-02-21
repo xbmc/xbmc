@@ -39,6 +39,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <VideoDecodeAcceleration/VDADecoder.h>
 
+using namespace std;
+
 // extra flags not defined in VDADecoder.h
 enum {
   kVDADecodeInfo_Asynchronous = 1UL << 0,
@@ -242,7 +244,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       return false;
     }
 
-    CStdString rendervendor = g_Windowing.GetRenderVendor();
+    string rendervendor = g_Windowing.GetRenderVendor();
     StringUtils::ToLower(rendervendor);
     if (rendervendor.find("nvidia") != std::string::npos)
     {

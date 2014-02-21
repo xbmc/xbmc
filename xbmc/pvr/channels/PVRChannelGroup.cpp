@@ -41,6 +41,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "epg/EpgContainer.h"
 
+using namespace std;
 using namespace PVR;
 using namespace EPG;
 
@@ -56,7 +57,7 @@ CPVRChannelGroup::CPVRChannelGroup(void) :
 {
 }
 
-CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName) :
+CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const string &strGroupName) :
     m_bRadio(bRadio),
     m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
     m_iGroupId(iGroupId),
@@ -92,7 +93,7 @@ bool CPVRChannelGroup::operator==(const CPVRChannelGroup& right) const
   return (m_bRadio == right.m_bRadio &&
       m_iGroupType == right.m_iGroupType &&
       m_iGroupId == right.m_iGroupId &&
-      m_strGroupName.Equals(right.m_strGroupName));
+      StringUtils::EqualsNoCase(m_strGroupName, right.m_strGroupName));
 }
 
 bool CPVRChannelGroup::operator!=(const CPVRChannelGroup &right) const
@@ -259,13 +260,13 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     if (!groupMember.channel->IconPath().empty())
       continue;
 
-    CStdString strBasePath = CSettings::Get().GetString("pvrmenu.iconpath");
-    CStdString strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
+    string strBasePath = CSettings::Get().GetString("pvrmenu.iconpath");
+    string strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
 
-    CStdString strIconPath = strBasePath + strSanitizedChannelName;
+    string strIconPath = strBasePath + strSanitizedChannelName;
     StringUtils::ToLower(strSanitizedChannelName);
-    CStdString strIconPathLower = strBasePath + strSanitizedChannelName;
-    CStdString strIconPathUid;
+    string strIconPathLower = strBasePath + strSanitizedChannelName;
+    string strIconPathUid;
     strIconPathUid = StringUtils::Format("%08d", groupMember.channel->UniqueID());
     strIconPathUid = URIUtils::AddFileToFolder(strBasePath, strIconPathUid);
 
@@ -836,7 +837,7 @@ bool CPVRChannelGroup::IsGroupMember(int iChannelId) const
   return bReturn;
 }
 
-bool CPVRChannelGroup::SetGroupName(const CStdString &strGroupName, bool bSaveInDb /* = false */)
+bool CPVRChannelGroup::SetGroupName(const string &strGroupName, bool bSaveInDb /* = false */)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -1188,10 +1189,10 @@ int CPVRChannelGroup::GroupType(void) const
   return m_iGroupType;
 }
 
-CStdString CPVRChannelGroup::GroupName(void) const
+string CPVRChannelGroup::GroupName(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strGroupName);
+  string strReturn(m_strGroupName);
   return strReturn;
 }
 
@@ -1207,7 +1208,7 @@ void CPVRChannelGroup::SetPreventSortAndRenumber(bool bPreventSortAndRenumber /*
   m_bPreventSortAndRenumber = bPreventSortAndRenumber;
 }
 
-bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const CStdString &strChannelName, const CStdString &strIconPath, const CStdString &strStreamURL)
+bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const string &strChannelName, const string &strIconPath, const string &strStreamURL)
 {
   if (!item.HasPVRChannelInfoTag())
     return false;

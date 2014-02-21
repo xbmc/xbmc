@@ -37,15 +37,15 @@ namespace XBMC
     XBMC_MD5(void);
     ~XBMC_MD5(void);
     void append(const void *inBuf, size_t inLen);
-    void append(const CStdString& str);
+    void append(const std::string& str);
     void getDigest(unsigned char digest[16]);
-    void getDigest(CStdString& digest);
+    void getDigest(std::string& digest);
     
     /*! \brief Get the MD5 digest of the given text
      \param text text to compute the MD5 for
      \return MD5 digest
      */
-    static CStdString GetMD5(const CStdString &text);
+    static std::string GetMD5(const std::string &text);
 private:
     MD5Context m_ctx;
   };

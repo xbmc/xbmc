@@ -40,6 +40,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace PLAYLIST;
 
 #define CONTROL_BTNVIEWASICONS     2
@@ -280,18 +281,18 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bo
 
 void CGUIWindowMusicPlayList::SavePlayList()
 {
-  CStdString strNewFileName;
+  string strNewFileName;
   if (CGUIKeyboardFactory::ShowAndGetInput(strNewFileName, g_localizeStrings.Get(16012), false))
   {
     // need 2 rename it
-    CStdString strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music");
+    string strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music");
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
-    CStdString strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
+    string strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
 
     // get selected item
     int iItem = m_viewControl.GetSelectedItem();
-    CStdString strSelectedItem = "";
+    string strSelectedItem = "";
     if (iItem >= 0 && iItem < m_vecItems->Size())
     {
       CFileItemPtr pItem = m_vecItems->Get(iItem);
@@ -301,7 +302,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
       }
     }
 
-    CStdString strOldDirectory = m_vecItems->GetPath();
+    string strOldDirectory = m_vecItems->GetPath();
     m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
     CPlayListM3U playlist;
@@ -406,7 +407,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
 
   // Update object count label
-  CStdString items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
+  string items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   MarkPlaying();
@@ -446,10 +447,10 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    CStdString strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
+    string strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
     if (strTrackLeft.empty())
       strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
-    CStdString strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
+    string strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
     if (strTrackRight.empty())
       strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
     CLabelFormatter formatter(strTrackLeft, strTrackRight);
@@ -470,7 +471,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       //        currently it is hacked into m_iprogramCount
 
       // No music info and it's not CDDA so we'll just show the filename
-      CStdString str;
+      string str;
       str = CUtil::GetTitleFromPath(pItem->GetPath());
       str = StringUtils::Format("%02.2i. %s ", pItem->m_iprogramCount, str.c_str());
       pItem->SetLabel(str);
@@ -478,7 +479,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   }
 }
 
-bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowMusicPlayList::Update(const string& strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_musicInfoLoader.IsLoading())
     m_musicInfoLoader.StopThread();
@@ -599,7 +600,7 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
   {
-    CStdString playlist = CProfilesManager::Get().GetUserDataItem("PartyMode.xsp");
+    string playlist = CProfilesManager::Get().GetUserDataItem("PartyMode.xsp");
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

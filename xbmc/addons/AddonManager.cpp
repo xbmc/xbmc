@@ -117,31 +117,36 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
-        CStdString value;
+        string value;
         if (type == ADDON_SCREENSAVER && 0 == strnicmp(props->plugin->identifier, "screensaver.xbmc.builtin.", 25))
         { // built in screensaver
           return AddonPtr(new CAddon(props));
         }
         if (type == ADDON_SCREENSAVER)
         { // Python screensaver
-          CStdString library = CAddonMgr::Get().GetExtValue(props->configuration, "@library");
+          string library = CAddonMgr::Get().GetExtValue(props->configuration, "@library");
           if (URIUtils::HasExtension(library, ".py"))
             return AddonPtr(new CScreenSaver(props));
         }
-#if defined(TARGET_ANDROID)                                                                                                                                                      
-          if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_android")) && value.empty())                                                                
+#if defined(TARGET_ANDROID)
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_android");
+        if (value.empty())
             break;                                                                                                                                                                 
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_linux");
+        if (value.empty())
           break;
 #elif defined(TARGET_WINDOWS) && defined(HAS_SDL_OPENGL)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_wingl")) && value.empty())
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_wingl");
+        if (value.empty())
           break;
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_windx")) && value.empty())
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_windx");
+        if (value.empty())
           break;
 #elif defined(TARGET_DARWIN)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_osx")) && value.empty())
+        value = GetExtValue(props->plugin->extensions->configuration, "@library_osx");
+        if (value.empty())
           break;
 #endif
         if (type == ADDON_VIZ)
@@ -187,7 +192,7 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
   ELEMENTS::iterator itr = elements.begin();
   while (itr != elements.end())
   {
-    CStdString path = GetExtValue(*itr++, "@path");
+    string path = GetExtValue(*itr++, "@path");
     if (!CFile::Exists(path))
     {
       if (!CUtil::CreateDirectoryEx(path))
@@ -268,9 +273,9 @@ bool CAddonMgr::Init()
   // would allow partial unloading of addon framework
   m_cp_context = m_cpluff->create_context(&status);
   assert(m_cp_context);
-  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://home/addons"));
-  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmc/addons"));
-  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmcbin/addons"));
+  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://home/addons").c_str());
+  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmc/addons").c_str());
+  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
@@ -347,19 +352,19 @@ void CAddonMgr::RemoveFromUpdateableAddons(AddonPtr &pAddon)
 
 struct AddonIdFinder 
 { 
-    AddonIdFinder(const CStdString& id)
+    AddonIdFinder(const string& id)
       : m_id(id)
     {}
     
     bool operator()(const AddonPtr& addon) 
     { 
-      return m_id.Equals(addon->ID()); 
+      return StringUtils::EqualsNoCase(m_id, addon->ID()); 
     }
     private:
-    CStdString m_id;
+    string m_id;
 };
 
-bool CAddonMgr::ReloadSettings(const CStdString &id)
+bool CAddonMgr::ReloadSettings(const string &id)
 {
   CSingleLock lock(m_critSection);
   VECADDONS::iterator it = std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(id));
@@ -415,7 +420,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   addons.clear();
   cp_status_t status;
   int num;
-  CStdString ext_point(TranslateType(type));
+  string ext_point(TranslateType(type));
   cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
   for(int i=0; i <num; i++)
   {
@@ -444,7 +449,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   return addons.size() > 0;
 }
 
-bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
+bool CAddonMgr::GetAddon(const string &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
 {
   CSingleLock lock(m_critSection);
 
@@ -478,7 +483,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 //TODO handle all 'default' cases here, not just scrapers & vizs
 bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
 {
-  CStdString setting;
+  string setting;
   switch (type)
   {
   case ADDON_VIZ:
@@ -511,7 +516,7 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
   return GetAddon(setting, addon, type);
 }
 
-bool CAddonMgr::SetDefault(const TYPE &type, const CStdString &addonID)
+bool CAddonMgr::SetDefault(const TYPE &type, const string &addonID)
 {
   switch (type)
   {
@@ -543,7 +548,7 @@ bool CAddonMgr::SetDefault(const TYPE &type, const CStdString &addonID)
   return true;
 }
 
-CStdString CAddonMgr::GetString(const CStdString &id, const int number)
+string CAddonMgr::GetString(const string &id, const int number)
 {
   AddonPtr addon;
   if (GetAddon(id, addon))
@@ -565,7 +570,7 @@ void CAddonMgr::FindAddons()
   NotifyObservers(ObservableMessageAddons);
 }
 
-void CAddonMgr::RemoveAddon(const CStdString& ID)
+void CAddonMgr::RemoveAddon(const string& ID)
 {
   if (m_cpluff && m_cp_context)
   {
@@ -600,10 +605,10 @@ bool CAddonMgr::IsAddonDisabled(const std::string& ID)
   return ret;
 }
 
-const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
+string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
 {
   if (!root)
-    return NULL;
+    return StringUtils::EmptyString;
 
   const cp_cfg_element_t *eng = NULL;
   for (unsigned int i = 0; i < root->num_children; i++)
@@ -613,12 +618,12 @@ const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
     { // see if we have a "lang" attribute
       const char *lang = m_cpluff->lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
       if (lang && 0 == strcmp(lang,g_langInfo.GetLanguageLocale(true).c_str()))
-        return child.value;
+        return child.value ? child.value : StringUtils::EmptyString;
       if (!lang || 0 == strcmp(lang, "en"))
         eng = &child;
     }
   }
-  return (eng) ? eng->value : NULL;
+  return (eng && eng->value) ? eng->value : StringUtils::EmptyString;
 }
 
 AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
@@ -676,7 +681,7 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   if (!metadata)
     return false;
 
-  vector<CStdString> platforms;
+  vector<string> platforms;
   if (CAddonMgr::Get().GetExtList(metadata->configuration, "platform", platforms))
   {
     for (unsigned int i = 0; i < platforms.size(); ++i)
@@ -724,7 +729,7 @@ bool CAddonMgr::GetExtElements(cp_cfg_element_t *base, const char *path, ELEMENT
 
   for (unsigned int i = 0; i < base->num_children; i++)
   {
-    CStdString temp = base->children[i].name;
+    string temp = base->children[i].name;
     if (!temp.compare(path))
       elements.push_back(&base->children[i]);
   }
@@ -744,27 +749,32 @@ const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, con
   return NULL;
 }
 
-CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
+string CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
 {
   const char *value = NULL;
   if (base && (value = m_cpluff->lookup_cfg_value(base, path)))
-    return CStdString(value);
-  else return CStdString();
+    return string(value);
+  else return string();
 }
 
-bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStdString> &result) const
+bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<string> &result) const
 {
   if (!base || !path)
     return false;
-  CStdString all = m_cpluff->lookup_cfg_value(base, path);
+
+  string all;
+  const char *cfg_value = m_cpluff->lookup_cfg_value(base, path);
+  if (cfg_value)
+    all = m_cpluff->lookup_cfg_value(base, path);
+
   if (all.empty())
     return false;
-  StringUtils::SplitString(all, " ", result);
+  result = StringUtils::Split(all, " ");
   return true;
 }
 
 AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
-                                           const CStdString& type)
+                                           const string& type)
 {
   if (!info)
     return AddonPtr();
@@ -790,7 +800,7 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
 }
 
 // FIXME: This function may not be required
-bool CAddonMgr::LoadAddonDescription(const CStdString &path, AddonPtr &addon)
+bool CAddonMgr::LoadAddonDescription(const string &path, AddonPtr &addon)
 {
   cp_status_t status;
   cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(m_cp_context, CSpecialProtocol::TranslatePath(path).c_str(), &status);

@@ -22,6 +22,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"   
 
+using namespace std;
 using namespace XFILE;
 
 /*
@@ -31,7 +32,6 @@ using namespace XFILE;
  */
 bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string& value)
 {
-  CStdStringArray tag;
   const TiXmlElement *pElement;
 
   if (!pNode)
@@ -46,8 +46,7 @@ bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string
     return false;
   }
 
-  StringUtils::SplitString(pElement->Value(), ":", tag, 2);
-
+  vector<string> tag = StringUtils::Split(pElement->Value(), ":");
   if (tag.size() == 1 && tag[0] == value)
   {
     return true;

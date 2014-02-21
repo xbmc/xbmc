@@ -29,6 +29,8 @@
 #include <string.h>
 #include "PlatformDefs.h"
 
+using namespace std;
+
 #define READ_STR(str, size, file) \
   if (!fread(str, size, 1, file)) \
     return false;
@@ -53,12 +55,12 @@ bool CXBTFReader::IsOpen() const
   return m_file != NULL;
 }
 
-bool CXBTFReader::Open(const CStdString& fileName)
+bool CXBTFReader::Open(const string& fileName)
 {
   m_fileName = fileName;
 
 #ifdef TARGET_WINDOWS
-  CStdStringW strPathW;
+  wstring strPathW;
   g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(m_fileName), strPathW, false);
   m_file = _wfopen(strPathW.c_str(), L"rb");
 #else
@@ -166,14 +168,14 @@ time_t CXBTFReader::GetLastModificationTimestamp()
   return fileStat.st_mtime;
 }
 
-bool CXBTFReader::Exists(const CStdString& name)
+bool CXBTFReader::Exists(const string& name)
 {
   return Find(name) != NULL;
 }
 
-CXBTFFile* CXBTFReader::Find(const CStdString& name)
+CXBTFFile* CXBTFReader::Find(const string& name)
 {
-  std::map<CStdString, CXBTFFile>::iterator iter = m_filesMap.find(name);
+  std::map<string, CXBTFFile>::iterator iter = m_filesMap.find(name);
   if (iter == m_filesMap.end())
   {
     return NULL;

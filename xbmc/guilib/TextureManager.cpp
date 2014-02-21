@@ -130,7 +130,7 @@ CTextureMap::CTextureMap()
   m_memUsage = 0;
 }
 
-CTextureMap::CTextureMap(const CStdString& textureName, int width, int height, int loops)
+CTextureMap::CTextureMap(const string& textureName, int width, int height, int loops)
 : m_texture(width, height, loops)
 {
   m_textureName = textureName;
@@ -158,7 +158,7 @@ bool CTextureMap::Release()
   return false;
 }
 
-const CStdString& CTextureMap::GetName() const
+const string& CTextureMap::GetName() const
 {
   return m_textureName;
 }
@@ -174,7 +174,7 @@ void CTextureMap::Dump() const
   if (!m_referenceCount)
     return;   // nothing to see here
 
-  CStdString strLog = StringUtils::Format("  texture:%s has %i frames %i refcount\n", m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
+  string strLog = StringUtils::Format("  texture:%s has %i frames %i refcount\n", m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
   OutputDebugString(strLog.c_str());
 }
 
@@ -225,7 +225,7 @@ CGUITextureManager::~CGUITextureManager(void)
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-bool CGUITextureManager::CanLoad(const CStdString &texturePath)
+bool CGUITextureManager::CanLoad(const string &texturePath)
 {
   if (texturePath == "-")
     return false;
@@ -237,7 +237,7 @@ bool CGUITextureManager::CanLoad(const CStdString &texturePath)
   return URIUtils::IsHD(texturePath);
 }
 
-bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *path, int *bundle, int *size)
+bool CGUITextureManager::HasTexture(const string &textureName, string *path, int *bundle, int *size)
 {
   // default values
   if (bundle) *bundle = -1;
@@ -248,7 +248,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
     return false;
 
   // Check our loaded and bundled textures - we store in bundles using \\.
-  CStdString bundledName = CTextureBundle::Normalize(textureName);
+  string bundledName = CTextureBundle::Normalize(textureName);
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap = m_vecTextures[i];
@@ -268,16 +268,16 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
     }
   }
 
-  CStdString fullPath = GetTexturePath(textureName);
+  string fullPath = GetTexturePath(textureName);
   if (path)
     *path = fullPath;
 
   return !fullPath.empty();
 }
 
-const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleOnly /*= false */)
+const CTextureArray& CGUITextureManager::Load(const string& strTextureName, bool checkBundleOnly /*= false */)
 {
-  CStdString strPath;
+  string strPath;
   static CTextureArray emptyTexture;
   int bundle = -1;
   int size = 0;
@@ -435,7 +435,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
 }
 
 
-void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, bool immediately /*= false */)
+void CGUITextureManager::ReleaseTexture(const string& strTextureName, bool immediately /*= false */)
 {
   CSingleLock lock(g_graphicsContext);
 
@@ -510,7 +510,7 @@ void CGUITextureManager::Cleanup()
 
 void CGUITextureManager::Dump() const
 {
-  CStdString strLog = StringUtils::Format("total texturemaps size:%i\n", m_vecTextures.size());
+  string strLog = StringUtils::Format("total texturemaps size:%i\n", m_vecTextures.size());
   OutputDebugString(strLog.c_str());
 
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -553,24 +553,24 @@ unsigned int CGUITextureManager::GetMemoryUsage() const
   return memUsage;
 }
 
-void CGUITextureManager::SetTexturePath(const CStdString &texturePath)
+void CGUITextureManager::SetTexturePath(const string &texturePath)
 {
   CSingleLock lock(m_section);
   m_texturePaths.clear();
   AddTexturePath(texturePath);
 }
 
-void CGUITextureManager::AddTexturePath(const CStdString &texturePath)
+void CGUITextureManager::AddTexturePath(const string &texturePath)
 {
   CSingleLock lock(m_section);
   if (!texturePath.empty())
     m_texturePaths.push_back(texturePath);
 }
 
-void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
+void CGUITextureManager::RemoveTexturePath(const string &texturePath)
 {
   CSingleLock lock(m_section);
-  for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+  for (vector<string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
   {
     if (*it == texturePath)
     {
@@ -580,16 +580,16 @@ void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
   }
 }
 
-CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, bool directory /* = false */)
+string CGUITextureManager::GetTexturePath(const string &textureName, bool directory /* = false */)
 {
   if (CURL::IsFullPath(textureName))
     return textureName;
   else
   { // texture doesn't include the full path, so check all fallbacks
     CSingleLock lock(m_section);
-    for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+    for (vector<string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
     {
-      CStdString path = URIUtils::AddFileToFolder(it->c_str(), "media");
+      string path = URIUtils::AddFileToFolder(it->c_str(), "media");
       path = URIUtils::AddFileToFolder(path, textureName);
       if (directory)
       {
@@ -606,7 +606,7 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, boo
   return "";
 }
 
-void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items)
+void CGUITextureManager::GetBundledTexturesFromPath(const string& texturePath, std::vector<string> &items)
 {
   m_TexBundle[0].GetTexturesFromPath(texturePath, items);
   if (items.empty())

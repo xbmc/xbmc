@@ -88,7 +88,7 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   if (pItem->GetProperty("hasfullmusictag") == "true")
     return false; // already have the information
 
-  CStdString path(pItem->GetPath());
+  string path(pItem->GetPath());
   if (pItem->IsMusicDb())
   {
     // set the artist / album properties
@@ -162,7 +162,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
     }
     else
     {
-      CStdString strPath = URIUtils::GetDirectory(pItem->GetPath());
+      string strPath = URIUtils::GetDirectory(pItem->GetPath());
       URIUtils::AddSlashAtEnd(strPath);
       if (strPath!=m_strPrevPath)
       {
@@ -229,12 +229,12 @@ void CMusicInfoLoader::OnLoaderFinish()
     m_thumbLoader->OnLoaderFinish();
 }
 
-void CMusicInfoLoader::UseCacheOnHD(const CStdString& strFileName)
+void CMusicInfoLoader::UseCacheOnHD(const string& strFileName)
 {
   m_strCacheFileName = strFileName;
 }
 
-void CMusicInfoLoader::LoadCache(const CStdString& strFileName, CFileItemList& items)
+void CMusicInfoLoader::LoadCache(const string& strFileName, CFileItemList& items)
 {
   CFile file;
 
@@ -255,7 +255,7 @@ void CMusicInfoLoader::LoadCache(const CStdString& strFileName, CFileItemList& i
   }
 }
 
-void CMusicInfoLoader::SaveCache(const CStdString& strFileName, CFileItemList& items)
+void CMusicInfoLoader::SaveCache(const string& strFileName, CFileItemList& items)
 {
   int iSize = items.Size();
 

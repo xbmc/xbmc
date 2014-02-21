@@ -28,6 +28,8 @@
 #include "guilib/WindowIDs.h"
 #include "guilib/IGUIContainer.h"
 
+using namespace std;
+
 CGUIViewControl::CGUIViewControl(void)
 {
   m_viewAsControl = -1;
@@ -189,18 +191,18 @@ void CGUIViewControl::SetSelectedItem(int item)
   g_windowManager.SendMessage(msg, m_parentWindow);
 }
 
-void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
+void CGUIViewControl::SetSelectedItem(const string &itemPath)
 {
   if (!m_fileItems || itemPath.empty())
     return;
 
-  CStdString comparePath(itemPath);
+  string comparePath(itemPath);
   URIUtils::RemoveSlashAtEnd(comparePath);
 
   int item = -1;
   for (int i = 0; i < m_fileItems->Size(); ++i)
   {
-    CStdString strPath =(*m_fileItems)[i]->GetPath();
+    string strPath =(*m_fileItems)[i]->GetPath();
     URIUtils::RemoveSlashAtEnd(strPath);
     if (strPath == comparePath)
     {
@@ -295,7 +297,7 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
   return -1;
 }
 
-void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
+void CGUIViewControl::UpdateViewAsControl(const string &viewLabel)
 {
   // the view as control could be a select/spin/dropdown button
   CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, m_viewAsControl);
@@ -304,7 +306,7 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
   {
     IGUIContainer *view = (IGUIContainer *)m_visibleViews[i];
     CGUIMessage msg(GUI_MSG_LABEL_ADD, m_parentWindow, m_viewAsControl, i);
-    CStdString label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
+    string label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
     msg.SetLabel(label);
     g_windowManager.SendMessage(msg, m_parentWindow);
   }
@@ -312,7 +314,7 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
   g_windowManager.SendMessage(msgSelect, m_parentWindow);
 
   // otherwise it's just a normal button
-  CStdString label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
+  string label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
   CGUIMessage msgSet(GUI_MSG_LABEL_SET, m_parentWindow, m_viewAsControl);
   msgSet.SetLabel(label);
   g_windowManager.SendMessage(msgSet, m_parentWindow);

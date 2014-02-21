@@ -166,7 +166,7 @@ bool CGUIDialogMediaFilter::OnMessage(CGUIMessage& message)
           {
             case SettingInfo::STRING:
             case SettingInfo::EDIT:
-              ((CStdString *)filter->second.data)->clear();
+              ((string *)filter->second.data)->clear();
               break;
 
             case SettingInfo::CHECK:
@@ -174,8 +174,8 @@ bool CGUIDialogMediaFilter::OnMessage(CGUIMessage& message)
               break;
 
             case SettingInfo::BUTTON:
-              ((CStdString *)filter->second.data)->clear();
-              SET_CONTROL_LABEL2(filter->second.controlIndex, *(CStdString *)filter->second.data);
+              ((string *)filter->second.data)->clear();
+              SET_CONTROL_LABEL2(filter->second.controlIndex, *(string *)filter->second.data);
               break;
 
             case SettingInfo::RANGE:
@@ -271,14 +271,14 @@ void CGUIDialogMediaFilter::CreateSettings()
       case SettingInfo::EDIT:
       {
         if (filter.rule != NULL && filter.rule->m_parameter.size() == 1)
-          filter.data = new CStdString(filter.rule->m_parameter.at(0));
+          filter.data = new string(filter.rule->m_parameter.at(0));
         else
-          filter.data = new CStdString();
+          filter.data = new string();
 
         if (filter.type == SettingInfo::STRING)
-          AddString(filter.field, filter.label, (CStdString *)filter.data);
+          AddString(filter.field, filter.label, (string *)filter.data);
         else
-          AddEdit(filter.field, filter.label, (CStdString *)filter.data);
+          AddEdit(filter.field, filter.label, (string *)filter.data);
         break;
       }
       
@@ -299,7 +299,7 @@ void CGUIDialogMediaFilter::CreateSettings()
 
       case SettingInfo::BUTTON:
       {
-        CStdString *values = new CStdString();
+        string *values = new string();
         if (filter.rule != NULL && filter.rule->m_parameter.size() > 0)
           *values = filter.rule->GetParameter();
         filter.data = values;
@@ -322,8 +322,8 @@ void CGUIDialogMediaFilter::CreateSettings()
         float *valueUpper = new float();
         if (filter.rule != NULL && filter.rule->m_parameter.size() == 2)
         {
-          *valueLower = (float)strtod(filter.rule->m_parameter.at(0), NULL);
-          *valueUpper = (float)strtod(filter.rule->m_parameter.at(1), NULL);
+          *valueLower = (float)strtod(filter.rule->m_parameter.at(0).c_str(), NULL);
+          *valueUpper = (float)strtod(filter.rule->m_parameter.at(1).c_str(), NULL);
         }
         else
         {
@@ -379,7 +379,7 @@ void CGUIDialogMediaFilter::SetupPage()
   else if (m_mediaType == "songs")
     localizedMediaId = 134;
 
-  CStdString format = StringUtils::Format(g_localizeStrings.Get(1275).c_str(), g_localizeStrings.Get(localizedMediaId).c_str());
+  string format = StringUtils::Format(g_localizeStrings.Get(1275).c_str(), g_localizeStrings.Get(localizedMediaId).c_str());
   SET_CONTROL_LABEL(CONTROL_HEADING, format);
 
   // now we can finally set the label/values of the button settings (genre, actors etc)
@@ -387,7 +387,7 @@ void CGUIDialogMediaFilter::SetupPage()
   {
     if (filter->second.type == SettingInfo::BUTTON &&
         filter->second.controlIndex >= 0 && filter->second.data != NULL)
-      SET_CONTROL_LABEL2(filter->second.controlIndex, *(CStdString *)filter->second.data);
+      SET_CONTROL_LABEL2(filter->second.controlIndex, *(string *)filter->second.data);
   }
 
   UpdateControls();
@@ -415,7 +415,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(SettingInfo &setting)
     case SettingInfo::STRING:
     case SettingInfo::EDIT:
     {
-      CStdString *str = static_cast<CStdString*>(filter.data);
+      string *str = static_cast<string*>(filter.data);
       if (!str->empty())
       {
         if (filter.rule == NULL)
@@ -463,15 +463,15 @@ void CGUIDialogMediaFilter::OnSettingChanged(SettingInfo &setting)
         for (int index = 0; index < items.Size(); index++)
           filter.rule->m_parameter.push_back(items[index]->GetLabel());
 
-        *(CStdString *)filter.data = filter.rule->GetParameter();
+        *(string *)filter.data = filter.rule->GetParameter();
       }
       else
       {
         remove = true;
-        *(CStdString *)filter.data = "";
+        *(string *)filter.data = "";
       }
 
-      SET_CONTROL_LABEL2(filter.controlIndex, *(CStdString *)filter.data);
+      SET_CONTROL_LABEL2(filter.controlIndex, *(string *)filter.data);
       break;
     }
 
@@ -496,7 +496,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(SettingInfo &setting)
         }
         else
         {
-          CStdString tmp = StringUtils::Format("%.1f", *valueLower);
+          string tmp = StringUtils::Format("%.1f", *valueLower);
           filter.rule->m_parameter.push_back(tmp);
           tmp.clear();
           tmp = StringUtils::Format("%.1f", *valueUpper);
@@ -561,7 +561,7 @@ void CGUIDialogMediaFilter::Reset()
       case SettingInfo::STRING:
       case SettingInfo::EDIT:
       case SettingInfo::BUTTON:
-        delete (CStdString *)filter->second.data;
+        delete (string *)filter->second.data;
         break;
 
       case SettingInfo::CHECK:
@@ -642,7 +642,7 @@ void CGUIDialogMediaFilter::UpdateControls()
       if (items.Size() == 1 && items[0]->HasProperty("total"))
         size = (int)items[0]->GetProperty("total").asInteger();
 
-      CStdString label = g_localizeStrings.Get(itFilter->second.label);
+      string label = g_localizeStrings.Get(itFilter->second.label);
       if (size <= 0 ||
          (size == 1 && itFilter->second.field != FieldSet && itFilter->second.field != FieldTag))
         CONTROL_DISABLE(itFilter->second.controlIndex);
@@ -684,7 +684,7 @@ void CGUIDialogMediaFilter::OnBrowse(const Filter &filter, CFileItemList &items,
       }
     }
 
-    std::set<CStdString> playlists;
+    std::set<string> playlists;
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(videodb, playlists);
 
@@ -725,7 +725,7 @@ void CGUIDialogMediaFilter::OnBrowse(const Filter &filter, CFileItemList &items,
       }
     }
 
-    std::set<CStdString> playlists;
+    std::set<string> playlists;
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(musicdb, playlists);
     
@@ -756,7 +756,7 @@ void CGUIDialogMediaFilter::OnBrowse(const Filter &filter, CFileItemList &items,
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
   pDialog->SetItems(&selectItems);
-  CStdString strHeading = StringUtils::Format(g_localizeStrings.Get(13401), g_localizeStrings.Get(filter.label).c_str());
+  string strHeading = StringUtils::Format(g_localizeStrings.Get(13401), g_localizeStrings.Get(filter.label).c_str());
   pDialog->SetHeading(strHeading);
   pDialog->SetMultiSelection(true);
 
@@ -821,8 +821,8 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &in
 
     if (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "musicvideos")
     {
-      CStdString table;
-      CStdString year;
+      string table;
+      string year;
       if (m_mediaType == "movies")
       {
         table = "movieview";
@@ -845,7 +845,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &in
     }
     else if (m_mediaType == "albums" || m_mediaType == "songs")
     {
-      CStdString table;
+      string table;
       MediaType mediaType;
       if (m_mediaType == "albums")
       {
@@ -874,7 +874,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &in
 
     if (m_mediaType == "episodes")
     {
-      CStdString field = StringUtils::Format("CAST(strftime(\"%%s\", c%02d) AS INTEGER)", VIDEODB_ID_EPISODE_AIRED);
+      string field = StringUtils::Format("CAST(strftime(\"%%s\", c%02d) AS INTEGER)", VIDEODB_ID_EPISODE_AIRED);
       
       GetMinMax("episodeview", field, min, max);
       interval = 60 * 60 * 24 * 7; // 1 week
@@ -902,7 +902,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &in
   }
 }
 
-bool CGUIDialogMediaFilter::GetMinMax(const CStdString &table, const CStdString &field, float &min, float &max, const CDatabase::Filter &filter /* = CDatabase::Filter() */)
+bool CGUIDialogMediaFilter::GetMinMax(const string &table, const string &field, float &min, float &max, const CDatabase::Filter &filter /* = CDatabase::Filter() */)
 {
   if (table.empty() || field.empty())
     return false;
@@ -942,7 +942,7 @@ bool CGUIDialogMediaFilter::GetMinMax(const CStdString &table, const CStdString 
   }
 
   CDatabase::Filter extFilter = filter;
-  CStdString strSQLExtra;
+  string strSQLExtra;
   if (!db->BuildSQL(m_dbUrl->ToString(), strSQLExtra, extFilter, strSQLExtra, *dbUrl))
   {
     delete db;
@@ -950,10 +950,10 @@ bool CGUIDialogMediaFilter::GetMinMax(const CStdString &table, const CStdString 
     return false;
   }
 
-  CStdString strSQL = "SELECT %s FROM %s ";
+  string strSQL = "SELECT %s FROM %s ";
 
-  min = (float)strtod(db->GetSingleValue(db->PrepareSQL(strSQL, CStdString("MIN(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL);
-  max = (float)strtod(db->GetSingleValue(db->PrepareSQL(strSQL, CStdString("MAX(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL);
+  min = (float)strtod(db->GetSingleValue(db->PrepareSQL(strSQL, string("MIN(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL);
+  max = (float)strtod(db->GetSingleValue(db->PrepareSQL(strSQL, string("MAX(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL);
 
   db->Close();
   delete db;
@@ -962,9 +962,9 @@ bool CGUIDialogMediaFilter::GetMinMax(const CStdString &table, const CStdString 
   return true;
 }
 
-CStdString CGUIDialogMediaFilter::RangeAsFloat(float valueLower, float valueUpper, float minimum)
+string CGUIDialogMediaFilter::RangeAsFloat(float valueLower, float valueUpper, float minimum)
 {
-  CStdString text;
+  string text;
   if (valueLower != valueUpper)
     text = StringUtils::Format(g_localizeStrings.Get(21467).c_str(), valueLower, valueUpper);
   else
@@ -972,9 +972,9 @@ CStdString CGUIDialogMediaFilter::RangeAsFloat(float valueLower, float valueUppe
   return text;
 }
 
-CStdString CGUIDialogMediaFilter::RangeAsInt(float valueLower, float valueUpper, float minimum)
+string CGUIDialogMediaFilter::RangeAsInt(float valueLower, float valueUpper, float minimum)
 {
-  CStdString text;
+  string text;
   if (valueLower != valueUpper)
     text = StringUtils::Format(g_localizeStrings.Get(21468).c_str(),
                                MathUtils::round_int((double)valueLower),
@@ -984,11 +984,11 @@ CStdString CGUIDialogMediaFilter::RangeAsInt(float valueLower, float valueUpper,
   return text;
 }
 
-CStdString CGUIDialogMediaFilter::RangeAsDate(float valueLower, float valueUpper, float minimum)
+string CGUIDialogMediaFilter::RangeAsDate(float valueLower, float valueUpper, float minimum)
 {
   CDateTime from = (time_t)valueLower;
   CDateTime to = (time_t)valueUpper;
-  CStdString text;
+  string text;
   if (valueLower != valueUpper)
     text = StringUtils::Format(g_localizeStrings.Get(21469).c_str(),
                                from.GetAsLocalizedDate().c_str(),
@@ -999,11 +999,11 @@ CStdString CGUIDialogMediaFilter::RangeAsDate(float valueLower, float valueUpper
   return text;
 }
 
-CStdString CGUIDialogMediaFilter::RangeAsTime(float valueLower, float valueUpper, float minimum)
+string CGUIDialogMediaFilter::RangeAsTime(float valueLower, float valueUpper, float minimum)
 {
   CDateTime from = (time_t)valueLower;
   CDateTime to = (time_t)valueUpper;
-  CStdString text;
+  string text;
   if (valueLower != valueUpper)
     text = StringUtils::Format(g_localizeStrings.Get(21469).c_str(),
                                from.GetAsLocalizedTime("mm:ss").c_str(),

@@ -26,6 +26,7 @@
 #include "PasswordManager.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 IDirectory::IDirectory(void)
@@ -45,7 +46,7 @@ IDirectory::~IDirectory(void)
        "vts_##_0.ifo". If extension is ".dat", filename format must be
        "AVSEQ##(#).DAT", "ITEM###(#).DAT" or "MUSIC##(#).DAT".
  */
-bool IDirectory::IsAllowed(const CStdString& strFile) const
+bool IDirectory::IsAllowed(const string& strFile) const
 {
   if (m_strFileMask.empty() || strFile.empty())
     return true;
@@ -57,7 +58,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
   // We should ignore all non dvd/vcd related ifo and dat files.
   if (URIUtils::HasExtension(strFile, ".ifo"))
   {
-    CStdString fileName = URIUtils::GetFileName(strFile);
+    string fileName = URIUtils::GetFileName(strFile);
 
     // Allow filenames of the form video_ts.ifo or vts_##_0.ifo
     
@@ -69,7 +70,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
   
   if (URIUtils::HasExtension(strFile, ".dat"))
   {
-    CStdString fileName = URIUtils::GetFileName(strFile);
+    string fileName = URIUtils::GetFileName(strFile);
 
     // Allow filenames of the form AVSEQ##(#).DAT, ITEM###(#).DAT
     // and MUSIC##(#).DAT
@@ -92,7 +93,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
  \endverbatim
  So only *.m4a, *.flac, *.aac files will be retrieved with GetDirectory().
  */
-void IDirectory::SetMask(const CStdString& strMask)
+void IDirectory::SetMask(const string& strMask)
 {
   m_strFileMask = strMask;
   // ensure it's completed with a | so that filtering is easy.
@@ -112,10 +113,10 @@ void IDirectory::SetFlags(int flags)
 
 bool IDirectory::ProcessRequirements()
 {
-  CStdString type = m_requirements["type"].asString();
+  string type = m_requirements["type"].asString();
   if (type == "keyboard")
   {
-    CStdString input;
+    string input;
     if (CGUIKeyboardFactory::ShowAndGetInput(input, m_requirements["heading"], false))
     {
       m_requirements["input"] = input;
@@ -139,7 +140,7 @@ bool IDirectory::ProcessRequirements()
   return false;
 }
 
-bool IDirectory::GetKeyboardInput(const CVariant &heading, CStdString &input)
+bool IDirectory::GetKeyboardInput(const CVariant &heading, string &input)
 {
   if (!m_requirements["input"].asString().empty())
   {
@@ -162,7 +163,7 @@ void IDirectory::SetErrorDialog(const CVariant &heading, const CVariant &line1, 
   m_requirements["line3"] = line3;
 }
 
-void IDirectory::RequireAuthentication(const CStdString &url)
+void IDirectory::RequireAuthentication(const string &url)
 {
   m_requirements.clear();
   m_requirements["type"] = "authenticate";

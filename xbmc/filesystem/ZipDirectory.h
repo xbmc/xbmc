@@ -28,8 +28,8 @@ namespace XFILE
   public:
     CZipDirectory();
     ~CZipDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool ContainsFiles(const CStdString& strPath);
-    virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
+    virtual bool GetDirectory(const std::string& strPath, CFileItemList& items);
+    virtual bool ContainsFiles(const std::string& strPath);
+    virtual DIR_CACHE_TYPE GetCacheType(const std::string& strPath) const { return DIR_CACHE_ALWAYS; };
   };
 }

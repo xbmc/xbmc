@@ -157,7 +157,7 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
   m_optionvalues.clear();
   for (int i=0; options[i].name; i++)
   {
-    CStdString tmp = m_item.GetProperty(options[i].name).asString();
+    string tmp = m_item.GetProperty(options[i].name).asString();
     if (!tmp.empty())
     {
       m_optionvalues.push_back(tmp);

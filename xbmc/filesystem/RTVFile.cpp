@@ -36,6 +36,7 @@ extern "C"
 }
 
 
+using namespace std;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////
@@ -71,7 +72,7 @@ bool CRTVFile::Open(const char* strHostName, const char* strFileName, int iport)
   m_iport = iport;
 
   // Allow for ReplayTVs on ports other than 80
-  CStdString strHostAndPort;
+  string strHostAndPort;
   strHostAndPort = strHostName;
   if (iport)
   {
@@ -107,7 +108,7 @@ bool CRTVFile::Open(const char* strHostName, const char* strFileName, int iport)
 
 bool CRTVFile::Open(const CURL& url)
 {
-  return Open(url.GetHostName(), url.GetFileName(), url.GetPort());
+  return Open(url.GetHostName().c_str(), url.GetFileName().c_str(), url.GetPort());
 }
 
 bool CRTVFile::Exists(const CURL& url)

@@ -25,8 +25,8 @@
 class CBuiltins
 {
 public:
-  static bool HasCommand(const CStdString& execString);
-  static void GetHelp(CStdString &help);
-  static int Execute(const CStdString& execString);
+  static bool HasCommand(const std::string& execString);
+  static void GetHelp(std::string &help);
+  static int Execute(const std::string& execString);
 };
 

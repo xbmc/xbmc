@@ -29,8 +29,8 @@ public:
 
 protected:
   virtual void SaveViewState();
-  virtual CStdString GetLockType();
-  virtual CStdString GetExtensions();
+  virtual std::string GetLockType();
+  virtual std::string GetExtensions();
   virtual VECSOURCES& GetSources();
 };
 

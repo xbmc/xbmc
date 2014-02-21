@@ -30,6 +30,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "settings/Settings.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace PVR;
 
@@ -362,7 +363,7 @@ void CDVDInputStreamPVRManager::Pause(bool bPaused)
   g_PVRClients->PauseStream(bPaused);
 }
 
-CStdString CDVDInputStreamPVRManager::GetInputFormat()
+string CDVDInputStreamPVRManager::GetInputFormat()
 {
   if (!m_pOtherStream && g_PVRManager.IsStarted())
     return g_PVRClients->GetCurrentInputFormat();

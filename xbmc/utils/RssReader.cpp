@@ -37,6 +37,7 @@
 #include "threads/SingleLock.h"
 #include "log.h"
 #include "utils/FileUtils.h"
+#include "utils/StringUtils.h"
 
 #define RSS_COLOR_BODY      0
 #define RSS_COLOR_HEADLINE  1
@@ -130,14 +131,14 @@ void CRssReader::Process()
     int iFeed = m_vecQueue.front();
     m_vecQueue.erase(m_vecQueue.begin());
 
-    m_strFeed[iFeed] = "";
-    m_strColors[iFeed] = "";
+    m_strFeed[iFeed] = L"";
+    m_strColors[iFeed] = L"";
 
     CCurlFile http;
     http.SetUserAgent(g_advancedSettings.m_userAgent);
     http.SetTimeout(2);
-    CStdString strXML;
-    CStdString strUrl = m_vecUrls[iFeed];
+    string strXML;
+    string strUrl = m_vecUrls[iFeed];
     lock.Leave();
 
     int nRetries = 3;
@@ -223,12 +224,12 @@ void CRssReader::getFeed(vecText &text)
   }
 }
 
-void CRssReader::AddTag(const CStdString &aString)
+void CRssReader::AddTag(const string &aString)
 {
   m_tagSet.push_back(aString);
 }
 
-void CRssReader::AddString(CStdStringW aString, int aColour, int iFeed)
+void CRssReader::AddString(wstring aString, int aColour, int iFeed)
 {
   if (m_rtlText)
     m_strFeed[iFeed] = aString + m_strFeed[iFeed];
@@ -251,9 +252,9 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
   HTML::CHTMLUtil html;
 
   TiXmlElement * itemNode = channelXmlNode->FirstChildElement("item");
-  map <CStdString, CStdStringW> mTagElements;
-  typedef pair <CStdString, CStdStringW> StrPair;
-  list <CStdString>::iterator i;
+  map <string, wstring> mTagElements;
+  typedef pair <string, wstring> StrPair;
+  list <string>::iterator i;
 
   // Add the title tag in if we didn't pass any tags in at all
   // Represents default behaviour before configurability
@@ -267,23 +268,23 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
     mTagElements.clear();
     while (childNode > 0)
     {
-      CStdString strName = childNode->Value();
+      string strName = childNode->Value();
 
       for (i = m_tagSet.begin(); i != m_tagSet.end(); i++)
       {
-        if (!childNode->NoChildren() && i->Equals(strName))
+        if (!childNode->NoChildren() && StringUtils::EqualsNoCase(*i, strName))
         {
-          CStdString htmlText = childNode->FirstChild()->Value();
+          string htmlText = childNode->FirstChild()->Value();
 
           // This usually happens in right-to-left languages where they want to
           // specify in the RSS body that the text should be RTL.
           // <title>
           //  <div dir="RTL">��� ����: ���� �� �����</div>
           // </title>
-          if (htmlText.Equals("div") || htmlText.Equals("span"))
+          if (StringUtils::EqualsNoCase(htmlText, "div") || StringUtils::EqualsNoCase(htmlText, "span"))
             htmlText = childNode->FirstChild()->FirstChild()->Value();
 
-          CStdStringW unicodeText, unicodeText2;
+          wstring unicodeText, unicodeText2;
 
           g_charsetConverter.utf8ToW(htmlText, unicodeText2, m_rtlText);
           html.ConvertHTMLToW(unicodeText2, unicodeText);
@@ -297,15 +298,15 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
     int rsscolour = RSS_COLOR_HEADLINE;
     for (i = m_tagSet.begin(); i != m_tagSet.end(); i++)
     {
-      map <CStdString, CStdStringW>::iterator j = mTagElements.find(*i);
+      map <string, wstring>::iterator j = mTagElements.find(*i);
 
       if (j == mTagElements.end())
         continue;
 
-      CStdStringW& text = j->second;
+      wstring& text = j->second;
       AddString(text, rsscolour, iFeed);
       rsscolour = RSS_COLOR_BODY;
-      text = " - ";
+      text = L" - ";
       AddString(text, rsscolour, iFeed);
     }
     itemNode = itemNode->NextSiblingElement("item");
@@ -331,7 +332,7 @@ bool CRssReader::Parse(int iFeed)
 
   TiXmlElement* rssXmlNode = NULL;
 
-  CStdString strValue = rootXmlNode->Value();
+  string strValue = rootXmlNode->Value();
   if (strValue.find("rss") != std::string::npos ||
       strValue.find("rdf") != std::string::npos)
     rssXmlNode = rootXmlNode;
@@ -347,13 +348,13 @@ bool CRssReader::Parse(int iFeed)
     TiXmlElement* titleNode = channelXmlNode->FirstChildElement("title");
     if (titleNode && !titleNode->NoChildren())
     {
-      CStdString strChannel = titleNode->FirstChild()->Value();
-      CStdStringW strChannelUnicode;
+      string strChannel = titleNode->FirstChild()->Value();
+      wstring strChannelUnicode;
       g_charsetConverter.utf8ToW(strChannel, strChannelUnicode, m_rtlText);
       AddString(strChannelUnicode, RSS_COLOR_CHANNEL, iFeed);
 
-      AddString(":", RSS_COLOR_CHANNEL, iFeed);
-      AddString(" ", RSS_COLOR_CHANNEL, iFeed);
+      AddString(L":", RSS_COLOR_CHANNEL, iFeed);
+      AddString(L" ", RSS_COLOR_CHANNEL, iFeed);
     }
 
     GetNewsItems(channelXmlNode,iFeed);

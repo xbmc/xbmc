@@ -41,7 +41,7 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID) const
 {
   if (m_actions.size() == 0) return false;
   // take a copy of actions that satisfy our conditions
-  vector<CStdString> actions;
+  vector<string> actions;
   for (ciActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
   {
     if (it->condition.empty() || g_infoManager.EvaluateBool(it->condition))
@@ -52,7 +52,7 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID) const
   }
   // execute them
   bool retval = false;
-  for (vector<CStdString>::iterator i = actions.begin(); i != actions.end(); ++i)
+  for (vector<string>::iterator i = actions.begin(); i != actions.end(); ++i)
   {
     CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID);
     msg.SetStringParam(*i);
@@ -81,7 +81,7 @@ int CGUIAction::GetNavigation() const
 void CGUIAction::SetNavigation(int id)
 {
   if (id == 0) return;
-  CStdString strId = StringUtils::Format("%i", id);
+  string strId = StringUtils::Format("%i", id);
   for (iActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
   {
     if (StringUtils::IsInteger(it->action) && it->condition.empty())

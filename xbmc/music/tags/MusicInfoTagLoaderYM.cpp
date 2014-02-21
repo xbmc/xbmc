@@ -22,6 +22,7 @@
 #include "MusicInfoTag.h"
 #include "utils/log.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderYM::CMusicInfoTagLoaderYM(void)
@@ -33,7 +34,7 @@ CMusicInfoTagLoaderYM::~CMusicInfoTagLoaderYM()
 {
 }
 
-bool CMusicInfoTagLoaderYM::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
+bool CMusicInfoTagLoaderYM::Load(const string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   tag.SetLoaded(false);
 

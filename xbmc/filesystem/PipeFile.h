@@ -65,7 +65,7 @@ public:
   virtual bool Rename(const CURL& url, const CURL& urlnew);
   virtual int IoControl(int request, void* param);
   
-  CStdString GetName() const;
+  std::string GetName() const;
   
   virtual void OnPipeOverFlow();
   virtual void OnPipeUnderFlow();

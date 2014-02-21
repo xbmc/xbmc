@@ -24,6 +24,7 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 
+using namespace std;
 using namespace XFILE;
 
 CPipeFile::CPipeFile() : m_pos(0), m_length(-1), m_pipe(NULL)
@@ -52,7 +53,7 @@ void CPipeFile::SetLength(int64_t len)
 
 bool CPipeFile::Open(const CURL& url)
 {
-  CStdString name = url.Get();
+  string name = url.Get();
   m_pipe = PipesManager::GetInstance().OpenPipe(name);
   if (m_pipe)
     m_pipe->AddListener(this);
@@ -61,7 +62,7 @@ bool CPipeFile::Open(const CURL& url)
 
 bool CPipeFile::Exists(const CURL& url)
 {
-  CStdString name = url.Get();
+  string name = url.Get();
   return PipesManager::GetInstance().Exists(name);
 }
 
@@ -143,7 +144,7 @@ void CPipeFile::Flush()
 
 bool CPipeFile::OpenForWrite(const CURL& url, bool bOverWrite)
 {
-  CStdString name = url.Get();
+  string name = url.Get();
 
   m_pipe = PipesManager::GetInstance().CreatePipe(name);
   if (m_pipe)
@@ -166,7 +167,7 @@ int CPipeFile::IoControl(int request, void* param)
   return -1;
 }
 
-CStdString CPipeFile::GetName() const
+string CPipeFile::GetName() const
 {
   if (!m_pipe)
     return StringUtils::EmptyString;

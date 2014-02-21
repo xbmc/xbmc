@@ -28,6 +28,8 @@
 #include "utils/StringUtils.h"
 #include "video/VideoDatabase.h"
 
+using namespace std;
+
 std::string DatabaseUtils::MediaTypeToString(MediaType mediaType)
 {
   switch (mediaType)
@@ -170,7 +172,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
   }
   else if (mediaType == MediaTypeMusicVideo)
   {
-    CStdString result;
+    string result;
     if (field == FieldId) return "musicvideoview.idMVideo";
     else if (field == FieldTitle) result = StringUtils::Format("musicvideoview.c%02d",VIDEODB_ID_MUSICVIDEO_TITLE);
     else if (field == FieldTime) result = StringUtils::Format("musicvideoview.c%02d", VIDEODB_ID_MUSICVIDEO_RUNTIME);
@@ -193,7 +195,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
   }
   else if (mediaType == MediaTypeMovie)
   {
-    CStdString result;
+    string result;
     if (field == FieldId) return "movieview.idMovie";
     else if (field == FieldTitle)
     {
@@ -237,7 +239,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
   }
   else if (mediaType == MediaTypeTvShow)
   {
-    CStdString result;
+    string result;
     if (field == FieldId) return "tvshowview.idShow";
     else if (field == FieldTitle)
     {
@@ -268,7 +270,7 @@ std::string DatabaseUtils::GetField(Field field, MediaType mediaType, DatabaseQu
   }
   else if (mediaType == MediaTypeEpisode)
   {
-    CStdString result;
+    string result;
     if (field == FieldId) return "episodeview.idEpisode";
     else if (field == FieldTitle) result = StringUtils::Format("episodeview.c%02d", VIDEODB_ID_EPISODE_TITLE);
     else if (field == FieldPlot) result = StringUtils::Format("episodeview.c%02d", VIDEODB_ID_EPISODE_PLOT);

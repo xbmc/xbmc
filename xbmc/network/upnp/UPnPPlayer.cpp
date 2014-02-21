@@ -40,6 +40,7 @@
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogYesNo.h"
 
+using namespace std;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")
 
@@ -565,7 +566,7 @@ failed:
   return 0;
 };
 
-CStdString CUPnPPlayer::GetPlayingTitle()
+string CUPnPPlayer::GetPlayingTitle()
 {
   return "";
 };

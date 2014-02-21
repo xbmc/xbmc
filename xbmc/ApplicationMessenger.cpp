@@ -406,7 +406,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
         {
           CFileItemList items;
-          CStdString strPath;
+          string strPath;
           if (URIUtils::IsZIP(pMsg->strParam))
             URIUtils::CreateArchivePath(strPath, "zip", pMsg->strParam.c_str(), "");
           else
@@ -446,8 +446,8 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         pSlideShow->Reset();
 
         CFileItemList items;
-        CStdString strPath = pMsg->strParam;
-        CStdString extensions = g_advancedSettings.m_pictureExtensions;
+        string strPath = pMsg->strParam;
+        string extensions = g_advancedSettings.m_pictureExtensions;
         if (pMsg->dwParam1)
           extensions += "|.tbn";
         CUtil::GetRecursiveListing(strPath, items, extensions);
@@ -754,7 +754,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         if (pMsg->lpVoid)
         {
-          vector<CStdString> *infoLabels = (vector<CStdString> *)pMsg->lpVoid;
+          vector<string> *infoLabels = (vector<string> *)pMsg->lpVoid;
           for (unsigned int i = 0; i < pMsg->params.size(); i++)
             infoLabels->push_back(g_infoManager.GetLabel(g_infoManager.TranslateString(pMsg->params[i])));
         }
@@ -881,7 +881,7 @@ void CApplicationMessenger::ProcessWindowMessages()
   }
 }
 
-int CApplicationMessenger::SetResponse(CStdString response)
+int CApplicationMessenger::SetResponse(string response)
 {
   CSingleLock lock (m_critBuffer);
   bufferResponse=response;
@@ -889,16 +889,16 @@ int CApplicationMessenger::SetResponse(CStdString response)
   return 0;
 }
 
-CStdString CApplicationMessenger::GetResponse()
+string CApplicationMessenger::GetResponse()
 {
-  CStdString tmp;
+  string tmp;
   CSingleLock lock (m_critBuffer);
   tmp=bufferResponse;
   lock.Leave();
   return tmp;
 }
 
-void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
+void CApplicationMessenger::ExecBuiltIn(const string &command, bool wait)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
   tMsg.strParam = command;
@@ -1201,7 +1201,7 @@ void CApplicationMessenger::Minimize(bool wait)
   SendMessage(tMsg, wait);
 }
 
-void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)
+void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const string &param)
 {
   ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};
   tMsg.lpVoid = pDialog;
@@ -1210,7 +1210,7 @@ void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CS
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::ExecOS(const CStdString &command, bool waitExit)
+void CApplicationMessenger::ExecOS(const string &command, bool waitExit)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_OS};
   tMsg.strParam = command;
@@ -1239,7 +1239,7 @@ void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool wait
   SendMessage(tMsg, waitResult);
 }
 
-void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString> &params, bool swappingWindows)
+void CApplicationMessenger::ActivateWindow(int windowID, const vector<string> &params, bool swappingWindows)
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, (unsigned int)windowID, swappingWindows ? 1u : 0u};
   tMsg.params = params;
@@ -1277,9 +1277,9 @@ void CApplicationMessenger::SendText(const std::string &aTextString, bool closeK
   SendGUIMessage(msg, window->GetID());
 }
 
-vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString> &properties)
+vector<string> CApplicationMessenger::GetInfoLabels(const vector<string> &properties)
 {
-  vector<CStdString> infoLabels;
+  vector<string> infoLabels;
 
   ThreadMessage tMsg = {TMSG_GUI_INFOLABEL};
   tMsg.params = properties;
@@ -1288,7 +1288,7 @@ vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString>
   return infoLabels;
 }
 
-vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<CStdString> &properties)
+vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<string> &properties)
 {
   vector<bool> infoLabels;
 
@@ -1306,7 +1306,7 @@ void CApplicationMessenger::ShowVolumeBar(bool up)
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::SetSplashMessage(const CStdString& message)
+void CApplicationMessenger::SetSplashMessage(const string& message)
 {
   ThreadMessage tMsg = {TMSG_SPLASH_MESSAGE};
   tMsg.strParam = message;
@@ -1373,7 +1373,7 @@ void CApplicationMessenger::LoadProfile(unsigned int idx)
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::StartAndroidActivity(const vector<CStdString> &params)
+void CApplicationMessenger::StartAndroidActivity(const vector<string> &params)
 {
   ThreadMessage tMsg = {TMSG_START_ANDROID_ACTIVITY};
   tMsg.params = params;

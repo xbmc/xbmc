@@ -89,7 +89,7 @@ static const TypeMapping types[] =
    {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" },
    {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" }};
 
-const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
+const string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
@@ -105,18 +105,18 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
   return "";
 }
 
-TYPE TranslateType(const CStdString &string)
+TYPE TranslateType(const string &string)
 {
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
     const TypeMapping &map = types[index];
-    if (string.Equals(map.name))
+    if (StringUtils::EqualsNoCase(string, map.name))
       return map.type;
   }
   return ADDON_UNKNOWN;
 }
 
-const CStdString GetIcon(const ADDON::TYPE& type)
+const string GetIcon(const ADDON::TYPE& type)
 {
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
@@ -129,18 +129,18 @@ const CStdString GetIcon(const ADDON::TYPE& type)
 
 #define EMPTY_IF(x,y) \
   { \
-    CStdString fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
-    if (fan.Equals("true")) \
+    string fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
+    if (StringUtils::EqualsNoCase(fan, "true")) \
       y.clear(); \
   }
 
 AddonProps::AddonProps(const cp_extension_t *ext)
-  : id(ext->plugin->identifier)
-  , version(ext->plugin->version)
-  , minversion(ext->plugin->abi_bw_compatibility)
-  , name(ext->plugin->name)
-  , path(ext->plugin->plugin_path)
-  , author(ext->plugin->provider_name)
+  : id(ext->plugin->identifier ? ext->plugin->identifier : "")
+  , version(ext->plugin->version ? ext->plugin->version : "")
+  , minversion(ext->plugin->abi_bw_compatibility ? ext->plugin->abi_bw_compatibility : "")
+  , name(ext->plugin->name ? ext->plugin->name : "")
+  , path(ext->plugin->plugin_path ? ext->plugin->plugin_path : "")
+  , author(ext->plugin->provider_name ? ext->plugin->provider_name : "")
   , stars(0)
 {
   if (ext->ext_point_id)
@@ -157,7 +157,7 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
-    CStdString language;
+    string language;
     language = CAddonMgr::Get().GetExtValue(metadata->configuration, "language");
     if (!language.empty())
       extrainfo.insert(make_pair("language",language));
@@ -170,12 +170,12 @@ AddonProps::AddonProps(const cp_extension_t *ext)
 }
 
 AddonProps::AddonProps(const cp_plugin_info_t *plugin)
-  : id(plugin->identifier)
-  , version(plugin->version)
-  , minversion(plugin->abi_bw_compatibility)
-  , name(plugin->name)
-  , path(plugin->plugin_path)
-  , author(plugin->provider_name)
+  : id(plugin->identifier ? plugin->identifier : "")
+  , version(plugin->version ? plugin->version : "")
+  , minversion(plugin->abi_bw_compatibility ? plugin->abi_bw_compatibility : "")
+  , name(plugin->name ? plugin->name : "")
+  , path(plugin->plugin_path ? plugin->plugin_path : "")
+  , author(plugin->provider_name ? plugin->provider_name : "")
   , stars(0)
 {
   BuildDependencies(plugin);
@@ -239,7 +239,7 @@ void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
   if (!plugin)
     return;
   for (unsigned int i = 0; i < plugin->num_imports; ++i)
-    dependencies.insert(make_pair(CStdString(plugin->imports[i].plugin_id),
+    dependencies.insert(make_pair(string(plugin->imports[i].plugin_id),
                         make_pair(AddonVersion(plugin->imports[i].version), plugin->imports[i].optional != 0)));
 }
 
@@ -328,7 +328,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
   if (!extension)
   {
     m_strLibName = "default";
-    CStdString ext;
+    string ext;
     switch (m_props.type)
     {
     case ADDON_SCRAPER_ALBUMS:
@@ -391,7 +391,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SERVICE:
       case ADDON_REPOSITORY:
         {
-          CStdString temp = CAddonMgr::Get().GetExtValue(extension->configuration, "@library");
+          string temp = CAddonMgr::Get().GetExtValue(extension->configuration, "@library");
           m_strLibName = temp;
         }
         break;
@@ -408,7 +408,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
 bool CAddon::LoadStrings()
 {
   // Path where the language strings reside
-  CStdString chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
+  string chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
 
   m_hasStrings = m_strings.Load(chosenPath, CSettings::Get().GetString("locale.language"));
   return m_checkedStrings = true;
@@ -421,7 +421,7 @@ void CAddon::ClearStrings()
   m_hasStrings = false;
 }
 
-CStdString CAddon::GetString(uint32_t id)
+string CAddon::GetString(uint32_t id)
 {
   if (!m_hasStrings && ! m_checkedStrings && !LoadStrings())
      return "";
@@ -443,7 +443,7 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
     return true;
   if (!m_hasSettings)
     return false;
-  CStdString addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources/settings.xml");
+  string addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources/settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
@@ -494,9 +494,9 @@ void CAddon::SaveSettings(void)
     return; // no settings to save
 
   // break down the path into directories
-  CStdString strAddon = URIUtils::GetDirectory(m_userSettingsPath);
+  string strAddon = URIUtils::GetDirectory(m_userSettingsPath);
   URIUtils::RemoveSlashAtEnd(strAddon);
-  CStdString strRoot = URIUtils::GetDirectory(strAddon);
+  string strRoot = URIUtils::GetDirectory(strAddon);
   URIUtils::RemoveSlashAtEnd(strRoot);
 
   // create the individual folders
@@ -517,18 +517,18 @@ void CAddon::SaveSettings(void)
 #endif
 }
 
-CStdString CAddon::GetSetting(const CStdString& key)
+string CAddon::GetSetting(const string& key)
 {
   if (!LoadSettings())
     return ""; // no settings available
 
-  map<CStdString, CStdString>::const_iterator i = m_settings.find(key);
+  map<string, string>::const_iterator i = m_settings.find(key);
   if (i != m_settings.end())
     return i->second;
   return "";
 }
 
-void CAddon::UpdateSetting(const CStdString& key, const CStdString& value)
+void CAddon::UpdateSetting(const string& key, const string& value)
 {
   LoadSettings();
   if (key.empty()) return;
@@ -571,7 +571,7 @@ void CAddon::SettingsToXML(CXBMCTinyXML &doc) const
 {
   TiXmlElement node("settings");
   doc.InsertEndChild(node);
-  for (map<CStdString, CStdString>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
+  for (map<string, string>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
   {
     TiXmlElement nodeSetting("setting");
     nodeSetting.SetAttribute("id", i->first.c_str());
@@ -591,14 +591,14 @@ void CAddon::BuildProfilePath()
   m_profile = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
 }
 
-const CStdString CAddon::Icon() const
+const string CAddon::Icon() const
 {
   if (CURL::IsFullPath(m_props.icon))
     return m_props.icon;
   return URIUtils::AddFileToFolder(m_props.path, m_props.icon);
 }
 
-const CStdString CAddon::LibPath() const
+const string CAddon::LibPath() const
 {
   return URIUtils::AddFileToFolder(m_props.path, m_strLibName);
 }
@@ -633,14 +633,14 @@ TYPE CAddonLibrary::SetAddonType()
     return ADDON_UNKNOWN;
 }
 
-CStdString GetXbmcApiVersionDependency(ADDON::AddonPtr addon)
+string GetXbmcApiVersionDependency(ADDON::AddonPtr addon)
 {
-  CStdString version("1.0");
+  string version("1.0");
   if (addon.get() != NULL)
   {
     const ADDON::ADDONDEPS &deps = addon->GetDeps();
     ADDON::ADDONDEPS::const_iterator it;
-    CStdString key("xbmc.python");
+    string key("xbmc.python");
     it = deps.find(key);
     if (!(it == deps.end()))
     {

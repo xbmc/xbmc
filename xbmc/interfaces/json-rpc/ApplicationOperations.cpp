@@ -30,14 +30,15 @@
 #include "GitRevision.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace JSONRPC;
 
-JSONRPC_STATUS CApplicationOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::GetProperties(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CVariant properties = CVariant(CVariant::VariantTypeObject);
   for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
   {
-    CStdString propertyName = parameterObject["properties"][index].asString();
+    string propertyName = parameterObject["properties"][index].asString();
     CVariant property;
     JSONRPC_STATUS ret;
     if ((ret = GetPropertyValue(propertyName, property)) != OK)
@@ -51,7 +52,7 @@ JSONRPC_STATUS CApplicationOperations::GetProperties(const CStdString &method, I
   return OK;
 }
 
-JSONRPC_STATUS CApplicationOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::SetVolume(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   bool up = false;
   if (parameterObject["volume"].isInteger())
@@ -91,7 +92,7 @@ JSONRPC_STATUS CApplicationOperations::SetVolume(const CStdString &method, ITran
   return GetPropertyValue("volume", result);
 }
 
-JSONRPC_STATUS CApplicationOperations::SetMute(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::SetMute(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if ((parameterObject["mute"].isString() && parameterObject["mute"].asString().compare("toggle") == 0) ||
       (parameterObject["mute"].isBoolean() && parameterObject["mute"].asBoolean() != g_application.IsMuted()))
@@ -102,28 +103,28 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const CStdString &method, ITransp
   return GetPropertyValue("muted", result);
 }
 
-JSONRPC_STATUS CApplicationOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::Quit(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CApplicationMessenger::Get().Quit();
   return ACK;
 }
 
-JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const CStdString &property, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const string &property, CVariant &result)
 {
-  if (property.Equals("volume"))
+  if (StringUtils::EqualsNoCase(property, "volume"))
     result = (int)g_application.GetVolume();
-  else if (property.Equals("muted"))
+  else if (StringUtils::EqualsNoCase(property, "muted"))
     result = g_application.IsMuted();
-  else if (property.Equals("name"))
+  else if (StringUtils::EqualsNoCase(property, "name"))
     result = "XBMC";
-  else if (property.Equals("version"))
+  else if (StringUtils::EqualsNoCase(property, "version"))
   {
     result = CVariant(CVariant::VariantTypeObject);
     result["major"] = VERSION_MAJOR;
     result["minor"] = VERSION_MINOR;
     if (GetXbmcGitRevision())
       result["revision"] = GetXbmcGitRevision();
-    CStdString tag(VERSION_TAG);
+    string tag(VERSION_TAG);
     if (StringUtils::EqualsNoCase(tag, "-pre"))
       result["tag"] = "alpha";
     else if (StringUtils::StartsWithNoCase(tag, "-beta"))

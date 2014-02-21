@@ -208,7 +208,7 @@ bool CSkinSettings::Load(const TiXmlNode *settings)
   const TiXmlElement *pChild = pElement->FirstChildElement(XML_SETTING);
   while (pChild)
   {
-    CStdString settingName = pChild->Attribute(XML_ATTR_NAME);
+    string settingName = pChild->Attribute(XML_ATTR_NAME);
     if (pChild->Attribute("type") && StringUtils::EqualsNoCase(pChild->Attribute(XML_ATTR_TYPE), "string"))
     { // string setting
       CSkinString string;

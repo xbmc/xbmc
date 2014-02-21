@@ -33,6 +33,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 
+using namespace std;
 using namespace PVR;
 using namespace EPG;
 
@@ -211,7 +212,7 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   CSingleLock lock(m_critSection);
   if (m_strChannelName.empty())
     SetChannelName(channel.ClientChannelName());
-  if (m_strIconPath.empty()||(!m_strIconPath.Equals(channel.IconPath()) && !IsUserSetIcon()))
+  if (m_strIconPath.empty()||(!StringUtils::EqualsNoCase(m_strIconPath, channel.IconPath()) && !IsUserSetIcon()))
     SetIconPath(channel.IconPath());
 
   return m_bChanged;
@@ -299,7 +300,7 @@ bool CPVRChannel::IsRecording(void) const
   return g_PVRTimers->IsRecordingOnChannel(*this);
 }
 
-bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon /* = false */)
+bool CPVRChannel::SetIconPath(const string &strIconPath, bool bIsUserSetIcon /* = false */)
 {
   CSingleLock lock(m_critSection);
 
@@ -320,9 +321,9 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon
   return false;
 }
 
-bool CPVRChannel::SetChannelName(const CStdString &strChannelName)
+bool CPVRChannel::SetChannelName(const string &strChannelName)
 {
-  CStdString strName(strChannelName);
+  string strName(strChannelName);
 
   if (strName.empty())
     strName = StringUtils::Format(g_localizeStrings.Get(19085).c_str(), ClientChannelNumber());
@@ -435,7 +436,7 @@ bool CPVRChannel::SetClientChannelNumber(int iClientChannelNumber)
   return false;
 }
 
-bool CPVRChannel::SetClientChannelName(const CStdString &strClientChannelName)
+bool CPVRChannel::SetClientChannelName(const string &strClientChannelName)
 {
   CSingleLock lock(m_critSection);
 
@@ -452,7 +453,7 @@ bool CPVRChannel::SetClientChannelName(const CStdString &strClientChannelName)
   return false;
 }
 
-bool CPVRChannel::SetInputFormat(const CStdString &strInputFormat)
+bool CPVRChannel::SetInputFormat(const string &strInputFormat)
 {
   CSingleLock lock(m_critSection);
 
@@ -469,7 +470,7 @@ bool CPVRChannel::SetInputFormat(const CStdString &strInputFormat)
   return false;
 }
 
-bool CPVRChannel::SetStreamURL(const CStdString &strStreamURL)
+bool CPVRChannel::SetStreamURL(const string &strStreamURL)
 {
   CSingleLock lock(m_critSection);
 
@@ -490,7 +491,7 @@ void CPVRChannel::UpdatePath(CPVRChannelGroupInternal* group, unsigned int iNewC
 {
   if (!group) return;
 
-  CStdString strFileNameAndPath;
+  string strFileNameAndPath;
   CSingleLock lock(m_critSection);
   strFileNameAndPath = StringUtils::Format("pvr://channels/%s/%s/%i.pvr", (m_bIsRadio ? "radio" : "tv"), group->GroupName().c_str(), iNewChannelGroupPosition);
   if (m_strFileNameAndPath != strFileNameAndPath)
@@ -522,7 +523,7 @@ void CPVRChannel::UpdateEncryptionName(void)
 {
   // http://www.dvb.org/index.php?id=174
   // http://en.wikipedia.org/wiki/Conditional_access_system
-  CStdString strName(g_localizeStrings.Get(13205)); /* Unknown */
+  string strName(g_localizeStrings.Get(13205)); /* Unknown */
   CSingleLock lock(m_critSection);
 
   if (     m_iClientEncryptionSystem == 0x0000)
@@ -678,7 +679,7 @@ bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
   return false;
 }
 
-bool CPVRChannel::SetEPGScraper(const CStdString &strScraper)
+bool CPVRChannel::SetEPGScraper(const string &strScraper)
 {
   CSingleLock lock(m_critSection);
 
@@ -740,10 +741,10 @@ bool CPVRChannel::IsLocked(void) const
   return m_bIsLocked;
 }
 
-CStdString CPVRChannel::IconPath(void) const
+string CPVRChannel::IconPath(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strIconPath);
+  string strReturn(m_strIconPath);
   return strReturn;
 }
 
@@ -753,7 +754,7 @@ bool CPVRChannel::IsUserSetIcon(void) const
   return m_bIsUserSetIcon;
 }
 
-CStdString CPVRChannel::ChannelName(void) const
+string CPVRChannel::ChannelName(void) const
 {
   CSingleLock lock(m_critSection);
   return m_strChannelName;
@@ -795,31 +796,31 @@ int CPVRChannel::ClientChannelNumber(void) const
   return m_iClientChannelNumber;
 }
 
-CStdString CPVRChannel::ClientChannelName(void) const
+string CPVRChannel::ClientChannelName(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strClientChannelName);
+  string strReturn(m_strClientChannelName);
   return strReturn;
 }
 
-CStdString CPVRChannel::InputFormat(void) const
+string CPVRChannel::InputFormat(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strInputFormat);
+  string strReturn(m_strInputFormat);
   return strReturn;
 }
 
-CStdString CPVRChannel::StreamURL(void) const
+string CPVRChannel::StreamURL(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strStreamURL);
+  string strReturn(m_strStreamURL);
   return strReturn;
 }
 
-CStdString CPVRChannel::Path(void) const
+string CPVRChannel::Path(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strFileNameAndPath);
+  string strReturn(m_strFileNameAndPath);
   return strReturn;
 }
 
@@ -835,10 +836,10 @@ int CPVRChannel::EncryptionSystem(void) const
   return m_iClientEncryptionSystem;
 }
 
-CStdString CPVRChannel::EncryptionName(void) const
+string CPVRChannel::EncryptionName(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strClientEncryptionName);
+  string strReturn(m_strClientEncryptionName);
   return strReturn;
 }
 
@@ -861,10 +862,10 @@ bool CPVRChannel::EPGEnabled(void) const
   return m_bEPGEnabled;
 }
 
-CStdString CPVRChannel::EPGScraper(void) const
+string CPVRChannel::EPGScraper(void) const
 {
   CSingleLock lock(m_critSection);
-  CStdString strReturn(m_strEPGScraper);
+  string strReturn(m_strEPGScraper);
   return strReturn;
 }
 

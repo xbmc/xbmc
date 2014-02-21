@@ -22,6 +22,8 @@
 #include "cores/DllLoader/DllLoader.h"
 #include "utils/log.h"
 
+using namespace std;
+
 YMCodec::YMCodec()
 {
   m_CodecName = "ym";
@@ -34,7 +36,7 @@ YMCodec::~YMCodec()
   DeInit();
 }
 
-bool YMCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool YMCodec::Init(const string &strFile, unsigned int filecache)
 {
   if (!m_dll.Load())
     return false; // error logged previously

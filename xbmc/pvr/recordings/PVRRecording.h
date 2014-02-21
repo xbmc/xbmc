@@ -45,16 +45,16 @@ namespace PVR
   {
   public:
     int           m_iClientId;        /*!< ID of the backend */
-    CStdString    m_strRecordingId;   /*!< unique id of the recording on the client */
-    CStdString    m_strChannelName;   /*!< name of the channel this was recorded from */
+    std::string    m_strRecordingId;   /*!< unique id of the recording on the client */
+    std::string    m_strChannelName;   /*!< name of the channel this was recorded from */
     CDateTimeSpan m_duration;         /*!< duration of this recording */
     int           m_iPriority;        /*!< priority of this recording */
     int           m_iLifetime;        /*!< lifetime of this recording */
-    CStdString    m_strStreamURL;     /*!< stream URL. if empty use pvr client */
-    CStdString    m_strDirectory;     /*!< directory of this recording on the client */
-    CStdString    m_strIconPath;      /*!< icon path */
-    CStdString    m_strThumbnailPath; /*!< thumbnail path */
-    CStdString    m_strFanartPath;    /*!< fanart path */
+    std::string    m_strStreamURL;     /*!< stream URL. if empty use pvr client */
+    std::string    m_strDirectory;     /*!< directory of this recording on the client */
+    std::string    m_strIconPath;      /*!< icon path */
+    std::string    m_strThumbnailPath; /*!< thumbnail path */
+    std::string    m_strFanartPath;    /*!< fanart path */
 
     CPVRRecording(void);
     CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
@@ -85,7 +85,7 @@ namespace PVR
      * @param strNewName The new name.
      * @return True if it was renamed successfully, false otherwise.
      */
-    bool Rename(const CStdString &strNewName);
+    bool Rename(const std::string &strNewName);
 
     /*!
      * @brief Set this recording's play count on the client (if supported).
@@ -141,7 +141,7 @@ namespace PVR
      * @param url the URL for the recording
      * @return Title of the recording
      */
-    static CStdString GetTitleFromURL(const CStdString &url);
+    static std::string GetTitleFromURL(const std::string &url);
 
     /*!
      * @brief Copy some information from the client to the given video info tag

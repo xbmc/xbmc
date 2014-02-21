@@ -192,7 +192,7 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focu
 }
 
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
-void CGUIListItemLayout::CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, const CStdString &nofocusCondition, const CStdString &focusCondition)
+void CGUIListItemLayout::CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, const string &nofocusCondition, const string &focusCondition)
 {
   m_width = width;
   m_height = height;

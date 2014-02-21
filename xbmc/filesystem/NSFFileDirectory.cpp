@@ -22,6 +22,7 @@
 #include "music/tags/MusicInfoTagLoaderNSF.h"
 #include "music/tags/MusicInfoTag.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
@@ -34,7 +35,7 @@ CNSFFileDirectory::~CNSFFileDirectory(void)
 {
 }
 
-int CNSFFileDirectory::GetTrackCount(const CStdString& strPath)
+int CNSFFileDirectory::GetTrackCount(const string& strPath)
 {
   CMusicInfoTagLoaderNSF nsf;
   nsf.Load(strPath,m_tag);

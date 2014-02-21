@@ -2399,45 +2399,6 @@ public:
   #endif
 
   // -------------------------------------------------------------------------
-  // CStdStr -- Direct access to character buffer.  In the MS' implementation,
-  // the at() function that we use here also calls _Freeze() providing us some
-  // protection from multithreading problems associated with ref-counting.
-    // In VC 7 and later, of course, the ref-counting stuff is gone.
-  // -------------------------------------------------------------------------
-
-  CT* GetBuf(int nMinLen=-1)
-  {
-    if ( static_cast<int>(this->size()) < nMinLen )
-      this->resize(static_cast<MYSIZE>(nMinLen));
-
-    return this->empty() ? const_cast<CT*>(this->data()) : &(this->at(0));
-  }
-
-  CT* SetBuf(int nLen)
-  {
-    nLen = ( nLen > 0 ? nLen : 0 );
-    if ( this->capacity() < 1 && nLen == 0 )
-      this->resize(1);
-
-    this->resize(static_cast<MYSIZE>(nLen));
-    return const_cast<CT*>(this->data());
-  }
-  void RelBuf(int nNewLen=-1)
-  {
-    this->resize(static_cast<MYSIZE>(nNewLen > -1 ? nNewLen :
-                                                        sslen(this->c_str())));
-  }
-
-  void BufferRel()     { RelBuf(); }      // backwards compatability
-  CT*  Buffer()       { return GetBuf(); }  // backwards compatability
-  CT*  BufferSet(int nLen) { return SetBuf(nLen);}// backwards compatability
-
-  bool Equals(const CT* pT, bool bUseCase=false) const
-  {
-    return  0 == (bUseCase ? this->compare(pT) : ssicmp(this->c_str(), pT));
-  }
-
-  // -------------------------------------------------------------------------
   // FUNCTION:  CStdStr::Load
   // REMARKS:
   //    Loads string from resource specified by nID
@@ -2536,60 +2497,11 @@ public:
     }
   #endif
 
-#ifndef SS_NO_LOCALE
-  int Collate(PCMYSTR szThat) const
-  {
-    return sscoll(this->c_str(), this->length(), szThat, sslen(szThat));
-  }
-
-  int CollateNoCase(PCMYSTR szThat) const
-  {
-    return ssicoll(this->c_str(), this->length(), szThat, sslen(szThat));
-  }
-#endif
   int FindOneOf(PCMYSTR szCharSet) const
   {
     MYSIZE nIdx = this->find_first_of(szCharSet);
     return static_cast<int>(MYBASE::npos == nIdx ? -1 : nIdx);
   }
-
-#ifndef SS_ANSI
-  void FormatMessage(PCMYSTR szFormat, ...) throw(std::exception)
-  {
-    va_list argList;
-    va_start(argList, szFormat);
-    PMYSTR szTemp;
-    if ( ssfmtmsg(FORMAT_MESSAGE_FROM_STRING|FORMAT_MESSAGE_ALLOCATE_BUFFER,
-             szFormat, 0, 0,
-             reinterpret_cast<PMYSTR>(&szTemp), 0, &argList) == 0 ||
-       szTemp == 0 )
-    {
-      throw std::runtime_error("out of memory");
-    }
-    *this = szTemp;
-    LocalFree(szTemp);
-    va_end(argList);
-  }
-
-  void FormatMessage(UINT nFormatId, ...) throw(std::exception)
-  {
-    MYTYPE sFormat;
-    VERIFY(sFormat.LoadString(nFormatId));
-    va_list argList;
-    va_start(argList, nFormatId);
-    PMYSTR szTemp;
-    if ( ssfmtmsg(FORMAT_MESSAGE_FROM_STRING|FORMAT_MESSAGE_ALLOCATE_BUFFER,
-             sFormat, 0, 0,
-             reinterpret_cast<PMYSTR>(&szTemp), 0, &argList) == 0 ||
-      szTemp == 0)
-    {
-      throw std::runtime_error("out of memory");
-    }
-    *this = szTemp;
-    LocalFree(szTemp);
-    va_end(argList);
-  }
-#endif
 
   // GetAllocLength -- an MSVC7 function but it costs us nothing to add it.
 
@@ -2598,35 +2510,12 @@ public:
     return static_cast<int>(this->capacity());
   }
 
-  // -------------------------------------------------------------------------
-  // GetXXXX -- Direct access to character buffer
-  // -------------------------------------------------------------------------
-  CT* GetBuffer(int nMinLen=-1)
-  {
-    return GetBuf(nMinLen);
-  }
-
-  CT* GetBufferSetLength(int nLen)
-  {
-    return BufferSet(nLen);
-  }
-
 #ifndef SS_ANSI
   bool LoadString(UINT nId)
   {
     return this->Load(nId);
   }
 #endif
-
-  void MakeReverse()
-  {
-    std::reverse(this->begin(), this->end());
-  }
-
-  void ReleaseBuffer(int nNewLen=-1)
-  {
-    RelBuf(nNewLen);
-  }
 
 #ifndef SS_ANSI
   BSTR SetSysString(BSTR* pbstr) const
@@ -3070,49 +2959,6 @@ inline CStdStringW operator+(const CStdStringW& s1, PCSTR pA)
 }
 
 
-// New-style format function is a template
-
-#ifdef SS_SAFE_FORMAT
-
-template<>
-struct FmtArg<CStdStringA>
-{
-    explicit FmtArg(const CStdStringA& arg) : a_(arg) {}
-    PCSTR operator()() const { return a_.c_str(); }
-    const CStdStringA& a_;
-private:
-    FmtArg<CStdStringA>& operator=(const FmtArg<CStdStringA>&) { return *this; }
-};
-template<>
-struct FmtArg<CStdStringW>
-{
-    explicit FmtArg(const CStdStringW& arg) : a_(arg) {}
-    PCWSTR operator()() const { return a_.c_str(); }
-    const CStdStringW& a_;
-private:
-    FmtArg<CStdStringW>& operator=(const FmtArg<CStdStringW>&) { return *this; }
-};
-
-template<>
-struct FmtArg<std::string>
-{
-    explicit FmtArg(const std::string& arg) : a_(arg) {}
-    PCSTR operator()() const { return a_.c_str(); }
-    const std::string& a_;
-private:
-    FmtArg<std::string>& operator=(const FmtArg<std::string>&) { return *this; }
-};
-template<>
-struct FmtArg<std::wstring>
-{
-    explicit FmtArg(const std::wstring& arg) : a_(arg) {}
-    PCWSTR operator()() const { return a_.c_str(); }
-    const std::wstring& a_;
-private:
-    FmtArg<std::wstring>& operator=(const FmtArg<std::wstring>&) {return *this;}
-};
-#endif // #ifdef SS_SAFEFORMAT
-
 #ifndef SS_ANSI
   // SSResourceHandle: our MFC-like resource handle
   inline HMODULE& SSResourceHandle()
@@ -3121,7 +2967,6 @@ private:
     return hModuleSS;
   }
 #endif
-
 
 // In MFC builds, define some global serialization operators
 // Special operators that allow us to serialize CStdStrings to CArchives.

@@ -24,6 +24,8 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CDVDSubtitleTagSami::~CDVDSubtitleTagSami()
 {
   delete m_tags;
@@ -47,7 +49,7 @@ bool CDVDSubtitleTagSami::Init()
 
 void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len, const char* lang)
 {
-  CStdStringA strUTF8;
+  std::string strUTF8;
   strUTF8.assign(line, len);
   StringUtils::Trim(strUTF8);
 
@@ -56,7 +58,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
   while ((pos=m_tags->RegFind(strUTF8.c_str(), pos)) >= 0)
   {
     // Parse Tags
-    CStdString fullTag = m_tags->GetMatch(0);
+    string fullTag = m_tags->GetMatch(0);
     StringUtils::ToLower(fullTag);
     strUTF8.erase(pos, fullTag.length());
     if (fullTag == "<b>" || fullTag == "{\\b1}")
@@ -93,8 +95,8 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
              StringUtils::StartsWith(fullTag, "{\\1c&h"))
     {
       m_flag[FLAG_COLOR] = true;
-      CStdString tempColorTag = "[COLOR FF";
-      CStdString tagOptionValue;
+      string tempColorTag = "[COLOR FF";
+      string tagOptionValue;
       if (StringUtils::StartsWith(fullTag, "{\\c&h"))
          tagOptionValue = fullTag.substr(5,6);
       else
@@ -111,13 +113,13 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
       int pos2 = 5;
       while ((pos2 = m_tagOptions->RegFind(fullTag.c_str(), pos2)) >= 0)
       {
-        CStdString tagOptionName = m_tagOptions->GetMatch(1);
-        CStdString tagOptionValue = m_tagOptions->GetMatch(2);
+        string tagOptionName = m_tagOptions->GetMatch(1);
+        string tagOptionValue = m_tagOptions->GetMatch(2);
         pos2 += tagOptionName.length() + tagOptionValue.length();
         if (tagOptionName == "color")
         {
           m_flag[FLAG_COLOR] = true;
-          CStdString tempColorTag = "[COLOR ";
+          string tempColorTag = "[COLOR ";
           if (tagOptionValue[0] == '#')
           {
             tagOptionValue.erase(0, 1);
@@ -151,8 +153,8 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
       int pos2 = 3;
       while ((pos2 = m_tagOptions->RegFind(fullTag.c_str(), pos2)) >= 0)
       {
-        CStdString tagOptionName = m_tagOptions->GetMatch(1);
-        CStdString tagOptionValue = m_tagOptions->GetMatch(2);
+        string tagOptionName = m_tagOptions->GetMatch(1);
+        string tagOptionValue = m_tagOptions->GetMatch(2);
         pos2 += tagOptionName.length() + tagOptionValue.length();
         if (tagOptionName == "class")
         {

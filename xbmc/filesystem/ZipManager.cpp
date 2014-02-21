@@ -45,14 +45,14 @@ CZipManager::~CZipManager()
 
 }
 
-bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items)
+bool CZipManager::GetZipList(const string& strPath, vector<SZipEntry>& items)
 {
   CLog::Log(LOGDEBUG, "%s - Processing %s", __FUNCTION__, strPath.c_str());
 
   CURL url(strPath);
   struct __stat64 m_StatData = {};
 
-  CStdString strFile = url.GetHostName();
+  string strFile = url.GetHostName();
 
   if (CFile::Stat(strFile,&m_StatData))
   {
@@ -60,10 +60,10 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     return false;
   }
 
-  map<CStdString,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  map<string,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
-    map<CStdString,int64_t>::iterator it2=mZipDate.find(strFile);
+    map<string,int64_t>::iterator it2=mZipDate.find(strFile);
     CLog::Log(LOGDEBUG,"statdata: %"PRId64" new: %"PRIu64, it2->second, (uint64_t)m_StatData.st_mtime);
 
       if (m_StatData.st_mtime == it2->second)
@@ -178,9 +178,9 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     }
 
     // Get the filename just after the central file header
-    CStdString strName;
-    mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
-    strName.ReleaseBuffer();
+    std::vector<char> buffer(ze.flength);
+    mFile.Read(&buffer[0], ze.flength);
+    std::string strName(buffer.begin(), buffer.end());
     g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
@@ -211,13 +211,13 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   return true;
 }
 
-bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
+bool CZipManager::GetZipEntry(const string& strPath, SZipEntry& item)
 {
   CURL url(strPath);
 
-  CStdString strFile = url.GetHostName();
+  string strFile = url.GetHostName();
 
-  map<CStdString,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  map<string,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   vector<SZipEntry> items;
   if (it == mZipMap.end()) // we need to list the zip
   {
@@ -228,10 +228,10 @@ bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
     items = it->second;
   }
 
-  CStdString strFileName = url.GetFileName();
+  string strFileName = url.GetFileName();
   for (vector<SZipEntry>::iterator it2=items.begin();it2 != items.end();++it2)
   {
-    if (CStdString(it2->name) == strFileName)
+    if (string(it2->name) == strFileName)
     {
       memcpy(&item,&(*it2),sizeof(SZipEntry));
       return true;
@@ -240,17 +240,17 @@ bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
   return false;
 }
 
-bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString& strPath)
+bool CZipManager::ExtractArchive(const string& strArchive, const string& strPath)
 {
   vector<SZipEntry> entry;
-  CStdString strZipPath;
+  string strZipPath;
   URIUtils::CreateArchivePath(strZipPath, "zip", strArchive, "");
   GetZipList(strZipPath,entry);
   for (vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
-    CStdString strFilePath(it->name);
+    string strFilePath(it->name);
 
 
     URIUtils::CreateArchivePath(strZipPath, "zip", strArchive, strFilePath);
@@ -260,10 +260,10 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
   return true;
 }
 
-void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPath)
+void CZipManager::CleanUp(const string& strArchive, const string& strPath)
 {
   vector<SZipEntry> entry;
-  CStdString strZipPath;
+  string strZipPath;
   URIUtils::CreateArchivePath(strZipPath, "zip", strArchive, "");
 
   GetZipList(strZipPath,entry);
@@ -271,7 +271,7 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
-    CStdString strFilePath(it->name);
+    string strFilePath(it->name);
     CLog::Log(LOGDEBUG,"delete file: %s",(strPath+strFilePath).c_str());
     CFile::Delete((strPath+strFilePath).c_str());
   }
@@ -314,13 +314,13 @@ void CZipManager::readCHeader(const char* buffer, SZipEntry& info)
 
 }
 
-void CZipManager::release(const CStdString& strPath)
+void CZipManager::release(const string& strPath)
 {
   CURL url(strPath);
-  map<CStdString,vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
+  map<string,vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
   if (it != mZipMap.end())
   {
-    map<CStdString,int64_t>::iterator it2=mZipDate.find(url.GetHostName());
+    map<string,int64_t>::iterator it2=mZipDate.find(url.GetHostName());
     mZipMap.erase(it);
     mZipDate.erase(it2);
   }

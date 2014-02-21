@@ -87,14 +87,14 @@ CCueDocument::~CCueDocument(void)
 // Function: Parse()
 // Opens the .cue file for reading, and constructs the track database information
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::Parse(const CStdString &strFile)
+bool CCueDocument::Parse(const string &strFile)
 {
   if (!m_file.Open(strFile))
     return false;
 
-  CStdString strLine;
+  string strLine;
   m_iTotalTracks = -1;
-  CStdString strCurrentFile = "";
+  string strCurrentFile = "";
   bool bCurrentFileChanged = false;
   int time;
 
@@ -107,7 +107,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     {
       if (bCurrentFileChanged)
       {
-        OutputDebugString("Track split over multiple files, unsupported ('" + strFile + "')\n");
+        CLog::Log(LOGDEBUG, "Track split over multiple files, unsupported ('%s')\n", strFile.c_str());
         return false;
       }
 
@@ -115,7 +115,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       time = ExtractTimeFromIndex(strLine);
       if (time == -1)
       { // Error!
-        OutputDebugString("Mangled Time in INDEX 0x tag in CUE file!\n");
+        CLog::Log(LOGDEBUG, "Mangled Time in INDEX 0x tag in CUE file!\n");
         return false;
       }
       if (m_iTotalTracks > 0)  // Set the end time of the last track
@@ -131,7 +131,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       else if (!ExtractQuoteInfo(strLine, m_Track[m_iTotalTracks].strTitle))
       {
         // lets manage tracks titles without quotes
-        CStdString titleNoQuote = strLine.substr(5);
+        string titleNoQuote = strLine.substr(5);
         StringUtils::TrimLeft(titleNoQuote);
         if (!titleNoQuote.empty())
         {
@@ -192,7 +192,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     {
       if (!ExtractQuoteInfo(strLine, m_strGenre))
       {
-        CStdString genreNoQuote = strLine.substr(9);
+        string genreNoQuote = strLine.substr(9);
         StringUtils::TrimLeft(genreNoQuote);
         if (!genreNoQuote.empty())
         {
@@ -261,17 +261,17 @@ void CCueDocument::GetSongs(VECSONGS &songs)
   }
 }
 
-void CCueDocument::GetMediaFiles(vector<CStdString>& mediaFiles)
+void CCueDocument::GetMediaFiles(vector<string>& mediaFiles)
 {
-  set<CStdString> uniqueFiles;
+  set<string> uniqueFiles;
   for (int i = 0; i < m_iTotalTracks; i++)
     uniqueFiles.insert(m_Track[i].strFile);
 
-  for (set<CStdString>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
+  for (set<string>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
     mediaFiles.push_back(*it);
 }
 
-CStdString CCueDocument::GetMediaTitle()
+string CCueDocument::GetMediaTitle()
 {
   return m_strAlbum;
 }
@@ -283,7 +283,7 @@ CStdString CCueDocument::GetMediaTitle()
 // Returns the next non-blank line of the textfile, stripping any whitespace from
 // the left.
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::ReadNextLine(CStdString &szLine)
+bool CCueDocument::ReadNextLine(string &szLine)
 {
   // Read the next line.
   while (m_file.ReadString(m_szBuffer, 1023)) // Bigger than MAX_PATH_SIZE, for usage with relax!
@@ -302,7 +302,7 @@ bool CCueDocument::ReadNextLine(CStdString &szLine)
 // Function: ExtractQuoteInfo()
 // Extracts the information in quotes from the string line, returning it in quote
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
+bool CCueDocument::ExtractQuoteInfo(const string &line, string &quote)
 {
   quote.clear();
   size_t left = line.find('\"');
@@ -321,10 +321,10 @@ bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
 // Assumed format is:
 // MM:SS:FF where MM is minutes, SS seconds, and FF frames (75 frames in a second)
 ////////////////////////////////////////////////////////////////////////////////////
-int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
+int CCueDocument::ExtractTimeFromIndex(const string &index)
 {
   // Get rid of the index number and any whitespace
-  CStdString numberTime = index.substr(5);
+  string numberTime = index.substr(5);
   StringUtils::TrimLeft(numberTime);
   while (!numberTime.empty())
   {
@@ -334,8 +334,7 @@ int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
   }
   StringUtils::TrimLeft(numberTime);
   // split the resulting string
-  CStdStringArray time;
-  StringUtils::SplitString(numberTime, ":", time);
+  std::vector<std::string> time = StringUtils::Split(numberTime, ":");
   if (time.size() != 3)
     return -1;
 
@@ -350,9 +349,9 @@ int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
 // Function: ExtractNumericInfo()
 // Extracts the numeric info from the string info, returning it as an integer value
 ////////////////////////////////////////////////////////////////////////////////////
-int CCueDocument::ExtractNumericInfo(const CStdString &info)
+int CCueDocument::ExtractNumericInfo(const string &info)
 {
-  CStdString number(info);
+  string number(info);
   StringUtils::TrimLeft(number);
   if (number.empty() || !isdigit(number[0]))
     return -1;
@@ -364,10 +363,10 @@ int CCueDocument::ExtractNumericInfo(const CStdString &info)
 // Determines whether strPath is a relative path or not, and if so, converts it to an
 // absolute path using the path information in strBase
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
+bool CCueDocument::ResolvePath(string &strPath, const string &strBase)
 {
-  CStdString strDirectory = URIUtils::GetDirectory(strBase);
-  CStdString strFilename = URIUtils::GetFileName(strPath);
+  string strDirectory = URIUtils::GetDirectory(strBase);
+  string strFilename = URIUtils::GetFileName(strPath);
 
   strPath = URIUtils::AddFileToFolder(strDirectory, strFilename);
 
@@ -378,7 +377,7 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
     CDirectory::GetDirectory(strDirectory,items);
     for (int i=0;i<items.Size();++i)
     {
-      if (items[i]->GetPath().Equals(strPath))
+      if (StringUtils::EqualsNoCase(items[i]->GetPath(), strPath))
       {
         strPath = items[i]->GetPath();
         return true;

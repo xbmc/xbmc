@@ -36,10 +36,10 @@ CAlarmClock::~CAlarmClock()
 {
 }
 
-void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent /* false */, bool bLoop /* false */)
+void CAlarmClock::Start(const string& strName, float n_secs, const string& strCommand, bool bSilent /* false */, bool bLoop /* false */)
 {
   // make lower case so that lookups are case-insensitive
-  CStdString lowerName(strName);
+  string lowerName(strName);
   StringUtils::ToLower(lowerName);
   Stop(lowerName);
   SAlarmClockEvent event;
@@ -53,8 +53,8 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
     m_bIsRunning = true;
   }
 
-  CStdString strAlarmClock;
-  CStdString strStarted;
+  string strAlarmClock;
+  string strStarted;
   if (StringUtils::EqualsNoCase(strName, "shutdowntimer"))
   {
     strAlarmClock = g_localizeStrings.Get(20144);
@@ -66,7 +66,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
     strStarted = g_localizeStrings.Get(13210);
   }
 
-  CStdString strMessage = StringUtils::Format(strStarted.c_str(),
+  string strMessage = StringUtils::Format(strStarted.c_str(),
                                               static_cast<int>(event.m_fSecs)/60,
                                               static_cast<int>(event.m_fSecs)%60);
 
@@ -79,32 +79,32 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
   CLog::Log(LOGDEBUG,"started alarm with name: %s",lowerName.c_str());
 }
 
-void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
+void CAlarmClock::Stop(const string& strName, bool bSilent /* false */)
 {
   CSingleLock lock(m_events);
 
-  CStdString lowerName(strName);
+  string lowerName(strName);
   StringUtils::ToLower(lowerName);          // lookup as lowercase only
-  map<CStdString,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
+  map<string,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
 
   if (iter == m_event.end())
     return;
 
   SAlarmClockEvent& event = iter->second;
 
-  CStdString strAlarmClock;
-  if (event.m_strCommand.Equals("xbmc.powerdown") || event.m_strCommand.Equals("xbmc.powerdown()"))
+  string strAlarmClock;
+  if (StringUtils::EqualsNoCase(event.m_strCommand, "xbmc.powerdown") || StringUtils::EqualsNoCase(event.m_strCommand, "xbmc.powerdown()"))
     strAlarmClock = g_localizeStrings.Get(20144);
   else
     strAlarmClock = g_localizeStrings.Get(13208);
 
-  CStdString strMessage;
+  string strMessage;
   if( iter->second.watch.GetElapsedSeconds() > iter->second.m_fSecs )
     strMessage = g_localizeStrings.Get(13211);
   else
   {
     float remaining = static_cast<float>(iter->second.m_fSecs-iter->second.watch.GetElapsedSeconds());
-    CStdString strStarted = g_localizeStrings.Get(13212);
+    string strStarted = g_localizeStrings.Get(13212);
     strMessage = StringUtils::Format(strStarted.c_str(),
                                      static_cast<int>(remaining)/60,
                                      static_cast<int>(remaining)%60);
@@ -132,10 +132,10 @@ void CAlarmClock::Process()
 {
   while( !m_bStop)
   {
-    CStdString strLast = "";
+    string strLast = "";
     {
       CSingleLock lock(m_events);
-      for (map<CStdString,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
+      for (map<string,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
         if (iter->second.watch.GetElapsedSeconds() >= iter->second.m_fSecs)
         {
           Stop(iter->first);

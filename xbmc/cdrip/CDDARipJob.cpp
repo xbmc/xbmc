@@ -41,11 +41,12 @@
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
-CCDDARipJob::CCDDARipJob(const CStdString& input,
-                         const CStdString& output,
+CCDDARipJob::CCDDARipJob(const string& input,
+                         const string& output,
                          const CMusicInfoTag& tag, 
                          int encoder,
                          bool eject,
@@ -92,7 +93,7 @@ bool CCDDARipJob::DoWork()
   CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(g_localizeStrings.Get(605));
 
   int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
-  CStdString strLine0 = StringUtils::Format("%02i. %s - %s", iTrack,
+  string strLine0 = StringUtils::Format("%02i. %s - %s", iTrack,
                                             StringUtils::Join(m_tag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str(),
                                             m_tag.GetTitle().c_str());
   handle->SetText(strLine0);
@@ -212,7 +213,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
     return NULL;
 
   // we have to set the tags before we init the Encoder
-  CStdString strTrack = StringUtils::Format("%i", strtol(m_input.substr(13, m_input.size() - 13 - 5).c_str(),NULL,10));
+  string strTrack = StringUtils::Format("%i", strtol(m_input.substr(13, m_input.size() - 13 - 5).c_str(),NULL,10));
 
   encoder->SetComment("Ripped with XBMC");
   encoder->SetArtist(StringUtils::Join(m_tag.GetArtist(),
@@ -234,7 +235,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
   return encoder;
 }
 
-CStdString CCDDARipJob::SetupTempFile()
+string CCDDARipJob::SetupTempFile()
 {
   char tmp[MAX_PATH];
 #ifndef TARGET_POSIX

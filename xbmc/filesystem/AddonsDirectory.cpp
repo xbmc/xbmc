@@ -35,6 +35,7 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 
+using namespace std;
 using namespace ADDON;
 
 namespace XFILE
@@ -47,9 +48,9 @@ CAddonsDirectory::CAddonsDirectory(void)
 CAddonsDirectory::~CAddonsDirectory(void)
 {}
 
-bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CAddonsDirectory::GetDirectory(const string& strPath, CFileItemList &items)
 {
-  CStdString path1(strPath);
+  string path1(strPath);
   URIUtils::RemoveSlashAtEnd(path1);
   CURL path(path1);
   items.ClearProperties();
@@ -59,36 +60,36 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   VECADDONS addons;
   // get info from repository
   bool reposAsFolders = true;
-  if (path.GetHostName().Equals("enabled"))
+  if (StringUtils::EqualsNoCase(path.GetHostName(), "enabled"))
   {
     CAddonMgr::Get().GetAllAddons(addons, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
     items.SetLabel(g_localizeStrings.Get(24062));
   }
-  else if (path.GetHostName().Equals("disabled"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "disabled"))
   { // grab all disabled addons, including disabled repositories
     reposAsFolders = false;
     CAddonMgr::Get().GetAllAddons(addons, false, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24039));
     items.SetLabel(g_localizeStrings.Get(24039));
   }
-  else if (path.GetHostName().Equals("outdated"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "outdated"))
   {
     reposAsFolders = false;
     CAddonMgr::Get().GetAllOutdatedAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24043));
     items.SetLabel(g_localizeStrings.Get(24043));
   }
-  else if (path.GetHostName().Equals("repos"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "repos"))
   {
     CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,true);
     items.SetLabel(g_localizeStrings.Get(24033)); // Get Add-ons
   }
-  else if (path.GetHostName().Equals("sources"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "sources"))
   {
     return GetScriptsAndPlugins(path.GetFileName(), items);
   }
-  else if (path.GetHostName().Equals("all"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "all"))
   {
     CAddonDatabase database;
     database.Open();
@@ -96,9 +97,9 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     items.SetProperty("reponame",g_localizeStrings.Get(24032));
     items.SetLabel(g_localizeStrings.Get(24032));
   }
-  else if (path.GetHostName().Equals("search"))
+  else if (StringUtils::EqualsNoCase(path.GetHostName(), "search"))
   {
-    CStdString search(path.GetFileName());
+    string search(path.GetFileName());
     if (search.empty() && !GetKeyboardInput(16017, search))
       return false;
 
@@ -133,7 +134,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   if (path.GetFileName().empty())
   {
-    if (!path.GetHostName().Equals("repos"))
+    if (!StringUtils::EqualsNoCase(path.GetHostName(), "repos"))
     {
       for (int i=ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
       {
@@ -144,7 +145,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
             CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
             item->SetPath(URIUtils::AddFileToFolder(strPath,TranslateType((TYPE)i,false)));
             item->m_bIsFolder = true;
-            CStdString thumb = GetIcon((TYPE)i);
+            string thumb = GetIcon((TYPE)i);
             if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
               item->SetArt("thumb", thumb);
             items.Add(item);
@@ -174,7 +175,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   items.SetPath(strPath);
   GenerateListing(path, addons, items, reposAsFolders);
   // check for available updates
-  if (path.GetHostName().Equals("enabled"))
+  if (StringUtils::EqualsNoCase(path.GetHostName(), "enabled"))
   {
     CAddonDatabase database;
     database.Open();
@@ -190,7 +191,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
     }
   }
-  if (path.GetHostName().Equals("repos") && items.Size() > 1)
+  if (StringUtils::EqualsNoCase(path.GetHostName(), "repos") && items.Size() > 1)
   {
     CFileItemPtr item(new CFileItem("addons://all/",true));
     item->SetLabel(g_localizeStrings.Get(24032));
@@ -202,7 +203,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
 void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemList &items, bool reposAsFolders)
 {
-  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
+  string xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   items.ClearItems();
   for (unsigned i=0; i < addons.size(); i++)
   {
@@ -232,7 +233,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
   }
 }
 
-CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CStdString &basePath, bool folder)
+CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const string &basePath, bool folder)
 {
   if (!addon)
     return CFileItemPtr();
@@ -240,19 +241,19 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CS
   // TODO: This can probably be done more efficiently
   CURL url(basePath);
   url.SetFileName(addon->ID());
-  CStdString path(url.Get());
+  string path(url.Get());
   if (folder)
     URIUtils::AddSlashAtEnd(path);
 
   CFileItemPtr item(new CFileItem(path, folder));
 
-  CStdString strLabel(addon->Name());
-  if (url.GetHostName().Equals("search"))
+  string strLabel(addon->Name());
+  if (StringUtils::EqualsNoCase(url.GetHostName(), "search"))
     strLabel = StringUtils::Format("%s - %s", TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
 
   item->SetLabel(strLabel);
 
-  if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
+  if (!(StringUtils::EqualsNoCase(basePath, "addons://") && addon->Type() == ADDON_REPOSITORY))
     item->SetLabel2(addon->Version().c_str());
   item->SetArt("thumb", addon->Icon());
   item->SetLabelPreformated(true);
@@ -263,7 +264,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const CS
   return item;
 }
 
-bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, VECADDONS &addons)
+bool CAddonsDirectory::GetScriptsAndPlugins(const string &content, VECADDONS &addons)
 {
   CPluginSource::Content type = CPluginSource::Translate(content);
   if (type == CPluginSource::UNKNOWN)
@@ -288,7 +289,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, VECADDONS
   return true;
 }
 
-bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItemList &items)
+bool CAddonsDirectory::GetScriptsAndPlugins(const string &content, CFileItemList &items)
 {
   items.Clear();
 
@@ -305,7 +306,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
     if (plugin->ProvidesSeveral())
     {
       CURL url = item->GetAsUrl();
-      CStdString opt = StringUtils::Format("?content_type=%s",content.c_str());
+      string opt = StringUtils::Format("?content_type=%s",content.c_str());
       url.SetOptions(opt);
       item->SetPath(url.Get());
     }
@@ -320,7 +321,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
   return items.Size() > 0;
 }
 
-CFileItemPtr CAddonsDirectory::GetMoreItem(const CStdString &content)
+CFileItemPtr CAddonsDirectory::GetMoreItem(const string &content)
 {
   CFileItemPtr item(new CFileItem("addons://more/"+content,false));
   item->SetLabelPreformated(true);

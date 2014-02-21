@@ -22,6 +22,7 @@
 #include "cores/paplayer/OggCallback.h"
 #include "File.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
@@ -34,7 +35,7 @@ COGGFileDirectory::~COGGFileDirectory(void)
 {
 }
 
-int COGGFileDirectory::GetTrackCount(const CStdString& strPath)
+int COGGFileDirectory::GetTrackCount(const string& strPath)
 {
   if (!m_dll.Load())
     return 0;

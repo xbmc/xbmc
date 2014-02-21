@@ -380,10 +380,10 @@ class CKey;
 class CAction
 {
 public:
-  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "", unsigned int holdTime = 0);
+  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const std::string &name = "", unsigned int holdTime = 0);
   CAction(int actionID, wchar_t unicode);
-  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name = "");
-  CAction(int actionID, const CStdString &name, const CKey &key);
+  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const std::string &name = "");
+  CAction(int actionID, const std::string &name, const CKey &key);
   CAction(int actionID, const std::string &name);
 
   /*! \brief Identifier of the action
@@ -401,7 +401,7 @@ public:
   /*! \brief Human-readable name of the action
    \return name of the action
    */
-  const CStdString &GetName() const { return m_name; };
+  const std::string &GetName() const { return m_name; };
 
   /*! \brief Get an amount associated with this action
    \param zero-based index of amount to retrieve, defaults to 0
@@ -431,7 +431,7 @@ public:
 
 private:
   int          m_id;
-  CStdString   m_name;
+  std::string   m_name;
 
   static const unsigned int max_amounts = 4; // Must be at least 4.
   float        m_amount[max_amounts];

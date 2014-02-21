@@ -24,6 +24,7 @@
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "MusicInfoTag.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderDatabase::CMusicInfoTagLoaderDatabase(void)
@@ -34,7 +35,7 @@ CMusicInfoTagLoaderDatabase::~CMusicInfoTagLoaderDatabase()
 {
 }
 
-bool CMusicInfoTagLoaderDatabase::Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
+bool CMusicInfoTagLoaderDatabase::Load(const string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   tag.SetLoaded(false);
   CMusicDatabase database;

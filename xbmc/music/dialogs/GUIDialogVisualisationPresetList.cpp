@@ -28,6 +28,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 #define CONTROL_LIST           2
 #define CONTROL_PRESETS_LABEL  3
 #define CONTROL_NONE_AVAILABLE 4
@@ -125,7 +127,7 @@ void CGUIDialogVisualisationPresetList::OnInitWindow()
 void CGUIDialogVisualisationPresetList::Update()
 {
   m_vecPresets->Clear();
-  CStdString strHeading;
+  string strHeading;
   if (m_viz)
   {
     strHeading = StringUtils::Format(g_localizeStrings.Get(13407).c_str(), m_viz->Name().c_str());
@@ -133,7 +135,7 @@ void CGUIDialogVisualisationPresetList::Update()
     //clear filelist
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
     OnMessage(msg);
-    std::vector<CStdString> presets;
+    std::vector<string> presets;
     if (m_viz->GetPresetList(presets))
     {
       m_currentPreset = m_viz->GetPreset();

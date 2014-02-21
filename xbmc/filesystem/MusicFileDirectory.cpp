@@ -24,6 +24,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
@@ -35,11 +36,11 @@ CMusicFileDirectory::~CMusicFileDirectory(void)
 {
 }
 
-bool CMusicFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
+bool CMusicFileDirectory::GetDirectory(const string& strPath1, CFileItemList &items)
 {
-  CStdString strPath=strPath1;
+  string strPath=strPath1;
 
-  CStdString strFileName;
+  string strFileName;
   strFileName = URIUtils::GetFileName(strPath);
   URIUtils::RemoveExtension(strFileName);
 
@@ -49,7 +50,7 @@ bool CMusicFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList
 
   for (int i=0; i<iStreams; ++i)
   {
-    CStdString strLabel = StringUtils::Format("%s - %s %02.2i", strFileName.c_str(), g_localizeStrings.Get(554).c_str(), i+1);
+    string strLabel = StringUtils::Format("%s - %s %02.2i", strFileName.c_str(), g_localizeStrings.Get(554).c_str(), i+1);
     CFileItemPtr pItem(new CFileItem(strLabel));
     strLabel = StringUtils::Format("%s%s-%i.%s", strPath.c_str(), strFileName.c_str(), i+1, m_strExt.c_str());
     pItem->SetPath(strLabel);
@@ -69,7 +70,7 @@ bool CMusicFileDirectory::Exists(const char* strPath)
   return true;
 }
 
-bool CMusicFileDirectory::ContainsFiles(const CStdString& strPath)
+bool CMusicFileDirectory::ContainsFiles(const string& strPath)
 {
   if (GetTrackCount(strPath) > 1)
     return true;

@@ -30,7 +30,7 @@ namespace MUSIC_INFO
       CMusicInfoTagLoaderYM(void);
       virtual ~CMusicInfoTagLoaderYM();
 
-      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
+      virtual bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
     private:
       void* m_ym;
       DllStSound m_dll;

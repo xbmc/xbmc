@@ -27,6 +27,7 @@
 #include "GUIUserMessages.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace ADDON;
 
 namespace XBMCAddon
@@ -104,7 +105,7 @@ namespace XBMCAddon
         if (dialog->GetCurrentID() == addon->ID())
         {
           CGUIMessage message(GUI_MSG_SETTING_UPDATED,0,0);
-          std::vector<CStdString> params;
+          vector<string> params;
           params.push_back(id);
           params.push_back(value);
           message.SetStringParams(params);

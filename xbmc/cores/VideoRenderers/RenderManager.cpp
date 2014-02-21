@@ -56,6 +56,8 @@
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
 
+using namespace std;
+
 #define MAXPRESENTDELAY 0.500
 
 /* at any point we want an exclusive lock on rendermanager */
@@ -205,14 +207,14 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
 }
 
-CStdString CXBMCRenderManager::GetVSyncState()
+string CXBMCRenderManager::GetVSyncState()
 {
   double avgerror = 0.0;
   for (int i = 0; i < ERRORBUFFSIZE; i++)
     avgerror += m_errorbuff[i];
   avgerror /= ERRORBUFFSIZE;
 
-  CStdString state = StringUtils::Format("sync:%+3d%% avg:%3d%% error:%2d%%"
+  string state = StringUtils::Format("sync:%+3d%% avg:%3d%% error:%2d%%"
                                          ,     MathUtils::round_int(m_presentcorr * 100)
                                          ,     MathUtils::round_int(avgerror      * 100)
                                          , abs(MathUtils::round_int(m_presenterr  * 100)));

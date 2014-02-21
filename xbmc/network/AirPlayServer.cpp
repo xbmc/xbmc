@@ -44,6 +44,7 @@
 #include "cores/IPlayer.h"
 #include "interfaces/AnnouncementManager.h"
 
+using namespace std;
 using namespace ANNOUNCEMENT;
 
 #ifdef TARGET_WINDOWS
@@ -185,7 +186,7 @@ bool CAirPlayServer::StartServer(int port, bool nonlocal)
     return false;
 }
 
-bool CAirPlayServer::SetCredentials(bool usePassword, const CStdString& password)
+bool CAirPlayServer::SetCredentials(bool usePassword, const string& password)
 {
   bool ret = false;
 
@@ -196,7 +197,7 @@ bool CAirPlayServer::SetCredentials(bool usePassword, const CStdString& password
   return ret;
 }
 
-bool CAirPlayServer::SetInternalCredentials(bool usePassword, const CStdString& password)
+bool CAirPlayServer::SetInternalCredentials(bool usePassword, const string& password)
 {
   m_usePassword = usePassword;
   m_password = password;
@@ -231,9 +232,9 @@ void CAirPlayServer::AnnounceToClients(int state)
   std::vector<CTCPClient>::iterator it;
   for (it = m_connections.begin(); it != m_connections.end(); it++)
   {
-    CStdString reverseHeader;
-    CStdString reverseBody;
-    CStdString response;
+    string reverseHeader;
+    string reverseBody;
+    string response;
     int reverseSocket = INVALID_SOCKET;
     it->ComposeReverseEvent(reverseHeader, reverseBody, state);
   
@@ -318,7 +319,7 @@ void CAirPlayServer::Process()
           nread = recv(socket, (char*)&buffer, RECEIVEBUFFER, 0);
           if (nread > 0)
           {
-            CStdString sessionId;
+            string sessionId;
             m_connections[i].PushBuffer(this, buffer, nread, sessionId, m_reverseSockets);
           }
           if (nread <= 0)
@@ -428,7 +429,7 @@ CAirPlayServer::CTCPClient& CAirPlayServer::CTCPClient::operator=(const CTCPClie
 }
 
 void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *buffer,
-                                            int length, CStdString &sessionId, std::map<CStdString,
+                                            int length, string &sessionId, std::map<string,
                                             int> &reverseSockets)
 {
   HttpParser::status_t status = m_httpParser->addBytes(buffer, length);
@@ -436,11 +437,11 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
   if (status == HttpParser::Done)
   {
     // Parse the request
-    CStdString responseHeader;
-    CStdString responseBody;
+    string responseHeader;
+    string responseBody;
     int status = ProcessRequest(responseHeader, responseBody);
     sessionId = m_sessionId;
-    CStdString statusMsg = "OK";
+    string statusMsg = "OK";
 
     switch(status)
     {
@@ -463,7 +464,7 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
     }
 
     // Prepare the response
-    CStdString response;
+    string response;
     const time_t ltime = time(NULL);
     char *date = asctime(gmtime(&ltime)); //Fri, 17 Dec 2010 11:18:01 GMT;
     date[strlen(date) - 1] = '\0'; // remove \n
@@ -521,8 +522,8 @@ void CAirPlayServer::CTCPClient::Copy(const CTCPClient& client)
 }
 
 
-void CAirPlayServer::CTCPClient::ComposeReverseEvent( CStdString& reverseHeader,
-                                                      CStdString& reverseBody,
+void CAirPlayServer::CTCPClient::ComposeReverseEvent( string& reverseHeader,
+                                                      string& reverseBody,
                                                       int state)
 {
 
@@ -545,10 +546,10 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( CStdString& reverseHeader,
   }
 }
 
-void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(CStdString& responseHeader, CStdString& responseBody)
+void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(string& responseHeader, string& responseBody)
 {
   int16_t random=rand();
-  CStdString randomStr = StringUtils::Format("%i", random);
+  string randomStr = StringUtils::Format("%i", random);
   m_authNonce=XBMC::XBMC_MD5::GetMD5(randomStr);
   responseHeader = StringUtils::Format(AUTH_REQUIRED, m_authNonce.c_str());
   responseBody.clear();
@@ -556,16 +557,16 @@ void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(CStdString& responseHe
 
 
 //as of rfc 2617
-CStdString calcResponse(const CStdString& username,
-                        const CStdString& password,
-                        const CStdString& realm,
-                        const CStdString& method,
-                        const CStdString& digestUri,
-                        const CStdString& nonce)
+string calcResponse(const string& username,
+                        const string& password,
+                        const string& realm,
+                        const string& method,
+                        const string& digestUri,
+                        const string& nonce)
 {
-  CStdString response;
-  CStdString HA1;
-  CStdString HA2;
+  string response;
+  string HA1;
+  string HA2;
 
   HA1 = XBMC::XBMC_MD5::GetMD5(username + ":" + realm + ":" + password);
   HA2 = XBMC::XBMC_MD5::GetMD5(method + ":" + digestUri);
@@ -578,19 +579,17 @@ CStdString calcResponse(const CStdString& username,
 
 //helper function
 //from a string field1="value1", field2="value2" it parses the value to a field
-CStdString getFieldFromString(const CStdString &str, const char* field)
+string getFieldFromString(const string &str, const char* field)
 {
-  CStdString tmpStr;
-  CStdStringArray tmpAr1;
-  CStdStringArray tmpAr2;
-
-  StringUtils::SplitString(str, ",", tmpAr1);
+  string tmpStr;
+  std::vector<std::string> tmpAr1 = StringUtils::Split(str, ",");
 
   for(unsigned int i = 0;i<tmpAr1.size();i++)
   {
     if (tmpAr1[i].find(field) != std::string::npos)
     {
-      if (StringUtils::SplitString(tmpAr1[i], "=", tmpAr2) == 2)
+      std::vector<std::string> tmpAr2 = StringUtils::Split(tmpAr1[i], "=");
+      if (tmpAr2.size() == 2)
       {
         StringUtils::Replace(tmpAr2[1], "\"", "");//remove quotes
         return tmpAr2[1];
@@ -600,13 +599,13 @@ CStdString getFieldFromString(const CStdString &str, const char* field)
   return "";
 }
 
-bool CAirPlayServer::CTCPClient::checkAuthorization(const CStdString& authStr,
-                                                    const CStdString& method,
-                                                    const CStdString& uri)
+bool CAirPlayServer::CTCPClient::checkAuthorization(const string& authStr,
+                                                    const string& method,
+                                                    const string& uri)
 {
   bool authValid = true;
 
-  CStdString username;
+  string username;
 
   if (authStr.empty())
     return false;
@@ -648,10 +647,10 @@ bool CAirPlayServer::CTCPClient::checkAuthorization(const CStdString& authStr,
   //last check response
   if (authValid)
   {
-     CStdString realm = AUTH_REALM;
-     CStdString ourResponse = calcResponse(username, ServerInstance->m_password, realm, method, uri, m_authNonce);
-     CStdString theirResponse = getFieldFromString(authStr, "response");
-     if (!theirResponse.Equals(ourResponse, false))
+     string realm = AUTH_REALM;
+     string ourResponse = calcResponse(username, ServerInstance->m_password, realm, method, uri, m_authNonce);
+     string theirResponse = getFieldFromString(authStr, "response");
+     if (!StringUtils::EqualsNoCase(theirResponse, ourResponse))
      {
        authValid = false;
        CLog::Log(LOGDEBUG,"AirAuth: response mismatch - our: %s theirs: %s",ourResponse.c_str(), theirResponse.c_str());
@@ -680,16 +679,16 @@ void CAirPlayServer::restoreVolume()
   }
 }
 
-int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
-                                                CStdString& responseBody)
+int CAirPlayServer::CTCPClient::ProcessRequest( string& responseHeader,
+                                                string& responseBody)
 {
-  CStdString method = m_httpParser->getMethod();
-  CStdString uri = m_httpParser->getUri();
-  CStdString queryString = m_httpParser->getQueryString();
-  CStdString body = m_httpParser->getBody();
-  CStdString contentType = m_httpParser->getValue("content-type");
+  string method = m_httpParser->getMethod();
+  string uri = m_httpParser->getUri();
+  string queryString = m_httpParser->getQueryString();
+  string body = m_httpParser->getBody();
+  string contentType = m_httpParser->getValue("content-type");
   m_sessionId = m_httpParser->getValue("x-apple-session-id");
-  CStdString authorization = m_httpParser->getValue("authorization");
+  string authorization = m_httpParser->getValue("authorization");
   int status = AIRPLAY_STATUS_OK;
   bool needAuth = false;
   
@@ -779,7 +778,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   // Content-Location and optionally a Start-Position
   else if (uri == "/play")
   {
-    CStdString location;
+    string location;
     float position = 0.0;
     m_lastEvent = EVENT_NONE;
 
@@ -862,7 +861,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
     if (status != AIRPLAY_STATUS_NEED_AUTH)
     {
-      CStdString userAgent(CURL::Encode("AppleCoreMedia/1.0.0.8F455 (AppleTV; U; CPU OS 4_3 like Mac OS X; de_de)"));
+      string userAgent(CURL::Encode("AppleCoreMedia/1.0.0.8F455 (AppleTV; U; CPU OS 4_3 like Mac OS X; de_de)"));
       location += "|User-Agent=" + userAgent;
 
       CFileItem fileToPlay(location, false);
@@ -943,7 +942,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     else if (m_httpParser->getContentLength() > 0)
     {
       XFILE::CFile tmpFile;
-      CStdString tmpFileName = "special://temp/airplay_photo.jpg";
+      string tmpFileName = "special://temp/airplay_photo.jpg";
 
       if( m_httpParser->getContentLength() > 3 &&
           m_httpParser->getBody()[1] == 'P' &&

@@ -196,7 +196,7 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
 
   if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.audiolanguage"), "original"))
   {
-    CStdString audio_language = g_langInfo.GetAudioLanguage();
+    string audio_language = g_langInfo.GetAudioLanguage();
     PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(audio_language, lh.language)
                    , g_LangCodeExpander.CompareLangCodes(audio_language, rh.language));
   }
@@ -273,7 +273,7 @@ public:
                      , rh.flags & CDemuxStream::FLAG_FORCED);
     }
 
-    CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
+    string subtitle_language = g_langInfo.GetSubtitleLanguage();
     if(!original)
     {
       PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
@@ -479,7 +479,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
       stream->GetStreamName(s.name);
-      CStdString codec;
+      string codec;
       demuxer->GetStreamCodecName(stream->iId, codec);
       s.codec    = codec;
       s.channels = 0; // Default to 0. Overwrite if STREAM_AUDIO below.
@@ -665,7 +665,7 @@ bool CDVDPlayer::OpenInputStream()
   CLog::Log(LOGNOTICE, "Creating InputStream");
 
   // correct the filename if needed
-  CStdString filename(m_filename);
+  string filename(m_filename);
   if (StringUtils::StartsWith(filename, "dvd://")
   ||  StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo"))
   {
@@ -694,11 +694,11 @@ bool CDVDPlayer::OpenInputStream()
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
     // find any available external subtitles
-    std::vector<CStdString> filenames;
+    std::vector<string> filenames;
     CUtil::ScanForExternalSubtitles( m_filename, filenames );
 
     // find any upnp subtitles
-    CStdString key("upnp:subtitle:1");
+    string key("upnp:subtitle:1");
     for(unsigned s = 1; m_item.HasProperty(key); key = StringUtils::Format("upnp:subtitle:%u", ++s))
       filenames.push_back(m_item.GetProperty(key).asString());
 
@@ -707,7 +707,7 @@ bool CDVDPlayer::OpenInputStream()
       // if vobsub subtitle:
       if (URIUtils::HasExtension(filenames[i], ".idx"))
       {
-        CStdString strSubFile;
+        string strSubFile;
         if ( CUtil::FindVobSubPair( filenames, filenames[i], strSubFile ) )
           AddSubtitleFile(filenames[i], strSubFile);
       }
@@ -2690,7 +2690,7 @@ bool CDVDPlayer::SeekScene(bool bPlus)
   return false;
 }
 
-void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
+void CDVDPlayer::GetAudioInfo(string& strAudioInfo)
 {
   { CSingleLock lock(m_StateSection);
     strAudioInfo = StringUtils::Format("D(%s)", m_StateInput.demux_audio.c_str());
@@ -2698,7 +2698,7 @@ void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
   strAudioInfo += StringUtils::Format("\nP(%s)", m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
-void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
+void CDVDPlayer::GetVideoInfo(string& strVideoInfo)
 {
   { CSingleLock lock(m_StateSection);
     strVideoInfo = StringUtils::Format("D(%s)", m_StateInput.demux_video.c_str());
@@ -2706,7 +2706,7 @@ void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
   strVideoInfo += StringUtils::Format("\nP(%s)", m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
-void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
+void CDVDPlayer::GetGeneralInfo(string& strGeneralInfo)
 {
   if (!m_bStop)
   {
@@ -2719,10 +2719,10 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
-    CStdString strEDL;
+    string strEDL;
     strEDL += StringUtils::Format(", edl:%s", m_Edl.GetInfo().c_str());
 
-    CStdString strBuf;
+    string strBuf;
     CSingleLock lock(m_StateSection);
     if(m_StateInput.cache_bytes >= 0)
     {
@@ -3875,13 +3875,13 @@ bool CDVDPlayer::HasMenu()
     return false;
 }
 
-CStdString CDVDPlayer::GetPlayerState()
+string CDVDPlayer::GetPlayerState()
 {
   CSingleLock lock(m_StateSection);
   return m_State.player_state;
 }
 
-bool CDVDPlayer::SetPlayerState(CStdString state)
+bool CDVDPlayer::SetPlayerState(string state)
 {
   m_messenger.Put(new CDVDMsgPlayerSetState(state));
   return true;
@@ -3899,7 +3899,7 @@ int CDVDPlayer::GetChapter()
   return m_State.chapter;
 }
 
-void CDVDPlayer::GetChapterName(CStdString& strChapterName)
+void CDVDPlayer::GetChapterName(string& strChapterName)
 {
   CSingleLock lock(m_StateSection);
   strChapterName = m_State.chapter_name;
@@ -3922,7 +3922,7 @@ int CDVDPlayer::SeekChapter(int iChapter)
   return 0;
 }
 
-int CDVDPlayer::AddSubtitle(const CStdString& strSubPath)
+int CDVDPlayer::AddSubtitle(const string& strSubPath)
 {
   return AddSubtitleFile(strSubPath);
 }
@@ -3944,7 +3944,7 @@ void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 {
   info.bitrate = m_dvdPlayerVideo.GetVideoBitrate();
 
-  CStdString retVal;
+  string retVal;
   if (m_pDemuxer && (m_CurrentVideo.id != -1))
   {
     m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
@@ -4001,7 +4001,7 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
     if (stream)
     {
       info.channels = stream->iChannels;
-      CStdString codecName;
+      string codecName;
       m_pDemuxer->GetStreamCodecName(stream->iId, codecName);
       info.audioCodecName = codecName;
     }
@@ -4039,7 +4039,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   }
   if(ext == ".sub")
   {
-    CStdString strReplace(URIUtils::ReplaceExtension(filename,".idx"));
+    string strReplace(URIUtils::ReplaceExtension(filename,".idx"));
     if (XFILE::CFile::Exists(strReplace))
       return -1;
   }
@@ -4276,7 +4276,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
     return false;
 }
 
-CStdString CDVDPlayer::GetPlayingTitle()
+string CDVDPlayer::GetPlayingTitle()
 {
   /* Currently we support only Title Name from Teletext line 30 */
   TextCacheStruct_t* ttcache = m_dvdPlayerTeletext.GetTeletextCache();

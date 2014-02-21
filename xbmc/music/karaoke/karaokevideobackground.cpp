@@ -34,6 +34,8 @@
 #include "video/FFmpegVideoDecoder.h"
 #include "system.h"
 
+using namespace std;
+
 KaraokeVideoBackground::KaraokeVideoBackground()
 {
   m_decoder = new FFmpegVideoDecoder();
@@ -47,9 +49,9 @@ KaraokeVideoBackground::~KaraokeVideoBackground()
   delete m_texture;
 }
 
-bool KaraokeVideoBackground::openVideoFile( const CStdString& filename )
+bool KaraokeVideoBackground::openVideoFile( const string& filename )
 {
-  CStdString realPath = CSpecialProtocol::TranslatePath( filename );
+  string realPath = CSpecialProtocol::TranslatePath( filename );
 
   if ( !m_decoder->open( realPath ) )
   {
@@ -150,7 +152,7 @@ void KaraokeVideoBackground::Render()
   CGUITexture::DrawQuad(vertCoords, 0xffffffff, m_texture );
 }
 
-bool KaraokeVideoBackground::Start( const CStdString& filename )
+bool KaraokeVideoBackground::Start( const string& filename )
 {
   if ( !filename.empty() )
   {

@@ -87,11 +87,11 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create() == ADDON_STATUS_OK)
   {
     // Start the visualisation
-    CStdString strFile = URIUtils::GetFileName(g_application.CurrentFile());
+    string strFile = URIUtils::GetFileName(g_application.CurrentFile());
     CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
     try
     {
-      m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
+      m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
     }
     catch (std::exception e)
     {
@@ -116,7 +116,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   return false;
 }
 
-void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString &strSongName)
+void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const string &strSongName)
 {
   // notify visz. that new song has been started
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
@@ -213,9 +213,9 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       if ( action == VIS_ACTION_UPDATE_TRACK && param )
       {
         const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
-        CStdString artist(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator));
-        CStdString albumArtist(StringUtils::Join(tag->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator));
-        CStdString genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
+        string artist(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator));
+        string albumArtist(StringUtils::Join(tag->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator));
+        string genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
         
         VisTrack track;
         track.title       = tag->GetTitle().c_str();
@@ -361,7 +361,7 @@ bool CVisualisation::UpdateTrack()
   return handled;
 }
 
-bool CVisualisation::GetPresetList(std::vector<CStdString> &vecpresets)
+bool CVisualisation::GetPresetList(std::vector<string> &vecpresets)
 {
   vecpresets = m_presets;
   return !m_presets.empty();
@@ -394,7 +394,7 @@ bool CVisualisation::GetPresets()
   return (!m_presets.empty());
 }
 
-bool CVisualisation::GetSubModuleList(std::vector<CStdString> &vecmodules)
+bool CVisualisation::GetSubModuleList(std::vector<string> &vecmodules)
 {
   vecmodules = m_submodules;
   return !m_submodules.empty();
@@ -427,11 +427,11 @@ bool CVisualisation::GetSubModules()
   return (!m_submodules.empty());
 }
 
-CStdString CVisualisation::GetFriendlyName(const CStdString& strVisz,
-                                           const CStdString& strSubModule)
+string CVisualisation::GetFriendlyName(const string& strVisz,
+                                           const string& strSubModule)
 {
   // should be of the format "moduleName (visName)"
-  return CStdString(strSubModule + " (" + strVisz + ")");
+  return string(strSubModule + " (" + strVisz + ")");
 }
 
 bool CVisualisation::IsLocked()
@@ -477,7 +477,7 @@ unsigned CVisualisation::GetPreset()
   return index;
 }
 
-CStdString CVisualisation::GetPresetName()
+string CVisualisation::GetPresetName()
 {
   if (!m_presets.empty())
     return m_presets[GetPreset()];

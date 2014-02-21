@@ -25,6 +25,8 @@
 
 #include <string>
 
+using namespace std;
+
 namespace PythonBindings
 {
   TypeInfo::TypeInfo(const std::type_info& ti) : swigType(NULL), parentType(NULL), typeIndex(ti)
@@ -155,7 +157,7 @@ namespace PythonBindings
     PyObject* exc_traceback;
     PyObject* pystring = NULL;
 
-    CStdString msg;
+    string msg;
 
     PyErr_Fetch(&exc_type, &exc_value, &exc_traceback);
     if (exc_type == 0 && exc_value == 0 && exc_traceback == 0)

@@ -36,6 +36,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
+using namespace std;
 using namespace PVR;
 
 CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
@@ -62,9 +63,9 @@ void CGUIWindowPVRRecordings::ResetObservers(void)
   g_infoManager.RegisterObserver(this);
 }
 
-CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
+string CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
 {
-  CStdString resumeString;
+  string resumeString;
   if (item.IsPVRRecording())
   {
 
@@ -79,7 +80,7 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
       CVideoDatabase db;
       if (db.Open())
       {
-        CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
+        string itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
         db.AddBookMarkToFile(itemPath, bookmark, CBookmark::RESUME);
         db.Close();
       }
@@ -90,7 +91,7 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
       if (db.Open())
       {
         CBookmark bookmark;
-        CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
+        string itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
         if (db.GetResumeBookMark(itemPath, bookmark) )
           positionInSeconds = lrint(bookmark.timeInSeconds);
         db.Close();
@@ -115,7 +116,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_INFO, 19053);      /* Get Information of this recording */
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
-    CStdString resumeString = GetResumeString(*pItem);
+    string resumeString = GetResumeString(*pItem);
     if (!resumeString.empty())
     {
       buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
@@ -147,7 +148,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
   // Update sort by button
 //if (m_guiState->GetSortMethod()!=SortByNone)
 //{
-//  CStdString sortLabel;
+//  string sortLabel;
 //  sortLabel.Format(g_localizeStrings.Get(550).c_str(), g_localizeStrings.Get(m_guiState->GetSortMethodLabel()).c_str());
 //  buttons.Add(CONTEXT_BUTTON_SORTBY, sortLabel);   /* Sort method */
 //
@@ -274,7 +275,7 @@ bool CGUIWindowPVRRecordings::OnClickList(CGUIMessage &message)
     if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK || iAction == ACTION_PLAY)
     {
       int choice = CONTEXT_BUTTON_PLAY_ITEM;
-      CStdString resumeString = GetResumeString(*pItem);
+      string resumeString = GetResumeString(*pItem);
       if (!resumeString.empty())
       {
         CContextButtons choices;
@@ -362,7 +363,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUT
     bReturn = true;
 
     CPVRRecording *recording = item->GetPVRRecordingInfoTag();
-    CStdString strNewName = recording->m_strTitle;
+    string strNewName = recording->m_strTitle;
     if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
     {
       if (g_PVRRecordings->RenameRecording(*item, strNewName))
@@ -400,7 +401,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
   return bReturn;
 }
 
-void CGUIWindowPVRRecordings::BeforeUpdate(const CStdString &strDirectory)
+void CGUIWindowPVRRecordings::BeforeUpdate(const string &strDirectory)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -428,12 +429,12 @@ void CGUIWindowPVRRecordings::AfterUpdate(CFileItemList& items)
           // Build a map of all files belonging to common subdirectories and call
           // LoadVideoInfo for each item list
           typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
-          typedef std::map<CStdString, CFileItemListPtr> DirectoryMap;
+          typedef std::map<string, CFileItemListPtr> DirectoryMap;
 
           DirectoryMap directory_map;
           for (int i = 0; i < files.Size(); i++)
           {
-            CStdString strDirectory = URIUtils::GetDirectory(files[i]->GetPath());
+            string strDirectory = URIUtils::GetDirectory(files[i]->GetPath());
             DirectoryMap::iterator it = directory_map.find(strDirectory);
             if (it == directory_map.end())
               it = directory_map.insert(std::make_pair(

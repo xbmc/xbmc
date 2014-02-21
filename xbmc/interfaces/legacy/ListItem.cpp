@@ -31,6 +31,8 @@
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 
+using namespace std;
+
 namespace XBMCAddon
 {
   namespace xbmcgui
@@ -136,9 +138,9 @@ namespace XBMCAddon
         LOCKGUI;
         for (Properties::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
         {
-          CStdString artName = it->first;
+          string artName = it->first;
           StringUtils::ToLower(artName);
-          const CStdString artFilename(it->second.c_str());
+          const string artFilename(it->second.c_str());
           item->SetArt(artName, artFilename);
         }
       }
@@ -203,7 +205,7 @@ namespace XBMCAddon
       LOCKGUI;
       String lowerKey = key;
       StringUtils::ToLower(lowerKey);
-      CStdString value;
+      string value;
       if (lowerKey == "startoffset")
       { // special case for start offset - don't actually store in a property,
         // we store it in item.m_lStartOffset instead

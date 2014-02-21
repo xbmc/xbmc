@@ -177,7 +177,7 @@ public:
 
 private:
   void Calculate(const CPoint &point);
-  void AddEffect(const CStdString &type, const TiXmlElement *node, const CRect &rect);
+  void AddEffect(const std::string &type, const TiXmlElement *node, const CRect &rect);
   void AddEffect(CAnimEffect *effect);
 
   enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };

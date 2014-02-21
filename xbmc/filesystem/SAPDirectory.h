@@ -150,8 +150,8 @@ namespace XFILE
   public:
     CSAPDirectory(void);
     virtual ~CSAPDirectory(void);
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+    virtual bool GetDirectory(const std::string& strPath, CFileItemList &items);
+    virtual bool IsAllowed(const std::string &strFile) const { return true; };
   };
 
 }

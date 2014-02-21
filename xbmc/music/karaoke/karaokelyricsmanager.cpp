@@ -35,6 +35,8 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+using namespace std;
+
 CKaraokeLyricsManager::CKaraokeLyricsManager()
 {
   m_Lyrics = 0;
@@ -52,7 +54,7 @@ CKaraokeLyricsManager::~ CKaraokeLyricsManager()
   }
 }
 
-bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
+bool CKaraokeLyricsManager::Start(const string & strSongPath)
 {
   CSingleLock lock (m_CritSection);
 

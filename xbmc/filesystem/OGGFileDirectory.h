@@ -31,7 +31,7 @@ namespace XFILE
       COGGFileDirectory(void);
       virtual ~COGGFileDirectory(void);
     protected:
-      virtual int GetTrackCount(const CStdString& strPath);
+      virtual int GetTrackCount(const std::string& strPath);
   private:
     DllVorbisfile m_dll;
   };

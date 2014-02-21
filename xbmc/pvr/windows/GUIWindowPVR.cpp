@@ -35,6 +35,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
 using namespace PVR;
 
 #define CHANNELS_REFRESH_INTERVAL 5000
@@ -92,7 +93,7 @@ void CGUIWindowPVR::SetActiveView(CGUIWindowPVRCommon *window)
   m_currentSubwindow = window;
 }
 
-bool CGUIWindowPVR::Update(const CStdString &strDirectory, bool updateFilterPath)
+bool CGUIWindowPVR::Update(const string &strDirectory, bool updateFilterPath)
 {
   CGUIWindowPVRCommon *view = GetActiveView();
 
@@ -222,7 +223,7 @@ void CGUIWindowPVR::OnWindowUnload(void)
   CGUIMediaWindow::OnWindowUnload();
 }
 
-void CGUIWindowPVR::SetLabel(int iControl, const CStdString &strLabel)
+void CGUIWindowPVR::SetLabel(int iControl, const string &strLabel)
 {
   SET_CONTROL_LABEL(iControl, strLabel);
 }

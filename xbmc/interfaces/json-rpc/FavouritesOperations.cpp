@@ -32,7 +32,7 @@ using namespace std;
 using namespace JSONRPC;
 using namespace XFILE;
 
-JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFavouritesOperations::GetFavourites(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CFileItemList favourites;
   CFavouritesDirectory::Load(favourites);
@@ -51,8 +51,8 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, IT
     CVariant object;
     CFileItemPtr item = favourites.Get(i);
 
-    CStdString function;
-    vector<CStdString> parameters;
+    string function;
+    vector<string> parameters;
     CUtil::SplitExecFunction(item->GetPath(), function, parameters);
     if (parameters.size() == 0)
       continue;
@@ -67,7 +67,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, IT
       if (fields.find("window") != fields.end())
       {
         if (StringUtils::IsNaturalNumber(parameters[0]))
-          object["window"] = CButtonTranslator::TranslateWindow(strtol(parameters[0], NULL, 10));
+          object["window"] = CButtonTranslator::TranslateWindow(strtol(parameters[0].c_str(), NULL, 10));
         else
           object["window"] = parameters[0];
       }
@@ -104,7 +104,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const CStdString &method, IT
   return OK;
 }
 
-JSONRPC_STATUS CFavouritesOperations::AddFavourite(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFavouritesOperations::AddFavourite(const string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   string type = parameterObject["type"].asString();
 

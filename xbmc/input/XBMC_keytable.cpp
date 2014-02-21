@@ -25,6 +25,8 @@
 #include "input/XBMC_vkeys.h"
 #include "input/XBMC_keytable.h"
 
+using namespace std;
+
 // The array of XBMCKEYTABLEs used in XBMC.
 // scancode, sym, unicode, ascii, vkey, keyname
 static const XBMCKEYTABLE XBMCKeyTable[] =
@@ -237,7 +239,7 @@ bool KeyTableLookupName(const char* keyname, XBMCKEYTABLE* keytable)
     return false;
 
   // We need the button name to be in lowercase
-  CStdString lkeyname = keyname;
+  string lkeyname = keyname;
   StringUtils::ToLower(lkeyname);
 
   // Look up the key name in XBMCKeyTable

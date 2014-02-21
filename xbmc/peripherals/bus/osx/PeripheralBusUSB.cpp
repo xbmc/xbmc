@@ -25,6 +25,7 @@
 
 #include <sys/param.h>
 
+using namespace std;
 using namespace PERIPHERALS;
 
 #ifdef TARGET_DARWIN_OSX
@@ -36,7 +37,7 @@ using namespace PERIPHERALS;
 
 typedef struct USBDevicePrivateData {
   CPeripheralBusUSB     *refCon;
-  CStdString            deviceName;
+  string            deviceName;
   io_object_t           notification;
   PeripheralScanResult  result;
 } USBDevicePrivateData;
