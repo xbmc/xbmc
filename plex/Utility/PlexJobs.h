@@ -24,6 +24,7 @@ class CPlexHTTPFetchJob : public CJob
     CPlexHTTPFetchJob(const CURL &url) : CJob(), m_url(url) {};
   
     bool DoWork();
+    void Cancel() { m_http.Cancel(); }
     virtual bool operator==(const CJob* job) const;
   
     XFILE::CCurlFile m_http;
@@ -48,6 +49,11 @@ public:
   virtual const char* GetType() const { return "plexdirectoryfetch"; }
   
   virtual bool DoWork();
+
+  virtual void Cancel()
+  {
+    m_dir.CancelDirectory();
+  }
   
   XFILE::CPlexDirectory m_dir;
   CFileItemList m_items;
