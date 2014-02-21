@@ -23,7 +23,7 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
-#include "CoreAudioDevice.h"
+#include "cores/AudioEngine/Sinks/osx/CoreAudioDevice.h"
 
 // There is only one AudioSystemObject instance system-side.
 // Therefore, all CCoreAudioHardware methods are static

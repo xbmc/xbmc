@@ -20,7 +20,7 @@
 
 #include "CoreAudioHardware.h"
 
-#include "CoreAudioAEHAL.h"
+#include "CoreAudioHelpers.h"
 #include "utils/log.h"
 #include "osx/DarwinUtils.h"
 

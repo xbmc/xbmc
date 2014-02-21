@@ -23,7 +23,7 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
-#include "threads/Thread.h"
+#include "threads/Event.h"
 #include <CoreAudio/CoreAudio.h>
 
 #include <list>
@@ -39,10 +39,10 @@ public:
   
   bool    Open(AudioStreamID streamId);
   void    Close(bool restore = true);
-  
+
   AudioStreamID GetId() {return m_StreamId;}
   UInt32  GetDirection();
-  UInt32  GetTerminalType();
+  static UInt32 GetTerminalType(AudioStreamID id);
   UInt32  GetNumLatencyFrames();
   bool    GetVirtualFormat(AudioStreamBasicDescription *pDesc);
   bool    GetPhysicalFormat(AudioStreamBasicDescription *pDesc);
@@ -50,7 +50,10 @@ public:
   bool    SetPhysicalFormat(AudioStreamBasicDescription *pDesc);
   bool    GetAvailableVirtualFormats(StreamFormatList *pList);
   bool    GetAvailablePhysicalFormats(StreamFormatList *pList);
-  
+  static bool GetAvailableVirtualFormats(AudioStreamID id, StreamFormatList *pList);
+  static bool GetAvailablePhysicalFormats(AudioStreamID id, StreamFormatList *pList);
+  static bool IsDigitalOuptut(AudioStreamID id);
+
 protected:
   static OSStatus HardwareStreamListener(AudioObjectID inObjectID,
     UInt32 inNumberAddresses, const AudioObjectPropertyAddress inAddresses[], void* inClientData);
@@ -58,10 +61,9 @@ protected:
   CEvent m_virtual_format_event;
   CEvent m_physical_format_event;
 
-
   AudioStreamID m_StreamId;
   AudioStreamBasicDescription m_OriginalVirtualFormat;  
-  AudioStreamBasicDescription m_OriginalPhysicalFormat;  
+  AudioStreamBasicDescription m_OriginalPhysicalFormat;
 };
 
 #endif

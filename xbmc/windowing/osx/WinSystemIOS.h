@@ -57,6 +57,7 @@ public:
   virtual bool BeginRender();
   virtual bool EndRender();
   virtual int GetNumScreens();    
+  virtual int GetCurrentScreen();
   
           void InitDisplayLink(void);
           void DeinitDisplayLink(void);

@@ -19,7 +19,7 @@
  */
 
 #include "CoreAudioDevice.h"
-#include "CoreAudioAEHAL.h"
+#include "CoreAudioHelpers.h"
 #include "CoreAudioChannelLayout.h"
 #include "CoreAudioHardware.h"
 #include "utils/log.h"
@@ -29,7 +29,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoreAudioDevice::CCoreAudioDevice()  :
   m_Started             (false    ),
-  m_pSource             (NULL     ),
   m_DeviceId            (0        ),
   m_MixerRestore        (-1       ),
   m_IoProc              (NULL     ),
@@ -44,7 +43,6 @@ CCoreAudioDevice::CCoreAudioDevice()  :
 
 CCoreAudioDevice::CCoreAudioDevice(AudioDeviceID deviceId) :
   m_Started             (false    ),
-  m_pSource             (NULL     ),
   m_DeviceId            (deviceId ),
   m_MixerRestore        (-1       ),
   m_IoProc              (NULL     ),
@@ -78,8 +76,7 @@ void CCoreAudioDevice::Close()
   Stop();
 
   // Unregister the IOProc if we have one
-  if (m_IoProc)
-    SetInputSource(NULL, 0, 0);
+  RemoveIOProc();
 
   SetHogStatus(false);
   CCoreAudioHardware::SetAutoHogMode(false);
@@ -98,7 +95,6 @@ void CCoreAudioDevice::Close()
   }
 
   m_IoProc = NULL;
-  m_pSource = NULL;
   m_DeviceId = 0;
   m_ObjectListenerProc = NULL;
 }
@@ -170,26 +166,13 @@ bool CCoreAudioDevice::SetObjectListenerProc(AudioObjectPropertyListenerProc cal
   m_ObjectListenerProc = callback;
   return true;
 }
-
-bool CCoreAudioDevice::SetInputSource(ICoreAudioSource* pSource, unsigned int frameSize, unsigned int outputBufferIndex)
-{
-  m_pSource   = pSource;
-  m_frameSize = frameSize;
-  m_OutputBufferIndex = outputBufferIndex;
-
-  if (pSource)
-    return AddIOProc();
-  else
-    return RemoveIOProc();
-}
-
-bool CCoreAudioDevice::AddIOProc()
+bool CCoreAudioDevice::AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData)
 {
   // Allow only one IOProc at a time
   if (!m_DeviceId || m_IoProc)
     return false;
 
-  OSStatus ret = AudioDeviceCreateIOProcID(m_DeviceId, DirectRenderCallback, this, &m_IoProc);
+  OSStatus ret = AudioDeviceCreateIOProcID(m_DeviceId, ioProc, pCallbackData, &m_IoProc);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioDevice::AddIOProc: "
@@ -216,7 +199,6 @@ bool CCoreAudioDevice::RemoveIOProc()
       "Unable to remove IOProc. Error = %s", GetError(ret).c_str());
 
   m_IoProc = NULL; // Clear the reference no matter what
-  m_pSource = NULL;
 
   Sleep(100);
 
@@ -226,7 +208,7 @@ bool CCoreAudioDevice::RemoveIOProc()
 std::string CCoreAudioDevice::GetName()
 {
   if (!m_DeviceId)
-    return NULL;
+    return "";
 
   AudioObjectPropertyAddress  propertyAddress;
   propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
@@ -236,9 +218,9 @@ std::string CCoreAudioDevice::GetName()
   UInt32 propertySize;
   OSStatus ret = AudioObjectGetPropertyDataSize(m_DeviceId, &propertyAddress, 0, NULL, &propertySize);
   if (ret != noErr)
-    return NULL;
+    return "";
 
-  std::string name = "";
+  std::string name;
   char *buff = new char[propertySize + 1];
   buff[propertySize] = 0x00;
   ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, buff);
@@ -250,9 +232,9 @@ std::string CCoreAudioDevice::GetName()
   else
   {
     name = buff;
+    name.erase(name.find_last_not_of(" ") + 1);
   }
   delete[] buff;
-
 
   return name;
 }
@@ -478,7 +460,7 @@ bool CCoreAudioDevice::GetMixingSupport()
         mix = 0;
     }
   }
-  CLog::Log(LOGERROR, "CCoreAudioDevice::SupportsMixing: "
+  CLog::Log(LOGDEBUG, "CCoreAudioDevice::SupportsMixing: "
     "Device mixing support : %s.", mix ? "'Yes'" : "'No'");
 
   return (mix > 0);
@@ -684,28 +666,4 @@ bool CCoreAudioDevice::SetBufferSize(UInt32 size)
     CLog::Log(LOGERROR, "CCoreAudioDevice::SetBufferSize: Buffer size change not applied.");
 
   return (ret == noErr);
-}
-
-OSStatus CCoreAudioDevice::DirectRenderCallback(AudioDeviceID inDevice,
-  const AudioTimeStamp  *inNow,
-  const AudioBufferList *inInputData,
-  const AudioTimeStamp  *inInputTime,
-  AudioBufferList       *outOutputData,
-  const AudioTimeStamp  *inOutputTime,
-  void                  *inClientData)
-{
-  OSStatus ret = noErr;
-  CCoreAudioDevice *audioDevice = (CCoreAudioDevice*)inClientData;
-
-  if (audioDevice->m_pSource && audioDevice->m_frameSize)
-  {
-    UInt32 frames = outOutputData->mBuffers[audioDevice->m_OutputBufferIndex].mDataByteSize / audioDevice->m_frameSize;
-    ret = audioDevice->m_pSource->Render(NULL, inInputTime, 0, frames, outOutputData);
-  }
-  else
-  {
-    outOutputData->mBuffers[audioDevice->m_OutputBufferIndex].mDataByteSize = 0;
-  }
-
-  return ret;
 }

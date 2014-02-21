@@ -11,7 +11,7 @@
         <setting id="audiooutput.channels" help="36367" />
       </group>
       <group id="3">
-        <setting id="audiooutput.ac3transcode">
+        <setting id="audiooutput.eac3passthrough">
           <visible>false</visible>
         </setting>
         <setting id="audiooutput.truehdpassthrough">

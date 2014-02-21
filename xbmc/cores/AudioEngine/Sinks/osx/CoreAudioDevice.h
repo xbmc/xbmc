@@ -25,8 +25,7 @@
 
 #include <string>
 
-#include "ICoreAudioSource.h"
-#include "CoreAudioStream.h"
+#include "cores/AudioEngine/Sinks/osx/CoreAudioStream.h"
 
 #include <CoreAudio/CoreAudio.h>
 
@@ -68,17 +67,11 @@ public:
   UInt32        GetBufferSize();
   bool          SetBufferSize(UInt32 size);
 
-  virtual bool  SetInputSource(ICoreAudioSource *pSource, unsigned int frameSize, unsigned int outputBufferIndex);
-protected:
-  bool          AddIOProc();
+  bool          AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData);
   bool          RemoveIOProc();
-
-  static OSStatus DirectRenderCallback(AudioDeviceID inDevice, 
-    const AudioTimeStamp *inNow, const AudioBufferList *inInputData, const AudioTimeStamp *inInputTime, 
-    AudioBufferList *outOutputData, const AudioTimeStamp *inOutputTime, void *inClientData);
+protected:
 
   bool              m_Started;
-  ICoreAudioSource *m_pSource;
   AudioDeviceID     m_DeviceId;
   int               m_MixerRestore;
   AudioDeviceIOProc m_IoProc;

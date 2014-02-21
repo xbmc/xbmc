@@ -50,7 +50,6 @@ protected:
   SwrContext*         m_pConvert;
   enum AVSampleFormat m_iSampleFormat;  
   CAEChannelInfo      m_channelLayout;
-  bool                m_bLpcmMode;
 
   AVFrame* m_pFrame1;
   int      m_iBufferSize1;
