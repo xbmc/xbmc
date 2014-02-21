@@ -262,9 +262,10 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
       }
     }
 
-    std::string location = "navigation";
     if (m_currentStates[type] != MEDIA_STATE_STOPPED)
     {
+      std::string location = "navigation";
+
       int currentWindow = g_windowManager.GetActiveWindow();
       if (g_application.IsPlayingFullScreenVideo())
         location = "fullScreenVideo";
@@ -272,9 +273,9 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
         location = "fullScreenPhoto";
       else if (currentWindow == WINDOW_NOW_PLAYING || currentWindow == WINDOW_VISUALISATION)
         location = "fullScreenMusic";
-    }
 
-    options.AddOption("location", location);
+      options.AddOption("location", location);
+    }
 
     if (g_application.IsPlaying() && g_application.m_pPlayer)
     {
@@ -485,6 +486,7 @@ CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(CPlexRemoteSubscriberP
   CXBMCTinyXML doc;
   doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
   TiXmlElement *mediaContainer = new TiXmlElement("MediaContainer");
+  mediaContainer->SetAttribute("location", "navigation"); // default
   if (m_textFieldFocused)
   {
     mediaContainer->SetAttribute("textFieldFocused", std::string(m_textFieldName));
