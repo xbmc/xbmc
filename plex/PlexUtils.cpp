@@ -541,14 +541,62 @@ CStdString PlexUtils::GetXMLString(const CXBMCTinyXML &document)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool PlexUtils::MakeWakeupPipe(SOCKET *pipe)
 {
-#define _USE_PIPE
-#ifdef _USE_PIPE
+#ifdef TARGET_POSIX
   if (::pipe(pipe) == -1)
   {
     CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to create a POSIX pipe");
     return false;
   }
-  return true;
 #else
+  pipe[0] = ::socket(AF_INET, SOCK_DGRAM, 0);
+  if (pipe[0] == -1)
+  {
+    CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to create UDP socket");
+    return false;
+  }
+
+  struct sockaddr_in inAddr;
+  struct sockaddr addr;
+
+  memset((char*)&inAddr, 0, sizeof(inAddr));
+  memset((char*)&addr, 0, sizeof(addr));
+
+  inAddr.sin_family = AF_INET;
+  inAddr.sin_port = htons(0);
+  inAddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+  int y = 1;
+  if (setsockopt(pipe[0], SOL_SOCKET, SO_REUSEADDR, &y, sizeof(y)) == -1)
+  {
+    CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to set socket options");
+    return false;
+  }
+
+  if (bind(pipe[0], (struct sockaddr *)&inAddr, sizeof(inAddr)) == -1)
+  {
+    CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to bind socket!");
+    return false;
+  }
+
+  unsigned int len = sizeof(addr);
+  if (getsockname(pipe[0], &addr, &len) != 0)
+  {
+    CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to getsockname on socket");
+    return false;
+  }
+
+  pipe[1] = ::socket(AF_INET, SOCK_DGRAM, 0);
+  if (pipe[1] == -1)
+  {
+    CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to create other end of UDP pipe");
+    return false;
+  }
+
+  if (connect(pipe[1], &addr, len) != 0)
+  {
+    CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to connect UDP pipe.");
+    return false;
+  }
 #endif
+  return true;
 }
