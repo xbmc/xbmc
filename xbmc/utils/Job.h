@@ -159,6 +159,11 @@ public:
    \sa IJobCallback::OnJobProgress()
    */
   bool ShouldCancel(unsigned int progress, unsigned int total) const;
+
+  /* PLEX */
+  virtual void Cancel() {}
+  /* END PLEX */
+
 private:
   friend class CJobManager;
   CJobManager *m_callback;

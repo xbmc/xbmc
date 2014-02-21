@@ -186,6 +186,9 @@ class CJobManager
     };
     void Cancel()
     {
+      /* PLEX */
+      m_job->Cancel();
+      /* END PLEX */
       m_callback = NULL;
     };
     CJob         *m_job;
