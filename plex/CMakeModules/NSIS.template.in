@@ -750,32 +750,26 @@ FunctionEnd
 ; determine admin versus local install
 Function un.onInit
 
-  ; Detect Media Center
-  ; 4.0 - Media Center 2005 with Update Rollup 2
-  ; 5.0 - Media Center on Windows Vista
-  ; 6.0 - Media Center on Windows 7
-  StrCpy $0 "0"
-  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Media Center" "Ident"
-  DetailPrint "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Media Center\Ident is $0"
+  ClearErrors
+  UserInfo::GetName
+  IfErrors noLM
+  Pop $0
+  UserInfo::GetAccountType
+  Pop $1
+  StrCmp $1 "Admin" 0 +3
+    SetShellVarContext all
+    ;MessageBox MB_OK 'User "$0" is in the Admin group'
+    Goto done
+  StrCmp $1 "Power" 0 +3
+    SetShellVarContext all
+    ;MessageBox MB_OK 'User "$0" is in the Power Users group'
+    Goto done
 
-  ${If} $0 < 4.0
-    DetailPrint "No MCE detected, or unsupported MCE version"
-    SectionSetFlags ${UnSecMCE} ${SF_RO}
-    SectionSetText ${UnSecMCE} ""
-    StrCpy $SupportedMCEDetected "0"
-  ${Else}
-    DetailPrint "Detected supported MCE version"
-    StrCpy $SupportedMCEDetected "1"
+  noLM:
+    ;Get installation folder from registry if available
 
-    ${If} $0 == 4.0
-      StrCpy $MCERegistrationFile "plex-mce-registration-xp.xml"
-    ${ElseIf} $0 == 5.0
-      StrCpy $MCERegistrationFile "plex-mce-registration-vista.xml"
-    ${Else}
-      StrCpy $MCERegistrationFile "plex-mce-registration-7.xml"
-    ${EndIf}
+  done:
 
-  ${EndIf}
   
 FunctionEnd
 
