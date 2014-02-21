@@ -18,6 +18,8 @@
 #include "JobManager.h"
 #include "GUIInfoManager.h"
 #include "PlexApplication.h"
+#include "GUIWindowSlideShow.h"
+#include "GUIWindowManager.h"
 
 #define ANALYTICS_TID_PHT "UA-6111912-18"
 
@@ -122,6 +124,9 @@ void CPlexAnalytics::setCustomDimensions(CUrlOptions &options)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexAnalytics::trackEvent(const std::string &category, const std::string &action, const std::string &label, int64_t value, const CUrlOptions &args)
 {
+  if (!g_guiSettings.GetBool("advanced.collectanalytics"))
+    return;
+
   CUrlOptions opts(m_baseOptions);
   opts.AddOptions(args);
 
@@ -149,6 +154,9 @@ void CPlexAnalytics::sendPing()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexAnalytics::sendTrackingRequest(const CUrlOptions &request)
 {
+  if (!g_guiSettings.GetBool("advanced.collectanalytics"))
+    return;
+
   CURL u("http://www.google-analytics.com/collect");
   CPlexMediaServerClientJob *j = new CPlexMediaServerClientJob(u, "POST");
   j->m_postData = request.GetOptionsString();
@@ -161,8 +169,29 @@ void CPlexAnalytics::sendTrackingRequest(const CUrlOptions &request)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexAnalytics::sendPlaybackStop()
+{
+  m_cumulativeTimePlayed += m_playStopWatch.GetElapsedSeconds();
+  m_playStopWatch.Stop();
+
+  CLog::Log(LOGDEBUG, "CPlexAnalytics::Announce played item done, time played: %lld", m_cumulativeTimePlayed);
+
+  trackEvent("Playback",
+             m_currentItem->GetProperty("type").asString(),
+             m_currentItem->GetProperty("identifier").asString(),
+             m_cumulativeTimePlayed);
+  g_plexApplication.timer.RestartTimeout(PING_INTERVAL_SECONDS * 1000, this);
+
+  m_currentItem.reset();
+  m_numberOfPlays += 1;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexAnalytics::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
+  if (!g_guiSettings.GetBool("advanced.collectanalytics"))
+    return;
+
   if (flag == ANNOUNCEMENT::System && (stricmp(sender, "xbmc") == 0))
   {
     if (stricmp(message, "OnQuit") == 0)
@@ -173,31 +202,48 @@ void CPlexAnalytics::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *s
 
       g_plexApplication.timer.RemoveTimeout(this);
     }
-  } else if (flag == ANNOUNCEMENT::Player && (stricmp(sender, "xbmc") == 0))
+  }
+  else if (flag == ANNOUNCEMENT::Player && (stricmp(sender, "xbmc") == 0))
   {
     if (stricmp(message, "OnPlay") == 0)
     {
-      m_currentItem = g_application.CurrentFileItemPtr();
-      m_startOffset = m_currentItem->GetProperty("viewOffset").asInteger() / 1000;
+      CFileItemPtr item = g_application.CurrentFileItemPtr();
+      if (data["item"].isObject() && data["item"].isMember("type") && data["item"]["type"] == "picture")
+      {
+        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        if (slideshow && slideshow->IsActive())
+          item = slideshow->GetCurrentSlide();
+      }
+
+      if (!item)
+      {
+        CLog::Log(LOGWARNING, "CPlexAnalytics::Announce no item found on PlayEvent");
+        return;
+      }
+
+      if (!m_currentItem || (m_currentItem->GetPath() != item->GetPath()))
+      {
+        if (m_currentItem)
+          // It doesn't seem like we have sent a stop event yet.
+          sendPlaybackStop();
+
+        m_currentItem = CFileItemPtr(new CFileItem(*item.get()));
+        CLog::Log(LOGDEBUG, "CPlexAnalytics::Announce starting playing of a new item.");
+        m_cumulativeTimePlayed = 0;
+      }
+      else
+        CLog::Log(LOGDEBUG, "CPlexAnalytics::Announce resuming playback of current item %s", m_currentItem->GetPath().c_str());
+
+      m_playStopWatch.StartZero();
+    }
+    else if (stricmp(message, "OnPause") == 0 && m_currentItem)
+    {
+      CLog::Log(LOGDEBUG, "CPlexAnalytics::Announce pausing playback");
+      m_cumulativeTimePlayed += m_playStopWatch.GetElapsedSeconds();
+      m_playStopWatch.Stop();
     }
     else if (stricmp(message, "OnStop") == 0 && m_currentItem)
-    {
-      int64_t playbackTime;
-      if (m_currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_WATCHED)
-        playbackTime = (m_currentItem->GetProperty("duration").asInteger() / 1000)- m_startOffset;
-      else
-        playbackTime = (m_currentItem->GetProperty("viewOffset").asInteger() / 1000) - m_startOffset;
-
-      trackEvent("Playback",
-                 m_currentItem->GetProperty("type").asString(),
-                 m_currentItem->GetProperty("identifier").asString(),
-                 playbackTime);
-      g_plexApplication.timer.RestartTimeout(PING_INTERVAL_SECONDS * 1000, this);
-
-      m_currentItem.reset();
-      m_startOffset = 0;
-      m_numberOfPlays += 1;
-    }
+      sendPlaybackStop();
   }
 }
 
@@ -209,8 +255,9 @@ void CPlexAnalytics::OnTimeout()
     m_firstEvent = false;
     CUrlOptions o("sc=start");
     trackEvent("App", "Startup", "", 1, o);
-  } else {
-    sendPing();
   }
+  else
+    sendPing();
+
   g_plexApplication.timer.SetTimeout(PING_INTERVAL_SECONDS * 1000, this);
 }
