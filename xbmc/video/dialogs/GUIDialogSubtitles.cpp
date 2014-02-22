@@ -404,72 +404,97 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     return;
   }
 
-  CStdString strFileName;
-  CStdString strDestPath;
-#if 0
-  // TODO: Code to download all subtitles for all stack items in one run
-  if (g_application.CurrentFileItem().IsStack())
-  {
-    for (int i = 0; i < items->Size(); i++)
-    {
-//    check for all stack items and match to given subs, item [0] == CD1, item [1] == CD2
-//    CLog::Log(LOGDEBUG, "Stack Subs [%s} Found", vecItems[i]->GetLabel().c_str());
-    }
-  }
-#endif
-
   // Get (unstacked) path
   const CStdString &strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
 
-  if (StringUtils::StartsWith(strCurrentFile, "http://"))
+  CStdString strFileName = "TemporarySubs";
+  CStdString strDownloadPath = "special://temp";
+  CStdString strDestPath;
+
+  CStdString strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
+  if (!StringUtils::StartsWith(strCurrentFilePath, "http://"))
   {
-    strFileName = "TemporarySubs";
-    strDestPath = "special://temp/";
-  }
-  else
-  {
+    CStdString subPath = CSpecialProtocol::TranslatePath("special://subtitles");
+    if (!subPath.empty())
+      strDownloadPath = subPath;
+
     strFileName = URIUtils::GetFileName(strCurrentFile);
-    if (CSettings::Get().GetBool("subtitles.savetomoviefolder"))
+    if (CSettings::Get().GetBool("subtitles.savetomoviefolder") &&
+        CUtil::SupportsWriteFileOperations(strCurrentFilePath))
     {
-      strDestPath = URIUtils::GetDirectory(strCurrentFile);
-      if (!CUtil::SupportsWriteFileOperations(strDestPath))
-        strDestPath.clear();
-    }
-    if (strDestPath.empty())
-    {
-      if (CSpecialProtocol::TranslatePath("special://subtitles").empty())
-        strDestPath = "special://temp";
-      else
-        strDestPath = "special://subtitles";
+      strDestPath = strCurrentFilePath;
     }
   }
+
+  // Use fallback?
+  if (strDestPath.empty())
+    strDestPath = strDownloadPath;
+
   // Extract the language and appropriate extension
   CStdString strSubLang;
   g_LangCodeExpander.ConvertToTwoCharCode(strSubLang, language);
-  CStdString strUrl = items->Get(0)->GetPath();
-  CStdString strSubExt = URIUtils::GetExtension(strUrl);
-
-  // construct subtitle path
   URIUtils::RemoveExtension(strFileName);
-  CStdString strSubName = StringUtils::Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
-  CStdString strSubPath = URIUtils::AddFileToFolder(strDestPath, strSubName);
 
-  // and copy the file across
-  CFile::Cache(strUrl, strSubPath);
-
-  // for ".sub" subtitles we check if ".idx" counterpart exists and copy that as well
-  if (strSubExt.Equals(".sub"))
+  // Iterate over all items to transfer
+  for (int i = 0; i < items->Size(); i++)
   {
-    strUrl = URIUtils::ReplaceExtension(strUrl, ".idx");
-    if(CFile::Exists(strUrl))
+    CStdString strUrl = items->Get(i)->GetPath();
+
+    // construct subtitle path
+    CStdString strSubExt = URIUtils::GetExtension(strUrl);
+    CStdString strSubName = StringUtils::Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
+
+    // Handle URL decoding/slash correction:
+    CStdString strDownloadFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDownloadPath);
+    CStdString strDestFile = strDownloadFile;
+
+    if (!CFile::Cache(strUrl, strDownloadFile))
     {
-      CStdString strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
-      strSubPath = URIUtils::AddFileToFolder(strDestPath, strSubNameIdx);
-      CFile::Cache(strUrl, strSubPath);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strSubName, g_localizeStrings.Get(24113));
+    }
+    else
+    {
+      if (strDestPath != strDownloadPath)
+      {
+        CStdString strTryDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDestPath);
+
+        /* Copy the file from temp to our final destination, if that fails fallback to download path
+         * (ie. special://subtitles or use special://temp). Note that after the first item strDownloadPath equals strDestpath
+         * so that all remaining items (including the .idx below) are copied directly to their final destination and thus all
+         * items end up in the same folder
+         */
+        CLog::Log(LOGDEBUG, "%s - Saving subtitle %s to %s", __FUNCTION__, strDownloadFile.c_str(), strDestPath.c_str());
+        if (CFile::Cache(strDownloadFile, strTryDestFile))
+        {
+          CFile::Delete(strDownloadFile);
+          strDestFile = strTryDestFile;
+          strDownloadPath = strDestPath; // Update download path so all the other items get directly downloaded to our final destination
+        }
+        else
+        {
+          CLog::Log(LOGWARNING, "%s - Saving of subtitle %s to %s failed. Falling back to %s", __FUNCTION__, strDownloadFile.c_str(), strDestPath.c_str(), strDownloadPath.c_str());
+          strDestPath = strDownloadPath; // Copy failed, use fallback for the rest of the items
+        }
+      }
+
+      // for ".sub" subtitles we check if ".idx" counterpart exists and copy that as well
+      if (strSubExt.Equals(".sub"))
+      {
+        strUrl = URIUtils::ReplaceExtension(strUrl, ".idx");
+        if(CFile::Exists(strUrl))
+        {
+          CStdString strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
+          // Handle URL decoding/slash correction:
+          strDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubNameIdx, strDestPath);
+          CFile::Cache(strUrl, strDestFile);
+        }
+      }
+
+      // FIXME: With multiple files (eg. stacks), select the correct one
+      SetSubtitles(strDestFile);
     }
   }
 
-  SetSubtitles(strSubPath);
   // Close the window
   Close();
 }
