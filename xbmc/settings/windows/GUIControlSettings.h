@@ -20,6 +20,7 @@
  */
 
 #include "utils/StdString.h"
+#include "guilib/ISliderCallback.h"
 
 class CGUIControl;
 class CGUIImage;
@@ -27,8 +28,10 @@ class CGUISpinControlEx;
 class CGUIEditControl;
 class CGUIButtonControl;
 class CGUIRadioButtonControl;
+class CGUISettingsSliderControl;
 
 class CSetting;
+class CSettingControlSlider;
 class CSettingString;
 class CSettingPath;
 
@@ -131,7 +134,7 @@ private:
   CGUIButtonControl *m_pButton;
 };
 
-class CGUIControlButtonSetting : public CGUIControlBaseSetting
+class CGUIControlButtonSetting : public CGUIControlBaseSetting, protected ISliderCallback
 {
 public:
   CGUIControlButtonSetting(CGUIButtonControl* pButton, int id, CSetting *pSetting);
@@ -143,6 +146,10 @@ public:
   virtual void Clear() { m_pButton = NULL; }
 
   static bool GetPath(CSettingPath *pathSetting);
+protected:
+  // implementations of ISliderCallback
+  virtual void OnSliderChange(void *data, CGUISliderControl *slider);
+
 private:
   CGUIButtonControl *m_pButton;
 };
@@ -161,6 +168,23 @@ private:
   static bool InputValidation(const std::string &input, void *data);
 
   CGUIEditControl *m_pEdit;
+};
+
+class CGUIControlSliderSetting : public CGUIControlBaseSetting
+{
+public:
+  CGUIControlSliderSetting(CGUISettingsSliderControl* pSlider, int id, CSetting *pSetting);
+  virtual ~CGUIControlSliderSetting();
+
+  virtual CGUIControl* GetControl() { return (CGUIControl*)m_pSlider; }
+  virtual bool OnClick();
+  virtual void Update();
+  virtual void Clear() { m_pSlider = NULL; }
+
+  static std::string GetText(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
+
+private:
+  CGUISettingsSliderControl *m_pSlider;
 };
 
 class CGUIControlSeparatorSetting : public CGUIControlBaseSetting

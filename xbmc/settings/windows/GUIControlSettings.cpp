@@ -28,9 +28,11 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogSlider.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIRadioButtonControl.h"
+#include "guilib/GUISettingsSliderControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -510,26 +512,57 @@ bool CGUIControlButtonSetting::OnClick()
 {
   if (m_pButton == NULL)
     return false;
-
-  const std::string &controlFormat = m_pSetting->GetControl()->GetFormat();
-  if (controlFormat == "addon")
+  
+  const ISettingControl *control = m_pSetting->GetControl();
+  const std::string &controlType = control->GetType();
+  const std::string &controlFormat = control->GetFormat();
+  if (controlType == "button")
   {
-    // prompt for the addon
-    CSettingAddon *setting = (CSettingAddon *)m_pSetting;
-    CStdString addonID = setting->GetValue();
-    if (!CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty()) == 1)
+    if (controlFormat == "addon")
+    {
+      // prompt for the addon
+      CSettingAddon *setting = (CSettingAddon *)m_pSetting;
+      CStdString addonID = setting->GetValue();
+      if (!CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty()) == 1)
+        return false;
+
+      return setting->SetValue(addonID);
+    }
+    if (controlFormat == "path")
+      return GetPath((CSettingPath *)m_pSetting);
+    if (controlFormat == "action")
+    {
+      // simply call the OnSettingAction callback and whoever knows what to
+      // do can do so (based on the setting's identification
+      CSettingAction *pSettingAction = (CSettingAction *)m_pSetting;
+      pSettingAction->OnSettingAction(pSettingAction);
+      return true;
+    }
+  }
+  else if (controlType == "slider")
+  {
+    float value, min, step, max;
+    if (m_pSetting->GetType() == SettingTypeInteger)
+    {
+      CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
+      value = (float)settingInt->GetValue();
+      min = (float)settingInt->GetMinimum();
+      step = (float)settingInt->GetStep();
+      max = (float)settingInt->GetMaximum();
+    }
+    else if (m_pSetting->GetType() == SettingTypeNumber)
+    {
+      CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
+      value = (float)settingNumber->GetValue();
+      min = (float)settingNumber->GetMinimum();
+      step = (float)settingNumber->GetStep();
+      max = (float)settingNumber->GetMaximum();
+    }
+    else
       return false;
 
-    return setting->SetValue(addonID);
-  }
-  if (controlFormat == "path")
-    return GetPath((CSettingPath *)m_pSetting);
-  if (controlFormat == "action")
-  {
-    // simply call the OnSettingAction callback and whoever knows what to
-    // do can do so (based on the setting's identification
-    CSettingAction *pSettingAction = (CSettingAction *)m_pSetting;
-    pSettingAction->OnSettingAction(pSettingAction);
+    const CSettingControlSlider *sliderControl = static_cast<const CSettingControlSlider*>(control);
+    CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(sliderControl->GetHeading()), value, min, step, max, this, NULL);
     return true;
   }
 
@@ -542,29 +575,60 @@ void CGUIControlButtonSetting::Update()
     return;
 
   CGUIControlBaseSetting::Update();
+  
+  std::string strText;
+  const ISettingControl *control = m_pSetting->GetControl();
+  const std::string &controlType = control->GetType();
+  const std::string &controlFormat = control->GetFormat();
 
-  if (m_pSetting->GetType() == SettingTypeString &&
-      !static_cast<const CSettingControlButton*>(m_pSetting->GetControl())->HideValue())
+  if (controlType == "button")
   {
-    std::string strText = ((CSettingString *)m_pSetting)->GetValue();
-    const std::string &controlFormat = m_pSetting->GetControl()->GetFormat();
-    if (controlFormat == "addon")
+    if (m_pSetting->GetType() == SettingTypeString &&
+        !static_cast<const CSettingControlButton*>(control)->HideValue())
     {
-      ADDON::AddonPtr addon;
-      if (ADDON::CAddonMgr::Get().GetAddon(strText, addon))
-        strText = addon->Name();
-      if (strText.empty())
-        strText = g_localizeStrings.Get(231); // None
+      std::string strValue = ((CSettingString *)m_pSetting)->GetValue();
+      if (controlFormat == "addon")
+      {
+        ADDON::AddonPtr addon;
+        if (ADDON::CAddonMgr::Get().GetAddon(strValue, addon))
+          strText = addon->Name();
+        if (strText.empty())
+          strText = g_localizeStrings.Get(231); // None
+      }
+      else if (controlFormat == "path")
+      {
+        CStdString shortPath;
+        if (CUtil::MakeShortenPath(strValue, shortPath, 30))
+          strText = shortPath;
+      }
     }
-    else if (controlFormat == "path")
-    {
-      CStdString shortPath;
-      if (CUtil::MakeShortenPath(strText, shortPath, 30))
-        strText = shortPath;
-    }
-
-    m_pButton->SetLabel2(strText);
   }
+  else if (controlType == "slider")
+  {
+    switch (m_pSetting->GetType())
+    {
+      case SettingTypeInteger:
+      {
+        const CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
+        strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
+          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum());
+        break;
+      }
+
+      case SettingTypeNumber:
+      {
+        const CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
+        strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
+          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum());
+        break;
+      }
+    
+      default:
+        break;
+    }
+  }
+
+  m_pButton->SetLabel2(strText);
 }
 
 bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
@@ -590,6 +654,40 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
     return false;
 
   return pathSetting->SetValue(path);
+}
+
+void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *slider)
+{
+  if (slider == NULL)
+    return;
+
+  std::string strText;
+  switch (m_pSetting->GetType())
+  {
+    case SettingTypeInteger:
+    {
+      CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
+      if (settingInt->SetValue(slider->GetIntValue()))
+        strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
+          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum());
+      break;
+    }
+
+    case SettingTypeNumber:
+    {
+      CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
+      if (settingNumber->SetValue(static_cast<double>(slider->GetFloatValue())))
+        strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
+          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum());
+      break;
+    }
+    
+    default:
+      break;
+  }
+
+  if (!strText.empty())
+    slider->SetTextValue(strText);
 }
 
 CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, CSetting *pSetting)
@@ -667,6 +765,135 @@ bool CGUIControlEditSetting::InputValidation(const std::string &input, void *dat
     return true;
 
   return editControl->GetSetting()->CheckValidity(input);
+}
+
+CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pSlider, int id, CSetting *pSetting)
+  : CGUIControlBaseSetting(id, pSetting)
+{
+  m_pSlider = pSlider;
+  if (m_pSlider == NULL)
+    return;
+
+  m_pSlider->SetID(id);
+  
+  switch (m_pSetting->GetType())
+  {
+    case SettingTypeInteger:
+    {
+      CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
+      if (m_pSetting->GetControl()->GetFormat() == "percentage")
+        m_pSlider->SetType(SLIDER_CONTROL_TYPE_PERCENTAGE);
+      else
+      {
+        m_pSlider->SetType(SLIDER_CONTROL_TYPE_INT);
+        m_pSlider->SetRange(settingInt->GetMinimum(), settingInt->GetMaximum());
+      }
+      m_pSlider->SetIntInterval(settingInt->GetStep());
+      break;
+    }
+
+    case SettingTypeNumber:
+    {
+      CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
+      m_pSlider->SetType(SLIDER_CONTROL_TYPE_FLOAT);
+      m_pSlider->SetFloatRange((float)settingNumber->GetMinimum(), (float)settingNumber->GetMaximum());
+      m_pSlider->SetFloatInterval((float)settingNumber->GetStep());
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  Update();
+}
+
+CGUIControlSliderSetting::~CGUIControlSliderSetting()
+{ }
+
+bool CGUIControlSliderSetting::OnClick()
+{
+  if (m_pSlider == NULL)
+    return false;
+
+  switch (m_pSetting->GetType())
+  {
+    case SettingTypeInteger:
+      return static_cast<CSettingInt*>(m_pSetting)->SetValue(m_pSlider->GetIntValue());
+
+    case SettingTypeNumber:
+    {
+      float value = 0.0f;
+      value = m_pSlider->GetFloatValue();
+
+      return static_cast<CSettingNumber*>(m_pSetting)->SetValue(value);
+    }
+    
+    default:
+      break;
+  }
+  
+  return false;
+}
+
+void CGUIControlSliderSetting::Update()
+{
+  if (m_pSlider == NULL)
+    return;
+
+  CGUIControlBaseSetting::Update();
+
+  std::string strText;
+  switch (m_pSetting->GetType())
+  {
+    case SettingTypeInteger:
+    {
+      const CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
+      int value = static_cast<CSettingInt*>(m_pSetting)->GetValue();
+      m_pSlider->SetIntValue(value);
+
+      strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
+        value, settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum());
+      break;
+    }
+
+    case SettingTypeNumber:
+    {
+      const CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
+      double value = static_cast<CSettingNumber*>(m_pSetting)->GetValue();
+      m_pSlider->SetFloatValue((float)value);
+
+      strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
+        value, settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum());
+      break;
+    }
+    
+    default:
+      break;
+  }
+
+  if (!strText.empty())
+    m_pSlider->SetTextValue(strText);
+}
+
+std::string CGUIControlSliderSetting::GetText(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
+{
+  if (control == NULL ||
+      !(value.isInteger() || value.isDouble()))
+    return "";
+
+  SettingControlSliderFormatter formatter = control->GetFormatter();
+  if (formatter != NULL)
+    return formatter(control, value, minimum, step, maximum);
+
+  std::string formatString = control->GetFormatString();
+  if (control->GetFormatLabel() > -1)
+    formatString = g_localizeStrings.Get(control->GetFormatLabel());
+
+  if (value.isDouble())
+    return StringUtils::Format(formatString.c_str(), value.asDouble());
+
+  return StringUtils::Format(formatString.c_str(), static_cast<int>(value.asInteger()));
 }
 
 CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int id)
