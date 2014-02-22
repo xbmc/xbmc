@@ -81,7 +81,7 @@ void CGUIDialogSlider::SetSlider(const CStdString &label, float value, float min
   m_callbackData = callbackData;
   if (slider)
   {
-    slider->SetType(SPIN_CONTROL_TYPE_FLOAT);
+    slider->SetType(SLIDER_CONTROL_TYPE_FLOAT);
     slider->SetFloatRange(min, max);
     slider->SetFloatInterval(delta);
     slider->SetFloatValue(value);

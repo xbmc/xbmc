@@ -31,9 +31,9 @@
 #include "GUIControl.h"
 #include "GUITexture.h"
 
-#define SPIN_CONTROL_TYPE_INT       1
-#define SPIN_CONTROL_TYPE_FLOAT     2
-#define SPIN_CONTROL_TYPE_TEXT      3
+#define SLIDER_CONTROL_TYPE_INT         1
+#define SLIDER_CONTROL_TYPE_FLOAT       2
+#define SLIDER_CONTROL_TYPE_PERCENTAGE  3
 
 typedef struct
 {
