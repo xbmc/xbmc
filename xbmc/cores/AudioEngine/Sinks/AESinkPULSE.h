@@ -44,9 +44,6 @@ public:
   virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames, bool hasAudio, bool blocking = false);
   virtual void         Drain           ();
 
-  virtual bool HasVolume() { return true; };
-  virtual void SetVolume(float volume);
-
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
   bool IsInitialized();
   CCriticalSection m_sec;
@@ -64,7 +61,6 @@ private:
   unsigned int m_Channels;
   
   pa_stream *m_Stream;
-  pa_cvolume m_Volume;
 
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;
