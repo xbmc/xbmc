@@ -30,16 +30,13 @@ set(PLEX_VERSION_MAJOR 1)
 set(PLEX_VERSION_MINOR 0)
 set(PLEX_VERSION_PATCH 13)
 if(DEFINED ENV{BUILD_NUMBER})
-  set(PLEX_VERSION_BUILD "$ENV{BUILD_NUMBER}")
-  set(PLEX_VERSION_BUILD_NR "$ENV{BUILD_NUMBER}")
+  set(PLEX_VERSION_BUILD ".$ENV{BUILD_NUMBER}")
 else()
-  set(PLEX_VERSION_BUILD "dev")
-  set(PLEX_VERSION_BUILD_NR "0")
+  set(PLEX_VERSION_BUILD ".dev")
 endif()
-set(PLEX_VERSION_STRING ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX_VERSION_PATCH}.${PLEX_VERSION_BUILD}-${PLEX_GIT_REVISION})
+set(PLEX_VERSION_STRING ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX_VERSION_PATCH}${PLEX_VERSION_BUILD}-${PLEX_GIT_REVISION})
 set(PLEX_VERSION_STRING_SHORT ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX_VERSION_PATCH})
-set(PLEX_VERSION_STRING_SHORT_BUILD ${PLEX_VERSION_STRING_SHORT}.${PLEX_VERSION_BUILD})
-set(PLEX_WINDOWS_VERSION ${PLEX_VERSION_MAJOR},${PLEX_VERSION_MINOR},${PLEX_VERSION_PATCH},${PLEX_VERSION_BUILD_NR})
+set(PLEX_VERSION_STRING_SHORT_BUILD ${PLEX_VERSION_STRING_SHORT}${PLEX_VERSION_BUILD})
 set(XBMC_VERSION "Frodo")
 
 configure_file(${plexdir}/git_revision.h.in git_revision.h)
@@ -92,10 +89,13 @@ if(TARGET_WIN32)
 endif(TARGET_WIN32)
 
 # Build the texturepacker
-add_subdirectory(tools/TexturePacker)
 
-# add our visualizations
-add_subdirectory(xbmc/visualizations)
+if (NOT TARGET_RPI)
+  add_subdirectory(tools/TexturePacker)
+
+  # add our visualizations
+  add_subdirectory(xbmc/visualizations)
+endif()
 
 # global includes
 include_directories(

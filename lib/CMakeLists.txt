@@ -33,3 +33,6 @@ endif(TARGET_COMMON_DARWIN)
 
 add_subdirectory(cpluff)
 add_subdirectory(cximage-6.0)
+if(TARGET_RPI)
+  add_subdirectory(addons)
+endif()
