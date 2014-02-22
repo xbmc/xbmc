@@ -26,8 +26,6 @@ void CPlexThemeMusicPlayer::initPlayer()
   {
     m_player = CPlayerCoreFactory::CreatePlayer(EPC_PAPLAYER, *this);
     m_player->RegisterAudioCallback(this);
-    m_player->SetVolume(g_guiSettings.GetInt("backgroundmusic.bgmusicvolume") / 100.0);
-    m_player->FadeOut(2 * 1000);
   }
 }
 
@@ -97,6 +95,8 @@ void CPlexThemeMusicPlayer::OnJobComplete(unsigned int jobID, bool success, CJob
 
       initPlayer();
       m_player->OpenFile(*m_currentItem.get(), CPlayerOptions());
+      m_player->SetVolume(g_guiSettings.GetInt("backgroundmusic.bgmusicvolume") / 100.0);
+      m_player->FadeOut(2 * 1000);
     }
   }
   else if (m_player && m_player->IsPlaying() && !m_player->IsPaused())
