@@ -602,8 +602,8 @@ bool PlexUtils::MakeWakeupPipe(SOCKET *pipe)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(TARGET_RASPBERRY_PI)
-static void PlexUtils::StackTrace(char *FuncName)
+#if defined(HAVE_EXECINFO_H)
+void PlexUtils::LogStackTrace(char *FuncName)
 {
   void *buffer[100];
   char **strings;
@@ -615,7 +615,7 @@ static void PlexUtils::StackTrace(char *FuncName)
    {
      CLog::Log(LOGDEBUG,"Stacktrace for function %s", FuncName);
      for (int j = 0; j < nptrs; j++)
-         Log(LOGDEBUG,"%s\n", strings[j]);
+         CLog::Log(LOGDEBUG,"%s\n", strings[j]);
 
      free(strings);
    }

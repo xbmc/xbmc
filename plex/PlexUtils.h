@@ -5,7 +5,7 @@
 #include "FileItem.h"
 #include "utils/XBMCTinyXML.h"
 
-#if defined(TARGET_RASPBERRY_PI)
+#if defined(HAVE_EXECINFO_H)
 #include <execinfo.h>
 #endif
 
@@ -49,13 +49,15 @@ namespace PlexUtils
 
   bool MakeWakeupPipe(SOCKET *pipe);
 
-#if defined(TARGET_RASPBERRY_PI)
-  static void StackTrace(char *FuncName);
+#if defined(HAVE_EXECINFO_H)
+  void LogStackTrace(char *FuncName);
+#else
+  void LogStackTrace(char *FuncName) {}
 #endif
 }
 
-#if defined(TARGET_RASPBERRY_PI)
-#define LOG_STACKTRACE  PlexUtils::StackTrace((char*)__PRETTY_FUNCTION__);
+#if defined(HAVE_EXECINFO_H)
+#define LOG_STACKTRACE  PlexUtils::LogStackTrace((char*)__PRETTY_FUNCTION__);
 #endif
 
 #ifdef _WIN32
