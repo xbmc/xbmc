@@ -3383,7 +3383,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
   m_pPlayer->CreatePlayer(newPlayer, *this);
 
-  PlayBackRet iResult;
+  PlayBackRet iResult = PLAYBACK_FAIL;
   if (m_pPlayer->HasPlayer())
   {
     /* When playing video pause any low priority jobs, they will be unpaused  when playback stops.
@@ -3399,13 +3399,14 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     // may wait on another thread, that requires gfx
     CSingleExit ex(g_graphicsContext);
 
-    iResult = m_pPlayer->OpenFile(item, options);
+    if (item.Exists()) // this is also an implicit call to CWakeOnAccess::WakeUpHost() if enabled
+      iResult = m_pPlayer->OpenFile(item, options);
+    else
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(16026), g_localizeStrings.Get(16027));
   }
-  else
-  {
+
+  if (iResult == PLAYBACK_FAIL)
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.GetPath().c_str());
-    iResult = PLAYBACK_FAIL;
-  }
 
   if (iResult == PLAYBACK_OK)
   {
