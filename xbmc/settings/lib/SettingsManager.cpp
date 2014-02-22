@@ -99,7 +99,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
               if (setting->second.setting == NULL)
               {
                 setting->second.setting = *settingIt;
-                (*settingIt)->m_callback = this;
+                (*settingIt)->SetCallback(this);
               }
             }
           }

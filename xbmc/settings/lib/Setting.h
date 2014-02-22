@@ -109,12 +109,12 @@ public:
   const SettingDependencies& GetDependencies() const { return m_dependencies; }
   const std::set<CSettingUpdate>& GetUpdates() const { return m_updates; }
 
+  void SetCallback(ISettingCallback *callback) { m_callback = callback; }
+
   // overrides of ISetting
   virtual bool IsVisible() const;
 
 protected:
-  friend class CSettingsManager;
-
   virtual bool OnSettingChanging(const CSetting *setting);
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
