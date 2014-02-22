@@ -58,6 +58,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   VECADDONS addons;
   // get info from repository
+  bool groupAddons = true;
   bool reposAsFolders = true;
   if (path.GetHostName().Equals("enabled"))
   {
@@ -68,6 +69,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else if (path.GetHostName().Equals("disabled"))
   { // grab all disabled addons, including disabled repositories
     reposAsFolders = false;
+    groupAddons = false;
     CAddonMgr::Get().GetAllAddons(addons, false, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24039));
     items.SetLabel(g_localizeStrings.Get(24039));
@@ -75,12 +77,14 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else if (path.GetHostName().Equals("outdated"))
   {
     reposAsFolders = false;
+    groupAddons = false;
     CAddonMgr::Get().GetAllOutdatedAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24043));
     items.SetLabel(g_localizeStrings.Get(24043));
   }
   else if (path.GetHostName().Equals("repos"))
   {
+    groupAddons = false;
     CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,true);
     items.SetLabel(g_localizeStrings.Get(24033)); // Get Add-ons
   }
@@ -133,7 +137,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   if (path.GetFileName().empty())
   {
-    if (!path.GetHostName().Equals("repos"))
+    if (groupAddons)
     {
       for (int i=ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
       {
