@@ -35,7 +35,14 @@
 class CGUITextureGLES : public CGUITextureBase
 {
 public:
+/* PLEX */
+#ifndef __PLEX__
   CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture);
+#else
+  CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth=0.0f);
+#endif
+/* END PLEX */
+
   static void DrawQuad(const CRect &coords, color_t color, CBaseTexture *texture = NULL, const CRect *texCoords = NULL);
 protected:
   void Begin(color_t color);

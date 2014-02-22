@@ -7,6 +7,16 @@ endif()
 add_subdirectory(WaveForm)
 
 if(NOT WIN32)
+
+  if(TARGET_RPI)
+    include_directories(
+     ${root}/xbmc/visualizations/EGLHelpers
+    )
+    add_subdirectory(EGLHelpers)
+  else()
+    add_subdirectory(XBMCProjectM)
+  endif()
+
   add_subdirectory(OpenGLSpectrum)
   add_subdirectory(XBMCProjectM)
   

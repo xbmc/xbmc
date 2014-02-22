@@ -29,11 +29,16 @@
 #include "windowing/WindowingFactory.h"
 #include "guilib/GraphicContext.h"
 
+/* PLEX */
 #if defined(HAS_GLES)
-
-
+#ifndef __PLEX__
 CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
+#else
+CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo &texture, float minWidth)
+: CGUITextureBase(posX, posY, width, height, texture, minWidth)
+#endif
+/* END PLEX */
 {
 }
 

@@ -270,6 +270,12 @@
 #ifdef HAVE_LIBGLESV2
 #undef HAS_GL
 #define HAS_GLES 2
+/* PLEX */
+#if defined(TARGET_RASPBERRY_PI)
+  #undef HAS_SDL_WIN_EVENTS
+  #define HAS_LINUX_EVENTS
+#endif
+/* END PLEX */
 #endif
 
 // GLES1.0 detected. Dont use GL!
@@ -293,4 +299,8 @@
 #define GET_R(color)            ((color >> 16) & 0xFF)
 #define GET_G(color)            ((color >>  8) & 0xFF)
 #define GET_B(color)            ((color >>  0) & 0xFF)
-
+/* PLEX */
+#if defined(TARGET_RASPBERRY_PI)
+  #undef HAS_SDL_JOYSTICK
+#endif
+/* END PLEX */

@@ -156,7 +156,13 @@ public:
 #else
 class DllBcmHost : public DllDynamic, DllBcmHostInterface
 {
+/* PLEX */
+#if defined(TARGET_RASPBERRY_PI)
+  DECLARE_DLL_WRAPPER(DllBcmHost, "/usr/lib/libbcm_host.so")
+#else
   DECLARE_DLL_WRAPPER(DllBcmHost, "/opt/vc/lib/libbcm_host.so")
+#endif
+/* PLEX */
 
   DEFINE_METHOD0(void,    bcm_host_init)
   DEFINE_METHOD0(void,    bcm_host_deinit)
