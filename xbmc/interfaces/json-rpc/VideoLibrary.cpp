@@ -22,6 +22,7 @@
 #include "ApplicationMessenger.h"
 #include "TextureDatabase.h"
 #include "Util.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
@@ -1056,6 +1057,8 @@ void CVideoLibrary::UpdateVideoTagField(const CVariant &parameterObject, const s
 
 void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork,	std::set<std::string> &updatedDetails)
 {
+  CLog::Log(LOGDEBUG, "%s: scanning for changes", __FUNCTION__);
+
   UpdateVideoTagField(parameterObject, "title", details.m_strTitle, updatedDetails);
   UpdateVideoTagField(parameterObject, "playcount", details.m_playCount, updatedDetails);
   UpdateVideoTagField(parameterObject, "runtime", details.m_duration, updatedDetails);
@@ -1093,27 +1096,31 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "thumbnail"))
   {
     artwork["thumb"] = parameterObject["thumbnail"].asString();
-    updatedDetails.insert("art");
+    updatedDetails.insert("art.altered");
   }
   if (ParameterNotNull(parameterObject, "fanart"))
   {
     artwork["fanart"] = parameterObject["fanart"].asString();
-    updatedDetails.insert("art");
+    updatedDetails.insert("art.altered");
   }
 
   if (ParameterNotNull(parameterObject, "art"))
   {
-    updatedDetails.insert("art");
     CVariant art = parameterObject["art"];
     for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
     {
       if (artIt->second.isString() && !artIt->second.asString().empty())
+      {
         artwork[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
+        updatedDetails.insert("art.altered");
+      }
       else if (artIt->second.isNull())
       {
         artwork.erase(artIt->first);
         removedArtwork.insert(artIt->first);
+        updatedDetails.insert("art.removed");
       }
     }
   }
+  CLog::Log(LOGDEBUG, "%s: found %d changes", __FUNCTION__, updatedDetails.size());
 }

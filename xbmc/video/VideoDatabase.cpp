@@ -2163,12 +2163,11 @@ struct MovieUpdateDetails{
           m["showlink"] = VIDEODB_ID_MAX;
           m["fanart"] = VIDEODB_ID_FANART;
           m["tag"] = VIDEODB_ID_MAX;
-          m["art"] = VIDEODB_ID_MAX;
+          m["art.altered"] = VIDEODB_ID_MAX;
+          m["art.removed"] = VIDEODB_ID_MAX;
 
           // just ignore this
           m["lastplayed"] = VIDEODB_ID_MIN;
-          m["movieid"] = VIDEODB_ID_MIN;
-          m["resume"] = VIDEODB_ID_MIN;
           return m;
         }
     static const map<std::string,VIDEODB_IDS> updateDetails;
@@ -2193,6 +2192,7 @@ bool PendingUpdates(const std::set<std::string> &updatedDetails, std::vector<VID
       {
         // we can't do anything with this
         // should trace what we can't use
+        CLog::Log(LOGWARNING, "%s: called with tag it can't optimise: %s", __FUNCTION__, updatedDetail);
         return false;
       }
       else if (mapIt->second != VIDEODB_ID_MAX)
@@ -2210,24 +2210,26 @@ bool PendingUpdates(const std::set<std::string> &updatedDetails, std::vector<VID
 int CVideoDatabase::UpdateDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails,
   int idMovie /* = -1 */)
 {
+  CLog::Log(LOGDEBUG, "%s: called for Movie %s, id %d", __FUNCTION__, strFilenameAndPath.c_str(), idMovie);
+
   if (idMovie < 0)
     idMovie = GetMovieId(strFilenameAndPath);
-
-  // This is an update op, so the movie ID must exist
-  if (idMovie < 0)
-    return idMovie;
 
   if (updatedDetails.size() == 0)
     return idMovie;
 
+  CLog::Log(LOGDEBUG, "%s: Parsing pending updates", __FUNCTION__);
   vector<VIDEODB_IDS> simpleUpdates;
   vector<std::string> complexUpdates;
-  if (!PendingUpdates(updatedDetails, simpleUpdates, complexUpdates))
+  if (idMovie < 0 || !PendingUpdates(updatedDetails, simpleUpdates, complexUpdates))
   {
-    // Something about the updates we can't process, fall back to the set code
+    // this is a new file, or part of the update isn't known.
+    // fall back to the set code
     RemoveTagsFromItem(idMovie, "movie");
     return SetDetailsForMovie(strFilenameAndPath, details, artwork, idMovie);      
   }
+
+  CLog::Log(LOGDEBUG, "%s: starting update run", __FUNCTION__);
 
   // At this stage we believe that updates can be done...
   try
@@ -2317,11 +2319,12 @@ int CVideoDatabase::UpdateDetailsForMovie(const CStdString& strFilenameAndPath, 
     // add set...
     int idSet = -1;
     bool idSetUpdate = false;
+    
+    CLog::Log(LOGDEBUG, "%s: starting complex updates", __FUNCTION__);
 
-    // process the simple updates
+    // process the complex updates
     for (vector<std::string>::const_iterator complexUpdateIt = complexUpdates.begin() ; complexUpdateIt != complexUpdates.end(); ++complexUpdateIt)
     {
-
       if (*complexUpdateIt == "set")
       {
         idSetUpdate = true;
@@ -2334,7 +2337,8 @@ int CVideoDatabase::UpdateDetailsForMovie(const CStdString& strFilenameAndPath, 
           if (!GetArtForItem(idSet, "set", setArt))
             SetArtForItem(idSet, "set", artwork);
         }
-      } else if (*complexUpdateIt == "tag")
+      }
+      else if (*complexUpdateIt == "tag")
       {
         RemoveTagsFromItem(idMovie, "movie");
         // add tags...
@@ -2343,34 +2347,15 @@ int CVideoDatabase::UpdateDetailsForMovie(const CStdString& strFilenameAndPath, 
           int idTag = AddTag(details.m_tags[i]);
           AddTagToItem(idMovie, idTag, "movie");
         }
-      } else if (*complexUpdateIt == "art")
+      }
+      else if (*complexUpdateIt == "art.altered")
       {
         SetArtForItem(idMovie, "movie", artwork);
       }
-    }
-    
-    // TODO: does update even need this code for playCount?
+    }   
 
-    // query DB for any movies matching imdbid and year
-    CStdString strSQL = PrepareSQL("select files.playCount, files.lastPlayed from movie,files where files.idFile=movie.idFile and movie.c%02d='%s' and movie.c%02d=%i and movie.idMovie!=%i and files.playCount > 0", VIDEODB_ID_IDENT, details.m_strIMDBNumber.c_str(), VIDEODB_ID_YEAR, details.m_iYear, idMovie);
-    m_pDS->query(strSQL.c_str());
+    CLog::Log(LOGDEBUG, "%s: creating update sql query", __FUNCTION__);
 
-    if (!m_pDS->eof())
-    {
-      int playCount = m_pDS->fv("files.playCount").get_asInt();
-
-      CDateTime lastPlayed;
-      lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
-
-      int idFile = GetFileId(strFilenameAndPath);
-
-      // update with playCount and lastPlayed
-      strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount, lastPlayed.GetAsDBDateTime().c_str(), idFile);
-      m_pDS->exec(strSQL.c_str());
-    }
-
-    m_pDS->close();
- 
     // generate the simple updates command.  Note that conditions is passed in, so that there's no magic needed for the idSet
     std::vector<std::string> conditions;
     if (idSetUpdate)
@@ -4116,14 +4101,18 @@ void CVideoDatabase::SetArtForItem(int mediaId, const string &mediaType, const s
     if (artType.find('.') != string::npos)
       return;
 
-    CStdString sql = PrepareSQL("SELECT art_id FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
+    CStdString sql = PrepareSQL("SELECT art_id,url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
     { // update
       int artId = m_pDS->fv(0).get_asInt();
+      std::string oldUrl = m_pDS->fv(1).get_asString();
       m_pDS->close();
-      sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
-      m_pDS->exec(sql.c_str());
+      if (oldUrl != url)
+      {
+        sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
+        m_pDS->exec(sql.c_str());
+      }
     }
     else
     { // insert
