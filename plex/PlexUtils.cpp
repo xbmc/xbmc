@@ -600,3 +600,24 @@ bool PlexUtils::MakeWakeupPipe(SOCKET *pipe)
 #endif
   return true;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#if defined(HAVE_EXECINFO_H)
+void PlexUtils::LogStackTrace(char *FuncName)
+{
+  void *buffer[100];
+  char **strings;
+  int  nptrs;
+
+   nptrs = backtrace(buffer, 100);
+   strings = backtrace_symbols(buffer, nptrs);
+   if (strings)
+   {
+     CLog::Log(LOGDEBUG,"Stacktrace for function %s", FuncName);
+     for (int j = 0; j < nptrs; j++)
+         CLog::Log(LOGDEBUG,"%s\n", strings[j]);
+
+     free(strings);
+   }
+}
+#endif

@@ -5,6 +5,7 @@ set(headers
   arpa/inet
   cdio/iso9660
   dirent
+  execinfo
   fcntl
   float
   inttypes
