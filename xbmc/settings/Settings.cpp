@@ -265,6 +265,8 @@ ISettingControl* CSettings::CreateControl(const std::string &controlType) const
     return new CSettingControlButton();
   else if (StringUtils::EqualsNoCase(controlType, "list"))
     return new CSettingControlList();
+  else if (StringUtils::EqualsNoCase(controlType, "slider"))
+    return new CSettingControlSlider();
 
   return NULL;
 }
@@ -749,6 +751,7 @@ void CSettings::InitializeControls()
   m_settingsManager->RegisterSettingControl("edit", this);
   m_settingsManager->RegisterSettingControl("button", this);
   m_settingsManager->RegisterSettingControl("list", this);
+  m_settingsManager->RegisterSettingControl("slider", this);
 }
 
 void CSettings::InitializeVisibility()

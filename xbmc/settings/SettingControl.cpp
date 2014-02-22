@@ -162,3 +162,39 @@ bool CSettingControlList::SetFormat(const std::string &format)
 
   return true;
 }
+
+bool CSettingControlSlider::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  if (!ISettingControl::Deserialize(node, update))
+    return false;
+
+  XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
+  XMLUtils::GetBoolean(node, SETTING_XML_ELM_CONTROL_POPUP, m_popup);
+
+  XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_FORMATLABEL, m_formatLabel);
+  if (m_formatLabel < 0)
+  {
+    std::string strFormat;
+    if (XMLUtils::GetString(node, SETTING_XML_ATTR_FORMAT, strFormat) && !strFormat.empty())
+      m_formatString = strFormat;
+  }
+
+  return true;
+}
+
+bool CSettingControlSlider::SetFormat(const std::string &format)
+{
+  if (StringUtils::EqualsNoCase(format, "percentage"))
+    m_format = "%i %%";
+  else if (StringUtils::EqualsNoCase(format, "integer"))
+    m_format = "%d";
+  else if (StringUtils::EqualsNoCase(format, "number"))
+    m_format = "%.1f";
+  else
+    return false;
+
+  m_format = format;
+  StringUtils::ToLower(m_format);
+
+  return true;
+}

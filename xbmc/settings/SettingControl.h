@@ -27,6 +27,9 @@
 #define SETTING_XML_ELM_CONTROL_HEADING      "heading"
 #define SETTING_XML_ELM_CONTROL_HIDEVALUE    "hidevalue"
 #define SETTING_XML_ELM_CONTROL_MULTISELECT  "multiselect"
+#define SETTING_XML_ELM_CONTROL_POPUP        "popup"
+
+class CVariant;
 
 class CSettingControlCheckmark : public ISettingControl
 {
@@ -68,7 +71,6 @@ protected:
   int m_formatLabel;
   std::string m_formatString;
   int m_minimumLabel;
-
 };
 
 class CSettingControlEdit : public ISettingControl
@@ -143,4 +145,41 @@ protected:
   
   int m_heading;
   bool m_multiselect;
+};
+
+class CSettingControlSlider;
+typedef std::string (*SettingControlSliderFormatter)(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
+
+class CSettingControlSlider : public ISettingControl
+{
+public:
+  CSettingControlSlider()
+    : m_heading(-1),
+      m_popup(false),
+      m_formatLabel(-1),
+      m_formatString("%i"),
+      m_formatter(NULL)
+  { }
+  virtual ~CSettingControlSlider() { }
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const { return "slider"; }
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+
+  int GetHeading() const { return m_heading; }
+  bool UsePopup() const { return m_popup; }
+  int GetFormatLabel() const { return m_formatLabel; }
+  const std::string& GetFormatString() const { return m_formatString; }
+
+  SettingControlSliderFormatter GetFormatter() const { return m_formatter; }
+  void SetFormatter(SettingControlSliderFormatter formatter) { m_formatter = formatter; }
+
+protected:
+  virtual bool SetFormat(const std::string &format);
+
+  int m_heading;
+  bool m_popup;
+  int m_formatLabel;
+  std::string m_formatString;
+  SettingControlSliderFormatter m_formatter;
 };
