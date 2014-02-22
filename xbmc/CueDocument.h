@@ -79,7 +79,7 @@ private:
   std::vector<CCueTrack> m_Track;
 
   bool ReadNextLine(CStdString &strLine);
-  bool ExtractQuoteInfo(const CStdString &line, CStdString &quote);
+  CStdString ExtractInfo(const CStdString &line);
   int ExtractTimeFromIndex(const CStdString &index);
   int ExtractNumericInfo(const CStdString &info);
   bool ResolvePath(CStdString &strPath, const CStdString &strBase);
