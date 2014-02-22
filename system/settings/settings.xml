@@ -695,7 +695,7 @@
         </setting>
       </group>
     </category>
-    <category id="myvideos" label="14081" help="36176">
+    <category id="myvideos" label="14081" help="36601">
       <group id="1">
         <setting id="myvideos.selectaction" type="integer" label="22079" help="36177">
           <level>1</level>
@@ -805,7 +805,7 @@
           </constraints>
           <control type="button" format="addon" />
         </setting>
-        <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="">
+        <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="24123">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
@@ -1386,7 +1386,7 @@
     </category>
   </section>
   <section id="music" label="2" help="36253">
-    <category id="musiclibrary" label="14022" help="36138">
+    <category id="musiclibrary" label="14022" help="36600">
       <group id="1">
         <setting id="musiclibrary.enabled" type="boolean" label="24022" help="36254">
           <level>4</level>
@@ -2106,7 +2106,7 @@
         </setting>
       </group>
     </category>
-    <category id="airplay" label="1273" help="36343">
+    <category id="airplay" label="1273" help="36602">
       <requirement>HAS_AIRPLAY</requirement>
       <group id="1">
         <setting id="services.airplay" type="boolean" label="1270" help="36343">
@@ -2161,7 +2161,7 @@
     </category>
   </section>
   <section id="system" label="13000" help="36349">
-    <category id="videoscreen" label="21373" help="36350">
+    <category id="videoscreen" label="21373" help="36603">
       <group id="1">
         <setting id="videoscreen.screen" type="integer" label="240" help="36351">
           <level>0</level>
@@ -2687,7 +2687,7 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="debug.screenshotpath" type="path" label="20004" help="36261">
+        <setting id="debug.screenshotpath" type="path" label="20004" help="36393">
           <level>1</level>
           <default></default>
           <constraints>
@@ -2716,7 +2716,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="masterlock.maxretries" type="integer" label="12364" help="36398">
+        <setting id="masterlock.maxretries" type="integer" label="12362" help="36398">
           <level>4</level>
           <default>3</default>
           <constraints>
