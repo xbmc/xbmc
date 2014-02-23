@@ -22,6 +22,7 @@
 #include <string.h>
 #include <sstream>
 
+#include "utils/CharsetConverter.h"
 #include "Variant.h"
 
 #ifndef strtoll
@@ -473,6 +474,12 @@ std::string CVariant::asString(const std::string &fallback /* = "" */) const
         strStream << m_data.dvalue;
       return strStream.str();
     }
+    case VariantTypeWideString:
+    {
+      std::string str;
+      g_charsetConverter.wToUTF8(*m_data.wstring, str, false);
+      return str;
+    }
     default:
       return fallback;
   }
@@ -501,6 +508,12 @@ std::wstring CVariant::asWideString(const std::wstring &fallback /* = L"" */) co
         strStream << m_data.dvalue;
       return strStream.str();
       break;
+    }
+    case VariantTypeString:
+    {
+      std::wstring wstr;
+      g_charsetConverter.utf8ToW(*m_data.string, wstr, false);
+      return wstr;
     }
     default:
       return fallback;
