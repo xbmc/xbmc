@@ -284,27 +284,25 @@
 				</control>
 				<control type="group" id="130">
 					<control type="grouplist">
-						<left>20</left>
-						<top>660</top>
-						<width>305</width>
-						<height>40</height>
-						<align>right</align>
+						<left>50</left>
+						<top>659</top>
+						<width>605</width>
+						<height>30</height>
 						<orientation>horizontal</orientation>
 						<itemgap>5</itemgap>
 						<control type="image">
-							<width>40</width>
-							<height>40</height>
+							<width>30</width>
+							<height>30</height>
 							<texture>DefaultIconInfo.png</texture>
 						</control>
 						<control type="label">
 							<description>notification</description>
-							<width min="10" max="260">auto</width>
-							<height>40</height>
+							<width min="10" max="560">auto</width>
+							<height>30</height>
 							<font>font13</font>
 							<textcolor>white</textcolor>
-							<label>31413</label>
+							<label>$LOCALIZE[31413]</label>
 							<aligny>center</aligny>
-							<wrapmultiline>true</wrapmultiline>
 						</control>
 					</control>
 				</control>
