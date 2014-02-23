@@ -11838,7 +11838,13 @@ msgctxt "#24023"
 msgid "Disabled"
 msgstr ""
 
-#empty strings from id 24024 to 24026
+#. Used as an error message (triggered from content dialog) on disabled scrapers
+#: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
+msgctxt "#24023"
+msgid "Add-on disabled"
+msgstr ""
+
+#empty strings from id 24025 to 24026
 
 #: xbmc/addons/addon.cpp
 msgctxt "#24027"
