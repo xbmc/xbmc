@@ -127,25 +127,16 @@ bool CCueDocument::Parse(const CStdString &strFile)
     else if (StringUtils::StartsWithNoCase(strLine,"TITLE"))
     {
       if (m_iTotalTracks == -1) // No tracks yet
-        ExtractQuoteInfo(strLine, m_strAlbum);
-      else if (!ExtractQuoteInfo(strLine, m_Track[m_iTotalTracks].strTitle))
-      {
-        // lets manage tracks titles without quotes
-        CStdString titleNoQuote = strLine.substr(5);
-        StringUtils::TrimLeft(titleNoQuote);
-        if (!titleNoQuote.empty())
-        {
-          g_charsetConverter.unknownToUTF8(titleNoQuote);
-          m_Track[m_iTotalTracks].strTitle = titleNoQuote;
-        }
-      }
+        m_strAlbum = ExtractInfo(strLine.substr(5));
+      else
+        m_Track[m_iTotalTracks].strTitle = ExtractInfo(strLine.substr(5));
     }
     else if (StringUtils::StartsWithNoCase(strLine,"PERFORMER"))
     {
       if (m_iTotalTracks == -1) // No tracks yet
-        ExtractQuoteInfo(strLine, m_strArtist);
+        m_strArtist = ExtractInfo(strLine.substr(9));
       else // New Artist for this track
-        ExtractQuoteInfo(strLine, m_Track[m_iTotalTracks].strArtist);
+        m_Track[m_iTotalTracks].strArtist = ExtractInfo(strLine.substr(9));
     }
     else if (StringUtils::StartsWithNoCase(strLine,"TRACK"))
     {
@@ -176,7 +167,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
       if(strCurrentFile.size() > 0)
         bCurrentFileChanged = true;
 
-      ExtractQuoteInfo(strLine, strCurrentFile);
+      strCurrentFile = ExtractInfo(strLine.substr(4));
 
       // Resolve absolute paths (if needed).
       if (strCurrentFile.length() > 0)
@@ -190,16 +181,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     }
     else if (StringUtils::StartsWithNoCase(strLine,"REM GENRE"))
     {
-      if (!ExtractQuoteInfo(strLine, m_strGenre))
-      {
-        CStdString genreNoQuote = strLine.substr(9);
-        StringUtils::TrimLeft(genreNoQuote);
-        if (!genreNoQuote.empty())
-        {
-          g_charsetConverter.unknownToUTF8(genreNoQuote);
-          m_strGenre = genreNoQuote;
-        }
-      }
+      m_strGenre = ExtractInfo(strLine.substr(9));
     }
     else if (StringUtils::StartsWithNoCase(strLine,"REM REPLAYGAIN_ALBUM_GAIN"))
       m_replayGainAlbumGain = (float)atof(strLine.substr(26).c_str());
@@ -299,19 +281,26 @@ bool CCueDocument::ReadNextLine(CStdString &szLine)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-// Function: ExtractQuoteInfo()
+// Function: ExtractInfo()
 // Extracts the information in quotes from the string line, returning it in quote
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
+CStdString CCueDocument::ExtractInfo(const CStdString &line)
 {
-  quote.clear();
   size_t left = line.find('\"');
-  if (left == std::string::npos) return false;
-  size_t right = line.find('\"', left + 1);
-  if (right == std::string::npos) return false;
-  quote = line.substr(left + 1, right - left - 1);
-  g_charsetConverter.unknownToUTF8(quote);
-  return true;
+  if (left != std::string::npos)
+  {
+    size_t right = line.find('\"', left + 1);
+    if (right != std::string::npos)
+    {
+      CStdString text = line.substr(left + 1, right - left - 1);
+      g_charsetConverter.unknownToUTF8(text);
+      return text;
+    }
+  }
+  CStdString text = line;
+  StringUtils::Trim(text);
+  g_charsetConverter.unknownToUTF8(text);
+  return text;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
