@@ -11840,7 +11840,7 @@ msgstr ""
 
 #. Used as an error message (triggered from content dialog) on disabled scrapers
 #: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
-msgctxt "#24023"
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr ""
 
