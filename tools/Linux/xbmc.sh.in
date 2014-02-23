@@ -23,6 +23,7 @@ prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 datarootdir="@datarootdir@"
 LIBDIR="@libdir@"
+CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
 
 # Check for some options used by this script
 while [ "$#" -gt "0" ]
@@ -52,7 +53,7 @@ single_stacktrace()
 
 print_crash_report()
 {
-  FILE="$HOME/xbmc_crashlog-`date +%Y%m%d_%H%M%S`.log"
+  FILE="$CRASHLOG_DIR/xbmc_crashlog-`date +%Y%m%d_%H%M%S`.log"
   echo "############## XBMC CRASH LOG ###############" >> $FILE
   echo >> $FILE
   echo "################ SYSTEM INFO ################" >> $FILE
