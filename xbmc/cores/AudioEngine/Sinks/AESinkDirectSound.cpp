@@ -21,7 +21,7 @@
 #define INITGUID
 
 #include "AESinkDirectSound.h"
-#include "utils/Log.h"
+#include "utils/log.h"
 #include <initguid.h>
 #include <list>
 #include "threads/SingleLock.h"
