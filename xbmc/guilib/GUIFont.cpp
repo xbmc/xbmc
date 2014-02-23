@@ -204,7 +204,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const vecColors &colors, colo
   if (!text.size() || ClippedRegionIsEmpty(x, y, maxWidth, alignment))
     return; // nothing to render
 
-  maxWidth = ROUND(maxWidth / g_graphicsContext.GetGUIScaleX());
+  maxWidth = ROUND((maxWidth + scrollInfo.pixelPos) / g_graphicsContext.GetGUIScaleX());
 
   float charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
   float offset;
@@ -239,9 +239,9 @@ void CGUIFont::DrawScrollingText(float x, float y, const vecColors &colors, colo
     vecColors shadowColors;
     for (unsigned int i = 0; i < renderColors.size(); i++)
       shadowColors.push_back((renderColors[i] & 0xff000000) != 0 ? shadowColor : 0);
-    m_font->DrawTextInternal(x - offset + 1, y + 1, shadowColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f), scroll);
+    m_font->DrawTextInternal(x - offset + 1, y + 1, shadowColors, renderText, alignment, maxWidth + m_font->GetLineHeight(2.0f), scroll);
   }
-  m_font->DrawTextInternal(x - offset, y, renderColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f), scroll);
+  m_font->DrawTextInternal(x - offset, y, renderColors, renderText, alignment, maxWidth + m_font->GetLineHeight(2.0f), scroll);
 
   g_graphicsContext.RestoreClipRegion();
 }
