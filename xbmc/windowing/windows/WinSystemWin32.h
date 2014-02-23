@@ -22,6 +22,7 @@
 #define WINDOW_SYSTEM_WIN32_H
 
 #include "windowing/WinSystem.h"
+#include <string>
 
 struct MONITOR_DETAILS
 {
@@ -33,9 +34,9 @@ struct MONITOR_DETAILS
   bool      Interlaced;
 
   HMONITOR  hMonitor;
-  char      MonitorName[128];
-  char      CardName[128];
-  char      DeviceName[128];
+  std::wstring MonitorNameW;
+  std::wstring CardNameW;
+  std::wstring DeviceNameW;
   int       ScreenNumber; // XBMC POV, not Windows. Windows primary is XBMC #0, then each secondary is +1.
 };
 
