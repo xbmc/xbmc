@@ -115,11 +115,16 @@ void CJoystick::Initialize()
         // Details: Total Axis: 37 Total Hats: 0 Total Buttons: 57
         // NOTICE: Enabled Joystick: Microsoft Microsoft® 2.4GHz Transceiver v6.0
         // Details: Total Axis: 37 Total Hats: 0 Total Buttons: 57
+        // also checks if we have at least 1 button, fixes 
+        // NOTICE: Enabled Joystick: ST LIS3LV02DL Accelerometer
+        // Details: Total Axis: 3 Total Hats: 0 Total Buttons: 0
         int num_axis = SDL_JoystickNumAxes(joy);
         int num_buttons = SDL_JoystickNumButtons(joy);
-        if (num_axis > 20 && num_buttons > 50)
-          CLog::Log(LOGNOTICE, "Your Joystick seems to be a Keyboard, ignoring it: %s Axis: %d Buttons: %d", 
-            SDL_JoystickName(i), num_axis, num_buttons);
+        if ((num_axis > 20 && num_buttons > 50) || num_buttons == 0)
+        {
+          CLog::Log(LOGNOTICE, "Ignoring Joystick %s Axis: %d Buttons: %d: invalid device properties",
+           SDL_JoystickName(i), num_axis, num_buttons);
+        }
         else
         {
           m_JoystickNames.push_back(string(SDL_JoystickName(i)));
