@@ -1372,6 +1372,9 @@
             <step>5</step>
             <maximum>360</maximum>
           </constraints>
+          <dependencies>
+            <dependency type="enable" setting="pvrpowermanagement.enabled" operator="is">true</dependency>
+          </dependencies>
           <control type="spinner" format="string">
             <formatlabel>14044</formatlabel>
           </control>
@@ -1382,6 +1385,9 @@
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
+          <dependencies>
+            <dependency type="enable" setting="pvrpowermanagement.enabled" operator="is">true</dependency>
+          </dependencies>
           <control type="edit" format="string" />
         </setting>
         <setting id="pvrpowermanagement.prewakeup" type="integer" label="19246" help="36244">
@@ -1392,6 +1398,9 @@
             <step>1</step>
             <maximum>60</maximum>
           </constraints>
+          <dependencies>
+            <dependency type="enable" setting="pvrpowermanagement.enabled" operator="is">true</dependency>
+          </dependencies>
           <control type="spinner" format="string">
             <formatlabel>14044</formatlabel>
           </control>
@@ -1402,11 +1411,17 @@
           <level>2</level>
           <default>false</default>
           <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="pvrpowermanagement.enabled" operator="is">true</dependency>
+          </dependencies>
         </setting>
         <setting id="pvrpowermanagement.dailywakeuptime" type="string" label="19248" help="36246">
           <level>2</level>
           <default>00:00:00</default>
           <control type="edit" format="string" />
+          <dependencies>
+            <dependency type="enable" setting="pvrpowermanagement.enabled" operator="is">true</dependency>
+          </dependencies>
         </setting>
       </group>
     </category>
