@@ -625,24 +625,22 @@ case $host in
      use_sdl=no
      use_x11=no
      build_shared_lib=yes    
-    ;;
+     ;;
   i*86*-linux-gnu*|i*86*-*-linux-uclibc*)
      ARCH="i486-linux"
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86"
         use_cpu="i686"
-     else
-        target_platform=target_linux
      fi
+     use_static_ffmpeg=yes
      ;;
   x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*)
      ARCH="x86_64-linux"
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86_64"
         use_cpu="x86_64"
-     else
-        target_platform=target_linux
      fi
+     use_static_ffmpeg=yes
      ;;
   i386-*-freebsd*)
      ARCH="x86-freebsd"
@@ -698,6 +696,7 @@ case $host in
      use_sdl=no
      use_x11=no
      use_wayland=no
+     use_static_ffmpeg=yes
      ;;
   arm*-*linux-android*)
      target_platform=target_android
@@ -875,9 +874,8 @@ elif test "$use_arch" = "arm"; then
     fi
   fi
 fi
-if test "$target_platform" = "target_linux"; then
+if test "$use_static_ffmpeg" = "yes"; then
   USE_STATIC_FFMPEG=1
-  use_static_ffmpeg=yes
   AC_DEFINE([USE_STATIC_FFMPEG], [1], [link ffmpeg statically])
   # ffmpeg may depend on gnutls and vorbisenc, we add those libs at the end of linker
   # command in order to resolve any missing symbols
@@ -2804,7 +2802,6 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
     LDFLAGS="$(echo "$LDFLAGS" | sed "s/-Wl,-Bsymbolic-functions//g")" \
     ./configure \
       --extra-cflags="$PASSED_CFLAGS $FFMPEG_EXTRACFLAGS" \
-      --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
@@ -2828,7 +2825,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffserver \
       --disable-ffmpeg \
       --disable-crystalhd \
-      `if test "$use_static_ffmpeg" = "yes"; then echo --enable-static; else echo --enable-shared; fi` \
+      `if test "$use_static_ffmpeg" = "yes"; then echo --enable-static --disable-shared; else echo --disable-static --enable-shared; fi` \
       --disable-doc \
       --enable-postproc \
       --enable-gpl \
