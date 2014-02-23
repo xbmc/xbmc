@@ -29,6 +29,7 @@
 #include "filesystem/File.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "filesystem/StackDirectory.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/Key.h"
@@ -72,6 +73,8 @@ public:
   virtual bool DoWork()
   {
     CDirectory::GetDirectory(m_url.Get(), *m_items);
+    // Sort items by path so they properly order for eg. stacks
+    m_items->Sort(SortByPath, SortOrderAscending);
     return true;
   }
   virtual bool operator==(const CJob *job) const
@@ -325,6 +328,10 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
   if (setting)
     url.SetOption("languages", setting->ToString());
 
+  // Check for stacking
+  if (g_application.CurrentFileItem().IsStack())
+    url.SetOption("stack", "1");
+
   AddJob(new CSubtitlesJob(url, ""));
 }
 
@@ -409,18 +416,37 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   // Get (unstacked) path
   const CStdString &strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
 
-  CStdString strFileName = "TemporarySubs";
   CStdString strDownloadPath = "special://temp";
   CStdString strDestPath;
+  std::vector<CStdString> vecFiles;
 
   CStdString strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
-  if (!StringUtils::StartsWith(strCurrentFilePath, "http://"))
+  if (StringUtils::StartsWith(strCurrentFilePath, "http://"))
+  {
+    vecFiles.push_back("TemporarySubs");
+  }
+  else
   {
     CStdString subPath = CSpecialProtocol::TranslatePath("special://subtitles");
     if (!subPath.empty())
       strDownloadPath = subPath;
 
-    strFileName = URIUtils::GetFileName(strCurrentFile);
+    // Handle stacks
+    if (g_application.CurrentFileItem().IsStack() && items->Size() > 1)
+    {
+      CStackDirectory::GetPaths(g_application.CurrentFileItem().GetPath(), vecFiles);
+      // Make sure (stack) size is the same as the size of the items handed to us, else fallback to single item
+      if (items->Size() != (int) vecFiles.size())
+      {
+        vecFiles.clear();
+        vecFiles.push_back(strCurrentFile);
+      }
+    }
+    else
+    {
+      vecFiles.push_back(strCurrentFile);
+    }
+
     if (storageMode == SUBTITLE_STORAGEMODE_MOVIEPATH &&
         CUtil::SupportsWriteFileOperations(strCurrentFilePath))
     {
@@ -435,12 +461,13 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   // Extract the language and appropriate extension
   CStdString strSubLang;
   g_LangCodeExpander.ConvertToTwoCharCode(strSubLang, language);
-  URIUtils::RemoveExtension(strFileName);
 
   // Iterate over all items to transfer
-  for (int i = 0; i < items->Size(); i++)
+  for (unsigned int i = 0; i < vecFiles.size() && i < (unsigned int) items->Size(); i++)
   {
     CStdString strUrl = items->Get(i)->GetPath();
+    CStdString strFileName = URIUtils::GetFileName(vecFiles[i]);
+    URIUtils::RemoveExtension(strFileName);
 
     // construct subtitle path
     CStdString strSubExt = URIUtils::GetExtension(strUrl);
@@ -492,8 +519,9 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         }
       }
 
-      // FIXME: With multiple files (eg. stacks), select the correct one
-      SetSubtitles(strDestFile);
+      // Set sub for currently playing (stack) item
+      if (vecFiles[i] == strCurrentFile)
+        SetSubtitles(strDestFile);
     }
   }
 
