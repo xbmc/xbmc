@@ -860,6 +860,13 @@ bool CSettingsManager::OnSettingsLoading()
   return true;
 }
 
+void CSettingsManager::OnSettingsUnloaded()
+{
+  CSharedLock lock(m_critical);
+  for (SettingsHandlers::const_iterator it = m_settingsHandlers.begin(); it != m_settingsHandlers.end(); ++it)
+    (*it)->OnSettingsUnloaded();
+}
+
 void CSettingsManager::OnSettingsLoaded()
 {
   CSharedLock lock(m_critical);
