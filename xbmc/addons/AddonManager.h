@@ -99,15 +99,14 @@ namespace ADDON
     bool ReloadSettings(const CStdString &id);
     /*! \brief Get all addons with available updates
      \param addons List to fill with all outdated addons
-     \param enabled Whether to get only enabled or disabled addons
+     \param getLocalVersion Whether to get the local addon version or the addon verion from the repository
      \return True if there are outdated addons otherwise false
      */
-    bool GetAllOutdatedAddons(VECADDONS &addons, bool enabled = true);
+    bool GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion = false);
     /*! \brief Checks if there is any addon with available updates
-     \param enabled Whether to check only enabled or disabled addons
      \return True if there are outdated addons otherwise false
      */
-    bool HasOutdatedAddons(bool enabled = true);
+    bool HasOutdatedAddons();
     CStdString GetString(const CStdString &id, const int number);
 
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
