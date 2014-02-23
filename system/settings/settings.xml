@@ -480,9 +480,12 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.teletextscale" type="boolean" label="23055" help="36175">
+        <setting id="videoplayer.teletextscale" type="boolean" parent="videoplayer.teletextenabled" label="23055" help="36175">
           <level>1</level>
           <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.teletextenabled" operator="is">true</dependency>
+          </dependencies>
           <control type="toggle" />
         </setting>
       </group>
