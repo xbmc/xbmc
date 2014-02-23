@@ -11147,18 +11147,7 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr ""
 
-#empty strings from id 21470 to 21599
-
-#: xbmc/cores/dvdplayer/DVDPlayer.cpp
-msgctxt "#21600"
-msgid "Prefer external subtitles"
-msgstr ""
-
-#. Description of setting "Video -> Subtitles -> Prefer external subtitles" with label #21600
-#: system/settings/settings.xml
-msgctxt "#21601"
-msgid "Prefer external subtitles to internal ones."
-msgstr ""
+#empty strings from id 21470 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"

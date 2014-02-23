@@ -800,11 +800,6 @@
     </category>
     <category id="subtitles" label="287" help="36184">
       <group id="1">
-        <setting id="subtitles.preferexternal" type="boolean" label="21600" help="21601">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="subtitles.languages" type="list[string]" label="24111" help="24112">
           <level>1</level>
           <default>English</default>
