@@ -200,6 +200,13 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     item->SetLabel(g_localizeStrings.Get(24032));
     items.Add(item);
   }
+  else if (path.GetHostName().Equals("outdated") && items.Size() > 1)
+  {
+    CFileItemPtr item(new CFileItem("addons://update_all/", true));
+    item->SetLabel(g_localizeStrings.Get(24122));
+    item->SetSpecialSort(SortSpecialOnTop);
+    items.Add(item);
+  }
 
   return true;
 }

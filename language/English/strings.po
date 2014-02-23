@@ -12223,7 +12223,12 @@ msgctxt "#24121"
 msgid "Enter search string"
 msgstr ""
 
-#empty strings from id 24122 to 24999
+#: xbmc/filesystem/AddonDirectory.cpp
+msgctxt "#24122"
+msgid "Update all"
+msgstr ""
+
+#empty strings from id 24123 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
