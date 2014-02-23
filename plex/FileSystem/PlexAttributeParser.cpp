@@ -169,6 +169,8 @@ void CPlexAttributeParserMediaUrl::Process(const CURL &url, const CStdString &ke
     item->SetArt(PLEX_ART_FANART, GetImageURL(url, value, 1080, 1920));
   else if (key == "picture")
     item->SetArt("picture", GetImageURL(url, value, 1080, 1920));
+  else
+    item->SetArt(key, GetImageURL(url, value, 0, 0));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +185,7 @@ void CPlexAttributeParserMediaFlag::Process(const CURL &url, const CStdString &k
   {
     item->SetArt("mediaTag::" + key, got->second);
     item->SetProperty("mediaTag-" + key, value);
+    //CLog::Log(LOGDEBUG, "CPlexAttributeParserMediaFlag::Process MEDIATAG (CACHED): mediaTag::%s = %s | mediaTag-%s = %s", key.c_str(), got->second.c_str(), key.c_str(), value.c_str());
   }
   else
   {
