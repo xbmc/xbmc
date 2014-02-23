@@ -13,7 +13,7 @@ ifneq ($(OS),linux)
 CONFIGURE += --without-x --disable-video-x11
 endif
 
-LIBDYLIB=$(PLATFORM)/build/.libs/lib$(LIBNAME).so
+LIBDYLIB=$(PLATFORM)/build/.libs/lib$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
 

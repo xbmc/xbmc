@@ -11,7 +11,7 @@ ARCHIVE=$(SOURCE).tar.bz2
 CONFIGURE=./configure --prefix=$(PREFIX) --exec-prefix=$(PREFIX) \
   --disable-examples --disable-doxygen-doc
 
-LIBDYLIB=$(PLATFORM)/src/.libs/libbluray.so.1.0.0
+LIBDYLIB=$(PLATFORM)/src/.libs/libbluray.la
 
 all: .installed-$(PLATFORM)
 
