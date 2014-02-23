@@ -114,6 +114,28 @@ include_directories(
   ${root}/xbmc/cores/AudioEngine
 )
 
+if(ENABLE_PYTHON)
+    if(EXTERNAL_PYTHON_HOME)
+      if(TARGET_LINUX OR TARGET_OSX OR TARGET_RPI)
+        install(DIRECTORY ${EXTERNAL_PYTHON_HOME}/lib/python${PYTHON_VERSION} DESTINATION ${LIBPATH}/lib/ COMPONENT RUNTIME
+          PATTERN python${PYTHON_VERSION}/test EXCLUDE
+          REGEX .*\\.pyc$ EXCLUDE
+          REGEX .*\\.pyo$ EXCLUDE
+        )
+        install(FILES ${PYTHON_INCLUDE_DIRS}/pyconfig.h DESTINATION "${LIBPATH}/include/python${PYTHON_VERSION}" COMPONENT RUNTIME)
+      endif()
+    elseif()
+      if(TARGET_LINUX OR TARGET_OSX)
+        install(DIRECTORY /usr/lib/python${PYTHON_VERSION} DESTINATION ${LIBPATH}/lib/ COMPONENT RUNTIME
+          PATTERN python${PYTHON_VERSION}/test EXCLUDE
+          REGEX .*\\.pyc$ EXCLUDE
+          REGEX .*\\.pyo$ EXCLUDE
+        )
+        install(FILES ${PYTHON_INCLUDE_DIRS}/pyconfig.h DESTINATION "${LIBPATH}/include/python${PYTHON_VERSION}" COMPONENT RUNTIME)
+      endif()
+    endif()
+endif()
+
 # UPnP includes
 include_directories(
   ${root}/lib/libUPnP/Platinum/Source/Platinum
