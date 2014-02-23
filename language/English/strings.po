@@ -5646,7 +5646,7 @@ msgid "Scan for new content"
 msgstr ""
 
 msgctxt "#13350"
-msgid "Now playing..."
+msgid "Current playlist"
 msgstr ""
 
 msgctxt "#13351"
