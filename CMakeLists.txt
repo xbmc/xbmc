@@ -116,15 +116,7 @@ include_directories(
 
 if(ENABLE_PYTHON)
     if(EXTERNAL_PYTHON_HOME)
-      if (TARGET_RPI)
-        install(DIRECTORY ${EXTERNAL_PYTHON_HOME}/lib/python2.7 DESTINATION ${LIBPATH}/lib/ COMPONENT RUNTIME 
-          PATTERN python2.7/test EXCLUDE
-          REGEX .*\\.pyc$ EXCLUDE
-          REGEX .*\\.pyo$ EXCLUDE
-        )
-        install(FILES ${EXTERNAL_PYTHON_HOME}/include/python2.7/pyconfig.h DESTINATION ${LIBPATH}/include/python2.7 COMPONENT RUNTIME)
-      endif()
-      if(TARGET_LINUX OR TARGET_OSX)
+      if(TARGET_LINUX OR TARGET_OSX OR TARGET_RPI)
         install(DIRECTORY ${EXTERNAL_PYTHON_HOME}/lib/python${PYTHON_VERSION} DESTINATION ${LIBPATH}/lib/ COMPONENT RUNTIME
           PATTERN python${PYTHON_VERSION}/test EXCLUDE
           REGEX .*\\.pyc$ EXCLUDE
