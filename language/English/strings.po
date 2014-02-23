@@ -11832,9 +11832,10 @@ msgctxt "#24022"
 msgid "Enable"
 msgstr ""
 
+#. Defines the state of the add-on in the add-on manager window
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24023"
-msgid "Add-on disabled"
+msgid "Disabled"
 msgstr ""
 
 #empty strings from id 24024 to 24026
