@@ -21,8 +21,63 @@
 #include "GUIDialogBusy.h"
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUIWindowManager.h"
+#include "threads/Thread.h"
 
 #define PROGRESS_CONTROL 10
+
+class CBusyWaiter : public CThread
+{
+public:
+  CBusyWaiter(IRunnable *runnable) : CThread(runnable, "waiting")
+  {
+  }
+  
+  bool Wait()
+  {
+    Create();
+    return CGUIDialogBusy::WaitOnEvent(m_done);
+  }
+  
+  virtual void Process()
+  {
+    CThread::Process();
+    m_done.Set();
+  }
+  CEvent  m_done;
+};
+
+bool CGUIDialogBusy::Wait(IRunnable *runnable)
+{
+  if (!runnable)
+    return false;
+  CBusyWaiter waiter(runnable);
+  return waiter.Wait();
+}
+
+bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 100 */, bool allowCancel /* = true */)
+{
+  bool cancelled = false;
+  if (!event.WaitMSec(displaytime))
+  {
+    // throw up the progress
+    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    if (dialog)
+    {
+      dialog->Show();
+      while(!event.WaitMSec(1))
+      {
+        g_windowManager.ProcessRenderLoop(false);
+        if (allowCancel && dialog->IsCanceled())
+        {
+          cancelled = true;
+          break;
+        }
+      }
+      dialog->Close();
+    }
+  }
+  return !cancelled;
+}
 
 CGUIDialogBusy::CGUIDialogBusy(void)
   : CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml"), m_bLastVisible(false)
