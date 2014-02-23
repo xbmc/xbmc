@@ -2100,7 +2100,7 @@
       <requirement>HAS_ZEROCONF</requirement>
       <group id="1">
         <setting id="services.zeroconf" type="boolean" label="1260" help="36342">
-          <level>2</level>
+          <level>1</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
