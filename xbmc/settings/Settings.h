@@ -63,6 +63,8 @@ public:
    */
   static CSettings& Get();
 
+  CSettingsManager* GetSettingsManager() const { return m_settingsManager; }
+
   /*!
    \brief Initializes the setting system with the generic
    settings definition and platform specific setting definitions.
