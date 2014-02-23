@@ -2850,6 +2850,13 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
   fi
 ], [$USE_EXTERNAL_FFMPEG])
 
+if test "$USE_EXTERNAL_FFMPEG" = "0" && test "$USE_STATIC_FFMPEG" = "1"; then
+# get libs ffmpeg linked against
+FF_LIBS=$(PKG_CONFIG_PATH=lib/ffmpeg/libavdevice:lib/ffmpeg/libavformat:lib/ffmpeg/libavcodec:lib/ffmpeg/libavutil:lib/ffmpeg/libavfilter:lib/ffmpeg/libpostproc:lib/ffmpeg/libswresample:lib/ffmpeg/libswscale:$PKG_CONFIG_PATH \
+${PKG_CONFIG} --libs libavfilter libpostproc libswresample libavdevice libswscale libavcodec libavutil libavformat)
+LIBS="$LIBS $(${ECHO} $FF_LIBS | ${SED} 's/-l\(avfilter\|postproc\|swresample\|avdevice\|avutil\|swscale\|avformat\|avcodec\)/ /g' | ${SED} ':a;N;$!ba;s/\n/ /g')"
+fi
+
 XB_CONFIG_MODULE([lib/libdvd/libdvdcss], [
   ./configure \
     CC="$CC" \
