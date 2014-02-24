@@ -128,6 +128,7 @@ public:
   void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   void OnTimeout();
+  CStdString TimerName() const { return "windowHome"; }
 
   CStdString GetCurrentItemName(bool onlySections=false);
   CFileItem* GetCurrentFileItem();

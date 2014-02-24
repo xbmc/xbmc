@@ -59,7 +59,7 @@ void CPlexGlobalTimer::SetTimeout(int64_t msec, IPlexGlobalTimeout *callback)
     idx ++;
   }
 
-  CLog::Log(LOGDEBUG, "CPlexGlobalTimer::SetTimeout adding timeout at pos %d", idx);
+  CLog::Log(LOGDEBUG, "CPlexGlobalTimer::SetTimeout adding timeout: %s at pos %d [%lld]", callback->TimerName().c_str(), idx, msec);
   if (idx > m_timeouts.size())
     m_timeouts.push_back(newPair);
   else
@@ -77,13 +77,20 @@ void CPlexGlobalTimer::RemoveTimeout(IPlexGlobalTimeout *callback)
   if (m_timeouts.size() == 0)
     return;
 
-  int idx = -1;
+  CLog::Log(LOGDEBUG, "CPlexGlobalTimer::RemoveTimeout want to remove %s", callback->TimerName().c_str());
+
+  int idx = -1, i = 0;
   BOOST_FOREACH(timeoutPair tmout, m_timeouts)
   {
     if (callback == tmout.second)
+    {
+      idx = i;
       break;
-    idx ++;
+    }
+    i ++;
   }
+
+  CLog::Log(LOGDEBUG, "CPlexGlobaltimer::RemoveTimeout idx is %d for %s", idx, callback->TimerName().c_str());
 
   if (idx == -1)
     return;
@@ -91,6 +98,7 @@ void CPlexGlobalTimer::RemoveTimeout(IPlexGlobalTimeout *callback)
   if (idx > m_timeouts.size())
     return;
 
+  CLog::Log(LOGDEBUG, "CPlexGlobaltimer::RemoveTimeout removing %s %d", callback->TimerName().c_str(), idx);
   m_timeouts.erase(m_timeouts.begin() + idx);
 
   if (idx == 0)
@@ -132,14 +140,14 @@ void CPlexGlobalTimer::Process()
 
     m_timerEvent.Reset();
     lk.unlock();
-    CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process waiting %lld milliseconds...", msecsToSleep);
+    CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process waiting %lld milliseconds for %s...", msecsToSleep, p.second->TimerName().c_str());
     if (msecsToSleep <= 0 || !m_timerEvent.WaitMSec(msecsToSleep))
     {
       lk.lock();
       if (!m_running)
         return;
 
-      CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process firing callback");
+      CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process firing callback %s", p.second->TimerName().c_str());
       m_timeouts.erase(m_timeouts.begin());
       CJobManager::GetInstance().AddJob(new CPlexGlobalTimerJob(p.second), NULL, CJob::PRIORITY_HIGH);
     }

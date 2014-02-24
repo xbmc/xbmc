@@ -5,11 +5,14 @@
 #include "threads/CriticalSection.h"
 #include "JobManager.h"
 
+#include "StdString.h"
+
 class IPlexGlobalTimeout
 {
   public:
     virtual ~IPlexGlobalTimeout() {}
     virtual void OnTimeout() = 0;
+    virtual CStdString TimerName() const { return "unnamed"; }
 };
 
 typedef std::pair<int64_t, IPlexGlobalTimeout*> timeoutPair;

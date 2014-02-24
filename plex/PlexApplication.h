@@ -103,6 +103,7 @@ public:
 
   void setNetworkLogging(bool);
   void OnTimeout();
+  CStdString TimerName() const { return "plexApplication"; }
   void sendNetworkLog(int level, const std::string& logline);
 
 private:

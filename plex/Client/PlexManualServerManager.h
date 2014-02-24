@@ -26,6 +26,7 @@ class CPlexManualServerManager : public IJobCallback, public IPlexGlobalTimeout
     void checkLocalhost();
 
     void OnTimeout();
+    CStdString TimerName() const { return "manualServerManager"; }
 
     CCriticalSection m_serverLock;
     PlexServerMap m_serverMap;

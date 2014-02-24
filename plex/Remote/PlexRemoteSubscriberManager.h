@@ -86,6 +86,7 @@ class CPlexRemoteSubscriberManager : public IPlexGlobalTimeout
     std::vector<CPlexRemoteSubscriberPtr> getSubscribers() const;
   
     bool hasSubscribers() const { CSingleLock lk(m_crit); return m_map.size(); }
+    CStdString TimerName() const { return "remoteSubscriberManager"; }
   
   private:
     void OnTimeout();

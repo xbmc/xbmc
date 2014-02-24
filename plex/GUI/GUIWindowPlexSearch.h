@@ -50,6 +50,8 @@ class CGUIWindowPlexSearch : public CGUIWindow, public PlexContentPlayerMixin, p
       return (m_currentSearchId.size() > 0);
     }
 
+    CStdString TimerName() const { return "plexSearch"; }
+
   private:
     void InitWindow();
     void UpdateSearch();

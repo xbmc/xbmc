@@ -47,6 +47,8 @@ class CPlexServerDataLoader : public CJobQueue, public IPlexGlobalTimeout, publi
     CFileItemPtr GetSection(const CURL &sectionUrl);
     EPlexDirectoryType GetSectionType(const CURL &sectionUrl);
 
+    CStdString TimerName() const { return "serverDataLoader"; }
+
   private:
     bool m_stopped;
     void OnTimeout();

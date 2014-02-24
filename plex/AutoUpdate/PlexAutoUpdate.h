@@ -46,6 +46,8 @@ class CPlexAutoUpdate : public IJobCallback, public IPlexGlobalTimeout
 
     int GetDownloadPercentage() const { return m_percentage; }
 
+    CStdString TimerName() const { return "autoupdate"; }
+
   private:
     void CheckInstalledVersion();
     void DownloadUpdate(CFileItemPtr updateItem);
