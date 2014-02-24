@@ -23,6 +23,9 @@
 #include "utils/RingBuffer.h"
 #include <map>
 #include "utils/HttpHeader.h"
+/* PLEX */
+#include "log.h"
+/* END PLEX */
 
 namespace XCURL
 {
@@ -135,7 +138,11 @@ namespace XFILE
           void Cancel()
           {
             if (m_hasTicklePipe)
-              write(m_ticklePipe[1], "Q", 1);
+            {
+              CLog::Log(LOGDEBUG, "CCurlFile::ReadState::Cancel sending wakeup packet.");
+              if (send(m_ticklePipe[1], "Q", 1, 0) != 1)
+                CLog::Log(LOGWARNING, "CCurlFile::ReadState::Cancel ERROR sending wakeup packet.");
+            }
             m_cancelled = true;
           }
           /* END PLEX */
