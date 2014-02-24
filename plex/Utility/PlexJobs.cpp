@@ -39,17 +39,16 @@ bool CPlexDirectoryFetchJob::DoWork()
 ////////////////////////////////////////////////////////////////////////////////
 bool CPlexMediaServerClientJob::DoWork()
 {
-  XFILE::CPlexFile file;
   bool success = false;
   
   if (m_verb == "PUT")
-    success = file.Put(m_url.Get(), m_data);
+    success = m_http.Put(m_url.Get(), m_data);
   else if (m_verb == "GET")
-    success = file.Get(m_url.Get(), m_data);
+    success = m_http.Get(m_url.Get(), m_data);
   else if (m_verb == "DELETE")
-    success = file.Delete(m_url.Get(), m_data);
+    success = m_http.Delete(m_url.Get(), m_data);
   else if (m_verb == "POST")
-    success = file.Post(m_url.Get(), m_postData, m_data);
+    success = m_http.Post(m_url.Get(), m_postData, m_data);
   
   return success;
 }
@@ -85,10 +84,9 @@ using namespace XFILE;
 bool
 CPlexDownloadFileJob::DoWork()
 {
-  CCurlFile http;
   CFile file;
   CURL theUrl(m_url);
-  http.SetRequestHeader("X-Plex-Client", PLEX_TARGET_NAME);
+  m_http.SetRequestHeader("X-Plex-Client", PLEX_TARGET_NAME);
 
   if (!file.OpenForWrite(m_destination, true))
   {
@@ -96,20 +94,20 @@ CPlexDownloadFileJob::DoWork()
     return false;
   }
 
-  if (http.Open(theUrl))
+  if (m_http.Open(theUrl))
   {
     CLog::Log(LOGINFO, "[DownloadJob] Downloading %s to %s", m_url.c_str(), m_destination.c_str());
 
     bool done = false;
     bool failed = false;
     int64_t read;
-    int64_t leftToDownload = http.GetLength();
+    int64_t leftToDownload = m_http.GetLength();
     int64_t total = leftToDownload;
 
     while (!done)
     {
       char buffer[4096];
-      read = http.Read(buffer, 4096);
+      read = m_http.Read(buffer, 4096);
       if (read > 0)
       {
         leftToDownload -= read;
@@ -130,7 +128,7 @@ CPlexDownloadFileJob::DoWork()
 
     CLog::Log(LOGINFO, "[DownloadJob] Done with the download.");
 
-    http.Close();
+    m_http.Close();
     file.Close();
 
     return !failed;
