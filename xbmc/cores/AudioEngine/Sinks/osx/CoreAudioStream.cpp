@@ -24,6 +24,15 @@
 #include "utils/log.h"
 #include "utils/StdString.h"
 
+// defines taken from CoreAudio/AudioHardware.h from SDK 10.8
+#if !defined kAudioStreamTerminalTypeHDMI
+#define kAudioStreamTerminalTypeHDMI 'hdmi'
+#endif
+
+#if !defined kAudioStreamTerminalTypeDisplayPort
+#define kAudioStreamTerminalTypeDisplayPort 'dprt'
+#endif
+
 CCoreAudioStream::CCoreAudioStream() :
   m_StreamId  (0    )
 {
