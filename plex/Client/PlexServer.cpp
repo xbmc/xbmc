@@ -221,6 +221,17 @@ void CPlexServer::CancelReachabilityTests()
     thread->Cancel();
 }
 
+CStdString CPlexServer::GetAccessToken() const
+{
+  CSingleLock lk(m_serverLock);
+  BOOST_FOREACH(CPlexConnectionPtr conn, m_connections)
+  {
+    if (!conn->GetAccessToken().empty())
+      return conn->GetAccessToken();
+  }
+  return CStdString();
+}
+
 void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, int state)
 {
   {

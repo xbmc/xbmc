@@ -52,6 +52,8 @@ public:
   bool UpdateReachability();
   void CancelReachabilityTests();
 
+  CStdString GetAccessToken() const;
+
   CStdString GetName() const { return m_name; }
   CStdString GetUUID() const { return m_uuid; }
   CStdString GetVersion() const { return m_version; }
