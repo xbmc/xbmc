@@ -78,11 +78,11 @@
 						</control>
 					</control>
 					<control type="label" id="10082">
-						<posy>0</posy>
-						<posx>15</posx>
+						<posy>15</posy>
+						<posx>10</posx>
 						<width>480</width>
 						<height>150</height>
-						<font>Bold-126</font>
+						<font>Bold-144</font>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
 				</control>
