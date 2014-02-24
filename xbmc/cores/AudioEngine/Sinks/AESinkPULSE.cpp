@@ -483,8 +483,6 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
   m_Channels = format.m_channelLayout.Count();
 
-  pa_cvolume_reset(&m_Volume, m_Channels);
-
   pa_format_info *info[1];
   info[0] = pa_format_info_new();
   info[0]->encoding = AEFormatToPulseEncoding(format.m_dataFormat);
@@ -594,7 +592,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     buffer_attr.fragsize = (uint32_t) latency;
   }
 
-  if (pa_stream_connect_playback(m_Stream, isDefaultDevice ? NULL : device.c_str(), sinkStruct.isHWDevice ? &buffer_attr : NULL, ((pa_stream_flags)(PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY)), m_passthrough ? NULL : &m_Volume, NULL) < 0)
+  if (pa_stream_connect_playback(m_Stream, isDefaultDevice ? NULL : device.c_str(), sinkStruct.isHWDevice ? &buffer_attr : NULL, ((pa_stream_flags)(PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY)), NULL, NULL) < 0)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
     pa_threaded_mainloop_unlock(m_MainLoop);
@@ -750,26 +748,6 @@ void CAESinkPULSE::Drain()
   pa_threaded_mainloop_lock(m_MainLoop);
   WaitForOperation(pa_stream_drain(m_Stream, NULL, NULL), m_MainLoop, "Drain");
   pa_threaded_mainloop_unlock(m_MainLoop);
-}
-
-void CAESinkPULSE::SetVolume(float volume)
-{
-  if (m_IsAllocated && !m_passthrough)
-  {
-    pa_threaded_mainloop_lock(m_MainLoop);
-    pa_volume_t pavolume = pa_sw_volume_from_linear(volume);
-    if ( pavolume <= 0 )
-      pa_cvolume_mute(&m_Volume, m_Channels);
-    else
-      pa_cvolume_set(&m_Volume, m_Channels, pavolume);
-    pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_Volume, NULL, NULL);
-    if (op == NULL)
-      CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
-    else
-      pa_operation_unref(op);
-
-    pa_threaded_mainloop_unlock(m_MainLoop);
-  }
 }
 
 void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
