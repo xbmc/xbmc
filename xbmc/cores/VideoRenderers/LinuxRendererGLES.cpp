@@ -349,11 +349,9 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
                                 , unsigned width, unsigned height
                                 , int stride, void* data )
 {
-  /* PLEX */
 #if defined(__PLEX__)
   if(!m_bRGBImageSet && plane.flipindex == flipindex)
     return;
-  /* END PLEX */
 #else
   if(plane.flipindex == flipindex)
     return;
@@ -1328,44 +1326,6 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
 #endif
 }
 
-/* PLEX */
-bool CLinuxRendererGLES::ValidateRenderer()
-{
-  if (!m_bConfigured)
-    return false;
-
-  // if its first pass, just init textures and return
-  if (ValidateRenderTarget())
-    return false;
-
-  // this needs to be checked after texture validation
-#ifndef __PLEX__
-  if (!m_bImageReady)
-#else
-  if (!m_bRGBImageSet && !m_bImageReady)
-#endif
-    return false;
-
-  int index = m_iYV12RenderBuffer;
-  YUVBUFFER& buf =  m_buffers[index];
-
-#ifndef __PLEX__
-  if (!buf.fields[FIELD_FULL][0].id)
-#else
-  if (!m_bRGBImageSet && !buf.fields[FIELD_FULL][0].id)
-#endif
-    return false;
-
-#ifndef __PLEX__
-  if (buf.image.flags==0)
-#else
-  if (!m_bRGBImageSet && buf.image.flags==0)
-#endif
-    return false;
-
-  return true;
-}
-/* END PLEX */
 
 bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 {
@@ -2087,4 +2047,32 @@ void CLinuxRendererGLES::SetRGB32Image(const char *image, int nHeight, int nWidt
 }
 /* END PLEX */
 #endif
+
+
+/* PLEX */
+bool CLinuxRendererGLES::ValidateRenderer()
+{
+  if (!m_bConfigured)
+    return false;
+
+  // if its first pass, just init textures and return
+  if (ValidateRenderTarget())
+    return false;
+
+  // this needs to be checked after texture validation
+  if (!m_bRGBImageSet && !m_bImageReady)
+    return false;
+
+  int index = m_iYV12RenderBuffer;
+  YUVBUFFER& buf =  m_buffers[index];
+
+  if (!m_bRGBImageSet && !buf.fields[FIELD_FULL][0].id)
+    return false;
+
+  if (!m_bRGBImageSet && buf.image.flags==0)
+    return false;
+
+  return true;
+}
+/* END PLEX */
 
