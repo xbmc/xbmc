@@ -30,6 +30,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p0 < ../fix-32bits-on-64bits.patch
 endif
+	cd $(PLATFORM); patch -p1 < ../sqlite3.c.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
