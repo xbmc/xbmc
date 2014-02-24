@@ -320,6 +320,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="myvideos.flatten" type="boolean" label="20456" help="36183">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.flattentvshows" type="integer" label="20412" help="36144">
           <level>1</level>
           <default>1</default> <!-- if only one season -->
@@ -782,11 +787,6 @@
           <default>100024</default> <!-- WINDOW_VIDEO_FILES -->
         </setting>
         <setting id="myvideos.stackvideos" type="boolean" label="20435" help="36182">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="myvideos.flatten" type="boolean" label="20456" help="36183">
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
