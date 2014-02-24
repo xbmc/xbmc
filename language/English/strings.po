@@ -10208,11 +10208,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr ""
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr ""
@@ -13516,11 +13511,7 @@ msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Automatically grab season thumbs" with label #20382
-#: system/settings/settings.xml
-msgctxt "#36142"
-msgid "Automatically grab season thumbs when scanning media."
-msgstr ""
+# empty string with id 36142
 
 #. Description of setting "Videos -> Library -> Download actor thumbnails when adding to library" with label #20402
 #: system/settings/settings.xml

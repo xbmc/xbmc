@@ -315,11 +315,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videolibrary.seasonthumbs" type="boolean" label="20382" help="36142">
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videolibrary.actorthumbs" type="boolean" label="20402" help="36143">
           <level>1</level>
           <default>true</default>
