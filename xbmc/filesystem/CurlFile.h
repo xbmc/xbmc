@@ -25,6 +25,7 @@
 #include "utils/HttpHeader.h"
 /* PLEX */
 #include "log.h"
+#include <sys/socket.h>
 /* END PLEX */
 
 namespace XCURL
@@ -140,8 +141,12 @@ namespace XFILE
             if (m_hasTicklePipe)
             {
               CLog::Log(LOGDEBUG, "CCurlFile::ReadState::Cancel sending wakeup packet.");
-              if (send(m_ticklePipe[1], "Q", 1, 0) != 1)
-                CLog::Log(LOGWARNING, "CCurlFile::ReadState::Cancel ERROR sending wakeup packet.");
+#ifndef TARGET_WINDOWS
+              if (::write(m_ticklePipe[1], "Q", 1) != 1)
+#else
+              if (::send(m_ticklePipe[1], "Q", 1, 0) != 1)
+#endif
+                CLog::Log(LOGWARNING, "CCurlFile::ReadState::Cancel ERROR sending wakeup packet. %d", errno);
             }
             m_cancelled = true;
           }

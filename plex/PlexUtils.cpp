@@ -542,7 +542,7 @@ CStdString PlexUtils::GetXMLString(const CXBMCTinyXML &document)
 bool PlexUtils::MakeWakeupPipe(SOCKET *pipe)
 {
 #ifdef TARGET_POSIX
-  if (::pipe(pipe) == -1)
+  if (::pipe(pipe) != 0)
   {
     CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to create a POSIX pipe");
     return false;
