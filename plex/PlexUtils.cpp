@@ -566,20 +566,20 @@ bool PlexUtils::MakeWakeupPipe(SOCKET *pipe)
   inAddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
   int y = 1;
-  if (setsockopt(pipe[0], SOL_SOCKET, SO_REUSEADDR, &y, sizeof(y)) == -1)
+  if (::setsockopt(pipe[0], SOL_SOCKET, SO_REUSEADDR, (const char*)&y, sizeof(y)) == -1)
   {
     CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to set socket options");
     return false;
   }
 
-  if (bind(pipe[0], (struct sockaddr *)&inAddr, sizeof(inAddr)) == -1)
+  if (::bind(pipe[0], (struct sockaddr *)&inAddr, sizeof(inAddr)) == -1)
   {
     CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to bind socket!");
     return false;
   }
 
-  unsigned int len = sizeof(addr);
-  if (getsockname(pipe[0], &addr, &len) != 0)
+  int len = sizeof(addr);
+  if (::getsockname(pipe[0], &addr, &len) != 0)
   {
     CLog::Log(LOGWARNING, "PlexUtils::MakeWakeupPipe failed to getsockname on socket");
     return false;
@@ -620,4 +620,6 @@ void PlexUtils::LogStackTrace(char *FuncName)
      free(strings);
    }
 }
+#else
+void PlexUtils::LogStackTrace(char *FuncName) {}
 #endif

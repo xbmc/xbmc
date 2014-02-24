@@ -49,11 +49,7 @@ namespace PlexUtils
 
   bool MakeWakeupPipe(SOCKET *pipe);
 
-#if defined(HAVE_EXECINFO_H)
   void LogStackTrace(char *FuncName);
-#else
-  void LogStackTrace(char *FuncName) {}
-#endif
 }
 
 #if defined(HAVE_EXECINFO_H)
