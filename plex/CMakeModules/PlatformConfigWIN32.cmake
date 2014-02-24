@@ -10,7 +10,7 @@ set(ENV{LIBS} "$ENV{LIBS};${dependdir}/lib")
 # C4800 = 'unsigned int' : forcing value to bool 'true' or 'false' (performance warning)
 # C4996 = 'strcmpi': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strcmpi. See online help for details
 # C4244 = 'initializing' : conversion from 'int64_t' to 'int', possible loss of data
-set(IGNOREERRS "/wd4800 /wd4996 /wd4244")
+set(IGNOREERRS "/wd4800 /wd4996 /wd4244 /wd4804")
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MDd ${IGNOREERRS}")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd ${IGNOREERRS}")
