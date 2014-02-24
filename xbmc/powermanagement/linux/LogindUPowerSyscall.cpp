@@ -23,6 +23,9 @@
 #include "system.h"
 #include "LogindUPowerSyscall.h"
 #include "utils/log.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #ifdef HAS_DBUS
 
@@ -140,7 +143,36 @@ bool CLogindUPowerSyscall::HasLogind()
   // recommended method by systemd devs. The seats directory
   // doesn't exist unless logind created it and therefore is running.
   // see also https://mail.gnome.org/archives/desktop-devel-list/2013-March/msg00092.html
-  return (access("/run/systemd/seats/", F_OK) >= 0);
+  if(access("/run/systemd/seats/", F_OK) < 0)
+    return false;
+
+  // systemd supports suspend and resume as of version 183.
+  // Thus, check that the installed systemd is >= 183.
+  // see the changelog entry in:
+  // http://cgit.freedesktop.org/systemd/systemd/tree/NEWS
+  CVariant properties = CDBusUtil::GetAll("org.freedesktop.systemd1", "/org/freedesktop/systemd1", "org.freedesktop.systemd1.Manager");
+  if(properties.isMember("Version"))
+  {
+    CStdStringArray s;
+    StringUtils::SplitString(properties["Version"].asString(), " ", s, 2);
+    return (str2uint64(s[1],0u) >= 183u);
+  }
+
+  // systems without systemd as PID 1 such as Ubuntu do not implement all
+  // of the systemd API including the version API.
+  // Upstart implements the same API as logind as of version 1.11
+  CVariant upstartVer = CDBusUtil::GetVariant("com.ubuntu.Upstart", "/com/ubuntu/Upstart", "com.ubuntu.Upstart0_6", "version");
+  if(!upstartVer.isNull())
+  {
+    CRegExp re;
+    re.RegComp("init \\(upstart ([0-9.]+)\\)");
+    if(re.RegFind(upstartVer.asString()) != -1)
+    {
+      return (str2double(re.GetReplaceString("\\1")) >= 1.11);
+    }
+  }
+
+  return false;
 }
 
 bool CLogindUPowerSyscall::LogindSetPowerState(const char *state)
