@@ -38,7 +38,7 @@ CPlexAutoUpdate::CPlexAutoUpdate()
 {
   m_url = CURL("https://plex.tv/updater/products/2/check.xml");
 
-  m_searchFrequency = 86400000; /* default to 24h */
+  m_searchFrequency = 21600000; /* 6 hours */
 
   CheckInstalledVersion();
 
