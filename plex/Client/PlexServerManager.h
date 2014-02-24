@@ -44,7 +44,7 @@ public:
   void UpdateFromConnectionType(PlexServerList servers, int connectionType);
   void UpdateFromDiscovery(CPlexServerPtr server);
   void MarkServersAsRefreshing();
-  void MergeServer(CPlexServerPtr server);
+  CPlexServerPtr MergeServer(CPlexServerPtr server);
   void ServerRefreshComplete(int connectionType);
   void UpdateReachability(bool force = false);
 

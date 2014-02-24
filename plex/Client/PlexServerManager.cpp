@@ -175,12 +175,12 @@ CPlexServerManager::UpdateFromDiscovery(CPlexServerPtr server)
   
   CSingleLock lk(m_serverManagerLock);
 
-  MergeServer(server);
-  NotifyAboutServer(server);
-  SetBestServer(server, false);
+  CPlexServerPtr mergedServer = MergeServer(server);
+  NotifyAboutServer(mergedServer);
+  SetBestServer(mergedServer, false);
 }
 
-void
+CPlexServerPtr
 CPlexServerManager::MergeServer(CPlexServerPtr server)
 {
   CSingleLock lk(m_serverManagerLock);
@@ -192,11 +192,13 @@ CPlexServerManager::MergeServer(CPlexServerPtr server)
     CLog::Log(LOGDEBUG, "CPlexServerManager::MergeServer Merged %s with %d connection, now we have %d total connections.",
               server->GetName().c_str(), server->GetNumConnections(),
               existingServer->GetNumConnections());
+    return existingServer;
   }
   else
   {
     m_serverMap[server->GetUUID()] = server;
     CLog::Log(LOGDEBUG, "CPlexServerManager::MergeServer Added a new server %s with %d connections", server->GetName().c_str(), server->GetNumConnections());
+    return server;
   }
 }
 
