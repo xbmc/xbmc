@@ -21,7 +21,7 @@ if(NOT WIN32)
 
   add_subdirectory(OpenGLSpectrum)
   
-  if (NOT APPLE)
+  if (NOT APPLE AND NOT TARGET_RPI)
     add_subdirectory(Goom)
   endif()
 else()
