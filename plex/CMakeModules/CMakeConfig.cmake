@@ -15,9 +15,12 @@ set(CONFIG_INTERNAL_LIBS
 OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" OFF)
 OPTION(ENABLE_PYTHON "Enable Python addon support" OFF)
 OPTION(CREATE_BUNDLE "Create the finished bundle" ON)
-OPTION(COMPRESS_TEXTURES "If we should compress the textures or not" ON)
 OPTION(ENABLE_NEW_SKIN "Enable the new Plex skin" ON)
-OPTION(ENABLE_AUTOUPDATE "Enable the cool autoupdate system" ON)
+
+if(NOT TARGET_RPI)
+  OPTION(ENABLE_AUTOUPDATE "Enable the cool autoupdate system" ON)
+  OPTION(COMPRESS_TEXTURES "If we should compress the textures or not" ON)
+endif()
 
 if(ENABLE_NEW_SKIN)
   add_definitions(-DPLEX_NEW_SKIN=1)
@@ -82,7 +85,9 @@ add_definitions(-D__PLEX__ -D__PLEX__XBMC__ -DPLEX_BUILD_TAG="${BUILD_TAG}" -DPL
 set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG "_DEBUG")
 
 include(CheckFFmpegIncludes)
-include(CheckCrystalHDInclude)
+if(NOT TARGET_RPI)
+  include(CheckCrystalHDInclude)
+endif()
 include(CheckLibshairportConfig)
 
 if(DEFINED SDL_FOUND)
