@@ -1,0 +1,20 @@
+--- sqlite3.c
++++ sqlite3.c
+@@ -28278,7 +28278,7 @@
+     pNew = osMremap(pOrig, nReuse, nNew, MREMAP_MAYMOVE);
+     zErr = "mremap";
+ #else
+-    pNew = osMmap(pReq, nNew-nReuse, flags, MAP_SHARED, h, nReuse);
++    pNew = osMmap(pReq, nNew-nReuse, flags, MAP_SHARED | MAP_POPULATE, h, nReuse);
+     if( pNew!=MAP_FAILED ){
+       if( pNew!=pReq ){
+         osMunmap(pNew, nNew - nReuse);
+@@ -28297,7 +28297,7 @@
+ 
+   /* If pNew is still NULL, try to create an entirely new mapping. */
+   if( pNew==0 ){
+-    pNew = osMmap(0, nNew, flags, MAP_SHARED, h, 0);
++    pNew = osMmap(0, nNew, flags, MAP_SHARED | MAP_POPULATE, h, 0);
+   }
+ 
+   if( pNew==MAP_FAILED ){
