@@ -42,9 +42,6 @@ const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
 const IID IID_IAudioClient = __uuidof(IAudioClient);
 const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
 
-static const unsigned int WASAPISampleRateCount = 10;
-static const unsigned int WASAPISampleRates[] = {384000, 192000, 176400, 96000, 88200, 48000, 44100, 32000, 22050, 11025};
-
 #define WASAPI_SPEAKER_COUNT 21
 static const unsigned int WASAPIChannelOrder[] = {AE_CH_RAW,
                                                   SPEAKER_FRONT_LEFT,           SPEAKER_FRONT_RIGHT,           SPEAKER_FRONT_CENTER,
@@ -748,13 +745,13 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
       wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-      for (int j = 0; j < WASAPISampleRateCount; j++)
+      for (int j = 0; j < CAEUtil::CommonSampleRateList[j] != 0; j++)
       {
-        wfxex.Format.nSamplesPerSec     = WASAPISampleRates[j];
+        wfxex.Format.nSamplesPerSec     = CAEUtil::CommonSampleRateList[j];
         wfxex.Format.nAvgBytesPerSec    = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
         hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
         if (SUCCEEDED(hr))
-          deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+          deviceInfo.m_sampleRates.push_back(CAEUtil::CommonSampleRateList[j]);
       }
 
       /* Test format for channels iteration */
@@ -1037,9 +1034,9 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
       wfxex.Samples.wValidBitsPerSample = testFormats[j].validBitsPerSample;
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
 
-      for (int i = 0 ; i < WASAPISampleRateCount; i++)
+      for (int i = 0 ; CAEUtil::CommonSampleRateList[i] != 0; i++)
       {
-        wfxex.Format.nSamplesPerSec    = WASAPISampleRates[i];
+        wfxex.Format.nSamplesPerSec    = CAEUtil::CommonSampleRateList[i];
         wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
         /* Trace format match iteration loop via log */
@@ -1055,10 +1052,10 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
         if (SUCCEEDED(hr))
         {
           /* If the current sample rate matches the source then stop looking and use it */
-          if ((WASAPISampleRates[i] == format.m_sampleRate) && (testFormats[j].subFormatType <= format.m_dataFormat))
+          if ((CAEUtil::CommonSampleRateList[i] == format.m_sampleRate) && (testFormats[j].subFormatType <= format.m_dataFormat))
             goto initialize;
           /* If this rate is closer to the source then the previous one, save it */
-          else if (closestMatch < 0 || abs((int)WASAPISampleRates[i] - (int)format.m_sampleRate) < abs((int)WASAPISampleRates[closestMatch] - (int)format.m_sampleRate))
+          else if (closestMatch < 0 || abs((int)CAEUtil::CommonSampleRateList[i] - (int)format.m_sampleRate) < abs((int)CAEUtil::CommonSampleRateList[closestMatch] - (int)format.m_sampleRate))
             closestMatch = i;
         }
         else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT)
@@ -1067,7 +1064,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
       if (closestMatch >= 0)
       {
-        wfxex.Format.nSamplesPerSec    = WASAPISampleRates[closestMatch];
+        wfxex.Format.nSamplesPerSec    = CAEUtil::CommonSampleRateList[closestMatch];
         wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
         goto initialize;
       }

@@ -57,25 +57,6 @@ static enum AEChannel ALSAChannelMapPassthrough[ALSA_MAX_CHANNELS + 1] = {
   AE_CH_NULL
 };
 
-static unsigned int ALSASampleRateList[] =
-{
-  5512,
-  8000,
-  11025,
-  16000,
-  22050,
-  32000,
-  44100,
-  48000,
-  64000,
-  88200,
-  96000,
-  176400,
-  192000,
-  384000,
-  0
-};
-
 CAESinkALSA::CAESinkALSA() :
   m_bufferSize(0),
   m_formatSampleRateMul(0.0),
@@ -1054,7 +1035,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   }
 
   /* detect the available sample rates */
-  for (unsigned int *rate = ALSASampleRateList; *rate != 0; ++rate)
+  for (const unsigned int *rate = CAEUtil::CommonSampleRateList; *rate != 0; ++rate)
     if (snd_pcm_hw_params_test_rate(pcmhandle, hwparams, *rate, 0) >= 0)
       info.m_sampleRates.push_back(*rate);
 
