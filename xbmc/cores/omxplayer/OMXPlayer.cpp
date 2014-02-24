@@ -208,7 +208,7 @@ public:
 
     if (preferexternal)
     {
-      if(ss.source == STREAM_SOURCE_DEMUX_SUB || ss.source == STREAM_SOURCE_TEXT)
+      if(STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_TEXT)
         return false;
     }
 
@@ -301,11 +301,11 @@ public:
 
     if (preferextsubs)
     {
-      PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
-                     , rh.source == STREAM_SOURCE_DEMUX_SUB);
+      PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB
+                     , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_DEMUX_SUB);
 
-      PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
-                     , rh.source == STREAM_SOURCE_TEXT);
+      PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT
+                     , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_TEXT);
     }
 
     if(!subson || original)
@@ -320,15 +320,15 @@ public:
     CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
     if(!original)
     {
-      PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
-                     , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+      PREDICATE_RETURN((STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
+                     , (STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
     }
 
-    PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
-                   , rh.source == STREAM_SOURCE_DEMUX_SUB);
+    PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB
+                   , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_DEMUX_SUB);
 
-    PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
-                   , rh.source == STREAM_SOURCE_TEXT);
+    PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT
+                   , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_TEXT);
 
     if(!original)
     {
