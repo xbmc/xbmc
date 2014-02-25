@@ -268,7 +268,8 @@ int CMyPlexManager::DoRefreshUserInfo()
   TiXmlElement* root = GetXml(url);
   if (!root)
   {
-    DoRemoveAllServers();
+    if (m_lastError != ERROR_NETWORK)
+      DoRemoveAllServers();
     return FAILURE_TMOUT;
   }
 
