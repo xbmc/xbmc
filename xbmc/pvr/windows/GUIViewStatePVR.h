@@ -33,7 +33,7 @@ namespace PVR
     PVRWindow GetActiveView(void);
   protected:
     bool AutoPlayNextItem(void) { return false; };
-    bool HideParentDirItems(void) { return true; }
+    bool HideParentDirItems(void);
     void SaveViewState(void);
   };
 }
