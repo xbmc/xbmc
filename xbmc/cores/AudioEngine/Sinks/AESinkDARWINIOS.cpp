@@ -252,7 +252,6 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
 
 void CAAudioUnitSink::drain()
 {
-  CCriticalSection mutex;
   unsigned int bytes = m_buffer->GetReadSize();
   while (bytes)
   {

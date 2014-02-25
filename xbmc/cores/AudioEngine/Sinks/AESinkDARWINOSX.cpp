@@ -576,7 +576,6 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t *data, unsigned int frames, bo
 
 void CAESinkDARWINOSX::Drain()
 {
-  CCriticalSection mutex;
   int bytes = m_buffer->GetReadSize();
   while (bytes)
   {
