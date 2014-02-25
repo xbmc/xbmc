@@ -126,6 +126,7 @@ public:
   static bool IsBluray(const CStdString& strFile);
   static bool IsAndroidApp(const CStdString& strFile);
   static bool IsLibraryFolder(const CStdString& strFile);
+  static bool IsLibraryContent(const std::string& strFile);
 
   static void AddSlashAtEnd(std::string& strFolder);
   static bool HasSlashAtEnd(const std::string& strFile, bool checkURL = false);

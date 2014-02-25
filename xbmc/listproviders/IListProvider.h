@@ -61,8 +61,9 @@ public:
 
   /*! \brief Reset the current list of items.
    Derived classes may choose to ignore this.
+   \param immediately whether the content of the provider should be cleared.
    */
-  virtual void Reset() {};
+  virtual void Reset(bool immediately = false) {};
 
   /*! \brief Click event on an item.
    \param item the item that was clicked.
