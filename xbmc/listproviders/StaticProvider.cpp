@@ -64,9 +64,9 @@ CStaticListProvider::~CStaticListProvider()
 {
 }
 
-bool CStaticListProvider::Update(bool refresh)
+bool CStaticListProvider::Update(bool forceRefresh)
 {
-  bool changed = refresh;
+  bool changed = forceRefresh;
   if (!m_updateTime)
     m_updateTime = CTimeUtils::GetFrameTime();
   else if (CTimeUtils::GetFrameTime() - m_updateTime > 1000)

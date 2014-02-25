@@ -53,7 +53,7 @@ public:
   CDirectoryProvider(const TiXmlElement *element, int parentID);
   virtual ~CDirectoryProvider();
 
-  virtual bool Update(bool refresh);
+  virtual bool Update(bool forceRefresh);
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
   virtual void Fetch(std::vector<CGUIListItemPtr> &items) const;
   virtual void Reset(bool immediately = false);

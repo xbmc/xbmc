@@ -122,7 +122,7 @@ protected:
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   virtual void OnFocus();
-  void UpdateListProvider(bool refreshItems = false);
+  void UpdateListProvider(bool forceRefresh = false);
 
   int ScrollCorrectionRange() const;
   inline float Size() const;

@@ -47,7 +47,7 @@ public:
   /*! \brief Update the list content
    \return true if the content has changed, false otherwise.
    */
-  virtual bool Update(bool refresh)=0;
+  virtual bool Update(bool forceRefresh)=0;
 
   /*! \brief Fetch the current list of items.
    \param items [out] the list to be filled.

@@ -800,9 +800,11 @@ void CGUIBaseContainer::AllocResources()
 {
   CGUIControl::AllocResources();
   CalculateLayout();
-  UpdateListProvider(true);
   if (m_listProvider)
+  {
+    UpdateListProvider(true);
     SelectItem(m_listProvider->GetDefaultItem());
+  }
 }
 
 void CGUIBaseContainer::FreeResources(bool immediately)
@@ -869,11 +871,11 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   UpdateListProvider();
 }
 
-void CGUIBaseContainer::UpdateListProvider(bool refreshItems)
+void CGUIBaseContainer::UpdateListProvider(bool forceRefresh /* = false */)
 {
   if (m_listProvider)
   {
-    if (m_listProvider->Update(refreshItems))
+    if (m_listProvider->Update(forceRefresh))
     {
       // save the current item
       int currentItem = GetSelectedItem();

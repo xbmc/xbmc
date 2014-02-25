@@ -102,7 +102,7 @@ public:
     initThumbLoader<CProgramThumbLoader>(PROGRAM);
     return m_thumbloaders[PROGRAM];
   }
-  
+
   template<class CThumbLoaderClass>
   void initThumbLoader(InfoTagType type)
   {
@@ -141,7 +141,6 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID
    m_jobID(0)
 {
   assert(element);
-
   if (!element->NoChildren())
   {
     const char *target = element->Attribute("target");
@@ -156,7 +155,7 @@ CDirectoryProvider::~CDirectoryProvider()
   Reset(true);
 }
 
-bool CDirectoryProvider::Update(bool refresh)
+bool CDirectoryProvider::Update(bool forceRefresh)
 {
   // we never need to force refresh here
   bool changed = false;
