@@ -239,9 +239,9 @@ CCurlFile::CReadState::~CReadState()
   if (m_hasTicklePipe)
   {
     ::shutdown(m_ticklePipe[0], 2);
-    ::close(m_ticklePipe[0]);
+    ::closesocket(m_ticklePipe[0]);
     ::shutdown(m_ticklePipe[1], 2);
-    ::close(m_ticklePipe[1]);
+    ::closesocket(m_ticklePipe[1]);
   }
   /* END PLEX */
 }
@@ -1514,7 +1514,11 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
           {
             CLog::Log(LOGINFO, "CCurlFile::CReadState::FillBuffer [%s] terminated", m_url.c_str());
             char theTickleByte;
+#ifdef TARGET_WINDOWS
+            ::recv(m_ticklePipe[0], &theTickleByte, 1, 0);
+#else
             ::read(m_ticklePipe[0], &theTickleByte, 1);
+#endif
           }
         }
         /* END PLEX */
