@@ -16,11 +16,12 @@
 #include <boost/system/error_code.hpp>
 
 #include "PlexServerManager.h"
+#include "PlexGlobalTimer.h"
 
 ///
 /// Plex specific service browser.
 ///
-class CPlexNetworkServiceBrowser : public NetworkServiceBrowser
+class CPlexNetworkServiceBrowser : public NetworkServiceBrowser, public IPlexGlobalTimeout
 {
 public:
   CPlexNetworkServiceBrowser(boost::asio::io_service& ioService, unsigned short port, int refreshTime=NS_BROWSE_REFRESH_INTERVAL)
@@ -35,6 +36,9 @@ public:
   virtual void handleServiceDeparture(NetworkServicePtr& service);
 
   virtual void handleNetworkChange(const vector<NetworkInterface> &interfaces);
+
+  virtual CStdString TimerName() const { return "networkServiceBrowser"; }
+  virtual void OnTimeout();
 
 private:
   void SetAddTimer();

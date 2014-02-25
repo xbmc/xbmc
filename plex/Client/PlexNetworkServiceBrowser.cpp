@@ -32,9 +32,7 @@ CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
   CSingleLock lk(m_serversSection);
   m_discoveredServers[server->GetUUID()] = server;
   dprintf("CPlexNetworkServiceBrowser::handleServiceArrival %s arrived", service->address().to_string().c_str());
-
-  /* Update or reset our timer */
-  SetAddTimer();
+  g_plexApplication.timer.RestartTimeout(5000, this);
 }
 
 void
@@ -52,40 +50,36 @@ CPlexNetworkServiceBrowser::handleServiceDeparture(NetworkServicePtr &service)
 
   CLog::Log(LOGDEBUG, "CPlexNetworkServiceBrowser::handleServiceDeparture we have %lu servers from GDM", list.size());
   g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
-
-  SetAddTimer();
+  g_plexApplication.timer.RestartTimeout(5000, this);
 }
 
 void CPlexNetworkServiceBrowser::handleNetworkChange(const vector<NetworkInterface> &interfaces)
 {
   NetworkServiceBrowser::handleNetworkChange(interfaces);
 
-  // refresh myPlex as well
+  // update all our reachability states
+  g_plexApplication.serverManager->UpdateReachability(true);
+
+  // and refresh myPlex
   g_plexApplication.myPlexManager->Refresh();
 
   // publish our device to plex
   g_plexApplication.mediaServerClient->publishDevice();
+
+  g_plexApplication.timer.RestartTimeout(5000, this);
 }
 
-void
-CPlexNetworkServiceBrowser::SetAddTimer()
+void CPlexNetworkServiceBrowser::OnTimeout()
 {
-  m_addTimer.expires_from_now(boost::posix_time::milliseconds(5000));
-  m_addTimer.async_wait(boost::bind(&CPlexNetworkServiceBrowser::HandleAddTimeout, this, boost::asio::placeholders::error));
-}
-
-void
-CPlexNetworkServiceBrowser::HandleAddTimeout(const boost::system::error_code &e)
-{
-  if (e == boost::asio::error::operation_aborted)
-    return;
-
   CSingleLock lk(m_serversSection);
   PlexServerList list;
   BOOST_FOREACH(PlexServerPair p, m_discoveredServers)
     list.push_back(p.second);
 
+  CLog::Log(LOGDEBUG, "CPlexNetworkServiceBrowser::OnTimeout reporting %ld discovered servers", list.size());
+
   g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+  g_plexApplication.timer.RestartTimeout(5 * 10000, this); // run it every 5th minute even if there are no changes
 }
 
 void
@@ -98,6 +92,9 @@ CPlexServiceListener::Process()
 
   // Server browser.
   m_pmsBrowser = NetworkServiceBrowserPtr(new CPlexNetworkServiceBrowser(m_ioService, NS_PLEX_MEDIA_SERVER_PORT));
+
+  // start our reporting timer
+  g_plexApplication.timer.SetTimeout(5000, (CPlexNetworkServiceBrowser*)m_pmsBrowser.get());
 
   // Player
   StartAdvertisement();
