@@ -27,6 +27,10 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <map>
 
 CAndroidStorageProvider::CAndroidStorageProvider()
 {
@@ -95,23 +99,66 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
   // mounted usb disks
-  std::vector<CStdString> result;
-  CRegExp reMount;
+  char*                               buf     = NULL;
+  FILE*                               pipe;
+  std::map<std::string, std::string>  result;
+  CRegExp                             reMount;
   reMount.RegComp("^(.+?)\\s+(.+?)\\s+(.+?)\\s");
-  char line[1024];
 
-  FILE* pipe = fopen("/proc/mounts", "r");
-
-  if (pipe)
+  /* /proc/mounts is only guaranteed atomic for the current read
+   * operation, so we need to read it all at once.
+   */
+  if ((pipe = fopen("/proc/mounts", "r")))
   {
-    while (fgets(line, sizeof(line) - 1, pipe))
+    char*   new_buf;
+    size_t  buf_len = 4096;
+
+    while ((new_buf = (char*)realloc(buf, buf_len * sizeof(char))))
+    {
+      size_t nread;
+
+      buf   = new_buf;
+      nread = fread(buf, sizeof(char), buf_len, pipe);
+
+      if (nread == buf_len)
+      {
+        rewind(pipe);
+        buf_len *= 2;
+      }
+      else
+      {
+        buf[nread] = '\0';
+        if (!feof(pipe))
+          new_buf = NULL;
+        break;
+      }
+    }
+
+    if (!new_buf)
+    {
+      free(buf);
+      buf = NULL;
+    }
+    fclose(pipe);
+  }
+  else
+    CLog::Log(LOGERROR, "Cannot read mount points");
+
+  if (buf)
+  {
+    char* line;
+    char* saveptr = NULL;
+
+    line = strtok_r(buf, "\n", &saveptr);
+
+    while (line)
     {
       if (reMount.RegFind(line) != -1)
       {
         bool accepted = false;
+        std::string device   = reMount.GetReplaceString("\\1");
         std::string mountStr = reMount.GetReplaceString("\\2");
         std::string fsStr    = reMount.GetReplaceString("\\3");
-        const char* mount = mountStr.c_str();
         const char* fs    = fsStr.c_str();
 
         // Here we choose which filesystems are approved
@@ -123,22 +170,23 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
             || strcmp(fs, "fusefs") == 0 || strcmp(fs, "hfs") == 0)
           accepted = true;
 
-        // Ignore everything but usb
-        if (!StringUtils::StartsWith(mountStr, "/mnt/usb"))
+        // Ignore sdcards
+        if (!StringUtils::StartsWith(device, "/dev/block/vold/") ||
+            mountStr.find("sdcard") != std::string::npos)
           accepted = false;
 
         if(accepted)
-          result.push_back(mount);
+          result[device] = mountStr;
       }
+      line = strtok_r(NULL, "\n", &saveptr);
     }
-    fclose(pipe);
-  } else
-    CLog::Log(LOGERROR, "Cannot read mount points");
+    free(buf);
+  }
 
-  for (unsigned int i = 0; i < result.size(); i++)
+  for (std::map<std::string, std::string>::const_iterator i = result.begin(); i != result.end(); ++i)
   {
     CMediaSource share;
-    share.strPath = unescape(result[i]);
+    share.strPath = unescape(i->second);
     share.strName = URIUtils::GetFileName(share.strPath);
     share.m_ignore = true;
     removableDrives.push_back(share);
