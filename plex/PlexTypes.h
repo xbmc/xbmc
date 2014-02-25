@@ -77,6 +77,7 @@ enum EPlexDirectoryType
 #define WINDOW_DIALOG_FILTER_SORT           10202
 #define WINDOW_DIALOG_PLEX_SUBTITLE_PICKER  10204
 #define WINDOW_DIALOG_PLEX_AUDIO_PICKER     10205
+#define WINDOW_DIALOG_PLEX_SCREENSAVER_SLIDE 10206
 
 // Sent when the set of remote sources has changed
 #define GUI_MSG_UPDATE_REMOTE_SOURCES GUI_MSG_USER + 40
@@ -197,33 +198,6 @@ typedef std::pair<std::string, CPlexServerPtr> PlexServerPair;
 #define PLEX_DEFAULT_PAGE_SIZE 50
 
 /* Property map definition */
-
-struct __ihash : std::unary_function<CStdString, std::size_t>
-{
-    bool operator()(const CStdString& x) const
-    {
-      std::size_t seed = 0;
-      std::locale locale;
-      std::string src = x;
-
-      for(std::string::const_iterator it = src.begin();
-          it != src.end(); ++it)
-      {
-          boost::hash_combine(seed, std::toupper(*it, locale));
-      }
-
-      return seed;
-    }
-};
-
-struct __icompare : std::binary_function<CStdString, CStdString, bool>
-{
-  bool operator()(const CStdString &s1, const CStdString &s2) const
-  {
-    return boost::iequals(s1, s2, std::locale());
-  }
-};
-
-typedef boost::unordered_map<CStdString, CVariant, __ihash, __icompare> PropertyMap;
+typedef boost::unordered_map<CStdString, CVariant> PropertyMap;
 
 #endif

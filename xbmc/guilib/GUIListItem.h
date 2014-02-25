@@ -162,7 +162,10 @@ public:
 #ifdef __PLEX__
   inline void SetProperty(const CStdString &strKey, const CVariant &value)
   {
-    m_mapProperties[strKey] = value;
+    CStdString _key(strKey);
+    _key.ToLower();
+
+    m_mapProperties[_key] = value;
   }
 #else
   void SetProperty(const CStdString &strKey, const CVariant &value);
@@ -186,7 +189,10 @@ public:
 #ifdef __PLEX__
   inline bool HasProperty(const CStdString &strKey) const
   {
-    PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
+    CStdString _key(strKey);
+    _key.ToLower();
+
+    PropertyMap::const_iterator iter = m_mapProperties.find(_key);
     if (iter == m_mapProperties.end())
       return false;
 
@@ -202,7 +208,10 @@ public:
 #ifdef __PLEX__
   inline CVariant GetProperty(const CStdString &strKey) const
   {
-    PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
+    CStdString _key(strKey);
+    _key.ToLower();
+
+    PropertyMap::const_iterator iter = m_mapProperties.find(_key);
     if (iter == m_mapProperties.end())
       return CVariant(CVariant::VariantTypeNull);
 
