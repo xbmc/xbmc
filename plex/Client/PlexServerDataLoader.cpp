@@ -14,6 +14,7 @@
 using namespace XFILE;
 
 #define SECTION_REFRESH_INTERVAL 30 * 1000
+#define SHARED_SERVER_REFRESH 5 * 10000
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIORITY_NORMAL), m_stopped(false)
@@ -98,6 +99,8 @@ void CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob
       m_channelMap[j->m_server->GetUUID()]->SetProperty("serverName", j->m_server->GetName());
     }
 
+    j->m_server->DidRefresh();
+
     CGUIMessage msg(GUI_MSG_PLEX_SERVER_DATA_LOADED, PLEX_DATA_LOADER, 0);
     msg.SetStringParam(j->m_server->GetUUID());
     g_windowManager.SendThreadMessage(msg);
@@ -135,11 +138,10 @@ CFileItemListPtr CPlexServerDataLoader::GetChannelsForUUID(const CStdString &uui
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CFileItemListPtr CPlexServerDataLoaderJob::FetchList(const CStdString& path)
 {
-  CPlexDirectory dir;
   CURL url = m_server->BuildPlexURL(path);
   CFileItemList* list = new CFileItemList;
 
-  if (dir.GetDirectory(url.Get(), *list))
+  if (m_dir.GetDirectory(url.Get(), *list))
     return CFileItemListPtr(list);
 
   delete list;
@@ -249,13 +251,17 @@ void CPlexServerDataLoader::OnTimeout()
 {
   CSingleLock lk(m_serverLock);
 
-  CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnTimeout Refreshing data for all servers...");
-
   std::pair<CStdString, CPlexServerPtr> p;
   BOOST_FOREACH(p, m_servers)
   {
     if (p.second->GetUUID() != "myplex")
-      AddJob(new CPlexServerDataLoaderJob(p.second, shared_from_this()));
+    {
+      if (p.second->GetOwned() || p.second->GetLastRefreshed() > SHARED_SERVER_REFRESH)
+      {
+        CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnTimeout refreshing data for %s", p.second->GetName().c_str());
+        AddJob(new CPlexServerDataLoaderJob(p.second, shared_from_this()));
+      }
+    }
   }
 
   g_plexApplication.timer.SetTimeout(SECTION_REFRESH_INTERVAL, this);

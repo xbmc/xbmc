@@ -102,6 +102,9 @@ public:
     
   void SetActiveConnection(CPlexConnectionPtr connection) { m_activeConnection = connection; }
 
+  uint64_t GetLastRefreshed() const { return m_lastRefreshed; }
+  void DidRefresh() { m_lastRefreshed = XbmcThreads::SystemClockMillis(); }
+
 private:
   bool m_owned;
   bool m_synced;
@@ -135,4 +138,6 @@ private:
 
   CCriticalSection m_connTestThreadLock;
   std::vector<CPlexServerConnTestThread*> m_connTestThreads;
+
+  uint64_t m_lastRefreshed;
 };
