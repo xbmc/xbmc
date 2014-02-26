@@ -1493,7 +1493,7 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="musicplayer.replaygainpreamp" type="integer" label="641" help="36268">
+        <setting id="musicplayer.replaygainpreamp" type="integer" parent="musicplayer.replaygaintype" label="641" help="36268">
           <level>2</level>
           <default>89</default>
           <constraints>
@@ -1504,8 +1504,11 @@
           <control type="spinner" format="string">
             <formatlabel>14050</formatlabel>
           </control>
+          <dependencies>
+            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
+          </dependencies>
         </setting>
-        <setting id="musicplayer.replaygainnogainpreamp" type="integer" label="642" help="36269">
+        <setting id="musicplayer.replaygainnogainpreamp" type="integer" parent="musicplayer.replaygaintype" label="642" help="36269">
           <level>2</level>
           <default>89</default>
           <constraints>
@@ -1516,11 +1519,17 @@
           <control type="spinner" format="string">
             <formatlabel>14050</formatlabel>
           </control>
+          <dependencies>
+            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
+          </dependencies>
         </setting>
-        <setting id="musicplayer.replaygainavoidclipping" type="boolean" label="643" help="36270">
+        <setting id="musicplayer.replaygainavoidclipping" type="boolean" parent="musicplayer.replaygaintype" label="643" help="36270">
           <level>2</level>
           <default>false</default>
           <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
+          </dependencies>
         </setting>
       </group>
       <group id="3">
@@ -1536,15 +1545,11 @@
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
-        <setting id="musicplayer.crossfadealbumtracks" type="boolean" label="13400" help="36272">
+        <setting id="musicplayer.crossfadealbumtracks" type="boolean" parent="musicplayer.crossfade" label="13400" help="36272">
           <level>1</level>
           <default>true</default>
           <dependencies>
-            <dependency type="enable">
-              <and>
-                <condition setting="musicplayer.crossfade" operator="!is">0</condition>
-              </and>
-            </dependency>
+            <dependency type="enable" setting="musicplayer.crossfade" operator="!is">0</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
