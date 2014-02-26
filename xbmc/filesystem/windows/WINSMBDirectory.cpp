@@ -95,14 +95,11 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
 
   memset(&wfd, 0, sizeof(wfd));
   //rebuild the URL
-  std::string strUNCShare = "\\\\?\\UNC\\" + (std::string)url.GetHostName() + "\\" + URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
-  
-  if(!URIUtils::HasSlashAtEnd(strUNCShare))
-    strUNCShare.append("\\");
-
-  std::wstring strSearchMask;
-  g_charsetConverter.utf8ToW(strUNCShare, strSearchMask, false, false, true);
-  strSearchMask += L"*";
+  std::wstring strSearchMask(CWIN32Util::ConvertPathToWin32Form(GetLocal(strPath)));
+  if (!strSearchMask.empty() && strSearchMask[strSearchMask.length() - 1] == '\\')
+    strSearchMask += L'*';
+  else
+    strSearchMask += L"\\*";
 
   FILETIME localTime;
   CAutoPtrFind hFind ( FindFirstFileW(strSearchMask.c_str(), &wfd));
