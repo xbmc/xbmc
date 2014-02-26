@@ -132,6 +132,14 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_SETFOCUS:
     {
+      // make sure the additional button is focused in case the list is empty
+      // (otherwise it is impossible to navigate to the additional button)
+      if (m_vecList->IsEmpty() && m_bButtonEnabled &&
+          m_viewControl.HasControl(message.GetControlId()))
+      {
+        SET_CONTROL_FOCUS(CONTROL_BUTTON, 0);
+        return true;
+      }
       if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();

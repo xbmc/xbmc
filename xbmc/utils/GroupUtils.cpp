@@ -36,8 +36,12 @@ typedef map<int, set<CFileItemPtr> > SetMap;
 
 bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, CFileItemList &groupedItems, GroupAttribute groupAttributes /* = GroupAttributeNone */)
 {
-  if (items.Size() <= 0 || groupBy == GroupByNone)
+  if (groupBy == GroupByNone)
     return false;
+
+  // nothing to do if there are no items to group
+  if (items.Size() <= 0)
+    return true;
 
   SetMap setMap;
   for (int index = 0; index < items.Size(); index++)

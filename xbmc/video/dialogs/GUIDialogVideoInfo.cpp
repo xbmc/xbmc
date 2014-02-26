@@ -1449,7 +1449,7 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
 
   CFileItemList listItems;
   CStdString baseDir = "videodb://movies/sets/";
-  if (!CDirectory::GetDirectory(baseDir, listItems) || listItems.Size() <= 0)
+  if (!CDirectory::GetDirectory(baseDir, listItems))
     return false;
   listItems.Sort(SortByLabel, SortOrderAscending, SortAttributeIgnoreArticle);
 
