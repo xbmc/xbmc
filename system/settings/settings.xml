@@ -342,6 +342,8 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+      </group>
+      <group id="2">
         <setting id="videolibrary.updateonstartup" type="boolean" label="22000" help="36146">
           <level>1</level>
           <default>false</default>
@@ -353,7 +355,7 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="2">
+      <group id="3">
         <setting id="videolibrary.cleanup" type="action" label="334" help="36148">
           <level>2</level>
           <control type="button" format="action" />
@@ -1424,6 +1426,8 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+      </group>
+      <group id="3">
         <setting id="musiclibrary.updateonstartup" type="boolean" label="22000" help="36259">
           <level>1</level>
           <default>false</default>
@@ -1435,7 +1439,7 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="3">
+      <group id="4">
         <setting id="musiclibrary.cleanup" type="action" label="334" help="36148">
           <level>2</level>
           <control type="button" format="action" />
