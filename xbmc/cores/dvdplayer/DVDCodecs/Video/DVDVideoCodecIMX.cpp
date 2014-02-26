@@ -671,8 +671,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
         }
       } //VPU_DEC_ONE_FRM_CONSUMED
 
-      if ((decRet & VPU_DEC_OUTPUT_DIS) ||
-          (decRet & VPU_DEC_OUTPUT_MOSAIC_DIS))
+      if (decRet & VPU_DEC_OUTPUT_DIS)
       // Frame ready to be displayed
       {
         if (retStatus & VC_PICTURE)
@@ -686,6 +685,34 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
         }
         retStatus |= VC_PICTURE;
       } //VPU_DEC_OUTPUT_DIS
+
+      // According to libfslvpuwrap: If this flag is set then the frame should
+      // be dropped. It is just returned to gather decoder information but not
+      // for display.
+      if (decRet & VPU_DEC_OUTPUT_MOSAIC_DIS)
+      {
+        ret = VPU_DecGetOutputFrame(m_vpuHandle, &m_frameInfo);
+        if(ret != VPU_DEC_RET_SUCCESS)
+        {
+          CLog::Log(LOGERROR, "%s - VPU Cannot get output frame(%d).\n", __FUNCTION__, ret);
+          goto out_error;
+        }
+
+        // Release associated pts
+        idx = VpuFindBuffer(m_frameInfo.pDisplayFrameBuf->pbufY);
+        if (idx != -1)
+          m_outputBuffers[idx]->SetPts(DVD_NOPTS_VALUE);
+        else
+          CLog::Log(LOGERROR, "%s - could not find frame buffer\n", __FUNCTION__);
+
+        // Display frame
+        ret = VPU_DecOutFrameDisplayed(m_vpuHandle, m_frameInfo.pDisplayFrameBuf);
+        if(ret != VPU_DEC_RET_SUCCESS)
+        {
+          CLog::Log(LOGERROR, "%s: VPU Clear frame display failure(%d)\n",__FUNCTION__,ret);
+          goto out_error;
+        }
+      } //VPU_DEC_OUTPUT_MOSAIC_DIS
 
       if (decRet & VPU_DEC_OUTPUT_REPEAT)
       {
