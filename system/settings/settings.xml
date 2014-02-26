@@ -1033,17 +1033,17 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="pvrmenu.infotimeout" type="boolean" label="19179" help="36213">
+        <setting id="pvrmenu.infotimeout" type="boolean" parent="pvrmenu.infoswitch" label="19179" help="36213">
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="pvrmenu.infoswitch" operator="is">true</condition>
+            </dependency>
+          </dependencies>
         </setting>
-        <setting id="pvrmenu.closechannelosdonswitch" type="boolean" label="19229" help="36214">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pvrmenu.infotime" type="integer" label="19184" help="36215">
+        <setting id="pvrmenu.infotime" type="integer" parent="pvrmenu.infoswitch" label="19184" help="36215">
           <level>2</level>
           <default>5</default>
           <constraints>
@@ -1054,6 +1054,19 @@
           <control type="spinner" format="string">
             <formatlabel>14045</formatlabel>
           </control>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="pvrmenu.infoswitch" operator="is">true</condition>
+                <condition setting="pvrmenu.infotimeout" operator="is">true</condition>
+              </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="pvrmenu.closechannelosdonswitch" type="boolean" label="19229" help="36214">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
       </group>
       <group id="2">
