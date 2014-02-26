@@ -1951,7 +1951,7 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="services.upnpannounce" type="boolean" label="20188" help="36324">
+        <setting id="services.upnpannounce" type="boolean" parent="services.upnpserver" label="20188" help="36324">
           <level>2</level>
           <default>true</default>
           <dependencies>
