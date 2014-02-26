@@ -2715,7 +2715,7 @@
             <hidevalue>true</hidevalue>
           </control>
         </setting>
-        <setting id="masterlock.startuplock" type="boolean" label="20076" help="36397">
+        <setting id="masterlock.startuplock" type="boolean" parent="masterlock.lockcode" label="20076" help="36397">
           <level>2</level>
           <default>false</default>
           <dependencies>
