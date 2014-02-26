@@ -2194,7 +2194,7 @@
           </dependencies>
           <control type="spinner" format="string" delayed="true" />
         </setting>
-        <setting id="videoscreen.resolution" type="integer" label="169" help="36352">
+        <setting id="videoscreen.resolution" type="integer" parent="videoscreen.screen" label="169" help="36352">
           <level>0</level>
           <default>16</default> <!-- RES_DESKTOP -->
           <constraints>
@@ -2207,7 +2207,7 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="videoscreen.screenmode" type="string" label="243" help="36353">
+        <setting id="videoscreen.screenmode" type="string" parent="videoscreen.screen" label="243" help="36353">
           <requirement>IsStandAlone</requirement>
           <level>0</level>
           <default>DESKTOP</default>
@@ -2224,7 +2224,7 @@
           </dependencies>
           <control type="spinner" format="string" delayed="true" />
         </setting>
-        <setting id="videoscreen.fakefullscreen" type="boolean" label="14083" help="36354">
+        <setting id="videoscreen.fakefullscreen" type="boolean" parent="videoscreen.screen" label="14083" help="36354">
           <level>2</level>
           <default>true</default>
           <dependencies>
@@ -2232,7 +2232,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="videoscreen.blankdisplays" type="boolean" label="13130" help="36355">
+        <setting id="videoscreen.blankdisplays" type="boolean" parent="videoscreen.screen" label="13130" help="36355">
           <level>1</level>
           <default>false</default>
           <dependencies>
