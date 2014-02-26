@@ -760,20 +760,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="subtitles.custompath" type="path" label="21366" help="36191">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-            <writable>false</writable>
-            <sources>
-              <source>videos</source>
-            </sources>
-          </constraints>
-          <control type="button" format="path">
-            <heading>657</heading>
-          </control>
-        </setting>
         <setting id="subtitles.languages" type="list[string]" label="24111" help="24112">
           <level>1</level>
           <default>English</default>
@@ -786,34 +772,6 @@
           <control type="list" format="string">
             <multiselect>true</multiselect>
           </control>
-        </setting>
-        <setting id="subtitles.tv" type="addon" label="24116" help="24117">
-          <level>1</level>
-          <default>-</default>
-          <constraints>
-            <addontype>xbmc.subtitle.module</addontype>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="button" format="addon" />
-        </setting>
-        <setting id="subtitles.movie" type="addon" label="24118" help="24119">
-          <level>1</level>
-          <default>-</default>
-          <constraints>
-            <addontype>xbmc.subtitle.module</addontype>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="button" format="addon" />
-        </setting>
-        <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="24123">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="subtitles.savetomoviefolder" type="boolean" label="24115" help="24106">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
         </setting>
       </group>
       <group id="3">
@@ -915,6 +873,46 @@
             <maximum>10</maximum>
           </constraints>
           <control type="spinner" format="integer" delayed="true"/>
+        </setting>
+        <setting id="subtitles.savetomoviefolder" type="boolean" label="24115" help="24106">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="subtitles.custompath" type="path" label="21366" help="36191">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+            <writable>false</writable>
+            <sources>
+              <source>videos</source>
+            </sources>
+          </constraints>
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
+        </setting>
+        <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="24123">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="subtitles.tv" type="addon" label="24116" help="24117">
+          <level>1</level>
+          <default>-</default>
+          <constraints>
+            <addontype>xbmc.subtitle.module</addontype>
+          </constraints>
+          <control type="button" format="addon" />
+        </setting>
+        <setting id="subtitles.movie" type="addon" label="24118" help="24119">
+          <level>1</level>
+          <default>-</default>
+          <constraints>
+            <addontype>xbmc.subtitle.module</addontype>
+          </constraints>
+          <control type="button" format="addon" />
         </setting>
       </group>
     </category>
