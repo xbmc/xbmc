@@ -805,7 +805,7 @@
           </constraints>
           <control type="button" format="addon" />
         </setting>
-        <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="">
+        <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="24123">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />

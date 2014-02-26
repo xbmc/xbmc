@@ -6000,73 +6000,67 @@ msgctxt "#13440"
 msgid "Allow frame-multi-threaded decoding"
 msgstr ""
 
-#. Description of Mpeg-2 Codec for VDPAU
 #: system/settings/settings.xml
 msgctxt "#13441"
 msgid "Use Mpeg-2 VDPAU"
 msgstr ""
 
-#. Description of setting #13441 'Use Mpeg-2 VDPAU'
+#. Description of setting "Videos -> Playback -> Use Mpeg-2 VDPAU" with label #13441 
 #: system/settings/settings.xml
 msgctxt "#13442"
 msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
 msgstr ""
 
-#. Description of Mpeg-4 Codec for VDPAU
 #: system/settings/settings.xml
 msgctxt "#13443"
 msgid "Use Mpeg-4 VDPAU"
 msgstr ""
 
-#. Description of setting #13443 'Use Mpeg-4 VDPAU'
+#. Description of setting "Videos -> Playback -> Use Mpeg-4 VDPAU" with label #13443 
 #: system/settings/settings.xml
 msgctxt "#13444"
 msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
 msgstr ""
 
-#. Description of VC-1 Codec for VDPAU
 #: system/settings/settings.xml
 msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr ""
 
-#. Description of setting #13445 'Use VC-1 VDPAU'
+#. Description of setting "Videos -> Playback -> Use VC-1 VDPAU" with label #13445 
 #: system/settings/settings.xml
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
 msgstr ""
 
-#. Description of Mpeg-2 Codec for VAAPI
 #: system/settings/settings.xml
 msgctxt "#13447"
 msgid "Use Mpeg-2 VAAPI"
 msgstr ""
 
-#. Description of setting #13447 'Use Mpeg-2 VAAPI'
+#. Description of setting "Videos -> Playback -> Use Mpeg-2 VAAPI" with label #13447 
 #: system/settings/settings.xml
 msgctxt "#13448"
 msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
 msgstr ""
 
-#. Description of Mpeg-4 Codec for VAAPI
 #: system/settings/settings.xm
 msgctxt "#13449"
 msgid "Use Mpeg-4 VAAPI"
 msgstr ""
 
-#. Description of setting #13449 'Use Mpeg-4 VAAPI'
+#. Description of setting "Videos -> Playback -> Use Mpeg-4 VAAPI" with label #13449 
 #: system/settings/settings.xml
 msgctxt "#13450"
 msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
 msgstr ""
 
-#. Description of VC-1 Codec for VAAPI
 #: system/settings/settings.xm
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
 msgstr ""
 
-#. Description of setting #13451 'Use VC-1 VAAPI'
+#. Description of setting "Videos -> Playback -> Use VC-1 VAAPI" with label #13451 
 #: system/settings/settings.xml
 msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
@@ -8169,7 +8163,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
+msgid "Synchronise channel groups with backend(s)"
 msgstr ""
 
 msgctxt "#19222"
@@ -10321,7 +10315,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20412"
-msgid "Flatten TV shows"
+msgid "Flatten TV show seasons"
 msgstr ""
 
 msgctxt "#20413"
@@ -11075,7 +11069,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21460"
-msgid "Subtitle location on screen"
+msgid "Subtitle position on screen"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11130,6 +11124,7 @@ msgctxt "#21600"
 msgid "Prefer external subtitles"
 msgstr ""
 
+#. Description of setting "Video -> Subtitles -> Prefer external subtitles" with label #21600
 #: system/settings/settings.xml
 msgctxt "#21601"
 msgid "Prefer external subtitles to internal ones"
@@ -12150,6 +12145,7 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> Save subtitles to movie folder" with label #24115
 #: system/settings/settings.xml
 msgctxt "#24106"
 msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
@@ -12180,6 +12176,7 @@ msgctxt "#24111"
 msgid "Languages to download subtitles for"
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> Languages to download subtitles for" with label #24111
 #: system/settings/settings.xml
 msgctxt "#24112"
 msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
@@ -12205,9 +12202,10 @@ msgctxt "#24116"
 msgid "Default TV Service"
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> Default TV Service" with label #24116
 #: system/settings/settings.xml
 msgctxt "#24117"
-msgid "Select service that will be used as default to search for TV Show subtitles"
+msgid "Select service that will be used as default to search for TV Show subtitles."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12215,9 +12213,10 @@ msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> Default Movie Service" with label #24118
 #: system/settings/settings.xml
 msgctxt "#24119"
-msgid "Select service that will be used as default to search for Movie subtitles"
+msgid "Select service that will be used as default to search for Movie subtitles."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
@@ -12230,12 +12229,19 @@ msgctxt "#24121"
 msgid "Enter search string"
 msgstr ""
 
+#. Button in Add-on Manager -> Available Updates for updating all add-ons when auto-updating is off.
 #: xbmc/filesystem/AddonDirectory.cpp
 msgctxt "#24122"
 msgid "Update all"
 msgstr ""
 
-#empty strings from id 24123 to 24999
+#. Description of setting "Videos -> Subtitles -> Pause when searching for subtitles" with label #24105
+#: system/settings/settings.xml
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr ""
+
+#empty strings from id 24124 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -13237,171 +13243,205 @@ msgstr ""
 #empty strings from id 36043 to 36100
 #strings from 36100 to 36999 are reserved for settings descriptions
 
+#. Description of settings section "Appearance"
 #: system/settings/settings.xml
 msgctxt "#36101"
 msgid "Change the look and feel of the User Interface."
 msgstr ""
 
+#. Description of settings category "Appearance -> Skin" with label #166
 #: system/settings/settings.xml
 msgctxt "#36102"
-msgid "No info available yet."
+msgid "Category containing all Skin related settings"
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Skin" with label #166 
 #: system/settings/settings.xml
 msgctxt "#36103"
 msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Settings" with label #21417
 #: system/settings/settings.xml
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Theme" with label #15111
 #: system/settings/settings.xml
 msgctxt "#36105"
 msgid "Change the theme associated with your selected skin."
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Colours" with label #14078
 #: system/settings/settings.xml
 msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Fonts" with label #13303
 #: system/settings/settings.xml
 msgctxt "#36107"
 msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Zoom" with label #20109
 #: system/settings/settings.xml
 msgctxt "#36108"
 msgid "Resize the view of the GUI."
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Startup window" with label #512
 #: system/settings/settings.xml
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Navigation sounds" with label #15108
 #: system/settings/settings.xml
 msgctxt "#36110"
 msgid "Select or disable the sound scheme used in the User Interface."
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Show RSS news feed" with label #13305
 #: system/settings/settings.xml
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
 msgstr ""
 
+#. Description of setting "Appearance -> Skin -> Edit" with label #21450
 #: system/settings/settings.xml
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr ""
 
+#. Description of settings category "Appearance -> International" with label #14090
 #: system/settings/settings.xml
 msgctxt "#36113"
-msgid "No info available yet."
+msgid "Category containing all local/regional settings"
 msgstr ""
 
+#. Description of setting "Appearance -> International -> Language" with label #248
 #: system/settings/settings.xml
 msgctxt "#36114"
 msgid "Chooses the language of the User Interface."
 msgstr ""
 
+#.  Description of setting "Appearance -> International -> Region" with label #20026
 #: system/settings/settings.xml
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr ""
 
+#.  Description of setting "Appearance -> International -> Character set" with label #14091
 #: system/settings/settings.xml
 msgctxt "#36116"
 msgid "Choose which character set is used for displaying text in the GUI."
 msgstr ""
 
+#.  Description of setting "Appearance -> International -> Timezone country" with label #14079
 #: system/settings/settings.xml
 msgctxt "#36117"
 msgid "Select country location."
 msgstr ""
 
+ Description of setting "Appearance -> International -> Timezone" with label #14080
 #: system/settings/settings.xml
 msgctxt "#36118"
 msgid "Select your current timezone."
 msgstr ""
 
+#.  Description of setting "Appearance -> International -> Preferred audio language" with label #285
 #: system/settings/settings.xml
 msgctxt "#36119"
 msgid "Select the default audio track when different language tracks are available."
 msgstr ""
 
+#.  Description of setting "Video -> Subtitles -> Preferred subtitle language" with label #286
 #: system/settings/settings.xml
 msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr ""
 
+#. Description of settings category "Appearance -> File lists" with label #14081
 #: system/settings/settings.xml
 msgctxt "#36121"
-msgid "No info available yet."
+msgid "Category containing settings related to how file lists are displayed"
 msgstr ""
 
+#.  Description of setting "Appearance -> File lists -> Show parent folder items" with label #13306
 #: system/settings/settings.xml
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr ""
 
+#.  Description of setting "Appearance -> File lists -> Show file extensions" with label #497
 #: system/settings/settings.xml
 msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr ""
 
+#. #.  Description of setting "Appearance -> File lists -> Ignore articles when sorting (e.g. "the")" with label #13399
 #: system/settings/settings.xml
 msgctxt "#36124"
 msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
 msgstr ""
 
+#.  Description of setting "Appearance -> File lists -> Allow file renaming and deletion" with label #14071
 #: system/settings/settings.xml
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr ""
 
+#.  Description of setting "Appearance -> File lists -> Show "Add source" buttons in files lists" with label #21382
 #: system/settings/settings.xml
 msgctxt "#36126"
 msgid "Show the add source button from root sections of the user interface."
 msgstr ""
 
+#.  Description of setting "Appearance -> File lists -> Show hidden files and directories" with label #21330
 #: system/settings/settings.xml
 msgctxt "#36127"
 msgid "Show hidden files and directories."
 msgstr ""
 
+#. Description of settings category "Appearance -> Screensaver" with label #360
 #: system/settings/settings.xml
 msgctxt "#36128"
-msgid "No info available yet."
+msgid "Category containing all screensaver settings"
 msgstr ""
 
+#. Description of setting "Appearance -> Screensaver -> Screensaver time" with label #355
 #: system/settings/settings.xml
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr ""
 
+#. Description of setting "Appearance -> Screensaver -> Screensaver mode" with label #356
 #: system/settings/settings.xml
 msgctxt "#36130"
 msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
 msgstr ""
 
+#. #. Description of setting "Appearance -> Screensaver -> Settings" with label #21417
 #: system/settings/settings.xml
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
 msgstr ""
 
+#. Description of setting "Appearance -> Screensaver -> Preview" with label #1000
 #: system/settings/settings.xml
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr ""
 
+#. Description of setting "Appearance -> Screensaver -> Use visualisation if playing audio" with label #13392
 #: system/settings/settings.xml
 msgctxt "#36133"
 msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
 msgstr ""
 
+#. Description of setting "Appearance -> Screensaver -> Use dim if paused during video playback" with label #22014
 #: system/settings/settings.xml
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -13422,99 +13462,119 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr ""
 
+#. Description of settings section "Videos" with label #3
 #: system/settings/settings.xml
 msgctxt "#36138"
-msgid "No info available yet."
+msgid "Section that contains all the settings related to videos and how they are handled."
 msgstr ""
 
+#. Description of settings category "Videos -> Library" with label #14022
 #: system/settings/settings.xml
 msgctxt "#36139"
-msgid "No info available yet."
+msgid "Category containing the settings for how the video library is handled."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Enable" with label #24022
 #: system/settings/settings.xml
 msgctxt "#36140"
-msgid "No info available yet."
+msgid "Enable the video library."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Show plot for unwatched items" with label #20369
 #: system/settings/settings.xml
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Automatically grab season thumbs" with label #20382
 #: system/settings/settings.xml
 msgctxt "#36142"
-msgid "No info available yet."
+msgid "Automatically grab season thumbs when scanning media."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Download actor thumbnails when adding to library" with label #20402
 #: system/settings/settings.xml
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Flatten TV show seasons" with label #20412
 #: system/settings/settings.xml
 msgctxt "#36144"
 msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Group movies in sets" with label #20458
 #: system/settings/settings.xml
 msgctxt "#36145"
 msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Update library on startup" with label #22000
 #: system/settings/settings.xml
 msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Hide progress of library updates" with label #22001
 #: system/settings/settings.xml
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Clean library..." with label #334
 #: system/settings/settings.xml
 msgctxt "#36148"
 msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Export video library" with label #647
 #: system/settings/settings.xml
 msgctxt "#36149"
 msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
 msgstr ""
 
+#. Description of setting "Videos -> Library -> Import video library" with label #648
 #: system/settings/settings.xml
 msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr ""
 
+#. Description of settings category "Videos -> Playback" with label #14086
 #: system/settings/settings.xml
 msgctxt "#36151"
-msgid "No info available yet."
+msgid "Category containing settings for how video playback is handled."
+"
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Play the next video automatically" with label #13433
 #: system/settings/settings.xml
 msgctxt "#36152"
-msgid "Enable automatic playback of the next file in the list of the selected item."
+msgid "Enable automatic playback of the next file in the list."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Render method" with label #13415
 #: system/settings/settings.xml
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Enable HQ Scalers for scalings above" with label #13435
 #: system/settings/settings.xml
 msgctxt "#36154"
-msgid "No info available yet."
+msgid "Enabled high quality scaler where the required scaling of the image to fit the configured video output resolution is above the set percentage."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VDPAU)" with label #13425
 #: system/settings/settings.xml
 msgctxt "#36155"
-msgid "Enable hardware decoding of video files."
+msgid "Enable VDPAU hardware decoding of video files, mainly used for Nvidia graphics and in some circumstances AMD graphics"
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VAAPI)" with label #13426
 #: system/settings/settings.xml
 msgctxt "#36156"
-msgid "No info available yet."
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13522,56 +13582,67 @@ msgctxt "#36157"
 msgid "No info available yet."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (DXVA2)" with label #13427
 #: system/settings/settings.xml
 msgctxt "#36158"
-msgid "No info available yet."
+msgid "Enable DXVA2 hardware decoding of video files."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (CrystalHD)" with label #13428
 #: system/settings/settings.xml
 msgctxt "#36159"
-msgid "No info available yet."
+msgid "Enable CrystalHD decoding of video files."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VDADecoder)" with label #13429
 #: system/settings/settings.xml
 msgctxt "#36160"
-msgid "No info available yet."
+msgid "Enable VDA hardware decoding of video files."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (OpenMax)" with label #13430
 #: system/settings/settings.xml
 msgctxt "#36161"
-msgid "No info available yet."
+msgid "Enable OpenMax hardware decoding of video files."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VideoToolbox)" with label #13432
 #: system/settings/settings.xml
 msgctxt "#36162"
 msgid "No info available yet."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Use pixel buffer objects" with label #13424
 #: system/settings/settings.xml
 msgctxt "#36163"
-msgid "No info available yet."
+msgid "Enable decoding of video files using pixel buffer objects"
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Adjust display refresh rate to match video" with label #170
 #: system/settings/settings.xml
 msgctxt "#36164"
-msgid "Select when the refresh rate adjustments should take place."
+msgid "Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Pause during refresh rate change" with label #13550
 #: system/settings/settings.xml
 msgctxt "#36165"
-msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
+msgid "Pause for a small amount of time during a refresh rate change."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Sync playback to display" with label #13510
 #: system/settings/settings.xml
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> A/V sync method" with label #13500
 #: system/settings/settings.xml
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Maximum speedup/slowdown amount (%)" with label #13504
 #: system/settings/settings.xml
 msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
@@ -13582,56 +13653,67 @@ msgctxt "#36169"
 msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allowed error in aspect ratio to minimise black bars" with label #22021
 #: system/settings/settings.xml
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Display 4:3 videos as" with label #173
 #: system/settings/settings.xml
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> VDPAU Studio level colour conversion" with label #13122
 #: system/settings/settings.xml
 msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> VDPAU HQ Upscaling level" with label #13121
 #: system/settings/settings.xml
 msgctxt "#36173"
-msgid "No info available yet."
+msgid "Enable upscaling using VDPAU"
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Activate Teletext" with label #23050
 #: system/settings/settings.xml
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> "Scale Teletext to 4:3" with label #23055
 #: system/settings/settings.xml
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr ""
 
+#. Description of settings category "Videos -> File lists" with label #14081
 #: system/settings/settings.xml
 msgctxt "#36176"
-msgid "No info available yet."
+msgid "Category containing settings for how video file lists are handled."
 msgstr ""
 
+#. Description of setting "Videos -> File lists -> Default select action" with label #22079
 #: system/settings/settings.xml
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr ""
 
+#. Description of setting "Videos -> File lists -> Extract thumbnails and video information" with label #20433
 #: system/settings/settings.xml
 msgctxt "#36178"
-msgid "No info available yet."
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
 msgstr ""
 
+#. Description of setting "Videos -> File lists -> Replace file names with library titles" with label #20419
 #: system/settings/settings.xml
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
 msgstr ""
 
+#. Description of setting "Videos -> File lists -> Extract thumbnails and video information" with label #20433
 #: system/settings/settings.xml
 msgctxt "#36180"
 msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
@@ -13642,76 +13724,91 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr ""
 
+#. Description of setting "Videos -> File lists -> Combine split video items" with label #20435
 #: system/settings/settings.xml
 msgctxt "#36182"
-msgid "Enables direct playback of videos that are in folders, without having to open those folders first, as well as displaying multi-part video files as single items in non-library views."
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
 msgstr ""
 
+#. Description of setting "Videos -> File lists -> Flatten library hierarchy" with label #20456
 #: system/settings/settings.xml
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr ""
 
+#. Description of settings category "Videos -> Subtitles" with label #287
 #: system/settings/settings.xml
 msgctxt "#36184"
-msgid "No info available yet."
+msgid "Category containing settings for how subtitles are handled."
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> Font to use for text subtitles" with label #14089
 #: system/settings/settings.xml
 msgctxt "#36185"
-msgid "No info available yet."
+msgid "Set the font type to be used for subtitles."
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> - Size" with label #289
 #: system/settings/settings.xml
 msgctxt "#36186"
-msgid "No info available yet."
+msgid "Set the font size to be used for subtitles."
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> - Style" with label #736
 #: system/settings/settings.xml
 msgctxt "#36187"
-msgid "No info available yet."
+msgid "Set the font style to be used for subtitles."
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> - Colour" with label #737
 #: system/settings/settings.xml
 msgctxt "#36188"
-msgid "No info available yet."
+msgid "Set the font colour to be used for subtitles."
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> - Character set" with label #735
 #: system/settings/settings.xml
 msgctxt "#36189"
-msgid "No info available yet."
+msgid "Set the font character set to be used for subtitles."
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> Override ASS/SSA subtitles fonts" with label #21368
 #: system/settings/settings.xml
 msgctxt "#36190"
-msgid "No info available yet."
+msgid "Override ASS/SSA subtitles fonts."
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> Custom subtitle folder" with label #21366
 #: system/settings/settings.xml
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> Subtitle location on screen" with label #21460
 #: system/settings/settings.xml
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr ""
 
+#. Description of settings category "Videos -> DVDs" with label #14087
 #: system/settings/settings.xml
 msgctxt "#36193"
-msgid "No info available yet."
+msgid "Category containing settings for how DVD's are handled."
 msgstr ""
 
+#. Description of setting "Videos -> DVDs -> Play DVDs automatically" with label #14088
 #: system/settings/settings.xml
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
 msgstr ""
 
+#. Description of setting "Videos -> DVDs -> Forced DVD player region" with label #21372
 #: system/settings/settings.xml
 msgctxt "#36195"
 msgid "Force a region for DVD playback."
 msgstr ""
 
+#. Description of setting "Videos -> DVDs -> Attempt to skip introduction before DVD menu" with label #21882
 #: system/settings/settings.xml
 msgctxt "#36196"
 msgid "Attempt to skip 'unskippable' introductions before DVD menu."
@@ -13759,7 +13856,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
+msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13874,7 +13971,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36228"
-msgid "Show the last viewed channel if switching to live tv."
+msgid "Continue with the last viewed channel on startup."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13904,7 +14001,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36234"
-msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
+msgid "Duration of instant recordings when pressing the record button. Defaults to 120 minutes."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14837,16 +14934,19 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Prefer VDPAU Video Mixer" with label #13437
 #: system/settings/settings.xml
 msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality"
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (amcodec)" with label #13438
 #: system/settings/settings.xml
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder"
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Allow frame-multi-threaded decoding" with label #13440
 #: system/settings/settings.xml
 msgctxt "#36423"
 msgid "Use frame-multi-threaded decoding instead of hardware accelerated decoding (less reliable than default single thread mode)."
@@ -14942,7 +15042,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos"
+msgid "Playback mode of stereoscopic videos."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -15024,14 +15124,16 @@ msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Playback mode of stereoscopic videos" with label #36520
 #: system/settings/settings.xml
 msgctxt "#36537"
-msgid "No info available yet."
+msgid "Set playback mode of stereoscopic 3D videos."
 msgstr ""
 
+#. Description of setting "Videos -> Playback -> Disable stereoscopic mode when playback is stopped" with label #36526
 #: system/settings/settings.xml
 msgctxt "#36538"
-msgid "No info available yet."
+msgid "Select whether to disable stereoscopic mode when playback is stopped."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -15069,9 +15171,10 @@ msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr ""
 
+#. Description of setting "Videos -> Subtitles -> Subtitle stereoscopic depth" with label #36545
 #: system/settings/settings.xml
 msgctxt "#36546"
-msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr ""
 
 #: system/settings/rbp.xml
