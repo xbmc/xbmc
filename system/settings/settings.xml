@@ -1676,7 +1676,7 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="audiocds.quality" type="integer" label="622" help="36288">
+        <setting id="audiocds.quality" type="integer" parent="audiocds.encoder" label="622" help="36288">
           <level>2</level>
           <default>0</default> <!-- CDDARIP_QUALITY_CBR -->
           <constraints>
@@ -1697,7 +1697,7 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="audiocds.bitrate" type="integer" label="623" help="36289">
+        <setting id="audiocds.bitrate" type="integer" parent="audiocds.encoder" label="623" help="36289">
           <level>2</level>
           <default>192</default>
           <constraints>
@@ -1718,7 +1718,7 @@
             <formatlabel>14048</formatlabel>
           </control>
         </setting>
-        <setting id="audiocds.compressionlevel" type="integer" label="665" help="36290">
+        <setting id="audiocds.compressionlevel" type="integer" parent="audiocds.encoder" label="665" help="36290">
           <level>2</level>
           <default>5</default>
           <constraints>
