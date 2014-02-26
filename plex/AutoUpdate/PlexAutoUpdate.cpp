@@ -89,6 +89,12 @@ void CPlexAutoUpdate::OnTimeout()
 #endif
   m_url.SetOption("build", PLEX_BUILD_TAG);
 
+#ifdef TARGET_DARWIN
+  m_url.SetOption("distribution", "macosx");
+#elif TARGET_WINDOWS
+  m_url.SetOption("distribution", "windows");
+#endif
+
   int channel = g_guiSettings.GetInt("updates.channel");
   if (channel != CMyPlexUserInfo::ROLE_USER)
     m_url.SetOption("channel", boost::lexical_cast<std::string>(channel));
