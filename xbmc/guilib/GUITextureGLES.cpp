@@ -260,20 +260,12 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
 
   glUniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
 
-  // Setup vertex position values
-  #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
-  ver[0][0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x1, rect.y1));
-  ver[0][1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x1, rect.y1));
-  ver[0][2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x1, rect.y1));
-  ver[1][0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x2, rect.y1));
-  ver[1][1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x2, rect.y1));
-  ver[1][2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x2, rect.y1));
-  ver[2][0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x2, rect.y2));
-  ver[2][1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x2, rect.y2));
-  ver[2][2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x2, rect.y2));
-  ver[3][0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x1, rect.y2));
-  ver[3][1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x1, rect.y2));
-  ver[3][2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x1, rect.y2));
+  ver[0][0] = ver[3][0] = rect.x1;
+  ver[0][1] = ver[1][1] = rect.y1;
+  ver[1][0] = ver[2][0] = rect.x2;
+  ver[2][1] = ver[3][1] = rect.y2;
+  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2]= 0;
+
   if (texture)
   {
     // Setup texture coordinates
