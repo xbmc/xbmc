@@ -230,6 +230,10 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
     g_langInfo.SetCurrentRegion(((CSettingString*)setting)->GetValue());
     g_weatherManager.Refresh(); // need to reset our weather, as temperatures need re-translating.
   }
+  else if (settingId == "locale.mainkeyboardlayout")
+    g_langInfo.SetMainKeyboardLayout(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.altkeyboardlayout")
+    g_langInfo.SetAltKeyboardLayout(((CSettingString*)setting)->GetValue());
 }
 
 bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= false*/)
@@ -392,6 +396,8 @@ bool CLangInfo::Load(const std::string& strFileName, bool onlyCheckLanguage /*= 
     LoadTokens(pRootElement->FirstChild("sorttokens"), g_advancedSettings.m_vecTokens);
 
     LoadKeyboardLayouts(pRootElement->FirstChild("keyboardlayouts"), m_altKeyboardLayouts);
+    const std::string strName = CSettings::Get().GetString("locale.altkeyboardlayout");
+    SetAltKeyboardLayout(strName);
   }
 
   return true;
@@ -846,4 +852,31 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
 
   if (!match && regions.size() > 0)
     current = regions[0];
+}
+
+void CLangInfo::SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+{
+  std::vector<std::string> names;
+  if (setting->GetId() == "locale.mainkeyboardlayout")
+    g_langInfo.GetMainKeyboardLayoutNames(names);
+  else if (setting->GetId() == "locale.altkeyboardlayout")
+    g_langInfo.GetAltKeyboardLayoutNames(names);
+  else
+    return;
+
+  bool match = false;
+  for (std::vector<std::string>::const_iterator it = names.begin(); it != names.end(); it++)
+  {
+    std::string strName = *it;
+    list.push_back(make_pair(strName, strName));
+
+    if (!match && strName == ((CSettingString*)setting)->GetValue())
+    {
+      match = true;
+      current = strName;
+    }
+  }
+
+  if (!match && !names.empty())
+    current = names[0];
 }

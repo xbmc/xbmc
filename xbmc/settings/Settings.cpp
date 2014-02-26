@@ -418,6 +418,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("timezones");
 #endif // defined(TARGET_LINUX)
   m_settingsManager->UnregisterSettingOptionsFiller("verticalsyncs");
+  m_settingsManager->UnregisterSettingOptionsFiller("keyboardlayouts");
 
   // unregister ISettingCallback implementations
   m_settingsManager->UnregisterCallback(&g_advancedSettings);
@@ -847,6 +848,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("timezones", CLinuxTimezone::SettingOptionsTimezonesFiller);
 #endif
   m_settingsManager->RegisterSettingOptionsFiller("verticalsyncs", CDisplaySettings::SettingOptionsVerticalSyncsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("keyboardlayouts", CLangInfo::SettingOptionsKeyboardLayoutsFiller);
 }
 
 void CSettings::InitializeConditions()
@@ -1084,6 +1086,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("locale.subtitlelanguage");
   settingSet.insert("locale.language");
   settingSet.insert("locale.country");
+  settingSet.insert("locale.mainkeyboardlayout");
+  settingSet.insert("locale.altkeyboardlayout");
   m_settingsManager->RegisterCallback(&g_langInfo, settingSet);
 
 #if defined(HAS_SDL_JOYSTICK)

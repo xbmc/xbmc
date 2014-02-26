@@ -133,10 +133,12 @@ public:
 
   CKeyboardLayout* GetMainKeyboardLayout();
   void SetMainKeyboardLayout(const std::string &strName);
+  void GetMainKeyboardLayoutNames(std::vector<std::string> &array);
 
   CKeyboardLayout* GetAltKeyboardLayout();
   bool HasAltKeyboardLayout();
   void SetAltKeyboardLayout(const std::string &strName);
+  void GetAltKeyboardLayoutNames(std::vector<std::string> &array);
 
   static bool CheckLanguage(const std::string& language);
 
@@ -148,6 +150,7 @@ public:
   static void SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
+  static void SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
 protected:
   void SetDefaults();
