@@ -105,21 +105,9 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       break;
     }
   }
-  m_format.m_sampleRate = sampleRate;
 
-  // default to AE_FMT_S16LE,
-  // then check if we can support the requested format.
-  AEDataFormat dataFormat = AE_FMT_S16LE;
-  for (size_t i = 0; i < m_info.m_dataFormats.size(); i++)
-  {
-    if (m_format.m_dataFormat == m_info.m_dataFormats[i])
-    {
-      dataFormat = m_format.m_dataFormat;
-      break;
-    }
-  }
-
-  m_format.m_dataFormat     = dataFormat;
+  m_format.m_sampleRate     = sampleRate;
+  m_format.m_dataFormat     = AE_FMT_S16LE;
   m_format.m_channelLayout  = m_info.m_channels;
   m_format.m_frameSize      = m_format.m_channelLayout.Count() *
                               (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
