@@ -16,7 +16,7 @@ export LIBS+=$(LINK_ICONV)
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-fuse
 
-LIBDYLIB=$(PLATFORM)/lib/.libs/libafpclient.so.0.0.0
+LIBDYLIB=$(PLATFORM)/lib/.libs/libafpclient.a
 
 all: .installed-$(PLATFORM)
 
