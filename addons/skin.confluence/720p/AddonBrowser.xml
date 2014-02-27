@@ -98,10 +98,9 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
-				<control type="radiobutton" id="5">
-					<description>Enable auto-updates</description>
-					<left>0</left>
-					<top>130</top>
+				<control type="button" id="5">
+					<description>addon-updates</description>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>24063</label>
 				</control>
