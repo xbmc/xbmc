@@ -698,13 +698,6 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
           goto out_error;
         }
 
-        // Release associated pts
-        idx = VpuFindBuffer(m_frameInfo.pDisplayFrameBuf->pbufY);
-        if (idx != -1)
-          m_outputBuffers[idx]->SetPts(DVD_NOPTS_VALUE);
-        else
-          CLog::Log(LOGERROR, "%s - could not find frame buffer\n", __FUNCTION__);
-
         // Display frame
         ret = VPU_DecOutFrameDisplayed(m_vpuHandle, m_frameInfo.pDisplayFrameBuf);
         if(ret != VPU_DEC_RET_SUCCESS)
