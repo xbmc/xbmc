@@ -13409,7 +13409,7 @@ msgstr ""
 #. #.  Description of setting "Appearance -> File lists -> Ignore articles when sorting (e.g. "the")" with label #13399
 #: system/settings/settings.xml
 msgctxt "#36124"
-msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
 msgstr ""
 
 #.  Description of setting "Appearance -> File lists -> Allow file renaming and deletion" with label #14071
