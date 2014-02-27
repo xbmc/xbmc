@@ -49,6 +49,7 @@
 #include "utils/XMLUtils.h"
 #if defined(TARGET_ANDROID)
 #include "android/jni/Build.h"
+#include "utils/AMLUtils.h"
 #endif
 
 /* Target identification */
@@ -397,6 +398,15 @@ bool CSysInfo::IsAeroDisabled()
   HRESULT res = DwmIsCompositionEnabled(&aeroEnabled);
   if (SUCCEEDED(res))
     return !aeroEnabled;
+#endif
+  return false;
+}
+
+bool CSysInfo::HasHW3DInterlaced()
+{
+#if defined(TARGET_ANDROID)
+  if (aml_hw3d_present())
+    return true;
 #endif
   return false;
 }
