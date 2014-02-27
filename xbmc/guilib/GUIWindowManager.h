@@ -50,6 +50,7 @@ public:
   bool SendMessage(CGUIMessage& message);
   bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
   bool SendMessage(CGUIMessage& message, int window);
+  int  RemoveThreadMessageByMessageIds(int *pMessageIDList);
   void Initialize();
   void Add(CGUIWindow* pWindow);
   void AddUniqueInstance(CGUIWindow *window);

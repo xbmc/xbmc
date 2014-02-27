@@ -4455,6 +4455,25 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
   // tell system we are starting a file
   m_bPlaybackStarting = true;
 
+  // for playing a new item, previous playing item's callback may already
+  // pushed some delay message into the threadmessage list, they are not
+  // expected be processed after or during the new item playback starting.
+  // so we clean up previous playing item's playback callback delay messages here.
+  int previousMsgsIgnoredByNewPlaying[] = {
+        GUI_MSG_PLAYBACK_STARTED,
+        GUI_MSG_PLAYBACK_ENDED,
+        GUI_MSG_PLAYBACK_STOPPED,
+        GUI_MSG_PLAYLIST_CHANGED,
+        GUI_MSG_PLAYLISTPLAYER_STOPPED,
+        GUI_MSG_PLAYLISTPLAYER_STARTED,
+        GUI_MSG_PLAYLISTPLAYER_CHANGED,
+        GUI_MSG_QUEUE_NEXT_ITEM,
+        0
+      };
+  int dMsgCount = g_windowManager.RemoveThreadMessageByMessageIds(&previousMsgsIgnoredByNewPlaying[0]);
+  if (dMsgCount > 0)
+    CLog::Log(LOGDEBUG,"%s : Ignored %d playback thread messages", __FUNCTION__, dMsgCount);
+
   // We should restart the player, unless the previous and next tracks are using
   // one of the players that allows gapless playback (paplayer, dvdplayer)
   if (m_pPlayer)

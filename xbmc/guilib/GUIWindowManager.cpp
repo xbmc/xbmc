@@ -776,6 +776,31 @@ int CGUIWindowManager::GetTopMostModalDialogID(bool ignoreClosing /*= false*/) c
   return WINDOW_INVALID;
 }
 
+int CGUIWindowManager::RemoveThreadMessageByMessageIds(int *pMessageIDList)
+{
+  CSingleLock lock(m_critSection);
+  int removedMsgCount = 0;
+  for (std::vector < std::pair<CGUIMessage*,int> >::iterator it = m_vecThreadMessages.begin(); it != m_vecThreadMessages.end();)
+  {
+    CGUIMessage *pMsg = it->first;
+    int *pMsgID;
+    for(pMsgID = pMessageIDList; *pMsgID != 0; ++pMsgID)
+      if (pMsg->GetMessage() == *pMsgID)
+        break;
+    if (*pMsgID)
+    {
+      it = m_vecThreadMessages.erase(it);
+      delete pMsg;
+      ++removedMsgCount;
+    }
+    else
+    {
+      ++it;
+    }
+  }
+  return removedMsgCount;
+}
+
 void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
 {
   CSingleLock lock(m_critSection);
