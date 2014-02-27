@@ -2988,6 +2988,7 @@
             <options>
               <option label="12396">0</option> <!-- AUTO_UPDATES_ON -->
               <option label="12397">1</option> <!-- AUTO_UPDATES_NOTIFY -->
+              <option label="12398">2</option> <!-- AUTO_UPDATES_NEVER -->
             </options>
           </constraints>
           <control type="spinner" format="string" />

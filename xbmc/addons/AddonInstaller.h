@@ -29,6 +29,7 @@ class CAddonDatabase;
 enum {
   AUTO_UPDATES_ON = 0,
   AUTO_UPDATES_NOTIFY,
+  AUTO_UPDATES_NEVER,
   AUTO_UPDATES_MAX
 };
 
