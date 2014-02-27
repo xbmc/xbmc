@@ -13,10 +13,10 @@
 			<expression clear="yes" noclean="1">(themoviedb.org/movie/)([0-9]*)</expression>
 		</RegExp>
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url&gt;http://api.themoviedb.org/3/movie/tt\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;&lt;/details&gt;" dest="3">
-			<expression>imdb....?/title/tt([0-9]*)</expression>
+			<expression>imdb....?/title/tt([0-9]+)</expression>
 		</RegExp>
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url&gt;http://api.themoviedb.org/3/movie/tt\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;&lt;/details&gt;" dest="3">
-			<expression>imdb....?/Title\?([0-9]*)</expression>
+			<expression>imdb....?/Title\?t{0,2}([0-9]+)</expression>
 		</RegExp>
 	</NfoUrl>
 	<GetSearchResults dest="8">
