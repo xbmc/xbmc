@@ -26,6 +26,12 @@
 
 class CAddonDatabase;
 
+enum {
+  AUTO_UPDATES_ON = 0,
+  AUTO_UPDATES_NOTIFY,
+  AUTO_UPDATES_MAX
+};
+
 class CAddonInstaller : public IJobCallback
 {
 public:

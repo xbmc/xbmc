@@ -4914,7 +4914,19 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr ""
 
-#empty strings from id 12396 to 12599
+#. Used on the button to toggle add-on update mode in the Add-on Manager.
+#: xbmc/addons/GUIWindowAddonBrowser.cpp
+msgctxt "#12396"
+msgid "Auto updates: On"
+msgstr ""
+
+#. Used on the button to toggle add-on update mode in the Add-on Manager.
+#: xbmc/addons/GUIWindowAddonBrowser.cpp
+msgctxt "#12397"
+msgid "Auto updates: Notify"
+msgstr ""
+
+#empty strings from id 12398 to 12599
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12600"
