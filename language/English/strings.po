@@ -5992,12 +5992,14 @@ msgctxt "#13438"
 msgid "Allow hardware acceleration (amcodec)"
 msgstr ""
 
+#: system/settings/settings.xml
 msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr ""
 
+#: system/settings/settings.xml
 msgctxt "#13440"
-msgid "Allow frame-multi-threaded decoding"
+msgid "Allow multi threaded software decoding"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6066,7 +6068,25 @@ msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
 msgstr ""
 
-#empty strings from id 13453 to 13499
+#. Label for a setting to configure the video decoding method
+#: system/settings/settings.xml
+msgctxt "#13454"
+msgid "Decoding method"
+msgstr ""
+
+#. Option for video related setting #13454: Decoding method
+#: system/settings/settings.xml
+msgctxt "#13455"
+msgid "Software"
+msgstr ""
+
+#. Option for video related setting #13454: Decoding method
+#: system/settings/settings.xml
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr ""
+
+#empty strings from id 13457 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
@@ -6664,7 +6684,13 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr ""
 
-#empty strings from id 14101 to 15011
+#. Name of a settings category related to video playback
+#: system/settings/settings.xml
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr ""
+
+#empty strings from id 14102 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -10182,11 +10208,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr ""
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr ""
@@ -11121,18 +11142,7 @@ msgctxt "#21469"
 msgid "%s to %s"
 msgstr ""
 
-#empty strings from id 21470 to 21599
-
-#: xbmc/cores/dvdplayer/DVDPlayer.cpp
-msgctxt "#21600"
-msgid "Prefer external subtitles"
-msgstr ""
-
-#. Description of setting "Video -> Subtitles -> Prefer external subtitles" with label #21600
-#: system/settings/settings.xml
-msgctxt "#21601"
-msgid "Prefer external subtitles to internal ones."
-msgstr ""
+#empty strings from id 21470 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"
@@ -12152,7 +12162,7 @@ msgstr ""
 #. Description of setting "Videos -> Subtitles -> Save subtitles to movie folder" with label #24115
 #: system/settings/settings.xml
 msgctxt "#24106"
-msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder."
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
@@ -12198,7 +12208,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24115"
-msgid "Save subtitles to movie folder"
+msgid "Subtitle storage location"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12245,7 +12255,17 @@ msgctxt "#24123"
 msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
 msgstr ""
 
-#empty strings from id 24124 to 24999
+#: system/settings/settings.xml
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#24125"
+msgid "Custom location"
+msgstr ""
+
+#empty strings from id 24126 to 24999
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -13491,11 +13511,7 @@ msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Automatically grab season thumbs" with label #20382
-#: system/settings/settings.xml
-msgctxt "#36142"
-msgid "Automatically grab season thumbs when scanning media."
-msgstr ""
+# empty string with id 36142
 
 #. Description of setting "Videos -> Library -> Download actor thumbnails when adding to library" with label #20402
 #: system/settings/settings.xml
@@ -15111,7 +15127,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Allow frame-multi-threaded decoding" with label #13440
 #: system/settings/settings.xml
 msgctxt "#36423"
-msgid "Use frame-multi-threaded decoding instead of hardware accelerated decoding (less reliable than default single thread mode)."
+msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -15145,7 +15161,19 @@ msgctxt "#36429"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
 msgstr ""
 
-#empty strings from id 36430 to 36499
+#. Description for setting category #14101: Video Acceleration
+#: system/settings/settings.xml
+msgctxt "#36430"
+msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
+msgstr ""
+
+#. Description for video related setting #13454: Decoding mode 
+#: system/settings/settings.xml
+msgctxt "#36431"
+msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
+msgstr ""
+
+#empty strings from id 36432 to 36499
 #end reservation
 
 #: system/settings/settings.xml

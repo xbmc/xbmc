@@ -181,14 +181,13 @@ class PredicateSubtitleFilter
 private:
   std::string audiolang;
   bool original;
-  bool preferexternal;
 public:
   /** \brief The class' operator() decides if the given (subtitle) SelectionStream is relevant wrt.
   *          preferred subtitle language and audio language. If the subtitle is relevant <B>false</B> false is returned.
   *
   *          A subtitle is relevant if
   *          - it was previously selected, or
-  *          - it's an external sub and "prefer external subs was selected", or
+  *          - it's an external sub, or
   *          - it's a forced sub and "original stream's language" was selected, or
   *          - it's a forced sub and its language matches the audio's language, or
   *          - it's a default sub, or
@@ -196,21 +195,17 @@ public:
   */
   PredicateSubtitleFilter(std::string& lang)
     : audiolang(lang),
-      original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original")),
-      preferexternal(CSettings::Get().GetBool("subtitles.preferexternal"))
+      original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original"))
   {
   };
-  
+
   bool operator()(const OMXSelectionStream& ss) const
   {
     if (ss.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream)
       return false;
 
-    if (preferexternal)
-    {
-      if(STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_TEXT)
-        return false;
-    }
+    if(STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_TEXT)
+      return false;
 
     if ((ss.flags & CDemuxStream::FLAG_FORCED) && (original || g_LangCodeExpander.CompareLangCodes(ss.language, audiolang)))
       return false;
@@ -261,10 +256,9 @@ static bool PredicateAudioPriority(const OMXSelectionStream& lh, const OMXSelect
 *
 *          A subtitle lh is 'better than' a subtitle rh (in evaluation order) if
 *          - lh was previously selected, or
-*          - lh is an external sub and "prefer external subs was selected" and rh not, or
+*          - lh is an external sub and rh not, or
 *          - lh is a forced sub and ("original stream's language" was selected or subtitles are off) and rh not, or
 *          - lh is an external sub and its language matches the preferred subtitle's language (unequal to "original stream's language") and rh not, or
-*          - lh is an external sub and rh not, or
 *          - lh is language matches the preferred subtitle's language (unequal to "original stream's language") and rh not, or
 *          - lh is a default sub and rh not
 */
@@ -273,14 +267,12 @@ class PredicateSubtitlePriority
 private:
   std::string audiolang;
   bool original;
-  bool preferextsubs;
   bool subson;
   PredicateSubtitleFilter filter;
 public:
   PredicateSubtitlePriority(std::string& lang)
     : audiolang(lang),
       original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original")),
-      preferextsubs(CSettings::Get().GetBool("subtitles.preferexternal")),
       subson(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn),
       filter(lang)
   {
@@ -299,14 +291,12 @@ public:
     PREDICATE_RETURN(lh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream
                    , rh.type_index == CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream);
 
-    if (preferextsubs)
-    {
-      PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB
-                     , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_DEMUX_SUB);
+    // prefer external subs
+    PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB
+                   , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_DEMUX_SUB);
 
-      PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT
-                     , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_TEXT);
-    }
+    PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT
+                   , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_TEXT);
 
     if(!subson || original)
     {
@@ -323,12 +313,6 @@ public:
       PREDICATE_RETURN((STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
                      , (STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
     }
-
-    PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB
-                   , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_DEMUX_SUB);
-
-    PREDICATE_RETURN(STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT
-                   , STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_TEXT);
 
     if(!original)
     {
