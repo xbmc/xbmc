@@ -32,20 +32,24 @@
 //#define TRACE_FRAMES
 
 // FIXME TODO Develop real proper CVPUBuffer class
-#define VPU_DEC_MAX_NUM_MEM_NUM 20
-typedef struct
+class CDecMemInfo
 {
+public:
+  CDecMemInfo()
+    : nVirtNum(0)
+    , virtMem(NULL)
+    , nPhyNum(0)
+    , phyMem(NULL)
+  {}
+
   //virtual mem info
   int nVirtNum;
-  unsigned int virtMem[VPU_DEC_MAX_NUM_MEM_NUM];
+  void** virtMem;
 
   //phy mem info
   int nPhyNum;
-  unsigned int phyMem_virtAddr[VPU_DEC_MAX_NUM_MEM_NUM];
-  unsigned int phyMem_phyAddr[VPU_DEC_MAX_NUM_MEM_NUM];
-  unsigned int phyMem_cpuAddr[VPU_DEC_MAX_NUM_MEM_NUM];
-  unsigned int phyMem_size[VPU_DEC_MAX_NUM_MEM_NUM];
-} DecMemInfo;
+  VpuMemDesc* phyMem;
+};
 
 class CDVDVideoCodecIMXBuffer : public CDVDVideoCodecBuffer
 {
@@ -113,7 +117,7 @@ protected:
   CDVDStreamInfo      m_hints;             // Hints from demuxer at stream opening
   const char         *m_pFormatName;       // Current decoder format name
   VpuDecOpenParam     m_decOpenParam;      // Parameters required to call VPU_DecOpen
-  DecMemInfo          m_decMemInfo;        // VPU dedicated memory description
+  CDecMemInfo         m_decMemInfo;        // VPU dedicated memory description
   VpuDecHandle        m_vpuHandle;         // Handle for VPU library calls
   VpuDecInitInfo      m_initInfo;          // Initial info returned from VPU at decoding start
   bool                m_tsSyncRequired;    // state whether timestamp manager has to be sync'ed

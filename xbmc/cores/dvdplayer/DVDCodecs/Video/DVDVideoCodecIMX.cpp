@@ -48,7 +48,7 @@ CCriticalSection CDVDVideoCodecIMX::m_codecBufferLock;
 bool CDVDVideoCodecIMX::VpuAllocBuffers(VpuMemInfo *pMemBlock)
 {
   int i, size;
-  unsigned char * ptr;
+  void* ptr;
   VpuMemDesc vpuMem;
   VpuDecRetCode ret;
 
@@ -57,7 +57,7 @@ bool CDVDVideoCodecIMX::VpuAllocBuffers(VpuMemInfo *pMemBlock)
     size = pMemBlock->MemSubBlock[i].nAlignment + pMemBlock->MemSubBlock[i].nSize;
     if (pMemBlock->MemSubBlock[i].MemType == VPU_MEM_VIRT)
     { // Allocate standard virtual memory
-      ptr = (unsigned char *)malloc(size);
+      ptr = malloc(size);
       if(ptr == NULL)
       {
         CLog::Log(LOGERROR, "%s - Unable to malloc %d bytes.\n", __FUNCTION__, size);
@@ -65,8 +65,9 @@ bool CDVDVideoCodecIMX::VpuAllocBuffers(VpuMemInfo *pMemBlock)
       }
       pMemBlock->MemSubBlock[i].pVirtAddr = (unsigned char*)Align(ptr, pMemBlock->MemSubBlock[i].nAlignment);
 
-      m_decMemInfo.virtMem[m_decMemInfo.nVirtNum] = (unsigned int)ptr;
       m_decMemInfo.nVirtNum++;
+      m_decMemInfo.virtMem = (void**)realloc(m_decMemInfo.virtMem, m_decMemInfo.nVirtNum*sizeof(void*));
+      m_decMemInfo.virtMem[m_decMemInfo.nVirtNum-1] = ptr;
     }
     else
     { // Allocate contigous mem for DMA
@@ -80,11 +81,12 @@ bool CDVDVideoCodecIMX::VpuAllocBuffers(VpuMemInfo *pMemBlock)
       pMemBlock->MemSubBlock[i].pVirtAddr = (unsigned char*)Align(vpuMem.nVirtAddr, pMemBlock->MemSubBlock[i].nAlignment);
       pMemBlock->MemSubBlock[i].pPhyAddr = (unsigned char*)Align(vpuMem.nPhyAddr, pMemBlock->MemSubBlock[i].nAlignment);
 
-      m_decMemInfo.phyMem_phyAddr[m_decMemInfo.nPhyNum] = (unsigned int)vpuMem.nPhyAddr;
-      m_decMemInfo.phyMem_virtAddr[m_decMemInfo.nPhyNum] = (unsigned int)vpuMem.nVirtAddr;
-      m_decMemInfo.phyMem_cpuAddr[m_decMemInfo.nPhyNum] = (unsigned int)vpuMem.nCpuAddr;
-      m_decMemInfo.phyMem_size[m_decMemInfo.nPhyNum] = size;
       m_decMemInfo.nPhyNum++;
+      m_decMemInfo.phyMem = (VpuMemDesc*)realloc(m_decMemInfo.phyMem, m_decMemInfo.nPhyNum*sizeof(VpuMemDesc));
+      m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nPhyAddr = vpuMem.nPhyAddr;
+      m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nVirtAddr = vpuMem.nVirtAddr;
+      m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nCpuAddr = vpuMem.nCpuAddr;
+      m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nSize = size;
     }
   }
 
@@ -111,29 +113,39 @@ bool CDVDVideoCodecIMX::VpuFreeBuffers(void)
   VpuDecRetCode vpuRet;
   bool ret = true;
 
-  //free virtual mem
-  for(int i=0; i<m_decMemInfo.nVirtNum; i++)
+  if (m_decMemInfo.virtMem)
   {
-    if (m_decMemInfo.virtMem[i])
-      free((void*)m_decMemInfo.virtMem[i]);
-  }
-  m_decMemInfo.nVirtNum = 0;
-
-  //free physical mem
-  for(int i=0; i<m_decMemInfo.nPhyNum; i++)
-  {
-    vpuMem.nPhyAddr = m_decMemInfo.phyMem_phyAddr[i];
-    vpuMem.nVirtAddr = m_decMemInfo.phyMem_virtAddr[i];
-    vpuMem.nCpuAddr = m_decMemInfo.phyMem_cpuAddr[i];
-    vpuMem.nSize = m_decMemInfo.phyMem_size[i];
-    vpuRet = VPU_DecFreeMem(&vpuMem);
-    if(vpuRet != VPU_DEC_RET_SUCCESS)
+    //free virtual mem
+    for(int i=0; i<m_decMemInfo.nVirtNum; i++)
     {
-      CLog::Log(LOGERROR, "%s - Errror while trying to free physical memory (%d).\n", __FUNCTION__, ret);
-      ret = false;
+      if (m_decMemInfo.virtMem[i])
+        free((void*)m_decMemInfo.virtMem[i]);
     }
+    free(m_decMemInfo.virtMem);
+    m_decMemInfo.virtMem = NULL;
+    m_decMemInfo.nVirtNum = 0;
   }
-  m_decMemInfo.nPhyNum = 0;
+
+  if (m_decMemInfo.phyMem)
+  {
+    //free physical mem
+    for(int i=0; i<m_decMemInfo.nPhyNum; i++)
+    {
+      vpuMem.nPhyAddr = m_decMemInfo.phyMem[i].nPhyAddr;
+      vpuMem.nVirtAddr = m_decMemInfo.phyMem[i].nVirtAddr;
+      vpuMem.nCpuAddr = m_decMemInfo.phyMem[i].nCpuAddr;
+      vpuMem.nSize = m_decMemInfo.phyMem[i].nSize;
+      vpuRet = VPU_DecFreeMem(&vpuMem);
+      if(vpuRet != VPU_DEC_RET_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s - Errror while trying to free physical memory (%d).\n", __FUNCTION__, ret);
+        ret = false;
+      }
+    }
+    free(m_decMemInfo.phyMem);
+    m_decMemInfo.phyMem = NULL;
+    m_decMemInfo.nPhyNum = 0;
+  }
 
   return ret;
 }
@@ -257,11 +269,12 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
     }
 
     //record memory info for release
-    m_decMemInfo.phyMem_phyAddr[m_decMemInfo.nPhyNum]=vpuMem.nPhyAddr;
-    m_decMemInfo.phyMem_virtAddr[m_decMemInfo.nPhyNum]=vpuMem.nVirtAddr;
-    m_decMemInfo.phyMem_cpuAddr[m_decMemInfo.nPhyNum]=vpuMem.nCpuAddr;
-    m_decMemInfo.phyMem_size[m_decMemInfo.nPhyNum]=vpuMem.nSize;
     m_decMemInfo.nPhyNum++;
+    m_decMemInfo.phyMem = (VpuMemDesc*)realloc(m_decMemInfo.phyMem, m_decMemInfo.nPhyNum*sizeof(VpuMemDesc));
+    m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nPhyAddr = vpuMem.nPhyAddr;
+    m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nVirtAddr = vpuMem.nVirtAddr;
+    m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nCpuAddr = vpuMem.nCpuAddr;
+    m_decMemInfo.phyMem[m_decMemInfo.nPhyNum-1].nSize = vpuMem.nSize;
 
     //fill frameBuf
     ptr=(unsigned char*)vpuMem.nPhyAddr;
@@ -310,7 +323,6 @@ CDVDVideoCodecIMX::CDVDVideoCodecIMX()
 {
   m_vpuHandle = 0;
   m_pFormatName = "iMX-xxx";
-  memset(&m_decMemInfo, 0, sizeof(DecMemInfo));
   m_vpuHandle = 0;
   m_vpuFrameBuffers = NULL;
   m_outputBuffers = NULL;
