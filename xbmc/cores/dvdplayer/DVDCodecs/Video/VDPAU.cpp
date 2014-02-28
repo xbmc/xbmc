@@ -509,14 +509,14 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
 #endif
   if (!g_Windowing.IsExtSupported("GL_NV_vdpau_interop"))
   {
-    CLog::Log(LOGNOTICE, "VDPAU: required extension GL_NV_vdpau_interop not found");
+    CLog::Log(LOGNOTICE, "VDPAU::Open: required extension GL_NV_vdpau_interop not found");
     return false;
   }
 
   if(avctx->coded_width  == 0
   || avctx->coded_height == 0)
   {
-    CLog::Log(LOGWARNING,"(VDPAU) no width/height available, can't init");
+    CLog::Log(LOGWARNING,"VDPAU::Open: no width/height available, can't init");
     return false;
   }
   m_vdpauConfig.numRenderBuffers = surfaces;
@@ -535,44 +535,49 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
 
   {
     VdpDecoderProfile profile = 0;
-    /* Change FFMPEG Codec ID to VDPAU Profile. */
-	ReadFormatOf(avctx->codec_id, profile, m_vdpauConfig.vdpChromaType);
+
+    // convert FFMPEG codec ID to VDPAU profile.
+    ReadFormatOf(avctx->codec_id, profile, m_vdpauConfig.vdpChromaType);
     if(profile)
     {
       VdpStatus vdp_st;
       VdpBool is_supported = false;
       uint32_t max_level, max_macroblocks, max_width, max_height;
-      /* Query Device Capabilities to Ensure that VDPAU Can handle the Requested Codec */
+
+      // query device capabilities to ensure that VDPAU can handle the requested codec
       vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_query_caps(m_vdpauConfig.context->GetDevice(),
-       profile, &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
-      /* Test to make Sure there is a Possibility the Codec will Work */
-      if(CheckStatus(vdp_st, __LINE__))
+               profile, &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
+
+      // test to make sure there is a possibility the codec will work
+      if (CheckStatus(vdp_st, __LINE__))
       {
-        CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st);
+        CLog::Log(LOGERROR, "VDPAU::Open: error %s(%d) checking for decoder support", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st);
         return false;
       }
-      if(max_width < avctx->coded_width || max_height < avctx->coded_height)
+
+      if (max_width < avctx->coded_width || max_height < avctx->coded_height)
       {
-        CLog::Log(LOGWARNING,"(VDPAU) Requested Picture Dimensions (%i, %i) exceed hardware capabilities ( %i, %i).", 
-	        avctx->coded_width, avctx->coded_height, max_width, max_height);
+        CLog::Log(LOGWARNING,"VDPAU::Open: requested picture dimensions (%i, %i) exceed hardware capabilities ( %i, %i).",
+	                      avctx->coded_width, avctx->coded_height, max_width, max_height);
         return false;
       }
+
       if (!CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
-        CLog::Log(LOGWARNING,"(VDPAU) width %i might not be supported because of hardware bug", avctx->width);
+        CLog::Log(LOGWARNING,"VDPAU::Open width %i might not be supported because of hardware bug", avctx->width);
    
-      /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
+      // attempt to create a decoder with this width/height, some sizes are not supported by hw
       vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(m_vdpauConfig.context->GetDevice(), profile, avctx->coded_width, avctx->coded_height, 5, &m_vdpauConfig.vdpDecoder);
 
-      if(CheckStatus(vdp_st, __LINE__))
+      if (CheckStatus(vdp_st, __LINE__))
       {
-        CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st);
+        CLog::Log(LOGERROR, "VDPAU::Open: error: %s(%d) checking for decoder support", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st);
         return false;
       }
 
       m_vdpauConfig.context->GetProcs().vdp_decoder_destroy(m_vdpauConfig.vdpDecoder);
       CheckStatus(vdp_st, __LINE__);
 
-      /* finally setup ffmpeg */
+      // finally setup ffmpeg
       memset(&m_hwContext, 0, sizeof(AVVDPAUContext));
       m_hwContext.render = CDecoder::Render;
       m_hwContext.bitstream_buffers_allocated = 0;
