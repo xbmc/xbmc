@@ -36,7 +36,6 @@ public:
   void ClearBestServer();
 
   CPlexServerPtr FindByUUID(const CStdString &uuid);
-  CPlexServerPtr FindByHostAndPort(const CStdString &host, int port);
   CPlexServerPtr FindFromItem(CFileItemPtr item);
 
   PlexServerList GetAllServers(CPlexServerOwnedModifier modifier = SERVER_ALL) const;

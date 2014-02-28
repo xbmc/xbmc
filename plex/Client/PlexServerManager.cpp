@@ -55,24 +55,6 @@ CPlexServerManager::CPlexServerManager() : m_stopped(false)
 
 }
 
-CPlexServerPtr CPlexServerManager::FindByHostAndPort(const CStdString &host, int port)
-{
-  CSingleLock lk(m_serverManagerLock);
-
-  BOOST_FOREACH(PlexServerPair p, m_serverMap)
-  {
-    vector<CPlexConnectionPtr> connections;
-    p.second->GetConnections(connections);
-    BOOST_FOREACH(CPlexConnectionPtr conn, connections)
-    {
-      if (conn->GetAddress().GetHostName().Equals(host) &&
-          conn->GetAddress().GetPort() == port)
-        return p.second;
-    }
-  }
-  return CPlexServerPtr();
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerPtr CPlexServerManager::FindFromItem(CFileItemPtr item)
 {
