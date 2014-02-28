@@ -85,6 +85,8 @@ static void AnnounceRemove(const std::string& content, int id)
   CVariant data;
   data["type"] = content;
   data["id"] = id;
+  if (g_application.IsMusicScanning())
+    data["transaction"] = true;
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnRemove", data);
 }
 
@@ -93,6 +95,8 @@ static void AnnounceUpdate(const std::string& content, int id)
   CVariant data;
   data["type"] = content;
   data["id"] = id;
+  if (g_application.IsMusicScanning())
+    data["transaction"] = true;
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
 }
 
