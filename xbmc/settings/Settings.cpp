@@ -243,34 +243,6 @@ CSettings& CSettings::Get()
   return sSettings;
 }
 
-CSetting* CSettings::CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager /* = NULL */) const
-{
-  if (StringUtils::EqualsNoCase(settingType, "addon"))
-    return new CSettingAddon(settingId, settingsManager);
-  else if (StringUtils::EqualsNoCase(settingType, "path"))
-    return new CSettingPath(settingId, settingsManager);
-
-  return NULL;
-}
-
-ISettingControl* CSettings::CreateControl(const std::string &controlType) const
-{
-  if (StringUtils::EqualsNoCase(controlType, "toggle"))
-    return new CSettingControlCheckmark();
-  else if (StringUtils::EqualsNoCase(controlType, "spinner"))
-    return new CSettingControlSpinner();
-  else if (StringUtils::EqualsNoCase(controlType, "edit"))
-    return new CSettingControlEdit();
-  else if (StringUtils::EqualsNoCase(controlType, "button"))
-    return new CSettingControlButton();
-  else if (StringUtils::EqualsNoCase(controlType, "list"))
-    return new CSettingControlList();
-  else if (StringUtils::EqualsNoCase(controlType, "slider"))
-    return new CSettingControlSlider();
-
-  return NULL;
-}
-
 bool CSettings::Initialize()
 {
   CSingleLock lock(m_critical);

@@ -25,9 +25,9 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "settings/SettingControl.h"
+#include "settings/SettingCreator.h"
 #include "settings/lib/ISettingCallback.h"
-#include "settings/lib/ISettingControlCreator.h"
-#include "settings/lib/ISettingCreator.h"
 #include "threads/CriticalSection.h"
 #include "utils/Variant.h"
 
@@ -44,7 +44,7 @@ class TiXmlNode;
  setting types.
  \sa CSettingsManager
  */
-class CSettings : public ISettingCreator, public ISettingControlCreator
+class CSettings : public CSettingCreator, public CSettingControlCreator
 {
 public:
   /*!
@@ -62,12 +62,6 @@ public:
    \return "global" settings wrapper
    */
   static CSettings& Get();
-
-  // implementation of ISettingCreator
-  virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const;
-
-  // implementation of ISettingControlCreator
-  virtual ISettingControl* CreateControl(const std::string &controlType) const;
 
   /*!
    \brief Initializes the setting system with the generic
