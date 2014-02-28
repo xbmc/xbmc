@@ -65,7 +65,6 @@ public:
 private:
   unsigned int     m_updateTime;
   UpdateState      m_updateState;
-  bool             m_isDbUpdating;
   bool             m_isAnnounced;
   unsigned int     m_jobID;
   CGUIInfoLabel    m_url;
