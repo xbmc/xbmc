@@ -480,11 +480,11 @@ bool URIUtils::IsRemote(const CStdString& strFile)
   if (IsCDDA(strFile) || IsISO9660(strFile))
     return false;
 
+  if (IsStack(strFile))
+    return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
+
   if (IsSpecial(strFile))
     return IsRemote(CSpecialProtocol::TranslatePath(strFile));
-
-  if(IsStack(strFile))
-    return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
 
   if(IsMultiPath(strFile))
   { // virtual paths need to be checked separately
