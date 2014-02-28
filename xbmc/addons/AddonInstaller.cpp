@@ -357,6 +357,22 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
   return true;
 }
 
+CDateTime CAddonInstaller::LastRepoUpdate() const
+{
+  CDateTime update;
+  VECADDONS addons;
+  CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons);
+  for (unsigned int i=0;i<addons.size();++i)
+  {
+    CAddonDatabase database;
+    database.Open();
+    CDateTime lastUpdate = database.GetRepoTimestamp(addons[i]->ID());
+    if (lastUpdate.IsValid() && lastUpdate > update)
+      update = lastUpdate;
+  }
+  return update;
+}
+
 void CAddonInstaller::UpdateRepos(bool force, bool wait)
 {
   CSingleLock lock(m_critSection);

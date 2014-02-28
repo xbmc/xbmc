@@ -96,6 +96,10 @@ public:
    */
   bool HasJob(const CStdString& ID) const;
 
+  /*! \brief Fetch the last repository update time.
+   \return the last time a repository was updated.
+   */
+  CDateTime LastRepoUpdate() const;
   void UpdateRepos(bool force = false, bool wait = false);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
