@@ -112,7 +112,10 @@ void CSettingConditionsManager::AddCondition(const std::string &condition)
   if (condition.empty())
     return;
 
-  m_defines.insert(condition);
+  std::string tmpCondition = condition;
+  StringUtils::ToLower(tmpCondition);
+
+  m_defines.insert(tmpCondition);
 }
 
 void CSettingConditionsManager::AddCondition(const std::string &identifier, SettingConditionCheck condition)
@@ -120,7 +123,10 @@ void CSettingConditionsManager::AddCondition(const std::string &identifier, Sett
   if (identifier.empty() || condition == NULL)
     return;
 
-  m_conditions.insert(SettingConditionPair(identifier, condition));
+  std::string tmpIdentifier = identifier;
+  StringUtils::ToLower(tmpIdentifier);
+
+  m_conditions.insert(SettingConditionPair(tmpIdentifier, condition));
 }
 
 bool CSettingConditionsManager::Check(const std::string &condition, const std::string &value /* = "" */, const std::string &settingId /* = "" */) const
