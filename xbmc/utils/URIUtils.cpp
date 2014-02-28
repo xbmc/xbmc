@@ -620,11 +620,11 @@ bool URIUtils::IsHD(const CStdString& strFileName)
 {
   CURL url(strFileName);
 
+  if (IsStack(strFileName))
+    return IsHD(CStackDirectory::GetFirstStackedFile(strFileName));
+
   if (IsSpecial(strFileName))
     return IsHD(CSpecialProtocol::TranslatePath(strFileName));
-
-  if(IsStack(strFileName))
-    return IsHD(CStackDirectory::GetFirstStackedFile(strFileName));
 
   if (ProtocolHasParentInHostname(url.GetProtocol()))
     return IsHD(url.GetHostName());
