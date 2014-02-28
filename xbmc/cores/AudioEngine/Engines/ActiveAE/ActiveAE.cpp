@@ -2055,16 +2055,17 @@ void CActiveAE::Deamplify(CSoundPacket &dstSample)
   {
     float *buffer;
     int nb_floats = dstSample.nb_samples * dstSample.config.channels / dstSample.planes;
+    float volume = m_muted ? 0.0f : m_volume;
 
     for(int j=0; j<dstSample.planes; j++)
     {
       buffer = (float*)dstSample.data[j];
 #ifdef __SSE__
-      CAEUtil::SSEMulArray(buffer, m_muted ? 0.0 : m_volume, nb_floats);
+      CAEUtil::SSEMulArray(buffer, volume, nb_floats);
 #else
       float *fbuffer = buffer;
       for (int i = 0; i < nb_floats; i++)
-        *fbuffer++ *= m_volume;
+        *fbuffer++ *= volume;
 #endif
     }
   }
