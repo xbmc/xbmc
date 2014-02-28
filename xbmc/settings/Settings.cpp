@@ -23,16 +23,12 @@
 #include "Settings.h"
 #include "Application.h"
 #include "Autorun.h"
-#include "GUIPassword.h"
 #include "LangInfo.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
-#if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
-#endif // defined(HAVE_LIBCRYSTALHD)
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
@@ -69,6 +65,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingAddon.h"
+#include "settings/SettingConditions.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingPath.h"
 #include "settings/SkinSettings.h"
@@ -83,13 +80,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "view/ViewStateSettings.h"
 #include "windowing/WindowingFactory.h"
-#if defined(TARGET_ANDROID)
-#include "android/activity/AndroidFeatures.h"
-#endif
-
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 #define SETTINGS_XML_ROOT   "settings"
@@ -113,115 +103,6 @@ bool AddonHasSettings(const std::string &condition, const std::string &value, co
     return ((ADDON::CSkinInfo*)addon.get())->HasSkinFile("SkinSettings.xml");
 
   return addon->HasSettings();
-}
-
-bool CheckMasterLock(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return g_passwordManager.IsMasterLockUnlocked(StringUtils::EqualsNoCase(value, "true"));
-}
-
-bool CheckPVRParentalPin(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return PVR::g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str());
-}
-
-bool HasPeripherals(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return PERIPHERALS::g_peripherals.GetNumberOfPeripherals() > 0;
-}
-
-bool IsFullscreen(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return g_Windowing.IsFullScreen();
-}
-
-bool IsMasterUser(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return g_passwordManager.bMasterUser;
-}
-
-bool IsUsingTTFSubtitles(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CUtil::IsUsingTTFSubtitles();
-}
-
-bool ProfileCanWriteDatabase(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().canWriteDatabases();
-}
-
-bool ProfileCanWriteSources(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().canWriteSources();
-}
-
-bool ProfileHasAddons(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().hasAddons();
-}
-
-bool ProfileHasDatabase(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().hasDatabases();
-}
-
-bool ProfileHasSources(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().hasSources();
-}
-
-bool ProfileHasAddonManagerLocked(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().addonmanagerLocked();
-}
-
-bool ProfileHasFilesLocked(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().filesLocked();
-}
-
-bool ProfileHasMusicLocked(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().musicLocked();
-}
-
-bool ProfileHasPicturesLocked(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().picturesLocked();
-}
-
-bool ProfileHasProgramsLocked(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().programsLocked();
-}
-
-bool ProfileHasSettingsLocked(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  LOCK_LEVEL::SETTINGS_LOCK slValue=LOCK_LEVEL::ALL;
-  if (StringUtils::EqualsNoCase(value, "none"))
-    slValue = LOCK_LEVEL::NONE;
-  else if (StringUtils::EqualsNoCase(value, "standard"))
-    slValue = LOCK_LEVEL::STANDARD;
-  else if (StringUtils::EqualsNoCase(value, "advanced"))
-    slValue = LOCK_LEVEL::ADVANCED;
-  else if (StringUtils::EqualsNoCase(value, "expert"))
-    slValue = LOCK_LEVEL::EXPERT;
-  return slValue <= CProfilesManager::Get().GetCurrentProfile().settingsLockLevel();
-}
-
-bool ProfileHasVideosLocked(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  return CProfilesManager::Get().GetCurrentProfile().videoLocked();
-}
-
-bool ProfileLockMode(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  char *tmp = NULL;
-  LockType lock = (LockType)strtol(value.c_str(), &tmp, 0);
-  if (tmp != NULL && *tmp != '\0')
-    return false;
-
-  return CProfilesManager::Get().GetCurrentProfile().getLockMode() == lock;
 }
 
 CSettings::CSettings()
@@ -828,118 +709,19 @@ void CSettings::InitializeOptionFillers()
 
 void CSettings::InitializeConditions()
 {
+  CSettingConditions::Initialize();
+
   // add basic conditions
-  m_settingsManager->AddCondition("true");
-#ifdef HAS_UPNP
-  m_settingsManager->AddCondition("has_upnp");
-#endif
-#ifdef HAS_AIRPLAY
-  m_settingsManager->AddCondition("has_airplay");
-#endif
-#ifdef HAS_EVENT_SERVER
-  m_settingsManager->AddCondition("has_event_server");
-#endif
-#ifdef HAVE_X11
-  m_settingsManager->AddCondition("have_x11");
-#endif
-#ifdef HAS_GL
-  m_settingsManager->AddCondition("has_gl");
-#endif
-#ifdef HAS_GLX
-  m_settingsManager->AddCondition("has_glx");
-#endif
-#ifdef HAS_GLES
-  m_settingsManager->AddCondition("has_gles");
-#endif
-#if HAS_GLES == 2
-  m_settingsManager->AddCondition("has_glesv2");
-#endif
-#ifdef HAS_KARAOKE
-  m_settingsManager->AddCondition("has_karaoke");
-#endif
-#ifdef HAS_SDL_JOYSTICK
-  m_settingsManager->AddCondition("has_sdl_joystick");
-#endif
-#ifdef HAS_SKIN_TOUCHED
-  m_settingsManager->AddCondition("has_skin_touched");
-#endif
-#ifdef HAS_TIME_SERVER
-  m_settingsManager->AddCondition("has_time_server");
-#endif
-#ifdef HAS_WEB_SERVER
-  m_settingsManager->AddCondition("has_web_server");
-#endif
-#ifdef HAS_ZEROCONF
-  m_settingsManager->AddCondition("has_zeroconf");
-#endif
-#ifdef HAVE_LIBCRYSTALHD
-  m_settingsManager->AddCondition("have_libcrystalhd");
-  if (CCrystalHD::GetInstance()->DevicePresent())
-    m_settingsManager->AddCondition("hascrystalhddevice");
-#endif
-#ifdef HAVE_LIBOPENMAX
-  m_settingsManager->AddCondition("have_libopenmax");
-#endif
-#ifdef HAVE_LIBVA
-  m_settingsManager->AddCondition("have_libva");
-#endif
-#ifdef HAVE_LIBVDPAU
-  m_settingsManager->AddCondition("have_libvdpau");
-#endif
-#ifdef TARGET_ANDROID
-  if (CAndroidFeatures::GetVersion() > 15)
-    m_settingsManager->AddCondition("has_mediacodec");
-#endif
-#ifdef HAS_LIBSTAGEFRIGHT
-  m_settingsManager->AddCondition("have_libstagefrightdecoder");
-#endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  m_settingsManager->AddCondition("have_videotoolboxdecoder");
-  if (g_sysinfo.HasVideoToolBoxDecoder())
-    m_settingsManager->AddCondition("hasvideotoolboxdecoder");
-#endif
-#ifdef HAS_LIBAMCODEC
-  if (aml_present())
-    m_settingsManager->AddCondition("have_amcodec");
-#endif
-#ifdef TARGET_DARWIN_IOS_ATV2
-  if (g_sysinfo.IsAppleTV2())
-    m_settingsManager->AddCondition("isappletv2");
-#endif
-#if defined(TARGET_WINDOWS) && defined(HAS_DX)
-  m_settingsManager->AddCondition("has_dx");
-  m_settingsManager->AddCondition("hasdxva2");
-#endif
-
-  if (g_application.IsStandAlone())
-    m_settingsManager->AddCondition("isstandalone");
-
-  if(CAEFactory::SupportsQualitySetting())
-    m_settingsManager->AddCondition("has_ae_quality_levels");
+  const std::set<std::string> &simpleConditions = CSettingConditions::GetSimpleConditions();
+  for (std::set<std::string>::const_iterator itCondition = simpleConditions.begin(); itCondition != simpleConditions.end(); ++itCondition)
+    m_settingsManager->AddCondition(*itCondition);
 
   // add more complex conditions
   m_settingsManager->AddCondition("addonhassettings", AddonHasSettings);
-  m_settingsManager->AddCondition("checkmasterlock", CheckMasterLock);
-  m_settingsManager->AddCondition("checkpvrparentalpin", CheckPVRParentalPin);
-  m_settingsManager->AddCondition("hasperipherals", HasPeripherals);
-  m_settingsManager->AddCondition("isfullscreen", IsFullscreen);
-  m_settingsManager->AddCondition("ismasteruser", IsMasterUser);
-  m_settingsManager->AddCondition("isusingttfsubtitles", IsUsingTTFSubtitles);
-  m_settingsManager->AddCondition("profilecanwritedatabase", ProfileCanWriteDatabase);
-  m_settingsManager->AddCondition("profilecanwritesources", ProfileCanWriteSources);
-  m_settingsManager->AddCondition("profilehasaddons", ProfileHasAddons);
-  m_settingsManager->AddCondition("profilehasdatabase", ProfileHasDatabase);
-  m_settingsManager->AddCondition("profilehassources", ProfileHasSources);
-  m_settingsManager->AddCondition("profilehasaddonmanagerlocked", ProfileHasAddonManagerLocked);
-  m_settingsManager->AddCondition("profilehasfileslocked", ProfileHasFilesLocked);
-  m_settingsManager->AddCondition("profilehasmusiclocked", ProfileHasMusicLocked);
-  m_settingsManager->AddCondition("profilehaspictureslocked", ProfileHasPicturesLocked);
-  m_settingsManager->AddCondition("profilehasprogramslocked", ProfileHasProgramsLocked);
-  m_settingsManager->AddCondition("profilehassettingslocked", ProfileHasSettingsLocked);
-  m_settingsManager->AddCondition("profilehasvideoslocked", ProfileHasVideosLocked);
-  m_settingsManager->AddCondition("profilelockmode", ProfileLockMode);
-  m_settingsManager->AddCondition("aesettingvisible", CAEFactory::IsSettingVisible);
-  m_settingsManager->AddCondition("codecoptionvisible", CDVDVideoCodec::IsSettingVisible);
+
+  const std::map<std::string, SettingConditionCheck> &complexConditions = CSettingConditions::GetComplexConditions();
+  for (std::map<std::string, SettingConditionCheck>::const_iterator itCondition = complexConditions.begin(); itCondition != complexConditions.end(); ++itCondition)
+    m_settingsManager->AddCondition(itCondition->first, itCondition->second);
 }
 
 void CSettings::InitializeISettingsHandlers()
