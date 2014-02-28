@@ -55,6 +55,7 @@ namespace PVR
     CStdString    m_strIconPath;      /*!< icon path */
     CStdString    m_strThumbnailPath; /*!< thumbnail path */
     CStdString    m_strFanartPath;    /*!< fanart path */
+    unsigned      m_iRecordingId;     /*!< id that won't change while xbmc is running */
 
     CPVRRecording(void);
     CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
@@ -62,6 +63,8 @@ namespace PVR
 
     bool operator ==(const CPVRRecording& right) const;
     bool operator !=(const CPVRRecording& right) const;
+
+    virtual void Serialize(CVariant& value) const;
 
     /*!
      * @brief Reset this tag to it's initial state.

@@ -1755,6 +1755,72 @@
       }
     }
   },
+  "PVR.GetTimers": {
+    "type": "method",
+    "description": "Retrieves the timers",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "PVR.Fields.Timer" },
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "timers": { "type": "array", "required": true,
+          "items": { "$ref": "PVR.Details.Timer" }
+        }
+      }
+    }
+  },
+  "PVR.GetTimerDetails": {
+    "type": "method",
+    "description": "Retrieves the details of a specific timer",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "timerid", "$ref": "Library.Id", "required": true },
+      { "name": "properties", "$ref": "PVR.Fields.Timer" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "timerdetails": { "$ref": "PVR.Details.Timer" }
+      }
+    }
+  },
+  "PVR.GetRecordings": {
+    "type": "method",
+    "description": "Retrieves the recordings",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "PVR.Fields.Recording" },
+      { "name": "limits", "$ref": "List.Limits" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "recordings": { "type": "array", "required": true,
+          "items": { "$ref": "PVR.Details.Recording" }
+        }
+      }
+    }
+  },
+  "PVR.GetRecordingDetails": {
+    "type": "method",
+    "description": "Retrieves the details of a specific recording",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "recordingid", "$ref": "Library.Id", "required": true },
+      { "name": "properties", "$ref": "PVR.Fields.Recording" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "recordingdetails": { "$ref": "PVR.Details.Recording" }
+      }
+    }
+  },
   "PVR.Record": {
     "type": "method",
     "description": "Toggle recording of a channel",

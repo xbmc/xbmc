@@ -68,6 +68,12 @@ namespace PVR
     std::vector<CFileItemPtr> GetActiveTimers(void) const;
 
     /*!
+     * Get all timers
+     * @param items The list to add the timers to
+     */
+    void GetAll(CFileItemList& items) const;
+
+    /*!
      * @return True when there is at least one timer that is active (states scheduled or recording), false otherwise.
      */
     bool HasActiveTimers(void) const;
@@ -166,6 +172,13 @@ namespace PVR
 
     void Notify(const Observable &obs, const ObservableMessage msg);
 
+    /*!
+     * Get a timer tag given it's unique ID
+     * @param iTimerId The ID to find
+     * @return The tag, or an empty one when not found
+     */
+    CPVRTimerInfoTagPtr GetById(unsigned int iTimerId) const;
+
   private:
     void Unload(void);
     void UpdateEpgEvent(CPVRTimerInfoTagPtr timer);
@@ -175,5 +188,6 @@ namespace PVR
     CCriticalSection                                        m_critSection;
     bool                                                    m_bIsUpdating;
     std::map<CDateTime, std::vector<CPVRTimerInfoTagPtr>* > m_tags;
+    unsigned int                                            m_iLastId;
   };
 }
