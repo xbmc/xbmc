@@ -225,7 +225,7 @@ void CPlexMediaDecisionEngine::ChooseMedia()
   if (m_item.HasProperty("selectedMediaItem"))
     m_choosenMedia.SetProperty("selectedMediaItem", m_item.GetProperty("selectedMediaItem"));
 
-  CFileItemPtr mediaItem = getSelecteMediaItem(m_choosenMedia);
+  CFileItemPtr mediaItem = getSelectedMediaItem(m_choosenMedia);
   if (!mediaItem)
   {
     m_success = false;
@@ -289,7 +289,7 @@ void CPlexMediaDecisionEngine::ChooseMedia()
  * properties, so we need to rely on the correct indexing. Let's trust that
  * shall we
  */
-CFileItemPtr CPlexMediaDecisionEngine::getSelecteMediaItem(const CFileItem &item)
+CFileItemPtr CPlexMediaDecisionEngine::getSelectedMediaItem(const CFileItem &item)
 {
   int mediaItemIdx = 0;
   CFileItemPtr mediaItem;
@@ -319,7 +319,7 @@ CFileItemPtr CPlexMediaDecisionEngine::getSelecteMediaItem(const CFileItem &item
  * or leave blank to use the current selected or first one in the lists */
 CFileItemPtr CPlexMediaDecisionEngine::getMediaPart(const CFileItem &item, int partId)
 {
-  CFileItemPtr mediaItem = getSelecteMediaItem(item);
+  CFileItemPtr mediaItem = getSelectedMediaItem(item);
   if (mediaItem && mediaItem->m_mediaParts.size() > 0)
   {
     if (partId == -1)
@@ -337,7 +337,7 @@ CFileItemPtr CPlexMediaDecisionEngine::getMediaPart(const CFileItem &item, int p
 
 void CPlexMediaDecisionEngine::ProcessStack(const CFileItem& item, const CFileItemList &stack)
 {
-  CFileItemPtr mediaItem = getSelecteMediaItem(item);
+  CFileItemPtr mediaItem = getSelectedMediaItem(item);
   int64_t totalDuration = 0;
   
   for (int i = 0; i < stack.Size(); i++)

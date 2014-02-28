@@ -159,6 +159,7 @@ void
 CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *element)
 {
   int thumbIdx = 0;
+  int mediaIndex = 0;
 #ifndef USE_RAPIDXML
   for (XML_ELEMENT* media = element->FirstChildElement(); media; media = media->NextSiblingElement())
 #else
@@ -179,6 +180,7 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *ele
     else if (mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_MEDIA)
     {
       mediaItem->SetPath(item.GetPath());
+      mediaItem->SetProperty("mediaIndex", mediaIndex ++);
 
       /* Parse children */
       ParseMediaParts(*mediaItem, media);
@@ -200,6 +202,7 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *ele
 
 void CPlexDirectoryTypeParserVideo::ParseMediaParts(CFileItem &mediaItem, XML_ELEMENT* element)
 {
+  int partIndex = 0;
 #ifndef USE_RAPIDXML
   for (XML_ELEMENT* part = element->FirstChildElement(); part; part = part->NextSiblingElement())
 #else
@@ -207,6 +210,7 @@ void CPlexDirectoryTypeParserVideo::ParseMediaParts(CFileItem &mediaItem, XML_EL
 #endif
   {
     CFileItemPtr mediaPart = CPlexDirectory::NewPlexElement(part, mediaItem, mediaItem.GetPath());
+    mediaPart->SetProperty("partIndex", partIndex ++);
 
     ParseMediaStreams(*mediaPart, part);
     
