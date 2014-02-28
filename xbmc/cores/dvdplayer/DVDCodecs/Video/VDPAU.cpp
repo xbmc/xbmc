@@ -62,9 +62,7 @@ CDecoder::Desc decoder_profiles[] = {
 {"VC1_SIMPLE",   VDP_DECODER_PROFILE_VC1_SIMPLE},
 {"VC1_MAIN",     VDP_DECODER_PROFILE_VC1_MAIN},
 {"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
-#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_ASP
 {"MPEG4_PART2_ASP", VDP_DECODER_PROFILE_MPEG4_PART2_ASP},
-#endif
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CDecoder::Desc);
 
@@ -537,22 +535,35 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
 
   {
     VdpDecoderProfile profile = 0;
-    if(avctx->codec_id == AV_CODEC_ID_H264)
-      profile = VDP_DECODER_PROFILE_H264_HIGH;
-#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_ASP
-    else if(avctx->codec_id == AV_CODEC_ID_MPEG4)
-      profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
-#endif
+    /* Change FFMPEG Codec ID to VDPAU Profile. */
+	ReadFormatOf(avctx->codec_id, profile, m_vdpauConfig.vdpChromaType);
     if(profile)
     {
+      VdpStatus vdp_st;
+      VdpBool is_supported = false;
+      uint32_t max_level, max_macroblocks, max_width, max_height;
+      /* Query Device Capabilities to Ensure that VDPAU Can handle the Requested Codec */
+      vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_query_caps(m_vdpauConfig.context->GetDevice(),
+       profile, &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
+      /* Test to make Sure there is a Possibility the Codec will Work */
+      if(CheckStatus(vdp_st, __LINE__))
+      {
+        CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st);
+        return false;
+      }
+      if(max_width < avctx->coded_width || max_height < avctx->coded_height)
+      {
+        CLog::Log(LOGWARNING,"(VDPAU) Requested Picture Dimensions (%i, %i) exceed hardware capabilities ( %i, %i).", 
+	        avctx->coded_width, avctx->coded_height, max_width, max_height);
+        return false;
+      }
       if (!CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
         CLog::Log(LOGWARNING,"(VDPAU) width %i might not be supported because of hardware bug", avctx->width);
    
       /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
-      VdpStatus vdp_st;
       vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(m_vdpauConfig.context->GetDevice(), profile, avctx->coded_width, avctx->coded_height, 5, &m_vdpauConfig.vdpDecoder);
 
-      if(vdp_st != VDP_STATUS_OK)
+      if(CheckStatus(vdp_st, __LINE__))
       {
         CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", m_vdpauConfig.context->GetProcs().vdp_get_error_string(vdp_st), vdp_st);
         return false;
@@ -560,22 +571,22 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
 
       m_vdpauConfig.context->GetProcs().vdp_decoder_destroy(m_vdpauConfig.vdpDecoder);
       CheckStatus(vdp_st, __LINE__);
+
+      /* finally setup ffmpeg */
+      memset(&m_hwContext, 0, sizeof(AVVDPAUContext));
+      m_hwContext.render = CDecoder::Render;
+      m_hwContext.bitstream_buffers_allocated = 0;
+      avctx->get_buffer      = CDecoder::FFGetBuffer;
+      avctx->reget_buffer    = CDecoder::FFGetBuffer;
+      avctx->release_buffer  = CDecoder::FFReleaseBuffer;
+      avctx->draw_horiz_band = CDecoder::FFDrawSlice;
+      avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
+      avctx->hwaccel_context = &m_hwContext;
+      avctx->thread_count    = 1;
+
+      g_Windowing.Register(this);
+      return true;
     }
-
-    /* finally setup ffmpeg */
-    memset(&m_hwContext, 0, sizeof(AVVDPAUContext));
-    m_hwContext.render = CDecoder::Render;
-    m_hwContext.bitstream_buffers_allocated = 0;
-    avctx->get_buffer      = CDecoder::FFGetBuffer;
-    avctx->reget_buffer    = CDecoder::FFGetBuffer;
-    avctx->release_buffer  = CDecoder::FFReleaseBuffer;
-    avctx->draw_horiz_band = CDecoder::FFDrawSlice;
-    avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-    avctx->hwaccel_context = &m_hwContext;
-    avctx->thread_count    = 1;
-
-    g_Windowing.Register(this);
-    return true;
   }
   return false;
 }
