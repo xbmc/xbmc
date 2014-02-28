@@ -27,6 +27,7 @@ public:
   virtual ~IDispResource() {};
   virtual void OnLostDevice() {};
   virtual void OnResetDevice() {};
+  virtual void OnAppFocusChange(bool focus) {};
 };
 
 #endif

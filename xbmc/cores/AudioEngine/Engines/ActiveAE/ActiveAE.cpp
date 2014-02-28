@@ -236,6 +236,9 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           return;
         case CActiveAEControlProtocol::DISPLAYRESET:
           return;
+        case CActiveAEControlProtocol::APPFOCUSED:
+          m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::APPFOCUSED, msg->data, sizeof(bool));
+          return;
         default:
           break;
         }
@@ -2359,6 +2362,11 @@ void CActiveAE::OnLostDevice()
 void CActiveAE::OnResetDevice()
 {
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::DISPLAYRESET);
+}
+
+void CActiveAE::OnAppFocusChange(bool focus)
+{
+  m_controlPort.SendOutMessage(CActiveAEControlProtocol::APPFOCUSED, &focus, sizeof(focus));
 }
 
 //-----------------------------------------------------------------------------
