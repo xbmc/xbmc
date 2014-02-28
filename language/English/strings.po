@@ -13584,7 +13584,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Enable HQ Scalers for scalings above" with label #13435
 #: system/settings/settings.xml
 msgctxt "#36154"
-msgid "Use high quality scalars when upscaling a video by at least this percentage."
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (VDPAU)" with label #13425
