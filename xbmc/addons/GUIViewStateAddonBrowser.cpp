@@ -26,7 +26,9 @@
 #include "view/ViewState.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonInstaller.h"
 #include "AddonDatabase.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -64,6 +66,17 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
 {
   m_sources.clear();
 
+  { // check for updates
+    CMediaSource share;
+    share.strPath = "addons://check/";
+    share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE; // hack for sorting
+    share.strName = g_localizeStrings.Get(24055); // "Check for updates"
+    CDateTime lastChecked = CAddonInstaller::Get().LastRepoUpdate();
+    if (lastChecked.IsValid())
+      share.strStatus = StringUtils::Format(g_localizeStrings.Get(24056).c_str(),
+                                            lastChecked.GetAsLocalizedDateTime(false, false).c_str());
+    m_sources.push_back(share);
+  }
   if (CAddonMgr::Get().HasOutdatedAddons())
   {
     CMediaSource share;

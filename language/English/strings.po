@@ -12119,7 +12119,19 @@ msgctxt "#24054"
 msgid "Changelog"
 msgstr ""
 
-#empty strings from id 24055 to 24058
+#. Used in the Add-on Manager
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
+msgctxt "#24055"
+msgid "Check for updates"
+msgstr ""
+
+#. Used in the Add-on Manager to specify last update time
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
+msgctxt "#24056"
+msgid "Last updated %s"
+msgstr ""
+
+#empty strings from id 24057 to 24058
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
