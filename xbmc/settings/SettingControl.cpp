@@ -27,6 +27,24 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+ISettingControl* CSettingControlCreator::CreateControl(const std::string &controlType) const
+{
+  if (StringUtils::EqualsNoCase(controlType, "toggle"))
+    return new CSettingControlCheckmark();
+  else if (StringUtils::EqualsNoCase(controlType, "spinner"))
+    return new CSettingControlSpinner();
+  else if (StringUtils::EqualsNoCase(controlType, "edit"))
+    return new CSettingControlEdit();
+  else if (StringUtils::EqualsNoCase(controlType, "button"))
+    return new CSettingControlButton();
+  else if (StringUtils::EqualsNoCase(controlType, "list"))
+    return new CSettingControlList();
+  else if (StringUtils::EqualsNoCase(controlType, "slider"))
+    return new CSettingControlSlider();
+
+  return NULL;
+}
+
 bool CSettingControlCheckmark::SetFormat(const std::string &format)
 {
   return format.empty() || StringUtils::EqualsNoCase(format, "boolean");

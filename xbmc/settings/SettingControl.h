@@ -20,6 +20,7 @@
  */
 
 #include "settings/lib/ISettingControl.h"
+#include "settings/lib/ISettingControlCreator.h"
 
 #define SETTING_XML_ELM_CONTROL_FORMATLABEL  "formatlabel"
 #define SETTING_XML_ELM_CONTROL_HIDDEN       "hidden"
@@ -30,6 +31,16 @@
 #define SETTING_XML_ELM_CONTROL_POPUP        "popup"
 
 class CVariant;
+
+class CSettingControlCreator : public ISettingControlCreator
+{
+public:
+  CSettingControlCreator() { }
+  virtual ~CSettingControlCreator() { }
+
+  // implementation of ISettingControlCreator
+  virtual ISettingControl* CreateControl(const std::string &controlType) const;
+};
 
 class CSettingControlCheckmark : public ISettingControl
 {
