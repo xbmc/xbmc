@@ -19,18 +19,16 @@
 class CPlexManualServerManager : public IJobCallback, public IPlexGlobalTimeout
 {
   public:
-    CPlexManualServerManager() : m_manualServerUUID("") {}
+    CPlexManualServerManager() {}
     void checkManualServersAsync();
     void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-    void updateServerManager();
-    void checkLocalhost();
 
     void OnTimeout();
     CStdString TimerName() const { return "manualServerManager"; }
 
-    CCriticalSection m_serverLock;
-    PlexServerMap m_serverMap;
-    std::string m_manualServerUUID;
+    CCriticalSection m_manualServerLock;
+    PlexServerList m_manualServers;
+    int m_waitingForThreads;
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexManualServerManager__) */

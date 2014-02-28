@@ -21,7 +21,7 @@
 class CPlexHTTPFetchJob : public CJob
 {
   public:
-    CPlexHTTPFetchJob(const CURL &url) : CJob(), m_url(url) {};
+    CPlexHTTPFetchJob(const CURL &url, CPlexServerPtr server = CPlexServerPtr()) : CJob(), m_url(url), m_server(server) {};
   
     bool DoWork();
     void Cancel() { m_http.Cancel(); }
@@ -30,6 +30,7 @@ class CPlexHTTPFetchJob : public CJob
     XFILE::CCurlFile m_http;
     CStdString m_data;
     CURL m_url;
+    CPlexServerPtr m_server;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////

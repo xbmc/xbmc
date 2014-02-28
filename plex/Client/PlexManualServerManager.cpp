@@ -16,42 +16,28 @@
 
 #include <boost/lexical_cast.hpp>
 
-void CPlexManualServerManager::checkLocalhost()
-{
-  CURL url;
-  url.SetProtocol("http");
-  url.SetHostName("127.0.0.1");
-  url.SetPort(32400);
-
-  CJobManager::GetInstance().AddJob(new CPlexHTTPFetchJob(url), this);
-}
 
 void CPlexManualServerManager::checkManualServersAsync()
 {
+  CSingleLock lk(m_manualServerLock);
+
+  m_waitingForThreads = 1;
+  m_manualServers.clear();
+
+  CPlexServerPtr localServer = CPlexServerPtr(new CPlexServer(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "127.0.0.1", 32400, "http"))));
+  CJobManager::GetInstance().AddJob(new CPlexHTTPFetchJob(localServer->BuildURL("/"), localServer), this);
+
   if (g_guiSettings.GetBool("plexmediaserver.manualaddress"))
   {
     CStdString address = g_guiSettings.GetString("plexmediaserver.address");
     int port = boost::lexical_cast<int>(g_guiSettings.GetString("plexmediaserver.port"));
-    
-    CURL url;
-    url.SetProtocol("http");
-    url.SetHostName(address);
-    url.SetPort(port);
-    
-    CJobManager::GetInstance().AddJob(new CPlexHTTPFetchJob(url), this);
-  }
-  else
-  {
-    CSingleLock lk(m_serverLock);
-    if (m_serverMap.find(m_manualServerUUID) != m_serverMap.end())
-    {
-      m_serverMap.erase(m_manualServerUUID);
-      m_manualServerUUID.clear();
-    }
-    updateServerManager();
+
+    m_waitingForThreads ++;
+
+    CPlexServerPtr manualServer = CPlexServerPtr(new CPlexServer(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, address, port, "http"))));
+    CJobManager::GetInstance().AddJob(new CPlexHTTPFetchJob(manualServer->BuildURL("/"), manualServer), this);
   }
 
-  checkLocalhost();
   g_plexApplication.timer.SetTimeout(1 * 60 * 1000, this);
 }
 
@@ -61,23 +47,13 @@ void CPlexManualServerManager::OnTimeout()
   g_plexApplication.timer.SetTimeout(1 * 60 * 1000, this);
 }
 
-void CPlexManualServerManager::updateServerManager()
-{
-  CSingleLock lk(m_serverLock);
-  PlexServerList list;
-  BOOST_FOREACH(PlexServerPair p, m_serverMap)
-      list.push_back(p.second);
-
-  g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_MANUAL);
-}
-
 void CPlexManualServerManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CPlexHTTPFetchJob *httpJob = static_cast<CPlexHTTPFetchJob*>(job);
   
   if (success)
   {
-    std::string uuid, name;
+    std::string uuid, name, version;
     
     CXBMCTinyXML doc;
     doc.Parse(httpJob->m_data);
@@ -86,36 +62,33 @@ void CPlexManualServerManager::OnJobComplete(unsigned int jobID, bool success, C
       TiXmlElement *root = doc.RootElement();
       
       if (root->QueryStringAttribute("machineIdentifier", &uuid) == TIXML_SUCCESS &&
-          root->QueryStringAttribute("friendlyName", &name) == TIXML_SUCCESS)
+          root->QueryStringAttribute("friendlyName", &name) == TIXML_SUCCESS &&
+          root->QueryStringAttribute("version", &version) == TIXML_SUCCESS)
       {
-        CSingleLock lk(m_serverLock);
-        if (m_serverMap.find(uuid) != m_serverMap.end())
-          return;
+        CPlexServerPtr server = httpJob->m_server;
+        server->SetUUID(uuid);
+        server->SetName(name);
+        server->SetVersion(version);
+        server->SetOwned(true);
 
-        if (httpJob->m_url.GetHostName() != "127.0.0.1")
-          m_manualServerUUID = uuid;
+        server->CollectDataFromRoot(httpJob->m_data);
 
-        CPlexServerPtr server = CPlexServerPtr(new CPlexServer(uuid, name, true));
-        server->AddConnection(CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, httpJob->m_url.GetHostName(), httpJob->m_url.GetPort())));
+        CLog::Log(LOGDEBUG, "CPlexManualServerManager::OnJobComplete found manually added server %s", server->GetName().c_str());
+
         g_plexApplication.serverManager->UpdateFromDiscovery(server);
-        m_serverMap[uuid] = server;
+
+        CSingleLock lk(m_manualServerLock);
+        m_manualServers.push_back(server);
       }
     }
   }
   else
-  {
-    CSingleLock lk(m_serverLock);
     CLog::Log(LOGWARNING, "CPlexManualServerManager::OnJobComplete failed to find a server on %s", httpJob->m_url.Get().c_str());
 
-    CPlexServerPtr server = g_plexApplication.serverManager->FindByHostAndPort(httpJob->m_url.GetHostName(), httpJob->m_url.GetPort());
-    if (!server)
-      return;
-
-    if (m_serverMap.find(server->GetUUID()) != m_serverMap.end())
-      m_serverMap.erase(server->GetUUID());
-
-    server.reset();
+  CSingleLock lk(m_manualServerLock);
+  if (-- m_waitingForThreads == 0)
+  {
+    CLog::Log(LOGDEBUG, "CPlexManualServerManager::OnJobComplete all manual server checks done, updating serverManager");
+    g_plexApplication.serverManager->UpdateFromConnectionType(m_manualServers, CPlexConnection::CONNECTION_MANUAL);
   }
-
-  updateServerManager();
 }
