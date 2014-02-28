@@ -4,6 +4,7 @@ SRCS=AdvancedSettings.cpp \
      MediaSourceSettings.cpp \
      SettingAddon.cpp \
      SettingControl.cpp \
+     SettingCreator.cpp \
      SettingPath.cpp \
      Settings.cpp \
      SkinSettings.cpp \
