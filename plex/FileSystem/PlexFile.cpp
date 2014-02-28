@@ -68,7 +68,6 @@ CPlexFile::BuildHTTPURL(CURL& url)
 {
   CURL newUrl;
   CPlexServerPtr server;
-  CStdString key;
 
   /* allow passthrough */
   if (url.GetProtocol() != "plexserver")
@@ -77,21 +76,12 @@ CPlexFile::BuildHTTPURL(CURL& url)
   if (!g_plexApplication.serverManager)
     return false;
 
-  if (PlexUtils::IsValidIP(url.GetHostName()))
-  {
-    server = g_plexApplication.serverManager->FindByHostAndPort(url.GetHostName(), url.GetPort());
-    key = url.GetHostName() + ":" + boost::lexical_cast<CStdString>(url.GetPort());
-  }
-  else
-  {
-    key = url.GetHostName();
-    server = g_plexApplication.serverManager->FindByUUID(key);
-  }
+  server = g_plexApplication.serverManager->FindByUUID(url.GetHostName());
 
   if (!server)
   {
     /* Ouch, this should not happen! */
-    CLog::Log(LOGWARNING, "CPlexFile::BuildHTTPURL tried to lookup server %s but it was not found!", key.c_str());
+    CLog::Log(LOGWARNING, "CPlexFile::BuildHTTPURL tried to lookup server %s but it was not found!", url.GetHostName().c_str());
     return false;
   }
 
