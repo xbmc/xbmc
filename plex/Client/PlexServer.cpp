@@ -47,6 +47,12 @@ void CPlexServerConnTestThread::Cancel()
   m_conn->m_http.Cancel();
 }
 
+CPlexServer::CPlexServer(CPlexConnectionPtr connection)
+{
+  AddConnection(connection);
+  m_activeConnection = connection;
+}
+
 bool
 CPlexServer::CollectDataFromRoot(const CStdString xmlData)
 {
