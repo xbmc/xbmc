@@ -1906,7 +1906,19 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     URIUtils::Split(strArchive, strPath, strMovieFileName);
     strLookInPaths.push_back(strPath);
   }
-  
+ 
+  if (StringUtils::StartsWith(strMovie, "bluray://"))
+  {
+    CURL url(strMovie);
+    CStdString strArchive = url.GetHostName();
+    URIUtils::Split(strArchive, strPath, strMovieFileName);
+    CStdString strPath2 = URIUtils::AddFileToFolder(strPath, "BDMV/");
+    strLookInPaths.push_back(strPath2);
+
+    // set the subtitle lookup name to be able to locate "BDMV/index.srt" in the blu-ray movie folder
+    strMovieFileNameNoExt = "index";
+  }
+ 
   int iSize = strLookInPaths.size();
   for (int i=0; i<iSize; ++i)
   {
