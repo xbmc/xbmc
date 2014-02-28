@@ -946,6 +946,14 @@ bool URIUtils::IsLibraryFolder(const CStdString& strFile)
   return url.GetProtocol().Equals("library");
 }
 
+bool URIUtils::IsLibraryContent(const std::string &strFile)
+{
+  return (StringUtils::StartsWith(strFile, "library://") ||
+          StringUtils::StartsWith(strFile, "videodb://") ||
+          StringUtils::StartsWith(strFile, "musicdb://") ||
+          StringUtils::EndsWith(strFile, ".xsp"));
+}
+
 bool URIUtils::IsDOSPath(const CStdString &path)
 {
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))

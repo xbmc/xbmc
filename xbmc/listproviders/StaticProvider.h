@@ -30,7 +30,7 @@ public:
   CStaticListProvider(const std::vector<CGUIStaticItemPtr> &items); // for python
   virtual ~CStaticListProvider();
 
-  virtual bool Update(bool refresh);
+  virtual bool Update(bool forceRefresh);
   virtual void Fetch(std::vector<CGUIListItemPtr> &items) const;
   virtual bool OnClick(const CGUIListItemPtr &item);
   virtual void SetDefaultItem(int item, bool always);
