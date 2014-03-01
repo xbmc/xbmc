@@ -31,7 +31,6 @@
 //#define IMX_PROFILE
 //#define TRACE_FRAMES
 
-// FIXME TODO Develop real proper CVPUBuffer class
 class CDecMemInfo
 {
 public:
