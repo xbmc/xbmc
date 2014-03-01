@@ -1633,7 +1633,7 @@
         </setting>
       </group>
     </category>
-    <category id="musicfiles" label="14081" help="36274">
+    <category id="musicfiles" label="14081" help="36601">
       <group id="1">
         <setting id="musicfiles.usetags" type="boolean" label="258" help="36274">
           <level>0</level>
