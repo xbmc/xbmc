@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "guilib/GUIDialog.h"
+#include "settings/SettingControl.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Timer.h"
 
@@ -53,12 +54,12 @@ class CSetting;
 class CSettingAction;
 class CSettingCategory;
 class CSettingSection;
-class ISettingControl;
 
 typedef boost::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;
 
 class CGUIDialogSettingsBase
   : public CGUIDialog,
+    public CSettingControlCreator,
     protected ITimerCallback,
     protected ISettingCallback
 {
@@ -90,7 +91,6 @@ protected:
   virtual int GetSettingLevel() const { return 0; }
   virtual CSettingSection* GetSection() = 0;
   virtual CSetting* GetSetting(const std::string &settingId) = 0;
-  virtual ISettingControl* CreateControl(const std::string &controlType) = 0;
   virtual void Save() = 0;
   virtual unsigned int GetDelayMs() const { return 1500; }
   virtual std::string GetLocalizedString(uint32_t labelId) const;

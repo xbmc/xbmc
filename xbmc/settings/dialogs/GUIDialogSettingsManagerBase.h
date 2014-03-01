@@ -32,10 +32,12 @@ public:
 protected:
   // implementation of CGUIDialogSettingsBase
   virtual CSetting* GetSetting(const std::string &settingId);
-  virtual ISettingControl* CreateControl(const std::string &controlType);
 
   virtual std::set<std::string> CreateSettings();
   virtual void FreeSettingsControls();
+
+  // implementation of ISettingControlCreator
+  virtual ISettingControl* CreateControl(const std::string &controlType);
 
   CSettingsManager *m_settingsManager;
 };
