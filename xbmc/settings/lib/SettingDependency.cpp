@@ -137,7 +137,17 @@ bool CSettingDependencyCondition::Check() const
 
     case SettingDependencyTargetProperty:
     {
-      result = m_settingsManager->GetConditions().Check(m_name, m_value, m_setting);
+      const CSetting *setting = NULL;
+      if (!m_setting.empty())
+      {
+        setting = m_settingsManager->GetSetting(m_setting);
+        if (setting == NULL)
+        {
+          CLog::Log(LOGWARNING, "CSettingDependencyCondition: unable to check condition on unknown setting \"%s\"", m_setting.c_str());
+          return false;
+        }
+      }
+      result = m_settingsManager->GetConditions().Check(m_name, m_value, setting);
       break;
     }
 

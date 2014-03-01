@@ -27,8 +27,9 @@
 #include "utils/BooleanLogic.h"
 
 class CSettingsManager;
+class CSetting;
 
-typedef bool (*SettingConditionCheck)(const std::string &condition, const std::string &value, const std::string &settingId);
+typedef bool (*SettingConditionCheck)(const std::string &condition, const std::string &value, const CSetting *setting);
 
 class ISettingCondition
 {
@@ -94,7 +95,7 @@ public:
   void AddCondition(const std::string &condition);
   void AddCondition(const std::string &identifier, SettingConditionCheck condition);
 
-  bool Check(const std::string &condition, const std::string &value = "", const std::string &settingId = "") const;
+  bool Check(const std::string &condition, const std::string &value = "", const CSetting *setting = NULL) const;
 
 private:
   CSettingConditionsManager(const CSettingConditionsManager&);
