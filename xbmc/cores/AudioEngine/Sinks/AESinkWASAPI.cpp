@@ -143,6 +143,7 @@ AEDeviceInfoList DeviceInfoList;
 #define ERRTOSTR(err) case err: return #err
 
 DEFINE_PROPERTYKEY(PKEY_Device_FriendlyName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0, 14);
+DEFINE_PROPERTYKEY(PKEY_Device_EnumeratorName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0, 24);
 
 DWORD ChLayoutToChMask(const enum AEChannel * layout, unsigned int * numberOfChannels = NULL)
 {
@@ -1117,6 +1118,11 @@ initialize:
   REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
 
   audioSinkBufferDurationMsec = (REFERENCE_TIME)500000;
+  if (IsUSBDevice())
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__": detected USB device, increating buffer size");
+    audioSinkBufferDurationMsec = (REFERENCE_TIME)1000000;
+  }
   audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
 
   if (AE_IS_RAW(format.m_dataFormat))
@@ -1275,4 +1281,24 @@ void CAESinkWASAPI::Drain()
     }
   }
   m_running = false;
+}
+
+bool CAESinkWASAPI::IsUSBDevice()
+{
+  IPropertyStore *pProperty = NULL;
+  PROPVARIANT varName;
+  PropVariantInit(&varName);
+  bool ret = false;
+
+  HRESULT hr = m_pDevice->OpenPropertyStore(STGM_READ, &pProperty);
+  if (!SUCCEEDED(hr))
+    return ret;
+  hr = pProperty->GetValue(PKEY_Device_EnumeratorName, &varName);
+
+  std::string str = localWideToUtf(varName.pwszVal);
+  StringUtils::ToUpper(str);
+  ret = (str == "USB");
+  PropVariantClear(&varName);
+  SAFE_RELEASE(pProperty);
+  return ret;
 }
