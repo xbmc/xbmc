@@ -13590,7 +13590,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (VDPAU)" with label #13425
 #: system/settings/settings.xml
 msgctxt "#36155"
-msgid "Enable VDPAU hardware decoding of video files, mainly used for Nvidia graphics and in some circumstances AMD graphics."
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (VAAPI)" with label #13426
@@ -13979,7 +13979,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36225"
-msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
+msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14074,7 +14074,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36244"
-msgid "Time to substract from the start time of the next scheduled recording."
+msgid "Time to subtract from the start time of the next scheduled recording."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14232,7 +14232,7 @@ msgstr ""
 #. Description of setting "Music -> Playback -> Crossfade between songs on the same album" with label #13400
 #: system/settings/settings.xml
 msgctxt "#36272"
-msgid "Allow crassfading to occur when both tracks are from the same album."
+msgid "Allow crossfading to occur when both tracks are from the same album."
 msgstr ""
 
 #. Description of setting "Music -> Playback -> "Visualisation" with label #250
@@ -14370,25 +14370,25 @@ msgstr ""
 #. Description of setting "Music -> Karaoke -> Font" with label #22030
 #: system/settings/settings.xml
 msgctxt "#36295"
-msgid "Select the font type used during karoake."
+msgid "Select the font type used during karaoke."
 msgstr ""
 
 #. Description of setting "Music -> Karaoke -> Size" with label #22031
 #: system/settings/settings.xml
 msgctxt "#36296"
-msgid "Select the size of the font used during karoake."
+msgid "Select the size of the font used during karaoke."
 msgstr ""
 
 #. Description of setting "Music -> Karaoke -> Colours" with label #22032
 #: system/settings/settings.xml
 msgctxt "#36297"
-msgid "Select the font colour used during karoake."
+msgid "Select the font colour used during karaoke."
 msgstr ""
 
 #. Description of setting "Music -> Karaoke -> Charset" with label #22033
 #: system/settings/settings.xml
 msgctxt "#36298"
-msgid "Select the character set used during karoake."
+msgid "Select the character set used during karaoke."
 msgstr ""
 
 #. Description of setting "Music -> Karaoke -> Export karaoke titles..." with label #22038
@@ -14722,7 +14722,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Use a fullscreen window rather than true fullscreen" with label #14083
 #: system/settings/settings.xml
 msgctxt "#36354"
-msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses a more resources so playback may be less smooth."
+msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Blank other displays" with label #13130
