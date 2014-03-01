@@ -510,7 +510,7 @@ msgstr "Телевизия"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr "Добавяне на група"
+msgstr "Добави група"
 
 msgctxt "#31504"
 msgid "Rename Group"

@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Video OSD"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Innstillings nivå"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Snarveier"
@@ -476,9 +480,25 @@ msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Denne fanen indikerer at det er en meny ved siden av dette vinduet som inneholder ekstra innstillinger til denne seksjonen. For å få tilgang til menyen,  navigerer du til venstre med fjernkontrollen eller tastaturet. Du kan også flytte musmarkøren over fanen. [CR][CR]Trykk \"Ok\" for å lukke dette dialogvinduet. Det kommer ikke opp igjen senere."
 
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Lokal tekst tilgjengelig"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Logg Inn"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Velg din XBMC brukerprofil[CR]for å logge inn og fortsette"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Vis eller skjul innloggings skjermen ved oppstart"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Velg profil som vil bli brukt ved oppstart når innloggings skjermen er deaktivert ."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

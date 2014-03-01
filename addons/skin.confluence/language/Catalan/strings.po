@@ -480,9 +480,17 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Subtítol local disponible"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "Inicia sessió"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Seleccioneu el vostre perfil d'usuari de l'XBMC[CR]per iniciar la sessió i continuar"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Mostra o amaga la pantalla d'inici de sessió a l'inici."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

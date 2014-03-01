@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Changement des"
+msgstr "Changer votre"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -230,7 +230,7 @@ msgstr "Afficher la visualisation en cours de lecture en arrière-plan"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Jouer les génériques TV de vidéothèque (extension TvTunes)"
+msgstr "Jouer les génériques TV de vidéothèque (addiciel TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -246,7 +246,7 @@ msgstr "Cacher Fanart en mode plein ecran"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Extension gérant les paroles"
+msgstr "Addiciel de paroles"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -426,11 +426,11 @@ msgstr "Activé"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Par défaut"
+msgstr "Habillage par défaut"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Par défaut sans majuscule"
+msgstr "Habillage par défaut sans majuscule"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -438,7 +438,7 @@ msgstr "Basé sur Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES APPARENCE[/B][CR][CR]Changer le thème · Définir la langue et la région · Changer les options de liste de fichiers[CR]Paramétrer l'économiseur d'écran"
+msgstr "[B]CONFIGURER LES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changer l'habillage · Définir la langue et la région · Changer les options de listage de fichiers[CR]Régler un économiseur d'écran"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -462,7 +462,7 @@ msgstr "[B]CONFIGURATION DES PARAMÈTRES SYSTÈME[/B][CR][CR]Configurer et calib
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]CONFIGURATION DES EXTENSIONS[/B][CR][CR]Gérer les extensions installées · Recherche et installation d'extensions depuis xbmc.org[CR]Modifier les paramètres des extensions"
+msgstr "[B]CONFIGURATION DES ADDICIELS[/B][CR][CR]Gérer vos addiciels installés · Rechercher et installer des addiciels depuis xbmc.org[CR]Modifier les paramètres des addiciels"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"

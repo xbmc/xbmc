@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "திரையில் காண்பிக்கப்படும் படகாட்சி"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "அமைப்புக்கள் நிலை"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "குறுக்குவழிகள்"
@@ -476,9 +480,25 @@ msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "இந்த தாவல் மூலம் அறிவதாவது இந்த சாளரத்தின் பக்கத்தில் ஒரு மெனு உள்ளது. அதில்  கூடுதல் விருப்பங்கள் உள்ளன. அந்த மெனுவை அணுக, உங்கள் ரிமோட் கண்ட்ரோல் மூலம் அல்லது விசைப்பலகை மூலம் அல்லது சுட்டியை இடது நகர்த்தி தாவல் மேல் வைக்கவும். [CR][CR]இந்த உரையாடலை மூடுவதற்கு \"சரி\" என்பதை கிளிக் செய்யவும். அது மீண்டும் வராது."
 
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "உள்ளூர் வசன வரிகள் உள்ளன"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "உள்நுழை"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "உங்கள் XBMC பயனர் விவரங்களை தேர்வுசெய்து[CR]உள்நுழைய தொடரச்செய்யவும்"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "தொடக்கத்தில் உள்நுழை திரையை காண்பிக்கவும் அல்லது மறைக்கவும்"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "உள்நுழைவு திரை முடக்கப்பட்டுள்ளது போது தொடக்கத்தில் பயன்படுத்தப்படுத்த வேண்டிய சுயவிவரத்தை தேர்ந்தெடுக்கவும்."
 
 msgctxt "#31501"
 msgid "Scheduled Time"
