@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.dxspectrum"
-  version="1.0.15"
+  version="1.0.16"
   name="DirectX Spectrum"
   provider-name="Team XBMC">
   <extension
@@ -19,6 +19,8 @@
     <summary lang="de">Diese Visualisierung zeigt eine rotierende Spektrumanalyse in 3D</summary>
     <summary lang="el">Οπτικοποίηση που εμφανίζει έναν περιστρεφόμενο τρισδιάστατο Αναλυτή Φάσματος</summary>
     <summary lang="en">Visualisation showing a rotating 3D Spectrum Analyser</summary>
+    <summary lang="en_AU">Visualisation showing a rotating 3D Spectrum Analyser</summary>
+    <summary lang="en_NZ">Visualisation showing a rotating 3D Spectrum Analyser</summary>
     <summary lang="en_US">Visualization showing a rotating 3D Spectrum Analyzer</summary>
     <summary lang="es">Visualización que muestra un analizador de espectro en 3D girando</summary>
     <summary lang="es_AR">Visualización que muestra un analizador de espectro en 3D girando</summary>
@@ -28,7 +30,7 @@
     <summary lang="fi">Pyörivä 3D-spektrianalysaattori</summary>
     <summary lang="fr">Visualisation affichant un analyseur de spectre 3D en rotation</summary>
     <summary lang="fr_CA">Visualisation affichant un analyseur de spectre 3D en rotation</summary>
-    <summary lang="gl">Visualización que amosa un analizador de espe</summary>
+    <summary lang="gl">Visualización que amosa un analizador de espectro virando en 3D</summary>
     <summary lang="he">DirectX Spectrum זהו חיזוי אשר מציג סיבובי 3D Spectrum Analyzer</summary>
     <summary lang="hr">Vizualizacija koja prikazuje rotirajući 3D spektralni analizator</summary>
     <summary lang="hu">Vizualizáció 3D spektrum analizátorral</summary>
@@ -38,7 +40,7 @@
     <summary lang="ja">回転する 3D スペクトラムアナライザーを表示する DirectX ビジュアライザー</summary>
     <summary lang="ko">회전하는 3D 스펙트럼 분석기를 보여지는 음악시각화</summary>
     <summary lang="lt">Vizualizacija rodo rotacinis 3D spektro analizatorių</summary>
-    <summary lang="lv">Vizualizācija kas attēlo rotējošu 3D spektra analizatoru</summary>
+    <summary lang="lv">Vizualizācija, kas attēlo rotējošu 3D spektra analizatoru</summary>
     <summary lang="mk">Оваа визуализација покажува ротирачки 3Д анализатор на спектар</summary>
     <summary lang="my">လည်ပတ်နေသော 3D Spectrum Analyzer ဖန်တီး ပြနေသည်</summary>
     <summary lang="nl">DirectX-visualisatie die een roterende 3D-spectrumanalyse weergeeft</summary>

@@ -32,6 +32,10 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Максимальное"
 
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Очень медленно"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "Мин."

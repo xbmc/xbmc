@@ -16,6 +16,10 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Presets casuali"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Tempo tra i preset"
@@ -23,6 +27,30 @@ msgstr "Tempo tra i preset"
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Tempo aggiuntivo casuale"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Blocca preset"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Attiva le transizioni"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Ferma primo preset"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Mostra FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Mostra la console di debug"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Mostra analisi audio"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

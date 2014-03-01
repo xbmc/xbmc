@@ -1,0 +1,41 @@
+# XBMC Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Maori (http://www.transifex.com/projects/p/xbmc-main/language/mi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: mi\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Aratau"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Small"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Taunoa"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Tere"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Taunoa"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Nohopuku"

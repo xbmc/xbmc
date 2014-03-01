@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.glspectrum"
-  version="1.0.15"
+  version="1.0.16"
   name="OpenGL Spectrum"
   provider-name="Team XBMC">
   <extension
@@ -21,6 +21,8 @@
     <summary lang="de">Diese Visualisierung zeigt eine rotierende Spektrum Analyse in 3D</summary>
     <summary lang="el">Οπτικοποίηση που εμφανίζει έναν περιστρεφόμενο τρισδιάστατο Αναλυτή Φάσματος</summary>
     <summary lang="en">Visualisation showing a rotating 3D Spectrum Analyser</summary>
+    <summary lang="en_AU">Visualisation showing a rotating 3D Spectrum Analyser</summary>
+    <summary lang="en_NZ">Visualisation showing a rotating 3D Spectrum Analyser</summary>
     <summary lang="en_US">Visualization showing a rotating 3D Spectrum Analyzer</summary>
     <summary lang="es">Visualización que muestra un analizador de espectro en 3D girando</summary>
     <summary lang="es_AR">Visualización que muestra un analizador de espectro en 3D girando</summary>
@@ -40,7 +42,7 @@
     <summary lang="ja">回転する 3D スペクトラムアナライザーを表示する OpenGL ビジュアライザー</summary>
     <summary lang="ko">회전하는 3D 스펙트럼 분석기를 보여지는 음악시각화</summary>
     <summary lang="lt">Vizualizacija rodo rotacinis 3D spektro analizatorių</summary>
-    <summary lang="lv">Vizualizācija kas attēlo rotējošu 3D spektra analizatoru</summary>
+    <summary lang="lv">Vizualizācija, kas attēlo rotējošu 3D spektra analizatoru</summary>
     <summary lang="mk">Визуализација која покажува ротирачки 3Д анализатор на спектар</summary>
     <summary lang="my">လည်ပတ်နေသော 3D Spectrum Analyzer ဖန်တီး ပြနေသည်</summary>
     <summary lang="nl">DirectX-visualisatie die een roterende 3D-spectrumanalyse weergeeft</summary>

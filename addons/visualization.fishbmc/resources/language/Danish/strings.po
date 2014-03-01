@@ -16,6 +16,10 @@ msgstr ""
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Detalje [CPU intensive]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Lav"
@@ -32,6 +36,18 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Ekstrem"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Nervøs mode [flere mode skift]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Hastighed [ignorer nogle frames]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Meget lavt"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "Lav"
@@ -43,3 +59,7 @@ msgstr "Normal"
 msgctxt "#30010"
 msgid "High"
 msgstr "Høj"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Brug en persistent fil [hurtigere opstart]"

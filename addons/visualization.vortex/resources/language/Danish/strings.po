@@ -16,6 +16,10 @@ msgstr ""
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Tilfældige forudindstillinger"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Tid mellem forudindstillinger"
@@ -23,6 +27,30 @@ msgstr "Tid mellem forudindstillinger"
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Ekstra tilfældig tid"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Låse forudindstillinger"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Aktiver transitioner"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Stop første forudindstillinger"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Vis FPS "
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Vis debugging konsollen"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Vis audio analyse"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

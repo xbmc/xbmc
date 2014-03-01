@@ -16,6 +16,10 @@ msgstr ""
 "Language: af\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Besonderhede [CPU intens]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Laag"
@@ -30,7 +34,19 @@ msgstr "Hoog"
 
 msgctxt "#30004"
 msgid "Extreme"
-msgstr "Ekstreme"
+msgstr "Uiterste"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Senuweeagtige Wyse [meer wyse veranderinge]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Spoed [spring oor sekere rame]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Baie Laag"
 
 msgctxt "#30008"
 msgid "Low"
@@ -43,3 +59,7 @@ msgstr "Normaal"
 msgctxt "#30010"
 msgid "High"
 msgstr "Hoog"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Gebriuk 'n aanhoudende lêer [vinniger begin]"

@@ -59,3 +59,7 @@ msgstr "Normal"
 msgctxt "#30010"
 msgid "High"
 msgstr "Hög"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Använd en statisk fil (snabbare uppstart)"

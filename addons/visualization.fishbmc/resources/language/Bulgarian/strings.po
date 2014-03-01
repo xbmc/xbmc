@@ -36,6 +36,10 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Изключително"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Нервен режим [още режимни промени]"
+
 msgctxt "#30006"
 msgid "Speed [skip some frames]"
 msgstr "Скорост [пропуска някои кадри]"
@@ -55,3 +59,7 @@ msgstr "Нормално"
 msgctxt "#30010"
 msgid "High"
 msgstr "Високо"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Използвай постоянен файл [по-бързо стартиране]"

@@ -32,6 +32,10 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Extremoa"
 
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Oso Baxua"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "Min"
