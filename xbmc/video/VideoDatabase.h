@@ -786,8 +786,8 @@ protected:
   void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   void GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   CStdString GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
-  CStdString GetValueString(const CVideoInfoTag &details, const std::vector<VIDEODB_IDS> simpleUpdates, const SDbTableOffsets *offsets, std::vector<std::string> conditions) const;
-
+  CStdString GetValueString(const CVideoInfoTag &details, const std::vector<VIDEODB_IDS> simpleUpdates, const SDbTableOffsets *offsets, std::vector<std::string> &conditions) const;
+  void ProcessValueString(const CVideoInfoTag &details, const SDbTableOffsets *offsets, std::vector<std::string> &conditions, int i) const;
 
 private:
   virtual void CreateTables();
