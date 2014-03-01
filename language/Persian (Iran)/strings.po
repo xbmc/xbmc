@@ -1073,10 +1073,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "زبان اصلی استریم"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "زبان رابط کاربری"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=اتوماتیک)"
@@ -4202,8 +4198,8 @@ msgid "Scan for new content"
 msgstr "اسکن برای موارد جدید"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "در حال پخش..."
+msgid "Current playlist"
+msgstr "لیست پخش فعلی"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4469,6 +4465,10 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "فعال کردن شتاب دهی سخت افزاری (VideoToolbox)"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "نرم‌افزار"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "روش سینک A/V"
@@ -4657,17 +4657,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "حافظه ی کش ویدیو -  DVD-ROM"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "اینترنت"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "حافظه ی کش صدا -  DVD-ROM"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "اینترنت"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6137,10 +6129,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "این گزینه مقادیر کالیبره کردن را برای %s ریست می‌کند"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "به مقادیر پیش‌فرض آن."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "مرور برای مقصد"
@@ -6353,10 +6341,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "ویژه‌ها"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "دریافت خودکار تصاویر فصل‌ها"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "پوشه انتخابی تنها یک ویدئو دارد"
@@ -6532,6 +6516,10 @@ msgstr "اطلاعات آلبوم"
 msgctxt "#24018"
 msgid "Services"
 msgstr "سرویس ها"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "غیر فعال"
 
 msgctxt "#24027"
 msgid "Weather"

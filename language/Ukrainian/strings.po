@@ -1073,10 +1073,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Мова потоку за промовчанням"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Мова інтерфейсу"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=авто)"
@@ -4506,8 +4502,8 @@ msgid "Scan for new content"
 msgstr "Сканувати вміст"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Поточн. список відтворення…"
+msgid "Current playlist"
+msgstr "Поточний список відтворення"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4785,6 +4781,10 @@ msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
 msgstr "Високоякісне масштабування більше, ніж"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Програмний"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Синхронізація А/В"
@@ -4997,25 +4997,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Кеш відео - з DVD-диска"
 
-msgctxt "#14027"
-msgid "Local Network"
-msgstr "Локальна мережа"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Інтернет"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Кеш аудіо - з DVD-диска"
-
-msgctxt "#14031"
-msgid "Local Network"
-msgstr "Локальна мережа"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Інтернет"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6493,10 +6477,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "каналів у"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "Синхронізувати групи каналів зі серверами."
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
@@ -7949,10 +7929,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Калібрувальні значення для %s буде скинуто"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "до значень за промовчанням"
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Вкажіть призначення"
@@ -8169,10 +8145,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Надбудови"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Автоматично завантажувати ескізи сезонів"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Вказана папка містить окремий відеофайл"
@@ -8288,10 +8260,6 @@ msgstr "Трейлер"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Без категорій"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Приховувати списки сезонів серіалів"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8576,10 +8544,6 @@ msgstr "Папка для фільмів і альтернативних суб�
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Ігнорувати шрифти субтитрів ASS/SSA"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Увімкнути мишу та сенсорний екран"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9558,6 +9522,10 @@ msgid "Enable"
 msgstr "Увімкнути"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Вимкн."
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Надбудову вимкнено"
 
@@ -10441,10 +10409,6 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Папка об'єкту"
 
-msgctxt "#36102"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
 msgctxt "#36105"
 msgid "Change the theme associated with your selected skin."
 msgstr "Змінити тему, що асоційована з вибраною шкіркою."
@@ -10453,29 +10417,13 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Зміна кольорів вибраної шкірки."
 
-msgctxt "#36108"
-msgid "Resize the view of the GUI."
-msgstr "Змінити розмір вигляду GUI"
-
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Редагування потоків RSS."
 
-msgctxt "#36113"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
 msgctxt "#36117"
 msgid "Select country location."
 msgstr "Вказати розміщення країни."
-
-msgctxt "#36121"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36128"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10489,103 +10437,11 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
-msgctxt "#36138"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36139"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36140"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36142"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36151"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36156"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
 msgctxt "#36157"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
-msgctxt "#36158"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36159"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36160"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36161"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36162"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36163"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36173"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36176"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36178"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
 msgctxt "#36181"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36184"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36185"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36186"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36187"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36188"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36189"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36190"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36193"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
@@ -10677,55 +10533,15 @@ msgctxt "#36252"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
-msgctxt "#36253"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36254"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
 msgstr "Вибір основного джерела відомостей про виконавців. Доступні варіанти див. у менеджері надбудов."
 
-msgctxt "#36264"
+msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
-msgctxt "#36277"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36278"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36279"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36280"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36282"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36292"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36294"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36299"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36300"
+msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
@@ -10741,27 +10557,7 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
-msgctxt "#36304"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36305"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
 msgctxt "#36310"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36311"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36315"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36316"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
@@ -10769,169 +10565,9 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "Вибір основного джерела відомостей про погоду. Доступні варіанти див. у менеджері надбудов."
 
-msgctxt "#36319"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36320"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36322"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36325"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36327"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Вибір доступних веб-інтерфейсів, встановлених за допомогою менеджера надбудов."
-
-msgctxt "#36335"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36336"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36337"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36339"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36340"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36341"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36342"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36343"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36344"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36345"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36346"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36347"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36348"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36349"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36351"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36352"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36353"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36359"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36360"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36374"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36375"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36379"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36388"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36392"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36399"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36400"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36401"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36402"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36403"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36404"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36405"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36406"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36407"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36408"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36409"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -10954,14 +10590,6 @@ msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 
 msgctxt "#36415"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36417"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
-msgctxt "#36418"
 msgid "No info available yet."
 msgstr "Ще немає доступної інформації."
 

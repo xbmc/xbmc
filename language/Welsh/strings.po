@@ -1077,10 +1077,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Iaith wreiddiol y ffrwd"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Iaith rhyngwyneb defnyddiwr"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -4394,8 +4390,8 @@ msgid "Scan for new content"
 msgstr "Sganio am gynnwys newydd"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Wrthi'n chwarae..."
+msgid "Current playlist"
+msgstr "Rhestr chwarae gyfredol"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4669,6 +4665,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Chwarae dim ond hwn"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Meddalwedd"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Dull cydweddu A/V"
@@ -4885,25 +4885,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Storfa Fideo - DVD-ROM"
 
-msgctxt "#14027"
-msgid "Local Network"
-msgstr "Rhwydwaith Leol"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Rhyngrwyd"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Storfa Sain - DVD-ROM"
-
-msgctxt "#14031"
-msgid "Local Network"
-msgstr "Rhwydwaith Leol"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Rhyngrwyd"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6385,10 +6369,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Sianeli mewn"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "Cydweddu'r grwpiau sianeli i'r offer cefn"
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "Amserlenydd Fideo Personol"
@@ -7817,10 +7797,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Bydd hyn yn ailodsod gwerthoedd calibro %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "i'w gwerthoedd rhagosodedig."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Pori am gyrchfan"
@@ -8037,10 +8013,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Arbennig"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Cipio lluniau bach tymor yn awtomatig"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Mae'r ffolder hon yn cynnwys un fideo"
@@ -8152,10 +8124,6 @@ msgstr "Hysbysiad"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Gwastatáu"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Gwastatáu rhaglenni teledu"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8404,10 +8372,6 @@ msgstr "Cyfeiriadur ffilmiau ac isdeitlau eraill"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Anwybyddu ffontiau isdeitlau ASS/SSA"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Galluogi cynnal llygoden a Sgrin Cyffwrdd"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9374,6 +9338,10 @@ msgid "Enable"
 msgstr "Galluogi"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Analluogwyd"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Ychwanegyn wedi ei analluogi"
 
@@ -10285,37 +10253,13 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Ffolder eitem"
 
-msgctxt "#36102"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Golygu'r ffrydiau RSS."
 
-msgctxt "#36113"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36114"
-msgid "Chooses the language of the User Interface."
-msgstr "Yn dewis iaith y Rhyngwyneb Defnyddiwr."
-
 msgctxt "#36117"
 msgid "Select country location."
 msgstr "Dewis lleoliad gwlad."
-
-msgctxt "#36121"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36127"
-msgid "Show hidden files and directories."
-msgstr "Dangos ffeiliau a chyfeiriaduron cudd."
-
-msgctxt "#36128"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10329,107 +10273,11 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
-msgctxt "#36138"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36139"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36140"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36142"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36151"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36154"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36156"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
 msgctxt "#36157"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
-msgctxt "#36158"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36159"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36160"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36161"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36162"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36163"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36173"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36176"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36178"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
 msgctxt "#36181"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36184"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36185"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36186"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36187"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36188"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36189"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36190"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36193"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
@@ -10513,55 +10361,11 @@ msgctxt "#36252"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
-msgctxt "#36253"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36254"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
-msgctxt "#36264"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36277"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36278"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36279"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36280"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36282"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36292"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36294"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36299"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36300"
+msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
@@ -10577,191 +10381,7 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
-msgctxt "#36304"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36305"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
 msgctxt "#36310"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36311"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36315"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36316"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36319"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36320"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36322"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36325"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36327"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36333"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36335"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36336"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36337"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36339"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36340"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36341"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36342"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36343"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36344"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36345"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36346"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36347"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36348"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36349"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36351"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36352"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36353"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36359"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36360"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36374"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36375"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36379"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36388"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36392"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36399"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36400"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36401"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36402"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36403"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36404"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36405"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36406"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36407"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36408"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36409"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
@@ -10789,14 +10409,6 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
-msgctxt "#36417"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36418"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
@@ -10820,22 +10432,6 @@ msgstr "Trosodd/Tanodd"
 msgctxt "#36507"
 msgid "Interlaced"
 msgstr "Rhyngweol"
-
-msgctxt "#36537"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36538"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36539"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36540"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
 msgctxt "#37017"
 msgid "Dual audio output"

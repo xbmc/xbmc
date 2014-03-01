@@ -15,7 +15,7 @@ msgstr ""
 
 msgctxt "#0"
 msgid "Programs"
-msgstr "करिअक्रम"
+msgstr "कार्यक्रम"
 
 msgctxt "#1"
 msgid "Pictures"
@@ -205,6 +205,26 @@ msgctxt "#62"
 msgid "Dec"
 msgstr "देक"
 
+msgctxt "#88"
+msgid "South"
+msgstr "दक्षिण"
+
+msgctxt "#89"
+msgid "North"
+msgstr "उत्तर"
+
+msgctxt "#90"
+msgid "West"
+msgstr "पश्चिम"
+
+msgctxt "#91"
+msgid "East"
+msgstr "पूर्व"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "वेरिएबल"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "द्रिस्तिकों: ऑटो"
@@ -373,6 +393,14 @@ msgctxt "#139"
 msgid "Temperatures:"
 msgstr "तापमान: "
 
+msgctxt "#140"
+msgid "CPU:"
+msgstr "सी.पी.यू"
+
+msgctxt "#141"
+msgid "GPU:"
+msgstr "जी.पी.यू"
+
 msgctxt "#142"
 msgid "Time:"
 msgstr "वक्त:"
@@ -381,9 +409,45 @@ msgctxt "#143"
 msgid "Current:"
 msgstr "वर्तमाना:"
 
+msgctxt "#144"
+msgid "Build:"
+msgstr "गठन"
+
+msgctxt "#145"
+msgid "Network:"
+msgstr "नेटवर्क"
+
+msgctxt "#146"
+msgid "Type:"
+msgstr "टाइप"
+
+msgctxt "#147"
+msgid "Static"
+msgstr "स्थिर"
+
+msgctxt "#148"
+msgid "DHCP"
+msgstr "डी अच् सी पी"
+
+msgctxt "#149"
+msgid "MAC address"
+msgstr "मैक एड्रेस"
+
 msgctxt "#150"
 msgid "IP address"
 msgstr "IP पता"
+
+msgctxt "#151"
+msgid "Link:"
+msgstr "कड़ी"
+
+msgctxt "#152"
+msgid "Half duplex"
+msgstr "हाफ डुप्लेक्स"
+
+msgctxt "#153"
+msgid "Full duplex"
+msgstr "फुल डुप्लेक्स"
 
 msgctxt "#154"
 msgid "Storage"
@@ -436,6 +500,10 @@ msgstr "कद अंधार है"
 msgctxt "#166"
 msgid "Skin"
 msgstr "विषय"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "फ़ाइल कार्रवाई रद्द करे"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -2701,6 +2769,18 @@ msgctxt "#13280"
 msgid "Video"
 msgstr "विडियो"
 
+msgctxt "#13281"
+msgid "Hardware"
+msgstr "हार्डवेयर"
+
+msgctxt "#13283"
+msgid "Operating system:"
+msgstr "प्रचालन तंत्र:"
+
+msgctxt "#13286"
+msgid "Video encoder:"
+msgstr "वीडियो एनकोडर:"
+
 msgctxt "#13305"
 msgid "Show RSS news feeds"
 msgstr "दिखाएँ आरएसएस समाचार फ़ीड"
@@ -2816,14 +2896,6 @@ msgstr "क्षेत्र कोड बदले 3"
 msgctxt "#14022"
 msgid "Library"
 msgstr "पुस्तकालय"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "इंटरनेट"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "इंटरनेट"
 
 msgctxt "#14036"
 msgid "Services"
@@ -3033,10 +3105,6 @@ msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
 msgstr "अभिनेता थंबनेल डाउनलोड जब पुस्तकालय को जोड़ने"
 
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "टीवी शो समतल"
-
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
 msgstr "निकालें थंबनेल और वीडियो जानकारी"
@@ -3048,10 +3116,6 @@ msgstr "दिखाएँ छुपी फ़ाइलें और निर�
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "शेयर और UPnP के माध्यम से वीडियो संगीत पुस्तकालयों"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "माउस सक्षम"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
@@ -3096,6 +3160,26 @@ msgstr "संकल्प"
 msgctxt "#21806"
 msgid "Comment"
 msgstr "टिप्पणी"
+
+msgctxt "#21862"
+msgid "Caption"
+msgstr "शीर्षक"
+
+msgctxt "#21863"
+msgid "Author"
+msgstr "रचयिता"
+
+msgctxt "#21864"
+msgid "Headline"
+msgstr "शीर्षक"
+
+msgctxt "#21865"
+msgid "Special instructions"
+msgstr "विशेष निर्देश"
+
+msgctxt "#21866"
+msgid "Category"
+msgstr "श्रेणी"
 
 msgctxt "#21874"
 msgid "State"
@@ -3204,6 +3288,10 @@ msgstr "कलाकार जानकारी"
 msgctxt "#24018"
 msgid "Services"
 msgstr "सेवाएँ"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "विकलांग"
 
 msgctxt "#24027"
 msgid "Weather"

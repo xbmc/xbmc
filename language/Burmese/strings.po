@@ -865,10 +865,6 @@ msgctxt "#305"
 msgid "Enabled"
 msgstr "ဖွင့်"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "User Interface ဘာသာစကား"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -2990,8 +2986,8 @@ msgid "Scan for new content"
 msgstr "content အသစ်အတွက်စစ်ဆေးမည်"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "ယခုဖွင့်ထားသည်"
+msgid "Current playlist"
+msgstr "ယခုသီချင်းစာရင်း"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -3121,6 +3117,10 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "hardware acceleration (VideoToolbox)ကိုခွင့်ပြုမည်"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "ဆော့ဝဲလ်"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V sync နည်းလမ်း"
@@ -3184,14 +3184,6 @@ msgstr "တီဗွီ"
 msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "အနီးဆုံးကျယ်သည့်မြို့ထဲသို့ဝင်မည်"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "အင်တာနက်"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "အင်တာနက်"
 
 msgctxt "#14036"
 msgid "Services"
@@ -5166,6 +5158,10 @@ msgid "Enable"
 msgstr "ဖွင့်"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "ပိတ်ထားမည်"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Add-on ပိတ်ထားသည်"
 
@@ -5652,10 +5648,6 @@ msgstr "အမြဲတမ်း"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
-
-msgctxt "#36126"
-msgid "Show the add source button from root sections of the user interface."
-msgstr "user interface ၏ root sections မှ ရင်းမြစ်ထည့်သွင်း ခလုတ်ကို ဖော်ပြရန်"
 
 msgctxt "#36198"
 msgid "Select the default movie information source. See the Add-ons Manager for options."

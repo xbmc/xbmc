@@ -3505,10 +3505,6 @@ msgctxt "#13349"
 msgid "Scan for new content"
 msgstr "Fittex għal kontenut ġdid"
 
-msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Indoqq bħalissa..."
-
 msgctxt "#13351"
 msgid "Album information"
 msgstr "Informazzjoni dwar l-album"
@@ -3805,17 +3801,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video Cache - DVDRom"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Audio Cache - DVDRom"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5025,10 +5013,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Din tirrisetja l-valuri tal-kalibrazzjoni ta' %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "għad-difolt."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "lokazzjoni biex tikkopja ġo"
@@ -5241,10 +5225,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Speċjali"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Ġib tambnejl tal-istaġun awtomatikament"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Fowlder fiħ Vidjo wieħed"
@@ -5404,10 +5384,6 @@ msgstr "Neħħi Media Share"
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Fowlder Alternattiv ghas-sottotitoli u filmati"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Attiva l-Maws"
 
 msgctxt "#21371"
 msgid "Thumbnail"
@@ -5952,6 +5928,10 @@ msgstr "Informazzjoni tal-Artist"
 msgctxt "#24018"
 msgid "Services"
 msgstr "Servers"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "Mhux attiv"
 
 msgctxt "#24027"
 msgid "Weather"

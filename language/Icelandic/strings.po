@@ -1057,10 +1057,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Upprunalegt tungumál straums"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Tungumál notendaviðmóts"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=sjálfv.)"
@@ -4326,8 +4322,8 @@ msgid "Scan for new content"
 msgstr "Leita að nýju innihaldi"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Í spilun..."
+msgid "Current playlist"
+msgstr "Núgildandi lagalisti"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4593,6 +4589,10 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Leyfa vélbúnaðarhröðun (VideoToolbox)"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Hugbúnaður"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V samstillingaraðferð"
@@ -4781,17 +4781,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Myndefni flýtiminni - DVD-ROM"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Hljóð flýtiminni - DVD-ROM"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6549,10 +6541,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Þetta endurstillir tækjastillingu fyrir %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "á sín upprunalegu gildi."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Veldu staðsetningu"
@@ -6769,10 +6757,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Sérþættir"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Ná sjálfkrafa í þáttaraðarsmámynd"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Mappa inniheldur eina myndskrá"
@@ -6884,10 +6868,6 @@ msgstr "Sýnishorn"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Fletja"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Fletja út sjónvarpsþætti"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -7112,10 +7092,6 @@ msgstr "Kvikmynda og auka mappa fyrir þýðingartexta"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Hunsa leturgerð ASS/SSA þýðingartexta"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Virkja stuðning við mús og snertiskjá"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -8042,6 +8018,10 @@ msgid "Enable"
 msgstr "Virkja viðbót"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Óvirkt"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Viðbót óvirk"
 
@@ -8252,10 +8232,6 @@ msgstr "Til að nota þetta þarftu að sækja viðbót:"
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "Viltu sækja þessa viðbót?"
-
-msgctxt "#24106"
-msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
-msgstr "Ef þýðingartextar eru ekki settir í möppu myndar, þá verða þeir settir í sérsniðna þýðingartexta-möppu"
 
 msgctxt "#24110"
 msgid "Downloading subtitles ..."

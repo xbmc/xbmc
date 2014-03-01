@@ -6007,7 +6007,7 @@ msgctxt "#13441"
 msgid "Use Mpeg-2 VDPAU"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use Mpeg-2 VDPAU" with label #13441 
+#. Description of setting "Videos -> Playback -> Use Mpeg-2 VDPAU" with label #13441
 #: system/settings/settings.xml
 msgctxt "#13442"
 msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
@@ -6018,7 +6018,7 @@ msgctxt "#13443"
 msgid "Use Mpeg-4 VDPAU"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use Mpeg-4 VDPAU" with label #13443 
+#. Description of setting "Videos -> Playback -> Use Mpeg-4 VDPAU" with label #13443
 #: system/settings/settings.xml
 msgctxt "#13444"
 msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
@@ -6029,7 +6029,7 @@ msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use VC-1 VDPAU" with label #13445 
+#. Description of setting "Videos -> Playback -> Use VC-1 VDPAU" with label #13445
 #: system/settings/settings.xml
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
@@ -6040,7 +6040,7 @@ msgctxt "#13447"
 msgid "Use Mpeg-2 VAAPI"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use Mpeg-2 VAAPI" with label #13447 
+#. Description of setting "Videos -> Playback -> Use Mpeg-2 VAAPI" with label #13447
 #: system/settings/settings.xml
 msgctxt "#13448"
 msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
@@ -6051,7 +6051,7 @@ msgctxt "#13449"
 msgid "Use Mpeg-4 VAAPI"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use Mpeg-4 VAAPI" with label #13449 
+#. Description of setting "Videos -> Playback -> Use Mpeg-4 VAAPI" with label #13449
 #: system/settings/settings.xml
 msgctxt "#13450"
 msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
@@ -6062,11 +6062,13 @@ msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use VC-1 VAAPI" with label #13451 
+#. Description of setting "Videos -> Playback -> Use VC-1 VAAPI" with label #13451
 #: system/settings/settings.xml
 msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
 msgstr ""
+
+#empty string with id 13453
 
 #. Label for a setting to configure the video decoding method
 #: system/settings/settings.xml
@@ -10208,6 +10210,8 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr ""
 
+#empty string with id 20382
+
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr ""
@@ -13280,7 +13284,7 @@ msgctxt "#36102"
 msgid "Category containing all Skin related settings."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Skin" with label #166 
+#. Description of setting "Appearance -> Skin -> Skin" with label #166
 #: system/settings/settings.xml
 msgctxt "#36103"
 msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
@@ -13370,7 +13374,7 @@ msgctxt "#36117"
 msgid "Select country location."
 msgstr ""
 
- Description of setting "Appearance -> International -> Timezone" with label #14080
+#. Description of setting "Appearance -> International -> Timezone" with label #14080
 #: system/settings/settings.xml
 msgctxt "#36118"
 msgid "Select your current timezone."
@@ -13511,7 +13515,7 @@ msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr ""
 
-# empty string with id 36142
+#empty string with id 36142
 
 #. Description of setting "Videos -> Library -> Download actor thumbnails when adding to library" with label #20402
 #: system/settings/settings.xml
@@ -14460,7 +14464,6 @@ msgctxt "#36310"
 msgid "No info available yet."
 msgstr ""
 
-
 #. Description of settings category "Pictures -> Slideshow" with label #108
 #: system/settings/settings.xml
 msgctxt "#36311"
@@ -15167,7 +15170,7 @@ msgctxt "#36430"
 msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
 msgstr ""
 
-#. Description for video related setting #13454: Decoding mode 
+#. Description for video related setting #13454: Decoding mode
 #: system/settings/settings.xml
 msgctxt "#36431"
 msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
@@ -15383,7 +15386,7 @@ msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
 msgstr ""
 
-#empty strings from id 36549 to 36499
+#empty strings from id 36549 to 36599
 #reserved strings 365XX
 
 #. Description of settings category "Music -> Library" with label #14022

@@ -585,6 +585,10 @@ msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
 msgstr "Juster skærmens opdateringshastighed til videoens"
 
+msgctxt "#171"
+msgid "Sort title"
+msgstr "Sorter efter: Titel"
+
 msgctxt "#172"
 msgid "Release date"
 msgstr "Udgivelsesdato"
@@ -857,9 +861,17 @@ msgctxt "#249"
 msgid "Music"
 msgstr "Musik"
 
+msgctxt "#250"
+msgid "Visualisation"
+msgstr "Visualisation"
+
 msgctxt "#251"
 msgid "Select destination directory"
 msgstr "Vælg destinationsmappe"
+
+msgctxt "#252"
+msgid "Stereo upmix"
+msgstr "Stereo upmix"
 
 msgctxt "#253"
 msgid "Number of channels"
@@ -1074,8 +1086,8 @@ msgid "Original stream's language"
 msgstr "Sprog på oprindelig stream"
 
 msgctxt "#309"
-msgid "User Interface language"
-msgstr "Brugerfladesprog"
+msgid "User interface language"
+msgstr "Brugerinterface sprog"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1177,9 +1189,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "Juster billedhastighed"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "Output konfiguration"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Fast"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "Optimeret"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1205,9 +1225,17 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Årstal"
 
+msgctxt "#346"
+msgid "Normalize levels on downmix"
+msgstr "Normaliser niveauer ved downmix"
+
 msgctxt "#347"
 msgid "DTS-HD capable receiver"
 msgstr "DTS-HD-kompatibel receiver"
+
+msgctxt "#348"
+msgid "Enable passthrough"
+msgstr "Aktiver passthrough"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1485,6 +1513,14 @@ msgctxt "#419"
 msgid "High"
 msgstr "Høj"
 
+msgctxt "#420"
+msgid "Best Match"
+msgstr "Bedste match"
+
+msgctxt "#421"
+msgid "Keep audio device alive"
+msgstr "Behold lyd enhed aktiv"
+
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Slet albuminfo"
@@ -1557,6 +1593,10 @@ msgctxt "#439"
 msgid "Cache"
 msgstr "Cache"
 
+msgctxt "#440"
+msgid "Hard disk"
+msgstr "Harddisk"
+
 msgctxt "#441"
 msgid "UDF"
 msgstr "UDF"
@@ -1584,6 +1624,10 @@ msgstr "DVD"
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "Afspil medie automatisk"
+
+msgctxt "#448"
+msgid "Dolby Digital Plus (E-AC3) capable receiver"
+msgstr "Dolby Digital (AC3)-kompatibel receiver"
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1620,6 +1664,10 @@ msgstr "Tilstand"
 msgctxt "#457"
 msgid "Switch view"
 msgstr "Skift visning"
+
+msgctxt "#458"
+msgid "Limit sampling rate (kHz)"
+msgstr "Begræns sampling rate (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -1788,6 +1836,10 @@ msgstr "Indlæser medieinfo fra filer..."
 msgctxt "#507"
 msgid "Sort by: Usage"
 msgstr "Sorter efter: Brug"
+
+msgctxt "#510"
+msgid "Enable visualisations"
+msgstr "Aktiver visualisering"
 
 msgctxt "#511"
 msgid "Enable video mode switching"
@@ -2169,6 +2221,10 @@ msgctxt "#613"
 msgid "Sample rate"
 msgstr "Samplefrekvens"
 
+msgctxt "#614"
+msgid "Virtual folder"
+msgstr "Virtuel mappe"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Lyd-CD'er"
@@ -2229,6 +2285,14 @@ msgctxt "#636"
 msgid "Custom"
 msgstr "Brugerdefineret"
 
+msgctxt "#637"
+msgid "ReplayGain"
+msgstr "ReplayGain"
+
+msgctxt "#638"
+msgid "ReplayGain volume adjustments"
+msgstr "Løbende lydstyrkereguleringsstyring  \"replaygain\""
+
 msgctxt "#639"
 msgid "Use track levels"
 msgstr "Brug sporets lydstyrke"
@@ -2236,6 +2300,18 @@ msgstr "Brug sporets lydstyrke"
 msgctxt "#640"
 msgid "Use album levels"
 msgstr "Brug albummets lydstyrke"
+
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "PreAmp niveau - løbende lydstyrkeregulering \"replaygain\""
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "PreAmp niveau - uden løbende lydstyrkeregulering \"replaygain\""
+
+msgctxt "#643"
+msgid "Avoid clipping on ReplayGained files"
+msgstr "Undgå hak ved filer med løbende lydstyrkeregulering \"replaygain\""
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2328,6 +2404,10 @@ msgstr "Komprimeringsniveau"
 msgctxt "#666"
 msgid "Verbose logging..."
 msgstr "Detaljeret logning..."
+
+msgctxt "#667"
+msgid "Enable Dolby Digital transcoding"
+msgstr "Aktiver Dolby Digital transkodning"
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2873,6 +2953,10 @@ msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr "Program Add-ons"
 
+msgctxt "#1044"
+msgid "Set plug-in thumb"
+msgstr "Vælg miniaturebillede til plugin"
+
 msgctxt "#1045"
 msgid "Add-on settings"
 msgstr "Indstillinger til Add-ons"
@@ -3052,6 +3136,10 @@ msgstr "Zeroconf"
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Annoncer disse tjenester til andre systemer ved hjælp af Zeroconf"
+
+msgctxt "#1269"
+msgid "Allow volume control"
+msgstr "Tillad lydstyrkekontrol"
 
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
@@ -3433,9 +3521,29 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "Nulstil"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "Basis"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standard"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Avanceret"
+
+msgctxt "#10039"
+msgid "Expert"
+msgstr "Expert"
+
+msgctxt "#10040"
+msgid "Add-on browser"
+msgstr "Add-on katalog"
+
+msgctxt "#10041"
+msgid "Reset above settings to default"
+msgstr "Nulstil ovenstående indstillinger"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3448,6 +3556,26 @@ msgstr "Hjælp"
 msgctxt "#10044"
 msgid "No help available"
 msgstr "Ingen hjælp tilgængelig"
+
+msgctxt "#10045"
+msgid "Resets all the visible settings to their default values."
+msgstr "Nulstil alle de viste indstillinger."
+
+msgctxt "#10046"
+msgid "No categories available"
+msgstr "Ingen tilgængelige kategorier"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Prøv at skifte indstillingsniveau for at se yderligere kategorier og indstillinger."
+
+msgctxt "#10100"
+msgid "Yes/No dialogue"
+msgstr "Ja/Nej-dialog"
+
+msgctxt "#10101"
+msgid "Progress dialogue"
+msgstr "Fremskridtsdialog"
 
 msgctxt "#10126"
 msgid "File browser"
@@ -3589,9 +3717,17 @@ msgctxt "#10524"
 msgid "Movie info"
 msgstr "Filminfo"
 
+msgctxt "#12000"
+msgid "Select dialogue"
+msgstr "Vælg dialog"
+
 msgctxt "#12001"
 msgid "Music/Info"
 msgstr "Musik/Info"
+
+msgctxt "#12002"
+msgid "Dialogue OK"
+msgstr "Dialog OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3604,6 +3740,14 @@ msgstr "Scripts/Info"
 msgctxt "#12005"
 msgid "Fullscreen video"
 msgstr "Fuldskærmsvideo"
+
+msgctxt "#12006"
+msgid "Audio visualisation"
+msgstr "Lydvisualisering"
+
+msgctxt "#12008"
+msgid "File stacking dialogue"
+msgstr "Filkombineringsdialog"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -3760,6 +3904,10 @@ msgstr "Adgang nægtet"
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr "Du har ikke flere forsøg tilbage."
+
+msgctxt "#12347"
+msgid "The system will now power down."
+msgstr "Systemet slukkes nu."
 
 msgctxt "#12348"
 msgid "Item locked"
@@ -3937,6 +4085,10 @@ msgctxt "#13013"
 msgid "Reboot"
 msgstr "Genstart"
 
+msgctxt "#13014"
+msgid "Minimise"
+msgstr "Minimere"
+
 msgctxt "#13015"
 msgid "Power button action"
 msgstr "Powerknappens funktion"
@@ -4057,6 +4209,10 @@ msgctxt "#13110"
 msgid "Save resolution?"
 msgstr "Gem opløsning?"
 
+msgctxt "#13111"
+msgid "Would you like to keep this change?"
+msgstr "Vil du gemme denne ændring?"
+
 msgctxt "#13112"
 msgid "High quality upscaling"
 msgstr "Højkvalitetsopskalering"
@@ -4096,6 +4252,14 @@ msgstr "VDPAU"
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
 msgstr "Opskaleringsniveau til VDPAU HQ "
+
+msgctxt "#13122"
+msgid "VDPAU Studio level colour conversion"
+msgstr "VDPAU studieniveau farvekonvertering"
+
+msgctxt "#13123"
+msgid "Keep skin?"
+msgstr "Behold skin?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4148,6 +4312,10 @@ msgstr "Gateway"
 msgctxt "#13161"
 msgid "Primary DNS"
 msgstr "Primær DNS"
+
+msgctxt "#13162"
+msgid "Initialise failed"
+msgstr "Initialisering mislykkedes"
 
 msgctxt "#13170"
 msgid "Never"
@@ -4393,6 +4561,10 @@ msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr "Diasshow af mappe og undermapper"
 
+msgctxt "#13319"
+msgid "Randomise"
+msgstr "Gør tilfældig (Random)"
+
 msgctxt "#13320"
 msgid "Stereo"
 msgstr "Stereo"
@@ -4502,8 +4674,8 @@ msgid "Scan for new content"
 msgstr "Skan efter nyt indhold"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Spiller nu..."
+msgid "Current playlist"
+msgstr "Nuværende afspilningsliste"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4605,9 +4777,21 @@ msgctxt "#13388"
 msgid "Preset"
 msgstr "Forudindstilling"
 
+msgctxt "#13389"
+msgid "There are no presets available\nfor this visualisation"
+msgstr "Der er ingen forudindstillinger tilgængelige\ntil denne visualisering"
+
+msgctxt "#13390"
+msgid "There are no settings available\nfor this visualisation"
+msgstr "Der er ingen indstillinger tilgængelige\ntil denne visualisering"
+
 msgctxt "#13391"
 msgid "Eject/Load"
 msgstr "Skub ud/Læs"
+
+msgctxt "#13392"
+msgid "Use visualisation if playing audio"
+msgstr "Brug visualisering ved musikafspilning"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4781,6 +4965,86 @@ msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
 msgstr "Aktivér HD-skalering for skalering over"
 
+msgctxt "#13436"
+msgid "Allow hardware acceleration (libstagefright)"
+msgstr "Tillad hardware acceleration (libstagefright)"
+
+msgctxt "#13437"
+msgid "Prefer VDPAU Video Mixer"
+msgstr "Foretræk VDPAU Video Mixer"
+
+msgctxt "#13438"
+msgid "Allow hardware acceleration (amcodec)"
+msgstr "Tillad hardwareacceleration (amcodec)"
+
+msgctxt "#13439"
+msgid "Allow hardware acceleration (MediaCodec)"
+msgstr "Tillad hardwareacceleration (MediaCodec)"
+
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "Tillad multi-trådet software dekodning"
+
+msgctxt "#13441"
+msgid "Use Mpeg-2 VDPAU"
+msgstr "Anvend MPEG-2 VDPAU"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Aktivér dette for benytte hardware acceleration til MPEG-(1/2) codecs. Hvis deaktiverét vil CPU'en blive brugt istedet. Ældre Radeon grafikkort har en tendens til at segfaulte hvis denne altiverés."
+
+msgctxt "#13443"
+msgid "Use Mpeg-4 VDPAU"
+msgstr "Brug MPEG-4 VDPAU"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Aktiver denne indstilling for at bruge hardware acceleration til MPEG-4 codec. Hvis deaktiveret CPU vil blive brugt i stedet. Noget ION Hardware har problemer med dette hvis aktiveret som standard."
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "Brug VC-1 VDPAU"
+
+msgctxt "#13446"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
+msgstr "Aktiver denne indstilling for at bruge hardware acceleration til VC-1 baserede codecs. Hvis deaktiveret vil CPU blive brugt i stedet. AMD Hardware med VDPAU kan ikke afkode VC-1 Simple."
+
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr "Brug MPEG-2 VAAPI"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
+msgstr "Aktiver denne indstilling for at bruge hardware acceleration til MPEG-(1/2) codecs. Hvis deaktiveret vil CPU blive brugt i stedet. Nogle MPEG-2 videoer kan have grønne artefakter."
+
+msgctxt "#13449"
+msgid "Use Mpeg-4 VAAPI"
+msgstr "Brug MPEG-4 VAAPI"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
+msgstr "Aktivér denne for at bruge hardware acceleration for MPEG-4 codec'et. Hvis deaktiverét vil CPU'en blive brugt."
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "Brug VC-1 VAAPI"
+
+msgctxt "#13452"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
+msgstr "Aktiver denne indstilling for at bruge hardware acceleration til VC-1 baserede codecs. Hvis deaktiveret vil CPU blive brugt i stedet. Især VC-1 Interlaced fejler på Intel hardware."
+
+msgctxt "#13454"
+msgid "Decoding method"
+msgstr "Dekodnings metode"
+
+msgctxt "#13455"
+msgid "Software"
+msgstr "Software"
+
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Hardwareaccelereret"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V synkroniseingsmetode"
@@ -4796,6 +5060,10 @@ msgstr "Videotiming (tabt/dobbeltlyd)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Videotiming (Resampling af lyd)"
+
+msgctxt "#13504"
+msgid "Maximum speedup/slowdown amount (%)"
+msgstr "Maksimalt forøgelse/nedsættelsesmængde (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -4860,6 +5128,14 @@ msgstr "%.1f Sekund"
 msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f Sekunder"
+
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d minut"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d Minutter"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -4989,29 +5265,33 @@ msgctxt "#14024"
 msgid "Enter the nearest large town"
 msgstr "Indtast den nærmeste større by"
 
+msgctxt "#14025"
+msgid "Video/Audio/DVD cache - Hard disk"
+msgstr "Video/Lyd/DVD-cache - Harddisk"
+
 msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Videocache - DVD-ROM"
 
 msgctxt "#14027"
-msgid "Local Network"
-msgstr "Lokalt netværk"
+msgid "Video cache - Local Network"
+msgstr "Videocache - lokalt netværk"
 
 msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
+msgid "Video cache - Internet"
+msgstr "Videocache - Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Lydcache - DVD-ROM"
 
 msgctxt "#14031"
-msgid "Local Network"
-msgstr "Lokalt netværk"
+msgid "Audio cache - Local Network"
+msgstr "Lydcache - lokalt netværk"
 
 msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
+msgid "Audio cache - Internet"
+msgstr "Lydcache - Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5024,6 +5304,10 @@ msgstr "Lokalt netværk"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Tjenester"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "DVD Cache - lokalt netværk"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5257,6 +5541,22 @@ msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Stop rip af CD'en"
 
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Acceleration"
+
+msgctxt "#15012"
+msgid "Unavailable source"
+msgstr "Ikke tilgængelig kilde"
+
+msgctxt "#15013"
+msgid "What would you like to do with media items from %s"
+msgstr "Hvad vil du gerne gøre med medie ting fra %s"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Behold"
+
 msgctxt "#15015"
 msgid "Remove"
 msgstr "Fjern"
@@ -5332,6 +5632,10 @@ msgstr "Ikke forbundet"
 msgctxt "#15213"
 msgid "Play using..."
 msgstr "Afspil med..."
+
+msgctxt "#15214"
+msgid "Use smoothed A/V synchronisation"
+msgstr "Brug udglattet A/V synkronisering"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
@@ -5473,6 +5777,10 @@ msgctxt "#16031"
 msgid "No matching songs in the library."
 msgstr "Ingen matchende sange i biblioteket."
 
+msgctxt "#16032"
+msgid "Could not initialise database."
+msgstr "Kunne ikke initialisere databasen."
+
 msgctxt "#16033"
 msgid "Could not open database."
 msgstr "Kunne ikke åbne databasen."
@@ -5532,6 +5840,14 @@ msgstr "Marker som ikke set"
 msgctxt "#16105"
 msgid "Edit title"
 msgstr "Rediger titel"
+
+msgctxt "#16106"
+msgid "Manage..."
+msgstr "Administrer..."
+
+msgctxt "#16107"
+msgid "Edit sort title"
+msgstr "Rediger sorterings titel"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -5621,6 +5937,10 @@ msgctxt "#16314"
 msgid "Inverse Telecine"
 msgstr "Omvendt Telecine"
 
+msgctxt "#16315"
+msgid "Lanczos3 optimised"
+msgstr "Lanczos3 optimeret"
+
 msgctxt "#16316"
 msgid "Auto"
 msgstr "Automatisk"
@@ -5649,9 +5969,21 @@ msgctxt "#16322"
 msgid "Spline36"
 msgstr "Spline36"
 
+msgctxt "#16323"
+msgid "Spline36 optimised"
+msgstr "Spline36 optimeret"
+
 msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Softwareblanding"
+
+msgctxt "#16325"
+msgid "VDPAU - Bob"
+msgstr "VDPAU - Bob"
+
+msgctxt "#16326"
+msgid "DXVA-HD"
+msgstr "DXVA-HD"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -5744,6 +6076,10 @@ msgstr "PVR Backend %i - %s"
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "TV-optagelser"
+
+msgctxt "#19018"
+msgid "Folder with channel icons"
+msgstr "Folder med kanal ikoner"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -5933,6 +6269,10 @@ msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "EPG-standardvindue"
 
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "Kanal ikoner"
+
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr "Denne begivenhed optages allerede."
@@ -5944,6 +6284,10 @@ msgstr "Denne optagelse kunne ikke slettes.  Kig i log'en for detajler."
 msgctxt "#19069"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19070"
+msgid "Go to now"
+msgstr "Gå til nu"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -6056,6 +6400,18 @@ msgstr "Indtast optagelsens navn"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "Advarsel"
+
+msgctxt "#19099"
+msgid "Service"
+msgstr "Tjeneste"
+
+msgctxt "#19100"
+msgid "Mux"
+msgstr "Mux"
+
+msgctxt "#19101"
+msgid "Provider"
+msgstr "Leverandør"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -6301,6 +6657,10 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr "Tidsfrist for start af afspilning"
 
+msgctxt "#19171"
+msgid "Start playback minimised"
+msgstr "Start afspilning minimeret"
+
 msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr "Øjeblikkelig optagelsesvarighed"
@@ -6368,6 +6728,10 @@ msgstr "EPG-databasen nulstilles"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "Fortsæt seneste kanal ved opstart"
+
+msgctxt "#19190"
+msgid "Minimised"
+msgstr "Minimeret"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6490,12 +6854,16 @@ msgid "Channels in"
 msgstr "Kanaler i"
 
 msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "Synkroniser kanalgrupper med backend's"
+msgid "Synchronise channel groups with backend(s)"
+msgstr "Synkroniser kanalgrupper med backend(s)"
 
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
+msgstr "Intet PVR-add-on kunne aktiveres. Tjek dine indstillinger eller log'en for mere information."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6521,6 +6889,10 @@ msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
 msgstr "Luk kanal-OSD efter kanalskift"
 
+msgctxt "#19230"
+msgid "Prevent EPG updates during playback"
+msgstr "Undgå EPG-opdateringer under afspilning"
+
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
 msgstr "Brug altid kanalrækkefølge fra backend(s)"
@@ -6532,6 +6904,10 @@ msgstr "Ryd søgeresultater"
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
 msgstr "Vis en besked ved opdatering af optagelser"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgstr "Brug kanalnumre fra backend (fungerer kun med 1 aktiveret PVR add-on)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6553,9 +6929,17 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Starter baggrundstråde"
 
+msgctxt "#19240"
+msgid "No PVR Add-on enabled"
+msgstr "Intet PVR add-on aktiveret"
+
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
 msgstr "PVR-håndteringen er blevet aktiveret uden et"
+
+msgctxt "#19242"
+msgid "enabled PVR Add-on. Enable at least one Add-on"
+msgstr "aktiveret PVR-add-on. Aktivér mindst én add-on"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -6669,9 +7053,17 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Alle optagelser"
 
+msgctxt "#19271"
+msgid "No PVR Add-ons could be found"
+msgstr "Ingen PVR-add-ons kunne findes"
+
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
 msgstr "Du skal bruge en tuner, backend-software og en"
+
+msgctxt "#19273"
+msgid "Add-on for the backend to be able to use PVR."
+msgstr "Add-on for at backend kan benytte PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -6704,6 +7096,22 @@ msgstr "Klientspecifikke indstillinger"
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Bekræft kanalskift ved at trykke OK"
+
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "Nuværende ikoner"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "Ingen ikoner"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "Vælg ikon"
+
+msgctxt "#19285"
+msgid "Browse for icon"
+msgstr "Se efter ikon"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -6989,6 +7397,10 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Motor"
 
+msgctxt "#19648"
+msgid "Fitness & Health"
+msgstr "Fitness & Sundhed"
+
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Madlavning"
@@ -7008,6 +7420,10 @@ msgstr "Specielle karaktertræk"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Oprindeligt sprog"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "Sort & hvid"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -7332,6 +7748,14 @@ msgstr "Vis vejrudsigt"
 msgctxt "#20085"
 msgid "Show system info"
 msgstr "Vis systeminfo"
+
+msgctxt "#20086"
+msgid "Show available disk space C: E: F:"
+msgstr "Vis ledig disk plads på C: E: F:"
+
+msgctxt "#20087"
+msgid "Show available disk space E: F: G:"
+msgstr "Vis ledig disk plads på E: F: G:"
 
 msgctxt "#20088"
 msgid "Weather info"
@@ -7777,6 +8201,14 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Fejl ved hentning af kunstnerinfo"
 
+msgctxt "#20220"
+msgid "Override song tags with online information"
+msgstr "Overskriv sanges tags med online information"
+
+msgctxt "#20221"
+msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
+msgstr "Med dette aktiveret, vil alle oplysninger, der er downloadet for albums og kunstnere tilsidesætte det du har angivet i din sang tags, såsom genrer, årstal, sang kunstnere osv. Nyttigt, hvis du har MusicBrainz identifikatorer i din sang tags."
+
 msgctxt "#20240"
 msgid "Android music"
 msgstr "Android musik"
@@ -7909,6 +8341,10 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Skanner albummer med %s"
 
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Film plot"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Afspil del..."
@@ -7922,8 +8358,8 @@ msgid "This will reset the calibration values for %s"
 msgstr "Dette vil nulstille kalibreringen af %s"
 
 msgctxt "#20327"
-msgid "to it's default values."
-msgstr "til standardværdierne."
+msgid "to its default values."
+msgstr "til dets standard værdier."
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -8141,10 +8577,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Specials"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Hent automatisk sæsonminiaturebilleder"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Den valgte mappe indeholder en enkelt video"
@@ -8262,12 +8694,16 @@ msgid "Flatten"
 msgstr "Fladgør"
 
 msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Fladgør TV-serier"
+msgid "Flatten TV show seasons"
+msgstr "Flatten TV show sæsonner"
 
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Hent fankunst"
+
+msgctxt "#20414"
+msgid "Show fanart in video and music libraries"
+msgstr "Vis fankunst i video- og musikbibliotekerne"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -8349,6 +8785,10 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Sæt"
 
+msgctxt "#20435"
+msgid "Combine split video items"
+msgstr "Kombiner splittede video filer"
+
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Eksporter miniaturebilleder af skuespillere"
@@ -8428,6 +8868,10 @@ msgstr "Lytter"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Lyttere"
+
+msgctxt "#20456"
+msgid "Flatten library hierarchy"
+msgstr "Udjævn bibliotekshieraki "
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -8541,6 +8985,10 @@ msgctxt "#21365"
 msgid "Remove media share"
 msgstr "Fjern mediedelingsmappe"
 
+msgctxt "#21366"
+msgid "Custom subtitle folder"
+msgstr "Brugerdefineret undertekst folder"
+
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Alternativ mappe til film og undertekster"
@@ -8550,8 +8998,8 @@ msgid "Override ASS/SSA subtitles fonts"
 msgstr "Underkend ASS/SSA skrifttype for undertekster"
 
 msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Aktiver mus og understøttelse af touch-skærm"
+msgid "Enable mouse and touch screen support"
+msgstr "Aktiver support for mus og berøringsfølsomskærm"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -8909,6 +9357,10 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "Blandede"
 
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "undertekst position på skærmen"
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Fast"
@@ -8940,6 +9392,10 @@ msgstr "%d til %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s til %s"
+
+msgctxt "#21602"
+msgid "(External)"
+msgstr "(Ekstern)"
 
 msgctxt "#21800"
 msgid "File name"
@@ -9333,6 +9789,10 @@ msgctxt "#22020"
 msgid "Guide"
 msgstr "Guide"
 
+msgctxt "#22021"
+msgid "Allowed error in aspect ratio to minimise black bars"
+msgstr "Tilladte fejl i billedeforhold, for at minimere sorte bjælker"
+
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "Vis videofiler i oversigten"
@@ -9493,6 +9953,10 @@ msgctxt "#24009"
 msgid "Script"
 msgstr "Script"
 
+msgctxt "#24010"
+msgid "Visualisation"
+msgstr "Visualiserings-forudindstillinger"
+
 msgctxt "#24011"
 msgid "Add-on repository"
 msgstr "Add-on fjernlager"
@@ -9542,6 +10006,10 @@ msgid "Enable"
 msgstr "Aktiver"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Deaktiveret"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Add-on deaktiveret"
 
@@ -9613,13 +10081,29 @@ msgctxt "#24043"
 msgid "Available Updates"
 msgstr "Tilgængelige Opdateringer"
 
+msgctxt "#24044"
+msgid "Dependencies not met. Please contact Add-on author."
+msgstr "Afhængigheder er ikke imødekommet. Venligst kontakt add-ons udvikleren."
+
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr "Add-on har ikke den korrekte struktur"
 
+msgctxt "#24046"
+msgid "%s is used by the following installed Add-on(s)"
+msgstr "%s er brugt af følgende installerede add-ons"
+
+msgctxt "#24047"
+msgid "This Add-on cannot be uninstalled"
+msgstr "Denne add-on kan ikke afinstalleres"
+
 msgctxt "#24048"
 msgid "Rollback"
 msgstr "Tilbagerulning"
+
+msgctxt "#24049"
+msgid "Incompatible"
+msgstr "Inkompatibel"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
@@ -9725,6 +10209,10 @@ msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Lås håndtering af Add-ons"
 
+msgctxt "#24091"
+msgid "This Add-on cannot be disabled"
+msgstr "Denne add-on kan ikke deaktiveres"
+
 msgctxt "#24094"
 msgid "(current)"
 msgstr "(nuværende)"
@@ -9732,6 +10220,10 @@ msgstr "(nuværende)"
 msgctxt "#24095"
 msgid "(blacklisted)"
 msgstr "(sortlistet)"
+
+msgctxt "#24096"
+msgid "Add-on is incompatible or has been marked broken in repository."
+msgstr "Add-on er ikke kompatibel eller er blevet markeret som defekt i repositoriet."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -9761,9 +10253,93 @@ msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Skin'et mangler nogle filer"
 
+msgctxt "#24104"
+msgid "Add-on is incompatible due to unmet dependencies."
+msgstr "Add-on er ikke kompatibel grundet ikke-imødekommet afhængigheder."
+
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Pause når der søges efter undertekster"
+
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Angive, hvor hentede undertekster skal gemmes, det samme sted som video eller en brugerdefineret placering."
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "søger efter undertekster ..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d undertekster fundet"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Ingen undertekster fundet"
+
+msgctxt "#24110"
+msgid "Downloading subtitles ..."
+msgstr "Henter undertekster..."
+
+msgctxt "#24111"
+msgid "Languages to download subtitles for"
+msgstr "Sprog som der skal downloades undertekster for"
+
+msgctxt "#24112"
+msgid "Set languages to use when searching for subtitles. Not all subtitle services will use all languages."
+msgstr "Opsæt de sprog som skal benyttes når undertekster downloades. Ikke alle undertekst services bruger alle sprog."
+
+msgctxt "#24113"
+msgid "Failed to download subtitle"
+msgstr "Kunne ikke download undertekster"
+
+msgctxt "#24114"
+msgid "No subtitle services installed"
+msgstr "Der er ikke installeret nogen undertekst service"
+
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "Undertekst opbevaringssted"
+
+msgctxt "#24116"
+msgid "Default TV Service"
+msgstr "Standard TV Service"
+
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles."
+msgstr "Vælg den service der vil blive brugt som standard til at søge efter TV undertekster."
+
+msgctxt "#24118"
+msgid "Default Movie Service"
+msgstr "Standard Movie service"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles."
+msgstr "Vælg den service der vil blive brugt som standard til at søge efter film undertekster."
+
+msgctxt "#24120"
+msgid "Manual search string"
+msgstr "Manuel søgestreng"
+
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Indtast søgeord"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Opdater alle"
+
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr "Pause den aktuelle video imens der søges efter undertikster og fortsæt når en undertekst er tilgængelig."
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "Ved siden af videoen"
+
+msgctxt "#24125"
+msgid "Custom location"
+msgstr "Brugerdefineret placering"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -9792,6 +10368,18 @@ msgstr "Titel: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Vælg afspilningsemne"
+
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "Kapitler: %u - varighed: %s"
+
+msgctxt "#25008"
+msgid "Blu-ray Disc playback failed"
+msgstr "Blu-ray Disk-afspilning mislykkedes"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray Disc is not supported"
+msgstr "Menuen i denne Blu-ray Disk er ikke understøttet"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -9868,6 +10456,10 @@ msgstr "Spørg om hentning før afspilning af video"
 msgctxt "#33016"
 msgid "Clips"
 msgstr "Klip"
+
+msgctxt "#33017"
+msgid "Restart plug-in to enable"
+msgstr "Genstart plugin for at aktivere den"
 
 msgctxt "#33018"
 msgid "Tonight"
@@ -10137,6 +10729,14 @@ msgctxt "#34005"
 msgid "Flac"
 msgstr "Flac"
 
+msgctxt "#34006"
+msgid "MPEG-4 Audio (FFmpeg M4A AAC)"
+msgstr "MPEG-4 Lyd (FFmpeg M4A AAC)"
+
+msgctxt "#34007"
+msgid "Windows Media Audio 2 (FFmpeg wmav2)"
+msgstr "Windows Media Lyd 2 (FFmpeg wmav2)"
+
 msgctxt "#34100"
 msgid "Number of channels"
 msgstr "Antal lydkanaler"
@@ -10180,6 +10780,10 @@ msgstr "7.0"
 msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
+
+msgctxt "#34111"
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
+msgstr "Vælg opførslen når lyd ikke er påkrævet for afspilning eller GUI. [Always] - kontinuerlig ikke-hørbar lyd, dette holder den modtagende lyd enhed i live for nye lyde, men det kan også forhindre lyde fra andre applikationer. [1-10 minutter] - det samme som Always, bortset fra at efter den valgte periode skifter lyden til suspenderet tilstand [Off] - Lyd skifter til en suspenderet tilstand. NB - lyd går tabt hvis lyden går i suspenderet tilstand."
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
@@ -10253,6 +10857,10 @@ msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "Mislykkedes at initialisere video-filtre og -skalering, går tilbage til bilineær skalering"
 
+msgctxt "#34402"
+msgid "Failed to initialise audio device"
+msgstr "Start af lydenhed mislykkedes"
+
 msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Kontroller dine lydindstillinger"
@@ -10284,6 +10892,10 @@ msgstr "Ydre enheder"
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr "Generisk HID enhed"
+
+msgctxt "#35002"
+msgid "Generic network adaptor"
+msgstr "Generisk netværksadapter"
 
 msgctxt "#35003"
 msgid "Generic disk"
@@ -10321,6 +10933,10 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr "Deaktivér joystick når denne enhed er repræsenteret"
 
+msgctxt "#35103"
+msgid "Enable system keys in fullscreen"
+msgstr "Aktiver system taster i fuldskærmsmode."
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Lokalitet"
@@ -10340,6 +10956,10 @@ msgstr "Leverandør"
 msgctxt "#35504"
 msgid "Product ID"
 msgstr "Produkt-ID"
+
+msgctxt "#36000"
+msgid "Pulse-Eight CEC adaptor"
+msgstr "Pulse-Eight CEC-adapter"
 
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
@@ -10361,6 +10981,10 @@ msgctxt "#36005"
 msgid "Enable switch side commands"
 msgstr "Aktiver sideskift-kommandoer"
 
+msgctxt "#36006"
+msgid "Could not open the adaptor"
+msgstr "Kunne ikke åbne adapteren"
+
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
 msgstr "Enheder, der skal tændes, når XBMC startes"
@@ -10381,6 +11005,10 @@ msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Kunne ikke finde CEC-kommunikationsporten. Opsæt den manuelt."
 
+msgctxt "#36012"
+msgid "Could not initialise the CEC adaptor. Please check your settings."
+msgstr "Kunne ikke initialisere CEC-adapteren. Tjek venligst dine indstillinger."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI-portnummer"
@@ -10388,6 +11016,10 @@ msgstr "HDMI-portnummer"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Tilsluttet"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adaptor: libCEC was not found on your system."
+msgstr "Kunne ikke initialisere CEC-adapteren: libCEC blev ikke fundet på dit system."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10441,6 +11073,14 @@ msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Forbindelse mistet"
 
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adaptor"
+msgstr "Denne bruger har ikke tilladelse til at åbne CEC-adapteren"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adaptor"
+msgstr "Kommunikationsporten er optaget. Kun ét program kan tilgå CEC-adapteren."
+
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
 msgstr "Sæt afspilning på pause ved skift til en anden kilde"
@@ -10473,17 +11113,21 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Emnemappe"
 
+msgctxt "#36042"
+msgid "Use limited colour range (16-235)"
+msgstr "Benyt begrænset farveområde (16-235)"
+
 msgctxt "#36101"
-msgid "Change the look and feel of the User Interface."
-msgstr "Skift udseende for brugergrænsefladen."
+msgid "Change the look and feel of the user interface."
+msgstr "Ændre udseendet og fornemmelsen af ​​brugergrænsefladen."
 
 msgctxt "#36102"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing all Skin related settings."
+msgstr "Kategori indeholdende alle Skin-indstillnger."
 
 msgctxt "#36103"
-msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
-msgstr "Vælg skin for brugergrænsefladen. Dette vil ændre udseendet af XBMC."
+msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
+msgstr "Vælg skin i brugergrænsefladen. Dette vil definere udseendet og fornemmelsen af ​​XBMC."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -10498,20 +11142,20 @@ msgid "Change the colours of your selected skin."
 msgstr "Skift farve for det valgte skin."
 
 msgctxt "#36107"
-msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
-msgstr "Vælg skrifttype til anvendelse i brugergrænsefladen. Skrifttypen bestemmes af dit skin."
+msgid "Choose the fonts displayed in the user interface. The font sets are configured by your skin."
+msgstr "Vælg de skrifttyper, der vises i brugergrænsefladen. Skrifttypen sæt er konfigureret af din skin."
 
 msgctxt "#36108"
-msgid "Resize the view of the GUI."
-msgstr "Ændre størrelsen for den grafiske brugergrænseflade."
+msgid "Resize the view of the user interface."
+msgstr "Resize visningen af brugergrænsefladen."
 
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "Vælg medievinduet XBMC skal vise ved opstart."
 
 msgctxt "#36110"
-msgid "Select or disable the sound scheme used in the User Interface."
-msgstr "Vælg eller deaktivér lydtema for brugergrænsefladen."
+msgid "Select or disable the sound scheme used in the user interface."
+msgstr "Vælg eller deaktiver lyd schemet der bruges i brugergrænsefladen."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -10522,11 +11166,11 @@ msgid "Edit the RSS feeds."
 msgstr "Redigér rss-feeds."
 
 msgctxt "#36113"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing all locale/regional settings."
+msgstr "Kategori indeholdende indstillinger for region/sprogindstillinger."
 
 msgctxt "#36114"
-msgid "Chooses the language of the User Interface."
+msgid "Chooses the language of the user interface."
 msgstr "Vælg sprog for brugergrænsefladen"
 
 msgctxt "#36115"
@@ -10534,8 +11178,8 @@ msgid "Select the formats for temperature, time and date. The available options 
 msgstr "Vælg format for temperatur, tid og dato. De tilgængelige muligheder afhænger af det valgte sprog."
 
 msgctxt "#36116"
-msgid "Choose which character set is used for displaying text in the GUI."
-msgstr "Vælg hvilket tegnsæt der skal benyttes ved visning af tekst i brugergrænsefladen."
+msgid "Choose which character set is used for displaying text in the user interface."
+msgstr "Vælg hvilket karakterset der bruges til at vise tekst i brugergrænsefladen."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -10554,8 +11198,8 @@ msgid "Select the default subtitles when different languages are available."
 msgstr "Vælg standard-sprog for undertekster, når flere sprog er tilgængelige."
 
 msgctxt "#36121"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Kategori indeholdende indstillinger for hvordan fil-listerne vises."
 
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
@@ -10565,29 +11209,29 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Vis filendelser for medie-filer. Eksempelvis ville 'Sangtitel.mp3' ellers vises som 'Sangtitel'."
 
-msgctxt "#36124"
-msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-msgstr "Ignorer specifikke ord under sortering. For eksempel, 'The Simpsons' ville blive sorteret som 'Simpsons'. For at konfigurerer udeladte ord, se http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Tillad at filer slettes eller omdøbes i brugergrænsefladen via kontekstmenuen (Tryk C på din keyboard for at fremvise menuen)."
 
 msgctxt "#36126"
-msgid "Show the add source button from root sections of the user interface."
-msgstr "Vis Tilføj kilde-knappen i rod-sektionen for brugergrænsefladen."
+msgid "Show the add source button in root sections of the user interface."
+msgstr "Vis tilføj kilde knappen i rod-sektionerne i brugergrænsefladen."
 
 msgctxt "#36127"
-msgid "Show hidden files and directories."
-msgstr "Vis skjulte filer og mapper."
+msgid "Show hidden files and directories when listing files."
+msgstr "Inkluder skjulte filer og kataloger i fil-lister."
 
 msgctxt "#36128"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing all screensaver settings."
+msgstr "Kategory indeholdende alle screensaver indstillinger"
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
 msgstr "Sæt den ønskede ventetid, før pauseskærmen vises."
+
+msgctxt "#36130"
+msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgstr "Vælg pauseskærmen. XBMC vil tvinge 'Nedton' pauseskærmen når video playback i fuldskærm pauses eller en dialog boks er aktiv."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -10596,6 +11240,10 @@ msgstr "Skift specifikke pauseskærms-indstillinger. Indstillingerne afhænger a
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Vis den valgte pauseskærm."
+
+msgctxt "#36133"
+msgid "If music is being played, XBMC will start the selected visualisation instead of displaying the screensaver."
+msgstr "Hvis musik afspilles starter XBMC den valgte visualisation i stedet for pauseskærmen."
 
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
@@ -10614,24 +11262,20 @@ msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36138"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "Sektion med indstillinger for videoer"
 
 msgctxt "#36139"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing the settings for how the video library is handled."
+msgstr "Kategori indeholdende indstillinger for video biblioteket"
 
 msgctxt "#36140"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable the video library."
+msgstr "Aktiver video biblioteket."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "Vis plottet for usete medier i Video Library."
-
-msgctxt "#36142"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
@@ -10666,68 +11310,72 @@ msgid "Import a XML file into the Video Library database."
 msgstr "Importer en XML-fil til videodatabasen."
 
 msgctxt "#36151"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how video playback is handled."
+msgstr "Kategori indeholdende indstillinger for video afspilning."
 
 msgctxt "#36152"
-msgid "Enable automatic playback of the next file in the list of the selected item."
-msgstr "Aktiver automatisk afspilning af den næste fil i listen af valgte emner."
+msgid "Enable automatic playback of the next file in the list."
+msgstr "Aktiver automatisk afspilning af den næste fil i listen."
 
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Justér metoden der anvendes til at behandle og vise videoer."
 
-msgctxt "#36154"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
-
-msgctxt "#36155"
-msgid "Enable hardware decoding of video files."
-msgstr "Aktiver hardware dekodning af video-filer."
-
 msgctxt "#36156"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "Aktiver VAAPI hardware dekodning af video filer. Mest brugt til Intel grafikkort og i visse situationer AMD grafikkkort."
 
 msgctxt "#36157"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36158"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "Aktiver DXVA2 hardware dekodning af video filer."
 
 msgctxt "#36159"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable CrystalHD decoding of video files."
+msgstr "Aktiver CrystalHD dekodning fa video filer."
 
 msgctxt "#36160"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable VDA hardware decoding of video files."
+msgstr "Aktiver VDA hardware dekodning af video filer."
 
 msgctxt "#36161"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "Aktiver OpenMax hardware dekodning af video filer."
 
 msgctxt "#36162"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "Aktiver VideoToolbox hardware dekodning af video filer."
 
 msgctxt "#36163"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "Aktiver dekodning af video filer ved brug af pixel buffer objekter."
 
 msgctxt "#36164"
-msgid "Select when the refresh rate adjustments should take place."
-msgstr "Vælg hvornår opdateringshastighedens justeringer skal ske."
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "Tillad as skærmens refresh-rate ændres til at matche video frame-raten. Dette kan give mere flydende video afspilning."
 
 msgctxt "#36165"
-msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
-msgstr "Sæt mediet på pause i et kort stykke tid, når opdateringshastigheden ændres. Aktivér for automatisk at ændre opdateringshastigheden så den matcher den video der afspilles. Dette kan potentielt give en perfekt jævn afspilning, da videomateriale kan være optaget ved forskellige opdateringshastigheder, hvilket kræver at skærmen matcher videomaterialet for at blive vist uden hakker og flimmer."
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "Pause kortvarigt under skift af refresh-rate."
+
+msgctxt "#36166"
+msgid "Synchronise the video to the refresh rate of the monitor."
+msgstr "Synkroniser video til skærmens opdateringsfrekvens."
 
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "Audio skal forblive i sync, det kan enten ske ved resampling, springe pakker over eller dublere pakker eller justere klokken hvis den kommer for meget ud af sync."
+
+msgctxt "#36168"
+msgid "Maximum video speed adjust to match actual screen refresh rate."
+msgstr "Maksimal video hastighed justeret til at matche den aktuelle skærms refresh rate."
+
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Vælg kvaliteten af ​​resampling i tilfælde, hvor lydudgangen skal være på en anden samplingfrekvens, end den der anvendes ved kilden. [Low] er hurtig og vil have minimal indflydelse på systemets ressourcer såsom brugen af CPU, [Medium] & [Høj] vil bruge gradvis flere system ressourcer."
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
@@ -10737,9 +11385,13 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "Vælg hvilket zoomniveau som 4:3 videoer bliver vist med på widescreen-tv."
 
+msgctxt "#36172"
+msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
+msgstr "VDPAU studie-niveau konversion giver en måde avancerede applikationer så som XBMC at influerer på farvepalette konversionen."
+
 msgctxt "#36173"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable upscaling using VDPAU."
+msgstr "Aktiver opskalering ved brug af VDPAU."
 
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
@@ -10750,12 +11402,16 @@ msgid "Scale Teletext to 4:3 ratio."
 msgstr "Skalerer Tekst-TV til 4:3."
 
 msgctxt "#36176"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how video file lists are handled."
+msgstr "Kategori indeholdende indstillinger for video fil-lister."
+
+msgctxt "#36177"
+msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgstr "Skift mellem Vælg, Afspil (default), Genoptag og Vis information. Vælg vælger et punkt, f.eks. at åbne en sti i filtilstand. Genoptag genoptager automatisk video fra sidst sete position, selv efter genstart af systemet"
 
 msgctxt "#36178"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Udtræk thumbnails og metadata så som codec og aspekt ratio fra videoer."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -10769,33 +11425,41 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Kombiner multi-part video, DVD foldere og musik foldere ned til et element i ikke-biblioteks visninger."
+
+msgctxt "#36183"
+msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
+msgstr "Fjerner titler, genrer etc. fra biblioteksoversigt. Ved valg af en kategori skiftes der direkte til titel siden."
+
 msgctxt "#36184"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how subtitles are handled."
+msgstr "Kategori indeholdende indstillinger for undertekster."
 
 msgctxt "#36185"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Set the font type to be used for subtitles."
+msgstr "Sæt skrifttypen for undertekster"
 
 msgctxt "#36186"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Set the font size to be used for subtitles."
+msgstr "Sæt skriftstørrelsen for undertekster."
 
 msgctxt "#36187"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Set the font style to be used for subtitles."
+msgstr "Sæt skriftstil for undertekster."
 
 msgctxt "#36188"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Set the font colour to be used for subtitles."
+msgstr "Sæt skriftfarven for undertekster."
 
 msgctxt "#36189"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Set the font character set to be used for subtitles."
+msgstr "Sæt tegnindstillinger for undertekster."
 
 msgctxt "#36190"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Opprioriter ASS/SSA skrifttyper for undertekster."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -10806,8 +11470,8 @@ msgid "Location of subtitles on the screen."
 msgstr "Placering af undertekster på skærmen."
 
 msgctxt "#36193"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how DVDs are handled."
+msgstr "Kategori indeholdende indstillinger for håndterng fa DVD'er"
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -10845,13 +11509,17 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36203"
+msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
+msgstr "Aktiver Personal Video Recorder (PVR) funktioner i XBMC. Dette kræver, at mindst en PVR add-on er installeret."
+
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "importere kanalgrupper fra PVR-backend (hvis det er supporteret). Det vil slette brugeroprettet grupper, hvis de ikke er fundet på backend."
 
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
-msgstr "Sorter kanaler efter kanalnummer på backend, men vis XBMC's egene kanal numre."
+msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
+msgstr "Sorter kanalerne efter kanalnummer på backend, men brug XBMC egen nummerering afkanaler."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -10906,12 +11574,16 @@ msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36219"
-msgid "Default EPG window to show. Defaults to Timeline."
-msgstr "Standard EPG visning. Normal er Tidslinje"
+msgid "Default EPG window to show."
+msgstr "Standard EPG interval der skal vises."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "Antal dages EPG data der skal importeres fra backends."
 
 msgctxt "#36221"
-msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
-msgstr "Timer mellem EPG data import fra backend. Standard er 120 minutter."
+msgid "Time between EPG data imports from backends."
+msgstr "Interval imellem EPG data import fra backends."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -10925,10 +11597,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Skjul \"Ingen information tilgængelig\" beskeden når der ikke findes EPG data for kanal."
 
-msgctxt "#36225"
-msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
-msgstr "Set data i XBMC's lokale EPG database og genimporter data fra backend."
-
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
@@ -10938,8 +11606,12 @@ msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Vis den valgte kanals stream i en lille boks i stedet for fuld skærm."
 
 msgctxt "#36228"
-msgid "Show the last viewed channel if switching to live tv."
-msgstr "Vis den sidst sete kanal når der skiftes til live-tv."
+msgid "Continue with the last viewed channel on startup."
+msgstr "Fortsæt med den sidst sete kanal ved opstart."
+
+msgctxt "#36229"
+msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
+msgstr "Vis signal kvalitetsoplysninger i codec-information vinduet (hvis det understøttes af add-on og backend)."
 
 msgctxt "#36230"
 msgid "No info available yet."
@@ -10958,8 +11630,24 @@ msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36234"
-msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
-msgstr "Varighed af optagelsen ved tryk på optag knappen eller ved oprettelse af en ny manuel optagelse. Standard er 180 minutter."
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "Længe af øjeblikkelig optagelser når optag-knappen benyttes."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "Prioritet af optagelsen. Højere numre betyder højere prioritet. Ikke supporteret af alle add-ons og backends."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "Slet optagelser efter denne tid. Ikke supporteret af alle add-ons og backends."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "Start optagelser før den aktuelle tid. Ikke supporteret af alle add-ons og backends."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "Afslut optagelser efter den aktuelle tid. Ikke supporteret af alle add-ons og backends."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
@@ -10974,16 +11662,12 @@ msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hib
 msgstr "Udfør \"Vågn-op komandoen\" nedenfor, når XBMC afsluttes eller går i dvale tilstand. Tidspunkt for næste planlagte optagelse tilføjes som parameter."
 
 msgctxt "#36242"
-msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
-msgstr "Kommandoen vil ikke blive udført hvis en optagelse er planlagt indenfor timeout perioden. Standard er 15 minutter."
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "Kommandoen vil ikke blive eksekveret når en optagelse påbegyndes indenfor denne timeout. "
 
 msgctxt "#36243"
-msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
-msgstr "Komandoen til udførelse. Standard er '/usr/bin/setwakeup.sh'."
-
-msgctxt "#36244"
-msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
-msgstr "Tid som trækkes fra start tidspunkt for næste planlagte optagelse. Standard er 15 minutter."
+msgid "The command to execute."
+msgstr "Kommandoen som skal eksekveres."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11006,8 +11690,8 @@ msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Indtast en ny PIN kode for at låse op for kanaler låst med forældrekontrol."
 
 msgctxt "#36250"
-msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
-msgstr "Spørg efter PIN kode igen efter X antal sekunder, når der forsøges på adgang til kanaler låst med forældrekontrol. Standard er 300 sekunder."
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
+msgstr "Bed om pinkoden igen når en forældrelåst kanal tilgås, og ikke pinkoden ikke tidligere har været efterspurgt."
 
 msgctxt "#36251"
 msgid "No info available yet."
@@ -11018,12 +11702,12 @@ msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36253"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Section that contains settings related to music files and how they are handled."
+msgstr "Sektion med indstillinger for musik filer og deres håndtering."
 
 msgctxt "#36254"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable the music library."
+msgstr "Aktiver musik biblioteket."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11034,8 +11718,8 @@ msgid "Automatically fetch album and artist information via scrapers during scan
 msgstr "Automatisk hent album of artist information ved hjælp af scrapers i forbindelse med skanning."
 
 msgctxt "#36257"
-msgid "Select the default album information source"
-msgstr "Vælg standard album information kilde"
+msgid "Select the default album information source."
+msgstr "Vælg standardkilde til album information"
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11049,6 +11733,10 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36261"
+msgid "No info available yet."
+msgstr "Ingen information tilgængelig endnu."
+
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
 msgstr "Exporter musik biblioteks databasen til XML filer. Dette vil overskrive eventuelle eksisterende XML filer."
@@ -11058,16 +11746,20 @@ msgid "Import a XML file into the Music Library database."
 msgstr "Importer en XML fil ind i musik biblioteks databasen."
 
 msgctxt "#36264"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how music playback is handled."
+msgstr "Kategori indeholdende indstillinger for musik afspilning."
 
 msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
 msgstr "XBMC afspiller automatisk den næste fil i den nuværende mappe. For eksempel i \"Fil visning: Efter et nummer er blevet afspillet, afspiller XBMC automatisk den næste fil i den samme mappe."
 
 msgctxt "#36266"
-msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
-msgstr "Når sange tilføjes en afspilningsliste, sættes de i kø i stedet for at blive afspillet med det samme."
+msgid "When songs are selected they are queued instead of playback starting immediately."
+msgstr "Smid sange på kø når de vælges, fremfor straks at starte afspilning."
+
+msgctxt "#36267"
+msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgstr "XBMC læser ReplayGain information som er encoded i dine lydfiler ved hjælp af et program, så som MP3Gain, og normaliserer lyd niveauerne derefter."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11078,52 +11770,52 @@ msgid "Default is 89dB per standard. Change with caution."
 msgstr "Standard er 89db. Vær forsigtig med at ændre dette."
 
 msgctxt "#36270"
-msgid "Reduce the volume of the file if clipping is likely to occur."
-msgstr "Sænk automatisk volumen på en afspilning, med for højt signal niveau - ver 100%"
+msgid "Reduce the volume of the file if clipping will occur."
+msgstr "Reducer lydniveau for filen hvis klipning (clipping) vil optræde."
 
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Anvend blød og overlappet overgang mellem musik numre. Du kan indstille overlap mellem sangene fra 1-15 sekunder."
 
-msgctxt "#36272"
-msgid "Allow crassfading to occur when both tracks are from the same album."
-msgstr "Anvend crossfading mellem sange fra samme album."
+msgctxt "#36273"
+msgid "Select the visualisation that will be displayed while listening to music."
+msgstr "Vælg visualiseringen som vises imens der lyttes til musik."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "Læs tag information fra musik filerne. For store musik biblioteker kan dette gøre indlæsning langsom over en netværksforbindelse."
 
 msgctxt "#36275"
-msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
-msgstr "Kontrollerer hvordan titler på sange vises. For at fungerer ska ID3 tags være aktiveret."
+msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
+msgstr "Kontroller hvordan sang titler vises i brugergrænsefladen. For at det fungerer ordentlit skal tag reading være aktiveret."
 
 msgctxt "#36276"
-msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
-msgstr "Anvendes til information i højre side af skærmen. Det anvendes normalt til at vise længde på numret."
+msgid "Used for formatting the second column in file lists."
+msgstr "Brugt til formatering af den anden kolonne i fil-lister."
 
 msgctxt "#36277"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Control the way that the names of songs are displayed in the now playing list."
+msgstr "Kontroller hvordan sang titler vises i afspilningslisten."
 
 msgctxt "#36278"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Used for formatting the second column in the now playing list."
+msgstr "Brugt til formatering af den anden kolonne i afspilningslisten."
 
 msgctxt "#36279"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Control the way that the names of songs are displayed in library lists."
+msgstr "Kontroller hvordan sang titler vises i bibliotekslister."
 
 msgctxt "#36280"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Used for formatting the second column in library lists."
+msgstr "Brugt til formatering af den anden kolonne i bibliotekslister."
 
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "XBMC vil søge efter miniature på netværks drev eller CD/DVD. Dette kan gøre indlæsning langsom over netværk."
 
 msgctxt "#36282"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how CDs are handled."
+msgstr "Kategori indeholdende indstillinger for håndtering af CD'er"
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11138,8 +11830,8 @@ msgid "Select the location on your hard drive where ripped tracks will be saved 
 msgstr "Vælg hvor du ønsker at gemme musik numre som rippes fra CD."
 
 msgctxt "#36286"
-msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
-msgstr "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Kontroller hvordan gemt musik navngives ud fra tags.Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
 
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
@@ -11154,44 +11846,32 @@ msgid "Select which bitrate to use for the specified audio encoder for audio com
 msgstr "Vælg bitrate som skal anvendes af den valgte lyd encoder når lyden komprimeres."
 
 msgctxt "#36290"
-msgid "For FLAC define compression level, default 5"
-msgstr "Vælg FLAC kompressions niveau. Standard er 5."
+msgid "For FLAC define compression level, default 5."
+msgstr "Definer kompressions niveau for FLAC, default er 5."
 
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "Skub CD ud når ripning  er færdig"
 
 msgctxt "#36292"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing the settings for how karaoke is handled."
+msgstr "Kategori indeholdende indstillinger for karaoke."
 
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Ved afspilning af musik vil eventuelle .cdg filer vises."
 
 msgctxt "#36294"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
-
-msgctxt "#36295"
-msgid "Select the font used during karoake."
-msgstr "Vælg skrifttype for karoake."
-
-msgctxt "#36296"
-msgid "Select the size of the font used during karoake."
-msgstr "Vælg skriftstørrelse for karaoke."
-
-msgctxt "#36298"
-msgid "Select the character set used during karoake."
-msgstr "Vælg karaktersæt for karaoke."
+msgid "Show song selection dialog once the last song in the queue has been played."
+msgstr "Vis sang-valgsdialogen når den sidste sang i køen er afspillet."
 
 msgctxt "#36299"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Export the karaoke numbered songs to HTML or CSV files."
+msgstr "Eksporter de karaoke nummerede sange til HTML eller CSV filer."
 
 msgctxt "#36300"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Import the karaoke numbered songs from HTML or CSV files."
+msgstr "Importer de karaoke nummerede sange fra HTML eller CSV filer."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11206,12 +11886,12 @@ msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36304"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Section that contains settings related to pictures and how they are handled."
+msgstr "Sektion der indeholder indstillinger for håndtering af billeder."
 
 msgctxt "#36305"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how picture file lists are handled."
+msgstr "Kategori indeholdende indstillinger for billed fil-lister."
 
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
@@ -11225,185 +11905,405 @@ msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "Billeder roteres automatisk i forhold til tilgængelig EXIF information hvis fundet."
 
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "Vis videoer i billede fil-lister."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36311"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how picture slideshows are handled."
+msgstr "Kategori indeholdende indstillinger for billedfremvisning."
+
+msgctxt "#36312"
+msgid "Select the amount of time that each image is displayed in a slideshow."
+msgstr "Vis den tid som hvert billede er vist i en billedfremvisning."
+
+msgctxt "#36313"
+msgid "Images in a slideshow will pan and zoom while displayed."
+msgstr "Billeder i en billedfremvisning vil panorere og zoome når de bliver vist."
+
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr "Se diasshow billeder i en tilfældig rækkefølge."
 
 msgctxt "#36315"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Section that contains weather related settings."
+msgstr "Sektion for vejr-relaterede indstillinger."
 
 msgctxt "#36316"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how weather addons are handled."
+msgstr "Kategori indeholdende indstillinger for vejr add-ons."
+
+msgctxt "#36317"
+msgid "Select up to three locations for which the weather can be displayed."
+msgstr "Vælg op til tre placeringer for hvilke vejret kan vises."
+
+msgctxt "#36318"
+msgid "Specify the default weather information source. See the Add-ons Manager for options."
+msgstr "Specificere hvor vejrudsigten skal komme fra. Se efter valgmuligheder i Add-on Manageren."
 
 msgctxt "#36319"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Section containing settings for how network services are handled."
+msgstr "Sektion for netværks services-relaterede indstillinger."
 
 msgctxt "#36320"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings used for all services."
+msgstr "Kategori indeholdende indstillinger for alle services."
+
+msgctxt "#36321"
+msgid "Display name of the XBMC installation when using various network services."
+msgstr "Display navnet på XBMC installation ved brug af forskellige nettjenester."
 
 msgctxt "#36322"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how the UPnP service is handled."
+msgstr "Kategori indeholdende indstillinger for UPnP services."
+
+msgctxt "#36323"
+msgid "Enable the UPnP server. This allows you to stream media to a UPnP client."
+msgstr "Aktiver UPnP serveren. Dette tillader dig at streame indhold til en UPnP klient."
+
+msgctxt "#36324"
+msgid "When a manual or automatical library update occurs, notify UPnP clients."
+msgstr "Når der er en automatisk eller manuel opdatering af bibliotekerne, så skal UPnP-klienterne underrettes."
 
 msgctxt "#36325"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "Aktiver UPnP klienten. Dette tillader at du kan streame indhold fra enhver UPnP server med et control point og kontrollere afspilning fra denne server."
+
+msgctxt "#36326"
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
+msgstr "Aktiver UPnP control point. Dette tillader at du kan streame indhold til enhver UPnP klient og kontrollere afspilning fra XBMC."
 
 msgctxt "#36327"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how the webserver service is handled."
+msgstr "Kategori indeholdende indstillinger for webserveren."
+
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr "Aktivere muligheden for at fjernstyre XBMC via den indbyggede webserver."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Definer webserver port."
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Definer webserver brugernavn."
+
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "Definer kodeord til webserveren."
+
+msgctxt "#36332"
+msgid "Select between web interfaces installed via the Add-on Manager."
+msgstr "Vælg mellem web-grænseflader, der er installeret via Add-on Manager."
 
 msgctxt "#36333"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how the remote control service is handled."
+msgstr "Kategori indeholdende indstillinger for fjernbetjenings servicen."
+
+msgctxt "#36334"
+msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Tillad programmer på denne computer at styre XBMC via webinterfacet eller JSON-RPC interface protokol."
 
 msgctxt "#36335"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Define the remote control port."
+msgstr "Definer porten til fjernbetjeningen"
 
 msgctxt "#36336"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Define the remote control port range."
+msgstr "Definer portene (port range) til fjernbetjeningen."
 
 msgctxt "#36337"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Define the maximum number of clients that can connect."
+msgstr "Definer det maksimale antal klienter som kan forbinde sig. "
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Tillad programmer på netværket til at styre XBMC."
 
 msgctxt "#36339"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Initial repeat delay (ms)."
+msgstr "Initiel repeat delay (ms)"
 
 msgctxt "#36340"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Continuous repeat delay (ms)."
+msgstr "Kontinuerligt repeat delay (ms)"
 
 msgctxt "#36341"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
+msgstr "Kategori indeholdende indstillinger for hvordan Zeroconf discovery servicen håndteres. Dette er påkrævet for AirPlay."
 
 msgctxt "#36342"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Allows applications on the network to discover XBMC's running services."
+msgstr "Tillad at applikationer på netværket kan opdage XMBCs services."
 
 msgctxt "#36343"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Allows XBMC to receive content from other AirPlay devices or applications."
+msgstr "Tillad at XBMC kan modtage indhold fra andre AirPlay enheder og applikationer."
 
 msgctxt "#36344"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable AirPlay password protection."
+msgstr "Aktiv AirPlay kodeordsbeskyttelse."
 
 msgctxt "#36345"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Sets the AirPlay password."
+msgstr "Sæt AirPlay kodeord."
 
 msgctxt "#36346"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how the SMB Client (samba) service is handled."
+msgstr "Kategori indeholdende indstillinger for hvordan SMB klient (samba) servicen håndteres."
 
 msgctxt "#36347"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "If a WINS server is running on the network, enter its IP address here. Otherwise, leave blank."
+msgstr "Hvis der kører en WINS server på netværket, angiv dens IP adresse her. Ellers, efterlad dette blankt."
 
 msgctxt "#36348"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "If a WINS server is running on the network, enter its workgroup name here. Otherwise, leave blank."
+msgstr "Hvis der kører en WINS server på netværket, angiv dens workgroup navn her. Ellers, efterlad dette blankt."
 
 msgctxt "#36349"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Section that contains the System related settings for the device XBMC is installed on."
+msgstr "Afsnit som indeholder system-relaterede indstillinger for enheden som XBMC er installeret på."
+
+msgctxt "#36350"
+msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
+msgstr "Send automatisk 'Wake-On-Lan' til server(er) lige før der forbindes til delte filer og services."
 
 msgctxt "#36351"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Display XBMC in a window, or fullscreen on the selected screen."
+msgstr "Vis XBMC i et vindue, eller fuldskærms-mode på den valgte skærm."
 
 msgctxt "#36352"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Changes the resolution that the user interface is displayed in."
+msgstr "Skift opløsningen for brugergrænsefladen."
 
 msgctxt "#36353"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Changes the refresh rate that the user interface is displayed in."
+msgstr "Ændrer opdateringshastighed, som brugergrænsefladen vises med."
+
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgstr "I en flerskærmskonfiguration, vil de skærme hvor XBMC ikke bliver vist, sorte."
+
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr "Undgå lodrette udrivninger."
+
+msgctxt "#36357"
+msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Kalibrer brugergrænsefladen ved at justere overscan. Brug dette hvis skærmbilledet er for stort eller for lille til din skærm."
+
+msgctxt "#36358"
+msgid "Test patterns for display hardware calibration."
+msgstr "Test mønstre for visning hardware kalibrering."
 
 msgctxt "#36359"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
+msgstr "Brug begrænset farvespektrum (16-235) i stedet for fuld farvespektrum (0-255). Begrænset farvespektrum bør benyttes hvis din skærm er et almindeligt HDMI TV og ikke har en PC-mode eller anden mod til visning af fuld farvespektrum (full range colour). Hvis din skærm er en PC monitor, så efterlad denne i deaktiveret for at få korrekt visning af sort."
 
 msgctxt "#36360"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how audio output is handled."
+msgstr "Kategori indeholdende indstillinger for hvordan lyd output håndteres."
+
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Vælg, hvordan egenskaberne af lydudgangen er indstillet: [Fixed] - udgangsegenskaber er fast indstillet til den angivne sampling rate & højttalerkonfiguration [Best Match] - udgangsegenskaber er indstillet til altid at kildens egenskaber som tæt som muligt [Optimized] - udgangsegenskaber indstilles i starten af ​​afspilningen og vil ikke ændre sig, hvis egenskaberne fra kilde ændringer."
+
+msgctxt "#36362"
+msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
+msgstr "Vælg antallet af kanaler, der understøttes af den audio-forbindelse, eller antallet af højtalere, hvis forbundet med analoge tilslutninger. Denne indstilling gælder ikke for Passthrough lyd. Bemærk - SPDIF understøtter kun 2,0 kanaler, men kan stadig outputte multi-kanalslydved  hjælp af et format der understøttes af passthrough."
+
+msgctxt "#36363"
+msgid "Boost AC3 streams that have been downmixed to 2 channels."
+msgstr "Forstærk AC3-lyd der har været mikset til 2 kanallyd."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the channel configuration."
+msgstr "Vælg for at aktivere upmix af 2-kanals lyd til antallet af lyd kanaler specificeret af kanal konfigurationen."
+
+msgctxt "#36365"
+msgid "Select this option if your receiver is capable of decoding AC3 streams."
+msgstr "Vælg denne indstilling, hvis din receiver er i stand til at afkode AC3 streams."
+
+msgctxt "#36366"
+msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgstr "Vælg denne indstilling, hvis din receiver er i stand til at afkode DTS-strømme."
+
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Vælg det maksimale antal lydkanaler / højttalere til rådighed for dekodet audio. Hvis der anvendes optisk / coax digitale udgange skal dette sættes til 2,0"
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Vælg for at aktivere passthrough audio muligheder for afspilning af kodede lyd såsom Dolby Digital."
+
+msgctxt "#36369"
+msgid "Select this option if your receiver is capable of decoding TrueHD streams."
+msgstr "Vælg denne indstilling, hvis din receiver er i stand til at afkode TrueHD streams."
+
+msgctxt "#36370"
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgstr "Vis denne mulighed, hvis din forstærker har mulighed for at dekode DTS-HD lyd."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
+msgstr "Vælg den enhed, der skal bruges til afspilning af lyd, der er blevet afkodet såsom mp3."
+
+msgctxt "#36372"
+msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
+msgstr "Vælg den enhed, der skal bruges til afspilning af kodede formater, disse er et af de formater nedenfor i 'capable receiver' mulighederne."
+
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Vælg hvordan interfacelyde bliver håndteret, så som menunavigation og vigtige notifikationer."
 
 msgctxt "#36374"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for how input devices are handled."
+msgstr "Kategori indeholdende indstillinger for hvordan input enheder håndteres."
 
 msgctxt "#36375"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Configure any attached peripheral devices."
+msgstr "Kategori indeholdende indstillinger for eksterne enheder."
+
+msgctxt "#36376"
+msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
+msgstr "Når det er aktivt, vil dine tastaturpile flytte valget på det virtuelle tastatur. Når det ikke er aktivt, vil de flytte markøren fra din tekst."
+
+msgctxt "#36377"
+msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
+msgstr "Brug en mus eller en smartphone til at kontrollere XBMC. Note: Deaktivering vil resultere i mistet kontrolt over XBMC når der ikke er  keyboard eller fjernbjetjening til stede."
+
+msgctxt "#36378"
+msgid "Use a joystick to control XBMC."
+msgstr "Bruge et joystick til at styre XBMC."
 
 msgctxt "#36379"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for internet access."
+msgstr "Kategori indeholdende indstillinger for Internet adgang."
+
+msgctxt "#36380"
+msgid "If your internet connection uses a proxy, configure it here."
+msgstr "Hvis din internet forbindelse bruger en proxy, konfigurer den her. "
+
+msgctxt "#36381"
+msgid "Configure which proxy type is used."
+msgstr "Konfigurere, hvilke proxy type der bruges."
+
+msgctxt "#36382"
+msgid "Configure the proxy server address."
+msgstr "Konfigurer proxy server adresse."
+
+msgctxt "#36383"
+msgid "Configure the proxy server port."
+msgstr "Konfigurer proxy server port."
+
+msgctxt "#36384"
+msgid "Configure the proxy server username."
+msgstr "Konfigurer proxy server brugernavn."
+
+msgctxt "#36385"
+msgid "Configure the proxy server password."
+msgstr "Konfigurer proxy server password."
+
+msgctxt "#36386"
+msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
+msgstr "Hvis du har begrænset båndbredde til rådighed, vil XBMC forsøge at holde sig inden for disse grænser."
+
+msgctxt "#36387"
+msgid "Category containing settings for power saving."
+msgstr "Kategori indeholdende indstillinger for strømbesparelse."
 
 msgctxt "#36388"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
+msgstr "Sluk skærmen når den er idle. BRugbar for TV der slukker når de ikke modtager et signal."
+
+msgctxt "#36389"
+msgid "Define how long XBMC should idle before shutting down."
+msgstr "Definer, hvor længe XBMC skal være inaktiv, før lukker ned."
+
+msgctxt "#36390"
+msgid "Define what action XBMC should do when it has been idle for a long period of time."
+msgstr "Bestem hvilken handling XBMC skal foretage når den er inaktiv i lang tid."
+
+msgctxt "#36391"
+msgid "Category containing settings for debugging functions."
+msgstr "Kategori indeholdende indstillinger for debug funktionerne."
 
 msgctxt "#36392"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr "Tænd og sluk for debug logging. Brugbar ifm. fejldiagnosticering."
+
+msgctxt "#36393"
+msgid "Folder used to save screenshots taken within XBMC."
+msgstr "Mappe der bruges til at gemme skærmbilleder taget inde i XBMC"
+
+msgctxt "#36394"
+msgid "Specify additional libraries to be included in the debug log."
+msgstr "Angiv flere biblioteker som skal inkluderes i debug loggen."
+
+msgctxt "#36395"
+msgid "Category containing settings for the master lock function."
+msgstr "Kategori indeholdende indstillinger for master lock funktionen."
+
+msgctxt "#36396"
+msgid "Define the PIN code used for the master lock."
+msgstr "Definer PIN kode, der bruges til master lås."
+
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup."
+msgstr "Hvis aktiveret, er master lock kode påkrævet for at oplåse XBMC ved opstart."
+
+msgctxt "#36398"
+msgid "Define the maximum number of retries before XBMC is closed down."
+msgstr "Definer det maksimale antal forsøg, før XBMC lukkes ned."
 
 msgctxt "#36399"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category containing settings for the cache function."
+msgstr "Kategori indeholdende indstillinger for cache funktionen."
 
 msgctxt "#36400"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache for playback of Video, Audio or DVDs from hard disk."
+msgstr "Aktiver cache for video-, lyd- og DVD afspilning fra harddisken."
 
 msgctxt "#36401"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache for playback of Video from DVD-ROM."
+msgstr "Aktiver cache for video afspilning fra DVD-ROM."
 
 msgctxt "#36402"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache for Video playback from Local Network."
+msgstr "Aktiver cache for video afspilning fra lokal netværk."
 
 msgctxt "#36403"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache for Video playback from Internet."
+msgstr "Aktiver cache for video afspilning fra Internettet."
 
 msgctxt "#36404"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache for playback of Audio from DVD-ROM."
+msgstr "Aktiver cache for lyd-afspilning fra DVD-ROM."
 
 msgctxt "#36405"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache for Audio playback from Local Network."
+msgstr "Aktiver cache for lyd-afspilning fra lokal netværk."
 
 msgctxt "#36406"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache for Audio playback from Internet."
+msgstr "Aktiver cache for lyd-afspilning fra Internettet."
 
 msgctxt "#36407"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache for playback of DVD from DVD-ROM."
+msgstr "Aktiver cache for DVD afspilning fra DVD-ROM."
 
 msgctxt "#36408"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache for DVD playback from Local Network."
+msgstr "Aktiver cache for DVD afspilning fra lokale netværk."
 
 msgctxt "#36409"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Enable cache of unknown types from Internet."
+msgstr "Aktiver cache af ukendte fil-typer fra Internettet."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -11429,42 +12329,302 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "Angiv typen af fjernbetjening der benyttes."
+
 msgctxt "#36417"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
+msgstr "Kør altid en XBMC hjælper så fjernbetjeningen kan bruges til at starte XBMC."
 
 msgctxt "#36418"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Specify the delay between button sequences on a universal remote."
+msgstr "Specificer forsinkelsen imellem tryk sekvenser på en universal fjernbetjening."
+
+msgctxt "#36419"
+msgid "Define locations used for retrieving weather information."
+msgstr "Definer lokationer der anvendes til at hente oplysninger om vejret."
 
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
+msgstr "At skippe VDPAU mixer vil spare ressourcer på mindre kraftige systemer, men vil reducere billedkvaliteten en smule."
+
+msgctxt "#36422"
+msgid "Enable hardware video decode using AMLogic decoder."
+msgstr "Aktiver hardware video dekodning ved hjælp af AMLogic dekoder."
+
+msgctxt "#36423"
+msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
+msgstr "Aktiverer frame-multi-trådet software dekodning (mindre pålidelig end standard single trådet mode)."
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Vælg, hvad der vil ske, når en EPG emne er valgt: [Vis kontekstmenu] vil udløse genvejsmenu, hvorfra du kan vælge yderligere handlinger, [Skift til kanal] vil straks stille ind på den tilhørende kanal [Vis information] vil vise en detaljeret oplysninger med plot og yderligere muligheder. [Record] vil skabe en planlagt optagelse for det valgte emne."
+
+msgctxt "#36425"
+msgid "Show context menu"
+msgstr "Vis kontekstmenu"
+
 msgctxt "#36426"
 msgid "Switch to channel"
 msgstr "Skift til kanal"
+
+msgctxt "#36427"
+msgid "Show information"
+msgstr "Vis information"
 
 msgctxt "#36428"
 msgid "Record"
 msgstr "Optag"
 
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
+msgstr "Vælg denne hvis lyd-ud forbindelsen kun understøtter multi-kanal audio som Dolby Digital 5.1, som foreksempel en SPDIF forbindelse. Hvis dit system understøtter LPCM multi-kanal lyd via HDMI, så lad denne være deaktiv"
+
+msgctxt "#36430"
+msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
+msgstr "Konfigurerer hvordan video processering skal accelereres. Dette inkluderer ting som dekodning og skalering."
+
+msgctxt "#36431"
+msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
+msgstr "Definerer om video dekodning skal ske i software (kræver mere CPU) eller med hardware acceleration hvis muligt."
+
+msgctxt "#36500"
+msgid "Stereoscopic mode (current)"
+msgstr "Stereoskopisk tilstand (aktuel)"
+
+msgctxt "#36501"
+msgid "Stereoscopic mode"
+msgstr "Stereoskopisk tilstand"
+
+msgctxt "#36502"
+msgid "None"
+msgstr "Ingen"
+
+msgctxt "#36503"
+msgid "Over/Under"
+msgstr "Over/Under"
+
+msgctxt "#36504"
+msgid "Side by side"
+msgstr "Side om side"
+
+msgctxt "#36505"
+msgid "Anaglyph Red/Cyan"
+msgstr "Anaglyph Rød/Cyan"
+
+msgctxt "#36506"
+msgid "Anaglyph Green/Magenta"
+msgstr "Anaglyph Grøn/Magenta"
+
+msgctxt "#36507"
+msgid "Interlaced"
+msgstr "Interlaced"
+
+msgctxt "#36508"
+msgid "Hardware Based"
+msgstr "Hardware Baseret"
+
+msgctxt "#36509"
+msgid "Monoscopic - 2D"
+msgstr "Monoskopisk - 2D"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos."
+msgstr "Afspilningsmode for stereoskopise videoer."
+
+msgctxt "#36521"
+msgid "Ask me"
+msgstr "Spørg mig"
+
+msgctxt "#36522"
+msgid "Use preferred mode"
+msgstr "Brug foretrukken måde"
+
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
+msgstr "Maksimale sampling rate for spdif eller sampling rate for fixed output konfiguration."
+
+msgctxt "#36524"
+msgid "Preferred mode"
+msgstr "Foretrukken tilstand"
+
+msgctxt "#36525"
+msgid "Same as movie (autodetect)"
+msgstr "Samme som filmen (automatisk registrering)"
+
+msgctxt "#36526"
+msgid "Disable stereoscopic mode when playback is stopped"
+msgstr "Deaktiver stereoskopisk tilstand når playback stoppes"
+
+msgctxt "#36527"
+msgid "This video is stereoscopic. Select playback mode"
+msgstr "Denne video er stereoskopisk. Vælg playback tilstand"
+
+msgctxt "#36528"
+msgid "Select stereoscopic mode"
+msgstr "Vælg stereoskopisk tilstand"
+
+msgctxt "#36529"
+msgid "Mono (2D)"
+msgstr "Mono (2D)"
+
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr "Foretrukken tilstand"
+
+msgctxt "#36531"
+msgid "Select alternate mode..."
+msgstr "Vælg alternativ tilstand..."
+
+msgctxt "#36532"
+msgid "Same as movie"
+msgstr "Samme som film"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Vælg hvordan lyden er konverteret, for eksempel fra 5,1 til 2,0: [Enabled] fastholder det dynamiske område af den oprindelige lydkilde når det downmixes, dog vil volumen være lavere [Disabled] fastholder lydstyrken af den oprindelige lydkilde, dog er dynamikområdet komprimeret. Bemærk - Dynamisk område er forskellen mellem de lavest og højeste lyde i en lydkilde."
+
+msgctxt "#36535"
+msgid "Stereoscopic mode of video"
+msgstr "Stereoskopisk video stand"
+
+msgctxt "#36536"
+msgid "Stereoscopic mode inverted"
+msgstr "Stereoskopisk tilstand inverteret"
+
 msgctxt "#36537"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Set playback mode of stereoscopic 3D videos."
+msgstr "Indstil afspilningsmode for stereoskopiske 3D videoer."
 
 msgctxt "#36538"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgstr "Forhindrer at XBMC forlader stereoskopisk 3D mode når afspilning standser. Nødvendig fordi ikke alle TV automatisk skifter tilbage til 2D mode (uden at det skiftet manuelt på TV'et). "
 
 msgctxt "#36539"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Changes the stereoscopic 3D mode of the user interface."
+msgstr "Skifter brugergrænsefladens stereoskopiske 3D mode."
 
 msgctxt "#36540"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "The preferred stereoscopic 3D mode."
+msgstr "Den foretrukne stereoskopiske 3D mode."
+
+msgctxt "#36541"
+msgid "Allows volume control from AirPlay clients."
+msgstr "Tillader volumen kontrol fra AirPlay klienter"
+
+msgctxt "#36542"
+msgid "Output to both analogue (headphones) and HDMI"
+msgstr "Lyd output til både analog (hovedtelefoner) og HDMI"
+
+msgctxt "#36543"
+msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr "Aktiver denne for at gøre dialog højere ift. baggrundslyde multi-kanals lyd downmixes"
 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
 msgstr "Aktiver hardware dekodning af video-filer."
+
+msgctxt "#36545"
+msgid "Subtitle stereoscopic depth"
+msgstr "Underteksters stereoskopiske dybde"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Sætter den visuelle dybde af undertekster for stereoskopiske 3D videoer. Jo større værdi, jo tættere vil underteksterne optræde på seeren."
+
+msgctxt "#36547"
+msgid "Use higher quality textures for covers and fanart (uses more memory)"
+msgstr "Brug højere kvalitet teksturer for covers og fanart (bruger mere hukommelse)"
+
+msgctxt "#36548"
+msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
+msgstr "Begræns opløsning på GUI forl at spare hukommelse. Påvirker ikke videoafspilning. Brug 1080 for ubegrænset. Kræver genstart."
+
+msgctxt "#36600"
+msgid "Category containing the settings for how the music library is handled."
+msgstr "Kategori indeholdende indstillinger for håndtering af musik biblioteket."
+
+msgctxt "#36601"
+msgid "Category containing settings for how music file lists are handled."
+msgstr "Kategori indeholdende indstillinger for håndtering af musik fil-lister."
+
+msgctxt "#36602"
+msgid "Category containing settings for how the AirPlay service is handled."
+msgstr "Kategori indeholdende indstillinger for håndtering af AirPlay services."
+
+msgctxt "#36603"
+msgid "Category containing settings for how video output is handled."
+msgstr "Kategori indeholdende indstillinger for håndtering af video output."
+
+msgctxt "#37000"
+msgid "(Visually Impaired)"
+msgstr "(Svagtseende)"
+
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr "(Instruktør kommentare)"
+
+msgctxt "#37002"
+msgid "(Directors Comments 2)"
+msgstr "(Instruktør kommentare 2)"
+
+msgctxt "#37011"
+msgid "(CC)"
+msgstr "(CC)"
+
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr "(Tvunget)"
+
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr "(Instruktør kommentare)"
+
+msgctxt "#37014"
+msgid "Last used profile"
+msgstr "Senest indlæst profil"
+
+msgctxt "#37015"
+msgid "Browse Into"
+msgstr "Gennemse"
+
+msgctxt "#37016"
+msgid "Select this option if your receiver is capable of decoding E-AC3 streams."
+msgstr "Vælg denne indstilling, hvis din receiver er i stand til at afkode E-AC3 streams."
+
+msgctxt "#37017"
+msgid "Dual audio output"
+msgstr "Dual lydudgang."
+
+msgctxt "#37018"
+msgid "Boost centre channel when downmixing"
+msgstr "Boost center kanalen når der downmixes"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
+msgstr "Ativerer system knapperne så som printscreen, alt-tab og justering af lydniveau i fuldskærms-mode."
+
+msgctxt "#37020"
+msgid "Enable higher colour depth artwork"
+msgstr "Aktiver højere farvedybde artwork"
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Sæt GUI opløsnings grænsen."
+
+msgctxt "#37022"
+msgid "UPnP Player"
+msgstr "UPnP-afspiller"
+
+msgctxt "#37023"
+msgid "Do you wish to stop playback on the remote device?"
+msgstr "Ønsker du at stoppe afspilningen på den eksterne enhed?"
+
+msgctxt "#37024"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
+msgstr "Vælg dette, hvis lyden ud forbindelsen understøtter kun multikanals lyd som Dolby Digital 5.1, dette tillader multikanallyd såsom AAC5.1 eller FLAC5.1 at blive lyttet til i 5.1 surround sound. Bemærk - Ikke anbefalet på Rashberry Pi, da dette kræver en masse CPU."

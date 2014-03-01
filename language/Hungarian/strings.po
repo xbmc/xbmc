@@ -1086,7 +1086,7 @@ msgid "Original stream's language"
 msgstr "Eredeti nyelv"
 
 msgctxt "#309"
-msgid "User Interface language"
+msgid "User interface language"
 msgstr "Kezelőfelület nyelve"
 
 msgctxt "#312"
@@ -4674,8 +4674,8 @@ msgid "Scan for new content"
 msgstr "Új tartalom keresése"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Lejátszási sor..."
+msgid "Current playlist"
+msgstr "Jelenlegi játszáslista"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4982,8 +4982,68 @@ msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Hardvergyorsítás engedélyezése (MediaCodec)"
 
 msgctxt "#13440"
-msgid "Allow frame-multi-threaded decoding"
-msgstr "Többesszálú dekódolás engedélyezése"
+msgid "Allow multi threaded software decoding"
+msgstr "Több-szálú dekódolás engedélyezése"
+
+msgctxt "#13441"
+msgid "Use Mpeg-2 VDPAU"
+msgstr "Mpeg-2 VDPAU használata"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Az Mpeg-(1/2) kodekek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol. Régebbi Radeon kártyákon szegmenshiba fordulhat elő."
+
+msgctxt "#13443"
+msgid "Use Mpeg-4 VDPAU"
+msgstr "Mpeg-4 VDPAU használata"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Az Mpeg-4 kodek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol.  Néhány ION alapú rendszerel probléma lehet engedélyezés esetén."
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "VC-1 VDPAU használata"
+
+msgctxt "#13446"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
+msgstr "A VC-1 kodek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol.  AMD hardver VDPAU nem ismeri a VC-1 Egyszerű üzemmódot."
+
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr "Mpeg-2 VAAPI használata"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
+msgstr "Az Mpeg-(1/2) kodekek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol.  Néhány Mpeg-2 videónak zöldes hibái lehetnek."
+
+msgctxt "#13449"
+msgid "Use Mpeg-4 VAAPI"
+msgstr "Mpeg-4 VAAPI használata"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
+msgstr "Az Mpeg-4 kodek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol. "
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "VC-1 VAAPI használata"
+
+msgctxt "#13452"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
+msgstr "A VC-1 kodek hardveres gyorsításának bekapcsolása. Tiltott esetén a CPU dekódol. Különösen a váltottsoros VC-1 nagyban hibázik Intel hardvernél."
+
+msgctxt "#13454"
+msgid "Decoding method"
+msgstr "Visszafejtés módja"
+
+msgctxt "#13455"
+msgid "Software"
+msgstr "Szoftveres"
+
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Hardveres gyorsítás"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5214,24 +5274,24 @@ msgid "Video cache - DVD-ROM"
 msgstr "Videó gyorsítótár - DVD-ROM"
 
 msgctxt "#14027"
-msgid "Local Network"
-msgstr "Helyi hálózat"
+msgid "Video cache - Local Network"
+msgstr "Videó gyorsítótár - Helyi hálózat"
 
 msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
+msgid "Video cache - Internet"
+msgstr "Viedó gyorsítótár - Internet"
 
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Hang gyorsítótár - DVD-ROM"
 
 msgctxt "#14031"
-msgid "Local Network"
-msgstr "Helyi hálózat"
+msgid "Audio cache - Local Network"
+msgstr "Audió gyorsítótár - Helyi hálózat"
 
 msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
+msgid "Audio cache - Internet"
+msgstr "Audió gyorsítótár - Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5244,6 +5304,10 @@ msgstr "Helyi hálózat"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Szolgáltatások"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "DVD gyorsítótár - Helyi hálózat"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5476,6 +5540,10 @@ msgstr "CD kiadása, ha a másolás kész"
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "CD bemásolás megszakítása"
+
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Gyorsítás"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -6786,7 +6854,7 @@ msgid "Channels in"
 msgstr "Csatornák ebben a csoportban:"
 
 msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
+msgid "Synchronise channel groups with backend(s)"
 msgstr "Csatornacsoportok szinkronizálása a háttér-kiszolgálóval"
 
 msgctxt "#19222"
@@ -7329,6 +7397,10 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Autózás"
 
+msgctxt "#19648"
+msgid "Fitness & Health"
+msgstr "Fitnesz & Egészség"
+
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Főzés"
@@ -7348,6 +7420,10 @@ msgstr "Különleges jellemzők"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Eredeti nyelv"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "Fekete & Fehér"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8282,8 +8358,8 @@ msgid "This will reset the calibration values for %s"
 msgstr "Kalibrációs értékek törlése %s számára"
 
 msgctxt "#20327"
-msgid "to it's default values."
-msgstr "az alapértelmezett értékekere."
+msgid "to its default values."
+msgstr "az alapértelmezett értékekre"
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -8501,10 +8577,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Egyediek"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Évad miniképek automatikus letöltése"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "A kiválasztott mappa egyetlen videót tartalmaz"
@@ -8620,10 +8692,6 @@ msgstr "Filmajánló"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Listák szűkítése"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Sorozat listaszűkítés"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8926,7 +8994,7 @@ msgid "Override ASS/SSA subtitles fonts"
 msgstr "Az ASS/SSA betűtípusok figyelmen kívül hagyása"
 
 msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
+msgid "Enable mouse and touch screen support"
 msgstr "Egér- és érintőképernyő támogatás engedélyezése"
 
 msgctxt "#21370"
@@ -9286,7 +9354,7 @@ msgid "mixed"
 msgstr "kevert"
 
 msgctxt "#21460"
-msgid "Subtitle location on screen"
+msgid "Subtitle position on screen"
 msgstr "Felirat elhelyezkedése a képernyőn"
 
 msgctxt "#21461"
@@ -9320,14 +9388,6 @@ msgstr "%d -tól %d -ig"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "ettől: %s eddig: %s"
-
-msgctxt "#21600"
-msgid "Prefer external subtitles"
-msgstr "Külső felirat preferálása"
-
-msgctxt "#21601"
-msgid "Prefer external subtitles to internal ones"
-msgstr "Külső felirat preferálása a belsővel szemben"
 
 msgctxt "#21602"
 msgid "(External)"
@@ -9942,6 +10002,10 @@ msgid "Enable"
 msgstr "Engedélyezés"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Letiltva"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Kiegészítő tiltva"
 
@@ -10193,10 +10257,6 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Szüneteletetés a feliratok keresése közben"
 
-msgctxt "#24106"
-msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
-msgstr "Ha nem a film mappájába kerül a felirat akkor az erre kijelölt mappába töltődik le"
-
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Feliratok keresése..."
@@ -10229,16 +10289,12 @@ msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "Nincs felirat-szolgáltatás telepítve"
 
-msgctxt "#24115"
-msgid "Save subtitles to movie folder"
-msgstr "Feliratok mentése a film mappába"
-
 msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Alapértelmezett TV Szolgáltatás"
 
 msgctxt "#24117"
-msgid "Select service that will be used as default to search for TV Show subtitles"
+msgid "Select service that will be used as default to search for TV Show subtitles."
 msgstr "Alapértelmezett szolgáltatás kiválasztása a Sorozat felirat kereséshez"
 
 msgctxt "#24118"
@@ -10246,7 +10302,7 @@ msgid "Default Movie Service"
 msgstr "Alapértelmezett Film Szolgáltatás"
 
 msgctxt "#24119"
-msgid "Select service that will be used as default to search for Movie subtitles"
+msgid "Select service that will be used as default to search for Movie subtitles."
 msgstr "Alapértelmezett szolgáltatás kiválasztása a Film felirat kereséshez"
 
 msgctxt "#24120"
@@ -10256,6 +10312,10 @@ msgstr "Keresendő szöveg kézi megadása"
 msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Keresőszó"
+
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Mindent frissít"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -11033,18 +11093,6 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "Korlátozott színtér használata (16-235)"
 
-msgctxt "#36101"
-msgid "Change the look and feel of the User Interface."
-msgstr "A Felhasználói Felület kinézetének módosítása"
-
-msgctxt "#36102"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36103"
-msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
-msgstr "Válassza ki a Felhasználói Felület Felszínét. Ez meghatározza a az XBMC kinézetés és kezelését."
-
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "A Felület specifikus beállítások  módosítása. A opciók a beállított Felszíntől függnek."
@@ -11057,21 +11105,9 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "A választott felszín színeinek megváltoztatása."
 
-msgctxt "#36107"
-msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
-msgstr "A kezelőfelület betűtípusának választása. A betűtípus-készleteket a felszín határozza meg."
-
-msgctxt "#36108"
-msgid "Resize the view of the GUI."
-msgstr "A felhasználói felület nézetének átméretezése."
-
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "Az XBMC indulásakor megjelenő médiaablak választása."
-
-msgctxt "#36110"
-msgid "Select or disable the sound scheme used in the User Interface."
-msgstr "A hangséma választása, vagy tiltása a kezelői felülethez."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -11081,21 +11117,9 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Az RSS hírcsatornák szerkesztése."
 
-msgctxt "#36113"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36114"
-msgid "Chooses the language of the User Interface."
-msgstr "A kezelőfelület nyelvét választja ki."
-
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "A hőmérséklet, idő és dátum formátumának választása. A rendelkezésre álló lehetőségeket a kiválasztott nyelv befolyásolja."
-
-msgctxt "#36116"
-msgid "Choose which character set is used for displaying text in the GUI."
-msgstr "A kezelőfelületen megjelenő szöveg karakterkészletének választása."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11113,10 +11137,6 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Alapértelmezett feliratnyelv kiválasztása, amikor több is rendelkezésre áll."
 
-msgctxt "#36121"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "A (..) visszalépő elem megjelenítése a szülőmappába való kilépéshez."
@@ -11125,25 +11145,9 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Fájlkiterjesztések megjelenítése a média fájlokon. Például az 'You Enjoy Myself.mp3' simán úgy jelenjen meg hogy 'You Enjoy Myself'."
 
-msgctxt "#36124"
-msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-msgstr "Bizonyos szavak figyelmen kívül hagyása rendezés során. Például  'The Simpsons' úgy kerül rendezésre hogy 'Simpsons'. Ezeknek a konfiguráláshoz lásd: http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Átnevezés és törlés fájlműveletek engedélyezése a felhasználói felületen a kontextusmenüben. (pl C billentyű hozza fel ezt a menüt)"
-
-msgctxt "#36126"
-msgid "Show the add source button from root sections of the user interface."
-msgstr "Forrás hozzáadása opció mutatása a felhasználói felület legfelső menüjében."
-
-msgctxt "#36127"
-msgid "Show hidden files and directories."
-msgstr "Rejtett fájlok és mappák megjelenítése"
-
-msgctxt "#36128"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11181,25 +11185,9 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
-msgctxt "#36138"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36139"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36140"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "Jelölje a még meg nem tekintett anyagokat a Médiatárban."
-
-msgctxt "#36142"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
@@ -11233,65 +11221,13 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "XML fájl importálása a Médiatár adatbázisba."
 
-msgctxt "#36151"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36152"
-msgid "Enable automatic playback of the next file in the list of the selected item."
-msgstr "Következő állomány automatikus lejátszásának engedélyezése a kiválaszott elemek között."
-
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "A videó feldolgozásához és megjelenítéséhez használt módszer beállítása."
 
-msgctxt "#36154"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36155"
-msgid "Enable hardware decoding of video files."
-msgstr "Videófájlok hardveres dekódolásának engedélyezése."
-
-msgctxt "#36156"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36157"
 msgid "No info available yet."
 msgstr "Nincs még információ"
-
-msgctxt "#36158"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36159"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36160"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36161"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36162"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36163"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36164"
-msgid "Select when the refresh rate adjustments should take place."
-msgstr "Válassza ki hogy a képfrissítés váltása mikor lépjen érvénybe."
-
-msgctxt "#36165"
-msgid "Pause for a small amount of time during a refresh rate change. Activate to automatically set the refresh rate which is best matched with the video that is playing. This potentially allows for perfectly smooth video reproduction, as video material can be recorded in a variety of frame rates which need to be properly matched by the refresh rate of the display in order to be displayed smoothly."
-msgstr "Szünet egy rövid ideig a képfrissítés átállítása alatt. Aktiválása beállítja a a képfrissítési frekvenciát ami a legjobban illeszkedik az éppen játszott videóhoz. Ez lehetővé teszi az akadozásmentes videólejátszást, mert a felvételi módok más és más képfrissítési frekvenciát eredményeznek, amikhez a megjelenítő képfrissítési frekvenciájának a hozzáigazítása biztosítja az akadozásmentes lejátszást."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11321,10 +11257,6 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
 msgstr "A VDPAU studió szintű konverzió lehetővé teszi hogy az olyan haladó programok mint az XBMC befolyásolja a színtér konverziót."
 
-msgctxt "#36173"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "Teletext engedélyezése élő TV műsor nézésekor."
@@ -11333,17 +11265,9 @@ msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "Teletext méretezése 4:3 arányra"
 
-msgctxt "#36176"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Váltás a Kiválasztás, Lejátszás (alapértelmezett), Folytatás és Információ funkció között. A Kiválasztás használja az elemet, pl belép a könyvtárba fájl módban. A Folytatás automatikusan folytatja az utolsó pozíciótól, akár rendszer újraindítás esetén is."
-
-msgctxt "#36178"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11357,41 +11281,9 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
-msgctxt "#36182"
-msgid "Enables direct playback of videos that are in folders, without having to open those folders first, as well as displaying multi-part video files as single items in non-library views."
-msgstr "A videók közvetlen lejátszásának engedélyezése a könyvtárba lépés nélkül, és a több részre vágott videók egy videóként való mutatása nem médiatár nézetben."
-
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "Eltávolítja a cím, műfaj, stb. opciókat a médiatár nézetben. A kategória kiválasztásakor egyből a cím nézet kerül megjelenítésre."
-
-msgctxt "#36184"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36185"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36186"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36187"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36188"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36189"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36190"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11400,10 +11292,6 @@ msgstr "Egyéni kövtár megadása a feliratokhoz. Ez lehet megosztott könyvtá
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "A feliratok helye a képernyőn."
-
-msgctxt "#36193"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11448,10 +11336,6 @@ msgstr "Videófelvevő funkciók (PVR) engedélyezése. Ehhez legalább egy tele
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Csatorna csoportok importálása a PVR háttérszolgáltatásból (ha támogatott). A felhasználói csoportok törlésre kerülnek ha nem találhatóak meg a háttérszolgáltatásban."
-
-msgctxt "#36205"
-msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
-msgstr "A csatornák rendezése a szerver csatornakiosztása szerint, de az XBMC saját sorszámozását használja."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -11505,18 +11389,6 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
-msgctxt "#36219"
-msgid "Default EPG window to show. Defaults to Timeline."
-msgstr "Alapértelmezeten mutatott EPG ablak. Alapértelmezett az Idővonal."
-
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
-msgstr "Hány nap EPG adat kerüljön beimportálásra a háttérszolgáltatásból. Alapértelmezett érték 3 nap."
-
-msgctxt "#36221"
-msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
-msgstr "Az EPG adat importálás időintervalluma a háttérszolgáltatásból. Alapértelmezett a 120 perc."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "EPG adat importálás mellőzése TV nézés közben a CPU terhelés minimalizálásához."
@@ -11529,10 +11401,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "A \"nem található információ\" címkék elrejtése ha az adott csatornához nincs elérhető EPG adat."
 
-msgctxt "#36225"
-msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
-msgstr "Az EPG adatbázis törlése az XBMC-ből, és az adatok újraimportálása a háttérszolgáltatásból."
-
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Nincs még információ"
@@ -11540,10 +11408,6 @@ msgstr "Nincs még információ"
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "A kiválasztott csatorna megjelenítése kis méretben teljes képernyős mód helyett."
-
-msgctxt "#36228"
-msgid "Show the last viewed channel if switching to live tv."
-msgstr "A legutoljára nézett csatorna használata élő adásra váltáskor."
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
@@ -11565,26 +11429,6 @@ msgctxt "#36233"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
-msgctxt "#36234"
-msgid "Duration of the recording when pressing the record button, or when creating a new manual timer. Defaults to 180 minutes."
-msgstr "A felvétel hossza a felvevőgomb megnyomásakor, vagy kézi időzítés létrehozásakor. Alapértelmezett érték 180 perc."
-
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
-msgstr "A felvétel prioritása. A nagyobb érték nagyobb prioritást jelent. Alapértelmezetten 50. Nem minden kiegészítő és háttérszolgáltatás támogatja."
-
-msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
-msgstr "Felvételek törlése ennyi nap után. Alapértelmezésben 99 nap, Nem minden kiegészítő és háttérszolgáltatás támogatja."
-
-msgctxt "#36237"
-msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
-msgstr "Felvétel elkezdése ennyivel az aktuális idő előtt. Alapértelmezésben 2 perc. Nem minden kiegészítő és háttérszolgáltatás támogatja."
-
-msgctxt "#36238"
-msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
-msgstr "Felvétel befejezése ennyivel az aktuális idő után. Alapértelmezésben 10 perc. Nem minden kiegészítő és háttérszolgáltatás támogatja."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Visszajelzés megjelenítése ha időzítő kerül hozzáadásra, befejeződik vagy eltávolításra kerül a háttérszolgáltatás által."
@@ -11596,18 +11440,6 @@ msgstr "Nincs még információ"
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "\"ébresztési parancs\" végrehajtása mialatt az XBMC nem fut, vagy hibernált módba került. A következő időzített felvétel időbélyegzője kerül átadásra mint paraméter."
-
-msgctxt "#36242"
-msgid "The command will not be executed when a recording will be started within this timeout. Defaults to 15 minutes."
-msgstr "A parancs nem kerül végrehajtásra amennyiben felvétel indul ezen az időintervallumon belül. Alapértelmezett érték 15 perc."
-
-msgctxt "#36243"
-msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
-msgstr "A kiadandó parancs. Alapértelmezett érték '/usr/bin/setwakeup.sh'."
-
-msgctxt "#36244"
-msgid "Time to substract from the start time of the next scheduled recording. Defaults to 15 minutes."
-msgstr "A következő időzített felvétel kezdetéig kivonandó idő. Alapértelmezett érték 15 perc."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11629,23 +11461,11 @@ msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Adjon meg egy új Pin kódot a zárolt csatornák feloldásához."
 
-msgctxt "#36250"
-msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration. Defaults to 300 seconds."
-msgstr "Kód ismételt kérése zárolt csatorna eléréséhez ha eltelt ennyi idő a kód utolsó beadása óta. Alapértelmezett érték 300 másodperc."
-
 msgctxt "#36251"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
 msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36253"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36254"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
@@ -11656,10 +11476,6 @@ msgstr "Annak meghatározása hogyha egy előadó csak egy válogatáslemezen sz
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "Automatikusan letölti az album és előadó információkat a médiatár frissítés alatt."
-
-msgctxt "#36257"
-msgid "Select the default album information source"
-msgstr "Válassza ki az alapértelmezett album-információ forrást."
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11674,8 +11490,8 @@ msgid "No info available yet."
 msgstr "Nincs még információ"
 
 msgctxt "#36261"
-msgid "Path where taken screenshots will be stored."
-msgstr "Könyvtár megadása a képernyőmentéshez."
+msgid "No info available yet."
+msgstr "Nincs még információ"
 
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
@@ -11685,17 +11501,9 @@ msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "XML fájl importálása a Zene Médiatár adatbázisba."
 
-msgctxt "#36264"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
 msgstr "Az XBMC automatikusan lejátssza a következő elemet az aktuális könyvtárban. Például Fájl nézet: Miután a szám lejátszásra került, az XBMC automatikusan lejátssza a következő számot ugyanabban az alkönyvtárban. "
-
-msgctxt "#36266"
-msgid "When songs are added to a playlist they are queued instead of playback starting immediately."
-msgstr "Mikor egy zeneszám hozzáadásra kerül a lejátszási listához akkor a végéhez adódik, nem kerül azonnal lejátszásra."
 
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
@@ -11709,17 +11517,9 @@ msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Alapértelmezésben 89dB. Óvatosan változtatni."
 
-msgctxt "#36270"
-msgid "Reduce the volume of the file if clipping is likely to occur."
-msgstr "Csökkentse a fájl hangerejét ha pattogás észlelhető."
-
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Finom átmenet egyik zeneszámból a másikba. Beállítható az időtartam 1-15 másodpercig."
-
-msgctxt "#36272"
-msgid "Allow crassfading to occur when both tracks are from the same album."
-msgstr "Az átkeverés engedélyezése ha mindkét zeneszám ugyanarról az albumról származik."
 
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
@@ -11729,37 +11529,9 @@ msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "Tag információk kiolvasása a zeneállományokból. Nagy könyvtáraknál lelassíthatja az olvasást, különösen hálózat esetén."
 
-msgctxt "#36275"
-msgid "Control the way that the names of songs are displayed in the User Interface. In order to function properly, ID3 tags need to be enabled."
-msgstr "Vezérli a nevek kijelzését a felhasználói felületen. A helyes működéshez engedélyezni kell az ID3 tageket."
-
-msgctxt "#36276"
-msgid "Used for the information on the right-hand side of the UI. It is commonly used to display the length of tracks."
-msgstr "A felület jobb oldalán megjelenő információ. Jellemzően a zeneszám hosszának kijelzésére használt."
-
-msgctxt "#36277"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36278"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36279"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36280"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "XBMC bélyegképeket készít a távoli megosztásokról és optikai lemezekről. Lassíthatja a hálózati könyvtárak listázását."
-
-msgctxt "#36282"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11773,10 +11545,6 @@ msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr "Válassza ki a helyet a merevlemezen ahová a sávok mentésre kerülnek."
 
-msgctxt "#36286"
-msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
-msgstr "Tagek: [B]%N[/B]: Sorszám, [B]%S[/B]: Lemez, [B]%A[/B]: Előadó, [B]%T[/B]: Cím, [B]%B[/B]: Album, [B]%G[/B]: Műfaj, [B]%Y[/B]: Év, [B]%F[/B]: Fájlnév, [B]%D[/B]: Hossz, [B]%J[/B]: Dátum, [B]%R[/B]: Értékelés, [B]%I[/B]: Méret."
-
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
 msgstr "Válassza ki mely kódolás kerüljön használatra a lemez mentéséhez."
@@ -11789,49 +11557,13 @@ msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
 msgstr "Válassza ki milyen bitráta kerüljön alkalmazásra az hang tömörítéshez."
 
-msgctxt "#36290"
-msgid "For FLAC define compression level, default 5"
-msgstr "FLAC tömörítés megadása, alapértelmezett érték 5."
-
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "Lemez automatikus kiadása mentés után."
 
-msgctxt "#36292"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Zenelejátszás alatt az XBMC keresi a .cdg fájlt, is megmutatja a kapcsolódó grafikát."
-
-msgctxt "#36294"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36295"
-msgid "Select the font used during karoake."
-msgstr "Válassza ki karaoke során használandó betűtípust."
-
-msgctxt "#36296"
-msgid "Select the size of the font used during karoake."
-msgstr "Válassza ki karaoke során használandó betűméretet."
-
-msgctxt "#36297"
-msgid "Select the font colour used during karoake."
-msgstr "Betűszín kiválasztása karaoke alatt."
-
-msgctxt "#36298"
-msgid "Select the character set used during karoake."
-msgstr "Válassza ki karaoke során használandó betűkódolást."
-
-msgctxt "#36299"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36300"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11842,14 +11574,6 @@ msgid "No info available yet."
 msgstr "Nincs még információ"
 
 msgctxt "#36303"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36304"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36305"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
@@ -11865,15 +11589,7 @@ msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "A képek automatikusan elforgatásra kerülnekaz EXIF adatnak megfelelően ha elérhető."
 
-msgctxt "#36309"
-msgid "Show video media in picture file lists, since most digital cameras nowadays have video recording capabilities."
-msgstr "Videó fájlok mutatása a képfájl listában, mert a digitális kameráknak jellemzően videofelvételi képessége is van."
-
 msgctxt "#36310"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36311"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
@@ -11889,14 +11605,6 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Diavetítés véletlen sorrendben."
 
-msgctxt "#36315"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36316"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "Válasszon ki három települést amelyekre az időjárási adatok kijelzésre kerülnek."
@@ -11905,41 +11613,13 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "Alapértelmezett időjárásadatbázis-forrás kiválasztása. Lásd a kiegészítőkezelőt a beállításokhoz."
 
-msgctxt "#36319"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36320"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "XBMC telepítés nevének kijelzése mikor több hálózati szolgáltatás van használatban."
 
-msgctxt "#36322"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36323"
-msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
-msgstr "UPnP szerver engedélyezése. Ez lehetővé teszi műsorok sugárzását bármely UPnP kliens részére."
-
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "UPnP kliensek értesítése, ha manuális vagy automatikus médiatár frissítés történik."
-
-msgctxt "#36325"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36326"
-msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
-msgstr "UPnP kliens engedélyezése. Ez lehetővé teszi bármely UPnP kiszolgálóról a lejátszást, és a lejátszás vezérlését."
-
-msgctxt "#36327"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11953,101 +11633,21 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Webkiszolgáló felhasználónevének megadása."
 
-msgctxt "#36331"
-msgid "Define webserver password."
-msgstr "Webkiszolgáló jelszavának megadása."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Telepített Webfelületek közötti választás a Kiegészítő-kezelő segítségével."
-
-msgctxt "#36333"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Az XBMC erre a gépre telepített programokkal való vezérlésének engedélyezése a Webkiszolgálón vagy az JSON-RPC illesztőn keresztül."
 
-msgctxt "#36335"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36336"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36337"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Az XBMC vezérlésének engedélyezése a hálózaton lévő programok számára."
 
-msgctxt "#36339"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36340"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36341"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36342"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36343"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36344"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36345"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36346"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36347"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36348"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36349"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Automatikus 'Wake-On-Lan\" küldése a szerver(ek)nek a megosztás vagy szolgáltatás elérése előtt."
-
-msgctxt "#36351"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36352"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36353"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36354"
-msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimising other applications. Uses a bit more resources and playback may be slightly less smooth."
-msgstr "A többképernyős használat fő előnye hogy az XBMC használható a többi alkalmazás minimalizálása nélkül is. Valamivel több erőforrást használ, és a visszajátszás kis mértékben akadozhat."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -12057,21 +11657,9 @@ msgctxt "#36356"
 msgid "Eliminate vertical tearing."
 msgstr "Frissítés miatti képtöredezettség elnyomása."
 
-msgctxt "#36357"
-msgid "Calibrate the User Interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
-msgstr "A felhasználói felület túlnyúlásokkal való képernyőhöz igazítása. Akkor használja ezt az eszközt a megjelenített kép túl kicsi vagy nagy a megjelenítőhöz képest."
-
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Tesztképek a kijelző kalibráláshoz."
-
-msgctxt "#36359"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36360"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
@@ -12084,10 +11672,6 @@ msgstr "Támogatott hangcsatornák számának megadása, vagy ahány analóg han
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "A 2 csatornára lekevert AC3 hangfolyamok erősítése."
-
-msgctxt "#36364"
-msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the speaker configuration."
-msgstr "Felkonvertálás engedélyezése a 2 csatornás sztereó hangfolyamhoz a hangfal beállításoknál megadott többcsatornás hangfalkonfigurációra."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12113,10 +11697,6 @@ msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Válassza ki ezt az opciót ha az erősítője képes a DTS-HD hangsáv dekódolására."
 
-msgctxt "#36371"
-msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
-msgstr "Eszköz kiválasztása a dekódolt audió állományok visszajátszásához mint az mp3"
-
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
 msgstr "Eszköz kiválasztása a kódolt állományokhoz, ez bármely formátum lehet ami kiválasztására került az 'erősítő képességei' opcióknál."
@@ -12124,14 +11704,6 @@ msgstr "Eszköz kiválasztása a kódolt állományokhoz, ez bármely formátum 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "A kezelőfelület hangjainak kezelési módja, úgymint a navigáció és a fontosabb visszajelzések."
-
-msgctxt "#36374"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36375"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
@@ -12144,10 +11716,6 @@ msgstr "Egér vagy érintőképernyő használata az XBMC irányításához. Meg
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
 msgstr "Joystick használata az XBMC irányításához."
-
-msgctxt "#36379"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -12177,14 +11745,6 @@ msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "Ha az elérhető sávszélesség limitált akkor az XBMC próbál ehhez az értékhez igazodni."
 
-msgctxt "#36387"
-msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected, but you don't want to suspend/shutdown the whole computer."
-msgstr "Képernyő kikapcsolása tétlenség esetén. Hasznos lehet olyan televíziók esetén amik kikapcsolnak ha nem érzékelnek jelet a bemeneten, de magát a gépet nem akarjuk elaltatni/kikapcsolni."
-
-msgctxt "#36388"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "Mennyi ideig legyen tétlen az XBMC mielőtt kikapcsolásra kerüljön."
@@ -12193,13 +11753,9 @@ msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "Adja meg mi történjen ha az XBMC tartósan tétlen."
 
-msgctxt "#36391"
+msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "Debug információk naplózásának ki- bekapcsolása.  Hasznos hibakeresés esetén."
-
-msgctxt "#36392"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
@@ -12209,65 +11765,13 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "A debug naplóba bekerülendő egyéb komponensek megadása."
 
-msgctxt "#36395"
-msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
-msgstr "Megnyitja a Mester Zárolás kezelőt, ahol beállíthatóak a Mester Zárolás paraméterei."
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Az általános zároláshoz használt PIN kód megadása."
 
-msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup "
-msgstr "Ha engedélyezett akkor a PIN kód megadása szükséges az XBMC elindulásakor."
-
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "Adja meg a próbálkozások maximális számát mielőtt az XBMC zárolásra kerül."
-
-msgctxt "#36399"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36400"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36401"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36402"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36403"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36404"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36405"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36406"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36407"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36408"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36409"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -12293,18 +11797,6 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
-msgctxt "#36416"
-msgid "Define the Apple remote standard used."
-msgstr "Apple távvezérlés módjának megadása."
-
-msgctxt "#36417"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36418"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Időjárás információ forrásának megadása."
@@ -12312,18 +11804,6 @@ msgstr "Időjárás információ forrásának megadása."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Nincs még információ"
-
-msgctxt "#36421"
-msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality"
-msgstr "Kihagyja a VDPAU keverőt, ezáltal erőforrást takarít meg az alacsonyabb teljesítményű rendszeren, de kismértékben rontja a képminőséget."
-
-msgctxt "#36422"
-msgid "Enable hardware video decode using AMLogic decoder"
-msgstr "Engedélyezi az AMLogic hardvergyorsítást"
-
-msgctxt "#36423"
-msgid "Use frame-multi-threaded decoding instead of hardware accelerated decoding (less reliable than default single thread mode)."
-msgstr "Többszálas dekódolás használata a hardveres gyorsítású dekódolás helyett. (kevésbé megbízható mint az alap egyszálú üzemmód)."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -12344,10 +11824,6 @@ msgstr "Információ mutatása"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Felvétel"
-
-msgctxt "#36429"
-msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - transcoding can lead to a reduction in sound quality"
-msgstr "Ez a beállítás akkor szükséges ha a hangkimenet csak a Dolby Digital 5.1-et támogatja, ezzel lehetővé válik egyéb többcsatornás hangfolyam átvitele is úgymint AAC5.1 vagy FLAC5.1 többcsatornásként. Megjegyzés - az átkódolás hangminőség csökkenést okozhat"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
@@ -12389,10 +11865,6 @@ msgctxt "#36509"
 msgid "Monoscopic - 2D"
 msgstr "Monoszkópikus - 2D"
 
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos"
-msgstr "A sztereógráf videók lejátszási módja"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Kérdezzen"
@@ -12400,10 +11872,6 @@ msgstr "Kérdezzen"
 msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Használja a preferált módot"
-
-msgctxt "#36523"
-msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration"
-msgstr "Maximális mintavételi frekvencia spdif kimenethez, vagy rögzített mintavételi frekvencia konfiguráció"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12453,22 +11921,6 @@ msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "Sztereógráf mód megfordítva"
 
-msgctxt "#36537"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36538"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36539"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36540"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "A hangerő változtatás engedélyezése az AirPlay kliensekkel."
@@ -12488,10 +11940,6 @@ msgstr "Videófájlok hardveres dekódolásának engedélyezése."
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "Felirat 3D mélység"
-
-msgctxt "#36546"
-msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
-msgstr "Beállítja a feliratok 3D videóknál látható térbeli mélységét. Minél magasabb az érték, a felirat annál közelebbinek fog látszani a nézőhöz."
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
@@ -12545,10 +11993,6 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "Középcsatorna erősítése lekeverés esetén"
 
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
-msgstr "Rendszerbillentyűk engedélyezése teljesképernyős üzemmódban úgymint alt-tab, printscreen, hangerőgombok"
-
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "Nagyobb színmélységű képek használata"
@@ -12564,3 +12008,7 @@ msgstr "UPnP Lejátszó"
 msgctxt "#37023"
 msgid "Do you wish to stop playback on the remote device?"
 msgstr "Megszakítja a lejátszást a távoli eszközön?"
+
+msgctxt "#37024"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
+msgstr "Ez a beállítás akkor szükséges ha a hangkimenet csak a Dolby Digital 5.1-et támogatja, ezzel lehetővé válik egyéb többcsatornás hangfolyam átvitele is úgymint AAC5.1 vagy FLAC5.1 többcsatornásként. Megjegyzés - nem javasolt a használata Pi eszköznél az erős CPU igény miatt."

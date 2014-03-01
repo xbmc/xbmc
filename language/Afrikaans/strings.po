@@ -211,31 +211,31 @@ msgstr "N"
 
 msgctxt "#72"
 msgid "NNE"
-msgstr "NNE"
+msgstr "NNO"
 
 msgctxt "#73"
 msgid "NE"
-msgstr "NE"
+msgstr "NO"
 
 msgctxt "#74"
 msgid "ENE"
-msgstr "ENE"
+msgstr "ONO"
 
 msgctxt "#75"
 msgid "E"
-msgstr "E"
+msgstr "O"
 
 msgctxt "#76"
 msgid "ESE"
-msgstr "ESE"
+msgstr "OSO"
 
 msgctxt "#77"
 msgid "SE"
-msgstr "SE"
+msgstr "SO"
 
 msgctxt "#78"
 msgid "SSE"
-msgstr "SSE"
+msgstr "SSO"
 
 msgctxt "#79"
 msgid "S"
@@ -339,7 +339,7 @@ msgstr "Skyfievertoning"
 
 msgctxt "#109"
 msgid "Create thumbs"
-msgstr "Skep duime"
+msgstr "Skep naeldruk"
 
 msgctxt "#110"
 msgid "Create thumbnails"
@@ -351,15 +351,15 @@ msgstr "Kortpaaie"
 
 msgctxt "#112"
 msgid "Paused"
-msgstr "Gepouseer"
+msgstr "Pouseer"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Kon nie op datum bring nie"
+msgstr "Opdateering het misluk"
 
 msgctxt "#114"
 msgid "Installation failed"
-msgstr "Installasie het gefaal"
+msgstr "Installasie het misluk"
 
 msgctxt "#115"
 msgid "Copy"
@@ -519,7 +519,7 @@ msgstr "Vol-dupleks"
 
 msgctxt "#154"
 msgid "Storage"
-msgstr "Storing"
+msgstr "Berging"
 
 msgctxt "#155"
 msgid "Drive"
@@ -572,6 +572,10 @@ msgstr "Omslag"
 msgctxt "#167"
 msgid "Cancel file operations"
 msgstr "Kanselleer lêer operasies"
+
+msgctxt "#168"
+msgid "%s- %s"
+msgstr "%s- %s"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -1033,6 +1037,18 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Boekmerke"
 
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 bekwame ontvanger"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 bekwame ontvanger"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 bekwame ontvanger"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Vertraging"
@@ -1052,10 +1068,6 @@ msgstr "Nie-intervleg"
 msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Oorspronklike stroom se taal"
-
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Gebruiker koppelvlak taal"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1185,6 +1197,14 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Jaar"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD bekwame ontvanger"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD bekwame ontvanger"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programme"
@@ -1240,6 +1260,10 @@ msgstr "Skerskut verdof vlak"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Sorteer volgens: Lêer"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digitale (AC3) bekwame ontvanger"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -2009,6 +2033,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Kere gespeel"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Datum Gevat"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Sorteer rigting"
@@ -2289,6 +2317,10 @@ msgctxt "#665"
 msgid "Compression level"
 msgstr "Kompressie vlak"
 
+msgctxt "#666"
+msgid "Verbose logging..."
+msgstr "Verbose meld..."
+
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr "Maak biblioteek skoon"
@@ -2304,6 +2336,10 @@ msgstr "Hierdie pad is al vantevore deursoek"
 msgctxt "#705"
 msgid "Network"
 msgstr "Netwerk"
+
+msgctxt "#706"
+msgid "Server"
+msgstr "Bediener"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
@@ -2321,6 +2357,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP proksie"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Toekenning"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Outomaties (DHCP)"
@@ -2332,6 +2372,18 @@ msgstr "Handrolies (Staties)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "IP-adres"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Netmasker"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Standaard portaal"
+
+msgctxt "#722"
+msgid "DNS server"
+msgstr "DNS bediener"
 
 msgctxt "#723"
 msgid "Save & restart"
@@ -2376,6 +2428,14 @@ msgstr "Geen wagwoord"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Karakter stel"
+
+msgctxt "#736"
+msgid "Style"
+msgstr "Styl"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Kleur"
 
 msgctxt "#738"
 msgid "Normal"
@@ -2509,6 +2569,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Koortlose netwerk naam (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Draadlose wagwoord"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Draadlose sekurityd"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Stoor en pas netwerk koppelvlak verstellings toe"
@@ -2593,6 +2661,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Biblioteek Opdatering"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Musiek lys moet geskandeer word om merker van lêers te kry."
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Wil jy nou skandeer?"
@@ -2609,6 +2681,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Geldige poort bereik is 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Voeg Prente By..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Voeg Musiek By..."
@@ -2616,6 +2692,10 @@ msgstr "Voeg Musiek By..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Voeg Videos By..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Voorskou"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2813,6 +2893,30 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Tik web adres in"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Instaan tipe"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr "SOCKS4"
+
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr "SOCKS4A"
+
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 met afgelee dns oplossing"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB kliënt"
@@ -2949,9 +3053,17 @@ msgctxt "#1271"
 msgid "Device name"
 msgstr "Toestel naam"
 
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Gebriuk wagwoord beskeriming"
+
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1274"
+msgid "AirTunes"
+msgstr "AirTunes"
 
 msgctxt "#1275"
 msgid "Filter %s"
@@ -3309,9 +3421,25 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Verstellings - Profiele"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Terugstel"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Standaard"
+
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Is jy seker jy wil die stellings terugstel in die kategorie?"
+
+msgctxt "#10043"
+msgid "Help"
+msgstr "Help"
+
+msgctxt "#10044"
+msgid "No help available"
+msgstr "Geen hulp beskikbaar"
 
 msgctxt "#10131"
 msgid "Lock settings"
@@ -4278,8 +4406,8 @@ msgid "Scan for new content"
 msgstr "Deursoek vir nuwe inhoud"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Speel nou..."
+msgid "Current playlist"
+msgstr "Huidige speellys"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4553,6 +4681,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Speel slegs hierdie"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Sagteware"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V sinchroniseer metode"
@@ -4761,17 +4893,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video stoor - DVD-ROM"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Oudio stoor - DVD-ROM"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6233,10 +6357,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Kanale in"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "Sinchroniseer kanaal groepe met agterkante"
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
@@ -7665,10 +7785,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Hierdie sal die kalibrasie waardes vir %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "herstel na die verstek waardes."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Soek vir destinasie"
@@ -7885,10 +8001,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Spesiale"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Gryp seisoen duime outomaties"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Geselekteerde vouer bevat 'n enkele video"
@@ -8000,10 +8112,6 @@ msgstr "Voorskou"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Verplat"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Verplat TV vertonings"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8252,10 +8360,6 @@ msgstr "Fliek & alternatiewe subtitel gids"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Oorskryf ASS/SSA subtitel fonts"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Stel muis in staat"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9210,6 +9314,10 @@ msgid "Enable"
 msgstr "Stel in staat"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Nie in staat gestel"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Byvoegsel nie in staat gestel"
 
