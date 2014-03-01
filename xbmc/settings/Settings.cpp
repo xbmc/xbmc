@@ -25,7 +25,6 @@
 #include "Autorun.h"
 #include "LangInfo.h"
 #include "Util.h"
-#include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
@@ -85,25 +84,6 @@
 #define SETTINGS_XML_ROOT   "settings"
 
 using namespace XFILE;
-
-bool AddonHasSettings(const std::string &condition, const std::string &value, const std::string &settingId)
-{
-  if (settingId.empty())
-    return false;
-
-  CSettingAddon *setting = (CSettingAddon*)CSettings::Get().GetSetting(settingId);
-  if (setting == NULL)
-    return false;
-
-  ADDON::AddonPtr addon;
-  if (!ADDON::CAddonMgr::Get().GetAddon(setting->GetValue(), addon, setting->GetAddonType()) || addon == NULL)
-    return false;
-
-  if (addon->Type() == ADDON::ADDON_SKIN)
-    return ((ADDON::CSkinInfo*)addon.get())->HasSkinFile("SkinSettings.xml");
-
-  return addon->HasSettings();
-}
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -717,8 +697,6 @@ void CSettings::InitializeConditions()
     m_settingsManager->AddCondition(*itCondition);
 
   // add more complex conditions
-  m_settingsManager->AddCondition("addonhassettings", AddonHasSettings);
-
   const std::map<std::string, SettingConditionCheck> &complexConditions = CSettingConditions::GetComplexConditions();
   for (std::map<std::string, SettingConditionCheck>::const_iterator itCondition = complexConditions.begin(); itCondition != complexConditions.end(); ++itCondition)
     m_settingsManager->AddCondition(itCondition->first, itCondition->second);

@@ -374,9 +374,9 @@ void CAEFactory::UnregisterAudioCallback()
     AE->UnregisterAudioCallback();
 }
 
-bool CAEFactory::IsSettingVisible(const std::string &condition, const std::string &value, const std::string &settingId)
+bool CAEFactory::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting)
 {
-  if (settingId.empty() || value.empty() || !AE)
+  if (setting == NULL || value.empty() || !AE)
     return false;
 
   return AE->IsSettingVisible(value);
