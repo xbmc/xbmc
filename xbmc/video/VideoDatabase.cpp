@@ -8185,23 +8185,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
         if (silent)
           del = false;
         else
-        {
-          CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-          if (pDialog != NULL)
-          {
-            CURL parentUrl(parentPath);
-            pDialog->SetHeading(15012);
-            pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013), parentUrl.GetWithoutUserDetails().c_str()));
-            pDialog->SetChoice(0, 15015);
-            pDialog->SetChoice(1, 15014);
-
-            //send message and wait for user input
-            ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, (unsigned int)g_windowManager.GetActiveWindow() };
-            CApplicationMessenger::Get().SendMessage(tMsg, true);
-
-            del = !pDialog->IsConfirmed();
-          }
-        }
+          del = QueryUserToRemoveMissingPath(parentPath);
       }
 
       parentPathsDeleteDecisions.insert(make_pair(parentPathID, make_pair(parentPathNotExists, del)));
@@ -8226,6 +8210,28 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
   m_pDS->close();
 
   return cleanedIDs;
+}
+
+bool CVideoDatabase::QueryUserToRemoveMissingPath(const CStdString& path)
+{
+  bool              rc      = false;
+  CGUIDialogYesNo*  pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+
+  if (pDialog != NULL)
+  {
+    CURL parentUrl(path);
+    pDialog->SetHeading(15012);
+    pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013), parentUrl.GetWithoutUserDetails().c_str()));
+    pDialog->SetChoice(0, 15015);
+    pDialog->SetChoice(1, 15014);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, (unsigned int)g_windowManager.GetActiveWindow() };
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
+    rc = !pDialog->IsConfirmed();
+  }
+
+  return rc;
 }
 
 void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
