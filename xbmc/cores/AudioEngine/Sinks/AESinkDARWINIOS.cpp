@@ -528,6 +528,8 @@ OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFl
     sink->m_buffer->Read((unsigned char*)ioData->mBuffers[i].mData, bytes);
     if (bytes != wanted)
       CLog::Log(LOGERROR, "%s: %sFLOW (%i vs %i) bytes", __FUNCTION__, bytes > wanted ? "OVER" : "UNDER", bytes, wanted);
+    if (bytes == 0)
+      *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
   }
   // tell the sink we're good for more data
   condVar.notifyAll();
