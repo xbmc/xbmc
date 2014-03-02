@@ -181,7 +181,7 @@ protected:
   CCriticalSection m_lock;
 };
 
-#if defined(HAS_GLX) || defined(TARGET_DARWIN_OSX)
+#if defined(HAS_GLX) || defined(TARGET_DARWIN)
 class CActiveAE : public IAE, public IDispResource, private CThread
 #else
 class CActiveAE : public IAE, private CThread
