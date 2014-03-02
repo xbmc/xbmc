@@ -2701,8 +2701,9 @@ void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
     glBindTexture(m_textureTarget, plane.id);
 
     GLuint physical = ~0U;
+    GLvoid *virt = (GLvoid*)codecinfo->data[0];
     glTexDirectVIVMap(m_textureTarget, codecinfo->iWidth, codecinfo->iHeight, GL_VIV_NV12,
-                      (GLvoid **)(&codecinfo->data[0]), &physical);
+                      (GLvoid **)&virt, &physical);
     glTexDirectInvalidateVIV(m_textureTarget);
 
     glBindTexture(m_textureTarget, 0);
