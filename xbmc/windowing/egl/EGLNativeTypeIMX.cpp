@@ -44,7 +44,7 @@ CEGLNativeTypeIMX::~CEGLNativeTypeIMX()
 bool CEGLNativeTypeIMX::CheckCompatibility()
 {
   std::string strName;
-  std::string str2 ("mxc");
+  std::string str2 ("mxc_sdc_fb");
   get_sysfs_str("/sys/class/graphics/fb0/device/modalias", strName);
   StringUtils::Trim(strName);
   size_t found = strName.find(str2);
