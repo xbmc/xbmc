@@ -27,6 +27,7 @@
 #include "NfoFile.h"
 #include "utils/RegExp.h"
 #include "utils/md5.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "VideoInfoDownloader.h"
 #include "GUIInfoManager.h"
@@ -49,6 +50,8 @@
 #include "TextureCache.h"
 #include "GUIUserMessages.h"
 #include "URL.h"
+#include "ApplicationMessenger.h"
+#include "settings/MediaSourceSettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -94,6 +97,57 @@ namespace VIDEO
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Starting scan ..");
       ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
 
+      // check that our sources are all around
+      std::vector<CStdString> skipSources;
+      VECSOURCES*             videoSources;
+
+      if ((videoSources = CMediaSourceSettings::Get().GetSources("video")))
+      {
+        VECSOURCES::const_iterator  it;
+        std::vector<std::string>    toCheck;
+        for (it = videoSources->begin(); it != videoSources->end(); ++it)
+        {
+          if (URIUtils::IsMultiPath(it->strPath))
+          {
+            std::vector<CStdString> multipaths;
+            CMultiPathDirectory::GetPaths(it->strPath, multipaths);
+            toCheck.insert(toCheck.end(), multipaths.begin(), multipaths.end());
+          }
+          else
+            toCheck.push_back(it->strPath);
+        }
+
+        std::vector<std::string>::const_iterator it2 = toCheck.begin();
+
+        while (it2 != toCheck.end())
+        {
+          CLog::Log(LOGDEBUG, "Checking existence of %s", it2->c_str());
+          if (!CDirectory::Exists(*it2))
+          {
+            if (m_showDialog)
+            {
+              CGUIDialogYesNo*  pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+              if (pDialog != NULL)
+              {
+                CURL parentUrl(*it2);
+                pDialog->SetHeading(15012);
+                pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013), parentUrl.GetWithoutUserDetails().c_str()));
+                pDialog->SetChoice(0, 20470);
+                pDialog->SetChoice(1, 20471);
+
+                //send message and wait for user input
+                ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, (unsigned int)g_windowManager.GetActiveWindow() };
+                CApplicationMessenger::Get().SendMessage(tMsg, true);
+                if (!pDialog->IsConfirmed())
+                  continue;
+              }
+            }
+            skipSources.push_back(*it2);
+          }
+          ++it2;
+        }
+      }
+
       // Reset progress vars
       m_currentItem = 0;
       m_itemCount = -1;
@@ -115,7 +169,7 @@ namespace VIDEO
          * occurs.
          */
         CStdString directory = *m_pathsToScan.begin();
-        if (!CDirectory::Exists(directory))
+        if (URIUtils::IsInPath(directory, skipSources) || !CDirectory::Exists(directory))
         {
           /*
            * Note that this will skip clean (if m_bClean is enabled) if the directory really
