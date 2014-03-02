@@ -726,6 +726,11 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
           CLog::Log(LOGERROR, "%s - VPU Cannot get output frame(%d).\n", __FUNCTION__, ret);
           goto out_error;
         }
+
+        // Some codecs (VC1?) lie about their frame size (mod 16). Adjust...
+        m_frameInfo.pExtInfo->nFrmWidth  = (((m_frameInfo.pExtInfo->nFrmWidth) + 15) & ~15);
+        m_frameInfo.pExtInfo->nFrmHeight = (((m_frameInfo.pExtInfo->nFrmHeight) + 15) & ~15);
+
         retStatus |= VC_PICTURE;
       } //VPU_DEC_OUTPUT_DIS
 
