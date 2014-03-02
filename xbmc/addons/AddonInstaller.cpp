@@ -731,7 +731,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& re
 
 void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 {
-  if (m_addon->Type() < ADDON_VIZ_LIBRARY && CSettings::Get().GetBool("general.addonnotifications"))
+  if (CSettings::Get().GetBool("general.addonnotifications"))
   {
     CGUIDialogKaiToast::QueueNotification(m_addon->Icon(),
                                           m_addon->Name(),

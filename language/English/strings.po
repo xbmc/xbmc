@@ -12221,7 +12221,31 @@ msgctxt "#24080"
 msgid "Try to reconnect?"
 msgstr ""
 
-#empty strings from id 24081 to 24088
+#. The label in the add-ons manager for helper add-ons
+#: xbmc/addons/addon.cpp
+msgctxt "#24081"
+msgid "Helper Add-ons"
+msgstr ""
+
+#. The label in the add-ons manager for add-on libraries
+#: xbmc/addons/addon.cpp
+msgctxt "#24082"
+msgid "Add-on libraries"
+msgstr ""
+
+#. The label in the add-ons manager for information libraries
+#: xbmc/addons/addon.cpp
+msgctxt "#24083"
+msgid "Information libraries"
+msgstr ""
+
+#. The label in the add-ons manager for visualisation libraries
+#: xbmc/addons/addon.cpp
+msgctxt "#24084"
+msgid "Visualisation libraries"
+msgstr ""
+
+#empty strings from id 24085 to 24088
 
 msgctxt "#24089"
 msgid "Add-on restarts"

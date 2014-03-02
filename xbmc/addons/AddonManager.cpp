@@ -318,7 +318,7 @@ bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
 
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool allowRepos /* = false */)
 {
-  for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
+  for (int i = ADDON_UNKNOWN+1; i < ADDON_MAX; ++i)
   {
     if (!allowRepos && ADDON_REPOSITORY == (TYPE)i)
       continue;
@@ -375,7 +375,7 @@ bool CAddonMgr::ReloadSettings(const CStdString &id)
 bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion /*= false*/)
 {
   CSingleLock lock(m_critSection);
-  for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
+  for (int i = ADDON_UNKNOWN+1; i < ADDON_MAX; ++i)
   {
     VECADDONS temp;
     if (CAddonMgr::Get().GetAddons((TYPE)i, temp, true))

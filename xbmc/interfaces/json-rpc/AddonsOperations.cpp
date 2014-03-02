@@ -108,7 +108,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const CStdString &method, ITransport
     if (content != CPluginSource::UNKNOWN)
       plugin = boost::dynamic_pointer_cast<CPluginSource>(addons.at(index));
 
-    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_VIZ_LIBRARY) ||
+    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
        ((content != CPluginSource::UNKNOWN && plugin == NULL) || (plugin != NULL && !plugin->Provides(content))))
     {
       addons.erase(addons.begin() + index);
@@ -131,7 +131,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const CStdString &method, ITra
   string id = parameterObject["addonid"].asString();
   AddonPtr addon;
   if (!CAddonMgr::Get().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon.get() == NULL ||
-      addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_VIZ_LIBRARY)
+      addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
     return InvalidParams;
     
   CAddonDatabase addondb;
@@ -163,7 +163,7 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const CStdString &method, ITransp
   string id = parameterObject["addonid"].asString();
   AddonPtr addon;
   if (!CAddonMgr::Get().GetAddon(id, addon) || addon.get() == NULL ||
-      addon->Type() < ADDON_VIZ || addon->Type() >= ADDON_VIZ_LIBRARY)
+      addon->Type() < ADDON_VIZ || addon->Type() >= ADDON_MAX)
     return InvalidParams;
     
   string argv;

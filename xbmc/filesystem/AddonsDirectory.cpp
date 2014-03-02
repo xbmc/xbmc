@@ -151,7 +151,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
     if (groupAddons)
     {
-      for (int i=ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
+      for (int i=ADDON_UNKNOWN+1;i<ADDON_MAX;++i)
       {
         for (unsigned int j=0;j<addons.size();++j)
         {
