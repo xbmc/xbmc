@@ -73,7 +73,15 @@ bool CGUIKeyboardFactory::SendTextToActiveKeyboard(const std::string &aTextStrin
 {
   if (!g_activedKeyboard)
     return false;
-  return g_activedKeyboard->SetTextToKeyboard(aTextString, closeKeyboard);
+
+  std::string sendStr = aTextString;
+
+  // strip off trailing carriage return if this is the "closekeyboard" text
+  // we normally never want the carriage return in the string here
+  if (closeKeyboard && StringUtils::EndsWith(aTextString, "\n"))
+    sendStr = aTextString.substr(0, aTextString.length() - 1);
+
+  return g_activedKeyboard->SetTextToKeyboard(sendStr, closeKeyboard);
 }
 
 
