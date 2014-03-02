@@ -20,7 +20,7 @@
 
 #pragma once
 
-#if defined(HAS_GLX) || defined(TARGET_DARWIN_OSX)
+#if defined(HAS_GLX) || defined(TARGET_DARWIN)
 class IDispResource
 {
 public:
