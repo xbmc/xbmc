@@ -78,5 +78,4 @@ private:
   void FireJob();
   void RegisterListProvider(bool hasLibraryContent);
   bool UpdateURL();
-  static bool HasLibraryContent(const std::string &url);
 };
