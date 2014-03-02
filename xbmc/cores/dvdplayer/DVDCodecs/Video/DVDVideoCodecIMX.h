@@ -75,6 +75,7 @@ protected:
   // private because we are reference counted
   virtual                  ~CDVDVideoCodecIMXBuffer();
 
+private:
 #ifdef TRACE_FRAMES
   int                      m_idx;
 #endif
@@ -136,12 +137,14 @@ class CDVDVideoCodecIPUBuffers
 
     bool Init(int width, int height, int numBuffers, int nAlign);
     bool Reset();
+    bool SetEnabled(bool);
     bool Close();
 
     CDVDVideoCodecIPUBuffer *Process(CDVDVideoCodecBuffer *sourceBuffer,
                                      VpuFieldType fieldType, bool lowMotion);
 
   private:
+    bool                      m_bEnabled;
     int                       m_ipuHandle;
     int                       m_bufferNum;
     CDVDVideoCodecIPUBuffer **m_buffers;
@@ -168,6 +171,9 @@ public:
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   virtual unsigned GetAllowedReferences();
+
+  static void Enter();
+  static void Leave();
 
 protected:
 

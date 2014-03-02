@@ -78,6 +78,8 @@ static PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
 
 #ifdef HAS_IMXVPU
 #include "windowing/egl/EGLWrapper.h"
+#include "DVDCodecs/Video/DVDVideoCodecIMX.h"
+
 #define GL_VIV_NV12 0x8FC1
 typedef void (GL_APIENTRYP PFNGLTEXDIRECTVIVMAPPROC) (GLenum Target, GLsizei Width, GLsizei Height, GLenum Format, GLvoid ** Logical, const GLuint * Physical);
 typedef void (GL_APIENTRYP PFNGLTEXDIRECTINVALIDATEVIVPROC) (GLenum Target);
@@ -1638,7 +1640,15 @@ void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
   YUVPLANE &plane = m_buffers[index].fields[field][0];
   CDVDVideoCodecBuffer* codecinfo = m_buffers[index].codecinfo;
 
-  if((codecinfo == NULL) || !codecinfo->IsValid()) return;
+  if(codecinfo == NULL) return;
+
+  CDVDVideoCodecIMX::Enter();
+
+  if(!codecinfo->IsValid())
+  {
+    CDVDVideoCodecIMX::Leave();
+    return;
+  }
 
   glDisable(GL_DEPTH_TEST);
 
@@ -1690,6 +1700,8 @@ void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
 
   glBindTexture(m_textureTarget, 0);
   VerifyGLState();
+
+  CDVDVideoCodecIMX::Leave();
 
 #ifdef DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "RenderIMXMAPTexture %d: tm:%d\n", index, XbmcThreads::SystemClockMillis() - time);
@@ -2714,9 +2726,31 @@ void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
   YUVBUFFER& buf    =  m_buffers[index];
   CDVDVideoCodecBuffer* codecinfo = buf.codecinfo;
 
-  if(codecinfo && codecinfo->IsValid())
+  if(codecinfo)
   {
+    CDVDVideoCodecIMX::Enter();
+
+    if(!codecinfo->IsValid())
+    {
+      CDVDVideoCodecIMX::Leave();
+      return;
+    }
+
     YUVPLANE &plane = m_buffers[index].fields[0][0];
+    CDVDVideoCodecIPUBuffers *deinterlacer = (CDVDVideoCodecIPUBuffers*)codecinfo->data[2];
+
+    if (deinterlacer)
+    {
+      CDVDVideoCodecBuffer *deint;
+      deint = deinterlacer->Process(codecinfo, (VpuFieldType)(int)codecinfo->data[3], false);
+      if (deint)
+      {
+        SAFE_RELEASE(buf.codecinfo);
+        buf.codecinfo = deint;
+        buf.codecinfo->Lock();
+        codecinfo = buf.codecinfo;
+      }
+    }
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(m_textureTarget, plane.id);
@@ -2734,6 +2768,8 @@ void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
     plane.texheight = codecinfo->iHeight;
 
     CalculateTextureSourceRects(index, 1);
+
+    CDVDVideoCodecIMX::Leave();
   }
 
 #endif
