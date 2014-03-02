@@ -1035,11 +1035,13 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::Get().MediaPauseIfPlaying();
   }
+  g_Windowing.OnAppFocusChange(false);
 }
 
 - (void)enterForeground
 {
   PRINT_SIGNATURE();
+  g_Windowing.OnAppFocusChange(true);
   // when we come back, restore playing if we were.
   if (m_isPlayingBeforeInactive)
   {
