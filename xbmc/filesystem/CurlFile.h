@@ -140,7 +140,6 @@ namespace XFILE
           {
             if (m_hasTicklePipe)
             {
-              CLog::Log(LOGDEBUG, "CCurlFile::ReadState::Cancel sending wakeup packet.");
 #ifndef TARGET_WINDOWS
               if (::write(m_ticklePipe[1], "Q", 1) != 1)
 #else

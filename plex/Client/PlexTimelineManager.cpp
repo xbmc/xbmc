@@ -305,7 +305,7 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, CPlexTime
 
   bool stateChange = false;
 
-  CLog::Log(LOGDEBUG, "PlexTimelineManager::ReportProgress reporting for %s, current is %s", newItem->GetLabel().c_str(), m_currentItems[type] ? m_currentItems[type]->GetLabel().c_str() : "none");
+  //CLog::Log(LOGDEBUG, "PlexTimelineManager::ReportProgress reporting for %s, current is %s", newItem->GetLabel().c_str(), m_currentItems[type] ? m_currentItems[type]->GetLabel().c_str() : "none");
 
   if (!m_currentItems[type] || newItem->GetPath() != m_currentItems[type]->GetPath())
   {

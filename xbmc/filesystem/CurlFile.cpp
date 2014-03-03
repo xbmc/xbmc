@@ -224,7 +224,6 @@ CCurlFile::CReadState::CReadState()
 
   /* PLEX */
   m_hasTicklePipe = PlexUtils::MakeWakeupPipe(m_ticklePipe);
-  CLog::Log(LOGDEBUG, "CCurlFile::CReadState::CReadState Has ticklePipe %s", m_hasTicklePipe ? "YES" : "NO");
   /* END PLEX */
 }
 
