@@ -21,6 +21,7 @@
 #include "TextureManager.h"
 #include "Texture.h"
 #include "AnimatedGif.h"
+#include "pictures/Gif.h"
 #include "GraphicContext.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -350,38 +351,25 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
     }
     else
     {
-      CAnimatedGifSet AnimatedGifSet;
-      int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
-      if (iImages == 0)
+      Gif gif;
+      if(!gif.LoadGif(strPath.c_str()))
       {
         if (StringUtils::StartsWith(strPath, g_SkinInfo->Path()))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return emptyTexture;
       }
-      int iWidth = AnimatedGifSet.FrameWidth;
-      int iHeight = AnimatedGifSet.FrameHeight;
 
-      // fixup our palette
-      COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
-      // set the alpha values to fully opaque
-      for (int i = 0; i < 256; i++)
-        palette[i].x = 0xff;
-      // and set the transparent colour
-      if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
-        palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
-
-      pMap = new CTextureMap(strTextureName, iWidth, iHeight, AnimatedGifSet.nLoops);
-
-      for (int iImage = 0; iImage < iImages; iImage++)
+      pMap = new CTextureMap(strTextureName, gif.m_width, gif.m_height, gif.m_loops);
+      
+      for (std::vector<GifFrame>::iterator frame = gif.m_frames.begin(); frame != gif.m_frames.end(); ++frame)
       {
         CTexture *glTexture = new CTexture();
         if (glTexture)
         {
-          CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
-          glTexture->LoadPaletted(pImage->Width, pImage->Height, pImage->BytesPerRow, XB_FMT_A8R8G8B8, (unsigned char *)pImage->Raster, palette);
-          pMap->Add(glTexture, pImage->Delay);
+          glTexture->LoadFromMemory(gif.m_width, gif.m_height, gif.m_pitch, XB_FMT_A8R8G8B8, false, frame->m_pImage );
+          pMap->Add(glTexture, frame->m_delay);
         }
-      } // of for (int iImage=0; iImage < iImages; iImage++)
+      }
     }
 
 #ifdef _DEBUG
