@@ -13908,7 +13908,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36210"
-msgid "Prevent the "connection lost" notification window from constantly pooping up when XBMC is unable to talk to the PVR backend server."
+msgid "Prevent the 'connection lost' notification window from constantly pooping up when XBMC is unable to talk to the PVR backend server."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13923,7 +13923,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36213"
-msgid "Hide the channel info window automatically after a few seconds, defined below."
+msgid "Hide the programming information automatically after a few seconds, defined below."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13933,7 +13933,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36215"
-msgid "How long the channel info window is displayed when the "automatically hide" setting is turned on."
+msgid "How long the programming information is displayed when the "automatically hide" setting is turned on."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13943,7 +13943,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36217"
-msgid "Scan for missing channels icons."
+msgid "Scan for missing channel icons."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13988,7 +13988,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36226"
-msgid "Category for PVR playback and channel swithcing settings."
+msgid "Category for PVR playback and channel switching settings."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14008,7 +14008,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36230"
-msgid "How long XBMC will wait to attempt to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
 msgstr ""
 
 #: system/settings/settings.xml
