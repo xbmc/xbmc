@@ -15,7 +15,7 @@ DEPENDS = \
 	python26 afpfs-ng libshairplay \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
 	libamplayer libssh taglib xbmc-pvr-addons libusb libnfs libmp3lame \
-	pythonmodule-pil libxslt
+	pythonmodule-pil libxslt harfbuzz
 
 ifeq ($(ENABLE_GPLV3),1)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -76,7 +76,7 @@ tiff: libjpeg-turbo
 jasper: libjpeg-turbo
 libvorbis: libogg
 libflac: libogg gettext
-libass: fontconfig libpng freetype2 expat $(ICONV)
+libass: fontconfig libpng freetype2 expat $(ICONV) harfbuzz
 librtmp: openssl
 libmicrohttpd: openssl libgpg-error libgcrypt
 python26: expat gettext libxml2 sqlite3 openssl libffi
