@@ -6094,6 +6094,9 @@
     <ClInclude Include="..\..\xbmc\win32\IMMNotificationClient.h">
       <Filter>win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\pictures\DllLibGif.h">
+      <Filter>pictures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
