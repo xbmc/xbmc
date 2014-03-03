@@ -36,6 +36,35 @@
 #include <sys/times.h>
 #include <sched.h>
 
+/* PLEX */
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/date_time/posix_time/conversion.hpp>
+/* END PLEX */
+
+
+#ifdef __PLEX__
+/* thread-safe version of timegm() */
+time_t plex_timegm(struct tm *tm)
+{
+    mktime(tm);
+    time_t ret = tm->tm_sec + tm->tm_min*60 + tm->tm_hour*3600 + tm->tm_yday*86400;
+    ret += ((time_t)31536000) * (tm->tm_year-70);
+    ret += ((tm->tm_year-69)/4)*86400 - ((tm->tm_year-1)/100)*86400 + ((tm->tm_year+299)/400)*86400;
+    return ret;
+}
+
+boost::posix_time::ptime __plex_starttime = boost::posix_time::microsec_clock::local_time();
+const time_t __plex_startsec = time(NULL);
+
+void plex_localtime(const time_t *t, struct tm *tm)
+{
+  const time_t now = time(NULL);
+  boost::posix_time::ptime curLocalTime = __plex_starttime + boost::posix_time::seconds(now - __plex_startsec);
+  *tm = boost::posix_time::to_tm(curLocalTime);
+}
+
+#endif
+
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
 
 /*
@@ -64,7 +93,11 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
   const time_t t = time(NULL);
   struct tm now;
 
+#ifndef __PLEX__
   localtime_r(&t, &now);
+#else
+  plex_localtime(&t, &now);
+#endif
   sysTime->wYear = now.tm_year + 1900;
   sysTime->wMonth = now.tm_mon + 1;
   sysTime->wDayOfWeek = now.tm_wday;
@@ -86,7 +119,11 @@ BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileT
   time_t ft;
   struct tm tm_ft;
   FileTimeToTimeT(lpFileTime, &ft);
+#ifndef __PLEX__
   localtime_r(&ft, &tm_ft);
+#else
+  plex_localtime(&ft, &tm_ft);
+#endif
 
   l.QuadPart += tm_ft.tm_gmtoff * 10000000;
 
@@ -94,18 +131,6 @@ BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileT
   lpLocalFileTime->dwHighDateTime = l.u.HighPart;
   return true;
 }
-
-#ifdef __PLEX__
-/* thread-safe version of timegm() */
-time_t plex_timegm(struct tm *tm)
-{
-    mktime(tm);
-    time_t ret = tm->tm_sec + tm->tm_min*60 + tm->tm_hour*3600 + tm->tm_yday*86400;
-    ret += ((time_t)31536000) * (tm->tm_year-70);
-    ret += ((tm->tm_year-69)/4)*86400 - ((tm->tm_year-1)/100)*86400 + ((tm->tm_year+299)/400)*86400;
-    return ret;
-}
-#endif
 
 BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime)
 {
@@ -228,7 +253,11 @@ BOOL  FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
   time_t ft = fileTime.QuadPart;
 
   struct tm tm_ft;
+#ifndef __PLEX__
   localtime_r(&ft,&tm_ft);
+#else
+  plex_localtime(&ft, &tm_ft);
+#endif
 
   *pTimeT = mktime(&tm_ft);
   return true;
