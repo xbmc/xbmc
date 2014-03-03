@@ -26,6 +26,7 @@ int aml_get_sysfs_int(const char *path);
 
 bool aml_present();
 void aml_permissions();
+bool aml_hw3d_present();
 bool aml_wired_present();
 int  aml_get_cputype();
 void aml_cpufreq_min(bool limit);
