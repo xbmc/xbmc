@@ -3052,6 +3052,8 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.cpp">
       <Filter>filesystem\win32</Filter>
+    <ClCompile Include="..\..\xbmc\pictures\Gif.cpp">
+      <Filter>pictures</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\win32\Win32InterfaceForCLog.cpp">
       <Filter>utils\win32</Filter>
@@ -6011,6 +6013,10 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h">
       <Filter>filesystem\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pictures\Gif.h">
+      <Filter>pictures</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\pictures\DllLibGif.h">
       <Filter>pictures</Filter>
     </ClInclude>
