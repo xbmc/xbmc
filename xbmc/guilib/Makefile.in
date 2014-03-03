@@ -1,5 +1,4 @@
-SRCS  = AnimatedGif.cpp
-SRCS += DDSImage.cpp
+SRCS = DDSImage.cpp
 SRCS += DirectXGraphics.cpp
 SRCS += DirtyRegionSolvers.cpp
 SRCS += DirtyRegionTracker.cpp
