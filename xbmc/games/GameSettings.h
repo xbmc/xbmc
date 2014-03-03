@@ -20,13 +20,15 @@
 #pragma once
 
 #include "settings/lib/ISettingCallback.h"
+#include "utils/Observer.h"
 
 class CSetting;
 
 namespace GAME
 {
 
-class CGameSettings : public ISettingCallback
+class CGameSettings : public ISettingCallback,
+                      public Observable
 {
 public:
   static CGameSettings& GetInstance();

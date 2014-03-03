@@ -278,6 +278,11 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
   return Abort(false);
 }
 
+bool CGUIConfigurationWizard::OnButtonPress(const std::string& button)
+{
+  return Abort(false);
+}
+
 void CGUIConfigurationWizard::InstallHooks(void)
 {
   using namespace PERIPHERALS;
@@ -288,11 +293,15 @@ void CGUIConfigurationWizard::InstallHooks(void)
   // If we're not using emulation, allow keyboard input to abort prompt
   if (!m_bEmulation)
     CInputManager::GetInstance().RegisterKeyboardHandler(this);
+
+  CInputManager::GetInstance().RegisterMouseHandler(this);
 }
 
 void CGUIConfigurationWizard::RemoveHooks(void)
 {
   using namespace PERIPHERALS;
+
+  CInputManager::GetInstance().UnregisterMouseHandler(this);
 
   if (!m_bEmulation)
     CInputManager::GetInstance().UnregisterKeyboardHandler(this);

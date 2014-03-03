@@ -1,6 +1,7 @@
 set(SOURCES DeadzoneFilter.cpp
             DefaultJoystick.cpp
             DriverPrimitive.cpp
+            JoystickEasterEgg.cpp
             JoystickMonitor.cpp
             JoystickTranslator.cpp
             KeymapHandler.cpp
@@ -13,11 +14,13 @@ set(HEADERS DeadzoneFilter.h
             IButtonMap.h
             IButtonMapCallback.h
             IButtonMapper.h
+            IButtonSequence.h
             IDriverHandler.h
             IDriverReceiver.h
             IInputHandler.h
             IInputReceiver.h
             IKeymapHandler.h
+            JoystickEasterEgg.h
             JoystickMonitor.h
             JoystickTranslator.h
             JoystickTypes.h

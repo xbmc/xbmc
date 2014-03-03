@@ -1980,6 +1980,37 @@
     </category>
   </section>
   <section id="games" label="15016" help="35200">
+    <category id="gamesgeneral" label="16000">
+      <group id="1" label="35201">
+        <setting id="gamesgeneral.enable" type="boolean">
+          <visible>false</visible>
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="gamesgeneral.enablerewind" type="boolean" label="35203" help="35204">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="gamesgeneral.rewindtime" type="integer" label="35205" help="35206">
+          <level>2</level>
+          <default>60</default>
+          <constraints>
+            <minimum>10</minimum>
+            <step>10</step>
+            <maximum>600</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="gamesgeneral.enablerewind">true</dependency>
+          </dependencies>
+          <control type="slider" format="integer">
+            <popup>true</popup>
+            <formatlabel>14045</formatlabel>
+          </control>
+        </setting>
+      </group>
+    </category>
     <category id="gameskeyboard" label="35150">
       <group id="1" label="128">
         <setting id="gameskeyboard.enablekeyboard" type="boolean" label="35152" help="35153">

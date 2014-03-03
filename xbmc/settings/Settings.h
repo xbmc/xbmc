@@ -387,6 +387,9 @@ public:
   static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_6;
   static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_7;
   static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8;
+  static const std::string SETTING_GAMES_ENABLE;
+  static const std::string SETTING_GAMES_ENABLEREWIND;
+  static const std::string SETTING_GAMES_REWINDTIME;
 
   /*!
    \brief Creates a new settings wrapper around a new settings manager.

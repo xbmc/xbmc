@@ -3065,6 +3065,17 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
     return g_PVRManager.PlayMedia(item);
   }
 
+  CURL path(item.GetPath());
+  if (path.GetProtocol() == "game")
+  {
+    AddonPtr addon;
+    if (CAddonMgr::GetInstance().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL))
+    {
+      CFileItem addonItem(addon);
+      return PlayFile(addonItem, player, false) == PLAYBACK_OK;
+    }
+  }
+
   //nothing special just play
   return PlayFile(item, player, false) == PLAYBACK_OK;
 }

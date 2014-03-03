@@ -36,6 +36,8 @@
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
+#include "games/addons/GameClient.h"
+#include "games/GameUtils.h"
 #include "games/tags/GameInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "CueDocument.h"
@@ -811,6 +813,9 @@ bool CFileItem::IsVideo() const
      return true;
   }
 
+  //! @todo If the file is a zip file, ask the game clients if any support this
+  // file before assuming it is video.
+
   return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_videoExtensions);
 }
 
@@ -890,6 +895,9 @@ bool CFileItem::IsAudio() const
      return true;
   }
 
+  //! @todo If the file is a zip file, ask the game clients if any support this
+  // file before assuming it is audio
+
   return URIUtils::HasExtension(m_strPath, g_advancedSettings.GetMusicExtensions());
 }
 
@@ -907,7 +915,10 @@ bool CFileItem::IsGame() const
   if (HasPictureInfoTag())
     return false;
 
-  return false;
+  if (HasAddonInfo())
+    return CGameUtils::IsStandaloneGame(std::const_pointer_cast<ADDON::IAddon>(GetAddonInfo()));
+
+  return CGameUtils::HasGameExtension(m_strPath);
 }
 
 bool CFileItem::IsPicture() const

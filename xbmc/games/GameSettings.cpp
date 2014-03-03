@@ -48,6 +48,12 @@ void CGameSettings::OnSettingChanged(const CSetting *setting)
   {
     PERIPHERALS::g_peripherals.TriggerDeviceScan(PERIPHERALS::PERIPHERAL_BUS_APPLICATION);
   }
+  else if (settingId == CSettings::SETTING_GAMES_ENABLEREWIND ||
+           settingId == CSettings::SETTING_GAMES_REWINDTIME)
+  {
+    SetChanged();
+    NotifyObservers(ObservableMessageSettingsChanged);
+  }
 }
 
 void CGameSettings::OnSettingAction(const CSetting *setting)

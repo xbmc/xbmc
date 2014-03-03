@@ -77,12 +77,14 @@ using namespace XFILE;
 CPeripherals::CPeripherals() :
   m_eventScanner(this)
 {
+  RegisterObserver(&m_portMapper);
   Clear();
 }
 
 CPeripherals::~CPeripherals()
 {
   Clear();
+  UnregisterObserver(&m_portMapper);
 }
 
 CPeripherals &CPeripherals::GetInstance()

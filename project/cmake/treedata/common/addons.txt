@@ -1,5 +1,6 @@
 lib/addons/library.kodi.adsp        KODI_adsp
 lib/addons/library.kodi.audioengine KODI_audioengine
+lib/addons/library.kodi.game        KODI_game
 lib/addons/library.kodi.guilib      KODI_guilib
 lib/addons/library.kodi.inputstream KODI_inputstream
 lib/addons/library.kodi.peripheral  KODI_peripheral

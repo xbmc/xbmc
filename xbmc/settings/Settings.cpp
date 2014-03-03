@@ -431,6 +431,9 @@ const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_5 = "gameskeybo
 const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_6 = "gameskeyboard.keyboardplayerconfig6";
 const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_7 = "gameskeyboard.keyboardplayerconfig7";
 const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8 = "gameskeyboard.keyboardplayerconfig8";
+const std::string CSettings::SETTING_GAMES_ENABLE = "gamesgeneral.enable";
+const std::string CSettings::SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
+const std::string CSettings::SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -1227,6 +1230,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_6);
   settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_7);
   settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8);
+  settingSet.insert(CSettings::SETTING_GAMES_ENABLEREWIND);
+  settingSet.insert(CSettings::SETTING_GAMES_REWINDTIME);
   m_settingsManager->RegisterCallback(&GAME::CGameSettings::GetInstance(), settingSet);
 }
 

@@ -32,6 +32,7 @@ const char* CControllerTranslator::TranslateFeatureType(FEATURE_TYPE type)
     case FEATURE_TYPE::ANALOG_STICK:     return LAYOUT_XML_ELM_ANALOG_STICK;
     case FEATURE_TYPE::ACCELEROMETER:    return LAYOUT_XML_ELM_ACCELEROMETER;
     case FEATURE_TYPE::MOTOR:            return LAYOUT_XML_ELM_MOTOR;
+    case FEATURE_TYPE::RELPOINTER:       return LAYOUT_XML_ELM_RELPOINTER;
     default:
       break;
   }
@@ -44,6 +45,7 @@ FEATURE_TYPE CControllerTranslator::TranslateFeatureType(const std::string& strT
   if (strType == LAYOUT_XML_ELM_ANALOG_STICK)     return FEATURE_TYPE::ANALOG_STICK;
   if (strType == LAYOUT_XML_ELM_ACCELEROMETER)    return FEATURE_TYPE::ACCELEROMETER;
   if (strType == LAYOUT_XML_ELM_MOTOR)            return FEATURE_TYPE::MOTOR;
+  if (strType == LAYOUT_XML_ELM_RELPOINTER)       return FEATURE_TYPE::RELPOINTER;
 
   return FEATURE_TYPE::UNKNOWN;
 }

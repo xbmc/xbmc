@@ -20,6 +20,7 @@
 
 #include "DefaultJoystick.h"
 #include "KeymapHandler.h"
+#include "JoystickEasterEgg.h"
 #include "JoystickTranslator.h"
 #include "input/Key.h"
 #include "Application.h"
@@ -34,7 +35,8 @@ using namespace JOYSTICK;
 
 CDefaultJoystick::CDefaultJoystick(void) :
   m_handler(new CKeymapHandler),
-  m_rumbleGenerator(ControllerID())
+  m_rumbleGenerator(ControllerID()),
+  m_easterEgg(new CJoystickEasterEgg)
 {
 }
 
@@ -75,6 +77,9 @@ INPUT_TYPE CDefaultJoystick::GetInputType(const FeatureName& feature) const
 
 bool CDefaultJoystick::OnButtonPress(const FeatureName& feature, bool bPressed)
 {
+  if (bPressed && m_easterEgg->OnButtonPress(feature))
+    return true;
+
   const unsigned int keyId = GetKeyID(feature);
 
   if (m_handler->GetInputType(keyId) == INPUT_TYPE::DIGITAL)
