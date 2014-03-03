@@ -34,7 +34,6 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "threads/SingleLock.h"
-#include "utils/StringUtils.h"
 
 using namespace PVR;
 
