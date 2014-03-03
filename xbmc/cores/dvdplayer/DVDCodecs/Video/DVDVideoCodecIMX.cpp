@@ -945,7 +945,9 @@ void CDVDVideoCodecIMX::SetDropState(bool bDrop)
   if (m_dropState != bDrop)
   {
     m_dropState = bDrop;
-    CLog::Log(LOGNOTICE, "%s : %d\n", __FUNCTION__, bDrop);
+#ifdef TRACE_FRAMES
+    CLog::Log(LOGDEBUG, "%s : %d\n", __FUNCTION__, bDrop);
+#endif
   }
 }
 
