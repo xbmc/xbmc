@@ -13863,7 +13863,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36201"
-msgid "No info available yet."
+msgid "Category for general settings for PVR/Live TV features."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13908,52 +13908,52 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36210"
-msgid "No info available yet."
+msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36211"
-msgid "No info available yet."
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36212"
-msgid "No info available yet."
+msgid "Display programming information when changing channels, such as the current TV show."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36213"
-msgid "No info available yet."
+msgid "Hide the programming information automatically after a few seconds, defined below."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36214"
-msgid "No info available yet."
+msgid "Close the on screen display controls after switching channels."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36215"
-msgid "No info available yet."
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36216"
-msgid "No info available yet."
+msgid "Folder where channel icons are stored."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36217"
-msgid "No info available yet."
+msgid "Scan for missing channel icons."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36218"
-msgid "No info available yet."
+msgid "Category for electronic programming guide settings."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36219"
-msgid "Default EPG window to show."
+msgid "Default electronic programming guide window to show."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13988,7 +13988,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36226"
-msgid "No info available yet."
+msgid "Category for PVR playback and channel switching settings."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14008,7 +14008,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36230"
-msgid "No info available yet."
+msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14018,12 +14018,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36232"
-msgid "No info available yet."
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36233"
-msgid "No info available yet."
+msgid "Category for default recording duration settings."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14058,7 +14058,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36240"
-msgid "No info available yet."
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14093,7 +14093,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36247"
-msgid "No info available yet."
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14113,12 +14113,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36251"
-msgid "No info available yet."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36252"
-msgid "No info available yet."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
 msgstr ""
 
 #. Description of settings section "Music" with label #2
