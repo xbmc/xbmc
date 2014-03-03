@@ -6011,6 +6011,8 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h">
       <Filter>filesystem\win32</Filter>
+    <ClInclude Include="..\..\xbmc\pictures\DllLibGif.h">
+      <Filter>pictures</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\params_check_macros.h">
       <Filter>utils</Filter>
