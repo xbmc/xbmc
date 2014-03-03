@@ -890,6 +890,15 @@ bool CDVDVideoCodecIMX::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 
 bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
+#ifdef IMX_PROFILE
+  static unsigned int previous = 0;
+  unsigned int current;
+
+  current = XbmcThreads::SystemClockMillis();
+  CLog::Log(LOGDEBUG, "%s  tm:%03d\n", __FUNCTION__, current - previous);
+  previous = current;
+#endif
+
   m_frameCounter++;
 
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
@@ -1028,8 +1037,8 @@ bool CDVDVideoCodecIMXBuffer::Rendered() const
 
 void CDVDVideoCodecIMXBuffer::Queue(VpuDecOutFrameInfo *frameInfo)
 {
-  // No lock necessary because at the time Queue there is definitely no
-  // thread that is still holding a reference
+  // No lock necessary because at this time there is definitely no
+  // thread still holding a reference
   m_frameBuffer = frameInfo->pDisplayFrameBuf;
   m_rendered = false;
 
@@ -1363,7 +1372,7 @@ bool CDVDVideoCodecIPUBuffers::Reset()
     m_buffers[i]->ReleaseFrameBuffer();
 }
 
-bool CDVDVideoCodecIPUBuffers::SetEnabled(bool enabled)
+void CDVDVideoCodecIPUBuffers::SetEnabled(bool enabled)
 {
   m_bEnabled = enabled;
 }

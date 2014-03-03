@@ -137,7 +137,7 @@ class CDVDVideoCodecIPUBuffers
 
     bool Init(int width, int height, int numBuffers, int nAlign);
     bool Reset();
-    bool SetEnabled(bool);
+    void SetEnabled(bool);
     bool Close();
 
     CDVDVideoCodecIPUBuffer *Process(CDVDVideoCodecBuffer *sourceBuffer,

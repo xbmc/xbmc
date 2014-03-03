@@ -2723,7 +2723,7 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
 void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
 {
 #ifdef HAS_IMXVPU
-  YUVBUFFER& buf    =  m_buffers[index];
+  YUVBUFFER& buf =  m_buffers[index];
   CDVDVideoCodecBuffer* codecinfo = buf.codecinfo;
 
   if(codecinfo)
@@ -2738,18 +2738,27 @@ void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
 
     YUVPLANE &plane = m_buffers[index].fields[0][0];
     CDVDVideoCodecIPUBuffers *deinterlacer = (CDVDVideoCodecIPUBuffers*)codecinfo->data[2];
+    EDEINTERLACEMODE deinterlacemode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+    EINTERLACEMETHOD interlacemethod = CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod;
 
     if (deinterlacer)
     {
-      CDVDVideoCodecBuffer *deint;
-      deint = deinterlacer->Process(codecinfo, (VpuFieldType)(int)codecinfo->data[3], false);
-      if (deint)
+      if (deinterlacemode != VS_DEINTERLACEMODE_OFF)
       {
-        SAFE_RELEASE(buf.codecinfo);
-        buf.codecinfo = deint;
-        buf.codecinfo->Lock();
-        codecinfo = buf.codecinfo;
+        deinterlacer->SetEnabled(true);
+        CDVDVideoCodecBuffer *deint;
+        deint = deinterlacer->Process(codecinfo, (VpuFieldType)(int)codecinfo->data[3],
+                                      interlacemethod == VS_INTERLACEMETHOD_DEINTERLACE);
+        if (deint)
+        {
+          SAFE_RELEASE(buf.codecinfo);
+          buf.codecinfo = deint;
+          buf.codecinfo->Lock();
+          codecinfo = buf.codecinfo;
+        }
       }
+      else
+        deinterlacer->SetEnabled(false);
     }
 
     glActiveTexture(GL_TEXTURE0);
@@ -2884,9 +2893,14 @@ bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
   if(m_renderMethod & RENDER_CVREF)
     return false;
 
+#ifdef HAS_IMXVPU
+  if(mode == VS_DEINTERLACEMODE_AUTO)
+    return true;
+#else
   if(mode == VS_DEINTERLACEMODE_AUTO
   || mode == VS_DEINTERLACEMODE_FORCE)
     return true;
+#endif
 
   return false;
 }
@@ -2915,6 +2929,7 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
+#ifndef HAS_IMXVPU
 #if defined(__i386__) || defined(__x86_64__)
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
   || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
@@ -2923,6 +2938,11 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_SW_BLEND)
 #endif
     return true;
+#else
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+    return true;
+#endif
 
   return false;
 }
@@ -2963,7 +2983,7 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   if(m_renderMethod & RENDER_CVREF)
     return VS_INTERLACEMETHOD_NONE;
 
-#if defined(__i386__) || defined(__x86_64__)
+#if defined(__i386__) || defined(__x86_64__) || defined(HAS_IMXVPU)
   return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 #else
   return VS_INTERLACEMETHOD_SW_BLEND;
