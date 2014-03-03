@@ -198,6 +198,8 @@ librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
+libgif_not_found="== Could not find libgif. libgif support disabled. =="
+libgif_disabled="== libgif support disabled. =="
 libshairplay_not_found="== Could not find libshairplay. =="
 samba_disabled="== SAMBA support disabled. =="
 libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
@@ -363,6 +365,12 @@ AC_ARG_ENABLE([nfs],
   [enable NFS support via libnfs (default is auto)])],
   [use_libnfs=$enableval],
   [use_libnfs=auto])
+
+AC_ARG_ENABLE([gif],
+  [AS_HELP_STRING([--enable-gif],
+  [enable gif support via libgif (default is auto)])],
+  [use_libgif=$enableval],
+  [use_libgif=auto])
 
 AC_ARG_ENABLE([airplay],
   [AS_HELP_STRING([--enable-airplay],
@@ -1478,6 +1486,29 @@ else
   AC_MSG_NOTICE($libnfs_disabled)
 fi
 
+# libgif
+if test "$use_libgif" != "no"; then
+  AC_CHECK_HEADERS([gif_lib.h],,
+   [if test "$use_libgif" = "yes"; then
+      AC_MSG_ERROR($libgif_not_found)
+      USE_LIBGIF=0
+    elif test "$use_libgif" != "no"; then
+      AC_MSG_NOTICE($libgif_not_found)
+      use_libgif="no"
+      USE_LIBGIF=0
+    fi
+   ])
+  if test "$use_libgif" != "no"; then
+    XB_FIND_SONAME([GIF], [gif], [use_libgif])
+  fi
+  if test "$use_libgif" != "no"; then
+    AC_DEFINE([HAVE_LIBGIF], [1], [Whether to use libgif library.])
+    USE_LIBGIF=1
+  fi
+else
+  USE_LIBGIF=0
+  AC_MSG_NOTICE($libgif_disabled)
+fi
 
 # libplist for airplay feature
 USE_AIRPLAY=0
@@ -2249,6 +2280,12 @@ else
   final_message="$final_message\n  libnfs client support:No"
 fi
 
+if test "$use_libgif" != "no"; then
+  final_message="$final_message\n  libgif support:\tYes"
+else
+  final_message="$final_message\n  libgif support:\tNo"
+fi
+
 if test "$use_airplay" != "no"; then
   final_message="$final_message\n  AirPlay support:\tYes"
 else
@@ -2490,6 +2527,7 @@ AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_LIBSMBCLIENT)
 AC_SUBST(USE_LIBNFS)
+AC_SUBST(USE_LIBGIF)
 AC_SUBST(USE_AIRPLAY)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
