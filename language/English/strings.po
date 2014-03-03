@@ -13938,12 +13938,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36216"
-msgid "No info available yet."
+msgid "Folder where channel icons are stored."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36217"
-msgid "No info available yet."
+msgid "Scan for missing channels icons."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14008,7 +14008,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36230"
-msgid "No info available yet."
+msgid "How long XBMC will wait to attempt to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
 msgstr ""
 
 #: system/settings/settings.xml
