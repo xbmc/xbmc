@@ -6249,7 +6249,7 @@ msgid "Apple Remote Error"
 msgstr ""
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
+msgid "Apple Remote support could not be enabled."
 msgstr ""
 
 #empty strings from id 13622 to 13999
