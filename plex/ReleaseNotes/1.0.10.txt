@@ -1,0 +1,48 @@
+New:
+  - Loading large sections is now so much faster. Most of the code for this is thanks
+    to Lionel Chazallon from the RasPLEX team.
+  - To make browsing faster we have tweaked poster/thumb sizes all over the interface.
+    We show smaller posters where we have to and the large unscaled one when it's appropiate.
+  - Make it possible to opt-out of analytics collection.
+  - PHT now supports a new API for better player discovery. If you are using the Android client
+    it will find PHT more reliable as a cast target.
+  - Added setting for hiding cloud sync servers.
+  - Make it possible to hide All Episodes in advancedsettings
+  - Selected viewMode is now remembered in channels as well.
+
+Fixes:
+  - Lot of fixes to the OpenELEC distribution - Thanks to Mark Walker and RasPLEX team.
+  - Fix X-Plex-Client-Profile-Extra parameter to transcoder, will make the transcode
+    transcode to 5.1 audio if possible. Thanks Andreas Weinlein
+  - Don't advertise HTTP over bonjour. Thanks Frank Rosquin
+  - If your server is published on port 443 it will now actually work with PHT as a client.
+  - Move Audio Output Device configuration back under Audio Output tab
+  - Change user-visible strings from myPlex to Plex.
+  - Fix libass font loading
+  - Many reported crashes fixed
+  - Report progress on items when playing items in a row better.
+  - Change wording on Remove to Delete in context menus
+  - Play casted music from the correct offset.
+  - When playing items that where on a sleeping harddrive we could at times get a timeout
+    which caused the media to be identified as Audio. This is now fixed by increasing the
+    timeout to 30sec instead of 10sec.
+  - Use a more reliable way to store server manager cache.
+  - Correct version is now reported in windows add/remove application window.
+  - Windows uninstaller now works on systems without Media Center installed.
+  - Installer will now refused to install on Windows XP
+  - Sometimes casting from iOS would bring up the navigation bar instead of video controls.
+    This was due to a typo that is now corrected.
+  - Shutdown should be faster on all platforms, but most significantly on Windows
+  - Fixed a bunch of server discovery problems
+  - AutoUpdate would never prompt for a update unless you manually searched for it.
+  - Lower the frequency where we load section data from remote servers.
+    This means less work == more speed, but new sections on shared servers might take
+    longer to show up.
+
+Skin updates:
+  - Show uncompressed poster art in Movie preplay.
+  - Poster size tweaks
+  - Tweak Home Queue/Rec and Album/Artist title vertical positions.
+  - Correctly align myPlex login PIN.
+  - Fix left menu bar visibility in Music views.
+
