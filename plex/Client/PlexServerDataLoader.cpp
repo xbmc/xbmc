@@ -25,7 +25,7 @@ CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIOR
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
 {
-  if (m_stopped)
+  if (m_stopped || !server)
     return;
 
   CSingleLock lk(m_serverLock);
@@ -139,18 +139,20 @@ CFileItemListPtr CPlexServerDataLoader::GetChannelsForUUID(const CStdString &uui
 CFileItemListPtr CPlexServerDataLoaderJob::FetchList(const CStdString& path)
 {
   CURL url = m_server->BuildPlexURL(path);
-  CFileItemList* list = new CFileItemList;
+  CFileItemListPtr list = CFileItemListPtr(new CFileItemList);
 
   if (m_dir.GetDirectory(url.Get(), *list))
-    return CFileItemListPtr(list);
+    return list;
 
-  delete list;
   return CFileItemListPtr();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexServerDataLoaderJob::DoWork()
 {
+  if (!m_server)
+    return false;
+
   if (m_server->GetUUID() != "myplex")
   {
     m_sectionList = FetchList("/library/sections");
@@ -254,6 +256,8 @@ void CPlexServerDataLoader::OnTimeout()
   std::pair<CStdString, CPlexServerPtr> p;
   BOOST_FOREACH(p, m_servers)
   {
+    if (!p.second) continue;
+
     if (p.second->GetUUID() != "myplex")
     {
       if (p.second->GetOwned() || p.second->GetLastRefreshed() > SHARED_SERVER_REFRESH)
