@@ -13603,10 +13603,7 @@ msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr ""
+# empty strings from id 36157
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (DXVA2)" with label #13427
 #: system/settings/settings.xml
@@ -14168,10 +14165,7 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36261"
-msgid "No info available yet."
-msgstr ""
+# empty strings from id 36261
 
 #. Description of setting "Music -> Library -> Export music library" with label #20196
 #: system/settings/settings.xml
@@ -15110,10 +15104,7 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr ""
+# empty strings from id 36420
 
 #. Description of setting "Videos -> Playback -> Prefer VDPAU Video Mixer" with label #13437
 #: system/settings/settings.xml
