@@ -24,7 +24,7 @@ SRCS+= wayland/Callback.cpp \
        wayland/XBMCSurface.cpp
 endif
 
-ifeq (@USE_IMXVPU@,1)
+ifeq (@USE_IMXFB@,1)
 SRCS+= EGLNativeTypeIMX.cpp
 endif
 

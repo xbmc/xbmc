@@ -85,7 +85,7 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation))
-#ifdef HAS_IMXVPU
+#ifdef HAS_IMXFB
       || (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation))
 #endif
       )

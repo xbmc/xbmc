@@ -1034,6 +1034,15 @@ else
   AC_MSG_RESULT($wayland_disabled)
 fi
 
+# i.MX6
+AC_MSG_CHECKING([for i.MX framebuffer support])
+AC_CHECK_HEADER([linux/mxcfb.h], have_imxfb=yes,have_imxfb=no)
+AC_MSG_RESULT($have_imxfb)
+if test "x$have_imxfb" = "xyes"; then
+  AC_DEFINE([HAS_IMXFB], [1], [Whether i.MX framebuffer support is enabled.])
+  AC_SUBST([USE_IMXFB], 1)
+fi
+
 # Checks for platforms libraries.
 if test "$use_gles" = "yes"; then
   use_gl="no"
