@@ -281,7 +281,7 @@
 					<top>120</top>
 					<width>910</width>
 					<height>25</height>
-					<label>$INFO[VideoPlayer.NextTitle,$LOCALIZE[209]: ]</label>
+					<label>$INFO[VideoPlayer.NextTitle,$LOCALIZE[19031]: ]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12</font>
