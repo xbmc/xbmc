@@ -174,7 +174,7 @@
 					<top>120</top>
 					<width>910</width>
 					<height>25</height>
-					<label>$LOCALIZE[209]: $INFO[MusicPlayer.offset(1).Artist,, - ]$INFO[MusicPlayer.offset(1).Title]</label>
+					<label>$LOCALIZE[19031]: $INFO[MusicPlayer.offset(1).Artist,, - ]$INFO[MusicPlayer.offset(1).Title]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12</font>

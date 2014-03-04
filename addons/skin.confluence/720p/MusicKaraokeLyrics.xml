@@ -37,7 +37,7 @@
 				<height>25</height>
 				<font>font13_title</font>
 				<textcolor>blue</textcolor>
-				<label>[COLOR=blue]$LOCALIZE[209] :[/COLOR] [COLOR=selected]$INFO[MusicPlayer.offset(1).Title][/COLOR]</label>
+				<label>[COLOR=blue]$LOCALIZE[19031] :[/COLOR] [COLOR=selected]$INFO[MusicPlayer.offset(1).Title][/COLOR]</label>
 				<align>center</align>
 				<aligny>center</aligny>
 			</control>
