@@ -79,7 +79,7 @@ void CPlexNetworkServiceBrowser::OnTimeout()
   CLog::Log(LOGDEBUG, "CPlexNetworkServiceBrowser::OnTimeout reporting %ld discovered servers", list.size());
 
   g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
-  g_plexApplication.timer.RestartTimeout(5 * 10000, this); // run it every 5th minute even if there are no changes
+  g_plexApplication.timer.RestartTimeout(5 * 60 * 1000, this); // run it every 5th minute even if there are no changes
 }
 
 void
