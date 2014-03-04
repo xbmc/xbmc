@@ -235,11 +235,15 @@ CPlexServerManager::SetBestServer(CPlexServerPtr server, bool force)
   if (!m_bestServer || force || m_bestServer == server)
   {
     CLog::Log(LOGDEBUG, "CPlexServerManager::SetBestServer bestServer updated to %s", server->toString().c_str());
-    m_bestServer = server;
 
-    CGUIMessage msg(GUI_MSG_PLEX_BEST_SERVER_UPDATED, 0, 0);
-    msg.SetStringParam(server->GetUUID());
-    g_windowManager.SendThreadMessage(msg);
+    if (m_bestServer != server)
+    {
+      CGUIMessage msg(GUI_MSG_PLEX_BEST_SERVER_UPDATED, 0, 0);
+      msg.SetStringParam(server->GetUUID());
+      g_windowManager.SendThreadMessage(msg);
+    }
+
+    m_bestServer = server;
   }
 }
 
