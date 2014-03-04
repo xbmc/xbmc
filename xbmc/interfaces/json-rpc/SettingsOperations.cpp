@@ -24,6 +24,7 @@
 #include "settings/SettingControl.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
+#include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
 #include "guilib/LocalizeStrings.h"
@@ -597,8 +598,8 @@ bool CSettingsOperations::SerializeSettingList(const CSettingList* setting, CVar
       !SerializeSetting(setting->GetDefinition(), obj["definition"]))
     return false;
 
-  SerializeSettingListValues(CSettings::Get().GetList(setting->GetId()), obj["value"]);
-  SerializeSettingListValues(CSettings::ListToValues(setting, setting->GetDefault()), obj["default"]);
+  SerializeSettingListValues(CSettingUtils::GetList(setting), obj["value"]);
+  SerializeSettingListValues(CSettingUtils::ListToValues(setting, setting->GetDefault()), obj["default"]);
 
   obj["elementtype"] = obj["definition"]["type"];
   obj["delimiter"] = setting->GetDelimiter();

@@ -67,6 +67,7 @@
 #include "settings/SettingConditions.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingPath.h"
+#include "settings/SettingUtils.h"
 #include "settings/SkinSettings.h"
 #include "settings/lib/SettingsManager.h"
 #include "threads/SingleLock.h"
@@ -400,8 +401,7 @@ std::vector<CVariant> CSettings::GetList(const std::string &id) const
   if (setting == NULL || setting->GetType() != SettingTypeList)
     return std::vector<CVariant>();
 
-  CSettingList *listSetting = static_cast<CSettingList*>(setting);
-  return ListToValues(listSetting, listSetting->GetValue());
+  return CSettingUtils::GetList(static_cast<CSettingList*>(setting));
 }
 
 bool CSettings::SetList(const std::string &id, const std::vector<CVariant> &value)
@@ -410,97 +410,12 @@ bool CSettings::SetList(const std::string &id, const std::vector<CVariant> &valu
   if (setting == NULL || setting->GetType() != SettingTypeList)
     return false;
 
-  CSettingList *listSetting = static_cast<CSettingList*>(setting);
-  SettingPtrList newValues;
-  bool ret = true;
-  int index = 0;
-  for (std::vector<CVariant>::const_iterator itValue = value.begin(); itValue != value.end(); ++itValue)
-  {
-    CSetting *settingValue = listSetting->GetDefinition()->Clone(StringUtils::Format("%s.%d", listSetting->GetId().c_str(), index++));
-    if (settingValue == NULL)
-      return false;
-
-    switch (listSetting->GetElementType())
-    {
-      case SettingTypeBool:
-        if (!itValue->isBoolean())
-          return false;
-        ret = static_cast<CSettingBool*>(settingValue)->SetValue(itValue->asBoolean());
-        break;
-
-      case SettingTypeInteger:
-        if (!itValue->isInteger())
-          return false;
-        ret = static_cast<CSettingInt*>(settingValue)->SetValue((int)itValue->asInteger());
-        break;
-
-      case SettingTypeNumber:
-        if (!itValue->isDouble())
-          return false;
-        ret = static_cast<CSettingNumber*>(settingValue)->SetValue(itValue->asDouble());
-        break;
-
-      case SettingTypeString:
-        if (!itValue->isString())
-          return false;
-        ret = static_cast<CSettingString*>(settingValue)->SetValue(itValue->asString());
-        break;
-
-      default:
-        ret = false;
-        break;
-    }
-
-    if (!ret)
-    {
-      delete settingValue;
-      return false;
-    }
-
-    newValues.push_back(SettingPtr(settingValue));
-  }
-
-  return listSetting->SetValue(newValues);
+  return CSettingUtils::SetList(static_cast<CSettingList*>(setting), value);
 }
 
 bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
 {
   return m_settingsManager->LoadSetting(node, settingId);
-}
-
-std::vector<CVariant> CSettings::ListToValues(const CSettingList *setting, const std::vector< boost::shared_ptr<CSetting> > &values)
-{
-  std::vector<CVariant> realValues;
-
-  if (setting == NULL)
-    return realValues;
-
-  for (SettingPtrList::const_iterator it = values.begin(); it != values.end(); ++it)
-  {
-    switch (setting->GetElementType())
-    {
-      case SettingTypeBool:
-        realValues.push_back(static_cast<const CSettingBool*>(it->get())->GetValue());
-        break;
-
-      case SettingTypeInteger:
-        realValues.push_back(static_cast<const CSettingInt*>(it->get())->GetValue());
-        break;
-
-      case SettingTypeNumber:
-        realValues.push_back(static_cast<const CSettingNumber*>(it->get())->GetValue());
-        break;
-
-      case SettingTypeString:
-        realValues.push_back(static_cast<const CSettingString*>(it->get())->GetValue());
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  return realValues;
 }
 
 bool CSettings::Initialize(const std::string &file)

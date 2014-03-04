@@ -257,8 +257,6 @@ public:
    \return True if the setting was successfully loaded from the given XML node, false otherwise
    */
   bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
-
-  static std::vector<CVariant> ListToValues(const CSettingList *setting, const std::vector< boost::shared_ptr<CSetting> > &values);
 private:
   CSettings(const CSettings&);
   CSettings const& operator=(CSettings const&);

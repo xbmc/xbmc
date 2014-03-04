@@ -40,6 +40,7 @@
 #include "settings/SettingControl.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
+#include "settings/SettingUtils.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
@@ -312,7 +313,7 @@ bool CGUIControlListSetting::OnClick()
       break;
 
     case SettingTypeList:
-      ret = CSettings::Get().SetList(m_pSetting->GetId(), values);
+      ret = CSettingUtils::SetList(static_cast<CSettingList*>(m_pSetting), values);
       break;
     
     default:
@@ -397,7 +398,7 @@ bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemL
       return false;
 
     pSettingInt = static_cast<const CSettingInt*>(settingList->GetDefinition());
-    std::vector<CVariant> list = CSettings::Get().GetList(settingList->GetId());
+    std::vector<CVariant> list = CSettingUtils::GetList(settingList);
     for (std::vector<CVariant>::const_iterator itValue = list.begin(); itValue != list.end(); ++itValue)
     {
       if (!itValue->isInteger())
@@ -464,7 +465,7 @@ bool CGUIControlListSetting::GetStringItems(const CSetting *setting, CFileItemLi
       return false;
 
     pSettingString = static_cast<const CSettingString*>(settingList->GetDefinition());
-    std::vector<CVariant> list = CSettings::Get().GetList(settingList->GetId());
+    std::vector<CVariant> list = CSettingUtils::GetList(settingList);
     for (std::vector<CVariant>::const_iterator itValue = list.begin(); itValue != list.end(); ++itValue)
     {
       if (!itValue->isString())
@@ -979,7 +980,7 @@ bool CGUIControlRangeSetting::OnClick()
   if (values.size() != 2)
     return false;
 
-  return CSettings::Get().SetList(m_pSetting->GetId(), values);
+  return CSettingUtils::SetList(settingList, values);
 }
 
 void CGUIControlRangeSetting::Update()
