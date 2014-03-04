@@ -123,8 +123,21 @@ static void EnumerateDevices(CADeviceList &list)
                       format = AE_FMT_S16BE;
                     else
                     {
+                      bool isDigital = CCoreAudioStream::IsDigitalOuptut(*j);
+
+                      // if it is no digital stream per definition
+                      // check if the device name suggests that it is digital
+                      // (some hackintonshs are not so smart in announcing correct
+                      // ca devices ...
+                      if (!isDigital)
+                      {
+                        std::string devNameLower = device.m_deviceName;
+                        StringUtils::ToLower(devNameLower);
+                        isDigital = devNameLower.find("digital") != std::string::npos;
+                      }
+
                       /* Passthrough is possible with a 2ch digital output */
-                      if (desc.mChannelsPerFrame == 2 && CCoreAudioStream::IsDigitalOuptut(*j))
+                      if (desc.mChannelsPerFrame == 2 && isDigital)
                       {
                         if (desc.mSampleRate == 48000)
                         {
@@ -132,6 +145,10 @@ static void EnumerateDevices(CADeviceList &list)
                             device.m_dataFormats.push_back(AE_FMT_AC3);
                           if (!HasDataFormat(device.m_dataFormats, AE_FMT_DTS))
                             device.m_dataFormats.push_back(AE_FMT_DTS);
+
+                          // treat it like optical - else ActiveAE
+                          // won't enable the pass through options in the gui
+                          device.m_deviceType = AE_DEVTYPE_IEC958;
                         }
                         else if (desc.mSampleRate == 192000)
                         {
