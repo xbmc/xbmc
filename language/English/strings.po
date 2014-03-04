@@ -7769,7 +7769,7 @@ msgid "Cannot use PVR functions while searching."
 msgstr ""
 
 msgctxt "#19119"
-msgid "On which server you want to search?"
+msgid "On which server do you want to search?"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
