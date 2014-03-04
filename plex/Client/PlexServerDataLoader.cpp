@@ -13,8 +13,8 @@
 
 using namespace XFILE;
 
-#define SECTION_REFRESH_INTERVAL 30 * 1000
-#define SHARED_SERVER_REFRESH 5 * 10000
+#define SECTION_REFRESH_INTERVAL 5 * 60 * 1000
+#define SHARED_SERVER_REFRESH 10 * 60 * 1000
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIORITY_NORMAL), m_stopped(false)
