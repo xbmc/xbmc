@@ -12286,7 +12286,7 @@ msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25003"
-msgid "Show bluray menus"
+msgid "Show Blu-ray menus"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
@@ -12311,12 +12311,12 @@ msgstr ""
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
+msgid "Playback of Blu-ray failed"
 msgstr ""
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
+msgid "The menu of this Blu-ray is not supported"
 msgstr ""
 
 #empty strings from id 25010 to 29799
