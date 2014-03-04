@@ -41,6 +41,8 @@ ISettingControl* CSettingControlCreator::CreateControl(const std::string &contro
     return new CSettingControlList();
   else if (StringUtils::EqualsNoCase(controlType, "slider"))
     return new CSettingControlSlider();
+  else if (StringUtils::EqualsNoCase(controlType, "range"))
+    return new CSettingControlRange();
 
   return NULL;
 }
@@ -208,6 +210,55 @@ bool CSettingControlSlider::SetFormat(const std::string &format)
     m_format = "%d";
   else if (StringUtils::EqualsNoCase(format, "number"))
     m_format = "%.1f";
+  else
+    return false;
+
+  m_format = format;
+  StringUtils::ToLower(m_format);
+
+  return true;
+}
+
+bool CSettingControlRange::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  if (!ISettingControl::Deserialize(node, update))
+    return false;
+
+  const TiXmlElement *formatLabel = node->FirstChildElement(SETTING_XML_ELM_CONTROL_FORMATLABEL);
+  if (formatLabel != NULL)
+  {
+    XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_FORMATLABEL, m_formatLabel);
+    if (m_formatLabel < 0)
+      return false;
+
+    const char *formatValue = formatLabel->Attribute(SETTING_XML_ELM_CONTROL_FORMATVALUE);
+    if (formatValue != NULL)
+    {
+      if (StringUtils::IsInteger(formatValue))
+        m_valueFormatLabel = (int)strtol(formatValue, NULL, 0);
+      else
+      {
+        m_valueFormat = formatValue;
+        if (!m_valueFormat.empty())
+          m_valueFormatLabel = -1;
+      }
+    }
+  }
+
+  return true;
+}
+
+bool CSettingControlRange::SetFormat(const std::string &format)
+{
+  if (StringUtils::EqualsNoCase(format, "percentage"))
+    m_valueFormat = "%i %%";
+  else if (StringUtils::EqualsNoCase(format, "integer"))
+    m_valueFormat = "%d";
+  else if (StringUtils::EqualsNoCase(format, "number"))
+    m_valueFormat = "%.1f";
+  else if (StringUtils::EqualsNoCase(format, "date") ||
+           StringUtils::EqualsNoCase(format, "time"))
+    m_valueFormat.clear();
   else
     return false;
 

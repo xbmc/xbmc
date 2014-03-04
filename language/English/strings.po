@@ -11169,6 +11169,7 @@ msgstr ""
 
 #. Filter (media data) from string value to string value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/settings/SettingControl.cpp
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr ""

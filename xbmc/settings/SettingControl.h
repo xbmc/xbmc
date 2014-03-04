@@ -29,6 +29,7 @@
 #define SETTING_XML_ELM_CONTROL_HIDEVALUE    "hidevalue"
 #define SETTING_XML_ELM_CONTROL_MULTISELECT  "multiselect"
 #define SETTING_XML_ELM_CONTROL_POPUP        "popup"
+#define SETTING_XML_ELM_CONTROL_FORMATVALUE  "value"
 
 class CVariant;
 
@@ -193,4 +194,30 @@ protected:
   int m_formatLabel;
   std::string m_formatString;
   SettingControlSliderFormatter m_formatter;
+};
+
+class CSettingControlRange : public ISettingControl
+{
+public:
+  CSettingControlRange()
+    : m_formatLabel(21469),
+      m_valueFormatLabel(-1),
+      m_valueFormat("%s")
+  { }
+  virtual ~CSettingControlRange() { }
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const { return "range"; }
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+
+  int GetFormatLabel() const { return m_formatLabel; }
+  int GetValueFormatLabel() const { return m_valueFormatLabel; }
+  const std::string& GetValueFormat() const { return m_valueFormat; }
+
+protected:
+  virtual bool SetFormat(const std::string &format);
+
+  int m_formatLabel;
+  int m_valueFormatLabel;
+  std::string m_valueFormat;
 };
