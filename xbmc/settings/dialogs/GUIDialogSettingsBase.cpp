@@ -645,6 +645,16 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
       pSettingControl.reset(new CGUIControlSliderSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting));
     }
   }
+  else if (controlType == "range")
+  {
+    if (m_pOriginalSlider != NULL)
+      pControl = new CGUISettingsSliderControl(*m_pOriginalSlider);
+    if (pControl == NULL)
+      return NULL;
+
+    ((CGUISettingsSliderControl *)pControl)->SetText(label);
+    pSettingControl.reset(new CGUIControlRangeSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting));
+  }
   else
     return NULL;
 

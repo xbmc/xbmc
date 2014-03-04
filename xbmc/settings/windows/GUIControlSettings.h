@@ -187,6 +187,21 @@ private:
   CGUISettingsSliderControl *m_pSlider;
 };
 
+class CGUIControlRangeSetting : public CGUIControlBaseSetting
+{
+public:
+  CGUIControlRangeSetting(CGUISettingsSliderControl* pSlider, int id, CSetting *pSetting);
+  virtual ~CGUIControlRangeSetting();
+  
+  virtual CGUIControl* GetControl() { return (CGUIControl*)m_pSlider; }
+  virtual bool OnClick();
+  virtual void Update();
+  virtual void Clear() { m_pSlider = NULL; }
+
+private:
+  CGUISettingsSliderControl *m_pSlider;
+};
+
 class CGUIControlSeparatorSetting : public CGUIControlBaseSetting
 {
 public:

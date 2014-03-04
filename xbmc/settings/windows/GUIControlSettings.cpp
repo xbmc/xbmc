@@ -896,6 +896,192 @@ std::string CGUIControlSliderSetting::GetText(const CSettingControlSlider *contr
   return StringUtils::Format(formatString.c_str(), static_cast<int>(value.asInteger()));
 }
 
+CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSlider, int id, CSetting *pSetting)
+  : CGUIControlBaseSetting(id, pSetting)
+{
+  m_pSlider = pSlider;
+  if (m_pSlider == NULL)
+    return;
+
+  m_pSlider->SetID(id);
+  m_pSlider->SetRangeSelection(true);
+  
+  if (m_pSetting->GetType() == SettingTypeList)
+  {
+    CSettingList *settingList = static_cast<CSettingList*>(m_pSetting);
+    const CSetting *listDefintion = settingList->GetDefinition();
+    switch (listDefintion->GetType())
+    {
+      case SettingTypeInteger:
+      {
+        const CSettingInt *listDefintionInt = static_cast<const CSettingInt*>(listDefintion);
+        if (m_pSetting->GetControl()->GetFormat() == "percentage")
+          m_pSlider->SetType(SLIDER_CONTROL_TYPE_PERCENTAGE);
+        else
+        {
+          m_pSlider->SetType(SLIDER_CONTROL_TYPE_INT);
+          m_pSlider->SetRange(listDefintionInt->GetMinimum(), listDefintionInt->GetMaximum());
+        }
+        m_pSlider->SetIntInterval(listDefintionInt->GetStep());
+        break;
+      }
+
+      case SettingTypeNumber:
+      {
+        const CSettingNumber *listDefinitionNumber = static_cast<const CSettingNumber*>(listDefintion);
+        m_pSlider->SetType(SLIDER_CONTROL_TYPE_FLOAT);
+        m_pSlider->SetFloatRange((float)listDefinitionNumber->GetMinimum(), (float)listDefinitionNumber->GetMaximum());
+        m_pSlider->SetFloatInterval((float)listDefinitionNumber->GetStep());
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+
+  Update();
+}
+
+CGUIControlRangeSetting::~CGUIControlRangeSetting()
+{ }
+
+bool CGUIControlRangeSetting::OnClick()
+{
+  if (m_pSlider == NULL ||
+      m_pSetting->GetType() != SettingTypeList)
+    return false;
+
+  CSettingList *settingList = static_cast<CSettingList*>(m_pSetting);
+  const SettingPtrList &settingListValues = settingList->GetValue();
+  SettingPtrList settingListValuesCopy(settingListValues.begin(), settingListValues.end());
+  if (settingListValues.size() != 2)
+    return false;
+
+  std::vector<CVariant> values;
+  const CSetting *listDefintion = settingList->GetDefinition();
+  switch (listDefintion->GetType())
+  {
+    case SettingTypeInteger:
+      values.push_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorLower));
+      values.push_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorUpper));
+      break;
+
+    case SettingTypeNumber:
+      values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorLower));
+      values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorUpper));
+      break;
+    
+    default:
+      break;
+  }
+  
+  if (values.size() != 2)
+    return false;
+
+  return CSettings::Get().SetList(m_pSetting->GetId(), values);
+}
+
+void CGUIControlRangeSetting::Update()
+{
+  if (m_pSlider == NULL ||
+      m_pSetting->GetType() != SettingTypeList)
+    return;
+
+  CGUIControlBaseSetting::Update();
+
+  CSettingList *settingList = static_cast<CSettingList*>(m_pSetting);
+  const SettingPtrList &settingListValues = settingList->GetValue();
+  if (settingListValues.size() != 2)
+    return;
+
+  const CSetting *listDefintion = settingList->GetDefinition();
+  const CSettingControlRange *controlRange = static_cast<const CSettingControlRange*>(m_pSetting->GetControl());
+  const std::string &controlFormat = controlRange->GetFormat();
+
+  std::string strText;
+  std::string strTextLower, strTextUpper;
+  std::string formatString = g_localizeStrings.Get(controlRange->GetFormatLabel() > -1 ? controlRange->GetFormatLabel() : 21469);
+  std::string valueFormat = controlRange->GetValueFormat();
+  if (controlRange->GetValueFormatLabel() > -1)
+    valueFormat = g_localizeStrings.Get(controlRange->GetValueFormatLabel());
+
+  switch (listDefintion->GetType())
+  {
+    case SettingTypeInteger:
+    {
+      int valueLower = static_cast<CSettingInt*>(settingListValues[0].get())->GetValue();
+      int valueUpper = static_cast<CSettingInt*>(settingListValues[1].get())->GetValue();
+      m_pSlider->SetIntValue(valueLower, CGUISliderControl::RangeSelectorLower);
+      m_pSlider->SetIntValue(valueUpper, CGUISliderControl::RangeSelectorUpper);
+
+      if (controlFormat == "date" || controlFormat == "time")
+      {
+        CDateTime dateLower = (time_t)valueLower;
+        CDateTime dateUpper = (time_t)valueUpper;
+
+        if (controlFormat == "date")
+        {
+          if (valueFormat.empty())
+          {
+            strTextLower = dateLower.GetAsLocalizedDate();
+            strTextUpper = dateUpper.GetAsLocalizedDate();
+          }
+          else
+          {
+            strTextLower = dateLower.GetAsLocalizedDate(valueFormat);
+            strTextUpper = dateUpper.GetAsLocalizedDate(valueFormat);
+          }
+        }
+        else
+        {
+          if (valueFormat.empty())
+            valueFormat = "mm:ss";
+
+          strTextLower = dateLower.GetAsLocalizedTime(valueFormat);
+          strTextUpper = dateUpper.GetAsLocalizedTime(valueFormat);
+        }
+      }
+      else
+      {
+        strTextLower = StringUtils::Format(valueFormat.c_str(), valueLower);
+        strTextUpper = StringUtils::Format(valueFormat.c_str(), valueUpper);
+      }
+
+      if (valueLower != valueUpper)
+        strText = StringUtils::Format(formatString.c_str(), strTextLower.c_str(), strTextUpper.c_str());
+      else
+        strText = strTextLower;
+      break;
+    }
+
+    case SettingTypeNumber:
+    {
+      double valueLower = static_cast<CSettingNumber*>(settingListValues[0].get())->GetValue();
+      double valueUpper = static_cast<CSettingNumber*>(settingListValues[1].get())->GetValue();
+      m_pSlider->SetFloatValue((float)valueLower, CGUISliderControl::RangeSelectorLower);
+      m_pSlider->SetFloatValue((float)valueUpper, CGUISliderControl::RangeSelectorUpper);
+
+      strTextLower = StringUtils::Format(valueFormat.c_str(), valueLower);
+      if (valueLower != valueUpper)
+      {
+        strTextUpper = StringUtils::Format(valueFormat.c_str(), valueUpper);
+        strText = StringUtils::Format(formatString.c_str(), strTextLower.c_str(), strTextUpper.c_str());
+      }
+      else
+        strText = strTextLower;
+      break;
+    }
+    
+    default:
+      strText.clear();
+      break;
+  }
+
+  if (!strText.empty())
+    m_pSlider->SetTextValue(strText);
+}
+
 CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int id)
     : CGUIControlBaseSetting(id, NULL)
 {
