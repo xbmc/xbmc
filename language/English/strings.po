@@ -852,10 +852,12 @@ msgctxt "#208"
 msgid "Play"
 msgstr ""
 
+#. used as label for an action/button to play or navigate to the next item
 msgctxt "#209"
 msgid "Next"
 msgstr ""
 
+#. used as label for an action/button to play or navigate to the previous item
 msgctxt "#210"
 msgid "Previous"
 msgstr ""
@@ -7411,6 +7413,7 @@ msgctxt "#19030"
 msgid "Now"
 msgstr ""
 
+#. Label prefix for the next playing tv-show (PVR) or media, like "Next: The Simpsons", "Next: AC/DC - Thunderstruck". It's also used as EPG display mode (EPG: timeline / now / next)
 msgctxt "#19031"
 msgid "Next"
 msgstr ""
