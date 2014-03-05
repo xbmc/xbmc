@@ -58,6 +58,10 @@
 #include "guilib/Key.h"
 #include "dialogs/GUIDialogPVRChannelManager.h"
 
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
+#endif
+
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace PVR;
@@ -890,14 +894,62 @@ bool CPVRManager::CheckParentalPIN(const char *strTitle /* = NULL */)
   return bValidPIN;
 }
 
-void CPVRManager::SaveCurrentChannelSettings(void)
+void CPVRManager::SaveCurrentChannelSettings(const CPVRChannel &channel)
 {
-  m_addons->SaveCurrentChannelSettings();
+  CPVRDatabase *database = GetPVRDatabase();
+  if (!database)
+    return;
+
+  if (CMediaSettings::Get().GetCurrentVideoSettings() != CMediaSettings::Get().GetDefaultVideoSettings())
+  {
+    CLog::Log(LOGDEBUG, "PVR - %s - persisting custom channel settings for channel '%s'",
+        __FUNCTION__, channel.ChannelName().c_str());
+    database->PersistChannelSettings(channel, CMediaSettings::Get().GetCurrentVideoSettings());
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "PVR - %s - no custom channel settings for channel '%s'",
+        __FUNCTION__, channel.ChannelName().c_str());
+    database->DeleteChannelSettings(channel);
+  }
 }
 
-void CPVRManager::LoadCurrentChannelSettings()
+void CPVRManager::LoadChannelSettings(const CPVRChannel &channel)
 {
-  m_addons->LoadCurrentChannelSettings();
+  CPVRDatabase *database = GetPVRDatabase();
+  if (!database)
+    return;
+  
+  CLog::Log(LOGDEBUG, "PVR - %s - loading custom channel settings for channel '%s'",
+        __FUNCTION__, channel.ChannelName().c_str());
+
+  if (g_application.m_pPlayer->HasPlayer())
+  {
+    /* store the current settings so we can compare if anything has changed */
+    CVideoSettings previousSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+
+    /* load the persisted channel settings and set them as current */
+    CVideoSettings loadedChannelSettings = CMediaSettings::Get().GetDefaultVideoSettings();
+    database->GetChannelSettings(channel, loadedChannelSettings);
+    CMediaSettings::Get().GetCurrentVideoSettings() = loadedChannelSettings;
+
+    /* update the view mode if it set to custom or differs from the previous mode */
+    if (previousSettings.m_ViewMode != loadedChannelSettings.m_ViewMode || loadedChannelSettings.m_ViewMode == ViewModeCustom)
+      g_renderManager.SetViewMode(loadedChannelSettings.m_ViewMode);
+
+    /* only change the subtitle stream, if it's different */
+    if (previousSettings.m_SubtitleStream != loadedChannelSettings.m_SubtitleStream)
+      g_application.m_pPlayer->SetSubtitle(loadedChannelSettings.m_SubtitleStream);
+
+    /* only change the audio stream if it's different */
+    if (g_application.m_pPlayer->GetAudioStream() != loadedChannelSettings.m_AudioStream && loadedChannelSettings.m_AudioStream >= 0)
+      g_application.m_pPlayer->SetAudioStream(loadedChannelSettings.m_AudioStream);
+
+    g_application.m_pPlayer->SetAVDelay(loadedChannelSettings.m_AudioDelay);
+    g_application.m_pPlayer->SetDynamicRangeCompression((long)(loadedChannelSettings.m_VolumeAmplification * 100));
+    g_application.m_pPlayer->SetSubtitleVisible(loadedChannelSettings.m_SubtitleOn);
+    g_application.m_pPlayer->SetSubTitleDelay(loadedChannelSettings.m_SubtitleDelay);
+  }
 }
 
 void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
@@ -962,6 +1014,9 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
       delete m_currentFile;
     m_currentFile = new CFileItem(channel);
 
+    // load channel settings
+    LoadCurrentChannelSettings(*channel.GetPVRChannelInfoTag());
+
     if (m_addons->GetPlayingChannel(playingChannel))
     {
       /* store current time in iLastWatched */
@@ -1014,6 +1069,9 @@ void CPVRManager::CloseStream(void)
       bPersistChannel = true;
 
       m_channelGroups->SetLastPlayedGroup(GetPlayingGroup(channel->IsRadio()));
+  
+      // store channel settings
+      SaveCurrentChannelSettings(*channel);
     }
 
     m_addons->CloseStream();
@@ -1220,9 +1278,6 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     m_channelGroups->SetLastPlayedGroup(GetPlayingGroup(currentChannel->IsRadio()));
   }
 
-  // store channel settings
-  SaveCurrentChannelSettings();
-
   // will be deleted by CPVRChannelSwitchJob::DoWork()
   CFileItem* previousFile = m_currentFile;
   m_currentFile = NULL;
@@ -1247,6 +1302,10 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
   {
     // switch successful
     bSwitched = true;
+
+    // save previous and load new channel's settings
+    SaveCurrentChannelSettings(*currentChannel);
+    LoadCurrentChannelSettings(channel);
 
     CSingleLock lock(m_critSection);
     m_currentFile = new CFileItem(channel);

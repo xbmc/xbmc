@@ -28,18 +28,12 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRDatabase.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/DisplaySettings.h"
-#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "cores/IPlayer.h"
-
-#ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
-#endif
 
 using namespace std;
 using namespace ADDON;
@@ -1024,78 +1018,6 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
   params.push_back("addons://disabled/xbmc.pvrclient");
   params.push_back("return");
   g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
-}
-
-void CPVRClients::SaveCurrentChannelSettings(void)
-{
-  CPVRChannelPtr channel;
-  {
-    CSingleLock lock(m_critSection);
-    if (!GetPlayingChannel(channel) || !m_bIsValidChannelSettings)
-      return;
-  }
-
-  CPVRDatabase *database = GetPVRDatabase();
-  if (!database)
-    return;
-
-  if (CMediaSettings::Get().GetCurrentVideoSettings() != CMediaSettings::Get().GetDefaultVideoSettings())
-  {
-    CLog::Log(LOGDEBUG, "PVR - %s - persisting custom channel settings for channel '%s'",
-        __FUNCTION__, channel->ChannelName().c_str());
-    database->PersistChannelSettings(*channel, CMediaSettings::Get().GetCurrentVideoSettings());
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "PVR - %s - no custom channel settings for channel '%s'",
-        __FUNCTION__, channel->ChannelName().c_str());
-    database->DeleteChannelSettings(*channel);
-  }
-}
-
-void CPVRClients::LoadCurrentChannelSettings(void)
-{
-  CPVRChannelPtr channel;
-  {
-    CSingleLock lock(m_critSection);
-    if (!GetPlayingChannel(channel))
-      return;
-  }
-
-  CPVRDatabase *database = GetPVRDatabase();
-  if (!database)
-    return;
-
-  if (g_application.m_pPlayer->HasPlayer())
-  {
-    /* store the current settings so we can compare if anything has changed */
-    CVideoSettings previousSettings = CMediaSettings::Get().GetCurrentVideoSettings();
-
-    /* load the persisted channel settings and set them as current */
-    CVideoSettings loadedChannelSettings = CMediaSettings::Get().GetDefaultVideoSettings();
-    database->GetChannelSettings(*channel, loadedChannelSettings);
-    CMediaSettings::Get().GetCurrentVideoSettings() = loadedChannelSettings;
-
-    /* update the view mode if it set to custom or differs from the previous mode */
-    if (previousSettings.m_ViewMode != loadedChannelSettings.m_ViewMode || loadedChannelSettings.m_ViewMode == ViewModeCustom)
-      g_renderManager.SetViewMode(loadedChannelSettings.m_ViewMode);
-
-    /* only change the subtitle stream, if it's different */
-    if (previousSettings.m_SubtitleStream != loadedChannelSettings.m_SubtitleStream)
-      g_application.m_pPlayer->SetSubtitle(loadedChannelSettings.m_SubtitleStream);
-
-    /* only change the audio stream if it's different */
-    if (g_application.m_pPlayer->GetAudioStream() != loadedChannelSettings.m_AudioStream && loadedChannelSettings.m_AudioStream >= 0)
-      g_application.m_pPlayer->SetAudioStream(loadedChannelSettings.m_AudioStream);
-
-    g_application.m_pPlayer->SetAVDelay(loadedChannelSettings.m_AudioDelay);
-    g_application.m_pPlayer->SetDynamicRangeCompression((long)(loadedChannelSettings.m_VolumeAmplification * 100));
-    g_application.m_pPlayer->SetSubtitleVisible(loadedChannelSettings.m_SubtitleOn);
-    g_application.m_pPlayer->SetSubTitleDelay(loadedChannelSettings.m_SubtitleDelay);
-
-    /* settings can be saved on next channel switch */
-    m_bIsValidChannelSettings = true;
-  }
 }
 
 bool CPVRClients::UpdateAddons(void)

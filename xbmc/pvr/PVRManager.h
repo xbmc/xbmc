@@ -492,13 +492,15 @@ namespace PVR
 
     /*!
      * @brief Persist the current channel settings in the database.
+     * @param channel the channel which settings should be saved.
      */
-    void SaveCurrentChannelSettings(void);
+    void SaveCurrentChannelSettings(const CPVRChannel &channel);
 
     /*!
      * @brief Load the settings for the current channel from the database.
+     * @param channel the channel which settings should be loaded.
      */
-    void LoadCurrentChannelSettings(void);
+    void LoadCurrentChannelSettings(const CPVRChannel &channel);
 
     /*!
      * @brief Check if channel is parental locked. Ask for PIN if neccessary.
