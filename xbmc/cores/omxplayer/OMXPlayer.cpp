@@ -1830,10 +1830,6 @@ void COMXPlayer::HandlePlaySpeed()
           bGotAudio, m_omxPlayerAudio.GetLevel(),
           bGotVideo, m_omxPlayerVideo.GetLevel());
 
-      CFileItem currentItem(g_application.CurrentFileItem());
-      if (currentItem.HasPVRChannelInfoTag())
-        g_PVRManager.LoadCurrentChannelSettings();
-
       caching = CACHESTATE_DONE;
     }
     else
