@@ -122,11 +122,12 @@ public:
   bool IsAllocated() const { return m_isAllocated != NO; };
   bool FailedToAlloc() const { return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED; };
   bool ReadyToRender() const;
+  bool AnimFinishedOnce() const { return m_loopedOnce; };
 protected:
   bool CalculateSize();
   void LoadDiffuseImage();
   bool AllocateOnDemand();
-  bool UpdateAnimFrame();
+  bool UpdateAnimFrame(unsigned int currentTime);
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, float u3, float v3);
   static void OrientateTexture(CRect &rect, float width, float height, int orientation);
 
@@ -154,9 +155,10 @@ protected:
   float m_texCoordsScaleU, m_texCoordsScaleV; // scale factor for pixel->texture coordinates
 
   // animations
+  bool m_loopedOnce;
   int m_currentLoop;
   unsigned int m_currentFrame;
-  uint32_t m_frameCounter;
+  uint32_t m_lasttime;
 
   float m_diffuseU, m_diffuseV;           // size of the diffuse frame (in tex coords)
   float m_diffuseScaleU, m_diffuseScaleV; // scale factor of the diffuse frame (from texture coords to diffuse tex coords)
