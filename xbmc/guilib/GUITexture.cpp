@@ -23,6 +23,8 @@
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
+#include "threads/SystemClock.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -76,7 +78,7 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
 
   // anim gifs
   m_currentFrame = 0;
-  m_frameCounter = (unsigned int) -1;
+  m_lasttime = 0;
   m_currentLoop = 0;
 
   m_allocateDynamically = false;
@@ -115,7 +117,6 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
   m_diffuseScaleV = 1.0f;
 
   m_currentFrame = 0;
-  m_frameCounter = (unsigned int) -1;
   m_currentLoop = 0;
 
   m_isAllocated = NO;
@@ -140,7 +141,6 @@ bool CGUITextureBase::AllocateOnDemand()
     // reset animated textures (animgifs)
     m_currentLoop = 0;
     m_currentFrame = 0;
-    m_frameCounter = 0;
   }
 
   return false;
@@ -296,13 +296,12 @@ bool CGUITextureBase::AllocResources()
     return false; // already have our texture
 
   // reset our animstate
-  m_frameCounter = 0;
   m_currentFrame = 0;
   m_currentLoop = 0;
 
   bool changed = false;
   bool useLarge = m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename);
-  if (useLarge)
+  if (useLarge && !StringUtils::EndsWithNoCase(m_info.filename, ".gif"))
   { // we want to use the large image loader, but we first check for bundled textures
     if (!IsAllocated())
     {
@@ -494,13 +493,11 @@ void CGUITextureBase::SetInvalid()
 bool CGUITextureBase::UpdateAnimFrame()
 {
   bool changed = false;
-
-  m_frameCounter++;
   unsigned int delay = m_texture.m_delays[m_currentFrame];
-  if (!delay) delay = 100;
-  if (m_frameCounter * 40 >= delay)
+  unsigned int now = XbmcThreads::SystemClockMillis();
+
+  if ((now - m_lasttime) >= delay)
   {
-    m_frameCounter = 0;
     if (m_currentFrame + 1 >= m_texture.size())
     {
       if (m_texture.m_loops > 0)
@@ -509,6 +506,7 @@ bool CGUITextureBase::UpdateAnimFrame()
         {
           m_currentLoop++;
           m_currentFrame = 0;
+          m_lasttime = now;
           changed = true;
         }
       }
@@ -516,12 +514,14 @@ bool CGUITextureBase::UpdateAnimFrame()
       {
         // 0 == loop forever
         m_currentFrame = 0;
+        m_lasttime = now;
         changed = true;
       }
     }
     else
     {
       m_currentFrame++;
+      m_lasttime = now;
       changed = true;
     }
   }

@@ -156,7 +156,7 @@ protected:
   // animations
   int m_currentLoop;
   unsigned int m_currentFrame;
-  uint32_t m_frameCounter;
+  uint32_t m_lasttime;
 
   float m_diffuseU, m_diffuseV;           // size of the diffuse frame (in tex coords)
   float m_diffuseScaleU, m_diffuseScaleV; // scale factor of the diffuse frame (from texture coords to diffuse tex coords)
