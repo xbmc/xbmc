@@ -37,7 +37,6 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/PVRManager.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
 #include "utils/LangCodeExpander.h"
@@ -45,7 +44,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace PVR;
 
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "VideoOSDSettings.xml")
@@ -362,9 +360,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
       CSettings::Get().Save();
     }
   }
-
-  if (g_PVRManager.IsPlayingRadio() || g_PVRManager.IsPlayingTV())
-    g_PVRManager.TriggerSaveChannelSettings();
 }
 
 void CGUIDialogAudioSubtitleSettings::FrameMove()

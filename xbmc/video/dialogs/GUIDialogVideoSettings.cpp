@@ -34,10 +34,8 @@
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "addons/Skin.h"
-#include "pvr/PVRManager.h"
 
 using namespace std;
-using namespace PVR;
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")
@@ -263,9 +261,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
   {
     EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode != VS_DEINTERLACEMODE_OFF);
   }
-
-  if (g_PVRManager.IsPlayingRadio() || g_PVRManager.IsPlayingTV())
-    g_PVRManager.TriggerSaveChannelSettings();
 }
 
 CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)
