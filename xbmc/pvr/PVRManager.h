@@ -389,11 +389,6 @@ namespace PVR
     void TriggerChannelGroupsUpdate(void);
 
     /*!
-     * @brief Let the background thread save the current video settings.
-     */
-    void TriggerSaveChannelSettings(void);
-
-    /*!
      * @brief Update the channel that is currently active.
      * @param item The new channel.
      * @return True if it was updated correctly, false otherwise.
@@ -718,16 +713,6 @@ namespace PVR
     virtual const char *GetType() const { return "pvr-update-channelgroups"; }
 
     virtual bool DoWork();
-  };
-
-  class CPVRChannelSettingsSaveJob : public CJob
-  {
-  public:
-    CPVRChannelSettingsSaveJob(void) {}
-    virtual ~CPVRChannelSettingsSaveJob() {}
-    virtual const char *GetType() const { return "pvr-save-channelsettings"; }
-
-    bool DoWork();
   };
 
   class CPVRChannelSwitchJob : public CJob
