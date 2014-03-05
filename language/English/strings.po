@@ -852,10 +852,12 @@ msgctxt "#208"
 msgid "Play"
 msgstr ""
 
+#. used as label for an action/button to play or navigate to the next item
 msgctxt "#209"
 msgid "Next"
 msgstr ""
 
+#. used as label for an action/button to play or navigate to the previous item
 msgctxt "#210"
 msgid "Previous"
 msgstr ""
@@ -6249,7 +6251,7 @@ msgid "Apple Remote Error"
 msgstr ""
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
+msgid "Apple Remote support could not be enabled."
 msgstr ""
 
 #empty strings from id 13622 to 13999
@@ -7411,6 +7413,7 @@ msgctxt "#19030"
 msgid "Now"
 msgstr ""
 
+#. Label prefix for the next playing tv-show (PVR) or media, like "Next: The Simpsons", "Next: AC/DC - Thunderstruck". It's also used as EPG display mode (EPG: timeline / now / next)
 msgctxt "#19031"
 msgid "Next"
 msgstr ""
@@ -7769,7 +7772,7 @@ msgid "Cannot use PVR functions while searching."
 msgstr ""
 
 msgctxt "#19119"
-msgid "On which server you want to search?"
+msgid "On which server do you want to search?"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
@@ -12286,7 +12289,7 @@ msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25003"
-msgid "Show bluray menus"
+msgid "Show Blu-ray menus"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
@@ -12311,12 +12314,12 @@ msgstr ""
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
+msgid "Playback of Blu-ray failed"
 msgstr ""
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
+msgid "The menu of this Blu-ray is not supported"
 msgstr ""
 
 #empty strings from id 25010 to 29799
@@ -13603,10 +13606,7 @@ msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr ""
+# empty strings from id 36157
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (DXVA2)" with label #13427
 #: system/settings/settings.xml
@@ -14168,10 +14168,7 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36261"
-msgid "No info available yet."
-msgstr ""
+# empty strings from id 36261
 
 #. Description of setting "Music -> Library -> Export music library" with label #20196
 #: system/settings/settings.xml
@@ -15110,10 +15107,7 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr ""
+# empty strings from id 36420
 
 #. Description of setting "Videos -> Playback -> Prefer VDPAU Video Mixer" with label #13437
 #: system/settings/settings.xml
