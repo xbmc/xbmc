@@ -900,18 +900,9 @@ void CPVRManager::SaveChannelSettings(const CPVRChannel &channel)
   if (!database)
     return;
 
-  if (CMediaSettings::Get().GetCurrentVideoSettings() != CMediaSettings::Get().GetDefaultVideoSettings())
-  {
-    CLog::Log(LOGDEBUG, "PVR - %s - persisting custom channel settings for channel '%s'",
-        __FUNCTION__, channel.ChannelName().c_str());
-    database->PersistChannelSettings(channel, CMediaSettings::Get().GetCurrentVideoSettings());
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "PVR - %s - no custom channel settings for channel '%s'",
-        __FUNCTION__, channel.ChannelName().c_str());
-    database->DeleteChannelSettings(channel);
-  }
+  CLog::Log(LOGDEBUG, "PVR - %s - persisting custom channel settings for channel '%s'",
+	  __FUNCTION__, channel.ChannelName().c_str());
+  database->PersistChannelSettings(channel, CMediaSettings::Get().GetCurrentVideoSettings());
 }
 
 void CPVRManager::LoadChannelSettings(const CPVRChannel &channel)
