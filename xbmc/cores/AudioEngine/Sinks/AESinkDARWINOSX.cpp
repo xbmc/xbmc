@@ -83,8 +83,15 @@ static void EnumerateDevices(CADeviceList &list)
     device.m_displayName = device.m_deviceName;
     device.m_displayNameExtra = "";
 
-    if (device.m_deviceName.find("HDMI") != std::string::npos)
-      device.m_deviceType = AE_DEVTYPE_HDMI;
+    // flag indicating that passthroughformats where added throughout the stream enumeration
+    bool hasPassthroughFormats = false;
+    // the maximum number of channels found in the streams
+    UInt32 numMaxChannels = 0;
+    // the terminal type as reported by ca
+    UInt32 caTerminalType = 0;
+      
+    bool isDigital = caDevice.IsDigital(caTerminalType);
+
 
     CLog::Log(LOGDEBUG, "EnumerateDevices:Device(%s)" , device.m_deviceName.c_str());
     AudioStreamIdList streams;
@@ -101,6 +108,7 @@ static void EnumerateDevices(CADeviceList &list)
             std::string formatString;
             CLog::Log(LOGDEBUG, "EnumerateDevices:Format(%s)" ,
                                 StreamDescriptionToString(desc, formatString));
+
             // add stream format info
             switch (desc.mFormatID)
             {
@@ -110,9 +118,8 @@ static void EnumerateDevices(CADeviceList &list)
                   device.m_dataFormats.push_back(AE_FMT_AC3);
                 if (!HasDataFormat(device.m_dataFormats, AE_FMT_DTS))
                   device.m_dataFormats.push_back(AE_FMT_DTS);
-                // if we are not hdmi, this is an S/PDIF device
-                if (device.m_deviceType != AE_DEVTYPE_HDMI)
-                  device.m_deviceType = AE_DEVTYPE_IEC958;
+                hasPassthroughFormats = true;
+                isDigital = true;// sanity - those are always digital devices!
                 break;
               default:
                 AEDataFormat format = AE_FMT_INVALID;
@@ -123,6 +130,17 @@ static void EnumerateDevices(CADeviceList &list)
                       format = AE_FMT_S16BE;
                     else
                     {
+                      // if it is no digital stream per definition
+                      // check if the device name suggests that it is digital
+                      // (some hackintonshs are not so smart in announcing correct
+                      // ca devices ...
+                      if (!isDigital)
+                      {
+                        std::string devNameLower = device.m_deviceName;
+                        StringUtils::ToLower(devNameLower);                       
+                        isDigital = devNameLower.find("digital") != std::string::npos;
+                      }
+
                       /* Passthrough is possible with a 2ch digital output */
                       if (desc.mChannelsPerFrame == 2 && CCoreAudioStream::IsDigitalOuptut(*j))
                       {
@@ -132,11 +150,13 @@ static void EnumerateDevices(CADeviceList &list)
                             device.m_dataFormats.push_back(AE_FMT_AC3);
                           if (!HasDataFormat(device.m_dataFormats, AE_FMT_DTS))
                             device.m_dataFormats.push_back(AE_FMT_DTS);
+                          hasPassthroughFormats = true;
                         }
                         else if (desc.mSampleRate == 192000)
                         {
                           if (!HasDataFormat(device.m_dataFormats, AE_FMT_EAC3))
                             device.m_dataFormats.push_back(AE_FMT_EAC3);
+                          hasPassthroughFormats = true;
                         }
                       }
                       format = AE_FMT_S16LE;
@@ -160,6 +180,10 @@ static void EnumerateDevices(CADeviceList &list)
                     }
                     break;
                 }
+                
+                if (numMaxChannels < desc.mChannelsPerFrame)
+                  numMaxChannels = desc.mChannelsPerFrame;
+                
                 if (format != AE_FMT_INVALID && !HasDataFormat(device.m_dataFormats, format))
                   device.m_dataFormats.push_back(format);
                 break;
@@ -182,6 +206,46 @@ static void EnumerateDevices(CADeviceList &list)
       }
     }
 
+    
+    // flag indicating that the device name "sounds" like HDMI
+    bool hasHdmiName = device.m_deviceName.find("HDMI") != std::string::npos;
+    // flag indicating that the device name "sounds" like DisplayPort
+    bool hasDisplayPortName = device.m_deviceName.find("DisplayPort") != std::string::npos;
+    
+    // decide the type of the device based on the discovered information
+    // in the streams
+    // device defaults to PCM (see start of the while loop)
+    // it can be HDMI, DisplayPort or Optical
+    // for all of those types it needs to support
+    // passthroughformats and needs to be a digital port
+    if (hasPassthroughFormats && isDigital)
+    {
+      // if the max number of channels was more then 2
+      // this can be HDMI or DisplayPort or Thunderbolt
+      if (numMaxChannels > 2)
+      {
+        // either the devicename suggests its HDMI
+        // or CA reported the terminalType as HDMI
+        if (hasHdmiName || caTerminalType == kIOAudioDeviceTransportTypeHdmi)
+          device.m_deviceType = AE_DEVTYPE_HDMI;
+
+        // either the devicename suggests its DisplayPort
+        // or CA reported the terminalType as DisplayPort or Thunderbolt
+        if (hasDisplayPortName || caTerminalType == kIOAudioDeviceTransportTypeDisplayPort || caTerminalType == kIOAudioDeviceTransportTypeThunderbolt)
+          device.m_deviceType = AE_DEVTYPE_DP;
+      }
+      else// treat all other digital passthrough devices as optical
+        device.m_deviceType = AE_DEVTYPE_IEC958;
+    }
+
+    // devicename based overwrites from former code - maybe FIXME at some point when we
+    // are sure that the upper detection does its job in all[tm] use cases
+    if (hasHdmiName)
+      device.m_deviceType = AE_DEVTYPE_HDMI;
+    if (hasDisplayPortName)
+      device.m_deviceType = AE_DEVTYPE_DP;
+    
+    
     list.push_back(std::make_pair(deviceID, device));
     //in the first place of the list add the default device
     //with name "default" - if this is selected

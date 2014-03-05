@@ -239,6 +239,38 @@ std::string CCoreAudioDevice::GetName()
   return name;
 }
 
+bool CCoreAudioDevice::IsDigital(UInt32 &transportType)
+{
+  bool isDigital = false;
+  if (!m_DeviceId)
+    return false;
+
+  AudioObjectPropertyAddress  propertyAddress;
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyTransportType;
+
+  UInt32 propertySize = sizeof(transportType);
+  OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &transportType);
+  if (ret != noErr)
+      return false;
+    
+  if (transportType == kIOAudioDeviceTransportTypeFireWire)
+    isDigital = true;
+  if (transportType == kIOAudioDeviceTransportTypeUSB)
+    isDigital = true;
+  if (transportType == kIOAudioDeviceTransportTypeHdmi)
+    isDigital = true;
+  if (transportType == kIOAudioDeviceTransportTypeDisplayPort)
+    isDigital = true;
+  if (transportType == kIOAudioDeviceTransportTypeThunderbolt)
+    isDigital = true;
+  if (transportType == kAudioStreamTerminalTypeDigitalAudioInterface)
+    isDigital = true;
+    
+  return isDigital;
+}
+
 UInt32 CCoreAudioDevice::GetTotalOutputChannels()
 {
   UInt32 channels = 0;
