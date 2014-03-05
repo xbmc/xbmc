@@ -44,6 +44,8 @@ OMXClock::OMXClock()
   m_eState = OMX_TIME_ClockStateStopped;
   m_eClock = OMX_TIME_RefClockNone;
   m_clock        = NULL;
+  m_last_media_time = 0.0f;
+  m_last_media_time_read = 0.0f;
 
   pthread_mutex_init(&m_lock, NULL);
 }
@@ -112,6 +114,7 @@ bool OMXClock::OMXSetReferenceClock(bool has_audio, bool lock /* = true */)
     }
     m_eClock = refClock.eClock;
   }
+  m_last_media_time = 0.0f;
   if(lock)
     UnLock();
 
@@ -141,6 +144,7 @@ void OMXClock::OMXDeinitialize()
   m_omx_clock.Deinitialize();
 
   m_omx_speed = DVD_PLAYSPEED_NORMAL;
+  m_last_media_time = 0.0f;
 }
 
 bool OMXClock::OMXStateExecute(bool lock /* = true */)
@@ -168,6 +172,7 @@ bool OMXClock::OMXStateExecute(bool lock /* = true */)
     }
   }
 
+  m_last_media_time = 0.0f;
   if(lock)
     UnLock();
 
@@ -185,6 +190,7 @@ void OMXClock::OMXStateIdle(bool lock /* = true */)
   if(m_omx_clock.GetState() != OMX_StateIdle)
     m_omx_clock.SetStateForComponent(OMX_StateIdle);
 
+  m_last_media_time = 0.0f;
   if(lock)
     UnLock();
 }
@@ -221,6 +227,7 @@ bool  OMXClock::OMXStop(bool lock /* = true */)
   }
   m_eState = clock.eState;
 
+  m_last_media_time = 0.0f;
   if(lock)
     UnLock();
 
@@ -251,6 +258,7 @@ bool OMXClock::OMXStep(int steps /* = 1 */, bool lock /* = true */)
     return false;
   }
 
+  m_last_media_time = 0.0f;
   if(lock)
     UnLock();
 
@@ -301,6 +309,7 @@ bool OMXClock::OMXReset(bool has_video, bool has_audio, bool lock /* = true */)
     }
   }
 
+  m_last_media_time = 0.0f;
   if(lock)
     UnLock();
 
@@ -309,33 +318,45 @@ bool OMXClock::OMXReset(bool has_video, bool has_audio, bool lock /* = true */)
 
 double OMXClock::OMXMediaTime(bool lock /* = true */)
 {
+  double pts = 0.0;
   if(m_omx_clock.GetComponent() == NULL)
     return 0;
 
-  if(lock)
-    Lock();
-
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-  double pts = 0;
-
-  OMX_TIME_CONFIG_TIMESTAMPTYPE timeStamp;
-  OMX_INIT_STRUCTURE(timeStamp);
-  timeStamp.nPortIndex = m_omx_clock.GetInputPort();
-
-  omx_err = m_omx_clock.GetConfig(OMX_IndexConfigTimeCurrentMediaTime, &timeStamp);
-  if(omx_err != OMX_ErrorNone)
+  double now = GetAbsoluteClock();
+  if (now - m_last_media_time_read > DVD_MSEC_TO_TIME(100) || m_last_media_time == 0.0)
   {
-    CLog::Log(LOGERROR, "OMXClock::MediaTime error getting OMX_IndexConfigTimeCurrentMediaTime\n");
+    if(lock)
+      Lock();
+
+    OMX_ERRORTYPE omx_err = OMX_ErrorNone;
+
+    OMX_TIME_CONFIG_TIMESTAMPTYPE timeStamp;
+    OMX_INIT_STRUCTURE(timeStamp);
+    timeStamp.nPortIndex = m_omx_clock.GetInputPort();
+
+    omx_err = m_omx_clock.GetConfig(OMX_IndexConfigTimeCurrentMediaTime, &timeStamp);
+    if(omx_err != OMX_ErrorNone)
+    {
+      CLog::Log(LOGERROR, "OMXClock::MediaTime error getting OMX_IndexConfigTimeCurrentMediaTime\n");
+      if(lock)
+        UnLock();
+      return 0;
+    }
+
+    pts = FromOMXTime(timeStamp.nTimestamp);
+    //CLog::Log(LOGINFO, "OMXClock::MediaTime %.2f (%.2f, %.2f)", pts, m_last_media_time, now - m_last_media_time_read);
+    m_last_media_time = pts;
+    m_last_media_time_read = now;
+
     if(lock)
       UnLock();
-    return 0;
   }
-
-  pts = FromOMXTime(timeStamp.nTimestamp);
-
-  if(lock)
-    UnLock();
-  
+  else
+  {
+    double speed = m_pause ? 0.0 : (double)m_omx_speed / DVD_PLAYSPEED_NORMAL;
+    pts = m_last_media_time + (now - m_last_media_time_read) * speed;
+    //CLog::Log(LOGINFO, "OMXClock::MediaTime cached %.2f (%.2f, %.2f)", pts, m_last_media_time, now - m_last_media_time_read);
+  }
   return pts;
 }
 
@@ -408,6 +429,7 @@ bool OMXClock::OMXMediaTime(double pts, bool lock /* = true*/)
   CLog::Log(LOGDEBUG, "OMXClock::OMXMediaTime set config %s = %.2f", index == OMX_IndexConfigTimeCurrentAudioReference ?
        "OMX_IndexConfigTimeCurrentAudioReference":"OMX_IndexConfigTimeCurrentVideoReference", pts);
 
+  m_last_media_time = 0.0f;
   if(lock)
     UnLock();
 
@@ -427,6 +449,7 @@ bool OMXClock::OMXPause(bool lock /* = true */)
     if (OMXSetSpeed(0, false, true))
       m_pause = true;
 
+    m_last_media_time = 0.0f;
     if(lock)
       UnLock();
   }
@@ -446,6 +469,7 @@ bool OMXClock::OMXResume(bool lock /* = true */)
     if (OMXSetSpeed(m_omx_speed, false, true))
       m_pause = false;
 
+    m_last_media_time = 0.0f;
     if(lock)
       UnLock();
   }
@@ -484,6 +508,7 @@ bool OMXClock::OMXSetSpeed(int speed, bool lock /* = true */, bool pause_resume 
   if (!pause_resume)
     m_omx_speed = speed;
 
+  m_last_media_time = 0.0f;
   if(lock)
     UnLock();
 
@@ -520,6 +545,7 @@ bool OMXClock::HDMIClockSync(bool lock /* = true */)
     return false;
   }
 
+  m_last_media_time = 0.0f;
   if(lock)
     UnLock();
 
