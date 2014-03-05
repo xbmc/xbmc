@@ -29,7 +29,6 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "profiles/ProfilesManager.h"
-#include "pvr/PVRManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
@@ -62,7 +61,6 @@
 #define SETTING_VIDEO_CALIBRATION         "video.calibration"
 
 using namespace std;
-using namespace PVR;
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings()
     : CGUIDialogSettingsManualBase(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml"),
@@ -145,9 +143,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
     videoSettings.m_StereoMode = static_cast<const CSettingInt*>(setting)->GetValue();
   else if (settingId == SETTING_VIDEO_STEREOSCOPICINVERT)
     videoSettings.m_StereoInvert = static_cast<const CSettingBool*>(setting)->GetValue();
-
-  if (g_PVRManager.IsPlayingRadio() || g_PVRManager.IsPlayingTV())
-    g_PVRManager.TriggerSaveChannelSettings();
 }
 
 void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)

@@ -1550,10 +1550,6 @@ void CDVDPlayer::HandlePlaySpeed()
           bGotAudio, m_dvdPlayerAudio.GetLevel(),
           bGotVideo, m_dvdPlayerVideo.GetLevel());
 
-      CFileItem currentItem(g_application.CurrentFileItem());
-      if (currentItem.HasPVRChannelInfoTag())
-        g_PVRManager.LoadCurrentChannelSettings();
-
       caching = CACHESTATE_DONE;
     }
     else

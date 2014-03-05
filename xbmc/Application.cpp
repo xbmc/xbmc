@@ -4495,9 +4495,6 @@ void CApplication::StopPlaying()
       m_pKaraokeMgr->Stop();
 #endif
 
-    if (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio())
-      g_PVRManager.SaveCurrentChannelSettings();
-
     m_pPlayer->CloseFile();
 
     // turn off visualisation window when stopping
