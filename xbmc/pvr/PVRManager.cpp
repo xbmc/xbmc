@@ -894,7 +894,7 @@ bool CPVRManager::CheckParentalPIN(const char *strTitle /* = NULL */)
   return bValidPIN;
 }
 
-void CPVRManager::SaveCurrentChannelSettings(const CPVRChannel &channel)
+void CPVRManager::SaveChannelSettings(const CPVRChannel &channel)
 {
   CPVRDatabase *database = GetPVRDatabase();
   if (!database)
@@ -1015,7 +1015,7 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
     m_currentFile = new CFileItem(channel);
 
     // load channel settings
-    LoadCurrentChannelSettings(*channel.GetPVRChannelInfoTag());
+    LoadChannelSettings(*channel.GetPVRChannelInfoTag());
 
     if (m_addons->GetPlayingChannel(playingChannel))
     {
@@ -1071,7 +1071,7 @@ void CPVRManager::CloseStream(void)
       m_channelGroups->SetLastPlayedGroup(GetPlayingGroup(channel->IsRadio()));
   
       // store channel settings
-      SaveCurrentChannelSettings(*channel);
+      SaveChannelSettings(*channel);
     }
 
     m_addons->CloseStream();
@@ -1304,8 +1304,8 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     bSwitched = true;
 
     // save previous and load new channel's settings
-    SaveCurrentChannelSettings(*currentChannel);
-    LoadCurrentChannelSettings(channel);
+    SaveChannelSettings(*currentChannel);
+    LoadChannelSettings(channel);
 
     CSingleLock lock(m_critSection);
     m_currentFile = new CFileItem(channel);
