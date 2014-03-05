@@ -59,6 +59,9 @@ class CPlexThumbCacher;
 class CPlexFilterManager;
 typedef boost::shared_ptr<CPlexFilterManager> CPlexFilterManagerPtr;
 
+class CPlexProfiler;
+typedef boost::shared_ptr<CPlexProfiler> CPlexProfilerPtr;
+
 class CPlexExtraInfoLoader;
 
 ///
@@ -98,6 +101,7 @@ public:
   CPlexTimelineManagerPtr timelineManager;  
   CPlexThumbCacher *thumbCacher;
   CPlexFilterManagerPtr filterManager;
+  CPlexProfilerPtr profiler;
   CPlexGlobalTimer timer;
   CPlexExtraInfoLoader *extraInfo;
 

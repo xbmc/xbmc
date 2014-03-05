@@ -31,6 +31,7 @@
 #include "ApplicationMessenger.h"
 #include "dialogs/GUIDialogVideoOSD.h"
 #include "GUIWindowManager.h"
+#include "Utility/PlexProfiler.h"
 
 #include "network/UdpClient.h"
 #include "DNSNameCache.h"
@@ -59,6 +60,7 @@ PlexApplication::Start()
   themeMusicPlayer = CPlexThemeMusicPlayerPtr(new CPlexThemeMusicPlayer);
   thumbCacher = new CPlexThumbCacher;
   filterManager = CPlexFilterManagerPtr(new CPlexFilterManager);
+  profiler = CPlexProfilerPtr(new CPlexProfiler);
   extraInfo = new CPlexExtraInfoLoader;
 
   serverManager->load();
@@ -302,6 +304,9 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     
     mediaServerClient->CancelJobs();
     mediaServerClient.reset();
+
+    profiler->Clear();
+    profiler.reset();
 
     filterManager->saveFiltersToDisk();
     filterManager.reset();
