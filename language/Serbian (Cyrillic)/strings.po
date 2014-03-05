@@ -3870,8 +3870,8 @@ msgid "Scan for new content"
 msgstr "Потражи нови садржај"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Тренутно се репродукује..."
+msgid "Current playlist"
+msgstr "Тренутни реп. списак"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4105,6 +4105,10 @@ msgctxt "#13425"
 msgid "Allow hardware acceleration (VDPAU)"
 msgstr "Broadcom Crystal HD"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Софтвер"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V начин синхрон."
@@ -4281,17 +4285,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Видео кеш - DVD-ROM"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Интернет"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Кеш звука - DVD-ROM"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Интернет"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5685,10 +5681,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Овим ћете поништити вредности калибрације за %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "на подразумеване вредности."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Потражи одредиште"
@@ -5897,10 +5889,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Посебне емисије"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Аутоматски преузми сличицу сезоне"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Изабрана фасцикла садржи један филм"
@@ -6012,10 +6000,6 @@ msgstr "Најава"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Поравнат списак"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Поравнат списак TV серија"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -6204,10 +6188,6 @@ msgstr "Уклони дељену локацију медија"
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Фасцикла филмова и алтернативних титлова"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Омогући коришћење миша"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -7062,6 +7042,10 @@ msgid "Enable"
 msgstr "Омогући додатни прог."
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Онемогућено"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Додатни прог. је онемогућен"
 

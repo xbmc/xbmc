@@ -1061,10 +1061,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Ngôn ngữ gốc của stream"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Ngôn ngữ giao diện"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=tự động)"
@@ -2356,6 +2352,10 @@ msgstr "Không mật khẩu"
 msgctxt "#735"
 msgid "Character set"
 msgstr "Bộ ký tự"
+
+msgctxt "#737"
+msgid "Colour"
+msgstr "Màu"
 
 msgctxt "#738"
 msgid "Normal"
@@ -4150,8 +4150,8 @@ msgid "Scan for new content"
 msgstr "Quét tìm dữ liệu mới"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Đang xem..."
+msgid "Current playlist"
+msgstr "Danh sách hiện tại"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4397,6 +4397,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Chỉ chơi bài này"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Phần mềm"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Phương thức đồng bộ A/V"
@@ -4585,17 +4589,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Đệm video - DVD-ROM"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Đệm tiếng - DVD-ROM"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5144,6 +5140,14 @@ msgstr "Kế"
 msgctxt "#19037"
 msgid "Show signal quality"
 msgstr "Hiển thị chất lượng sóng"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "Tới đầu"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "Tới cuối"
 
 msgctxt "#19078"
 msgid "Channel:"
@@ -6144,6 +6148,10 @@ msgstr "Dịch vụ"
 msgctxt "#24021"
 msgid "Disable"
 msgstr "Vô hiệu"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "Đã tắt"
 
 msgctxt "#24027"
 msgid "Weather"

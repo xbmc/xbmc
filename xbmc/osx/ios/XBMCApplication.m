@@ -131,26 +131,6 @@ XBMCController *m_xbmcController;
   {
     ELOG(@"AVAudioSession setActive failed: %@", err);
   }
-  [[AVAudioSession sharedInstance] setDelegate:self];
-}
-
-- (void)beginInterruption
-{
-  PRINT_SIGNATURE();
-  [m_xbmcController beginInterruption];
-}
-- (void)endInterruptionWithFlags:(NSUInteger)flags
-{
-  LOG(@"%s: %d", __PRETTY_FUNCTION__, flags);
-  if (flags & AVAudioSessionInterruptionFlags_ShouldResume)
-  {
-    NSError *err = nil;
-    if (![[AVAudioSession sharedInstance] setActive: YES error: &err])
-    {
-      ELOG(@"AVAudioSession::endInterruption setActive failed: %@", err);
-    }
-    [m_xbmcController endInterruption];
-  }
 }
 
 - (void)dealloc

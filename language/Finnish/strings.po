@@ -1073,10 +1073,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Alkuperäisen lähteen kieli"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Käyttöliittymän kieli"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -4510,8 +4506,8 @@ msgid "Scan for new content"
 msgstr "Etsi uusi sisältö"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Nykyinen toistolista..."
+msgid "Current playlist"
+msgstr "Nykyinen toistolista"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4797,6 +4793,10 @@ msgctxt "#13435"
 msgid "Enable HQ Scalers for scalings above"
 msgstr "Käytä HQ-skaalaimia yllä oleville"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Ohjelmallinen"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V-tahdistusmenetelmä"
@@ -5009,25 +5009,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Videovälimuisti - DVD-ROM"
 
-msgctxt "#14027"
-msgid "Local Network"
-msgstr "Lähiverkko"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Musiikkivälimuisti - DVD-ROM"
-
-msgctxt "#14031"
-msgid "Local Network"
-msgstr "Lähiverkko"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6505,10 +6489,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Kanavat ryhmässä"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "Synkronoi kanavaryhmät taustaosien kanssa"
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "Ohjelmaopas"
@@ -7937,10 +7917,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Tämä palauttaa asettamasi %s kalibroinnin arvot"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "oletusarvoiksi"
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Valitse kohdesijainti"
@@ -8157,10 +8133,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Erikoisuudet"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Automaattisesti luodut jakson pienoiskuvat"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Valittu kansio sisältää yhden videon"
@@ -8276,10 +8248,6 @@ msgstr "Esittely"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Tiivistä"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Tiivistä TV-ohjelmat"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8544,10 +8512,6 @@ msgstr "Elokuvien ja vaihtoehtoisten tekstitysten hakemisto"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Älä käytä ASS/SSA -tekstitysten kirjasinta"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Hiiri- ja kosketusnäyttötuki käytössä"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9530,6 +9494,10 @@ msgid "Enable"
 msgstr "Ota käyttöön"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Ei käytössä"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Lisäosa ei ole käytössä"
 
@@ -10437,18 +10405,6 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Kohteiden kansio"
 
-msgctxt "#36101"
-msgid "Change the look and feel of the User Interface."
-msgstr "Vaihda käyttöliittymän ulkoasua."
-
-msgctxt "#36102"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36103"
-msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
-msgstr "Valitse käyttöliittymän ulkoasu. Tämä vaikuttaa siihen miltä XBMC näyttää."
-
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Vaihda ulkoasun asetuksia. Valittavissa olevat vaihtoehdot riippuvät käytetystä ulkoasusta."
@@ -10461,21 +10417,9 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Vaihda käytössä olevan ulkoasun värejä."
 
-msgctxt "#36107"
-msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
-msgstr "Valitse käyttöliittymän fontit. Fonttivalikoima on määritelty ulkoasussa."
-
-msgctxt "#36108"
-msgid "Resize the view of the GUI."
-msgstr "Muuta käyttöliittymän kokoa."
-
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "Valitse mediaikkuna, jonka XBMC näyttää käynnistyttyään."
-
-msgctxt "#36110"
-msgid "Select or disable the sound scheme used in the User Interface."
-msgstr "Valitse tai poista käytöstä käyttöliittymän äänet."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -10485,21 +10429,9 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Muokkaa RSS-syötteitä."
 
-msgctxt "#36113"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36114"
-msgid "Chooses the language of the User Interface."
-msgstr "Valitsee käyttöliittymän kielen."
-
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Valitse missä muodossa lämpötila, aika ja päiväys näytetään. Vaihtoehdot riippuvat valitusta kielestä."
-
-msgctxt "#36116"
-msgid "Choose which character set is used for displaying text in the GUI."
-msgstr "Valitse mitä merkistöä käytetään tekstin näyttämiseen käyttöliittymässä."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -10517,10 +10449,6 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Valitse oletustekstitys kun useampia kieliä on saatavilla."
 
-msgctxt "#36121"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Näytä (..) valinta yläkansion valitsemiseksi."
@@ -10529,25 +10457,9 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Näytä mediatiedostojen päätteet. Esimerkiksi 'You Enjoy Myself.mp3' näkyisi pelkästään 'You Enjoy Myself' ilman päätettä."
 
-msgctxt "#36124"
-msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-msgstr "Älä huomio tiettyjä sanoja aakkosjärjestettäessä. Esimerkiksi 'The Simpsons' näkyisi S-kirjaimen kohdalla kuten 'Simpsons'. Katso lisää http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Salli tiedostojen poisto ja uudelleen nimeäminen käyttöliittymän avulla (paina esimerkiksi näppäimistöltä C päästäksesi tähän valikkoon)."
-
-msgctxt "#36126"
-msgid "Show the add source button from root sections of the user interface."
-msgstr "Näytä Lisää lähde -nappi käyttöliittymän päätasoilla."
-
-msgctxt "#36127"
-msgid "Show hidden files and directories."
-msgstr "Näytä piilotetut tiedostot ja kansiot."
-
-msgctxt "#36128"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
@@ -10565,71 +10477,7 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
-msgctxt "#36138"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36139"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36140"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36142"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36151"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36154"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36156"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36158"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36159"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36160"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36161"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36162"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36163"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36173"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36176"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36178"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
@@ -10637,41 +10485,9 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
-msgctxt "#36184"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36185"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36186"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36187"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36188"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36189"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36190"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Tekstityksen sijainti näytöllä."
-
-msgctxt "#36193"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -10753,29 +10569,9 @@ msgctxt "#36233"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
-msgstr "Tallennuksen prioriteetti. Korkeampi numero tarkoittaa korkeampaa prioriteettiä. Oletus on 50. Kaikki lisäosat ja backendit eivät tue tätä."
-
-msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
-msgstr "Poista tallennus tämän ajan jälkeen. Oletus on 99 päivää. Kaikki lisäosat ja backendit eivät tue tätä."
-
-msgctxt "#36237"
-msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
-msgstr "Aloita tallennus hieman ennen ohjelma-aikaa. Oletus on 2 minuuttia. Kaikki lisäosat ja backendit eivät tue tätä."
-
-msgctxt "#36238"
-msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
-msgstr "Lopeta tallentaminen hieman ohjelma-ajan jälkeen. Oletus on 10 minuuttia. Kaikki lisäosat ja backendit eivät tue tätä."
-
 msgctxt "#36240"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36243"
-msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
-msgstr "Suoritettava komento. Oletuksena '/usr/bin/setwakeup.sh'."
 
 msgctxt "#36247"
 msgid "No info available yet."
@@ -10789,65 +10585,17 @@ msgctxt "#36252"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
-msgctxt "#36253"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36254"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36261"
-msgid "Path where taken screenshots will be stored."
-msgstr "Polku, johon otetut kuvakaappaukset tallennetaan."
-
-msgctxt "#36264"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36277"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36278"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36279"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36280"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36282"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "Käynnistä CD-levyt automaattisesti, kun levy syötetään asemaan."
-
-msgctxt "#36292"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36294"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36299"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36300"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -10861,47 +10609,7 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
-msgctxt "#36304"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36305"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36310"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36311"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36315"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36316"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36319"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36320"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36322"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36325"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36327"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
@@ -10912,102 +10620,6 @@ msgstr "Määritä web-palvelimen portti."
 msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Määritä web-palvelimen käyttäjätunnus."
-
-msgctxt "#36331"
-msgid "Define webserver password."
-msgstr "Määritä web-palvelimen salasana."
-
-msgctxt "#36333"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36335"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36336"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36337"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36339"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36340"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36341"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36342"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36343"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36344"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36345"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36346"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36347"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36348"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36349"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36351"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36352"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36353"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36359"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36360"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36374"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36375"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36379"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11033,61 +10645,9 @@ msgctxt "#36385"
 msgid "Configure the proxy server password."
 msgstr "Määritä välityspalveimen salasana."
 
-msgctxt "#36388"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36392"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
 msgstr "Kansio, johon XBMC:ssä otetut kuvakaappaukset tallennetaan."
-
-msgctxt "#36399"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36400"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36401"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36402"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36403"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36404"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36405"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36406"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36407"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36408"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36409"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -11113,14 +10673,6 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
-msgctxt "#36417"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36418"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
@@ -11132,22 +10684,6 @@ msgstr "Vaihda kanavalle"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Nauhoita"
-
-msgctxt "#36537"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36538"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36539"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä.§"
-
-msgctxt "#36540"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#37014"
 msgid "Last used profile"

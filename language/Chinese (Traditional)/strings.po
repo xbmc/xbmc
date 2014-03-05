@@ -1081,10 +1081,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "原始語言"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "使用者介面語言"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=自動)"
@@ -1504,6 +1500,10 @@ msgstr "低溫"
 msgctxt "#419"
 msgid "High"
 msgstr "高溫"
+
+msgctxt "#420"
+msgid "Best Match"
+msgstr "最符合"
 
 msgctxt "#422"
 msgid "Delete album info"
@@ -3541,6 +3541,10 @@ msgctxt "#10044"
 msgid "No help available"
 msgstr "無說明內容"
 
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "嘗試改變設定等級來看到更多的分類和設定。"
+
 msgctxt "#10100"
 msgid "Yes/No dialogue"
 msgstr "確認對話框"
@@ -4642,8 +4646,8 @@ msgid "Scan for new content"
 msgstr "掃描新內容"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "現正播放…"
+msgid "Current playlist"
+msgstr "目前的播放清單"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4941,9 +4945,33 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "允許硬體加速 (MediaCodec)"
 
-msgctxt "#13440"
-msgid "Allow frame-multi-threaded decoding"
-msgstr "允許多執行緒解碼"
+msgctxt "#13441"
+msgid "Use Mpeg-2 VDPAU"
+msgstr "使用 Mpeg-2 VDPAU"
+
+msgctxt "#13443"
+msgid "Use Mpeg-4 VDPAU"
+msgstr "使用 Mpeg-4 VDPAU"
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "使用 VC-1 VDPAU"
+
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr "使用 Mpeg-2 VAAPI"
+
+msgctxt "#13449"
+msgid "Use Mpeg-4 VAAPI"
+msgstr "使用 Mpeg-4 VAAPI"
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "使用 VC-1 VAAPI"
+
+msgctxt "#13455"
+msgid "Software"
+msgstr "軟體著色"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5169,25 +5197,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "視訊緩衝區 - 光碟機"
 
-msgctxt "#14027"
-msgid "Local Network"
-msgstr "區域網路"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "網際網路"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "音效緩衝區 - 光碟機"
-
-msgctxt "#14031"
-msgid "Local Network"
-msgstr "區域網路"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "網際網路"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6717,10 +6729,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "頻道在"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "與後端同步頻道群組"
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "電子節目表"
@@ -7261,6 +7269,10 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "駕駛"
 
+msgctxt "#19648"
+msgid "Fitness & Health"
+msgstr "健身與健康"
+
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "烹飪"
@@ -7280,6 +7292,10 @@ msgstr "特殊特性"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "其他語言"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "黑白"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8209,10 +8225,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "重設螢幕校正值為 %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "還原為預設值"
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "瀏覽目的"
@@ -8429,10 +8441,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "特別"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "自動擷取影集的縮圖"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "選擇的資料夾包含一個視訊"
@@ -8548,10 +8556,6 @@ msgstr "預告片"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "連續播放"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "自動連續播放電視劇"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8848,10 +8852,6 @@ msgstr "電影和替代字幕資料夾"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "覆蓋 ASS/SSA 字幕的字型"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "啟用滑鼠"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9209,10 +9209,6 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "混合"
 
-msgctxt "#21460"
-msgid "Subtitle location on screen"
-msgstr "字幕在螢幕中的位置"
-
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "固定"
@@ -9244,14 +9240,6 @@ msgstr "%d 到 %d"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s 到 %s"
-
-msgctxt "#21600"
-msgid "Prefer external subtitles"
-msgstr "優先使用外部字幕"
-
-msgctxt "#21601"
-msgid "Prefer external subtitles to internal ones"
-msgstr "優先使用外部字幕而非影片檔中的字幕"
 
 msgctxt "#21602"
 msgid "(External)"
@@ -9866,6 +9854,10 @@ msgid "Enable"
 msgstr "啟用"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "關閉"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "附加元件已停用"
 
@@ -10117,10 +10109,6 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "搜尋字幕的時候暫停"
 
-msgctxt "#24106"
-msgid "If not saved to movie folder subtitles will be downloaded to custom subtitle folder"
-msgstr "如果不是儲存到電影資料夾，字幕將會儲存到自訂的字幕資料夾。"
-
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "正在搜尋字幕 ..."
@@ -10153,25 +10141,13 @@ msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "沒有安裝任何的字幕服務"
 
-msgctxt "#24115"
-msgid "Save subtitles to movie folder"
-msgstr "將字幕儲存到電影所在的資料夾"
-
 msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "預設電視服務"
 
-msgctxt "#24117"
-msgid "Select service that will be used as default to search for TV Show subtitles"
-msgstr "選擇預設用來搜尋電視節目字幕的服務。"
-
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "預設電影服務"
-
-msgctxt "#24119"
-msgid "Select service that will be used as default to search for Movie subtitles"
-msgstr "選擇預設用來搜尋電影字幕的服務。"
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -10953,18 +10929,6 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "限制色彩範圍 (16-235)"
 
-msgctxt "#36101"
-msgid "Change the look and feel of the User Interface."
-msgstr "改變使用者介面的視覺風格"
-
-msgctxt "#36102"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36103"
-msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
-msgstr "選擇使用者介面的皮膚，本選項會定義XBMC的整體視覺風格"
-
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "修改特定皮膚檔的設定，可用的選項依所使用皮膚而定"
@@ -10977,21 +10941,9 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "改變您選用皮膚檔的顏色設定"
 
-msgctxt "#36107"
-msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
-msgstr "選擇使用者介面中顯示的字型.字型庫的內容由您選用的皮膚決定"
-
-msgctxt "#36108"
-msgid "Resize the view of the GUI."
-msgstr "改變圖形使用者介面的可視尺寸"
-
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "選擇XBMC啟動時要顯示的媒體視窗"
-
-msgctxt "#36110"
-msgid "Select or disable the sound scheme used in the User Interface."
-msgstr "選擇或關閉使用者介面所使用的音效主題"
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -11001,21 +10953,9 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "編輯 RSS 來源。"
 
-msgctxt "#36113"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36114"
-msgid "Chooses the language of the User Interface."
-msgstr "選擇使用者介面的語言"
-
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "選擇溫度、時間及日期的格式.可使用的選項視所選的語言而定"
-
-msgctxt "#36116"
-msgid "Choose which character set is used for displaying text in the GUI."
-msgstr "選擇將會在使用者介面中顯示的字元集"
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11033,10 +10973,6 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "當影片提供多種語言的字幕時，選取預設的字幕"
 
-msgctxt "#36121"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "在列表中顯示(..)用以回到上層資料夾"
@@ -11045,25 +10981,9 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "顯示媒體檔的副檔名，比如說：「浪人情歌.mp3」會被簡化顯示為「浪人情歌」"
 
-msgctxt "#36124"
-msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-msgstr "排序時忽略某些單字。如 'The Simpsons' 會被當作 'Simpsons' 來排序。要設定這些單字的話請參照 http://wiki.xbmc.org/index.php?title=Settings/Appearance 的說明。"
-
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "允許在使用者介面中透過內容選單 (例如鍵盤上的 C 可以開啟這個選單) 刪除或重新命名檔案。"
-
-msgctxt "#36126"
-msgid "Show the add source button from root sections of the user interface."
-msgstr "在使用者介面的跟選單中顯示新增來源的按鈕。"
-
-msgctxt "#36127"
-msgid "Show hidden files and directories."
-msgstr "顯示隱藏的檔案和目錄。"
-
-msgctxt "#36128"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11101,25 +11021,9 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
-msgctxt "#36138"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36139"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36140"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "在影片資料庫中未看過的影片也顯示劇情簡介。"
-
-msgctxt "#36142"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
@@ -11149,61 +11053,13 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "匯入一個 XML 檔案到影片資料庫中。"
 
-msgctxt "#36151"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36152"
-msgid "Enable automatic playback of the next file in the list of the selected item."
-msgstr "啟用以在播放結束後自動播放清單中的下一個檔案。"
-
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "調整處理和播放影片的方法。"
 
-msgctxt "#36154"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36155"
-msgid "Enable hardware decoding of video files."
-msgstr "啟用影片檔案硬體解碼。"
-
-msgctxt "#36156"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36157"
 msgid "No info available yet."
 msgstr "無可用資訊。"
-
-msgctxt "#36158"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36159"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36160"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36161"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36162"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36163"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36164"
-msgid "Select when the refresh rate adjustments should take place."
-msgstr "選擇應該在什麼時候調整更新頻率。"
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11221,10 +11077,6 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "選擇 4:3 影片在寬螢幕播放時的放大等級。"
 
-msgctxt "#36173"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "觀賞電視直播時啟用電傳文訊"
@@ -11233,47 +11085,11 @@ msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "將電傳文訊比例調為 4:3。"
 
-msgctxt "#36176"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36178"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
 msgstr "當檔案被掃描進資料庫時顯示檔案資訊中的標題而非檔案名稱。"
 
 msgctxt "#36181"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36184"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36185"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36186"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36187"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36188"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36189"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36190"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
@@ -11284,10 +11100,6 @@ msgstr "自訂存放字幕的資料夾。它可以是一個分享資料夾。"
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "字幕在螢幕中的位置。"
-
-msgctxt "#36193"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11332,10 +11144,6 @@ msgstr "啟用 XBMC 中的個人影片錄影機 (Personal Video Recorder, PVR)�
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "從 PVR 後端匯入頻道群組 (如果支援的話)。 如果使用者建立的頻道群組在後端找不到的話將會被刪除。"
-
-msgctxt "#36205"
-msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
-msgstr "根據伺服器上的頻道號碼排序頻道，但使用 XBMC 自己的頻道號碼。"
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -11389,18 +11197,6 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
-msgctxt "#36219"
-msgid "Default EPG window to show. Defaults to Timeline."
-msgstr "預設的電子節目表顯示方式。預設為時間軸。"
-
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
-msgstr "從後端匯入電子節目表的天數。預設是 3 天。"
-
-msgctxt "#36221"
-msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
-msgstr "從後端匯入電子節目表的時間間隔。預設為 120 分鐘。"
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "當播放電視時不要匯入電子節目表以節省 CPU 資源。"
@@ -11413,17 +11209,9 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "當找不到頻道的電子節目表時隱藏 \"找不到資訊\" 的標籤。"
 
-msgctxt "#36225"
-msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
-msgstr "刪除 XBMC 中的電子節目表資料庫然後從後端重新匯入。"
-
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "無可用資訊。"
-
-msgctxt "#36228"
-msgid "Show the last viewed channel if switching to live tv."
-msgstr "開始直播電視時轉到最後一次收看的頻道。"
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
@@ -11445,21 +11233,9 @@ msgctxt "#36233"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
-msgstr "錄影的優先權。較大的數字代表較高的優先權。預設是 50。並非所有的附加元件和後端都支援。"
-
-msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
-msgstr "在設定的天數之後刪除錄影。預設是 99 天。並非所有的附加元件和後端都支援。"
-
 msgctxt "#36240"
 msgid "No info available yet."
 msgstr "無可用資訊。"
-
-msgctxt "#36243"
-msgid "The command to execute. Defaults to '/usr/bin/setwakeup.sh'."
-msgstr "要執行的命令。預設為 '/usr/bin/setwakeup.sh'。"
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11489,21 +11265,9 @@ msgctxt "#36252"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
-msgctxt "#36253"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36254"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "掃描時自動取得專輯和演出者的資訊。"
-
-msgctxt "#36257"
-msgid "Select the default album information source"
-msgstr "選擇預設的專輯資訊來源"
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11517,6 +11281,10 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
+msgctxt "#36261"
+msgid "No info available yet."
+msgstr "無可用資訊。"
+
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
 msgstr "將音樂資料庫匯出成 XML 檔。你可選擇是否覆蓋目前的 XML 檔案。"
@@ -11525,41 +11293,13 @@ msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "匯入一個 XML 檔到你的音樂資料庫。"
 
-msgctxt "#36264"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr "XBMC 會讀取音樂檔案中經過如 MP3Gain 等程式編碼過的回放增益資訊，並依此來調整輸出的音量。"
 
-msgctxt "#36270"
-msgid "Reduce the volume of the file if clipping is likely to occur."
-msgstr "如果可能發生 Clipping 的話降低檔案的音量。"
-
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
 msgstr "選擇播放音樂時要顯示的視覺效果。"
-
-msgctxt "#36277"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36278"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36279"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36280"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36282"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11573,10 +11313,6 @@ msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr "選擇音軌擷取後要存放的位置。"
 
-msgctxt "#36286"
-msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
-msgstr "標籤: [B]%N[/B]: 音軌, [B]%S[/B]: 光碟編號, [B]%A[/B]: 演出者, [B]%T[/B]: 標題, [B]%B[/B]: 專輯, [B]%G[/B]: 類別, [B]%Y[/B]: 年份, [B]%F[/B]: 檔名, [B]%D[/B]: 長度, [B]%J[/B]: 日期, [B]%R[/B]: 評分, [B]%I[/B]: 檔案大小。"
-
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
 msgstr "選擇擷取音軌所要使用的編碼器。"
@@ -11585,49 +11321,13 @@ msgctxt "#36288"
 msgid "Select which quality you want to rip your files."
 msgstr "選擇擷取檔案的品質。"
 
-msgctxt "#36290"
-msgid "For FLAC define compression level, default 5"
-msgstr "FLAC 壓縮等級，預設為 5"
-
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "擷取完成後自動退出光碟。"
 
-msgctxt "#36292"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "當播放音樂的時候，XBMC 會尋找符合的 .cdg 檔案，並顯示它的圖片。"
-
-msgctxt "#36294"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36295"
-msgid "Select the font used during karoake."
-msgstr "選擇卡拉OK所用的字型。"
-
-msgctxt "#36296"
-msgid "Select the size of the font used during karoake."
-msgstr "選擇卡拉 OK 要使用的字型大小。"
-
-msgctxt "#36297"
-msgid "Select the font colour used during karoake."
-msgstr "選擇卡拉OK的字體顏色。"
-
-msgctxt "#36298"
-msgid "Select the character set used during karoake."
-msgstr "選擇卡拉 OK 要使用的字元編碼。"
-
-msgctxt "#36299"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36300"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11638,14 +11338,6 @@ msgid "No info available yet."
 msgstr "無可用資訊。"
 
 msgctxt "#36303"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36304"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36305"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
@@ -11661,15 +11353,7 @@ msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "如果 EXIF 標籤中帶有相關自訓的話圖片將會自動旋轉。"
 
-msgctxt "#36309"
-msgid "Show video media in picture file lists, since most digital cameras nowadays have video recording capabilities."
-msgstr "在圖片檔案清單中顯示影片媒體，因為現在大部分的數位相機都有提供錄影的功能。"
-
 msgctxt "#36310"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36311"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
@@ -11685,14 +11369,6 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "幻燈片秀以亂序的方式顯示圖片。"
 
-msgctxt "#36315"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36316"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "選擇要顯示天氣資訊的地區，最多三個。"
@@ -11701,41 +11377,13 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "指定預設的天氣資訊來源。附加元件管理員中有更多選項。"
 
-msgctxt "#36319"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36320"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "當使用各種網路服務時，用來表示這個 XBMC 的名稱。"
 
-msgctxt "#36322"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36323"
-msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
-msgstr "啟用 UPnP 伺服器。這將允許你使用任何 UPnP 客戶端來串流媒體。"
-
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "當手動或自動發生資料庫更新時，通知 UPnP 客戶端。"
-
-msgctxt "#36325"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36326"
-msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
-msgstr "啟用 UPnP 客戶端。這將允許你從任何 UPnP 伺服器串流媒體且包含播放控制的功能。"
-
-msgctxt "#36327"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11749,109 +11397,21 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "設定網頁伺服器的使用者帳號。"
 
-msgctxt "#36331"
-msgid "Define webserver password."
-msgstr "設定網頁伺服器的密碼。"
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "從附加元件管理員選擇一個已安裝的網頁介面。"
-
-msgctxt "#36333"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "允許這個電腦上的程式透過網路介面或者 JSON-RPC 介面協定控制 XBMC。"
 
-msgctxt "#36335"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36336"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36337"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "允許網路上的程式控制XBMC"
 
-msgctxt "#36339"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36340"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36341"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36342"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36343"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36344"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36345"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36346"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36347"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36348"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36349"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36351"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36352"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36353"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36354"
-msgid "The main benefit is for multi-screen configurations, so XBMC can be used without automatically minimising other applications. Uses a bit more resources and playback may be slightly less smooth."
-msgstr "主要好處是在有多螢幕的情況下，不用將其他應用程式最小化就可以使用 XBMC。這會使用稍微多一點資源，且播放時可能會稍微不那麼流暢。"
-
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
 msgstr "在多螢幕設置中，用來顯示 XBMC 以外的螢幕會變全黑。"
-
-msgctxt "#36359"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36360"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
@@ -11877,25 +11437,9 @@ msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "如果你的接收器有能力解碼 DTS-HD 串流則選擇這個選項。"
 
-msgctxt "#36371"
-msgid "Select the device to be used for playback of audio that has been decoded such as mp3"
-msgstr "選擇要播放解碼後音效的裝置。"
-
-msgctxt "#36374"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36375"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
 msgstr "使用遊戲手把控制 XBMC。"
-
-msgctxt "#36379"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11921,10 +11465,6 @@ msgctxt "#36385"
 msgid "Configure the proxy server password."
 msgstr "設定代理伺服器的密碼。"
 
-msgctxt "#36388"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "設定 XBMC 要在閒置多久的時間之後關閉。"
@@ -11933,13 +11473,9 @@ msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "設定 XBMC 在長時間閒置時要執行的動作。"
 
-msgctxt "#36391"
+msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "開啟或關閉除厝訊息。找問題時很有用。"
-
-msgctxt "#36392"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
@@ -11949,65 +11485,13 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "指定要被包含進除錯訊息的額外的函式庫。"
 
-msgctxt "#36395"
-msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
-msgstr "開啟管理員密碼對話框，你可以在這裡設定你的管理員密碼選項。"
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "設定管理員密碼。"
 
-msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup "
-msgstr "如果啟用的話，當 XBMC 啟動時會要求輸入管理員密碼"
-
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "設定最多重試次數，達到這個次數 XBMC 將會關閉。"
-
-msgctxt "#36399"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36400"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36401"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36402"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36403"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36404"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36405"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36406"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36407"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36408"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36409"
-msgid "No info available yet."
-msgstr "無可用資訊。"
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -12033,14 +11517,6 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "無可用資訊。"
 
-msgctxt "#36417"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36418"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "設定要接收天氣資訊的位置。"
@@ -12048,14 +11524,6 @@ msgstr "設定要接收天氣資訊的位置。"
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "無可用資訊。"
-
-msgctxt "#36421"
-msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality"
-msgstr "略過 VDPAU 混合器可在較低端的系統上節省資源但會稍微降低圖像的品質"
-
-msgctxt "#36422"
-msgid "Enable hardware video decode using AMLogic decoder"
-msgstr "啟用 AMLogic 硬體解碼。"
 
 msgctxt "#36425"
 msgid "Show context menu"
@@ -12100,10 +11568,6 @@ msgstr "基於硬體"
 msgctxt "#36509"
 msgid "Monoscopic - 2D"
 msgstr "2D"
-
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos"
-msgstr "3D 立體影片的播放模式"
 
 msgctxt "#36521"
 msgid "Ask me"
@@ -12157,22 +11621,6 @@ msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "相反的 3D 立體模式"
 
-msgctxt "#36537"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36538"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36539"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
-msgctxt "#36540"
-msgid "No info available yet."
-msgstr "無可用資訊。"
-
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "允許 AirPlay 客戶端控制音量。"
@@ -12192,10 +11640,6 @@ msgstr "啟用影片硬體解碼。"
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "字幕立體效果深度"
-
-msgctxt "#36546"
-msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
-msgstr "設定立體電影中字幕的視覺深度。愈高的值字幕感覺會愈接近觀眾。"
 
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
@@ -12232,10 +11676,6 @@ msgstr "雙聲音輸出"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "下降混合時加強中間聲道"
-
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
-msgstr "在全螢幕時啟用如 printscreen、alt-tab 和音量控制等系統按鍵"
 
 msgctxt "#37021"
 msgid "Set GUI resolution limit"

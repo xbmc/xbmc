@@ -378,7 +378,7 @@ msgstr "Kürzlich Hinzugefügt"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]TIMER GESETZT![/B] [COLOR=grey2] - SYSTEM FÄHRT HERUNTER  IN[/COLOR]"
+msgstr "[B]Ausschalttimer gestellt![/B] [COLOR=grey2] - Zeit bis zum Herunterfahren:[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
@@ -474,11 +474,11 @@ msgstr "[B]KONFIGURIERE DIENSTE[/B][CR][CR]Richte Zugriff auf XBMC via UPnP und 
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr "Hilfe beim ersten Start...."
+msgstr "Hilfe beim ersten Start..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Dieses Symbol zeigt an, dass ein Menü an der Seite des Fensters versteckt ist, welches weitere Optionen beinhaltet. Um es aufzurufen, navigieren Sie nach links oder zeigen Sie mit der Maus darauf.[CR][CR]Klicken Sie auf \"Ok\" um diesen Dialog zu schließen. Er wird nicht wieder angezeigt werden."
+msgstr "Dieses Symbol zeigt an, dass ein Menü an der Seite des Fensters versteckt ist, das weitere Optionen beinhaltet. Um es aufzurufen, navigiere nach links oder zeige mit der Maus darauf.[CR][CR]Klicke auf \"Ok\" um diesen Dialog zu schließen. Er wird nicht wieder angezeigt werden."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -490,7 +490,7 @@ msgstr "Anmeldung"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Wähle Dein XBMC Benutzer Profil[CR]Zum Anmelden und Fortfahren"
+msgstr "Wähle Dein XBMC Benutzerprofil[CR]Zum Anmelden und Fortfahren"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -498,7 +498,7 @@ msgstr "Den Anmeldebildschirm beim Start anzeigen oder verstecken"
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Profil, dass beim Start verwendet werden soll wenn der Anmeldebildschirm deaktiviert ist."
+msgstr "Profil, dass beim Start verwendet werden soll, wenn der Anmeldebildschirm deaktiviert ist."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

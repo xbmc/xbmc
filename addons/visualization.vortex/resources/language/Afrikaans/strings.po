@@ -16,13 +16,41 @@ msgstr ""
 "Language: af\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Willekeurige voorafinstelling"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Tyd Tussen Voorafinstellings"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "Addisionele Lukraak Tyd"
+msgstr "Addisionele Willekeurige Tyd"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Sluit Voorafinstelling"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Aktiveer Oorgang"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Stop eerste voorafinstelling"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Wys RPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Wys ontfout konsole"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Wys klank ontleding"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

@@ -26,6 +26,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/CharsetConverter.h"
 
 #ifdef TARGET_WINDOWS
 #include <tpcshrd.h>
@@ -356,10 +357,10 @@ RECT CWinSystemWin32::ScreenRect(int screen)
 {
   const MONITOR_DETAILS &details = GetMonitor(screen);
 
-  DEVMODE sDevMode;
+  DEVMODEW sDevMode;
   ZeroMemory(&sDevMode, sizeof(DEVMODE));
   sDevMode.dmSize = sizeof(DEVMODE);
-  if(!EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode))
+  if(!EnumDisplaySettingsW(details.DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode))
     CLog::Log(LOGERROR, "%s : EnumDisplaySettings failed with %d", __FUNCTION__, GetLastError());
 
   RECT rc;
@@ -443,12 +444,12 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
 {
   const MONITOR_DETAILS &details = GetMonitor(res.iScreen);
 
-  DEVMODE sDevMode;
+  DEVMODEW sDevMode;
   ZeroMemory(&sDevMode, sizeof(DEVMODE));
   sDevMode.dmSize = sizeof(DEVMODE);
 
   // If we can't read the current resolution or any detail of the resolution is different than res
-  if (!EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode) ||
+  if (!EnumDisplaySettingsW(details.DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode) ||
       sDevMode.dmPelsWidth != res.iWidth || sDevMode.dmPelsHeight != res.iHeight ||
       sDevMode.dmDisplayFrequency != (int)res.fRefreshRate ||
       ((sDevMode.dmDisplayFlags & DM_INTERLACED) && !(res.dwFlags & D3DPRESENTFLAG_INTERLACED)) ||
@@ -465,7 +466,7 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
 
     // CDS_FULLSCREEN is for temporary fullscreen mode and prevents icons and windows from moving
     // to fit within the new dimensions of the desktop
-    LONG rc = ChangeDisplaySettingsEx(details.DeviceName, &sDevMode, NULL, CDS_FULLSCREEN, NULL);
+    LONG rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), &sDevMode, NULL, CDS_FULLSCREEN, NULL);
     if (rc != DISP_CHANGE_SUCCESSFUL)
     {
       CLog::Log(LOGERROR, "%s : ChangeDisplaySettingsEx failed with %d", __FUNCTION__, rc);
@@ -540,10 +541,10 @@ void CWinSystemWin32::UpdateResolutions()
   {
     for(int mode = 0;; mode++)
     {
-      DEVMODE devmode;
+      DEVMODEW devmode;
       ZeroMemory(&devmode, sizeof(devmode));
       devmode.dmSize = sizeof(devmode);
-      if(EnumDisplaySettings(m_MonitorsInfo[monitor].DeviceName, mode, &devmode) == 0)
+      if(EnumDisplaySettingsW(m_MonitorsInfo[monitor].DeviceNameW.c_str(), mode, &devmode) == 0)
         break;
       if(devmode.dmBitsPerPel != 32)
         continue;
@@ -583,25 +584,25 @@ void CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
 bool CWinSystemWin32::UpdateResolutionsInternal()
 {
 
-  DISPLAY_DEVICE ddAdapter;
+  DISPLAY_DEVICEW ddAdapter;
   ZeroMemory(&ddAdapter, sizeof(ddAdapter));
   ddAdapter.cb = sizeof(ddAdapter);
   DWORD adapter = 0;
 
-  while (EnumDisplayDevices(NULL, adapter, &ddAdapter, 0))
+  while (EnumDisplayDevicesW(NULL, adapter, &ddAdapter, 0))
   {
     // Exclude displays that are not part of the windows desktop. Using them is too different: no windows,
     // direct access with GDI CreateDC() or DirectDraw for example. So it may be possible to play video, but GUI?
     if (!(ddAdapter.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) && (ddAdapter.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP))
     {
-      DISPLAY_DEVICE ddMon;
+      DISPLAY_DEVICEW ddMon;
       ZeroMemory(&ddMon, sizeof(ddMon));
       ddMon.cb = sizeof(ddMon);
       bool foundScreen = false;
       DWORD screen = 0;
 
       // Just look for the first active output, we're actually only interested in the information at the adapter level.
-      while (EnumDisplayDevices(ddAdapter.DeviceName, screen, &ddMon, 0))
+      while (EnumDisplayDevicesW(ddAdapter.DeviceName, screen, &ddMon, 0))
       {
         if (ddMon.StateFlags & (DISPLAY_DEVICE_ACTIVE | DISPLAY_DEVICE_ATTACHED))
         {
@@ -615,33 +616,35 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
       // Remoting returns no screens. Handle with a dummy screen.
       if (!foundScreen && screen == 0)
       {
-        lstrcpy(ddMon.DeviceString, _T("Dummy Monitor")); // safe: large static array
+        lstrcpyW(ddMon.DeviceString, L"Dummy Monitor"); // safe: large static array
         foundScreen = true;
       }
 
       if (foundScreen)
       {
-        CLog::Log(LOGNOTICE, "Found screen: %s on %s, adapter %d.", ddMon.DeviceString, ddAdapter.DeviceString, adapter);
+        std::string monitorStr, adapterStr;
+        g_charsetConverter.wToUTF8(ddMon.DeviceString, monitorStr);
+        g_charsetConverter.wToUTF8(ddAdapter.DeviceString, adapterStr);
+        CLog::Log(LOGNOTICE, "Found screen: %s on %s, adapter %d.", monitorStr.c_str(), adapterStr.c_str(), adapter);
 
         // get information about the display's current position and display mode
         // TODO: for Windows 7/Server 2008 and up, Microsoft recommends QueryDisplayConfig() instead, the API used by the control panel.
-        DEVMODE dm;
+        DEVMODEW dm;
         ZeroMemory(&dm, sizeof(dm));
         dm.dmSize = sizeof(dm);
-        if (EnumDisplaySettingsEx(ddAdapter.DeviceName, ENUM_CURRENT_SETTINGS, &dm, 0) == FALSE)
-          EnumDisplaySettingsEx(ddAdapter.DeviceName, ENUM_REGISTRY_SETTINGS, &dm, 0);
+        if (EnumDisplaySettingsExW(ddAdapter.DeviceName, ENUM_CURRENT_SETTINGS, &dm, 0) == FALSE)
+          EnumDisplaySettingsExW(ddAdapter.DeviceName, ENUM_REGISTRY_SETTINGS, &dm, 0);
 
         // get the monitor handle and workspace
         HMONITOR hm = 0;
         POINT pt = { dm.dmPosition.x, dm.dmPosition.y };
         hm = MonitorFromPoint(pt, MONITOR_DEFAULTTONULL);
 
-        MONITOR_DETAILS md;
-        memset(&md, 0, sizeof(MONITOR_DETAILS));
+        MONITOR_DETAILS md = {};
 
-        strcpy(md.MonitorName, ddMon.DeviceString);
-        strcpy(md.CardName, ddAdapter.DeviceString);
-        strcpy(md.DeviceName, ddAdapter.DeviceName);
+        md.MonitorNameW = ddMon.DeviceString;
+        md.CardNameW = ddAdapter.DeviceString;
+        md.DeviceNameW = ddAdapter.DeviceName;
 
         // width x height @ x,y - bpp - refresh rate
         // note that refresh rate information is not available on Win9x

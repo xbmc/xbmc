@@ -785,10 +785,6 @@ msgctxt "#13340"
 msgid "Leave as is"
 msgstr "استاندارد"
 
-msgctxt "#13350"
-msgid "Now playing..."
-msgstr "در حال پخش..."
-
 msgctxt "#13388"
 msgid "Preset"
 msgstr "استاندارد"
@@ -992,6 +988,10 @@ msgstr "خط"
 msgctxt "#24012"
 msgid "Subtitles"
 msgstr "زیرنویس‌ها"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "غیرفعال"
 
 msgctxt "#24027"
 msgid "Weather"

@@ -66,6 +66,8 @@ config.log
 .project
 .cproject
 
+/nbproject
+
 # /
 /.dummy
 /.dummy.in
@@ -152,27 +154,30 @@ lib/cmyth/Makefile
 /lib/cpluff/aclocal.m4
 /lib/cpluff/autom4te.cache
 /lib/cpluff/auxliary
+/lib/cpluff/m4
 /lib/cpluff/config.h
 /lib/cpluff/config.h.in
 /lib/cpluff/config.h.in~
 /lib/cpluff/configure
-/lib/cpluff/console
-/lib/cpluff/doc*
-/lib/cpluff/examples
-/lib/cpluff/libcpluff/docsrc
-/lib/cpluff/libcpluff/Makefile.in
-/lib/cpluff/libtool
-/lib/cpluff/loader
-/lib/cpluff/m4
 /lib/cpluff/Makefile.in
-/lib/cpluff/po
-/lib/cpluff/stamp-h1
-/lib/cpluff/test
+/lib/cpluff/*/Makefile.in
+/lib/cpluff/*/*/Makefile.in
+/lib/cpluff/*/*/*/Makefile.in
+/lib/cpluff/*/*/*/*/Makefile.in
 /lib/cpluff/Makefile
-/lib/cpluff/libcpluff/Makefile
-/lib/cpluff/libcpluff/cpluffdef.h
-/lib/cpluff/libcpluff/win32/Debug
-/lib/cpluff/libcpluff/win32/Release
+/lib/cpluff/*/Makefile
+/lib/cpluff/*/*/Makefile
+/lib/cpluff/*/*/*/Makefile
+/lib/cpluff/*/*/*/*/Makefile
+/lib/cpluff/po/*template
+/lib/cpluff/po/*header
+lib/cpluff/examples/cpfile/cpfile
+lib/cpluff/libcpluff/cpluffdef.h
+lib/cpluff/libcpluff/docsrc/Doxyfile-impl
+lib/cpluff/libcpluff/docsrc/Doxyfile-ref
+lib/cpluff/libtool
+lib/cpluff/po/POTFILES
+lib/cpluff/stamp-h1
 
 # /lib/libcec
 /lib/libcec/libcec
@@ -210,6 +215,7 @@ lib/cmyth/Makefile
 /lib/gtest/build-aux/config.h
 /lib/gtest/build-aux/config.h.in~
 /lib/gtest/build-aux/stamp-h1
+/lib/gtest/build-aux/test-driver
 /lib/gtest/fused-src/
 /lib/gtest/lib/
 /lib/gtest/libtool

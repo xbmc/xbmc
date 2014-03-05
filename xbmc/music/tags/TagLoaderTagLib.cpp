@@ -396,16 +396,17 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
         // First field is the same as the description
         StringList stringList = frame->fieldList(); 
         stringList.erase(stringList.begin());
-        if      (frame->description() == "MusicBrainz Artist Id")       tag.SetMusicBrainzArtistID(StringListToVectorString(stringList));
-        else if (frame->description() == "MusicBrainz Album Id")        tag.SetMusicBrainzAlbumID(stringList.front().to8Bit(true));
-        else if (frame->description() == "MusicBrainz Album Artist Id") tag.SetMusicBrainzAlbumArtistID(StringListToVectorString(stringList));
-        else if (frame->description() == "MusicBrainz Album Artist")    SetAlbumArtist(tag, StringListToVectorString(stringList));
-        else if (frame->description() == "replaygain_track_gain")       tag.SetReplayGainTrackGain((int)(atof(stringList.front().toCString(true)) * 100 + 0.5));
-        else if (frame->description() == "replaygain_album_gain")       tag.SetReplayGainAlbumGain((int)(atof(stringList.front().toCString(true)) * 100 + 0.5));
-        else if (frame->description() == "replaygain_track_peak")       tag.SetReplayGainTrackPeak((float)atof(stringList.front().toCString(true)));
-        else if (frame->description() == "replaygain_album_peak")       tag.SetReplayGainAlbumPeak((float)atof(stringList.front().toCString(true)));
-        else if (frame->description() == "ALBUMARTIST")                 SetAlbumArtist(tag, StringListToVectorString(stringList));
-        else if (frame->description() == "ALBUM ARTIST")                SetAlbumArtist(tag, StringListToVectorString(stringList));
+        String desc = frame->description().upper();
+        if      (desc == "MUSICBRAINZ ARTIST ID")       tag.SetMusicBrainzArtistID(StringListToVectorString(stringList));
+        else if (desc == "MUSICBRAINZ ALBUM ID")        tag.SetMusicBrainzAlbumID(stringList.front().to8Bit(true));
+        else if (desc == "MUSICBRAINZ ALBUM ARTIST ID") tag.SetMusicBrainzAlbumArtistID(StringListToVectorString(stringList));
+        else if (desc == "MUSICBRAINZ ALBUM ARTIST")    SetAlbumArtist(tag, StringListToVectorString(stringList));
+        else if (desc == "REPLAYGAIN_TRACK_GAIN")       tag.SetReplayGainTrackGain((int)(atof(stringList.front().toCString(true)) * 100 + 0.5));
+        else if (desc == "REPLAYGAIN_ALBUM_GAIN")       tag.SetReplayGainAlbumGain((int)(atof(stringList.front().toCString(true)) * 100 + 0.5));
+        else if (desc == "REPLAYGAIN_TRACK_PEAK")       tag.SetReplayGainTrackPeak((float)atof(stringList.front().toCString(true)));
+        else if (desc == "REPLAYGAIN_ALBUM_PEAK")       tag.SetReplayGainAlbumPeak((float)atof(stringList.front().toCString(true)));
+        else if (desc == "ALBUMARTIST")                 SetAlbumArtist(tag, StringListToVectorString(stringList));
+        else if (desc == "ALBUM ARTIST")                SetAlbumArtist(tag, StringListToVectorString(stringList));
         else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
           CLog::Log(LOGDEBUG, "unrecognized user text tag detected: TXXX:%s", frame->description().toCString(true));
       }

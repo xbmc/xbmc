@@ -46,6 +46,7 @@
 #include "ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "AppParamParser.h"
+#include "XbmcContext.h"
 #include <android/bitmap.h>
 #include "android/jni/JNIThreading.h"
 #include "android/jni/BroadcastReceiver.h"
@@ -251,7 +252,8 @@ void CXBMCApp::run()
   int status = 0;
 
   SetupEnv();
-  
+  XBMC::Context context;
+
   m_initialVolume = GetSystemVolume();
 
   CJNIIntent startIntent = getIntent();

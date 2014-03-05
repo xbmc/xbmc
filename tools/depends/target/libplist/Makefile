@@ -7,7 +7,11 @@ VERSION=1.6
 SOURCE=$(LIBNAME)-$(VERSION)
 FILENAME=v$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+ifeq ($(findstring osx,x86-osx), osx)
+LIBDYLIB=$(PLATFORM)/build/src/libplist++.dylib
+else
 LIBDYLIB=$(PLATFORM)/build/src/libplist++.so
+endif
 CFLAGS+=-fvisibility=default
 all: .installed-$(PLATFORM)
 

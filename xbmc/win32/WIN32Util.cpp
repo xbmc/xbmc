@@ -481,20 +481,25 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
   if (pathUtf8.compare(0, 2, "\\\\", 2) != 0) // pathUtf8 don't start from "\\"
   { // assume local file path in form 'C:\Folder\File.ext'
     std::string formedPath("\\\\?\\"); // insert "\\?\" prefix
-    formedPath += URIUtils::FixSlashesAndDups(pathUtf8, '\\'); // fix duplicated and forward slashes
+    formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8, '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path
     convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
   }
-
   else if (pathUtf8.compare(0, 8, "\\\\?\\UNC\\", 8) == 0) // pathUtf8 starts from "\\?\UNC\"
-    convertResult = g_charsetConverter.utf8ToW(URIUtils::FixSlashesAndDups(pathUtf8, '\\', 7), result, false, false, true); // fix duplicated and forward slashes, don't touch "\\?\UNC" prefix
-
+  {
+    std::string formedPath("\\\\?\\UNC"); // start from "\\?\UNC" prefix
+    formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8.substr(7), '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path, don't touch "\\?\UNC" prefix,
+    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true); 
+  }
   else if (pathUtf8.compare(0, 4, "\\\\?\\", 4) == 0) // pathUtf8 starts from "\\?\", but it's not UNC path
-    convertResult = g_charsetConverter.utf8ToW(URIUtils::FixSlashesAndDups(pathUtf8, '\\', 4), result, false, false, true); // fix duplicated and forward slashes, don't touch "\\?\" prefix
-
+  {
+    std::string formedPath("\\\\?"); // start from "\\?" prefix
+    formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8.substr(3), '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path, don't touch "\\?" prefix,
+    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
+  }
   else // pathUtf8 starts from "\\", but not from "\\?\UNC\"
   { // assume UNC path in form '\\server\share\folder\file.ext'
-    std::string formedPath("\\\\?\\UNC\\"); // append "\\?\UNC\" prefix
-    formedPath.append(URIUtils::FixSlashesAndDups(pathUtf8, '\\', 2), 2, std::string::npos); // fix duplicated and forward slashes, skip and cut out two first slashes
+    std::string formedPath("\\\\?\\UNC"); // append "\\?\UNC" prefix
+    formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8), '\\'); // fix duplicated and forward slashes, resolve relative path, transform "\\" prefix to single "\"
     convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
   }
 

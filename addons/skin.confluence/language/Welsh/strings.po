@@ -268,6 +268,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "OSD Fideo"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Lefel y gosodiadau"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Llwybrau Byr"
@@ -476,9 +480,25 @@ msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
 msgstr "Mae'r tab yma'n amlygu fod yna ddewislen ar ochr y ffenestr sy'n cynnwys dewisiadau ychwanegol ar gyfer yr adran hon. I gael at y ddewislen, ewch i'r chwith gyda'ch rheolwr pell neu fysellfwrdd neu osod eich pwyntydd llygaden dros y tab. [CR][CR]Cliciwch \"Iawn\" i gau'r ddeialog. Ni fydd yn ymddangos eto."
 
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Is deitlau lleol ar gael"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Mewngofnodi"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Dewiswch eich Proffil[CR] defnyddiwr XBMC i fewngofnodi a pharhau"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Dangos neu guddio'r sgrin mewngofnodi wrth gychwyn."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Dewiswch y proffil fydd yn cael ei ddefnyddio wrth gychwyn pan fydd y sgrin mewngofnodi wedi ei anablu."
 
 msgctxt "#31501"
 msgid "Scheduled Time"

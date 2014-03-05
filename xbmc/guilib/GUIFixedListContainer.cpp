@@ -283,7 +283,7 @@ bool CGUIFixedListContainer::HasPreviousPage() const
 
 bool CGUIFixedListContainer::HasNextPage() const
 {
-  return (GetOffset() != (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
+  return (GetOffset() < (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
 }
 
 int CGUIFixedListContainer::GetCurrentPage() const

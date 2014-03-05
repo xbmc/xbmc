@@ -372,6 +372,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Tải phụ đề"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Xem 2D"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Đã bật"

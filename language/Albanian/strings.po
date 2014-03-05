@@ -1073,10 +1073,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Gjuha e transmetimit origjinal"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Gjuha e përdoruesit të ndërfaqes "
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -4362,8 +4358,8 @@ msgid "Scan for new content"
 msgstr "Kërkoni për përmbajtje të re"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Duke riprodhuar tani..."
+msgid "Current playlist"
+msgstr "Playlist’a aktuale"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4637,6 +4633,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Riprodho vetëm këtë"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Software"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Mënyra sinkronizimit A/V"
@@ -4845,17 +4845,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video cache - DVD-ROM"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Interneti"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Audio cache - DVD-ROM"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Interneti"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6317,10 +6309,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Kanalet në"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "Sinkronizoni grupet e kanaleve me backend'at"
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
@@ -7749,10 +7737,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Kjo do të rivendosë vlerat e kalibrimeve për %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "Në vlerat e përzgjedhura."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Shfletoni për vendndodhjen"
@@ -7969,10 +7953,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Speciale"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Ngarkoni thumb'at e sezonës automatikisht"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Regjistri i zgjedhur përmban një video të vetëm"
@@ -8084,10 +8064,6 @@ msgstr "Trailer"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Sheshoni"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Sheshoni serialet"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8336,10 +8312,6 @@ msgstr "Zhvendosni & alternoni adresarin e subtitrave"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Mbishkruaj fontin ASS/SSA të subtitrave"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Aktivoni përkrahjen për miun dhe Touch Screen"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9294,6 +9266,10 @@ msgid "Enable"
 msgstr "Aktivoni"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Deaktivuar"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Shtesë e deaktivuar"
 

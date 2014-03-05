@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.15"
+       version="1.0.16"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -17,6 +17,8 @@
     <summary lang="de">Bildschirmschoner zum Abdunkeln des Bildschirmes</summary>
     <summary lang="el">Προφύλαξη οθόνης που σκιάζει την οθόνη σας</summary>
     <summary lang="en">Screensaver that dims your screen</summary>
+    <summary lang="en_AU">Screensaver that dims your screen</summary>
+    <summary lang="en_NZ">Screensaver that dims your screen</summary>
     <summary lang="en_US">Screensaver that dims your screen</summary>
     <summary lang="es">Un salvapantallas que oscurece tu pantalla</summary>
     <summary lang="es_AR">Un protector de pantalla que oscurece tu pantalla</summary>
@@ -26,8 +28,8 @@
     <summary lang="eu">Pantaila iluntzen duen pantaila-babeslea</summary>
     <summary lang="fi">Ruudun himmennys</summary>
     <summary lang="fr">Un économiseur qui assombrit votre écran</summary>
-    <summary lang="fr_CA">Un économiseur qui assombrit votre écran</summary>
-    <summary lang="gl">O Gardapantallas atenúa a súa pantalla</summary>
+    <summary lang="fr_CA">Un économiseur d'écran qui baisse la luminosité de votre écran</summary>
+    <summary lang="gl">O  protector de pantalla atenúa a súa pantalla</summary>
     <summary lang="he">שומר מסך אשר מעמעם את המסך</summary>
     <summary lang="hr">Čuvar zaslona koji zatamnjuje vaš zaslon</summary>
     <summary lang="hu">Képernyővédő ami elhalványítja a képernyőt</summary>
@@ -37,7 +39,7 @@
     <summary lang="ja">画面を暗くするスクリーンセーバー</summary>
     <summary lang="ko">화면을 어둡게 하는 화면보호기</summary>
     <summary lang="lt">Ekrano vaizdas pritemdantis foną Jūsų ekrane</summary>
-    <summary lang="lv">Ekrānsaudzētājs, kurš aptumšo jūsu ekrānu</summary>
+    <summary lang="lv">Ekrānsaudzētājs, kas aptumšo jūsu ekrānu</summary>
     <summary lang="mk">Заштита што го стемнува екранот</summary>
     <summary lang="my">သင်၏စကရင်ကို မှေးမှိန်စေသော Screensaver</summary>
     <summary lang="nl">Schermbeveiliging die je scherm dimt</summary>
@@ -71,6 +73,8 @@
     <description lang="de">Der Dimmer-Bildschirmschoner ist ein einfacher Bildschirmschoner, welcher den Bildschirm auf einen benutzerdefinierten Wert zwischen 20 und 100% abdunkelt.</description>
     <description lang="el">Η προφύλαξη οθόνης Dim είναι μία απλή προφύλαξη η οποία σκιάζει την οθόνη σας σε μία τιμή που μπορεί να ρυθμιστεί μεταξύ 20 και 100%.</description>
     <description lang="en">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
+    <description lang="en_AU">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
+    <description lang="en_NZ">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
     <description lang="en_US">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a settable value between 20 and 100% .</description>
     <description lang="es">Dim es un sencillo salvapantallas que oscurece tu pantalla. El valor es configurable entre el 20% y el 100%.</description>
     <description lang="es_AR">Dim es un sencillo protector de pantalla que oscurece tu pantalla. El valor es configurable entre el 20% y el 100%.</description>
@@ -80,8 +84,8 @@
     <description lang="eu">Dim  %20 eta %100 artean zure pantaila iluntzeko (belztu) konfiguratu daitekeen pantaila babesle soil bat da.</description>
     <description lang="fi">Dim on yksinkertainen näytönsäästäjä joka himmentää ruudun valitulle tasolle välillä 20-100%.</description>
     <description lang="fr">L'économiseur Dim est un simple économiseur qui assombrira votre écran. L'assombrissement est paramétrable de 20 à 100 %.</description>
-    <description lang="fr_CA">L'économiseur Dim est un simple économiseur qui assombrira votre écran. L'assombrissement est paramétrable de 20 à 100 %.</description>
-    <description lang="gl">O gardapantallas de Atenuación é un gardapantallas simple que atenuará o súa pantall a un valor configurable entre o 20% e o 100%</description>
+    <description lang="fr_CA">L'économiseur Dim est un économiseur d'écran simple qui abaissera la luminosité de votre écran à une valeur réglable entre 20 à 100 %.</description>
+    <description lang="gl">O  protector de pantalla de Atenuación atenuará a súa pantalla nun valor configurábel entre o 20% e o 100%</description>
     <description lang="he">שומר המסך Dim הוא שומר מסך פשוט אשר יעמעם (fade out) את המסך לערך מוגדר בין 20% ל-100%</description>
     <description lang="hr">Dim čuvar zaslona je jednostavan čuvar zaslona koji će zatamniti (postepeno isčeznuti) vaš zaslon na odabranu vrijednost između 20 i 100% .</description>
     <description lang="hu">A Dim képernyővédő egyszerűen elhalványítja a képernyőt egy előre beállítható sötétségi szintre 20 és 100% között.</description>
@@ -91,7 +95,7 @@
     <description lang="ja">Dim はその名の通りシンプルなスクリーンセーバーで、画面をフェードアウトしながら暗くします。値は20%から100%まで設定可能です。</description>
     <description lang="ko">Dim 화면보호기는 화면을 어둡게(페이드 아웃)하는 간단한 화면보호기 입니다. 어둡게 하는 정도를 20-100%사이에서 설정할 수 있습니다.</description>
     <description lang="lt">Pritemdyta ekrano užsklanda yra paprasta ekrano užsklanda,katra pamažu (pamažu mažinant vaizdo ryškumą) jūsų ekrano ryškuma sumažins nuo 20 iki 100%.</description>
-    <description lang="lv">Aptumšojošais ekrānsaudzētājs ir vienkāršs ekrānsaudzētājs, kurš aptumšo (padara tumšāku) jūsu ekrānu līdz uzstādāmai robežai starp 20 un 100%.</description>
+    <description lang="lv">Aptumsuma ekrānsaudzētājs ir vienkāršs ekrānsaudzētājs, kas aptumšo (padara tumšāku) jūsu ekrānu līdz uzstādāmai robežai starp 20 un 100%.</description>
     <description lang="mk">ДИМ Заштитата на екран е едноставно стемнување на екранот, може да се одбере вредност помеѓу 20 и 100%</description>
     <description lang="my">Dim screensaver သည် ရိုးရှင်းသော Screensaver တစ်ခုဖြစ်သည်။ ၎င်းသည် သင်၏ စခရင် ကို ၂၀% မှ ၁၀၀% အတွင်း မှေးမှိန်သွားအောင်ပြုလုပ်လိမ့်မည်</description>
     <description lang="nl">De Dim-schermbeveiliging is een eenvoudige schermbeveiliging die uw scherm geleidelijk dimt. U kan een waarde gaande van 20 tot 100% instellen.</description>

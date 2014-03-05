@@ -40,6 +40,8 @@
 #include "music/MusicThumbLoader.h"
 #include "Util.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/recordings/PVRRecording.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "epg/Epg.h"
 #include "epg/EpgContainer.h"
 
@@ -277,6 +279,10 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
           object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
         if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().empty())
           object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
+        if (item->HasPVRRecordingInfoTag() && !item->GetPVRRecordingInfoTag()->GetPath().empty())
+          object["file"] = item->GetPVRRecordingInfoTag()->GetPath().c_str();
+        if (item->HasPVRTimerInfoTag() && !item->GetPVRTimerInfoTag()->m_strFileNameAndPath.empty())
+          object["file"] = item->GetPVRTimerInfoTag()->m_strFileNameAndPath.c_str();
 
         if (!object.isMember("file"))
           object["file"] = item->GetPath().c_str();
@@ -290,6 +296,10 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
          object[ID] = item->GetPVRChannelInfoTag()->ChannelID();
       else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->UniqueBroadcastID() > 0)
          object[ID] = item->GetEPGInfoTag()->UniqueBroadcastID();
+      else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_iRecordingId > 0)
+         object[ID] = item->GetPVRRecordingInfoTag()->m_iRecordingId;
+      else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->m_iTimerId > 0)
+         object[ID] = item->GetPVRTimerInfoTag()->m_iTimerId;
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
         object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
@@ -348,6 +358,10 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       FillDetails(item->GetPVRChannelInfoTag(), item, fields, object, thumbLoader);
     if (item->HasEPGInfoTag())
       FillDetails(item->GetEPGInfoTag(), item, fields, object, thumbLoader);
+    if (item->HasPVRRecordingInfoTag())
+      FillDetails(item->GetPVRRecordingInfoTag(), item, fields, object, thumbLoader);
+    if (item->HasPVRTimerInfoTag())
+      FillDetails(item->GetPVRTimerInfoTag(), item, fields, object, thumbLoader);
     if (item->HasVideoInfoTag())
       FillDetails(item->GetVideoInfoTag(), item, fields, object, thumbLoader);
     if (item->HasMusicInfoTag())

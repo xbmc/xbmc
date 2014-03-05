@@ -81,12 +81,35 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strTitle           == right.m_strTitle &&
        m_strIconPath        == right.m_strIconPath &&
        m_strThumbnailPath   == right.m_strThumbnailPath &&
-       m_strFanartPath      == right.m_strFanartPath);
+       m_strFanartPath      == right.m_strFanartPath &&
+       m_iRecordingId       == right.m_iRecordingId);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
 {
   return !(*this == right);
+}
+
+void CPVRRecording::Serialize(CVariant& value) const
+{
+  CVideoInfoTag::Serialize(value);
+
+  value["channel"] = m_strChannelName;
+  value["runtime"] = m_duration.GetSecondsTotal();
+  value["lifetime"] = m_iLifetime;
+  value["streamurl"] = m_strStreamURL;
+  value["directory"] = m_strDirectory;
+  value["icon"] = m_strIconPath;
+  value["starttime"] = m_recordingTime.IsValid() ? m_recordingTime.GetAsDBDateTime() : "";
+  value["endtime"] = m_recordingTime.IsValid() ? (m_recordingTime + m_duration).GetAsDBDateTime() : "";
+  value["recordingid"] = m_iRecordingId;
+
+  if (!value.isMember("art"))
+    value["art"] = CVariant(CVariant::VariantTypeObject);
+  if (!m_strThumbnailPath.empty())
+    value["art"]["thumb"] = m_strThumbnailPath;
+  if (!m_strFanartPath.empty())
+    value["art"]["fanart"] = m_strFanartPath;
 }
 
 void CPVRRecording::Reset(void)
@@ -103,6 +126,7 @@ void CPVRRecording::Reset(void)
   m_strThumbnailPath   = StringUtils::EmptyString;
   m_strFanartPath      = StringUtils::EmptyString;
   m_bGotMetaData       = false;
+  m_iRecordingId       = 0;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();

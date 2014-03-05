@@ -29,6 +29,7 @@
 #include "Application.h"
 #include "WindowingFactory.h"
 #include "settings/DisplaySettings.h"
+#include "cores/AudioEngine/AEFactory.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
@@ -205,6 +206,10 @@ static CEvent screenChangeEvent;
   {
     [self changeScreenSelector:dict];
   }
+
+  // re-enumerate audio devices in that case too
+  // as we might gain passthrough capabilities via HDMI
+  CAEFactory::DeviceChange();
   return true;
 }
 //--------------------------------------------------------------

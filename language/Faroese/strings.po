@@ -993,10 +993,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Uppruna mál á sending"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Mál á brúkaraflatu"
-
 msgctxt "#313"
 msgid "Cleaning database"
 msgstr "Ruddi dátugrunn"
@@ -3746,8 +3742,8 @@ msgid "Scan for new content"
 msgstr "Leita eftir nýggjum tilfari"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Spæli nú..."
+msgid "Current playlist"
+msgstr "Verðandi spælilisti"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -3904,6 +3900,10 @@ msgstr "Spæl næstu video automatiskt"
 msgctxt "#13434"
 msgid "Play only this"
 msgstr "Spæl bert hesa"
+
+msgctxt "#13455"
+msgid "Software"
+msgstr "Ritbúnaður"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5245,10 +5245,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Rásir í"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "Samankoyr bólkar av rásum við móttakarar"
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
@@ -6413,10 +6409,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Hetta vil broyta uppseting av %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "aftur til grund uppseting."
-
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
 msgstr "Filmar eru í mappum við sama heiti sum filmurin"
@@ -6620,10 +6612,6 @@ msgstr "Tak ikki hesa mappu við í yvirliti "
 msgctxt "#20381"
 msgid "Specials"
 msgstr "Serútgávur"
-
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Heinta automatiskt myndir til útgávur"
 
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
@@ -6956,10 +6944,6 @@ msgstr "Strika media savn"
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Onnur mappa til film og undirtekstir "
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Tendra mús og touchscreen stýring"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -7706,6 +7690,10 @@ msgid "Enable"
 msgstr "Tendra"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Sløkt"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Víðkan er sløkt"
 

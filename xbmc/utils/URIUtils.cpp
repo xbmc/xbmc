@@ -480,11 +480,11 @@ bool URIUtils::IsRemote(const CStdString& strFile)
   if (IsCDDA(strFile) || IsISO9660(strFile))
     return false;
 
+  if (IsStack(strFile))
+    return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
+
   if (IsSpecial(strFile))
     return IsRemote(CSpecialProtocol::TranslatePath(strFile));
-
-  if(IsStack(strFile))
-    return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
 
   if(IsMultiPath(strFile))
   { // virtual paths need to be checked separately
@@ -620,11 +620,11 @@ bool URIUtils::IsHD(const CStdString& strFileName)
 {
   CURL url(strFileName);
 
+  if (IsStack(strFileName))
+    return IsHD(CStackDirectory::GetFirstStackedFile(strFileName));
+
   if (IsSpecial(strFileName))
     return IsHD(CSpecialProtocol::TranslatePath(strFileName));
-
-  if(IsStack(strFileName))
-    return IsHD(CStackDirectory::GetFirstStackedFile(strFileName));
 
   if (ProtocolHasParentInHostname(url.GetProtocol()))
     return IsHD(url.GetHostName());
@@ -946,6 +946,14 @@ bool URIUtils::IsLibraryFolder(const CStdString& strFile)
   return url.GetProtocol().Equals("library");
 }
 
+bool URIUtils::IsLibraryContent(const std::string &strFile)
+{
+  return (StringUtils::StartsWith(strFile, "library://") ||
+          StringUtils::StartsWith(strFile, "videodb://") ||
+          StringUtils::StartsWith(strFile, "musicdb://") ||
+          StringUtils::EndsWith(strFile, ".xsp"));
+}
+
 bool URIUtils::IsDOSPath(const CStdString &path)
 {
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
@@ -1058,6 +1066,39 @@ std::string URIUtils::FixSlashesAndDups(const std::string& path, const char slas
   return result;
 }
 
+
+std::string URIUtils::CanonicalizePath(const std::string& path, const char slashCharacter /*= '\\'*/)
+{
+  assert(slashCharacter == '\\' || slashCharacter == '/');
+
+  if (path.empty())
+    return path;
+
+  const std::string slashStr(1, slashCharacter);
+  vector<std::string> pathVec, resultVec;
+  StringUtils::Tokenize(path, pathVec, slashStr);
+
+  for (vector<std::string>::const_iterator it = pathVec.begin(); it != pathVec.end(); ++it)
+  {
+    if (*it == ".")
+    { /* skip - do nothing */ }
+    else if (*it == ".." && !resultVec.empty() && resultVec.back() != "..")
+      resultVec.pop_back();
+    else
+      resultVec.push_back(*it);
+  }
+
+  std::string result;
+  if (path[0] == slashCharacter)
+    result.push_back(slashCharacter); // add slash at the begin
+
+  result += StringUtils::Join(resultVec, slashStr);
+
+  if (path[path.length() - 1] == slashCharacter  && !result.empty() && result[result.length() - 1] != slashCharacter)
+    result.push_back(slashCharacter); // add slash at the end if result isn't empty and result isn't "/"
+
+  return result;
+}
 
 CStdString URIUtils::AddFileToFolder(const CStdString& strFolder, 
                                 const CStdString& strFile)

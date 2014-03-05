@@ -232,5 +232,10 @@ public:
    * @param millis time for which old configuration should be kept
    */
   virtual void KeepConfiguration(unsigned int millis) {return; }
+
+  /**
+   * Instruct AE to re-initialize, e.g. after ELD change event
+   */
+  virtual void DeviceChange() {return; }
 };
 

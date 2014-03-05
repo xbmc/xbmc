@@ -761,6 +761,10 @@ msgctxt "#224"
 msgid "Speed"
 msgstr "Abiadura"
 
+msgctxt "#225"
+msgid "Vertical Shift"
+msgstr "Aldaketa Bertikala"
+
 msgctxt "#226"
 msgid "Test patterns..."
 msgstr "Probatu ereduak..."
@@ -860,6 +864,10 @@ msgstr "Hautatu helburuko direktorioa"
 msgctxt "#253"
 msgid "Number of channels"
 msgstr "Kanal kopurua"
+
+msgctxt "#254"
+msgid "DTS capable receiver"
+msgstr "DTS kudeatzeko gai den hargailua"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1033,6 +1041,18 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "Lastermarkak"
 
+msgctxt "#300"
+msgid "MP1 capable receiver"
+msgstr "MP1 kudeatzeko gai den hargailua"
+
+msgctxt "#301"
+msgid "MP2 capable receiver"
+msgstr "MP2 kudeatzeko gai den hargailua"
+
+msgctxt "#302"
+msgid "MP3 capable receiver"
+msgstr "MP3 kudeatzeko gai den hargailua"
+
 msgctxt "#303"
 msgid "Delay"
 msgstr "Atzerapena"
@@ -1052,10 +1072,6 @@ msgstr "Ez-interleaved"
 msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Jatorrizko hizkuntza"
-
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Interfazearen hizkuntza"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1185,6 +1201,14 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Urtea"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "DTS-HD kudeatzeko gai den hargailua"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "TrueHD kudeatzeko gai den hargailua"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programak"
@@ -1240,6 +1264,10 @@ msgstr "Babeslea iluntzeko maila"
 msgctxt "#363"
 msgid "Sort by: File"
 msgstr "Ordenatu: Fitxategia"
+
+msgctxt "#364"
+msgid "Dolby Digital (AC3) capable receiver"
+msgstr "Dolby Digital (AC3) kudeatzeko gai den hargailua"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1508,6 +1536,10 @@ msgstr "%s-tik %i %s-ko abiaduraz"
 msgctxt "#435"
 msgid "No optical disc drive detected"
 msgstr "Ez da disko optiko gailurik antzeman"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Disko optiko bat behar duzu bideo hau ikusteko"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2125,6 +2157,14 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Zenbakia idatzi"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bits/lagina"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Lagin tasa"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Audio CDak"
@@ -2148,6 +2188,10 @@ msgstr "Txertatu pistaren zenbakia"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "Abesti guztiak"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Zuzeneko TB saioak"
 
 msgctxt "#629"
 msgid "View mode"
@@ -3141,6 +3185,10 @@ msgctxt "#1439"
 msgid "and"
 msgstr "eta"
 
+msgctxt "#1442"
+msgid "Chance"
+msgstr "Aukera"
+
 msgctxt "#1443"
 msgid "of"
 msgstr "/"
@@ -3156,6 +3204,10 @@ msgstr "Ezezaguna"
 msgctxt "#1448"
 msgid "Precipitation"
 msgstr "Prezipitazioak"
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "Partziala"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3281,6 +3333,10 @@ msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Ezarpenak - Profilak"
 
+msgctxt "#10035"
+msgid "Reset"
+msgstr "Berrezarri"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Estandarra"
@@ -3321,9 +3377,21 @@ msgctxt "#10134"
 msgid "Favourites"
 msgstr "Gogokoak"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Abestiak/Info"
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Argazkiak/Info"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Gehigarrien ezarpenak"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Gehigarriak/Info"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3588,6 +3656,10 @@ msgstr "Pasahitza saiatzeko muga gainditu da."
 msgctxt "#12348"
 msgid "Item locked"
 msgstr "Elementua blokeatuta"
+
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Bideotekako artea eguneratzen"
 
 msgctxt "#12350"
 msgid "Processing %s"
@@ -4286,8 +4358,8 @@ msgid "Scan for new content"
 msgstr "Eduki berriak eskaneatu"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Orain erreproduzitzen..."
+msgid "Current playlist"
+msgstr "Uneko erreprodukzio-zerrenda"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4557,6 +4629,14 @@ msgctxt "#13433"
 msgid "Play the next video automatically"
 msgstr "Erreproduzituko hurrengo bideoa autmatikoki"
 
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr "Erabili Mpeg-2 VAAPI"
+
+msgctxt "#13455"
+msgid "Software"
+msgstr "Softwarea"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V sinkronia metodoa"
@@ -4596,6 +4676,30 @@ msgstr "Oso handia(motela!)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Sinkronizatu erreprodukzioa erakusteko"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Artea aukeratu"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Uneko artea"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Urruneko artea"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Tokiko artea"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Artegabe"
+
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Artea gehitu"
 
 msgctxt "#13551"
 msgid "Off"
@@ -4741,25 +4845,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Bideoaren katxea - DVD-ROM"
 
-msgctxt "#14027"
-msgid "Local Network"
-msgstr "Sare lokala"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Audio katxea - DVD-ROM"
-
-msgctxt "#14031"
-msgid "Local Network"
-msgstr "Sare lokala"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5000,6 +5088,10 @@ msgstr "Erreproduzitu"
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "Ripeatu ondoren atera diskoa"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "CD-a ripeatzen utzi"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5248,6 +5340,10 @@ msgstr "Off"
 msgctxt "#16040"
 msgid "Auto"
 msgstr "Automatikoa"
+
+msgctxt "#16041"
+msgid "On"
+msgstr "Piztuta"
 
 msgctxt "#16100"
 msgid "All Videos"
@@ -7237,10 +7333,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Honek %s-ren balioak berrezarriko ditu"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "lehenetsitako balioetara."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Arakatu helbururako"
@@ -7457,10 +7549,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Bereziak"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Automatikoki Kapturatu denboraldiaren iruditxoa"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Aukeratutako karpetak bideo bakar bat du"
@@ -7576,10 +7664,6 @@ msgstr "Trailerra"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Berdindu"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Berdindu TB saioak"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -7828,10 +7912,6 @@ msgstr "Filmak eta txandakatu azpitituluen direktorioa"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Gainidatzi ASS/SSA azpititulu letra-tipoak"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Gaitu xagua"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -8798,6 +8878,10 @@ msgid "Enable"
 msgstr "Gaitu"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Ezgaituta"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Gehigarria ezgaituta"
 
@@ -9008,6 +9092,10 @@ msgstr "Ezin da itxura kargatu"
 msgctxt "#24103"
 msgid "Skin is missing some files"
 msgstr "Itxurari fitxategi batzuek falta zaizkio"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Ez da azpititutulurik aurkitu"
 
 msgctxt "#24121"
 msgid "Enter search string"
@@ -9437,6 +9525,26 @@ msgctxt "#34123"
 msgid "Never"
 msgstr "Inoiz ez"
 
+msgctxt "#34124"
+msgid "44.1"
+msgstr "44.1"
+
+msgctxt "#34125"
+msgid "48.0"
+msgstr "48.0"
+
+msgctxt "#34126"
+msgid "88.2"
+msgstr "88.2"
+
+msgctxt "#34127"
+msgid "96.0"
+msgstr "96.0"
+
+msgctxt "#34128"
+msgid "192.0"
+msgstr "192.0"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Ezin da erreproduzitzeko hurrengo elementua aurkitu"
@@ -9581,29 +9689,13 @@ msgctxt "#36037"
 msgid "TV"
 msgstr "TB"
 
-msgctxt "#36102"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Editatu RSS jarioak."
 
-msgctxt "#36113"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36114"
-msgid "Chooses the language of the User Interface."
-msgstr "Hautatu erabiltzaile interfazearen hizkuntza."
-
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Tenperatura, ordu eta data formatuak hautatu. Aukera erabilgarriak hautatutako hizkuntzaren araberakoak izango dira."
-
-msgctxt "#36116"
-msgid "Choose which character set is used for displaying text in the GUI."
-msgstr "Hautatu interfaze testuetan zein karaktere-joko erabili den."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -9621,14 +9713,6 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Hautatu lehenetsitakoa hizkuntza ezberdinetako azpitituluak dauden kasuetarako."
 
-msgctxt "#36121"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36128"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36135"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
@@ -9641,67 +9725,7 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36138"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36139"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36140"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36142"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36151"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36156"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36158"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36159"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36160"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36161"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36162"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36163"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36173"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36176"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36178"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
@@ -9709,41 +9733,9 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36184"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36185"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36186"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36187"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36188"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36189"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36190"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Azpitituluen pantailako kokalekua."
-
-msgctxt "#36193"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -9829,63 +9821,11 @@ msgctxt "#36252"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36253"
+msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36254"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36264"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36277"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36278"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36279"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36280"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36282"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36292"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36294"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36295"
-msgid "Select the font used during karoake."
-msgstr "Hautatu karaokean erabiliko den letra-tipoa."
-
-msgctxt "#36296"
-msgid "Select the size of the font used during karoake."
-msgstr "Hautatu karaokean erabiliko den letra tamaina."
-
-msgctxt "#36298"
-msgid "Select the character set used during karoake."
-msgstr "Hautatu karaokean erabiliko den letra-tipoa."
-
-msgctxt "#36299"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36300"
+msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
@@ -9901,14 +9841,6 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36304"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36305"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr "EXIF informazioa badago (data, ordua, erabilitako kamera, etab.) bistarazi egingo da."
@@ -9917,41 +9849,9 @@ msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36311"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Ikusi presentazio irudiak ausazko ordenan."
-
-msgctxt "#36315"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36316"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36319"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36320"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36322"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36325"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36327"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
 
 msgctxt "#36329"
 msgid "Define the webserver port."
@@ -9961,10 +9861,6 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Ezarri web-zerbitzari erabiltzailea."
 
-msgctxt "#36331"
-msgid "Define webserver password."
-msgstr "Ezarri web-zerbitzari pasahitza."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Hautatu gehigarri kudeatzailea erabiliaz instalatutako web interfazeen artean."
@@ -9973,97 +9869,9 @@ msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Ahalmendu ordenagailu honetako programek XBMC JSON-RPC interfazeko protokoloaren web-zerbitzariaren bidez kontrolatzea."
 
-msgctxt "#36335"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36336"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36337"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Baimendu sareko programek XBMC kontrolatzea."
-
-msgctxt "#36339"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36340"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36341"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36342"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36343"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36344"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36345"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36346"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36347"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36348"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36349"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36351"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36352"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36353"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36359"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36360"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36374"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36375"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36379"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
 
 msgctxt "#36381"
 msgid "Configure which proxy type is used."
@@ -10085,65 +9893,9 @@ msgctxt "#36385"
 msgid "Configure the proxy server password."
 msgstr "Ezarri proxy zerbitzari pasahitza."
 
-msgctxt "#36388"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36392"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Ezarri blokeo nagusiaren PIN kodea"
-
-msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup "
-msgstr "Gaiturik dagoenean blokeo kodea eskatuko da abioan XBMC desblokeatzeko"
-
-msgctxt "#36399"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36400"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36401"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36402"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36403"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36404"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36405"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36406"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36407"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36408"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36409"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -10166,18 +9918,6 @@ msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
 msgctxt "#36415"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36416"
-msgid "Define the Apple remote standard used."
-msgstr "Ezarri erabiliko den Apple urruneko estandarra."
-
-msgctxt "#36417"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36418"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 

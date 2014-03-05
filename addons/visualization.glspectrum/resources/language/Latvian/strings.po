@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Mode"
-msgstr "Veids"
+msgstr "Režīms"
 
 msgctxt "#30001"
 msgid "Filled"
-msgstr "Pildīts"
+msgstr "Aizpildīts"
 
 msgctxt "#30002"
 msgid "Wireframe"
@@ -42,7 +42,7 @@ msgstr "Mazs"
 
 msgctxt "#30006"
 msgid "Default"
-msgstr "Noklusētais"
+msgstr "Noklusējums"
 
 msgctxt "#30007"
 msgid "Big"
@@ -58,7 +58,7 @@ msgstr "Ātrums"
 
 msgctxt "#30010"
 msgid "Very Slow"
-msgstr "Ļoti mazs"
+msgstr "Ļoti lēns"
 
 msgctxt "#30011"
 msgid "Slow"
@@ -66,7 +66,7 @@ msgstr "Lēns"
 
 msgctxt "#30012"
 msgid "Default"
-msgstr "Noklusētais"
+msgstr "Noklusējums"
 
 msgctxt "#30013"
 msgid "Fast"

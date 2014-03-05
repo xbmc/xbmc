@@ -286,13 +286,13 @@ void CGUIScrollBar::SetFromPosition(const CPoint &point)
 {
   float fPercent;
   if (m_orientation == VERTICAL)
-    fPercent = (point.y - m_guiBackground.GetYPosition() - 0.5f*m_guiBarFocus.GetHeight()) / m_guiBackground.GetHeight();
+    fPercent = (point.y - m_guiBackground.GetYPosition() - 0.5f*m_guiBarFocus.GetHeight()) / (m_guiBackground.GetHeight() - m_guiBarFocus.GetHeight());
   else
-    fPercent = (point.x - m_guiBackground.GetXPosition() - 0.5f*m_guiBarFocus.GetWidth()) / m_guiBackground.GetWidth();
+    fPercent = (point.x - m_guiBackground.GetXPosition() - 0.5f*m_guiBarFocus.GetWidth()) / (m_guiBackground.GetWidth() - m_guiBarFocus.GetWidth());
   if (fPercent < 0) fPercent = 0;
   if (fPercent > 1) fPercent = 1;
 
-  int offset = (int)(floor(fPercent * m_numItems + 0.5f));
+  int offset = (int)(floor(fPercent * (m_numItems - m_pageSize) + 0.5f));
 
   if (m_offset != offset)
   {

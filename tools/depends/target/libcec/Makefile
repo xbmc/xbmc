@@ -10,7 +10,7 @@ ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-rpi \
 
-LIBDYLIB=$(PLATFORM)/src/lib/.libs/libcec.so.2.0.1
+LIBDYLIB=$(PLATFORM)/src/lib/.libs/libcec.la
 
 all: .installed-$(PLATFORM)
 

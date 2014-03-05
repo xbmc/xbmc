@@ -45,6 +45,7 @@
 #else
 #import "ios/XBMCController.h"
 #endif
+#import "osx/IOSScreenManager.h"
 #include "osx/DarwinUtils.h"
 #import <dlfcn.h>
 
@@ -167,6 +168,16 @@ bool CWinSystemIOS::SwitchToVideoMode(int width, int height, double refreshrate,
 int CWinSystemIOS::GetNumScreens()
 {
   return [[UIScreen screens] count];
+}
+
+int CWinSystemIOS::GetCurrentScreen()
+{
+  int idx = 0;
+  if ([[IOSScreenManager sharedInstance] isExternalScreen])
+  {
+    idx = 1;
+  }
+  return idx;
 }
 
 bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenIdx)

@@ -42,6 +42,7 @@
 #include "settings/Settings.h"
 #include "rendering/RenderSystem.h"
 #include "utils/log.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "windowing/WindowingFactory.h"
@@ -145,33 +146,39 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetNextSupportedStereoMode(const RENDE
 
 std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &needle)
 {
-  std::string stereoMode;
+  std::string stereoMode = "mono";
   CStdString searchString(needle);
-  CStdStringArray tags;
-  StringUtils::ToUpper(searchString);
+  CRegExp re(true);
 
-  CStdString tag( g_advancedSettings.m_stereoscopicflags_sbs );
-  if (stereoMode.empty() && !tag.empty())
+  if (!re.RegComp(g_advancedSettings.m_stereoscopicregex_3d.c_str()))
   {
-    StringUtils::ToUpper(tag);
-    StringUtils::SplitString(tag, "|", tags);
-    if (StringUtils::ContainsKeyword(searchString, tags))
-      stereoMode = "left_right";
+    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d content:'%s'", __FUNCTION__, g_advancedSettings.m_stereoscopicregex_3d.c_str());
+    return stereoMode;
   }
 
-  tag = g_advancedSettings.m_stereoscopicflags_tab;
-  if (stereoMode.empty() && !tag.empty())
+  if (re.RegFind(searchString) == -1)
+    return stereoMode;    // no match found for 3d content, assume mono mode
+
+  if (!re.RegComp(g_advancedSettings.m_stereoscopicregex_sbs.c_str()))
   {
-    StringUtils::ToUpper(tag);
-    StringUtils::SplitString(tag, "|", tags);
-    if (StringUtils::ContainsKeyword(searchString, tags))
-      stereoMode = "top_bottom";
+    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d SBS content:'%s'", __FUNCTION__, g_advancedSettings.m_stereoscopicregex_sbs.c_str());
+    return stereoMode;
   }
 
-  if (stereoMode.empty())
-    stereoMode = "mono";
-  else
-    CLog::Log(LOGDEBUG, "StereoscopicsManager: Detected stereo mode in string '%s' is '%s'", CURL::GetRedacted(needle).c_str(), stereoMode.c_str());
+  if (re.RegFind(searchString) > -1)
+  {
+    stereoMode = "left_right";
+    return stereoMode;
+  }
+
+  if (!re.RegComp(g_advancedSettings.m_stereoscopicregex_tab.c_str()))
+  {
+    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d TAB content:'%s'", __FUNCTION__, g_advancedSettings.m_stereoscopicregex_tab.c_str());
+    return stereoMode;
+  }
+
+  if (re.RegFind(searchString) > -1)
+    stereoMode = "top_bottom";
 
   return stereoMode;
 }

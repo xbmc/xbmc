@@ -965,10 +965,6 @@ msgctxt "#305"
 msgid "Enabled"
 msgstr "Yoqilgan"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Foydalanuvchi interfeysi tili"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=avto)"
@@ -2693,10 +2689,6 @@ msgctxt "#13346"
 msgid "Movie information"
 msgstr "Film ma'lumoti"
 
-msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Ijro ettirilmoqda..."
-
 msgctxt "#13351"
 msgid "Album information"
 msgstr "Albom ma'lumoti"
@@ -2764,14 +2756,6 @@ msgstr "Ko'rish parametrlari"
 msgctxt "#14022"
 msgid "Library"
 msgstr "To'plam"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
 
 msgctxt "#14036"
 msgid "Services"

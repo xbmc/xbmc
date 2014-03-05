@@ -42,7 +42,7 @@ msgstr "Pequeno"
 
 msgctxt "#30006"
 msgid "Default"
-msgstr "Predeterminado"
+msgstr "Predefinido"
 
 msgctxt "#30007"
 msgid "Big"
@@ -66,7 +66,7 @@ msgstr "Lento"
 
 msgctxt "#30012"
 msgid "Default"
-msgstr "Predeterminado"
+msgstr "Predefinido"
 
 msgctxt "#30013"
 msgid "Fast"

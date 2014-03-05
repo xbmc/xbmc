@@ -35,6 +35,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
+#include "XbmcContext.h"
 #undef BOOL
 
 #import <QuartzCore/QuartzCore.h>
@@ -367,6 +368,8 @@
 - (void) runAnimation:(id) arg
 {
   CCocoaAutoPool outerpool;
+  // set up some xbmc specific relationships
+  XBMC::Context context;
   bool readyToRun = true;
 
   // signal we are alive

@@ -1061,10 +1061,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Limba originală pentru fluxul video"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Limba interfață utilizator"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=automat)"
@@ -4286,8 +4282,8 @@ msgid "Scan for new content"
 msgstr "Scanează pentru conținut nou"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Acum în redare..."
+msgid "Current playlist"
+msgstr "Listă de redare curentă"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4561,6 +4557,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Redă doar asta"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Software"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Metodă sincronizare A/V"
@@ -4769,17 +4769,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Preîncărcare video - DVD-ROM"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Preîncărcare audio - DVD-ROM"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6241,10 +6233,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Canale în"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "Sincronizează grupurile de canale cu backend-urile"
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
@@ -7673,10 +7661,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Vor fi resetate valorile de calibrare pentru %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "către valorile implicite."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Alege destinație"
@@ -7893,10 +7877,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Speciale"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Obține miniaturi sezon automat"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Dosarul selectat conține un singur fișier video"
@@ -8008,10 +7988,6 @@ msgstr "Secvențe"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Netezește"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Netezește seriale"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8260,10 +8236,6 @@ msgstr "Director de film și subtitrare alternativă"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Ignoră fonturi subtitrări ASS/SSA"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Activează suport mouse și ecran sensibil la atingere"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9218,6 +9190,10 @@ msgid "Enable"
 msgstr "Activează"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Dezactivat"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Supliment dezactivat"
 

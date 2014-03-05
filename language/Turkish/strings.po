@@ -1081,10 +1081,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Akışın özgün dili"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Kullanıcı Arabirimi dili"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=otomatik)"
@@ -4646,8 +4642,8 @@ msgid "Scan for new content"
 msgstr "Yeni içerik için tara"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Şimdi yürütülüyor..."
+msgid "Current playlist"
+msgstr "Geçerli çalma listesi"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4953,6 +4949,58 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Donanım hızlandırmasına izin ver (MediaCodec)"
 
+msgctxt "#13441"
+msgid "Use Mpeg-2 VDPAU"
+msgstr "Mpeg-2 VDPAU Kullan"
+
+msgctxt "#13442"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
+msgstr "Mpeg-(1/2) codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Eski Radeon kartları bu etkin ise hata verme eğilimindedir."
+
+msgctxt "#13443"
+msgid "Use Mpeg-4 VDPAU"
+msgstr "Mpeg-4 VDPAU Kullan"
+
+msgctxt "#13444"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead. Some ION Hardware has problems with this being enabled by default."
+msgstr "Mpeg-4 codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Bazı ION Donanımının bunun varsayılan olarak etkin olmasından dolayı problemleri vardır."
+
+msgctxt "#13445"
+msgid "Use VC-1 VDPAU"
+msgstr "VC-1 VDPAU Kullan"
+
+msgctxt "#13446"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
+msgstr "VC-1 tabanlı codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. VDPAU bulunan AMD Donanımı VC-1 Simple kodunu çözemez."
+
+msgctxt "#13447"
+msgid "Use Mpeg-2 VAAPI"
+msgstr "Mpeg-2 VAAPI Kullan"
+
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
+msgstr "Mpeg-(1/2) codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Bazı Mpeg-2 videolarda yeşil yapılar olabilir."
+
+msgctxt "#13449"
+msgid "Use Mpeg-4 VAAPI"
+msgstr "Mpeg-4 VAAPI Kullan"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
+msgstr "Mpeg-4 codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır."
+
+msgctxt "#13451"
+msgid "Use VC-1 VAAPI"
+msgstr "VC-1 VAAPI Kullan"
+
+msgctxt "#13452"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
+msgstr "VC-1 tabanlı codec bileşenleri donanım hızlandırmasını kullanmak için bu seçeneği etkinleştir. Eğer devre dışı ise CPU kullanılır. Özellikle Intel donanımlarında VC-1 Interlaced çok başarısızdır."
+
+msgctxt "#13455"
+msgid "Software"
+msgstr "Yazılım"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Ses/Video eşitleme yöntemi"
@@ -5181,25 +5229,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video önbelleği - DVD-ROM"
 
-msgctxt "#14027"
-msgid "Local Network"
-msgstr "Yerel Ağ"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "İnternet"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Ses önbelleği - DVD-ROM"
-
-msgctxt "#14031"
-msgid "Local Network"
-msgstr "Yerel Ağ"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "İnternet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6749,10 +6781,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Kanallar"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "Kanal guruplarını arka uçlar ile eşitle"
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
@@ -7285,6 +7313,10 @@ msgctxt "#19647"
 msgid "Motoring"
 msgstr "Motor"
 
+msgctxt "#19648"
+msgid "Fitness & Health"
+msgstr "Spor ve Sağlık"
+
 msgctxt "#19649"
 msgid "Cooking"
 msgstr "Yemek Pişirme"
@@ -7304,6 +7336,10 @@ msgstr "Karakteristik"
 msgctxt "#19661"
 msgid "Original Language"
 msgstr "Özgün Dil"
+
+msgctxt "#19662"
+msgid "Black & White"
+msgstr "Siyah ve Beyaz"
 
 msgctxt "#19663"
 msgid "Unpublished"
@@ -8237,10 +8273,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Bu %s için olan ayarlama değerlerini"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "varsayılana sıfırlayacak."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Hedefe gözat"
@@ -8457,10 +8489,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Specials"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Sezon küçük resimlerini otomatik olarak al"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Seçilen klasör tek bir video içeriyor"
@@ -8576,10 +8604,6 @@ msgstr "Fragman"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Düzleştir"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "TV programlarını düzleştir"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8880,10 +8904,6 @@ msgstr "Film ve alternatif altyazı klasörü"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "ASS/SSA altyazı yazı tiplerini geçersiz kıl"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Fareyi ve Dokunmatik Ekran desteğini etkinleştir"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -9241,10 +9261,6 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "karışık"
 
-msgctxt "#21460"
-msgid "Subtitle location on screen"
-msgstr "Altyazının ekrandaki konumu"
-
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Sabit"
@@ -9276,10 +9292,6 @@ msgstr "%d ile %d arasında"
 msgctxt "#21469"
 msgid "%s to %s"
 msgstr "%s ile %s arasında"
-
-msgctxt "#21600"
-msgid "Prefer external subtitles"
-msgstr "Harici altyazıları tercih et."
 
 msgctxt "#21602"
 msgid "(External)"
@@ -9894,6 +9906,10 @@ msgid "Enable"
 msgstr "Etkinleştir"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Devre dışı"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Eklenti devre dışı"
 
@@ -10141,6 +10157,10 @@ msgctxt "#24104"
 msgid "Add-on is incompatible due to unmet dependencies."
 msgstr "Eklenti karşılanamayan bağımlılıklar olduğu için uyumsuz."
 
+msgctxt "#24105"
+msgid "Pause when searching for subtitles"
+msgstr "Altyazılar aranırken duraklat"
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Altyazılar aranıyor ..."
@@ -10173,25 +10193,13 @@ msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "Hiçbir altyazı hizmeti yüklü değil"
 
-msgctxt "#24115"
-msgid "Save subtitles to movie folder"
-msgstr "Altyazıları film klasörüne kaydet"
-
 msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Varsayılan TV Hizmeti"
 
-msgctxt "#24117"
-msgid "Select service that will be used as default to search for TV Show subtitles"
-msgstr "TV Programı altyazılarını aramak için kullanılacak varsayılan hizmeti seçin."
-
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "Varsayılan Film Hizmeti"
-
-msgctxt "#24119"
-msgid "Select service that will be used as default to search for Movie subtitles"
-msgstr "Film altyazılarını aramak için kullanılacak varsayılan hizmeti seçin."
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -10973,18 +10981,6 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "Sınırlı renk aralığı kullan (16-235)"
 
-msgctxt "#36101"
-msgid "Change the look and feel of the User Interface."
-msgstr "Kullanıcı arabiriminin görünüm ve düzenini değiştir."
-
-msgctxt "#36102"
-msgid "No info available yet."
-msgstr "Henüz bilgi mevcut değil."
-
-msgctxt "#36103"
-msgid "Select the skin for the User Interface. This will define the look and feel of XBMC."
-msgstr "Kullanıcı arabirimi için bir dış görünüm seçiniz. Bu seçim XBMC'nin nasıl görüneceğini belirleyecektir."
-
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Özel dış görünüm ayarlarını değiştir.  Kullanılabilir seçenekler kullanılan dış görünüme bağlıdır."
@@ -10997,21 +10993,9 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Seçtiğiniz kaplamanın renklerini değiştirin."
 
-msgctxt "#36107"
-msgid "Choose the fonts displayed in the User Interface. The font sets are configured by your skin."
-msgstr "Kullanıcı arabiriminde gösterilecek yazı tipini seçiniz. Yazı tipleri sizin kullanıcı arabirimi temanız tarafından ayarlanır."
-
-msgctxt "#36108"
-msgid "Resize the view of the GUI."
-msgstr "Grafik Kullanıcı Arabirimi görüntüsünü yeniden boyutlandır."
-
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "XBMC nin başlangıç ekranında görüntüleyeceği medya penceresini seçiniz."
-
-msgctxt "#36110"
-msgid "Select or disable the sound scheme used in the User Interface."
-msgstr "Kullanıcı arabiriminde kullanılacak ses grubunu seçiniz ya da kapatınız."
 
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
@@ -11021,21 +11005,9 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "RSS beslemelerini düzenle."
 
-msgctxt "#36113"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36114"
-msgid "Chooses the language of the User Interface."
-msgstr "Kullanıcı Arabirimi dilini seçer."
-
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Sıcaklık, tarih ve zaman formatını seçin. Mevcut seçenekler seçtiğiniz dile bağlıdır."
-
-msgctxt "#36116"
-msgid "Choose which character set is used for displaying text in the GUI."
-msgstr "Grafik Kullanıcı Arabirimini gösterirken hangi karakter kümesinin kullanılacağını seçiniz."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11053,10 +11025,6 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Farklı dil seçenekleri mevcut olduğunda geçerli altyazı dilini seçiniz."
 
-msgctxt "#36121"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Üst klasöre gitmek için (..) öğesini listelerde göster."
@@ -11065,25 +11033,9 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Dosya uzantısını göster. Örneğin \"Benimle Eğlen.mp3\" kısaca \"Benimle Eğlen\" olarak gösterilecek."
 
-msgctxt "#36124"
-msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would simply be sorted as 'Simpsons'. To configure tokens, see http://wiki.xbmc.org/index.php?title=Settings/Appearance."
-msgstr "Sıralama işlemleri sırasında bazı belirteçleri yoksay. Örneğin, 'The Simpsons' sadece 'Simpsons' olarak sıralanır. Belirteçleri ayarlamak için http://wiki.xbmc.org/index.php?title=Settings/Appearance adresine bakınız."
-
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "İçerik menüsü aracılığıyla, kullanıcı arabirimi üzerinden dosyaları silmeye ve yeniden adlandırmaya izin ver. (bu menüyü getirmek için klavyeden C'ye basın)"
-
-msgctxt "#36126"
-msgid "Show the add source button from root sections of the user interface."
-msgstr "Kullanıcı arabiriminin kök bölümlerinde kaynak ekle düğmesini göster."
-
-msgctxt "#36127"
-msgid "Show hidden files and directories."
-msgstr "Gizli dosya ve klasörleri göster."
-
-msgctxt "#36128"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11113,25 +11065,9 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
-msgctxt "#36138"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36139"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36140"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "İzlenmemiş bölüm bilgisini Video Kütüphanesinde göster."
-
-msgctxt "#36142"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
@@ -11165,69 +11101,17 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "XML dosyasından Video Kitaplığı veritabanı içine aktar."
 
-msgctxt "#36151"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36152"
-msgid "Enable automatic playback of the next file in the list of the selected item."
-msgstr "Seçililer listesindeki bir sonraki dosyayı otomatik oynatmayı etkinleştir."
-
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Videoyu işlemek ve görüntülemek için kullanılan metodu ayarla."
-
-msgctxt "#36154"
-msgid "No info available yet."
-msgstr "Henüz bir bilgi mevcut değil."
-
-msgctxt "#36155"
-msgid "Enable hardware decoding of video files."
-msgstr "Video dosyalarının donanımsal çözülmesini etkinleştir."
-
-msgctxt "#36156"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36157"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
-msgctxt "#36158"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36159"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36160"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36161"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36162"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36163"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36164"
-msgid "Select when the refresh rate adjustments should take place."
-msgstr "Tazeleme hızı ayarlamalarının ne zaman uygulanacağını seç."
-
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "4:3 videolarının geniş ekranlarda görüntüleneceği yakınlaştırma düzeyini seçin."
-
-msgctxt "#36173"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
@@ -11236,14 +11120,6 @@ msgstr "Canlı TV akışını izlerken Teletext'i etkinleştir."
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "Teleteksi 4:3 orantısına ayarla."
-
-msgctxt "#36176"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36178"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11257,34 +11133,6 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
-msgctxt "#36184"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36185"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36186"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36187"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36188"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36189"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36190"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
 msgstr "Altyazılarınız için özel bir dizin ayarlayın. Bu bir dosya paylaşımı olabilir."
@@ -11292,10 +11140,6 @@ msgstr "Altyazılarınız için özel bir dizin ayarlayın. Bu bir dosya paylaş
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Altyazıların ekrandaki konumu."
-
-msgctxt "#36193"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11340,10 +11184,6 @@ msgstr "XBMC'nin Kişisel Video Kaydedici (PVR) özelliklerini etkinleştir. En 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Kanal guruplarını PVR arka uçtan al (destekleniyorsa). Eğer arka uçta bulunmuyorsa kullanıcının oluşturduğu guruplar silinir."
-
-msgctxt "#36205"
-msgid "Sort the channels by channel number on the server, but uses XBMC's own numbering for channels."
-msgstr "Kanalları sunucudaki kanal numarasına göre sırala, fakat kanallar için XBMC'nin kendi numaralandırmasını kullanır."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -11397,18 +11237,6 @@ msgctxt "#36218"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
-msgctxt "#36219"
-msgid "Default EPG window to show. Defaults to Timeline."
-msgstr "Varsayılan EPG penceresini göstermek için. Varsayılan: Zaman çizelgesi"
-
-msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends. Defaults to 3 days."
-msgstr "EPG verisini arka uçtan alma gün sayısı. Varsayılan 3 gün."
-
-msgctxt "#36221"
-msgid "Time between EPG data imports from backends. Defaults to 120 minutes."
-msgstr "EPG verisini arka uçtan alma süresi. Varsayılan 120 dakika."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "CPU kullanımını azaltmak için TV oynatılırken EPG verilerini alma."
@@ -11421,10 +11249,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Kanal için EPG verisi alınamaz ise 'hiçbir bilgi yok' etiketlerini gizle."
 
-msgctxt "#36225"
-msgid "Delete the EPG database in xbmc and reimport the data afterwards from the backend."
-msgstr "XBMC'nin içindeki EPG veritabanını sil ve sonra veriyi arka uçtan tekrar al."
-
 msgctxt "#36226"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
@@ -11432,10 +11256,6 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Seçilen kanalın görüntüsünü tam ekran yerine küçük bir kutuda görüntüleyin."
-
-msgctxt "#36228"
-msgid "Show the last viewed channel if switching to live tv."
-msgstr "Canlı TV ye geçildiğinde son seyredilen kanala geç."
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
@@ -11456,22 +11276,6 @@ msgstr "Bilgi mevcut değil."
 msgctxt "#36233"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
-
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Defaults to 50. Not supported by all Add-ons and backends."
-msgstr "Kayıt önceliği. Daha yüksek bir sayı daha yüksek öncelik anlamına gelir. Varsayılan değer 50. Bütün eklentiler ve arka uçlar tarafından desteklenmez."
-
-msgctxt "#36236"
-msgid "Delete recording after this time. Defaults to 99 days. Not supported by all Add-ons and backends."
-msgstr "Kayıdı bu zamandan sonra sil. Varsayılan değer 99 gün. Bütün eklentiler ve arka uçlar tarafından desteklenmez."
-
-msgctxt "#36237"
-msgid "Start recordings before the actual time. Defaults to 2 minutes. Not supported by all Add-ons and backends."
-msgstr "Gerçek zamanından önce kayıtları başlat. Varsayılan değer 2 dakika. Bütün eklentiler ve arka uçlar tarafından desteklenmez."
-
-msgctxt "#36238"
-msgid "End recordings after the actual time. Defaults to 10 minutes. Not supported by all Add-ons and backends."
-msgstr "Gerçek zamanından sonra kayıtları durdur. Varsayılan değer 10 dakika. Bütün eklentiler ve arka uçlar tarafından desteklenmez."
 
 msgctxt "#36240"
 msgid "No info available yet."
@@ -11501,18 +11305,6 @@ msgctxt "#36252"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
-msgctxt "#36253"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36254"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36257"
-msgid "Select the default album information source"
-msgstr "Varsayılan albüm bilgisi kaynağını seçin"
-
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
 msgstr "Varsayılan sanatçı bilgisi kaynağını seçin. Seçenekler için Eklenti Yöneticisi'ne bakın."
@@ -11526,8 +11318,8 @@ msgid "No info available yet."
 msgstr "Hiçbir bilgi mevcut değil."
 
 msgctxt "#36261"
-msgid "Path where taken screenshots will be stored."
-msgstr "Alınan ekran görüntülerinin depolanacağı yol."
+msgid "No info available yet."
+msgstr "Hiçbir bilgi mevcut değil."
 
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
@@ -11537,10 +11329,6 @@ msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "XML dosyasından Müzik Kitaplığı veritabanı içine aktar."
 
-msgctxt "#36264"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Standartlara göre 89dB ayarlıdır. Lütfen dikkatle değiştirin."
@@ -11548,10 +11336,6 @@ msgstr "Standartlara göre 89dB ayarlıdır. Lütfen dikkatle değiştirin."
 msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Standartlara göre 89dB ayarlıdır. Lütfen dikkatle değiştirin."
-
-msgctxt "#36272"
-msgid "Allow crassfading to occur when both tracks are from the same album."
-msgstr "Aynı albünden iki parça ise çapraz geçişe izin ver."
 
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
@@ -11561,73 +11345,13 @@ msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "Şarkı dosyalarının etiket bilgilerini oku. Bu büyük klasörler için okuma süresini yavaşlatır, özellikle ağ üzerinden."
 
-msgctxt "#36277"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36278"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36279"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36280"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36282"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr "CD lerin sürücüye konulduklarında otomatik olarak başlatır."
 
-msgctxt "#36286"
-msgid "Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
-msgstr "Etiketler: [B]%N[/B]: ParçaNumarası, [B]%S[/B]: DiskNumarası, [B]%A[/B]: Artist, [B]%T[/B]: Başlık, [B]%B[/B]: Albüm, [B]%G[/B]: Tarz, [B]%Y[/B]: Yıl, [B]%F[/B]: DosyaAdı, [B]%D[/B]: Süre, [B]%J[/B]: Tarih, [B]%R[/B]: Derecelendirme, [B]%I[/B]: DosyaBoyutu."
-
-msgctxt "#36290"
-msgid "For FLAC define compression level, default 5"
-msgstr "FLAC için sıkıştırma düzeyini belirleyiniz, geçerli değer 5 dir."
-
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "CD kopyalama işlemi bitince otomatik olarak diski çıkar"
-
-msgctxt "#36292"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36294"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36295"
-msgid "Select the font used during karoake."
-msgstr "Karaoke sırasında kullanılacak yazı tipini seçiniz."
-
-msgctxt "#36296"
-msgid "Select the size of the font used during karoake."
-msgstr "Karaoke sırasında kullanılacak yazı tipi boyutunu seçiniz."
-
-msgctxt "#36297"
-msgid "Select the font colour used during karoake."
-msgstr "Karaoke sırasında kullanılacak yazı tipi rengini seçiniz."
-
-msgctxt "#36298"
-msgid "Select the character set used during karoake."
-msgstr "Karaoke sırasında kullanılacak karakter kümesini seçiniz."
-
-msgctxt "#36299"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36300"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11638,14 +11362,6 @@ msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
 msgctxt "#36303"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36304"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36305"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
@@ -11661,15 +11377,7 @@ msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "Eğer varsa EXIF etiketindeki bilgiye göre fotoğraflar otomatik olarak döndürülecek."
 
-msgctxt "#36309"
-msgid "Show video media in picture file lists, since most digital cameras nowadays have video recording capabilities."
-msgstr "Resim dosyalarının içinde videoları da göster. Bugünlerde hemen hemen bütün fotoğraf makineleri video çekme özelliğine sahipler."
-
 msgctxt "#36310"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36311"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
@@ -11685,14 +11393,6 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Slayt gösterisinde resimleri rastgele sırayla göster."
 
-msgctxt "#36315"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36316"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "Hava durumunun gösterileceği üç konumu seçin."
@@ -11701,37 +11401,9 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "Varsayılan hava durumu bilgisi kaynağını belirtin. Eklenti Yöneticisi'nden yapabilirsini."
 
-msgctxt "#36319"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36320"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36322"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36323"
-msgid "Enable the UPnP server. This will allow you to stream media to any UPnP client."
-msgstr "UPnP sunucusunu etkinleştir. Bu özellik herhangi bir UPnP istemcisine akış yapmanızı sağlar."
-
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "El ile ya da otomatik kitaplık güncellemesi olduğunda UPnP istemcilerine bildir."
-
-msgctxt "#36325"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36326"
-msgid "Enable the UPnP client. This will allow you to stream media from any UPnP server with a control point and control playback from that server."
-msgstr "UPnP istemcisini etkinleştir. Bu özellik herhangi bir UPnP sunucusundan akış yapmanızı ve oynatımı sunucudan kontrol etmenizi sağlar."
-
-msgctxt "#36327"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11745,105 +11417,21 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Web sunucu kullanıcı adını belirle."
 
-msgctxt "#36331"
-msgid "Define webserver password."
-msgstr "Web sunucu şifresini belirle."
-
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Eklenti Yöneticisi ile hangi web arayüzünü kullanmak istediğinizi seçin."
-
-msgctxt "#36333"
-msgid "No info available yet."
-msgstr "Henüz bir bilgi mevcut değil."
-
-msgctxt "#36335"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36336"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36337"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Ağ üzerindeki programların XBMC yi kontrol etmesine izin ver."
 
-msgctxt "#36339"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36340"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36341"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36342"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36343"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36344"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36345"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36346"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36347"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36348"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36349"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Paylaşılan dosyalar veya hizmetlere erişmeye çalışmadan hemen önce sunucu(ya/lara) otomatik olarak 'Wake-On-Lan' gönder."
 
-msgctxt "#36351"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36352"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36353"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Ekran donanım kalibrasyonu için test kalıpları."
-
-msgctxt "#36359"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36360"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11865,21 +11453,9 @@ msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "Menü gezintisi ve önemli bildirimler gibi arayüz seslerinin nasıl işlendiğini yapılandır."
 
-msgctxt "#36374"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36375"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
 msgstr "XBMC yi kontrol etmek için joystick kullan."
-
-msgctxt "#36379"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11905,10 +11481,6 @@ msgctxt "#36385"
 msgid "Configure the proxy server password."
 msgstr "Vekil sunucu şifresini ayarlayınız."
 
-msgctxt "#36388"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "Kapatılmadan önce XBMC'nin ne kadar süre boşta kalacağını tanımlayın."
@@ -11917,13 +11489,9 @@ msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "Uzun bir süre boşta kaldığında XBMC'nin ne yapması gerektiğini tanımlayın."
 
-msgctxt "#36391"
+msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr "Hata ayıklama günlüğünü aç veya kapat. Sorun giderme için kullanışlıdır."
-
-msgctxt "#36392"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
@@ -11933,65 +11501,13 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Hata ayıklama günlüğüne eklenecek ek kitaplıkları belirle."
 
-msgctxt "#36395"
-msgid "Open the Master Lock dialogue, where you can configure your Master Lock options."
-msgstr "Yönetici Kilidi seçeneklerinizi ayarlayabileceğiniz Yönetici Kilidi iletişim kutusunu aç."
-
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Yönetici kilidi için kullanılacak PIN kodunu belirleyiniz."
 
-msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock XBMC on startup "
-msgstr "Eğer etkinse, başlangıçta XBMC kilidini açmak için yönetici kilit kodu gereklidir"
-
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "XBMC kapatılmadan önce en fazla yeniden deneme sayısını belirleyin."
-
-msgctxt "#36399"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36400"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36401"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36402"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36403"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36404"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36405"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36406"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36407"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36408"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36409"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -12017,18 +11533,6 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
 
-msgctxt "#36416"
-msgid "Define the Apple remote standard used."
-msgstr "Kullanılan Apple uzaktan kumanda standardını tanımlayın."
-
-msgctxt "#36417"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
-msgctxt "#36418"
-msgid "No info available yet."
-msgstr "Bilgi mevcut değil."
-
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Hava durumu bilgisi için kullanılacak yer bilgisini tanımlayınız."
@@ -12036,10 +11540,6 @@ msgstr "Hava durumu bilgisi için kullanılacak yer bilgisini tanımlayınız."
 msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Bilgi mevcut değil."
-
-msgctxt "#36422"
-msgid "Enable hardware video decode using AMLogic decoder"
-msgstr "AMLogic kod çözücü kullanarak donanımsal video çözücüyü etkinleştir"
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -12101,10 +11601,6 @@ msgctxt "#36509"
 msgid "Monoscopic - 2D"
 msgstr "Monoscopic - 2D"
 
-msgctxt "#36520"
-msgid "Playback mode of stereoscopic videos"
-msgstr "Stereoskopik videoların oynatma modu"
-
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "Bana sor"
@@ -12157,22 +11653,6 @@ msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "Ters çevrilmiş Stereoskopik mod"
 
-msgctxt "#36537"
-msgid "No info available yet."
-msgstr "Hiçbir bilgi mevcut değil."
-
-msgctxt "#36538"
-msgid "No info available yet."
-msgstr "Hiçbir bilgi mevcut değil."
-
-msgctxt "#36539"
-msgid "No info available yet."
-msgstr "Hiçbir bilgi mevcut değil."
-
-msgctxt "#36540"
-msgid "No info available yet."
-msgstr "Hiçbir bilgi mevcut değil."
-
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "AirPlay istemcilerinin ses düzeyi kontrolüne izin ver"
@@ -12188,10 +11668,6 @@ msgstr "Video dosyalarının donanımsal çözülmesini etkinleştir."
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "Stereoskopik altyazı derinliği"
-
-msgctxt "#36546"
-msgid "Sets the visual depth of subtitles for stereoscopic videos. The higher the value, the closer the subtitles will appear to the viewer."
-msgstr "Stereoskopik videolar için altyazı görsel derinliğini ayarlar. Değer ne kadar yüksek olursa altyazı izleyiciye daha yakın görünecektir."
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
@@ -12228,10 +11704,6 @@ msgstr "Eğer alıcınız E-AC3 çözme desteğine sahipse bu seçeneği seçin.
 msgctxt "#37017"
 msgid "Dual audio output"
 msgstr "Çift ses çıkışı"
-
-msgctxt "#37019"
-msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen"
-msgstr "Tam ekranda printscreen, alt-tab ve ses ayarı tuşları gibi sistem tuşlarını etkinleştirir"
 
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"

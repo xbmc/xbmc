@@ -1073,10 +1073,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "مجرى اللغة الأصلي"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "لغة واجهة المستخدم"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -4238,8 +4234,8 @@ msgid "Scan for new content"
 msgstr "تفحص محتوى جديد"
 
 msgctxt "#13350"
-msgid "Now playing..."
-msgstr "يعرض الان..."
+msgid "Current playlist"
+msgstr "قائمة التشغيل الحالية"
 
 msgctxt "#13351"
 msgid "Album information"
@@ -4513,6 +4509,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "شغل هذا وفقط"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "برنامج"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "تزامن أسلوب تشغيل الشاشة"
@@ -4701,17 +4701,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "التخزين المؤقت للفيديو - DVD-ROM"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "الإنترنت"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "التخزين المؤقت للصوت - DVD-ROM "
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "الإنترنت"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6141,10 +6133,6 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "القنوات في"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr "مزامنة مجموعات المحطات مع الخلفيات"
-
 msgctxt "#19222"
 msgid "EPG"
 msgstr "دليل القنوات EPG"
@@ -7457,10 +7445,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "%s هذا سوف يعين معايرة القيم لـ "
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "القيم الافتراضية الخاصة به"
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "استعراض للموقع"
@@ -7677,10 +7661,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "العروض الخاصة"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "تحميل مصغرات الفصل تلقائي"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "المجلد المحدد يحتوي على فيديو واحد"
@@ -7792,10 +7772,6 @@ msgstr "فيلم قصير"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "فلاتن"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "برامج تلفزيونية فلاتن"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8044,10 +8020,6 @@ msgstr "دليل ترجمة الفيديو البديل"
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "ASS / SSA تجاوز خطوط الترجمات"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "تمكين دعم الفأره وشاشة اللمس"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -8982,6 +8954,10 @@ msgid "Enable"
 msgstr "تمكين"
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "معطلة"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "الموقع"
 

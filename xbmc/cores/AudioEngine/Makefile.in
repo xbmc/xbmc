@@ -20,21 +20,6 @@ CXXFLAGS += -D__STDC_LIMIT_MACROS
 
 SRCS  = AEFactory.cpp
 
-ifeq ($(findstring osx,@ARCH@),osx)
-SRCS += Engines/CoreAudio/CoreAudioAE.cpp
-SRCS += Engines/CoreAudio/CoreAudioAEHAL.cpp
-SRCS += Engines/CoreAudio/CoreAudioAEHALOSX.cpp
-SRCS += Engines/CoreAudio/CoreAudioAESound.cpp
-SRCS += Engines/CoreAudio/CoreAudioAEStream.cpp
-SRCS += Engines/CoreAudio/CoreAudioChannelLayout.cpp
-SRCS += Engines/CoreAudio/CoreAudioDevice.cpp
-SRCS += Engines/CoreAudio/CoreAudioGraph.cpp
-SRCS += Engines/CoreAudio/CoreAudioHardware.cpp
-SRCS += Engines/CoreAudio/CoreAudioMixMap.cpp
-SRCS += Engines/CoreAudio/CoreAudioStream.cpp
-SRCS += Engines/CoreAudio/CoreAudioUnit.cpp
-else
-
 SRCS += AESinkFactory.cpp
 SRCS += Sinks/AESinkNULL.cpp
 SRCS += Sinks/AESinkProfiler.cpp
@@ -50,12 +35,20 @@ SRCS += Engines/ActiveAE/ActiveAEBuffer.cpp
 
 ifeq (@USE_ANDROID@,1)
 SRCS += Sinks/AESinkAUDIOTRACK.cpp
+else ifeq ($(findstring ios,@ARCH@),ios)
+SRCS += Sinks/AESinkDARWINIOS.cpp
+else ifeq ($(findstring osx,@ARCH@),osx)
+SRCS += Sinks/AESinkDARWINOSX.cpp
+SRCS += Sinks/osx/CoreAudioChannelCount.cpp
+SRCS += Sinks/osx/CoreAudioDevice.cpp
+SRCS += Sinks/osx/CoreAudioHardware.cpp
+SRCS += Sinks/osx/CoreAudioHelpers.cpp
+SRCS += Sinks/osx/CoreAudioStream.cpp
 else
 SRCS += Sinks/AESinkALSA.cpp
 SRCS += Sinks/AESinkOSS.cpp
 ifeq (@USE_PULSE@,1)
 SRCS += Sinks/AESinkPULSE.cpp
-endif
 endif
 endif
 

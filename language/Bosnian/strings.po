@@ -1073,10 +1073,6 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Originalni jezik strimova"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "Korisnički interfejs jezik"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=autom.)"
@@ -4497,10 +4493,6 @@ msgctxt "#13349"
 msgid "Scan for new content"
 msgstr "Potraži novi sadržaj"
 
-msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Trenutno se reprodukuje..."
-
 msgctxt "#13351"
 msgid "Album information"
 msgstr "Podaci o albumu"
@@ -4773,6 +4765,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Pokreni samo ovo"
 
+msgctxt "#13455"
+msgid "Software"
+msgstr "Softver"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V način sinhron."
@@ -4985,25 +4981,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video keš - DVD-ROM"
 
-msgctxt "#14027"
-msgid "Local Network"
-msgstr "Lokalna mreža"
-
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Internet"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Keš zvuka - DVD-ROM"
-
-msgctxt "#14031"
-msgid "Local Network"
-msgstr "Lokalna mreža"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -6949,10 +6929,6 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Ovim ćete poništiti vrijednosti kalibracije za %s"
 
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr "na podrazumevane vrijednosti."
-
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Potraži odredište"
@@ -7161,10 +7137,6 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr "Posebne emisije"
 
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr "Automatski preuzmi sličicu sezone"
-
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
 msgstr "Izabrana fascikla sadrži jedan film"
@@ -7276,10 +7248,6 @@ msgstr "Najava"
 msgctxt "#20411"
 msgid "Flatten"
 msgstr "Poravnat spisak"
-
-msgctxt "#20412"
-msgid "Flatten TV shows"
-msgstr "Poravnat spisak TV serija"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -7468,10 +7436,6 @@ msgstr "Ukloni dijeljenu lokaciju medija"
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Fascikla filmova i alternativnih titlova"
-
-msgctxt "#21369"
-msgid "Enable mouse and Touch Screen support"
-msgstr "Omogući korišćenje miša"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -8330,6 +8294,10 @@ msgid "Enable"
 msgstr "Omogući dodatni prog."
 
 msgctxt "#24023"
+msgid "Disabled"
+msgstr "Onemogućeno"
+
+msgctxt "#24024"
 msgid "Add-on disabled"
 msgstr "Dodatni prog. je onemogućen"
 

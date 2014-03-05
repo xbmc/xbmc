@@ -45,8 +45,6 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
   m_channels = 0;
   m_layout = 0;
   
-  m_bLpcmMode = false;
-
   m_pFrame1 = NULL;
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
 }
@@ -72,11 +70,6 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
     return false;
   }
-
-#if defined(TARGET_DARWIN_OSX)
-  if (CSettings::Get().GetInt("audiooutput.channels") >  AE_CH_LAYOUT_2_0)
-    m_bLpcmMode = true;
-#endif
 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);
   m_pCodecContext->debug_mv = 0;
@@ -198,7 +191,7 @@ int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize)
     default:
       convert = true;
   }
-  if(m_bLpcmMode || convert)
+  if(convert)
     ConvertToFloat();
 
   return iBytesUsed;
@@ -310,25 +303,18 @@ int CDVDAudioCodecFFmpeg::GetEncodedSampleRate()
 
 enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
 {
-  if(m_bLpcmMode)
+  switch(m_pCodecContext->sample_fmt)
   {
-    return AE_FMT_LPCM;
-  }
-  else
-  {
-    switch(m_pCodecContext->sample_fmt)
-    {
-      case AV_SAMPLE_FMT_U8 : return AE_FMT_U8;
-      case AV_SAMPLE_FMT_S16: return AE_FMT_S16NE;
-      case AV_SAMPLE_FMT_S32: return AE_FMT_S32NE;
-      case AV_SAMPLE_FMT_FLT: return AE_FMT_FLOAT;
-      case AV_SAMPLE_FMT_DBL: return AE_FMT_DOUBLE;
-      case AV_SAMPLE_FMT_NONE:
-        CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::GetDataFormat - invalid data format");
-        return AE_FMT_INVALID;
-      default:
-        return AE_FMT_FLOAT;
-    }
+    case AV_SAMPLE_FMT_U8 : return AE_FMT_U8;
+    case AV_SAMPLE_FMT_S16: return AE_FMT_S16NE;
+    case AV_SAMPLE_FMT_S32: return AE_FMT_S32NE;
+    case AV_SAMPLE_FMT_FLT: return AE_FMT_FLOAT;
+    case AV_SAMPLE_FMT_DBL: return AE_FMT_DOUBLE;
+    case AV_SAMPLE_FMT_NONE:
+      CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::GetDataFormat - invalid data format");
+      return AE_FMT_INVALID;
+    default:
+      return AE_FMT_FLOAT;
   }
 }
 

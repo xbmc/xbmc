@@ -425,6 +425,36 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           msg->Reply(CActiveAEControlProtocol::ACC);
           return;
+        case CActiveAEControlProtocol::DEVICECHANGE:
+          time_t now;
+          time(&now);
+          while (!m_extLastDeviceChange.empty() && (now - m_extLastDeviceChange.front() > 0))
+          {
+            m_extLastDeviceChange.pop();
+          }
+          if (m_extLastDeviceChange.size() > 2)
+          {
+            CLog::Log(LOGWARNING,"CActiveAE - received %ld device change events within one second", m_extLastDeviceChange.size());
+            return;
+          }
+          m_extLastDeviceChange.push(now);
+          UnconfigureSink();
+          m_sink.EnumerateSinkList(true);
+          LoadSettings();
+          m_extError = false;
+          Configure();
+          if (!m_extError)
+          {
+            m_state = AE_TOP_CONFIGURED_PLAY;
+            m_extTimeout = 0;
+          }
+          else
+          {
+            m_state = AE_TOP_ERROR;
+            m_extTimeout = 500;
+          }
+          m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECHANGE);
+          return;
         case CActiveAEControlProtocol::PAUSESTREAM:
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
@@ -930,6 +960,11 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   if (m_streams.empty())
   {
     inputFormat = m_sinkFormat;
+    if (m_sinkFormat.m_channelLayout.Count() > m_sinkRequestFormat.m_channelLayout.Count())
+    {
+      inputFormat.m_channelLayout = m_sinkRequestFormat.m_channelLayout;
+      inputFormat.m_channelLayout.ResolveChannels(m_sinkFormat.m_channelLayout);
+    }
     inputFormat.m_dataFormat = AE_FMT_FLOAT;
     inputFormat.m_frameSize = inputFormat.m_channelLayout.Count() *
                               (CAEUtil::DataFormatToBits(inputFormat.m_dataFormat) >> 3);
@@ -1023,6 +1058,16 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       outputFormat.m_dataFormat = AE_FMT_FLOAT;
       outputFormat.m_frameSize = outputFormat.m_channelLayout.Count() *
                                  (CAEUtil::DataFormatToBits(outputFormat.m_dataFormat) >> 3);
+
+      // due to channel ordering of the driver, a sink may return more channels than
+      // requested, i.e. 2.1 request returns FL,FR,BL,BR,FC,LFE for ALSA
+      // in this case we need to downmix to requested format
+      if (m_sinkFormat.m_channelLayout.Count() > m_sinkRequestFormat.m_channelLayout.Count())
+      {
+        outputFormat.m_channelLayout = m_sinkRequestFormat.m_channelLayout;
+        outputFormat.m_channelLayout.ResolveChannels(m_sinkFormat.m_channelLayout);
+      }
+
       // TODO: adjust to decoder
       sinkInputFormat = outputFormat;
     }
@@ -2010,16 +2055,17 @@ void CActiveAE::Deamplify(CSoundPacket &dstSample)
   {
     float *buffer;
     int nb_floats = dstSample.nb_samples * dstSample.config.channels / dstSample.planes;
+    float volume = m_muted ? 0.0f : m_volume;
 
     for(int j=0; j<dstSample.planes; j++)
     {
       buffer = (float*)dstSample.data[j];
 #ifdef __SSE__
-      CAEUtil::SSEMulArray(buffer, m_muted ? 0.0 : m_volume, nb_floats);
+      CAEUtil::SSEMulArray(buffer, volume, nb_floats);
 #else
       float *fbuffer = buffer;
       for (int i = 0; i < nb_floats; i++)
-        *fbuffer++ *= m_volume;
+        *fbuffer++ *= volume;
 #endif
     }
   }
@@ -2068,7 +2114,7 @@ bool CActiveAE::Initialize()
   Message *reply;
   if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT,
                                                  &reply,
-                                                 5000))
+                                                 10000))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
@@ -2275,6 +2321,11 @@ void CActiveAE::KeepConfiguration(unsigned int millis)
 {
   unsigned int timeMs = millis;
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::KEEPCONFIG, &timeMs, sizeof(unsigned int));
+}
+
+void CActiveAE::DeviceChange()
+{
+  m_controlPort.SendOutMessage(CActiveAEControlProtocol::DEVICECHANGE);
 }
 
 void CActiveAE::OnLostDevice()

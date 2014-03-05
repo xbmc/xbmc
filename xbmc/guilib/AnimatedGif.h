@@ -37,6 +37,9 @@
 
 #pragma pack(1)
 
+#define LZW_MAXBITS   12
+#define LZW_SIZETABLE (1<<LZW_MAXBITS)
+
 /*!
  \ingroup textures
  \brief

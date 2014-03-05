@@ -16,6 +16,10 @@ msgstr ""
 "Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Satunnaiset esiasetukset"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Esiasetusten välinen aika"
@@ -23,6 +27,22 @@ msgstr "Esiasetusten välinen aika"
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Satunnainen lisäaika"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Lukitse esiasetus"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Käytä siirtymiä"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Pysäytä ensimmäinen esiasetus"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Näytä äänianalyysi"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

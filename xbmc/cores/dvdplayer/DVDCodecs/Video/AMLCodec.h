@@ -23,6 +23,7 @@
 #include "cores/dvdplayer/DVDStreamInfo.h"
 #include "cores/VideoRenderers/RenderFeatures.h"
 #include "guilib/Geometry.h"
+#include "rendering/RenderSystem.h"
 #include "threads/Thread.h"
 
 typedef struct am_private_t am_private_t;
@@ -58,6 +59,8 @@ private:
   void          SetVideoBrightness(const int brightness);
   void          SetVideoSaturation(const int saturation);
   void          GetRenderFeatures(Features &renderFeatures);
+  void          SetVideo3dMode(const int mode3d);
+  std::string   GetStereoMode();
   static void   RenderFeaturesCallBack(const void *ctx, Features &renderFeatures);
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   static void   RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
@@ -79,6 +82,8 @@ private:
 
   CRect            m_dst_rect;
   int              m_view_mode;
+  RENDER_STEREO_MODE m_stereo_mode;
+  RENDER_STEREO_VIEW m_stereo_view;
   float            m_zoom;
   int              m_contrast;
   int              m_brightness;

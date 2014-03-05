@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Информации"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Дела"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Се репродуцира во моментот"
@@ -107,6 +111,10 @@ msgstr "ПРЕМОТУВАЊЕ НАПРЕД"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ПРЕМОТУВАЊЕ НАЗАД"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "Предефирнирани визуелизации"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -160,6 +168,10 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Прикажи „Паузирано“ за време на репродукција на слика"
 
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+msgstr "Пушти трејлери во прозорче [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Разни опции"
@@ -196,6 +208,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Прикажи неодамна додадени филмови"
 
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "Почетна страна Прогрсами под мени"
+
 msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Сокриј позадина"
@@ -203,6 +219,10 @@ msgstr "Сокриј позадина"
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Прикажи сегашен филм во позадина"
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualisation"
+msgstr "Прикажи сегашна визуализација во позадина"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -216,9 +236,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Текстови на песни"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Сокриј ги постерите во визуелизацијата на полн екран"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Lyrics Add-on"
+
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Видео подмени на почетна страна"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Музичко подмени на почетна страна"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Подмени Албуми од почетната страна"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -227,6 +263,10 @@ msgstr "Музички OSD"
 msgctxt "#31141"
 msgid "Video OSD"
 msgstr "Видео OSD"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Ниво на поставки"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -368,6 +408,14 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Превземи превод"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Гледај во 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Смени мод"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Овозможено"
@@ -412,6 +460,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]КОНФИГУРИРАЊЕ ЗА ДОПОЛНИТЕЛНИ ПРОГРАМИ[/B][CR][CR]Управувајте со вашите инсталирани додатни програми · Потражете и инсталирајте додатен прог. од xbmc.org[CR]Прилагодете подесување на додатен програм"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]КОНФИГУРИРАЈ ТВ ПОСТАВКИ[/B][CR][CR]Промени инфо на цел екран · Подесување на EPG податоци"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]КОНФИГУРИРАЈ СЕРВИСНИ ПОДЕСУВАЊА[/B][CR][CR]Подеси контрола врз XBMC преку UPnP и HTTP · Конфигурирај споделување папки[CR]Овозможи Zeroconf ·Конфигурирај AirPlay"
@@ -420,9 +472,29 @@ msgctxt "#31411"
 msgid "First run help...."
 msgstr "Помош при прво пуштање"
 
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Овој таб покажува дека постои исклучено мени на левата страна на прозорот кое содржи дополнителни опции за оваа секција. За пристап кон менито, притиснете кон лево на далечинското или тастатурата или со маусот поминете прекутабот. [CR][CR]Кликни \"Ok\" за да се затвори овој дијалог. Нема повторно да се појави."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Преводот е достапен локално"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Најави се"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Одберете ваш XBMC кориснички[CR]профил за најава, а потоа продолжете понатаму"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Прикажи го или сокриј го екранот за најава при стартување"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Избери го профилот кој ќе биде користен при стартување кога екранот за најава е исклучен"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
@@ -491,3 +563,43 @@ msgstr "Превземање на прогноза..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Мапи и Предупредувања"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "Време"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "Слики"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "ТВ во живо"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "Видеа"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "Филмови"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "ТВ Серијали"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "Музика"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "Програми"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "Пушти диск"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "Систем"

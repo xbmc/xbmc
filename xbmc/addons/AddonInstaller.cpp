@@ -733,7 +733,10 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
         toast->ResetTimer();
         toast->Close(true);
       }
-      CSettings::Get().SetString("lookandfeel.skin",m_addon->ID().c_str());
+      if (CSettings::Get().GetString("lookandfeel.skin") == m_addon->ID())
+        CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin", true);
+      else
+        CSettings::Get().SetString("lookandfeel.skin",m_addon->ID().c_str());
     }
   }
 

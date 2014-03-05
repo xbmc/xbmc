@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Render Quality"
-msgstr "Renderēšanas kvalitāte"
+msgstr "Apstrādes kvalitāte"
 
 msgctxt "#30001"
 msgid "Low"
@@ -50,7 +50,7 @@ msgstr "Sagatavju ilgums"
 
 msgctxt "#30008"
 msgid "Beat Sensitivity"
-msgstr "Sitienu jūtīgums"
+msgstr "Ritma sajušana"
 
 msgctxt "#30009"
 msgid "Preset Pack"
@@ -62,7 +62,7 @@ msgstr "Noklusētā paka"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"
-msgstr "Lietotāja definēta sagatavju mape"
+msgstr "Lietotāja norādīta sagatavju mape"
 
 msgctxt "#30012"
 msgid "User Preset Folder"

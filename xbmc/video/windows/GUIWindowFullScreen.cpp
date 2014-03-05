@@ -237,7 +237,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (g_application.CurrentFileItem().IsLiveTV())
       {
         CPVRChannelPtr playingChannel;
-        g_PVRManager.GetCurrentChannel(playingChannel);
+        if(!g_PVRManager.GetCurrentChannel(playingChannel))
+          return false;
 
         if (action.GetID() == REMOTE_0)
         {
@@ -423,6 +424,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_DIRECTOR);
       if (pDialog) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CUTTER);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_SUBTITLES);
       if (pDialog) pDialog->Close(true);
 
       CGUIWindow::OnMessage(message);

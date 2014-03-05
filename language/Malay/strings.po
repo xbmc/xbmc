@@ -1177,6 +1177,10 @@ msgctxt "#13310"
 msgid "Zoom effect"
 msgstr "Kesan zum"
 
+msgctxt "#13350"
+msgid "Current playlist"
+msgstr "Senarai audio video semasa"
+
 msgctxt "#13399"
 msgid "Ignore articles when sorting (e.g. \"the\")"
 msgstr "Abaikan artikel apabila mengisih (cth: \"the\")"

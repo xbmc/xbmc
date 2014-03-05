@@ -38,4 +38,4 @@ msgstr "Подробно описване в дневника на RTMP библ
 
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
-msgstr "Verbose logging for DBUS calls"
+msgstr "Подробно описване в дневника на DBUS обажданията"

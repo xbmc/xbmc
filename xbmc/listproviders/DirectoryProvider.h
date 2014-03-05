@@ -25,18 +25,38 @@
 #include "guilib/GUIStaticItem.h"
 #include "utils/Job.h"
 #include "threads/CriticalSection.h"
+#include "interfaces/IAnnouncer.h"
 
 class TiXmlElement;
 
-class CDirectoryProvider : public IListProvider, public IJobCallback
+typedef enum
+{
+  VIDEO,
+  AUDIO,
+  PICTURE,
+  PROGRAM
+} InfoTagType;
+
+class CDirectoryProvider :
+  public IListProvider,
+  public IJobCallback,
+  public ANNOUNCEMENT::IAnnouncer
 {
 public:
+  typedef enum
+  {
+    OK,
+    PENDING,
+    DONE
+  } UpdateState;
+
   CDirectoryProvider(const TiXmlElement *element, int parentID);
   virtual ~CDirectoryProvider();
 
-  virtual bool Update(bool refresh);
+  virtual bool Update(bool forceRefresh);
+  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
   virtual void Fetch(std::vector<CGUIListItemPtr> &items) const;
-  virtual void Reset();
+  virtual void Reset(bool immediately = false);
   virtual bool OnClick(const CGUIListItemPtr &item);
   virtual bool IsUpdating() const;
 
@@ -44,12 +64,20 @@ public:
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 private:
   unsigned int     m_updateTime;
-  bool             m_invalid;
+  UpdateState      m_updateState;
+  bool             m_isDbUpdating;
+  bool             m_isAnnounced;
   unsigned int     m_jobID;
   CGUIInfoLabel    m_url;
   CGUIInfoLabel    m_target;
   std::string      m_currentUrl;
   std::string      m_currentTarget;   ///< \brief node.target property on the list as a whole
   std::vector<CGUIStaticItemPtr> m_items;
+  std::vector<InfoTagType> m_itemTypes;
   CCriticalSection m_section;
+
+  void FireJob();
+  void RegisterListProvider(bool hasLibraryContent);
+  bool UpdateURL();
+  static bool HasLibraryContent(const std::string &url);
 };

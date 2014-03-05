@@ -7,7 +7,7 @@
 	<controls>
 		<control type="group">
 			<visible>player.chaptercount + Window.IsVisible(FullScreenVideo)</visible>
-			<left>665r</left>
+			<left>705r</left>
 			<top>-6</top>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
@@ -46,7 +46,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<left>520r</left>
+			<left>560r</left>
 			<top>-6</top>
 			<control type="image">
 				<left>0</left>

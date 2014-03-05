@@ -100,6 +100,19 @@ bool aml_present()
   return has_aml == 1;
 }
 
+bool aml_hw3d_present()
+{
+  static int has_hw3d = -1;
+  if (has_hw3d == -1)
+  {
+    if (aml_get_sysfs_int("/sys/class/ppmgr/ppmgr_3d_mode") != -1)
+      has_hw3d = 1;
+    else
+      has_hw3d = 0;
+  }
+  return has_hw3d == 1;
+}
+
 bool aml_wired_present()
 {
   static int has_wired = -1;
@@ -133,6 +146,7 @@ void aml_permissions()
     system("su -c chmod 666 /sys/class/video/disable_video");
     system("su -c chmod 666 /sys/class/tsync/pts_pcrscr");
     system("su -c chmod 666 /sys/class/audiodsp/digital_raw");
+    system("su -c chmod 666 /sys/class/ppmgr/ppmgr_3d_mode");
     system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
     system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
     system("su -c chmod 666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");

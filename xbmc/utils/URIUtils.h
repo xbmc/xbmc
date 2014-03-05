@@ -126,12 +126,25 @@ public:
   static bool IsBluray(const CStdString& strFile);
   static bool IsAndroidApp(const CStdString& strFile);
   static bool IsLibraryFolder(const CStdString& strFile);
+  static bool IsLibraryContent(const std::string& strFile);
 
   static void AddSlashAtEnd(std::string& strFolder);
   static bool HasSlashAtEnd(const std::string& strFile, bool checkURL = false);
   static void RemoveSlashAtEnd(std::string& strFolder);
   static bool CompareWithoutSlashAtEnd(const CStdString& strPath1, const CStdString& strPath2);
   static std::string FixSlashesAndDups(const std::string& path, const char slashCharacter = '/', const size_t startFrom = 0);
+  /**
+   * Convert path to form without duplicated slashes and without relative directories
+   * Strip duplicated slashes
+   * Resolve and remove relative directories ("/../" and "/./")
+   * Will ignore slashes with other direction than specified
+   * Will not resolve path starting from relative directory
+   * @warning Don't use with "protocol://path"-style URLs
+   * @param path string to process
+   * @param slashCharacter character to use as directory delimiter
+   * @return transformed path
+   */
+  static std::string CanonicalizePath(const std::string& path, const char slashCharacter = '\\');
 
   static void CreateArchivePath(CStdString& strUrlPath,
                                 const CStdString& strType,

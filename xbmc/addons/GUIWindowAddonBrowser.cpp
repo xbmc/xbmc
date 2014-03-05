@@ -23,6 +23,7 @@
 #include "addons/Repository.h"
 #include "GUIDialogAddonInfo.h"
 #include "GUIDialogAddonSettings.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -208,6 +209,20 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
+class UpdateAddons : public IRunnable
+{
+  virtual void Run()
+  {
+    VECADDONS addons;
+    CAddonMgr::Get().GetAllOutdatedAddons(addons, true); // get local
+    for (VECADDONS::iterator i = addons.begin(); i != addons.end(); ++i)
+    {
+      CStdString referer = StringUtils::Format("Referer=%s-%s.zip",(*i)->ID().c_str(),(*i)->Version().c_str());
+      CAddonInstaller::Get().Install((*i)->ID(), true, referer); // force install
+    }
+  }
+};
+
 bool CGUIWindowAddonBrowser::OnClick(int iItem)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
@@ -220,6 +235,14 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     CStdString path;
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
       CAddonInstaller::Get().InstallFromZip(path);
+    return true;
+  }
+  if (item->GetPath() == "addons://update_all/")
+  {
+    // fire off a threaded update of all addons
+    UpdateAddons updater;
+    if (CGUIDialogBusy::Wait(&updater))
+      return Update("addons://downloading/");
     return true;
   }
   if (!item->m_bIsFolder)

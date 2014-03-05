@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Info"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Acciones"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Reproduciendo Ahora"
@@ -220,9 +224,25 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Letras"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualisation"
+msgstr "Ocultar Fanart en visualización de pantalla completa"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Add-on de Liricas"
+
+msgctxt "#31134"
+msgid "Home Page Videos Sub-menu"
+msgstr "Submenú de Videos de Pantalla Principal"
+
+msgctxt "#31135"
+msgid "Home Page Music Sub-menu"
+msgstr "Submenú de Música de Pantalla Principal"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Sub-menu"
+msgstr "Submenú de Imágenes de Pantalla Principal"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -231,6 +251,10 @@ msgstr "OSD de Música"
 msgctxt "#31141"
 msgid "Video OSD"
 msgstr "OSD de Video"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Nivel de Ajustes"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -372,6 +396,14 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Descargar Subtítulos"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Ver en 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Cambiar modo"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Activado"
@@ -416,6 +448,10 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGURAR ADD-ONS[/B][CR][CR]Administrar tus Add-ons instalados · Buscar e instalar add-ons desde xbmc.org[CR]Modificar la configuración de Add-ons"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]CONFIGURAR AJUSTES DE TV[/B][CR][CR]Cambiar información de pantalla completa · Administrar ajustes de datos EPG"
+
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGURAR AJUSTES DE SERVICIO[/B][CR][CR]Configuración de control de XBMC a través de UPnP y HTTP · Configurar el uso compartido de archivos[CR]HabilitarZeroconf · Configurar AirPlay"
@@ -423,6 +459,14 @@ msgstr "[B]CONFIGURAR AJUSTES DE SERVICIO[/B][CR][CR]Configuración de control d
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Ayuda de primera vez..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgstr "Esta pestaña significa que existe un menú al lado de esta ventana que contiene opciones extra para esta sección. Para acceder al menú, navegue a la izquierda con su control remoto o teclado, o posicione el puntero del ratón sobre la pestaña. [CR][CR] Presione \"Aceptar\" para cerrar este diálogo. No aparecerá nuevamente."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Subtítulo local disponible"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

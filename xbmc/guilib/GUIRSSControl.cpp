@@ -113,10 +113,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
         m_rtl = iter->second.rtl;
         m_vecUrls = iter->second.url;
         m_vecIntervals = iter->second.interval;
-        if (m_scrollInfo.pixelSpeed > 0 && m_rtl)
-          m_scrollInfo.pixelSpeed *= -1;
-        else if (m_scrollInfo.pixelSpeed < 0 && !m_rtl)
-          m_scrollInfo.pixelSpeed *= -1;
+        m_scrollInfo.SetSpeed(m_label.scrollSpeed * (m_rtl ? -1 : 1));
       }
 
       dirty = true;
@@ -149,7 +146,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
       if ( m_stopped )
         m_scrollInfo.SetSpeed(0);
       else
-        m_scrollInfo.SetSpeed(m_label.scrollSpeed);
+        m_scrollInfo.SetSpeed(m_label.scrollSpeed * (m_rtl ? -1 : 1));
 
       if(m_label.font->UpdateScrollInfo(m_feed, m_scrollInfo))
         dirty = true;

@@ -933,6 +933,10 @@ msgctxt "#13280"
 msgid "Video"
 msgstr "Video"
 
+msgctxt "#13350"
+msgid "Current playlist"
+msgstr "Danh sách hiện tại"
+
 msgctxt "#13351"
 msgid "Album information"
 msgstr "Thông tin bộ sưu tập"

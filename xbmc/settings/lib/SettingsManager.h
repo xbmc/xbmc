@@ -393,6 +393,7 @@ private:
   // implementation of ISettingsHandler
   virtual bool OnSettingsLoading();
   virtual void OnSettingsLoaded();
+  virtual void OnSettingsUnloaded();
   virtual bool OnSettingsSaving() const;
   virtual void OnSettingsSaved() const;
   virtual void OnSettingsCleared();
