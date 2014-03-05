@@ -44,7 +44,6 @@ CPVRClients::CPVRClients(void) :
     CThread("PVRClient"),
     m_bChannelScanRunning(false),
     m_bIsSwitchingChannels(false),
-    m_bIsValidChannelSettings(false),
     m_playingClientId(-EINVAL),
     m_bIsPlayingLiveTV(false),
     m_bIsPlayingRecording(false),
@@ -335,8 +334,6 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
   {
     CSingleLock lock(m_critSection);
     m_bIsSwitchingChannels = false;
-    if (bSwitchSuccessful)
-      m_bIsValidChannelSettings = false;
   }
 
   if (!bSwitchSuccessful)
