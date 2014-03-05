@@ -199,4 +199,6 @@ protected:
   VpuDecOutFrameInfo  m_frameInfo;
   CBitstreamConverter *m_converter;
   bool                m_convert_bitstream;
+  int                 m_bytesToBeConsumed; // Remaining bytes in VPU
+  double              m_previousPts;       // Enable to keep pts when needed
 };
