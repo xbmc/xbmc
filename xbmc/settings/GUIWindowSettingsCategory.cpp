@@ -1001,7 +1001,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
+      if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("dimscreensaver.mode"), addon, ADDON_SCREENSAVER))
         pControl->SetEnabled(addon->HasSettings());
       else
         pControl->SetEnabled(false);
