@@ -189,6 +189,10 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *ele
       if (mediaItem->HasProperty("indirect"))
         item.SetProperty("indirect", mediaItem->GetProperty("indirect"));
 
+      /* Also forward unavailable flag */
+      if (mediaItem->HasProperty("unavailable"))
+        item.SetProperty("unavailable", mediaItem->GetProperty("unavailable"));
+
       item.m_mediaItems.push_back(mediaItem);
     }
     else if (mediaItem->GetPlexDirectoryType() == PLEX_DIR_TYPE_THUMB)
