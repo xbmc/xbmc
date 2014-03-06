@@ -32,6 +32,11 @@ CSettingPath::CSettingPath(const std::string &id, CSettingsManager *settingsMana
   : CSettingString(id, settingsManager),
     m_writable(true)
 { }
+
+CSettingPath::CSettingPath(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = NULL */)
+  : CSettingString(id, label, value, settingsManager),
+    m_writable(true)
+{ }
   
 CSettingPath::CSettingPath(const std::string &id, const CSettingPath &setting)
   : CSettingString(id, setting)
