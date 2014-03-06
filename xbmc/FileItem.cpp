@@ -1464,6 +1464,9 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
       m_ref = m_pvrChannelInfoTag->InputFormat();
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
+          /* PLEX */
+          || m_strPath.Left(13).Equals("plexserver://")
+          /* END PLEX */
           || m_strPath.Left(8).Equals("https://"))
     {
       /* PLEX */
@@ -1502,6 +1505,9 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
 
       else if (extension == ".ram")
         m_ref = "audio/x-pn-realaudio";
+
+      else if (extension == ".m3u8")
+        m_ref = "application/x-mpegURL";
 
       else
       {

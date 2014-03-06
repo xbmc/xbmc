@@ -24,30 +24,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false), m_textFieldFocused(false), m_textFieldSecure(false)
 {
-  m_currentItems[MUSIC] = CFileItemPtr();
-  m_currentItems[PHOTO] = CFileItemPtr();
-  m_currentItems[VIDEO] = CFileItemPtr();
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-std::string CPlexTimelineManager::StateToString(MediaState state)
-{
-  CStdString strstate;
-  switch (state) {
-    case MEDIA_STATE_STOPPED:
-      strstate = "stopped";
-      break;
-    case MEDIA_STATE_BUFFERING:
-      strstate = "buffering";
-      break;
-    case MEDIA_STATE_PLAYING:
-      strstate = "playing";
-      break;
-    case MEDIA_STATE_PAUSED:
-      strstate = "paused";
-      break;
-  }
-  return strstate;
+  m_contexts[PLEX_MEDIA_TYPE_MUSIC] = CPlexTimelineContext(PLEX_MEDIA_TYPE_MUSIC);
+  m_contexts[PLEX_MEDIA_TYPE_VIDEO] = CPlexTimelineContext(PLEX_MEDIA_TYPE_VIDEO);
+  m_contexts[PLEX_MEDIA_TYPE_PHOTO] = CPlexTimelineContext(PLEX_MEDIA_TYPE_PHOTO);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,9 +62,12 @@ void CPlexTimelineManager::SendTimelineToSubscriber(CPlexRemoteSubscriberPtr sub
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexTimelineManager::SendTimelineToSubscribers()
+void CPlexTimelineManager::SendTimelineToSubscribers(bool delay)
 {
-  g_plexApplication.timer.SetTimeout(200, this);
+  if (delay)
+    g_plexApplication.timer.SetTimeout(200, this);
+  else
+    OnTimeout();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +94,7 @@ void CPlexTimelineManager::SetTextFieldFocused(bool focused, const CStdString &n
     m_textFieldSecure = false;
   }
 
-  SendTimelineToSubscribers();
+  SendTimelineToSubscribers(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,22 +113,38 @@ void CPlexTimelineManager::Stop()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexTimelineManager::NotifyPollers()
 {
+  std::vector<CPlexRemoteSubscriberPtr> pollers;
   BOOST_FOREACH(CPlexRemoteSubscriberPtr sub, g_plexApplication.remoteSubscriberManager->getSubscribers())
   {
-    if (sub->isPoller() && sub->m_pollEvent.getNumWaits() > 0)
-      sub->m_pollEvent.Set();
+    if (sub->isPoller())
+      pollers.push_back(sub);
+  }
+
+  if (!pollers.empty())
+  {
+    {
+      CSingleLock lk(m_pollerTimelineLock);
+      CSingleLock lk2(m_timelineLock);
+      m_pollerContexts.push(m_contexts);
+    }
+
+    BOOST_FOREACH(CPlexRemoteSubscriberPtr sub, pollers)
+    {
+      if (sub->m_pollEvent.getNumWaits() > 0)
+        sub->m_pollEvent.Set();
+    }
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forServer)
+CUrlOptions CPlexTimelineManager::GetCurrentTimeline(const CPlexTimelineContext& context, bool forServer)
 {
   CUrlOptions options;
   std::string durationStr;
 
-  options.AddOption("state", StateToString(m_currentStates[type]));
+  options.AddOption("state", PlexUtils::GetMediaStateString(context.state));
 
-  CFileItemPtr item = m_currentItems[type];
+  CFileItemPtr item = context.item;
   if (item)
   {
     options.AddOption("time", item->GetProperty("viewOffset").asString());
@@ -175,7 +173,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
 
   if (!forServer)
   {
-    options.AddOption("type", MediaTypeToString(type));
+    options.AddOption("type", PlexUtils::GetMediaTypeString(context.type));
 
     if (item)
     {
@@ -202,7 +200,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
     controllable.push_back("playPause");
     controllable.push_back("stop");
 
-    if (type == MUSIC || type == VIDEO)
+    if (context.type == PLEX_MEDIA_TYPE_MUSIC || context.type == PLEX_MEDIA_TYPE_VIDEO)
     {
       if (playlistLen > 0)
       {
@@ -221,22 +219,22 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
       controllable.push_back("stepBack");
       controllable.push_back("stepForward");
       controllable.push_back("seekTo");
-      if (type == VIDEO)
+      if (context.type == PLEX_MEDIA_TYPE_VIDEO)
       {
         controllable.push_back("subtitleStream");
         controllable.push_back("audioStream");
       }
     }
-    else if (type == PHOTO)
+    else if (context.type == PLEX_MEDIA_TYPE_PHOTO)
     {
       controllable.push_back("skipPrevious");
       controllable.push_back("skipNext");
     }
 
-    if (controllable.size() > 0 && m_currentStates[type] != MEDIA_STATE_STOPPED)
+    if (controllable.size() > 0 && context.state != PLEX_MEDIA_STATE_STOPPED)
       options.AddOption("controllable", StringUtils::Join(controllable, ","));
 
-    if (g_application.IsPlaying() && m_currentStates[type] != MEDIA_STATE_STOPPED)
+    if (g_application.IsPlaying() && context.state != PLEX_MEDIA_STATE_STOPPED)
     {
       options.AddOption("volume", g_application.GetVolume());
 
@@ -254,7 +252,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
 
       options.AddOption("mute", g_application.IsMuted() ? "1" : "0");
 
-      if (type == VIDEO && g_application.IsPlayingVideo())
+      if (context.type == PLEX_MEDIA_TYPE_VIDEO && g_application.IsPlayingVideo())
       {
         int subid = g_application.m_pPlayer->GetSubtitleVisible() ? g_application.m_pPlayer->GetSubtitlePlexID() : -1;
         options.AddOption("subtitleStreamID", subid);
@@ -262,7 +260,7 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
       }
     }
 
-    if (m_currentStates[type] != MEDIA_STATE_STOPPED)
+    if (context.state != PLEX_MEDIA_STATE_STOPPED)
     {
       std::string location = "navigation";
 
@@ -276,6 +274,8 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
 
       options.AddOption("location", location);
     }
+    else if (context.continuing)
+      options.AddOption("continuing", "1");
 
     if (g_application.IsPlaying() && g_application.m_pPlayer)
     {
@@ -291,65 +291,99 @@ CUrlOptions CPlexTimelineManager::GetCurrentTimeline(MediaType type, bool forSer
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, CPlexTimelineManager::MediaState state, uint64_t currentPosition, bool force)
+void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMediaState state, uint64_t currentPosition, bool force)
 {
   if (!newItem)
     return;
 
-  MediaType type = GetMediaType(newItem);
-  if (type == UNKNOWN)
+  ePlexMediaType type = PlexUtils::GetMediaTypeFromItem(newItem);
+  if (type == PLEX_MEDIA_TYPE_UNKNOWN)
   {
     CLog::Log(LOGDEBUG, "PlexTimelineManager::ReportProgress unknown item %s", newItem->GetPath().c_str());
     return;
   }
 
-  bool stateChange = false;
+  CPlexTimelineContext newContext;
+  newContext.item = CFileItemPtr(new CFileItem(*newItem.get()));
+  newContext.state = state;
+  newContext.currentPosition = currentPosition;
+
+  CSingleLock lk(m_timelineLock);
+
+  CPlexTimelineContext oldContext = m_contexts[type];
+
+  lk.unlock();
 
   //CLog::Log(LOGDEBUG, "PlexTimelineManager::ReportProgress reporting for %s, current is %s", newItem->GetLabel().c_str(), m_currentItems[type] ? m_currentItems[type]->GetLabel().c_str() : "none");
 
-  if (!m_currentItems[type] || newItem->GetPath() != m_currentItems[type]->GetPath())
+  if (!oldContext || newContext.item->GetPath() != oldContext.item->GetPath())
   {
-    if (m_currentStates[type] != MEDIA_STATE_STOPPED && m_currentItems[type])
+    if (oldContext.state != PLEX_MEDIA_STATE_STOPPED && oldContext)
     {
       // we need to stop the old media before playing the new one.
       CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress Old item was never stopped, sending stop timeline now.");
-      ReportProgress(m_currentItems[type], MEDIA_STATE_STOPPED, m_currentItems[type]->GetProperty("viewOffset").asInteger(), true);
+      oldContext.continuing = true;
+      oldContext.state = PLEX_MEDIA_STATE_STOPPED;
+
+      lk.lock();
+      m_contexts[type] = oldContext;
+      lk.unlock();
+
+      ReportProgress(oldContext, true);
     }
-    /* we need a copy */
-    m_currentItems[type] = CFileItemPtr(new CFileItem(*newItem.get()));
-    stateChange = true;
   }
 
-  /* now se the correct item, since we might have copied it */
-  CFileItemPtr currentItem = m_currentItems[type];
+  /* force if the caller has set the force flag, or if the
+   * context has changed enough to warrant a direct timeline
+   */
+  bool reallyForce = force ? true : (newContext != oldContext);
 
-  if (state != m_currentStates[type])
+  lk.lock();
+  m_contexts[type] = newContext;
+  lk.unlock();
+
+  ReportProgress(newContext, reallyForce);
+
+  if (newContext.state == PLEX_MEDIA_STATE_STOPPED)
   {
-    m_currentStates[type] = state;
-    stateChange = true;
+    lk.lock();
+    m_contexts[type] = CPlexTimelineContext();
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexTimelineManager::ReportProgress(const CPlexTimelineContext &context, bool force)
+{
+  /* now se the correct item, since we might have copied it */
+  CFileItemPtr currentItem = context.item;
+
+  int64_t realPosition = context.currentPosition;
 
   if (currentItem)
   {
     /* Let's cheat, if the timecode is something absurd, like bigger than our current
      * duration, let's just reset it to 0 */
-    if (currentPosition > GetItemDuration(currentItem))
-      currentPosition = 0;
+    if (realPosition > GetItemDuration(currentItem))
+      realPosition = 0;
 
-    if (currentItem->GetProperty("viewOffset").asInteger() != currentPosition)
-      currentItem->SetProperty("viewOffset", currentPosition);
+    if (currentItem->GetProperty("viewOffset").asInteger() != realPosition)
+      currentItem->SetProperty("viewOffset", realPosition);
 
     if (g_plexApplication.m_preplayItem &&
         g_plexApplication.m_preplayItem->GetPath() == currentItem->GetPath() &&
-        g_plexApplication.m_preplayItem->GetProperty("viewOffset").asInteger() != currentPosition)
-      g_plexApplication.m_preplayItem->SetProperty("viewOffset", currentPosition);
+        g_plexApplication.m_preplayItem->GetProperty("viewOffset").asInteger() != realPosition)
+      g_plexApplication.m_preplayItem->SetProperty("viewOffset", realPosition);
   }
 
   if (g_plexApplication.remoteSubscriberManager->hasSubscribers() &&
-      (stateChange || m_subTimer.elapsedMs() >= 950))
+      (force || m_subTimer.elapsedMs() >= 950))
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating subscribers: (%s) %s [%lld/%lld]",
-              StateToString(m_currentStates[type]).c_str(), currentItem->GetLabel().c_str(), currentPosition, GetItemDuration(m_currentItems[type]));
+              PlexUtils::GetMediaStateString(context.state).c_str(),
+              currentItem->GetLabel().c_str(),
+              realPosition,
+              GetItemDuration(currentItem));
+
     NotifyPollers();
     SendTimelineToSubscribers();
     m_subTimer.restart();
@@ -364,14 +398,17 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, CPlexTime
   else if (server && server->GetActiveConnection() && !server->GetActiveConnection()->IsLocal())
     serverTimeout = 9950 * 3; // 30 seconds for remote server
 
-  if (force || stateChange || m_serverTimer.elapsedMs() >= serverTimeout)
+  if (force || m_serverTimer.elapsedMs() >= serverTimeout)
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server: (%s) %s [%lld/%lld]",
-              StateToString(m_currentStates[type]).c_str(), currentItem->GetLabel().c_str(), currentPosition, GetItemDuration(currentItem));
-    g_plexApplication.mediaServerClient->SendServerTimeline(currentItem, GetCurrentTimeline(type));
+              PlexUtils::GetMediaStateString(context.state).c_str(),
+              currentItem->GetLabel().c_str(),
+              realPosition,
+              GetItemDuration(currentItem));
+    g_plexApplication.mediaServerClient->SendServerTimeline(currentItem, GetCurrentTimeline(context.type));
 
     /* now we can see if we need to ping the transcoder as well */
-    if (type == VIDEO && state == MEDIA_STATE_PAUSED && currentItem &&
+    if (context.type == PLEX_MEDIA_TYPE_VIDEO && context.state == PLEX_MEDIA_STATE_PAUSED && currentItem &&
         currentItem->GetProperty("plexDidTranscode").asBoolean() && server)
       g_plexApplication.mediaServerClient->SendTranscoderPing(server);
 
@@ -381,72 +418,16 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, CPlexTime
   /* Mark progress for the item */
   float percentage = 0.0;
   if (GetItemDuration(currentItem) > 0)
-    percentage = (float)(((float)currentPosition/(float)GetItemDuration(currentItem)) * 100.0);
+    percentage = (float)(((float)realPosition/(float)GetItemDuration(currentItem)) * 100.0);
 
   if (currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED &&
-      currentPosition >= 5)
+      realPosition >= 5)
     currentItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
 
   if ((currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_IN_PROGRESS ||
       currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED) &&
       percentage > g_advancedSettings.m_videoPlayCountMinimumPercent)
     currentItem->MarkAsWatched();
-
-  /* if we are stopping, we need to reset our currentItem */
-  if (state == MEDIA_STATE_STOPPED)
-    m_currentItems[type].reset();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(CFileItemPtr item)
-{
-  EPlexDirectoryType plexType = item->GetPlexDirectoryType();
-
-  switch(plexType)
-  {
-    case PLEX_DIR_TYPE_TRACK:
-      return MUSIC;
-    case PLEX_DIR_TYPE_VIDEO:
-    case PLEX_DIR_TYPE_EPISODE:
-    case PLEX_DIR_TYPE_CLIP:
-    case PLEX_DIR_TYPE_MOVIE:
-      return VIDEO;
-    case PLEX_DIR_TYPE_IMAGE:
-    case PLEX_DIR_TYPE_PHOTO:
-    case PLEX_DIR_TYPE_PHOTOALBUM:
-      return PHOTO;
-    default:
-      return UNKNOWN;
-  }
-  return UNKNOWN;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-std::string CPlexTimelineManager::MediaTypeToString(MediaType type)
-{
-  switch(type)
-  {
-    case MUSIC:
-      return "music";
-    case PHOTO:
-      return "photo";
-    case VIDEO:
-      return "video";
-    default:
-      return "unknown";
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexTimelineManager::MediaType CPlexTimelineManager::GetMediaType(const CStdString &typestr)
-{
-  if (typestr == "music")
-    return MUSIC;
-  if (typestr == "photo")
-    return PHOTO;
-  if (typestr == "video")
-    return VIDEO;
-  return UNKNOWN;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -457,8 +438,17 @@ CXBMCTinyXML CPlexTimelineManager::WaitForTimeline(CPlexRemoteSubscriberPtr subs
 
   CLog::Log(LOGDEBUG, "CPlexTimelineManager::WaitForTimeline - %s is waiting until pollEvent is set.", subscriber->getUUID().c_str());
 
-  subscriber->m_pollEvent.Reset();
-  subscriber->m_pollEvent.WaitMSec(10000); /* wait 10 seconds */
+  bool wait = false;
+  {
+    CSingleLock lk(m_pollerTimelineLock);
+    wait = m_pollerContexts.empty();
+  }
+
+  if (wait)
+  {
+    subscriber->m_pollEvent.Reset();
+    subscriber->m_pollEvent.WaitMSec(10000); /* wait 10 seconds */
+  }
 
   if (!m_stopped)
     return GetCurrentTimeLinesXML(subscriber);
@@ -471,9 +461,11 @@ std::vector<CUrlOptions> CPlexTimelineManager::GetCurrentTimeLines(int commandID
 {
   std::vector<CUrlOptions> array;
 
-  array.push_back(GetCurrentTimeline(MUSIC, false));
-  array.push_back(GetCurrentTimeline(PHOTO, false));
-  array.push_back(GetCurrentTimeline(VIDEO, false));
+  CSingleLock lk(m_timelineLock);
+
+  array.push_back(GetCurrentTimeline(m_contexts[PLEX_MEDIA_TYPE_MUSIC], false));
+  array.push_back(GetCurrentTimeline(m_contexts[PLEX_MEDIA_TYPE_PHOTO], false));
+  array.push_back(GetCurrentTimeline(m_contexts[PLEX_MEDIA_TYPE_VIDEO], false));
 
   return array;
 }
@@ -481,7 +473,27 @@ std::vector<CUrlOptions> CPlexTimelineManager::GetCurrentTimeLines(int commandID
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(CPlexRemoteSubscriberPtr subscriber)
 {
-  std::vector<CUrlOptions> tlines = GetCurrentTimeLines();
+  std::vector<CUrlOptions> tlines;
+
+  {
+    CSingleLock lk(m_pollerTimelineLock);
+    PlexTimelineContextMap cmap;
+
+    if (!subscriber->isPoller() || m_pollerContexts.empty())
+    {
+      CSingleLock lk(m_timelineLock);
+      cmap = m_contexts;
+    }
+    else
+    {
+      cmap = m_pollerContexts.front();
+    }
+
+    tlines.push_back(GetCurrentTimeline(cmap[PLEX_MEDIA_TYPE_MUSIC], false));
+    tlines.push_back(GetCurrentTimeline(cmap[PLEX_MEDIA_TYPE_PHOTO], false));
+    tlines.push_back(GetCurrentTimeline(cmap[PLEX_MEDIA_TYPE_VIDEO], false));
+  }
+
 
   CXBMCTinyXML doc;
   doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));

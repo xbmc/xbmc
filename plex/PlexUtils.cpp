@@ -623,3 +623,90 @@ void PlexUtils::LogStackTrace(char *FuncName)
 #else
 void PlexUtils::LogStackTrace(char *FuncName) {}
 #endif
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+ePlexMediaType PlexUtils::GetMediaTypeFromItem(CFileItemPtr item)
+{
+  EPlexDirectoryType plexType = item->GetPlexDirectoryType();
+
+  switch(plexType)
+  {
+    case PLEX_DIR_TYPE_TRACK:
+      return PLEX_MEDIA_TYPE_MUSIC;
+    case PLEX_DIR_TYPE_VIDEO:
+    case PLEX_DIR_TYPE_EPISODE:
+    case PLEX_DIR_TYPE_CLIP:
+    case PLEX_DIR_TYPE_MOVIE:
+      return PLEX_MEDIA_TYPE_VIDEO;
+    case PLEX_DIR_TYPE_IMAGE:
+    case PLEX_DIR_TYPE_PHOTO:
+    case PLEX_DIR_TYPE_PHOTOALBUM:
+      return PLEX_MEDIA_TYPE_PHOTO;
+    default:
+      return PLEX_MEDIA_TYPE_UNKNOWN;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::string PlexUtils::GetMediaTypeString(ePlexMediaType type)
+{
+  switch(type)
+  {
+    case PLEX_MEDIA_TYPE_MUSIC:
+      return "music";
+    case PLEX_MEDIA_TYPE_PHOTO:
+      return "photo";
+    case PLEX_MEDIA_TYPE_VIDEO:
+      return "video";
+    default:
+      return "unknown";
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+ePlexMediaType PlexUtils::GetMediaTypeFromString(const std::string &typestr)
+{
+  if (typestr == "music")
+    return PLEX_MEDIA_TYPE_MUSIC;
+  if (typestr == "photo")
+    return PLEX_MEDIA_TYPE_PHOTO;
+  if (typestr == "video")
+    return PLEX_MEDIA_TYPE_VIDEO;
+  return PLEX_MEDIA_TYPE_UNKNOWN;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+std::string PlexUtils::GetMediaStateString(ePlexMediaState state)
+{
+  CStdString strstate;
+  switch (state) {
+    case PLEX_MEDIA_STATE_STOPPED:
+      strstate = "stopped";
+      break;
+    case PLEX_MEDIA_STATE_BUFFERING:
+      strstate = "buffering";
+      break;
+    case PLEX_MEDIA_STATE_PLAYING:
+      strstate = "playing";
+      break;
+    case PLEX_MEDIA_STATE_PAUSED:
+      strstate = "paused";
+      break;
+  }
+  return strstate;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+ePlexMediaState PlexUtils::GetMediaStateFromString(const std::string& statestr)
+{
+  if (statestr == "stopped")
+    return PLEX_MEDIA_STATE_STOPPED;
+  else if (statestr == "buffering")
+    return PLEX_MEDIA_STATE_BUFFERING;
+  else if (statestr == "playing")
+    return PLEX_MEDIA_STATE_PLAYING;
+  else if (statestr == "paused")
+    return PLEX_MEDIA_STATE_PAUSED;
+
+  return PLEX_MEDIA_STATE_STOPPED;
+}

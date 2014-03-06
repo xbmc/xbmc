@@ -169,7 +169,7 @@ void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", item, param);
   
   /* PLEX */
-  g_plexApplication.timelineManager->ReportProgress(item, m_bPause ? CPlexTimelineManager::MEDIA_STATE_PAUSED : CPlexTimelineManager::MEDIA_STATE_PLAYING);
+  g_plexApplication.timelineManager->ReportProgress(item, m_bPause ? PLEX_MEDIA_STATE_PAUSED : PLEX_MEDIA_STATE_PLAYING);
   /* END PLEX */
 }
 
@@ -181,7 +181,7 @@ void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPause", item, param);
   
   /* PLEX */
-  g_plexApplication.timelineManager->ReportProgress(item, CPlexTimelineManager::MEDIA_STATE_PAUSED);
+  g_plexApplication.timelineManager->ReportProgress(item, PLEX_MEDIA_STATE_PAUSED);
   /* END PLEX */
 }
 
@@ -193,7 +193,7 @@ void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", item, param);
 
   /* PLEX */
-  g_plexApplication.timelineManager->ReportProgress(item, CPlexTimelineManager::MEDIA_STATE_STOPPED);
+  g_plexApplication.timelineManager->ReportProgress(item, PLEX_MEDIA_STATE_STOPPED);
   /* END PLEX */
 }
 

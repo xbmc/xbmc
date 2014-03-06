@@ -6378,24 +6378,16 @@ void CApplication::UpdateFileState(const string& aState, bool force)
     return;
 
   // Compute the state if not passed on.
-  CPlexTimelineManager::MediaState state;
-  if (aState == "paused")
-    state = CPlexTimelineManager::MEDIA_STATE_PAUSED;
-  else if (aState == "playing")
-    state = CPlexTimelineManager::MEDIA_STATE_PLAYING;
-  else if (aState == "buffering")
-    state = CPlexTimelineManager::MEDIA_STATE_BUFFERING;
-  else if (aState == "stopped" )
-    state = CPlexTimelineManager::MEDIA_STATE_STOPPED;
-  else if (aState.empty())
-    state = IsBuffering() ? CPlexTimelineManager::MEDIA_STATE_BUFFERING : IsPaused() ? CPlexTimelineManager::MEDIA_STATE_PAUSED : CPlexTimelineManager::MEDIA_STATE_PLAYING;
+  ePlexMediaState state;
+  if (!aState.empty())
+    state = PlexUtils::GetMediaStateFromString(aState);
   else
-    return;
+    state = IsBuffering() ? PLEX_MEDIA_STATE_BUFFERING : IsPaused() ? PLEX_MEDIA_STATE_PAUSED : PLEX_MEDIA_STATE_PLAYING;
 
   if (!m_itemCurrentFile->HasProperty("duration"))
     m_itemCurrentFile->SetProperty("duration", GetTotalTime());
 
-  if (state == CPlexTimelineManager::MEDIA_STATE_STOPPED || IsPlayingVideo() || IsPlayingAudio())
+  if (state == PLEX_MEDIA_STATE_STOPPED || IsPlayingVideo() || IsPlayingAudio())
   {
     if (g_plexApplication.timelineManager)
       g_plexApplication.timelineManager->ReportProgress(m_itemCurrentFile, state, GetTime() * 1000, force);
