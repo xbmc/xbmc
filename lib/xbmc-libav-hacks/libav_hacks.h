@@ -35,6 +35,11 @@
 #error "Your libav version is too old. Please update to libav-10 or git master."
 #endif
 
+// libavcodec
+
+// AVCodecContext does not have pkt_timebase member
+#define pkt_timebase time_base
+
 // libavutil
 
 #define AVFRAME_IN_LAVU
