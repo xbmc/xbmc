@@ -1414,6 +1414,26 @@ bool CPVRManager::IsIdle(void) const
   return true;
 }
 
+bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
+{
+  bool bReturn(true);
+  if (IsStarted())
+  {
+    if (!m_addons->AllLocalBackendsIdle())
+    {
+      if (bAskUser)
+      {
+        // Inform user about PVR being busy. Ask if user wants to powerdown anyway.
+        bool bCanceled = false;
+        bReturn = CGUIDialogYesNo::ShowAndGetInput(19685, 19686, 0, 0, -1, -1, bCanceled, 10000);
+      }
+      else
+        bReturn = false; // do not powerdown (busy, but no user interaction requested).
+    }
+  }
+  return bReturn;
+}
+
 void CPVRManager::ShowPlayerInfo(int iTimeout)
 {
   if (IsStarted() && m_guiInfo)

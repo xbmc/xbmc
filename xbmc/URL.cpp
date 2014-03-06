@@ -19,6 +19,7 @@
  */
 
 #include "URL.h"
+#include "Application.h"
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -29,6 +30,7 @@
 #include "filesystem/StackDirectory.h"
 #include "addons/Addon.h"
 #include "utils/StringUtils.h"
+#include "network/Network.h"
 #ifndef TARGET_POSIX
 #include <sys\types.h>
 #include <sys\stat.h>
@@ -679,14 +681,12 @@ std::string CURL::GetRedacted(const std::string& path)
 
 bool CURL::IsLocal() const
 {
-  return (IsLocalHost() || m_strProtocol.empty());
+  return (m_strProtocol.empty() || IsLocalHost());
 }
 
 bool CURL::IsLocalHost() const
 {
-  // localhost is case-insensitive
-  return (StringUtils::EqualsNoCase(m_strHostName, "localhost") ||
-          m_strHostName == "127.0.0.1");
+  return g_application.getNetwork().IsLocalHost(m_strHostName);
 }
 
 bool CURL::IsFileOnly(const std::string &url)

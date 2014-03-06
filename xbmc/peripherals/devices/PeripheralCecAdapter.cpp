@@ -628,9 +628,9 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
       {
         adapter->m_bStarted = false;
         if (adapter->m_configuration.bPowerOffOnStandby == 1)
-          CApplicationMessenger::Get().Suspend();
+          g_application.ExecuteXBMCAction("Suspend");
         else if (adapter->m_configuration.bShutdownOnStandby == 1)
-          CApplicationMessenger::Get().Shutdown();
+          g_application.ExecuteXBMCAction("Shutdown");
       }
       break;
     case CEC_OPCODE_SET_MENU_LANGUAGE:

@@ -9295,7 +9295,19 @@ msgctxt "#19684"
 msgid "Adult"
 msgstr ""
 
-#empty strings from id 19685 to 19999
+#. Title for shutdown confirmation dialog
+#: xbmc/ApplicationMessenger.cpp
+msgctxt "#19685"
+msgid "Confirm shutdown"
+msgstr ""
+
+#. Text for shutdown confirmation dialog
+#: xbmc/ApplicationMessenger.cpp
+msgctxt "#19686"
+msgid "The PVR backend is busy. Shutdown anyway?"
+msgstr ""
+
+#empty strings from id 19687 to 19999
 
 #: system/settings/settings.xml
 msgctxt "#20000"
