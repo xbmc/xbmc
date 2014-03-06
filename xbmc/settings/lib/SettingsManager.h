@@ -29,7 +29,9 @@
 #include "ISettingCreator.h"
 #include "ISettingsHandler.h"
 #include "ISubSettings.h"
+#include "Setting.h"
 #include "SettingConditions.h"
+#include "SettingDefinitions.h"
 #include "SettingDependency.h"
 #include "threads/SharedSection.h"
 
@@ -38,9 +40,6 @@ class CSettingUpdate;
 
 class TiXmlElement;
 class TiXmlNode;
-
-typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
-typedef void (*StringSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
 
 /*!
  \ingroup settings

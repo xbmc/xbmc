@@ -392,9 +392,9 @@ void* CSettingsManager::GetSettingOptionsFiller(const CSetting *setting)
   // get the option filler's identifier
   std::string filler;
   if (setting->GetType() == SettingTypeInteger)
-    filler = ((const CSettingInt*)setting)->GetOptionsFiller();
+    filler = ((const CSettingInt*)setting)->GetOptionsFillerName();
   else if (setting->GetType() == SettingTypeString)
-    filler = ((const CSettingString*)setting)->GetOptionsFiller();
+    filler = ((const CSettingString*)setting)->GetOptionsFillerName();
 
   if (filler.empty())
     return NULL;
