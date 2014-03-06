@@ -75,10 +75,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.9.2"
+#define XBMC_PVR_API_VERSION "1.9.3"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.9.2"
+#define XBMC_PVR_MIN_API_VERSION "1.9.3"
 
 #ifdef __cplusplus
 extern "C" {
@@ -399,6 +399,7 @@ extern "C" {
     time_t       (__cdecl* GetPlayingTime)(void);
     time_t       (__cdecl* GetBufferTimeStart)(void);
     time_t       (__cdecl* GetBufferTimeEnd)(void);
+    const char*  (__cdecl* GetBackendHostname)(void);
   } PVRClient;
 
 #ifdef __cplusplus

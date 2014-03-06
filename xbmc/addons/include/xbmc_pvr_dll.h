@@ -595,6 +595,13 @@ extern "C"
   time_t GetBufferTimeEnd();
 
   /*!
+   *  Get the hostname of the pvr backend server
+   *  @return hostname as ip address or alias. If backend does not
+   *          utilize a server, return empty string.
+   */
+  const char* GetBackendHostname();
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param pClient The struct to assign the function pointers to.
    */
@@ -674,6 +681,8 @@ extern "C"
     pClient->GetPlayingTime                 = GetPlayingTime;
     pClient->GetBufferTimeStart             = GetBufferTimeStart;
     pClient->GetBufferTimeEnd               = GetBufferTimeEnd;
+
+    pClient->GetBackendHostname             = GetBackendHostname;
   };
 };
 

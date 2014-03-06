@@ -34,6 +34,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "cores/IPlayer.h"
+#include "network/Network.h"
 
 using namespace ADDON;
 using namespace PVR;
@@ -1370,4 +1371,34 @@ time_t CPVRClients::GetBufferTimeEnd() const
   }
 
   return time;
+}
+
+bool CPVRClients::NextEventWithinBackendIdleTime(const CPVRTimers& timers)
+{
+    // timers going off soon?
+    const CDateTime now(CDateTime::GetUTCDateTime());
+    const CDateTimeSpan idle(
+      0, 0, CSettings::Get().GetInt("pvrpowermanagement.backendidletime"), 0);
+    const CDateTime next(timers.GetNextEventTime());
+    const CDateTimeSpan delta(next - now);
+
+    return (delta <= idle);
+}
+
+bool CPVRClients::AllLocalBackendsIdle() const
+{
+  PVR_CLIENTMAP clients;
+  GetConnectedClients(clients);
+  for (PVR_CLIENTMAP_CITR itr = clients.begin(); itr != clients.end(); itr++)
+  {
+    CPVRTimers timers;
+    PVR_ERROR ret = itr->second->GetTimers(&timers);
+    if (ret == PVR_ERROR_NOT_IMPLEMENTED || ret != PVR_ERROR_NO_ERROR)
+      continue;
+
+    if (((timers.AmountActiveRecordings() > 0) || NextEventWithinBackendIdleTime(timers))
+        && g_application.getNetwork().IsLocalHost(itr->second->GetBackendHostname()))
+      return false;
+  }
+  return true;
 }

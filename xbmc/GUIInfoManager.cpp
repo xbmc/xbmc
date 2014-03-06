@@ -1921,7 +1921,11 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     {
       std::string friendlyName = CSettings::Get().GetString("services.devicename");
       if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
-        strLabel = StringUtils::Format("%s (%s)", friendlyName.c_str(), g_application.getNetwork().GetHostName().c_str());
+      {
+        std::string hostname("[unknown]");
+        g_application.getNetwork().GetHostName(hostname);
+        strLabel = StringUtils::Format("%s (%s)", friendlyName.c_str(), hostname.c_str());
+      }
       else
         strLabel = friendlyName;
     }

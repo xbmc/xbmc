@@ -96,6 +96,7 @@
 #include <vector>
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
+#include "powermanagement/PowerManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -240,6 +241,39 @@ bool CBuiltins::HasCommand(const std::string& execString)
   {
     if (StringUtils::EqualsNoCase(function, commands[i].command) && (!commands[i].needsParameters || parameters.size()))
       return true;
+  }
+  return false;
+}
+
+bool CBuiltins::IsSystemPowerdownCommand(const std::string& execString)
+{
+  std::string execute;
+  vector<string> params;
+  CUtil::SplitExecFunction(execString, execute, params);
+  StringUtils::ToLower(execute);
+
+  // Check if action is resulting in system powerdown.
+  if (execute == "reboot"    ||
+      execute == "restart"   ||
+      execute == "reset"     ||
+      execute == "powerdown" ||
+      execute == "hibernate" ||
+      execute == "suspend" )
+  {
+    return true;
+  }
+  else if (execute == "shutdown")
+  {
+    switch (CSettings::Get().GetInt("powermanagement.shutdownstate"))
+    {
+      case POWERSTATE_SHUTDOWN:
+      case POWERSTATE_SUSPEND:
+      case POWERSTATE_HIBERNATE:
+        return true;
+
+      default:
+        return false;
+    }
   }
   return false;
 }
