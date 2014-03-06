@@ -107,7 +107,7 @@ bool CActiveAESink::HasPassthroughDevice()
   return false;
 }
 
-bool CActiveAESink::SupportsFormat(const std::string &device, AEDataFormat format)
+bool CActiveAESink::SupportsFormat(const std::string &device, AEDataFormat format, int samplerate)
 {
   std::string dev = device;
   std::string dri;
@@ -124,7 +124,14 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEDataFormat forma
           AEDataFormatList::iterator itt3;
           itt3 = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), format);
           if (itt3 != info.m_dataFormats.end())
-            return true;
+          {
+            AESampleRateList::iterator itt4;
+            itt4 = find(info.m_sampleRates.begin(), info.m_sampleRates.end(), samplerate);
+            if (itt4 != info.m_sampleRates.end())
+              return true;
+            else
+              return false;
+          }
           else
             return false;
         }
