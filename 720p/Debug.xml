@@ -463,6 +463,10 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
+					<label>ListItem.Property(Unavailable) : [COLOR=orangeLight]$INFO[ListItem.Property(Unavailable)][/COLOR]</label>
+				</control>
+				<control type="label">
+					<include>debugFont</include>
 					<label/>
 				</control>
 				<!--><control type="label">
