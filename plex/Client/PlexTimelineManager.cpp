@@ -303,7 +303,7 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMedi
     return;
   }
 
-  CPlexTimelineContext newContext;
+  CPlexTimelineContext newContext(type);
   newContext.item = CFileItemPtr(new CFileItem(*newItem.get()));
   newContext.state = state;
   newContext.currentPosition = currentPosition;
@@ -487,6 +487,7 @@ CXBMCTinyXML CPlexTimelineManager::GetCurrentTimeLinesXML(CPlexRemoteSubscriberP
     else
     {
       cmap = m_pollerContexts.front();
+      m_pollerContexts.pop();
     }
 
     tlines.push_back(GetCurrentTimeline(cmap[PLEX_MEDIA_TYPE_MUSIC], false));
