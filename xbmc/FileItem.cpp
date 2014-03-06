@@ -1185,14 +1185,12 @@ bool CFileItem::IsHD() const
 
 bool CFileItem::IsMusicDb() const
 {
-  CURL url(m_strPath);
-  return url.GetProtocol().Equals("musicdb");
+  return URIUtils::IsMusicDb(m_strPath);
 }
 
 bool CFileItem::IsVideoDb() const
 {
-  CURL url(m_strPath);
-  return url.GetProtocol().Equals("videodb");
+  return URIUtils::IsVideoDb(m_strPath);
 }
 
 bool CFileItem::IsVirtualDirectoryRoot() const
