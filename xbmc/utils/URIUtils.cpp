@@ -1226,10 +1226,12 @@ std::string URIUtils::resolvePath(const std::string &path)
   CStdString realPath;
   int i = 0;
   // re-add any / or \ at the beginning
-  while (path.at(i) == delim.at(0))
+  for (std::string::const_iterator itPath = path.begin(); itPath != path.end(); ++itPath)
   {
+    if (*itPath != delim.at(0))
+      break;
+
     realPath += delim;
-    i++;
   }
   // put together the path
   realPath += StringUtils::Join(realParts, delim);
