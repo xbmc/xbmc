@@ -1224,7 +1224,6 @@ std::string URIUtils::resolvePath(const std::string &path)
   }
 
   CStdString realPath;
-  int i = 0;
   // re-add any / or \ at the beginning
   for (std::string::const_iterator itPath = path.begin(); itPath != path.end(); ++itPath)
   {
