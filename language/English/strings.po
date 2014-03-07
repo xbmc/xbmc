@@ -6048,7 +6048,7 @@ msgctxt "#13448"
 msgid "Enable this option to use hardware acceleration for MPEG-(1/2) codecs. If disabled the CPU will be used instead. Some MPEG-2 Videos might have green artifacts."
 msgstr ""
 
-#: system/settings/settings.xm
+#: system/settings/settings.xml
 msgctxt "#13449"
 msgid "Use MPEG-4 VAAPI"
 msgstr ""
@@ -6059,7 +6059,7 @@ msgctxt "#13450"
 msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
 msgstr ""
 
-#: system/settings/settings.xm
+#: system/settings/settings.xml
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
 msgstr ""
