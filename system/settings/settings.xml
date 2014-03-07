@@ -801,8 +801,8 @@
           <constraints>
             <options>languages</options>
             <delimiter>,</delimiter>
-            <minimum>1</minimum>
-            <maximum>3</maximum>
+            <minimumItems>1</minimumItems>
+            <maximumItems>3</maximumItems>
           </constraints>
           <control type="list" format="string">
             <multiselect>true</multiselect>

@@ -593,8 +593,8 @@ bool CSettingsOperations::SerializeSettingList(const CSettingList* setting, CVar
 
   obj["elementtype"] = obj["definition"]["type"];
   obj["delimiter"] = setting->GetDelimiter();
-  obj["minimum"] = setting->GetMinimum();
-  obj["maximum"] = setting->GetMaximum();
+  obj["minimumItems"] = setting->GetMinimumItems();
+  obj["maximumItems"] = setting->GetMaximumItems();
 
   return true;
 }
