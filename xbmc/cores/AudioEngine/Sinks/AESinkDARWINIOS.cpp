@@ -259,11 +259,21 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
 void CAAudioUnitSink::drain()
 {
   unsigned int bytes = m_buffer->GetReadSize();
-  while (bytes)
+  unsigned int totalBytes = bytes;
+  int maxNumTimeouts = 3;
+  unsigned int timeout = 900 * bytes / (m_sampleRate * m_frameSize);
+  while (bytes && maxNumTimeouts > 0)
   {
     CSingleLock lock(mutex);
-    condVar.wait(mutex, 900 * bytes / (m_sampleRate * m_frameSize));
+    XbmcThreads::EndTime timer(timeout);
+    condVar.wait(mutex, timeout);
+
     bytes = m_buffer->GetReadSize();
+    // if we timeout and don't
+    // consum bytes - decrease maxNumTimeouts
+    if (timer.IsTimePast() && bytes == totalBytes)
+      maxNumTimeouts--;
+    totalBytes = bytes;
   }
 }
 
