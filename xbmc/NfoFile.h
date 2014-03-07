@@ -46,8 +46,7 @@ public:
     ERROR_NFO    = 4
   };
 
-  NFOResult Create(const CStdString&, const ADDON::ScraperPtr&, int episode=-1,
-                   const CStdString& strPath2="");
+  NFOResult Create(const CStdString&, const ADDON::ScraperPtr&, int episode=-1);
   template<class T>
     bool GetDetails(T& details,const char* document=NULL, bool prioritise=false)
   {
