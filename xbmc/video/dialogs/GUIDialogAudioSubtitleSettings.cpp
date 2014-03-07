@@ -315,12 +315,12 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
     VECSOURCES shares(*CMediaSourceSettings::Get().GetSources("video"));
-    if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() != -1 && !CSettings::Get().GetString("subtitles.custompath").empty())
+    if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() != -1)
     {
       CMediaSource share;
       std::vector<CStdString> paths;
       paths.push_back(URIUtils::GetDirectory(strPath));
-      paths.push_back(CSettings::Get().GetString("subtitles.custompath"));
+      paths.push_back("special://subtitles");
       share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
       shares.push_back(share);
       strPath = share.strPath;
