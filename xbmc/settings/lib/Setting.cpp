@@ -251,14 +251,14 @@ CSettingList::CSettingList(const std::string &id, CSetting *settingDefinition, C
   : CSetting(id, settingsManager),
     m_definition(settingDefinition),
     m_delimiter("|"),
-    m_minimum(0), m_maximum(-1)
+    m_minimumItems(0), m_maximumItems(-1)
 { }
 
 CSettingList::CSettingList(const std::string &id, const CSettingList &setting)
   : CSetting(id, setting),
     m_definition(NULL),
     m_delimiter("|"),
-    m_minimum(0), m_maximum(-1)
+    m_minimumItems(0), m_maximumItems(-1)
 {
   copy(setting);
 }
@@ -306,15 +306,15 @@ bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
     if (XMLUtils::GetString(constraints, SETTING_XML_ELM_DELIMITER, delimiter) && !delimiter.empty())
       m_delimiter = delimiter;
 
-    XMLUtils::GetInt(constraints, SETTING_XML_ELM_MINIMUM, m_minimum);
-    if (m_minimum < 0)
-      m_minimum = 0;
-    XMLUtils::GetInt(constraints, SETTING_XML_ELM_MAXIMUM, m_maximum);
-    if (m_maximum <= 0)
-      m_maximum = -1;
-    else if (m_maximum < m_minimum)
+    XMLUtils::GetInt(constraints, SETTING_XML_ELM_MINIMUM_ITEMS, m_minimumItems);
+    if (m_minimumItems < 0)
+      m_minimumItems = 0;
+    XMLUtils::GetInt(constraints, SETTING_XML_ELM_MAXIMUM_ITEMS, m_maximumItems);
+    if (m_maximumItems <= 0)
+      m_maximumItems = -1;
+    else if (m_maximumItems < m_minimumItems)
     {
-      CLog::Log(LOGWARNING, "CSettingList: invalid <minimum> (%d) and/or <maximum> (%d) of %s", m_minimum, m_maximum, m_id.c_str());
+      CLog::Log(LOGWARNING, "CSettingList: invalid <minimum> (%d) and/or <maximum> (%d) of %s", m_minimumItems, m_maximumItems, m_id.c_str());
       return false;
     }
   }
@@ -407,8 +407,8 @@ bool CSettingList::SetValue(const SettingPtrList &values)
 {
   CExclusiveLock lock(m_critical);
 
-  if ((int)values.size() < m_minimum ||
-     (m_maximum > 0 && (int)values.size() > m_maximum))
+  if ((int)values.size() < m_minimumItems ||
+     (m_maximumItems > 0 && (int)values.size() > m_maximumItems))
     return false;
 
   bool equal = values.size() == m_values.size();
@@ -476,8 +476,8 @@ void CSettingList::copy(const CSettingList &setting)
   }
 
   m_delimiter = setting.m_delimiter;
-  m_minimum = setting.m_minimum;
-  m_maximum = setting.m_maximum;
+  m_minimumItems = setting.m_minimumItems;
+  m_maximumItems = setting.m_maximumItems;
 }
 
 void CSettingList::copy(const SettingPtrList &srcValues, SettingPtrList &dstValues)
@@ -505,8 +505,8 @@ bool CSettingList::fromString(const std::string &strValue, SettingPtrList &value
 
 bool CSettingList::fromValues(const std::vector<std::string> &strValues, SettingPtrList &values) const
 {
-  if ((int)strValues.size() < m_minimum ||
-     (m_maximum > 0 && (int)strValues.size() > m_maximum))
+  if ((int)strValues.size() < m_minimumItems ||
+     (m_maximumItems > 0 && (int)strValues.size() > m_maximumItems))
     return false;
 
   bool ret = true;
