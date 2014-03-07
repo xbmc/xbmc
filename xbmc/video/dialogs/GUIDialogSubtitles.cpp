@@ -480,6 +480,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     if (!CFile::Cache(strUrl, strDownloadFile))
     {
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strSubName, g_localizeStrings.Get(24113));
+      CLog::Log(LOGERROR, "%s - Saving of subtitle %s to %s failed", __FUNCTION__, strUrl.c_str(), strDownloadFile.c_str());
     }
     else
     {
@@ -492,7 +493,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
          * so that all remaining items (including the .idx below) are copied directly to their final destination and thus all
          * items end up in the same folder
          */
-        CLog::Log(LOGDEBUG, "%s - Saving subtitle %s to %s", __FUNCTION__, strDownloadFile.c_str(), strDestPath.c_str());
+        CLog::Log(LOGDEBUG, "%s - Saving subtitle %s to %s", __FUNCTION__, strDownloadFile.c_str(), strTryDestFile.c_str());
         if (CFile::Cache(strDownloadFile, strTryDestFile))
         {
           CFile::Delete(strDownloadFile);
@@ -501,9 +502,13 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         }
         else
         {
-          CLog::Log(LOGWARNING, "%s - Saving of subtitle %s to %s failed. Falling back to %s", __FUNCTION__, strDownloadFile.c_str(), strDestPath.c_str(), strDownloadPath.c_str());
+          CLog::Log(LOGWARNING, "%s - Saving of subtitle %s to %s failed. Falling back to %s", __FUNCTION__, strDownloadFile.c_str(), strTryDestFile.c_str(), strDownloadPath.c_str());
           strDestPath = strDownloadPath; // Copy failed, use fallback for the rest of the items
         }
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "%s - Saved subtitle %s to %s", __FUNCTION__, strUrl.c_str(), strDownloadFile.c_str());
       }
 
       // for ".sub" subtitles we check if ".idx" counterpart exists and copy that as well
