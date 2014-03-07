@@ -33,7 +33,9 @@ endif(TARGET_RPI)
 
 ############ Check for pthread_setname -> HAVE_PTHREAD_SETNAME_NP
 set(HAVE_PTHREAD_SETNAME_NP 1)
-set(HAS_SDL_JOYSTICK 1)
+if(NOT TARGET_RPI)
+  set(HAS_SDL_JOYSTICK 1)
+endif()
 set(HAS_LIBRTMP 1)
 
 if(NOT USE_INTERNAL_FFMPEG)
