@@ -36,6 +36,8 @@
 #define NUM_OMX_BUFFERS 2
 #define AUDIO_PLAYBUFFER (1.0/20.0)
 
+static const unsigned int PassthroughSampleRates[] = { 8000, 11025, 16000, 22050, 24000, 32000, 41400, 48000, 88200, 96000, 176400, 192000 };
+
 CAEDeviceInfo CAESinkPi::m_info;
 
 CAESinkPi::CAESinkPi() :
@@ -282,7 +284,8 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_displayNameExtra = "";
   m_info.m_channels += AE_CH_FL;
   m_info.m_channels += AE_CH_FR;
-  m_info.m_sampleRates.push_back(48000);
+  for (unsigned int i=0; i<sizeof PassthroughSampleRates/sizeof *PassthroughSampleRates; i++)
+    m_info.m_sampleRates.push_back(PassthroughSampleRates[i]);
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
   m_info.m_dataFormats.push_back(AE_FMT_AC3);
   m_info.m_dataFormats.push_back(AE_FMT_DTS);
