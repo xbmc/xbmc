@@ -32,6 +32,7 @@ CTextureInfo::CTextureInfo()
 {
   orientation = 0;
   useLarge = false;
+  m_animated = false;
 }
 
 CTextureInfo::CTextureInfo(const CStdString &file)
@@ -39,6 +40,7 @@ CTextureInfo::CTextureInfo(const CStdString &file)
   orientation = 0;
   useLarge = false;
   filename = file;
+  m_animated = StringUtils::EndsWithNoCase(file, ".gif");
 }
 
 CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
@@ -49,7 +51,14 @@ CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
   filename = right.filename;
   useLarge = right.useLarge;
   diffuseColor = right.diffuseColor;
+  m_animated = right.m_animated;
   return *this;
+}
+
+void CTextureInfo::SetFileName(const std::string &fileName)
+{
+  filename = fileName;
+  m_animated = StringUtils::EndsWithNoCase(filename, ".gif");
 }
 
 CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture) :
@@ -301,7 +310,7 @@ bool CGUITextureBase::AllocResources()
 
   bool changed = false;
   bool useLarge = m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename);
-  if (useLarge && !StringUtils::EndsWithNoCase(m_info.filename, ".gif"))
+  if (useLarge && !m_info.m_animated)
   { // we want to use the large image loader, but we first check for bundled textures
     if (!IsAllocated())
     {
@@ -653,6 +662,7 @@ bool CGUITextureBase::SetFileName(const CStdString& filename)
   // filenames mid-animation
   FreeResources();
   m_info.filename = filename;
+  m_info.m_animated = StringUtils::EndsWithNoCase(filename, ".gif");
   // Don't allocate resources here as this is done at render time
   return true;
 }
