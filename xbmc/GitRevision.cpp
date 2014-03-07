@@ -20,6 +20,8 @@
 
 #include "GitRevision.h"
 
+#include <cstddef>
+
 #if defined(TARGET_DARWIN) || (defined(TARGET_WINDOWS) && !defined(_DEBUG))
 #include "../git_revision.h" // generated file
 #endif

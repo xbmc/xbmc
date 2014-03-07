@@ -874,6 +874,9 @@ elif test "$use_arch" = "arm"; then
     fi
   fi
 fi
+if test "$use_static_ffmpeg" = "yes" -a "$use_external_ffmpeg" = "yes"; then
+  use_static_ffmpeg=no
+fi
 if test "$use_static_ffmpeg" = "yes"; then
   USE_STATIC_FFMPEG=1
   AC_DEFINE([USE_STATIC_FFMPEG], [1], [link ffmpeg statically])
