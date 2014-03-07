@@ -867,6 +867,23 @@ bool CSysInfo::HasHW3DInterlaced()
   return false;
 }
 
+bool CSysInfo::HWSupportsStereo(const int mode)
+{
+#if defined(TARGET_ANDROID)
+  if (aml_present())
+    return aml_supports_stereo(mode);
+#endif
+  return false;
+}
+
+void CSysInfo::HWSetStereoMode(const int mode, const int view)
+{
+#if defined(TARGET_ANDROID)
+  if (aml_present())
+    aml_set_stereo_mode(mode, view);
+#endif
+}
+
 CSysInfo::WindowsVersion CSysInfo::m_WinVer = WindowsVersionUnknown;
 
 bool CSysInfo::IsWindowsVersion(WindowsVersion ver)
