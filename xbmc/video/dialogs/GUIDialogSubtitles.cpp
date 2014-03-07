@@ -414,7 +414,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   SUBTITLE_STORAGEMODE storageMode = (SUBTITLE_STORAGEMODE) CSettings::Get().GetInt("subtitles.storagemode");
 
   // Get (unstacked) path
-  const CStdString &strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
+  CStdString strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
 
   CStdString strDownloadPath = "special://temp";
   CStdString strDestPath;
@@ -423,7 +423,9 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   CStdString strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
   if (StringUtils::StartsWith(strCurrentFilePath, "http://"))
   {
-    vecFiles.push_back("TemporarySubs");
+    strCurrentFilePath = "";
+    strCurrentFile = "TempSubtitle";
+    vecFiles.push_back(strCurrentFile);
   }
   else
   {
@@ -473,7 +475,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     CStdString strSubExt = URIUtils::GetExtension(strUrl);
     CStdString strSubName = StringUtils::Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
 
-    // Handle URL decoding/slash correction:
+    // Handle URL encoding:
     CStdString strDownloadFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDownloadPath);
     CStdString strDestFile = strDownloadFile;
 
@@ -486,6 +488,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     {
       if (strDestPath != strDownloadPath)
       {
+        // Handle URL encoding:
         CStdString strTryDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDestPath);
 
         /* Copy the file from temp to our final destination, if that fails fallback to download path
@@ -518,7 +521,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         if(CFile::Exists(strUrl))
         {
           CStdString strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
-          // Handle URL decoding/slash correction:
+          // Handle URL encoding:
           strDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubNameIdx, strDestPath);
           CFile::Cache(strUrl, strDestFile);
         }
