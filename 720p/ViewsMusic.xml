@@ -416,6 +416,8 @@
 							<visible>true</visible>
 						</control>
 					</control>
+					<!-- Unavailable indicator -->
+					<include>UnavailableIndicator</include>
 				</control>
 				<!-- list -->
 				<control type="list" id="54">
