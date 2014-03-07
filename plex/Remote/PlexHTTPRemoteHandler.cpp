@@ -34,6 +34,7 @@
 #include "Settings.h"
 
 #include "GUIWindowSlideShow.h"
+#include "PlexNavigationHelper.h"
 
 #define LEGACY 1
 
@@ -108,6 +109,8 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     pausePlay(argumentMap);
   else if (path.Equals("/player/playback/play"))
     pausePlay(argumentMap);
+  else if (path.Equals("/player/navigation/showDetails"))
+    showDetails(argumentMap);
   else if (boost::starts_with(path, "/player/navigation"))
     navigation(path, argumentMap);
   else if (path.Equals("/player/timeline/subscribe"))
@@ -179,6 +182,62 @@ void CPlexHTTPRemoteHandler::updateCommandID(const HTTPRequest &request, const A
     sub->setCommandID(commandID);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexServerPtr CPlexHTTPRemoteHandler::getServerFromArguments(const ArgMap &arguments)
+{
+  CPlexServerPtr server;
+
+  if (arguments.find("machineIdentifier") != arguments.end())
+  {
+    std::string uuid = arguments.find("machineIdentifier")->second;
+    server = g_plexApplication.serverManager->FindByUUID(uuid);
+    if (server)
+      return server;
+
+    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::getServerFromArguments request had machineIdentifier but that server is not found.");
+  }
+
+  /* no machineIdentfier or server not found, at this point we need to synthesize the server instead */
+  std::string address, token, portStr, schema;
+  int port;
+
+  if (arguments.find("address") != arguments.end())
+    address = arguments.find("address")->second;
+
+  if (arguments.find("token") != arguments.end())
+    token = arguments.find("token")->second;
+
+  if (arguments.find("protocol") != arguments.end())
+    schema = arguments.find("protocol")->second;
+
+  if (schema.empty())
+    schema = "http";
+
+  if (arguments.find("port") != arguments.end())
+  {
+    portStr = arguments.find("port")->second;
+    if (!portStr.empty())
+    {
+      try { port = boost::lexical_cast<int>(portStr); }
+      catch (...)
+      {
+        port = 32400;
+        CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::getServerFromArguments port was not parsable, just guessing here.");
+      }
+    }
+  }
+
+  if (address.empty())
+  {
+    CLog::Log(LOGERROR, "CPlexHTTPRemoteHandler::getServerFromArguments no address found! Can't synthesize server!");
+    return server;
+  }
+
+  CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED, address, port, schema, token));
+  server = CPlexServerPtr(new CPlexServer(connection));
+  return server;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
 {
@@ -186,22 +245,11 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   CStdString key;
   std::string containerPath;
   
-  /* Protocol v2 requires machineIndentifier. */
-  if (arguments.find("machineIdentifier") != arguments.end())
+  server = getServerFromArguments(arguments);
+  if (!server)
   {
-    std::string uuid = arguments.find("machineIdentifier")->second;
-    server = g_plexApplication.serverManager->FindByUUID(uuid);
-    if (!server)
-    {
-      CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia could not find server %s", uuid.c_str());
-      setStandardResponse(500, "Could not find specified server");
-      return;
-    }
-  }
-  else
-  {
-    CLog::Log(LOGWARNING, "CPlexHTTPRemoteHandler::playMedia playMedia command REQUIRES a machineIdentifier for the server!");
-    setStandardResponse(500, "Required argument machineIdentifier not present");
+    CLog::Log(LOGERROR, "CPlexHTTPRemoteHandler::playMedia didn't get a valid server!");
+    setStandardResponse(500, "Did not find a server!");
     return;
   }
 
@@ -236,15 +284,7 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
   }
 
   CURL itemURL = server->BuildPlexURL(containerPath);
-  if (arguments.find("protocol") != arguments.end())
-  {
-    if (arguments.find("protocol")->second == "https")
-    {
-      if (itemURL.GetProtocol() == "plexserver")
-        itemURL.SetProtocolOption("ssl", "1");
-    }
-  }
-  
+
   /* fetch the container */
   CFileItemList list;
   XFILE::CPlexDirectory dir;
@@ -424,6 +464,46 @@ void CPlexHTTPRemoteHandler::seekTo(const ArgMap &arguments)
     g_application.m_pPlayer->SeekTime(seekTo);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexHTTPRemoteHandler::showDetails(const ArgMap &arguments)
+{
+  CPlexServerPtr server = getServerFromArguments(arguments);
+
+  if (!server)
+  {
+    CLog::Log(LOGERROR, "CPlexHTTPRemoteHandler::showDetails Can't find server.");
+    setStandardResponse(500, "Can't find server");
+    return;
+  }
+
+  std::string key;
+
+  if (arguments.find("key") != arguments.end())
+  {
+    key = arguments.find("key")->second;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CPlexHTTPRemoteHandler::showDetails needs a key argument to show something");
+    setStandardResponse(500, "Need key argument");
+    return;
+  }
+
+  CURL u = server->BuildPlexURL(key);
+
+  XFILE::CPlexDirectory dir;
+  CFileItemList list;
+
+  if (dir.GetDirectory(u.Get(), list))
+  {
+    if (list.Size() == 1)
+    {
+      CPlexNavigationHelper nav;
+      nav.navigateToItem(list.Get(0));
+    }
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arguments)
 {
@@ -465,7 +545,6 @@ void CPlexHTTPRemoteHandler::navigation(const CStdString &url, const ArgMap &arg
     else
       action = ACTION_NAV_BACK;
   }
-
 
 #ifdef LEGACY
   else if (navigation.Equals("contextMenu"))

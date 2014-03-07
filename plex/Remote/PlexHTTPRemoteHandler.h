@@ -32,6 +32,9 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
     /* generic function to handle commandID parameter */
     void updateCommandID(const HTTPRequest &request, const ArgMap &arguments);
 
+    /* find server for playMedia and showDetails commands */
+    CPlexServerPtr getServerFromArguments(const ArgMap &arguments);
+
     /* player functions */
     void playMedia(const ArgMap &arguments);
     void stepFunction(const CStdString &url, const ArgMap &arguments);
@@ -40,6 +43,7 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
     void pausePlay(const ArgMap &arguments);
     void stop(const ArgMap &arguments);
     void seekTo(const ArgMap &arguments);
+    void showDetails(const ArgMap &arguments);
     void navigation(const CStdString &url, const ArgMap &arguments);
     void set(const ArgMap &arguments);
     void setVolume(const ArgMap &arguments);
