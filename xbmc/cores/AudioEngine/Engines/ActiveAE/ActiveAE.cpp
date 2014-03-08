@@ -2186,9 +2186,9 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
   }
 }
 
-bool CActiveAE::SupportsRaw(AEDataFormat format)
+bool CActiveAE::SupportsRaw(AEDataFormat format, int samplerate)
 {
-  if (!m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), format))
+  if (!m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), format, samplerate))
     return false;
 
   return true;
@@ -2228,19 +2228,19 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
   }
   else if (settingId == "audiooutput.truehdpassthrough")
   {
-    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_TRUEHD) &&
+    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_TRUEHD, 192000) &&
         CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
       return true;
   }
   else if (settingId == "audiooutput.dtshdpassthrough")
   {
-    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_DTSHD) &&
+    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_DTSHD, 192000) &&
         CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
       return true;
   }
   else if (settingId == "audiooutput.eac3passthrough")
   {
-    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_EAC3) &&
+    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_EAC3, 192000) &&
         CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
       return true;
   }

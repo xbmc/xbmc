@@ -191,8 +191,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     if (bAdd)
     {
-      if ((url.GetFileType().Equals("ac3") && !CAEFactory::SupportsRaw(AE_FMT_AC3))
-            || (url.GetFileType().Equals("dts") && !CAEFactory::SupportsRaw(AE_FMT_DTS)))
+      if ((url.GetFileType().Equals("ac3"))
+            || (url.GetFileType().Equals("dts")))
       {
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding DVDPlayer (%d)", EPC_DVDPLAYER);
         vecCores.push_back(EPC_DVDPLAYER);

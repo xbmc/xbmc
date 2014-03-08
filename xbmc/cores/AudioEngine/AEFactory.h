@@ -52,7 +52,7 @@ public:
   static void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   static void VerifyOutputDevice(std::string &device, bool passthrough);
   static std::string GetDefaultDevice(bool passthrough);
-  static bool SupportsRaw(AEDataFormat format);
+  static bool SupportsRaw(AEDataFormat format, int samplerate);
   static bool SupportsSilenceTimeout();
 
   /**
