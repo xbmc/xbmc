@@ -552,12 +552,10 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params.size())
     {
       AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(params[0],addon) && addon)
+      CStdString cmd;
+      if (CAddonMgr::Get().GetAddon(params[0],addon,ADDON_PLUGIN))
       {
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
-        CStdString cmd;
-        if (plugin && addon->Type() == ADDON_PLUGIN)
-        {
           CStdString addonid = params[0];
           CStdString urlParameters;
           CStdStringArray parameters;
@@ -589,13 +587,14 @@ int CBuiltins::Execute(const CStdString& execString)
             // (params[1] ... params[x]) separated by a comma to RunPlugin
             cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::JoinString(params, ",").c_str());
         }
-        else if (addon->Type() >= ADDON_SCRIPT && addon->Type() <= ADDON_SCRIPT_LYRICS)
+        else if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT) ||
+                 CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
+                 CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS))
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunScript
           cmd = StringUtils::Format("RunScript(%s)", StringUtils::JoinString(params, ",").c_str());
 
         return Execute(cmd);
-      }
     }
     else
     {
