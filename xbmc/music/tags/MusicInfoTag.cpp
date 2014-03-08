@@ -543,6 +543,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetComment(song.strComment);
   SetPlayCount(song.iTimesPlayed);
   SetLastPlayed(song.lastPlayed);
+  SetCoverArtInfo(song.embeddedArt.size, song.embeddedArt.mime);
   m_rating = song.rating;
   m_strURL = song.strFileName;
   SYSTEMTIME stTime;
