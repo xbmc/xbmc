@@ -50,6 +50,8 @@ namespace XBMC
   Context::~Context()
   {
     // cleanup
+    XbmcCommons::Exception::SetLogger(NULL);
+    CThread::SetLogger(NULL);
     delete impl->loggerImpl;
 
     delete impl;
