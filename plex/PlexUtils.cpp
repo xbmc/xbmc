@@ -710,3 +710,17 @@ ePlexMediaState PlexUtils::GetMediaStateFromString(const std::string& statestr)
 
   return PLEX_MEDIA_STATE_STOPPED;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+unsigned long PlexUtils::GetFastHash(std::string Data)
+{
+  // DJB2 FastHash Method (http://www.cse.yorku.ca/~oz/hash.html)
+  unsigned long hash = 5381;
+  int c;
+  const char* str = Data.c_str();
+
+  while ((c = *str++))
+    hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+  return hash;
+}

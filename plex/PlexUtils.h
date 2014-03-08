@@ -56,6 +56,8 @@ namespace PlexUtils
   ePlexMediaType GetMediaTypeFromString(const std::string &typeString);
   ePlexMediaState GetMediaStateFromString(const std::string &statestring);
   std::string GetMediaStateString(ePlexMediaState state);
+
+  unsigned long GetFastHash(std::string Data);
 }
 
 #if defined(HAVE_EXECINFO_H)
