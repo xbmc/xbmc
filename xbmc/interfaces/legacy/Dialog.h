@@ -361,13 +361,14 @@ namespace XBMCAddon
     {
       CGUIDialogExtendedProgressBar* dlg;
       CGUIDialogProgressBarHandle* handle;
+      bool open;
 
     protected:
       virtual void deallocating();
 
     public:
 
-      DialogProgressBG() : dlg(NULL), handle(NULL) {}
+      DialogProgressBG() : dlg(NULL), handle(NULL), open(false) {}
       virtual ~DialogProgressBG();
 
 

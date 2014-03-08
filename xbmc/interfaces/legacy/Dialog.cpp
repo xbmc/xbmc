@@ -437,7 +437,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
 
-      if (dlg)
+      if (dlg && open)
       {
         DelayedCallGuard dg;
         dlg->Close();
@@ -457,6 +457,7 @@ namespace XBMCAddon
 
       dlg = pDialog;
       handle = pHandle;
+      open = true;
 
       pHandle->SetTitle(heading);
       if (!message.empty())
@@ -484,6 +485,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       handle->MarkFinished();
+      open = false;
     }
 
     bool DialogProgressBG::isFinished()
