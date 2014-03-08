@@ -142,7 +142,7 @@ static void EnumerateDevices(CADeviceList &list)
                       }
 
                       /* Passthrough is possible with a 2ch digital output */
-                      if (desc.mChannelsPerFrame == 2 && CCoreAudioStream::IsDigitalOuptut(*j))
+                      if (desc.mChannelsPerFrame == 2 && isDigital)
                       {
                         if (desc.mSampleRate == 48000)
                         {
