@@ -781,11 +781,7 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
       if (decRet & VPU_DEC_FLUSH)
       {
         CLog::Log(LOGNOTICE, "%s - VPU requires a flush.\n", __FUNCTION__);
-        ret = VPU_DecFlushAll(m_vpuHandle);
-        if (ret != VPU_DEC_RET_SUCCESS)
-        {
-          CLog::Log(LOGERROR, "%s - VPU flush failed(%d).\n", __FUNCTION__, ret);
-        }
+        Reset();
         retStatus = VC_FLUSHED;
       }
       if (decRet & VPU_DEC_OUTPUT_EOS)
