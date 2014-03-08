@@ -250,8 +250,19 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_isPaused = false; // Make sure to reset the pause state
   }
 
-  if (!QueueNextFileEx(file, false))
-    return false;
+  // if audio engine is suspended i.e. by a DisplayLost event (HDMI), MakeStream
+  // waits until the engine is resumed. if we block the main thread here, it can't
+  // resume the engine after a DisplayReset event
+  if (CAEFactory::IsSuspended())
+  {
+    if (!QueueNextFile(file))
+      return false;
+  }
+  else
+  {
+    if (!QueueNextFileEx(file, false))
+      return false;
+  }
 
   CSharedLock lock(m_streamsLock);
   if (m_streams.size() == 2)
