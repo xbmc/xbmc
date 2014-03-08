@@ -6939,7 +6939,7 @@ msgstr "Der PVR-Manager wurde aktiviert, ohne ein"
 
 msgctxt "#19242"
 msgid "enabled PVR Add-on. Enable at least one Add-on"
-msgstr "aktives PVR-Addaon. Bitte mindestens ein Addon aktivieren"
+msgstr "aktives PVR-Addon. Bitte mindestens ein Addon aktivieren"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
