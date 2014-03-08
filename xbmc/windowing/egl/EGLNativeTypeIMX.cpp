@@ -34,6 +34,8 @@
 #include "windowing/WindowingFactory.h"
 
 CEGLNativeTypeIMX::CEGLNativeTypeIMX()
+  : m_display(NULL)
+  , m_window(NULL)
 {
 }
 
@@ -184,6 +186,11 @@ bool CEGLNativeTypeIMX::GetNativeResolution(RESOLUTION_INFO *res) const
 bool CEGLNativeTypeIMX::SetNativeResolution(const RESOLUTION_INFO &res)
 {
   if (m_readonly)
+    return false;
+
+  std::string mode;
+  get_sysfs_str("/sys/class/graphics/fb0/mode", mode);
+  if (res.strId == mode)
     return false;
 
   DestroyNativeWindow();
