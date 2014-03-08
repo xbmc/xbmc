@@ -373,6 +373,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
   if (!m_musicdatabase.GetArtist(params.GetArtistId(), artist))
       return;
 
+  m_musicdatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
   while (1)
   {
     // Check if we have the information in the database first
@@ -411,9 +412,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
     CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgArtistInfo)
     {
-      CStdString strPath;
-      m_musicdatabase.GetArtistPath(params.GetArtistId(), strPath);
-      pDlgArtistInfo->SetArtist(artist, strPath);
+      pDlgArtistInfo->SetArtist(artist, artist.strPath);
       pDlgArtistInfo->DoModal();
 
       if (pDlgArtistInfo->NeedRefresh())
@@ -445,6 +444,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
   if (!m_musicdatabase.GetAlbum(params.GetAlbumId(), album))
     return false;
 
+  m_musicdatabase.GetAlbumPath(params.GetAlbumId(), album.strPath);
   while (1)
   {
     if (!m_musicdatabase.HasAlbumBeenScraped(params.GetAlbumId()))
@@ -491,9 +491,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
     CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgAlbumInfo)
     {
-      CStdString strPath;
-      m_musicdatabase.GetAlbumPath(params.GetAlbumId(), strPath);
-      pDlgAlbumInfo->SetAlbum(album, strPath);
+      pDlgAlbumInfo->SetAlbum(album, album.strPath);
       pDlgAlbumInfo->DoModal();
 
       if (pDlgAlbumInfo->NeedRefresh())
@@ -503,7 +501,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
       }
       else if (pDlgAlbumInfo->HasUpdatedThumb())
       {
-        UpdateThumb(album, strPath);
+        UpdateThumb(album, album.strPath);
       }
     }
     break;
