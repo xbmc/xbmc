@@ -4993,7 +4993,6 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
   //We don't know if there is unsecure information in this yet, so we
   //postpone any logging
   const std::string in_actionStr(actionStr);
-  CLog::Log(LOGDEBUG,"%s : Translating action string", __FUNCTION__);
   CGUIInfoLabel info(actionStr, "");
   actionStr = info.GetLabel(0);
 
