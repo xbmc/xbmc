@@ -32,6 +32,7 @@
 #include "utils/Environment.h"
 #include "guilib/gui3d.h"
 #include "windowing/WindowingFactory.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 CEGLNativeTypeIMX::CEGLNativeTypeIMX()
   : m_display(NULL)
@@ -201,6 +202,10 @@ bool CEGLNativeTypeIMX::SetNativeResolution(const RESOLUTION_INFO &res)
   CreateNativeDisplay();
 
   CLog::Log(LOGDEBUG, "%s: %s",__FUNCTION__, res.strId.c_str());
+
+  // Reset AE
+  CAEFactory::DeviceChange();
+
   return true;
 }
 
