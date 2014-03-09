@@ -411,21 +411,35 @@ void CGUIEPGGridContainer::ProcessProgrammeGrid(unsigned int currentTime, CDirty
 
       bool focused = (channel == m_channelOffset + m_channelCursor) && (item == m_gridIndex[m_channelOffset + m_channelCursor][m_blockOffset + m_blockCursor].item);
 
-      if (m_orientation == VERTICAL)
-        ProcessItem(posA2, posB, item.get(), m_lastChannel, focused, m_programmeLayout, m_focusedProgrammeLayout, currentTime, dirtyregions, m_gridIndex[channel][block].width);
-      else
-        ProcessItem(posB, posA2, item.get(), m_lastChannel, focused, m_programmeLayout, m_focusedProgrammeLayout, currentTime, dirtyregions, m_gridIndex[channel][block].height);
+      // calculate the size to truncate if item is out of grid view
+      float truncateSize = 0;
+      if (posA2 < posA)
+      {
+        truncateSize = posA - posA2;
+        posA2 = posA; // reset to grid start position
+      }
 
-      // increment our X position
       if (m_orientation == VERTICAL)
       {
+        // truncate item's width
+        m_gridIndex[channel][block].width = m_gridIndex[channel][block].originWidth - truncateSize;
+
+        ProcessItem(posA2, posB, item.get(), m_lastChannel, focused, m_programmeLayout, m_focusedProgrammeLayout, currentTime, dirtyregions, m_gridIndex[channel][block].width);
+
+        // increment our X position
         posA2 += m_gridIndex[channel][block].width; // assumes focused & unfocused layouts have equal length
-        block += (int)(m_gridIndex[channel][block].width / m_blockSize);
+        block += (int)(m_gridIndex[channel][block].originWidth / m_blockSize);
       }
       else
       {
+        // truncate item's height
+        m_gridIndex[channel][block].height = m_gridIndex[channel][block].originHeight - truncateSize;
+
+        ProcessItem(posB, posA2, item.get(), m_lastChannel, focused, m_programmeLayout, m_focusedProgrammeLayout, currentTime, dirtyregions, m_gridIndex[channel][block].height);
+
+        // increment our X position
         posA2 += m_gridIndex[channel][block].height; // assumes focused & unfocused layouts have equal length
-        block += (int)(m_gridIndex[channel][block].height / m_blockSize);
+        block += (int)(m_gridIndex[channel][block].originHeight / m_blockSize);
       }
     }
 
@@ -494,6 +508,10 @@ void CGUIEPGGridContainer::RenderProgrammeGrid()
 
       bool focused = (channel == m_channelOffset + m_channelCursor) && (item == m_gridIndex[m_channelOffset + m_channelCursor][m_blockOffset + m_blockCursor].item);
 
+      // reset to grid start position if first item is out of grid view
+      if (posA2 < posA)
+        posA2 = posA;
+
       // render our item
       if (focused)
       {
@@ -521,12 +539,12 @@ void CGUIEPGGridContainer::RenderProgrammeGrid()
       if (m_orientation == VERTICAL)
       {
         posA2 += m_gridIndex[channel][block].width; // assumes focused & unfocused layouts have equal length
-        block += (int)(m_gridIndex[channel][block].width / m_blockSize);
+        block += (int)(m_gridIndex[channel][block].originWidth / m_blockSize);
       }
       else
       {
         posA2 += m_gridIndex[channel][block].height; // assumes focused & unfocused layouts have equal length
-        block += (int)(m_gridIndex[channel][block].height / m_blockSize);
+        block += (int)(m_gridIndex[channel][block].originHeight / m_blockSize);
       }
     }
 
@@ -596,53 +614,55 @@ void CGUIEPGGridContainer::ProcessItem(float posX, float posY, CGUIListItem* ite
     if (!item->GetFocusedLayout())
     {
       CGUIListItemLayout *layout = new CGUIListItemLayout(*focusedlayout);
-      if (resize != -1.0f)
-      {
-        if (m_orientation == VERTICAL)
-          layout->SetWidth(resize);
-        else
-          layout->SetHeight(resize);
-      }
       item->SetFocusedLayout(layout);
     }
-    if (item->GetFocusedLayout())
+
+    if (resize != -1.0f)
     {
-      if (item != lastitem || !HasFocus())
-      {
-        item->GetFocusedLayout()->SetFocusedItem(0);
-      }
-      if (item != lastitem && HasFocus())
-      {
-        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
-        unsigned int subItem = 1;
-        if (lastitem && lastitem->GetFocusedLayout())
-          subItem = lastitem->GetFocusedLayout()->GetFocusedItem();
-        item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
-      }
-      item->GetFocusedLayout()->Process(item,m_parentID,currentTime,dirtyregions);
+      if (m_orientation == VERTICAL)
+        item->GetFocusedLayout()->SetWidth(resize);
+      else
+        item->GetFocusedLayout()->SetHeight(resize);
     }
+
+    if (item != lastitem || !HasFocus())
+      item->GetFocusedLayout()->SetFocusedItem(0);
+
+    if (item != lastitem && HasFocus())
+    {
+      item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
+      unsigned int subItem = 1;
+      if (lastitem && lastitem->GetFocusedLayout())
+        subItem = lastitem->GetFocusedLayout()->GetFocusedItem();
+      item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
+    }
+
+    item->GetFocusedLayout()->Process(item, m_parentID, currentTime, dirtyregions);
     lastitem = item;
   }
   else
   {
-    if (item->GetFocusedLayout())
-      item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
     if (!item->GetLayout())
     {
       CGUIListItemLayout *layout = new CGUIListItemLayout(*normallayout);
-      if (resize != -1.0f)
-      {
-        if (m_orientation == VERTICAL)
-          layout->SetWidth(resize);
-        else
-          layout->SetHeight(resize);
-      }
       item->SetLayout(layout);
     }
+
+    if (resize != -1.0f)
+    {
+      if (m_orientation == VERTICAL)
+        item->GetLayout()->SetWidth(resize);
+      else
+        item->GetLayout()->SetHeight(resize);
+    }
+
+    if (item->GetFocusedLayout())
+      item->GetFocusedLayout()->SetFocusedItem(0);
+
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Process(item,m_parentID,currentTime,dirtyregions);
-    else if (item->GetLayout())
-      item->GetLayout()->Process(item,m_parentID,currentTime,dirtyregions);
+      item->GetFocusedLayout()->Process(item, m_parentID, currentTime, dirtyregions);
+    else
+      item->GetLayout()->Process(item, m_parentID, currentTime, dirtyregions);
   }
   g_graphicsContext.RestoreOrigin();
 }
@@ -983,14 +1003,17 @@ void CGUIEPGGridContainer::UpdateItems()
 
         if (m_orientation == VERTICAL)
         {
-          m_gridIndex[row][savedBlock].width   = itemSize*m_blockSize;
-          m_gridIndex[row][savedBlock].height  = m_channelHeight;
+          m_gridIndex[row][savedBlock].originWidth = itemSize*m_blockSize;
+          m_gridIndex[row][savedBlock].originHeight = m_channelHeight;
         }
         else
         {
-          m_gridIndex[row][savedBlock].width   = m_channelWidth;
-          m_gridIndex[row][savedBlock].height  = itemSize*m_blockSize;
+          m_gridIndex[row][savedBlock].originWidth = m_channelWidth;
+          m_gridIndex[row][savedBlock].originHeight = itemSize*m_blockSize;
         }
+
+        m_gridIndex[row][savedBlock].width = m_gridIndex[row][savedBlock].originWidth;
+        m_gridIndex[row][savedBlock].height = m_gridIndex[row][savedBlock].originHeight;
 
         itemSize = 1;
         savedBlock = block+1;
