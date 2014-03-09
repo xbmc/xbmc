@@ -129,7 +129,6 @@ namespace XBMCAddon
     String PythonLanguageHook::GetAddonId()
     {
       XBMC_TRACE;
-      const char* id = NULL;
 
       // Get a reference to the main module
       // and global dictionary
@@ -138,8 +137,9 @@ namespace XBMCAddon
       // Extract a reference to the function "func_name"
       // from the global dictionary
       PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcaddonid__");
-      id = PyString_AsString(pyid);
-      return id;
+      if (pyid)
+        return PyString_AsString(pyid);
+      return "";
     }
 
     String PythonLanguageHook::GetAddonVersion()
@@ -152,8 +152,9 @@ namespace XBMCAddon
       // Extract a reference to the function "func_name"
       // from the global dictionary
       PyObject* pyversion = PyDict_GetItemString(global_dict, "__xbmcapiversion__");
-      String version(PyString_AsString(pyversion));
-      return version;
+      if (pyversion)
+        return PyString_AsString(pyversion);
+      return "";
     }
 
     void PythonLanguageHook::RegisterPlayerCallback(IPlayerCallback* player) { XBMC_TRACE; g_pythonParser.RegisterPythonPlayerCallBack(player); }
