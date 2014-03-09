@@ -2775,21 +2775,25 @@ CStdString CFileItem::GetTBNFile() const
   return thumbFile;
 }
 
+bool CFileItem::SkipLocalArt() const
+{
+  return (m_strPath.empty()
+       || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
+       || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
+       || m_bIsShareOrDrive
+       || IsInternetStream()
+       || URIUtils::IsUPnP(m_strPath)
+       || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+       || IsPlugin()
+       || IsAddonsPath()
+       || IsParentFolder()
+       || IsLiveTV()
+       || IsDVD());
+}
+
 CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) const
 {
-  // ignore a bunch that are meaningless
-  if (m_strPath.empty()
-   || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
-   || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
-   || m_bIsShareOrDrive
-   || IsInternetStream()
-   || URIUtils::IsUPnP(m_strPath)
-   || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
-   || IsPlugin()
-   || IsAddonsPath()
-   || IsParentFolder()
-   || IsLiveTV()
-   || IsDVD())
+  if (SkipLocalArt())
     return "";
 
   CStdString thumb;

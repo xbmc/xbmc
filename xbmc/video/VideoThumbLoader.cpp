@@ -473,6 +473,9 @@ bool CVideoThumbLoader::FillThumb(CFileItem &item)
 
 std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::string &type, bool checkFolder)
 {
+  if (item.SkipLocalArt())
+    return "";
+
   /* Cache directory for (sub) folders on streamed filesystems. We need to do this
      else entering (new) directories from the app thread becomes much slower. This
      is caused by the fact that Curl Stat/Exist() is really slow and that the 
