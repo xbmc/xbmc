@@ -58,11 +58,11 @@
 			<left>30</left>
 			<top>60</top>
 			<width>550</width>
-			<height>80</height>
+			<height>100</height>
 			<align>left</align>
 			<label>-</label>
 			<font>font13</font>
-			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+			<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 		</control>
 		<control type="button" id="11">
 			<description>Yes button</description>
