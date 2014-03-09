@@ -123,8 +123,7 @@ bool CSettingControlEdit::SetFormat(const std::string &format)
       !StringUtils::EqualsNoCase(format, "integer") &&
       !StringUtils::EqualsNoCase(format, "number") &&
       !StringUtils::EqualsNoCase(format, "ip") &&
-      !StringUtils::EqualsNoCase(format, "md5") &&
-      !StringUtils::EqualsNoCase(format, "path")) // TODO
+      !StringUtils::EqualsNoCase(format, "md5"))
     return false;
 
   m_format = format;
@@ -146,11 +145,8 @@ bool CSettingControlButton::Deserialize(const TiXmlNode *node, bool update /* = 
 
 bool CSettingControlButton::SetFormat(const std::string &format)
 {
-  if (!StringUtils::EqualsNoCase(format, "string") &&  // TODO
-      !StringUtils::EqualsNoCase(format, "integer") &&  // TODO
-      !StringUtils::EqualsNoCase(format, "number") &&  // TODO
-      !StringUtils::EqualsNoCase(format, "path") &&
-      !StringUtils::EqualsNoCase(format, "addon") &&  // TODO
+  if (!StringUtils::EqualsNoCase(format, "path") &&
+      !StringUtils::EqualsNoCase(format, "addon") &&
       !StringUtils::EqualsNoCase(format, "action"))
     return false;
 
