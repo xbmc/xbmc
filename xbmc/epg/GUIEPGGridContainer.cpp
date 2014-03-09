@@ -616,36 +616,32 @@ void CGUIEPGGridContainer::ProcessItem(float posX, float posY, CGUIListItem* ite
       CGUIListItemLayout *layout = new CGUIListItemLayout(*focusedlayout);
       item->SetFocusedLayout(layout);
     }
-    if (item->GetFocusedLayout())
-    {
-      if (resize != -1.0f)
-      {
-        if (m_orientation == VERTICAL)
-          item->GetFocusedLayout()->SetWidth(resize);
-        else
-          item->GetFocusedLayout()->SetHeight(resize);
-      }
 
-      if (item != lastitem || !HasFocus())
-      {
-        item->GetFocusedLayout()->SetFocusedItem(0);
-      }
-      if (item != lastitem && HasFocus())
-      {
-        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
-        unsigned int subItem = 1;
-        if (lastitem && lastitem->GetFocusedLayout())
-          subItem = lastitem->GetFocusedLayout()->GetFocusedItem();
-        item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
-      }
-      item->GetFocusedLayout()->Process(item,m_parentID,currentTime,dirtyregions);
+    if (resize != -1.0f)
+    {
+      if (m_orientation == VERTICAL)
+        item->GetFocusedLayout()->SetWidth(resize);
+      else
+        item->GetFocusedLayout()->SetHeight(resize);
     }
+
+    if (item != lastitem || !HasFocus())
+      item->GetFocusedLayout()->SetFocusedItem(0);
+
+    if (item != lastitem && HasFocus())
+    {
+      item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
+      unsigned int subItem = 1;
+      if (lastitem && lastitem->GetFocusedLayout())
+        subItem = lastitem->GetFocusedLayout()->GetFocusedItem();
+      item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
+    }
+
+    item->GetFocusedLayout()->Process(item, m_parentID, currentTime, dirtyregions);
     lastitem = item;
   }
   else
   {
-    if (item->GetFocusedLayout())
-      item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
     if (!item->GetLayout())
     {
       CGUIListItemLayout *layout = new CGUIListItemLayout(*normallayout);
@@ -660,10 +656,13 @@ void CGUIEPGGridContainer::ProcessItem(float posX, float posY, CGUIListItem* ite
         item->GetLayout()->SetHeight(resize);
     }
 
+    if (item->GetFocusedLayout())
+      item->GetFocusedLayout()->SetFocusedItem(0);
+
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Process(item,m_parentID,currentTime,dirtyregions);
-    else if (item->GetLayout())
-      item->GetLayout()->Process(item,m_parentID,currentTime,dirtyregions);
+      item->GetFocusedLayout()->Process(item, m_parentID, currentTime, dirtyregions);
+    else
+      item->GetLayout()->Process(item, m_parentID, currentTime, dirtyregions);
   }
   g_graphicsContext.RestoreOrigin();
 }
