@@ -16,6 +16,7 @@
 #include "guilib/GUIMessage.h"
 #include "Client/PlexMediaServerClient.h"
 #include "FileSystem/PlexDirectory.h"
+#include "threads/CriticalSection.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 class CPlexHTTPFetchJob : public CJob
@@ -62,10 +63,25 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
-class CPlexSectionFetchJob : public CPlexDirectoryFetchJob
+class CPlexCachedDirectoryFetchJob : public CPlexDirectoryFetchJob
+{
+private:
+  unsigned long m_newHash, m_oldHash;
+  static boost::unordered_map<std::string,unsigned long> m_urlHash;
+  static CCriticalSection m_hashMaplock;
+public:
+  CPlexCachedDirectoryFetchJob(const CURL& url) : CPlexDirectoryFetchJob(url),m_newHash(0), m_oldHash(0) {}
+  inline bool DirectoryChanged() { return (m_oldHash != m_newHash); }
+  virtual bool DoWork();
+  unsigned long GetHashFromCache(const CURL& url);
+  void SetCacheHash(const CURL& url, unsigned long hash);
+};
+
+////////////////////////////////////////////////////////////////////////////////////////
+class CPlexSectionFetchJob : public CPlexCachedDirectoryFetchJob
 {
 public:
-  CPlexSectionFetchJob(const CURL& url, int contentType) : CPlexDirectoryFetchJob(url), m_contentType(contentType) {}
+  CPlexSectionFetchJob(const CURL& url, int contentType) : CPlexCachedDirectoryFetchJob(url), m_contentType(contentType) {}
   int m_contentType;
 };
 
