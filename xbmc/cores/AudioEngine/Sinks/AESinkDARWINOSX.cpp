@@ -632,7 +632,7 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t *data, unsigned int frames, bo
     // we are using a timer here for beeing sure for timeouts
     // condvar can be woken spuriously as signaled
     XbmcThreads::EndTime timer(timeout);
-    condVar.wait(lock, timeout);
+    condVar.wait(mutex, timeout);
     if (!m_started && timer.IsTimePast())
       return INT_MAX;    
   }
