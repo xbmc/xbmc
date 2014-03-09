@@ -118,16 +118,16 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
 
 void CGUIListGroup::EnlargeWidth(float difference)
 {
-  // Alters the width of the controls that have an ID of 1
+  // Alters the width of the controls that have an ID of 1 to 14
   for (iControls it = m_children.begin(); it != m_children.end(); it++)
   {
     CGUIControl *child = *it;
     if (child->GetID() >= 1 && child->GetID() <= 14)
     {
-      if (child->GetID() == 1) // label
+      if (child->GetID() == 1)
       {
-        child->SetWidth(child->GetWidth() + difference - 10);
-        child->SetVisible(child->GetWidth() > 10); ///
+        child->SetWidth(child->GetWidth() + difference);
+        child->SetVisible(child->GetWidth() > 10);
       }
       else
       {
@@ -140,16 +140,16 @@ void CGUIListGroup::EnlargeWidth(float difference)
 
 void CGUIListGroup::EnlargeHeight(float difference)
 {
-  // Alters the width of the controls that have an ID of 1
+  // Alters the height of the controls that have an ID of 1 to 14
   for (iControls it = m_children.begin(); it != m_children.end(); it++)
   {
     CGUIControl *child = *it;
     if (child->GetID() >= 1 && child->GetID() <= 14)
     {
-      if (child->GetID() == 1) // label
+      if (child->GetID() == 1)
       {
         child->SetHeight(child->GetHeight() + difference);
-        child->SetVisible(child->GetHeight() > 10); ///
+        child->SetVisible(child->GetHeight() > 10);
       }
       else
       {

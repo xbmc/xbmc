@@ -39,6 +39,8 @@ namespace EPG
   struct GridItemsPtr
   {
     CGUIListItemPtr item;
+    float originWidth;
+    float originHeight;
     float width;
     float height;
   };
