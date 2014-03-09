@@ -70,6 +70,7 @@ public:
           void DeinitDisplayLink(void);
           double GetDisplayLinkFPS(void);
           void OnAppFocusChange(bool focus);
+          bool IsBackgrounded() const { return m_bIsBackgrounded; }
 
 protected:
   virtual bool PresentRenderImpl(const CDirtyRegionList &dirty);
@@ -82,6 +83,7 @@ protected:
   int          m_iVSyncErrors;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
+  bool         m_bIsBackgrounded;
   
 private:
   bool GetScreenResolution(int* w, int* h, double* fps, int screenIdx);

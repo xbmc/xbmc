@@ -56,6 +56,7 @@ CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
   m_eWindowSystem = WINDOW_SYSTEM_IOS;
 
   m_iVSyncErrors = 0;
+  m_bIsBackgrounded = false;
 }
 
 CWinSystemIOS::~CWinSystemIOS()
@@ -337,6 +338,7 @@ void CWinSystemIOS::Unregister(IDispResource* resource)
 void CWinSystemIOS::OnAppFocusChange(bool focus)
 {
   CSingleLock lock(m_resourceSection);
+  m_bIsBackgrounded = !focus;
   CLog::Log(LOGDEBUG, "CWinSystemIOS::OnAppFocusChange: %d", focus ? 1 : 0);
   for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
     (*i)->OnAppFocusChange(focus);
