@@ -312,8 +312,6 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
     return false;
   if (CProfilesManager::Get().GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
     return false;
-  else if (!g_passwordManager.IsMasterLockUnlocked(true))
-    return false;
 
   // setup our thumb list
   CFileItemList items;
