@@ -718,8 +718,10 @@ void CPlexHTTPRemoteHandler::subscribe(const HTTPRequest &request, const ArgMap 
   CPlexRemoteSubscriberPtr sub = getSubFromRequest(request, arguments);
   if (sub && g_plexApplication.remoteSubscriberManager && g_plexApplication.timelineManager)
   {
-    g_plexApplication.remoteSubscriberManager->addSubscriber(sub);
-    g_plexApplication.timelineManager->SendTimelineToSubscriber(sub);
+    sub = g_plexApplication.remoteSubscriberManager->addSubscriber(sub);
+
+    if (sub)
+      g_plexApplication.timelineManager->SendCurrentTimelineToSubscriber(sub);
   }
 }
 
@@ -880,6 +882,12 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
   if (g_plexApplication.remoteSubscriberManager && g_plexApplication.timelineManager)
     pollSubscriber = g_plexApplication.remoteSubscriberManager->addSubscriber(pollSubscriber);
 
+  if (!pollSubscriber)
+  {
+    setStandardResponse(500, "We are going away!");
+    return;
+  }
+
   if (arguments.find("wait") != arguments.end())
   {
     if (arguments.find("wait")->second == "1" || arguments.find("wait")->second == "true")
@@ -887,9 +895,9 @@ void CPlexHTTPRemoteHandler::poll(const HTTPRequest &request, const ArgMap &argu
   }
 
   if (wait)
-    m_xmlOutput = g_plexApplication.timelineManager->WaitForTimeline(pollSubscriber);
+    m_xmlOutput = pollSubscriber->waitForTimeline();
   else
-    m_xmlOutput = g_plexApplication.timelineManager->GetCurrentTimeLinesXML(pollSubscriber);
+    m_xmlOutput = g_plexApplication.timelineManager->GetCurrentTimeLines()->getTimelinesXML(pollSubscriber->getCommandID());
 
   m_responseHeaderFields.insert(std::make_pair("Access-Control-Expose-Headers", "X-Plex-Client-Identifier"));
 }

@@ -20,9 +20,12 @@
 #include "PlexApplication.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "LocalizeStrings.h"
+#include "Client/PlexTimeline.h"
+#include "Client/PlexTimelineManager.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
-CPlexRemoteSubscriber::CPlexRemoteSubscriber(const std::string &uuid, int commandID, const std::string &ipaddress, int port, const std::string &protocol)
+CPlexRemoteSubscriber::CPlexRemoteSubscriber(bool poller, const std::string &uuid, int commandID, const std::string &ipaddress, int port, const std::string &protocol)
+  : CThread(std::string("RemoteSubscriber: " + uuid).c_str()), m_outgoingTimelines(20)
 {
   if (!protocol.empty() && !ipaddress.empty())
   {
@@ -31,9 +34,76 @@ CPlexRemoteSubscriber::CPlexRemoteSubscriber(const std::string &uuid, int comman
     m_url.SetPort(port);
   }
 
-  m_poller = false;
+  m_poller = poller;
   m_commandID = commandID;
   m_uuid = uuid;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexRemoteSubscriber::Process()
+{
+  while (!m_bStop)
+  {
+    CPlexTimelineCollectionPtr timelines;
+
+    if (!m_outgoingTimelines.waitPop(timelines) || !timelines)
+      continue;
+
+    while (!sendTimeline(timelines))
+    {
+      CLog::Log(LOGWARNING, "CPlexRemoteSubscriber::sendTimeline failed to send timeline to %s", getName().c_str());
+      Sleep(500);
+      if (m_bStop)
+      {
+        CLog::Log(LOGDEBUG, "CPlexRemoteSubcriber::Process aborting timeline thread for subscriber %s", getName().c_str());
+        return;
+      }
+    }
+  }
+  CLog::Log(LOGDEBUG, "CPlexRemoteSubcriber::Process exiting timeline thread for subscriber %s", getName().c_str());
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexRemoteSubscriber::Stop()
+{
+  if (IsRunning())
+    StopThread(false);
+
+  m_outgoingTimelines.cancel();
+  m_file.Cancel();
+
+  if (IsRunning())
+    WaitForThreadExit(0xFFFFFFFF);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CXBMCTinyXML CPlexRemoteSubscriber::waitForTimeline()
+{
+  CPlexTimelineCollectionPtr timelines;
+
+  while (true)
+  {
+    if (!m_outgoingTimelines.waitPop(timelines, 10 * 1000) || !timelines)
+      return g_plexApplication.timelineManager->GetCurrentTimeLines()->getTimelinesXML();
+
+    return timelines->getTimelinesXML(m_commandID);
+  }
+
+  // should never happen!
+  return CXBMCTinyXML();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexRemoteSubscriber::sendTimeline(const CPlexTimelineCollectionPtr &timelines)
+{
+  CURL u(m_url);
+  u.SetFileName(":/timeline");
+
+  CXBMCTinyXML xml = timelines->getTimelinesXML(m_commandID);
+  std::string data = PlexUtils::GetXMLString(xml);
+  CStdString ret;
+
+  return m_file.Post(u.Get(), data, ret);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +116,20 @@ bool CPlexRemoteSubscriber::shouldRemove() const
   }
   CLog::Log(LOGDEBUG, "CPlexRemoteSubscriber::shouldRemove will not remove because elapsed: %lld", m_lastUpdated.elapsed());
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlexRemoteSubscriber::queueTimeline(const CPlexTimelineCollectionPtr &timeline)
+{
+  if (!m_outgoingTimelines.tryEnqueue(timeline))
+  {
+    // This means that the queue is full, the client is not reading fast enough!
+    // which means that we will drop the client.
+    CLog::Log(LOGWARNING, "CPlexRemoteSubscriber::queueTimeline client %s is not reading fast enough.", getName().c_str());
+    return false;
+  }
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -71,6 +155,8 @@ CPlexRemoteSubscriberPtr CPlexRemoteSubscriberManager::addSubscriber(CPlexRemote
   if (!subscriber) return CPlexRemoteSubscriberPtr();
   
   CSingleLock lk(m_crit);
+
+  if (m_stopped) return CPlexRemoteSubscriberPtr();
   
   if (m_map.find(subscriber->getUUID()) != m_map.end())
   {
@@ -87,8 +173,11 @@ CPlexRemoteSubscriberPtr CPlexRemoteSubscriberManager::addSubscriber(CPlexRemote
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52500),
                                             subscriber->getName().empty() ? CStdString(subscriber->getURL().GetHostName()) : CStdString(subscriber->getName()),
                                             TOAST_DISPLAY_TIME, false);
+
+    if (!subscriber->isPoller())
+      subscriber->Create();
   }
-  
+
   g_plexApplication.timer.SetTimeout(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, this);
 
   return m_map[subscriber->getUUID()];
@@ -114,6 +203,7 @@ void CPlexRemoteSubscriberManager::removeSubscriber(CPlexRemoteSubscriberPtr sub
   if (m_map.find(subscriber->getUUID()) == m_map.end())
     return;
   
+  m_map[subscriber->getUUID()]->Stop();
   m_map.erase(subscriber->getUUID());
   
   if (m_map.size() == 0)
@@ -150,7 +240,10 @@ void CPlexRemoteSubscriberManager::OnTimeout()
   BOOST_FOREACH(SubscriberPair p, m_map)
   {
     if (p.second->shouldRemove())
+    {
+      p.second->Stop();
       subsToRemove.push_back(p.first);
+    }
   }
   
   BOOST_FOREACH(std::string s, subsToRemove)
@@ -189,4 +282,20 @@ std::vector<CPlexRemoteSubscriberPtr> CPlexRemoteSubscriberManager::getSubscribe
     list.push_back(p.second);
 
   return list;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexRemoteSubscriberManager::Stop()
+{
+  CSingleLock lock (m_crit);
+  m_stopped = true;
+  g_plexApplication.timer.RemoveTimeout(this);
+
+  std::vector<CPlexRemoteSubscriberPtr> allSubs;
+
+  BOOST_FOREACH(SubscriberPair p, m_map)
+    allSubs.push_back(p.second);
+
+  BOOST_FOREACH(CPlexRemoteSubscriberPtr sub, allSubs)
+    removeSubscriber(sub);
 }

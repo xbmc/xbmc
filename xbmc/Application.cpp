@@ -3833,6 +3833,10 @@ void CApplication::Stop(int exitCode)
     StopServices();
     //Sleep(5000);
 
+    /* PLEX */
+    g_plexApplication.preShutdown();
+    /* END PLEX */
+
 #ifdef HAS_WEB_SERVER
   CWebServer::UnregisterRequestHandler(&m_httpImageHandler);
   CWebServer::UnregisterRequestHandler(&m_httpVfsHandler);
@@ -3848,6 +3852,10 @@ void CApplication::Stop(int exitCode)
   CWebServer::UnregisterRequestHandler(&m_httpWebinterfaceHandler);
 #endif
 #endif
+
+  /* PLEX */
+  g_plexApplication.Shutdown();
+  /* END PLEX */
 
     if (m_pPlayer)
     {

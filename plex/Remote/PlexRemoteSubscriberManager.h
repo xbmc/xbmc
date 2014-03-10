@@ -17,6 +17,10 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "Utility/PlexTimer.h"
+#include "FileSystem/PlexFile.h"
+#include "XBMCTinyXML.h"
+#include "Client/PlexTimeline.h"
+#include "PlexQueue.h"
 
 class CPlexRemoteSubscriber;
 typedef boost::shared_ptr<CPlexRemoteSubscriber> CPlexRemoteSubscriberPtr;
@@ -27,27 +31,30 @@ typedef boost::shared_ptr<CPlexRemoteSubscriber> CPlexRemoteSubscriberPtr;
 /* check all subscribers every 10th second */
 #define PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL 10
 
-class CPlexRemoteSubscriber
+class CPlexRemoteSubscriber : public CThread
 {
   public:
     static CPlexRemoteSubscriberPtr NewSubscriber(const std::string &uuid, const std::string &ipaddress, int port, int commandID = -1, const std::string &protocol = "http")
     {
-      return CPlexRemoteSubscriberPtr(new CPlexRemoteSubscriber(uuid, commandID, ipaddress, port, protocol));
+      return CPlexRemoteSubscriberPtr(new CPlexRemoteSubscriber(false, uuid, commandID, ipaddress, port, protocol));
     };
 
     static CPlexRemoteSubscriberPtr NewPollSubscriber(const std::string& uuid, int commandID = -1)
     {
-      CPlexRemoteSubscriberPtr sub =  CPlexRemoteSubscriberPtr(new CPlexRemoteSubscriber(uuid, commandID));
-      sub->setPoller();
+      CPlexRemoteSubscriberPtr sub =  CPlexRemoteSubscriberPtr(new CPlexRemoteSubscriber(true, uuid, commandID));
       return sub;
     }
 
-    CPlexRemoteSubscriber(const std::string &uuid, int commandID, const std::string &ipaddress="", int port=32400, const std::string& protocol="http");
+    CPlexRemoteSubscriber(bool poller, const std::string &uuid, int commandID, const std::string &ipaddress="", int port=32400, const std::string& protocol="http");
+
+    void Process();
+    void Stop();
+
+    CXBMCTinyXML waitForTimeline();
 
     void refresh(CPlexRemoteSubscriberPtr sub);
     bool shouldRemove() const;
 
-    void setPoller() { m_poller = true; }
     bool isPoller() const { return m_poller; }
   
     CURL getURL() const { return m_url; }
@@ -59,15 +66,20 @@ class CPlexRemoteSubscriber
     void setName(const std::string& name) { m_name = name; }
     std::string getName() const { return m_name; }
 
-    CEvent m_pollEvent;
+    bool queueTimeline(const CPlexTimelineCollectionPtr& timeline);
+
   
   private:
+    bool sendTimeline(const CPlexTimelineCollectionPtr& timelines);
+    CPlexQueue<CPlexTimelineCollectionPtr> m_outgoingTimelines;
+
     int m_commandID;
     CURL m_url;
     CPlexTimer m_lastUpdated;
     std::string m_uuid;
     bool m_poller;
     std::string m_name;
+    XFILE::CPlexFile m_file;
 };
 
 typedef std::map<std::string, CPlexRemoteSubscriberPtr> SubscriberMap;
@@ -76,7 +88,7 @@ typedef std::pair<std::string, CPlexRemoteSubscriberPtr> SubscriberPair;
 class CPlexRemoteSubscriberManager : public IPlexGlobalTimeout
 {
   public:
-    CPlexRemoteSubscriberManager() {}
+    CPlexRemoteSubscriberManager() : m_stopped(false) {}
     CPlexRemoteSubscriberPtr addSubscriber(CPlexRemoteSubscriberPtr subscriber);
     void updateSubscriberCommandID(CPlexRemoteSubscriberPtr subscriber);
     void removeSubscriber(CPlexRemoteSubscriberPtr subscriber);
@@ -87,12 +99,14 @@ class CPlexRemoteSubscriberManager : public IPlexGlobalTimeout
   
     bool hasSubscribers() const { CSingleLock lk(m_crit); return m_map.size(); }
     CStdString TimerName() const { return "remoteSubscriberManager"; }
-  
+    void Stop();
+
   private:
     void OnTimeout();
   
     CCriticalSection m_crit;
     SubscriberMap m_map;
+    bool m_stopped;
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexRemoteSubscriberManager__) */

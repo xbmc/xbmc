@@ -257,6 +257,58 @@ void PlexApplication::sendNetworkLog(int level, const std::string &logline)
   Send(m_ipAddress, 60969, packet);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexApplication::preShutdown()
+{
+  remoteSubscriberManager->Stop();
+  timer.StopAllTimers();
+  themeMusicPlayer->stop();
+  if (m_serviceListener)
+  {
+    m_serviceListener->Stop();
+    m_serviceListener.reset();
+  }
+  myPlexManager->Stop();
+  serverManager->Stop();
+  dataLoader->Stop();
+  timelineManager->Stop();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlexApplication::Shutdown()
+{
+  CLog::Log(LOGINFO, "CPlexApplication shutting down!");
+
+  delete extraInfo;
+
+  delete myPlexManager;
+
+  serverManager.reset();
+  dataLoader.reset();
+
+  timelineManager.reset();
+
+  mediaServerClient->CancelJobs();
+  mediaServerClient.reset();
+
+  profiler->Clear();
+  profiler.reset();
+
+  filterManager->saveFiltersToDisk();
+  filterManager.reset();
+
+  OnTimeout();
+
+  delete remoteSubscriberManager;
+  remoteSubscriberManager = NULL;
+
+#ifdef ENABLE_AUTOUPDATE
+  delete autoUpdater;
+#endif
+
+  delete thumbCacher;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
@@ -273,56 +325,5 @@ void PlexApplication::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *
     CGUIDialogVideoOSD *osd = (CGUIDialogVideoOSD*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
     if (g_application.IsPlayingVideo() && osd && !osd->IsActive())
       CApplicationMessenger::Get().DoModal(osd, WINDOW_DIALOG_VIDEO_OSD, "pauseOpen", false);
-  }
-  else if (flag == ANNOUNCEMENT::System && stricmp(sender, "xbmc") == 0 && stricmp(message, "onQuit") == 0)
-  {
-    CLog::Log(LOGINFO, "CPlexApplication shutting down!");
-
-    delete extraInfo;
-
-    timer.StopAllTimers();
-
-    themeMusicPlayer->stop();
-    
-    if (m_serviceListener)
-    {
-      m_serviceListener->Stop();
-      m_serviceListener.reset();
-    }
-    
-    myPlexManager->Stop();
-    delete myPlexManager;
-
-    serverManager->Stop();
-    serverManager.reset();
-
-    dataLoader->Stop();
-    dataLoader.reset();
-
-    timelineManager->Stop();
-    timelineManager.reset();
-    
-    mediaServerClient->CancelJobs();
-    mediaServerClient.reset();
-
-    profiler->Clear();
-    profiler.reset();
-
-    filterManager->saveFiltersToDisk();
-    filterManager.reset();
-
-    OnTimeout();
-    
-    delete remoteSubscriberManager;
-    remoteSubscriberManager = NULL;
-    
-//    backgroundMusicPlayer->Die();
-//    delete backgroundMusicPlayer;
-    
-#ifdef ENABLE_AUTOUPDATE
-    delete autoUpdater;
-#endif
-
-    delete thumbCacher;
   }
 }

@@ -109,8 +109,10 @@ public:
   void OnTimeout();
   CStdString TimerName() const { return "plexApplication"; }
   void sendNetworkLog(int level, const std::string& logline);
+  void Shutdown();
+  void preShutdown();
 
-private:
+  private:
   /// Members
   CPlexServiceListenerPtr m_serviceListener;
   CStdString m_ipAddress;
