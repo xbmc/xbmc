@@ -24,14 +24,16 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false), m_textFieldFocused(false), m_textFieldSecure(false)
 {
-  m_timelines[PLEX_MEDIA_TYPE_MUSIC] = CPlexTimelinePtr(new CPlexTimeline(PLEX_MEDIA_TYPE_MUSIC));
-  m_timelines[PLEX_MEDIA_TYPE_VIDEO] = CPlexTimelinePtr(new CPlexTimeline(PLEX_MEDIA_TYPE_VIDEO));
-  m_timelines[PLEX_MEDIA_TYPE_PHOTO] = CPlexTimelinePtr(new CPlexTimeline(PLEX_MEDIA_TYPE_PHOTO));
+  ResetTimeline(PLEX_MEDIA_TYPE_MUSIC);
+  ResetTimeline(PLEX_MEDIA_TYPE_VIDEO);
+  ResetTimeline(PLEX_MEDIA_TYPE_PHOTO);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 uint64_t CPlexTimelineManager::GetItemDuration(CFileItemPtr item)
 {
+  if (!item) return 0;
+
   if (item->HasProperty("duration"))
     return item->GetProperty("duration").asInteger();
   else if (item->HasVideoInfoTag())
@@ -102,6 +104,15 @@ void CPlexTimelineManager::Stop()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexTimelinePtr CPlexTimelineManager::ResetTimeline(ePlexMediaType type, bool continuing)
+{
+  CSingleLock lk(m_timelineManagerLock);
+  m_timelines[type] = CPlexTimelinePtr(new CPlexTimeline(type));
+  m_timelines[type]->setContinuing(continuing);
+  return m_timelines[type];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMediaState state, uint64_t currentPosition, bool force)
 {
   if (!newItem)
@@ -133,15 +144,29 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMedi
     {
       // we need to stop the old media before playing the new one.
       CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress Old item was never stopped, sending stop timeline now.");
-      oldTimeline->setContinuing(true);
-      oldTimeline->setState(PLEX_MEDIA_STATE_STOPPED);
 
-      lk.lock();
-      m_timelines[type] = oldTimeline;
-      lk.unlock();
+      // We need to save the item, otherwise the Report function will fail badly.
+      CFileItemPtr oldItem = oldTimeline->getItem();
+      oldTimeline = ResetTimeline(type, true);
+      if (oldItem) oldTimeline->setItem(oldItem);
 
       ReportProgress(oldTimeline, true);
     }
+  }
+
+  /* now we need to check the other types because we can start
+   * playing a video when music is playing which will stop the music
+   * but the stopped command will never come here.
+   */
+  if (timeline->getType() == PLEX_MEDIA_TYPE_VIDEO)
+  {
+    ResetTimeline(PLEX_MEDIA_TYPE_MUSIC);
+    ResetTimeline(PLEX_MEDIA_TYPE_PHOTO);
+  }
+  else if (timeline->getType() == PLEX_MEDIA_TYPE_MUSIC ||
+           timeline->getType() == PLEX_MEDIA_TYPE_PHOTO)
+  {
+    ResetTimeline(PLEX_MEDIA_TYPE_VIDEO);
   }
 
   /* force if the caller has set the force flag, or if the
@@ -156,10 +181,7 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMedi
   ReportProgress(timeline, reallyForce);
 
   if (timeline->getState() == PLEX_MEDIA_STATE_STOPPED)
-  {
-    lk.lock();
-    m_timelines[type] = CPlexTimelinePtr(new CPlexTimeline(type));
-  }
+    ResetTimeline(type);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +213,7 @@ void CPlexTimelineManager::ReportProgress(const CPlexTimelinePtr &timeline, bool
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating subscribers: (%s) %s [%lld/%lld]",
               PlexUtils::GetMediaStateString(timeline->getState()).c_str(),
-              currentItem->GetLabel().c_str(),
+              currentItem ? currentItem->GetLabel().c_str() : "None",
               realPosition,
               GetItemDuration(currentItem));
 
@@ -212,10 +234,11 @@ void CPlexTimelineManager::ReportProgress(const CPlexTimelinePtr &timeline, bool
   {
     CLog::Log(LOGDEBUG, "CPlexTimelineManager::ReportProgress updating server: (%s) %s [%lld/%lld]",
               PlexUtils::GetMediaStateString(timeline->getState()).c_str(),
-              currentItem->GetLabel().c_str(),
+              currentItem ? currentItem->GetLabel().c_str() : "None",
               realPosition,
               GetItemDuration(currentItem));
-    g_plexApplication.mediaServerClient->SendServerTimeline(currentItem, timeline->getTimeline());
+    if (currentItem)
+      g_plexApplication.mediaServerClient->SendServerTimeline(currentItem, timeline->getTimeline());
 
     /* now we can see if we need to ping the transcoder as well */
     if (timeline->getType() == PLEX_MEDIA_TYPE_VIDEO &&
@@ -228,19 +251,22 @@ void CPlexTimelineManager::ReportProgress(const CPlexTimelinePtr &timeline, bool
     m_serverTimer.restart();
   }
 
-  /* Mark progress for the item */
-  float percentage = 0.0;
-  if (GetItemDuration(currentItem) > 0)
-    percentage = (float)(((float)realPosition/(float)GetItemDuration(currentItem)) * 100.0);
+  if (currentItem)
+  {
+    /* Mark progress for the item */
+    float percentage = 0.0;
+    if (GetItemDuration(currentItem) > 0)
+      percentage = (float)(((float)realPosition/(float)GetItemDuration(currentItem)) * 100.0);
 
-  if (currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED &&
-      realPosition >= 5)
-    currentItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
+    if (currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED &&
+        realPosition >= 5)
+      currentItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
 
-  if ((currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_IN_PROGRESS ||
-      currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED) &&
-      percentage > g_advancedSettings.m_videoPlayCountMinimumPercent)
-    currentItem->MarkAsWatched();
+    if ((currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_IN_PROGRESS ||
+         currentItem->GetOverlayImageID() == CGUIListItem::ICON_OVERLAY_UNWATCHED) &&
+        percentage > g_advancedSettings.m_videoPlayCountMinimumPercent)
+      currentItem->MarkAsWatched();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

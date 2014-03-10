@@ -61,6 +61,7 @@ class CPlexTimelineManager
     bool m_textFieldSecure;
 
     void NotifyPollers();
+    CPlexTimelinePtr ResetTimeline(ePlexMediaType type, bool continuing = false);
 };
 
 typedef boost::shared_ptr<CPlexTimelineManager> CPlexTimelineManagerPtr;
