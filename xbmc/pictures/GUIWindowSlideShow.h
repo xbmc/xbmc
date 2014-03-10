@@ -110,6 +110,7 @@ private:
                 SortOrder order = SortOrderAscending,
                 SortAttribute sortAttributes = SortAttributeNone);
   bool PlayVideo();
+  bool PlayAnimatedPicture(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   CSlideShowPic::DISPLAY_EFFECT GetDisplayEffect(int iSlideNumber) const;
   void RenderPause();
   void RenderErrorMessage();
