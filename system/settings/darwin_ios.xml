@@ -16,6 +16,7 @@
         <setting id="videoplayer.hqscalers">
           <visible>false</visible>
         </setting>
+      </group>
     </category>
   </section>
   <section id="music">
