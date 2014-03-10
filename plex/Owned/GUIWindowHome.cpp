@@ -150,12 +150,6 @@ void CPlexSectionFanout::Refresh()
 
   CSingleLock lk(m_critical);
   
-  /*
-  BOOST_FOREACH(contentListPair p, m_fileLists)
-    delete p.second;
-  
-  m_fileLists.clear();*/
-
   CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:Refresh for %s", m_url.Get().c_str());
 
   CURL trueUrl(m_url);
