@@ -15,6 +15,7 @@ include_directories(
 	${root}/plex/Network
 	${root}/plex/Remote
 	${root}/plex/Filters
+  ${root}/plex/Third-Party/rapidxml
   ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
