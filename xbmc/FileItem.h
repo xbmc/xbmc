@@ -134,6 +134,13 @@ public:
    */
   bool IsVideo() const;
 
+  /*!
+  \brief Check whether an item is an animated picture item.
+   Note that this may change the PictureInfoTag of the item.
+  \return true if the item is an animated picture, false otherwise. 
+  */
+  bool IsAnimatedPicture();
+
   bool IsDiscStub() const;
 
   /*!
