@@ -109,7 +109,7 @@ int CPlexHTTPRemoteHandler::HandleHTTPRequest(const HTTPRequest &request)
     pausePlay(argumentMap);
   else if (path.Equals("/player/playback/play"))
     pausePlay(argumentMap);
-  else if (path.Equals("/player/navigation/showDetails"))
+  else if (path.Equals("/player/mirror/details"))
     showDetails(argumentMap);
   else if (boost::starts_with(path, "/player/navigation"))
     navigation(path, argumentMap);
