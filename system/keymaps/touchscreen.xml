@@ -28,4 +28,11 @@
       <rotate>RotateGesture</rotate>
     </touch>
   </SlideShow>
+  <MyFiles>
+    <touch>
+      <tap>Select</tap>
+      <swipe direction="left">Highlight</swipe>
+      <swipe direction="right">Highlight</swipe>
+    </touch>
+  </MyFiles>
 </keymap>
