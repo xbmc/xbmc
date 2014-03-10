@@ -1790,7 +1790,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\AudioDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\CodecFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\paplayer\FLACcodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\ModplugCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\MP3codec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\NSFCodec.cpp" />
@@ -2602,14 +2601,12 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h" />
     <ClInclude Include="..\..\lib\DllAdpcm.h" />
     <ClInclude Include="..\..\lib\DllASAP.h" />
-    <ClInclude Include="..\..\lib\DllLibFlac.h" />
     <ClInclude Include="..\..\lib\DllNosefart.h" />
     <ClInclude Include="..\..\lib\DllSidplay2.h" />
     <ClInclude Include="..\..\lib\DllStSound.h" />
     <ClInclude Include="..\..\lib\DllTimidity.h" />
     <ClInclude Include="..\..\lib\DllVorbisfile.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\FLACcodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ICodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ModplugCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\MP3codec.h" />

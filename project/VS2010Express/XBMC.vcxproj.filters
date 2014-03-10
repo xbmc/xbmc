@@ -540,9 +540,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\FLACcodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\ModplugCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
@@ -3436,9 +3433,6 @@
     <ClInclude Include="..\..\lib\DllASAP.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\DllLibFlac.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\DllNosefart.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
@@ -3455,9 +3449,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\FLACcodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ICodec.h">
