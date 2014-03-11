@@ -321,6 +321,17 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     return;
   }
 
+  int albumID = m_musicdatabase.GetAlbumIdByPath(pItem->GetPath());
+  if (albumID != -1)
+  {
+    CAlbum album;
+    if (!m_musicdatabase.GetAlbum(albumID, album))
+      return;
+    CFileItem item(StringUtils::Format("musicdb://albums/%ld/", albumID), album);
+    if (ShowAlbumInfo(&item))
+      return;
+  }
+
   CFileItemList items;
   GetDirectory(pItem->GetPath(), items);
 
