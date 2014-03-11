@@ -1177,9 +1177,17 @@ msgctxt "#336"
 msgid "Framerate conversion"
 msgstr "フレームレートの調整"
 
+msgctxt "#337"
+msgid "Output configuration"
+msgstr "アウトプット設定"
+
 msgctxt "#338"
 msgid "Fixed"
 msgstr "Fixed"
+
+msgctxt "#339"
+msgid "Optimized"
+msgstr "最適化"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1556,6 +1564,10 @@ msgstr "ファイルを開く"
 msgctxt "#439"
 msgid "Cache"
 msgstr "キャッシュ"
+
+msgctxt "#440"
+msgid "Hard disk"
+msgstr "ハードディスク"
 
 msgctxt "#441"
 msgid "UDF"
@@ -2372,6 +2384,10 @@ msgstr "無効なポートです。1から65535の間で設定して下さい。
 msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP プロキシ"
+
+msgctxt "#715"
+msgid "Assignment"
+msgstr "アサインメント"
 
 msgctxt "#716"
 msgid "Automatic (DHCP)"
@@ -3429,9 +3445,17 @@ msgctxt "#10035"
 msgid "Reset"
 msgstr "リセット"
 
+msgctxt "#10036"
+msgid "Basic"
+msgstr "ベーシック"
+
 msgctxt "#10037"
 msgid "Standard"
 msgstr "標準"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "高度な設定"
 
 msgctxt "#10040"
 msgid "Add-on browser"
@@ -3493,9 +3517,17 @@ msgctxt "#10137"
 msgid "Smart playlist rule editor"
 msgstr "スマートプレイリストルールエディター"
 
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "写真/情報"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "アドオン設定"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "アドオン/情報"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3936,6 +3968,10 @@ msgstr "終了"
 msgctxt "#13013"
 msgid "Reboot"
 msgstr "再起動"
+
+msgctxt "#13014"
+msgid "Minimise"
+msgstr "最小化"
 
 msgctxt "#13015"
 msgid "Power button action"
@@ -4853,6 +4889,14 @@ msgctxt "#13553"
 msgid "%.1f Seconds"
 msgstr "%.1f 秒"
 
+msgctxt "#13554"
+msgid "%d Minute"
+msgstr "%d　分"
+
+msgctxt "#13555"
+msgid "%d Minutes"
+msgstr "%d　分"
+
 msgctxt "#13600"
 msgid "Apple remote"
 msgstr "Apple Remote"
@@ -4884,10 +4928,6 @@ msgstr "マルチリモート (Harmony)"
 msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple Remote エラー"
-
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple Remote サポートを有効にできません。"
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6033,6 +6073,10 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "警告"
 
+msgctxt "#19099"
+msgid "Service"
+msgstr "サービス"
+
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "他のチャンネルに切り替えてください。"
@@ -6080,10 +6124,6 @@ msgstr "チャンネルの検索"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "検索中に PVR 機能を使うことはできません。"
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "どのサーバーで検索を行いますか？"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -9005,6 +9045,14 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "写真の向き"
 
+msgctxt "#21858"
+msgid "Image type"
+msgstr "画像タイプ"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "作成時間"
+
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr "追加カテゴリ"
@@ -9700,10 +9748,6 @@ msgstr "Hide foreign"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "全タイトルから選択..."
-
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Blu-Ray メニューを表示"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10449,10 +10493,6 @@ msgctxt "#36146"
 msgid "Check for new media files on XBMC startup."
 msgstr "XBMC 起動時に新しいメディアファイルをチェックします。"
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "情報がまだありません。"
@@ -10461,87 +10501,11 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "情報がまだありません。"
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "情報がまだありません。"
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "情報がまだありません。"
 
@@ -10617,10 +10581,6 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "天気情報の取得先を指定してください。"
 
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
 msgctxt "#36426"
 msgid "Switch to channel"
 msgstr "チャンネル切り替え"
@@ -10628,6 +10588,14 @@ msgstr "チャンネル切り替え"
 msgctxt "#36428"
 msgid "Record"
 msgstr "録音"
+
+msgctxt "#36524"
+msgid "Preferred mode"
+msgstr "推奨モード"
+
+msgctxt "#36530"
+msgid "Preferred mode"
+msgstr "推奨モード"
 
 msgctxt "#37014"
 msgid "Last used profile"

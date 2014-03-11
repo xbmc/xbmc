@@ -4563,7 +4563,7 @@ msgstr "Diavoorstelling met mappen"
 
 msgctxt "#13319"
 msgid "Randomise"
-msgstr "Willekeurige"
+msgstr "Willekeurige volgorde"
 
 msgctxt "#13320"
 msgid "Stereo"
@@ -5170,8 +5170,8 @@ msgid "Apple Remote Error"
 msgstr "Apple afstandsbedieningsfout"
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple afstandsbedieningsondersteuning kan niet worden geactiveerd."
+msgid "Apple Remote support could not be enabled."
+msgstr "Apple op afstand ondersteuning kon niet worden ingeschakeld."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6462,8 +6462,8 @@ msgid "Cannot use PVR functions while searching."
 msgstr "Kan de instellingen van de TV niet aanpassen tijdens het zoeken"
 
 msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Op welke server wilt u zoeken?"
+msgid "On which server do you want to search?"
+msgstr "op welke server wil je gaan zoeken?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -8183,7 +8183,7 @@ msgstr "Standaardscraper voor artiestinformatie"
 
 msgctxt "#20195"
 msgid "Change scraper"
-msgstr "Scraper wijzigen"
+msgstr "Scanner wijzigen"
 
 msgctxt "#20196"
 msgid "Export music library"
@@ -8675,7 +8675,7 @@ msgstr "Afl. aan favorieten toevoegen"
 
 msgctxt "#20407"
 msgid "Scraper settings"
-msgstr "Scraperinstellingen"
+msgstr "Scannerinstellingen"
 
 msgctxt "#20408"
 msgid "Downloading music video information"
@@ -9171,19 +9171,19 @@ msgstr "niet in laatste"
 
 msgctxt "#21412"
 msgid "Scrapers"
-msgstr "Scrapers"
+msgstr "Scanners"
 
 msgctxt "#21413"
 msgid "Default movie scraper"
-msgstr "Standaard speelfilm scraper"
+msgstr "Standaard speelfilm scanner"
 
 msgctxt "#21414"
 msgid "Default tvshow scraper"
-msgstr "Standaard tv-serie scraper"
+msgstr "Standaard tv-serie scanner"
 
 msgctxt "#21415"
 msgid "Default music video scraper"
-msgstr "Standaard muziekvideo scraper"
+msgstr "Standaard muziekvideo scanner"
 
 msgctxt "#21417"
 msgid "Settings"
@@ -9195,7 +9195,7 @@ msgstr "Meertalig"
 
 msgctxt "#21419"
 msgid "No scrapers present"
-msgstr "Geen scrapers beschikbaar"
+msgstr "Geen scanner beschikbaar"
 
 msgctxt "#21420"
 msgid "Value to match"
@@ -10354,8 +10354,8 @@ msgid "Select from all titles ..."
 msgstr "Selecteer uit alle titels..."
 
 msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Toon bluray menu's"
+msgid "Show Blu-ray menus"
+msgstr "Toon Blu-ray menu`s"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10374,12 +10374,12 @@ msgid "Chapters: %u - duration: %s"
 msgstr "Hoofdstukken: %u - duur: %s"
 
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Blu-ray disc afspelen mislukt"
+msgid "Playback of Blu-ray failed"
+msgstr "Afspelen van Blu-ray mislukt"
 
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Het menu van deze Blu-ray disc wordt niet ondersteund"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Het menu van deze Blu-ray wordt niet ondersteund"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11209,6 +11209,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Laat bestandsextensies zien bij media bestanden. Bijvoorbeeld, 'Jij Geniet Van Mij.mp3' wordt getoond als 'Jij Geniet Van Mij'."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "Negeer bepaalde woorden of tekens tijdens het sorteren. Bijvoorbeeld, 'The Simpsons' wordt gesorteerd als 'Simpsons'."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Maak het mogelijk dat bestanden verwijderd en hernoemd kunnen worden in de gebruikersinterface, via het context menu (druk C in op een toetsenbord, bijvoorbeeld, om in dit menu te komen)."
@@ -11321,13 +11325,17 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Kies de manier waarop video behandeld, verbeterd en getoond wordt."
 
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "Gebruik hogekwaliteitsscalers bij het opschalen van een video door tenminste dit percentage."
+
+msgctxt "#36155"
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
+msgstr "Activeer VDPAU hardwaredecodering voor videobestanden, hoofdzakelijk voor NVIDIA graphics en in sommige gevallen van AMD graphics."
+
 msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr "Activeer VAAPI hardwaredecodering voor videobestanden, hoofdzakelijk voor Intel graphics en in sommige gevallen van AMD graphics."
-
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
 
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
@@ -11499,11 +11507,11 @@ msgstr "Kies de standaardbron voor TV showinformatie. Zie de Add-ons Beheerder v
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
-msgstr "Standaard scraper voor het toevoegen van muziekvideo`s aan je bibliotheek."
+msgstr "Standaard scanner voor het toevoegen van muziekvideo`s aan je bibliotheek."
 
 msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Categorie voor algemene instellingen van PVR/Live TV functies."
 
 msgctxt "#36202"
 msgid "No info available yet."
@@ -11538,44 +11546,44 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "Verwijder de database van kanalen en EPG, en importeer de gegevens nadien opnieuw van de back-end."
 
 msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
+msgstr "Voorkomt dat het 'connectie verbroken' notificatiescherm wordt getoond wanneer XBMC niet in staat is te communiceren naar de PVR backend server."
 
 msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Categorie voor PVR menu`s en op-beeld scherminstellingen, evenals kanaal informatieschermen."
 
 msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Toon de programmeringsinformatie wanneer kanalen worden verandert, zoals de huidige TV uitzending."
 
 msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Hide the programming information automatically after a few seconds, defined below."
+msgstr "Verberg het programmeringsinformatiescherm automatisch na een aantal seconden, hieronder ingesteld."
 
 msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Close the on screen display controls after switching channels."
+msgstr "sluit de op beeld scherm knoppen af na verwisselen van kanalen."
 
 msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
+msgstr "Hoe lang de programmeringsinformatie wordt getoond wanneer de 'automatisch verbergen' instelling aanstaat."
 
 msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Folder where channel icons are stored."
+msgstr "Map waar kanaaliconen zijn opgeslagen."
 
 msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Scan for missing channel icons."
+msgstr "Zoek voor missende kanaaliconen."
 
 msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Category for electronic programming guide settings."
+msgstr "Categorie voor elektronische programmering gids instellingen."
 
 msgctxt "#36219"
-msgid "Default EPG window to show."
-msgstr "Standaard te tonen EPG scherm."
+msgid "Default electronic programming guide window to show."
+msgstr "Standaard elektronische programmeringsgids scherm te tonen."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -11597,9 +11605,13 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Verberg \"geen informatie beschikbaar\" labels wanneer er geen EPG gegevens kunnen opgehaald worden voor een kanaal."
 
+msgctxt "#36225"
+msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
+msgstr "Verwijder de EPG database in XBMC en her-importeer de gegevens nadien vanuit de back-end."
+
 msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Category for PVR playback and channel switching settings."
+msgstr "Categorie voor PVR afspelen en kanaalwissel instellingen."
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
@@ -11614,20 +11626,20 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "Toon signaalkwaliteitsinformatie in het codec informatiescherm (indien ondersteund door de add-on en back-end)."
 
 msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Hoe lang XBMC zal wachten wanneer het kanaal niet wordt ontvangen. Handig voor via de ether kanalen die af en toe signaalsterkte verliezen"
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Bij het indrukken van een cijferknop in volledig scherm modus zal er automatisch naar dat kanaal gesprongen worden na 1 seconde."
 
 msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "Bij het indrukken van kanaal omhoog of omlaag, wordt de werkelijke kanaal schakelaar vertraagd.zodat de gebruiker mogelijkheden krijgt om naar een kanaal te switchen zonder te wachten op elke kanaal-switch."
 
 msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Category for default recording duration settings."
+msgstr "categorie voor standaard opnameduur instellingen."
 
 msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button."
@@ -11654,8 +11666,8 @@ msgid "Display a notification when timers are added, finished or removed by the 
 msgstr "Toon een boodschap wanneer er timers toegevoegd of afgelopen zijn of verwijderd door de back-end."
 
 msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "Categorie voor PVR energiebeheer instellingen, zoals wanneer de PVR backend server te ontwaken."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11669,6 +11681,10 @@ msgctxt "#36243"
 msgid "The command to execute."
 msgstr "Het commando om uit te voeren."
 
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "Tijd die moet worden afgetrokken van de starttijd van de volgende geplande opname."
+
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
 msgstr "Voer het ontwaak commando dagelijks uit op het aangegeven tijdstip."
@@ -11678,8 +11694,8 @@ msgid "When to execute the daily wakeup command."
 msgstr "Wanneer het dagelijkse wakeup commando uit te voeren."
 
 msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "Categorie voor ouderlijk toezicht instellingen als de PVR backend server ouderlijk toezicht instellingen ondersteunt."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11694,12 +11710,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "Opnieuw naar de pincode vragen als er wordt geprobeerd een kanaal op te zetten dat geblokkeerd is met het kinderslot en er is gedurende deze tijdspanne niet voor de code gevraagd."
 
 msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Categorie voor alle specifieke instellingen voor jou PVR backend, mits de PVR backend de verandering van instellingen in XBMC ondersteunt."
 
 msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Deze optie zal jou alle specifieke instellingen geven voor jouw PVR backend, mits de PVR backend de verandering van instellingen in XBMC ondersteunt."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11715,7 +11731,7 @@ msgstr "Bepaal of artiesten die enkel in compilaties voorkomen getoond worden in
 
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
-msgstr "Haal automatisch album- en artiestinformatie op via scrapers tijdens het scannen."
+msgstr "Haal automatisch album- en artiestenformatie op via scanners tijdens het scannen."
 
 msgctxt "#36257"
 msgid "Select the default album information source."
@@ -11732,10 +11748,6 @@ msgstr "Controleer of er nieuwe of verwijderde mediabestanden zijn bij het opsta
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Nog geen informatie."
-
-msgctxt "#36261"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
 
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
@@ -11776,6 +11788,10 @@ msgstr "Verminder het bestandsvolume als clipping zich voordoet."
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Zorg voor vloeiende overgang (fade) van één audio nummer naar het volgende. De tijdsoverlap kan ingesteld worden tussen 1-15 seconden."
+
+msgctxt "#36272"
+msgid "Allow crossfading to occur when both tracks are from the same album."
+msgstr "Laat crossfading toe wanneer beide nummers van hetzelfde album zijn."
 
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
@@ -11864,6 +11880,22 @@ msgstr "Bij het afspelen van een muziekbestand, zal XBMC naar een overeenkomstig
 msgctxt "#36294"
 msgid "Show song selection dialog once the last song in the queue has been played."
 msgstr "Toon nummerkeuze-dialoogvenster wanneer het laatste nummer in de afspeellijst afgespeeld is."
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Kies het lettertype om te gebruiken bij karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Kies de lettergrootte van het lettertype om te gebruiken bij karaoke."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Kies de kleur van het lettertype gebruikt bij karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Kies de karakterset die wordt gebruikt tijdens karaoke."
 
 msgctxt "#36299"
 msgid "Export the karaoke numbered songs to HTML or CSV files."
@@ -12084,6 +12116,10 @@ msgstr "Verander de resolutie waarin de gebruikersinterface wordt getoond."
 msgctxt "#36353"
 msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "Verander de verversingssnelheid waarin de gebruikersinterface wordt getoond."
+
+msgctxt "#36354"
+msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Toon XBMC in een venster dat het volledige scherm bedekt. Het voornaamste voordeel ligt bij multi-scherm configuraties. Hiermee kan XBMC gebruikt worden zonder automatisch alle andere applicaties te minimaliseren. Dit gebruikt wat meer systeembronnen en het afspelen kan iets minder vloeiend zijn."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -12344,10 +12380,6 @@ msgstr "Geef de vertraging tussen knop sequenties op, op een universele afstands
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Definieer locaties die gebruikt worden voor weersvoorspellingen."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
 
 msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."

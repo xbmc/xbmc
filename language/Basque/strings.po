@@ -4745,10 +4745,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple Remote Errorea"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple Remote ezin izan da gaitu"
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Pilatu"
@@ -5836,10 +5832,6 @@ msgstr "Kate bilaketa"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Ezin da PVR funtziorik erabili bilaketak egitean."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Zein zerbitzaritan bilatu nahi duzu?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -9113,10 +9105,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Hautatu izenburu guztietatik ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Bistarazi bluray menuak"
-
 msgctxt "#25005"
 msgid "Title: %d"
 msgstr "Titulua: %d"
@@ -9725,10 +9713,6 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
@@ -9745,87 +9729,11 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
@@ -9918,10 +9826,6 @@ msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
 msgctxt "#36415"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
-msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 

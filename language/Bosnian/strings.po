@@ -4881,10 +4881,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Greška Apple daljinskog upravljača"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Podrška za Apple dalj. upravljač može biti omogućena."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Postavi na skladište"
@@ -6072,10 +6068,6 @@ msgstr "Pretraživanje kanala"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Nije moguće koristiti PVR funkcije dok traje pretraživanje."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Na kojem serveru želite vršiti pretraživanje?"
 
 msgctxt "#19120"
 msgid "Client number"

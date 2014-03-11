@@ -3441,6 +3441,10 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "Normaali"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Lisäasetukset"
+
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Oletko varma että haluat resetoida tämän ryhmän asetukset?"
@@ -4909,10 +4913,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple Remote -kauko-ohjain virhe"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple Remote -kauko-ohjain voidaan ottaa käyttöön."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Pinoa"
@@ -5256,6 +5256,10 @@ msgstr "Poista CD kun rippaus on valmis"
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Lopeta CD:n rippaus"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Säilytä"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -6104,10 +6108,6 @@ msgstr "Hae kanavia"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "PVR-toimintoja ei voi käyttää haun aikana."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Miltä palvelimelta haluat hakea?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -9733,10 +9733,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Valitse kaikista otsakkeista"
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Näytä Blu-ray-valikot"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Toista pääotsikko: %d"
@@ -10477,10 +10473,6 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
@@ -10501,10 +10493,6 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
@@ -10513,83 +10501,11 @@ msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Aktivoi videotallennusominaisuudet (PVR) XBMC:ssä. Ainakin yhden PVR-lisäosan on oltava asennettu tätä varten."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Näytä signaalin voimakkuustiedot codecin infoikkunassa (mikäli lisäosa ja backend tukee tätä ominaisuutta)."
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
@@ -10670,10 +10586,6 @@ msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
 msgctxt "#36415"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
-msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 

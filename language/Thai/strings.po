@@ -5105,10 +5105,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple รีโมทผิดพลาด"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple รีโมทเปิดการสนับสนุนผิดพลาด."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "ซ้อน"
@@ -6372,10 +6368,6 @@ msgstr "ค้นหาช่องสัญญาณ"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "ไม่สามารถใช้การทำงาน PVR ขณะที่ทำการค้นหา"
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "บนเซิร์ฟเวอร์ที่คุณต้องการค้นหา?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10205,10 +10197,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "เลือกจากชื่อเรื่องทั้งหมด ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "แสดง bluray เมนู"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "เล่นชื่อเรื่องหลัก: %d"
@@ -10224,14 +10212,6 @@ msgstr "เลือกรายการที่เล่น"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "ที่คั่นหน้า: %u - ช่วงเวลา: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "การเล่น แผ่นบลูเรย์ ล้มเหลว"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "ไม่รองรับเมนูของแผ่นบลูเรย์นี้"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11101,10 +11081,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "ปรับกระบวนการที่ใช้ ในการประมวลผลและแสดงผลวิดีโอ."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "ทำให้วิดีโอตรงกับอัตราการรีเฟรชของจอภาพ"
@@ -11197,10 +11173,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "ค่าเริ่มต้น ตัวดึงข้อมูล ที่ใช้เพื่อเพิ่ม วิดีโอเพลง ไปยังคลังข้อมูลของคุณ."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
@@ -11229,42 +11201,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "ลบ ฐานข้อมูล ช่องรายการ/EPG แล้วนำเข้าข้อมูลจาก backend ในภายหลัง."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "อย่าได้นำเข้า ข้อมูล EPG ขณะกำลังเล่นทีวี เพื่อเป็นการลดใช้งาน CPU."
@@ -11277,10 +11213,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "ซ่อน ป้าย \"ไม่มีข้อมูลปรากฏ\" เมื่อไม่มีข้อมูล EPG ที่สามารถเรียกดูได้จากช่องรายการ."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "แสดงผล กระแสของช่องรายการที่เลือก ในช่องขนาดเล็ก แทนการแสดงแบบเต็มจอ."
@@ -11289,29 +11221,13 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "แสดงข้อมูลคุณภาพสัญญาณ ในหน้าต่างแสดงข้อมูลการเข้ารหัส (ถ้ารองรับโดย ส่วนเสริม และ backend)."
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "การกดปุ่มหมายเลขในโหมดเต็มจอ จะเปลี่ยนไปยังช่องรายการ ตามหมายเลขที่ป้อนโดยอัตโนมัติ ภายใน 1 วินาที."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "แสดงการแจ้งเตือน เมื่อการตั้งเวลาถูก เพิ่ม, เสร็จสิ้น หรือ เอาออก โดย backend."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11325,10 +11241,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "เวลาที่จะดำเนินการคำสั่ง ปลุก ประจำวัน."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "ถามรหัส pin เพื่อเข้าถึงช่องรายการที่ถูกล็อค. ช่องรายการจะถูกแสดงเป็นล็อคไว้ ในตัวแก้ไขช่องรายการ บนแท็บทั่วไป. ช่องรายการที่ล็อคโดยผู้ปกครอง จะไม่สามารถเล่นหรือบันทึกได้ โดยปราศจากการป้อนรหัส pin, และข้อมูล EPG ของช่องเหล่านั้นจะถูกซ่อนไว้."
@@ -11336,14 +11248,6 @@ msgstr "ถามรหัส pin เพื่อเข้าถึงช่อ�
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "ป้อนรหัส pin ใหม่ เพื่อปลดล็อคช่องรายดาร ที่ถูกล็อคโดยผู้ปกครอง."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11362,10 +11266,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "ตรวจสอบเพื่อหา สื่อที่มาใหม่และถูกเอาออก ขณะเริ่มระบบ XBMC."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "ยังไม่มีข้อมูล."
 
@@ -11676,10 +11576,6 @@ msgstr "ยังไม่มีข้อมูล."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "กำหนดตำแหน่งพื้นที่ ที่ใช้เพื่อรับข้อมูลสภาพอากาศ."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "ยังไม่มีข้อมูล."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."

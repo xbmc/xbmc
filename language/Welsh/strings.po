@@ -1205,6 +1205,14 @@ msgctxt "#345"
 msgid "Year"
 msgstr "Blwyddyn"
 
+msgctxt "#347"
+msgid "DTS-HD capable receiver"
+msgstr "Derbynnydd DTS-HD galluog"
+
+msgctxt "#349"
+msgid "TrueHD capable receiver"
+msgstr "Derbynnydd TrueHD galluog"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Rhaglenni"
@@ -2037,6 +2045,10 @@ msgctxt "#576"
 msgid "Times played"
 msgstr "Troeon chwaraewyd"
 
+msgctxt "#577"
+msgid "Date Taken"
+msgstr "Dyddiad Cymerwyd"
+
 msgctxt "#580"
 msgid "Sort direction"
 msgstr "Cyfeiriad trefnu"
@@ -2357,6 +2369,10 @@ msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "Dirprwy HTTP"
 
+msgctxt "#715"
+msgid "Assignment"
+msgstr "Aseiniad"
+
 msgctxt "#716"
 msgid "Automatic (DHCP)"
 msgstr "Awtomatig (DHCP)"
@@ -2368,6 +2384,14 @@ msgstr "Gyda llaw (Statig)"
 msgctxt "#719"
 msgid "IP address"
 msgstr "Cyfeiriad IP"
+
+msgctxt "#720"
+msgid "Netmask"
+msgstr "Masg Rhwyd"
+
+msgctxt "#721"
+msgid "Default gateway"
+msgstr "Porth rhagosodedig"
 
 msgctxt "#722"
 msgid "DNS server"
@@ -2557,6 +2581,14 @@ msgctxt "#776"
 msgid "Wireless network name (ESSID)"
 msgstr "Enw rhwydwaith diwyfr (ESSID)"
 
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "Cyfrinair y Diwyfr"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "Diogelwch y diwyfr"
+
 msgctxt "#779"
 msgid "Save and apply network interface settings"
 msgstr "Cadw a gosod gosodiadau rhyngwyneb rhyngrwyd"
@@ -2641,6 +2673,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "Diweddaru Llyfrgell"
 
+msgctxt "#800"
+msgid "Music library needs to rescan tags from files."
+msgstr "Mae angen i'r llyfrgell cerddoriaeth ailsganio tagiau'r ffeiliau."
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Hoffech chi sganio nawr?"
@@ -2657,6 +2693,10 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Ystod porth dilys yw 1024-65535"
 
+msgctxt "#997"
+msgid "Add Pictures..."
+msgstr "Ychwanegu Lluniau..."
+
 msgctxt "#998"
 msgid "Add Music..."
 msgstr "Ychwanegu Cerddoriaeth..."
@@ -2664,6 +2704,10 @@ msgstr "Ychwanegu Cerddoriaeth..."
 msgctxt "#999"
 msgid "Add Videos..."
 msgstr "Ychwnanegu Fideo..."
+
+msgctxt "#1000"
+msgid "Preview"
+msgstr "Rhagolwg"
 
 msgctxt "#1001"
 msgid "Unable to connect"
@@ -2861,6 +2905,10 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Rhowch gyfeiriad gwe"
 
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr "Math o ddirprwy"
+
 msgctxt "#1181"
 msgid "HTTP"
 msgstr "HTTP"
@@ -2876,6 +2924,10 @@ msgstr "SOCKS4A"
 msgctxt "#1184"
 msgid "SOCKS5"
 msgstr "SOCKS5"
+
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr "SOCKS5 gyda datrys dns pell"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -3012,6 +3064,10 @@ msgstr "Caniatáu i XBMC dderbyn cynnwys AirPlay"
 msgctxt "#1271"
 msgid "Device name"
 msgstr "Enw dyfais"
+
+msgctxt "#1272"
+msgid "Use password protection"
+msgstr "Defnyddio diogelu cyfrinair"
 
 msgctxt "#1273"
 msgid "AirPlay"
@@ -3397,6 +3453,10 @@ msgctxt "#10039"
 msgid "Expert"
 msgstr "Arbenigwr"
 
+msgctxt "#10042"
+msgid "Are you sure you want to reset the settings in this category?"
+msgstr "Ydych chi'n siŵr eich bod am ailosod y gosodiadau yn y categori hwn?"
+
 msgctxt "#10043"
 msgid "Help"
 msgstr "Cymorth"
@@ -3413,6 +3473,10 @@ msgctxt "#10126"
 msgid "File browser"
 msgstr "Porwr ffeiliau"
 
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "Gosodiad y rhwydwaith"
+
 msgctxt "#10129"
 msgid "Media source"
 msgstr "Ffynhonell cyfrwng"
@@ -3425,13 +3489,37 @@ msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Gosodiadau cloi"
 
+msgctxt "#10132"
+msgid "Content settings"
+msgstr "Gosodiadau'r cynnwys"
+
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "Ffefrynnau"
 
+msgctxt "#10135"
+msgid "Songs/Info"
+msgstr "Caneuon/Gwybodaeth"
+
+msgctxt "#10136"
+msgid "Smart playlist editor"
+msgstr "Golygydd clyfar rhestr chwarae "
+
+msgctxt "#10137"
+msgid "Smart playlist rule editor"
+msgstr "Golygydd rheol rhestr chwarae "
+
+msgctxt "#10139"
+msgid "Pictures/Info"
+msgstr "Lluniau/Gwybodaeth"
+
 msgctxt "#10140"
 msgid "Add-on settings"
 msgstr "Gosodidau ychwanegion"
+
+msgctxt "#10146"
+msgid "Add-ons/Info"
+msgstr "Ychwanegion/Gwybodaeth"
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
@@ -3908,6 +3996,50 @@ msgstr "Ffon hwyl wedi ei gysylltu"
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Ffon hwyl wedi ei ddatgysylltu"
+
+msgctxt "#13026"
+msgid "Try to wake remote servers on access"
+msgstr "Ceisio deffro'r gweinyddion pell i gael mynediad"
+
+msgctxt "#13027"
+msgid "Wake on Lan (%s)"
+msgstr "Deffro gan Rhwydwaith (%s)"
+
+msgctxt "#13028"
+msgid "Waiting for network to connect..."
+msgstr "Aros i'r rhwydwaith gysylltu..."
+
+msgctxt "#13029"
+msgid "Failed to execute Wake on Lan!"
+msgstr "Methwyd gweithredu deffro gan y Rhwydwaith!"
+
+msgctxt "#13030"
+msgid "Waiting for server to wake up..."
+msgstr "Aros i'r gweinydd ddefro..."
+
+msgctxt "#13031"
+msgid "Extended wait for server to wake up..."
+msgstr "Aros estynedig i'r gweinydd ddefro..."
+
+msgctxt "#13032"
+msgid "Waiting for services to launch..."
+msgstr "Aros i wasanaethau gychwyn..."
+
+msgctxt "#13033"
+msgid "MAC Discovery"
+msgstr "Canfod MAC"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "Diweddarwyd i %s"
+
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "Canfuwyd i %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "Methwyd i %s"
 
 msgctxt "#13050"
 msgid "Running low on battery"
@@ -4665,6 +4797,10 @@ msgctxt "#13434"
 msgid "Play only this"
 msgstr "Chwarae dim ond hwn"
 
+msgctxt "#13435"
+msgid "Enable HQ Scalers for scalings above"
+msgstr "Galluogi HQ Scalers ar gyfer y graddio uchod"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Meddalwedd"
@@ -4729,6 +4865,10 @@ msgctxt "#13515"
 msgid "No art"
 msgstr "Dim celf"
 
+msgctxt "#13516"
+msgid "Add art"
+msgstr "Ychwanegu celf"
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
 msgstr "Oedi rhwng newid cyfradd adnewyddu"
@@ -4784,10 +4924,6 @@ msgstr "Rheolwr Pell Lluosog (Harmony)"
 msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Rheolwr Pell Apple"
-
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Nid oedd modd galluogi rheolwr pell Apple."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -5685,6 +5821,10 @@ msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr "Eisoes wedi cychwyn recordio ar y sianel"
 
+msgctxt "#19035"
+msgid "%s could not be played. Check the log for details."
+msgstr "Methwyd chwarae %s. Gwiriwch y cofnod am fanylion."
+
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
 msgstr "Niod oes modd chwarae'r recordiad. Darllenwch y cofnod am wybodaeth bellach."
@@ -5984,10 +6124,6 @@ msgstr "Chwilio am sianeli"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Methu defnyddio swyddogaethau Recordydd tra'n chwilio."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Ar ba weinydd hoffech chi chwilio?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -8097,6 +8233,10 @@ msgctxt "#20403"
 msgid "Set actor thumb"
 msgstr "Gosod llun bach actor"
 
+msgctxt "#20404"
+msgid "Remove bookmark"
+msgstr "Tynnu nod tudalen"
+
 msgctxt "#20405"
 msgid "Remove episode bookmark"
 msgstr "Tynnu nod tudalen rhifyn"
@@ -8140,6 +8280,10 @@ msgstr "Darlledwyd gyntaf"
 msgctxt "#20417"
 msgid "Writer"
 msgstr "Awdur"
+
+msgctxt "#20418"
+msgid "Writers"
+msgstr "Awduron"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
@@ -8317,6 +8461,26 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr "Dewis %s"
 
+msgctxt "#20465"
+msgid "Manage movie set"
+msgstr "Rheoli st ffilm"
+
+msgctxt "#20466"
+msgid "Select movie set"
+msgstr "Dewis set film"
+
+msgctxt "#20467"
+msgid "No set (Remove from %s)"
+msgstr "Dim set (Tynnu o %s)"
+
+msgctxt "#20468"
+msgid "Add movie to a new set"
+msgstr "Ychwanegu ffilm i set newydd"
+
+msgctxt "#20469"
+msgid "Keep current set (%s)"
+msgstr "Cadw'r set gyfredol (%s)"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Dangos ffeiliau a chyfarwyddiadau cudd"
@@ -8356,6 +8520,18 @@ msgstr "Ychwanegu rhannu cyfrwng..."
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "Rhannu llyfrgelloedd fideo a cherddoriaeth drwy UPnP"
+
+msgctxt "#21361"
+msgid "Look for remote UPnP players"
+msgstr "Chwilio am chwaraewyr UPnP pell"
+
+msgctxt "#21362"
+msgid "Bookmark created"
+msgstr "Nod tudalen wedi ei greu"
+
+msgctxt "#21363"
+msgid "Episode Bookmark created"
+msgstr "Nod tudalen rhifyn wedi ei greu"
 
 msgctxt "#21364"
 msgid "Edit media share"
@@ -8725,6 +8901,10 @@ msgctxt "#21458"
 msgid "Group by"
 msgstr "Grwpio yn ôl"
 
+msgctxt "#21459"
+msgid "mixed"
+msgstr "cymysgwyd"
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Sefydlog"
@@ -8889,9 +9069,17 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr "Cyfeiriadaeth"
 
+msgctxt "#21857"
+msgid "Sub-location"
+msgstr "Is leoliad"
+
 msgctxt "#21858"
 msgid "Image type"
 msgstr "Math delwedd"
+
+msgctxt "#21859"
+msgid "Time created"
+msgstr "Amser crewyd"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -9576,10 +9764,6 @@ msgstr "Cuddio'r dieithr"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Dewis o'r holl deitlau ..."
-
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Dangos dewislenni bluray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10273,10 +10457,6 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
@@ -10285,87 +10465,11 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
@@ -10406,10 +10510,6 @@ msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
 msgctxt "#36415"
-msgid "No info available yet."
-msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
-
-msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 

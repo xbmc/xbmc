@@ -4965,10 +4965,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple puldi viga"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple puldi tuge ei õnnestunud lubada."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Saki"
@@ -5312,6 +5308,10 @@ msgstr "CD rippimise lõpetamisel ava kettaseade"
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Peata CD rippimine"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Jäta alles"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -6172,10 +6172,6 @@ msgstr "Otsi kanaleid"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "PVR funktsioone ei saa otsimise ajal kasutada."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Millisest serverist soovid otsida?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -9869,10 +9865,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Vali kõikidest nimetustest..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Näita Blu-Ray menüüd"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Esita põhinimetus: %d"
@@ -10697,10 +10689,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Määra video näitamise ja töötlemise meetod."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "Audio peab olema sünkroonis, seda saab tagada ümbersämplimise, pakettide vahelejätmise/dubleerimisega või takti korrigeerimisega."
@@ -10769,10 +10757,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Vaikimisi muusikavideote lisamise kraabits."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Info pole veel saadaval."
@@ -10797,42 +10781,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Kustuta kanalite/saatekava andmebaas ning impordi see põhirakendusest uuesti."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Ära impordi saatekava TV vaatamise ajal, sellega vähendad protsessori koormust."
@@ -10845,37 +10793,17 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Peida \"info puudub\" teated, kui kanali saatekava hankimine ebaõnnestub."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Kuva valitud kanali pilt täisekraani asemel väikeses kastis."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Numbriklahvi vajutus täisekraanil lülitab 1 sekundi pärast valitud numbriga kanalile."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Näita teadet, kui põhirakendus lisab, muudab või kustutab taimereid."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -10889,10 +10817,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Igapäevase äratuskäskluse käivitamise aeg."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Vanemliku lukuga kanalitele ligipääsuks küsitakse PIN koodi. Kanaleid saab lukustatuks märkida kanaliredaktori abil. Vanemliku luku all olevaid kanaleid ei saa vaadata ega salvestada, samuti on peidetud nende saatekava."
@@ -10900,14 +10824,6 @@ msgstr "Vanemliku lukuga kanalitele ligipääsuks küsitakse PIN koodi. Kanaleid
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Sisesta PIN kood lukustatud kanali avamiseks."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -10926,10 +10842,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Kontrolli uusi ja kustutatud faile XBCM käivitamisel."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Info pole veel saadaval."
 
@@ -11146,10 +11058,6 @@ msgid "No info available yet."
 msgstr "Info pole veel saadaval."
 
 msgctxt "#36415"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
-msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Info pole veel saadaval."
 

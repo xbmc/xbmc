@@ -1085,6 +1085,10 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Lingua dello stream originale"
 
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Lingua dell'interfaccia utente"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=auto)"
@@ -5142,8 +5146,8 @@ msgid "Apple Remote Error"
 msgstr "Errore Apple Remote"
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Il supporto per Apple Remote non è stato attivato."
+msgid "Apple Remote support could not be enabled."
+msgstr "Impossibile abilitare il supporto per Apple Remote"
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6434,8 +6438,8 @@ msgid "Cannot use PVR functions while searching."
 msgstr "Impossibile usare le funzioni del PVR durante la ricerca."
 
 msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Su quale server vuoi cercate?"
+msgid "On which server do you want to search?"
+msgstr "Su quale server vuoi cercare?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10277,6 +10281,10 @@ msgctxt "#24121"
 msgid "Enter search string"
 msgstr "Inserire stringa da cercare"
 
+msgctxt "#24122"
+msgid "Update all"
+msgstr "Aggiorna tutto"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Notifiche"
@@ -10290,8 +10298,8 @@ msgid "Select from all titles ..."
 msgstr "Seleziona da tutti i titoli ..."
 
 msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Mostra i menu bluray"
+msgid "Show Blu-ray menus"
+msgstr "Mostra i menu Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10310,12 +10318,12 @@ msgid "Chapters: %u - duration: %s"
 msgstr "Capitolo: %u - durata: %s"
 
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Riproduzione disco Blu-ray fallita"
+msgid "Playback of Blu-ray failed"
+msgstr "Riproduzione del Blu-ray fallita"
 
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Il menu del disco Blu-ray non è supportato"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Il menu di questo Blu-ray non è supportato"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11077,6 +11085,10 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Abilita feed RSS."
 
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "Sceglie la lingua dell'interfaccia utente."
+
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Seleziona i formati per la temperatura, l'orario e la data. Le opzioni disponibili dipendono dalla lingua selezionata."
@@ -11145,6 +11157,10 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Attiva l'archivio video."
+
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "Visualizza informazioni trama per film non visti nella Libreria Video."
@@ -11184,10 +11200,6 @@ msgstr "Importa un file XML nel database della Libreria Video."
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Configura il metodo usato per elaborare e visualizzare i video."
-
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11245,6 +11257,10 @@ msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "Rimuove titolo, genere, etc.. dalla vista libreria. Selezionando una categoria verrai portato alla vista titoli."
 
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "Imposta lo stile dei font da usare per i sottotitoli."
+
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
 msgstr "Imposta una cartella personalizzata per i tuoi sottotitoli. Può essere una condivisione di file."
@@ -11281,10 +11297,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper predefinito per aggiungere video musicali alla tua raccolta."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
@@ -11313,42 +11325,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Elimina la base dati canali/EPG, quindi reimporta i dati dal backend ."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Non importare i dati EPG durante la riproduzione della TV per ridure l'uso della CPU."
@@ -11361,10 +11337,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Nascondi le etichette \"nessuna informazione disponibile\" quando non è possibile recuperare i dati EPG di un canale "
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Visualizza lo streaming dei canali selezionati in un piccolo riquadro invece che a schermo intero."
@@ -11373,29 +11345,13 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Mostra informazioni sulla qualità del segnale nella finestra di informazioni sul codec (se supportato sia dall'addon che dal backend)"
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Premendo un pulsante numerico in modalità a schermo intero verrà cambiato canale secondo il numero selezionato entro 1 secondo."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Mostra una notifica quando dei timer vengono aggiunti, finiscono o vengono rimossi dal backend."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11409,10 +11365,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Quando eseguire il comando wakeup giornaliero"
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Chiede un codice pin per accedere a canali con blocco genitori. I canali possono essere selezionati come bloccati nell'editor dei canali nella scheda generale. I canali con blocco genitori non possono essere riprodotti o registrati senza immettere un codice pin, e le informazioni EPG sono nascoste per questi canali."
@@ -11420,14 +11372,6 @@ msgstr "Chiede un codice pin per accedere a canali con blocco genitori. I canali
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Inserisci un nuovo codice pin per sbloccate i canali protetti dal controllo genitori"
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11446,10 +11390,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Verificare la presenza di file multimediali nuovi e rimossi all'avvio di XBMC."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Nessuna informazione disponibile."
 
@@ -11760,10 +11700,6 @@ msgstr "Nessuna informazione disponibile."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Imposta le località usate per recuperare le informazioni sul meteo."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Nessuna informazione disponibile."
 
 msgctxt "#36425"
 msgid "Show context menu"

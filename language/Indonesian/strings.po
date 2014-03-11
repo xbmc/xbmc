@@ -5170,8 +5170,8 @@ msgid "Apple Remote Error"
 msgstr "Galat Remote Apple"
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Dukungan Remote Aplle bisa dilakukan"
+msgid "Apple Remote support could not be enabled."
+msgstr "Layanan Apple Remote tidak dapat diaktifkan."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6462,7 +6462,7 @@ msgid "Cannot use PVR functions while searching."
 msgstr "Tidak dapat menggunakan fungsi PVR ketika mencari."
 
 msgctxt "#19119"
-msgid "On which server you want to search?"
+msgid "On which server do you want to search?"
 msgstr "Server manakah yang yang ingin anda cari?"
 
 msgctxt "#19120"
@@ -9791,7 +9791,7 @@ msgstr "Panduan"
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimise black bars"
-msgstr "Perbolehkan galat pada aspek rasio untuk meminimalisasi panel hitam"
+msgstr "Perbolehkan galat pada rasio aspek untuk meminimalisasi panel hitam"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
@@ -10354,7 +10354,7 @@ msgid "Select from all titles ..."
 msgstr "Pilih dari semua judul..."
 
 msgctxt "#25003"
-msgid "Show bluray menus"
+msgid "Show Blu-ray menus"
 msgstr "Tampilkan menu bluray"
 
 msgctxt "#25004"
@@ -10374,12 +10374,12 @@ msgid "Chapters: %u - duration: %s"
 msgstr "Babak: %u - durasi: %s"
 
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Pemutaran disk Blu-ray gagal"
+msgid "Playback of Blu-ray failed"
+msgstr "Pemutaran Blu-ray gagal"
 
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Menu di disk Blu-ray ini tidak didukung"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Menu Blu-ray ini tidak didukung"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11173,6 +11173,10 @@ msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Pilih format dari suhu, waktu, dan tanggal. Pilihan tersedia bergantung dari bahasa yang dipilih."
 
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the user interface."
+msgstr "Pilih set karakter yang akan digunakan untuk menampilkan teks di antar-muka pengguna."
+
 msgctxt "#36117"
 msgid "Select country location."
 msgstr "Pilih lokasi negara."
@@ -11189,6 +11193,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Pilih subtitle standar ketika bahasa lainnya tersedia."
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Kategori yang berisi setelan yang berhubungan dengan bagaimana list berkas ditampilkan."
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Tampilkan (..) butir dalam bentuk daftar untuk mengunjungi folder induk."
@@ -11200,6 +11208,18 @@ msgstr "Tampilkan ekstensi berkas untuk berkas media. Sebagai contoh, 'You Enjoy
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Izinkan berkas untuk dihapus dan diubah nama melalui antarmuka pengguna, dengan menu kontekstual (tekan C di keyboard, sebagai contoh, akan memunculkan menu ini)."
+
+msgctxt "#36126"
+msgid "Show the add source button in root sections of the user interface."
+msgstr "Tampilkan tombol tambah sumber di bagian utama antar-muka pengguna."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Tampilkan direktori dan berkas tersembunyi ketika melisting berkas."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "Kategori yang berisi semua setelan screensaver."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11237,6 +11257,18 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
 
+msgctxt "#36138"
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "Bagianyang berisi semua setelan yang berhubungan dengan video dan cara penanganannya."
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "Kategori yang berisi setelan bagaimana pustaka video ditangani."
+
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Aktifkan berkas video."
+
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "Tampilkan informasi plot untuk media yang tidak tertonton di Pustaka Video."
@@ -11273,13 +11305,53 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "Impor suatu berkas XML ke dalam basis data Pustaka Video"
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "Kategori yang berisi setelan bagaimana pemutaran video ditangani."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list."
+msgstr "Aktifkan pemutaran video berikutnya di dalam list dengan otomatis."
+
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Setel metoda yang dipakai untuk memroses dan menampilkan video."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "Aktifkan pendekodean perangkat keras VAAPI dari berkas video, terutama digunakan untuk kartu grafis merek Intel dan dalam beberapa kasus merek AMD."
+
+msgctxt "#36158"
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "Aktifkan pendekodean perangkat keras DXVA2 atas berkas video."
+
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "Atifkan pendekodean CrystalHD berkas video"
+
+msgctxt "#36160"
+msgid "Enable VDA hardware decoding of video files."
+msgstr "Atifkan pendekodean perangkat-keras VDA berkas video."
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "Atifkan pendekodean perangkat-keras OpenMax berkas video."
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "Atifkan pendekodean perangkat-keras VideoToolbox berkas video."
+
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "Atifkan pendekodean berkas video menggunakan Pixel Buffer Objects."
+
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "Perbolehkan refresh rate tampilan dirubah sehingga bisa menyesuaikan dengan frame-rate video. Ini dapat menghasilkan pemutaran video yang lebih halus."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "Jeda sekejap waktu selama perubahan refresh rate."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11293,6 +11365,10 @@ msgctxt "#36168"
 msgid "Maximum video speed adjust to match actual screen refresh rate."
 msgstr "Atur kecepatan maksimum video mengikuti tingkat penyegaran layar yang sesungguhnya."
 
+msgctxt "#36169"
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
+msgstr "Pilih kualitas sampling ulang untuk kasus dimana keluaran audio harus dalam rata sampling yang berbeda dengan sumber. [Rendah] adalah cepat dan memiliki dampak minimal pada sumberdaya sistem seperti penggunaan CPU, [Sedang] & [Tinggi] akan menggunakan lebih banyak sumber daya."
+
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
 msgstr "Ijinkan pemutar video mengabaikan rasio aspek sampai sejumlah tertentu untuk memenuhi lebih besar bagian layar dengan video."
@@ -11305,6 +11381,10 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
 msgstr "konversi level studio VDPAU memberi jalan untuk aplikasi lanjutan seperti XBMC untuk mempengaruhi konversi ruang warna."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "Aktifkan upscaling menggunakan VDPAU."
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "Aktifkan Teleteks ketika menonton aliran TV langsung"
@@ -11313,9 +11393,17 @@ msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "Atur rasio Teletext menjadi 4:3"
 
+msgctxt "#36176"
+msgid "Category containing settings for how video file lists are handled."
+msgstr "Kategori yang berisi setelan bagaimana list berkas video ditangani."
+
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Alihkan antara Pilih, Putar (standar), Lanjutkan dan Informasi Acara. \"Pilih\" akan memilih item seperti membuka direktori pada modus berkas. \"Lanjutkan\" akan secara otomatis melanjutkan pemutaran video dari posisi terakhir ditonton, walaupun setelah menstart-ulang sistem."
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Ambil thumbnail dan informasi metadata seperti kodek dan rasio aspek dari video."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11323,15 +11411,47 @@ msgstr "Ketika sebuah berkas dipindai ke dalam Pustaka, Ia akan menampilkan judu
 
 msgctxt "#36180"
 msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
-msgstr "Mengambil gambar mini dan informasi seperti kodek dan aspek rasio untuk ditampilkan dalam Modus Pustaka"
+msgstr "Mengambil gambar mini dan informasi seperti kodek dan rasio aspek untuk ditampilkan dalam Modus Pustaka"
 
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
 
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Kombinasikan berkas video multi-part, folder DVD dan folder film menjadi satu item dalam tampilan non-pustaka."
+
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "Hilangkan node judul, genre dan lainnya dari tampilan pustaka. Memilih kategory membawa anda langsung ke tampilan judul."
+
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "Kategori yang berisi semua setelan bagaimana subtitle ditangani."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "Tentukan tipe huruf yang akan digunakan untuk subtitle."
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "Tentukan ukuran huruf yang akan digunakan untuk subtitle."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "Tentukan gaya huruf yang akan digunakan untuk subtitle."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "Tentukan warna huruf yang akan digunakan untuk subtitle."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "Tentukan set karakter huruf yang akan digunakan untuk subtitle."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Kesampingkan font teks film ASS/SSA"
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11340,6 +11460,10 @@ msgstr "Tentukan direktori khusus untuk subtitle Anda. Ini bisa berupa berkas be
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Lokasi subtitle pada layar"
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "Kategori yang berisi setelan bagaimana DVD ditangani."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11369,10 +11493,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Pengais standar digunakan ketika menambahkan video musik ke dalam pustaka Anda"
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
@@ -11384,6 +11504,10 @@ msgstr "Aktifkan fitur Perekam Video Personal (PVR) di dalam XBMC. Ini membutuhk
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Impor grup kanal dari backednd PVR (apabila didukung). Akan menghapus grub yang dibuat oleh pengguna apabila tidak ditemukan di dalam backend."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
+msgstr "Urutkan kanal berdasarkan nomor kanal di backend tetapi gunakan penomoran dari XBMC untuk kanal."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -11401,41 +11525,13 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Hapus basis data kanal/EPG lalu impor ulang data dari backend setelahnya."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "Lama hari data EPG yang diimpor dari backend."
 
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "Waktu antara impor data EPG dari backend."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11449,45 +11545,57 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Sembunyikan label \"Tidak ada informasi tersedia\" apabila tidak ada data EPG yang dapat ditarik untuk kanal."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Tampilkan aliran kanal terpilih di dalam kotak kecil bukan layar penuh."
+
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "Lanjutkan dengan kanal yang terakhir ditonton ketika memulai."
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Tampilkan informasi kualitas sinyal di dalam jendela informasi kodek (apabila didukung oleh pengaya dan backend)."
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Menekan tombol angka dalam modus layar penuh akan secara otomatis memindahkan ke kanal yang telah dimasukkan setelah 1 detik."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "Waktu perekaman instan ketika menekan tombol rekam."
 
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "Prioritas perekaman. Angka lebih tinggi berarti berprioritas lebih tinggi. Belum tentu didukung oleh semua pengaya dan backend."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "Hapus rekaman setelah waktu berikut. Belum tentu didukung oleh semua pengaya dan backend."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "Mulai perekaman sebelum waktu sesungguhnya. Belum tentu didukung oleh semua pengaya dan backend."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "Hentikan perekaman setelah waktu sesungguhnya. Belum tentu didukung oleh semua pengaya dan backend."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Tampilkan notifikasi ketika timer ditambah, selesai atau dihilangkan oleh backend."
 
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Jalankan \"perintah bangun\" di bawah ini ketika XBMC keluar ataupun memasuki mode hibernasi. Waktu perekaman berikutnya akan dikirimkan sebagai parameter."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "Perintah tidak akan dijalankan apabila ada perekaman yang harus dimulai dalam jeda waktu timeout ini."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "Perintah yang harus dijalankan."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11497,10 +11605,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Kapan harus menjalankan perintah bangun harian."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Meminta kode pin untuk mengakses kanal yang terkunci parental. Kanal dapat ditandai sebagai terkunci di penyunting kanal di tab umum. Kanal yang terkunci parental tidak dapat diputar atau direkam tanpa terlebih dahulu memasukkan kode pin, dan informasi EPG pun disembunyikan untuk kanal tersebut."
@@ -11509,13 +11613,17 @@ msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Masukkan kode pin baru untuk membuka kanal yang terkunci parental."
 
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
+msgstr "Minta kode pinlagi ketika mencoba mengakses kanal yang terkunci parental dan kode belum pernah ditanya selama durasi ini."
 
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
+msgctxt "#36253"
+msgid "Section that contains settings related to music files and how they are handled."
+msgstr "Bagian yang berisi setelan yang berhubungan dengan berkas musik dan bagaimana mereka ditangani."
+
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "Aktifkan pustaka musik."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11524,6 +11632,10 @@ msgstr "Tentukan apakah artis yang muncul dalam kompilasi dimunculkan di tampila
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "Ambil informasi artis dan album melalui pengais ketika pemindaian."
+
+msgctxt "#36257"
+msgid "Select the default album information source."
+msgstr "Pilih sumber standar untuk informasi album."
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11537,10 +11649,6 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Tidak ada info tersedia."
 
-msgctxt "#36261"
-msgid "No info available yet."
-msgstr "Tidak ada info tersedia."
-
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
 msgstr "Ekspor basis data Pustaka Musik ke dalam berkas XML. Ini dapat dipilih untuk menimpa berkas XML Anda yang sekarang."
@@ -11549,9 +11657,17 @@ msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "Impor file XML ke dalam basis data Pustaka Musik"
 
+msgctxt "#36264"
+msgid "Category containing settings for how music playback is handled."
+msgstr "Kategori yang berisi setelan bagaimana pemutaran musik ditangani."
+
 msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
 msgstr "XBMC akan secara otomatis memutar item berikutnya di dalam berkas yang sama. Contohnya, dalam tampilan berkas: Setelah trek diputar, XBMC akan secara otomatis memutar trek berikutnya di dalam berkas yang sama."
+
+msgctxt "#36266"
+msgid "When songs are selected they are queued instead of playback starting immediately."
+msgstr "Ketika lagu yang dipilih akan diantrikan bukan langsung diputar."
 
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
@@ -11565,6 +11681,10 @@ msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Standarnya adalah 89dB. Rubah dengan seksama."
 
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping will occur."
+msgstr "Kurangi volume berkas apabila pemotongan akan terjadi."
+
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Pudarkan secara lembut dari satu trek audio ke trek berikutnya. Anda dapat menentukan lama tindihan dari 1-15 detik."
@@ -11577,9 +11697,37 @@ msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "Baca informasi tag dari berkas lagu. Untuk direktori besar ini dapat memperlama waktu baca, terutama melalui jaringan."
 
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
+msgstr "Atur bagaimana nama lagu ditampilkan di antar muka pengguna. Untuk bisa berfungsi dengan baik, pembacaan tag harus diaktifkan."
+
+msgctxt "#36276"
+msgid "Used for formatting the second column in file lists."
+msgstr "Digunakan untuk format kolom kedua dari list berkas."
+
+msgctxt "#36277"
+msgid "Control the way that the names of songs are displayed in the now playing list."
+msgstr "Atur bagaimana nama lagu ditampilkan di list yang sedang dimainkan."
+
+msgctxt "#36278"
+msgid "Used for formatting the second column in the now playing list."
+msgstr "Digunakan untuk format kolom kedua dari list yang sedang dimainkan."
+
+msgctxt "#36279"
+msgid "Control the way that the names of songs are displayed in library lists."
+msgstr "Atur bagaimana nama lagu ditampilkan di list pustaka."
+
+msgctxt "#36280"
+msgid "Used for formatting the second column in library lists."
+msgstr "Digunakan untuk format kolom kedua dari list pustaka."
+
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "XBMC akan mencari thumb di dalam remote shares dan media optik. Ini dapat memperlambat listing folder jaringan."
+
+msgctxt "#36282"
+msgid "Category containing settings for how CDs are handled."
+msgstr "Kategori yang berisi setelan bagaimana CD ditangani."
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11593,6 +11741,10 @@ msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr "Pilih lokasi di hard disk dimana trek tersalin akan disimpan."
 
+msgctxt "#36286"
+msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Atur bagaimana musik tersimpan dinamain dari tag. Tag: [B]%N[/B]: Nomor Trek, [B]%S[/B]: Nomor Disk, [B]%A[/B]: Artis, [B]%T[/B]: Judul, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Tahun, [B]%F[/B]: Nama Berkas, [B]%D[/B]: Durasi, [B]%J[/B]: Tanggal, [B]%R[/B]: Rating, [B]%I[/B]: Ukuran Berkas."
+
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
 msgstr "Pilih pengenkode yang akan digunakan untuk menyalin."
@@ -11605,13 +11757,41 @@ msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
 msgstr "Pilih bitrate yang akan digunakan untuk kompresi audio oleh enkoder audio tersebut."
 
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5."
+msgstr "Tentukan tingkat kompresi untuk FLAC, standarnya 5."
+
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "Otomatis mengeluarkan disk setelah penyalinan selesai."
 
+msgctxt "#36292"
+msgid "Category containing the settings for how karaoke is handled."
+msgstr "Kategori yang berisi setelah bagaimana karaoke ditangani."
+
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Ketika memainkan berkas musik apapun, XBMC akan mencari berkas .cdg yang serupa dan menampilkan grafisnya."
+
+msgctxt "#36294"
+msgid "Show song selection dialog once the last song in the queue has been played."
+msgstr "Tunjukkan dialog pemilihan lagu setelah lagu terakhir dalam antrian selesai diputar."
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Pilih tipe font yang digunakan ketika karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Pilih ukuran font yang digunakan ketika karaoke."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Pilih warna font yang digunakan ketika karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Pilih set karakter yang digunakan ketika karaoke."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11625,6 +11805,14 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
 
+msgctxt "#36304"
+msgid "Section that contains settings related to pictures and how they are handled."
+msgstr "Seksi yang berisi setelah yang berhubungan dengan gambar dan bagaimana mereka ditangani."
+
+msgctxt "#36305"
+msgid "Category containing settings for how picture file lists are handled."
+msgstr "Kategori yang berisi setelan bagaimana list berkas gambar ditangani."
+
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr "Apabila informasi EXIF tersedia (tanggal, waktu, kamera digunakan dan lainnya), Ini akan ditampilkan."
@@ -11637,9 +11825,17 @@ msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "Apabila ditemukan, Gambar akan otomatis diputar sesuai informasi di dalam tag EXIF."
 
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "Tampilkan video dalam daftar berkas gambar."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
+
+msgctxt "#36311"
+msgid "Category containing settings for how picture slideshows are handled."
+msgstr "Kategori yang berisi setelan bagaimana slideshow gambar ditangani."
 
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
@@ -11653,6 +11849,14 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Tampilkan gambar slideshow secara acak."
 
+msgctxt "#36315"
+msgid "Section that contains weather related settings."
+msgstr "Seksi yang berisi setelan yang berhubungan cuaca."
+
+msgctxt "#36316"
+msgid "Category containing settings for how weather addons are handled."
+msgstr "Kategori yang berisi setelan bagaimana pengaya cuaca ditangani."
+
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "Pilih hingga tiga lokasi dimana cuacanya dapat ditampilkan."
@@ -11661,13 +11865,33 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "Pilih sumber informasi cuaca standar. Lihat Pengelola Pengaya untuk pilihan."
 
+msgctxt "#36319"
+msgid "Section containing settings for how network services are handled."
+msgstr "Seksi yang berisi setelan bagaimana layanan jaringan ditangani."
+
+msgctxt "#36320"
+msgid "Category containing settings used for all services."
+msgstr "Kategori yang berisi setelan yang digunakan oleh semua layanan."
+
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "Tampilkan nama instalasi XBMC ketika menggunakan berbagai layanan jaringan."
 
+msgctxt "#36322"
+msgid "Category containing settings for how the UPnP service is handled."
+msgstr "Kategori yang berisi setelan bagaimana layanan UPnP ditangani."
+
+msgctxt "#36323"
+msgid "Enable the UPnP server. This allows you to stream media to a UPnP client."
+msgstr "Aktifkan server UPnP. Ini memungkinkan anda mengalirkan media ke klien UPnP."
+
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "Ketika pemuktahiran pustaka terjadi, baik secara manual atau otomatis, beri tahu klien UPnP."
+
+msgctxt "#36327"
+msgid "Category containing settings for how the webserver service is handled."
+msgstr "Kategori yang berisi setelan bagaimana layanan webserver ditangani."
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11681,6 +11905,10 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Tentukan nama pengguna server web."
 
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "Tentukan kata kunci webserver."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Pilih antara antarmuka web yang terpasang melalui Pengelola Pengaya."
@@ -11689,13 +11917,81 @@ msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Memungkinkan program di komputer ini untuk mengatur XBMC melalui antarmuka web atau protokol antarmuka JSON-RPC."
 
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "Tentukan port remote control."
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "Tentukan rentang port remote control."
+
+msgctxt "#36337"
+msgid "Define the maximum number of clients that can connect."
+msgstr "Tentukan maksimum klien yang dapat terhubung."
+
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Memungkinkan program di dalam jaringan untuk mengatur XBMC."
 
+msgctxt "#36339"
+msgid "Initial repeat delay (ms)."
+msgstr "Jeda ulang awalan (ms)"
+
+msgctxt "#36340"
+msgid "Continuous repeat delay (ms)."
+msgstr "Jeda ulang lanjut (ms)"
+
+msgctxt "#36341"
+msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
+msgstr "Kategori yang berisi setelan bagaimana layanan zeroconf network discovery ditangani, diperlukan untuk AirPlay."
+
+msgctxt "#36342"
+msgid "Allows applications on the network to discover XBMC's running services."
+msgstr "Perbolehkan aplikasi dalam jaringan untuk menemukan layanan yang diberikan oleh XBMC."
+
+msgctxt "#36343"
+msgid "Allows XBMC to receive content from other AirPlay devices or applications."
+msgstr "Perbolehkan XBMC untuk menerima konten dari aplikasi atau perangkat AirPlay lainnya."
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "Aktfikan proteksi kata sandi AirPlay"
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "Set kata sandi AirPlay"
+
+msgctxt "#36346"
+msgid "Category containing settings for how the SMB Client (samba) service is handled."
+msgstr "Kategori yang berisi setelan bagaimana layanan klien SMB (samba) ditangani"
+
+msgctxt "#36347"
+msgid "If a WINS server is running on the network, enter its IP address here. Otherwise, leave blank."
+msgstr "Apabila ada layanan WINS berjalan di dalam jaringan, masukkan alamat IP di sini, Kalau tidak ada, kosongkan."
+
+msgctxt "#36348"
+msgid "If a WINS server is running on the network, enter its workgroup name here. Otherwise, leave blank."
+msgstr "Apabila ada layanan WINS berjalan di dalam jaringan, masukkan nama workgroupnya di sini, Kalau tidak ada, kosongkan."
+
+msgctxt "#36349"
+msgid "Section that contains the System related settings for the device XBMC is installed on."
+msgstr "Seksi yang berisi setelan yang berhubungan dengan sistem untuk perangkat XBMC terinstal."
+
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Secara otomatis mengirimkan pesan 'Wake-On-Lan' kepada server sebelum mencoba mengakses berkas atau layanan."
+
+msgctxt "#36351"
+msgid "Display XBMC in a window, or fullscreen on the selected screen."
+msgstr "Tampilkan XBMC di dalam jendela atau layar penuh pada layar terpilih."
+
+msgctxt "#36352"
+msgid "Changes the resolution that the user interface is displayed in."
+msgstr "Rubah resolusi dimana antar muka ditampilkan"
+
+msgctxt "#36353"
+msgid "Changes the refresh rate that the user interface is displayed in."
+msgstr "Rubah refresh rate dimana antar muka ditampilkan."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -11708,6 +12004,14 @@ msgstr "Hilangkan vertical tearing."
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Uji pola untuk kalibrasi perangkat keras tampilan."
+
+msgctxt "#36360"
+msgid "Category containing settings for how audio output is handled."
+msgstr "Kategori yang berisi setelan bagaimana keluaran audio ditangani."
+
+msgctxt "#36361"
+msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
+msgstr "Pilih bagaimana properti keluaran audio ditentukan: [Tetap] properti keluaran diset ke rata sampling dan konfigurasi speaker tertentu sepanjang waktu. [Padanan Terbaik] - properti keluaran diset menyamai semirip mungkin dengan properti sumber. [Optimis] - properti keluaran diset pada awal pemutaran dan tidak berubah ketika properti sumber berubah."
 
 msgctxt "#36362"
 msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
@@ -11725,6 +12029,14 @@ msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr "Pilih opsi ini apabila penerima anda mampu mendekode aliran DTS."
 
+msgctxt "#36367"
+msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
+msgstr "Pilih jumlah maksimum kanal audio/speaker yang tersedia untuk audio. Ketika keluaran digital optis/koaksial digunakan, ini harus dipilih ke 2.0"
+
+msgctxt "#36368"
+msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
+msgstr "Pilih untuk mengaktifkan opsi passthrough audio untuk pemutaran audio terenkode seperti Dolby Digital."
+
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr "Pilih opsi ini apabila penerima anda mampu mendekode aliran TrueHD."
@@ -11737,6 +12049,14 @@ msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "Atur bagaimana suara antar-muka ditangani, seperti navigasi menu dan notifikasi penting."
 
+msgctxt "#36374"
+msgid "Category containing settings for how input devices are handled."
+msgstr "Kategori yang berisi setelan bagaimana perangkat input ditangani."
+
+msgctxt "#36375"
+msgid "Configure any attached peripheral devices."
+msgstr "Konfigurasikan perangkat tambahan yang terpasang."
+
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
 msgstr "Ketika aktif, panah di keyboard akan memindahkan pilihan pada keyboard virtual. Ketika non-aktif, akan memindahkan kursor dari teks anda."
@@ -11748,6 +12068,10 @@ msgstr "Gunakan mouse atau perangkat layar sentuh untuk mengendalikan XBMC. Cat:
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
 msgstr "Gunakan joystik untuk mengendalikan XBMC."
+
+msgctxt "#36379"
+msgid "Category containing settings for internet access."
+msgstr "Kategori yang berisi setelan untuk akses internet."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11777,6 +12101,14 @@ msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "Kalau anda memiliki bandwidth terbatas, XBMC akan mencoba berada dalam batas tersebut."
 
+msgctxt "#36387"
+msgid "Category containing settings for power saving."
+msgstr "Kategori yang berisi setelan untuk penghematan daya."
+
+msgctxt "#36388"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
+msgstr "Matikan tampilan ketika langsam. Berguna untuk TV yang mati ketika tidak ada sinyal tampilan terdeteksi."
+
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "Tentukan beberapa lama XBM harus menganggur sebelum mematikan."
@@ -11784,6 +12116,14 @@ msgstr "Tentukan beberapa lama XBM harus menganggur sebelum mematikan."
 msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "Tentukan aksi apa yang akan dilakukan XBMC ketika menganggur dalam periode yang lama."
+
+msgctxt "#36391"
+msgid "Category containing settings for debugging functions."
+msgstr "Kategori yang berisi setelan untuk fungsi debugging."
+
+msgctxt "#36392"
+msgid "Turn debug logging on or off. Useful for troubleshooting."
+msgstr "Set logging debug nyala atau mati. Berguna ketika pemecahan masalah."
 
 msgctxt "#36393"
 msgid "Folder used to save screenshots taken within XBMC."
@@ -11793,13 +12133,65 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Tentukan pustaka tambahan yang akan disertakan ke dalam log debug."
 
+msgctxt "#36395"
+msgid "Category containing settings for the master lock function."
+msgstr "Kategori yang berisi setelan untuk fungsi kunci master."
+
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Tentukan kode pin yang akan digunakan sebagai kunci master."
 
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup."
+msgstr "Apabila diaktifkan, kode kunci master diperlukan untuk membuka XBMC ketika startup."
+
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "Tentukan jumlah maksimum percobaan sebelum XBMC ditutup."
+
+msgctxt "#36399"
+msgid "Category containing settings for the cache function."
+msgstr "Kategori yang berisi setelan untuk fungsi cache."
+
+msgctxt "#36400"
+msgid "Enable cache for playback of Video, Audio or DVDs from hard disk."
+msgstr "Aktifkan cache untuk pemutaran Video, Audio atau DVD dari harddisk."
+
+msgctxt "#36401"
+msgid "Enable cache for playback of Video from DVD-ROM."
+msgstr "Aktifkan cache untuk pemutaran Video dari DVD-ROM."
+
+msgctxt "#36402"
+msgid "Enable cache for Video playback from Local Network."
+msgstr "Aktifkan cache untuk pemutaran Video dari Jaringan Lokal."
+
+msgctxt "#36403"
+msgid "Enable cache for Video playback from Internet."
+msgstr "Aktifkan cache untuk pemutaran Video dari Internet."
+
+msgctxt "#36404"
+msgid "Enable cache for playback of Audio from DVD-ROM."
+msgstr "Aktifkan cache untuk pemutaran Audio dari DVD-ROM."
+
+msgctxt "#36405"
+msgid "Enable cache for Audio playback from Local Network."
+msgstr "Aktifkan cache untuk pemutaran Audio dari Jaringan Lokal."
+
+msgctxt "#36406"
+msgid "Enable cache for Audio playback from Internet."
+msgstr "Aktifkan cache untuk pemutaran Audio dari Internet."
+
+msgctxt "#36407"
+msgid "Enable cache for playback of DVD from DVD-ROM."
+msgstr "Aktifkan cache untuk pemutaran DVD dari DVD-ROM."
+
+msgctxt "#36408"
+msgid "Enable cache for DVD playback from Local Network."
+msgstr "Aktifkan cache untuk pemutaran DVD dari Jaringan Lokal."
+
+msgctxt "#36409"
+msgid "Enable cache of unknown types from Internet."
+msgstr "Aktifkan cache untuk tipe tidak dikenal dari Internet."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -11825,13 +12217,13 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Belum ada info tersedia."
 
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "Tentukan tipe remote yang digunakan."
+
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Tentukan lokasi yang digunakan ketika mengambil informasi cuaca."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -11936,6 +12328,10 @@ msgstr "Pilih modus alternatif..."
 msgctxt "#36532"
 msgid "Same as movie"
 msgstr "Sama seperti film"
+
+msgctxt "#36533"
+msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
+msgstr "Pilih bagaimana audio didownmix, contohnya dari 5.1 ke 2.0: [Aktifkan] Pertahankan rentang dinamis sumber audio aslinya ketika didownmix namun volume akan berkurang [Matikan] Pertahankan level volume sumber audio aslinya namun rentang dinamisnya akan terkompresi. Catatan - Rentang dinamis adalah perbedaan antar suara terkecil dan terkeras di sumber audio."
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"

@@ -5081,10 +5081,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple Remote Error"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple Remote support could be enabled."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Stack"
@@ -6320,10 +6316,6 @@ msgstr "Search for channels"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Cannot use PVR functions while searching."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "On which server you want to search?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10097,10 +10089,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Select from all titles ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Show bluray menus"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Play main title: %d"
@@ -10949,10 +10937,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Adjust the method used to process and display video."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "Synchronize the video to the refresh rate of the monitor."
@@ -11041,10 +11025,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Default scraper used for adding music videos to your library."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "No info available yet."
@@ -11069,42 +11049,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Delete channel/EPG database and reimport the data from the backend afterwards."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Do not import EPG data while playing TV to minimize CPU usage."
@@ -11117,37 +11061,17 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Display stream of selected channel in a small box instead of fullscreen."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "No info available yet."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Display a notification when timers are added, finished or removed by the backend."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "No info available yet."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11161,10 +11085,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "When to execute the daily wakeup command."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11172,14 +11092,6 @@ msgstr "Asks for a pin code to access parental locked channels. Channels can be 
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Enter a new pin code to unlock parental locked channels."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "No info available yet."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11198,10 +11110,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Check for new and removed media files on XBMC startup."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "No info available yet."
 
@@ -11492,10 +11400,6 @@ msgstr "No info available yet."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Define locations used for retrieving weather information."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "No info available yet."
 
 msgctxt "#36426"
 msgid "Switch to channel"

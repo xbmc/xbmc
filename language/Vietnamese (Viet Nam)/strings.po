@@ -905,6 +905,10 @@ msgctxt "#10025"
 msgid "Videos"
 msgstr "Video"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Nâng ca"
+
 msgctxt "#10505"
 msgid "Top 100 albums"
 msgstr "100 bộ sưu tập hay nhất"

@@ -5157,10 +5157,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Error de Apple Remote"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "No se puede activar el soporte para Apple Remote."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Agrupar"
@@ -6444,10 +6440,6 @@ msgstr "Buscar canales"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "No se pueden usar las funciones del PVR mientras se esta buscando."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "¿En qué servidor quiere buscar?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10305,10 +10297,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Seleccionar de todos los títulos ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Mostrar menus de bluray"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Reproducir título principal: %d"
@@ -10324,14 +10312,6 @@ msgstr "Seleccionar ítem de reproducción"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Capítulos: %u - duración: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Falló reprodución de Disco Blu-ray"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "El menú de este disco Blu-ray no es soportado"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11205,10 +11185,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Ajusta el método usado para procesar el vídeo."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "Sincroniza el vídeo para que se ajuste a la tasa de refresco del monitor."
@@ -11313,10 +11289,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper por omisión para añadir vídeos musicales a tu librería."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
@@ -11345,46 +11317,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Borra la base de datos de canales/EPG y seguidamente reimporta los datos desde el backend."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36219"
-msgid "Default EPG window to show."
-msgstr "Ventana EPG a mostrar por Defecto"
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "No importar los datos de EPG mientras miras TV para disminuir el uso del CPU."
@@ -11397,37 +11329,17 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Esconde las etiquetas \"no hay información disponible\" cuando no hay datos EPG para recuperar de un canal."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Muestra previsualización del canal seleccionado en una pequeña ventana en lugar de usar la pantalla entera."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Presionando un boton de número en el modo de pantalla completa, se cambia automáticamente al canal que fue marcado después de 1 segundo."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Muestra una notificación cuando un backend añade, termina o remueve un temporizador."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11441,10 +11353,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Cuando se ejecutará el comando despertar diariamente."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Solicita un código de acceso a los canales bloqueados por control parental. Los canales pueden ser bloqueados en el editor que se encuentra en la pestaña general. Los canales bloqueados por control parental no pueden ser reproducidos ni grabados sin ingresar el código de autorización, y la información EPG también se esconde en estos canales."
@@ -11452,14 +11360,6 @@ msgstr "Solicita un código de acceso a los canales bloqueados por control paren
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Introduce un nuevo codigo pin para desbloquear los canales con bloqueo paternal. "
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
 
 msgctxt "#36254"
 msgid "Enable the music library."
@@ -11486,10 +11386,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Comprobar si hay archivos de medios nuevos o removidos al inicio de XBMC."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Aun no hay informacion disponible."
 
@@ -11808,10 +11704,6 @@ msgstr "Aun no hay informacion disponible."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Defina los lugares usados para obtener información meteorológica"
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Aun no hay informacion disponible."
 
 msgctxt "#36425"
 msgid "Show context menu"

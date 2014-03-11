@@ -2785,6 +2785,10 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Nhập địa chỉ web"
 
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "Máy khách SMB"
@@ -3212,6 +3216,10 @@ msgstr "Cài đặt - Tài khoản"
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Chuẩn"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Nâng cao"
 
 msgctxt "#10131"
 msgid "Lock settings"
@@ -4488,10 +4496,6 @@ msgstr "Remote đa năng (Harmony)"
 msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Lỗi remote Apple"
-
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Có thể bật hỗ trợ remote Apple."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6240,10 +6244,6 @@ msgstr "Nhập chuỗi tìm kiếm"
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Các thông báo"
-
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Hiển thị danh mục Bluray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"

@@ -2681,6 +2681,10 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "मानक"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "उन्नत"
+
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "प्रिय"
