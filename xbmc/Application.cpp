@@ -2437,7 +2437,7 @@ float CApplication::GetDimScreenSaverLevel() const
     return 0;
 
   if (m_screenSaver->ID() == "screensaver.xbmc.builtin.plexphotos")
-    return 0.1f;
+    return 0.042f;
 
   if (!m_screenSaver->GetSetting("level").IsEmpty())
     return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));

@@ -9,6 +9,7 @@
 #include "PlexJobs.h"
 #include "Client/PlexServerManager.h"
 #include "PlexApplication.h"
+#include "settings/GUISettings.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CGUIPlexScreenSaverPhoto::CGUIPlexScreenSaverPhoto() : CGUIDialog(WINDOW_DIALOG_PLEX_SS_PHOTOS, "")
@@ -65,8 +66,8 @@ void CGUIPlexScreenSaverPhoto::Process(unsigned int currentTime, CDirtyRegionLis
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexScreenSaverPhoto::UpdateVisibility()
 {
-  float level = g_application.GetDimScreenSaverLevel();
-  if (level)
+  // such a hack
+  if (g_application.GetDimScreenSaverLevel() == 0.042f)
     Show();
   else
     Close();
