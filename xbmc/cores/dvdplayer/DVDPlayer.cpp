@@ -711,40 +711,39 @@ bool CDVDPlayer::OpenInputStream()
 
 bool CDVDPlayer::OpenDemuxStream()
 {
-  if(m_pDemuxer)
-    SAFE_DELETE(m_pDemuxer);
-
-  CLog::Log(LOGNOTICE, "Creating Demuxer");
-
-  try
-  {
-    int attempts = 10;
-    while(!m_bStop && attempts-- > 0)
+  if (!m_pDemuxer) {
+    CLog::Log(LOGNOTICE, "Creating Demuxer");
+    
+    try
     {
-      m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-      if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      int attempts = 10;
+      while(!m_bStop && attempts-- > 0)
       {
-        continue;
+        m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
+        if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+        {
+          continue;
+        }
+        else if(!m_pDemuxer && m_pInputStream->NextStream() != CDVDInputStream::NEXTSTREAM_NONE)
+        {
+          CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
+          continue;
+        }
+        break;
       }
-      else if(!m_pDemuxer && m_pInputStream->NextStream() != CDVDInputStream::NEXTSTREAM_NONE)
+
+      if(!m_pDemuxer)
       {
-        CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
-        continue;
+        CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
+        return false;
       }
-      break;
+
     }
-
-    if(!m_pDemuxer)
+    catch(...)
     {
-      CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
       return false;
     }
-
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
-    return false;
   }
 
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
@@ -1026,7 +1025,10 @@ void CDVDPlayer::Process()
   // allow renderer to switch to fullscreen if requested
   m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
 
-  OpenDefaultStreams();
+  // don't open default streams here for demxued PVR streams, it is done 
+  // when the DMX_SPECIALID_STREAMCHANGE packet comes in
+  if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    OpenDefaultStreams();
 
   // look for any EDL files
   m_Edl.Clear();
@@ -1093,10 +1095,6 @@ void CDVDPlayer::Process()
     }
   }
 
-  // make sure all selected stream have data on startup
-  if (CachePVRStream())
-    SetCaching(CACHESTATE_PVR);
-
   // make sure application know our info
   UpdateApplication(0);
   UpdatePlayState(0);
@@ -1106,9 +1104,6 @@ void CDVDPlayer::Process()
 
   // we are done initializing now, set the readyevent
   m_ready.Set();
-
-  if (!CachePVRStream())
-    SetCaching(CACHESTATE_FLUSH);
 
   while (!m_bAbortRequest)
   {
@@ -1143,18 +1138,21 @@ void CDVDPlayer::Process()
         break;
       }
 
-      OpenDefaultStreams();
+      // don't open default streams here for demxued PVR streams, it is done 
+      // when the DMX_SPECIALID_STREAMCHANGE packet comes in
+      if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+        OpenDefaultStreams();
 
       // never allow first frames after open to be skipped
       if( m_dvdPlayerVideo.IsInited() )
         m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
-
-      if (CachePVRStream())
-        SetCaching(CACHESTATE_PVR);
-
+  
       UpdateApplication(0);
       UpdatePlayState(0);
     }
+    
+    // update channel settings for PVR streams
+    UpdateChannelSettings();
 
     // handle eventual seeks due to playspeed
     HandlePlaySpeed();
@@ -1226,19 +1224,8 @@ void CDVDPlayer::Process()
         }
       }
 
-      // if there is another stream available, reopen demuxer
-      CDVDInputStream::ENextStream next = m_pInputStream->NextStream();
-      if(next == CDVDInputStream::NEXTSTREAM_OPEN)
-      {
-        SAFE_DELETE(m_pDemuxer);
-        m_CurrentAudio.stream = NULL;
-        m_CurrentVideo.stream = NULL;
-        m_CurrentSubtitle.stream = NULL;
-        continue;
-      }
-
       // input stream asked us to just retry
-      if(next == CDVDInputStream::NEXTSTREAM_RETRY)
+      if(m_pInputStream->NextStream() == CDVDInputStream::NEXTSTREAM_RETRY)
       {
         Sleep(100);
         continue;
@@ -1578,40 +1565,6 @@ void CDVDPlayer::HandlePlaySpeed()
     }
   }
 
-  if (caching == CACHESTATE_PVR)
-  {
-    bool bGotAudio(m_pDemuxer->GetNrOfAudioStreams() > 0);
-    bool bGotVideo(m_pDemuxer->GetNrOfVideoStreams() > 0);
-    bool bAudioLevelOk(m_dvdPlayerAudio.GetLevel() > g_advancedSettings.m_iPVRMinAudioCacheLevel);
-    bool bVideoLevelOk(m_dvdPlayerVideo.GetLevel() > g_advancedSettings.m_iPVRMinVideoCacheLevel);
-    bool bAudioFull(!m_dvdPlayerAudio.AcceptsData());
-    bool bVideoFull(!m_dvdPlayerVideo.AcceptsData());
-
-    if (/* if all streams got at least g_advancedSettings.m_iPVRMinCacheLevel in their buffers, we're done */
-        ((bGotVideo || bGotAudio) && (!bGotAudio || bAudioLevelOk) && (!bGotVideo || bVideoLevelOk)) ||
-        /* or if one of the buffers is full */
-        (bAudioFull || bVideoFull))
-    {
-      CLog::Log(LOGDEBUG, "set caching from pvr to done. audio (%d) = %d. video (%d) = %d",
-          bGotAudio, m_dvdPlayerAudio.GetLevel(),
-          bGotVideo, m_dvdPlayerVideo.GetLevel());
-
-      CFileItem currentItem(g_application.CurrentFileItem());
-      if (currentItem.HasPVRChannelInfoTag())
-        g_PVRManager.LoadCurrentChannelSettings();
-
-      caching = CACHESTATE_DONE;
-    }
-    else
-    {
-      /* ensure that automatically started players are stopped while caching */
-      if (m_CurrentAudio.started)
-        m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
-      if (m_CurrentVideo.started)
-        m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
-    }
-  }
-
   if(caching == CACHESTATE_PLAY)
   {
     // if all enabled streams have started playing we are done
@@ -1675,16 +1628,8 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   if((current.type == STREAM_AUDIO && m_dvdPlayerAudio.IsStalled())
   || (current.type == STREAM_VIDEO && m_dvdPlayerVideo.IsStalled()))
   {
-    if (CachePVRStream())
-    {
-      if ((current.type == STREAM_AUDIO && current.started && m_dvdPlayerAudio.GetLevel() == 0) ||
-         (current.type == STREAM_VIDEO && current.started && m_dvdPlayerVideo.GetLevel() == 0))
-      {
-        CLog::Log(LOGDEBUG, "%s stream stalled. start buffering", current.type == STREAM_AUDIO ? "audio" : "video");
-        SetCaching(CACHESTATE_PVR);
-      }
+    if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
       return true;
-    }
 
     // don't start caching if it's only a single stream that has run dry
     if(m_dvdPlayerAudio.GetLevel() > 50
@@ -2319,10 +2264,7 @@ void CDVDPlayer::HandleMessages()
       {
         FlushBuffers(false);
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-        if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
-        {
-          SAFE_DELETE(m_pDemuxer);
-        }else
+        if(!input || !input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
           CApplicationMessenger::Get().MediaStop(false);
@@ -2332,10 +2274,7 @@ void CDVDPlayer::HandleMessages()
       {
         FlushBuffers(false);
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-        if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
-        {
-          SAFE_DELETE(m_pDemuxer);
-        }else
+        if(!input || !input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
           CApplicationMessenger::Get().MediaStop(false);
@@ -2438,17 +2377,13 @@ void CDVDPlayer::SetCaching(ECacheState state)
 
   CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - caching state %d", state);
   if(state == CACHESTATE_FULL
-  || state == CACHESTATE_INIT
-  || state == CACHESTATE_PVR)
+  || state == CACHESTATE_INIT)
   {
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
     m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
-
-    if (state == CACHESTATE_PVR)
-      m_pInputStream->ResetScanTimeout((unsigned int) CSettings::Get().GetInt("pvrplayback.scantime") * 1000);
   }
 
   if(state == CACHESTATE_PLAY
@@ -2483,7 +2418,7 @@ void CDVDPlayer::Pause()
     return;
   lock.Leave();
 
-  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && (m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR))
+  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && m_caching == CACHESTATE_FULL)
   {
     SetCaching(CACHESTATE_DONE);
     return;
@@ -2504,7 +2439,7 @@ void CDVDPlayer::Pause()
 
 bool CDVDPlayer::IsPaused() const
 {
-  return m_playSpeed == DVD_PLAYSPEED_PAUSE || m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR;
+  return m_playSpeed == DVD_PLAYSPEED_PAUSE || m_caching == CACHESTATE_FULL;
 }
 
 bool CDVDPlayer::HasVideo() const
@@ -4191,6 +4126,13 @@ void CDVDPlayer::UpdateApplication(double timeout)
   m_UpdateApplication = CDVDClock::GetAbsoluteClock();
 }
 
+void CDVDPlayer::UpdateChannelSettings()
+{
+  CFileItem currentItem(g_application.CurrentFileItem());
+  if (currentItem.HasPVRChannelInfoTag())
+    g_PVRManager.LoadCurrentChannelSettings();
+}
+
 bool CDVDPlayer::CanRecord()
 {
   CSingleLock lock(m_StateSection);
@@ -4283,11 +4225,4 @@ bool CDVDPlayer::SwitchChannel(const CPVRChannel &channel)
   m_messenger.Put(new CDVDMsgType<CPVRChannel>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
 
   return true;
-}
-
-bool CDVDPlayer::CachePVRStream(void) const
-{
-  return m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
-      !g_PVRManager.IsPlayingRecording() &&
-      g_advancedSettings.m_bPVRCacheInDvdPlayer;
 }
