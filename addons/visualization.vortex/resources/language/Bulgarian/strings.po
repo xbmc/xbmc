@@ -46,7 +46,7 @@ msgstr "Покажи FPS"
 
 msgctxt "#30007"
 msgid "Show debug console"
-msgstr "Покажи конзолата за отстраняване на грешки"
+msgstr "Покажи дебъг конзолата"
 
 msgctxt "#30008"
 msgid "Show audio analysis"

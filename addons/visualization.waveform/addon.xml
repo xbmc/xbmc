@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.waveform"
-  version="1.0.16"
+  version="1.0.17"
   name="Waveform"
   provider-name="MrC">
   <extension
@@ -31,7 +31,7 @@
     <summary lang="et">Visuaal, mis näitab ekraanil kahte signaalikujulist graafikut</summary>
     <summary lang="fi">Kaksi aaltomuotograafia</summary>
     <summary lang="fr">Visualisation affichant 2 graphiques de forme d'onde à l'écran</summary>
-    <summary lang="fr_CA">Visualisation affichant 2 graphiques de forme d'onde à l'écran</summary>
+    <summary lang="fr_CA">Visualisation affichant à l'écran 2 graphes de forme d'onde</summary>
     <summary lang="gl">Visualización amosando 2 gráficos en forma de onde na pantalla</summary>
     <summary lang="he">חיזוי אשר מציג 2 גרפיים בצורת גל על המסך</summary>
     <summary lang="hr">Vizualizacija koja prikazuje 2 valna grafikona</summary>
@@ -85,7 +85,7 @@
     <description lang="et">Waveform on lihtne visuaal, ekraanil on 2 signaalikujulist graafikut - üks vasaku ja teine parema kanali jaoks, mis mõlemad liiguvad muusika rütmis.</description>
     <description lang="fi">Waveform on kaksi aaltomuotograafia näyttävä yksinkertainen visualisointi. Toinen on vasemmalle ja toinen oikealle kanavalla ja ne liikkuvat musiikin tahdissa.</description>
     <description lang="fr">Waveform est une visualisation simple affichant deux graphiques de forme d'onde à l'écran. Chaque forme d'onde représente une voie, gauche et droite, et réagit selon le rythme de la musique.</description>
-    <description lang="fr_CA">Waveform est une visualisation simple affichant deux graphiques de forme d'onde à l'écran. Chaque forme d'onde représente une voie, gauche et droite, et réagit selon le rythme de la musique.</description>
+    <description lang="fr_CA">Waveform est une visualisation simple affichant à l'écran 2 graphes en forme d'onde. Un pour le canal gauche et un pour le canal droit, qui réagissent au rythme de la musique.</description>
     <description lang="gl">Waveform é unha Visualización simple que amosa 2 gráficos en forma de onde na súa pantalla, unha por cada lateral correspondente ás canles de audio da esquerda e da dereita que se move ó ritmo da música</description>
     <description lang="he">Waveform הוא חיזוי פשוט המציג 2 גרפים בצורת גל על המסך, אחד לכל ערוץ שמאלי וימני הזז לפי קצב המוזיקה</description>
     <description lang="hr">Waveform je jednostavna vizualizacija koja prikazuje 2 valna grafikona, po jedan za lijevi i desni kanal koji se pokreću u ritmu glazbe.</description>

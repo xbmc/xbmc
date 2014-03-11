@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.plasma"
-  version="1.0.16"
+  version="1.0.17"
   name="Plasma"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -33,11 +33,12 @@
     <summary lang="eu">Ziurrenik inoizko bigarren pantaila-babesle psikodelikoena</summary>
     <summary lang="fi">Todennäköisesti toiseksi psykedeelisin näytönsäästäjä koskaan</summary>
     <summary lang="fr">Probablement le deuxième économiseur d'écran le plus psychédélique jamais créé</summary>
-    <summary lang="fr_CA">Probablement le deuxième économiseur d'écran le plus psychédélique jamais créé</summary>
+    <summary lang="fr_CA">Probablement le deuxième économiseur d'écran le plus psychédélique</summary>
     <summary lang="gl">Probabelmente o segundo protector de pantalla máis psicodélico.</summary>
     <summary lang="he">כפי הנראה שומר המסך השני בדירוג הפסיכדליות</summary>
     <summary lang="hr">Vjerojatno drugi najveći psihodelični čuvar zaslona ikad</summary>
     <summary lang="hu">A második legpszihedelikusabb képernyővédő</summary>
+    <summary lang="id">Mungkin screensaver paling psikedelik nomor dua yang pernah ada</summary>
     <summary lang="it">Probabilmente il secondo salvaschermo più psichedelico di sempre</summary>
     <summary lang="ja">世界で2番目にサイケなスクリーンセーバー</summary>
     <summary lang="ko">아마도 지금까지 두번째로 가장 환상적인 화면보호기</summary>
@@ -88,6 +89,7 @@
     <description lang="he">כפי הנראה שומר המסך השני בדירוג הפסיכדליות שקיים כיום. פשוט נסו לדמיין את כל הצבעים האלו נעים ממקום למקום.</description>
     <description lang="hr">Vjerojatno drugi najveći psihodelični čuvar zaslona koji postoji. Samo pokušajte zamisliti sve te boje koje se gibaju okolo.</description>
     <description lang="hu">Valószínüleg a második legpszihedelikusabb képernyővédő ami létezik. Csak képzeld el mindezt a színkavalkádot mozogni.</description>
+    <description lang="id">Mungkin screensaver paling psikedelik nomor dua yang pernah ada. Coba bayangkan warna-warni itu bergerak ke sana kemari.</description>
     <description lang="it">Probabilmente il secondo salvaschermo più psichedelico di sempre. Prova semplicemente a guardare tutti quei colori che si muovono.</description>
     <description lang="ja">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="ko">아마도 존재하는 두번째로 가장 환상적인 화면보호기. 모든 색깔들이 움직이는 것을 상상해보세요.</description>

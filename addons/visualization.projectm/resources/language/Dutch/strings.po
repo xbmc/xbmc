@@ -42,11 +42,11 @@ msgstr "Willekeurige modus"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
-msgstr "Smooth-Presetduur"
+msgstr "Geleidelijke voorinstellingsduur "
 
 msgctxt "#30007"
 msgid "Preset Duration"
-msgstr "Presetduur"
+msgstr "Voorinstellingsduur"
 
 msgctxt "#30008"
 msgid "Beat Sensitivity"
@@ -54,11 +54,11 @@ msgstr "Beatgevoeligheid"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Preset Pakket"
+msgstr "Voorinstelling pakket"
 
 msgctxt "#30010"
 msgid "Default Pack"
-msgstr "Standaard Pakket"
+msgstr "Standaard pakket"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"

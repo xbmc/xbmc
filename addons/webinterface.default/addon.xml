@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.10"
+  version="2.2.11"
   name="Default"
   provider-name="Team XBMC">
   <requires>
@@ -35,7 +35,7 @@
     <summary lang="fa">نمایه وب تیم Xbmc.(رابط پیش فرض Xbmc)</summary>
     <summary lang="fi">Team XBMC:n WWW-käyttöliittymä. (XBMC:n oletus WWW-käyttöliittymä)</summary>
     <summary lang="fr">Interface Web de l'équipe d'XBMC. (Interface Web par défaut d'XBMC)</summary>
-    <summary lang="fr_CA">Interface Web de l'équipe d'XBMC. (Interface Web par défaut d'XBMC)</summary>
+    <summary lang="fr_CA">Interface Web de l'équipe XBMC. (Interface Web par défaut d'XBMC)</summary>
     <summary lang="gl">Interface web da equipa de XBMC. (Interface web predefinida de XBMC)</summary>
     <summary lang="he">ממשק הדפדפן הרשמי של XBMC. (ברירת המחדל)</summary>
     <summary lang="hr">Tim XBMC Web sučelje. (XBMC-ovo uobičajeno web sučelje)</summary>
@@ -94,7 +94,7 @@
     <description lang="fa">رابط پیش فرض Xbmcوطراحی شده برای هر رزولیشن</description>
     <description lang="fi">Oletus WWW-käyttöliittymä XBMC:lle. Suunniteltu käytettäväksi kaiken kokoisilla laitteilla.</description>
     <description lang="fr">Interface Web par défaut d'XBMC; Adaptée aux dispositifs de toutes résolutions</description>
-    <description lang="fr_CA">Interface Web par défaut d'XBMC; Adaptée aux dispositifs de toutes résolutions</description>
+    <description lang="fr_CA">Interface Web par défaut d'XBMC - Conçue pour les dispositifs de toutes résolutions</description>
     <description lang="gl">Interface web predefinida para XBMC, deseñada para dispositivos de todas as resolucións</description>
     <description lang="he">ממשק דפדפן ברירת המחדל עבור XBMC; מתאים למכשירים בעלי רזולוציות שונות</description>
     <description lang="hr">Uobičajeno web sučelje za XBMC; Dizajnirano za uređaje svih razlučivosti</description>
