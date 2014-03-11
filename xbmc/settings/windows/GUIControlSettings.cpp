@@ -713,7 +713,7 @@ CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, C
     if (control->IsHidden())
       inputType = CGUIEditControl::INPUT_TYPE_PASSWORD;
   }
-  else if (controlFormat == "integer")
+  else if (controlFormat == "integer" || controlFormat == "number")
   {
     if (control->VerifyNewValue())
       inputType = CGUIEditControl::INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW;
@@ -823,12 +823,7 @@ bool CGUIControlSliderSetting::OnClick()
       return static_cast<CSettingInt*>(m_pSetting)->SetValue(m_pSlider->GetIntValue());
 
     case SettingTypeNumber:
-    {
-      float value = 0.0f;
-      value = m_pSlider->GetFloatValue();
-
-      return static_cast<CSettingNumber*>(m_pSetting)->SetValue(value);
-    }
+      return static_cast<CSettingNumber*>(m_pSetting)->SetValue(m_pSlider->GetFloatValue());
     
     default:
       break;
