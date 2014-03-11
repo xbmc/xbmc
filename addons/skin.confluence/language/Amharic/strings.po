@@ -80,6 +80,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "መረጃ"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "ተግባሮች"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "አሁን የሚጫወተው"
@@ -99,6 +103,10 @@ msgstr "ወደ ፊት ማሳለፊያ"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ወደ ኋላ ማሳለፊያ"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "በ መፈለግ ላይ"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -196,6 +204,10 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr "ቪዲዮ OSD"
 
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "የማሰናጃ ደረጃዎች"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "አቋራጮች"
@@ -256,6 +268,10 @@ msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "መጨረሻ የገባው"
 
+msgctxt "#31322"
+msgid "Aired"
+msgstr "የተላለፈ"
+
 msgctxt "#31325"
 msgid "Playlist Options"
 msgstr "የሚያጫውቱት ምርጫዎች "
@@ -304,6 +320,14 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "ንዑስ አርእስቶች ማውረጃ "
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "እንደ 2ዲ መመልከቻ"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "መቀየሪያ ዘዴ"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "ተችሏል"
@@ -315,6 +339,22 @@ msgstr "መደበኛ "
 msgctxt "#31392"
 msgid "Arial based"
 msgstr "Arial based"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "እርዳታ መጀመሪያ ጊዜ ሲያስኬዱ...."
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "መግቢያ"
+
+msgctxt "#31421"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "ይምረጡ የ እርስዎን  XBMC ተጠቃሚ ገጽታ[CR]ለ መግባት እና ለመቀጠል"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "የመግቢያ መመልከቻውን በሚጀምር ጊዜ ማሳያ ወይንም መደበቂያ"
 
 msgctxt "#31502"
 msgid "Live TV"
@@ -339,6 +379,10 @@ msgstr "ዝግጁ[CR]ቡድኖች"
 msgctxt "#31509"
 msgid "Channel Group"
 msgstr "የ ጣቢያ ቡድን"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "ሰአት ማሰናጃ"
 
 msgctxt "#31511"
 msgid "Channel Options"
@@ -371,3 +415,43 @@ msgstr "ግምት በመፈለግ ላይ..."
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "ካርታ & ማስጠንቀቂያ"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "የ አየር ንብረት"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "ስእሎች"
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr "በቀጥታ የሚሰራጭ ቲቪ"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "ቪዲዮዎች"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "ሙቪዎች"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "የ ቲቪ ትእይንቶች"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "ሙዚቃ"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "ፕሮግራሞች"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "ዲስክ ማጫወቻ"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "ስርአቱ"

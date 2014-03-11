@@ -230,7 +230,7 @@ msgstr "Zeige im Hintergrund \"Aktuell abgespielt\"-Visualisierung"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Spiele TV-Titelmusik in der Video-Bibliothek (TvTunes Ad-on)"
+msgstr "Spiele TV-Titelmusik in der Video-Bibliothek (TvTunes Addon)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -246,7 +246,7 @@ msgstr "Fanart in Vollbild Visualisierung ausblenden."
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Songtext Add-on"
+msgstr "Songtext Addon"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
@@ -462,7 +462,7 @@ msgstr "[B]KONFIGURIERE SYSTEM EINSTELLUNGEN[/B][CR][CR]Konfiguriere und kalibri
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGURIERE ADD-ONS[/B][CR][CR]Organisiere die installierten Add-ons · Installiere Add-ons von xbmc.org[CR]Add-on Einstellungen anpassen"
+msgstr "[B]KONFIGURIERE ADDONS[/B][CR][CR]Organisiere die installierten Addons · Installiere Addons von xbmc.org[CR]Addon Einstellungen anpassen"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"

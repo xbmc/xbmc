@@ -219,3 +219,7 @@ msgstr "Perisisan tambahan Lirik"
 msgctxt "#31327"
 msgid "Resolution"
 msgstr "Resolusi"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Dibenarkan"
