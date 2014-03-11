@@ -137,14 +137,12 @@ class CDVDVideoCodecIPUBuffers
 
     bool Init(int width, int height, int numBuffers, int nAlign);
     bool Reset();
-    void SetEnabled(bool);
     bool Close();
 
     CDVDVideoCodecIPUBuffer *Process(CDVDVideoCodecBuffer *sourceBuffer,
                                      VpuFieldType fieldType, bool lowMotion);
 
   private:
-    bool                      m_bEnabled;
     int                       m_ipuHandle;
     int                       m_bufferNum;
     CDVDVideoCodecIPUBuffer **m_buffers;

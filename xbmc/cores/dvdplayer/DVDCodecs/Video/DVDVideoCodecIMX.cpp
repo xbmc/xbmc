@@ -342,6 +342,11 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers(void)
       CLog::Log(LOGWARNING, "IMX: Failed to initialize IPU buffers: deinterlacing disabled\n");
       m_modeDeinterlace = 0;
     }
+    else
+    {
+      for (int i=0 ; i < m_vpuFrameBufferNum; i++)
+        GET_DEINTERLACER(m_outputBuffers[i]) = (uint8_t*)&m_deinterlacer;
+    }
   }
   else
     m_modeDeinterlace = 0;
@@ -934,8 +939,6 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     CLog::Log(LOGDEBUG, "+  %02d dts %f pts %f  (VPU)\n", idx, pDvdVideoPicture->dts, pDvdVideoPicture->pts);
 #endif
 
-    GET_DEINTERLACER(buffer) = (uint8_t*)&m_deinterlacer;
-
     pDvdVideoPicture->codecinfo = buffer;
     pDvdVideoPicture->codecinfo->Lock();
   }
@@ -987,6 +990,7 @@ CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer()
   , m_rendered(false)
   , m_pts(DVD_NOPTS_VALUE)
 {
+  GET_DEINTERLACER(this) = NULL;
 }
 
 void CDVDVideoCodecIMXBuffer::Lock()
@@ -1064,7 +1068,6 @@ VpuDecRetCode CDVDVideoCodecIMXBuffer::ReleaseFramebuffer(VpuDecHandle *handle)
 #ifdef TRACE_FRAMES
   CLog::Log(LOGDEBUG, "-  %02d  (VPU)\n", m_idx);
 #endif
-  GET_DEINTERLACER(this) = NULL;
   m_rendered = false;
   m_frameBuffer = NULL;
   m_pts = DVD_NOPTS_VALUE;
@@ -1315,8 +1318,7 @@ bool CDVDVideoCodecIPUBuffer::Free(int fd)
 }
 
 CDVDVideoCodecIPUBuffers::CDVDVideoCodecIPUBuffers()
-  : m_bEnabled(true)
-  , m_ipuHandle(0)
+  : m_ipuHandle(0)
   , m_bufferNum(0)
   , m_buffers(NULL)
   , m_lastBuffer(NULL)
@@ -1348,7 +1350,7 @@ bool CDVDVideoCodecIPUBuffers::Init(int width, int height, int numBuffers, int n
   m_bufferNum = numBuffers;
   m_buffers = new CDVDVideoCodecIPUBuffer*[m_bufferNum];
 
-  for (int i=0; i < m_bufferNum; i++ )
+  for (int i=0; i < m_bufferNum; i++)
   {
 #ifdef TRACE_FRAMES
     m_buffers[i] = new CDVDVideoCodecIPUBuffer(i);
@@ -1370,11 +1372,6 @@ bool CDVDVideoCodecIPUBuffers::Reset()
   SAFE_RELEASE(m_lastBuffer);
   for (int i=0; i < m_bufferNum; i++)
     m_buffers[i]->ReleaseFrameBuffer();
-}
-
-void CDVDVideoCodecIPUBuffers::SetEnabled(bool enabled)
-{
-  m_bEnabled = enabled;
 }
 
 bool CDVDVideoCodecIPUBuffers::Close()
@@ -1421,7 +1418,7 @@ CDVDVideoCodecIPUBuffers::Process(CDVDVideoCodecBuffer *sourceBuffer,
   CDVDVideoCodecIPUBuffer *target = NULL;
   bool ret = true;
 
-  if (!m_bEnabled || !m_bufferNum)
+  if (!m_bufferNum)
     return NULL;
 
   for (int i=0; i < m_bufferNum; i++ )
