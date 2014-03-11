@@ -361,6 +361,26 @@
 			
 		</control>
 	</include>
+	<include name="UnavailableIndicator">
+		<control type="group">
+			<visible>!IsEmpty(ListItem.Property(Unavailable))</visible>
+			<control type="image">
+				<posy>5</posy>
+				<width>210</width>
+				<height>26</height>
+				<texture>b-unavailable.png</texture>
+			</control>
+			<control type="label">
+				<posy>6</posy>
+				<width>210</width>
+				<height>26</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[32109]</label>
+				<include>LeftInfoFormatGrey</include>
+			</control>
+		</control>
+	</include>
 	<!-- animations -->
 	<include name="FadeQuick">
 		<animation effect="fade" start="0" end="100" time="100">Visible</animation>

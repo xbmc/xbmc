@@ -1086,3 +1086,8 @@ msgstr ""
 msgctxt "#32108"
 msgid "Section"
 msgstr ""
+
+msgctxt "#32109"
+msgid "Unavailable"
+msgstr ""
+

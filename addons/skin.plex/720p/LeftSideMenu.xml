@@ -274,7 +274,7 @@
 		<pulseonselect>false</pulseonselect>
 		<radioheight>14</radioheight>
 		<radiowidth>16</radiowidth>
-		<radioposy>8</radioposy>
+		<radioposy>6</radioposy>
 	</include>
 	<!-- preplay buttons -->
 	<include name="leftMenuPreplayIcon">

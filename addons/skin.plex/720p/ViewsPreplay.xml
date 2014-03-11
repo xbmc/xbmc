@@ -835,6 +835,8 @@
 					<include>WhiteShadow</include>
 					<visible>IsEmpty(ListItem.Season)</visible>
 				</control>
+				<!-- Unavailable indicator -->
+				<include>UnavailableIndicator</include>
 			</control>
 			<!-- Infos Right -->
 			<control type="group">
@@ -1026,6 +1028,8 @@
 					<include>WhiteShadow</include>
 					<visible>true</visible>
 				</control>
+				<!-- Unavailable indicator -->
+				<include>UnavailableIndicator</include>
 			</control>
 			<!-- Infos Right -->
 			<control type="group">
