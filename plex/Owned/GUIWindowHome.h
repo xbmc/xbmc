@@ -72,7 +72,7 @@ typedef std::pair<int, CFileItemList*> contentListPair;
 class CPlexSectionFanout : public IJobCallback
 {
   public:
-    CPlexSectionFanout(const CStdString& url, SectionTypes sectionType);
+    CPlexSectionFanout(const CStdString& url, SectionTypes sectionType, bool useGlobalSlideshow);
 
     void GetContentTypes(std::vector<int> &types);
     void GetContentList(int type, CFileItemList& list);
@@ -95,6 +95,7 @@ class CPlexSectionFanout : public IJobCallback
     CPlexTimer m_age;
     CCriticalSection m_critical;
     std::vector<int> m_outstandingJobs;
+    bool m_useGlobalSlideshow;
 };
 
 class CGUIWindowHome : public CGUIWindow, public PlexContentPlayerMixin, public IPlexGlobalTimeout, public IJobCallback
@@ -116,7 +117,7 @@ public:
   void RefreshSection(const CStdString& url, SectionTypes type);
   void RefreshAllSections(bool force = true);
   void RefreshSectionsForServer(const CStdString &uuid);
-  void AddSection(const CStdString& url, SectionTypes sectionType);
+  void AddSection(const CStdString& url, SectionTypes sectionType, bool useGlobalSlideshow);
   void RemoveSection(const CStdString& url);
   bool ShowSection(const CStdString& url);
   bool ShowCurrentSection();

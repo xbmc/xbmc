@@ -103,8 +103,8 @@ using namespace boost;
 typedef std::pair<CStdString, CPlexSectionFanout*> nameSectionPair;
 
 //////////////////////////////////////////////////////////////////////////////
-CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, SectionTypes sectionType)
-  : m_sectionType(sectionType), m_needsRefresh(false), m_url(url)
+CPlexSectionFanout::CPlexSectionFanout(const CStdString &url, SectionTypes sectionType, bool useGlobalSlideshow)
+  : m_sectionType(sectionType), m_needsRefresh(false), m_url(url), m_useGlobalSlideshow(useGlobalSlideshow)
 {
   Refresh();
 }
@@ -222,7 +222,12 @@ void CPlexSectionFanout::Refresh()
     if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow"))
     {
       CURL artsUrl(m_url);
-      PlexUtils::AppendPathToURL(artsUrl, "arts");
+
+      if (m_useGlobalSlideshow)
+        artsUrl = GetBestServerUrl("library/arts");
+      else
+        PlexUtils::AppendPathToURL(artsUrl, "arts");
+
       LoadSection(artsUrl, CONTENT_LIST_FANART);
     }
   }
@@ -322,7 +327,7 @@ bool CPlexSectionFanout::NeedsRefresh()
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(false), m_lastSelectedItem("Search")
 {
   m_loadType = LOAD_ON_GUI_INIT;
-  AddSection("global://art/", SECTION_TYPE_GLOBAL_FANART);
+  AddSection("global://art/", SECTION_TYPE_GLOBAL_FANART, true);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -763,8 +768,10 @@ CGUIStaticItemPtr CGUIWindowHome::ItemToSection(CFileItemPtr item)
   newItem->SetPlexDirectoryType(item->GetPlexDirectoryType());
   newItem->m_bIsFolder = true;
 
+  bool useGlobalSlideshow = item->HasProperty("pref_includeInGlobal") ? !item->GetProperty("pref_includeInGlobal").asBoolean() : false;
+
   AddSection(item->GetPath(),
-             CGUIWindowHome::GetSectionTypeFromDirectoryType(item->GetPlexDirectoryType()));
+             CGUIWindowHome::GetSectionTypeFromDirectoryType(item->GetPlexDirectoryType()), useGlobalSlideshow);
 
   return newItem;
 }
@@ -901,7 +908,7 @@ void CGUIWindowHome::UpdateSections()
     newList.push_back(item);
     listUpdated = true;
 
-    AddSection("plexserver://channels/", SECTION_TYPE_CHANNELS);
+    AddSection("plexserver://channels/", SECTION_TYPE_CHANNELS, false);
   }
 
 
@@ -939,12 +946,12 @@ void CGUIWindowHome::HideAllLists()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::AddSection(const CStdString &url, SectionTypes type)
+void CGUIWindowHome::AddSection(const CStdString &url, SectionTypes type, bool useGlobalSlideshow)
 {
   if (m_sections.find(url) == m_sections.end())
   {
     CLog::Log(LOG_LEVEL_DEBUG, "CGUIWindowHome::AddSection Adding section %s", url.c_str());
-    CPlexSectionFanout* fan = new CPlexSectionFanout(url, type);
+    CPlexSectionFanout* fan = new CPlexSectionFanout(url, type, useGlobalSlideshow);
     m_sections[url] = fan;
   }
 }
@@ -1048,7 +1055,7 @@ void CGUIWindowHome::RefreshSection(const CStdString &url, SectionTypes type)
     return section->Refresh();
   }
   else
-    AddSection(url, type);
+    AddSection(url, type, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
