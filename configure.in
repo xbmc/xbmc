@@ -2525,7 +2525,6 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/paplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \
     lib/timidity/Makefile \
-    lib/xbadpcm/Makefile \
     lib/asap/Makefile \
     lib/nosefart/Makefile \
     lib/libsidplay2/Makefile \
