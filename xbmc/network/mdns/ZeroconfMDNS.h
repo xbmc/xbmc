@@ -44,6 +44,7 @@ protected:
                         unsigned int f_port,
                         const std::vector<std::pair<std::string, std::string> >& txt);
 
+  bool doForceReAnnounceService(const std::string& fcr_identifier);
   bool doRemoveService(const std::string& fcr_ident);
 
   virtual void doStop();
@@ -65,7 +66,13 @@ private:
 
   //lock + data (accessed from runloop(main thread) + the rest)
   CCriticalSection m_data_guard;
-  typedef std::map<std::string, DNSServiceRef> tServiceMap;
+  struct tServiceRef
+  {
+    DNSServiceRef serviceRef;
+    TXTRecordRef txtRecordRef;
+    int updateNumber;
+  };
+  typedef std::map<std::string, struct tServiceRef> tServiceMap;
   tServiceMap m_services;
   DNSServiceRef m_service;
 };
