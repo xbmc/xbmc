@@ -5169,10 +5169,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Fejl ved Apple-fjernbetjeningen"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Understøttelse af Apple-fjernbetjening kunne aktiveres."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Kombiner"
@@ -6460,10 +6456,6 @@ msgstr "Søg efter kanaler"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "PVR-funktioner kan ikke bruges under søgning."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "På hvilken server vil du søge?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10353,10 +10345,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Vælg fra alle titler..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Vis bluray menuer"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Afspil hovedtitel: %d"
@@ -10372,14 +10360,6 @@ msgstr "Vælg afspilningsemne"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Kapitler: %u - varighed: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Blu-ray Disk-afspilning mislykkedes"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Menuen i denne Blu-ray Disk er ikke understøttet"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11209,6 +11189,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Vis filendelser for medie-filer. Eksempelvis ville 'Sangtitel.mp3' ellers vises som 'Sangtitel'."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "Ignorere visse tokens under sortering operationer. For eksempel ville 'The Simpsons' sorteres som \"Simpsons\"."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Tillad at filer slettes eller omdøbes i brugergrænsefladen via kontekstmenuen (Tryk C på din keyboard for at fremvise menuen)."
@@ -11321,13 +11305,17 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Justér metoden der anvendes til at behandle og vise videoer."
 
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "Brug høj kvalitets scalere, når opskalering en video med mindst denne procentdel."
+
+msgctxt "#36155"
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
+msgstr "Aktiver VDPAU hardware afkodning af video-filer, hovedsagelig anvendes til NVIDIA-grafik og i nogle tilfælde AMD grafik."
+
 msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr "Aktiver VAAPI hardware dekodning af video filer. Mest brugt til Intel grafikkort og i visse situationer AMD grafikkkort."
-
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
@@ -11502,8 +11490,8 @@ msgid "Default scraper used for adding music videos to your library."
 msgstr "Standardscraper der bruges til at tilføje musikvideoer til dit bibliotek."
 
 msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Kategori til generelle indstillinger for PVR/Live TV funktioner."
 
 msgctxt "#36202"
 msgid "No info available yet."
@@ -11538,44 +11526,44 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "Slet kanal/EPG database og genimportere data fra back-end bagefter."
 
 msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
+msgstr "Undgå at 'forbindelse tabt' notifikationen vises når XBMC ikke kan kommunikere med PVR backend serveren."
 
 msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Kategori til PVR menuer og on-screen display indstillinger samt kanal info vinduer."
 
 msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Vis program information såsom aktuelt TV show når der skiftes kanal."
 
 msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Hide the programming information automatically after a few seconds, defined below."
+msgstr "Skjul automatisk program information efter et par sekunder som defineret nedenfor."
 
 msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Close the on screen display controls after switching channels."
+msgstr "Luk kanal-OSD efter kanalskift"
 
 msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
+msgstr "Hvor længe vises program information når 'skjul automatisk' er aktiveret."
 
 msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Folder where channel icons are stored."
+msgstr "Folder til opbevaring af kanal ikoner."
 
 msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Scan for missing channel icons."
+msgstr "Skan efter manglende ikoner"
 
 msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category for electronic programming guide settings."
+msgstr "Kategori til EPG indstillinger."
 
 msgctxt "#36219"
-msgid "Default EPG window to show."
-msgstr "Standard EPG interval der skal vises."
+msgid "Default electronic programming guide window to show."
+msgstr "Standard EPG vindue der skal vises."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -11597,9 +11585,13 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Skjul \"Ingen information tilgængelig\" beskeden når der ikke findes EPG data for kanal."
 
+msgctxt "#36225"
+msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
+msgstr "Slet EPG database i XBMC og genimporter data bagefter fra backend."
+
 msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category for PVR playback and channel switching settings."
+msgstr "Kategori til PVR playback og kanalskift indstillinger."
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
@@ -11614,20 +11606,20 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "Vis signal kvalitetsoplysninger i codec-information vinduet (hvis det understøttes af add-on og backend)."
 
 msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Hvor længe XMBC venter med at skifte kanal hvis kanalen ikke kan modtages. Brugbart til over-the-air kanaler der sommetider mister signal styrke."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Tryk på en nummer tast i fuld skærms visning, vil automatisk skifte til den pågældende kanal efter 1 sekund."
 
 msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "Når der trykkes op/ned i kanaler forsinkes skiftet, således at brugeren hurtigere kan skifte til et kanal nummer uden at vente på hvert kanal skift."
 
 msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category for default recording duration settings."
+msgstr "Kategori til indstillnger for standard optagelsesvarighed."
 
 msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button."
@@ -11654,8 +11646,8 @@ msgid "Display a notification when timers are added, finished or removed by the 
 msgstr "Vis en besked når en optagelse er oprettet, færdig eller fjernet af backend."
 
 msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "Kategori til PVR strømhåndtering, f.eks. hvornår PVR backend serveren skal vækkes."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11669,6 +11661,10 @@ msgctxt "#36243"
 msgid "The command to execute."
 msgstr "Kommandoen som skal eksekveres."
 
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "Tid til at trække fra starttidspunktet for den næste planlagte optagelse."
+
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
 msgstr "Udfør \"Vågn-op kommandoen\" på et bestemt tidspunkt hver dag."
@@ -11678,8 +11674,8 @@ msgid "When to execute the daily wakeup command."
 msgstr "Tidspunkt for udførelse af \"Vågn-op kommandoen\"."
 
 msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "Kategori til forældrekontrol indstillinger hvis PVR backend serveren understøtter dette."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11694,12 +11690,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "Bed om pinkoden igen når en forældrelåst kanal tilgås, og ikke pinkoden ikke tidligere har været efterspurgt."
 
 msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Kategori til PVR backend specifikke indstillinger hvis denne understøtter skift af indstillinger i XBMC."
 
 msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Denne option giver dig de PVR backend specifikke settings hvis denne understøtter skift af disse i XBMC. "
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11730,10 +11726,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Tjek for nye, fjernede og ændrede medie filer når XBMC startes."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Ingen information tilgængelig endnu."
 
@@ -11776,6 +11768,10 @@ msgstr "Reducer lydniveau for filen hvis klipning (clipping) vil optræde."
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Anvend blød og overlappet overgang mellem musik numre. Du kan indstille overlap mellem sangene fra 1-15 sekunder."
+
+msgctxt "#36272"
+msgid "Allow crossfading to occur when both tracks are from the same album."
+msgstr "Tillad overblænding at opstå, når begge spor er fra samme album."
 
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
@@ -11864,6 +11860,22 @@ msgstr "Ved afspilning af musik vil eventuelle .cdg filer vises."
 msgctxt "#36294"
 msgid "Show song selection dialog once the last song in the queue has been played."
 msgstr "Vis sang-valgsdialogen når den sidste sang i køen er afspillet."
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Vælg den skrifttype anvendt i karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Vælg størrelsen på den skrifttype, der bruges i løbet af karaoke."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Vælg den skrifttype farve der skal anvendes ved karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Vælg det tegnsæt, der bruges i løbet af karaoke."
 
 msgctxt "#36299"
 msgid "Export the karaoke numbered songs to HTML or CSV files."
@@ -12084,6 +12096,10 @@ msgstr "Skift opløsningen for brugergrænsefladen."
 msgctxt "#36353"
 msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "Ændrer opdateringshastighed, som brugergrænsefladen vises med."
+
+msgctxt "#36354"
+msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Vise XBMC i en fuldskærm vindue. Den største fordel er for multi-screen-konfigurationer, så XBMC kan bruges uden at minimere andre applikationer. Dette bruger flere ressourcer, så afspilningen kan være mindre jævn."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -12344,10 +12360,6 @@ msgstr "Specificer forsinkelsen imellem tryk sekvenser på en universal fjernbet
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Definer lokationer der anvendes til at hente oplysninger om vejret."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."

@@ -5081,10 +5081,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Error del'Apple Remote"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "No es pot habilitar el suport per l'Apple Remote."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Agrupa"
@@ -6328,10 +6324,6 @@ msgstr "Cerca canals"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "No es poden utilitzar les funcions PVR durant una cerca."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "A quin servidor voleu cercar?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10097,10 +10089,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Seleccioneu entre tots els títols ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Mostra els menús dels bluray"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Reprodueix el títol principal: %d"
@@ -10977,10 +10965,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Ajusta el mètode utilitzat per processar i mostrar el vídeo."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "Sincronitzar el vídeo a la velocitat de refresc del monitor."
@@ -11069,10 +11053,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper per afegir videoclips a la teva biblioteca, per defecte."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "No hi ha informació disponible"
@@ -11097,42 +11077,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Elimina la base de dades del canal i de l'EPG i torna a importar les dades des del backend."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "No importar dades de l'EPG durant la reproducció de TV per minimitzar l'ús de CPU."
@@ -11145,37 +11089,17 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Amaga les etiquetes d'\"informació no disponible\" quan no es pugui recuperar la informació EPG d'un canal."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Mostra l'stream del canal seleccionat en una caixa petita en comptes de a pantalla completa."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Al pressionar un número dins el mode de pantalla completa canviarà automàticament al canal introduït, al cap d'1 segon."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Mostra una notificació quan s'agreguen, acaben, o eliminen temporitzadors en el backend."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11189,10 +11113,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Quan executar la comanda de wakeup diària."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Demana un codi PIN per accedir a canals bloquejats parentalment. Els canals poden ser marcats com bloquejats a l'editor de canals, dins la pestanya general. Els canals bloquejats parentalment no es poden reproduir o gravar sense introduir un codi PIN, i també se'ls oculta la informació de l'EPG."
@@ -11200,14 +11120,6 @@ msgstr "Demana un codi PIN per accedir a canals bloquejats parentalment. Els can
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Introduïu un codi PIN nou per desbloquejar els canals bloquejats parentalment."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11226,10 +11138,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Buscar fitxers multimèdia nous i eliminats durant l'arrencada de l'XBMC."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Encara no hi ha informació disponible."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Encara no hi ha informació disponible."
 
@@ -11520,10 +11428,6 @@ msgstr "No hi ha informació disponible"
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Defineix les localitzacions utilitzades per a recuperar informació meteorològica."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
 
 msgctxt "#36426"
 msgid "Switch to channel"

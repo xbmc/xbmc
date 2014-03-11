@@ -5081,10 +5081,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Error de mando Apple"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "No se puede activar el soporte para el mando Apple."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Agrupar"
@@ -6328,10 +6324,6 @@ msgstr "Buscar canales"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "No se pueden utilizar funciones PVR mientras durante la búsqueda."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "¿En qué servidor deseas buscar?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10133,10 +10125,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Seleccionar entre todos los títulos ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Mostrar menú de bluray"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Reproducir título principal: %d"
@@ -10152,14 +10140,6 @@ msgstr "Selecciona elemento a reproducir"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Capítulos: %u - duración: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Fallo al reproducir Blu-ray"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "El menú de este disco Blu-ray no está soportado"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10957,6 +10937,10 @@ msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr "Vista previa del protector de pantalla seleccionado."
 
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Atenuar pantalla cuando la reproducción está pausada. No es válido para el modo 'Dim' del protector de pantalla."
+
 msgctxt "#36135"
 msgid "No info available yet."
 msgstr "Aún no hay información disponible."
@@ -10977,6 +10961,10 @@ msgctxt "#36143"
 msgid "Get thumbnails for actors when scanning media."
 msgstr "Obtener miniaturas para actores cuando se escanean los medios."
 
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Elimina el nodo de Temporada de serie, conmuta entre 'Sólo si hay una temporada' (por defecto), 'Siempre' y 'Nunca'."
+
 msgctxt "#36145"
 msgid "Group movies into 'Movie sets' when browsing the movie library."
 msgstr "Agrupa películas en 'Colecciones' cuando se explora la biblioteca de películas."
@@ -10993,19 +10981,31 @@ msgctxt "#36148"
 msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
 msgstr "Remover elementos de la biblioteca que no pueden ser encontrados (ya  sean renombrados, eliminados o en dispositivos removibles actualmente no conectados)."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Exporta la base de datos de la Librería de Video a archivos XML. Puede sobreescribir los archivos XML existentes en forma opcional."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Exporta desde un archivo XML la base de datos de la Librería de Video."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Ajustes para el método usado para procesar y mostrar video."
 
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Aún no hay información disponible."
 
-msgctxt "#36197"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Posición de los subtítulos en la pantalla."
 
-msgctxt "#36201"
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Reproducir video de un DVD automáticamente cuando es colocado en el lector."
+
+msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Aún no hay información disponible."
 
@@ -11013,79 +11013,7 @@ msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Aún no hay información disponible."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Aún no hay información disponible."
 
@@ -11196,10 +11124,6 @@ msgstr "Aún no hay información disponible."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Definir la ubicación para buscar información del clima."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Aún no hay información disponible."
 
 msgctxt "#36425"
 msgid "Show context menu"

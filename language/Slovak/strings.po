@@ -5129,10 +5129,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Diaľkové ovládanie Apple Chyba"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Podpora diaľkového ovládania Apple by mohla byť zapnutá."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Zlučovať"
@@ -6392,10 +6388,6 @@ msgstr "Vyhľadávať kanály"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Počas vyhľadávania nie je možné použiť PVR funkcie."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Na ktorom serveri chcete vyhľadávať?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10229,10 +10221,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Vybrať zo všetkých titulov"
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Zobraziť Bluray menu"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Prehrať hlavný titul: %d"
@@ -10248,14 +10236,6 @@ msgstr "Vyberte položku k prehraniu"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Kapitoly: %u - trvanie: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Prehrávanie Blu-ray Disku zlyhalo"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Menu tohto Blu-ray Disku nie je podporované"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11125,10 +11105,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Upraviť metódu používanú na spracovanie a zobrazenie videa."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "Synchronizovať video na obnovovaciu frekvenciu obrazovky."
@@ -11221,10 +11197,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Default scraper used for adding music videos to your library."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Momentálne nie sú k dispozícii žiadne informácie."
@@ -11253,42 +11225,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Delete channel/EPG database and reimport the data from the backend afterwards."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11301,10 +11237,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Display stream of selected channel in a small box instead of fullscreen."
@@ -11313,29 +11245,13 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Zobrazovať informácie o kvalite signálu v okne s informáciami o použitom kodeku (pokiaľ to podporuje doplnok a backend)."
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Display a notification when timers are added, finished or removed by the backend."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11349,10 +11265,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "When to execute the daily wakeup command."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11360,14 +11272,6 @@ msgstr "Asks for a pin code to access parental locked channels. Channels can be 
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Enter a new pin code to unlock parental locked channels."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11386,10 +11290,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Check for new and removed media files on XBMC startup."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 
@@ -11680,10 +11580,6 @@ msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Define locations used for retrieving weather information."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
 
 msgctxt "#36425"
 msgid "Show context menu"

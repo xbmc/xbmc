@@ -3429,6 +3429,10 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "Standardní"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Pokročilé"
+
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Opravdu si přejete obnovit nastavení v této kategorii?"
@@ -4889,10 +4893,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Chyba dálkového ovladače Apple"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Podpora dálkového ovladače Apple může být zapnuta."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Spojovat videa"
@@ -5236,6 +5236,10 @@ msgstr "Vysunout disk po dokončení získávání CD"
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Zastavit kopírování CD"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Ponechat"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -6084,10 +6088,6 @@ msgstr "Vyhledat kanály"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "V průběhu prohledávání nelze používat  PVR."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Na jakém serveru si přejete vyhledávat?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -9741,10 +9741,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Vybrat ze všech názvů..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Zobrazit menu bluray"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Přehrát hlavní titul: %d"
@@ -10513,103 +10509,131 @@ msgctxt "#36144"
 msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
 msgstr "Odstraní zobrazování sezón, přepíná mezi \"Pokud existuje jen jedna sezóna\", \"Vždy\" a \"Nikdy\"."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Při proházení knihovny seskupit filmy do \"Filmových sad\"."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Při startu XBMC vyhledat nové mediální soubory."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Během vyhledávání v knihovně skrýt ukazatel vyhledávacího procesu."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Odstranit z knihovny soubory, které nejsou dostupné (přejmenované, smazané nebo na vypojených výměnných mediích)"
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Exportovat knihovnu do XML souborů. Tato volba by mohla přepsat vaše aktuální XML soubory."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Importovat XML soubor do databáze videí."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Nastavit používanou metodu zobrazení a převodu videa."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Zvuk musí být s videem synchronizován. Toho lze v případě špatné synchronizace dosáhnout převzorkováním, přeskakováním/duplikováním paketů nebo změnou časování."
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Umožňuje přehrávači videa do určité úrovně ignorovat poměr obrazu a vyplnit větší plochu obrazovky videem."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Zvolte úroveň přiblížení, pomocí které budou filmy s poměrem obrazu 4:3 zobrazovány na širokoúhlých obrazovkách."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Při sledování živého vysílání povolit Teletext."
 
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "Nastavit zobrazení teletextu na poměr 4:3."
 
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "Pokud je soubor přidán do knihovny, místo zobrazení názvu souboru bude zobrazen název z metadat."
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Pro zobrazení v módu knihovny získat náhledy a doplňkové informace, jako je kodek a poměr obrazu."
+
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Žádné informace nejsou zatím k dispozici."
+
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "Nastavit uživatelský adresář umístění titulků. Může se jednat o adresář sdílený."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Umístění titulků na obrazovce."
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "V případě vložení DVD disku automaticky spustit přehrávání."
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "Vynutit nastavení regionu pro přehrávání DVD."
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Pokusit se přeskočit \"nepřeskočitelné\" upoutávky před DVD nabídkou."
 
 msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Žádné informace nejsou zatím k dispozici."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr "Zvolit výchozí zdroj filmových informací. Pro další volby zkontrolujte správce doplňků."
+
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr "Zvolit výchozí zdroj seriálových informací. Pro další volby zkontrolujte správce doplňků."
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "Výchozí používaný scraper pro přidání hudebních videí do knihovny."
 
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Žádné informace nejsou zatím k dispozici."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "Importovat skupiny kanálů z PVR backendu (pokud je podporováno). Tato volba smaže uživatelsky definované skupiny, pokud nejsou v backendu nalezeny."
 
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr "Místo manuální konfigurace v XBMC použít číslování z backendu."
 
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "Otevřít správce kanálů, který umožní změnu pořadí kanálů, jmen kanálů, ikon, atp."
 
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "Vyžádá prohledání kanálů v backendu (pokud je podporováno)."
 
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr "Smazat databázi kanálů/EPG a znovu importovat data z backendu."
 
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "Pro minimalizaci využití procesoru neimportovat EPG data v průběhu přehrávání TV."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Žádné informace nejsou zatím k dispozici."
 
@@ -10650,10 +10674,6 @@ msgid "No info available yet."
 msgstr "Žádné informace nejsou zatím k dispozici."
 
 msgctxt "#36415"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
-msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Žádné informace nejsou zatím k dispozici."
 

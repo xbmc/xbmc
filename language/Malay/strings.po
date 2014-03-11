@@ -885,6 +885,10 @@ msgctxt "#304"
 msgid "Language"
 msgstr "Bahasa"
 
+msgctxt "#305"
+msgid "Enabled"
+msgstr "Dibenarkan"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Program"
@@ -925,6 +929,10 @@ msgctxt "#444"
 msgid "Video"
 msgstr "Video"
 
+msgctxt "#449"
+msgid "Enabled"
+msgstr "Dibenarkan"
+
 msgctxt "#498"
 msgid "Sort by: Type"
 msgstr "Isihan: Jenis"
@@ -936,6 +944,14 @@ msgstr "Isihan: Penggunaan"
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "Isihan: %s"
+
+msgctxt "#571"
+msgid "Default"
+msgstr "Lalai"
+
+msgctxt "#574"
+msgid "Country"
+msgstr "Negara"
 
 msgctxt "#580"
 msgid "Sort direction"
@@ -965,9 +981,25 @@ msgctxt "#719"
 msgid "IP address"
 msgstr "Alamat IP"
 
+msgctxt "#733"
+msgid "Password"
+msgstr "Kata Laluan"
+
 msgctxt "#1006"
 msgid "IP address"
 msgstr "Alamat IP"
+
+msgctxt "#1014"
+msgid "Username"
+msgstr "Nama Pengguna"
+
+msgctxt "#1048"
+msgid "Username"
+msgstr "Nama Pengguna"
+
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
 
 msgctxt "#1211"
 msgid "Music"
@@ -980,6 +1012,10 @@ msgstr "Video"
 msgctxt "#1213"
 msgid "Pictures"
 msgstr "Gambar"
+
+msgctxt "#1223"
+msgid "Disabled"
+msgstr "Dilumpuhkan"
 
 msgctxt "#1397"
 msgid "and"
@@ -1129,6 +1165,10 @@ msgctxt "#10025"
 msgid "Videos"
 msgstr "Video"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Lanjutan"
+
 msgctxt "#10506"
 msgid "Programs"
 msgstr "Program"
@@ -1161,6 +1201,18 @@ msgctxt "#12600"
 msgid "Weather"
 msgstr "Cuaca"
 
+msgctxt "#13106"
+msgid "Disabled"
+msgstr "Dilumpuhkan"
+
+msgctxt "#13113"
+msgid "Disabled"
+msgstr "Dilumpuhkan"
+
+msgctxt "#13131"
+msgid "Disabled"
+msgstr "Dilumpuhkan"
+
 msgctxt "#13205"
 msgid "Unknown"
 msgstr "Tidak Diketahui"
@@ -1168,6 +1220,10 @@ msgstr "Tidak Diketahui"
 msgctxt "#13277"
 msgid "Storage"
 msgstr "Simpanan"
+
+msgctxt "#13278"
+msgid "Default"
+msgstr "Lalai"
 
 msgctxt "#13280"
 msgid "Video"
@@ -1213,13 +1269,29 @@ msgctxt "#13515"
 msgid "No art"
 msgstr "Tiada karya seni"
 
+msgctxt "#13610"
+msgid "Disabled"
+msgstr "Dilumpuhkan"
+
 msgctxt "#14036"
 msgid "Services"
 msgstr "Perkhidmatan"
 
+msgctxt "#14086"
+msgid "Playback"
+msgstr "Main Balik"
+
 msgctxt "#14098"
 msgid "Play"
 msgstr "Main"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Kekal"
+
+msgctxt "#15052"
+msgid "Password"
+msgstr "Kata Laluan"
 
 msgctxt "#16000"
 msgid "General"
@@ -1233,9 +1305,21 @@ msgctxt "#19003"
 msgid "Find similar programs"
 msgstr "Cari program yang sama"
 
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Saluran"
+
 msgctxt "#19020"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "Saluran TV"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Saluran radio"
 
 msgctxt "#19031"
 msgid "Next"
@@ -1244,6 +1328,14 @@ msgstr "Seterusnya"
 msgctxt "#19062"
 msgid "Sort by: Channel"
 msgstr "Isihan: Saluran"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Saluran tidak tersedia"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Main Balik"
 
 msgctxt "#19180"
 msgid "TV"
@@ -1429,6 +1521,10 @@ msgctxt "#20109"
 msgid "Zoom"
 msgstr "Zum"
 
+msgctxt "#20142"
+msgid "Username"
+msgstr "Nama Pengguna"
+
 msgctxt "#20242"
 msgid "Android pictures"
 msgstr "Gambar Android"
@@ -1501,6 +1597,14 @@ msgctxt "#21417"
 msgid "Settings"
 msgstr "Seting"
 
+msgctxt "#21445"
+msgid "Video codec"
+msgstr "Kodeks video"
+
+msgctxt "#21446"
+msgid "Audio codec"
+msgstr "Kodeks audio"
+
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Simpanan Luaran."
@@ -1529,6 +1633,14 @@ msgctxt "#21838"
 msgid "Digital zoom"
 msgstr "Zum Digital"
 
+msgctxt "#21875"
+msgid "Country"
+msgstr "Negara"
+
+msgctxt "#23054"
+msgid "Running"
+msgstr "Berjalan"
+
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
 msgstr "Pengskalaan Teleteks ke 4:3"
@@ -1544,6 +1656,10 @@ msgstr "Perkhidmatan"
 msgctxt "#24019"
 msgid "PVR clients"
 msgstr "klien PVR"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "Dilumpuhkan"
 
 msgctxt "#24027"
 msgid "Weather"

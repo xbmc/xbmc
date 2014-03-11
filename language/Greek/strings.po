@@ -4215,7 +4215,7 @@ msgstr "Επιθυμείτε να διατηρήσετε αυτήν την αλ�
 
 msgctxt "#13112"
 msgid "High quality upscaling"
-msgstr "Υψηλής ποιότητας Upscaling"
+msgstr "Υψηλής ποιότητας upscaling"
 
 msgctxt "#13113"
 msgid "Disabled"
@@ -4231,7 +4231,7 @@ msgstr "Πάντα ενεργό"
 
 msgctxt "#13116"
 msgid "Upscaling method"
-msgstr "Μέθοδος Upscaling"
+msgstr "Μέθοδος upscaling"
 
 msgctxt "#13117"
 msgid "Bicubic"
@@ -4287,11 +4287,11 @@ msgstr "Να διακοπεί η λειτουργία του απομακρυσ�
 
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
-msgstr "Αλλαγή λειτουργίας συσκευής Apple Remote;"
+msgstr "Αλλαγή λειτουργίας του Χειριστηρίου Apple;"
 
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control"
-msgstr "Εάν χρησιμοποιείτε τώρα τη συσκευή Apple Remote για να"
+msgstr "Εάν χρησιμοποιείτε τώρα το Χειριστήριο Apple για να"
 
 msgctxt "#13146"
 msgid "XBMC, changing this setting might affect your ability"
@@ -5139,7 +5139,7 @@ msgstr "%d Λεπτά"
 
 msgctxt "#13600"
 msgid "Apple remote"
-msgstr "Apple Remote"
+msgstr "Χειριστήριο Apple"
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
@@ -5167,11 +5167,11 @@ msgstr "Τηλεχειριστήριο Multi (Harmony)"
 
 msgctxt "#13620"
 msgid "Apple Remote Error"
-msgstr "Σφάλμα συσκευής Apple Remote"
+msgstr "Σφάλμα Χειριστηρίου Apple"
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Αδυναμία υποστήριξης Apple Remote."
+msgid "Apple Remote support could not be enabled."
+msgstr "Μπορεί να ενεργοποιηθεί υποστήριξη για Χειριστήριο Apple."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6055,7 +6055,7 @@ msgstr "UNC"
 
 msgctxt "#19012"
 msgid "PVR Backend"
-msgstr "PVR Backend"
+msgstr "Backend του PVR"
 
 msgctxt "#19013"
 msgid "Free to air"
@@ -6071,7 +6071,7 @@ msgstr "Κρυπτογράφηση"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
-msgstr "PVR Backend %i - %s"
+msgstr "Backend του PVR %i - %s"
 
 msgctxt "#19017"
 msgid "TV recordings"
@@ -6159,7 +6159,7 @@ msgstr "Εμφάνιση ποιότητας σήματος"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
-msgstr "Δεν υποστηρίζεται από το PVR backend."
+msgstr "Δεν υποστηρίζεται από το backend του PVR."
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
@@ -6439,7 +6439,7 @@ msgstr "Προέκυψε ένα αναπάντεχο σφάλμα. Δοκιμά�
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr "Σφάλμα του PVR backend. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+msgstr "Σφάλμα του backend του PVR. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6462,8 +6462,8 @@ msgid "Cannot use PVR functions while searching."
 msgstr "Δε γίνεται να χρησιμοποιηθούν οι λειτουργίες PVR κατά την αναζήτηση."
 
 msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Σε ποιο διακομιστή επιθυμείτε να κάνετε αναζήτηση;"
+msgid "On which server do you want to search?"
+msgstr "Σε ποιο διακομιστή να γίνει αναζήτηση;"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -6571,7 +6571,7 @@ msgstr "Γκρουπ"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr "Το PVR backend δεν υποστηρίζει αυτήν την ενέργεια. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+msgstr "Το backend του PVR δεν υποστηρίζει αυτήν την ενέργεια. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6739,7 +6739,7 @@ msgstr "Υπηρεσία PVR"
 
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
-msgstr "Κανένα από τα συνδεδεμένα PVR backend δεν υποστηρίζει σάρωση για κανάλια."
+msgstr "Κανένα από τα συνδεδεμένα backend δεν υποστηρίζει σάρωση για κανάλια."
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
@@ -6831,7 +6831,7 @@ msgstr "Εισάγετε μία έγκυρη διεύθυνση URL για το 
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr "Το PVR backend δεν υποστηρίζει χρονοδιακόπτες."
+msgstr "Το backend του PVR δεν υποστηρίζει χρονοδιακόπτες."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -10261,6 +10261,10 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Παύση κατά την αναζήτηση υποτίτλων"
 
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Καθορίστε που θα αποθηκεύονται οι υπότιτλοι, στην ίδια τοποθεσία με το βίντεο ή σε μια προσαρμοσμένη τοποθεσία."
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Αναζήτηση υποτίτλων ..."
@@ -10325,6 +10329,14 @@ msgctxt "#24122"
 msgid "Update all"
 msgstr "Ενημέρωση όλων"
 
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr "Παύση του τρέχοντος βίντεο κατά την αναζήτηση υποτίτλων, και συνέχιση μόλις κατέβουν οι υπότιτλοι."
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "Δίπλα στο βίντεο"
+
 msgctxt "#24125"
 msgid "Custom location"
 msgstr "Προσαρμοσμένη τοποθεσία"
@@ -10342,8 +10354,8 @@ msgid "Select from all titles ..."
 msgstr "Επιλογή από όλους τους τίτλους ..."
 
 msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Εμφάνιση μενού bluray"
+msgid "Show Blu-ray menus"
+msgstr "Εμφάνιση μενού Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10362,11 +10374,11 @@ msgid "Chapters: %u - duration: %s"
 msgstr "Κεφάλαια: %u - διάρκεια: %s"
 
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Αποτυχία αναπαραγωγής Δίσκου Blu-ray"
+msgid "Playback of Blu-ray failed"
+msgstr "Αποτυχία αναπαραγωγής Blu-ray"
 
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
+msgid "The menu of this Blu-ray is not supported"
 msgstr "Το μενού αυτού του Δίσκου Blu-ray δεν υποστηρίζεται"
 
 msgctxt "#29800"
@@ -11197,6 +11209,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Απόκρυψη των προεκτάσεων αρχείων πολυμέσων. Για παράδειγμα, το 'You Enjoy Myself.mp3' θα εμφανίζεται απλά ως 'You Enjoy Myself'."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "Να αγνοούνται κάποια διακριτικά κατά την ταξινόμηση. Για παράδειγμα, η σειρά 'The Simpsons' θα ταξινομηθεί ως 'Simpsons'."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Να επιτρέπεται η διαγραφή και η μετονομασία μέσω του περιβάλλοντος εργασίας, από το μενού επιλογών (πιέζοντας το 'C' στο πληκτρολόγιο)."
@@ -11204,6 +11220,10 @@ msgstr "Να επιτρέπεται η διαγραφή και η μετονομ
 msgctxt "#36126"
 msgid "Show the add source button in root sections of the user interface."
 msgstr "Εμφάνιση του πλήκτρου προσθήκης πηγής στους αρχικούς φακέλους του περιβάλλοντος εργασίας."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Εμφάνιση κρυφών αρχείων και φακέλων κατά την προβολή αρχείων."
 
 msgctxt "#36128"
 msgid "Category containing all screensaver settings."
@@ -11305,9 +11325,9 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Ρύθμιση της μεθόδου επεξεργασίας και αναπαραγωγής βίντεο."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "Χρήση υψηλής ποιότητας scalers κατά το upscaling ενός βίντεο, τουλάχιστον κατά τόσο ποσοστό."
 
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
@@ -11328,6 +11348,14 @@ msgstr "OpenMax αποκωδικοποίηση υλικού των αρχείω�
 msgctxt "#36162"
 msgid "Enable VideoToolbox hardware decoding of video files."
 msgstr "VideoToolbox αποκωδικοποίηση υλικού των αρχείων βίντεο."
+
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "Επιτρέψτε στον ρυθμό ανανέωσης της οθόνης να αλλάξει ώστε να ακολουθεί βέλτιστα το ρυθμό ανανέωσης γραφικών. Αυτή η ρύθμιση μπορεί να αποδόσει ομαλότερη αναπαραγωγή."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "Παύση για ένα μικρό χρονικό διάστημα κατά τη διάρκεια αλλαγής του ρυθμού ανανέωσης."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11357,6 +11385,10 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
 msgstr "Η συμπίεση επιπέδου στούντιο VDPAU παρέχει σε προχωρημένες εφαρμογές, όπως το XBMC, τη δυνατότητα να επηρεάζουν τη μετατροπή του χρωματικού χώρου."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "Ενεργοποίηση upscaling με χρήση VDPAU"
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "Ενεργοποίηση του Τελετέξτ μετά την παρακολούθηση ροής live TV."
@@ -11371,7 +11403,7 @@ msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χε
 
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
-msgstr "Εναλλαγή ανάμεσα σε 'Επιλογή', 'Εκκίνηση' (προεπιλογή), 'Συνέχεια' και 'Προβολή Πληροφοριών'. Η 'Επιλογή' θα επιλέξει το αντικείμενο, π.χ. θα ανοίξει το φάκελο στη λειτουργία αρχείων. Η 'Συνέχιση' θα αναπαραγάγει αυτόματα το βίντεο από το σημείο όπου σταμάτησε την τελευταία φορά, ακόμα και αν έγινε επανεκκίνηση."
+msgstr "Εναλλαγή ανάμεσα σε 'Επιλογή', 'Εκκίνηση' (προεπιλογή), 'Συνέχιση' και 'Προβολή Πληροφοριών'. Η 'Επιλογή' θα επιλέξει το αντικείμενο, π.χ. θα ανοίξει το φάκελο στη λειτουργία αρχείων. Η 'Συνέχιση' θα αναπαραγάγει αυτόματα το βίντεο από το σημείο όπου σταμάτησε την τελευταία φορά, ακόμα και αν έγινε επανεκκίνηση."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11458,8 +11490,8 @@ msgid "Default scraper used for adding music videos to your library."
 msgstr "Προεπιλεγμένο scraper για προσθήκη μουσικών βίντεο στη συλλογή σας."
 
 msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Κατηγορία με γενικές ρυθμίσεις για λειτουργίες PVR/Live TV."
 
 msgctxt "#36202"
 msgid "No info available yet."
@@ -11494,40 +11526,36 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "Διαγραφή της βάσης δεδομένων καναλιών/EPG και εκ νέου εισαγωγή τους από το backend."
 
 msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
+msgstr "Να μην εμφανίζονται ειδοποιήσεις 'απώλειας σύνδεσης' όταν το XBMC αδυνατεί να επικοινωνήσει με το backend του PVR."
 
 msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Κατηγορία με ρυθμίσεις μενού PVR και πληροφοριών στην οθόνη (OSD), καθώς και για παράθυρα πληροφοριών καναλιών."
 
 msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Folder where channel icons are stored."
+msgstr "Φάκελος αποθήκευσης εικονιδίων καναλιών."
 
 msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Scan for missing channel icons."
+msgstr "Σάρωση για εικονίδια καναλιών που λείπουν."
 
 msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Category for electronic programming guide settings."
+msgstr "Κατηγορία με ρυθμίσεις οδηγού τηλεοπτικού προγράμματος (EPG)"
+
+msgctxt "#36219"
+msgid "Default electronic programming guide window to show."
+msgstr "Προεπιλεγμένο παράθυρο οδηγού τηλεοπτικού προγράμματος (EPG)."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "Πλήθος ημερών δεδομένων EPG για τις οποίες θα γίνει εισαγωγή από τα backend."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "Χρονικό διάστημα ανάμεσα στις εισαγωγές δεδομένων EPG από τα backend."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11541,33 +11569,45 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Απόκρυψη των ετικετών \"Μη διαθέσιμες πληροφορίες\" όταν δεν είναι δυνατό να ανακτηθούν δεδομένα EPG για ένα κανάλι."
 
+msgctxt "#36225"
+msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
+msgstr "Διαγραφή της βάσης δεδομένων EPG στο XBMC και εισαγωγή τους εκ νέου από το backend."
+
 msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Category for PVR playback and channel switching settings."
+msgstr "Κατηγορία με ρυθμίσεις αναπαραγωγής PVR και αλλαγής καναλιών"
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Προβολή ροής του επιλεγμένου καναλιού σε μικρό παράθυρο αντί για πλήρη οθόνη."
+
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "Συνέχιση στο τελευταίο κανάλι κατά την εκκίνηση."
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Εμφάνιση πληροφοριών ποιότητας σήματος στο παράθυρο πληροφοριών κωδικοποίησης (αν υποστηρίζεται από το Πρόσθετο και το backend)."
 
 msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Πόσο θα αναμένει το XBMC προτού αλλάξει το κανάλι όταν δεν υπάρχει σήμα. Χρήσιμο για κανάλια που τείνει να πέφτει το σήμα τους."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Πιέζοντας ένα αριθμητικό πλήκτρο σε πλήρη οθόνη θα γίνει αυτόματα μετάβαση στον αριθμό του καναλιού που πιέστηκε, μετά από 1 δευτερόλεπτο."
 
 msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "Κατά την πίεση ΠΑΝΩ ή ΚΑΤΩ καθυστερεί η αλλαγή του καναλιού, επιτρέποντας στο χρήστη να μεταβεί σε ένα κανάλι με πίεση του αριθμού, χωρίς να περιμένει την αλλαγή."
 
 msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Category for default recording duration settings."
+msgstr "Κατηγορία με ρυθμίσεις προεπιλεγμένης διάρκειας εγγραφής."
+
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "Διάρκεια της άμεσης εγγραφής κατά την πίεση του πλήκτρου εγγραφής."
 
 msgctxt "#36235"
 msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
@@ -11590,8 +11630,8 @@ msgid "Display a notification when timers are added, finished or removed by the 
 msgstr "Εμφάνιση ειδοποίησης κατά την προσθήκη, ολοκλήρωση ή αφαίρεση χρονοδιακοπτών από το backend."
 
 msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "Κατηγορία με ρυθμίσεις διαχείρισης ενέργειας PVR, όπως το πότε να αφυπνίζεται το backend του PVR."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11605,6 +11645,10 @@ msgctxt "#36243"
 msgid "The command to execute."
 msgstr "Η εντολή που θα εκτελεστεί."
 
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "Χρόνος που θα αφαιρείται από την ώρα έναρξης της επόμενης προγραμματισμένης εγγραφής."
+
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
 msgstr "Εκτέλεση της εντολής αφύπνισης κάθε μέρα στη συγκεκριμένη ώρα."
@@ -11614,8 +11658,8 @@ msgid "When to execute the daily wakeup command."
 msgstr "Πότε να εκτελείται η καθημερινή εντολή αφύπνισης."
 
 msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "Κατηγορία με ρυθμίσεις γονικού ελέγχου, αν υποστηρίζονται από το backend του PVR."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11630,12 +11674,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "Να ξαναζητείται ο κωδικός PIN όταν γίνεται προσπάθεια πρόσβασης σε κλειδωμένο κανάλι και δεν έχει ζητηθεί για αυτό το χρονικό διάστημα."
 
 msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Κατηγορία με συγκεκριμένες ρυθμίσεις για το backend του PVR, αν υποστηρίζεται από αυτό η αλλαγή τους μέσω του XBMC."
 
 msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Αυτή η επιλογή περιέχει συγκεκριμένες ρυθμίσεις για το backend του PVR, αν υποστηρίζεται από αυτό η αλλαγή τους μέσω του XBMC."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11666,10 +11710,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Έλεγχος για αρχεία πολυμέσων που προστέθηκαν και αφαιρέθηκαν κατά την εκκίνηση του XBMC."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
 
@@ -11713,6 +11753,10 @@ msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Ομαλή εξασθένιση κατά τη μετάβαση από το ένα τραγούδι στο επόμενο. Μπορείτε να ορίσετε το χρόνο μετάβασης μεταξύ 1-15 δευτερόλεπτα."
 
+msgctxt "#36272"
+msgid "Allow crossfading to occur when both tracks are from the same album."
+msgstr "Να επιτρέπεται βαθμιαία εξασθένιση όταν και τα δύο κομμάτια είναι από το ίδιο άλμπουμ."
+
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
 msgstr "Επιλογή της οπτικοποίησης που θα προβάλλεται κατά την ακρόαση μουσικής."
@@ -11723,7 +11767,15 @@ msgstr "Ανάγνωση των πληροφοριών των ετικετών �
 
 msgctxt "#36275"
 msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
-msgstr "Έλεγχος του τρόπου με τον οποίο τα ονόματα των τραγουδιών εμφανίζονται στο περιβάλλον εργασίας. Για να λειτουργήσει σωστά πρέπει να είναι ενεργή η ανάγνωση ετικετών."
+msgstr "Έλεγχος του τρόπου με τον οποίο εμφανίζονται οι τίτλοι τραγουδιών στο περιβάλλον εργασίας. Για να λειτουργήσει σωστά πρέπει να είναι ενεργή η ανάγνωση ετικετών."
+
+msgctxt "#36277"
+msgid "Control the way that the names of songs are displayed in the now playing list."
+msgstr "Έλεγχος του τρόπου με τον οποίο εμφανίζονται οι τίτλοι τραγουδιών στη λίστα 'Τώρα Εκτελείται'."
+
+msgctxt "#36279"
+msgid "Control the way that the names of songs are displayed in library lists."
+msgstr "Έλεγχος του τρόπου με τον οποίο εμφανίζονται οι τίτλοι τραγουδιών στις λίστες συλλογών."
 
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
@@ -11776,6 +11828,22 @@ msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χε
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Κατά την αναπαραγωγή οποιουδήποτε αρχείου μουσικής, το XBMC θα αναζητήσει το αντίστοιχο αρχείο .cdg προκειμένου να προβάλλει τα γραφικά του."
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Επιλογή του τύπου της γραμματοσειράς που θα χρησιμοποιείται στο καραόκε."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Επιλογή του μεγέθους της γραμματοσειράς που θα χρησιμοποιείται στο καραόκε."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Επιλογή του χρώματος της γραμματοσειράς που θα χρησιμοποιείται στο καραόκε."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Επιλογή της κωδικοποίησης χαρακτήρων που θα χρησιμοποιείται στο καραόκε."
 
 msgctxt "#36299"
 msgid "Export the karaoke numbered songs to HTML or CSV files."
@@ -11945,6 +12013,10 @@ msgctxt "#36340"
 msgid "Continuous repeat delay (ms)."
 msgstr "Συνεχής καθυστέρηση (ms)."
 
+msgctxt "#36341"
+msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
+msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χειρισμό του εντοπισμού δικτύου zeroconf, που απαιτείται για το AirPlay."
+
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
 msgstr "Ενεργοποίηση προστασίας με κωδικό για το AirPlay."
@@ -11976,6 +12048,10 @@ msgstr "Αλλαγή της ανάλυσης του περιβάλλοντος �
 msgctxt "#36353"
 msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "Αλλαγή του ρυθμού ανανέωσης του περιβάλλοντος εργασίας."
+
+msgctxt "#36354"
+msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Προβολή του XBMC σε μεγιστοποιημένο παράθυρο. Το μεγαλύτερο όφελος είναι για συστήματα με πολλαπλές οθόνες, ούτως ώστε το XBMC να μπορεί να χρησιμοποιηθεί χωρίς να απαιτείται αυτόματη ελαχιστοποίηση άλλων εφαρμογών. Αξιοποιεί περισσότερους πόρους συνεπώς η αναπαραγωγή ενδέχεται να είναι λιγότερο ομαλή."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -12009,6 +12085,10 @@ msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Ενίσχυση των ροών AC3 που έχουν υποστεί downmix σε 2 κανάλια."
 
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the channel configuration."
+msgstr "Επιλογή για να γίνεται upmix του 2-κάναλου ήχου στο πλήθος των καναλιών ήχου που ορίζεται από τη διαμόρφωση των καναλιών."
+
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
 msgstr "Επιλογή αυτής της ρύθμισης αν ο δέκτης σας υποστηρίζει αποκωδικοποίηση ροών AC3."
@@ -12032,6 +12112,10 @@ msgstr "Επιλογή αυτής της ρύθμισης αν ο δέκτης �
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Επιλογή αυτής της ρύθμισης αν ο δέκτης σας υποστηρίζει αποκωδικοποίηση ροών DTS-HD."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
+msgstr "Επιλέξτε τη συσκευή που θα χρησιμοποιηθεί για αναπαραγωγή ήχου που έχει αποκωδικοποιηθεί όπως mp3."
 
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
@@ -12092,6 +12176,10 @@ msgstr "Αν έχετε περιορισμένη ταχύτητα διαδικτ
 msgctxt "#36387"
 msgid "Category containing settings for power saving."
 msgstr "Κατηγορία με ρυθμίσεις σχετικά με την εξοικονόμηση ενέργειας."
+
+msgctxt "#36388"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
+msgstr "Σβήσιμο της οθόνης κατά την αδράνεια. Χρήσιμο για τηλεοράσεις που σβήνουν όταν δεν εντοπιστεί σήμα."
 
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
@@ -12201,17 +12289,25 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
 
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "Προσδιορισμός του τύπου χειριστηρίου που χρησιμοποιείται."
+
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Ορισμός τοποθεσιών για λήψη πληροφοριών καιρού."
 
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Μη διαθέσιμες πληροφορίες."
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
+msgstr "Παρακάμπτοντας το μείκτη VDPAU μειώνεται η χρήση πόρων, αλλά με ταυτόχρονη μείωση της ποιότητας εικόνας."
 
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
 msgstr "AMLogic αποκωδικοποίηση υλικού των αρχείων βίντεο."
+
+msgctxt "#36423"
+msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
+msgstr "Ενεργοποίηση πολυνηματικής αποκωδικοποίησης καρέ (λιγότερο αξιόπιστη από την προεπιλεγμένη λειτουργία)."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -12339,7 +12435,19 @@ msgstr "Ανεστραμμένη στερεοσκοπική προβολή"
 
 msgctxt "#36537"
 msgid "Set playback mode of stereoscopic 3D videos."
-msgstr "Ορισμός λειτουργίας αναπαραγωγής στερεοσκοπικών βίντεο."
+msgstr "Ορισμός λειτουργίας αναπαραγωγής στερεοσκοπικών 3D βίντεο."
+
+msgctxt "#36538"
+msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgstr "Αποτρέπει το XBMC από το να βγαίνει από τη στερεοσκοπική 3D προβολή κατά τη διακοπή της αναπαραγωγής, καθώς δεν αναγνωρίζουν όλες οι τηλεοράσεις την αλλαγή από 3D σε 2D χωρίς την αντίστοιχη ρύθμιση στην ίδια την τηλεόραση."
+
+msgctxt "#36539"
+msgid "Changes the stereoscopic 3D mode of the user interface."
+msgstr "Αλλάζει τη στερεοσκοπική 3D προβολή του περιβάλλοντος εργασίας."
+
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "Προτιμώμενη στερεοσκοπική 3D προβολή."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -12360,6 +12468,10 @@ msgstr "Αποκωδικοποίηση υλικού των αρχείων βίν
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "Στερεοσκοπικό βάθος υποτίτλων"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "Ορισμός του οπτικού βάθους υποτίτλων σε στερεοσκοπικά 3D βίντεο. Όσο υψηλότερη είναι η τιμή, τόσο πιο κοντά στο θεατή θα φαίνονται οι υπότιτλοι."
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"

@@ -5113,10 +5113,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "שגיאת שלט Apple"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "יש אפשרות להפעיל תמיכה בשלט Apple"
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "לערום"
@@ -6364,10 +6360,6 @@ msgstr "חפש ערוצים"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "אין אפשרות להשתמש בתוכנות ה-PVR בעת חיפוש."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "באיזה שרת ברצונך לבצע חיפוש?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10205,10 +10197,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "בחר מכל הכותרות ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "הצג תפריטי בלוריי"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "נגן כותרת ראשית: %d"
@@ -10224,14 +10212,6 @@ msgstr "בחר פריט השמעה"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "פרקים: %u - משך: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "ניגון דיסק Blu-ray נכשל"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "התפריט של דיסק Blu-ray הזה לא נתמך"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11101,10 +11081,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "כוון את האופן בו משתמשתים לעבד ולהציג וידיאו."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "הפעלת טלטקסט בעת צפייה בתזרים טלוויזיה."
@@ -11161,10 +11137,6 @@ msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
 msgstr "בחר מקור מידע ברירת המחדל עבור סדרה. ראה מנהל הרחבות עבור אפשרויות."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "אין מידע זמין כעת."
@@ -11185,49 +11157,9 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "מחק מסד נתונים של ערוצים/לוח שידורים ולאחר מכן ייבא מחדש מידע מממשק אחורי."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "אל תייבא לוח שידורים בעת צפייה בטלוויזיה כדי למזער שימוש במעבד."
-
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
@@ -11237,33 +11169,13 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "הצג מידע על אות איכות בחלון מידע מקודד (אם נתמך ע\"י ההרחבה והממשק אחורי)"
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "הצג הודעה כאשר תזמונים מתווספים, מסתיימים או נמחקים ע\"י הממשק האחורי."
 
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
 msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "מתי להפעיל את פקודת ההתעוררות היומית."
-
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11272,14 +11184,6 @@ msgstr "הפעל בקרת הורים ,ידרוש סיסמא עבור ערוצי�
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "שנה את הסיסמא  לבקרת הורים עבור ערוצים נעולים"
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
 
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
@@ -11290,10 +11194,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "בדוק אם קיימים קבצי מדיה חדשים בעת הפעלת XBMC."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "אין מידע זמין כעת."
 
@@ -11460,10 +11360,6 @@ msgstr "אין מידע זמין כעת."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "הגדר מיקומים לשימוש עבור איחזור מידע לגבי מזג-האוויר."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
 
 msgctxt "#36425"
 msgid "Show context menu"

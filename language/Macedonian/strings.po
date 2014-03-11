@@ -2801,6 +2801,10 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "Внесете интернет адреса"
 
+msgctxt "#1181"
+msgid "HTTP"
+msgstr "HTTP"
+
 msgctxt "#1200"
 msgid "SMB client"
 msgstr "SMB клиент"
@@ -3300,6 +3304,10 @@ msgstr "Поставки - Профили"
 msgctxt "#10037"
 msgid "Standard"
 msgstr "Вообичаено"
+
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Напредно"
 
 msgctxt "#10131"
 msgid "Lock settings"
@@ -4652,10 +4660,6 @@ msgstr "Повеќекратен далечински (Сложно)"
 msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Грешка на Apple далечинско управување"
-
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Подршка за Apple дал. управ. може да биде овозможена."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -8425,10 +8429,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Одбери од сите наслови..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Прикажи bluray Мениа"
-
 msgctxt "#25005"
 msgid "Title: %d"
 msgstr "Наслов: %d"
@@ -8825,10 +8825,6 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Сеуште нема инфоермации."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Сеуште нема инфоермации."
@@ -8837,87 +8833,11 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Сеуште нема инфоермации."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Сеуште нема инфоермации."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Сеуште нема Сеуште нема инфоермации.инфоермации."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Сеуште нема инфоермации."
 
@@ -8966,10 +8886,6 @@ msgid "No info available yet."
 msgstr "Сеуште нема инфоермации."
 
 msgctxt "#36415"
-msgid "No info available yet."
-msgstr "Сеуште нема инфоермации."
-
-msgctxt "#36420"
 msgid "No info available yet."
 msgstr "Сеуште нема инфоермации."
 

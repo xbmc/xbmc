@@ -1235,7 +1235,7 @@ msgstr "Wsparcie formatu DTS-HD"
 
 msgctxt "#348"
 msgid "Enable passthrough"
-msgstr "Włącz przekazywanie"
+msgstr "Włącz przepuszczanie do zewnętrznych dekoderów"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1515,7 +1515,7 @@ msgstr "maks."
 
 msgctxt "#420"
 msgid "Best Match"
-msgstr "Najlepsze dopasowanie "
+msgstr "Najlepsze dopasowanie"
 
 msgctxt "#421"
 msgid "Keep audio device alive"
@@ -1667,7 +1667,7 @@ msgstr "Przełącz widok"
 
 msgctxt "#458"
 msgid "Limit sampling rate (kHz)"
-msgstr "Limit próbkowania (kHz) "
+msgstr "Limit próbkowania (kHz)"
 
 msgctxt "#459"
 msgid "Subs"
@@ -1975,7 +1975,7 @@ msgstr "Wyjściowe urządzenie audio"
 
 msgctxt "#546"
 msgid "Passthrough output device"
-msgstr "Urządzenie przejścia dźwięku"
+msgstr "Wyjściowe urządzenie przepuszczające"
 
 msgctxt "#547"
 msgid "No biography for this artist"
@@ -2431,7 +2431,7 @@ msgstr "Serwer"
 
 msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
-msgstr "Dostęp do internetu przez serwer proxy HTTP"
+msgstr "Dostęp do internetu przez serwer proxy"
 
 msgctxt "#711"
 msgid "Internet Protocol (IP)"
@@ -2459,11 +2459,11 @@ msgstr "Ręczny (Static)"
 
 msgctxt "#719"
 msgid "IP address"
-msgstr "Adres IP "
+msgstr "Adres IP"
 
 msgctxt "#720"
 msgid "Netmask"
-msgstr "Maska podsieci "
+msgstr "Maska podsieci"
 
 msgctxt "#721"
 msgid "Default gateway"
@@ -2655,7 +2655,7 @@ msgstr "Interfejs sieciowy"
 
 msgctxt "#776"
 msgid "Wireless network name (ESSID)"
-msgstr "Nazwa sieci bezprzewodowej "
+msgstr "Nazwa sieci bezprzewodowej"
 
 msgctxt "#777"
 msgid "Wireless password"
@@ -2663,7 +2663,7 @@ msgstr "Hasło sieciowe"
 
 msgctxt "#778"
 msgid "Wireless security"
-msgstr "Standard szyfrowania "
+msgstr "Standard szyfrowania"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
@@ -2771,7 +2771,7 @@ msgstr "Wartość musi być z przedziału 1024-65535"
 
 msgctxt "#997"
 msgid "Add Pictures..."
-msgstr "Dodaj zdjęcia ..."
+msgstr "Dodaj obrazy..."
 
 msgctxt "#998"
 msgid "Add Music..."
@@ -2927,7 +2927,7 @@ msgstr "Ulubione"
 
 msgctxt "#1037"
 msgid "Video Add-ons"
-msgstr "Wtyczki filmów"
+msgstr "Wtyczki wideo"
 
 msgctxt "#1038"
 msgid "Music Add-ons"
@@ -2935,7 +2935,7 @@ msgstr "Wtyczki muzyki"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "Wtyczki zdjęć"
+msgstr "Wtyczki obrazów"
 
 msgctxt "#1040"
 msgid "Loading directory"
@@ -3047,7 +3047,7 @@ msgstr "Wideo"
 
 msgctxt "#1213"
 msgid "Pictures"
-msgstr "Zdjęcia"
+msgstr "Obrazy"
 
 msgctxt "#1214"
 msgid "Files"
@@ -3059,7 +3059,7 @@ msgstr "Muzyka i wideo"
 
 msgctxt "#1216"
 msgid "Music & pictures"
-msgstr "Muzyka i zdjęcia"
+msgstr "Muzyka i obrazy"
 
 msgctxt "#1217"
 msgid "Music & files"
@@ -3067,7 +3067,7 @@ msgstr "Muzyka i pliki"
 
 msgctxt "#1218"
 msgid "Video & pictures"
-msgstr "Wideo i zdjęcia"
+msgstr "Wideo i obrazy"
 
 msgctxt "#1219"
 msgid "Video & files"
@@ -3075,15 +3075,15 @@ msgstr "Wideo i pliki"
 
 msgctxt "#1220"
 msgid "Pictures & files"
-msgstr "Zdjęcia i pliki"
+msgstr "Obrazy i pliki"
 
 msgctxt "#1221"
 msgid "Music & video & pictures"
-msgstr "Muzyka, wideo i zdjęcia"
+msgstr "Muzyka, wideo i obrazy"
 
 msgctxt "#1222"
 msgid "Music & video & pictures & files"
-msgstr "Muzyka, wideo, zdjęcia i pliki"
+msgstr "Muzyka, wideo, obrazy i pliki"
 
 msgctxt "#1223"
 msgid "Disabled"
@@ -3095,11 +3095,11 @@ msgstr "Pliki, muzyka i wideo"
 
 msgctxt "#1227"
 msgid "Files & pictures & music"
-msgstr "Pliki, zdjęcia i muzyka"
+msgstr "Pliki, obrazy i muzyka"
 
 msgctxt "#1228"
 msgid "Files & pictures & video"
-msgstr "Pliki, zdjęcia i wideo"
+msgstr "Pliki, obrazy i wideo"
 
 msgctxt "#1229"
 msgid "Music & programs"
@@ -3111,11 +3111,11 @@ msgstr "Wideo, gry i programy"
 
 msgctxt "#1231"
 msgid "Pictures & programs"
-msgstr "Zdjęcia, gry i programy"
+msgstr "Obrazy i programy"
 
 msgctxt "#1232"
 msgid "Music & video & pictures & programs"
-msgstr "Muzyka, wideo, zdjęcia i programy"
+msgstr "Muzyka, wideo, obrazy i programy"
 
 msgctxt "#1233"
 msgid "Programs & video & music"
@@ -3123,11 +3123,11 @@ msgstr "Programy, wideo i muzyka"
 
 msgctxt "#1234"
 msgid "Programs & pictures & music"
-msgstr "Programy, zdjęcia i muzyka"
+msgstr "Programy, obrazy i muzyka"
 
 msgctxt "#1235"
 msgid "Programs & pictures & video"
-msgstr "Programy, zdjęcia i wideo"
+msgstr "Programy, obrazy i wideo"
 
 msgctxt "#1259"
 msgid "Zeroconf"
@@ -3171,7 +3171,7 @@ msgstr "Inne urządzenie audio"
 
 msgctxt "#1301"
 msgid "Custom passthrough device"
-msgstr "Inne urządzenie przejścia"
+msgstr "Inne urządzenie przepuszczające"
 
 msgctxt "#1396"
 msgid "Drifting"
@@ -3423,7 +3423,7 @@ msgstr "Programy"
 
 msgctxt "#10002"
 msgid "Pictures"
-msgstr "Zdjęcia"
+msgstr "Obrazy"
 
 msgctxt "#10003"
 msgid "File manager"
@@ -3463,7 +3463,7 @@ msgstr "Ustawienia - Wideo - Kalibracja ekranu"
 
 msgctxt "#10012"
 msgid "Settings - Pictures"
-msgstr "Ustawienia - Zdjęcia"
+msgstr "Ustawienia - Obrazy"
 
 msgctxt "#10013"
 msgid "Settings - Programs"
@@ -3543,7 +3543,7 @@ msgstr "Przeglądarka wtyczek"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
-msgstr "Przywróć powyższe ustawienia do domyślnych "
+msgstr "Przywróć powyższe ustawienia do domyślnych"
 
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
@@ -3563,7 +3563,7 @@ msgstr "Przywraca wszystkie ustawienia do wartości domyślnych."
 
 msgctxt "#10046"
 msgid "No categories available"
-msgstr "Brak dostępnych kategorii "
+msgstr "Brak dostępnych kategorii"
 
 msgctxt "#10047"
 msgid "Try changing the setting level to see additional categories and settings."
@@ -4079,7 +4079,7 @@ msgstr "Uśpij"
 
 msgctxt "#13012"
 msgid "Exit"
-msgstr "Wyjście"
+msgstr "Koniec"
 
 msgctxt "#13013"
 msgid "Reboot"
@@ -4131,7 +4131,7 @@ msgstr "Odłączono joystick"
 
 msgctxt "#13026"
 msgid "Try to wake remote servers on access"
-msgstr "Spróbuj uzyskać dostęp do serwera zdalnego "
+msgstr "Spróbuj uzyskać dostęp do serwera zdalnego"
 
 msgctxt "#13027"
 msgid "Wake on Lan (%s)"
@@ -4847,7 +4847,7 @@ msgstr "Pobierz ikonę"
 
 msgctxt "#13406"
 msgid "Picture information"
-msgstr "Informacje o zdjęciu"
+msgstr "Informacje o obrazie"
 
 msgctxt "#13407"
 msgid "%s presets"
@@ -5015,7 +5015,7 @@ msgstr "Używaj VAAPI dla Mpeg-2"
 
 msgctxt "#13448"
 msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
-msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania Mpeg-(1/2), w przeciwnym przypadku do dekodowania zostanie użyty procesor. Podczas odtwarzania niektórych plików wideo Mpeg-2 mogą pojawić się zielone artefakty. "
+msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania Mpeg-(1/2), w przeciwnym przypadku do dekodowania zostanie użyty procesor. Podczas odtwarzania niektórych plików wideo Mpeg-2 mogą pojawić się zielone artefakty."
 
 msgctxt "#13449"
 msgid "Use Mpeg-4 VAAPI"
@@ -5170,8 +5170,8 @@ msgid "Apple Remote Error"
 msgstr "Błąd Pilota Apple"
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Możliwe włączenie obsługi pilota Apple "
+msgid "Apple Remote support could not be enabled."
+msgstr "Obsługa zdalnego sterowania Aplle nie może zostać włączona."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -5363,7 +5363,7 @@ msgstr "Zegar w formacie"
 
 msgctxt "#14052"
 msgid "Date format"
-msgstr "Data w formacie "
+msgstr "Data w formacie"
 
 msgctxt "#14053"
 msgid "GUI filters"
@@ -5475,7 +5475,7 @@ msgstr "Wyświetlaj dane EXIF"
 
 msgctxt "#14083"
 msgid "Use a fullscreen window rather than true fullscreen"
-msgstr "Używaj pełnego okna zamiast pełnego ekranu"
+msgstr "Używaj pełnoekranowego okna zamiast pełnego ekranu"
 
 msgctxt "#14084"
 msgid "Queue songs on selection"
@@ -5847,7 +5847,7 @@ msgstr "Zarządzanie..."
 
 msgctxt "#16107"
 msgid "Edit sort title"
-msgstr "Edycja sortowania "
+msgstr "Edycja sortowania"
 
 msgctxt "#16200"
 msgid "Operation was aborted"
@@ -6461,10 +6461,6 @@ msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Nie można użyc PVR w czasie przeszukiwania."
 
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Na którym serwerze chcesz szukac?"
-
 msgctxt "#19120"
 msgid "Client number"
 msgstr "Numer klienta"
@@ -6779,7 +6775,7 @@ msgstr "Nazwa kanału:"
 
 msgctxt "#19202"
 msgid "Channel icon:"
-msgstr "Miniatura kanału: "
+msgstr "Ikona kanału:"
 
 msgctxt "#19203"
 msgid "Edit channel"
@@ -7107,7 +7103,7 @@ msgstr "Brak ikony"
 
 msgctxt "#19284"
 msgid "Choose icon"
-msgstr "Wybierz ikonę "
+msgstr "Wybierz ikonę"
 
 msgctxt "#19285"
 msgid "Browse for icon"
@@ -7571,7 +7567,7 @@ msgstr "Zablokuj dostęp do wideo"
 
 msgctxt "#20040"
 msgid "Lock pictures window"
-msgstr "Zablokuj dostęp do zdjęć"
+msgstr "Zablokuj dostęp do obrazów"
 
 msgctxt "#20041"
 msgid "Lock programs & scripts windows"
@@ -8175,11 +8171,11 @@ msgstr "Pobieraj dodatkowe informacje podczas aktualizacji"
 
 msgctxt "#20193"
 msgid "Default service for album information"
-msgstr "Domyślne źródło informacji o albumach"
+msgstr "Domyślny serwis informacji o albumach"
 
 msgctxt "#20194"
 msgid "Default service for artist information"
-msgstr "Domyślne źródło informacji o artystach"
+msgstr "Domyślny serwis informacji o wykonawcach"
 
 msgctxt "#20195"
 msgid "Change scraper"
@@ -8787,7 +8783,7 @@ msgstr "Serie"
 
 msgctxt "#20435"
 msgid "Combine split video items"
-msgstr "Połącz podzielone elementy wideo "
+msgstr "Połącz podzielone elementy wideo"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
@@ -8871,15 +8867,15 @@ msgstr "Słuchaczy"
 
 msgctxt "#20456"
 msgid "Flatten library hierarchy"
-msgstr "Spłaszczaj hierarchię biblioteki "
+msgstr "Spłaszczaj hierarchię biblioteki"
 
 msgctxt "#20457"
 msgid "Movie set"
-msgstr "Kolekcja filmów"
+msgstr "Seria filmowa"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr "Grupuj filmy w kolekcje"
+msgstr "Grupuj filmy w serie"
 
 msgctxt "#20459"
 msgid "Tags"
@@ -8967,7 +8963,7 @@ msgstr "Udostępniaj bibliotekę przez UPnP"
 
 msgctxt "#21361"
 msgid "Look for remote UPnP players"
-msgstr "Wyszukaj zdalnych odtwarzaczy UPnP "
+msgstr "Wyszukaj zdalnych odtwarzaczy UPnP"
 
 msgctxt "#21362"
 msgid "Bookmark created"
@@ -9271,7 +9267,7 @@ msgstr "Nowa playlista (smart)"
 
 msgctxt "#21438"
 msgid "%c Drive"
-msgstr "Dysk %c "
+msgstr "Dysk %c"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"
@@ -9351,7 +9347,7 @@ msgstr "Licznik obejrzanych epizodów"
 
 msgctxt "#21458"
 msgid "Group by"
-msgstr "Grupuj "
+msgstr "Grupuj"
 
 msgctxt "#21459"
 msgid "mixed"
@@ -10354,7 +10350,7 @@ msgid "Select from all titles ..."
 msgstr "Wybierz ze wszystkich tytułów..."
 
 msgctxt "#25003"
-msgid "Show bluray menus"
+msgid "Show Blu-ray menus"
 msgstr "Pokazuj menu dysku Blu-ray"
 
 msgctxt "#25004"
@@ -10374,12 +10370,12 @@ msgid "Chapters: %u - duration: %s"
 msgstr "Rozdziały: %u - czas trwania: %s"
 
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Odtwarzanie płyty Blu-ray nie powiodło się"
+msgid "Playback of Blu-ray failed"
+msgstr "Nieudane odtwarzanie dysku Blu-ray"
 
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Menu tego Blu-ray nie jest obsługiwane"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Menu tego dysku Blu-ray nie jest wspierane"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10391,7 +10387,7 @@ msgstr "Klawiatura QWERTY"
 
 msgctxt "#29802"
 msgid "Passthrough Audio in use"
-msgstr "Używasz bezpośredniego przejścia dźwięku"
+msgstr "Używasz przepuszczania dźwięku do zewnętrznych dekoderów"
 
 msgctxt "#33001"
 msgid "Trailer quality"
@@ -10683,7 +10679,7 @@ msgstr "Włącz przycisk własnego skryptu"
 
 msgctxt "#33084"
 msgid "Auto login"
-msgstr "Logowanie automatyczne "
+msgstr "Logowanie automatyczne"
 
 msgctxt "#33100"
 msgid "Failed to start"
@@ -10735,7 +10731,7 @@ msgstr "Dzwięk MPEG-4  (FFmpeg M4A AAC)"
 
 msgctxt "#34007"
 msgid "Windows Media Audio 2 (FFmpeg wmav2)"
-msgstr "Windows Media Audio 2 (FFmpeg wmav2) "
+msgstr "Windows Media Audio 2 (FFmpeg wmav2)"
 
 msgctxt "#34100"
 msgid "Number of channels"
@@ -10803,11 +10799,11 @@ msgstr "Nigdy"
 
 msgctxt "#34124"
 msgid "44.1"
-msgstr "44.1 "
+msgstr "44.1"
 
 msgctxt "#34125"
 msgid "48.0"
-msgstr "48.0 "
+msgstr "48.0"
 
 msgctxt "#34126"
 msgid "88.2"
@@ -11263,7 +11259,7 @@ msgstr "Brak dostępnych informacji ."
 
 msgctxt "#36138"
 msgid "Section that contains settings related to videos and how they are handled."
-msgstr "Kategoria zawierająca ustawienia wideo."
+msgstr "Kategoria zawierająca ustawienia związane z plikami wideo i ich obsługą."
 
 msgctxt "#36139"
 msgid "Category containing the settings for how the video library is handled."
@@ -11321,13 +11317,13 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Ustaw metodę przetwarzania i wyświetlania wideo."
 
+msgctxt "#36155"
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
+msgstr "Włącza sprzętowe dekodowanie plików wideo przy pomocy VDPAU, używane głównie przez procesory graficzne NVidia i w określonych warunkach przez procesory graficzne AMD."
+
 msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr "Włącza sprzętowe dekodowanie plików wideo przy pomocy VAAPI, używane głównie przez procesory graficzne Intela i w określonych warunkach przez procesory graficzne AMD."
-
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji ."
 
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
@@ -11353,6 +11349,10 @@ msgctxt "#36163"
 msgid "Enable decoding of video files using pixel buffer objects."
 msgstr "Używaj sprzętowego dekodowania plików wideo przy pomocy bufora pikseli."
 
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "Dopasowuj częstotliwość odświeżania wyświetlacza do częstotliwości wyświetlania klatek w odtwarzanym materiale wideo. Włączenie tej funkcji może poprawić płynność odtwarzania."
+
 msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change."
 msgstr "Zatrzymuj odtwarzanie na czas zmiany częstotliwości odświeżania."
@@ -11375,7 +11375,7 @@ msgstr "Określ jakość próbkowania w przypadku, gdy urządzenie podłączone 
 
 msgctxt "#36170"
 msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
-msgstr "Zezwól odtwarzaczowi wideo, aby ignorował proporcję obrazu aby jak najwięcej wypełnić ekran obrazem filmu. "
+msgstr "Zezwól odtwarzaczowi wideo, aby ignorował proporcję obrazu aby jak najwięcej wypełnić ekran obrazem filmu."
 
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
@@ -11405,6 +11405,10 @@ msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Wybór pomiędzy dostępnymi funkcjami: Określ, Odtwórz (domyślnie), Wznów i Pokaż informacje. Określ - wybierze wskazany element, np. otworzy katalog w trybie plików. Wznów - automatycznie wznowi odtwarzanie wideo od ostatniej oglądanej pozycji, nawet po ponownym uruchomieniu systemu."
 
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Ekstraktuj miniatury i metadane takie, jak kodek i proporcje z materiału wideo."
+
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
 msgstr "Gdy plik jest skanowany i dodawany do biblioteki wyświetli się tytuł metadanych zamiast nazwy pliku."
@@ -11417,9 +11421,13 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Brak dostępnych informacji."
 
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Łączy wielocześciowe pliki wideo, foldery DVD i foldery filmów w jedną pozycję w widokach innych niż biblioteczny."
+
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
-msgstr "Usuwa tytuł, gatunek itp. z widoku biblioteki. Wybór kategorii przekierowuje bezpośrednio do widoku nazwy. "
+msgstr "Usuwa tytuł, gatunek itp. z widoku biblioteki. Wybór kategorii przekierowuje bezpośrednio do widoku nazwy."
 
 msgctxt "#36184"
 msgid "Category containing settings for how subtitles are handled."
@@ -11451,7 +11459,7 @@ msgstr "Zastępuj czcionki w napisach ASS/SSA."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
-msgstr "Ustaw własny katalog dla Twoich napisów. "
+msgstr "Ustaw własny katalog dla Twoich napisów."
 
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
@@ -11479,19 +11487,19 @@ msgstr "Brak dostępnych informacji."
 
 msgctxt "#36198"
 msgid "Select the default movie information source. See the Add-ons Manager for options."
-msgstr "Wybierz domyślne źródło informacji o filmie. Więcej opcji w  menedżerze dodatków."
+msgstr "Wybierz domyślny serwis informacji o filmie. Więcej opcji w  menedżerze wtyczek."
 
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
-msgstr "Wybierz domyślne źródło informacji o serialach. Więcej opcji w  menedżerze dodatków."
+msgstr "Wybierz domyślny serwis informacji o serialach. Więcej opcji w  menedżerze wtyczek."
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Domyślnie używany scraper teledysków przy aktualizacji biblioteki."
 
 msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Kategoria z ogólnymi ustawieniami telewizyjnymi i funkcjami nagrywania."
 
 msgctxt "#36202"
 msgid "No info available yet."
@@ -11504,6 +11512,10 @@ msgstr "Włącz osobistą cyfrową nagrywarkę (PVR) w funkcjach w XBMC. Wymagan
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importuj grupy kanałów z serwera PVR (jeśli wspierane). Funkcja usunie wszystkie grupy utworzone przez użytkownika, jeśli nie są one zapisane w bazie."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
+msgstr "Ustawia kolejność kanałów według numerów kanałów na serwerze PVR, ale używa własnej numeracji kanałów w XBMC."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -11522,44 +11534,44 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "Usuń kanał/bazę Przewodnika TV i importuj ponownie dane z serwera PVR."
 
 msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
+msgstr "Zapobiega wyświetlaniu okna informacyjnego 'połączenie utracone', w przypadku problemów z komunikacją XBMC z serwerem PVR."
 
 msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Kategoria z ustawieniami wyświetlania menu ekranowego oraz oknami informacyjnymi kanałów TV."
 
 msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Wyświetla informacje o programie takiej, jak nazwa aktualnie nadawanej audycji, podczas zmiany kanałów."
 
 msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Hide the programming information automatically after a few seconds, defined below."
+msgstr "Automatycznie ukrywa informacje o programie po upływie kilku sekund, w liczbie określonej poniżej."
 
 msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Close the on screen display controls after switching channels."
+msgstr "Ukrywa menu ekranowe z przyciskami odtwarzania po przełączeniu kanału."
 
 msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
+msgstr "Określa, jak długo informację o programie są wyświetlane, kiedy opcja 'ukrywaj automatycznie' jest zaznaczona."
 
 msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Folder where channel icons are stored."
+msgstr "Folder przechowywania ikon kanałów."
 
 msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Scan for missing channel icons."
+msgstr "Szukaj brakujących ikon kanałów."
 
 msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Category for electronic programming guide settings."
+msgstr "Kategoria z ustawieniami przewodnika TV"
 
 msgctxt "#36219"
-msgid "Default EPG window to show."
-msgstr "Domyślny tryb wyświetlania Przewodnika TV."
+msgid "Default electronic programming guide window to show."
+msgstr "Domyślnie wyświetlany tryb przewodnika telewizyjnego."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -11581,9 +11593,13 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Ukrywaj komunikat \"Brak dostępnych informacji\", gdy brak informacji o kanale w Przewodniku TV."
 
+msgctxt "#36225"
+msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
+msgstr "Usuwa lokalną bazę przewodnika, a następnie importuje ją ponownie z serwera PVR."
+
 msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji ."
+msgid "Category for PVR playback and channel switching settings."
+msgstr "Kategoria z ustawieniami odtwarzania programów telewizyjnych i przełączania kanałów."
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
@@ -11598,32 +11614,60 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "Wyświetlaj informację o jakości sygnału w oknie informacyjnym kodeka (jeśli wspierane przez wtyczkę i serwer)."
 
 msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Określa jak długo XBMC będzie oczekiwać na przełączenie kanału, jeśli kanał nie jest odbierany. Użyteczne w przypadku kanałów telewizji naziemnej i satelitarnej, które czasami mają problem z siłą sygnału."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Naciśnięcie przycisku numerycznego w trybie pełnoekranowym przełączy po 1 sekundzie na wybrany kanał."
 
 msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "Określa zachowanie po zmianie kanału przy pomocy klawiszy, dodając opóźnienie, które umożliwia użytkownikowi wprowadzenie numer kanału, bez oczekiwania na przełączenie do wcześniej wybranego kanału."
 
 msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Category for default recording duration settings."
+msgstr "Kategoria z ustawieniami domyślnych czasów nagrywania."
+
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "Czas trwania nagrania po naciśnięciu przycisku nagrywania."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "Priorytet nagrywania. Większa liczba oznacza wyższy priorytet. Nie wszystkie wtyczki klientów i serwery PVR wspierają tę funkcję."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "Usuwa nagrania po upłynięciu określonego tutaj czasu. Nie wszystkie wtyczki klientów i serwery PVR wspierają tę funkcję."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "Rozpoczyna nagrywanie przed planowanym rozpoczęciem nagrania. Nie wszystkie wtyczki klientów i serwery PVR wspierają tę funkcję."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "Kończy nagrywanie po planowanym zakończeniu nagrania. Nie wszystkie wtyczki klientów i serwery PVR wspierają tę funkcję."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Wyświetlaj powiadomienie, gdy nagrania są dodawane, zakończone lub usuwane."
 
 msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "Kategoria z ustawieniami oszczędzania energii takimi, jak wybudzanie serwera PVR."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "Uruchom \"polecenie wznowienia\", kiedy XBMC będzie zamykane lub będzie w trybie hibernacji. Czas zaplanowanego kolejnego nagrania będzie przekazywane jako parametr."
+msgstr "Uruchom \"polecenie wznowienia\", kiedy XBMC będzie zamykane lub przejdzie w stan hibernacji. Czas zaplanowanego kolejnego nagrania będzie przekazywane jako parametr."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "Polecenie nie zostanie wykonane jeśli nagranie nie rozpocznie się przed upłynięciem wprowadzonego tutaj czasu."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "Polecenie do wykonania."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11634,8 +11678,8 @@ msgid "When to execute the daily wakeup command."
 msgstr "Określ codzienne polecenia wznowienia."
 
 msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "Kategoria z ustawieniami kontroli rodzicielskiej, jeśli używany serwer PVR wspiera kontrolę rodzicielską."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11645,13 +11689,25 @@ msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Wprowadź nowy kod PIN, aby odblokować zablokowane kanały rodzicielskie."
 
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
+msgstr "Żąda ponownie o podanie kodu PIN podczas próby uzyskania dostępu do kanału zablokowanego przy pomocy kontroli rodzicielskiej, jeśli wcześniej kod PIN nie został wprowadzony."
+
 msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Kategoria ze specyficznymi ustawieniami serwera PVR, jeśli używany serwer PVR wspiera zmianę tych ustawień z poziomu XBMC."
 
 msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Umożliwia ustawienie specyficznych ustawień serwera PVR, jeśli serwer wspiera zmianę tych ustawień z poziomu XBMC."
+
+msgctxt "#36253"
+msgid "Section that contains settings related to music files and how they are handled."
+msgstr "Kategoria zawierająca ustawienia związane z plikami muzyki i ich obsługą."
+
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "Włącza bibliotekę muzyki."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11661,9 +11717,13 @@ msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "Automatycznie pobieraj informacje o albumie i artyście podczas skanowania."
 
+msgctxt "#36257"
+msgid "Select the default album information source."
+msgstr "Wybierz domyślny serwis informacji o albumach."
+
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
-msgstr "Wybierz domyślne źródło informacji o artyście. Więcej opcji w menedżerze wtyczek."
+msgstr "Wybierz domyślny serwis informacji o artyście. Więcej opcji w menedżerze wtyczek."
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
@@ -11671,11 +11731,7 @@ msgstr "Sprawdź nowe i usunięte pliki multimedialne przy uruchomieniu XBMC."
 
 msgctxt "#36260"
 msgid "No info available yet."
-msgstr "Brak dostępnych informacji. "
-
-msgctxt "#36261"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji. "
+msgstr "Brak dostępnych informacji."
 
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
@@ -11693,13 +11749,17 @@ msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
 msgstr "Automatyczne odtwarzanie następnego elementu w bieżącym folderze. "
 
+msgctxt "#36266"
+msgid "When songs are selected they are queued instead of playback starting immediately."
+msgstr "Podczas wyboru utworu zostaje on dodany do kolejki, zamiast natychmiastowego rozpoczęcia odtwarzania."
+
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr "XBMC odczyta informacje wzmocnienia, zakodowane w pliku audio za pomocą programu takiego jak MP3Gain i odpowiednio znormalizuje poziomu dźwięku."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
-msgstr "Domyślnie jest to 89 dB. Zmieniaj ostrożnie. "
+msgstr "Domyślnie jest to 89 dB. Zmieniaj ostrożnie."
 
 msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11717,6 +11777,30 @@ msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "Czytaj metadane z plików utworów. W przypadku dużych katalogów może spowolnić czas odczytu, zwłaszcza w sieci."
 
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
+msgstr "Kontroluje sposób w jaki nazwy utworów są wyświetlane w interfejsie użytkownika. Do poprawnego działania wymaga włączenia funkcji wczytywania znaczników."
+
+msgctxt "#36276"
+msgid "Used for formatting the second column in file lists."
+msgstr "Wykorzystuje do formatowania drugą kolumnę na liście plików."
+
+msgctxt "#36277"
+msgid "Control the way that the names of songs are displayed in the now playing list."
+msgstr "Kontroluje sposób w jaki nazwy utworów są wyświetlane na liście aktualnie odtwarzanych."
+
+msgctxt "#36278"
+msgid "Used for formatting the second column in the now playing list."
+msgstr "Wykorzystuje do formatowania drugą kolumnę na liście aktualnie odtwarzanych."
+
+msgctxt "#36279"
+msgid "Control the way that the names of songs are displayed in library lists."
+msgstr "Kontroluje sposób w jaki nazwy utworów są wyświetlane na listach biblioteki."
+
+msgctxt "#36280"
+msgid "Used for formatting the second column in library lists."
+msgstr "Wykorzystuje do formatowania drugą kolumnę na listach biblioteki."
+
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "XBMC wyszuka miniatur w folderach sieciowych i nośnikach optycznych. Może spowolnić dostęp do listy folderów sieciowych."
@@ -11731,7 +11815,7 @@ msgstr "Auto uruchomienie Audio CD po włożeniu dysku."
 
 msgctxt "#36284"
 msgid "Read the information belonging to an audio CD from an internet database."
-msgstr "Przeczytaj informacje płyty Audio CD z internetowej bazy danych. "
+msgstr "Przeczytaj informacje płyty Audio CD z internetowej bazy danych."
 
 msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
@@ -11749,6 +11833,10 @@ msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
 msgstr "Wybierz bitrate określonego kodera audio dla kompresji audio."
 
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5."
+msgstr "Określ poziom kompresji FLAC, domyślnie 5"
+
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "Wysuń płytę po zgraniu."
@@ -11760,6 +11848,22 @@ msgstr "Kategoria zawierająca ustawienia związane z obsługą karaoke."
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Podczas odtwarzania plików muzycznych, XBMC będzie szukać pliku .cdg i wyświetlić jego grafiki."
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Ustaw czcionkę używaną podczas karaoke."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Ustaw rozmiar czcionki używanej podczas karaoke."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Ustaw kolor czcionki używanej podczas karaoke."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Ustaw zestaw znaków używanych podczas karaoke."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11773,6 +11877,10 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Brak dostępnych informacji."
 
+msgctxt "#36304"
+msgid "Section that contains settings related to pictures and how they are handled."
+msgstr "Kategoria zawierająca ustawienia związane z obrazami i ich obsługą."
+
 msgctxt "#36305"
 msgid "Category containing settings for how picture file lists are handled."
 msgstr "Kategoria zawierająca ustawienia związane z obsługą list plików obrazów."
@@ -11783,11 +11891,15 @@ msgstr "Jeśli istnieją informacje EXIF (data, czas, aparat, itp.), to zostaną
 
 msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."
-msgstr "Generuj automatycznie miniatury przy wejściu do folderu zdjęć."
+msgstr "Generuj automatycznie miniatury przy wejściu do folderu obrazów."
 
 msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
-msgstr "Zdjęcia będą automatycznie obracane według informacji w znaczniku EXIF."
+msgstr "Obrazy będą automatycznie obracane według informacji w znaczniku EXIF."
+
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "Pokazuj pliki wideo na liście plików obrazów."
 
 msgctxt "#36310"
 msgid "No info available yet."
@@ -11809,6 +11921,10 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Pokaz slajdów zdjęć w losowej kolejności."
 
+msgctxt "#36315"
+msgid "Section that contains weather related settings."
+msgstr "Kategoria zawierająca ustawienia związane serwisem pogodowym."
+
 msgctxt "#36316"
 msgid "Category containing settings for how weather addons are handled."
 msgstr "Kategoria zawierająca ustawienia związane z obsługą serwisu pogodowego."
@@ -11819,7 +11935,11 @@ msgstr "Wybierz do trzech lokalizacji miejsc, dla których pogoda może być wy�
 
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
-msgstr "Określ domyślne źródło informacji pogodowych. Więcej opcji w menedżerze wtyczek."
+msgstr "Wybierz domyślny serwis informacji pogodowych. Więcej opcji w menedżerze wtyczek."
+
+msgctxt "#36319"
+msgid "Section containing settings for how network services are handled."
+msgstr "Kategoria zawierająca ustawienia związane z usługami sieciowymi i ich obsługą."
 
 msgctxt "#36320"
 msgid "Category containing settings used for all services."
@@ -11833,9 +11953,17 @@ msgctxt "#36322"
 msgid "Category containing settings for how the UPnP service is handled."
 msgstr "Kategoria zawierająca ustawienia związane z usługą UPnP."
 
+msgctxt "#36323"
+msgid "Enable the UPnP server. This allows you to stream media to a UPnP client."
+msgstr "Włącza serwer UPnP. Umożliwia to strumieniowanie mediów do klienta UPnP."
+
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "Powiadom klientów UPnP gdy biblioteka zostanie zaktualizowana."
+
+msgctxt "#36325"
+msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "Włącza klienta UPnP. Umożliwia to odtwarzanie strumienieniowanych mediów z dowolnego serwera UPnP z punktem kontrolnym z możliwością kontroli odtwarzania z tego serwera."
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
@@ -11853,6 +11981,10 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Określ nazwę użytkownika serwera."
 
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "Określa hasło serwera webowego."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Wybierz między zainstalowanymi interfejsami internetowymi za pomocą menedżera wtyczek."
@@ -11865,21 +11997,85 @@ msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Zezwól programom, na tym komputerze, na sterowanie XBMC poprzez interfejs internetowy lub protokół JSON-RPC."
 
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "Określa port zdalnego sterowania."
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "Określa zakres portów zdalnego sterowania."
+
+msgctxt "#36337"
+msgid "Define the maximum number of clients that can connect."
+msgstr "Określa maksymalną listę podłączonych klientów."
+
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Zezwól programom z sieci do sterowania XBMC."
+
+msgctxt "#36339"
+msgid "Initial repeat delay (ms)."
+msgstr "Początkowe opóźnienie powtarzania (ms)."
+
+msgctxt "#36340"
+msgid "Continuous repeat delay (ms)."
+msgstr "Ciągłe opóźnienie powtarzania (ms)."
 
 msgctxt "#36341"
 msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
 msgstr "Kategoria zawierająca ustawienia związane z usługą wykrywania sieci ZeroConf, która jest wymagana do działania AirPlay."
 
+msgctxt "#36342"
+msgid "Allows applications on the network to discover XBMC's running services."
+msgstr "Pozwala aplikacjom w lokalnej sieci wykrywanie usług udostępnionych przez XBMC."
+
+msgctxt "#36343"
+msgid "Allows XBMC to receive content from other AirPlay devices or applications."
+msgstr "Pozwala XBMC odbierać treści AirPlay z innych urządzeń i aplikacji."
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "Chroni usługę AirPlay przy pomocy hasła."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "Ustawia hasło usługi AirPlay."
+
 msgctxt "#36346"
 msgid "Category containing settings for how the SMB Client (samba) service is handled."
 msgstr "Kategoria zawierająca ustawienia związane z obsługą klienta SMB (samba)."
 
+msgctxt "#36347"
+msgid "If a WINS server is running on the network, enter its IP address here. Otherwise, leave blank."
+msgstr "Jeśli w lokalnej sieci uruchomiono serwer WINS, należy wprowadzić jego nazwę. W przeciwnym przypadku, pole należy zostawić puste."
+
+msgctxt "#36348"
+msgid "If a WINS server is running on the network, enter its workgroup name here. Otherwise, leave blank."
+msgstr "Jeśli w lokalnej sieci uruchomiono serwer WINS, należy wprowadzić nazwę jego grupy roboczej. W przeciwnym przypadku, pole należy zostawić puste."
+
+msgctxt "#36349"
+msgid "Section that contains the System related settings for the device XBMC is installed on."
+msgstr "Kategoria zawierająca ustawienia związane z systemem operacyjnym i urządzeniem, na którym zainstalowano XBMC."
+
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "Automatyczne wysyłaj sygnał \"Wake-On-Lan\" do serwera(ów), przed uzyskaniem dostępu zdalnego do udostępnionych plików lub usług."
+
+msgctxt "#36351"
+msgid "Display XBMC in a window, or fullscreen on the selected screen."
+msgstr "Wyświetla XBMC w oknie lub na pełnym ekranie."
+
+msgctxt "#36352"
+msgid "Changes the resolution that the user interface is displayed in."
+msgstr "Zmienia rozdzielczość, w której wyświetlany jest interfejs użytkownika."
+
+msgctxt "#36353"
+msgid "Changes the refresh rate that the user interface is displayed in."
+msgstr "Zmienia częstotliwość odświeżania, w której wyświetlany jest interfejs użytkownika."
+
+msgctxt "#36354"
+msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Wyświetla XBMC w pełnoekranowym oknie. Główną korzyścią tego trybu jest możliwość używania XBMC w konfiguracjach wieloekranowych bez konieczności minimalizowania pozostałych aplikacji. Zmniejsza to zużycie zasobów, dzięki czemu odtwarzanie może być płynniejsze."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -11893,6 +12089,10 @@ msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Wzorce testowe dla sprzętowej kalibracji wyświetlacza."
 
+msgctxt "#36359"
+msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
+msgstr "Wykorzystuje ograniczony zakres kolorów (16-235) zamiast pełnego zakresu kolorów (0-255). Ograniczony zakres kolorów powinien być używany, jeśli obraz jest przekazywany poprzez łącze HDMI do telewizora. Jeśli obraz jest wyświetlany na monitorze komputerowym, należy pozostawić tę opcję wyłączoną, aby uzyskać prawidłową czerń."
+
 msgctxt "#36360"
 msgid "Category containing settings for how audio output is handled."
 msgstr "Kategoria zawierająca ustawienia związane z obsługą wyjścia dźwięku."
@@ -11903,7 +12103,7 @@ msgstr "Wybierz ustawienie wyjścia audio: [Stałe] - właściwości wyjścia s�
 
 msgctxt "#36362"
 msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
-msgstr "Określ liczbę kanałów wspieranych przez podłączone urządzenie audio lub liczbę głośników podłączonych do złącz analogowych. To ustawienie nie ma wpływu na ustawienie przepuszczania dźwięku. Uwaga - złącze SPDIF wspiera tylko kanały w systemie 2.0, ale umożliwia przepuszczanie wspieranych formatów wielokanałowych."
+msgstr "Określa liczbę kanałów wspieranych przez podłączone urządzenie dźwiękowe lub liczbę głośników podłączonych do złącz analogowych. To ustawienie nie ma wpływu na ustawienie przepuszczania dźwięku. Uwaga - złącze SPDIF wspiera tylko kanały w systemie 2.0, ale umożliwia przepuszczanie wspieranych formatów wielokanałowych."
 
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
@@ -11923,7 +12123,7 @@ msgstr "Określ maksymalną liczbę kanałów/głośników dostępnych dla zdeko
 
 msgctxt "#36368"
 msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
-msgstr "Wybierz, aby włączyć funkcję przepuszczania zakodowanego dźwięku np. Dolby Digital, do zewnętrznego urządzenia dekodującego np. telewizora, amplitunera."
+msgstr "Włącza funkcję przepuszczania zakodowanego dźwięku np. Dolby Digital, do zewnętrznego urządzenia dekodującego np. telewizora lub amplitunera."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
@@ -11944,6 +12144,10 @@ msgstr "Określ sposób obsługi dźwięków interfejsu użytkownika takich, jak
 msgctxt "#36374"
 msgid "Category containing settings for how input devices are handled."
 msgstr "Kategoria zawierająca ustawienia związane z obsługą urządzeń wejściowych."
+
+msgctxt "#36375"
+msgid "Configure any attached peripheral devices."
+msgstr "Konfiguracja podłączonych urządzeń peryferyjnych."
 
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
@@ -11993,6 +12197,10 @@ msgctxt "#36387"
 msgid "Category containing settings for power saving."
 msgstr "Kategoria zawierająca ustawienia związane z oszczędzaniem energii."
 
+msgctxt "#36388"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
+msgstr "Wyłącza wyświetlanie w trybie bezczynności. Przydatne dla telewizorów, które się wyłączają, w przypadku wykrycia braku sygnału."
+
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "Określ czas bezczynności przed zamknięciem XBMC."
@@ -12033,6 +12241,46 @@ msgctxt "#36399"
 msgid "Category containing settings for the cache function."
 msgstr "Kategoria zawierająca ustawienia związane z funkcją buforowania."
 
+msgctxt "#36400"
+msgid "Enable cache for playback of Video, Audio or DVDs from hard disk."
+msgstr "Włącza buforowanie odtwarzania wideo, muzyki i DVD z dysku twardego."
+
+msgctxt "#36401"
+msgid "Enable cache for playback of Video from DVD-ROM."
+msgstr "Włącza buforowanie odtwarzania wideo z dysków DVD-ROM."
+
+msgctxt "#36402"
+msgid "Enable cache for Video playback from Local Network."
+msgstr "Włącza buforowanie odtwarzania wideo z sieci lokalnej."
+
+msgctxt "#36403"
+msgid "Enable cache for Video playback from Internet."
+msgstr "Włącza buforowanie odtwarzania wideo z Internetu."
+
+msgctxt "#36404"
+msgid "Enable cache for playback of Audio from DVD-ROM."
+msgstr "Włącza buforowanie odtwarzania dźwięku z dysków DVD-ROM."
+
+msgctxt "#36405"
+msgid "Enable cache for Audio playback from Local Network."
+msgstr "Włącza buforowanie odtwarzania dźwięku z sieci lokalnej."
+
+msgctxt "#36406"
+msgid "Enable cache for Audio playback from Internet."
+msgstr "Włącza buforowanie odtwarzania dźwięku z Internetu."
+
+msgctxt "#36407"
+msgid "Enable cache for playback of DVD from DVD-ROM."
+msgstr "Włącza buforowanie odtwarzania DVD z dysków DVD-ROM."
+
+msgctxt "#36408"
+msgid "Enable cache for DVD playback from Local Network."
+msgstr "Włącza buforowanie odtwarzania DVD z sieci lokalnej."
+
+msgctxt "#36409"
+msgid "Enable cache of unknown types from Internet."
+msgstr "Włącza buforowanie odtwarzania nieznanych mediów z Internetu."
+
 msgctxt "#36410"
 msgid "No info available yet."
 msgstr "Brak dostępnych informacji."
@@ -12057,13 +12305,33 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Brak dostępnych informacji."
 
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "Określa typ używanego pilota."
+
+msgctxt "#36417"
+msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
+msgstr "Usługa pomocnicza XBMC będzie zawsze uruchomiona, co umożliwi uruchomienie XBMC przy pomocy pilota."
+
+msgctxt "#36418"
+msgid "Specify the delay between button sequences on a universal remote."
+msgstr "Określa opóźnienie pomiędzy sekwencjami przycisków na pilocie uniwersalnym."
+
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
-msgstr "Określ lokalizacje pobierania informacji o pogodzie. "
+msgstr "Określ lokalizacje pobierania informacji o pogodzie."
 
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Brak dostępnych informacji."
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
+msgstr "Pomijanie miksera VDPAU oszczędza zasoby na mało wydajnych systemach, ale zmniejsza nieco jakość obrazu."
+
+msgctxt "#36422"
+msgid "Enable hardware video decode using AMLogic decoder."
+msgstr "Używaj sprzętowego dekodowania plików wideo przy dekodera AMLogic."
+
+msgctxt "#36423"
+msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
+msgstr "Włącza wielowątkowe dekodowanie programowe (mniej stabilne niż domyślny tryb jednowątkowy)."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -12087,11 +12355,11 @@ msgstr "Nagraj"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
-msgstr "Tryb stereoskopowy (aktualny) "
+msgstr "Tryb stereoskopowy (aktualny)"
 
 msgctxt "#36501"
 msgid "Stereoscopic mode"
-msgstr "Tryb stereoskopowy "
+msgstr "Tryb stereoskopowy"
 
 msgctxt "#36502"
 msgid "None"
@@ -12099,7 +12367,7 @@ msgstr "Brak"
 
 msgctxt "#36503"
 msgid "Over/Under"
-msgstr "Powyżej/Poniżej "
+msgstr "Powyżej/Poniżej"
 
 msgctxt "#36504"
 msgid "Side by side"
@@ -12107,7 +12375,7 @@ msgstr "Obok siebie"
 
 msgctxt "#36505"
 msgid "Anaglyph Red/Cyan"
-msgstr "Anaglif Red/Cyan "
+msgstr "Anaglif Red/Cyan"
 
 msgctxt "#36506"
 msgid "Anaglyph Green/Magenta"
@@ -12115,31 +12383,35 @@ msgstr "Anaglif Green/Magenta"
 
 msgctxt "#36507"
 msgid "Interlaced"
-msgstr "Z przeplotem "
+msgstr "Z przeplotem"
 
 msgctxt "#36508"
 msgid "Hardware Based"
-msgstr "Wspomaganie sprzętowe "
+msgstr "Wspomaganie sprzętowe"
 
 msgctxt "#36509"
 msgid "Monoscopic - 2D"
-msgstr "Monoskopowy - 2D "
+msgstr "Monoskopowy - 2D"
+
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos."
+msgstr "Tryb odtwarzania stereofonicznych materiałów wideo."
 
 msgctxt "#36521"
 msgid "Ask me"
-msgstr "Zapytaj mnie "
+msgstr "Zapytaj mnie"
 
 msgctxt "#36522"
 msgid "Use preferred mode"
-msgstr "Użyj preferowanego trybu "
+msgstr "Używaj preferowanego trybu"
 
 msgctxt "#36524"
 msgid "Preferred mode"
-msgstr "Preferowany tryb "
+msgstr "Preferowany tryb"
 
 msgctxt "#36525"
 msgid "Same as movie (autodetect)"
-msgstr "Tak samo jak film (autodetekcja) "
+msgstr "Jak w materiale wideo (autodetekcja)"
 
 msgctxt "#36526"
 msgid "Disable stereoscopic mode when playback is stopped"
@@ -12147,19 +12419,19 @@ msgstr "Wyłącz tryb stereoskopowy, gdy zatrzymano odtwarzanie"
 
 msgctxt "#36527"
 msgid "This video is stereoscopic. Select playback mode"
-msgstr "Ten film jest stereoskopowy. Wybierz tryb odtwarzania "
+msgstr "Ten film jest stereoskopowy. Wybierz tryb odtwarzania"
 
 msgctxt "#36528"
 msgid "Select stereoscopic mode"
-msgstr "Wybierz tryb stereoskopy "
+msgstr "Wybierz tryb stereoskopy"
 
 msgctxt "#36529"
 msgid "Mono (2D)"
-msgstr "Monofoniczny (2D) "
+msgstr "Monofoniczny (2D)"
 
 msgctxt "#36530"
 msgid "Preferred mode"
-msgstr "Preferowany tryb "
+msgstr "Preferowany tryb"
 
 msgctxt "#36531"
 msgid "Select alternate mode..."
@@ -12167,7 +12439,7 @@ msgstr "Wybierz tryb alternatywny..."
 
 msgctxt "#36532"
 msgid "Same as movie"
-msgstr "Tak samo jak film "
+msgstr "Jak w materiale wideo"
 
 msgctxt "#36533"
 msgid "Select how audio is downmixed, for example from 5.1 to 2.0: [Enabled] maintains the dynamic range of the original audio source when downmixed however volume will be lower [Disabled] maintains volume level of the original audio source however the dynamic range is compressed. Note - Dynamic range is the difference between the quietest and loudest sounds in a audio source."
@@ -12175,7 +12447,7 @@ msgstr "Wybierz jak dźwięk jest miksowany w dół, na przykład z 5.1 do 2.0: 
 
 msgctxt "#36535"
 msgid "Stereoscopic mode of video"
-msgstr "Stereoskopowy tryb wideo "
+msgstr "Stereoskopowy tryb wideo"
 
 msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
@@ -12187,7 +12459,7 @@ msgstr "Ustawia tryb odtwarzania stereoskopowych materiałów 3D."
 
 msgctxt "#36538"
 msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
-msgstr "Zapobiega wychodzeniu ze stereofonicznego trybu 3D po zatrzymaniu odtwarzania, gdyż nie wszystkie telewizory potrafią rozpoznać przełączenie z trybu 3D do 2D, bez przełączenia trybu wyświetlania. "
+msgstr "Zapobiega wychodzeniu ze stereofonicznego trybu 3D po zatrzymaniu odtwarzania, gdyż nie wszystkie telewizory potrafią rozpoznać przełączenie z trybu 3D do 2D, bez przełączenia trybu wyświetlania."
 
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
@@ -12199,7 +12471,7 @@ msgstr "Preferowany stereoskopowy tryb 3D."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
-msgstr "Zezwalaj klientom AirPlay na regulację głośności. "
+msgstr "Zezwalaj klientom AirPlay na regulację głośności."
 
 msgctxt "#36542"
 msgid "Output to both analogue (headphones) and HDMI"
@@ -12215,7 +12487,7 @@ msgstr "Włącz sprzętowe dekodowanie plików wideo."
 
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
-msgstr "Głębia napisów stereoskopowych "
+msgstr "Głębia napisów stereoskopowych"
 
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."

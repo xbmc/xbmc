@@ -5169,10 +5169,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple távirányító hiba"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple távirányító támogatás engedélyezhető."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Egyesítés: be"
@@ -6460,10 +6456,6 @@ msgstr "Csatornák keresése"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "A PVR funkciók nem használhatók keresés közben."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Melyik kiszolgálón akarsz keresni ?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10329,10 +10321,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Választás a teljes tartalomból..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Bluray menü mutatása"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Főcím lejátszása: %d"
@@ -10348,14 +10336,6 @@ msgstr "Lejátszandó elem kiválasztása"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Fejezetek: %u - időtartam: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Blu-ray Lemez lejátszás sikertelen"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "A Blu-ray Lemez menüje nem támogatott"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11147,7 +11127,7 @@ msgstr "Fájlkiterjesztések megjelenítése a média fájlokon. Például az 'Y
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
-msgstr "Átnevezés és törlés fájlműveletek engedélyezése a felhasználói felületen a kontextusmenüben. (pl C billentyű hozza fel ezt a menüt)"
+msgstr "Átnevezés és törlés fájlműveletek engedélyezése a felhasználói felületen a kontextusmenüben. (pl.: C billentyű hozza fel ezt a menüt)"
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11224,10 +11204,6 @@ msgstr "XML fájl importálása a Médiatár adatbázisba."
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "A videó feldolgozásához és megjelenítéséhez használt módszer beállítása."
-
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11321,10 +11297,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Alapértelmezetten használt album letöltő a zenei klipek médiatárhoz adásához."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Nincs még információ"
@@ -11353,42 +11325,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Csatorna/EPG adatbázis törlése, ezt követően a hátérszolgáltatásból való újraimportálása."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "EPG adat importálás mellőzése TV nézés közben a CPU terhelés minimalizálásához."
@@ -11401,10 +11337,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "A \"nem található információ\" címkék elrejtése ha az adott csatornához nincs elérhető EPG adat."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "A kiválasztott csatorna megjelenítése kis méretben teljes képernyős mód helyett."
@@ -11413,29 +11345,13 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Jelminőség kijelzése a kodekinformácós ablakban (ha a kiegészítő és a háttérszolgáltatás is támogatja)"
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Teljesképernyős üzemmódban egy számbillentyű megnyomásakor automatikusan csatornát vált 1 másodperc után."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Visszajelzés megjelenítése ha időzítő kerül hozzáadásra, befejeződik vagy eltávolításra kerül a háttérszolgáltatás által."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11449,10 +11365,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Mikor kerüljön kiadásra a napi ébresztési parancs."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Pin kód kérésének bekapcsolása a zárolt csatornákra. A csatornák megjelölhetőek zároltként a csatornaszerkesztőben az általános fülön. A zárolt csatornák nem lejátszhatóak vagy felvehetőek a pin kód megadása nélkül, és az EPG információ is rejtett ezekhez a csatornákhoz."
@@ -11460,14 +11372,6 @@ msgstr "Pin kód kérésének bekapcsolása a zárolt csatornákra. A csatornák
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Adjon meg egy új Pin kódot a zárolt csatornák feloldásához."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11486,10 +11390,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Új és eltávolított állományok keresése az XBMC indulásakor."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Nincs még információ"
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Nincs még információ"
 
@@ -11800,10 +11700,6 @@ msgstr "Nincs még információ"
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Időjárás információ forrásának megadása."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."

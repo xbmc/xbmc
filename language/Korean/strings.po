@@ -5153,10 +5153,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "애플 리모트 오류"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "애플 리모트 지원을 사용할 수 있습니다."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "연결재생"
@@ -6440,10 +6436,6 @@ msgstr "채널 검색"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "검색하는 동안에는 PVR 기능을 사용할 수 없습니다."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "어느 서버에서 검색하겠습니까?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -8336,6 +8328,10 @@ msgstr "조정값 초기화"
 msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "기본값으로 %s 조정값를"
+
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "기본값으로"
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -10329,10 +10325,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "모든 제목에서 선택 ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "블루레이 메뉴 보기"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "메인 타이틀 재생: %d"
@@ -10348,14 +10340,6 @@ msgstr "재생 항목 선택"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "챕터: %u - 재생시간: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "블루레이 디스크 재생 실패"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "이 블루레이 디스크의 메뉴는 지원하지 않습니다."
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11129,6 +11113,10 @@ msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "XBMC를 시작할 때 표시할 미디어 화면을 선택합니다."
 
+msgctxt "#36110"
+msgid "Select or disable the sound scheme used in the user interface."
+msgstr "사용자 인터페이스에 사용할 사운드 모음을 선택하거나 끕니다."
+
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
 msgstr "RSS 뉴스 표시를 사용하지 않으려면 이 옵션을 끕니다."
@@ -11137,9 +11125,21 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "RSS 피드를 편집합니다."
 
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "로캘/지역 설정을 포함합니다"
+
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "사용자 인터페이스 언어를 선택하세요."
+
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "온도, 시간, 날짜 형식을 선택합니다. 사용가능한 옵션은 선택한 언어에 따라 다릅니다."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the user interface."
+msgstr "사용자 인터페이스에서 문자열을 표시하는데 사용할 문자집합을 선택하세요."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11157,6 +11157,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "다국어 자막이 사용 가능할 때 기본 자막을 선택합니다."
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "파일목록 표시 방법과 관련된 설정을 포함합니다."
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "리스트에 상위 폴더로 이동 (...) 항목을 표시합니다."
@@ -11165,9 +11169,25 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "파일과 미디어 확장자 표시 여부. 예를 들면, 'You Enjoy Myself.mp3'를 'You Enjoy Myself'로 보여 줍니다."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "정렬에서 특정 문자 또는 문자열을 무시합니다. 예를 들면, 'The Simpsons'는 'Simpson'으로 정렬됩니다."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "컨텍스트 메뉴 (키보드 C)를 사용하여 파일을 삭제하거나 이름을 변경할 수 있게 허용합니다."
+
+msgctxt "#36126"
+msgid "Show the add source button in root sections of the user interface."
+msgstr "사용자 인터페이스의 루트 영역에 소스 추가 버튼을 표시합니다."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "파일 목록을 표시할 때 숨김 파일과 폴더 보기."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "모든 화면보호기 설정을 포함합니다."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11205,6 +11225,18 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
 
+msgctxt "#36138"
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "동영상 처리와 관련된 설정을 포함합니다"
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "비디오 라이브러리와 관련된 설정을 포함합니다."
+
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "비디오 라이브러리 사용"
+
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr "비디오 라이브러리에서 시청하지 않은 미디어의 줄거리 정보를 표시합니다."
@@ -11241,13 +11273,53 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "XML 파일을 비디오 라이브러리 데이터베이스로 가져옵니다."
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "비디오 재생과 관련된 설정을 포함합니다."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list."
+msgstr "목록의 다음 파일을 자동으로 재생합니다."
+
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "비디오 처리와 화면 표시 방법을 조정합니다."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "동영상 재생에 VAAPI 하드웨어 디코딩을 사용합니다. 주로 인텔 그래픽과 특정한 환경의 AMD 그래픽에 사용됩니다. "
+
+msgctxt "#36158"
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "동영상 재생에 DXVA2 하드웨어 디코딩을 사용합니다."
+
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "동영상 재생에 CrystalHD 디코딩을 사용합니다."
+
+msgctxt "#36160"
+msgid "Enable VDA hardware decoding of video files."
+msgstr "동영상 재생에 VDA 하드웨어 디코딩을 사용합니다."
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "동영상 재생에 OpenMax 하드웨어 디코딩을 사용합니다."
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "동영상 재생에 VideoToolbox 하드웨어 디코딩을 사용합니다."
+
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "동영상 디코딩에 픽셀 버퍼 개체 사용."
+
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "화면 새로고침 빈도를 비디오의 프레임 속도에 가장 근접하게 변경하여 부드럽게 재생하게 합니다."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "새로고침 빈도를 변경할 때 잠깐 동안 일시정지합니다."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11273,6 +11345,10 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr "와이드스크린 디스플레이에 4:3 동영상 재생시 확대 방법을 선택합니다."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "VDPAU를 사용하여 업스케일링 합니다."
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "TV 시청시 텔레텍스트를 표시합니다."
@@ -11281,9 +11357,17 @@ msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "텔레텍스트를 4:3 화면비에 맞추어 변경합니다."
 
+msgctxt "#36176"
+msgid "Category containing settings for how video file lists are handled."
+msgstr "비디오 파일 목록과 관련된 설정을 포함합니다."
+
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "'선택', '재생' (기본값), '되시작', '정보 보기' 의 옵션이 있습니다. '선택'은 항목을 선택합니다(ex. 파일모드에서 디렉터리를 엽니다). '되시작'은 마지막으로 재생이 중단된 지점부터 자동으로 이어서 재생되며 시스템을 재시작한 경우에도 작동됩니다."
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "비디오에서 코덱, 화면비 등의 메타데이터 정보와 썸네일을 추출합니다."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11297,9 +11381,41 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
 
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "분할된 비디오 파일을 연결하여 라이브러리 모드가 아닌 파일 보기에서 영화 폴더를 한 개의 항목으로 표시합니다."
+
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "라이브러리 보기에서 제목, 장르 등의 노드를 제거합니다. 카테고리를 선택하면 제목 보기로 바로 이동합니다."
+
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "자막과 관련된 설정을 포함합니다."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "자막에 사용할 글꼴을 설정합니다."
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "자막에 사용할 글꼴 크기를 설정합니다."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "자막에 사용할 글꼴 스타일을 설정합니다."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "자막에 사용할 글꼴 색상을 설정합니다."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "자막에 사용할 문자집합을 설정합니다."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "ASS/SSA 자막 글꼴을 무시합니다."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11308,6 +11424,10 @@ msgstr "자막이 저장되어 있는 디렉터리를 설정합니다. 네트워
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "화면에서 자막이 표시될 위치"
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "DVD 관련 설정을 포함합니다."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11337,10 +11457,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "기본 뮤직비디오 자료수집기"
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
@@ -11352,6 +11468,10 @@ msgstr "XBMC의 PVR 기능을 사용합니다. 하나 이상의 PVR 애드온이
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "PVR 백엔드에서 채널 그룹을 가져옵니다. 백엔드에서 그룹이 발견되지 않으면 사용자가 만든 그룹을 지웁니다."
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
+msgstr "XBMC 자체 채널 번호를 사용하지만 백엔드 채널 번호 순서로 채널을 정렬합니다."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -11369,41 +11489,13 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "채널/EPG 데이터베이스를 삭제한 후 백엔드에서 데이터를 다시 가져옵니다."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "백엔드에서 며칠 분의 EPG 데이터를 가져올 것인지를 설정합니다."
 
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "백엔드에서 EPG 데이터를 가져오는 시간 간격."
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11417,41 +11509,45 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "채널의 EPG 데이터를 찾지 못하는 경우에 보여주는 \"정보 없음\" 표시를 숨김."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "선택한 채널을 전체화면 대신 작은 창에서 보여 줍니다."
+
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "시작할 때 마지막 시청 채널 계속 재생."
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "코덱 정보 윈도우에서 신호 품질을 표시합니다 (애드온과 백엔드가 지원하는 경우)."
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "전체화면 모드에서 숫자 버튼을 누르면 1초가 지난 후 해당 번호의 채널로 자동 전환됩니다."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "녹화 버튼을 누를 때 즉시 녹화되는 분량."
 
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "녹화 우선순위. 높은 번호일수록 우선순위가 높습니다. 모든 추가기능과 백엔드가 지원하지는 않습니다"
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "지정한 시간 후 녹화를 삭제합니다. 모든 애드온과 백엔드가 지원하지는 않습니다."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "실제 방송 시작시간 전에 녹화를 시작합니다. 모든 추가기능과 백엔드가 지원하지는 않습니다"
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "실제 방송 종료시간이 지난 후 녹화를 종료합니다. 모든 추가기능과 백엔드가 지원하지는 않습니다."
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "백엔드에서 예약 추가, 완료, 삭제되는 경우 알림을 표시합니다."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11461,10 +11557,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "매일 깨우기 명령을 실행할 시각."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "자녀 보호 잠금이 된 채널에 접근할 때 비밀번호를 물어봅니다. 일반 채널 편집기의 일반 탭에서 잠금 표시를 할 수 습니다. 자녀 보호 잠금 채널은 비밀번호를 입력하지 않으면 시청 또는 녹화를 할 수 없으며 EPG 정보를 숨깁니다."
@@ -11473,13 +11565,17 @@ msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "자녀보호로 잠긴 채널을 해제하기 위한 새로운 비밀번호를 입력하세요."
 
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
+msgstr "자녀보호 채널에 접근할 때 비밀번호를 입력하여야 하고 입력 후 정해진 시간 동안 비밀번호를 다시 요청하지 않습니다."
 
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
+msgctxt "#36253"
+msgid "Section that contains settings related to music files and how they are handled."
+msgstr "음악 파일 처리와 관련된 설정을 포함합니다."
+
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "음악 라이브러리 사용."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11488,6 +11584,10 @@ msgstr "컴필레이션 앨범에만 있는 아티스트를 라이브러리 아�
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "음악을 검색할 때 앨범과 아티스트 정보를 자료수집기를 사용하여 자동으로 가져옵니다.  "
+
+msgctxt "#36257"
+msgid "Select the default album information source."
+msgstr "앨범 정보 기본 소스 선택"
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11501,10 +11601,6 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
 
-msgctxt "#36261"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
 msgstr "음악 라이브러리 데이터베이스를 XML 파일로 내보냅니다. 이 작업은 현재 XML 파일을 임의로 덮어씁니다. "
@@ -11513,9 +11609,17 @@ msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "XML 파일을 음악 라이브러리로 가져옵니다."
 
+msgctxt "#36264"
+msgid "Category containing settings for how music playback is handled."
+msgstr "음악 재생과 관련된 설정을 포함합니다."
+
 msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
 msgstr "현재 폴더의 다음 항목을 자동으로 재생합니다. 예를들면, 파일 보기에서 한 개의 트랙이 재생 완료되면 같은 폴더의 다음 트랙을 자동으로 재생합니다."
+
+msgctxt "#36266"
+msgid "When songs are selected they are queued instead of playback starting immediately."
+msgstr "트랙을 선택할 때 즉시 재생하지 않고 대기열에 추가합니다."
 
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
@@ -11529,6 +11633,10 @@ msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "기본값은 표준에 따라 89dB 입니다. 변경시 주의를 요합니다."
 
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping will occur."
+msgstr "클리핑이 발생할 때 음량을 줄입니다."
+
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "트랙에서 다음 트랙까지 부드럽게 페이드인/아웃 합니다. 겹치는 시간을 1-15초 사이에서 설정할 수 있습니다."
@@ -11541,9 +11649,37 @@ msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "노래 파일에서 태그 정보를 읽습니다. 큰 디렉터리를 네트워크를 통해 읽어오는 경우 특히 많은 시간이 걸릴 수 있습니다."
 
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
+msgstr "노래 목록에서 노래 제목이 표시되는 형식을 설정합니다. 올바른 작동을 위해서 태그 읽기를 사용하여야 합니다."
+
+msgctxt "#36276"
+msgid "Used for formatting the second column in file lists."
+msgstr "파일 목록의 두 번째 열 형식에 사용됩니다."
+
+msgctxt "#36277"
+msgid "Control the way that the names of songs are displayed in the now playing list."
+msgstr "지금 재생 중 목록에서 노래 제목이 표시되는 형식을 설정합니다."
+
+msgctxt "#36278"
+msgid "Used for formatting the second column in the now playing list."
+msgstr "지금 재생 중 목록의 두 번째 열 형식에 사용됩니다."
+
+msgctxt "#36279"
+msgid "Control the way that the names of songs are displayed in library lists."
+msgstr "라이브러리 목록에서 노래 제목이 표시되는 형식을 설정합니다."
+
+msgctxt "#36280"
+msgid "Used for formatting the second column in library lists."
+msgstr "라이브러리 목록의 두 번째 열 형식에 사용됩니다."
+
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "원격 공유와 광학 미디어에서 썸네일을 검색합니다. 이 기능은 때때로 네트워크 폴더의 리스팅 속도를 느리게 합니다."
+
+msgctxt "#36282"
+msgid "Category containing settings for how CDs are handled."
+msgstr "CD 관련 설정을 포함합니다."
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11557,6 +11693,10 @@ msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr "복사한 트랙을 저장할 하드 드라이브의 위치를 선택합니다."
 
+msgctxt "#36286"
+msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "태그를 기준으로 저장 될 노래 제목 형식. 태그: [B]%N[/B]: 트랙번호, [B]%S[/B]: 디스크번호, [B]%A[/B]: 가수, [B]%T[/B]: 제목, [B]%B[/B]: 앨범, [B]%G[/B]: 장르, [B]%Y[/B]: 연도, [B]%F[/B]: 파일이름, [B]%D[/B]: 재생시간, [B]%J[/B]: 날짜, [B]%R[/B]: 평점, [B]%I[/B]: 파일크기."
+
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
 msgstr "복사 백업에 사용할 오디오 인코더를 선택합니다."
@@ -11569,13 +11709,25 @@ msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
 msgstr "해당 오디오 코덱에서 사용할 비트레이트를 선택합니다."
 
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5."
+msgstr "FLAC의 압축 수준이며 기본값은 5입니다."
+
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "복사 백업이 끝나면 디스크를 자동으로 꺼냅니다."
 
+msgctxt "#36292"
+msgid "Category containing the settings for how karaoke is handled."
+msgstr "노래방 관련 설정을 포함합니다."
+
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "음악을 재생할 때 음악의 .cdg 파일을 찾아서 보여줍니다."
+
+msgctxt "#36294"
+msgid "Show song selection dialog once the last song in the queue has been played."
+msgstr "대기열의 마지막 노래가 재생되면 노래 선택 대화창을 표시합니다."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11589,6 +11741,14 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
 
+msgctxt "#36304"
+msgid "Section that contains settings related to pictures and how they are handled."
+msgstr "사진 처리와 관련된 설정을 포함합니다."
+
+msgctxt "#36305"
+msgid "Category containing settings for how picture file lists are handled."
+msgstr "사진 목록과 관련된 설정을 포함합니다."
+
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr "EXIF 정보 (날짜, 시각, 사용한 카메라 등) 가 포함되어 있으면 보여줍니다."
@@ -11601,9 +11761,17 @@ msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "해당되는 정보가 포함되어 있는 경우, EXIF 정보에 따라 자동으로 사진을 회전합니다."
 
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "사진 파일 목록에 비디오 파일을 표시합니다."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "아직 사용 가능한 정보가 없습니다."
+
+msgctxt "#36311"
+msgid "Category containing settings for how picture slideshows are handled."
+msgstr "사진 슬라이드 쇼와 관련된 설정을 포함합니다."
 
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
@@ -11617,6 +11785,14 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "슬라이드쇼 이미지를 무작위 순서로 봅니다."
 
+msgctxt "#36315"
+msgid "Section that contains weather related settings."
+msgstr "날씨와 관련된 설정을 포함합니다."
+
+msgctxt "#36316"
+msgid "Category containing settings for how weather addons are handled."
+msgstr "날씨 추가기능과 관련된 설정을 포함합니다."
+
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "날씨를 표시할 세 군데의 지역을 선택합니다."
@@ -11625,13 +11801,33 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "기본 날씨 정보 소스를 지정합니다. 옵션은 추가기능 관리자를 보세요."
 
+msgctxt "#36319"
+msgid "Section containing settings for how network services are handled."
+msgstr "네트워크 서비스와 관련된 설정을 포함합니다."
+
+msgctxt "#36320"
+msgid "Category containing settings used for all services."
+msgstr "모든 서비스에 사용되는 설정을 포함합니다."
+
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "다양한 네트워크 서비스를 사용할 때 표시되는 XBMC 이름입니다."
 
+msgctxt "#36322"
+msgid "Category containing settings for how the UPnP service is handled."
+msgstr "UPnP 서비스와 관련된 설정을 포함합니다."
+
+msgctxt "#36323"
+msgid "Enable the UPnP server. This allows you to stream media to a UPnP client."
+msgstr "UPnP 서버 기능을 사용합니다. 다른 UPnP 클라이언트에 미디어를 스트림해 줍니다."
+
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "수동이나 자동으로 라이브러리가 업데이트 되었을 때 UPnP 클라이언트에 알림을 보냅니다. "
+
+msgctxt "#36327"
+msgid "Category containing settings for how the webserver service is handled."
+msgstr "웹 서버 서비스와 관련된 설정을 포함합니다."
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11645,17 +11841,49 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "웹서버 사용자 이름을 설정합니다."
 
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "웹서버 비밀번호를 설정합니다."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "추가기능 관리자에서 설치한 웹 인터페이스 중에서 선택합니다."
+
+msgctxt "#36333"
+msgid "Category containing settings for how the remote control service is handled."
+msgstr "원격 제어 서비스와 관련된 설정을 포함합니다."
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "이 시스템의 프로그램이 웹 인터페이스 또는 JSON-RPC 인터페이스 프로토콜을 통해 XBMC를 제어하는 것을 허용합니다."
 
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "원격 제어 포트를 설정합니다."
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "원격 제어 포트 범위를 설정합니다."
+
+msgctxt "#36337"
+msgid "Define the maximum number of clients that can connect."
+msgstr "연결 가능한 클라이언트 수를 설정합니다."
+
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "네트워크에 있는 프로그램이 XBMC를 제어하는 것을 허용합니다."
+
+msgctxt "#36339"
+msgid "Initial repeat delay (ms)."
+msgstr "초기 반복 지연 (밀리초)"
+
+msgctxt "#36340"
+msgid "Continuous repeat delay (ms)."
+msgstr "연속 반복 지연 (밀리초)"
+
+msgctxt "#36349"
+msgid "Section that contains the System related settings for the device XBMC is installed on."
+msgstr "XBMC가 설치된 장치의 시스템과 관련된 설정을 포함합니다."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
@@ -11809,10 +12037,6 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "날씨 정보를 검색하는데 필요한 위치 정보를 정의합니다."
 
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "아직 사용 가능한 정보가 없습니다."
-
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr "EPG 항목을 선택했을 때의 동작입니다: [컨텍스트 메뉴 표시] 는 해당 항목에서 선택할 수 있는 추가 동작을 컨텍스트 메뉴로 보여줍니다; [채널로  변경] 관련 채널로 이동하여 시청합니다; [정보 보기] 줄거리와 추가 옵션을 포함하는 상세 정보를 보여줍니다; [녹화] 선택한 항목을 예약 녹화합니다."
@@ -11929,6 +12153,14 @@ msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "3D 모드 반전"
 
+msgctxt "#36539"
+msgid "Changes the stereoscopic 3D mode of the user interface."
+msgstr "3D 사용자 인터페이스를 변경합니다."
+
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "우선 적용 3D 모드"
+
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "AirPlay 클라이언트에서 음량 조정 허용"
@@ -11948,6 +12180,10 @@ msgstr "비디오 하드웨어 디코딩을 사용합니다."
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "3D 자막 심도"
+
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "3D 비디오 자막의 심도를 설정합니다. 설정값이 높을수록 시청자에 가깝게 보입니다"
 
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
@@ -12000,6 +12236,10 @@ msgstr "듀얼 오디오 출력"
 msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "다운믹스할 때 센터 채널 증폭"
+
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
+msgstr "전체화면에서 프린트스크린, alt-tab, 음량 등의 시스템 키를 사용합니다"
 
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"

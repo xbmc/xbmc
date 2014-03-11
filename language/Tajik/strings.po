@@ -1085,6 +1085,10 @@ msgctxt "#308"
 msgid "Original stream's language"
 msgstr "Забони ҷараёнӣ аслӣ"
 
+msgctxt "#309"
+msgid "User interface language"
+msgstr "Забони интерфейси корбар"
+
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=худкор)"
@@ -4977,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Фаъол кардани шитоби сахтафзор (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "Иҷозат додани рамзкушоии нармафзор бо якҷанд ҷараён"
+
 msgctxt "#13441"
 msgid "Use Mpeg-2 VDPAU"
 msgstr "Истифодаи Mpeg-2 VDPAU"
@@ -5025,9 +5033,17 @@ msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
 msgstr "Ин имконро фаъол кунед, агар хоҳед ки шитобдиҳандаи сахтафзориро барои кодекҳои VC-1 истифода баред. Агар ғайрифаъол кунед, ба ҷояш CPU истифода мешавад. Махсусан, VC-1-и бофташуда аксари вақт дар сахтафзори Intel қатъ мешавад."
 
+msgctxt "#13454"
+msgid "Decoding method"
+msgstr "Усули рамзкушоӣ"
+
 msgctxt "#13455"
 msgid "Software"
 msgstr "Нармафзор"
+
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Бо сахтафзор суръат додашуда"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -5154,8 +5170,8 @@ msgid "Apple Remote Error"
 msgstr "Хатои пулти Apple"
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Шумо метавонед дастгирии пулти Apple-ро фаъол кунед."
+msgid "Apple Remote support could not be enabled."
+msgstr "Дастгирии пулти Apple фаъол карда нашуд."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -5257,9 +5273,25 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Зерҳофизаи видео - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "Зерҳофизаи видеоӣ - Шабакаи маҳаллӣ"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "Зерҳофизаи видеоӣ - Интернет"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Зерҳофизаи аудио - DVD-ROM"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "Зерҳофизаи аудиоӣ - Шабакаи маҳаллӣ"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "Зерҳофизаи аудиоӣ - Интернет"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5272,6 +5304,10 @@ msgstr "Шабакаи маҳаллӣ"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Хидматҳо"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "Зерҳофизаи DVD - Шабакаи маҳаллӣ"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5504,6 +5540,10 @@ msgstr "Баровардани диски CD баъди анҷоми нусха�
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Истодани нусхабардории диски CD"
+
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Суръатафзоӣ"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -6420,10 +6460,6 @@ msgstr "Ҷустуҷӯи шабакаҳо"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Ҳангоми иҷрои ҷустуҷӯ истифодаи функсияҳои PVR имконпазир нест."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Шумо дар кадом сервер мехоҳед ҷустуҷӯ кунед?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -8313,6 +8349,10 @@ msgctxt "#20326"
 msgid "This will reset the calibration values for %s"
 msgstr "Ин амал қиматҳои санҷиширо барои %s дубора танзим мекунад"
 
+msgctxt "#20327"
+msgid "to its default values."
+msgstr "ба қиматҳои пешфарзи он."
+
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Тамошо кардани ҷои таъинот"
@@ -9301,6 +9341,10 @@ msgctxt "#21459"
 msgid "mixed"
 msgstr "омехташуда"
 
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Ҷойгиршавии зерунвонҳо дар экран"
+
 msgctxt "#21461"
 msgid "Fixed"
 msgstr "Таъйиншуда"
@@ -10201,6 +10245,10 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Таваққуф кардан ҳангоми ҷустуҷӯи зерунвонҳо"
 
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Муайян кунед, ки зерунвонҳои боршуда дар куҷо захира мешаванд - ба ҷузвдони ягонаи видео ё ягон ҷои дигар."
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Дар ҳоли ҷустуҷӯи зерунвонҳо..."
@@ -10233,6 +10281,10 @@ msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "Ягон хидмати зерунвонҳо насб нашудааст"
 
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "Ҷойгиршавии захирагоҳи зерунвонҳо"
+
 msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Хидмати телевизионии пешфарз"
@@ -10253,6 +10305,18 @@ msgctxt "#24122"
 msgid "Update all"
 msgstr "Ҳамаро навсозӣ кардан"
 
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr "Таваққуф кардани видео ҳангоми ҷустуҷӯи зерунвонҳо ва оғози дубора баъд аз ворид кардани зерунвон."
+
+msgctxt "#24124"
+msgid "Next to the video"
+msgstr "Дар назди видео"
+
+msgctxt "#24125"
+msgid "Custom location"
+msgstr "Ҷойгиршавии фармоишӣ"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Огоҳиҳо"
@@ -10266,8 +10330,8 @@ msgid "Select from all titles ..."
 msgstr "Интихоб кардан аз ҳамаи унвонҳо..."
 
 msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Намоиш додани менюи BluRay"
+msgid "Show Blu-ray menus"
+msgstr "Намоиш додани менюи Blu-ray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
@@ -10286,12 +10350,8 @@ msgid "Chapters: %u - duration: %s"
 msgstr "Фаслҳо: %u - давомнокӣ: %s"
 
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Пахши диски Blu-ray қатъ шудааст"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Менюи диски Blu-ray дастгирӣ намешавад"
+msgid "Playback of Blu-ray failed"
+msgstr "Пахши Blu-ray қатъ шудааст"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11029,6 +11089,10 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "Истифодаи диапазони рангҳои маҳдудшуда (16—235)"
 
+msgctxt "#36102"
+msgid "Category containing all Skin related settings."
+msgstr "Категория дорои ҳамаи танзимоти Пӯст."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Тағйир додани танзимоти махсуси пӯст. Параметрҳои дастрас аз пӯсти интихобшуда вобаста аст."
@@ -11053,6 +11117,10 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Таҳрир кардани навори навсозии RSS."
 
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "Категория дорои ҳамаи танзимоти маҳаллигардонӣ/минтақавӣ."
+
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Интихоби форматҳои ҳарорат, вақт ва сана. Танзимҳои дастрас аз забони интихобшуда вобаста ҳастанд."
@@ -11073,6 +11141,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Интихоб кардани зерунвонҳои пешфарз вақте ки забонҳои гуногун дастрасанд."
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Категория дорои танзимот барои намоиши рӯйхатҳои файлҳо."
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Намоиш додани аломати (..) дар рӯйхат барои гузариш ба ҷусвдони асосӣ."
@@ -11081,9 +11153,21 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Намоиш додани пасвандҳои файлҳои мултимедиавӣ. Масалан, файли \"You Enjoy Myself.mp3\" ҳамчун \"You Enjoy Myself\" намоиш дода мешавад."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "Рад кардани баъзе намоишҳо ҳангоми амалҳои мураттабсозӣ. Барои мисол, 'The Simpsons' ҳамчун 'Simpsons' мураттаб карда мешавад."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Иҷозати иваз кардани ном ва нест кардани файлҳо тавассути менюи марбут дар интерфейси корбарӣ (Барои намоиш додани менюи марбут, тугмаи \"С\"-ро дар клавиатура пахш кунед)."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Намоиш додани файлҳо ва директорияҳои пинҳоншуда ҳангоми намоиши рӯйхат."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "Категория дорои ҳамаи танзимоти пардаи экран."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11161,9 +11245,9 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Интихоби усули коркард ва намоиши видео."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "Таваққуф кардан ба фосилаи кӯтоҳ ҳангоми тағйир додани сӯръати навсозӣ."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11193,6 +11277,10 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
 msgstr "Студияи табдилдиҳии сатҳи рангҳои VDPAU ба барномаҳои монанди XBMC иҷозат медиҳад, ки тавонанд ба табдилдиҳии рангҳои фазо таъсир расонанд."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "Фаъол кардани миқёсбандии баландсифат тавассути VDPAU."
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "Фаъол кардани телетекст ҳангоми тамошои ҷараёни телевизионии пахши мустақим."
@@ -11217,9 +11305,41 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Файлҳои видеоӣ бо якчанд қисм, ҷузвдонҳои DVD ва ҷузвдонҳои филмҳоро дар намоиши ғайри китобхонагӣ ба объекти ягона муттаҳид мекунад."
+
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "Барои намоиш надодани \"Унвон\", \"Жанр\", \"Сол\" ва ғайра дар ҳолати Китобхона истифода баред. Ҳангоми интихоби категория рӯйхати филмҳо/сериалҳо дарҳол намоиш дода мешавад."
+
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "Категория дорои танзимот барои тарзи коркарди зерунвонҳо."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "Танзими навъи шрифт барои зерунвонҳо."
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "Танзими андозаи шрифт барои зерунвонҳо."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "Танзими сабки шрифт барои зерунвонҳо."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "Танзими ранги шрифт барои зерунвонҳо."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "Танзими маҷмӯи аломатҳои шрифт барои зерунвонҳо."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Рӯиҳамнависии шрифтҳои зерунвонҳои ASS/SSA."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11228,6 +11348,10 @@ msgstr "Танзим кардани директорияи шахсӣ барои
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Ҷойгиршавии зерунвонҳо дар экран."
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "Категория дорои танзимот барои тарзи коркарди дискҳои DVD."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11258,8 +11382,8 @@ msgid "Default scraper used for adding music videos to your library."
 msgstr "Инфоресурси пешфарз барои иловаунии видеоҳои мусиқӣ ба китобхонаи худ."
 
 msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Категория дорои танзимоти умумӣ барои хусустяҳои PVR/Live TV."
 
 msgctxt "#36202"
 msgid "No info available yet."
@@ -11289,42 +11413,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Нест кардани пойгоҳи иттилоотии шабакаҳо/EPG ва аз нав ворид кардани иттилоот аз серверҳои мултимедиавӣ."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Ворид накардани иттилооти EPG ҳангоми пахши ТВ барои истиснои сарбории CPU."
@@ -11337,10 +11425,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Пинҳон кардани барчаспҳои \"Ягон иттилоот дастрас нест\", вақте ки бозёбии иттилооти EPG барои шабака имконпазир нест."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Намоиш додани ҷараёни шабакаи интихобшуда дар равзанаи хурд ба ивази экрани пурра."
@@ -11349,29 +11433,13 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Намоиш додани иттилооти сифати сигнал дар равзанаи иттилоотии кодекҳо (агар бо барномаи иловагӣ ва сервери мултимедиавӣ дастгирӣ карда шавад)."
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Гузариши худкор ба шабкаи интихобшуда баъд аз 1 сония ҳангоми зеркунии рақами шабака дар ҳолати экрани пурра."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Намоиш додани огоҳиҳо ҳангоми иловакунӣ, несткунӣ ё анҷомдиҳии вақтсанҷҳои сервери мултимедиавӣ."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11385,10 +11453,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Вақти иҷрокунии фармони бедоршавии ҳаррӯза."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Ҳангоми кушодани шабакаҳои қулфшуда рамзи PIN дархост мешавад. Шабакаҳо метавонанд дар варақаи умумии муҳаррири шабакаҳо ҳамчун қулфшуда қайд карда шаванд. Шабакаҳои қулфшуда танҳо баъд аз ворид кардани рамзи PIN пахш ё сабт карда мешаванд ва иттилооти EPG барои ин шабакаҳо пинҳон карда мешаванд."
@@ -11396,14 +11460,6 @@ msgstr "Ҳангоми кушодани шабакаҳои қулфшуда ра
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Барои кушодани шабакаҳои қулфшуда бо волидон рамзи қулфи наверо ворид кунед."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11422,10 +11478,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Санҷиши файлҳои мултимедиаи нав ва тозашуда ҳангоми оғози кори XBMC."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Ягон маълумот ҳоло дастрас нест."
 
@@ -11549,13 +11601,25 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "Интихоб кардани манбаи пешфарз барои гирифтани иттилооти пешгӯии обу ҳаво. Хидматҳои дастрасро дар мудири барномаҳои иловагӣ интихоб кунед."
 
+msgctxt "#36320"
+msgid "Category containing settings used for all services."
+msgstr "Категория дорои танзимот барои ҳамаи хидматҳо."
+
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "Номи намоишии насби ҷории XBMC барои истифода дар хидматҳои шабакавии гуногун."
 
+msgctxt "#36322"
+msgid "Category containing settings for how the UPnP service is handled."
+msgstr "Категория дорои танзимот барои тарзи коркарди хидмати UPnP."
+
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "Фиристодани огоҳӣ ба муштариёни UPnP ҳангоми ба вуҷуд омадани навсозиҳои дастӣ ё худкор барои китобхона."
+
+msgctxt "#36327"
+msgid "Category containing settings for how the webserver service is handled."
+msgstr "Категория дорои танзимот барои тарзи коркарди хидмати сервери веб."
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11569,17 +11633,49 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "Номи корбари сервери вебро ворид кунед."
 
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "Таъин кардани парол барои сервери веб."
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Интихоби интерфейсҳои веби насбшуда тавассути мудири барномаҳои иловагӣ."
+
+msgctxt "#36333"
+msgid "Category containing settings for how the remote control service is handled."
+msgstr "Категория дорои танзимот барои тарзи коркарди хидмати идоракунии дурдаст."
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Иҷозати идоракунии XBMC аз тарафи барномаҳои ин компютер тавассути интерфейси веб ё протоколи интерфейси JSON-RPC."
 
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "Таъин кардани порт барои сервери веб."
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "Таъин кардани диапазон барои порти идоракунии дурдаст."
+
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Иҷозати идоракунии XBMC ба воситаи барномаҳо аз шабакаи пайвастшуда."
+
+msgctxt "#36339"
+msgid "Initial repeat delay (ms)."
+msgstr "Таъхири такрори ибтидоӣ (мс)."
+
+msgctxt "#36340"
+msgid "Continuous repeat delay (ms)."
+msgstr "Таъхири такрори бефосила (мс)."
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "Фаъол кардани муҳофизат бо пароли AirPlay."
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "Пароли AirPlay-ро танзим мекунад."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
@@ -11736,10 +11832,6 @@ msgstr "Ягон маълумот ҳоло дастрас нест."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Интихоби минтақаҳо барои гирифтани иттилооти обу ҳаво."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Ягон маълумот ҳоло дастрас нест."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."

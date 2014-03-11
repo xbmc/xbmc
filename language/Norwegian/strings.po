@@ -5145,10 +5145,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Feil med Apple fjernkontroll"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple fjernkontrollstøtte kan bli aktivert."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Stable"
@@ -5249,9 +5245,25 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Video mellomlager - DVD-spiller"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "Video cache - Lokalt nettverk"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "Video cache - Internett"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Lyd-mellomlager - DVD-spiller"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "Lyd cache - Lokalt nettverk"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "Lyd cache - Internett"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5264,6 +5276,10 @@ msgstr "Lokalt nettverk"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Tjenester"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "DVD cache - Lokalt nettverk"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5496,6 +5512,10 @@ msgstr "Løs ut CD når rippingen er fullført"
 msgctxt "#14100"
 msgid "Stop ripping CD"
 msgstr "Stop CD-ripping"
+
+msgctxt "#14101"
+msgid "Acceleration"
+msgstr "Akselerasjon"
 
 msgctxt "#15012"
 msgid "Unavailable source"
@@ -6412,10 +6432,6 @@ msgstr "Søk etter kanaler"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Kan ikke bruke PVR-funksjoner når søk pågår."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "På hvilken tjener ønsker du å søke?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10209,6 +10225,10 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Sett på pause ved søk etter undertekster"
 
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Spesifiser hvor nedlastede undertitler skal lagres, den samme plasseringen som videoen eller en egendefinert plassering."
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Søker etter undertekster ..."
@@ -10249,9 +10269,17 @@ msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Standard TV-tjeneste"
 
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles."
+msgstr "Velg tjeneste som vil bli brukt som standard for å søke etter TV-serieundertekster"
+
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "Standard filmtjeneste"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles."
+msgstr "Velg tjenesten som vil bli brukt som standard for å søke etter filmundertekster"
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -10264,6 +10292,10 @@ msgstr "Skriv inn søketekst"
 msgctxt "#24122"
 msgid "Update all"
 msgstr "Oppdater alle"
+
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr "Stopp den gjeldende videoen når det søkes etter undertekster og gjenoppta når underteksten er tilgjengelig."
 
 msgctxt "#24124"
 msgid "Next to the video"
@@ -10285,10 +10317,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Velg fra alle titler ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Vis Blu-ray menyer"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Spill av hovedspor: %d"
@@ -10304,14 +10332,6 @@ msgstr "Velg avspillingsoppføring"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Kapittel: %u - varighet: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Avspilling av Blu-ray plate mislyktes"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Menyen til denne Blu-ray platen er ikke støttet"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11053,6 +11073,10 @@ msgctxt "#36101"
 msgid "Change the look and feel of the user interface."
 msgstr "Endre utseende og opplevelsen av brukergrensesnittet."
 
+msgctxt "#36102"
+msgid "Category containing all Skin related settings."
+msgstr "Kategori som inneholder alle skallinnstillinger."
+
 msgctxt "#36103"
 msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
 msgstr "Velg temaet for brukergrensesnittet. Dette vil bestemme utseendet og opplevelsen av XBMC."
@@ -11093,6 +11117,10 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Rediger RSS-nyhetsstrømmene."
 
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "Kategori som inneholder alle lokalitets- og regionsinnstillinger."
+
 msgctxt "#36114"
 msgid "Chooses the language of the user interface."
 msgstr "Velg språket for brukergrensesnittet."
@@ -11121,6 +11149,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Velg undertekststandard når undertekster er tilgjengelige på andre språk."
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Kategori som inneholder filvisningsinnstillinger. "
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Vis (...) oppføringen i lister for å gå til foreldremappen."
@@ -11136,6 +11168,14 @@ msgstr "Tillat sletting av, og å gi nytt navn til, filer gjennom brukergrensesn
 msgctxt "#36126"
 msgid "Show the add source button in root sections of the user interface."
 msgstr "Vis legg-til-kilde-knappen fra rotseksjoner av brukergrensesnittet."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Vis skjulte filer og mapper i filvisning."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "Kategori som inneholder alle skjermsparerinnstillinger."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11172,6 +11212,14 @@ msgstr "Ingen informasjon tilgjengelig enda."
 msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
+
+msgctxt "#36138"
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "Kategori som inneholder innstillinger for hvordan videoavspilling håndteres."
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "Kategori som inneholder videobiblioteksinnstillinger og hvordan det håndteres."
 
 msgctxt "#36140"
 msgid "Enable the video library."
@@ -11213,6 +11261,10 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "Importer en XML-fil til videobibliotekdatabasen."
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "Kategori som inneholder innstillinger for hvordan videoavspilling håndteres."
+
 msgctxt "#36152"
 msgid "Enable automatic playback of the next file in the list."
 msgstr "Aktiver automatisk avspilling av den neste filen i listen."
@@ -11221,9 +11273,9 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Juster metodene brukt for å bearbeide og vise video."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "Aktiver VAAPI-maskinvaredekoding av videofiler, brukes hovedsakelig for Intel-grafikk og i noen tilfeller AMD-grafikk."
 
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
@@ -11236,6 +11288,26 @@ msgstr "Aktiver CrystalHD dekoding av videofiler."
 msgctxt "#36160"
 msgid "Enable VDA hardware decoding of video files."
 msgstr "Aktiver VDA maskinvareavkoding av videofiler."
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "Aktiver OpenMac-maskinvaredekoding av videofiler."
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "Aktiver VideoToolbox-maskinvaredekoding av videofiler."
+
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "Aktiver dekoding av videofiler ved å benytte pikselbufferobjekter."
+
+msgctxt "#36164"
+msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
+msgstr "Tillat at oppdateringsfrekvensen til skjermen forandres slik at den best passer til videoens bildefrekvens. Dette kan gi jevnere videoavspilling."
+
+msgctxt "#36165"
+msgid "Pause for a small amount of time during a refresh rate change."
+msgstr "Stopp for et lite tidsintervall når oppdateringsfrekvensen forandres."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11265,6 +11337,10 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
 msgstr "VDPAU studionivåkonvertering gjør det mulig for avanserte programmer som XBMC å påvirke fargeromkonverteringen."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "Aktiver oppskalering ved å benytte VDPAU."
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "Aktiver Tekst-TV når direktesente TV-strømmer sees."
@@ -11273,9 +11349,17 @@ msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "Skaler Tekst-TV til 4:3"
 
+msgctxt "#36176"
+msgid "Category containing settings for how video file lists are handled."
+msgstr "Kategori som inneholder innstillinger for hvordan videofillister håndteres."
+
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Skift mellom Velg, Spill (forvalgt), Fortsett og Vis Informasjon. Velg vil velge et element, med andre ord åpne en mappe i filmodus. Fortsett vil automatisk spille av videoer fra den siste posisjonen du så dem, selv etter at systemet er blitt startet på nytt. "
+
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Hent ut miniatyrbilder og informasjon, slik som kodeker og formatforhold fra videoer."
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
@@ -11289,9 +11373,41 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Slå sammen flerdels-videofiler, DVD-mapper, og filmmapper til et element i ikke-biblioteksvisninger."
+
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "Fjerner tittel, sjanger o.l. fra Bibliotekvisningen. Valg av Kategori tar deg rett til Tittel-visning"
+
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "Kategori som inneholder innstillinger for hvordan undertitler håndteres."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "Fastsett skrifttypen som brukes til undertitler."
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "Fastsett skriftstørrelsen som brukes til undertekster."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "Fastsett skriftstilen som brukes til undertitler."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "Fastsett skriftfargen som brukes til undertitler."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "Fastsett skrifttegnsamlingen som brukes til underteksten."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Tilsidesett ASS/SSA undertekstskrifter."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
@@ -11300,6 +11416,10 @@ msgstr "Oppgi en brukerdefinert mappe for dine undertekster. Dette kan være en 
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Skjermplassering av undertekster."
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "Kategori som inneholder innstillinger for hvordan DVD-er håndteres."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11329,10 +11449,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Standardskaper som benyttes for å legge til musikkvideoer i biblioteket ditt."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
@@ -11361,42 +11477,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Slett kanal/EPG-database og etterpå hent data på ny fra kulisseklienten."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Ikke hent EPG-informasjon under TV-visning for å begrense prosessorbruk."
@@ -11409,10 +11489,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Skjul etiketten «ingen informasjon er tilgjengelig» når det ikke er mulig å hente EPG-informasjon for en kanal."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Vis valgt kanalstrøm i et lite vindu istedenfor fullskjerm."
@@ -11421,29 +11497,13 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Vis informasjon om signalkvaliteten i kodekinformasjonsvinduet (hvis støttet av tillegget og kulisseklient)"
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Ved å trykke en nummertast under fullskjermsvisning vil det automatisk byttes til det kanalnummeret som ble tastet inn etter ett sekund."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Vis en melding når tidsur blir lagt til, er ferdige eller blir fjernet av kulisseklienten."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11457,10 +11517,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Tidspunktet våkne opp kommandoen skal kjøres."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Spør etter en PIN-kode for å få tilgang til låste kanaler. Kanaler kan bli markert som låste i kanalhåndtereren på generelt-fanen. Låste kanaler kan ikke spilles av eller bli tatt opp uten å oppgi en pin-kode, og for disse kanalene er EPG-informasjonen skjult."
@@ -11468,14 +11524,6 @@ msgstr "Spør etter en PIN-kode for å få tilgang til låste kanaler. Kanaler k
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Vennligst oppgi en ny PIN-kode for å låse opp låste kanaler."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11494,10 +11542,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Se etter nye og fjernede mediefiler når XBMC starter."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Ingen informasjon tilgjengelig enda."
 
@@ -11812,10 +11856,6 @@ msgstr "Ingen informasjon tilgjengelig enda."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Velg steder som brukes for å hente værinfo."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Ingen informasjon tilgjengelig enda."
 
 msgctxt "#36425"
 msgid "Show context menu"

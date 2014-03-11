@@ -3433,6 +3433,10 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "நிலையான"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "மேம்பட்ட"
+
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "நீங்கள் இந்த பிரிவின் அமைப்புகளை மீட்டமைக்க வேண்டுமா?"
@@ -4913,10 +4917,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "ஆப்பிள் தொலை இயக்கி பிழை"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "ஆப்பிள் தொலைநிலை கட்டுப்பாடு ஆதரவு செயல்படுத்தப்படும்."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "அடுக்கு"
@@ -6116,10 +6116,6 @@ msgstr "சேனல்கள் தேடல்"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "தேடல் போது PVR செயல்பாடுகளை பயன்படுத்த முடியாது."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "எந்த சர்வரில் நீங்கள் தேட வேண்டும்?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -9777,10 +9773,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "அனைத்து தலைப்புகளில் இருந்து தேர்வு seiga"
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "புளுரே மெனுக்களை kaanbi"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "பிரதான தலைப்பை வாசிக்கவும்: %d"
@@ -10545,10 +10537,6 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
@@ -10561,79 +10549,7 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
 msgctxt "#36202"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36252"
 msgid "No info available yet."
 msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
 
@@ -10650,10 +10566,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "XBMC தொடக்கத்தில் புதிய மற்றும் நீக்கப்பட்ட ஊடக கோப்புகளுக்காக சரிபார்க்கவும்."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
 
@@ -10718,10 +10630,6 @@ msgid "No info available yet."
 msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
 
 msgctxt "#36415"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
-msgctxt "#36420"
 msgid "No info available yet."
 msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
 

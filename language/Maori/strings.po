@@ -5133,10 +5133,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Hapa Mamao Apple"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "I taea e Apple tautoko Mamao te whakahohe."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Stack"
@@ -6400,10 +6396,6 @@ msgstr "Rapu mō ngā hongere"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Kāore e taea te whakamahi i ngā mahi PVR i rapu."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "I te nei tūmau e hiahia ana koe ki te rapu?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10237,10 +10229,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Tīpakohia i ngā taitara katoa ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Whakaaturia tahua bluray"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Te tākaro taitara matua: %d"
@@ -10256,14 +10244,6 @@ msgstr "Tīpakohia item pūrei anō"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Pene:% u - roanga:% s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "I rahua te Blu-ray Kōpae pūrei anō"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "E kore te tahua o tenei Kōpae Blu-ray tautoko"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11133,10 +11113,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Whakaritea te tikanga e whakamahia ana ki te tukatuka me te whakaatu ataata."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "Synchronise te ataata ki te Mokatere tāmata o te aroturuki."
@@ -11229,10 +11205,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper taunoa whakamahia mō te tāpiri ataata waiata ki a koutou hei tirotiro ai."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "No info wātea ano."
@@ -11243,7 +11215,7 @@ msgstr "Whakahohe i te Whaiaro Video papa'i (PVR) ngā āhuatanga i roto i te XB
 
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
-msgstr "Kawemai i ngā rōpū hongere i te backend PVR (ki te tautoko). Ka muku i hanga kaiwhakamahi rōpū ki te kore ratou e kitea i runga i te backend."
+msgstr "Kawemai i ngā rōpū hongere i te PVR tuara-muri (ki te tautoko). Ka muku i hanga kaiwhakamahi rōpū ki te kore ratou e kitea i runga i te tuara-muri."
 
 msgctxt "#36205"
 msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
@@ -11265,42 +11237,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Mukua te teihana pātengi / EPG me Kawemai anō te raraunga i te backend muri."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Kaua e kawemai raraunga EPG i tākaro TV ki te whakaiti i te whakamahinga PTM."
@@ -11313,10 +11249,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Huna \"kore ngā mōhiohio e wātea ana \" tapanga ka taea te tiki e kore raraunga EPG mo te hongere."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Whakaatu awa o te teihana kua tīpakohia i roto i te pouaka iti kē o te matakatoa."
@@ -11325,29 +11257,13 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Ngā mōhiohio o te kounga Whakaatu tohu i roto i te matapihi mōhiohio kōteke (ki te tautoko i te Tāpiri-ki runga ki a backend)."
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Pāwhiritia te pātene tau i roto i te aratau mata katoa ka whakawhiti aunoa ki te tau teihana i tomo i muri 1 tuarua."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Whakaatu i te whakamōhiotanga i te e tapiritia timers, ka oti tangohia ranei e te backend."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "No info wātea ano."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11361,10 +11277,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "A, no te ki te mahi i te whakahau te ohonga ia rā."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Ui mo te waehere titi ki te uru mātua takere e kati ana. Ka taea te tohu takere rite e kati ana i roto i te ētita takere i runga i te ripa whānui. E kore e taea te takaro Parental takere raka ranei i tuhia te kore e tomo i te waehere titi, a ka huna te te mōhiohio EPG mo aua takere."
@@ -11372,14 +11284,6 @@ msgstr "Ui mo te waehere titi ki te uru mātua takere e kati ana. Ka taea te toh
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Tomo i te waehere titi hou ki te iriti mātua takere e kati ana."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "No info wātea ano."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11398,10 +11302,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Tirohia hoki ngā kōnae pāpāho hou, ka tangohia i runga i XBMC whakaoho."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "No info wātea ano."
 
@@ -11708,10 +11608,6 @@ msgstr "No info wātea ano."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Whakatautuhia ngā wāhi e whakamahia ana mō te tiki i ngā mōhiohio huarere."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "No info wātea ano."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."

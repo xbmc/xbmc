@@ -5170,8 +5170,8 @@ msgid "Apple Remote Error"
 msgstr "Ошибка ДУ Apple"
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Можно включить поддержку ДУ Apple."
+msgid "Apple Remote support could not be enabled."
+msgstr "Можно включить поддержку ПДУ Apple."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6462,8 +6462,8 @@ msgid "Cannot use PVR functions while searching."
 msgstr "Невозможно использовать функции PVR во время поиска."
 
 msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Выберите сервер для поиска"
+msgid "On which server do you want to search?"
+msgstr "На каком сервере произвести поиск?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10354,7 +10354,7 @@ msgid "Select from all titles ..."
 msgstr "Выбрать тайтл…"
 
 msgctxt "#25003"
-msgid "Show bluray menus"
+msgid "Show Blu-ray menus"
 msgstr "Показать меню BluRay"
 
 msgctxt "#25004"
@@ -10374,12 +10374,12 @@ msgid "Chapters: %u - duration: %s"
 msgstr "Главы: %u — длительность: %s"
 
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Не удалось проиграть диск Blu-ray"
+msgid "Playback of Blu-ray failed"
+msgstr "Воспроизведение Blu-ray невозможно"
 
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Меню этого диска Blu-ray не поддерживается"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Меню этого Blu-Ray не поддерживается"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11209,6 +11209,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Показывать расширения файлов. Например, файл \"You Enjoy Myself.mp3\" будет показан как \"You Enjoy Myself\"."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "Игнорировать артикли при сортировке. Например, файл \"The Simpsons\" будет отсортирован как \"Simpsons\"."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Разрешить удаление и переименование файлов посредством контекстного меню интерфейса (клавиша \"С\" на клавиатуре\")."
@@ -11321,13 +11325,17 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Выбор метода обработки и отображения видео."
 
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "Использовать высококачественные скаляры при масштабировании видео на этот процент."
+
+msgctxt "#36155"
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
+msgstr "Включить аппаратное декодирование видеофайлов VDPAU, в основном используемое в картах от Nvidia и в некоторых AMD."
+
 msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr "Включить аппаратное декодирование видео файлов VAAPI, в основном используемое в картах от Intel и в некоторых AMD."
-
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
 
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
@@ -11502,8 +11510,8 @@ msgid "Default scraper used for adding music videos to your library."
 msgstr "Источник сведений, используемый по умолчанию при добавлении музыкальных видео в медиатеку."
 
 msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Category for general settings for PVR/Live TV features."
+msgstr "Раздел основных настроек PVR/ТВ."
 
 msgctxt "#36202"
 msgid "No info available yet."
@@ -11538,44 +11546,44 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "Удалить базу данных каналов/EPG и повторно импортировать данные с ТВ-серверов."
 
 msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
+msgstr "Не выводить уведомление \"Соединение потеряно\", когда XBMC не может получить информацию от сервера PVR"
 
 msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "Раздел настроек меню и наэкранной информации ТВ, таких как сведения о канале."
 
 msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Выводить информацию при изменении канала, такую как название текущей передачи."
 
 msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Hide the programming information automatically after a few seconds, defined below."
+msgstr "Скрыть сведения о канале автоматически через несколько секунд, заданных ниже."
 
 msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Close the on screen display controls after switching channels."
+msgstr "Скрывать на дисплее кнопки управления после переключения каналов."
 
 msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
+msgstr "Как долго показывать сведения о канале, когда включена настройка 'авто-скрытия'."
 
 msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Folder where channel icons are stored."
+msgstr "Папка, где хранятся значки каналов."
 
 msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Scan for missing channel icons."
+msgstr "Искать недостающие значки каналов."
 
 msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Category for electronic programming guide settings."
+msgstr "Категория для установок EPG."
 
 msgctxt "#36219"
-msgid "Default EPG window to show."
-msgstr "Окно EPG по умолчанию"
+msgid "Default electronic programming guide window to show."
+msgstr "Окно по умолчанию для отображения EPG."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -11597,9 +11605,13 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Скрыть метки \"сведения недоступны\", если невозможно получить данные EPG  для канала."
 
+msgctxt "#36225"
+msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
+msgstr "Удалить базу данных EPG в xbmc и потом повторно получить данные от подсистемы."
+
 msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Category for PVR playback and channel switching settings."
+msgstr "Раздел настроек воспроизведения PVR и переключения каналов."
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
@@ -11614,20 +11626,20 @@ msgid "Display signal quality information in the codec information window (if su
 msgstr "Сведения о качестве сигнала в окне сведений о кодеке (если поддерживается дополнением и сервером)."
 
 msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "Как долго XBMC будет ждать смены канала, если не получает сигнал. Полезно для вещания 'по воздуху', когда сила сигнала не постоянна."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Автоматическое переключение на выбранный канал через 1 с при нажатии кнопки с цифрой в полноэкранном режиме."
 
 msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "При переключении каналов вперед или назад, переключение произойдет с задержкой, чтоб можно было успеть выбрать нужный, а не ждать переключения каждого."
 
 msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Category for default recording duration settings."
+msgstr "Категория установок продолжительности записи по-умолчанию."
 
 msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button."
@@ -11654,8 +11666,8 @@ msgid "Display a notification when timers are added, finished or removed by the 
 msgstr "Показывать уведомление при добавлении, удалении или завершении таймеров ТВ-сервером."
 
 msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "Раздел настроек управления энергосбережением, как и когда пробуждаться серверу PVR."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11669,6 +11681,10 @@ msgctxt "#36243"
 msgid "The command to execute."
 msgstr "Команда для выполнения."
 
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "Вычитаемое время от начала следующей запланированной записи."
+
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
 msgstr "Выполнять команду пробуждения каждый день в заданное время."
@@ -11678,8 +11694,8 @@ msgid "When to execute the daily wakeup command."
 msgstr "Когда выполнять ежедневную команду пробуждения."
 
 msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "Раздел настроек родительского контроля, если их  поддерживает сервер PVR."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11694,12 +11710,12 @@ msgid "Ask for the pin code again when trying to access a parental locked channe
 msgstr "Если в течении этого интервала времени не было попыток доступа к заблокированным от детей каналам, при очередной попытке пин-код будет запрошен вновь."
 
 msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Раздел настроек, специфичных для Вашего сервера PVR, если он поддерживает их изменение посредством XBMC."
 
 msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Этот пункт даст Вам доступ к специфичным настройкам вашего сервера PVR, если он поддерживает их смену через XBMC."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -11730,10 +11746,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Сканировать новые и удаленные медиафайлы при запуске XBMC."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Информация пока недоступна."
 
@@ -11776,6 +11788,10 @@ msgstr "Уменьшить громкость файла если он отсе�
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Плавный переход между музыкальными композициями. Можно выбрать длительность перехода 1—15 с."
+
+msgctxt "#36272"
+msgid "Allow crossfading to occur when both tracks are from the same album."
+msgstr "Разрешить плавный переход, даже когда обе композиции с одного альбома."
 
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
@@ -11864,6 +11880,22 @@ msgstr "Во время проигрывания музыкальных комп
 msgctxt "#36294"
 msgid "Show song selection dialog once the last song in the queue has been played."
 msgstr "Отображать диалог выбора песни после того как последняя песня будет воспроизведена."
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "Выбор шрифта караоке."
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "Выберите размер шрифта для караоке."
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "Выберите цвет шрифта для караоке."
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "Выберите кодировку символов для караоке."
 
 msgctxt "#36299"
 msgid "Export the karaoke numbered songs to HTML or CSV files."
@@ -12084,6 +12116,10 @@ msgstr "Изменить разрешение пользовательского
 msgctxt "#36353"
 msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr "Изменить частоту кадров отображения пользовательского интерфейса."
+
+msgctxt "#36354"
+msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "Отображать XBMC в полноэкранном окне. Основным преимуществом является для конфигураций с несколькими экранами, XBMC может быть использована без минимизации других приложений. Это использует больше ресурсов и воспроизведения может быть менее плавным."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -12344,10 +12380,6 @@ msgstr "Время задержки между нажатиями клавиш �
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Укажите месположения, для которых нужно получать прогноз погоды."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Информация пока недоступна."
 
 msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
