@@ -113,14 +113,21 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
 
+    // Set art
     if (!current->m_strIconPath.empty())
+    {
       pFileItem->SetIconImage(current->m_strIconPath);
+      pFileItem->SetArt("icon", current->m_strIconPath);
+    }
 
     if (!current->m_strThumbnailPath.empty())
       pFileItem->SetArt("thumb", current->m_strThumbnailPath);
 
     if (!current->m_strFanartPath.empty())
       pFileItem->SetArt("fanart", current->m_strFanartPath);
+    
+    // Use the channel icon as a fallback when a thumbnail is not available
+    pFileItem->SetArtFallback("thumb", "icon");
 
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
 
