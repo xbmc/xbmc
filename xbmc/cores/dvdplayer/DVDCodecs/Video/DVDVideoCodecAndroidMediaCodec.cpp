@@ -74,6 +74,16 @@ static bool IsBlacklisted(const std::string &name)
   static const char *blacklisted_decoders[] = {
     // No software decoders
     "OMX.google",
+    // For Rockchip non-standard components
+    "AVCDecoder",
+    "AVCDecoder_FLASH",
+    "FLVDecoder",
+    "M2VDecoder",
+    "M4vH263Decoder",
+    "RVDecoder",
+    "VC1Decoder",
+    "VPXDecoder",
+    // End of Rockchip
     NULL
   };
   for (const char **ptr = blacklisted_decoders; *ptr; ptr++)
