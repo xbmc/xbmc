@@ -53,6 +53,8 @@ int avformat_alloc_output_context2(AVFormatContext **ctx, AVOutputFormat *oforma
 
 AVRational av_stream_get_r_frame_rate(const AVStream *s);
 
+int64_t av_frame_get_best_effort_timestamp(const AVFrame *frame);
+
 // libavresample
 
 #define SwrContext AVAudioResampleContext

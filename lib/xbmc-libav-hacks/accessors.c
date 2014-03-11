@@ -33,3 +33,8 @@ AVRational av_stream_get_r_frame_rate(const AVStream *s)
     zero.den = 1;
     return zero;
 }
+
+int64_t av_frame_get_best_effort_timestamp(const AVFrame *frame)
+{
+    return frame->pkt_pts;
+}
