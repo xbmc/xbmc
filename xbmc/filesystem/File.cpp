@@ -149,7 +149,6 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     url.SetOptions("?cache=no");
   if (file.Open(url.Get(), READ_TRUNCATED))
   {
-
     CFile newFile;
     if (URIUtils::IsHD(strDest)) // create possible missing dirs
     {
@@ -260,7 +259,11 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     /* verify that we managed to completed the file */
     if (llFileSize && llPos != llFileSize)
     {
-      CFile::Delete(strDest);
+      // If file *really* exists, delete it, else just remove from dircache
+      if (CFile::Exists(strDest, true))
+        CFile::Delete(strDest);
+      else
+        g_directoryCache.ClearFile(strDest);
       return false;
     }
     return true;
