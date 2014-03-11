@@ -113,6 +113,36 @@ void CPlexGlobalTimer::RestartTimeout(int64_t msec, IPlexGlobalTimeout *callback
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexGlobalTimer::RemoveAllTimeoutsByName(const CStdString &name)
+{
+  CSingleLock lk(m_timerLock);
+  std::vector<timeoutPair> toRemove;
+
+  BOOST_FOREACH(timeoutPair p, m_timeouts)
+  {
+    if (name == p.second->TimerName())
+      toRemove.push_back(p);
+  }
+
+  BOOST_FOREACH(timeoutPair p, toRemove)
+    RemoveTimeout(p.second);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexGlobalTimer::DumpDebug()
+{
+#ifdef _DEBUG
+  CLog::Log(LOGDEBUG, "CPlexGlobalTimer::DumpDebug ******");
+  int i = 0;
+  BOOST_FOREACH(timeoutPair p, m_timeouts)
+  {
+    CLog::Log(LOGDEBUG, "CPlexGlobalTimer::DumpDebug %d - %s (%lld)", i, p.second->TimerName().c_str(), p.first - XbmcThreads::SystemClockMillis());
+    i++;
+  }
+#endif
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexGlobalTimer::Process()
 {
   m_running = true;
@@ -149,6 +179,7 @@ void CPlexGlobalTimer::Process()
 
       CLog::Log(LOGDEBUG, "CPlexGlobalTimer::Process firing callback %s", p.second->TimerName().c_str());
       m_timeouts.erase(m_timeouts.begin());
+      DumpDebug();
       CJobManager::GetInstance().AddJob(new CPlexGlobalTimerJob(p.second), NULL, CJob::PRIORITY_HIGH);
     }
   }

@@ -55,7 +55,6 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
       CLog::Log(LOGDEBUG, "CGUIWindowPlexPreplayVideo::OnMessage(deinit) killing local item out of directory cache");
       g_directoryCache.ClearDirectory(item->GetPath());
     }
-
   }
   else if (message.GetMessage() == GUI_MSG_CLICKED)
   {
@@ -71,6 +70,8 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
 {
+  g_plexApplication.timer.RemoveAllTimeoutsByName("navigationTimeout");
+
   if (action.GetID() == ACTION_PLAYER_PLAY)
   {
     PlexContentPlayerMixin::PlayPlexItem(g_plexApplication.m_preplayItem);

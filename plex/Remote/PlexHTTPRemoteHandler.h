@@ -73,6 +73,7 @@ class CPlexHTTPRemoteHandler : public IHTTPRequestHandler
     CXBMCTinyXML m_xmlOutput;
 
     CStdString m_data;
+    int m_formerWindow;
 };
 
 

@@ -58,7 +58,7 @@ bool CPlexNavigationHelper::CacheUrl(const std::string& url, bool& cancel, bool 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &parentUrl, int windowId)
+CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &parentUrl, int windowId, bool swap)
 {
   CStdString empty;
 
@@ -122,7 +122,7 @@ CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &
     args.push_back(originalUrl);
     args.push_back("return");
 
-    CApplicationMessenger::Get().ActivateWindow(window, args, false);
+    CApplicationMessenger::Get().ActivateWindow(window, args, swap);
     return empty;
   }
 
@@ -138,7 +138,7 @@ CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &
     args.push_back("return");
     args.push_back(parentUrl.Get());
 
-    CApplicationMessenger::Get().ActivateWindow(WINDOW_PLEX_PREPLAY_VIDEO, args, false);
+    CApplicationMessenger::Get().ActivateWindow(WINDOW_PLEX_PREPLAY_VIDEO, args, swap);
     return empty;
   }
 
@@ -177,7 +177,7 @@ CStdString CPlexNavigationHelper::navigateToItem(CFileItemPtr item, const CURL &
     CLog::Log(LOGDEBUG, "CPlexNavigationHelper::navigateToItem navigating to %s (%s)", originalUrl.c_str(), item->GetLabel().c_str());
     std::vector<CStdString> args;
     args.push_back(originalUrl);
-    CApplicationMessenger::Get().ActivateWindow(window, args, false);
+    CApplicationMessenger::Get().ActivateWindow(window, args, swap);
   }
   else
     return originalUrl;

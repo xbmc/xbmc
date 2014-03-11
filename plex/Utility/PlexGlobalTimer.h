@@ -39,11 +39,13 @@ class CPlexGlobalTimer : public CThread
     void SetTimeout(int64_t msec, IPlexGlobalTimeout* callback);
     void RemoveTimeout(IPlexGlobalTimeout* callback);
     void RestartTimeout(int64_t msec, IPlexGlobalTimeout* callback);
+    void RemoveAllTimeoutsByName(const CStdString& name);
 
     void StopAllTimers();
   private:
     void Process();
     void SetTimer();
+    void DumpDebug();
 
     CCriticalSection m_timerLock;
     std::vector<timeoutPair> m_timeouts;

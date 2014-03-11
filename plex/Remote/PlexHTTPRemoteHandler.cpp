@@ -36,6 +36,8 @@
 #include "GUIWindowSlideShow.h"
 #include "PlexNavigationHelper.h"
 
+#include "ViewDatabase.h"
+
 #define LEGACY 1
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -465,6 +467,21 @@ void CPlexHTTPRemoteHandler::seekTo(const ArgMap &arguments)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+class NavigationTimeout : public IPlexGlobalTimeout
+{
+  public:
+    NavigationTimeout() {}
+    void OnTimeout()
+    {
+      CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+    }
+
+    CStdString TimerName() const { return "navigationTimeout"; }
+};
+
+static NavigationTimeout* navTimeout;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexHTTPRemoteHandler::showDetails(const ArgMap &arguments)
 {
   CPlexServerPtr server = getServerFromArguments(arguments);
@@ -489,6 +506,12 @@ void CPlexHTTPRemoteHandler::showDetails(const ArgMap &arguments)
     return;
   }
 
+  if (!PlexUtils::CurrentSkinHasPreplay() ||
+      g_application.IsPlayingFullScreenVideo() ||
+      g_application.IsVisualizerActive() ||
+      g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+    return;
+
   CURL u = server->BuildPlexURL(key);
 
   XFILE::CPlexDirectory dir;
@@ -498,8 +521,24 @@ void CPlexHTTPRemoteHandler::showDetails(const ArgMap &arguments)
   {
     if (list.Size() == 1)
     {
-      CPlexNavigationHelper nav;
-      nav.navigateToItem(list.Get(0));
+      CFileItemPtr item = list.Get(0);
+
+      /* FIXME: the pre-play for Shows and Epsiodes are not really looking
+       * great yet, so let's skip them for now */
+      if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_ALBUM ||
+          item->GetPlexDirectoryType() == PLEX_DIR_TYPE_MOVIE ||
+          item->GetPlexDirectoryType() == PLEX_DIR_TYPE_ARTIST ||
+          item->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
+      {
+        CPlexNavigationHelper nav;
+        nav.navigateToItem(item, CURL(), WINDOW_HOME, true);
+
+        g_application.WakeUpScreenSaverAndDPMS();
+
+        if (!navTimeout)
+          navTimeout = new NavigationTimeout;
+        g_plexApplication.timer.RestartTimeout(5 * 60 * 1000, navTimeout);
+      }
     }
   }
 }
@@ -990,7 +1029,7 @@ void CPlexHTTPRemoteHandler::resources()
   player->SetAttribute("title", g_guiSettings.GetString("services.devicename").c_str());
   player->SetAttribute("protocol", "plex");
   player->SetAttribute("protocolVersion", "1");
-  player->SetAttribute("protocolCapabilities", "navigation,playback,timeline");
+  player->SetAttribute("protocolCapabilities", "navigation,playback,timeline,mirror");
   player->SetAttribute("machineIdentifier", g_guiSettings.GetString("system.uuid").c_str());
   player->SetAttribute("product", "Plex Home Theater");
   player->SetAttribute("platform", PlexUtils::GetMachinePlatform());

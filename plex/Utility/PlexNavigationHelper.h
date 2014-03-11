@@ -10,7 +10,7 @@
 class CPlexNavigationHelper : public IJobCallback
 {
   public:
-    CStdString navigateToItem(CFileItemPtr item, const CURL& parentURL = CURL(), int windowId = WINDOW_INVALID);
+    CStdString navigateToItem(CFileItemPtr item, const CURL& parentURL = CURL(), int windowId = WINDOW_INVALID, bool swap = false);
     bool CacheUrl(const std::string& url, bool& cancel, bool closeDialog = true);
 
   private:
