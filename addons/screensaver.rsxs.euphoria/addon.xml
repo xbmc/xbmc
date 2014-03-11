@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.euphoria"
-  version="1.0.16"
+  version="1.0.17"
   name="Euphoria"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -39,6 +39,7 @@
     <summary lang="he">זהו פחות או יותר שומר המסך הכי פסיכדלי שיש</summary>
     <summary lang="hr">Psihodeličan koliko čuvar zaslona može biti </summary>
     <summary lang="hu">A legpszihedelikusabb képernyővédő</summary>
+    <summary lang="id">Sepsikedelik mungkin dari sebuah screensaver</summary>
     <summary lang="is">Eins geggjuð og skjáhvíla getur orðið</summary>
     <summary lang="it">Quanto di più psichedelico possa essere un salvaschermo</summary>
     <summary lang="ja">スクリーンセーバーはここまでサイケになれる</summary>
@@ -91,6 +92,7 @@
     <description lang="he">זוהי הרמה הגבוהה ביותר של פסיכדליות אליה יכולים להגיע שומרי מסך. mogumbo חשב ששומר מסך הפלזמה שלו הגיע לראש הטבלה אבל זה אפילו יותר מסחרר. מוטב להצטייד במספר שקיות הקאה בטרם בהייה ממושכת בשומר מסך זה.</description>
     <description lang="hr">Psihodeličan koliko čuvar zaslona može biti. Mogumbo kroz svoj plazma čuvar zaslona je bio vrh, ali od ovog vam je još više loše. Bilo bi vam bolje da pronađete jednu od onih vrećica za mučninu što dijele u avionima prije nego počnete zuriti u ovaj.</description>
     <description lang="hu">Ez a legpszihedelikusabb képernyővédő. mogumbo úgy gondolta, hogy a Plasma képernyővédő van a lista tetején,de ez még inkább kábító. Jobb ha keresel egy légibetegség zacskót mielőtt túl sokáig néznéd a képernyőt.</description>
+    <description lang="id">Ini adalah sepsikedelik mungkin dari sebuah screensaver. mogumbo mengira Plasma savernya berada di puncak, Tapi ini bahkan lebih memabukkan. Anda sebaiknya mencari kantung mabuk terlebih dahulu sebelum menatapnya terlalu lama.</description>
     <description lang="it">Questo è quanto di più psichedelico possa essere un salvaschermo. mogumbo pensava che il suo salvaschermo 'Plasma' fosse al massimo della psichedelicità, ma questo è anche più nauseante. Faresti meglio a cercare uno di quei sacchetti per il mal d'aria prima di fissarlo troppo a lungo.</description>
     <description lang="ja">This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
     <description lang="ko">싸이키델릭한 화면보호기입니다. 거의 토나올 정도의 화면보호기로 오래 쳐다보려면 봉투를 준비하는것이 좋을겁니다.</description>

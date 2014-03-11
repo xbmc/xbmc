@@ -20,6 +20,14 @@ msgctxt "#30005"
 msgid "Small"
 msgstr "Kecil"
 
+msgctxt "#30006"
+msgid "Default"
+msgstr "Lalai"
+
 msgctxt "#30009"
 msgid "Speed"
 msgstr "Kelajuan"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Lalai"

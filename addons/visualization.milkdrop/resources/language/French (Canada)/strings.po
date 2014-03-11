@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Automatic Blend Time"
-msgstr "Durée des combinaisons"
+msgstr "Durée de mélange automatique"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Intervalle des présélections"
+msgstr "Intervalle entre les préréglages"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -30,55 +30,55 @@ msgstr "Ajout aléatoire de temps"
 
 msgctxt "#30003"
 msgid "Enable Anisotropic Filtering"
-msgstr "Activer le filtre anisotropique"
+msgstr "Activer le filtrage anisotropique"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
-msgstr "Permettre les changements brusques"
+msgstr "Activer les coupures brusques"
 
 msgctxt "#30005"
 msgid "Loudness Threshold For Hard Cuts"
-msgstr "Seuil de volume pour les changements brusques"
+msgstr "Seuil de volume pour les coupures brusques"
 
 msgctxt "#30006"
 msgid "Average Time Between Hard Cuts"
-msgstr "Temps moyen entre les coupures"
+msgstr "Temps moyen entre les coupures brusques"
 
 msgctxt "#30007"
 msgid "Maximum Refresh Rate"
-msgstr "Taux de rafraichissement maximum "
+msgstr "Fréquence de rafraîchissement maximum "
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
-msgstr "Activer la Stereo 3D"
+msgstr "Activer la stéréo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Pack de présélections"
+msgstr "Jeu de préréglages"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Dossier de présélections de l'utilisateur        "
+msgstr "Dossier de préréglages de l'utilisateur        "
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Mode de présélections aléatoires"
+msgstr "Mode de préréglages aléatoire"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
-msgstr "Présélections WA51"
+msgstr "Préréglages WA51"
 
 msgctxt "#30021"
 msgid "Winamp Presets"
-msgstr "Présélections Winamp"
+msgstr "Préréglages Winamp"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Dossier de présélections de l'utilisateur"
+msgstr "Dossier de préréglages de l'utilisateur"
 
 msgctxt "#30050"
 msgid "%2.0f secs"
-msgstr "%2.0f secs"
+msgstr "%2.0f s"
 
 msgctxt "#30051"
 msgid "%2.0f %%"
@@ -86,4 +86,4 @@ msgstr "%2.0f %%"
 
 msgctxt "#30052"
 msgid "%2.0f fps"
-msgstr "%2.0f fps"
+msgstr "%2.0f images-par-seconde"

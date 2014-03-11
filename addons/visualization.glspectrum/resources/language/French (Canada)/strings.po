@@ -42,7 +42,7 @@ msgstr "Petit"
 
 msgctxt "#30006"
 msgid "Default"
-msgstr "Défaut"
+msgstr "Par défaut"
 
 msgctxt "#30007"
 msgid "Big"
@@ -50,7 +50,7 @@ msgstr "Grand"
 
 msgctxt "#30008"
 msgid "Very Big"
-msgstr "Très Grand"
+msgstr "Très grand"
 
 msgctxt "#30009"
 msgid "Speed"
@@ -58,7 +58,7 @@ msgstr "Vitesse"
 
 msgctxt "#30010"
 msgid "Very Slow"
-msgstr "Très Lent"
+msgstr "Très lent"
 
 msgctxt "#30011"
 msgid "Slow"
@@ -66,7 +66,7 @@ msgstr "Lent"
 
 msgctxt "#30012"
 msgid "Default"
-msgstr "Défaut"
+msgstr "Par défaut"
 
 msgctxt "#30013"
 msgid "Fast"
@@ -74,4 +74,4 @@ msgstr "Rapide"
 
 msgctxt "#30014"
 msgid "Very Fast"
-msgstr "Très Rapide"
+msgstr "Très rapide"

@@ -22,7 +22,7 @@ msgstr "Automatische overgangstijd"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Tijd tussen presets"
+msgstr "Tijd tussen voorinstelling"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -54,36 +54,36 @@ msgstr "Stereo 3D inschakelen"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Preset pakket"
+msgstr "Voorinstelling pakket"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Gebruiker Preset Folder        "
+msgstr "Gebruiker voorinstelling folder        "
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Preset Shuffle Mode"
+msgstr "Voorinstelling shuffle mode"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
-msgstr "WA51 Presets"
+msgstr "WA51 voorinstelling"
 
 msgctxt "#30021"
 msgid "Winamp Presets"
-msgstr "Winamp Presets"
+msgstr "Winamp voorinstelling"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Gebruiker Gedefineerde Preset Folder"
+msgstr "Gebruiker Gedefinieerde voorinstelling folder"
 
 msgctxt "#30050"
 msgid "%2.0f secs"
-msgstr "%2.Van sec."
+msgstr "%2.0f sec."
 
 msgctxt "#30051"
 msgid "%2.0f %%"
-msgstr "%2.Van %%"
+msgstr "%2.0f %%"
 
 msgctxt "#30052"
 msgid "%2.0f fps"
-msgstr "%2.Van fps"
+msgstr "%2.0f fps"
