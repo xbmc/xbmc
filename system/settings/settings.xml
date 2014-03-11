@@ -2526,7 +2526,12 @@
                 <condition setting="audiooutput.ac3passthrough" operator="is">true</condition>
               </and>
             </dependency>
-            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.ac3transcode</dependency>
+            <dependency type="visible">
+              <and>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.ac3transcode</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.channels">audiooutput.ac3transcode</condition>
+              </and>
+            </dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
