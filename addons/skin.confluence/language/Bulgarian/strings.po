@@ -74,7 +74,7 @@ msgstr "Плакати"
 
 msgctxt "#31029"
 msgid "Fanart"
-msgstr "Fanart"
+msgstr "Фанарт"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
@@ -218,7 +218,7 @@ msgstr "Подменю на елемента \"Програми\", от нача
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Скривай фоновия Fanart"
+msgstr "Скривай фоновия фанарт"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -242,7 +242,7 @@ msgstr "Лирики"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Без Fanart при визуализация на цял екран"
+msgstr "Без фанарт при визуализация на цял екран"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -302,7 +302,7 @@ msgstr "Текуща температура"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Последна актуализация"
+msgstr "Последно обновяване"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -310,7 +310,7 @@ msgstr "Доставчик на данни"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Скрий Fanart-а"
+msgstr "Скрий фанарта"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -326,7 +326,7 @@ msgstr "Аудио запис №"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Не е зададено[CR][CR]Fanart изображение[CR][CR]Натиснете бутона, за да изберете"
+msgstr "Не е зададено[CR][CR]фанарт изображение[CR][CR]Натиснете бутона, за да изберете"
 
 msgctxt "#31312"
 msgid "Current Scraper"
@@ -342,7 +342,7 @@ msgstr "Настройки за сканиране на съдържанието
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Задай път до Fanart-а"
+msgstr "Задай път до фанарта"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -458,7 +458,7 @@ msgstr "[B]КОНФИГУРИРАЙТЕ ПРОГНОЗАТА ЗА ВРЕМЕТО
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]КОНФИГУРИРАЙТЕ СИСТЕМАТА[/B][CR][CR]Настройте и калибрирайте екраните · Настройте компютъра да пести енергия[CR]Настройте дистанционните · Конфигурирайте аудио изхода · Включете Debug режима · Задайте код за заключване"
+msgstr "[B]КОНФИГУРИРАЙТЕ СИСТЕМАТА[/B][CR][CR]Настройте и калибрирайте екраните · Настройте компютъра да пести енергия[CR]Настройте дистанционните · Конфигурирайте аудио изхода · Включете режима \"дебъг\" · Задайте код за заключване"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
@@ -470,7 +470,7 @@ msgstr "[B]КОНФИГУРИРАЙТЕ ТЕЛЕВИЗИЯТА[/B][CR][CR]Change
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]КОНФИГУРИРАЙТЕ УСЛУГИТЕ[/B][CR][CR]Настройте контролирането на XBMC през UPnP и HTTP · Настройте споделянето на файлове[CR]Включете Zeroconf · Настройте AirPlay"
+msgstr "[B]КОНФИГУРИРАЙТЕ УСЛУГИТЕ[/B][CR][CR]Настройте контрола над XBMC чрез UPnP и HTTP · Настройте споделянето на файлове[CR]Включете Zeroconf · Настройте AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -486,7 +486,7 @@ msgstr "Налични са локални субтитри"
 
 msgctxt "#31420"
 msgid "Login"
-msgstr "Вписване"
+msgstr "Влизане"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -494,11 +494,11 @@ msgstr "Изберете потребителски профил,[CR]за да �
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
-msgstr "Определя да се ползва или не, екрана за вписване"
+msgstr "Определя да се ползва или не, екрана за влизане"
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Определя кой профил да се ползва за вписване, когато екрана за вписване е изключен"
+msgstr "Определя кой профил да се ползва за влизане, когато екрана за вписване е изключен"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

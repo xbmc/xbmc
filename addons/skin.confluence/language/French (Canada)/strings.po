@@ -58,7 +58,7 @@ msgstr "Page"
 
 msgctxt "#31025"
 msgid "Items"
-msgstr "Objets"
+msgstr "Éléments"
 
 msgctxt "#31026"
 msgid "Misc Options"
@@ -70,7 +70,7 @@ msgstr "Emplacement"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
-msgstr "Galerie d'affiches"
+msgstr "Défilement d'affiches"
 
 msgctxt "#31029"
 msgid "Fanart"
@@ -78,15 +78,15 @@ msgstr "Fanart"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
-msgstr "Vignettes"
+msgstr "Imagettes"
 
 msgctxt "#31032"
 msgid "Image Wrap"
-msgstr "Galerie d'images"
+msgstr "Défilement d'images"
 
 msgctxt "#31033"
 msgid "Info"
-msgstr "Info"
+msgstr "Infos"
 
 msgctxt "#31039"
 msgid "Actions"
@@ -102,7 +102,7 @@ msgstr "LECTURE"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "PAUSE"
+msgstr "EN PAUSE"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -122,35 +122,35 @@ msgstr "Préréglages de visualisation"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Échéance"
+msgstr "Heure de fin"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Tri : Ascendant"
+msgstr "Tri : ascendant"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Tri : Descendant"
+msgstr "Tri : descendant"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Ouvrir une playliste"
+msgstr "Ouvrir une liste de lecture"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Sauvegarder la playliste"
+msgstr "Enregistrer la liste de lecture"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Fermer la playliste"
+msgstr "Fermer la liste de lecture"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Fichiers musique du système"
+msgstr "Fichiers audio du système"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Playliste actuelle"
+msgstr "Liste de lecture actuelle"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
@@ -170,11 +170,11 @@ msgstr "Arrière-plan"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Afficher « Pause » dans le diaporama d'images"
+msgstr "Afficher « En pause » dans le diaporama d'images"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
-msgstr "Lire les bandes annonces dans une fenêtre [COLOR=grey3](Ecran d'information sur la vidéo uniquement)[/COLOR]"
+msgstr "Lire les bandes-annonces dans une fenêtre [COLOR=grey3]Boîte d'informations sur la vidéo uniquement)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -182,7 +182,7 @@ msgstr "Options diverses"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Masquer l'indicateur de fichiers vidéo déjà vus [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Masquer l'indicateur déjà vu des noms de fichiers des vidéos [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
@@ -214,7 +214,7 @@ msgstr "Afficher les vidéos récemment ajoutées"
 
 msgctxt "#31118"
 msgid "Home Page Programs Sub-menu"
-msgstr "Page d'accueil du sous menu Programmes"
+msgstr "Page d'accueil - Sous-menu Programmes"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -226,11 +226,11 @@ msgstr "Afficher la vidéo en cours de lecture en arrière-plan"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "Afficher la visualisation en cours de lecture en arrière-plan"
+msgstr "Afficher la visualisation d'arrière-plan « Lecture en cours »"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Jouer les génériques TV de vidéothèque (addiciel TvTunes)"
+msgstr "Jouer les indicatifs musicaux de la télé dans la vidéothèque (addiciel TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -242,7 +242,7 @@ msgstr "Paroles"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Cacher Fanart en mode plein ecran"
+msgstr "Cacher le Fanart en mode plein écran"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -250,23 +250,23 @@ msgstr "Addiciel de paroles"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
-msgstr "Page d'accueil du sous menu Vidéos"
+msgstr "Page d'accueil - Sous-menu Vidéos"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "Page d'accueil du sous menu Musiques"
+msgstr "Page d'accueil - Sous-menu Musique"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
-msgstr "Page d'accueil du sous menu Images"
+msgstr "Page d'accueil - Sous-menu Images"
 
 msgctxt "#31140"
 msgid "Music OSD"
-msgstr "Menu à l'écran Musique"
+msgstr "Affichage à l'écran Musique"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "Menu à l'écran Vidéo"
+msgstr "Affichage à l'écran Vidéo"
 
 msgctxt "#31142"
 msgid "Settings level"
@@ -278,11 +278,11 @@ msgstr "Raccourcis"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Choisissez votre chanson"
+msgstr "Choisissez votre morceau"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
-msgstr "Source pour les paroles"
+msgstr "Source des paroles"
 
 msgctxt "#31206"
 msgid "Found"
@@ -294,7 +294,7 @@ msgstr "Trouver plus d'éléments"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
-msgstr "Prochains épisodes"
+msgstr "Épisodes à venir"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -310,7 +310,7 @@ msgstr "Fournisseur de données"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Sans Fanart"
+msgstr "Masquer le fanart"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -330,19 +330,19 @@ msgstr "Image Fanart[CR][CR]Indisponible[CR][CR] Cliquer sur le bouton pour déf
 
 msgctxt "#31312"
 msgid "Current Scraper"
-msgstr "Scraper actuel"
+msgstr "Extracteur de contenu actuel"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Choisissez un scraper"
+msgstr "Choisir un extracteur de contenu"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
-msgstr "Options de scan de contenu"
+msgstr "Options de balayage de contenu"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Définir le chemin du Fanart"
+msgstr "Définir le chemin du fanart"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -354,7 +354,7 @@ msgstr "Dernière connexion"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
-msgstr "Sélecteur chanson karaoké"
+msgstr "Sélecteur de chanson karaoké"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -362,7 +362,7 @@ msgstr "Diffusé"
 
 msgctxt "#31325"
 msgid "Playlist Options"
-msgstr "Options de playliste"
+msgstr "Options de liste de lecture"
 
 msgctxt "#31326"
 msgid "Created"
@@ -394,7 +394,7 @@ msgstr "Pause"
 
 msgctxt "#31352"
 msgid "Stop"
-msgstr "Stop"
+msgstr "Arrêt"
 
 msgctxt "#31353"
 msgid "Fast Forward"
@@ -406,7 +406,7 @@ msgstr "Retour rapide"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "Menu film"
+msgstr "Menu du film"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -414,7 +414,7 @@ msgstr "Télécharger les sous-titres"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
-msgstr "Voir en 2D"
+msgstr "Regarder en 2D"
 
 msgctxt "#31361"
 msgid "Change mode"
@@ -442,43 +442,43 @@ msgstr "[B]CONFIGURER LES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changer l'habillage
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES VIDÉO[/B][CR][CR]Gérer votre vidéothèque · Définir les options de lecture · Changer les options des listes de vidéos[CR]Définir la police des sous-titres"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gérer votre vidéothèque · Définir les options de lecture · Changer les options des listes de vidéos[CR]Définir la police des sous-titres"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES MUSIQUE[/B][CR][CR]Gérer votre musithèque musique · Définir les options de lecture · Changer les options des listes de musique[CR]Paramétrer les soumissions de chansons · Définir les options karaoké"
+msgstr "[B]CONFIGURER LES  PARAMÈTRES DE LA MUSIQUE[/B][CR][CR]Gérer votre musithèque · Définir les options de lecture · Changer les options de listage de la musique[CR]Paramétrer les envois de chansons · Définir les options de karaoké"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES IMAGE[/B][CR][CR]Définir les options de lecture · Configurer les diaporamas"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DES IMAGES[/B][CR][CR]Définir les options de lecture · Configurer les diaporamas"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES MÉTÉO[/B][CR][CR]Choisir trois villes pour lesquelles recueillir les informations météorologiques"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DE LA MÉTÉO[/B][CR][CR]Définir trois villes pour lesquelles recueillir les informations météorologiques"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES SYSTÈME[/B][CR][CR]Configurer et calibrer les écrans · Configurer les sorties audio · Configurer les périphériques de contrôle[CR]Définir les options de gestion d'énergie · Activer le débogage · Configurer la sécurité"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DU SYSTÈME[/B][CR][CR]Configurer et calibrer les écrans · Configurer les sorties audio · Configurer les télécommandes[CR]Régler les options de gestion d'énergie · Activer le débogage · Configurer le verrou maître"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]CONFIGURATION DES ADDICIELS[/B][CR][CR]Gérer vos addiciels installés · Rechercher et installer des addiciels depuis xbmc.org[CR]Modifier les paramètres des addiciels"
+msgstr "[B]CONFIGURER LES ADDICIELS[/B][CR][CR]Gérer vos addiciels installés · Rechercher et installer des addiciels depuis xbmc.org[CR]Modifier les paramètres des addiciels"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURER RÉGLAGES TV[/B][CR][CR]Changer les informations de plein écran · Gérer les données du Guide des Programmes"
+msgstr "[B]CONFIGURER LES RÉGLAGES DE TÉLÉ[/B][CR][CR]Changer les informations de plein écran · Gérer les données du GÉP"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES DE SERVICE[/B][CR][CR]Configurer le contrôle de XBMC en UPnP et HTTP · Configurer le partage de fichiers[CR]Activer Zeroconf · Configurer AirPlay"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DES SERVICES[/B][CR][CR]Configurer le contrôle de XBMC par UPnP et HTTP · Configurer le partage de fichiers[CR]Activer Zéroconf · Configurer AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr "Aide au démarrage"
+msgstr "Aide au premier démarrage..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Cet onglet signale un menu en côté de fenêtre contenant des options supplémentaires pour cette section.  Pour accéder à ce menu, appuyez sur la flèche de gauche sur votre télécommande ou votre clavier ou placez votre souris au dessus de l'onglet. [CR][CR]Cliquez sur \"Ok\" pour fermer cette fenêtre. Elle n’apparaîtra plus."
+msgstr "Cet onglet signale qu'il y a un menu sur le côté de cette fenêtre contenant des options supplémentaires pour cette section.  Pour accéder au menu, naviguez vers la gauche avec votre télécommande ou votre clavier ou placez le pointeur de votre souris sur l'onglet. [CR][CR]Cliquez sur Ok pour fermer cette boîte de dialogue. Elle n’apparaîtra plus."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -490,7 +490,7 @@ msgstr "Connexion"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Sélectionnez le profil d'utilisateur[CR]auquel vous connecter et continuer"
+msgstr "Choisissez votre profil d'utilisateur XBMC[CR]pour vous connecter et continuer"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -502,23 +502,23 @@ msgstr "Choisir le profil qui sera utilisé lors du démarrage quand l'écran de
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr "Heure prévue"
+msgstr "Heure planifiée"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr "TV Direct"
+msgstr "Télé en direct"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr "Ajouter un Groupe"
+msgstr "Ajouter un groupe"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr "Renommer le Groupe"
+msgstr "Renommer le groupe"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr "Supprimer le Groupe"
+msgstr "Supprimer le groupe"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
@@ -526,7 +526,7 @@ msgstr "Groupes[CR]disponibles"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr "Groupe des Chaînes"
+msgstr "Groupe de chaînes"
 
 msgctxt "#31510"
 msgid "Timer Set"
@@ -534,7 +534,7 @@ msgstr "Réglage de la minuterie"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr "Options des Chaînes"
+msgstr "Options des chaînes"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -546,7 +546,7 @@ msgstr "Prévisions heure par heure"
 
 msgctxt "#31903"
 msgid "Weekend Forecast"
-msgstr "Prévisions pour le weekend"
+msgstr "Prévisions pour la fin de semaine"
 
 msgctxt "#31904"
 msgid "10 Day Forecast"
@@ -558,11 +558,11 @@ msgstr "Prévisions"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"
-msgstr "Risque de pluie"
+msgstr "Risque de précipitations"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
-msgstr "Récupération des prévisions météo…"
+msgstr "Récupération des infos de prévision…"
 
 msgctxt "#31910"
 msgid "Map & Alerts"
@@ -570,7 +570,7 @@ msgstr "Carte & Alertes"
 
 msgctxt "#31950"
 msgid "WEATHER"
-msgstr "METEO"
+msgstr "MÉTÉO"
 
 msgctxt "#31951"
 msgid "PICTURES"
@@ -578,11 +578,11 @@ msgstr "IMAGES"
 
 msgctxt "#31952"
 msgid "LIVE TV"
-msgstr "TV DIRECT"
+msgstr "TÉLÉ EN DIRECT"
 
 msgctxt "#31953"
 msgid "VIDEOS"
-msgstr "VIDEOS"
+msgstr "VIDÉOS"
 
 msgctxt "#31954"
 msgid "MOVIES"
@@ -590,7 +590,7 @@ msgstr "FILMS"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "SERIES TV"
+msgstr "ÉMISSIONS TÉLÉ"
 
 msgctxt "#31956"
 msgid "MUSIC"
@@ -602,8 +602,8 @@ msgstr "PROGRAMMES"
 
 msgctxt "#31958"
 msgid "PLAY DISC"
-msgstr "LIRE LE DISQUE"
+msgstr "LIRE UN DISQUE"
 
 msgctxt "#31959"
 msgid "SYSTEM"
-msgstr "SYSTEME"
+msgstr "SYSTÈME"
