@@ -160,6 +160,7 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *ele
 {
   int thumbIdx = 0;
   int mediaIndex = 0;
+
 #ifndef USE_RAPIDXML
   for (XML_ELEMENT* media = element->FirstChildElement(); media; media = media->NextSiblingElement())
 #else
@@ -200,6 +201,9 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *ele
       item.SetArt(PLEX_ART_THUMB, thumbIdx ++, mediaItem->GetPath());
     }
   }
+
+  if (item.m_mediaItems.size() == 0)
+    item.SetProperty("isSynthesized", true);
 
   SetTagsAsProperties(item);
 }
