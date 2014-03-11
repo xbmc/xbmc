@@ -269,7 +269,7 @@ void CPlexMediaDecisionEngine::ChooseMedia()
   {
     /* find the server for the item */
     CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(m_choosenMedia.GetProperty("plexserver").asString());
-    if (server && CPlexTranscoderClient::ShouldTranscode(server, m_choosenMedia))
+    if (server && CPlexTranscoderClient::GetInstance()->ShouldTranscode(server, m_choosenMedia))
     {
       CLog::Log(LOGDEBUG, "CPlexMediaDecisionEngine::ChooseMedia Item should be transcoded");
       m_choosenMedia.SetPath(CPlexTranscoderClient::GetTranscodeURL(server, m_choosenMedia).Get());

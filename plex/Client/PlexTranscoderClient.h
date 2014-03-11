@@ -21,13 +21,18 @@
 
 class CPlexTranscoderClient
 {
+private:
+    static CPlexTranscoderClient *_Instance;
+
 public:
-  CPlexTranscoderClient();
+  CPlexTranscoderClient() {}
+  static CPlexTranscoderClient *GetInstance();
+  static void DeleteInstance();
   static int SelectATranscoderQuality(CPlexServerPtr server, int currentQuality = 0);
   static std::string GetPrettyBitrate(int br);
-  static bool ShouldTranscode(CPlexServerPtr server, const CFileItem& item);
+  virtual bool ShouldTranscode(CPlexServerPtr server, const CFileItem& item);
   static CURL GetTranscodeURL(CPlexServerPtr server, const CFileItem& item);
-  static std::string GetCurrentBitrate(bool local);
+  virtual std::string GetCurrentBitrate(bool local);
   static std::string GetCurrentSession();
   static PlexIntStringMap getOnlineQualties();
   static int SelectAOnlineQuality(int currentQuality);
