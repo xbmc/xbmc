@@ -2,6 +2,7 @@ SRCS=GUIDialogContentSettings.cpp \
      GUIDialogSettings.cpp \
      GUIDialogSettingsBase.cpp \
      GUIDialogSettingsManagerBase.cpp \
+     GUIDialogSettingsManualBase.cpp \
 
 LIB=settings_dialogs.a
 
