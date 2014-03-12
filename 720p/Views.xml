@@ -1,36 +1,106 @@
 <?xml version="1.0"?>
 <includes>
 	<!-- Thumbs -->
-	<include name="ListSelectedPoster">
-		<control type="image">
-			<posx>23</posx>
-			<posy>37</posy>
-			<width>79</width>
-			<height>106</height>
-			<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-			<texture background="true" border="20">shadow.png</texture>
+	<include name="ListSelectedArt">
+		<!-- TV Show Banner -->
+		<control type="group">
+			<visible>Container.Content(tvshows)</visible>
+			<control type="image">
+				<posx>23</posx>
+				<posy>37</posy>
+				<width>458</width>
+				<height>106</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="20">shadow.png</texture>
+			</control>
+			<control type="image">
+				<include>PosListItem</include>
+				<width>432</width>
+				<height>80</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="mask-wide-big.png" background="true">default-banner-small.png</texture>
+			</control>
+			<control type="image">
+				<include>PosListItem</include>
+				<width>432</width>
+				<height>80</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="mask-wide-big.png" background="true">$INFO[ListItem.Art(banner)]</texture>
+			</control>
 		</control>
-		<control type="image">
-			<include>PosListItem</include>
-			<width>53</width>
-			<height>80</height>
-			<texture background="true">default-poster-small.png</texture>
+		<!-- Episode Thumb -->
+		<control type="group">
+			<visible>Container.Content(episodes) | [Container.Content(channel) + [ListItem.Type(clip) | ListItem.Type(episode)]]</visible>
+			<control type="image">
+				<posx>23</posx>
+				<posy>37</posy>
+				<width>168</width>
+				<height>106</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="20">shadow.png</texture>
+			</control>
+			<control type="image">
+				<include>PosListItem</include>
+				<width>142</width>
+				<height>80</height>
+				<texture background="true">default-thumb-small.png</texture>
+			</control>
+			<control type="image">
+				<include>PosListItem</include>
+				<width>142</width>
+				<height>80</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="mask-wide-big.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
 		</control>
-		<control type="image">
-			<include>PosListItem</include>
-			<width>53</width>
-			<height>80</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-			<visible>!ListItem.Type(episode)</visible>
+		<!-- Movies Poster -->
+		<control type="group">
+			<visible>Container.Content(Movies)</visible>
+			<control type="image">
+				<posx>23</posx>
+				<posy>37</posy>
+				<width>79</width>
+				<height>106</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="20">shadow.png</texture>
+			</control>
+			<control type="image">
+				<include>PosListItem</include>
+				<width>53</width>
+				<height>80</height>
+				<texture background="true">default-poster-small.png</texture>
+			</control>
+			<control type="image">
+				<include>PosListItem</include>
+				<width>53</width>
+				<height>80</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
 		</control>
-		<control type="image">
-			<include>PosListItem</include>
-			<width>53</width>
-			<height>80</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
-			<visible>ListItem.Type(episode)</visible>
+		<!-- Music/Photos/Channels Square Art -->
+		<control type="group">
+			<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(photos) | [Container.Content(channels) | [Container.Content(channel) + ListItem.Type(photo)]] | [Container.Content(channel) + !ListItem.Type(clip) + !ListItem.Type(episode)]</visible>
+			<control type="image">
+				<posx>23</posx>
+				<posy>37</posy>
+				<width>106</width>
+				<height>106</height>
+				<include>Shadow</include>
+			</control>
+			<control type="image">
+				<include>PosListItem</include>
+				<width>80</width>
+				<height>80</height>
+				<texture background="true">default-square-small.png</texture>
+			</control>
+			<control type="image">
+				<include>PosListItem</include>
+				<width>80</width>
+				<height>80</height>
+				<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+				<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
 		</control>
 	</include>
 	<include name="ListSquareItemThumb">
@@ -46,76 +116,6 @@
 			<height>30</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-		</control>
-	</include>
-	<include name="ListSelectedSquareItemThumb">
-		<control type="image">
-			<posx>23</posx>
-			<posy>37</posy>
-			<width>106</width>
-			<height>106</height>
-			<include>Shadow</include>
-		</control>
-		<control type="image">
-			<include>PosListItem</include>
-			<width>80</width>
-			<height>80</height>
-			<texture background="true">default-square-small.png</texture>
-		</control>
-		<control type="image">
-			<include>PosListItem</include>
-			<width>80</width>
-			<height>80</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-square.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-		</control>
-	</include>
-	<include name="_ListPoster">
-		<control type="image">
-			<include>PosListItem</include>
-			<width>53</width>
-			<height>80</height>
-			<texture background="true">default-poster-small.png</texture>
-		</control>
-		<control type="image">
-			<include>PosListItem</include>
-			<width>53</width>
-			<height>80</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-			<visible>!ListItem.Type(episode)</visible>
-		</control>
-		<control type="image">
-			<include>PosListItem</include>
-			<width>53</width>
-			<height>80</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
-			<visible>ListItem.Type(episode)</visible>
-		</control>
-	</include>
-	<include name="ListSelectedThumb">
-		<control type="image">
-			<posx>23</posx>
-			<posy>37</posy>
-			<width>168</width>
-			<height>106</height>
-			<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-			<texture background="true" border="20">shadow.png</texture>
-		</control>
-		<control type="image">
-			<include>PosListItem</include>
-			<width>142</width>
-			<height>80</height>
-			<texture background="true">default-thumb-small.png</texture>
-		</control>
-		<control type="image">
-			<include>PosListItem</include>
-			<width>142</width>
-			<height>80</height>
-			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-			<texture diffuse="mask-wide-big.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-			<!--><visible>!ListItem.Type(episode)</visible>-->
 		</control>
 	</include>
 	<include name="ListChannelTypeIcon">
@@ -223,7 +223,7 @@
 							<width>1150</width>
 							<height>50</height>
 							<texture border="5">border-bottom-grey.png</texture>
-						</control>	
+						</control>
 						<include>ListMovieTVUnwatchedOverlay</include>
 						<control type="label">
 							<width>840</width>
@@ -244,23 +244,49 @@
 							<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
 						</control>
 						<control type="group">
-							<posx>-27</posx>
+							<posx>28</posx>
 							<posy>-40</posy>
-							<include>ListSelectedPoster</include>
+							<include>ListSelectedArt</include>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="650"/>
+							</animation>
+						</control>
+						<control type="group">
+							<posy>25</posy>
+							<include>ListMovieTVUnwatchedOverlay</include>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="650"/>
 							</animation>
 						</control>
 						<control type="label">
-							<width>820</width>
+							<posx>100</posx>
+							<posy>3</posy>
+							<width>600</width>
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
 							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
-							<textoffsetx>100</textoffsetx>
+							<visible>!Container.Content(TVShows) + !Container.Content(Movies)</visible>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="450"/>
+							</animation>
+						</control>
+						<control type="label">
+							<posx>135</posx>
+							<posy>3</posy>
+							<width>600</width>
+							<height>100</height>
+							<info>ListItem.Label</info>
+							<aligny>center</aligny>
+							<font>Bold-32</font>
+							<textcolor>orange</textcolor>
+							<shadowcolor>FF222222</shadowcolor>
+							<visible>Container.Content(Movies)</visible>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="450"/>
@@ -294,46 +320,60 @@
 					</itemlayout>
 					<focusedlayout height="100" condition="[Container.Content(episodes) + !IsEmpty(Container.Property(primaryFilterActivated)) + !IsEmpty(Container.Property(mixedParents))] | [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))]">
 						<control type="group">
-							<posx>-27</posx>
+							<posx>28</posx>
 							<posy>-40</posy>
-							<include>ListSelectedPoster</include>
+							<include>ListSelectedArt</include>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="150,0" start="85" end="100" time="300" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="650"/>
 							</animation>
 						</control>
+						<control type="group">
+							<posy>25</posy>
+							<control type="image">
+								<posy>16</posy>
+								<posx>28</posx>
+								<width>20</width>
+								<height>20</height>
+								<info>ListItem.Overlay</info>
+							</control>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="650"/>
+							</animation>
+						</control>
 						<control type="label">
-							<width>820</width>
+							<posx>225</posx>
+							<width>525</width>
 							<height>50</height>
 							<info>ListItem.TVShowTitle</info>
 							<aligny>center</aligny>
 							<font>Bold-32</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
-							<textoffsetx>100</textoffsetx>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="450"/>
 							</animation>
 						</control>
 						<control type="image">
-							<posx>100</posx>
+							<posx>225</posx>
 							<posy>50</posy>
-							<width>650</width>
+							<width>525</width>
 							<height>1</height>
 							<texture>black.png</texture>
 							<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
 						</control>
 						<control type="label">
+							<posx>225</posx>
 							<posy>50</posy>
-							<width>820</width>
+							<width>525</width>
 							<height>50</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
 							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
-							<textoffsetx>100</textoffsetx>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="450"/>
@@ -394,23 +434,37 @@
 							<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
 						</control>
 						<control type="group">
-							<posx>-27</posx>
+							<posx>28</posx>
 							<posy>-40</posy>
-							<include>ListSelectedThumb</include>
+							<include>ListSelectedArt</include>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="150,0" start="85" end="100" time="300" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="650"/>
+							</animation>
+						</control>
+						<control type="group">
+							<posy>25</posy>
+							<control type="image">
+								<posy>16</posy>
+								<posx>28</posx>
+								<width>20</width>
+								<height>20</height>
+								<info>ListItem.Overlay</info>
+							</control>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="650"/>
 							</animation>
 						</control>
 						<control type="label">
-							<width>900</width>
+							<posx>230</posx>
+							<width>525</width>
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
 							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
-							<textoffsetx>170</textoffsetx>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="450"/>
@@ -460,7 +514,7 @@
 						<control type="group">
 							<posx>-27</posx>
 							<posy>-40</posy>
-							<include>ListSelectedSquareItemThumb</include>
+							<include>ListSelectedArt</include>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="650"/>
@@ -529,7 +583,7 @@
 						<control type="group">
 							<posx>-27</posx>
 							<posy>-40</posy>
-							<include>ListSelectedSquareItemThumb</include>
+							<include>ListSelectedArt</include>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="650"/>
@@ -597,7 +651,7 @@
 						<control type="group">
 							<posx>-27</posx>
 							<posy>-40</posy>
-							<include>ListSelectedSquareItemThumb</include>
+							<include>ListSelectedArt</include>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="650"/>
@@ -683,15 +737,30 @@
 							<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
 						</control>
 						<control type="group">
-							<posx>-27</posx>
+							<posx>28</posx>
 							<posy>-40</posy>
-							<include>ListSelectedThumb</include>
+							<include>ListSelectedArt</include>
+							<animation type="Focus" reversible="false">
+								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
+								<effect type="fade" start="0" end="100" time="650"/>
+							</animation>
+						</control>
+						<control type="group">
+							<posy>25</posy>
+							<control type="image">
+								<posy>16</posy>
+								<posx>28</posx>
+								<width>20</width>
+								<height>20</height>
+								<info>ListItem.Overlay</info>
+							</control>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="650"/>
 							</animation>
 						</control>
 						<control type="label">
+							<posx>55</posx>
 							<width>900</width>
 							<height>100</height>
 							<info>ListItem.Label</info>
@@ -834,21 +903,62 @@
 						<control type="group">
 							<posx>-27</posx>
 							<posy>-40</posy>
-							<include>ListSelectedSquareItemThumb</include>
+							<include>ListSelectedArt</include>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="150,0" start="85" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="650"/>
 							</animation>
 						</control>
+						<control type="group">
+							<visible>!IsEmpty(Container.Property(PrimaryFilterActivated))</visible>
+							<control type="label">
+								<posx>115</posx>
+								<width>635</width>
+								<height>50</height>
+								<info>ListItem.Artist</info>
+								<aligny>center</aligny>
+								<font>Bold-32</font>
+								<textcolor>white</textcolor>
+								<shadowcolor>FF222222</shadowcolor>
+								<animation type="Focus" reversible="false">
+									<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+									<effect type="fade" start="0" end="100" time="450"/>
+								</animation>
+							</control>
+							<control type="image">
+								<posx>115</posx>
+								<posy>50</posy>
+								<width>635</width>
+								<height>1</height>
+								<texture>black.png</texture>
+								<animation effect="fade" start="0" end="30" time="0" condition="true">Conditional</animation>
+							</control>
+							<control type="label">
+								<posx>115</posx>
+								<posy>50</posy>
+								<width>635</width>
+								<height>50</height>
+								<info>ListItem.Label</info>
+								<aligny>center</aligny>
+								<font>Bold-32</font>
+								<textcolor>orange</textcolor>
+								<shadowcolor>FF222222</shadowcolor>
+								<animation type="Focus" reversible="false">
+									<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
+									<effect type="fade" start="0" end="100" time="450"/>
+								</animation>
+							</control>
+						</control>
 						<control type="label">
-							<width>850</width>
+							<visible>IsEmpty(Container.Property(PrimaryFilterActivated))</visible>
+							<posx>120</posx>
+							<width>525</width>
 							<height>100</height>
 							<info>ListItem.Label</info>
 							<aligny>center</aligny>
 							<font>Bold-32</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
-							<textoffsetx>120</textoffsetx>
 							<animation type="Focus" reversible="false">
 								<effect type="zoom" center="0,0" start="90" end="100" time="200" tween="Linear" easing="out"/>
 								<effect type="fade" start="0" end="100" time="450"/>
