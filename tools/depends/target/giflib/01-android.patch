@@ -1,0 +1,18 @@
+--- lib/egif_lib.c	Thu Aug 29 19:56:40 2013
++++ lib/egif_libnew.c	Thu Mar 13 10:08:38 2014
+@@ -22,6 +22,15 @@
+ #endif /* _WIN32 */
+ #include <sys/stat.h>
+ 
++#if defined(ANDROID)
++#if !defined(S_IREAD)
++#define S_IREAD S_IRUSR 
++#endif
++#if !defined(S_IWRITE)
++#define S_IWRITE S_IWUSR
++#endif
++#endif
++
+ #include "gif_lib.h"
+ #include "gif_lib_private.h"
+ 

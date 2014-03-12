@@ -152,6 +152,23 @@ if test "@platform_os@" = "ios"; then
     unset CCAS
   fi
 
+  # tweaks for giflib (ios must use llvm-gcc-4.2)
+  if test "${PACKAGE_NAME}" = "giflib" ; then
+      case "@use_xcode@" in
+        5.* | 5.*.* )
+          export CC="@use_toolchain@/usr/bin/clang"
+          export CPP="@use_toolchain@/usr/bin/clang -E"
+          ;;
+        *)
+          export CC="@use_toolchain@/usr/bin/llvm-gcc-4.2"
+          export CPP="@use_toolchain@/usr/bin/llvm-gcc-4.2 -E"
+          ;;
+        esac
+    unset AS
+    unset CCAS
+  fi
+
+
   # tweaks for flac
   if test "${ac_unique_file}" = "src/flac/main.c" ; then
     # compiler barfs if we use -O3/O2 for flac
