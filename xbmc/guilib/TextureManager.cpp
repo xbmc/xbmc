@@ -478,7 +478,13 @@ void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
 #if defined(HAS_GL) || defined(HAS_GLES)
   for (unsigned int i = 0; i < m_unusedHwTextures.size(); ++i)
   {
-    glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);
+  // on ios the hw textures might be deleted from the os
+  // when XBMC is backgrounded (e.x. for backgrounded music playback)
+  // sanity check before delete in that case.
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+    if (glIsTexture(m_unusedHwTextures[i]))
+#endif
+      glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);
   }
 #endif
   m_unusedHwTextures.clear();
