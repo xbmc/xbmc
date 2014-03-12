@@ -1670,7 +1670,7 @@ bool MysqlDataset::seek(int pos) {
 }
 
 int64_t MysqlDataset::lastinsertid() {
-  if (!handle()) DbErrors("No Database Connection");
+  if (!handle()) throw DbErrors("No Database Connection");
   return mysql_insert_id(handle());
 }
 
