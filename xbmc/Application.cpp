@@ -535,27 +535,11 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       if (!g_application.m_bInitializing &&
           !g_advancedSettings.m_fullScreen)
       {
-        /* PLEX */
-#ifdef __PLEX__
-        int width = newEvent.resize.w;
-        int height = newEvent.resize.h;
-
-        // Maintain 16:9 AR.
-        height = width * 9 / 16;
-
-        g_Windowing.SetWindowResolution(width, height);
-        g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
-        g_guiSettings.SetInt("window.width", width);
-        g_guiSettings.SetInt("window.height", height);
-        g_settings.Save();
-#else
         g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
         g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
         g_guiSettings.SetInt("window.width", newEvent.resize.w);
         g_guiSettings.SetInt("window.height", newEvent.resize.h);
         g_settings.Save();
-#endif
-        /* END PLEX */
       }
       break;
     case XBMC_VIDEOMOVE:
