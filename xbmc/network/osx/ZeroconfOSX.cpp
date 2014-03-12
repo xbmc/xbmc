@@ -193,7 +193,10 @@ void CZeroconfOSX::registerCallback(CFNetServiceRef theService, CFStreamError* e
     for(tServiceMap::iterator it = p_this->m_services.begin(); it != p_this->m_services.end(); ++it)
     {
       if(it->second == theService)
+      {
         p_this->m_services.erase(it);
+        break;
+      }
     }
   }
 }
