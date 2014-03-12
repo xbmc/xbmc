@@ -223,7 +223,7 @@ CCurlFile::CReadState::CReadState()
   m_headerdone = false;
 
   /* PLEX */
-  m_hasTicklePipe = PlexUtils::MakeWakeupPipe(m_ticklePipe);
+  m_hasTicklePipe = false; //PlexUtils::MakeWakeupPipe(m_ticklePipe);
   /* END PLEX */
 }
 
