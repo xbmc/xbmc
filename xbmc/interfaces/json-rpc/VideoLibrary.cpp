@@ -568,9 +568,6 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   std::map<int, std::map<std::string, std::string> > seasonArt;
   videodatabase.GetTvShowSeasonArt(infos.m_iDbId, seasonArt);
 
-  int playcount = infos.m_playCount;
-  CDateTime lastPlayed = infos.m_lastPlayed;
-
   std::set<std::string> removedArtwork;
   UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
 
@@ -583,14 +580,6 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
 
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, "tvshow", removedArtwork))
     return InternalError;
-
-  if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
-  {
-    // restore original playcount or the new one won't be announced
-    int newPlaycount = infos.m_playCount;
-    infos.m_playCount = playcount;
-    videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
-  }
 
   CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
