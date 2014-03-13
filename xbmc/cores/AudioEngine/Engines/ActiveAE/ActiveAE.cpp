@@ -656,6 +656,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_stats.SetSuspended(false);
           m_extDeferData = false;
           return;
+        case CActiveAEControlProtocol::DEVICECHANGE:
+          return;
         default:
           break;
         }

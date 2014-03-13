@@ -230,6 +230,10 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           m_extTimeout = 0;
           return;
 
+        case CSinkControlProtocol::STREAMING:
+          m_extStreaming = *(bool*)msg->data;
+          return;
+
         default:
           break;
         }
