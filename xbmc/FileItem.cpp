@@ -60,7 +60,9 @@
 #ifdef HAS_ASAP_CODEC
 #include "cores/paplayer/ASAPCodec.h"
 #endif
+#if defined(HAS_GIFLIB)
 #include "pictures/Gif.h"
+#endif//HAS_GIFLIB
 
 
 using namespace std;
@@ -823,6 +825,7 @@ bool CFileItem::IsAnimatedPicture()
   {
     if (GetPictureInfoTag()->isAnimated() == -1)
     {
+#if defined(HAS_GIFLIB)
       Gif gif;
       if (gif.LoadGifMetaData(m_strPath) && gif.m_numFrames > 1)
       {
@@ -832,6 +835,7 @@ bool CFileItem::IsAnimatedPicture()
       {
         GetPictureInfoTag()->setIsAnimated(0);
       }
+#endif//HAS_GIFLIB
     }
     if (GetPictureInfoTag()->isAnimated() == 0)
       return false;

@@ -47,7 +47,9 @@
 #include "interfaces/AnnouncementManager.h"
 #include "pictures/PictureInfoTag.h"
 #include "pictures/PictureThumbLoader.h"
+#if defined(HAS_GIFLIB)
 //#include "pictures/Gif.h"
+#endif//HAS_GIFLIB
 
 using namespace XFILE;
 

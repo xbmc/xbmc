@@ -20,7 +20,9 @@
 
 #include "TextureManager.h"
 #include "Texture.h"
+#if defined(HAS_GIFLIB)
 #include "pictures/Gif.h"
+#endif//HAS_GIFLIB
 #include "GraphicContext.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -323,7 +325,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
 
   if (StringUtils::EndsWithNoCase(strPath, ".gif"))
   {
-    CTextureMap* pMap;
+    CTextureMap* pMap = NULL;
 
     if (bundle >= 0)
     {
@@ -350,6 +352,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
     }
     else
     {
+#if defined(HAS_GIFLIB)
       Gif gif;
       if(!gif.LoadGif(strPath.c_str()))
       {
@@ -369,6 +372,7 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
           pMap->Add(glTexture, frame->m_delay);
         }
       }
+#endif//HAS_GIFLIB
     }
 
 #ifdef _DEBUG
@@ -380,8 +384,11 @@ const CTextureArray& CGUITextureManager::Load(const CStdString& strTextureName, 
     OutputDebugString(temp);
 #endif
 
-    m_vecTextures.push_back(pMap);
-    return pMap->GetTexture();
+    if (pMap)
+    {
+      m_vecTextures.push_back(pMap);
+      return pMap->GetTexture();
+    }
   } // of if (strPath.Right(4).ToLower()==".gif")
 
   CBaseTexture *pTexture = NULL;

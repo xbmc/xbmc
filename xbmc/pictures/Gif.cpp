@@ -17,7 +17,8 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-
+#include "system.h"
+#if defined(HAS_GIFLIB)
 #include "Gif.h"
 #include "utils/log.h"
 
@@ -521,3 +522,4 @@ GifFrame::~GifFrame()
   delete[] m_pImage;
   m_pImage = NULL;
 }
+#endif//HAS_GIFLIB
