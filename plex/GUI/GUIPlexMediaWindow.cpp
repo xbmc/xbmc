@@ -680,8 +680,12 @@ bool CGUIPlexMediaWindow::OnSelect(int iItem)
 
   if (!item->m_bIsFolder)
   {
-    if ((!PlexUtils::CurrentSkinHasPreplay() || item->GetProperty("isSynthesized").asBoolean()) &&
-        (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK || item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO || item->GetPlexDirectoryType() == PLEX_DIR_TYPE_VIDEO))
+    if (!PlexUtils::CurrentSkinHasPreplay() || item->GetProperty("isSynthesized").asBoolean())
+      return OnPlayMedia(iItem);
+
+      if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK ||
+          item->GetPlexDirectoryType() == PLEX_DIR_TYPE_PHOTO ||
+          item->GetPlexDirectoryType() == PLEX_DIR_TYPE_VIDEO)
       return OnPlayMedia(iItem);
   }
 
