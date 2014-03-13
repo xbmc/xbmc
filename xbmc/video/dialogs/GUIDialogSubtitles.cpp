@@ -45,6 +45,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "video/VideoDatabase.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace ADDON;
 using namespace XFILE;
@@ -421,7 +422,11 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   std::vector<CStdString> vecFiles;
 
   CStdString strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
-  if (StringUtils::StartsWith(strCurrentFilePath, "http://"))
+
+  /* Check for properly named file (video extension)
+   * Especially http streams can be provided without a (proper) filename
+   */
+  if (!URIUtils::HasExtension(strCurrentFile, g_advancedSettings.m_videoExtensions))
   {
     vecFiles.push_back("TemporarySubs");
   }
