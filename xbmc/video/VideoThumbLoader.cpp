@@ -467,7 +467,8 @@ bool CVideoThumbLoader::FillThumb(CFileItem &item)
     if (!thumb.empty())
       SetCachedImage(item, "thumb", thumb);
   }
-  item.SetArt("thumb", thumb);
+  if (!thumb.empty())
+    item.SetArt("thumb", thumb);
   return !thumb.empty();
 }
 

@@ -103,13 +103,12 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
 
   if (thumb.empty())
   { // see whether we have a cached image for this item
-    CProgramThumbLoader loader;
-    thumb = loader.GetCachedImage(item, "thumb");
+    thumb = GetCachedImage(item, "thumb");
     if (thumb.empty())
     {
       thumb = GetLocalThumb(item);
       if (!thumb.empty())
-        loader.SetCachedImage(item, "thumb", thumb);
+        SetCachedImage(item, "thumb", thumb);
     }
   }
 
