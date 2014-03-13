@@ -93,7 +93,6 @@
 	<!-- DialogSeekBar.xml -->
 	<!-- variables for "VideoSeek" -->
 	<variable name="SeekingLabels">
-		<value condition="Player.Paused">PAUSED</value>
 		<value condition="Player.Seeking">SEEKING</value>
 		<value condition="Player.Caching">CACHING</value>
 		<value condition="Player.DisplayAfterSeek + ![Player.Forwarding | Player.Rewinding]">$INFO[Player.SeekOffset]</value>
