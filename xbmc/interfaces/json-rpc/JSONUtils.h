@@ -23,6 +23,7 @@
 #include <stdlib.h>
 
 #include "JSONRPCUtils.h"
+#include "XBDateTime.h"
 #include "utils/SortUtils.h"
 #include "interfaces/IAnnouncer.h"
 #include "playlists/SmartPlayList.h"
@@ -517,6 +518,28 @@ namespace JSONRPC
       stringArray.clear();
       for (CVariant::const_iterator_array it = jsonStringArray.begin_array(); it != jsonStringArray.end_array(); it++)
         stringArray.push_back(it->asString());
+    }
+
+    static void SetFromDBDate(const CVariant &jsonDate, CDateTime &date)
+    {
+      if (!jsonDate.isString())
+        return;
+
+      if (jsonDate.empty())
+        date.Reset();
+      else
+        date.SetFromDBDate(jsonDate.asString());
+    }
+
+    static void SetFromDBDateTime(const CVariant &jsonDate, CDateTime &date)
+    {
+      if (!jsonDate.isString())
+        return;
+
+      if (jsonDate.empty())
+        date.Reset();
+      else
+        date.SetFromDBDateTime(jsonDate.asString());
     }
 
     static bool GetXspFiltering(const CStdString &type, const CVariant &filter, CStdString &xsp)
