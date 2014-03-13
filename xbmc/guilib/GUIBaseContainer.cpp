@@ -1248,8 +1248,13 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
   case CONTAINER_NUM_ITEMS:
     {
       unsigned int numItems = GetNumItems();
+#ifndef __PLEX__
       if (numItems && m_items[0]->IsFileItem() && (boost::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
         label.Format("%u", numItems-1);
+#else
+      if (numItems && m_items[0]->IsFileItem() && m_items[0]->GetProperty("isAllItems").asBoolean())
+          label.Format("%u", numItems - 1);
+#endif
       else
         label.Format("%u", numItems);
     }

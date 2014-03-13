@@ -429,8 +429,13 @@ CPlexDirectory::ReadChildren(XML_ELEMENT* root, CFileItemList& container)
   {
     CFileItemPtr item = CPlexDirectory::NewPlexElement(element, container, m_url);
 
-    if (boost::ends_with(item->GetPath(), "/allLeaves") && g_advancedSettings.m_bVideoLibraryHideAllItems)
-      continue;
+    if (boost::ends_with(item->GetPath(), "/allLeaves"))
+    {
+      if (g_advancedSettings.m_bVideoLibraryHideAllItems)
+        continue;
+
+      item->SetProperty("isAllItems", true);
+    }
 
     CPlexDirectoryTypeParserBase::GetDirectoryTypeParser(item->GetPlexDirectoryType())->Process(*item, container, element);
 
