@@ -25,6 +25,7 @@
 #include "utils/log.h"
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 // the size of the audio_render output port buffers
 #define AUDIO_DECODE_OUTPUT_BUFFER (32*1024)
@@ -86,6 +87,15 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
   m_pCodecContext->block_align = hints.blockalign;
   m_pCodecContext->bit_rate = hints.bitrate;
   m_pCodecContext->bits_per_coded_sample = hints.bitspersample;
+  if (hints.codec == AV_CODEC_ID_TRUEHD)
+  {
+    if (CAEFactory::HasStereoAudioChannelCount())
+      m_pCodecContext->request_channel_layout = AV_CH_LAYOUT_STEREO;
+    else if (!CAEFactory::HasHDAudioChannelCount())
+      m_pCodecContext->request_channel_layout = AV_CH_LAYOUT_5POINT1;
+  }
+  if (m_pCodecContext->request_channel_layout)
+    CLog::Log(LOGNOTICE,"COMXAudioCodecOMX::Open() Requesting channel layout of %x", (unsigned)m_pCodecContext->request_channel_layout);
 
   // vorbis has variable sized planar output, so skip concatenation
   if (hints.codec == AV_CODEC_ID_VORBIS)
