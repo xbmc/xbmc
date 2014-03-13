@@ -123,8 +123,8 @@ namespace PVR
     std::vector<PVR_EDL_ENTRY> GetEdl() const;
 
     /*!
-     * @brief Get the resume point and play count from the server (if supported) or the database
-     * @param bookmark The bookmark to update
+     * @brief Get the resume point and play count from the database if the 
+     * client doesn't handle it itself.
      */
     void UpdateMetadata(void);
 
