@@ -63,6 +63,7 @@ bool CPlexVideoThumbLoaderJob::DoWork()
   art.push_back("smallThumb");
   art.push_back("smallPoster");
   art.push_back("smallGrandparentThumb");
+  art.push_back("banner");
 
   int i = 0;
   BOOST_FOREACH(CStdString artKey, art)
