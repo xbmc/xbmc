@@ -77,7 +77,6 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_bIsPlayingTV          = false;
   m_bIsPlayingRecording   = false;
   memset(&m_addonCapabilities, 0, sizeof(m_addonCapabilities));
-  ResetQualityData(m_qualityInfo);
   m_apiVersion = AddonVersion("0.0.0");
 }
 
@@ -1024,7 +1023,6 @@ bool CPVRClient::SwitchChannel(const CPVRChannel &channel)
   {
     CPVRChannelPtr currentChannel = g_PVRChannelGroups->GetByUniqueID(channel.UniqueID(), channel.ClientID());
     CSingleLock lock(m_critSection);
-    ResetQualityData(m_qualityInfo);
     m_playingChannel = currentChannel;
   }
 
@@ -1455,51 +1453,6 @@ bool CPVRClient::CanSeekStream(void) const
     catch (exception &e) { LogException(e, __FUNCTION__); }
   }
   return bReturn;
-}
-
-void CPVRClient::ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo)
-{
-  memset(&qualityInfo, 0, sizeof(qualityInfo));
-  if (CSettings::Get().GetBool("pvrplayback.signalquality"))
-  {
-    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13205).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
-    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13205).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
-  }
-  else
-  {
-    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
-    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
-  }
-}
-
-void CPVRClient::GetQualityData(PVR_SIGNAL_STATUS *status) const
-{
-  CSingleLock lock(m_critSection);
-  *status = m_qualityInfo;
-}
-
-int CPVRClient::GetSignalLevel(void) const
-{
-  CSingleLock lock(m_critSection);
-  return (int) ((float) m_qualityInfo.iSignal / 0xFFFF * 100);
-}
-
-int CPVRClient::GetSNR(void) const
-{
-  CSingleLock lock(m_critSection);
-  return (int) ((float) m_qualityInfo.iSNR / 0xFFFF * 100);
-}
-
-void CPVRClient::UpdateCharInfoSignalStatus(void)
-{
-  PVR_SIGNAL_STATUS qualityInfo;
-  ResetQualityData(qualityInfo);
-
-  if (CSettings::Get().GetBool("pvrplayback.signalquality"))
-    SignalQuality(qualityInfo);
-
-  CSingleLock lock(m_critSection);
-  m_qualityInfo = qualityInfo;
 }
 
 time_t CPVRClient::GetPlayingTime(void) const

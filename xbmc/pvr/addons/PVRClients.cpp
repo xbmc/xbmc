@@ -1004,9 +1004,6 @@ void CPVRClients::Process(void)
         ShowDialogNoClientsEnabled();
     }
 
-    PVR_CLIENT client;
-    if (GetPlayingClient(client))
-      client->UpdateCharInfoSignalStatus();
     Sleep(1000);
   }
 }
