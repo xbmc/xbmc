@@ -1265,7 +1265,7 @@ bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool b
   if (!channel)
     return false;
 
-  channel->SetChannelName(strChannelName);
+  channel->SetChannelName(strChannelName, true);
   channel->SetHidden(bHidden);
   channel->SetLocked(bParentalLocked);
   channel->SetIconPath(strIconPath, bUserSetIcon);
