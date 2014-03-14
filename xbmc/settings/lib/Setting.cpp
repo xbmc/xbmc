@@ -269,6 +269,15 @@ CSettingList::CSettingList(const std::string &id, CSetting *settingDefinition, C
     m_minimumItems(0), m_maximumItems(-1)
 { }
 
+CSettingList::CSettingList(const std::string &id, CSetting *settingDefinition, int label, CSettingsManager *settingsManager /* = NULL */)
+  : CSetting(id, settingsManager),
+    m_definition(settingDefinition),
+    m_delimiter("|"),
+    m_minimumItems(0), m_maximumItems(-1)
+{
+  m_label = label;
+}
+
 CSettingList::CSettingList(const std::string &id, const CSettingList &setting)
   : CSetting(id, setting),
     m_definition(NULL),
