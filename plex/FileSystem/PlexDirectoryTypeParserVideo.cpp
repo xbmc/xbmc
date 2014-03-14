@@ -206,6 +206,8 @@ CPlexDirectoryTypeParserVideo::ParseMediaNodes(CFileItem &item, XML_ELEMENT *ele
 
   if (item.m_mediaItems.size() == 0)
     item.SetProperty("isSynthesized", true);
+  else
+    item.SetProperty("isSynthesized", false);
 
   SetTagsAsProperties(item);
 }
