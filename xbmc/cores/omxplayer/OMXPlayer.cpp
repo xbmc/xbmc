@@ -1100,7 +1100,7 @@ void COMXPlayer::Process()
     m_bAbortRequest = true;
     return;
   }
-  if(CSettings::Get().GetBool("videoplayer.adjustrefreshrate"))
+  if(CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
     m_av_clock.HDMIClockSync();
   m_av_clock.OMXStateIdle();
   m_av_clock.OMXStop();
