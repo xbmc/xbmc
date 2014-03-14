@@ -212,8 +212,14 @@ CFileItemPtr CPlexAutoUpdate::GetPackage(CFileItemPtr updateItem)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexAutoUpdate::NeedDownload(const std::string& localFile, const std::string& expectedHash)
+bool CPlexAutoUpdate::NeedDownload(const std::string& localFile, const std::string& expectedHash, bool isManifest)
 {
+#ifdef OPENELEC
+  // Manifest is not needed in OpenELEC
+  if (isManifest)
+    return false;
+#endif
+
   if (CFile::Exists(localFile, false) && PlexUtils::GetSHA1SumFromURL(CURL(localFile)) == expectedHash)
   {
     CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate we already have %s with correct SHA", localFile.c_str());
@@ -247,18 +253,15 @@ void CPlexAutoUpdate::DownloadUpdate(CFileItemPtr updateItem)
   m_localManifest = "special://temp/autoupdate/manifest-" + m_downloadItem->GetProperty("version").asString() + "." + packageStr + ".xml";
   m_localBinary = "special://temp/autoupdate/binary-" + m_downloadItem->GetProperty("version").asString() + "." + packageStr + ".zip";
 
-#ifndef OPENELEC /* OpenELEC doesn't have a manifest */
-  if (NeedDownload(m_localManifest, m_downloadPackage->GetProperty("manifestHash").asString()))
+
+  if (NeedDownload(m_localManifest, m_downloadPackage->GetProperty("manifestHash").asString(), true))
   {
     CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate need %s", manifestUrl.c_str());
     CJobManager::GetInstance().AddJob(new CPlexDownloadFileJob(manifestUrl, m_localManifest), this, CJob::PRIORITY_LOW);
     m_needManifest = true;
   }
-#else
-  m_needManifest = false;
-#endif
 
-  if (NeedDownload(m_localBinary, m_downloadPackage->GetProperty("fileHash").asString()))
+  if (NeedDownload(m_localBinary, m_downloadPackage->GetProperty("fileHash").asString(), false))
   {
     CLog::Log(LOGDEBUG, "CPlexAutoUpdate::DownloadUpdate need %s", m_localBinary.c_str());
     CJobManager::GetInstance().AddJob(new CPlexDownloadFileJob(updateUrl, m_localBinary), this, CJob::PRIORITY_LOW);
@@ -391,7 +394,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   {
     if (fj->m_destination == m_localManifest)
     {
-      if (NeedDownload(m_localManifest, m_downloadPackage->GetProperty("manifestHash").asString()))
+      if (NeedDownload(m_localManifest, m_downloadPackage->GetProperty("manifestHash").asString(), true))
       {
         CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to download manifest, SHA mismatch. Retrying in %d seconds", m_searchFrequency);
         return;
@@ -402,7 +405,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     }
     else if (fj->m_destination == m_localBinary)
     {
-      if (NeedDownload(m_localBinary, m_downloadPackage->GetProperty("fileHash").asString()))
+      if (NeedDownload(m_localBinary, m_downloadPackage->GetProperty("fileHash").asString(), false))
       {
         CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to download update, SHA mismatch. Retrying in %d seconds", m_searchFrequency);
         return;

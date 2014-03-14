@@ -73,7 +73,7 @@ class CPlexAutoUpdate : public IJobCallback, public IPlexGlobalTimeout
     bool m_ready;
 
     CFileItemPtr GetPackage(CFileItemPtr updateItem);
-    bool NeedDownload(const std::string& localFile, const std::string& expectedHash);
+    bool NeedDownload(const std::string& localFile, const std::string& expectedHash, bool isManifest);
     bool RenameLocalBinary();
     int m_percentage;
 
