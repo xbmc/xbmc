@@ -1,0 +1,24 @@
+New:
+  * A nice little addition that has been requested a lot. Let's see if you guys can find it :)
+  * [API] details will now be mirrored to PHT from remote, just like ChromeCast. Needs client updates.
+
+Fixes:
+  * Theme music fixes (Thanks to Lionel C)
+  * Fix exit button keymapping for IR/CEC remotes (Thanks to Lionel C)
+  * Fixed transcoding of multi-part/multi-item videos
+  * Fix crash when GDM was disabled
+  * Progress / now playing fixes
+  * Fixed crash when playing video from the iTunes channel
+  * Make sure resolution can not be set to something insane. We now clamp it to the total size of the monitor or as low as 1024x576
+  * Fixed channel preferences dialog
+  * Fixed number of albums in artist view to not include "All songs"
+
+Skin updates:
+  * Fix left menu bar visibility in Music views.
+  * Tweak the Sort triangle vertical position for better alignment.
+  * Show unavailable flag in video Pre-Play
+  * Better align the unwatched count icon in the full info card.
+  * Show banner instead of poster in Tv Show list view.
+  * Show unwatched indicator next to selected Art.
+  * Show Seekbar only in video player, and while seeking.
+  * Don't show Music OSD unless Music Player has activity
