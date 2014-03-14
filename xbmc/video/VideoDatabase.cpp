@@ -1909,6 +1909,9 @@ bool CVideoDatabase::GetFileInfo(const CStdString& strFilenameAndPath, CVideoInf
       details.m_resumePoint.type = CBookmark::RESUME;
     }
 
+    // get streamdetails
+    GetStreamDetails(details);
+
     return !details.IsEmpty();
   }
   catch (...)
