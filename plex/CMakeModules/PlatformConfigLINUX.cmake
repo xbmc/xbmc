@@ -146,5 +146,10 @@ set(PLEX_LINK_WRAPPED "-Wl,--unresolved-symbols=ignore-all -Wl,-wrap,_IO_getc -W
 set(PLEX_LINK_WHOLEARCHIVE -Wl,--whole-archive)
 set(PLEX_LINK_NOWHOLEARCHIVE -Wl,--no-whole-archive)
 
+option(OPENELEC "Are we building OpenELEC dist?" OFF)
+if(OPENELEC)
+  add_definitions(-DOPENELEC)
+endif(OPENELEC)
+
 ############ Add our definitions
 add_definitions(-DTARGET_LINUX -D_LINUX)
