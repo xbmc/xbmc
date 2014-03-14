@@ -59,6 +59,7 @@ add_subdirectory(Utility)
 add_subdirectory(Remote)
 add_subdirectory(Filters)
 add_subdirectory(Windows)
+add_subdirectory(AutoUpdate)
 
 include(BreakpadSymbols)
 
