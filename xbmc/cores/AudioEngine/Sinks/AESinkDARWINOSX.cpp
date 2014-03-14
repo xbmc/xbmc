@@ -673,6 +673,21 @@ void CAESinkDARWINOSX::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     list.push_back(i->second);
 }
 
+inline void LogLevel(unsigned int got, unsigned int wanted)
+{
+  static unsigned int lastReported = INT_MAX;
+  if (got != wanted)
+  {
+    if (got != lastReported)
+    {
+      CLog::Log(LOGWARNING, "DARWINOSX: %sflow (%u vs %u bytes)", got > wanted ? "over" : "under", got, wanted);
+      lastReported = got;
+    }    
+  }
+  else
+    lastReported = INT_MAX; // indicate we were good at least once
+}
+
 OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData)
 {
   CAESinkDARWINOSX *sink = (CAESinkDARWINOSX*)inClientData;
@@ -702,8 +717,7 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
       unsigned int wanted = outOutputData->mBuffers[i].mDataByteSize;
       unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
       sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[i].mData, bytes);
-      if (bytes != wanted)
-        CLog::Log(LOGERROR, "%s: %sFLOW (%i vs %i) bytes", __FUNCTION__, bytes > wanted ? "OVER" : "UNDER", bytes, wanted);
+      LogLevel(bytes, wanted);
     }
 
     // tell the sink we're good for more data
