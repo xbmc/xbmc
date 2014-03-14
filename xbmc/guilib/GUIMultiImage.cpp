@@ -184,7 +184,10 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
     CFileItemList* list = (CFileItemList*)message.GetPointer();
     m_plexFiles.clear();
     for (int i = 0; i < list->Size(); i ++)
+    {
       m_plexFiles.push_back(list->Get(i)->GetPath());
+      m_plexLabels[list->Get(i)->GetPath()] = list->Get(i)->GetLabel();
+    }
     
     /* PLEX */
     CSingleLock lk(m_section);

@@ -2,10 +2,14 @@
 #define GUIPLEXSCREENSAVERPHOTO_H
 
 #include "guilib/GUIDialog.h"
+#include "guilib/GUIImage.h"
 #include "guilib/GUIMultiImage.h"
+#include "guilib/GUILabelControl.h"
 
 #include "JobManager.h"
 #include "FileItem.h"
+#include "addons/Addon.h"
+
 
 class CGUIPlexScreenSaverPhoto : public CGUIDialog, public IJobCallback
 {
@@ -21,7 +25,10 @@ class CGUIPlexScreenSaverPhoto : public CGUIDialog, public IJobCallback
     void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
     CGUIMultiImage* m_multiImage;
+    CGUIImage* m_overlayImage;
+    CGUILabelControl* m_clockLabel;
     CFileItemListPtr m_images;
+    CGUILabelControl* m_imageLabel;
 };
 
 #endif // GUIPLEXSCREENSAVERPHOTO_H

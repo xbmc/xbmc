@@ -62,6 +62,16 @@ public:
   void SetInfo(const CGUIInfoLabel &info);
   void SetAspectRatio(const CAspectRatio &ratio);
 
+  /* PLEX */
+  CStdString GetCurrentPlexLabel()
+  {
+    std::string path = m_files[m_currentImage];
+    if (m_plexLabels.find(path) != m_plexLabels.end())
+      return m_plexLabels[m_files[m_currentImage]];
+    return "";
+  }
+  /* END PLEX */
+
 protected:
   void LoadDirectory();
   void OnDirectoryLoaded();
@@ -101,6 +111,7 @@ protected:
   
   /* PLEX */
   std::vector<CStdString> m_plexFiles;
+  std::map<CStdString, CStdString> m_plexLabels;
   /* END PLEX */
 };
 #endif
