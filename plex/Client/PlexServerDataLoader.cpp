@@ -156,6 +156,8 @@ bool CPlexServerDataLoaderJob::DoWork()
   if (m_server->GetUUID() != "myplex")
   {
     m_sectionList = FetchList("/library/sections");
+    if (!m_sectionList)
+      return false;
 
     if (m_server->GetOwned())
     {
