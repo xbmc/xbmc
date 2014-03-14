@@ -29,8 +29,6 @@
 #include "PlexAnalytics.h"
 #include "GUIUserMessages.h"
 
-#define OPENELEC
-
 using namespace XFILE;
 
 //#define UPDATE_DEBUG 1
@@ -39,12 +37,20 @@ using namespace XFILE;
 CPlexAutoUpdate::CPlexAutoUpdate()
   : m_forced(false), m_isSearching(false), m_isDownloading(false), m_ready(false), m_percentage(0)
 {
+#if defined(TARGET_RASPBERRY_PI)
+  int channel = g_guiSettings.GetInt("updates.channel");
+  if (channel != CMyPlexUserInfo::ROLE_USER)
+    m_url = CURL("https://raw.github.com/RasPlex/RasPlex.github.io/master/autoupdate/experimental.xml");
+  else
+    m_url = CURL("https://raw.github.com/RasPlex/RasPlex.github.io/master/autoupdate/stable.xml");
+#else
   m_url = CURL("https://plex.tv/updater/products/2/check.xml");
 
   m_searchFrequency = 21600000; /* 6 hours */
 
   CheckInstalledVersion();
 
+  CLog::Log(LOGDEBUG,"CPlexAutoUpdate : Creating Updater, auto=%d",g_guiSettings.GetBool("updates.auto"));
   if (g_guiSettings.GetBool("updates.auto"))
     g_plexApplication.timer.SetTimeout(5 * 1000, this);
 }
@@ -85,6 +91,7 @@ void CPlexAutoUpdate::OnTimeout()
   CPlexDirectory dir;
   m_isSearching = true;
 
+  CLog::Log(LOGDEBUG,"CPlexAutoUpdate::OnTimeout Starting");
 #ifdef UPDATE_DEBUG
   m_url.SetOption("version", "1.0.0.117-a97636ae");
 #else
@@ -408,7 +415,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
   else if (!success)
   {
-    CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to run a download job, will retry in %d seconds.", m_searchFrequency);
+    CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to run a download job, will retry in %d milliseconds.", m_searchFrequency);
     g_plexApplication.timer.SetTimeout(m_searchFrequency, this);
     return;
   }
@@ -675,6 +682,35 @@ void CPlexAutoUpdate::UpdateAndRestart()
 #else /* OPENELEC */
 void CPlexAutoUpdate::UpdateAndRestart()
 {
+  // we need to start the Install script here
+
+  // build script path
+  CStdString updaterPath;
+  CUtil::GetHomePath(updaterPath);
+  updaterPath += "/tools/openelec_install_update.sh";
+
+  // run the script redirecting stderr to stdin so that we can grab script errors and log them
+  CStdString command = "/bin/sh " + updaterPath + " " + CSpecialProtocol::TranslatePath(m_localBinary) + " 2>&1";
+  CLog::Log(LOGDEBUG,"CPlexAutoUpdate::UpdateAndRestart : Executing '%s'", command.c_str());
+  FILE* fp = popen(command.c_str(), "r");
+  if (fp)
+  {
+    // we grab script output in case we would have an error
+    char output[1000];
+    CStdString commandOutput;
+    if (fgets(output, sizeof(output)-1, fp))
+      commandOutput = CStdString(output);
+
+    int retcode = fclose(fp);
+    if (retcode)
+    {
+      CLog::Log(LOGERROR,"CPlexAutoUpdate::UpdateAndRestart: error %d while running install script : %s", retcode, commandOutput.c_str());
+      return;
+    }
+  }
+
+  // now restart
+  CApplicationMessenger::Get().Restart();
 }
 #endif
 

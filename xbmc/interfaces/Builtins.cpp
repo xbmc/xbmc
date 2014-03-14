@@ -1658,7 +1658,7 @@ int CBuiltins::Execute(const CStdString& execString)
     g_application.StopPVRManager();
   }
   /* PLEX */
-#if defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS)
+#if defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS) || defined(OPENELEC)
   else if (execute.Equals("toggledisplayblanking"))
   {
     g_guiSettings.SetBool("videoscreen.blankdisplays", !g_guiSettings.GetBool("videoscreen.blankdisplays"));
