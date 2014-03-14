@@ -45,6 +45,7 @@ CPlexAutoUpdate::CPlexAutoUpdate()
     m_url = CURL("https://raw.github.com/RasPlex/RasPlex.github.io/master/autoupdate/stable.xml");
 #else
   m_url = CURL("https://plex.tv/updater/products/2/check.xml");
+#endif
 
   m_searchFrequency = 21600000; /* 6 hours */
 
