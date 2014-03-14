@@ -41,6 +41,7 @@
         PyObject* pyentry${seq};
         ${helper.getOutConversion(vectype,'result',method,[ 'result' : 'pyentry' + seq, 'api' : 'entry' + seq, 'sequence' : sequence ])}
         PyList_Append(${result}, pyentry${seq});
+        Py_DECREF(pyentry${seq});
       }
 <%
     if (ispointer)
