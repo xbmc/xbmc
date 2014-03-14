@@ -838,24 +838,19 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
   configDisplay.fullscreen = OMX_FALSE;
   configDisplay.noaspect   = OMX_TRUE;
 
-  if (configDisplay.dest_rect.width == 0 || configDisplay.dest_rect.height == 0)
-  {
-    configDisplay.set                 = OMX_DISPLAY_SET_FULLSCREEN;
-    configDisplay.fullscreen          = OMX_TRUE;
-  }
-  else
-  {
-    configDisplay.set                 = (OMX_DISPLAYSETTYPE)(OMX_DISPLAY_SET_DEST_RECT|OMX_DISPLAY_SET_SRC_RECT|OMX_DISPLAY_SET_NOASPECT);
-    configDisplay.dest_rect.x_offset  = (int)(DestRect.x1+0.5f);
-    configDisplay.dest_rect.y_offset  = (int)(DestRect.y1+0.5f);
-    configDisplay.dest_rect.width     = (int)(DestRect.Width()+0.5f);
-    configDisplay.dest_rect.height    = (int)(DestRect.Height()+0.5f);
+  configDisplay.set                 = (OMX_DISPLAYSETTYPE)(OMX_DISPLAY_SET_DEST_RECT|OMX_DISPLAY_SET_SRC_RECT|OMX_DISPLAY_SET_FULLSCREEN|OMX_DISPLAY_SET_NOASPECT);
+  configDisplay.dest_rect.x_offset  = (int)(DestRect.x1+0.5f);
+  configDisplay.dest_rect.y_offset  = (int)(DestRect.y1+0.5f);
+  configDisplay.dest_rect.width     = (int)(DestRect.Width()+0.5f);
+  configDisplay.dest_rect.height    = (int)(DestRect.Height()+0.5f);
 
-    configDisplay.src_rect.x_offset   = (int)(SrcRect.x1+0.5f);
-    configDisplay.src_rect.y_offset   = (int)(SrcRect.y1+0.5f);
-    configDisplay.src_rect.width      = (int)(SrcRect.Width()+0.5f);
-    configDisplay.src_rect.height     = (int)(SrcRect.Height()+0.5f);
-  }
+  configDisplay.src_rect.x_offset   = (int)(SrcRect.x1+0.5f);
+  configDisplay.src_rect.y_offset   = (int)(SrcRect.y1+0.5f);
+  configDisplay.src_rect.width      = (int)(SrcRect.Width()+0.5f);
+  configDisplay.src_rect.height     = (int)(SrcRect.Height()+0.5f);
+
+  configDisplay.fullscreen          = configDisplay.dest_rect.width == 0 || configDisplay.dest_rect.width == 0 ? OMX_TRUE : OMX_FALSE;
+
   m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
 
   CLog::Log(LOGDEBUG, "dest_rect.x_offset %d dest_rect.y_offset %d dest_rect.width %d dest_rect.height %d\n",
