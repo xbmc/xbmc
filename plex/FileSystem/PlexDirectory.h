@@ -82,6 +82,7 @@ namespace XFILE
 
       CStdString m_body;
       CStdString m_data;
+      CStdString m_xmlData;
       CURL m_url;
 
       CPlexFile m_file;

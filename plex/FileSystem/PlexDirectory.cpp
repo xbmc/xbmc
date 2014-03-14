@@ -115,14 +115,8 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     xml_document<> doc;    // character type defaults to char
     try
     {
-      // RapidXML destroys the xml string buffer, so let's copy it to
-      // a new place first
-      char *xmlData = (char*)malloc(m_data.size());
-      strncpy(xmlData, (const char*)m_data, m_data.size());
-
-      doc.parse<0>(xmlData);    // 0 means default parse flags
-
-      free(xmlData);
+      m_xmlData = m_data;
+      doc.parse<0>((char*)m_xmlData.c_str());    // 0 means default parse flags
     }
     catch (...)
     {
