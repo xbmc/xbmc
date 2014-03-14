@@ -1515,7 +1515,7 @@ bool CJSONServiceDescription::AddType(const std::string &jsonType)
 
   if (!globalType->Parse(descriptionObject[typeName]))
   {
-    CLog::Log(LOGERROR, "JSONRPC: Could not parse type \"%s\"", typeName.c_str());
+    CLog::Log(LOGWARNING, "JSONRPC: Could not parse type \"%s\"", typeName.c_str());
     CJSONServiceDescription::removeReferenceTypeDefinition(typeName);
     if (!globalType->missingReference.empty())
     {
