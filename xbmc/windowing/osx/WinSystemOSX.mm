@@ -177,6 +177,11 @@
 
 
 #define MAX_DISPLAYS 32
+// if there was a devicelost callback
+// but no device reset for 3 secs
+// a timeout fires the reset callback
+// (for ensuring that e.x. AE isn't stuck)
+#define LOST_DEVICE_TIMEOUT_MS 3000
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
 void* CWinSystemOSX::m_lastOwnedContext = 0;
@@ -514,10 +519,18 @@ static void DisplayReconfigured(CGDirectDisplayID display,
   CGDisplayChangeSummaryFlags flags, void* userData)
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)userData;
-	if (!winsys)
+  if (!winsys)
     return;
 
-  if (flags & kCGDisplaySetModeFlag || flags & kCGDisplayBeginConfigurationFlag)
+  CLog::Log(LOGDEBUG, "CWinSystemOSX::DisplayReconfigured with flags %d", flags);
+
+  // we fire the callbacks on start of configuration
+  // or when the mode set was finished
+  // or when we are called with flags == 0 (which is undocumented but seems to happen
+  // on some macs - we treat it as device reset)
+
+  // first check if we need to call OnLostDevice
+  if (flags & kCGDisplayBeginConfigurationFlag)
   {
     // pre/post-reconfiguration changes
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
@@ -532,22 +545,37 @@ static void DisplayReconfigured(CGDirectDisplayID display,
         pScreen = [[NSScreen screens] objectAtIndex:screenIdx];
     }
 
+    // kCGDisplayBeginConfigurationFlag is only fired while the screen is still
+    // valid
     if (pScreen)
     {
       CGDirectDisplayID xbmc_display = GetDisplayIDFromScreen(pScreen);
       if (xbmc_display == display)
       {
         // we only respond to changes on the display we are running on.
-        CLog::Log(LOGDEBUG, "CWinSystemOSX::DisplayReconfigured");
-        winsys->CheckDisplayChanging(flags);
+        winsys->AnnounceOnLostDevice();
+        winsys->StartLostDeviceTimer();
       }
+    }
+  }
+  else // the else case checks if we need to call OnResetDevice
+  {
+    // we fire if kCGDisplaySetModeFlag is set or if flags == 0
+    // (which is undocumented but seems to happen
+    // on some macs - we treat it as device reset)
+    // we also don't check the screen here as we might not even have
+    // one anymore (e.x. when tv is turned off)
+    if (flags & kCGDisplaySetModeFlag || flags == 0)
+    {
+      winsys->StopLostDeviceTimer(); // no need to timeout - we've got the callback
+      winsys->AnnounceOnResetDevice();
     }
   }
 }
 
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
-CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
+CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
 {
   m_eWindowSystem = WINDOW_SYSTEM_OSX;
   m_glContext = 0;
@@ -565,6 +593,24 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
 CWinSystemOSX::~CWinSystemOSX()
 {
 };
+
+void CWinSystemOSX::StartLostDeviceTimer()
+{
+  if (m_lostDeviceTimer.IsRunning())
+    m_lostDeviceTimer.Restart();
+  else
+    m_lostDeviceTimer.Start(LOST_DEVICE_TIMEOUT_MS, false);
+}
+
+void CWinSystemOSX::StopLostDeviceTimer()
+{
+  m_lostDeviceTimer.Stop();
+}
+
+void CWinSystemOSX::OnTimeout()
+{
+  AnnounceOnResetDevice();
+}
 
 bool CWinSystemOSX::InitWindowSystem()
 {
@@ -1689,25 +1735,22 @@ void CWinSystemOSX::WindowChangedScreen()
   m_movedToOtherScreen = true;
 }
 
-void CWinSystemOSX::CheckDisplayChanging(u_int32_t flags)
+void CWinSystemOSX::AnnounceOnLostDevice()
 {
-  if (flags)
-  {
-    CSingleLock lock(m_resourceSection);
-    // tell any shared resources
-    if (flags & kCGDisplayBeginConfigurationFlag)
-    {
-      CLog::Log(LOGDEBUG, "CWinSystemOSX::CheckDisplayChanging:OnLostDevice");
-      for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
-        (*i)->OnLostDevice();
-    }
-    if (flags & kCGDisplaySetModeFlag)
-    {
-      CLog::Log(LOGDEBUG, "CWinSystemOSX::CheckDisplayChanging:OnResetDevice");
-      for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
-        (*i)->OnResetDevice();
-    }
-  }
+  CSingleLock lock(m_resourceSection);
+  // tell any shared resources
+  CLog::Log(LOGDEBUG, "CWinSystemOSX::AnnounceOnLostDevice");
+  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnLostDevice();
+}
+
+void CWinSystemOSX::AnnounceOnResetDevice()
+{
+  CSingleLock lock(m_resourceSection);
+  // tell any shared resources
+  CLog::Log(LOGDEBUG, "CWinSystemOSX::AnnounceOnResetDevice");
+  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnResetDevice();
 }
 
 void* CWinSystemOSX::GetCGLContextObj()
