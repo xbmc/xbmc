@@ -22,6 +22,7 @@
 #include "guilib/JpegIO.h"
 #include "guilib/cximage.h"
 #include "utils/Mime.h"
+#include "pictures/Gif.h"
 
 IImage* ImageFactory::CreateLoader(const std::string& strFileName)
 {
@@ -41,6 +42,8 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 {
   if(strMimeType == "image/jpeg" || strMimeType == "image/tbn" || strMimeType == "image/jpg")
     return new CJpegIO();
+  else if (strMimeType == "image/gif")
+    return new Gif();
   return new CXImage(strMimeType);
 }
 

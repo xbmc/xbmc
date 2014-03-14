@@ -20,6 +20,7 @@
  *
  */
 
+#include "guilib/iimage.h"
 #include "DllLibGif.h"
 #include "guilib/Texture.h"
 
@@ -52,7 +53,7 @@ private:
 
 
 
-class Gif
+class Gif : public IImage
 {
   friend class GifFrame;
 public:
@@ -63,12 +64,15 @@ public:
   bool LoadGif(const char* file);
 
   std::vector<GifFrame> m_frames;
-  unsigned int    m_width;
-  unsigned int    m_height;
   unsigned int    m_imageSize;
   unsigned int    m_pitch;
   unsigned int    m_loops;
   unsigned int    m_numFrames;
+
+  virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
+  virtual bool Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
+  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+                                          unsigned char* &bufferout, unsigned int &bufferoutSize);
 
 private:
   DllLibGif       m_dll;
@@ -79,6 +83,8 @@ private:
   COLOR*          m_pGlobalPalette;
   unsigned int    m_gloabalPaletteSize;
   unsigned char*  m_pTemplate;
+  unsigned int    m_optimalWidth;
+  unsigned int    m_optimalHeight;
 
   void InitTemplateAndColormap();
   bool LoadGifMetaData(GifFileType* file);

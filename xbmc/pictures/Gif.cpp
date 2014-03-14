@@ -24,9 +24,26 @@
 #define UNSIGNED_LITTLE_ENDIAN(lo, hi)	((lo) | ((hi) << 8))
 #define GIF_MAX_MEMORY 82944000U // about 79 MB, which is equivalent to 10 full hd frames.
 
+class Gifreader
+{
+public:
+  unsigned char* buffer;
+  unsigned int readPosition;
+
+  Gifreader() : buffer(NULL), readPosition(0) {}
+};
+
+int ReadFromMemory(GifFileType* gif, GifByteType* gifbyte, int len)
+{
+  unsigned int alreadyRead = ((Gifreader*)gif->UserData)->readPosition;
+  unsigned char* src = ((Gifreader*)gif->UserData)->buffer + alreadyRead;
+  memcpy(gifbyte, src, len);
+  ((Gifreader*)gif->UserData)->readPosition += len; 
+  return len;
+}
+
+
 Gif::Gif() :
-  m_width(0),
-  m_height(0),
   m_imageSize(0),
   m_pitch(0),
   m_loops(0),
@@ -36,7 +53,9 @@ Gif::Gif() :
   m_hasBackground(false),
   m_pGlobalPalette(NULL),
   m_gloabalPaletteSize(0),
-  m_pTemplate(NULL)
+  m_pTemplate(NULL),
+  m_optimalWidth(0),
+  m_optimalHeight(0)
 {
   if (!m_dll.Load())
     CLog::Log(LOGERROR, "Gif::Gif(): Could not load giflib");
@@ -371,6 +390,87 @@ void Gif::SetFrameAreaToBack(unsigned char* dest, const GifFrame &frame)
   }
 }
 
+bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)
+{
+  if (!m_dll.IsLoaded())
+    return false;
+
+  if (!buffer || !bufSize || !width || !height)
+    return false;
+
+  Gifreader reader;
+  reader.buffer = buffer;
+
+  int err = 0;
+  m_gif = m_dll.DGifOpen((void *)&reader, (InputFunc)&ReadFromMemory ,&err);
+  if (!m_gif)
+  {
+    char* error = m_dll.GifErrorString(err);
+    if (error)
+      CLog::Log(LOGERROR, "Gif::LoadImageFromMemory(): Could not open gif from memory - %s", error);
+    else
+      CLog::Log(LOGERROR, "Gif::LoadImageFromMemory(): Could not open gif from memory (reasons unknown)");
+    return false;
+  }
+
+  if (!LoadGifMetaData(m_gif))
+    return false;
+
+  m_originalWidth = m_width;
+  m_originalHeight = m_height;
+
+  try
+  {
+    InitTemplateAndColormap(); 
+
+    if (ExtractFrames(m_numFrames))
+    {
+      m_optimalWidth = width;
+      m_optimalHeight = height;
+    }
+    else
+      return false;
+  }
+  catch (std::bad_alloc& ba)
+  {
+    CLog::Log(LOGERROR, "Gif::LoadImageFromMemory(): Out of memory while extracting gif frames - %s", ba.what());
+    Release();
+    return false;
+  }  
+
+  return true;
+}
+
+bool Gif::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)
+{
+  if (m_width == 0 || m_height == 0 
+    || !m_dll.IsLoaded() || !m_gif 
+    || format != XB_FMT_A8R8G8B8 || !m_numFrames)
+    return false;
+
+  const unsigned char *src = m_frames[0].m_pImage;
+  unsigned char *dst = (unsigned char*)pixels;
+
+  if (pitch == m_pitch)
+    memcpy(dst, src, m_imageSize);
+  else
+  {    
+    for (unsigned int y = 0; y < m_height; y++)
+    {
+      memcpy(dst, src, m_pitch);
+      src += m_pitch;
+      dst += pitch;
+    }
+  }
+  return true;
+}
+
+bool Gif::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+                                     unsigned char* &bufferout, unsigned int &bufferoutSize)
+{
+  CLog::Log(LOGERROR, "Gif::CreateThumbnailFromSurface(): Not implemented. Something went wrong, we don't store thumbnails as gifs!");
+  return false;
+}
 
 GifFrame::GifFrame() :
   m_pImage(NULL),
