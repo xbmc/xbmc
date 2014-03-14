@@ -66,12 +66,14 @@ public:
   virtual bool             IsValid();
 
   bool                     Rendered() const;
-  void                     Queue(VpuDecOutFrameInfo *frameInfo);
+  void                     Queue(VpuDecOutFrameInfo *frameInfo,
+                                 CDVDVideoCodecIMXBuffer *previous);
   VpuDecRetCode            ReleaseFramebuffer(VpuDecHandle *handle);
   void                     SetPts(double pts);
   double                   GetPts(void) const;
+  CDVDVideoCodecIMXBuffer *GetPreviousBuffer() const;
 
-protected:
+private:
   // private because we are reference counted
   virtual                  ~CDVDVideoCodecIMXBuffer();
 
@@ -83,6 +85,8 @@ private:
   VpuFrameBuffer          *m_frameBuffer;
   bool                     m_rendered;
   double                   m_pts;
+  CDVDVideoCodecIMXBuffer *m_previousBuffer; // Holds a the reference counted
+                                             // previous buffer
 };
 
 // Shared buffer that holds an IPU allocated memory block and serves as target
@@ -103,8 +107,9 @@ public:
 
   // Returns whether the buffer is ready to be used
   bool                     Rendered() const { return m_source == NULL; }
-  bool                     Process(int fd, CDVDVideoCodecBuffer *currentBuffer,
-                                   CDVDVideoCodecBuffer *previousBuffer, VpuFieldType fieldType);
+  bool                     Process(int fd, CDVDVideoCodecIMXBuffer *buffer,
+                                   VpuFieldType fieldType, int fieldFmt,
+                                   bool lowMotion);
   void                     ReleaseFrameBuffer();
 
   bool                     Allocate(int fd, int width, int height, int nAlign);
@@ -146,7 +151,7 @@ class CDVDVideoCodecIPUBuffers
     int                       m_ipuHandle;
     int                       m_bufferNum;
     CDVDVideoCodecIPUBuffer **m_buffers;
-    CDVDVideoCodecBuffer     *m_lastBuffer;
+    int                       m_currentFieldFmt;
 };
 
 
@@ -181,31 +186,30 @@ protected:
   bool VpuAllocFrameBuffers();
   int  VpuFindBuffer(void *frameAddr);
 
-  static const int    m_extraVpuBuffers;   // Number of additional buffers for VPU
-  static const int    m_maxVpuDecodeLoops; // Maximum iterations in VPU decoding loop
-  static CCriticalSection m_codecBufferLock;
+  static const int          m_extraVpuBuffers;   // Number of additional buffers for VPU
+  static const int          m_maxVpuDecodeLoops; // Maximum iterations in VPU decoding loop
+  static CCriticalSection   m_codecBufferLock;
 
-  CDVDStreamInfo      m_hints;             // Hints from demuxer at stream opening
-  const char         *m_pFormatName;       // Current decoder format name
-  VpuDecOpenParam     m_decOpenParam;      // Parameters required to call VPU_DecOpen
-  CDecMemInfo         m_decMemInfo;        // VPU dedicated memory description
-  VpuDecHandle        m_vpuHandle;         // Handle for VPU library calls
-  VpuDecInitInfo      m_initInfo;          // Initial info returned from VPU at decoding start
-  bool                m_dropState;         // Current drop state
-  int                 m_vpuFrameBufferNum; // Total number of allocated frame buffers
-  VpuFrameBuffer     *m_vpuFrameBuffers;   // Table of VPU frame buffers description
+  CDVDStreamInfo            m_hints;             // Hints from demuxer at stream opening
+  const char               *m_pFormatName;       // Current decoder format name
+  VpuDecOpenParam           m_decOpenParam;      // Parameters required to call VPU_DecOpen
+  CDecMemInfo               m_decMemInfo;        // VPU dedicated memory description
+  VpuDecHandle              m_vpuHandle;         // Handle for VPU library calls
+  VpuDecInitInfo            m_initInfo;          // Initial info returned from VPU at decoding start
+  bool                      m_dropState;         // Current drop state
+  int                       m_vpuFrameBufferNum; // Total number of allocated frame buffers
+  VpuFrameBuffer           *m_vpuFrameBuffers;   // Table of VPU frame buffers description
   CDVDVideoCodecIPUBuffers  m_deinterlacer;
   CDVDVideoCodecIMXBuffer **m_outputBuffers;
-  VpuMemDesc         *m_extraMem;          // Table of allocated extra Memory
-//  VpuMemDesc         *m_outputBuffers;     // Table of buffers out of VPU (used to call properly VPU_DecOutFrameDisplayed)
-  int                 m_frameCounter;      // Decoded frames counter
-  bool                m_usePTS;            // State whether pts out of decoding process should be used
-  int                 m_modeDeinterlace;   // Deinterlacer mode: 0=off, 1=high, 2..=low
-  VpuDecOutFrameInfo  m_frameInfo;
-  CBitstreamConverter *m_converter;
-  bool                m_convert_bitstream;
-  int                 m_bytesToBeConsumed; // Remaining bytes in VPU
-  double              m_previousPts;       // Enable to keep pts when needed
-  bool                m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
-  double              m_dts;               // Current dts
+  CDVDVideoCodecIMXBuffer  *m_lastBuffer;
+  VpuMemDesc               *m_extraMem;          // Table of allocated extra Memory
+  int                       m_frameCounter;      // Decoded frames counter
+  bool                      m_usePTS;            // State whether pts out of decoding process should be used
+  VpuDecOutFrameInfo        m_frameInfo;
+  CBitstreamConverter      *m_converter;
+  bool                      m_convert_bitstream;
+  int                       m_bytesToBeConsumed; // Remaining bytes in VPU
+  double                    m_previousPts;       // Enable to keep pts when needed
+  bool                      m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
+  double                    m_dts;               // Current dts
 };
