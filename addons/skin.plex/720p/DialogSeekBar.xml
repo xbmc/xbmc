@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="115">
 	<defaultcontrol>702</defaultcontrol>
-	<visible>[Player.Seeking | Player.DisplayAfterSeek | Player.ShowCodec | [Player.ShowInfo + Window.IsActive(FullScreenVideo)] | Player.Paused | Player.Forwarding | Player.Rewinding] + ![Window.IsActive(VideoOSD) | Window.IsActive(142)]</visible>
+	<visible>[Player.Seeking | Player.DisplayAfterSeek | Player.Forwarding | Player.Rewinding] + Window.IsActive(FullScreenVideo)</visible>
 	<controls>
 		<!-- ViewsOSD.xml -->
 		<include>VideoSeek</include>
