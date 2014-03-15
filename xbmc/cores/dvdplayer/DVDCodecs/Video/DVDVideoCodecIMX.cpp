@@ -422,6 +422,11 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     m_pFormatName = "iMX-h263";
     break;
   case CODEC_ID_H264:
+    if (m_hints.profile == 110)
+    {
+      CLog::Log(LOGNOTICE, "i.MX6 VPU is not able to decode AVC high 10 profile\n");
+      return false;
+    }
     m_decOpenParam.CodecFormat = VPU_V_AVC;
     m_pFormatName = "iMX-h264";
     if (hints.extradata)
@@ -462,10 +467,6 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   case CODEC_ID_VP8:
     m_decOpenParam.CodecFormat = VPU_V_VP8;
     m_pFormatName = "iMX-vp8";
-    break;
-  case CODEC_ID_MSMPEG4V3:
-    m_decOpenParam.CodecFormat = VPU_V_XVID; // VPU_V_DIVX3
-    m_pFormatName = "iMX-divx3";
     break;
   case CODEC_ID_MPEG4:
     switch(m_hints.codec_tag)
