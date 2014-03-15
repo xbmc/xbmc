@@ -106,7 +106,7 @@ static void* realloc_or_free(void* src, int len) throw(exception)
   {
     CLog::Log(LOGERROR, "DVDAUDIO - %s : could not realloc the buffer",  __FUNCTION__);
     free(src);
-    throw new exception();
+    throw exception();
   }
 }
 
