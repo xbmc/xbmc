@@ -4705,24 +4705,12 @@ void CApplication::SetInBackground(bool background)
 void CApplication::CheckShutdown()
 {
   // first check if we should reset the timer
-  bool resetTimer = m_bInhibitIdleShutdown;
-
-  if (m_pPlayer->IsPlaying() || m_pPlayer->IsPausedPlayback()) // is something playing?
-    resetTimer = true;
-
-  if (m_musicInfoScanner->IsScanning())
-    resetTimer = true;
-
-  if (m_videoInfoScanner->IsScanning())
-    resetTimer = true;
-
-  if (g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
-    resetTimer = true;
-
-  if (CSettings::Get().GetBool("pvrmanager.enabled") &&  !g_PVRManager.IsIdle())
-    resetTimer = true;
-
-  if (resetTimer)
+  if (m_bInhibitIdleShutdown
+      || m_pPlayer->IsPlaying() || m_pPlayer->IsPausedPlayback() // is something playing?
+      || m_musicInfoScanner->IsScanning()
+      || m_videoInfoScanner->IsScanning()
+      || g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS) // progress dialog is onscreen
+      || (CSettings::Get().GetBool("pvrmanager.enabled") && !g_PVRManager.IsIdle()))
   {
     m_shutdownTimer.StartZero();
     return;
