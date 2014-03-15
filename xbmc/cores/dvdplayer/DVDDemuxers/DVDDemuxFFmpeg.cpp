@@ -1133,16 +1133,19 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
           std::string fileName = "special://temp/fonts/";
           XFILE::CDirectory::Create(fileName);
           AVDictionaryEntry *nameTag = av_dict_get(pStream->metadata, "filename", NULL, 0);
-          if (!nameTag) {
-            CLog::Log(LOGERROR, "%s: TTF attachment has no name", __FUNCTION__);
-            break;
-          }
-          fileName += nameTag->value;
-          XFILE::CFile file;
-          if(pStream->codec->extradata && file.OpenForWrite(fileName))
+          if (!nameTag)
           {
-            file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
-            file.Close();
+            CLog::Log(LOGERROR, "%s: TTF attachment has no name", __FUNCTION__);
+          }
+          else
+          {
+            fileName += nameTag->value;
+            XFILE::CFile file;
+            if(pStream->codec->extradata && file.OpenForWrite(fileName))
+            {
+              file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
+              file.Close();
+            }
           }
         }
         stream = new CDemuxStream();
