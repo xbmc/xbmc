@@ -6,4 +6,5 @@
 	<setting id="bit4" type="bool" label="30003" default="0"/>
 	<setting id="bit5" type="bool" label="30004" default="0"/>
 	<setting id="bit6" type="bool" label="30005" default="0"/>
+	<setting id="bit7" type="bool" label="30006" default="0"/>
 </settings>
