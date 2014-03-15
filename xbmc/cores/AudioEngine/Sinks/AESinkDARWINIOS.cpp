@@ -529,6 +529,21 @@ void CAAudioUnitSink::sessionInterruptionCallback(void *inClientData, UInt32 inI
   }
 }
 
+inline void LogLevel(unsigned int got, unsigned int wanted)
+{
+  static unsigned int lastReported = INT_MAX;
+  if (got != wanted)
+  {
+    if (got != lastReported)
+    {
+      CLog::Log(LOGWARNING, "DARWINIOS: %sflow (%u vs %u bytes)", got > wanted ? "over" : "under", got, wanted);
+      lastReported = got;
+    }    
+  }
+  else
+    lastReported = INT_MAX; // indicate we were good at least once
+}
+
 OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
   const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
@@ -542,8 +557,8 @@ OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFl
     unsigned int wanted = ioData->mBuffers[i].mDataByteSize;
     unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
     sink->m_buffer->Read((unsigned char*)ioData->mBuffers[i].mData, bytes);
-    if (bytes != wanted)
-      CLog::Log(LOGERROR, "%s: %sFLOW (%i vs %i) bytes", __FUNCTION__, bytes > wanted ? "OVER" : "UNDER", bytes, wanted);
+    LogLevel(bytes, wanted);
+    
     if (bytes == 0)
       *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
   }
