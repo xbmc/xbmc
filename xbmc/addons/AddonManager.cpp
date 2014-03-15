@@ -305,6 +305,7 @@ void CAddonMgr::DeInit()
   delete m_cpluff;
   m_cpluff = NULL;
   m_database.Close();
+  m_disabled.clear();
 }
 
 bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
