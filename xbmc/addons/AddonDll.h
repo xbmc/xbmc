@@ -18,6 +18,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <math.h>
+
 #include "Addon.h"
 #include "DllAddon.h"
 #include "AddonManager.h"

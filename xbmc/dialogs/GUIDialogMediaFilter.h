@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2012-2013 Team XBMC
+ *      Copyright (C) 2012-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,23 +22,24 @@
 #include <map>
 #include <string>
 
-#include "DbUrl.h"
 #include "dbwrappers/Database.h"
-#include "playlists/SmartPlayList.h"
-#include "settings/dialogs/GUIDialogSettings.h"
-#include "threads/Timer.h"
+#include "dbwrappers/DatabaseQuery.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "utils/DatabaseUtils.h"
-#include "utils/StdString.h"
 
-class CFileItemList;
+class CDbUrl;
+class CSetting;
+class CSmartPlaylist;
+class CSmartPlaylistRule;
 
-class CGUIDialogMediaFilter : public CGUIDialogSettings, protected ITimerCallback
+class CGUIDialogMediaFilter : public CGUIDialogSettingsManualBase
 {
 public:
   CGUIDialogMediaFilter();
   virtual ~CGUIDialogMediaFilter();
 
-  virtual bool OnMessage(CGUIMessage& message);
+  // specializations of CGUIControl
+  virtual bool OnMessage(CGUIMessage &message);
 
   static void ShowAndEditMediaFilter(const std::string &path, CSmartPlaylist &filter);
 
@@ -46,41 +47,49 @@ public:
     std::string mediaType;
     Field field;
     uint32_t label;
-    SettingInfo::SETTING_TYPE type;
+    int settingType;
+    std::string controlType;
+    std::string controlFormat;
     CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator;
-    void *data;
+    CSetting *setting;
     CSmartPlaylistRule *rule;
-    int controlIndex;
+    void *data;
   } Filter;
 
 protected:
+  // specializations of CGUIWindow
   virtual void OnWindowLoaded();
+  virtual void OnInitWindow();
 
-  virtual void CreateSettings();
-  virtual void SetupPage();
-  virtual void OnSettingChanged(SettingInfo &setting);
+  // implementations of ISettingCallback
+  virtual void OnSettingChanged(const CSetting *setting);
 
-  virtual void OnTimeout();
+  // specialization of CGUIDialogSettingsBase
+  virtual bool AllowResettingSettings() const { return false; }
+  virtual void Save() { }
+  virtual unsigned int GetDelayMs() const { return 500; }
 
-  void Reset();
+  // specialization of CGUIDialogSettingsManualBase
+  virtual void SetupView();
+  virtual void InitializeSettings();
+
   bool SetPath(const std::string &path);
   void UpdateControls();
   void TriggerFilter() const;
+  void Reset(bool filtersOnly = false);
 
-  void OnBrowse(const Filter &filter, CFileItemList &items, bool countOnly = false);
+  int GetItems(const Filter &filter, std::vector<std::string> &items, bool countOnly = false);
+  void GetRange(const Filter &filter, int &min, int &interval, int &max);
+  void GetRange(const Filter &filter, float &min, float &interval, float &max);
+  bool GetMinMax(const std::string &table, const std::string &field, int &min, int &max, const CDatabase::Filter &filter = CDatabase::Filter());
+
   CSmartPlaylistRule* AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
   void DeleteRule(Field field);
-  void GetRange(const Filter &filter, float &min, float &interval, float &max, RANGEFORMATFUNCTION &formatFunction);
-  bool GetMinMax(const CStdString &table, const CStdString &field, float &min, float &max, const CDatabase::Filter &filter = CDatabase::Filter());
 
-  static CStdString RangeAsFloat(float valueLower, float valueUpper, float minimum);
-  static CStdString RangeAsInt(float valueLower, float valueUpper, float minimum);
-  static CStdString RangeAsDate(float valueLower, float valueUpper, float minimum);
-  static CStdString RangeAsTime(float valueLower, float valueUpper, float minimum);
+  static void GetStringListOptions(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
   CDbUrl* m_dbUrl;
   std::string m_mediaType;
   CSmartPlaylist *m_filter;
-  std::map<uint32_t, Filter> m_filters;
-  CTimer *m_delayTimer;
+  std::map<std::string, Filter> m_filters;
 };
