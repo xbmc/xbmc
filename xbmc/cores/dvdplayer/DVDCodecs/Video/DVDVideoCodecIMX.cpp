@@ -211,6 +211,18 @@ bool CDVDVideoCodecIMX::VpuOpen(void)
     goto VpuOpenError;
   }
 
+  // Note that libvpufsl (file vpu_wrapper.c) associates VPU_DEC_CAP_FRAMESIZE
+  // capability to the value of  nDecFrameRptEnabled which is in fact directly
+  // related to the ability to generate VPU_DEC_ONE_FRM_CONSUMED even if the
+  // naming is misleading...
+  ret = VPU_DecGetCapability(m_vpuHandle, VPU_DEC_CAP_FRAMESIZE, &param);
+  m_frameReported = (param != 0);
+  if (ret != VPU_DEC_RET_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "%s - iMX VPU get framesize capability failed (%d).\n", __FUNCTION__, ret);
+    m_frameReported = false;
+  }
+
   return true;
 
 VpuOpenError:
@@ -648,7 +660,8 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
 #ifdef IMX_PROFILE
       before_dec = XbmcThreads::SystemClockMillis();
 #endif
-      m_bytesToBeConsumed += inData.nSize;
+      if (m_frameReported)
+        m_bytesToBeConsumed += inData.nSize;
       ret = VPU_DecDecodeBuf(m_vpuHandle, &inData, &decRet);
 #ifdef IMX_PROFILE
         CLog::Log(LOGDEBUG, "%s - VPU dec 0x%x decode takes : %lld\n\n", __FUNCTION__, decRet,  XbmcThreads::SystemClockMillis() - before_dec);
