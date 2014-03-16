@@ -505,7 +505,7 @@ bool CAutorun::CanResumePlayDVD(const CStdString& path)
   return false;
 }
 
-void CAutorun::SettingOptionAudioCdActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+void CAutorun::SettingOptionAudioCdActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   list.push_back(make_pair(g_localizeStrings.Get(16018), AUTOCD_NONE));
   list.push_back(make_pair(g_localizeStrings.Get(14098), AUTOCD_PLAY));
@@ -514,7 +514,7 @@ void CAutorun::SettingOptionAudioCdActionsFiller(const CSetting *setting, std::v
 #endif
 }
 
-void CAutorun::SettingOptionAudioCdEncodersFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current)
+void CAutorun::SettingOptionAudioCdEncodersFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
 #ifdef HAVE_LIBMP3LAME
   list.push_back(make_pair(g_localizeStrings.Get(34000), CDDARIP_ENCODER_LAME));

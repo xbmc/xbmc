@@ -633,7 +633,7 @@ const CStdString& CLangInfo::GetSpeedUnitString() const
   return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_currentRegion->m_speedUnit);
 }
 
-void CLangInfo::SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+void CLangInfo::SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   //find languages...
   CFileItemList items;
@@ -660,7 +660,7 @@ void CLangInfo::SettingOptionsLanguagesFiller(const CSetting *setting, std::vect
     list.push_back(make_pair(vecLanguage[i], vecLanguage[i]));
 }
 
-void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   list.push_back(make_pair(g_localizeStrings.Get(308), "original"));
   list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
@@ -672,7 +672,7 @@ void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std
     list.push_back(make_pair(*language, *language));
 }
 
-void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current)
+void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   CStdStringArray regions;
   g_langInfo.GetRegionNames(regions);

@@ -73,5 +73,5 @@ typedef std::pair<std::string, std::string> DynamicStringSettingOption;
 typedef std::vector<DynamicStringSettingOption> DynamicStringSettingOptions;
 
 class CSetting;
-typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current);
-typedef void (*StringSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current);
+typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+typedef void (*StringSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
