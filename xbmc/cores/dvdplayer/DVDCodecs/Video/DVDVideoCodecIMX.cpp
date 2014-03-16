@@ -412,6 +412,10 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_convert_bitstream = false;
   switch(m_hints.codec)
   {
+  case CODEC_ID_MPEG1VIDEO:
+    m_decOpenParam.CodecFormat = VPU_V_MPEG2;
+    m_pFormatName = "iMX-mpeg1";
+    break;
   case CODEC_ID_MPEG2VIDEO:
   case CODEC_ID_MPEG2VIDEO_XVMC:
     m_decOpenParam.CodecFormat = VPU_V_MPEG2;
