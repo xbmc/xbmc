@@ -480,8 +480,9 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const CStdString &path, CStreamD
       else
         dsub->m_strLanguage = lang;
 
-      return true;
+      details.AddStream(dsub);
     }
+    return true;
   }
   if(ext == ".sub")
   {
