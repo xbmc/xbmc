@@ -482,7 +482,7 @@ msgstr "Deze tab betekent dat er een menu met extra opties voor deze sectie aan 
 
 msgctxt "#31413"
 msgid "Local subtitle available"
-msgstr "Lokale ondertitels beschikbaar"
+msgstr "Lokale ondertitel beschikbaar"
 
 msgctxt "#31420"
 msgid "Login"

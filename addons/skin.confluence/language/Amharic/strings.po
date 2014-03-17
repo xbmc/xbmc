@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "መቀየሪያ "
+msgstr "መቀየሪያ የእርስዎን"
 
 msgctxt "#31003"
 msgid "Power Options"
