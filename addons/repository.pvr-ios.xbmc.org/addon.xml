@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.pvr-ios.xbmc.org"
 		name="XBMC.org PVR Add-ons"
-		version="1.1.5"
+		version="1.1.6"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -96,6 +96,7 @@
 		<description lang="tr">PVR Eklentilerini Resmi XBMC.org eklenti deposundan indir ve yükle.[CR]Resmi yazılım depomuzu kullanarak size en yakın bölgeden en hızlı biçimde indirme yapmanızı sağlayacak gelişkin dosya aynalama servisini kullanma avantajını elde edeceksiniz.[CR]Bu yazılım deposundaki tüm eklentiler temel testlerden geçerler, şayet hatalı ya da çalışmayan bir eklenti bulur iseniz lütfen düzeltilmesi için bu durumu XBMC Takımına bildiriniz.</description>
 		<description lang="zh">从官方 XBMC.org 插件库下载和安装 PVR 插件。[CR]　通过官方程序库你将能利用我们广泛的镜像服务优势，使你能够就近下载资源。[CR]　官方库中的所有插件都经过了基本的测试，如果你发现有失效或不能正常工作的插件，请向 XBMC 开发团队报告，以便及时处理。</description>
 		<disclaimer lang="af">Die XBMC span het nie al die byvoegsels in die kodebank gemaak nie en is nie verantwoordelik vir hulle inhoud nie</disclaimer>
+		<disclaimer lang="am">የ XBMC ቡድን እዚህ ማጠራቀሚያ ውስጥ ያሉትን የ ተጨማ-ሪዎች ይዞታ አልፈጠሩም ስለዚህም ምንም አይነት ሀላፊነት አይወስዱም</disclaimer>
 		<disclaimer lang="ar">فريق برنامج إكس بى إم سى لم يُصنِع جميع اﻹضافات فى هذا المستودع وغير مسؤول عن ما قد تسببه لك</disclaimer>
 		<disclaimer lang="be">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="bg">Team XBMC (Екипът зад XBMC) не е автор на всички добавки в хранилището и не носи отговорност за съдържанието им</disclaimer>
