@@ -181,17 +181,20 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
   /* PLEX */
   else if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetPointer())
   {
+    /* PLEX */
+    CSingleLock lk(m_section);
+    /* END PLEX */
+
     CFileItemList* list = (CFileItemList*)message.GetPointer();
     m_plexFiles.clear();
+    m_plexLabels.clear();
+
     for (int i = 0; i < list->Size(); i ++)
     {
       m_plexFiles.push_back(list->Get(i)->GetPath());
       m_plexLabels[list->Get(i)->GetPath()] = list->Get(i)->GetLabel();
     }
     
-    /* PLEX */
-    CSingleLock lk(m_section);
-    /* END PLEX */
     m_directoryStatus = UNLOADED;
     AllocResources();
     
