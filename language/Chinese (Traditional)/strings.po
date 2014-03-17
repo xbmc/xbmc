@@ -5109,6 +5109,10 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple 遙控器錯誤"
 
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "無法啟用 Apple 遙控器支援。"
+
 msgctxt "#14000"
 msgid "Stack"
 msgstr "堆疊開啟"
@@ -6372,6 +6376,10 @@ msgstr "搜尋頻道"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "搜尋時無法使用 PVR 功能。"
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "你要在哪個伺服器上搜尋？"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10241,6 +10249,10 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "從所有標題中選擇..."
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "顯示藍光光碟選單"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "播放主標題：%d"
@@ -10256,6 +10268,14 @@ msgstr "選擇播放項目"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "章節：%u - 長度：%s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "播放藍光光碟失敗"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "不支援這片藍光光碟的選單"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10995,15 +11015,15 @@ msgstr "改變使用者介面的視覺風格。"
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
-msgstr "修改特定皮膚檔的設定，可用的選項依所使用皮膚而定"
+msgstr "修改特定佈景主題的設定，可用的選項依所使用的佈景主題而定"
 
 msgctxt "#36105"
 msgid "Change the theme associated with your selected skin."
-msgstr "改變您選用的皮膚所關連的主題檔"
+msgstr "改變你所選的佈景主題所關連的主題。"
 
 msgctxt "#36106"
 msgid "Change the colours of your selected skin."
-msgstr "改變您選用皮膚檔的顏色設定"
+msgstr "改變你所選佈景主題的顏色設定"
 
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
@@ -11356,6 +11376,18 @@ msgstr "擷取完成後自動退出光碟。"
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "當播放音樂的時候，XBMC 會尋找符合的 .cdg 檔案，並顯示它的圖片。"
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "選擇卡拉 OK 要使用的字型大小。"
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "選擇卡拉OK的字體顏色。"
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "選擇卡拉 OK 要使用的字元編碼。"
 
 msgctxt "#36301"
 msgid "No info available yet."

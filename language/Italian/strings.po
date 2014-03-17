@@ -4981,6 +4981,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
 msgstr "Abilita accelerazione hardware (MediaCodec)"
 
+msgctxt "#13440"
+msgid "Allow multi threaded software decoding"
+msgstr "Permette la decodifica multi processo via software"
+
 msgctxt "#13441"
 msgid "Use Mpeg-2 VDPAU"
 msgstr "Usa Mpeg-2 VDPAU"
@@ -5001,13 +5005,25 @@ msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr "Usa VC-1 VDPAU"
 
+msgctxt "#13446"
+msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
+msgstr "Abilita questa opzione per usare l'accelerazione hardware con i codec basati su VC-1. Se disabilitato la CPU verrà utilizzata lo stesso. L'hardware AMD con VDPAU non può decodificare il VC-1 semplice."
+
 msgctxt "#13447"
 msgid "Use Mpeg-2 VAAPI"
 msgstr "Usa Mpeg-2 VAAPi"
 
+msgctxt "#13448"
+msgid "Enable this option to use hardware acceleration for Mpeg-(1/2) codecs. If disabled the CPU will be used instead. Some Mpeg-2 Videos might have green artifacts."
+msgstr "Abilità questa opzione per abilitare l'accelerazione hardware per i filmati con codec Mpeg-(1/2). Se disabilitato la CPU verrà utilizzata lo stesso. In qualche filmato basato su Mpeg-2 potrebbe apparire qualche artefatto verde."
+
 msgctxt "#13449"
 msgid "Use Mpeg-4 VAAPI"
 msgstr "Usa Mpeg-4 VAAPI"
+
+msgctxt "#13450"
+msgid "Enable this option to use hardware acceleration for the Mpeg-4 codec. If disabled the CPU will be used instead."
+msgstr "Abilita questa opzione per usare l'accelerazione hardware nei filmati basati su codec Mpeg-4. Se disabilitata verrà usata la CPU per la decodifica."
 
 msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
@@ -5020,6 +5036,10 @@ msgstr "Metodo di decodifica"
 msgctxt "#13455"
 msgid "Software"
 msgstr "Software"
+
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Accelerazione via hardware"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -8665,6 +8685,10 @@ msgctxt "#20411"
 msgid "Flatten"
 msgstr "Spiana"
 
+msgctxt "#20412"
+msgid "Flatten TV show seasons"
+msgstr "Spiana serie TV"
+
 msgctxt "#20413"
 msgid "Get fanart"
 msgstr "Ottieni Fanart"
@@ -10229,6 +10253,10 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Metti in pausa durante la ricerca dei sottotitoli"
 
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Specifica dove verranno salvati i sottotitoli, la stessa posizione del video o una posizione definita."
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Ricerca sottotitoli in corso..."
@@ -10269,9 +10297,17 @@ msgctxt "#24116"
 msgid "Default TV Service"
 msgstr "Servizio TV predefinito"
 
+msgctxt "#24117"
+msgid "Select service that will be used as default to search for TV Show subtitles."
+msgstr "Seleziona il servizio predefinito per la ricerca dei sottotitoli delle serie TV"
+
 msgctxt "#24118"
 msgid "Default Movie Service"
 msgstr "Servizio predefinito per i film"
+
+msgctxt "#24119"
+msgid "Select service that will be used as default to search for Movie subtitles."
+msgstr "Seleziona il servizio predefinito per la ricerca dei sottotitoli dei film"
 
 msgctxt "#24120"
 msgid "Manual search string"
@@ -10284,6 +10320,10 @@ msgstr "Inserire stringa da cercare"
 msgctxt "#24122"
 msgid "Update all"
 msgstr "Aggiorna tutto"
+
+msgctxt "#24123"
+msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
+msgstr "Mette in pausa il video mentre è in corso la ricerca dei sottotitoli e riprende quando i sottotitoli saranno disponibili."
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -11700,6 +11740,10 @@ msgstr "Nessuna informazione disponibile."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Imposta le località usate per recuperare le informazioni sul meteo."
+
+msgctxt "#36424"
+msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgstr "Seleziona cosa succederà quando un elemento nella guida TV viene selezionato: [ Mostra menu contestuale ] aprirà il menu contestuale da dove potrai scegliere più azioni; [ Passa a canale ] Passerà immediatamente al canale correlato; [ Mostra informazioni ] Visualizzerà dettagliate informazioni con trama e ulteriori opzioni; [ Registra ] Creerà una registrazione per l'elemento selezionato"
 
 msgctxt "#36425"
 msgid "Show context menu"

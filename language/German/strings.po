@@ -11661,6 +11661,10 @@ msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Zeigt eine Benachrichtigung wenn Timer durch den Server (Backend) hinzugefügt, beendet oder entfernt werden."
 
+msgctxt "#36240"
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "Kategorie für PVR-Energiemanagement Einstellungen, etwa wann das PVR backend geweckt werden sollte."
+
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Führe den nachfolgenden \"Aufwach-Befehl\" beim Beenden von XBMC oder bei Wechsel in den Ruhezustand aus. Der Zeitstempel der nächsten geplanten Aufnahme wird dabei als Parameter übergeben."
@@ -11684,6 +11688,10 @@ msgstr "Führe den Aufwachbefehl jeden Tag zur festgelegten Uhrzeit aus."
 msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Ausführzeit des täglichen Aufwachbefehls."
+
+msgctxt "#36247"
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "Kategorie für Kindersicherungseinstellungen, sollte der PVR-Backend Server diese unterstützen."
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."

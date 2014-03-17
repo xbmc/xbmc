@@ -9153,6 +9153,10 @@ msgctxt "#21877"
 msgid "Date created"
 msgstr "Dyddiad crëwyd"
 
+msgctxt "#21878"
+msgid "Urgency"
+msgstr "Brys"
+
 msgctxt "#21879"
 msgid "Country code"
 msgstr "Cod gwlad"
@@ -9249,6 +9253,10 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "Cuddio cynnydd diweddaru'r llyfrgell"
 
+msgctxt "#22002"
+msgid "DNS suffix"
+msgstr "Rhagosodiad DNS"
+
 msgctxt "#22003"
 msgid "%2.3fs"
 msgstr "%2.3fs"
@@ -9344,6 +9352,10 @@ msgstr "Maint"
 msgctxt "#22032"
 msgid "Colours"
 msgstr "Lliwiau"
+
+msgctxt "#22033"
+msgid "Charset"
+msgstr "Set Nod"
 
 msgctxt "#22034"
 msgid "Export karaoke titles as HTML"
@@ -10073,6 +10085,10 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Galluogi botwmsgript cyfaddas"
 
+msgctxt "#33084"
+msgid "Auto login"
+msgstr "Awto mewngofnodi"
+
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr "Methwyd cychwyn"
@@ -10213,9 +10229,25 @@ msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr "Methu canfod yr eitem flaenoro i'w chwarae"
 
+msgctxt "#34300"
+msgid "Failed to start Zeroconf"
+msgstr "Methwyd cychwyn Zeroconf"
+
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
 msgstr "A yw gwasanaeth Apple Bonjour wedi ei osod? Gw. cofnod am ragor o wybodaeth."
+
+msgctxt "#34302"
+msgid "AirPlay requires Zeroconf to be enabled."
+msgstr "Mae angen Zeroconf ar AirPlay"
+
+msgctxt "#34303"
+msgid "Unable to stop Zeroconf"
+msgstr "Methu atal Zeroconf"
+
+msgctxt "#34304"
+msgid "AirPlay and AirTunes depend on Zeroconf running."
+msgstr "Mae AirPlay ac AirTunes angen cael Zeroconf yn rhedeg."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10289,6 +10321,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Galluogi cynnal ffon hwyl a pad gemau"
 
+msgctxt "#35102"
+msgid "Disable joystick when this device is present"
+msgstr "Anablu'r ffon hud pan fydd y ddyfais hon ar gael"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Lleoliad"
@@ -10340,6 +10376,10 @@ msgstr "Dyfais i ddiffodd wrth ddiffodd XBMC"
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Rhoi'r ddyfais yn y modd aros wrth weithredu'r arbedwr sgrin"
+
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr "Deffro dyfeisiau wrth atal yr arbedwr sgrin"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10437,13 +10477,77 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr "* Ffolder eitem"
 
+msgctxt "#36104"
+msgid "Change specific skin settings. The available options are dependent on the skin used."
+msgstr "Newid gosodiadau penodol croen. Mae'r dewisiadau'n ddibynnol ar y croen sy'n cael ei ddefnyddio."
+
+msgctxt "#36105"
+msgid "Change the theme associated with your selected skin."
+msgstr "Newid y thema sy'n gysylltiedig â'r croen rydych wedi ei dewis."
+
+msgctxt "#36106"
+msgid "Change the colours of your selected skin."
+msgstr "Newid lliw'r croen rydych wedi ei dewis"
+
+msgctxt "#36109"
+msgid "Select the media window that XBMC displays on startup."
+msgstr "Dewis y ffenestr cyfrwng mae XBMC yn ei ddangos wrth gychwyn."
+
+msgctxt "#36111"
+msgid "Turn this off to remove the scrolling RSS news ticker."
+msgstr "Difodd hwn i dynnu ticiwr sgrolio newyddion RSS."
+
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Golygu'r ffrydiau RSS."
 
+msgctxt "#36115"
+msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
+msgstr "Dewis y fformatau ar gyfer tymheredd, amser a dyddiad. Mae'r dewisiadau'n dibynnu ar yr iaith sydd wedi'i dewis."
+
 msgctxt "#36117"
 msgid "Select country location."
 msgstr "Dewis lleoliad gwlad."
+
+msgctxt "#36118"
+msgid "Select your current timezone."
+msgstr "Dewis eich cylch amser cyfredol"
+
+msgctxt "#36119"
+msgid "Select the default audio track when different language tracks are available."
+msgstr "Dewis y trac sain arferol pan fydd traciau iaith gwahanol ar gael."
+
+msgctxt "#36120"
+msgid "Select the default subtitles when different languages are available."
+msgstr "Dewis yr isdeitlau arferol pan fydd ieithoedd gwahanol ar gael."
+
+msgctxt "#36122"
+msgid "Display the (..) item in lists for visiting the parent folder."
+msgstr "Dangos y (..) eitem mewn rhestrau ar gyfer ymweld â'r ffolder rhiant."
+
+msgctxt "#36123"
+msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
+msgstr "Dangos estyniadau ffeiliau ar ffeiliau cyfrwng. Er enghraifft, bydd 'Cân Go Lew.mp3' yn cael ei ddangos fel 'Cân Go Lew.mp3'."
+
+msgctxt "#36125"
+msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
+msgstr "Caniatáu i ffeiliau gael eu dileu a'u hailenwi drwy'r rhyngwyneb defnyddiwr, drwy'r ddewislen cyd-destun (pwyso C ar y bysellfwrdd i agor y ddewislen hon)"
+
+msgctxt "#36129"
+msgid "Set the amount of idle time required before displaying the screensaver."
+msgstr "Gosod y cyfnod oedi cyn dangos yr arbedwr sgrin."
+
+msgctxt "#36131"
+msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
+msgstr "Newid gosodiadau penodol yr arbedwr sgrin. Mae'r gosodiadau yn dibynnol ar ba arbedwr sgrin sy'n cael ei ddefnyddio."
+
+msgctxt "#36132"
+msgid "Preview the selected screensaver."
+msgstr "Rhagolwg o'r arbedwr sgrin"
+
+msgctxt "#36134"
+msgid "Dim the display when media is paused. Not valid for the 'Dim' screensaver mode."
+msgstr "Pylu'r dangosydd pan mae cyfrwng yn cael ei oedi. Nid yw'n gweithio yn y modd arbedwr sgrin 'Pylu'"
 
 msgctxt "#36135"
 msgid "No info available yet."
@@ -10457,21 +10561,265 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
+msgctxt "#36141"
+msgid "Show plot information for unwatched media in the Video Library."
+msgstr "Dangos gwybodaeth am y stori ar gyfer cyfrwng heb ei wylio yn y Llyfrgell Fideo."
+
+msgctxt "#36143"
+msgid "Get thumbnails for actors when scanning media."
+msgstr "Gweld lluniau bach actorion wrth sganio cyfryngau."
+
+msgctxt "#36144"
+msgid "Remove the TV show season node, toggles between 'If only one season' (default), 'Always' and 'Never'."
+msgstr "Tynnu nod tymor sioeau teledu, newid rhwng 'Un tymor' (arferol), 'Pob tro' a 'Byth'."
+
+msgctxt "#36145"
+msgid "Group movies into 'Movie sets' when browsing the movie library."
+msgstr "Casglu ffilmiau i 'Setiau ffilm' wrth bori'r llyfrgell ffilm."
+
+msgctxt "#36146"
+msgid "Check for new media files on XBMC startup."
+msgstr "Edrych am ffeiliau cyfrwng newydd wrth gychwyn XBMC."
+
+msgctxt "#36147"
+msgid "Hide the library scanning progress bar during scans."
+msgstr "Cuddio'r bar cynnydd sganio llyfrgell wrth sganio."
+
+msgctxt "#36148"
+msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
+msgstr "Tynnu eitemau o'ch llyfrgell nad ydynt i'w gweld (un ai wedi eu hailenwi, dileu neu ar storfa dynadwy sydd heb ei osod.)"
+
+msgctxt "#36149"
+msgid "Export the Video Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Allforio cronfa ddata'r Llyfrgell Fideo i ffeiliau XML. Bydd hyn o ddewis yn trosysgrifennu eich ffeiliau XML cyfredol."
+
+msgctxt "#36150"
+msgid "Import a XML file into the Video Library database."
+msgstr "Mewnforio ffeil XML i gronfa ddata'r Llyfrgell Fideo."
+
+msgctxt "#36153"
+msgid "Adjust the method used to process and display video."
+msgstr "Addasu'r dull o brosesu a dangos fideo."
+
+msgctxt "#36167"
+msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
+msgstr "Rhaid i sain gydweddu, mae modd gwneud hyn drwy ailsamplo, hepgor/dyblygu pacedi neu newid y cloc os yw'n allan y ormodol."
+
+msgctxt "#36170"
+msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgstr "Caniatáu i'r chwaraewr fideo anwybyddu cyfradd agwedd o rhyw hyn a hyn er mwyn llanw mwy o'r sgrin gyda fideo."
+
+msgctxt "#36171"
+msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
+msgstr "Dewis lefel chwyddo fel bod fideos 4:3 yn gallu cael eu dangos ar sgrin lydan."
+
+msgctxt "#36174"
+msgid "Enable Teletext when watching a live TV stream."
+msgstr "Galluogi Teletestun wrth wylio llif teledu byw."
+
+msgctxt "#36175"
+msgid "Scale Teletext to 4:3 ratio."
+msgstr "Graddio Teletestun i 4:3."
+
+msgctxt "#36179"
+msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
+msgstr "Pa fydd ffeil wedi ei sganio i'r llyfrgell bydd yn dangos teitl metadata yn lle enw'r ffeil."
+
+msgctxt "#36180"
+msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
+msgstr "Tynnu lluniau bach a gwybodaeth, megis codecs, cyfradd agwedd i'w dangos yn y Modd Llyfrgell."
+
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
+
+msgctxt "#36191"
+msgid "Set a custom directory for your subtitles. This can be a file share."
+msgstr "Gosod cyfeiriadur cyfaddas ar gyfer eich isdeitlau. Gall hyn fod yn rhaniad ffeiliau."
+
+msgctxt "#36192"
+msgid "Location of subtitles on the screen."
+msgstr "Lleoliad isdeitlau ar y sgrin."
+
+msgctxt "#36194"
+msgid "Autorun DVD video when inserted in drive."
+msgstr "Awto-rhedeg fideo DVD wrth ei fewnosod i'r gyrrwr"
+
+msgctxt "#36195"
+msgid "Force a region for DVD playback."
+msgstr "Gorfodi ardal ar gyfer chwarae DVD."
+
+msgctxt "#36196"
+msgid "Attempt to skip 'unskippable' introductions before DVD menu."
+msgstr "Ceisio hepgor cyfarwyddiadau 'anhepgoradwy' cyn dewislen DVD."
 
 msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
+msgctxt "#36198"
+msgid "Select the default movie information source. See the Add-ons Manager for options."
+msgstr "Dewis ffynhonnell arferol gwybodaeth ffilmiau. Gw Rheolwr Ychwanegion am ddewisiadau."
+
+msgctxt "#36199"
+msgid "Select the default TV show information source. See the Add-ons Manager for options."
+msgstr "Dewis ffynhonnell gwybodaeth rhaglenni teledu arferol. Gw. Rheolwr Ychwanegion am y dewisiadau."
+
+msgctxt "#36200"
+msgid "Default scraper used for adding music videos to your library."
+msgstr "Y crafwr arferol ar gyfer ychwanegu fideos cerddoriaeth i'ch llyfrgell."
+
 msgctxt "#36202"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
+msgctxt "#36204"
+msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
+msgstr "Mewnforio grwpiau sianeli o gefn y Recordydd (os yw'n cael ei gynnal). Bydd yn dileu grwpiau crëwyd gan y defnyddiwr os nad ydynt i'w cael yn y cefn."
+
+msgctxt "#36206"
+msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
+msgstr "Defnyddio rhifo o'r cefn, yn lle ffurfweddu â llaw dros XBMC."
+
+msgctxt "#36207"
+msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
+msgstr "Agor y rheolwr sianeli, sy'n caniatáu newid trefn sianeli, enw sianel, eicon ac ati."
+
+msgctxt "#36208"
+msgid "Instruct the backend to search for channels (if supported)."
+msgstr "Dweud wrth y cefn i chwilio am sianeli (os yw'n cael ei gynnal)"
+
+msgctxt "#36209"
+msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgstr "Dileu sianel/cronfa ddata'r Amserlenydd ac ail fewnforio'r data o'r cefn wedyn."
+
+msgctxt "#36222"
+msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgstr "Peidio mewnforio data'r Amserlenydd tra bod y teledu ymlaen er mwyn lleihau'r defnydd o'r CPU."
+
+msgctxt "#36223"
+msgid "By default, EPG data is stored in a local database to speed up importing when XBMC is restarted."
+msgstr "Fel arfer mae data'r Amserlenydd yn cael ei gadw mewn cronfa ddata er mwyn cyflymu mewnforio wrth ailgychwyn XBMC."
+
+msgctxt "#36224"
+msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgstr "Cuddio labeli \"dim gwybodaeth ar gael\" pan nad oes modd estyn data sianel yr Amserlenydd '"
+
+msgctxt "#36227"
+msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgstr "Dangos llif o sianel benodol i ffenestr fach yn lle'r sgrin lawn."
+
+msgctxt "#36231"
+msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgstr "Bydd pwyso botwm rhif yn y modd sgrin llawn yn newid yn awtomatig i'r rhif sianel hwnnw o fewn 1 eiliad."
+
+msgctxt "#36239"
+msgid "Display a notification when timers are added, finished or removed by the backend."
+msgstr "Dangos rhybudd pan fydd amseryddion yn cael eu hychwanegu, gorffen neu dynnu gan y cefn."
+
+msgctxt "#36241"
+msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgstr "Gweithredu'r \"gorchymyn deffro\" isod pan mae XBMC yn gadael neu'n mynd i'r modd cysgu. Bydd stamp amser y recordiad nesaf yn cael ei anfon fel paramedr."
+
+msgctxt "#36245"
+msgid "Execute the wakeup command every day at the given time."
+msgstr "Gweithredu'r gorchymyn deffro bod dydd ar amser penodol."
+
+msgctxt "#36246"
+msgid "When to execute the daily wakeup command."
+msgstr "Pryd i weithredu'r gorchymyn deffro dyddiol."
+
+msgctxt "#36248"
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgstr "Bydd y gofyn am rif PIN i gael mynediad at glo sianeli'r rhiant./ Mae modd marcio sianeli wedi eu cloi yng ngolygydd y sianeli yn y tab cyffredinol. Nid oes modd chwarae neu recordio sianeli sydd â chlo'r rhieni heb gyflwyno'r rhif PIN ac mae gwybodaeth am y sianeli hynny wedi ei guddio yn yr Amserlenydd ."
+
+msgctxt "#36249"
+msgid "Enter a new pin code to unlock parental locked channels."
+msgstr "Rhowch PIN newydd i ddatgloi sianeli sydd â chlo'r rhiant."
+
+msgctxt "#36255"
+msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgstr "Pennu os yw artistiaid sy'n ymddangos mewn casgliadau hefyd yn cael eu dangos yng ngolwg artist y llyfrgell."
+
+msgctxt "#36256"
+msgid "Automatically fetch album and artist information via scrapers during scan."
+msgstr "Estyn yn awtomatig gwybodaeth am yr albwm a'r artist drwy grafwyr wrth sganio."
+
+msgctxt "#36258"
+msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgstr "Dewis ffynhonnell arferol gwybodaeth am artist. Gw Rheolwr Ychwanegion am ddewisiadau."
+
+msgctxt "#36259"
+msgid "Check for new and removed media files on XBMC startup."
+msgstr "Edrych am ffeiliau cyfrwng newydd a rhai wedi eu tynnu wrth gychwyn XBMC."
+
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
+
+msgctxt "#36262"
+msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
+msgstr "Allforio cronfa ddata'r Llyfrgell Cerddoriaeth i ffeiliau XML. Bydd hyn o ddewis yn trosysgrifennu eich ffeiliau XML cyfredol."
+
+msgctxt "#36263"
+msgid "Import a XML file into the Music Library database."
+msgstr "Mewnforio ffeil XML i gronfa ddata'r Llyfrgell Cerddoriaeth."
+
+msgctxt "#36265"
+msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
+msgstr "Bydd XBMC yn chwarae'r eitem nesaf yn awtomatig yn y ffolder cyfredol. Er enghraifft, yn y Golwg Ffeiliau: Wedi i drac gael i chwarae, bydd XBMC yn chwarae'r trac nesaf  yn yr un ffolder yn awtomatig."
+
+msgctxt "#36268"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Yr arferol yw 89dB yn ôl y safon. Newidiwch gyda gofal."
+
+msgctxt "#36269"
+msgid "Default is 89dB per standard. Change with caution."
+msgstr "Yr arferol yw 89dB yn ôl y safon. Newidiwch gyda gofal."
+
+msgctxt "#36271"
+msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
+msgstr "Tawelu'n llyfn o un trac sain i'r llall. Mae modd gosod maint y trosglwyddo o 1-15 eiliad."
+
+msgctxt "#36274"
+msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
+msgstr "Darllen gwybodaeth tag o ffeiliau caneuon. Mewn cyfeiriaduron mawr mae modd i hyn arafu'r broses ddarllen, yn arbennig dros rwydwaith."
+
+msgctxt "#36281"
+msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgstr "Bydd XBMC yn chwilio am luniau bach ar raniadau pell a chyfrwng optegol. Mae hyn yn gallu arafu rhestru ffolderi rhwydwaith."
+
+msgctxt "#36283"
+msgid "Autorun CDs when inserted in drive."
+msgstr "Rhedeg CDau yn awtomatig ar ôl eu gosod yn y gyrrwr."
+
+msgctxt "#36284"
+msgid "Read the information belonging to an audio CD from an internet database."
+msgstr "Darllen gwybodaeth am CD sain o gronfa ddata ar y rhyngrwyd."
+
+msgctxt "#36285"
+msgid "Select the location on your hard drive where ripped tracks will be saved to."
+msgstr "Dewis lleoliad ar eich disg caled lle bydd traciau wedi eu rhwygo’n cael u cadw."
+
+msgctxt "#36287"
+msgid "Select which audio encoder to use when ripping."
+msgstr "Dewis pa amgodiwr sain i'w ddefnyddio wrth rwygo."
+
+msgctxt "#36288"
+msgid "Select which quality you want to rip your files."
+msgstr "Dewis i ba ansawdd i rwygo'r ffeiliau"
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Dewis pa ddidradd i'w ddefnyddio ar gyfer amgodiwr sain benodol ar gyfer cywasgiad sain."
+
+msgctxt "#36291"
+msgid "Auto eject disc after rip is complete."
+msgstr "Bwrw allan y ddisg yn awtomatig wedi cwblhau’r rhwygo."
+
+msgctxt "#36293"
+msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
+msgstr "Pan yn chwarae ffeil cerddoriaeth bydd XBMC yn chwilio am ffeil .cdg sy'n cyfateb ac yn dangos ei graffigau."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -10485,9 +10833,81 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
 
+msgctxt "#36306"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr "Os oes gwybodaeth EXIF y bodoli (dyddiad, amser, camera, ac ati) bydd yn cael ei ddangos."
+
+msgctxt "#36307"
+msgid "Automatically generate picture thumbnails when entering picture folder."
+msgstr "Cynhyrchu lluniau bach yn awtomatig wrth fynd i ffolder lluniau."
+
+msgctxt "#36308"
+msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
+msgstr "Bydd lluniau'n tro'n awtomatig yn ôl y wybodaeth yn y tag EXIF, os yw ar gael."
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Dim gwybodaeth ar gael ar hyn o bryd."
+
+msgctxt "#36312"
+msgid "Select the amount of time that each image is displayed in a slideshow."
+msgstr "Dewis am faint o amser y bydd pob llun yn cael ei ddangos mewn sioe sleidiau."
+
+msgctxt "#36313"
+msgid "Images in a slideshow will pan and zoom while displayed."
+msgstr "Bydd delweddau mewn sioe sleidiau yn symud a chwyddo wrth gael ei dangos."
+
+msgctxt "#36314"
+msgid "View slideshow images in a random order."
+msgstr "Gweld delweddau sioe sleidiau yn nhrefn hap."
+
+msgctxt "#36317"
+msgid "Select up to three locations for which the weather can be displayed."
+msgstr "Dewis un o dri lleoliad i ddangos y tywydd."
+
+msgctxt "#36318"
+msgid "Specify the default weather information source. See the Add-ons Manager for options."
+msgstr "Pennu ffynhonnell arferol y tywydd. Gw Rheolwr Ychwanegion am ddewisiadau."
+
+msgctxt "#36321"
+msgid "Display name of the XBMC installation when using various network services."
+msgstr "Dangos enw'r gosodiad XBMC wrth ddefnyddio gwasanaethau rhwydwaith amrywiol."
+
+msgctxt "#36324"
+msgid "When a manual or automatical library update occurs, notify UPnP clients."
+msgstr "Pan fydd diweddariad llyfrgell yn digwydd yn awtomatig neu â llaw, dweud wrth y cleientiaid UPnP."
+
+msgctxt "#36328"
+msgid "Enable remote users to control XBMC through the built-in webserver."
+msgstr "Galluogi defnyddwyr pell i reoli XBMC drwy'r gweinydd gwe mewnol."
+
+msgctxt "#36329"
+msgid "Define the webserver port."
+msgstr "Diffinio porth y gweinydd gw"
+
+msgctxt "#36330"
+msgid "Define the webserver username."
+msgstr "Diffinio enw defnyddiwr y gweinydd gwe."
+
+msgctxt "#36332"
+msgid "Select between web interfaces installed via the Add-on Manager."
+msgstr "Dewis rhwng rhyngwynebau gwe sydd wedi eu gosod drwy'r Rheolwr Ychwanegion."
+
+msgctxt "#36334"
+msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
+msgstr "Caniatáu i raglenni ar y cyfrifiadur hwn i reoli XBMC drwy'r rhyngwyneb gwe neu drwy brotocol rhyngwyneb JSON-RPC. "
+
+msgctxt "#36338"
+msgid "Allow programs on the network to control XBMC."
+msgstr "Caniatáu i raglenni ar y rhwydwaith i reoli XBMC."
+
+msgctxt "#36355"
+msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
+msgstr "Mewn ffurfweddiad sgrin lluosog bydd y sgriniau lle nad yw XBMC."
+
+msgctxt "#36356"
+msgid "Eliminate vertical tearing."
+msgstr "Dileu rhwygo fertigol"
 
 msgctxt "#36410"
 msgid "No info available yet."

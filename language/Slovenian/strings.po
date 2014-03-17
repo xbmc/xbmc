@@ -2301,6 +2301,18 @@ msgctxt "#640"
 msgid "Use album levels"
 msgstr "Uporabi nivoje albuma"
 
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "Nivo PreAmp - Datoteke s poenoteno glasnostjo"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "Nivo PreAmp - Datoteke brez poenotene glasnosti"
+
+msgctxt "#643"
+msgid "Avoid clipping on ReplayGained files"
+msgstr "Prepreči popačenje zvoka ob poenotenju glasnosti"
+
 msgctxt "#644"
 msgid "Crop black bars"
 msgstr "Obreži črne robove"
@@ -3552,6 +3564,10 @@ msgstr "Ponastavi vse vidne nastavitve na privzete vrednosti."
 msgctxt "#10046"
 msgid "No categories available"
 msgstr "Na voljo ni nobene kategorije"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Zamanjajte nivo menija nastavitev za dostop do dodatnih kategorij in nastavitev."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -5020,6 +5036,10 @@ msgstr "Slikovna ura (zavrži/podvoji zvok)"
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Slikovna ura (pretvori zvok)"
+
+msgctxt "#13504"
+msgid "Maximum speedup/slowdown amount (%)"
+msgstr "Maksimalna pohitritev/upočasnitev (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
@@ -8925,6 +8945,10 @@ msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Ponastavi pisave podnapisov ASS/SSA"
 
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "Omogoči podporo za miško in zaslon na dotik"
+
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
 msgstr "Predvajaj navigacijske zvoke med predvajanjem vsebine"
@@ -9280,6 +9304,10 @@ msgstr "Združi po"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "mešano"
+
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Pozicija podnapisov na zaslonu"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10181,6 +10209,10 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Začasno ustavi predvajanje ko se prične iskanje podnapisov"
 
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Določi ali se ponapisi shranjujejo v mapo s predvajano datoteko ali v drugo uporabniško mapo."
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Iščem podnapise ..."
@@ -10212,6 +10244,10 @@ msgstr "Prenos podnapisa je spodletel."
 msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "Ni nameščen noben vtičnik za podnapise."
+
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "Lokacija za shranjevanje podnapisov"
 
 msgctxt "#24116"
 msgid "Default TV Service"
@@ -10993,6 +11029,10 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "Uporabi omejen obseg barv (16-235)"
 
+msgctxt "#36101"
+msgid "Change the look and feel of the user interface."
+msgstr "Spremenite izgled in obnašanje uporabniškega vmesnika."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Spremenite nastavitve specifične za preobleko. Možnosti, ki so na voljo, so odvisne od uporabljene preobleke."
@@ -11005,6 +11045,10 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Spremenite barve trenutno izbrane preobleke."
 
+msgctxt "#36108"
+msgid "Resize the view of the user interface."
+msgstr "Spremeni velikost uporabniškega vmesnika."
+
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "Izberite privzeto okno, ki se bo prikazalo ob zagonu XBMC-ja."
@@ -11016,6 +11060,10 @@ msgstr "Izključite drsenje novic RSS."
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Uredite vire RSS."
+
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "Izberite jezik uporabniškega vmesnika."
 
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
@@ -11048,6 +11096,10 @@ msgstr "Prikažite pripone predstavnih datotek. Na primer 'Party Anima.mp3' bi p
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Dovolite brisanje in preimenovanje datotek s pomočjo uporabniškega vmesnika, preko vsebinskega menija (na primer na tipkovnici pritisnite tipko C za prikaz vsebinskega menija)."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Prikaži skrite datoteke in mape na seznamu datotek."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11084,6 +11136,10 @@ msgstr "Informacije še niso na voljo."
 msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
+
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Omogoči video knjižnico."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
@@ -11132,6 +11188,10 @@ msgstr "Stopnji osveževanja zaslona prilagodite posnetek."
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "Zvok mora ostati usklajen, to se lahko popravi z pretvarjanjem, izpuščanjem/podvajanjem paketkov ali prilagajanjem ure, če se preveč ne ujema."
+
+msgctxt "#36168"
+msgid "Maximum video speed adjust to match actual screen refresh rate."
+msgstr "Maksimalna prilagoditev hitrosti predvajanja za doseganje dejanske frekvence osvežitve zaslona."
 
 msgctxt "#36169"
 msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
@@ -11337,6 +11397,10 @@ msgctxt "#36288"
 msgid "Select which quality you want to rip your files."
 msgstr "Izberite kvaliteto zajemanja posnetkov."
 
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Izberi bitno hitrost, katero uporablja izbrani avdio kodirnik za stiskanje zvoka."
+
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "Samodejno izvrzite ploščo po končanem zajemanju."
@@ -11464,6 +11528,10 @@ msgstr "Izberite to možnost, če vaš sprejemnik podpira dekodiranje sledi DTS-
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
 msgstr "Izberite napravo, ki se bo uporabila za predvajanje kodiranih formatov, ki so navedeni spodaj med možnostmi 'sprejemnik podpira'."
+
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Prilagodi zvoke uporabniškega vmesnika, kot so zvoki pomembnih obvestil in navigacije v menijih."
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."

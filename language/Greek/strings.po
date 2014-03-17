@@ -4975,11 +4975,11 @@ msgstr "Προτίμηση του Μείκτη Βίντεο VDPAU"
 
 msgctxt "#13438"
 msgid "Allow hardware acceleration (amcodec)"
-msgstr "Χρήση επιτάχυνσης υλικού (amcodec)"
+msgstr "Να επιτρέπεται επιτάχυνση υλικού (amcodec)"
 
 msgctxt "#13439"
 msgid "Allow hardware acceleration (MediaCodec)"
-msgstr "Χρήση επιτάχυνσης υλικού (MediaCodec)"
+msgstr "Να επιτρέπεται επιτάχυνση υλικού (MediaCodec)"
 
 msgctxt "#13440"
 msgid "Allow multi threaded software decoding"
@@ -9791,7 +9791,7 @@ msgstr "Οδηγός"
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimise black bars"
-msgstr "Σφάλμα αναλογίας οθόνης για μείωση μαύρων μπαρών"
+msgstr "Μέγιστο σφάλμα αναλογίας οθόνης για μείωση μαύρων μπαρών"
 
 msgctxt "#22022"
 msgid "Show video files in listings"
@@ -10263,7 +10263,7 @@ msgstr "Παύση κατά την αναζήτηση υποτίτλων"
 
 msgctxt "#24106"
 msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
-msgstr "Καθορίστε που θα αποθηκεύονται οι υπότιτλοι, στην ίδια τοποθεσία με το βίντεο ή σε μια προσαρμοσμένη τοποθεσία."
+msgstr "Καθορίστε που θα αποθηκεύονται οι υπότιτλοι, στον ίδιο φάκελο με το βίντεο ή σε κάποια προσαρμοσμένη τοποθεσία."
 
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
@@ -11329,6 +11329,14 @@ msgctxt "#36154"
 msgid "Use high quality scalers when upscaling a video by at least this percentage."
 msgstr "Χρήση υψηλής ποιότητας scalers κατά το upscaling ενός βίντεο, τουλάχιστον κατά τόσο ποσοστό."
 
+msgctxt "#36155"
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
+msgstr "Ενεργοποίηση VDPAU αποκωδικοποίησης υλικού των αρχείων βίντεο. Χρησιμοποιείται κυρίως για NVIDIA και, σε κάποιες περιπτώσεις, AMD κάρτες γραφικών."
+
+msgctxt "#36156"
+msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
+msgstr "Ενεργοποίηση VAAPI αποκωδικοποίησης υλικού των αρχείων βίντεο. Χρησιμοποιείται κυρίως για Intel και, σε κάποιες περιπτώσεις, AMD κάρτες γραφικών."
+
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
 msgstr "DXVA2 αποκωδικοποίηση υλικού των αρχείων βίντεο."
@@ -11349,13 +11357,17 @@ msgctxt "#36162"
 msgid "Enable VideoToolbox hardware decoding of video files."
 msgstr "VideoToolbox αποκωδικοποίηση υλικού των αρχείων βίντεο."
 
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "Ενεργοποίηση αποκωδικοποίησης αρχείων βίντεο με χρήση αντικειμένων pixel buffer."
+
 msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
-msgstr "Επιτρέψτε στον ρυθμό ανανέωσης της οθόνης να αλλάξει ώστε να ακολουθεί βέλτιστα το ρυθμό ανανέωσης γραφικών. Αυτή η ρύθμιση μπορεί να αποδόσει ομαλότερη αναπαραγωγή."
+msgstr "Να επιτρέπεται η αλλαγή του ρυθμού ανανέωσης οθόνης προκειμένου να ταιριάζει με το ρυθμό ανανέωσης του βίντεο. Μπορεί να αποδώσει ομαλότερη αναπαραγωγή."
 
 msgctxt "#36165"
 msgid "Pause for a small amount of time during a refresh rate change."
-msgstr "Παύση για ένα μικρό χρονικό διάστημα κατά τη διάρκεια αλλαγής του ρυθμού ανανέωσης."
+msgstr "Παύση για μικρό χρονικό διάστημα κατά την αλλαγή του ρυθμού ανανέωσης."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11405,6 +11417,10 @@ msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr "Εναλλαγή ανάμεσα σε 'Επιλογή', 'Εκκίνηση' (προεπιλογή), 'Συνέχιση' και 'Προβολή Πληροφοριών'. Η 'Επιλογή' θα επιλέξει το αντικείμενο, π.χ. θα ανοίξει το φάκελο στη λειτουργία αρχείων. Η 'Συνέχιση' θα αναπαραγάγει αυτόματα το βίντεο από το σημείο όπου σταμάτησε την τελευταία φορά, ακόμα και αν έγινε επανεκκίνηση."
 
+msgctxt "#36178"
+msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgstr "Εξαγωγή μικρογραφιών και μεταδεδομένων όπως η κωδικοποίηση και η αναλογία εικόνας, από τα βίντεο."
+
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
 msgstr "Όταν ένα αρχείο σαρωθεί στη συλλογή θα εμφανίζει τον τίτλο μεταδεδομένων αντί του τίτλου του αρχείου."
@@ -11416,6 +11432,10 @@ msgstr "Εξαγωγή μικρογραφιών και πληροφοριών, �
 msgctxt "#36181"
 msgid "No info available yet."
 msgstr "Μη διαθέσιμες πληροφορίες."
+
+msgctxt "#36182"
+msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
+msgstr "Συνδυάζει τα βίντεο πολλαπλών τμημάτων, τους φακέλους DVD, και τους φακέλους ταινιών, δημιουργώντας ένα αντικείμενο για τις προβολές εκτός συλλογής."
 
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
@@ -11532,6 +11552,22 @@ msgstr "Να μην εμφανίζονται ειδοποιήσεις 'απώλ�
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
 msgstr "Κατηγορία με ρυθμίσεις μενού PVR και πληροφοριών στην οθόνη (OSD), καθώς και για παράθυρα πληροφοριών καναλιών."
+
+msgctxt "#36212"
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "Προβολή πληροφοριών προγράμματος, όπως η τρέχουσα τηλ. σειρά, κατά την αλλαγή καναλιών."
+
+msgctxt "#36213"
+msgid "Hide the programming information automatically after a few seconds, defined below."
+msgstr "Απόκρυψη των πληροφοριών προγράμματος αυτόματα μετά από λίγα δευτερόλεπτα, όπως ορίζεται παρακάτω."
+
+msgctxt "#36214"
+msgid "Close the on screen display controls after switching channels."
+msgstr "Κλείσιμο των χειριστηρίων οθόνης κατά την αλλαγή καναλιών."
+
+msgctxt "#36215"
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
+msgstr "Πόση ώρα θα προβάλλονται οι πληροφορίες προγράμματος όταν είναι ενεργή η επιλογή 'αυτόματη απόκρυψη'."
 
 msgctxt "#36216"
 msgid "Folder where channel icons are stored."
@@ -11769,13 +11805,25 @@ msgctxt "#36275"
 msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
 msgstr "Έλεγχος του τρόπου με τον οποίο εμφανίζονται οι τίτλοι τραγουδιών στο περιβάλλον εργασίας. Για να λειτουργήσει σωστά πρέπει να είναι ενεργή η ανάγνωση ετικετών."
 
+msgctxt "#36276"
+msgid "Used for formatting the second column in file lists."
+msgstr "Χρησιμοποιείται για τη μορφοποίηση της δεύτερης στήλης στις λίστες αρχείων."
+
 msgctxt "#36277"
 msgid "Control the way that the names of songs are displayed in the now playing list."
 msgstr "Έλεγχος του τρόπου με τον οποίο εμφανίζονται οι τίτλοι τραγουδιών στη λίστα 'Τώρα Εκτελείται'."
 
+msgctxt "#36278"
+msgid "Used for formatting the second column in the now playing list."
+msgstr "Χρησιμοποιείται για τη μορφοποίηση της δεύτερης στήλης στη λίστα 'Τώρα Εκτελείται'."
+
 msgctxt "#36279"
 msgid "Control the way that the names of songs are displayed in library lists."
 msgstr "Έλεγχος του τρόπου με τον οποίο εμφανίζονται οι τίτλοι τραγουδιών στις λίστες συλλογών."
+
+msgctxt "#36280"
+msgid "Used for formatting the second column in library lists."
+msgstr "Χρησιμοποιείται για τη μορφοποίηση της δεύτερης στήλης στις λίστες συλλογής."
 
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
@@ -11828,6 +11876,10 @@ msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χε
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Κατά την αναπαραγωγή οποιουδήποτε αρχείου μουσικής, το XBMC θα αναζητήσει το αντίστοιχο αρχείο .cdg προκειμένου να προβάλλει τα γραφικά του."
+
+msgctxt "#36294"
+msgid "Show song selection dialog once the last song in the queue has been played."
+msgstr "Προβολή παραθύρου επιλογής τραγουδιού όταν αναπαραχθεί και το τελευταίο τραγούδι στην αναμονή."
 
 msgctxt "#36295"
 msgid "Select the font type used during karaoke."
@@ -11923,7 +11975,7 @@ msgstr "Επιλογή τριών τοποθεσιών για τις οποίε�
 
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
-msgstr "Ορισμός της προεπιλεγμένης πηγής καιρικών πληροφοριών. Δείτε τη Διαχείριση Πρόσθετων για επιλογές."
+msgstr "Καθορίστε την προεπιλεγμένη πηγή πληροφοριών για τον Καιρό. Δείτε τη Διαχείριση Πρόσθετων για επιλογές."
 
 msgctxt "#36319"
 msgid "Section containing settings for how network services are handled."
@@ -12003,7 +12055,7 @@ msgstr "Ορισμός του μέγιστου πλήθους πελατών π�
 
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
-msgstr "Έγκριση σε προγράμματα του δικτύου να ελέγχουν το XBMC."
+msgstr "Να επιτρέπεται προγράμματα του δικτύου να ελέγχουν το XBMC."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12017,6 +12069,14 @@ msgctxt "#36341"
 msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
 msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χειρισμό του εντοπισμού δικτύου zeroconf, που απαιτείται για το AirPlay."
 
+msgctxt "#36342"
+msgid "Allows applications on the network to discover XBMC's running services."
+msgstr "Επιτρέπει σε εφαρμογές εντός του δικτύου να εντοπίζουν τρέχουσες υπηρεσίες του XBMC."
+
+msgctxt "#36343"
+msgid "Allows XBMC to receive content from other AirPlay devices or applications."
+msgstr "Επιτρέπει στο XBMC να λαμβάνει περιεχόμενο από άλλες συσκευές ή εφαρμογές AirPlay."
+
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
 msgstr "Ενεργοποίηση προστασίας με κωδικό για το AirPlay."
@@ -12028,6 +12088,14 @@ msgstr "Ορισμός του κωδικού για το AirPlay."
 msgctxt "#36346"
 msgid "Category containing settings for how the SMB Client (samba) service is handled."
 msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χειρισμό της υπηρεσίας Πελάτη SMB (samba)."
+
+msgctxt "#36347"
+msgid "If a WINS server is running on the network, enter its IP address here. Otherwise, leave blank."
+msgstr "Αν υπάρχει διακομιστής WINS στο δίκτυο, εισαγάγετε τη διεύθυνση IP του. Διαφορετικά, αφήστε το κενό."
+
+msgctxt "#36348"
+msgid "If a WINS server is running on the network, enter its workgroup name here. Otherwise, leave blank."
+msgstr "Αν υπάρχει διακομιστής WINS στο δίκτυο, εισαγάγετε την Ομάδα Εργασίας του. Διαφορετικά, αφήστε το κενό."
 
 msgctxt "#36349"
 msgid "Section that contains the System related settings for the device XBMC is installed on."
@@ -12069,6 +12137,10 @@ msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Δοκιμαστικά μοτίβα για βαθμονόμηση της οθόνης."
 
+msgctxt "#36359"
+msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
+msgstr "Χρήση περιορισμένου χρωματικού εύρους (16-235) αντί πλήρους (0-255). Προτείνεται αν η οθόνη σας είναι μια απλή τηλεόραση με HDMI η οποία δεν υποστηρίζει σύνδεση με υπολογιστή ή κάτι παρόμοιο, ούτως ώστε να προβάλλει όλα τα χρώματα. Αν πρόκειται για οθόνη υπολογιστή, αφήστε το απενεργοποιημένο για καλύτερη απόδοση του μαύρου."
+
 msgctxt "#36360"
 msgid "Category containing settings for how audio output is handled."
 msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χειρισμό της εξόδου ήχου."
@@ -12099,7 +12171,7 @@ msgstr "Επιλογή αυτής της ρύθμισης αν ο δέκτης �
 
 msgctxt "#36367"
 msgid "Select the maximum number of audio channels/speakers available for audio decoded. If optical/coax digital outputs are used this must be set to 2.0"
-msgstr "Επιλέξτε το μέγιστο αριθμό ηχητικών καναλιών/ηχείων διαθέσιμων για την ηχητική αποκωδικοποίηση. Εάν χρησιμοποιούνται οπτικές/coax έξοδοι αυτό θα πρέπει να οριστεί ως 2.0"
+msgstr "Επιλογή του μέγιστου αριθμού ηχητικών καναλιών/ηχείων διαθέσιμων για την αποκωδικοποίηση ήχου. Εάν χρησιμοποιούνται οπτικές/coax έξοδοι αυτό θα πρέπει να οριστεί ως 2.0"
 
 msgctxt "#36368"
 msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
@@ -12128,6 +12200,10 @@ msgstr "Διαμόρφωση του τρόπου χειρισμού των ήχ�
 msgctxt "#36374"
 msgid "Category containing settings for how input devices are handled."
 msgstr "Κατηγορία με ρυθμίσεις σχετικά με το χειρισμό συσκευών εισόδου."
+
+msgctxt "#36375"
+msgid "Configure any attached peripheral devices."
+msgstr "Διαμόρφωση όλων των συνδεδεμένων περιφερειακών συσκευών."
 
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
@@ -12203,7 +12279,7 @@ msgstr "Ο φάκελος όπου θα αποθηκεύονται στιγμι�
 
 msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
-msgstr "Ποιες συλλογές να συμπεριληφθούν στο αρχείο καταγραφής εντοπισμού σφαλμάτων."
+msgstr "Καθορίστε τις συλλογές που θα περιληφθούν στην καταγραφή εντοπισμού σφαλμάτων."
 
 msgctxt "#36395"
 msgid "Category containing settings for the master lock function."
@@ -12291,7 +12367,15 @@ msgstr "Μη διαθέσιμες πληροφορίες."
 
 msgctxt "#36416"
 msgid "Specify the type of remote used."
-msgstr "Προσδιορισμός του τύπου χειριστηρίου που χρησιμοποιείται."
+msgstr "Καθορίστε τον τύπο χειριστηρίου που χρησιμοποιείτε."
+
+msgctxt "#36417"
+msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
+msgstr "Να τρέχει πάντα ένα πρόγραμμα για να μπορεί να χρησιμοποιηθεί το τηλεχειριστήριο για την εκκίνηση του XBMC."
+
+msgctxt "#36418"
+msgid "Specify the delay between button sequences on a universal remote."
+msgstr "Καθορίστε την καθυστέρηση μεταξύ ακολουθιών πλήκτρων σε τηλεχειριστήρια universal."
 
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
@@ -12328,6 +12412,18 @@ msgstr "Εμφάνιση πληροφοριών"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Εγγραφή"
+
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
+msgstr "Επιλογή αυτής της ρύθμισης αν η σύνδεση της εξόδου ήχου υποστηρίζει μόνο πολυκάναλο ήχο, π.χ. Dolby Digital 5.1, όπως σε σύνδεση SPDIF. Αν το σύστημά σας υποστηρίζει πολυκάναλο ήχο LPCM μέσω HDMI, αφήστε το απενεργοποιημένο."
+
+msgctxt "#36430"
+msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
+msgstr "Διαμόρφωση της μεθόδου επιτάχυνσης κατά την επεξεργασία βίντεο. Περιλαμβάνονται ρυθμίσεις όπως η αποκωδικοποίηση και το scaling."
+
+msgctxt "#36431"
+msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
+msgstr "Ορισμός του τρόπου αποκωδικοποίησης βίντεο, είτε μέσω λογισμικού (απαιτείται περισσότερη επεξεργαστική ισχύ), ή μέσω επιτάχυνσης υλικού όταν είναι εφικτό."
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

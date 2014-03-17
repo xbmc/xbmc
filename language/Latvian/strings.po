@@ -5169,6 +5169,10 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple tālvadības kļūda"
 
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "Apple tālvadības atbalstu nevar ieslēgt."
+
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Ielikt stekā"
@@ -6456,6 +6460,10 @@ msgstr "Meklēt kanālus"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Meklēšanas laikā PVR funkcijas nevar izmantot."
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "Kurā serverī vēlaties meklēt?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10345,6 +10353,10 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Atlasīt no visiem nosaukumiem ..."
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Rādīt Blu-ray izvēlnes"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Atskaņo galveno nosaukumu: %d"
@@ -10360,6 +10372,14 @@ msgstr "Atlasīt ierakstu atskaņošanai"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Nodaļas: %u - ilgums: %s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Neizdevās atskaņot Blu-ray"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Šī Blu-ray izvēlne nav atbalstīta"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11145,9 +11165,21 @@ msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Labot RSS pūsmas."
 
+msgctxt "#36113"
+msgid "Category containing all locale/regional settings."
+msgstr "Kategorija, kas satur visus valodas/reģionālos iestatījumus."
+
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "Izvēlas valodu lietotāja saskarnei."
+
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr "Atlasiet temperatūras, laika un datuma formātu. Pieejamās opcijas ir atkarīgas no izvēlētās valodas."
+
+msgctxt "#36116"
+msgid "Choose which character set is used for displaying text in the user interface."
+msgstr "Izvēlēties rakstzīmu kopumu teksta attēlošanai lietotāja saskarnē."
 
 msgctxt "#36117"
 msgid "Select country location."
@@ -11165,6 +11197,10 @@ msgctxt "#36120"
 msgid "Select the default subtitles when different languages are available."
 msgstr "Atlasiet noklusētos subtitrus, ja pieejami subtitri dažādās valodās."
 
+msgctxt "#36121"
+msgid "Category containing settings related to how file lists are displayed."
+msgstr "Kategorija, kas satur iestatījumus failu sarakstu attēlošanai."
+
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr "Attēlot (..) ierakstu sarakstos, lai norādītu uz vecāku mapi."
@@ -11176,6 +11212,18 @@ msgstr "Rādīt failu paplašinājumus mediju failiem. Piemēram, 'Tu Baudi Mani
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Atļaut failus dzēst un pārsaukt no lietotāja saskarnes, izmantojot konteksta izvēlni (piemēram, nospiest C uz tastatūras, lai atvērtu šo izvēlni)."
+
+msgctxt "#36126"
+msgid "Show the add source button in root sections of the user interface."
+msgstr "Rādīt pogu avota pievienošanai saknes sekcijās lietotāja saskarnē."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Rādīt sarakstos slēptos failus un direktorijas."
+
+msgctxt "#36128"
+msgid "Category containing all screensaver settings."
+msgstr "Kategorija, kas satur visus ekrānsaudzētāja iestatījumus."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11212,6 +11260,14 @@ msgstr "Info vēl nav pieejama."
 msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Info vēl nav pieejama."
+
+msgctxt "#36138"
+msgid "Section that contains settings related to videos and how they are handled."
+msgstr "Sekcija, kas satur ar video un tā apstrādi saistītus iestatījumus."
+
+msgctxt "#36139"
+msgid "Category containing the settings for how the video library is handled."
+msgstr "Kategorija, kas satur iestatījumus video bibliotēkas darbībai."
 
 msgctxt "#36140"
 msgid "Enable the video library."
@@ -11253,9 +11309,45 @@ msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
 msgstr "Importēt XML failu video bibliotēkas datubāzē."
 
+msgctxt "#36151"
+msgid "Category containing settings for how video playback is handled."
+msgstr "Kategorija, kas satur iestatījumus video atskaņošanas darbībai."
+
+msgctxt "#36152"
+msgid "Enable automatic playback of the next file in the list."
+msgstr "Ieslēgt automātisku nākamā faila atskaņošanu spēļsarakstā."
+
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Pielāgot video apstrādes un attēlošanas metodi."
+
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "Izmantot augstas kvalitātes mērogotājus, palielinot video par vismaz šādu procentu daudzumu."
+
+msgctxt "#36158"
+msgid "Enable DXVA2 hardware decoding of video files."
+msgstr "Ieslēgt video failu atkodēšanu ar DXVA2 aparatūru."
+
+msgctxt "#36159"
+msgid "Enable CrystalHD decoding of video files."
+msgstr "Ieslēgt video failu atkodēšanu ar CrystalHD."
+
+msgctxt "#36160"
+msgid "Enable VDA hardware decoding of video files."
+msgstr "Ieslēgt video failu atkodēšanu ar VDA aparatūru."
+
+msgctxt "#36161"
+msgid "Enable OpenMax hardware decoding of video files."
+msgstr "Ieslēgt video failu atkodēšanu ar OpenMax aparatūru."
+
+msgctxt "#36162"
+msgid "Enable VideoToolbox hardware decoding of video files."
+msgstr "Ieslēgt video failu atkodēšanu ar VideoToolbox aparatūru."
+
+msgctxt "#36163"
+msgid "Enable decoding of video files using pixel buffer objects."
+msgstr "Ieslēgt video failu atkodēšanu ar pikseļu bufera objektiem."
 
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
@@ -11285,6 +11377,10 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like XBMC to influence the colour space conversion."
 msgstr "VDPAU studijas līmeņa konvertācija ļauj papildus lietotnēm kā XBMC iespaidot krāsu lauka konvertāciju."
 
+msgctxt "#36173"
+msgid "Enable upscaling using VDPAU."
+msgstr "Ieslēgt palielināšanu ar VDPAU."
+
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."
 msgstr "Ieslēgt teletekstu, kad skatās tiešraides TV plūsmu."
@@ -11292,6 +11388,10 @@ msgstr "Ieslēgt teletekstu, kad skatās tiešraides TV plūsmu."
 msgctxt "#36175"
 msgid "Scale Teletext to 4:3 ratio."
 msgstr "Mērogo teletekstu uz 4:3 attiecību."
+
+msgctxt "#36176"
+msgid "Category containing settings for how video file lists are handled."
+msgstr "Kategorija, kas satur iestatījumus video failu sarakstu darbībai."
 
 msgctxt "#36177"
 msgid "Toggle between Choose, Play (default), Resume and Show Information. Choose will select an item, e.g. open a directory in files mode. Resume will automatically resume videos from the last position that you were viewing them, even after restarting the system."
@@ -11313,6 +11413,34 @@ msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr "Noņem nosaukuma, žanra utt. mezglu no bibliotēkas skata. Kategorijas atlasīšana noved tieši pie nosaukumu skata."
 
+msgctxt "#36184"
+msgid "Category containing settings for how subtitles are handled."
+msgstr "Kategorija, kas satur iestatījumus subtitru darbībai."
+
+msgctxt "#36185"
+msgid "Set the font type to be used for subtitles."
+msgstr "Iestatīt fonta veidu izmantošanai subtitros."
+
+msgctxt "#36186"
+msgid "Set the font size to be used for subtitles."
+msgstr "Iestatīt fonta izmēru izmantošanai subtitros."
+
+msgctxt "#36187"
+msgid "Set the font style to be used for subtitles."
+msgstr "Iestatīt fonta stilu izmantošanai subtitros."
+
+msgctxt "#36188"
+msgid "Set the font colour to be used for subtitles."
+msgstr "Iestatīt fonta krāsu izmantošanai subtitros."
+
+msgctxt "#36189"
+msgid "Set the font character set to be used for subtitles."
+msgstr "Iestatīt fonta rakstzīmju kopu izmantošanai subtitros."
+
+msgctxt "#36190"
+msgid "Override ASS/SSA subtitles fonts."
+msgstr "Ignorēt ASS/SSA subtitru fontus."
+
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
 msgstr "Atlasīt pielāgotu direktoriju subtitriem. Tas var būt failu koplietojums."
@@ -11320,6 +11448,10 @@ msgstr "Atlasīt pielāgotu direktoriju subtitriem. Tas var būt failu koplietoj
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "Subtitru atrašanās vieta uz ekrāna."
+
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "Kategorija, kas satur iestatījumus DVD darbībai."
 
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
@@ -11377,6 +11509,22 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Dzēst kanālu/EPG datubāzi un pārimportēt datus pēc tam no aizmugursistēmas."
 
+msgctxt "#36216"
+msgid "Folder where channel icons are stored."
+msgstr "Mape, kur glabājas kanālu ikonas."
+
+msgctxt "#36217"
+msgid "Scan for missing channel icons."
+msgstr "Skenēt trūkstošās kanālu ikonas."
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "Dienu skaits, par kurām importēt EPG datus no aizmugursistēmām."
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "Laiks starp EPG datu importiem no aizmugursistēmām."
+
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Neimportēt EPG datus, kamēr atskaņo TV, lai samazinātu CPU lietošanu."
@@ -11393,6 +11541,10 @@ msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Attēlot izvēlētā kanāla plūsmu mazā lodziņā nevis pa visu ekrānu."
 
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "Uzsākot, turpināt pēdējo skatīto kanālu."
+
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "Attēlot signāla kvalitātes informāciju kodeka informācijas logā (ja atbalsta pielikums un aizmugursistēma)."
@@ -11401,6 +11553,26 @@ msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Nospiežot numura pogu pilnekrāna režīmā, automātiski pārslēgsies uz to kanāla numuru, kas tika ievadīts pēc 1 sekundes."
 
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "Tūlītējā ieraksta ilgums, ja nospiež ierakstīšanas pogu."
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "Ieraksta prioritāte. Lielāks numurs nozīmē lielāku prioritāti. Neatbalsta visi pielikumi un aizmugursistēmas."
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "Dzēš ierakstu pēc šī laika. Neatbalsta visi pielikumi un aizmugursistēmas."
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "Sākt ierakstus pirms aktuālā laika. Neatbalsta visi pielikumi un aizmugursistēmas."
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "Beigt ierakstus pēc aktuālā laika. Neatbalsta visi pielikumi un aizmugursistēmas."
+
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Rādīt paziņojumu, kad taimeri ir pievienoti, pabeigti vai noņemti aizmugursistēmā."
@@ -11408,6 +11580,14 @@ msgstr "Rādīt paziņojumu, kad taimeri ir pievienoti, pabeigti vai noņemti ai
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Izpildīt \"pamodināšanas komandu\", izejot no XBMC vai nonākot miega režīmā. Nākamā ieplānotā ieraksta laika zīmogu padod kā parametru."
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "Komanda netiks izpildīta, ja ierakstīšanu sāks šajā noilgumā."
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "Izpildāmā komanda."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11425,6 +11605,10 @@ msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Ievadiet jaunu pin kodu, lai atslēgtu vecāku sēgtos kanālus."
 
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "Ieslēgt mūzikas bibliotēku."
+
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
 msgstr "Noteikt, vai izpildītāji, kas parādās tikai kompilācijās, būs redzami bibliotēkas izpildītāju skatā."
@@ -11432,6 +11616,10 @@ msgstr "Noteikt, vai izpildītāji, kas parādās tikai kompilācijās, būs red
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "Skenēšanas laikā automātiski ar skrāpjiem uzmeklēt albuma un izpildītāja informāciju."
+
+msgctxt "#36257"
+msgid "Select the default album information source."
+msgstr "Atlasīt noklusēto albuma informācijas avotu."
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11453,9 +11641,17 @@ msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "Importēt XML failu mūzikas bibliotēkas datubāzē."
 
+msgctxt "#36264"
+msgid "Category containing settings for how music playback is handled."
+msgstr "Kategorija, kas satur iestatījumus mūzikas atskaņošanas darbībai."
+
 msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
 msgstr "XBMC automātiski atskaņo ņakamo ierakstu pašreizējā mapē. Piemēram, failu skatā: pēc tam, kad celiņš nospēlēts, XBMC automātiski atskaņos nākamo celiņu tajā pašā mapē."
+
+msgctxt "#36266"
+msgid "When songs are selected they are queued instead of playback starting immediately."
+msgstr "Kad dziesmas tiek atlasītas, tās ierindo sarakstā nevis sāk nekavējoties atskaņot."
 
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
@@ -11468,6 +11664,10 @@ msgstr "Noklusējums ir 89dB pēc standarta. Mainiet uzmanīgi."
 msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Noklusējums ir 89dB pēc standarta. Mainiet uzmanīgi."
+
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping will occur."
+msgstr "Samazināt faila skaļumu, ja būs kropļojumi."
 
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
@@ -11484,6 +11684,10 @@ msgstr "Lasīt iezīmes informāciju no dziesmu failiem. Lielām direktorijām t
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "XBMC meklēs sīktēlus attālinātajos koplietojumos un optiskā medijā. Tas bieži var salēnināt tīkla mapju saraksta parādīšanu."
+
+msgctxt "#36282"
+msgid "Category containing settings for how CDs are handled."
+msgstr "Kategorija, kas satur iestatījumus CD darbībai."
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11509,9 +11713,17 @@ msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
 msgstr "Atlasīt, kādu bitu ātrumu izmantot noteiktam audio kodētājam, lai kompresētu audio"
 
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5."
+msgstr "Norādīt FLAC saspiešanas līmeni, noklusējums 5."
+
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "Auto izstumt disku, kad izvilkšana ir pabeigta."
+
+msgctxt "#36292"
+msgid "Category containing the settings for how karaoke is handled."
+msgstr "Kategorija, kas satur iestatījumus karaoke darbībai."
 
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
@@ -11529,6 +11741,10 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "Info vēl nav pieejama."
 
+msgctxt "#36305"
+msgid "Category containing settings for how picture file lists are handled."
+msgstr "Kategorija, kas satur iestatījumus attēlu failu sarakstu darbībai."
+
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr "Ja eksistē EXIF informācija (datums, laiks, izmantotā kamera, utt.), tā tiks attēlota."
@@ -11545,6 +11761,10 @@ msgctxt "#36310"
 msgid "No info available yet."
 msgstr "Info vēl nav pieejama."
 
+msgctxt "#36311"
+msgid "Category containing settings for how picture slideshows are handled."
+msgstr "Kategorija, kas satur iestatījumus attēlu slīdīšu darbībai."
+
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
 msgstr "Atlasīt laika apjomu, kurā slīdītē redzams katrs viens attēls."
@@ -11557,6 +11777,10 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "Skatīt sīdītes attēlus nejaušā secībā."
 
+msgctxt "#36316"
+msgid "Category containing settings for how weather addons are handled."
+msgstr "Kategorija, kas satur iestatījumus laikapstākļu pielikumu darbībai."
+
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "Atlasīt līdz trim atrašanās vietām, par kurām var attēlot laikapstākļus."
@@ -11565,13 +11789,25 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "Norādīt noklusēto laikapstākļu informācijas avotu. Opcijām skatīt pielikumu pārvaldnieku."
 
+msgctxt "#36320"
+msgid "Category containing settings used for all services."
+msgstr "Kategorija, kas satur iestatījumus visiem servisiem."
+
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "Attēlot XBMC instalācijas nosaukumu, kad izmanto dažādus tīkla pakalpojumus."
 
+msgctxt "#36322"
+msgid "Category containing settings for how the UPnP service is handled."
+msgstr "Kategorija, kas satur iestatījumus UPnP servisa darbībai."
+
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "Brīdināt UPnP klientus, kad notiek pašrocīga vai automātiska bibliotēkas atjaunināšana."
+
+msgctxt "#36327"
+msgid "Category containing settings for how the webserver service is handled."
+msgstr "Kategorija, kas satur iestatījumus tīmekļa servera servisa darbībai."
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11589,17 +11825,45 @@ msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Atlasīt instalēto tīmekļa saskarni ar pielikumu pārvaldnieku."
 
+msgctxt "#36333"
+msgid "Category containing settings for how the remote control service is handled."
+msgstr "Kategorija, kas satur iestatījumus tālvadības pults servisa darbībai."
+
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Atļaut programmām šajā sistēmā kontrolēt XBMC no tīmekļa saskarnes vai  JSON-RPC saskarnes protokola."
 
 msgctxt "#36335"
 msgid "Define the remote control port."
-msgstr "Noteikt tālvadības portu."
+msgstr "Noteikt tālvadības pults portu."
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "Noteikt tālvadības pults portu diapazonu."
+
+msgctxt "#36337"
+msgid "Define the maximum number of clients that can connect."
+msgstr "Noteikt maksimālo klientu skaitu, kas var pieslēgties."
 
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "Atļaut programmām no tīkla kontrolēt XBMC."
+
+msgctxt "#36339"
+msgid "Initial repeat delay (ms)."
+msgstr "Sākotnējā atkārtošanas aizkave (ms)."
+
+msgctxt "#36340"
+msgid "Continuous repeat delay (ms)."
+msgstr "Tālākā atkārtošanas aizkave (ms)."
+
+msgctxt "#36341"
+msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
+msgstr "Kategorija, kas satur iestatījumus zeroconf tīkla atklāšanas servisa darbībai, nepieciešams pie AirPlay."
+
+msgctxt "#36346"
+msgid "Category containing settings for how the SMB Client (samba) service is handled."
+msgstr "Kategorija, kas satur iestatījumus SMB klienta (samba) servisa darbībai."
 
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
@@ -11616,6 +11880,10 @@ msgstr "Novērst vertikālo pārraušanu."
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Testē musturus ekrāna aparatūras kalibrēšanai."
+
+msgctxt "#36360"
+msgid "Category containing settings for how audio output is handled."
+msgstr "Kategorija, kas satur iestatījumus audio izvades darbībai."
 
 msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
@@ -11661,6 +11929,10 @@ msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "Konfigurēt, kā apstrādā saskarnes skaņas, piem., izvēlnes navigāciju un svarīgus paziņojumus."
 
+msgctxt "#36374"
+msgid "Category containing settings for how input devices are handled."
+msgstr "Kategorija, kas satur iestatījumus ievades ierīču darbībai."
+
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
 msgstr "Kad aktivizēts, tastatūras bultas kustinās atlasīto uz virtuālās tastatūras. Kad neaktivizēts, bultas kustinās kursoru no teksta."
@@ -11672,6 +11944,10 @@ msgstr "Izmantot peli vai skārienekrāna ierīci XBMC kontrolei. Piezīme: izsl
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
 msgstr "Izmantot kursorsviru, lai kontrolētu XMBC."
+
+msgctxt "#36379"
+msgid "Category containing settings for internet access."
+msgstr "Kategorija, kas satur iestatījumus interneta piekļuvei."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11701,6 +11977,10 @@ msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "Ja ir ierobežots datu pieslēgums, XBMC mēģinās iekļauties ierobežojumu ietvaros."
 
+msgctxt "#36387"
+msgid "Category containing settings for power saving."
+msgstr "Kategorija, kas satur iestatījumus enerģijas taupīšanai."
+
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "Noteikt, cik ilgi XBMC jābūt gaidīšanas laikā, pirms notiek izslēgšana."
@@ -11708,6 +11988,10 @@ msgstr "Noteikt, cik ilgi XBMC jābūt gaidīšanas laikā, pirms notiek izslēg
 msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "Noteikt, kādu darbību izpildīt XBMC, kad tas ilgi bijis gaidīšanas laikā."
+
+msgctxt "#36391"
+msgid "Category containing settings for debugging functions."
+msgstr "Kategorija, kas satur iestatījumus atkļūdošanas funkcijām."
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -11721,6 +12005,10 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "Norādīt papildbibliotēkas, kuras iekļaut atkļūdošanas žurnālā."
 
+msgctxt "#36395"
+msgid "Category containing settings for the master lock function."
+msgstr "Kategorija, kas satur iestatījumus galvenās slēdzenes funkcijai."
+
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Noteikt PIN, kas tiek izmantots galvenajā slēdzenē."
@@ -11728,6 +12016,50 @@ msgstr "Noteikt PIN, kas tiek izmantots galvenajā slēdzenē."
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "Noteikt maksimālo mēģinājumu skaitu, pirms tiek aizvērts XBMC."
+
+msgctxt "#36399"
+msgid "Category containing settings for the cache function."
+msgstr "Kategorija, kas satur iestatījumus kešatmiņas funkcijai."
+
+msgctxt "#36400"
+msgid "Enable cache for playback of Video, Audio or DVDs from hard disk."
+msgstr "Ieslēgt kešatmiņu video, audio vai DVD atskaņošanai no cietā diska."
+
+msgctxt "#36401"
+msgid "Enable cache for playback of Video from DVD-ROM."
+msgstr "Ieslēgt kešatmiņu video atskaņošanai no DVD-ROM."
+
+msgctxt "#36402"
+msgid "Enable cache for Video playback from Local Network."
+msgstr "Ieslēgt kešatmiņu video atskaņošanai no lokālā tīkla."
+
+msgctxt "#36403"
+msgid "Enable cache for Video playback from Internet."
+msgstr "Ieslēgt kešatmiņu video atskaņošanai no interneta."
+
+msgctxt "#36404"
+msgid "Enable cache for playback of Audio from DVD-ROM."
+msgstr "Ieslēgt kešatmiņu audio atskaņošanai no DVD-ROM."
+
+msgctxt "#36405"
+msgid "Enable cache for Audio playback from Local Network."
+msgstr "Ieslēgt kešatmiņu audio atskaņošanai no lokālā tīkla."
+
+msgctxt "#36406"
+msgid "Enable cache for Audio playback from Internet."
+msgstr "Ieslēgt kešatmiņu audio atskaņošanai no interneta."
+
+msgctxt "#36407"
+msgid "Enable cache for playback of DVD from DVD-ROM."
+msgstr "Ieslēgt kešatmiņu DVD atskaņošanai no DVD-ROM."
+
+msgctxt "#36408"
+msgid "Enable cache for DVD playback from Local Network."
+msgstr "Ieslēgt kešatmiņu DVD atskaņošanai no lokālā tīkla."
+
+msgctxt "#36409"
+msgid "Enable cache of unknown types from Internet."
+msgstr "Ieslēgt kešatmiņu nezināma veida saturam no interneta."
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -11753,9 +12085,17 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "Info vēl nav pieejama."
 
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "Norādīt izmantotās pults veidu."
+
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Noteikt atrašanās vietas, kuras izmanto laikapstākļu informācijas izgūšanai."
+
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
+msgstr "Apejot VDPAU miksētāju, ietaupās mazjaudīgu sistēmu resursi, taču stipri samazinās attēla kvalitāte."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -11895,7 +12235,7 @@ msgstr "Ieslēgt šo, lai laikā, kad notiek daudzkanālu audio samiksēšana, p
 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
-msgstr "Ieslēgt video failu dekodēšanu ar aparatūru."
+msgstr "Ieslēgt video failu atkodēšanu ar aparatūru."
 
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
@@ -11908,6 +12248,22 @@ msgstr "Izmantot labākas kvalitātes tekstūras plakātiem un fanumākslai (izm
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
 msgstr "Ierobežo GUI izšķirtspēju, lai taupītu atmiņu. Neietekmē video atskaņošanu. Izmantošanai bez ierobežojuma 1080. Nepieciešams pārstartēt."
+
+msgctxt "#36600"
+msgid "Category containing the settings for how the music library is handled."
+msgstr "Kategorija, kas satur iestatījumus mūzikas bibliotēkas darbībai."
+
+msgctxt "#36601"
+msgid "Category containing settings for how music file lists are handled."
+msgstr "Kategorija, kas satur iestatījumus mūzikas failu sarakstu darbībai."
+
+msgctxt "#36602"
+msgid "Category containing settings for how the AirPlay service is handled."
+msgstr "Kategorija, kas satur iestatījumus AirPlay servisa darbībai."
+
+msgctxt "#36603"
+msgid "Category containing settings for how video output is handled."
+msgstr "Kategorija, kas satur iestatījumus video izvades darbībai."
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
