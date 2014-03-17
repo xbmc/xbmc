@@ -92,8 +92,6 @@ void CWinSystemBase::UpdateResolutions()
 void CWinSystemBase::SetWindowResolution(int width, int height)
 {
   /* PLEX */
-#ifdef TARGET_DARWIN_OSX
-
   // some times SDL seems to go really bonkers, so we need to cap the resolution
   // information in some sane way
 
@@ -107,7 +105,6 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
 
   // Maintain 16:9 AR.
   height = (width * 9) / 16;
-#endif
   /* END PLEX */
 
   RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
