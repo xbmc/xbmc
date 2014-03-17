@@ -10,10 +10,48 @@ OBJS = libcurl.so \
 PLATFORM_OBJS =
 EXCLUDED_ADDONS = screensaver.rsxs.euphoria visualization.dxspectrum visualization.milkdrop visualization.projectm
 
+UNAME := $(shell uname -sm)
+# Host OS
+ifneq (,$(findstring Linux,$(UNAME)))
+HOST_OS := linux
+endif
+ifneq (,$(findstring Darwin,$(UNAME)))
+HOST_OS := darwin
+endif
+ifneq (,$(findstring Macintosh,$(UNAME)))
+HOST_OS := darwin
+endif
+
 XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
 COPYDIRS = system addons language media
+# Conditionally set SDK file locations
+# aapt
+ifneq ($(wildcard $(SDKROOT)/tools/$(HOST_OS)/aapt)),)
+AAPT = $(SDKROOT)/tools/$(HOST_OS)/aapt
+else
 AAPT = $(SDKROOT)/platform-tools/aapt
+endif
+# dx
+ifneq ($(wildcard $(SDKROOT)/tools/dx)),)
+DX = $(SDKROOT)/tools/dx
+else
 DX = $(SDKROOT)/platform-tools/dx
+endif
+#zipalign
+ifneq ($(wildcard $(SDKROOT)/tools/$(HOST_OS)/zipalign)),)
+ZIPALIGN = $(SDKROOT)/tools/$(HOST_OS)/zipalign
+else
+ZIPALIGN = $(SDKROOT)/tools/zipalign
+endif
+# Check android.jar location
+ifeq ($(wildcard $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar)),)
+ANDROIDJAR = $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar
+else
+# Using prebuilts/sdk in AOSP tree
+SDK_PLATFORM_NO = $(filter-out android,$(subst -, ,$(SDK_PLATFORM)))
+ANDROIDJAR = $(SDKROOT)/$(SDK_PLATFORM_NO)/android.jar
+endif
+
 GCC_VERSION=$(shell $(CC) -dumpversion)
 
 X86OVERRIDES=XBMC_OVERRIDE_HOST=i686-android-linux XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_X86_TOOLCHAIN)
@@ -44,7 +82,7 @@ GDBPATH=$(NDKROOT)/prebuilt/android-$(ARCH)/gdbserver/gdbserver
 endif
 
 all: package
-SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS)) $(addprefix $(PREFIX)/lib/$(SDK_PLATFORM)/,$(PLATFORM_OBJS))
+SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS)) $(addprefix $(PREFIX)/lib/$(SDK_PLATFORM_NO)/,$(PLATFORM_OBJS))
 DSTLIBS = $(CPU)/lib/libxbmc.so $(addprefix $(CPU)/lib/,$(OBJS)) $(addprefix $(CPU)/lib/,$(PLATFORM_OBJS))
 libs= $(DSTLIBS)
 
@@ -52,18 +90,18 @@ multi: x86 arm
 	@cp images/xbmcapp-debug-skeleton.apk images/xbmcapp-debug-multi-unaligned.apk
 	@cd xbmc; zip -r -q ../images/xbmcapp-debug-multi-unaligned.apk lib/ assets
 	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-multi-unaligned.apk androiddebugkey
-	@$(SDKROOT)/tools/zipalign -f 4 images/xbmcapp-debug-multi-unaligned.apk $(XBMCROOT)/xbmcapp-multi-debug.apk
+	@$(ZIPALIGN) -f 4 images/xbmcapp-debug-multi-unaligned.apk $(XBMCROOT)/xbmcapp-multi-debug.apk
 	@rm images/xbmcapp-debug-multi-unaligned.apk
 	@echo "$(XBMCROOT)/xbmcapp-multi-debug.apk created"
 
 package: extras
 	@cp images/xbmcapp-debug-skeleton.apk images/xbmcapp-debug-$(CPU)-unaligned.apk
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/xbmc/*.java
+	@javac -classpath $(ANDROIDJAR):xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java
+	@javac -classpath $(ANDROIDJAR):xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/xbmc/*.java
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
 	@cd xbmc; zip -r -q ../images/xbmcapp-debug-$(CPU)-unaligned.apk lib/$(CPU) assets classes.dex
 	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-$(CPU)-unaligned.apk androiddebugkey
-	@$(SDKROOT)/tools/zipalign -f 4 images/xbmcapp-debug-$(CPU)-unaligned.apk $(XBMCROOT)/xbmcapp-$(CPU)-debug.apk
+	@$(ZIPALIGN) -f 4 images/xbmcapp-debug-$(CPU)-unaligned.apk $(XBMCROOT)/xbmcapp-$(CPU)-debug.apk
 	@rm images/xbmcapp-debug-$(CPU)-unaligned.apk
 	@echo "$(XBMCROOT)/xbmcapp-$(CPU)-debug.apk created"
 
@@ -81,7 +119,7 @@ extras: libs
 	cp -rfp $(XBMCROOT)/media/Splash.png xbmc/res/drawable/splash.png
 	cd xbmc/assets/python2.6/lib/python2.6/; rm -rf test config lib-dynload
 	mkdir -p tmp/res; $(AAPT) c -S xbmc/res -C tmp/res; cp -r -n xbmc/res tmp/ || true
-	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/xbmcapp-debug-skeleton.apk -J xbmc/src
+	$(AAPT) p -f -I $(ANDROIDJAR) -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/xbmcapp-debug-skeleton.apk -J xbmc/src
 	@rm -rf tmp/
 
 libs: $(PREFIX)/lib/xbmc/libxbmc.so
