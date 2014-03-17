@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.fishbmc"
-  version="4.0.6"
+  version="4.0.7"
   name="FishBMC"
   provider-name="26elf">
   <extension
@@ -31,11 +31,13 @@
     <summary lang="hu">A vizualizáció Hullámokat és Elmosás Effekteket mutat.</summary>
     <summary lang="id">Visualisasi menunjukkan efek gelombang dan efek kabur.</summary>
     <summary lang="it">Visualizzazione mostrando Onde e Sfumature</summary>
+    <summary lang="ko">물결 효과와 흐림 효과를 보여주는 시각화</summary>
     <summary lang="lv">Vizualizācija, rādot viļņus un izpludināšanas efektu</summary>
     <summary lang="nl">Visualisatie waarbij Golven en Blur effecten worden getoond </summary>
     <summary lang="pl">Wizualizacja prezentuje efekty fali i rozmycia</summary>
     <summary lang="pt">Uma visualização com Ondas e Efeitos de Desfocagem</summary>
     <summary lang="pt_BR">Visualização mostrando Ondas e Efeitos Borrados</summary>
+    <summary lang="ru">Визуализация показывает волны и эффект размытия</summary>
     <summary lang="sk">Vizualizácia zobrazujúca vlnky a efekty rozmazania</summary>
     <summary lang="sl">Vizualizacija prikazuje valovanje in učinke zamegljenosti</summary>
     <summary lang="sv">Visualisering bestående av vågor- och blur-effekter</summary>
@@ -67,6 +69,7 @@
     <description lang="pl">fishBMC bazuje na fische, samodzielne narzędzie do wizualizacji muzyki. Podstawową zasadą jest generowanie wykresu fali i rozmazywanie go wzdłuż zdefiniowanych wektorów. Ponadto fische zawiera również zaawansowaną detekcję rytmu, co gwarantuje wspaniałe wrażenia wizualne.</description>
     <description lang="pt">O fishBMC é baseado no fische, uma ferramenta autónoma de visualização de sons. O princípio básico é desenhar a onda e deformar o desenho através de vectores pré-definidos. No entanto, o fische também incorpora detecção avançada de ritmos, garantindo uma excelente experiência visual.</description>
     <description lang="pt_BR">fishBMC é baseado no fische, uma ferramenta de visualização de som independente. O princípio básico é: desenhar a forma de onda e esmaecer o desenho ao longo de vetores pré-definidos. Entretanto fische também incorpora detecção avançada de batidas, o que realmente garante uma grande experiência visual.</description>
+    <description lang="ru">fishBMC основан на fische, являющейся самостоятельной утилитой для визуализации звука. Принцип работы: рисует форму волны и растягивает рисунок вдоль предопределенных векторов. При этом fische предлагает куда более продвинутый алгоритм определения ритма, гарантирующий потрясающее качество визуализации.</description>
     <description lang="sk">fishBMC je založený na fische, samostatnom nástroji na vizualizáciu. Základným princípom je: nakresliť priebeh signálu a rozmazať kresbu pozdĺž predefinovaných vektorov. Navyše fische obsahuje aj pokročilú detekciu rytmu, čo garantuje skutočný vizuálny zážitok.</description>
     <description lang="sl">fishBMC temelji na fischeu, samostojnem zvočno vizualizacijskem orodju. Osnovno načelo je: nariši valovni način in ga razmaži vzdolž vnaprej določenih vektorjev. Fische prav tako vključuje tudi napredno zaznavanje ritma, ki resnično zagotavlja odlično vizualno izkušnjo.</description>
     <description lang="sv">fishBMC är baserat på fische, ett fristående verktyg för ljudvisualisering. Den grundläggande principen är: rita en vågform och smeta ut den längs förbestämda vektorer. fische inkluderar även avancerad rytmdetektion, vilket verkligen garanterar en härlig visuell upplevelse.</description>
@@ -98,6 +101,7 @@
     <disclaimer lang="pl">Jeśli to rozbije cokolwiek, kawałki pozostaną Twoje.</disclaimer>
     <disclaimer lang="pt">Se isto quebrar alguma coisa, pode ficar com as peças.</disclaimer>
     <disclaimer lang="pt_BR">se isto quebrar algo, as peças serão suas.</disclaimer>
+    <disclaimer lang="ru">Если что-то сломается, это ваши проблемы.</disclaimer>
     <disclaimer lang="sk">Ak toto niečo rozbije, kúsky vám ostanú.</disclaimer>
     <disclaimer lang="sl">V primeru, da to karkoli zlomi, koščki ostanejo vaši.</disclaimer>
     <disclaimer lang="sv">Om detta skulle förstöra något så kan du behålla resterna.</disclaimer>

@@ -36,6 +36,14 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Максимальное"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Нервный режим [больше изменений режима]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Скорость [пропускать некоторые кадры]"
+
 msgctxt "#30007"
 msgid "Very Low"
 msgstr "Очень медленно"
@@ -51,3 +59,7 @@ msgstr "Нормальное"
 msgctxt "#30010"
 msgid "High"
 msgstr "Макс."
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Использовать файл сохранения состояния [быстрее запуск]"

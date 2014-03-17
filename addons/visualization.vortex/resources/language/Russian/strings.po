@@ -32,6 +32,14 @@ msgctxt "#30003"
 msgid "Lock Preset"
 msgstr "Заблокировать предустановки"
 
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Включить переходы"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Остановить первую предустановку"
+
 msgctxt "#30006"
 msgid "Show FPS"
 msgstr "Показать FPS"
