@@ -29,6 +29,7 @@ CGUIPlexScreenSaverPhoto::CGUIPlexScreenSaverPhoto() : CGUIDialog(WINDOW_DIALOG_
   m_overlayImage = NULL;
   m_clockLabel = NULL;
   m_imageLabel = NULL;
+  m_currentPosition = TOP_LEFT;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,15 +80,18 @@ bool CGUIPlexScreenSaverPhoto::OnMessage(CGUIMessage &message)
         if (m_clockLabel)
           delete m_clockLabel;
 
-        int posX = 25;
+        int posX, posY, align;
+        getXYPosition(posX, posY, align);
+
         if (screensaver->GetSetting("showclock") == "true")
         {
-          m_clockLabel = new CGUILabelControl(GetID(), 1236, 50, posX,
-                                              200, 50, info, false, false);
+          m_clockLabel = new CGUILabelControl(GetID(), 1236, posX, posY,
+                                              400, 50, info, false, false);
           m_clockLabel->SetLabel("00:00");
+          m_clockLabel->SetAlignment(align);
           m_clockLabel->UpdateInfo();
           m_clockLabel->SetVisible(true);
-          posX = 75;
+          posY += 50;
         }
 
         if (m_imageLabel)
@@ -96,10 +100,13 @@ bool CGUIPlexScreenSaverPhoto::OnMessage(CGUIMessage &message)
         if (screensaver->GetSetting("showinfo") == "true")
         {
           info.font = g_fontManager.GetFont("Regular-18", true);
-          m_imageLabel = new CGUILabelControl(GetID(), 1237, 50, posX, 400, 50, info, false, false);
-          m_imageLabel->SetLabel("Foo");
+          m_imageLabel = new CGUILabelControl(GetID(), 1237, posX, posY, 400, 50, info, false, false);
+          m_imageLabel->SetLabel("No images found...");
+          m_imageLabel->SetAlignment(align);
           m_imageLabel->UpdateInfo();
         }
+
+        m_moveTimer.restart();
 
       }
       break;
@@ -130,9 +137,83 @@ bool CGUIPlexScreenSaverPhoto::OnMessage(CGUIMessage &message)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexScreenSaverPhoto::getXYPosition(int& x, int& y, int& alignment)
+{
+  switch (m_currentPosition)
+  {
+    case TOP_LEFT:
+      x = 50;
+      y = 25;
+      alignment = XBFONT_LEFT;
+      break;
+    case BOTTOM_LEFT:
+      x = 50;
+      y = g_graphicsContext.GetHeight() - 125;
+      alignment = XBFONT_LEFT;
+      break;
+    case TOP_RIGHT:
+      x = g_graphicsContext.GetWidth() - 450;
+      y = 25;
+      alignment = XBFONT_RIGHT;
+      break;
+    case BOTTOM_RIGHT:
+      x = g_graphicsContext.GetWidth() - 450;
+      y = g_graphicsContext.GetHeight() - 125;
+      alignment = XBFONT_RIGHT;
+      break;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexScreenSaverPhoto::moveLabels()
+{
+  switch (m_currentPosition)
+  {
+    case TOP_LEFT:
+      m_currentPosition = BOTTOM_RIGHT;
+      break;
+    case BOTTOM_RIGHT:
+      m_currentPosition = BOTTOM_LEFT;
+      break;
+    case BOTTOM_LEFT:
+      m_currentPosition = TOP_RIGHT;
+      break;
+    case TOP_RIGHT:
+      m_currentPosition = TOP_LEFT;
+      break;
+  }
+
+  int x, y, align;
+
+  getXYPosition(x, y, align);
+
+  if (m_clockLabel)
+  {
+    m_clockLabel->SetPosition(x, y);
+    m_clockLabel->SetAlignment(align);
+    m_clockLabel->MarkDirtyRegion();
+    y += 50;
+  }
+
+  if (m_imageLabel)
+  {
+    m_imageLabel->SetPosition(x, y);
+    m_imageLabel->SetAlignment(align);
+    m_imageLabel->MarkDirtyRegion();
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexScreenSaverPhoto::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   CGUIDialog::Process(currentTime, dirtyregions);
+
+
+  if (m_moveTimer.elapsedMs() >= 2 * 60 * 1000)
+  {
+    moveLabels();
+    m_moveTimer.restart();
+  }
 
   if (m_multiImage)
     m_multiImage->Process(currentTime, dirtyregions);
@@ -177,18 +258,20 @@ void CGUIPlexScreenSaverPhoto::Render()
 
   CGUITexture::DrawQuad(rect, 0xff000000);
 
-  if (m_active && m_multiImage)
-    m_multiImage->Render();
+  if (m_active)
+  {
+    if (m_multiImage)
+      m_multiImage->Render();
 
-  if (m_overlayImage)
-    m_overlayImage->Render();
+    if (m_overlayImage)
+      m_overlayImage->Render();
 
-  if (m_clockLabel)
-    m_clockLabel->Render();
+    if (m_clockLabel)
+      m_clockLabel->Render();
 
-  if (m_imageLabel)
-    m_imageLabel->Render();
-
+    if (m_imageLabel)
+      m_imageLabel->Render();
+  }
 
   CGUIDialog::Render();
 }

@@ -9,26 +9,40 @@
 #include "JobManager.h"
 #include "FileItem.h"
 #include "addons/Addon.h"
-
+#include "PlexTimer.h"
 
 class CGUIPlexScreenSaverPhoto : public CGUIDialog, public IJobCallback
 {
-  public:
-    CGUIPlexScreenSaverPhoto();
-    virtual void UpdateVisibility();
+public:
+  CGUIPlexScreenSaverPhoto();
+  virtual void UpdateVisibility();
 
-  private:
-    virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-    virtual bool OnMessage(CGUIMessage &message);
-    virtual void Render();
+  enum POSITION
+  {
+    TOP_LEFT,
+    TOP_RIGHT,
+    BOTTOM_LEFT,
+    BOTTOM_RIGHT
+  };
 
-    void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+private:
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual bool OnMessage(CGUIMessage &message);
+  virtual void Render();
 
-    CGUIMultiImage* m_multiImage;
-    CGUIImage* m_overlayImage;
-    CGUILabelControl* m_clockLabel;
-    CFileItemListPtr m_images;
-    CGUILabelControl* m_imageLabel;
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+
+  void moveLabels();
+  void getXYPosition(int &x, int &y, int &alignment);
+
+  CGUIMultiImage* m_multiImage;
+  CGUIImage* m_overlayImage;
+  CGUILabelControl* m_clockLabel;
+  CFileItemListPtr m_images;
+  CGUILabelControl* m_imageLabel;
+
+  CPlexTimer m_moveTimer;
+  POSITION m_currentPosition;
 };
 
 #endif // GUIPLEXSCREENSAVERPHOTO_H
