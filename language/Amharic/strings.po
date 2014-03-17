@@ -1853,6 +1853,10 @@ msgctxt "#625"
 msgid "All songs of"
 msgstr "ሁሉንም ዘፈኖች ከ "
 
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "በ ሂደት ላይ ያሉ የ ቲቪ ትእይንቶች"
+
 msgctxt "#629"
 msgid "View mode"
 msgstr "መመልከቻ ዘዴ"
@@ -2077,6 +2081,10 @@ msgctxt "#756"
 msgid "Edit program name"
 msgstr "የፕሮግራም ስም ማረሚያ"
 
+msgctxt "#757"
+msgid "Edit path depth"
+msgstr "የ መንገድ ጥልቀት ማረሚያ"
+
 msgctxt "#759"
 msgid "View: Big list"
 msgstr "መመልከቻ: ትልቅ ዝርዝር "
@@ -2129,6 +2137,18 @@ msgctxt "#775"
 msgid "Network interface"
 msgstr "የ ኔትዎርክክክክክ ገጽታዎች"
 
+msgctxt "#776"
+msgid "Wireless network name (ESSID)"
+msgstr "የ ሽቦ አልባ ኔትዎርክ ስም (ESSID)"
+
+msgctxt "#777"
+msgid "Wireless password"
+msgstr "የ ሽቦ አልባ መግቢያ ቃል"
+
+msgctxt "#778"
+msgid "Wireless security"
+msgstr "የ ሽቦ አልባ ደህንነት"
+
 msgctxt "#781"
 msgid "WEP"
 msgstr "WEP"
@@ -2140,6 +2160,10 @@ msgstr "WPA"
 msgctxt "#783"
 msgid "WPA2"
 msgstr "WPA2"
+
+msgctxt "#789"
+msgid "Wireless network name (ESSID)"
+msgstr "የ ሽቦ አልባ ኔትዎርክ ስም (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
@@ -2577,6 +2601,10 @@ msgctxt "#2050"
 msgid "Runtime"
 msgstr "ማስኬጃ ጊዜ"
 
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "ዝርዝር ባዶ ማድረጊያ"
+
 msgctxt "#10000"
 msgid "Home"
 msgstr "ቤት "
@@ -2704,6 +2732,10 @@ msgstr "ምንም እርዳታ አልተገኘም"
 msgctxt "#10126"
 msgid "File browser"
 msgstr "ፋይል መቃኛ"
+
+msgctxt "#10128"
+msgid "Network setup"
+msgstr "ኔትዎርክ ማሰናጃ"
 
 msgctxt "#10130"
 msgid "Profile settings"
@@ -3133,6 +3165,14 @@ msgctxt "#13023"
 msgid "Successfully removed device"
 msgstr "ተሳክቶ አካሉ ተወግዷል"
 
+msgctxt "#13035"
+msgid "Found for %s"
+msgstr "ተገኝቷል ለ %s"
+
+msgctxt "#13036"
+msgid "Failed for %s"
+msgstr "አልተገኘም ለ %s"
+
 msgctxt "#13100"
 msgid "Flicker filter"
 msgstr "የፍሊከር ማጣሪያ"
@@ -3216,6 +3256,10 @@ msgstr "ያልታወቀ"
 msgctxt "#13206"
 msgid "Overwrite"
 msgstr "በላዩ ላይ ደርቦ መጻፊያ"
+
+msgctxt "#13208"
+msgid "Alarm clock"
+msgstr "መቀስቀሻ ሰአት"
 
 msgctxt "#13211"
 msgid "Alarm!"
@@ -4201,9 +4245,45 @@ msgctxt "#19098"
 msgid "Warning"
 msgstr "ማስጠንቀቂያ "
 
+msgctxt "#19114"
+msgid "Version"
+msgstr "እትም"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "አድራሻ"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "የ ዲስክ መጠን"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "ማስጀመሪያ ሰአት"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "መጨረሻ ሰአት"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "ማስጀመሪያ ቀን"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "መጨረሻ ቀን"
+
 msgctxt "#19136"
 msgid "Channel unavailable"
 msgstr "ጣቢያው አልተገኘም"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "ቡድን"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "ቡድኖች"
 
 msgctxt "#19148"
 msgid "Channel"
@@ -4245,6 +4325,10 @@ msgctxt "#19159"
 msgid "from"
 msgstr "ከ"
 
+msgctxt "#19160"
+msgid "to"
+msgstr "ለ"
+
 msgctxt "#19165"
 msgid "Switch"
 msgstr "መቀየሪያ"
@@ -4260,6 +4344,14 @@ msgstr "አንሷል"
 msgctxt "#19194"
 msgid "Continue?"
 msgstr "ልቀጥል?"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "የ ጣቢያው ስም:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "የ ጣቢያው ምልክት:"
 
 msgctxt "#19203"
 msgid "Edit channel"
@@ -4329,6 +4421,26 @@ msgctxt "#19258"
 msgid "Unlock channel"
 msgstr "ጣቢያ መክፈቻ"
 
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "ለ ወላጆች መቆጣጠሪያ"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "የመግቢያ ቃል መቀየሪያ"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "ለ ወላጅ መቆጣጠሪያ የመግቢያ ቃል ያስገቡ:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "የተቆለፈ ጣቢያ የመግቢያ ቃል ያስገቡ:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "የተሳሳተ የመግቢያ ቃል"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "ሌላ/ያልታወቀ"
@@ -4384,6 +4496,10 @@ msgstr "ዘዴ "
 msgctxt "#19635"
 msgid "Languages"
 msgstr "ቋንቋ "
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "የ ጓሮ አትክልት"
 
 msgctxt "#19660"
 msgid "Special Characteristics"

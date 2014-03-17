@@ -1195,7 +1195,7 @@ msgstr "Konfiguracja wyjścia"
 
 msgctxt "#338"
 msgid "Fixed"
-msgstr "Stałe"
+msgstr "Stała"
 
 msgctxt "#339"
 msgid "Optimized"
@@ -1235,7 +1235,7 @@ msgstr "Wsparcie formatu DTS-HD"
 
 msgctxt "#348"
 msgid "Enable passthrough"
-msgstr "Włącz przepuszczanie do zewnętrznych dekoderów"
+msgstr "Włącz przepuszczanie dźwięku"
 
 msgctxt "#349"
 msgid "TrueHD capable receiver"
@@ -1971,7 +1971,7 @@ msgstr "O mediach"
 
 msgctxt "#545"
 msgid "Audio output device"
-msgstr "Wyjściowe urządzenie audio"
+msgstr "Wyjściowe urządzenie dźwiękowe"
 
 msgctxt "#546"
 msgid "Passthrough output device"
@@ -2287,11 +2287,11 @@ msgstr "Własny"
 
 msgctxt "#637"
 msgid "ReplayGain"
-msgstr "Normalizowanie głośności muzyki ReplayGain"
+msgstr "Normalizacja dźwięku"
 
 msgctxt "#638"
 msgid "ReplayGain volume adjustments"
-msgstr "Ustawienie głośności ReplayGain"
+msgstr "Regulacja głośności normalizacji dźwięku"
 
 msgctxt "#639"
 msgid "Use track levels"
@@ -2303,15 +2303,15 @@ msgstr "Użyj poziom albumu"
 
 msgctxt "#641"
 msgid "PreAmp Level - ReplayGained files"
-msgstr "Wzmocnienie plików z ReplayGain"
+msgstr "Poziom wzmocnienia - pliki znormalizowane"
 
 msgctxt "#642"
 msgid "PreAmp Level - Non ReplayGained files"
-msgstr "Wzmocnienie plików bez ReplayGain"
+msgstr "Poziom wzmocnienia - pliki nieznormalizowane"
 
 msgctxt "#643"
 msgid "Avoid clipping on ReplayGained files"
-msgstr "Unikaj przesterowania w plikach z ReplayGain"
+msgstr "Unikaj przesterowania w plikach znormalizowanych"
 
 msgctxt "#644"
 msgid "Crop black bars"
@@ -2563,7 +2563,7 @@ msgstr "Proszę wyłącz tryb biblioteki"
 
 msgctxt "#747"
 msgid "Error loading image"
-msgstr "Błąd wczytywania obrazka"
+msgstr "Błąd wczytywania obrazu"
 
 msgctxt "#748"
 msgid "Edit path"
@@ -2571,7 +2571,7 @@ msgstr "Edytuj ścieżkę"
 
 msgctxt "#749"
 msgid "Mirror image"
-msgstr "Odbicie lustrzane obrazka"
+msgstr "Lustrzane odbicie obrazu"
 
 msgctxt "#750"
 msgid "Are you sure?"
@@ -2899,11 +2899,11 @@ msgstr "Wprowadź nową etykietę"
 
 msgctxt "#1030"
 msgid "Browse for image"
-msgstr "Wskaż zdjęcie"
+msgstr "Wskaż obraz"
 
 msgctxt "#1031"
 msgid "Browse for image folder"
-msgstr "Wskaż folder ze zdjęciami"
+msgstr "Wskaż folder obrazów"
 
 msgctxt "#1032"
 msgid "Add network location..."
@@ -3571,7 +3571,7 @@ msgstr "Spróbuj zmienić poziom ustawień, aby zobaczyć dodatkowe kategorie i 
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
-msgstr "Dialog Tak/Nie"
+msgstr "Okno dialogowe Tak/Nie"
 
 msgctxt "#10101"
 msgid "Progress dialogue"
@@ -3719,7 +3719,7 @@ msgstr "Info o filmie"
 
 msgctxt "#12000"
 msgid "Select dialogue"
-msgstr "Dialog wyboru"
+msgstr "Okno dialogowe wyboru"
 
 msgctxt "#12001"
 msgid "Music/Info"
@@ -3727,7 +3727,7 @@ msgstr "Muzyka/Info"
 
 msgctxt "#12002"
 msgid "Dialogue OK"
-msgstr "Dialog OK"
+msgstr "Okno dialogowe OK"
 
 msgctxt "#12003"
 msgid "Videos/Info"
@@ -3747,7 +3747,7 @@ msgstr "Wizualizacja audio"
 
 msgctxt "#12008"
 msgid "File stacking dialogue"
-msgstr "Dialog łączenia plików"
+msgstr "Okno dialogowe łączenia plików"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -3831,7 +3831,7 @@ msgstr "Podaj hasło"
 
 msgctxt "#12327"
 msgid "Enter master code"
-msgstr "Wprowadź główne hasło"
+msgstr "Wprowadź hasło główne "
 
 msgctxt "#12328"
 msgid "Enter unlock code"
@@ -3963,7 +3963,7 @@ msgstr "Nieprawidłowe hasło główne"
 
 msgctxt "#12368"
 msgid "Please enter a valid master code"
-msgstr "Wpisz hasło główne"
+msgstr "Wprowadź poprawne hasło główne"
 
 msgctxt "#12373"
 msgid "Settings & file manager"
@@ -3979,7 +3979,7 @@ msgstr "Wszystkie wcześniejsze ustawienia zostaną wyczyszczone"
 
 msgctxt "#12378"
 msgid "Amount of time to display each image"
-msgstr "Czas wyświetlania zdjęcia"
+msgstr "Czas wyświetlania każdego obrazu"
 
 msgctxt "#12379"
 msgid "Use pan and zoom effects"
@@ -4079,7 +4079,7 @@ msgstr "Uśpij"
 
 msgctxt "#13012"
 msgid "Exit"
-msgstr "Koniec"
+msgstr "Zamknij"
 
 msgctxt "#13013"
 msgid "Reboot"
@@ -4699,7 +4699,7 @@ msgstr "Pixel Shader (niska jakość)"
 
 msgctxt "#13356"
 msgid "Hardware overlays"
-msgstr "Overlay (sprzętowy)"
+msgstr "Sprzętowe buforowanie wideo"
 
 msgctxt "#13357"
 msgid "High quality pixel shader"
@@ -4939,7 +4939,7 @@ msgstr "Zezwalaj na sprzętową akcelerację (CrystalHD)"
 
 msgctxt "#13429"
 msgid "Allow hardware acceleration (VDADecoder)"
-msgstr "Zezwalaj na sprzętową akcelerację (VDADecoder)"
+msgstr "Dopuszczaj sprzętową akcelerację (VDADecoder)"
 
 msgctxt "#13430"
 msgid "Allow hardware acceleration (OpenMax)"
@@ -5007,7 +5007,7 @@ msgstr "Używaj VDPAU dla VC-1"
 
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD Hardware with VDPAU cannot decode VC-1 Simple."
-msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania VC-1, w przeciwnym przypadku do dekodowania zostanie użyty procesor. Sprzęt AMD nie potrafi dekodować wideo VC-1 o profilu simple."
+msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania VC-1, w przeciwnym przypadku do dekodowania zostanie użyty procesor. Sprzęt AMD nie potrafi dekodować wideo VC-1 o profilu Simple."
 
 msgctxt "#13447"
 msgid "Use Mpeg-2 VAAPI"
@@ -5035,7 +5035,7 @@ msgstr "Zaznacz tę opcję, aby używać sprzętowego dekodowania VC-1, w przeci
 
 msgctxt "#13454"
 msgid "Decoding method"
-msgstr "Sposób dekompresji"
+msgstr "Tryb dekodowania"
 
 msgctxt "#13455"
 msgid "Software"
@@ -5171,7 +5171,7 @@ msgstr "Błąd Pilota Apple"
 
 msgctxt "#13621"
 msgid "Apple Remote support could not be enabled."
-msgstr "Obsługa zdalnego sterowania Aplle nie może zostać włączona."
+msgstr "Obsługa pilota Apple nie może zostać włączona."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6063,7 +6063,7 @@ msgstr "Kanały niekodowane"
 
 msgctxt "#19014"
 msgid "Fixed"
-msgstr "Stałe"
+msgstr "Stała"
 
 msgctxt "#19015"
 msgid "Encryption"
@@ -6461,6 +6461,10 @@ msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Nie można użyc PVR w czasie przeszukiwania."
 
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "Na którym serwerze chcesz wyszukiwać?"
+
 msgctxt "#19120"
 msgid "Client number"
 msgstr "Numer klienta"
@@ -6471,7 +6475,7 @@ msgstr "Unikaj powtórzeń"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
-msgstr "Zaplanowane nagranie jest w toku. Chcesz usunąć to zaplanowane nagranie?"
+msgstr "Zaplanowane nagranie ciągle trwa. Na pewno chcesz je usunąć?"
 
 msgctxt "#19123"
 msgid "Free to air channels only"
@@ -7707,7 +7711,7 @@ msgstr "Wprowadź hasło główne"
 
 msgctxt "#20076"
 msgid "Ask for master lock code on startup"
-msgstr "Pytaj o hasło główne na starcie"
+msgstr "Pytaj o hasło główne po uruchomieniu"
 
 msgctxt "#20077"
 msgid "Skin settings"
@@ -7803,7 +7807,7 @@ msgstr "Jednoczesne zgrywanie i odtwarzanie płyty CD jest niemożliwe"
 
 msgctxt "#20100"
 msgid "Master lock code and settings"
-msgstr "Hasło główne i ustawiania"
+msgstr "Hasło główne i ustawienia"
 
 msgctxt "#20101"
 msgid "Entering master lock code always enables master mode"
@@ -8271,7 +8275,7 @@ msgstr "SSH/SFTP"
 
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
-msgstr "Protokół AFP"
+msgstr "Protokół Apple Filing Protocol (AFP)"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -8535,7 +8539,7 @@ msgstr "Ustaw ikonę sezonu"
 
 msgctxt "#20372"
 msgid "Season image"
-msgstr "Miniatura dla sezonu"
+msgstr "Miniatura sezonu"
 
 msgctxt "#20373"
 msgid "Season"
@@ -8963,7 +8967,7 @@ msgstr "Udostępniaj bibliotekę przez UPnP"
 
 msgctxt "#21361"
 msgid "Look for remote UPnP players"
-msgstr "Wyszukaj zdalnych odtwarzaczy UPnP"
+msgstr "Wyszukuj zdalne odtwarzacze UPnP"
 
 msgctxt "#21362"
 msgid "Bookmark created"
@@ -9359,7 +9363,7 @@ msgstr "Pozycja napisów na ekranie"
 
 msgctxt "#21461"
 msgid "Fixed"
-msgstr "Stałe"
+msgstr "Stała"
 
 msgctxt "#21462"
 msgid "Bottom of video"
@@ -10387,7 +10391,7 @@ msgstr "Klawiatura QWERTY"
 
 msgctxt "#29802"
 msgid "Passthrough Audio in use"
-msgstr "Używasz przepuszczania dźwięku do zewnętrznych dekoderów"
+msgstr "Używasz przepuszczania dźwięku do zewnętrznych urządzeń odtwarzających"
 
 msgctxt "#33001"
 msgid "Trailer quality"
@@ -10779,7 +10783,7 @@ msgstr "7.1"
 
 msgctxt "#34111"
 msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] - continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1- 10 Minutes] - same as Always except that after the selected period of time audio enters a suspended state [Off] - audio output enters a suspended state. Note - sounds can be missed if audio enters suspended state."
-msgstr "Określ zachowanie, gdy żaden dźwięk nie jest generowany przez odtwarzacz lub interfejs użytkownika. [Zawsze] - wysyłany jest ciągły niesłyszalny sygnał, który utrzymuje urządzenie w stanie gotowości, może jednak blokować dostęp do urządzenia innym programom. [1-10 minut] - działa identycznie jak ustawienie Zawsze z ograniczeniem czasowym, po którym urządzenie przechodzi w stan wstrzymania [Wyłączone] - urządzenie wyjściowe przechodzi w stan wstrzymania. Uwaga - w stanie wstrzymania urządzenie może pomijać niektóre dźwięki."
+msgstr "Określa zachowanie, gdy żaden dźwięk nie jest generowany przez odtwarzacz lub interfejs użytkownika. [Zawsze] - wysyłany jest ciągły niesłyszalny sygnał, który utrzymuje urządzenie w stanie gotowości, może jednak blokować dostęp do urządzenia innym programom. [1-10 minut] - działa identycznie jak ustawienie Zawsze z ograniczeniem czasowym, po którym urządzenie przechodzi w stan wstrzymania [Wyłączone] - urządzenie wyjściowe przechodzi w stan wstrzymania. Uwaga - w stanie wstrzymania urządzenie może pomijać niektóre dźwięki."
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
@@ -10831,7 +10835,7 @@ msgstr "Błąd przy uruchomieniu Zeroconf"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr "Usługa Apple Bonjour jest zainstalowana? Sprawdź log."
+msgstr "Czy usługa Apple Bonjour została zainstalowana? Sprawdź plik logów."
 
 msgctxt "#34302"
 msgid "AirPlay requires Zeroconf to be enabled."
@@ -11205,6 +11209,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "Pokazuj rozszerzenia plików multimedialnych. Na przykład, \"Innuendo.mp3\" zostanie określone jako \"Innuendo\"."
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "Ignoruje określone znaki podczas sortowania. Dla przykładu, 'The Simpsons' zostanie posortowany jako 'Simpsons' ."
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Zezwalaj na usuwanie plików  i zmienianie nazw przez interfejs użytkownika, z menu kontekstowego (naciśnij przycisk C na klawiaturze, aby wywołać to menu)."
@@ -11227,7 +11235,7 @@ msgstr "Ustaw czas bezczynności wymagany do uruchomienia wygaszacza ekranu."
 
 msgctxt "#36130"
 msgid "Select the screensaver. XBMC will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
-msgstr "Wybierz wygaszacz ekranu. XBMC wymusi włączenie wygaszacza ekranu \"Dim\", gdy pełnoekranowe odtwarzanie wideo jest wstrzymane lub okno dialogowe jest aktywne."
+msgstr "Określa włączony wygaszacz ekranu. XBMC wymusi włączenie wygaszacza ekranu 'Dim', gdy pełnoekranowe odtwarzanie wideo jest zatrzymane lub okno dialogowe jest aktywne."
 
 msgctxt "#36131"
 msgid "Change specific screensaver settings. The available options are dependent on the screensaver used."
@@ -11317,6 +11325,10 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Ustaw metodę przetwarzania i wyświetlania wideo."
 
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "Używa skalerów wysokiej jakości kiedy wielkość skalowania przekracza określony procent."
+
 msgctxt "#36155"
 msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
 msgstr "Włącza sprzętowe dekodowanie plików wideo przy pomocy VDPAU, używane głównie przez procesory graficzne NVidia i w określonych warunkach przez procesory graficzne AMD."
@@ -11327,27 +11339,27 @@ msgstr "Włącza sprzętowe dekodowanie plików wideo przy pomocy VAAPI, używan
 
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
-msgstr "Używaj sprzętowego dekodowania plików wideo przy pomocy DXVA2."
+msgstr "Włącza sprzętowe dekodowanie plików wideo przy pomocy DXVA2."
 
 msgctxt "#36159"
 msgid "Enable CrystalHD decoding of video files."
-msgstr "Używaj sprzętowego dekodowania plików wideo przy pomocy CrystalHD."
+msgstr "Włącza dekodowanie plików wideo przy pomocy CrystalHD."
 
 msgctxt "#36160"
 msgid "Enable VDA hardware decoding of video files."
-msgstr "Używaj sprzętowego dekodowania plików wideo przy pomocy VDA."
+msgstr "Włącza sprzętowe dekodowanie plików wideo przy pomocy VDA."
 
 msgctxt "#36161"
 msgid "Enable OpenMax hardware decoding of video files."
-msgstr "Używaj sprzętowego dekodowania plików wideo przy pomocy OpenMax."
+msgstr "Włącza sprzętowe dekodowanie plików wideo przy pomocy OpenMax."
 
 msgctxt "#36162"
 msgid "Enable VideoToolbox hardware decoding of video files."
-msgstr "Używaj sprzętowego dekodowania plików wideo przy pomocy VideoToolbox."
+msgstr "Włącza sprzętowe dekodowanie plików wideo przy pomocy VideoToolbox."
 
 msgctxt "#36163"
 msgid "Enable decoding of video files using pixel buffer objects."
-msgstr "Używaj sprzętowego dekodowania plików wideo przy pomocy bufora pikseli."
+msgstr "Włącza sprzętowe dekodowanie plików wideo przy pomocy obiektów bufora pikseli."
 
 msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
@@ -11427,7 +11439,7 @@ msgstr "Łączy wielocześciowe pliki wideo, foldery DVD i foldery filmów w jed
 
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
-msgstr "Usuwa tytuł, gatunek itp. z widoku biblioteki. Wybór kategorii przekierowuje bezpośrednio do widoku nazwy."
+msgstr "Usuwa tytuł, gatunek itp. z widoku biblioteki. Wybór kategorii przenosi bezpośrednio do widoku tytułów."
 
 msgctxt "#36184"
 msgid "Category containing settings for how subtitles are handled."
@@ -11459,7 +11471,7 @@ msgstr "Zastępuj czcionki w napisach ASS/SSA."
 
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
-msgstr "Ustaw własny katalog dla Twoich napisów."
+msgstr "Ustawia własny katalog dla napisów. Może to być udział sieciowy."
 
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
@@ -11515,7 +11527,7 @@ msgstr "Importuj grupy kanałów z serwera PVR (jeśli wspierane). Funkcja usuni
 
 msgctxt "#36205"
 msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
-msgstr "Ustawia kolejność kanałów według numerów kanałów na serwerze PVR, ale używa własnej numeracji kanałów w XBMC."
+msgstr "Sortuje kanały według numeracji serwerze PVR, ale używa własnej numeracji kanałów w XBMC."
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -11543,11 +11555,11 @@ msgstr "Kategoria z ustawieniami wyświetlania menu ekranowego oraz oknami infor
 
 msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
-msgstr "Wyświetla informacje o programie takiej, jak nazwa aktualnie nadawanej audycji, podczas zmiany kanałów."
+msgstr "Wyświetla podczas zmiany kanału informacje o programie takie, jak nazwa aktualnej emisji."
 
 msgctxt "#36213"
 msgid "Hide the programming information automatically after a few seconds, defined below."
-msgstr "Automatycznie ukrywa informacje o programie po upływie kilku sekund, w liczbie określonej poniżej."
+msgstr "Ukrywa informacje o programie automatycznie po upływie kilku sekund, w liczbie określonej poniżej."
 
 msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
@@ -11563,7 +11575,7 @@ msgstr "Folder przechowywania ikon kanałów."
 
 msgctxt "#36217"
 msgid "Scan for missing channel icons."
-msgstr "Szukaj brakujących ikon kanałów."
+msgstr "Wyszukuj brakujących ikon kanałów."
 
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
@@ -11659,7 +11671,7 @@ msgstr "Kategoria z ustawieniami oszczędzania energii takimi, jak wybudzanie se
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
-msgstr "Uruchom \"polecenie wznowienia\", kiedy XBMC będzie zamykane lub przejdzie w stan hibernacji. Czas zaplanowanego kolejnego nagrania będzie przekazywane jako parametr."
+msgstr "Uruchamia \"polecenie wznowienia\", kiedy XBMC będzie zamykane lub przejdzie w stan hibernacji. Czas kolejnego zaplanowanego nagrania będzie przekazywany jako parametr."
 
 msgctxt "#36242"
 msgid "The command will not be executed when a recording will be started within this timeout."
@@ -11668,6 +11680,10 @@ msgstr "Polecenie nie zostanie wykonane jeśli nagranie nie rozpocznie się prze
 msgctxt "#36243"
 msgid "The command to execute."
 msgstr "Polecenie do wykonania."
+
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "Określa czas odejmowany od czasu rozpoczęcia następnego zaplanowanego nagrania."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11691,7 +11707,7 @@ msgstr "Wprowadź nowy kod PIN, aby odblokować zablokowane kanały rodzicielski
 
 msgctxt "#36250"
 msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
-msgstr "Żąda ponownie o podanie kodu PIN podczas próby uzyskania dostępu do kanału zablokowanego przy pomocy kontroli rodzicielskiej, jeśli wcześniej kod PIN nie został wprowadzony."
+msgstr "Prosi ponownie o podanie kodu PIN podczas próby uzyskania dostępu do kanału, zablokowanego przy pomocy kontroli rodzicielskiej, jeśli wcześniej kod PIN nie został wprowadzony."
 
 msgctxt "#36251"
 msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
@@ -11755,7 +11771,7 @@ msgstr "Podczas wyboru utworu zostaje on dodany do kolejki, zamiast natychmiasto
 
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
-msgstr "XBMC odczyta informacje wzmocnienia, zakodowane w pliku audio za pomocą programu takiego jak MP3Gain i odpowiednio znormalizuje poziomu dźwięku."
+msgstr "XBMC będzie wczytywać informacje normalizujące zakodowane w pliku dźwiękowym za pomocą programu takiego, jak MP3Gain i odpowiednio znormalizuje poziom głośności."
 
 msgctxt "#36268"
 msgid "Default is 89dB per standard. Change with caution."
@@ -11765,9 +11781,17 @@ msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "Domyślnie jest to 89 dB. Zmieniaj ostrożnie."
 
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping will occur."
+msgstr "Zmniejsza głośność pliku, gdy występuje przesterowanie."
+
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "Płynne przejście z jednej ścieżki dźwiękowej do następnej. Można ustawić wielkość zakładki od 1-15 sekund."
+
+msgctxt "#36272"
+msgid "Allow crossfading to occur when both tracks are from the same album."
+msgstr "Zapewnia płynne przechodzenie między kolejnymi utworami, jeśli pochodzą z tego samego albumu."
 
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
@@ -11775,11 +11799,11 @@ msgstr "Wybierz wizualizację."
 
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
-msgstr "Czytaj metadane z plików utworów. W przypadku dużych katalogów może spowolnić czas odczytu, zwłaszcza w sieci."
+msgstr "Włącza wczytywanie znaczników z plików utworów. W przypadku dużych katalogów może spowolnić czas odczytu, zwłaszcza w sieci."
 
 msgctxt "#36275"
 msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
-msgstr "Kontroluje sposób w jaki nazwy utworów są wyświetlane w interfejsie użytkownika. Do poprawnego działania wymaga włączenia funkcji wczytywania znaczników."
+msgstr "Określa sposób w jaki nazwy utworów są wyświetlane w interfejsie użytkownika. Do poprawnego działania wymaga włączenia funkcji wczytywania znaczników."
 
 msgctxt "#36276"
 msgid "Used for formatting the second column in file lists."
@@ -11787,7 +11811,7 @@ msgstr "Wykorzystuje do formatowania drugą kolumnę na liście plików."
 
 msgctxt "#36277"
 msgid "Control the way that the names of songs are displayed in the now playing list."
-msgstr "Kontroluje sposób w jaki nazwy utworów są wyświetlane na liście aktualnie odtwarzanych."
+msgstr "Określa sposób w jaki nazwy utworów są wyświetlane na liście aktualnie odtwarzanych."
 
 msgctxt "#36278"
 msgid "Used for formatting the second column in the now playing list."
@@ -11795,7 +11819,7 @@ msgstr "Wykorzystuje do formatowania drugą kolumnę na liście aktualnie odtwar
 
 msgctxt "#36279"
 msgid "Control the way that the names of songs are displayed in library lists."
-msgstr "Kontroluje sposób w jaki nazwy utworów są wyświetlane na listach biblioteki."
+msgstr "Określa sposób w jaki nazwy utworów są wyświetlane na listach biblioteki."
 
 msgctxt "#36280"
 msgid "Used for formatting the second column in library lists."
@@ -11815,11 +11839,15 @@ msgstr "Auto uruchomienie Audio CD po włożeniu dysku."
 
 msgctxt "#36284"
 msgid "Read the information belonging to an audio CD from an internet database."
-msgstr "Przeczytaj informacje płyty Audio CD z internetowej bazy danych."
+msgstr "Wczytuj informacje o dysku audio CD z internetowej bazy danych."
 
 msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr "Wybierz lokalizację gdzie na dysku zostaną zapisane zgrane utwory."
+
+msgctxt "#36286"
+msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "Określa sposób nazewnictwa utworów na podstawie znaczników. Znaczniki: [B]%N[/B]: Numer utworu, [B]%S[/B]: Numer dysku, [B]%A[/B]: Wykonawca, [B]%T[/B]: Tytuł, [B]%B[/B]: Album, [B]%G[/B]: Gatunek, [B]%Y[/B]: Rok, [B]%F[/B]: Nazwa pliku, [B]%D[/B]: Czas trwania, [B]%J[/B]: Data, [B]%R[/B]: Ocena, [B]%I[/B]: Wielkość pliku."
 
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
@@ -11835,7 +11863,7 @@ msgstr "Wybierz bitrate określonego kodera audio dla kompresji audio."
 
 msgctxt "#36290"
 msgid "For FLAC define compression level, default 5."
-msgstr "Określ poziom kompresji FLAC, domyślnie 5"
+msgstr "Określa poziom kompresji FLAC, domyślnie 5."
 
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
@@ -11848,6 +11876,10 @@ msgstr "Kategoria zawierająca ustawienia związane z obsługą karaoke."
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "Podczas odtwarzania plików muzycznych, XBMC będzie szukać pliku .cdg i wyświetlić jego grafiki."
+
+msgctxt "#36294"
+msgid "Show song selection dialog once the last song in the queue has been played."
+msgstr "Wyświetla okno dialogowe wybory utworu podczas odtwarzania ostatniego utworu z kolejki."
 
 msgctxt "#36295"
 msgid "Select the font type used during karaoke."
@@ -11864,6 +11896,14 @@ msgstr "Ustaw kolor czcionki używanej podczas karaoke."
 msgctxt "#36298"
 msgid "Select the character set used during karaoke."
 msgstr "Ustaw zestaw znaków używanych podczas karaoke."
+
+msgctxt "#36299"
+msgid "Export the karaoke numbered songs to HTML or CSV files."
+msgstr "Eksportuje ponumerowane utwory karaoke do plików HTML lub CSV."
+
+msgctxt "#36300"
+msgid "Import the karaoke numbered songs from HTML or CSV files."
+msgstr "Importuje ponumerowane utwory karaoke z plików HTML lub CSV."
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11911,15 +11951,15 @@ msgstr "Kategoria zawierająca ustawienia związane z obsługą pokazu slajdów.
 
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
-msgstr "Wybierz czas przerwy między kolejnymi pokazami slajdów."
+msgstr "Określa czas wyświetlania każdego obrazu podczas pokazu slajdów."
 
 msgctxt "#36313"
 msgid "Images in a slideshow will pan and zoom while displayed."
-msgstr "Efekt przesuwania i powiększania obrazów."
+msgstr "Podczas pokazu slajdów obrazy będą wyświetlane z wykorzystaniem efektu przesuwania i powiększania."
 
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
-msgstr "Pokaz slajdów zdjęć w losowej kolejności."
+msgstr "Podczas pokazu slajdów obrazy będą wyświetlane w losowej kolejności."
 
 msgctxt "#36315"
 msgid "Section that contains weather related settings."
@@ -11959,11 +11999,15 @@ msgstr "Włącza serwer UPnP. Umożliwia to strumieniowanie mediów do klienta U
 
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
-msgstr "Powiadom klientów UPnP gdy biblioteka zostanie zaktualizowana."
+msgstr "Powiadamia klientów UPnP o aktualizacji biblioteki."
 
 msgctxt "#36325"
 msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
-msgstr "Włącza klienta UPnP. Umożliwia to odtwarzanie strumienieniowanych mediów z dowolnego serwera UPnP z punktem kontrolnym z możliwością kontroli odtwarzania z tego serwera."
+msgstr "Włącza klienta UPnP. Umożliwia to strumieniowanie mediów z dowolnego serwera UPnP z punktem kontroli oraz kontrolowanie odtwarzania."
+
+msgctxt "#36326"
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
+msgstr "Włącza punkt kontroli UPnP. Umożliwia to strumieniowanie mediów do dowolnego klienta oraz kontrolowanie odtwarzania z poziomu XBMC."
 
 msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
@@ -12035,7 +12079,7 @@ msgstr "Pozwala XBMC odbierać treści AirPlay z innych urządzeń i aplikacji."
 
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
-msgstr "Chroni usługę AirPlay przy pomocy hasła."
+msgstr "Chroni dostęp do usługi AirPlay przy pomocy hasła."
 
 msgctxt "#36345"
 msgid "Sets the AirPlay password."
@@ -12063,7 +12107,7 @@ msgstr "Automatyczne wysyłaj sygnał \"Wake-On-Lan\" do serwera(ów), przed uzy
 
 msgctxt "#36351"
 msgid "Display XBMC in a window, or fullscreen on the selected screen."
-msgstr "Wyświetla XBMC w oknie lub na pełnym ekranie."
+msgstr "Wyświetla XBMC w oknie lub w pełnym ekranie na wybranym wyświetlaczu."
 
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
@@ -12085,6 +12129,10 @@ msgctxt "#36356"
 msgid "Eliminate vertical tearing."
 msgstr "Wyeliminuj pionowe rozdarcia."
 
+msgctxt "#36357"
+msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Kalibracja interfejsu użytkownika dostosowująca nadmiarowość obrazu. Użyj tego narzędzia, jeśli wyświetlany obraz jest zbyt duży lub mały w stosunku do wyświetlacza."
+
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Wzorce testowe dla sprzętowej kalibracji wyświetlacza."
@@ -12099,15 +12147,19 @@ msgstr "Kategoria zawierająca ustawienia związane z obsługą wyjścia dźwię
 
 msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
-msgstr "Wybierz ustawienie wyjścia audio: [Stałe] - właściwości wyjścia są ustawione na stałą częstotliwość próbkowania i konfigurację głośników za każdym razem; [Najlepsze dopasowanie] - właściwości wyjścia są dobierane jak najlepiej do właściwości źródła; [Zoptymalizowane] - właściwości wyjścia są ustawiane na początku odtwarzania i pozostają niezmienne nawet po zmianie właściwości źródła."
+msgstr "Określa ustawienie wyjścia dźwięku: [Stała] - właściwości wyjścia są ustawione na stałą częstotliwość próbkowania i konfigurację głośników za każdym razem; [Dopasowana] - właściwości wyjścia są dobierane jak najlepiej do właściwości źródła; [Zoptymalizowana] - właściwości wyjścia są ustawiane na początku odtwarzania i pozostają niezmienne nawet po zmianie właściwości źródła."
 
 msgctxt "#36362"
 msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analog connections. This setting does not apply to passthrough audio. Note - SPDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
-msgstr "Określa liczbę kanałów wspieranych przez podłączone urządzenie dźwiękowe lub liczbę głośników podłączonych do złącz analogowych. To ustawienie nie ma wpływu na ustawienie przepuszczania dźwięku. Uwaga - złącze SPDIF wspiera tylko kanały w systemie 2.0, ale umożliwia przepuszczanie wspieranych formatów wielokanałowych."
+msgstr "Określa liczbę kanałów wspieranych przez złącze dźwiękowe lub liczbę głośników podłączonych do złącz analogowych. To ustawienie nie ma wpływu na ustawienie przepuszczania dźwięku. Uwaga - złącze SPDIF wspiera tylko kanały 2.0, ale umożliwia przepuszczanie wspieranych formatów wielokanałowych."
 
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Wzmocnij strumienie AC3 zmiksowane do 2 kanałów."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the channel configuration."
+msgstr "Włącza miksowanie dźwięku 2 kanałowego do liczby kanałów określonych w konfiguracji kanałów."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12123,7 +12175,7 @@ msgstr "Określ maksymalną liczbę kanałów/głośników dostępnych dla zdeko
 
 msgctxt "#36368"
 msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital."
-msgstr "Włącza funkcję przepuszczania zakodowanego dźwięku np. Dolby Digital, do zewnętrznego urządzenia dekodującego np. telewizora lub amplitunera."
+msgstr "Włącza przepuszczanie zakodowanego dźwięku np. Dolby Digital, do zewnętrznego urządzenia odtwarzającego np. telewizora lub amplitunera."
 
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
@@ -12132,6 +12184,10 @@ msgstr "Wybierz tę opcję, jeśli urządzenie odtwarzające wspiera dekodowanie
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Wybierz tę opcję, jeśli urządzenie odtwarzające wspiera dekodowanie strumieni DTS-HD."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
+msgstr "Określa urządzenie używane do odtwarzania dźwięku zdekodowanego w formatach takich, jak MP3."
 
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
@@ -12233,6 +12289,10 @@ msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "Zdefiniuj główny kod PIN dla blokady Master."
 
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup."
+msgstr "Jeśli zaznaczone, po uruchomieniu XBMC niezbędne będzie wprowadzenie hasła głównego, aby odblokować program."
+
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "Określ maksymalną liczbę prób przed zamknięciem XBMC."
@@ -12319,7 +12379,7 @@ msgstr "Określa opóźnienie pomiędzy sekwencjami przycisków na pilocie uniwe
 
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
-msgstr "Określ lokalizacje pobierania informacji o pogodzie."
+msgstr "Określa lokalizacje, dla których pobierane są informacje o pogodzie."
 
 msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
@@ -12327,7 +12387,7 @@ msgstr "Pomijanie miksera VDPAU oszczędza zasoby na mało wydajnych systemach, 
 
 msgctxt "#36422"
 msgid "Enable hardware video decode using AMLogic decoder."
-msgstr "Używaj sprzętowego dekodowania plików wideo przy dekodera AMLogic."
+msgstr "UżWłącza sprzętowe dekodowanie plików wideo przy pomocy dekodera AMLogic."
 
 msgctxt "#36423"
 msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
@@ -12352,6 +12412,18 @@ msgstr "Pokaż informacje"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Nagraj"
+
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
+msgstr "Zaznacz tę opcję, gdy wyjściowe złącze dźwięku wspiera tylko wielokanałowe formaty dźwięku takie, jak Dolby Digital 5.1 - np. złącze SPDIF. Jeśli Twój system wspiera wielokanałowy dźwięk LPCM przez HDMI, pozostaw tę opcję odznaczoną."
+
+msgctxt "#36430"
+msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
+msgstr "Określa sposób akceleracji przetwarzania wideo. Obejmuje to dekodowanie i skalowanie."
+
+msgctxt "#36431"
+msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
+msgstr "Określa czy dekodowanie wideo powinno być przetwarzane programowo (wymaga mocniejszego procesora), czy przy wykorzystaniu akceleracji sprzętowej, jeśli to możliwe."
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
@@ -12404,6 +12476,10 @@ msgstr "Zapytaj mnie"
 msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "Używaj preferowanego trybu"
+
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
+msgstr "Określa maksymalną częstotliwość próbkowania złącza SPDIF lub częstotliwość próbkowania dla stałej konfiguracji wyjścia."
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12479,11 +12555,11 @@ msgstr "Wyjście analogowe (słuchawki) i HDMI"
 
 msgctxt "#36543"
 msgid "Enable this to make dialogue louder compared to background sounds when downmixing multichannel audio"
-msgstr "Włącz tę opcję, aby podczas miksowania dźwięku wielokanałowego dialogi były głośniej w stosunku do dźwięków tła"
+msgstr "Włączenie tej opcji zwiększy głośność dialogów podczas miksowania dźwięku wielokanałowego do trybu stereo."
 
 msgctxt "#36544"
 msgid "Enable hardware decoding of video files."
-msgstr "Włącz sprzętowe dekodowanie plików wideo."
+msgstr "Włącza sprzętowe dekodowanie plików wideo."
 
 msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"

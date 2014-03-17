@@ -5171,7 +5171,7 @@ msgstr "Ошибка ДУ Apple"
 
 msgctxt "#13621"
 msgid "Apple Remote support could not be enabled."
-msgstr "Можно включить поддержку ПДУ Apple."
+msgstr "Нельзя включить поддержку ПДУ Apple."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -10375,7 +10375,7 @@ msgstr "Главы: %u — длительность: %s"
 
 msgctxt "#25008"
 msgid "Playback of Blu-ray failed"
-msgstr "Воспроизведение Blu-ray невозможно"
+msgstr "Не удалось воспроизвести Blu-ray"
 
 msgctxt "#25009"
 msgid "The menu of this Blu-ray is not supported"
@@ -11399,7 +11399,7 @@ msgstr "Преобразование цветов VDPAU позволят при�
 
 msgctxt "#36173"
 msgid "Enable upscaling using VDPAU."
-msgstr "Включить масштабирования при помощи VDPAU."
+msgstr "Включить масштабирование при помощи VDPAU."
 
 msgctxt "#36174"
 msgid "Enable Teletext when watching a live TV stream."

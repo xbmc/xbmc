@@ -11913,6 +11913,10 @@ msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "Pilih antara antarmuka web yang terpasang melalui Pengelola Pengaya."
 
+msgctxt "#36333"
+msgid "Category containing settings for how the remote control service is handled."
+msgstr "Kategori yang berisi setelan bagaimana service remote control ditangani."
+
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "Memungkinkan program di komputer ini untuk mengatur XBMC melalui antarmuka web atau protokol antarmuka JSON-RPC."
@@ -12001,9 +12005,17 @@ msgctxt "#36356"
 msgid "Eliminate vertical tearing."
 msgstr "Hilangkan vertical tearing."
 
+msgctxt "#36357"
+msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "Kalibrasi antar-muka dengan menyesuaikan overscan. Gunakan apabila gambar yang ditampilkan terlalu besar atau terlalu kecil untuk layar Anda."
+
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Uji pola untuk kalibrasi perangkat keras tampilan."
+
+msgctxt "#36359"
+msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
+msgstr "Gunakan rentang warna terbatas (16-235) bukan yang penuh (0-255). Rentang terbatas hanya digunakan apabila layar Anda adalah TV HDMI biasa dan tidak memiliki modus PC atau modus lainnya untuk menampilkan warna penuh, Tetapi apabila tampilan Anda adalah monitor PC biarkan nonaktifkan untuk mendapatkan warna hitam pekat."
 
 msgctxt "#36360"
 msgid "Category containing settings for how audio output is handled."
@@ -12020,6 +12032,10 @@ msgstr "Pilih jumlah kanal yang didukung oleh koneksi audio atau jumlah pengeras
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "Dorong aliran AC3 yang telah didownmix ke 2 channels."
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the channel configuration."
+msgstr "Pilih untuk mengaktifkan upmixing 2 kanal audio ke sejumlah kanal audio sesuai dengan konfigurasi kanal."
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -12044,6 +12060,10 @@ msgstr "Pilih opsi ini apabila penerima anda mampu mendekode aliran TrueHD."
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "Pilih opsi ini apabila penerima anda mampu mendekode aliran DTS-HD."
+
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
+msgstr "Pilih perangkat yang digunakan untuk pemutaran audio yang telah didekode seperti mp3."
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
@@ -12221,9 +12241,29 @@ msgctxt "#36416"
 msgid "Specify the type of remote used."
 msgstr "Tentukan tipe remote yang digunakan."
 
+msgctxt "#36417"
+msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
+msgstr "Selalu jalankan XBMC helper sehingga remote dapat digunakan untuk memulai XBMC."
+
+msgctxt "#36418"
+msgid "Specify the delay between button sequences on a universal remote."
+msgstr "Tentukan jeda antar urutan tombol pada remote universal."
+
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Tentukan lokasi yang digunakan ketika mengambil informasi cuaca."
+
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
+msgstr "Membypass VDPAU Mixer akan menghemat sumber daya pada sistem berdaya kecil tetapi akan sedikit mengurangi kualitas gambar."
+
+msgctxt "#36422"
+msgid "Enable hardware video decode using AMLogic decoder."
+msgstr "Aktifkan dekode video perang-keras menggunakan dekoder AMLogic."
+
+msgctxt "#36423"
+msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
+msgstr "Aktifkan pendekodean perangkat lunak frame-multi-threaded (kurang handal dibanding modus single-threaded)."
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -12244,6 +12284,18 @@ msgstr "Tampilkan informasi"
 msgctxt "#36428"
 msgid "Record"
 msgstr "Rekam"
+
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
+msgstr "Pilih ini apabila koneksi keluran audio hanya mendukung audio multikanal seperti Dolby Digital 5.1, seperti halnya koneksi SPDIF. Apabila sistem Anda mendukung suara multikanal LCPM melalui HDMI, biarkan nonaktif."
+
+msgctxt "#36430"
+msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
+msgstr "Konfigurasikan bagaimana pemrosesan video diakselerasi. Ini meliputi pendekodean dan scaling."
+
+msgctxt "#36431"
+msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
+msgstr "Tentukan apakah pendekodean video dilakukan secara perangkat lunak (Membutuhkan CPU lebih) atau dengan pengakselerasi perangkat-keras bila memungkinkan."
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"

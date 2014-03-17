@@ -5947,7 +5947,7 @@ msgstr "Buscar programas semellantes"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr "Importando o EPG dende os clientes"
+msgstr "Importando a Guía dende os clientes"
 
 msgctxt "#19005"
 msgid "PVR stream information"
@@ -6043,7 +6043,7 @@ msgstr "Busca sen resultados"
 
 msgctxt "#19028"
 msgid "No EPG entries"
-msgstr "Sen entradas na EPG"
+msgstr "Sen entradas na Guía"
 
 msgctxt "#19029"
 msgid "Channel"
@@ -6175,7 +6175,7 @@ msgstr "Eliminar o temporizador"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr "Engadir timer"
+msgstr "Engadir temporizador"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
@@ -6207,7 +6207,7 @@ msgstr "A gravación no se pode eliminar, verifique o rexistro para máis detall
 
 msgctxt "#19069"
 msgid "EPG"
-msgstr "EPG"
+msgstr "Guía"
 
 msgctxt "#19070"
 msgid "Go to now"
@@ -6639,7 +6639,7 @@ msgstr "Toda a información da base de datos do PVR está a ser eliminada"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr "Restabelecer a base de datos do EPG"
+msgstr "Restabelecer a base de datos da Guía"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
@@ -6691,7 +6691,7 @@ msgstr "Xestor do canle"
 
 msgctxt "#19200"
 msgid "EPG source:"
-msgstr "Fonte do EPG:"
+msgstr "Fonte da Guía:"
 
 msgctxt "#19201"
 msgid "Channel name:"
@@ -6715,7 +6715,7 @@ msgstr "Xestión do grupo"
 
 msgctxt "#19206"
 msgid "Activate EPG:"
-msgstr "Activar EPG:"
+msgstr "Activar Guía:"
 
 msgctxt "#19207"
 msgid "Group:"
@@ -6775,7 +6775,7 @@ msgstr "Canles en"
 
 msgctxt "#19222"
 msgid "EPG"
-msgstr "EPG"
+msgstr "Guía"
 
 msgctxt "#19223"
 msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
@@ -6891,7 +6891,7 @@ msgstr "Cargando a Guía dende a base de datos"
 
 msgctxt "#19251"
 msgid "Update EPG information"
-msgstr "Actualizar a información do EPG"
+msgstr "Actualizar a información da Guía"
 
 msgctxt "#19252"
 msgid "Schedule EPG update for this channel?"

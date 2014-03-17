@@ -2901,6 +2901,10 @@ msgctxt "#1214"
 msgid "Files"
 msgstr "Files"
 
+msgctxt "#1223"
+msgid "Disabled"
+msgstr "Disabled"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Allow volume control"
@@ -3041,9 +3045,17 @@ msgctxt "#13014"
 msgid "Minimise"
 msgstr "Minimise"
 
+msgctxt "#13106"
+msgid "Disabled"
+msgstr "Disabled"
+
 msgctxt "#13111"
 msgid "Would you like to keep this change?"
 msgstr "Would you like to keep this change?"
+
+msgctxt "#13113"
+msgid "Disabled"
+msgstr "Disabled"
 
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
@@ -3052,6 +3064,10 @@ msgstr "VDPAU Studio level colour conversion"
 msgctxt "#13123"
 msgid "Keep skin?"
 msgstr "Keep skin?"
+
+msgctxt "#13131"
+msgid "Disabled"
+msgstr "Disabled"
 
 msgctxt "#13162"
 msgid "Initialise failed"
@@ -3161,6 +3177,10 @@ msgctxt "#13555"
 msgid "%d Minutes"
 msgstr "%d Minutes"
 
+msgctxt "#13610"
+msgid "Disabled"
+msgstr "Disabled"
+
 msgctxt "#13611"
 msgid "Standard"
 msgstr "Standard"
@@ -3244,6 +3264,10 @@ msgstr "Next"
 msgctxt "#19099"
 msgid "Service"
 msgstr "Service"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Channel unavailable"
 
 msgctxt "#19171"
 msgid "Start playback minimised"
@@ -3392,6 +3416,10 @@ msgstr "Subtitles"
 msgctxt "#24013"
 msgid "Lyrics"
 msgstr "Lyrics"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "Disabled"
 
 msgctxt "#24027"
 msgid "Weather"
