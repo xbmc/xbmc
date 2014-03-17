@@ -706,7 +706,7 @@ no_packet:
 
         if(end || av_log2(pd->buf_size) != av_log2(pd->buf_size - pkt->size)){
             int score= set_codec_from_probe_data(s, st, pd);
-            if(    (st->codec->codec_id != AV_CODEC_ID_NONE && score > AVPROBE_SCORE_RETRY-1)
+            if(    (st->codec->codec_id != AV_CODEC_ID_NONE && score > AVPROBE_SCORE_RETRY/4-1)
                 || end){
                 pd->buf_size=0;
                 av_freep(&pd->buf);
