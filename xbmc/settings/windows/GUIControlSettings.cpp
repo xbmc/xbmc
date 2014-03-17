@@ -49,11 +49,11 @@
 using namespace ADDON;
 
 CGUIControlBaseSetting::CGUIControlBaseSetting(int id, CSetting *pSetting)
-{
-  m_id = id;
-  m_pSetting = pSetting;
-  m_delayed = false;
-}
+  : m_id(id),
+    m_pSetting(pSetting),
+    m_delayed(false),
+    m_valid(true)
+{ }
 
 bool CGUIControlBaseSetting::IsEnabled() const
 {
@@ -69,6 +69,7 @@ void CGUIControlBaseSetting::Update()
   control->SetEnabled(IsEnabled());
   if (m_pSetting)
     control->SetVisible(m_pSetting->IsVisible());
+  SetValid(true);
 }
 
 CGUIControlRadioButtonSetting::CGUIControlRadioButtonSetting(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting)
@@ -87,7 +88,8 @@ CGUIControlRadioButtonSetting::~CGUIControlRadioButtonSetting()
 
 bool CGUIControlRadioButtonSetting::OnClick()
 {
-  return ((CSettingBool *)m_pSetting)->SetValue(!((CSettingBool *)m_pSetting)->GetValue());
+  SetValid(((CSettingBool *)m_pSetting)->SetValue(!((CSettingBool *)m_pSetting)->GetValue()));
+  return IsValid();
 }
 
 void CGUIControlRadioButtonSetting::Update()
@@ -123,20 +125,22 @@ bool CGUIControlSpinExSetting::OnClick()
   switch (m_pSetting->GetType())
   {
     case SettingTypeInteger:
-      return ((CSettingInt *)m_pSetting)->SetValue(m_pSpin->GetValue());
+      SetValid(((CSettingInt *)m_pSetting)->SetValue(m_pSpin->GetValue()));
       break;
 
     case SettingTypeNumber:
-      return ((CSettingNumber *)m_pSetting)->SetValue(m_pSpin->GetFloatValue());
+      SetValid(((CSettingNumber *)m_pSetting)->SetValue(m_pSpin->GetFloatValue()));
+      break;
     
     case SettingTypeString:
-      return ((CSettingString *)m_pSetting)->SetValue(m_pSpin->GetStringValue());
+      SetValid(((CSettingString *)m_pSetting)->SetValue(m_pSpin->GetStringValue()));
+      break;
     
     default:
-      break;
+      return false;
   }
   
-  return false;
+  return IsValid();
 }
 
 void CGUIControlSpinExSetting::Update()
@@ -317,13 +321,15 @@ bool CGUIControlListSetting::OnClick()
       break;
     
     default:
-      break;
+      return false;
   }
 
   if (ret)
     Update();
+  else
+    SetValid(false);
 
-  return ret;
+  return IsValid();
 }
 
 void CGUIControlListSetting::Update()
@@ -527,17 +533,17 @@ bool CGUIControlButtonSetting::OnClick()
       if (!CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty()) == 1)
         return false;
 
-      return setting->SetValue(addonID);
+      SetValid(setting->SetValue(addonID));
     }
-    if (controlFormat == "path")
-      return GetPath((CSettingPath *)m_pSetting);
-    if (controlFormat == "action")
+    else if (controlFormat == "path")
+      SetValid(GetPath((CSettingPath *)m_pSetting));
+    else if (controlFormat == "action")
     {
       // simply call the OnSettingAction callback and whoever knows what to
       // do can do so (based on the setting's identification
       CSettingAction *pSettingAction = (CSettingAction *)m_pSetting;
       pSettingAction->OnSettingAction(pSettingAction);
-      return true;
+      SetValid(true);
     }
   }
   else if (controlType == "slider")
@@ -564,10 +570,10 @@ bool CGUIControlButtonSetting::OnClick()
 
     const CSettingControlSlider *sliderControl = static_cast<const CSettingControlSlider*>(control);
     CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(sliderControl->GetHeading()), value, min, step, max, this, NULL);
-    return true;
+    SetValid(true);
   }
 
-  return false;
+  return IsValid();
 }
 
 void CGUIControlButtonSetting::Update()
@@ -743,7 +749,8 @@ bool CGUIControlEditSetting::OnClick()
     return false;
 
   // update our string
-  return m_pSetting->FromString(m_pEdit->GetLabel2());
+  SetValid(m_pSetting->FromString(m_pEdit->GetLabel2()));
+  return IsValid();
 }
 
 void CGUIControlEditSetting::Update()
@@ -765,7 +772,8 @@ bool CGUIControlEditSetting::InputValidation(const std::string &input, void *dat
   if (editControl == NULL || editControl->GetSetting() == NULL)
     return true;
 
-  return editControl->GetSetting()->CheckValidity(input);
+  editControl->SetValid(editControl->GetSetting()->CheckValidity(input));
+  return editControl->IsValid();
 }
 
 CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pSlider, int id, CSetting *pSetting)
@@ -820,16 +828,18 @@ bool CGUIControlSliderSetting::OnClick()
   switch (m_pSetting->GetType())
   {
     case SettingTypeInteger:
-      return static_cast<CSettingInt*>(m_pSetting)->SetValue(m_pSlider->GetIntValue());
+      SetValid(static_cast<CSettingInt*>(m_pSetting)->SetValue(m_pSlider->GetIntValue()));
+      break;
 
     case SettingTypeNumber:
-      return static_cast<CSettingNumber*>(m_pSetting)->SetValue(m_pSlider->GetFloatValue());
+      SetValid(static_cast<CSettingNumber*>(m_pSetting)->SetValue(m_pSlider->GetFloatValue()));
+      break;
     
     default:
-      break;
+      return false;
   }
   
-  return false;
+  return IsValid();
 }
 
 void CGUIControlSliderSetting::Update()
@@ -969,13 +979,14 @@ bool CGUIControlRangeSetting::OnClick()
       break;
     
     default:
-      break;
+      return false;
   }
   
   if (values.size() != 2)
     return false;
 
-  return CSettingUtils::SetList(settingList, values);
+  SetValid(CSettingUtils::SetList(settingList, values));
+  return IsValid();
 }
 
 void CGUIControlRangeSetting::Update()

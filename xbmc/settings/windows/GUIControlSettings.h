@@ -74,6 +74,13 @@ public:
    */
   bool IsEnabled() const;
 
+  /*!
+   \brief Returns whether the setting's value is valid or not
+   */
+  bool IsValid() const { return m_valid; }
+
+  void SetValid(bool valid) { m_valid = valid; }
+
   virtual CGUIControl* GetControl() { return NULL; }
   virtual bool OnClick() { return false; }
   virtual void Update();
@@ -82,6 +89,7 @@ protected:
   int m_id;
   CSetting* m_pSetting;
   bool m_delayed;
+  bool m_valid;
 };
 
 class CGUIControlRadioButtonSetting : public CGUIControlBaseSetting
