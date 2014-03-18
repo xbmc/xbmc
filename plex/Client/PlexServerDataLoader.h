@@ -88,7 +88,7 @@ class CPlexServerDataLoaderJob : public CJob
     virtual bool operator==(const CJob* job) const
     {
       CPlexServerDataLoaderJob *oJob = (CPlexServerDataLoaderJob*)job;
-      if (oJob->m_server == m_server)
+      if (oJob->m_server->Equals(m_server))
         return true;
       return false;
     }

@@ -232,7 +232,7 @@ CPlexServerManager::SetBestServer(CPlexServerPtr server, bool force)
     return;
   
   CSingleLock lk(m_serverManagerLock);
-  if (!m_bestServer || force || m_bestServer == server)
+  if (!m_bestServer || force || m_bestServer->Equals(server))
   {
     CLog::Log(LOGDEBUG, "CPlexServerManager::SetBestServer bestServer updated to %s", server->toString().c_str());
 
@@ -275,7 +275,7 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
   }
   else
   {
-    if (m_bestServer == server)
+    if (m_bestServer && m_bestServer->Equals(server))
       ClearBestServer();
     
     NotifyAboutServer(server, false);

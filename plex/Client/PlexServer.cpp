@@ -152,11 +152,11 @@ CPlexServer::MarkUpdateFinished(int connType)
     vector<CPlexConnectionPtr>::iterator it = find(m_connections.begin(), m_connections.end(), conn);
     m_connections.erase(it);
 
-    if (m_activeConnection == conn)
+    if (m_activeConnection->Equals(conn))
+    {
+      CLog::Log(LOGDEBUG, "CPlexServer::MarkUpdateFinished Lost activeConnection for server %s", GetName().c_str());
       m_activeConnection.reset();
-
-    if (m_bestConnection == conn)
-      m_bestConnection.reset();
+    }
   }
 
   return m_connections.size() > 0;
@@ -244,7 +244,7 @@ void CPlexServer::OnConnectionTest(CPlexConnectionPtr conn, int state)
     CSingleLock lk(m_connTestThreadLock);
     BOOST_FOREACH(CPlexServerConnTestThread* thread, m_connTestThreads)
     {
-      if (thread->m_conn == conn)
+      if (thread->m_conn->Equals(conn))
       {
         m_connTestThreads.erase(std::remove(m_connTestThreads.begin(), m_connTestThreads.end(), thread));
         break;
@@ -294,11 +294,17 @@ CPlexServer::Merge(CPlexServerPtr otherServer)
 
   BOOST_FOREACH(CPlexConnectionPtr conn, otherServer->m_connections)
   {
-    vector<CPlexConnectionPtr>::iterator it;
-    it = find(m_connections.begin(), m_connections.end(), conn);
-    if (it != m_connections.end())
-      (*it)->Merge(conn);
-    else
+    BOOST_FOREACH(CPlexConnectionPtr mappedConn, m_connections)
+    {
+      if (conn->Equals(mappedConn))
+      {
+        mappedConn->Merge(conn);
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
       AddConnection(conn);
   }
 }

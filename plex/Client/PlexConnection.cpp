@@ -77,10 +77,10 @@ CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
   m_refreshed = true;
 }
 
-bool CPlexConnection::operator ==(const CPlexConnection &other)
+bool CPlexConnection::Equals(const CPlexConnectionPtr &other)
 {
-  bool uriMatches = m_url.Get().Equals(other.GetAddress().Get());
-  bool tokenMatches = GetAccessToken().Equals(other.GetAccessToken());
+  bool uriMatches = m_url.Get().Equals(other->GetAddress().Get());
+  bool tokenMatches = GetAccessToken().Equals(other->GetAccessToken());
 
   return (uriMatches && tokenMatches);
 }

@@ -69,7 +69,7 @@ public:
   CPlexConnectionPtr GetActiveConnection() const;
   CURL GetActiveConnectionURL() const;
 
-  bool operator== (const CPlexServer& otherServer) { return m_uuid.Equals(otherServer.m_uuid); }
+  bool Equals(const CPlexServerPtr& otherServer) { return m_uuid.Equals(otherServer->m_uuid); }
 
   /* ConnTestThread */
   void OnConnectionTest(CPlexConnectionPtr conn, int state);
