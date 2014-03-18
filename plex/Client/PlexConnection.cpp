@@ -58,7 +58,9 @@ CPlexConnection::TestReachability(CPlexServerPtr server)
   }
   else
   {
-    if (m_http.GetLastHTTPResponseCode() == 401)
+    if (m_http.DidCancel())
+      m_state = CONNECTION_STATE_UNKNOWN;
+    else if (m_http.GetLastHTTPResponseCode() == 401)
       m_state = CONNECTION_STATE_UNAUTHORIZED;
     else
       m_state = CONNECTION_STATE_UNREACHABLE;
