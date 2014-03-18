@@ -297,6 +297,7 @@ CPlexServer::Merge(CPlexServerPtr otherServer)
 
   BOOST_FOREACH(CPlexConnectionPtr conn, otherServer->m_connections)
   {
+    bool found = false;
     BOOST_FOREACH(CPlexConnectionPtr mappedConn, m_connections)
     {
       if (conn->Equals(mappedConn))
@@ -412,10 +413,6 @@ string CPlexServer::GetAnyToken() const
 void
 CPlexServer::AddConnection(CPlexConnectionPtr connection)
 {
-  if (m_activeConnection && m_activeConnection->IsLocal() &&
-      (!connection->GetAccessToken().empty() && !HasAuthToken()))
-    m_activeConnection.reset();
-  
   m_connections.push_back(connection);
 }
 
