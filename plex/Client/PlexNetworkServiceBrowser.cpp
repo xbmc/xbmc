@@ -22,7 +22,6 @@ CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
                                                                    service->address().to_string(),
                                                                    port));
   server->AddConnection(conn);
-  server->UpdateReachability();
 
   g_plexApplication.serverManager->UpdateFromDiscovery(server);
 
