@@ -20,6 +20,7 @@
 #include "Client/PlexServerManager.h"
 
 #include "FileItem.h"
+#include "DirectoryCache.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexTimelineManager::CPlexTimelineManager() : m_stopped(false), m_textFieldFocused(false), m_textFieldSecure(false)
@@ -181,7 +182,13 @@ void CPlexTimelineManager::ReportProgress(const CFileItemPtr &newItem, ePlexMedi
   ReportProgress(timeline, reallyForce);
 
   if (timeline->getState() == PLEX_MEDIA_STATE_STOPPED)
+  {
+    /* Now we need to make sure that if this item is cached it's removed */
+    if (timeline->getItem())
+      g_directoryCache.ClearDirWithFile(timeline->getItem()->GetProperty("key").asString());
+
     ResetTimeline(type);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
