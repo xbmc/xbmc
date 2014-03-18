@@ -208,12 +208,10 @@ CPlexServerManager::UpdateReachability(bool force)
 {
   CSingleLock lk(m_serverManagerLock);
 
-  CLog::Log(LOGDEBUG, "CPlexServerManager::UpdateReachability Updating reachability (force=%s)", force ? "YES" : "NO");
   if (m_reachabilityThreads.size() > 0)
-  {
-    CLog::Log(LOGWARNING, "CPlexServerManager::UpdateReachability WOW, BAD we are already running reachability tests. We can't do it twice, mmmkey?");
     return;
-  }
+
+  CLog::Log(LOGDEBUG, "CPlexServerManager::UpdateReachability Updating reachability (force=%s)", force ? "YES" : "NO");
 
   m_updateRechabilityForced = force;
   m_reachabilityTestEvent.Reset();
@@ -287,7 +285,10 @@ void CPlexServerManager::ServerReachabilityDone(CPlexServerPtr server, bool succ
     m_reachabilityTestEvent.Set();
 
     if (!m_bestServer && !m_updateRechabilityForced)
+    {
+      CLog::Log(LOGDEBUG, "CPlexServerManager::ServerReachabilityDone No best server when reachability was done. forcing update");
       UpdateReachability(true);
+    }
   }
   else
   {
