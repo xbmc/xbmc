@@ -201,4 +201,5 @@ protected:
   bool                m_convert_bitstream;
   int                 m_bytesToBeConsumed; // Remaining bytes in VPU
   double              m_previousPts;       // Enable to keep pts when needed
+  bool                m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
 };
