@@ -5,6 +5,7 @@ APPNAME=pkg-config
 VERSION=0.28
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=http://mirrors.xbmc.org/build-deps/sources/
 
 # configuration settings
 export PATH:=$(TOOLCHAIN)/bin:$(PATH)
