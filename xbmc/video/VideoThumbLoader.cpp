@@ -316,25 +316,41 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 
   m_videoDatabase->Open();
 
-  map<string, string> artwork = pItem->GetArt();
-  vector<string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
-  if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
-    artTypes.push_back("thumb"); // always look for "thumb" art for files
-  for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+  if (!pItem->SkipLocalArt())
   {
-    std::string type = *i;
-    if (!pItem->HasArt(type))
+    map<string, string> artwork = pItem->GetArt();
+    vector<string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
+    if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
+      artTypes.push_back("thumb"); // always look for "thumb" art for files
+
+    /* Cache directory for (sub) folders on streamed filesystems. We need to do this
+       else entering (new) directories from the app thread becomes much slower. This
+       is caused by the fact that Curl Stat/Exist() is really slow and that the 
+       thumbloader thread accesses the streamed filesystem at the same time as the
+       App thread and the latter has to wait for it.
+     */
+    if (pItem->m_bIsFolder && (pItem->IsInternetStream(true) || g_advancedSettings.m_networkBufferMode == 1))
     {
-      std::string art = GetLocalArt(*pItem, type, type=="fanart");
-      if (!art.empty()) // cache it
+      CFileItemList items; // Dummy list
+      CDirectory::GetDirectory(pItem->GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+    }
+
+    for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+    {
+      std::string type = *i;
+      if (!pItem->HasArt(type))
       {
-        SetCachedImage(*pItem, type, art);
-        CTextureCache::Get().BackgroundCacheImage(art);
-        artwork.insert(make_pair(type, art));
+        std::string art = GetLocalArt(*pItem, type, type=="fanart");
+        if (!art.empty()) // cache it
+        {
+          SetCachedImage(*pItem, type, art);
+          CTextureCache::Get().BackgroundCacheImage(art);
+          artwork.insert(make_pair(type, art));
+        }
       }
     }
+    SetArt(*pItem, artwork);
   }
-  SetArt(*pItem, artwork);
 
   // We can only extract flags/thumbs for file-like items
   if (!pItem->m_bIsFolder && pItem->IsVideo())
@@ -472,23 +488,8 @@ bool CVideoThumbLoader::FillThumb(CFileItem &item)
   return !thumb.empty();
 }
 
-std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::string &type, bool checkFolder)
+std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::string &type, bool checkFolder /* = false */)
 {
-  if (item.SkipLocalArt())
-    return "";
-
-  /* Cache directory for (sub) folders on streamed filesystems. We need to do this
-     else entering (new) directories from the app thread becomes much slower. This
-     is caused by the fact that Curl Stat/Exist() is really slow and that the 
-     thumbloader thread accesses the streamed filesystem at the same time as the
-     App thread and the latter has to wait for it.
-   */
-  if (item.m_bIsFolder && (item.IsInternetStream(true) || g_advancedSettings.m_networkBufferMode == 1))
-  {
-    CFileItemList items; // Dummy list
-    CDirectory::GetDirectory(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
-  }
-
   std::string art;
   if (!type.empty())
   {
