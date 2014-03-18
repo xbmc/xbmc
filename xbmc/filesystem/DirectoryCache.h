@@ -60,6 +60,9 @@ namespace XFILE
 #ifdef _DEBUG
     void PrintStats() const;
 #endif
+    /* PLEX */
+    void ClearDirWithFile(const CStdString &strPath);
+    /* END PLEX */
   protected:
     void InitCache(std::set<CStdString>& dirs);
     void ClearCache(std::set<CStdString>& dirs);
@@ -78,6 +81,10 @@ namespace XFILE
     unsigned int m_cacheHits;
     unsigned int m_cacheMisses;
 #endif
+
+    /* PLEX */
+    CStdString DirPathOfFile(const CStdString &strPath);
+    /* END PLEX */
   };
 }
 extern XFILE::CDirectoryCache g_directoryCache;
