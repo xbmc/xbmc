@@ -23,7 +23,6 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
-	sed -ie "s|DDARWIN -fno-common -force_cpusubtype_ALL|DARWIN_NO_CARBON -fno-common -noforce_cpusubtype_ALL|" "$(SOURCE)/configure"
 	sed -ie "s|SUBDIRS = m4 include vq lib examples test doc|SUBDIRS = m4 include lib|" "$(SOURCE)/Makefile.in"
 	cd $(SOURCE); $(CONFIGURE)
 

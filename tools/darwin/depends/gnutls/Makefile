@@ -1,14 +1,15 @@
 include ../Makefile.include
 
 # lib name, version
-BASE_URL=http://ftp.gnu.org/gnu/gnutls
+BASE_URL=ftp://ftp.gnutls.org/gcrypt/gnutls/v3.1
 LIBNAME=gnutls
-VERSION=2.12.20
+VERSION=3.1.14
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.bz2
+ARCHIVE=$(SOURCE).tar.xz
+ARCHIVE_TOOL=/usr/local/bin/gtar
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --with-libgcrypt --without-p11-kit
+CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls
 
 LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
 
@@ -19,7 +20,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 
 $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
-	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	$(ARCHIVE_TOOL) xJf $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); $(CONFIGURE)
 

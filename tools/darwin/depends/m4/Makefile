@@ -2,9 +2,10 @@ include ../Makefile.buildtools
 
 # lib name, version
 APPNAME=m4
-VERSION=1.4.9
+VERSION=1.4.17
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=http://ftp.gnu.org/gnu/m4
 
 # configuration settings
 export PATH:=$(TOOLCHAIN)/bin:$(PATH)

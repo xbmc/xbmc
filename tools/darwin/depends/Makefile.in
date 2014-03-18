@@ -16,7 +16,7 @@ SUBDIRS := \
 	libmicrohttpd libmodplug libbluray libyajl libffi \
 	libgpg-error libgcrypt \
 	libplist libshairport libcec tinyxml \
-  boost gnutls breakpad
+    gmp nettle boost gnutls breakpad
 
 ifeq ($(DARWIN), ios)
   EXCLUDED = libcec libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
