@@ -28,7 +28,7 @@
 
 
 #define FAILURE_TMOUT 3600
-#define SUCCESS_TMOUT 60 * 3
+#define SUCCESS_TMOUT 30 * 60
 
 void
 CMyPlexManager::Process()
