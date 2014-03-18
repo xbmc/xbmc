@@ -20,7 +20,14 @@
 #include "music/tags/MusicInfoTag.h"
 
 #include <boost/assign/list_of.hpp>
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wredeclared-class-member"
+#endif
 #include <boost/bimap.hpp>
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 #include <boost/foreach.hpp>
 #include <map>
 
