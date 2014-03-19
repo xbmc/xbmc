@@ -1416,7 +1416,7 @@ void CDVDPlayer::Process()
 
   /* PLEX */
   // We're done, if we transcoded we need to stop that now
-  if (m_item.GetProperty("plexDidTranscode").asBoolean())
+  if (m_item.GetProperty("plexDidTranscode").asBoolean() && g_plexApplication.serverManager)
   {
     CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(m_item.GetProperty("plexserver").asString());
     if (server)
