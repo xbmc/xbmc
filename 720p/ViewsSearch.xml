@@ -1324,6 +1324,13 @@
 								<control type="group">
 									<include>SearchScreenPoster</include>
 									<control type="image">
+										<posx>121</posx>
+										<posy>194</posy>
+										<width>30</width>
+										<height>30</height>
+										<info>ListItem.Overlay</info>
+									</control>
+									<control type="image">
 										<posy>47</posy>
 										<posx>34</posx>
 										<width>122</width>
@@ -1438,6 +1445,13 @@
 							<focusedlayout width="144" height="200">
 								<control type="group">
 									<include>SearchScreenPoster</include>
+									<control type="image">
+										<posx>121</posx>
+										<posy>194</posy>
+										<width>30</width>
+										<height>30</height>
+										<info>ListItem.Overlay</info>
+									</control>
 									<control type="image">
 										<posy>47</posy>
 										<posx>34</posx>
@@ -1577,6 +1591,13 @@
 									<control type="label">
 										<include>SearchScreenWideThumbOverlayTitle</include>
 										<textcolor>orangeLight</textcolor>
+									</control>
+									<control type="image">
+										<posx>195</posx>
+										<posy>123</posy>
+										<width>29</width>
+										<height>29</height>
+										<info>ListItem.Overlay</info>
 									</control>
 									<control type="image">
 										<posy>50</posy>
