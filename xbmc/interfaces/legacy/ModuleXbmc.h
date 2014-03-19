@@ -230,6 +230,14 @@ namespace XBMCAddon
     void playSFX(const char* filename);
 
     /**
+     * stopSFX() -- Stops wav file
+     *
+     * example:
+     *   - xbmc.stopSFX()
+     */
+    void stopSFX();
+    
+    /**
      * enableNavSounds(yesNo) -- Enables/Disables nav sounds
      * 
      * yesNo          : integer - enable (True) or disable (False) nav sounds
