@@ -1229,13 +1229,13 @@
 							<visible>Control.HasFocus(9001)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>orangeLight</textcolor>
-							<label>Movies</label>
+							<label>$LOCALIZE[31111]</label>
 						</control>
 						<control type="label" id="8001">
 							<visible>!Control.HasFocus(9001)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>FF999999</textcolor>
-							<label>Movies</label>
+							<label>$LOCALIZE[31111]</label>
 						</control>
 						<visible allowhiddenfocus="false">true</visible>
 						<control type="image">
@@ -1348,13 +1348,13 @@
 							<visible>Control.HasFocus(9002)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>orangeLight</textcolor>
-							<label>TV Shows</label>
+							<label>$LOCALIZE[31112]</label>
 						</control>
 						<control type="label" id="8002">
 							<visible>!Control.HasFocus(9002)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>FF999999</textcolor>
-							<label>TV Shows</label>
+							<label>$LOCALIZE[31112]</label>
 						</control>
 						<control type="image">
 							<posx>1</posx>
@@ -1463,13 +1463,13 @@
 							<visible>Control.HasFocus(9004)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>orangeLight</textcolor>
-							<label>Episodes</label>
+							<label>$LOCALIZE[31137]</label>
 						</control>
 						<control type="label" id="8004">
 							<visible>!Control.HasFocus(9004)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>FF999999</textcolor>
-							<label>Episodes</label>
+							<label>$LOCALIZE[31137]</label>
 						</control>
 						<visible allowhiddenfocus="false">true</visible>
 						<control type="image">
@@ -1603,13 +1603,13 @@
 							<visible>Control.HasFocus(9008)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>orangeLight</textcolor>
-							<label>Artists</label>
+							<label>$LOCALIZE[32110]</label>
 						</control>
 						<control type="label" id="8008">
 							<visible>!Control.HasFocus(9008)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>FF999999</textcolor>
-							<label>Artists</label>
+							<label>$LOCALIZE[32110]</label>
 						</control>
 						<control type="image">
 							<posx>1</posx>
@@ -1693,13 +1693,13 @@
 							<visible>Control.HasFocus(9009)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>orangeLight</textcolor>
-							<label>Albums</label>
+							<label>$LOCALIZE[32111]</label>
 						</control>
 						<control type="label" id="8009">
 							<visible>!Control.HasFocus(9009)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>FF999999</textcolor>
-							<label>Albums</label>
+							<label>$LOCALIZE[32111]</label>
 						</control>
 						<visible allowhiddenfocus="false">true</visible>
 						<control type="image">
@@ -1806,13 +1806,13 @@
 							<visible>Control.HasFocus(9010)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>orangeLight</textcolor>
-							<label>Tracks</label>
+							<label>$LOCALIZE[32106]</label>
 						</control>
 						<control type="label" id="8010">
 							<visible>!Control.HasFocus(9010)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>FF999999</textcolor>
-							<label>Tracks</label>
+							<label>$LOCALIZE[32106]</label>
 						</control>
 						<visible allowhiddenfocus="false">true</visible>
 						<control type="image">
@@ -1919,13 +1919,13 @@
 							<visible>Control.HasFocus(9013)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>orangeLight</textcolor>
-							<label>Actors</label>
+							<label>$LOCALIZE[32112]</label>
 						</control>
 						<control type="label" id="8013">
 							<visible>!Control.HasFocus(9013)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>FF999999</textcolor>
-							<label>Actors</label>
+							<label>$LOCALIZE[32112]</label>
 						</control>
 						<control type="image">
 							<posx>1</posx>
@@ -2009,42 +2009,13 @@
 							<visible>Control.HasFocus(9012)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>orange</textcolor>
-							<label>Clips</label>
+							<label>$LOCALIZE[31970]</label>
 						</control>
 						<control type="label" id="8012">
 							<visible>!Control.HasFocus(9012)</visible>
 							<include>SearchScreenListTitle</include>
 							<textcolor>FF777777</textcolor>
-							<label>Clips</label>
-						</control>
-						<!-- title bar infos -->
-						<control type="grouplist">
-							<posx>38</posx>
-							<posy>10</posy>
-							<height>23</height>
-							<orientation>horizontal</orientation>
-							<itemgap>0</itemgap>
-							<visible>Control.HasFocus(9012)</visible>
-							<control type="label">
-								<align>left</align>
-								<label>$INFO[Container(9012).ListItem(0).Title]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="600">auto</width>
-								<visible>!IsEmpty(Container(9012).ListItem(0).Title)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(9012).ListItem(0).DurationStr]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(9012).ListItem(0).DurationStr)</visible>
-							</control>
+							<label>$LOCALIZE[31970]</label>
 						</control>
 						<visible allowhiddenfocus="false">true</visible>
 						<control type="panel" id="9012">
@@ -2081,6 +2052,35 @@
 									</control>
 								</control>
 							</focusedlayout>
+						</control>
+						<!-- title bar infos -->
+						<control type="grouplist">
+							<posx>38</posx>
+							<posy>10</posy>
+							<height>23</height>
+							<orientation>horizontal</orientation>
+							<itemgap>0</itemgap>
+							<visible>Control.HasFocus(9012)</visible>
+							<control type="label">
+								<align>left</align>
+								<label>$INFO[Container(9012).ListItem(0).Title]</label>
+								<font>SearchResult</font>
+								<scroll>false</scroll>
+								<textcolor>orange</textcolor>
+								<wrapmultiline>false</wrapmultiline>
+								<width min="1" max="600">auto</width>
+								<visible>!IsEmpty(Container(9012).ListItem(0).Title)</visible>
+							</control>
+							<control type="label">
+								<align>left</align>
+								<label> &#xB7; $INFO[Container(9012).ListItem(0).DurationStr]</label>
+								<font>SearchResult</font>
+								<scroll>false</scroll>
+								<textcolor>FFFFFFFF</textcolor>
+								<wrapmultiline>false</wrapmultiline>
+								<width min="1" max="200">auto</width>
+								<visible>!IsEmpty(Container(9012).ListItem(0).DurationStr)</visible>
+							</control>
 						</control>
 					</control>
 				</control>

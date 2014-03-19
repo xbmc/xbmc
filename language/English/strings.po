@@ -1091,3 +1091,14 @@ msgctxt "#32109"
 msgid "Unavailable"
 msgstr ""
 
+msgctxt "#32110"
+msgid "Artists"
+msgstr ""
+
+msgctxt "#32111"
+msgid "Albums"
+msgstr ""
+
+msgctxt "#32112"
+msgid "Actors"
+msgstr ""
