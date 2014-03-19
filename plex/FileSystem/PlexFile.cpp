@@ -6,6 +6,8 @@
 #include <boost/assign.hpp>
 #include <boost/foreach.hpp>
 #include <string>
+#include "Mime.h"
+#include "URIUtils.h"
 
 #include "PlexApplication.h"
 #include "GUIInfoManager.h"
@@ -138,4 +140,24 @@ CPlexFile::Exists(const CURL &url)
   if (BuildHTTPURL(newUrl))
     return CCurlFile::Exists(newUrl);
   return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CPlexFile::GetMimeType(const CURL& url)
+{
+  /* we only handle plexserver:// stuff here */
+  if (url.GetProtocol() != "plexserver")
+    return "";
+
+  CStdString path = url.GetFileName();
+
+  if (boost::starts_with(path, "/video"))
+    return "video/unknown";
+  if (boost::starts_with(path, "/music"))
+    return "audio/uknown";
+  if (boost::starts_with(path, "/photo"))
+    return "image/unknown";
+
+  CStdString extension = URIUtils::GetExtension(path);
+  return CMime::GetMimeType(extension);
 }

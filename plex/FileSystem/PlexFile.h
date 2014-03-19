@@ -25,5 +25,6 @@ namespace XFILE
     /* Returns false if the server is missing or
      * there is something else wrong */
     static bool CanBeTranslated(const CURL &url);
+    static CStdString GetMimeType(const CURL &url);
   };
 }

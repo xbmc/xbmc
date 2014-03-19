@@ -62,6 +62,7 @@
 #include "plex/PlexTypes.h"
 #include "PlexApplication.h"
 #include "filesystem/DirectoryCache.h"
+#include "FileSystem/PlexFile.h"
 /* END PLEX */
 
 using namespace std;
@@ -1458,69 +1459,20 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
     // discard const qualifyier
     CStdString& m_ref = (CStdString&)m_mimetype;
 
+    /* PLEX */
+    if (GetAsUrl().GetProtocol() == "plexserver")
+      m_ref = XFILE::CPlexFile::GetMimeType(GetAsUrl());
+    else
+    /* END PLEX */
+
     if( m_bIsFolder )
       m_ref = "x-directory/normal";
     else if( m_pvrChannelInfoTag )
       m_ref = m_pvrChannelInfoTag->InputFormat();
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
-          /* PLEX */
-          || m_strPath.Left(13).Equals("plexserver://")
-          /* END PLEX */
           || m_strPath.Left(8).Equals("https://"))
     {
-      /* PLEX */
-      int start = 0;
-      if (IsPlexMediaServer() && m_strPath.size() > 8 && (start=m_strPath.find("/", 8)))
-      {
-        CStdString path = m_strPath.substr(start);
-        if (path.substr(0, 6) == "/video")
-          m_ref = "video/unknown";
-        else if (path.substr(0, 6) == "/music")
-          m_ref = "audio/unknown";
-      }
-      else if (IsVideo())
-      {
-        m_ref = "video/unknown";
-      }
-      else if (IsAudio())
-      {
-        m_ref = "audio/unknown";
-      }
-
-      CStdString extension = URIUtils::GetExtension(m_strPath);
-      extension.MakeLower();
-
-      if (extension == ".m3u" || extension == ".strm")
-        m_ref = "audio/mpegurl";
-
-      else if (extension == ".pls")
-        m_ref = "audio/scpls";
-
-      else if (extension == ".wpl")
-        m_ref = "application/vnd.ms-wpl";
-
-      else if (extension == ".asx")
-        m_ref = "video/x-ms-asf";
-
-      else if (extension == ".ram")
-        m_ref = "audio/x-pn-realaudio";
-
-      else if (extension == ".m3u8")
-        m_ref = "application/x-mpegURL";
-
-      else
-      {
-        CCurlFile::GetMimeType(GetAsUrl(), m_ref);
-
-        // try to get mime-type again but with an NSPlayer User-Agent
-        // in order for server to provide correct mime-type.  Allows us
-        // to properly detect an MMS stream
-        if (m_ref.Left(11).Equals("video/x-ms-"))
-          CCurlFile::GetMimeType(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
-      }
-      /* END PLEX */
-
       // make sure there are no options set in mime-type
       // mime-type can look like "video/x-ms-asf ; charset=utf8"
       int i = m_ref.Find(';');
