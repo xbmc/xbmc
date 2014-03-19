@@ -494,7 +494,7 @@
 				<label>Searching...</label>
 				<font>Bold-16</font>
 				<posx>48</posx>
-				<posy>6</posy>
+				<posy>18</posy>
 				<textcolor>FF888888</textcolor>
 			</control>
 		</control>
