@@ -262,7 +262,7 @@
 		<control type="label">
 			<posy>209</posy>
 			<include>SearchScreenListItemTitle1</include>
-			<label>$INFO[ListItem.Title]</label>
+			<label>$INFO[ListItem.Label]</label>
 		</control>
 	</include>
 	<include name="SearchScreenSquareTitleAlbum">
@@ -314,7 +314,7 @@
 		<control type="label">
 			<posy>212</posy>
 			<include>SearchScreenListItemTitle1</include>
-			<label>$INFO[ListItem.Title]</label>
+			<label>$INFO[ListItem.Label]</label>
 			<textcolor>white</textcolor>
 		</control>
 	</include>
@@ -322,7 +322,7 @@
 		<control type="label">
 			<posy>209</posy>
 			<include>SearchScreenListItemTitle1</include>
-			<label>$INFO[ListItem.Title]</label>
+			<label>$INFO[ListItem.Label]</label>
 			<textcolor>orangeLight</textcolor>
 		</control>
 	</include>
