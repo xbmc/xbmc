@@ -573,14 +573,32 @@
 							<control type="group">
 								<posy>-3</posy>
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + Control.IsVisible(11000)</visible>
-								<include>ListItemPoster</include>
+								<control type="group">
+									<include>ListItemPoster</include>
+									<include>ListItemInProgress</include>
+								</control>
+								<control type="group">
+									<visible>ListItem.Type(episode)</visible>
+									<include>ListItemPosterCard</include>
+									<include>ListItemPosterTitleTV2</include>
+									<include>ListItemInProgress</include>
+								</control>
 								<include>ListItemPosterSelectedBorder</include>
 							</control>
 							<!-- movie & episode when only this list is visible -->
 							<control type="group">
 								<posy>100</posy>
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie)] + !Control.IsVisible(11000)</visible>
-								<include>ListItemPoster</include>
+								<control type="group">
+									<include>ListItemPoster</include>
+									<include>ListItemInProgress</include>
+								</control>
+								<control type="group">
+									<visible>ListItem.Type(episode)</visible>
+									<include>ListItemPosterCard</include>
+									<include>ListItemPosterTitleTV2</include>
+									<include>ListItemInProgress</include>
+								</control>
 								<include>ListItemPosterSelectedBorder</include>
 							</control>
 						</focusedlayout>
@@ -687,12 +705,36 @@
 								<posy>100</posy>
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie) | ListItem.Type(season)] + Control.IsVisible(11001)</visible>
 								<include>ListItemPoster</include>
+								<control type="group">
+									<visible>ListItem.Type(episode)</visible>
+									<include>ListItemPosterCard</include>
+									<include>ListItemPosterTitleTV2</include>
+									<include>ListItemInProgress</include>
+								</control>
+								<control type="group">
+									<visible>ListItem.Type(season)</visible>
+									<include>ListItemPosterCard</include>
+									<include>ListItemPosterTitleTV3</include>
+									<include>ListItemInProgress</include>
+								</control>
 								<include>ListItemPosterSelectedBorder</include>
 							</control>
 							<!-- tv show episode when  only this list is visible -->
 							<control type="group">
 								<visible>[ListItem.Type(episode) | ListItem.Type(movie) | ListItem.Type(season)] + !Control.IsVisible(11001)</visible>
 								<include>ListItemPoster</include>
+								<control type="group">
+									<visible>ListItem.Type(episode)</visible>
+									<include>ListItemPosterCard</include>
+									<include>ListItemPosterTitleTV2</include>
+									<include>ListItemInProgress</include>
+								</control>
+								<control type="group">
+									<visible>ListItem.Type(season)</visible>
+									<include>ListItemPosterCard</include>
+									<include>ListItemPosterTitleTV3</include>
+									<include>ListItemInProgress</include>
+								</control>
 								<include>ListItemPosterSelectedBorder</include>
 							</control>
 						</focusedlayout>
