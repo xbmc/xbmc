@@ -428,6 +428,61 @@
 		<font>Bold-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
+	<!-- Channels Items -->
+	<include name="SearchScreenChannels">
+		<control type="image">
+			<width>221</width>
+			<height>132</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>195</width>
+			<height>106</height>
+			<texture background="true">default-thumb-small.png</texture>
+		</control>
+		<control type="image">
+			<include>PosListItem</include>
+			<width>195</width>
+			<height>106</height>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			<texture diffuse="mask-clip-small.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+		</control>
+	</include>
+	<include name="SearchScreenChannelsCard">
+		<control type="image">
+			<posx>37</posx>
+			<posy>153</posy>
+			<width>195</width>
+			<height>60</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+		</control>
+		<control type="image">
+			<posx>37</posx>
+			<posy>183</posy>
+			<width>195</width>
+			<height>30</height>
+			<include>Card</include>
+			<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+		</control>
+	</include>
+	<include name="SearchScreenChannelsTitle">
+		<control type="label">
+			<posy>199</posy>
+			<include>SearchScreenListItemTitleWide</include>
+			<label>$INFO[ListItem.Label]</label>
+			<textcolor>white</textcolor>
+		</control>
+	</include>
+	<include name="SearchScreenChannelsTitle2">
+		<control type="label">
+			<posy>171</posy>
+			<include>SearchScreenListItemTitleWide</include>
+			<label>$INFO[ListItem.Property(sourceTitle)]</label>
+			<textcolor>FF888888</textcolor>
+		</control>
+	</include>
 	<!-- page ui and search formatting -->
 	<include name="SearchSeparatorVertical">
 		<control type="group">
@@ -1993,178 +2048,37 @@
 						</control>
 						<visible allowhiddenfocus="false">true</visible>
 						<control type="panel" id="9012">
+							<posx>0</posx>
+							<posy>15</posy>
 							<width>890</width>
 							<height>680</height>
-							<posy>35</posy>
 							<visible allowhiddenfocus="false">true</visible>
 							<orientation>vertical</orientation>
 							<onup>9013</onup>
 							<ondown>-</ondown>
 							<onright>-</onright>
 							<onleft>350</onleft>
-							<posx>0</posx>
-							<posy>0</posy>
-							<itemlayout width="440" height="134">
-								<!-- drop shadow -->
-								<control type="image">
-									<posx>29</posx>
-									<posy>11</posy>
-									<width>132</width>
-									<height>126</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>19</posy>
-									<width>116</width>
-									<height>110</height>
-									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-								</control>
-								<control type="image">
-									<posx>160</posx>
-									<posy>17</posy>
-									<width>270</width>
-									<height>46</height>
-									<texture border="10">whitewiderounded.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="image">
-									<posx>160</posx>
-									<posy>68</posy>
-									<width>270</width>
-									<height>64</height>
-									<texture border="10">whitewiderounded.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="15" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="image">
-									<posx>160</posx>
-									<posy>17</posy>
-									<width>270</width>
-									<height>46</height>
-									<texture border="10">whitewiderounded.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="label">
-									<posx>165</posx>
-									<posy>30</posy>
-									<width>250</width>
-									<align>left</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Label]</label>
-									<font>SearchResult</font>
-									<textcolor>FFdddddd</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-								</control>
-								<control type="label">
-									<posx>165</posx>
-									<posy>49</posy>
-									<width>250</width>
-									<align>left</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(originallyAvailableAt)] &#x2022; $INFO[ListItem.DurationStr] &#x2022; $INFO[ListItem.Property(sourceTitle)]</label>
-									<font>SearchResultSmall</font>
-									<textcolor>FF777777</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-								</control>
-								<control type="label" id="999">
-									<posx>165</posx>
-									<posy>72</posy>
-									<width>250</width>
-									<height>40</height>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.plot]</label>
-									<font>SearchResultSmall</font>
-									<textcolor>FF999999</textcolor>
-									<wrapmultiline>true</wrapmultiline>
+							<itemlayout width="216" height="230">
+								<control type="group">
+									<include>SearchScreenChannelsCard</include>
+									<include>SearchScreenChannels</include>
+									<include>SearchScreenChannelsTitle2</include>
+									<include>SearchScreenChannelsTitle</include>
 								</control>
 							</itemlayout>
-							<focusedlayout width="440" height="120">
-								<control type="image">
-									<posx>27</posx>
-									<posy>9</posy>
-									<width>136</width>
-									<height>130</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
-								</control>
-								<control type="image">
-									<posx>34</posx>
-									<posy>16</posy>
-									<width>122</width>
-									<height>116</height>
-									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
-									<bordertexture border="10">frameOrange.png</bordertexture>
-									<bordersize>3</bordersize>
-								</control>
-								<control type="image">
-									<posx>160</posx>
-									<posy>17</posy>
-									<width>270</width>
-									<height>46</height>
-									<texture border="10">whitewiderounded.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="image">
-									<posx>160</posx>
-									<posy>68</posy>
-									<width>270</width>
-									<height>64</height>
-									<texture border="10">whitewiderounded.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="15" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="image">
-									<posx>160</posx>
-									<posy>17</posy>
-									<width>270</width>
-									<height>46</height>
-									<texture border="10">whitewiderounded.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="label">
-									<posx>165</posx>
-									<posy>30</posy>
-									<width>250</width>
-									<align>left</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Label]</label>
-									<font>SearchResult</font>
-									<textcolor>orange</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-								</control>
-								<control type="label">
-									<posx>165</posx>
-									<posy>49</posy>
-									<width>250</width>
-									<align>left</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(originallyAvailableAt)] &#x2022; $INFO[ListItem.DurationStr] &#x2022; $INFO[ListItem.Property(sourceTitle)]</label>
-									<font>SearchResultSmall</font>
-									<textcolor>FF777777</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-								</control>
-								<control type="label" id="999">
-									<posx>165</posx>
-									<posy>72</posy>
-									<width>250</width>
-									<height>40</height>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.plot]</label>
-									<font>SearchResultSmall</font>
-									<textcolor>FF999999</textcolor>
-									<wrapmultiline>true</wrapmultiline>
+							<focusedlayout width="216" height="230">
+								<control type="group">
+									<include>SearchScreenChannelsCard</include>
+									<include>SearchScreenChannels</include>
+									<include>SearchScreenChannelsTitle2</include>
+									<include>SearchScreenChannelsTitle</include>
+									<control type="image">
+										<posy>50</posy>
+										<posx>37</posx>
+										<width>195</width>
+										<height>165</height>
+										<include>Border</include>
+									</control>
 								</control>
 							</focusedlayout>
 						</control>
