@@ -78,7 +78,7 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
     return GetOnlineChannelDirectory(fileItems);
   }
 
-  if (boost::contains(m_url.GetFileName(), "library/metadata"))
+  if (boost::starts_with(m_url.GetFileName(), "library/metadata") && !boost::ends_with(m_url.GetFileName(), "children"))
     m_url.SetOption("checkFiles", "1");
 
   bool httpSuccess;
