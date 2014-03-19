@@ -21,6 +21,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexNavigationHelper::CacheUrl(const std::string& url, bool& cancel, bool closeDialog)
 {
+  m_cacheEvent.Reset();
 
   int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL(url)), this, CJob::PRIORITY_HIGH);
 
@@ -31,11 +32,9 @@ bool CPlexNavigationHelper::CacheUrl(const std::string& url, bool& cancel, bool 
 
     if (busy)
     {
-      m_cacheEvent.Reset();
-
-
       if (!busy->IsActive())
         busy->Show();
+
       while (!m_cacheEvent.WaitMSec(10))
       {
         if (busy->IsCanceled())
