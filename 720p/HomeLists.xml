@@ -283,7 +283,7 @@
 		<control type="label">
 			<posy>214</posy>
 			<include>ListItemTitle1</include>
-			<label>$INFO[ListItem.Title]</label>
+			<label>$INFO[ListItem.Label]</label>
 		</control>
 	</include>
 	<include name="ListItemSquareTitleAlbum">
@@ -352,7 +352,7 @@
 			<posy>209</posy>
 			<include>ListItemTitleWide</include>
 			<textcolor>white</textcolor>
-			<label>$INFO[ListItem.Title]</label>
+			<label>$INFO[ListItem.Label]</label>
 		</control>
 	</include>
 	<include name="ListItemWideTitleProvider">

@@ -312,7 +312,7 @@
 						<control type="label">
 							<width>840</width>
 							<height>50</height>
-							<label>[COLOR=greyLighter]$INFO[ListItem.TVShowTitle][/COLOR]$INFO[ListItem.Title, [COLOR=orange]&#xB7; [/COLOR]]</label>
+							<label>[COLOR=greyLighter]$INFO[ListItem.TVShowTitle][/COLOR]$INFO[ListItem.Label, [COLOR=orange]&#xB7; [/COLOR]]</label>
 							<font>Regular-20</font>
 							<include>White2</include>
 							<textoffsetx>80</textoffsetx>

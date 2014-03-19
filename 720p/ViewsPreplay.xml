@@ -806,7 +806,7 @@
 					<control type="label">
 						<width min="29" max="450">auto</width>
 						<height>44</height>
-						<label>$INFO[ListItem.Title]</label>
+						<label>$INFO[ListItem.Label]</label>
 						<font>Bold-36</font>
 						<include>Grey1</include>
 						<visible>true</visible>
@@ -998,7 +998,7 @@
 					<control type="label">
 						<width min="29" max="500">auto</width>
 						<height>44</height>
-						<label>$INFO[ListItem.Title]</label>
+						<label>$INFO[ListItem.Label]</label>
 						<font>Bold-36</font>
 						<include>WhiteShadow</include>
 						<visible>true</visible>
@@ -1224,7 +1224,7 @@
 					<control type="label">
 						<width min="29" max="570">auto</width>
 						<height>44</height>
-						<label>$INFO[ListItem.Title]</label>
+						<label>$INFO[ListItem.Label]</label>
 						<font>Bold-36</font>
 						<include>WhiteShadow</include>
 						<visible>true</visible>

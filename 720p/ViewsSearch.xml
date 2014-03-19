@@ -395,7 +395,7 @@
 		<control type="label">
 			<posy>199</posy>
 			<include>SearchScreenListItemTitleWide</include>
-			<label>$INFO[ListItem.Title]</label>
+			<label>$INFO[ListItem.Label]</label>
 			<textcolor>white</textcolor>
 		</control>
 	</include>
@@ -571,7 +571,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<scroll>false</scroll>
-				<label>$INFO[ListItem.Title]</label>
+				<label>$INFO[ListItem.Label]</label>
 				<font>Regular-16</font>
 				<textcolor>FF999999</textcolor>
 				<wrapmultiline>false</wrapmultiline>
@@ -619,7 +619,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<scroll>false</scroll>
-				<label>$INFO[ListItem.Title]</label>
+				<label>$INFO[ListItem.Label]</label>
 				<font>Regular-16</font>
 				<textcolor>FFFFFFFF</textcolor>
 				<wrapmultiline>false</wrapmultiline>
@@ -2056,7 +2056,7 @@
 									<align>left</align>
 									<aligny>center</aligny>
 									<scroll>false</scroll>
-									<label>$INFO[ListItem.title]</label>
+									<label>$INFO[ListItem.Label]</label>
 									<font>SearchResult</font>
 									<textcolor>FFdddddd</textcolor>
 									<wrapmultiline>false</wrapmultiline>
@@ -2138,7 +2138,7 @@
 									<align>left</align>
 									<aligny>center</aligny>
 									<scroll>false</scroll>
-									<label>$INFO[ListItem.title]</label>
+									<label>$INFO[ListItem.Label]</label>
 									<font>SearchResult</font>
 									<textcolor>orange</textcolor>
 									<wrapmultiline>false</wrapmultiline>
