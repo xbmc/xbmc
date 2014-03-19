@@ -163,7 +163,10 @@ void CPVRChannel::Serialize(CVariant& value) const
   
   CEpgInfoTag epg;
   if (GetEPGNow(epg))
-    epg.Serialize(value);
+    epg.Serialize(value["broadcastnow"]);
+
+  if (GetEPGNext(epg))
+    epg.Serialize(value["broadcastnext"]);
 }
 
 /********** XBMC related channel methods **********/

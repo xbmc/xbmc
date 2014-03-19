@@ -170,7 +170,25 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
     return InternalError;
 
   CFileItemList programFull;
-  channelEpg->Get(programFull);
+  EpgSearchFilter epgFilter;
+  epgFilter.Reset();
+  if (!parameterObject["startdate"].asString().empty())
+  {
+    CDateTime startDate;
+    if (startDate.SetFromDateString(parameterObject["startdate"].asString()))
+      epgFilter.m_startDateTime = startDate;
+    else
+      return InvalidParams;
+  }
+  if (!parameterObject["enddate"].asString().empty())
+  {
+    CDateTime endDate;
+    if (endDate.SetFromDateString(parameterObject["enddate"].asString()))
+      epgFilter.m_endDateTime = endDate;
+    else
+      return InvalidParams;
+  }
+  channelEpg->Get(programFull, epgFilter);
 
   HandleFileItemList("broadcastid", false, "broadcasts", programFull, parameterObject, result, programFull.Size(), true);
 
