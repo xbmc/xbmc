@@ -285,7 +285,8 @@ CPlexServer::Merge(CPlexServerPtr otherServer)
   CSingleLock lk(m_serverLock);
 
   m_name = otherServer->m_name;
-  m_version = otherServer->m_version;
+  if (!otherServer->m_version.empty())
+    m_version = otherServer->m_version;
 
   // Token ownership is the only ownership metric to be believed. Everything else defaults to owned.
   // If something comes after myPlex on the LAN, say, we'll reset ownership to owned.
