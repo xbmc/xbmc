@@ -320,7 +320,7 @@
 	</include>
 	<include name="SearchScreenPortraitTitleSelected">
 		<control type="label">
-			<posy>209</posy>
+			<posy>212</posy>
 			<include>SearchScreenListItemTitle1</include>
 			<label>$INFO[ListItem.Label]</label>
 			<textcolor>orangeLight</textcolor>
@@ -418,7 +418,7 @@
 		</control>
 	</include>
 	<include name="SearchScreenWideThumbOverlayTitle">
-		<posy>123</posy>
+		<posy>125</posy>
 		<posx>44</posx>
 		<width>180</width>
 		<height>30</height>
@@ -1258,6 +1258,8 @@
 										<control type="image">
 											<posx>121</posx>
 											<posy>194</posy>
+											<width>30</width>
+											<height>30</height>
 											<info>ListItem.Overlay</info>
 										</control>
 									</control>
@@ -1372,6 +1374,8 @@
 									<control type="image">
 										<posx>121</posx>
 										<posy>194</posy>
+										<width>30</width>
+										<height>30</height>
 										<info>ListItem.Overlay</info>
 									</control>
 								</control>
@@ -1502,6 +1506,8 @@
 									<control type="image">
 										<posx>195</posx>
 										<posy>123</posy>
+										<width>29</width>
+										<height>29</height>
 										<info>ListItem.Overlay</info>
 									</control>
 								</control>
@@ -1825,12 +1831,14 @@
 								<control type="group">
 									<include>SearchScreenSquareCard</include>
 									<include>SearchScreenSquare</include>
+									<include>SearchScreenSquareTitleArtist</include>
 									<include>SearchScreenSquareTitle</include>
 								</control>
 							</itemlayout>
 							<focusedlayout width="160" height="200">
 								<include>SearchScreenSquareCard</include>
 								<include>SearchScreenSquare</include>
+								<include>SearchScreenSquareTitleArtist</include>
 								<include>SearchScreenSquareTitle</include>
 								<control type="image">
 									<posy>50</posy>
