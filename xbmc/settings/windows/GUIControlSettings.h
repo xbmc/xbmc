@@ -83,7 +83,7 @@ public:
 
   virtual CGUIControl* GetControl() { return NULL; }
   virtual bool OnClick() { return false; }
-  virtual void Update();
+  virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() = 0;  ///< Clears the attached control
 protected:
   int m_id;
@@ -102,7 +102,7 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pRadioButton; }
   virtual bool OnClick();
-  virtual void Update();
+  virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pRadioButton = NULL; }
 private:
   CGUIRadioButtonControl *m_pRadioButton;
@@ -116,7 +116,7 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pSpin; }
   virtual bool OnClick();
-  virtual void Update();
+  virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pSpin = NULL; }
 private:
   void FillControl();
@@ -132,7 +132,7 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pButton; }
   virtual bool OnClick();
-  virtual void Update();
+  virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pButton = NULL; }
 private:
   static bool GetItems(const CSetting *setting, CFileItemList &items);
@@ -150,7 +150,7 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pButton; }
   virtual bool OnClick();
-  virtual void Update();
+  virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pButton = NULL; }
 
   static bool GetPath(CSettingPath *pathSetting);
@@ -170,7 +170,7 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pEdit; }
   virtual bool OnClick();
-  virtual void Update();
+  virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pEdit = NULL; }
 private:
   static bool InputValidation(const std::string &input, void *data);
@@ -186,7 +186,7 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pSlider; }
   virtual bool OnClick();
-  virtual void Update();
+  virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pSlider = NULL; }
 
   static std::string GetText(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
@@ -203,7 +203,7 @@ public:
   
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pSlider; }
   virtual bool OnClick();
-  virtual void Update();
+  virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pSlider = NULL; }
 
 private:

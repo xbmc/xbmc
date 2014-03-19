@@ -737,6 +737,14 @@ void CGUIDialogSettingsBase::OnClick(BaseSettingControlPtr pSettingControl)
   if (pSettingControl->IsDelayed())
   {
     m_delayedSetting = pSettingControl;
+    // for some controls we need to update its displayed data/text before
+    // OnClick() is called after the delay timer has expired because
+    // otherwise the displayed value of the control does not match with
+    // the user's interaction
+    pSettingControl->Update(true);
+
+    // either start or restart the delay timer which will result in a call to
+    // the control's OnClick() method to update the setting's value
     if (m_delayedTimer.IsRunning())
       m_delayedTimer.Restart();
     else
