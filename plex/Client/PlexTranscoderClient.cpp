@@ -22,6 +22,8 @@
 #include "Client/PlexServerManager.h"
 #include "Client/PlexServer.h"
 #include "PlexMediaDecisionEngine.h"
+#include "Client/PlexServerVersion.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #include "log.h"
 
@@ -191,15 +193,25 @@ typedef std::pair<std::string, std::string> stringPair;
 CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileItem& item)
 {
   bool isLocal = server->GetActiveConnection()->IsLocal();
-  
+
+  CPlexServerVersion serverVersion(server->GetVersion());
+  CPlexServerVersion needVersion("0.9.9.7.0-abc123");
+  bool hlsStreaming = false;
+  if (needVersion > serverVersion)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Server version to old...", "You need Plex Media Server 0.9.9.8 or later for Matroska streaming");
+    hlsStreaming = true;
+  }
+
   /* Note that we are building a HTTP URL here, because XBMC will pass the
    * URL directly to FFMPEG, and as we all know, ffmpeg doesn't handle
    * plexserver:// protocol */
-  CURL tURL = server->BuildURL("/video/:/transcode/universal/start.m3u8");
+  CStdString extension = hlsStreaming ? "m3u8" : "mkv";
+  CURL tURL = server->BuildURL("/video/:/transcode/universal/start." + extension);
   
   tURL.SetOption("path", item.GetProperty("unprocessed_key").asString());
   tURL.SetOption("session", g_guiSettings.GetString("system.uuid"));
-  tURL.SetOption("protocol", "hls");
+  tURL.SetOption("protocol", hlsStreaming ? "hls" : "http");
   tURL.SetOption("directPlay", "0");
   tURL.SetOption("directStream", "1");
 
@@ -234,28 +246,6 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
       CLog::Log(LOGDEBUG, "CPlexTranscoderClient::GetTranscodeURL file has a selected subtitle that is external.");
       tURL.SetOption("skipSubtitles", "1");
     }
-  }
-  
-  CStdString extraAudioFormats;
-  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
-  
-  if (AUDIO_IS_BITSTREAM(audioMode))
-  {
-    if (g_guiSettings.GetBool("audiooutput.ac3passthrough"))
-    {
-      extraAudioFormats += "add-transcode-target-audio-codec(type=videoProfile&context=streaming&protocol=hls&audioCodec=ac3)";
-      extraAudioFormats += "+add-transcode-target-audio-codec(type=videoProfile&context=streaming&protocol=hls&audioCodec=eac3)";
-    }
-    
-    if (g_guiSettings.GetBool("audiooutput.dtspassthrough"))
-    {
-      if (!extraAudioFormats.empty())
-        extraAudioFormats+="+";
-      extraAudioFormats += "add-transcode-target-audio-codec(type=videoProfile&context=streaming&protocol=hls&audioCodec=dca)";
-    }
-    
-    if (!extraAudioFormats.empty())
-      tURL.SetOption("X-Plex-Client-Profile-Extra", extraAudioFormats);
   }
   
   /* since we are passing the URL to FFMPEG we need to pass our 
