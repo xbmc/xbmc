@@ -1,6 +1,6 @@
 #include "PlexServerVersion.h"
 
-#include "Utils/StringUtils.h"
+#include "utils/StringUtils.h"
 #include "log.h"
 
 #include <boost/lexical_cast.hpp>
