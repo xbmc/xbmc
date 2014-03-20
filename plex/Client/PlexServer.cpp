@@ -155,7 +155,7 @@ CPlexServer::MarkUpdateFinished(int connType)
     vector<CPlexConnectionPtr>::iterator it = find(m_connections.begin(), m_connections.end(), conn);
     m_connections.erase(it);
 
-    if (m_activeConnection->Equals(conn))
+    if (m_activeConnection && m_activeConnection->Equals(conn))
     {
       CLog::Log(LOGDEBUG, "CPlexServer::MarkUpdateFinished Lost activeConnection for server %s", GetName().c_str());
       m_activeConnection.reset();
