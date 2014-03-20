@@ -222,19 +222,21 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   if (mediaItem->m_selectedMediaPart)
     tURL.SetOption("partIndex", mediaItem->m_selectedMediaPart->GetProperty("partIndex").asString());
   
-  /*
-  if (item.HasProperty("viewOffset"))
+  if (hlsStreaming)
+  {
+    tURL.SetOption("fastSeek", "1");
+  }
+  else if (item.HasProperty("viewOffset"))
   {
     int offset = item.GetProperty("viewOffset").asInteger() / 1000;
     tURL.SetOption("offset", boost::lexical_cast<std::string>(offset));
-  }*/
-  tURL.SetOption("fastSeek", "1");
-  
+  }
+
   std::string bitrate = GetCurrentBitrate(isLocal);
   tURL.SetOption("maxVideoBitrate", bitrate);
   tURL.SetOption("videoQuality", _qualities[bitrate]);
   tURL.SetOption("videoResolution", _resolutions[bitrate]);
-  
+
   /* PHT can render subtitles itself no need to include them in the transcoded video
    * UNLESS it's a embedded subtitle, we can't extract it from the file or UNLESS the
    * user have checked the always transcode subtitles option in settings */
