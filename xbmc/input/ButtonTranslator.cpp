@@ -260,6 +260,8 @@ static const ActionMapping windows[] =
         {"plexpreplaymusic"         , WINDOW_PLEX_PREPLAY_MUSIC},
         {"myplexlogin"              , WINDOW_MYPLEX_LOGIN},
         {"filterdialog"             , WINDOW_DIALOG_FILTER_SORT},
+        {"plexsubtitlepicker"       , WINDOW_DIALOG_PLEX_SUBTITLE_PICKER},
+        {"plexaudiopicker"          , WINDOW_DIALOG_PLEX_AUDIO_PICKER },        
         /* END PLEX */
         {"programs"                 , WINDOW_PROGRAMS},
         {"pictures"                 , WINDOW_PICTURES},
