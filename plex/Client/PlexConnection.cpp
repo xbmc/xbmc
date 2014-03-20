@@ -81,8 +81,13 @@ CPlexConnection::Merge(CPlexConnectionPtr otherConnection)
 
 bool CPlexConnection::Equals(const CPlexConnectionPtr &other)
 {
-  bool uriMatches = m_url.Get().Equals(other->GetAddress().Get());
-  bool tokenMatches = GetAccessToken().Equals(other->GetAccessToken());
+  if (!other) return false;
+
+  CStdString url1 = m_url.Get();
+  CStdString url2 = other->m_url.Get();
+
+  bool uriMatches = url1.Equals(url2);
+  bool tokenMatches = m_token.Equals(other->m_token);
 
   return (uriMatches && tokenMatches);
 }
