@@ -124,14 +124,14 @@
 	<variable name="HomeListItemFullInfoTitle">
 		<!-- on deck -->
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.TVShowTitle]</value>
-		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.Title]</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.Label]</value>
 		<!-- recently added -->
 		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(season) | Container(11000).ListItem.Type(episode)]">$INFO[Container(11000).ListItem.TVShowTitle]</value>
-		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(clip)]">$INFO[Container(11000).ListItem.Title]</value>
+		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(clip)]">$INFO[Container(11000).ListItem.Label]</value>
 		<!-- queue -->
-		<value condition="ControlGroup(7003).HasFocus">$INFO[Container(11003).ListItem.Title]</value>
+		<value condition="ControlGroup(7003).HasFocus">$INFO[Container(11003).ListItem.Label]</value>
 		<!-- recommended -->
-		<value condition="ControlGroup(7005).HasFocus">$INFO[Container(11004).ListItem.Title]</value>
+		<value condition="ControlGroup(7005).HasFocus">$INFO[Container(11004).ListItem.Label]</value>
 		<!--><value>No title available (debug).</value>-->
 	</variable>
 	<include name="debugInfos">
@@ -335,7 +335,7 @@
 				</control>
 				<control type="label">
 					<include>debugFont</include>
-					<label>ListItem.Title : [COLOR=orangeLight]$INFO[ListItem.Title][/COLOR]</label>
+					<label>ListItem.Label : [COLOR=orangeLight]$INFO[ListItem.Label][/COLOR]</label>
 				</control>
 				<control type="label">
 					<include>debugFont</include>

@@ -319,7 +319,7 @@
 						<posy>20</posy>
 						<width>360</width>
 						<height>0</height>
-						<label>$INFO[ListItem.Title]</label>
+						<label>$INFO[ListItem.Label]</label>
 						<info>ListItem.Label</info>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -409,7 +409,7 @@
 						<posy>20</posy>
 						<width>360</width>
 						<height>0</height>
-						<label>$INFO[ListItem.Title]</label>
+						<label>$INFO[ListItem.Label]</label>
 						<info>ListItem.Label</info>
 						<align>right</align>
 						<aligny>center</aligny>

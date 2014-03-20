@@ -23,17 +23,17 @@
 		<value condition="ListItem.Type(episode) + !Container.Content(episodes) + !Container.Content(channel)">$INFO[ListItem.TVShowTitle]</value>
 		<value condition="ListItem.Type(episode) + Container.Content(episodes)">$INFO[ListItem.Label]</value>
 		<value condition="ListItem.Type(episode) + Container.Content(channel)">$INFO[Container.FolderName]</value>
-		<value condition="ListItem.Type(movie)">$INFO[ListItem.Title]</value>
+		<value condition="ListItem.Type(movie)">$INFO[ListItem.Label]</value>
 		<value condition="ListItem.Type(artist)">$INFO[ListItem.Label]</value>
 		<value condition="ListItem.Type(album) | Container.Content(songs) | [Container.Content(channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Artist]</value>
 		<value condition="[Container.Content(albums) + !ListItem.Type(album)] | Container.Content(seasons)">$INFO[Container.Property(parentTitle)]</value>
-		<value>$INFO[ListItem.Title]</value>
+		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="ListItemFullInfoSecondTitle">
 		<value condition="ListItem.Type(movie) + !Container.Content(homemovies)">$INFO[ListItem.DurationStr]$INFO[ListItem.Year, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 		<value condition="ListItem.Type(movie) + Container.Content(homemovies)">$INFO[ListItem.DurationStr]</value>
 		<value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(SourceTitle)]</value>
-		<value condition="ListItem.Type(episode) + !Container.Content(episodes)">$INFO[ListItem.Title]</value>
+		<value condition="ListItem.Type(episode) + !Container.Content(episodes)">$INFO[ListItem.Label]</value>
 		<value condition="ListItem.Type(episode) + Container.Content(episodes) + IsEmpty(Container.Property(mixedParents)) ">$INFO[Container.SecondTitle] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
 		<value condition="ListItem.Type(episode) + [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.Season)]">Season $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
 		<value condition="ListItem.Type(episode) + [Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.Season)]">$LOCALIZE[31145] [COLOR=orange]&#xB7;[/COLOR] Episode $INFO[ListItem.Episode]</value>
@@ -44,7 +44,7 @@
 		<value condition="ListItem.Type(album)">$INFO[ListItem.Album]</value>
 		<value condition="[Container.Content(albums) + !ListItem.Type(album)]">$INFO[ListItem.Label]</value>
 		<value condition="Container.Content(channels)">$INFO[ListItem.Property(ServerName)]</value>
-		<value condition="Container.Content(songs) | [Container.Content(channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Title]$INFO[ListItem.DurationStr, [COLOR=orange]&#xB7;[/COLOR] ]</value>
+		<value condition="Container.Content(songs) | [Container.Content(channel) + Skin.String(SectionType,music)]">$INFO[ListItem.Label]$INFO[ListItem.DurationStr, [COLOR=orange]&#xB7;[/COLOR] ]</value>
 	</variable>
 	<variable name="ListItemFullInfoThirdTitle">
 	    <value condition="Window.IsActive(mysharedcontent)">$INFO[ListItem.Property(ServerName)]</value>
@@ -437,25 +437,25 @@
 	<variable name="HomeListItemFullInfoTitle">
 		<!-- on deck -->
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.TVShowTitle]</value>
-		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.Title]</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.Label]</value>
 		<!-- recently added -->
 		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(season) | Container(11000).ListItem.Type(episode)]">$INFO[Container(11000).ListItem.TVShowTitle]</value>
-		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(clip)]">$INFO[Container(11000).ListItem.Title]</value>
+		<value condition="ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(clip)]">$INFO[Container(11000).ListItem.Label]</value>
 		<!-- queue -->
-		<value condition="ControlGroup(7003).HasFocus">$INFO[Container(11003).ListItem.Title]</value>
+		<value condition="ControlGroup(7003).HasFocus">$INFO[Container(11003).ListItem.Label]</value>
 		<!-- recommended -->
-		<value condition="ControlGroup(7005).HasFocus">$INFO[Container(11004).ListItem.Title]</value>
+		<value condition="ControlGroup(7005).HasFocus">$INFO[Container(11004).ListItem.Label]</value>
 		<!--><value>No title available (debug).</value>-->
 	</variable>
 	<variable name="HomeListItemFullInfoSecondTitle">
 		<!-- on deck -->
-		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.Title]</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.Label]</value>
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.DurationStr]$INFO[Container(11001).ListItem.Year, &#xB7; ]</value>
 		<!-- recently added -->
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(season)">$INFO[Container(11000).ListItem.Title]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">$INFO[Container(11000).ListItem.Title]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(season)">$INFO[Container(11000).ListItem.Label]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">$INFO[Container(11000).ListItem.Label]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">$INFO[Container(11000).ListItem.DurationStr]$INFO[Container(11000).ListItem.Year, &#xB7; ]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album)">$INFO[Container(11000).ListItem.Title]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album)">$INFO[Container(11000).ListItem.Label]</value>
 		<!-- queue -->
 		<value condition="ControlGroup(7003).HasFocus]">$INFO[Container(11003).ListItem.DurationStr]</value>
 		<!-- recommended -->
@@ -785,11 +785,11 @@
 	<!-- SearchItemFullInfo -->
 	<variable name="SearchItemFullInfoTitle">
 		<!-- movie -->
-		<value condition="ControlGroup(7001).HasFocus">$INFO[Container(9001).ListItem.Title]</value>
+		<value condition="ControlGroup(7001).HasFocus">$INFO[Container(9001).ListItem.Label]</value>
 		<!-- tv show -->
 		<value condition="ControlGroup(7002).HasFocus">$INFO[Container(9002).ListItem.TVShowTitle]</value>
 		<!-- tv episode -->
-		<value condition="ControlGroup(7004).HasFocus">$INFO[Container(9004).ListItem.Title]</value>
+		<value condition="ControlGroup(7004).HasFocus">$INFO[Container(9004).ListItem.Label]</value>
 	</variable>
 	<variable name="SearchItemFullInfoSecondTitle">
 		<!-- movie -->

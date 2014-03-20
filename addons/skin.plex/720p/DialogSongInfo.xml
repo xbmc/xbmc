@@ -42,7 +42,7 @@
 				<posx>InfoDialogTitleXOffset</posx>
 				<control type="label">
 					<description>Song title</description>
-					<label>$INFO[ListItem.Title]</label>
+					<label>$INFO[ListItem.Label]</label>
 					<include>InfoDialogTitle</include>
 				</control>
 				<control type="grouplist">
