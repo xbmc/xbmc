@@ -346,7 +346,9 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
 
   /* make sure that the playlist player doesn't reset our position */
   item->SetProperty("forceStartOffset", true);
-  
+  g_application.WakeUpScreenSaverAndDPMS();
+  g_application.ResetSystemIdleTimer();
+
   if (item->GetPlexDirectoryType() == PLEX_DIR_TYPE_TRACK)
   {
     if (g_application.IsPlaying() || g_application.IsPaused())
@@ -365,7 +367,6 @@ void CPlexHTTPRemoteHandler::playMedia(const ArgMap &arguments)
     if (g_application.IsPlayingVideo())
       CApplicationMessenger::Get().MediaStop(true);
     
-    g_application.WakeUpScreenSaverAndDPMS();
     CLog::Log(LOGDEBUG, "PlexHTTPRemoteHandler::playMedia photo slideshow with start %s", list.Get(idx)->GetPath().c_str());
     CApplicationMessenger::Get().PictureSlideShow(itemURL.Get(), false, list.Get(idx)->GetPath());
   }

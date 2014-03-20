@@ -165,6 +165,9 @@ CPlexRemoteSubscriberPtr CPlexRemoteSubscriberManager::addSubscriber(CPlexRemote
   }
   else
   {
+    g_application.WakeUpScreenSaverAndDPMS();
+    g_application.ResetSystemIdleTimer();
+
     m_map[subscriber->getUUID()] = subscriber;
     CLog::Log(LOGDEBUG, "CPlexRemoteSubscriberManager::addSubscriber added %s:%d [%s]",
               subscriber->getURL().GetHostName().c_str(), subscriber->getURL().GetPort(), subscriber->getUUID().c_str());
