@@ -185,7 +185,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_EncodedSampleRate = m_pAudioCodec->GetEncodedSampleRate();
     m_Channels = m_pAudioCodec->GetChannels();
     m_ChannelInfo = m_pAudioCodec->GetChannelMap();
-
+    m_BitsPerCodedSample = static_cast<CDemuxStreamAudio*>(pStream)->iBitsPerSample;
   }
   if (nErrors >= 10)
   {
@@ -205,7 +205,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Bitrate = m_pAudioCodec->GetBitRate();
   if (!m_Bitrate && m_TotalTime)
   {
-    m_Bitrate = ((m_pInputStream->GetLength()*1000) / m_TotalTime) * 8;
+    m_Bitrate = (int)(((m_pInputStream->GetLength()*1000) / m_TotalTime) * 8);
   }
   m_pDemuxer->GetStreamCodecName(m_nAudioStream,m_CodecName);
 
