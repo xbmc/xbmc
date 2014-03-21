@@ -493,6 +493,10 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
   pa_format_info_set_channels(info[0], m_Channels);
 
+  // Pulse can resample everything between 1 hz and 192000 hz
+  // Make sure we are in the range that we originally added
+  format.m_sampleRate = std::max(5512U, std::min(format.m_sampleRate, 192000U));
+
   // PA requires m_encodedRate in order to do EAC3
   unsigned int samplerate;
   if (m_passthrough)
