@@ -1045,7 +1045,6 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
   CSharedLock lock(m_streamsLock);
 
   m_playerGUIData.m_sampleRate    = si->m_sampleRate;
-  m_playerGUIData.m_bitsPerSample = si->m_bytesPerSample << 3;
   m_playerGUIData.m_channelCount  = si->m_channelInfo.Count();
   m_playerGUIData.m_canSeek       = si->m_decoder.CanSeek();
 
@@ -1054,6 +1053,7 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
   m_playerGUIData.m_audioBitrate = codec ? codec->m_Bitrate : 0;
   strncpy(m_playerGUIData.m_codec,codec ? codec->m_CodecName : "",20);
   m_playerGUIData.m_cacheLevel   = codec ? codec->GetCacheLevel() : 0;
+  m_playerGUIData.m_bitsPerSample = (codec && codec->m_BitsPerCodedSample) ? codec->m_BitsPerCodedSample : si->m_bytesPerSample << 3;
 
   int64_t total = si->m_decoder.TotalTime();
   if (si->m_endOffset)
