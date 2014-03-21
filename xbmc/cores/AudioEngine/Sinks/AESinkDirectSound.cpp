@@ -548,9 +548,12 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
       WAVEFORMATEX* smpwfxex = (WAVEFORMATEX*)varName.blob.pBlobData;
       deviceInfo.m_channels = layoutsByChCount[std::max(std::min(smpwfxex->nChannels, (WORD) DS_SPEAKER_COUNT), (WORD) 2)];
       deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
-      deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_AC3));
-      // DTS is played with the same infrastructure as AC3
-      deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_DTS));
+      if (aeDeviceType != AE_DEVTYPE_PCM)
+      {
+        deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_AC3));
+        // DTS is played with the same infrastructure as AC3
+        deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_DTS));
+      }
       deviceInfo.m_sampleRates.push_back(std::min(smpwfxex->nSamplesPerSec, (DWORD) 192000));
     }
     else
