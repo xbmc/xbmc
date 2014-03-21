@@ -1092,7 +1092,7 @@ bool CSettingNumber::fromString(const std::string &strValue, double &value)
     return false;
 
   char *end = NULL;
-  value = (int)strtod(strValue.c_str(), &end);
+  value = strtod(strValue.c_str(), &end);
   if (end != NULL && *end != '\0')
     return false;
 
