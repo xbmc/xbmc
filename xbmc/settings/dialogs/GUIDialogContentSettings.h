@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,11 +20,11 @@
  *
  */
 
-#include <vector>
+#include <map>
 
+#include "addons/Addon.h"
 #include "addons/Scraper.h"
-#include "addons/AddonManager.h"
-#include "settings/dialogs/GUIDialogSettings.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
 namespace VIDEO
 {
@@ -32,45 +32,70 @@ namespace VIDEO
 }
 class CFileItemList;
 
-class CGUIDialogContentSettings : public CGUIDialogSettings
+class CGUIDialogContentSettings : public CGUIDialogSettingsManualBase
 {
 public:
-  CGUIDialogContentSettings(void);
-  virtual ~CGUIDialogContentSettings(void);
-  virtual bool OnMessage(CGUIMessage& message);
+  CGUIDialogContentSettings();
+  virtual ~CGUIDialogContentSettings();
 
-  static bool Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE musicContext = CONTENT_NONE);
-  static bool Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, CONTENT_TYPE musicContext = CONTENT_NONE);
-  static bool ShowForDirectory(const CStdString& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
+  // specializations of CGUIControl
+  virtual bool OnMessage(CGUIMessage &message);
+
+  // specialization of CGUIWindow
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+
+  CONTENT_TYPE GetContent() const { return m_content; }
+  void SetContent(CONTENT_TYPE content);
+
+  const ADDON::ScraperPtr& GetScraper() const { return m_scraper; }
+  void SetScraper(ADDON::ScraperPtr scraper) { m_scraper = scraper; }
+
+  void SetScanSettings(const VIDEO::SScanSettings &scanSettings);
+  bool GetScanRecursive() const { return m_scanRecursive; }
+  bool GetUseDirectoryNames() const { return m_useDirectoryNames; }
+  bool GetContainsSingleItem() const { return m_containsSingleItem; }
+  bool GetExclude() const { return m_exclude; }
+  bool GetNoUpdating() const { return m_noUpdating; }
+
+  static bool Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE content = CONTENT_NONE);
+  static bool Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, CONTENT_TYPE content = CONTENT_NONE);
+
 protected:
+  // specializations of CGUIWindow
+  virtual void OnInitWindow();
+
+  // implementations of ISettingCallback
+  virtual void OnSettingChanged(const CSetting *setting);
+
+  // specialization of CGUIDialogSettingsBase
+  virtual bool AllowResettingSettings() const { return false; }
+  virtual void Save();
   virtual void OnOkay();
   virtual void OnCancel();
-  virtual void OnInitWindow();
-  virtual void SetupPage();
-  virtual void CreateSettings();
+  virtual void SetupView();
+
+  // specialization of CGUIDialogSettingsManualBase
+  virtual void InitializeSettings();
+
+private:
   void FillContentTypes();
-  void FillContentTypes(const CONTENT_TYPE& content);
-  void AddContentType(const CONTENT_TYPE& content);
-  void FillListControl();
-  virtual void OnSettingChanged(SettingInfo& setting);
+  void FillContentTypes(CONTENT_TYPE content);
+  void FillScraperList();
 
-  bool m_bNeedSave;
-
-  bool m_bShowScanSettings;
-  bool m_bScanRecursive;
-  bool m_bUseDirNames;
-  bool m_bSingleItem;
-  bool m_bExclude;
-  bool m_bNoUpdate;
-  std::map<CONTENT_TYPE, ADDON::VECADDONS> m_scrapers;
-  std::map<CONTENT_TYPE, ADDON::AddonPtr>  m_lastSelected;
-  CFileItemList* m_vecItems;
-
-  CStdString m_strContentType;
-  ADDON::AddonPtr m_scraper;
-  CStdString m_defaultScraper;
+  bool m_needsSaving;
   CONTENT_TYPE m_content;
-  CONTENT_TYPE m_origContent;
+  CONTENT_TYPE m_originalContent;
+  ADDON::ScraperPtr m_scraper;
+
+  bool m_showScanSettings;
+  bool m_scanRecursive;
+  bool m_useDirectoryNames;
+  bool m_containsSingleItem;
+  bool m_exclude;
+  bool m_noUpdating;
+  
+  std::map<CONTENT_TYPE, ADDON::VECADDONS> m_scrapers;
+  std::map<CONTENT_TYPE, ADDON::AddonPtr> m_lastSelected;
+  CFileItemList* m_vecItems;
 };
