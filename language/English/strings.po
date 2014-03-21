@@ -13863,12 +13863,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
+msgid "Settings for PVR/Live TV features."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36202"
-msgid "No info available yet."
+msgid "Category for general settings for PVR/Live TV features."
 msgstr ""
 
 #: system/settings/settings.xml
