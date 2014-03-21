@@ -1,0 +1,30 @@
+New:
+  * MUCH better transcoder streaming. When PMS 0.9.9.8 is released PHT will be able to do
+    live matroska streaming instead of HTTP Live Streaming. This solves a lot of problems
+    including:
+    * Audio data is now copied into the matroska container, that means that even
+      if you are transcoding you will get the full DTS/AC3 audio stream.
+    * Caching now works properly with transcoding
+    * Faster start-up and faster seek/resume than HLS.
+
+Fixes:
+  * Fix pre-play for TV-Shows.
+  * Run window resizing barriers on all platforms.
+  * Make plasma users happy by moving the clock and label in the fanart screensaver around a bit
+  * Fix a VERY BAD connection discovery bug that has been around for way to long
+  * Mute silly warning from curl.
+  * Fix watch state when playing items from shared servers
+  * Fix a few issues with "Please Wait" dialog when opening PrePlay
+  * Several fixes to search window
+  * Wake up screensaver and DPMS on playMedia and subscribe commands
+  * Several crashes fixed.
+
+Skin updates:
+  * Change Title to Label in search results.
+  * Resize the Unwatched indicators and some vertical position tweaks in Search.
+  * Center "Searching" label vertically to the spinner.
+  * Fix "Clips" search results layout.
+  * Change "Clips" search results section to "Channels", and localize all section titles.
+  * Home lists: show the episode information overlay on selected item.
+  * Search: show unwatched overlay on selected item.
+  
