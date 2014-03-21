@@ -433,7 +433,10 @@ void CBitstreamConverter::Close(void)
 bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 {
   if (m_convertBuffer)
-    free(m_convertBuffer), m_convertBuffer = NULL;
+  {  
+    m_dllAvUtil->av_free(m_convertBuffer);
+    m_convertBuffer = NULL;
+  }
   m_inputSize = 0;
   m_convertSize = 0;
   m_inputBuffer = NULL;
