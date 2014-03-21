@@ -444,6 +444,7 @@
   </MyPictures>
   <ContextMenu>
     <keyboard>
+      <y>Back</y>
       <c>Back</c>
       <menu>Back</menu>
     </keyboard>
