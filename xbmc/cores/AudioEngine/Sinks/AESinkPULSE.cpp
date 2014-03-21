@@ -224,12 +224,14 @@ struct SinkInfoStruct
   bool isHWDevice;
   bool device_found;
   pa_threaded_mainloop *mainloop;
+  int samplerate;
   SinkInfoStruct()
   {
     list = NULL;
     isHWDevice = false;
     device_found = true;
     mainloop = NULL;
+    samplerate = 0;
   }
 };
 
@@ -256,6 +258,7 @@ static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void
     if (i->flags && (i->flags & PA_SINK_HARDWARE))
       sinkStruct->isHWDevice = true;
 
+    sinkStruct->samplerate = i->sample_spec.rate;
     sinkStruct->device_found = true;
   }
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
@@ -512,6 +515,30 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
   m_Channels = format.m_channelLayout.Count();
 
+  // store information about current sink
+  SinkInfoStruct sinkStruct;
+  sinkStruct.mainloop = m_MainLoop;
+  sinkStruct.device_found = false;
+
+  // get real sample rate of the device we want to open - to avoid resampling
+  bool isDefaultDevice = (device == "Default");
+  WaitForOperation(pa_context_get_sink_info_by_name(m_Context, isDefaultDevice ? NULL : device.c_str(), SinkInfoCallback, &sinkStruct), m_MainLoop, "Get Sink Info");
+  if (sinkStruct.device_found)
+  {
+    if (!m_passthrough)
+      format.m_sampleRate = sinkStruct.samplerate;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Sink %s not found", device.c_str());
+    pa_threaded_mainloop_unlock(m_MainLoop);
+    Deinitialize();
+  }
+
+  // Pulse can resample everything between 1 hz and 192000 hz
+  // Make sure we are in the range that we originally added
+  format.m_sampleRate = std::max(5512U, std::min(format.m_sampleRate, 192000U));
+
   pa_format_info *info[1];
   info[0] = pa_format_info_new();
   info[0]->encoding = AEFormatToPulseEncoding(format.m_dataFormat);
@@ -521,10 +548,6 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     pa_format_info_set_channel_map(info[0], &map);
   }
   pa_format_info_set_channels(info[0], m_Channels);
-
-  // Pulse can resample everything between 1 hz and 192000 hz
-  // Make sure we are in the range that we originally added
-  format.m_sampleRate = std::max(5512U, std::min(format.m_sampleRate, 192000U));
 
   // PA requires m_encodedRate in order to do EAC3
   unsigned int samplerate;
@@ -587,29 +610,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   pa_stream_set_write_callback(m_Stream, StreamRequestCallback, m_MainLoop);
   pa_stream_set_latency_update_callback(m_Stream, StreamLatencyUpdateCallback, m_MainLoop);
 
-  bool isDefaultDevice = (device == "Default");
-
   pa_buffer_attr buffer_attr;
-  SinkInfoStruct sinkStruct;
-  sinkStruct.mainloop = m_MainLoop;
-  sinkStruct.isHWDevice = false;
-  sinkStruct.device_found = true; // needed to get default device opened
-
-  if (!isDefaultDevice)
-  {
-    // we need to check if the device we want to open really exists
-    // default device is handled in a special manner
-    sinkStruct.device_found = false; // if sink is valid it will be set true in pa_context_get_sink_info_by_name
-    WaitForOperation(pa_context_get_sink_info_by_name(m_Context, device.c_str(),SinkInfoCallback, &sinkStruct), m_MainLoop, "Get Sink Info");
-  }
-
-  if(!sinkStruct.device_found) // ActiveAE will open us again with a valid device name
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Sink %s not found", device.c_str());
-    pa_threaded_mainloop_unlock(m_MainLoop);
-    Deinitialize();
-    return false;
-  }
 
   // 200ms max latency
   // 50ms min packet size
