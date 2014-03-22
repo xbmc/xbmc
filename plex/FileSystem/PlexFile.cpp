@@ -34,6 +34,8 @@ vector<stringPair> CPlexFile::GetHeaderList()
   hdrs.push_back(stringPair("X-Plex-Device", "RaspberryPi"));
 #elif defined(TARGET_DARWIN_IOS)
   hdrs.push_back(stringPair("X-Plex-Device", "AppleTV"));
+#elif defined(OPENELEC)
+  hdrs.push_back(strinPair("X-Plex-Device", "OpenELEC"));
 #else
   hdrs.push_back(stringPair("X-Plex-Device", "PC"));
 #endif
