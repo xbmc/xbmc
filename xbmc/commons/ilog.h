@@ -49,6 +49,7 @@
 #define LOGRTMP   (1 << (LOGMASKBIT+4))
 #define LOGDBUS   (1 << (LOGMASKBIT+5))
 #define LOGJSONRPC   (1 << (LOGMASKBIT+6))
+#define LOGAUDIO  (1 << (LOGMASKBIT+7))
 
 #ifdef __GNUC__
 #define ATTRIB_LOG_FORMAT __attribute__((format(printf,3,4)))
