@@ -3522,6 +3522,11 @@ void CApplication::UpdateFileState()
           m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
         }
       }
+      if (m_pPlayer->IsPlayingAudio())
+      {
+        if (m_progressTrackingItem->IsAudioBook())
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+      }
     }
   }
 }

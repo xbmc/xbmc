@@ -16514,7 +16514,12 @@ msgctxt "#37045"
 msgid "Extract chapter thumbnails for presentation in the chapters/bookmarks dialog. This might increase CPU load."
 msgstr ""
 
-#empty strings from id 37046 to 38009
+#empty strings from id 37046 to 380098
+
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#38009"
+msgid "Resume audiobook"
+msgstr ""
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

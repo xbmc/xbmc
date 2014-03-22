@@ -166,6 +166,7 @@ bool CSaveFileStateJob::DoWork()
       std::string redactPath = CURL::GetRedacted(progressTrackingFile);
       CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, redactPath.c_str());
 
+      CMusicDatabase musicdatabase;
       if (m_updatePlayCount)
       {
 #if 0
@@ -174,7 +175,6 @@ bool CSaveFileStateJob::DoWork()
         if (dialog && !dialog->IsDialogRunning())
 #endif
         {
-          CMusicDatabase musicdatabase;
           if (!musicdatabase.Open())
           {
             CLog::Log(LOGWARNING, "%s - Unable to open music database. Can not save file state!", __FUNCTION__);
@@ -188,6 +188,12 @@ bool CSaveFileStateJob::DoWork()
             musicdatabase.Close();
           }
         }
+      }
+      if (m_item.IsAudioBook())
+      {
+        musicdatabase.Open();
+        musicdatabase.SetResumeBookmarkForAudioBook(m_item, m_item.m_lStartOffset+m_bookmark.timeInSeconds*75);
+        musicdatabase.Close();
       }
     }
   }
