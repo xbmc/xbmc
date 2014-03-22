@@ -1004,9 +1004,8 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   g_curlInterface.multi_add_handle(m_state->m_multiHandle, m_state->m_easyHandle);
 
-  m_state->SetReadBuffer(NULL, 0);
-
-  return true;
+  // Make sure we can write:
+  return (Write(NULL, 0) != -1);
 }
 
 int CCurlFile::Write(const void* lpBuf, int64_t uiBufSize)
