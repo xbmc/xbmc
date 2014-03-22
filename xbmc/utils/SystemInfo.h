@@ -35,7 +35,7 @@
 class CSysData
 {
 public:
-  enum INTERNET_STATE { UNKNOWN, CONNECTED, NO_DNS, DISCONNECTED };
+  enum INTERNET_STATE { UNKNOWN, CONNECTED, DISCONNECTED };
   CSysData()
   {
     Reset();

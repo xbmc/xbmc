@@ -99,8 +99,6 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
   XFILE::CCurlFile http;
   if (http.IsInternet())
     return CSysData::CONNECTED;
-  if (http.IsInternet(false))
-    return CSysData::NO_DNS;
   return CSysData::DISCONNECTED;
 }
 
@@ -207,8 +205,6 @@ CStdString CSysInfo::TranslateInfo(int info) const
   case SYSTEM_INTERNET_STATE:
     if (m_info.internetState == CSysData::CONNECTED)
       return g_localizeStrings.Get(13296);
-    else if (m_info.internetState == CSysData::NO_DNS)
-      return g_localizeStrings.Get(13274);
     else
       return g_localizeStrings.Get(13297);
   case SYSTEM_BATTERY_LEVEL:
