@@ -71,40 +71,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
         section = itSection->second;
 
       if (section->Deserialize(sectionNode, update))
-      {
-        section->CheckRequirements();
-        if (!update)
-          m_sections[section->GetId()] = section;
-
-        // get all settings and add them to the settings map
-        for (SettingCategoryList::const_iterator categoryIt = section->GetCategories().begin(); categoryIt != section->GetCategories().end(); ++categoryIt)
-        {
-          (*categoryIt)->CheckRequirements();
-          for (SettingGroupList::const_iterator groupIt = (*categoryIt)->GetGroups().begin(); groupIt != (*categoryIt)->GetGroups().end(); ++groupIt)
-          {
-            (*groupIt)->CheckRequirements();
-            for (SettingList::const_iterator settingIt = (*groupIt)->GetSettings().begin(); settingIt != (*groupIt)->GetSettings().end(); ++settingIt)
-            {
-              (*settingIt)->CheckRequirements();
-
-              const std::string &settingId = (*settingIt)->GetId();
-              SettingMap::iterator setting = m_settings.find(settingId);
-              if (setting == m_settings.end())
-              {
-                Setting tmpSetting = { NULL };
-                std::pair<SettingMap::iterator, bool> tmpIt = m_settings.insert(make_pair(settingId, tmpSetting));
-                setting = tmpIt.first;
-              }
-                
-              if (setting->second.setting == NULL)
-              {
-                setting->second.setting = *settingIt;
-                (*settingIt)->SetCallback(this);
-              }
-            }
-          }
-        }
-      }
+        AddSection(section);
       else
       {
         CLog::Log(LOGWARNING, "CSettingsManager: unable to read section \"%s\"", sectionId.c_str());
@@ -114,38 +81,6 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
     }
       
     sectionNode = sectionNode->NextSibling(SETTING_XML_ELM_SECTION);
-  }
-
-  for (SettingMap::iterator itSettingDep = m_settings.begin(); itSettingDep != m_settings.end(); ++itSettingDep)
-  {
-    if (itSettingDep->second.setting == NULL)
-      continue;
-
-    const SettingDependencies& deps = itSettingDep->second.setting->GetDependencies();
-    for (SettingDependencies::const_iterator depIt = deps.begin(); depIt != deps.end(); ++depIt)
-    {
-      std::set<std::string> settingIds = depIt->GetSettings();
-      for (std::set<std::string>::const_iterator itSettingId = settingIds.begin(); itSettingId != settingIds.end(); ++itSettingId)
-      {
-        SettingMap::iterator setting = m_settings.find(*itSettingId);
-        if (setting == m_settings.end())
-          continue;
-
-        bool newDep = true;
-        SettingDependencies &settingDeps = setting->second.dependencies[itSettingDep->first];
-        for (SettingDependencies::const_iterator itDeps = settingDeps.begin(); itDeps != settingDeps.end(); ++itDeps)
-        {
-          if (itDeps->GetType() == depIt->GetType())
-          {
-            newDep = false;
-            break;
-          }
-        }
-
-        if (newDep)
-          settingDeps.push_back(*depIt);
-      }
-    }
   }
 
   return true;
@@ -264,6 +199,77 @@ void CSettingsManager::SetInitialized()
     SettingMap::iterator tmpIterator = setting++;
     if (tmpIterator->second.setting == NULL)
       m_settings.erase(tmpIterator);
+  }
+
+  // figure out all the dependencies between settings
+  for (SettingMap::iterator itSettingDep = m_settings.begin(); itSettingDep != m_settings.end(); ++itSettingDep)
+  {
+    if (itSettingDep->second.setting == NULL)
+      continue;
+
+    const SettingDependencies& deps = itSettingDep->second.setting->GetDependencies();
+    for (SettingDependencies::const_iterator depIt = deps.begin(); depIt != deps.end(); ++depIt)
+    {
+      std::set<std::string> settingIds = depIt->GetSettings();
+      for (std::set<std::string>::const_iterator itSettingId = settingIds.begin(); itSettingId != settingIds.end(); ++itSettingId)
+      {
+        SettingMap::iterator setting = m_settings.find(*itSettingId);
+        if (setting == m_settings.end())
+          continue;
+
+        bool newDep = true;
+        SettingDependencies &settingDeps = setting->second.dependencies[itSettingDep->first];
+        for (SettingDependencies::const_iterator itDeps = settingDeps.begin(); itDeps != settingDeps.end(); ++itDeps)
+        {
+          if (itDeps->GetType() == depIt->GetType())
+          {
+            newDep = false;
+            break;
+          }
+        }
+
+        if (newDep)
+          settingDeps.push_back(*depIt);
+      }
+    }
+  }
+}
+
+void CSettingsManager::AddSection(CSettingSection *section)
+{
+  if (section == NULL)
+    return;
+
+  section->CheckRequirements();
+  m_sections[section->GetId()] = section;
+
+  // get all settings and add them to the settings map
+  for (SettingCategoryList::const_iterator categoryIt = section->GetCategories().begin(); categoryIt != section->GetCategories().end(); ++categoryIt)
+  {
+    (*categoryIt)->CheckRequirements();
+    for (SettingGroupList::const_iterator groupIt = (*categoryIt)->GetGroups().begin(); groupIt != (*categoryIt)->GetGroups().end(); ++groupIt)
+    {
+      (*groupIt)->CheckRequirements();
+      for (SettingList::const_iterator settingIt = (*groupIt)->GetSettings().begin(); settingIt != (*groupIt)->GetSettings().end(); ++settingIt)
+      {
+        (*settingIt)->CheckRequirements();
+
+        const std::string &settingId = (*settingIt)->GetId();
+        SettingMap::iterator setting = m_settings.find(settingId);
+        if (setting == m_settings.end())
+        {
+          Setting tmpSetting = { NULL };
+          std::pair<SettingMap::iterator, bool> tmpIt = m_settings.insert(make_pair(settingId, tmpSetting));
+          setting = tmpIt.first;
+        }
+
+        if (setting->second.setting == NULL)
+        {
+          setting->second.setting = *settingIt;
+          (*settingIt)->SetCallback(this);
+        }
+      }
+    }
   }
 }
 

@@ -129,6 +129,8 @@ public:
    */
   void SetLoaded() { m_loaded = true; }
 
+  void AddSection(CSettingSection *section);
+
   /*!
    \brief Registers the given ISettingCallback implementation to be triggered
    for the given list of settings.
