@@ -40,7 +40,7 @@ class CZeroconf
 public:
 
   //tries to publish this service via zeroconf
-  //fcr_identifier can be used to stop this service later
+  //fcr_identifier can be used to stop or reannounce this service later
   //fcr_type is the zeroconf service type to publish (e.g. _http._tcp for webserver)
   //fcr_name is the name of the service to publish. The hostname is currently automatically appended
   //         and used for name collisions. e.g. XBMC would get published as fcr_name@Martn or, after collision fcr_name@Martn-2
@@ -51,6 +51,14 @@ public:
                       const std::string& fcr_name,
                       unsigned int f_port,
                       std::vector<std::pair<std::string, std::string> > txt /*= std::vector<std::pair<std::string, std::string> >()*/);
+  
+  //tries to rebroadcast that service on the network without removing/readding
+  //this can be achieved by changing a fake txt record. Implementations should
+  //implement it by doing so.
+  //
+  //fcr_identifier - the identifier of the already published service which should be reannounced
+  // returns true on successfull reannonuce - false if this service isn't published yet
+  bool ForceReAnnounceService(const std::string& fcr_identifier);
 
   ///removes the specified service
   ///returns false if fcr_identifier does not exist
@@ -90,6 +98,11 @@ protected:
                                 const std::string& fcr_name,
                                 unsigned int f_port,
                                 const std::vector<std::pair<std::string, std::string> >& txt) = 0;
+
+  //methods to implement for concrete implementations
+  //update this service
+  virtual bool doForceReAnnounceService(const std::string& fcr_identifier) = 0;
+  
   //removes the service if published
   virtual bool doRemoveService(const std::string& fcr_ident) = 0;
 
