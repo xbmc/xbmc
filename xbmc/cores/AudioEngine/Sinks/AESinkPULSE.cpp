@@ -533,6 +533,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     CLog::Log(LOGERROR, "PulseAudio: Sink %s not found", device.c_str());
     pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
+    return false;
   }
 
   // Pulse can resample everything between 1 hz and 192000 hz
