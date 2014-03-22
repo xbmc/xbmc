@@ -102,13 +102,13 @@ void CAEChannelInfo::ResolveChannels(const CAEChannelInfo& rhs)
   }
 
   /* we need to ensure we end up with rear or side channels for downmix to work */
-  if (srcHasSL && !dstHasSL && dstHasRL)
+  if (srcHasSL && !dstHasSL && dstHasRL && !newInfo.HasChannel(AE_CH_BL))
     newInfo += AE_CH_BL;
-  if (srcHasSR && !dstHasSR && dstHasRR)
+  if (srcHasSR && !dstHasSR && dstHasRR && !newInfo.HasChannel(AE_CH_BR))
     newInfo += AE_CH_BR;
-  if (srcHasRL && !dstHasRL && dstHasSL)
+  if (srcHasRL && !dstHasRL && dstHasSL && !newInfo.HasChannel(AE_CH_SL))
     newInfo += AE_CH_SL;
-  if (srcHasRR && !dstHasRR && dstHasSR)
+  if (srcHasRR && !dstHasRR && dstHasSR && !newInfo.HasChannel(AE_CH_SR))
     newInfo += AE_CH_SR;
 
   // mix back center if not available in destination layout
