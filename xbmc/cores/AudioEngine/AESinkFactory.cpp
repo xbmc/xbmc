@@ -247,8 +247,10 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
   info.m_sinkName = "ALSA";
   CAESinkALSA::EnumerateDevicesEx(info.m_deviceInfoList, force);
   if(!info.m_deviceInfoList.empty())
+  {
     list.push_back(info);
     return;
+  }
   #endif
 
   info.m_deviceInfoList.clear();
