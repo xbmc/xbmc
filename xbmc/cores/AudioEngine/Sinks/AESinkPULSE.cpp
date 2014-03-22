@@ -497,9 +497,9 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   unsigned int samplerate;
   if (m_passthrough)
   {
-    if (format.m_encodedRate == 0)
+    if (format.m_encodedRate == 0 || format.m_encodedRate > format.m_sampleRate)
     {
-      CLog::Log(LOGNOTICE, "PulseAudio: Passthrough in use but m_encodedRate is not set - fallback to m_sampleRate");
+      CLog::Log(LOGNOTICE, "PulseAudio: Passthrough in use but m_encodedRate is not set or too large: %u - fallback to m_sampleRate", format.m_encodedRate);
       samplerate = format.m_sampleRate;
     }
     else
