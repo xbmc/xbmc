@@ -172,7 +172,7 @@ template <typename T>
 class CDVDMsgType : public CDVDMsg
 {
 public:
-  CDVDMsgType(Message type, T value)
+  CDVDMsgType(Message type, const T &value)
     : CDVDMsg(type)
     , m_value(value)
   {}
