@@ -315,7 +315,13 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
       m_tmp_diff = 365;
 
     CDateTime newStart = timestart + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
-    CDateTime newEnd = timestop  + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
+    CDateTime newEnd = timestop + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
+
+    /* add a day to end time if end time is before start time */
+    // TODO this should be removed after separate end date control was added
+    if (newEnd < newStart)
+      newEnd += CDateTimeSpan(1, 0, 0, 0);
+
     tag->SetStartFromLocalTime(newStart);
     tag->SetEndFromLocalTime(newEnd);
 
@@ -351,12 +357,19 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     if (CGUIDialogNumeric::ShowAndGetTime(timerEndTime, g_localizeStrings.Get(14066)))
     {
       CDateTime timestop = timerEndTime;
-      int start_day       = tag->EndAsLocalTime().GetDay();
-      int start_month     = tag->EndAsLocalTime().GetMonth();
-      int start_year      = tag->EndAsLocalTime().GetYear();
+      // TODO add separate end date control to schedule a show with more then 24 hours
+      int start_day       = tag->StartAsLocalTime().GetDay();
+      int start_month     = tag->StartAsLocalTime().GetMonth();
+      int start_year      = tag->StartAsLocalTime().GetYear();
       int start_hour      = timestop.GetHour();
       int start_minute    = timestop.GetMinute();
       CDateTime newEnd(start_year, start_month, start_day, start_hour, start_minute, 0);
+      
+      /* add a day to end time if end time is before start time */
+      // TODO this should be removed after separate end date control was added
+      if (newEnd < tag->StartAsLocalTime())
+        newEnd += CDateTimeSpan(1, 0, 0, 0);
+
       tag->SetEndFromLocalTime(newEnd);
 
       timerEndTimeStr = tag->EndAsLocalTime().GetAsLocalizedTime("", false);
