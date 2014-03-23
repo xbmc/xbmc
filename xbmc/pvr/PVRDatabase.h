@@ -236,7 +236,7 @@ namespace PVR
      * @param version The version to update the database from.
      */
     void UpdateTables(int version);
-    int GetMinSchemaVersion() { return 11; }
+    virtual int GetMinSchemaVersion() const { return 11; }
 
     bool PersistGroupMembers(CPVRChannelGroup &group);
 
