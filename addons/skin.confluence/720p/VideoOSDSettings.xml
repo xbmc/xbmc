@@ -71,15 +71,6 @@
 				<ondown>2</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
-			<control type="label" id="3">
-				<description>No Settings Label</description>
-				<left>20</left>
-				<top>180</top>
-				<width>760</width>
-				<align>center</align>
-				<label>13390</label>
-				<font>font13</font>
-			</control>
 			<control type="grouplist" id="5">
 				<description>control area</description>
 				<left>40</left>
@@ -111,7 +102,7 @@
 				<orientation>vertical</orientation>
 			</control>
 		</control>
-		<control type="sliderex" id="10">
+		<control type="sliderex" id="13">
 			<description>Default Slider</description>
 			<height>40</height>
 			<texturenofocus border="5">button-nofocus.png</texturenofocus>
