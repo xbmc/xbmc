@@ -345,6 +345,7 @@ namespace XBMCAddon
             if (!bResult)
               value = emptyString;
           }
+          break;
         default:
           value = emptyString;
           break;
