@@ -1883,14 +1883,14 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   CStdString strMovieFileNameNoExt(URIUtils::ReplaceExtension(strMovieFileName, ""));
   strLookInPaths.push_back(strPath);
   
-  if (!CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() && !CSettings::Get().GetString("subtitles.custompath").empty()) // to avoid checking non-existent directories (network) every time..
+  if (!CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked())
   {
-    if (!g_application.getNetwork().IsAvailable() && !URIUtils::IsHD(CSettings::Get().GetString("subtitles.custompath")))
+    if (!g_application.getNetwork().IsAvailable() && !URIUtils::IsHD("special://subtitles"))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
       CMediaSettings::Get().SetAdditionalSubtitleDirectoryChecked(-1); // disabled
     }
-    else if (!CDirectory::Exists(CSettings::Get().GetString("subtitles.custompath")))
+    else if (!CDirectory::Exists("special://subtitles"))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
       CMediaSettings::Get().SetAdditionalSubtitleDirectoryChecked(-1); // disabled
@@ -1963,8 +1963,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
   if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() == 1)
   {
-    strPath = CSettings::Get().GetString("subtitles.custompath");
-    URIUtils::AddSlashAtEnd(strPath);
+    strPath = "special://subtitles/";
     strLookInPaths.push_back(strPath);
   }
   

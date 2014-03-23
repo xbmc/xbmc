@@ -930,23 +930,6 @@
           </constraints>
           <control type="spinner" format="integer" />
         </setting>
-        <setting id="subtitles.custompath" parent="subtitles.storagemode" type="path" label="21366" help="36191">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-            <writable>false</writable>
-            <sources>
-              <source>videos</source>
-            </sources>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="subtitles.storagemode" operator="is">1</dependency>
-          </dependencies>
-          <control type="button" format="path">
-            <heading>657</heading>
-          </control>
-        </setting>
         <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="24123">
           <level>1</level>
           <default>true</default>

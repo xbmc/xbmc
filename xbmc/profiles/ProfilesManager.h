@@ -169,6 +169,7 @@ public:
   std::string GetThumbnailsFolder() const;
   std::string GetVideoThumbFolder() const;
   std::string GetBookmarksThumbFolder() const;
+  std::string GetSubtitlesFolder() const;
   std::string GetLibraryFolder() const;
   std::string GetSettingsFile() const;
 

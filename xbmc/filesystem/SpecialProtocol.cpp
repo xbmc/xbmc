@@ -130,7 +130,7 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
     RootDir = FullFileName;
 
   if (RootDir.Equals("subtitles"))
-    translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString("subtitles.custompath"), FileName);
+    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetSubtitlesFolder(), FileName);
   else if (RootDir.Equals("userdata"))
     translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), FileName);
   else if (RootDir.Equals("database"))
