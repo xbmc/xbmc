@@ -56,12 +56,12 @@ ALSA_LIB=
 LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
   #not for raspberry pi
-  ifneq ($(CPU),arm)
+  ifneq ($(TARGET_PLATFORM),raspberry-pi)
     DEPENDS += alsa-lib libsdl linux-system-libs
     ALSA_LIB = alsa-lib
     LINUX_SYSTEM_LIBS = linux-system-libs
-    FFMPEG_DEPENDS = gnutls
   endif
+  FFMPEG_DEPENDS = gnutls
 endif
 
 .PHONY: $(DEPENDS)

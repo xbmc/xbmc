@@ -18,6 +18,7 @@ ARCHIVE_TOOL_NATIVE=$(NATIVEPREFIX)/bin/tar
 OS=@platform_os@
 CROSS_COMPILING=@cross_compiling@
 ARCH_DEFINES=@ARCH_DEFINES@
+TARGET_PLATFORM=@use_platform@
 
 HAS_ZLIB=@has_zlib@
 NEED_LIBICONV=@need_libiconv@
