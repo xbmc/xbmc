@@ -940,9 +940,6 @@
               <source>videos</source>
             </sources>
           </constraints>
-          <dependencies>
-            <dependency type="enable" setting="subtitles.storagemode" operator="is">1</dependency>
-          </dependencies>
           <control type="button" format="path">
             <heading>657</heading>
           </control>
