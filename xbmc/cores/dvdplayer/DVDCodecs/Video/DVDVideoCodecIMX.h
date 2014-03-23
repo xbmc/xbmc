@@ -178,6 +178,7 @@ protected:
   int  VpuFindBuffer(void *frameAddr);
 
   static const int    m_extraVpuBuffers;   // Number of additional buffers for VPU
+  static const int    m_maxVpuDecodeLoops; // Maximum iterations in VPU decoding loop
   static CCriticalSection m_codecBufferLock;
 
   CDVDStreamInfo      m_hints;             // Hints from demuxer at stream opening
@@ -202,4 +203,5 @@ protected:
   int                 m_bytesToBeConsumed; // Remaining bytes in VPU
   double              m_previousPts;       // Enable to keep pts when needed
   bool                m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
+  double              m_dts;               // Current dts
 };
