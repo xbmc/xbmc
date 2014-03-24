@@ -29,5 +29,8 @@ public:
   CFileItemList m_networks;
   void MoveToItem(int idx);
 
+  CCriticalSection m_navigationLock;
+  bool m_navigating;
+
   CPlexNavigationHelper m_navHelper;
 };

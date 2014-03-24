@@ -25,6 +25,7 @@
 CGUIWindowPlexPreplayVideo::CGUIWindowPlexPreplayVideo(void)
  : CGUIMediaWindow(WINDOW_PLEX_PREPLAY_VIDEO, "PlexPreplayVideo.xml")
 {
+  m_navigating = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,6 +113,12 @@ bool CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
 {
+  CSingleLock lk(m_navigationLock);
+  if (m_navigating) return;
+
+  m_navigating = true;
+  lk.Leave();
+
   CFileItemPtr item = m_vecItems->Get(0);
   if (item && item->GetPlexDirectoryType() == PLEX_DIR_TYPE_EPISODE)
   {
@@ -133,7 +140,11 @@ void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
             {
               CFileItemPtr i2 = list.Get(i + idx);
               if (!i2)
+              {
+                lk.Enter();
+                m_navigating = false;
                 return;
+              }
 
               if (m_navHelper.CacheUrl(i2->GetPath(), cancel))
                 Update(i2->GetPath(), false);
@@ -143,6 +154,9 @@ void CGUIWindowPlexPreplayVideo::MoveToItem(int idx)
       }
     }
   }
+
+  lk.Enter();
+  m_navigating = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
