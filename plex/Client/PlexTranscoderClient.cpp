@@ -226,7 +226,8 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   {
     tURL.SetOption("fastSeek", "1");
   }
-  else if (item.HasProperty("viewOffset"))
+  else if (item.HasProperty("viewOffset") &&
+           item.m_lStartOffset == STARTOFFSET_RESUME)
   {
     int offset = item.GetProperty("viewOffset").asInteger() / 1000;
     tURL.SetOption("offset", boost::lexical_cast<std::string>(offset));
