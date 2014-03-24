@@ -199,16 +199,21 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   bool hlsStreaming = false;
   if (needVersion > serverVersion)
   {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Server version to old...", "You need Plex Media Server 0.9.9.8 or later for Matroska streaming");
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Using HLS transcode streaming", "You need at least Plex Media Server 0.9.9.8 for Matroska streaming", false, 2500, false);
     hlsStreaming = true;
   }
 
-  /* Note that we are building a HTTP URL here, because XBMC will pass the
-   * URL directly to FFMPEG, and as we all know, ffmpeg doesn't handle
-   * plexserver:// protocol */
-  CStdString extension = hlsStreaming ? "m3u8" : "mkv";
-  CURL tURL = server->BuildURL("/video/:/transcode/universal/start." + extension);
-  
+  CURL tURL;
+  if (hlsStreaming)
+  {
+    /* Note that we are building a HTTP URL here, because XBMC will pass the
+     * URL directly to FFMPEG, and as we all know, ffmpeg doesn't handle
+     * plexserver:// protocol */
+    tURL = server->BuildURL("/video/:/transcode/universal/start.m3u8");
+  }
+  else
+    tURL = server->BuildPlexURL("/video/:/transcode/universal/start.mkv");
+
   tURL.SetOption("path", item.GetProperty("unprocessed_key").asString());
   tURL.SetOption("session", g_guiSettings.GetString("system.uuid"));
   tURL.SetOption("protocol", hlsStreaming ? "hls" : "http");
@@ -253,9 +258,12 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   
   /* since we are passing the URL to FFMPEG we need to pass our 
    * headers as well */
-  std::vector<stringPair> hdrs = XFILE::CPlexFile::GetHeaderList();
-  BOOST_FOREACH(stringPair p, hdrs)
-    tURL.SetOption(p.first, p.second);
+  if (hlsStreaming)
+  {
+    std::vector<stringPair> hdrs = XFILE::CPlexFile::GetHeaderList();
+    BOOST_FOREACH(stringPair p, hdrs)
+      tURL.SetOption(p.first, p.second);
+  }
   
   return tURL;
 }
