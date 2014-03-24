@@ -38,6 +38,9 @@ namespace PERIPHERALS
     virtual void OnOkay(void);
     virtual void ResetDefaultSettings(void);
     virtual void UpdatePeripheralSettings(void);
+    
+    static CStdString FormatInteger(float value, float minimum);
+    static CStdString FormatFloat(float value, float minimum);
 
     CFileItem *                      m_item;
     bool                             m_bIsInitialising;
