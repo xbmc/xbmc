@@ -332,7 +332,7 @@ void RegisterDeviceChangedCB(bool bRegister, void *ref)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
-: m_latentFrames(0), m_outputBitstream(false), m_outputBuffer(NULL), m_planar(false), m_planarBuffer(NULL), m_buffer(NULL)
+: m_latentFrames(0), m_outputBufferIndex(0), m_outputBitstream(false), m_outputBuffer(NULL), m_planar(false), m_planarBuffer(NULL), m_buffer(NULL)
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
@@ -526,10 +526,11 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
       format.m_channelLayout += CAChannelMap[i];
   }
 
+  m_outputBufferIndex = outputIndex;
   m_outputBitstream   = passthrough && outputFormat.mFormatID == kAudioFormatLinearPCM;
 
   std::string formatString;
-  CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, outputIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
+  CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, m_outputBufferIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
 
   SetHogMode(passthrough);
 
@@ -618,6 +619,7 @@ void CAESinkDARWINOSX::Deinitialize()
     delete m_buffer;
     m_buffer = NULL;
   }
+  m_outputBufferIndex = 0;
   m_outputBitstream = false;
 
   delete[] m_outputBuffer;
@@ -756,7 +758,7 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
   }
   else
   {
-    for (unsigned int i = 0; i < outOutputData->mNumberBuffers; i++)
+    if(sink->m_outputBufferIndex < outOutputData->mNumberBuffers)
     {
       if (sink->m_outputBitstream)
       {
@@ -764,12 +766,12 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
          We reverse the float->S16LE conversion done in the stream or device */
         static const float mul = 1.0f / (INT16_MAX + 1);
 
-        unsigned int wanted = std::min(outOutputData->mBuffers[i].mDataByteSize / sizeof(float), (size_t)sink->m_format.m_frameSamples)  * sizeof(int16_t);
+        unsigned int wanted = std::min(outOutputData->mBuffers[sink->m_outputBufferIndex].mDataByteSize / sizeof(float), (size_t)sink->m_format.m_frameSamples)  * sizeof(int16_t);
         if (wanted <= sink->m_buffer->GetReadSize())
         {
           sink->m_buffer->Read((unsigned char *)sink->m_outputBuffer, wanted);
           int16_t *src = sink->m_outputBuffer;
-          float  *dest = (float*)outOutputData->mBuffers[i].mData;
+          float  *dest = (float*)outOutputData->mBuffers[sink->m_outputBufferIndex].mData;
           for (unsigned int i = 0; i < wanted / 2; i++)
             *dest++ = *src++ * mul;
         }
@@ -777,9 +779,9 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
       else
       {
         /* buffers appear to come from CA already zero'd, so just copy what is wanted */
-        unsigned int wanted = outOutputData->mBuffers[i].mDataByteSize;
+        unsigned int wanted = outOutputData->mBuffers[sink->m_outputBufferIndex].mDataByteSize;
         unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
-        sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[i].mData, bytes);
+        sink->m_buffer->Read((unsigned char*)outOutputData->mBuffers[sink->m_outputBufferIndex].mData, bytes);
         LogLevel(bytes, wanted);
       }
 
