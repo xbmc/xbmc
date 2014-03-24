@@ -156,9 +156,9 @@ class CPlexDownloadFileJob : public CJob
 class CPlexThemeMusicPlayerJob : public CJob
 {
   public:
-    CPlexThemeMusicPlayerJob(const CFileItem& item) : m_item(item) {}
+    CPlexThemeMusicPlayerJob(const CStdString& themeUrl) : m_themeUrl(themeUrl) {}
     bool DoWork();
-    CFileItem m_item;
+    CStdString m_themeUrl;
     CStdString m_fileToPlay;
 };
 

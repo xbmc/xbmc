@@ -223,12 +223,11 @@ CPlexDownloadFileJob::DoWork()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexThemeMusicPlayerJob::DoWork()
 {
-  CStdString themeMusicUrl = m_item.GetProperty("theme").asString();
-  if (themeMusicUrl.empty())
+  if (m_themeUrl.empty())
     return false;
 
   Crc32 crc;
-  crc.ComputeFromLowerCase(themeMusicUrl);
+  crc.ComputeFromLowerCase(m_themeUrl);
 
   CStdString hex;
   hex.Format("%08x", (unsigned int)crc);
@@ -248,7 +247,7 @@ bool CPlexThemeMusicPlayerJob::DoWork()
 
     bool failed = false;
 
-    if (plex.Open(themeMusicUrl))
+    if (plex.Open(m_themeUrl))
     {
       bool done = false;
       int64_t read = 0;
@@ -271,7 +270,7 @@ bool CPlexThemeMusicPlayerJob::DoWork()
       }
     }
 
-    CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayerJob::DoWork cached %s => %s", themeMusicUrl.c_str(), m_fileToPlay.c_str());
+    CLog::Log(LOGDEBUG, "CPlexThemeMusicPlayerJob::DoWork cached %s => %s", m_themeUrl.c_str(), m_fileToPlay.c_str());
 
     plex.Close();
     localFile.Close();

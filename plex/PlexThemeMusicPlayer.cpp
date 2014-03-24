@@ -71,7 +71,7 @@ CFileItemPtr CPlexThemeMusicPlayer::getThemeItem(const CStdString &url)
 void CPlexThemeMusicPlayer::playForItem(const CFileItem &item)
 {
   if (g_guiSettings.GetBool("backgroundmusic.thememusicenabled") && !g_application.IsPlaying())
-    CJobManager::GetInstance().AddJob(new CPlexThemeMusicPlayerJob(item), this);
+    CJobManager::GetInstance().AddJob(new CPlexThemeMusicPlayerJob(item.GetProperty("theme").asString()), this);
 }
 
 void CPlexThemeMusicPlayer::OnQueueNextItem()
