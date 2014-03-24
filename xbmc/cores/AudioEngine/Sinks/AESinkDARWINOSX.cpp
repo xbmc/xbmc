@@ -131,6 +131,7 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
 : m_latentFrames(0),
+  m_outputBufferIndex(0),
   m_outputBitstream(false),
   m_planes(1),
   m_frameSizePerPlane(0),
@@ -222,10 +223,11 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   /* Update our AE format */
   format.m_sampleRate    = outputFormat.mSampleRate;
   
+  m_outputBufferIndex = 0;
   m_outputBitstream   = passthrough == PassthroughModeBitstream;
 
   std::string formatString;
-  CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, (unsigned int)0, (unsigned int)outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
+  CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, (unsigned int)m_outputBufferIndex, (unsigned int)outputStream, StreamDescriptionToString(outputFormat, formatString), m_outputBitstream ? "bitstreamed passthrough" : "");
 
   m_device.Open(deviceID);
   SetHogMode(passthrough != PassthroughModeNone);
@@ -315,6 +317,7 @@ void CAESinkDARWINOSX::Deinitialize()
     delete m_buffer;
     m_buffer = NULL;
   }
+  m_outputBufferIndex = 0;
   m_outputBitstream = false;
   m_planes = 1;
 
@@ -446,11 +449,14 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
       {
         for (unsigned int i = 0; i < sink->m_buffer->NumPlanes(); i++)
         {
+          unsigned int outputIdx = i;
+          if (sink->m_buffer->NumPlanes() == 1)
+            outputIdx = sink->m_outputBufferIndex;
           int16_t src;
           sink->m_buffer->Read((unsigned char *)&src, sizeof(int16_t), i);
-          if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
+          if (outputIdx < outOutputData->mNumberBuffers && outOutputData->mBuffers[outputIdx].mData)
           {
-            float *dest = (float *)outOutputData->mBuffers[i].mData;
+            float *dest = (float *)outOutputData->mBuffers[outputIdx].mData;
             dest[j] = src * mul;
           }
         }
@@ -464,8 +470,12 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
       unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
       for (unsigned int i = 0; i < sink->m_buffer->NumPlanes(); i++)
       {
-        if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
-          sink->m_buffer->Read((unsigned char *)outOutputData->mBuffers[i].mData, bytes, i);
+        unsigned int outputIdx = i;
+        if (sink->m_buffer->NumPlanes() == 1)
+          outputIdx = sink->m_outputBufferIndex;
+
+        if (outputIdx < outOutputData->mNumberBuffers && outOutputData->mBuffers[outputIdx].mData)
+          sink->m_buffer->Read((unsigned char *)outOutputData->mBuffers[outputIdx].mData, bytes, i);
         else
           sink->m_buffer->Read(NULL, bytes, i);
       }
