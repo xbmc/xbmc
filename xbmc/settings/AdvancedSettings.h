@@ -393,6 +393,7 @@ class CAdvancedSettings
     void SetVisualizeDirtyRegions(bool visualize);
     void SetDirtyRegionsAlgorithm(int algorithm);
     void SetDirtyRegionsNoFlipTimeout(int timeout);
+    bool m_bUseMatroskaTranscodes;
     /* END PLEX */
 };
 

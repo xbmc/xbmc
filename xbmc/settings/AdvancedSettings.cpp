@@ -366,6 +366,7 @@ void CAdvancedSettings::Initialize()
   m_imageRes = 1080;
 
   m_bForceJpegImageFormat = false;
+  m_bUseMatroskaTranscodes = false;
 
   /* END PLEX */
 
@@ -1161,6 +1162,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetBoolean(pRootElement, "alwaysreinitcoreaudio", m_bAlwaysReinitCoreAudio);
   XMLUtils::GetBoolean(pRootElement, "hidefanouts", m_bHideFanouts);
   XMLUtils::GetBoolean(pRootElement, "forcejpegimageformat", m_bForceJpegImageFormat);
+  XMLUtils::GetBoolean(pRootElement, "usematroskatranscode", m_bUseMatroskaTranscodes);
   /* END PLEX */
 
   // load in the GUISettings overrides:

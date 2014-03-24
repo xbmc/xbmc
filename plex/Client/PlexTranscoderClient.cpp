@@ -24,6 +24,7 @@
 #include "PlexMediaDecisionEngine.h"
 #include "Client/PlexServerVersion.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "AdvancedSettings.h"
 
 #include "log.h"
 
@@ -194,23 +195,19 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
 {
   bool isLocal = server->GetActiveConnection()->IsLocal();
 
+  bool hlsStreaming = !g_advancedSettings.m_bUseMatroskaTranscodes;
+
   CPlexServerVersion serverVersion(server->GetVersion());
-  CPlexServerVersion needVersion("0.9.9.8.0-abc123");
-  bool hlsStreaming = false;
-  if (needVersion > serverVersion)
-  {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "Using HLS transcode streaming", "You need at least Plex Media Server 0.9.9.8 for Matroska streaming", false, 2500, false);
+  CPlexServerVersion needVersion("0.9.9.7.435-abc123");
+  if (!hlsStreaming && (needVersion > serverVersion))
     hlsStreaming = true;
-  }
 
   CURL tURL;
   if (hlsStreaming)
-  {
     /* Note that we are building a HTTP URL here, because XBMC will pass the
      * URL directly to FFMPEG, and as we all know, ffmpeg doesn't handle
      * plexserver:// protocol */
     tURL = server->BuildURL("/video/:/transcode/universal/start.m3u8");
-  }
   else
     tURL = server->BuildPlexURL("/video/:/transcode/universal/start.mkv");
 
