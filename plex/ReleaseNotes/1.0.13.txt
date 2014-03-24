@@ -1,0 +1,10 @@
+New:
+  * Internal testing showed that Matroska streaming that was announced in 1.0.12
+    release notes did not work well with aspects of seeking and resuming. It has
+    therefore been disabled while we figure these issues out. You can still try it
+    out by adding <usematroskatranscode>on</usematroskatranscode> in your advancedsettings.xml
+    but it will not work well with seeking and resuming. You have been warned.
+
+ Fixes:
+   * Fixed deadlock in "Please Wait" dialog when navigating TV Shows.
+   
