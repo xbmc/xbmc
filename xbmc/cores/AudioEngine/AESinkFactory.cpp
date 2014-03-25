@@ -127,7 +127,15 @@ IAESink *CAESinkFactory::TrySink(std::string &driver, std::string &device, AEAud
 
   if (sink->Initialize(format, device))
   {
-    return sink;
+    // do some sanity checks
+    if (format.m_sampleRate == 0)
+      CLog::Log(LOGERROR, "Sink %s:%s returned invalid sample rate", driver.c_str(), device.c_str());
+    else if (format.m_channelLayout.Count() == 0)
+      CLog::Log(LOGERROR, "Sink %s:%s returned invalid channel layout", driver.c_str(), device.c_str());
+    else if (format.m_frames < 256)
+      CLog::Log(LOGERROR, "Sink %s:%s returned invalid buffer size: %d", driver.c_str(), device.c_str(), format.m_frames);
+    else
+      return sink;
   }
   sink->Deinitialize();
   delete sink;

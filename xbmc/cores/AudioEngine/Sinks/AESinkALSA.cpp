@@ -988,7 +988,10 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
                 continue;
               it = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), i);
               if (it == info.m_dataFormats.end())
+              {
                 info.m_dataFormats.push_back(i);
+                CLog::Log(LOGNOTICE, "CAESinkALSA::%s data format \"%s\" on device \"%s\" seems to be not supported.", __FUNCTION__, CAEUtil::DataFormatToStr(i), device.c_str());
+              }
             }
 
             if (badHDMI)
