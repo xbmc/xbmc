@@ -71,7 +71,7 @@ fi
 config="$config --disable-libvorbis"
 config="$config --enable-gpl --enable-postproc --enable-static --enable-pthreads"
 config="$config --enable-muxer=spdif --enable-muxer=adts --enable-encoder=ac3 --enable-encoder=aac"
-config="$config --enable-protocol=http --enable-runtime-cpudetect --enable-gnutls"
+config="$config --enable-protocol=http --enable-runtime-cpudetect"
 config="$config --prefix=$ROOT/plex/Dependencies/xbmc-depends/ffmpeg-$outputdir"
 config="$config --cc=clang"
 
