@@ -145,11 +145,11 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_Buffer       = (uint8_t*)av_malloc(m_NeededBytes);
   m_BufferSize   = 0;
 
-  m_BufferFrame = avcodec_alloc_frame();
+  m_BufferFrame = av_frame_alloc();
   if(!m_BufferFrame || !m_Buffer)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to allocate necessary buffers");
-    if(m_BufferFrame) avcodec_free_frame(&m_BufferFrame);
+    if(m_BufferFrame) av_frame_free(&m_BufferFrame);
     if(m_Buffer) av_freep(&m_Buffer);
     av_freep(&m_Stream);
     av_freep(&m_Format->pb);
@@ -172,7 +172,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     if(!m_SwrCtx || swr_init(m_SwrCtx) < 0)
     {
       CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to initialize the resampler");
-      avcodec_free_frame(&m_BufferFrame);
+      av_frame_free(&m_BufferFrame);
       av_freep(&m_Buffer);
       av_freep(&m_Stream);
       av_freep(&m_Format->pb);
@@ -182,14 +182,14 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
 
     m_ResampledBufferSize = av_samples_get_buffer_size(NULL, iInChannels, m_NeededFrames, m_OutFormat, 0);
     m_ResampledBuffer = (uint8_t*)av_malloc(m_ResampledBufferSize);
-    m_ResampledFrame = avcodec_alloc_frame();
+    m_ResampledFrame = av_frame_alloc();
     if(!m_ResampledBuffer || !m_ResampledFrame)
     {
       CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to allocate a frame for resampling");
-      if (m_ResampledFrame)  avcodec_free_frame(&m_ResampledFrame);
+      if (m_ResampledFrame)  av_frame_free(&m_ResampledFrame);
       if (m_ResampledBuffer) av_freep(&m_ResampledBuffer);
       if (m_SwrCtx)          swr_free(&m_SwrCtx);
-      avcodec_free_frame(&m_BufferFrame);
+      av_frame_free(&m_BufferFrame);
       av_freep(&m_Buffer);
       av_freep(&m_Stream);
       av_freep(&m_Format->pb);
@@ -206,10 +206,10 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   if (!CEncoder::Init(strFile, iInChannels, iInRate, iInBits))
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to call CEncoder::Init");
-    if (m_ResampledFrame ) avcodec_free_frame(&m_ResampledFrame);
+    if (m_ResampledFrame ) av_frame_free(&m_ResampledFrame);
     if (m_ResampledBuffer) av_freep(&m_ResampledBuffer);
     if (m_SwrCtx)          swr_free(&m_SwrCtx);
-    avcodec_free_frame(&m_BufferFrame);
+    av_frame_free(&m_BufferFrame);
     av_freep(&m_Buffer);
     av_freep(&m_Stream);
     av_freep(&m_Format->pb);
@@ -229,10 +229,10 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   if (avformat_write_header(m_Format, NULL) != 0)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to write the header");
-    if (m_ResampledFrame ) avcodec_free_frame(&m_ResampledFrame);
+    if (m_ResampledFrame ) av_frame_free(&m_ResampledFrame);
     if (m_ResampledBuffer) av_freep(&m_ResampledBuffer);
     if (m_SwrCtx)          swr_free(&m_SwrCtx);
-    avcodec_free_frame(&m_BufferFrame);
+    av_frame_free(&m_BufferFrame);
     av_freep(&m_Buffer);
     av_freep(&m_Stream);
     av_freep(&m_Format->pb);
@@ -345,10 +345,10 @@ bool CEncoderFFmpeg::Close()
 
     /* Flush if needed */
     av_freep(&m_Buffer);
-    avcodec_free_frame(&m_BufferFrame);
+    av_frame_free(&m_BufferFrame);
 
     if (m_SwrCtx)          swr_free(&m_SwrCtx);
-    if (m_ResampledFrame ) avcodec_free_frame(&m_ResampledFrame);
+    if (m_ResampledFrame ) av_frame_free(&m_ResampledFrame);
     if (m_ResampledBuffer) av_freep(&m_ResampledBuffer);
     m_NeedConversion = false;
 

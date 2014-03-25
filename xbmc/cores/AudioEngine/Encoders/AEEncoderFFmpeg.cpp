@@ -286,7 +286,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
    * sadly, we have to alloc/dealloc it everytime since we have no guarantee the
    * data argument will be constant over iterated calls and the frame needs to
    * setup pointers inside data */
-  frame = avcodec_alloc_frame();
+  frame = av_frame_alloc();
   if (!frame)
     return 0;
 
@@ -302,7 +302,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
       if (!m_ResampBuffer)
       {
         CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Encode - Failed to allocate %i bytes buffer for resampling", buf_size);
-        avcodec_free_frame(&frame);
+        av_frame_free(&frame);
         return 0;
       }
       m_ResampBufferSize = buf_size;
@@ -317,7 +317,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
     if (swr_convert(m_SwrCtx, frame->extended_data, frames, &input, frames) < 0)
     {
       CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Encode - Resampling failed");
-      avcodec_free_frame(&frame);
+      av_frame_free(&frame);
       return 0;
     }
   }
@@ -334,7 +334,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
   int ret = avcodec_encode_audio2(m_CodecCtx, &m_Pkt, frame, &got_output);
 
   /* free temporary data */
-  avcodec_free_frame(&frame);
+  av_frame_free(&frame);
 
   if (ret < 0 || !got_output)
   {
@@ -369,7 +369,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
    * sadly, we have to alloc/dealloc it everytime since we have no guarantee the
    * data argument will be constant over iterated calls and the frame needs to
    * setup pointers inside data */
-  frame = avcodec_alloc_frame();
+  frame = av_frame_alloc();
   if (!frame)
     return 0;
 
@@ -389,7 +389,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   int ret = avcodec_encode_audio2(m_CodecCtx, &m_Pkt, frame, &got_output);
 
   /* free temporary data */
-  avcodec_free_frame(&frame);
+  av_frame_free(&frame);
 
   if (ret < 0 || !got_output)
   {

@@ -2482,7 +2482,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
 
   AVPacket avpkt;
   AVFrame *decoded_frame = NULL;
-  decoded_frame = avcodec_alloc_frame();
+  decoded_frame = av_frame_alloc();
 
   if (avcodec_open2(dec_ctx, dec, NULL) >= 0)
   {

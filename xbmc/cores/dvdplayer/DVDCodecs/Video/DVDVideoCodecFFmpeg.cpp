@@ -301,7 +301,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
-  m_pFrame = avcodec_alloc_frame();
+  m_pFrame = av_frame_alloc();
   if (!m_pFrame) return false;
 
   m_pFilterFrame = av_frame_alloc();
