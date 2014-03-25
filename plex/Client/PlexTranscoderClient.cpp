@@ -22,14 +22,10 @@
 #include "Client/PlexServerManager.h"
 #include "Client/PlexServer.h"
 #include "PlexMediaDecisionEngine.h"
-<<<<<<< HEAD
 #include "Client/PlexServerVersion.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "AdvancedSettings.h"
-
-=======
 #include "Client/PlexTranscoderClientRPi.h"
->>>>>>> [RasPlex][ENH] Adding Transcoding Support
 #include "log.h"
 
 #include <map>
