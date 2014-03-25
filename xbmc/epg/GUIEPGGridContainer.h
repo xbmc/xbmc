@@ -51,7 +51,7 @@ namespace EPG
 
   public:
     CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width, float height,
-                         ORIENTATION orientation, int scrollTime, int preloadItems, int minutesPerPage,
+                         int scrollTime, int preloadItems, int minutesPerPage,
                          int rulerUnit, const CTextureInfo& progressIndicatorTexture);
     virtual ~CGUIEPGGridContainer(void);
     virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); };
@@ -146,8 +146,6 @@ namespace EPG
     void RenderProgressIndicator();
 
     CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
-
-    ORIENTATION m_orientation;
 
     struct ItemsPtr
     {
