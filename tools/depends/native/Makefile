@@ -36,6 +36,7 @@ libsdl_image-native: libsdl-native libpng-native libjpeg-turbo-native tiff-nativ
 distribute-native: python26-native
 distutilscross-native: python26-native distribute-native
 tar-native: xz-native
+python26-native: zlib-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native
