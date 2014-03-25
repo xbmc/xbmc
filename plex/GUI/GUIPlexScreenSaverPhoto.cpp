@@ -86,7 +86,7 @@ bool CGUIPlexScreenSaverPhoto::OnMessage(CGUIMessage &message)
         if (screensaver->GetSetting("showclock") == "true")
         {
           m_clockLabel = new CGUILabelControl(GetID(), 1236, posX, posY,
-                                              400, 50, info, false, false);
+                                              800, 50, info, false, false);
           m_clockLabel->SetLabel("00:00");
           m_clockLabel->SetAlignment(align);
           m_clockLabel->UpdateInfo();
@@ -100,7 +100,7 @@ bool CGUIPlexScreenSaverPhoto::OnMessage(CGUIMessage &message)
         if (screensaver->GetSetting("showinfo") == "true")
         {
           info.font = g_fontManager.GetFont("Regular-18", true);
-          m_imageLabel = new CGUILabelControl(GetID(), 1237, posX, posY, 400, 50, info, false, false);
+          m_imageLabel = new CGUILabelControl(GetID(), 1237, posX, posY, 800, 50, info, false, false);
           m_imageLabel->SetLabel("No images found...");
           m_imageLabel->SetAlignment(align);
           m_imageLabel->UpdateInfo();
@@ -152,12 +152,12 @@ void CGUIPlexScreenSaverPhoto::getXYPosition(int& x, int& y, int& alignment)
       alignment = XBFONT_LEFT;
       break;
     case TOP_RIGHT:
-      x = g_graphicsContext.GetWidth() - 450;
+      x = g_graphicsContext.GetWidth() - 850;
       y = 25;
       alignment = XBFONT_RIGHT;
       break;
     case BOTTOM_RIGHT:
-      x = g_graphicsContext.GetWidth() - 450;
+      x = g_graphicsContext.GetWidth() - 850;
       y = g_graphicsContext.GetHeight() - 125;
       alignment = XBFONT_RIGHT;
       break;
