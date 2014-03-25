@@ -961,134 +961,103 @@ void CGUIEPGGridContainer::ProgrammesScroll(int amount)
   ScrollToBlockOffset(m_blockOffset + amount);
 }
 
-bool CGUIEPGGridContainer::MoveChannel(bool direction, bool wrapAround)
+void CGUIEPGGridContainer::OnUp()
 {
-  if (direction)
+  if (m_channelCursor > 0)
   {
-    if (m_channelCursor > 0)
-    {
-      SetChannel(m_channelCursor - 1);
-    }
-    else if (m_channelCursor == 0 && m_channelOffset)
-    {
-      ScrollToChannelOffset(m_channelOffset - 1);
-      SetChannel(0);
-    }
-    else if (wrapAround)
-    {
-      int offset = m_channels - m_channelsPerPage;
+    SetChannel(m_channelCursor - 1);
+  }
+  else if (m_channelCursor == 0 && m_channelOffset)
+  {
+    ScrollToChannelOffset(m_channelOffset - 1);
+    SetChannel(0);
+  }
+  else if (m_actionUp.GetNavigation() == GetID() || !m_actionUp.HasActionsMeetingCondition()) // wrap around
+  {
+    int offset = m_channels - m_channelsPerPage;
 
-      if (offset < 0) offset = 0;
+    if (offset < 0) offset = 0;
 
-      SetChannel(m_channels - offset - 1);
+    SetChannel(m_channels - offset - 1);
 
-      ScrollToChannelOffset(offset);
-    }
-    else
-      return false;
+    ScrollToChannelOffset(offset);
   }
   else
-  {
-    if (m_channelOffset + m_channelCursor + 1 < m_channels)
-    {
-      if (m_channelCursor + 1 < m_channelsPerPage)
-      {
-        SetChannel(m_channelCursor + 1);
-      }
-      else
-      {
-        ScrollToChannelOffset(m_channelOffset + 1);
-        SetChannel(m_channelsPerPage - 1);
-      }
-    }
-    else if (wrapAround)
-    {
-      SetChannel(0);
-      ScrollToChannelOffset(0);
-    }
-    else
-      return false;
-  }
-  return true;
+    CGUIControl::OnUp();
 }
 
-bool CGUIEPGGridContainer::MoveProgrammes(bool direction)
+void CGUIEPGGridContainer::OnDown()
 {
-  if (m_gridIndex.empty() || !m_item)
-    return false;
-
-  if (direction)
+  if (m_channelOffset + m_channelCursor + 1 < m_channels)
   {
-    if (m_channelCursor + m_channelOffset < 0 || m_blockOffset < 0)
-      return false;
+    if (m_channelCursor + 1 < m_channelsPerPage)
+    {
+      SetChannel(m_channelCursor + 1);
+    }
+    else
+    {
+      ScrollToChannelOffset(m_channelOffset + 1);
+      SetChannel(m_channelsPerPage - 1);
+    }
+  }
+  else if (m_actionDown.GetNavigation() == GetID() || !m_actionDown.HasActionsMeetingCondition()) // wrap around
+  {
+    SetChannel(0);
+    ScrollToChannelOffset(0);
+  }
+  else
+    CGUIControl::OnDown();
+}
 
-    if (m_item->item != m_gridIndex[m_channelCursor + m_channelOffset][m_blockOffset].item)
+void CGUIEPGGridContainer::OnLeft()
+{
+  if (!m_gridIndex.empty() && m_item)
+  {
+    if (m_channelCursor + m_channelOffset >= 0 && m_blockOffset >= 0 &&
+        m_item->item != m_gridIndex[m_channelCursor + m_channelOffset][m_blockOffset].item)
     {
       // this is not first item on page
       m_item = GetPrevItem(m_channelCursor);
       SetBlock(GetBlock(m_item->item, m_channelCursor));
-    }
-    else if (m_blockCursor <= 0 && m_blockOffset)
-    {
-      if (m_blockOffset - BLOCK_SCROLL_OFFSET < 0)
-        return false;
 
+      return;
+    }
+    else if (m_blockCursor <= 0 && m_blockOffset && m_blockOffset - BLOCK_SCROLL_OFFSET >= 0)
+    {
       // this is the first item on page
       ScrollToBlockOffset(m_blockOffset - BLOCK_SCROLL_OFFSET);
       SetBlock(GetBlock(m_item->item, m_channelCursor));
+
+      return;
     }
-    else
-      return false;
   }
-  else
+
+  CGUIControl::OnLeft();
+}
+
+void CGUIEPGGridContainer::OnRight()
+{
+  if (!m_gridIndex.empty() && m_item)
   {
     if (m_item->item != m_gridIndex[m_channelCursor + m_channelOffset][m_blocksPerPage + m_blockOffset - 1].item)
     {
       // this is not last item on page
       m_item = GetNextItem(m_channelCursor);
       SetBlock(GetBlock(m_item->item, m_channelCursor));
+
+      return;
     }
-    else if ((m_blockOffset != m_blocks - m_blocksPerPage) && m_blocks > m_blocksPerPage)
+    else if ((m_blockOffset != m_blocks - m_blocksPerPage) && m_blocks > m_blocksPerPage && m_blockOffset + BLOCK_SCROLL_OFFSET <= m_blocks)
     {
-      if (m_blockOffset + BLOCK_SCROLL_OFFSET > m_blocks)
-        return false;
-      
       // this is the last item on page
       ScrollToBlockOffset(m_blockOffset + BLOCK_SCROLL_OFFSET);
       SetBlock(GetBlock(m_item->item, m_channelCursor));
+
+      return;
     }
-    else
-      return false;
   }
-  return true;
-}
 
-void CGUIEPGGridContainer::OnUp()
-{
-  bool wrapAround = m_actionUp.GetNavigation() == GetID() || !m_actionUp.HasActionsMeetingCondition();
-  if (!MoveChannel(true, wrapAround))
-    CGUIControl::OnUp();
-}
-
-void CGUIEPGGridContainer::OnDown()
-{
-  bool wrapAround = m_actionDown.GetNavigation() == GetID() || !m_actionDown.HasActionsMeetingCondition();
-  if (!MoveChannel(false, wrapAround))
-    CGUIControl::OnDown();
-}
-
-void CGUIEPGGridContainer::OnLeft()
-{
-  bool wrapAround = m_actionLeft.GetNavigation() == GetID() || !m_actionLeft.HasActionsMeetingCondition();
-  if (!MoveProgrammes(true))
-    CGUIControl::OnLeft();
-}
-
-void CGUIEPGGridContainer::OnRight()
-{
-  bool wrapAround = m_actionRight.GetNavigation() == GetID() || !m_actionRight.HasActionsMeetingCondition();
-  if (!MoveProgrammes(false))
-    CGUIControl::OnRight();
+  CGUIControl::OnRight();
 }
 
 void CGUIEPGGridContainer::SetChannel(const CStdString &channel)

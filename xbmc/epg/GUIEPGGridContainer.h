@@ -124,8 +124,6 @@ namespace EPG
     int  GetBlock(const CGUIListItemPtr &item, const int &channel);
     int  GetRealBlock(const CGUIListItemPtr &item, const int &channel);
     void MoveToRow(int row);
-    bool MoveChannel(bool direction, bool wrapAround);
-    bool MoveProgrammes(bool direction);
 
     CGUIListItemLayout *GetFocusedLayout() const;
 
