@@ -630,14 +630,17 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t *data, unsigned int frames, bo
     CSingleLock lock(mutex);
     unsigned int timeout = 900 * frames / m_format.m_sampleRate;
     if (!m_started)
-      timeout = 500;
+      timeout = 4500;
 
     // we are using a timer here for beeing sure for timeouts
     // condvar can be woken spuriously as signaled
     XbmcThreads::EndTime timer(timeout);
     condVar.wait(mutex, timeout);
     if (!m_started && timer.IsTimePast())
+    {
+      CLog::Log(LOGERROR, "%s engine didn't start in %d ms!", __FUNCTION__, timeout);
       return INT_MAX;    
+    }
   }
 
   unsigned int write_frames = std::min(frames, m_buffer->GetWriteSize() / m_format.m_frameSize);
