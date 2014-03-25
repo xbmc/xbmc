@@ -66,7 +66,7 @@ namespace EPG
     virtual bool OnMouseDoubleClick(int dwButton, const CPoint &point);
     virtual bool OnMouseWheel(char wheel, const CPoint &point);
     virtual bool OnMessage(CGUIMessage& message);
-    virtual void SetFocus(bool bOnOff);
+    virtual void SetFocus(bool focus);
 
     virtual CStdString GetDescription() const;
     const int GetNumChannels()   { return m_channels; };
@@ -150,12 +150,10 @@ namespace EPG
       long start;
       long stop;
     };
-    std::vector< ItemsPtr > m_epgItemsPtr;
-    std::vector< CGUIListItemPtr > m_channelItems;
-    std::vector< CGUIListItemPtr > m_rulerItems;
-    std::vector< CGUIListItemPtr > m_programmeItems;
-    typedef std::vector<CGUIListItemPtr> ::iterator iItems;
-
+    std::vector<ItemsPtr> m_epgItemsPtr;
+    std::vector<CGUIListItemPtr> m_channelItems;
+    std::vector<CGUIListItemPtr> m_rulerItems;
+    std::vector<CGUIListItemPtr> m_programmeItems;
     std::vector<CGUIListItemLayout> m_channelLayouts;
     std::vector<CGUIListItemLayout> m_focusedChannelLayouts;
     std::vector<CGUIListItemLayout> m_focusedProgrammeLayouts;
@@ -181,19 +179,19 @@ namespace EPG
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
 
   private:
-    int   m_rulerUnit; //! number of blocks that makes up one element of the ruler
-    int   m_channels;
-    int   m_channelsPerPage;
-    int   m_ProgrammesPerPage;
-    int   m_channelCursor;
-    int   m_channelOffset;
-    int   m_blocks;
-    int   m_blocksPerPage;
-    int   m_blockCursor;
-    int   m_blockOffset;
-    int   m_cacheChannelItems;
-    int   m_cacheProgrammeItems;
-    int   m_cacheRulerItems;
+    int m_rulerUnit; //! number of blocks that makes up one element of the ruler
+    int m_channels;
+    int m_channelsPerPage;
+    int m_ProgrammesPerPage;
+    int m_channelCursor;
+    int m_channelOffset;
+    int m_blocks;
+    int m_blocksPerPage;
+    int m_blockCursor;
+    int m_blockOffset;
+    int m_cacheChannelItems;
+    int m_cacheProgrammeItems;
+    int m_cacheRulerItems;
 
     float m_rulerPosX;      //! X position of first ruler item
     float m_rulerPosY;      //! Y position of first ruler item
@@ -220,8 +218,7 @@ namespace EPG
     CGUIListItem *m_lastItem;
     CGUIListItem *m_lastChannel;
 
-    int   m_scrollTime;
-    bool  m_gridWrapAround; //! only when no more data available should this be true
+    int m_scrollTime;
 
     int m_programmeScrollLastTime;
     float m_programmeScrollSpeed;

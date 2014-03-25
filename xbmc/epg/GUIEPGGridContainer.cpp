@@ -611,34 +611,26 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-  case ACTION_MOVE_LEFT:
-  case ACTION_MOVE_RIGHT:
-  case ACTION_MOVE_DOWN:
-  case ACTION_MOVE_UP:
-  case ACTION_NAV_BACK:
-    { // use base class implementation
-
+    case ACTION_MOVE_LEFT:
+    case ACTION_MOVE_RIGHT:
+    case ACTION_MOVE_DOWN:
+    case ACTION_MOVE_UP:
+    case ACTION_NAV_BACK:
+      // use base class implementation
       return CGUIControl::OnAction(action);
-    }
 
-    break;
-  case ACTION_PAGE_UP:
-    {
+    case ACTION_PAGE_UP:
       if (m_channelOffset == 0)
       { // already on the first page, so move to the first item
         SetChannel(0);
       }
       else
       { // scroll up to the previous page
-        ChannelScroll(-m_channelsPerPage);
+        ChannelScroll(m_channelsPerPage*-1);
       }
-
       return true;
-    }
 
-    break;
-  case ACTION_PAGE_DOWN:
-    {
+    case ACTION_PAGE_DOWN:
       if (m_channelOffset == m_channels - m_channelsPerPage || m_channels < m_channelsPerPage)
       { // already at the last page, so move to the last item.
         SetChannel(m_channels - m_channelOffset - 1);
@@ -647,75 +639,69 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
       { // scroll down to the next page
         ChannelScroll(m_channelsPerPage);
       }
-
       return true;
-    }
-
-    break;
 
     // smooth scrolling (for analog controls)
-  case ACTION_TELETEXT_RED:
-  case ACTION_TELETEXT_GREEN:
-  case ACTION_SCROLL_UP: // left horizontal scrolling
-    {
-      int blocksToJump = action.GetID() == ACTION_TELETEXT_RED ? m_blocksPerPage/2 : m_blocksPerPage/4;
-
-      m_analogScrollCount += action.GetAmount() * action.GetAmount();
-      bool handled = false;
-
-      while (m_analogScrollCount > 0.4)
+    case ACTION_TELETEXT_RED:
+    case ACTION_TELETEXT_GREEN:
+    case ACTION_SCROLL_UP: // left horizontal scrolling
       {
-        handled = true;
-        m_analogScrollCount -= 0.4f;
+        int blocksToJump = action.GetID() == ACTION_TELETEXT_RED ? m_blocksPerPage/2 : m_blocksPerPage/4;
 
-        if (m_blockOffset > 0 && m_blockCursor <= m_blocksPerPage / 2)
+        m_analogScrollCount += action.GetAmount() * action.GetAmount();
+        bool handled = false;
+
+        while (m_analogScrollCount > 0.4)
         {
-          ProgrammesScroll(-blocksToJump);
+          handled = true;
+          m_analogScrollCount -= 0.4f;
+
+          if (m_blockOffset > 0 && m_blockCursor <= m_blocksPerPage / 2)
+          {
+            ProgrammesScroll(-blocksToJump);
+          }
+          else if (m_blockCursor > blocksToJump)
+          {
+            SetBlock(m_blockCursor - blocksToJump);
+          }
         }
-        else if (m_blockCursor > blocksToJump)
-        {
-          SetBlock(m_blockCursor - blocksToJump);
-        }
+
+        return handled;
       }
+      break;
 
-      return handled;
-    }
-
-    break;
-
-  case ACTION_TELETEXT_BLUE:
-  case ACTION_TELETEXT_YELLOW:
-  case ACTION_SCROLL_DOWN: // right horizontal scrolling
-    {
-      int blocksToJump = action.GetID() == ACTION_TELETEXT_BLUE ? m_blocksPerPage/2 : m_blocksPerPage/4;
-
-      m_analogScrollCount += action.GetAmount() * action.GetAmount();
-      bool handled = false;
-
-      while (m_analogScrollCount > 0.4)
+    case ACTION_TELETEXT_BLUE:
+    case ACTION_TELETEXT_YELLOW:
+    case ACTION_SCROLL_DOWN: // right horizontal scrolling
       {
-        handled = true;
-        m_analogScrollCount -= 0.4f;
+        int blocksToJump = action.GetID() == ACTION_TELETEXT_BLUE ? m_blocksPerPage/2 : m_blocksPerPage/4;
 
-        if (m_blockOffset + m_blocksPerPage < m_blocks && m_blockCursor >= m_blocksPerPage / 2)
+        m_analogScrollCount += action.GetAmount() * action.GetAmount();
+        bool handled = false;
+
+        while (m_analogScrollCount > 0.4)
         {
-          ProgrammesScroll(blocksToJump);
+          handled = true;
+          m_analogScrollCount -= 0.4f;
+
+          if (m_blockOffset + m_blocksPerPage < m_blocks && m_blockCursor >= m_blocksPerPage / 2)
+          {
+            ProgrammesScroll(blocksToJump);
+          }
+          else if (m_blockCursor < m_blocksPerPage - blocksToJump && m_blockOffset + m_blockCursor < m_blocks - blocksToJump)
+          {
+            SetBlock(m_blockCursor + blocksToJump);
+          }
         }
-        else if (m_blockCursor < m_blocksPerPage - blocksToJump && m_blockOffset + m_blockCursor < m_blocks - blocksToJump)
-        {
-          SetBlock(m_blockCursor + blocksToJump);
-        }
+
+        return handled;
       }
+      break;
 
-      return handled;
-    }
-
-    break;
-
-  default:
-    if (action.GetID())
-      return OnClick(action.GetID());
-    break;
+    default:
+      if (action.GetID())
+        return OnClick(action.GetID());
+      break;
   }
 
   return false;
@@ -725,93 +711,97 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID())
   {
-    if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
+    switch (message.GetMessage())
     {
-      message.SetParam1(GetSelectedItem());
-      return true;
-    }
-    else if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetPointer())
-    {
-      Reset();
-      CFileItemList *items = (CFileItemList *)message.GetPointer();
+      case GUI_MSG_ITEM_SELECTED:
+        message.SetParam1(GetSelectedItem());
+        return true;
 
-      /* Create programme items */
-      m_programmeItems.reserve(items->Size());
-      for (int i = 0; i < items->Size(); i++)
-      {
-        CFileItemPtr fileItem = items->Get(i);
-        if (fileItem->HasEPGInfoTag() && fileItem->GetEPGInfoTag()->HasPVRChannel())
-          m_programmeItems.push_back(fileItem);
-      }
-
-      /* Create Channel items */
-      int iLastChannelNumber = -1;
-      ItemsPtr itemsPointer;
-      itemsPointer.start = 0;
-      for (unsigned int i = 0; i < m_programmeItems.size(); ++i)
-      {
-        const CEpgInfoTag* tag = ((CFileItem*)m_programmeItems[i].get())->GetEPGInfoTag();
-        int iCurrentChannelNumber = tag->PVRChannelNumber();
-        if (iCurrentChannelNumber != iLastChannelNumber)
+      case GUI_MSG_LABEL_BIND:
+        if (message.GetPointer())
         {
-          CPVRChannelPtr channel = tag->ChannelTag();
-          if (!channel)
-            continue;
+          Reset();
+          CFileItemList *items = (CFileItemList *)message.GetPointer();
 
-          if (i > 0)
+          /* Create programme items */
+          m_programmeItems.reserve(items->Size());
+          for (unsigned int i = 0; i < items->Size(); i++)
           {
-            itemsPointer.stop = i-1;
-            m_epgItemsPtr.push_back(itemsPointer);
-            itemsPointer.start = i;
+            CFileItemPtr fileItem = items->Get(i);
+            if (fileItem->HasEPGInfoTag() && fileItem->GetEPGInfoTag()->HasPVRChannel())
+              m_programmeItems.push_back(fileItem);
           }
-          iLastChannelNumber = iCurrentChannelNumber;
-          CGUIListItemPtr item(new CFileItem(*channel));
-          m_channelItems.push_back(item);
+
+          /* Create Channel items */
+          int iLastChannelNumber = -1;
+          ItemsPtr itemsPointer;
+          itemsPointer.start = 0;
+          for (unsigned int i = 0; i < m_programmeItems.size(); ++i)
+          {
+            const CEpgInfoTag* tag = ((CFileItem*)m_programmeItems[i].get())->GetEPGInfoTag();
+            int iCurrentChannelNumber = tag->PVRChannelNumber();
+            if (iCurrentChannelNumber != iLastChannelNumber)
+            {
+              CPVRChannelPtr channel = tag->ChannelTag();
+              if (!channel)
+                continue;
+
+              if (i > 0)
+              {
+                itemsPointer.stop = i-1;
+                m_epgItemsPtr.push_back(itemsPointer);
+                itemsPointer.start = i;
+              }
+              iLastChannelNumber = iCurrentChannelNumber;
+              CGUIListItemPtr item(new CFileItem(*channel));
+              m_channelItems.push_back(item);
+            }
+          }
+          if (!m_programmeItems.empty())
+          {
+            itemsPointer.stop = m_programmeItems.size()-1;
+            m_epgItemsPtr.push_back(itemsPointer);
+          }
+
+          ClearGridIndex();
+          m_gridIndex.reserve(m_channelItems.size());
+          for (unsigned int i = 0; i < m_channelItems.size(); i++)
+          {
+            std::vector<GridItemsPtr> blocks(MAXBLOCKS);
+            m_gridIndex.push_back(blocks);
+          }
+
+          UpdateLayout(true); // true to refresh all items
+
+          /* Create Ruler items */
+          CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
+          CDateTime rulerEnd; rulerEnd.SetFromUTCDateTime(m_gridEnd);
+          CDateTimeSpan unit(0, 0, m_rulerUnit * MINSPERBLOCK, 0);
+          CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true, true)));
+          rulerItem->SetProperty("DateLabel", true);
+          m_rulerItems.push_back(rulerItem);
+
+          for (; ruler < rulerEnd; ruler += unit)
+          {
+            CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedTime("", false)));
+            rulerItem->SetLabel2(ruler.GetAsLocalizedDate(true, true));
+            m_rulerItems.push_back(rulerItem);
+          }
+
+          UpdateItems();
+          return true;
         }
-      }
-      if (!m_programmeItems.empty())
-      {
-        itemsPointer.stop = m_programmeItems.size()-1;
-        m_epgItemsPtr.push_back(itemsPointer);
-      }
+        break;
 
-      ClearGridIndex();
-      m_gridIndex.reserve(m_channelItems.size());
-      for (unsigned int i = 0; i < m_channelItems.size(); i++)
-      {
-        std::vector<GridItemsPtr> blocks(MAXBLOCKS);
-        m_gridIndex.push_back(blocks);
-      }
-
-      UpdateLayout(true); // true to refresh all items
-
-      /* Create Ruler items */
-      CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
-      CDateTime rulerEnd; rulerEnd.SetFromUTCDateTime(m_gridEnd);
-      CDateTimeSpan unit(0, 0, m_rulerUnit * MINSPERBLOCK, 0);
-      CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true, true)));
-      rulerItem->SetProperty("DateLabel", true);
-      m_rulerItems.push_back(rulerItem);
-
-      for (; ruler < rulerEnd; ruler += unit)
-      {
-        CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedTime("", false)));
-        rulerItem->SetLabel2(ruler.GetAsLocalizedDate(true, true));
-        m_rulerItems.push_back(rulerItem);
-      }
-
-      UpdateItems();
-      //SelectItem(message.GetParam1());
-      return true;
-    }
-    else if (message.GetMessage() == GUI_MSG_REFRESH_LIST)
-    { // update our list contents
-      for (unsigned int i = 0; i < m_channelItems.size(); ++i)
-        m_channelItems[i]->SetInvalid();
-      for (unsigned int i = 0; i < m_programmeItems.size(); ++i)
-        m_programmeItems[i]->SetInvalid();
-      for (unsigned int i = 0; i < m_rulerItems.size(); ++i)
-        m_rulerItems[i]->SetInvalid();
+      case GUI_MSG_REFRESH_LIST:
+        // update our list contents
+        for (unsigned int i = 0; i < m_channelItems.size(); ++i)
+          m_channelItems[i]->SetInvalid();
+        for (unsigned int i = 0; i < m_programmeItems.size(); ++i)
+          m_programmeItems[i]->SetInvalid();
+        for (unsigned int i = 0; i < m_rulerItems.size(); ++i)
+          m_rulerItems[i]->SetInvalid();
+        break;
     }
   }
 
@@ -820,8 +810,6 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
 
 void CGUIEPGGridContainer::UpdateItems()
 {
-  CDateTimeSpan blockDuration, gridDuration;
-
   /* check for invalid start and end time */
   if (m_gridStart >= m_gridEnd)
   {
@@ -831,8 +819,7 @@ void CGUIEPGGridContainer::UpdateItems()
     return;
   }
 
-  gridDuration = m_gridEnd - m_gridStart;
-
+  CDateTimeSpan gridDuration = m_gridEnd - m_gridStart;
   m_blocks = (gridDuration.GetDays()*24*60 + gridDuration.GetHours()*60 + gridDuration.GetMinutes()) / MINSPERBLOCK;
   if (m_blocks >= MAXBLOCKS)
     m_blocks = MAXBLOCKS;
@@ -840,12 +827,13 @@ void CGUIEPGGridContainer::UpdateItems()
   /* if less than one page, can't display grid */
   if (m_blocks < m_blocksPerPage)
   {
-    CLog::Log(LOGERROR, "(%s) - Less than one page of data available.", __FUNCTION__);
+    CLog::Log(LOGERROR, "CGUIEPGGridContainer - %s - Less than one page of data available.", __FUNCTION__);
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), GetParentID()); // message the window
     SendWindowMessage(msg);
     return;
   }
 
+  CDateTimeSpan blockDuration;
   blockDuration.SetDateTimeSpan(0, 0, MINSPERBLOCK, 0);
 
   long tick(XbmcThreads::SystemClockMillis());
@@ -929,7 +917,7 @@ void CGUIEPGGridContainer::UpdateItems()
 
   /******************************************* END ******************************************/
 
-  CLog::Log(LOGDEBUG, "%s completed successfully in %u ms", __FUNCTION__, (unsigned int)(XbmcThreads::SystemClockMillis()-tick));
+  CLog::Log(LOGDEBUG, "CGUIEPGGridContainer - %s completed successfully in %u ms", __FUNCTION__, (unsigned int)(XbmcThreads::SystemClockMillis()-tick));
 
   m_channels = (int)m_epgItemsPtr.size();
   m_item = GetItem(m_channelCursor);
@@ -1437,16 +1425,11 @@ GridItemsPtr *CGUIEPGGridContainer::GetItem(const int &channel)
   return &m_gridIndex[channelIndex][blockIndex];
 }
 
-void CGUIEPGGridContainer::SetFocus(bool bOnOff)
+void CGUIEPGGridContainer::SetFocus(bool focus)
 {
-  if (bOnOff != HasFocus())
-  {
+  if (focus != HasFocus())
     SetInvalid();
-    /*m_lastItem.reset();
-    m_lastChannel.reset();*/
-  }
-
-  CGUIControl::SetFocus(bOnOff);
+  CGUIControl::SetFocus(focus);
 }
 
 void CGUIEPGGridContainer::DoRender()
@@ -1584,14 +1567,14 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
 void CGUIEPGGridContainer::UpdateLayout(bool updateAllItems)
 {
   // if container is invalid, either new data has arrived, or m_blockSize has changed
-  //  need to run UpdateItems rather than CalculateLayout?
+  // need to run UpdateItems rather than CalculateLayout?
   if (updateAllItems)
   { // free memory of items
-    for (iItems it = m_channelItems.begin(); it != m_channelItems.end(); it++)
+    for (std::vector<CGUIListItemPtr>::iterator it = m_channelItems.begin(); it != m_channelItems.end(); it++)
       (*it)->FreeMemory();
-    for (iItems it = m_rulerItems.begin(); it != m_rulerItems.end(); it++)
+    for (std::vector<CGUIListItemPtr>::iterator it = m_rulerItems.begin(); it != m_rulerItems.end(); it++)
       (*it)->FreeMemory();
-    for (iItems it = m_programmeItems.begin(); it != m_programmeItems.end(); it++)
+    for (std::vector<CGUIListItemPtr>::iterator it = m_programmeItems.begin(); it != m_programmeItems.end(); it++)
       (*it)->FreeMemory();
   }
 
