@@ -100,7 +100,7 @@ bool CPlexCachedDirectoryFetchJob::DoWork()
   m_newHash = PlexUtils::GetFastHash(xmlData);
   m_oldHash = GetHashFromCache(m_url);
 
-  CLog::Log(LOGDEBUG, "CPlexCachedDirectoryFetchJob::DoWork New Hash = %X, Old Hash = %X",m_newHash,m_oldHash);
+  CLog::Log(LOGDEBUG, "CPlexCachedDirectoryFetchJob::DoWork New Hash = %lX, Old Hash = %lX",m_newHash,m_oldHash);
   if (m_newHash != m_oldHash)
   {
     CLog::Log(LOGDEBUG, "CPlexCachedDirectoryFetchJob::DoWork detected that section '%s'' content has changed, refreshing ...",m_url.Get().c_str());
