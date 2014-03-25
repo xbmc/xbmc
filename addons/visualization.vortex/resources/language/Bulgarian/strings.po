@@ -36,13 +36,17 @@ msgctxt "#30004"
 msgid "Enable Transitions"
 msgstr "Включи прехода между шаблоните"
 
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Спри първият шаблон"
+
 msgctxt "#30006"
 msgid "Show FPS"
 msgstr "Покажи FPS"
 
 msgctxt "#30007"
 msgid "Show debug console"
-msgstr "Покажи debug конзолата"
+msgstr "Покажи дебъг конзолата"
 
 msgctxt "#30008"
 msgid "Show audio analysis"

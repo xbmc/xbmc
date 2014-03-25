@@ -26,7 +26,7 @@ msgstr "Papildiespējas"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Apstrāde..."
+msgstr "Darbojas..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -46,7 +46,7 @@ msgstr "Kopējais ilgums"
 
 msgctxt "#31022"
 msgid "Music - Files"
-msgstr "Mūzika - Faili"
+msgstr "Mūzika - faili"
 
 msgctxt "#31023"
 msgid "Playing"
@@ -114,7 +114,7 @@ msgstr "ATTĪT ATPAKAĻ"
 
 msgctxt "#31046"
 msgid "SEEKING"
-msgstr "MEKLĒŠANA"
+msgstr "NOVIETOŠANA"
 
 msgctxt "#31048"
 msgid "Visualisation Presets"
@@ -154,7 +154,7 @@ msgstr "Pašreizējais atskaņošanas saraksts"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Šis fails ir ielādēts, izvēlieties daļu, kuru vēlaties lai atskaņotu no."
+msgstr "Fails ir ielādēts, atlasiet daļu, no kuras atskaņot."
 
 msgctxt "#31061"
 msgid "Current Selected"
@@ -170,7 +170,7 @@ msgstr "Fons"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Rādīt \"Iepauzēts\" attēlu slīdrādē"
+msgstr "Rādīt \"Iepauzēts\" attēlu slīdītē"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialogue Only)[/COLOR]"
@@ -178,11 +178,11 @@ msgstr "Atskaņot filmu reklāmas logā [COLOR=grey3](Video informācijas dialog
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "Dažādi uzstādijumi"
+msgstr "Dažādas opcijas"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Paslēpt Karodziņu lasīt video faila nosaukumus [COLOR = grey3] (Blu-ray, HD-DVD) [/ color]"
+msgstr "Paslēpt karogus, kas nolasīti no video failu nosaukumiem [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
@@ -190,11 +190,11 @@ msgstr "Slēpt galvenās izvēlnes pogas"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Iespējot savus fonus"
+msgstr "Ieslēgt pielāgotus fonus"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Fona ceļš"
+msgstr "Fona ceļš:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -226,7 +226,7 @@ msgstr "Rādīt fonā video \"Tagad atskaņo\""
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "Rādīt Fona \"Now Playing\" vizualizāciju"
+msgstr "Rādīt fonā \"Pašlaik atskaņo\" vizualizāciju"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -242,7 +242,7 @@ msgstr "Lirika"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualisation"
-msgstr "Slēpt Fanart pilnekrāna vizualizāciju"
+msgstr "Slēpt fanumākslu pilnekrāna vizualizācijā"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -250,15 +250,15 @@ msgstr "Dziesmu vārdu papildinājums"
 
 msgctxt "#31134"
 msgid "Home Page Videos Sub-menu"
-msgstr " Video Mājas lapas Apakš-iestatijumi"
+msgstr " Video mājaslapas apakšizvēlne"
 
 msgctxt "#31135"
 msgid "Home Page Music Sub-menu"
-msgstr "Mūzikas Mājas lapas Apakš-iestatijumi"
+msgstr "Mūzikas mājaslapas apakšizvēlne"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Sub-menu"
-msgstr " Foto Mājas lapas Apakš-iestatijumi"
+msgstr "Attēlu mājaslapas apakšizvēlne"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -270,7 +270,7 @@ msgstr "Video OSD"
 
 msgctxt "#31142"
 msgid "Settings level"
-msgstr "Iestatījumi"
+msgstr "Iestatījumu līmenis"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -326,7 +326,7 @@ msgstr "Celiņa numurs"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Fanart attēls [CR] [CR] Nav pieejams [CR] [CR] Klikšķiniet pogu, lai uzstādītu"
+msgstr "Fanumākslas attēls[CR][CR]Nav pieejams[CR][CR] Klišķis uz pogas, lai iestatītu"
 
 msgctxt "#31312"
 msgid "Current Scraper"
@@ -358,11 +358,11 @@ msgstr "Karaoke Dziesmu Atlasītājs"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Translēts"
+msgstr "Ēterā"
 
 msgctxt "#31325"
 msgid "Playlist Options"
-msgstr "Atskaņošanas sarakstu uzstādijumi"
+msgstr "Spēļsaraksta opcijas"
 
 msgctxt "#31326"
 msgid "Created"
@@ -374,19 +374,19 @@ msgstr "Izšķirtspēja"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Nesen Pievienoti"
+msgstr "Nesen pievienots"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Taimeris tiek iestatīts![/B] [COLOR=grey2] - Sistēmas automatiski izslēgsies pēc[/COLOR]"
+msgstr "[B]Taimeris iestatīts![/B] [COLOR=grey2] - Sistēmas auto izslēgšana pēc[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Spiediet pogu lai atskaņotu[CR][CR]filmu reklāmas"
+msgstr "Spiediet pogu, lai atskaņotu[CR][CR]filmas rullīti"
 
 msgctxt "#31331"
 msgid "Album Details"
-msgstr "Albūma Informācija"
+msgstr "Albuma detaļas"
 
 msgctxt "#31351"
 msgid "Pause"
@@ -406,7 +406,7 @@ msgstr "Attīt atpakaļ"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "Filmu izvēlne"
+msgstr "Filmas izvēlne"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -458,11 +458,11 @@ msgstr "[B]KONFIGURĒT LAIKAPSTĀKĻU IESTATĪJUMUS[/B][CR][CR]Iestatīt trīs p
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]KONFIGURĒT SISTĒMAS IESTATĪJUMUS[/B][CR][CR]Uzstādīt un kalibrēt displejus · Konfigurēt audio izvadi · Uzstādīt pults kontroli[CR]Iestatīt enerģijas taupības opcijas · Ieslēgt atkļūdošanu · Uzstādīt piekļuves atslēgu"
+msgstr "[B]KONFIGURĒT SISTĒMAS IESTATĪJUMUS[/B][CR][CR]Uzstādīt un kalibrēt displejus · Konfigurēt audio izvadi · Uzstādīt tālvadības pulti[CR]Iestatīt enerģijas taupīšanas opcijas · Ieslēgt atkļūdošanu · Uzstādīt galveno slēdzeni"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGURĒT PIELIKUMUS[/B][CR][CR]Pārvaldīt savus uzstādītos pielikumus · Pārlūkot un uzstādīt pielikumus no xbmc.org[CR]Mainīt pielikuma iestatījumus"
+msgstr "[B]KONFIGURĒT PIELIKUMUS[/B][CR][CR]Pārvaldīt savus instalētos pielikumus · Pārlūkot un instalēt pielikumus no xbmc.org[CR]Mainīt pielikuma iestatījumus"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -470,7 +470,7 @@ msgstr "[B]KONFIGURĒT TV IESTATĪJUMUS[/B][CR][CR]Mainīt pilnekrāna info · P
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGURĒT SERVISA IESTATĪJUMUS[/B][CR][CR]Uzstādīt XBMC kontroli no UPnP un HTTP · Konfigurēt failu koplietošanu[CR]Ieslēgt Zeroconf · Konfigurēt AirPlay"
+msgstr "[B]KONFIGURĒT PAKALPOJUMA IESTATĪJUMUS[/B][CR][CR]Uzstādīt XBMC kontroli no UPnP un HTTP · Konfigurēt failu koplietošanu[CR]Ieslēgt Zeroconf · Konfigurēt AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -478,7 +478,7 @@ msgstr "Palīdzība pirmo reizi darbinot..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
-msgstr "Šī cilne nozīmē, ka aiz šī loga malas ir izvēlne, kas satur šīs sekcijas ekstra opcijas. Lai piekļūtu izvēlnei, navigējiet ar pulti vai tastatūru pa kreisi, vai novietojiet peles kursoru virs cilnes. [CR][CR]Spiediet \"Ok\", lai aizvērtu šo dialogu. Tas vairs neparādīsies."
+msgstr "Šī cilne nozīmē, ka aiz loga malas ir izvēlne, kas satur sekcijas papildus opcijas. Lai piekļūtu izvēlnei, navigējiet ar tālvadības pulti vai tastatūru pa kreisi, vai novietojiet peles kursoru virs cilnes. [CR][CR]Spiediet \"Ok\", lai aizvērtu šo dialogu. Tas vairs neparādīsies."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -494,11 +494,11 @@ msgstr "Izvēlaties savi XBMC lietotāja profilu[CR]lai pieslēgtos un turpināt
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
-msgstr "Startējot rādīt vai paslēpt pieteikšanās logu."
+msgstr "Uzsākot rādīt vai paslēpt pieteikšanās logu."
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Izvēlieties profilu, kas tiks izmantots startējot, kad pieteikšanās logs ir atslēgts. "
+msgstr "Atlasīt profilu, ko izmantot uzsākot, ja pieteikšanās logs ir izslēgts. "
 
 msgctxt "#31501"
 msgid "Scheduled Time"

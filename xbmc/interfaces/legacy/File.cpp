@@ -28,7 +28,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dg(languageHook);
       int64_t size = file->GetLength();
-      if (!numBytes || (((int64_t)numBytes) > size))
+      if ((!numBytes || (((int64_t)numBytes) > size)) && (size >= 0))
         numBytes = (unsigned long) size;
 
       

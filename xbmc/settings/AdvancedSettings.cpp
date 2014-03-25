@@ -401,8 +401,9 @@ void CAdvancedSettings::Initialize()
   // internal video extensions
   m_videoExtensions += "|.pvr";
 
-  m_stereoscopicflags_sbs = "3DSBS|3D.SBS|HSBS|H.SBS|H-SBS| SBS |FULL-SBS|FULL.SBS|FULLSBS|FSBS|HALF-SBS";
-  m_stereoscopicflags_tab = "3DTAB|3D.TAB|HTAB|H.TAB|3DOU|3D.OU|3D.HOU| HOU | OU |HALF-TAB";
+  m_stereoscopicregex_3d = "[-. _]3d[-. _]";
+  m_stereoscopicregex_sbs = "[-. _]h?sbs[-. _]";
+  m_stereoscopicregex_tab = "[-. _]h?tab[-. _]";
 
   m_logLevelHint = m_logLevel = LOG_LEVEL_NORMAL;
   m_extraLogLevels = 0;
@@ -544,8 +545,9 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("video");
   if (pElement)
   {
-    XMLUtils::GetString(pElement, "stereoscopicflagssbs", m_stereoscopicflags_sbs);
-    XMLUtils::GetString(pElement, "stereoscopicflagstab", m_stereoscopicflags_tab);
+    XMLUtils::GetString(pElement, "stereoscopicregex3d", m_stereoscopicregex_3d);
+    XMLUtils::GetString(pElement, "stereoscopicregexsbs", m_stereoscopicregex_sbs);
+    XMLUtils::GetString(pElement, "stereoscopicregextab", m_stereoscopicregex_tab);
     XMLUtils::GetFloat(pElement, "subsdelayrange", m_videoSubsDelayRange, 10, 600);
     XMLUtils::GetFloat(pElement, "audiodelayrange", m_videoAudioDelayRange, 10, 600);
     XMLUtils::GetInt(pElement, "blackbarcolour", m_videoBlackBarColour, 0, 255);

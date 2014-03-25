@@ -32,6 +32,7 @@
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #if defined(TARGET_DARWIN_IOS)
 #include "osx/ios/IOSKeyboard.h"
+#include "windowing/WindowingFactory.h"
 #endif
 
 CGUIKeyboard *CGUIKeyboardFactory::g_activedKeyboard = NULL;
@@ -93,7 +94,8 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
     headingStr = g_localizeStrings.Get((uint32_t)heading.asInteger());
 
 #if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
-  kb = new CIOSKeyboard();
+  if (g_Windowing.GetCurrentScreen() == 0)
+    kb = new CIOSKeyboard();
 #endif
 
   if(!kb)

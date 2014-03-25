@@ -63,6 +63,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   pic->type = FF_BUFFER_TYPE_USER;
   pic->data[0] = (uint8_t *)1;
+  pic->reordered_opaque = avctx->reordered_opaque;
   return 0;
 }
 

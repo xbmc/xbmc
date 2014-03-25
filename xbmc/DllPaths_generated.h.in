@@ -46,7 +46,6 @@
 
 /* paplayer */
 #define DLL_PATH_AAC_CODEC     "special://xbmcbin/system/players/paplayer/AACCodec-@ARCH@.so"
-#define DLL_PATH_ADPCM_CODEC   "special://xbmcbin/system/players/paplayer/adpcm-@ARCH@.so"
 #define DLL_PATH_ADPLUG_CODEC  "special://xbmcbin/system/players/paplayer/adplug-@ARCH@.so"
 #define DLL_PATH_APE_CODEC     "special://xbmcbin/system/players/paplayer/MACDll-@ARCH@.so"
 #define DLL_PATH_ASAP_CODEC    "special://xbmcbin/system/players/paplayer/xbmc_asap-@ARCH@.so"

@@ -16,6 +16,10 @@ msgstr ""
 "Language: mk\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Случајна поставка"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Време помеѓу подесувањата"
@@ -23,6 +27,30 @@ msgstr "Време помеѓу подесувањата"
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Дополнително случајно време"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Заклучи дефиниција"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Овозможи транзиции"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Запри ја првата дефиниција"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Покажи FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Прикажи ја конзолата за дебагирање"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Прикажи ги звучните анализи"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

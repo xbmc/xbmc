@@ -717,6 +717,10 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "استاندارد"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "پیشرفته"
+
 msgctxt "#10134"
 msgid "Favourites"
 msgstr "علاقه‌مندی‌ها"
@@ -784,10 +788,6 @@ msgstr "ویدئو"
 msgctxt "#13340"
 msgid "Leave as is"
 msgstr "استاندارد"
-
-msgctxt "#13350"
-msgid "Now playing..."
-msgstr "در حال پخش..."
 
 msgctxt "#13388"
 msgid "Preset"
@@ -992,6 +992,10 @@ msgstr "خط"
 msgctxt "#24012"
 msgid "Subtitles"
 msgstr "زیرنویس‌ها"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "غیرفعال"
 
 msgctxt "#24027"
 msgid "Weather"

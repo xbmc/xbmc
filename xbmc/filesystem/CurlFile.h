@@ -67,7 +67,7 @@ namespace XFILE
       bool Get(const CStdString& strURL, CStdString& strHTML);
       bool ReadData(CStdString& strHTML);
       bool Download(const CStdString& strURL, const CStdString& strFileName, LPDWORD pdwSize = NULL);
-      bool IsInternet(bool checkDNS = true);
+      bool IsInternet();
       void Cancel();
       void Reset();
       void SetUserAgent(CStdString sUserAgent)                   { m_userAgent = sUserAgent; }

@@ -656,4 +656,17 @@ GLint CRenderSystemGLES::GUIShaderGetCoord0Matrix()
   return -1;
 }
 
+bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode)
+{
+  switch(mode)
+  {
+    case RENDER_STEREO_MODE_INTERLACED:
+      if (g_sysinfo.HasHW3DInterlaced())
+        return true;
+
+    default:
+      return CRenderSystemBase::SupportsStereo(mode);
+  }
+}
+
 #endif

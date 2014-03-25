@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "معلومات"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "الإجراءات"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "المُشَغَل اﻷن"
@@ -111,6 +115,10 @@ msgstr "إرجاع"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "يَطلُب"
+
+msgctxt "#31048"
+msgid "Visualisation Presets"
+msgstr "الإعدادات المسبقة للتصور"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -199,6 +207,10 @@ msgstr "إظهر اﻷلبومات المُضافه مؤخراً"
 msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "إظهر المقاطع المرئيه المُضافه مؤخراً"
+
+msgctxt "#31118"
+msgid "Home Page Programs Sub-menu"
+msgstr "القائمة الفرعية لقائمة البرامج الرئيسية"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -440,9 +452,17 @@ msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "تتوفر ترجمات محليه"
 
+msgctxt "#31420"
+msgid "Login"
+msgstr "تسجيل الدخول"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "حدد الملف الشخصى المُراد[CR] لتسجيل الدخول به"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "اظهار أو اخفاء شاشة تسجيل الدخول عند بدء التشغيل"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

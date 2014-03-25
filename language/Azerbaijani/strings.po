@@ -617,10 +617,6 @@ msgctxt "#304"
 msgid "Language"
 msgstr "Dil"
 
-msgctxt "#309"
-msgid "User Interface language"
-msgstr "İnterfeysin dili"
-
 msgctxt "#312"
 msgid "(0=auto)"
 msgstr "(0=avto)"

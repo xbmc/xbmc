@@ -16,6 +16,10 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Подробно [Нагрузка на процессор]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Мин."
@@ -32,6 +36,18 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Максимальное"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Нервный режим [больше изменений режима]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Скорость [пропускать некоторые кадры]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Очень медленно"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "Мин."
@@ -43,3 +59,7 @@ msgstr "Нормальное"
 msgctxt "#30010"
 msgid "High"
 msgstr "Макс."
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Использовать файл сохранения состояния [быстрее запуск]"

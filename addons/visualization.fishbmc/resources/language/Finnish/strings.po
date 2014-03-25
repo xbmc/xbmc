@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30001"
 msgid "Low"
-msgstr "Alin"
+msgstr "Matala"
 
 msgctxt "#30002"
 msgid "Normal"
@@ -32,9 +32,13 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Erittäin korkea"
 
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Erittäin matala"
+
 msgctxt "#30008"
 msgid "Low"
-msgstr "Alin"
+msgstr "Matala"
 
 msgctxt "#30009"
 msgid "Normal"

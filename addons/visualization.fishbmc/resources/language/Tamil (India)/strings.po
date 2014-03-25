@@ -16,13 +16,17 @@ msgstr ""
 "Language: ta_IN\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "விரிவாக [CPU மிகுதியாதல்]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "குறைவு"
 
 msgctxt "#30002"
 msgid "Normal"
-msgstr "வழக்கமான"
+msgstr "இயல்பு"
 
 msgctxt "#30003"
 msgid "High"
@@ -30,7 +34,19 @@ msgstr "அதிகம்"
 
 msgctxt "#30004"
 msgid "Extreme"
-msgstr "தீவிரம்"
+msgstr "அளவற்றது"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "தடுமாற்ற முறை [மேலும் முறை மாற்றங்கள்]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "வேகம் [சில பிரேம்கள் தவிர்க்கவும்]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "மிக குறைவு"
 
 msgctxt "#30008"
 msgid "Low"
@@ -38,8 +54,12 @@ msgstr "குறைவு"
 
 msgctxt "#30009"
 msgid "Normal"
-msgstr "வழக்கமான"
+msgstr "இயல்பு"
 
 msgctxt "#30010"
 msgid "High"
 msgstr "அதிகம்"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "நிலைத்தன்மை கோப்பை பயன்படுத்தவும் [வேகமாக தொடங்குவதற்கு]"

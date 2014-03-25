@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Verbose logging for SMB library"
-msgstr "Ausführliches Logging der SMB-Bibliothek."
+msgstr "Ausführliches Loggen der SMB-Bibliothek."
 
 msgctxt "#30001"
 msgid "Verbose logging for CURL library (http, dav)"

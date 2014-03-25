@@ -224,16 +224,6 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     }
     results->AddFront(pItem, 0);
   }
-
-  // Add parent directory item
-  if (!strUseBase.empty() && (subDirectories > 0 || files.Size() > 0) && CSettings::Get().GetBool("filelists.showparentdiritems"))
-  {
-    CStdString strLabel("..");
-    CFileItemPtr pItem(new CFileItem(strLabel));
-    pItem->SetPath("pvr://recordings");
-    pItem->m_bIsShareOrDrive = false;
-    results->AddFront(pItem, 0);
-  }
 }
 
 bool CPVRRecordings::HasAllRecordingsPathExtension(const CStdString &strDirectory)

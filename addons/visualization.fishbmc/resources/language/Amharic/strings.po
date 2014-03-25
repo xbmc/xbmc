@@ -16,6 +16,10 @@ msgstr ""
 "Language: am\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "ዝርዝር [CPU intensive]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "ዝቅተኛ "
@@ -31,6 +35,10 @@ msgstr "ከፍተኛ "
 msgctxt "#30004"
 msgid "Extreme"
 msgstr "ከፍተኛ"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "በጣም ዝቅተኛ"
 
 msgctxt "#30008"
 msgid "Low"

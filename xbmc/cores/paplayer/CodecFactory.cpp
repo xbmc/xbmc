@@ -22,8 +22,6 @@
 #include "CodecFactory.h"
 #include "MP3codec.h"
 #include "OGGcodec.h"
-#include "FLACcodec.h"
-#include "WAVcodec.h"
 #include "ModplugCodec.h"
 #include "NSFCodec.h"
 #ifdef HAS_SPC_CODEC
@@ -32,7 +30,6 @@
 #include "SIDCodec.h"
 #include "VGMCodec.h"
 #include "YMCodec.h"
-#include "ADPCMCodec.h"
 #include "TimidityCodec.h"
 #ifdef HAS_ASAP_CODEC
 #include "ASAPCodec.h"
@@ -59,7 +56,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("mka"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("flac"))
-    return new FLACCodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("wav"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("dts") || strFileType.Equals("ac3") ||
@@ -100,7 +97,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("xwav"))
-    return new ADPCMCodec();
+    return new DVDPlayerCodec();
   else if (TimidityCodec::IsSupportedFormat(strFileType))
     return new TimidityCodec();
 #ifdef HAS_ASAP_CODEC
@@ -147,7 +144,11 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return dvdcodec;
   }
   else if (strContent.Equals("audio/flac") || strContent.Equals("audio/x-flac") || strContent.Equals("application/x-flac"))
-    return new FLACCodec();
+  {
+    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    dvdcodec->SetContentType(strContent);
+    return dvdcodec;
+  }
 
   if (urlFile.GetProtocol() == "shout")
   {
@@ -156,7 +157,6 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
 
   if (urlFile.GetFileType().Equals("wav") || strContent.Equals("audio/wav") || strContent.Equals("audio/x-wav"))
   {
-    ICodec* codec;
     //lets see what it contains...
     //this kinda sucks 'cause if it's a plain wav file the file
     //will be opened, sniffed and closed 2 times before it is opened *again* for wav
@@ -167,20 +167,11 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     {
       return dvdcodec;
     }
-    delete dvdcodec;
-    codec = new ADPCMCodec();
-    if (codec->Init(strFile, filecache))
-    {
-      return codec;
-    }
-    delete codec;
 
-    codec = new WAVCodec();
-    if (codec->Init(strFile, filecache))
-    {
-      return codec;
-    }
-    delete codec;
+    dvdcodec = new DVDPlayerCodec();
+    dvdcodec->SetContentType(strContent);
+    return dvdcodec;
+
   }
   else if (urlFile.GetFileType().Equals("ogg") || urlFile.GetFileType().Equals("oggstream") || urlFile.GetFileType().Equals("oga"))
     return CreateOGGCodec(strFile,filecache);

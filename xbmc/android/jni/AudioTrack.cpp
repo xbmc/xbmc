@@ -116,3 +116,9 @@ int CJNIAudioTrack::getMinBufferSize(int sampleRateInHz, int channelConfig, int 
                                   sampleRateInHz, channelConfig, audioFormat);
 }
 
+int CJNIAudioTrack::getNativeOutputSampleRate(int streamType)
+{
+  return call_static_method<int>( "android/media/AudioTrack", "getNativeOutputSampleRate", "(I)I",
+                                  streamType);
+}
+

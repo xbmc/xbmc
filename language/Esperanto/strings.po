@@ -3137,10 +3137,6 @@ msgctxt "#13349"
 msgid "Scan for new content"
 msgstr "Query Info For ĉiom vicos"
 
-msgctxt "#13350"
-msgid "Now playing..."
-msgstr "Now Playing..."
-
 msgctxt "#13351"
 msgid "Album information"
 msgstr "Albumo informaĵo"
@@ -3417,17 +3413,9 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Filmoj Cache - DVDRom"
 
-msgctxt "#14028"
-msgid "Internet"
-msgstr "Interreto"
-
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Audio Cache - DVDRom"
-
-msgctxt "#14032"
-msgid "Internet"
-msgstr "Interreto"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -3880,6 +3868,10 @@ msgstr "Albumo informaĵo"
 msgctxt "#24018"
 msgid "Services"
 msgstr "Servers"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "Disabled"
 
 msgctxt "#24027"
 msgid "Weather"

@@ -237,10 +237,16 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
   if (m_buffer->GetWriteSize() < frames * m_frameSize)
   { // no space to write - wait for a bit
     CSingleLock lock(mutex);
+    unsigned int timeout = 900 * frames / m_sampleRate;
     if (!m_started)
-      condVar.wait(lock);
-    else
-      condVar.wait(lock, 900 * frames / m_sampleRate);
+      timeout = 500;
+
+    // we are using a timer here for beeing sure for timeouts
+    // condvar can be woken spuriously as signaled
+    XbmcThreads::EndTime timer(timeout);
+    condVar.wait(mutex, timeout);
+    if (!m_started && timer.IsTimePast())
+      return INT_MAX;
   }
 
   unsigned int write_frames = std::min(frames, m_buffer->GetWriteSize() / m_frameSize);
@@ -253,11 +259,21 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
 void CAAudioUnitSink::drain()
 {
   unsigned int bytes = m_buffer->GetReadSize();
-  while (bytes)
+  unsigned int totalBytes = bytes;
+  int maxNumTimeouts = 3;
+  unsigned int timeout = 900 * bytes / (m_sampleRate * m_frameSize);
+  while (bytes && maxNumTimeouts > 0)
   {
     CSingleLock lock(mutex);
-    condVar.wait(mutex, 900 * bytes / (m_sampleRate * m_frameSize));
+    XbmcThreads::EndTime timer(timeout);
+    condVar.wait(mutex, timeout);
+
     bytes = m_buffer->GetReadSize();
+    // if we timeout and don't
+    // consum bytes - decrease maxNumTimeouts
+    if (timer.IsTimePast() && bytes == totalBytes)
+      maxNumTimeouts--;
+    totalBytes = bytes;
   }
 }
 
@@ -513,6 +529,21 @@ void CAAudioUnitSink::sessionInterruptionCallback(void *inClientData, UInt32 inI
   }
 }
 
+inline void LogLevel(unsigned int got, unsigned int wanted)
+{
+  static unsigned int lastReported = INT_MAX;
+  if (got != wanted)
+  {
+    if (got != lastReported)
+    {
+      CLog::Log(LOGWARNING, "DARWINIOS: %sflow (%u vs %u bytes)", got > wanted ? "over" : "under", got, wanted);
+      lastReported = got;
+    }    
+  }
+  else
+    lastReported = INT_MAX; // indicate we were good at least once
+}
+
 OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
   const AudioTimeStamp *inTimeStamp, UInt32 inOutputBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
@@ -526,8 +557,10 @@ OSStatus CAAudioUnitSink::renderCallback(void *inRefCon, AudioUnitRenderActionFl
     unsigned int wanted = ioData->mBuffers[i].mDataByteSize;
     unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
     sink->m_buffer->Read((unsigned char*)ioData->mBuffers[i].mData, bytes);
-    if (bytes != wanted)
-      CLog::Log(LOGERROR, "%s: %sFLOW (%i vs %i) bytes", __FUNCTION__, bytes > wanted ? "OVER" : "UNDER", bytes, wanted);
+    LogLevel(bytes, wanted);
+    
+    if (bytes == 0)
+      *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
   }
   // tell the sink we're good for more data
   condVar.notifyAll();

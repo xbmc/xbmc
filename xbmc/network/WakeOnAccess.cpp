@@ -652,15 +652,22 @@ void CWakeOnAccess::OnSettingsSaved()
   }
 }
 
+void CWakeOnAccess::SetEnabled(bool enabled) 
+{
+  m_enabled = enabled;
+
+  CLog::Log(LOGNOTICE,"WakeOnAccess - Enabled:%s", m_enabled ? "TRUE" : "FALSE");
+}
+
 void CWakeOnAccess::LoadFromXML()
 {
   bool enabled = CSettings::Get().GetBool("powermanagement.wakeonaccess");
-  SetEnabled(enabled);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(GetSettingFile()))
   {
-    CLog::Log(LOGNOTICE, "%s - unable to load:%s", __FUNCTION__, GetSettingFile().c_str());
+    if (enabled)
+      CLog::Log(LOGNOTICE, "%s - unable to load:%s", __FUNCTION__, GetSettingFile().c_str());
     return;
   }
 
@@ -674,6 +681,8 @@ void CWakeOnAccess::LoadFromXML()
   m_entries.clear();
 
   CLog::Log(LOGNOTICE,"WakeOnAccess - Load settings :");
+
+  SetEnabled(enabled);
 
   int tmp;
   if (XMLUtils::GetInt(pRootElement, "netinittimeout", tmp, 0, 5 * 60))

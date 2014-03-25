@@ -16,6 +16,10 @@ msgstr ""
 "Language: no\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Tilfeldige Presets"
+
 msgctxt "#30001"
 msgid "Time Between Presets"
 msgstr "Tid mellom forvalg"
@@ -23,6 +27,18 @@ msgstr "Tid mellom forvalg"
 msgctxt "#30002"
 msgid "Additional Random Time"
 msgstr "Ytterligere tilfeldig tid"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Låst Preset"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Aktiver Oversettelse "
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Vis FPS"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

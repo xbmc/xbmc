@@ -181,23 +181,30 @@ bool CPVRRecording::SetPlayCount(int count)
 
 void CPVRRecording::UpdateMetadata(void)
 {
-  CVideoDatabase db;
-
-  if (!g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
+  if (m_bGotMetaData)
+    return;
+    
+  bool supportsPlayCount  = g_PVRClients->SupportsRecordingPlayCount(m_iClientId);
+  bool supportsLastPlayed = g_PVRClients->SupportsLastPlayedPosition(m_iClientId);
+  
+  if (!supportsPlayCount || !supportsLastPlayed)
   {
-    if (!m_bGotMetaData && db.Open())
+    CVideoDatabase db;
+    if (db.Open())
     {
-      CFileItem pFileItem(*this);
-      m_playCount = db.GetPlayCount(pFileItem);
+      if (!supportsPlayCount)
+      {
+        CFileItem pFileItem(*this);
+        m_playCount = db.GetPlayCount(pFileItem);
+      }
+
+      if (!supportsLastPlayed)
+        db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
+
+      db.Close();
     }
   }
-
-  if (!g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
-  {
-    if (!m_bGotMetaData && db.Open())
-      db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
-  }
-
+  
   m_bGotMetaData = true;
 }
 

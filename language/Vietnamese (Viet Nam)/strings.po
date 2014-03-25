@@ -905,6 +905,10 @@ msgctxt "#10025"
 msgid "Videos"
 msgstr "Video"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Nâng ca"
+
 msgctxt "#10505"
 msgid "Top 100 albums"
 msgstr "100 bộ sưu tập hay nhất"
@@ -932,6 +936,10 @@ msgstr "Lưu trữ"
 msgctxt "#13280"
 msgid "Video"
 msgstr "Video"
+
+msgctxt "#13350"
+msgid "Current playlist"
+msgstr "Danh sách hiện tại"
 
 msgctxt "#13351"
 msgid "Album information"

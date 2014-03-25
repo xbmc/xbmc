@@ -16,6 +16,10 @@ msgstr ""
 "Language: id\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Detil [tingkat CPU tinggi]"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Video/Aliran"
@@ -32,6 +36,18 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Ekstrim"
 
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Modus Galau [lebih banyak perubahan modus]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Kecepatan [bisa melewatkan beberapa frame]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Sangat Lambat."
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "Video/Aliran"
@@ -43,3 +59,7 @@ msgstr "Normal"
 msgctxt "#30010"
 msgid "High"
 msgstr "Tinggi"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Gunakan berkas yang menetap [lebih cepat dimulai]"

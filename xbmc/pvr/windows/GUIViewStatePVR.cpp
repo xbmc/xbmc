@@ -65,3 +65,8 @@ void CGUIViewStatePVR::SaveViewState(void)
   PVRWindow ActiveView = GetActiveView();
   SaveViewToDb(m_items.GetPath(), ActiveView == PVR_WINDOW_UNKNOWN ? WINDOW_PVR : WINDOW_PVR + 100 - ActiveView, NULL);
 }
+
+bool CGUIViewStatePVR::HideParentDirItems(void)
+{
+  return (CGUIViewState::HideParentDirItems() || PVR_WINDOW_RECORDINGS != GetActiveView() || m_items.GetPath() == "pvr://recordings/");
+}

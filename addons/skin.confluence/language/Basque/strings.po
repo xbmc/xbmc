@@ -76,6 +76,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Argb"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Akzioak"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Orain erreproduzitzen"
@@ -176,6 +180,10 @@ msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Ikusi azkenaldian igotako bideoak"
 
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr "Ezkutatu Atzealdeko Fanarta"
+
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Letrak"
@@ -211,6 +219,10 @@ msgstr "Azken eguneraketa"
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Datu hornitzailea"
+
+msgctxt "#31307"
+msgid "Hide Fanart"
+msgstr "Ezkutatu Fanart-a"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -284,6 +296,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Deskargatu azpitituluak"
 
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Ikusi 2D bezala"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Gaituta"
@@ -295,6 +311,10 @@ msgstr "Skin lehenetsia"
 msgctxt "#31411"
 msgid "First run help...."
 msgstr "Lehen exekuzio laguntza..."
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Sartu"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -355,3 +375,39 @@ msgstr "Iragarpen argibideak eskuratzen"
 msgctxt "#31910"
 msgid "Map & Alerts"
 msgstr "Mapa eta alertak"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "EGURALDIA"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "IRUDIAK"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "BIDEOAK"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMAK"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TB SAIOAK"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUSIKA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMAK"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "ERREPRODUZITU DISKOA"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTEMA"

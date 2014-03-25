@@ -94,19 +94,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     aml_set_audio_passthrough(m_passthrough);
 #endif
 
-  // default to 44100, all android devices support it.
-  // then check if we can support the requested rate.
-  unsigned int sampleRate = 44100;
-  for (size_t i = 0; i < m_info.m_sampleRates.size(); i++)
-  {
-    if (m_format.m_sampleRate == m_info.m_sampleRates[i])
-    {
-      sampleRate = m_format.m_sampleRate;
-      break;
-    }
-  }
-
-  m_format.m_sampleRate     = sampleRate;
+  m_format.m_sampleRate     = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
   m_format.m_dataFormat     = AE_FMT_S16LE;
   m_format.m_channelLayout  = m_info.m_channels;
   m_format.m_frameSize      = m_format.m_channelLayout.Count() *
@@ -259,8 +247,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_displayNameExtra = "audiotrack";
   m_info.m_channels += AE_CH_FL;
   m_info.m_channels += AE_CH_FR;
-  m_info.m_sampleRates.push_back(44100);
-  m_info.m_sampleRates.push_back(48000);
+  m_info.m_sampleRates.push_back(CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC));
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
 #if 0 //defined(__ARM_NEON__)
   if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)

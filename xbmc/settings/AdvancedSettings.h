@@ -400,8 +400,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_discStubExtensions;
     CStdString m_subtitlesExtensions;
 
-    CStdString m_stereoscopicflags_sbs;
-    CStdString m_stereoscopicflags_tab;
+    CStdString m_stereoscopicregex_3d;
+    CStdString m_stereoscopicregex_sbs;
+    CStdString m_stereoscopicregex_tab;
 
     CStdString m_logFolder;
 

@@ -49,6 +49,7 @@
 #include "utils/XMLUtils.h"
 #if defined(TARGET_ANDROID)
 #include "android/jni/Build.h"
+#include "utils/AMLUtils.h"
 #endif
 
 /* Target identification */
@@ -98,8 +99,6 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
   XFILE::CCurlFile http;
   if (http.IsInternet())
     return CSysData::CONNECTED;
-  if (http.IsInternet(false))
-    return CSysData::NO_DNS;
   return CSysData::DISCONNECTED;
 }
 
@@ -206,8 +205,6 @@ CStdString CSysInfo::TranslateInfo(int info) const
   case SYSTEM_INTERNET_STATE:
     if (m_info.internetState == CSysData::CONNECTED)
       return g_localizeStrings.Get(13296);
-    else if (m_info.internetState == CSysData::NO_DNS)
-      return g_localizeStrings.Get(13274);
     else
       return g_localizeStrings.Get(13297);
   case SYSTEM_BATTERY_LEVEL:
@@ -397,6 +394,15 @@ bool CSysInfo::IsAeroDisabled()
   HRESULT res = DwmIsCompositionEnabled(&aeroEnabled);
   if (SUCCEEDED(res))
     return !aeroEnabled;
+#endif
+  return false;
+}
+
+bool CSysInfo::HasHW3DInterlaced()
+{
+#if defined(TARGET_ANDROID)
+  if (aml_hw3d_present())
+    return true;
 #endif
   return false;
 }

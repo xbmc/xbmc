@@ -32,6 +32,10 @@ msgctxt "#30004"
 msgid "Extreme"
 msgstr "Tối đa"
 
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Rất thấp"
+
 msgctxt "#30008"
 msgid "Low"
 msgstr "Thấp"

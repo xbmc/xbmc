@@ -24,15 +24,6 @@
 #include "utils/log.h"
 #include "utils/StdString.h"
 
-// defines taken from CoreAudio/AudioHardware.h from SDK 10.8
-#if !defined kAudioStreamTerminalTypeHDMI
-#define kAudioStreamTerminalTypeHDMI 'hdmi'
-#endif
-
-#if !defined kAudioStreamTerminalTypeDisplayPort
-#define kAudioStreamTerminalTypeDisplayPort 'dprt'
-#endif
-
 CCoreAudioStream::CCoreAudioStream() :
   m_StreamId  (0    )
 {
@@ -136,12 +127,19 @@ UInt32 CCoreAudioStream::GetDirection()
   return val;
 }
 
+// WARNING - don't rely on this method - the return value of
+// GetTerminalType is driver specific - the checked return
+// values are only recommendations from apple
 bool CCoreAudioStream::IsDigitalOuptut(AudioStreamID id)
 {
   UInt32 type = GetTerminalType(id);
+  // yes apple is mixing types here...
   return (type == kAudioStreamTerminalTypeDigitalAudioInterface ||
-          type == kAudioStreamTerminalTypeDisplayPort ||
-          type == kAudioStreamTerminalTypeHDMI);
+          type == kIOAudioDeviceTransportTypeDisplayPort ||
+          type == kIOAudioDeviceTransportTypeHdmi ||
+          type == kIOAudioDeviceTransportTypeFireWire ||
+          type == kIOAudioDeviceTransportTypeThunderbolt ||
+          type == kIOAudioDeviceTransportTypeUSB);
 }
 
 UInt32 CCoreAudioStream::GetTerminalType(AudioStreamID id)

@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#30001"
 msgid "Low"
-msgstr "الصغرى"
+msgstr "منخفض"
 
 msgctxt "#30002"
 msgid "Normal"
-msgstr "عادي"
+msgstr "متوسط"
 
 msgctxt "#30003"
 msgid "High"
@@ -30,7 +30,11 @@ msgstr "مرتفع"
 
 msgctxt "#30004"
 msgid "Extreme"
-msgstr "أقصى"
+msgstr "اﻷقصي"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "منخفض جداً"
 
 msgctxt "#30008"
 msgid "Low"
@@ -43,3 +47,7 @@ msgstr "عادي"
 msgctxt "#30010"
 msgid "High"
 msgstr "مرتفع"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "إستخدِم ملفاً إستمرارياً [لضمان بدء التشغيل بشكل أسرع]"

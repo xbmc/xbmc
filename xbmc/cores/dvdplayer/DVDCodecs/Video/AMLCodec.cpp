@@ -244,7 +244,9 @@ public:
 // AppContext - Application state
 #define MODE_3D_DISABLE         0x00000000
 #define MODE_3D_LR              0x00000101
+#define MODE_3D_LR_SWITCH       0x00000501
 #define MODE_3D_BT              0x00000201
+#define MODE_3D_BT_SWITCH       0x00000601
 #define MODE_3D_TO_2D_L         0x00000102
 #define MODE_3D_TO_2D_R         0x00000902
 #define MODE_3D_TO_2D_T         0x00000202
@@ -2063,6 +2065,7 @@ void CAMLCodec::GetRenderFeatures(Features &renderFeatures)
 
 void CAMLCodec::SetVideo3dMode(const int mode3d)
 {
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideo3dMode:mode3d(0x%x)", mode3d);
   aml_set_sysfs_int("/sys/class/ppmgr/ppmgr_3d_mode", mode3d);
 }
 
@@ -2184,7 +2187,6 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   if (m_stereo_mode == RENDER_STEREO_MODE_MONO)
   {
     std::string mode = GetStereoMode();
-    CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:mode(%s)", mode.c_str());
     if (mode == "left_right")
       SetVideo3dMode(MODE_3D_TO_2D_L);
     else if (mode == "right_left")
@@ -2199,14 +2201,26 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   else if (m_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
   {
     dst_rect.x2 *= 2.0;
-    //SetVideo3dMode(MODE_3D_LR);
     SetVideo3dMode(MODE_3D_DISABLE);
   }
   else if (m_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
   {
     dst_rect.y2 *= 2.0;
-    //SetVideo3dMode(MODE_3D_BT);
     SetVideo3dMode(MODE_3D_DISABLE);
+  }
+  else if (m_stereo_mode == RENDER_STEREO_MODE_INTERLACED)
+  {
+    std::string mode = GetStereoMode();
+    if (mode == "left_right")
+      SetVideo3dMode(MODE_3D_LR);
+    else if (mode == "right_left")
+      SetVideo3dMode(MODE_3D_LR_SWITCH);
+    else if (mode == "row_interleaved_lr")
+      SetVideo3dMode(MODE_3D_LR);
+    else if (mode == "row_interleaved_rl")
+      SetVideo3dMode(MODE_3D_LR_SWITCH);
+    else
+      SetVideo3dMode(MODE_3D_DISABLE);
   }
   else
   {
