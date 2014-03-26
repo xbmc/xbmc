@@ -209,8 +209,7 @@ double CAESinkPi::GetCacheTime()
 
 double CAESinkPi::GetCacheTotal()
 {
-  double audioplus_buffer = AUDIO_PLAYBUFFER;
-  return m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_size + audioplus_buffer;
+  return AUDIO_PLAYBUFFER;
 }
 
 unsigned int CAESinkPi::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
@@ -224,41 +223,51 @@ unsigned int CAESinkPi::AddPackets(uint8_t *data, unsigned int frames, bool hasA
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
   while (sent < frames)
   {
-    int timeout = blocking ? 1000 : 0;
-
-    // delay compared to maximum we'd like (to keep lag low)
     double delay = GetDelay();
-    bool too_laggy = delay - AUDIO_PLAYBUFFER > 0.0;
-    omx_buffer = too_laggy ? NULL : m_omx_render.GetInputBuffer(timeout);
-
-    if (omx_buffer == NULL)
+    double ideal_submission_time = AUDIO_PLAYBUFFER - delay;
+    // ideal amount of audio we'd like submit (to make delay match AUDIO_PLAYBUFFER)
+    int timeout = blocking ? 1000 : 0;
+    int ideal_submission_samples = ideal_submission_time / (m_sinkbuffer_sec_per_byte * m_format.m_frameSize);
+    // if we are almost full then sleep (to avoid repeatedly sending a few samples)
+    bool too_laggy = ideal_submission_time < 0.25 * AUDIO_PLAYBUFFER;
+    int sleeptime = (int)(AUDIO_PLAYBUFFER * 0.25 * 1000.0);
+    if (too_laggy)
     {
-      if (too_laggy)
+      if (blocking)
       {
-        Sleep((int)((delay - AUDIO_PLAYBUFFER) * 1000.0));
+        Sleep(sleeptime);
         continue;
       }
+      break;
+    }
+    omx_buffer = m_omx_render.GetInputBuffer(timeout);
+    if (omx_buffer == NULL)
+    {
       if (blocking)
         CLog::Log(LOGERROR, "COMXAudio::Decode timeout");
       break;
     }
 
-    omx_buffer->nFilledLen = std::min(omx_buffer->nAllocLen, (frames - sent) * m_format.m_frameSize);
+    unsigned int space = omx_buffer->nAllocLen / m_format.m_frameSize;
+    unsigned int samples = std::min(std::min(space, (unsigned int)ideal_submission_samples), frames - sent);
+
+    omx_buffer->nFilledLen = samples * m_format.m_frameSize;
     omx_buffer->nTimeStamp = ToOMXTime(0);
     omx_buffer->nFlags = 0;
     memcpy(omx_buffer->pBuffer, (uint8_t *)data + sent * m_format.m_frameSize, omx_buffer->nFilledLen);
-    sent += omx_buffer->nFilledLen / m_format.m_frameSize;
+
+    sent += samples;
 
     if (sent == frames)
       omx_buffer->nFlags |= OMX_BUFFERFLAG_ENDOFFRAME;
 
     if (delay <= 0.0 && m_submitted)
-      CLog::Log(LOGERROR, "%s:%s Underrun (delay:%.2f frames:%d)", CLASSNAME, __func__, delay, frames);
+      CLog::Log(LOGNOTICE, "%s:%s Underrun (delay:%.2f frames:%d)", CLASSNAME, __func__, delay, frames);
 
     omx_err = m_omx_render.EmptyThisBuffer(omx_buffer);
     if (omx_err != OMX_ErrorNone)
       CLog::Log(LOGERROR, "%s:%s frames=%d err=%x", CLASSNAME, __func__, frames, omx_err);
-    m_submitted += omx_buffer->nFilledLen;
+    m_submitted++;
   }
 
   return sent;
