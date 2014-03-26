@@ -500,7 +500,7 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
       CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(channel->IsRadio());
       CPVRChannelPtr channelPtr = group->GetByUniqueID(channel->UniqueID());
 
-      channelPtr->SetIconPath(strThumb, true);
+      channelPtr->SetIconPath(strThumb, strThumb != "");
       channelPtr->Persist();
       UpdateData();
     }
