@@ -155,7 +155,12 @@ namespace PVR
      * @return True if this user changed icon via GUI. False if not.
      */
     bool IsUserSetIcon(void) const;
-	  
+
+    /*!
+     * @return True if the channel icon path exists
+     */
+    bool IsIconExists(void) const;
+
     /*!
      * @brief Set the path to the icon for this channel.
      * @param strIconPath The new path.

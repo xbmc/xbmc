@@ -359,6 +359,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
 
   pItem->SetProperty("Icon", strThumb);
   pItem->SetProperty("Changed", true);
+  pItem->SetProperty("UserSetIcon", true);
   m_bContainsChanges = true;
   return true;
 }
@@ -773,8 +774,9 @@ bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannel
   CStdString strChannelName = pItem->GetProperty("Name").asString();
   CStdString strIconPath    = pItem->GetProperty("Icon").asString();
   CStdString strStreamURL   = pItem->GetProperty("StreamURL").asString();
+  bool bUserSetIcon         = pItem->GetProperty("UserSetIcon").asBoolean();
 
-  return group->UpdateChannel(*pItem, bHidden, bVirtual, bEPGEnabled, bParentalLocked, iEPGSource, ++(*iChannelNumber), strChannelName, strIconPath, strStreamURL);
+  return group->UpdateChannel(*pItem, bHidden, bVirtual, bEPGEnabled, bParentalLocked, iEPGSource, ++(*iChannelNumber), strChannelName, strIconPath, strStreamURL, bUserSetIcon);
 }
 
 void CGUIDialogPVRChannelManager::SaveList(void)
