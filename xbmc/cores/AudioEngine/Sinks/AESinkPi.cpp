@@ -34,7 +34,7 @@
 #define CLASSNAME "CAESinkPi"
 
 #define NUM_OMX_BUFFERS 2
-#define AUDIO_PLAYBUFFER (1.0/20.0)
+#define AUDIO_PLAYBUFFER (0.1) // 100ms
 
 static const unsigned int PassthroughSampleRates[] = { 8000, 11025, 16000, 22050, 24000, 32000, 41400, 48000, 88200, 96000, 176400, 192000 };
 
