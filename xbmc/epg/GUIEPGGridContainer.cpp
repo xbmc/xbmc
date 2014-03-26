@@ -64,6 +64,10 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
   m_programmeScrollOffset = 0;
   m_programmeScrollSpeed  = 0;
   m_programmeScrollLastTime  = 0;
+  m_programmesPerPage     = 0;
+  m_channelsPerPage       = 0;
+  m_channels              = 0;
+  m_blocks                = 0;
   m_scrollTime            = scrollTime ? scrollTime : 1;
   m_item                  = NULL;
   m_lastItem              = NULL;
@@ -90,6 +94,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
   m_cacheChannelItems     = preloadItems;
   m_cacheRulerItems       = preloadItems;
   m_cacheProgrammeItems   = preloadItems;
+  m_wasReset              = false;
 }
 
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
@@ -354,7 +359,7 @@ void CGUIEPGGridContainer::ProcessProgrammeGrid(unsigned int currentTime, CDirty
       break;
 
     // Free memory not used on screen
-    FreeProgrammeMemory(channel, blockOffset - cacheBeforeProgramme, blockOffset + m_ProgrammesPerPage + 1 + cacheAfterProgramme);
+    FreeProgrammeMemory(channel, blockOffset - cacheBeforeProgramme, blockOffset + m_programmesPerPage + 1 + cacheAfterProgramme);
 
     int block = blockOffset;
     float posA2 = posA;
@@ -1086,7 +1091,7 @@ void CGUIEPGGridContainer::SetChannel(int channel)
 {
   if (m_blockCursor + m_blockOffset == 0 || m_blockOffset + m_blockCursor + GetItemSize(m_item) == m_blocks)
   {
-    m_item          = GetItem(channel);
+    m_item = GetItem(channel);
     if (m_item)
     {
       SetBlock(GetBlock(m_item->item, channel));
@@ -1096,7 +1101,7 @@ void CGUIEPGGridContainer::SetChannel(int channel)
   }
 
   /* basic checks failed, need to correctly identify nearest item */
-  m_item          = GetClosestItem(channel);
+  m_item = GetClosestItem(channel);
   if (m_item)
   {
     m_channelCursor = channel;
@@ -1112,7 +1117,7 @@ void CGUIEPGGridContainer::SetBlock(int block)
     m_blockCursor = m_blocksPerPage - 1;
   else
     m_blockCursor = block;
-  m_item        = GetItem(m_channelCursor);
+  m_item = GetItem(m_channelCursor);
 }
 
 CGUIListItemLayout *CGUIEPGGridContainer::GetFocusedLayout() const
@@ -1328,7 +1333,7 @@ GridItemsPtr *CGUIEPGGridContainer::GetClosestItem(const int &channel)
 {
   GridItemsPtr *closest = GetItem(channel);
 
-  if(!closest)
+  if (!closest)
     return NULL;
 
   int block = GetBlock(closest->item, channel);
@@ -1697,7 +1702,7 @@ void CGUIEPGGridContainer::CalculateLayout()
   m_rulerPosX         = m_posX + m_channelWidth;
   m_rulerPosY         = m_posY;
   m_channelsPerPage   = (int)(m_gridHeight / m_channelHeight);
-  m_ProgrammesPerPage = (int)(m_gridWidth / m_blockSize) + 1;
+  m_programmesPerPage = (int)(m_gridWidth / m_blockSize) + 1;
 
   // ensure that the scroll offsets are a multiple of our sizes
   m_channelScrollOffset   = m_channelOffset * m_programmeLayout->Size(VERTICAL);
