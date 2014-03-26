@@ -18,6 +18,15 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
+# Read envvars.conf if it exists
+for envfile in $HOME/.xbmc/userdata/envvars.conf $XBMC_HOME/userdata/envvars.conf
+do
+  [ -r $envfile ] && EVARS=$(grep -v "^#" $envfile)
+  [ -n "$EVARS" ] && echo "found following env vars: $EVARS" && export $EVARS
+  unset EVARS
+  [ "$AE_SINK" = "alsa" ] && [ -x "$(which pasuspender)" ] && SUSPEND_PULSE=true
+done
+
 SAVED_ARGS="$@"
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
@@ -132,7 +141,11 @@ LOOP=1
 while [ $(( $LOOP )) = "1" ]
 do
   LOOP=0
-  "$LIBDIR/xbmc/xbmc.bin" $SAVED_ARGS
+  if [ "$SUSPEND_PULSE" ]; then
+    pasuspender -- "$LIBDIR/xbmc/xbmc.bin" $SAVED_ARGS
+  else
+    "$LIBDIR/xbmc/xbmc.bin" $SAVED_ARGS
+  fi
   RET=$?
   if [ $(( $RET == 65 )) = "1" ]
   then # User requested to restart app
