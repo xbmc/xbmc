@@ -259,7 +259,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     if (!groupMember.channel->IsIconExists())
       groupMember.channel->SetIconPath(StringUtils::Empty, false);
     else
-        continue;
+      continue;
 
     CStdString strBasePath = CSettings::Get().GetString("pvrmenu.iconpath");
     CStdString strSanitizedClientChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
