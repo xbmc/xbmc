@@ -309,10 +309,7 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon
     m_strIconPath = StringUtils::Format("%s", strIconPath.c_str());
     SetChanged();
     m_bChanged = true;
-
-    /* did the user change the icon? */
-    if (bIsUserSetIcon)
-      m_bIsUserSetIcon = !m_strIconPath.empty();
+    m_bIsUserSetIcon = bIsUserSetIcon && !m_strIconPath.empty();
 	  
     return true;
   }
@@ -751,6 +748,11 @@ bool CPVRChannel::IsUserSetIcon(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bIsUserSetIcon;
+}
+
+bool CPVRChannel::IsIconExists() const
+{
+  return  CFile::Exists(IconPath());
 }
 
 CStdString CPVRChannel::ChannelName(void) const
