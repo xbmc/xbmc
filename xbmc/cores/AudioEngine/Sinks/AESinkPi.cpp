@@ -41,7 +41,6 @@ static const unsigned int PassthroughSampleRates[] = { 8000, 11025, 16000, 22050
 CAEDeviceInfo CAESinkPi::m_info;
 
 CAESinkPi::CAESinkPi() :
-    m_sinkbuffer_size(0),
     m_sinkbuffer_sec_per_byte(0),
     m_Initialized(false),
     m_submitted(0)
@@ -84,19 +83,22 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   m_initDevice = device;
   m_initFormat = format;
   // setup for a 50ms sink feed from SoftAE
-  format.m_dataFormat    = AE_FMT_S16NE;
+  if (format.m_dataFormat != AE_FMT_FLOAT && format.m_dataFormat != AE_FMT_S32LE)
+    format.m_dataFormat = AE_FMT_S16LE;
+  unsigned int channels    = format.m_channelLayout.Count();
+  unsigned int sample_size = CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3;
+  format.m_frameSize     = sample_size * channels;
+  format.m_sampleRate    = std::max(8000U, std::min(192000U, format.m_sampleRate));
   format.m_frames        = format.m_sampleRate * AUDIO_PLAYBUFFER;
-  format.m_frameSamples  = format.m_channelLayout.Count();
-  format.m_frameSize     = format.m_frameSamples * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
-  format.m_sampleRate    = std::max(8000U, std::min(96000U, format.m_sampleRate));
+  format.m_frameSamples  = format.m_frames * channels;
 
   m_format = format;
 
-  m_sinkbuffer_size = format.m_frameSize * format.m_frames * NUM_OMX_BUFFERS;
-  m_sinkbuffer_sec_per_byte = 1.0 / (double)(format.m_frameSize * format.m_sampleRate);
+  m_format = format;
+  m_sinkbuffer_sec_per_byte = 1.0 / (double)(m_format.m_frameSize * m_format.m_sampleRate);
 
   CLog::Log(LOGDEBUG, "%s:%s Format:%d Channels:%d Samplerate:%d framesize:%d bufsize:%d bytes/s=%.2f", CLASSNAME, __func__,
-                format.m_dataFormat, format.m_channelLayout.Count(), format.m_sampleRate, format.m_frameSize, m_sinkbuffer_size, 1.0/m_sinkbuffer_sec_per_byte);
+                m_format.m_dataFormat, channels, m_format.m_sampleRate, m_format.m_frameSize, m_format.m_frameSize * m_format.m_frames, 1.0/m_sinkbuffer_sec_per_byte);
 
   // This may be called before Application calls g_RBP.Initialise, so call it here too
   g_RBP.Initialize();
@@ -113,17 +115,14 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   m_pcm_input.eNumData              = OMX_NumericalDataSigned;
   m_pcm_input.eEndian               = OMX_EndianLittle;
   m_pcm_input.bInterleaved          = OMX_TRUE;
-  m_pcm_input.nBitPerSample         = 16;
-  m_pcm_input.ePCMMode              = OMX_AUDIO_PCMModeLinear;
-  m_pcm_input.nChannels             = m_format.m_frameSamples;
+  m_pcm_input.nBitPerSample         = sample_size * 8;
+  m_pcm_input.ePCMMode              = m_format.m_dataFormat == AE_FMT_FLOAT ? (OMX_AUDIO_PCMMODETYPE)0x8000 : OMX_AUDIO_PCMModeLinear;
+  m_pcm_input.nChannels             = channels;
   m_pcm_input.nSamplingRate         = m_format.m_sampleRate;
-  m_pcm_input.eChannelMapping[0] = OMX_AUDIO_ChannelLF;
-  m_pcm_input.eChannelMapping[1] = OMX_AUDIO_ChannelRF;
-  m_pcm_input.eChannelMapping[2] = OMX_AUDIO_ChannelMax;
 
   omx_err = m_omx_render.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
   if (omx_err != OMX_ErrorNone)
-    CLog::Log(LOGERROR, "%s::%s - error m_omx_render SetParameter omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
+    CLog::Log(LOGERROR, "%s::%s - error m_omx_render SetParameter in omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
 
   m_omx_render.ResetEos();
 
@@ -139,7 +138,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
     CLog::Log(LOGERROR, "%s:%s - error get OMX_IndexParamPortDefinition (input) omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
 
   port_param.nBufferCountActual = std::max((unsigned int)port_param.nBufferCountMin, (unsigned int)NUM_OMX_BUFFERS);
-  port_param.nBufferSize = m_sinkbuffer_size / port_param.nBufferCountActual;
+  port_param.nBufferSize = m_format.m_frameSize * m_format.m_frames / port_param.nBufferCountActual;
 
   omx_err = m_omx_render.SetParameter(OMX_IndexParamPortDefinition, &port_param);
   if (omx_err != OMX_ErrorNone)
@@ -295,6 +294,8 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_channels += AE_CH_FR;
   for (unsigned int i=0; i<sizeof PassthroughSampleRates/sizeof *PassthroughSampleRates; i++)
     m_info.m_sampleRates.push_back(PassthroughSampleRates[i]);
+  m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
+  m_info.m_dataFormats.push_back(AE_FMT_S32LE);
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
   m_info.m_dataFormats.push_back(AE_FMT_AC3);
   m_info.m_dataFormats.push_back(AE_FMT_DTS);
@@ -313,6 +314,8 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_channels += AE_CH_FL;
   m_info.m_channels += AE_CH_FR;
   m_info.m_sampleRates.push_back(48000);
+  m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
+  m_info.m_dataFormats.push_back(AE_FMT_S32LE);
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
 
   list.push_back(m_info);
