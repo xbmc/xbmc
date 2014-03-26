@@ -83,8 +83,6 @@ namespace EPG
     virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
     virtual CStdString GetLabel(int info) const;
 
-    virtual int  CorrectOffset(int offset, int cursor) const;
-
     /*! \brief Set the offset of the first item in the container from the container's position
      Useful for lists/panels where the focused item may be larger than the non-focused items and thus
      normally cut off from the clipping window defined by the container's position + size.

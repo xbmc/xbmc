@@ -135,7 +135,7 @@ void CGUIEPGGridContainer::ProcessChannels(unsigned int currentTime, CDirtyRegio
 
   // Free memory not used on screen
   if ((int)m_channelItems.size() > m_channelsPerPage + cacheBeforeChannel + cacheAfterChannel)
-    FreeChannelMemory(CorrectOffset(chanOffset - cacheBeforeChannel, 0), CorrectOffset(chanOffset + m_channelsPerPage + 1 + cacheAfterChannel, 0));
+    FreeChannelMemory(chanOffset - cacheBeforeChannel, chanOffset + m_channelsPerPage + 1 + cacheAfterChannel);
 
   CPoint originChannel = CPoint(m_channelPosX, m_channelPosY) + m_renderOffset;
   float pos = originChannel.y;
@@ -152,7 +152,7 @@ void CGUIEPGGridContainer::ProcessChannels(unsigned int currentTime, CDirtyRegio
   int current = chanOffset;// - cacheBeforeChannel;
   while (pos < end && !m_channelItems.empty())
   {
-    int itemNo = CorrectOffset(current, 0);
+    int itemNo = current;
     if (itemNo >= (int)m_channelItems.size())
       break;
     bool focused = (current == m_channelOffset + m_channelCursor);
@@ -198,7 +198,7 @@ void CGUIEPGGridContainer::RenderChannels()
   int current = chanOffset;// - cacheBeforeChannel;
   while (pos < end && !m_channelItems.empty())
   {
-    int itemNo = CorrectOffset(current, 0);
+    int itemNo = current;
     if (itemNo >= (int)m_channelItems.size())
       break;
     bool focused = (current == m_channelOffset + m_channelCursor);
@@ -245,7 +245,7 @@ void CGUIEPGGridContainer::ProcessRuler(unsigned int currentTime, CDirtyRegionLi
 
   // Free memory not used on screen
   if ((int)m_rulerItems.size() > m_blocksPerPage + cacheBeforeRuler + cacheAfterRuler)
-    FreeRulerMemory(CorrectOffset(rulerOffset/m_rulerUnit+1 - cacheBeforeRuler, 0), CorrectOffset(rulerOffset/m_rulerUnit+1 + m_blocksPerPage + 1 + cacheAfterRuler, 0));
+    FreeRulerMemory(rulerOffset/m_rulerUnit+1 - cacheBeforeRuler, rulerOffset/m_rulerUnit+1 + m_blocksPerPage + 1 + cacheAfterRuler);
 
   CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
   float pos = originRuler.x;
@@ -354,7 +354,7 @@ void CGUIEPGGridContainer::ProcessProgrammeGrid(unsigned int currentTime, CDirty
       break;
 
     // Free memory not used on screen
-    FreeProgrammeMemory(channel, CorrectOffset(blockOffset - cacheBeforeProgramme, 0), CorrectOffset(blockOffset + m_ProgrammesPerPage + 1 + cacheAfterProgramme, 0));
+    FreeProgrammeMemory(channel, blockOffset - cacheBeforeProgramme, blockOffset + m_ProgrammesPerPage + 1 + cacheAfterProgramme);
 
     int block = blockOffset;
     float posA2 = posA;
@@ -725,7 +725,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
 
           /* Create programme items */
           m_programmeItems.reserve(items->Size());
-          for (unsigned int i = 0; i < items->Size(); i++)
+          for (int i = 0; i < items->Size(); i++)
           {
             CFileItemPtr fileItem = items->Get(i);
             if (fileItem->HasEPGInfoTag() && fileItem->GetEPGInfoTag()->HasPVRChannel())
@@ -1788,11 +1788,6 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   }
   if (!m_rulerLayout && !m_rulerLayouts.empty())
     m_rulerLayout = &m_rulerLayouts[0];  // failsafe
-}
-
-int CGUIEPGGridContainer::CorrectOffset(int offset, int cursor) const
-{
-  return offset + cursor;
 }
 
 void CGUIEPGGridContainer::SetRenderOffset(const CPoint &offset)
