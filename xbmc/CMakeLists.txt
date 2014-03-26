@@ -1,6 +1,6 @@
 set(subdirs cores addons cdrip dbwrappers dialogs filesystem guilib input interfaces music network
 peripherals pictures playlists powermanagement programs rendering settings storage threads
-utils video windowing windows pvr commons epg main)
+utils video windowing windows pvr commons epg main test)
 
 if(TARGET_COMMON_DARWIN)
 	list(APPEND subdirs osx)

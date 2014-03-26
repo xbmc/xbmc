@@ -48,6 +48,12 @@ OPTION(USE_RAPIDXML "Use RAPIDXML instead of TinyXML - Faster" ON)
 if(USE_RAPIDXML)
   add_definitions(-DUSE_RAPIDXML)
 endif(USE_RAPIDXML)
+ 
+if(HAVE_BREAKPAD)
+  if(NOT TARGET_WIN32)
+   list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${LIBBREAKPAD_CLIENT})
+  endif(NOT TARGET_WIN32)
+endif(HAVE_BREAKPAD)
 
 add_subdirectory(CrashReporter)
 add_subdirectory(Client)
@@ -73,8 +79,6 @@ endif(TARGET_OSX)
 find_all_sources(. plex_SRCS)
 
 list(REMOVE_ITEM plex_SRCS ./pch_plex.cpp)
-list(APPEND plex_SRCS Resources/Plex.rc)
-list(APPEND plex_SRCS Resources/Plex.rc2)
 
 set(Headers PlexTypes.h)
 if(NOT TARGET_OSX)
@@ -92,15 +96,18 @@ set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers})
 
 ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 
+# build all plex related source files
+add_library(PlexMain OBJECT ${PLEX_ALL_SRCS})
+
 if(TARGET_COMMON_DARWIN)
-  add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE ${PLEX_ALL_SRCS})
+  add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE $<TARGET_OBJECTS:PlexMain> $<TARGET_OBJECTS:xbmcmain>)
   set_target_properties(${PLEX_TARGET_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
   add_dependencies(${PLEX_TARGET_NAME} Update-Installer)
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PLEX_VERSION_STRING}")
   set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PLEX_VERSION_STRING_SHORT}")
   set(MACOSX_BUNDLE_BUNDLE_VERSION "${PLEX_VERSION_STRING}")
 else()
-  add_executable(${PLEX_TARGET_NAME} WIN32 ${PLEX_ALL_SRCS})
+  add_executable(${PLEX_TARGET_NAME} WIN32 $<TARGET_OBJECTS:PlexMain> $<TARGET_OBJECTS:xbmcmain> Resources/Plex.rc Resources/Plex.rc2)
 endif()
 
 # Set the correct binary name
@@ -114,11 +121,6 @@ endif(ENABLE_DUMP_SYMBOLS)
 
 add_dependencies(${PLEX_TARGET_NAME} git_revision.h)
 target_link_libraries(${PLEX_TARGET_NAME} xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
-if(HAVE_BREAKPAD)
-  if(NOT TARGET_WIN32)
-   target_link_libraries(${PLEX_TARGET_NAME} ${LIBBREAKPAD_CLIENT})
-  endif(NOT TARGET_WIN32)
-endif(HAVE_BREAKPAD)
 
 if(TARGET_WIN32)
   add_custom_command(
