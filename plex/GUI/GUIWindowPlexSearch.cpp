@@ -136,7 +136,7 @@ void CGUIWindowPlexSearch::UpdateSearch()
 
   if (!str.empty())
   {
-    g_plexApplication.timer.SetTimeout(SEARCH_DELAY, this);
+    g_plexApplication.timer->SetTimeout(SEARCH_DELAY, this);
   }
   else
     Reset();

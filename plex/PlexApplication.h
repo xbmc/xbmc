@@ -102,7 +102,7 @@ public:
   CPlexThumbCacher *thumbCacher;
   CPlexFilterManagerPtr filterManager;
   CPlexProfilerPtr profiler;
-  CPlexGlobalTimer timer;
+  CPlexGlobalTimerPtr timer;
   CPlexExtraInfoLoader *extraInfo;
 
   void setNetworkLogging(bool);

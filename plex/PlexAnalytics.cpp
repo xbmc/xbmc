@@ -61,15 +61,15 @@ CPlexAnalytics::CPlexAnalytics() : m_firstEvent(true), m_numberOfPlays(0)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexAnalytics::startLogging()
 {
-  g_plexApplication.timer.RemoveTimeout(this);
-  g_plexApplication.timer.SetTimeout(INITIAL_EVENT_DELAY * 1000, this);
+  g_plexApplication.timer->RemoveTimeout(this);
+  g_plexApplication.timer->SetTimeout(INITIAL_EVENT_DELAY * 1000, this);
   m_sessionLength.restart();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexAnalytics::stopLogging()
 {
-  g_plexApplication.timer.RemoveTimeout(this);
+  g_plexApplication.timer->RemoveTimeout(this);
   m_sessionLength.restart();
 }
 
@@ -180,7 +180,7 @@ void CPlexAnalytics::sendPlaybackStop()
              m_currentItem->GetProperty("type").asString(),
              m_currentItem->GetProperty("identifier").asString(),
              m_cumulativeTimePlayed);
-  g_plexApplication.timer.RestartTimeout(PING_INTERVAL_SECONDS * 1000, this);
+  g_plexApplication.timer->RestartTimeout(PING_INTERVAL_SECONDS * 1000, this);
 
   m_currentItem.reset();
   m_numberOfPlays += 1;
@@ -200,7 +200,7 @@ void CPlexAnalytics::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *s
       o.AddOption("cm1", boost::lexical_cast<std::string>(m_numberOfPlays));
       trackEvent("App", "Shutdown", "", m_sessionLength.elapsed(), o);
 
-      g_plexApplication.timer.RemoveTimeout(this);
+      g_plexApplication.timer->RemoveTimeout(this);
     }
   }
   else if (flag == ANNOUNCEMENT::Player && (stricmp(sender, "xbmc") == 0))
@@ -259,5 +259,5 @@ void CPlexAnalytics::OnTimeout()
   else
     sendPing();
 
-  g_plexApplication.timer.SetTimeout(PING_INTERVAL_SECONDS * 1000, this);
+  g_plexApplication.timer->SetTimeout(PING_INTERVAL_SECONDS * 1000, this);
 }

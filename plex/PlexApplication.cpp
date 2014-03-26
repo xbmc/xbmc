@@ -63,6 +63,7 @@ PlexApplication::Start()
   filterManager = CPlexFilterManagerPtr(new CPlexFilterManager);
   profiler = CPlexProfilerPtr(new CPlexProfiler);
   extraInfo = new CPlexExtraInfoLoader;
+  timer = CPlexGlobalTimerPtr(new CPlexGlobalTimer);
 
   serverManager->load();
   
@@ -193,7 +194,7 @@ void PlexApplication::setNetworkLogging(bool onOff)
       g_guiSettings.SetBool("debug.networklogging", false);
       return;
     }
-    timer.SetTimeout(1200000, this);
+    timer->SetTimeout(1200000, this);
     m_networkLoggingOn = true;
 
     CLog::Log(LOGINFO, "Plex Home Theater v%s (%s %s) @ %s", g_infoManager.GetVersion().c_str(), PlexUtils::GetMachinePlatform().c_str(),
@@ -204,7 +205,7 @@ void PlexApplication::setNetworkLogging(bool onOff)
     Destroy();
 
     m_networkLoggingOn = false;
-    timer.RemoveTimeout(this);
+    timer->RemoveTimeout(this);
 
     CLog::Log(LOGWARNING, "CPlexApplication::setNetworkLogging stopped networkLogging");
   }
@@ -262,7 +263,7 @@ void PlexApplication::sendNetworkLog(int level, const std::string &logline)
 void PlexApplication::preShutdown()
 {
   remoteSubscriberManager->Stop();
-  timer.StopAllTimers();
+  timer->StopAllTimers();
   themeMusicPlayer->stop();
   if (m_serviceListener)
   {
@@ -283,6 +284,8 @@ void PlexApplication::Shutdown()
   delete extraInfo;
 
   delete myPlexManager;
+
+  timer.reset();
 
   serverManager.reset();
   dataLoader.reset();

@@ -371,7 +371,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
         HideAllLists();
         m_lastSelectedItem = GetCurrentItemName();
         m_lastSelectedSubItem.Empty();
-        g_plexApplication.timer.SetTimeout(200, this);
+        g_plexApplication.timer->SetTimeout(200, this);
       }
 
       if (action.GetID() == ACTION_SELECT_ITEM && pItem->HasProperty("sectionPath") &&

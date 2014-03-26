@@ -7,6 +7,8 @@
 
 #include "StdString.h"
 
+#include <boost/shared_ptr.hpp>
+
 class IPlexGlobalTimeout
 {
   public:
@@ -52,5 +54,7 @@ class CPlexGlobalTimer : public CThread
     CEvent m_timerEvent;
     bool m_running;
 };
+
+typedef boost::shared_ptr<CPlexGlobalTimer> CPlexGlobalTimerPtr;
 
 #endif // PLEXGLOBALTIMER_H

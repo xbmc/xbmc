@@ -19,7 +19,7 @@ using namespace XFILE;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerDataLoader::CPlexServerDataLoader() : CJobQueue(false, 4, CJob::PRIORITY_NORMAL), m_stopped(false)
 {
-  g_plexApplication.timer.SetTimeout(SECTION_REFRESH_INTERVAL, this);
+  g_plexApplication.timer->SetTimeout(SECTION_REFRESH_INTERVAL, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ void CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
     CLog::Log(LOGDEBUG, "CPlexServerDataLoader::LoadDataFromServer loading data for server %s", server->GetName().c_str());
     AddJob(new CPlexServerDataLoaderJob(server, shared_from_this()));
     
-    g_plexApplication.timer.RestartTimeout(SECTION_REFRESH_INTERVAL, this);
+    g_plexApplication.timer->RestartTimeout(SECTION_REFRESH_INTERVAL, this);
   }
 }
 
@@ -311,13 +311,13 @@ void CPlexServerDataLoader::OnTimeout()
     }
   }
 
-  g_plexApplication.timer.SetTimeout(SECTION_REFRESH_INTERVAL, this);
+  g_plexApplication.timer->SetTimeout(SECTION_REFRESH_INTERVAL, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlexServerDataLoader::Stop()
 {
-  g_plexApplication.timer.RemoveTimeout(this);
+  g_plexApplication.timer->RemoveTimeout(this);
   m_stopped = true;
 
   CancelJobs();

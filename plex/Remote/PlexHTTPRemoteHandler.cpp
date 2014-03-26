@@ -538,7 +538,7 @@ void CPlexHTTPRemoteHandler::showDetails(const ArgMap &arguments)
 
         if (!navTimeout)
           navTimeout = new NavigationTimeout;
-        g_plexApplication.timer.RestartTimeout(5 * 60 * 1000, navTimeout);
+        g_plexApplication.timer->RestartTimeout(5 * 60 * 1000, navTimeout);
       }
     }
   }

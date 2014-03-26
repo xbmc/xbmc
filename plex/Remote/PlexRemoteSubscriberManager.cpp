@@ -182,7 +182,7 @@ CPlexRemoteSubscriberPtr CPlexRemoteSubscriberManager::addSubscriber(CPlexRemote
       subscriber->Create();
   }
 
-  g_plexApplication.timer.SetTimeout(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, this);
+  g_plexApplication.timer->SetTimeout(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, this);
 
   return m_map[subscriber->getUUID()];
 }
@@ -211,7 +211,7 @@ void CPlexRemoteSubscriberManager::removeSubscriber(CPlexRemoteSubscriberPtr sub
   m_map.erase(subscriber->getUUID());
   
   if (m_map.size() == 0)
-    g_plexApplication.timer.RemoveTimeout(this);
+    g_plexApplication.timer->RemoveTimeout(this);
 
   if (!g_application.IsPlayingVideo())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(52501),
@@ -257,7 +257,7 @@ void CPlexRemoteSubscriberManager::OnTimeout()
   
   /* still clients to handle, restart the timer */
   if (m_map.size() > 0)
-    g_plexApplication.timer.SetTimeout(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, this);
+    g_plexApplication.timer->SetTimeout(PLEX_REMOTE_SUBSCRIBER_CHECK_INTERVAL * 1000, this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -293,7 +293,7 @@ void CPlexRemoteSubscriberManager::Stop()
 {
   CSingleLock lock (m_crit);
   m_stopped = true;
-  g_plexApplication.timer.RemoveTimeout(this);
+  g_plexApplication.timer->RemoveTimeout(this);
 
   std::vector<CPlexRemoteSubscriberPtr> allSubs;
 

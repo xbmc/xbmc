@@ -71,7 +71,7 @@ bool CGUIWindowPlexPreplayVideo::OnMessage(CGUIMessage &message)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexPreplayVideo::OnAction(const CAction &action)
 {
-  g_plexApplication.timer.RemoveAllTimeoutsByName("navigationTimeout");
+  g_plexApplication.timer->RemoveAllTimeoutsByName("navigationTimeout");
 
   if (action.GetID() == ACTION_PLAYER_PLAY)
   {

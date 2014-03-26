@@ -38,13 +38,13 @@ void CPlexManualServerManager::checkManualServersAsync()
     CJobManager::GetInstance().AddJob(new CPlexHTTPFetchJob(manualServer->BuildURL("/"), manualServer), this);
   }
 
-  g_plexApplication.timer.SetTimeout(1 * 60 * 1000, this);
+  g_plexApplication.timer->SetTimeout(1 * 60 * 1000, this);
 }
 
 void CPlexManualServerManager::OnTimeout()
 {
   checkManualServersAsync();
-  g_plexApplication.timer.SetTimeout(1 * 60 * 1000, this);
+  g_plexApplication.timer->SetTimeout(1 * 60 * 1000, this);
 }
 
 void CPlexManualServerManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)

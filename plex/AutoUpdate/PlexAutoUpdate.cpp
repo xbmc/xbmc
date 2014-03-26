@@ -53,7 +53,7 @@ CPlexAutoUpdate::CPlexAutoUpdate()
 
   CLog::Log(LOGDEBUG,"CPlexAutoUpdate : Creating Updater, auto=%d",g_guiSettings.GetBool("updates.auto"));
   if (g_guiSettings.GetBool("updates.auto"))
-    g_plexApplication.timer.SetTimeout(5 * 1000, this);
+    g_plexApplication.timer->SetTimeout(5 * 1000, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,7 +181,7 @@ void CPlexAutoUpdate::OnTimeout()
   }
 
   if (g_guiSettings.GetBool("updates.auto"))
-    g_plexApplication.timer.SetTimeout(m_searchFrequency, this);
+    g_plexApplication.timer->SetTimeout(m_searchFrequency, this);
 
   m_isSearching = false;
   CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, WINDOW_SETTINGS_MYPICTURES);
@@ -420,7 +420,7 @@ void CPlexAutoUpdate::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   else if (!success)
   {
     CLog::Log(LOGWARNING, "CPlexAutoUpdate::OnJobComplete failed to run a download job, will retry in %d milliseconds.", m_searchFrequency);
-    g_plexApplication.timer.SetTimeout(m_searchFrequency, this);
+    g_plexApplication.timer->SetTimeout(m_searchFrequency, this);
     return;
   }
 
@@ -726,7 +726,7 @@ void CPlexAutoUpdate::ForceVersionCheckInBackground()
   m_isSearching = true;
 
   // restart with a short time out, just to make sure that we get it running in the background thread
-  g_plexApplication.timer.RestartTimeout(1, this);
+  g_plexApplication.timer->RestartTimeout(1, this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -734,7 +734,7 @@ void CPlexAutoUpdate::ResetTimer()
 {
   if (g_guiSettings.GetBool("updates.auto"))
   {
-    g_plexApplication.timer.RestartTimeout(m_searchFrequency, this);
+    g_plexApplication.timer->RestartTimeout(m_searchFrequency, this);
   }
 }
 
@@ -742,7 +742,7 @@ void CPlexAutoUpdate::ResetTimer()
 void CPlexAutoUpdate::PokeFromSettings()
 {
   if (g_guiSettings.GetBool("updates.auto"))
-    g_plexApplication.timer.RestartTimeout(m_searchFrequency, this);
+    g_plexApplication.timer->RestartTimeout(m_searchFrequency, this);
   else if (!g_guiSettings.GetBool("updates.auto"))
-    g_plexApplication.timer.RemoveTimeout(this);
+    g_plexApplication.timer->RemoveTimeout(this);
 }
