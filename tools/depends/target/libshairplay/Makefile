@@ -24,6 +24,8 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p1 < ../xcode-llmvfix.patch
 endif
+	cd $(PLATFORM); patch -p1 < ../02-fixipv4ipv6race.patch
+	cd $(PLATFORM); patch -p1 < ../03-fixpasswordauthitunes.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
