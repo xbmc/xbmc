@@ -257,7 +257,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
     /* skip if an icon is already set  and exists*/
     if (!groupMember.channel->IsIconExists())
-      groupMember.channel->SetIconPath(std::string(), false);
+      groupMember.channel->SetIconPath(StringUtils::Empty, false);
     else
         continue;
 
