@@ -776,7 +776,8 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
             m_gridIndex.push_back(blocks);
           }
 
-          UpdateLayout(true); // true to refresh all items
+          FreeItemsMemory();
+          UpdateLayout();
 
           /* Create Ruler items */
           CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
@@ -1569,24 +1570,6 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   }
 }
 
-void CGUIEPGGridContainer::UpdateLayout(bool updateAllItems)
-{
-  // if container is invalid, either new data has arrived, or m_blockSize has changed
-  // need to run UpdateItems rather than CalculateLayout?
-  if (updateAllItems)
-  { // free memory of items
-    for (std::vector<CGUIListItemPtr>::iterator it = m_channelItems.begin(); it != m_channelItems.end(); it++)
-      (*it)->FreeMemory();
-    for (std::vector<CGUIListItemPtr>::iterator it = m_rulerItems.begin(); it != m_rulerItems.end(); it++)
-      (*it)->FreeMemory();
-    for (std::vector<CGUIListItemPtr>::iterator it = m_programmeItems.begin(); it != m_programmeItems.end(); it++)
-      (*it)->FreeMemory();
-  }
-
-  // and recalculate the layout
-  CalculateLayout();
-}
-
 CStdString CGUIEPGGridContainer::GetDescription() const
 {
   CStdString strLabel;
@@ -1671,7 +1654,7 @@ void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)
       __FUNCTION__, m_gridStart.GetAsLocalizedDateTime(false, true).c_str(), m_gridEnd.GetAsLocalizedDateTime(false, true).c_str());
 }
 
-void CGUIEPGGridContainer::CalculateLayout()
+void CGUIEPGGridContainer::UpdateLayout()
 {
   CGUIListItemLayout *oldFocusedChannelLayout   = m_focusedChannelLayout;
   CGUIListItemLayout *oldChannelLayout          = m_channelLayout;
@@ -1798,6 +1781,17 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
 void CGUIEPGGridContainer::SetRenderOffset(const CPoint &offset)
 {
   m_renderOffset = offset;
+}
+
+void CGUIEPGGridContainer::FreeItemsMemory()
+{
+  // free memory of items
+  for (std::vector<CGUIListItemPtr>::iterator it = m_channelItems.begin(); it != m_channelItems.end(); it++)
+    (*it)->FreeMemory();
+  for (std::vector<CGUIListItemPtr>::iterator it = m_rulerItems.begin(); it != m_rulerItems.end(); it++)
+    (*it)->FreeMemory();
+  for (std::vector<CGUIListItemPtr>::iterator it = m_programmeItems.begin(); it != m_programmeItems.end(); it++)
+    (*it)->FreeMemory();
 }
 
 void CGUIEPGGridContainer::FreeChannelMemory(int keepStart, int keepEnd)

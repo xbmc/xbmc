@@ -101,8 +101,7 @@ namespace EPG
     void ChannelScroll(int amount);
     void ProgrammesScroll(int amount);
     void ValidateOffset();
-    void UpdateLayout(bool refreshAllItems = false);
-    void CalculateLayout();
+    void UpdateLayout();
     void Reset();
     void ClearGridIndex(void);
 
@@ -162,6 +161,7 @@ namespace EPG
                       // the "movement" was simply due to the list being repopulated (thus cursor position
                       // changing around)
 
+    void FreeItemsMemory();
     void FreeChannelMemory(int keepStart, int keepEnd);
     void FreeProgrammeMemory(int channel, int keepStart, int keepEnd);
     void FreeRulerMemory(int keepStart, int keepEnd);
