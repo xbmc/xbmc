@@ -65,20 +65,112 @@ void CAESinkPi::SetAudioDest()
     CLog::Log(LOGERROR, "%s::%s - m_omx_render.SetConfig omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
 }
 
+static void SetAudioProps(bool stream_channels, uint32_t channel_map)
+{
+  char command[80], response[80];
+
+  sprintf(command, "hdmi_stream_channels %d", stream_channels ? 1 : 0);
+  vc_gencmd(response, sizeof response, command);
+
+  sprintf(command, "hdmi_channel_map 0x%08x", channel_map);
+  vc_gencmd(response, sizeof response, command);
+
+  CLog::Log(LOGDEBUG, "%s:%s hdmi_stream_channels %d hdmi_channel_map %08x", CLASSNAME, __func__, stream_channels, channel_map);
+}
+
+static uint32_t GetChannelMap(AEAudioFormat &format, bool passthrough)
+{
+  unsigned int channels = format.m_channelLayout.Count();
+  uint32_t channel_map = 0;
+  if (passthrough)
+    return 0;
+
+  static const unsigned char map_normal[] =
+  {
+    0, //AE_CH_RAW ,
+    1, //AE_CH_FL
+    2, //AE_CH_FR
+    4, //AE_CH_FC
+    3, //AE_CH_LFE
+    7, //AE_CH_BL
+    8, //AE_CH_BR
+    1, //AE_CH_FLOC,
+    2, //AE_CH_FROC,
+    4, //AE_CH_BC,
+    5, //AE_CH_SL
+    6, //AE_CH_SR
+  };
+  static const unsigned char map_back[] =
+  {
+    0, //AE_CH_RAW ,
+    1, //AE_CH_FL
+    2, //AE_CH_FR
+    4, //AE_CH_FC
+    3, //AE_CH_LFE
+    5, //AE_CH_BL
+    6, //AE_CH_BR
+    1, //AE_CH_FLOC,
+    2, //AE_CH_FROC,
+    4, //AE_CH_BC,
+    5, //AE_CH_SL
+    6, //AE_CH_SR
+  };
+  const unsigned char *map = map_normal;
+  // According to CEA-861-D only RL and RR are known. In case of a format having SL and SR channels
+  // but no BR BL channels, we use the wide map in order to open only the num of channels really
+  // needed.
+  if (format.m_channelLayout.HasChannel(AE_CH_BL) && !format.m_channelLayout.HasChannel(AE_CH_SL))
+    map = map_back;
+
+  for (unsigned int i = 0; i < channels; ++i)
+  {
+    AEChannel c = format.m_channelLayout[i];
+    unsigned int chan = 0;
+    if ((unsigned int)c < sizeof map_normal / sizeof *map_normal)
+      chan = map[(unsigned int)c];
+    if (chan > 0)
+      channel_map |= (chan-1) << (3*i);
+  }
+  // These numbers are from Table 28 Audio InfoFrame Data byte 4 of CEA 861
+  // and describe the speaker layout
+  static const uint8_t cea_map[] = {
+    0xff, // 0
+    0xff, // 1
+    0x00, // 2.0
+    0x02, // 3.0
+    0x08, // 4.0
+    0x0a, // 5.0
+    0xff, // 6
+    0x12, // 7.0
+    0xff, // 8
+  };
+  static const uint8_t cea_map_lfe[] = {
+    0xff, // 0
+    0xff, // 1
+    0xff, // 2
+    0x01, // 2.1
+    0x03, // 3.1
+    0x09, // 4.1
+    0x0b, // 5.1
+    0xff, // 7
+    0x13, // 7.1
+  };
+  uint8_t cea = format.m_channelLayout.HasChannel(AE_CH_LFE) ? cea_map_lfe[channels] : cea_map[channels];
+  if (cea == 0xff)
+    CLog::Log(LOGERROR, "%s::%s - Unexpected CEA mapping %d,%d", CLASSNAME, __func__, format.m_channelLayout.HasChannel(AE_CH_LFE), channels);
+
+  channel_map |= cea << 24;
+
+  return channel_map;
+}
+
 bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
 {
-  char response[80];
+  // This may be called before Application calls g_RBP.Initialise, so call it here too
+  g_RBP.Initialize();
+
   /* if we are raw need to let gpu know */
-  if (AE_IS_RAW(format.m_dataFormat))
-  {
-    vc_gencmd(response, sizeof response, "hdmi_stream_channels 1");
-    m_passthrough = true;
-  }
-  else
-  {
-    vc_gencmd(response, sizeof response, "hdmi_stream_channels 0");
-    m_passthrough = false;
-  }
+  m_passthrough = AE_IS_RAW(format.m_dataFormat);
 
   m_initDevice = device;
   m_initFormat = format;
@@ -92,16 +184,13 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   format.m_frames        = format.m_sampleRate * AUDIO_PLAYBUFFER;
   format.m_frameSamples  = format.m_frames * channels;
 
-  m_format = format;
+  SetAudioProps(m_passthrough, GetChannelMap(format, m_passthrough));
 
   m_format = format;
   m_sinkbuffer_sec_per_byte = 1.0 / (double)(m_format.m_frameSize * m_format.m_sampleRate);
 
   CLog::Log(LOGDEBUG, "%s:%s Format:%d Channels:%d Samplerate:%d framesize:%d bufsize:%d bytes/s=%.2f", CLASSNAME, __func__,
                 m_format.m_dataFormat, channels, m_format.m_sampleRate, m_format.m_frameSize, m_format.m_frameSize * m_format.m_frames, 1.0/m_sinkbuffer_sec_per_byte);
-
-  // This may be called before Application calls g_RBP.Initialise, so call it here too
-  g_RBP.Initialize();
 
   CLog::Log(LOGDEBUG, "%s:%s", CLASSNAME, __func__);
 
@@ -160,6 +249,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
 void CAESinkPi::Deinitialize()
 {
   CLog::Log(LOGDEBUG, "%s:%s", CLASSNAME, __func__);
+  SetAudioProps(false, 0);
   if (m_Initialized)
   {
     m_omx_render.FlushAll();
