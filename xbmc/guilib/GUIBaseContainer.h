@@ -92,6 +92,10 @@ public:
   void SetAutoScrolling(const TiXmlNode *node);
   void ResetAutoScrolling();
   void UpdateAutoScrolling(unsigned int currentTime);
+  
+  void SetItemChangedActions(const CGUIAction &itemchanged);
+  
+  CGUIAction m_itemchangedActions;
 
 #ifdef _DEBUG
   virtual void DumpTextureUse();
@@ -101,7 +105,7 @@ protected:
   bool OnClick(int actionID);
 
   virtual void ProcessItem(float posX, float posY, CGUIListItemPtr& item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions);
-
+  virtual void RunItemChangedActions();
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);

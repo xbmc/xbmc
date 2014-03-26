@@ -1258,14 +1258,20 @@ void CGUIBaseContainer::GetCacheOffsets(int &cacheBefore, int &cacheAfter) const
 
 void CGUIBaseContainer::SetCursor(int cursor)
 {
-  m_cursor = cursor;
+   int previous_cursor = m_cursor;
+   m_cursor = cursor;
+   if(previous_cursor != m_cursor)
+    RunItemChangedActions(); 
 }
 
 void CGUIBaseContainer::SetOffset(int offset)
 {
+  int previous_offset = m_offset;
   if (m_offset != offset)
     MarkDirtyRegion();
   m_offset = offset;
+  if(previous_offset != m_offset)
+    RunItemChangedActions(); 
 }
 
 bool CGUIBaseContainer::CanFocus() const
@@ -1287,4 +1293,14 @@ void CGUIBaseContainer::OnFocus()
     SelectItem(m_listProvider->GetDefaultItem());
 
   CGUIControl::OnFocus();
+}
+
+void CGUIBaseContainer::RunItemChangedActions()
+{
+   m_itemchangedActions.ExecuteActions(GetID(), GetParentID());
+}
+
+void CGUIBaseContainer::SetItemChangedActions(const CGUIAction &itemchanged)
+{
+    m_itemchangedActions = itemchanged;
 }
