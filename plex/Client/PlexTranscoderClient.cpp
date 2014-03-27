@@ -260,7 +260,13 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   {
     std::vector<stringPair> hdrs = XFILE::CPlexFile::GetHeaderList();
     BOOST_FOREACH(stringPair p, hdrs)
+    {
+      // Let's ignore X-Plex-Client-Capabilities, ffmpeg is cranky about {}
+      if (p.first == "X-Plex-Client-Capabilities")
+        continue;
+
       tURL.SetOption(p.first, p.second);
+    }
   }
   
   return tURL;
