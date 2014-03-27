@@ -174,6 +174,11 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
 
   m_initDevice = device;
   m_initFormat = format;
+
+  // analogue only supports stereo
+  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+    format.m_channelLayout = AE_CH_LAYOUT_2_0;
+
   // setup for a 50ms sink feed from SoftAE
   if (format.m_dataFormat != AE_FMT_FLOAT && format.m_dataFormat != AE_FMT_S32LE)
     format.m_dataFormat = AE_FMT_S16LE;
