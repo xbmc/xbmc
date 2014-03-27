@@ -1460,7 +1460,11 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
     CStdString& m_ref = (CStdString&)m_mimetype;
 
     /* PLEX */
-    if (GetAsUrl().GetProtocol() == "plexserver")
+    CURL url = GetAsUrl();
+    if (url.GetProtocol() == "plexserver" ||
+        // We also need to check for transcoder URL's since they are translated
+        // to HTTP already (ffmpeg doesn't like plexserver:// url's
+        boost::starts_with(url.GetFileName(), "video/:/transcode"))
       m_ref = XFILE::CPlexFile::GetMimeType(GetAsUrl());
     else
     /* END PLEX */
