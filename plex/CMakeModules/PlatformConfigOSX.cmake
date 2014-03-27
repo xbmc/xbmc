@@ -94,7 +94,6 @@ set(external_libs
   GLEW
   vorbis
   vorbisenc
-  gnutls
 )
 
 set(ffmpeg_libs
