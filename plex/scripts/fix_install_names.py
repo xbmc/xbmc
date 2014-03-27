@@ -53,7 +53,7 @@ def fix_install_name(path):
           continue
         for l in otoolout.split("\n"):
           l=l.rstrip().strip()
-          if l.startswith("/Users/plex/jenkins/"):
+          if l.startswith("/Users/admin/jenkins/"):
             # this needs to be changed then...
             currentlib=l.split(" (compat")[0]
             basename = os.path.basename(currentlib)
