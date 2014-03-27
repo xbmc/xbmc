@@ -2023,12 +2023,15 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="services.upnprenderer" type="boolean" label="21881" help="36325">
+        <setting id="services.upnpcontroller" type="boolean" label="21361" help="36326">
           <level>1</level>
           <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="services.upnpserver">true</dependency>
+          </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="services.upnpcontroller" type="boolean" label="21361" help="36326">
+        <setting id="services.upnprenderer" type="boolean" label="21881" help="36325">
           <level>1</level>
           <default>false</default>
           <control type="toggle" />

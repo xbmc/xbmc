@@ -496,7 +496,8 @@ CUPnP::StartClient()
     m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
 
     // start controller
-    if (CSettings::Get().GetBool("services.upnpcontroller")) {
+    if (CSettings::Get().GetBool("services.upnpcontroller") &&
+        CSettings::Get().GetBool("services.upnpserver")) {
         m_MediaController = new CMediaController(m_CtrlPointHolder->m_CtrlPoint);
     }
 }
