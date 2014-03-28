@@ -88,6 +88,10 @@ msgctxt "#31033"
 msgid "Info"
 msgstr "Maklumat"
 
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Tindakan"
+
 msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Kini Bermain"
@@ -164,6 +168,14 @@ msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Papar \"Henti Sejenak\" pada persembahan slaid gambar"
 
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Pelbagai opsyen"
+
+msgctxt "#31107"
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Sembunyi penanda bacaan daripada nama fail video [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
 msgstr "Sembunyi Punat Menu Utama"
@@ -216,10 +228,66 @@ msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Perisisan tambahan Lirik"
 
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Pintasan"
+
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr "Pilih Lagu Anda"
+
+msgctxt "#31205"
+msgid "Lyrics Source"
+msgstr "Sumber Lirik"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Dijumpai"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Kemaskini Terakhir"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Penyedia data"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Memori Digunakan:"
+
+msgctxt "#31319"
+msgid "Selected Profile"
+msgstr "Pilihan Profil"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Log Masuk Terakhir"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Disiarkan"
+
 msgctxt "#31327"
 msgid "Resolution"
 msgstr "Resolusi"
 
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Muat turun Sari kata"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Tonton menggunakan 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Ubah mod"
+
 msgctxt "#31362"
 msgid "Enabled"
 msgstr "Dibenarkan"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "Sistem"

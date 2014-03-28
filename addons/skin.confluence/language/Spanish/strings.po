@@ -582,7 +582,7 @@ msgstr "TELEVISIÓN EN DIRECTO"
 
 msgctxt "#31953"
 msgid "VIDEOS"
-msgstr "VIDEOS"
+msgstr "VÍDEOS"
 
 msgctxt "#31954"
 msgid "MOVIES"
@@ -590,7 +590,7 @@ msgstr "PELÍCULAS"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "PROGRAMAS DE TELEVISIÓN"
+msgstr "SERIES"
 
 msgctxt "#31956"
 msgid "MUSIC"
