@@ -23,6 +23,8 @@ public:
 
   int getPlaylistFromString(const CStdString &typeStr);
 
+  void refreshPlayQueue(const CFileItemPtr& item);
+
 private:
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 };

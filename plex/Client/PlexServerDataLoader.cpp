@@ -106,7 +106,7 @@ void CPlexServerDataLoader::OnJobComplete(unsigned int jobID, bool success, CJob
     g_windowManager.SendThreadMessage(msg);
   }
   else
-    CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnJobComplete fail");
+    CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnJobComplete failed for server %s", j->m_server->GetName().c_str());
 
   CJobQueue::OnJobComplete(jobID, success, job);
 }

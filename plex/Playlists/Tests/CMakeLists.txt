@@ -1,0 +1,1 @@
+plex_add_testcase(PlayQueueManager_Tests.cpp)

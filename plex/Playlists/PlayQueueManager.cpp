@@ -12,6 +12,8 @@
 
 #include "ApplicationMessenger.h"
 
+#include "dialogs/GUIDialogOK.h"
+
 using namespace PLAYLIST;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,9 +41,15 @@ CStdString CPlayQueueManager::getURIFromItem(const CFileItemPtr& item)
   if (item->m_bIsFolder)
     itemDirStr = "directory";
 
+  if (!item->HasProperty("librarySectionUUID"))
+  {
+    CLog::Log(LOGWARNING, "CPlayQueueManager::getURIFromItem item %s doesn't have a section UUID", item->GetPath().c_str());
+    return "";
+  }
+
   CStdString ret;
-  ret.Format("library://%s/%s%s", item->GetProperty("plexserver").asString(), itemDirStr,
-             item->GetProperty("unprocessed_key").asString());
+  ret.Format("library://%s/%s/%s", item->GetProperty("librarySectionUUID").asString(), itemDirStr,
+             CURL::Encode(item->GetProperty("unprocessed_key").asString()));
 
   return ret;
 }
@@ -77,12 +85,8 @@ CURL CPlayQueueManager::getCreatePlayQueueURL(const CPlexServerPtr& server, ePle
 
   CURL u = server->BuildPlexURL("/playQueues");
   std::string typeStr = PlexUtils::GetMediaTypeString(type);
-  if (typeStr.empty())
-  {
-    CLog::Log(LOGWARNING, "CPlexQueueManager::createPlayQueue crazy type there: %d", type);
-    return CURL();
-  }
-  else if (typeStr == "music")
+
+  if (typeStr == "music")
   {
     // here we expect audio for some reason
     typeStr = "audio";
@@ -131,21 +135,44 @@ int CPlayQueueManager::getPlaylistFromString(const CStdString& typeStr)
   return PLAYLIST_NONE;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlayQueueManager::refreshPlayQueue(const CFileItemPtr &item)
+{
+  if (!item)
+    return;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 void CPlayQueueManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   CPlexDirectoryFetchJob *fj = static_cast<CPlexDirectoryFetchJob*>(job);
   if (fj && success)
   {
+
     int playlist = getPlaylistFromString(fj->m_url.GetOption("type"));
     int selectedOffset = fj->m_items.GetProperty("playQueueSelectedItemOffset").asInteger();
 
-    if (playlist != PLAYLIST_NONE)
+    if (playlist == PLAYLIST_NONE)
     {
-      g_playlistPlayer.SetCurrentPlaylist(playlist);
-      CApplicationMessenger::Get().PlayListPlayerClear(playlist);
-      CApplicationMessenger::Get().PlayListPlayerAdd(playlist, fj->m_items);
-      CApplicationMessenger::Get().PlayListPlayerPlay(selectedOffset);
+      CGUIDialogOK::ShowAndGetInput("Error creating the Play Queue", "The reponse from the server did not make sense.", "", "");
+      return;
     }
+
+    if (fj->m_items.Size() == 0)
+    {
+      CGUIDialogOK::ShowAndGetInput("Error creating the Play Queue", "The server responded with a empty Play Queue", "", "");
+      return;
+    }
+
+    CLog::Log(LOGDEBUG, "CPlayQueueManager::OnJobComplete going to play a playlist of size %d and type %d", fj->m_items.Size(), playlist);
+
+    g_playlistPlayer.SetCurrentPlaylist(playlist);
+    CApplicationMessenger::Get().PlayListPlayerClear(playlist);
+    CApplicationMessenger::Get().PlayListPlayerAdd(playlist, fj->m_items);
+    CApplicationMessenger::Get().PlayListPlayerPlay(selectedOffset);
+  }
+  else
+  {
+    CGUIDialogOK::ShowAndGetInput("Error creating the Play Queue", "The server was unable to create the Play Queue", "", "");
   }
 }

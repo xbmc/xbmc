@@ -8,8 +8,6 @@ namespace PLAYLIST
 {
   class CPlexPlayListPlayer : public CPlayListPlayer
   {
-  public:
-    CPlexPlayListPlayer();
   };
 }
 
