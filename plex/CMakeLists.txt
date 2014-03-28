@@ -114,6 +114,21 @@ add_test(PlexHomeTheaterTests ${EXECUTABLE_OUTPUT_PATH}/PlexHomeTheaterTests --g
 add_custom_target(all_tests DEPENDS PlexHomeTheaterTests)
 add_custom_target(run_tests COMMAND ${CMAKE_CTEST_COMMAND} -V DEPENDS all_tests)
 
+find_program(LIZARD lizard HINTS /usr/local/bin)
+if(NOT LIZARD MATCHES "-NOTFOUND")
+  add_custom_command(
+    OUTPUT lizard-output.xml
+    COMMAND ${LIZARD} --xml -t 4 ${plexdir} -x"${plexdir}/Dependencies/*" -x"${plexdir}/Update-Installer/*" -x"${plexdir}/Third-Party/*" > ${CMAKE_CURRENT_BINARY_DIR}/lizard-output.xml
+  )
+  add_custom_command(
+    OUTPUT lizard-stdout
+    COMMAND ${LIZARD} -w -t 4 ${plexdir} -x"${plexdir}/Dependencies/*" -x"${plexdir}/Update-Installer/*" -x"${plexdir}/Third-Party/*"
+  )
+
+  add_custom_target(lizard DEPENDS lizard-output.xml)
+  add_custom_target(lizard-warnings DEPENDS lizard-stdout)
+endif(NOT LIZARD MATCHES "-NOTFOUND")
+
 if(TARGET_COMMON_DARWIN)
   add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE $<TARGET_OBJECTS:PlexMain> $<TARGET_OBJECTS:xbmcmain>)
   set_target_properties(${PLEX_TARGET_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
