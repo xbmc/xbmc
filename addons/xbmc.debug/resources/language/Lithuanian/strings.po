@@ -39,3 +39,7 @@ msgstr "Išsami registracija RTMP bibliotekoje"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Išsami registracija DBUS skambučiuose"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Išsami registracija naudojant JSON-RPC registrą"
