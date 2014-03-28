@@ -576,15 +576,11 @@ public:
   EINTERLACEMETHOD AutoInterlaceMethod();
   static bool IsVDPAUFormat(PixelFormat fmt);
 
-  static void FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
-  static void FFDrawSlice(struct AVCodecContext *s,
-                          const AVFrame *src, int offset[4],
-                          int y, int type, int height);
-  static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic);
-  static VdpStatus Render( VdpDecoder decoder, VdpVideoSurface target,
-                           VdpPictureInfo const *picture_info,
-                           uint32_t bitstream_buffer_count,
-                           VdpBitstreamBuffer const * bitstream_buffers);
+  static void FFReleaseBuffer(void *opaque, uint8_t *data);
+  static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+  static int Render(struct AVCodecContext *s, struct AVFrame *src,
+                    const VdpPictureInfo *info, uint32_t buffers_used,
+                    const VdpBitstreamBuffer *buffers);
 
   virtual void OnLostDevice();
   virtual void OnResetDevice();
