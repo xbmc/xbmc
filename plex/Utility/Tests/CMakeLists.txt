@@ -1,0 +1,1 @@
+plex_add_testcase(PlexUtils_Tests.cpp)
