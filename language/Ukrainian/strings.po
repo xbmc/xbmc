@@ -10445,10 +10445,6 @@ msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
 msgstr "Вибір основного джерела відомостей про серіали. Доступні варіанти див. у менеджері надбудов."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Ще немає доступної інформації."
-
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
 msgstr "Вибір основного джерела відомостей про виконавців. Доступні варіанти див. у менеджері надбудов."

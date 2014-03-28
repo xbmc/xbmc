@@ -11127,7 +11127,7 @@ msgstr "Kategória amely a Felszín beállításait tartalmazza."
 
 msgctxt "#36103"
 msgid "Select the skin for the user interface. This will define the look and feel of XBMC."
-msgstr "Válassza ki a felhasználói felület felszínét. Ez meghatározza a az XBMC kinézetés és kezelését."
+msgstr "Válassza ki a felhasználói felület felszínét. Ez meghatározza a az XBMC kinézetét és kezelését."
 
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
@@ -11508,14 +11508,6 @@ msgstr "Alapértelmezett sorozatadatbázis-forrás kiválasztása. Lásd a kieg�
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Alapértelmezetten használt album letöltő a zenei klipek médiatárhoz adásához."
-
-msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
-msgstr "Kategória a PVR/Élő TV általános beállításaival."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Nincs még információ"
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."

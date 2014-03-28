@@ -5169,6 +5169,10 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Fejl ved Apple-fjernbetjeningen"
 
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "Apple Fjernsupport kunne ikke aktiveres."
+
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Kombiner"
@@ -6456,6 +6460,10 @@ msgstr "Søg efter kanaler"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "PVR-funktioner kan ikke bruges under søgning."
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "På hvilken server vil du søge?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10345,6 +10353,10 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Vælg fra alle titler..."
 
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Vis Blu-ray menuer"
+
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Afspil hovedtitel: %d"
@@ -10360,6 +10372,14 @@ msgstr "Vælg afspilningsemne"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Kapitler: %u - varighed: %s"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Afspilning af Blu-ray mislykkedes"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "Menuen i denne Blu-ray er ikke understøttet"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11488,14 +11508,6 @@ msgstr "Vælg standardkilde til serieinformation. Se Add-on manager for valgmuli
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Standardscraper der bruges til at tilføje musikvideoer til dit bibliotek."
-
-msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
-msgstr "Kategori til generelle indstillinger for PVR/Live TV funktioner."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Ingen information tilgængelig endnu."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."

@@ -11509,14 +11509,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Standard Scraper der benutzt wird um Musik und Videos zur Bibliothek hinzuzufügen."
 
-msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
-msgstr "Kategorie für allgemeine Einstellungen der PVR/Live-TV-Funktionen."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Noch keine Informationen vorhanden."
-
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Aktiviere die Personal Video Recorder (PVR) Funktionen in XBMC. Dies erfordert die Installation von mindestens einem PVR-Addon."
@@ -11633,6 +11625,10 @@ msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Betätigen einer Nummerntaste wechselt nach einer Eingabezeit von 1 Sekunde automatisch zum ausgewählten Sender."
 
+msgctxt "#36232"
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "Beim betätigen Tasten für Senderwechsel wird der tatsächliche Senderwechsel verzögert, um dem Benutzer zu erlauben Sender zu überspringen ohne auf jeden Senderwechsel warten zu müssen."
+
 msgctxt "#36233"
 msgid "Category for default recording duration settings."
 msgstr "Kategorie für Standard-Aufnahmedauer-Einstellungen."
@@ -11704,6 +11700,10 @@ msgstr "Eine neue PIN eingeben um jugendgeschützte Kanäle freizugeben."
 msgctxt "#36250"
 msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
 msgstr "Erneut nach dem PIN-Code fragen, wenn versucht wird, auf einen gesperrten Erwachsenenkanal zuzugreifen und während der Laufzeit noch nicht nach dem Code gefragt wurde."
+
+msgctxt "#36251"
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "Kategorie für PVR Backend spezifische Einstellungen, sofern das PVR Backend diese Änderungen in XBMC zulässt."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."

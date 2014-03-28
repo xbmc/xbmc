@@ -11509,14 +11509,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Standardskrapa som används för att lägga till musikvideor till ditt bibliotek."
 
-msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
-msgstr "Kategori med inställningar för PVR/Live-TV"
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Ingen info tillgänglig ännu."
-
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Aktivera den Personliga Video Inspelaren (PVR) funktionen i XBMC. Detta kräver att minst ett PVR-tillägg är installerat."

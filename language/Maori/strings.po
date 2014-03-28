@@ -615,7 +615,7 @@ msgstr "Roanga"
 
 msgctxt "#181"
 msgid "Select album"
-msgstr "Tīpakohia Kōpae Pūoro"
+msgstr "Tīpakohia Pukaemi"
 
 msgctxt "#182"
 msgid "Tracks"
@@ -631,7 +631,7 @@ msgstr "Tāmata"
 
 msgctxt "#185"
 msgid "Searching album"
-msgstr "Rapu Kōpae Pūoro"
+msgstr "Rapu pukaemi"
 
 msgctxt "#186"
 msgid "OK"
@@ -639,7 +639,7 @@ msgstr "Āna"
 
 msgctxt "#187"
 msgid "No albums found!"
-msgstr "Kaore kitea he kōpae pūoro!"
+msgstr "Kaore kitea he pukaemi!"
 
 msgctxt "#188"
 msgid "Select all"
@@ -907,7 +907,7 @@ msgstr "Kāti te Tāhopu"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Kōmaka mā te: Aroturuki"
+msgstr "Kōmaka mā te: Riu Whakatangi"
 
 msgctxt "#267"
 msgid "Sort by: Time"
@@ -927,11 +927,11 @@ msgstr "Kōmaka mā te: Pukaemi"
 
 msgctxt "#271"
 msgid "Top 100"
-msgstr "Top 100"
+msgstr "Tuatahi 100"
 
 msgctxt "#272"
 msgid "Top-Left overscan compensation"
-msgstr "Te Mauī o Runga paremata overscan"
+msgstr "Te Mauī o Runga whakaeatanga overscan "
 
 msgctxt "#273"
 msgid "Bottom-Right overscan compensation"
@@ -939,11 +939,11 @@ msgstr "Paremata raro-matau overscan"
 
 msgctxt "#274"
 msgid "Subtitle positioning"
-msgstr "Whakatūtū Taitararoto"
+msgstr "Whakatūtū kupu hauraro"
 
 msgctxt "#275"
 msgid "Pixel ratio adjustment"
-msgstr "Ōwehenga whakatikatikanga pika"
+msgstr "Whakatikatikanga pika ōwehenga"
 
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
@@ -951,7 +951,7 @@ msgstr "Whakaritea te pere ki te huri i te rahi o te overscan"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
-msgstr "Whakaritea te pae ki te whakarerekē i te tūranga hauraro"
+msgstr "Whakaritea te pae ki te whakarerekē i te tūranga o ngā hauraro"
 
 msgctxt "#278"
 msgid "Adjust the rectangle so it is perfectly square"
@@ -1123,7 +1123,7 @@ msgstr "Ara horoi Hapa"
 
 msgctxt "#326"
 msgid "Cleaning albums..."
-msgstr "Whakapai ana pukapuka ..."
+msgstr "Whakapai ana pukaemi ..."
 
 msgctxt "#327"
 msgid "Error cleaning albums"
@@ -6015,7 +6015,7 @@ msgstr "Recordings TV"
 
 msgctxt "#19018"
 msgid "Folder with channel icons"
-msgstr "Kōpaki ki te ata te hongere"
+msgstr "Kōpaki me hongere ata"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -6207,7 +6207,7 @@ msgstr "Matapihi EPG Taunoa"
 
 msgctxt "#19066"
 msgid "Channel icons"
-msgstr "Ata Channel"
+msgstr "Ata hongere"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -11205,10 +11205,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper taunoa whakamahia mō te tāpiri ataata waiata ki a koutou hei tirotiro ai."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "No info wātea ano."
-
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Whakahohe i te Whaiaro Video papa'i (PVR) ngā āhuatanga i roto i te XBMC. Me whiwhi tenei e tāuta Tāpiri-i runga i te iti rawa i te kotahi PVR te."
@@ -11619,7 +11615,7 @@ msgstr "Whakaatu tahua horopaki"
 
 msgctxt "#36426"
 msgid "Switch to channel"
-msgstr "Whakawhiti atu ki te teihana"
+msgstr "Whakawhiti atu ki te hongere"
 
 msgctxt "#36427"
 msgid "Show information"

@@ -333,6 +333,10 @@ msgctxt "#107"
 msgid "Yes"
 msgstr "Ya"
 
+msgctxt "#111"
+msgid "Shortcuts"
+msgstr "Pintasan"
+
 msgctxt "#112"
 msgid "Paused"
 msgstr "Berhenti Sekejap"
@@ -1236,6 +1240,10 @@ msgstr "Kesan zum"
 msgctxt "#13350"
 msgid "Current playlist"
 msgstr "Senarai audio video semasa"
+
+msgctxt "#13398"
+msgid "Shortcuts"
+msgstr "Pintasan"
 
 msgctxt "#13399"
 msgid "Ignore articles when sorting (e.g. \"the\")"

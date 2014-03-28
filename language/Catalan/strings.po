@@ -11053,10 +11053,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper per afegir videoclips a la teva biblioteca, per defecte."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "No hi ha informació disponible"
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importa grups de canals des del backend PVR (si és compatible). Esborra els grups d'usuaris creats que no es trobin dins el backend."

@@ -10605,10 +10605,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Výchozí používaný scraper pro přidání hudebních videí do knihovny."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Žádné informace nejsou zatím k dispozici."
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importovat skupiny kanálů z PVR backendu (pokud je podporováno). Tato volba smaže uživatelsky definované skupiny, pokud nejsou v backendu nalezeny."

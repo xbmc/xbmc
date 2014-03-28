@@ -10493,10 +10493,6 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Ei tietoa saatavilla vielä."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Ei tietoa saatavilla vielä."
-
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Aktivoi videotallennusominaisuudet (PVR) XBMC:ssä. Ainakin yhden PVR-lisäosan on oltava asennettu tätä varten."

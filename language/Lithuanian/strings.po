@@ -10063,7 +10063,7 @@ msgstr "Įdiegti"
 
 msgctxt "#24039"
 msgid "Disabled Add-ons"
-msgstr "Išjungti priedus"
+msgstr "Išjungti priedai"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
@@ -10139,7 +10139,7 @@ msgstr "Galimi priedo(-ų) atnaujinimai!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr "Įjungti priedus"
+msgstr "Įjungti priedai"
 
 msgctxt "#24063"
 msgid "Auto update"
@@ -11508,14 +11508,6 @@ msgstr "Pasirinkti, numatytąjį TV Šou informacijos šaltinį. Žiūrėti, -Pr
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Numatytasis skreperis naudojamas pridedant muzikinius vaizdo įrašus į jūsų biblioteką."
-
-msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
-msgstr "Kategorija, -Bendras PVR/Live TV funkcijų nustatymas."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Informacijos dar nėra."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."

@@ -6063,7 +6063,7 @@ msgstr "Canais Abertos"
 
 msgctxt "#19014"
 msgid "Fixed"
-msgstr "Fixos"
+msgstr "Fixo"
 
 msgctxt "#19015"
 msgid "Encryption"
@@ -9363,7 +9363,7 @@ msgstr "Posição da Legenda na tela"
 
 msgctxt "#21461"
 msgid "Fixed"
-msgstr "Fixado"
+msgstr "Fixo"
 
 msgctxt "#21462"
 msgid "Bottom of video"
@@ -11508,14 +11508,6 @@ msgstr "Selecionar a fonte padrão para informação de Seriados. Veja as opçõ
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper padrão utilizado para adicionar vídeoclipes à sua biblioteca."
-
-msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
-msgstr "Categoria para ajustes gerais de recursos de TV ao Vivo/PVR"
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Nenhuma informação disponível ainda"
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."

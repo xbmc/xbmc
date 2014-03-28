@@ -11509,14 +11509,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Standaard scanner voor het toevoegen van muziekvideo`s aan je bibliotheek."
 
-msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
-msgstr "Categorie voor algemene instellingen van PVR/Live TV functies."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Nog geen informatie beschikbaar."
-
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Activeer de personal Video Recorder (PVR) functies in XBMC. dit vereist dat minstens één PVR Add-on is geïnstalleerd."
@@ -11639,7 +11631,7 @@ msgstr "Bij het indrukken van kanaal omhoog of omlaag, wordt de werkelijke kanaa
 
 msgctxt "#36233"
 msgid "Category for default recording duration settings."
-msgstr "categorie voor standaard opnameduur instellingen."
+msgstr "Categorie voor standaard opnameduur instellingen."
 
 msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button."
