@@ -2836,7 +2836,6 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-pthreads \
       --enable-runtime-cpudetect \
       `if test "$use_hardcoded_tables" = "yes"; then echo --enable-hardcoded-tables; else echo --disable-hardcoded-tables; fi`\
-      `if test "$target_platform" = "target_android" && test "$host_cpu" = "i686"; then echo --disable-mmx; fi #workaround for gcc 4.6 bug` \
       `if test "$target_platform" = "target_android"; then echo "--custom-libname-with-major=\\$(SLIBPREF)\\$(FULLNAME)-\\$(LIBMAJOR)-${ARCH}\\$(SLIBSUF)"; \
        else echo "--custom-libname-with-major=\\$(FULLNAME)-\\$(LIBMAJOR)-${ARCH}\\$(SLIBSUF)"; fi` \
       `case $host_cpu in i?86*) echo --disable-pic ;; *) echo --enable-pic ;; esac` \
