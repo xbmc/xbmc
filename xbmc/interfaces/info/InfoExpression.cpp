@@ -177,7 +177,7 @@ bool InfoExpression::Evaluate(const CGUIListItem *item, bool &result)
       bool left = save.top(); save.pop();
       save.push(left || right);
     }
-    else  // operand
+    else if (expr >= 0) // operand
       save.push(m_operands[expr]->Get(item));
   }
   if (save.size() != 1)
