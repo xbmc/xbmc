@@ -428,6 +428,17 @@ bool CGUIListItem::HasProperty(const CStdString &strKey) const
 
 void CGUIListItem::ClearProperty(const CStdString &strKey)
 {
+  /* PLEX */
+  CStdString _key(strKey);
+  _key.ToLower();
+
+  PropertyMap::iterator _iter = m_mapProperties.find(_key);
+  if (_iter != m_mapProperties.end())
+    m_mapProperties.erase(_iter);
+
+  return;
+  /* END PLEX */
+
   PropertyMap::iterator iter = m_mapProperties.find(strKey);
   if (iter != m_mapProperties.end())
     m_mapProperties.erase(iter);
