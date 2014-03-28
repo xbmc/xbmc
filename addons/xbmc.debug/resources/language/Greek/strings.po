@@ -39,3 +39,7 @@ msgstr "Αναλυτική καταγραφή για τη συλλογή RTMP"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Αναλυτική καταγραφή για τις κλήσεις DBUS"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Αναλυτική καταγραφή για αιτήματα JSON-RPC"

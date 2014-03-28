@@ -39,3 +39,7 @@ msgstr "RTMP teegi detailne logimine"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "DBUS kutsete detailne logimine"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC päringute detailne logimine"
