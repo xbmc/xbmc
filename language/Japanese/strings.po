@@ -10501,10 +10501,6 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "情報がまだありません。"
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "情報がまだありません。"
-
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "情報がまだありません。"

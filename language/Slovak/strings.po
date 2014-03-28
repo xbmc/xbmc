@@ -11197,10 +11197,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Default scraper used for adding music videos to your library."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Momentálne nie sú k dispozícii žiadne informácie."
-
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Týmto sa zapnú funkcie osobného videorekordéra (PVR) v XBMC. Toto nastavenie vyžaduje, aby bol nainštalovaný aspoň jeden PVR doplnok."

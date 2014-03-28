@@ -9729,10 +9729,6 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Ez dago informazio erabilgarririk oraindik."
-
 msgctxt "#36260"
 msgid "No info available yet."
 msgstr "Ez dago informazio erabilgarririk oraindik."

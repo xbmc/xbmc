@@ -11137,10 +11137,6 @@ msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
 msgstr "בחר מקור מידע ברירת המחדל עבור סדרה. ראה מנהל הרחבות עבור אפשרויות."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "אין מידע זמין כעת."
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "ייבא קבוצת ערוצים מממשק אחורי PVR (אם נתמך). ימחק קבוצות משתמש שלא קיימות בממשק אחורי."

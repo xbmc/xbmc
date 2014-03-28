@@ -10549,10 +10549,6 @@ msgctxt "#36197"
 msgid "No info available yet."
 msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "எந்த தகவலும் இதுவரை கிடைக்கவில்லை."
-
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "ஸ்கேன் செய்யும் போது சுரண்டிகள் வழியாக தானாகவே ஆல்பம் மற்றும் கலைஞர் தகவல்களை பெறவும்."

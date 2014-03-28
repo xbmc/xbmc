@@ -773,6 +773,10 @@ msgctxt "#244"
 msgid "Full screen"
 msgstr "በሙል መመልከቻ ዘዴ "
 
+msgctxt "#245"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+
 msgctxt "#248"
 msgid "Language"
 msgstr "ቋንቋ "
@@ -2549,6 +2553,10 @@ msgctxt "#1422"
 msgid "Windy"
 msgstr "ነፋሳማ "
 
+msgctxt "#1423"
+msgid "Mist"
+msgstr "ጭጋግ"
+
 msgctxt "#1424"
 msgid "Overcast"
 msgstr "ደመናማ"
@@ -2596,6 +2604,14 @@ msgstr "ደመና"
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "ያልታወቀ"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "እርጥበት "
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "በከፊል"
 
 msgctxt "#2050"
 msgid "Runtime"
@@ -3164,6 +3180,10 @@ msgstr "ያለ ጥንቃቄ አካሎችን ማውጫ "
 msgctxt "#13023"
 msgid "Successfully removed device"
 msgstr "ተሳክቶ አካሉ ተወግዷል"
+
+msgctxt "#13034"
+msgid "Updated for %s"
+msgstr "ተሻሽሏል ለ %s"
 
 msgctxt "#13035"
 msgid "Found for %s"
@@ -5613,6 +5633,10 @@ msgctxt "#33020"
 msgid "Condition"
 msgstr "ሁኔታው "
 
+msgctxt "#33021"
+msgid "Precipitation"
+msgstr "እርጥበት "
+
 msgctxt "#33027"
 msgid "Sunrise"
 msgstr "ፀሐይ መውጫ "
@@ -5874,10 +5898,6 @@ msgid "No info available yet."
 msgstr "ለጊዜው ምንም መረጃ አልተገኘም"
 
 msgctxt "#36197"
-msgid "No info available yet."
-msgstr "ለጊዜው ምንም መረጃ አልተገኘም"
-
-msgctxt "#36202"
 msgid "No info available yet."
 msgstr "ለጊዜው ምንም መረጃ አልተገኘም"
 

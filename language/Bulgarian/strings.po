@@ -1087,7 +1087,7 @@ msgstr "Език на оригиналния поток"
 
 msgctxt "#309"
 msgid "User interface language"
-msgstr "Език на потренителския интерфейс"
+msgstr "Език на потребителския интерфейс"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -2743,7 +2743,7 @@ msgstr "Максимален брой клиенти"
 
 msgctxt "#798"
 msgid "Internet access"
-msgstr "Интернет достъп"
+msgstr "Достъп до интернет"
 
 msgctxt "#799"
 msgid "Library Update"
@@ -3265,6 +3265,10 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Гръмотевични бури"
 
+msgctxt "#1419"
+msgid "Shallow"
+msgstr "Незначително"
+
 msgctxt "#1420"
 msgid "Moderate"
 msgstr "Умерено"
@@ -3285,6 +3289,10 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "Плътна облачност"
 
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Град"
+
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Градушка"
@@ -3293,9 +3301,17 @@ msgctxt "#1427"
 msgid "Smoke"
 msgstr "Дим"
 
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Вулканично"
+
 msgctxt "#1429"
 msgid "Ash"
 msgstr "Пепел"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "Повсеместни"
 
 msgctxt "#1431"
 msgid "Dust"
@@ -3316,6 +3332,14 @@ msgstr "Вихрушки"
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Пясъчна буря"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Виелица"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "Град"
 
 msgctxt "#1438"
 msgid "Small"
@@ -3340,6 +3364,10 @@ msgstr "Вероятност"
 msgctxt "#1443"
 msgid "of"
 msgstr "от"
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "Вихър"
 
 msgctxt "#1445"
 msgid "Cloud"
@@ -3511,7 +3539,7 @@ msgstr "За експерти"
 
 msgctxt "#10040"
 msgid "Add-on browser"
-msgstr "Баузър за добавки"
+msgstr "Браузър за добавки"
 
 msgctxt "#10041"
 msgid "Reset above settings to default"
@@ -3551,7 +3579,7 @@ msgstr "Прозорец за напредъка"
 
 msgctxt "#10126"
 msgid "File browser"
-msgstr "Браузер на файлове"
+msgstr "Браузър за файлове"
 
 msgctxt "#10128"
 msgid "Network setup"
@@ -4235,7 +4263,7 @@ msgstr "Желаете ли да ползвате облика?"
 
 msgctxt "#13130"
 msgid "Blank other displays"
-msgstr "Затъмняване на останалите екрани"
+msgstr "Затъмнявай останалите екрани"
 
 msgctxt "#13131"
 msgid "Disabled"
@@ -5387,11 +5415,11 @@ msgstr "Задайте час"
 
 msgctxt "#14066"
 msgid "Enter the time in 24 hour HH:MM format"
-msgstr "Въведете часа в 24-ов формат ЧЧ:ММ"
+msgstr "Въведете часа в 24-ов формат (ЧЧ:ММ)"
 
 msgctxt "#14067"
 msgid "Enter the date in DD/MM/YYYY format"
-msgstr "Въведете датата в формат ДД/ММ/ГГГГ"
+msgstr "Въведете датата, във формат ДД/ММ/ГГГГ"
 
 msgctxt "#14068"
 msgid "Enter the IP address"
@@ -6335,7 +6363,7 @@ msgstr "__-__-ср-__-__-__-__"
 
 msgctxt "#19089"
 msgid "__-__-__-Th-__-__-__"
-msgstr "__-__-__-чет-__-__-__"
+msgstr "__-__-__-четв-__-__-__"
 
 msgctxt "#19090"
 msgid "__-__-__-__-Fr-__-__"
@@ -6343,7 +6371,7 @@ msgstr "__-__-__-__-пет-__-__"
 
 msgctxt "#19091"
 msgid "__-__-__-__-__-Sa-__"
-msgstr "__-__-__-__-__-съ-__"
+msgstr "__-__-__-__-__-съб-__"
 
 msgctxt "#19092"
 msgid "__-__-__-__-__-__-Su"
@@ -7027,7 +7055,7 @@ msgstr "Няма открити ПВР добавки"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
-msgstr "Имате нужда от тунер, сърварен софтуер, както и"
+msgstr "Имате нужда от тунер, сървърен софтуер, както и"
 
 msgctxt "#19273"
 msgid "Add-on for the backend to be able to use PVR."
@@ -7129,6 +7157,10 @@ msgctxt "#19517"
 msgid "News/Weather Report"
 msgstr "Новини/Прогноза за времето"
 
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "Новинарско предаване"
+
 msgctxt "#19519"
 msgid "Documentary"
 msgstr "Документален"
@@ -7148,6 +7180,10 @@ msgstr "Спорт"
 msgctxt "#19549"
 msgid "Special Event"
 msgstr "Специални събития"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Спортно предаване"
 
 msgctxt "#19551"
 msgid "Football"
@@ -7237,6 +7273,10 @@ msgctxt "#19596"
 msgid "Arts/Culture"
 msgstr "Изкуства/Култура"
 
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "Сценични изкуства"
+
 msgctxt "#19598"
 msgid "Fine Arts"
 msgstr "Изящни изкуства"
@@ -7260,6 +7300,14 @@ msgstr "Филм/Кино"
 msgctxt "#19603"
 msgid "Experimental Film/Video"
 msgstr "Експериментален филм/видео"
+
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr "Предавания/Медии"
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr "Нови предавания"
 
 msgctxt "#19606"
 msgid "Arts/Culture Magazines"
@@ -7309,6 +7357,10 @@ msgctxt "#19633"
 msgid "Social/Spiritual Sciences"
 msgstr "Социални/Духовни науки"
 
+msgctxt "#19634"
+msgid "Further Education"
+msgstr "Допълнително образование"
+
 msgctxt "#19635"
 msgid "Languages"
 msgstr "Езици"
@@ -7320,6 +7372,10 @@ msgstr "Отдих/Хоби"
 msgctxt "#19645"
 msgid "Tourism/Travel"
 msgstr "Туризъм/Пътешествия"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "Направи си сам"
 
 msgctxt "#19647"
 msgid "Motoring"
@@ -8623,7 +8679,7 @@ msgstr "Обединено"
 
 msgctxt "#20412"
 msgid "Flatten TV show seasons"
-msgstr "Обединявай сезоните на ТВ сериали"
+msgstr "Обединявай сезоните на ТВ Сериали"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -10227,15 +10283,15 @@ msgstr "Не сте инсталирали услуга за субтитри"
 
 msgctxt "#24115"
 msgid "Subtitle storage location"
-msgstr "Mясто за съхраняване на субтитрите"
+msgstr "Място за съхраняване на субтитрите"
 
 msgctxt "#24116"
 msgid "Default TV Service"
-msgstr "Услуга за ТВ сериали"
+msgstr "Услуга за ТВ Сериали"
 
 msgctxt "#24117"
 msgid "Select service that will be used as default to search for TV Show subtitles."
-msgstr "Изберете коя услуга да се ползва при стандартно търсене на субтитри за ТВ сериал."
+msgstr "Изберете коя услуга да се ползва при стандартно търсене на субтитри за ТВ Сериал."
 
 msgctxt "#24118"
 msgid "Default Movie Service"
@@ -11095,7 +11151,7 @@ msgstr "Редактирайте RSS емисиите."
 
 msgctxt "#36113"
 msgid "Category containing all locale/regional settings."
-msgstr "Категорията съдържа всички настройки свързани с локалните/регоналните настройки."
+msgstr "Категорията съдържа всички настройки свързани с локалните/регионалните настройки."
 
 msgctxt "#36114"
 msgid "Chooses the language of the user interface."
@@ -11227,7 +11283,7 @@ msgstr "Проверява за нови мултимедийни файлове
 
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
-msgstr "Скрива лентата с прогреса на сканирането при обновяване на библиотеката."
+msgstr "Скрива лентата за напредъка на сканирането при обновяване на библиотеката."
 
 msgctxt "#36148"
 msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
@@ -11363,7 +11419,7 @@ msgstr "Все още няма налична информация."
 
 msgctxt "#36182"
 msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
-msgstr "Комбинира частите на видеата разделени в няколко файла, папките от DVD дискове в един единнствен елемент. Опцията е валидна за всички изгледи извън библиотеката."
+msgstr "Комбинира частите на видеата разделени в няколко файла, папките от DVD дискове в един единствен елемент. Опцията е валидна за всички изгледи извън библиотеката."
 
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
@@ -11431,19 +11487,11 @@ msgstr "Изберете стандартния източник на инфор
 
 msgctxt "#36199"
 msgid "Select the default TV show information source. See the Add-ons Manager for options."
-msgstr "Изберете стандартния източник на информация за ТВ сериали. За повече опции отворете диспечера на добавки."
+msgstr "Изберете стандартния източник на информация за ТВ Сериали. За повече опции отворете диспечера на добавки."
 
 msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Стандартен източник на инф, за музикалните видео файлове в библиотеката."
-
-msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
-msgstr "Категория с общите настройки на ПВР/ТВ."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Все още няма налична информация."
 
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
@@ -11507,11 +11555,11 @@ msgstr "Сканиране за липсващи иконки на канали.
 
 msgctxt "#36218"
 msgid "Category for electronic programming guide settings."
-msgstr "Категория с настройки на електрония програмен справочник."
+msgstr "Категория с настройки на електронния програмен справочник."
 
 msgctxt "#36219"
 msgid "Default electronic programming guide window to show."
-msgstr "Стандартен прозорец за показване на електрония програмен справочник."
+msgstr "Стандартен прозорец за показване на електронния програмен справочник."
 
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
@@ -12055,7 +12103,7 @@ msgstr "Когато ползвате няколко екрана тези ко�
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
-msgstr "Елиминирайте вертикалното разкъсване на кадрите."
+msgstr "Елиминира вертикалното разкъсване на кадрите."
 
 msgctxt "#36357"
 msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
@@ -12123,7 +12171,7 @@ msgstr "Изберете устройство което да декодира �
 
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
-msgstr "Определете, кога да се възпройзвеждат звуците от потребителския интерфейс, такива като звука издаван при навигиране из менютата и оповестяването за важни съобщения."
+msgstr "Определете, кога да се възпроизвеждат звуците от потребителския интерфейс, такива като звука издаван при навигиране из менютата и оповестяването за важни съобщения."
 
 msgctxt "#36374"
 msgid "Category containing settings for how input devices are handled."
@@ -12135,7 +12183,7 @@ msgstr "Настройка на всички свързани периферни
 
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
-msgstr "Стрелките от клавиатурата ще преместват маркираното от виртуалната клавиатура, когато опцията е включена. Изключите ли я местят курсора измежду символите на въведения текст."
+msgstr "Стрелките от клавиатурата ще променят бутона под фокус от виртуалната клавиатура, когато опцията е включена. Изключите ли я ще местят курсора измежду символите на въведения текст."
 
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
@@ -12183,7 +12231,7 @@ msgstr "Категорията съдържа всички настройки с
 
 msgctxt "#36388"
 msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
-msgstr "Изключва дисплея при бездействие. Опцията е ползена когато разполагате с телевизор който може да се изклюва когато сигнала към него бъде прекъснат."
+msgstr "Изключва дисплея при бездействие. Опцията е полезна когато разполагате с телевизор който може да се изклюва когато сигнала към него бъде прекъснат."
 
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."

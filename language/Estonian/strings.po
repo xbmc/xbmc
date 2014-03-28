@@ -10757,10 +10757,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Vaikimisi muusikavideote lisamise kraabits."
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Info pole veel saadaval."
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Impordi kanaligrupid PVR põhirakendusest (kui võimalik). Kasutaja loodud grupid kustutatakse, kui neid põhirakendusest ei leita."
@@ -11000,6 +10996,14 @@ msgstr "Kõrvalda vertikaalne katkendlikkus."
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "Ekraani kalibreerimise mustrid."
+
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Seadista kuidas kasutajaliidese, näiteks menüü navigatsiooni ja oluliste teadete, helisid käsitletakse."
+
+msgctxt "#36377"
+msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
+msgstr "Kasuta XBMC juhtimiseks hiirt või puuteekraaniga seadet. Märkus : Valiku deaktiveerimisega kaotate, klaviatuuri või kaugjuhtimispuldi puudumisel, võimaluse programmi juhtida."
 
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."

@@ -595,7 +595,7 @@ msgstr "Datum izdavanja"
 
 msgctxt "#173"
 msgid "Display 4:3 videos as"
-msgstr "Prikaži 4:3 video snimke kao"
+msgstr "Prikaz 4:3 video snimaka"
 
 msgctxt "#175"
 msgid "Moods"
@@ -2259,7 +2259,7 @@ msgstr "Način prikaza"
 
 msgctxt "#630"
 msgid "Normal"
-msgstr "Normalan"
+msgstr "Normalno"
 
 msgctxt "#631"
 msgid "Zoom"
@@ -2483,7 +2483,7 @@ msgstr "Određena je netočna adresa. Vrijednost mora biti AAA.BBB.CCC.DDD"
 
 msgctxt "#725"
 msgid "with numbers between 0 and 255."
-msgstr "sa brojevima između 0 i 255."
+msgstr "s brojevima između 0 i 255."
 
 msgctxt "#726"
 msgid "Changes not saved. Continue without saving?"
@@ -3007,7 +3007,7 @@ msgstr "SOCKS5"
 
 msgctxt "#1185"
 msgid "SOCKS5 with remote dns resolving"
-msgstr "SOCKS5 sa udaljenim dns razrješavanjem"
+msgstr "SOCKS5 s udaljenim dns razrješavanjem"
 
 msgctxt "#1200"
 msgid "SMB client"
@@ -4007,15 +4007,15 @@ msgstr "Sustav pokrenut"
 
 msgctxt "#12391"
 msgid "Minutes"
-msgstr "Minuta"
+msgstr "minuta"
 
 msgctxt "#12392"
 msgid "Hours"
-msgstr "Sati"
+msgstr "sati"
 
 msgctxt "#12393"
 msgid "Days"
-msgstr "Dani"
+msgstr "dana"
 
 msgctxt "#12394"
 msgid "Total uptime"
@@ -5455,7 +5455,7 @@ msgstr "Ukloni iz omiljenih"
 
 msgctxt "#14078"
 msgid "Colours"
-msgstr "Boje"
+msgstr "Boja"
 
 msgctxt "#14079"
 msgid "Timezone country"
@@ -5683,7 +5683,7 @@ msgstr "Reproduktor"
 
 msgctxt "#16004"
 msgid "Play media from disc"
-msgstr "Pokreni medij sa diska"
+msgstr "Pokreni medij s diska"
 
 msgctxt "#16008"
 msgid "Enter new title"
@@ -5735,7 +5735,7 @@ msgstr "Automatski odabir"
 
 msgctxt "#16020"
 msgid "De-interlace"
-msgstr "Deinterlace"
+msgstr "Raspletanje"
 
 msgctxt "#16021"
 msgid "Bob"
@@ -5795,15 +5795,15 @@ msgstr "Party način popisa izvođenja"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
-msgstr "Deinterlace (Pola)"
+msgstr "Raspletanje (Pola)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
-msgstr "Deinterlace video"
+msgstr "Raspletanje videa"
 
 msgctxt "#16038"
 msgid "Deinterlace method"
-msgstr "Deinterlace način"
+msgstr "Način raspletanja"
 
 msgctxt "#16039"
 msgid "Off"
@@ -6679,7 +6679,7 @@ msgstr "Vrijeme prije početka snimanja"
 
 msgctxt "#19176"
 msgid "Margin at the end of a recording"
-msgstr "Vrijeme na kraju snimanja"
+msgstr "Vrijeme nakon završetka snimanja"
 
 msgctxt "#19177"
 msgid "Playback"
@@ -6727,7 +6727,7 @@ msgstr "EPG se vraća na početno"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
-msgstr "Nastavi sa posljednjim programom pri pokretanju"
+msgstr "Nastavi s posljednjim programom pri pokretanju"
 
 msgctxt "#19190"
 msgid "Minimised"
@@ -6907,7 +6907,7 @@ msgstr "Prikaži obavijest pri ažuriranju zakazanih snimanja"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
-msgstr "Koristi brojeve TV programa sa pozadinskog softvera (radi samo sa 1 omogućenim PVR dodatkom)"
+msgstr "Koristi brojeve TV programa s pozadinskog softvera (radi samo s 1 omogućenim PVR dodatkom)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -8175,11 +8175,11 @@ msgstr "Preuzmi dodatne informacije tijekom ažuriranja"
 
 msgctxt "#20193"
 msgid "Default service for album information"
-msgstr "Zadani servis informacija albuma"
+msgstr "Zadana usluga za informacije albuma"
 
 msgctxt "#20194"
 msgid "Default service for artist information"
-msgstr "Zadani servis informacija izvođača"
+msgstr "Zadana usluga za informacije izvođača"
 
 msgctxt "#20195"
 msgid "Change scraper"
@@ -8367,7 +8367,7 @@ msgstr "Pregledaj odredište"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr "Filmovi koji se podudaraju sa naslovom filma su u zasebnim mapama"
+msgstr "Filmovi koji se podudaraju s naslovom filma su u zasebnim mapama"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -8723,7 +8723,7 @@ msgstr "Pisci"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
-msgstr "Zamijeni nazive datoteka sa naslovima iz zbirke"
+msgstr "Zamijeni nazive datoteka s naslovima iz zbirke"
 
 msgctxt "#20420"
 msgid "Never"
@@ -9011,7 +9011,7 @@ msgstr "Minijature"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
-msgstr "Prisili regiju DVD reproduktora"
+msgstr "Forsiraj regiju DVD reproduktora"
 
 msgctxt "#21373"
 msgid "Video output"
@@ -9223,7 +9223,7 @@ msgstr "sa svim pravilima"
 
 msgctxt "#21426"
 msgid "one or more of the rules"
-msgstr "sa jednim ili više pravila"
+msgstr "s jednim ili više pravila"
 
 msgctxt "#21427"
 msgid "Limit to"
@@ -9815,7 +9815,7 @@ msgstr "Veličina"
 
 msgctxt "#22032"
 msgid "Colours"
-msgstr "Boje"
+msgstr "Boja"
 
 msgctxt "#22033"
 msgid "Charset"
@@ -10319,7 +10319,7 @@ msgstr "Odaberite uslugu koja će se koristiti kao zadana za podnaslove filmova"
 
 msgctxt "#24120"
 msgid "Manual search string"
-msgstr "Prilagođeni zahtjev za pretraživanje"
+msgstr "Prilagođena pretraga"
 
 msgctxt "#24121"
 msgid "Enter search string"
@@ -10935,7 +10935,7 @@ msgstr "Onemogući joystick dok je ovaj uređaj prisutan"
 
 msgctxt "#35103"
 msgid "Enable system keys in fullscreen"
-msgstr "Omogući tipke sustava u cjelozaslonskom prikazu"
+msgstr "Omogući tipke sustava u cijelozaslonskom prikazu"
 
 msgctxt "#35500"
 msgid "Location"
@@ -11207,15 +11207,15 @@ msgstr "Prikaži (..) stavku u popisu za vraćanje u nadređenu mapu."
 
 msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
-msgstr "Prikaži nastavke vrsta datoteka u medijskim datotekama. Npr., 'You Enjoy Myself.mp3' jednostavno će biti prikazano kao 'You Enjoy Myself'."
+msgstr "Prikaži nastavke vrsta datoteka u medijskim datotekama. Npr. 'You Enjoy Myself.mp3' jednostavno će biti prikazano kao 'You Enjoy Myself'."
 
 msgctxt "#36124"
 msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
-msgstr "Zanemari određene znakove tijekom razvrstavanja. Npr., 'The Simpsons' jednostavno će biti prikazani kao 'Simpsons'."
+msgstr "Zanemari određene znakove tijekom razvrstavanja. Npr. 'The Simpsons' jednostavno će biti prikazani kao 'Simpsons'."
 
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
-msgstr "Dopusti preimenovanje i brisanje datoteka putem korisničkog sučelja, putem kontekstnog izbornika (prtisnite C na tipkovnici, npr., za pokretanje izbornika)."
+msgstr "Dopusti preimenovanje i brisanje datoteka putem korisničkog sučelja, putem kontekstnog izbornika (prtisnite C na tipkovnici, npr. za pokretanje izbornika)."
 
 msgctxt "#36126"
 msgid "Show the add source button in root sections of the user interface."
@@ -11311,7 +11311,7 @@ msgstr "Izvezite bazu podataka Videoteke u XML format datoteke. Moguće je da ć
 
 msgctxt "#36150"
 msgid "Import a XML file into the Video Library database."
-msgstr "Uvezi XML datoteku u bazu podataka Videteke."
+msgstr "Uvezi XML datoteku u bazu podataka videteke."
 
 msgctxt "#36151"
 msgid "Category containing settings for how video playback is handled."
@@ -11423,7 +11423,7 @@ msgstr "Izdvoji minijature i informacije metapodataka, poput kôdeka i omjera sl
 
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
-msgstr "Kada je datoteka nađena u zbirci, prikazati će se naslov iz meta podataka umjesto naziva datoteke."
+msgstr "Kada je datoteka pronađena u zbirci, prikazati će se naslov iz meta podataka umjesto naziva datoteke."
 
 msgctxt "#36180"
 msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in Library Mode."
@@ -11435,7 +11435,7 @@ msgstr "Informacije još nisu dostupne."
 
 msgctxt "#36182"
 msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
-msgstr "Kombiniranje višestrukih video datoteka, DVD mapa i filmskih mapa u jednu datotekau u nezbirčnom pogledu.."
+msgstr "Kombiniranje višestrukih video datoteka, DVD mapa i filmskih mapa u jednu datotekau u nezbirčnom pogledu."
 
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
@@ -11443,7 +11443,7 @@ msgstr "Uklanja naslove, žanr itd. iz pogleda zbirke. Odabir kategorije vodi va
 
 msgctxt "#36184"
 msgid "Category containing settings for how subtitles are handled."
-msgstr "Kategorija sadrži sve postavke rukovanja podnaslova."
+msgstr "Kategorija sadrži sve postavke rukovanja podnaslovima."
 
 msgctxt "#36185"
 msgid "Set the font type to be used for subtitles."
@@ -11487,7 +11487,7 @@ msgstr "Automatski pokreni DVD video kada je umetnut u optički pogon."
 
 msgctxt "#36195"
 msgid "Force a region for DVD playback."
-msgstr "Prisili regiju za DVD reprodukciju."
+msgstr "Forsiraj regiju za DVD reprodukciju."
 
 msgctxt "#36196"
 msgid "Attempt to skip 'unskippable' introductions before DVD menu."
@@ -11509,14 +11509,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Zadani sakupljač korišten za dodavanje video spotova vašoj zbirci."
 
-msgctxt "#36201"
-msgid "Category for general settings for PVR/Live TV features."
-msgstr "Kategorija za opće postavke PVR/TV značajka."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Informacije još nisu dostupne."
-
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Omogući značajku Osobnog Video Snimača (PVR) u XBMC-u. To zahtijeva bar jedan instalirani PVR dodatak."
@@ -11531,7 +11523,7 @@ msgstr "Razvrstaj programe prema broju programa iz pozadinskog softvera, ali kor
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
-msgstr "Koristi brojeve sa pozadinskog softvera, umjesto ručnog podešavanja preko XBMC-a."
+msgstr "Koristi brojeve s pozadinskog softvera, umjesto ručnog podešavanja preko XBMC-a."
 
 msgctxt "#36207"
 msgid "Open the channel manager, which allows modifying the channel order, channel name, icon, etc."
@@ -11551,7 +11543,7 @@ msgstr "Spriječi prikazivanje upozorenja 'Povezivanje prekinuto' kada XBMC ne m
 
 msgctxt "#36211"
 msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
-msgstr "Kategorija za PVR izbornike, postavke zaslonskog prikaza i prozore informacija programa."
+msgstr "Kategorija za PVR izbornike, postavke zaslonskog prikaza i prozora informacija programa."
 
 msgctxt "#36212"
 msgid "Display programming information when changing channels, such as the current TV show."
@@ -11727,7 +11719,7 @@ msgstr "Omogući fonoteku."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
-msgstr "Odredi da li se izvođači koji se pojavljuju samo u kompilacijama su prikazani u pogledu izvođača u zbirci."
+msgstr "Odredi hoće li se izvođači koji se pojavljuju samo u kompilacijama biti prikazani u pogledu izvođača zbirke."
 
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
@@ -11743,7 +11735,7 @@ msgstr "Odaberi zadani izvor informacija izvođaća. Pogledajte Upravitelja doda
 
 msgctxt "#36259"
 msgid "Check for new and removed media files on XBMC startup."
-msgstr "Provjeri za nove i uklonjene medijske datoteke prilikom XBMC pokretanja."
+msgstr "Provjeri za nove i uklonjene medijske datoteke prilikom pokretanja XBMC-a."
 
 msgctxt "#36260"
 msgid "No info available yet."
@@ -11755,7 +11747,7 @@ msgstr "Izvezite bazu podataka Fonoteke u XML format datoteke. Moguće je da će
 
 msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
-msgstr "Uvezi XML datoteku u bazu podataka Fonoteke."
+msgstr "Uvezi XML datoteku u bazu podataka fonoteke."
 
 msgctxt "#36264"
 msgid "Category containing settings for how music playback is handled."
@@ -11839,7 +11831,7 @@ msgstr "Automatski pokreni CD kada je umetnut u optički pogon."
 
 msgctxt "#36284"
 msgid "Read the information belonging to an audio CD from an internet database."
-msgstr "Čitaj pripadajuće informacije glazbenog CD-a sa internetske baze podataka."
+msgstr "Čitaj pripadajuće informacije glazbenog CD-a s internetske baze podataka."
 
 msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
@@ -12055,7 +12047,7 @@ msgstr "Odredite maksimalan broj klijenata koji se mogu povezati."
 
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
-msgstr "Dopusti programima sa mreže da upravljaju XBMC-om."
+msgstr "Dopusti programima s mreže da upravljaju XBMC-om."
 
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
@@ -12119,11 +12111,11 @@ msgstr "Promijenite osvježavanje zaslona prikaza korisničkog sučelja."
 
 msgctxt "#36354"
 msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
-msgstr "Prikazuje XBMC u cjelozaslonskom prozoru. Glavna pogodnost je za konfiguracije s više zaslona, stoga se XBMC može koristiti bez automatskog smanjenja ostalih aplikacija. Koristi se malo više resursa i reprodukcija može biti malo manje glatka."
+msgstr "Prikazuje XBMC u cijelozaslonskom prozoru. Glavna pogodnost je za konfiguracije s više zaslona, stoga se XBMC može koristiti bez automatskog smanjenja ostalih aplikacija. Koristi se malo više resursa i reprodukcija može biti malo manje glatka."
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
-msgstr "U konfiguracijama sa više zaslona, zasloni gdje XBMC nije prikazan su zatamnjeni."
+msgstr "U konfiguracijama s više zaslona, zasloni gdje XBMC nije prikazan su zatamnjeni."
 
 msgctxt "#36356"
 msgid "Eliminate vertical tearing."
@@ -12223,7 +12215,7 @@ msgstr "Kategorija sadrži sve postavke rukovanja Internet pristupom."
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
-msgstr "Ako vaša Internet veza koristi proxy, prilagodite ga ovdje."
+msgstr "Ako vaša Internet veza koristi proxy prilagodite ga ovdje."
 
 msgctxt "#36381"
 msgid "Configure which proxy type is used."
@@ -12255,7 +12247,7 @@ msgstr "Kategorija sadrži sve postavke rukovanja uštedom energije."
 
 msgctxt "#36388"
 msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
-msgstr "Isključite zaslon kada miruje. Korisno za televizore koji se isključuju kada više nema signala zaslona."
+msgstr "Zaslon se isključuje kada miruje. Korisno za televizore koji se isključuju kada više nema signala zaslona."
 
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
@@ -12455,7 +12447,7 @@ msgstr "Stereoskopska slika zeleno/ružičasto"
 
 msgctxt "#36507"
 msgid "Interlaced"
-msgstr "Interlaced"
+msgstr "Raspletanje"
 
 msgctxt "#36508"
 msgid "Hardware Based"
@@ -12479,7 +12471,7 @@ msgstr "Koristi željeni način"
 
 msgctxt "#36523"
 msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
-msgstr "Maksimalna brzina uzorkovanja za SPDIF ili brzina uzorkovanje za nepromjenjivo izlazno podešavanje."
+msgstr "Maksimalna frekvencija za SPDIF ili frekvencija za nepromjenjivo izlazno podešavanje."
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12547,7 +12539,7 @@ msgstr "Željeni 3D stereoskopski način."
 
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
-msgstr "Dopusti kontrolu glasnoće zvuka sa AirPlay klijenata."
+msgstr "Dopusti kontrolu glasnoće zvuka s AirPlay klijenta."
 
 msgctxt "#36542"
 msgid "Output to both analogue (headphones) and HDMI"

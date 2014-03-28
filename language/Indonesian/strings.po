@@ -11493,10 +11493,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Pengais standar digunakan ketika menambahkan video musik ke dalam pustaka Anda"
 
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Belum ada info tersedia."
-
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "Aktifkan fitur Perekam Video Personal (PVR) di dalam XBMC. Ini membutuhkan paling tidak satu pengaya PVR terinstall."

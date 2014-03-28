@@ -505,6 +505,10 @@ msgctxt "#12600"
 msgid "Weather"
 msgstr "వాతావరణం"
 
+msgctxt "#13621"
+msgid "Apple Remote support could not be enabled."
+msgstr "Apple రిమోట్ మద్దతు కాలేదు"
+
 msgctxt "#14068"
 msgid "Enter the IP address"
 msgstr "IP చిరునామా ను ఎంటర్ చేయండి"
@@ -568,6 +572,10 @@ msgstr "మొదటి రోజు:"
 msgctxt "#19098"
 msgid "Warning"
 msgstr "హెచ్చరిక"
+
+msgctxt "#19119"
+msgid "On which server do you want to search?"
+msgstr "ఏ సర్వర్లో శోధన చెయ్యాలనుకుంటున్నారు?"
 
 msgctxt "#19130"
 msgid "Minimum duration"
@@ -660,3 +668,27 @@ msgstr "రంగులు"
 msgctxt "#24027"
 msgid "Weather"
 msgstr "వాతావరణం"
+
+msgctxt "#24107"
+msgid "Searching for subtitles ..."
+msgstr "Subtitles కొరకు శోధిస్తోంది ..."
+
+msgctxt "#24108"
+msgid "%d subtitles found"
+msgstr "%d subtitles దొరికాయి"
+
+msgctxt "#24109"
+msgid "No subtitles found"
+msgstr "Subtitles దొరకలేదు"
+
+msgctxt "#25003"
+msgid "Show Blu-ray menus"
+msgstr "Blu-ray మెనూలు చూపించు"
+
+msgctxt "#25008"
+msgid "Playback of Blu-ray failed"
+msgstr "Blu-ray ప్లేబ్యాక్ విఫలమైంది"
+
+msgctxt "#25009"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "ఈ Blu-ray మెను మద్దతు లేదు"
