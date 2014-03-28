@@ -62,8 +62,8 @@ public:
 
   bool  OpenTarget(const GUID &guid);
   bool  OpenDecoder();
-  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
-  void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
+  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+  void  RelBuffer(uint8_t *data);
 
   static bool      Supports(enum PixelFormat fmt);
 
