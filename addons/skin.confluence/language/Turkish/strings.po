@@ -94,7 +94,7 @@ msgstr "Eylemler"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "Şimdi Çalınıyor"
+msgstr "Şimdi Yürütülüyor"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -218,15 +218,15 @@ msgstr "Ana Sayfa Programlar Alt Menüsü"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Arkaplan Fanartını Gizle"
+msgstr "Arka Plan Fanartını Gizle"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Arkaplanda Oynatılan Videoyu Göster"
+msgstr "Arka Planda Oynatılan Videoyu Göster"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualisation"
-msgstr "Arkaplanda Görsel Ögeyi Göster"
+msgstr "Arka Planda Görsel Ögeyi Göster"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -578,7 +578,7 @@ msgstr "RESİMLER"
 
 msgctxt "#31952"
 msgid "LIVE TV"
-msgstr "CANLI YAYIN"
+msgstr "CANLI TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"
