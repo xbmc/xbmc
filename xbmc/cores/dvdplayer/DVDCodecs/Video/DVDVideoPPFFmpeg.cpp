@@ -134,7 +134,7 @@ bool CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
   pp_postprocess((const uint8_t**)m_pSource->data, m_pSource->iLineSize,
                 m_pTarget->data, m_pTarget->iLineSize,
                 m_pSource->iWidth, m_pSource->iHeight,
-                m_pSource->qscale_table, m_pSource->qscale_stride,
+                m_pSource->qp_table, m_pSource->qstride,
                 m_pMode, m_pContext,
                 pict_type); //m_pSource->iFrameType);
 
@@ -145,8 +145,8 @@ bool CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
   m_pTarget->iFrameType = m_pSource->iFrameType;
   m_pTarget->iRepeatPicture = m_pSource->iRepeatPicture;;
   m_pTarget->iDuration = m_pSource->iDuration;
-  m_pTarget->qscale_table = m_pSource->qscale_table;
-  m_pTarget->qscale_stride = m_pSource->qscale_stride;
+  m_pTarget->qp_table = m_pSource->qp_table;
+  m_pTarget->qstride = m_pSource->qstride;
   m_pTarget->qscale_type = m_pSource->qscale_type;
   m_pTarget->iDisplayHeight = m_pSource->iDisplayHeight;
   m_pTarget->iDisplayWidth = m_pSource->iDisplayWidth;

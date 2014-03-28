@@ -613,10 +613,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   else
     pDvdVideoPicture->color_range = 0;
 
-  pDvdVideoPicture->qscale_table = m_pFrame->qscale_table;
-  pDvdVideoPicture->qscale_stride = m_pFrame->qstride;
+  int qscale_type;
+  pDvdVideoPicture->qp_table = av_frame_get_qp_table(m_pFrame, &pDvdVideoPicture->qstride, &qscale_type);
 
-  switch (m_pFrame->qscale_type) {
+  switch (qscale_type) {
   case FF_QSCALE_TYPE_MPEG1:
     pDvdVideoPicture->qscale_type = DVP_QSCALE_MPEG1;
     break;
