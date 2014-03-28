@@ -40,6 +40,7 @@
 #include "Client/PlexExtraInfoLoader.h"
 #include "ViewDatabase.h"
 #include "ViewState.h"
+#include "PlayQueueManager.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
@@ -422,12 +423,7 @@ bool CGUIPlexMediaWindow::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_PLAYER_PLAY)
   {
-    CGUIControl *pControl = (CGUIControl*)GetControl(m_viewControl.GetCurrentControl());
-    if (pControl)
-    {
-      PlayFileFromContainer(pControl);
-      return true;
-    }
+    return OnPlayMedia(m_viewControl.GetSelectedItem());
   }
   else if (action.GetID() == ACTION_CLEAR_FILTERS ||
            action.GetID() == ACTION_PLEX_TOGGLE_UNWATCHED_FILTER ||
@@ -726,6 +722,14 @@ bool CGUIPlexMediaWindow::OnPlayMedia(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (!item)
     return false;
+
+  if (item->m_bIsFolder)
+  {
+    // we want to create a PlayQueue for this
+    CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
+    g_plexApplication.playQueueManager->createPlayQueueFromItem(server, item);
+    return true;
+  }
 
   if (IsMusicContainer())
     QueueItems(*m_vecItems, item);

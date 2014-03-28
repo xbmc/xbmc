@@ -4580,8 +4580,7 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
   // If we're supposed to activate the visualizer when playing audio, do so now.
   if (IsPlayingAudio() &&
       g_advancedSettings.m_bVisualizerOnPlay &&
-      !g_playlistPlayer.HasPlayedFirstFile() &&
-      !g_playlistPlayer.QueuedFirstFile())
+      !g_playlistPlayer.HasPlayedFirstFile())
   {
     ActivateVisualizer();
   }

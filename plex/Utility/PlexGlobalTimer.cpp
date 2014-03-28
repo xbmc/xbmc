@@ -179,6 +179,7 @@ void CPlexGlobalTimer::Process()
       m_timeouts.erase(m_timeouts.begin());
       DumpDebug();
       CJobManager::GetInstance().AddJob(new CPlexGlobalTimerJob(p.second), NULL, CJob::PRIORITY_HIGH);
+      lk.unlock();
     }
 
     lk.lock();

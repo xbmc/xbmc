@@ -50,12 +50,6 @@ CPlayListPlayer::CPlayListPlayer(void)
     m_repeatState[i] = REPEAT_NONE;
   m_iFailedSongs = 0;
   m_failedSongsStart = 0;
-
-  /* PLEX */
-  m_bQueuedFirstFile = false;
-  m_bPreviousMusicShuffle = false;
-  m_bTemporaryShuffle = false;
-  /* END PLEX */
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
@@ -365,14 +359,6 @@ void CPlayListPlayer::ClearPlaylist(int iPlaylist)
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
   g_windowManager.SendMessage(msg);
-
-  /* PLEX */
-  if (m_bTemporaryShuffle && (iPlaylist == PLAYLIST_MUSIC))
-  {
-    Reset();
-    SetShuffle(PLAYLIST_MUSIC, m_bPreviousMusicShuffle, false);
-  }
-  /* END PLEX */
 }
 
 CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist)
@@ -423,10 +409,6 @@ void CPlayListPlayer::Reset()
   m_bPlayedFirstFile = false;
   m_bPlaybackStarted = false;
 
-  /* PLEX */
-  m_bQueuedFirstFile = false;
-  /* END PLEX */
-
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
   g_windowManager.SendMessage(msg);
@@ -451,7 +433,7 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
   return false;
 }
 
-void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = false */, bool bTemporary /* = false */)
+void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = false */)
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
@@ -459,15 +441,6 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = f
   // disable shuffle in party mode
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
     return;
-
-  /* PLEX */
-  if (iPlaylist == PLAYLIST_MUSIC)
-  {
-    m_bTemporaryShuffle = bTemporary;
-    if (bTemporary)
-      m_bPreviousMusicShuffle = IsShuffled(PLAYLIST_MUSIC);
-  }
-  /* END PLEX */
 
   // do we even need to do anything?
   if (bYesNo != IsShuffled(iPlaylist))
@@ -682,12 +655,6 @@ void CPlayListPlayer::Clear()
 {
   if (m_PlaylistMusic)
     m_PlaylistMusic->Clear();
-
-  /* PLEX */
-  if (m_PlaylistMusic && m_bTemporaryShuffle)
-    SetShuffle(PLAYLIST_MUSIC, m_bPreviousMusicShuffle, false);
-  /* END PLEX */
-
   if (m_PlaylistVideo)
     m_PlaylistVideo->Clear();
   if (m_PlaylistEmpty)

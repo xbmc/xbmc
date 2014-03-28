@@ -55,6 +55,10 @@
 #include "linux/RBP.h"
 #endif
 
+/* PLEX */
+#include "Plex/Playlists/PlexPlaylistPlayer.h"
+/* END PLEX */
+
   CSettings          g_settings;
 
   CXBMCRenderManager g_renderManager;
@@ -82,7 +86,12 @@
   XBPython           g_pythonParser;
 #endif
   CAlarmClock        g_alarmClock;
+
+#ifndef __PLEX__
   PLAYLIST::CPlayListPlayer g_playlistPlayer;
+#else
+  PLAYLIST::CPlexPlayListPlayer g_playlistPlayer;
+#endif
 
 #ifdef TARGET_RASPBERRY_PI
   CRBP               g_RBP;

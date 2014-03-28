@@ -632,11 +632,15 @@ ePlexMediaType PlexUtils::GetMediaTypeFromItem(CFileItemPtr item)
   switch(plexType)
   {
     case PLEX_DIR_TYPE_TRACK:
+    case PLEX_DIR_TYPE_ALBUM:
+    case PLEX_DIR_TYPE_ARTIST:
       return PLEX_MEDIA_TYPE_MUSIC;
     case PLEX_DIR_TYPE_VIDEO:
     case PLEX_DIR_TYPE_EPISODE:
     case PLEX_DIR_TYPE_CLIP:
     case PLEX_DIR_TYPE_MOVIE:
+    case PLEX_DIR_TYPE_SEASON:
+    case PLEX_DIR_TYPE_SHOW:
       return PLEX_MEDIA_TYPE_VIDEO;
     case PLEX_DIR_TYPE_IMAGE:
     case PLEX_DIR_TYPE_PHOTO:
