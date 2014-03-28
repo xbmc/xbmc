@@ -101,6 +101,19 @@ ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 # build all plex related source files
 add_library(PlexMain OBJECT ${PLEX_ALL_SRCS})
 
+# build test cases
+get_property(TEST_CASES GLOBAL PROPERTY PLEX_TEST_CASES)
+foreach(cases ${TEST_CASES})
+  message(STATUS "Adding test case ${cases}")
+  list(APPEND TEST_CASES_OBJS $<TARGET_OBJECTS:${cases}>)
+endforeach(cases ${TEST_CASES})
+add_executable(PlexHomeTheaterTests ${TEST_CASES_OBJS} $<TARGET_OBJECTS:xbmctest> $<TARGET_OBJECTS:PlexMain>)
+target_link_libraries(PlexHomeTheaterTests xbmc pcre gtest ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
+add_test(PlexHomeTheaterTests ${EXECUTABLE_OUTPUT_PATH}/PlexHomeTheaterTests --gtest_color=yes)
+
+add_custom_target(all_tests DEPENDS PlexHomeTheaterTests)
+add_custom_target(run_tests COMMAND ${CMAKE_CTEST_COMMAND} -V DEPENDS all_tests)
+
 if(TARGET_COMMON_DARWIN)
   add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE $<TARGET_OBJECTS:PlexMain> $<TARGET_OBJECTS:xbmcmain>)
   set_target_properties(${PLEX_TARGET_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")

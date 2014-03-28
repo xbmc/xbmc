@@ -58,6 +58,25 @@ function(add_sources)
   set_property(GLOBAL APPEND PROPERTY SRCS_LIST ${SRCS})
 endfunction(add_sources)
 
+# function to add a test case
+function(plex_add_testcase)
+  get_property(is_defined GLOBAL PROPERTY PLEX_TEST_CASES DEFINED)
+  if(NOT is_defined)
+    define_property(GLOBAL PROPERTY PLEX_TEST_CASES BRIEF_DOCS "testcases" FULL_DOCS "testcases")
+  endif(NOT is_defined)
+
+  set(TESTCASES)
+  foreach(CASE IN LISTS ARGN)
+    get_filename_component(CASE_FILE "${CASE}" ABSOLUTE)
+    get_filename_component(CASE_BIN "${CASE}" NAME_WE)
+    list(APPEND TESTCASES "${CASE_BIN}")
+
+    include_directories(${root}/lib/gtest ${root}/lib/gtest/include)
+    add_library(${CASE_BIN} OBJECT ${CASE_FILE})
+  endforeach()
+
+  set_property(GLOBAL APPEND PROPERTY PLEX_TEST_CASES ${TESTCASES})
+endfunction(plex_add_testcase)
 
 macro(plex_get_soname sonamevar library)
       # split out the library name
