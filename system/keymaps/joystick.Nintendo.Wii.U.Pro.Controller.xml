@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Button mappings for the Nintendo Wii U Pro Controller (currently Linux only).
+
+     - The Power button is not actually usuable as a button
+       but can only be used to turn off the controller.
+
+     - Up until kernel 3.12, one of the axis was inverted
+       and the driver occasionally crashed, so one should at least
+       run kernel 3.13 to use this controller.
+
+     ID          Button
+
+     1           B
+     2           A
+     3           X
+     4           Y
+     5           L
+     6           R
+     7           ZL
+     8           ZR
+     9           Select
+     10          Start
+     11          Home
+     12          Left stick click
+     13          Right stick click
+     14          D-Pad Up
+     15          D-Pad Down
+     16          D-Pad Left
+     17          D-Pad Right
+     Axis 1      Left stick left/right
+     Axis 2      Left stick up/down
+     Axis 3      Right stick left/right
+     Axis 4      Right stick up/down
+
+-->
+<keymap>
+  <global>
+    <joystick name="Nintendo Wii Remote Pro Controller">
+      <!-- B, A, X, Y -->
+      <button id="1">Back</button>
+      <button id="2">Select</button>
+      <button id="3">FullScreen</button>
+      <button id="4">ContextMenu</button>
+
+      <!-- L, R -->
+      <button id="5">Queue</button>
+      <button id="6">Playlist</button>
+
+      <!-- ZL, ZR -->
+      <button id="7">ScrollUp</button>
+      <button id="8">ScrollDown</button>
+
+      <!-- Home -->
+      <button id="11">XBMC.ActivateWindow(Home)</button>
+
+      <!-- Left/Right stick click -->
+      <button id="12">XBMC.ActivateWindow(ShutdownMenu)</button>
+      <button id="13">XBMC.ActivateWindow(PlayerControls)</button>
+
+      <!-- D-Pad -->
+      <button id="14">Up</button>
+      <button id="15">Down</button>
+      <button id="16">Left</button>
+      <button id="17">Right</button>
+
+      <!-- Left stick -->
+      <axis id="1" limit="-1">Left</axis>
+      <axis id="1" limit="+1">Right</axis>
+      <axis id="2" limit="-1">Up</axis>
+      <axis id="2" limit="+1">Down</axis>
+
+      <!-- Right stick up/down -->
+      <axis id="4" limit="-1">VolumeUp</axis>
+      <axis id="4" limit="+1">VolumeDown</axis>
+    </joystick>
+  </global>
+
+  <FullscreenVideo>
+    <joystick name="Nintendo Wii Remote Pro Controller">
+      <!-- B, A, Y; X is global FullScreen. -->
+      <button id="1">Stop</button>
+      <button id="2">Pause</button>
+      <button id="4">OSD</button>
+
+      <!-- L/R -->
+      <button id="5">AudioNextLanguage</button>
+      <button id="6">NextSubtitle</button>
+
+      <!-- ZL/ZR -->
+      <button id="7">Rewind</button>
+      <button id="8">FastForward</button>
+
+      <!-- Start -->
+      <button id="10">Info</button>
+
+      <!-- Right stick click -->
+      <button id="13">AspectRatio</button>
+
+      <!-- D-Pad -->
+      <button id="14">BigStepForward</button>
+      <button id="15">BigStepBack</button>
+      <button id="16">StepBack</button>
+      <button id="17">StepForward</button>
+
+      <!-- Left stick left/right -->
+      <axis id="1" limit="-1">AnalogRewind</axis>
+      <axis id="1" limit="+1">AnalogFastForward</axis>
+
+    </joystick>
+  </FullscreenVideo>
+</keymap>
