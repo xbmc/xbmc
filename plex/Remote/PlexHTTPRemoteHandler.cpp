@@ -474,7 +474,8 @@ class NavigationTimeout : public IPlexGlobalTimeout
     NavigationTimeout() {}
     void OnTimeout()
     {
-      CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
+      if (!g_application.IsPlayingFullScreenVideo())
+        CApplicationMessenger::Get().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), true);
     }
 
     CStdString TimerName() const { return "navigationTimeout"; }
