@@ -337,6 +337,13 @@ namespace XBMCAddon
       }
     }
 
+    void stopSFX()
+    {
+      XBMC_TRACE;
+      DelayedCallGuard dg;
+      g_audioManager.Stop();
+    }
+    
     void enableNavSounds(bool yesNo)
     {
       XBMC_TRACE;
