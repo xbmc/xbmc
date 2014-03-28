@@ -199,6 +199,18 @@ static void EnumerateDevices(CADeviceList &list)
             }
 
             // add sample rate info
+            // quirk devices which don't report a valid samplerate
+            // add 44.1khz and 48khz in that case - user can use
+            // the "fixed" audio config to force one of them
+            if (desc.mSampleRate == 0)
+            {
+              CLog::Log(LOGWARNING, "%s no valid samplerate - adding 44.1khz and 48khz quirk", __FUNCTION__);
+              desc.mSampleRate = 44100;
+              if (!HasSampleRate(device.m_sampleRates, desc.mSampleRate))
+                device.m_sampleRates.push_back(desc.mSampleRate);
+              desc.mSampleRate = 48000;
+            }
+
             if (!HasSampleRate(device.m_sampleRates, desc.mSampleRate))
               device.m_sampleRates.push_back(desc.mSampleRate);
           }
@@ -463,7 +475,14 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
     CCoreAudioStream::GetAvailablePhysicalFormats(*i, &formats);
     for (StreamFormatList::const_iterator j = formats.begin(); j != formats.end(); ++j)
     {
-      const AudioStreamBasicDescription &desc = j->mFormat;
+      AudioStreamBasicDescription desc = j->mFormat;
+
+      // quirk devices with invalid sample rate
+      // assume that the user uses a fixed config
+      // and knows what he is doing - so we use
+      // the requested samplerate here
+      if (desc.mSampleRate == 0)
+        desc.mSampleRate = format.m_sampleRate;
 
       float score = ScoreStream(desc, format);
 
