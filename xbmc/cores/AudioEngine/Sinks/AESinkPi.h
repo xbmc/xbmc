@@ -53,7 +53,6 @@ private:
   std::string          m_initDevice;
   AEAudioFormat        m_initFormat;
   AEAudioFormat        m_format;
-  unsigned int         m_sinkbuffer_size;  ///< total size of the buffer
   double               m_sinkbuffer_sec_per_byte;
   static CAEDeviceInfo m_info;
   bool                 m_Initialized;
