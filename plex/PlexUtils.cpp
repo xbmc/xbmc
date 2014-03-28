@@ -273,6 +273,9 @@ string PlexUtils::GetMachinePlatformVersion()
 ///////////////////////////////////////////////////////////////////////////////
 std::string PlexUtils::GetStreamChannelName(CFileItemPtr item)
 {
+  if (!item->HasProperty("channels"))
+    return "";
+
   int64_t channels = item->GetProperty("channels").asInteger();
 
   if (channels == 1)
@@ -286,6 +289,9 @@ std::string PlexUtils::GetStreamChannelName(CFileItemPtr item)
 ///////////////////////////////////////////////////////////////////////////////
 std::string PlexUtils::GetStreamCodecName(CFileItemPtr item)
 {
+  if (!item->HasProperty("codec"))
+    return "";
+
   std::string codec = item->GetProperty("codec").asString();
   if (codec == "dca")
     return "DTS";
@@ -447,24 +453,43 @@ CStdString PlexUtils::GetPrettyStreamNameFromStreamItem(CFileItemPtr stream)
   CStdString name;
 
   if (stream->HasProperty("language") && !stream->GetProperty("language").asString().empty())
-  {
     name = stream->GetProperty("language").asString();
-    if (stream->GetProperty("streamType").asInteger() == PLEX_STREAM_AUDIO)
+  else
+    name = g_localizeStrings.Get(1446).empty() ? "Unknown" : g_localizeStrings.Get(1446);
+
+  if (stream->GetProperty("streamType").asInteger() == PLEX_STREAM_AUDIO)
+  {
+    if (stream->HasProperty("codec") || stream->HasProperty("channels"))
     {
-      name += " (" + GetStreamCodecName(stream) + " " + GetStreamChannelName(stream) + ")";
+      name += " (";
+      if (stream->HasProperty("codec"))
+        name += GetStreamCodecName(stream);
+
+      if (stream->HasProperty("channels") && stream->HasProperty("codec"))
+        name += " ";
+
+      if (stream->HasProperty("channels"))
+        name += GetStreamChannelName(stream);
+
+      name += ")";
     }
-    else if (stream->HasProperty("format"))
+  }
+  else if (stream->GetProperty("streamType") == PLEX_STREAM_SUBTITLE)
+  {
+    if (!stream->GetProperty("format").empty() || stream->HasProperty("codec"))
     {
-      name += " (" + boost::to_upper_copy(stream->GetProperty("format").asString());
+      name += " (";
+      if (!stream->GetProperty("format").empty())
+        name += boost::to_upper_copy(stream->GetProperty("format").asString());
+      else if (stream->HasProperty("codec"))
+        name += boost::to_upper_copy(stream->GetProperty("codec").asString());
+
       if (stream->GetProperty("forced").asBoolean())
         name += " " + g_localizeStrings.Get(52503) + ")";
       else
         name += ")";
-
     }
   }
-  else
-    name = g_localizeStrings.Get(1446);
 
   return name;
 }
