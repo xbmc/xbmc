@@ -52,6 +52,7 @@ public:
   int AddData(uint8_t *data, unsigned int size, uint8_t **buffer = NULL, unsigned int *bufferSize = 0);
 
   void                      SetCoreOnly      (bool value) { m_coreOnly = value; }
+  void                      SetAC3Only       (bool value) { m_ac3Only = value; }
   unsigned int              IsValid          () { return m_hasSync       ; }
   unsigned int              GetSampleRate    () { return m_sampleRate    ; }
   unsigned int              GetOutputRate    () { return m_outputRate    ; }
@@ -67,6 +68,14 @@ public:
   CAEPackIEC61937::PackFunc GetPackFunc      () { return m_packFunc      ; }
   unsigned int              GetBufferSize    () { return m_bufferSize    ; }
 private:
+  enum AC3Type
+  {
+     AC3TYPE_INVALID,
+     AC3TYPE_AC3,
+     AC3TYPE_EAC3_WITH_AC3MAIN,
+     AC3TYPE_EAC3_INDEPENDENT_STREAM_ONLY,
+     AC3TYPE_EAC3_WITH_DEPENDENT_STREAM
+  };
   DllAvUtil m_dllAvUtil;
 
   uint8_t      m_buffer[MAX_IEC61937_PACKET];
@@ -95,6 +104,8 @@ private:
   DataType                  m_dataType;
   bool                      m_dataIsLE;
   CAEPackIEC61937::PackFunc m_packFunc;
+  bool                      m_ac3Only;
+  AC3Type                   m_ac3Type;
 
   void GetPacket(uint8_t **buffer, unsigned int *bufferSize);
   unsigned int DetectType(uint8_t *data, unsigned int size);

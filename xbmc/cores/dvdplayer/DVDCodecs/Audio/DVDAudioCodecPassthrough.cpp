@@ -41,13 +41,16 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   bool bSupportsAC3Out    = CAEFactory::SupportsRaw(AE_FMT_AC3, hints.samplerate);
-  bool bSupportsEAC3Out   = CAEFactory::SupportsRaw(AE_FMT_EAC3, 192000);
+  bool bSupportsEAC3Out   = CAEFactory::SupportsRaw(AE_FMT_EAC3, 4*hints.samplerate); // E-AC3 is 4 times sample rate once packed into IEC 61937 format
   bool bSupportsDTSOut    = CAEFactory::SupportsRaw(AE_FMT_DTS, hints.samplerate);
   bool bSupportsTrueHDOut = CAEFactory::SupportsRaw(AE_FMT_TRUEHD, 192000);
   bool bSupportsDTSHDOut  = CAEFactory::SupportsRaw(AE_FMT_DTSHD, 192000);
 
   /* only get the dts core from the parser if we don't support dtsHD */
   m_info.SetCoreOnly(!bSupportsDTSHDOut);
+  /* only get the ac3 core for e-ac3 if possible from the parser */
+  m_info.SetAC3Only(!bSupportsEAC3Out);
+
   m_bufferSize = 0;
 
   /* 32kHz E-AC-3 passthrough requires 128kHz IEC 60958 stream
