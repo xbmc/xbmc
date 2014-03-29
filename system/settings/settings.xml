@@ -2330,6 +2330,9 @@
           <constraints>
             <options>verticalsyncs</options>
           </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
           <control type="spinner" format="string" />
         </setting>
         <setting id="videoscreen.guicalibration" type="action" label="214" help="36357">
