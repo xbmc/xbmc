@@ -54,15 +54,6 @@
 			<ondown>5</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
-		<control type="label" id="3">
-			<description>No Settings Label</description>
-			<left>20</left>
-			<top>180</top>
-			<width>640</width>
-			<align>center</align>
-			<label>35004</label>
-			<font>font13</font>
-		</control>
 		<control type="grouplist" id="5">
 			<animation effect="slide" start="0,0" end="5,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
 			<description>control area</description>
@@ -127,7 +118,7 @@
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
 		</control>
-		<control type="sliderex" id="10">
+		<control type="sliderex" id="13">
 			<description>Default Slider</description>
 			<height>40</height>
 			<texturenofocus border="5">button-nofocus.png</texturenofocus>
