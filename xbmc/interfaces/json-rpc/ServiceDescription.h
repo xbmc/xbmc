@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://xbmc.org/jsonrpc/ServiceDescription.json";
-  const char* const JSONRPC_SERVICE_VERSION     = "6.14.1";
+  const char* const JSONRPC_SERVICE_VERSION     = "6.14.2";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -4326,6 +4326,24 @@ namespace JSONRPC
     "\"Input.OnInputFinished\": {"
       "\"type\": \"notification\","
       "\"description\": \"The user has provided the requested input.\","
+      "\"params\": ["
+        "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
+        "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
+      "],"
+      "\"returns\": null"
+    "}",
+    "\"GUI.OnScreensaverActivated\": {"
+      "\"type\": \"notification\","
+      "\"description\": \"The screensaver has been activated.\","
+      "\"params\": ["
+        "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
+        "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
+      "],"
+      "\"returns\": null"
+    "}",
+    "\"GUI.OnScreensaverDeactivated\": {"
+      "\"type\": \"notification\","
+      "\"description\": \"The screensaver has been deactivated.\","
       "\"params\": ["
         "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
         "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
