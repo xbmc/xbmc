@@ -331,9 +331,9 @@ bool CProcessorHD::OpenProcessor()
   DXVAHD_STREAM_STATE_INPUT_COLOR_SPACE_DATA data =
   {
     0,                                          // Type: 0=Video, 1=Graphics
-    m_flags & CONF_FLAGS_YUV_FULLRANGE ? 0 : 1, // RGB_Range: 0=Full, 1=Limited
+    0,                                          // RGB_Range: 0=Full, 1=Limited
     m_flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0, // YCbCr_Matrix: 0=BT.601, 1=BT.709
-    1                                           // YCbCr_xvYCC: 0=Conventional YCbCr, 1=xvYCC
+    m_flags & CONF_FLAGS_YUV_FULLRANGE ? 1 : 0  // YCbCr_xvYCC: 0=Conventional YCbCr, 1=xvYCC
   };
   LOGIFERROR(m_pDXVAVP->SetVideoProcessStreamState( 0, DXVAHD_STREAM_STATE_INPUT_COLOR_SPACE
                                                   , sizeof(data), &data ));
