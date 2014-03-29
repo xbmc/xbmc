@@ -662,6 +662,12 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
       CLog::Log(LOGWARNING, "CSetting: unable to write <%s> tag in <%s>", parts.at(1).c_str(), parts.at(0).c_str());
       continue;
     }
+    if (it->second.setting->IsDefault())
+    {
+      TiXmlElement *settingElem = settingNode->ToElement();
+      if (settingElem != NULL)
+        settingElem->SetAttribute(SETTING_XML_ELM_DEFAULT, "true");
+    }
       
     TiXmlText value(it->second.setting->ToString());
     settingNode->InsertEndChild(value);
@@ -931,11 +937,17 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, CSetting *setting)
   if (sectionNode == NULL)
     return false;
 
-  const TiXmlNode *settingNode = sectionNode->FirstChild(parts.at(1));
-  if (settingNode == NULL)
+  const TiXmlElement *settingElement = sectionNode->FirstChildElement(parts.at(1));
+  if (settingElement == NULL)
     return false;
 
-  if (!setting->FromString(settingNode->FirstChild() != NULL ? settingNode->FirstChild()->ValueStr() : StringUtils::Empty))
+  // check if the default="true" attribute is set for the value in which case
+  // we don't have to read the actual setting value
+  const char *isDefault = settingElement->Attribute(SETTING_XML_ELM_DEFAULT);
+  if (isDefault != NULL && StringUtils::EqualsNoCase(isDefault, "true"))
+    return true;
+
+  if (!setting->FromString(settingElement->FirstChild() != NULL ? settingElement->FirstChild()->ValueStr() : StringUtils::Empty))
   {
     CLog::Log(LOGWARNING, "CSettingsManager: unable to read value of setting \"%s\"", settingId.c_str());
     return false;
