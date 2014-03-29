@@ -5279,6 +5279,7 @@ msgstr ""
 #: skin.confluence
 #: skin.touched
 #: xbmc\profiles\ProfilesManager.cpp
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
 msgctxt "#13200"
 msgid "Profiles"
 msgstr ""
