@@ -101,6 +101,7 @@ public:
   int GetHelp() const { return m_help; }
   void SetHelp(int help) { m_help = help; }
   bool IsEnabled() const;
+  bool IsDefault() const { return !m_changed; }
   const std::string& GetParent() const { return m_parentSetting; }
   SettingLevel GetLevel() const { return m_level; }
   const ISettingControl* GetControl() const { return m_control; }
