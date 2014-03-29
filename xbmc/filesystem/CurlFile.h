@@ -177,6 +177,7 @@ namespace XFILE
       CStdString      m_username;
       CStdString      m_password;
       CStdString      m_httpauth;
+      CStdString      m_cipherlist;
       bool            m_ftppasvip;
       int             m_connecttimeout;
       int             m_lowspeedtime;
