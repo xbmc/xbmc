@@ -62,6 +62,12 @@ public:
   void ClearSearchHistory();
   void DumpPathHistory();
 
+  /*! \brief Returns whether a path is in the history.
+   \param path to test
+   \return true if the path is in the history, false otherwise.
+   */
+  bool IsInHistory(const std::string &path) const;
+
 private:
   static CStdString preparePath(const CStdString &strDirectory, bool tolower = true);
   
