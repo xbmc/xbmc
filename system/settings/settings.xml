@@ -2326,7 +2326,7 @@
       <group id="3">
         <setting id="videoscreen.vsync" type="integer" label="13105" help="36356">
           <level>2</level>
-          <default>3</default> <!-- VSYNC_DRIVER -->
+          <default>2</default> <!-- VSYNC_ALWAYS -->
           <constraints>
             <options>verticalsyncs</options>
           </constraints>
