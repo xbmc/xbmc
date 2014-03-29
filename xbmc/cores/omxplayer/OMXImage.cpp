@@ -241,6 +241,8 @@ bool COMXImage::AllocTextureInternal(EGLDisplay egl_display, EGLContext egl_cont
   GLenum type = CSettings::Get().GetBool("videoscreen.textures32") ? GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT_5_6_5;
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->width, tex->height, 0, GL_RGB, type, 0);
   tex->egl_image = eglCreateImageKHR(egl_display, egl_context, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)tex->texture, NULL);
+  if (!tex->egl_image)
+    CLog::Log(LOGDEBUG, "%s: eglCreateImageKHR failed to allocate", __func__);
   GLint m_result;
   CheckError();
   return true;
@@ -267,15 +269,14 @@ void COMXImage::DestroyTexture(void *userdata)
 bool COMXImage::DestroyTextureInternal(EGLDisplay egl_display, EGLContext egl_context, struct textureinfo *tex)
 {
   bool s = true;
-  if (!tex->egl_image || !tex->texture)
+  if (tex->egl_image)
   {
-    CLog::Log(LOGNOTICE, "%s: Invalid image/texture %p:%d", __func__, tex->egl_image, tex->texture);
-    return false;
+    s = eglDestroyImageKHR(egl_display, tex->egl_image);
+    if (!s)
+      CLog::Log(LOGNOTICE, "%s: failed to destroy texture", __func__);
   }
-  s = eglDestroyImageKHR(egl_display, tex->egl_image);
-  if (!s)
-    CLog::Log(LOGNOTICE, "%s: failed to destroy texture", __func__);
-  glDeleteTextures(1, (GLuint*) &tex->texture);
+  if (tex->texture)
+    glDeleteTextures(1, (GLuint*) &tex->texture);
   return s;
 }
 
@@ -1864,6 +1865,16 @@ void COMXTexture::Close()
 {
   CSingleLock lock(m_OMXSection);
 
+  if(m_omx_decoder.IsInitialized())
+  {
+    m_omx_decoder.FlushInput();
+    m_omx_decoder.FreeInputBuffers();
+  }
+  if(m_omx_egl_render.IsInitialized())
+  {
+    m_omx_egl_render.FlushOutput();
+    m_omx_egl_render.FreeOutputBuffers();
+  }
   if (m_omx_tunnel_decode.IsInitialized())
     m_omx_tunnel_decode.Deestablish();
   if (m_omx_tunnel_egl.IsInitialized())
