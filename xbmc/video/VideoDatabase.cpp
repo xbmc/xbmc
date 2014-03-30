@@ -4321,6 +4321,21 @@ public:
   string media_type;
 };
 
+// used for database update to v83
+class CShowItem
+{
+public:
+  bool operator==(const CShowItem &r) const
+  {
+    return (!ident.empty() && ident == r.ident) || (title == r.title && year == r.year);
+  };
+  int    id;
+  int    path;
+  string title;
+  string year;
+  string ident;
+};
+
 void CVideoDatabase::UpdateTables(int iVersion)
 {
   if (iVersion < 61)
@@ -4500,11 +4515,55 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // drop the basepath column from the tvshow table
     m_pDS->exec("UPDATE tvshow SET c16=NULL");
   }
+  if (iVersion < 83)
+  {
+    // drop duplicates in tvshow table, and update tvshowlinkpath accordingly
+    CStdString sql = PrepareSQL("SELECT tvshow.idShow,idPath,c%02d,c%02d,c%02d FROM tvshow JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_IDENT);
+    m_pDS->query(sql.c_str());
+    vector<CShowItem> shows;
+    while (!m_pDS->eof())
+    {
+      CShowItem show;
+      show.id    = m_pDS->fv(0).get_asInt();
+      show.path  = m_pDS->fv(1).get_asInt();
+      show.title = m_pDS->fv(2).get_asString();
+      show.year  = m_pDS->fv(3).get_asString();
+      show.ident = m_pDS->fv(4).get_asString();
+      shows.push_back(show);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    if (!shows.empty())
+    {
+      for (vector<CShowItem>::iterator i = shows.begin() + 1; i != shows.end(); ++i)
+      {
+        // has this show been found before?
+        vector<CShowItem>::const_iterator j = find(shows.begin(), i, *i);
+        if (j != i)
+        { // this is a duplicate
+          // update the tvshowlinkpath table
+          m_pDS->exec(PrepareSQL("UPDATE tvshowlinkpath SET idShow = %d WHERE idShow = %d AND idPath = %d", j->id, i->id, i->path));
+          // update episodes, seasons, movie links
+          m_pDS->exec(PrepareSQL("UPDATE episode SET idShow = %d WHERE idShow = %d", j->id, i->id));
+          m_pDS->exec(PrepareSQL("UPDATE seasons SET idShow = %d WHERE idShow = %d", j->id, i->id));
+          m_pDS->exec(PrepareSQL("UPDATE movielinktvshow SET idShow = %d WHERE idShow = %d", j->id, i->id));
+          // delete tvshow
+          m_pDS->exec(PrepareSQL("DELETE FROM genrelinktvshow WHERE idShow=%i", i->id));
+          m_pDS->exec(PrepareSQL("DELETE FROM actorlinktvshow WHERE idShow=%i", i->id));
+          m_pDS->exec(PrepareSQL("DELETE FROM directorlinktvshow WHERE idShow=%i", i->id));
+          m_pDS->exec(PrepareSQL("DELETE FROM studiolinktvshow WHERE idShow=%i", i->id));
+          m_pDS->exec(PrepareSQL("DELETE FROM tvshow WHERE idShow = %d", i->id));
+        }
+      }
+      // cleanup duplicate seasons
+      m_pDS->exec("DELETE FROM seasons WHERE idSeason NOT IN (SELECT min(idSeason) FROM seasons GROUP BY idShow,season)");
+    }
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 82;
+  return 83;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
