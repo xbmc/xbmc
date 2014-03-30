@@ -761,6 +761,14 @@ protected:
   int AddMusicVideo(const CStdString& strFilenameAndPath);
   int AddSeason(int showID, int season);
 
+  /*! \brief Adds a path to the tvshow link table.
+   \param idShow the id of the show.
+   \param path the path to add.
+   \param parentPath the parent path of the path to add.
+   \return true if successfully added, false otherwise.
+   */
+  bool AddPathToTvShow(int idShow, const std::string &path, const std::string &parentPath);
+
   // link functions - these two do all the work
   void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role, int order);
   void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
