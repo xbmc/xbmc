@@ -1242,6 +1242,46 @@ int CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
   return -1;
 }
 
+bool CVideoDatabase::AddPathToTvShow(int idShow, const std::string &path, int idParentPath)
+{
+  // Check if this path is already added
+  int idPath = GetPathId(path);
+  if (idPath < 0)
+  {
+    // Get the creation datetime of the tvshow directory
+    CDateTime dateAdded;
+
+    // Skip looking at the files ctime/mtime if defined by the user through as.xml
+    if (g_advancedSettings.m_iVideoLibraryDateAdded > 0)
+    {
+      struct __stat64 buffer;
+      if (XFILE::CFile::Stat(path, &buffer) == 0)
+      {
+        time_t now = time(NULL);
+        // Make sure we have a valid date (i.e. not in the future)
+        if ((time_t)buffer.st_ctime <= now)
+        {
+          struct tm *time = localtime((const time_t*)&buffer.st_ctime);
+          if (time)
+            dateAdded = *time;
+        }
+      }
+    }
+
+    if (!dateAdded.IsValid())
+      dateAdded = CDateTime::GetCurrentDateTime();
+
+    idPath = AddPath(path, dateAdded.GetAsDBDateTime());
+  }
+
+  // is the path added to the show?
+  string sql = PrepareSQL("SELECT idShow FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i", idShow, idPath);
+  if (!GetSingleValue(sql).empty())
+    return true;
+
+  return ExecuteQuery(PrepareSQL("INSERT INTO tvshowlinkpath(idShow, idPath, idParentPath) VALUES (%i,%i,%i)", idShow, idPath, idParentPath));
+}
+
 int CVideoDatabase::AddTvShow(const CStdString& strPath, int idParent)
 {
   try
@@ -1258,31 +1298,7 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath, int idParent)
     m_pDS->exec(strSQL.c_str());
     int idTvShow = (int)m_pDS->lastinsertid();
 
-    // Get the creation datetime of the tvshow directory
-    CDateTime dateAdded;
-    // Skip looking at the files ctime/mtime if defined by the user through as.xml
-    if (g_advancedSettings.m_iVideoLibraryDateAdded > 0)
-    {
-      struct __stat64 buffer;
-      if (XFILE::CFile::Stat(strPath, &buffer) == 0)
-      {
-        time_t now = time(NULL);
-        // Make sure we have a valid date (i.e. not in the future)
-        if ((time_t)buffer.st_ctime <= now)
-        {
-          struct tm *time = localtime((const time_t*)&buffer.st_ctime);
-          if (time)
-            dateAdded = *time;
-        }
-      }
-    }
-
-    if (!dateAdded.IsValid())
-      dateAdded = CDateTime::GetCurrentDateTime();
-
-    int idPath = AddPath(strPath, dateAdded.GetAsDBDateTime());
-    strSQL=PrepareSQL("insert into tvshowlinkpath values (%i,%i,%i)",idTvShow,idPath,idParent);
-    m_pDS->exec(strSQL.c_str());
+    AddPathToTvShow(idTvShow, strPath, idParent);
     return idTvShow;
   }
   catch (...)
