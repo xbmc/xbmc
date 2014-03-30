@@ -1,5 +1,4 @@
 SRCS=GUIDialogContentSettings.cpp \
-     GUIDialogSettings.cpp \
      GUIDialogSettingsBase.cpp \
      GUIDialogSettingsManagerBase.cpp \
      GUIDialogSettingsManualBase.cpp \

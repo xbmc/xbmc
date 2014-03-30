@@ -25,7 +25,6 @@
 #include "AddonManager.h"
 #include "AddonStatusHandler.h"
 #include "AddonCallbacks.h"
-#include "settings/dialogs/GUIDialogSettings.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
