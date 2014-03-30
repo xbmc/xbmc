@@ -859,9 +859,6 @@ private:
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void InvalidatePathHash(const CStdString& strPath);
 
-  bool GetStackedTvShowList(int idShow, CStdString& strIn) const;
-  void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder = false);
-
   /*! \brief Get a safe filename from a given string
    \param dir directory to use for the file
    \param name movie, show name, or actor to get a safe filename for

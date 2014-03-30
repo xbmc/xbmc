@@ -5717,41 +5717,6 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
   return false;
 }
 
-bool CVideoDatabase::GetStackedTvShowList(int idShow, CStdString& strIn) const
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    // look for duplicate show titles and stack them into a list
-    if (idShow == -1)
-      return false;
-    CStdString strSQL = PrepareSQL("select idShow from tvshow where c00 like (select c00 from tvshow where idShow=%i) order by idShow", idShow);
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRows = m_pDS->num_rows();
-    if (iRows == 0) return false; // this should never happen!
-    if (iRows > 1)
-    { // more than one show, so stack them up
-      strIn = "IN (";
-      while (!m_pDS->eof())
-      {
-        strIn += PrepareSQL("%i,", m_pDS->fv(0).get_asInt());
-        m_pDS->next();
-      }
-      strIn[strIn.size() - 1] = ')'; // replace last , with )
-    }
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
-}
-
 bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, int idActor, int idDirector, int idGenre, int idYear, int idShow, bool getLinkedMovies /* = true */)
 {
   // parse the base path to get additional filters
@@ -5776,12 +5741,9 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
   // now add any linked movies
   if (getLinkedMovies && idShow != -1)
   {
-    CStdString strIn = PrepareSQL("= %i", idShow);
-    GetStackedTvShowList(idShow, strIn);
-
     Filter movieFilter;
     movieFilter.join = PrepareSQL("join movielinktvshow on movielinktvshow.idMovie=movieview.idMovie");
-    movieFilter.where = PrepareSQL("movielinktvshow.idShow %s", strIn.c_str());
+    movieFilter.where = PrepareSQL("movielinktvshow.idShow = %i", idShow);
     CFileItemList movieItems;
     GetMoviesByWhere("videodb://movies/titles/", movieFilter, movieItems);
 
@@ -6225,8 +6187,6 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
       }
     }
 
-    Stack(items, VIDEODB_CONTENT_TVSHOWS, !filter.order.empty() || sorting.sortBy != SortByNone);
-
     // cleanup
     m_pDS->close();
     return true;
@@ -6238,186 +6198,6 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
   return false;
 }
 
-void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder /* = false */)
-{
-  if (maintainSortOrder)
-  {
-    // save current sort order
-    for (int i = 0; i < items.Size(); i++)
-      items[i]->m_iprogramCount = i;
-  }
-
-  switch (type)
-  {
-    case VIDEODB_CONTENT_TVSHOWS:
-    {
-      // sort by Title
-      items.Sort(SortBySortTitle, SortOrderAscending);
-
-      int i = 0;
-      while (i < items.Size())
-      {
-        CFileItemPtr pItem = items.Get(i);
-        CStdString strTitle = pItem->GetVideoInfoTag()->m_strTitle;
-        CStdString strFanArt = pItem->GetArt("fanart");
-
-        int j = i + 1;
-        bool bStacked = false;
-        while (j < items.Size())
-        {
-          CFileItemPtr jItem = items.Get(j);
-
-          // matching title? append information
-          if (jItem->GetVideoInfoTag()->m_strTitle.Equals(strTitle))
-          {
-            if (jItem->GetVideoInfoTag()->m_premiered != 
-                pItem->GetVideoInfoTag()->m_premiered)
-            {
-              j++;
-              continue;
-            }
-            bStacked = true;
-
-            // increment episode counts
-            pItem->GetVideoInfoTag()->m_iEpisode += jItem->GetVideoInfoTag()->m_iEpisode;
-            pItem->IncrementProperty("totalepisodes", (int)jItem->GetProperty("totalepisodes").asInteger());
-            pItem->IncrementProperty("numepisodes", (int)jItem->GetProperty("numepisodes").asInteger()); // will be changed later to reflect watchmode setting
-            pItem->IncrementProperty("watchedepisodes", (int)jItem->GetProperty("watchedepisodes").asInteger());
-            pItem->IncrementProperty("unwatchedepisodes", (int)jItem->GetProperty("unwatchedepisodes").asInteger());
-
-            // adjust lastplayed
-            if (jItem->GetVideoInfoTag()->m_lastPlayed > pItem->GetVideoInfoTag()->m_lastPlayed)
-              pItem->GetVideoInfoTag()->m_lastPlayed = jItem->GetVideoInfoTag()->m_lastPlayed;
-
-            // check for fanart if not already set
-            if (strFanArt.empty())
-              strFanArt = jItem->GetArt("fanart");
-
-            // remove duplicate entry
-            items.Remove(j);
-          }
-          // no match? exit loop
-          else
-            break;
-        }
-        // update playcount and fanart
-        if (bStacked)
-        {
-          pItem->GetVideoInfoTag()->m_playCount = (pItem->GetVideoInfoTag()->m_iEpisode == (int)pItem->GetProperty("watchedepisodes").asInteger()) ? 1 : 0;
-          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
-          if (!strFanArt.empty())
-            pItem->SetArt("fanart", strFanArt);
-        }
-        // increment i to j which is the next item
-        i = j;
-      }
-    }
-    break;
-    // We currently don't stack episodes (No call here in GetEpisodesByWhere()), but this code is left
-    // so that if we eventually want to stack during scan we can utilize it.
-    /*
-    case VIDEODB_CONTENT_EPISODES:
-    {
-      // sort by ShowTitle, Episode, Filename
-      items.Sort(SortByEpisodeNumber, SortOrderAscending);
-
-      int i = 0;
-      while (i < items.Size())
-      {
-        CFileItemPtr pItem = items.Get(i);
-        CStdString strPath = pItem->GetVideoInfoTag()->m_strPath;
-        int iSeason = pItem->GetVideoInfoTag()->m_iSeason;
-        int iEpisode = pItem->GetVideoInfoTag()->m_iEpisode;
-        //CStdString strFanArt = pItem->GetArt("fanart");
-
-        // do we have a dvd folder, ie foo/VIDEO_TS.IFO or foo/VIDEO_TS/VIDEO_TS.IFO
-        CStdString strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
-        bool bDvdFolder = StringUtils::EndsWithNoCase(strFileNameAndPath, "video_ts.ifo");
-
-        vector<CStdString> paths;
-        paths.push_back(strFileNameAndPath);
-        CLog::Log(LOGDEBUG, "Stack episode (%i,%i):[%s]", iSeason, iEpisode, paths[0].c_str());
-
-        int j = i + 1;
-        int iPlayCount = pItem->GetVideoInfoTag()->m_playCount;
-        while (j < items.Size())
-        {
-          CFileItemPtr jItem = items.Get(j);
-          const CVideoInfoTag *jTag = jItem->GetVideoInfoTag();
-          CStdString jFileNameAndPath = jTag->m_strFileNameAndPath;
-
-          CLog::Log(LOGDEBUG, " *testing (%i,%i):[%s]", jTag->m_iSeason, jTag->m_iEpisode, jFileNameAndPath.c_str());
-          // compare path, season, episode
-          if (
-            jTag &&
-            jTag->m_strPath.Equals(strPath) &&
-            jTag->m_iSeason == iSeason &&
-            jTag->m_iEpisode == iEpisode
-            )
-          {
-            // keep checking to see if this is dvd folder
-            if (!bDvdFolder)
-            {
-              bDvdFolder = StringUtils::EndsWithNoCase(jFileNameAndPath, "video_ts.ifo");
-              // if we have a dvd folder, we stack differently
-              if (bDvdFolder)
-              {
-                // remove all the other items and ONLY show the VIDEO_TS.IFO file
-                paths.empty();
-                paths.push_back(jFileNameAndPath);
-              }
-              else
-              {
-                // increment playcount
-                iPlayCount += jTag->m_playCount;
-
-                // episodes dont have fanart yet
-                //if (strFanArt.empty())
-                //  strFanArt = jItem->GetArt("fanart");
-
-                paths.push_back(jFileNameAndPath);
-              }
-            }
-
-            // remove duplicate entry
-            jTag = NULL;
-            items.Remove(j);
-          }
-          // no match? exit loop
-          else
-            break;
-        }
-        // update playcount and fanart if we have a stacked entry
-        if (paths.size() > 1)
-        {
-          CStackDirectory dir;
-          CStdString strStack;
-          dir.ConstructStackPath(paths, strStack);
-          pItem->GetVideoInfoTag()->m_strFileNameAndPath = strStack;
-          pItem->GetVideoInfoTag()->m_playCount = iPlayCount;
-          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
-
-          // episodes dont have fanart yet
-          //if (!strFanArt.empty())
-          //  pItem->SetArt("fanart", strFanArt);
-        }
-        // increment i to j which is the next item
-        i = j;
-      }
-    }
-    break;*/
-
-    // stack other types later
-    default:
-      break;
-  }
-  if (maintainSortOrder)
-  {
-    // restore original sort order - essential for smartplaylists
-    items.Sort(SortByProgramCount, SortOrderAscending);
-  }
-}
-
 bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idShow, int idSeason, const SortDescription &sortDescription /* = SortDescription() */)
 {
   CVideoDbUrl videoUrl;
@@ -6427,9 +6207,6 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
   CStdString strIn;
   if (idShow != -1)
   {
-    strIn = PrepareSQL("= %i", idShow);
-    GetStackedTvShowList(idShow, strIn);
-
     videoUrl.AddOption("tvshowid", idShow);
     if (idSeason >= 0)
       videoUrl.AddOption("season", idSeason);
@@ -6454,7 +6231,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
   { // add any linked movies
     Filter movieFilter;
     movieFilter.join  = PrepareSQL("join movielinktvshow on movielinktvshow.idMovie=movieview.idMovie");
-    movieFilter.where = PrepareSQL("movielinktvshow.idShow %s", strIn.c_str());
+    movieFilter.where = PrepareSQL("movielinktvshow.idShow = %i", idShow);
     CFileItemList movieItems;
     GetMoviesByWhere("videodb://movies/titles/", movieFilter, movieItems);
 
@@ -9603,12 +9380,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     {
       option = options.find("tvshowid");
       if (option != options.end())
-      {
-        int idShow = (int)option->second.asInteger();
-        CStdString strIn = PrepareSQL("= %i", idShow);
-        GetStackedTvShowList(idShow, strIn);
-        filter.AppendWhere(PrepareSQL("seasonview.idShow %s", strIn.c_str()));
-      }
+        filter.AppendWhere(PrepareSQL("seasonview.idShow = %i", (int)option->second.asInteger()));
 
       option = options.find("genreid");
       if (option != options.end())
@@ -9646,9 +9418,6 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       option = options.find("season");
       if (option != options.end())
         season = (int)option->second.asInteger();
-
-      CStdString strIn = PrepareSQL("= %i", idShow);
-      GetStackedTvShowList(idShow, strIn);
 
       if (idShow > -1)
       {
@@ -9710,7 +9479,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         }
 
         if (!condition)
-          filter.AppendWhere(PrepareSQL("episodeview.idShow %s", strIn.c_str()));
+          filter.AppendWhere(PrepareSQL("episodeview.idShow = %i", idShow));
 
         if (season > -1)
         {
