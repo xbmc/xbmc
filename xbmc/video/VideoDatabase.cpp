@@ -1282,29 +1282,10 @@ bool CVideoDatabase::AddPathToTvShow(int idShow, const std::string &path, int id
   return ExecuteQuery(PrepareSQL("INSERT INTO tvshowlinkpath(idShow, idPath, idParentPath) VALUES (%i,%i,%i)", idShow, idPath, idParentPath));
 }
 
-int CVideoDatabase::AddTvShow(const CStdString& strPath, int idParent)
+int CVideoDatabase::AddTvShow()
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-
-    CStdString strSQL=PrepareSQL("select tvshowlinkpath.idShow from path,tvshowlinkpath where path.strPath='%s' and path.idPath=tvshowlinkpath.idPath",strPath.c_str());
-    m_pDS->query(strSQL.c_str());
-    if (m_pDS->num_rows() != 0)
-      return m_pDS->fv("tvshowlinkpath.idShow").get_asInt();
-
-    strSQL=PrepareSQL("insert into tvshow (idShow) values (NULL)");
-    m_pDS->exec(strSQL.c_str());
-    int idTvShow = (int)m_pDS->lastinsertid();
-
-    AddPathToTvShow(idTvShow, strPath, idParent);
-    return idTvShow;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
-  }
+  if (ExecuteQuery("INSERT INTO tvshow(idShow) VALUES(NULL)"))
+    return m_pDS->lastinsertid();
   return -1;
 }
 
@@ -2262,20 +2243,28 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
 
     BeginTransaction();
 
+    /*
+     The steps are as follows.
+     1. Check if the tvshow is found on the given path.  If found, we have the show id.
+     2. If we don't have the id, add a new show.
+     3. Add the path to the show.
+     4. Add details for the show.
+     */
+
     if (idTvShow < 0)
       idTvShow = GetTvShowId(strPath);
-
-    if (idTvShow > -1)
-      DeleteDetailsForTvShow(idTvShow);
-    else
+    if (idTvShow < 0)
     {
-      idTvShow = AddTvShow(strPath, details.m_parentPathID);
+      idTvShow = AddTvShow();
       if (idTvShow < 0)
       {
         RollbackTransaction();
         return idTvShow;
       }
     }
+
+    // add any paths to the tvshow
+    AddPathToTvShow(idTvShow, strPath, details.m_parentPathID);
 
     vector<int> vecDirectors;
     vector<int> vecGenres;

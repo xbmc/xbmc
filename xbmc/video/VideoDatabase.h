@@ -756,7 +756,7 @@ protected:
   int AddCountry(const CStdString& strCountry);
   int AddStudio(const CStdString& strStudio1);
 
-  int AddTvShow(const CStdString& strPath, int idParent);
+  int AddTvShow();
   int AddMusicVideo(const CStdString& strFilenameAndPath);
   int AddSeason(int showID, int season);
 
