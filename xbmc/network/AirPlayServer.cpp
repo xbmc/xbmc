@@ -160,7 +160,13 @@ void CAirPlayServer::Announce(AnnouncementFlag flag, const char *sender, const c
   {
     if (strcmp(message, "OnStop") == 0)
     {
-      restoreVolume();
+      bool shouldRestoreVolume = true;
+      if (data.isMember("player") && data["player"].isMember("playerid"))
+        shouldRestoreVolume = (data["player"]["playerid"] != PLAYLIST_PICTURE);
+
+      if (shouldRestoreVolume)
+        restoreVolume();
+
       ServerInstance->AnnounceToClients(EVENT_STOPPED);
     }
     else if (strcmp(message, "OnPlay") == 0)
