@@ -3616,6 +3616,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.m_iDbId = idTvShow;
   details.m_type = MediaTypeTvShow;
   details.m_strPath = record->at(VIDEODB_DETAILS_TVSHOW_PATH).get_asString();
+  details.m_basePath = details.m_strPath;
   details.m_parentPathID = record->at(VIDEODB_DETAILS_TVSHOW_PARENTPATHID).get_asInt();
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_TVSHOW_DATEADDED).get_asString());
   details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_TVSHOW_LASTPLAYED).get_asString());
@@ -4475,11 +4476,16 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // drop the column from the tvshow table
     m_pDS->exec("UPDATE tvshow SET c17=NULL");
   }
+  if (iVersion < 82)
+  {
+    // drop the basepath column from the tvshow table
+    m_pDS->exec("UPDATE tvshow SET c16=NULL");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 81;
+  return 82;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
