@@ -369,7 +369,6 @@ void CVideoDatabase::CreateViews()
                                       "  tvshow.c%02d AS strStudio,"
                                       "  tvshow.c%02d AS premiered,"
                                       "  tvshow.c%02d AS mpaa,"
-                                      "  tvshow.c%02d AS strShowPath, "
                                       "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
                                       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
                                       "  seasons.idSeason AS idSeason "
@@ -383,7 +382,7 @@ void CVideoDatabase::CreateViews()
                                       "  JOIN path ON"
                                       "    files.idPath=path.idPath"
                                       "  LEFT JOIN bookmark ON"
-                                      "    bookmark.idFile=episode.idFile AND bookmark.type=1", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA, VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_EPISODE_SEASON);
+                                      "    bookmark.idFile=episode.idFile AND bookmark.type=1", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA,VIDEODB_ID_EPISODE_SEASON);
   m_pDS->exec(episodeview.c_str());
 
   CLog::Log(LOGINFO, "create tvshowview");
@@ -3628,7 +3627,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_TVSHOW_LASTPLAYED).get_asString());
   details.m_iEpisode = record->at(VIDEODB_DETAILS_TVSHOW_NUM_EPISODES).get_asInt();
   details.m_playCount = record->at(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInt();
-  details.m_strShowPath = details.m_strPath;
   details.m_strShowTitle = details.m_strTitle;
   if (details.m_premiered.IsValid())
     details.m_iYear = details.m_premiered.GetYear();
@@ -3696,7 +3694,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_studio = StringUtils::Split(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString(), g_advancedSettings.m_videoItemSeparator);
   details.m_premiered.SetFromDBDate(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString());
   details.m_iIdShow = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
-  details.m_strShowPath = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_PATH).get_asString();
   details.m_iIdSeason = record->at(VIDEODB_DETAILS_EPISODE_SEASON_ID).get_asInt();
 
   details.m_resumePoint.timeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_RESUME_TIME).get_asInt();
