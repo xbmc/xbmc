@@ -166,6 +166,8 @@ librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
+libgif_not_found="== Could not find libgif. libgif support disabled. =="
+libgif_disabled="== libgif support disabled. =="
 libafpclient_not_found="== Could not find libafpclient. AFP client support disabled. =="
 libafpclient_disabled="== AFP support disabled. =="
 libshairport_not_found="== Could not find libshairport. =="
@@ -398,6 +400,13 @@ AC_ARG_ENABLE([nfs],
   [enable NFS support via libnfs (default is auto)])],
   [use_libnfs=$enableval],
   [use_libnfs=auto])
+
+AC_ARG_ENABLE([gif],
+  [AS_HELP_STRING([--enable-gif],
+  [enable gif support via libgif (default is auto)])],
+  [use_libgif=$enableval],
+  [use_libgif=auto])
+
 
 AC_ARG_ENABLE([afpclient],
   [AS_HELP_STRING([--enable-afpclient],
@@ -1588,6 +1597,31 @@ else
   AC_MSG_NOTICE($libnfs_disabled)
 fi
 
+# libgif
+if test "$use_libgif" != "no"; then
+  AC_CHECK_HEADERS([gif_lib.h],,
+   [if test "$use_libgif" = "yes"; then
+      AC_MSG_ERROR($libgif_not_found)
+      USE_LIBGIF=0
+    elif test "$use_libgif" != "no"; then
+      AC_MSG_NOTICE($libgif_not_found)
+      use_libgif="no"
+      USE_LIBGIF=0
+    fi
+   ])
+  if test "$use_libgif" != "no"; then
+    XB_FIND_SONAME([GIF], [gif], [use_libgif])
+  fi
+  if test "$use_libgif" != "no"; then
+    AC_DEFINE([HAVE_LIBGIF], [1], [Whether to use libgif library.])
+    USE_LIBGIF=1
+  fi
+else
+  USE_LIBGIF=0
+  AC_MSG_NOTICE($libgif_disabled)
+fi
+
+
 # libafpclient
 USE_LIBAFPCLIENT=0
 if test "x$use_libafpclient" != "xno"; then
@@ -2387,6 +2421,12 @@ else
   final_message="$final_message\n  libnfs client support:No"
 fi
 
+if test "$use_libgif" != "no"; then
+  final_message="$final_message\n  libgif support:Yes"
+else
+  final_message="$final_message\n  libgif support:No"
+fi
+
 if test "x$use_libafpclient" != "xno"; then
   final_message="$final_message\n  libafpclient support:\tYes"
 else  
@@ -2552,6 +2592,7 @@ OUTPUT_FILES="Makefile \
     xbmc/freebsd/Makefile \
     xbmc/linux/Makefile \
     xbmc/filesystem/Makefile \
+    xbmc/pictures/Makefile \
     xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
     xbmc/visualizations/XBMCProjectM/Makefile \
     xbmc/visualizations/Goom/Makefile \
@@ -2644,6 +2685,7 @@ AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_CRYSTALHD)
 AC_SUBST(USE_LIBSMBCLIENT)
 AC_SUBST(USE_LIBNFS)
+AC_SUBST(USE_LIBGIF)
 AC_SUBST(USE_LIBAFPCLIENT)
 AC_SUBST(USE_AIRPLAY)
 AC_SUBST(USE_OPENMAX)

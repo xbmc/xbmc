@@ -339,7 +339,7 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
 bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info, int parentID)
 {
   GetTexture(pRootNode, strTag, image);
-  image.filename = "";
+  image.SetFileName("");
   GetInfoLabel(pRootNode, strTag, info, parentID);
   return true;
 }
@@ -361,7 +361,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   const char *background = pNode->Attribute("background");
   if (background && strnicmp(background, "true", 4) == 0)
     image.useLarge = true;
-  image.filename = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
+  image.SetFileName((pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "");
   return true;
 }
 
@@ -1300,7 +1300,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       texture.useLarge = true;
 
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
-    if (borderTexture.filename.empty() && borderStr.empty())
+    if (borderTexture.GetFileName().empty() && borderStr.empty())
       control = new CGUIImage(
         parentID, id, posX, posY, width, height, texture);
     else

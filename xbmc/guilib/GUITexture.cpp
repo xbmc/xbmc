@@ -23,6 +23,8 @@
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
+#include "threads/SystemClock.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -30,6 +32,7 @@ CTextureInfo::CTextureInfo()
 {
   orientation = 0;
   useLarge = false;
+  m_animated = false;
 }
 
 CTextureInfo::CTextureInfo(const CStdString &file)
@@ -37,6 +40,7 @@ CTextureInfo::CTextureInfo(const CStdString &file)
   orientation = 0;
   useLarge = false;
   filename = file;
+  m_animated = StringUtils::EndsWithNoCase(file, ".gif");
 }
 
 CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
@@ -47,7 +51,14 @@ CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
   filename = right.filename;
   useLarge = right.useLarge;
   diffuseColor = right.diffuseColor;
+  m_animated = right.m_animated;
   return *this;
+}
+
+void CTextureInfo::SetFileName(const std::string &fileName)
+{
+  filename = fileName;
+  m_animated = StringUtils::EndsWithNoCase(filename, ".gif");
 }
 
 CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture) :
@@ -76,7 +87,7 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
 
   // anim gifs
   m_currentFrame = 0;
-  m_frameCounter = (unsigned int) -1;
+  m_lasttime = 0;
   m_currentLoop = 0;
 
   m_allocateDynamically = false;
@@ -115,7 +126,6 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
   m_diffuseScaleV = 1.0f;
 
   m_currentFrame = 0;
-  m_frameCounter = (unsigned int) -1;
   m_currentLoop = 0;
 
   m_isAllocated = NO;
@@ -140,7 +150,6 @@ bool CGUITextureBase::AllocateOnDemand()
     // reset animated textures (animgifs)
     m_currentLoop = 0;
     m_currentFrame = 0;
-    m_frameCounter = 0;
   }
 
   return false;
@@ -296,13 +305,12 @@ bool CGUITextureBase::AllocResources()
     return false; // already have our texture
 
   // reset our animstate
-  m_frameCounter = 0;
   m_currentFrame = 0;
   m_currentLoop = 0;
 
   bool changed = false;
   bool useLarge = m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename);
-  if (useLarge)
+  if (useLarge && !m_info.m_animated)
   { // we want to use the large image loader, but we first check for bundled textures
     if (!IsAllocated())
     {
@@ -494,13 +502,11 @@ void CGUITextureBase::SetInvalid()
 bool CGUITextureBase::UpdateAnimFrame()
 {
   bool changed = false;
-
-  m_frameCounter++;
   unsigned int delay = m_texture.m_delays[m_currentFrame];
-  if (!delay) delay = 100;
-  if (m_frameCounter * 40 >= delay)
+  unsigned int now = XbmcThreads::SystemClockMillis();
+
+  if ((now - m_lasttime) >= delay)
   {
-    m_frameCounter = 0;
     if (m_currentFrame + 1 >= m_texture.size())
     {
       if (m_texture.m_loops > 0)
@@ -509,6 +515,7 @@ bool CGUITextureBase::UpdateAnimFrame()
         {
           m_currentLoop++;
           m_currentFrame = 0;
+          m_lasttime = now;
           changed = true;
         }
       }
@@ -516,12 +523,14 @@ bool CGUITextureBase::UpdateAnimFrame()
       {
         // 0 == loop forever
         m_currentFrame = 0;
+        m_lasttime = now;
         changed = true;
       }
     }
     else
     {
       m_currentFrame++;
+      m_lasttime = now;
       changed = true;
     }
   }
@@ -653,6 +662,7 @@ bool CGUITextureBase::SetFileName(const CStdString& filename)
   // filenames mid-animation
   FreeResources();
   m_info.filename = filename;
+  m_info.m_animated = StringUtils::EndsWithNoCase(filename, ".gif");
   // Don't allocate resources here as this is done at render time
   return true;
 }

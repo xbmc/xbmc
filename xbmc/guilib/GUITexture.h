@@ -70,16 +70,24 @@ public:
 
 class CTextureInfo
 {
+  friend class CGUITextureBase;
 public:
   CTextureInfo();
   CTextureInfo(const CStdString &file);
   CTextureInfo& operator=(const CTextureInfo &right);
+
+  void SetFileName(const std::string &filename);
+  const std::string& GetFileName() const { return filename; };
+
   bool       useLarge;
   CRect      border;          // scaled  - unneeded if we get rid of scale on load
   int        orientation;     // orientation of the texture (0 - 7 == EXIForientation - 1)
   CStdString diffuse;         // diffuse overlay texture
   CGUIInfoColor diffuseColor; // diffuse color
+
+private:
   CStdString filename;        // main texture file
+  bool m_animated;
 };
 
 class CGUITextureBase
@@ -156,7 +164,7 @@ protected:
   // animations
   int m_currentLoop;
   unsigned int m_currentFrame;
-  uint32_t m_frameCounter;
+  uint32_t m_lasttime;
 
   float m_diffuseU, m_diffuseV;           // size of the diffuse frame (in tex coords)
   float m_diffuseScaleU, m_diffuseScaleV; // scale factor of the diffuse frame (from texture coords to diffuse tex coords)
