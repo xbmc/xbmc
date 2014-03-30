@@ -171,7 +171,7 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec(columns.c_str());
 
   CLog::Log(LOGINFO, "create tvshowlinkpath table");
-  m_pDS->exec("CREATE TABLE tvshowlinkpath (idShow integer, idPath integer)\n");
+  m_pDS->exec("CREATE TABLE tvshowlinkpath (idShow integer, idPath integer, idParentPath integer)\n");
 
   CLog::Log(LOGINFO, "create actorlinkepisode table");
   m_pDS->exec("CREATE TABLE actorlinkepisode ( idActor integer, idEpisode integer, strRole text, iOrder integer)\n");
@@ -312,7 +312,7 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c23(12) )");
   m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c14(12) )");
   m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c19(12) )");
-  m_pDS->exec("CREATE INDEX ixTVShowBasePath on tvshow ( c17(12) )");
+  m_pDS->exec("CREATE INDEX ixTVShowBasePath on tvshowlinkpath ( idParentPath )");
 
   m_pDS->exec("CREATE INDEX ix_streamdetails ON streamdetails (idFile)");
   m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
@@ -388,6 +388,7 @@ void CVideoDatabase::CreateViews()
   CLog::Log(LOGINFO, "create tvshowview");
   CStdString tvshowview = PrepareSQL("CREATE VIEW tvshowview AS SELECT "
                                      "  tvshow.*,"
+                                     "  tvshowlinkpath.idParentPath AS idParentPath,"
                                      "  path.strPath AS strPath,"
                                      "  path.dateAdded AS dateAdded,"
                                      "  MAX(files.lastPlayed) AS lastPlayed,"
@@ -1241,7 +1242,7 @@ int CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
   return -1;
 }
 
-int CVideoDatabase::AddTvShow(const CStdString& strPath)
+int CVideoDatabase::AddTvShow(const CStdString& strPath, int idParent)
 {
   try
   {
@@ -1280,9 +1281,8 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
       dateAdded = CDateTime::GetCurrentDateTime();
 
     int idPath = AddPath(strPath, dateAdded.GetAsDBDateTime());
-    strSQL=PrepareSQL("insert into tvshowlinkpath values (%i,%i)",idTvShow,idPath);
+    strSQL=PrepareSQL("insert into tvshowlinkpath values (%i,%i,%i)",idTvShow,idPath,idParent);
     m_pDS->exec(strSQL.c_str());
-
     return idTvShow;
   }
   catch (...)
@@ -2253,7 +2253,7 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
       DeleteDetailsForTvShow(idTvShow);
     else
     {
-      idTvShow = AddTvShow(strPath);
+      idTvShow = AddTvShow(strPath, details.m_parentPathID);
       if (idTvShow < 0)
       {
         RollbackTransaction();
@@ -3616,6 +3616,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.m_iDbId = idTvShow;
   details.m_type = MediaTypeTvShow;
   details.m_strPath = record->at(VIDEODB_DETAILS_TVSHOW_PATH).get_asString();
+  details.m_parentPathID = record->at(VIDEODB_DETAILS_TVSHOW_PARENTPATHID).get_asInt();
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_TVSHOW_DATEADDED).get_asString());
   details.m_lastPlayed.SetFromDBDateTime(record->at(VIDEODB_DETAILS_TVSHOW_LASTPLAYED).get_asString());
   details.m_iEpisode = record->at(VIDEODB_DETAILS_TVSHOW_NUM_EPISODES).get_asInt();
@@ -4465,11 +4466,20 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
   if (iVersion < 77)
     m_pDS->exec("ALTER TABLE streamdetails ADD strStereoMode text");
+  if (iVersion < 81)
+  {
+    // move the tvshow parent path id to the tvshowlinkpath table
+    m_pDS->exec("ALTER TABLE tvshowlinkpath ADD idParentPath integer");
+    m_pDS->exec("UPDATE tvshowlinkpath SET idParentPath = (SELECT c17 FROM tvshow WHERE tvshow.idShow = tvshowlinkpath.idShow) "
+                "WHERE EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = tvshowlinkpath.idShow)");
+    // drop the column from the tvshow table
+    m_pDS->exec("UPDATE tvshow SET c17=NULL");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 80;
+  return 81;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
@@ -8121,10 +8131,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
                                   "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = path.idPath) "
                                   "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idPath = path.idPath) "
                                   "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.c%02d = path.idPath) "
-                                  "AND NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.c%02d = path.idPath) "
+                                  "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idParentPath = path.idPath) "
                                   "AND NOT EXISTS (SELECT 1 FROM episode WHERE episode.c%02d = path.idPath) "
                                   "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE musicvideo.c%02d = path.idPath)"
-                , VIDEODB_ID_PARENTPATHID, VIDEODB_ID_TV_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID, VIDEODB_ID_MUSICVIDEO_PARENTPATHID );
+                , VIDEODB_ID_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID, VIDEODB_ID_MUSICVIDEO_PARENTPATHID );
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning genre table", __FUNCTION__);
@@ -8217,7 +8227,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
   else if (mediaType == MediaTypeEpisode)
   {
     idField = "idEpisode";
-    parentPathIdField = StringUtils::Format("tvshow.c%02d", VIDEODB_ID_TV_PARENTPATHID);
+    parentPathIdField = "tvshowlinkpath.idParentPath";
     isEpisode = true;
   }
   else if (mediaType == MediaTypeMusicVideo)
@@ -8236,7 +8246,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
                                table.c_str());
 
   if (isEpisode)
-    sql += "JOIN tvshow ON tvshow.idShow = episode.idShow ";
+    sql += "JOIN tvshowlinkpath ON tvshowlinkpath.idShow = episode.idShow ";
 
   sql += PrepareSQL("JOIN path as parentPath ON parentPath.idPath = %s "
                     "WHERE %s.idFile IN (%s)",
@@ -9302,7 +9312,7 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   }
   else if (content == "tvshows")
   {
-    Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_TV_PARENTPATHID, pathID));
+    Filter filter(PrepareSQL("idParentPath=%d", pathID));
     GetTvShowsByWhere("videodb://tvshows/titles/", filter, items);
   }
   else if (content == "musicvideos")
