@@ -1929,7 +1929,7 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemo
     iSelectedLabel = pDialog->GetSelectedLabel();
   }
 
-  if (iSelectedLabel > -1)
+  if (iSelectedLabel > -1 && iSelectedLabel < list.Size())
     return database.LinkMovieToTvshow(dbId, list[iSelectedLabel]->GetVideoInfoTag()->m_iDbId, bRemove);
 
   return false;
