@@ -385,26 +385,33 @@ void CVideoDatabase::CreateViews()
                                       "    bookmark.idFile=episode.idFile AND bookmark.type=1", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA,VIDEODB_ID_EPISODE_SEASON);
   m_pDS->exec(episodeview.c_str());
 
+  /* NOTE: The tvshowview needs to have "GROUP BY tvshow.idShow" added to any usage if you wish to
+           avoid duplicates due to multiple paths per tvshow (from the join on tvshowlinkpath) */
   CLog::Log(LOGINFO, "create tvshowview");
   CStdString tvshowview = PrepareSQL("CREATE VIEW tvshowview AS SELECT "
                                      "  tvshow.*,"
                                      "  tvshowlinkpath.idParentPath AS idParentPath,"
                                      "  path.strPath AS strPath,"
                                      "  path.dateAdded AS dateAdded,"
-                                     "  MAX(files.lastPlayed) AS lastPlayed,"
-                                     "  NULLIF(COUNT(episode.c12), 0) AS totalCount,"
-                                     "  COUNT(files.playCount) AS watchedcount,"
-                                     "  NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons "
+                                     "  lastPlayed, totalCount, watchedcount, totalSeasons "
                                      "FROM tvshow"
                                      "  LEFT JOIN tvshowlinkpath ON"
                                      "    tvshowlinkpath.idShow=tvshow.idShow"
                                      "  LEFT JOIN path ON"
                                      "    path.idPath=tvshowlinkpath.idPath"
-                                     "  LEFT JOIN episode ON"
-                                     "    episode.idShow=tvshow.idShow"
-                                     "  LEFT JOIN files ON"
-                                     "    files.idFile=episode.idFile "
-                                     "GROUP BY tvshow.idShow;");
+                                     "  INNER JOIN ("
+                                     "    SELECT tvshow.idShow AS idShow,"
+                                     "      MAX(files.lastPlayed) AS lastPlayed,"
+                                     "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
+                                     "      COUNT(files.playCount) AS watchedcount,"
+                                     "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons "
+                                     "    FROM tvshow"
+                                     "      LEFT JOIN episode ON"
+                                     "        episode.idShow=tvshow.idShow"
+                                     "      LEFT JOIN files ON"
+                                     "        files.idFile=episode.idFile "
+                                     "    GROUP BY tvshow.idShow) AS counts ON"
+                                     "  tvshow.idShow = counts.idShow");
   m_pDS->exec(tvshowview.c_str());
 
   CLog::Log(LOGINFO, "create seasonview");
@@ -1855,7 +1862,7 @@ bool CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& det
       idTvShow = GetTvShowId(strPath);
     if (idTvShow < 0) return false;
 
-    CStdString sql = PrepareSQL("SELECT * FROM tvshowview WHERE idShow=%i", idTvShow);
+    CStdString sql = PrepareSQL("SELECT * FROM tvshowview WHERE idShow=%i GROUP BY idShow", idTvShow);
     if (!m_pDS->query(sql.c_str()))
       return false;
     details = GetDetailsForTvShow(m_pDS, true, item);
@@ -6161,6 +6168,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
     CVideoDbUrl videoUrl;
     CStdString strSQLExtra;
     Filter extFilter = filter;
+    extFilter.AppendGroup("tvshowview.idShow");
     SortDescription sorting = sortDescription;
     if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
@@ -8718,7 +8726,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     m_pDS->close();
 
     // repeat for all tvshows
-    sql = "SELECT * FROM tvshowview";
+    sql = "SELECT * FROM tvshowview GROUP BY tvshowview.idShow";
     m_pDS->query(sql.c_str());
 
     total = m_pDS->num_rows();
