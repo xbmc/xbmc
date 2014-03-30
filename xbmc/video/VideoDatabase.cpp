@@ -409,7 +409,7 @@ void CVideoDatabase::CreateViews()
   CLog::Log(LOGINFO, "create seasonview");
   CStdString seasonview = PrepareSQL("CREATE VIEW seasonview AS SELECT "
                                      "  seasons.*, "
-                                     "  path.strPath AS strPath,"
+                                     "  tvshowview.strPath AS strPath,"
                                      "  tvshowview.c%02d AS showTitle,"
                                      "  tvshowview.c%02d AS plot,"
                                      "  tvshowview.c%02d AS premiered,"
@@ -424,11 +424,7 @@ void CVideoDatabase::CreateViews()
                                      "  JOIN episodeview ON"
                                      "    episodeview.idShow = seasons.idShow AND episodeview.c%02d = seasons.season"
                                      "  JOIN files ON"
-                                     "    files.idFile = episodeview.idFile"
-                                     "  JOIN tvshowlinkpath ON"
-                                     "    tvshowlinkpath.idShow = tvshowview.idShow"
-                                     "  JOIN path ON"
-                                     "    path.idPath = tvshowlinkpath.idPath "
+                                     "    files.idFile = episodeview.idFile "
                                      "GROUP BY seasons.idSeason",
                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
                                      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
@@ -4473,7 +4469,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 79;
+  return 80;
 }
 
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
