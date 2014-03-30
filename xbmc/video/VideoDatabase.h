@@ -769,6 +769,13 @@ protected:
    */
   bool AddPathToTvShow(int idShow, const std::string &path, const std::string &parentPath);
 
+  /*! \brief Check whether a show is already in the library.
+   Matches on unique identifier or matching title and premiered date.
+   \param show the details of the show to check for.
+   \return the show id if found, else -1.
+   */
+  int GetMatchingTvShow(const CVideoInfoTag &show);
+
   // link functions - these two do all the work
   void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role, int order);
   void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID, const char *typeField = NULL, const char *type = NULL);
