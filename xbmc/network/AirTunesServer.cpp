@@ -140,10 +140,6 @@ void CAirTunesServer::Announce(AnnouncementFlag flag, const char *sender, const 
 {
   if ( (flag & Player) && strcmp(sender, "xbmc") == 0)
   {
-#ifdef HAS_AIRPLAY
-    if (strcmp(message, "OnStop") == 0)
-      CAirPlayServer::restoreVolume();
-#endif
     if (strcmp(message, "OnPlay") == 0 && m_streamStarted)
     {
       RefreshMetadata();
