@@ -85,6 +85,7 @@
 #include "LangInfo.h"
 #include "URL.h"
 #include "utils/LangCodeExpander.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 using namespace std;
 using namespace PVR;
@@ -2936,7 +2937,11 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source, bool reset)
   if(m_CurrentAudio.id    < 0
   || m_CurrentAudio.hint != hint)
   {
-    if (!m_dvdPlayerAudio.OpenStream( hint ))
+    if (m_CurrentAudio.hint.codec == AV_CODEC_ID_AC3 && hint.codec == AV_CODEC_ID_EAC3 && m_dvdPlayerAudio.IsPassthrough() && !CAEFactory::SupportsRaw(AE_FMT_EAC3, 4*hint.samplerate))
+    {
+       // if we were using AC3 and now transitioning to EAC3 with no support for EAC3 try to extract the AC3 core by continuing to use the existing stream as AC3
+    }
+    else if (!m_dvdPlayerAudio.OpenStream( hint ))
     {
       /* mark stream as disabled, to disallaw further attempts*/
       CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);

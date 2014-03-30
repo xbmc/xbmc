@@ -83,7 +83,9 @@ CAEStreamInfo::CAEStreamInfo() :
   m_substreams    (0),
   m_dataType      (STREAM_TYPE_NULL),
   m_dataIsLE      (false),
-  m_packFunc      (NULL)
+  m_packFunc      (NULL),
+  m_ac3Only       (false),
+  m_ac3Type       (AC3TYPE_INVALID)
 {
   m_dllAvUtil.Load();
   m_dllAvUtil.av_crc_init(m_crcTrueHD, 0, 16, 0x2D, sizeof(m_crcTrueHD));
@@ -205,6 +207,12 @@ void CAEStreamInfo::GetPacket(uint8_t **buffer, unsigned int *bufferSize)
     unsigned int size = m_fsize;
     if (m_dataType == STREAM_TYPE_DTSHD_CORE)
       size = m_coreSize;
+    /* if it is EAC3 and we only want the core, just fetch that */
+    else if (m_ac3Only && m_ac3Type == AC3TYPE_EAC3_WITH_AC3MAIN && m_fsize)
+    {
+      size = m_fsizeMain;
+      m_fsizeMain = 0;
+    }
 
     /* make sure the buffer is allocated and big enough */
     if (!*buffer || !bufferSize || *bufferSize < size)
@@ -222,6 +230,8 @@ void CAEStreamInfo::GetPacket(uint8_t **buffer, unsigned int *bufferSize)
   /* remove the parsed data from the buffer */
   m_bufferSize -= m_fsize;
   memmove(m_buffer, m_buffer + m_fsize, m_bufferSize);
+  if (m_fsize && m_fsizeMain)
+    m_fsizeMain = 0;
   m_fsize = 0;
   m_coreSize = 0;
 }
@@ -289,7 +299,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
   unsigned int skip = 0;
 
   // handle substreams
-  if (m_fsizeMain)
+  if (m_ac3Type == AC3TYPE_EAC3_WITH_AC3MAIN || m_ac3Type == AC3TYPE_EAC3_WITH_DEPENDENT_STREAM)
   {
     data += m_fsizeMain;
   }
@@ -343,7 +353,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
 
       /* dont do extensive testing if we have not lost sync */
       /* this may be the main stream of EAC3 */
-      if (m_dataType == STREAM_TYPE_EAC3 && skip == 0)
+      if (m_ac3Type == AC3TYPE_EAC3_WITH_AC3MAIN && skip == 0)
       {
         m_fsizeMain = m_fsize;
         m_fsize = 0;
@@ -371,6 +381,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_channels       = AC3Channels[acmod] + lfeon;
       m_syncFunc       = &CAEStreamInfo::SyncAC3;
       m_dataType       = STREAM_TYPE_AC3;
+      m_ac3Type        = AC3TYPE_AC3;
       m_packFunc       = &CAEPackIEC61937::PackAC3;
       m_repeat         = 1;
 
@@ -406,25 +417,75 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_fsize        = framesize << 1;
 
       // concatenate substream to independent stream
-      if (strmtyp == 1 && m_fsizeMain)
+      if (strmtyp == 1)
       {
         m_fsize += m_fsizeMain;
+
+        if (m_ac3Type == AC3TYPE_AC3)
+        {
+          m_ac3Type = AC3TYPE_EAC3_WITH_AC3MAIN;
+          // update number of channels
+          if (!m_ac3Only)
+            m_channels = 8;/* FIXME: this should be read out of the stream */
+        }
+        else if (m_ac3Type == AC3TYPE_EAC3_INDEPENDENT_STREAM_ONLY)
+        {
+          m_ac3Type = AC3TYPE_EAC3_WITH_DEPENDENT_STREAM;
+          m_channels = 8; /* FIXME: this should be read out of the stream */
+        }
+        else if (m_ac3Type == AC3TYPE_INVALID)
+        {
+          CLog::Log(LOGERROR, "EAC3 substream detected with no main stream");
+
+          // assume transition from AC3 to EAC3 and main AC3 frame was lost
+          m_ac3Type = AC3TYPE_EAC3_WITH_AC3MAIN;
+        }
       }
-      m_fsizeMain = 0;
-
-      m_repeat       = MAX_EAC3_BLOCKS / blocks;
-
-      // E-AC-3 rate is 4 times bitstream sample rate as per IEC 61937.
-      m_outputRate = 4 * m_sampleRate;
-
-      if (m_dataType == STREAM_TYPE_EAC3 && m_hasSync && skip == 0)
+      else if (m_ac3Type == AC3TYPE_EAC3_WITH_DEPENDENT_STREAM && skip == 0)
+      {
+        m_fsizeMain = m_fsize;
+        m_fsize = 0;
         return 0;
+      }
+      else if (strmtyp == 0 || strmtyp == 2)
+      {
+        m_ac3Type = AC3TYPE_EAC3_INDEPENDENT_STREAM_ONLY;
+      }
+
+      // if ac3 only is enabled, essentially ignore the dependent stream
+      if (m_ac3Only && m_ac3Type == AC3TYPE_EAC3_WITH_AC3MAIN && skip == 0)
+      {
+          // if no sync then assume ac3 main was lost and set sync for that
+          if (!m_hasSync)
+          {
+            m_hasSync        = true;
+            m_outputRate     = m_sampleRate;
+            m_outputChannels = 2;
+            m_channelMap     = CAEChannelInfo(OutputMaps[0]);
+            m_channels       = AC3Channels[acmod] + lfeon;
+            m_syncFunc       = &CAEStreamInfo::SyncAC3;
+            m_dataType       = STREAM_TYPE_AC3;
+            m_packFunc       = &CAEPackIEC61937::PackAC3;
+            m_repeat         = 1;
+          }
+          return 0;
+      }
+      else
+      {
+        m_repeat       = MAX_EAC3_BLOCKS / blocks;
+
+        // E-AC-3 rate is 4 times bitstream sample rate as per IEC 61937.
+        m_outputRate = 4 * m_sampleRate;
+
+        if (m_dataType == STREAM_TYPE_EAC3 && m_hasSync && skip == 0)
+          return 0;
+      }
 
       /* if we get here, we can sync */
       m_hasSync        = true;
       m_outputChannels = 2;
       m_channelMap     = CAEChannelInfo(OutputMaps[0]);
-      m_channels       = 8; /* FIXME: this should be read out of the stream */
+      m_channels       = AC3Channels[acmod] + lfeon;
       m_syncFunc       = &CAEStreamInfo::SyncAC3;
       m_dataType       = STREAM_TYPE_EAC3;
       m_packFunc       = &CAEPackIEC61937::PackEAC3;
@@ -439,6 +500,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
   CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - AC3 sync lost");
   m_hasSync = false;
   m_fsizeMain = 0;
+  m_ac3Type = AC3TYPE_INVALID;
   return skip;
 }
 
