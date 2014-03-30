@@ -2231,6 +2231,17 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details, const st
   return -1;
 }
 
+int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag &details)
+{
+  // first try matching on VIDEODB_ID_TV_IDENT, then on title + year
+  int id = -1;
+  if (!details.m_strIMDBNumber.empty())
+    id = GetDbId(PrepareSQL("SELECT idShow from tvshow WHERE c%02d='%s'", VIDEODB_ID_TV_IDENT, details.m_strIMDBNumber.c_str()));
+  if (id < 0)
+    id = GetDbId(PrepareSQL("SELECT idShow FROM tvshow WHERE c%02d='%s' AND c%02d='%s'", VIDEODB_ID_TV_TITLE, details.m_strTitle.c_str(), VIDEODB_ID_TV_PREMIERED, details.m_premiered.GetAsDBDate().c_str()));
+  return id;
+}
+
 int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, const map<string, string> &artwork, const map<int, map<string, string> > &seasonArt, int idTvShow /*= -1 */)
 {
   try
@@ -2246,13 +2257,16 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     /*
      The steps are as follows.
      1. Check if the tvshow is found on the given path.  If found, we have the show id.
-     2. If we don't have the id, add a new show.
-     3. Add the path to the show.
-     4. Add details for the show.
+     2. Search for a matching show.  If found, we have the show id.
+     3. If we don't have the id, add a new show.
+     4. Add the path to the show.
+     5. Add details for the show.
      */
 
     if (idTvShow < 0)
       idTvShow = GetTvShowId(strPath);
+    if (idTvShow < 0)
+      idTvShow = GetMatchingTvShow(details);
     if (idTvShow < 0)
     {
       idTvShow = AddTvShow();
