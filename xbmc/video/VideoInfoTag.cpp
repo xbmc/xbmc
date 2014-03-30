@@ -90,7 +90,6 @@ void CVideoInfoTag::Reset()
   m_resumePoint.type = CBookmark::RESUME;
   m_iIdShow = -1;
   m_iIdSeason = -1;
-  m_strShowPath.clear();
   m_dateAdded.Reset();
   m_type.clear();
 }
@@ -325,7 +324,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_resumePoint.timeInSeconds;
     ar << m_resumePoint.totalTimeInSeconds;
     ar << m_iIdShow;
-    ar << m_strShowPath;
     ar << m_dateAdded.GetAsDBDateTime();
     ar << m_type;
     ar << m_iIdSeason;
@@ -403,7 +401,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_resumePoint.timeInSeconds;
     ar >> m_resumePoint.totalTimeInSeconds;
     ar >> m_iIdShow;
-    ar >> m_strShowPath;
 
     CStdString dateAdded;
     ar >> dateAdded;
@@ -474,7 +471,6 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   resume["total"] = (float)m_resumePoint.totalTimeInSeconds;
   value["resume"] = resume;
   value["tvshowid"] = m_iIdShow;
-  value["tvshowpath"] = m_strShowPath;
   value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString;
   value["type"] = m_type;
   value["seasonid"] = m_iIdSeason;
