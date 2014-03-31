@@ -121,6 +121,20 @@ CStdString CPlexAttributeParserMediaUrl::GetImageURL(const CURL &url, const CStd
     imageURL.SetProtocol("http");
     imageURL.SetHostName("127.0.0.1");
     imageURL.SetPort(32400);
+
+    // Now check if we have a local connection that might override the port
+    // this is especially true for secondary servers
+    if (g_plexApplication.serverManager)
+    {
+      CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(mediaUrl.GetHostName());
+      if (server)
+      {
+        CPlexConnectionPtr localConn = server->GetLocalConnection();
+        if (localConn)
+          imageURL.SetPort(localConn->GetAddress().GetPort());
+      }
+    }
+
     if (boost::starts_with(source, "/"))
       imageURL.SetFileName(source.substr(1, std::string::npos));
     else

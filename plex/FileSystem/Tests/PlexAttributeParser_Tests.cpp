@@ -21,6 +21,24 @@ TEST(PlexAttributeParserMediaUrlGetImageURL, basic)
   EXPECT_FALSE(imageUrl.HasOption("format"));
 }
 
+TEST(PlexAttributeParserMediaUrlGetImageURL, serverWithOtherPort)
+{
+  CPlexConnectionPtr conn = CPlexConnectionPtr(
+      new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "10.10.10.10", 32412));
+  CPlexServerPtr server = CPlexServerPtr(new CPlexServer(conn));
+  server->SetUUID("abc123");
+  g_plexApplication.serverManager = CPlexServerManagerPtr(new CPlexServerManager(server));
+
+  CURL u("plexserver://abc123");
+  CURL imageUrl = CPlexAttributeParserMediaUrl::GetImageURL(u, "abc123", 320, 320);
+
+  EXPECT_FALSE(imageUrl.Get().empty());
+  EXPECT_TRUE(imageUrl.HasOption("url"));
+  EXPECT_STREQ(imageUrl.GetOption("url"), "http://127.0.0.1:32412/abc123");
+
+  g_plexApplication.serverManager.reset();
+}
+
 TEST(PlexAttributeParserMediaUrlGetImageURL, directURL)
 {
   CURL u("plexserver://abc123:32400/foo");
@@ -86,13 +104,13 @@ TEST(PlexAttributeParserMediaUrlGetImageURL, forcedJpeg)
 
 static CPlexAttributeParserMediaUrl parser;
 
-#define EXPECT_SIZE(key, h, w) \
-{ \
-  EXPECT_TRUE(item.HasArt(key));\
-  CURL u(item.GetArt(key)); \
-  EXPECT_STREQ(u.GetOption("width"), w); \
-  EXPECT_STREQ(u.GetOption("height"), h); \
-}
+#define EXPECT_SIZE(key, h, w)                                                                     \
+  {                                                                                                \
+    EXPECT_TRUE(item.HasArt(key));                                                                 \
+    CURL u(item.GetArt(key));                                                                      \
+    EXPECT_STREQ(u.GetOption("width"), w);                                                         \
+    EXPECT_STREQ(u.GetOption("height"), h);                                                        \
+  }
 
 TEST(PlexAttributeParserMediaUrl, thumb)
 {
@@ -156,3 +174,4 @@ TEST(PlexAttributeParserMediaUrl, other)
 
   EXPECT_SIZE("foobar", "320", "320");
 }
+
