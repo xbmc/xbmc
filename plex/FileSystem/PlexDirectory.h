@@ -31,7 +31,7 @@ namespace XFILE
   class CPlexDirectory : public IDirectory
   {
   public:
-    CPlexDirectory()
+    CPlexDirectory() : m_doPost(false)
     {
     }
 
