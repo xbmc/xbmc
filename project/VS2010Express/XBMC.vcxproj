@@ -1739,7 +1739,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecUtils.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDFactoryCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibMad.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLPcm.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecCrystalHD.cpp" />
@@ -1794,7 +1793,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\CodecFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\ModplugCodec.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\paplayer\MP3codec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\NSFCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\OggCallback.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\OGGcodec.cpp" />
@@ -2524,10 +2522,8 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecs.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecUtils.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDFactoryCodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DllLibMad.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibMad.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLPcm.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h" />
@@ -2610,7 +2606,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ICodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ModplugCodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\MP3codec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\NSFCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\OggCallback.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\OGGcodec.h" />

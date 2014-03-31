@@ -51,8 +51,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squish", "..\..\lib\libsqui
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libStSoundLibrary_dll", "..\..\lib\stsound\StSoundLibrary\StSoundLibrary.vcxproj", "{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmad_dll", "..\..\lib\libmad\msvc++\libmad.vcxproj", "{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvgmstream_dll", "..\..\lib\vgmstream\win32\win32.vcxproj", "{3600E1C5-FECA-468C-83F3-FE467DBE2A66}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libNoseFartXBMC_dll", "..\..\lib\nosefart\NoseFartXBMC.vcxproj", "{17238C64-04D6-4B51-B205-4A5A84ADB9FA}"
