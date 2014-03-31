@@ -84,6 +84,7 @@ You need to install the following things:
 * Visual Studio 2012 (Express or Pro doesn't matter)
 * CMake
 * Git (I use the github client from windows.github.com)
+* DirectX 9 SDK
 
 Get the source via the client or download a release.
 
