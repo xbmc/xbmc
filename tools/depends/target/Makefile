@@ -9,7 +9,7 @@ DEPENDS = \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls libssh2 curl \
 	libjpeg-turbo tiff jasper libpng \
-	libogg libvorbis libflac libmad fribidi libmpeg2 \
+	libogg libvorbis libflac fribidi libmpeg2 \
 	libass libsamplerate \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python26 afpfs-ng libshairplay \
