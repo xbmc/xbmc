@@ -26,6 +26,10 @@ public:
 
   CPlexServerManager();
 
+  // This constructor is mainly used by tests, it inserts the server
+  // into the server map.
+  CPlexServerManager(const CPlexServerPtr& server);
+
   CPlexServerPtr GetBestServer() const
   {
     CSingleLock lk(m_serverManagerLock);

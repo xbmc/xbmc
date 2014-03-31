@@ -20,8 +20,8 @@
 
 using namespace std;
 
-void
-CPlexServerReachabilityThread::Process()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServerReachabilityThread::Process()
 {
   if (!g_plexApplication.serverManager)
     return;
@@ -34,6 +34,7 @@ CPlexServerReachabilityThread::Process()
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexServerManager::CPlexServerManager() : m_stopped(false)
 {
   CPlexConnectionPtr conn;
@@ -53,6 +54,12 @@ CPlexServerManager::CPlexServerManager() : m_stopped(false)
   _localServer->AddConnection(conn);
   _localServer->SetActiveConnection(conn);
 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexServerManager::CPlexServerManager(const CPlexServerPtr &server) : m_stopped(false)
+{
+  m_serverMap[server->GetUUID()] = server;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
