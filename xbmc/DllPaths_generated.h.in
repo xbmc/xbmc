@@ -69,7 +69,6 @@
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav-@ARCH@.so"
 #define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
-#define DLL_PATH_LIBMAD        "@MAD_SONAME@"
 
 /* cdrip */
 #define DLL_PATH_LAME_ENC      "@LAMEENC_SONAME@"
