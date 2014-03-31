@@ -296,8 +296,11 @@ void CGUIWindowPlexPreplayVideo::UpdateItem()
 
   m_vecItems->SetProperty("PlexPreplay", "yes");
 
-  g_plexApplication.m_preplayItem = m_vecItems->Get(0);
-  g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems->Get(0));
+  if (m_vecItems->Size() > 0 && m_vecItems->Get(0))
+  {
+    g_plexApplication.m_preplayItem = m_vecItems->Get(0);
+    g_plexApplication.themeMusicPlayer->playForItem(*m_vecItems->Get(0));
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
