@@ -46,6 +46,7 @@ public:
   CStdString toString() const;
 
   bool HasActiveLocalConnection() const;
+  CPlexConnectionPtr GetLocalConnection() const;
   void MarkAsRefreshing();
   bool MarkUpdateFinished(int connType);
 

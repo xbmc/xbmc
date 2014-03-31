@@ -125,6 +125,22 @@ CPlexServer::HasActiveLocalConnection() const
   return (m_activeConnection != NULL && m_activeConnection->IsLocal());
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CPlexConnectionPtr CPlexServer::GetLocalConnection() const
+{
+  if (HasActiveLocalConnection())
+    return m_activeConnection;
+
+  CSingleLock lk(m_serverLock);
+  BOOST_FOREACH(CPlexConnectionPtr connection, m_connections)
+  {
+    if (connection->IsLocal())
+      return connection;
+  }
+  return CPlexConnectionPtr();
+}
+
 void
 CPlexServer::MarkAsRefreshing()
 {
