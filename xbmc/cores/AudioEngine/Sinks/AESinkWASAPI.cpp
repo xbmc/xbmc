@@ -545,6 +545,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   CAEChannelInfo       deviceChannels;
   LPWSTR               pwszID = NULL;
   std::wstring         wstrDDID;
+  bool                 add192 = false;
 
   WAVEFORMATEXTENSIBLE wfxex = {0};
   HRESULT              hr;
@@ -677,6 +678,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
           CLog::Log(LOGNOTICE, __FUNCTION__": data format \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::DataFormatToStr(AE_FMT_DTSHD), strFriendlyName.c_str());
 
         deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_DTSHD));
+        add192 = true;
       }
 
       /* Test format Dolby TrueHD */
@@ -688,6 +690,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
           CLog::Log(LOGNOTICE, __FUNCTION__": data format \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::DataFormatToStr(AE_FMT_TRUEHD), strFriendlyName.c_str());
 
         deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_TRUEHD));
+        add192 = true;
       }
 
       /* Test format Dolby EAC3 */
@@ -702,6 +705,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
           CLog::Log(LOGNOTICE, __FUNCTION__": data format \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::DataFormatToStr(AE_FMT_EAC3), strFriendlyName.c_str());
 
         deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_EAC3));
+        add192 = true;
       }
 
       /* Test format DTS */
@@ -786,6 +790,11 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
         if (SUCCEEDED(hr))
           deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+        else if (wfxex.Format.nSamplesPerSec == 192000 && add192)
+        {
+          deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+          CLog::Log(LOGNOTICE, __FUNCTION__": sample rate 192khz on device \"%s\" seems to be not supported.", strFriendlyName.c_str());
+        }
       }
 
       /* Test format for channels iteration */
