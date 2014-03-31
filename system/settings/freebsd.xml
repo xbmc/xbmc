@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
-
+  <section id="system">
+    <category id="videoscreen">
+      <group id="3">
+        <setting id="videoscreen.vsync">
+          <default>3</default> <!-- VSYNC_DRIVER -->
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>
