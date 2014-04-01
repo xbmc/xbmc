@@ -174,3 +174,12 @@ CStdString CPlexFile::GetMimeType(const CURL& url)
   CStdString extension = URIUtils::GetExtension(path);
   return CMime::GetMimeType(extension);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+int CPlexFile::IoControl(EIoControl request, void* param)
+{
+  if ( (request == IOCTRL_SEEK_POSSIBLE) && (boost::starts_with(m_url, ":/transcode")) )
+    return 1;
+  else
+    return CCurlFile::IoControl(request, param);
+}

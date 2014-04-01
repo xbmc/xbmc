@@ -196,27 +196,64 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
 {
   bool isLocal = server->GetActiveConnection()->IsLocal();
 
-  bool hlsStreaming = !g_advancedSettings.m_bUseMatroskaTranscodes;
-
-  CPlexServerVersion serverVersion(server->GetVersion());
-  CPlexServerVersion needVersion("0.9.9.7.435-abc123");
-  if (!hlsStreaming && (needVersion > serverVersion))
-    hlsStreaming = true;
-
   CURL tURL;
-  if (hlsStreaming)
-    /* Note that we are building a HTTP URL here, because XBMC will pass the
-     * URL directly to FFMPEG, and as we all know, ffmpeg doesn't handle
-     * plexserver:// protocol */
-    tURL = server->BuildURL("/video/:/transcode/universal/start.m3u8");
-  else
-    tURL = server->BuildPlexURL("/video/:/transcode/universal/start.mkv");
+
+  switch (getServerTranscodeMode(server))
+  {
+    case PLEX_TRANSCODE_MODE_HLS:
+    {
+      tURL = server->BuildURL("/video/:/transcode/universal/start.m3u8");
+      tURL.SetOption("protocol", "hls");
+      tURL.SetOption("fastSeek", "1");
+
+      /* since we are passing the URL to FFMPEG we need to pass our
+       * headers as well */
+      std::vector<stringPair> hdrs = XFILE::CPlexFile::GetHeaderList();
+      BOOST_FOREACH(stringPair p, hdrs)
+      {
+        // Let's ignore X-Plex-Client-Capabilities, ffmpeg is cranky about {}
+        if (p.first == "X-Plex-Client-Capabilities")
+          continue;
+
+        tURL.SetOption(p.first, p.second);
+      }
+      break;
+    }
+
+    case PLEX_TRANSCODE_MODE_MKV:
+    {
+      tURL = server->BuildPlexURL("/video/:/transcode/universal/start.mkv");
+      tURL.SetOption("protocol", "http");
+      tURL.SetOption("copyts", "1");
+
+      if (item.HasProperty("viewOffset") &&
+          item.m_lStartOffset == STARTOFFSET_RESUME)
+      {
+        int offset = item.GetProperty("viewOffset").asInteger() / 1000;
+        tURL.SetOption("offset", boost::lexical_cast<std::string>(offset));
+      }
+      else if (item.HasProperty("viewOffsetSeek"))
+      {
+        // Here we handle seek offset for Matroska seeking
+        // Define transcoder start point
+        int offset = item.GetProperty("viewOffsetSeek").asInteger() / 1000;
+        tURL.SetOption("offset", boost::lexical_cast<std::string>(offset));
+      }
+      break;
+    }
+
+    default:
+    {
+      CLog::Log(LOGERROR,"CPlexTranscoderClient::GetTranscodeURL : item Transcode mode is unknown");
+      break;
+    }
+  }
 
   tURL.SetOption("path", item.GetProperty("unprocessed_key").asString());
   tURL.SetOption("session", g_guiSettings.GetString("system.uuid"));
-  tURL.SetOption("protocol", hlsStreaming ? "hls" : "http");
   tURL.SetOption("directPlay", "0");
   tURL.SetOption("directStream", "1");
+
 
   CFileItemPtr mediaItem = CPlexMediaDecisionEngine::getSelectedMediaItem(item);
   if (mediaItem)
@@ -225,17 +262,6 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
   if (mediaItem->m_selectedMediaPart)
     tURL.SetOption("partIndex", mediaItem->m_selectedMediaPart->GetProperty("partIndex").asString());
   
-  if (hlsStreaming)
-  {
-    tURL.SetOption("fastSeek", "1");
-  }
-  else if (item.HasProperty("viewOffset") &&
-           item.m_lStartOffset == STARTOFFSET_RESUME)
-  {
-    int offset = item.GetProperty("viewOffset").asInteger() / 1000;
-    tURL.SetOption("offset", boost::lexical_cast<std::string>(offset));
-  }
-
   std::string bitrate = GetInstance()->GetCurrentBitrate(isLocal);
   tURL.SetOption("maxVideoBitrate", bitrate);
   tURL.SetOption("videoQuality", _qualities[bitrate]);
@@ -254,21 +280,6 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
     }
   }
   
-  /* since we are passing the URL to FFMPEG we need to pass our 
-   * headers as well */
-  if (hlsStreaming)
-  {
-    std::vector<stringPair> hdrs = XFILE::CPlexFile::GetHeaderList();
-    BOOST_FOREACH(stringPair p, hdrs)
-    {
-      // Let's ignore X-Plex-Client-Capabilities, ffmpeg is cranky about {}
-      if (p.first == "X-Plex-Client-Capabilities")
-        continue;
-
-      tURL.SetOption(p.first, p.second);
-    }
-  }
-  
   return tURL;
 }
 
@@ -276,6 +287,32 @@ CURL CPlexTranscoderClient::GetTranscodeURL(CPlexServerPtr server, const CFileIt
 std::string CPlexTranscoderClient::GetCurrentSession()
 {
   return g_guiSettings.GetString("system.uuid");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+CPlexTranscoderClient::PlexTranscodeMode CPlexTranscoderClient::getServerTranscodeMode(const CPlexServerPtr& server)
+{
+  if (!server)
+    return PLEX_TRANSCODE_MODE_UNKNOWN;
+
+  if (g_advancedSettings.m_bUseMatroskaTranscodes)
+  {
+    CPlexServerVersion serverVersion(server->GetVersion());
+    CPlexServerVersion needVersion("0.9.9.7.435-abc123");
+    if (serverVersion > needVersion)
+      return PLEX_TRANSCODE_MODE_MKV;
+  }
+
+  // default to HLS
+  return PLEX_TRANSCODE_MODE_HLS;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+CPlexTranscoderClient::PlexTranscodeMode CPlexTranscoderClient::getItemTranscodeMode(const CFileItem& item)
+{
+  CFileItemPtr pItem(new CFileItem(item));
+  CPlexServerPtr pServer = g_plexApplication.serverManager->FindFromItem(pItem);
+  return getServerTranscodeMode(pServer);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

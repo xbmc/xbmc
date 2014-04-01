@@ -19,16 +19,30 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
 #include "PlexApplication.h"
+#include "AdvancedSettings.h"
 
 bool CPlexMediaDecisionEngine::BlockAndResolve(const CFileItem &item, CFileItem &resolvedItem)
 {
-  if (item.GetProperty("isResolved").asBoolean())
-  {
-    resolvedItem = item;
-    return true;
-  }
 
   m_item = item;
+
+  // if we are trasnscoding (Matroska), then we want to rebuild the trasncoding url for seeking
+  if (m_item.GetProperty("plexDidTranscode").asBoolean())
+  {
+    CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(item.GetProperty("plexserver").asString());
+
+    if ( (CPlexTranscoderClient::getServerTranscodeMode(server) == CPlexTranscoderClient::PLEX_TRANSCODE_MODE_MKV) )
+    {
+      CStdString transcodeURL = CPlexTranscoderClient::GetTranscodeURL(server, m_item).Get();
+      m_item.SetPath(transcodeURL);
+    }
+  }
+
+  if (item.GetProperty("isResolved").asBoolean())
+  {
+    resolvedItem = m_item;
+    return true;
+  }
 
   m_done.Reset();
   Create();

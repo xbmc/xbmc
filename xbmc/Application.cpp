@@ -4252,6 +4252,19 @@ bool CApplication::PlayFile(const CFileItem& item_, bool bRestart)
       newItem.m_lStartOffset = item.m_lStartOffset;
       newItem.m_lEndOffset = item.m_lEndOffset;
 
+      // Matroska seeking check
+      if (CPlexTranscoderClient::getItemTranscodeMode(item) == CPlexTranscoderClient::PLEX_TRANSCODE_MODE_MKV)
+      {
+        if (item.HasProperty("viewOffsetSeek"))
+        {
+          // for Matroska seeking, redefine viewOffset from seeeking value and update item offset
+          int64_t offsetSeek = item.GetProperty("viewOffsetSeek").asInteger();
+
+          newItem.SetProperty("viewOffset", offsetSeek);
+          newItem.m_lStartOffset = item.m_lStartOffset = ((offsetSeek / 10) - newItem.m_lEndOffset) * 0.75;
+        }
+      }
+
       item = newItem;
 
       if (!m_itemCurrentFile->IsStack())
@@ -4734,6 +4747,17 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 
   /* PLEX */
+  // define here viewOffsetSeek for Matroska transcoding seek & restart media
+  if (CurrentFileItemPtr())
+  {
+    if (CPlexTranscoderClient::getItemTranscodeMode(*CurrentFileItemPtr()) == CPlexTranscoderClient::PLEX_TRANSCODE_MODE_MKV)
+    {
+      CurrentFileItemPtr()->SetProperty("viewOffsetSeek",iTime);
+      CApplicationMessenger::Get().MediaRestart(false);
+    }
+  }
+  
+
   UpdateFileState("", true);
   /* END PLEX */
 }
@@ -5756,7 +5780,7 @@ void CApplication::Restart(bool bSamePosition)
   /* END PLEX */
 
   // do we want to return to the current position in the file
-  if (false == bSamePosition)
+  if ((false == bSamePosition) && (CPlexTranscoderClient::getItemTranscodeMode(*m_itemCurrentFile) != CPlexTranscoderClient::PLEX_TRANSCODE_MODE_MKV))
   {
     // no, then just reopen the file and start at the beginning
     PlayFile(*m_itemCurrentFile, true);

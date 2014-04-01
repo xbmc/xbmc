@@ -25,6 +25,14 @@ private:
     static CPlexTranscoderClient *_Instance;
 
 public:
+    
+    enum PlexTranscodeMode
+    {
+      PLEX_TRANSCODE_MODE_UNKNOWN = 0,
+      PLEX_TRANSCODE_MODE_HLS = 1,
+      PLEX_TRANSCODE_MODE_MKV = 2
+    };
+
   CPlexTranscoderClient() {}
   static CPlexTranscoderClient *GetInstance();
   static void DeleteInstance();
@@ -37,6 +45,8 @@ public:
   static PlexIntStringMap getOnlineQualties();
   static int SelectAOnlineQuality(int currentQuality);
   static int getBandwidthForQuality(int quality);
+  static PlexTranscodeMode getServerTranscodeMode(const CPlexServerPtr& server);
+  static PlexTranscodeMode getItemTranscodeMode(const CFileItem& item);
 };
 
 #endif /* defined(__Plex_Home_Theater__PlexTranscoderClient__) */
