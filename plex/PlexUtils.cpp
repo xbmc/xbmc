@@ -650,9 +650,9 @@ void PlexUtils::LogStackTrace(char *FuncName) {}
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-ePlexMediaType PlexUtils::GetMediaTypeFromItem(CFileItemPtr item)
+ePlexMediaType PlexUtils::GetMediaTypeFromItem(const CFileItem& item)
 {
-  EPlexDirectoryType plexType = item->GetPlexDirectoryType();
+  EPlexDirectoryType plexType = item.GetPlexDirectoryType();
 
   switch(plexType)
   {
@@ -674,6 +674,12 @@ ePlexMediaType PlexUtils::GetMediaTypeFromItem(CFileItemPtr item)
     default:
       return PLEX_MEDIA_TYPE_UNKNOWN;
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+ePlexMediaType PlexUtils::GetMediaTypeFromItem(CFileItemPtr item)
+{
+  return GetMediaTypeFromItem(*(item.get()));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

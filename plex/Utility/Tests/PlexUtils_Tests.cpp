@@ -111,3 +111,34 @@ TEST(PlexUtilsGetPrettyStreamNameFromStreamItem, audioUnknownLang)
   item->SetProperty("channels", "6");
   EXPECT_STREQ(PlexUtils::GetPrettyStreamNameFromStreamItem(item), "Unknown (AC3 5.1)");
 }
+
+#define EXPECT_TYPE(a, b)                                                                          \
+  {                                                                                                \
+    CFileItem item;                                                                                \
+    item.SetPlexDirectoryType(a);                                                                  \
+    EXPECT_EQ(PlexUtils::GetMediaTypeFromItem(item), b);                                           \
+  }
+
+TEST(PlexUtilsGetMediaTypeFromItem, music)
+{
+  EXPECT_TYPE(PLEX_DIR_TYPE_ALBUM, PLEX_MEDIA_TYPE_MUSIC);
+  EXPECT_TYPE(PLEX_DIR_TYPE_ARTIST, PLEX_MEDIA_TYPE_MUSIC);
+  EXPECT_TYPE(PLEX_DIR_TYPE_TRACK, PLEX_MEDIA_TYPE_MUSIC);
+}
+
+TEST(PlexUtilsGetMediaTypeFromItem, video)
+{
+  EXPECT_TYPE(PLEX_DIR_TYPE_VIDEO, PLEX_MEDIA_TYPE_VIDEO);
+  EXPECT_TYPE(PLEX_DIR_TYPE_EPISODE, PLEX_MEDIA_TYPE_VIDEO);
+  EXPECT_TYPE(PLEX_DIR_TYPE_CLIP, PLEX_MEDIA_TYPE_VIDEO);
+  EXPECT_TYPE(PLEX_DIR_TYPE_MOVIE, PLEX_MEDIA_TYPE_VIDEO);
+  EXPECT_TYPE(PLEX_DIR_TYPE_SEASON, PLEX_MEDIA_TYPE_VIDEO);
+  EXPECT_TYPE(PLEX_DIR_TYPE_SHOW, PLEX_MEDIA_TYPE_VIDEO);
+}
+
+TEST(PlexUtilsGetMediaTypeFromItem, photo)
+{
+  EXPECT_TYPE(PLEX_DIR_TYPE_IMAGE, PLEX_MEDIA_TYPE_PHOTO);
+  EXPECT_TYPE(PLEX_DIR_TYPE_PHOTO, PLEX_MEDIA_TYPE_PHOTO);
+  EXPECT_TYPE(PLEX_DIR_TYPE_PHOTOALBUM, PLEX_MEDIA_TYPE_PHOTO);
+}
