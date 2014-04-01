@@ -92,30 +92,30 @@ void CPlayQueueManager::getPlayQueue(CPlexServerPtr server, int id)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CStdString CPlayQueueManager::getURIFromItem(const CFileItemPtr& item)
+CStdString CPlayQueueManager::getURIFromItem(const CFileItem& item)
 {
-  if (!item)
+  if (item.GetPath().empty())
     return "";
 
-  CURL u(item->GetPath());
+  CURL u(item.GetPath());
 
   if (u.GetProtocol() != "plexserver")
     return "";
 
   CStdString itemDirStr = "item";
-  if (item->m_bIsFolder)
+  if (item.m_bIsFolder)
     itemDirStr = "directory";
 
-  if (!item->HasProperty("librarySectionUUID"))
+  if (!item.HasProperty("librarySectionUUID"))
   {
     CLog::Log(LOGWARNING, "CPlayQueueManager::getURIFromItem item %s doesn't have a section UUID",
-              item->GetPath().c_str());
+              item.GetPath().c_str());
     return "";
   }
 
   CStdString ret;
-  ret.Format("library://%s/%s/%s", item->GetProperty("librarySectionUUID").asString(), itemDirStr,
-             CURL::Encode(item->GetProperty("unprocessed_key").asString()));
+  ret.Format("library://%s/%s/%s", item.GetProperty("librarySectionUUID").asString(), itemDirStr,
+             CURL::Encode(item.GetProperty("unprocessed_key").asString()));
 
   return ret;
 }
@@ -132,7 +132,7 @@ bool CPlayQueueManager::createPlayQueueFromItem(const CPlexServerPtr& server,
   if (type == PLEX_MEDIA_TYPE_UNKNOWN)
     return false;
 
-  std::string containerPath = getURIFromItem(item);
+  std::string containerPath = getURIFromItem(*item.get());
   std::string key;
 
   if (!item->m_bIsFolder)

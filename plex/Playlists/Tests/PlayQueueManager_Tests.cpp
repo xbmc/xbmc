@@ -7,21 +7,21 @@
 
 #include "PlayListPlayer.h"
 
-static CFileItemPtr getURIItem()
+static const CFileItem& getURIItem()
 {
-  CFileItemPtr item(new CFileItem);
+  CFileItem* item = new CFileItem;
   item->SetPath("plexserver://abc123/library/sections/2/all");
   item->SetProperty("plexserver", "abc123");
   item->SetProperty("unprocessed_key", "/library/sections/2/all");
   item->SetProperty("librarySectionUUID", "sectionUUID");
   item->m_bIsFolder = true;
   item->SetPlexDirectoryType(PLEX_DIR_TYPE_ALBUM);
-  return item;
+  return *item;
 }
 
 TEST(PlayQueueManagerGetURIFromItem, constructDirectoryURL)
 {
-  CFileItemPtr item = getURIItem();
+  CFileItem item = getURIItem();
 
   CStdString uri = CPlayQueueManager::getURIFromItem(item);
   EXPECT_STREQ(uri, "library://sectionUUID/directory/%2flibrary%2fsections%2f2%2fall");
@@ -29,22 +29,22 @@ TEST(PlayQueueManagerGetURIFromItem, constructDirectoryURL)
 
 TEST(PlayQueueManagerGetURIFromItem, constructItemURL)
 {
-  CFileItemPtr item = getURIItem();
-  item->m_bIsFolder = false;
+  CFileItem item = getURIItem();
+  item.m_bIsFolder = false;
   CStdString uri = CPlayQueueManager::getURIFromItem(item);
   EXPECT_STREQ(uri, "library://sectionUUID/item/%2flibrary%2fsections%2f2%2fall");
 }
 
 TEST(PlayQueueManagerGetURIFromItem, badFileItem)
 {
-  CStdString uri = CPlayQueueManager::getURIFromItem(CFileItemPtr());
+  CStdString uri = CPlayQueueManager::getURIFromItem(CFileItem());
   EXPECT_TRUE(uri.empty());
 }
 
 TEST(PlayQueueManagerGetURIFromItem, missingLibrarySectionUUID)
 {
-  CFileItemPtr item = getURIItem();
-  item->ClearProperty("librarySectionUUID");
+  CFileItem item = getURIItem();
+  item.ClearProperty("librarySectionUUID");
 
   CStdString uri = CPlayQueueManager::getURIFromItem(item);
   EXPECT_STREQ(uri, "");
@@ -52,8 +52,8 @@ TEST(PlayQueueManagerGetURIFromItem, missingLibrarySectionUUID)
 
 TEST(PlayQueueManagerGetURIFromItem, badProtocol)
 {
-  CFileItemPtr item = getURIItem();
-  item->SetPath("file://foobaar");
+  CFileItem item = getURIItem();
+  item.SetPath("file://foobaar");
   EXPECT_TRUE(CPlayQueueManager::getURIFromItem(item).empty());
 }
 
