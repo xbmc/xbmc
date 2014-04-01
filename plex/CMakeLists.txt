@@ -102,17 +102,19 @@ ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 add_library(PlexMain OBJECT ${PLEX_ALL_SRCS})
 
 # build test cases
-get_property(TEST_CASES GLOBAL PROPERTY PLEX_TEST_CASES)
-foreach(cases ${TEST_CASES})
-  message(STATUS "Adding test case ${cases}")
-  list(APPEND TEST_CASES_OBJS $<TARGET_OBJECTS:${cases}>)
-endforeach(cases ${TEST_CASES})
-add_executable(PlexHomeTheaterTests ${TEST_CASES_OBJS} $<TARGET_OBJECTS:xbmctest> $<TARGET_OBJECTS:PlexMain>)
-target_link_libraries(PlexHomeTheaterTests xbmc pcre gtest ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
-add_test(PlexHomeTheaterTests ${EXECUTABLE_OUTPUT_PATH}/PlexHomeTheaterTests --gtest_output=xml:${CMAKE_CURRENT_BINARY_DIR}/PlexHomeTheaterTests.xml --gtest_color=yes)
+if(ENABLE_TESTING)
+  get_property(TEST_CASES GLOBAL PROPERTY PLEX_TEST_CASES)
+  foreach(cases ${TEST_CASES})
+    message(STATUS "Adding test case ${cases}")
+    list(APPEND TEST_CASES_OBJS $<TARGET_OBJECTS:${cases}>)
+  endforeach(cases ${TEST_CASES})
+  add_executable(PlexHomeTheaterTests ${TEST_CASES_OBJS} $<TARGET_OBJECTS:xbmctest> $<TARGET_OBJECTS:PlexMain>)
+  target_link_libraries(PlexHomeTheaterTests xbmc pcre gtest ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
+  add_test(PlexHomeTheaterTests ${EXECUTABLE_OUTPUT_PATH}/PlexHomeTheaterTests --gtest_output=xml:${CMAKE_CURRENT_BINARY_DIR}/PlexHomeTheaterTests.xml --gtest_color=yes)
 
-add_custom_target(all_tests DEPENDS PlexHomeTheaterTests)
-add_custom_target(run_tests COMMAND ${CMAKE_CTEST_COMMAND} -V DEPENDS all_tests)
+  add_custom_target(all_tests DEPENDS PlexHomeTheaterTests)
+  add_custom_target(run_tests COMMAND ${CMAKE_CTEST_COMMAND} -V DEPENDS all_tests)
+endif(ENABLE_TESTING)
 
 find_program(LIZARD lizard HINTS /usr/local/bin)
 if(NOT LIZARD MATCHES "-NOTFOUND")
@@ -166,7 +168,6 @@ endif(ENABLE_PYTHON)
 
 
 # find all image files in the skin
-file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
 file(GLOB MEDIA_IMAGES_PLEX_SKIN ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)
 
 if(COMPRESS_TEXTURES)
@@ -184,29 +185,16 @@ if(COMPRESS_TEXTURES)
   endif(TEXTUREPACKERPATH)
 
   add_custom_command(
-    OUTPUT Textures_MediaStream.xbt
-    COMMAND ${TEXTUREPACKER_EXE} -input ${root}/addons/skin.mediastream/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt
-    MAIN_DEPENDENCY ${MEDIA_IMAGES_MEDIASTREAM}
+    OUTPUT Textures_Plex.xbt
+    COMMAND ${TEXTUREPACKER_EXE} -input ${root}/addons/skin.plex/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt
+    MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX_SKIN}
     DEPENDS TexturePacker
     WORKING_DIRECTORY ${WORKDIR}
   )
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
+  add_custom_target(CompressTextures ALL DEPENDS Textures_Plex.xbt)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/addons/skin.plex/Media RENAME Textures.xbt COMPONENT RUNTIME)
 
-  if(ENABLE_NEW_SKIN)
-    add_custom_command(
-      OUTPUT Textures_Plex.xbt
-      COMMAND ${TEXTUREPACKER_EXE} -input ${root}/addons/skin.plex/Media -output ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt
-      MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX_SKIN}
-      DEPENDS TexturePacker
-      WORKING_DIRECTORY ${WORKDIR}
-    )
-    add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt Textures_Plex.xbt)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/addons/skin.plex/Media RENAME Textures.xbt COMPONENT RUNTIME)
-  else(ENABLE_NEW_SKIN)
-    add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
-  endif(ENABLE_NEW_SKIN)
-
-  set(EXCLUDE_TEXTURES "skin.(mediastream|plex)/Media/*")
+  set(EXCLUDE_TEXTURES "skin.plex/Media/*")
 else()
   set(EXCLUDE_TEXTURES ^foo)
 endif()
@@ -240,16 +228,9 @@ install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN peripherals.xml EXCLUDE)
 
 
-if(NOT ENABLE_NEW_SKIN)
-  set(EXCLUDE_NEW_SKIN skin.plex)
-else(NOT ENABLE_NEW_SKIN)
-  set(EXCLUDE_NEW_SKIN ^foo)
-endif(NOT ENABLE_NEW_SKIN)
-
 install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN skin.confluence EXCLUDE
         PATTERN skin.touched EXCLUDE
-        PATTERN ${EXCLUDE_NEW_SKIN} EXCLUDE
         REGEX screensaver.rsxs* EXCLUDE
         REGEX library.* EXCLUDE
         REGEX metadata.* EXCLUDE
