@@ -975,3 +975,12 @@ msgstr "Allow Plex collect anonymous data to improve your experience"
 msgctxt "#52505"
 msgid "Hide CloudSync sections"
 msgstr "Hide CloudSync sections"
+
+msgctxt "#52600"
+msgid "Shuffle all"
+msgstr "Shuffle all"
+
+msgctxt "#52601"
+msgid "Play all"
+msgstr "Play all"
+

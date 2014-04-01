@@ -732,7 +732,7 @@ bool CGUIPlexMediaWindow::OnPlayMedia(int iItem)
   }
 
   if (IsMusicContainer())
-    QueueItems(*m_vecItems, item);
+    PlayAll(false, item);
   else if (IsPhotoContainer())
     CApplicationMessenger::Get().PictureSlideShow(m_vecItems->GetPath(), false, item->GetPath());
   else
@@ -758,11 +758,11 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
     }
   }
 
-  if (item->CanQueue())
-  {
-    buttons.Add(CONTEXT_BUTTON_SHUFFLE, 191);
-    buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);
-  }
+  buttons.Add(CONTEXT_BUTTON_SHUFFLE, 52600);
+  buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 52601);
+
+  if (!item->m_bIsFolder && item->CanQueue())
+    buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
 
   if (IsVideoContainer() && item->IsPlexMediaServerLibrary())
   {
@@ -807,12 +807,22 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
        break;
     }
     case CONTEXT_BUTTON_SHUFFLE:
-      ShuffleItem(item);
+    {
+      PlayAll(true);
       break;
+    }
 
-    case CONTEXT_BUTTON_QUEUE_ITEM:
-      QueueItem(item);
+    case CONTEXT_BUTTON_PLAY_PARTYMODE:
+    {
+      PlayAll(false);
       break;
+    }
+
+    case CONTEXT_BUTTON_PLAY_AND_QUEUE:
+    {
+      PlayAll(false, item);
+      break;
+    }
 
     case CONTEXT_BUTTON_MARK_WATCHED:
     case CONTEXT_BUTTON_MARK_UNWATCHED:
@@ -847,90 +857,27 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexMediaWindow::ShuffleItem(CFileItemPtr item)
+void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
 {
-  int currentPlaylist = ContainerPlaylistType();
-  if (currentPlaylist == PLAYLIST_NONE)
-    return;
+  CPlexServerPtr server;
+  if (m_vecItems->HasProperty("plexServer"))
+    server = g_plexApplication.serverManager->FindByUUID(m_vecItems->GetProperty("plexServer").asString());
 
-  CApplicationMessenger &appMsg = CApplicationMessenger::Get();
-
-  appMsg.MediaStop();
-  appMsg.PlayListPlayerClear(currentPlaylist);
-
-  if (!item->m_bIsFolder)
-    appMsg.PlayListPlayerAdd(currentPlaylist, *m_vecItems);
-  else
+  if (server)
   {
-    XFILE::CPlexDirectory dir;
-    CFileItemList list;
-    dir.GetDirectory(item->GetPath(), list);
-    appMsg.PlayListPlayerAdd(currentPlaylist, list);
-  }
+    CStdString fromHereKey;
+    if (fromHere)
+      fromHereKey = fromHere->GetProperty("unprocessed_key").asString();
 
-  appMsg.PlayListPlayerShuffle(currentPlaylist, true);
-  appMsg.MediaPlay(currentPlaylist);
-}
+    CStdString uri = CPlayQueueManager::getURIFromItem(*m_vecItems);
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexMediaWindow::QueueItem(CFileItemPtr item)
-{
-  int currentPlaylist = ContainerPlaylistType();
-  if (currentPlaylist == PLAYLIST_NONE)
-    return;
-
-  CApplicationMessenger &appMsg = CApplicationMessenger::Get();
-
-  if ((IsVideoContainer() && !g_application.IsPlayingVideo()) ||
-      (IsMusicContainer() && !g_application.IsPlayingAudio()))
-    appMsg.PlayListPlayerClear(currentPlaylist);
-
-  if(item->m_bIsFolder)
-  {
-    XFILE::CPlexDirectory dir;
-    CFileItemList list;
-    dir.GetDirectory(item->GetPath(), list);
-    appMsg.PlayListPlayerAdd(currentPlaylist, list);
-  }
-  else
-  {
-    appMsg.PlayListPlayerAdd(currentPlaylist, *item.get());
-  }
-
-  if ((IsVideoContainer() && !g_application.IsPlayingVideo()) ||
-      (IsMusicContainer() && !g_application.IsPlayingAudio()))
-  {
-    appMsg.MediaStop(true);
-    appMsg.MediaPlay(currentPlaylist);
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIPlexMediaWindow::QueueItems(const CFileItemList &list, CFileItemPtr startItem)
-{
-  int currentPlaylist = ContainerPlaylistType();
-  if (currentPlaylist == PLAYLIST_NONE)
-    return;
-
-  CApplicationMessenger &appMsg = CApplicationMessenger::Get();
-  appMsg.PlayListPlayerClear(currentPlaylist);
-  appMsg.PlayListPlayerAdd(currentPlaylist, list);
-  appMsg.MediaStop(true);
-
-  bool found = false;
-  int idx = 0;
-  if (startItem)
-  {
-    for (; idx < list.Size(); idx++)
+    if (g_plexApplication.playQueueManager->createPlayQueue(server,
+                                                            PlexUtils::GetMediaTypeFromItem(*m_vecItems),
+                                                            uri, fromHereKey, shuffle))
     {
-      if (list.Get(idx)->GetPath() == startItem->GetPath())
-      {
-        found = true;
-        break;
-      }
+      // error
     }
   }
-  appMsg.MediaPlay(currentPlaylist, found ? idx : 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
