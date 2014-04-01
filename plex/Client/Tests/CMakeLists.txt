@@ -1,1 +1,2 @@
 plex_add_testcase(PlexServer_Tests.cpp)
+plex_add_testcase(PlexServerVersion_Tests.cpp)

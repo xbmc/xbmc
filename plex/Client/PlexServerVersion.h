@@ -23,11 +23,7 @@ public:
   friend bool operator >(const CPlexServerVersion& version,
                          const CPlexServerVersion& otherVersion)
   {
-    return (version.major > otherVersion.major ||
-            version.minor > otherVersion.minor ||
-            version.micro > otherVersion.micro ||
-            version.patch > otherVersion.patch ||
-            version.build > otherVersion.build);
+    return !(version < otherVersion);
   }
 
   friend bool operator <(const CPlexServerVersion& version,
