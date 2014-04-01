@@ -1,7 +1,7 @@
 include ../../depends/Makefile.include
 
 OBJS = libcurl.so \
-  librtmp.so  libmad.so \
+  librtmp.so \
   libafpclient.so  \
   libplist.so libshairplay.so \
   libxbogg.so libxbvorbis.so libxbvorbisfile.so libxbFLAC.so libxbmpeg2.so \
