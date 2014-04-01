@@ -3,6 +3,7 @@
 
 #include "FileItem.h"
 #include "Job.h"
+#include "playlists/PlayList.h"
 
 class CPlayQueueManager : public IJobCallback
 {
@@ -21,12 +22,17 @@ public:
                              const std::string& uri, const std::string& key = "",
                              bool shuffle = false, bool continuous = false, int limit = 0);
 
-  int getPlaylistFromString(const CStdString &typeStr);
+  int getPlaylistFromString(const CStdString& typeStr);
 
   void refreshPlayQueue(const CFileItemPtr& item);
+  void reconcilePlayQueueChanges(int playlistType, const CFileItemList& list);
+
+  int getPlaylistFromType(ePlexMediaType type);
 
 private:
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
+  int m_currentPlayQueueId;
+  int m_currentPlayQueuePlaylist;
 };
 
 #endif // PLAYQUEUEMANAGER_H

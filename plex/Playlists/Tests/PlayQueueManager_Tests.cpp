@@ -57,11 +57,10 @@ TEST(PlayQueueManagerGetURIFromItem, badProtocol)
   EXPECT_TRUE(CPlayQueueManager::getURIFromItem(item).empty());
 }
 
-
 static CPlexServerPtr getServer()
 {
-  CPlexConnectionPtr connection = CPlexConnectionPtr(new CPlexConnection(
-      CPlexConnection::CONNECTION_MANUAL, "10.0.42.200", 32400, "http", "token"));
+  CPlexConnectionPtr connection = CPlexConnectionPtr(
+  new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "10.0.42.200", 32400, "http", "token"));
   CPlexServerPtr server = CPlexServerPtr(new CPlexServer(connection));
   server->SetUUID("abc123");
 
@@ -93,8 +92,8 @@ TEST(PlayQueueManagerGetCreatePlayQueueURL, limit)
   CPlexServerPtr server = getServer();
 
   CURL u = manager.getCreatePlayQueueURL(server, PLEX_MEDIA_TYPE_VIDEO,
-                                         "library://abc123/directory/library/sections/2/all", "korv",
-                                         true, false, 10);
+                                         "library://abc123/directory/library/sections/2/all",
+                                         "korv", true, false, 10);
 
   EXPECT_STREQ(u.GetOption("type"), "video");
   EXPECT_STREQ(u.GetOption("shuffle"), "1");
@@ -115,22 +114,93 @@ TEST(PlayQueueManagerGetCreatePlayQueueURL, haveKey)
   EXPECT_STREQ(u.GetOption("key"), "item");
 }
 
-TEST(CPlayQueueManagerGetPlaylistFromString, music)
+TEST(CPlayQueueManagerGetPlaylistFromString, basic)
 {
   EXPECT_EQ(PLAYLIST_MUSIC, manager.getPlaylistFromString("audio"));
-}
-
-TEST(CPlayQueueManagerGetPlaylistFromString, video)
-{
   EXPECT_EQ(PLAYLIST_VIDEO, manager.getPlaylistFromString("video"));
-}
-
-TEST(CPlayQueueManagerGetPlaylistFromString, picture)
-{
   EXPECT_EQ(PLAYLIST_PICTURE, manager.getPlaylistFromString("photo"));
+  EXPECT_EQ(PLAYLIST_NONE, manager.getPlaylistFromString("bar"));
 }
 
-TEST(CPlayQueueManagerGetPlaylistFromString, invalid)
+#define newItem(list, a)                                                                           \
+  {                                                                                                \
+    CFileItemPtr item = CFileItemPtr(new CFileItem(a));                                            \
+    item->SetProperty("unprocessed_key", a);                                                       \
+    list.Add(item);                                                                                \
+  }
+
+TEST(CPlayQueueManagerReconcilePlayQueueChanges, basic)
 {
-  EXPECT_EQ(PLAYLIST_NONE, manager.getPlaylistFromString("bar"));
+  CFileItemList list;
+  newItem(list, "1");
+  newItem(list, "2");
+  newItem(list, "3");
+
+  g_playlistPlayer.Add(PLAYLIST_VIDEO, list);
+
+  // simulate a sliding window
+  // our list is now 2, 3, 4
+  list.Remove(0);
+  newItem(list, "4");
+
+  // reconcile changes and hope that the list
+  // will be 2, 3, 4 as expected
+  manager.reconcilePlayQueueChanges(PLAYLIST_VIDEO, list);
+
+  PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+  EXPECT_EQ(playlist.size(), 3);
+  EXPECT_STREQ(playlist[0]->GetProperty("unprocessed_key").asString().c_str(), "2");
+  EXPECT_STREQ(playlist[1]->GetProperty("unprocessed_key").asString().c_str(), "3");
+  EXPECT_STREQ(playlist[2]->GetProperty("unprocessed_key").asString().c_str(), "4");
+
+  g_playlistPlayer.Clear();
+}
+
+TEST(CPlayQueueManagerReconcilePlayQueueChanges, noMatching)
+{
+  CFileItemList list;
+  newItem(list, "1");
+
+  g_playlistPlayer.Add(PLAYLIST_VIDEO, list);
+
+  list.Clear();
+  newItem(list, "2");
+  newItem(list, "3");
+
+  manager.reconcilePlayQueueChanges(PLAYLIST_VIDEO, list);
+  PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+  EXPECT_EQ(playlist.size(), 2);
+  EXPECT_STREQ(playlist[0]->GetProperty("unprocessed_key").asString().c_str(), "2");
+  EXPECT_STREQ(playlist[1]->GetProperty("unprocessed_key").asString().c_str(), "3");
+
+  g_playlistPlayer.Clear();
+}
+
+TEST(CPlayQueueManagerReconcilePlayQueueChanges, gapInMiddle)
+{
+  CFileItemList list;
+  newItem(list, "1");
+  newItem(list, "2");
+  newItem(list, "3");
+  newItem(list, "4");
+
+  g_playlistPlayer.Add(PLAYLIST_VIDEO, list);
+
+  list.Remove(2);
+
+  manager.reconcilePlayQueueChanges(PLAYLIST_VIDEO, list);
+  PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+  EXPECT_EQ(playlist.size(), 3);
+  EXPECT_STREQ(playlist[0]->GetProperty("unprocessed_key").asString().c_str(), "1");
+  EXPECT_STREQ(playlist[1]->GetProperty("unprocessed_key").asString().c_str(), "2");
+  EXPECT_STREQ(playlist[2]->GetProperty("unprocessed_key").asString().c_str(), "4");
+
+  g_playlistPlayer.Clear();
+}
+
+TEST(CPlayQueueManagerGetPlaylistFromType, basic)
+{
+  EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_MUSIC), PLAYLIST_MUSIC);
+  EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_VIDEO), PLAYLIST_VIDEO);
+  EXPECT_EQ(manager.getPlaylistFromType(PLEX_MEDIA_TYPE_PHOTO), PLAYLIST_NONE);
 }
