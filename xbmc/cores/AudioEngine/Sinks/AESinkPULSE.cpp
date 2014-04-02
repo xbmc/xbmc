@@ -812,8 +812,8 @@ void CAESinkPULSE::SetVolume(float volume)
 {
   if (m_IsAllocated && !m_passthrough)
   {
-    // undo internal Engine pseudo gain calculation
-    float per_cent_volume = CAEUtil::GainToPercent(CAEUtil::ScaleToGain(volume));
+    // clamp possibly too large / low values
+    float per_cent_volume = std::max(0.0f, std::min(volume, 1.0f));
 
     pa_threaded_mainloop_lock(m_MainLoop);
     bool external_change = false;

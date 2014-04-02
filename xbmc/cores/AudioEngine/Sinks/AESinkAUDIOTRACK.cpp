@@ -217,9 +217,7 @@ void  CAESinkAUDIOTRACK::SetVolume(float scale)
   if (!m_at_jni)
     return;
 
-  // Android uses fixed steps, reverse scale back to percent
-  float gain = CAEUtil::ScaleToGain(scale);
-  m_volume = CAEUtil::GainToPercent(gain);
+  m_volume = scale;
   if (!m_passthrough)
   {
     CXBMCApp::SetSystemVolume(xbmc_jnienv(), m_volume);
