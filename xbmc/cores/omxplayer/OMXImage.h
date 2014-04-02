@@ -79,15 +79,15 @@ public:
   void DestroyTexture(void *userdata);
   void GetTexture(void *userdata, GLuint *texture);
 private:
-  EGLDisplay m_egl_display;
   EGLContext m_egl_context;
 
   void CreateContext();
+  EGLContext GetEGLContext();
   CCriticalSection               m_texqueue_lock;
   XbmcThreads::ConditionVariable m_texqueue_cond;
   std::queue <struct textureinfo *> m_texqueue;
-  void AllocTextureInternal(struct textureinfo *tex);
-  void DestroyTextureInternal(struct textureinfo *tex);
+  void AllocTextureInternal(EGLDisplay egl_display, EGLContext egl_context, struct textureinfo *tex);
+  void DestroyTextureInternal(EGLDisplay egl_display, EGLContext egl_context, struct textureinfo *tex);
 };
 
 class COMXImageFile
@@ -184,9 +184,9 @@ public:
 
   // Required overrides
   void Close(void);
-  bool Decode(const uint8_t *data, unsigned size, unsigned int width, unsigned int height, void *egl_image, void *egl_display);
+  bool Decode(const uint8_t *data, unsigned size, unsigned int width, unsigned int height, void *egl_image);
 protected:
-  bool HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, void *egl_image, void *egl_display, bool port_settings_changed);
+  bool HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, void *egl_image, bool port_settings_changed);
 
   // Components
   COMXCoreComponent m_omx_decoder;

@@ -57,6 +57,7 @@
 COMXImage::COMXImage()
 : CThread("CRBPWorker")
 {
+  m_egl_context = EGL_NO_CONTEXT;
 }
 
 COMXImage::~COMXImage()
@@ -195,7 +196,7 @@ bool COMXImage::CreateThumb(const CStdString& srcFile, unsigned int maxHeight, u
   return okay;
 }
 
-void COMXImage::AllocTextureInternal(struct textureinfo *tex)
+void COMXImage::AllocTextureInternal(EGLDisplay egl_display, EGLContext egl_context, struct textureinfo *tex)
 {
   glGenTextures(1, (GLuint*) &tex->texture);
   glBindTexture(GL_TEXTURE_2D, tex->texture);
@@ -205,7 +206,7 @@ void COMXImage::AllocTextureInternal(struct textureinfo *tex)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   GLenum type = CSettings::Get().GetBool("videoscreen.textures32") ? GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT_5_6_5;
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->width, tex->height, 0, GL_RGB, type, 0);
-  tex->egl_image = eglCreateImageKHR(m_egl_display, m_egl_context, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)tex->texture, NULL);
+  tex->egl_image = eglCreateImageKHR(egl_display, egl_context, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)tex->texture, NULL);
   tex->sync.Set();
   GLint m_result;
   CheckError();
@@ -217,7 +218,7 @@ void COMXImage::GetTexture(void *userdata, GLuint *texture)
   *texture = tex->texture;
 }
 
-void COMXImage::DestroyTextureInternal(struct textureinfo *tex)
+void COMXImage::DestroyTextureInternal(EGLDisplay egl_display, EGLContext egl_context, struct textureinfo *tex)
 {
   bool s = true;
   if (!tex->egl_image || !tex->texture)
@@ -225,7 +226,7 @@ void COMXImage::DestroyTextureInternal(struct textureinfo *tex)
     CLog::Log(LOGNOTICE, "%s: Invalid image/texture %p:%d", __func__, tex->egl_image, tex->texture);
     return;
   }
-  s = eglDestroyImageKHR(m_egl_display, tex->egl_image);
+  s = eglDestroyImageKHR(egl_display, tex->egl_image);
   if (!s)
     CLog::Log(LOGNOTICE, "%s: failed to destroy texture", __func__);
   glDeleteTextures(1, (GLuint*) &tex->texture);
@@ -241,7 +242,7 @@ void COMXImage::DestroyTexture(void *userdata)
   tex->sync.Reset();
   if ( g_application.IsCurrentThread() )
   {
-     DestroyTextureInternal(tex);
+     DestroyTextureInternal(g_Windowing.GetEGLDisplay(), GetEGLContext(), tex);
   }
   else
   {
@@ -281,7 +282,7 @@ bool COMXImage::DecodeJpegToTexture(COMXImageFile *file, unsigned int width, uns
   // wait for function to have finished (in texture thread)
   tex->sync.Wait();
 
-  if (tex->egl_image && tex->texture && omx_image.Decode(file->GetImageBuffer(), file->GetImageSize(), width, height, tex->egl_image, m_egl_display))
+  if (tex->egl_image && tex->texture && omx_image.Decode(file->GetImageBuffer(), file->GetImageSize(), width, height, tex->egl_image))
   {
     ret = true;
     *userdata = tex;
@@ -292,6 +293,16 @@ bool COMXImage::DecodeJpegToTexture(COMXImageFile *file, unsigned int width, uns
     DestroyTexture(tex);
   }
   return ret;
+}
+
+EGLContext COMXImage::GetEGLContext()
+{
+  CSingleLock lock(m_texqueue_lock);
+  if (g_application.IsCurrentThread())
+    return g_Windowing.GetEGLContext();
+  if (m_egl_context == EGL_NO_CONTEXT)
+    CreateContext();
+  return m_egl_context;
 }
 
 static bool ChooseConfig(EGLDisplay display, const EGLint *configAttrs, EGLConfig *config)
@@ -338,9 +349,9 @@ void COMXImage::CreateContext()
 {
   EGLConfig egl_config;
   GLint m_result;
+  EGLDisplay egl_display = g_Windowing.GetEGLDisplay();
 
-  m_egl_display = g_Windowing.GetEGLDisplay();
-  eglInitialize(m_egl_display, NULL, NULL);
+  eglInitialize(egl_display, NULL, NULL);
   CheckError();
   eglBindAPI(EGL_OPENGL_ES_API);
   CheckError();
@@ -358,28 +369,28 @@ void COMXImage::CreateContext()
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
         EGL_NONE
   };
-  bool s = ChooseConfig(m_egl_display, configAttrs, &egl_config);
+  bool s = ChooseConfig(egl_display, configAttrs, &egl_config);
   CheckError();
   if (!s)
   {
     CLog::Log(LOGERROR, "%s: Could not find a compatible configuration",__FUNCTION__);
     return;
   }
-  m_egl_context = eglCreateContext(m_egl_display, egl_config, g_Windowing.GetEGLContext(), contextAttrs);
+  m_egl_context = eglCreateContext(egl_display, egl_config, g_Windowing.GetEGLContext(), contextAttrs);
   CheckError();
   if (m_egl_context == EGL_NO_CONTEXT)
   {
     CLog::Log(LOGERROR, "%s: Could not create a context",__FUNCTION__);
     return;
   }
-  EGLSurface egl_surface = eglCreatePbufferSurface(m_egl_display, egl_config, NULL);
+  EGLSurface egl_surface = eglCreatePbufferSurface(egl_display, egl_config, NULL);
   CheckError();
   if (egl_surface == EGL_NO_SURFACE)
   {
     CLog::Log(LOGERROR, "%s: Could not create a surface",__FUNCTION__);
     return;
   }
-  s = eglMakeCurrent(m_egl_display, egl_surface, egl_surface, m_egl_context);
+  s = eglMakeCurrent(egl_display, egl_surface, egl_surface, m_egl_context);
   CheckError();
   if (!s)
   {
@@ -390,8 +401,6 @@ void COMXImage::CreateContext()
 
 void COMXImage::Process()
 {
-  bool firsttime = true;
-
   while(!m_bStop)
   {
     struct textureinfo *tex = NULL;
@@ -410,14 +419,10 @@ void COMXImage::Process()
     if (m_bStop)
       return;
 
-    if (firsttime)
-      CreateContext();
-    firsttime = false;
-
     if (tex && tex->action == TEXTURE_ALLOC)
-      AllocTextureInternal(tex);
+      AllocTextureInternal(g_Windowing.GetEGLDisplay(), GetEGLContext(), tex);
     else if (tex && tex->action == TEXTURE_DELETE)
-      DestroyTextureInternal(tex);
+      DestroyTextureInternal(g_Windowing.GetEGLDisplay(), GetEGLContext(), tex);
     else
       CLog::Log(LOGERROR, "%s: Unexpected texture job: %p:%d", __func__, tex, tex ? tex->action : 0);
   }
@@ -1859,8 +1864,9 @@ void COMXTexture::Close()
     m_omx_egl_render.Deinitialize();
 }
 
-bool COMXTexture::HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, void *egl_image, void *egl_display, bool port_settings_changed)
+bool COMXTexture::HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, void *egl_image, bool port_settings_changed)
 {
+  EGLDisplay egl_display = g_Windowing.GetEGLDisplay();
   OMX_ERRORTYPE omx_err;
 
   if (port_settings_changed)
@@ -1989,7 +1995,7 @@ bool COMXTexture::HandlePortSettingChange(unsigned int resize_width, unsigned in
   return true;
 }
 
-bool COMXTexture::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes, unsigned int width, unsigned int height, void *egl_image, void *egl_display)
+bool COMXTexture::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes, unsigned int width, unsigned int height, void *egl_image)
 {
   CSingleLock lock(m_OMXSection);
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
@@ -2081,7 +2087,7 @@ bool COMXTexture::Decode(const uint8_t *demuxer_content, unsigned demuxer_bytes,
     omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged, timeout);
     if (omx_err == OMX_ErrorNone)
     {
-      if (!HandlePortSettingChange(width, height, egl_image, egl_display, port_settings_changed))
+      if (!HandlePortSettingChange(width, height, egl_image, port_settings_changed))
       {
         CLog::Log(LOGERROR, "%s::%s - HandlePortSettingChange failed (%x)", CLASSNAME, __func__, omx_err);
         return false;
