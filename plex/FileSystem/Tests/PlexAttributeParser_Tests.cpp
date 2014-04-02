@@ -23,8 +23,8 @@ TEST(PlexAttributeParserMediaUrlGetImageURL, basic)
 
 TEST(PlexAttributeParserMediaUrlGetImageURL, serverWithOtherPort)
 {
-  CPlexConnectionPtr conn = CPlexConnectionPtr(
-      new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "10.10.10.10", 32412));
+  CPlexConnectionPtr conn =
+      CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "10.10.10.10", 32412));
   CPlexServerPtr server = CPlexServerPtr(new CPlexServer(conn));
   server->SetUUID("abc123");
   g_plexApplication.serverManager = CPlexServerManagerPtr(new CPlexServerManager(server));
@@ -42,8 +42,8 @@ TEST(PlexAttributeParserMediaUrlGetImageURL, serverWithOtherPort)
 TEST(PlexAttributeParserMediaUrlGetImageURL, directURL)
 {
   CURL u("plexserver://abc123:32400/foo");
-  CURL imageUrl
-      = CPlexAttributeParserMediaUrl::GetImageURL(u, "http://google.com/abc123", 320, 320);
+  CURL imageUrl =
+      CPlexAttributeParserMediaUrl::GetImageURL(u, "http://google.com/abc123", 320, 320);
 
   EXPECT_FALSE(imageUrl.Get().empty());
   EXPECT_STREQ(imageUrl.GetOption("url"), "http://google.com/abc123");
@@ -68,8 +68,8 @@ TEST(PlexAttributeParserMediaUrlGetImageURL, myplexHost)
 {
   /* For this to work we need to insert a bestServer in the serverManager */
   g_plexApplication.serverManager = CPlexServerManagerPtr(new CPlexServerManager);
-  CPlexConnectionPtr conn = CPlexConnectionPtr(
-      new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "10.10.10.10", 32400));
+  CPlexConnectionPtr conn =
+      CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_MANUAL, "10.10.10.10", 32400));
   CPlexServerPtr server = CPlexServerPtr(new CPlexServer(conn));
   server->SetUUID("abc123");
   g_plexApplication.serverManager->SetBestServer(server, true);
@@ -100,6 +100,47 @@ TEST(PlexAttributeParserMediaUrlGetImageURL, forcedJpeg)
 
   // reset settings
   g_advancedSettings.Initialize();
+}
+
+TEST(PlexAttributeParserMediaUrlGetImageURL, syncedServer)
+{
+  /* For this to work we need to insert a bestServer in the serverManager */
+  CPlexServerPtr server = CPlexServerPtr(new CPlexServer);
+  server->SetUUID("abc123");
+  server->SetSynced(true);
+  g_plexApplication.serverManager = CPlexServerManagerPtr(new CPlexServerManager(server));
+
+  server = CPlexServerPtr(new CPlexServer);
+  server->SetUUID("cba321");
+  g_plexApplication.serverManager->SetBestServer(server, true);
+
+  CURL u("plexserver://abc123:32400");
+  CURL imageUrl = CPlexAttributeParserMediaUrl::GetImageURL(u, "/abc123", 320, 320);
+
+  EXPECT_FALSE(imageUrl.Get().empty());
+  EXPECT_STREQ(imageUrl.GetHostName(), "cba321");
+
+  g_plexApplication.serverManager.reset();
+}
+
+TEST(PlexAttributeParserMediaUrlGetImageURL, secondaryServer)
+{
+  CPlexServerPtr server = CPlexServerPtr(new CPlexServer);
+  server->SetUUID("abc123");
+  server->SetServerClass("secondary");
+  g_plexApplication.serverManager = CPlexServerManagerPtr(new CPlexServerManager(server));
+
+  server = CPlexServerPtr(new CPlexServer);
+  server->SetUUID("cba321");
+  g_plexApplication.serverManager->SetBestServer(server, true);
+
+  CURL u("plexserver://abc123:32400");
+  CURL imageUrl = CPlexAttributeParserMediaUrl::GetImageURL(u, "/abc123", 320, 320);
+
+  EXPECT_FALSE(imageUrl.Get().empty());
+  EXPECT_STREQ(imageUrl.GetHostName(), "cba321");
+
+  g_plexApplication.serverManager.reset();
 }
 
 static CPlexAttributeParserMediaUrl parser;
@@ -174,4 +215,3 @@ TEST(PlexAttributeParserMediaUrl, other)
 
   EXPECT_SIZE("foobar", "320", "320");
 }
-

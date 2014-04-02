@@ -99,12 +99,20 @@ CStdString CPlexAttributeParserMediaUrl::GetImageURL(const CURL &url, const CStd
   CURL mediaUrl(url);
   CURL imageURL;
   CUrlOptions options;
+  CPlexServerPtr server;
 
   mediaUrl.SetOptions("");
 
-  if ((mediaUrl.GetHostName() == "myplex" || mediaUrl.GetHostName() == "node") && g_plexApplication.serverManager)
+  if (g_plexApplication.serverManager)
+    server = g_plexApplication.serverManager->FindByUUID(mediaUrl.GetHostName());
+
+  if ((mediaUrl.GetHostName() == "myplex" || mediaUrl.GetHostName() == "node") ||
+      (server && (server->GetSynced() || !server->GetServerClass().empty())))
   {
-    CPlexServerPtr bestServer = g_plexApplication.serverManager->GetBestServer();
+    CPlexServerPtr bestServer;
+    if (g_plexApplication.serverManager)
+      bestServer = g_plexApplication.serverManager->GetBestServer();
+
     if (bestServer)
       mediaUrl.SetHostName(bestServer->GetUUID());
     else
@@ -124,15 +132,11 @@ CStdString CPlexAttributeParserMediaUrl::GetImageURL(const CURL &url, const CStd
 
     // Now check if we have a local connection that might override the port
     // this is especially true for secondary servers
-    if (g_plexApplication.serverManager)
+    if (server)
     {
-      CPlexServerPtr server = g_plexApplication.serverManager->FindByUUID(mediaUrl.GetHostName());
-      if (server)
-      {
-        CPlexConnectionPtr localConn = server->GetLocalConnection();
-        if (localConn)
-          imageURL.SetPort(localConn->GetAddress().GetPort());
-      }
+      CPlexConnectionPtr localConn = server->GetLocalConnection();
+      if (localConn)
+        imageURL.SetPort(localConn->GetAddress().GetPort());
     }
 
     if (boost::starts_with(source, "/"))

@@ -86,7 +86,9 @@ public:
   void SetName(const CStdString &name) { m_name = name; }
   void SetOwned(bool owned) { m_owned = owned; }
   void SetOwner(const CStdString &owner) { m_owner = owner; }
+  void SetSynced(bool synced) { m_synced = synced; }
   void SetVersion(const CStdString& version) { m_version = version; }
+  void SetServerClass(const CStdString& classStr) { m_serverClass = classStr; }
   void SetSupportsVideoTranscoding(bool support) { m_supportsVideoTranscoding = support; }
   void SetSupportsAudioTranscoding(bool support) { m_supportsAudioTranscoding = support; }
   void SetSupportsDeletion(bool support) { m_supportsDeletion = support; }
