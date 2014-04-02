@@ -31,7 +31,8 @@ bool CPlexServerVersion::parse(const std::string& versionString)
   std::vector<std::string> firstSplit = StringUtils::Split(versionString, "-");
   if (firstSplit.size() != 2)
   {
-    CLog::Log(LOGWARNING, "CPlexServerVersion::parse could not be split apart: %s", versionString.c_str());
+    CLog::Log(LOGWARNING, "CPlexServerVersion::parse could not be split apart: %s",
+              versionString.c_str());
     return false;
   }
 
@@ -39,7 +40,8 @@ bool CPlexServerVersion::parse(const std::string& versionString)
   std::vector<std::string> dotsplit = StringUtils::Split(firstSplit.at(0), ".");
   if (dotsplit.size() != 5)
   {
-    CLog::Log(LOGWARNING, "CPlexServerVersion::parse could not split apart: %s", firstSplit.at(0).c_str());
+    CLog::Log(LOGWARNING, "CPlexServerVersion::parse could not split apart: %s",
+              firstSplit.at(0).c_str());
     return false;
   }
 
