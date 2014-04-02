@@ -200,7 +200,8 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
 
-  m_nDecodedLen = 0;
+  // rewind stream to beginning
+  Seek(0);
 
   if (m_Channels == 0) // no data - just guess and hope for the best
     m_Channels = 2;
