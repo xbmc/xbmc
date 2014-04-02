@@ -27,6 +27,18 @@ TEST(PlexServerVersion, parseBroken)
   EXPECT_FALSE(version.isValid);
 }
 
+TEST(PlexServerVersion, shortStringNonDev)
+{
+  CPlexServerVersion version("0.9.9.8.123-abc123");
+  EXPECT_STREQ(version.shortString(), "0.9.9.8.123");
+}
+
+TEST(PlexServerVersion, shortStringDev)
+{
+  CPlexServerVersion version("0.9.9.8.dev-abc123");
+  EXPECT_STREQ(version.shortString(), "0.9.9.8");
+}
+
 TEST(PlexServerVersion, testEqual)
 {
   CPlexServerVersion version("0.9.9.8.234-abc123");
@@ -57,16 +69,18 @@ TEST(PlexServerVersion, testLT)
   EXPECT_TRUE(version < version2);
 }
 
-TEST(PlexServerVersion, testGTsmallerBuild)
-{
-  CPlexServerVersion version1("0.9.9.7.435-abc123");
-  CPlexServerVersion version2("0.9.9.8.34-624687d");
-  EXPECT_TRUE(version1 < version2);
-}
-
 TEST(PlexServerVersion, testLTsmallerBuild)
 {
   CPlexServerVersion version1("0.9.9.7.435-abc123");
   CPlexServerVersion version2("0.9.9.8.34-624687d");
+  EXPECT_TRUE(version1 < version2);
+  EXPECT_FALSE(version2 < version1);
+}
+
+TEST(PlexServerVersion, testGTsmallerBuild)
+{
+  CPlexServerVersion version1("0.9.9.7.435-abc123");
+  CPlexServerVersion version2("0.9.9.8.34-624687d");
+  EXPECT_TRUE(version2 > version1);
   EXPECT_FALSE(version1 > version2);
 }
