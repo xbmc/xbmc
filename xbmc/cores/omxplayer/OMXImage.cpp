@@ -196,7 +196,41 @@ bool COMXImage::CreateThumb(const CStdString& srcFile, unsigned int maxHeight, u
   return okay;
 }
 
-void COMXImage::AllocTextureInternal(EGLDisplay egl_display, EGLContext egl_context, struct textureinfo *tex)
+bool COMXImage::SendMessage(bool (*callback)(EGLDisplay egl_display, EGLContext egl_context, void *cookie), void *cookie)
+{
+  // we can only call gl functions from the application thread or texture thread
+  if ( g_application.IsCurrentThread() )
+  {
+    return callback(g_Windowing.GetEGLDisplay(), GetEGLContext(), cookie);
+  }
+  struct callbackinfo mess;
+  mess.callback = callback;
+  mess.cookie = cookie;
+  mess.result = false;
+  mess.sync.Reset();
+  {
+    CSingleLock lock(m_texqueue_lock);
+    CLog::Log(LOGDEBUG, "%s: texture job: %p:%p", __func__, &mess, mess.callback);
+    m_texqueue.push(&mess);
+    m_texqueue_cond.notifyAll();
+  }
+  // wait for function to have finished (in texture thread)
+  mess.sync.Wait();
+  CLog::Log(LOGDEBUG, "%s: texture job done: %p:%p = %d", __func__, &mess, mess.callback, mess.result);
+  // need to ensure texture thread has returned from mess.sync.Set() before we exit and free tex
+  CSingleLock lock(m_texqueue_lock);
+  return mess.result;
+}
+
+
+static bool AllocTextureCallback(EGLDisplay egl_display, EGLContext egl_context, void *cookie)
+{
+  struct COMXImage::textureinfo *tex = static_cast<struct COMXImage::textureinfo *>(cookie);
+  COMXImage *img = static_cast<COMXImage*>(tex->parent);
+  return img->AllocTextureInternal(egl_display, egl_context, tex);
+}
+
+bool COMXImage::AllocTextureInternal(EGLDisplay egl_display, EGLContext egl_context, struct textureinfo *tex)
 {
   glGenTextures(1, (GLuint*) &tex->texture);
   glBindTexture(GL_TEXTURE_2D, tex->texture);
@@ -207,9 +241,9 @@ void COMXImage::AllocTextureInternal(EGLDisplay egl_display, EGLContext egl_cont
   GLenum type = CSettings::Get().GetBool("videoscreen.textures32") ? GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT_5_6_5;
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->width, tex->height, 0, GL_RGB, type, 0);
   tex->egl_image = eglCreateImageKHR(egl_display, egl_context, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)tex->texture, NULL);
-  tex->sync.Set();
   GLint m_result;
   CheckError();
+  return true;
 }
 
 void COMXImage::GetTexture(void *userdata, GLuint *texture)
@@ -218,41 +252,31 @@ void COMXImage::GetTexture(void *userdata, GLuint *texture)
   *texture = tex->texture;
 }
 
-void COMXImage::DestroyTextureInternal(EGLDisplay egl_display, EGLContext egl_context, struct textureinfo *tex)
+static bool DestroyTextureCallback(EGLDisplay egl_display, EGLContext egl_context, void *cookie)
+{
+  struct COMXImage::textureinfo *tex = static_cast<struct COMXImage::textureinfo *>(cookie);
+  COMXImage *img = static_cast<COMXImage*>(tex->parent);
+  return img->DestroyTextureInternal(egl_display, egl_context, tex);
+}
+
+void COMXImage::DestroyTexture(void *userdata)
+{
+  SendMessage(DestroyTextureCallback, userdata);
+}
+
+bool COMXImage::DestroyTextureInternal(EGLDisplay egl_display, EGLContext egl_context, struct textureinfo *tex)
 {
   bool s = true;
   if (!tex->egl_image || !tex->texture)
   {
     CLog::Log(LOGNOTICE, "%s: Invalid image/texture %p:%d", __func__, tex->egl_image, tex->texture);
-    return;
+    return false;
   }
   s = eglDestroyImageKHR(egl_display, tex->egl_image);
   if (!s)
     CLog::Log(LOGNOTICE, "%s: failed to destroy texture", __func__);
   glDeleteTextures(1, (GLuint*) &tex->texture);
-  tex->sync.Set();
-}
-
-void COMXImage::DestroyTexture(void *userdata)
-{
-  struct textureinfo *tex = static_cast<struct textureinfo *>(userdata);
-  // we can only call gl functions from the application thread
-
-  tex->action = TEXTURE_DELETE;
-  tex->sync.Reset();
-  if ( g_application.IsCurrentThread() )
-  {
-     DestroyTextureInternal(g_Windowing.GetEGLDisplay(), GetEGLContext(), tex);
-  }
-  else
-  {
-    CSingleLock lock(m_texqueue_lock);
-    m_texqueue.push(tex);
-    m_texqueue_cond.notifyAll();
-  }
-  // wait for function to have finished (in texture thread)
-  tex->sync.Wait();
-  delete tex;
+  return s;
 }
 
 bool COMXImage::DecodeJpegToTexture(COMXImageFile *file, unsigned int width, unsigned int height, void **userdata)
@@ -270,17 +294,8 @@ bool COMXImage::DecodeJpegToTexture(COMXImageFile *file, unsigned int width, uns
   tex->texture = 0;
   tex->egl_image = NULL;
   tex->filename = file->GetFilename();
-  tex->action = TEXTURE_ALLOC;
-  tex->sync.Reset();
 
-  {
-    CSingleLock lock(m_texqueue_lock);
-    m_texqueue.push(tex);
-    m_texqueue_cond.notifyAll();
-  }
-
-  // wait for function to have finished (in texture thread)
-  tex->sync.Wait();
+  SendMessage(AllocTextureCallback, tex);
 
   if (tex->egl_image && tex->texture && omx_image.Decode(file->GetImageBuffer(), file->GetImageSize(), width, height, tex->egl_image))
   {
@@ -403,28 +418,26 @@ void COMXImage::Process()
 {
   while(!m_bStop)
   {
-    struct textureinfo *tex = NULL;
-    while (!m_bStop)
+    CSingleLock lock(m_texqueue_lock);
+    if (m_texqueue.empty())
     {
-      CSingleLock lock(m_texqueue_lock);
-      if (!m_texqueue.empty())
-      {
-        tex = m_texqueue.front();
-        m_texqueue.pop();
-        break;
-      }
       m_texqueue_cond.wait(lock);
     }
-
-    if (m_bStop)
-      return;
-
-    if (tex && tex->action == TEXTURE_ALLOC)
-      AllocTextureInternal(g_Windowing.GetEGLDisplay(), GetEGLContext(), tex);
-    else if (tex && tex->action == TEXTURE_DELETE)
-      DestroyTextureInternal(g_Windowing.GetEGLDisplay(), GetEGLContext(), tex);
     else
-      CLog::Log(LOGERROR, "%s: Unexpected texture job: %p:%d", __func__, tex, tex ? tex->action : 0);
+    {
+      struct callbackinfo *mess = m_texqueue.front();
+      m_texqueue.pop();
+      lock.Leave();
+      CLog::Log(LOGDEBUG, "%s: texture job: %p:%p:%p", __func__, mess, mess->callback, mess->cookie);
+
+      mess->result = mess->callback(g_Windowing.GetEGLDisplay(), GetEGLContext(), mess->cookie);
+      CLog::Log(LOGDEBUG, "%s: texture job about to Set: %p:%p:%p", __func__, mess, mess->callback, mess->cookie);
+      {
+        CSingleLock lock(m_texqueue_lock);
+        mess->sync.Set();
+      }
+      CLog::Log(LOGDEBUG, "%s: texture job: %p done", __func__, mess);
+    }
   }
 }
 
