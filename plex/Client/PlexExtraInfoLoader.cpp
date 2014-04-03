@@ -13,7 +13,7 @@ CPlexExtraInfoLoader::~CPlexExtraInfoLoader()
 {
   std::pair<int, CFileItemList*> p;
   BOOST_FOREACH(p, m_jobMap)
-    CJobManager::GetInstance().CancelJob(p.first);
+  CJobManager::GetInstance().CancelJob(p.first);
   m_jobMap.clear();
 }
 
@@ -29,10 +29,8 @@ void CPlexExtraInfoLoader::LoadExtraInfoForItem(CFileItemList* list, CFileItemPt
   if (extraItem)
     type = extraItem->GetPlexDirectoryType();
 
-  if (type == PLEX_DIR_TYPE_SEASON ||
-      type == PLEX_DIR_TYPE_EPISODE ||
-      type == PLEX_DIR_TYPE_ALBUM ||
-      type == PLEX_DIR_TYPE_TRACK)
+  if (type == PLEX_DIR_TYPE_SEASON || type == PLEX_DIR_TYPE_EPISODE ||
+      type == PLEX_DIR_TYPE_ALBUM || type == PLEX_DIR_TYPE_TRACK)
   {
     if (list->HasProperty("parentKey"))
       url = list->GetProperty("parentKey").asString();
@@ -40,7 +38,7 @@ void CPlexExtraInfoLoader::LoadExtraInfoForItem(CFileItemList* list, CFileItemPt
       url = extraItem->GetProperty("parentKey").asString();
     else if (!extraItem)
     {
-      for (int i = 0; i < list->Size(); i ++)
+      for (int i = 0; i < list->Size(); i++)
       {
         CFileItemPtr item = list->Get(i);
         if (item && item->HasProperty("parentKey"))
@@ -57,21 +55,26 @@ void CPlexExtraInfoLoader::LoadExtraInfoForItem(CFileItemList* list, CFileItemPt
     CFileItemList cacheList;
     if (g_directoryCache.GetDirectory(url, cacheList))
     {
-      CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::LoadExtraInfoForItem clean cache hit on %s", url.c_str());
+      CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::LoadExtraInfoForItem clean cache hit on %s",
+                url.c_str());
       CopyProperties(list, cacheList.Get(0));
       return;
     }
 
-    int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL(url)), this, CJob::PRIORITY_HIGH);
+    int id = CJobManager::GetInstance().AddJob(new CPlexDirectoryFetchJob(CURL(url)), this,
+                                               CJob::PRIORITY_HIGH);
     if (id != 0)
     {
-      CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::LoadExtraInfoForItem loading %s for item %s", url.c_str(), list->GetPath().c_str());
+      CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::LoadExtraInfoForItem loading %s for item %s",
+                url.c_str(), list->GetPath().c_str());
       CSingleLock lk(m_lock);
       m_jobMap[id] = list;
     }
     else
     {
-      CLog::Log(LOGERROR, "CPlexExtraInfoLoader::LoadExtraInfoForItem failed to create CPlexDirectoryFetchJob for url %s", url.c_str());
+      CLog::Log(LOGERROR, "CPlexExtraInfoLoader::LoadExtraInfoForItem failed to create "
+                          "CPlexDirectoryFetchJob for url %s",
+                url.c_str());
       return;
     }
   }
@@ -83,14 +86,15 @@ void CPlexExtraInfoLoader::CopyProperties(CFileItemList* list, CFileItemPtr extr
   if (!list || !extraItem)
     return;
 
-  if (extraItem->HasProperty("summary") && !extraItem->GetProperty("summary").empty() && !list->HasProperty("showplot"))
+  if (extraItem->HasProperty("summary") && !extraItem->GetProperty("summary").empty() &&
+      !list->HasProperty("showplot"))
   {
     list->SetProperty("showplot", extraItem->GetProperty("summary"));
     if (!list->HasProperty("summary"))
       list->SetProperty("summary", extraItem->GetProperty("summary"));
   }
 
-  for (int i = 0; i < list->Size(); i ++)
+  for (int i = 0; i < list->Size(); i++)
   {
     CFileItemPtr item = list->Get(i);
 
@@ -117,10 +121,15 @@ void CPlexExtraInfoLoader::CopyProperties(CFileItemList* list, CFileItemPtr extr
       CVideoInfoTag* infoTag = item->GetVideoInfoTag();
       CVideoInfoTag* infoTag2 = extraItem->GetVideoInfoTag();
 
-      infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(), infoTag2->m_genre.end());
-      infoTag->m_cast.insert(infoTag->m_cast.end(), infoTag2->m_cast.begin(), infoTag2->m_cast.end());
-      infoTag->m_writingCredits.insert(infoTag->m_writingCredits.end(), infoTag2->m_writingCredits.begin(), infoTag2->m_writingCredits.end());
-      infoTag->m_director.insert(infoTag->m_director.end(), infoTag2->m_director.begin(), infoTag2->m_director.end());
+      infoTag->m_genre.insert(infoTag->m_genre.end(), infoTag2->m_genre.begin(),
+                              infoTag2->m_genre.end());
+      infoTag->m_cast.insert(infoTag->m_cast.end(), infoTag2->m_cast.begin(),
+                             infoTag2->m_cast.end());
+      infoTag->m_writingCredits.insert(infoTag->m_writingCredits.end(),
+                                       infoTag2->m_writingCredits.begin(),
+                                       infoTag2->m_writingCredits.end());
+      infoTag->m_director.insert(infoTag->m_director.end(), infoTag2->m_director.begin(),
+                                 infoTag2->m_director.end());
     }
     else if (extraItem->HasMusicInfoTag())
     {
@@ -141,7 +150,7 @@ void CPlexExtraInfoLoader::CopyProperties(CFileItemList* list, CFileItemPtr extr
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexExtraInfoLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+void CPlexExtraInfoLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   CSingleLock lk(m_lock);
   if (m_jobMap.find(jobID) == m_jobMap.end())
@@ -155,11 +164,12 @@ void CPlexExtraInfoLoader::OnJobComplete(unsigned int jobID, bool success, CJob 
     return;
   m_jobMap.erase(jobID);
 
-  CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::OnJobComplete loaded extra info for %s, sucess: %s", list->GetPath().c_str(), success ? "YES" : "NO");
+  CLog::Log(LOGDEBUG, "CPlexExtraInfoLoader::OnJobComplete loaded extra info for %s, sucess: %s",
+            list->GetPath().c_str(), success ? "YES" : "NO");
 
   CPlexDirectoryFetchJob* fjob = static_cast<CPlexDirectoryFetchJob*>(job);
   if (!job)
-      return;
+    return;
 
   CFileItemPtr extraItem = fjob->m_items.Get(0);
 
