@@ -159,7 +159,7 @@ bool CPlexServerDataLoaderJob::DoWork()
     if (!m_sectionList)
       return false;
 
-    if (m_server->GetOwned())
+    if (m_server->GetOwned() && m_server->GetServerClass().empty())
     {
       for (int i = 0; i < m_sectionList->Size(); i++)
       {
