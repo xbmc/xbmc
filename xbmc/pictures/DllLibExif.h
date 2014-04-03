@@ -23,6 +23,13 @@
 #include "DynamicDll.h"
 #include "lib/libexif/libexif.h"
 
+/* PLEX */
+#ifdef __clang__
+#pragma clang diagonstic push
+#pragma clang diagnostic ignored "-Wconstant-logical-operand"
+#endif
+/* END PLEX */
+
 class DllLibExifInterface
 {
 public:
@@ -38,3 +45,9 @@ class DllLibExif : public DllDynamic, DllLibExifInterface
     RESOLVE_METHOD(process_jpeg)
   END_METHOD_RESOLVE()
 };
+
+/* PLEX */
+#ifdef __clang__
+#pragma clang diagonstic pop
+#endif
+/* END PLEX */
