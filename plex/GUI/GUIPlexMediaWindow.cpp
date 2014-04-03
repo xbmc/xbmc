@@ -869,7 +869,16 @@ void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
     if (fromHere)
       fromHereKey = fromHere->GetProperty("unprocessed_key").asString();
 
-    CStdString uri = CPlayQueueManager::getURIFromItem(*m_vecItems);
+
+    CURL uriPart("plexserver://plex");
+    uriPart.SetFileName(m_sectionRoot.GetFileName());
+
+    CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+    if (filter)
+      uriPart = filter->addFiltersToUrl(uriPart);
+
+    // take out the plexserver://plex part from above when passing it down
+    CStdString uri = CPlayQueueManager::getURIFromItem(*m_vecItems, uriPart.Get().substr(17, std::string::npos));
 
     if (g_plexApplication.playQueueManager->createPlayQueue(server,
                                                             PlexUtils::GetMediaTypeFromItem(*m_vecItems),
@@ -1064,8 +1073,6 @@ bool CGUIPlexMediaWindow::OnBack(int actionID)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CURL CGUIPlexMediaWindow::GetRealDirectoryUrl(const CStdString& url_)
 {
-  CFileItemList tmpItems;
-  XFILE::CPlexDirectory dir;
   CURL dirUrl(url_);
 
   if (!PlexUtils::CurrentSkinHasFilters())
