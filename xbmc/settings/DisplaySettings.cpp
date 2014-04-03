@@ -240,7 +240,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
 
     // check if the old or the new resolution was/is windowed
     // in which case we don't show any prompt to the user
-    if (oldRes != RES_WINDOW && newRes != RES_WINDOW)
+    if (oldRes != RES_WINDOW && newRes != RES_WINDOW && oldRes != newRes)
     {
       if (!m_resolutionChangeAborted)
       {
