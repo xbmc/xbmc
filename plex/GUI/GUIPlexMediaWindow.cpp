@@ -41,6 +41,7 @@
 #include "ViewDatabase.h"
 #include "ViewState.h"
 #include "PlayQueueManager.h"
+#include "Client/PlexServerVersion.h"
 
 #include "LocalizeStrings.h"
 #include "DirectoryCache.h"
@@ -857,6 +858,58 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::PlayAllPlayQueue(const CPlexServerPtr& server, bool shuffle,
+                                           const CFileItemPtr& fromHere)
+{
+  CStdString fromHereKey;
+  if (fromHere)
+    fromHereKey = fromHere->GetProperty("unprocessed_key").asString();
+
+
+  CURL uriPart("plexserver://plex");
+  uriPart.SetFileName(m_sectionRoot.GetFileName());
+
+  CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
+  if (filter)
+    uriPart = filter->addFiltersToUrl(uriPart);
+
+  // take out the plexserver://plex part from above when passing it down
+  CStdString uri = CPlayQueueManager::getURIFromItem(*m_vecItems, uriPart.Get().substr(17, std::string::npos));
+
+  if (g_plexApplication.playQueueManager->createPlayQueue(server,
+                                                          PlexUtils::GetMediaTypeFromItem(*m_vecItems),
+                                                          uri, fromHereKey, shuffle))
+  {
+    // error
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIPlexMediaWindow::PlayAllLocalPlaylist(bool shuffle, const CFileItemPtr& fromHere)
+{
+  int playlist = IsMusicContainer() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
+
+  int startOffset = 0;
+  if (fromHere)
+  {
+    for (int i = 0; i < m_vecItems->Size(); i++)
+    {
+      if (fromHere->GetProperty("unprocessed_key") ==
+          m_vecItems->Get(i)->GetProperty("unprocessed_key"))
+      {
+        startOffset = i;
+        break;
+      }
+    }
+  }
+
+  g_playlistPlayer.SetCurrentPlaylist(playlist);
+  g_playlistPlayer.ClearPlaylist(playlist);
+  g_playlistPlayer.Add(playlist, *m_vecItems);
+  g_playlistPlayer.SetShuffle(playlist, shuffle);
+  g_playlistPlayer.PlaySongId(startOffset);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
 {
   CPlexServerPtr server;
@@ -865,27 +918,12 @@ void CGUIPlexMediaWindow::PlayAll(bool shuffle, const CFileItemPtr& fromHere)
 
   if (server)
   {
-    CStdString fromHereKey;
-    if (fromHere)
-      fromHereKey = fromHere->GetProperty("unprocessed_key").asString();
 
-
-    CURL uriPart("plexserver://plex");
-    uriPart.SetFileName(m_sectionRoot.GetFileName());
-
-    CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
-    if (filter)
-      uriPart = filter->addFiltersToUrl(uriPart);
-
-    // take out the plexserver://plex part from above when passing it down
-    CStdString uri = CPlayQueueManager::getURIFromItem(*m_vecItems, uriPart.Get().substr(17, std::string::npos));
-
-    if (g_plexApplication.playQueueManager->createPlayQueue(server,
-                                                            PlexUtils::GetMediaTypeFromItem(*m_vecItems),
-                                                            uri, fromHereKey, shuffle))
-    {
-      // error
-    }
+    CPlexServerVersion version(server->GetVersion());
+    if (!server->IsSecondary() && (version.isValid && version > CPlexServerVersion("0.9.9.6.0")))
+      PlayAllPlayQueue(server, shuffle, fromHere);
+    else
+      PlayAllLocalPlaylist(shuffle, fromHere);
   }
 }
 
