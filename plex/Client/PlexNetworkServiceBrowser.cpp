@@ -1,20 +1,24 @@
 #include "PlexNetworkServiceBrowser.h"
 #include "PlexApplication.h"
 #include "PlexMediaServerClient.h"
+#include "Network/NetworkInterface.h"
 
 #include <vector>
 
 using namespace std;
 
-void
-CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
+void CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr& service)
 {
-  CPlexServerPtr server = CPlexServerPtr(new CPlexServer(service->getResourceIdentifier(), service->getParam("Name"), true));
-  
+  CPlexServerPtr server = CPlexServerPtr(
+  new CPlexServer(service->getResourceIdentifier(), service->getParam("Name"), true));
+
   int port = 32400;
-  try {
+  try
+  {
     port = boost::lexical_cast<int>(service->getParam("Port"));
-  } catch (...) {
+  }
+  catch (...)
+  {
     eprintf("CPlexNetworkServiceBrowser::handleServiceArrival failed to get port?");
   }
 
@@ -39,14 +43,17 @@ CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
 
   CSingleLock lk(m_serversSection);
   m_discoveredServers[server->GetUUID()] = server;
-  dprintf("CPlexNetworkServiceBrowser::handleServiceArrival %s arrived", service->address().to_string().c_str());
+  dprintf("CPlexNetworkServiceBrowser::handleServiceArrival %s arrived",
+          service->address().to_string().c_str());
   g_plexApplication.timer->RestartTimeout(5000, this);
 }
 
-void
-CPlexNetworkServiceBrowser::handleServiceDeparture(NetworkServicePtr &service)
+void CPlexNetworkServiceBrowser::handleServiceDeparture(NetworkServicePtr& service)
 {
-  CLog::Log(LOGDEBUG, "CPlexNetworkServiceBrowser::handleServiceDeparture departing with server %s last seen %f", service->getResourceIdentifier().c_str(), service->timeSinceLastSeen());
+  CLog::Log(LOGDEBUG,
+            "CPlexNetworkServiceBrowser::handleServiceDeparture departing with server %s last seen %f",
+            service->getResourceIdentifier().c_str(), service->timeSinceLastSeen());
+
   CSingleLock lk(m_serversSection);
   /* Remove the server from m_discoveredServers and then tell ServerManager to update it's state */
   if (m_discoveredServers.find(service->getResourceIdentifier()) != m_discoveredServers.end())
@@ -54,14 +61,17 @@ CPlexNetworkServiceBrowser::handleServiceDeparture(NetworkServicePtr &service)
 
   PlexServerList list;
   BOOST_FOREACH(PlexServerPair p, m_discoveredServers)
-    list.push_back(p.second);
+  list.push_back(p.second);
 
-  CLog::Log(LOGDEBUG, "CPlexNetworkServiceBrowser::handleServiceDeparture we have %lu servers from GDM", list.size());
-  g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
+  CLog::Log(LOGDEBUG,
+            "CPlexNetworkServiceBrowser::handleServiceDeparture we have %lu servers from GDM",
+            list.size());
+  g_plexApplication.serverManager->UpdateFromConnectionType(list,
+                                                            CPlexConnection::CONNECTION_DISCOVERED);
   g_plexApplication.timer->RestartTimeout(5000, this);
 }
 
-void CPlexNetworkServiceBrowser::handleNetworkChange(const vector<NetworkInterface> &interfaces)
+void CPlexNetworkServiceBrowser::handleNetworkChange(const vector<NetworkInterface>& interfaces)
 {
   NetworkServiceBrowser::handleNetworkChange(interfaces);
 
@@ -82,16 +92,19 @@ void CPlexNetworkServiceBrowser::OnTimeout()
   CSingleLock lk(m_serversSection);
   PlexServerList list;
   BOOST_FOREACH(PlexServerPair p, m_discoveredServers)
-    list.push_back(p.second);
+  list.push_back(p.second);
 
-  CLog::Log(LOGDEBUG, "CPlexNetworkServiceBrowser::OnTimeout reporting %ld discovered servers", list.size());
+  CLog::Log(LOGDEBUG, "CPlexNetworkServiceBrowser::OnTimeout reporting %ld discovered servers",
+            list.size());
 
-  g_plexApplication.serverManager->UpdateFromConnectionType(list, CPlexConnection::CONNECTION_DISCOVERED);
-  g_plexApplication.timer->RestartTimeout(5 * 60 * 1000, this); // run it every 5th minute even if there are no changes
+  g_plexApplication.serverManager->UpdateFromConnectionType(list,
+                                                            CPlexConnection::CONNECTION_DISCOVERED);
+
+  // run it every 5th minute even if there are no changes
+  g_plexApplication.timer->RestartTimeout(5 * 60 * 1000, this);
 }
 
-void
-CPlexServiceListener::Process()
+void CPlexServiceListener::Process()
 {
   dprintf("CPlexServiceListener: Initializing.");
 
@@ -99,7 +112,8 @@ CPlexServiceListener::Process()
   NetworkInterface::WatchForChanges();
 
   // Server browser.
-  m_pmsBrowser = NetworkServiceBrowserPtr(new CPlexNetworkServiceBrowser(m_ioService, NS_PLEX_MEDIA_SERVER_PORT));
+  m_pmsBrowser =
+  NetworkServiceBrowserPtr(new CPlexNetworkServiceBrowser(m_ioService, NS_PLEX_MEDIA_SERVER_PORT));
 
   // start our reporting timer
   g_plexApplication.timer->SetTimeout(5000, (CPlexNetworkServiceBrowser*)m_pmsBrowser.get());
