@@ -29,6 +29,7 @@ public:
   URIUtils(void);
   virtual ~URIUtils(void);
   static bool IsInPath(const CStdString &uri, const CStdString &baseURI);
+  static bool IsInPath(const std::string &uri, const std::vector<std::string> &baseURIs);
 
   static CStdString GetDirectory(const CStdString &strFilePath);
 

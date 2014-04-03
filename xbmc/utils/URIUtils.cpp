@@ -46,6 +46,16 @@ bool URIUtils::IsInPath(const CStdString &uri, const CStdString &baseURI)
   return !basePath.empty() && StringUtils::StartsWith(uriPath, basePath);
 }
 
+bool URIUtils::IsInPath(const std::string &uri, const std::vector<std::string> &baseURIs)
+{
+  for (std::vector<std::string>::const_iterator it = baseURIs.begin(); it != baseURIs.end(); ++it)
+  {
+    if (URIUtils::IsInPath(uri, *it))
+      return true;
+  }
+  return false;
+}
+
 /* returns filename extension including period of filename */
 std::string URIUtils::GetExtension(const CURL& url)
 {
