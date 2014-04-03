@@ -24,7 +24,6 @@
 #include "cores/dvdplayer/DVDInputStreams/DVDFactoryInputStream.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDFactoryDemuxer.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDDemuxFFmpeg.h"
 #include "cores/dvdplayer/DVDStreamInfo.h"
 #include "cores/dvdplayer/DVDCodecs/DVDFactoryCodec.h"
 #include "music/tags/TagLoaderTagLib.h"
@@ -61,12 +60,6 @@ void DVDPlayerCodec::SetContentType(const CStdString &strContent)
 
 bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  if (!m_dllAvUtil.Load())
-  {
-    CLog::Log(LOGERROR, "DVDPlayerCodec::Init - failed to load avutil");
-    return false;
-  }
-
   // take precaution if Init()ialized earlier
   if (m_bInited)
   {
@@ -246,8 +239,6 @@ void DVDPlayerCodec::DeInit()
     m_pAudioCodec = NULL;
   }
 
-  m_dllAvUtil.Unload();
-
   // cleanup format information
   m_TotalTime = 0;
   m_SampleRate = 0;
@@ -271,11 +262,7 @@ int64_t DVDPlayerCodec::Seek(int64_t iSeekTime)
     CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
   m_pPacket = NULL;
 
-  CDVDDemuxFFmpeg *ffmpegDemuxer = dynamic_cast<CDVDDemuxFFmpeg*>(m_pDemuxer);
-  if (ffmpegDemuxer)
-    ffmpegDemuxer->SeekByte(m_dllAvUtil.av_rescale_rnd(iSeekTime, m_pInputStream->GetLength(), m_TotalTime, AV_ROUND_NEAR_INF));
-  else
-    m_pDemuxer->SeekTime((int)iSeekTime, false);
+  m_pDemuxer->SeekTime((int)iSeekTime, false);
   m_pAudioCodec->Reset();
 
   m_decoded = NULL;
