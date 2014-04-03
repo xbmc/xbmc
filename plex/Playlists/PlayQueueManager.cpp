@@ -92,7 +92,7 @@ void CPlayQueueManager::getPlayQueue(CPlexServerPtr server, int id)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CStdString CPlayQueueManager::getURIFromItem(const CFileItem& item)
+CStdString CPlayQueueManager::getURIFromItem(const CFileItem& item, const CStdString& uri)
 {
   if (item.GetPath().empty())
     return "";
@@ -113,9 +113,12 @@ CStdString CPlayQueueManager::getURIFromItem(const CFileItem& item)
     return "";
   }
 
+  CStdString realURI = uri.empty() ? (CStdString)item.GetProperty("unprocessed_key").asString() : uri;
+  CURL::Encode(realURI);
+
   CStdString ret;
   ret.Format("library://%s/%s/%s", item.GetProperty("librarySectionUUID").asString(), itemDirStr,
-             CURL::Encode(item.GetProperty("unprocessed_key").asString()));
+             realURI);
 
   return ret;
 }

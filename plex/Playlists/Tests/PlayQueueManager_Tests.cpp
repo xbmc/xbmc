@@ -57,6 +57,13 @@ TEST(PlayQueueManagerGetURIFromItem, badProtocol)
   EXPECT_TRUE(CPlayQueueManager::getURIFromItem(item).empty());
 }
 
+TEST(PlayQueueManagerGetURIFromItem, specifiedUri)
+{
+  CFileItem item = getURIItem();
+  CStdString uri = CPlayQueueManager::getURIFromItem(item, "foobar");
+  EXPECT_STREQ(uri, "library://sectionUUID/directory/foobar");
+}
+
 static CPlexServerPtr getServer()
 {
   CPlexConnectionPtr connection = CPlexConnectionPtr(

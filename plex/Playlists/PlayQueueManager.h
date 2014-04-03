@@ -16,7 +16,7 @@ public:
   bool createPlayQueueFromItem(const CPlexServerPtr& server, const CFileItemPtr& item,
                                bool shuffle = false, bool continuous = false, int limit = 0);
 
-  static CStdString getURIFromItem(const CFileItem &item);
+  static CStdString getURIFromItem(const CFileItem &item, const CStdString &uri = "");
 
   CURL getCreatePlayQueueURL(const CPlexServerPtr& server, ePlexMediaType type,
                              const std::string& uri, const std::string& key = "",
