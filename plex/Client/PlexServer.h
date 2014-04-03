@@ -113,6 +113,11 @@ public:
   uint64_t GetLastRefreshed() const { return m_lastRefreshed; }
   void DidRefresh() { m_lastRefreshed = XbmcThreads::SystemClockMillis(); }
 
+  bool IsSecondary() const
+  {
+    return (m_serverClass == "secondary");
+  }
+
 private:
   bool m_owned;
   bool m_synced;
