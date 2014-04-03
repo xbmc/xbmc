@@ -1935,13 +1935,10 @@ void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details
     vecStudios.push_back(AddStudio(details.m_studio[i]));
 }
 
-CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const
+void CVideoDatabase::ProcessValueString(const CVideoInfoTag &details, const SDbTableOffsets *offsets, std::vector<std::string> &conditions, int i) const
 {
-  std::vector<std::string> conditions;
-  for (int i = min + 1; i < max; ++i)
+  switch (offsets[i].type)
   {
-    switch (offsets[i].type)
-    {
     case VIDEODB_TYPE_STRING:
       conditions.push_back(PrepareSQL("c%02d='%s'", i, ((CStdString*)(((char*)&details)+offsets[i].offset))->c_str()));
       break;
@@ -1973,10 +1970,29 @@ CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min,
     case VIDEODB_TYPE_DATETIME:
       conditions.push_back(PrepareSQL("c%02d='%s'", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDateTime().c_str()));
       break;
-    }
+  }
+}
+
+CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const
+{
+  std::vector<std::string> conditions;
+  for (int i = min + 1; i < max; ++i)
+  {
+    ProcessValueString(details, offsets, conditions, i);
   }
   return StringUtils::Join(conditions, ",");
 }
+
+CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, const std::vector<VIDEODB_IDS> simpleUpdates, const SDbTableOffsets *offsets, std::vector<std::string> &conditions) const
+{
+  for (std::vector<VIDEODB_IDS>::const_iterator it = simpleUpdates.begin(); it != simpleUpdates.end(); ++it)
+  {
+    int i = *it;
+    ProcessValueString(details, offsets, conditions, i);
+  }
+  return StringUtils::Join(conditions, ",");
+}
+
 
 //********************************************************************************************************************************
 int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const map<string, string> &artwork, int idMovie /* = -1 */)
@@ -2079,6 +2095,242 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
       sql += ", idSet = NULL";
     sql += PrepareSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql.c_str());
+    CommitTransaction();
+
+    return idMovie;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+  }
+  RollbackTransaction();
+  return -1;
+}
+
+// Value of MAX means that it's a complex update
+// Value of MIN means that the item will be handled elsewhere
+struct MovieUpdateDetails {
+  static map<std::string,VIDEODB_IDS> create_map()
+    {
+      map<std::string,VIDEODB_IDS> m;
+      m["title"] = VIDEODB_ID_TITLE;
+      m["playcount"] = VIDEODB_ID_MAX;
+      m["runtime"] = VIDEODB_ID_RUNTIME;
+      m["director"] = VIDEODB_ID_DIRECTOR;
+      m["studio"] = VIDEODB_ID_STUDIOS;
+      m["year"] = VIDEODB_ID_YEAR;
+      m["plot"] = VIDEODB_ID_PLOT;
+      m["genre"] = VIDEODB_ID_GENRE;
+      m["rating"] = VIDEODB_ID_RATING;
+      m["mpaa"] = VIDEODB_ID_MPAA;
+      m["imdbnumber"] = VIDEODB_ID_IDENT;
+      m["votes"] = VIDEODB_ID_VOTES;
+      m["originaltitle"] = VIDEODB_ID_ORIGINALTITLE;
+      m["trailer"] = VIDEODB_ID_TRAILER;
+      m["tagline"] = VIDEODB_ID_TAGLINE;
+      m["plotoutline"] = VIDEODB_ID_PLOTOUTLINE;
+      m["writer"] = VIDEODB_ID_CREDITS;
+      m["country"] = VIDEODB_ID_COUNTRY;
+      m["top250"] = VIDEODB_ID_TOP250;
+      m["sorttitle"] = VIDEODB_ID_SORTTITLE;
+      m["set"] = VIDEODB_ID_MAX;
+      m["showlink"] = VIDEODB_ID_MAX;
+      m["fanart"] = VIDEODB_ID_FANART;
+      m["tag"] = VIDEODB_ID_MAX;
+      m["art.altered"] = VIDEODB_ID_MAX;
+      m["art.removed"] = VIDEODB_ID_MAX;
+
+      // just ignore this
+      m["lastplayed"] = VIDEODB_ID_MIN;
+      return m;
+    }
+  static const map<std::string,VIDEODB_IDS> updateDetails;
+};
+
+const map<std::string,VIDEODB_IDS> MovieUpdateDetails::updateDetails = MovieUpdateDetails::create_map();
+
+bool PendingUpdates(const std::set<std::string> &updatedDetails, std::vector<VIDEODB_IDS> &simpleUpdates, std::vector<std::string> &complexUpdates)
+{
+  for (std::set<std::string>::const_iterator it = updatedDetails.begin(); it != updatedDetails.end(); ++it)
+  {
+    std::string updatedDetail = *it;
+
+    // look up in the map.
+    std::map<std::string,VIDEODB_IDS>::const_iterator mapIt = MovieUpdateDetails::updateDetails.find(updatedDetail);
+
+    if (mapIt == MovieUpdateDetails::updateDetails.end())
+    {
+      CLog::Log(LOGWARNING, "%s: called with tag it can't optimise: %s", __FUNCTION__, updatedDetail.c_str());
+      return false;
+    }
+    else if (mapIt->second != VIDEODB_ID_MAX)
+    {
+      simpleUpdates.push_back(mapIt->second);
+    }
+    else
+    {
+      complexUpdates.push_back(mapIt->first);
+    }
+  }
+  return true;
+}
+
+int CVideoDatabase::UpdateDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails,
+  int idMovie /* = -1 */)
+{
+  CLog::Log(LOGDEBUG, "%s: called for Movie %s, id %d", __FUNCTION__, strFilenameAndPath.c_str(), idMovie);
+
+  if (idMovie < 0)
+    idMovie = GetMovieId(strFilenameAndPath);
+
+  if (updatedDetails.size() == 0)
+    return idMovie;
+
+  CLog::Log(LOGDEBUG, "%s: Parsing pending updates", __FUNCTION__);
+  vector<VIDEODB_IDS> simpleUpdates;
+  vector<std::string> complexUpdates;
+  if (idMovie < 0 || !PendingUpdates(updatedDetails, simpleUpdates, complexUpdates))
+  {
+    // this is a new file, or part of the update isn't known.
+    // fall back to the set code
+    RemoveTagsFromItem(idMovie, "movie");
+    return SetDetailsForMovie(strFilenameAndPath, details, artwork, idMovie);      
+  }
+
+  CLog::Log(LOGDEBUG, "%s: starting updates", __FUNCTION__);
+  try
+  {
+    BeginTransaction();
+
+    // process the simple updates
+    for (vector<VIDEODB_IDS>::const_iterator simpleUpdateIt = simpleUpdates.begin() ; simpleUpdateIt != simpleUpdates.end(); ++simpleUpdateIt)
+    {
+      switch (*simpleUpdateIt)
+      {
+      case VIDEODB_ID_GENRE:
+        {
+          CStdString strSQL = PrepareSQL("delete from genrelinkmovie where idMovie=%i", idMovie);
+          m_pDS->exec(strSQL.c_str());
+
+          for (unsigned int i = 0; i < details.m_genre.size(); ++i)
+            AddGenreToMovie(idMovie, AddGenre(details.m_genre[i]));
+        }
+        break;
+
+#if 0
+        // TODO: Updates from JSON can't have the cast set, so this code isn't needed atm
+      case :
+        {
+          CStdString strSQL;
+          strSQL=PrepareSQL("delete from actorlinkmovie where idMovie=%i", idMovie);
+          m_pDS->exec(strSQL.c_str());
+
+          AddCast(idMovie, "movie", "movie", details.m_cast);
+        }
+#endif
+
+      case VIDEODB_ID_DIRECTOR:
+        {
+          CStdString strSQL = PrepareSQL("delete from directorlinkmovie where idMovie=%i", idMovie);
+          m_pDS->exec(strSQL.c_str());
+
+          for (unsigned int i = 0; i < details.m_director.size(); i++)
+            AddDirectorToMovie(idMovie, AddActor(details.m_director[i],""));
+        }
+        break;
+
+      case VIDEODB_ID_STUDIOS:
+        {
+          CStdString strSQL = PrepareSQL("delete from studiolinkmovie where idMovie=%i", idMovie);
+          m_pDS->exec(strSQL.c_str());
+          for (unsigned int i = 0; i < details.m_studio.size(); i++)
+            AddStudioToMovie(idMovie, AddStudio(details.m_studio[i]));
+        }
+        break;
+
+      case VIDEODB_ID_CREDITS:
+        {
+          CStdString strSQL = PrepareSQL("delete from writerlinkmovie where idMovie=%i", idMovie);
+          m_pDS->exec(strSQL.c_str());
+
+          for (unsigned int i = 0; i < details.m_writingCredits.size(); i++)
+            AddWriterToMovie(idMovie, AddActor(details.m_writingCredits[i],""));
+        }
+        break;
+
+      case VIDEODB_ID_COUNTRY:
+        {
+          CStdString strSQL = PrepareSQL("delete from countrylinkmovie where idMovie=%i", idMovie);
+          m_pDS->exec(strSQL.c_str());
+
+          for (unsigned int i = 0; i < details.m_country.size(); i++)
+            AddCountryToMovie(idMovie, AddCountry(details.m_country[i]));
+        }
+        break;
+      default:
+        // Nothing to do for most of the simple changes
+        break;
+      }
+    }
+
+    // track if the set was updated
+    int idSet = -1;
+    bool idSetUpdate = false;
+    
+    CLog::Log(LOGDEBUG, "%s: starting complex updates", __FUNCTION__);
+
+    // process the complex updates
+    for (vector<std::string>::const_iterator complexUpdateIt = complexUpdates.begin() ; complexUpdateIt != complexUpdates.end(); ++complexUpdateIt)
+    {
+      if (*complexUpdateIt == "set")
+      {
+        idSetUpdate = true;
+
+        if (!details.m_strSet.empty())
+        {
+          idSet = AddSet(details.m_strSet);
+          // add art if not available
+          map<string, string> setArt;
+          if (!GetArtForItem(idSet, "set", setArt))
+            SetArtForItem(idSet, "set", artwork);
+        }
+      }
+      else if (*complexUpdateIt == "tag")
+      {
+        RemoveTagsFromItem(idMovie, "movie");
+
+        for (unsigned int i = 0; i < details.m_tags.size(); i++)
+        {
+          int idTag = AddTag(details.m_tags[i]);
+          AddTagToItem(idMovie, idTag, "movie");
+        }
+      }
+      else if (*complexUpdateIt == "art.altered")
+      {
+        SetArtForItem(idMovie, "movie", artwork);
+      }
+    }   
+
+    CLog::Log(LOGDEBUG, "%s: creating update sql query", __FUNCTION__);
+
+    // generate the update SQL string.
+    std::vector<std::string> conditions;
+    if (idSetUpdate)
+    {
+      if (idSet > 0)
+        conditions.push_back(PrepareSQL("idSet = %i", idSet));
+      else
+        conditions.push_back("idSet = NULL");
+    }
+    std::string updateQuery = GetValueString(details, simpleUpdates, DbMovieOffsets, conditions);
+
+    // if there's nothing to update, don't run the query.
+    if (!updateQuery.empty())
+    {
+      CStdString sql = "update movie set " + updateQuery;    
+      sql += PrepareSQL(" where idMovie=%i", idMovie);
+      m_pDS->exec(sql.c_str());
+    }
     CommitTransaction();
 
     return idMovie;
@@ -3806,14 +4058,18 @@ void CVideoDatabase::SetArtForItem(int mediaId, const string &mediaType, const s
     if (artType.find('.') != string::npos)
       return;
 
-    CStdString sql = PrepareSQL("SELECT art_id FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
+    CStdString sql = PrepareSQL("SELECT art_id,url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
     { // update
       int artId = m_pDS->fv(0).get_asInt();
+      std::string oldUrl = m_pDS->fv(1).get_asString();
       m_pDS->close();
-      sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
-      m_pDS->exec(sql.c_str());
+      if (oldUrl != url)
+      {
+        sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
+        m_pDS->exec(sql.c_str());
+      }
     }
     else
     { // insert

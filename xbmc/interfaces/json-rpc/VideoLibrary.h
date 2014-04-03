@@ -76,7 +76,13 @@ namespace JSONRPC
     static JSONRPC_STATUS GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase, bool limit = true);
     static JSONRPC_STATUS GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase, bool limit = true);
     static JSONRPC_STATUS RemoveVideo(const CVariant &parameterObject);
-    static void UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag &details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork);
+    static void UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag &details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork, std::set<std::string> &updatedDetails);
+    static void UpdateVideoTagField(const CVariant &parameterObject, const std::string &fieldName, std::string &fieldValue, std::set<std::string> &updatedDetails);
+    static void UpdateVideoTagField(const CVariant &parameterObject, const std::string &fieldName, int &fieldValue, std::set<std::string> &updatedDetails);
+    static void UpdateVideoTagField(const CVariant &parameterObject, const std::string &fieldName, float &fieldValue, std::set<std::string> &updatedDetails);
+    static void UpdateVideoTagField(const CVariant &parameterObject, const std::string &fieldName, std::vector<std::string> &fieldValue, std::set<std::string> &updatedDetails);
+    static void UpdateVideoTagField(const CVariant &parameterObject, const std::string &fieldName, CDateTime &fieldValue, std::set<std::string> &updatedDetails);
+
     static void UpdateResumePoint(const CVariant &parameterObject, CVideoInfoTag &details, CVideoDatabase &videodatabase);
   };
 }
