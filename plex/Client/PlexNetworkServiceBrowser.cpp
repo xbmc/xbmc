@@ -17,10 +17,19 @@ CPlexNetworkServiceBrowser::handleServiceArrival(NetworkServicePtr &service)
   } catch (...) {
     eprintf("CPlexNetworkServiceBrowser::handleServiceArrival failed to get port?");
   }
-  
-  CPlexConnectionPtr conn = CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED,
-                                                                   service->address().to_string(),
-                                                                   port));
+
+  std::string address = service->address().to_string();
+
+  if (address != "127.0.0.1" && NetworkInterface::IsLocalAddress(address))
+  {
+    CLog::Log(LOGDEBUG,
+              "CPlexNetworkServiceBrowser::handleServiceArrival won't add server %s",
+              address.c_str());
+    return;
+  }
+
+  CPlexConnectionPtr conn =
+      CPlexConnectionPtr(new CPlexConnection(CPlexConnection::CONNECTION_DISCOVERED, address, port));
   server->AddConnection(conn);
 
   g_plexApplication.serverManager->UpdateFromDiscovery(server);
