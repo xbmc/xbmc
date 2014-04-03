@@ -13,7 +13,9 @@
 
 using namespace XFILE;
 
-#define SECTION_REFRESH_INTERVAL 5 * 60 * 1000
+#define SECTION_REFRESH_INTERVAL 30 * 1000
+
+#define OWNED_SERVER_REFRESH 5 * 60 * 1000
 #define SHARED_SERVER_REFRESH 10 * 60 * 1000
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,8 +37,6 @@ void CPlexServerDataLoader::LoadDataFromServer(const CPlexServerPtr &server)
     m_servers[server->GetUUID()] = server;
     CLog::Log(LOGDEBUG, "CPlexServerDataLoader::LoadDataFromServer loading data for server %s", server->GetName().c_str());
     AddJob(new CPlexServerDataLoaderJob(server, shared_from_this()));
-    
-    g_plexApplication.timer->RestartTimeout(SECTION_REFRESH_INTERVAL, this);
   }
 }
 
@@ -303,7 +303,8 @@ void CPlexServerDataLoader::OnTimeout()
 
     if (p.second->GetUUID() != "myplex")
     {
-      if (p.second->GetOwned() || p.second->GetLastRefreshed() > SHARED_SERVER_REFRESH)
+      if ((p.second->GetOwned() && p.second->GetLastRefreshed() > OWNED_SERVER_REFRESH) ||
+          (!p.second->GetOwned() && p.second->GetLastRefreshed() > SHARED_SERVER_REFRESH))
       {
         CLog::Log(LOGDEBUG, "CPlexServerDataLoader::OnTimeout refreshing data for %s", p.second->GetName().c_str());
         AddJob(new CPlexServerDataLoaderJob(p.second, shared_from_this()));
