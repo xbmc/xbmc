@@ -155,6 +155,50 @@ CFileItemListPtr CPlexServerDataLoaderJob::FetchList(const CStdString& path)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexServerDataLoaderJob::loadPreferences()
+{
+  for (int i = 0; i < m_sectionList->Size(); i++)
+  {
+    CFileItemPtr sectionItem = m_sectionList->Get(i);
+    if (sectionItem)
+    {
+      CURL u(sectionItem->GetPath());
+      PlexUtils::AppendPathToURL(u, "prefs");
+      CFileItemList prefsList;
+
+      if (m_dir.GetDirectory(u.Get(), prefsList))
+      {
+        if (prefsList.Size() > 0)
+        {
+          for (int y = 0; y < prefsList.Size(); y++)
+          {
+            CFileItemPtr prefsItem = prefsList.Get(y);
+            if (!prefsItem)
+              continue;
+
+            CStdString key("pref_");
+            key += prefsItem->GetProperty("id").asString();
+            CStdString value = prefsItem->GetProperty("value").asString();
+            CStdString type = prefsItem->GetProperty("type").asString();
+
+            CVariant realValue(value);
+
+            if (type == "bool")
+              realValue = CVariant((bool)(value == "true"));
+            /* FIXME: handle more values */
+
+            sectionItem->SetProperty(key, realValue);
+          }
+        }
+      }
+    }
+
+    if (m_abort)
+      return;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexServerDataLoaderJob::DoWork()
 {
   if (!m_server)
@@ -168,46 +212,12 @@ bool CPlexServerDataLoaderJob::DoWork()
 
     if (m_server->GetOwned() && m_server->GetServerClass().empty())
     {
-      for (int i = 0; i < m_sectionList->Size(); i++)
-      {
-        CFileItemPtr sectionItem = m_sectionList->Get(i);
-        if (sectionItem)
-        {
-          CURL u(sectionItem->GetPath());
-          PlexUtils::AppendPathToURL(u, "prefs");
-          CFileItemList prefsList;
+      loadPreferences();
+      if (m_abort)
+        return false;
 
-          if (m_dir.GetDirectory(u.Get(), prefsList))
-          {
-            if (prefsList.Size() > 0)
-            {
-              for (int y = 0; y < prefsList.Size(); y++)
-              {
-                CFileItemPtr prefsItem = prefsList.Get(y);
-                if (!prefsItem)
-                  continue;
-
-                CStdString key("pref_");
-                key += prefsItem->GetProperty("id").asString();
-                CStdString value = prefsItem->GetProperty("value").asString();
-                CStdString type = prefsItem->GetProperty("type").asString();
-
-                CVariant realValue(value);
-
-                if (type == "bool")
-                  realValue = CVariant((bool)(value == "true"));
-                /* FIXME: handle more values */
-
-                sectionItem->SetProperty(key, realValue);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if (m_server->GetOwned())
       m_channelList = FetchList("/channels/all");
+    }
   }
   else
   {

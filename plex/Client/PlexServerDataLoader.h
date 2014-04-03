@@ -88,7 +88,7 @@ class CPlexServerDataLoaderJob : public CJob
 {
 public:
   CPlexServerDataLoaderJob(const CPlexServerPtr& server, const CPlexServerDataLoaderPtr& loader)
-    : m_server(server), m_loader(loader)
+    : m_server(server), m_loader(loader), m_abort(false)
   {
   }
 
@@ -105,6 +105,7 @@ public:
 
   virtual void Cancel()
   {
+    m_abort = true;
     m_dir.CancelDirectory();
   }
 
@@ -115,4 +116,7 @@ public:
       return true;
     return false;
   }
+
+  bool m_abort;
+  void loadPreferences();
 };
