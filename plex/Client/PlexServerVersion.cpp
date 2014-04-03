@@ -29,15 +29,21 @@ CPlexServerVersion::CPlexServerVersion(const std::string& versionString)
 bool CPlexServerVersion::parse(const std::string& versionString)
 {
   std::vector<std::string> firstSplit = StringUtils::Split(versionString, "-");
+  CStdString versionStr;
+
   if (firstSplit.size() != 2)
   {
-    CLog::Log(LOGWARNING, "CPlexServerVersion::parse could not be split apart: %s",
-              versionString.c_str());
-    return false;
+    gitrev = "";
+    versionStr = versionString;
+  }
+  else
+  {
+    gitrev = firstSplit.at(1);
+    versionStr = firstSplit.at(0);
   }
 
-  gitrev = firstSplit.at(1);
-  std::vector<std::string> dotsplit = StringUtils::Split(firstSplit.at(0), ".");
+  std::vector<std::string> dotsplit = StringUtils::Split(versionStr, ".");
+
   if (dotsplit.size() != 5)
   {
     CLog::Log(LOGWARNING, "CPlexServerVersion::parse could not split apart: %s",

@@ -36,9 +36,9 @@ public:
     CStdString dev;
 
     if (!isDev)
-      dev.Format(".%d", build);
+      dev.Format(".%05d", build);
 
-    shortStr.Format("%d.%d.%d.%d%s", major, minor, micro, patch, dev);
+    shortStr.Format("%02d.%02d.%02d.%02d%s", major, minor, micro, patch, dev);
 
     return shortStr;
   }
