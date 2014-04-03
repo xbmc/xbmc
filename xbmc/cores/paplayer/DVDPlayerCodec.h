@@ -26,7 +26,6 @@
 #include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
 #include "cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodec.h"
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStream.h"
-#include "DllAvUtil.h"
 
 class DVDPlayerCodec : public ICodec
 {
@@ -64,8 +63,6 @@ private:
   CAEChannelInfo m_ChannelInfo;
 
   bool m_bInited;
-
-  DllAvUtil m_dllAvUtil;
 };
 
 #endif
