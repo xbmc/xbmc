@@ -396,6 +396,7 @@ CCurlFile::CCurlFile()
   m_username = "";
   m_password = "";
   m_httpauth = "";
+  m_cipherlist = "DEFAULT";
   m_proxytype = PROXY_HTTP;
   m_state = new CReadState();
   m_oldState = NULL;
@@ -607,6 +608,9 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     // the 302 response's body length, which cause the next read request failed, so we ignore
     // content-length for shoutcast file to workaround this.
     g_curlInterface.easy_setopt(h, CURLOPT_IGNORE_CONTENT_LENGTH, 1);
+
+  // Setup allowed TLS/SSL ciphers. New versions of cURL may deprecate things that are still in use.
+  g_curlInterface.easy_setopt(h, CURLOPT_SSL_CIPHER_LIST, m_cipherlist.c_str());
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
@@ -772,6 +776,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           SetAcceptCharset(value);
         else if (name.Equals("HttpProxy"))
           SetStreamProxy(value, PROXY_HTTP);
+        else if (name.Equals("SSLCipherList"))
+          m_cipherlist = value;
         else
           SetRequestHeader(name, value);
       }
