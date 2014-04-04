@@ -76,12 +76,12 @@ static CPlexServerPtr getServer()
 
 static CPlayQueueManager manager;
 
-TEST(PlayQueueManagerGetCreatePlayQueueURL, validItem)
+TEST(PlayQueueManagerGetPlayQueueURL, validItem)
 {
   CPlexServerPtr server = getServer();
 
-  CURL u = manager.getCreatePlayQueueURL(server, PLEX_MEDIA_TYPE_MUSIC,
-                                         "library://abc123/item/library/sections/2/all");
+  CURL u = manager.getPlayQueueURL(server, PLEX_MEDIA_TYPE_MUSIC,
+                                   "library://abc123/item/library/sections/2/all");
 
   EXPECT_STREQ(u.GetProtocol(), "plexserver");
   EXPECT_STREQ(u.GetHostName(), "abc123");
@@ -92,15 +92,16 @@ TEST(PlayQueueManagerGetCreatePlayQueueURL, validItem)
   EXPECT_FALSE(u.HasOption("limit"));
   EXPECT_FALSE(u.HasOption("continuous"));
   EXPECT_FALSE(u.HasOption("key"));
+  EXPECT_FALSE(u.HasOption("next"));
 }
 
-TEST(PlayQueueManagerGetCreatePlayQueueURL, limit)
+TEST(PlayQueueManagerGetPlayQueueURL, limit)
 {
   CPlexServerPtr server = getServer();
 
-  CURL u = manager.getCreatePlayQueueURL(server, PLEX_MEDIA_TYPE_VIDEO,
-                                         "library://abc123/directory/library/sections/2/all",
-                                         "korv", true, false, 10);
+  CURL u = manager.getPlayQueueURL(server, PLEX_MEDIA_TYPE_VIDEO,
+                                   "library://abc123/directory/library/sections/2/all", "korv",
+                                   true, false, 10);
 
   EXPECT_STREQ(u.GetOption("type"), "video");
   EXPECT_STREQ(u.GetOption("shuffle"), "1");
@@ -108,17 +109,26 @@ TEST(PlayQueueManagerGetCreatePlayQueueURL, limit)
   EXPECT_STREQ(u.GetOption("limit"), "10");
 }
 
-TEST(PlayQueueManagerGetCreatePlayQueueURL, invalidServer)
+TEST(PlayQueueManagerGetPlayQueueURL, invalidServer)
 {
-  CURL u = manager.getCreatePlayQueueURL(CPlexServerPtr(), PLEX_MEDIA_TYPE_MUSIC, "");
+  CURL u = manager.getPlayQueueURL(CPlexServerPtr(), PLEX_MEDIA_TYPE_MUSIC, "");
   EXPECT_TRUE(u.Get().empty());
 }
 
-TEST(PlayQueueManagerGetCreatePlayQueueURL, haveKey)
+TEST(PlayQueueManagerGetPlayQueueURL, haveKey)
 {
   CPlexServerPtr server = getServer();
-  CURL u = manager.getCreatePlayQueueURL(server, PLEX_MEDIA_TYPE_MUSIC, "uri", "item");
+  CURL u = manager.getPlayQueueURL(server, PLEX_MEDIA_TYPE_MUSIC, "uri", "item");
   EXPECT_STREQ(u.GetOption("key"), "item");
+}
+
+TEST(PlayQueueManagerGetPlayQueueURL, hasNext)
+{
+  CPlexServerPtr server = getServer();
+  CURL u =
+    manager.getPlayQueueURL(server, PLEX_MEDIA_TYPE_MUSIC, "uri", "item", false, false, 0, true);
+  EXPECT_STREQ(u.GetOption("key"), "item");
+  EXPECT_TRUE(u.HasOption("next"));
 }
 
 TEST(CPlayQueueManagerGetPlaylistFromString, basic)

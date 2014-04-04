@@ -749,21 +749,27 @@ void CGUIPlexMediaWindow::GetContextButtons(int itemNumber, CContextButtons &but
   if (!item)
     return;
 
-  int currentPlaylist = ContainerPlaylistType();
+  if (PlexUtils::IsPlayingPlaylist())
+    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
 
-  if (currentPlaylist != PLAYLIST_NONE)
+  if (!PlexUtils::IsPlayingPlaylist())
   {
-    if (g_playlistPlayer.GetPlaylist(currentPlaylist).size() > 0)
+    buttons.Add(CONTEXT_BUTTON_SHUFFLE, 52600);
+    buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 52601);
+
+    if (!item->m_bIsFolder && item->CanQueue())
+      buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
+  }
+  else
+  {
+    if ((IsVideoContainer() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) ||
+        (IsMusicContainer() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC))
     {
-      buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+      // now enable queueing
+      buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);
+      buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS,52602);
     }
   }
-
-  buttons.Add(CONTEXT_BUTTON_SHUFFLE, 52600);
-  buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 52601);
-
-  if (!item->m_bIsFolder && item->CanQueue())
-    buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
 
   if (IsVideoContainer() && item->IsPlexMediaServerLibrary())
   {
@@ -801,8 +807,6 @@ bool CGUIPlexMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (IsVideoContainer() && g_application.IsPlayingVideo())
         g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-      else if (IsVideoContainer() && g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
-        CApplicationMessenger::Get().MediaPlay(PLAYLIST_VIDEO);
       else if (IsMusicContainer() && g_application.IsPlayingAudio())
         g_windowManager.ActivateWindow(WINDOW_NOW_PLAYING);
        break;
@@ -867,11 +871,22 @@ void CGUIPlexMediaWindow::PlayAllPlayQueue(const CPlexServerPtr& server, bool sh
 
 
   CURL uriPart("plexserver://plex");
-  uriPart.SetFileName(m_sectionRoot.GetFileName());
-
+  CURL itemsUrl(m_vecItems->GetPath());
   CPlexSectionFilterPtr filter = g_plexApplication.filterManager->getFilterForSection(m_sectionRoot.Get());
-  if (filter)
-    uriPart = filter->addFiltersToUrl(uriPart);
+
+  if (m_startDirectory == itemsUrl.GetUrlWithoutOptions())
+  {
+    uriPart.SetFileName(m_sectionRoot.GetFileName());
+    if (filter)
+      uriPart = filter->addFiltersToUrl(uriPart);
+  }
+  else
+  {
+    uriPart.SetFileName(itemsUrl.GetFileName());
+    if (filter && filter->getSecondaryFilterOfName("unwatchedLeaves") &&
+        filter->getSecondaryFilterOfName("unwatchedLeaves")->isSelected())
+      uriPart.SetOption("unwatched", "1");
+  }
 
   // take out the plexserver://plex part from above when passing it down
   CStdString uri = CPlayQueueManager::getURIFromItem(*m_vecItems, uriPart.Get().substr(17, std::string::npos));

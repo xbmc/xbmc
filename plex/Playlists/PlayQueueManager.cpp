@@ -113,7 +113,8 @@ CStdString CPlayQueueManager::getURIFromItem(const CFileItem& item, const CStdSt
     return "";
   }
 
-  CStdString realURI = uri.empty() ? (CStdString)item.GetProperty("unprocessed_key").asString() : uri;
+  CStdString realURI =
+  uri.empty() ? (CStdString)item.GetProperty("unprocessed_key").asString() : uri;
   CURL::Encode(realURI);
 
   CStdString ret;
@@ -145,9 +146,9 @@ bool CPlayQueueManager::createPlayQueueFromItem(const CPlexServerPtr& server,
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CURL CPlayQueueManager::getCreatePlayQueueURL(const CPlexServerPtr& server, ePlexMediaType type,
-                                              const std::string& uri, const std::string& key,
-                                              bool shuffle, bool continuous, int limit)
+CURL CPlayQueueManager::getPlayQueueURL(const CPlexServerPtr& server, ePlexMediaType type,
+                                        const std::string& uri, const std::string& key,
+                                        bool shuffle, bool continuous, int limit, bool next)
 {
   if (!server)
     return CURL();
@@ -172,8 +173,33 @@ CURL CPlayQueueManager::getCreatePlayQueueURL(const CPlexServerPtr& server, ePle
     u.SetOption("continuous", "1");
   if (limit > 0)
     u.SetOption("limit", boost::lexical_cast<std::string>(limit));
+  if (next)
+    u.SetOption("next", "1");
 
   return u;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CPlayQueueManager::addItemToCurrentPlayQueue(const CFileItemPtr& item, bool playNext)
+{
+  CStdString uri = getURIFromItem(*item);
+  CPlexServerPtr server = g_plexApplication.serverManager->FindFromItem(item);
+
+  if (server)
+  {
+    CURL u = getPlayQueueURL(server, PlexUtils::GetMediaTypeFromItem(item), uri, "", false, false,
+                             0, playNext);
+
+    if (u.Get().empty())
+      return false;
+
+    CPlexDirectoryFetchJob* job = new CPlexDirectoryFetchJob(u);
+    job->m_dir.SetHTTPVerb("PUT");
+    CJobManager::GetInstance().AddJob(job, this);
+    return true;
+  }
+
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,13 +207,13 @@ bool CPlayQueueManager::createPlayQueue(const CPlexServerPtr& server, ePlexMedia
                                         const std::string& uri, const std::string& key,
                                         bool shuffle, bool continuous, int limit)
 {
-  CURL u = getCreatePlayQueueURL(server, type, uri, key, shuffle, continuous, limit);
+  CURL u = getPlayQueueURL(server, type, uri, key, shuffle, continuous, limit);
 
   if (u.Get().empty())
     return false;
 
   CPlexDirectoryFetchJob* job = new CPlexDirectoryFetchJob(u);
-  job->m_dir.DoPost(true);
+  job->m_dir.SetHTTPVerb("POST");
   CJobManager::GetInstance().AddJob(job, this);
   return true;
 }

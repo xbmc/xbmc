@@ -13,14 +13,16 @@ public:
   bool createPlayQueue(const CPlexServerPtr& server, ePlexMediaType type, const std::string& uri,
                        const std::string& key, bool shuffle = false, bool continuous = false,
                        int limit = 0);
+
+  bool addItemToCurrentPlayQueue(const CFileItemPtr& item, bool playNext);
   bool createPlayQueueFromItem(const CPlexServerPtr& server, const CFileItemPtr& item,
                                bool shuffle = false, bool continuous = false, int limit = 0);
 
-  static CStdString getURIFromItem(const CFileItem &item, const CStdString &uri = "");
+  static CStdString getURIFromItem(const CFileItem& item, const CStdString& uri = "");
 
-  CURL getCreatePlayQueueURL(const CPlexServerPtr& server, ePlexMediaType type,
-                             const std::string& uri, const std::string& key = "",
-                             bool shuffle = false, bool continuous = false, int limit = 0);
+  CURL getPlayQueueURL(const CPlexServerPtr& server, ePlexMediaType type, const std::string& uri,
+                       const std::string& key = "", bool shuffle = false, bool continuous = false,
+                       int limit = 0, bool next = false);
 
   int getPlaylistFromString(const CStdString& typeStr);
 
