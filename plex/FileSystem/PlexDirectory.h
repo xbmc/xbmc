@@ -31,7 +31,7 @@ namespace XFILE
   class CPlexDirectory : public IDirectory
   {
   public:
-    CPlexDirectory() : m_doPost(false)
+    CPlexDirectory() : m_verb("GET")
     {
     }
 
@@ -58,9 +58,9 @@ namespace XFILE
 
     static CStdString GetContentFromType(EPlexDirectoryType typeNr);
 
-    void DoPost(bool post)
+    void SetHTTPVerb(const CStdString& verb)
     {
-      m_doPost = post;
+      m_verb = verb;
     }
 
     /* Legacy functions we need to revisit */
@@ -110,7 +110,7 @@ namespace XFILE
 
     CPlexFile m_file;
 
-    bool m_doPost;
+    CStdString m_verb;
   };
 }
 

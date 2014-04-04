@@ -97,10 +97,12 @@ CPlexDirectory::GetDirectory(const CURL& url, CFileItemList& fileItems)
   CStopWatch httpTimer;
   httpTimer.StartZero();
 
-  if (m_doPost || !m_body.empty())
+  if (m_verb == "POST" || !m_body.empty())
     httpSuccess = m_file.Post(m_url.Get(), m_body, m_data);
-  else
+  else if (m_verb == "GET")
     httpSuccess = m_file.Get(m_url.Get(), m_data);
+  else if (m_verb == "PUT")
+    httpSuccess = m_file.Put(m_url.Get(), m_data);
 
   if (!httpSuccess)
   {
