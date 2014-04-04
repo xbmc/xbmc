@@ -149,6 +149,7 @@ CActiveAE::CActiveAE() :
   m_vizBuffers = NULL;
   m_vizBuffersInput = NULL;
   m_volume = 1.0;
+  m_volumeScaled = 1.0;
   m_aeVolume = 1.0;
   m_muted = false;
   m_aeMuted = false;
@@ -225,6 +226,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           return;
         case CActiveAEControlProtocol::VOLUME:
           m_volume = *(float*)msg->data;
+          m_volumeScaled = CAEUtil::GainToScale(CAEUtil::PercentToGain(m_volume));
           if (m_sinkHasVolume)
             m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::VOLUME, &m_volume, sizeof(float));
           return;
@@ -2068,11 +2070,11 @@ void CActiveAE::MixSounds(CSoundPacket &dstSample)
 
 void CActiveAE::Deamplify(CSoundPacket &dstSample)
 {
-  if (m_volume < 1.0 || m_muted)
+  if (m_volumeScaled < 1.0 || m_muted)
   {
     float *buffer;
     int nb_floats = dstSample.nb_samples * dstSample.config.channels / dstSample.planes;
-    float volume = m_muted ? 0.0f : m_volume;
+    float volume = m_muted ? 0.0f : m_volumeScaled;
 
     for(int j=0; j<dstSample.planes; j++)
     {

@@ -5352,16 +5352,7 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
   hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
   m_volumeLevel = hardwareVolume;
 
-  float value = 0.0f;
-  if (hardwareVolume > VOLUME_MINIMUM)
-  {
-    float dB = CAEUtil::PercentToGain(hardwareVolume);
-    value = CAEUtil::GainToScale(dB);
-  }
-  if (value >= 0.99f)
-    value = 1.0f;
-
-  CAEFactory::SetVolume(value);
+  CAEFactory::SetVolume(hardwareVolume);
 }
 
 float CApplication::GetVolume(bool percentage /* = true */) const
