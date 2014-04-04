@@ -724,7 +724,6 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   format.m_sampleRate = m_audioSink->getRealisedSampleRate();
   m_format = format;
 
-  m_volume_changed = false;
   m_audioSink->play(false);
 
   return true;
@@ -797,14 +796,6 @@ void CAESinkDARWINIOS::Drain()
 bool CAESinkDARWINIOS::HasVolume()
 {
   return false;
-}
-
-void  CAESinkDARWINIOS::SetVolume(float scale)
-{
-  // CoreAudio uses fixed steps, reverse scale back to percent
-  float gain = CAEUtil::ScaleToGain(scale);
-  m_volume = CAEUtil::GainToPercent(gain);
-  m_volume_changed = true;
 }
 
 void CAESinkDARWINIOS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)

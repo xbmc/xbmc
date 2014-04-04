@@ -108,7 +108,11 @@ public:
    */
   static inline const float GainToScale(const float dB)
   {
-    return pow(10.0f, dB/20);
+    float val = pow(10.0f, dB/20);
+    if (val >= 0.99f)
+      val = 1.0f;
+
+    return val;
   }
 
   /*! \brief convert a scale factor to dB gain for audio manipulation

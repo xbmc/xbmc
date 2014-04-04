@@ -337,7 +337,8 @@ protected:
   std::list<SoundState> m_sounds_playing;
   std::vector<CActiveAESound*> m_sounds;
 
-  float m_volume;
+  float m_volume; // volume on a 0..1 scale corresponding to a proportion along the dB scale
+  float m_volumeScaled; // multiplier to scale samples in order to achieve the volume specified in m_volume
   bool m_muted;
   bool m_sinkHasVolume;
 
