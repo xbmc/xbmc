@@ -49,6 +49,7 @@ private:
     static DWORD        SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
     static void         BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
     static void         BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
+    bool IsUSBDevice();
 
     static const char  *WASAPIErrToStr(HRESULT err);
 

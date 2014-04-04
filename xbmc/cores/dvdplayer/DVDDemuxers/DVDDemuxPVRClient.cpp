@@ -252,7 +252,7 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
 
 
     CHECK_UPDATE(st, profile, pvr->m_context->profile , FF_PROFILE_UNKNOWN);
-    CHECK_UPDATE(st, level  , pvr->m_context->level   , 0);
+    CHECK_UPDATE(st, level  , pvr->m_context->level   , FF_LEVEL_UNKNOWN);
 
     switch (st->type)
     {

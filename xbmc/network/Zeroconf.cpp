@@ -45,6 +45,8 @@ class CZeroconfDummy : public CZeroconf
   {
     return false;
   }
+
+  virtual bool doForceReAnnounceService(const std::string&){return false;} 
   virtual bool doRemoveService(const std::string& fcr_ident){return false;}
   virtual void doStop(){}
 };
@@ -91,6 +93,15 @@ bool CZeroconf::RemoveService(const std::string& fcr_identifier)
     return doRemoveService(fcr_identifier);
   else
     return true;
+}
+
+bool CZeroconf::ForceReAnnounceService(const std::string& fcr_identifier)
+{
+  if (HasService(fcr_identifier) && m_started)
+  {
+    return doForceReAnnounceService(fcr_identifier);
+  }
+  return false;
 }
 
 bool CZeroconf::HasService(const std::string& fcr_identifier) const

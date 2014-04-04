@@ -337,6 +337,7 @@
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
 #include "android/activity/AndroidFeatures.h"
+#include "android/jni/Build.h"
 #endif
 
 #ifdef TARGET_WINDOWS
@@ -734,6 +735,8 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Running on Darwin iOS %d-bit %s%s", g_sysinfo.GetKernelBitness(), g_sysinfo.IsAppleTV2() ? "(AppleTV2) " : "", g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_FREEBSD)
   CLog::Log(LOGNOTICE, "Running on FreeBSD %d-bit %s", g_sysinfo.GetKernelBitness(), g_sysinfo.GetUnameVersion().c_str());
+#elif defined(TARGET_ANDROID)
+  CLog::Log(LOGNOTICE, "Running on Android %d-bit API level %d (%s, %s)", g_sysinfo.GetKernelBitness(), CJNIBuild::SDK_INT, g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_POSIX)
   CLog::Log(LOGNOTICE, "Running on Linux %d-bit (%s, %s)", g_sysinfo.GetKernelBitness(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str());
 #elif defined(TARGET_WINDOWS)
@@ -746,6 +749,13 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
   CLog::Log(LOGNOTICE, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
 #endif
+#if defined(TARGET_ANDROID)
+  CLog::Log(LOGNOTICE,
+        "Product: %s, Device: %s, Board: %s - Manufacturer: %s, Brand: %s, Model: %s, Hardware: %s",
+        CJNIBuild::PRODUCT.c_str(), CJNIBuild::DEVICE.c_str(), CJNIBuild::BOARD.c_str(),
+        CJNIBuild::MANUFACTURER.c_str(), CJNIBuild::BRAND.c_str(), CJNIBuild::MODEL.c_str(), CJNIBuild::HARDWARE.c_str());
+#endif
+
 #if defined(__arm__)
   if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
     CLog::Log(LOGNOTICE, "ARM Features: Neon enabled");
@@ -4705,24 +4715,12 @@ void CApplication::SetInBackground(bool background)
 void CApplication::CheckShutdown()
 {
   // first check if we should reset the timer
-  bool resetTimer = m_bInhibitIdleShutdown;
-
-  if (m_pPlayer->IsPlaying() || m_pPlayer->IsPausedPlayback()) // is something playing?
-    resetTimer = true;
-
-  if (m_musicInfoScanner->IsScanning())
-    resetTimer = true;
-
-  if (m_videoInfoScanner->IsScanning())
-    resetTimer = true;
-
-  if (g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
-    resetTimer = true;
-
-  if (CSettings::Get().GetBool("pvrmanager.enabled") &&  !g_PVRManager.IsIdle())
-    resetTimer = true;
-
-  if (resetTimer)
+  if (m_bInhibitIdleShutdown
+      || m_pPlayer->IsPlaying() || m_pPlayer->IsPausedPlayback() // is something playing?
+      || m_musicInfoScanner->IsScanning()
+      || m_videoInfoScanner->IsScanning()
+      || g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS) // progress dialog is onscreen
+      || (CSettings::Get().GetBool("pvrmanager.enabled") && !g_PVRManager.IsIdle()))
   {
     m_shutdownTimer.StartZero();
     return;
@@ -4993,7 +4991,6 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
   //We don't know if there is unsecure information in this yet, so we
   //postpone any logging
   const std::string in_actionStr(actionStr);
-  CLog::Log(LOGDEBUG,"%s : Translating action string", __FUNCTION__);
   CGUIInfoLabel info(actionStr, "");
   actionStr = info.GetLabel(0);
 

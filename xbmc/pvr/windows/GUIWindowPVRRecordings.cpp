@@ -402,6 +402,9 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
 
 void CGUIWindowPVRRecordings::BeforeUpdate(const CStdString &strDirectory)
 {
+  // set items path to current directory
+  m_parent->m_vecItems->SetPath(strDirectory);
+
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 }

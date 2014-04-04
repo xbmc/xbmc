@@ -591,7 +591,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
   // broadcom omx entension:
   // When enabled, the timestamp fifo mode will change the way incoming timestamps are associated with output images.
   // In this mode the incoming timestamps get used without re-ordering on output images.
-  if(hints.ptsinvalid)
+  // recent firmware will actually automatically choose the timestamp stream with the least variance, so always enable
   {
     OMX_CONFIG_BOOLEANTYPE timeStampMode;
     OMX_INIT_STRUCTURE(timeStampMode);
@@ -835,9 +835,6 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
 
   OMX_INIT_STRUCTURE(configDisplay);
   configDisplay.nPortIndex = m_omx_render.GetInputPort();
-  configDisplay.fullscreen = OMX_FALSE;
-  configDisplay.noaspect   = OMX_TRUE;
-
   configDisplay.set                 = (OMX_DISPLAYSETTYPE)(OMX_DISPLAY_SET_DEST_RECT|OMX_DISPLAY_SET_SRC_RECT|OMX_DISPLAY_SET_FULLSCREEN|OMX_DISPLAY_SET_NOASPECT);
   configDisplay.dest_rect.x_offset  = (int)(DestRect.x1+0.5f);
   configDisplay.dest_rect.y_offset  = (int)(DestRect.y1+0.5f);
@@ -849,7 +846,10 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
   configDisplay.src_rect.width      = (int)(SrcRect.Width()+0.5f);
   configDisplay.src_rect.height     = (int)(SrcRect.Height()+0.5f);
 
-  configDisplay.fullscreen          = configDisplay.dest_rect.width == 0 || configDisplay.dest_rect.width == 0 ? OMX_TRUE : OMX_FALSE;
+  if (configDisplay.dest_rect.width == 0 || configDisplay.dest_rect.height == 0)
+    configDisplay.fullscreen = OMX_TRUE;
+  else
+    configDisplay.noaspect = OMX_TRUE;
 
   m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
 

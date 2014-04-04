@@ -648,7 +648,7 @@ bool CGUIControlEditSetting::InputValidation(const std::string &input, void *dat
   if (editControl == NULL || editControl->GetSetting() == NULL)
     return true;
 
-  return editControl->GetSetting()->FromString(input);
+  return editControl->GetSetting()->CheckValidity(input);
 }
 
 CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int id)

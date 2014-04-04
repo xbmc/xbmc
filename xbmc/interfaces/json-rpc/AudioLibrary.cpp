@@ -465,7 +465,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const CStdString &method, ITranspo
   if (ParameterNotNull(parameterObject, "year"))
     album.iYear = (int)parameterObject["year"].asInteger();
 
-  if (musicdatabase.UpdateAlbum(album) <= 0)
+  if (!musicdatabase.UpdateAlbum(album))
     return InternalError;
 
   CJSONRPCUtils::NotifyItemUpdated();

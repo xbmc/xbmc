@@ -103,11 +103,13 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "MPEG2 MoComp", &DXVA2_ModeMPEG2_MoComp,  0 },
     { "MPEG2 IDCT",   &DXVA2_ModeMPEG2_IDCT,    0 },
 
-    // Intel drivers return standard modes in addition to the Intel specific ones. Try the Intel specific first, they work better for Sandy Bridges.
+#ifndef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
+    /* We must prefer Intel specific ones if the flag doesn't exists */
     { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, AV_CODEC_ID_H264 },
     { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0 },
     { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0 },
     { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
+#endif
 
     { "H.264 variable-length decoder (VLD), FGT",               &DXVA2_ModeH264_F, AV_CODEC_ID_H264 },
     { "H.264 VLD, no FGT",                                      &DXVA2_ModeH264_E, AV_CODEC_ID_H264 },
@@ -130,6 +132,14 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "VC-1 IDCT",            &DXVA2_ModeVC1_C,    0 },
     { "VC-1 MoComp",          &DXVA2_ModeVC1_B,    0 },
     { "VC-1 post processing", &DXVA2_ModeVC1_A,    0 },
+
+#ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
+    /* Intel specific modes (only useful on older GPUs) */
+    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, AV_CODEC_ID_H264 },
+    { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0 },
+    { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0 },
+    { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
+#endif
 
     { NULL, NULL, 0 }
 };
@@ -689,7 +699,16 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   avctx->release_buffer  = RelBufferS;
   avctx->hwaccel_context = m_context;
 
-  if (IsL41LimitedATI())
+  D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
+  if (AIdentifier.VendorId == PCIV_Intel && m_input == DXVADDI_Intel_ModeH264_E)
+  {
+#ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
+    m_context->workaround |= FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO;
+#else
+    CLog::Log(LOGWARNING, "DXVA - used Intel ClearVideo decoder, but no support workaround for it in libavcodec");
+#endif
+  }
+  else if (AIdentifier.VendorId == PCIV_ATI && IsL41LimitedATI())
   {
 #ifdef FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG
     m_context->workaround |= FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG;

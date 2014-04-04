@@ -471,17 +471,10 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const CStdString &path, CStreamD
       CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
       CDemuxStream* stream = v.GetStream(i);
       std::string lang = stream->language;
-      if (lang.length() == 2)
-      {
-        CStdString lang3;
-        g_LangCodeExpander.ConvertToThreeCharCode(lang3, lang);
-        dsub->m_strLanguage = lang3;
-      }
-      else
-        dsub->m_strLanguage = lang;
-
-      return true;
+      dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392T(lang);
+      details.AddStream(dsub);
     }
+    return true;
   }
   if(ext == ".sub")
   {
@@ -493,7 +486,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const CStdString &path, CStreamD
   CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
   ExternalStreamInfo info;
   CUtil::GetExternalStreamDetailsFromFilename(path, filename, info);
-  dsub->m_strLanguage = info.language;
+  dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392T(info.language);
   details.AddStream(dsub);
 
   return true;

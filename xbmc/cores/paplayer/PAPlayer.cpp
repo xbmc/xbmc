@@ -160,13 +160,16 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
   /* if we are going to wait for them to finish fading */
   if(wait)
   {
+    // fail safe timer, do not wait longer than 1000ms
+    XbmcThreads::EndTime timer(1000);
+
     /* wait for them to fade out */
     lock.Leave();
     Sleep(FAST_XFADE_TIME);
     lock.Enter();
 
     /* be sure they have faded out */
-    while(wait && !CAEFactory::IsSuspended())
+    while(wait && !CAEFactory::IsSuspended() && !timer.IsTimePast())
     {
       wait = false;
       for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
@@ -250,8 +253,19 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_isPaused = false; // Make sure to reset the pause state
   }
 
-  if (!QueueNextFileEx(file, false))
-    return false;
+  // if audio engine is suspended i.e. by a DisplayLost event (HDMI), MakeStream
+  // waits until the engine is resumed. if we block the main thread here, it can't
+  // resume the engine after a DisplayReset event
+  if (CAEFactory::IsSuspended())
+  {
+    if (!QueueNextFile(file))
+      return false;
+  }
+  else
+  {
+    if (!QueueNextFileEx(file, false))
+      return false;
+  }
 
   CSharedLock lock(m_streamsLock);
   if (m_streams.size() == 2)
@@ -1031,7 +1045,6 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
   CSharedLock lock(m_streamsLock);
 
   m_playerGUIData.m_sampleRate    = si->m_sampleRate;
-  m_playerGUIData.m_bitsPerSample = si->m_bytesPerSample << 3;
   m_playerGUIData.m_channelCount  = si->m_channelInfo.Count();
   m_playerGUIData.m_canSeek       = si->m_decoder.CanSeek();
 
@@ -1040,6 +1053,7 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
   m_playerGUIData.m_audioBitrate = codec ? codec->m_Bitrate : 0;
   strncpy(m_playerGUIData.m_codec,codec ? codec->m_CodecName : "",20);
   m_playerGUIData.m_cacheLevel   = codec ? codec->GetCacheLevel() : 0;
+  m_playerGUIData.m_bitsPerSample = (codec && codec->m_BitsPerCodedSample) ? codec->m_BitsPerCodedSample : si->m_bytesPerSample << 3;
 
   int64_t total = si->m_decoder.TotalTime();
   if (si->m_endOffset)

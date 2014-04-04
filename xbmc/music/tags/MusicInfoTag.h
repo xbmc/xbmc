@@ -46,7 +46,7 @@ enum ReplayGain
 
 namespace MUSIC_INFO
 {
-  class EmbeddedArtInfo
+  class EmbeddedArtInfo : public IArchivable
   {
   public:
     EmbeddedArtInfo() {};
@@ -55,6 +55,7 @@ namespace MUSIC_INFO
     void clear();
     bool empty() const;
     bool matches(const EmbeddedArtInfo &right) const;
+    virtual void Archive(CArchive& ar);
     size_t      size;
     std::string mime;
   };

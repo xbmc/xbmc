@@ -39,3 +39,7 @@ msgstr "Подробно описване в дневника на RTMP библ
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Подробно описване в дневника на DBUS обажданията"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Подробно описване в дневника на JSON-RPC заявките"

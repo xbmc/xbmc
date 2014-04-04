@@ -45,6 +45,7 @@ public:
   static int64_t TIME;
   static std::string USER;
   static std::string HOST;
+  static int SDK_INT;
   static std::string getRadioVersion();
 
   static void PopulateStaticFields();

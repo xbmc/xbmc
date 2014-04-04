@@ -39,3 +39,7 @@ msgstr "RTMP 라이브러리를 자세히 로깅"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "DBUS 콜을 자세히 로깅"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC 요청을 자세히 로깅"

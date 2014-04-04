@@ -55,6 +55,20 @@ bool EmbeddedArtInfo::matches(const EmbeddedArtInfo &right) const
           mime == right.mime);
 }
 
+void EmbeddedArtInfo::Archive(CArchive &ar)
+{
+  if (ar.IsStoring())
+  {
+    ar << size;
+    ar << mime;
+  }
+  else
+  {
+    ar >> size;
+    ar >> mime;
+  }
+}
+
 EmbeddedArt::EmbeddedArt(const uint8_t *dat, size_t siz, const std::string &mim)
 {
   set(dat, siz, mim);
@@ -543,6 +557,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetComment(song.strComment);
   SetPlayCount(song.iTimesPlayed);
   SetLastPlayed(song.lastPlayed);
+  SetCoverArtInfo(song.embeddedArt.size, song.embeddedArt.mime);
   m_rating = song.rating;
   m_strURL = song.strFileName;
   SYSTEMTIME stTime;
@@ -646,6 +661,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_strLyrics;
     ar << m_bCompilation;
     ar << m_listeners;
+    ar << m_coverArt;
   }
   else
   {
@@ -674,6 +690,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_strLyrics;
     ar >> m_bCompilation;
     ar >> m_listeners;
+    ar >> m_coverArt;
   }
 }
 

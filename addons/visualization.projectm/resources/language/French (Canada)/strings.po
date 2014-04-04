@@ -42,11 +42,11 @@ msgstr "Mode Aléatoire"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
-msgstr "Lisser la durée de la présélection"
+msgstr "Lisser la durée du préréglage"
 
 msgctxt "#30007"
 msgid "Preset Duration"
-msgstr "Durée de la présélection"
+msgstr "Durée du préréglage"
 
 msgctxt "#30008"
 msgid "Beat Sensitivity"
@@ -54,7 +54,7 @@ msgstr "Sensibilité au tempo"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Pack de présélections"
+msgstr "Pack de préréglages"
 
 msgctxt "#30010"
 msgid "Default Pack"
@@ -62,11 +62,11 @@ msgstr "Paquet par défaut"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"
-msgstr "Dossier de présélections de l'utilisateur"
+msgstr "Dossier de préréglages de l'utilisateur"
 
 msgctxt "#30012"
 msgid "User Preset Folder"
-msgstr "Dossier de présélections de l'utilisateur"
+msgstr "Dossier de préréglages de l'utilisateur"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

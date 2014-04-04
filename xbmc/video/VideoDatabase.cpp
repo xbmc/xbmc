@@ -1909,6 +1909,9 @@ bool CVideoDatabase::GetFileInfo(const CStdString& strFilenameAndPath, CVideoInf
       details.m_resumePoint.type = CBookmark::RESUME;
     }
 
+    // get streamdetails
+    GetStreamDetails(details);
+
     return !details.IsEmpty();
   }
   catch (...)
@@ -8941,7 +8944,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
           filename += StringUtils::Format("_%i", info.m_iYear);
         CFileItem artItem(item);
         artItem.SetPath(GetSafeFile(musicvideosDir, filename) + ".avi");
-        scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
+        scanner.GetArtwork(&artItem, CONTENT_MUSICVIDEOS, useFolders, true, actorsDir);
         item.SetArt(artItem.GetArt());
         scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders, true, NULL, true);
         current++;
@@ -8958,7 +8961,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         CFileItem artItem(showItem);
         CStdString artPath(GetSafeFile(tvshowsDir, info.m_strTitle));
         artItem.SetPath(artPath);
-        scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
+        scanner.GetArtwork(&artItem, CONTENT_TVSHOWS, useFolders, true, actorsDir);
         showItem.SetArt(artItem.GetArt());
         int showID = scanner.AddVideo(&showItem, CONTENT_TVSHOWS, useFolders, true, NULL, true);
         // season artwork
@@ -8982,7 +8985,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
           CStdString filename = StringUtils::Format("s%02ie%02i.avi", info.m_iSeason, info.m_iEpisode);
           CFileItem artItem(item);
           artItem.SetPath(GetSafeFile(artPath, filename));
-          scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
+          scanner.GetArtwork(&artItem, CONTENT_TVSHOWS, useFolders, true, actorsDir);
           item.SetArt(artItem.GetArt());
           scanner.AddVideo(&item,CONTENT_TVSHOWS, false, false, showItem.GetVideoInfoTag(), true);
           episode = episode->NextSiblingElement("episodedetails");

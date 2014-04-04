@@ -873,6 +873,13 @@ typedef struct AVStream {
      */
     int pts_wrap_behavior;
 
+    /**
+      * Internal data to analyze DTS and detect faulty mpeg streams
+      */
+    int64_t last_dts_for_order_check;
+    uint8_t dts_ordered;
+    uint8_t dts_misordered;
+
 } AVStream;
 
 #define AV_PROGRAM_RUNNING 1

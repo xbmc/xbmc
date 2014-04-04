@@ -39,3 +39,7 @@ msgstr "Подробный журнал для библиотеки RTMP"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Подробный журнал для вызовов DBUS"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Подробный журнал для запросов JSON-RPC "

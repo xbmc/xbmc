@@ -358,8 +358,8 @@ RECT CWinSystemWin32::ScreenRect(int screen)
   const MONITOR_DETAILS &details = GetMonitor(screen);
 
   DEVMODEW sDevMode;
-  ZeroMemory(&sDevMode, sizeof(DEVMODE));
-  sDevMode.dmSize = sizeof(DEVMODE);
+  ZeroMemory(&sDevMode, sizeof(sDevMode));
+  sDevMode.dmSize = sizeof(sDevMode);
   if(!EnumDisplaySettingsW(details.DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode))
     CLog::Log(LOGERROR, "%s : EnumDisplaySettings failed with %d", __FUNCTION__, GetLastError());
 
@@ -445,8 +445,8 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
   const MONITOR_DETAILS &details = GetMonitor(res.iScreen);
 
   DEVMODEW sDevMode;
-  ZeroMemory(&sDevMode, sizeof(DEVMODE));
-  sDevMode.dmSize = sizeof(DEVMODE);
+  ZeroMemory(&sDevMode, sizeof(sDevMode));
+  sDevMode.dmSize = sizeof(sDevMode);
 
   // If we can't read the current resolution or any detail of the resolution is different than res
   if (!EnumDisplaySettingsW(details.DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode) ||
@@ -455,8 +455,8 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
       ((sDevMode.dmDisplayFlags & DM_INTERLACED) && !(res.dwFlags & D3DPRESENTFLAG_INTERLACED)) ||
       (!(sDevMode.dmDisplayFlags & DM_INTERLACED) && (res.dwFlags & D3DPRESENTFLAG_INTERLACED)) )
   {
-    ZeroMemory(&sDevMode, sizeof(DEVMODE));
-    sDevMode.dmSize = sizeof(DEVMODE);
+    ZeroMemory(&sDevMode, sizeof(sDevMode));
+    sDevMode.dmSize = sizeof(sDevMode);
     sDevMode.dmDriverExtra = 0;
     sDevMode.dmPelsWidth = res.iWidth;
     sDevMode.dmPelsHeight = res.iHeight;

@@ -30,7 +30,7 @@ msgstr "Dodatkowy czas losowy"
 
 msgctxt "#30003"
 msgid "Lock Preset"
-msgstr "Zablokuj efekty"
+msgstr "Zablokuj ustawione efekty"
 
 msgctxt "#30004"
 msgid "Enable Transitions"
@@ -46,7 +46,7 @@ msgstr "Pokaż FPS "
 
 msgctxt "#30007"
 msgid "Show debug console"
-msgstr "Pokaż konsolę debugowania"
+msgstr "Pokazuj konsolę diagnozowania błędów"
 
 msgctxt "#30008"
 msgid "Show audio analysis"

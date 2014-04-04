@@ -2971,9 +2971,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
       case VIDEOPLAYER_CONTENT:
         {
-          CStdString strContent="movies";
-          if (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty())
-            strContent = "files";
+          CStdString strContent="files";
+          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == "movie")
+            strContent = "movies";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
             strContent = "episodes";
           if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_artist.empty())
@@ -4466,7 +4466,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       CStdString track;
       if (item->HasMusicInfoTag())
         track = StringUtils::Format("%i", item->GetMusicInfoTag()->GetTrackNumber());
-
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iTrack > -1 )
+        track = StringUtils::Format("%i", item->GetVideoInfoTag()->m_iTrack);
       return track;
     }
   case LISTITEM_DISC_NUMBER:

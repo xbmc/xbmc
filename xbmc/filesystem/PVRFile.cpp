@@ -79,7 +79,7 @@ bool CPVRFile::Open(const CURL& url)
         return false;
 
       m_isPlayRecording = true;
-      CLog::Log(LOGDEBUG, "%s - Recording has started on filename %s", __FUNCTION__, strURL.c_str());
+      CLog::Log(LOGDEBUG, "%s - playback has started on recording %s (%s)", __FUNCTION__, strURL.c_str(), tag->GetPVRRecordingInfoTag()->m_strIconPath.c_str());
     }
     else
     {

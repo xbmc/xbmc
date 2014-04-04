@@ -852,10 +852,12 @@ msgctxt "#208"
 msgid "Play"
 msgstr ""
 
+#. used as label for an action/button to play or navigate to the next item
 msgctxt "#209"
 msgid "Next"
 msgstr ""
 
+#. used as label for an action/button to play or navigate to the previous item
 msgctxt "#210"
 msgid "Previous"
 msgstr ""
@@ -6249,7 +6251,7 @@ msgid "Apple Remote Error"
 msgstr ""
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
+msgid "Apple Remote support could not be enabled."
 msgstr ""
 
 #empty strings from id 13622 to 13999
@@ -7411,6 +7413,7 @@ msgctxt "#19030"
 msgid "Now"
 msgstr ""
 
+#. Label prefix for the next playing tv-show (PVR) or media, like "Next: The Simpsons", "Next: AC/DC - Thunderstruck". It's also used as EPG display mode (EPG: timeline / now / next)
 msgctxt "#19031"
 msgid "Next"
 msgstr ""
@@ -7769,7 +7772,7 @@ msgid "Cannot use PVR functions while searching."
 msgstr ""
 
 msgctxt "#19119"
-msgid "On which server you want to search?"
+msgid "On which server do you want to search?"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
@@ -12286,7 +12289,7 @@ msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25003"
-msgid "Show bluray menus"
+msgid "Show Blu-ray menus"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
@@ -12311,12 +12314,12 @@ msgstr ""
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
+msgid "Playback of Blu-ray failed"
 msgstr ""
 
 #: xbmc/cores/dvdplayer/DVDPlayer.cpp
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
+msgid "The menu of this Blu-ray is not supported"
 msgstr ""
 
 #empty strings from id 25010 to 29799
@@ -13603,10 +13606,7 @@ msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr ""
+#empty string with id 36157
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (DXVA2)" with label #13427
 #: system/settings/settings.xml
@@ -13863,12 +13863,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36201"
-msgid "No info available yet."
+msgid "Settings for PVR/Live TV features."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36202"
-msgid "No info available yet."
+msgid "Category for general settings for PVR/Live TV features."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13908,52 +13908,52 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36210"
-msgid "No info available yet."
+msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36211"
-msgid "No info available yet."
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36212"
-msgid "No info available yet."
+msgid "Display programming information when changing channels, such as the current TV show."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36213"
-msgid "No info available yet."
+msgid "Hide the programming information automatically after a few seconds, defined below."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36214"
-msgid "No info available yet."
+msgid "Close the on screen display controls after switching channels."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36215"
-msgid "No info available yet."
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36216"
-msgid "No info available yet."
+msgid "Folder where channel icons are stored."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36217"
-msgid "No info available yet."
+msgid "Scan for missing channel icons."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36218"
-msgid "No info available yet."
+msgid "Category for electronic programming guide settings."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36219"
-msgid "Default EPG window to show."
+msgid "Default electronic programming guide window to show."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13988,7 +13988,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36226"
-msgid "No info available yet."
+msgid "Category for PVR playback and channel switching settings."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14008,7 +14008,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36230"
-msgid "No info available yet."
+msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14018,12 +14018,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36232"
-msgid "No info available yet."
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36233"
-msgid "No info available yet."
+msgid "Category for default recording duration settings."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14058,7 +14058,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36240"
-msgid "No info available yet."
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14093,7 +14093,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36247"
-msgid "No info available yet."
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14113,12 +14113,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36251"
-msgid "No info available yet."
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36252"
-msgid "No info available yet."
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
 msgstr ""
 
 #. Description of settings section "Music" with label #2
@@ -14168,10 +14168,7 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36261"
-msgid "No info available yet."
-msgstr ""
+#empty string with id 36261
 
 #. Description of setting "Music -> Library -> Export music library" with label #20196
 #: system/settings/settings.xml
@@ -15110,10 +15107,7 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr ""
+#empty string with id 36420
 
 #. Description of setting "Videos -> Playback -> Prefer VDPAU Video Mixer" with label #13437
 #: system/settings/settings.xml

@@ -61,7 +61,7 @@ private:
   void LoadFromXML();
   void SaveToXML();
 
-  void SetEnabled(bool enabled) { m_enabled = enabled; }
+  void SetEnabled(bool enabled);
   bool IsEnabled() const { return m_enabled; }
 
   void QueueMACDiscoveryForHost(const CStdString& host);

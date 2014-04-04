@@ -337,7 +337,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
       // Archived data is already converted (EXIF_COMMENT_CHARSET_CONVERTED)
       // Unknown data can't be converted as it could be any codec (EXIF_COMMENT_CHARSET_UNKNOWN)
       // JIS data can't be converted as CharsetConverter and iconv lacks support (EXIF_COMMENT_CHARSET_JIS)
-      value = m_exifInfo.Comments;
+      g_charsetConverter.unknownToUTF8(m_exifInfo.Comments, value);
     }
     break;
   case SLIDE_EXIF_LONG_DATE_TIME:

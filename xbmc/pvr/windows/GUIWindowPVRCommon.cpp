@@ -656,7 +656,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
   }
   else
   {
-    CLog::Log(LOGERROR, "PVRManager - %s - can't open recording: no valid filename", __FUNCTION__);
+    CLog::Log(LOGERROR, "CGUIWindowPVRCommon - %s - can't open recording: no valid filename", __FUNCTION__);
     CGUIDialogOK::ShowAndGetInput(19033,0,19036,0);
     return false;
   }

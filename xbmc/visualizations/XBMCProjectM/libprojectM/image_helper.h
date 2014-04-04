@@ -7,7 +7,7 @@
 */
 
 #ifndef HEADER_IMAGE_HELPER
-#define HEADER_GLFW_HELPER
+#define HEADER_IMAGE_HELPER
 
 #ifdef __cplusplus
 extern "C" {
@@ -86,4 +86,4 @@ int
 }
 #endif
 
-#endif /* HEADER_GLFW_HELPER	*/
+#endif /* HEADER_IMAGE_HELPER	*/

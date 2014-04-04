@@ -4329,10 +4329,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Greška Apple daljinskog upravljača"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Podrška za Apple dalj. upravljač može biti omogućena."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Postavi na skladište"

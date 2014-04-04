@@ -192,7 +192,6 @@ DIRECTORY_ARCHIVES += lib/xbmc-libav-hacks/dll-libavhacks.a
 endif
 
 PAPCODECS_DIRS= \
-	lib/xbadpcm \
 	lib/nosefart \
 	lib/timidity \
 	lib/libsidplay2 \
@@ -420,7 +419,6 @@ libhdhomerun: dllloader
 	$(MAKE) -C lib/libhdhomerun
 papcodecs: dllloader dvdpcodecs
 	test -d system/players/paplayer || mkdir system/players/paplayer
-	$(MAKE) -C lib/xbadpcm
 	$(MAKE) -C lib/vgmstream
 	$(MAKE) -C lib/timidity
 	$(MAKE) -C lib/nosefart

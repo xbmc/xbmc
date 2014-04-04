@@ -4681,10 +4681,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Villa í Apple fjarstýringu"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Ekki er hægt að virkja stuðning við Apple fjarstýringu."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Stafla"
@@ -5012,6 +5008,10 @@ msgstr "Aðgerð við innsetningu hljóðgeisladisks"
 msgctxt "#14098"
 msgid "Play"
 msgstr "Spila"
+
+msgctxt "#15014"
+msgid "Keep"
+msgstr "Halda"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -8260,10 +8260,6 @@ msgstr "Fela útlend"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Velja úr öllum titlum ..."
-
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Sýna bluray valmyndir"
 
 msgctxt "#25004"
 msgid "Play main title: %d"

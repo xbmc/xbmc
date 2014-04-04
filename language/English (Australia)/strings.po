@@ -2901,6 +2901,10 @@ msgctxt "#1214"
 msgid "Files"
 msgstr "Files"
 
+msgctxt "#1223"
+msgid "Disabled"
+msgstr "Disabled"
+
 msgctxt "#1269"
 msgid "Allow volume control"
 msgstr "Allow volume control"
@@ -3041,9 +3045,17 @@ msgctxt "#13014"
 msgid "Minimise"
 msgstr "Minimise"
 
+msgctxt "#13106"
+msgid "Disabled"
+msgstr "Disabled"
+
 msgctxt "#13111"
 msgid "Would you like to keep this change?"
 msgstr "Would you like to keep this change?"
+
+msgctxt "#13113"
+msgid "Disabled"
+msgstr "Disabled"
 
 msgctxt "#13122"
 msgid "VDPAU Studio level colour conversion"
@@ -3052,6 +3064,10 @@ msgstr "VDPAU Studio level colour conversion"
 msgctxt "#13123"
 msgid "Keep skin?"
 msgstr "Keep skin?"
+
+msgctxt "#13131"
+msgid "Disabled"
+msgstr "Disabled"
 
 msgctxt "#13162"
 msgid "Initialise failed"
@@ -3161,6 +3177,10 @@ msgctxt "#13555"
 msgid "%d Minutes"
 msgstr "%d Minutes"
 
+msgctxt "#13610"
+msgid "Disabled"
+msgstr "Disabled"
+
 msgctxt "#13611"
 msgid "Standard"
 msgstr "Standard"
@@ -3244,6 +3264,10 @@ msgstr "Next"
 msgctxt "#19099"
 msgid "Service"
 msgstr "Service"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Channel unavailable"
 
 msgctxt "#19171"
 msgid "Start playback minimised"
@@ -3392,6 +3416,10 @@ msgstr "Subtitles"
 msgctxt "#24013"
 msgid "Lyrics"
 msgstr "Lyrics"
+
+msgctxt "#24023"
+msgid "Disabled"
+msgstr "Disabled"
 
 msgctxt "#24027"
 msgid "Weather"
@@ -3973,10 +4001,6 @@ msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
 msgstr "Enable DXVA2 hardware decoding of video files."
@@ -4145,14 +4169,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Default scraper used for adding music videos to your library."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
@@ -4177,46 +4193,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Delete channel/EPG database and reimport the data from the backend afterwards."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36219"
-msgid "Default EPG window to show."
-msgstr "Default EPG window to show."
-
 msgctxt "#36220"
 msgid "Number of days of EPG data to import from backends."
 msgstr "Number of days of EPG data to import from backends."
@@ -4237,10 +4213,6 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Display stream of selected channel in a small box instead of fullscreen."
@@ -4249,21 +4221,9 @@ msgctxt "#36228"
 msgid "Continue with the last viewed channel on startup."
 msgstr "Continue with the last viewed channel on startup."
 
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
-
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "No info available yet."
 
 msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button."
@@ -4289,10 +4249,6 @@ msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Display a notification when timers are added, finished or removed by the backend."
 
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -4313,10 +4269,6 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "When to execute the daily wakeup command."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "No info available yet."
-
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
 msgstr "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -4328,14 +4280,6 @@ msgstr "Enter a new pin code to unlock parental locked channels."
 msgctxt "#36250"
 msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
 msgstr "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "No info available yet."
 
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -4366,10 +4310,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Check for new and removed media files on XBMC startup."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "No info available yet."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "No info available yet."
 
@@ -4956,10 +4896,6 @@ msgstr "Specify the delay between button sequences on a universal remote."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Define locations used for retrieving weather information."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "No info available yet."
 
 msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
