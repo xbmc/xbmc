@@ -21,7 +21,7 @@
  */
 
 #ifdef __PLEX__
-#include "plex/Owned/GUIWindowHome.h"
+#include "plex/Home/GUIWindowHome.h"
 #else
 
 #include "guilib/GUIWindow.h"
