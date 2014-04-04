@@ -63,6 +63,13 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
   m_pContext = m_dllSwResample.swr_alloc_set_opts(NULL, m_dst_chan_layout, m_dst_fmt, m_dst_rate,
                                                         m_src_chan_layout, m_src_fmt, m_src_rate,
                                                         0, NULL);
+
+  if(!m_pContext)
+  {
+    CLog::Log(LOGERROR, "CActiveAEResample::Init - create context failed");
+    return false;
+  }
+
   if(quality == AE_QUALITY_HIGH)
   {
     m_dllAvUtil.av_opt_set_double(m_pContext, "cutoff", 1.0, 0);
@@ -94,11 +101,6 @@ bool CActiveAEResample::Init(uint64_t dst_chan_layout, int dst_channels, int dst
      m_dllAvUtil.av_opt_set_double(m_pContext, "rematrix_maxval", 1.0, 0);
   }
 
-  if(!m_pContext)
-  {
-    CLog::Log(LOGERROR, "CActiveAEResample::Init - create context failed");
-    return false;
-  }
   if (remapLayout)
   {
     // one-to-one mapping of channels
