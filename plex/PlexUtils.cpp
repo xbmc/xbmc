@@ -733,8 +733,7 @@ std::string PlexUtils::GetMediaStateString(ePlexMediaState state)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ePlexMediaState PlexUtils::GetMediaStateFromString(const std::string& statestr)
-{
-  if (statestr == "stopped")
+{ if (statestr == "stopped")
     return PLEX_MEDIA_STATE_STOPPED;
   else if (statestr == "buffering")
     return PLEX_MEDIA_STATE_BUFFERING;
@@ -758,4 +757,17 @@ unsigned long PlexUtils::GetFastHash(std::string Data)
     hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
   return hash;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool PlexUtils::IsPlayingPlaylist()
+{
+  if (!g_application.IsPlaying())
+    return false;
+
+  int playlist = g_playlistPlayer.GetCurrentPlaylist();
+  if (g_playlistPlayer.GetPlaylist(playlist).size() > 0 && g_playlistPlayer.GetCurrentSong() != -1)
+    return true;
+
+  return false;
 }

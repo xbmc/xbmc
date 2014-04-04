@@ -59,6 +59,7 @@ namespace PlexUtils
   std::string GetMediaStateString(ePlexMediaState state);
 
   unsigned long GetFastHash(std::string Data);
+  bool IsPlayingPlaylist();
 }
 
 #if defined(HAVE_EXECINFO_H)
