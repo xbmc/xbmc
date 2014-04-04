@@ -440,6 +440,8 @@ CApplication::CApplication(void)
 
   m_muted = false;
   m_volumeLevel = 1.0f;
+
+  m_bFullScreenAdvancedSetting = false;
 }
 
 CApplication::~CApplication(void)
@@ -978,7 +980,10 @@ bool CApplication::CreateGUI()
   g_Windowing.SetWindowResolution(CSettings::Get().GetInt("window.width"), CSettings::Get().GetInt("window.height"));
 
   if (g_advancedSettings.m_startFullScreen && CDisplaySettings::Get().GetCurrentResolution() == RES_WINDOW)
+  {
     CDisplaySettings::Get().SetCurrentResolution(RES_DESKTOP);
+    m_bFullScreenAdvancedSetting = true;
+  }
 
   if (!g_graphicsContext.IsValidResolution(CDisplaySettings::Get().GetCurrentResolution()))
   {
@@ -1529,6 +1534,9 @@ bool CApplication::Initialize()
   g_Joystick.SetEnabled(CSettings::Get().GetBool("input.enablejoystick") &&
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
+
+  if(m_bFullScreenAdvancedSetting)
+      CDisplaySettings::Get().SetCurrentResolution(RES_DESKTOP, true);
 
   return true;
 }
