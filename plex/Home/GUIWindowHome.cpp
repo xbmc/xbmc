@@ -379,13 +379,22 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     case GUI_MSG_PLEX_BEST_SERVER_UPDATED:
     {
       RefreshAllSections(true);
-      break;
+      return true;
+    }
+
+    case GUI_MSG_PLAYLIST_CHANGED:
+    {
+      RefreshSection("plexserver://playqueue", CPlexSectionFanout::SECTION_TYPE_PLAYQUEUE);
+      return true;
     }
       
     case GUI_MSG_WINDOW_RESET:
     case GUI_MSG_PLEX_SERVER_DATA_LOADED:
     case GUI_MSG_PLEX_SERVER_DATA_UNLOADED:
     case GUI_MSG_UPDATE:
+    case GUI_MSG_PLAYLISTPLAYER_STARTED:
+    case GUI_MSG_PLAYLISTPLAYER_STOPPED:
+    case GUI_MSG_PLAYBACK_STARTED:
     {
       UpdateSections();
       
@@ -393,12 +402,13 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         RefreshAllSections(false);
       else if (message.GetMessage() == GUI_MSG_PLEX_SERVER_DATA_LOADED)
         RefreshSectionsForServer(message.GetStringParam());
-    }
+
       break;
+    }
 
     case GUI_MSG_PLEX_SECTION_LOADED:
       OnSectionLoaded(message);
-      break;
+      return true;
 
     case GUI_MSG_CLICKED:
       if (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_PLAYER_PLAY)
@@ -570,6 +580,9 @@ static bool _sortLabels(const CGUIListItemPtr& item1, const CGUIListItemPtr& ite
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 int CGUIWindowHome::GetPlayQueueType()
 {
+  if (!g_application.IsPlaying())
+    return PLAYLIST_NONE;
+
   int playlist = g_playlistPlayer.GetCurrentPlaylist();
 
   if (g_playlistPlayer.GetPlaylist(playlist).size() > 0)
@@ -612,18 +625,24 @@ void CGUIWindowHome::UpdateSections()
         haveShared = true;
         if (g_plexApplication.dataLoader->HasSharedSections())
           newList.push_back(item);
+        else
+          listUpdated = true;
       }
       else if (item->HasProperty("plexchannels"))
       {
         haveChannels = true;
         if (g_plexApplication.dataLoader->HasChannels())
           newList.push_back(item);
+        else
+          listUpdated = true;
       }
       else if (item->HasProperty("playqueue"))
       {
         havePlayQueue = true;
         if (GetPlayQueueType() != PLAYLIST_NONE)
           newList.push_back(item);
+        else
+          listUpdated = true;
       }
       else if (item->HasProperty("plexupdate"))
       {
@@ -736,6 +755,9 @@ void CGUIWindowHome::UpdateSections()
 void CGUIWindowHome::AddPlayQueue(std::vector<CGUIListItemPtr>& list, bool& updated)
 {
   int type = g_playlistPlayer.GetCurrentPlaylist();
+  if (type == PLAYLIST_NONE || !g_application.IsPlaying())
+    return;
+
   PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(type);
   if (playlist.size() < 1)
     return;

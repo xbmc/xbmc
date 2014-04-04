@@ -77,9 +77,21 @@ void CPlexSectionFanout::ShowPlayQueue()
   CFileItemList* list = new CFileItemList;
 
   int currentSong = g_playlistPlayer.GetCurrentSong();
+  if (currentSong == -1)
+    currentSong = 0;
 
   for (int i = currentSong; i < playlist.size(); i ++)
-    list->Add(playlist[i]);
+  {
+    try
+    {
+      list->Add(playlist[i]);
+    }
+    catch (...)
+    {
+      CLog::Log(LOGWARNING, "CPlexSectionFanout::ShowPlayQueue failed to read playlist");
+      return;
+    }
+  }
 
   m_fileLists[listType] = list;
 
