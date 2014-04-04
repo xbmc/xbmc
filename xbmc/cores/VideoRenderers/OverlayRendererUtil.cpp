@@ -198,7 +198,7 @@ bool convert_quad(ASS_Image* images, SQuads& quads)
     if((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
       continue;
 
-    quads.size_x += img->w;
+    quads.size_x += img->w + 1;
     quads.count++;
   }
 
