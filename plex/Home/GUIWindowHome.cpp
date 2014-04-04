@@ -477,6 +477,7 @@ void CGUIWindowHome::OnSectionLoaded(const CGUIMessage& message)
               }
             }
 
+            CLog::Log(LOGDEBUG, "CGUIWindowHome::OnSectionLoaded showing %d with %d items", p, list.Size());
             CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), p, selectedItem, 0, &list);
             OnMessage(msg);
             SET_CONTROL_VISIBLE(p);
@@ -782,7 +783,15 @@ void CGUIWindowHome::AddPlayQueue(std::vector<CGUIListItemPtr>& list, bool& upda
 void CGUIWindowHome::HideAllLists()
 {
   // Hide lists.
-  short lists[] = {CONTENT_LIST_ON_DECK, CONTENT_LIST_RECENTLY_ACCESSED, CONTENT_LIST_RECENTLY_ADDED, CONTENT_LIST_QUEUE, CONTENT_LIST_RECOMMENDATIONS};
+  short lists[] = {CONTENT_LIST_ON_DECK,
+                   CONTENT_LIST_RECENTLY_ACCESSED,
+                   CONTENT_LIST_RECENTLY_ADDED,
+                   CONTENT_LIST_QUEUE,
+                   CONTENT_LIST_RECOMMENDATIONS,
+                   CONTENT_LIST_PLAYQUEUE_MUSIC,
+                   CONTENT_LIST_PLAYQUEUE_PHOTO,
+                   CONTENT_LIST_PLAYQUEUE_VIDEO};
+
   BOOST_FOREACH(int id, lists)
   {
     SET_CONTROL_HIDDEN(id);
