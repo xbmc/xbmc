@@ -274,6 +274,7 @@ void PlexApplication::sendNetworkLog(int level, const std::string& logline)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::preShutdown()
 {
+  analytics->stopLogging();
   remoteSubscriberManager->Stop();
   timer->StopAllTimers();
   themeMusicPlayer->stop();
@@ -296,6 +297,7 @@ void PlexApplication::Shutdown()
   delete extraInfo;
 
   delete myPlexManager;
+  delete analytics;
 
   timer.reset();
 

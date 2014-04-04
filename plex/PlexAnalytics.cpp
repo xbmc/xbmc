@@ -71,6 +71,7 @@ void CPlexAnalytics::stopLogging()
 {
   g_plexApplication.timer->RemoveTimeout(this);
   m_sessionLength.restart();
+  ANNOUNCEMENT::CAnnouncementManager::RemoveAnnouncer(this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
