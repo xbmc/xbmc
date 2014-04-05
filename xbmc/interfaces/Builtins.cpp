@@ -675,7 +675,8 @@ int CBuiltins::Execute(const CStdString& execString)
       CFileItemList items;
       CStdString extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.m_musicExtensions;
       CDirectory::GetDirectory(item.GetPath(),items,extensions);
-      
+      items.Sort(SortByLabel, SortOrderAscending);
+
       bool containsMusic = false, containsVideo = false;
       for (int i = 0; i < items.Size(); i++)
       {
