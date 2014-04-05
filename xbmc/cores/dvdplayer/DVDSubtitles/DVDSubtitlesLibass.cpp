@@ -136,7 +136,7 @@ bool CDVDSubtitlesLibass::DecodeDemuxPkt(char* data, int size, double start, dou
   return true;
 }
 
-bool CDVDSubtitlesLibass::CreateTrack(char* buf, int size)
+bool CDVDSubtitlesLibass::CreateTrack(char* buf, size_t size)
 {
   CSingleLock lock(m_section);
   if(!m_library)
