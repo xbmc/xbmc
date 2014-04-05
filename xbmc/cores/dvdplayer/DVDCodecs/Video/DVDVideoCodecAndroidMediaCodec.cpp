@@ -438,13 +438,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     }
   }
 
-  if (!ConfigureMediaCodec())
-  {
-    m_codec.reset();
-    SAFE_DELETE(m_bitstream);
-    return false;
-  }
-
   // setup a YUV420P DVDVideoPicture buffer.
   // first make sure all properties are reset.
   memset(&m_videobuffer, 0x00, sizeof(DVDVideoPicture));
@@ -459,6 +452,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // these will get reset to crop values later
   m_videobuffer.iDisplayWidth  = m_hints.width;
   m_videobuffer.iDisplayHeight = m_hints.height;
+
+  if (!ConfigureMediaCodec())
+  {
+    m_codec.reset();
+    SAFE_DELETE(m_bitstream);
+    return false;
+  }
 
   CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec:: "
     "Open Android MediaCodec %s", m_codecname.c_str());
@@ -773,6 +773,10 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     return false;
   }
 
+  // There is no guarantee we'll get an INFO_OUTPUT_FORMAT_CHANGED
+  // Configure the output with defaults
+  ConfigureOutputFormat(&mediaformat);
+
   return true;
 }
 
@@ -886,7 +890,8 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   }
   else if (index == CJNIMediaCodec::INFO_OUTPUT_FORMAT_CHANGED)
   {
-    OutputFormatChanged();
+    CJNIMediaFormat mediaformat = m_codec->getOutputFormat();
+    ConfigureOutputFormat(&mediaformat);
   }
   else if (index == CJNIMediaCodec::INFO_TRY_AGAIN_LATER)
   {
@@ -902,19 +907,17 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   return rtn;
 }
 
-void CDVDVideoCodecAndroidMediaCodec::OutputFormatChanged(void)
+void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* mediaformat)
 {
-  CJNIMediaFormat mediaformat = m_codec->getOutputFormat();
-
-  int width       = mediaformat.getInteger("width");
-  int height      = mediaformat.getInteger("height");
-  int stride      = mediaformat.getInteger("stride");
-  int slice_height= mediaformat.getInteger("slice-height");
-  int color_format= mediaformat.getInteger("color-format");
-  int crop_left   = mediaformat.getInteger("crop-left");
-  int crop_top    = mediaformat.getInteger("crop-top");
-  int crop_right  = mediaformat.getInteger("crop-right");
-  int crop_bottom = mediaformat.getInteger("crop-bottom");
+  int width       = mediaformat->getInteger("width");
+  int height      = mediaformat->getInteger("height");
+  int stride      = mediaformat->getInteger("stride");
+  int slice_height= mediaformat->getInteger("slice-height");
+  int color_format= mediaformat->getInteger("color-format");
+  int crop_left   = mediaformat->getInteger("crop-left");
+  int crop_top    = mediaformat->getInteger("crop-top");
+  int crop_right  = mediaformat->getInteger("crop-right");
+  int crop_bottom = mediaformat->getInteger("crop-bottom");
 
   CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: "
     "width(%d), height(%d), stride(%d), slice-height(%d), color-format(%d)",
@@ -939,7 +942,11 @@ void CDVDVideoCodecAndroidMediaCodec::OutputFormatChanged(void)
       height = slice_height = m_hints.height;
     }
     if (stride <= width)
-        stride = width;
+      stride = width;
+    if (!crop_right)
+      crop_right = width-1;
+    if (!crop_bottom)
+      crop_bottom = height-1;
     if (slice_height <= height)
     {
       slice_height = height;
