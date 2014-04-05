@@ -523,12 +523,8 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   // get real sample rate of the device we want to open - to avoid resampling
   bool isDefaultDevice = (device == "Default");
   WaitForOperation(pa_context_get_sink_info_by_name(m_Context, isDefaultDevice ? NULL : device.c_str(), SinkInfoCallback, &sinkStruct), m_MainLoop, "Get Sink Info");
-  if (sinkStruct.device_found)
-  {
-    if (!m_passthrough)
-      format.m_sampleRate = sinkStruct.samplerate;
-  }
-  else
+  // only check if the device is existing - don't alter the sample rate
+  if (!sinkStruct.device_found)
   {
     CLog::Log(LOGERROR, "PulseAudio: Sink %s not found", device.c_str());
     pa_threaded_mainloop_unlock(m_MainLoop);
