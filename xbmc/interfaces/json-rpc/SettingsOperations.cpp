@@ -115,11 +115,14 @@ JSONRPC_STATUS CSettingsOperations::GetCategories(const CStdString &method, ITra
           SettingList settings = (*itGroup)->GetSettings(level);
           for (SettingList::const_iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
           {
-            CVariant varSetting(CVariant::VariantTypeObject);
-            if (!SerializeSetting(*itSetting, varSetting))
-              continue;
+            if ((*itSetting)->IsVisible())
+            {
+              CVariant varSetting(CVariant::VariantTypeObject);
+              if (!SerializeSetting(*itSetting, varSetting))
+                continue;
 
-            varGroup["settings"].push_back(varSetting);
+              varGroup["settings"].push_back(varSetting);
+            }
           }
 
           varCategory["groups"].push_back(varGroup);
@@ -174,11 +177,14 @@ JSONRPC_STATUS CSettingsOperations::GetSettings(const CStdString &method, ITrans
           SettingList settings = (*itGroup)->GetSettings(level);
           for (SettingList::const_iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
           {
-            CVariant varSetting(CVariant::VariantTypeObject);
-            if (!SerializeSetting(*itSetting, varSetting))
-              continue;
+            if ((*itSetting)->IsVisible())
+            {
+              CVariant varSetting(CVariant::VariantTypeObject);
+              if (!SerializeSetting(*itSetting, varSetting))
+                continue;
 
-            result["settings"].push_back(varSetting);
+              result["settings"].push_back(varSetting);
+            }
           }
         }
         found = true;
@@ -200,7 +206,8 @@ JSONRPC_STATUS CSettingsOperations::GetSettingValue(const CStdString &method, IT
   string settingId = parameterObject["setting"].asString();
 
   CSetting* setting = CSettings::Get().GetSetting(settingId);
-  if (setting == NULL)
+  if (setting == NULL ||
+      !setting->IsVisible())
     return InvalidParams;
 
   CVariant value;
@@ -245,7 +252,8 @@ JSONRPC_STATUS CSettingsOperations::SetSettingValue(const CStdString &method, IT
   CVariant value = parameterObject["value"];
 
   CSetting* setting = CSettings::Get().GetSetting(settingId);
-  if (setting == NULL)
+  if (setting == NULL ||
+      !setting->IsVisible())
     return InvalidParams;
 
   switch (setting->GetType())
@@ -305,7 +313,8 @@ JSONRPC_STATUS CSettingsOperations::ResetSettingValue(const CStdString &method, 
   string settingId = parameterObject["setting"].asString();
 
   CSetting* setting = CSettings::Get().GetSetting(settingId);
-  if (setting == NULL)
+  if (setting == NULL ||
+      !setting->IsVisible())
     return InvalidParams;
 
   switch (setting->GetType())
