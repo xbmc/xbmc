@@ -32,6 +32,7 @@
 class CJNISurface;
 class CJNISurfaceTexture;
 class CJNIMediaCodec;
+class CJNIMediaFormat;
 class CDVDMediaCodecOnFrameAvailable;
 class CJNIByteBuffer;
 class CBitstreamConverter;
@@ -106,7 +107,7 @@ protected:
   void            FlushInternal(void);
   bool            ConfigureMediaCodec(void);
   int             GetOutputPicture(void);
-  void            OutputFormatChanged(void);
+  void            ConfigureOutputFormat(CJNIMediaFormat* mediaformat);
 
   // surface handling functions
   static void     CallbackInitSurfaceTexture(void*);
