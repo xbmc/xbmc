@@ -33,6 +33,7 @@
 #include "guilib/gui3d.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include <fstream>
 
 CEGLNativeTypeIMX::CEGLNativeTypeIMX()
   : m_display(NULL)
@@ -46,14 +47,11 @@ CEGLNativeTypeIMX::~CEGLNativeTypeIMX()
 
 bool CEGLNativeTypeIMX::CheckCompatibility()
 {
-  std::string strName;
-  std::string str2 ("mxc_sdc_fb");
-  get_sysfs_str("/sys/class/graphics/fb0/device/modalias", strName);
-  StringUtils::Trim(strName);
-  size_t found = strName.find(str2);
-  if (found!=std::string::npos)
+  std::ifstream file("/sys/class/graphics/fb0/fsl_disp_dev_property");
+  if (!file)
+    return false;
+  else
     return true;
-  return false;
 }
 
 void CEGLNativeTypeIMX::Initialize()
