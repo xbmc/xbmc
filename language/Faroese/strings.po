@@ -3981,10 +3981,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Brek við Apple fjarstýring"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Eydnaðist ikki at tendra fyri Apple fjarstýring."
-
 msgctxt "#14003"
 msgid "Downloading playlist file..."
 msgstr "Heinti fíl við spælilista..."
@@ -4876,10 +4872,6 @@ msgstr "Leita eftir rásum"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Fái ikki brúkt PVR undir leiting."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Á hvørjum ambætara ynskir tú at leita?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -7916,10 +7908,6 @@ msgstr "Goym fremmand"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Vel frá øllum heitum..."
-
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Vís bluray valmynd"
 
 msgctxt "#25004"
 msgid "Play main title: %d"

@@ -111,7 +111,7 @@ void CGUIListLabel::SetWidth(float width)
   else if (m_label.GetLabelInfo().align & XBFONT_CENTER_X)
     m_label.SetMaxRect(m_posX - m_width*0.5f, m_posY, m_width, m_height);
   else
-    m_label.SetMaxRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
+    m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
   CGUIControl::SetWidth(m_width);
 }
 

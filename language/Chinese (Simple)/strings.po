@@ -5039,7 +5039,7 @@ msgstr "解码方式"
 
 msgctxt "#13455"
 msgid "Software"
-msgstr "软件着色"
+msgstr "软件"
 
 msgctxt "#13456"
 msgid "Hardware accelerated"
@@ -5170,8 +5170,8 @@ msgid "Apple Remote Error"
 msgstr "苹果遥控器错误"
 
 msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "苹果遥控器支持可能已开启。"
+msgid "Apple Remote support could not be enabled."
+msgstr "苹果遥控器支持无法激活。"
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6462,8 +6462,8 @@ msgid "Cannot use PVR functions while searching."
 msgstr "搜索时无法使用 PVR 功能。"
 
 msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "搜索哪个服务器？"
+msgid "On which server do you want to search?"
+msgstr "要搜索哪个服务器？"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -10354,7 +10354,7 @@ msgid "Select from all titles ..."
 msgstr "在所有标题中选择..."
 
 msgctxt "#25003"
-msgid "Show bluray menus"
+msgid "Show Blu-ray menus"
 msgstr "显示蓝光菜单"
 
 msgctxt "#25004"
@@ -10374,12 +10374,12 @@ msgid "Chapters: %u - duration: %s"
 msgstr "章节：%u - 时长：%s"
 
 msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "蓝光碟播放失败"
+msgid "Playback of Blu-ray failed"
+msgstr "蓝光播放失败"
 
 msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "不支持此光盘的蓝光菜单"
+msgid "The menu of this Blu-ray is not supported"
+msgstr "不支持此蓝光菜单"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11209,6 +11209,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr "显示媒体文件的扩展文件名。例如，“我的歌声里.mp3”会简单地显示为“我的歌声里”。"
 
+msgctxt "#36124"
+msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgstr "排序操作中忽略特定词。例如，“The Simpsons”将作为“Simpsons”来排序。"
+
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "允许在用户界面通过上下文菜单（按 C 键，如开启本菜单）删除和重命名。"
@@ -11321,13 +11325,17 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "调整处理和显示视频的方式。"
 
+msgctxt "#36154"
+msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgstr "当视频放大比例大于此值时使用高清倍线。"
+
+msgctxt "#36155"
+msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
+msgstr "启用视频文件 VDPAU 硬件解码。主要针对 NVIDIA 显卡，也有部分 AMD 显卡支持。"
+
 msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr "启用视频文件 VAAPI 硬件解码。主要针对 Intel 显卡，也有部分 AMD 显卡支持。"
-
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "无可用信息。"
 
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
@@ -11469,6 +11477,10 @@ msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr "字幕在屏幕的显示位置。"
 
+msgctxt "#36193"
+msgid "Category containing settings for how DVDs are handled."
+msgstr "包含 DVD 处理相关设置的功能区。"
+
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
 msgstr "插入光盘时自动播放 DVD 视频。"
@@ -11497,14 +11509,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "用于给资料库加入音乐电视的默认刮削器。"
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "无可用信息。"
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "无可用信息。"
-
 msgctxt "#36203"
 msgid "Enable the Personal Video Recorder (PVR) features in XBMC. This requires that at least one PVR Add-on is installed."
 msgstr "启用 XBMC 的个人视频录像机（PVR）功能。需要至少安装有一个 PVR 插件。"
@@ -11512,6 +11516,10 @@ msgstr "启用 XBMC 的个人视频录像机（PVR）功能。需要至少安装
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "从PVR后端（如果支持）导入频道组。这将删除用户创建但后端中没有的组。"
+
+msgctxt "#36205"
+msgid "Sort the channels by channel number on the backend, but use XBMC's own numbering for channels."
+msgstr "按后端频道号排序频道，但使用 XBMC 的频道编号。"
 
 msgctxt "#36206"
 msgid "Use numbering from the backend, instead of configuring them manually over XBMC."
@@ -11530,40 +11538,52 @@ msgid "Delete channel/EPG database and reimport the data from the backend afterw
 msgstr "删除频道/电子节目单数据库，然后从后端重新导入数据。"
 
 msgctxt "#36210"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Prevent the 'connection lost' notification window from displaying when XBMC is unable to talk to the PVR backend server."
+msgstr "阻止当 XBMC 无法与 PVR 后端服务器会话时显示“连接丢失”提示窗。"
 
 msgctxt "#36211"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Category for PVR menus and on-screen display settings, as well as channel info windows."
+msgstr "PVR 菜单和在屏显示设置，以及频道信息窗口功能区。"
 
 msgctxt "#36212"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Display programming information when changing channels, such as the current TV show."
+msgstr "变更频道时显示节目信息，如当前剧集。"
 
 msgctxt "#36213"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Hide the programming information automatically after a few seconds, defined below."
+msgstr "几秒后自动隐藏节目信息。"
 
 msgctxt "#36214"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Close the on screen display controls after switching channels."
+msgstr "切换频道后关闭在屏显示控制。"
 
 msgctxt "#36215"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "How long the programming information is displayed when the 'automatically hide' setting is turned on."
+msgstr "当“自动隐藏”设置开启时节目信息显示时长。"
 
 msgctxt "#36216"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Folder where channel icons are stored."
+msgstr "存储频道图标的文件夹。"
 
 msgctxt "#36217"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Scan for missing channel icons."
+msgstr "扫描缺失频道图标。"
 
 msgctxt "#36218"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Category for electronic programming guide settings."
+msgstr "电子节目单设置功能区。"
+
+msgctxt "#36219"
+msgid "Default electronic programming guide window to show."
+msgstr "默认显示的电子节目单窗口。"
+
+msgctxt "#36220"
+msgid "Number of days of EPG data to import from backends."
+msgstr "从后端导入电子节目单天数。"
+
+msgctxt "#36221"
+msgid "Time between EPG data imports from backends."
+msgstr "从后端导入电子节目单时间间隔。"
 
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
@@ -11577,45 +11597,85 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "隐藏当某频道未取得电子节目单数据时的“无可用信息”标签。"
 
+msgctxt "#36225"
+msgid "Delete the EPG database in XBMC and reimport the data afterwards from the backend."
+msgstr "删除 XBMC 的电子节目单数据库并重新从后端导入数据。"
+
 msgctxt "#36226"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Category for PVR playback and channel switching settings."
+msgstr "PVR 播放和频道切换设置功能区。"
 
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "在小窗格显示选中频道视频流而非全屏显示。"
+
+msgctxt "#36228"
+msgid "Continue with the last viewed channel on startup."
+msgstr "启动时继续最后浏览的频道。"
 
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the Add-on and backend)."
 msgstr "在编码信息窗显示信号质量信息（如果插件和后端支持）。"
 
 msgctxt "#36230"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "How long XBMC will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgstr "当频道未接收到时 XBMC 改变频道的等待时长。针对那些常失去信号强度的无线传输频道。"
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "在全屏模式按数字键将于1秒后自动切换到相应频道。"
 
 msgctxt "#36232"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "When pressing channel up or down, the actual channel switch is delayed, allowing the user to flip to a channel number without waiting for each channel switch."
+msgstr "当向前后翻频道时，延迟真实频道切换。这使你不用等待连续频道切换。"
 
 msgctxt "#36233"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Category for default recording duration settings."
+msgstr "默认录像时长设置功能区。"
+
+msgctxt "#36234"
+msgid "Duration of instant recordings when pressing the record button."
+msgstr "按下录像按钮时的即时录像时长。"
+
+msgctxt "#36235"
+msgid "Priority of the recording. Higher number means higher priority. Not supported by all Add-ons and backends."
+msgstr "录像的优先级，数值大表示优先级高。并非所有插件和后端都支持。"
+
+msgctxt "#36236"
+msgid "Delete recording after this time. Not supported by all Add-ons and backends."
+msgstr "删除录像的期限。并非所有插件和后端都支持。"
+
+msgctxt "#36237"
+msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgstr "开始录像的提前量。并非所有插件和后端都支持。"
+
+msgctxt "#36238"
+msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgstr "结束录像的延迟量。并非所有插件和后端都支持。"
 
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "当后端新增、完成或移除计时器时显示通知。"
 
 msgctxt "#36240"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Category for PVR power management settings, such as when to wake the PVR backend server."
+msgstr "PVR 电源管理设置功能区，如何时唤醒 PVR 后端服务器。"
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr "在 XBMC 退出或进入休眠模式时执行下面的“唤醒命令​​”。下一个预约录像的时间戳作为参数传递。"
+
+msgctxt "#36242"
+msgid "The command will not be executed when a recording will be started within this timeout."
+msgstr "在此超时期限内如有一个录像将启动，则命令不会执行。"
+
+msgctxt "#36243"
+msgid "The command to execute."
+msgstr "要执行的命令。"
+
+msgctxt "#36244"
+msgid "Time to subtract from the start time of the next scheduled recording."
+msgstr "时间减去下一个预约录像起始时间。"
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11626,8 +11686,8 @@ msgid "When to execute the daily wakeup command."
 msgstr "执行每日唤醒指令的时间。"
 
 msgctxt "#36247"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Category for parental control settings if the PVR backend server supports parental controls."
+msgstr "家长控制设置功能区，如果 PVR 后端支持家长控制。"
 
 msgctxt "#36248"
 msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
@@ -11637,13 +11697,25 @@ msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "输入一个新的 PIN 码以解锁家长锁定频道。"
 
+msgctxt "#36250"
+msgid "Ask for the pin code again when trying to access a parental locked channel and the code hasn't been asked for this duration."
+msgstr "当试图访问家长锁定频道且在此时长内未询问PIN码时再次询问PIN码。"
+
 msgctxt "#36251"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "PVR 后端特殊设置功能区，如果 PVR 后端支持改变 XBMC 中的这些设置。"
 
 msgctxt "#36252"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in XBMC."
+msgstr "此选项针对你的 PVR 后端的特殊设置功能区，如果 PVR 后端支持改变 XBMC 中的这些设置。"
+
+msgctxt "#36253"
+msgid "Section that contains settings related to music files and how they are handled."
+msgstr "包含与音乐文件及其处理相关设置的区域。"
+
+msgctxt "#36254"
+msgid "Enable the music library."
+msgstr "启用音乐资料库。"
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11652,6 +11724,10 @@ msgstr "决定仅在合辑中出现的歌手是否显示在资料库歌手视图
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
 msgstr "扫描时自动通过刮削器获取专辑和歌手信息。"
+
+msgctxt "#36257"
+msgid "Select the default album information source."
+msgstr "选择默认专辑信息来源。"
 
 msgctxt "#36258"
 msgid "Select the default artist information source. See the Add-ons Manager for options."
@@ -11665,10 +11741,6 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
-msgctxt "#36261"
-msgid "No info available yet."
-msgstr "无可用信息。"
-
 msgctxt "#36262"
 msgid "Export the Music Library database to XML files. This will optionally overwrite your current XML files."
 msgstr "将音乐资料库数据库导出到 XML 文件。这将有选择地覆盖当前 XML 文件。"
@@ -11677,9 +11749,17 @@ msgctxt "#36263"
 msgid "Import a XML file into the Music Library database."
 msgstr "从 XML 文件导入到音乐资料库数据库。"
 
+msgctxt "#36264"
+msgid "Category containing settings for how music playback is handled."
+msgstr "包含音乐播放处理相关设置的功能区。"
+
 msgctxt "#36265"
 msgid "XBMC automatically plays the next item in the current folder. For example, in Files View: After a track has been played, XBMC would automatically play the next track in the same folder."
 msgstr "XBMC 自动播放当前文件夹中的下一项目。如，在文件视图：一首歌曲播放完成后，XBMC 将自动播放同一文件夹中的下一首歌。"
+
+msgctxt "#36266"
+msgid "When songs are selected they are queued instead of playback starting immediately."
+msgstr "当歌曲被选定时进入播放队列而非立即播放。"
 
 msgctxt "#36267"
 msgid "XBMC will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
@@ -11693,9 +11773,17 @@ msgctxt "#36269"
 msgid "Default is 89dB per standard. Change with caution."
 msgstr "默认为89分贝。慎改。"
 
+msgctxt "#36270"
+msgid "Reduce the volume of the file if clipping will occur."
+msgstr "当要出现削波时减小文件音量。"
+
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr "通过淡入淡出平滑歌曲间的切换。切换时间设置范围为1-15秒。"
+
+msgctxt "#36272"
+msgid "Allow crossfading to occur when both tracks are from the same album."
+msgstr "允许同一专辑内歌曲间淡入淡出切换。"
 
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
@@ -11705,9 +11793,37 @@ msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
 msgstr "读取音乐文件中的标签信息。对于大型目录特别是网络目录会减慢读取时间。"
 
+msgctxt "#36275"
+msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
+msgstr "控制歌曲的名称在用户界面中显示的方式。需要启用标签读取才能正常使用此功能。"
+
+msgctxt "#36276"
+msgid "Used for formatting the second column in file lists."
+msgstr "用于规定文件列表第二列的格式。"
+
+msgctxt "#36277"
+msgid "Control the way that the names of songs are displayed in the now playing list."
+msgstr "控制歌曲的名称在当前播放列表中显示的方式。"
+
+msgctxt "#36278"
+msgid "Used for formatting the second column in the now playing list."
+msgstr "用于规定当前播放列表第二列的格式。"
+
+msgctxt "#36279"
+msgid "Control the way that the names of songs are displayed in library lists."
+msgstr "控制歌曲的名称在资料库列表中显示的方式。"
+
+msgctxt "#36280"
+msgid "Used for formatting the second column in library lists."
+msgstr "用于规定资料库列表第二列的格式。"
+
 msgctxt "#36281"
 msgid "XBMC will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr "XBMC 将搜索远程共享和光学介质上的缩略图。这通常会减慢网络文件夹显示速度。"
+
+msgctxt "#36282"
+msgid "Category containing settings for how CDs are handled."
+msgstr "包含 CD 处理相关设置的功能区。"
 
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
@@ -11721,6 +11837,10 @@ msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr "设置抓取的音轨在硬盘上保存的位置。"
 
+msgctxt "#36286"
+msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
+msgstr "控制保存音乐文件如何用标签命名。标签：[B]%N[/B]：音轨号、[B]%S[/B]：碟号、[B]%A[/B]：歌手、[B]%T[/B]：歌名、[B]%B[/B]：专辑、[B]%G[/B]：类型、[B]%Y[/B]：年份、[B]%F[/B]：文件名、[B]%D[/B]：时长、[B]%J[/B]：日期、[B]%R[/B]：评分、[B]%I[/B]：文件大小。"
+
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
 msgstr "选择抓取时使用的音频编码器。"
@@ -11733,13 +11853,49 @@ msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
 msgstr "选择指定音频编码器压缩音频的比特率。"
 
+msgctxt "#36290"
+msgid "For FLAC define compression level, default 5."
+msgstr "为 FLAC 指定压缩级别，默认为5。"
+
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr "抓取完成后弹出光盘"
 
+msgctxt "#36292"
+msgid "Category containing the settings for how karaoke is handled."
+msgstr "包含卡拉 OK 处理相关设置的功能区。"
+
 msgctxt "#36293"
 msgid "When playing any music file, XBMC will look for a matching .cdg file and display its graphics."
 msgstr "当播放音乐文件时，XBMC 将查找相应的 .cdg 文件并显示其中的图像。"
+
+msgctxt "#36294"
+msgid "Show song selection dialog once the last song in the queue has been played."
+msgstr "当队列中的最后一首歌曲播放完时显示歌曲选择对话框。"
+
+msgctxt "#36295"
+msgid "Select the font type used during karaoke."
+msgstr "选择卡拉 OK 使用的字体。"
+
+msgctxt "#36296"
+msgid "Select the size of the font used during karaoke."
+msgstr "选择卡拉 OK 使用的字体大小。"
+
+msgctxt "#36297"
+msgid "Select the font colour used during karaoke."
+msgstr "选择卡拉 OK 使用的字体颜色。"
+
+msgctxt "#36298"
+msgid "Select the character set used during karaoke."
+msgstr "选择卡拉 OK 使用的字符集。"
+
+msgctxt "#36299"
+msgid "Export the karaoke numbered songs to HTML or CSV files."
+msgstr "导出卡拉 OK 编号的歌曲到 HTML 或 CSV 文件。"
+
+msgctxt "#36300"
+msgid "Import the karaoke numbered songs from HTML or CSV files."
+msgstr "从 HTML 或 CSV 文件导入卡拉 OK 编号的歌曲。"
 
 msgctxt "#36301"
 msgid "No info available yet."
@@ -11753,6 +11909,14 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36304"
+msgid "Section that contains settings related to pictures and how they are handled."
+msgstr "包含与图片及其处理相关设置的区域。"
+
+msgctxt "#36305"
+msgid "Category containing settings for how picture file lists are handled."
+msgstr "包含图片文件列表处理相关设置的功能区。"
+
 msgctxt "#36306"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr "如果存在 EXIF 信息（日期、时间、相机型号等）将会显示出来。"
@@ -11765,9 +11929,17 @@ msgctxt "#36308"
 msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
 msgstr "如有相关 EXIF 标签信息，图片将据此自动旋转。"
 
+msgctxt "#36309"
+msgid "Show videos in picture file lists."
+msgstr "在图片文件列表中显示视频文件。"
+
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr "无可用信息。"
+
+msgctxt "#36311"
+msgid "Category containing settings for how picture slideshows are handled."
+msgstr "包含图片幻灯片处理相关设置的功能区。"
 
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
@@ -11781,6 +11953,14 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr "幻灯片播放图片时按随机顺序。"
 
+msgctxt "#36315"
+msgid "Section that contains weather related settings."
+msgstr "包含与天气相关设置的区域。"
+
+msgctxt "#36316"
+msgid "Category containing settings for how weather addons are handled."
+msgstr "包含天气插件处理相关设置的功能区。"
+
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr "最多可以选择三个地点显示天气。"
@@ -11789,13 +11969,41 @@ msgctxt "#36318"
 msgid "Specify the default weather information source. See the Add-ons Manager for options."
 msgstr "选择默认天气信息来源。选项见插件管理。"
 
+msgctxt "#36319"
+msgid "Section containing settings for how network services are handled."
+msgstr "包含网络服务处理相关设置的区域。"
+
+msgctxt "#36320"
+msgid "Category containing settings used for all services."
+msgstr "包含所有服务相关设置的功能区。"
+
 msgctxt "#36321"
 msgid "Display name of the XBMC installation when using various network services."
 msgstr "XBMC 在网络中显示的名称。"
 
+msgctxt "#36322"
+msgid "Category containing settings for how the UPnP service is handled."
+msgstr "包含 UPnP 服务处理相关设置的功能区。"
+
+msgctxt "#36323"
+msgid "Enable the UPnP server. This allows you to stream media to a UPnP client."
+msgstr "启用 UPnP 服务器。这将允许你向 UPnP 客户端传送流媒体。"
+
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr "当人工或自动更新资料库时，通知 UPnP 客户端。"
+
+msgctxt "#36325"
+msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
+msgstr "启用 UPnP 客户端。这将允许你通过一个控制点从任何 UPnP 服务器获取流媒体并控制播放。"
+
+msgctxt "#36326"
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from XBMC."
+msgstr "启用 UPnP 控制点。这将允许你向任何 UPnP 客户端传送流媒体并用 XBMC 控制播放。"
+
+msgctxt "#36327"
+msgid "Category containing settings for how the webserver service is handled."
+msgstr "包含 web 服务器服务处理相关设置的功能区。"
 
 msgctxt "#36328"
 msgid "Enable remote users to control XBMC through the built-in webserver."
@@ -11809,21 +12017,101 @@ msgctxt "#36330"
 msgid "Define the webserver username."
 msgstr "定义 web 服务器用户名。"
 
+msgctxt "#36331"
+msgid "Define the webserver password."
+msgstr "定义 web 服务器密码。"
+
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the Add-on Manager."
 msgstr "选择通过插件管理安装的 web 界面。"
+
+msgctxt "#36333"
+msgid "Category containing settings for how the remote control service is handled."
+msgstr "包含远程控制服务处理相关设置的功能区。"
 
 msgctxt "#36334"
 msgid "Allow programs on this computer to control XBMC via the Web Interface or the JSON-RPC interface protocol."
 msgstr "允许本机程序通过 Web 接口或 JSON-RPC 接口协议控制 XBMC。"
 
+msgctxt "#36335"
+msgid "Define the remote control port."
+msgstr "定义远程控制端口。"
+
+msgctxt "#36336"
+msgid "Define the remote control port range."
+msgstr "定义远程控制端口范围。"
+
+msgctxt "#36337"
+msgid "Define the maximum number of clients that can connect."
+msgstr "定义可连接的最大客户端数。"
+
 msgctxt "#36338"
 msgid "Allow programs on the network to control XBMC."
 msgstr "允许程序通过网络远程控制 XBMC。"
 
+msgctxt "#36339"
+msgid "Initial repeat delay (ms)."
+msgstr "初始重复延时（ms）。"
+
+msgctxt "#36340"
+msgid "Continuous repeat delay (ms)."
+msgstr "持续重复延时（ms）。"
+
+msgctxt "#36341"
+msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
+msgstr "包含 Zeroconf 网络发现服务处理相关设置的功能区， AirPlay 需要此服务。"
+
+msgctxt "#36342"
+msgid "Allows applications on the network to discover XBMC's running services."
+msgstr "允许网络上的应用发现 XBMC 运行的服务。"
+
+msgctxt "#36343"
+msgid "Allows XBMC to receive content from other AirPlay devices or applications."
+msgstr "允许 XBMC 接收来自其它 AirPlay 设备或应用的内容。"
+
+msgctxt "#36344"
+msgid "Enable AirPlay password protection."
+msgstr "启用 AirPlay 密码保护。"
+
+msgctxt "#36345"
+msgid "Sets the AirPlay password."
+msgstr "设置 AirPlay 密码。"
+
+msgctxt "#36346"
+msgid "Category containing settings for how the SMB Client (samba) service is handled."
+msgstr "包含 SMB 客户端（samba）服务处理相关设置的功能区。"
+
+msgctxt "#36347"
+msgid "If a WINS server is running on the network, enter its IP address here. Otherwise, leave blank."
+msgstr "如果网络中有运行的 WINS 服务器，在此输入它的 IP 地址。否则留空。"
+
+msgctxt "#36348"
+msgid "If a WINS server is running on the network, enter its workgroup name here. Otherwise, leave blank."
+msgstr "如果网络中有运行的 WINS 服务器，在此输入它的工作组名称。否则留空。"
+
+msgctxt "#36349"
+msgid "Section that contains the System related settings for the device XBMC is installed on."
+msgstr "包含与安装 XBMC 的设备的系统相关设置的区域。"
+
 msgctxt "#36350"
 msgid "Automatically send 'Wake-On-Lan' to server(s) right before trying to access shared files or services."
 msgstr "访问共享文件或服务前自动向服务器发送“网络唤醒”。"
+
+msgctxt "#36351"
+msgid "Display XBMC in a window, or fullscreen on the selected screen."
+msgstr "以窗口方式显示 XBMC，或者在选定的屏幕全屏显示。"
+
+msgctxt "#36352"
+msgid "Changes the resolution that the user interface is displayed in."
+msgstr "改变用户界面显示的分辨率。"
+
+msgctxt "#36353"
+msgid "Changes the refresh rate that the user interface is displayed in."
+msgstr "改变用户界面显示的刷新率。"
+
+msgctxt "#36354"
+msgid "Display XBMC in a fullscreen window. The main benefit is for multi-screen configurations, so that XBMC can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgstr "在全屏窗口显示 XBMC。在多屏配置情况下，可以在使用 XBMC 的同时无需将其它应用窗口最小化。这要占用更多的资源并轻微影响播放的流畅度。"
 
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens where XBMC is not displayed are blacked out."
@@ -11833,9 +12121,21 @@ msgctxt "#36356"
 msgid "Eliminate vertical tearing."
 msgstr "消除纵向撕裂。"
 
+msgctxt "#36357"
+msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
+msgstr "通过调整过扫描来校准用户界面。当图像在显示器中显示得过大或太小时使用这个工具。"
+
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr "显示器硬件校准的测试图案。"
+
+msgctxt "#36359"
+msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
+msgstr "使用有限的色彩范围（16-235）而非全色彩范围（0-255）。当你的显示器是一个没有 PC 或其它显示全色彩范围模式的常规 HDMI 电视时使用有限范围，如果你的显示器是一个 PC 显示器则应禁用此项以正确的显示黑色。"
+
+msgctxt "#36360"
+msgid "Category containing settings for how audio output is handled."
+msgstr "包含音频输出处理相关设置的功能区。"
 
 msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] - output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] - output properties are set to always be as close a match to the source properties as possible; [Optimized] - output properties are set at the start of playback and will not change if the properties of the source changes."
@@ -11848,6 +12148,10 @@ msgstr "选择连接的音频设备支持的声道数，或连接的模拟接口
 msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr "增大混缩为2声道的 AC3 音频流音量。"
+
+msgctxt "#36364"
+msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the channel configuration."
+msgstr "选择以启用将双声道音频上混为多声道以匹配声道设置。"
 
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding AC3 streams."
@@ -11873,6 +12177,10 @@ msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr "当你的功放能解码 DTS-HD 音频流时选择此项。"
 
+msgctxt "#36371"
+msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
+msgstr "选择用于播放已被解码的的音频如 mp3 的设备。"
+
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
 msgstr "选择用于播放未解码格式，也就是上面选择功放兼容的编码格式音频的播放设备。"
@@ -11880,6 +12188,14 @@ msgstr "选择用于播放未解码格式，也就是上面选择功放兼容的
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr "设置用户界面声音效果处理，如菜单导航和重要通知。"
+
+msgctxt "#36374"
+msgid "Category containing settings for how input devices are handled."
+msgstr "包含输入设备处理相关设置的功能区。"
+
+msgctxt "#36375"
+msgid "Configure any attached peripheral devices."
+msgstr "设置连接的外部设备。"
 
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
@@ -11892,6 +12208,10 @@ msgstr "使用鼠标或触摸屏设备来控制 XBMC。注：在没有键盘或�
 msgctxt "#36378"
 msgid "Use a joystick to control XBMC."
 msgstr "用游戏手柄控制 XBMC。"
+
+msgctxt "#36379"
+msgid "Category containing settings for internet access."
+msgstr "包含互联网访问相关设置的功能区。"
 
 msgctxt "#36380"
 msgid "If your internet connection uses a proxy, configure it here."
@@ -11921,6 +12241,14 @@ msgctxt "#36386"
 msgid "If you have limited bandwidth available, XBMC will try to keep within these limits."
 msgstr "如果你使用的带宽有限制，XBMC将使流量保持在限额内。"
 
+msgctxt "#36387"
+msgid "Category containing settings for power saving."
+msgstr "包含省电相关设置的功能区。"
+
+msgctxt "#36388"
+msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
+msgstr "空闲时关闭显示器。用于可在未检测到显示信号时关闭的电视。"
+
 msgctxt "#36389"
 msgid "Define how long XBMC should idle before shutting down."
 msgstr "定义 XBMC 空闲多长时间后关机。"
@@ -11928,6 +12256,10 @@ msgstr "定义 XBMC 空闲多长时间后关机。"
 msgctxt "#36390"
 msgid "Define what action XBMC should do when it has been idle for a long period of time."
 msgstr "定义 XBMC 长时间空闲的情况下执行的动作。"
+
+msgctxt "#36391"
+msgid "Category containing settings for debugging functions."
+msgstr "包含调试功能相关设置的功能区。"
 
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
@@ -11941,13 +12273,65 @@ msgctxt "#36394"
 msgid "Specify additional libraries to be included in the debug log."
 msgstr "在调试日志中包含特定附加库文件信息。"
 
+msgctxt "#36395"
+msgid "Category containing settings for the master lock function."
+msgstr "包含管理员锁定功能相关设置的功能区。"
+
 msgctxt "#36396"
 msgid "Define the PIN code used for the master lock."
 msgstr "定义用于管理员锁定的 PIN 码。"
 
+msgctxt "#36397"
+msgid "If enabled, the master lock code is required to unlock XBMC on startup."
+msgstr "如启用，XBMC 启动时需要输入管理员锁定码以解锁。"
+
 msgctxt "#36398"
 msgid "Define the maximum number of retries before XBMC is closed down."
 msgstr "定义 XBMC 关闭前的最大重试次数。"
+
+msgctxt "#36399"
+msgid "Category containing settings for the cache function."
+msgstr "包含缓存相关设置的功能区。"
+
+msgctxt "#36400"
+msgid "Enable cache for playback of Video, Audio or DVDs from hard disk."
+msgstr "启用从硬盘播放视频、音频或 DVD 的缓冲"
+
+msgctxt "#36401"
+msgid "Enable cache for playback of Video from DVD-ROM."
+msgstr "启用从 DVD-ROM 播放视频的缓冲。"
+
+msgctxt "#36402"
+msgid "Enable cache for Video playback from Local Network."
+msgstr "启用从本地网络播放视频的缓冲。"
+
+msgctxt "#36403"
+msgid "Enable cache for Video playback from Internet."
+msgstr "启用从互联网播放视频的缓冲。"
+
+msgctxt "#36404"
+msgid "Enable cache for playback of Audio from DVD-ROM."
+msgstr "启用从 DVD-ROM 播放音频的缓冲。"
+
+msgctxt "#36405"
+msgid "Enable cache for Audio playback from Local Network."
+msgstr "启用从本地网络播放音频的缓冲。"
+
+msgctxt "#36406"
+msgid "Enable cache for Audio playback from Internet."
+msgstr "启用从互联网播放音频的缓冲。"
+
+msgctxt "#36407"
+msgid "Enable cache for playback of DVD from DVD-ROM."
+msgstr "启用从 DVD-ROM 播放 DVD 的缓冲。"
+
+msgctxt "#36408"
+msgid "Enable cache for DVD playback from Local Network."
+msgstr "启用从本地网络播放 DVD 的缓冲。"
+
+msgctxt "#36409"
+msgid "Enable cache of unknown types from Internet."
+msgstr "启用来自互联网的未知类型的缓冲。"
 
 msgctxt "#36410"
 msgid "No info available yet."
@@ -11973,13 +12357,33 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr "无可用信息。"
 
+msgctxt "#36416"
+msgid "Specify the type of remote used."
+msgstr "指定使用的遥控器类型。"
+
+msgctxt "#36417"
+msgid "Always run an XBMC helper so that the remote can be used to start XBMC."
+msgstr "始终运行 XBMC helper 使遥控器可启动 XBMC。"
+
+msgctxt "#36418"
+msgid "Specify the delay between button sequences on a universal remote."
+msgstr "指定通用遥控器连续按键间隔。"
+
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "定义要获取天气信息的地点。"
 
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "无可用信息。"
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
+msgstr "在低功耗系统旁路 VDPAU 混合器以减少资源占用，但会稍微降低图像质量。"
+
+msgctxt "#36422"
+msgid "Enable hardware video decode using AMLogic decoder."
+msgstr "启用 AMLogic 解码器的视频硬解码。"
+
+msgctxt "#36423"
+msgid "Enables frame-multi-threaded software decoding (less reliable than the default single threaded mode)."
+msgstr "使用框架多线程软件解码（没有默认的单线程模式可靠）。"
 
 msgctxt "#36424"
 msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
@@ -12000,6 +12404,18 @@ msgstr "显示信息"
 msgctxt "#36428"
 msgid "Record"
 msgstr "录像"
+
+msgctxt "#36429"
+msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, such as an SPDIF connection.  If your system supports LPCM multichannel sound via HDMI, leave this disabled."
+msgstr "当类似 SPDIF 这样的音频输出接口仅支持如杜比数字5.1多声道音频时选择此项。如果你的系统通过 HDMI 支持 LPCM 多声道，则禁用此项。"
+
+msgctxt "#36430"
+msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
+msgstr "设置视频处理如何加速，包括解码和缩放。"
+
+msgctxt "#36431"
+msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
+msgstr "定义如何软件处理视频解码（需消耗 CPU 资源）或可能情况下硬件加速。"
 
 msgctxt "#36500"
 msgid "Stereoscopic mode (current)"
@@ -12041,6 +12457,10 @@ msgctxt "#36509"
 msgid "Monoscopic - 2D"
 msgstr "平面 - 2D"
 
+msgctxt "#36520"
+msgid "Playback mode of stereoscopic videos."
+msgstr "立体视频播放模式"
+
 msgctxt "#36521"
 msgid "Ask me"
 msgstr "询问"
@@ -12048,6 +12468,10 @@ msgstr "询问"
 msgctxt "#36522"
 msgid "Use preferred mode"
 msgstr "使用首选模式"
+
+msgctxt "#36523"
+msgid "Maximum sampling rate for spdif or sampling rate for fixed output configuration."
+msgstr "spdif 或固定输出设置的最大采样率。"
 
 msgctxt "#36524"
 msgid "Preferred mode"
@@ -12097,6 +12521,22 @@ msgctxt "#36536"
 msgid "Stereoscopic mode inverted"
 msgstr "立体模式反转"
 
+msgctxt "#36537"
+msgid "Set playback mode of stereoscopic 3D videos."
+msgstr "设置立体 3D 视频播放模式。"
+
+msgctxt "#36538"
+msgid "Prevents XBMC exiting out of stereoscopic 3D mode when playback is stopped as not all TVs will recognise the switch from 3D back to 2D without the viewing mode being toggled on the TV."
+msgstr "阻止 XBMC 在播放停止时退出立体 3D 模式，主要针对一些电视无法自动识别并从 3D 切换到 2D 模式。"
+
+msgctxt "#36539"
+msgid "Changes the stereoscopic 3D mode of the user interface."
+msgstr "改变用户界面的立体 3D 模式。"
+
+msgctxt "#36540"
+msgid "The preferred stereoscopic 3D mode."
+msgstr "首选立体 3D 模式。"
+
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr "允许 AirPlay 客户端控制音量。"
@@ -12117,6 +12557,10 @@ msgctxt "#36545"
 msgid "Subtitle stereoscopic depth"
 msgstr "字幕立体深度"
 
+msgctxt "#36546"
+msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
+msgstr "设置字幕在立体 3D 视频中的远近距离。数值越大则会感觉字幕离你越近。"
+
 msgctxt "#36547"
 msgid "Use higher quality textures for covers and fanart (uses more memory)"
 msgstr "封面和同人画使用高质量贴图（占用更多内存）"
@@ -12124,6 +12568,22 @@ msgstr "封面和同人画使用高质量贴图（占用更多内存）"
 msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Use 1080 for unlimited. Requires restart."
 msgstr "限制图形用户界面分辨率以节省内存。不影响视频播放。1080为无限制。需要重新启动。"
+
+msgctxt "#36600"
+msgid "Category containing the settings for how the music library is handled."
+msgstr "包含音乐资料库处理相关设置的功能区。"
+
+msgctxt "#36601"
+msgid "Category containing settings for how music file lists are handled."
+msgstr "包含音乐文件列表处理相关设置的功能区。"
+
+msgctxt "#36602"
+msgid "Category containing settings for how the AirPlay service is handled."
+msgstr "包含 AirPlay 服务处理相关设置的功能区。"
+
+msgctxt "#36603"
+msgid "Category containing settings for how video output is handled."
+msgstr "包含视频输出处理相关设置的功能区。"
 
 msgctxt "#37000"
 msgid "(Visually Impaired)"
@@ -12169,6 +12629,10 @@ msgctxt "#37018"
 msgid "Boost centre channel when downmixing"
 msgstr "混缩时增大中置声道音量"
 
+msgctxt "#37019"
+msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
+msgstr "在全屏画面启用 printscreen、alt-tab 和音量等系统键。"
+
 msgctxt "#37020"
 msgid "Enable higher colour depth artwork"
 msgstr "启用高色深艺术图片"
@@ -12187,4 +12651,4 @@ msgstr "要停止远程设备上的播放吗？"
 
 msgctxt "#37024"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1, this allows multichannel audio such as AAC5.1 or FLAC5.1 to be listened to in 5.1 surround sound. Note - Not recommended on Pi as this requires a lot of CPU."
-msgstr "当音频输出设备仅支持杜比数字5.1多声道音频时选择此项，这将允许 AAC5.1 或 FLAC5.1 等多声道音频以5.1环绕声播放。注意 - 需占用较多 CPU 资源，建议不要在 Pi 上使用。"
+msgstr "当音频输出接口仅支持如杜比数字5.1多声道音频时选择此项，这将允许 AAC5.1 或 FLAC5.1 等多声道音频以5.1环绕声播放。注意 - 需占用较多 CPU 资源，建议不要在 Pi 上使用。"

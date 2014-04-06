@@ -790,7 +790,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
 
         // check if stream has passed full duration, needed for live streams
-        if(m_pkt.pkt.dts != (int64_t)AV_NOPTS_VALUE)
+        bool bAllowDurationExt = (stream->codec && (stream->codec->codec_type == AVMEDIA_TYPE_VIDEO || stream->codec->codec_type == AVMEDIA_TYPE_AUDIO));
+        if(bAllowDurationExt && m_pkt.pkt.dts != (int64_t)AV_NOPTS_VALUE)
         {
           int64_t duration;
           duration = m_pkt.pkt.dts;
@@ -1078,7 +1079,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->iSampleRate = pStream->codec->sample_rate;
         st->iBlockAlign = pStream->codec->block_align;
         st->iBitRate = pStream->codec->bit_rate;
-        st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
+        st->iBitsPerSample = pStream->codec->bits_per_raw_sample;
 	
         if(m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = m_dllAvUtil.av_dict_get(pStream->metadata, "title", NULL, 0)->value;

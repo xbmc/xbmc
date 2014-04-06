@@ -4997,6 +4997,10 @@ msgctxt "#13455"
 msgid "Software"
 msgstr "Software"
 
+msgctxt "#13456"
+msgid "Hardware accelerated"
+msgstr "Hardware acelerado"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Método de sincronización A/V"
@@ -5121,10 +5125,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Erro do Apple Remote"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "O soporte do Apple Remote non puido activarse."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Amontoar"
@@ -5225,9 +5225,25 @@ msgctxt "#14026"
 msgid "Video cache - DVD-ROM"
 msgstr "Caché de vídeo - DVD-ROM"
 
+msgctxt "#14027"
+msgid "Video cache - Local Network"
+msgstr "Caché de vídeo - Rede Local"
+
+msgctxt "#14028"
+msgid "Video cache - Internet"
+msgstr "Caché de vídeo - Internet"
+
 msgctxt "#14030"
 msgid "Audio cache - DVD-ROM"
 msgstr "Caché de audio - DVD-ROM"
+
+msgctxt "#14031"
+msgid "Audio cache - Local Network"
+msgstr "Caché de audio - Rede Local"
+
+msgctxt "#14032"
+msgid "Audio cache - Internet"
+msgstr "Caché de audio - Internet"
 
 msgctxt "#14034"
 msgid "DVD cache - DVD-ROM"
@@ -5240,6 +5256,10 @@ msgstr "Rede Local"
 msgctxt "#14036"
 msgid "Services"
 msgstr "Servizos"
+
+msgctxt "#14037"
+msgid "DVD cache - Local Network"
+msgstr "Caché do DVD - Rede Local"
 
 msgctxt "#14038"
 msgid "Network settings changed"
@@ -5951,7 +5971,7 @@ msgstr "Buscar programas semellantes"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr "Importando o EPG dende os clientes"
+msgstr "Importando a Guía dende os clientes"
 
 msgctxt "#19005"
 msgid "PVR stream information"
@@ -6005,6 +6025,10 @@ msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Gravacións de TV"
 
+msgctxt "#19018"
+msgid "Folder with channel icons"
+msgstr "Cartafol coas iconas das canles"
+
 msgctxt "#19019"
 msgid "Channels"
 msgstr "Canles"
@@ -6043,7 +6067,7 @@ msgstr "Busca sen resultados"
 
 msgctxt "#19028"
 msgid "No EPG entries"
-msgstr "Sen entradas na EPG"
+msgstr "Sen entradas na Guía"
 
 msgctxt "#19029"
 msgid "Channel"
@@ -6175,7 +6199,7 @@ msgstr "Eliminar o temporizador"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr "Engadir timer"
+msgstr "Engadir temporizador"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
@@ -6193,6 +6217,10 @@ msgctxt "#19065"
 msgid "Default EPG window"
 msgstr "Xanela da Guía Predefinida"
 
+msgctxt "#19066"
+msgid "Channel icons"
+msgstr "Iconas das canles"
+
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr "Este evento estase a gravar."
@@ -6203,7 +6231,7 @@ msgstr "A gravación no se pode eliminar, verifique o rexistro para máis detall
 
 msgctxt "#19069"
 msgid "EPG"
-msgstr "EPG"
+msgstr "Guía"
 
 msgctxt "#19070"
 msgid "Go to now"
@@ -6380,10 +6408,6 @@ msgstr "Buscar canles"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Non se poden usar as funcións do PVR cando se está a buscar."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "En que servidor quere buscar?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -6639,7 +6663,7 @@ msgstr "Toda a información da base de datos do PVR está a ser eliminada"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr "Restabelecer a base de datos do EPG"
+msgstr "Restabelecer a base de datos da Guía"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
@@ -6691,7 +6715,7 @@ msgstr "Xestor do canle"
 
 msgctxt "#19200"
 msgid "EPG source:"
-msgstr "Fonte do EPG:"
+msgstr "Fonte da Guía:"
 
 msgctxt "#19201"
 msgid "Channel name:"
@@ -6715,7 +6739,7 @@ msgstr "Xestión do grupo"
 
 msgctxt "#19206"
 msgid "Activate EPG:"
-msgstr "Activar EPG:"
+msgstr "Activar Guía:"
 
 msgctxt "#19207"
 msgid "Group:"
@@ -6775,7 +6799,7 @@ msgstr "Canles en"
 
 msgctxt "#19222"
 msgid "EPG"
-msgstr "EPG"
+msgstr "Guía"
 
 msgctxt "#19223"
 msgid "No PVR Add-on could be enabled. Check your settings or the log for more info."
@@ -6891,7 +6915,7 @@ msgstr "Cargando a Guía dende a base de datos"
 
 msgctxt "#19251"
 msgid "Update EPG information"
-msgstr "Actualizar a información do EPG"
+msgstr "Actualizar a información da Guía"
 
 msgctxt "#19252"
 msgid "Schedule EPG update for this channel?"
@@ -7012,6 +7036,22 @@ msgstr "Axustes específicos do cliente"
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr "Confirmar o troco de canle premendo OK"
+
+msgctxt "#19282"
+msgid "Current icon"
+msgstr "Icona actual"
+
+msgctxt "#19283"
+msgid "No icon"
+msgstr "Sen icona"
+
+msgctxt "#19284"
+msgid "Choose icon"
+msgstr "Escoller icona"
+
+msgctxt "#19285"
+msgid "Browse for icon"
+msgstr "Buscar icona"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8232,6 +8272,10 @@ msgstr "Análise dos artistas usando %s"
 msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr "Análise dos álbums usando %s"
+
+msgctxt "#20323"
+msgid "Movie plot"
+msgstr "Sinopse do filme"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -10197,10 +10241,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Seleccionar dende tódolos títulos..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Amosar menús bluray"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Reproducir título principal: %d"
@@ -10212,6 +10252,10 @@ msgstr "Título: %d"
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr "Seleccionar elemento de reprodución"
+
+msgctxt "#25007"
+msgid "Chapters: %u - duration: %s"
+msgstr "Capitulos: %u - duración: %s"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10945,6 +10989,10 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "Usar un rango limitado de cores (16-235)"
 
+msgctxt "#36101"
+msgid "Change the look and feel of the user interface."
+msgstr "Mudar a aprencia da Interfade de usuario."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Mudar a configuración específica do tema. As opcións dispoñíbeis dependen do tema usado."
@@ -11073,10 +11121,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Axustar o método usado para procesar e reproducir vídeo."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "O audio tense que manter sincronizado, isto pódese acadar mediante a sobremostraxe, ignorando/duplicando paquetes ou axustando o reloxo se fica moi desincronizado."
@@ -11149,14 +11193,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Scraper predefinido para engadir vídeos musicais á súa biblioteca."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Importar grupos de canles dende o motor PVR (se está soportado). Eliminará os grupos creados polo usuario se non se atopan no motor."
@@ -11177,42 +11213,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Eliminar a base de datos da Guía e volver importar os datos dende o motor."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Non importar os datos da Guía mentres se está a ver a TV para minimizar o uso da CPU."
@@ -11225,37 +11225,17 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Agochar as etiquetas \"sen información dispoñíbel\" caneo no se poda obter datos da canle."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Reproducir o fluxo da canle seleccionada nunha xanela pequena no canto da pantalla completa."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Premendo un número de botón no modo pantalla completa trocará automaticamente á canle escollida despois 1 segundo."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Amosar unha notificación cando o motor engada, remate ou elimine temporizadores."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
 
 msgctxt "#36245"
 msgid "Execute the wakeup command every day at the given time."
@@ -11265,21 +11245,9 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Hora na que o comando espertar ten que ser executado."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Inserir un novo código pin para desbloquear as canles con control parental."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
 
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
@@ -11298,10 +11266,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Buscar ficheiros de medios novos e eliminados no inicio do XBMC."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Aínda non hai info. dispoñíbel."
 
@@ -11581,10 +11545,6 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Definir as localización das que obter a súa info. meteorolóxica."
 
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Aínda non hai info. dispoñíbel."
-
 msgctxt "#36425"
 msgid "Show context menu"
 msgstr "Amosar menú contextual"
@@ -11756,6 +11716,10 @@ msgstr "Potenciar a canle central ao diminuír o número de canles"
 msgctxt "#37019"
 msgid "Enables system keys like printscreen, alt-tab and volume keys when in fullscreen."
 msgstr "Activa as teclas do sistema como imp. pant., alt-tab e as teclas do volume na pantalla completa."
+
+msgctxt "#37021"
+msgid "Set GUI resolution limit"
+msgstr "Estabelecer o limite de resolución do GUI"
 
 msgctxt "#37022"
 msgid "UPnP Player"

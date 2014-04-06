@@ -4557,10 +4557,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "خطای اپل ریموت"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "پشتیبانی اپل ریموت را می توان فعال کرد."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "دسته"

@@ -3213,10 +3213,6 @@ msgctxt "#19117"
 msgid "Search for channels"
 msgstr "Kanallarni qidirish"
 
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Qaysi serverda qidirmoqchisiz?"
-
 msgctxt "#19120"
 msgid "Client number"
 msgstr "Mijoz raqami"

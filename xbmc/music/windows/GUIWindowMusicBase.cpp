@@ -321,43 +321,18 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     return;
   }
 
-  CFileItemList items;
-  GetDirectory(pItem->GetPath(), items);
-
-  // show dialog box indicating we're searching the album name
-  if (m_dlgProgress && bShowInfo)
+  int albumID = m_musicdatabase.GetAlbumIdByPath(pItem->GetPath());
+  if (albumID != -1)
   {
-    m_dlgProgress->SetHeading(185);
-    m_dlgProgress->SetLine(0, 501);
-    m_dlgProgress->SetLine(1, "");
-    m_dlgProgress->SetLine(2, "");
-    m_dlgProgress->StartModal();
-    m_dlgProgress->Progress();
-    if (m_dlgProgress->IsCanceled())
-    {
+    CAlbum album;
+    if (!m_musicdatabase.GetAlbum(albumID, album))
       return;
-    }
+    CFileItem item(StringUtils::Format("musicdb://albums/%ld/", albumID), album);
+    if (ShowAlbumInfo(&item))
+      return;
   }
 
-  // check the first song we find in the folder, and grab its album info
-  for (int i = 0; i < items.Size(); i++)
-  {
-    CFileItemPtr pItem = items[i];
-    pItem->LoadMusicTag();
-    if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded() &&
-       !pItem->GetMusicInfoTag()->GetAlbum().empty())
-    {
-      if (m_dlgProgress && bShowInfo)
-        m_dlgProgress->Close();
-
-      if (!ShowAlbumInfo(pItem.get())) // Something went wrong, so bail for the rest
-        break;
-    }
-  }
-
-  CLog::Log(LOGINFO, "%s called on a folder containing no songs with tag info - nothing can be done", __FUNCTION__);
-  if (m_dlgProgress && bShowInfo)
-      m_dlgProgress->Close();
+  CLog::Log(LOGINFO, "%s called on a folder containing no songs in the library - nothing can be done", __FUNCTION__);
 }
 
 void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo /* = true */)
@@ -373,6 +348,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
   if (!m_musicdatabase.GetArtist(params.GetArtistId(), artist))
       return;
 
+  m_musicdatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
   while (1)
   {
     // Check if we have the information in the database first
@@ -411,9 +387,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
     CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgArtistInfo)
     {
-      CStdString strPath;
-      m_musicdatabase.GetArtistPath(params.GetArtistId(), strPath);
-      pDlgArtistInfo->SetArtist(artist, strPath);
+      pDlgArtistInfo->SetArtist(artist, artist.strPath);
       pDlgArtistInfo->DoModal();
 
       if (pDlgArtistInfo->NeedRefresh())
@@ -445,6 +419,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
   if (!m_musicdatabase.GetAlbum(params.GetAlbumId(), album))
     return false;
 
+  m_musicdatabase.GetAlbumPath(params.GetAlbumId(), album.strPath);
   while (1)
   {
     if (!m_musicdatabase.HasAlbumBeenScraped(params.GetAlbumId()))
@@ -491,9 +466,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
     CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgAlbumInfo)
     {
-      CStdString strPath;
-      m_musicdatabase.GetAlbumPath(params.GetAlbumId(), strPath);
-      pDlgAlbumInfo->SetAlbum(album, strPath);
+      pDlgAlbumInfo->SetAlbum(album, album.strPath);
       pDlgAlbumInfo->DoModal();
 
       if (pDlgAlbumInfo->NeedRefresh())
@@ -503,7 +476,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
       }
       else if (pDlgAlbumInfo->HasUpdatedThumb())
       {
-        UpdateThumb(album, strPath);
+        UpdateThumb(album, album.strPath);
       }
     }
     break;

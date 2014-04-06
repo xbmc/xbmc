@@ -414,7 +414,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   SUBTITLE_STORAGEMODE storageMode = (SUBTITLE_STORAGEMODE) CSettings::Get().GetInt("subtitles.storagemode");
 
   // Get (unstacked) path
-  const CStdString &strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
+  CStdString strCurrentFile = g_application.CurrentUnstackedItem().GetPath();
 
   CStdString strDownloadPath = "special://temp";
   CStdString strDestPath;
@@ -423,7 +423,9 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   CStdString strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
   if (StringUtils::StartsWith(strCurrentFilePath, "http://"))
   {
-    vecFiles.push_back("TemporarySubs");
+    strCurrentFilePath = "";
+    strCurrentFile = "TempSubtitle";
+    vecFiles.push_back(strCurrentFile);
   }
   else
   {
@@ -473,18 +475,20 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     CStdString strSubExt = URIUtils::GetExtension(strUrl);
     CStdString strSubName = StringUtils::Format("%s.%s%s", strFileName.c_str(), strSubLang.c_str(), strSubExt.c_str());
 
-    // Handle URL decoding/slash correction:
+    // Handle URL encoding:
     CStdString strDownloadFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDownloadPath);
     CStdString strDestFile = strDownloadFile;
 
     if (!CFile::Cache(strUrl, strDownloadFile))
     {
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strSubName, g_localizeStrings.Get(24113));
+      CLog::Log(LOGERROR, "%s - Saving of subtitle %s to %s failed", __FUNCTION__, strUrl.c_str(), strDownloadFile.c_str());
     }
     else
     {
       if (strDestPath != strDownloadPath)
       {
+        // Handle URL encoding:
         CStdString strTryDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDestPath);
 
         /* Copy the file from temp to our final destination, if that fails fallback to download path
@@ -492,7 +496,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
          * so that all remaining items (including the .idx below) are copied directly to their final destination and thus all
          * items end up in the same folder
          */
-        CLog::Log(LOGDEBUG, "%s - Saving subtitle %s to %s", __FUNCTION__, strDownloadFile.c_str(), strDestPath.c_str());
+        CLog::Log(LOGDEBUG, "%s - Saving subtitle %s to %s", __FUNCTION__, strDownloadFile.c_str(), strTryDestFile.c_str());
         if (CFile::Cache(strDownloadFile, strTryDestFile))
         {
           CFile::Delete(strDownloadFile);
@@ -501,9 +505,13 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         }
         else
         {
-          CLog::Log(LOGWARNING, "%s - Saving of subtitle %s to %s failed. Falling back to %s", __FUNCTION__, strDownloadFile.c_str(), strDestPath.c_str(), strDownloadPath.c_str());
+          CLog::Log(LOGWARNING, "%s - Saving of subtitle %s to %s failed. Falling back to %s", __FUNCTION__, strDownloadFile.c_str(), strTryDestFile.c_str(), strDownloadPath.c_str());
           strDestPath = strDownloadPath; // Copy failed, use fallback for the rest of the items
         }
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "%s - Saved subtitle %s to %s", __FUNCTION__, strUrl.c_str(), strDownloadFile.c_str());
       }
 
       // for ".sub" subtitles we check if ".idx" counterpart exists and copy that as well
@@ -513,7 +521,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         if(CFile::Exists(strUrl))
         {
           CStdString strSubNameIdx = StringUtils::Format("%s.%s.idx", strFileName.c_str(), strSubLang.c_str());
-          // Handle URL decoding/slash correction:
+          // Handle URL encoding:
           strDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubNameIdx, strDestPath);
           CFile::Cache(strUrl, strDestFile);
         }

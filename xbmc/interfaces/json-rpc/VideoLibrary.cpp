@@ -507,7 +507,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
     // restore original playcount or the new one won't be announced
     int newPlaycount = infos.m_playCount;
     infos.m_playCount = playcount;
-    videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
+    videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed);
   }
 
   UpdateResumePoint(parameterObject, infos, videodatabase);
@@ -568,9 +568,6 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   std::map<int, std::map<std::string, std::string> > seasonArt;
   videodatabase.GetTvShowSeasonArt(infos.m_iDbId, seasonArt);
 
-  int playcount = infos.m_playCount;
-  CDateTime lastPlayed = infos.m_lastPlayed;
-
   std::set<std::string> removedArtwork;
   UpdateVideoTag(parameterObject, infos, artwork, removedArtwork);
 
@@ -583,14 +580,6 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
 
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, "tvshow", removedArtwork))
     return InternalError;
-
-  if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
-  {
-    // restore original playcount or the new one won't be announced
-    int newPlaycount = infos.m_playCount;
-    infos.m_playCount = playcount;
-    videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
-  }
 
   CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
@@ -673,7 +662,7 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITrans
     // restore original playcount or the new one won't be announced
     int newPlaycount = infos.m_playCount;
     infos.m_playCount = playcount;
-    videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
+    videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed);
   }
 
   UpdateResumePoint(parameterObject, infos, videodatabase);
@@ -723,7 +712,7 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
     // restore original playcount or the new one won't be announced
     int newPlaycount = infos.m_playCount;
     infos.m_playCount = playcount;
-    videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
+    videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed);
   }
 
   UpdateResumePoint(parameterObject, infos, videodatabase);
@@ -1023,13 +1012,13 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "imdbnumber"))
     details.m_strIMDBNumber = parameterObject["imdbnumber"].asString();
   if (ParameterNotNull(parameterObject, "premiered"))
-    details.m_premiered.SetFromDBDate(parameterObject["premiered"].asString());
+    SetFromDBDate(parameterObject["premiered"], details.m_premiered);
   if (ParameterNotNull(parameterObject, "votes"))
     details.m_strVotes = parameterObject["votes"].asString();
   if (ParameterNotNull(parameterObject, "lastplayed"))
-    details.m_lastPlayed.SetFromDBDateTime(parameterObject["lastplayed"].asString());
+    SetFromDBDateTime(parameterObject["lastplayed"], details.m_lastPlayed);
   if (ParameterNotNull(parameterObject, "firstaired"))
-    details.m_firstAired.SetFromDBDateTime(parameterObject["firstaired"].asString());
+    SetFromDBDateTime(parameterObject["firstaired"], details.m_firstAired);
   if (ParameterNotNull(parameterObject, "productioncode"))
     details.m_strProductionCode = parameterObject["productioncode"].asString();
   if (ParameterNotNull(parameterObject, "season"))

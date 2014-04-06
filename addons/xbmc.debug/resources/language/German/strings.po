@@ -39,3 +39,7 @@ msgstr "Ausführliches Logging der RTMP Bibliothek."
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "Ausführliches Logging der DBUS Aufrufe."
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "Ausführliches Logging der JSON-RPC Anfragen"

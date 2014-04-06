@@ -45,6 +45,8 @@ protected:
                         unsigned int f_port,
                         const std::vector<std::pair<std::string, std::string> >& txt);
 
+  bool doForceReAnnounceService(const std::string& fcr_identifier);
+
   bool doRemoveService(const std::string& fcr_ident);
 
   virtual void doStop();

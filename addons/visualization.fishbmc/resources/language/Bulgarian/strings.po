@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Detail [CPU intensive]"
-msgstr "Подробно [натоварва CPU]"
+msgstr "Подробно [натоварва ЦПУ]"
 
 msgctxt "#30001"
 msgid "Low"

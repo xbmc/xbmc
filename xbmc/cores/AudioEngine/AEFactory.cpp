@@ -180,7 +180,7 @@ std::string CAEFactory::GetDefaultDevice(bool passthrough)
   return "default";
 }
 
-bool CAEFactory::SupportsRaw(AEDataFormat format)
+bool CAEFactory::SupportsRaw(AEDataFormat format, int samplerate)
 {
   // check if passthrough is enabled
   if (!CSettings::Get().GetBool("audiooutput.passthrough"))
@@ -203,7 +203,7 @@ bool CAEFactory::SupportsRaw(AEDataFormat format)
     return false;
 
   if(AE)
-    return AE->SupportsRaw(format);
+    return AE->SupportsRaw(format, samplerate);
 
   return false;
 }

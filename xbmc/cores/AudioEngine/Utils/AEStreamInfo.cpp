@@ -473,7 +473,7 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
           break;
         }
         dtsBlocks = (((data[5] & 0x7) << 4) | ((data[6] & 0x3C) >> 2)) + 1;
-        m_fsize     = ((((data[6] & 0x3 << 8) | data[7]) << 4) | ((data[8] & 0x3C) >> 2)) + 1;
+        m_fsize     = (((((data[6] & 0x3) << 8) | data[7]) << 4) | ((data[8] & 0x3C) >> 2)) + 1;
         amode       = ((data[8] & 0x3) << 4) | ((data[9] & 0xF0) >> 4);
         sfreq       = data[9] & 0xF;
         lfe         = (data[12] & 0x18) >> 3;
@@ -489,7 +489,7 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
           break;
         }
         dtsBlocks = (((data[4] & 0x7) << 4) | ((data[7] & 0x3C) >> 2)) + 1;
-        m_fsize     = ((((data[7] & 0x3 << 8) | data[6]) << 4) | ((data[9] & 0x3C) >> 2)) + 1;
+        m_fsize     = (((((data[7] & 0x3) << 8) | data[6]) << 4) | ((data[9] & 0x3C) >> 2)) + 1;
         amode       = ((data[9] & 0x3) << 4) | ((data[8] & 0xF0) >> 4);
         sfreq       = data[8] & 0xF;
         lfe         = (data[13] & 0x18) >> 3;

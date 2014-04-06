@@ -57,7 +57,8 @@ public:
   {
     CONFIGURE,
     UNCONFIGURE,
-    SILENCEMODE,
+    STREAMING,
+    APPFOCUSED,
     VOLUME,
     FLUSH,
     TIMEOUT,
@@ -97,7 +98,7 @@ public:
   void Dispose();
   AEDeviceType GetDeviceType(const std::string &device);
   bool HasPassthroughDevice();
-  bool SupportsFormat(const std::string &device, AEDataFormat format);
+  bool SupportsFormat(const std::string &device, AEDataFormat format, int samplerate);
   CSinkControlProtocol m_controlPort;
   CSinkDataProtocol m_dataPort;
 
@@ -108,6 +109,7 @@ protected:
   void GetDeviceFriendlyName(std::string &device);
   void OpenSink();
   void ReturnBuffers();
+  void SetSilenceTimer();
 
   unsigned int OutputSamples(CSampleBuffer* samples);
   void ConvertInit(CSampleBuffer* samples);
@@ -123,6 +125,8 @@ protected:
   int m_extTimeout;
   bool m_extError;
   unsigned int m_extSilenceTimeout;
+  bool m_extAppFocused;
+  bool m_extStreaming;
   XbmcThreads::EndTime m_extSilenceTimer;
 
   CSampleBuffer m_sampleOfSilence;

@@ -39,3 +39,7 @@ msgstr "RTMP könyvtár bőbeszédű naplózása"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "DBUS hívások bőbeszédű naplózása"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC hívások bőbeszédű naplózása"

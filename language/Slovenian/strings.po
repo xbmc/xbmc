@@ -2301,6 +2301,18 @@ msgctxt "#640"
 msgid "Use album levels"
 msgstr "Uporabi nivoje albuma"
 
+msgctxt "#641"
+msgid "PreAmp Level - ReplayGained files"
+msgstr "Nivo PreAmp - Datoteke s poenoteno glasnostjo"
+
+msgctxt "#642"
+msgid "PreAmp Level - Non ReplayGained files"
+msgstr "Nivo PreAmp - Datoteke brez poenotene glasnosti"
+
+msgctxt "#643"
+msgid "Avoid clipping on ReplayGained files"
+msgstr "Prepreči popačenje zvoka ob poenotenju glasnosti"
+
 msgctxt "#644"
 msgid "Crop black bars"
 msgstr "Obreži črne robove"
@@ -3552,6 +3564,10 @@ msgstr "Ponastavi vse vidne nastavitve na privzete vrednosti."
 msgctxt "#10046"
 msgid "No categories available"
 msgstr "Na voljo ni nobene kategorije"
+
+msgctxt "#10047"
+msgid "Try changing the setting level to see additional categories and settings."
+msgstr "Zamanjajte nivo menija nastavitev za dostop do dodatnih kategorij in nastavitev."
 
 msgctxt "#10100"
 msgid "Yes/No dialogue"
@@ -5021,6 +5037,10 @@ msgctxt "#13503"
 msgid "Video clock (Resample audio)"
 msgstr "Slikovna ura (pretvori zvok)"
 
+msgctxt "#13504"
+msgid "Maximum speedup/slowdown amount (%)"
+msgstr "Maksimalna pohitritev/upočasnitev (%)"
+
 msgctxt "#13505"
 msgid "Resample quality"
 msgstr "Kvaliteta pretvorbe"
@@ -5124,10 +5144,6 @@ msgstr "Multi-upravljalnik (Harmony)"
 msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Napaka upravljalnika Apple"
-
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Podpora Apple Remote se lahko omogoči."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -6416,10 +6432,6 @@ msgstr "Išči nove programe"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Med iskanjem funkcij PVR ni mogoče uporabljati."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Na katerem strežniku želite iskati?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -8933,6 +8945,10 @@ msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
 msgstr "Ponastavi pisave podnapisov ASS/SSA"
 
+msgctxt "#21369"
+msgid "Enable mouse and touch screen support"
+msgstr "Omogoči podporo za miško in zaslon na dotik"
+
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
 msgstr "Predvajaj navigacijske zvoke med predvajanjem vsebine"
@@ -9288,6 +9304,10 @@ msgstr "Združi po"
 msgctxt "#21459"
 msgid "mixed"
 msgstr "mešano"
+
+msgctxt "#21460"
+msgid "Subtitle position on screen"
+msgstr "Pozicija podnapisov na zaslonu"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -10189,6 +10209,10 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr "Začasno ustavi predvajanje ko se prične iskanje podnapisov"
 
+msgctxt "#24106"
+msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
+msgstr "Določi ali se ponapisi shranjujejo v mapo s predvajano datoteko ali v drugo uporabniško mapo."
+
 msgctxt "#24107"
 msgid "Searching for subtitles ..."
 msgstr "Iščem podnapise ..."
@@ -10220,6 +10244,10 @@ msgstr "Prenos podnapisa je spodletel."
 msgctxt "#24114"
 msgid "No subtitle services installed"
 msgstr "Ni nameščen noben vtičnik za podnapise."
+
+msgctxt "#24115"
+msgid "Subtitle storage location"
+msgstr "Lokacija za shranjevanje podnapisov"
 
 msgctxt "#24116"
 msgid "Default TV Service"
@@ -10253,10 +10281,6 @@ msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Izberi med vsemi naslovi ..."
 
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Prikaži menije bluraya"
-
 msgctxt "#25004"
 msgid "Play main title: %d"
 msgstr "Predvajaj glavni naslov: %d"
@@ -10272,14 +10296,6 @@ msgstr "Izberite predmet predvajanja"
 msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr "Poglavja: %u - trajanje: %s"
-
-msgctxt "#25008"
-msgid "Blu-ray Disc playback failed"
-msgstr "Predvajanje Blu-ray diska je spodletelo"
-
-msgctxt "#25009"
-msgid "The menu of this Blu-ray Disc is not supported"
-msgstr "Meni tega Blu-ray diska ni podprt"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -11013,6 +11029,10 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr "Uporabi omejen obseg barv (16-235)"
 
+msgctxt "#36101"
+msgid "Change the look and feel of the user interface."
+msgstr "Spremenite izgled in obnašanje uporabniškega vmesnika."
+
 msgctxt "#36104"
 msgid "Change specific skin settings. The available options are dependent on the skin used."
 msgstr "Spremenite nastavitve specifične za preobleko. Možnosti, ki so na voljo, so odvisne od uporabljene preobleke."
@@ -11025,6 +11045,10 @@ msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr "Spremenite barve trenutno izbrane preobleke."
 
+msgctxt "#36108"
+msgid "Resize the view of the user interface."
+msgstr "Spremeni velikost uporabniškega vmesnika."
+
 msgctxt "#36109"
 msgid "Select the media window that XBMC displays on startup."
 msgstr "Izberite privzeto okno, ki se bo prikazalo ob zagonu XBMC-ja."
@@ -11036,6 +11060,10 @@ msgstr "Izključite drsenje novic RSS."
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr "Uredite vire RSS."
+
+msgctxt "#36114"
+msgid "Chooses the language of the user interface."
+msgstr "Izberite jezik uporabniškega vmesnika."
 
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
@@ -11068,6 +11096,10 @@ msgstr "Prikažite pripone predstavnih datotek. Na primer 'Party Anima.mp3' bi p
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr "Dovolite brisanje in preimenovanje datotek s pomočjo uporabniškega vmesnika, preko vsebinskega menija (na primer na tipkovnici pritisnite tipko C za prikaz vsebinskega menija)."
+
+msgctxt "#36127"
+msgid "Show hidden files and directories when listing files."
+msgstr "Prikaži skrite datoteke in mape na seznamu datotek."
 
 msgctxt "#36129"
 msgid "Set the amount of idle time required before displaying the screensaver."
@@ -11104,6 +11136,10 @@ msgstr "Informacije še niso na voljo."
 msgctxt "#36137"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
+
+msgctxt "#36140"
+msgid "Enable the video library."
+msgstr "Omogoči video knjižnico."
 
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
@@ -11145,10 +11181,6 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr "Prilagodi metodo uporabljeno za procesiranje in prikaz videa."
 
-msgctxt "#36157"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
 msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr "Stopnji osveževanja zaslona prilagodite posnetek."
@@ -11156,6 +11188,10 @@ msgstr "Stopnji osveževanja zaslona prilagodite posnetek."
 msgctxt "#36167"
 msgid "Audio has to stay in sync, this can either be done by resampling, skipping/duplicating packets, or adjusting the clock if it gets out of sync too far."
 msgstr "Zvok mora ostati usklajen, to se lahko popravi z pretvarjanjem, izpuščanjem/podvajanjem paketkov ali prilagajanjem ure, če se preveč ne ujema."
+
+msgctxt "#36168"
+msgid "Maximum video speed adjust to match actual screen refresh rate."
+msgstr "Maksimalna prilagoditev hitrosti predvajanja za doseganje dejanske frekvence osvežitve zaslona."
 
 msgctxt "#36169"
 msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
@@ -11225,14 +11261,6 @@ msgctxt "#36200"
 msgid "Default scraper used for adding music videos to your library."
 msgstr "Privzeto strgalo za dodajanje videospotov v knjižnico."
 
-msgctxt "#36201"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36202"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
 msgctxt "#36204"
 msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
 msgstr "Uvozite skupine programov iz hrbtenic PVR (če je podprto). To bo izbrisalo uporabniško ustvarjene skupine, če se ne nahajajo v hrbtenici."
@@ -11253,42 +11281,6 @@ msgctxt "#36209"
 msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
 msgstr "Izbrišite bazo programov/EPG in ponovno uvozite podatke iz hrbtenic."
 
-msgctxt "#36210"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36211"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36212"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36213"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36214"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36215"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36216"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36217"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36218"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
 msgctxt "#36222"
 msgid "Do not import EPG data while playing TV to minimise CPU usage."
 msgstr "Ne uvažajte programskega vodiča med predvajanjem TV in s tem zmanjšajte porabo CPU-ja."
@@ -11301,37 +11293,17 @@ msgctxt "#36224"
 msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
 msgstr "Skrijte oznako \"Informacije niso na voljo\", ko programskega vodiča za izbran program ni na voljo."
 
-msgctxt "#36226"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
 msgctxt "#36227"
 msgid "Display stream of selected channel in a small box instead of fullscreen."
 msgstr "Prikažite video izbranega programa v manjšem okvirju namesto v celozaslonskem načinu."
-
-msgctxt "#36230"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
 
 msgctxt "#36231"
 msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
 msgstr "Pritisk na številčne gumbe v celozaslonskem načinu bo samodejno preklopil na program s to številko po 1 sekundi."
 
-msgctxt "#36232"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36233"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
 msgctxt "#36239"
 msgid "Display a notification when timers are added, finished or removed by the backend."
 msgstr "Prikažite obvestilo, ko so časovniki dodani, končani ali zaključeni s strani hrbtenice."
-
-msgctxt "#36240"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
 
 msgctxt "#36241"
 msgid "Execute the \"wakeup command\" below when XBMC exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
@@ -11345,21 +11317,9 @@ msgctxt "#36246"
 msgid "When to execute the daily wakeup command."
 msgstr "Določite, kdaj zagnati dnevni ukaz bujenja."
 
-msgctxt "#36247"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
 msgctxt "#36249"
 msgid "Enter a new pin code to unlock parental locked channels."
 msgstr "Vnesite novo PIN kodo za odklep kanalov s starševkim nadzorom."
-
-msgctxt "#36251"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36252"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
 
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information via scrapers during scan."
@@ -11374,10 +11334,6 @@ msgid "Check for new and removed media files on XBMC startup."
 msgstr "Preglejte za nove in odstranjene medijske datoteke ob zagonu XBMC-ja."
 
 msgctxt "#36260"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
-
-msgctxt "#36261"
 msgid "No info available yet."
 msgstr "Informacije še niso na voljo."
 
@@ -11436,6 +11392,10 @@ msgstr "Izberite zvočni enkoder za zajemanje posnetkov."
 msgctxt "#36288"
 msgid "Select which quality you want to rip your files."
 msgstr "Izberite kvaliteto zajemanja posnetkov."
+
+msgctxt "#36289"
+msgid "Select which bitrate to use for the specified audio encoder for audio compression."
+msgstr "Izberi bitno hitrost, katero uporablja izbrani avdio kodirnik za stiskanje zvoka."
 
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
@@ -11565,6 +11525,10 @@ msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the 'capable receiver' options."
 msgstr "Izberite napravo, ki se bo uporabila za predvajanje kodiranih formatov, ki so navedeni spodaj med možnostmi 'sprejemnik podpira'."
 
+msgctxt "#36373"
+msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
+msgstr "Prilagodi zvoke uporabniškega vmesnika, kot so zvoki pomembnih obvestil in navigacije v menijih."
+
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control XBMC. Note: disabling will cause you to lose control over XBMC when no keyboard or remote is present."
 msgstr "Za upravljanje z XBMC-jem uporabite miško ali zaslon na dotik. Opomba: onemogočenje te nastavitve lahko povzroči, da izgubite nadzor nad XBMC-jem, ko ne boste imeli na voljo tipkovnice ali daljinskega upravljalnika."
@@ -11656,10 +11620,6 @@ msgstr "Informacije še niso na voljo."
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr "Določite lokacijo, ki se uporablja za pridobivanje informacij o vremenu."
-
-msgctxt "#36420"
-msgid "No info available yet."
-msgstr "Informacije še niso na voljo."
 
 msgctxt "#36425"
 msgid "Show context menu"

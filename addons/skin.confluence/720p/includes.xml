@@ -444,7 +444,7 @@
 			<top>120</top>
 			<height>30</height>
 			<width>325</width>
-			<label>[COLOR=blue]$LOCALIZE[209] :[/COLOR] $INFO[MusicPlayer.offset(1).Title]</label>
+			<label>[COLOR=blue]$LOCALIZE[19031] :[/COLOR] $INFO[MusicPlayer.offset(1).Title]</label>
 			<align>right</align>
 			<aligny>center</aligny>
 			<font>font12</font>

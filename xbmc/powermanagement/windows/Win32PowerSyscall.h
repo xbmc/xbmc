@@ -45,6 +45,7 @@ public:
 
   static void SetOnResume() { m_OnResume = true; }
   static void SetOnSuspend() { m_OnSuspend = true; }
+  static bool IsSuspending() { return m_OnSuspend; }
 
 private:
 

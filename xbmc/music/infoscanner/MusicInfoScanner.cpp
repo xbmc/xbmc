@@ -990,13 +990,17 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
   }
 
   // handle nfo files
-  CStdString strNfo = URIUtils::AddFileToFolder(album.strPath, "album.nfo");
+  CStdString path = album.strPath;
+  if (path.empty())
+    m_musicDatabase.GetAlbumPath(album.idAlbum, path);
+
+  CStdString strNfo = URIUtils::AddFileToFolder(path, "album.nfo");
   CNfoFile::NFOResult result = CNfoFile::NO_NFO;
   CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    result = nfoReader.Create(strNfo, info, -1, album.strPath);
+    result = nfoReader.Create(strNfo, info);
     if (result == CNfoFile::FULL_NFO)
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
@@ -1202,7 +1206,11 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
   }
 
   // handle nfo files
-  CStdString strNfo = URIUtils::AddFileToFolder(artist.strPath, "artist.nfo");
+  CStdString path = artist.strPath;
+  if (path.empty())
+    m_musicDatabase.GetArtistPath(artist.idArtist, path);
+
+  CStdString strNfo = URIUtils::AddFileToFolder(path, "artist.nfo");
   CNfoFile::NFOResult result=CNfoFile::NO_NFO;
   CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))

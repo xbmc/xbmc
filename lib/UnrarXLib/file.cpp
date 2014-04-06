@@ -109,11 +109,16 @@ bool File::Open(const char *Name,const wchar *NameW,bool OpenShared,bool Update)
   HandleType=FILE_HANDLENORMAL;
   SkipClose=false;
   bool success=hNewFile!=BAD_HANDLE;*/
+  char _name[NM];
+  if (NameW!=NULL)
+    WideToUtf(NameW, _name, sizeof(_name));
+  else
+    strcpy(_name, Name);
   bool success;
   if (Update)
-    success = m_File.OpenForWrite(Name);
+    success = m_File.OpenForWrite(_name);
   else
-    success = m_File.Open(Name);
+    success = m_File.Open(_name);
   if (success)
   {
 //    hFile=hNewFile;
@@ -165,9 +170,14 @@ bool File::Create(const char *Name,const wchar *NameW)
 #else
   hFile=fopen(Name,CREATEBINARY);
 #endif*/
-  CStdString strPath = URIUtils::GetDirectory(Name);
+  char _name[NM];
+  if (NameW!=NULL)
+    WideToUtf(NameW, _name, sizeof(_name));
+  else
+    strcpy(_name, Name);
+  CStdString strPath = URIUtils::GetDirectory(_name);
   CUtil::CreateDirectoryEx(strPath);
-  m_File.OpenForWrite(Name,true);
+  m_File.OpenForWrite(_name,true);
   NewFile=true;
   HandleType=FILE_HANDLENORMAL;
   SkipClose=false;

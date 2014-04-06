@@ -991,9 +991,6 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecording &tag)
   bool bReturn = false;
   CSingleLock lock(m_critSection);
 
-  CLog::Log(LOGDEBUG,"PVRManager - %s - opening recorded stream '%s'",
-      __FUNCTION__, tag.m_strFile.c_str());
-
   if ((bReturn = m_addons->OpenStream(tag)) != false)
   {
     delete m_currentFile;

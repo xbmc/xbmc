@@ -1185,14 +1185,12 @@ bool CFileItem::IsHD() const
 
 bool CFileItem::IsMusicDb() const
 {
-  CURL url(m_strPath);
-  return url.GetProtocol().Equals("musicdb");
+  return URIUtils::IsMusicDb(m_strPath);
 }
 
 bool CFileItem::IsVideoDb() const
 {
-  CURL url(m_strPath);
-  return url.GetProtocol().Equals("videodb");
+  return URIUtils::IsVideoDb(m_strPath);
 }
 
 bool CFileItem::IsVirtualDirectoryRoot() const
@@ -1431,6 +1429,12 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
     if (item->HasProperty("item_start") || HasProperty("item_start"))
       return (item->GetProperty("item_start") == GetProperty("item_start"));
     return true;
+  }
+  if (HasVideoInfoTag() && item->HasVideoInfoTag())
+  {
+    if (m_videoInfoTag->m_iDbId != -1 && item->m_videoInfoTag->m_iDbId != -1)
+      return ((m_videoInfoTag->m_iDbId == item->m_videoInfoTag->m_iDbId) &&
+        (m_videoInfoTag->m_type == item->m_videoInfoTag->m_type));        
   }
   if (IsMusicDb() && HasMusicInfoTag())
   {
@@ -2775,21 +2779,25 @@ CStdString CFileItem::GetTBNFile() const
   return thumbFile;
 }
 
+bool CFileItem::SkipLocalArt() const
+{
+  return (m_strPath.empty()
+       || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
+       || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
+       || m_bIsShareOrDrive
+       || IsInternetStream()
+       || URIUtils::IsUPnP(m_strPath)
+       || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+       || IsPlugin()
+       || IsAddonsPath()
+       || IsParentFolder()
+       || IsLiveTV()
+       || IsDVD());
+}
+
 CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) const
 {
-  // ignore a bunch that are meaningless
-  if (m_strPath.empty()
-   || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
-   || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
-   || m_bIsShareOrDrive
-   || IsInternetStream()
-   || URIUtils::IsUPnP(m_strPath)
-   || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
-   || IsPlugin()
-   || IsAddonsPath()
-   || IsParentFolder()
-   || IsLiveTV()
-   || IsDVD())
+  if (SkipLocalArt())
     return "";
 
   CStdString thumb;

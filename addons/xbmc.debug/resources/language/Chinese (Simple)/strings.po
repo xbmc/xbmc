@@ -39,3 +39,7 @@ msgstr "RTMP 库详细日志"
 msgctxt "#30005"
 msgid "Verbose logging for DBUS calls"
 msgstr "DBUS 调用详细日志"
+
+msgctxt "#30006"
+msgid "Verbose logging for JSON-RPC requests"
+msgstr "JSON-RPC 请求详细日志"

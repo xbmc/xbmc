@@ -1484,7 +1484,7 @@ bool MysqlDataset::query(const char *query) {
   size_t loc;
 
   // mysql doesn't understand CAST(foo as integer) => change to CAST(foo as signed integer)
-  if ((loc = ci_find(qry, "as integer)")) != string::npos)
+  while ((loc = ci_find(qry, "as integer)")) != string::npos)
     qry = qry.insert(loc + 3, "signed ");
 
   MYSQL_RES *stmt = NULL;

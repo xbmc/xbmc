@@ -24,6 +24,7 @@
 #include "system.h" // for SAFE_RELEASE
 #include "utils/log.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "powermanagement/windows/Win32PowerSyscall.h"
 
 class CMMNotificationClient : public IMMNotificationClient
 {
@@ -107,7 +108,7 @@ public:
       break;
     case eCommunications:
       pszRole = "eCommunications";
-      CAEFactory::DeviceChange();
+      NotifyAE();
       break;
     }
 
@@ -118,14 +119,14 @@ public:
   HRESULT STDMETHODCALLTYPE OnDeviceAdded(LPCWSTR pwstrDeviceId)
   {
     CLog::Log(LOGDEBUG, "%s: Added device: %s", __FUNCTION__, pwstrDeviceId);
-    CAEFactory::DeviceChange();
+    NotifyAE();
     return S_OK;
   }
 
   HRESULT STDMETHODCALLTYPE OnDeviceRemoved(LPCWSTR pwstrDeviceId)
   {
     CLog::Log(LOGDEBUG, "%s: Removed device: %s", __FUNCTION__, pwstrDeviceId);
-    CAEFactory::DeviceChange();
+    NotifyAE();
     return S_OK;
   }
 
@@ -149,7 +150,7 @@ public:
       break;
     }
     CLog::Log(LOGDEBUG, "%s: New device state is DEVICE_STATE_%s", __FUNCTION__, pszState);
-    CAEFactory::DeviceChange();
+    NotifyAE();
     return S_OK;
   }
 
@@ -163,5 +164,11 @@ public:
                                            key.fmtid.Data4[6], key.fmtid.Data4[7],
                                            key.pid);
     return S_OK;
+  }
+
+  void STDMETHODCALLTYPE NotifyAE()
+  {
+    if(!CWin32PowerSyscall::IsSuspending())
+      CAEFactory::DeviceChange();
   }
 };

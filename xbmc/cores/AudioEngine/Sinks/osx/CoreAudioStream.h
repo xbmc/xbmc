@@ -25,8 +25,15 @@
 
 #include "threads/Event.h"
 #include <CoreAudio/CoreAudio.h>
+#include <IOKit/audio/IOAudioTypes.h>
 
 #include <list>
+
+// not defined in 10.6 sdk
+#ifndef kIOAudioDeviceTransportTypeThunderbolt
+#define kIOAudioDeviceTransportTypeThunderbolt 'thun'
+#endif
+
 
 typedef std::list<AudioStreamID> AudioStreamIdList;
 typedef std::list<AudioStreamRangedDescription> StreamFormatList;

@@ -3429,6 +3429,10 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "Standaard"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "Gevorderde"
+
 msgctxt "#10042"
 msgid "Are you sure you want to reset the settings in this category?"
 msgstr "Is jy seker jy wil die stellings terugstel in die kategorie?"
@@ -4793,10 +4797,6 @@ msgctxt "#13620"
 msgid "Apple Remote Error"
 msgstr "Apple Afstandbeheer Fout"
 
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr "Apple Afstandbeheer bystand is in staat gestel."
-
 msgctxt "#14000"
 msgid "Stack"
 msgstr "Stapel"
@@ -5972,10 +5972,6 @@ msgstr "Soek vir kanale"
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
 msgstr "Kan nie PVR funksies gebruik terwyl soek nie."
-
-msgctxt "#19119"
-msgid "On which server you want to search?"
-msgstr "Op watter bediener wil jy soek?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -9552,10 +9548,6 @@ msgstr "Versteek vreemde"
 msgctxt "#25002"
 msgid "Select from all titles ..."
 msgstr "Kies van alle titels ..."
-
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr "Wys bluray kieslyste"
 
 msgctxt "#25004"
 msgid "Play main title: %d"

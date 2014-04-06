@@ -2409,6 +2409,10 @@ msgctxt "#10037"
 msgid "Standard"
 msgstr "စံ"
 
+msgctxt "#10038"
+msgid "Advanced"
+msgstr "အဆင့်မြင့်သော"
+
 msgctxt "#10131"
 msgid "Lock settings"
 msgstr "Lock settings"

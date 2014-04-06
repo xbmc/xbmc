@@ -30,11 +30,11 @@ msgstr "Dodatkowy czas losowy"
 
 msgctxt "#30003"
 msgid "Enable Anisotropic Filtering"
-msgstr "Włącz filtrowanie anizotropowe"
+msgstr "Aktywuj filtrowanie anizotropowe"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
-msgstr "Włącz \"ostre cięcia\""
+msgstr "Aktywuj \"ostre cięcia\""
 
 msgctxt "#30005"
 msgid "Loudness Threshold For Hard Cuts"
@@ -50,7 +50,7 @@ msgstr "Maksymalna częstotliwość odświeżania"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
-msgstr "Włącz tryb 3D"
+msgstr "Aktywuj stereofoniczny tryb 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
@@ -62,7 +62,7 @@ msgstr "Folder ustawień użytkownika"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Tryb ustawień mieszania"
+msgstr "Tryb losowy efektów"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
@@ -74,7 +74,7 @@ msgstr "Ustawienia Winampa"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Zdefiniowany folder ustawień użytkownika"
+msgstr "Zdefiniowany folder ustawień"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

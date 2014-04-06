@@ -3012,7 +3012,8 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source, bool reset)
   if(m_CurrentVideo.id    < 0
   || m_CurrentVideo.hint != hint)
   {
-    if (!m_dvdPlayerVideo.OpenStream(hint))
+    // discard if it's a picture attachment (e.g. album art embedded in MP3 or AAC)
+    if ((pStream->flags & AV_DISPOSITION_ATTACHED_PIC) || !m_dvdPlayerVideo.OpenStream(hint))
     {
       /* mark stream as disabled, to disallaw further attempts */
       CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
@@ -3560,6 +3561,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       {
         CLog::Log(LOGDEBUG, "DVDNAV_STOP");
         m_dvd.state = DVDSTATE_NORMAL;
+        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16026), g_localizeStrings.Get(16029));
       }
       break;
     default:

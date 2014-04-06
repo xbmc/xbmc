@@ -71,7 +71,7 @@
 			<align>left</align>
 			<label>-</label>
 			<font>font13</font>
-			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+			<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 		</control>
 		<control type="progress">
 			<description>Progressbar</description>

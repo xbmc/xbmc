@@ -1617,8 +1617,8 @@
       "elementtype": { "$ref": "Setting.Type", "required": true },
       "definition": { "$ref": "Setting.Details.Setting", "required": true },
       "delimiter": { "type": "string", "required": true },
-      "minimum": { "type": "integer" },
-      "maximum": { "type": "integer" }
+      "minimumItems": { "type": "integer" },
+      "maximumItems": { "type": "integer" }
     },
     "additionalProperties": false
   },

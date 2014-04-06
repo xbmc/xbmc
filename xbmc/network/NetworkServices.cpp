@@ -210,12 +210,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
       }
 #endif //HAS_ZEROCONF
 
-      if (!StartAirPlayServer())
-      {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1273), "", g_localizeStrings.Get(33100), "");
-        return false;
-      }
-
+      // note - airtunesserver has to start before airplay server (ios7 client detection bug)
 #ifdef HAS_AIRTUNES
       if (!StartAirTunesServer())
       {
@@ -223,6 +218,12 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
         return false;
       }
 #endif //HAS_AIRTUNES
+      
+      if (!StartAirPlayServer())
+      {
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1273), "", g_localizeStrings.Get(33100), "");
+        return false;
+      }      
     }
     else
     {
@@ -402,8 +403,10 @@ void CNetworkServices::Start()
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
   if (CSettings::Get().GetBool("services.esenabled") && !StartJSONRPCServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
-  StartAirPlayServer();
+  
+  // note - airtunesserver has to start before airplay server (ios7 client detection bug)
   StartAirTunesServer();
+  StartAirPlayServer();
   StartRss();
 }
 

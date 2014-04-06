@@ -62,11 +62,11 @@ msgstr "Domyślny zestaw"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"
-msgstr "Folder z ustawieniami zdefiniowny przez użytkownika"
+msgstr "Zdefiniowany folder ustawień"
 
 msgctxt "#30012"
 msgid "User Preset Folder"
-msgstr "Folder z ustawieniami użytkownika"
+msgstr "Folder ustawień użytkownika"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

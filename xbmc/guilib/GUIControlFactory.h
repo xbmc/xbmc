@@ -4,7 +4,7 @@
 */
 
 #ifndef GUI_CONTROL_FACTORY_H
-#define GIU_CONTROL_FACTORY_H
+#define GUI_CONTROL_FACTORY_H
 
 #pragma once
 
