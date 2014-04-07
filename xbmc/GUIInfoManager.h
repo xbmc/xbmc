@@ -288,7 +288,7 @@ namespace INFO
 #define CONTAINER_STATIC            347
 #define CONTAINER_MOVE_NEXT         348
 #define CONTAINER_SCROLL_NEXT       349
-
+#define CONTAINER_ISUPDATING        350
 #define CONTAINER_HASFILES          351
 #define CONTAINER_HASFOLDERS        352
 #define CONTAINER_STACKED           353

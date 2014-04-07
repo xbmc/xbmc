@@ -1159,6 +1159,8 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
     }
   case CONTAINER_SCROLLING:
     return (m_scrollTimer.GetElapsedMilliseconds() > std::max(m_scroller.GetDuration(), SCROLLING_THRESHOLD) || m_pageChangeTimer.IsRunning());
+  case CONTAINER_ISUPDATING:
+    return (m_listProvider) ? m_listProvider->IsUpdating() : false;
   default:
     return false;
   }

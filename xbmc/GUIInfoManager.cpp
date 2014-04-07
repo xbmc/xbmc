@@ -435,7 +435,8 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "hasprevious",      CONTAINER_HAS_PREVIOUS },
                                   { "canfilter",        CONTAINER_CAN_FILTER },
                                   { "canfilteradvanced",CONTAINER_CAN_FILTERADVANCED },
-                                  { "filtered",         CONTAINER_FILTERED }};
+                                  { "filtered",         CONTAINER_FILTERED },
+                                  { "isupdating",       CONTAINER_ISUPDATING }};
 
 const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "column",           CONTAINER_COLUMN },
@@ -2390,7 +2391,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     if (pWindow)
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasArt("thumb");
   }
-  else if (condition == CONTAINER_HAS_NEXT || condition == CONTAINER_HAS_PREVIOUS || condition == CONTAINER_SCROLLING)
+  else if (condition == CONTAINER_HAS_NEXT || condition == CONTAINER_HAS_PREVIOUS
+           || condition == CONTAINER_SCROLLING || condition == CONTAINER_ISUPDATING)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
@@ -2936,6 +2938,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case CONTAINER_HAS_PREVIOUS:
       case CONTAINER_SCROLLING:
       case CONTAINER_SUBITEM:
+      case CONTAINER_ISUPDATING:
         {
           const CGUIControl *control = NULL;
           if (info.GetData1())
