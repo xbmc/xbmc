@@ -25,8 +25,6 @@
 #include "EffectBase.h"
 #include <string>
 
-using namespace std;
-
 class VoicePrint : public EffectBase
 {
 public:
@@ -35,7 +33,7 @@ public:
 	~VoicePrint();
 	void Init();
 	void Render();
-	void LoadColourMap( string& filename );
+	void LoadColourMap( std::string& filename );
 	void SetRect(float minX, float minY, float maxX, float maxY);
 	void SetSpeed(float speed);
 

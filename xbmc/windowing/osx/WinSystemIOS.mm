@@ -300,7 +300,7 @@ bool CWinSystemIOS::IsExtSupported(const char* extension)
   name += extension;
   name += " ";
 
-  return m_eglext.find(name) != string::npos;
+  return m_eglext.find(name) != std::string::npos;
 }
 
 bool CWinSystemIOS::BeginRender()

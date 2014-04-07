@@ -47,6 +47,8 @@
 #include <iostream>
 #include <sstream>
 
+using namespace std;
+
 class COMXMsgAudioCodecChange : public CDVDMsg
 {
 public:

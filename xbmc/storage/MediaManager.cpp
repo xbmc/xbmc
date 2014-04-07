@@ -71,6 +71,10 @@
 using namespace std;
 using namespace XFILE;
 
+#ifdef HAS_DVD_DRIVE
+using namespace MEDIA_DETECT;
+#endif
+
 const char MEDIA_SOURCES_XML[] = { "special://profile/mediasources.xml" };
 
 class CMediaManager g_mediaManager;

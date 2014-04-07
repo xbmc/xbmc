@@ -22,6 +22,8 @@
 #include <new>
 #include <stdio.h>
 
+using namespace std;
+
 Texture::Texture()
 {
 	m_iRefCount = 1;

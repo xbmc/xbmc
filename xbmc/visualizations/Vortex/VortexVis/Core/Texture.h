@@ -23,14 +23,12 @@
 #include "Renderer.h"
 #include <string>
 
-using namespace std;
-
 class Texture
 {
 public:
 	Texture();
 	void CreateTexture();
-	void LoadTexture( string& filename );
+	void LoadTexture( std::string& filename );
 
 	void AddRef();
 	void Release();

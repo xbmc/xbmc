@@ -30,7 +30,7 @@
  */
 
 #include <string>
-using namespace std;
+
 class CWindowsShortcut
 {
 public:

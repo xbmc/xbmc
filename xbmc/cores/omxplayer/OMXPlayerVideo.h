@@ -39,8 +39,6 @@
 #include "linux/DllBCM.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
-using namespace std;
-
 class OMXPlayerVideo : public CThread
 {
 protected:

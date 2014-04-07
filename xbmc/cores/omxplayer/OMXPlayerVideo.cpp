@@ -51,6 +51,7 @@
 #include "linux/RBP.h"
 
 using namespace RenderManager;
+using namespace std;
 
 class COMXMsgVideoCodecChange : public CDVDMsg
 {

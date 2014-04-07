@@ -22,6 +22,8 @@
 #include "Shader.h"
 #include "angelscript.h"
 
+using namespace std;
+
 char ColourRemapPixelShaderSrc[] =
 {
 	" sampler2D SpectrumTexture : tex0;										\n"

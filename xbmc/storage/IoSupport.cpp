@@ -66,6 +66,9 @@
 #include "XHandle.h"
 #endif
 
+#ifdef HAS_DVD_DRIVE
+using namespace MEDIA_DETECT;
+#endif
 
 PVOID CIoSupport::m_rawXferBuffer;
 
