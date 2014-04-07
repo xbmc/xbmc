@@ -35,7 +35,6 @@
 
 #include "OMXClock.h"
 #include "OMXCore.h"
-#include "PCMRemap.h"
 
 #include "threads/CriticalSection.h"
 
@@ -63,7 +62,7 @@ public:
   float GetCacheTime();
   float GetCacheTotal();
   COMXAudio();
-  bool Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, uint64_t channelMap, bool bUsePassthrough, bool bUseHWDecode);
+  bool Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, CAEChannelInfo channelMap, bool bUsePassthrough, bool bUseHWDecode);
   bool PortSettingsChanged();
   ~COMXAudio();
 
@@ -100,12 +99,6 @@ public:
   bool BadState() { return !m_Initialized; };
   unsigned int GetAudioRenderingLatency();
   float GetMaxLevel(double &pts);
-
-  void BuildChannelMap(enum PCMChannels *channelMap, uint64_t layout);
-  int BuildChannelMapCEA(enum PCMChannels *channelMap, uint64_t layout);
-  void BuildChannelMapOMX(enum OMX_AUDIO_CHANNELTYPE *channelMap, uint64_t layout);
-  uint64_t GetChannelLayout(enum PCMLayout layout);
-  CAEChannelInfo GetAEChannelLayout(uint64_t layout);
 
 private:
   IAudioCallback* m_pCallback;

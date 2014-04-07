@@ -48,8 +48,6 @@
   (a).nVersion.s.nRevision = OMX_VERSION_REVISION; \
   (a).nVersion.s.nStep = OMX_VERSION_STEP
 
-#include "libavformat/avformat.h"
-
 #define OMX_MAX_PORTS 10
 
 typedef struct omx_event {
