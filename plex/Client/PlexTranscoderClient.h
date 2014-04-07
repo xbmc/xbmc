@@ -34,6 +34,7 @@ public:
     };
 
   CPlexTranscoderClient() {}
+  virtual ~CPlexTranscoderClient() {}
   static CPlexTranscoderClient *GetInstance();
   static void DeleteInstance();
   static int SelectATranscoderQuality(CPlexServerPtr server, int currentQuality = 0);

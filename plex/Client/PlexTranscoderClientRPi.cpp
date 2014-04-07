@@ -26,11 +26,11 @@ CPlexTranscoderClientRPi::CPlexTranscoderClientRPi()
 
   // Here is as list of audio / video codecs that we support natively on RPi
   m_knownVideoCodecs = boost::assign::list_of<std::string>  ("h264") ("mpeg4");
-  m_knownAudioCodecs = boost::assign::list_of<std::string>  ("aac") ("ac3") ("mp3") ("mp2") ("dca");
+  m_knownAudioCodecs = boost::assign::list_of<std::string>  ("") ("aac") ("ac3") ("mp3") ("mp2") ("dca") ("flac");
 
   // check if optionnal codecs are here
   if ( CheckCodec("MPG2") )
-    m_knownVideoCodecs.insert("mpeg2");
+    m_knownVideoCodecs.insert("mpeg2video");
 
   if ( CheckCodec("WVC1") )
     m_knownVideoCodecs.insert("vc1");
@@ -53,7 +53,7 @@ bool CPlexTranscoderClientRPi::CheckCodec(std::string codec)
   {
       if (fgets(output, sizeof(output)-1, fp))
       {
-        if (!strcmp(output, reply.c_str()))
+        if (!strncmp(output, reply.c_str(),reply.length()))
         {
           CLog::Log(LOGDEBUG, "CPlexTranscoderClientRPi :  Codec %s was found.",codec.c_str());
           return true;
@@ -77,6 +77,12 @@ bool CPlexTranscoderClientRPi::CheckCodec(std::string codec) { return false; }
 ///////////////////////////////////////////////////////////////////////////////
 bool CPlexTranscoderClientRPi::ShouldTranscode(CPlexServerPtr server, const CFileItem& item)
 {
+  if (!item.IsVideo())
+    return false;
+
+  if (!server || !server->GetActiveConnection())
+    return false;
+
   CFileItemPtr selectedItem = CPlexMediaDecisionEngine::getSelectedMediaItem((item));
 
   bool bShouldTranscode = false;
@@ -98,10 +104,12 @@ bool CPlexTranscoderClientRPi::ShouldTranscode(CPlexServerPtr server, const CFil
   // default capping values
   m_maxVideoBitrate = 20000;
   m_maxAudioBitrate = 1000;
+  int maxBitDepth = 8;
 
   // grab some other information in the audio / video streams
   int audioBitRate = 0;
   float videoFrameRate = 0;
+  int bitDepth = 0;
 
   CFileItemPtr audioStream,videoStream;
   CFileItemPtr mediaPart = selectedItem->m_mediaParts.at(0);
@@ -113,7 +121,10 @@ bool CPlexTranscoderClientRPi::ShouldTranscode(CPlexServerPtr server, const CFil
       CLog::Log(LOGERROR,"CPlexTranscoderClient::ShouldTranscodeRPi - AudioStream is empty");
 
     if ((videoStream = PlexUtils::GetSelectedStreamOfType(mediaPart, PLEX_STREAM_VIDEO)))
+    {
       videoFrameRate = videoStream->GetProperty("frameRate").asFloat();
+      bitDepth = videoStream->GetProperty("bitDepth").asInteger();
+    }
     else
       CLog::Log(LOGERROR,"CPlexTranscoderClient::ShouldTranscodeRPi - VideoStream is empty");
   }
@@ -125,6 +136,7 @@ bool CPlexTranscoderClientRPi::ShouldTranscode(CPlexServerPtr server, const CFil
   CLog::Log(LOGDEBUG,"-%16s : %s", "videoCodec",videoCodec.c_str());
   CLog::Log(LOGDEBUG,"-%16s : %d", "videoResolution",videoResolution);
   CLog::Log(LOGDEBUG,"-%16s : %3.3f", "videoFrameRate",videoFrameRate);
+  CLog::Log(LOGDEBUG,"-%16s : %d", "bitDepth",bitDepth);
   CLog::Log(LOGDEBUG,"-%16s : %d", "bitrate",videoBitRate);
   CLog::Log(LOGDEBUG,"-%16s : %d", "width",videoWidth);
   CLog::Log(LOGDEBUG,"-%16s : %d", "height",videoHeight);
@@ -170,6 +182,11 @@ bool CPlexTranscoderClientRPi::ShouldTranscode(CPlexServerPtr server, const CFil
   {
     bShouldTranscode = true;
     ReasonWhy.Format("Audio bitrate is too high : %d kbps, (max :%d kbps)",audioBitRate,m_maxAudioBitrate);
+  }
+  else if (bitDepth > maxBitDepth)
+  {
+    bShouldTranscode = true;
+    ReasonWhy.Format("Video bitDepth is too high : %d (max : %d)",bitDepth,maxBitDepth);
   }
 
   if (bShouldTranscode)
