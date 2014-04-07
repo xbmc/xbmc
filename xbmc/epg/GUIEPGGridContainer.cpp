@@ -1263,8 +1263,8 @@ void CGUIEPGGridContainer::SetChannel(int channel)
     m_item          = GetItem(channel);
     if (m_item)
     {
-      SetBlock(GetBlock(m_item->item, channel));
       m_channelCursor = channel;
+      SetBlock(GetBlock(m_item->item, channel));
     }
     return;
   }
