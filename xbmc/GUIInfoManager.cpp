@@ -944,6 +944,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           else if (param == "used.percent") return SYSTEM_USED_MEMORY_PERCENT;
           else if (param == "total") return SYSTEM_TOTAL_MEMORY;
         }
+        /* PLEX */
+        else if (prop.name == "issystem")
+        {
+          if (param == "rasplex") return SYSTEM_ISRASPLEX;
+          else if (param == "openelec") return SYSTEM_ISOPENELEC;
+        }
+        /* END PLEX */
         else if (prop.name == "addontitle")
         {
           int infoLabel = TranslateSingleString(param);
@@ -2408,6 +2415,22 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_NO_PLEX_SERVERS)
   {
     bReturn = !g_plexApplication.serverManager->HasAnyServerWithActiveConnection();
+  }
+  else if (condition == SYSTEM_ISRASPLEX)
+  {
+#ifdef TARGET_RASPBERRY_PI
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  }
+  else if (condition == SYSTEM_ISOPENELEC)
+  {
+#ifdef OPENELEC
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
   }
   /* END PLEX */
   else if (g_application.IsPlaying())
