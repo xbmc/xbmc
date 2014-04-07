@@ -766,7 +766,7 @@ void CGUIWindowHome::AddPlayQueue(std::vector<CGUIListItemPtr>& list, bool& upda
   updated = true;
 
   CGUIStaticItemPtr item = CGUIStaticItemPtr(new CGUIStaticItem);
-  CStdString path("plexserver://playqueue");
+  CStdString path("plexserver://playqueue/");
 
   item->SetLabel("Play Queue");
   item->SetProperty("playqueue", true);
