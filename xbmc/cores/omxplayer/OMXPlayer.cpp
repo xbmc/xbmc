@@ -4125,7 +4125,7 @@ bool COMXPlayer::HasMenu()
 {
   CDVDInputStream::IMenus* pStream = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
   if (pStream)
-    return true;
+    return pStream->HasMenu();
   else
     return false;
 }
